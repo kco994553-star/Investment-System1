@@ -221,3 +221,12 @@ User-designated successor `gpt-work-main-2026-10-05-3a80dcef6444` inherits Globa
 - Read back six actual routing comments; stored packet/body hashes, dependency states and Main-side conditional Web planning acceptance. Chart6 gates remain open; source authorities unassigned.
 - Consumed fresh Platform/QGV/Chart updates as recorded in the ledger, distinguishing owner contracts from independent audits and comment delivery from scoped receipt.
 - Main-only resumption configuration and event/followup receipts verified at their observed level; standalone unattended completion unverified. Existing scoped reservations untouched. Processed IDs prevent self-trigger replay; lease released for CI wait.
+
+
+## GCH-018 · 2026-10-05T14:32:45.200094+09:00 · terminal CI / compound consumer / material owner returns
+
+- Parent `e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae`; CDR-019 preserves two supplemental tool directives and current boundaries. No redesign/restart.
+- Recovered existing PR46old2135962a CI7/7SUCCESS and exact audit artifact integrity without rerun; rawFrozen-toolsFAIL and acceptance gaps preserved.
+- Published PIW-D002 finite compound consistency consumer new`a3e3f6cf5452d056de2df7845a17014765aa3ff3`,165affectedtestsPASS, independent correction. NewCI separate; authenticated binding/governance/exact merge acceptance still BLOCKED.
+- Platform successor `78a51462f89eac8e34647cddc4e53ed97e831178` repairs invalidreference and blankidentity subfindings;7Mainprobes and actualCI22/405PASS. Routed scoped return to PR45 and precise Web PPAF08 to PR36; delivery not receipt.
+- Chart `eedab5922db453a7b11a851cf57844064ce00f3f` active STATE-only repair lease preserved; gates unchanged. QGV/Portfolio/Identity boundaries retained. Main lease released, newCIqueue/processedIDs/backlog saved.

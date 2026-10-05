@@ -4,26 +4,19 @@
   "created_at_utc": "2026-10-05T04:42:49.051352+00:00",
   "fresh_scope": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-    "global": "af264713b99471fb554e06e8d321f5039be47b47",
-    "chart": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+    "global": "e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae",
+    "chart": "eedab5922db453a7b11a851cf57844064ce00f3f",
     "chart_lease": {
-      "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
-      "run_id": null,
-      "holder_kind": "MANUAL_ROOT",
-      "acquired_at_utc": "2026-10-05T04:50:05.736Z",
-      "expires_at_utc": "2026-10-05T05:20:05.736Z",
-      "ttl_minutes": 30,
-      "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-      "verified_remote_acquisition": true,
-      "acquisition_parent_head": "a5403a969021021cd3f489173603bc657365097f",
-      "reason": "Exact pending FPIA run just reached terminal SUCCESS; consume receipt and clear CI queue without governance promotion",
-      "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
-      "acquisition_commit": "7ba5f2dac74487d1ce504e80081213e23894cc09",
-      "verified_at_utc": "2026-10-05T04:53:10.015213+00:00",
-      "previous_run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
-      "released_at_utc": "2026-10-05T04:55:05.915Z",
-      "verified_published_packet": "395a24eef42fde2ddec8831808daba5e768d72e2"
-    }
+      "status": "HELD",
+      "run_id": "manual-chart-fixture-review-20261005T052509016Z",
+      "acquired_at_utc": "2026-10-05T05:25:09.016Z",
+      "expires_at_utc": "2026-10-05T06:25:09.016Z",
+      "reason": "Owner dedicated SAMPLE canvas/missing-to-zero repair; no gate closure yet",
+      "main_action": "PRESERVED_NO_DUPLICATE_WRITER"
+    },
+    "global_input": "e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae",
+    "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "fpia_successor": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
   },
   "summary": {
     "lane_a_open": 6,
@@ -595,12 +588,24 @@
         "source": "GitHub run/jobs/workflow readback"
       },
       "dependencies": [],
-      "state": "EVIDENCE_READY",
+      "state": "CONSUMED",
       "delivery_channel": "Global coordination packet (existing Platform automation fresh-reads Global)",
       "delivered_at": null,
-      "receipt": null,
-      "last_consumed_revision": null,
-      "next_action": "Platform owner consumes exact CI and appends own receipt; Main re-reads",
+      "receipt": {
+        "owner_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+        "artifact": "implementation/docs/product_platform_audit/CURRENT_HANDOFF.md",
+        "new_source": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+        "new_run": 37265731093,
+        "new_attempt": 1,
+        "status": "SUCCESS",
+        "targeted": 22,
+        "full": 405,
+        "counts_source": "actual job111622046572 logs read by independent intake delegate",
+        "old_run_owner_consumption": "UNAVAILABLE; newer owner receipt covers603d1c64/run37265731093 only",
+        "consumer": "Main consumes published new-source CI receipt; no claimed owner consumption of oldrun37263497936"
+      },
+      "last_consumed_revision": "78a51462f89eac8e34647cddc4e53ed97e831178",
+      "next_action": "No CI rerun; remaining runtime/auth/financial gates continue with owner",
       "source_HEAD": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
       "source_decision": [
         "CDR-016",
@@ -796,6 +801,66 @@
       "last_consumed_revision": null,
       "state": "ROUTED",
       "next_action": "Owner returns bounded attribution if future subject needs this optional branch"
+    },
+    {
+      "id": "MAIN-PLATFORM-PPF-RETURN-20261005",
+      "finding": "PPF003 repair and PPF005 blank-identity subfinding",
+      "authoritative_owner": "Independent Platform Audit Work PR45; source Platform owner preserved",
+      "source_HEAD": "78a51462f89eac8e34647cddc4e53ed97e831178",
+      "exact_path_branch_pr": {
+        "branch": "codex/product-platform-audit-v1",
+        "head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+        "path": "implementation/docs/product_platform_audit/CURRENT_HANDOFF.md",
+        "pr": null
+      },
+      "state": "ROUTED",
+      "source_receipt": "Platform owner consumed PR45 exact17244b4; Main independently verified7affectedprobes",
+      "acceptance_criteria": [
+        "audit re-consumes exact source603d1c64 and immutable hash",
+        "PPF003 contract validation CLOSED if negatives rejected",
+        "PPF005 blankidentity subfinding CLOSED, authenticated runtime ownership OPEN",
+        "PPF004 and PPF006 remain OPEN"
+      ],
+      "delivery_comment_id": 5988659420,
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5988659420",
+      "delivery_body_sha256": "bbad9a80395fd60f94526c35c852beb184a22acc46b590dc94ebede1862361ba",
+      "delivered_at": "2026-10-05T05:27:00Z",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Independent scoped audit returns exact-head re-consumption/finding decisions; comment alone not receipt",
+      "destination": {
+        "pr": 45,
+        "branch": "codex/product-platform-foundation-2026-10-05",
+        "head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+        "role": "independent scoped re-consumption"
+      }
+    },
+    {
+      "id": "MAIN-PLATFORM-WEB-PPAF08-20261005",
+      "finding": "actual_weight fallback to target_weight in Web snapshot context",
+      "authoritative_owner": "Web source owner not yet accepted; existing PR36 protected scope",
+      "owner_assignment": "OWNER_ACTION_REQUIRED",
+      "source_HEAD": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "exact_path_branch_pr": {
+        "branch": "integration/web/production-state-presentation-v1",
+        "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "path": "implementation/src/investment_system/product/web_assets/app.js",
+        "pr": 36
+      },
+      "state": "ROUTED",
+      "acceptance_criteria": [
+        "bounded writer/write-set/lease before source changes",
+        "missing ACTUAL remains unavailable in snapshot/actual context",
+        "TARGET/model separate; no browser aggregation",
+        "exact negative+valid evidence"
+      ],
+      "delivery_comment_id": 5988663367,
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-5988663367",
+      "delivery_body_sha256": "93e749e90beb84d5826af51b8e61a6a5cd677e2c7721810761ce353e4d995f46",
+      "delivered_at": "2026-10-05T05:27:23Z",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "next_action": "Accountable Web owner returns scope acceptance or OWNER_UNASSIGNED; Main does not seize protected source"
     }
   ],
   "wake_up": "Main PR41 synchronize and API-authored PR17 comment events observed; self-comment deduplicated. Other owner wake/receipt unverified.",
@@ -839,5 +904,14 @@
     "attempt": 1,
     "evidence": "evidence/main_takeover_2026-10-05/CHART_TERMINAL_INTAKE.json",
     "gate_impact": "CI wait removed; A-G3 and all six root gates remain OPEN"
+  },
+  "platform_delta": {
+    "head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "main_independent_probes": "7/7 PASS",
+    "PPF003": "CONTRACT_VALIDATION_CLOSED_BY_MAIN; SCOPED_RECONSUMPTION_PENDING",
+    "PPF005": "BLANK_IDENTITY_CLOSED; TRUSTED_RUNTIME_OPEN",
+    "PPF004": "OPEN",
+    "PPF006": "OPEN",
+    "production_capability": "NOT_VERIFIED"
   }
 }

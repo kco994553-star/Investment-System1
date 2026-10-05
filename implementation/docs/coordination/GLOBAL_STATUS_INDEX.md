@@ -4,7 +4,7 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-023 (CDR-018 takeover; FPIA successor PR46; exact owner routing ledger) |
+| Index revision | GSI-024 (PIW-D002 finite implementation; terminal CI; Platform/Chart current receipts) |
 | Recorded | 2026-10-03T01:18:13Z, commit `b118b68` (fresh `git fetch` of all 28 remote refs at 2026-10-03T01:07Z) |
 | Writer | GPT Work `gpt-work-main-2026-10-05-3a80dcef6444`; CDR-018 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
@@ -13,22 +13,23 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 **Decision authority (CDR-015, 2026-10-05 12:15 KST):** classifications below that read USER_DECISION_REQUIRED or "not approved" were made under the earlier authority. Under CDR-015 they are D2 for the responsible Work (decide with evidence, record reason/impact/verification/recovery), except paid resources (D3). Reclassification in progress; PIW decisions go to `PIW_DECISION_RECORDS.md`.
 
-## Current override · GCH-017 / CDR-018
+## Current override · GCH-018 / CDR-018 / CDR-019
 
-The current Integration authority is CDR-015 **as narrowed by CDR-016 §13 / CDR-017 / CDR-018**; the earlier broad decision paragraph and old labels do not override these limits. Current evidence is `GLOBAL_CURRENT_HANDOFF.md`, `MAIN_TAKEOVER_STATE.json`, `OWNER_ROUTING_LEDGER.json`, and GIE-014.
+Current authority is CDR-015 **narrowed by CDR-016 §13/CDR-017/CDR-018**. Tool guidance CDR-019 changes no owner or approval boundary. Historical broad labels below are superseded where scoped evidence differs.
 
-| Capability | Fresh branch evidence | Integration disposition |
+| Capability | Fresh evidence | Integration disposition |
 |---|---|---|
-| FPIA | PR42 11d2f25 existing audit SUCCESS; PR46 2135962a bounded literal-source repair published, exact-head CI pending | Governance + actual merge-result acceptance OPEN; PIW-D001..006 technical obligations pending |
-| Chart | Latest scoped HEAD/lease in Main state; v0.8 diagnostic repair independently source-checked | 6 Lane A gates OPEN; Lane B 0/19, 8 evidence families; no production admission |
-| Portfolio / Identity | No bounded authoritative owner claim found | OWNER_UNASSIGNED; memory/ticker aliases are not an admitted source |
-| Product / Web / US Session | Requests delivered to PR17/36/18; exact comment IDs/hashes in ledger | Await actual scoped owner artifacts; Main A-G2 acceptance is conditional planning only |
-| QGV missing/reconciliation | Missing owner4fb08a0 active lease; independent review uses separate branch | No Main production semantic decision; HOP1 actual canary evidence remains dependency |
-| Platform contract | c9e1adb, run37263497936 SUCCESS | Contract layer only; Auth/API NOT_STARTED; runtime/durable reconciliation obligations remain |
-| Platform independent audit | PR45 17244b4, push37264194566 + PR37264197708 SUCCESS | Synthetic harness PARTIAL; not authoritative owner replacement; PPF003–006 OPEN |
-| Main automated resumption | Enabled readback plus actual delivered/coalesced events | Separate unattended end-to-end continuation UNVERIFIED; no duplicate executor |
+| FPIA | PR46 old2135962a CI7/7SUCCESS; new`a3e3f6cf5452d056de2df7845a17014765aa3ff3` additive compound consumer165testsPASS, newCIpending | Authentication/governance/exact merge acceptance BLOCKED; consistency utility only |
+| Chart | `eedab5922db453a7b11a851cf57844064ce00f3f` STATE-only active SAMPLE repair lease; no gate closure | 6LaneA OPEN; LaneB0/19,8families; owner scope preserved |
+| Portfolio/Identity | No bounded authoritative owner claim | OWNER_UNASSIGNED |
+| Product/Web/Session | Existing PR17/18/36 requests; precise PPAF08 PR36comment5988663367 | Delivery not receipt; protected Web source not seized |
+| QGV | Missing4fb08a0 active lease; separate reconciliation4d53aa3 | HOP1 receipt dependency; Main selects no production semantics |
+| Platform owner | `78a51462f89eac8e34647cddc4e53ed97e831178` source603d1c64; existingCI22/405PASS;7Mainindependent probes | PPF003+blankidentitysubfinding repaired; runtimeauth/financial/durablestore OPEN |
+| Platform independent audit | PR45 17244b4; returncomment5988659420 delivered/readback | Await scoped re-consumption; synthetic harness not owner replacement |
+| Tool discovery | Context7docs/Superpowerscurrentphase; Linear0projects,no matchingissues,read-only | No invented service target; connection not completion |
+| Main continuation | Existing events coalesced with same Main writer, IDs retained | Standalone unattended END_TO_END_VERIFIED unclaimed; no duplicate executor |
 
-No canonical/integration readiness is implied by docs publication. Historical table rows below are preserved and superseded by newer scoped evidence where they differ.
+Evidence: current Main state/ledger and `evidence/main_tools_2026-10-05/`. No canonical readiness from docs or test count.
 
 ## 1. Maturity scale and state columns
 

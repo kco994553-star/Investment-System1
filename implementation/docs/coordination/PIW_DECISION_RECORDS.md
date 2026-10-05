@@ -75,3 +75,14 @@ A decision here never rewrites Frozen records or history, never hides a failure 
 - Recovery: supersede this entry with reason/evidence; preserve the old entry and all raw runs; roll back a future tooling proposal on its own branch without changing canonical or Frozen history.
 
 Overall current disposition: **INTEGRATION_ACCEPTANCE_BLOCKED**. No unsupported raw FPIA_PASS is promoted to GIE/governance/exact-merge closure. Literal execution-source and container-evidence repair proceeds separately as a verified bounded successor.
+
+
+## PIW-D007 · PIW-D002 bounded implementation checkpoint
+
+- Recorded: 2026-10-05T14:32:45.200094+09:00; authority CDR-015 D1/D2 narrowed by CDR-016 §13/CDR-017/CDR-018; CDR-019 supplements tool use only.
+- Status: **COMPOUND_CONSISTENCY_CONSUMER_IMPLEMENTED / AUTHENTICATED_BINDING_AND_INTEGRATION_ACCEPTANCE_PENDING**. Supersedes PIW-D002 technical status only in this finite sub-scope; PIW-D002 history is retained.
+- Decision/reason: publish an additive stdlib importable utility and read-only JSON CLI on existing draft PR46 rather than change raw FPIA semantics. Match the entire workflow/run/attempt/job/subject/nominated-verifier identity; generic labels cannot select evidence, ambiguity/malformed receipts fail closed. Consistency never authenticates caller-supplied strings. All outputs retain authentication NOT_VERIFIED and integration_acceptance BLOCKED.
+- Impact: two new ordinary integration-tool/test files; zero existing source or workflow edits, no new dependencies, no owner contracts or production policy. Exact remote `a3e3f6cf5452d056de2df7845a17014765aa3ff3`, parent `2135962a1e6fd19c3acd220a30c6464431eddf95`, tree `cdade46e1c9402a90272fbe325d6e04398b7b5ea`; TREE_IDENTICAL local/API, no local COMMIT_IDENTICAL claim.
+- Verification: 157 initial RED; independent review exposed 8 owner-hyphen cases RED, fixed before final 165/165 GREEN; root readback 165/165. Evidence `evidence/main_tools_2026-10-05/PIW_D002_IMPLEMENTATION_RECEIPT.json`. New exact-head CI collected once and pending separately; old subject CI7/7 SUCCESS is not reused for new code.
+- Limits/next: actual authenticated expected identity/receipt, independently authorized verifier/launcher, dynamic/transitive/external coverage, importer attribution, applicability and exact final merged subject still required. PIW-D001/D003-D006 remain runnable D1/D2 obligations, not fresh approval requests based on former D3 labels.
+- Recovery: revert this additive utility on its proposal branch if a defect is found; preserve all runs/decision history and fail-closed acceptance. No canonical merge/Frozen rewrite.

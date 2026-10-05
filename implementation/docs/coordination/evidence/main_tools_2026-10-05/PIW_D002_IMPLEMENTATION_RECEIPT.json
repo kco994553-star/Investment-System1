@@ -1,0 +1,59 @@
+{
+  "schema": "main-piw-d002-implementation-v1",
+  "observed_at_utc": "2026-10-05T05:32:45.200078+00:00",
+  "subject": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+  "parent": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+  "tree": "cdade46e1c9402a90272fbe325d6e04398b7b5ea",
+  "local_tree_identical": true,
+  "local_commit_identity": "NOT_CLAIMED; API commit is authoritative, local prior parent differs",
+  "write_set": [
+    {
+      "path": "implementation/tools/integration/track_c_fpia_evidence_identity.py",
+      "sha256": "b7393fcdfe12cbe77302c568caa6bb09c5ae684fc729b37d7808948db7c9c6e5",
+      "blob": "5b4ed76a580f07f4f7e3690de7f68236524cf108"
+    },
+    {
+      "path": "implementation/tests/test_integration_fpia_evidence_identity.py",
+      "sha256": "df9c595e65e6202797b2baaddeee08ddc0e031aac128f5c3a2aa9ae768aef8d3",
+      "blob": "de6d862d81b3f659325abf3c30ea493d70ead6d7"
+    }
+  ],
+  "existing_source_files_changed": 0,
+  "new_dependencies": 0,
+  "local_runtime": "Python 3.12.14; pytest9.1.1 existing venv",
+  "ci_previous_runtime": "Python3.11.16",
+  "tests": {
+    "initial_red": 157,
+    "review_correction_red": 8,
+    "final_green": 165,
+    "root_readback_green": 165,
+    "root_duration_s": 0.68,
+    "full_regression_rerun": false
+  },
+  "independent_review": {
+    "finding": "GitHub owner trailing/consecutive hyphens accepted, including verifier repository",
+    "red_evidence": "8 failed before regex fix",
+    "corrected": true,
+    "remaining_concrete_findings": 0
+  },
+  "features": [
+    "compound repository/workflow/run/attempt/job/subject/verifier matching",
+    "labels diagnostic only",
+    "malformed/duplicate/conflicting execution receipts fail closed",
+    "strict duplicate-key and nonfinite-constant JSON parsing",
+    "importable consumer and read-only JSON CLI"
+  ],
+  "integration_wiring": "ADDITIVE_IMPORTABLE_UTILITY_AND_CLI; NO_RAW_FPIA_GATE_REWRITE",
+  "actual_authenticated_receipt": "NOT_SUPPLIED",
+  "authentication": "NOT_VERIFIED",
+  "integration_acceptance": "BLOCKED",
+  "remaining_obligations": [
+    "PIW-D001 authorized verifier/launcher",
+    "PIW-D002 actual authenticated selection/receipt binding",
+    "PIW-D003 dynamic coverage",
+    "PIW-D004 generic optional importer attribution",
+    "PIW-D005 external runtime influence",
+    "PIW-D006 authenticated applicability and exact final subject"
+  ],
+  "test_log_archive": "RAW_TEST_LOGS.json; lossless gzip+base64 with raw/compressed hashes"
+}

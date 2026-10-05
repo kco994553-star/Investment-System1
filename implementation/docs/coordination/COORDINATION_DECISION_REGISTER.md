@@ -1498,3 +1498,12 @@ Effect, within the attachment's exact scope:
 - Publish only a descendant of the immediately re-read Global parent with non-force ref advancement. A remote movement is a conflict requiring fresh reconciliation; never overwrite another update. Long CI holds no shared write lease. Other owners' scopes, leases and independent automations are preserved.
 - CDR-015 D1/D2 remains narrowed by CDR-016 §13 and CDR-017. No canonical merge, Frozen semantic rewrite, Holdout, PIT relaxation, Official/LIVE, protected owner contract changes, real account/credential/production-auth activation, paid resources or trade execution is newly approved by this transfer. Main does not decide QGV production semantics.
 - Routing comments/packets on relevant repository owner PRs and new Main-only automatic continuation are authorized by attachment §§8–9. Delivery is not receipt; activation is not end-to-end execution.
+
+
+## CDR-019 · Supplemental tool use and first-use constraints
+
+- Status: USER_DECIDED; recorded 2026-10-05T14:32:45.200094+09:00.
+- Source: two current user directives, preserved verbatim in `evidence/main_tools_2026-10-05/USER_TOOL_USAGE_DIRECTIVES.md`; SHA-256 `c29ae2c08e97dd28414fb8d8e17f33d275a5fd9b1607bf2441d6fc312ce1a25e`. They apply at the existing safe checkpoint and do not restart completed work.
+- Effect: GitHub remains code/contract/approval/evidence authority. Verify callable tool access and exact service target; connection is not a configured project or completion. Context7 uses actual dependency versions; Superpowers applies only the current debugging/test/review phase; Linear first reads existing projects/issues and does not invent a target or close a GitHub gate. First use states purpose, target and read/write scope.
+- CDR-015 D1/D2 as narrowed by CDR-016 §13/CDR-017/CDR-018 remains unchanged. No new owner takeover, protected scope, paid resource, real credential/auth, tenant-policy change, backend replacement or deployment authority. Figma/MagicPath use one design authority per screen when an actual task needs it. Independent authorized work proceeds if an optional service target is unavailable.
+- Applied evidence: Context7 exact-version primary-doc fallback, read-only Linear discovery with no repository project found, current PIW-D002 TDD/review only; no redesign, full-audit repeat or new service resource.

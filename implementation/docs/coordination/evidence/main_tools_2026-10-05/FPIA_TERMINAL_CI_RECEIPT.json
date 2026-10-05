@@ -1,0 +1,126 @@
+{
+  "schema": "main-ci-recovery-v1",
+  "observed_at_utc": "2026-10-05T05:32:45.200078+00:00",
+  "subject": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+  "runs": [
+    {
+      "id": 37264932317,
+      "name": "sec-primary-disclosure",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932317"
+    },
+    {
+      "id": 37264932370,
+      "name": "us-equity-session",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932370"
+    },
+    {
+      "id": 37264932346,
+      "name": "qgv-invalidation-binding",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932346"
+    },
+    {
+      "id": 37264932313,
+      "name": "p01-research-publication",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932313"
+    },
+    {
+      "id": 37264932324,
+      "name": "technical-real-model",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932324"
+    },
+    {
+      "id": 37264932310,
+      "name": "technical-real-producer",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932310"
+    },
+    {
+      "id": 37264932348,
+      "name": "track-c-fpia",
+      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932348"
+    }
+  ],
+  "rerun_performed": false,
+  "track_c_fpia": {
+    "run_id": 37264932348,
+    "job_id": 111619607882,
+    "attempt": 1,
+    "artifact_id": 11327061190,
+    "artifact_archive_sha256": "ff7f5eed1fb62bb7325f459671fb3ceac69119c09afdb406b027c38293831b84",
+    "archive_digest_independently_matched": true,
+    "side_file_hashes_verified": 6,
+    "result_sha256": "992fd396abc47d03f3075b717f2640f78654fd9f92bf00f936135631dc67409f",
+    "run_sha256": "4198136fb7cc9d5376320631c8b52bbe28a013680c1b814b81132f5a272e90f4",
+    "raw_verdict": {
+      "reasons": [],
+      "status": "FPIA_PASS"
+    },
+    "code_identity": "CODE_IDENTITY_DIVERGED",
+    "frozen_tools_on_subject": "FROZEN_TOOLS_ON_T_FAIL",
+    "full_regression": {
+      "collect_errors": [],
+      "counts": {
+        "errors": 0,
+        "failures": 0,
+        "skipped": 0,
+        "tests": 2019
+      },
+      "deselect_rule": {
+        "file": "implementation/tests/test_raw_and_providers.py",
+        "node": "tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2",
+        "present_at_T": true,
+        "rule": "honoured only while its file is byte-identical to R's (PIW ruling); disclosed deviation",
+        "valid": true
+      },
+      "deselected": [
+        "implementation/tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2"
+      ],
+      "junit": {
+        "errors": 0,
+        "failures": 0,
+        "skipped": 0,
+        "tests": 2019
+      },
+      "non_track_c_failures": [],
+      "rc": 0,
+      "status": "PASS",
+      "track_c_nodes": 837
+    },
+    "ci_tier1": "SKIPPED_DISPATCH_ONLY",
+    "ci_tier2": "SKIPPED_DISPATCH_ONLY",
+    "integrity_readback": "verify-output EXIT_0; result/run/side hashes matched",
+    "verifier_authentication": "NOT_INDEPENDENTLY_AUTHORIZED",
+    "governance_closure": "BLOCKED",
+    "exact_merge_result_acceptance": "BLOCKED"
+  },
+  "successor_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+  "successor_ci_result": "PENDING_SEPARATE_EXACT_HEAD",
+  "old_success_applies_to_new_head": false
+}

@@ -25,16 +25,16 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "RUNNING_D002_IDENTITY_AND_PLATFORM_RECEIPT",
+  "execution_state": "CHECKPOINT_READY_D002_IMPLEMENTED_NEW_CI_PENDING",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-    "global_input": "af264713b99471fb554e06e8d321f5039be47b47",
+    "global_input": "e36bec9be6be3bdf60ac7fd4ef8379a2ba93a7ae",
     "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
-    "chart": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
-    "fpia_successor": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "chart": "eedab5922db453a7b11a851cf57844064ce00f3f",
+    "fpia_successor": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
     "qgv_missing": "4fb08a05728d83519b72a2bd995669f0cb06003a",
     "qgv_reconciliation": "4d53aa3047ba397cda992d2e784316a9d889bc22",
-    "platform": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+    "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "platform_independent_audit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
   },
   "automations": {
@@ -60,14 +60,7 @@
     "followup_delivery_observed": true
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": {
-    "token": "main-d002-owner-intake-20261005-3a80dcef6444",
-    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "acquired_at": "2026-10-05T05:17:37.238Z",
-    "expires_at": "2026-10-05T05:47:37.238Z",
-    "scope": "Global checkpoint + bounded PIW-D002 evidence identity implementation",
-    "reason": "Existing Main continues; event/followup must coalesce without duplicate writer"
-  },
+  "lease": null,
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -81,7 +74,11 @@
     "ea6fe940-c077-11f1-8771-9c00da60a34e",
     "3d9f3ad0-c078-11f1-8633-383e1f8a1664",
     "c082c480-c078-11f1-8341-4176060628fa",
-    "12077350-c079-11f1-8365-c26c461ca142"
+    "12077350-c079-11f1-8365-c26c461ca142",
+    "233b9b70-c07d-11f1-86de-0f2516fd9f27",
+    "643a66b0-c07d-11f1-8b05-46cad5c119ea",
+    "71dc3d20-c07d-11f1-92ea-8da830f185ff",
+    "9f0d73e0-c07d-11f1-8f1d-d377838d25a5"
   ],
   "last_processed_comment_ids": [
     5988265306,
@@ -89,77 +86,80 @@
     5988265604,
     5988265763,
     5988271804,
-    5988271956
+    5988271956,
+    5988659420,
+    5988663367
   ],
   "pending_ci": [
     {
-      "id": 37264932370,
-      "name": "us-equity-session",
-      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932370"
-    },
-    {
-      "id": 37264932313,
-      "name": "p01-research-publication",
-      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932313"
-    },
-    {
-      "id": 37264932317,
-      "name": "sec-primary-disclosure",
-      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932317"
-    },
-    {
-      "id": 37264932324,
-      "name": "technical-real-model",
-      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932324"
-    },
-    {
-      "id": 37264932310,
-      "name": "technical-real-producer",
-      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
-      "attempt": 1,
-      "status": "in_progress",
-      "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932310"
-    },
-    {
-      "id": 37264932346,
+      "id": 37267962003,
       "name": "qgv-invalidation-binding",
-      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
       "attempt": 1,
       "status": "in_progress",
       "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932346"
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962003"
     },
     {
-      "id": 37264932348,
-      "name": "track-c-fpia",
-      "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "id": 37267962024,
+      "name": "us-equity-session",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
       "attempt": 1,
       "status": "in_progress",
       "conclusion": null,
-      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932348"
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962024"
+    },
+    {
+      "id": 37267962000,
+      "name": "track-c-fpia",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000"
+    },
+    {
+      "id": 37267961987,
+      "name": "p01-research-publication",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961987"
+    },
+    {
+      "id": 37267961909,
+      "name": "sec-primary-disclosure",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961909"
+    },
+    {
+      "id": 37267962109,
+      "name": "technical-real-producer",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962109"
+    },
+    {
+      "id": 37267961900,
+      "name": "technical-real-model",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961900"
     }
   ],
   "next_runnable_backlog": [
-    "Implement and independently validate PIW-D001..006 acceptance obligations on FPIA successor after fresh scope/lease check; no canonical/Frozen changes",
-    "Consume existing PR46 CI run IDs/attempts; do not rerun merely to collect a result",
-    "Consume actual owner receipts and route material deltas; do not promote comment delivery to receipt"
+    "Consume existing new PR46 exact-head CI IDs/attempts; do not rerun to collect results",
+    "Continue PIW-D001 authorized verifier/launcher and PIW-D002 actual receipt binding under existing D1/D2; no raw/gate self-authentication",
+    "Continue PIW-D003..006 bounded implementation/evidence after fresh lease/scope check",
+    "Consume actual PR45/Web/Product/Session receipts and propagate only material deltas; delivery is not receipt"
   ],
   "next_dependency_gates": [
     "Chart 6 Lane A gates and 8 Lane B evidence families remain open until exact owner evidence",
@@ -167,30 +167,24 @@
     "QGV HOP1 manifest and active owner lease; no Main production semantic decision"
   ],
   "last_lease": {
-    "token": "main-intake-routing-20261005-3a80dcef6444",
+    "token": "main-d002-owner-intake-20261005-3a80dcef6444",
     "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "acquired_at": "2026-10-05T13:39:07+09:00",
-    "expires_at": "2026-10-05T14:09:07+09:00",
-    "scope": "Global coordination + routing publication; independent FPIA repair remains successor-only",
-    "reason": "Active manual intake; event/followup must not start a concurrent shared writer",
-    "released_at": "2026-10-05T04:55:37.638238+00:00",
-    "release_reason": "Bounded implementation/routing checkpoint published; no shared lease retained for long CI wait"
+    "acquired_at": "2026-10-05T05:17:37.238Z",
+    "expires_at": "2026-10-05T05:47:37.238Z",
+    "scope": "Global checkpoint + bounded PIW-D002 evidence identity implementation",
+    "reason": "Existing Main continues; event/followup must coalesce without duplicate writer",
+    "released_at": "2026-10-05T05:32:45.200078+00:00",
+    "release_reason": "Bounded D002 implementation and owner evidence/routing checkpoint published; no shared lease during CI wait"
   },
   "publication_dedup_rule": "Containing docs-only Global commit is the output watermark; do not create another commit merely to store its own SHA. Fresh-read this state and compare external input hashes.",
   "dependency_fingerprint_files": [
     "OWNER_ROUTING_LEDGER.json",
     "evidence/main_takeover_2026-10-05/REMOTE_RECEIPTS.json",
-    "evidence/main_takeover_2026-10-05/CHART_TERMINAL_INTAKE.json"
+    "evidence/main_takeover_2026-10-05/CHART_TERMINAL_INTAKE.json",
+    "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
+    "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": {
-    "branch": "codex/fpia-fix3-literal-repair-2026-10-05",
-    "parent": "2135962a1e6fd19c3acd220a30c6464431eddf95",
-    "writer": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "local_implementer": "delegated fpia_identity_consumer; Main only publishes",
-    "write_set": [
-      "implementation/tools/integration/track_c_fpia_evidence_identity.py",
-      "implementation/tests/test_integration_fpia_evidence_identity.py"
-    ],
-    "existing_ci_preserved": true
-  }
+  "active_scoped_execution": null,
+  "last_terminal_ci_evidence": "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
+  "last_checkpoint_at_utc": "2026-10-05T05:32:45.200078+00:00"
 }

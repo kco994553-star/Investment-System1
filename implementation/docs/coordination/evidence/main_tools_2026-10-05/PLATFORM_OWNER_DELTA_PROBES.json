@@ -1,0 +1,63 @@
+{
+  "schema": "main-platform-delta-probes-v1",
+  "subject_before": "c9e1adb5fbd9a1b8e005c4f4cea7eec30ccc84d9",
+  "subject_after": "78a51462f89eac8e34647cddc4e53ed97e831178",
+  "source_commit": "603d1c64b005e07dedebcf9ea733e4ed00b504d0",
+  "source_path": "implementation/src/investment_system/platform/contracts.py",
+  "before_sha256": "75eceb8960e59a6813b025a85e0d9b54a0c5c8ea5f0f6acd18ff292d57d31ef9",
+  "after_sha256": "b13686d8ce134ccb61ef78c51d178597404e7a3401e7b22240dcc47c01d0aa7b",
+  "runner": "source-pinned module execution; canonical personal.ports dependency; Python stdlib",
+  "negative_before": [
+    {
+      "probe": "blank_tenant",
+      "result": "INVALID_ACCEPTED"
+    },
+    {
+      "probe": "blank_principal",
+      "result": "INVALID_ACCEPTED"
+    },
+    {
+      "probe": "blank_ref",
+      "result": "INVALID_ACCEPTED"
+    },
+    {
+      "probe": "bad_hash",
+      "result": "INVALID_ACCEPTED"
+    },
+    {
+      "probe": "wrong_lineage_type",
+      "result": "INVALID_ACCEPTED"
+    }
+  ],
+  "negative_after": [
+    {
+      "probe": "blank_tenant",
+      "result": "REJECTED_AT_CONSTRUCTION"
+    },
+    {
+      "probe": "blank_principal",
+      "result": "REJECTED_AT_CONSTRUCTION"
+    },
+    {
+      "probe": "blank_ref",
+      "result": "REJECTED_AT_CONSTRUCTION"
+    },
+    {
+      "probe": "bad_hash",
+      "result": "REJECTED_AT_CONSTRUCTION"
+    },
+    {
+      "probe": "wrong_lineage_type",
+      "result": "REJECTED_AT_CONSTRUCTION"
+    }
+  ],
+  "valid_controls": [
+    "tenant_context",
+    "source_ref_normalized_lineage"
+  ],
+  "new_checks_passed": 7,
+  "ppf003": "CLOSED_CONTRACT_VALIDATION_INDEPENDENTLY_REPRODUCED",
+  "ppf005": "BLANK_IDENTITY_SUBFINDING_CLOSED; TRUSTED_RUNTIME_OWNERSHIP_OPEN",
+  "production_verified": false,
+  "full_regression_rerun": false
+}
