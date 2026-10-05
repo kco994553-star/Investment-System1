@@ -46,3 +46,12 @@ Use the verified GitHub API path when transport push is unavailable, preserving 
 ## Boundaries and readiness
 
 Six pre-code gates remain A-S1/A-S2/A-S3/A-G1/A-G2/A-G3, closed0/open6. Market admitted0/19; ACTUAL NOT_AVAILABLE. Automation setup neither closes these gates nor authorizes production package/protected Web work. No canonical merge, other owner branch or Global write, Frozen change, P01/TrackC digest/hash repin, grant, Official/LIVE promotion, Holdout, PIT relaxation, payment, MCP implementation or inactive QGV semantic activation is permitted by this setup. Any future newly authorized scope requires its own exact evidence and ownership assessment; the lease supplies coordination only.
+
+
+## v0.7 current execution policy and automation inventory
+
+The earlier two-task setup is historical. Active Main is Chart 감사 자동진행 `6ac31fca7bb4819183997a9f17f432cb` on its existing hourly schedule; active CI followup remains `6ac2ef0621908191909a27af4c91f101`. The superseded PR-event task `6ac2eeedb21c81919f04168d69672f0a` is paused. Actual API readback and paths are in [v0.7 checkpoint](../p0-dependency-continuation-v0.7/HANDOFF.md). Existing shared atomic lease/no-change/no-self-loop rules continue for Main, CI and manual invocations.
+
+Main must fresh-read material Global-only Portfolio/Identity/Product/FPIA inputs before no-op; pending CI absence cannot suppress that intake. Current GitHub webhook capability only exposes PR events, so no immediate branch-push wake-up is claimed. CI reads actual pending run/head/attempt; with no pending, it can read Global changes but leaves unprocessed dependency work to Main. Exact source/decision/blob semantic fingerprints, not mutable lease clocks or unrelated Global commits, determine actionable delta.
+
+The user latest scoped policy in [EXECUTION_POLICY.md](../p0-dependency-continuation-v0.7/EXECUTION_POLICY.md) replaces the earlier blanket readiness-only stop: after all6owner gates close, approved-write-set production Target vertical slice proceeds automatically through verification/E2E/handoff. Missing evidence is still missing; protected production/new policy/canonical/Frozen/PIT/Official/etc require actual scoped authority. Latest explicit Chart boundaries override wider earlier delegated authority where they conflict. Do not ask again merely because old FPIA owner findings were labelled D3. No production Freeze, source admission, owner acceptance or grant comes from scheduling.

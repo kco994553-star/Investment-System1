@@ -12,7 +12,7 @@
     "event": {
       "id": "6ac2eeedb21c81919f04168d69672f0a",
       "title": "Chart PR 이벤트 재개",
-      "enabled": true,
+      "enabled": false,
       "conversation_id": "6ac21ce4-f050-83ec-bfd4-5fa178fc6936",
       "selectors": {
         "pull_requests": [
@@ -29,7 +29,8 @@
         "enable_reviews": true,
         "enable_comments": true,
         "only_on_merge": false
-      }
+      },
+      "current_disposition": "EXTERNALLY_SUPERSEDED_KEEP_PAUSED"
     },
     "ci_followup": {
       "id": "6ac2ef0621908191909a27af4c91f101",
@@ -45,6 +46,14 @@
         "disposition": "READ_ONLY_NOOP",
         "ci_completion_claim": false
       }
+    },
+    "main": {
+      "id": "6ac31fca7bb4819183997a9f17f432cb",
+      "title": "Chart 감사 자동진행",
+      "enabled": true,
+      "schedule": "HOURLY_EXISTING",
+      "conversation_id": "6ac21e38-55f8-83ee-97af-8b9e30c57c11",
+      "global_only_dependency_intake": true
     }
   },
   "last_observed": {
@@ -55,10 +64,10 @@
       "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
       "41": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
-      "42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
       "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
     },
-    "observed_at_utc": "2026-10-05T01:17:25Z",
+    "observed_at_utc": "2026-10-05T04:11:09.885Z",
     "owner_output_head": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
     "event_watermarks": {
       "17": {
@@ -257,7 +266,86 @@
           "items": []
         }
       }
-    }
+    },
+    "global_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+    "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "global_semantic_refs": [
+      "CDR-015",
+      "CDR-016",
+      "CDR-017"
+    ],
+    "round3_ci_runs": [
+      {
+        "id": 37260997662,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "technical-real-producer",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997662"
+      },
+      {
+        "id": 37260997773,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "technical-real-model",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997773"
+      },
+      {
+        "id": 37260997788,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "track-c-fpia",
+        "event": "pull_request",
+        "status": "in_progress",
+        "conclusion": null,
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997788"
+      },
+      {
+        "id": 37260997660,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "sec-primary-disclosure",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997660"
+      },
+      {
+        "id": 37260997658,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "us-equity-session",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997658"
+      },
+      {
+        "id": 37260997655,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "qgv-invalidation-binding",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997655"
+      },
+      {
+        "id": 37260997708,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "p01-research-publication",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997708"
+      }
+    ]
   },
   "last_processed": {
     "source_head": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
@@ -480,7 +568,31 @@
     ],
     "status": "OFFLINE_PREFLIGHT_VERIFIED_PRODUCTION_PARKED_OTHER_OWNER_PREREQUISITES"
   },
-  "pending": [],
+  "pending": [
+    {
+      "kind": "READ_ONLY_OWNER_DEPENDENCY_CI",
+      "run_id": "manual-chart-dependency-delta-20261005T030326898Z",
+      "pr": 42,
+      "owner_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "last_observed_at_utc": "2026-10-05T04:11:09.885Z",
+      "runs": [
+        {
+          "id": 37260997788,
+          "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "name": "track-c-fpia",
+          "event": "pull_request",
+          "status": "in_progress",
+          "conclusion": null,
+          "attempt": 1,
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997788"
+        }
+      ],
+      "required_disposition": "Re-read exact run_id+attempt+head, record actual conclusion; no other-owner dispatch/write. CI completion alone does not close A-G3; independent owner review/governance/G7/GIE still required.",
+      "evidence_refs": [
+        "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json"
+      ]
+    }
+  ],
   "readiness": {
     "scope": "OFFLINE_PREFLIGHT_VERIFIED_PRODUCTION_OWNER_GATED",
     "lane_a": "IMPLEMENTATION_NOT_READY",
@@ -659,7 +771,8 @@
       "implementation/experiments/chart-contract-v0.1/automation/",
       "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/",
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/"
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/"
     ],
     "do_not_ignore_dependency_semantics_from_an_owned_checkpoint": true,
     "require_current_comment_body_sha256_match": true,
@@ -673,7 +786,7 @@
     ]
   },
   "fingerprint_policy": {
-    "include": "Relevant fresh dependency source/head/authority/decision changes, relevant comment or review revisions, scoped owner source inputs, and pending exact-subject CI state.",
+    "include": "Relevant fresh dependency source/head/authority/decision changes, relevant comment or review revisions, scoped owner source inputs, and pending exact-subject CI state.; Global-only Chart-relevant source/decision/receipt blob fingerprints independently of PR HEAD. Ignore unrelated Global/index clocks.",
     "exclude_paths": [
       "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
     ],
@@ -726,32 +839,47 @@
   },
   "approval_pins": {
     "explicit_user_scope": "2026-10-05 latest Chart continuation through success within Chart-owned scope; no canonical merge/Frozen/Holdout/PIT/Official or other-owner writes",
-    "global_routing_head": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+    "global_routing_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
     "worker_routing_pr21": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
-    "fpia_governance": "OPEN",
+    "fpia_governance": "DEPENDENCY_BLOCKED_ROUND3_REVIEW_AND_CLOSURE",
     "qgv": "INACTIVE_SPEC_ONLY",
-    "production_continuation": "Latest user authorizes continuing Chart to success. Six source/Product/write-set/FPIA owner prerequisites must close first; once closed rejudge exact Chart-owned implementation against current instruction, not the older evidence-only phase restriction. Canonical merge/Frozen/Holdout/PIT/Official prohibitions persist.",
-    "latest_scope_handoff": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md"
+    "production_continuation": "All6actual owner gates close -> implement approved exact write-set through deterministic validation/E2E/required actual-result FPIA/handoff autonomously. Protected production/new policy/canonical/Frozen/PIT/Official and other explicit current scoped D3 boundaries need actual approval; wider previous Global delegation cannot override later explicit Chart boundary.",
+    "latest_scope_handoff": "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md",
+    "latest_scoped_user_policy_effective_kst": "2026-10-05T13:01:31+09:00"
   },
   "automations_current_inventory": [
     {
       "id": "6ac2ef0621908191909a27af4c91f101",
       "title": "Chart CI 후속 확인",
       "is_enabled": true,
-      "timing_mode": "condition_watch",
       "conversation_id": "6ac2ef20-372c-83ee-9857-3ed62a8ed411",
-      "updated_at": "2026-10-05T01:04:49.429295+00:00",
-      "last_run_time": "2026-10-05T00:45:19.511130+00:00"
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "updated_at": "2026-10-05T04:06:23.012375+00:00"
+    },
+    {
+      "id": "6ac31fca7bb4819183997a9f17f432cb",
+      "title": "Chart 감사 자동진행",
+      "is_enabled": true,
+      "conversation_id": "6ac21e38-55f8-83ee-97af-8b9e30c57c11",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T035654Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "updated_at": "2026-10-05T04:06:21.977053+00:00"
     },
     {
       "id": "6ac2eeedb21c81919f04168d69672f0a",
       "title": "Chart PR 이벤트 재개",
-      "is_enabled": true,
-      "timing_mode": "condition_watch",
+      "is_enabled": false,
       "conversation_id": "6ac2f2a6-6938-83ec-8ea0-52e22ad3194f",
-      "updated_at": "2026-10-05T01:01:16.004493+00:00",
-      "last_run_time": "2026-10-05T01:01:15.979853+00:00"
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+      "updated_at": "2026-10-05T03:56:36.583970+00:00"
     }
   ],
-  "automation_conversation_discrepancy": "Actual tool conversation IDs differ from v0.5 setup conversation ID; IDs/enabled state fresh verified; tasks not moved/recreated."
+  "automation_conversation_discrepancy": "Actual tool conversation IDs differ from v0.5 setup conversation ID; IDs/enabled state fresh verified; tasks not moved/recreated.",
+  "execution_policy": {
+    "version": "chart-v0.7",
+    "path": "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
+    "authority": "Latest explicit user Chart instruction 2026-10-05T13:01:31+09:00",
+    "global_only_semantic_change_is_input": true,
+    "after_all_six_closed": "AUTOMATIC_APPROVED_WRITE_SET_PRODUCTION_VERTICAL_SLICE",
+    "actual_D3_boundary_preserved": true
+  }
 }

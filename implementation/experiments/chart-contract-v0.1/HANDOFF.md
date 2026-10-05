@@ -82,3 +82,8 @@ preflight at explicit decision time, verify actual owner evidence separately,
 then rejudge the existing minimal production plan. A filled packet/CLI0 still
 means INPUT_COMPLETE_UNAUTHENTICATED, not IMPLEMENTATION_READY. Other-owner
 prerequisites are the current stopping condition; no new Chart D3 is selected.
+
+
+## Scoped successor — dependency continuation v0.7
+
+See [current checkpoint](p0-dependency-continuation-v0.7/HANDOFF.md) and [execution policy](p0-dependency-continuation-v0.7/EXECUTION_POLICY.md). Global CDR-015/016/017 and FPIA round-3 exact head are dependency inputs; 6 source/Product/write-set/governance gates remain open and Market admission stays0/19. Actual audit Main and CI tasks are enabled, old event task paused; latest user authorizes approved-write-set implementation automatically after actual closure. Earlier evidence stays historical.

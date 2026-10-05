@@ -1,0 +1,498 @@
+{
+  "recorded_at_utc": "2026-10-05T04:07:14.239Z",
+  "user_scope_effective_at_kst": "2026-10-05T13:01:31+09:00",
+  "fresh_refs": [
+    {
+      "name": "codex/chart-contract-mcp-api-v0-1",
+      "sha": "1e8c24c6f77030425b3dbf59ef8aa6539cafd748"
+    },
+    {
+      "name": "integration/global-handoff-v1",
+      "sha": "b3532a2ebbe95310bbf222937466eb04a0211263"
+    },
+    {
+      "name": "integration/fpia-hardened-v1",
+      "sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+    },
+    {
+      "name": "codex/qgv-missing-data-decision-gate-2026-10-05",
+      "sha": "4fb08a05728d83519b72a2bd995669f0cb06003a"
+    }
+  ],
+  "automations": [
+    {
+      "id": "6ac2ef0621908191909a27af4c91f101",
+      "team_id": null,
+      "title": "Chart CI 후속 확인",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "display_schedule": null,
+      "is_enabled": true,
+      "conversation_id": "6ac2ef20-372c-83ee-9857-3ed62a8ed411",
+      "default_timezone": "Asia/Seoul",
+      "next_run_time": null,
+      "last_run_time": "2026-10-05T04:06:07.055549+00:00",
+      "updated_at": "2026-10-05T04:06:23.012375+00:00",
+      "prompt_sha256": "963e08a44f6869108d7dc25f246c05b3f4adf0cd4d685b9b079ec0063bb87169"
+    },
+    {
+      "id": "6ac31fca7bb4819183997a9f17f432cb",
+      "team_id": null,
+      "title": "Chart 감사 자동진행",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T035654Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "display_schedule": null,
+      "is_enabled": true,
+      "conversation_id": "6ac21e38-55f8-83ee-97af-8b9e30c57c11",
+      "default_timezone": "Asia/Seoul",
+      "next_run_time": null,
+      "last_run_time": "2026-10-05T03:58:42.998067+00:00",
+      "updated_at": "2026-10-05T04:06:21.977053+00:00",
+      "prompt_sha256": "c814ff7dc715f661225988410e8ed1f63a2bfb146085af041c3319c30fc4b17e"
+    },
+    {
+      "id": "6ac2eeedb21c81919f04168d69672f0a",
+      "team_id": null,
+      "title": "Chart PR 이벤트 재개",
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "display_schedule": null,
+      "is_enabled": false,
+      "conversation_id": "6ac2f2a6-6938-83ec-8ea0-52e22ad3194f",
+      "default_timezone": "Asia/Seoul",
+      "next_run_time": null,
+      "last_run_time": "2026-10-05T03:51:11.384912+00:00",
+      "updated_at": "2026-10-05T03:56:36.583970+00:00",
+      "prompt_sha256": "d08973141570a9f442dc04c52155666694b375830a7064a9c856f85c32b368ff"
+    }
+  ],
+  "round3_runs": [
+    {
+      "id": 37260997662,
+      "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "name": "technical-real-producer",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997662"
+    },
+    {
+      "id": 37260997773,
+      "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "name": "technical-real-model",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997773"
+    },
+    {
+      "id": 37260997788,
+      "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "name": "track-c-fpia",
+      "status": "in_progress",
+      "conclusion": null,
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997788"
+    },
+    {
+      "id": 37260997655,
+      "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "name": "qgv-invalidation-binding",
+      "status": "in_progress",
+      "conclusion": null,
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997655"
+    },
+    {
+      "id": 37260997658,
+      "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "name": "us-equity-session",
+      "status": "in_progress",
+      "conclusion": null,
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997658"
+    },
+    {
+      "id": 37260997708,
+      "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "name": "p01-research-publication",
+      "status": "in_progress",
+      "conclusion": null,
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997708"
+    },
+    {
+      "id": 37260997660,
+      "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "name": "sec-primary-disclosure",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997660"
+    }
+  ],
+  "policy": {
+    "user_text": "앞으로 이 Work는 Chart 감사 자동진행과 동일한 실행 정책을 사용한다. PR #41과 최신 GitHub/Global/Scoped Handoff를 fresh-read하고 Lane A의 6 blocker와 Lane B의 8 evidence gap을 매 실행 실제 evidence로 재판정하라. Global Handoff에만 기록된 Portfolio/Identity/Product/FPIA 변화도 dependency input으로 취급하라. D1/D2 범위에서 blocker가 풀리면 자동으로 다음 작업을 수행하고, 6 gate가 모두 닫히면 승인된 write-set 범위에서 Target Strategy Theme 첫 production vertical slice를 구현·검증·E2E·handoff까지 진행하라. protected production 변경·새 정책·canonical/Frozen/PIT/Official 등 실제 D3에서만 멈춰라. TARGET/ACTUAL, GICS/Strategy Theme/Investment Type/Overlap은 계속 분리하라.",
+    "rule": "Latest explicit Chart scoped boundary governs any conflict with wider CDR015; authority is not missing evidence."
+  },
+  "scope_recheck": {
+    "lane_a_open": 6,
+    "lane_a_closed": 0,
+    "lane_b_admitted": 0,
+    "lane_b_symbols": 19,
+    "lane_b_evidence_families": 8,
+    "fpia_gate": "DEPENDENCY_BLOCKED_ROUND3_PENDING_CI_AND_OWNER_REVIEW_CLOSURE",
+    "new_chart_user_decision": "NONE"
+  },
+  "validation": {
+    "additional_probes": 9,
+    "production_source_changes": 0,
+    "production_tests": "NOT_RUN",
+    "new_chart_actions": "NOT_RUN"
+  },
+  "automation_verification": {
+    "exact_prompt_readback": true,
+    "enabled_readback": true,
+    "legacy_event_paused": true,
+    "global_push_webhook_supported": false,
+    "new_automation_created": false,
+    "restoration_then_external_reconfiguration": "03:04 restored previous two; by03:59 external Work replaced paused event with existing Chart audit Main; latest inventory adopted",
+    "post_update_delivery": "NOT_TESTED",
+    "subscription_verification": "Main/CI are existing schedules; no event subscription modified"
+  },
+  "automations_before": {
+    "before": [
+      {
+        "id": "6ac2ef0621908191909a27af4c91f101",
+        "team_id": null,
+        "title": "Chart CI 후속 확인",
+        "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+        "timing_mode": "condition_watch",
+        "display_schedule": null,
+        "is_enabled": false,
+        "conversation_id": "6ac2ef20-372c-83ee-9857-3ed62a8ed411",
+        "default_timezone": "Asia/Seoul",
+        "next_run_time": null,
+        "last_run_time": "2026-10-05T01:34:25.356435+00:00",
+        "updated_at": "2026-10-05T01:56:26.049073+00:00",
+        "prompt_sha256": "f8ba53c881b16db8746fe6e521965ff3cdac443fbbd1a742547a28718aeb65fa"
+      },
+      {
+        "id": "6ac2eeedb21c81919f04168d69672f0a",
+        "team_id": null,
+        "title": "Chart PR 이벤트 재개",
+        "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+        "timing_mode": "condition_watch",
+        "display_schedule": null,
+        "is_enabled": false,
+        "conversation_id": "6ac2f2a6-6938-83ec-8ea0-52e22ad3194f",
+        "default_timezone": "Asia/Seoul",
+        "next_run_time": null,
+        "last_run_time": "2026-10-05T01:19:15.783587+00:00",
+        "updated_at": "2026-10-05T01:56:22.178014+00:00",
+        "prompt_sha256": "d08973141570a9f442dc04c52155666694b375830a7064a9c856f85c32b368ff"
+      }
+    ],
+    "after": [
+      {
+        "id": "6ac2ef0621908191909a27af4c91f101",
+        "team_id": null,
+        "title": "Chart CI 후속 확인",
+        "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+        "timing_mode": "condition_watch",
+        "display_schedule": null,
+        "is_enabled": true,
+        "conversation_id": "6ac2ef20-372c-83ee-9857-3ed62a8ed411",
+        "default_timezone": "Asia/Seoul",
+        "next_run_time": null,
+        "last_run_time": "2026-10-05T01:34:25.356435+00:00",
+        "updated_at": "2026-10-05T03:04:24.420837+00:00",
+        "prompt_sha256": "f8ba53c881b16db8746fe6e521965ff3cdac443fbbd1a742547a28718aeb65fa"
+      },
+      {
+        "id": "6ac2eeedb21c81919f04168d69672f0a",
+        "team_id": null,
+        "title": "Chart PR 이벤트 재개",
+        "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+        "timing_mode": "condition_watch",
+        "display_schedule": null,
+        "is_enabled": true,
+        "conversation_id": "6ac2f2a6-6938-83ec-8ea0-52e22ad3194f",
+        "default_timezone": "Asia/Seoul",
+        "next_run_time": null,
+        "last_run_time": "2026-10-05T01:19:15.783587+00:00",
+        "updated_at": "2026-10-05T03:04:07.527480+00:00",
+        "prompt_sha256": "d08973141570a9f442dc04c52155666694b375830a7064a9c856f85c32b368ff"
+      }
+    ],
+    "changed_fields": [
+      "is_enabled"
+    ],
+    "prompt_schedule_subscription_update": "NOT_PERFORMED",
+    "unknown_pause_origin": true,
+    "user_continuation_authorization": true
+  },
+  "observed_event_streams": {
+    "17": {
+      "issue_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "review_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "reviews": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      }
+    },
+    "18": {
+      "review_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "issue_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": [
+          {
+            "id": 5950833091,
+            "created_at": "2026-10-02T10:54:13Z",
+            "updated_at": "2026-10-02T10:54:13Z",
+            "state": null,
+            "commit_id": null,
+            "body_sha256": "e7354fd9eb298954e750257b8fa8f58f5ffec8526587ed566fea2faee841e185"
+          }
+        ]
+      },
+      "reviews": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      }
+    },
+    "19": {
+      "review_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "issue_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "reviews": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      }
+    },
+    "34": {
+      "review_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "issue_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "reviews": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      }
+    },
+    "36": {
+      "issue_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "review_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "reviews": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      }
+    },
+    "41": {
+      "review_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "issue_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "reviews": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      }
+    },
+    "42": {
+      "review_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "issue_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": [
+          {
+            "id": 5986162506,
+            "created_at": "2026-10-05T00:40:32Z",
+            "updated_at": "2026-10-05T00:40:32Z",
+            "state": null,
+            "commit_id": null,
+            "body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f"
+          }
+        ]
+      },
+      "reviews": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      }
+    },
+    "44": {
+      "review_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "issue_comments": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      },
+      "reviews": {
+        "complete": true,
+        "pages": 1,
+        "items": []
+      }
+    }
+  },
+  "initial_intake_heads": {
+    "global": "b5b4ca67fce635a5bb2a207e96bcf5399e17deb9",
+    "fpia": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+  },
+  "source_hashes": {
+    "implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md": {
+      "head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+      "sha256": "3cd83e5c40d3add976a0696272962673942f27cd893c5a7b83c04fafee6fa995"
+    },
+    "implementation/docs/coordination/GLOBAL_STATUS_INDEX.md": {
+      "head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+      "sha256": "866fa2a9eb12d21b15e8fe91cb35adae3a1399f89e9aa53fcec916f81aff8f7e"
+    },
+    "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md": {
+      "head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+      "sha256": "c46b5f581cbdbc8f277e392a4e58bd62b83485bf664ac0cb02135455c4ced103"
+    },
+    "implementation/docs/coordination/PIW_DECISION_RECORDS.md": {
+      "head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+      "sha256": "a771653926263f77dee95c7f48f9cba7f07041d65393d3acf2fbc3821929d463"
+    }
+  },
+  "actual_validation": {
+    "read_only_probes": {
+      "count": 9,
+      "pass": 9
+    },
+    "production_tests": "NOT_RUN",
+    "production_E2E": "NOT_RUN",
+    "Chart_exact_result_FPIA": "NOT_RUN",
+    "prior29Python75Node": "RETAINED_NOT_RERUN"
+  },
+  "round3_ci_followup_observation": {
+    "at": "2026-10-05T04:11:09.885Z",
+    "runs": [
+      {
+        "id": 37260997662,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "technical-real-producer",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997662"
+      },
+      {
+        "id": 37260997773,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "technical-real-model",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997773"
+      },
+      {
+        "id": 37260997788,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "track-c-fpia",
+        "event": "pull_request",
+        "status": "in_progress",
+        "conclusion": null,
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997788"
+      },
+      {
+        "id": 37260997660,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "sec-primary-disclosure",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997660"
+      },
+      {
+        "id": 37260997658,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "us-equity-session",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997658"
+      },
+      {
+        "id": 37260997655,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "qgv-invalidation-binding",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997655"
+      },
+      {
+        "id": 37260997708,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "p01-research-publication",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997708"
+      }
+    ]
+  }
+}
