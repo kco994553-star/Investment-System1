@@ -48,7 +48,7 @@ def _blob(data):
     return hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
 
 
-def collect_receipt(context, repo, verifier_path):
+def collect_receipt(context, repo, verifier_path, *, workflow_source=False):
     result = {'schema': 'FPIA_CI_SOURCE_OBSERVATION/1', 'status': 'UNAVAILABLE',
               'authentication': 'NOT_VERIFIED', 'integration_acceptance': 'BLOCKED',
               'scope': 'PROVIDER_CONTEXT_AND_LOCAL_BYTES_ONLY', 'errors': []}
@@ -98,9 +98,11 @@ def collect_receipt(context, repo, verifier_path):
             if parent.is_symlink():
                 raise ValueError('linked verifier directory')
         head = _git(repo, 'rev-parse', '--verify', 'HEAD^{commit}').decode().strip()
-        result['checkout'] = {'head': head}
-        if head != context['subject_sha']:
-            errors.append('checkout HEAD does not equal the explicit audit subject')
+        binding = 'WORKFLOW_SOURCE' if workflow_source else 'SUBJECT'
+        result['checkout'] = {'head': head, 'binding': binding}
+        expected = context['workflow_sha'] if workflow_source else context['subject_sha']
+        if head != expected:
+            errors.append('checkout HEAD does not equal the explicit ' + binding)
         wf = _git(repo, 'show', context['workflow_sha'] + ':' + workflow)
         blob = _git(repo, 'rev-parse', '--verify', context['workflow_sha'] + ':' + workflow).decode().strip()
         if _blob(wf) != blob:
@@ -149,9 +151,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--repo', required=True)
     parser.add_argument('--verifier-path', required=True)
+    parser.add_argument('--workflow-source', action='store_true',
+                        help='Require verifier checkout HEAD to equal workflow_sha; retain real subject separately')
     args = parser.parse_args()
     context = {name: os.environ.get('FPIA_' + name.upper(), '') for name in FIELDS}
-    result = collect_receipt(context, args.repo, args.verifier_path)
+    result = collect_receipt(context, args.repo, args.verifier_path, workflow_source=args.workflow_source)
     print(json.dumps(result, sort_keys=True, ensure_ascii=False, allow_nan=False))
     return 0 if result['status'] == 'OBSERVED_BYTE_MATCH' else 2
 

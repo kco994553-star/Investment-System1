@@ -134,3 +134,20 @@ def test_workflow_emits_runtime_context_and_does_not_rewrite_audit_exit():
     assert 'FPIA_SUBJECT_SHA: ${{ inputs.tree || github.event.pull_request.head.sha || github.sha }}' in wf
     assert 'fpia-ci-receipt.json' in wf
     assert 'exit $rc' in wf
+
+
+def test_separate_workflow_checkout_preserves_real_subject(source):
+    repo, c, _ = source
+    git(repo, 'checkout', '-q', c['workflow_sha'])
+    r = module().collect_receipt(c, repo, 'implementation/tools/integration', workflow_source=True)
+    assert r['status'] == 'OBSERVED_BYTE_MATCH'
+    assert r['subject_sha'] == c['subject_sha'] != r['checkout']['head']
+    assert r['checkout']['binding'] == 'WORKFLOW_SOURCE'
+    assert r['verifier_observation']['commit'] == c['workflow_sha']
+    assert r['integration_acceptance'] == 'BLOCKED'
+
+
+def test_workflow_checkout_mode_rejects_subject_checkout(source):
+    repo, c, _ = source
+    r = module().collect_receipt(c, repo, 'implementation/tools/integration', workflow_source=True)
+    assert r['status'] == 'UNAVAILABLE'

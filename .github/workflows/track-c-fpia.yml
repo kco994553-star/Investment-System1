@@ -4,10 +4,8 @@ name: track-c-fpia
 # inputs). On pull_request the audit subject is the PR head commit (not the synthetic merge commit)
 # and the register commit is the authority handoff-branch tip read with git ls-remote; on
 # workflow_dispatch both are inputs (subject default: the checked-out commit).
-# Scope (fix round 2, G7; recommended interpretation "FPIA applies to merge results containing R",
-# pending the user's confirmation): on pull_request the audit job runs only when the PR's base or head
-# branch matches integration/** (PIW integration / trial merge results); other PRs (e.g. pre-Track C
-# capability PRs) get a skipped job, not a red check. workflow_dispatch always runs.
+# PIW-D006: authenticated ancestry/content/import applicability, independent of branch spelling.
+# OUTSIDE_SCOPE_NOT_RUN is not a Frozen PASS or integration acceptance.
 on:
   pull_request:
   workflow_dispatch:
@@ -27,10 +25,6 @@ permissions:
   contents: read
 jobs:
   fpia:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      startsWith(github.event.pull_request.base.ref, 'integration/') ||
-      startsWith(github.event.pull_request.head.ref, 'integration/')
     runs-on: ubuntu-latest
     timeout-minutes: 150
     env:
@@ -45,6 +39,12 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
+      - name: Checkout workflow execution source independently of subject
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .fpia-verifier
+          fetch-depth: 0
       - name: Fetch every branch for the object store (read-only)
         run: git fetch --no-tags origin '+refs/heads/*:refs/remotes/origin/*'
       - uses: actions/setup-python@v5
@@ -52,17 +52,42 @@ jobs:
           python-version: "3.11"
       - name: Install pinned runtime (FPIA's workflow loader is the vendored PyYAML 6.0.1, AC-32.spoof)
         run: python -m pip install pytest==9.1.1 numpy==2.3.5
+      - name: Branch-independent authenticated applicability
+        id: applicability
+        env:
+          FPIA_REGISTER_COMMIT: ${{ inputs.register_commit }}
+          FPIA_CDR: ${{ inputs.cdr }}
+          FPIA_TREE: ${{ inputs.tree || github.event.pull_request.head.sha }}
+        run: |
+          tree="${FPIA_TREE:-$GITHUB_SHA}"
+          register="$FPIA_REGISTER_COMMIT"
+          if [ -z "$register" ]; then
+            register="$(git ls-remote origin refs/heads/integration/global-handoff-v1 | cut -f1)"
+          fi
+          out="$RUNNER_TEMP/fpia-out"
+          mkdir -p "$out"
+          python .fpia-verifier/implementation/tools/integration/track_c_fpia_applicability.py --repo . \
+            --tree "$tree" --register-commit "$register" --cdr "${FPIA_CDR:-CDR-014}" \
+            --out "$out/fpia-applicability.json"
+          python - "$out/fpia-applicability.json" >> "$GITHUB_OUTPUT" <<'PYCODE'
+          import json, sys
+          doc = json.load(open(sys.argv[1]))
+          print("applies=" + ("true" if doc["status"] == "APPLIES" else "false"))
+          PYCODE
+          echo 'Applicability receipt is not Frozen PASS or integration acceptance.' >> "$GITHUB_STEP_SUMMARY"
+          cat "$out/fpia-applicability.json" >> "$GITHUB_STEP_SUMMARY"
       - name: FPIA Tier 1 tests
-        if: github.event_name == 'workflow_dispatch'
-        working-directory: implementation
+        if: github.event_name == 'workflow_dispatch' && steps.applicability.outputs.applies == 'true'
+        working-directory: .fpia-verifier/implementation
         run: PYTHONPATH=src python -m pytest -q -p no:cacheprovider tests/test_integration_fpia_*.py
       - name: FPIA Tier 2 real-history checks (must not skip)
-        if: github.event_name == 'workflow_dispatch'
-        working-directory: implementation
+        if: github.event_name == 'workflow_dispatch' && steps.applicability.outputs.applies == 'true'
+        working-directory: .fpia-verifier/implementation
         env:
           FPIA_REQUIRE_HISTORY: "1"
         run: PYTHONPATH=src python -m pytest -q -p no:cacheprovider tests/integration_fpia_real_history_checks.py
       - name: FPIA audit (the job fails only on FPIA_FAIL or FPIA_NOT_RUN)
+        if: steps.applicability.outputs.applies == 'true'
         env:
           FPIA_REGISTER_COMMIT: ${{ inputs.register_commit }}
           FPIA_CDR: ${{ inputs.cdr }}
@@ -78,7 +103,7 @@ jobs:
           out="$RUNNER_TEMP/fpia-out"
           mkdir -p "$out"
           set +e
-          python implementation/tools/integration/track_c_fpia.py --repo . --tree "$tree" \
+          python .fpia-verifier/implementation/tools/integration/track_c_fpia.py --repo . --tree "$tree" \
             --register-commit "$register" --cdr "$cdr" --out "$out/fpia.json" > "$out/fpia-summary.txt"
           rc=$?
           set -e
@@ -97,7 +122,7 @@ jobs:
           # G4/H4: recheck the written output and its side files and print run_sha256 (integrity of the
           # written run section, not authentication - open decision D3-a); informational, never changes
           # the exit code
-          python implementation/tools/integration/track_c_fpia.py --verify-output "$out/fpia.json" \
+          python .fpia-verifier/implementation/tools/integration/track_c_fpia.py --verify-output "$out/fpia.json" \
             > "$out/fpia-verify.txt" 2>&1 || true
           {
             echo "### Track C FPIA (CDR-014)"
@@ -132,7 +157,7 @@ jobs:
           out="$RUNNER_TEMP/fpia-out"
           mkdir -p "$out"
           # Old receipts remain unchanged. Missing facts stay UNAVAILABLE, never subject fallback.
-          python implementation/tools/integration/track_c_fpia_ci_receipt.py --repo . \
+          python .fpia-verifier/implementation/tools/integration/track_c_fpia_ci_receipt.py --repo .fpia-verifier --workflow-source \
             --verifier-path implementation/tools/integration \
             > "$out/fpia-ci-receipt.json" || true
       - uses: actions/upload-artifact@v4
