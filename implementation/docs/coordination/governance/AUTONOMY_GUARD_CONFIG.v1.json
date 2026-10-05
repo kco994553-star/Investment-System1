@@ -1,0 +1,28 @@
+{
+  "schema": "autonomy-gate-a-guard-v1",
+  "authority": "CDR-024",
+  "autonomy_mode_file": "implementation/docs/coordination/governance/AUTONOMY_MODE",
+  "allowed_modes": ["RUN", "PAUSE", "READ_ONLY"],
+  "operating_values": {
+    "cycle_max_tasks": 5,
+    "lease_ttl_seconds": 7200,
+    "repair_round_cap": 3
+  },
+  "immutable_exact_paths": [
+    "implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json",
+    "implementation/src/investment_system/prompt_library/content/Investment_Prompt_Library_v1_Content_Catalog_FROZEN.md"
+  ],
+  "append_only_exact_paths": [
+    "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+    "implementation/docs/coordination/PIW_DECISION_RECORDS.md",
+    "implementation/src/investment_system/prompt_library/content/Investment_Prompt_Library_v1_Decision_History.md"
+  ],
+  "append_only_prefixes": [
+    "implementation/docs/coordination/evidence/"
+  ],
+  "notes": [
+    "Additions under append-only prefixes are allowed; modification/deletion/rename of existing entries is denied.",
+    "Changes to this registry that remove protection or add an exclusion are D3-R under SSoT v1.1 section 26A.",
+    "This repository guard is necessary but not sufficient for HG-02; GitHub branch/ruleset enforcement must also be verified."
+  ]
+}
