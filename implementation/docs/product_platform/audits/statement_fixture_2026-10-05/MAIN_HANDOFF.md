@@ -1,0 +1,17 @@
+# Main return — statement/raw acceptance fixture
+
+Packet PLATFORM-STATEMENT-FIXTURE-20261005; recipient role current CDR-018 Main coordinator. Existing audit-return channel: PR45. Source owner remains codex/product-platform-audit-v1 at78a51462f89eac8e34647cddc4e53ed97e831178; its branch is read-only here. Main's comment5989182963 already consumes older construction closure and routes SA01/SA02. This packet supplements that route with new exact evidence, not another full-audit request.
+
+Prepared artifacts: [four raw byte sequences and manifest](fixture.json), [bounded audit oracle](oracle.py), [acceptance tests](tests.py), [23/23 result](GREEN.txt), [report](REPORT.md) and evidence.json source/artifact hashes. Reuse the prior b517a098 [transferable SA01/SA02 patch](../risk_proportional_2026-10-05/SA01_SA02_candidate.patch), already temporary-copy12/12 verified. These candidate/fixture paths are not authorized owner production changes.
+
+| Requirement | Reusable example | Actual owner return required for closure |
+|---|---|---|
+| SA03 source-version conflict admission | Call existing ImportLedger before owner set-lineage helper; conflicting same identity/version hash rejected, identical replay counted once | Accepted non-bypassable ingestion/admission contract and actual source/API negative evidence; no arbitrary source cardinality imposed |
+| PPF-004 financial completeness | Explicit opening/transactions/closing statement with declared included IDs; missing source cannot produce financial PASS; exact cash/quantity/value differences remain visible | Authoritative external completeness/source evidence and supported event/amount/position rules; owner-confirmed unavailable/unsupported states; no unapproved FX/tax/corporate-action/tolerance policy |
+| PPF-006 raw provenance/preservation | Verify actual original bytes against pinned hash, metadata/user-independent tenant/account binding; retain original and correction byte records | Trusted user+tenant ownership plus authenticated durable append-only raw/receipt boundary; verified hashes/correction history and tamper/replay negatives on that actual store |
+
+Fixture assumptions are explicit: DEMO, not real; one account/tenant/currency/security; raw externally-authenticated provenance absent; only reported BUY/DIVIDEND deltas; test arithmetic exact; no trading call, no cost basis/settlement/FX/tax/corporate action, no effective-version selection policy. The statement included-ID list is fixture truth, not proof of bank completeness. Caller-supplied owner TenantContext remains unauthenticated. No cross-user runtime capability is certified.
+
+Next Main action: obtain an accountable writer and accepted source/test write set. Return exact adopted successor/hash and supported admission/completeness/raw boundary, or a bounded reason for deferral. Runtime/service/identity owners are still separate missing inputs; do not resolve them by owner takeover. Production auth/actual account/tenant-policy/paid/protected semantic/canonical/deploy boundaries remain D3.
+
+On actual successor, this auditor reuses the fixture and runs only affected trust-boundary negatives and relevant contract/integration checks. Financial/raw blockers close only for an implemented boundary whose acceptance criteria are met. Artifact publication/delivery, owner ACK, local fixture PASS and Product closure stay distinct. No repeat full repository regression or second complete Product implementation.

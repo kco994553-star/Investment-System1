@@ -1,0 +1,14 @@
+{
+  "account_id": "acct",
+  "cash": "1000.00",
+  "connection_id": "conn",
+  "currency": "USD",
+  "data_state": "DEMO",
+  "fixture_schema": "statement-fixture-v1",
+  "quantity": "10.000",
+  "record_id": "opening",
+  "record_type": "OPENING",
+  "security_id": "synthetic-security-1",
+  "source_version": "v1",
+  "tenant_id": "t1"
+}

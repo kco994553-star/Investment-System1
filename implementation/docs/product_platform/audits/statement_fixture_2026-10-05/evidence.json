@@ -1,0 +1,268 @@
+{
+  "schema": "platform-statement-fixture-checkpoint-v1",
+  "observed_at_utc": "2026-10-05T06:56:05.043754+00:00",
+  "parent_audit": "b517a09856e9c7414887ae15d496ef6370f243c2",
+  "publication_branch": "codex/product-platform-storage-auth-review-2026-10-05",
+  "publication_identity": "containing commit; no self-referential hash",
+  "subjects": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "owner": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "global": "51056c1c1ba051a1892801c7763cd86ada505f7d"
+  },
+  "owner_source_changed": false,
+  "source_contracts_sha256": "b13686d8ce134ccb61ef78c51d178597404e7a3401e7b22240dcc47c01d0aa7b",
+  "main_new_receipt": {
+    "comment_id": 5989182963,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5989182963",
+    "consumed": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+    "SA01_SA02": "ROUTED, not owner ACK",
+    "b517a098_patch_consumed": "NOT_OBSERVED"
+  },
+  "fixture": {
+    "raw_files": 4,
+    "declared_expected": {
+      "cash": "885.00",
+      "quantity": "15.000",
+      "market_value": "375.00",
+      "total": "1260.00"
+    },
+    "data_state": "DEMO",
+    "is_real": false,
+    "execution": "NOT_RUN",
+    "scope": "single currency, single synthetic instrument; provider-reported deltas; no execution/FX/cost-basis/tax/rounding policy"
+  },
+  "tests": {
+    "runner": "Python stdlib unittest; reviewed owner source via pinned loader; no existing test functions executed",
+    "python": "3.12.14",
+    "command": "python implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py",
+    "history": {
+      "RED.txt": {
+        "errors": 2,
+        "failures": 17,
+        "passed": 1,
+        "scope": "synthetic fixture oracle only; no owner/runtime/production claim",
+        "tests": 20
+      },
+      "FIRST_GREEN.txt": {
+        "errors": 0,
+        "failures": 0,
+        "passed": 20,
+        "scope": "synthetic fixture oracle only; no owner/runtime/production claim",
+        "tests": 20
+      },
+      "GREEN.txt": {
+        "errors": 0,
+        "failures": 0,
+        "passed": 23,
+        "scope": "synthetic fixture oracle only; no owner/runtime/production claim",
+        "tests": 23
+      }
+    },
+    "final_exit": 0,
+    "RED_scope": "intentionally incomplete local scaffold; not new owner findings"
+  },
+  "blocker_metrics": {
+    "start": 9,
+    "closed": 0,
+    "new": 0,
+    "end": 9,
+    "net_reduction": 0,
+    "target_net_gt_zero_achieved": false,
+    "counting": "deduplicated known blocking groups; candidate PASS and historical closure not counted"
+  },
+  "blockers": [
+    {
+      "id": "PPA-F01",
+      "scope": "Auth/session/revocation",
+      "owner": "Platform auth owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "trusted login/session/revocation implementation and security evidence",
+      "patch_ready": false
+    },
+    {
+      "id": "PPA-F02+PPF-005-runtime",
+      "scope": "Trusted user+tenant ownership",
+      "owner": "Platform runtime/security owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "cross-user/tenant object access and runtime database enforcement",
+      "patch_ready": false
+    },
+    {
+      "id": "PPA-F03",
+      "scope": "Actual connector lifecycle",
+      "owner": "Financial connector owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "approved provider consent/token/revocation/checkpoint/pagination; actual connection is D3",
+      "patch_ready": false
+    },
+    {
+      "id": "PPA-F04",
+      "scope": "Authenticated Product API",
+      "owner": "Platform API owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "trusted authorized API boundary and relevant negatives",
+      "patch_ready": false
+    },
+    {
+      "id": "PPA-F05+PPF-006",
+      "scope": "Durable authenticated raw ledger",
+      "owner": "Platform records owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "exact original bytes/hash binding and append-only correction/replay evidence",
+      "patch_ready": false
+    },
+    {
+      "id": "PPF-004+SA-03+SA-04",
+      "scope": "Financial reconciliation completeness",
+      "owner": "Platform reconciliation owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "financial opening/transactions/closing completeness and source-version conflict admission contract",
+      "patch_ready": false
+    },
+    {
+      "id": "SA-01",
+      "scope": "Hash-case ref identity",
+      "owner": "Platform contracts owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "adopt bounded candidate or equivalent; independent affected successor acceptance",
+      "patch_ready": true
+    },
+    {
+      "id": "SA-02",
+      "scope": "Inherited read-only interface drift",
+      "owner": "Platform contracts owner",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "adopt bounded candidate or equivalent; inherited write/masked read negatives",
+      "patch_ready": true
+    },
+    {
+      "id": "PPA-F08",
+      "scope": "Web ACTUAL/TARGET availability",
+      "owner": "Existing Web owner routed by Main",
+      "state": "OWNER_ACTION_REQUIRED",
+      "closure": "missing ACTUAL remains unavailable; explicit TARGET context and affected tests",
+      "patch_ready": false
+    }
+  ],
+  "verified_product_capabilities": [],
+  "capabilities": {
+    "Auth": "NOT_STARTED",
+    "Tenant isolation": "PARTIAL",
+    "Financial Connector": "PARTIAL",
+    "Financial sync/import": "PARTIAL",
+    "Reconciliation": "PARTIAL",
+    "Immutable/auditable records": "PARTIAL",
+    "Read-only hard gate": "PARTIAL",
+    "Product API": "NOT_STARTED",
+    "Web/PWA": "PARTIAL",
+    "Investment-engine integration": "PARTIAL"
+  },
+  "owner_actions_remaining": 9,
+  "patch_ready_owner_actions": 2,
+  "new_fixture_preparation": "COMPLETED 23/23; not Product blocker closure",
+  "new_packet_Main_consumption": "NOT_CONFIRMED",
+  "owner_adoption": "NOT_CONFIRMED",
+  "tool_blocked_items": [
+    {
+      "tool": "Supabase",
+      "scope": "remote audit only",
+      "adoption": "NOT_CONFIRMED",
+      "execution": "NOT_RUN",
+      "reason": "no approved DEV project URL/ref and environment mapping",
+      "provider_neutral_work_blocked": false,
+      "discovery_repeated": false
+    }
+  ],
+  "reuse": {
+    "old_SA01_SA02_12_rerun": false,
+    "old_owner_9_and_78_rerun": false,
+    "old_84_396_405_rerun": false,
+    "Supabase_discovery_repeated": false,
+    "browser_rerun": false
+  },
+  "agents": {
+    "auditors": 1,
+    "independent_security_verifiers": 0
+  },
+  "boundaries": {
+    "scope": "own docs/raw fixture/oracle/tests only",
+    "owner_Global_canonical_harness_source_changes": false,
+    "real_credentials_or_provider": false,
+    "auth_session_same_tenant_cross_user_service_tests": "NOT_RUN; runtime absent",
+    "raw_authenticity": "local manifest correspondence only; external authenticated provenance NOT_VERIFIED",
+    "correction_selection_policy": "NOT_SELECTED",
+    "protected_semantics_tenant_policy_production_auth_paid_deploy_changed": false
+  },
+  "actual_tools": [
+    "GitHub MCP",
+    "local Git/Python",
+    "existing Automations checkpoint update"
+  ],
+  "artifact_manifest": [
+    {
+      "path": "implementation/docs/product_platform/CURRENT_HANDOFF.md",
+      "sha256": "b755f1e2ffe5245c28f8872623a66881baeee3d349bc599807e1e394afd8a585",
+      "bytes": 6186
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/FIRST_GREEN.txt",
+      "sha256": "f8bb57c73784243436cf6c4750d78b92b32159dc4245725ef157dcab929788ce",
+      "bytes": 2974
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/GREEN.txt",
+      "sha256": "a93a757eb156ad54968e05e8e10d9c51df3a6cd7fbd8d1c28e2db8f12fabe2c0",
+      "bytes": 3390
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/MAIN_HANDOFF.md",
+      "sha256": "3d534fd3065a9f8e7695df6f71f80951e2a9be62cd0640db56d1d2677b722b27",
+      "bytes": 3464
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/RED.txt",
+      "sha256": "bbdfadedce14800aa0f4fa6c59fcd5bcd1c2f40159b159ad77179e5165dff68a",
+      "bytes": 15254
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/REPORT.md",
+      "sha256": "d9b770c2a0cd78e37a8619824bbd1ed6e37cf5dc159631c621fa4ce409ae292f",
+      "bytes": 7424
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/fixture.json",
+      "sha256": "13d28ebba947b4d4ab8f128a0f1e7b4a945740aa348a09d0e3526ea63cc45830",
+      "bytes": 1649
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/oracle.py",
+      "sha256": "96db7e615d5ba62a03338306ce32277598c55c4583dbab0acb1ed91a7c62d681",
+      "bytes": 6498
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/raw/buy.json",
+      "sha256": "a509236a6f07374f2934a0a481ef002569cbb58ed78f3720bf2b32c3fe48b356",
+      "bytes": 369
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/raw/closing.json",
+      "sha256": "3bf1c619e96c44d4360624eab66a761e9334f6acc490eae923649163bec0140a",
+      "bytes": 474
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/raw/dividend.json",
+      "sha256": "e27aac2cfd10125355438e7fd23488e107e41dc3d118a97bac19ddfe60d7adb4",
+      "bytes": 377
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/raw/opening.json",
+      "sha256": "8908b4a4a97cf61e1e9d08f074c5918a4af0ff046f4cd9aeafa4dba9629c98c5",
+      "bytes": 330
+    },
+    {
+      "path": "implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py",
+      "sha256": "0e9de7db9df6b394be6812e455290b8ff124a7af559f9a43eeb649ab82c0ac8c",
+      "bytes": 8472
+    }
+  ]
+}

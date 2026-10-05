@@ -1,0 +1,53 @@
+{
+  "schema": "synthetic-statement-acceptance-v1",
+  "data_state": "DEMO",
+  "is_real": false,
+  "execution": "NOT_RUN",
+  "tenant_id": "t1",
+  "principal_id": "u1",
+  "connection_id": "conn",
+  "account_id": "acct",
+  "decision_time": "2026-10-05T06:00:00+00:00",
+  "source_times": {
+    "observed_at": "2026-10-05T05:00:00+00:00",
+    "available_at": "2026-10-05T05:01:00+00:00",
+    "ingested_at": "2026-10-05T05:02:00+00:00"
+  },
+  "scope": "single currency, single synthetic instrument; provider-reported deltas; no execution/FX/cost-basis/tax/rounding policy",
+  "expected": {
+    "cash": "885.00",
+    "quantity": "15.000",
+    "market_value": "375.00",
+    "total": "1260.00"
+  },
+  "records": [
+    {
+      "record_id": "opening",
+      "record_type": "OPENING",
+      "source_version": "v1",
+      "raw_path": "raw/opening.json",
+      "payload_sha256": "8908b4a4a97cf61e1e9d08f074c5918a4af0ff046f4cd9aeafa4dba9629c98c5"
+    },
+    {
+      "record_id": "buy",
+      "record_type": "TRANSACTION",
+      "source_version": "v1",
+      "raw_path": "raw/buy.json",
+      "payload_sha256": "a509236a6f07374f2934a0a481ef002569cbb58ed78f3720bf2b32c3fe48b356"
+    },
+    {
+      "record_id": "dividend",
+      "record_type": "TRANSACTION",
+      "source_version": "v1",
+      "raw_path": "raw/dividend.json",
+      "payload_sha256": "e27aac2cfd10125355438e7fd23488e107e41dc3d118a97bac19ddfe60d7adb4"
+    },
+    {
+      "record_id": "closing",
+      "record_type": "STATEMENT",
+      "source_version": "v1",
+      "raw_path": "raw/closing.json",
+      "payload_sha256": "3bf1c619e96c44d4360624eab66a761e9334f6acc490eae923649163bec0140a"
+    }
+  ]
+}

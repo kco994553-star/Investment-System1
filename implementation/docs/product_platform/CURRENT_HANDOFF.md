@@ -24,6 +24,8 @@ The user directive received 2026-10-05 15:13:43 Asia/Seoul supersedes conflictin
 
 ## Next finite D1/D2 work
 
+Latest continuation: [statement/raw fixture report](audits/statement_fixture_2026-10-05/REPORT.md) and [Main return](audits/statement_fixture_2026-10-05/MAIN_HANDOFF.md). Main's PR45 comment5989182963 consumes the prior11dba838 report and routes SA01/SA02; actual source owner remains78a5146 without a repair successor. New opening→reported historical movements→closing statement fixture passes23/23 deterministic raw-admission/coverage/financial negatives; this is conditional synthetic acceptance evidence, not Product/owner closure. Prior candidate and broad/CI receipts were not rerun. Nine tracked Product blockers remain open; Main receipt/owner acceptance of the new exact artifacts is unconfirmed.
+
 Fresh-read relevant owner HEAD/handoff deltas and reuse accepted source-pinned receipts. Route the two patch-ready SA01/SA02 candidates through current Main; execute affected negative/contract tests once an actual owner successor exists, then close/retest. New independently eligible bounded fixtures may proceed in this audit scope, with no competing runtime or whole integration implementation. A pending D3 stops its dependent action only. No new affected evidence or actionable bounded task means no repeat audit/CI/evidence commit.
 
 Browser/mobile E2E is NOT_RUN due to missing Chromium and a failed normal download. HTTP tests are real loopback tests, not browser tests. Production PWA/Chart and real connector/auth are not complete. No unattended scheduler-hop verification is inferred from this manual run.

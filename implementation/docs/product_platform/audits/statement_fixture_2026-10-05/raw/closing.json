@@ -1,0 +1,22 @@
+{
+  "account_id": "acct",
+  "cash": "885.00",
+  "connection_id": "conn",
+  "currency": "USD",
+  "data_state": "DEMO",
+  "fixture_schema": "statement-fixture-v1",
+  "included_record_ids": [
+    "opening",
+    "buy",
+    "dividend"
+  ],
+  "market_value": "375.00",
+  "price": "25.00",
+  "quantity": "15.000",
+  "record_id": "closing",
+  "record_type": "STATEMENT",
+  "security_id": "synthetic-security-1",
+  "source_version": "v1",
+  "tenant_id": "t1",
+  "total": "1260.00"
+}

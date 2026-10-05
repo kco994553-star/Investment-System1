@@ -1,0 +1,26 @@
+test_cash_mismatch_has_no_tolerance (__main__.StatementFixtureTests.test_cash_mismatch_has_no_tolerance) ... ok
+test_changed_raw_bytes_without_hash_change_rejected (__main__.StatementFixtureTests.test_changed_raw_bytes_without_hash_change_rejected) ... ok
+test_complete_statement_matches_independent_expected_values (__main__.StatementFixtureTests.test_complete_statement_matches_independent_expected_values) ... ok
+test_declared_account_must_match_original_payload (__main__.StatementFixtureTests.test_declared_account_must_match_original_payload) ... ok
+test_deterministic_identical_replay_does_not_double_count_cash (__main__.StatementFixtureTests.test_deterministic_identical_replay_does_not_double_count_cash) ... ok
+test_duplicate_json_key_rejected_even_with_matching_hash (__main__.StatementFixtureTests.test_duplicate_json_key_rejected_even_with_matching_hash) ... ok
+test_empty_input_rejected (__main__.StatementFixtureTests.test_empty_input_rejected) ... ok
+test_foreign_tenant_context_rejected (__main__.StatementFixtureTests.test_foreign_tenant_context_rejected) ... ok
+test_foreign_tenant_source_rejected (__main__.StatementFixtureTests.test_foreign_tenant_source_rejected) ... ok
+test_future_availability_cannot_enter_decision_view (__main__.StatementFixtureTests.test_future_availability_cannot_enter_decision_view) ... ok
+test_missing_raw_bytes_rejected (__main__.StatementFixtureTests.test_missing_raw_bytes_rejected) ... ok
+test_missing_transaction_rejected_before_financial_pass (__main__.StatementFixtureTests.test_missing_transaction_rejected_before_financial_pass) ... ok
+test_original_and_correction_versions_can_be_retained_without_rewrite (__main__.StatementFixtureTests.test_original_and_correction_versions_can_be_retained_without_rewrite) ... ok
+test_payload_currency_mismatch_rejected (__main__.StatementFixtureTests.test_payload_currency_mismatch_rejected) ... ok
+test_quantity_mismatch_remains_visible (__main__.StatementFixtureTests.test_quantity_mismatch_remains_visible) ... ok
+test_same_source_version_conflicting_content_rejected (__main__.StatementFixtureTests.test_same_source_version_conflicting_content_rejected) ... ok
+test_secret_like_extra_field_rejected_without_storage (__main__.StatementFixtureTests.test_secret_like_extra_field_rejected_without_storage) ... ok
+test_statement_manifest_cannot_omit_input (__main__.StatementFixtureTests.test_statement_manifest_cannot_omit_input) ... ok
+test_statement_market_value_and_total_mismatch_remain_visible (__main__.StatementFixtureTests.test_statement_market_value_and_total_mismatch_remain_visible) ... ok
+test_unknown_target_field_cannot_supply_actual_value (__main__.StatementFixtureTests.test_unknown_target_field_cannot_supply_actual_value) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.006s
+
+OK
+{"errors": 0, "failures": 0, "passed": 20, "scope": "synthetic fixture oracle only; no owner/runtime/production claim", "tests": 20}

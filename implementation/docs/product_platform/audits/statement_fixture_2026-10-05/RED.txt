@@ -1,0 +1,194 @@
+test_cash_mismatch_has_no_tolerance (__main__.StatementFixtureTests.test_cash_mismatch_has_no_tolerance) ... FAIL
+test_changed_raw_bytes_without_hash_change_rejected (__main__.StatementFixtureTests.test_changed_raw_bytes_without_hash_change_rejected) ... FAIL
+test_complete_statement_matches_independent_expected_values (__main__.StatementFixtureTests.test_complete_statement_matches_independent_expected_values) ... ERROR
+test_declared_account_must_match_original_payload (__main__.StatementFixtureTests.test_declared_account_must_match_original_payload) ... FAIL
+test_deterministic_identical_replay_does_not_double_count_cash (__main__.StatementFixtureTests.test_deterministic_identical_replay_does_not_double_count_cash) ... ERROR
+test_duplicate_json_key_rejected_even_with_matching_hash (__main__.StatementFixtureTests.test_duplicate_json_key_rejected_even_with_matching_hash) ... FAIL
+test_empty_input_rejected (__main__.StatementFixtureTests.test_empty_input_rejected) ... FAIL
+test_foreign_tenant_context_rejected (__main__.StatementFixtureTests.test_foreign_tenant_context_rejected) ... FAIL
+test_foreign_tenant_source_rejected (__main__.StatementFixtureTests.test_foreign_tenant_source_rejected) ... FAIL
+test_future_availability_cannot_enter_decision_view (__main__.StatementFixtureTests.test_future_availability_cannot_enter_decision_view) ... FAIL
+test_missing_raw_bytes_rejected (__main__.StatementFixtureTests.test_missing_raw_bytes_rejected) ... FAIL
+test_missing_transaction_rejected_before_financial_pass (__main__.StatementFixtureTests.test_missing_transaction_rejected_before_financial_pass) ... FAIL
+test_original_and_correction_versions_can_be_retained_without_rewrite (__main__.StatementFixtureTests.test_original_and_correction_versions_can_be_retained_without_rewrite) ... ok
+test_payload_currency_mismatch_rejected (__main__.StatementFixtureTests.test_payload_currency_mismatch_rejected) ... FAIL
+test_quantity_mismatch_remains_visible (__main__.StatementFixtureTests.test_quantity_mismatch_remains_visible) ... FAIL
+test_same_source_version_conflicting_content_rejected (__main__.StatementFixtureTests.test_same_source_version_conflicting_content_rejected) ... FAIL
+test_secret_like_extra_field_rejected_without_storage (__main__.StatementFixtureTests.test_secret_like_extra_field_rejected_without_storage) ... FAIL
+test_statement_manifest_cannot_omit_input (__main__.StatementFixtureTests.test_statement_manifest_cannot_omit_input) ... FAIL
+test_statement_market_value_and_total_mismatch_remain_visible (__main__.StatementFixtureTests.test_statement_market_value_and_total_mismatch_remain_visible) ... FAIL
+test_unknown_target_field_cannot_supply_actual_value (__main__.StatementFixtureTests.test_unknown_target_field_cannot_supply_actual_value) ... FAIL
+
+======================================================================
+ERROR: test_complete_statement_matches_independent_expected_values (__main__.StatementFixtureTests.test_complete_statement_matches_independent_expected_values)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 37, in test_complete_statement_matches_independent_expected_values
+    self.assertEqual(result["computed"], self.meta["expected"])
+                     ~~~~~~^^^^^^^^^^^^
+KeyError: 'computed'
+
+======================================================================
+ERROR: test_deterministic_identical_replay_does_not_double_count_cash (__main__.StatementFixtureTests.test_deterministic_identical_replay_does_not_double_count_cash)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 44, in test_deterministic_identical_replay_does_not_double_count_cash
+    self.assertEqual(result["computed"], self.meta["expected"])
+                     ~~~~~~^^^^^^^^^^^^
+KeyError: 'computed'
+
+======================================================================
+FAIL: test_cash_mismatch_has_no_tolerance (__main__.StatementFixtureTests.test_cash_mismatch_has_no_tolerance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 108, in test_cash_mismatch_has_no_tolerance
+    self.assertFalse(result["passed"])
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_changed_raw_bytes_without_hash_change_rejected (__main__.StatementFixtureTests.test_changed_raw_bytes_without_hash_change_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 64, in test_changed_raw_bytes_without_hash_change_rejected
+    with self.assertRaises(o.FixtureRejected):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FixtureRejected not raised
+
+======================================================================
+FAIL: test_declared_account_must_match_original_payload (__main__.StatementFixtureTests.test_declared_account_must_match_original_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 97, in test_declared_account_must_match_original_payload
+    with self.assertRaises(o.FixtureRejected):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FixtureRejected not raised
+
+======================================================================
+FAIL: test_duplicate_json_key_rejected_even_with_matching_hash (__main__.StatementFixtureTests.test_duplicate_json_key_rejected_even_with_matching_hash)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 139, in test_duplicate_json_key_rejected_even_with_matching_hash
+    with self.assertRaises(o.FixtureRejected):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FixtureRejected not raised
+
+======================================================================
+FAIL: test_empty_input_rejected (__main__.StatementFixtureTests.test_empty_input_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 52, in test_empty_input_rejected
+    with self.assertRaises(o.FixtureRejected):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FixtureRejected not raised
+
+======================================================================
+FAIL: test_foreign_tenant_context_rejected (__main__.StatementFixtureTests.test_foreign_tenant_context_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 89, in test_foreign_tenant_context_rejected
+    with self.assertRaises(o.c.TenantIsolationError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: TenantIsolationError not raised
+
+======================================================================
+FAIL: test_foreign_tenant_source_rejected (__main__.StatementFixtureTests.test_foreign_tenant_source_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 93, in test_foreign_tenant_source_rejected
+    with self.assertRaises(o.c.TenantIsolationError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: TenantIsolationError not raised
+
+======================================================================
+FAIL: test_future_availability_cannot_enter_decision_view (__main__.StatementFixtureTests.test_future_availability_cannot_enter_decision_view)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 144, in test_future_availability_cannot_enter_decision_view
+    with self.assertRaises(o.FixtureRejected):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FixtureRejected not raised
+
+======================================================================
+FAIL: test_missing_raw_bytes_rejected (__main__.StatementFixtureTests.test_missing_raw_bytes_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 58, in test_missing_raw_bytes_rejected
+    with self.assertRaises(o.FixtureRejected):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FixtureRejected not raised
+
+======================================================================
+FAIL: test_missing_transaction_rejected_before_financial_pass (__main__.StatementFixtureTests.test_missing_transaction_rejected_before_financial_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 48, in test_missing_transaction_rejected_before_financial_pass
+    with self.assertRaises(o.FixtureRejected):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FixtureRejected not raised
+
+======================================================================
+FAIL: test_payload_currency_mismatch_rejected (__main__.StatementFixtureTests.test_payload_currency_mismatch_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 102, in test_payload_currency_mismatch_rejected
+    with self.assertRaises(o.FixtureRejected):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FixtureRejected not raised
+
+======================================================================
+FAIL: test_quantity_mismatch_remains_visible (__main__.StatementFixtureTests.test_quantity_mismatch_remains_visible)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 114, in test_quantity_mismatch_remains_visible
+    self.assertFalse(result["passed"])
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_same_source_version_conflicting_content_rejected (__main__.StatementFixtureTests.test_same_source_version_conflicting_content_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 72, in test_same_source_version_conflicting_content_rejected
+    with self.assertRaises(o.c.RecordIntegrityError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RecordIntegrityError not raised
+
+======================================================================
+FAIL: test_secret_like_extra_field_rejected_without_storage (__main__.StatementFixtureTests.test_secret_like_extra_field_rejected_without_storage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 130, in test_secret_like_extra_field_rejected_without_storage
+    with self.assertRaises(o.FixtureRejected):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FixtureRejected not raised
+
+======================================================================
+FAIL: test_statement_manifest_cannot_omit_input (__main__.StatementFixtureTests.test_statement_manifest_cannot_omit_input)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 149, in test_statement_manifest_cannot_omit_input
+    with self.assertRaises(o.FixtureRejected):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FixtureRejected not raised
+
+======================================================================
+FAIL: test_statement_market_value_and_total_mismatch_remain_visible (__main__.StatementFixtureTests.test_statement_market_value_and_total_mismatch_remain_visible)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 120, in test_statement_market_value_and_total_mismatch_remain_visible
+    self.assertFalse(result["passed"])
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_unknown_target_field_cannot_supply_actual_value (__main__.StatementFixtureTests.test_unknown_target_field_cannot_supply_actual_value)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/7283f9b39b73/investment-system1/implementation/docs/product_platform/audits/statement_fixture_2026-10-05/tests.py", line 125, in test_unknown_target_field_cannot_supply_actual_value
+    with self.assertRaises(o.FixtureRejected):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FixtureRejected not raised
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.007s
+
+FAILED (failures=17, errors=2)
+{"errors": 2, "failures": 17, "passed": 1, "scope": "synthetic fixture oracle only; no owner/runtime/production claim", "tests": 20}
