@@ -30,14 +30,18 @@
         "enable_comments": true,
         "only_on_merge": false
       },
-      "current_disposition": "EXTERNALLY_SUPERSEDED_KEEP_PAUSED"
+      "current_disposition": "EXTERNALLY_SUPERSEDED_KEEP_PAUSED",
+      "is_enabled": false,
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+      "role": "READ_ONLY_WATCHER",
+      "verified_at_utc": "2026-10-05T10:56:45.810Z"
     },
     "ci_followup": {
       "id": "6ac2ef0621908191909a27af4c91f101",
-      "title": "Chart CI 후속 확인",
+      "title": "차트 구현 감사 워크 · CI 후속 확인",
       "enabled": true,
       "conversation_id": "6ac21ce4-f050-83ec-bfd4-5fa178fc6936",
-      "schedule": "HOURLY",
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T092850\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
       "setup_first_run": {
         "observed_by_root": true,
         "remote_state": "404_NOT_YET_PUBLISHED",
@@ -45,15 +49,21 @@
         "semantic_work_delta": false,
         "disposition": "READ_ONLY_NOOP",
         "ci_completion_claim": false
-      }
+      },
+      "is_enabled": true,
+      "role": "READ_ONLY_WATCHER",
+      "verified_at_utc": "2026-10-05T10:56:45.810Z"
     },
     "main": {
       "id": "6ac31fca7bb4819183997a9f17f432cb",
-      "title": "Chart 감사 자동진행",
+      "title": "차트 구현 감사 워크 · 자동진행",
       "enabled": true,
-      "schedule": "HOURLY_EXISTING",
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T125654\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
       "conversation_id": "6ac21e38-55f8-83ee-97af-8b9e30c57c11",
-      "global_only_dependency_intake": true
+      "global_only_dependency_intake": true,
+      "is_enabled": false,
+      "role": "READ_ONLY_WATCHER",
+      "verified_at_utc": "2026-10-05T10:56:45.810Z"
     }
   },
   "last_observed": {
@@ -70,23 +80,23 @@
       "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
       "47": "7215a9f60ad7128b1748f405051eac684298614f"
     },
-    "observed_at_utc": "2026-10-05T09:18:52.550Z",
-    "owner_output_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+    "observed_at_utc": "2026-10-05T10:56:45.810Z",
+    "owner_output_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
     "event_watermarks": {
       "17": {
         "issue_comments": {
-          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
-          "observed_at_utc": "2026-10-05T05:23:14.033Z",
+          "status": "COMPLETE_FRESH_DISCUSSION_READ",
+          "observed_at_utc": "2026-10-05T10:55:00.036Z",
           "observed_count": 1,
           "last_id": 5988265306,
           "items": [
             {
               "id": 5988265306,
-              "updated_at": null,
+              "updated_at": "2026-10-05T04:44:18Z",
               "body_sha256": "219c87643e46bf46a2bcaa48453958a64f49347188f217cbb19e8f7f281b2971"
             }
           ],
-          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json"
         },
         "reviews": {
           "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
@@ -105,23 +115,23 @@
       },
       "18": {
         "issue_comments": {
-          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
-          "observed_at_utc": "2026-10-05T05:23:14.033Z",
+          "status": "COMPLETE_FRESH_DISCUSSION_READ",
+          "observed_at_utc": "2026-10-05T10:55:00.036Z",
           "observed_count": 2,
           "last_id": 5988265466,
           "items": [
             {
               "id": 5950833091,
-              "updated_at": null,
+              "updated_at": "2026-10-02T10:54:13Z",
               "body_sha256": "e7354fd9eb298954e750257b8fa8f58f5ffec8526587ed566fea2faee841e185"
             },
             {
               "id": 5988265466,
-              "updated_at": null,
+              "updated_at": "2026-10-05T04:44:19Z",
               "body_sha256": "b6846638d591437159001865e85bbeb7cfd759e89d9b3252360c40ee7a17f969"
             }
           ],
-          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json"
         },
         "reviews": {
           "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
@@ -188,18 +198,23 @@
       },
       "36": {
         "issue_comments": {
-          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
-          "observed_at_utc": "2026-10-05T05:23:14.033Z",
-          "observed_count": 1,
-          "last_id": 5988265604,
+          "status": "COMPLETE_FRESH_DISCUSSION_READ",
+          "observed_at_utc": "2026-10-05T10:55:00.036Z",
+          "observed_count": 2,
+          "last_id": 5988663367,
           "items": [
             {
               "id": 5988265604,
-              "updated_at": null,
+              "updated_at": "2026-10-05T04:44:20Z",
               "body_sha256": "bdbb491a262fdbda87b1e0258a1381adbf0158ee4808ecce62cf45319fa8e2b1"
+            },
+            {
+              "id": 5988663367,
+              "updated_at": "2026-10-05T05:27:23Z",
+              "body_sha256": "93e749e90beb84d5826af51b8e61a6a5cd677e2c7721810761ce353e4d995f46"
             }
           ],
-          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json"
         },
         "reviews": {
           "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
@@ -307,9 +322,19 @@
           "items": [],
           "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
         }
+      },
+      "47": {
+        "issue_comments": {
+          "status": "COMPLETE_FRESH_DISCUSSION_READ",
+          "observed_at_utc": "2026-10-05T10:55:00.036Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": [],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json"
+        }
       }
     },
-    "global_head": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+    "global_head": "1596649912554116196c1ad3c1d41797219f5241",
     "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
     "global_semantic_refs": [
       "CDR-015",
@@ -396,17 +421,13 @@
     ],
     "qgv_architecture_head": "2ba29b048c8601145c4a2cca0f85299c07262286",
     "exact_fpia_terminal": {
-      "pr": 46,
-      "run": 37267962000,
+      "pr": 47,
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "run_id": 37284465900,
       "attempt": 1,
-      "job": 111628676484,
-      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
       "status": "completed",
-      "conclusion": "failure",
-      "observed_at_utc": "2026-10-05T06:37:31.129Z",
-      "result_sha256": "3f7b27e7fc9c1d25fc9dc66cc9db76f37ad43b338289a3022c3c7012d263b41d",
-      "artifact_digest": "sha256:13d7f067019af8530e7a2aaabc21201ffa39018f472b15dbb8510d75c219728c",
-      "historical": true
+      "conclusion": "success",
+      "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/CI_TERMINAL_RECEIPT.json"
     },
     "platform_owner_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "platform_storage_auth_audit_head": "11dba838c6e27430aa07957f69e4ae8b270c999b",
@@ -477,107 +498,90 @@
     ],
     "latest_PR47_runs": [
       {
-        "id": 37284465900,
-        "name": "track-c-fpia",
-        "head_sha": "7215a9f60ad7128b1748f405051eac684298614f",
-        "attempt": 1,
-        "status": "in_progress",
-        "conclusion": null
-      },
-      {
         "id": 37284465856,
         "name": "p01-research-publication",
-        "head_sha": "7215a9f60ad7128b1748f405051eac684298614f",
-        "attempt": 1,
         "status": "completed",
         "conclusion": "success"
       },
       {
         "id": 37284465967,
         "name": "us-equity-session",
-        "head_sha": "7215a9f60ad7128b1748f405051eac684298614f",
-        "attempt": 1,
         "status": "completed",
         "conclusion": "success"
       },
       {
         "id": 37284466007,
         "name": "technical-real-producer",
-        "head_sha": "7215a9f60ad7128b1748f405051eac684298614f",
-        "attempt": 1,
         "status": "completed",
         "conclusion": "success"
       },
       {
         "id": 37284465977,
         "name": "technical-real-model",
-        "head_sha": "7215a9f60ad7128b1748f405051eac684298614f",
-        "attempt": 1,
         "status": "completed",
         "conclusion": "success"
       },
       {
         "id": 37284465865,
         "name": "qgv-invalidation-binding",
-        "head_sha": "7215a9f60ad7128b1748f405051eac684298614f",
-        "attempt": 1,
         "status": "completed",
         "conclusion": "success"
       },
       {
         "id": 37284465941,
         "name": "sec-primary-disclosure",
-        "head_sha": "7215a9f60ad7128b1748f405051eac684298614f",
-        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465900,
+        "name": "track-c-fpia",
         "status": "completed",
         "conclusion": "success"
       }
     ],
-    "latest_PR46_runs_note": "Old a3 history preserved; current6fea terminal7/7 hash-verifiedrawPASS v0.12 separately consumed"
+    "latest_PR46_runs_note": "Old a3 history preserved; current6fea terminal7/7 hash-verifiedrawPASS v0.12 separately consumed",
+    "effective_policy_ref": {
+      "version": "v1.1",
+      "decision": "CDR-024",
+      "global_head": "1596649912554116196c1ad3c1d41797219f5241",
+      "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "git_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "supersedes_conflicting_historical_policy": true
+    }
   },
   "last_processed": {
-    "source_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
-    "owner_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
-    "processed_at_utc": "2026-10-05T09:18:52.550Z",
-    "run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
+    "source_head": "cda174542f1a1ae95345726f308c24b60262c03b",
+    "owner_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+    "processed_at_utc": "2026-10-05T10:56:45.810Z",
+    "run_id": "manual-chart-terminal-policy-2026-10-05T104549543Z",
     "input_heads": {
       "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
       "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
       "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
       "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
-      "41": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+      "41": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
       "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
       "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
       "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
       "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
       "47": "7215a9f60ad7128b1748f405051eac684298614f"
     },
-    "global_head": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
-    "status": "V013_NATIVE_SAMPLE_AND_POLICY_VERIFIED_SCOPED_REFERENCE_REPAIR_COMPLETE",
+    "global_head": "1596649912554116196c1ad3c1d41797219f5241",
+    "status": "V014_EXACT_TERMINAL_AND_ADOPTED_POLICY_CONSUMED_VERIFIED",
     "evidence_refs": [
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BROWSER_CHECK.json"
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/CI_TERMINAL_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/VALIDATION_RECEIPT.json"
     ],
-    "ci_terminal_claim": false,
+    "ci_terminal_claim": true,
     "governance_closure": false,
     "actual_chart_merge_result_fpia": "NOT_RUN"
   },
-  "pending": [
-    {
-      "kind": "OWNER_EXACT_CI_FOLLOWUP",
-      "pr": 47,
-      "head": "7215a9f60ad7128b1748f405051eac684298614f",
-      "run_id": 37284465900,
-      "attempt": 1,
-      "workflow": "track-c-fpia",
-      "observed_status": "in_progress",
-      "last_observed_at_utc": "2026-10-05T09:08:30.805Z",
-      "role": "Read-only consume currentterminalreceipt, Mainownsrepair/governance",
-      "does_not_block_independent_chart_work": true
-    }
-  ],
+  "pending": [],
   "readiness": {
     "scope": "OFFLINE_PREFLIGHT_VERIFIED_PRODUCTION_OWNER_GATED",
     "lane_a": "IMPLEMENTATION_NOT_READY",
@@ -611,7 +615,7 @@
     },
     "current_independent_repairs": "IMPLEMENTED_VERIFIED",
     "production_owner_dependency_count": 6,
-    "fpia_owner_ci": "PR46_EXACT6FEA_TECHNICAL7_OF7_RAWPASS_HASH_VERIFIED; PR47_EXACT7215_SIXOF7SUCCESS_TRACKC_PENDING",
+    "fpia_owner_ci": "PR47_EXACT7215_TECHNICAL7_OF7_SUCCESS_RAWPASS_ARTIFACT_DIGEST_VERIFIED; TIER1_TIER2_SKIPPED; GOVERNANCE_OPEN",
     "fpia_tool_governance": "MAIN_D006_IMPLEMENTED_CURRENT_AUTHORITY_COVERAGE_REVIEW_GIE_ADMISSIBILITY_OWNER_ACTION_REQUIRED",
     "sample_renderer": "IMPLEMENTED_VERIFIED",
     "latest_run_metrics": {
@@ -620,13 +624,15 @@
       "production_blockers_closed": 0,
       "new_production_blockers": 0,
       "lane_a_remaining_blockers": 6,
-      "vertical_slice_progress": "ExistingSAMPLE reused; nativeeditable responsiveMagicPath1component implemented +18exactbuiltbrowserchecks PASS",
+      "vertical_slice_progress": "Unchanged verified native SAMPLE reused; new exact CI and adopted authority consumed; production owner gates unchanged",
       "production_ready_contracts": "NONE_ADMITTED_FOR_CURRENT_TARGET",
       "frontend_ready_contracts": "EXISTING_VERIFIED_SAMPLE_CONTRACT_AND_NATIVE_REACT_RENDERER",
       "independent_ready_work_remaining": 0,
       "quota_blocks_independent_work": false,
       "D3_A_R": "ADOPTED",
-      "new_D3_R_required": false
+      "new_D3_R_required": false,
+      "terminal_ci_intakes_closed": 1,
+      "effective_policy_bindings_closed": 1
     },
     "actual_chart_merge_result_fpia": "NOT_RUN",
     "L1_L5": "L1 reference verified/current root+Security+Theme owner-gated; L2 preflight implemented/production absent; L3 Product/Chart projection owner-gated; L4 native MagicPath SAMPLE React IMPLEMENTED_VERIFIED; L5 exact-build SAMPLE browser18/18PASS, productionE2E/actualChartFPIA NOT_RUN",
@@ -634,22 +640,16 @@
     "magicpath_sample": "NATIVE_EDITABLE_REACT_IMPLEMENTED_VERIFIED_EXACT_BUILD_BROWSER18_OF18"
   },
   "lease": {
-    "status": "HELD",
-    "run_id": "manual-chart-terminal-policy-2026-10-05T104549543Z",
-    "holder_kind": "USER_OBSERVED_CHART_OWNER_SESSION",
-    "acquired_at_utc": "2026-10-05T10:45:49.543Z",
-    "expires_at_utc": "2026-10-05T12:45:49.543Z",
-    "ttl_minutes": 120,
-    "target_branch": "codex/chart-contract-mcp-api-v0-1",
-    "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": false,
-    "acquisition_parent_head": "cda174542f1a1ae95345726f308c24b60262c03b",
-    "reason": "Consume newly terminal PR47 and adopted CDR024 v1.1; Gate A remains disabled",
-    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
+    "status": "NONE",
+    "last_run_id": "manual-chart-terminal-policy-2026-10-05T104549543Z",
+    "released_after_verified_publication": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+    "released_at_utc": "2026-10-05T10:56:45.810Z",
+    "reason": "Observed-session terminal/policy publication verified; no READY task remains; production owner dependencies not held under lease",
+    "release_commit_note": "Containing final HEAD resolved via Git metadata"
   },
   "publication": {
-    "status": "V013_NATIVE_MAGICPATH_SAMPLE_AND_DELEGATED_POLICY_VERIFIED",
-    "latest_published_owner_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+    "status": "VERIFIED_SCOPED_EVIDENCE_AND_CURRENT_POLICY",
+    "latest_published_owner_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
     "scoped_output_paths": [
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
       "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
@@ -792,11 +792,20 @@
       "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py",
       "implementation/experiments/chart-contract-v0.1/page.html",
       "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
-      "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs"
+      "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/AUTOMATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/CI_TERMINAL_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/FAILURE_HISTORY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/WRITE_SET.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/VALIDATION_RECEIPT.json"
     ],
     "output_sha256": {
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "4a5db13bc5fcf083b5354369da4205bd1c7ae3014617bd720c9f556bc4caf592",
-      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "857fe06cfbfb7b2fedb4c189da0b0705eb1636dbce9c4b043bbe22404a7a4319",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "dafd0d0eb663171f5b01dbfa8462ae7b37920ae8cdeea4c968e969c8c1998dd2",
+      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "8f63904e26044f22dd42d023a428284a29ec24a6d52cc9e6845831b879337522",
       "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json": "754a8d97e82af9d2b79fd6bf495d803f85112b3c7cea75666ea794860cfecef0",
       "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/HANDOFF.md": "05a1ec7f0500ab13f3dcbe8741411daec214a95b028d2c72ad41a63cf4092b30",
       "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json": "019f36b212ff865b4b3d86077e671166ce1d894d251127d6bda741e3cbe9ff17",
@@ -936,7 +945,16 @@
       "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py": "72e7960e878fda278ec2562c66690265ab28c14c647aaefd2c63907618d1f67f",
       "implementation/experiments/chart-contract-v0.1/page.html": "80d549d2c2040ccac633059f642c3dc2a7b11f5f05484dd456c08a621efea7d2",
       "implementation/experiments/chart-contract-v0.1/portfolio_app.js": "ab6e2ea167d95d04619b096ce8f3518de6128d7f248d4967424761ffe2eb4016",
-      "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs": "b4bf3053b40b9bdfc14874fb377ed9820bca64efe7c9b7062f1284d4c8dd7c9a"
+      "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs": "b4bf3053b40b9bdfc14874fb377ed9820bca64efe7c9b7062f1284d4c8dd7c9a",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/GATES_AND_GAPS.json": "52815db36196ec258dbe1da6c0e2c3a9beb768ce99eb1d404f31c63e6c05e694",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/HANDOFF.md": "ea67623a48ce3276d58b536f52c3b01002ffdf529f5dee40572e711887cbca44",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json": "3092f92062f0f62d97d045e7cf28251e3037718b4f6290d99118c122f9c9c988",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/AUTOMATION_RECEIPT.json": "ed019eb5a90ff0480c5215b45641efa00649f358153d8bac28b3b38f0e5a995a",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/CI_TERMINAL_RECEIPT.json": "9ebadbd5c396d9831e03f1ebae9e917a77be2fe712337c892ef7f47eb53a8fb3",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/FAILURE_HISTORY.json": "74c636c258d3e482163699f6640f148ed722a68d63c5fa64682ddd2dc129ce0a",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json": "6904c245234a8c862a2aeaa02442cdcffed862b83203df25fe97e77d97a9f69a",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/WRITE_SET.json": "77b9127c38d3a05934f44d59aeb3e2c81d4adef776484fa1dd5e1e93add2655d",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/VALIDATION_RECEIPT.json": "f28e960776f2f49420fa64e1d0888d497de45b53bee50dec433a3c773bdefad7"
     },
     "retained_comment_ids": [
       5986162506
@@ -972,7 +990,9 @@
       "64f6057eb34e6b70c828433a53c5364f325e28b3",
       "d84afa219221e31ca78f5759360ae97489a0c8d2",
       "837a14276470c51d6cc2800b75be0fa16a011e70",
-      "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8"
+      "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+      "00d3d2be6459b35946f84cb920a6a941a0c16207",
+      "c16b164a1d379ec4c26a36f178651f22b23f5ed3"
     ],
     "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded.",
     "bootstrap_verified_owner_head": "df1743b22680cd6d56dd286fd737cb053a7175ad",
@@ -1005,29 +1025,14 @@
     ],
     "latest_evidence_tree": "180efc047837f7b1aa041a1b5a481a9577e88ca5",
     "verification": {
-      "exact_written_bytes_match_remote": true,
-      "new_packet_files": 22,
-      "prior_output_hashes_checked": 120,
-      "prior_unchanged_outputs": 119,
-      "intended_root_handoff_append": 1,
-      "prior_prefix_preservation": true,
-      "all_current_manifest_hashes_match": true,
-      "current_manifest_count": 142,
-      "remote_exact9_component_hashes_match": true,
-      "protected_or_unintended_paths": 0,
-      "nativeBuild": "COMPLETED",
-      "browser_checks": 18,
-      "task_readback_exact": true,
-      "task_schedule_cadence_enabled_title_preserved": true,
-      "verified_at_utc": "2026-10-05T09:14:49.571Z",
-      "write_set_reference_repair": {
-        "exact_remote_bytes": true,
-        "real_conditional_owner_receipt_verified": true,
-        "all_gate_a_g2_closed": false,
-        "all_other141_current_hashes_match": true,
-        "first_invalid_reference_retained": true,
-        "verified_at_utc": "2026-10-05T09:18:52.550Z"
-      }
+      "verified_at_utc": "2026-10-05T10:56:45.810Z",
+      "head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+      "exact_new_file_readbacks": 11,
+      "sha256_manifest_paths": 151,
+      "mismatches": 0,
+      "targeted_checks_passed": 21,
+      "state_excluded_from_hash_manifest": true,
+      "lease_release_followup": "Containing release HEAD resolved by Git metadata"
     },
     "current_PR41_Actions": {
       "source_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
@@ -1054,6 +1059,31 @@
         "verified_at_utc": "2026-10-05T07:23:44.868132+00:00",
         "late_exact_written_files": 4,
         "late_Global": "7dac637f499a0771b3eb54da24295624f0803558"
+      },
+      {
+        "exact_written_bytes_match_remote": true,
+        "new_packet_files": 22,
+        "prior_output_hashes_checked": 120,
+        "prior_unchanged_outputs": 119,
+        "intended_root_handoff_append": 1,
+        "prior_prefix_preservation": true,
+        "all_current_manifest_hashes_match": true,
+        "current_manifest_count": 142,
+        "remote_exact9_component_hashes_match": true,
+        "protected_or_unintended_paths": 0,
+        "nativeBuild": "COMPLETED",
+        "browser_checks": 18,
+        "task_readback_exact": true,
+        "task_schedule_cadence_enabled_title_preserved": true,
+        "verified_at_utc": "2026-10-05T09:14:49.571Z",
+        "write_set_reference_repair": {
+          "exact_remote_bytes": true,
+          "real_conditional_owner_receipt_verified": true,
+          "all_gate_a_g2_closed": false,
+          "all_other141_current_hashes_match": true,
+          "first_invalid_reference_retained": true,
+          "verified_at_utc": "2026-10-05T09:18:52.550Z"
+        }
       }
     ]
   },
@@ -1098,7 +1128,9 @@
       "64f6057eb34e6b70c828433a53c5364f325e28b3",
       "d84afa219221e31ca78f5759360ae97489a0c8d2",
       "837a14276470c51d6cc2800b75be0fa16a011e70",
-      "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8"
+      "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+      "00d3d2be6459b35946f84cb920a6a941a0c16207",
+      "c16b164a1d379ec4c26a36f178651f22b23f5ed3"
     ],
     "owned_comment_marker": "<!-- chart-owner-handoff:v0.5 -->",
     "retained_owned_comment_ids": [
@@ -1197,54 +1229,36 @@
     "current_primary_integration_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
     "tool_target": "User selected dedicated private MagicPath SAMPLE review; no existing service readiness assumed"
   },
-  "automations_current_inventory": [
-    {
-      "id": "6ac2ef0621908191909a27af4c91f101",
-      "team_id": null,
-      "title": "Chart CI 후속 확인",
-      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
-      "timing_mode": "condition_watch",
-      "display_schedule": null,
-      "is_enabled": true,
-      "conversation_id": "6ac2ef20-372c-83ee-9857-3ed62a8ed411",
-      "default_timezone": "Asia/Seoul",
-      "next_run_time": null,
-      "last_run_time": "2026-10-05T05:57:06.819156+00:00",
-      "updated_at": "2026-10-05T04:13:52.713596+00:00",
-      "execution_policy_version": "chart-v0.10",
-      "risk_policy_prompt_verified": true
-    },
-    {
-      "id": "6ac31fca7bb4819183997a9f17f432cb",
-      "team_id": null,
-      "title": "Chart 감사 자동진행",
-      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T035654Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
-      "timing_mode": "condition_watch",
-      "display_schedule": null,
-      "is_enabled": true,
-      "conversation_id": "6ac21e38-55f8-83ee-97af-8b9e30c57c11",
-      "default_timezone": "Asia/Seoul",
-      "next_run_time": null,
-      "last_run_time": "2026-10-05T06:18:46.483035+00:00",
-      "updated_at": "2026-10-05T04:46:23.509522+00:00",
-      "execution_policy_version": "chart-v0.10",
-      "risk_policy_prompt_verified": true
-    },
-    {
-      "id": "6ac2eeedb21c81919f04168d69672f0a",
-      "team_id": null,
-      "title": "Chart PR 이벤트 재개",
-      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
-      "timing_mode": "condition_watch",
-      "display_schedule": null,
-      "is_enabled": false,
-      "conversation_id": "6ac2f2a6-6938-83ec-8ea0-52e22ad3194f",
-      "default_timezone": "Asia/Seoul",
-      "next_run_time": null,
-      "last_run_time": "2026-10-05T03:51:11.384912+00:00",
-      "updated_at": "2026-10-05T03:56:36.583970+00:00"
-    }
-  ],
+  "automations_current_inventory": {
+    "observed_at_utc": "2026-10-05T10:56:45.810Z",
+    "tasks": [
+      {
+        "id": "6ac2ef0621908191909a27af4c91f101",
+        "title": "차트 구현 감사 워크 · CI 후속 확인",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T092850\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+        "last_run_time": "2026-10-05T10:42:49.384262+00:00",
+        "role": "READ_ONLY_WATCHER"
+      },
+      {
+        "id": "6ac31fca7bb4819183997a9f17f432cb",
+        "title": "차트 구현 감사 워크 · 자동진행",
+        "is_enabled": false,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T125654\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+        "last_run_time": null,
+        "role": "READ_ONLY_WATCHER"
+      },
+      {
+        "id": "6ac2eeedb21c81919f04168d69672f0a",
+        "title": "Chart PR 이벤트 재개",
+        "is_enabled": false,
+        "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+        "last_run_time": "2026-10-05T03:51:11.384912+00:00",
+        "role": "READ_ONLY_WATCHER"
+      }
+    ],
+    "receipt": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/AUTOMATION_RECEIPT.json"
+  },
   "automation_conversation_discrepancy": "Actual tool conversation IDs differ from v0.5 setup conversation ID; IDs/enabled state fresh verified; tasks not moved/recreated.",
   "execution_policy": {
     "version": "chart-v0.10",
@@ -1253,7 +1267,7 @@
     "global_only_semantic_change_is_input": true,
     "after_all_six_closed": "AUTOMATIC_APPROVED_WRITE_SET_PRODUCTION_VERTICAL_SLICE",
     "actual_D3_boundary_preserved": true,
-    "latest_user_continuation_kst": "2026-10-05T13:13:37+09:00",
+    "latest_user_continuation_kst": "2026-10-05T19:40:00+09:00",
     "independent_d1_d2_completion": "Existing SAMPLE UI defects, validation/evidence/handoff continue while production owner/CI inputs remain",
     "latest_user_tools_instruction_kst": "2026-10-05T14:18:36+09:00",
     "tools_use_scope": "Read actual versions/docs/access first; use one design tool selected target; no new design/approval restart; connected service is not production authority",
@@ -1295,18 +1309,38 @@
       "protected_authority_unchanged": true
     },
     "delegated_approval": {
-      "version": "D3 Delegated Approval Policy v1.0",
+      "version": "Autonomous Execution & Decision Authority SSoT v1.1",
       "classes": [
         "D1",
         "D2",
         "D3-A",
         "D3-R"
       ],
-      "condition": "All user conditions + concrete existingSSoT authority proof, reversible independently/deterministically verified conservative choice",
+      "condition": "Concrete SSoT alignment +26A triggers +26B independent separate execution +26D rollback +26F semantic_delta conservative synthesis",
       "reserved": "User supplied full reserved list in DECISION_RECEIPT.json",
       "unknown": "D3-R",
       "scope": "Only dependentlane waits; does not replace actualsource facts/ownerwrite-set/governance",
-      "receipt": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json"
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "new_D3_A_executed": 0
+    },
+    "effective_common_authority": {
+      "version": "v1.1",
+      "decision": "CDR-024",
+      "global_head": "1596649912554116196c1ad3c1d41797219f5241",
+      "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "git_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "supersedes_conflicting_historical_policy": true
+    },
+    "execution_context": {
+      "current": "USER_OBSERVED_SESSION",
+      "unattended": "DISABLED_PENDING_GATE_A",
+      "watchers": "READ_ONLY_WAKEUP",
+      "hard_guard_gate_a": "HG01_HG02_HG03_NOT_VERIFIED",
+      "max_tasks_per_cycle": 5,
+      "lease_ttl_hours": 2,
+      "repair_cap": 3,
+      "kill_switch": "NOT_VERIFIED_NO_RUN_ASSUMPTION"
     }
   },
   "lease_history": [
@@ -1528,6 +1562,22 @@
       },
       "evidence_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
       "released_at_utc": "2026-10-05T09:18:52.550Z"
+    },
+    {
+      "status": "HELD",
+      "run_id": "manual-chart-terminal-policy-2026-10-05T104549543Z",
+      "holder_kind": "USER_OBSERVED_CHART_OWNER_SESSION",
+      "acquired_at_utc": "2026-10-05T10:45:49.543Z",
+      "expires_at_utc": "2026-10-05T12:45:49.543Z",
+      "ttl_minutes": 120,
+      "target_branch": "codex/chart-contract-mcp-api-v0-1",
+      "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+      "verified_remote_acquisition": true,
+      "acquisition_parent_head": "cda174542f1a1ae95345726f308c24b60262c03b",
+      "reason": "Consume newly terminal PR47 and adopted CDR024 v1.1; Gate A remains disabled",
+      "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+      "released_after_verified_publication": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+      "released_at_utc": "2026-10-05T10:56:45.810Z"
     }
   ],
   "automation_audit": {
@@ -1538,7 +1588,7 @@
     "no_repeatable_framework_failure_found": true,
     "trigger_missed_proven": false,
     "previous_event": "INTENTIONALLY_PAUSED_SUPERSEDED",
-    "current_pending": "ONE_EXACT_FPIA_RUN_CI_FOLLOWUP_ONLY",
+    "current_pending": 0,
     "latest_dependency_watermarks": "ADOPTED_ONLY_AFTER_VERIFIED_PUBLICATION",
     "task_configuration_modified": true,
     "proof": "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json",
@@ -1597,6 +1647,18 @@
       "quota_fallback": "LOCAL_EXISTING_RENDERER_BROWSER_ARTIFACTS",
       "proven_trigger_loss": false,
       "historicalFigmaQuota": "Optional historicalvisualNOT_RUN; noactivewholeWorkWAIT"
+    },
+    "latest_v014": {
+      "classification": "CI_FOLLOWUP_ONLY",
+      "main_current": "DISABLED",
+      "main_end_to_end": "NOT_VERIFIED",
+      "ci_current": "ENABLED_READ_ONLY_WATCHER",
+      "gate_a": "UNATTENDED_EXECUTOR_DISABLED_NOT_VERIFIED",
+      "root_cause": "Main disabled; enabled watcher is not executor; GateA not satisfied. Pause actor/reason and wake delivery UNKNOWN, no trigger loss proved",
+      "terminal_consumption": "USER_OBSERVED_SESSION_VERIFIED",
+      "pending_after": 0,
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/AUTOMATION_RECEIPT.json",
+      "hard_guard_verification_claim": false
     }
   },
   "dependency_classifications": {
@@ -1932,6 +1994,35 @@
         "actual_chart_merge_result_fpia": "NOT_RUN"
       },
       "reason": "D1 one dangling planning reference corrected and byte verified; immutable first reference in scoped correction_history"
+    },
+    {
+      "source_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
+      "owner_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+      "processed_at_utc": "2026-10-05T09:18:52.550Z",
+      "run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
+      "input_heads": {
+        "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+        "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+        "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "41": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+        "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+        "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+        "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+        "47": "7215a9f60ad7128b1748f405051eac684298614f"
+      },
+      "global_head": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+      "status": "V013_NATIVE_SAMPLE_AND_POLICY_VERIFIED_SCOPED_REFERENCE_REPAIR_COMPLETE",
+      "evidence_refs": [
+        "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md",
+        "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BROWSER_CHECK.json"
+      ],
+      "ci_terminal_claim": false,
+      "governance_closure": false,
+      "actual_chart_merge_result_fpia": "NOT_RUN"
     }
   ],
   "pending_history": [
@@ -2021,57 +2112,33 @@
         }
       ],
       "disposition": "FigmaNOT_RUN retained as historical evidence; userMagicPathprimary supersedes active design prerequisite"
+    },
+    {
+      "prior": {
+        "kind": "OWNER_EXACT_CI_FOLLOWUP",
+        "pr": 47,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "run_id": 37284465900,
+        "attempt": 1,
+        "workflow": "track-c-fpia",
+        "observed_status": "in_progress",
+        "last_observed_at_utc": "2026-10-05T09:08:30.805Z",
+        "role": "Read-only consume currentterminalreceipt, Mainownsrepair/governance",
+        "does_not_block_independent_chart_work": true
+      },
+      "disposition": "CONSUMED_TERMINAL_SUCCESS",
+      "recorded_at_utc": "2026-10-05T10:56:45.810Z",
+      "evidence_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+      "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/CI_TERMINAL_RECEIPT.json",
+      "governance_closed": false
     }
   ],
   "prepared_publication": {
-    "status": "VERIFIED_REMOTE_PUBLICATION",
-    "run_id": "manual-chart-magicpath-d3a-2026-10-05T090050954Z",
-    "source_start_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
-    "preparation_parent": "42a186e1e892d0e2da692553bd223d1e1b1e0336",
-    "Global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
-    "PR47": "7215a9f60ad7128b1748f405051eac684298614f",
-    "evidence_paths": [
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/MAGICPATH_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BUILD_MANIFEST.json",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BROWSER_CHECK.json",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/GATES_AND_GAPS.json",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/OWNER_INTAKE.json",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/AUTOMATION_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/VALIDATION_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md"
-    ],
-    "do_not_advance_processed_before_remote_verification": true,
-    "remaining_production_gates": 6,
-    "output_sha256": {
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "4a5db13bc5fcf083b5354369da4205bd1c7ae3014617bd720c9f556bc4caf592",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/AUTOMATION_RECEIPT.json": "f5ada17c6095c9c295d206b4fdcc981aca59a3ac8432d763bf599f411825037e",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BROWSER_CHECK.json": "15b2625f9a669c7a1555f88c22d9e025388a508ec07dd207812ac1620bb24470",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BUILD_MANIFEST.json": "a11e46336d5f34057f946ffa1ff165cd282fc1beda533c67eaa14c61aefe1fe5",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json": "7743ef04790e6b9356b10e8d6be0168e4a4c2efe02e65a6f78830578cc42f9e0",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/GATES_AND_GAPS.json": "eb99158dec9aebbaf6a3bdb8d4a53d408b959e9a6ae9b2c051a61c746382e437",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md": "117b7a37aeb76ba07c654f7b17ae2d4c92ca4905c7958cc61f8ef0ad0d448bf4",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/MAGICPATH_RECEIPT.json": "93c6fe209ff1562444c9634c47a4c817ebd0cb775b12b73d544aa9819fde6b15",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/OWNER_INTAKE.json": "8074ee686630125833f55135bbaddb535ef789aeed22e1d716297e0931e00fcf",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/VALIDATION_RECEIPT.json": "efaf94527420a6d0190b3b95d1193acb0f459429728879f959e6b23fcc6ca15f",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json": "bb684544013d9e939dca2bc2687f87b0079412b012808011895fd660e94fde5b",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/actual-390.png": "5416ca2bb61c436f8b7c315fc6c4649d6c4a72d53936abfbb486aba5015ca440",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/target-390.png": "c8d78a269e6064085af130c7c2dabcaf78553cb1462bebcc5509ab9607fec21a",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/LICENSE-Noto-Sans-KR.txt": "18aabf190848725e2576eefb5c29ba06aac1029d02132252a7f312eac2e50cf3",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/App.tsx": "a7d42b4975d1fff5c03cd541fc55ce6a1a4d27b3a8a611a73c448de10f8d2681",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.css": "8cf9ea613222c55e2af7935b24c63fa9c1085c9fb0694234c3fb14dccd5d0829",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.tsx": "a47adbf4e7574f0640ba862d6e8a9578863d645847ea65a74cc93cf6be87d0ac",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/chartSampleView.ts": "e1a8a4499efd16cb75cd89b2277a00641fc382bbcfe40d4b3fed5a95ebd7e90b",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-0.css": "e1092e58393157917dba2e7fa6c801f81ae60de2b594921c685bc2fec010671d",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-1.css": "37d3bcdafd566ccc7e4f1da733f893a17ee05446e1db096ab05c1807ecc6ed94",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-2.css": "7e4e2545ce0cf4dee3deff4f87ac3117312a78efaedbe65366dae65c8630bcf5",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-3.css": "e9c23ec753bef15b62ba2da58572d4210ce28dbe57c0fe388504778a66d6f4d5",
-      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/index.css": "7ed623c33948e02ee7bd28e26d94eb11685b365c97237f514d60b51e06fa210f"
-    },
-    "evidence_commit": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
-    "evidence_tree": "180efc047837f7b1aa041a1b5a481a9577e88ca5",
-    "verified_at_utc": "2026-10-05T09:18:52.550Z"
+    "status": "REMOTE_BYTES_VERIFIED",
+    "evidence_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+    "packet": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/",
+    "files": 11,
+    "manifest": 151
   },
   "owner_actions_current": {
     "fpia_latest_source": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
@@ -2198,6 +2265,69 @@
         }
       },
       "reason": "Latest user MagicPath primary/fallback and D3-A/R delegated authority"
+    },
+    {
+      "version": "chart-v0.10",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md",
+      "authority": "Latest explicit user Risk-Proportional Verification instruction 2026-10-05",
+      "global_only_semantic_change_is_input": true,
+      "after_all_six_closed": "AUTOMATIC_APPROVED_WRITE_SET_PRODUCTION_VERTICAL_SLICE",
+      "actual_D3_boundary_preserved": true,
+      "latest_user_continuation_kst": "2026-10-05T13:13:37+09:00",
+      "independent_d1_d2_completion": "Existing SAMPLE UI defects, validation/evidence/handoff continue while production owner/CI inputs remain",
+      "latest_user_tools_instruction_kst": "2026-10-05T14:18:36+09:00",
+      "tools_use_scope": "Read actual versions/docs/access first; use one design tool selected target; no new design/approval restart; connected service is not production authority",
+      "risk_proportional_verification": true,
+      "classes": [
+        "FAST",
+        "STANDARD",
+        "CRITICAL"
+      ],
+      "full_regression_by_default": false,
+      "agent_budget": {
+        "default_chart_owner": 1,
+        "optional_backend_pit_verifier": 1,
+        "visual_adversarial_panel": false
+      },
+      "evidence_reuse": "Exact current tree/input compatibility; no repeated completed UI/raw audits; reused PASS remains historical",
+      "latest_user_risk_policy": "2026-10-05",
+      "run_metrics": [
+        "requirements_closed",
+        "blockers_closed",
+        "new_blockers",
+        "vertical_slice_progress",
+        "production_ready_contracts",
+        "frontend_ready_contracts"
+      ],
+      "primary_design_tool": {
+        "provider": "MagicPath",
+        "project_id": "457727891984232448",
+        "component_id": "457764208520613888",
+        "revision_id": "457764208524808192",
+        "scope": "SAMPLE_PRESENTATION_IMPLEMENTED_VERIFIED",
+        "fallback": "EXISTING_GITHUB_RENDERER_LOCAL_BROWSER_ARTIFACTS_AUTO_CONTINUE",
+        "historicalFigma": "Preserve3views; historicalfinalvisualNOT_RUN notactiveprerequisite"
+      },
+      "ssot_execution_loop": {
+        "decision": "CDR-022",
+        "global": "7dac637f499a0771b3eb54da24295624f0803558",
+        "independent_ready_continue_after_checkpoint": true,
+        "protected_authority_unchanged": true
+      },
+      "delegated_approval": {
+        "version": "D3 Delegated Approval Policy v1.0",
+        "classes": [
+          "D1",
+          "D2",
+          "D3-A",
+          "D3-R"
+        ],
+        "condition": "All user conditions + concrete existingSSoT authority proof, reversible independently/deterministically verified conservative choice",
+        "reserved": "User supplied full reserved list in DECISION_RECEIPT.json",
+        "unknown": "D3-R",
+        "scope": "Only dependentlane waits; does not replace actualsource facts/ownerwrite-set/governance",
+        "receipt": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json"
+      }
     }
   ],
   "prepared_publication_history": [
@@ -2334,6 +2464,15 @@
       "policy_version": "chart-v0.10",
       "product_requirements_closed": 0,
       "production_gates_closed": 0
+    },
+    {
+      "classification": "D1_EXISTING_ADOPTED_POLICY_CONSUMPTION",
+      "decision": "CDR-024",
+      "global_head": "1596649912554116196c1ad3c1d41797219f5241",
+      "evidence_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "new_D3_A": 0,
+      "semantic_delta": "NONE"
     }
   ],
   "owner_actions_history": [
