@@ -105,7 +105,17 @@
         "dependency": "OWNER_ACTION_REQUIRED",
         "next_action": "Integration finishes exacthead CI and independent/adversarial review, current verifier/canonical applicability/GIE/decision closure with receipts; specifies actual future Chart merge-result FPIA condition. Do not equate old CI PASS with governance closure",
         "chart_can_close_directly": false,
-        "chart_can_continue_independent_diagnostic_work": true
+        "chart_can_continue_independent_diagnostic_work": true,
+        "terminal_rejudgment": {
+          "receipt": "FPIA_TERMINAL_RECEIPT.json",
+          "CI": "7_OF_7_SUCCESS_EXACT_11d2f25",
+          "audit": "FPIA_PASS_CODE_IDENTITY_DIVERGED",
+          "Tier1_Tier2": "SKIPPED",
+          "status": "PARTIALLY_RESOLVED",
+          "remaining_action": "Owner final independent/adversarial/authentication/D2decision/GIE/canonical applicability receipts and actual future Chart-result condition",
+          "chart_merge_result_fpia": "NOT_RUN",
+          "CI_wait_removed": true
+        }
       }
     ]
   },

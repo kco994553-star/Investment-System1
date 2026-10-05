@@ -116,3 +116,10 @@ Late v0.8 intake: Global af264713 (CDR018/GCH016) transfers PIW to successor GPT
 PR45 17244b4 synthetic Platform harness is a downstream Chart consumer, no
 Target gate closure/new prerequisite. Latest open count40. See v0.8 appended
 handoff/LATE_OWNER_INTAKE/PUBLICATION_RECEIPT for fresh verified routing.
+
+Terminal successor: exact PR42 run37260997788attempt1/11d2f25 SUCCESS; all7
+sourceheadworkflowsPASS. FPIA_PASS/CODE_IDENTITY_DIVERGED; Tier1/Tier2SKIPPED,
+verbatimFrozen-toolsFAIL and nonclaims retained. Completed run consumed and
+pending queue cleared with history. A-G3 remainsPARTIALLY_RESOLVED awaiting
+finalownerreview/decision/GIE; sixTargetgates/Market0of19/no newChartD3.
+See v0.8 FPIA_TERMINAL_RECEIPT and terminal handoff append.

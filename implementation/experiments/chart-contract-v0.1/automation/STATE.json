@@ -347,7 +347,15 @@
         "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997708"
       }
     ],
-    "qgv_architecture_head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505"
+    "qgv_architecture_head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505",
+    "exact_fpia_terminal": {
+      "run": 37260997788,
+      "attempt": 1,
+      "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "status": "completed",
+      "conclusion": "success",
+      "observed_at_utc": "2026-10-05T04:53:10.015213+00:00"
+    }
   },
   "last_processed": {
     "source_head": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
@@ -379,32 +387,7 @@
     "ci_terminal_claim": false,
     "semantic_input_fingerprint": "86a374fbf00c231f289f7607e0f4705c283f35aa582004ca1a9d263a20fc2548"
   },
-  "pending": [
-    {
-      "kind": "READ_ONLY_OWNER_DEPENDENCY_CI",
-      "run_id": "manual-chart-dependency-delta-20261005T030326898Z",
-      "pr": 42,
-      "owner_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
-      "last_observed_at_utc": "2026-10-05T04:29:58Z",
-      "runs": [
-        {
-          "id": 37260997788,
-          "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
-          "name": "track-c-fpia",
-          "event": "pull_request",
-          "status": "in_progress",
-          "conclusion": null,
-          "attempt": 1,
-          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997788"
-        }
-      ],
-      "required_disposition": "Re-read exact run_id+attempt+head, record actual conclusion; no other-owner dispatch/write. CI completion alone does not close A-G3; independent owner review/governance/G7/GIE still required.",
-      "evidence_refs": [
-        "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json",
-        "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FRESH_GITHUB_READ.json"
-      ]
-    }
-  ],
+  "pending": [],
   "readiness": {
     "scope": "OFFLINE_PREFLIGHT_VERIFIED_PRODUCTION_OWNER_GATED",
     "lane_a": "IMPLEMENTATION_NOT_READY",
@@ -437,7 +420,9 @@
       "A-G3": "PARTIALLY_RESOLVED"
     },
     "current_independent_repairs": "IMPLEMENTED_VERIFIED",
-    "production_owner_dependency_count": 6
+    "production_owner_dependency_count": 6,
+    "fpia_owner_ci": "7_OF_7_SUCCESS_EXACT_11d2f25",
+    "fpia_tool_governance": "OWNER_ACTION_REQUIRED_FINAL_REVIEW_DECISION_GIE"
   },
   "lease": {
     "status": "RUNNING",
@@ -447,10 +432,12 @@
     "expires_at_utc": "2026-10-05T05:20:05.736Z",
     "ttl_minutes": 30,
     "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-    "verified_remote_acquisition": false,
+    "verified_remote_acquisition": true,
     "acquisition_parent_head": "a5403a969021021cd3f489173603bc657365097f",
     "reason": "Exact pending FPIA run just reached terminal SUCCESS; consume receipt and clear CI queue without governance promotion",
-    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+    "acquisition_commit": "7ba5f2dac74487d1ce504e80081213e23894cc09",
+    "verified_at_utc": "2026-10-05T04:53:10.015213+00:00"
   },
   "publication": {
     "status": "V08_DIAGNOSTIC_AND_LATE_OWNER_INTAKE_PUBLICATION_VERIFIED",
@@ -844,7 +831,7 @@
   ],
   "automation_audit": {
     "classification": "WORKING_AS_DESIGNED",
-    "pending_classification": "CI_FOLLOWUP_ONLY",
+    "pending_classification": "NO_PENDING_CI_OWNER_EVIDENCE_ONLY",
     "historical_global_intake": "PR-only coverage limit now addressed by enabled hourly Global-aware Main",
     "productive_post_prompt_execution": "UNVERIFIED",
     "no_framework_repair_found": true,
@@ -884,6 +871,192 @@
         "semantic_input_fingerprint": "1df6fffb6df1522652e9fd6ee0acdd1a399bb222948b639b5de5cb6d61acdb6b"
       },
       "immutable_state_ref": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    }
+  ],
+  "prepared_publication": {
+    "status": "PREPARED_UNPUBLISHED_EXACT_FPIA_TERMINAL_EVENT",
+    "parent_head": "7ba5f2dac74487d1ce504e80081213e23894cc09",
+    "scoped_output_paths": [
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
+      "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/INDEPENDENT_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/AUTHORITY_ARTIFACT_MANIFEST_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/OWNER_PACKET_CONSISTENCY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_DELTA_EVIDENCE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/EXISTING_CAPABILITY_PINS_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/LANE_B_VERIFY_RECEIPT_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CLI_SMOKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CURRENT_INPUT_DIAGNOSTIC.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/EVENT_STREAMS_OBSERVED.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FINAL_UNITTEST.log",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FRESH_BASELINE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INDEPENDENT_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INITIAL_INPUT_DIAGNOSTIC.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/README.md",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_review_edges.py",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/REFERENCE_REPLAY_REPAIR_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/AUTOMATION_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/README.md",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DIAGNOSTIC_INPUT_PINS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_OPTIMIZED.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_OPTIMIZED_MISMATCH_PROBE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/replay_preflight_probes.py",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DECIMAL_REFERENCE_VERIFY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_INPUT_HASH_MISMATCH_PROBE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ORIGINAL_MALFORMED_JSON_FAILURE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_NORMAL.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/SOURCE_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ARCHIVED_RUN_OBSERVATION.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_reference_replay_status.py",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CLI_EXPECTATION_CORRECTION.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_diagnostic_repairs.py",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CURRENT_INPUT_DIAGNOSTIC.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/WRITE_SET.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FRESH_GITHUB_READ.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GOVERNANCE_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MARKET_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MALFORMED_JSON_REPAIR_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json"
+    ],
+    "output_sha256": {
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "467d8874cca23079bbb9e16e2d81820ad3dbeb4b959e0af85b6be4fd4bcc7c8b",
+      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "1226884d3afb4cbd571ca2f34639c31d934dd87baec5cd7894970dc284c3ea79",
+      "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json": "754a8d97e82af9d2b79fd6bf495d803f85112b3c7cea75666ea794860cfecef0",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json": "699dd0c832c105666420adfd9c3be0c9863cf3392992dc8f561280cb7417decb",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json": "3bb3c6ee5b7d5016f3acb7651ebd020a8508a0a8243a8340ddc059f0c0c77cfc",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md": "568eeeec27b63b3da41c6a16584e5727ee79bc47e0afa88caa86f9d53349eaf5",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/INDEPENDENT_REVIEW.json": "ba09a028ce6c73bf4e365028ed48faba508e1e076b21186bb9a04485c4d2739f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md": "4b33475fcfe7528b3beb29acffb0c818fade656a2317a00aa88218730373b607",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json": "514c7ddfd9e46b1a5b0f26ad7cb798dcc67efc51518218bbcf8ec6a38f787b83",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/AUTHORITY_ARTIFACT_MANIFEST_v0.5.json": "43daa13655f929249ec0ad2137a8f44316e66f985a41f327dfaf1c442ed18d0d",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json": "dde5503cd37c840f3127011d88cdf1b9c5a25a6c3d39a52fe60e95113a50a513",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json": "62b10722f88d242cc1a0aa8f590fe1cbac1ea0eeb3833dff4ce66b42c1a1d4fb",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md": "0b15e87e97c9bdb5cafc6efd4c9cab88efa01e9521eaa65a72fac15d723ee028",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py": "21300a2f55b8f27b3436b4467e507cfd27dccb7200d7cedf50e083b81005d12a",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/OWNER_PACKET_CONSISTENCY.json": "a6a96fe495ae5775c60054283ef5f20d152ed9bcbd6fb8b5c5b24285144f4f42",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_DELTA_EVIDENCE.json": "7d8aff4b12017797cf89e8f00d1ccea852da95e6382fe037f4ca4e842009633f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md": "f5019aa52649dc83bee5c41616e53d299d6cbd12fa64212be5f0c0cb9b5f48a7",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/EXISTING_CAPABILITY_PINS_v0.5.json": "9ee1dbaba37d1984d5428f8aada1b3d88f93c1ff77a0781ea19405bf39beab82",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json": "d274b1e8cc127aff34a5f1bf654cb969328df96753e503bd463d215ac8693545",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/LANE_B_VERIFY_RECEIPT_v0.5.json": "10725c567a78dae4c0ba7f0433e74be943efa47a846c228b7d5eb9041e218c65",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json": "96500808ea2b47b58c6d7a0ff7f7c2141e096467ee379f1a609afb5a0cf628d6",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md": "da9eb10534a98c57418fc09bcac0cfbd4c43fef58875b3bde3248c2f4693369f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py": "72e7960e878fda278ec2562c66690265ab28c14c647aaefd2c63907618d1f67f",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CLI_SMOKE.json": "7a86993addf952d871e3940557128969616efd0b2bf2ac75a48bd71a9705c65b",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CURRENT_INPUT_DIAGNOSTIC.json": "2a0af6419e050cf214343c12ca755255c3e59e04e84ca4d6e4bb31e48c261302",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/EVENT_STREAMS_OBSERVED.json": "7c22a86c9a16ee94ef972970235f5d3a2d97af8c423328031256ad854c8d1af3",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FINAL_UNITTEST.log": "8dd054ae0a3f2a5833bb0ac24532fc4d580cabbab5ab31d95b137b2cf16cc368",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FRESH_BASELINE.json": "4efb6998e1440a359f7e1c7bd833b559cd504575a8dd7701f67e02ec673f8269",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md": "08c665ff35fccdf31fdaec2c2078dc4b0d6c93a6864df03653029a355fd356e2",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INDEPENDENT_REVIEW.json": "7dcdf9d69b98468ae0f75ad6ee1b1eb011000d4514c8a36c46c96be74712603d",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INITIAL_INPUT_DIAGNOSTIC.json": "476b5edaf3474105d45c3dc345e363c7d7746b8b1f61c504c43de3b0b02d4769",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/README.md": "03552cb11208784abd9a48693669c02c328636871c22215d23f29030a5479fb7",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/VALIDATION_RECEIPT.json": "539c09fa4d08f0a81832472f4202252a142162f8d4fa4edf51fa7599399a8d1a",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py": "5ddfeaced404821d15f9a53cde0d4ee87f742f18e976e390764fd25a4d8364c1",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py": "39721807f2f032b31182cba1478fecbb00c79e20ba4bd4817fd4c5e8c7edf184",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_review_edges.py": "417c1267b270be7e74aa6eb07c5078a6abfd7fbb5a72d949dabf73cb88b1bdf9",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json": "79683e0e1034810a174d056f786cf22c3ad32f862de60209d7be8d38b6727237",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md": "8a297da09ba107dce84c022d269a3cd163525ea86070c9eb3aa6b84880eaf9a4",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md": "178170d313766970182a6f49a5793b946c17928a8a9c78cec7d52b8ca85bac71",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json": "1f1cc6bcfbcfcebbe1566cc4f1974c4c174832e3050a38b0b98e21e1bd322976",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json": "337e4c907e4c0f89375494c68ed850beedbdde748d33af14a15f53f6d131a81b",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt": "c6a0e6303275e1fdc47cc3b182e3faff787a9cea12907be692af37b5633a3844",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/REFERENCE_REPLAY_REPAIR_RECEIPT.json": "8fbcfb0ce04528e8055b987b1d81a1c7b49d7724f4e766dd369df3ac018d9905",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/AUTOMATION_RECHECK.json": "463da11084cfcf5f09ce575092deb1d061d2e2c937207012d594fae2854ba085",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/README.md": "fb9a6913dacc65a401a95661ef5049b77958544762239e11ca13ca053a93a65d",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DIAGNOSTIC_INPUT_PINS.json": "3295568f8a03db29a920307a98d3346283d96b9356f470b218465dfa336a21dc",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_OPTIMIZED.json": "8845051ed4a82d67c1d181623b8f4379880c8b719457ad8f6207761e4c046335",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_OPTIMIZED_MISMATCH_PROBE.json": "777e2a5aa5c11cc510018abaeaa364be554b302af62b1fa2f36d7ff8473676c5",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/replay_preflight_probes.py": "dcec8bbffbf5be647048b348b9feb2a71c981bd20505c5de95871721739daad5",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DECIMAL_REFERENCE_VERIFY.json": "6ac7c963c1b5673c2bf4c94f703175e7a9836dab89c14f4edf201efffa58526c",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GATES_AND_GAPS.json": "532227e1c8ea70c9fb8045cd8bb259e789dd7f10a2eca82fae4e8ccfe020556f",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md": "c32d2521636b9567407ee653f8e5b4906e8413bf0ce37348cdc7003332f0b64d",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REVIEW.json": "d4856fa5def2dc9e78a58895dcf8d0ed31eec5311376c28bd50bf86e1923ff30",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_INPUT_HASH_MISMATCH_PROBE.json": "fd0774ce1a97e33b3766b99192a06f8f7da9d5aeb2e4890f727157ad49f13352",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ORIGINAL_MALFORMED_JSON_FAILURE.json": "54e153b53f487067b20fc08b6c6428988e437e2cdb1e5a3e85dfa5f3fcc44b4a",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_NORMAL.json": "24171aafe04392790229cbd74ea1f6476ff1d1015a0ba8d2c24ef03532bc5adf",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/SOURCE_RECHECK.json": "be3f366dde148af13da35193d31af80759a62410779c62313f50bdb8c5c41598",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ARCHIVED_RUN_OBSERVATION.json": "c04d5e719c4908cc950719c09aaad8815fdb7bf0719a4fa2ed79028c88e50799",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_reference_replay_status.py": "8c36acc65d892a86e42ba8277a25aa0155834c55e2f3d9d36b10512274bed208",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CLI_EXPECTATION_CORRECTION.json": "c74001ad3a04ecf9f15d2cf789400d74171f3aa6990e565d7560db49be275e7a",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_diagnostic_repairs.py": "24b3e6a0f901c8768770eef97d0d92e3231f0cb1516ef7c44ad70ee6b9a3c674",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CURRENT_INPUT_DIAGNOSTIC.json": "acebcefa6ae94ba16911dc512682a7180d61b95cabf3d7994c6d02a451c5a7e3",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/WRITE_SET.json": "2682f8f4aeea530d622114a659fe4c29d6a889d3274a119d3cfda99c8c78ee73",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FRESH_GITHUB_READ.json": "8ca7d0f946196512e03f5e972ae5b72232f9a293e8ea869ae0c8c9b02b9913ca",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/VALIDATION_RECEIPT.json": "c3c3c3fc75f7eb2daf7513a767d0a43b6ec57a532b5f3ce8fab625ce4c3b0b24",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GOVERNANCE_RECHECK.json": "1da5fff339fbfbe002ebf6b6badb2ad586d560e6fd143f7e09fe5c95364ce54e",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MARKET_RECHECK.json": "59b5ffacf5c9c62805c69f0a766ae6563119658a246bbe8b5b0150b304303317",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MALFORMED_JSON_REPAIR_RECEIPT.json": "fe4eafd3418775742cc52e6e88063dcc0ec82eb7e2ef945de8d17ac66abe26b4",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json": "1f2e0c7d6b00fa9145f546c67ebc358af256e5e6a06cf0e130df360116aae24c",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json": "bd5e29ff8c0c3f78e1e4dd740dd5ea825f8b96c59da3eab4cf18ddac5a02740f",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json": "0d34e29b3186a4b4121f8541d34b478d95ac9302c7409a55f11d790f0e942eb6"
+    }
+  },
+  "pending_history": [
+    {
+      "immutable_state_ref": "a5403a969021021cd3f489173603bc657365097f:implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+      "pending": [
+        {
+          "kind": "READ_ONLY_OWNER_DEPENDENCY_CI",
+          "run_id": "manual-chart-dependency-delta-20261005T030326898Z",
+          "pr": 42,
+          "owner_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "last_observed_at_utc": "2026-10-05T04:29:58Z",
+          "runs": [
+            {
+              "id": 37260997788,
+              "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+              "name": "track-c-fpia",
+              "event": "pull_request",
+              "status": "in_progress",
+              "conclusion": null,
+              "attempt": 1,
+              "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997788"
+            }
+          ],
+          "required_disposition": "Re-read exact run_id+attempt+head, record actual conclusion; no other-owner dispatch/write. CI completion alone does not close A-G3; independent owner review/governance/G7/GIE still required.",
+          "evidence_refs": [
+            "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json",
+            "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FRESH_GITHUB_READ.json"
+          ]
+        }
+      ],
+      "disposition": "EXACT_COMPLETED_SUCCESS_CONSUMED",
+      "consumed_at_utc": "2026-10-05T04:53:10.015213+00:00",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json"
     }
   ]
 }

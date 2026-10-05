@@ -234,3 +234,32 @@ FPIA run37260997788attempt1/11d2f25 stays in progress. LATE_OWNER_INTAKE and
 PUBLICATION_RECEIPT supersede the earlier39-PR/GCH015 intake for current routing.
 Final implementation/evidence and coordination HEADs resolve from publication
 and subsequent release STATE; no self SHA is invented.
+
+## Exact FPIA terminal result consumed after final fresh read
+
+The final API read returned run37260997788attempt1/11d2f25 COMPLETED/SUCCESS
+(updated2026-10-05T04:41:34Z). The earlier IN_PROGRESS receipts remain historical.
+A new shared Chart lease was atomically acquired and verified at7ba5f2d to
+consume this actual event, rather than retaining a stale CI wait.
+
+All seven exact11d2f25 PR workflows now SUCCESS. Job111608006037 audit stepPASS;
+Tier1/Tier2 workflow stepsSKIPPED and not claimed as independently executed.
+Fetched log pins actual auditT=11d2f25, register5e33b30ce47b1875ae3b91fb3ba25d3158947e66,
+CDR014. ResultFPIA_PASS / CODE_IDENTITY_DIVERGED; result_sha256
+bec51ed8f57db64ebd6239fc6cb25437b87cfd3fbc3e64c1e7de25214f83633d.
+FROZEN_TOOLS_ON_T_FAIL is retained verbatim; historical identity/projection and
+full regression are reportedPASS by this owner run. Dynamic invocation is
+NOT_CLAIMED and out-of-tree analysisNOT_ANALYSED. Runhash is integrity, not
+verifier authentication. The artifact metadata/digest and exact job/steps/log
+summary are preserved in FPIA_TERMINAL_RECEIPT.json. This is the owner subject,
+not an actual Chart merge-result FPIA.
+
+The completed exact run is removed from pending queue, with previous queue and
+state preserved in history. No CI dispatch/retry or FPIA owner write occurred.
+A-G3 stays PARTIALLY_RESOLVED: CI subcondition is now closed; final independent/
+adversarial review, current verifier authentication, delegated owner D2 decision
+records, GIE/canonical applicability/accepted future Chart-result conditions
+remain absent. Raw reviews0 and Globalaf264713 unchanged at terminal intake.
+Target remaining root blockers6, Market0/19, L1–L5 production state unchanged,
+no new Chart D3. Next automatic work consumes actual owner review/admission
+receipts; the finished CI is no longer a pending dependency.
