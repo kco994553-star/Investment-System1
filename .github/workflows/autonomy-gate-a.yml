@@ -1,0 +1,42 @@
+name: autonomy-gate-a
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  repository-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Unit tests
+        working-directory: implementation
+        run: python -m unittest tests.test_autonomy_gate_a_guard -v
+      - name: Resolve comparison base
+        id: base
+        shell: bash
+        run: |
+          if [ -n "${{ github.base_ref }}" ]; then
+            git fetch --no-tags origin "${{ github.base_ref }}"
+            echo "ref=origin/${{ github.base_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=HEAD^" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Frozen/history/evidence fail-closed guard
+        working-directory: implementation
+        run: python tools/autonomy_gate_a_guard.py diff --base "${{ steps.base.outputs.ref }}"
+      - name: Kill Switch readback
+        working-directory: implementation
+        run: |
+          MODE="$(python tools/autonomy_gate_a_guard.py mode)"
+          test "$MODE" = "READ_ONLY" -o "$MODE" = "PAUSE" -o "$MODE" = "RUN"
+          echo "AUTONOMY_MODE=$MODE"
