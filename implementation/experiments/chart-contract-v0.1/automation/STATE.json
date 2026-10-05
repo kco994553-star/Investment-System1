@@ -348,11 +348,10 @@
     ]
   },
   "last_processed": {
-    "source_head": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
-    "owner_head": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
-    "semantic_input_fingerprint": "33ab1b9c58364ffbfc7a673a15022429e24f7119d248144f5e2651c1ce5ae8ac",
-    "processed_at_utc": "2026-10-05T01:17:25Z",
-    "run_id": "manual-root-v06-20261005005901",
+    "source_head": "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+    "owner_head": "32069065a0c4a62e4390d76675eb9c7681456c87",
+    "processed_at_utc": "2026-10-05T04:14:14.034Z",
+    "run_id": "manual-chart-dependency-delta-20261005T030326898Z",
     "input_heads": {
       "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
       "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
@@ -360,213 +359,21 @@
       "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
       "36": "fb086eac4321140493ce554a541343cebbb81ed6",
       "41": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
-      "42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
       "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
     },
-    "event_watermarks": {
-      "17": {
-        "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "reviews": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "review_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        }
-      },
-      "18": {
-        "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 1,
-          "last_id": 5950833091,
-          "items": [
-            {
-              "id": 5950833091,
-              "updated_at": "2026-10-02T10:54:13Z",
-              "body_sha256": "e7354fd9eb298954e750257b8fa8f58f5ffec8526587ed566fea2faee841e185"
-            }
-          ]
-        },
-        "reviews": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "review_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        }
-      },
-      "19": {
-        "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "reviews": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "review_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        }
-      },
-      "34": {
-        "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "reviews": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "review_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        }
-      },
-      "36": {
-        "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "reviews": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "review_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        }
-      },
-      "41": {
-        "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "reviews": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "review_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        }
-      },
-      "42": {
-        "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 1,
-          "last_id": 5986162506,
-          "items": [
-            {
-              "id": 5986162506,
-              "updated_at": "2026-10-05T00:40:32Z",
-              "body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f"
-            }
-          ]
-        },
-        "reviews": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "review_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        }
-      },
-      "44": {
-        "issue_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "reviews": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        },
-        "review_comments": {
-          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
-          "observed_at_utc": "2026-10-05T01:17:25Z",
-          "observed_count": 0,
-          "last_id": 0,
-          "items": []
-        }
-      }
-    },
+    "global_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+    "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "approval_effective_kst": "2026-10-05T13:01:31+09:00",
+    "status": "SCOPED_POLICY_ADOPTED_INDEPENDENT_PROBES_VERIFIED_PENDING_INTEGRATION_CI_AND_OWNER_INPUTS",
     "evidence_refs": [
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/VALIDATION_RECEIPT.json",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json"
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json"
     ],
-    "status": "OFFLINE_PREFLIGHT_VERIFIED_PRODUCTION_PARKED_OTHER_OWNER_PREREQUISITES"
+    "ci_terminal_claim": false,
+    "semantic_input_fingerprint": "1df6fffb6df1522652e9fd6ee0acdd1a399bb222948b639b5de5cb6d61acdb6b"
   },
   "pending": [
     {
@@ -616,8 +423,8 @@
     "preflight_cli_pass": 6
   },
   "lease": {
-    "status": "RUNNING",
-    "run_id": "manual-chart-dependency-delta-20261005T030326898Z",
+    "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+    "run_id": null,
     "holder_kind": "MANUAL_ROOT",
     "acquired_at_utc": "2026-10-05T03:03:26.899Z",
     "expires_at_utc": "2026-10-05T05:02:54.234Z",
@@ -630,14 +437,15 @@
     "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease.",
     "acquisition_commit": "74df6784071137bdca911964af94c8e1b6928c92",
     "verified_at_utc": "2026-10-05T04:02:54.236Z",
-    "verified_published_packet": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
-    "previous_run_id": "manual-root-v06-20261005005901",
+    "verified_published_packet": "32069065a0c4a62e4390d76675eb9c7681456c87",
+    "previous_run_id": "manual-chart-dependency-delta-20261005T030326898Z",
     "reason": "Current user authorizes durable Global-only dependency intake and automatic approved-write-set production continuation; renewal before expiry",
-    "renewed_at_utc": "2026-10-05T04:02:54.236Z"
+    "renewed_at_utc": "2026-10-05T04:02:54.236Z",
+    "released_at_utc": "2026-10-05T04:14:14.034Z"
   },
   "publication": {
-    "status": "V06_PREFLIGHT_PACKET_AND_HANDOFF_VERIFIED",
-    "latest_published_owner_head": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
+    "status": "V07_CONTINUATION_POLICY_AND_DEPENDENCY_CHECKPOINT_VERIFIED",
+    "latest_published_owner_head": "32069065a0c4a62e4390d76675eb9c7681456c87",
     "scoped_output_paths": [
       "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
       "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
@@ -676,11 +484,16 @@
       "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
       "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py",
       "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_review_edges.py",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json"
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt"
     ],
     "output_sha256": {
-      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "49c8c9996bc9307fe5123c515121be5e61acc17c86b9f30ce1312b9075a6df2b",
-      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "a7ab5ee8475f3ac4639043d9f8d3e03588cc05773e751150d26127f79978f2b8",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "0752747e6954bb52c1e1bb9d833e82135e9068d3e58c0cbbb1df4d59c2992ccb",
+      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "1226884d3afb4cbd571ca2f34639c31d934dd87baec5cd7894970dc284c3ea79",
       "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json": "754a8d97e82af9d2b79fd6bf495d803f85112b3c7cea75666ea794860cfecef0",
       "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json": "699dd0c832c105666420adfd9c3be0c9863cf3392992dc8f561280cb7417decb",
       "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json": "3bb3c6ee5b7d5016f3acb7651ebd020a8508a0a8243a8340ddc059f0c0c77cfc",
@@ -716,7 +529,12 @@
       "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py": "ca3a8bf5af7e2618a6e362b38d45d6ac59a2b6c5de9dda5bcb3423f89f90d6c3",
       "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py": "39721807f2f032b31182cba1478fecbb00c79e20ba4bd4817fd4c5e8c7edf184",
       "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_review_edges.py": "417c1267b270be7e74aa6eb07c5078a6abfd7fbb5a72d949dabf73cb88b1bdf9",
-      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json": "79683e0e1034810a174d056f786cf22c3ad32f862de60209d7be8d38b6727237"
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json": "79683e0e1034810a174d056f786cf22c3ad32f862de60209d7be8d38b6727237",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md": "8a297da09ba107dce84c022d269a3cd163525ea86070c9eb3aa6b84880eaf9a4",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md": "178170d313766970182a6f49a5793b946c17928a8a9c78cec7d52b8ca85bac71",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json": "1f1cc6bcfbcfcebbe1566cc4f1974c4c174832e3050a38b0b98e21e1bd322976",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json": "337e4c907e4c0f89375494c68ed850beedbdde748d33af14a15f53f6d131a81b",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt": "c6a0e6303275e1fdc47cc3b182e3faff787a9cea12907be692af37b5633a3844"
     },
     "retained_comment_ids": [
       5986162506
@@ -725,7 +543,11 @@
       "df1743b22680cd6d56dd286fd737cb053a7175ad",
       "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
       "ce978a5bebb17abd5b6072cdbc6f2db82cf21b18",
-      "d56ddb26f43a5c9a4acc9decdd0d444295de3b88"
+      "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
+      "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+      "74df6784071137bdca911964af94c8e1b6928c92",
+      "1e8c24c6f77030425b3dbf59ef8aa6539cafd748",
+      "32069065a0c4a62e4390d76675eb9c7681456c87"
     ],
     "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded.",
     "bootstrap_verified_owner_head": "df1743b22680cd6d56dd286fd737cb053a7175ad",
@@ -742,9 +564,20 @@
       {
         "head": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
         "immutable_state_ref": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+      },
+      {
+        "head": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
+        "immutable_state_ref": "1e8c24c6f77030425b3dbf59ef8aa6539cafd748:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
       }
     ],
-    "latest_evidence_tree": "463be77de7dc8c5a2eec505ab3e6eacc11469dcf"
+    "latest_evidence_tree": "356efdd6458a62396b9b1f288c1b9a13424e0fdb",
+    "verification": {
+      "exact_written_bytes_match_remote": true,
+      "written_files": 8,
+      "prior_prefix_preservation": true,
+      "unintended_paths": 0,
+      "verified_at_utc": "2026-10-05T04:14:14.034Z"
+    }
   },
   "self_update_filter": {
     "automation_titles": [
@@ -759,7 +592,11 @@
       "df1743b22680cd6d56dd286fd737cb053a7175ad",
       "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
       "ce978a5bebb17abd5b6072cdbc6f2db82cf21b18",
-      "d56ddb26f43a5c9a4acc9decdd0d444295de3b88"
+      "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
+      "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+      "74df6784071137bdca911964af94c8e1b6928c92",
+      "1e8c24c6f77030425b3dbf59ef8aa6539cafd748",
+      "32069065a0c4a62e4390d76675eb9c7681456c87"
     ],
     "owned_comment_marker": "<!-- chart-owner-handoff:v0.5 -->",
     "retained_owned_comment_ids": [
@@ -883,3 +720,4 @@
     "actual_D3_boundary_preserved": true
   }
 }
+
