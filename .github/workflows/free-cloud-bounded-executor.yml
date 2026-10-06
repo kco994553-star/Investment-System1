@@ -1,0 +1,53 @@
+name: free-cloud-bounded-executor
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "implementation/tools/free_cloud_bounded_executor.py"
+      - "implementation/tests/test_free_cloud_bounded_executor.py"
+      - ".github/workflows/free-cloud-bounded-executor.yml"
+      - "implementation/docs/coordination/governance/FREE_CLOUD_BOUNDED_EXECUTOR_v1.md"
+  workflow_run:
+    workflows: [free-cloud-controller]
+    types: [completed]
+
+# This v1 canary is intentionally read-only at repository level.
+# It proves event -> executor -> bounded-plan E2E before any write permission is added.
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: free-cloud-bounded-executor
+  cancel-in-progress: true
+
+jobs:
+  bounded-executor-canary:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify bounded executor
+        working-directory: implementation
+        run: python -m unittest tests.test_free_cloud_controller tests.test_free_cloud_bounded_executor -v
+      - name: Build deterministic bounded plan
+        run: |
+          python implementation/tools/free_cloud_bounded_executor.py | tee /tmp/free-cloud-plan.json
+          python - <<'PY'
+          import json
+          p=json.load(open("/tmp/free-cloud-plan.json"))
+          assert p["allowed_branch"]=="automation/free-cloud-state-v1"
+          assert p["allowed_paths"]==["implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json"]
+          # Production is currently READ_ONLY/Gate A closed, so mutation must be denied.
+          assert p["allow_mutation"] is False
+          PY
+      - name: Prove no external paid AI credentials are needed
+        run: |
+          test -z "${OPENAI_API_KEY:-}"
+          test -z "${ANTHROPIC_API_KEY:-}"
+          test -z "${GOOGLE_API_KEY:-}"
