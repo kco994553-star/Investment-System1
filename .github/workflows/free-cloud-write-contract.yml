@@ -1,0 +1,40 @@
+name: free-cloud-write-contract
+
+on:
+  pull_request:
+    paths:
+      - "implementation/tools/free_cloud_write_contract.py"
+      - "implementation/tests/test_free_cloud_write_contract.py"
+      - ".github/workflows/free-cloud-write-contract.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-write-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Unit tests
+        working-directory: implementation
+        run: python -m unittest tests.test_free_cloud_write_contract -v
+      - name: Positive exact-scope check
+        run: |
+          python implementation/tools/free_cloud_write_contract.py             --branch automation/free-cloud-state-v1             --path implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json
+      - name: Negative protected-branch check
+        run: |
+          if python implementation/tools/free_cloud_write_contract.py             --branch integration/global-handoff-v1             --path implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json; then
+            echo "::error::Global branch unexpectedly admitted"
+            exit 1
+          fi
+      - name: Negative protected-path check
+        run: |
+          if python implementation/tools/free_cloud_write_contract.py             --branch automation/free-cloud-state-v1             --path implementation/docs/coordination/governance/AUTONOMY_MODE; then
+            echo "::error::Governance path unexpectedly admitted"
+            exit 1
+          fi
