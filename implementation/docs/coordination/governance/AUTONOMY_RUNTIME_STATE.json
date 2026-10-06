@@ -1,11 +1,13 @@
 {
   "schema": "autonomy-runtime-state-v1",
-  "cycle_id": null,
-  "holder": null,
-  "branch": null,
-  "started_at_epoch": null,
-  "lease_expires_at_epoch": null,
+  "cycle_id": "main-chart-owner-20261006T093820Z",
+  "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+  "branch": "integration/global-handoff-v1",
+  "started_at_epoch": 1791279500,
+  "lease_expires_at_epoch": 1791286700,
   "tasks_used": 0,
   "repair_rounds": {},
-  "status": "IDLE"
+  "status": "RUNNING_USER_OBSERVED",
+  "activation": "BOUNDED_USER_SESSION_ONLY",
+  "unattended_executor": false
 }

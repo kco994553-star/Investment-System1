@@ -1658,3 +1658,14 @@ Follow-ups:
 - PR #48 final head: `1d2c8195ffb936c56ba91d9fe41e627ef172a5e7`; Global merge result: `82de599ee90a6beabd774dd22e7e2b939ff75b44`.
 - Exact merged-file identities: decision register `4ead1ef620d7b4f5addbb201681242020d0d55ca`; historical v1.0 `425c0b647073c16b021fb501c71b78c2d0248320`; adopted v1.1 `4736bbcb508ce1f4310fbe96cbcfdd8e080b275f`.
 - No canonical merge, Holdout, Official/LIVE, production, paid resource, credential, financial operation, PIT relaxation, Frozen/history destruction, protected-owner takeover, or QGV production-semantic authority is granted.
+
+## CDR-027 · One observed-session bounded Chart owner-dependency cycle
+
+- Status: USER_DECIDED_EXPLICIT_DIRECTIVE; recorded 2026-10-06T09:38:20Z. Submission timestamp is not independently provided; this is the receipt time.
+- Scope: current six Chart OPEN gates, Main integration coordination only; CDR-024 v1.1 applies.
+- User explicitly authorizes acting on their behalf to change READ_ONLY → RUN for this one session and to restore READ_ONLY at completion/WAIT_DEPENDENCY/D3-R/tool blocker. This scoped instruction overrides §4A's agent-mutation prohibition only for these two user-directed transitions. It does not enable unattended RUN or satisfy Gate A.
+- Maximum five tasks, lease TTL two hours, maximum three repairs for an identical failure; no stale takeover. Recheck mode before publication.
+- Portfolio/Identity/Theme owner claims and exact branch/write-set; TARGET/19 Security/Theme returns; P01 applicability; Web/Integration acceptance; FPIA governance and independent verifier/launcher/runtime/GIE; routing/reconciliation/verification/evidence/handoff are authorized within existing protection boundaries.
+- Prohibited: canonical merge, Official/LIVE, Holdout, PIT/no-lookahead relaxation, destructive Frozen/history/evidence, credential/rights expansion, paid resources, trades/orders/funds.
+- Verbatim user directive: [USER_DIRECTIVE.md](evidence/main_chart_owner_cycle_2026-10-06/USER_DIRECTIVE.md).
+- No source owner acceptance, source admission, Product grant or production gate closure is implied by this mode receipt.

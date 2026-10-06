@@ -1,0 +1,33 @@
+{
+  "schema": "main-bounded-chart-cycle-v1",
+  "cycle_id": "main-chart-owner-20261006T093820Z",
+  "authority": "CDR-027 / CDR-024",
+  "start": "2026-10-06T09:38:20Z",
+  "base_global": "0e348f60195abadc51bc586db9251497f20539aa",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "chart": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+  "lease": {
+    "lane_id": "Main-Chart-six-gate-coordination",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "cycle_id": "main-chart-owner-20261006T093820Z",
+    "target_branch": "integration/global-handoff-v1",
+    "acquired_at_utc": "2026-10-06T09:38:20Z",
+    "expires_at_utc": "2026-10-06T11:38:20Z",
+    "ttl_seconds": 7200,
+    "write_set": [
+      "implementation/docs/coordination/**"
+    ],
+    "authorization": "CDR-027 explicit observed-session user directive",
+    "unattended_executor": false
+  },
+  "tasks": [
+    "SOURCE_OWNER_AND_RETURN_RECONCILIATION",
+    "P01_APPLICABILITY",
+    "WEB_INTEGRATION_ACCEPTANCE",
+    "FPIA_GOVERNANCE",
+    "VERIFY_HANDOFF_AND_READ_ONLY_RESTORE"
+  ],
+  "tasks_max": 5,
+  "unattended": false,
+  "source_admission": false
+}
