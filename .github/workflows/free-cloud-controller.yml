@@ -1,0 +1,62 @@
+name: free-cloud-controller
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "implementation/docs/coordination/governance/**"
+      - "implementation/tools/free_cloud_controller.py"
+      - "implementation/tests/test_free_cloud_controller.py"
+      - ".github/workflows/free-cloud-controller.yml"
+  push:
+    branches:
+      - integration/global-handoff-v1
+    paths:
+      - "implementation/docs/coordination/governance/**"
+      - "implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md"
+      - "implementation/docs/coordination/GLOBAL_STATUS_INDEX.md"
+      - ".github/workflows/free-cloud-controller.yml"
+      - "implementation/tools/free_cloud_controller.py"
+  workflow_run:
+    workflows:
+      - autonomy-gate-a
+      - autonomy-hg03-canary
+      - c21-real-data
+    types: [completed]
+
+# Zero-paid-resource controller: no external AI/API calls.
+# This job is intentionally read-only. A future bounded executor job must remain
+# separate and must require Gate A OPEN + AUTONOMY_MODE=RUN.
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+concurrency:
+  group: free-cloud-controller
+  cancel-in-progress: true
+
+jobs:
+  control-plane:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify controller
+        working-directory: implementation
+        run: python -m unittest tests.test_free_cloud_controller -v
+      - name: Evaluate unattended eligibility
+        id: decision
+        run: |
+          DECISION="$(python implementation/tools/free_cloud_controller.py)"
+          echo "$DECISION"
+          echo "decision=$DECISION" >> "$GITHUB_OUTPUT"
+      - name: Assert no paid/external AI path
+        run: |
+          test -z "${OPENAI_API_KEY:-}"
+          test -z "${ANTHROPIC_API_KEY:-}"
+          test -z "${GOOGLE_API_KEY:-}"
+          echo "No paid AI credential is consumed by this workflow."
