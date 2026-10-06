@@ -1,0 +1,12 @@
+{
+  "canary": "BOUNDED_WRITE",
+  "main_gpt_replacement": false,
+  "paid_external_ai": false,
+  "production_autonomy_mode": "READ_ONLY",
+  "schema": "free-cloud-status-v1",
+  "source_global_sha": "d2e72027d1c80995efee738f9960c157e9e9fedc",
+  "workflow_run_attempt": "1",
+  "workflow_run_id": "37458872552",
+  "writer_branch": "automation/free-cloud-state-v1",
+  "writer_path": "implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json"
+}
