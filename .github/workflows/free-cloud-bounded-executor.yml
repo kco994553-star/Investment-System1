@@ -2,6 +2,12 @@ name: free-cloud-bounded-executor
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "implementation/tools/free_cloud_bounded_executor.py"
+      - "implementation/tests/test_free_cloud_bounded_executor.py"
+      - ".github/workflows/free-cloud-bounded-executor.yml"
+      - "implementation/docs/coordination/governance/FREE_CLOUD_BOUNDED_EXECUTOR_v1.md"
   workflow_run:
     workflows: [free-cloud-controller]
     types: [completed]
@@ -18,13 +24,11 @@ concurrency:
 
 jobs:
   bounded-executor-canary:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: integration/global-handoff-v1
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
