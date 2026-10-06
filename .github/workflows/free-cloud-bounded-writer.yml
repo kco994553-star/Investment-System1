@@ -1,0 +1,131 @@
+name: free-cloud-bounded-writer
+
+on:
+  push:
+    branches:
+      - integration/global-handoff-v1
+    paths:
+      - "implementation/docs/coordination/governance/FREE_CLOUD_WRITE_GRANT_DECISION_PACKAGE_v1.md"
+      - "implementation/docs/coordination/evidence/free_cloud_write_grant_2026-10-06/**"
+      - "implementation/tools/free_cloud_write_contract.py"
+      - "implementation/tools/free_cloud_controller.py"
+      - "implementation/tools/free_cloud_bounded_executor.py"
+      - ".github/workflows/free-cloud-bounded-writer.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: free-cloud-bounded-writer
+  cancel-in-progress: false
+
+jobs:
+  bounded-write-canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integration/global-handoff-v1
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify explicit approval receipt
+        run: |
+          test -f implementation/docs/coordination/evidence/free_cloud_write_grant_2026-10-06/DECISION_RECEIPT.md
+          grep -q "APPROVED" implementation/docs/coordination/evidence/free_cloud_write_grant_2026-10-06/DECISION_RECEIPT.md
+
+      - name: Verify write contract and negative protected scopes
+        working-directory: implementation
+        run: |
+          python -m unittest tests.test_free_cloud_write_contract tests.test_free_cloud_controller tests.test_free_cloud_bounded_executor -v
+          python tools/free_cloud_write_contract.py             --branch automation/free-cloud-state-v1             --path implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json
+          if python tools/free_cloud_write_contract.py             --branch integration/global-handoff-v1             --path implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json; then
+            echo "::error::Global branch unexpectedly admitted"
+            exit 1
+          fi
+          if python tools/free_cloud_write_contract.py             --branch claude/investment-system-top500-validation-alrugm             --path implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json; then
+            echo "::error::canonical unexpectedly admitted"
+            exit 1
+          fi
+          if python tools/free_cloud_write_contract.py             --branch automation/free-cloud-state-v1             --path implementation/docs/coordination/governance/AUTONOMY_MODE; then
+            echo "::error::governance control path unexpectedly admitted"
+            exit 1
+          fi
+
+      - name: Confirm production Kill Switch remains READ_ONLY
+        run: |
+          test "$(cat implementation/docs/coordination/governance/AUTONOMY_MODE | tr -d '\r\n')" = "READ_ONLY"
+
+      - name: Prepare dedicated automation branch
+        run: |
+          if git ls-remote --exit-code --heads origin refs/heads/automation/free-cloud-state-v1 >/dev/null 2>&1; then
+            git fetch --no-tags origin refs/heads/automation/free-cloud-state-v1:refs/remotes/origin/automation/free-cloud-state-v1
+            git switch -C automation/free-cloud-state-v1 origin/automation/free-cloud-state-v1
+          else
+            git switch -c automation/free-cloud-state-v1
+          fi
+
+      - name: Write exactly one bounded status file
+        env:
+          SOURCE_GLOBAL_SHA: ${{ github.sha }}
+          SOURCE_RUN_ID: ${{ github.run_id }}
+          SOURCE_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          mkdir -p implementation/docs/coordination/automation_free
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path("implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json")
+          data={
+            "schema":"free-cloud-status-v1",
+            "canary":"BOUNDED_WRITE",
+            "source_global_sha":os.environ["SOURCE_GLOBAL_SHA"],
+            "workflow_run_id":os.environ["SOURCE_RUN_ID"],
+            "workflow_run_attempt":os.environ["SOURCE_RUN_ATTEMPT"],
+            "production_autonomy_mode":"READ_ONLY",
+            "writer_branch":"automation/free-cloud-state-v1",
+            "writer_path":"implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json",
+            "main_gpt_replacement":False,
+            "paid_external_ai":False
+          }
+          p.write_text(json.dumps(data,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+          PY
+          CHANGED="$(git status --porcelain --untracked-files=all | awk '{print $2}')"
+          test "$CHANGED" = "implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json"
+
+      - name: Validate exact write set again before publish
+        run: |
+          python implementation/tools/free_cloud_write_contract.py             --branch automation/free-cloud-state-v1             --path implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json
+
+      - name: Publish without force
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json
+          if git diff --cached --quiet; then
+            echo "No status delta; nothing to publish."
+            exit 0
+          fi
+          git commit -m "automation: record bounded free-cloud status"
+          git push origin HEAD:refs/heads/automation/free-cloud-state-v1
+
+      - name: Exact remote readback
+        run: |
+          git fetch --no-tags origin refs/heads/automation/free-cloud-state-v1:refs/remotes/origin/automation/free-cloud-state-v1
+          REMOTE_SHA="$(git rev-parse refs/remotes/origin/automation/free-cloud-state-v1)"
+          echo "remote_sha=$REMOTE_SHA"
+          git show refs/remotes/origin/automation/free-cloud-state-v1:implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json > /tmp/remote-status.json
+          python - <<'PY'
+          import json
+          x=json.load(open("/tmp/remote-status.json"))
+          assert x["writer_branch"]=="automation/free-cloud-state-v1"
+          assert x["writer_path"]=="implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json"
+          assert x["production_autonomy_mode"]=="READ_ONLY"
+          assert x["main_gpt_replacement"] is False
+          assert x["paid_external_ai"] is False
+          PY

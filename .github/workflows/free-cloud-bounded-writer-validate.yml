@@ -1,0 +1,36 @@
+name: free-cloud-bounded-writer-validate
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/free-cloud-bounded-writer.yml"
+      - ".github/workflows/free-cloud-bounded-writer-validate.yml"
+      - "implementation/tests/test_free_cloud_bounded_writer_static.py"
+      - "implementation/docs/coordination/governance/FREE_CLOUD_BOUNDED_WRITER_v1.md"
+      - "implementation/tools/free_cloud_write_contract.py"
+      - "implementation/tools/free_cloud_controller.py"
+      - "implementation/tools/free_cloud_bounded_executor.py"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Static writer-policy tests
+        working-directory: implementation
+        run: python -m unittest tests.test_free_cloud_bounded_writer_static tests.test_free_cloud_write_contract tests.test_free_cloud_controller tests.test_free_cloud_bounded_executor -v
+      - name: Confirm workflow is bounded and no external AI secret is referenced
+        run: |
+          grep -q "contents: write" .github/workflows/free-cloud-bounded-writer.yml
+          grep -q "automation/free-cloud-state-v1" .github/workflows/free-cloud-bounded-writer.yml
+          grep -q "implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json" .github/workflows/free-cloud-bounded-writer.yml
+          ! grep -q "OPENAI_API_KEY" .github/workflows/free-cloud-bounded-writer.yml
+          ! grep -q "ANTHROPIC_API_KEY" .github/workflows/free-cloud-bounded-writer.yml
+          ! grep -q "GOOGLE_API_KEY" .github/workflows/free-cloud-bounded-writer.yml
