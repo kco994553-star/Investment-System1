@@ -1,0 +1,28 @@
+{
+  "schema": "main-chart-bounded-metadata-verification-v1",
+  "checks": {
+    "source_request_rows": 19,
+    "source_owner_claims": 0,
+    "candidate_source_blob_bindings": 33,
+    "subject_workflow_path_blobs_equal": true,
+    "artifact_run_attempt_head_digest_matches_previous": true,
+    "tier1": "skipped",
+    "tier2": "skipped",
+    "actual_workflow_sha_observed_in_fresh_job_log": "84792523ec131a0ff01c4185e85c89fd9cab8649",
+    "minimum_assets_absent_on_exact_base": 3,
+    "exact_base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "production_gates_closed": 0
+  },
+  "verdict": "PASS_METADATA_INTAKE_ONLY",
+  "not_claimed": [
+    "Independent verifier authority",
+    "External/runtime execution closure",
+    "Source admission",
+    "Owner receipt",
+    "GIE",
+    "Production E2E",
+    "Chart merge-result FPIA"
+  ],
+  "full_regression_repeated": false,
+  "ci_rerun": false
+}

@@ -1,0 +1,257 @@
+{
+  "schema": "main-source-owner-intake-plan-v1",
+  "cycle_id": "main-chart-owner-20261006T093820Z",
+  "authority": "CDR-027 bounded coordination under CDR-024",
+  "source_owner_status": "OWNER_UNASSIGNED",
+  "coordination_owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+  "source_owner_assigned": false,
+  "receiving_work_claim": false,
+  "production_gate_closed": false,
+  "evidence": {
+    "global_input": "0e348f60195abadc51bc586db9251497f20539aa",
+    "chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "source_request_blob": "693cc6bf15aeb9448aff995fe1898f669297e451",
+    "personal_handoff_blob": "f4988e024e90098484ab3462cabe1710b5c6510c",
+    "common_security_contract_blob": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+    "owner_branches_found": [],
+    "source_owner_issue_claims_found": [],
+    "chart_owner_lease": "NONE"
+  },
+  "roles": [
+    {
+      "gate": "A-S1",
+      "role": "Portfolio TARGET source owner",
+      "accountable_owner": null,
+      "branch": null,
+      "write_set": null,
+      "proposed_branch": "owner/portfolio-target-return-v1",
+      "proposed_write_set": [
+        "implementation/docs/portfolio_target_owner/**"
+      ],
+      "claim_status": "PROPOSAL_NOT_RESERVED_NOT_ACCEPTED",
+      "return_fields": [
+        "portfolio_id",
+        "portfolio_version",
+        "target_root_id",
+        "root_revision_id",
+        "snapshot_hash",
+        "source_receipt_ref",
+        "current_adoption_evidence_ref",
+        "applicability_semantics",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "completeness_receipt_ref",
+        "denominator_definition",
+        "source_use_provenance_ref",
+        "authoritative_route_record_ref"
+      ],
+      "acceptance": [
+        "Owner names one immutable current TARGET root and revision with source receipt/hash and unambiguous portfolio identity/version.",
+        "Owner states current applicability/effective-period semantics and separately evidenced availability; the document date/extraction/Git clock is not substituted.",
+        "Root binds exact19 source rows and explicit cash with completeness and full-portfolio denominator, and resolves authored spec vs reference fixture vs adopted root routing.",
+        "Any difference from pinned authored values is recorded in a new owner revision; no Chart-side arbitrary selection/rewrite."
+      ]
+    },
+    {
+      "gate": "A-S2",
+      "role": "Common Security identity source owner",
+      "accountable_owner": null,
+      "branch": null,
+      "write_set": null,
+      "proposed_branch": "owner/security-map19-return-v1",
+      "proposed_write_set": [
+        "implementation/docs/security_map19_owner/**"
+      ],
+      "claim_status": "PROPOSAL_NOT_RESERVED_NOT_ACCEPTED",
+      "return_fields": [
+        "owner/session",
+        "exact branch/head",
+        "19 CompanyLink/SecurityRecord relations",
+        "security_id namespace",
+        "issuer_id",
+        "share_form/class",
+        "identity_revision",
+        "source_evidence/hash",
+        "validity",
+        "common-contract admission decision",
+        "all19 completeness"
+      ],
+      "acceptance": [
+        "Each exact admitted root row binds through an explicit reviewed company→security/issuer identity relation in the reused common namespace.",
+        "All19 requested SECURITY subjects are complete and unambiguous; ticker/company/CIK alone does not synthesize security_id.",
+        "Share form/class and identity revision/evidence are explicit; preserve Tokyo D-29 and existing C-25 boundary.",
+        "Use existing identity contracts/resolver capability; no Chart-specific identity system or dependence on Market bars/session history."
+      ]
+    },
+    {
+      "gate": "A-S3",
+      "role": "User-defined Strategy Theme source owner",
+      "accountable_owner": null,
+      "branch": null,
+      "write_set": null,
+      "proposed_branch": "owner/strategy-theme-return-v1",
+      "proposed_write_set": [
+        "implementation/docs/strategy_theme_owner/**"
+      ],
+      "claim_status": "PROPOSAL_NOT_RESERVED_NOT_ACCEPTED",
+      "return_fields": [
+        "owner/session",
+        "exact branch/head",
+        "catalog/version",
+        "4 concepts",
+        "19 assignments",
+        "admitted TARGET root/security map binding",
+        "catalog/assignment revisions",
+        "hash/provenance",
+        "validity/currentness",
+        "completeness"
+      ],
+      "acceptance": [
+        "Owner admits named user-defined Strategy Theme catalog/revision and exact security assignment revision bound to admitted root/security map.",
+        "Four concepts and exact19 relations preserve source values with explicit version/provenance/hash/effective validity/completeness.",
+        "Current-use validity is evidenced; historical availability remains unknown if unproved and old records are not rewritten.",
+        "Renderer consumes classification projection and does not assign Themes."
+      ]
+    }
+  ],
+  "claims_required": [
+    "Explicit accountable role/session receipt",
+    "Confirm exact branch/head and bounded write-set",
+    "Confirm no conflicting active writer/lease",
+    "Immutable artifact path/hash and source authority",
+    "Accepting Chart consumption receipt"
+  ],
+  "scope_exclusions": [
+    "ACTUAL holdings",
+    "GICS assignment or license",
+    "Investment Type membership",
+    "Type Overlap",
+    "Quarterly Actual history",
+    "Market prices",
+    "Market listing/session/calendar history"
+  ],
+  "unresolved_source_rows": [
+    {
+      "source_row_key": "reference:company:asml",
+      "company_id": "asml",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:lrcx",
+      "company_id": "lrcx",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:klac",
+      "company_id": "klac",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:tokyo_electron",
+      "company_id": "tokyo_electron",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:hanmi",
+      "company_id": "hanmi",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:nvda",
+      "company_id": "nvda",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:amd",
+      "company_id": "amd",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:avgo",
+      "company_id": "avgo",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:qcom",
+      "company_id": "qcom",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:intc",
+      "company_id": "intc",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:msft",
+      "company_id": "msft",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:googl",
+      "company_id": "googl",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:amzn",
+      "company_id": "amzn",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:rtx",
+      "company_id": "rtx",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:stry",
+      "company_id": "stry",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:etn",
+      "company_id": "etn",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:hubb",
+      "company_id": "hubb",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:gev",
+      "company_id": "gev",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    },
+    {
+      "source_row_key": "reference:company:rok",
+      "company_id": "rok",
+      "share_binding": "UNRESOLVED",
+      "source_role": "AUTHORED_REFERENCE_NOT_CURRENT_ADMITTED"
+    }
+  ],
+  "new_numeric_policy": false,
+  "source_admission": false,
+  "current_target_root": null,
+  "security_map_admitted": 0,
+  "theme_adopted": false,
+  "next_action": "Use dedicated ownership intake issue for a receiving Work claim. Coordinator identity is not source owner authority; no source ID/time/grant synthesized."
+}

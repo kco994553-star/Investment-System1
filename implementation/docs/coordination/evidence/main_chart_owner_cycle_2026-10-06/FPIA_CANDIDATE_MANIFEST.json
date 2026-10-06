@@ -1,0 +1,266 @@
+{
+  "schema": "main-fpia-candidate-manifest-review-packet-v1",
+  "cycle_id": "main-chart-owner-20261006T093820Z",
+  "authority": "PIW-D001..D006 operational dispositions / CDR-024 / CDR-027",
+  "status": "CANDIDATE_MANIFEST_PINNED_NOT_TRUSTED",
+  "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+  "pr": 47,
+  "branch": "codex/fpia-execution-coverage-2026-10-05",
+  "workflow_execution_sha": "84792523ec131a0ff01c4185e85c89fd9cab8649",
+  "candidate_roles": {
+    "independent_verifier": "NOT_ACCEPTED",
+    "launcher": "NOT_ACCEPTED",
+    "runtime": "NOT_ACCEPTED",
+    "gie_governance": "OPEN"
+  },
+  "workflow": {
+    "path": ".github/workflows/track-c-fpia.yml",
+    "source_blob": "c49848ca8f4f850e522dc96a02c8946479fc77c7",
+    "run_id": 37284465900,
+    "attempt": 1,
+    "job_id": 111679955410,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "artifact": {
+    "id": 11335872268,
+    "digest": "sha256:7d8247a5d23c372a8868064179519b5321488a9041a227f030b2c43bff53167b",
+    "expired": false,
+    "head": "7215a9f60ad7128b1748f405051eac684298614f",
+    "previous_consumed_zip_sha256": "7d8247a5d23c372a8868064179519b5321488a9041a227f030b2c43bff53167b",
+    "artifact_identity_matches_previous": true
+  },
+  "candidate_source_manifest": [
+    {
+      "path": ".github/workflows/track-c-fpia.yml",
+      "subject_blob": "c49848ca8f4f850e522dc96a02c8946479fc77c7",
+      "workflow_execution_blob": "c49848ca8f4f850e522dc96a02c8946479fc77c7"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/README.md",
+      "subject_blob": "12c753ee29cca2b5ab772eba3c2aef8dd9fe6c1a",
+      "workflow_execution_blob": "12c753ee29cca2b5ab772eba3c2aef8dd9fe6c1a"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/__init__.py",
+      "subject_blob": "4693f619a0c8ee99561981d47145f382adbd7c24",
+      "workflow_execution_blob": "4693f619a0c8ee99561981d47145f382adbd7c24"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/LICENSE",
+      "subject_blob": "2f1b8e15e5627d92f0521605c9870bc8e5505cb4",
+      "workflow_execution_blob": "2f1b8e15e5627d92f0521605c9870bc8e5505cb4"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/__init__.py",
+      "subject_blob": "824936194774d34cd5e7816e519d00517612e7b4",
+      "workflow_execution_blob": "824936194774d34cd5e7816e519d00517612e7b4"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/composer.py",
+      "subject_blob": "6d15cb40e3b4198819c91c6f8d8b32807fcf53b2",
+      "workflow_execution_blob": "6d15cb40e3b4198819c91c6f8d8b32807fcf53b2"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/constructor.py",
+      "subject_blob": "619acd3070a4845c653fcf22a626e05158035bc2",
+      "workflow_execution_blob": "619acd3070a4845c653fcf22a626e05158035bc2"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/dumper.py",
+      "subject_blob": "6aadba551f3836b02f4752277f4b3027073defad",
+      "workflow_execution_blob": "6aadba551f3836b02f4752277f4b3027073defad"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/emitter.py",
+      "subject_blob": "a664d011162af69184df2f8e59ab7feec818f7c7",
+      "workflow_execution_blob": "a664d011162af69184df2f8e59ab7feec818f7c7"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/error.py",
+      "subject_blob": "b796b4dc519512c4825ff539a2e6aa20f4d370d0",
+      "workflow_execution_blob": "b796b4dc519512c4825ff539a2e6aa20f4d370d0"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/events.py",
+      "subject_blob": "f79ad389cb6c9517e391dcd25534866bc9ccd36a",
+      "workflow_execution_blob": "f79ad389cb6c9517e391dcd25534866bc9ccd36a"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/loader.py",
+      "subject_blob": "e90c11224c38e559cdf0cb205f0692ebd4fb8681",
+      "workflow_execution_blob": "e90c11224c38e559cdf0cb205f0692ebd4fb8681"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/nodes.py",
+      "subject_blob": "c4f070c41e1fb1bc01af27d69329e92dded38908",
+      "workflow_execution_blob": "c4f070c41e1fb1bc01af27d69329e92dded38908"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/parser.py",
+      "subject_blob": "13a5995d292045d0f865a99abf692bd35dc87814",
+      "workflow_execution_blob": "13a5995d292045d0f865a99abf692bd35dc87814"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/reader.py",
+      "subject_blob": "774b0219b5932a0ee1c27e637371de5ba8d9cb16",
+      "workflow_execution_blob": "774b0219b5932a0ee1c27e637371de5ba8d9cb16"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/representer.py",
+      "subject_blob": "808ca06dfbd60c9a23eb079151b74a82ef688749",
+      "workflow_execution_blob": "808ca06dfbd60c9a23eb079151b74a82ef688749"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/resolver.py",
+      "subject_blob": "3522bdaaf6358110b608f4e6503b9d314c82d887",
+      "workflow_execution_blob": "3522bdaaf6358110b608f4e6503b9d314c82d887"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/scanner.py",
+      "subject_blob": "de925b07f1eaec33c9c305a8a69f9eb7ac5983c5",
+      "workflow_execution_blob": "de925b07f1eaec33c9c305a8a69f9eb7ac5983c5"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/serializer.py",
+      "subject_blob": "fe911e67ae7a739abb491fbbc6834b9c37bbda4b",
+      "workflow_execution_blob": "fe911e67ae7a739abb491fbbc6834b9c37bbda4b"
+    },
+    {
+      "path": "implementation/tools/integration/_vendor/yaml/tokens.py",
+      "subject_blob": "4d0b48a394ac8c019b401516a12f688df361cf90",
+      "workflow_execution_blob": "4d0b48a394ac8c019b401516a12f688df361cf90"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia.py",
+      "subject_blob": "94212f9592806c091b68db35c8f0c5513deecc57",
+      "workflow_execution_blob": "94212f9592806c091b68db35c8f0c5513deecc57"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_applicability.py",
+      "subject_blob": "522e574f144de60788445762f0b34378be0ff8b5",
+      "workflow_execution_blob": "522e574f144de60788445762f0b34378be0ff8b5"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_auth.py",
+      "subject_blob": "93a46aa8820a1d2d57a48a9de80420a18b3dcefc",
+      "workflow_execution_blob": "93a46aa8820a1d2d57a48a9de80420a18b3dcefc"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_checks.py",
+      "subject_blob": "7a5829044ac1f3649391156bc8145ba967072ce5",
+      "workflow_execution_blob": "7a5829044ac1f3649391156bc8145ba967072ce5"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_child.py",
+      "subject_blob": "e5d06fed89e334f803bbfa95928540d5ba2f7e40",
+      "workflow_execution_blob": "e5d06fed89e334f803bbfa95928540d5ba2f7e40"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_ci_receipt.py",
+      "subject_blob": "0b1c872905ab261cb4ea17fa0c4dac480f5cd20a",
+      "workflow_execution_blob": "0b1c872905ab261cb4ea17fa0c4dac480f5cd20a"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_counterfactual.py",
+      "subject_blob": "bf431ce78218590445458721d9b6371f4614f93d",
+      "workflow_execution_blob": "bf431ce78218590445458721d9b6371f4614f93d"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_derive.py",
+      "subject_blob": "fc1831e9c74ef7671ff2b7e40c0da7e003345ad9",
+      "workflow_execution_blob": "fc1831e9c74ef7671ff2b7e40c0da7e003345ad9"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_evidence_identity.py",
+      "subject_blob": "e6a4d589be4798dc069bb7de5281fa5c288dd582",
+      "workflow_execution_blob": "e6a4d589be4798dc069bb7de5281fa5c288dd582"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_execution_coverage.py",
+      "subject_blob": "5fd082e54478cbcdb078ba0447f37cae35e1aec0",
+      "workflow_execution_blob": "5fd082e54478cbcdb078ba0447f37cae35e1aec0"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_git.py",
+      "subject_blob": "20a970d83d73ef0a25a99d5d2a37d2fd7ff2c286",
+      "workflow_execution_blob": "20a970d83d73ef0a25a99d5d2a37d2fd7ff2c286"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_runner.py",
+      "subject_blob": "e26ee8e29751f245796b723682836d985dd2aceb",
+      "workflow_execution_blob": "e26ee8e29751f245796b723682836d985dd2aceb"
+    },
+    {
+      "path": "implementation/tools/integration/track_c_fpia_workflows.py",
+      "subject_blob": "c3195cd38ebd4a01b2eb74c3ba590ca9da0eb7db",
+      "workflow_execution_blob": "c3195cd38ebd4a01b2eb74c3ba590ca9da0eb7db"
+    }
+  ],
+  "manifest_complete_for_selected_integration_tool_directory": true,
+  "manifest_claim": "Git blob identity only; not transitive/external closure or independent authorization",
+  "selected_path_blob_equality": true,
+  "reuse": {
+    "raw_fpia_receipt_ref": "implementation/docs/coordination/evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
+    "raw_result": {
+      "fpia": "FPIA_PASS",
+      "authority": "PASS",
+      "code_identity": "CODE_IDENTITY_DIVERGED",
+      "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+      "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+      "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+      "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+      "v2_binding": "PASS",
+      "full_regression": "PASS",
+      "dynamic_invocation_detection": "NOT_CLAIMED",
+      "out_of_tree_code_analysis": "NOT_ANALYSED"
+    },
+    "raw_tests": "Historical exact-subject evidence reused; no repeated runtime tests / CI dispatch",
+    "tier1": "skipped",
+    "tier2": "skipped"
+  },
+  "unverified_external_dependencies": [
+    "actions/checkout@v4",
+    "actions/setup-python@v5",
+    "actions/upload-artifact@v4",
+    "ubuntu-latest runner image",
+    "Python 3.11 runtime artifact",
+    "pytest==9.1.1 artifact",
+    "numpy==2.3.5 artifact",
+    "Transitive installed wheels iniconfig/packaging/pluggy/pygments; actual forced Node24 runtime"
+  ],
+  "independent_review_receipts": 0,
+  "required_next_action": [
+    "Independent reviewer evaluates this exact source manifest against original failure/counterexample history and CDR-014; acceptance is exact revision-specific, not all ancestors.",
+    "Bind an independently authorized verifier+launcher manifest to a separate immutable authority record and externally anchored execution receipt; job label and hash consistency alone do not authenticate.",
+    "Resolve/prove isolation of acceptance-relevant dynamic/transitive/descendant/external paths; preserve NOT_CLAIMED/NOT_ANALYSED while missing.",
+    "Review historical self-placement exemptions and unowned importers; no PR/path allowlist.",
+    "Consume exact independently launched runtime/output provenance and GIE receipt; actual assembled Chart merge-result remains separate."
+  ],
+  "integration_acceptance": "BLOCKED",
+  "actual_chart_merge_result": "NOT_RUN",
+  "rerun": false,
+  "canonical_merge": false,
+  "new_d3_r": false,
+  "governance_gate_closed": false,
+  "fresh_job_log_observations": {
+    "job_id": 111679955410,
+    "source": [
+      "2026-10-05T09:23:17.0517541Z   FPIA_WORKFLOW_SHA: 84792523ec131a0ff01c4185e85c89fd9cab8649",
+      "2026-10-05T09:23:17.0518111Z   FPIA_WORKFLOW_REF: kco994553-star/Investment-System1/.github/workflows/track-c-fpia.yml@refs/pull/47/merge",
+      "2026-10-05T09:23:17.0519061Z   FPIA_SUBJECT_SHA: 7215a9f60ad7128b1748f405051eac684298614f",
+      "2026-10-05T09:23:18.7436645Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/"
+    ],
+    "python": "CPython 3.11.16",
+    "installed_packages": [
+      "iniconfig-2.3.0",
+      "numpy-2.3.5",
+      "packaging-26.3",
+      "pluggy-1.6.0",
+      "pygments-2.21.0",
+      "pytest-9.1.1"
+    ],
+    "actual_actions_node_runtime": "FORCED_NODE_24_REPORTED_BY_RUNNER",
+    "authority": "OBSERVATION_NOT_INDEPENDENT_ACCEPTANCE"
+  }
+}

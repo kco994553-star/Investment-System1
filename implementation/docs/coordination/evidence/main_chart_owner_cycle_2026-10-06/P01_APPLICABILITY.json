@@ -1,0 +1,16 @@
+{
+  "schema": "main-p01-target-applicability-intake-v1",
+  "cycle_id": "main-chart-owner-20261006T093820Z",
+  "gate": "A-G1",
+  "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+  "branch": "feature/p01-research-publication-v1",
+  "original_request_id": 5988265306,
+  "owner_receipt": "NOT_RECEIVED",
+  "current_target_success_route": "NOT_EVIDENCED",
+  "existing_qgv_specific_binding": "NOT_ASSUMED_APPLICABLE",
+  "diagnostic_owner_interface_blob": "6a0bdf8b4483c7403ebc5f1a6dd9f60f356113c3",
+  "required_return": "A/B/C disposition with exact existing policy + admitted subject/read route, clock/invalidation/denial and minimum contract when B/C; no grant issuance",
+  "new_policy": false,
+  "source_admission": false,
+  "gate_closed": false
+}

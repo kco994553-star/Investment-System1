@@ -1,0 +1,44 @@
+{
+  "schema": "main-chart-minimum-write-set-reconfirmation-v1",
+  "cycle_id": "main-chart-owner-20261006T093820Z",
+  "authority": "CDR-027 / CDR-024; existing MAIN-CHART-AG2-INTEGRATION-20261005 reused",
+  "gate": "A-G2",
+  "state": "PARTIALLY_RESOLVED",
+  "integration_planning": "ACCEPTED_BOUNDED_3_ORDINARY_ASSETS",
+  "exact_base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+  "source_branch": "integration/cdr012-successor-trial-2026-10-04",
+  "prospective_candidate_branch": "integration/chart-target-theme-candidate-v1",
+  "candidate_branch_created": false,
+  "paths": [
+    "implementation/src/investment_system/product/web_assets/target-theme.html",
+    "implementation/src/investment_system/product/web_assets/target-theme-chart.js",
+    "implementation/src/investment_system/product/web_assets/target-theme.css"
+  ],
+  "actual_writer_lease": "NO_IMPLEMENTATION_LEASE_ACQUIRED",
+  "source_service": "UNRESOLVED_OWNER_INPUT",
+  "python_code_hash_change": false,
+  "p01_protected_digest_change": false,
+  "existing_web_source_change": false,
+  "consumer_rules": [
+    "One persisted owner-authorized payload; no browser financial aggregation",
+    "TARGET and ACTUAL remain separate; no actual_weight fallback",
+    "Denial/unresolved clears cached renderable allocation",
+    "Lossless lexical Decimal"
+  ],
+  "missing": [
+    "Source/P01 authority receipt",
+    "Web owner accepting role/session branch+per-file writer and lease",
+    "Chart acceptance of exact minimum source/API route",
+    "Fresh assembled-subject FPIA / governance"
+  ],
+  "product_gate_closed": false,
+  "original_request": {
+    "pr": 36,
+    "comment_id": 5988265604
+  },
+  "web_head": "fb086eac4321140493ce554a541343cebbb81ed6",
+  "new_return": false,
+  "next_action": "Web returns exact per-file acceptance of this bounded three-asset route or explicit gaps; no protected Web code edits.",
+  "paths_absent_on_exact_base": true,
+  "exact_base_tree": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66"
+}
