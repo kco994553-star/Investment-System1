@@ -1,6 +1,6 @@
 # Decision Package — Free Cloud Bounded Write Grant v1
 
-Status: D3-R USER DECISION REQUIRED
+Status: D3-R USER APPROVED — NARROW CANARY ONLY
 Authority: CDR-024 / Autonomous Execution & Decision Authority SSoT v1.1
 Context: PR #55, #56, #57 are merged; controller, bounded executor canary and write-scope contract all passed exact-head CI.
 
@@ -49,3 +49,8 @@ After approval:
 - APPROVE: allow the narrow write canary above.
 - REJECT: remain read-only; free cloud automation stops at deterministic control-plane.
 - MODIFY: specify a narrower branch/path or additional guard.
+
+
+## Decision outcome
+
+User approved the recommended narrow canary on 2026-10-06. Exact receipt: `implementation/docs/coordination/evidence/free_cloud_write_grant_2026-10-06/DECISION_RECEIPT.md`. No broader authority is inferred.
