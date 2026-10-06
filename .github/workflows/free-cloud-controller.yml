@@ -2,6 +2,12 @@ name: free-cloud-controller
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "implementation/docs/coordination/governance/**"
+      - "implementation/tools/free_cloud_controller.py"
+      - "implementation/tests/test_free_cloud_controller.py"
+      - ".github/workflows/free-cloud-controller.yml"
   push:
     branches:
       - integration/global-handoff-v1
