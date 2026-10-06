@@ -25,12 +25,12 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "RUN_USER_OBSERVED_BOUNDED_CHART_COORDINATION",
+  "execution_state": "WAIT_DEPENDENCY_BOUNDED_CYCLE_COMPLETE_READ_ONLY",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "0e348f60195abadc51bc586db9251497f20539aa",
     "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
-    "chart": "cda174542f1a1ae95345726f308c24b60262c03b",
+    "chart": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
     "qgv_missing": "4fb08a05728d83519b72a2bd995669f0cb06003a",
     "qgv_reconciliation": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
@@ -42,7 +42,7 @@
     "qgv_pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
     "execution_coverage": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
     "fpia_proposal": "7215a9f60ad7128b1748f405051eac684298614f",
-    "global_publication_parent": "aaedbed36c30411195679eaddc06ad7e4d2ff9e5",
+    "global_publication_parent": "2cda490a93bd2c093ff07557af4fe748964c20c1",
     "authority_proposal": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
     "global_merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
     "authority_sync_merge": "18e79a9a320b2a7b21a9fa2daad95d4e5d6eb5b3",
@@ -73,20 +73,7 @@
     "unattended_executor": "DISABLED_PENDING_GATE_A"
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": {
-    "lane_id": "Main-Chart-six-gate-coordination",
-    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "cycle_id": "main-chart-owner-20261006T093820Z",
-    "target_branch": "integration/global-handoff-v1",
-    "acquired_at_utc": "2026-10-06T09:38:20Z",
-    "expires_at_utc": "2026-10-06T11:38:20Z",
-    "ttl_seconds": 7200,
-    "write_set": [
-      "implementation/docs/coordination/**"
-    ],
-    "authorization": "CDR-027 explicit observed-session user directive",
-    "unattended_executor": false
-  },
+  "lease": null,
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -166,7 +153,11 @@
     5990706291,
     5991430617,
     5991476557,
-    5991485958
+    5991485958,
+    6013644499,
+    6013645018,
+    6013644202,
+    6013643886
   ],
   "pending_ci": [],
   "next_runnable_backlog": [],
@@ -197,11 +188,7 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": {
-    "cycle_id": "main-chart-owner-20261006T093820Z",
-    "tasks_max": 5,
-    "repair_max": 3
-  },
+  "active_scoped_execution": null,
   "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
   "last_checkpoint_at_utc": "2026-10-05T10:12:00Z",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
@@ -475,5 +462,47 @@
     "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
     "hard_guard_blob": "1018ff50fc8e624be3b1c9ab403337a4dfc9bb02",
     "pending_d3_blob": "a556817d4819ed2ec06823a7721927f6f330b975"
-  }
+  },
+  "last_bounded_cycle": {
+    "cycle_id": "main-chart-owner-20261006T093820Z",
+    "authority": "CDR-027 / CDR-024",
+    "packet_head": "2cda490a93bd2c093ff07557af4fe748964c20c1",
+    "recorded_at_utc": "2026-10-06T09:49:45.650Z",
+    "tasks_used": 5,
+    "tasks_max": 5,
+    "repair_rounds": {},
+    "source_issue": 54,
+    "owner_returns_received": 0,
+    "source_owners_assigned": 0,
+    "production_gates_closed": 0,
+    "remaining_production_gates": 6,
+    "end_mode": "READ_ONLY",
+    "unattended_enabled": false
+  },
+  "lease_history": [
+    {
+      "lane_id": "Main-Chart-six-gate-coordination",
+      "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "cycle_id": "main-chart-owner-20261006T093820Z",
+      "target_branch": "integration/global-handoff-v1",
+      "acquired_at_utc": "2026-10-06T09:38:20Z",
+      "expires_at_utc": "2026-10-06T11:38:20Z",
+      "ttl_seconds": 7200,
+      "write_set": [
+        "implementation/docs/coordination/**"
+      ],
+      "authorization": "CDR-027 explicit observed-session user directive",
+      "unattended_executor": false,
+      "status": "RELEASED_AT_BOUNDARY",
+      "release_recorded_at_utc": "2026-10-06T09:49:45.650Z",
+      "publication_parent": "2cda490a93bd2c093ff07557af4fe748964c20c1",
+      "reason": "Five bounded coordination tasks complete; source/P01/Web/independent-review receipts remain dependencies; user-directed READ_ONLY restore"
+    }
+  ],
+  "resume_dependencies": [
+    "Source owner role/session + branch/write-set claims and authoritative TARGET/Security19/Theme returns via #54",
+    "P01 actual A/B/C source-bound applicability receipt",
+    "Web actual minimum per-file writer acceptance",
+    "Independent exact FPIA candidate verifier/launcher/runtime/coverage/GIE acceptance; actual Chart assembled result after prerequisites"
+  ]
 }

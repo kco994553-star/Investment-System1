@@ -132,3 +132,11 @@ D2CRITICAL under015/016/017/018/021/022. Exact50fa7f49080b3fa3d1808f9745d8f97770
 - **Alignment/protections:** append-only, exact-parent non-force publication, watcher read-only and Gate A fail-closed. No canonical, Holdout, Official/LIVE, production, paid, credential, financial operation, PIT/Frozen/history, QGV-production-semantic or owner-scope grant.
 - **Verification:** three-file diff and blobs revalidated; CDR-024 remains single; 11 gaps/Gate A disabled; D3 = 7 reserved / 1 candidate / 3 dependency / 0 executed.
 - **Rollback:** mutable live state can be superseded by later exact evidence; append-only history is not rewritten.
+
+## PIWD-015 · CDR-027 bounded Chart owner routing and FPIA nomination · 2026-10-06T09:49:45.650Z
+
+D1/D2 under explicit CDR-027 / adopted CDR-024. Preserve6owner gates; source ownership is not inferred from GitHub login or existing frozen contracts. Publish #54 with concrete unclaimed branch/write-set proposals; current P01/Web requests supplemented only with authority/evidence delta. Reconfirm original three-additive-asset Main planning acceptance on fresh exactacaf; no product/source/Web implementation authorization or whole-gate closure.
+
+Nominate exact candidate verifier/workflow manifest33 with fresh actual workflow8479 versus subject7215/job111679955410/artifact11335872268 bindings; byte agreement/CI/observed runtime are distinct from independently accepted trust/external coverage/GIE. Alternative self-trust or invented source facts rejected.0newD3-A;0protectedsemantic decisions.
+
+Verification: scoped schema/nonclaim predicates,19unresolved source rows,33blob equalities,3absentordinarypaths, artifactdigest/run/attempt/head identity, actual runtime-source log,4comment exactbytes/IDs and sourceissue readback. Existing tests/raw evidence reused, nofullaudit/test/rerun. Rollback: later superseding coordination record and ordinary descendant changes; preserve every original receipt/comment/history. Five-taskcycle ends with ownlease release/READ_ONLY restoration, no unattended activation. Actual source-owner claims/Product-Web returns/independent reviewer/runtime/GIE remain dependencies. [Receipt](evidence/main_chart_owner_cycle_2026-10-06/FINAL_RECEIPT.json).

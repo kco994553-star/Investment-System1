@@ -1669,3 +1669,13 @@ Follow-ups:
 - Prohibited: canonical merge, Official/LIVE, Holdout, PIT/no-lookahead relaxation, destructive Frozen/history/evidence, credential/rights expansion, paid resources, trades/orders/funds.
 - Verbatim user directive: [USER_DIRECTIVE.md](evidence/main_chart_owner_cycle_2026-10-06/USER_DIRECTIVE.md).
 - No source owner acceptance, source admission, Product grant or production gate closure is implied by this mode receipt.
+
+## CDR-028 · CDR-027 bounded cycle execution receipt and READ_ONLY restoration
+
+- Recorded 2026-10-06T09:49:45.650Z; D1 execution receipt only, no new authority. User directive and CDR-027 preserved verbatim.
+- Activation Global commit `80c4d823a1062b569a5c3f3655570b67bcd5ed64`; immutable packet `2cda490a93bd2c093ff07557af4fe748964c20c1`; final containing commit resolves from Git metadata, not recursive self-embedding.
+- Five bounded tasks: source-owner claim intake #54; P01 applicability; three-asset Web/Integration reconfirmation; candidate FPIA source/runtime evidence; verification/routing/handoff/control restoration.
+- Four new PR routing comments exact readback verified; source issue exact readback verified. Source owner claims/closing returns0, production gates closed0/remaining6. Proposals and delivery do not establish owner assignment, authority, execution or product acceptance.
+- Current verifier/workflow33 selected blobs agree; run/attempt/job/artifact digest and actual workflow8479/subject7215 observed. Independent acceptance, external coverage, GIE and Chart assembled-subject FPIA remain open.
+- User-directed end-of-cycle restoration to READ_ONLY and release of this Main lease are atomic in the containing publication. No other lease/ref/automation/canonical/production/protected/financial operation changed.
+- [Final receipt](evidence/main_chart_owner_cycle_2026-10-06/FINAL_RECEIPT.json), [handoff](evidence/main_chart_owner_cycle_2026-10-06/HANDOFF.md).

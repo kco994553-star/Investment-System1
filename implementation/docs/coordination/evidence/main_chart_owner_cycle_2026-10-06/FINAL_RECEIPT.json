@@ -1,0 +1,103 @@
+{
+  "schema": "main-bounded-chart-cycle-final-v1",
+  "cycle_id": "main-chart-owner-20261006T093820Z",
+  "authority": "CDR-027 / CDR-024",
+  "recorded_at_utc": "2026-10-06T09:49:45.650Z",
+  "activation_commit": "80c4d823a1062b569a5c3f3655570b67bcd5ed64",
+  "packet_commit": "2cda490a93bd2c093ff07557af4fe748964c20c1",
+  "final_publication_parent": "2cda490a93bd2c093ff07557af4fe748964c20c1",
+  "tasks": [
+    {
+      "id": 1,
+      "task": "Portfolio/Identity/Theme source owner/returns",
+      "result": "SOURCE_OWNER_INTAKE_PUBLISHED",
+      "issue": 54,
+      "owner_claims": 0,
+      "source_owners": "OWNER_UNASSIGNED",
+      "admitted_target": null,
+      "security_map_admitted": 0,
+      "theme_adopted": false,
+      "state": "WAIT_DEPENDENCY"
+    },
+    {
+      "id": 2,
+      "task": "P01 TARGET applicability",
+      "comment_id": 6013644202,
+      "owner_receipt": false,
+      "state": "WAIT_DEPENDENCY"
+    },
+    {
+      "id": 3,
+      "task": "Web/Integration minimum write set",
+      "comment_id": 6013644499,
+      "main_planning_acceptance": "RECONFIRMED_3_ADDITIVE_ASSETS",
+      "affected_owner_acceptance": false,
+      "state": "WAIT_DEPENDENCY"
+    },
+    {
+      "id": 4,
+      "task": "FPIA governance candidate evidence",
+      "comment_id": 6013645018,
+      "source_blob_bindings": 33,
+      "fresh_runtime_sha_observed": true,
+      "artifact_identity_verified": true,
+      "independent_trust": "NOT_ACCEPTED",
+      "runtime_external_coverage": "OPEN",
+      "gie": "OPEN",
+      "actual_chart_merge_result": "NOT_RUN",
+      "state": "WAIT_DEPENDENCY"
+    },
+    {
+      "id": 5,
+      "task": "Verify routing, reconcile handoff, restore READ_ONLY/release own lease",
+      "state": "COMPLETED_BY_CONTAINING_ATOMIC_PUBLICATION",
+      "verified_comment_ids": [
+        6013644499,
+        6013645018,
+        6013644202,
+        6013643886
+      ]
+    }
+  ],
+  "tasks_used": 5,
+  "repair_rounds": {},
+  "metadata_verification": "PASS_SCOPED_METADATA_AND_BYTE_READBACK",
+  "packet_sha256": {
+    "VERIFICATION.json": "e6d8c6bc58179f1c972943db3d9546992b65dbe639b3dcbdcf09a4b893e9c737",
+    "DELIVERY_RECEIPT.json": "af4f12a868215ec19bd072129983c2225d971daf302540e63bd0ef0815f34c4c",
+    "SOURCE_OWNER_INTAKE.json": "70439db9490747ab9a7d38b1e9d7b08c9a27d3c776414fb60f4a901df3bbb6de",
+    "P01_APPLICABILITY.json": "e7336137fef7d7794dec1f199c0aa15524e604ce26f4ef6d0b431a4379613d29",
+    "FPIA_CANDIDATE_MANIFEST.json": "2d7d6050e172f6a11b5eaa9914d5206a9d76e3605d4de1deddbe5a87a0723bde",
+    "OWNER_RETURN_CONTRACT.md": "a8aa8f50d7ab3173c3668b6da0f3670499596fcb55dcd16be12b94fbba969547",
+    "INTEGRATION_WRITE_SET_RECEIPT.json": "614016c21824df177b1d6d23652153626576d56b08d5906eec8c704a3029e6f9"
+  },
+  "comment_body_sha256": {
+    "17": "7ba99c1402446593931d4dba7de4b348f37ac9c4ff429866378730981ca84e1a",
+    "36": "451fe3123a657bd80b6897bc076b7de8ec5f90eb607877c0cca8b6feb795bb03",
+    "41": "1dd9bde27c6e8c81701ee93ef6fdd2a439c651bf50d2c6d96baa107fef507274",
+    "47": "eee89e6cbb2be0e2dde52815c8cc4d41729ac71d301c927628863d37e41cb5fe"
+  },
+  "source_issue_body_sha256": "7741abf0f9772bbfa1d0ece3802db6b8399949ae1cf33ef150f623286f232470",
+  "owner_returns_received": 0,
+  "source_owners_assigned": 0,
+  "source_admission": false,
+  "remaining_gate_count": 6,
+  "gates_closed": 0,
+  "no_new_d3_r": true,
+  "new_d3_a_executed": 0,
+  "full_audit_or_regression_repeated": false,
+  "ci_dispatch": false,
+  "owner_refs_unchanged": true,
+  "canonical_unchanged": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "end_mode": "READ_ONLY",
+  "lease": null,
+  "watcher_configuration_modified": false,
+  "unattended_executor_enabled": false,
+  "resume_dependencies": [
+    "Source owner role/session + branch/write-set claims and authoritative TARGET/Security19/Theme returns via #54",
+    "P01 actual A/B/C source-bound applicability receipt",
+    "Web actual minimum per-file writer acceptance",
+    "Independent exact FPIA candidate verifier/launcher/runtime/coverage/GIE acceptance; actual Chart assembled result after prerequisites"
+  ],
+  "limits": "Source intake proposals are not receiving owner claims. Delivery not receipt, execution or gate closure. No source IDs/time/grant/trust synthesized."
+}

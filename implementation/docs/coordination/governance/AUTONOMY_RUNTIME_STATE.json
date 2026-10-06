@@ -1,13 +1,20 @@
 {
   "schema": "autonomy-runtime-state-v1",
-  "cycle_id": "main-chart-owner-20261006T093820Z",
-  "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
-  "branch": "integration/global-handoff-v1",
-  "started_at_epoch": 1791279500,
-  "lease_expires_at_epoch": 1791286700,
+  "cycle_id": null,
+  "holder": null,
+  "branch": null,
+  "started_at_epoch": null,
+  "lease_expires_at_epoch": null,
   "tasks_used": 0,
   "repair_rounds": {},
-  "status": "RUNNING_USER_OBSERVED",
-  "activation": "BOUNDED_USER_SESSION_ONLY",
-  "unattended_executor": false
+  "status": "IDLE",
+  "activation": "READ_ONLY_AFTER_USER_BOUNDED_SESSION",
+  "unattended_executor": false,
+  "last_cycle": {
+    "cycle_id": "main-chart-owner-20261006T093820Z",
+    "tasks_used": 5,
+    "packet_head": "2cda490a93bd2c093ff07557af4fe748964c20c1",
+    "end_reason": "TASK_CAP_AND_WAIT_DEPENDENCIES",
+    "unattended": false
+  }
 }

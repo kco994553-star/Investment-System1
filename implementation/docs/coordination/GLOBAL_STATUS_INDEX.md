@@ -4,13 +4,17 @@ Routing/index only. This file is not a calculation, policy, approval or publicat
 
 | Field | Value |
 |---|---|
-| Index revision | GSI-034 (Autonomous Governance v1.1 adopted; Gate A gaps registered; D3 reclassification started) |
-| Recorded | 2026-10-05; exact publication parent `0e55e464c34b33dab096be524745eb62bccabefa` |
+| Index revision | GSI-035 (CDR-027 bounded Chart owner cycle complete; READ_ONLY restored) |
+| Recorded | 2026-10-06T09:49:45.650Z; exact publication parent `2cda490a93bd2c093ff07557af4fe748964c20c1` |
 | Writer | GPT Work `gpt-work-main-2026-10-05-3a80dcef6444`; CDR-018 |
 | Live location | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` |
 | Canonical | `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca` (= `origin/HEAD`; unchanged since 2026-09-28) |
 | Operating contract | `CLAUDE_CODE_WORKER_CONTRACT_v1.0` at PR #21 exact HEAD `f1b5afb` is the operational routing SSoT (CDR-001). PR #20 is SUPERSEDED_DUPLICATE (not merged, retained) |
 
+
+## Current bounded Chart coordination · GSI-035
+
+CDR-027/028, five tasks; READ_ONLY/Mainlease null. Source-owner intake#54 and4PR deliveries verified; ownerclaim/closingreturn0. Main threeassetplanning reconfirmed; FPIAcandidate33sourcebindings/runtime observed, trust/coverage/GIE open. Chart exact2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9;6OPEN/0CLOSED,Market0/19. Scope receipt: `evidence/main_chart_owner_cycle_2026-10-06/FINAL_RECEIPT.json`. No unattended or production approval.
 
 ## Current authority delta · GSI-034 · 2026-10-05
 

@@ -92,7 +92,19 @@
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
       "production_gate": "OPEN",
-      "request_status": "BLOCKED"
+      "request_status": "BLOCKED",
+      "latest_source_owner_intake": {
+        "cycle_id": "main-chart-owner-20261006T093820Z",
+        "issue": 54,
+        "issue_body_sha256": "7741abf0f9772bbfa1d0ece3802db6b8399949ae1cf33ef150f623286f232470",
+        "contract": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/SOURCE_OWNER_INTAKE.json",
+        "contract_sha256": "70439db9490747ab9a7d38b1e9d7b08c9a27d3c776414fb60f4a901df3bbb6de",
+        "status": "INTAKE_PUBLISHED_SOURCE_OWNER_UNASSIGNED",
+        "owner_claim_received": false,
+        "source_branch": null,
+        "source_write_set": null
+      },
+      "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9"
     },
     {
       "id": "MAIN-CHART-A-S2-20261005",
@@ -123,7 +135,19 @@
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
       "production_gate": "OPEN",
-      "request_status": "BLOCKED"
+      "request_status": "BLOCKED",
+      "latest_source_owner_intake": {
+        "cycle_id": "main-chart-owner-20261006T093820Z",
+        "issue": 54,
+        "issue_body_sha256": "7741abf0f9772bbfa1d0ece3802db6b8399949ae1cf33ef150f623286f232470",
+        "contract": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/SOURCE_OWNER_INTAKE.json",
+        "contract_sha256": "70439db9490747ab9a7d38b1e9d7b08c9a27d3c776414fb60f4a901df3bbb6de",
+        "status": "INTAKE_PUBLISHED_SOURCE_OWNER_UNASSIGNED",
+        "owner_claim_received": false,
+        "source_branch": null,
+        "source_write_set": null
+      },
+      "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9"
     },
     {
       "id": "MAIN-CHART-A-S3-20261005",
@@ -155,7 +179,19 @@
       "state": "FOUND",
       "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
       "production_gate": "OPEN",
-      "request_status": "BLOCKED"
+      "request_status": "BLOCKED",
+      "latest_source_owner_intake": {
+        "cycle_id": "main-chart-owner-20261006T093820Z",
+        "issue": 54,
+        "issue_body_sha256": "7741abf0f9772bbfa1d0ece3802db6b8399949ae1cf33ef150f623286f232470",
+        "contract": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/SOURCE_OWNER_INTAKE.json",
+        "contract_sha256": "70439db9490747ab9a7d38b1e9d7b08c9a27d3c776414fb60f4a901df3bbb6de",
+        "status": "INTAKE_PUBLISHED_SOURCE_OWNER_UNASSIGNED",
+        "owner_claim_received": false,
+        "source_branch": null,
+        "source_write_set": null
+      },
+      "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9"
     },
     {
       "id": "MAIN-CHART-A-G1-20261005",
@@ -190,7 +226,19 @@
       "production_gate": "OPEN",
       "delivery_comment_id": 5988265306,
       "delivery_body_sha256": "219c87643e46bf46a2bcaa48453958a64f49347188f217cbb19e8f7f281b2971",
-      "request_status": "SENT"
+      "request_status": "SENT",
+      "delivery_history": [
+        {
+          "cycle_id": "main-chart-owner-20261006T093820Z",
+          "comment_id": 6013644202,
+          "body_sha256": "7ba99c1402446593931d4dba7de4b348f37ac9c4ff429866378730981ca84e1a",
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/17#issuecomment-6013644202",
+          "byte_readback_verified": true,
+          "receipt_received": false
+        }
+      ],
+      "latest_packet": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/P01_APPLICABILITY.json",
+      "latest_source_head": "21039a0a7f9677b123abd8587fd8d89784a73a3c"
     },
     {
       "id": "MAIN-CHART-A-G2-20261005",
@@ -227,7 +275,25 @@
       "integration_side_status": "ADOPTED_CONDITIONAL_PLANNING_ONLY",
       "delivery_comment_id": 5988265604,
       "delivery_body_sha256": "bdbb491a262fdbda87b1e0258a1381adbf0158ee4808ecce62cf45319fa8e2b1",
-      "request_status": "SENT"
+      "request_status": "SENT",
+      "delivery_history": [
+        {
+          "cycle_id": "main-chart-owner-20261006T093820Z",
+          "comment_id": 6013644499,
+          "body_sha256": "451fe3123a657bd80b6897bc076b7de8ec5f90eb607877c0cca8b6feb795bb03",
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-6013644499",
+          "byte_readback_verified": true,
+          "receipt_received": false
+        }
+      ],
+      "latest_packet": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/INTEGRATION_WRITE_SET_RECEIPT.json",
+      "latest_source_head": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "integration_side_reconfirmation": {
+        "accepted_paths": 3,
+        "exact_base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+        "status": "BOUNDED_PLANNING_RECONFIRMED_NOT_FULL_AG2",
+        "source_web_owner_acceptance": false
+      }
     },
     {
       "id": "MAIN-CHART-A-G3-20261005",
@@ -260,7 +326,18 @@
       "next_action": "CI7/7 and archive/result/verifier byte checks consumed; D001-D006 independent authorization/coverage/applicability and final exact merge-result acceptance still OPEN",
       "production_gate": "OPEN",
       "request_status": "IN_PROGRESS",
-      "ci_terminal": "7/7 SUCCESS exact6fea attempt1"
+      "ci_terminal": "7/7 SUCCESS exact6fea attempt1",
+      "latest_exact_head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "latest_candidate_manifest": {
+        "path": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/FPIA_CANDIDATE_MANIFEST.json",
+        "sha256": "2d7d6050e172f6a11b5eaa9914d5206a9d76e3605d4de1deddbe5a87a0723bde",
+        "selected_blob_bindings": 33,
+        "workflow_sha": "84792523ec131a0ff01c4185e85c89fd9cab8649",
+        "status": "CANDIDATE_NOT_TRUSTED",
+        "independent_authority": "NOT_ACCEPTED",
+        "gie": "OPEN",
+        "chart_merge_result": "NOT_RUN"
+      }
     },
     {
       "id": "MAIN-CHART-B01-20261005",
@@ -1176,6 +1253,40 @@
         "executed": 0
       },
       "next_action": "RD3-03 only after exact semantics pin, rollback and independent §26B PASS; no protected lane auto-executed"
+    },
+    {
+      "id": "MAIN-FPIA-CANDIDATE33-20261006",
+      "state": "ROUTED",
+      "history": [
+        "FOUND",
+        "IN_PROGRESS",
+        "EVIDENCE_READY",
+        "ROUTED"
+      ],
+      "authoritative_owner": "Main candidate evidence; independent accepting verifier/launcher role NOT_ASSIGNED",
+      "source_head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "delivery_comment_id": 6013645018,
+      "delivery_body_sha256": "eee89e6cbb2be0e2dde52815c8cc4d41729ac71d301c927628863d37e41cb5fe",
+      "evidence": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/FPIA_CANDIDATE_MANIFEST.json",
+      "receipt": null,
+      "production_gate_closed": false,
+      "next_action": "Receive independent exact-revision acceptance and runtime/coverage/GIE return. Candidate equality is not trust."
+    },
+    {
+      "id": "MAIN-CHART-CDR027-ROUTING-20261006",
+      "state": "CLOSED",
+      "history": [
+        "FOUND",
+        "RECEIVED",
+        "IN_PROGRESS",
+        "EVIDENCE_READY",
+        "CONSUMED",
+        "CLOSED"
+      ],
+      "scope": "User authority receipt and Main packet publication/delivery only",
+      "evidence": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/DELIVERY_RECEIPT.json",
+      "product_gate_closed": false,
+      "owner_receipts_received": 0
     }
   ],
   "wake_up": "Webhook events are wake-ups only. Under CDR-024/v1.1, watchers are read-only and unattended execution remains disabled until Gate A; exact SSoT evidence controls reconciliation.",
@@ -1236,18 +1347,19 @@
   },
   "verification_policy": "CDR-021 / main_convergence EXECUTION_POLICY.md",
   "chart_gate_rejudgement": {
-    "head": "8fc47b0a3c9a262718b706519d6d91a051629636",
+    "head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
     "CLOSED": 0,
     "total": 6,
     "gates": {
-      "A-S1": "BLOCKED",
-      "A-S2": "BLOCKED",
-      "A-S3": "BLOCKED",
+      "A-S1": "OWNER_UNASSIGNED",
+      "A-S2": "OWNER_UNASSIGNED",
+      "A-S3": "OWNER_UNASSIGNED",
       "A-G1": "OWNER_ACTION_PENDING",
-      "A-G2": "OWNER_ACTION_PENDING",
-      "A-G3": "OPEN"
+      "A-G2": "PARTIALLY_RESOLVED",
+      "A-G3": "PARTIALLY_RESOLVED"
     },
-    "reasons": "S1/S2/S3 authoritative owners unassigned;G1 applicability/readroute absent;G2 conditional planning only;G3 FPIA technical/governance unfinished"
+    "evidence": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/FINAL_RECEIPT.json",
+    "reason": "No actual source owner claim/admitted return, Product/Web return or independent trust/governance acceptance received."
   },
   "qgv_delta": {
     "head": "dc2dce6d538d4d66b71f98b59dc47b873312f7d9",
@@ -1294,11 +1406,11 @@
   },
   "chart_current_lease": {
     "status": "NONE",
-    "last_run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
-    "released_after_verified_publication": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
-    "released_at_utc": "2026-10-05T09:18:52.550Z",
-    "reason": "Verified scoped reference repair complete; no lease held for exactCI/ownerdependency",
-    "release_commit_note": "Current containingHEAD resolved via Git"
+    "last_run_id": "manual-chart-terminal-policy-2026-10-05T104549543Z",
+    "released_after_verified_publication": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+    "released_at_utc": "2026-10-05T10:56:45.810Z",
+    "reason": "Observed-session terminal/policy publication verified; no READY task remains; production owner dependencies not held under lease",
+    "release_commit_note": "Containing final HEAD resolved via Git metadata"
   },
   "chart_v013_return": {
     "schema": "main-chart-v013-return-consumption-v1",
@@ -1510,5 +1622,55 @@
     },
     "watcher": "READ_ONLY",
     "unattended_executor": "DISABLED_PENDING_GATE_A"
-  }
+  },
+  "last_bounded_cycle": {
+    "cycle_id": "main-chart-owner-20261006T093820Z",
+    "authority": "CDR-027 / CDR-024",
+    "packet_head": "2cda490a93bd2c093ff07557af4fe748964c20c1",
+    "recorded_at_utc": "2026-10-06T09:49:45.650Z",
+    "tasks_used": 5,
+    "tasks_max": 5,
+    "repair_rounds": {},
+    "source_issue": 54,
+    "owner_returns_received": 0,
+    "source_owners_assigned": 0,
+    "production_gates_closed": 0,
+    "remaining_production_gates": 6,
+    "end_mode": "READ_ONLY",
+    "unattended_enabled": false
+  },
+  "bounded_cycle_comment_inventory": [
+    {
+      "pr": 36,
+      "id": 6013644499,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-6013644499",
+      "body_sha256": "451fe3123a657bd80b6897bc076b7de8ec5f90eb607877c0cca8b6feb795bb03",
+      "cycle_id": "main-chart-owner-20261006T093820Z",
+      "role": "MAIN_ROUTING_NOT_OWNER_RETURN"
+    },
+    {
+      "pr": 47,
+      "id": 6013645018,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/47#issuecomment-6013645018",
+      "body_sha256": "eee89e6cbb2be0e2dde52815c8cc4d41729ac71d301c927628863d37e41cb5fe",
+      "cycle_id": "main-chart-owner-20261006T093820Z",
+      "role": "MAIN_ROUTING_NOT_OWNER_RETURN"
+    },
+    {
+      "pr": 17,
+      "id": 6013644202,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/17#issuecomment-6013644202",
+      "body_sha256": "7ba99c1402446593931d4dba7de4b348f37ac9c4ff429866378730981ca84e1a",
+      "cycle_id": "main-chart-owner-20261006T093820Z",
+      "role": "MAIN_ROUTING_NOT_OWNER_RETURN"
+    },
+    {
+      "pr": 41,
+      "id": 6013643886,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/41#issuecomment-6013643886",
+      "body_sha256": "1dd9bde27c6e8c81701ee93ef6fdd2a439c651bf50d2c6d96baa107fef507274",
+      "cycle_id": "main-chart-owner-20261006T093820Z",
+      "role": "MAIN_ROUTING_NOT_OWNER_RETURN"
+    }
+  ]
 }
