@@ -1687,3 +1687,18 @@ Follow-ups:
 - On the user's behalf, READ_ONLY→RUN is authorized for this one observed Main cycle only; restore READ_ONLY at completion/task cap/WAIT/D3-R/tool blocker. This is the same narrow §4A exception pattern as CDR-027, with a new explicit session decision; CDR-027/028 are not reused as current permission.
 - Maximum five tasks; own lease TTL two hours; same-failure repair maximum three; no stale recovery. Recheck mode and exact parent before each publish. Unattended executor false; Gate A unchanged.
 - Authorized next cycle: Single-Control adoption, eligible evidence-owner/write-set assignment, operational-return consumption, inactive Phase A contracts, scoped verification/evidence/handoff. No protected/canonical/production/scoring/financial/Holdout/paid permission is created.
+
+
+## CDR-030 · Main Single-Control Execution Policy v1.0 adoption
+
+- Status: USER_OPERATIONAL_DECISION_ADOPTED, history-preserving; original [directive](evidence/main_single_control_cycle_2026-10-07/SINGLE_CONTROL_USER_DIRECTIVE.md) retained. [Policy](policies/Investment-System1_Main_Single_Control_Execution_Policy_v1_0.md), [ten scoped reconciliations](evidence/main_single_control_cycle_2026-10-07/SINGLE_CONTROL_RECONCILIATION.json).
+- Main is the one observed-session control point. Specialist evidence is reused. Main may directly assign/claim eligible free bounded D1/D2/D3-A tasks; specialist-chat inactivity is not a dependency. Prior routing-only restrictions are superseded only in that exact scope.
+- Existing owner branches/contracts/evidence and leases are preserved; QGV qgv-b47-muupb538 expiry=null is not cleared. Evidence-preparation owner assignment does not create TARGET currentness, Security admission, Theme source authority, Product grant, independent trust or production gate closure.
+- CDR-024 protections and D3-A proof remain controlling. This policy grants no AUTONOMY_MODE change or Gate A passage; CDR-029 is separate session authority.
+
+
+## CDR-031 · New user Company Analysis product design intake / inactive Phase A contract
+
+- “QGV Company Analysis UI/UX Extension v1.1” + “Historical Price Context Contract v1.0” accepted as authoritative user product-design input; [structured input](../company_analysis_extension_v1_1/USER_DESIGN_INPUT.json), [Phase A contract](../company_analysis_extension_v1_1/CONTRACT.md), [field contract](../company_analysis_extension_v1_1/FIELD_CONTRACT.json).
+- D1 inactive docs-only contract. Preserve three independent classification axes, source/versioned existing Type profiles, same-basis price context, completed-full-period/Flat/QTD/YTD/partial rules, raw-score separation and Overview→Detail→Evidence navigation.
+- User candidate drawdown numbers remain inactive display-reference candidates; no episode/peer/scoring/weight/default/cutoff activation. Existing critical paths/evidence/owner leases preserved. No new D3-A execution or runtime/production acceptance is claimed.

@@ -1,0 +1,83 @@
+{
+  "schema": "main-single-control-scoped-reconciliation-v1",
+  "global_input": "648e86871f91c81f37f67d8c6a7a939b8f18f094",
+  "user_explicit_decision": true,
+  "record_published": true,
+  "mode_changed": false,
+  "gate_A_changed": false,
+  "conflicts": [
+    {
+      "id": "SC-01",
+      "prior": "CDR-017: specialist Works continue separately; Main routes instead of duplicate implementation",
+      "resolution": "USER_SUPERSEDED_IN_EXACT_SCOPE",
+      "scope": "Manual control / eligible unowned or inactive bounded execution only",
+      "rule": "Main is sole user-observed execution entry point; specialist chat wake is not a dependency. Preserve independent evidence and actual active owners."
+    },
+    {
+      "id": "SC-02",
+      "prior": "CDR-016 routing-only and Global owner_assignment_procedure requiring external owner claim",
+      "resolution": "USER_SUPERSEDED_IN_EXACT_SCOPE",
+      "scope": "OWNER_UNASSIGNED tasks without active writer/lease or protected contract impact",
+      "rule": "Under RUN, Main may assign itself a bounded source/evidence role with exact new branch/write-set and CAS claim. Assignment does not admit TARGET/Security/Theme facts."
+    },
+    {
+      "id": "SC-03",
+      "prior": "CDR-018 coordination-only; MAIN_TAKEOVER_STATE excludes other owner branches",
+      "resolution": "NARROW_USER_OVERRIDE",
+      "scope": "New bounded Main-assigned non-protected lanes",
+      "rule": "No wholesale branch transfer; no existing active lease recovery; old owner branches and write-set contracts remain protected. Runtime absence cannot be inferred from role transfer."
+    },
+    {
+      "id": "SC-04",
+      "prior": "CDR-024 §30: Main does not directly implement all subsystems",
+      "resolution": "NARROW_USER_OVERRIDE",
+      "scope": "Eligible bounded D1/D2/D3-A execution",
+      "rule": "Main may directly implement individual free tasks; retain specialist evidence and avoid repeating completed audited work."
+    },
+    {
+      "id": "SC-05",
+      "prior": "CDR-024 §§4A,16A Kill Switch; PART G Gate A; CDR-027 one-cycle RUN expired at CDR-028",
+      "resolution": "UNCHANGED_CONTROLLING",
+      "scope": "All mutation / unattended activation",
+      "rule": "Fresh READ_ONLY permits queries/reports only. This policy explicitly does not change mode or satisfy Gate A. No lease, commit, comment, ref, CI dispatch or live SSoT publication here."
+    },
+    {
+      "id": "SC-06",
+      "prior": "CDR-024 §§18A,26A,26B,26D,26F critical closure / Cross-Work / independence",
+      "resolution": "UNCHANGED_CONTROLLING",
+      "scope": "CRITICAL/D3-A decisions",
+      "rule": "Reuse independent evidence only at matching exact decision/input/scope. Main cannot self-certify a new decision. Cross-Work decision proposed by Main still needs coordination by another affected Work owner. Missing verification artifact is a factual dependency; unclear SSoT/semantics is D3-R."
+    },
+    {
+      "id": "SC-07",
+      "prior": "CDR-024 §23 reserved scopes exceed shorthand D3-R list",
+      "resolution": "INTERPRET_WITH_USER_PRESERVATION_CLAUSE",
+      "scope": "Unknown alignment, protected contracts, production exposure/deployment, irreversible migration, scoring semantics",
+      "rule": "The user retains v1.1 and forbids execution when D3-A cannot be proven. No omitted category is silently auto-approved. Preserve v1.1 reserved/independence checks."
+    },
+    {
+      "id": "SC-08",
+      "prior": "Existing lease expiry=null; missing-data handoff says released but actual STATE is held",
+      "resolution": "CONFLICTING_KEEP_ACTUAL_HELD",
+      "scope": "QGV Missing-Data qgv-b47-muupb538",
+      "rule": "Preserve token and owner, do not backdate TTL or clear it. The prospective two-hour rule does not cancel an existing null-expiry lease."
+    },
+    {
+      "id": "SC-09",
+      "prior": "Main Global snapshot still pins earlier QGV/Platform audit heads and old hard-guard summaries",
+      "resolution": "STALE_SELECTORS_IDENTIFIED",
+      "scope": "Read-only intake of current returns",
+      "rule": "Current QGV d1566 / Platform 3d997 and current guard register win for their scope; prepare later ledger/state receipts under RUN. Do not recredit prior closures."
+    },
+    {
+      "id": "SC-10",
+      "prior": "CDR-027 source issue #54 proposes three evidence branches",
+      "resolution": "HISTORICAL_UNCLAIMED_PROPOSALS",
+      "scope": "Portfolio/Identity/Theme",
+      "rule": "No assignee/comment/claim at fresh #54. Main may claim eligible evidence work under RUN; actual authoritative root/security admission/theme adoption still require concrete provenance. No invented dates, IDs, weights or grants."
+    }
+  ],
+  "publication_note": "Adopted by CDR-030 in containing exact Global commit; original local proposal retained outside repository. Historical source pins remain historical.",
+  "mode_changed_by_this_policy": false,
+  "current_mode_grant": "CDR-029"
+}

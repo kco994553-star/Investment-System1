@@ -5,29 +5,18 @@
   "fresh_scope": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global": "087f4c1f2ea54b5a8182aea8cb3b1a0ca5b5aa2b",
-    "chart": "cda174542f1a1ae95345726f308c24b60262c03b",
-    "chart_lease": {
-      "status": "HELD",
-      "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
-      "holder_kind": "CI_FOLLOWUP_AUTOMATION",
-      "acquired_at_utc": "2026-10-05T06:32:43.306Z",
-      "expires_at_utc": "2026-10-05T07:02:43.306Z",
-      "ttl_minutes": 30,
-      "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
-      "verified_remote_acquisition": false,
-      "acquisition_parent_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
-      "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
-      "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
-    },
-    "global_input": "13a15a2df529cbe54a52dcd4430f4bd06d919937",
+    "chart": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+    "chart_lease": null,
+    "global_input": "648e86871f91c81f37f67d8c6a7a939b8f18f094",
     "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
-    "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
-    "qgv_reconciliation": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
-    "platform_specialist": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
+    "fpia_successor": "7215a9f60ad7128b1748f405051eac684298614f",
+    "qgv_reconciliation": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
+    "platform_specialist": "3d997d34df8c76d4739d8bf71878cc12fec555d9",
     "global_publication_parent": "aaedbed36c30411195679eaddc06ad7e4d2ff9e5",
     "authority_proposal": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
     "global_merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
-    "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
+    "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+    "chart_source_evidence": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
   },
   "summary": {
     "lane_a_open": 6,
@@ -69,12 +58,15 @@
       "id": "MAIN-CHART-A-S1-20261005",
       "finding": "A-S1",
       "authoritative_owner": null,
-      "owner_assignment": "OWNER_UNASSIGNED",
+      "owner_assignment": "BOUNDED_MAIN_EVIDENCE_ROLE_ASSIGNED_SOURCE_AUTHORITY_UNVERIFIED",
       "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
       "exact_path_branch_pr": {
-        "branch": null,
-        "head": null,
-        "pr": null
+        "branch": "main/chart-source-evidence-v1",
+        "head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+        "pr": null,
+        "write_set": [
+          "implementation/docs/portfolio_target_owner/**"
+        ]
       },
       "acceptance_criteria": "Owner-admitted current TARGET root+revision: exact19 rows, cash, current applicability, independently evidenced availability, source/hash/use, completeness+denominator.",
       "dependencies": [],
@@ -89,33 +81,39 @@
       "delivered_at": null,
       "receipt": null,
       "last_consumed_revision": null,
-      "state": "FOUND",
-      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "state": "EVIDENCE_READY",
+      "next_action": "Consume reference-only RETURN; acquire missing authoritative source fields before admission; no ticker-generated identity or Theme version",
       "production_gate": "OPEN",
-      "request_status": "BLOCKED",
+      "request_status": "WAIT_SOURCE_AUTHORITY",
       "latest_source_owner_intake": {
-        "cycle_id": "main-chart-owner-20261006T093820Z",
+        "cycle_id": "main-single-control-20261007T104552Z",
         "issue": 54,
-        "issue_body_sha256": "7741abf0f9772bbfa1d0ece3802db6b8399949ae1cf33ef150f623286f232470",
-        "contract": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/SOURCE_OWNER_INTAKE.json",
-        "contract_sha256": "70439db9490747ab9a7d38b1e9d7b08c9a27d3c776414fb60f4a901df3bbb6de",
-        "status": "INTAKE_PUBLISHED_SOURCE_OWNER_UNASSIGNED",
-        "owner_claim_received": false,
-        "source_branch": null,
-        "source_write_set": null
+        "status": "EVIDENCE_ROLE_ASSIGNED_REFERENCE_RETURNED_SOURCE_ADMISSION_UNVERIFIED",
+        "owner_claim_received": true,
+        "source_branch": "main/chart-source-evidence-v1",
+        "source_write_set": [
+          "implementation/docs/portfolio_target_owner/**"
+        ],
+        "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+        "source_authority_admitted": false
       },
-      "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9"
+      "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "evidence_owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "evidence_role": "Portfolio TARGET evidence writer"
     },
     {
       "id": "MAIN-CHART-A-S2-20261005",
       "finding": "A-S2",
       "authoritative_owner": null,
-      "owner_assignment": "OWNER_UNASSIGNED",
+      "owner_assignment": "BOUNDED_MAIN_EVIDENCE_ROLE_ASSIGNED_SOURCE_AUTHORITY_UNVERIFIED",
       "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
       "exact_path_branch_pr": {
-        "branch": null,
-        "head": null,
-        "pr": null
+        "branch": "main/chart-source-evidence-v1",
+        "head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+        "pr": null,
+        "write_set": [
+          "implementation/docs/security_map19_owner/**"
+        ]
       },
       "acceptance_criteria": "Exact19 root-row to reviewed company/issuer/common security mapping, share form, dated provenance/revision, C25/D29 preserved; no ticker-generated identity.",
       "dependencies": [
@@ -132,33 +130,39 @@
       "delivered_at": null,
       "receipt": null,
       "last_consumed_revision": null,
-      "state": "FOUND",
-      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "state": "EVIDENCE_READY",
+      "next_action": "Consume reference-only RETURN; acquire missing authoritative source fields before admission; no ticker-generated identity or Theme version",
       "production_gate": "OPEN",
-      "request_status": "BLOCKED",
+      "request_status": "WAIT_SOURCE_AUTHORITY",
       "latest_source_owner_intake": {
-        "cycle_id": "main-chart-owner-20261006T093820Z",
+        "cycle_id": "main-single-control-20261007T104552Z",
         "issue": 54,
-        "issue_body_sha256": "7741abf0f9772bbfa1d0ece3802db6b8399949ae1cf33ef150f623286f232470",
-        "contract": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/SOURCE_OWNER_INTAKE.json",
-        "contract_sha256": "70439db9490747ab9a7d38b1e9d7b08c9a27d3c776414fb60f4a901df3bbb6de",
-        "status": "INTAKE_PUBLISHED_SOURCE_OWNER_UNASSIGNED",
-        "owner_claim_received": false,
-        "source_branch": null,
-        "source_write_set": null
+        "status": "EVIDENCE_ROLE_ASSIGNED_REFERENCE_RETURNED_SOURCE_ADMISSION_UNVERIFIED",
+        "owner_claim_received": true,
+        "source_branch": "main/chart-source-evidence-v1",
+        "source_write_set": [
+          "implementation/docs/security_map19_owner/**"
+        ],
+        "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+        "source_authority_admitted": false
       },
-      "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9"
+      "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "evidence_owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "evidence_role": "Common Security19 evidence writer"
     },
     {
       "id": "MAIN-CHART-A-S3-20261005",
       "finding": "A-S3",
       "authoritative_owner": null,
-      "owner_assignment": "OWNER_UNASSIGNED",
+      "owner_assignment": "BOUNDED_MAIN_EVIDENCE_ROLE_ASSIGNED_SOURCE_AUTHORITY_UNVERIFIED",
       "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
       "exact_path_branch_pr": {
-        "branch": null,
-        "head": null,
-        "pr": null
+        "branch": "main/chart-source-evidence-v1",
+        "head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+        "pr": null,
+        "write_set": [
+          "implementation/docs/strategy_theme_owner/**"
+        ]
       },
       "acceptance_criteria": "Adopted user-defined Theme catalog/concepts/version and complete security assignment revision; source/hash/validity+root binding, authored30/25/20/25 preserved.",
       "dependencies": [
@@ -176,22 +180,25 @@
       "delivered_at": null,
       "receipt": null,
       "last_consumed_revision": null,
-      "state": "FOUND",
-      "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+      "state": "EVIDENCE_READY",
+      "next_action": "Consume reference-only RETURN; acquire missing authoritative source fields before admission; no ticker-generated identity or Theme version",
       "production_gate": "OPEN",
-      "request_status": "BLOCKED",
+      "request_status": "WAIT_SOURCE_AUTHORITY",
       "latest_source_owner_intake": {
-        "cycle_id": "main-chart-owner-20261006T093820Z",
+        "cycle_id": "main-single-control-20261007T104552Z",
         "issue": 54,
-        "issue_body_sha256": "7741abf0f9772bbfa1d0ece3802db6b8399949ae1cf33ef150f623286f232470",
-        "contract": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/SOURCE_OWNER_INTAKE.json",
-        "contract_sha256": "70439db9490747ab9a7d38b1e9d7b08c9a27d3c776414fb60f4a901df3bbb6de",
-        "status": "INTAKE_PUBLISHED_SOURCE_OWNER_UNASSIGNED",
-        "owner_claim_received": false,
-        "source_branch": null,
-        "source_write_set": null
+        "status": "EVIDENCE_ROLE_ASSIGNED_REFERENCE_RETURNED_SOURCE_ADMISSION_UNVERIFIED",
+        "owner_claim_received": true,
+        "source_branch": "main/chart-source-evidence-v1",
+        "source_write_set": [
+          "implementation/docs/strategy_theme_owner/**"
+        ],
+        "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+        "source_authority_admitted": false
       },
-      "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9"
+      "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "evidence_owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "evidence_role": "Strategy Theme source-evidence writer"
     },
     {
       "id": "MAIN-CHART-A-G1-20261005",
@@ -1613,7 +1620,7 @@
     "status": "ADOPTED",
     "merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
     "hard_guard_gaps": 11,
-    "gate_a": "NOT_VERIFIED_DISABLED",
+    "gate_a": "PARTIAL_VERIFIED_DISABLED",
     "pending_d3": {
       "d3_r": 7,
       "d3_a_candidate": 1,
@@ -1621,7 +1628,13 @@
       "executed": 0
     },
     "watcher": "READ_ONLY",
-    "unattended_executor": "DISABLED_PENDING_GATE_A"
+    "unattended_executor": "DISABLED_PENDING_GATE_A",
+    "current_hard_guards": {
+      "HG01": "VERIFIED",
+      "HG02": "VERIFIED",
+      "HG03": "PARTIAL_VERIFIED",
+      "unattended": "DISABLED"
+    }
   },
   "last_bounded_cycle": {
     "cycle_id": "main-chart-owner-20261006T093820Z",
@@ -1672,5 +1685,189 @@
       "cycle_id": "main-chart-owner-20261006T093820Z",
       "role": "MAIN_ROUTING_NOT_OWNER_RETURN"
     }
-  ]
+  ],
+  "single_control_policy": {
+    "decision": "CDR-030",
+    "file": "implementation/docs/coordination/policies/Investment-System1_Main_Single_Control_Execution_Policy_v1_0.md",
+    "status": "REPOSITORY_ADOPTED_IN_CONTAINING_PUBLICATION",
+    "mode_grant": false,
+    "protected_source_owner_transfer": false
+  },
+  "current_owner_return_consumption": {
+    "cycle_id": "main-single-control-20261007T104552Z",
+    "qgv": {
+      "head": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
+      "manifest_blob": "3cdc61c5bb6382c03bbfa56c98cead694dd4aca7",
+      "verified_payloads": [
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/AUTHORITY_RECEIPT.json",
+          "sha256": "daceea260703bbb06e282287d12a1097075fea062259bd9a6f851a5ac85d9b30",
+          "git_blob": "edb48dd96e7a1b7c4f79d60ed1f290c48e146b3f"
+        },
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/COMPLETION_RECEIPT.json",
+          "sha256": "baa96b60f83df06e1be98b7889d52f31ed41cb787d8a441147b0c45cf7c19686",
+          "git_blob": "4232e4652cf549e4e702b7a8859913d78c160fc5"
+        },
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/CONTROL.json",
+          "sha256": "869bd5700750d40c0372e796f25659977b552156c1aef1066784d902cd26457e",
+          "git_blob": "76ee4bdf45d658dbbc8e63adbf4366f43b05be15"
+        },
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md",
+          "sha256": "aa8d707ef7b4a24cf03975d64f79b4b022023eb64176ea2e8904b5b3bc1eb210",
+          "git_blob": "0ae556f9c2d0f370d2872ede7e1a7b2b1bebc682"
+        },
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/DECISION_REGISTER.md",
+          "sha256": "279a57e8f6b77fcfa167ac694753892fbf5371ac15b703bd20a18fedb5444010",
+          "git_blob": "ee6163f1449b2e5eefd7b421541405b5f8bf593d"
+        },
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/EVIDENCE_REUSE.json",
+          "sha256": "0b465f7d0aa537242c45a5c7cdb1d124ca8f37794f89061ff5c258129a8c45f3",
+          "git_blob": "66fd3cdc671ceeb17959f42a8d4629c3da7d5f31"
+        },
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/FRESH_INTAKE.json",
+          "sha256": "a331c35d96f12aa2ac84ae907b3c569b844029c5cc2a1bf8e24fa6f3ddcc8275",
+          "git_blob": "e4392cc4ae6d35c098ac106aca7f8a6332b8f216"
+        },
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/INDEPENDENT_REVIEW.json",
+          "sha256": "a6a00c7a9bb5ebd68f81ac18e2e91eb36ae98b8128f55dd9eb13a92486557d81",
+          "git_blob": "d53582c73c397007e32196e328f469c510284ae4"
+        },
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/STATE_RECONCILIATION.json",
+          "sha256": "bf42e094651f6f6f648065bcdc32f24cfe16a9ff03f860c7db0a9049f0d7fc3d",
+          "git_blob": "49e85bfcddcacbafae5b541e87b3fd42da6affb8"
+        },
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/TASK_BOARD.json",
+          "sha256": "3af49d4bbf3360515b1556709f042711026dbd10295adee41ed57351c064713b",
+          "git_blob": "593dbb4704c8d5a86d200f0a0ed48fd1419cfe67"
+        },
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/VERIFICATION.json",
+          "sha256": "c309061797431a5d974f28a053385e3009e3e855df9b33cd2de5113eb526ef55",
+          "git_blob": "157abcc0fd0d1ff4a93a199a78f7783da7155e02"
+        },
+        {
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/PUBLICATION_HISTORY.json",
+          "sha256": "a63e1f11f6894f42f5f2f914fb773f68afdc0b6a529f1eac8f4bb1b08219f36e",
+          "git_blob": "91a4c51d55158d3e89773d93c83822f12dc558af"
+        }
+      ],
+      "acceptance": "CDR024 operational-policy adoption and exact Main-intake receipt only",
+      "main_policy_specific_ack": "ACK_OF_CURRENT_D156_OPERATIONAL_RETURN",
+      "original_checks_reused": 193,
+      "new_production_closures": 0,
+      "production_blocker_categories": 3,
+      "reserved_groups": 10,
+      "missing_data_lease_preserved": "qgv-b47-muupb538"
+    },
+    "platform": {
+      "head": "3d997d34df8c76d4739d8bf71878cc12fec555d9",
+      "state_blob": "580e2403209598eeda8eb087ea226f784aaf7ff1",
+      "state_sha256": "536bc44baed602ff9005f23bd53b65851350818336f695c3914bc8d98081024e",
+      "handoff_blob": "922917057a918bfcf87e6c7d4afdf0dfb4aa9cdb",
+      "acceptance": "current CDR024 operational-session state/evidence source selection; not production source adoption",
+      "source_owner_ACK": "UNVERIFIED",
+      "remaining_product_blockers": 9,
+      "new_product_closures": 0
+    },
+    "production_closures": 0
+  },
+  "current_source_evidence_roles": {
+    "schema": "main-bounded-source-evidence-roles-v1",
+    "authority": [
+      "USER_SINGLE_CONTROL_V1",
+      "CDR-029",
+      "CDR-030"
+    ],
+    "scope": "new docs-only evidence extraction; no old owner path written",
+    "roles": [
+      {
+        "gate": "A-S1",
+        "role": "Portfolio TARGET evidence writer",
+        "accountable_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "session": "main-single-control-20261007T104552Z",
+        "branch": "main/chart-source-evidence-v1",
+        "base_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "write_set": [
+          "implementation/docs/portfolio_target_owner/**"
+        ],
+        "claim": "MAIN_ASSIGNED_EVIDENCE_SCOPE",
+        "source_admission": false,
+        "protected_source_owner_transfer": false,
+        "claim_lease": {
+          "token": "main-single-control-20261007T104552Z",
+          "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+          "ttl_hours": 2,
+          "expires_at_utc": "2026-10-07T12:49:36.888779+00:00"
+        },
+        "lease": null,
+        "lease_status": "RELEASED_IN_SOURCE_RETURN_PUBLICATION",
+        "return_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
+      },
+      {
+        "gate": "A-S2",
+        "role": "Common Security19 evidence writer",
+        "accountable_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "session": "main-single-control-20261007T104552Z",
+        "branch": "main/chart-source-evidence-v1",
+        "base_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "write_set": [
+          "implementation/docs/security_map19_owner/**"
+        ],
+        "claim": "MAIN_ASSIGNED_EVIDENCE_SCOPE",
+        "source_admission": false,
+        "protected_source_owner_transfer": false,
+        "claim_lease": {
+          "token": "main-single-control-20261007T104552Z",
+          "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+          "ttl_hours": 2,
+          "expires_at_utc": "2026-10-07T12:49:36.888779+00:00"
+        },
+        "lease": null,
+        "lease_status": "RELEASED_IN_SOURCE_RETURN_PUBLICATION",
+        "return_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
+      },
+      {
+        "gate": "A-S3",
+        "role": "Strategy Theme source-evidence writer",
+        "accountable_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "session": "main-single-control-20261007T104552Z",
+        "branch": "main/chart-source-evidence-v1",
+        "base_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "write_set": [
+          "implementation/docs/strategy_theme_owner/**"
+        ],
+        "claim": "MAIN_ASSIGNED_EVIDENCE_SCOPE",
+        "source_admission": false,
+        "protected_source_owner_transfer": false,
+        "claim_lease": {
+          "token": "main-single-control-20261007T104552Z",
+          "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+          "ttl_hours": 2,
+          "expires_at_utc": "2026-10-07T12:49:36.888779+00:00"
+        },
+        "lease": null,
+        "lease_status": "RELEASED_IN_SOURCE_RETURN_PUBLICATION",
+        "return_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
+      }
+    ],
+    "absent_before_claim": true,
+    "gate_closures": 0,
+    "source_authority_status": "UNRESOLVED_REQUIRED_FIELDS_RETAINED",
+    "source_publication": {
+      "commit": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "tree": "4b5dc8b2fe2efb9820d05fbf6a5b512665cf9389",
+      "identity": "TREE_IDENTICAL / API_NATIVE_COMMIT",
+      "readback_verified": true
+    }
+  },
+  "current_dependency_reconciliation": "evidence/main_single_control_cycle_2026-10-07/DEPENDENCY_RECONCILIATION.json"
 }

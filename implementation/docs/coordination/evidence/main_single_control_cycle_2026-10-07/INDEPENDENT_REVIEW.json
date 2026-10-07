@@ -1,0 +1,30 @@
+{
+  "reviewer": "/root/main_cycle_doc_review_20261007",
+  "independent_execution": true,
+  "status": "PASS_DOC_SCOPE",
+  "critical": 0,
+  "important": 0,
+  "minor": 0,
+  "scope": "policy/source-reference/PhaseA candidate docs only; not final controls or runtime",
+  "not_certified": [
+    "D3-A",
+    "production closure",
+    "source admission",
+    "publication/readback",
+    "final READ_ONLY restoration"
+  ],
+  "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+  "source_tree": "4b5dc8b2fe2efb9820d05fbf6a5b512665cf9389",
+  "reviewed_payload_hashes": {
+    "main-control-contracts-20261007/implementation/docs/company_analysis_extension_v1_1/CONTRACT.md": "4d8695533d410df78124e4d54f340ee52b9e52a55f4c499597b37966ed6c7338",
+    "main-control-contracts-20261007/implementation/docs/company_analysis_extension_v1_1/OWNER_DELTA_ROUTES.json": "702f6f05ce24b60a18d6d93a57ed4675e01166caddb0dd3e877e8b592d1ac7c7",
+    "main-control-contracts-20261007/implementation/docs/company_analysis_extension_v1_1/FIELD_CONTRACT.json": "7d92537627abfa118338484ad1c3f2b6eb8f9d808f4cd23acd20dd956b87c159",
+    "main-control-contracts-20261007/implementation/docs/company_analysis_extension_v1_1/USER_DESIGN_INPUT.json": "527df0de298c25aeb76b95bc7b4b97b00183585bdf5ecd029084dd4bd04d658d",
+    "main-source-evidence-20261007/implementation/docs/strategy_theme_owner/OWNER_RECEIPT.json": "78506c719b72b67d9c015ec0f56fa3131a1bb4d6012dd7827014d54eec9a1cb7",
+    "main-source-evidence-20261007/implementation/docs/strategy_theme_owner/RETURN.json": "d91aea9a878aff8bb3e97f611360eecb01b0e9d94945672a762d018f57a46d57",
+    "main-source-evidence-20261007/implementation/docs/portfolio_target_owner/OWNER_RECEIPT.json": "4c80f0fca1f0bd2472bd3dd7171c61ce7c1e885b9954816e5eac73fc5bed06fc",
+    "main-source-evidence-20261007/implementation/docs/portfolio_target_owner/RETURN.json": "fda61cbe944cb9b9315000638bc9b574a482e3d3cbe4af1327e547ee0820abbc",
+    "main-source-evidence-20261007/implementation/docs/security_map19_owner/OWNER_RECEIPT.json": "d8a267ec384f874ab80c8e13c27d1284ecb0448901c2d17262da314d367131fa",
+    "main-source-evidence-20261007/implementation/docs/security_map19_owner/RETURN.json": "3c90c93df65d30ead91122805b2249c5729a9cec298938676178101c513757e6"
+  }
+}

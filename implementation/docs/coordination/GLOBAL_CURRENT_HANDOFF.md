@@ -1,3 +1,17 @@
+# GCH-031 · Main Single-Control adoption and inactive Company Analysis contracts · 2026-10-07T11:03:58.150028+00:00
+
+CDR-029 authorizes only this observed five-task cycle; CDR-030 adopts Main Single-Control v1.0, with no standing mode or Gate A grant. CDR-031 records QGV Company Analysis UI/UX Extension v1.1 and Historical Price Context Contract v1.0. Current publication is task5; RUN/own Main lease are retained briefly for routing and final READ_ONLY restoration. Unattended executor remains disabled. HG01/HG02 VERIFIED, HG03 PARTIAL_VERIFIED; older conflicting summaries below are historical.
+
+- Three distinct Main evidence roles now use `main/chart-source-evidence-v1` @ `7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5`: `implementation/docs/portfolio_target_owner/**`, `implementation/docs/security_map19_owner/**`, `implementation/docs/strategy_theme_owner/**`. Source leases are released. TARGET19 authored rows sum100%;19Security identifiers unresolved/admitted0; Theme authored30/25/20/25 preserved. These reference returns do not prove effective/availability/adoption/source authority or close Chart gates.
+- Chart#41 exact `2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9` remains6OPEN/0CLOSED and Market0/19. P01 actual TARGET applicability and complete Web/source/Product per-file acceptance are absent. FPIA#47 exact7215 CI7/7 is technical evidence only; independent trust/launcher/runtime/external coverage/GIE open, actual Chart assembled result NOT_RUN.
+- QGV exact `d1566aeb1bbf11b1d514ad874b069d8b127ff1c7` operational-policy return consumed with12 payloadSHA256/Gitblob matches;193 prior checks reused. Missing-Data lease remains held. Platform exact `3d997d34df8c76d4739d8bf71878cc12fec555d9` operational state consumed; source owner ACK unverified,9product blockers remain. No new production closure.
+- [Phase A contract](../company_analysis_extension_v1_1/CONTRACT.md) is inactive: classification3axes, historicalpriceprovenance, completed-period denominator/Flat/QTD/YTD/IPOpartial and Overview→Detail contracts. Existing component/read routes are reused; numericbands, weights, calibratedepisode detection and production scoring remain inactive.
+- [Cycle evidence](evidence/main_single_control_cycle_2026-10-07/DEPENDENCY_RECONCILIATION.json) · [Policy](policies/Investment-System1_Main_Single_Control_Execution_Policy_v1_0.md). Independent review PASS_DOC_SCOPE,0findings; source admission/production/D3-A not certified. Routing IDs and finalmode readback will be recorded in FINAL_RECEIPT.json.
+
+Next critical path: authoritative source admission, P01/Web acceptance, independent FPIA trust/GIE. Next independent candidate: Phase A ordinary sidecar preview after fresh exact branch/write-set and observed-mode checks. No specialist chat wake is a prerequisite. Canonical and all existing owner branches preserved.
+
+---
+
 # GCH-030 · User-observed bounded Chart owner coordination · 2026-10-06T09:49:45.650Z
 
 CDR-027/028 under adopted CDR-024. One bounded session completed five tasks; final publication restores `AUTONOMY_MODE=READ_ONLY` and Mainlease=null. Unattended executor remains disabled. Canonical `b8e39a2196a6d7794a04a0cd5393c68329e126ca`, Chart `2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9` and all other owner refs unchanged.

@@ -1,0 +1,104 @@
+{
+  "chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+  "gates_open": [
+    "A-S1",
+    "A-S2",
+    "A-S3",
+    "A-G1",
+    "A-G2",
+    "A-G3"
+  ],
+  "closed": 0,
+  "source_admission_closed": 0,
+  "source_branch": "main/chart-source-evidence-v1",
+  "security_roster": 19,
+  "security_admitted": 0,
+  "market_admitted": "0/19",
+  "P01": {
+    "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+    "comments_observed": [
+      5988265306,
+      6013644202
+    ],
+    "applicability": "NO_RETURN; protected grant unchanged"
+  },
+  "Web": {
+    "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+    "comments_observed": [
+      5988265604,
+      5988663367,
+      6013644499
+    ],
+    "acceptance": "ordinary-three-asset planning only; complete per-file source/Product/Web set absent"
+  },
+  "FPIA": {
+    "head": "7215a9f60ad7128b1748f405051eac684298614f",
+    "technical_runs": [
+      {
+        "id": 37284465856,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465967,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284466007,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465977,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465865,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465941,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465900,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "independent_verifier_launcher_runtime_GIE": "OPEN",
+    "Chart_assembled_result": "NOT_RUN"
+  },
+  "QGV_missing_data": "HELD_OWNER_LEASE; no recovery/no duplicate implementation",
+  "pending_D3_R": [
+    "P01 publication-authority change if required",
+    "new scoring/type weights/thresholds/methods",
+    "canonical/Official/LIVE/Holdout/protected exclusions"
+  ],
+  "eligible_next": [
+    "Phase A inactive contract published in this cycle; ordinary sidecar preview is next observed-cycle candidate after fresh collision/mode checks",
+    "Source admission only after exact effective/availability/adoption evidence; no invented identity or catalog version"
+  ],
+  "claim_is_not_admission": true,
+  "evidence_role_assignments": 3,
+  "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+  "authoritative_source_owner_admission": "UNVERIFIED; bounded evidence roles do not grant source authority"
+}

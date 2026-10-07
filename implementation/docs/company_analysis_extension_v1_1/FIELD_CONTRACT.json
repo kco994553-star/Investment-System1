@@ -1,0 +1,87 @@
+{
+  "schema": "company-analysis-phase-a-field-contract-v1",
+  "activation": "INACTIVE_SPEC_ONLY",
+  "runtime_enabled": false,
+  "classification": {
+    "independent_top_level_axes": [
+      "investment_type",
+      "gics",
+      "strategy_theme"
+    ],
+    "investment_type": {
+      "primary_type": "source-assigned identifier or unavailable",
+      "secondary_characteristics": "source-assigned list or unavailable",
+      "taxonomy_ref": "versioned source ref",
+      "weighting_profile_ref": "existing approved profile ref or unavailable; no new weights"
+    },
+    "gics_hierarchy": [
+      "sector",
+      "industry_group",
+      "industry",
+      "sub_industry"
+    ],
+    "strategy_theme": "multi-theme catalog and assignment refs; source authority separate",
+    "overlap": "separate projection, not taxonomy parent"
+  },
+  "price_position": {
+    "fields": [
+      "current_price",
+      "historical_ath",
+      "percent_from_ath",
+      "high_52w",
+      "percent_from_high_52w"
+    ],
+    "required_bindings": [
+      "security_ref",
+      "currency",
+      "series_ref",
+      "price_basis",
+      "corporate_action_receipt",
+      "coverage_ref",
+      "window_contract_ref",
+      "quote_kind",
+      "available_at",
+      "decision_time"
+    ],
+    "mixed_basis_allowed": false,
+    "missing_authority": "NOT_AVAILABLE",
+    "qgv_raw_score_input": false
+  },
+  "period_summary": {
+    "fields": [
+      "period_kind",
+      "calendar_ref",
+      "complete_full_period_roster_ref",
+      "positive_count",
+      "completed_count",
+      "positive_rate_percent",
+      "current_partial_period",
+      "coverage_status",
+      "source_ref"
+    ],
+    "positive": "return > 0",
+    "flat": "return == 0; included in completed denominator only",
+    "negative": "return < 0",
+    "exclude": [
+      "QTD",
+      "YTD",
+      "partial_IPO_period"
+    ],
+    "unknown_completed_return": "SUMMARY_NOT_AVAILABLE; do not drop from denominator",
+    "empty_denominator": "NOT_AVAILABLE",
+    "overview_negative_count_rate": false,
+    "arbitrary_inclusion_threshold": null,
+    "qgv_raw_score_input": false
+  },
+  "navigation": {
+    "levels": [
+      "Overview",
+      "Detail",
+      "Evidence/Full Technical Chart"
+    ],
+    "runtime_route_attachment": "NOT_IMPLEMENTED_NOT_ACTIVATED"
+  },
+  "drawdown_reference_activation": "CANDIDATE_NOT_ACTIVE",
+  "B_C": "DEFERRED_NOT_BLOCKING_PHASE_A",
+  "source_admission": false
+}

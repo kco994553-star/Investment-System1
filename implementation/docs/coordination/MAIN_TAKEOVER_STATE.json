@@ -28,25 +28,26 @@
   "execution_state": "RUNNING_USER_OBSERVED_MAIN_SINGLE_CONTROL_BOUNDED_CYCLE",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
-    "global_input": "0e348f60195abadc51bc586db9251497f20539aa",
+    "global_input": "d2e72027d1c80995efee738f9960c157e9e9fedc",
     "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
     "chart": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
     "qgv_missing": "4fb08a05728d83519b72a2bd995669f0cb06003a",
-    "qgv_reconciliation": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+    "qgv_reconciliation": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
     "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "platform_independent_audit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
     "platform_pr45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
-    "platform_specialist": "5e5fd1508a7f197a1168333bb13c45b8088a48ba",
+    "platform_specialist": "3d997d34df8c76d4739d8bf71878cc12fec555d9",
     "web": "fb086eac4321140493ce554a541343cebbb81ed6",
     "qgv_pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
     "execution_coverage": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
     "fpia_proposal": "7215a9f60ad7128b1748f405051eac684298614f",
-    "global_publication_parent": "2cda490a93bd2c093ff07557af4fe748964c20c1",
+    "global_publication_parent": "648e86871f91c81f37f67d8c6a7a939b8f18f094",
     "authority_proposal": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
     "global_merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
     "authority_sync_merge": "18e79a9a320b2a7b21a9fa2daad95d4e5d6eb5b3",
-    "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
+    "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+    "chart_source_evidence": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
   },
   "automations": {
     "state": "CONFIGURED_READ_ONLY_WAKE_UP",
@@ -85,7 +86,10 @@
     "input_parent": "d2e72027d1c80995efee738f9960c157e9e9fedc",
     "scope": [
       "implementation/docs/coordination/**",
-      "implementation/docs/company_analysis_extension_v1_1/**"
+      "implementation/docs/company_analysis_extension_v1_1/**",
+      "main/chart-source-evidence-v1:implementation/docs/portfolio_target_owner/**",
+      "main/chart-source-evidence-v1:implementation/docs/security_map19_owner/**",
+      "main/chart-source-evidence-v1:implementation/docs/strategy_theme_owner/**"
     ],
     "unattended": false
   },
@@ -175,13 +179,27 @@
     6013643886
   ],
   "pending_ci": [],
-  "next_runnable_backlog": [],
+  "next_runnable_backlog": [
+    {
+      "id": "CA-PHASE-A-SIDECAR-PREVIEW",
+      "lane": "Web/Chart/Product-contract",
+      "classification": "D1/D2 candidate",
+      "status": "NEXT_OBSERVED_CYCLE_FRESH_CHECK_REQUIRED",
+      "branch_candidate": "main/company-analysis-phase-a-v1",
+      "write_set": [
+        "new ordinary sidecar paths only; exact files to claim before execution"
+      ],
+      "source": "implementation/docs/company_analysis_extension_v1_1/OWNER_DELTA_ROUTES.json",
+      "production_permission": false
+    }
+  ],
   "next_dependency_gates": [
-    "Gate A remains NOT_VERIFIED/DISABLED: HG-01 exact lease CAS, HG-02 scope-isolation enforcement, and HG-03 unattended budget/stop controls require evidence before AUTONOMY_MODE=RUN",
-    "FPIA remains open for accepted independent verifier/launcher/runtime authority, GIE/governance and exact merge-result acceptance; technical CI PASS is separate",
-    "Chart retains six production gates; Portfolio/Identity remain OWNER_UNASSIGNED and no protected scope is taken by Main",
-    "QGV reclassification: 7 D3-R, RD3-03 D3-A candidate only pending exact semantics pin, rollback and independent §26B PASS; 3 WAIT_DEPENDENCY; 0 executed",
-    "Platform source-owner adoption/ACK and production-capability evidence remain absent; read-only watcher policy applies"
+    "Chart A-S1/A-S2/A-S3 authoritative effective/availability/adoption/identity/catalog source inputs absent; three Main evidence roles assigned, source admission 0",
+    "P01 source-bound TARGET applicability receipt absent; Web/source/Product per-file acceptance absent; original three ordinary asset planning scope preserved",
+    "FPIA independent verifier/launcher/runtime/external coverage/GIE acceptance open; exact7215 CI7/7 reused, Chart assembled result NOT_RUN",
+    "QGV Missing-Data held lease qgv-b47-muupb538 preserved; operational policy return d156 consumed with12 hash matches, production categories remain",
+    "Platform exact3d997 operational return consumed; implementation/source owner ACK UNVERIFIED and9 product blockers remain",
+    "HG01/HG02 VERIFIED; HG03 PARTIAL_VERIFIED; unattended executor remains disabled"
   ],
   "last_lease": {
     "token": "main-cdr024-state-reconcile-20261005-fc8a83eeb8fe",
@@ -205,13 +223,13 @@
   ],
   "active_scoped_execution": {
     "cycle_id": "main-single-control-20261007T104552Z",
-    "tasks_used": 1,
+    "tasks_used": 5,
     "max_tasks": 5,
     "classification": "D1_D2_OBSERVED_SESSION",
     "unattended": false
   },
   "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
-  "last_checkpoint_at_utc": "2026-10-05T10:12:00Z",
+  "last_checkpoint_at_utc": "2026-10-07T11:03:58.150028+00:00",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
   "dependency_content_hash": "5d3835968822791c72ea8e6174ac530bd6d7ba98b603f1396089145dab672f62",
   "execution_budget": {
@@ -219,7 +237,17 @@
     "repeat_audits": 0,
     "local_full_repo_rerun": false,
     "affected_FPIA": 294,
-    "net_blocker_reduction_current_delta": 0
+    "net_blocker_reduction_current_delta": 0,
+    "current_cycle": {
+      "tasks_used": 5,
+      "max_tasks": 5,
+      "new_independent_doc_review_agents": 1,
+      "full_audits": 0,
+      "ci_dispatch": 0,
+      "same_failure_repairs": 0,
+      "d3_a_executed": 0,
+      "production_gate_closures": 0
+    }
   },
   "last_terminal_ci": [
     {
@@ -390,10 +418,16 @@
     },
     "unattended_autonomy": {
       "mode": "DISABLED_PENDING_GATE_A",
-      "gate_a": "NOT_VERIFIED",
+      "gate_a": "PARTIAL_VERIFIED_DISABLED",
       "hard_guard_gap_file": "implementation/docs/coordination/governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md",
       "hard_guard_gap_blob": "1018ff50fc8e624be3b1c9ab403337a4dfc9bb02",
-      "gap_count": 11
+      "gap_count": 11,
+      "current_hard_guards": {
+        "HG01": "VERIFIED",
+        "HG02": "VERIFIED",
+        "HG03": "PARTIAL_VERIFIED",
+        "unattended": "DISABLED"
+      }
     },
     "watcher": {
       "role": "READ_ONLY_WAKE_UP",
@@ -432,7 +466,7 @@
     "product_gate_net_closed": 0,
     "canonical_candidate": "NOT_READY",
     "ready_main_d1_d2_d3_a": 0,
-    "gate_a": "NOT_VERIFIED_DISABLED",
+    "gate_a": "PARTIAL_VERIFIED_DISABLED",
     "pending_d3_reclassification": {
       "d3_r": 7,
       "d3_a_candidate": 1,
@@ -469,14 +503,20 @@
       "adopted_v1_1": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
     },
     "hard_guard_gaps": 11,
-    "gate_a": "NOT_VERIFIED_DISABLED",
+    "gate_a": "PARTIAL_VERIFIED_DISABLED",
     "pending_d3": {
       "d3_r": 7,
       "d3_a_candidate": 1,
       "wait_dependency": 3,
       "executed": 0
     },
-    "receipt": "implementation/docs/coordination/evidence/main_autonomy_ssot_v1_1_2026-10-05/STATE_RECONCILIATION_RECEIPT.json"
+    "receipt": "implementation/docs/coordination/evidence/main_autonomy_ssot_v1_1_2026-10-05/STATE_RECONCILIATION_RECEIPT.json",
+    "current_hard_guards": {
+      "HG01": "VERIFIED",
+      "HG02": "VERIFIED",
+      "HG03": "PARTIAL_VERIFIED",
+      "unattended": "DISABLED"
+    }
   },
   "dependency_fingerprint": {
     "basis": "CDR-024 merged identities + hard-guard and pending-D3 blobs",
@@ -521,9 +561,26 @@
     }
   ],
   "resume_dependencies": [
-    "Source owner role/session + branch/write-set claims and authoritative TARGET/Security19/Theme returns via #54",
-    "P01 actual A/B/C source-bound applicability receipt",
-    "Web actual minimum per-file writer acceptance",
-    "Independent exact FPIA candidate verifier/launcher/runtime/coverage/GIE acceptance; actual Chart assembled result after prerequisites"
-  ]
+    "Chart A-S1/A-S2/A-S3 authoritative effective/availability/adoption/identity/catalog source inputs absent; three Main evidence roles assigned, source admission 0",
+    "P01 source-bound TARGET applicability receipt absent; Web/source/Product per-file acceptance absent; original three ordinary asset planning scope preserved",
+    "FPIA independent verifier/launcher/runtime/external coverage/GIE acceptance open; exact7215 CI7/7 reused, Chart assembled result NOT_RUN",
+    "QGV Missing-Data held lease qgv-b47-muupb538 preserved; operational policy return d156 consumed with12 hash matches, production categories remain",
+    "Platform exact3d997 operational return consumed; implementation/source owner ACK UNVERIFIED and9 product blockers remain",
+    "HG01/HG02 VERIFIED; HG03 PARTIAL_VERIFIED; unattended executor remains disabled"
+  ],
+  "single_control_policy": {
+    "decision": "CDR-030",
+    "file": "implementation/docs/coordination/policies/Investment-System1_Main_Single_Control_Execution_Policy_v1_0.md",
+    "status": "REPOSITORY_ADOPTED_IN_CONTAINING_PUBLICATION",
+    "mode_grant": false,
+    "protected_source_owner_transfer": false
+  },
+  "product_design_input": {
+    "decision": "CDR-031",
+    "contract": "implementation/docs/company_analysis_extension_v1_1/CONTRACT.md",
+    "status": "AUTHORITATIVE_USER_INPUT / INACTIVE_PHASE_A_CONTRACT",
+    "runtime_enabled": false,
+    "numeric_policy_activated": false
+  },
+  "current_cycle_evidence": "implementation/docs/coordination/evidence/main_single_control_cycle_2026-10-07/"
 }

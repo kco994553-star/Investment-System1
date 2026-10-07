@@ -1,3 +1,7 @@
+## Current Main Single-Control / Company Analysis contract · GSI-036 · 2026-10-07T11:03:58.150028+00:00
+
+CDR029 observed5task session; CDR030 Single-Control repository adoption; CDR031 inactive PhaseA contract. Three Main reference-evidence roles/branch exact7b27 assigned;0authoritative admissions, Chart6OPEN/Market0of19. QGV12exacthashes consumed/193checks reused; Platform9blockers. HG01/HG02 VERIFIED/HG03 PARTIAL_VERIFIED, unattended disabled. Task5 publication/routing in progress; final READ_ONLY release receipt follows. Current paths: `evidence/main_single_control_cycle_2026-10-07/` and `../company_analysis_extension_v1_1/`.
+
 # Investment-System1 · GLOBAL_STATUS_INDEX
 
 Routing/index only. This file is not a calculation, policy, approval or publication authority. Where it disagrees with a scoped STATUS/HANDOFF, a Decision Register, approval evidence or the exact SHA, those win. Report the disagreement to the Primary Integration Writer.

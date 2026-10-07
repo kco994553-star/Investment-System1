@@ -2,3 +2,11 @@
 
 Pre-flight: five tasks share exact parent/control and source status; contracts keep these distinct.
 Ruling: this cycle publishes inactive contract/evidence documents only — approved Phase A contract scope and unresolved source gates — cost if wrong: a later superseding docs change; no runtime behavior changes.
+
+Task 1: complete — exact API-native 648e868 RUN/lease readback; local/remote tree 59a2cf2 identical.
+Task 2: complete in candidate — Single-Control reconciliation and three bounded source-evidence roles; all protected/admission rules retained.
+Task 3: complete in candidate — QGV manifest payload hashes and Platform exact-state consumption; no production closure/repeated audit.
+Task 4: complete in candidate — inactive Phase A docs/field contract, no runtime code or numeric activation.
+Ruling: one branch holds three distinct docs-only evidence roles — same Main writer, no protected source transfer — cost if wrong: later ordinary branch/path split; source admission remains fail-closed.
+
+Task 5: in progress — independent review PASS_DOC_SCOPE; source7b27 publication/readback verified; candidate live selectors/history prepared; scoped API packet/routing and own control restoration remain.

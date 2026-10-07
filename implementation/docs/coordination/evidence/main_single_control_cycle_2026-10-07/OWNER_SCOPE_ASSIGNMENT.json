@@ -1,0 +1,89 @@
+{
+  "schema": "main-bounded-source-evidence-roles-v1",
+  "authority": [
+    "USER_SINGLE_CONTROL_V1",
+    "CDR-029",
+    "CDR-030"
+  ],
+  "scope": "new docs-only evidence extraction; no old owner path written",
+  "roles": [
+    {
+      "gate": "A-S1",
+      "role": "Portfolio TARGET evidence writer",
+      "accountable_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "session": "main-single-control-20261007T104552Z",
+      "branch": "main/chart-source-evidence-v1",
+      "base_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "write_set": [
+        "implementation/docs/portfolio_target_owner/**"
+      ],
+      "claim": "MAIN_ASSIGNED_EVIDENCE_SCOPE",
+      "source_admission": false,
+      "protected_source_owner_transfer": false,
+      "claim_lease": {
+        "token": "main-single-control-20261007T104552Z",
+        "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "ttl_hours": 2,
+        "expires_at_utc": "2026-10-07T12:49:36.888779+00:00"
+      },
+      "lease": null,
+      "lease_status": "RELEASED_IN_SOURCE_RETURN_PUBLICATION",
+      "return_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
+    },
+    {
+      "gate": "A-S2",
+      "role": "Common Security19 evidence writer",
+      "accountable_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "session": "main-single-control-20261007T104552Z",
+      "branch": "main/chart-source-evidence-v1",
+      "base_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "write_set": [
+        "implementation/docs/security_map19_owner/**"
+      ],
+      "claim": "MAIN_ASSIGNED_EVIDENCE_SCOPE",
+      "source_admission": false,
+      "protected_source_owner_transfer": false,
+      "claim_lease": {
+        "token": "main-single-control-20261007T104552Z",
+        "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "ttl_hours": 2,
+        "expires_at_utc": "2026-10-07T12:49:36.888779+00:00"
+      },
+      "lease": null,
+      "lease_status": "RELEASED_IN_SOURCE_RETURN_PUBLICATION",
+      "return_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
+    },
+    {
+      "gate": "A-S3",
+      "role": "Strategy Theme source-evidence writer",
+      "accountable_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "session": "main-single-control-20261007T104552Z",
+      "branch": "main/chart-source-evidence-v1",
+      "base_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "write_set": [
+        "implementation/docs/strategy_theme_owner/**"
+      ],
+      "claim": "MAIN_ASSIGNED_EVIDENCE_SCOPE",
+      "source_admission": false,
+      "protected_source_owner_transfer": false,
+      "claim_lease": {
+        "token": "main-single-control-20261007T104552Z",
+        "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "ttl_hours": 2,
+        "expires_at_utc": "2026-10-07T12:49:36.888779+00:00"
+      },
+      "lease": null,
+      "lease_status": "RELEASED_IN_SOURCE_RETURN_PUBLICATION",
+      "return_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
+    }
+  ],
+  "absent_before_claim": true,
+  "gate_closures": 0,
+  "source_authority_status": "UNRESOLVED_REQUIRED_FIELDS_RETAINED",
+  "source_publication": {
+    "commit": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+    "tree": "4b5dc8b2fe2efb9820d05fbf6a5b512665cf9389",
+    "identity": "TREE_IDENTICAL / API_NATIVE_COMMIT",
+    "readback_verified": true
+  }
+}

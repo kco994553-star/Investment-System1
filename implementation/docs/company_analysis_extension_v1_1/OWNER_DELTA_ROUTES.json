@@ -1,0 +1,30 @@
+{
+  "status": "DOCS_DELTA_OWNED; RUNTIME_IMPLEMENTATION_CANDIDATES_NOT_CLAIMED",
+  "Main_docs_branch": "integration/global-handoff-v1",
+  "Main_docs_write_set": [
+    "implementation/docs/company_analysis_extension_v1_1/**"
+  ],
+  "existing_read_routes": {
+    "QGV": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+    "Chart": "codex/chart-contract-mcp-api-v0-1",
+    "Product": "codex/product-platform-audit-v1",
+    "Web": "integration/web/production-state-presentation-v1",
+    "News": "feature/rig-news-real-ingestion-v1",
+    "FPIA": "codex/fpia-execution-coverage-2026-10-05"
+  },
+  "next_candidate_branch": "main/company-analysis-phase-a-v1",
+  "next_candidate_write_set": [
+    "implementation/docs/company_analysis_extension_v1_1/preview/**",
+    "implementation/src/investment_system/product/company_price_context_v1.py",
+    "implementation/tests/test_company_price_context_v1.py"
+  ],
+  "not_granted": [
+    "old owner files",
+    "scoring.py",
+    "contracts/models.py",
+    "Web app.js or runtime/API route attachment",
+    "Missing-Data automation/implementation",
+    "source authority",
+    "production admission"
+  ]
+}

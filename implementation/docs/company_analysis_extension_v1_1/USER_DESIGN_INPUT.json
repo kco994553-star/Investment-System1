@@ -1,0 +1,105 @@
+{
+  "schema": "user-product-design-intake-v1",
+  "representation": "Structured intake of current user message, not a verbatim transcript",
+  "designs": [
+    "QGV Company Analysis UI/UX Extension v1.1",
+    "Historical Price Context Contract v1.0"
+  ],
+  "status": "RECEIVED_AS_AUTHORITATIVE_PRODUCT_DESIGN_INPUT",
+  "repository_publication": "RECORDED_USER_INPUT; runtime_contract_INACTIVE",
+  "priority": {
+    "A": [
+      "independent classification axes",
+      "Investment Type primary/secondary data contract",
+      "price position and same-basis drawdown fields",
+      "quarter/year summary and completed denominator rules",
+      "raw-score separation",
+      "Overview->Detail navigation"
+    ],
+    "B": [
+      "company drawdown distribution",
+      "Investment Type peer comparison",
+      "GICS peer comparison",
+      "recovery statistics"
+    ],
+    "C": [
+      "calibrated episode detection",
+      "event overlay",
+      "benchmark comparison",
+      "QGV thesis-recheck history"
+    ]
+  },
+  "overview_order": [
+    "Company / Data Stamp",
+    "Business",
+    "Market Position / Competition",
+    "Classification",
+    "News & Consensus",
+    "Current Price Position / Drawdown Context",
+    "Quarterly Return History",
+    "Annual Return History",
+    "QGV Core / VMR / Scenario",
+    "Conclusion"
+  ],
+  "general_reference_candidates": [
+    {
+      "range": "0 ~ -5%",
+      "label": "Near High"
+    },
+    {
+      "range": "-5 ~ -10%",
+      "label": "Mild Pullback"
+    },
+    {
+      "range": "-10 ~ -20%",
+      "label": "Correction"
+    },
+    {
+      "range": "-20 ~ -30%",
+      "label": "Significant Drawdown"
+    },
+    {
+      "range": "-30 ~ -40%",
+      "label": "Deep Drawdown"
+    },
+    {
+      "range": "≤ -40%",
+      "label": "Severe Drawdown"
+    }
+  ],
+  "candidate_status": "DISPLAY_REFERENCE_ONLY_NOT_ACTIVATED",
+  "candidate_endpoint_inclusion": "NOT_SELECTED",
+  "return_rules": {
+    "positive": "return > 0",
+    "negative": "return < 0",
+    "flat": "return = 0; denominator yes; positive numerator no",
+    "current_quarter": "QTD; historical counts excluded",
+    "current_year": "YTD; historical counts excluded",
+    "ipo_partial": "separate from full periods; no arbitrary inclusion threshold",
+    "overview": "positive / completed full periods (rate); no separate negative count/rate"
+  },
+  "preserve": [
+    "Chart #41 six gates",
+    "Issue #54 source authority",
+    "QGV #44 Missing-Data and active lanes",
+    "Product #45 owner blockers",
+    "FPIA #47 independent trust",
+    "all existing active leases, write-sets, decisions, evidence"
+  ],
+  "not_authorized": [
+    "new QGV/type weights",
+    "new episode threshold",
+    "new economic methodology",
+    "canonical merge",
+    "Official/LIVE",
+    "Holdout",
+    "PIT relaxation",
+    "destructive Frozen/history/evidence",
+    "paid resource",
+    "financial credentials/authority",
+    "orders/trades/funds",
+    "AUTONOMY_MODE change",
+    "Gate A pass"
+  ],
+  "publication_authority": "CDR-031; CDR-029 bounded session"
+}

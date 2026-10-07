@@ -1,0 +1,12 @@
+{
+  "target_rows": 19,
+  "Decimal_total": "1.000",
+  "unresolved_security_rows": 19,
+  "admitted": 0,
+  "qgv_payload_identity_matches": 12,
+  "history_prefix_preserved": true,
+  "no_runtime_code_written": true,
+  "D3_A_executed": 0,
+  "production_closed": 0,
+  "full_regression_reused_not_run": true
+}

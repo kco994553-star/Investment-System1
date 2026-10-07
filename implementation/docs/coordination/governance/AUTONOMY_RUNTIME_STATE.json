@@ -5,9 +5,9 @@
   "branch": "integration/global-handoff-v1",
   "started_at_epoch": 1791370176,
   "lease_expires_at_epoch": 1791377376,
-  "tasks_used": 1,
+  "tasks_used": 5,
   "repair_rounds": {},
-  "status": "RUNNING",
+  "status": "PUBLISHING_FINAL_TASK",
   "activation": "USER_OBSERVED_EXPLICIT_BOUNDED_SESSION",
   "unattended_executor": false,
   "last_cycle": {

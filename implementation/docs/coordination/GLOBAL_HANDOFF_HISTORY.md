@@ -296,3 +296,8 @@ After policy/return publication: MainREADY D1/D2/D3-A=0, sharedlease=null, no ac
 - Initial enforcement inventory: 11 Hard-Guard Gaps; Gate A NOT_VERIFIED; unattended `AUTONOMY_MODE=RUN` disabled; watchers read-only.
 - Pending-D3 reclassification: 7 D3-R, 1 D3-A candidate (not approved/executed), 3 WAIT_DEPENDENCY, 0 executed.
 - Canonical, Holdout, Official/LIVE, production, paid-resource, credential, PIT/Frozen/history and protected-owner boundaries remain unchanged.
+
+
+## GCH-031 · 2026-10-07T11:03:58.150028+00:00 · Single-Control/Company Analysis bounded contract publication
+
+New current GCH031 supersedes GCH030 owner-unassigned summary only for three bounded evidence roles; source authority remains unadmitted. Current HG selectors reconcile older Main summaries to HG01/HG02 VERIFIED/HG03 PARTIAL_VERIFIED. New source branch7b27 native publication TREE_IDENTICAL, six docs-only files,0source/production closure. CDR030/031 append only; independent review PASS_DOC_SCOPE. Observedsession only, canonical/oldownerrefs protected; finalmode restoration pending task5.
