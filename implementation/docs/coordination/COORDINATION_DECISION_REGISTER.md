@@ -1679,3 +1679,11 @@ Follow-ups:
 - Current verifier/workflow33 selected blobs agree; run/attempt/job/artifact digest and actual workflow8479/subject7215 observed. Independent acceptance, external coverage, GIE and Chart assembled-subject FPIA remain open.
 - User-directed end-of-cycle restoration to READ_ONLY and release of this Main lease are atomic in the containing publication. No other lease/ref/automation/canonical/production/protected/financial operation changed.
 - [Final receipt](evidence/main_chart_owner_cycle_2026-10-06/FINAL_RECEIPT.json), [handoff](evidence/main_chart_owner_cycle_2026-10-06/HANDOFF.md).
+
+
+## CDR-029 · Explicit user-observed Main five-task session mode grant · 2026-10-07
+
+- User answered “계속 진행해” to the exact preceding five-task RUN/restoration permission question at 2026-10-07T19:45:52+09:00. Preserve [exchange](evidence/main_single_control_cycle_2026-10-07/USER_SESSION_APPROVAL.md).
+- On the user's behalf, READ_ONLY→RUN is authorized for this one observed Main cycle only; restore READ_ONLY at completion/task cap/WAIT/D3-R/tool blocker. This is the same narrow §4A exception pattern as CDR-027, with a new explicit session decision; CDR-027/028 are not reused as current permission.
+- Maximum five tasks; own lease TTL two hours; same-failure repair maximum three; no stale recovery. Recheck mode and exact parent before each publish. Unattended executor false; Gate A unchanged.
+- Authorized next cycle: Single-Control adoption, eligible evidence-owner/write-set assignment, operational-return consumption, inactive Phase A contracts, scoped verification/evidence/handoff. No protected/canonical/production/scoring/financial/Holdout/paid permission is created.

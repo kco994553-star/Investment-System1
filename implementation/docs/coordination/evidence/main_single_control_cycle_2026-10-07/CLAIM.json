@@ -1,0 +1,25 @@
+{
+  "cycle_id": "main-single-control-20261007T104552Z",
+  "parent": "d2e72027d1c80995efee738f9960c157e9e9fedc",
+  "lease": {
+    "token": "main-single-control-20261007T104552Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_COORDINATION",
+    "branch": "integration/global-handoff-v1",
+    "acquired_at_utc": "2026-10-07T10:49:36.888779+00:00",
+    "expires_at_utc": "2026-10-07T12:49:36.888779+00:00",
+    "ttl_hours": 2,
+    "input_parent": "d2e72027d1c80995efee738f9960c157e9e9fedc",
+    "scope": [
+      "implementation/docs/coordination/**",
+      "implementation/docs/company_analysis_extension_v1_1/**"
+    ],
+    "unattended": false
+  },
+  "previous_mode": "READ_ONLY",
+  "mode": "RUN",
+  "tasks_used": 1,
+  "remaining_budget": 4,
+  "user_observed": true
+}

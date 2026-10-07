@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "WAIT_DEPENDENCY_BOUNDED_CYCLE_COMPLETE_READ_ONLY",
+  "execution_state": "RUNNING_USER_OBSERVED_MAIN_SINGLE_CONTROL_BOUNDED_CYCLE",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "0e348f60195abadc51bc586db9251497f20539aa",
@@ -73,7 +73,22 @@
     "unattended_executor": "DISABLED_PENDING_GATE_A"
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": null,
+  "lease": {
+    "token": "main-single-control-20261007T104552Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_COORDINATION",
+    "branch": "integration/global-handoff-v1",
+    "acquired_at_utc": "2026-10-07T10:49:36.888779+00:00",
+    "expires_at_utc": "2026-10-07T12:49:36.888779+00:00",
+    "ttl_hours": 2,
+    "input_parent": "d2e72027d1c80995efee738f9960c157e9e9fedc",
+    "scope": [
+      "implementation/docs/coordination/**",
+      "implementation/docs/company_analysis_extension_v1_1/**"
+    ],
+    "unattended": false
+  },
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -188,7 +203,13 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": null,
+  "active_scoped_execution": {
+    "cycle_id": "main-single-control-20261007T104552Z",
+    "tasks_used": 1,
+    "max_tasks": 5,
+    "classification": "D1_D2_OBSERVED_SESSION",
+    "unattended": false
+  },
   "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
   "last_checkpoint_at_utc": "2026-10-05T10:12:00Z",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
