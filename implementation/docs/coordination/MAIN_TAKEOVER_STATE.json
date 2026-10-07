@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "RUNNING_USER_OBSERVED_MAIN_SINGLE_CONTROL_BOUNDED_CYCLE",
+  "execution_state": "IDLE_READ_ONLY_CYCLE_COMPLETE",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "d2e72027d1c80995efee738f9960c157e9e9fedc",
@@ -42,12 +42,13 @@
     "qgv_pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
     "execution_coverage": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
     "fpia_proposal": "7215a9f60ad7128b1748f405051eac684298614f",
-    "global_publication_parent": "648e86871f91c81f37f67d8c6a7a939b8f18f094",
+    "global_publication_parent": "74cdffa463b88db0f00175e5f508a71086f159da",
     "authority_proposal": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
     "global_merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
     "authority_sync_merge": "18e79a9a320b2a7b21a9fa2daad95d4e5d6eb5b3",
     "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
-    "chart_source_evidence": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
+    "chart_source_evidence": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+    "global_packet": "74cdffa463b88db0f00175e5f508a71086f159da"
   },
   "automations": {
     "state": "CONFIGURED_READ_ONLY_WAKE_UP",
@@ -74,25 +75,7 @@
     "unattended_executor": "DISABLED_PENDING_GATE_A"
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": {
-    "token": "main-single-control-20261007T104552Z",
-    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "lane_id": "MAIN_COORDINATION",
-    "branch": "integration/global-handoff-v1",
-    "acquired_at_utc": "2026-10-07T10:49:36.888779+00:00",
-    "expires_at_utc": "2026-10-07T12:49:36.888779+00:00",
-    "ttl_hours": 2,
-    "input_parent": "d2e72027d1c80995efee738f9960c157e9e9fedc",
-    "scope": [
-      "implementation/docs/coordination/**",
-      "implementation/docs/company_analysis_extension_v1_1/**",
-      "main/chart-source-evidence-v1:implementation/docs/portfolio_target_owner/**",
-      "main/chart-source-evidence-v1:implementation/docs/security_map19_owner/**",
-      "main/chart-source-evidence-v1:implementation/docs/strategy_theme_owner/**"
-    ],
-    "unattended": false
-  },
+  "lease": null,
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -153,7 +136,8 @@
     "b0fb2f90-c0a3-11f1-9d37-935f67e7d5bb",
     "06153a20-c0a4-11f1-86c5-4879e4819143",
     "2109dca0-c0a4-11f1-90e2-53b4fb35ee3f",
-    "44934df0-c0a4-11f1-85ed-053f7d504596"
+    "44934df0-c0a4-11f1-85ed-053f7d504596",
+    "main-single-control-20261007T104552Z"
   ],
   "last_processed_comment_ids": [
     5988265306,
@@ -176,7 +160,12 @@
     6013644499,
     6013645018,
     6013644202,
-    6013643886
+    6013643886,
+    6036635943,
+    6036636199,
+    6036636457,
+    6036636696,
+    6036636959
   ],
   "pending_ci": [],
   "next_runnable_backlog": [
@@ -202,16 +191,27 @@
     "HG01/HG02 VERIFIED; HG03 PARTIAL_VERIFIED; unattended executor remains disabled"
   ],
   "last_lease": {
-    "token": "main-cdr024-state-reconcile-20261005-fc8a83eeb8fe",
+    "token": "main-single-control-20261007T104552Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
     "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "acquired_at": "2026-10-05T10:11:00Z",
-    "expires_at": "2026-10-05T12:11:00Z",
+    "lane_id": "MAIN_COORDINATION",
+    "branch": "integration/global-handoff-v1",
+    "acquired_at_utc": "2026-10-07T10:49:36.888779+00:00",
+    "expires_at_utc": "2026-10-07T12:49:36.888779+00:00",
     "ttl_hours": 2,
-    "scope": "Main coordination state/ledger/history coherence after user-approved CDR-024 Global merge",
-    "source_parent": "13a15a2df529cbe54a52dcd4430f4bd06d919937",
-    "claim_commit": "aaedbed36c30411195679eaddc06ad7e4d2ff9e5",
-    "released_at_utc": "2026-10-05T10:12:00Z",
-    "reason": "Append-only adoption identity/state reconciliation completed; READY=0 and no lease retained for waiting"
+    "input_parent": "d2e72027d1c80995efee738f9960c157e9e9fedc",
+    "scope": [
+      "implementation/docs/coordination/**",
+      "implementation/docs/company_analysis_extension_v1_1/**",
+      "main/chart-source-evidence-v1:implementation/docs/portfolio_target_owner/**",
+      "main/chart-source-evidence-v1:implementation/docs/security_map19_owner/**",
+      "main/chart-source-evidence-v1:implementation/docs/strategy_theme_owner/**"
+    ],
+    "unattended": false,
+    "claim_commit": "648e86871f91c81f37f67d8c6a7a939b8f18f094",
+    "released_at_utc": "2026-10-07T11:09:49.723867+00:00",
+    "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_PUBLICATION",
+    "reason": "five-task observed cycle completed; source dependencies remain; no long CI wait"
   },
   "publication_dedup_rule": "Fresh heads/dependency hashes/exact comment-event IDs/run attempts + consumed immutable returns; own docs-only ref movement with no READY/material delta is a no-op. Last publication identity resolves from containing commit, not fabricated self-reference.",
   "dependency_fingerprint_files": [
@@ -221,17 +221,11 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": {
-    "cycle_id": "main-single-control-20261007T104552Z",
-    "tasks_used": 5,
-    "max_tasks": 5,
-    "classification": "D1_D2_OBSERVED_SESSION",
-    "unattended": false
-  },
+  "active_scoped_execution": null,
   "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
-  "last_checkpoint_at_utc": "2026-10-07T11:03:58.150028+00:00",
+  "last_checkpoint_at_utc": "2026-10-07T11:09:49.723867+00:00",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
-  "dependency_content_hash": "5d3835968822791c72ea8e6174ac530bd6d7ba98b603f1396089145dab672f62",
+  "dependency_content_hash": "43e318a021affb7dfbc4e7b71d447fc5651deef50e452e5ed7ccf1a312f4c5af",
   "execution_budget": {
     "new_agents": 0,
     "repeat_audits": 0,
@@ -472,7 +466,8 @@
       "d3_a_candidate": 1,
       "wait_dependency": 3,
       "executed": 0
-    }
+    },
+    "next_cycle_candidate_count": 1
   },
   "delegation_return_checkpoint": {
     "decision": "CDR-023",
@@ -522,23 +517,94 @@
     "basis": "CDR-024 merged identities + hard-guard and pending-D3 blobs",
     "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
     "hard_guard_blob": "1018ff50fc8e624be3b1c9ab403337a4dfc9bb02",
-    "pending_d3_blob": "a556817d4819ed2ec06823a7721927f6f330b975"
+    "pending_d3_blob": "a556817d4819ed2ec06823a7721927f6f330b975",
+    "current_cycle": {
+      "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "qgv_return": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
+      "platform_return": "3d997d34df8c76d4739d8bf71878cc12fec555d9",
+      "chart": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "packet_head": "74cdffa463b88db0f00175e5f508a71086f159da",
+      "comment_ids": [
+        6036635943,
+        6036636199,
+        6036636457,
+        6036636696,
+        6036636959
+      ]
+    }
   },
   "last_bounded_cycle": {
-    "cycle_id": "main-chart-owner-20261006T093820Z",
-    "authority": "CDR-027 / CDR-024",
-    "packet_head": "2cda490a93bd2c093ff07557af4fe748964c20c1",
-    "recorded_at_utc": "2026-10-06T09:49:45.650Z",
+    "cycle_id": "main-single-control-20261007T104552Z",
+    "authority": "CDR-029/030/031 under CDR-024",
+    "packet_head": "74cdffa463b88db0f00175e5f508a71086f159da",
+    "packet_tree": "e50348a2540547e978a1d5427d7530d55ff7b802",
+    "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
     "tasks_used": 5,
     "tasks_max": 5,
     "repair_rounds": {},
-    "source_issue": 54,
-    "owner_returns_received": 0,
-    "source_owners_assigned": 0,
+    "end_reason": "TASK_CAP; SOURCE_LANES_WAIT_DEPENDENCY; INDEPENDENT_SIDECAR_NEXT_CYCLE_CANDIDATE",
+    "end_mode": "READ_ONLY",
+    "unattended_enabled": false,
+    "evidence_roles_assigned": 3,
+    "authoritative_source_returns_received": 0,
+    "source_admissions": 0,
     "production_gates_closed": 0,
     "remaining_production_gates": 6,
-    "end_mode": "READ_ONLY",
-    "unattended_enabled": false
+    "main_D3_A_executed": 0,
+    "routing_deliveries": [
+      {
+        "issue": 54,
+        "comment_id": 6036635943,
+        "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+        "status": "ROUTED_EXACT_READBACK_VERIFIED",
+        "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+        "byte_readback_verified": true,
+        "received_by_owner": false,
+        "automatically_executed": false
+      },
+      {
+        "issue": 41,
+        "comment_id": 6036636199,
+        "body_sha256": "ab5ec4a5ca50e586aef90742aa84a847af3ca65a1affb9fd8a676036d0aed767",
+        "status": "ROUTED_EXACT_READBACK_VERIFIED",
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/41#issuecomment-6036636199",
+        "byte_readback_verified": true,
+        "received_by_owner": false,
+        "automatically_executed": false
+      },
+      {
+        "issue": 44,
+        "comment_id": 6036636457,
+        "body_sha256": "9a1ca0f7197396e269c9d06d076b85c7fb3b1c9e02aa60fedd46f9ee44119fd7",
+        "status": "ROUTED_EXACT_READBACK_VERIFIED",
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-6036636457",
+        "byte_readback_verified": true,
+        "received_by_owner": false,
+        "automatically_executed": false
+      },
+      {
+        "issue": 45,
+        "comment_id": 6036636696,
+        "body_sha256": "0e30da38f01e62119e68cbf9fd2e22b32362b770cf7c416d5618ac8d5827c04d",
+        "status": "ROUTED_EXACT_READBACK_VERIFIED",
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-6036636696",
+        "byte_readback_verified": true,
+        "received_by_owner": false,
+        "automatically_executed": false
+      },
+      {
+        "issue": 36,
+        "comment_id": 6036636959,
+        "body_sha256": "164207f21fce4c26dd1189d48b3c683275c07db7700111ceb12757b0880fce92",
+        "status": "ROUTED_EXACT_READBACK_VERIFIED",
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-6036636959",
+        "byte_readback_verified": true,
+        "received_by_owner": false,
+        "automatically_executed": false
+      }
+    ],
+    "recorded_at_utc": "2026-10-07T11:09:49.723867+00:00",
+    "receipt": "implementation/docs/coordination/evidence/main_single_control_cycle_2026-10-07/FINAL_RECEIPT.json"
   },
   "lease_history": [
     {
@@ -558,6 +624,29 @@
       "release_recorded_at_utc": "2026-10-06T09:49:45.650Z",
       "publication_parent": "2cda490a93bd2c093ff07557af4fe748964c20c1",
       "reason": "Five bounded coordination tasks complete; source/P01/Web/independent-review receipts remain dependencies; user-directed READ_ONLY restore"
+    },
+    {
+      "token": "main-single-control-20261007T104552Z",
+      "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "lane_id": "MAIN_COORDINATION",
+      "branch": "integration/global-handoff-v1",
+      "acquired_at_utc": "2026-10-07T10:49:36.888779+00:00",
+      "expires_at_utc": "2026-10-07T12:49:36.888779+00:00",
+      "ttl_hours": 2,
+      "input_parent": "d2e72027d1c80995efee738f9960c157e9e9fedc",
+      "scope": [
+        "implementation/docs/coordination/**",
+        "implementation/docs/company_analysis_extension_v1_1/**",
+        "main/chart-source-evidence-v1:implementation/docs/portfolio_target_owner/**",
+        "main/chart-source-evidence-v1:implementation/docs/security_map19_owner/**",
+        "main/chart-source-evidence-v1:implementation/docs/strategy_theme_owner/**"
+      ],
+      "unattended": false,
+      "claim_commit": "648e86871f91c81f37f67d8c6a7a939b8f18f094",
+      "released_at_utc": "2026-10-07T11:09:49.723867+00:00",
+      "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_PUBLICATION",
+      "reason": "five-task observed cycle completed; source dependencies remain; no long CI wait"
     }
   ],
   "resume_dependencies": [

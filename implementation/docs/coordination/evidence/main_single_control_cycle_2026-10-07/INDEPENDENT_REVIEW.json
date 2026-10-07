@@ -26,5 +26,7 @@
     "main-source-evidence-20261007/implementation/docs/portfolio_target_owner/RETURN.json": "fda61cbe944cb9b9315000638bc9b574a482e3d3cbe4af1327e547ee0820abbc",
     "main-source-evidence-20261007/implementation/docs/security_map19_owner/OWNER_RECEIPT.json": "d8a267ec384f874ab80c8e13c27d1284ecb0448901c2d17262da314d367131fa",
     "main-source-evidence-20261007/implementation/docs/security_map19_owner/RETURN.json": "3c90c93df65d30ead91122805b2249c5729a9cec298938676178101c513757e6"
-  }
+  },
+  "metadata_followup": "PASS_METADATA",
+  "metadata_scope": "current selectors/lease distinctions/history/nonclosure; final remote restoration not certified"
 }

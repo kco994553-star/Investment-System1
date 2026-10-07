@@ -1702,3 +1702,10 @@ Follow-ups:
 - “QGV Company Analysis UI/UX Extension v1.1” + “Historical Price Context Contract v1.0” accepted as authoritative user product-design input; [structured input](../company_analysis_extension_v1_1/USER_DESIGN_INPUT.json), [Phase A contract](../company_analysis_extension_v1_1/CONTRACT.md), [field contract](../company_analysis_extension_v1_1/FIELD_CONTRACT.json).
 - D1 inactive docs-only contract. Preserve three independent classification axes, source/versioned existing Type profiles, same-basis price context, completed-full-period/Flat/QTD/YTD/partial rules, raw-score separation and Overview→Detail→Evidence navigation.
 - User candidate drawdown numbers remain inactive display-reference candidates; no episode/peer/scoring/weight/default/cutoff activation. Existing critical paths/evidence/owner leases preserved. No new D3-A execution or runtime/production acceptance is claimed.
+
+
+## CDR-032 · 2026-10-07T11:09:49.723867+00:00 · CDR-029 bounded observed cycle receipt / READ_ONLY restoration
+
+Execution receipt, no new authority: CDR029 five-taskcycle complete; CDR030 Main Single-Control adopted, CDR031 userdesign/inactivePhaseA preserved. Published source7b27 and Globalpacket74cd; TREE_IDENTICAL/API_NATIVE_COMMIT, no COMMIT_IDENTICAL claim. Three free bounded evidence roles assigned, authoritativeadmission0; Chart6OPEN/0CLOSED/Market0of19. QGV12hashes verified,193checks reused, Platform9blockers; FPIACI7/7 reused, trust/GIEopen. Five exact routing comments verified, no receiving/automaticexecution inference.
+
+Containing publication restores AUTONOMY_MODE=READ_ONLY, own Mainlease=null and runtimeIDLE after freshRUN/lease/exactpacketparent checks. HG01/HG02 VERIFIED, HG03 PARTIAL_VERIFIED; unattended disabled.0D3-A/0D3-R/0productionclosures/0CI dispatch. Oldhistory/evidence and ownerbranches/leases preserved. This receipt does not renew CDR029 modegrant or grant nextcycle runtime execution. Final identity resolves from containingcommit; remote readback follows publication. See evidence/main_single_control_cycle_2026-10-07/FINAL_RECEIPT.json.

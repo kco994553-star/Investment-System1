@@ -1,0 +1,57 @@
+{
+  "cycle_id": "main-single-control-20261007T104552Z",
+  "packet_head": "74cdffa463b88db0f00175e5f508a71086f159da",
+  "deliveries": [
+    {
+      "issue": 54,
+      "comment_id": 6036635943,
+      "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+      "status": "ROUTED_EXACT_READBACK_VERIFIED",
+      "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+      "byte_readback_verified": true,
+      "received_by_owner": false,
+      "automatically_executed": false
+    },
+    {
+      "issue": 41,
+      "comment_id": 6036636199,
+      "body_sha256": "ab5ec4a5ca50e586aef90742aa84a847af3ca65a1affb9fd8a676036d0aed767",
+      "status": "ROUTED_EXACT_READBACK_VERIFIED",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/41#issuecomment-6036636199",
+      "byte_readback_verified": true,
+      "received_by_owner": false,
+      "automatically_executed": false
+    },
+    {
+      "issue": 44,
+      "comment_id": 6036636457,
+      "body_sha256": "9a1ca0f7197396e269c9d06d076b85c7fb3b1c9e02aa60fedd46f9ee44119fd7",
+      "status": "ROUTED_EXACT_READBACK_VERIFIED",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-6036636457",
+      "byte_readback_verified": true,
+      "received_by_owner": false,
+      "automatically_executed": false
+    },
+    {
+      "issue": 45,
+      "comment_id": 6036636696,
+      "body_sha256": "0e30da38f01e62119e68cbf9fd2e22b32362b770cf7c416d5618ac8d5827c04d",
+      "status": "ROUTED_EXACT_READBACK_VERIFIED",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-6036636696",
+      "byte_readback_verified": true,
+      "received_by_owner": false,
+      "automatically_executed": false
+    },
+    {
+      "issue": 36,
+      "comment_id": 6036636959,
+      "body_sha256": "164207f21fce4c26dd1189d48b3c683275c07db7700111ceb12757b0880fce92",
+      "status": "ROUTED_EXACT_READBACK_VERIFIED",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-6036636959",
+      "byte_readback_verified": true,
+      "received_by_owner": false,
+      "automatically_executed": false
+    }
+  ],
+  "posted_is_not_received_or_executed": true
+}

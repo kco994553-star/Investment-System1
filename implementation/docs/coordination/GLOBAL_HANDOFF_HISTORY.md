@@ -301,3 +301,8 @@ After policy/return publication: MainREADY D1/D2/D3-A=0, sharedlease=null, no ac
 ## GCH-031 · 2026-10-07T11:03:58.150028+00:00 · Single-Control/Company Analysis bounded contract publication
 
 New current GCH031 supersedes GCH030 owner-unassigned summary only for three bounded evidence roles; source authority remains unadmitted. Current HG selectors reconcile older Main summaries to HG01/HG02 VERIFIED/HG03 PARTIAL_VERIFIED. New source branch7b27 native publication TREE_IDENTICAL, six docs-only files,0source/production closure. CDR030/031 append only; independent review PASS_DOC_SCOPE. Observedsession only, canonical/oldownerrefs protected; finalmode restoration pending task5.
+
+
+## GCH-032 · 2026-10-07T11:09:49.723867+00:00 · Five-task completion / own control restoration
+
+CDR032 receipt supersedes GCH031 running selector. Native source7b27/packet74cd publication and5routingbyte/IDreadbacks verified. READ_ONLY/MainleaseNULL/runtimeIDLE atomic target in containingpublication; finalexternalreadback follows. All6Chartproductiongates/source19admissions remain open/unadmitted, existingleases protected. NextordinaryPhaseAsidecar candidate requires freshobservedsession check; no unattendedrenewal.

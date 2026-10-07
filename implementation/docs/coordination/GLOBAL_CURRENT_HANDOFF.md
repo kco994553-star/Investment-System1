@@ -1,3 +1,16 @@
+# GCH-032 · Main Single-Control cycle complete / READ_ONLY · 2026-10-07T11:09:49.723867+00:00
+
+Five observed tasks complete; CDR029 grant ends. Containing publication sets AUTONOMY_MODE=READ_ONLY, Mainlease=null, runtimeIDLE. CDR030 Single-Control adoption gives one user-control entry point without unattended/GateA/standing mode permission. CDR031 PhaseA Company Analysis/HistoricalPrice contract remains inactive; no new weights/reference thresholds/calibration/runtime behavior.
+
+- Source evidence roles: Main writer, branch `main/chart-source-evidence-v1` exact `7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5`; distinct `implementation/docs/portfolio_target_owner/**`, `security_map19_owner/**`, `strategy_theme_owner/**`; source leases released. TARGET19authoredrows100%, Security19unresolved/admitted0, authoredTheme30/25/20/25. Authoritative current/availability/adoption/identity/catalog version still UNAVAILABLE; role assignment≠source authority.
+- Chart#41 exact2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9:6OPEN/0CLOSED, Market0/19. P01actualTARGETapplicability and completeWeb/source/Product per-file acceptance absent. FPIA#47 exact7215 CI7/7 reused; independent verifier/launcher/runtime/externalcoverage/GIE OPEN, actualChartassembledresult NOT_RUN.
+- QGVd156 operationalreturn consumed with12exacthashes,193checks reused; MissingData heldlease preserved. Platform3d997 operationalstate consumed only; sourceACKunverified/9blockers.0newproductionclosure.
+- Globalpacket `74cdffa463b88db0f00175e5f508a71086f159da` pins [Single-Control policy](policies/Investment-System1_Main_Single_Control_Execution_Policy_v1_0.md) and [PhaseA contract](../company_analysis_extension_v1_1/CONTRACT.md). Five routingcomments#54/#41/#44/#45/#36 exactbyte/ID verified; posting≠receipt≠execution. [Finalreceipt](evidence/main_single_control_cycle_2026-10-07/FINAL_RECEIPT.json) · [scopedhandoff](evidence/main_single_control_cycle_2026-10-07/HANDOFF.md).
+
+Next criticalpath: authoritativeTARGET/Security19/Theme input, P01/Webacceptance and independentFPIAtrust/GIE. IndependentREADYcandidate for next observedcycle: ordinaryPhaseAsidecar after freshmode/owner/write-set checks; no specialistchatwake prerequisite. HG01/HG02 VERIFIED/HG03 PARTIAL_VERIFIED; unattendeddisabled. Canonical and existingownerrefs unchanged, no protectedboundaryaction. Finalremote mode/lease readback must follow exactparent force=false publication.
+
+---
+
 # GCH-031 · Main Single-Control adoption and inactive Company Analysis contracts · 2026-10-07T11:03:58.150028+00:00
 
 CDR-029 authorizes only this observed five-task cycle; CDR-030 adopts Main Single-Control v1.0, with no standing mode or Gate A grant. CDR-031 records QGV Company Analysis UI/UX Extension v1.1 and Historical Price Context Contract v1.0. Current publication is task5; RUN/own Main lease are retained briefly for routing and final READ_ONLY restoration. Unattended executor remains disabled. HG01/HG02 VERIFIED, HG03 PARTIAL_VERIFIED; older conflicting summaries below are historical.

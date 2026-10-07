@@ -77,11 +77,11 @@
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
-      "delivery_channel": null,
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
       "delivered_at": null,
       "receipt": null,
       "last_consumed_revision": null,
-      "state": "EVIDENCE_READY",
+      "state": "ROUTED",
       "next_action": "Consume reference-only RETURN; acquire missing authoritative source fields before admission; no ticker-generated identity or Theme version",
       "production_gate": "OPEN",
       "request_status": "WAIT_SOURCE_AUTHORITY",
@@ -95,11 +95,27 @@
           "implementation/docs/portfolio_target_owner/**"
         ],
         "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
-        "source_authority_admitted": false
+        "source_authority_admitted": false,
+        "routed": true
       },
       "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
       "evidence_owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-      "evidence_role": "Portfolio TARGET evidence writer"
+      "evidence_role": "Portfolio TARGET evidence writer",
+      "delivery_history": [
+        {
+          "issue": 54,
+          "comment_id": 6036635943,
+          "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        }
+      ],
+      "delivery_comment_id": 6036635943,
+      "delivery_body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+      "evidence_state": "EVIDENCE_READY_REFERENCE_ONLY"
     },
     {
       "id": "MAIN-CHART-A-S2-20261005",
@@ -126,11 +142,11 @@
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
-      "delivery_channel": null,
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
       "delivered_at": null,
       "receipt": null,
       "last_consumed_revision": null,
-      "state": "EVIDENCE_READY",
+      "state": "ROUTED",
       "next_action": "Consume reference-only RETURN; acquire missing authoritative source fields before admission; no ticker-generated identity or Theme version",
       "production_gate": "OPEN",
       "request_status": "WAIT_SOURCE_AUTHORITY",
@@ -144,11 +160,27 @@
           "implementation/docs/security_map19_owner/**"
         ],
         "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
-        "source_authority_admitted": false
+        "source_authority_admitted": false,
+        "routed": true
       },
       "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
       "evidence_owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-      "evidence_role": "Common Security19 evidence writer"
+      "evidence_role": "Common Security19 evidence writer",
+      "delivery_history": [
+        {
+          "issue": 54,
+          "comment_id": 6036635943,
+          "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        }
+      ],
+      "delivery_comment_id": 6036635943,
+      "delivery_body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+      "evidence_state": "EVIDENCE_READY_REFERENCE_ONLY"
     },
     {
       "id": "MAIN-CHART-A-S3-20261005",
@@ -176,11 +208,11 @@
         "CDR-017",
         "user takeover directive 2026-10-05"
       ],
-      "delivery_channel": null,
+      "delivery_channel": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
       "delivered_at": null,
       "receipt": null,
       "last_consumed_revision": null,
-      "state": "EVIDENCE_READY",
+      "state": "ROUTED",
       "next_action": "Consume reference-only RETURN; acquire missing authoritative source fields before admission; no ticker-generated identity or Theme version",
       "production_gate": "OPEN",
       "request_status": "WAIT_SOURCE_AUTHORITY",
@@ -194,11 +226,27 @@
           "implementation/docs/strategy_theme_owner/**"
         ],
         "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
-        "source_authority_admitted": false
+        "source_authority_admitted": false,
+        "routed": true
       },
       "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
       "evidence_owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-      "evidence_role": "Strategy Theme source-evidence writer"
+      "evidence_role": "Strategy Theme source-evidence writer",
+      "delivery_history": [
+        {
+          "issue": 54,
+          "comment_id": 6036635943,
+          "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        }
+      ],
+      "delivery_comment_id": 6036635943,
+      "delivery_body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+      "evidence_state": "EVIDENCE_READY_REFERENCE_ONLY"
     },
     {
       "id": "MAIN-CHART-A-G1-20261005",
@@ -1637,20 +1685,77 @@
     }
   },
   "last_bounded_cycle": {
-    "cycle_id": "main-chart-owner-20261006T093820Z",
-    "authority": "CDR-027 / CDR-024",
-    "packet_head": "2cda490a93bd2c093ff07557af4fe748964c20c1",
-    "recorded_at_utc": "2026-10-06T09:49:45.650Z",
+    "cycle_id": "main-single-control-20261007T104552Z",
+    "authority": "CDR-029/030/031 under CDR-024",
+    "packet_head": "74cdffa463b88db0f00175e5f508a71086f159da",
+    "packet_tree": "e50348a2540547e978a1d5427d7530d55ff7b802",
+    "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
     "tasks_used": 5,
     "tasks_max": 5,
     "repair_rounds": {},
-    "source_issue": 54,
-    "owner_returns_received": 0,
-    "source_owners_assigned": 0,
+    "end_reason": "TASK_CAP; SOURCE_LANES_WAIT_DEPENDENCY; INDEPENDENT_SIDECAR_NEXT_CYCLE_CANDIDATE",
+    "end_mode": "READ_ONLY",
+    "unattended_enabled": false,
+    "evidence_roles_assigned": 3,
+    "authoritative_source_returns_received": 0,
+    "source_admissions": 0,
     "production_gates_closed": 0,
     "remaining_production_gates": 6,
-    "end_mode": "READ_ONLY",
-    "unattended_enabled": false
+    "main_D3_A_executed": 0,
+    "routing_deliveries": [
+      {
+        "issue": 54,
+        "comment_id": 6036635943,
+        "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+        "status": "ROUTED_EXACT_READBACK_VERIFIED",
+        "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+        "byte_readback_verified": true,
+        "received_by_owner": false,
+        "automatically_executed": false
+      },
+      {
+        "issue": 41,
+        "comment_id": 6036636199,
+        "body_sha256": "ab5ec4a5ca50e586aef90742aa84a847af3ca65a1affb9fd8a676036d0aed767",
+        "status": "ROUTED_EXACT_READBACK_VERIFIED",
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/41#issuecomment-6036636199",
+        "byte_readback_verified": true,
+        "received_by_owner": false,
+        "automatically_executed": false
+      },
+      {
+        "issue": 44,
+        "comment_id": 6036636457,
+        "body_sha256": "9a1ca0f7197396e269c9d06d076b85c7fb3b1c9e02aa60fedd46f9ee44119fd7",
+        "status": "ROUTED_EXACT_READBACK_VERIFIED",
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-6036636457",
+        "byte_readback_verified": true,
+        "received_by_owner": false,
+        "automatically_executed": false
+      },
+      {
+        "issue": 45,
+        "comment_id": 6036636696,
+        "body_sha256": "0e30da38f01e62119e68cbf9fd2e22b32362b770cf7c416d5618ac8d5827c04d",
+        "status": "ROUTED_EXACT_READBACK_VERIFIED",
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-6036636696",
+        "byte_readback_verified": true,
+        "received_by_owner": false,
+        "automatically_executed": false
+      },
+      {
+        "issue": 36,
+        "comment_id": 6036636959,
+        "body_sha256": "164207f21fce4c26dd1189d48b3c683275c07db7700111ceb12757b0880fce92",
+        "status": "ROUTED_EXACT_READBACK_VERIFIED",
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-6036636959",
+        "byte_readback_verified": true,
+        "received_by_owner": false,
+        "automatically_executed": false
+      }
+    ],
+    "recorded_at_utc": "2026-10-07T11:09:49.723867+00:00",
+    "receipt": "implementation/docs/coordination/evidence/main_single_control_cycle_2026-10-07/FINAL_RECEIPT.json"
   },
   "bounded_cycle_comment_inventory": [
     {
@@ -1684,6 +1789,56 @@
       "body_sha256": "1dd9bde27c6e8c81701ee93ef6fdd2a439c651bf50d2c6d96baa107fef507274",
       "cycle_id": "main-chart-owner-20261006T093820Z",
       "role": "MAIN_ROUTING_NOT_OWNER_RETURN"
+    },
+    {
+      "issue": 54,
+      "comment_id": 6036635943,
+      "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+      "status": "ROUTED_EXACT_READBACK_VERIFIED",
+      "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+      "byte_readback_verified": true,
+      "received_by_owner": false,
+      "automatically_executed": false
+    },
+    {
+      "issue": 41,
+      "comment_id": 6036636199,
+      "body_sha256": "ab5ec4a5ca50e586aef90742aa84a847af3ca65a1affb9fd8a676036d0aed767",
+      "status": "ROUTED_EXACT_READBACK_VERIFIED",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/41#issuecomment-6036636199",
+      "byte_readback_verified": true,
+      "received_by_owner": false,
+      "automatically_executed": false
+    },
+    {
+      "issue": 44,
+      "comment_id": 6036636457,
+      "body_sha256": "9a1ca0f7197396e269c9d06d076b85c7fb3b1c9e02aa60fedd46f9ee44119fd7",
+      "status": "ROUTED_EXACT_READBACK_VERIFIED",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-6036636457",
+      "byte_readback_verified": true,
+      "received_by_owner": false,
+      "automatically_executed": false
+    },
+    {
+      "issue": 45,
+      "comment_id": 6036636696,
+      "body_sha256": "0e30da38f01e62119e68cbf9fd2e22b32362b770cf7c416d5618ac8d5827c04d",
+      "status": "ROUTED_EXACT_READBACK_VERIFIED",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-6036636696",
+      "byte_readback_verified": true,
+      "received_by_owner": false,
+      "automatically_executed": false
+    },
+    {
+      "issue": 36,
+      "comment_id": 6036636959,
+      "body_sha256": "164207f21fce4c26dd1189d48b3c683275c07db7700111ceb12757b0880fce92",
+      "status": "ROUTED_EXACT_READBACK_VERIFIED",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-6036636959",
+      "byte_readback_verified": true,
+      "received_by_owner": false,
+      "automatically_executed": false
     }
   ],
   "single_control_policy": {
@@ -1778,7 +1933,17 @@
       "remaining_product_blockers": 9,
       "new_product_closures": 0
     },
-    "production_closures": 0
+    "production_closures": 0,
+    "main_ack_delivery": {
+      "issue": 44,
+      "comment_id": 6036636457,
+      "body_sha256": "9a1ca0f7197396e269c9d06d076b85c7fb3b1c9e02aa60fedd46f9ee44119fd7",
+      "status": "ROUTED_EXACT_READBACK_VERIFIED",
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-6036636457",
+      "byte_readback_verified": true,
+      "received_by_owner": false,
+      "automatically_executed": false
+    }
   },
   "current_source_evidence_roles": {
     "schema": "main-bounded-source-evidence-roles-v1",
@@ -1869,5 +2034,7 @@
       "readback_verified": true
     }
   },
-  "current_dependency_reconciliation": "evidence/main_single_control_cycle_2026-10-07/DEPENDENCY_RECONCILIATION.json"
+  "current_dependency_reconciliation": "evidence/main_single_control_cycle_2026-10-07/DEPENDENCY_RECONCILIATION.json",
+  "current_mode": "READ_ONLY",
+  "current_main_lease": null
 }
