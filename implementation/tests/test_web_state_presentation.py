@@ -301,3 +301,10 @@ def test_displayed_count_keys_are_restricted_to_the_code_token_key_shape():
                     assert k.endswith('_count'), k
     assert any(len(k) == 64 for c in fixture.COUNT_KEY_EDGE.values() for k in c)
     assert any(len(k) == 65 for c in fixture.FREE_TEXT_COUNT_KEYS.values() for k in c)
+
+
+def test_ppa_f08_actual_never_falls_back_to_target_weight():
+    assert 'actual_weight ?? h.target_weight' not in APP
+    assert 'pct(h.actual_weight ?? h.target_weight)' not in APP
+    assert 'h.actual_weight==null?"NOT_AVAILABLE":pct(h.actual_weight)' in APP
+    assert '${t("실제 비중")} ${h.actual_weight==null?"NOT_AVAILABLE":pct(h.actual_weight)}' in APP
