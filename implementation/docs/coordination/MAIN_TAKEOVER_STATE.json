@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "RUNNING_OBSERVED_COMPANY_ANALYSIS_PHASE_A",
+  "execution_state": "WAIT_DEPENDENCY_READ_ONLY",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "d2e72027d1c80995efee738f9960c157e9e9fedc",
@@ -42,13 +42,14 @@
     "qgv_pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
     "execution_coverage": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
     "fpia_proposal": "7215a9f60ad7128b1748f405051eac684298614f",
-    "global_publication_parent": "74cdffa463b88db0f00175e5f508a71086f159da",
+    "global_publication_parent": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
     "authority_proposal": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
     "global_merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
     "authority_sync_merge": "18e79a9a320b2a7b21a9fa2daad95d4e5d6eb5b3",
     "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
     "chart_source_evidence": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
-    "global_packet": "74cdffa463b88db0f00175e5f508a71086f159da"
+    "global_packet": "74cdffa463b88db0f00175e5f508a71086f159da",
+    "company_analysis_phase_a": "8cabb2e93bbc8425592221456f44801e0f4ca413"
   },
   "automations": {
     "state": "CONFIGURED_READ_ONLY_WAKE_UP",
@@ -75,25 +76,7 @@
     "unattended_executor": "DISABLED_PENDING_GATE_A"
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": {
-    "token": "main-ca-phase-a-20261008T093552Z",
-    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "lane_id": "MAIN_COMPANY_ANALYSIS_PHASE_A",
-    "branch": "integration/global-handoff-v1",
-    "source_branch": "main/company-analysis-phase-a-v1",
-    "acquired_at_utc": "2026-10-08T09:35:52.934Z",
-    "expires_at_utc": "2026-10-08T11:35:52.934Z",
-    "ttl_hours": 2,
-    "input_parent": "c2dad0c1b09a89c5688d8253d53f8a137237bef8",
-    "scope": [
-      "implementation/docs/coordination/**",
-      "main/company-analysis-phase-a-v1:implementation/docs/company_analysis_extension_v1_1/preview/**",
-      "main/company-analysis-phase-a-v1:implementation/src/investment_system/product/company_price_context_v1.py",
-      "main/company-analysis-phase-a-v1:implementation/tests/test_company_price_context_v1.py"
-    ],
-    "unattended": false
-  },
+  "lease": null,
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -155,7 +138,8 @@
     "06153a20-c0a4-11f1-86c5-4879e4819143",
     "2109dca0-c0a4-11f1-90e2-53b4fb35ee3f",
     "44934df0-c0a4-11f1-85ed-053f7d504596",
-    "main-single-control-20261007T104552Z"
+    "main-single-control-20261007T104552Z",
+    "main-ca-phase-a-20261008T093552Z"
   ],
   "last_processed_comment_ids": [
     5988265306,
@@ -191,13 +175,15 @@
       "id": "CA-PHASE-A-SIDECAR-PREVIEW",
       "lane": "Web/Chart/Product-contract",
       "classification": "D1/D2 candidate",
-      "status": "NEXT_OBSERVED_CYCLE_FRESH_CHECK_REQUIRED",
+      "status": "DONE_OFFLINE_CANDIDATE_ONLY",
       "branch_candidate": "main/company-analysis-phase-a-v1",
       "write_set": [
         "new ordinary sidecar paths only; exact files to claim before execution"
       ],
       "source": "implementation/docs/company_analysis_extension_v1_1/OWNER_DELTA_ROUTES.json",
-      "production_permission": false
+      "production_permission": false,
+      "source_head": "8cabb2e93bbc8425592221456f44801e0f4ca413",
+      "verification": "implementation/docs/coordination/evidence/main_company_analysis_cycle_2026-10-08/VERIFICATION.json"
     }
   ],
   "next_dependency_gates": [
@@ -209,27 +195,26 @@
     "HG01/HG02 VERIFIED; HG03 PARTIAL_VERIFIED; unattended executor remains disabled"
   ],
   "last_lease": {
-    "token": "main-single-control-20261007T104552Z",
+    "token": "main-ca-phase-a-20261008T093552Z",
     "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
     "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "lane_id": "MAIN_COORDINATION",
+    "lane_id": "MAIN_COMPANY_ANALYSIS_PHASE_A",
     "branch": "integration/global-handoff-v1",
-    "acquired_at_utc": "2026-10-07T10:49:36.888779+00:00",
-    "expires_at_utc": "2026-10-07T12:49:36.888779+00:00",
+    "source_branch": "main/company-analysis-phase-a-v1",
+    "acquired_at_utc": "2026-10-08T09:35:52.934Z",
+    "expires_at_utc": "2026-10-08T11:35:52.934Z",
     "ttl_hours": 2,
-    "input_parent": "d2e72027d1c80995efee738f9960c157e9e9fedc",
+    "input_parent": "c2dad0c1b09a89c5688d8253d53f8a137237bef8",
     "scope": [
       "implementation/docs/coordination/**",
-      "implementation/docs/company_analysis_extension_v1_1/**",
-      "main/chart-source-evidence-v1:implementation/docs/portfolio_target_owner/**",
-      "main/chart-source-evidence-v1:implementation/docs/security_map19_owner/**",
-      "main/chart-source-evidence-v1:implementation/docs/strategy_theme_owner/**"
+      "main/company-analysis-phase-a-v1:implementation/docs/company_analysis_extension_v1_1/preview/**",
+      "main/company-analysis-phase-a-v1:implementation/src/investment_system/product/company_price_context_v1.py",
+      "main/company-analysis-phase-a-v1:implementation/tests/test_company_price_context_v1.py"
     ],
     "unattended": false,
-    "claim_commit": "648e86871f91c81f37f67d8c6a7a939b8f18f094",
-    "released_at_utc": "2026-10-07T11:09:49.723867+00:00",
+    "released_at_utc": "2026-10-08T10:16:33Z",
     "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_PUBLICATION",
-    "reason": "five-task observed cycle completed; source dependencies remain; no long CI wait"
+    "reason": "CDR033 five-task Phase A source/evidence cycle completed; restore READ_ONLY at task cap; source dependencies remain"
   },
   "publication_dedup_rule": "Fresh heads/dependency hashes/exact comment-event IDs/run attempts + consumed immutable returns; own docs-only ref movement with no READY/material delta is a no-op. Last publication identity resolves from containing commit, not fabricated self-reference.",
   "dependency_fingerprint_files": [
@@ -239,20 +224,9 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": {
-    "cycle_id": "main-ca-phase-a-20261008T093552Z",
-    "branch": "main/company-analysis-phase-a-v1",
-    "write_set": [
-      "main/company-analysis-phase-a-v1:implementation/docs/company_analysis_extension_v1_1/preview/**",
-      "main/company-analysis-phase-a-v1:implementation/src/investment_system/product/company_price_context_v1.py",
-      "main/company-analysis-phase-a-v1:implementation/tests/test_company_price_context_v1.py"
-    ],
-    "classification": "D1/D2_ISOLATED_DISPLAY_CONTEXT",
-    "task_limit": 5,
-    "tasks_used": 1
-  },
+  "active_scoped_execution": null,
   "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
-  "last_checkpoint_at_utc": "2026-10-08T09:35:52.934Z",
+  "last_checkpoint_at_utc": "2026-10-08T10:16:33Z",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
   "dependency_content_hash": "43e318a021affb7dfbc4e7b71d447fc5651deef50e452e5ed7ccf1a312f4c5af",
   "execution_budget": {
@@ -264,10 +238,10 @@
     "current_cycle": {
       "tasks_used": 5,
       "max_tasks": 5,
-      "new_independent_doc_review_agents": 1,
+      "new_independent_source_review_agents": 1,
       "full_audits": 0,
       "ci_dispatch": 0,
-      "same_failure_repairs": 0,
+      "same_failure_repairs": 1,
       "d3_a_executed": 0,
       "production_gate_closures": 0
     }
@@ -496,7 +470,7 @@
       "wait_dependency": 3,
       "executed": 0
     },
-    "next_cycle_candidate_count": 1
+    "next_cycle_candidate_count": 0
   },
   "delegation_return_checkpoint": {
     "decision": "CDR-023",
@@ -563,77 +537,23 @@
     }
   },
   "last_bounded_cycle": {
-    "cycle_id": "main-single-control-20261007T104552Z",
-    "authority": "CDR-029/030/031 under CDR-024",
-    "packet_head": "74cdffa463b88db0f00175e5f508a71086f159da",
-    "packet_tree": "e50348a2540547e978a1d5427d7530d55ff7b802",
-    "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+    "cycle_id": "main-ca-phase-a-20261008T093552Z",
+    "authority": "CDR-033 under CDR-024/030/031",
+    "source_head": "8cabb2e93bbc8425592221456f44801e0f4ca413",
+    "source_tree": "7db0d8c91a453ed3d61cb1c6b32af46bdc1fb7f5",
+    "global_publication_parent": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
     "tasks_used": 5,
     "tasks_max": 5,
-    "repair_rounds": {},
-    "end_reason": "TASK_CAP; SOURCE_LANES_WAIT_DEPENDENCY; INDEPENDENT_SIDECAR_NEXT_CYCLE_CANDIDATE",
+    "repair_rounds": 1,
+    "end_reason": "TASK_CAP; INACTIVE_PHASE_A_CANDIDATE_PUBLISHED; PRODUCTION_SOURCE_LANES_WAIT_DEPENDENCY",
     "end_mode": "READ_ONLY",
     "unattended_enabled": false,
-    "evidence_roles_assigned": 3,
-    "authoritative_source_returns_received": 0,
     "source_admissions": 0,
     "production_gates_closed": 0,
     "remaining_production_gates": 6,
     "main_D3_A_executed": 0,
-    "routing_deliveries": [
-      {
-        "issue": 54,
-        "comment_id": 6036635943,
-        "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
-        "status": "ROUTED_EXACT_READBACK_VERIFIED",
-        "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
-        "byte_readback_verified": true,
-        "received_by_owner": false,
-        "automatically_executed": false
-      },
-      {
-        "issue": 41,
-        "comment_id": 6036636199,
-        "body_sha256": "ab5ec4a5ca50e586aef90742aa84a847af3ca65a1affb9fd8a676036d0aed767",
-        "status": "ROUTED_EXACT_READBACK_VERIFIED",
-        "url": "https://github.com/kco994553-star/Investment-System1/pull/41#issuecomment-6036636199",
-        "byte_readback_verified": true,
-        "received_by_owner": false,
-        "automatically_executed": false
-      },
-      {
-        "issue": 44,
-        "comment_id": 6036636457,
-        "body_sha256": "9a1ca0f7197396e269c9d06d076b85c7fb3b1c9e02aa60fedd46f9ee44119fd7",
-        "status": "ROUTED_EXACT_READBACK_VERIFIED",
-        "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-6036636457",
-        "byte_readback_verified": true,
-        "received_by_owner": false,
-        "automatically_executed": false
-      },
-      {
-        "issue": 45,
-        "comment_id": 6036636696,
-        "body_sha256": "0e30da38f01e62119e68cbf9fd2e22b32362b770cf7c416d5618ac8d5827c04d",
-        "status": "ROUTED_EXACT_READBACK_VERIFIED",
-        "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-6036636696",
-        "byte_readback_verified": true,
-        "received_by_owner": false,
-        "automatically_executed": false
-      },
-      {
-        "issue": 36,
-        "comment_id": 6036636959,
-        "body_sha256": "164207f21fce4c26dd1189d48b3c683275c07db7700111ceb12757b0880fce92",
-        "status": "ROUTED_EXACT_READBACK_VERIFIED",
-        "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-6036636959",
-        "byte_readback_verified": true,
-        "received_by_owner": false,
-        "automatically_executed": false
-      }
-    ],
-    "recorded_at_utc": "2026-10-07T11:09:49.723867+00:00",
-    "receipt": "implementation/docs/coordination/evidence/main_single_control_cycle_2026-10-07/FINAL_RECEIPT.json"
+    "recorded_at_utc": "2026-10-08T10:16:33Z",
+    "receipt": "implementation/docs/coordination/evidence/main_company_analysis_cycle_2026-10-08/FINAL_RECEIPT.json"
   },
   "lease_history": [
     {
@@ -676,6 +596,28 @@
       "released_at_utc": "2026-10-07T11:09:49.723867+00:00",
       "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_PUBLICATION",
       "reason": "five-task observed cycle completed; source dependencies remain; no long CI wait"
+    },
+    {
+      "token": "main-ca-phase-a-20261008T093552Z",
+      "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "lane_id": "MAIN_COMPANY_ANALYSIS_PHASE_A",
+      "branch": "integration/global-handoff-v1",
+      "source_branch": "main/company-analysis-phase-a-v1",
+      "acquired_at_utc": "2026-10-08T09:35:52.934Z",
+      "expires_at_utc": "2026-10-08T11:35:52.934Z",
+      "ttl_hours": 2,
+      "input_parent": "c2dad0c1b09a89c5688d8253d53f8a137237bef8",
+      "scope": [
+        "implementation/docs/coordination/**",
+        "main/company-analysis-phase-a-v1:implementation/docs/company_analysis_extension_v1_1/preview/**",
+        "main/company-analysis-phase-a-v1:implementation/src/investment_system/product/company_price_context_v1.py",
+        "main/company-analysis-phase-a-v1:implementation/tests/test_company_price_context_v1.py"
+      ],
+      "unattended": false,
+      "released_at_utc": "2026-10-08T10:16:33Z",
+      "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_PUBLICATION",
+      "reason": "CDR033 five-task Phase A source/evidence cycle completed; restore READ_ONLY at task cap; source dependencies remain"
     }
   ],
   "resume_dependencies": [
@@ -700,5 +642,91 @@
     "runtime_enabled": false,
     "numeric_policy_activated": false
   },
-  "current_cycle_evidence": "implementation/docs/coordination/evidence/main_single_control_cycle_2026-10-07/"
+  "current_cycle_evidence": "implementation/docs/coordination/evidence/main_company_analysis_cycle_2026-10-08/",
+  "bounded_cycle_history": [
+    {
+      "cycle_id": "main-single-control-20261007T104552Z",
+      "authority": "CDR-029/030/031 under CDR-024",
+      "packet_head": "74cdffa463b88db0f00175e5f508a71086f159da",
+      "packet_tree": "e50348a2540547e978a1d5427d7530d55ff7b802",
+      "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "tasks_used": 5,
+      "tasks_max": 5,
+      "repair_rounds": {},
+      "end_reason": "TASK_CAP; SOURCE_LANES_WAIT_DEPENDENCY; INDEPENDENT_SIDECAR_NEXT_CYCLE_CANDIDATE",
+      "end_mode": "READ_ONLY",
+      "unattended_enabled": false,
+      "evidence_roles_assigned": 3,
+      "authoritative_source_returns_received": 0,
+      "source_admissions": 0,
+      "production_gates_closed": 0,
+      "remaining_production_gates": 6,
+      "main_D3_A_executed": 0,
+      "routing_deliveries": [
+        {
+          "issue": 54,
+          "comment_id": 6036635943,
+          "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        },
+        {
+          "issue": 41,
+          "comment_id": 6036636199,
+          "body_sha256": "ab5ec4a5ca50e586aef90742aa84a847af3ca65a1affb9fd8a676036d0aed767",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/41#issuecomment-6036636199",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        },
+        {
+          "issue": 44,
+          "comment_id": 6036636457,
+          "body_sha256": "9a1ca0f7197396e269c9d06d076b85c7fb3b1c9e02aa60fedd46f9ee44119fd7",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-6036636457",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        },
+        {
+          "issue": 45,
+          "comment_id": 6036636696,
+          "body_sha256": "0e30da38f01e62119e68cbf9fd2e22b32362b770cf7c416d5618ac8d5827c04d",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-6036636696",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        },
+        {
+          "issue": 36,
+          "comment_id": 6036636959,
+          "body_sha256": "164207f21fce4c26dd1189d48b3c683275c07db7700111ceb12757b0880fce92",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-6036636959",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        }
+      ],
+      "recorded_at_utc": "2026-10-07T11:09:49.723867+00:00",
+      "receipt": "implementation/docs/coordination/evidence/main_single_control_cycle_2026-10-07/FINAL_RECEIPT.json"
+    }
+  ],
+  "company_analysis_phase_a_consumption": {
+    "source_head": "8cabb2e93bbc8425592221456f44801e0f4ca413",
+    "source_tree": "7db0d8c91a453ed3d61cb1c6b32af46bdc1fb7f5",
+    "status": "CONSUMED_OFFLINE_PREVIEW_ONLY",
+    "source_receipt": "implementation/docs/company_analysis_extension_v1_1/preview/VERIFICATION.json",
+    "root_hash_checks": 10,
+    "allowed_added_files": 22,
+    "source_admission": false,
+    "runtime_enabled": false,
+    "production_gate_closures": 0
+  }
 }

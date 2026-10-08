@@ -1,0 +1,120 @@
+{
+  "schema": "main-phase-a-exact-consumption-verification-v1",
+  "recorded_at_utc": "2026-10-08T10:16:33Z",
+  "global_input": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+  "source_head": "8cabb2e93bbc8425592221456f44801e0f4ca413",
+  "source_tree": "7db0d8c91a453ed3d61cb1c6b32af46bdc1fb7f5",
+  "source_verification": {
+    "schema": "company-analysis-phase-a-verification-v1",
+    "cycle_id": "main-ca-phase-a-20261008T093552Z",
+    "scope": "INACTIVE_SUPPLIED_INPUT_ADAPTER_AND_SYNTHETIC_OFFLINE_PREVIEW",
+    "classification": "D1/D2",
+    "canonical_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "contract_inputs": [
+      {
+        "path": "input/CONTRACT.md",
+        "git_blob": "6ffe3966b5191d70727a166822ff4bea54566c62"
+      },
+      {
+        "path": "input/FIELD_CONTRACT.json",
+        "git_blob": "3abd1b79e9cab5d1a7ab4bcbf84a8fbdecb6094e"
+      },
+      {
+        "path": "input/OWNER_DELTA_ROUTES.json",
+        "git_blob": "714d4039cddb87e82605200d8befb5aff214c741"
+      }
+    ],
+    "tests": {
+      "new_adapter": 52,
+      "affected_existing_product": 5,
+      "total": 57,
+      "failed": 0,
+      "full_repository_rerun": false,
+      "command": "PYTHONPATH=src:/workspace/scratch/3a80dcef6444/fpia-ci-venv/lib/python3.12/site-packages /usr/bin/python3 -m pytest -q tests/test_company_price_context_v1.py tests/test_product_strategy_validation.py",
+      "stdout": ".........................................................                [100%]\n57 passed in 0.24s"
+    },
+    "static_checks": {
+      "status": "PASS",
+      "context_mismatch_cases": 9,
+      "command": "/usr/bin/python3 verify_preview.py"
+    },
+    "browser_checks": {
+      "status": "PASS",
+      "viewports": [
+        1360,
+        390
+      ],
+      "command": "BROWSER_EXECUTABLE_PATH=/workspace/scratch/9de0281e56bb/chart-browser-runtime/bin/chromium node browser_verify.js",
+      "browser": "EXISTING_CHROMIUM_NO_INSTALL",
+      "checks": [
+        "10 overview sections",
+        "independent axes and separate Overlap",
+        "0% baseline bars",
+        "positive completed-period summaries",
+        "Overview/Detail/Evidence",
+        "honest unassembled Full Chart state",
+        "local links",
+        "validated currency",
+        "unavailable stale-value clearing",
+        "text injection safety"
+      ]
+    },
+    "preview_check_stdout": "PASS: deterministic adapter projection, synthetic boundary, all static local links, inert JSON serialization, nine fail-closed context mismatch cases.\nPASS: desktop/mobile, 10 sections, independent axes, baseline bars, positive summaries, drill-down, evidence, honest full-chart state, local links, validated currency, unavailable clearing, text injection safety.",
+    "independent_review": {
+      "agent": "/root/phase_a_independent_review",
+      "fork_context": "none",
+      "verdict": "PASS_SOURCE_SCOPE + PASS_OFFLINE_PREVIEW",
+      "critical_or_important_remaining": 0,
+      "repair_rounds": 1,
+      "resolved": [
+        "caller Decimal traps",
+        "unbounded exponent serialization",
+        "combined company/security/currency/decision context mismatch",
+        "display currency and data-stamp provenance"
+      ]
+    },
+    "reviewed_subject_sha256": {
+      "company_price_context_v1.py": "ff4a4971394e63e7800fbd4f2d66f2afbf67824bcc91bf73db260c141cb06ec1",
+      "test_company_price_context_v1.py": "924a99359176860a341c9cb539df30bd6d8643c9fdabba951997737c6430f6b7",
+      "preview.js": "3449df80b902b0ed78442574043dc9264c0a7e1d430e10ca06c1191178cbc3b3",
+      "build_preview.py": "35ae7a13c5f019613f048c732ab941dc7d91e29950df94dbc540bc1e61ee8cfc",
+      "verify_preview.py": "4c9c8202c625cbbc428ba0637351789fe3e8e8b2449aa997455195053699b770",
+      "browser_verify.js": "74350d862092d8ac864b11dccfaa67b34b074e9b94ab58acbac35200445bfb37",
+      "sample.json": "5c7291da215a7ff6c4a414eeafee986bb37af7f00729690042c7e02d3ad67cf2"
+    },
+    "source_admission": false,
+    "qgv_raw_score_input": false,
+    "runtime_enabled": false,
+    "D3_A_activation": false,
+    "production_gate_closures": 0,
+    "full_chart_assembly": "NOT_RUN_NOT_ATTACHED",
+    "CI_dispatch": 0
+  },
+  "root_readback": {
+    "reviewed_subject_sha256_matches": 7,
+    "contract_git_blob_matches": 3,
+    "all_matches": true,
+    "changed_files": 22,
+    "all_changes_new_and_in_claimed_scope": true,
+    "canonical_parent": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "new_test_runs": 0,
+  "prior_evidence_reused": true,
+  "closure_scope": "11 coordination files only; no source branch/other owner/canonical changes",
+  "closure_validation": {
+    "json_schema_static_invariants": "PASS",
+    "independent_metadata_review": "PASS_METADATA_SCOPE",
+    "non_force_expected_parent": "REQUIRED_AT_PUBLICATION",
+    "remote_control_and_byte_readback": "REQUIRED_AFTER_PUBLICATION"
+  },
+  "closure_metadata_review": {
+    "agent": "/root/closure_review",
+    "fork_context": "none",
+    "verdict": "PASS_METADATA_SCOPE",
+    "critical_or_important_findings": 0,
+    "base": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+    "files_reviewed": 11,
+    "scope": "GLOBAL_CLOSURE_METADATA_ONLY",
+    "production_certified": false
+  }
+}

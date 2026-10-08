@@ -1,0 +1,109 @@
+{
+  "schema": "main-company-analysis-phase-a-final-receipt-v1",
+  "cycle_id": "main-ca-phase-a-20261008T093552Z",
+  "recorded_at_utc": "2026-10-08T10:16:33Z",
+  "authority": [
+    "CDR-024",
+    "CDR-030",
+    "CDR-031",
+    "CDR-033"
+  ],
+  "continuation": {
+    "user_directives": [
+      "계속 진행해",
+      "이어서 마무리해"
+    ],
+    "interpretation": "Explicit continuation and completion of existing Main Work cycle; no new unattended or standing grant",
+    "observed_at_utc": "2026-10-08T10:16:33Z"
+  },
+  "tasks_used": 5,
+  "tasks_max": 5,
+  "task_ledger": {
+    "1": "Existing exact CDR033 approval and claim consumed",
+    "2": "Supplied-input adapter implemented on source branch",
+    "3": "Inactive synthetic Overview/Detail/Evidence preview implemented on source branch",
+    "4": "Source verification and independent review consumed; exact subject/contract hashes match",
+    "5": "Scoped source consumed and Global final publication restores own control at task cap"
+  },
+  "scope": "EXISTING_OBSERVED_CYCLE_COORDINATION_CLOSURE_ONLY",
+  "publication": {
+    "source": {
+      "branch": "main/company-analysis-phase-a-v1",
+      "head": "8cabb2e93bbc8425592221456f44801e0f4ca413",
+      "tree": "7db0d8c91a453ed3d61cb1c6b32af46bdc1fb7f5",
+      "parent": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "added_files": 22,
+      "write_set_violations": 0,
+      "readback_verified": true
+    },
+    "global": {
+      "branch": "integration/global-handoff-v1",
+      "expected_parent": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "force": false,
+      "final_identity": "Resolve from containing commit; remote readback required after ref update"
+    },
+    "identity": "API_NATIVE_COMMIT; local/remote tree equality required; no authored COMMIT_IDENTICAL claim"
+  },
+  "verification": {
+    "source_receipt_blob": "c84654d68f149591a007f039d6a82cc8311b8105",
+    "independent_review_blob": "1eda0968b757fb07b8d0320756f03e8fb51b68aa",
+    "recorded_targeted_tests": 57,
+    "recorded_context_mismatch_cases": 9,
+    "recorded_browser_viewports": [
+      1360,
+      390
+    ],
+    "source_independent_verdict": "PASS_SOURCE_SCOPE + PASS_OFFLINE_PREVIEW",
+    "root_subject_sha256_matches": 7,
+    "root_contract_git_blob_matches": 3,
+    "hash_matches": 10,
+    "new_test_runs": 0,
+    "prior_evidence_reused": true,
+    "global_closure": "PASS: 11-file coordination scope, JSON/control consistency, own-lease-only release, exact history/owner/dependency/protected state preservation, append/prepend history"
+  },
+  "control_restoration": {
+    "AUTONOMY_MODE": "READ_ONLY",
+    "Main_lease": null,
+    "runtime_status": "IDLE",
+    "released_token": "main-ca-phase-a-20261008T093552Z",
+    "release_only_matching_own_lease": true,
+    "unattended": false,
+    "publication_observation": "Declared atomic target; confirm by remote readback after containing ref update"
+  },
+  "outcomes": {
+    "phase_A_offline_candidate_consumed": true,
+    "source_admission": 0,
+    "runtime_route_attachment": 0,
+    "D3_A_activation": 0,
+    "production_gate_net_closed": 0,
+    "chart_gates_open": 6,
+    "chart_gates_closed": 0,
+    "market_admission": "0/19",
+    "FPIA_exact7215_CI": "7/7 SUCCESS reused",
+    "FPIA_independent_trust_launcher_runtime_external_GIE": "OPEN",
+    "Chart_assembled_result": "NOT_RUN_NOT_ATTACHED",
+    "qgv_missing_lease_preserved": "qgv-b47-muupb538",
+    "platform_product_blockers": 9,
+    "canonical_unchanged": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "remaining_dependencies": [
+    "Chart A-S1/A-S2/A-S3 authoritative effective/availability/adoption/identity/catalog source inputs absent; three Main evidence roles assigned, source admission 0",
+    "P01 source-bound TARGET applicability receipt absent; Web/source/Product per-file acceptance absent; original three ordinary asset planning scope preserved",
+    "FPIA independent verifier/launcher/runtime/external coverage/GIE acceptance open; exact7215 CI7/7 reused, Chart assembled result NOT_RUN",
+    "QGV Missing-Data held lease qgv-b47-muupb538 preserved; operational policy return d156 consumed with12 hash matches, production categories remain",
+    "Platform exact3d997 operational return consumed; implementation/source owner ACK UNVERIFIED and9 product blockers remain",
+    "HG01/HG02 VERIFIED; HG03 PARTIAL_VERIFIED; unattended executor remains disabled"
+  ],
+  "resume_trigger": "New immutable authoritative source/owner acceptance or independent FPIA/GIE evidence; fresh observed authorization and mode/lease checks for a later cycle. Own docs-only movement is not a new execution trigger.",
+  "prohibited_actions_performed": false,
+  "review": {
+    "agent": "/root/closure_review",
+    "fork_context": "none",
+    "verdict": "PASS_METADATA_SCOPE",
+    "critical_or_important_findings": 0,
+    "base": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+    "files_reviewed": 11,
+    "scope": "GLOBAL_CLOSURE_METADATA_ONLY",
+    "production_certified": false
+  }
+}

@@ -1,3 +1,13 @@
+# GCH-034 · Phase A candidate consumed / READ_ONLY · 2026-10-08T10:16:33Z
+
+Phase A source 8cabb2e93bbc8425592221456f44801e0f4ca413 (tree 7db0d8c91a453ed3d61cb1c6b32af46bdc1fb7f5) is consumed as an inactive supplied-input adapter and synthetic offline preview only. Source evidence records 57 targeted tests, nine context mismatch cases, desktop/mobile browser checks and independent PASS_SOURCE_SCOPE + PASS_OFFLINE_PREVIEW. Fresh receipt consumption verified seven subject SHA-256 hashes and three input Git blobs; 22 additions are within the claimed paths. Existing exact verification is reused; no test/CI rerun.
+
+Containing Global publication restores AUTONOMY_MODE=READ_ONLY, releases only Main lease main-ca-phase-a-20261008T093552Z, and sets runtime IDLE. CDR033 five-task observed grant ends here. Source admission, route attachment, D3-A activation and production gate closure remain zero. Chart remains 6 OPEN / Market 0/19, FPIA independent trust/GIE and actual assembled Chart acceptance remain open; MissingData lease qgv-b47-muupb538 and all owner/history scopes are preserved. Canonical b8e39a2196a6d7794a04a0cd5393c68329e126ca is unchanged.
+
+Exact [final receipt](evidence/main_company_analysis_cycle_2026-10-08/FINAL_RECEIPT.json) and [consumption verification](evidence/main_company_analysis_cycle_2026-10-08/VERIFICATION.json). Existing source role returns 7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5 remain reference-only. Source/currentness/adoption/identity/catalog, P01/Web acceptance and independent FPIA/GIE are the remaining critical path. Current offline Phase A backlog item is complete; product attachment needs exact accepted source/write-set evidence. No unattended execution, new standing RUN grant or source-owner takeover is created. Containing ref identity resolves from Git metadata; verify remote READ_ONLY/null lease/IDLE after publish.
+
+---
+
 # GCH-033 · Observed Main Phase A cycle claimed · 2026-10-08T09:35:52.934Z
 
 CDR033 new five-task observed RUN grant; own Main lease main-ca-phase-a-20261008T093552Z expires 2026-10-08T11:35:52.934Z. Branch candidate main/company-analysis-phase-a-v1, new preview/** and company_price_context_v1 module/test only. Active/specialist owner paths retained; MissingData held lease untouched. Phase A supplied-input display context, no source admission/score/runtime route or production closure. Exact plan/approval/claim: evidence/main_company_analysis_cycle_2026-10-08/. On completion/cap/WAIT/D3-R/tool blocker Main restores READ_ONLY and releases own lease. Gate A CLOSED/unattendedfalse; canonical b8e39a2 unchanged.

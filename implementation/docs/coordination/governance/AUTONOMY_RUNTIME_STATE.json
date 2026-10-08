@@ -1,86 +1,107 @@
 {
   "schema": "autonomy-runtime-state-v1",
-  "cycle_id": "main-ca-phase-a-20261008T093552Z",
-  "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+  "cycle_id": null,
+  "holder": null,
   "branch": "integration/global-handoff-v1",
-  "started_at_epoch": 1791452152,
-  "lease_expires_at_epoch": 1791459352,
-  "tasks_used": 1,
+  "started_at_epoch": null,
+  "lease_expires_at_epoch": null,
+  "tasks_used": 0,
   "repair_rounds": {},
-  "status": "RUNNING_OBSERVED_PHASE_A",
-  "activation": "CDR033_USER_OBSERVED_BOUNDED_SESSION",
+  "status": "IDLE",
+  "activation": "USER_OBSERVED_EXPLICIT_BOUNDED_SESSION",
   "unattended_executor": false,
   "last_cycle": {
-    "cycle_id": "main-single-control-20261007T104552Z",
-    "authority": "CDR-029/030/031 under CDR-024",
-    "packet_head": "74cdffa463b88db0f00175e5f508a71086f159da",
-    "packet_tree": "e50348a2540547e978a1d5427d7530d55ff7b802",
-    "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+    "cycle_id": "main-ca-phase-a-20261008T093552Z",
+    "authority": "CDR-033 under CDR-024/030/031",
+    "source_head": "8cabb2e93bbc8425592221456f44801e0f4ca413",
+    "source_tree": "7db0d8c91a453ed3d61cb1c6b32af46bdc1fb7f5",
+    "global_publication_parent": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
     "tasks_used": 5,
     "tasks_max": 5,
-    "repair_rounds": {},
-    "end_reason": "TASK_CAP; SOURCE_LANES_WAIT_DEPENDENCY; INDEPENDENT_SIDECAR_NEXT_CYCLE_CANDIDATE",
+    "repair_rounds": 1,
+    "end_reason": "TASK_CAP; INACTIVE_PHASE_A_CANDIDATE_PUBLISHED; PRODUCTION_SOURCE_LANES_WAIT_DEPENDENCY",
     "end_mode": "READ_ONLY",
     "unattended_enabled": false,
-    "evidence_roles_assigned": 3,
-    "authoritative_source_returns_received": 0,
     "source_admissions": 0,
     "production_gates_closed": 0,
     "remaining_production_gates": 6,
     "main_D3_A_executed": 0,
-    "routing_deliveries": [
-      {
-        "issue": 54,
-        "comment_id": 6036635943,
-        "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
-        "status": "ROUTED_EXACT_READBACK_VERIFIED",
-        "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
-        "byte_readback_verified": true,
-        "received_by_owner": false,
-        "automatically_executed": false
-      },
-      {
-        "issue": 41,
-        "comment_id": 6036636199,
-        "body_sha256": "ab5ec4a5ca50e586aef90742aa84a847af3ca65a1affb9fd8a676036d0aed767",
-        "status": "ROUTED_EXACT_READBACK_VERIFIED",
-        "url": "https://github.com/kco994553-star/Investment-System1/pull/41#issuecomment-6036636199",
-        "byte_readback_verified": true,
-        "received_by_owner": false,
-        "automatically_executed": false
-      },
-      {
-        "issue": 44,
-        "comment_id": 6036636457,
-        "body_sha256": "9a1ca0f7197396e269c9d06d076b85c7fb3b1c9e02aa60fedd46f9ee44119fd7",
-        "status": "ROUTED_EXACT_READBACK_VERIFIED",
-        "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-6036636457",
-        "byte_readback_verified": true,
-        "received_by_owner": false,
-        "automatically_executed": false
-      },
-      {
-        "issue": 45,
-        "comment_id": 6036636696,
-        "body_sha256": "0e30da38f01e62119e68cbf9fd2e22b32362b770cf7c416d5618ac8d5827c04d",
-        "status": "ROUTED_EXACT_READBACK_VERIFIED",
-        "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-6036636696",
-        "byte_readback_verified": true,
-        "received_by_owner": false,
-        "automatically_executed": false
-      },
-      {
-        "issue": 36,
-        "comment_id": 6036636959,
-        "body_sha256": "164207f21fce4c26dd1189d48b3c683275c07db7700111ceb12757b0880fce92",
-        "status": "ROUTED_EXACT_READBACK_VERIFIED",
-        "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-6036636959",
-        "byte_readback_verified": true,
-        "received_by_owner": false,
-        "automatically_executed": false
-      }
-    ],
-    "recorded_at_utc": "2026-10-07T11:09:49.723867+00:00",
-    "receipt": "implementation/docs/coordination/evidence/main_single_control_cycle_2026-10-07/FINAL_RECEIPT.json"
-  }
+    "recorded_at_utc": "2026-10-08T10:16:33Z",
+    "receipt": "implementation/docs/coordination/evidence/main_company_analysis_cycle_2026-10-08/FINAL_RECEIPT.json"
+  },
+  "cycle_history": [
+    {
+      "cycle_id": "main-single-control-20261007T104552Z",
+      "authority": "CDR-029/030/031 under CDR-024",
+      "packet_head": "74cdffa463b88db0f00175e5f508a71086f159da",
+      "packet_tree": "e50348a2540547e978a1d5427d7530d55ff7b802",
+      "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "tasks_used": 5,
+      "tasks_max": 5,
+      "repair_rounds": {},
+      "end_reason": "TASK_CAP; SOURCE_LANES_WAIT_DEPENDENCY; INDEPENDENT_SIDECAR_NEXT_CYCLE_CANDIDATE",
+      "end_mode": "READ_ONLY",
+      "unattended_enabled": false,
+      "evidence_roles_assigned": 3,
+      "authoritative_source_returns_received": 0,
+      "source_admissions": 0,
+      "production_gates_closed": 0,
+      "remaining_production_gates": 6,
+      "main_D3_A_executed": 0,
+      "routing_deliveries": [
+        {
+          "issue": 54,
+          "comment_id": 6036635943,
+          "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        },
+        {
+          "issue": 41,
+          "comment_id": 6036636199,
+          "body_sha256": "ab5ec4a5ca50e586aef90742aa84a847af3ca65a1affb9fd8a676036d0aed767",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/41#issuecomment-6036636199",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        },
+        {
+          "issue": 44,
+          "comment_id": 6036636457,
+          "body_sha256": "9a1ca0f7197396e269c9d06d076b85c7fb3b1c9e02aa60fedd46f9ee44119fd7",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-6036636457",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        },
+        {
+          "issue": 45,
+          "comment_id": 6036636696,
+          "body_sha256": "0e30da38f01e62119e68cbf9fd2e22b32362b770cf7c416d5618ac8d5827c04d",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-6036636696",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        },
+        {
+          "issue": 36,
+          "comment_id": 6036636959,
+          "body_sha256": "164207f21fce4c26dd1189d48b3c683275c07db7700111ceb12757b0880fce92",
+          "status": "ROUTED_EXACT_READBACK_VERIFIED",
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-6036636959",
+          "byte_readback_verified": true,
+          "received_by_owner": false,
+          "automatically_executed": false
+        }
+      ],
+      "recorded_at_utc": "2026-10-07T11:09:49.723867+00:00",
+      "receipt": "implementation/docs/coordination/evidence/main_single_control_cycle_2026-10-07/FINAL_RECEIPT.json"
+    }
+  ]
 }

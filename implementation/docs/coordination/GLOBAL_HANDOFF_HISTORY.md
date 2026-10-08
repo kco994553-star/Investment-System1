@@ -306,3 +306,11 @@ New current GCH031 supersedes GCH030 owner-unassigned summary only for three bou
 ## GCH-032 · 2026-10-07T11:09:49.723867+00:00 · Five-task completion / own control restoration
 
 CDR032 receipt supersedes GCH031 running selector. Native source7b27/packet74cd publication and5routingbyte/IDreadbacks verified. READ_ONLY/MainleaseNULL/runtimeIDLE atomic target in containingpublication; finalexternalreadback follows. All6Chartproductiongates/source19admissions remain open/unadmitted, existingleases protected. NextordinaryPhaseAsidecar candidate requires freshobservedsession check; no unattendedrenewal.
+
+
+## GCH-034 · 2026-10-08T10:16:33Z · Phase A source consumption / own cycle restoration
+
+Phase A source 8cabb2e93bbc8425592221456f44801e0f4ca413 (tree 7db0d8c91a453ed3d61cb1c6b32af46bdc1fb7f5) is consumed as an inactive supplied-input adapter and synthetic offline preview only. Source evidence records 57 targeted tests, nine context mismatch cases, desktop/mobile browser checks and independent PASS_SOURCE_SCOPE + PASS_OFFLINE_PREVIEW. Fresh receipt consumption verified seven subject SHA-256 hashes and three input Git blobs; 22 additions are within the claimed paths. Existing exact verification is reused; no test/CI rerun.
+
+Containing Global publication restores AUTONOMY_MODE=READ_ONLY, releases only Main lease main-ca-phase-a-20261008T093552Z, and sets runtime IDLE. CDR033 five-task observed grant ends here. Source admission, route attachment, D3-A activation and production gate closure remain zero. Chart remains 6 OPEN / Market 0/19, FPIA independent trust/GIE and actual assembled Chart acceptance remain open; MissingData lease qgv-b47-muupb538 and all owner/history scopes are preserved. Canonical b8e39a2196a6d7794a04a0cd5393c68329e126ca is unchanged.
+Final remote control/byte readback follows containing publication. Exact evidence/main_company_analysis_cycle_2026-10-08/FINAL_RECEIPT.json.
