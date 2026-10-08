@@ -21,6 +21,8 @@ const TEXT = {
     contexts: ["QGV context(QGV 맥락)", "Technical context(기술적 분석 맥락)", "Macro context(거시 맥락)"],
     researchSub: "프롬프트 → 맥락·변수 → 미리보기 → 복사", promptLibrary: "Prompt Library(프롬프트 라이브러리)",
     newsNetwork: "News Network(뉴스 관계망)", importFailed: "가져오기 실패:", interest: "관심기업",
+    actualWeight: "실제 비중", snapshotWeight: "Snapshot에 포함 · 비중", portfolioStatus: "Portfolio status(보유 상태)",
+    returnLabel: "수익률", missingValue: "미제공",
   },
   "en-US": {
     FRESH: "FRESH · Before expiry", STALE: "STALE · Past expiry, not current", NOT_USABLE: "NOT_USABLE · Past usable-until, withheld",
@@ -32,6 +34,8 @@ const TEXT = {
     contexts: ["QGV context", "Technical context", "Macro context"],
     researchSub: "Prompt → Context / Variables → Preview → Copy", promptLibrary: "Prompt Library",
     newsNetwork: "News Network", importFailed: "Import failed:", interest: "Interests",
+    actualWeight: "Actual weight", snapshotWeight: "Included in snapshot · Weight", portfolioStatus: "Portfolio status",
+    returnLabel: "Return", missingValue: "Not provided",
   },
 };
 const SETTINGS_KEY = "investment.web.v1.settings";
@@ -101,6 +105,50 @@ async function main() {
     for (const locale of ["ko-KR", "en-US"]) {
       const L = TEXT[locale];
       const page = await openPage(locale);
+
+      await check(`${locale}: PPA-F08 missing or unusable ACTUAL never falls back to TARGET; finite ACTUAL is unchanged`, async () => {
+        const demoBytes = fs.readFileSync(path.join(demoRoot, "data.json"));
+        const supplied = JSON.parse(demoBytes);
+        const cases = [
+          { name: "omitted", expected: "NOT_AVAILABLE" },
+          { name: "null", actual: null, expected: "NOT_AVAILABLE" },
+          { name: "unavailable code", actual: "NOT_AVAILABLE", expected: "NOT_AVAILABLE" },
+          { name: "numeric string", actual: "0.1234", expected: "NOT_AVAILABLE" },
+          { name: "zero", actual: 0, expected: "0%" },
+          { name: "nonzero", actual: 0.1234, expected: "12.34%" },
+        ];
+        const holdingCompany = supplied.companies[0];
+        assert.ok(holdingCompany, "fixture company exists");
+        assert.equal(supplied.portfolio.state, "DEMO", "test vectors remain DEMO");
+        for (const test of cases) {
+          const holding = { company_id: holdingCompany.company_id, ticker: holdingCompany.ticker,
+            target_weight: 0.3456, return: null };
+          if (Object.hasOwn(test, "actual")) holding.actual_weight = test.actual;
+          supplied.portfolio.data.holdings = [holding];
+          const body = JSON.stringify(supplied);
+          const p = await openPage(locale, { prefix: "/demo/", data: body });
+          try {
+            await p.go("company/" + encodeURIComponent(holding.company_id));
+            const status = p.locator("main section.card").filter({ has: p.getByRole("heading", { name: L.portfolioStatus, exact: true }) });
+            assert.equal((await status.locator("p").first().innerText()).trim(), `${L.snapshotWeight} ${test.expected}`,
+              `${locale} company ${test.name}: missing ACTUAL must not display TARGET 34.56%`);
+            assert.deepEqual(await p.evaluate(() => D), supplied, "company rendering preserves the supplied bundle");
+            const holdingEvidence = JSON.parse(await status.locator("pre").textContent());
+            assert.deepEqual(holdingEvidence, holding, "ACTUAL and TARGET stay separate and unchanged in Evidence");
+            if (test.name === "omitted") await p.screenshot({ path: path.join(evidence, `ppa-f08-company-${locale}-390.png`), fullPage: true });
+            await p.go("portfolio");
+            const weight = p.locator(`main a[href="#company/${encodeURIComponent(holding.company_id)}"] .muted`);
+            assert.equal((await weight.innerText()).trim(), `${L.actualWeight} ${test.expected} · ${L.returnLabel} ${L.missingValue}`,
+              `${locale} portfolio ${test.name}: ACTUAL stays explicitly labelled`);
+            assert.deepEqual(await p.evaluate(() => D), supplied, "portfolio rendering preserves the supplied bundle");
+            assert.equal(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${locale} ${test.name}: 390px has no overflow`);
+            if (test.name === "omitted") await p.screenshot({ path: path.join(evidence, `ppa-f08-portfolio-${locale}-390.png`), fullPage: true });
+          } finally {
+            await p.context().close();
+          }
+        }
+        assert.ok(fs.readFileSync(path.join(demoRoot, "data.json")).equals(demoBytes), "served data.json bytes are unchanged");
+      });
 
       await check(`${locale}: U1 LIVE, FRESH and STALE are separate labelled badges; STALE has its own style rule`, async () => {
         await page.go("home");
