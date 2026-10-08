@@ -1,0 +1,14 @@
+{
+  "recorded_at_utc": "2026-10-08T11:10:08Z",
+  "authority": "CDR035 user explicitly requested canary deletion refusal; task4 bounded verification",
+  "lease": "main-directed-cycle2-20261008T110350Z",
+  "branch": "hg02-canary",
+  "expected_sha": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "applied_rules": "GET200 deletion/non-fast-forward/PR/repository-guard from24499602, saved immediately before attempt",
+  "documented_api": "GitHub GraphQL updateRefs accepts afterOid=40 zeros to delete a ref; existing connector update_ref uses this mutation, verified by its native error paths",
+  "schema_reference": "https://raw.githubusercontent.com/octokit/graphql-schema/master/schema.graphql",
+  "expected": "DENIED",
+  "stop_on_acceptance": true,
+  "canonical_force_delete": false,
+  "mode": "READ_ONLY"
+}

@@ -90,7 +90,8 @@
     "scope": [
       "implementation/docs/coordination/**",
       "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
-      "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
+      "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js",
+      "hg02-canary: authenticated deletion-refusal probe only; never canonical force/delete"
     ],
     "mode": "READ_ONLY",
     "unattended": false,
@@ -284,7 +285,7 @@
     "classification": "USER_EXPLICIT_NAMED_ACTIONS_ONLY",
     "production_autonomy_mode": "READ_ONLY",
     "task_limit": 5,
-    "tasks_used": 3,
+    "tasks_used": 4,
     "lane_leases": [
       {
         "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
@@ -311,6 +312,17 @@
         ],
         "status": "CLAIMED_EXISTING_RECORDS_ONLY",
         "no_new_cases": true
+      },
+      {
+        "lane_id": "HG02_CANARY_DELETE_REFUSAL",
+        "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "branch": "hg02-canary",
+        "expected_head": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+        "write_set": [
+          "single canary delete-ref denial test using documented updateRefs zero afterOid"
+        ],
+        "status": "CLAIMED_EXPLICIT_USER_PROBE",
+        "expires_at_utc": "2026-10-08T13:03:50.000Z"
       }
     ],
     "progress": [
