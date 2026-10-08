@@ -1,0 +1,20 @@
+{
+  "source_bytes": 4463,
+  "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+  "intake_sha256": "53aaefd705a189aee91a8b1cced4f95c0251ba6e8e6b0268fac3dbbebd56b9b9",
+  "intake_bytes": 172464,
+  "identity_rows_retained_equal": true,
+  "evidence_pins_retained_equal": true,
+  "evidence_pin_count": 19,
+  "status": "EXISTING_REGISTRY_SEARCH_COMPLETE_19_UNRESOLVED_NO_ADMISSION",
+  "counts": {
+    "roster": 19,
+    "existing_approved_security_ids_found": 0,
+    "resolved": 0,
+    "unresolved": 19,
+    "new_ids_generated": 0,
+    "new_source_collections": 0,
+    "new_tests_or_audits_run": 0
+  },
+  "map_sha256": "d80ab4fe651cb5722005181d6d73968d9deba193e1858aa1efb14c203be4f7bd"
+}

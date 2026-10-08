@@ -1,0 +1,24 @@
+{
+  "schema": "target-v0-source-noncanonical-merge-receipt-v1",
+  "mode": "READ_ONLY",
+  "authority": "CDR039 explicit user file adoption/addviaPR; source-only noncanonical incorporation",
+  "pr": 64,
+  "base": "main/chart-source-evidence-v1",
+  "base_before": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+  "head": "40c7037870f5ad3b5538444fa3a8e545c65d213b",
+  "merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+  "tree": "c9ce0c0983f6a7775510401ff1f0ce158fc72648",
+  "local_head": "29bb81d38b47ec581f4dc04372abddc7b171ad18",
+  "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+  "source_bytes": 4463,
+  "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+  "mapped": 0,
+  "unresolved": 19,
+  "tests": {
+    "pytest": 13,
+    "mini_pytest": 13
+  },
+  "ci": "NOT_TRIGGERED_BY_EXISTING_PATH_FILTER; no new workflow",
+  "canonical_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "full_gate_closure": "Pending authenticated Chart consumption; A-S1 source criteria satisfied; other5 remainOPEN"
+}

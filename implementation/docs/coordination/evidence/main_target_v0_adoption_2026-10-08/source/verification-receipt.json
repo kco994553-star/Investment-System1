@@ -1,0 +1,167 @@
+{
+  "kind": "USER_TARGET_V0_SOURCE_PACKAGE_VERIFICATION",
+  "recorded_at_utc": "2026-10-08T12:02:31.918172+00:00",
+  "authority": {
+    "global_claim_sha": "0911b3e21b7b544ab7b26a73c5291843e81b1d3b",
+    "lease": "target-v0-20261008T114634Z",
+    "mode": "READ_ONLY",
+    "write_scope": "exact3newfiles only; raw user source unchanged; no production parser or dependency/workflow additions"
+  },
+  "source": {
+    "branch": "main/target-v0-source-20261008",
+    "head": "29bb81d38b47ec581f4dc04372abddc7b171ad18",
+    "tree": "c9ce0c0983f6a7775510401ff1f0ce158fc72648",
+    "parent": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+    "worktree_clean": true,
+    "changed_files": [
+      {
+        "status": "ADDED",
+        "path": "implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+        "blob": "53124085ecc9561fefe45cf6d31bd649abea6f63",
+        "sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+        "bytes": 4463
+      },
+      {
+        "status": "ADDED",
+        "path": "implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+        "blob": "63eb86eaf06d6d409f2e7fb59cea1ac5c4b5da3b",
+        "sha256": "d80ab4fe651cb5722005181d6d73968d9deba193e1858aa1efb14c203be4f7bd",
+        "bytes": 172928
+      },
+      {
+        "status": "ADDED",
+        "path": "implementation/tests/test_portfolio_target_v0.py",
+        "blob": "ec11217d70ec3d7135ba522fcbd697af05c7030e",
+        "sha256": "e44e8448d645bcca45bbc1ab6c7efc758a1118be8bccfc5e8186070c5bb98da9",
+        "bytes": 16707
+      }
+    ]
+  },
+  "user_target": {
+    "bytes": 4463,
+    "sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+    "raw_attachment_byte_equal": true,
+    "owner": "USER",
+    "version": "v0",
+    "status": "ADOPTED",
+    "effective_at": "2026-10-08T20:37:00+09:00",
+    "available_at": "2026-10-08T20:37:00+09:00",
+    "adopted_at": "2026-10-08T20:37:00+09:00",
+    "backdated_to_derived_specification": false,
+    "total_units": 10000,
+    "cash_units": 0,
+    "theme_units": {
+      "semi_equipment": 3000,
+      "ai_semi": 2500,
+      "big_tech": 2000,
+      "other_industrial": 2500
+    },
+    "holdings": 19,
+    "user_listing_selections": [
+      "TSE (Tokyo, 8035)",
+      "KRX (042700)",
+      "Class A (GOOGL)"
+    ],
+    "future_versions_automatically_adopted": false
+  },
+  "identity_map": {
+    "consumed_intake_sha256": "53aaefd705a189aee91a8b1cced4f95c0251ba6e8e6b0268fac3dbbebd56b9b9",
+    "consumed_intake_bytes": 172464,
+    "rows": 19,
+    "resolved": 0,
+    "unresolved": 19,
+    "source_admission": false,
+    "new_ids_generated": 0,
+    "user_choices_reopened": false,
+    "rows_equal_final_intake": true,
+    "evidence_pins_equal_final_intake": true,
+    "evidence_pins": 19,
+    "partial_source_facts_retained": true,
+    "company_namespaces_retained": true,
+    "ASML_form_conflict_retained": true,
+    "Stryker_stry_syk_difference_retained": true,
+    "copied_count_zero_tests_meaning": "historical identity intake count; package invariant tests separately reported"
+  },
+  "verification": {
+    "red_missing_source": {
+      "result": "EXPECTED_FAIL",
+      "count": 1,
+      "log": "red-missing-source.log"
+    },
+    "red_invalid_flow_shape": {
+      "result": "EXPECTED_FAIL_BEFORE_TEST_PARSER_FIX",
+      "count": 1,
+      "log": "red-invalid-flow-shape.log"
+    },
+    "final_pytest": {
+      "passed": 13,
+      "failed": 0,
+      "log": "final-green-pytest.log",
+      "command": "PYTHONPATH=src:/workspace/scratch/ppa-f08-tools python3 -m pytest -q -p no:cacheprovider tests/test_portfolio_target_v0.py",
+      "cwd": "/workspace/target-v0-source/implementation"
+    },
+    "ci_mini_shim": {
+      "passed": 13,
+      "failed": 0,
+      "runner": "mini_pytest shim, not pytest",
+      "log": "final-green-mini-pytest.log",
+      "command": "python3 tools/mini_pytest.py tests/test_portfolio_target_v0.py",
+      "cwd": "/workspace/target-v0-source/implementation"
+    },
+    "negative_copies": "sum mismatches, strict integer/bool failures, duplicate/balanced membership changes, user listing/owner/clock changes, fabricated identity/admission, map hash/pointer/roster divergence; no file mutations",
+    "parser": "test-only explicit source subset, quote-aware flow scalars; no PyYAML dependency",
+    "syntax": "python3 -m py_compile implementation/tests/test_portfolio_target_v0.py PASS",
+    "diff_check": "git diff --cached --check beforecommit PASS",
+    "raw_cmp": "cmp -s against attachment PASS",
+    "independent_review": "NO_REMAINING_CRITICAL_OR_IMPORTANT_FINDINGS",
+    "whole_repo_rerun": false
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "pytest": "9.1.1"
+  },
+  "limits": {
+    "production_code_changed": false,
+    "workflow_or_dependency_changed": false,
+    "existing_owner_return_or_history_changed": false,
+    "canonical_merge": false,
+    "production_grants": "NONE",
+    "security_admissions": 0,
+    "credentials_used": false,
+    "financial_calculators_added": false,
+    "Holdout_access": false,
+    "remote_mutations": false
+  },
+  "evidence": [
+    {
+      "path": "red-missing-source.log",
+      "sha256": "3f65dba52c8f7f7048ff85aedfab8b05e4c5efe16cfcfb36dc106b72e90aeb00",
+      "bytes": 869
+    },
+    {
+      "path": "red-invalid-flow-shape.log",
+      "sha256": "5ed301b6ad85ad82c360d97c6a7f2b0d7187ea548c9ddb5ee918a624933022ce",
+      "bytes": 1380
+    },
+    {
+      "path": "final-green-pytest.log",
+      "sha256": "327daf92f9ddc2a79c674e8f508f3433cfb113427347bc256a22873f356de818",
+      "bytes": 99
+    },
+    {
+      "path": "final-green-mini-pytest.log",
+      "sha256": "dbe385bbb1f39395dc4ae828bdb4c8e4f80bd0a672b2337a726ae5fdabc79b2b",
+      "bytes": 68
+    },
+    {
+      "path": "copy-projection.json",
+      "sha256": "ccc9346dd090e2bd449bcc8e644637d3442566153ee2eb56d36dedbc89161b12",
+      "bytes": 714
+    },
+    {
+      "path": "independent-review.json",
+      "sha256": "2c57c0edf3715e1a2efa37f3a42d449618b7409a4106fc13d6102f37a7abd4c9",
+      "bytes": 612
+    }
+  ]
+}

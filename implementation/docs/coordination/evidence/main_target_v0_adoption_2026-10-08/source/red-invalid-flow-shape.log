@@ -1,0 +1,20 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_target_v0_quoted_listing_and_leading_zero_hints_survive_parsing _____
+
+    def test_target_v0_quoted_listing_and_leading_zero_hints_survive_parsing():
+        holdings = {h['label']: h for t in _target()['themes'] for h in t['holdings']}
+        for label, choice in USER_CHOICES.items():
+            assert (holdings[label]['ticker_hint'], holdings[label]['listing']) == choice
+        assert type(holdings['한미반도체']['ticker_hint']) is str and holdings['한미반도체']['ticker_hint'].startswith('0')
+        with pytest.raises(AssertionError, match='unsupported'):
+            _parse_source(TARGET.read_text() + '\nunknown_block:\n  value: 1\n')
+        invalid_flow = TARGET.read_text().replace('"USER_DECIDED: Class A (GOOGL)"', 'USER_DECIDED: Class A (GOOGL)')
+>       with pytest.raises(AssertionError, match='unsupported'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE AssertionError
+
+tests/test_portfolio_target_v0.py:218: Failed
+=========================== short test summary info ============================
+FAILED tests/test_portfolio_target_v0.py::test_target_v0_quoted_listing_and_leading_zero_hints_survive_parsing
+1 failed in 0.07s

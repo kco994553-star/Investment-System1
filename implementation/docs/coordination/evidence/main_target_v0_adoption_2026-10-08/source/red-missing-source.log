@@ -1,0 +1,15 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________________ test_target_v0_user_bytes_are_immutable ____________________
+
+    def test_target_v0_user_bytes_are_immutable():
+>       assert TARGET.is_file(), 'adopted user TARGET source file must exist'
+E       AssertionError: adopted user TARGET source file must exist
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('/workspace/target-v0-source/implementation/docs/portfolio_target_owner/TARGET_v0.yaml').is_file
+
+tests/test_portfolio_target_v0.py:191: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_portfolio_target_v0.py::test_target_v0_user_bytes_are_immutable
+1 failed in 0.08s
