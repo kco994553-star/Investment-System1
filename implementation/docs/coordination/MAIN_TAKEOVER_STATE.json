@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "WAIT_DEPENDENCY_READ_ONLY",
+  "execution_state": "RUNNING_USER_DIRECTED_BOUNDED_ACTIONS_READ_ONLY",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "d2e72027d1c80995efee738f9960c157e9e9fedc",
@@ -76,7 +76,23 @@
     "unattended_executor": "DISABLED_PENDING_GATE_A"
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": null,
+  "lease": {
+    "token": "main-directed-20261008-104213Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_USER_DIRECTED_BOUNDED_ACTIONS",
+    "branch": "integration/global-handoff-v1",
+    "acquired_at_utc": "2026-10-08T10:42:13Z",
+    "expires_at_utc": "2026-10-08T12:42:13.000Z",
+    "ttl_hours": 2,
+    "input_parent": "8ac28b62d86bc9697d607338b4af8d9a8fdc9021",
+    "scope": [
+      "implementation/docs/coordination/**"
+    ],
+    "mode": "READ_ONLY",
+    "unattended": false,
+    "authority": "CDR-035 explicit named user-directed actions; no RUN grant"
+  },
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -224,9 +240,62 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": null,
+  "active_scoped_execution": {
+    "cycle_id": "main-directed-20261008-104213Z",
+    "classification": "USER_EXPLICIT_NAMED_ACTIONS_ONLY",
+    "production_autonomy_mode": "READ_ONLY",
+    "task_limit": 5,
+    "tasks_used": 1,
+    "lane_leases": [
+      {
+        "lane_id": "HG02_CANONICAL_BOOTSTRAP_AND_VALIDATION",
+        "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "branch": "governance/canonical-gate-a-bootstrap-v1",
+        "write_set": [
+          "PR #51 only: existing five guard files; harmless marker commit on canonical only as explicit denial test; no canonical force/delete"
+        ],
+        "status": "CLAIMED_USER_APPROVED_51_ONLY",
+        "lease_expires_at_utc": "2026-10-08T12:42:13.000Z"
+      },
+      {
+        "lane_id": "PPA-F08_PRESENTATION_REPAIR",
+        "holder": "/root/ppa_f08 under gpt-work-main-2026-10-05-3a80dcef6444",
+        "branch": "fix/ppa-f08-actual-availability-20261008",
+        "base": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "write_set": [
+          "implementation/src/investment_system/product/web_assets/app.js",
+          "implementation/tools/web_state_presentation_browser_test.js"
+        ],
+        "status": "CLAIMED_NEW_SUCCESSOR_SCOPE",
+        "existing_owner_branch_modified": false,
+        "source_authority": false,
+        "lease_expires_at_utc": "2026-10-08T12:42:13.000Z"
+      },
+      {
+        "lane_id": "TARGET_DECISION_PACKAGE",
+        "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "branch": "integration/global-handoff-v1",
+        "write_set": [
+          "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
+        ],
+        "status": "CLAIMED_BLANK_FORMS_ONLY",
+        "no_target_values_synthesized": true,
+        "lease_expires_at_utc": "2026-10-08T12:42:13.000Z"
+      },
+      {
+        "lane_id": "FPIA_B1_B4_INTAKE",
+        "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "branch": "integration/global-handoff-v1",
+        "write_set": [
+          "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/FPIA_INTAKE.json"
+        ],
+        "status": "WAIT_DEPENDENCY_AUTHORITATIVE_CLAUDE_B1_B4_BUNDLE_NOT_FOUND",
+        "implementation_mutation_allowed": false
+      }
+    ]
+  },
   "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
-  "last_checkpoint_at_utc": "2026-10-08T10:16:33Z",
+  "last_checkpoint_at_utc": "2026-10-08T10:42:13Z",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
   "dependency_content_hash": "43e318a021affb7dfbc4e7b71d447fc5651deef50e452e5ed7ccf1a312f4c5af",
   "execution_budget": {
@@ -236,12 +305,10 @@
     "affected_FPIA": 294,
     "net_blocker_reduction_current_delta": 0,
     "current_cycle": {
-      "tasks_used": 5,
+      "tasks_used": 1,
       "max_tasks": 5,
-      "new_independent_source_review_agents": 1,
-      "full_audits": 0,
       "ci_dispatch": 0,
-      "same_failure_repairs": 1,
+      "full_audits": 0,
       "d3_a_executed": 0,
       "production_gate_closures": 0
     }
@@ -642,7 +709,7 @@
     "runtime_enabled": false,
     "numeric_policy_activated": false
   },
-  "current_cycle_evidence": "implementation/docs/coordination/evidence/main_company_analysis_cycle_2026-10-08/",
+  "current_cycle_evidence": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/",
   "bounded_cycle_history": [
     {
       "cycle_id": "main-single-control-20261007T104552Z",
@@ -728,5 +795,11 @@
     "source_admission": false,
     "runtime_enabled": false,
     "production_gate_closures": 0
+  },
+  "automation_expansion_freeze": {
+    "authority": "CDR-035",
+    "active": true,
+    "release_condition": "Gate A OPEN AND >=1 product blocker closed",
+    "allowed": "bug fixes only for merged #55–#60"
   }
 }

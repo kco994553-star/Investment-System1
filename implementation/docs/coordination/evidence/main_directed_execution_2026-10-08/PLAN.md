@@ -1,0 +1,13 @@
+# Main named-action execution plan · 2026-10-08
+
+Authority: CDR-035 and USER_DIRECTIVE.md; CDR-024/030 protection continues. AUTONOMY_MODE remains READ_ONLY. This is the direct observed user instruction for named actions, not an autonomous RUN/mode or standing authority grant. One writer per claimed scope, lease TTL2h, non-force exact-parent publication, five-task checkpoints and immediately continuing next observed cycle are explicitly requested. Preserve all prior owner/lease/history.
+
+Cycle1 tasks: (1) fresh state + append user directive/approval/claims; (2) exact-head repository-guard success + PR51-only merge; (3) HG02 rule/identity/denial evidence and existing HG01/03 plus bounded Watcher/Work capability verdict; (4) PPA-F08 negative RED→presentation GREEN→existing affected Web/browser390px ko/en; (5) consume/publish exact fixes/evidence and Checkpoint, release only own lease. Parallel TARGET blank form preparation and existing FPIA bundle discovery feed cycle2 if needed; cycle2 continues without a new user prompt.
+
+PPA interfaces: existing portfolio holdings actual_weight is display authority; absent/unusable ACTUAL displays literal NOT_AVAILABLE, never target_weight. Test existing zero and finite ACTUAL and preservation of input/evidence. Only app.js and existing browser runner on new successor branch; preserve #36 owner ref. No formula/default/threshold/contract or workflow changes.
+
+HG02: merge PR51 only with exact successful repository-guard and fresh head/base. Store ruleset and GET applied branch rules. Test only harmless new marker commit normal non-force direct canonical update; expect refusal. No canonical force/delete. Canary destructive-operation tests are permitted only after its applied rules match; missing/not-targeted canary =>PARTIAL_VERIFIED and one26E request. Caller authentication token kind/other execution identities must not be inferred from Git author; record available proof and unknowns. Denial must be attributable to rules, not merely missing auth. Any successful forbidden action =>immediate HG02 FAIL, stop tests, PR recovery.
+
+E2E: reuse existing actual executor/Watcher capability only; do not expand automation/controller/trigger/write scope. A manually active Work consuming a signal is not unattended E2E proof. No PAUSE or RUN mode change; use isolated existing canary guard proof for PAUSE where possible, record actual missing product-runtime proof as a dependency.
+
+TARGET: exact blank forms, no authored target/theme defaults; reviewed Security disposition separates source/contract work from explicit user choices. FPIA: accept exact Claude report/reproductions/tests only when B1–B4 provenance is present; otherwise WAIT_DEPENDENCY, no new counterexamples or speculative repair.

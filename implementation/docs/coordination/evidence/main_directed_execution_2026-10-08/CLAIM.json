@@ -1,0 +1,83 @@
+{
+  "schema": "main-named-action-claim-v1",
+  "authority": "CDR-035",
+  "recorded_at_utc": "2026-10-08T10:42:13Z",
+  "mode": "READ_ONLY",
+  "lease": {
+    "token": "main-directed-20261008-104213Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_USER_DIRECTED_BOUNDED_ACTIONS",
+    "branch": "integration/global-handoff-v1",
+    "acquired_at_utc": "2026-10-08T10:42:13Z",
+    "expires_at_utc": "2026-10-08T12:42:13.000Z",
+    "ttl_hours": 2,
+    "input_parent": "8ac28b62d86bc9697d607338b4af8d9a8fdc9021",
+    "scope": [
+      "implementation/docs/coordination/**"
+    ],
+    "mode": "READ_ONLY",
+    "unattended": false,
+    "authority": "CDR-035 explicit named user-directed actions; no RUN grant"
+  },
+  "lane_leases": [
+    {
+      "lane_id": "HG02_CANONICAL_BOOTSTRAP_AND_VALIDATION",
+      "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "branch": "governance/canonical-gate-a-bootstrap-v1",
+      "write_set": [
+        "PR #51 only: existing five guard files; harmless marker commit on canonical only as explicit denial test; no canonical force/delete"
+      ],
+      "status": "CLAIMED_USER_APPROVED_51_ONLY",
+      "lease_expires_at_utc": "2026-10-08T12:42:13.000Z"
+    },
+    {
+      "lane_id": "PPA-F08_PRESENTATION_REPAIR",
+      "holder": "/root/ppa_f08 under gpt-work-main-2026-10-05-3a80dcef6444",
+      "branch": "fix/ppa-f08-actual-availability-20261008",
+      "base": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "write_set": [
+        "implementation/src/investment_system/product/web_assets/app.js",
+        "implementation/tools/web_state_presentation_browser_test.js"
+      ],
+      "status": "CLAIMED_NEW_SUCCESSOR_SCOPE",
+      "existing_owner_branch_modified": false,
+      "source_authority": false,
+      "lease_expires_at_utc": "2026-10-08T12:42:13.000Z"
+    },
+    {
+      "lane_id": "TARGET_DECISION_PACKAGE",
+      "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "branch": "integration/global-handoff-v1",
+      "write_set": [
+        "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
+      ],
+      "status": "CLAIMED_BLANK_FORMS_ONLY",
+      "no_target_values_synthesized": true,
+      "lease_expires_at_utc": "2026-10-08T12:42:13.000Z"
+    },
+    {
+      "lane_id": "FPIA_B1_B4_INTAKE",
+      "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "branch": "integration/global-handoff-v1",
+      "write_set": [
+        "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/FPIA_INTAKE.json"
+      ],
+      "status": "WAIT_DEPENDENCY_AUTHORITATIVE_CLAUDE_B1_B4_BUNDLE_NOT_FOUND",
+      "implementation_mutation_allowed": false
+    }
+  ],
+  "owner_collision_check": {
+    "global_main_lease_before": null,
+    "runtime_before": "IDLE",
+    "web_active_lease_artifact": "NONE_FOUND",
+    "old_web_runtime": "NOT_ASSERTED_STOPPED",
+    "web_successor_source_scope_explicitly_requested": true,
+    "missing_data_lease": "qgv-b47-muupb538 preserved"
+  },
+  "canonical_merge_authorization": {
+    "pr": 51,
+    "only": true
+  },
+  "automation_expansion_frozen": true
+}
