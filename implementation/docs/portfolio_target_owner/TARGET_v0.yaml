@@ -1,0 +1,80 @@
+# Investment-System1 · Portfolio TARGET v0 (user-owned source file)
+#
+# 이 파일의 소스 담당자는 사용자 본인이다. 에이전트는 이 파일의 비중·테마·종목을 변경하지 않는다.
+# 변경은 사용자가 이 파일을 수정하는 것으로만 일어나며, 수정 시 version을 올리고 새 adopted_at을 기록한다.
+# 이전 버전은 git 이력으로 보존한다(덮어쓰기 금지, history-preserving).
+#
+# 이 파일은 A-S1(TARGET)과 A-S3(Strategy Theme)를 함께 담는다.
+# A-S2(종목 식별, security_id 매핑)는 이 파일이 아니라 에이전트가 별도로 수행한다.
+
+schema: PORTFOLIO_TARGET/0.1
+version: v0
+status: ADOPTED
+
+owner:
+  role: USER
+  note: 사용자가 정의한 투자 목표. 에이전트는 값을 제안·추정·보정하지 않는다.
+
+provenance:
+  derived_from: "QGV Portfolio Specification v1.1 §2 (2026-09-14, 사용자 작성)"
+  adopted_by: USER
+  adopted_at: "2026-10-08T20:37:00+09:00"
+  adoption_note: "사용자가 v1.1 구성을 수정 없이 TARGET v0으로 채택함"
+
+# 시점 규칙: 이 TARGET은 채택 시점부터만 유효하다. 2026-09-14로 소급하지 않는다(PIT).
+effective_at: "2026-10-08T20:37:00+09:00"
+available_at: "2026-10-08T20:37:00+09:00"
+
+unit: weight_units
+total_units: 10000          # 100% = 10000 단위, 정수만 사용
+cash_units: 0
+
+themes:
+  - theme_id: semi_equipment
+    label: 반도체 장비
+    target_units: 3000
+    holdings:
+      - { label: ASML Holding,        ticker_hint: ASML,  listing: UNRESOLVED_BY_AGENT, weight_units: 900 }
+      - { label: Lam Research,        ticker_hint: LRCX,  listing: UNRESOLVED_BY_AGENT, weight_units: 600 }
+      - { label: KLA Corporation,     ticker_hint: KLAC,  listing: UNRESOLVED_BY_AGENT, weight_units: 550 }
+      - { label: Tokyo Electron,      ticker_hint: "8035", listing: "USER_DECIDED: TSE (Tokyo, 8035)", weight_units: 500 }
+      - { label: 한미반도체,           ticker_hint: "042700", listing: "USER_DECIDED: KRX (042700)", weight_units: 450 }
+
+  - theme_id: ai_semi
+    label: AI·반도체
+    target_units: 2500
+    holdings:
+      - { label: NVIDIA,              ticker_hint: NVDA,  listing: UNRESOLVED_BY_AGENT, weight_units: 800 }
+      - { label: Advanced Micro Devices, ticker_hint: AMD, listing: UNRESOLVED_BY_AGENT, weight_units: 500 }
+      - { label: Broadcom,            ticker_hint: AVGO,  listing: UNRESOLVED_BY_AGENT, weight_units: 500 }
+      - { label: Qualcomm,            ticker_hint: QCOM,  listing: UNRESOLVED_BY_AGENT, weight_units: 400 }
+      - { label: Intel,               ticker_hint: INTC,  listing: UNRESOLVED_BY_AGENT, weight_units: 300 }
+
+  - theme_id: big_tech
+    label: Big Tech
+    target_units: 2000
+    holdings:
+      - { label: Microsoft,           ticker_hint: MSFT,  listing: UNRESOLVED_BY_AGENT, weight_units: 700 }
+      - { label: Alphabet,            ticker_hint: GOOGL, listing: "USER_DECIDED: Class A (GOOGL)", weight_units: 700 }
+      - { label: Amazon,              ticker_hint: AMZN,  listing: UNRESOLVED_BY_AGENT, weight_units: 600 }
+
+  - theme_id: other_industrial
+    label: 기타산업
+    target_units: 2500
+    holdings:
+      - { label: RTX Corporation,     ticker_hint: RTX,   listing: UNRESOLVED_BY_AGENT, weight_units: 600 }
+      - { label: Stryker,             ticker_hint: SYK,   listing: UNRESOLVED_BY_AGENT, weight_units: 550 }
+      - { label: Eaton,               ticker_hint: ETN,   listing: UNRESOLVED_BY_AGENT, weight_units: 500 }
+      - { label: Hubbell,             ticker_hint: HUBB,  listing: UNRESOLVED_BY_AGENT, weight_units: 350 }
+      - { label: GE Vernova,          ticker_hint: GEV,   listing: UNRESOLVED_BY_AGENT, weight_units: 300 }
+      - { label: Rockwell Automation, ticker_hint: ROK,   listing: UNRESOLVED_BY_AGENT, weight_units: 200 }
+
+# 상태 값 의미
+#   UNRESOLVED_BY_AGENT     : 에이전트가 기존 승인된 식별 계약(A-S2)으로 security_id를 매핑해야 함
+#   USER_DECIDED: …         : 사용자가 상장 시장·주식 클래스를 직접 정함(2026-10-08). 에이전트는 변경하지 않음
+#   ticker_hint             : 사람이 읽기 위한 참고값일 뿐 식별자가 아님. 매핑은 A-S2 결과로만 확정
+#
+# 검증 규칙 (에이전트가 확인)
+#   - 각 theme의 target_units = 해당 holdings weight_units 합
+#   - 모든 theme target_units 합 + cash_units = total_units
+#   - 종목은 정확히 하나의 theme에만 속함
