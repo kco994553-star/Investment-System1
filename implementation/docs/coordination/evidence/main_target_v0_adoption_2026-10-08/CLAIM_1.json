@@ -1,0 +1,34 @@
+{
+  "lease": {
+    "token": "target-v0-20261008T114634Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_USER_TARGET_V0_ADOPTION_AND_PR63",
+    "branch": "integration/global-handoff-v1",
+    "acquired_at_utc": "2026-10-08T11:46:34Z",
+    "expires_at_utc": "2026-10-08T13:46:34.000Z",
+    "ttl_hours": 2,
+    "input_parent": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
+    "scope": [
+      "implementation/docs/coordination/**",
+      "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+      "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+      "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py",
+      "PR63 merge only into integration/web/production-state-presentation-v1"
+    ],
+    "mode": "READ_ONLY",
+    "unattended": false,
+    "authority": "CDR039 explicit user TARGET/file/identity/display/PR63 named actions; no autonomous mode grant"
+  },
+  "attachment_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+  "source_owner": "USER",
+  "source_values_modified": false,
+  "plan": [
+    "fresh claim/decision/source byte intake",
+    "PR63 noncanonical-only merge and Platform1/9 receipt",
+    "TARGET source+invariants+A-S2 via noncanonical PR",
+    "display source connection+six-gate rejudgment",
+    "checkpoint then continue remaining work under same named prompt; READ_ONLY"
+  ],
+  "source_branch_merge_scope": "Only noncanonical PR incorporation of named user source/display work; canonical prohibited"
+}

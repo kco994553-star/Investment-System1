@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "WAIT_DEPENDENCY_READ_ONLY",
+  "execution_state": "RUNNING_USER_TARGET_V0_NAMED_ACTIONS_READ_ONLY",
   "last_processed_heads": {
     "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
     "global_input": "d2e72027d1c80995efee738f9960c157e9e9fedc",
@@ -78,7 +78,27 @@
     "unattended_executor": "DISABLED_PENDING_GATE_A"
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": null,
+  "lease": {
+    "token": "target-v0-20261008T114634Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_USER_TARGET_V0_ADOPTION_AND_PR63",
+    "branch": "integration/global-handoff-v1",
+    "acquired_at_utc": "2026-10-08T11:46:34Z",
+    "expires_at_utc": "2026-10-08T13:46:34.000Z",
+    "ttl_hours": 2,
+    "input_parent": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
+    "scope": [
+      "implementation/docs/coordination/**",
+      "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+      "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+      "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py",
+      "PR63 merge only into integration/web/production-state-presentation-v1"
+    ],
+    "mode": "READ_ONLY",
+    "unattended": false,
+    "authority": "CDR039 explicit user TARGET/file/identity/display/PR63 named actions; no autonomous mode grant"
+  },
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -273,7 +293,37 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": null,
+  "active_scoped_execution": {
+    "cycle_id": "target-v0-20261008T114634Z",
+    "authority": "CDR039",
+    "mode": "READ_ONLY",
+    "task_limit": 5,
+    "tasks_used": 1,
+    "lane_leases": [
+      {
+        "lane_id": "PR63_AUTHORIZED_NONCANONICAL_MERGE",
+        "branch": "integration/web/production-state-presentation-v1",
+        "head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+        "status": "CLAIMED_EXPLICIT_APPROVAL"
+      },
+      {
+        "lane_id": "TARGET_V0_SOURCE",
+        "source_owner": "USER",
+        "proposal_branch": "main/target-v0-source-20261008",
+        "base_branch": "main/chart-source-evidence-v1",
+        "write_set": [
+          "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+          "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+          "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py"
+        ],
+        "status": "CLAIMED_NEW_USER_SOURCE_AND_EXISTING_IDENTITY_RESULT"
+      },
+      {
+        "lane_id": "TARGET_DISPLAY_AND_CHART_REJUDGMENT",
+        "status": "READ_INTAKE_BEFORE_EXACT_WRITESET_CLAIM"
+      }
+    ]
+  },
   "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
   "last_checkpoint_at_utc": "2026-10-08T11:13:57Z",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
@@ -1000,7 +1050,7 @@
     "runtime_enabled": false,
     "numeric_policy_activated": false
   },
-  "current_cycle_evidence": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/",
+  "current_cycle_evidence": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/",
   "bounded_cycle_history": [
     {
       "cycle_id": "main-single-control-20261007T104552Z",
