@@ -1,0 +1,129 @@
+{
+  "schema": "target-v0-final-verification/1",
+  "verified_at_utc": "2026-10-08T12:31:13.555485+00:00",
+  "exact_base": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+  "source_PR": 64,
+  "source_head": "40c7037870f5ad3b5538444fa3a8e545c65d213b",
+  "source_merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+  "source_tree": "c9ce0c0983f6a7775510401ff1f0ce158fc72648",
+  "post_test_source_integrity": [
+    {
+      "path": "implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+      "sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "git_blob": "53124085ecc9561fefe45cf6d31bd649abea6f63",
+      "byte_equal_immutable_source_merge": true
+    },
+    {
+      "path": "implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+      "sha256": "d80ab4fe651cb5722005181d6d73968d9deba193e1858aa1efb14c203be4f7bd",
+      "git_blob": "63eb86eaf06d6d409f2e7fb59cea1ac5c4b5da3b",
+      "byte_equal_immutable_source_merge": true
+    }
+  ],
+  "original_attachment_byte_equal": true,
+  "recorded_extraction_at_utc": "2026-10-08T12:15:25Z",
+  "user_declared_effective_available_adopted_unchanged": "2026-10-08T20:37:00+09:00",
+  "UTC_equivalent": "2026-10-08T11:37:00Z",
+  "default_build_repeatable": true,
+  "repeatability_receipt": "DETERMINISTIC_BUILD.json",
+  "commands": [
+    {
+      "command": "npm test",
+      "exit_code": 0,
+      "tests": 99,
+      "passed": 99,
+      "failed": 0,
+      "scope": "Existing ChartLab JS package, including24 new bounded source adapter cases",
+      "log": "NODE_TESTS.log"
+    },
+    {
+      "command": "npm run build",
+      "exit_code": 0,
+      "log": "BUILD.log"
+    },
+    {
+      "command": "CHART_CHROMIUM_PATH=/usr/bin/chromium CHART_DEMO_URL=http://127.0.0.1:8877/index.html node portfolio_browser_test.cjs",
+      "exit_code": 0,
+      "cases": 4,
+      "passed": 4,
+      "viewports_locales": [
+        [
+          360,
+          "ko"
+        ],
+        [
+          390,
+          "ko"
+        ],
+        [
+          390,
+          "en"
+        ],
+        [
+          1280,
+          "ko"
+        ]
+      ],
+      "reference_serialized_rejections_per_case": 12,
+      "unexpected_DEMO_USER_metadata_rejections_per_case": 1,
+      "selected_mode_slot_rejections_per_case": 3,
+      "log": "BROWSER_TESTS.log",
+      "results": "BROWSER_RESULTS.json"
+    }
+  ],
+  "boundaries": {
+    "display": "TARGET v0 / USER / REFERENCE; unchanged USER_SPEC_REFERENCE contract",
+    "actual": "NOT_AVAILABLE / doc null / zeroSVG / zeroholdingtable / no TARGET substitution",
+    "GICS": "NOT_AVAILABLE",
+    "Investment_Type": "NOT_AVAILABLE",
+    "Type_Overlap": "NOT_AVAILABLE",
+    "Security_mapping": "0/19;19UNRESOLVEDnullSecurityIDs",
+    "source_values_changed": false,
+    "new_identity_ids": 0,
+    "new_dependencies": false,
+    "new_financial_calculations": false,
+    "production_grants": 0,
+    "canonical_merge": false,
+    "autonomy_mode_changes": false,
+    "automation_controller_changes": false
+  },
+  "review_repair_rounds": [
+    {
+      "round": 1,
+      "method": "Generic projection shape guard",
+      "finding": "Missing USER source metadata accepted; reference label/chart could remain",
+      "RED_receipt": "BROWSER_PARTIAL_SOURCE_GUARD_RED.log"
+    },
+    {
+      "round": 2,
+      "method": "Partial source field guard",
+      "finding": "Changed ticker/listing/concept and authored Theme subtotals/overlap accepted; DEMO metadata caused partial render exception",
+      "RED_receipt": "BROWSER_CANONICAL_BOUNDARY_RED.log",
+      "response": "Replan to complete serialized build-source snapshot binding, not further partial field patches"
+    },
+    {
+      "round": 3,
+      "method": "Complete serialized source snapshot",
+      "source_field_findings": "Resolved; prior36 independent corruptions withheld",
+      "remaining_distinct_finding": "Selected mode and payload lane substitution mislabelled source",
+      "RED_receipt": "BROWSER_MODE_SLOT_RED.log",
+      "response": "Bounded selected-mode admission matrix replan; reference mandates exact canonical USER reference, demo mandates synthetic/no USER metadata, actual remains literalunavailable"
+    }
+  ],
+  "final_admission_method": "Selected mode determines permitted state/kind; complete immutable serialized USER projection checked before draw. The snapshot is ordinary local reference display integrity, not production trust/publication authority.",
+  "independent_final_review": "NO_REMAINING_CRITICAL_OR_IMPORTANT_FINDINGS_IN_REQUESTED_SCOPE",
+  "final_checks": {
+    "git_diff_check": "PASS",
+    "all_changed_files_in_claim": "PASS",
+    "immutable_contract_reference_and_original_package_files": "PASS"
+  },
+  "gates": {
+    "A-S1": "CLOSED_VERIFIED_CURRENT_TARGET_SOURCE_ROOT",
+    "A-S2": "OPEN_WAIT_DEPENDENCY",
+    "A-S3": "OPEN_WAIT_DEPENDENCY (USER sourcecatalog/subpart adopted)",
+    "A-G1": "OPEN",
+    "A-G2": "OPEN",
+    "A-G3": "OPEN"
+  },
+  "independent_review_receipt": "INDEPENDENT_REVIEW.json"
+}

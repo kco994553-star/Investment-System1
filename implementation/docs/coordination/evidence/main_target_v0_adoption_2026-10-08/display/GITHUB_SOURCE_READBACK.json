@@ -1,0 +1,23 @@
+{
+  "tool": "mcp__codex_apps__github_fetch",
+  "pr_url": "https://github.com/kco994553-star/Investment-System1/pull/64",
+  "pr": 64,
+  "merged": true,
+  "merged_at": "2026-10-08T12:05:55Z",
+  "merge_commit": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+  "head": "40c7037870f5ad3b5538444fa3a8e545c65d213b",
+  "base": "main/chart-source-evidence-v1",
+  "immutable_commit": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+  "tree": "c9ce0c0983f6a7775510401ff1f0ce158fc72648",
+  "current_source_authority_readback": {
+    "api_url": "https://api.github.com/repos/kco994553-star/Investment-System1/git/ref/heads/main/chart-source-evidence-v1",
+    "ref": "refs/heads/main/chart-source-evidence-v1",
+    "object_sha": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+    "object_type": "commit",
+    "claim": "Source-authority branch still points to the verified immutable merge at readback; does not grant production Product authority."
+  },
+  "parents": [
+    "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+    "40c7037870f5ad3b5538444fa3a8e545c65d213b"
+  ]
+}

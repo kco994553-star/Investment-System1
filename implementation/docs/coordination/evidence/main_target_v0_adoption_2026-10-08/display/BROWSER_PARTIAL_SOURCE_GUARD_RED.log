@@ -1,0 +1,15 @@
+AssertionError [ERR_ASSERTION]: metadata absent: invalid source metadata must be rejected before displaying an allocation
++ actual - expected
+
++ 'REFERENCE'
+- 'BLOCKED'
+
+    at invalidSourceIsWithheld (/workspace/target-v0-display/implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs:57:10)
+    at async /workspace/target-v0-display/implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs:145:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'REFERENCE',
+  expected: 'BLOCKED',
+  operator: 'strictEqual',
+  diff: 'simple'
+}

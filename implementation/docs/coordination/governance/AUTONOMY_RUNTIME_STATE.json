@@ -5,7 +5,7 @@
   "branch": "integration/global-handoff-v1",
   "started_at_epoch": 1791459994,
   "lease_expires_at_epoch": 1791467194,
-  "tasks_used": 3,
+  "tasks_used": 4,
   "repair_rounds": {},
   "status": "RUNNING_USER_DIRECTED_READ_ONLY",
   "activation": "CDR039_EXPLICIT_NAMED_ACTIONS_NO_MODE_CHANGE",

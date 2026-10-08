@@ -1,0 +1,57 @@
+{
+  "schema": "target-v0-display-merge-completion-v1",
+  "authority": "CDR039",
+  "mode": "READ_ONLY",
+  "recorded_at_utc": "2026-10-08T12:35:30Z",
+  "pr": 66,
+  "base": "codex/chart-contract-mcp-api-v0-1",
+  "base_before": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+  "head": "4a613a5ce7a87f06a04116a355bc03c3225c4613",
+  "merge": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+  "tree": "94c3d0fdbbb835a163a0accdffbe8dabebfd2a8c",
+  "local_head": "6ac426653d260b00967dd7842a2cdd51579911df",
+  "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+  "source_pr": 64,
+  "source_merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+  "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+  "source_bytes": 4463,
+  "raw_source_unchanged": true,
+  "tests": {
+    "node": 99,
+    "new_source_adapter": 24,
+    "build": "PASS"
+  },
+  "browser": {
+    "passed": 4,
+    "viewports_locales": [
+      "360ko",
+      "390ko",
+      "390en",
+      "1280ko"
+    ],
+    "source_corruptions_per_case": 12,
+    "unexpected_demo_metadata_per_case": 1,
+    "mode_substitutions_per_case": 3,
+    "screenshots": 6
+  },
+  "ci": "NOT_TRIGGERED_BY_EXISTING_WORKFLOW; exacthead0checks0runs; no newworkflow",
+  "mapped": 0,
+  "unresolved": 19,
+  "gates_closed": [
+    "A-S1"
+  ],
+  "gates_open": [
+    "A-S2",
+    "A-S3",
+    "A-G1",
+    "A-G2",
+    "A-G3"
+  ],
+  "actual": "NOT_AVAILABLE_NO_TARGET_FALLBACK",
+  "qgv_recalculated": false,
+  "weights_or_themes_changed": false,
+  "canonical_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "holdout_consumed": false,
+  "automation_expansion": false,
+  "independent_review": "NO_REMAINING_CRITICAL_OR_IMPORTANT_FINDINGS"
+}
