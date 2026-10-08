@@ -159,12 +159,15 @@ async function main() {
           assert.ok(main.includes(NOT_CONNECTED[locale]), "NOT_AVAILABLE relationships reason");
           assert.ok(main.includes(bundle.universe.as_of), "legacy FROZEN universe as_of in Attention");
           await page.go("portfolio");
-          assert.ok((await page.locator("main").textContent()).includes("44.44%"));
+          const portfolioText = await page.locator("main").textContent();
+          assert.ok(portfolioText.includes("NOT_AVAILABLE"));
+          assert.ok(!portfolioText.includes("44.44%"));
           await page.go("entity/" + encodeURIComponent("MACRO:CPIAUCSL"));
           assert.ok((await page.locator("main").textContent()).includes("33.33"));
           await page.go("company/" + manifest.company);
           const detail = await page.locator("main").textContent();
-          assert.ok(detail.includes("TEST_EXPOSURE_VALID") && detail.includes("44.44%"));
+          assert.ok(detail.includes("TEST_EXPOSURE_VALID") && detail.includes("NOT_AVAILABLE"));
+          assert.ok(!detail.includes("44.44%"));
           await page.go("companies");
           assert.ok((await page.locator("main p.meta").first().innerText()).includes("FROZEN_SNAPSHOT / DEMO"));
           const row = await searchRows(page, "NVDA");
