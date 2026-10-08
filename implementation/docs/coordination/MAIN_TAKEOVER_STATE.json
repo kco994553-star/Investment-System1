@@ -33,7 +33,7 @@
     "chart": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
     "qgv_missing": "4fb08a05728d83519b72a2bd995669f0cb06003a",
-    "qgv_reconciliation": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
+    "qgv_reconciliation": "753f225caa2da1877a1e6391df9e10b1085e9578",
     "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
     "platform_independent_audit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
     "platform_pr45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
@@ -51,7 +51,8 @@
     "global_packet": "74cdffa463b88db0f00175e5f508a71086f159da",
     "company_analysis_phase_a": "8cabb2e93bbc8425592221456f44801e0f4ca413",
     "ppa_f08_candidate": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
-    "directed_package_publication": "dd3729f71e7f3cdc790e8859b238b13f568c77ff"
+    "directed_package_publication": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+    "qgv_standard_v1": "c72458c9608c4f7814fa2ed6e251bea465570d7c"
   },
   "automations": {
     "state": "CONFIGURED_READ_ONLY_WAKE_UP",
@@ -387,14 +388,16 @@
           "implementation/tools/qgv_contract_audit.py",
           "implementation/src/investment_system/product/render_app.py"
         ],
-        "status": "CLAIMED_USER_D3_R_NAMED_ACTIONS",
+        "status": "DONE_NONCANONICAL_PR65_MERGED_LEASE_RELEASED",
         "expires_at_utc": "2026-10-08T13:46:34.000Z",
         "task_limit": 5,
-        "tasks_used": 1,
+        "tasks_used": 5,
         "adoption_receipt": "2026-10-08T11:50:25Z",
         "protected_history": "appendC03resolution only; oldbytespreserved",
         "held_missing_data_lease": "qgv-b47-muupb538 preserved",
-        "claim_amendment_reason": "Preserve71historicgoldens with exact13authorizedmetadata/status deltas and strict allnumeric invariance; remove2stale active Vnull descriptions. No fixture/runtime/trigger edits."
+        "claim_amendment_reason": "Preserve71historicgoldens with exact13authorizedmetadata/status deltas and strict allnumeric invariance; remove2stale active Vnull descriptions. No fixture/runtime/trigger edits.",
+        "lease_active": false,
+        "released_at_utc": "2026-10-08T12:18:30Z"
       },
       {
         "lane_id": "TARGET_DISPLAY_AND_CHART_REJUDGMENT",
@@ -1930,5 +1933,61 @@
         "merge_performed_by_this_session": false
       }
     }
-  ]
+  ],
+  "qgv_scoring_standard_v1_consumption": {
+    "schema": "qgv-scoring-standard-v1-completion-v1",
+    "authority": "CDR040",
+    "mode": "READ_ONLY",
+    "standard": "v1",
+    "calibration": "UNCALIBRATED",
+    "standard_status": "STANDARD v1 · UNCALIBRATED",
+    "effective_at": "2026-10-08T11:50:25Z",
+    "pr": 65,
+    "base": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+    "base_before": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
+    "head": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+    "merge": "753f225caa2da1877a1e6391df9e10b1085e9578",
+    "tree": "dd9a914ea3cd013f30ef78a30d5f05eb8fcdd669",
+    "local_head": "39342374301ce25483a9f58ef5b8e0323aa04465",
+    "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+    "changed_paths": 24,
+    "tests": {
+      "passed": 503,
+      "existing": 488,
+      "new": 15,
+      "audit_golden": 71
+    },
+    "ci": {
+      "status": "SUCCESS",
+      "run_id": 37775779453,
+      "job_id": 113306115143,
+      "head_sha": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37775779453"
+    },
+    "numeric_invariance": {
+      "eight_vectors": true,
+      "ten_raw_map_functions": true,
+      "all71_golden_numeric_and_other_fields": true,
+      "exact_weight_sums": "1.00",
+      "range": "5–30%"
+    },
+    "first_full_run": {
+      "passed": 430,
+      "failed": 71,
+      "cause": "13 authorized status/newmetadata fields only; numeric differences0; originalgoldens untouched"
+    },
+    "c03": "RESOLVED_APPEND_ONLY",
+    "research_candidates": "RESEARCH_NOT_OPERATIONAL",
+    "history_preserved": true,
+    "missing_data_lease": "qgv-b47-muupb538 preserved",
+    "holdout_or_calibration_run": false,
+    "canonical_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+    "lane_checkpoint": {
+      "tasks_used": 5,
+      "tasks_max": 5,
+      "own_sublease": "target-v0-20261008T114634Z/qgv-v1",
+      "lease_active": false,
+      "main_cycle_tasks_used": 3
+    }
+  }
 }

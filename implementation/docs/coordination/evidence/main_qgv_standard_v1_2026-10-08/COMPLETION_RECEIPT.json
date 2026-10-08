@@ -1,0 +1,56 @@
+{
+  "schema": "qgv-scoring-standard-v1-completion-v1",
+  "authority": "CDR040",
+  "mode": "READ_ONLY",
+  "standard": "v1",
+  "calibration": "UNCALIBRATED",
+  "standard_status": "STANDARD v1 · UNCALIBRATED",
+  "effective_at": "2026-10-08T11:50:25Z",
+  "pr": 65,
+  "base": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+  "base_before": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
+  "head": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+  "merge": "753f225caa2da1877a1e6391df9e10b1085e9578",
+  "tree": "dd9a914ea3cd013f30ef78a30d5f05eb8fcdd669",
+  "local_head": "39342374301ce25483a9f58ef5b8e0323aa04465",
+  "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+  "changed_paths": 24,
+  "tests": {
+    "passed": 503,
+    "existing": 488,
+    "new": 15,
+    "audit_golden": 71
+  },
+  "ci": {
+    "status": "SUCCESS",
+    "run_id": 37775779453,
+    "job_id": 113306115143,
+    "head_sha": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+    "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37775779453"
+  },
+  "numeric_invariance": {
+    "eight_vectors": true,
+    "ten_raw_map_functions": true,
+    "all71_golden_numeric_and_other_fields": true,
+    "exact_weight_sums": "1.00",
+    "range": "5–30%"
+  },
+  "first_full_run": {
+    "passed": 430,
+    "failed": 71,
+    "cause": "13 authorized status/newmetadata fields only; numeric differences0; originalgoldens untouched"
+  },
+  "c03": "RESOLVED_APPEND_ONLY",
+  "research_candidates": "RESEARCH_NOT_OPERATIONAL",
+  "history_preserved": true,
+  "missing_data_lease": "qgv-b47-muupb538 preserved",
+  "holdout_or_calibration_run": false,
+  "canonical_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "lane_checkpoint": {
+    "tasks_used": 5,
+    "tasks_max": 5,
+    "own_sublease": "target-v0-20261008T114634Z/qgv-v1",
+    "lease_active": false,
+    "main_cycle_tasks_used": 3
+  }
+}

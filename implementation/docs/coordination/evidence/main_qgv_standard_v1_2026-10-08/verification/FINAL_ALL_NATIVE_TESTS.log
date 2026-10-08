@@ -1,0 +1,1291 @@
+BASE_HEAD=d1566aeb1bbf11b1d514ad874b069d8b127ff1c7
+CLAIM=8a6c8fd4dcc6ccb1084cc5dbf84e39e35046c46b
+command=['python', '-m', 'pytest', '-q', 'implementation/tests']
+........................................................................ [ 14%]
+........................................................................ [ 28%]
+........................................................................ [ 43%]
+............................................FFFFFFFFFFFFFFFFFFFFFFFFFFFF [ 57%]
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF............................. [ 71%]
+........................................................................ [ 86%]
+.....................................................................    [100%]
+=================================== FAILURES ===================================
+_____________________ test_golden_exact_semantics[all_70] ______________________
+
+case = {'case_id': 'all_70', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+____________________ test_golden_exact_semantics[all_zero] _____________________
+
+case = {'case_id': 'all_zero', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...e': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 0.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_____________________ test_golden_exact_semantics[all_100] _____________________
+
+case = {'case_id': 'all_100', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...: 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 100.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+____________ test_golden_exact_semantics[heterogeneous_fractional] _____________
+
+case = {'case_id': 'heterogeneous_fractional', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta... 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 47.125, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________________ test_golden_exact_semantics[financial_na] ___________________
+
+case = {'case_id': 'financial_na', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'FINANCIAL', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['roic_wacc=NOT_APPLICABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['roic_wacc=NOT_APPLICABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_ca...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________ test_golden_exact_semantics[financial_na_even_if_bad_roic] __________
+
+case = {'case_id': 'financial_na_even_if_bad_roic', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'FINANCIAL', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['roic_wacc=NOT_APPLICABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['roic_wacc=NOT_APPLICABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_ca...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________________ test_golden_exact_semantics[q_one_absent] ___________________
+
+case = {'case_id': 'q_one_absent', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=MISSING'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=MISSING'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]}...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________________ test_golden_exact_semantics[q_all_absent] ___________________
+
+case = {'case_id': 'q_all_absent', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=MISSING', 'roic_wacc=MISSING', 'market_position=MISSING', 'fc...uality=MISSING', 'financial_health=MISSING', ...], 'g_notes': [], 'q_coverage': 'BLOCKED', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=MISSING', 'roic_wacc=MISSING', 'market_position=MISSING', 'fc...uality=MISSING', 'financial_health=MISSING', ...], 'g_notes': [], 'q_coverage': 'BLOCKED', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________________ test_golden_exact_semantics[q_one_blocked] __________________
+
+case = {'case_id': 'q_one_blocked', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=BLOCKED'], 'g_notes': [], 'q_coverage': 'BLOCKED', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=BLOCKED'], 'g_notes': [], 'q_coverage': 'BLOCKED', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]}...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________________ test_golden_exact_semantics[g_one_absent] ___________________
+
+case = {'case_id': 'g_one_absent', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': ['next_3_5y_growth=MISSING'], 'q_coverage': 'READY', 'g_coverage': 'PARTIAL', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': ['next_3_5y_growth=MISSING'], 'q_coverage': 'READY', 'g_coverage': 'PARTIAL', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_ca...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________________ test_golden_exact_semantics[g_all_absent] ___________________
+
+case = {'case_id': 'g_all_absent', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': ['next_3_5y_growth=MISSING', 'growth_efficiency=MISSING', 'revenue_gro...growth_durability=MISSING', 'excess_growth_vs_industry=MISSING'], 'q_coverage': 'READY', 'g_coverage': 'BLOCKED', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': ['next_3_5y_growth=MISSING', 'growth_efficiency=MISSING', 'revenue_gro...growth_durability=MISSING', 'excess_growth_vs_industry=MISSING'], 'q_coverage': 'READY', 'g_coverage': 'BLOCKED', ...}}
+E         {'v_candidates': [{'candidate_id...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________________ test_golden_exact_semantics[g_one_blocked] __________________
+
+case = {'case_id': 'g_one_blocked', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': ['next_3_5y_growth=BLOCKED'], 'q_coverage': 'READY', 'g_coverage': 'BLOCKED', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': ['next_3_5y_growth=BLOCKED'], 'q_coverage': 'READY', 'g_coverage': 'BLOCKED', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_ca...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________________ test_golden_exact_semantics[v_one_absent] ___________________
+
+case = {'case_id': 'v_one_absent', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________________ test_golden_exact_semantics[v_all_absent] ___________________
+
+case = {'case_id': 'v_all_absent', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________________ test_golden_exact_semantics[v_one_blocked] __________________
+
+case = {'case_id': 'v_one_blocked', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_______ test_golden_exact_semantics[competitive_advantage__OK__numeric] ________
+
+case = {'case_id': 'competitive_advantage__OK__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_________ test_golden_exact_semantics[competitive_advantage__OK__null] _________
+
+case = {'case_id': 'competitive_advantage__OK__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=OK'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=OK'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_ca...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+___________ test_golden_exact_semantics[sector_context__OK__numeric] ___________
+
+case = {'case_id': 'sector_context__OK__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+____________ test_golden_exact_semantics[sector_context__OK__null] _____________
+
+case = {'case_id': 'sector_context__OK__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__ test_golden_exact_semantics[competitive_advantage__MISSING_DATA__numeric] ___
+
+case = {'case_id': 'competitive_advantage__MISSING_DATA__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=MISSING_DATA'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=MISSING_DATA'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+____ test_golden_exact_semantics[competitive_advantage__MISSING_DATA__null] ____
+
+case = {'case_id': 'competitive_advantage__MISSING_DATA__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=MISSING_DATA'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=MISSING_DATA'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+______ test_golden_exact_semantics[sector_context__MISSING_DATA__numeric] ______
+
+case = {'case_id': 'sector_context__MISSING_DATA__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_______ test_golden_exact_semantics[sector_context__MISSING_DATA__null] ________
+
+case = {'case_id': 'sector_context__MISSING_DATA__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+___ test_golden_exact_semantics[competitive_advantage__STALE_DATA__numeric] ____
+
+case = {'case_id': 'competitive_advantage__STALE_DATA__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_____ test_golden_exact_semantics[competitive_advantage__STALE_DATA__null] _____
+
+case = {'case_id': 'competitive_advantage__STALE_DATA__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=STALE_DATA'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=STALE_DATA'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_______ test_golden_exact_semantics[sector_context__STALE_DATA__numeric] _______
+
+case = {'case_id': 'sector_context__STALE_DATA__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+________ test_golden_exact_semantics[sector_context__STALE_DATA__null] _________
+
+case = {'case_id': 'sector_context__STALE_DATA__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__ESTIMATED_DATA__numeric] __
+
+case = {'case_id': 'competitive_advantage__ESTIMATED_DATA__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+___ test_golden_exact_semantics[competitive_advantage__ESTIMATED_DATA__null] ___
+
+case = {'case_id': 'competitive_advantage__ESTIMATED_DATA__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=ESTIMATED_DATA'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=ESTIMATED_DATA'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score'...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_____ test_golden_exact_semantics[sector_context__ESTIMATED_DATA__numeric] _____
+
+case = {'case_id': 'sector_context__ESTIMATED_DATA__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+______ test_golden_exact_semantics[sector_context__ESTIMATED_DATA__null] _______
+
+case = {'case_id': 'sector_context__ESTIMATED_DATA__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__CONFLICTING_SOURCE__numeric] _
+
+case = {'case_id': 'competitive_advantage__CONFLICTING_SOURCE__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__CONFLICTING_SOURCE__null] _
+
+case = {'case_id': 'competitive_advantage__CONFLICTING_SOURCE__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=CONFLICTING_SOURCE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=CONFLICTING_SOURCE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, '...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+___ test_golden_exact_semantics[sector_context__CONFLICTING_SOURCE__numeric] ___
+
+case = {'case_id': 'sector_context__CONFLICTING_SOURCE__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+____ test_golden_exact_semantics[sector_context__CONFLICTING_SOURCE__null] _____
+
+case = {'case_id': 'sector_context__CONFLICTING_SOURCE__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__PIT_UNAVAILABLE__numeric] _
+
+case = {'case_id': 'competitive_advantage__PIT_UNAVAILABLE__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=PIT_UNAVAILABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=PIT_UNAVAILABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_scor...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__ test_golden_exact_semantics[competitive_advantage__PIT_UNAVAILABLE__null] ___
+
+case = {'case_id': 'competitive_advantage__PIT_UNAVAILABLE__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=PIT_UNAVAILABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=PIT_UNAVAILABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_scor...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+____ test_golden_exact_semantics[sector_context__PIT_UNAVAILABLE__numeric] _____
+
+case = {'case_id': 'sector_context__PIT_UNAVAILABLE__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+______ test_golden_exact_semantics[sector_context__PIT_UNAVAILABLE__null] ______
+
+case = {'case_id': 'sector_context__PIT_UNAVAILABLE__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__VERSION_MISMATCH__numeric] _
+
+case = {'case_id': 'competitive_advantage__VERSION_MISMATCH__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__ test_golden_exact_semantics[competitive_advantage__VERSION_MISMATCH__null] __
+
+case = {'case_id': 'competitive_advantage__VERSION_MISMATCH__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=VERSION_MISMATCH'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=VERSION_MISMATCH'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_sc...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+____ test_golden_exact_semantics[sector_context__VERSION_MISMATCH__numeric] ____
+
+case = {'case_id': 'sector_context__VERSION_MISMATCH__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_____ test_golden_exact_semantics[sector_context__VERSION_MISMATCH__null] ______
+
+case = {'case_id': 'sector_context__VERSION_MISMATCH__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__IDENTIFIER_CHANGED__numeric] _
+
+case = {'case_id': 'competitive_advantage__IDENTIFIER_CHANGED__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__IDENTIFIER_CHANGED__null] _
+
+case = {'case_id': 'competitive_advantage__IDENTIFIER_CHANGED__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=IDENTIFIER_CHANGED'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=IDENTIFIER_CHANGED'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, '...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+___ test_golden_exact_semantics[sector_context__IDENTIFIER_CHANGED__numeric] ___
+
+case = {'case_id': 'sector_context__IDENTIFIER_CHANGED__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+____ test_golden_exact_semantics[sector_context__IDENTIFIER_CHANGED__null] _____
+
+case = {'case_id': 'sector_context__IDENTIFIER_CHANGED__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__CALCULATION_ERROR__numeric] _
+
+case = {'case_id': 'competitive_advantage__CALCULATION_ERROR__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__CALCULATION_ERROR__null] __
+
+case = {'case_id': 'competitive_advantage__CALCULATION_ERROR__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=CALCULATION_ERROR'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=CALCULATION_ERROR'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+___ test_golden_exact_semantics[sector_context__CALCULATION_ERROR__numeric] ____
+
+case = {'case_id': 'sector_context__CALCULATION_ERROR__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_____ test_golden_exact_semantics[sector_context__CALCULATION_ERROR__null] _____
+
+case = {'case_id': 'sector_context__CALCULATION_ERROR__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__BLOCKED_DEPENDENCY__numeric] _
+
+case = {'case_id': 'competitive_advantage__BLOCKED_DEPENDENCY__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=BLOCKED'], 'g_notes': [], 'q_coverage': 'BLOCKED', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=BLOCKED'], 'g_notes': [], 'q_coverage': 'BLOCKED', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]}...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__BLOCKED_DEPENDENCY__null] _
+
+case = {'case_id': 'competitive_advantage__BLOCKED_DEPENDENCY__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=BLOCKED'], 'g_notes': [], 'q_coverage': 'BLOCKED', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=BLOCKED'], 'g_notes': [], 'q_coverage': 'BLOCKED', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]}...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+___ test_golden_exact_semantics[sector_context__BLOCKED_DEPENDENCY__numeric] ___
+
+case = {'case_id': 'sector_context__BLOCKED_DEPENDENCY__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+____ test_golden_exact_semantics[sector_context__BLOCKED_DEPENDENCY__null] _____
+
+case = {'case_id': 'sector_context__BLOCKED_DEPENDENCY__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__NOT_APPLICABLE__numeric] __
+
+case = {'case_id': 'competitive_advantage__NOT_APPLICABLE__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=NOT_APPLICABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=NOT_APPLICABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score'...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+___ test_golden_exact_semantics[competitive_advantage__NOT_APPLICABLE__null] ___
+
+case = {'case_id': 'competitive_advantage__NOT_APPLICABLE__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=NOT_APPLICABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=NOT_APPLICABLE'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score'...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_____ test_golden_exact_semantics[sector_context__NOT_APPLICABLE__numeric] _____
+
+case = {'case_id': 'sector_context__NOT_APPLICABLE__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+______ test_golden_exact_semantics[sector_context__NOT_APPLICABLE__null] _______
+
+case = {'case_id': 'sector_context__NOT_APPLICABLE__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+____ test_golden_exact_semantics[competitive_advantage__SYNTHETIC__numeric] ____
+
+case = {'case_id': 'competitive_advantage__SYNTHETIC__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_____ test_golden_exact_semantics[competitive_advantage__SYNTHETIC__null] ______
+
+case = {'case_id': 'competitive_advantage__SYNTHETIC__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=SYNTHETIC'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=SYNTHETIC'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, .....
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_______ test_golden_exact_semantics[sector_context__SYNTHETIC__numeric] ________
+
+case = {'case_id': 'sector_context__SYNTHETIC__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_________ test_golden_exact_semantics[sector_context__SYNTHETIC__null] _________
+
+case = {'case_id': 'sector_context__SYNTHETIC__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__IDENTIFIER_AMBIGUOUS__numeric] _
+
+case = {'case_id': 'competitive_advantage__IDENTIFIER_AMBIGUOUS__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_ test_golden_exact_semantics[competitive_advantage__IDENTIFIER_AMBIGUOUS__null] _
+
+case = {'case_id': 'competitive_advantage__IDENTIFIER_AMBIGUOUS__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=IDENTIFIER_AMBIGUOUS'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=IDENTIFIER_AMBIGUOUS'], 'g_notes': [], 'q_coverage': 'PARTIAL', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ......
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__ test_golden_exact_semantics[sector_context__IDENTIFIER_AMBIGUOUS__numeric] __
+
+case = {'case_id': 'sector_context__IDENTIFIER_AMBIGUOUS__numeric', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+___ test_golden_exact_semantics[sector_context__IDENTIFIER_AMBIGUOUS__null] ____
+
+case = {'case_id': 'sector_context__IDENTIFIER_AMBIGUOUS__null', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': None, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+___________________ test_golden_exact_semantics[no_factors] ____________________
+
+case = {'case_id': 'no_factors', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': ['competitive_advantage=MISSING', 'roic_wacc=MISSING', 'market_position=MISSING', 'fc...owth_durability=MISSING', 'excess_growth_vs_industry=MISSING'], 'q_coverage': 'BLOCKED', 'g_coverage': 'BLOCKED', ...}} != {'factor_breakdown': {'q_notes': ['competitive_advantage=MISSING', 'roic_wacc=MISSING', 'market_position=MISSING', 'fc...owth_durability=MISSING', 'excess_growth_vs_industry=MISSING'], 'q_coverage': 'BLOCKED', 'g_coverage': 'BLOCKED', ...}}
+E         {'v_candidates': [{'candidate_id...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+______________ test_golden_exact_semantics[caller_confidence_low] ______________
+
+case = {'case_id': 'caller_confidence_low', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'LOW', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+_______________ test_golden_exact_semantics[out_of_range_legacy] _______________
+
+case = {'case_id': 'out_of_range_legacy', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 70.0, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+__________________ test_golden_exact_semantics[V_only_delta] ___________________
+
+case = {'case_id': 'V_only_delta', 'as_of': '2026-09-14T00:00:00+00:00', 'profile_kind': 'GENERAL_CORPORATE', 'confidence': 'MEDIUM', ...}
+
+    @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
+    def test_golden_exact_semantics(case):
+>       assert evaluate_case(case) == case["expected"]
+E       AssertionError: assert {'company_id'...: 'v1.7', ...} == {'company_id'...: 'v1.7', ...}
+E         
+E         Omitting 25 identical items, use -vv to show
+E         Differing items:
+E         {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}} != {'factor_breakdown': {'q_notes': [], 'g_notes': [], 'q_coverage': 'READY', 'g_coverage': 'READY', ...}}
+E         {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle': 'STANDARD v1 · UNCALIBRATED', 'weights': {'fundamenta...': 0.15, 'peer_relative_value': 0.15, 'historical_valuation': 0.1, 'sector_context': 0.1, ...}, 'v_score': 74.5, ...}]} != {'v_candidates': [{'candidate_id': 'initial_prior', 'lifecycle...
+E         
+E         ...Full output truncated (8 lines hidden), use '-vv' to show
+
+implementation/tests/test_qgv_common_contract_vnext.py:38: AssertionError
+=========================== short test summary info ============================
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[all_70]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[all_zero]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[all_100]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[heterogeneous_fractional]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[financial_na]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[financial_na_even_if_bad_roic]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[q_one_absent]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[q_all_absent]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[q_one_blocked]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[g_one_absent]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[g_all_absent]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[g_one_blocked]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[v_one_absent]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[v_all_absent]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[v_one_blocked]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__OK__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__OK__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__OK__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__OK__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__MISSING_DATA__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__MISSING_DATA__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__MISSING_DATA__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__MISSING_DATA__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__STALE_DATA__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__STALE_DATA__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__STALE_DATA__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__STALE_DATA__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__ESTIMATED_DATA__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__ESTIMATED_DATA__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__ESTIMATED_DATA__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__ESTIMATED_DATA__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__CONFLICTING_SOURCE__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__CONFLICTING_SOURCE__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__CONFLICTING_SOURCE__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__CONFLICTING_SOURCE__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__PIT_UNAVAILABLE__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__PIT_UNAVAILABLE__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__PIT_UNAVAILABLE__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__PIT_UNAVAILABLE__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__VERSION_MISMATCH__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__VERSION_MISMATCH__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__VERSION_MISMATCH__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__VERSION_MISMATCH__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__IDENTIFIER_CHANGED__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__IDENTIFIER_CHANGED__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__IDENTIFIER_CHANGED__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__IDENTIFIER_CHANGED__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__CALCULATION_ERROR__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__CALCULATION_ERROR__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__CALCULATION_ERROR__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__CALCULATION_ERROR__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__BLOCKED_DEPENDENCY__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__BLOCKED_DEPENDENCY__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__BLOCKED_DEPENDENCY__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__BLOCKED_DEPENDENCY__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__NOT_APPLICABLE__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__NOT_APPLICABLE__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__NOT_APPLICABLE__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__NOT_APPLICABLE__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__SYNTHETIC__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__SYNTHETIC__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__SYNTHETIC__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__SYNTHETIC__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__IDENTIFIER_AMBIGUOUS__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[competitive_advantage__IDENTIFIER_AMBIGUOUS__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__IDENTIFIER_AMBIGUOUS__numeric]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[sector_context__IDENTIFIER_AMBIGUOUS__null]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[no_factors]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[caller_confidence_low]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[out_of_range_legacy]
+FAILED implementation/tests/test_qgv_common_contract_vnext.py::test_golden_exact_semantics[V_only_delta]
+71 failed, 430 passed in 18.05s

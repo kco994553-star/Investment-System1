@@ -1,0 +1,378 @@
+{
+  "cases": 71,
+  "all_changes_user_authorized_metadata_only": true,
+  "numeric_differences": 0,
+  "field_counts": {
+    "V_policy_status": 71,
+    "calibration": 71,
+    "factor_breakdown.v_lifecycle": 71,
+    "standard": 71,
+    "standard_effective_at": 71,
+    "standard_status": 71,
+    "v_candidates[0].calibration": 71,
+    "v_candidates[0].lifecycle": 71,
+    "v_candidates[0].standard": 71,
+    "v_candidates[1].calibration": 71,
+    "v_candidates[1].standard": 71,
+    "v_candidates[2].calibration": 71,
+    "v_candidates[2].standard": 71
+  },
+  "cases_details": [
+    {
+      "case_id": "all_70",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "all_zero",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "all_100",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "heterogeneous_fractional",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "financial_na",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "financial_na_even_if_bad_roic",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "q_one_absent",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "q_all_absent",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "q_one_blocked",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "g_one_absent",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "g_all_absent",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "g_one_blocked",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "v_one_absent",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "v_all_absent",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "v_one_blocked",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__OK__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__OK__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__OK__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__OK__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__MISSING_DATA__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__MISSING_DATA__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__MISSING_DATA__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__MISSING_DATA__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__STALE_DATA__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__STALE_DATA__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__STALE_DATA__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__STALE_DATA__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__ESTIMATED_DATA__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__ESTIMATED_DATA__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__ESTIMATED_DATA__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__ESTIMATED_DATA__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__CONFLICTING_SOURCE__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__CONFLICTING_SOURCE__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__CONFLICTING_SOURCE__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__CONFLICTING_SOURCE__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__PIT_UNAVAILABLE__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__PIT_UNAVAILABLE__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__PIT_UNAVAILABLE__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__PIT_UNAVAILABLE__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__VERSION_MISMATCH__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__VERSION_MISMATCH__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__VERSION_MISMATCH__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__VERSION_MISMATCH__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__IDENTIFIER_CHANGED__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__IDENTIFIER_CHANGED__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__IDENTIFIER_CHANGED__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__IDENTIFIER_CHANGED__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__CALCULATION_ERROR__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__CALCULATION_ERROR__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__CALCULATION_ERROR__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__CALCULATION_ERROR__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__BLOCKED_DEPENDENCY__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__BLOCKED_DEPENDENCY__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__BLOCKED_DEPENDENCY__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__BLOCKED_DEPENDENCY__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__NOT_APPLICABLE__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__NOT_APPLICABLE__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__NOT_APPLICABLE__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__NOT_APPLICABLE__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__SYNTHETIC__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__SYNTHETIC__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__SYNTHETIC__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__SYNTHETIC__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__IDENTIFIER_AMBIGUOUS__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "competitive_advantage__IDENTIFIER_AMBIGUOUS__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__IDENTIFIER_AMBIGUOUS__numeric",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "sector_context__IDENTIFIER_AMBIGUOUS__null",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "no_factors",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "caller_confidence_low",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "out_of_range_legacy",
+      "changed_fields": 13,
+      "unexpected": []
+    },
+    {
+      "case_id": "V_only_delta",
+      "changed_fields": 13,
+      "unexpected": []
+    }
+  ],
+  "unchanged_fixture_sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040"
+}

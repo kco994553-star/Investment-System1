@@ -1,0 +1,121 @@
+{
+  "total_count": 1,
+  "jobs": [
+    {
+      "id": 113306115143,
+      "run_id": 37775779453,
+      "workflow_name": "qgv-common-contract-vnext",
+      "head_branch": "main/qgv-scoring-standard-v1-20261008",
+      "run_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37775779453",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOUjo5Vc8AAAAaYZIcRw",
+      "head_sha": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+      "url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/jobs/113306115143",
+      "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37775779453/job/113306115143",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-08T12:17:06Z",
+      "started_at": "2026-10-08T12:17:08Z",
+      "completed_at": "2026-10-08T12:17:35Z",
+      "name": "neutral-contract",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-08T12:17:09Z",
+          "completed_at": "2026-10-08T12:17:09Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-08T12:17:09Z",
+          "completed_at": "2026-10-08T12:17:11Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-08T12:17:11Z",
+          "completed_at": "2026-10-08T12:17:11Z"
+        },
+        {
+          "name": "Install test-only dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-08T12:17:11Z",
+          "completed_at": "2026-10-08T12:17:13Z"
+        },
+        {
+          "name": "Existing targeted regression",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-08T12:17:13Z",
+          "completed_at": "2026-10-08T12:17:15Z"
+        },
+        {
+          "name": "Inactive contract and golden/isolation/provenance checks",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-08T12:17:15Z",
+          "completed_at": "2026-10-08T12:17:15Z"
+        },
+        {
+          "name": "Existing plus additive regression",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-08T12:17:15Z",
+          "completed_at": "2026-10-08T12:17:32Z"
+        },
+        {
+          "name": "Preserve tracked content",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-08T12:17:32Z",
+          "completed_at": "2026-10-08T12:17:33Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-08T12:17:33Z",
+          "completed_at": "2026-10-08T12:17:33Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-10-08T12:17:33Z",
+          "completed_at": "2026-10-08T12:17:33Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-10-08T12:17:33Z",
+          "completed_at": "2026-10-08T12:17:33Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/kco994553-star/Investment-System1/check-runs/113306115143",
+      "labels": [
+        "ubuntu-latest"
+      ],
+      "runner_id": 1000000540,
+      "runner_name": "GitHub Actions 1000000540",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

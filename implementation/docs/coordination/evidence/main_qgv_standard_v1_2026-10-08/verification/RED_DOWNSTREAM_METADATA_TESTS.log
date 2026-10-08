@@ -1,0 +1,36 @@
+CLAIM_EXTENSION=8a6c8fd4dcc6ccb1084cc5dbf84e39e35046c46b
+DOWNSTREAM_SOURCE_UNMODIFIED
+command=['python', '-m', 'pytest', '-q', 'implementation/tests/test_qgv_scoring_standard_v1.py', '-k', 'leaderboard or us_session']
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+__ test_v1_operational_leaderboard_copies_metadata_without_relabelling_legacy __
+
+    def test_v1_operational_leaderboard_copies_metadata_without_relabelling_legacy():
+        from investment_system.qgv.leaderboard import LeaderboardEngine
+    
+        snap = AnalysisEngine().analyze("nvda", AS_OF, complete_obs())
+        row = LeaderboardEngine().build("v1-test", AS_OF, [snap]).to_dict()["rows"][0]
+        assert row["V_score"] == 70
+>       assert row["standard"] == "v1" and row["calibration"] == "UNCALIBRATED"
+               ^^^^^^^^^^^^^^^
+E       KeyError: 'standard'
+
+implementation/tests/test_qgv_scoring_standard_v1.py:170: KeyError
+______ test_v1_us_session_output_and_html_display_existing_v_with_labels _______
+
+    def test_v1_us_session_output_and_html_display_existing_v_with_labels():
+        from investment_system.qgv.us_live import evaluate_current_session
+        from investment_system.qgv.html_sample import render_us_book_html
+    
+        session = evaluate_current_session(live_prices={"prices": {}})
+        assert len(session["rows"]) == 17
+        for row in session["rows"]:
+>           assert row["standard"] == "v1" and row["calibration"] == "UNCALIBRATED"
+                   ^^^^^^^^^^^^^^^
+E           KeyError: 'standard'
+
+implementation/tests/test_qgv_scoring_standard_v1.py:186: KeyError
+=========================== short test summary info ============================
+FAILED implementation/tests/test_qgv_scoring_standard_v1.py::test_v1_operational_leaderboard_copies_metadata_without_relabelling_legacy
+FAILED implementation/tests/test_qgv_scoring_standard_v1.py::test_v1_us_session_output_and_html_display_existing_v_with_labels
+2 failed, 10 deselected in 0.11s

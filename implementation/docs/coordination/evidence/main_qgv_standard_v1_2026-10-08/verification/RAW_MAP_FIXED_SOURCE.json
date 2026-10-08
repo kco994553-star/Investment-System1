@@ -1,0 +1,120 @@
+{
+  "_clip_score": {
+    "numeric_literals": [
+      0.0,
+      100.0
+    ],
+    "ast_sha256": "d3d7ac1572b6e29301245d5ccbb7e90387e25cbd3e25b236ff51ad99b78392f6"
+  },
+  "_obs": {
+    "numeric_literals": [],
+    "ast_sha256": "486a0b3a6c69d1b104ac72712669bfcaee270eaaf289bbf40d9fe029e994822d"
+  },
+  "_ratio": {
+    "numeric_literals": [
+      0
+    ],
+    "ast_sha256": "ddc14b344df4148d9f4ba9b105dbd6ddb72b8b1f5d7d2381a83b6ee216aec5f8"
+  },
+  "_yoy": {
+    "numeric_literals": [
+      1.0,
+      0
+    ],
+    "ast_sha256": "234b42766d8f8fdd41dbbf1888e1f0bdd64151e6d18486404009cae6b38df264"
+  },
+  "_growth_to_score": {
+    "numeric_literals": [
+      50.0,
+      50.0,
+      0.25
+    ],
+    "ast_sha256": "44977abb7db4f5f93b55b5639e0ffa8a51afc3e31712d762907f8e946ed8afe0"
+  },
+  "_spread_to_score": {
+    "numeric_literals": [
+      50.0,
+      50.0,
+      0.1
+    ],
+    "ast_sha256": "4487ebb14f456e8f0d8cc1b69046d58c5e0b2c80b7bdf63d2d094e1b669b6188"
+  },
+  "_central_value_score": {
+    "numeric_literals": [
+      0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      0.4,
+      20.0,
+      1.0,
+      20.0
+    ],
+    "ast_sha256": "6e24dec1fe62c0df55ea285bbef3dc411935e0e8d4694ad2ce74c5704ebc326a"
+  },
+  "_mos_score": {
+    "numeric_literals": [
+      0.75,
+      0,
+      12.0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      0.3,
+      0.3,
+      1.0,
+      1.0
+    ],
+    "ast_sha256": "84a57f377b37edf2361cee81275bb5a506e9c788ee174a834c66cfd4d3cd32c1"
+  },
+  "_reverse_dcf_score": {
+    "numeric_literals": [
+      0,
+      50.0,
+      0.2,
+      0.4,
+      50.0,
+      100.0,
+      0.15,
+      15.0
+    ],
+    "ast_sha256": "257290a7af24e6c2e52df2b7494716e74473378d74222402b08484c7651004fe"
+  },
+  "map_raw": {
+    "numeric_literals": [
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      50.0,
+      400.0,
+      20.0,
+      50.0,
+      0.4,
+      0.04,
+      0.15,
+      0.25,
+      0.015,
+      0.1,
+      0.15,
+      50.0,
+      0.12,
+      0.025,
+      0.05,
+      50.0,
+      0.3
+    ],
+    "ast_sha256": "1c6006fd3480a7be77641f02bed905c80996bd7bd371c7eebb04eb39d0895ce5"
+  }
+}

@@ -1,0 +1,70 @@
+BASE_HEAD=d1566aeb1bbf11b1d514ad874b069d8b127ff1c7
+TESTS_ONLY_ADDED
+command=['python', '-m', 'pytest', '-q', 'implementation/tests/test_qgv_scoring_standard_v1.py']
+....FFFF.F                                                               [100%]
+=================================== FAILURES ===================================
+_______ test_v1_operational_snapshot_has_explicit_uncalibrated_metadata ________
+
+    def test_v1_operational_snapshot_has_explicit_uncalibrated_metadata():
+        snap = AnalysisEngine().analyze("nvda", AS_OF, complete_obs())
+        payload = snap.to_dict()
+>       assert payload["standard"] == "v1"
+               ^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'standard'
+
+implementation/tests/test_qgv_scoring_standard_v1.py:80: KeyError
+______ test_v1_statuses_and_q7_name_are_standard_with_unchanged_identity _______
+
+    def test_v1_statuses_and_q7_name_are_standard_with_unchanged_identity():
+>       from investment_system.qgv.factors import Q_WEIGHTS_STATUS, G_WEIGHTS_STATUS, V_WEIGHTS_STATUS
+E       ImportError: cannot import name 'Q_WEIGHTS_STATUS' from 'investment_system.qgv.factors' (/workspace/qgv-standard-v1-read/implementation/src/investment_system/qgv/factors.py)
+
+implementation/tests/test_qgv_scoring_standard_v1.py:90: ImportError
+______ test_v1_uses_initial_prior_and_keeps_research_candidates_separate _______
+
+    def test_v1_uses_initial_prior_and_keeps_research_candidates_separate():
+        obs = complete_obs()
+        for fid, score in zip(V_INITIAL_PRIOR, (10, 20, 30, 40, 50, 60, 70)):
+            obs[fid] = FactorObservation(fid, score, score, QualityState.OK, "v1-test")
+        snap = AnalysisEngine().analyze("nvda", AS_OF, obs)
+        assert snap.V_score == 31.5
+        assert snap.total_score == 70
+        for candidate in snap.to_dict()["v_candidates"]:
+            if candidate["candidate_id"] == "initial_prior":
+>               assert candidate["lifecycle"] == "STANDARD v1 · UNCALIBRATED"
+E               AssertionError: assert 'PROVISIONAL_INITIAL_PRIOR' == 'STANDARD v1 · UNCALIBRATED'
+E                 
+E                 - STANDARD v1 · UNCALIBRATED
+E                 + PROVISIONAL_INITIAL_PRIOR
+
+implementation/tests/test_qgv_scoring_standard_v1.py:112: AssertionError
+_______ test_v1_missing_and_blocked_v_preserve_existing_numeric_behavior _______
+
+    def test_v1_missing_and_blocked_v_preserve_existing_numeric_behavior():
+        obs = complete_obs()
+        del obs["fundamental_value"]
+        snap = AnalysisEngine().analyze("nvda", AS_OF, obs)
+        assert snap.V_score == 52.5  # Existing partial, non-renormalized prior.
+        assert snap.factor_breakdown["v_coverage"] == "PARTIAL"
+>       assert snap.to_dict()["standard"] == "v1"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'standard'
+
+implementation/tests/test_qgv_scoring_standard_v1.py:131: KeyError
+_______ test_v1_adoption_is_forward_only_separate_from_historical_as_of ________
+
+    def test_v1_adoption_is_forward_only_separate_from_historical_as_of():
+        snap = AnalysisEngine().analyze("nvda", AS_OF, complete_obs())
+        payload = snap.to_dict()
+>       assert payload["standard_effective_at"] == "2026-10-08T11:50:25Z"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'standard_effective_at'
+
+implementation/tests/test_qgv_scoring_standard_v1.py:149: KeyError
+=========================== short test summary info ============================
+FAILED implementation/tests/test_qgv_scoring_standard_v1.py::test_v1_operational_snapshot_has_explicit_uncalibrated_metadata
+FAILED implementation/tests/test_qgv_scoring_standard_v1.py::test_v1_statuses_and_q7_name_are_standard_with_unchanged_identity
+FAILED implementation/tests/test_qgv_scoring_standard_v1.py::test_v1_uses_initial_prior_and_keeps_research_candidates_separate
+FAILED implementation/tests/test_qgv_scoring_standard_v1.py::test_v1_missing_and_blocked_v_preserve_existing_numeric_behavior
+FAILED implementation/tests/test_qgv_scoring_standard_v1.py::test_v1_adoption_is_forward_only_separate_from_historical_as_of
+5 failed, 5 passed in 0.12s

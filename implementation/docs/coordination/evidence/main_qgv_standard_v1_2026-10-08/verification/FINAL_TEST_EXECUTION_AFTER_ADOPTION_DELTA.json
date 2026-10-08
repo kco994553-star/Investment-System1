@@ -1,0 +1,41 @@
+{
+  "verified_at": "2026-10-08T12:13:54.071536+00:00",
+  "base_head": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
+  "lane_claim": "88eae322db22b3a587e7619c7331a4f6adf77527",
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "-q",
+    "implementation/tests"
+  ],
+  "pytest_path": "/workspace/scratch/ppa-f08-tools",
+  "pre_run_sha256": {
+    "Investment-System1 \u00b7 Contract Conflict Register 2026-09-23.md": "8e1da679a1d1a1a663e69f9a7e51ca99a2bb9d2c3df8d5d498d627b847f1a5ec",
+    "implementation/src/investment_system/contracts/enums.py": "75ec6d4d688ac8fb54147b59b53e6e21b08e3869267b4b61825d1247d6d969a7",
+    "implementation/src/investment_system/contracts/models.py": "b9963b41b1893e0064e63750eab96723b4e8dcd2fd524d2cce4467d5ef0a711e",
+    "implementation/src/investment_system/product/render_app.py": "20285bde710021ec4b04ee8cfc386bd8160cb22f2ad9c3d57b8afa044102399b",
+    "implementation/src/investment_system/qgv/analysis.py": "f58e99ab8e62d63f8e99e6cbb4eef471ad034ce6cf011d877e2a63cb578a3701",
+    "implementation/src/investment_system/qgv/factors.py": "6dc48f252199fbe87e8d7a03c9832f192caea62e3709cb475d5eae44f4ef8b8d",
+    "implementation/src/investment_system/qgv/g_horizon.py": "f80f615e18b497eaa4ee4ba772232d0495cd90b517001fe7b1511d44bdbce4ac",
+    "implementation/src/investment_system/qgv/html_sample.py": "66f5e72816da68b9be7228dab9b1d8e8dbca3969a47f1d0d8a111436bd895125",
+    "implementation/src/investment_system/qgv/leaderboard.py": "25cddc789d21b6f1caa2a5a82fce2ce1198ae7e2a59e948686d6c8e9fe20d835",
+    "implementation/src/investment_system/qgv/raw_map.py": "518d63aca022d5d644ac6d0c7d8b92f65cb10dd22577bdab311ccaf4e8f4eb97",
+    "implementation/src/investment_system/qgv/scoring.py": "4b7d9af5f2f5ff308a6294be0803e341ed583b74cbb7a476f575f1f175224a8d",
+    "implementation/src/investment_system/qgv/us_live.py": "f165cd2f3031b18096dce3a7f70c4e8df40def920a4096489922c5b208fadc73",
+    "implementation/src/investment_system/validation/historical.py": "f8d90b14f2aaa7a5f3aa2fe1ce703b50e8f3794d70cb53366e4f0832ce087f80",
+    "implementation/tests/test_analysis_scoring.py": "10ed39a1739a53d099f7dd21f460f8f207594efc6a8ceb8e3b4a352c2c980a45",
+    "implementation/tests/test_book_catalog_financial.py": "de07d40974ca0ea970f7c27c5e712ea5a9f0cb6bff37fe2a16b506a7e3872499",
+    "implementation/tests/test_live_sources_and_persist.py": "eb02117cb099534cf0fd520e28232611167d072e360a124c521fffaf76120796",
+    "implementation/tests/test_qgv_common_contract_vnext.py": "79024285d4779d9c7d6061aabf14e091f66129298b8e9111dedb65ff033be4a2",
+    "implementation/tests/test_raw_and_providers.py": "709d9dcebc24f86265684de3ee85a89be50ebb7f0e3f3581710686f20040b7af",
+    "implementation/tests/test_v_prior_and_c15.py": "cc6ebe5cd2a7526d46bbf65e1222105731b76667f1be4d19f0cf29b8f51da646",
+    "implementation/tests/test_validation_framework.py": "52d98cf1f2003e6a79004addd5297ec0f28255a0c7c7a1753eb8f7648dbe9855",
+    "implementation/tools/qgv_contract_audit.py": "80a9234123b276fdacce3492db4f9e5e7979b0f5e5b3f6d20213d260495981db",
+    "implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md": "618583aaff901e2ffed9408dc55780fb066cad20e2d6e17f5887c5f74f03872e",
+    "implementation/src/investment_system/qgv/scoring_standard.py": "40803c0f704a8032136b82edc1cac990ce46cb6ffd75311555ea430ead3b3220",
+    "implementation/tests/test_qgv_scoring_standard_v1.py": "62c952de54ed5e9da8f589ab86800bf76e8d07dc46740258be733d8f64555c13"
+  },
+  "post_run_sources_identical": true,
+  "exit_code": 0
+}

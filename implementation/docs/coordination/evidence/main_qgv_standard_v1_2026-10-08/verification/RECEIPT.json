@@ -1,0 +1,99 @@
+{
+  "lane": "QGV_SCORING_STANDARD_V1",
+  "completed_at": "2026-10-08T12:15:46.582225+00:00",
+  "status": "VERIFIED_LOCAL_SOURCE_PUBLICATION_PENDING",
+  "mode": "READ_ONLY",
+  "adoption_effective_recorded_at": "2026-10-08T11:50:25Z",
+  "decision_register": "CDR040",
+  "branch": "main/qgv-scoring-standard-v1-20261008",
+  "base_branch": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+  "base_exact_head": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
+  "local_exact_head": "39342374301ce25483a9f58ef5b8e0323aa04465",
+  "local_tree": "dd9a914ea3cd013f30ef78a30d5f05eb8fcdd669",
+  "path_count": 24,
+  "clean_worktree": true,
+  "claim_history": [
+    "d21773b88f84fa00a2e1e585d1f3c170f7ec611c",
+    "8a6c8fd4dcc6ccb1084cc5dbf84e39e35046c46b",
+    "88eae322db22b3a587e7619c7331a4f6adf77527"
+  ],
+  "tests": {
+    "original_native_baseline": {
+      "passed": 488,
+      "log": "BASELINE_ALL_NATIVE_TESTS.log"
+    },
+    "initial_fixed_red": {
+      "failed": 5,
+      "passed": 5,
+      "log": "RED_FIXED_STANDARD_TESTS.log"
+    },
+    "downstream_red": {
+      "failed": 2,
+      "log": "RED_DOWNSTREAM_METADATA_TESTS.log"
+    },
+    "first_full_regression": {
+      "failed": 71,
+      "passed": 430,
+      "cause": "Whole-payload historical golden status/metadata expectations differ by13explicitadoptedfields only; zero numerical orotherdifferences.",
+      "log": "FINAL_ALL_NATIVE_TESTS.log"
+    },
+    "compatibility_red": {
+      "failed": 2,
+      "log": "RED_GOLDEN_COMPATIBILITY_AND_PRODUCT_STATUS.log"
+    },
+    "final_full_native": {
+      "passed": 503,
+      "existing": 488,
+      "new_fixed": 15,
+      "log": "FINAL_ALL_NATIVE_TESTS_AFTER_EXPLICIT_ADOPTION_DELTA.log",
+      "all_pre_post_source_bytes_identical": true
+    },
+    "independent_fixed_review": {
+      "passed": 15,
+      "review": "INDEPENDENT_REVIEW.json"
+    },
+    "golden_cli": {
+      "passed": 71,
+      "output": "FINAL_GOLDEN_CLI.json",
+      "scope": "SYNTHETIC_LEGACY_SCORES_AND_FULL_FIELDS_WITH_EXPLICIT_USER_V1_METADATA_DELTA"
+    }
+  },
+  "numeric_evidence": "FINAL_NUMERIC_INVARIANCE.json",
+  "numeric_expectations_rewritten": false,
+  "raw_mapping_changed": false,
+  "operational_v_intake_already_emitted_prior": true,
+  "combined_total_still_q_g_only": true,
+  "type_adjustment": "identity",
+  "research_candidates_lifecycle": "RESEARCH",
+  "legacy_metadata_defaults": null,
+  "historic_golden_sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040",
+  "historic_golden_bytes_preserved": true,
+  "c03": {
+    "status": "RESOLVED",
+    "register": "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+    "prior_prefix_preserved": true,
+    "prefix_sha256": "6bd7f8a39fc69cea0bedb3323ea72e5921f1ac1773fd643ced1a08557c1490b3",
+    "q7": "Management Quality (경영진 품질)",
+    "weight": 0.1,
+    "capital_allocation": "subordinate interpretation"
+  },
+  "metadata_fields": [
+    "standard=v1",
+    "calibration=UNCALIBRATED",
+    "standard_status=STANDARD v1 · UNCALIBRATED",
+    "standard_effective_at=2026-10-08T11:50:25Z"
+  ],
+  "downstream_score_copies_tagged": [
+    "LeaderboardRow",
+    "US current-session rows/prediction",
+    "new historical predictions/quality"
+  ],
+  "ci": "Existing qgv-common-contract-vnext PR pathfilter now matches audit/test fixes; Root will publish PR and consume actual CI. No workflow changes.",
+  "missing_data_lease_preserved": "qgv-b47-muupb538",
+  "canonical_merge": false,
+  "remote_mutations_by_lane": false,
+  "holdout_period_selected_or_consumed": false,
+  "calibration_or_refit_run": false,
+  "automation_expansion": false,
+  "source_manifest": "SOURCE_MANIFEST.json"
+}

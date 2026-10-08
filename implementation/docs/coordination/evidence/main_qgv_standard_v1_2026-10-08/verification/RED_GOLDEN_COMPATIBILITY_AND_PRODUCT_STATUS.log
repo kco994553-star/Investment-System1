@@ -1,0 +1,30 @@
+CLAIM_EXTENSION=88eae322db22b3a587e7619c7331a4f6adf77527
+GOLDEN_TOOL_AND_PRODUCT_SOURCE_UNMODIFIED
+command=['python', '-m', 'pytest', '-q', 'implementation/tests/test_qgv_scoring_standard_v1.py', '-k', 'golden_projection or active_product']
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_v1_golden_projection_preserves_all_numeric_unknown_and_historical_fields _
+
+    def test_v1_golden_projection_preserves_all_numeric_unknown_and_historical_fields():
+        from copy import deepcopy
+        import json
+>       from tools.qgv_contract_audit import DOCS, evaluate_case, expected_with_v1_metadata
+E       ImportError: cannot import name 'expected_with_v1_metadata' from 'tools.qgv_contract_audit' (/workspace/qgv-standard-v1-read/implementation/tools/qgv_contract_audit.py)
+
+implementation/tests/test_qgv_scoring_standard_v1.py:219: ImportError
+_______ test_v1_active_product_descriptions_show_adopted_uncalibrated_v ________
+
+    def test_v1_active_product_descriptions_show_adopted_uncalibrated_v():
+        from investment_system.product.render_app import bodies
+    
+        pages = bodies()
+        for name in ("home", "qgv_analysis"):
+            text = pages[name][1]
+>           assert "STANDARD v1 · UNCALIBRATED" in text
+E           assert 'STANDARD v1 · UNCALIBRATED' in '\n      <div class="badge">PRODUCT UI</div><div class="badge">US TRACK</div><div class="badge">KR DEFERRED</div>\n   ...-working-PROVISIONAL · Macro confirmed v0.1.1 · Q factors 7 / G factors 6 frozen · V production null</p>\n            '
+
+implementation/tests/test_qgv_scoring_standard_v1.py:246: AssertionError
+=========================== short test summary info ============================
+FAILED implementation/tests/test_qgv_scoring_standard_v1.py::test_v1_golden_projection_preserves_all_numeric_unknown_and_historical_fields
+FAILED implementation/tests/test_qgv_scoring_standard_v1.py::test_v1_active_product_descriptions_show_adopted_uncalibrated_v
+2 failed, 13 deselected in 0.12s

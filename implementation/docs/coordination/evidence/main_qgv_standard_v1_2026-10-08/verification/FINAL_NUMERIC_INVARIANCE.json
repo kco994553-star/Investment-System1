@@ -1,0 +1,215 @@
+{
+  "verified_head": "39342374301ce25483a9f58ef5b8e0323aa04465",
+  "before": [
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 0.0,
+      "G_score": 0.0,
+      "V_score": 0.0,
+      "total_score": 0.0,
+      "attractiveness_10": 0.0,
+      "type_adjusted_score_100": 0.0,
+      "coverage_state": "READY",
+      "input_score": 0
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "FINANCIAL",
+      "Q_score": 0.0,
+      "G_score": 0.0,
+      "V_score": 0.0,
+      "total_score": 0.0,
+      "attractiveness_10": 0.0,
+      "type_adjusted_score_100": 0.0,
+      "coverage_state": "PARTIAL",
+      "input_score": 0
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 10.0,
+      "G_score": 10.0,
+      "V_score": 10.0,
+      "total_score": 10.0,
+      "attractiveness_10": 1.0,
+      "type_adjusted_score_100": 10.0,
+      "coverage_state": "READY",
+      "input_score": 10
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "FINANCIAL",
+      "Q_score": 8.0,
+      "G_score": 10.0,
+      "V_score": 10.0,
+      "total_score": 9.0,
+      "attractiveness_10": 0.9,
+      "type_adjusted_score_100": 9.0,
+      "coverage_state": "PARTIAL",
+      "input_score": 10
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 70.0,
+      "G_score": 70.0,
+      "V_score": 70.0,
+      "total_score": 70.0,
+      "attractiveness_10": 7.0,
+      "type_adjusted_score_100": 70.0,
+      "coverage_state": "READY",
+      "input_score": 70
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "FINANCIAL",
+      "Q_score": 56.0,
+      "G_score": 70.0,
+      "V_score": 70.0,
+      "total_score": 63.0,
+      "attractiveness_10": 6.3,
+      "type_adjusted_score_100": 63.0,
+      "coverage_state": "PARTIAL",
+      "input_score": 70
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 100.0,
+      "G_score": 100.0,
+      "V_score": 100.0,
+      "total_score": 100.0,
+      "attractiveness_10": 10.0,
+      "type_adjusted_score_100": 100.0,
+      "coverage_state": "READY",
+      "input_score": 100
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "FINANCIAL",
+      "Q_score": 80.0,
+      "G_score": 100.0,
+      "V_score": 100.0,
+      "total_score": 90.0,
+      "attractiveness_10": 9.0,
+      "type_adjusted_score_100": 90.0,
+      "coverage_state": "PARTIAL",
+      "input_score": 100
+    }
+  ],
+  "after": [
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 0.0,
+      "G_score": 0.0,
+      "V_score": 0.0,
+      "total_score": 0.0,
+      "attractiveness_10": 0.0,
+      "type_adjusted_score_100": 0.0,
+      "coverage_state": "READY",
+      "input_score": 0
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "FINANCIAL",
+      "Q_score": 0.0,
+      "G_score": 0.0,
+      "V_score": 0.0,
+      "total_score": 0.0,
+      "attractiveness_10": 0.0,
+      "type_adjusted_score_100": 0.0,
+      "coverage_state": "PARTIAL",
+      "input_score": 0
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 10.0,
+      "G_score": 10.0,
+      "V_score": 10.0,
+      "total_score": 10.0,
+      "attractiveness_10": 1.0,
+      "type_adjusted_score_100": 10.0,
+      "coverage_state": "READY",
+      "input_score": 10
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "FINANCIAL",
+      "Q_score": 8.0,
+      "G_score": 10.0,
+      "V_score": 10.0,
+      "total_score": 9.0,
+      "attractiveness_10": 0.9,
+      "type_adjusted_score_100": 9.0,
+      "coverage_state": "PARTIAL",
+      "input_score": 10
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 70.0,
+      "G_score": 70.0,
+      "V_score": 70.0,
+      "total_score": 70.0,
+      "attractiveness_10": 7.0,
+      "type_adjusted_score_100": 70.0,
+      "coverage_state": "READY",
+      "input_score": 70
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "FINANCIAL",
+      "Q_score": 56.0,
+      "G_score": 70.0,
+      "V_score": 70.0,
+      "total_score": 63.0,
+      "attractiveness_10": 6.3,
+      "type_adjusted_score_100": 63.0,
+      "coverage_state": "PARTIAL",
+      "input_score": 70
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "GENERAL_CORPORATE",
+      "Q_score": 100.0,
+      "G_score": 100.0,
+      "V_score": 100.0,
+      "total_score": 100.0,
+      "attractiveness_10": 10.0,
+      "type_adjusted_score_100": 100.0,
+      "coverage_state": "READY",
+      "input_score": 100
+    },
+    {
+      "as_of": "2026-09-14T00:00:00+00:00",
+      "profile_kind": "FINANCIAL",
+      "Q_score": 80.0,
+      "G_score": 100.0,
+      "V_score": 100.0,
+      "total_score": 90.0,
+      "attractiveness_10": 9.0,
+      "type_adjusted_score_100": 90.0,
+      "coverage_state": "PARTIAL",
+      "input_score": 100
+    }
+  ],
+  "all_8_numeric_vectors_identical": true,
+  "all_10_raw_map_ast_and_numeric_literals_identical": true,
+  "decimal_weight_sums_bounds": {
+    "Q": {
+      "exact_sum": "1.00",
+      "within_5_30_percent": true
+    },
+    "G": {
+      "exact_sum": "1.00",
+      "within_5_30_percent": true
+    },
+    "V": {
+      "exact_sum": "1.00",
+      "within_5_30_percent": true
+    }
+  }
+}
