@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "CHECKPOINT_CONTINUE_READ_ONLY",
+  "execution_state": "RUNNING_USER_DIRECTED_BOUNDED_ACTIONS_READ_ONLY",
   "last_processed_heads": {
     "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
     "global_input": "d2e72027d1c80995efee738f9960c157e9e9fedc",
@@ -77,7 +77,25 @@
     "unattended_executor": "DISABLED_PENDING_GATE_A"
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": null,
+  "lease": {
+    "token": "main-directed-cycle2-20261008T110350Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_USER_DIRECTED_BOUNDED_ACTIONS",
+    "branch": "integration/global-handoff-v1",
+    "acquired_at_utc": "2026-10-08T11:03:50Z",
+    "expires_at_utc": "2026-10-08T13:03:50.000Z",
+    "ttl_hours": 2,
+    "input_parent": "9b18106f86a58b6d908cbbae4e36dbcb4751eae2",
+    "scope": [
+      "implementation/docs/coordination/**",
+      "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
+      "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
+    ],
+    "mode": "READ_ONLY",
+    "unattended": false,
+    "authority": "CDR035 same direct named-action instruction plus CDR036 inventory override; no mode grant"
+  },
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -260,7 +278,42 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": null,
+  "active_scoped_execution": {
+    "cycle_id": "main-directed-cycle2-20261008T110350Z",
+    "checkpoint": 2,
+    "classification": "USER_EXPLICIT_NAMED_ACTIONS_ONLY",
+    "production_autonomy_mode": "READ_ONLY",
+    "task_limit": 5,
+    "tasks_used": 1,
+    "lane_leases": [
+      {
+        "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
+        "branch": "fix/ppa-f08-actual-availability-20261008",
+        "base": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+        "write_set": [
+          "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
+          "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
+        ],
+        "status": "CLAIMED_USER_SCOPE",
+        "repair_rounds": 1
+      },
+      {
+        "lane_id": "TARGET_DECISION_PACKAGE",
+        "write_set": [
+          "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
+        ],
+        "status": "CLAIMED_DRAFT_ONLY"
+      },
+      {
+        "lane_id": "FPIA_EXISTING_RECORDED_DEFECT_INVENTORY",
+        "write_set": [
+          "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/**"
+        ],
+        "status": "CLAIMED_EXISTING_RECORDS_ONLY",
+        "no_new_cases": true
+      }
+    ]
+  },
   "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
   "last_checkpoint_at_utc": "2026-10-08T10:59:36Z",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",

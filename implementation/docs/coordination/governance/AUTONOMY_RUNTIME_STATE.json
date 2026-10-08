@@ -1,14 +1,16 @@
 {
   "schema": "autonomy-runtime-state-v1",
-  "cycle_id": null,
-  "holder": null,
+  "cycle_id": "main-directed-cycle2-20261008T110350Z",
+  "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
   "branch": "integration/global-handoff-v1",
-  "started_at_epoch": null,
-  "lease_expires_at_epoch": null,
-  "tasks_used": 0,
-  "repair_rounds": {},
-  "status": "IDLE",
-  "activation": "NONE",
+  "started_at_epoch": 1791457430,
+  "lease_expires_at_epoch": 1791464630,
+  "tasks_used": 1,
+  "repair_rounds": {
+    "PPA-F08": 1
+  },
+  "status": "RUNNING_USER_DIRECTED_READ_ONLY",
+  "activation": "CDR035_SAME_PROMPT_NEXT_CYCLE_CDR036_OVERRIDE",
   "unattended_executor": false,
   "last_cycle": {
     "cycle_id": "main-directed-20261008-104213Z",

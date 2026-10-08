@@ -1,0 +1,53 @@
+{
+  "cycle_id": "main-directed-cycle2-20261008T110350Z",
+  "recorded_at_utc": "2026-10-08T11:03:50Z",
+  "parent": "9b18106f86a58b6d908cbbae4e36dbcb4751eae2",
+  "lease": {
+    "token": "main-directed-cycle2-20261008T110350Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_USER_DIRECTED_BOUNDED_ACTIONS",
+    "branch": "integration/global-handoff-v1",
+    "acquired_at_utc": "2026-10-08T11:03:50Z",
+    "expires_at_utc": "2026-10-08T13:03:50.000Z",
+    "ttl_hours": 2,
+    "input_parent": "9b18106f86a58b6d908cbbae4e36dbcb4751eae2",
+    "scope": [
+      "implementation/docs/coordination/**",
+      "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
+      "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
+    ],
+    "mode": "READ_ONLY",
+    "unattended": false,
+    "authority": "CDR035 same direct named-action instruction plus CDR036 inventory override; no mode grant"
+  },
+  "autonomy_mode": "READ_ONLY",
+  "task_limit": 5,
+  "tasks": [
+    {
+      "number": 1,
+      "scope": "fresh claim and existing PPA-F08 CI compatibility repair"
+    },
+    {
+      "number": 2,
+      "scope": "blank TARGET/Theme/identity decision package"
+    },
+    {
+      "number": 3,
+      "scope": "recorded FPIA F1–F25 intake only; no new audits/repros"
+    },
+    {
+      "number": 4,
+      "scope": "exact source/CI/evidence verification"
+    },
+    {
+      "number": 5,
+      "scope": "final handoff and release own lease"
+    }
+  ],
+  "expected_code_behavior": "ACTUAL unavailable remains NOT_AVAILABLE; finite persisted TARGET displayed separately as TARGET/Model weight to preserve existing positive guard control",
+  "source_head_before_repair": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+  "same_failure_cap": 3,
+  "old_lease_released_and_verified": true,
+  "unattended": false
+}
