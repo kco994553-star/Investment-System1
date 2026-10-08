@@ -1,0 +1,3738 @@
+{
+  "schema": "FPIA_RECORDED_DEFECT_INVENTORY/1",
+  "created_at_utc": "2026-10-08T10:52:32.084651+00:00",
+  "scope": "Already recorded PR42/PR46/PR47 defects and their existing regression cases only. F IDs are intake identifiers, not new findings.",
+  "repository": "kco994553-star/Investment-System1",
+  "read_scope": "Existing commits, checked-in reports/logs/test source and immutable receipt evidence. No fresh audit or adversarial exploration.",
+  "remote_heads": {
+    "PR42": {
+      "branch": "integration/fpia-hardened-v1",
+      "sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb"
+    },
+    "PR46": {
+      "branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+      "sha": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6"
+    },
+    "PR47": {
+      "branch": "codex/fpia-execution-coverage-2026-10-05",
+      "sha": "7215a9f60ad7128b1748f405051eac684298614f"
+    },
+    "currentGlobal": {
+      "branch": "integration/global-handoff-v1",
+      "sha": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4"
+    },
+    "handover": {
+      "branch": "handover/claude-main-outputs-2026-10-05",
+      "sha": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2"
+    }
+  },
+  "current_candidate": {
+    "sha": "7215a9f60ad7128b1748f405051eac684298614f",
+    "tree": "d5a61fad01b84ef5e84daf2949572911a14a6782",
+    "inherits_PR42": true,
+    "inherits_PR46": true,
+    "canonical_adoption": false
+  },
+  "defect_count": 25,
+  "defects": [
+    {
+      "id": "F1",
+      "title": "Literal executable source filenames with spaces or non-code suffix missed AC-32.spoof",
+      "source_labels": [
+        "PR46_LITERAL_SOURCE_FALSE_PASS"
+      ],
+      "pull_requests": [
+        42,
+        46
+      ],
+      "recorded_broken_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "recorded_fix_ref": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E001",
+        "E002",
+        "E003",
+        "E004",
+        "E005",
+        "E006"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E029",
+          "path": "implementation/tests/test_integration_fpia_literal_sources.py",
+          "function": "test_literal_executable_source_is_scanned",
+          "line": 20,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E029",
+          "path": "implementation/tests/test_integration_fpia_literal_sources.py",
+          "function": "test_literal_script_end_to_end_status",
+          "line": 58,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E029",
+          "path": "implementation/tests/test_integration_fpia_literal_sources.py",
+          "function": "test_literal_source_benign_controls",
+          "line": 32,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing four failures: bash ci/commands.txt; python ci/commands.txt; bash \"ci/run commands.sh\"; bash ci/entry.sh -> ci/nested.txt. Same recorded synthetic T e6fde4628c1154e5ff840729949daa5ff8284faf and register d2ccd9252f3680b4828fe13648f8a45f1d3dc88c changed FPIA_PASS/NONE to FPIA_FAIL/AC-32.spoof; runtime and synthetic regression remain PASS.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_UNFIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E001",
+          "kind": "git_file",
+          "ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/README.md",
+          "git_blob": "d7b2dcb960ab8576e2b845019d4d889864fae8e0",
+          "sha256": "abb6d73ac51b64a28c78916e9086c30e9d22df632cd1c026e637008ef0253ba6"
+        },
+        {
+          "evidence_id": "E002",
+          "kind": "git_file",
+          "ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/summary.json",
+          "git_blob": "7916e571f8e2059b18cf04613c01daeba50c48c5",
+          "sha256": "795677db47385b1f977c6d3a606adba157d6c2a2493c2e831ab25a0758f8cfdc"
+        },
+        {
+          "evidence_id": "E003",
+          "kind": "git_file",
+          "ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/new_regressions_before_7_fail_4_pass.log",
+          "git_blob": "cffa2ba74ba7b3a9d74cbb7621d053ef09a4f881",
+          "sha256": "1f38ff119bb30ee14770bf2e30cd7fd08fffd5cd9c68c9c0c363e7f17c0897c7"
+        },
+        {
+          "evidence_id": "E004",
+          "kind": "git_file",
+          "ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/aggregate_before.json",
+          "git_blob": "3b94d52963973f3cebd8be7ed8738715c3d8ac46",
+          "sha256": "57763a3fceae075f64e84ceeb0398a7950e276f3977c10803404bbbdaa6d2086"
+        },
+        {
+          "evidence_id": "E005",
+          "kind": "git_file",
+          "ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/aggregate_after.json",
+          "git_blob": "e898913067ca2d905a69653e6ec9160b43ecd619",
+          "sha256": "3e40c4f8a854254dc56f7b8e9eeb9e417673e07834cdeaf8440979809a09218c"
+        },
+        {
+          "evidence_id": "E006",
+          "kind": "git_file",
+          "ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/independent_review_10_pass.json",
+          "git_blob": "d0e94164b260c6337f687323d945edb0bb79ff9f",
+          "sha256": "d9ac85a4a5eb5ec7c63dab9bc45c3247e47328bd4bbd494dd06b5a464772fe14"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F2",
+      "title": "AC-32 workflow identity bypasses from literal expressions, confusables and invisible characters",
+      "source_labels": [
+        "G1",
+        "H1",
+        "D1",
+        "D2",
+        "S24V2"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E007",
+        "E008",
+        "E009",
+        "E010",
+        "E011",
+        "E012"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_round2_variant_pinned",
+          "line": 498,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_round2_d1_d2_all_found",
+          "line": 513,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_s24v2_end_to_end_component_status",
+          "line": 554,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_constant_expressions_fold",
+          "line": 580,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_skeleton_applied_before_nfkc",
+          "line": 609,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_non_foldable_name_is_found_fail_closed",
+          "line": 619,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_identity_key_non_claims",
+          "line": 605,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_data_files_and_whole_suite_are_not_spoofing",
+          "line": 671,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing S24V2 at3b09df4ebc32b517da1f4623ffd6c52cb1f35327 combines trailingU+2800 workflow identity and rooted workspace cd; original full CLI falsePASS is preserved. Recorded D1/D2 identity cases are pinned FOUND by fix3.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "existing_case_records": [
+        {
+          "id": "U27",
+          "group": "G1-confusable-icu",
+          "desc": "U+03F2 GREEK LUNATE SIGMA SYMBOL for c (ICU skeleton c; NFKC -> final sigma)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "traϲk-ϲ-evl-validation",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "ICU 74.2 uspoof_getSkeleton maps U+03F2 to 'c'; FPIA applies NFKC first (-> U+03C2) contrary to its UTS #39 skeleton claim"
+        },
+        {
+          "id": "U28",
+          "group": "G1-confusable-icu",
+          "desc": "U+FE58 SMALL EM DASH for hyphens (ICU skeleton '-'; NFKC -> em dash)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track﹘c﹘evl﹘validation",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "ICU skeleton '-'; NFKC first turns U+FE58 into U+2014"
+        },
+        {
+          "id": "U29",
+          "group": "G1-confusable-icu",
+          "desc": "U+FFE8 HALFWIDTH FORMS LIGHT VERTICAL for l (ICU skeleton l; NFKC -> U+2502)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-ev￨-va￨idation",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "ICU skeleton 'l'; NFKC first turns U+FFE8 into U+2502"
+        },
+        {
+          "id": "U30",
+          "group": "G1-confusable-icu",
+          "desc": "U+02DB OGONEK for i (ICU skeleton i)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-val˛dat˛on",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "ICU skeleton 'i'; NFKC first turns U+02DB into space + U+0328"
+        },
+        {
+          "id": "U31",
+          "group": "G1-confusable-icu",
+          "desc": "U+037A GREEK YPOGEGRAMMENI for i (ICU skeleton i)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-valͺdatͺon",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "ICU skeleton 'i'; NFKC first turns U+037A into space + U+0345"
+        },
+        {
+          "id": "U32",
+          "group": "G1-confusable-icu",
+          "desc": "single U+03F2 for the lone c in 'track' only",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "traϲk-c-evl-validation",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "one lunate sigma is enough"
+        },
+        {
+          "id": "Y27",
+          "group": "G1",
+          "desc": "run-name constant expression ${{ 'track-c-evl-validation' }}",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": "track-c-evl-validation"
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "GitHub folds the literal expression: oracle runName='track-c-evl-validation'; FPIA compares the raw text"
+        },
+        {
+          "id": "Y28",
+          "group": "G1",
+          "desc": "run-name format() expression",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": "${{ format('track-c-{0}-validation', 'evl') }}"
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "constant format() in run-name is evaluated by GitHub at run time to the Track C name"
+        },
+        {
+          "id": "Y29",
+          "group": "G1",
+          "desc": "run-name with embedded expression track-c-${{ 'evl' }}-validation",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": "${{ format('track-c-{0}-validation', 'evl') }}"
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "embedded constant expression in run-name evaluates to the Track C name"
+        },
+        {
+          "id": "Y30",
+          "group": "G1",
+          "desc": "name contains expression syntax (workflow name does not evaluate)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-validation",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "expected FOUND (variant label corrected): the GitHub oracle folds name: ${{ 'track-c-evl-validation' }} to the Track C name"
+        },
+        {
+          "id": "U01",
+          "group": "G1-confusable",
+          "desc": "trailing U+2800 BRAILLE PATTERN BLANK",
+          "expected": "FOUND?",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-validation⠀",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "trailing U+2800 renders blank; not UTS #39-confusable and not Default_Ignorable"
+        },
+        {
+          "id": "U03",
+          "group": "G1-confusable",
+          "desc": "trailing U+1D159 MUSICAL SYMBOL NULL NOTEHEAD",
+          "expected": "FOUND?",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-validation𝅙",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "trailing U+1D159 renders blank/empty"
+        },
+        {
+          "id": "U04",
+          "group": "G1-confusable",
+          "desc": "dotless i + U+0307 COMBINING DOT ABOVE for each i",
+          "expected": "FOUND?",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-valı̇datı̇on",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "U+0131 + U+0307 renders as 'i'; the UTS #39 skeleton keeps U+0307"
+        },
+        {
+          "id": "U10",
+          "group": "G1-confusable",
+          "desc": "U+FFF9 INTERLINEAR ANNOTATION ANCHOR trailing",
+          "expected": "FOUND?",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-validation￹",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "U+FFF9 is an invisible format character outside Default_Ignorable"
+        },
+        {
+          "id": "U26",
+          "group": "G1-confusable",
+          "desc": "trailing U+16FE4 KHITAN FILLER (Cf, not DI in Unicode 15.1)",
+          "expected": "FOUND?",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-validation𖿤",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "U+16FE4 KHITAN FILLER is invisible, outside the embedded Default_Ignorable ranges"
+        },
+        {
+          "id": "F03",
+          "group": "G1-stem",
+          "desc": "no name; stem with trailing U+2800",
+          "expected": "FOUND?",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": null,
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "filename stem with trailing U+2800"
+        },
+        {
+          "id": "U33",
+          "group": "G1-control",
+          "desc": "trailing DEL via \\x7f escape",
+          "expected": "FOUND?",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-validation",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "non-printing DEL"
+        },
+        {
+          "id": "U34",
+          "group": "G1-control",
+          "desc": "trailing C1 control U+0080 via \\x80 escape",
+          "expected": "FOUND?",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-validation",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "non-printing C1 control"
+        },
+        {
+          "id": "U37",
+          "group": "G1-control",
+          "desc": "trailing U+0001 via \\x01 escape",
+          "expected": "FOUND?",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-validation\u0001",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "non-printing C0 control"
+        },
+        {
+          "id": "U38",
+          "group": "G1-control",
+          "desc": "trailing U+009F via \\x9f escape",
+          "expected": "FOUND?",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": null,
+          "github_oracle": {
+            "errors": false,
+            "name": "track-c-evl-validation",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "non-printing C1 control"
+        }
+      ],
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E007",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/fpia_fix_round_2_complete_results.json",
+          "git_blob": "a51f552edf39b9e6aeb72569c1fa31761a55c41f",
+          "sha256": "6dc146cd181ec5ab5ee2b4e1c549cca9ae2dc845be760a6041b17c1a9db6b740"
+        },
+        {
+          "evidence_id": "E008",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/fpia_round2_adversarial_classification_156.json",
+          "git_blob": "e1f5eca21aa1b1b47bd9cc7498fc9cf6098749c3",
+          "sha256": "e0457895c0289d4c417fb8fe62e0c7f7c2f04a74b5b73e882f7013b3b37b2082"
+        },
+        {
+          "evidence_id": "E009",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/variants.py",
+          "git_blob": "4fbf0c7b3d6ba5bdbd26e53c466804efa51afb72",
+          "sha256": "25edfb04d42870f84fb57f32cf0a33857021bed64af20a6709fc87323190aa55"
+        },
+        {
+          "evidence_id": "E010",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/combined.py",
+          "git_blob": "c78c53a9183ba9c0a0e9fb7e1911276d7156d05e",
+          "sha256": "0a4e879fefc657dffc5241e217708a08563a14e5a0c0a68b0849b485c0c683da"
+        },
+        {
+          "evidence_id": "E011",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/run1.sh",
+          "git_blob": "d9cd75d0f743323b117fee43d06b68823cb52ab8",
+          "sha256": "e30595a84424275c48e68c37edc967641e09495622e5636ff2f2696af9468c7d"
+        },
+        {
+          "evidence_id": "E012",
+          "kind": "git_commit",
+          "ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "path": null,
+          "git_blob": null,
+          "sha256": "135c1849252e437fb9d6c607c4b6ad090c878e77d0338449d516dc5996b791fd"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F3",
+      "title": "AC-32 claimed literal invocation and reached-source bypasses",
+      "source_labels": [
+        "G2",
+        "H2",
+        "D1",
+        "D2",
+        "S24V2"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E007",
+        "E008",
+        "E009",
+        "E010",
+        "E011",
+        "E012"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_round2_variant_pinned",
+          "line": 498,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_round2_d1_d2_all_found",
+          "line": 513,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_s24v2_end_to_end_component_status",
+          "line": 554,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_mention_detected_whatever_surrounds_it",
+          "line": 651,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_reached_files_scanned",
+          "line": 665,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_data_files_and_whole_suite_are_not_spoofing",
+          "line": 671,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_d3c_pinned_as_current_behaviour",
+          "line": 525,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Recorded workspace paths, cd/shell wrapper options, action_path, backslash continuations/shlex errors, Python/pytest/make/npm/local action references. These existing D1/D2 cases were converted to mention over-approximation; arbitrary dynamic invocation remains a disclosed acceptance obligation.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "existing_case_records": [
+        {
+          "id": "I01",
+          "group": "G2",
+          "desc": "cd ${{ github.workspace }}/implementation/tools && python <tool>",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "claimed: cd and ${{ github.workspace }}; command() ignores any cd whose argument contains '$', and _subst turns the workspace expression into $GITHUB_WORKSPACE first"
+        },
+        {
+          "id": "I02",
+          "group": "G2",
+          "desc": "cd \"$GITHUB_WORKSPACE/implementation/tools\" && python <tool>",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "same root cause: cd \"$GITHUB_WORKSPACE/...\" is ignored"
+        },
+        {
+          "id": "I03",
+          "group": "G2",
+          "desc": "working-directory: ${{ github.workspace }}/implementation/tools",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "claimed working-directory + workspace: the base keeps the ${{ github.workspace }}/ prefix (only tokens are stripped)"
+        },
+        {
+          "id": "I05",
+          "group": "G2",
+          "desc": "cd -P implementation/tools",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "cd -P: the option is taken as the directory"
+        },
+        {
+          "id": "I06",
+          "group": "G2",
+          "desc": "cd -- implementation/tools",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "cd --: the option is taken as the directory"
+        },
+        {
+          "id": "I08",
+          "group": "G2",
+          "desc": "bash -ec 'cd implementation/tools && python <tool>' (combined flags)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "claimed bash -c: combined flags -ec pop the command string; it is then treated as a script path"
+        },
+        {
+          "id": "I09",
+          "group": "G2",
+          "desc": "sh -xc 'cd ... && python <tool>'",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "sh -xc: same"
+        },
+        {
+          "id": "I15",
+          "group": "G2",
+          "desc": "bash -o pipefail ci/tc.sh (option with value before script)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "bash -o pipefail ci/tc.sh: 'pipefail' is taken as the script"
+        },
+        {
+          "id": "I16",
+          "group": "G2",
+          "desc": "bash --noprofile --norc -eo pipefail ci/tc.sh (GitHub's own bash template)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "GitHub's own 'bash --noprofile --norc -eo pipefail <script>' form: same"
+        },
+        {
+          "id": "I19",
+          "group": "G2",
+          "desc": "extension-less, shebang-less executable script ./ci/run-tc (bash ENOEXEC fallback)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "claimed local-script following: a shebang-less executable is silently skipped (bash runs it via ENOEXEC fallback)"
+        },
+        {
+          "id": "I20",
+          "group": "G2",
+          "desc": "shell line continuation splitting the path (implementation/to\\<NL>ols/...)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "backslash-newline is replaced by a space; bash removes it"
+        },
+        {
+          "id": "I29",
+          "group": "G2",
+          "desc": "reusable workflow (job uses ./.github/workflows/x.yml) whose step uses cd ${{ github.workspace }}/...",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "the reusable workflow is followed (I57 control FOUND), but its rooted cd hits the I01 bug"
+        },
+        {
+          "id": "I31",
+          "group": "G2",
+          "desc": "composite action runs ${{ github.action_path }}/run.sh which calls the tool",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "claimed composite-action following: ${{ github.action_path }} is not resolved"
+        },
+        {
+          "id": "I32",
+          "group": "G2",
+          "desc": "composite action runs $GITHUB_ACTION_PATH/run.sh",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "$GITHUB_ACTION_PATH not resolved"
+        },
+        {
+          "id": "I51",
+          "group": "G2",
+          "desc": "multi-line quoted argument: cd + python on a line whose quote closes on the next line",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "fail-open: a quote spanning two lines makes shlex fail and the whole line is dropped"
+        },
+        {
+          "id": "I65",
+          "group": "G2",
+          "desc": "job-level defaults.run.working-directory via ${{ github.workspace }}",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D1)",
+          "why": "same as I03 for defaults.run.working-directory"
+        },
+        {
+          "id": "I04",
+          "group": "G2",
+          "desc": "pushd implementation/tools",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "pushd not modelled"
+        },
+        {
+          "id": "I07",
+          "group": "G2",
+          "desc": "env -C implementation/tools python <tool>",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "env -C not modelled"
+        },
+        {
+          "id": "I10",
+          "group": "G2",
+          "desc": "PYTHONPATH=implementation/tools python -m track_c_c6_acceptance",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "python -m <Track C tool module> with PYTHONPATH=implementation/tools"
+        },
+        {
+          "id": "I11",
+          "group": "G2",
+          "desc": "python -m <tree module> (implementation/src/ci_probe/__main__.py) calling the tool with subprocess cwd=",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "followed module: subprocess cwd='tools' literal kwarg not modelled"
+        },
+        {
+          "id": "I12",
+          "group": "G2",
+          "desc": "python script: os.chdir('implementation/tools') then os.system('python track_c_c6_acceptance.py')",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "os.chdir literal not modelled"
+        },
+        {
+          "id": "I13",
+          "group": "G2",
+          "desc": "make target running the tool (Makefile recipe)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "Makefile recipe not followed (or a non-claim; see NEW_D3)"
+        },
+        {
+          "id": "I14",
+          "group": "G2",
+          "desc": "npm script running the tool (package.json)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "package.json script not followed (or a non-claim; see NEW_D3)"
+        },
+        {
+          "id": "I17",
+          "group": "G2",
+          "desc": "timeout 600 bash ci/tc.sh (wrapper not in WRAPPERS)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "timeout not in WRAPPERS"
+        },
+        {
+          "id": "I18",
+          "group": "G2",
+          "desc": "nice -n 5 python ci/run.py (wrapper with option)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "nice -n not in WRAPPERS"
+        },
+        {
+          "id": "I21",
+          "group": "G2",
+          "desc": "ANSI-C quoting $'\\x69mplementation/tools/...'",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "ANSI-C quoting"
+        },
+        {
+          "id": "I22",
+          "group": "G2",
+          "desc": "brace expansion implementation/t{o,}ols/... (extra argv ignored by the tool? python runs first)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "brace expansion"
+        },
+        {
+          "id": "I23",
+          "group": "G2",
+          "desc": "absolute runner path /home/runner/work/<repo>/<repo>/implementation/tools/<tool>",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": false,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "absolute GitHub runner workspace path; emulation cannot run it locally, it runs on the runner by construction"
+        },
+        {
+          "id": "I33",
+          "group": "G2",
+          "desc": "node local action (runs.using node20, main index.js) spawning the tool",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "local node action is not followed and not failed closed (FPIA fails closed only when action.yml is missing); NEW_D3 if a non-claim is preferred"
+        },
+        {
+          "id": "I34",
+          "group": "G2",
+          "desc": "docker local action (Dockerfile ENTRYPOINT with /github/workspace path)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": false,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "local docker action: same; not emulated (no docker), runs by construction"
+        },
+        {
+          "id": "I35",
+          "group": "G2",
+          "desc": "pytest @argsfile (-k evl_c6 inside the file)",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "pytest @argsfile"
+        },
+        {
+          "id": "I36",
+          "group": "G2",
+          "desc": "PYTEST_ADDOPTS='-k evl_c6' + bare pytest",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "PYTEST_ADDOPTS from step env"
+        },
+        {
+          "id": "I37",
+          "group": "G2",
+          "desc": "pytest -c custom ini with addopts -k evl_c6",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "pytest -c ini addopts"
+        },
+        {
+          "id": "I39",
+          "group": "G2",
+          "desc": "pytest --ignore-glob selecting only Track C tests",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "--ignore-glob leaves only Track C tests"
+        },
+        {
+          "id": "I40",
+          "group": "G2",
+          "desc": "pytest.main(['-k','evl_c6']) in a followed python script",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "pytest.main([...]) list in a followed script"
+        },
+        {
+          "id": "I41",
+          "group": "G2",
+          "desc": "Windows runner, backslash path",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": false,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "Windows runner backslash path; not emulated, runs by construction"
+        },
+        {
+          "id": "I43",
+          "group": "G2",
+          "desc": "uv run --directory implementation/tools python <tool>",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "uv run --directory"
+        },
+        {
+          "id": "I48",
+          "group": "G2",
+          "desc": "cd inside if-block: if true; then cd implementation/tools; fi; python <tool>",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "cd after the 'then' keyword"
+        },
+        {
+          "id": "I52",
+          "group": "G2",
+          "desc": "CDPATH=implementation cd tools",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "CDPATH"
+        },
+        {
+          "id": "I56",
+          "group": "G2",
+          "desc": "PYTHONPATH=ci python -m runner (module only on PYTHONPATH) calling the tool by full literal path",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "module found only through PYTHONPATH"
+        },
+        {
+          "id": "I59",
+          "group": "G2",
+          "desc": "shell: python {0} with os.chdir + subprocess bare tool name",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": false,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "shell: python {0} with os.chdir (same as I12)"
+        },
+        {
+          "id": "Y41",
+          "group": "G2",
+          "desc": "working-directory given as a literal expression ${{ 'implementation/tools' }} + bare tool name",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "GitHub folds working-directory ${{ 'implementation/tools' }}; emulation runs the tool"
+        },
+        {
+          "id": "Y42",
+          "group": "G2",
+          "desc": "whole run command as one literal expression ${{ 'cd implementation/tools && python <tool>' }}",
+          "expected": "FOUND",
+          "observed_fpia": "NOT_FOUND",
+          "fpia_reasons": [],
+          "ground_truth_track_c_executed": true,
+          "github_oracle": {
+            "errors": false,
+            "name": "probe",
+            "run_name": null
+          },
+          "class": "LOCAL_FIXABLE (D2)",
+          "why": "GitHub folds the whole run text (oracle step run = 'cd implementation/tools && python ...'); emulation runs the tool"
+        }
+      ],
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E007",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/fpia_fix_round_2_complete_results.json",
+          "git_blob": "a51f552edf39b9e6aeb72569c1fa31761a55c41f",
+          "sha256": "6dc146cd181ec5ab5ee2b4e1c549cca9ae2dc845be760a6041b17c1a9db6b740"
+        },
+        {
+          "evidence_id": "E008",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/fpia_round2_adversarial_classification_156.json",
+          "git_blob": "e1f5eca21aa1b1b47bd9cc7498fc9cf6098749c3",
+          "sha256": "e0457895c0289d4c417fb8fe62e0c7f7c2f04a74b5b73e882f7013b3b37b2082"
+        },
+        {
+          "evidence_id": "E009",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/variants.py",
+          "git_blob": "4fbf0c7b3d6ba5bdbd26e53c466804efa51afb72",
+          "sha256": "25edfb04d42870f84fb57f32cf0a33857021bed64af20a6709fc87323190aa55"
+        },
+        {
+          "evidence_id": "E010",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/combined.py",
+          "git_blob": "c78c53a9183ba9c0a0e9fb7e1911276d7156d05e",
+          "sha256": "0a4e879fefc657dffc5241e217708a08563a14e5a0c0a68b0849b485c0c683da"
+        },
+        {
+          "evidence_id": "E011",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/run1.sh",
+          "git_blob": "d9cd75d0f743323b117fee43d06b68823cb52ab8",
+          "sha256": "e30595a84424275c48e68c37edc967641e09495622e5636ff2f2696af9468c7d"
+        },
+        {
+          "evidence_id": "E012",
+          "kind": "git_commit",
+          "ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "path": null,
+          "git_blob": null,
+          "sha256": "135c1849252e437fb9d6c607c4b6ad090c878e77d0338449d516dc5996b791fd"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F4",
+      "title": "Explicit job and service container declarations missing external inventory",
+      "source_labels": [
+        "PR46_EXTERNAL_IMAGE_INVENTORY"
+      ],
+      "pull_requests": [
+        46
+      ],
+      "recorded_broken_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "recorded_fix_ref": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E001",
+        "E002",
+        "E003",
+        "E006"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E029",
+          "path": "implementation/tests/test_integration_fpia_literal_sources.py",
+          "function": "test_explicit_external_images_recorded_without_safety_claim",
+          "line": 42,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E029",
+          "path": "implementation/tests/test_integration_fpia_literal_sources.py",
+          "function": "test_arbitrary_image_input_is_not_job_container",
+          "line": 51,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E029",
+          "path": "implementation/tests/test_integration_fpia_literal_sources.py",
+          "function": "test_literal_source_benign_controls",
+          "line": 32,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Three recorded failures: scalar jobcontainer alpine:3.20; mapping image alpine:3.20; service redis:7. Declaration is recorded while external code remains NOT_ANALYSED.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_UNFIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E001",
+          "kind": "git_file",
+          "ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/README.md",
+          "git_blob": "d7b2dcb960ab8576e2b845019d4d889864fae8e0",
+          "sha256": "abb6d73ac51b64a28c78916e9086c30e9d22df632cd1c026e637008ef0253ba6"
+        },
+        {
+          "evidence_id": "E002",
+          "kind": "git_file",
+          "ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/summary.json",
+          "git_blob": "7916e571f8e2059b18cf04613c01daeba50c48c5",
+          "sha256": "795677db47385b1f977c6d3a606adba157d6c2a2493c2e831ab25a0758f8cfdc"
+        },
+        {
+          "evidence_id": "E003",
+          "kind": "git_file",
+          "ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/new_regressions_before_7_fail_4_pass.log",
+          "git_blob": "cffa2ba74ba7b3a9d74cbb7621d053ef09a4f881",
+          "sha256": "1f38ff119bb30ee14770bf2e30cd7fd08fffd5cd9c68c9c0c363e7f17c0897c7"
+        },
+        {
+          "evidence_id": "E006",
+          "kind": "git_file",
+          "ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "path": "implementation/docs/coordination/evidence/FPIA_LITERAL_SOURCE_REPAIR_2026-10-05/independent_review_10_pass.json",
+          "git_blob": "d0e94164b260c6337f687323d945edb0bb79ff9f",
+          "sha256": "d9ac85a4a5eb5ec7c63dab9bc45c3247e47328bd4bbd494dd06b5a464772fe14"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F5",
+      "title": "Environment paths and OS user altered result hash or produced false FAIL",
+      "source_labels": [
+        "G5",
+        "H3"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E007",
+        "E013",
+        "E012",
+        "E031",
+        "E032"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_symlinked_venv_tmpdir_and_user_give_same_verdict_and_sha",
+          "line": 732,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_pytest_basetemp_user_normalised",
+          "line": 761,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_plugin_findings_compare_realpath_to_realpath",
+          "line": 771,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_env_paths_scrubbed_to_tokens",
+          "line": 438,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_result_sha256_independent_of_venv_location",
+          "line": 493,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Recorded baselinePASS became FAIL under symlinked venv/TMPDIR; pytest-of-OSuser affected hashes. Earlier fix2 path tokens and fix3 realpath/user normalization are existing repairs. PR46 bounded local run deselected two environment tests; latest exact7215 native CI covers the retained corpus.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E007",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/fpia_fix_round_2_complete_results.json",
+          "git_blob": "a51f552edf39b9e6aeb72569c1fa31761a55c41f",
+          "sha256": "6dc146cd181ec5ab5ee2b4e1c549cca9ae2dc845be760a6041b17c1a9db6b740"
+        },
+        {
+          "evidence_id": "E013",
+          "kind": "git_commit",
+          "ref": "babf0a41dd8a740190743ee1e27289b17d8118d3",
+          "path": null,
+          "git_blob": null,
+          "sha256": "0b79722904507345eb697c2d0beea40cfb1e2c08eeb436cee38a6845ad865f1b"
+        },
+        {
+          "evidence_id": "E012",
+          "kind": "git_commit",
+          "ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "path": null,
+          "git_blob": null,
+          "sha256": "135c1849252e437fb9d6c607c4b6ad090c878e77d0338449d516dc5996b791fd"
+        },
+        {
+          "evidence_id": "E031",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/run3.sh",
+          "git_blob": "afa352052e579e004e6b007308fb89aeb5cbe42a",
+          "sha256": "270d9d80bad2792f9d74c63b3f155bb361b840059018cb38edc89f1048fba2c1"
+        },
+        {
+          "evidence_id": "E032",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/run4.sh",
+          "git_blob": "90068efbbc19eea2b9d88e23c05f453ef78b6ed0",
+          "sha256": "480c019772d0e3f4664e1f19840d411549cd7408b8ef3a5247cae8bb6011921c"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F6",
+      "title": "Output verifier/run metadata and output handling gaps",
+      "source_labels": [
+        "G4",
+        "H4"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E007",
+        "E013",
+        "E012",
+        "E034",
+        "E035"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_verify_rejects_duplicate_keys_and_non_basename_side_files",
+          "line": 793,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_run_section_hash_recorded_printed_and_checked",
+          "line": 817,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_utf8_whatever_the_locale",
+          "line": 836,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_out_directory_preflight",
+          "line": 862,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_verify_output_detects_tampering",
+          "line": 391,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_out_reuse_refused_never_stale_side_files",
+          "line": 358,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Recorded run-section tampering, duplicate keys, ../side filenames, ASCIIlocale, and missing/unwritable outputdirectory. Earlier stale output reuse and sidefile verifier repaired atfix2. Hash consistency still does not authenticate a verifier.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E007",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/fpia_fix_round_2_complete_results.json",
+          "git_blob": "a51f552edf39b9e6aeb72569c1fa31761a55c41f",
+          "sha256": "6dc146cd181ec5ab5ee2b4e1c549cca9ae2dc845be760a6041b17c1a9db6b740"
+        },
+        {
+          "evidence_id": "E013",
+          "kind": "git_commit",
+          "ref": "babf0a41dd8a740190743ee1e27289b17d8118d3",
+          "path": null,
+          "git_blob": null,
+          "sha256": "0b79722904507345eb697c2d0beea40cfb1e2c08eeb436cee38a6845ad865f1b"
+        },
+        {
+          "evidence_id": "E012",
+          "kind": "git_commit",
+          "ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "path": null,
+          "git_blob": null,
+          "sha256": "135c1849252e437fb9d6c607c4b6ad090c878e77d0338449d516dc5996b791fd"
+        },
+        {
+          "evidence_id": "E034",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/g4v3/g4_result.json",
+          "git_blob": "fae555e22b6631e6b932328ec6819eb65a57691f",
+          "sha256": "7cba89a4655d9ae362a34e2e89e22691dbbcb26b7401091a2726792bbbf90f26"
+        },
+        {
+          "evidence_id": "E035",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/g4v3/g4b_result.json",
+          "git_blob": "ee69b7bcb70a3dfb9e756de7236857e6dc78ad3a",
+          "sha256": "5ba0ca6a05e37a63e6b0a651fb7fb11b3b38cb81a65512bf3a0e8e52494c71fd"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F7",
+      "title": "Fetch rejection parsing confused ref text or Unicode line separators",
+      "source_labels": [
+        "G3",
+        "H5",
+        "F1-E5"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E007",
+        "E013",
+        "E012",
+        "E036"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_rejected_ref_names_with_unicode_line_separators",
+          "line": 887,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_ls_remote_ref_names_with_unicode_line_separators",
+          "line": 893,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_rejected_lines_structural",
+          "line": 300,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_branch_named_rejected_is_not_a_fetch_rejection",
+          "line": 318,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_real_rejection_at_exit_zero_still_not_run",
+          "line": 332,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing ordinary feature/rejected-ideas falsely made NOT_RUN; U+2028/U+2029/U+0085 could split refusal lines. Structural status parsing and LF/CRonly splitting are recorded repairs.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E007",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/fpia_fix_round_2_complete_results.json",
+          "git_blob": "a51f552edf39b9e6aeb72569c1fa31761a55c41f",
+          "sha256": "6dc146cd181ec5ab5ee2b4e1c549cca9ae2dc845be760a6041b17c1a9db6b740"
+        },
+        {
+          "evidence_id": "E013",
+          "kind": "git_commit",
+          "ref": "babf0a41dd8a740190743ee1e27289b17d8118d3",
+          "path": null,
+          "git_blob": null,
+          "sha256": "0b79722904507345eb697c2d0beea40cfb1e2c08eeb436cee38a6845ad865f1b"
+        },
+        {
+          "evidence_id": "E012",
+          "kind": "git_commit",
+          "ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "path": null,
+          "git_blob": null,
+          "sha256": "135c1849252e437fb9d6c607c4b6ad090c878e77d0338449d516dc5996b791fd"
+        },
+        {
+          "evidence_id": "E036",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/g3v3/g3_result.json",
+          "git_blob": "8372e3c7ba2e2f7bf9909e1bcf5d085fe075a7e9",
+          "sha256": "d2c75645a7740e4a535d65caf1bf5e6775b3c1591b136c3b9d0367452e026dc3"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F8",
+      "title": "AC-04 classification omitted new Track C namespace paths and summary printed empty details",
+      "source_labels": [
+        "G6",
+        "H6"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E007",
+        "E013",
+        "E012",
+        "E037"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_ac04_counts_track_c_namespace_paths_not_in_r",
+          "line": 902,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_ac04_distinguishes_absent_track_c_from_non_merge_landing",
+          "line": 517,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_summary_without_site_values_has_no_empty_parentheses",
+          "line": 539,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing verdict stayed failclosed; namespace files absent fromR were wrongly counted0/labelled notintegrated. This is wording/classification repair, not a new acceptance rule.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E007",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/fpia_fix_round_2_complete_results.json",
+          "git_blob": "a51f552edf39b9e6aeb72569c1fa31761a55c41f",
+          "sha256": "6dc146cd181ec5ab5ee2b4e1c549cca9ae2dc845be760a6041b17c1a9db6b740"
+        },
+        {
+          "evidence_id": "E013",
+          "kind": "git_commit",
+          "ref": "babf0a41dd8a740190743ee1e27289b17d8118d3",
+          "path": null,
+          "git_blob": null,
+          "sha256": "0b79722904507345eb697c2d0beea40cfb1e2c08eeb436cee38a6845ad865f1b"
+        },
+        {
+          "evidence_id": "E012",
+          "kind": "git_commit",
+          "ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "path": null,
+          "git_blob": null,
+          "sha256": "135c1849252e437fb9d6c607c4b6ad090c878e77d0338449d516dc5996b791fd"
+        },
+        {
+          "evidence_id": "E037",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/repro_and_regression/round2_adversarial/g6v3/g6_result.json",
+          "git_blob": "2d4de557c50faba349c034897f7931f8955d1384",
+          "sha256": "722f9c1a4230298019d9042c93b26cce4eb4bcc02f1a44360e831face5801f65"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F9",
+      "title": "Verifier provenance inventory omitted files outside the primary modules",
+      "source_labels": [
+        "H7"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E012"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E030",
+          "path": "implementation/tests/test_integration_fpia_fix3.py",
+          "function": "test_verifier_provenance_lists_vendored_files",
+          "line": 916,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E038",
+          "path": "implementation/tests/test_integration_fpia_vendor.py",
+          "function": "test_vendored_files_match_recorded_upstream_digests",
+          "line": 25,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Recorded fix3H7 lists everyfile under tools/integration including _vendor. The inventory proves sourcebyte consistency only.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E012",
+          "kind": "git_commit",
+          "ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "path": null,
+          "git_blob": null,
+          "sha256": "135c1849252e437fb9d6c607c4b6ad090c878e77d0338449d516dc5996b791fd"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F10",
+      "title": "Installed PyYAML dependency broke existing native owner CI",
+      "source_labels": [
+        "PR42_PYYAML_PACKAGING"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "babf0a41dd8a740190743ee1e27289b17d8118d3",
+      "recorded_fix_ref": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E015",
+        "E007"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E038",
+          "path": "implementation/tests/test_integration_fpia_vendor.py",
+          "function": "test_vendored_files_match_recorded_upstream_digests",
+          "line": 25,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E038",
+          "path": "implementation/tests/test_integration_fpia_vendor.py",
+          "function": "test_no_compiled_or_bytecode_files_committed_under_vendor",
+          "line": 34,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E038",
+          "path": "implementation/tests/test_integration_fpia_vendor.py",
+          "function": "test_loader_is_the_vendored_copy_without_libyaml",
+          "line": 41,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E038",
+          "path": "implementation/tests/test_integration_fpia_vendor.py",
+          "function": "test_script_mode_import_uses_the_vendored_copy",
+          "line": 50,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_yaml_loader_unavailable_is_not_run",
+          "line": 218,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing nativeworkflows installed pytest/numpy only;60FPIA tests failed before vendoring purePythonPyYAML6.0.1. Existing source explicitly retains those CI failures.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E015",
+          "kind": "git_commit",
+          "ref": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+          "path": null,
+          "git_blob": null,
+          "sha256": "64b707dcce9d55a9975c9d35dc08096b29ecfabe16e44f20ef5499450f97f1d5"
+        },
+        {
+          "evidence_id": "E007",
+          "kind": "git_file",
+          "ref": "6ad2fa7dbf8a4ee70f39d5e366a69515ea713ba2",
+          "path": "evidence/claude_main_handover_2026-10-05/fpia_fix_round_2_complete_results.json",
+          "git_blob": "a51f552edf39b9e6aeb72569c1fa31761a55c41f",
+          "sha256": "6dc146cd181ec5ab5ee2b4e1c549cca9ae2dc845be760a6041b17c1a9db6b740"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F11",
+      "title": "Compound evidence identity accepted invalid GitHub owner names",
+      "source_labels": [
+        "PIW-D002_REVIEW"
+      ],
+      "pull_requests": [
+        46
+      ],
+      "recorded_fix_ref": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E016",
+        "E017"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E039",
+          "path": "implementation/tests/test_integration_fpia_evidence_identity.py",
+          "function": "test_malformed_identity_values_fail_closed",
+          "line": 215,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E039",
+          "path": "implementation/tests/test_integration_fpia_evidence_identity.py",
+          "function": "test_complete_exact_identity_matches_but_does_not_authenticate_or_accept",
+          "line": 70,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E039",
+          "path": "implementation/tests/test_integration_fpia_evidence_identity.py",
+          "function": "test_job_label_is_not_part_of_identity_and_is_never_selection_authority",
+          "line": 98,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing independentreview found trailing/consecutive ownerhyphens inclverifier.repository;8RED, then165PASS. RAW_TEST_LOGS.json losslessly retains the exact8cases.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "recorded_broken_source_label": "INITIAL_D002_REVIEW_BEFORE_a3e3f6cf",
+      "recorded_broken_ref": null,
+      "broken_revision_identity_limit": "The existing local RED/review log was published later; no immutable commit SHA for its pre-fix source is supplied in the cited record.",
+      "status_by_current_pr_head": {
+        "PR42": "D002_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E016",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_tools_2026-10-05/PIW_D002_IMPLEMENTATION_RECEIPT.json",
+          "git_blob": "067bc148b020c0d1cdaaf60ffe564ee11bda5eb6",
+          "sha256": "fba0fa861f833c5e5bb0831b111cef0b1c32dc46056abc523305832aa874d8e7"
+        },
+        {
+          "evidence_id": "E017",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_tools_2026-10-05/RAW_TEST_LOGS.json",
+          "git_blob": "f5ac93f584918f25521d6fd4960353a65fdd5a93",
+          "sha256": "ab4bfbb74c1ed723daf595c6e8ea1cb1135ff0805de852806fa9d3ccd46e46d3"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F12",
+      "title": "D002 implementation introduced threshold/SHA literal self-constraint failures",
+      "source_labels": [
+        "PR46_D002_SELF_CONSTRAINT_CI"
+      ],
+      "pull_requests": [
+        46
+      ],
+      "recorded_broken_ref": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "recorded_fix_ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E018",
+        "E027",
+        "E019"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E040",
+          "path": "implementation/tests/test_integration_fpia_self.py",
+          "function": "test_no_numeric_thresholds",
+          "line": 33,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E040",
+          "path": "implementation/tests/test_integration_fpia_self.py",
+          "function": "test_no_sha_or_pr_literals",
+          "line": 47,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E039",
+          "path": "implementation/tests/test_integration_fpia_evidence_identity.py",
+          "function": "test_complete_exact_identity_matches_but_does_not_authenticate_or_accept",
+          "line": 70,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E039",
+          "path": "implementation/tests/test_integration_fpia_evidence_identity.py",
+          "function": "test_malformed_identity_values_fail_closed",
+          "line": 215,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing Actions37267962000 attempt1 job111628676484:2184tests/2failures. Refactoring preserved identity bounds:172targetedPASS,667affectedPASS,9132boundary comparisons. Initial42localfailures came from missinginstalledRECORDscriptfiles and are excluded productregression evidence.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "D002_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E018",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_convergence_2026-10-05/FPIA_RECEIPT.json",
+          "git_blob": "351e52d1983d28b57b0dd1dfb2a92f48059415e4",
+          "sha256": "b6a6e6072d240978d16e240414f5b2f4eb680ee1026f29156aefaaefd34358b9"
+        },
+        {
+          "evidence_id": "E027",
+          "kind": "git_commit",
+          "ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "path": null,
+          "git_blob": null,
+          "sha256": "391c6c6b7fd4c5a5db276d5990ff50f04691b79364951768ecad5e4917dbde78"
+        },
+        {
+          "evidence_id": "E019",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_execution_coverage_2026-10-05/RECEIPT.json",
+          "git_blob": "fc5e0e4d0dadb85c83a92af4aca4dc87b95222a5",
+          "sha256": "3692f188c88ab513d7ddf93cf4e007bbd6bcb4d659e227d4f8844614ac8915c2"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F13",
+      "title": "Applicability incorrectly treated relative imports and unresolved dynamic calls as outside scope",
+      "source_labels": [
+        "PIW-D006_REVIEW_RELATIVE_STAR_IMPORTS"
+      ],
+      "pull_requests": [
+        47
+      ],
+      "recorded_fix_ref": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E020",
+        "E022",
+        "E021",
+        "E025"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_unmerged_import_or_ambiguous_source_fails_closed",
+          "line": 77,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_unauthenticated_register_cannot_skip_audit",
+          "line": 140,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_reference_descendant_applies_regardless_of_branch_name",
+          "line": 51,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_pre_track_c_is_not_run_never_pass",
+          "line": 57,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing review log retains3failedcases: from . import protected_area; from .protected_area import a; getattr(__builtins__, \"__\" + \"import__\")(name). Existing review also labels relative/starimports; no newcase invented.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "recorded_broken_source_label": "INITIAL_D006_REVIEW_BEFORE_50fa7f49",
+      "recorded_broken_ref": null,
+      "broken_revision_identity_limit": "The existing local RED/review log was published later; no immutable commit SHA for its pre-fix source is supplied in the cited record.",
+      "status_by_current_pr_head": {
+        "PR42": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E020",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/INDEPENDENT_REVIEW.md",
+          "git_blob": "f2dd5538ed0f6e08bcf694ebe6bbd5ade770d7b3",
+          "sha256": "23d6248297054a2e108c430efbcaf509fc3d5700a3721273a46e02634b0e1faf"
+        },
+        {
+          "evidence_id": "E022",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/fpia-d6-review-red.txt",
+          "git_blob": "b78b4ea5488a6628a1e9db20dcb2822aa7e5b754",
+          "sha256": "ae0fead78aa291100fabac0ab731b440a19c78a450d072038ed3f3b51173d3ad"
+        },
+        {
+          "evidence_id": "E021",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/RECEIPT.json",
+          "git_blob": "6316daff4bfa166b9aa4d9364dcd68080106fc96",
+          "sha256": "5364ab71189639367b1d0d7291d3938abb738aa557cf3dffe8af4e4498317148"
+        },
+        {
+          "evidence_id": "E025",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/fpia-d6-final.txt",
+          "git_blob": "ef406b6ed2d08d1d63c73648428a73f4b412643e",
+          "sha256": "6b8a5f78a9844032bdc08d133088b08de6e5f84ff775ce2639a282081b12beab"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F14",
+      "title": "Applicability skipped .pyw and extensionless executable source",
+      "source_labels": [
+        "PIW-D006_REVIEW_EXECUTABLE_SOURCE"
+      ],
+      "pull_requests": [
+        47
+      ],
+      "recorded_fix_ref": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E020",
+        "E022",
+        "E021",
+        "E025"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_unclassified_executable_blocks",
+          "line": 115,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_pre_track_c_is_not_run_never_pass",
+          "line": 57,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_reference_descendant_applies_regardless_of_branch_name",
+          "line": 51,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing review log retains launcher.pyw100644 and launcher100755: outside-scope incorrectly returned; existing fixes returnBLOCKED for unclassifiedexecutable.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "recorded_broken_source_label": "INITIAL_D006_REVIEW_BEFORE_50fa7f49",
+      "recorded_broken_ref": null,
+      "broken_revision_identity_limit": "The existing local RED/review log was published later; no immutable commit SHA for its pre-fix source is supplied in the cited record.",
+      "status_by_current_pr_head": {
+        "PR42": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E020",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/INDEPENDENT_REVIEW.md",
+          "git_blob": "f2dd5538ed0f6e08bcf694ebe6bbd5ade770d7b3",
+          "sha256": "23d6248297054a2e108c430efbcaf509fc3d5700a3721273a46e02634b0e1faf"
+        },
+        {
+          "evidence_id": "E022",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/fpia-d6-review-red.txt",
+          "git_blob": "b78b4ea5488a6628a1e9db20dcb2822aa7e5b754",
+          "sha256": "ae0fead78aa291100fabac0ab731b440a19c78a450d072038ed3f3b51173d3ad"
+        },
+        {
+          "evidence_id": "E021",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/RECEIPT.json",
+          "git_blob": "6316daff4bfa166b9aa4d9364dcd68080106fc96",
+          "sha256": "5364ab71189639367b1d0d7291d3938abb738aa557cf3dffe8af4e4498317148"
+        },
+        {
+          "evidence_id": "E025",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/fpia-d6-final.txt",
+          "git_blob": "ef406b6ed2d08d1d63c73648428a73f4b412643e",
+          "sha256": "6b8a5f78a9844032bdc08d133088b08de6e5f84ff775ce2639a282081b12beab"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F15",
+      "title": "Workflow selected old subject checkout that could lack the FPIA tooling",
+      "source_labels": [
+        "PIW-D006_REVIEW_OLD_SUBJECT_TOOLING"
+      ],
+      "pull_requests": [
+        47
+      ],
+      "recorded_fix_ref": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E020",
+        "E021",
+        "E025",
+        "E042"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E043",
+          "path": "implementation/tests/test_integration_fpia_ci_receipt.py",
+          "function": "test_workflow_emits_runtime_context_and_does_not_rewrite_audit_exit",
+          "line": 130,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E043",
+          "path": "implementation/tests/test_integration_fpia_ci_receipt.py",
+          "function": "test_workflow_source_never_falls_back_to_subject",
+          "line": 51,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_pre_track_c_is_not_run_never_pass",
+          "line": 57,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing boundedreview names oldsubjectmissingtooling. Workflow now runs from separate exactworkflowcheckout and passes subjectrepo/SHA separately. No standalone rawrepro output for this onefinding was committed; the existing review and workflowsource are the evidence.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "recorded_broken_source_label": "INITIAL_D006_REVIEW_BEFORE_50fa7f49",
+      "recorded_broken_ref": null,
+      "broken_revision_identity_limit": "The existing local RED/review log was published later; no immutable commit SHA for its pre-fix source is supplied in the cited record.",
+      "status_by_current_pr_head": {
+        "PR42": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E020",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/INDEPENDENT_REVIEW.md",
+          "git_blob": "f2dd5538ed0f6e08bcf694ebe6bbd5ade770d7b3",
+          "sha256": "23d6248297054a2e108c430efbcaf509fc3d5700a3721273a46e02634b0e1faf"
+        },
+        {
+          "evidence_id": "E021",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/RECEIPT.json",
+          "git_blob": "6316daff4bfa166b9aa4d9364dcd68080106fc96",
+          "sha256": "5364ab71189639367b1d0d7291d3938abb738aa557cf3dffe8af4e4498317148"
+        },
+        {
+          "evidence_id": "E025",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/fpia-d6-final.txt",
+          "git_blob": "ef406b6ed2d08d1d63c73648428a73f4b412643e",
+          "sha256": "6b8a5f78a9844032bdc08d133088b08de6e5f84ff775ce2639a282081b12beab"
+        },
+        {
+          "evidence_id": "E042",
+          "kind": "git_file",
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f",
+          "path": ".github/workflows/track-c-fpia.yml",
+          "git_blob": "c49848ca8f4f850e522dc96a02c8946479fc77c7",
+          "sha256": "d1469a27cee037ac5e661349511ddeb3fa58a4b86b7d37310f6414b11db1b489"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F16",
+      "title": "Workflow-source observer rejected separate workflow checkout or confused actual subject identity",
+      "source_labels": [
+        "PIW-D006_REVIEW_OBSERVER_CHECKOUT_BINDING"
+      ],
+      "pull_requests": [
+        47
+      ],
+      "recorded_fix_ref": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E020",
+        "E023",
+        "E021",
+        "E025"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E043",
+          "path": "implementation/tests/test_integration_fpia_ci_receipt.py",
+          "function": "test_separate_workflow_checkout_preserves_real_subject",
+          "line": 139,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E043",
+          "path": "implementation/tests/test_integration_fpia_ci_receipt.py",
+          "function": "test_workflow_checkout_mode_rejects_subject_checkout",
+          "line": 150,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E043",
+          "path": "implementation/tests/test_integration_fpia_ci_receipt.py",
+          "function": "test_workflow_source_never_falls_back_to_subject",
+          "line": 51,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E043",
+          "path": "implementation/tests/test_integration_fpia_ci_receipt.py",
+          "function": "test_checkout_of_a_different_subject_is_unavailable",
+          "line": 104,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing2REDcases before workflow_source mode; corrected negative/positivecase pair preserved real subject with exactworkflowcheckout. Observations remain unauthenticated.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "recorded_broken_source_label": "INITIAL_D006_OBSERVER_REVIEW_BEFORE_50fa7f49",
+      "recorded_broken_ref": null,
+      "broken_revision_identity_limit": "The existing local RED/review log was published later; no immutable commit SHA for its pre-fix source is supplied in the cited record.",
+      "status_by_current_pr_head": {
+        "PR42": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E020",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/INDEPENDENT_REVIEW.md",
+          "git_blob": "f2dd5538ed0f6e08bcf694ebe6bbd5ade770d7b3",
+          "sha256": "23d6248297054a2e108c430efbcaf509fc3d5700a3721273a46e02634b0e1faf"
+        },
+        {
+          "evidence_id": "E023",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/fpia-d6-observer-red.txt",
+          "git_blob": "0c4ab3c381813c1c3cee30a17955ed0ef2d30a0a",
+          "sha256": "ec48e1f4eb8552f1301fcc1cbc2048d3047528711d709fae7bd352f88224b57e"
+        },
+        {
+          "evidence_id": "E021",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/RECEIPT.json",
+          "git_blob": "6316daff4bfa166b9aa4d9364dcd68080106fc96",
+          "sha256": "5364ab71189639367b1d0d7291d3938abb738aa557cf3dffe8af4e4498317148"
+        },
+        {
+          "evidence_id": "E025",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/fpia-d6-final.txt",
+          "git_blob": "ef406b6ed2d08d1d63c73648428a73f4b412643e",
+          "sha256": "6b8a5f78a9844032bdc08d133088b08de6e5f84ff775ce2639a282081b12beab"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F17",
+      "title": "PR47 native CI retained a stale integration-branch workflow regression",
+      "source_labels": [
+        "PR47_STALE_REGRESSION_CONTRACT"
+      ],
+      "pull_requests": [
+        47
+      ],
+      "recorded_broken_ref": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "recorded_fix_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E021",
+        "E024",
+        "E028",
+        "E026"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_workflow_pull_request_scope_uses_authenticated_applicability",
+          "line": 545,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_workflow_has_no_branch_spelling_filter",
+          "line": 103,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_reference_descendant_applies_regardless_of_branch_name",
+          "line": 51,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_pre_track_c_is_not_run_never_pass",
+          "line": 57,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existing37282319537/job111673018387 and37282319630/job111673019058 each1FAIL/2241PASS on oldtest test_workflow_pull_request_scope_integration_branches. Newtest asserts allPRs reach applicability, rawaudit only whenapplies=true. REDreproduced, corrected singleGREEN,294affectedPASS.7215 sixnativejobs2242PASS each and seventhFPIA SUCCESS.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E021",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/RECEIPT.json",
+          "git_blob": "6316daff4bfa166b9aa4d9364dcd68080106fc96",
+          "sha256": "5364ab71189639367b1d0d7291d3938abb738aa557cf3dffe8af4e4498317148"
+        },
+        {
+          "evidence_id": "E024",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
+          "git_blob": "f824be713d3db5533bfe82094511b398d1d5a33b",
+          "sha256": "01826ca81881325d1828d0b8cd9d29946a52c9f9a0028db6d71ad71349561116"
+        },
+        {
+          "evidence_id": "E028",
+          "kind": "git_commit",
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f",
+          "path": null,
+          "git_blob": null,
+          "sha256": "689744b2c7a91f6ee5494501ecd297e1c50515ce27ad5874372c477817f4fca2"
+        },
+        {
+          "evidence_id": "E026",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/fpia-d6-affected.txt",
+          "git_blob": "a3511a1aed08208eb93b64c89ce7d14e1e05b7da",
+          "sha256": "323865c21b26b6198482e6a453f3b8c07470859049fd4375ca0df7c337627c00"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F18",
+      "title": "Shallow/incomplete Git inputs or fetch refusals could yield determinate statuses",
+      "source_labels": [
+        "PR42_FIX1_F1"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "dc0bf792c4d10ac4e2ab8545d45003f7a59922f0",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E014"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E044",
+          "path": "implementation/tests/test_integration_fpia_environment.py",
+          "function": "test_shallow_repo_is_not_run_never_a_determinate_frozen_tools_fail",
+          "line": 21,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E044",
+          "path": "implementation/tests/test_integration_fpia_environment.py",
+          "function": "test_fetch_that_rejects_refs_but_exits_zero_is_an_error",
+          "line": 36,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E044",
+          "path": "implementation/tests/test_integration_fpia_environment.py",
+          "function": "test_fetch_must_deliver_explicit_refs",
+          "line": 51,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E044",
+          "path": "implementation/tests/test_integration_fpia_environment.py",
+          "function": "test_missing_evidence_head_object_is_not_run_not_fail",
+          "line": 58,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E045",
+          "path": "implementation/tests/test_integration_fpia_status_contract.py",
+          "function": "test_t0_end_to_end_pass_with_diverged_and_frozen_fail",
+          "line": 69,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Alreadyrecordedfixround1 makes unverifiedGitinputsNOT_RUN; no re-audit of historicalruns performed.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E014",
+          "kind": "git_commit",
+          "ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+          "path": null,
+          "git_blob": null,
+          "sha256": "1d40aae3b0d554326b12362d82ef5707aaf38913e3746943ecda0eb7b95ee4ca"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F19",
+      "title": "Frozen tools canonical premise trusted caller-local tracking ref",
+      "source_labels": [
+        "PR42_FIX1_F2"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "dc0bf792c4d10ac4e2ab8545d45003f7a59922f0",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E014"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E044",
+          "path": "implementation/tests/test_integration_fpia_environment.py",
+          "function": "test_canonical_value_comes_from_authority_not_caller_tracking_ref",
+          "line": 79,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E044",
+          "path": "implementation/tests/test_integration_fpia_environment.py",
+          "function": "test_canonical_absent_at_authority_is_not_run",
+          "line": 99,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E044",
+          "path": "implementation/tests/test_integration_fpia_environment.py",
+          "function": "test_canonical_unreachable_authority_is_not_run",
+          "line": 114,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E045",
+          "path": "implementation/tests/test_integration_fpia_status_contract.py",
+          "function": "test_t0_end_to_end_pass_with_diverged_and_frozen_fail",
+          "line": 69,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existingfix1 reads canonical ls-remote fromauthority; absence/unreachability/objectlessnessNOT_RUN. Authoritysource choice is alreadyrecorded; no newauthority granted.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E014",
+          "kind": "git_commit",
+          "ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+          "path": null,
+          "git_blob": null,
+          "sha256": "1d40aae3b0d554326b12362d82ef5707aaf38913e3746943ecda0eb7b95ee4ca"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F20",
+      "title": "A_V-type content without authenticated V ancestry was incorrectly not applicable",
+      "source_labels": [
+        "PR42_FIX1_F3"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "dc0bf792c4d10ac4e2ab8545d45003f7a59922f0",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E014"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E046",
+          "path": "implementation/tests/test_integration_fpia_v2.py",
+          "function": "test_v2_bytes_without_v_ancestry_fail",
+          "line": 17,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E046",
+          "path": "implementation/tests/test_integration_fpia_v2.py",
+          "function": "test_stale_v2_bytes_without_v_ancestry_fail",
+          "line": 35,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E046",
+          "path": "implementation/tests/test_integration_fpia_v2.py",
+          "function": "test_v2_not_applicable_only_without_av_paths",
+          "line": 50,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existingfix1 requiresV ancestry forTcarryingA_V-typepaths.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E014",
+          "kind": "git_commit",
+          "ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+          "path": null,
+          "git_blob": null,
+          "sha256": "1d40aae3b0d554326b12362d82ef5707aaf38913e3746943ecda0eb7b95ee4ca"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F21",
+      "title": "Frozen tool stdout/stderr evidence was truncated instead of retained verbatim",
+      "source_labels": [
+        "PR42_FIX1_F4"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "dc0bf792c4d10ac4e2ab8545d45003f7a59922f0",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E014"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E044",
+          "path": "implementation/tests/test_integration_fpia_environment.py",
+          "function": "test_frozen_tool_streams_kept_verbatim_next_to_output",
+          "line": 124,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E045",
+          "path": "implementation/tests/test_integration_fpia_status_contract.py",
+          "function": "test_frozen_tools_fail_recorded_verbatim",
+          "line": 97,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existingfix1 stores full sidefiles with hashes/bytes; Frozen toolfailure remains separate fromoverallprojection acceptance.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E014",
+          "kind": "git_commit",
+          "ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+          "path": null,
+          "git_blob": null,
+          "sha256": "1d40aae3b0d554326b12362d82ef5707aaf38913e3746943ecda0eb7b95ee4ca"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F22",
+      "title": "AC-32 spoof attribution and generic job-name collision scope were incorrect",
+      "source_labels": [
+        "PR42_FIX1_F5"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "dc0bf792c4d10ac4e2ab8545d45003f7a59922f0",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E014"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E046",
+          "path": "implementation/tests/test_integration_fpia_v2.py",
+          "function": "test_complement_workflow_spoofs_track_c_name_found",
+          "line": 109,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E046",
+          "path": "implementation/tests/test_integration_fpia_v2.py",
+          "function": "test_spoof_named_track_c_found_even_when_carried_by_v",
+          "line": 155,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E046",
+          "path": "implementation/tests/test_integration_fpia_v2.py",
+          "function": "test_v_whole_tree_does_not_attribute_track_c_runner",
+          "line": 170,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E046",
+          "path": "implementation/tests/test_integration_fpia_v2.py",
+          "function": "test_generic_job_id_collision_is_not_spoof",
+          "line": 142,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existingfix1 narrows attribution toauthenticatedTrackCadditions; genericjoblabels arediagnostic. Current compoundreceipt acceptance still requires actualauthenticatedevidence.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E014",
+          "kind": "git_commit",
+          "ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+          "path": null,
+          "git_blob": null,
+          "sha256": "1d40aae3b0d554326b12362d82ef5707aaf38913e3746943ecda0eb7b95ee4ca"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F23",
+      "title": "PR scheduling and subject/register/artifact collection omitted intended audit coverage",
+      "source_labels": [
+        "PR42_FIX1_F6",
+        "G7",
+        "PIW-D006"
+      ],
+      "pull_requests": [
+        42,
+        47
+      ],
+      "recorded_broken_ref": "dc0bf792c4d10ac4e2ab8545d45003f7a59922f0",
+      "recorded_fix_ref": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E014",
+        "E013",
+        "E020",
+        "E021"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_workflow_pull_request_scope_uses_authenticated_applicability",
+          "line": 545,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_workflow_has_no_branch_spelling_filter",
+          "line": 103,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_reference_descendant_applies_regardless_of_branch_name",
+          "line": 51,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        {
+          "evidence_id": "E041",
+          "path": "implementation/tests/test_integration_fpia_applicability.py",
+          "function": "test_pre_track_c_is_not_run_never_pass",
+          "line": 57,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existingfix1 addedpull_requestsubject/authority/artifacts; fix2usedintegrationbranchgate; alreadyapprovedD006replacedbranchspelling withauthenticatedcontent/ancestry/importclassification. Stale legacytestfailure is separatelyF17.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "EARLIER_PR_TRIGGER_REPAIR_PRESENT; branch-prefix limitation retained",
+        "PR46": "EARLIER_PR_TRIGGER_REPAIR_PRESENT; branch-prefix limitation retained",
+        "PR47": "RECORDED_FIXED branch-independent applicability at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E014",
+          "kind": "git_commit",
+          "ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+          "path": null,
+          "git_blob": null,
+          "sha256": "1d40aae3b0d554326b12362d82ef5707aaf38913e3746943ecda0eb7b95ee4ca"
+        },
+        {
+          "evidence_id": "E013",
+          "kind": "git_commit",
+          "ref": "babf0a41dd8a740190743ee1e27289b17d8118d3",
+          "path": null,
+          "git_blob": null,
+          "sha256": "0b79722904507345eb697c2d0beea40cfb1e2c08eeb436cee38a6845ad865f1b"
+        },
+        {
+          "evidence_id": "E020",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/INDEPENDENT_REVIEW.md",
+          "git_blob": "f2dd5538ed0f6e08bcf694ebe6bbd5ade770d7b3",
+          "sha256": "23d6248297054a2e108c430efbcaf509fc3d5700a3721273a46e02634b0e1faf"
+        },
+        {
+          "evidence_id": "E021",
+          "kind": "git_file",
+          "ref": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+          "path": "implementation/docs/coordination/evidence/main_applicability_2026-10-05/RECEIPT.json",
+          "git_blob": "6316daff4bfa166b9aa4d9364dcd68080106fc96",
+          "sha256": "5364ab71189639367b1d0d7291d3938abb738aa557cf3dffe8af4e4498317148"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F24",
+      "title": "Historical Frozen byte-protected-only scope was not explicitly disclosed",
+      "source_labels": [
+        "PR42_FIX1_F7"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "dc0bf792c4d10ac4e2ab8545d45003f7a59922f0",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E014"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E047",
+          "path": "implementation/tests/test_integration_fpia_historical.py",
+          "function": "test_byte_protected_only_records_disclosed",
+          "line": 120,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E047",
+          "path": "implementation/tests/test_integration_fpia_historical.py",
+          "function": "test_exact_replay_reproduces_records",
+          "line": 96,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existingfix1 listsFrozenrecords/CIlogsnotrederived byreplay; preserves actualreplayed scope.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E014",
+          "kind": "git_commit",
+          "ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+          "path": null,
+          "git_blob": null,
+          "sha256": "1d40aae3b0d554326b12362d82ef5707aaf38913e3746943ecda0eb7b95ee4ca"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    },
+    {
+      "id": "F25",
+      "title": "Authority transport environment disclosure was missing",
+      "source_labels": [
+        "PR42_FIX2_F2"
+      ],
+      "pull_requests": [
+        42
+      ],
+      "recorded_broken_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "recorded_fix_ref": "babf0a41dd8a740190743ee1e27289b17d8118d3",
+      "fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "current_candidate_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "evidence_ids": [
+        "E013"
+      ],
+      "existing_regression_testcases": [
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_authority_transport_names_recorded_without_values",
+          "line": 564,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "normal_case_controls": [
+        {
+          "evidence_id": "E033",
+          "path": "implementation/tests/test_integration_fpia_fix2.py",
+          "function": "test_authority_transport_names_recorded_without_values",
+          "line": 564,
+          "ref": "7215a9f60ad7128b1748f405051eac684298614f"
+        }
+      ],
+      "recorded_detail": "Existingfix2 records authorityfetch/ls-remoteproxy/CA namespresent/passed, neversecretvalues.",
+      "current_verification": {
+        "method": "REUSE_IMMUTABLE_EXACT_HEAD_CI",
+        "evidence_ids": [
+          "E024",
+          "E021"
+        ],
+        "subject": "7215a9f60ad7128b1748f405051eac684298614f",
+        "six_capability_workflows": "2242 PASS each; seven total workflows SUCCESS",
+        "tier1_tier2_track_c_job": "SKIPPED, not PASS",
+        "new_test_run": false
+      },
+      "remaining_tasks": [],
+      "same_failure_attempt_count_this_session": 0,
+      "same_failure_repair_cap": 3,
+      "status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "reproduction_evidence": [
+        {
+          "evidence_id": "E013",
+          "kind": "git_commit",
+          "ref": "babf0a41dd8a740190743ee1e27289b17d8118d3",
+          "path": null,
+          "git_blob": null,
+          "sha256": "0b79722904507345eb697c2d0beea40cfb1e2c08eeb436cee38a6845ad865f1b"
+        }
+      ],
+      "raw_reproduction_limit": "Only already committed logs/probes/test corpus and recorded failures are reused; no counterexample was executed or created in this intake."
+    }
+  ],
+  "verification_reuse": {
+    "PR46": {
+      "evidence_id": "E019",
+      "exact_subject": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "workflows": "7/7 SUCCESS",
+      "full_regression": {
+        "passed": 2184,
+        "failed": 0,
+        "skipped": 0,
+        "deselected": 1,
+        "deselected_scope": "Optional live SEC test; same bytes as R; explicitly not executed"
+      }
+    },
+    "PR47": {
+      "evidence_id": "E024",
+      "exact_subject": "7215a9f60ad7128b1748f405051eac684298614f",
+      "workflows": {
+        "success": 7,
+        "total": 7,
+        "re_run": false
+      },
+      "six_capability_workflows": [
+        {
+          "run_id": 37284465856,
+          "name": "p01-research-publication",
+          "head": "7215a9f60ad7128b1748f405051eac684298614f",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "job_id": 111679954752,
+          "tests": "2242 passed in 910.35s",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465856"
+        },
+        {
+          "run_id": 37284465967,
+          "name": "us-equity-session",
+          "head": "7215a9f60ad7128b1748f405051eac684298614f",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "job_id": 111679955675,
+          "tests": "2242 passed in 1100.31s",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465967"
+        },
+        {
+          "run_id": 37284466007,
+          "name": "technical-real-producer",
+          "head": "7215a9f60ad7128b1748f405051eac684298614f",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "job_id": 111679955290,
+          "tests": "2242 passed in 1103.56s",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284466007"
+        },
+        {
+          "run_id": 37284465977,
+          "name": "technical-real-model",
+          "head": "7215a9f60ad7128b1748f405051eac684298614f",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "job_id": 111679955939,
+          "tests": "2242 passed in 1118.11s",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465977"
+        },
+        {
+          "run_id": 37284465865,
+          "name": "qgv-invalidation-binding",
+          "head": "7215a9f60ad7128b1748f405051eac684298614f",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "job_id": 111679954903,
+          "tests": "2242 passed in 1113.72s",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465865"
+        },
+        {
+          "run_id": 37284465941,
+          "name": "sec-primary-disclosure",
+          "head": "7215a9f60ad7128b1748f405051eac684298614f",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "job_id": 111679954988,
+          "tests": "2242 passed in 1138.42s",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37284465941"
+        }
+      ],
+      "seventh_fpia": {
+        "run_id": 37284465900,
+        "attempt": 1,
+        "name": "track-c-fpia",
+        "status": "completed",
+        "conclusion": "success",
+        "job_id": 111679955410,
+        "workflow_merge_sha": "84792523ec131a0ff01c4185e85c89fd9cab8649"
+      },
+      "track_c_tier1_tier2": {
+        "applicability": "success",
+        "tier_1": "skipped",
+        "tier_2": "skipped",
+        "fpia_audit": "success",
+        "workflow_source_observation": "success",
+        "artifact_upload": "success"
+      },
+      "artifact": {
+        "id": 11335872268,
+        "name": "track-c-fpia-7215a9f60ad7128b1748f405051eac684298614f",
+        "size_bytes": 63100,
+        "zip_sha256": "7d8247a5d23c372a8868064179519b5321488a9041a227f030b2c43bff53167b",
+        "expires_at": "2027-01-03T08:34:26Z",
+        "files": 12,
+        "fpia_json_sha256": "897699b04f055beaa376b0638905e507f63a036ef03bfb922deb5a0f36ae640d",
+        "fpia_result_sha256": "6b2b238454c8e2da30734e768845b5414005edacd8c4d9466f54b0dcb6b13902",
+        "run_sha256": "f4c2962b7b16693cbdbc09363cd9d3071c94ce13b29ff32d6dbf0ded4daa6837",
+        "applicability_json_sha256": "44d88fd524e4eee10f69d83f144826c3c8bbb5ab24242f53dc64cb6a3f1fa80e",
+        "ci_receipt_sha256": "7a9b816d527be8284ba4b102daf9323863c479039c45a7d98444758916cff04d"
+      },
+      "raw_statuses": {
+        "fpia": "FPIA_PASS",
+        "authority": "PASS",
+        "code_identity": "CODE_IDENTITY_DIVERGED",
+        "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+        "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+        "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+        "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+        "v2_binding": "PASS",
+        "full_regression": "PASS",
+        "dynamic_invocation_detection": "NOT_CLAIMED",
+        "out_of_tree_code_analysis": "NOT_ANALYSED"
+      }
+    },
+    "new_runs_this_intake": 0,
+    "interpretation": "Exact-head immutable CI is reused for the existing corpus. Skipped Tier1/Tier2 are not claimed passed; native capability full suites separately passed. Runtime and verifier authority remain open."
+  },
+  "excluded_attempts": [
+    {
+      "source_evidence_ids": [
+        "E001",
+        "E002"
+      ],
+      "name": "excluded_initial_wrong_source.json",
+      "reason": "Initial baseline extraction imported repaired verifier; original record explicitly excludes it."
+    },
+    {
+      "source_evidence_ids": [
+        "E018"
+      ],
+      "name": "42 FAILED /623 PASS initial isolated environment run",
+      "reason": "Cached installation omitted RECORD scripts; original receipt classifies environment NOT_RUN, not product regression."
+    },
+    {
+      "source_evidence_ids": [
+        "E021"
+      ],
+      "name": "Real-history applicability preflight",
+      "reason": "Missing promisor Gitobject in local partialstore; UNAVAILABLE, noPASScredit."
+    }
+  ],
+  "remaining_concrete_implementation_defects_from_recorded_sources": [],
+  "remaining_acceptance_obligations": [
+    "Independently authorized exact verifier/launcher/runtime receipt; source consistency and greenCI are insufficient authentication.",
+    "Actual authenticated compound execution/receipt selection.",
+    "Acceptance-relevant dynamic/transitive/descendant/external coverage or independently verified enforced isolation; preserve NOT_CLAIMED/NOT_ANALYSED.",
+    "Generic optional importer packaging/attribution for any future subject that contains it; PR47 exact tree omits the recorded optional PR28 paths.",
+    "GIE/governance review and actual assembled merge-result acceptance remain OPEN/NOT_RUN."
+  ],
+  "remaining_actions": [
+    "No implementation repair is queued from this recorded-only intake: all enumerated defects have recorded fixes inherited by exact7215 candidate and reused exact-head CI.",
+    "If root requests fresh proof, run only the mapped existing regressions and normal controls on the exact current candidate; do not add tests or counterexamples.",
+    "Before any implementation mutation, obtain the root bounded claim; stop that same failure after at most3unsuccessful repair attempts."
+  ],
+  "constraints": {
+    "priority": "after PPA-F08 and HG-02",
+    "new_counterexamples": false,
+    "new_tests": false,
+    "source_mutations": false,
+    "remote_writes": false,
+    "ci_reruns": false,
+    "same_failure_cap": 3,
+    "root_claim_required_for_implementation": true
+  },
+  "intake_validation": {
+    "json_documents_parse": true,
+    "unique_f_ids": 25,
+    "evidence_references_resolve": true,
+    "round2_existing_D1_D2_cases_mapped": 63,
+    "new_case_generation": false,
+    "test_sources_checked_by_read_only_AST": true,
+    "runtime_tests_executed": 0
+  }
+}

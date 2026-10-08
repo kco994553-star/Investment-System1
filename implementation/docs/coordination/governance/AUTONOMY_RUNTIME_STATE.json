@@ -5,7 +5,7 @@
   "branch": "integration/global-handoff-v1",
   "started_at_epoch": 1791457430,
   "lease_expires_at_epoch": 1791464630,
-  "tasks_used": 1,
+  "tasks_used": 3,
   "repair_rounds": {
     "PPA-F08": 1
   },

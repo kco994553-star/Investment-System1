@@ -1,0 +1,153 @@
+{
+  "schema": "oct08-decision-inventory-artifact-review-v1",
+  "verdict": "PASS_PACKAGING_SCOPE_ONLY",
+  "scope": "Independent read-only packaging review of ten existing local artifacts; no source re-audit, counterexamples, tests, probes or CI execution.",
+  "reviewed_artifacts": [
+    {
+      "path": "/workspace/scratch/target-decision-package/DECISION_BUNDLE.json",
+      "bytes": 7276,
+      "sha256": "b8aed46b1a5413f1810584727609368617b04f7442339697c444ceb48d403139"
+    },
+    {
+      "path": "/workspace/scratch/target-decision-package/DECISION_REQUEST_26E.md",
+      "bytes": 9728,
+      "sha256": "97a9cd4b3787565801d32f24f0a96e38f41dffa89301b2a19a7e2d504c495b32"
+    },
+    {
+      "path": "/workspace/scratch/target-decision-package/SECURITY19_DISPOSITION.json",
+      "bytes": 68513,
+      "sha256": "1f09536dc9c44c9ef92a0a54780b4cdf78f7143ae70bdcf37171d0f11f79c838"
+    },
+    {
+      "path": "/workspace/scratch/target-decision-package/SOURCE_MANIFEST.json",
+      "bytes": 28840,
+      "sha256": "a373a1286dd880b766b6c553fa9c41de41e03588bab3a595004b6160fdcede39"
+    },
+    {
+      "path": "/workspace/scratch/target-decision-package/STRATEGY_THEME_INPUT_FORM.json",
+      "bytes": 13089,
+      "sha256": "0c3c7a43d8081c81f9c0375ab2a5f6a4eb5c50db96dd5593503a25b2cc3087f8"
+    },
+    {
+      "path": "/workspace/scratch/target-decision-package/TARGET_INPUT_FORM.json",
+      "bytes": 12801,
+      "sha256": "514f6074d4e7061d22711edf938e789773d587062b607e4782b022816ff2702f"
+    },
+    {
+      "path": "/workspace/scratch/target-decision-package/VALIDATION.json",
+      "bytes": 3773,
+      "sha256": "60ac3c3ededfe00a5581baaf3df4977503427cfa836690f3742a67daa414c73e"
+    },
+    {
+      "path": "/workspace/scratch/fpia-known-defects/EVIDENCE_MANIFEST.json",
+      "bytes": 39981,
+      "sha256": "370099e1d2fee0c0a3a566dba2c9f5f7362a6472b65db0aa6b5bd64733a9bcd7"
+    },
+    {
+      "path": "/workspace/scratch/fpia-known-defects/INVENTORY.json",
+      "bytes": 149522,
+      "sha256": "1776fbd3baea29585a4f151e0d04f6e7e20a16bbffbe7ede14ac460fa85f5988"
+    },
+    {
+      "path": "/workspace/scratch/fpia-known-defects/SUMMARY.md",
+      "bytes": 4631,
+      "sha256": "6a1fc71a3eeb48c6f15c2b043c3b6942a4586c5ddd6b4c5bd323c31dcad79769"
+    }
+  ],
+  "target_checks": {
+    "file_count": 7,
+    "expected_seven_files": true,
+    "json_artifacts_parse": 6,
+    "user_value_slots": 294,
+    "populated_user_value_slots": [],
+    "theme_catalog_entries_empty": true,
+    "historical_values_are_defaults": {
+      "target": false,
+      "theme": false
+    },
+    "target_holdings_context_rows": 19,
+    "theme_assignment_context_rows": 19,
+    "security_identity_input_slots": 285,
+    "populated_identity_return_slots": [],
+    "security_admitted": 0,
+    "source_bound_resolver_available": 0,
+    "every_security_row_admitted_false": true,
+    "disposition_18_dependencies_one_existing_D29_choice": true,
+    "no_proposed_weight_theme_defaults_or_mapping_admissions": true,
+    "recommendation_workflow_only": true,
+    "decision_input_blank": true,
+    "source_authority_admitted": false,
+    "production_gate_closures": 0,
+    "chart_open_closed": {
+      "open": 6,
+      "closed": 0
+    },
+    "market_admitted": {
+      "count": 0,
+      "total": 19
+    },
+    "existing_validation_six_artifact_hashes_match": true,
+    "source_manifest_verification_limit": "Existing manifest assertions preserved. This review did not fetch or rehash upstream source objects; it verified local package structure, blank inputs and the six package hashes."
+  },
+  "fpia_checks": {
+    "file_count": 3,
+    "expected_three_files": true,
+    "json_artifacts_parse": 2,
+    "unique_sequential_intake_ids_F1_F25": true,
+    "defects": 25,
+    "every_row_has_recorded_failure_title_labels_refs": true,
+    "every_row_has_existing_test_and_normal_case_refs": true,
+    "every_row_has_recorded_reproduction_evidence": true,
+    "every_row_has_exact_current_fix_ref": true,
+    "null_broken_source_refs_honestly_explained": [
+      "F11",
+      "F13",
+      "F14",
+      "F15",
+      "F16"
+    ],
+    "missing_evidence_id_references": [],
+    "duplicate_manifest_evidence_ids": false,
+    "B1_B4_mapping_absent": true,
+    "new_cases_not_claimed": true,
+    "new_runtime_runs": 0,
+    "recorded_implementation_remaining_tasks": [],
+    "acceptance_obligations_kept_open": [
+      "Independently authorized exact verifier/launcher/runtime receipt; source consistency and greenCI are insufficient authentication.",
+      "Actual authenticated compound execution/receipt selection.",
+      "Acceptance-relevant dynamic/transitive/descendant/external coverage or independently verified enforced isolation; preserve NOT_CLAIMED/NOT_ANALYSED.",
+      "Generic optional importer packaging/attribution for any future subject that contains it; PR47 exact tree omits the recorded optional PR28 paths.",
+      "GIE/governance review and actual assembled merge-result acceptance remain OPEN/NOT_RUN."
+    ],
+    "tier1_tier2_skipped_not_pass": true,
+    "canonical_adoption": false,
+    "no_CI_trust_GIE_or_future_merge_acceptance_closure_claim": true,
+    "evidence_limit": "Evidence IDs and metadata were checked within the supplied manifest. Existing regressions/reproductions and raw CI were not rerun or re-adjudicated."
+  },
+  "blocking_packaging_findings": [],
+  "advisory_packaging_findings": [
+    {
+      "id": "PACKAGING-SNAPSHOT-LABEL",
+      "path": "fpia-known-defects/SUMMARY.md:3",
+      "detail": "Current Global71a19b66 is the intake snapshot and will become historical when root publishes Global cycle2.",
+      "action": "Prefer Global at intake instead of Current Global; retain exact ref and existing artifact evidence. Optional wording change only; update affected package hash/receipt if edited."
+    }
+  ],
+  "publication_instructions": [
+    "Publish the unchanged seven TARGET and three FPIA artifacts under their bounded new coordination-evidence paths; do not fill forms or promote metadata.",
+    "Label this review PASS_PACKAGING_SCOPE_ONLY. Existing fixed-defect inventory does not establish independent verifier/runtime trust, GIE or actual assembled-merge acceptance.",
+    "Record actual ten payload hashes and containing publication identity in the root receipt; do not recursively embed a final commit SHA in its own file.",
+    "Preserve missing pre-fix immutable SHAs forF11/F13/F14/F15/F16 as unavailable; retain existing source labels and recorded-reproduction limits."
+  ],
+  "actions_taken": {
+    "artifact_reads": true,
+    "local_package_hash_comparison": true,
+    "upstream_fetches": 0,
+    "repository_edits": 0,
+    "new_cases": 0,
+    "tests": 0,
+    "probes": 0,
+    "ci_runs": 0,
+    "remote_mutations": 0
+  }
+}

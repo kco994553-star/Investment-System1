@@ -1,0 +1,381 @@
+{
+  "schema": "blank-user-target-input-form-v1",
+  "status": "BLANK_INACTIVE_NOT_ADOPTED",
+  "value_authority": "USER_PROVIDED_EXCLUSIVELY",
+  "historical_roster_context_only": true,
+  "historical_values_are_defaults": false,
+  "instructions": [
+    "Return your current TARGET values or identify your authoritative current artifact/version; each weight and cash field below is intentionally blank.",
+    "Reference rows identify the existing19 intake subjects, not a recommendation to retain holdings or historical weights. Explicitly declare any roster change in your new source revision.",
+    "Supply Decimal ratio strings and the full-portfolio denominator/completeness receipt; missing is UNKNOWN, never zero.",
+    "Supply source-backed current applicability and separately evidenced availability; document dates, extraction/Git/capture times are not substituted.",
+    "The blank form and a workflow choice do not admit source data, issue a grant or close Chart gates."
+  ],
+  "user_root": {
+    "portfolio_id": null,
+    "portfolio_version": null,
+    "target_root_id": null,
+    "root_revision_id": null,
+    "snapshot_hash": null,
+    "source_receipt_ref": null,
+    "current_adoption_evidence_ref": null,
+    "applicability_semantics": null,
+    "effective_from": null,
+    "effective_to": null,
+    "available_at": null,
+    "availability_evidence_ref": null,
+    "completeness_receipt_ref": null,
+    "denominator_definition": null,
+    "source_use_provenance_ref": null,
+    "authoritative_route_record_ref": null
+  },
+  "user_inputs": {
+    "cash_target_decimal_ratio": null,
+    "cash_row_id": null,
+    "cash_provenance_ref": null,
+    "complete": null,
+    "holdings": [
+      {
+        "reference_row_index": 0,
+        "reference_row_key": "reference:company:asml",
+        "reference_company_id": "asml",
+        "reference_display_label": "ASML",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/0/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 1,
+        "reference_row_key": "reference:company:lrcx",
+        "reference_company_id": "lrcx",
+        "reference_display_label": "LRCX",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/1/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 2,
+        "reference_row_key": "reference:company:klac",
+        "reference_company_id": "klac",
+        "reference_display_label": "KLAC",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/2/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 3,
+        "reference_row_key": "reference:company:tokyo_electron",
+        "reference_company_id": "tokyo_electron",
+        "reference_display_label": "TEL",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/3/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 4,
+        "reference_row_key": "reference:company:hanmi",
+        "reference_company_id": "hanmi",
+        "reference_display_label": "한미반도체",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/4/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 5,
+        "reference_row_key": "reference:company:nvda",
+        "reference_company_id": "nvda",
+        "reference_display_label": "NVDA",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/5/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 6,
+        "reference_row_key": "reference:company:amd",
+        "reference_company_id": "amd",
+        "reference_display_label": "AMD",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/6/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 7,
+        "reference_row_key": "reference:company:avgo",
+        "reference_company_id": "avgo",
+        "reference_display_label": "AVGO",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/7/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 8,
+        "reference_row_key": "reference:company:qcom",
+        "reference_company_id": "qcom",
+        "reference_display_label": "QCOM",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/8/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 9,
+        "reference_row_key": "reference:company:intc",
+        "reference_company_id": "intc",
+        "reference_display_label": "INTC",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/9/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 10,
+        "reference_row_key": "reference:company:msft",
+        "reference_company_id": "msft",
+        "reference_display_label": "MSFT",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/10/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 11,
+        "reference_row_key": "reference:company:googl",
+        "reference_company_id": "googl",
+        "reference_display_label": "GOOGL",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/11/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 12,
+        "reference_row_key": "reference:company:amzn",
+        "reference_company_id": "amzn",
+        "reference_display_label": "AMZN",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/12/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 13,
+        "reference_row_key": "reference:company:rtx",
+        "reference_company_id": "rtx",
+        "reference_display_label": "RTX",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/13/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 14,
+        "reference_row_key": "reference:company:stry",
+        "reference_company_id": "stry",
+        "reference_display_label": "Stryker",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/14/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 15,
+        "reference_row_key": "reference:company:etn",
+        "reference_company_id": "etn",
+        "reference_display_label": "Eaton",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/15/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 16,
+        "reference_row_key": "reference:company:hubb",
+        "reference_company_id": "hubb",
+        "reference_display_label": "Hubbell",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/16/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 17,
+        "reference_row_key": "reference:company:gev",
+        "reference_company_id": "gev",
+        "reference_display_label": "GE Vernova",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/17/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      },
+      {
+        "reference_row_index": 18,
+        "reference_row_key": "reference:company:rok",
+        "reference_company_id": "rok",
+        "reference_display_label": "Rockwell",
+        "source_ref": {
+          "source_id": "S2-RETURN",
+          "json_pointer": "/rows/18/source_row"
+        },
+        "user_input": {
+          "admitted_target_row_id": null,
+          "security_map_revision_ref": null,
+          "security_id": null,
+          "target_weight_decimal_ratio": null,
+          "row_source_ref": null
+        }
+      }
+    ]
+  },
+  "nominate_existing_current_source": {
+    "source_artifact_ref": null,
+    "exact_version_or_revision": null,
+    "source_content_hash": null,
+    "user_adoption_statement_ref": null
+  },
+  "validation_rules": [
+    "Exact user-declared roster plus explicit cash; no duplicated or omitted admitted row.",
+    "All user-supplied Decimal ratio weights and cash must be finite, nonnegative and account for the full declared denominator; do not normalize or fill missing values silently.",
+    "Every admitted row must join the reviewed common identity return and the same adopted root revision.",
+    "Any historical-value difference is a new user source revision; historical evidence is retained."
+  ],
+  "source_refs": [
+    "S1-RETURN",
+    "TARGET-ADMISSION",
+    "PIL-FROZEN",
+    "PIL-TIME"
+  ]
+}

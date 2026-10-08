@@ -1,0 +1,125 @@
+{
+  "schema": "target-identity-theme-26e-decision-bundle-v1",
+  "issue": 54,
+  "draft_status": "REVIEWABLE_DRAFT_USER_DECISION_PENDING_NOT_APPLIED",
+  "preparation_class": "D1_ADDITIVE_DOCS_ONLY",
+  "preparation_semantic_delta": "NONE",
+  "reserved_user_input_boundary": "User-authoring/adoption of current TARGET weights and Strategy Theme values; explicit D29 venue choice. No values, mapping approval or C25 policy choice are proposed.",
+  "decision_question": "Will you provide current user-authored TARGET and Strategy Theme inputs with the Tokyo Electron venue choice and any existing adopted C25 link-policy reference, nominate exact authoritative current artifacts for them, or leave this bundle deferred?",
+  "options": [
+    {
+      "id": "A",
+      "label": "Provide current user inputs",
+      "effect": "Complete the blank TARGET and Strategy Theme forms; state Tokyo Electron venue/form and provide any existing adopted C25 policy reference. Main validates source/adoption/availability and reviewed identity returns before consuming them. This option chooses a workflow, not portfolio values or identity-policy semantics.",
+      "reversibility": "Before adoption, revise the draft; after adoption, corrections use a new immutable user/source revision and preserve old evidence."
+    },
+    {
+      "id": "B",
+      "label": "Nominate authoritative current artifacts",
+      "effect": "Point to exact user-approved current TARGET and Theme artifacts/revisions/hashes and existing reviewed identity/link authority, including the Tokyo venue choice. Main reads/validates those sources; reference-only historical files are not automatically adopted.",
+      "reversibility": "Before adoption, replace the nominated reference; later changes use a new immutable revision."
+    },
+    {
+      "id": "C",
+      "label": "Defer these inputs",
+      "effect": "Leave current TARGET/Theme adoption and Tokyo venue unresolved; A-S1/A-S2/A-S3 admission and dependent TARGET production use remain WAIT. Independent authorized evidence and other ready lanes continue.",
+      "reversibility": "Resume on a later user input/source revision; no current data is replaced."
+    }
+  ],
+  "recommendation": {
+    "option": "A",
+    "kind": "WORKFLOW_ONLY",
+    "reason": "Collect one complete user-controlled source revision in the blank forms, with exact provenance and clock evidence; the governing SSoT requires one26E bundle and dependent-lane WAIT.",
+    "source_refs": [
+      "GOV-26E",
+      "GOV-23-24",
+      "RD3-10",
+      "PIL-TIME",
+      "TARGET-ADMISSION"
+    ]
+  },
+  "wait_lanes": [
+    {
+      "lane": "A-S1",
+      "state": "WAIT_USER_CURRENT_TARGET_AND_SOURCE_AUTHORITY",
+      "reason": "Current root/version, weights/cash/denominator/completeness, applicability/adoption and independent availability unresolved."
+    },
+    {
+      "lane": "A-S2",
+      "state": "WAIT_USER_D29_AND_SOURCE_REVIEW_C25_AUTHORITY",
+      "reason": "Tokyo venue reserved choice; all19 reviewed source-bound common relations absent; C25 unresolved model boundary preserved."
+    },
+    {
+      "lane": "A-S3",
+      "state": "WAIT_USER_THEME_AND_ROOT_SECURITY_BINDING",
+      "reason": "User catalog/concepts/weights/assignment revision and current applicability/adoption/availability unresolved."
+    },
+    {
+      "lane": "TARGET production consumption dependent on A-S1/A-S2/A-S3",
+      "state": "WAIT_DEPENDENCY",
+      "reason": "This package does not close source gates or authorize production wiring."
+    }
+  ],
+  "continuing_lanes": [
+    "Free bounded source evidence lookup and reviewed identity preparation for the18 non-Tokyo-choice rows under existing common contracts and accepted write-sets.",
+    "Read-only immutable intake/diagnostics, provenance checks and consolidation; obtain any existing adopted C25 decision without editing frozen Personal contracts.",
+    "Other authorized READY Main/Platform/Web/FPIA/QGV lanes within their accepted scopes; active owner leases remain with their owners.",
+    "Market evidence work remains a separate lane; it is not a TARGET input prerequisite."
+  ],
+  "decision_deadline": null,
+  "deadline_reason": "No user or authoritative source supplies a decision deadline.",
+  "decision_input": {
+    "selected_option": null,
+    "user_statement_ref": null,
+    "user_decided_at": null,
+    "current_target_form_ref": null,
+    "current_theme_form_ref": null,
+    "identity_source_return_ref": null,
+    "C25_existing_adopted_policy_or_explicit_unresolved_ref": null
+  },
+  "source_pins": {
+    "source_evidence": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+    "canonical_contracts": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "chart": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+    "global_read": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+    "entity_search_only": "a013f1c1758642f90a65fe11df69fc234c143a48"
+  },
+  "proposed_global_write_set": [
+    "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/DECISION_REQUEST_26E.md",
+    "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/DECISION_BUNDLE.json",
+    "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/TARGET_INPUT_FORM.json",
+    "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/STRATEGY_THEME_INPUT_FORM.json",
+    "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/SECURITY19_DISPOSITION.json",
+    "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/SOURCE_MANIFEST.json",
+    "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/VALIDATION.json"
+  ],
+  "local_draft_directory": "/workspace/scratch/target-decision-package",
+  "scope": "One new coordination evidence package only; root Main handles publication after review. No source-owner, Chart, frozen Personal, canonical, runtime or active-owner files changed.",
+  "source_authority_admitted": false,
+  "production_gate_closures": 0,
+  "existing_chart_gates": {
+    "open": 6,
+    "closed": 0
+  },
+  "market_admitted": {
+    "count": 0,
+    "total": 19
+  },
+  "forms": [
+    "TARGET_INPUT_FORM.json",
+    "STRATEGY_THEME_INPUT_FORM.json"
+  ],
+  "identity_disposition": "SECURITY19_DISPOSITION.json",
+  "unknowns": [
+    "Current user TARGET root/version/adoption, all weights/cash, denominator/completeness and source-bound effective/independent availability.",
+    "Current user Strategy Theme concepts/definitions/weights, catalog/assignment revisions and root/Security-bound provenance/validity.",
+    "All19 common issuer/Security/share-form/CompanyLink reviewed relations and admission authority.",
+    "Tokyo Electron TSE versus ADR choice; source facts describe alternatives without selecting one.",
+    "Existing adopted C25 identifier-model policy/relation authority; private frozen CompanyLink remains PROPOSED until decided.",
+    "ASML source-backed ordinary-shares versus legacy ADR-comment conflict pending accepted identity review/correction.",
+    "Historical source availability is UNKNOWN; current capture clocks do not prove it."
+  ],
+  "no_remote_mutations_or_notifications": true,
+  "source_manifest": "SOURCE_MANIFEST.json",
+  "validation": "VALIDATION.json"
+}

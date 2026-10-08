@@ -1,0 +1,550 @@
+{
+  "schema": "target-decision-source-manifest-v1",
+  "repository": "kco994553-star/Investment-System1",
+  "source_branch": "main/chart-source-evidence-v1",
+  "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+  "chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+  "canonical_contract_pin": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "global_read_pin": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+  "entity_metadata_pin": "a013f1c1758642f90a65fe11df69fc234c143a48",
+  "sources": [
+    {
+      "source_id": "GOV-26E",
+      "commit": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "git_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+      "sha256": "e193544159babd5ccb7d74671d9925fa6fd4de406a0e215cda1b08b2264dba3b",
+      "locator": {
+        "line_start": 497,
+        "line_end": 504
+      },
+      "authority_status": "ADOPTED_COMMON_SSOT",
+      "purpose": "One consolidated request; options/effects/reversibility; affected WAIT and continuing lanes; only evidenced deadline",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/84f2dd99e44e6c5e25b59391fdf44254e4d8be30/implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md#L497"
+    },
+    {
+      "source_id": "GOV-23-24",
+      "commit": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "git_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+      "sha256": "e193544159babd5ccb7d74671d9925fa6fd4de406a0e215cda1b08b2264dba3b",
+      "locator": {
+        "line_start": 392,
+        "line_end": 419
+      },
+      "authority_status": "ADOPTED_COMMON_SSOT",
+      "purpose": "New weights/method meanings and protected owner contract changes reserved; independent lanes continue",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/84f2dd99e44e6c5e25b59391fdf44254e4d8be30/implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md#L392"
+    },
+    {
+      "source_id": "GOV-26A",
+      "commit": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "git_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+      "sha256": "e193544159babd5ccb7d74671d9925fa6fd4de406a0e215cda1b08b2264dba3b",
+      "locator": {
+        "line_start": 426,
+        "line_end": 449
+      },
+      "authority_status": "ADOPTED_COMMON_SSOT",
+      "purpose": "Source authority and portfolio weight semantics cannot be inferred or silently changed",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/84f2dd99e44e6c5e25b59391fdf44254e4d8be30/implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md#L426"
+    },
+    {
+      "source_id": "CDR-024",
+      "commit": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+      "git_blob": "ade2b85f1b23fee026133b6825dfe258cec522ac",
+      "sha256": "3d0cf8a52964242ef3927647be632537c691c74656c42bccabcaadffe2df35cd",
+      "locator": {
+        "line_start": 1585,
+        "line_end": 1625
+      },
+      "authority_status": "USER_DECIDED_ADOPTION",
+      "purpose": "Confirms governing policy adoption and preserved boundaries",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/84f2dd99e44e6c5e25b59391fdf44254e4d8be30/implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md#L1585"
+    },
+    {
+      "source_id": "CDR-026",
+      "commit": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+      "git_blob": "ade2b85f1b23fee026133b6825dfe258cec522ac",
+      "sha256": "3d0cf8a52964242ef3927647be632537c691c74656c42bccabcaadffe2df35cd",
+      "locator": {
+        "line_start": 1652,
+        "line_end": 1660
+      },
+      "authority_status": "EXECUTED_IDENTITY_CLARIFICATION",
+      "purpose": "Exact adopted policy blob4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/84f2dd99e44e6c5e25b59391fdf44254e4d8be30/implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md#L1652"
+    },
+    {
+      "source_id": "CDR-030",
+      "commit": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+      "git_blob": "ade2b85f1b23fee026133b6825dfe258cec522ac",
+      "sha256": "3d0cf8a52964242ef3927647be632537c691c74656c42bccabcaadffe2df35cd",
+      "locator": {
+        "line_start": 1692,
+        "line_end": 1697
+      },
+      "authority_status": "USER_OPERATIONAL_DECISION_ADOPTED",
+      "purpose": "Evidence assignment does not create currentness, mapping admission or source authority",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/84f2dd99e44e6c5e25b59391fdf44254e4d8be30/implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md#L1692"
+    },
+    {
+      "source_id": "SINGLE-CONTROL",
+      "commit": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "path": "implementation/docs/coordination/policies/Investment-System1_Main_Single_Control_Execution_Policy_v1_0.md",
+      "git_blob": "e69ca00000404a9b03292b9de3359901c29228b5",
+      "sha256": "4910d04036320a99511aeb254d4c4e64ed61691a70f23ec4c1cd90e73623c973",
+      "locator": {
+        "line_start": 3,
+        "line_end": 13
+      },
+      "authority_status": "ADOPTED_USER_OPERATIONAL_DECISION",
+      "purpose": "Bounded eligible work preserves active owner scopes and leases",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/84f2dd99e44e6c5e25b59391fdf44254e4d8be30/implementation/docs/coordination/policies/Investment-System1_Main_Single_Control_Execution_Policy_v1_0.md#L3"
+    },
+    {
+      "source_id": "RD3-10",
+      "commit": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "path": "implementation/docs/coordination/governance/PENDING_D3_RECLASSIFICATION_v1.1.md",
+      "git_blob": "a556817d4819ed2ec06823a7721927f6f330b975",
+      "sha256": "b2a1e54c8b507b7d70f5eb1b3036058d7b96fe48e2d73b8a63beb421bb543d30",
+      "locator": {
+        "line_start": 23,
+        "line_end": 23
+      },
+      "authority_status": "MAIN_RECLASSIFICATION_UNDER_CDR024",
+      "purpose": "Missing Identity/Portfolio source evidence is WAIT_DEPENDENCY, not a user decision",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/84f2dd99e44e6c5e25b59391fdf44254e4d8be30/implementation/docs/coordination/governance/PENDING_D3_RECLASSIFICATION_v1.1.md#L23"
+    },
+    {
+      "source_id": "C39-CONTRACT",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "Investment-System1 · Global-Korea Universe and Information Source Contract 2026-09-24.md",
+      "git_blob": "a30a55d8223440913285ddc0d02e066aa5e8b4ef",
+      "sha256": "ec2374de458f72b12889e74644ac2c7d8eb79d1d0afa09d235b51286e0d92ad6",
+      "locator": {
+        "line_start": 11,
+        "line_end": 16,
+        "additional_line_ranges": [
+          [
+            31,
+            34
+          ],
+          [
+            58,
+            63
+          ]
+        ]
+      },
+      "authority_status": "EXISTING_PROVISIONAL_IMPLEMENTED_COMMON_CONTRACT",
+      "purpose": "Issuer→Security→dated Listing; per-field sources; common types do not replace Personal private contract",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/b8e39a2196a6d7794a04a0cd5393c68329e126ca/Investment-System1%20%C2%B7%20Global-Korea%20Universe%20and%20Information%20Source%20Contract%202026-09-24.md#L11"
+    },
+    {
+      "source_id": "C39-RESOLUTION",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "git_blob": "e63aca909246148723fbfe9cd2528299b6138bf8",
+      "sha256": "6bd7f8a39fc69cea0bedb3323ea72e5921f1ac1773fd643ced1a08557c1490b3",
+      "locator": {
+        "line_start": 481,
+        "line_end": 501
+      },
+      "authority_status": "RESOLVED_CONTRACT_IMPLEMENTATION_BOUNDARY",
+      "purpose": "Shared capability restored without modifying frozen Personal; no roster identity registry admission",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/b8e39a2196a6d7794a04a0cd5393c68329e126ca/Investment-System1%20%C2%B7%20Contract%20Conflict%20Register%202026-09-23.md#L481"
+    },
+    {
+      "source_id": "COMMON-TYPES",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/contracts/global_universe.py",
+      "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8",
+      "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+      "locator": {
+        "line_start": 61,
+        "line_end": 111
+      },
+      "authority_status": "EXISTING_COMMON_RUNTIME_CONTRACT",
+      "purpose": "Separate issuer/security/listing types and half-open validity; no roster records",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/b8e39a2196a6d7794a04a0cd5393c68329e126ca/implementation/src/investment_system/contracts/global_universe.py#L61"
+    },
+    {
+      "source_id": "PIL-FROZEN",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md",
+      "git_blob": "f4988e024e90098484ab3462cabe1710b5c6510c",
+      "sha256": "64bb27df6dc389477b219a63c276e6ee71041773845017229f3d6043a010287c",
+      "locator": {
+        "line_start": 3,
+        "line_end": 13,
+        "additional_line_ranges": [
+          [
+            139,
+            147
+          ],
+          [
+            191,
+            205
+          ]
+        ]
+      },
+      "authority_status": "ARCHITECTURE_AND_P0_FROZEN",
+      "purpose": "P0 freeze; TARGET/ACTUAL separate; symbol not identity; uncertain mappings fail closed",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/b8e39a2196a6d7794a04a0cd5393c68329e126ca/Investment-System1%20%C2%B7%20PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md#L3"
+    },
+    {
+      "source_id": "PIL-SECURITY",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/personal/security.py",
+      "git_blob": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+      "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0",
+      "locator": {
+        "line_start": 1,
+        "line_end": 5,
+        "additional_line_ranges": [
+          [
+            21,
+            52
+          ],
+          [
+            68,
+            100
+          ]
+        ]
+      },
+      "authority_status": "FROZEN_PRIVATE_RUNTIME_CONTRACT_NOT_COMMON_ROSTER_AUTHORITY",
+      "purpose": "Explicit certain dated records; separate reviewed CompanyLink; CompanyLink stays PROPOSED until model decided",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/b8e39a2196a6d7794a04a0cd5393c68329e126ca/implementation/src/investment_system/personal/security.py#L1"
+    },
+    {
+      "source_id": "PIL-TIME",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/personal/timecontract.py",
+      "git_blob": "0310a7e16bd86308ebcf90888032572269daf14b",
+      "sha256": "dee41dce8153740e75faa1810f9ffa5c150d13f3f4cf3d6f5f452348a7219d73",
+      "locator": {
+        "line_start": 18,
+        "line_end": 43
+      },
+      "authority_status": "FROZEN_PRIVATE_RUNTIME_CONTRACT",
+      "purpose": "available_at required and <=decision_time; no invented clocks",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/b8e39a2196a6d7794a04a0cd5393c68329e126ca/implementation/src/investment_system/personal/timecontract.py#L18"
+    },
+    {
+      "source_id": "C25-OPEN",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "git_blob": "e63aca909246148723fbfe9cd2528299b6138bf8",
+      "sha256": "6bd7f8a39fc69cea0bedb3323ea72e5921f1ac1773fd643ced1a08557c1490b3",
+      "locator": {
+        "line_start": 326,
+        "line_end": 330
+      },
+      "authority_status": "OPEN_COMMON_CONTRACT_BOUNDARY_NO_MAPPING_CREATED",
+      "purpose": "No company_id/security_id equivalence or approved CompanyLink is established",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/b8e39a2196a6d7794a04a0cd5393c68329e126ca/Investment-System1%20%C2%B7%20Contract%20Conflict%20Register%202026-09-23.md#L326"
+    },
+    {
+      "source_id": "D29-TOKYO",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "git_blob": "e63aca909246148723fbfe9cd2528299b6138bf8",
+      "sha256": "6bd7f8a39fc69cea0bedb3323ea72e5921f1ac1773fd643ced1a08557c1490b3",
+      "locator": {
+        "line_start": 52,
+        "line_end": 56
+      },
+      "authority_status": "EXISTING_EXPLICIT_DECISION_REQUIRED_VENUE",
+      "purpose": "Tokyo Electron company identity fixed; TSE versus ADR requires choice; TEL ambiguous",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/b8e39a2196a6d7794a04a0cd5393c68329e126ca/Investment-System1%20%C2%B7%20Contract%20Conflict%20Register%202026-09-23.md#L52"
+    },
+    {
+      "source_id": "LEGACY-ROSTER",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/qgv/identifiers.py",
+      "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+      "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+      "locator": {
+        "line_start": 14,
+        "line_end": 42
+      },
+      "authority_status": "COMPANY_LEVEL_REFERENCE_NOT_SECURITY_ADMISSION",
+      "purpose": "Exact19 historical company/display/venue constraints; no internal Security records",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/b8e39a2196a6d7794a04a0cd5393c68329e126ca/implementation/src/investment_system/qgv/identifiers.py#L14"
+    },
+    {
+      "source_id": "ASML-LEGACY-CONFLICT",
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/markets/us.py",
+      "git_blob": "921a99458da93c06f79e6f46421acc1aa0bb5f79",
+      "sha256": "7c87cefacd152c59044bb6a14b4bbc7ce2ffd44ceb27daa22095b1f76ae3950b",
+      "locator": {
+        "line_start": 32,
+        "line_end": 34
+      },
+      "authority_status": "SOURCE_FORM_COMMENT_CONFLICT",
+      "purpose": "Legacy NASDAQ ADR comment conflicts with issuer primary capture; row itself supplies company/CIK/exchange only",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/b8e39a2196a6d7794a04a0cd5393c68329e126ca/implementation/src/investment_system/markets/us.py#L32"
+    },
+    {
+      "source_id": "S1-RETURN",
+      "commit": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "path": "implementation/docs/portfolio_target_owner/RETURN.json",
+      "git_blob": "05113b6ceb32ce27132d9fe66066ad6f36a3d3b1",
+      "sha256": "fda61cbe944cb9b9315000638bc9b574a482e3d3cbe4af1327e547ee0820abbc",
+      "locator": {
+        "json_pointers": [
+          "/source_admission",
+          "/current_root",
+          "/constituents",
+          "/source_root_boundary"
+        ]
+      },
+      "authority_status": "REFERENCE_RETURN_NOT_ADMITTED",
+      "purpose": "Immutable source return; historical authorship never becomes current default",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5/implementation/docs/portfolio_target_owner/RETURN.json"
+    },
+    {
+      "source_id": "S1-ROLE",
+      "commit": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "path": "implementation/docs/portfolio_target_owner/OWNER_RECEIPT.json",
+      "git_blob": "53f30645e4aeb93891baf48fb8db82d46e4aaafc",
+      "sha256": "4c80f0fca1f0bd2472bd3dd7171c61ce7c1e885b9954816e5eac73fc5bed06fc",
+      "locator": {
+        "json_pointers": [
+          "/claim",
+          "/source_admission",
+          "/acceptance",
+          "/lease_status"
+        ]
+      },
+      "authority_status": "EVIDENCE_SCOPE_RELEASED_NOT_SOURCE_AUTHORITY",
+      "purpose": "Bounded evidence-role claim does not prove source authority; source leases released",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5/implementation/docs/portfolio_target_owner/OWNER_RECEIPT.json"
+    },
+    {
+      "source_id": "S2-RETURN",
+      "commit": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "path": "implementation/docs/security_map19_owner/RETURN.json",
+      "git_blob": "8ffc7a26895abc15a1770b103022ba3fdce40fdc",
+      "sha256": "3c90c93df65d30ead91122805b2249c5729a9cec298938676178101c513757e6",
+      "locator": {
+        "json_pointers": [
+          "/source_admission",
+          "/rows",
+          "/roster_count",
+          "/admitted_count"
+        ]
+      },
+      "authority_status": "REFERENCE_RETURN_NOT_ADMITTED",
+      "purpose": "Immutable source return; historical authorship never becomes current default",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5/implementation/docs/security_map19_owner/RETURN.json"
+    },
+    {
+      "source_id": "S2-ROLE",
+      "commit": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "path": "implementation/docs/security_map19_owner/OWNER_RECEIPT.json",
+      "git_blob": "b7b2f4da365ad9de908b30d1d7339dfd59f02db7",
+      "sha256": "d8a267ec384f874ab80c8e13c27d1284ecb0448901c2d17262da314d367131fa",
+      "locator": {
+        "json_pointers": [
+          "/claim",
+          "/source_admission",
+          "/acceptance",
+          "/lease_status"
+        ]
+      },
+      "authority_status": "EVIDENCE_SCOPE_RELEASED_NOT_SOURCE_AUTHORITY",
+      "purpose": "Bounded evidence-role claim does not prove source authority; source leases released",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5/implementation/docs/security_map19_owner/OWNER_RECEIPT.json"
+    },
+    {
+      "source_id": "S3-RETURN",
+      "commit": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "path": "implementation/docs/strategy_theme_owner/RETURN.json",
+      "git_blob": "ad75e1bf9827e9dbb9d44a74502b62d87a82f304",
+      "sha256": "d91aea9a878aff8bb3e97f611360eecb01b0e9d94945672a762d018f57a46d57",
+      "locator": {
+        "json_pointers": [
+          "/source_admission",
+          "/catalog_version",
+          "/assignment_revision",
+          "/admitted_target_root",
+          "/admitted_security_map"
+        ]
+      },
+      "authority_status": "REFERENCE_RETURN_NOT_ADMITTED",
+      "purpose": "Immutable source return; historical authorship never becomes current default",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5/implementation/docs/strategy_theme_owner/RETURN.json"
+    },
+    {
+      "source_id": "S3-ROLE",
+      "commit": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "path": "implementation/docs/strategy_theme_owner/OWNER_RECEIPT.json",
+      "git_blob": "4f9034baf219b4f2952e2ff3932a7d99c3f65618",
+      "sha256": "78506c719b72b67d9c015ec0f56fa3131a1bb4d6012dd7827014d54eec9a1cb7",
+      "locator": {
+        "json_pointers": [
+          "/claim",
+          "/source_admission",
+          "/acceptance",
+          "/lease_status"
+        ]
+      },
+      "authority_status": "EVIDENCE_SCOPE_RELEASED_NOT_SOURCE_AUTHORITY",
+      "purpose": "Bounded evidence-role claim does not prove source authority; source leases released",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5/implementation/docs/strategy_theme_owner/OWNER_RECEIPT.json"
+    },
+    {
+      "source_id": "TARGET-ADMISSION",
+      "commit": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "git_blob": "693cc6bf15aeb9448aff995fe1898f669297e451",
+      "sha256": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c",
+      "locator": {
+        "line_start": 1323,
+        "line_end": 1357
+      },
+      "authority_status": "NOT_ADOPTED_REQUEST_NO_ACTIVATION",
+      "purpose": "Exact source closure predicates; excludes ACTUAL/GICS/Type/Overlap/Market prerequisites",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json#L1323"
+    },
+    {
+      "source_id": "IDENTITY-FACT-AUDIT",
+      "commit": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/MARKET19_IDENTITY_TIME_READINESS.json",
+      "git_blob": "f198816b6971c660e749b7b6855ae07f5d10aba3",
+      "sha256": "ec7ea7b94056591cc52e7735d1d66d901c90debf7b177a3c050ef829e8ef8425",
+      "locator": {
+        "json_pointers": [
+          "/production_identity_bound_count",
+          "/source_fact_readiness_is_not_production_admission",
+          "/rows"
+        ]
+      },
+      "authority_status": "RETAINED_NARROW_SOURCE_FACT_AUDIT_NOT_MAPPING_ADMISSION",
+      "purpose": "All19 primary/current metadata reviewed at narrow facts scope; none admits internal identity",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/MARKET19_IDENTITY_TIME_READINESS.json"
+    },
+    {
+      "source_id": "ASML-PRIMARY",
+      "commit": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/asml_share_form_extracted.txt",
+      "git_blob": "17e93cc15df9c3788bcbc28808596e585fd7a56b",
+      "sha256": "2954657228eb5e2911dd97b7ad5a5cbcfe61f4e5c553c274771547959720b832",
+      "locator": {
+        "line_start": 1,
+        "line_end": 1
+      },
+      "authority_status": "CAPTURED_ISSUER_PRIMARY_FACT_NOT_ADOPTED_MAP",
+      "purpose": "NASDAQ registered ordinary shares and distinct Euronext identifiers; form conflict requires review",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/asml_share_form_extracted.txt#L1"
+    },
+    {
+      "source_id": "ASML-CAPTURE",
+      "commit": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/SHARE_FORM_SOURCE_ACQUISITION.json",
+      "git_blob": "d6b406361ef7d4294a7520b681536a0eefc3f8c0",
+      "sha256": "fa39d98065805fd6f05479b74ae3674027d4c991950f83504c9d0eb118438193",
+      "locator": {
+        "json_pointers": [
+          "/url",
+          "/sha256",
+          "/historical_source_available_at"
+        ]
+      },
+      "authority_status": "CAPTURE_PROVENANCE_HISTORICAL_AVAILABLE_AT_UNKNOWN",
+      "purpose": "Source-bound provenance for issuer shares page",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/SHARE_FORM_SOURCE_ACQUISITION.json"
+    },
+    {
+      "source_id": "TOKYO-PRIMARY",
+      "commit": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/tel_stock_info_extracted.txt",
+      "git_blob": "257c1ad7c890b8862803e402d2627a8c9b75bbb1",
+      "sha256": "bbac3d057fc1b4568e4b035c05aa7350de4daea2a85c30594b0eb33f5fc5b599",
+      "locator": {
+        "line_start": 1,
+        "line_end": 1
+      },
+      "authority_status": "CAPTURED_ISSUER_PRIMARY_FACT_NOT_TARGET_VENUE_CHOICE",
+      "purpose": "TSE8035 common stock versus OTC TELWY ADR are separately described; no current TARGET selection",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/tel_stock_info_extracted.txt#L1"
+    },
+    {
+      "source_id": "OFFICIAL-CAPTURE",
+      "commit": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/OFFICIAL_SOURCE_ACQUISITION.json",
+      "git_blob": "9cce9a7abf7b7658fa783cb09ca4b55d5065a6c9",
+      "sha256": "5324b02c24d864cdc72536af886635dcf89befe5b97ca4072a159114391e4feb",
+      "locator": {
+        "json_pointers": [
+          "/source_observation_is_not_historical_publication",
+          "/sources/0",
+          "/sources/2",
+          "/sources/3"
+        ]
+      },
+      "authority_status": "CAPTURE_PROVENANCE_NOT_HISTORICAL_AVAILABILITY",
+      "purpose": "SEC/current association, Tokyo issuer and Hanmi DART facts; capture times not effective/historical availability",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/OFFICIAL_SOURCE_ACQUISITION.json"
+    },
+    {
+      "source_id": "ENTITY-SEARCH-ONLY",
+      "commit": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "path": "implementation/docs/entity_metadata/CONTRACT.md",
+      "git_blob": "721d02d613d1e900e5d2aa196bb61128e135b2fb",
+      "sha256": "1f40285e0185a62f1715c52190f63a4c4e2c4575b2128ddd5a9175c8916cb7b7",
+      "locator": {
+        "line_start": 17,
+        "line_end": 22,
+        "additional_line_ranges": [
+          [
+            45,
+            48
+          ]
+        ]
+      },
+      "authority_status": "SEARCH_PRESENTATION_ONLY_NOT_PORTFOLIO_AUTHORITY",
+      "purpose": "Existing company/CIK/ticker metadata forbidden from Portfolio/engine authority",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/a013f1c1758642f90a65fe11df69fc234c143a48/implementation/docs/entity_metadata/CONTRACT.md#L17"
+    },
+    {
+      "source_id": "OWNER-RETURN-CONTRACT",
+      "commit": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "path": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/OWNER_RETURN_CONTRACT.md",
+      "git_blob": "6c4edd9195d0db21521c735655c874fd77a2bfa4",
+      "sha256": "a8aa8f50d7ab3173c3668b6da0f3670499596fcb55dcd16be12b94fbba969547",
+      "locator": {
+        "line_start": 1,
+        "line_end": 10
+      },
+      "authority_status": "EXISTING_MAIN_SOURCE_RETURN_REQUIREMENTS",
+      "purpose": "Reviewed19 C25/D29 common relations; Market history not TARGET prerequisite",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/84f2dd99e44e6c5e25b59391fdf44254e4d8be30/implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/OWNER_RETURN_CONTRACT.md#L1"
+    },
+    {
+      "source_id": "GLOBAL-LEDGER-READ",
+      "commit": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "path": "implementation/docs/coordination/OWNER_ROUTING_LEDGER.json",
+      "git_blob": "92fbe34bf33c9262671337a3b9a736af20460456",
+      "sha256": "6d8898a819d9045ee1933266877800f65b931e766bce64ead26d41e809593ecd",
+      "locator": {
+        "json_pointers": [
+          "/fresh_scope",
+          "/summary",
+          "/current_source_evidence_roles",
+          "/qgv_delta/source_owner_lease"
+        ]
+      },
+      "authority_status": "READ_ONLY_COORDINATION_SNAPSHOT",
+      "purpose": "Six gates OPEN, Market0/19; protected active owner scopes remain unchanged",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/84f2dd99e44e6c5e25b59391fdf44254e4d8be30/implementation/docs/coordination/OWNER_ROUTING_LEDGER.json"
+    }
+  ],
+  "authority_rule": "An approved type/contract or captured issuer fact is not an adopted TARGET identity mapping; all relation/adoption/availability fields remain unresolved unless exact reviewed authority is returned."
+}

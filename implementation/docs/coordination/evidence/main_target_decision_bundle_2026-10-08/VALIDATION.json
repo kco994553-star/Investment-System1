@@ -1,0 +1,92 @@
+{
+  "schema": "target-decision-package-validation-v1",
+  "status": "PASS_INACTIVE_DOCS_FORMS_ONLY",
+  "checks": [
+    {
+      "check": "all exact source objects and hashes verified",
+      "pass": true
+    },
+    {
+      "check": "exact adopted policy blob preserved",
+      "pass": true
+    },
+    {
+      "check": "19 exact reference roster rows retained only as context",
+      "pass": true
+    },
+    {
+      "check": "all TARGET user input values blank",
+      "pass": true
+    },
+    {
+      "check": "all Theme values and assignment inputs blank",
+      "pass": true
+    },
+    {
+      "check": "no internal identity or reviewed-link inputs populated",
+      "pass": true
+    },
+    {
+      "check": "one explicit Tokyo decision and18 dependencies; resolver/admission0",
+      "pass": true
+    },
+    {
+      "check": "Tokyo choice and C25 policy inputs blank",
+      "pass": true
+    },
+    {
+      "check": "one26E question three options workflow recommendation no deadline",
+      "pass": true
+    },
+    {
+      "check": "no source or gate admission claimed",
+      "pass": true
+    },
+    {
+      "check": "proposed exact seven-file Global write-set additive and scoped",
+      "pass": true
+    },
+    {
+      "check": "captured primary facts retain UNKNOWN historical availability",
+      "pass": true
+    },
+    {
+      "check": "all six JSON artifacts parse",
+      "pass": true
+    }
+  ],
+  "source_objects_verified": 33,
+  "artifact_sha256": {
+    "DECISION_REQUEST_26E.md": "97a9cd4b3787565801d32f24f0a96e38f41dffa89301b2a19a7e2d504c495b32",
+    "DECISION_BUNDLE.json": "b8aed46b1a5413f1810584727609368617b04f7442339697c444ceb48d403139",
+    "TARGET_INPUT_FORM.json": "514f6074d4e7061d22711edf938e789773d587062b607e4782b022816ff2702f",
+    "STRATEGY_THEME_INPUT_FORM.json": "0c3c7a43d8081c81f9c0375ab2a5f6a4eb5c50db96dd5593503a25b2cc3087f8",
+    "SECURITY19_DISPOSITION.json": "1f09536dc9c44c9ef92a0a54780b4cdf78f7143ae70bdcf37171d0f11f79c838",
+    "SOURCE_MANIFEST.json": "a373a1286dd880b766b6c553fa9c41de41e03588bab3a595004b6160fdcede39"
+  },
+  "validation_file_hash_note": "Containing publication receipt may hash VALIDATION.json; no recursive self-hash embedded.",
+  "files_created": [
+    "/workspace/scratch/target-decision-package/DECISION_REQUEST_26E.md",
+    "/workspace/scratch/target-decision-package/DECISION_BUNDLE.json",
+    "/workspace/scratch/target-decision-package/TARGET_INPUT_FORM.json",
+    "/workspace/scratch/target-decision-package/STRATEGY_THEME_INPUT_FORM.json",
+    "/workspace/scratch/target-decision-package/SECURITY19_DISPOSITION.json",
+    "/workspace/scratch/target-decision-package/SOURCE_MANIFEST.json",
+    "/workspace/scratch/target-decision-package/VALIDATION.json"
+  ],
+  "repo_mutations": [],
+  "remote_mutations": [],
+  "notifications": [],
+  "production_tests": "NOT_APPLICABLE_NO_RUNTIME_CHANGE",
+  "source_admission": false,
+  "gate_closures": 0,
+  "unknowns_preserved": [
+    "Current user TARGET root/version/adoption, all weights/cash, denominator/completeness and source-bound effective/independent availability.",
+    "Current user Strategy Theme concepts/definitions/weights, catalog/assignment revisions and root/Security-bound provenance/validity.",
+    "All19 common issuer/Security/share-form/CompanyLink reviewed relations and admission authority.",
+    "Tokyo Electron TSE versus ADR choice; source facts describe alternatives without selecting one.",
+    "Existing adopted C25 identifier-model policy/relation authority; private frozen CompanyLink remains PROPOSED until decided.",
+    "ASML source-backed ordinary-shares versus legacy ADR-comment conflict pending accepted identity review/correction.",
+    "Historical source availability is UNKNOWN; current capture clocks do not prove it."
+  ]
+}

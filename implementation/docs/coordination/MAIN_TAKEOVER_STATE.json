@@ -284,7 +284,7 @@
     "classification": "USER_EXPLICIT_NAMED_ACTIONS_ONLY",
     "production_autonomy_mode": "READ_ONLY",
     "task_limit": 5,
-    "tasks_used": 1,
+    "tasks_used": 3,
     "lane_leases": [
       {
         "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
@@ -311,6 +311,20 @@
         ],
         "status": "CLAIMED_EXISTING_RECORDS_ONLY",
         "no_new_cases": true
+      }
+    ],
+    "progress": [
+      {
+        "task": 1,
+        "status": "PPA_COMPATIBILITY_REPAIR_IN_PROGRESS"
+      },
+      {
+        "task": 2,
+        "status": "TARGET_BLANK_DECISION_PACKAGE_PREPARED"
+      },
+      {
+        "task": 3,
+        "status": "FPIA_RECORDED_F1_F25_INTAKE_PREPARED_NO_CODE_REPAIR_QUEUED"
       }
     ]
   },
@@ -1214,5 +1228,27 @@
       "merged_by": "kco994553-star",
       "merge_performed_by_this_session": false
     }
+  },
+  "current_target_decision_bundle": {
+    "path": "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/DECISION_REQUEST_26E.md",
+    "status": "D3_R_PENDING_USER_INPUT_DRAFT_ONLY",
+    "target_values_proposed": 0,
+    "theme_values_proposed": 0,
+    "security_admitted": 0,
+    "security_contract_source_dependencies": 18,
+    "security_user_venue_decisions": 1,
+    "chart_gates_closed": 0
+  },
+  "current_fpia_recorded_inventory": {
+    "path": "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/INVENTORY.json",
+    "scope": "EXISTING_RECORDED_F1_F25_ONLY",
+    "count": 25,
+    "new_counterexamples": 0,
+    "new_audits": 0,
+    "new_tests": 0,
+    "code_fixes_queued": 0,
+    "existing_ci_head": "7215a9f60ad7128b1748f405051eac684298614f",
+    "trust_gie": "OPEN",
+    "B1_B4_discovery": "TERMINATED_SUPERSEDED_BY_CDR036"
   }
 }
