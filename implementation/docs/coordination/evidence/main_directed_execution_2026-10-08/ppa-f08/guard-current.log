@@ -1,0 +1,10 @@
+PASS served data.json still carries the hand-built research sections unchanged
+PASS ko-KR: withheld sections show NOT_AVAILABLE + reason and no value on every route
+PASS ko-KR: each research-marked section is withheld where it is shown
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert.ok((await page.locator("main").textContent()).includes("44.44%"))
+
+    at /workspace/ppa-f08/implementation/tools/web_research_guard_browser_test.js:162:18
+    at async check (/workspace/ppa-f08/implementation/tools/web_research_guard_browser_test.js:61:36)
+    at async main (/workspace/ppa-f08/implementation/tools/web_research_guard_browser_test.js:148:9)

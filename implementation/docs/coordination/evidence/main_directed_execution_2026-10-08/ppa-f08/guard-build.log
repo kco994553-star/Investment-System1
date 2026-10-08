@@ -1,0 +1,64 @@
+{
+ "kind": "WEB_RESEARCH_GUARD_FIXTURE_V1",
+ "scope": "TEST VECTORS ONLY; NOT_REAL_DATA; NO GRANT",
+ "company": "nvda",
+ "withheld": {
+  "qgv": "producer.methodology.status: PROVISIONAL_RESEARCH",
+  "changes": "producer.methodology.status: IDEA",
+  "news": "producer.methodology.status: PROVISIONAL_INITIAL_PRIOR",
+  "technical": "producer.methodology.status: PROVISIONAL",
+  "leaderboard": "research_state.status: PROVISIONAL_RESEARCH"
+ },
+ "rendered": {
+  "universe": "FROZEN_SNAPSHOT",
+  "macro": "LIVE",
+  "portfolio": "DEMO",
+  "relationships": "NOT_AVAILABLE"
+ },
+ "withheld_probes": [
+  "11.11",
+  "22.22",
+  "66.66",
+  "77.77",
+  "RESEARCH_PROBE_QGV",
+  "RESEARCH_PROBE_REGIME",
+  "RESEARCH_PROBE_ZONE",
+  "RESEARCH_PROBE_CHANGES",
+  "RESEARCH_PROBE_NEWS"
+ ],
+ "rendered_probes": {
+  "macro": [
+   "TEST_REGIME_VALID",
+   "33.33"
+  ],
+  "portfolio": [
+   "44.44%",
+   "TEST DEMO / NOT ACTUAL"
+  ]
+ },
+ "validation_withheld": {
+  "variant-validation-fail-live.json": {
+   "section": "macro",
+   "state": "LIVE",
+   "status": "FAIL"
+  },
+  "variant-validation-missing-live.json": {
+   "section": "macro",
+   "state": "LIVE",
+   "status": null
+  },
+  "variant-validation-not-run-frozen.json": {
+   "section": "universe",
+   "state": "FROZEN_SNAPSHOT",
+   "status": "NOT_RUN"
+  }
+ },
+ "validation_probes": [
+  "TEST_REGIME_VALID",
+  "33.33",
+  "TEST_EXPOSURE_VALID"
+ ],
+ "research_display": "NONE",
+ "frozen_grant": "NONE",
+ "live_grant": "NONE"
+}

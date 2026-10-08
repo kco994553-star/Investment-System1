@@ -1,0 +1,73 @@
+{
+  "kind": "PPA_F08_PUBLICATION_V1",
+  "pr": 63,
+  "url": "https://github.com/kco994553-star/Investment-System1/pull/63",
+  "branch": "fix/ppa-f08-actual-availability-20261008",
+  "remote_head": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+  "local_head": "5c844f1ab3fab32e0556ce3f1a0638a9a7f481c8",
+  "parent": "fb086eac4321140493ce554a541343cebbb81ed6",
+  "tree": "cd0dbe37c55e7d02a8d834f7da70ef0b15f87dc0",
+  "publication_identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+  "files": [
+    "implementation/src/investment_system/product/web_assets/app.js",
+    "implementation/tools/web_state_presentation_browser_test.js"
+  ],
+  "status": "PRESENTATION_REPAIR_LOCAL_PASS_CI_COMPATIBILITY_REPAIR_REQUIRED",
+  "product_blocker_source_fixed": [
+    "PPA-F08"
+  ],
+  "canonical_product_closures": 0,
+  "python_tests_passed": 41,
+  "browser_checks_passed": 31,
+  "page_errors": [],
+  "browser_viewport": "390x844",
+  "locales": [
+    "ko-KR",
+    "en-US"
+  ],
+  "normal_controls": [
+    "finite zero",
+    "finite nonzero"
+  ],
+  "negative_controls": [
+    "omitted",
+    "null",
+    "unavailable code",
+    "numeric string"
+  ],
+  "real_data_validation": "NOT_RUN",
+  "code_contract_formula_threshold_workflow_changes": 0,
+  "source_evidence_sha256": "f2e80f1a48f090e28a4618dd3280922cf3bdf6a48a92f3bb10748e36169cde8c",
+  "source_verification_receipt": "ppa-f08/verification-receipt.json",
+  "ci": {
+    "exact_head": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+    "status": "TWO_SUCCESS_ONE_FAILURE",
+    "runs": [
+      {
+        "id": 37766480718,
+        "name": "web-state-presentation",
+        "conclusion": "success"
+      },
+      {
+        "id": 37766480693,
+        "name": "web-mvp-validation",
+        "conclusion": "success"
+      },
+      {
+        "id": 37766480805,
+        "name": "web-research-guard",
+        "conclusion": "failure",
+        "job": 113275278268,
+        "failed_step": "Render-time guard E2E",
+        "assertion": "existing line162 portfolio requires44.44%; line167 company same",
+        "fixture": "target_weight0.4444,noACTUAL",
+        "remaining": "restore separate labelled persistedTARGET presentation while ACTUAL remains NOT_AVAILABLE"
+      }
+    ]
+  },
+  "old_owner_branch_changed": false,
+  "merged": false,
+  "autonomy_mode": "READ_ONLY",
+  "product_blockers_fully_closed": [],
+  "repair_rounds": 1
+}

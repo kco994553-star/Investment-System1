@@ -1,33 +1,89 @@
 {
   "schema": "autonomy-runtime-state-v1",
-  "cycle_id": "main-directed-20261008-104213Z",
-  "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+  "cycle_id": null,
+  "holder": null,
   "branch": "integration/global-handoff-v1",
-  "started_at_epoch": 1791456133,
-  "lease_expires_at_epoch": 1791463333,
-  "tasks_used": 1,
+  "started_at_epoch": null,
+  "lease_expires_at_epoch": null,
+  "tasks_used": 0,
   "repair_rounds": {},
-  "status": "RUNNING_USER_DIRECTED_READ_ONLY",
-  "activation": "EXPLICIT_USER_NAMED_ACTIONS_WITH_MODE_READ_ONLY",
+  "status": "IDLE",
+  "activation": "NONE",
   "unattended_executor": false,
   "last_cycle": {
-    "cycle_id": "main-ca-phase-a-20261008T093552Z",
-    "authority": "CDR-033 under CDR-024/030/031",
-    "source_head": "8cabb2e93bbc8425592221456f44801e0f4ca413",
-    "source_tree": "7db0d8c91a453ed3d61cb1c6b32af46bdc1fb7f5",
-    "global_publication_parent": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+    "cycle_id": "main-directed-20261008-104213Z",
+    "checkpoint": 1,
+    "authority": "CDR-035 named user actions with CDR-036 FPIA override; same directive continues into later observed cycles",
+    "global_publication_parent": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
     "tasks_used": 5,
     "tasks_max": 5,
-    "repair_rounds": 1,
-    "end_reason": "TASK_CAP; INACTIVE_PHASE_A_CANDIDATE_PUBLISHED; PRODUCTION_SOURCE_LANES_WAIT_DEPENDENCY",
+    "task_ledger": {
+      "1": "Own bounded coordination/lane claim consumed at ab9e8863d2e2d2d03a5d1f9b2e6d3bd086d9d7ef",
+      "2": "Externally user-merged PR51 exact guard SUCCESS and canonical c109 consumed; session did not merge",
+      "3": "HG02 refusal evidence and HG03 bounded capability/guard proof consumed; incomplete matrix/E2E remain explicit",
+      "4": "PPA-F08 minimal presentation successor published as draft PR63; local verification passed; native presentation/MVP SUCCESS, research guard FAILURE; compatibility repair/integration pending",
+      "5": "Containing checkpoint publication target releases only matching own lease; remote byte/control readback required"
+    },
+    "repair_rounds": {},
+    "end_reason": "TASK_CAP_CHECKPOINT_CONTINUE_UNDER_SAME_DIRECTIVE",
     "end_mode": "READ_ONLY",
+    "mode_changed": false,
     "unattended_enabled": false,
     "source_admissions": 0,
     "production_gates_closed": 0,
-    "remaining_production_gates": 6,
+    "canonical_product_closures": 0,
     "main_D3_A_executed": 0,
-    "recorded_at_utc": "2026-10-08T10:16:33Z",
-    "receipt": "implementation/docs/coordination/evidence/main_company_analysis_cycle_2026-10-08/FINAL_RECEIPT.json"
+    "remaining_production_gates": 6,
+    "PPA_F08": {
+      "status": "VERIFIED_LOCAL_PRESENTATION_FIX_CI_BLOCKED_PENDING_COMPATIBILITY_REPAIR_AND_INTEGRATION",
+      "pr": 63,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/63",
+      "branch": "fix/ppa-f08-actual-availability-20261008",
+      "source_head": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+      "local_head": "5c844f1ab3fab32e0556ce3f1a0638a9a7f481c8",
+      "source_tree": "cd0dbe37c55e7d02a8d834f7da70ef0b15f87dc0",
+      "source_parent": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+      "python_checks": 41,
+      "browser_checks": 31,
+      "screenshots": "ko-KR/en-US company and portfolio at 390x844",
+      "negative_control": "GENUINE_RED_REPRODUCED_BEFORE_FIX",
+      "ci_status": "BLOCKED_EXISTING_COMPATIBILITY_REGRESSION",
+      "ci_runs": [
+        37766480805,
+        37766480693,
+        37766480718
+      ],
+      "product_blocker_source_fixed": [
+        "PPA-F08"
+      ],
+      "final_product_blockers_closed": 0,
+      "canonical_product_closures": 0,
+      "source_admission": false,
+      "merged": false,
+      "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/PPA_F08_PUBLICATION.json",
+      "ci_results": {
+        "presentation_37766480718": "SUCCESS",
+        "mvp_37766480693": "SUCCESS",
+        "research_guard_37766480805": "FAILURE"
+      },
+      "ci_failure": "job113275278268 step10 Render-time guard E2E: existing lines162/167 expect target-only44.44% while actual_weight is absent; bounded compatibility repair pending"
+    },
+    "hard_guards": {
+      "HG01": "VERIFIED",
+      "HG02": "PARTIAL_VERIFIED",
+      "HG03": "PARTIAL_VERIFIED",
+      "unattended": "DISABLED"
+    },
+    "gate_a": "CLOSED",
+    "freeze_active": true,
+    "next_ready": [
+      "PPA-F08-EXISTING-CI-COMPATIBILITY-REPAIR",
+      "TARGET-DECISION-DRAFT-PACKAGE",
+      "FPIA-RECORDED-DEFECT-INVENTORY"
+    ],
+    "recorded_at_utc": "2026-10-08T10:59:36Z",
+    "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/CHECKPOINT_1.json"
   },
   "cycle_history": [
     {
@@ -102,6 +158,100 @@
       ],
       "recorded_at_utc": "2026-10-07T11:09:49.723867+00:00",
       "receipt": "implementation/docs/coordination/evidence/main_single_control_cycle_2026-10-07/FINAL_RECEIPT.json"
+    },
+    {
+      "cycle_id": "main-ca-phase-a-20261008T093552Z",
+      "authority": "CDR-033 under CDR-024/030/031",
+      "source_head": "8cabb2e93bbc8425592221456f44801e0f4ca413",
+      "source_tree": "7db0d8c91a453ed3d61cb1c6b32af46bdc1fb7f5",
+      "global_publication_parent": "84f2dd99e44e6c5e25b59391fdf44254e4d8be30",
+      "tasks_used": 5,
+      "tasks_max": 5,
+      "repair_rounds": 1,
+      "end_reason": "TASK_CAP; INACTIVE_PHASE_A_CANDIDATE_PUBLISHED; PRODUCTION_SOURCE_LANES_WAIT_DEPENDENCY",
+      "end_mode": "READ_ONLY",
+      "unattended_enabled": false,
+      "source_admissions": 0,
+      "production_gates_closed": 0,
+      "remaining_production_gates": 6,
+      "main_D3_A_executed": 0,
+      "recorded_at_utc": "2026-10-08T10:16:33Z",
+      "receipt": "implementation/docs/coordination/evidence/main_company_analysis_cycle_2026-10-08/FINAL_RECEIPT.json"
+    },
+    {
+      "cycle_id": "main-directed-20261008-104213Z",
+      "checkpoint": 1,
+      "authority": "CDR-035 named user actions with CDR-036 FPIA override; same directive continues into later observed cycles",
+      "global_publication_parent": "71a19b66ec8a7bdc0b21e5543d558ef22d7631f4",
+      "tasks_used": 5,
+      "tasks_max": 5,
+      "task_ledger": {
+        "1": "Own bounded coordination/lane claim consumed at ab9e8863d2e2d2d03a5d1f9b2e6d3bd086d9d7ef",
+        "2": "Externally user-merged PR51 exact guard SUCCESS and canonical c109 consumed; session did not merge",
+        "3": "HG02 refusal evidence and HG03 bounded capability/guard proof consumed; incomplete matrix/E2E remain explicit",
+        "4": "PPA-F08 minimal presentation successor published as draft PR63; local verification passed; native presentation/MVP SUCCESS, research guard FAILURE; compatibility repair/integration pending",
+        "5": "Containing checkpoint publication target releases only matching own lease; remote byte/control readback required"
+      },
+      "repair_rounds": {},
+      "end_reason": "TASK_CAP_CHECKPOINT_CONTINUE_UNDER_SAME_DIRECTIVE",
+      "end_mode": "READ_ONLY",
+      "mode_changed": false,
+      "unattended_enabled": false,
+      "source_admissions": 0,
+      "production_gates_closed": 0,
+      "canonical_product_closures": 0,
+      "main_D3_A_executed": 0,
+      "remaining_production_gates": 6,
+      "PPA_F08": {
+        "status": "VERIFIED_LOCAL_PRESENTATION_FIX_CI_BLOCKED_PENDING_COMPATIBILITY_REPAIR_AND_INTEGRATION",
+        "pr": 63,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/63",
+        "branch": "fix/ppa-f08-actual-availability-20261008",
+        "source_head": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+        "local_head": "5c844f1ab3fab32e0556ce3f1a0638a9a7f481c8",
+        "source_tree": "cd0dbe37c55e7d02a8d834f7da70ef0b15f87dc0",
+        "source_parent": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+        "python_checks": 41,
+        "browser_checks": 31,
+        "screenshots": "ko-KR/en-US company and portfolio at 390x844",
+        "negative_control": "GENUINE_RED_REPRODUCED_BEFORE_FIX",
+        "ci_status": "BLOCKED_EXISTING_COMPATIBILITY_REGRESSION",
+        "ci_runs": [
+          37766480805,
+          37766480693,
+          37766480718
+        ],
+        "product_blocker_source_fixed": [
+          "PPA-F08"
+        ],
+        "final_product_blockers_closed": 0,
+        "canonical_product_closures": 0,
+        "source_admission": false,
+        "merged": false,
+        "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/PPA_F08_PUBLICATION.json",
+        "ci_results": {
+          "presentation_37766480718": "SUCCESS",
+          "mvp_37766480693": "SUCCESS",
+          "research_guard_37766480805": "FAILURE"
+        },
+        "ci_failure": "job113275278268 step10 Render-time guard E2E: existing lines162/167 expect target-only44.44% while actual_weight is absent; bounded compatibility repair pending"
+      },
+      "hard_guards": {
+        "HG01": "VERIFIED",
+        "HG02": "PARTIAL_VERIFIED",
+        "HG03": "PARTIAL_VERIFIED",
+        "unattended": "DISABLED"
+      },
+      "gate_a": "CLOSED",
+      "freeze_active": true,
+      "next_ready": [
+        "PPA-F08-EXISTING-CI-COMPATIBILITY-REPAIR",
+        "TARGET-DECISION-DRAFT-PACKAGE",
+        "FPIA-RECORDED-DEFECT-INVENTORY"
+      ],
+      "recorded_at_utc": "2026-10-08T10:59:36Z",
+      "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/CHECKPOINT_1.json"
     }
   ]
 }

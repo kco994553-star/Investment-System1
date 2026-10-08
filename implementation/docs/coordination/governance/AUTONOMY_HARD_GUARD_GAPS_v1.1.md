@@ -1,3 +1,15 @@
+## Current Gate A override · CDR-037 checkpoint 1 · 2026-10-08T10:59:36Z
+
+Current evidence supersedes earlier HG-02 VERIFIED labels below; the PR #62 correction and prior proof remain historical and are preserved verbatim. Fresh Global input is `71a19b66ec8a7bdc0b21e5543d558ef22d7631f4`. HG-01 is VERIFIED; HG-02 is PARTIAL_VERIFIED; HG-03 is PARTIAL_VERIFIED. Gate A remains **CLOSED**, automation expansion remains frozen and AUTONOMY_MODE remains READ_ONLY.
+
+PR #51 was merged externally by `kco994553-star` at 2026-10-08T10:41:37Z into canonical `c109c81a3e417e5f61fd26b67b171fb13628dc21`; this session consumed the result and did not perform that merge. Exact source `de84abf11df64041f666628493b8ae54f2e6df4a` retains successful repository-guard run `37303986881`, job `111743115747`.
+
+HG-02: canonical normal push, canary normal push and genuine non-fast-forward canary force-with-lease were DENIED_BY_BRANCH_RULES with unchanged ref readback. Canary deletion is NO_CALLABLE_AUTHENTICATED_DELETE_REF. The observed Codex connector login is `kco994553-star`; App versus personal-token credential kind is unconfirmed, and Claude authentication is unavailable. The full executor identity/refusal matrix is incomplete. Canonical force/delete was not attempted. Active ruleset `24499602`, empty bypass, now applies to canonical and `hg02-canary` following the external target update at 2026-10-08T10:44:36Z; this session made no ruleset change and no §26E target-addition request is needed. [HG-02 receipt](../evidence/main_directed_execution_2026-10-08/HG02_RECEIPT.json).
+
+HG-03 actual Watcher → dedicated Work → lease → commit → handoff E2E is WAIT_PRODUCT_RUNTIME_CAPABILITY. Watcher is enabled, dedicated executor remains disabled, and no official existing Work wake/start capability is available. Seven isolated controller/executor checks and the PAUSE guard fixture PASS are bounded repository proof; actual product PAUSE wake/silence is NOT_RUN. [Capability and bounded proof](../evidence/main_directed_execution_2026-10-08/GATE_A_E2E.json). Promotion requires authenticated canary deletion rejection and complete actor refusal evidence for HG-02, plus permitted correlated product-runtime E2E and actual PAUSE evidence for HG-03. PPA-F08 is locally verified in draft PR #63; exact CI is 2 SUCCESS / research guard1FAILURE on existing target-only weight expectations, so compatibility repair/integration remain pending; no final production blocker closure or freeze release is inferred.
+
+---
+
 # AUTONOMY HARD-GUARD GAP REGISTER · v1.1
 
 Status: ACTIVE / INITIAL BASELINE

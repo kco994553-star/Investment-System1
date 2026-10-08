@@ -1,0 +1,178 @@
+{
+  "kind": "PPA_F08_BOUNDED_PRESENTATION_REPAIR_V1",
+  "recorded_at_utc": "2026-10-08T10:48:44.577176+00:00",
+  "authority": {
+    "claim_global_sha": "ab9e8863d2e2d2d03a5d1f9b2e6d3bd086d9d7ef",
+    "decision": "CDR-035 direct user observed bounded session",
+    "lease": "main-directed-20261008-104213Z",
+    "mode": "READ_ONLY",
+    "mode_grant_changed": false
+  },
+  "source": {
+    "repo": "kco994553-star/Investment-System1",
+    "pr": 36,
+    "base_sha": "fb086eac4321140493ce554a541343cebbb81ed6",
+    "branch": "fix/ppa-f08-actual-availability-20261008",
+    "head_sha": "5c844f1ab3fab32e0556ce3f1a0638a9a7f481c8",
+    "tree_sha": "cd0dbe37c55e7d02a8d834f7da70ef0b15f87dc0",
+    "commit_parent": "fb086eac4321140493ce554a541343cebbb81ed6",
+    "worktree_clean": true,
+    "write_set": [
+      {
+        "path": "implementation/src/investment_system/product/web_assets/app.js",
+        "git_blob": "983f5cdc0f5f67af079da3cc3687d6adc03c4f60",
+        "sha256": "9e865d2005bddfc06daeab28e64c919074933c599ba6a3464a037ce6b933308b"
+      },
+      {
+        "path": "implementation/tools/web_state_presentation_browser_test.js",
+        "git_blob": "fe37aafe4f8a892c8c29ab1d44dc0a1913e6bef1",
+        "sha256": "1178bb8272aa20d336d98629f0da39b486d2a892cab77e01e8263f8f0e1fc39a"
+      }
+    ]
+  },
+  "behavior": {
+    "unavailable_actual": "NOT_AVAILABLE literal",
+    "eligibility": "Number.isFinite at presentation sinks only",
+    "portfolio_label": "ACTUAL always",
+    "finite_actual": "existing pct unchanged, including zero",
+    "target": "never substituted; persisted bundle and Evidence retained",
+    "contracts_formulas_workflows": "unchanged"
+  },
+  "negative_control": {
+    "result": "EXPECTED_FAILURE",
+    "exit_code": 1,
+    "base_app_sha256": "9774bee4b51b34ed68ce0467b01dc13028306c8f46589bd3e3283b2778a209f2",
+    "base_app_hash_verified_before_fix_in_tool_output": true,
+    "log": "red.log",
+    "red_log_sha256": "cc16c6e6fbe743203c9377b2b33fd9e0ad36b08e23925005c5bd80fb4bf88b50",
+    "red_log_written_at_utc": "2026-10-08T10:44:06.044294+00:00",
+    "first_app_fix_written_at_utc": "2026-10-08T10:44:36.878876+00:00",
+    "expected": "Snapshot에 포함 · 비중 NOT_AVAILABLE",
+    "observed": "Snapshot에 포함 · 비중 34.56%",
+    "trigger": "ko-KR company; omitted actual_weight; target_weight=0.3456",
+    "test_harness_correction_after_red": "collapsed Evidence pre read with textContent instead of innerText; downstream of failing RED assertion",
+    "manifest_capture": "recorded after verification; original-app.js recovered from exact baseline git blob"
+  },
+  "validation": {
+    "pytest": {
+      "result": "PASS",
+      "count": 41,
+      "log": "pytest.log",
+      "command": "PYTHONPATH=src:/workspace/scratch/ppa-f08-tools python3 -m pytest -q -p no:cacheprovider tests/test_web_mvp.py tests/test_web_research_guard.py tests/test_web_state_presentation.py tests/test_global_language_search.py",
+      "cwd": "/workspace/ppa-f08/implementation"
+    },
+    "browser": {
+      "result": "PASS",
+      "count": 31,
+      "errors": [],
+      "log": "green-browser.log",
+      "json": "runner/browser-validation.json",
+      "command": "WEB_TEST_CHROMIUM_PATH=/usr/bin/chromium node implementation/tools/web_state_presentation_browser_test.js --dir /workspace/scratch/ppa-f08-evidence/state --evidence /workspace/scratch/ppa-f08-evidence/runner --demo-dir /workspace/scratch/ppa-f08-evidence/demo",
+      "cwd": "/workspace/ppa-f08",
+      "locales": [
+        "ko-KR",
+        "en-US"
+      ],
+      "ppa_f08_viewport": "390x844",
+      "ppa_f08_cases": [
+        "omitted",
+        "null",
+        "unavailable code",
+        "numeric string",
+        "zero",
+        "nonzero"
+      ],
+      "routes": [
+        "company",
+        "portfolio"
+      ],
+      "existing_assertions_removed": 0
+    },
+    "syntax": "node --check app.js and existing browser test: PASS",
+    "diff_check": "git diff --check: PASS",
+    "whole_repo_rerun": false,
+    "independent_review": "NO_ACTIONABLE_FINDINGS",
+    "existing_schema_variants": {
+      "result": "PASS",
+      "count": 6,
+      "validator_unchanged": true,
+      "evidence": "schema-variants.json",
+      "method": "Each exact browser test holding variant passes existing validate_bundle and deep-equals input."
+    }
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "pytest": "9.1.1",
+    "playwright": "1.62.1",
+    "node": "v24.19.0",
+    "chromium": "151.0.7922.173"
+  },
+  "limits": {
+    "scope": "TEST VECTORS / SOFTWARE PRESENTATION ONLY",
+    "real_data_validation": "NOT_RUN",
+    "publication_grants": "NONE",
+    "production_gates_closed": 0,
+    "remote_writes": false,
+    "ci_dispatch": false,
+    "canonical_merge": false,
+    "old_owner_branch_changed": false,
+    "old_owner_runtime_stopped": false
+  },
+  "evidence": [
+    {
+      "path": "red.log",
+      "size": 537,
+      "sha256": "cc16c6e6fbe743203c9377b2b33fd9e0ad36b08e23925005c5bd80fb4bf88b50"
+    },
+    {
+      "path": "green-browser.log",
+      "size": 3084,
+      "sha256": "be78bce15253c1082a5599d6799a811e1477a9fe5da2c9506e01e0b0d9342669"
+    },
+    {
+      "path": "pytest.log",
+      "size": 100,
+      "sha256": "cfaf534b7b3b291c9e567b5ca287001d3f51a443b403de9ce9fc79af1e5e1c4e"
+    },
+    {
+      "path": "independent-review.json",
+      "size": 516,
+      "sha256": "8a4fa19f2c10f2ca9e6bc7d5186c3c83866588b5052db9b4a59fc11b97fedd96"
+    },
+    {
+      "path": "original-app.js",
+      "size": 38098,
+      "sha256": "9774bee4b51b34ed68ce0467b01dc13028306c8f46589bd3e3283b2778a209f2"
+    },
+    {
+      "path": "runner/browser-validation.json",
+      "size": 3992,
+      "sha256": "fd11759de01dedb0441c1bcf701441bfc417e0c02ee0fa25e9166d4687d336cf"
+    },
+    {
+      "path": "runner/ppa-f08-company-en-US-390.png",
+      "size": 93589,
+      "sha256": "03761870734ceebf55849964ab1146c63f2063351237af004fd128e660f5ac70"
+    },
+    {
+      "path": "runner/ppa-f08-company-ko-KR-390.png",
+      "size": 85285,
+      "sha256": "284552525543dd872a132acf0f236954a235008bee2e0b21aff75889ceb7c4e8"
+    },
+    {
+      "path": "runner/ppa-f08-portfolio-en-US-390.png",
+      "size": 91294,
+      "sha256": "eaff1c5fd5e68474a416a8e0ef1355d20cc65a3c17609d44372cc603d65973b3"
+    },
+    {
+      "path": "runner/ppa-f08-portfolio-ko-KR-390.png",
+      "size": 82730,
+      "sha256": "bd7e757b50ca249160696e235cccb40579ca9d000e5a6d7769af15c2a84f41e8"
+    },
+    {
+      "path": "schema-variants.json",
+      "size": 239,
+      "sha256": "0e00b653a4c6736d9b9a733d6a07e752d5add89975466ab5734161ace88b20f7"
+    }
+  ]
+}

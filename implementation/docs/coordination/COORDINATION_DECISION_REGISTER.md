@@ -1730,3 +1730,32 @@ Publication uses fresh exact Global parent 84f2dd99e44e6c5e25b59391fdf44254e4d8b
 User directive (2026-10-08) is retained verbatim at [USER_DIRECTIVE.md](evidence/main_directed_execution_2026-10-08/USER_DIRECTIVE.md). User attests Active HG02 canonical Ruleset with empty bypass, deletion/non-fast-forward denial, PR0 approval and repository-guard required; PR51 merge is expressly authorized only for51. Automation expansion is frozen until GateA OPEN and>=1 product blocker closed; only already-merged55–60 bug fixes allowed. User explicitly orders named HG/51/PPA-F08/TARGET/FPIA actions and lane leases while production AUTONOMY_MODE stays READ_ONLY. Apply this direct observed instruction only to those named actions; do not manufacture an autonomous RUN, unattended/GateA or standing-mode grant. This current explicit user instruction takes precedence for its bounded named actions; §4A remains controlling for autonomous/Watcher activity and all other unrequested writes.
 
 Claims/plan: evidence/main_directed_execution_2026-10-08/. Five-task checkpoints continue to later observed cycles under this same prompt. No Ruleset/mode change, canonical merge other than51, Holdout/methodology/credential/financial/source authority/numeric permission. MissingData lease retained. Existing Web owner ref is preserved; explicit PPA-F08 successor claim uses app.js+existing browser runner only, negative reproduction then minimal ACTUAL availability presentation repair.
+
+
+## CDR-036 · 2026-10-08T10:59:36Z · User FPIA lane replacement / existing recorded defects only
+
+Latest explicit steering is preserved verbatim at [USER_FPIA_SCOPE_OVERRIDE.md](evidence/main_directed_execution_2026-10-08/USER_FPIA_SCOPE_OVERRIDE.md) and below. It supersedes only CDR035 section6 / B1–B4 discovery; other named actions, protections and READ_ONLY constraints remain unchanged.
+
+```text
+B1–B4 묶음은 찾지 말고 종료한다. 대신 FPIA lane을 다음으로 대체한다.
+- 새 감사나 새 반례 작성은 하지 않는다.
+- #42, #46, #47에 이미 기록된 결함(literal-source 거짓 PASS, AC-32 spoof 우회, #47 CI 실패 등)을
+  F1, F2…로 번호 붙여 목록화하고, 각 항목의 기존 재현 근거·현재 수정 상태·남은 작업만 정리한다.
+- 수정은 이 목록 범위로 한정한다. 완료 조건: 기존 반례 차단, 정상 사례 보존, 관련 회귀 통과.
+  같은 방식 3회 실패 시 재계획(9A).
+- 이 lane은 우선순위를 PPA-F08과 HG-02 다음으로 둔다.
+```
+
+This replacement does not authorize new audits/counterexamples or repairs outside the existing numbered inventory. PPA-F08 and HG-02 have priority over this lane. The same direct prompt continues across five-task checkpoints; no autonomous RUN/unattended/standing-mode grant is created.
+
+## CDR-037 · 2026-10-08T10:59:36Z · Directed checkpoint 1 receipt / own lease release / continue cycle 2
+
+Execution receipt only, no new authority. CDR035 named actions and CDR036 latest FPIA replacement remain the same observed user directive. Five tasks reach checkpoint 1; this is CHECKPOINT_CONTINUE, with existing PPA-F08 CI compatibility repair, TARGET draft package and existing #42/#46/#47 FPIA record inventory READY for cycle 2. The B1–B4 bundle search is terminated. No new FPIA audit or counterexample is authorized; repairs are confined to the numbered existing-defect inventory, with existing counterexamples blocked, normal cases preserved and relevant regressions passing; same-method third failure requires 9A replanning.
+
+PR #51 source `de84abf11df64041f666628493b8ae54f2e6df4a` exact repository-guard run37303986881/job111743115747 SUCCESS is reused. External user merge by `kco994553-star` at 2026-10-08T10:41:37Z advanced canonical to `c109c81a3e417e5f61fd26b67b171fb13628dc21`; this Main session consumed that merge and did not perform it.
+
+HG01 VERIFIED; HG02 PARTIAL_VERIFIED pending authenticated canary deletion and complete executor identity/refusal matrix; HG03 PARTIAL_VERIFIED / actual Watcher-to-Work E2E WAIT_PRODUCT_RUNTIME_CAPABILITY; actual PAUSE wake NOT_RUN, isolated fixture PASS only; Gate A CLOSED; automation expansion frozen; unattended executor disabled; AUTONOMY_MODE READ_ONLY. Canonical/canary normal pushes and genuine canary non-fast-forward force update were denied. Authenticated canary deletion is unavailable; actor credential type and Claude identity remain unverified. Ruleset24499602 Active/empty bypass includes canonical and canary following the user's external update; no ruleset update or target-addition request was made here. Actual product-runtime E2E and actual PAUSE wake remain unproved.
+
+PPA-F08 draft [PR #63](https://github.com/kco994553-star/Investment-System1/pull/63) source `c6e00273b212a8d2c134909ec6ed803f8a43fb46` / tree `cd0dbe37c55e7d02a8d834f7da70ef0b15f87dc0` is VERIFIED_LOCAL_PRESENTATION_FIX_CI_BLOCKED_PENDING_COMPATIBILITY_REPAIR_AND_INTEGRATION. Genuine RED, 41 Python and31 browser checks pass; ko/en company/portfolio390 screenshots and finite zero/nonzero normal controls are retained. Local/API trees are identical. Exact native CI presentation37766480718 and MVP37766480693 SUCCESS; research guard37766480805/job113275278268 step10 FAILURE on existing line162/167 target-only44.44% expectations. This compatibility regression blocks completion; the next bounded cycle will show separately labelled persisted TARGET/Model weight beside ACTUAL NOT_AVAILABLE in the same claimed files, preserving the no-fallback boundary. Presentation source fix1; final product/canonical production closures0, source admission0, Chart6OPEN/Market0of19. Existing Web owner ref, all other owner/history scopes and MissingData lease `qgv-b47-muupb538` are preserved. Automation expansion freeze remains active.
+
+Containing Global publication from `71a19b66ec8a7bdc0b21e5543d558ef22d7631f4` targets only matching own lease `main-directed-20261008-104213Z` release, Mainlease null and runtimeIDLE; AUTONOMY_MODE remains READ_ONLY throughout. Final identity resolves from the containing commit; remote exact-byte/control readback is required after non-force publication. The checkpoint does not finish the user's directed work or require a new directive for the next bounded cycle. [Checkpoint](evidence/main_directed_execution_2026-10-08/CHECKPOINT_1.json) · [HG02](evidence/main_directed_execution_2026-10-08/HG02_RECEIPT.json) · [HG03 E2E](evidence/main_directed_execution_2026-10-08/GATE_A_E2E.json) · [PPA publication](evidence/main_directed_execution_2026-10-08/PPA_F08_PUBLICATION.json) · [FPIA override](evidence/main_directed_execution_2026-10-08/USER_FPIA_SCOPE_OVERRIDE.md).

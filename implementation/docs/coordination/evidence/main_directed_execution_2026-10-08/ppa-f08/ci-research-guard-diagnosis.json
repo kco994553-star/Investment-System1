@@ -1,0 +1,72 @@
+{
+  "kind": "PPA_F08_EXISTING_RESEARCH_GUARD_CI_DIAGNOSIS",
+  "recorded_at_utc": "2026-10-08T11:00:32.213817+00:00",
+  "remote_head": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+  "local_identical_tree_head": "5c844f1ab3fab32e0556ce3f1a0638a9a7f481c8",
+  "tree": "cd0dbe37c55e7d02a8d834f7da70ef0b15f87dc0",
+  "ci": {
+    "run_id": 37766480805,
+    "job_id": 113275278268,
+    "step": 10,
+    "step_name": "Render-time guard E2E (ko/en, withheld vs rendered sections)",
+    "conclusion": "failure",
+    "assertion_file": "implementation/tools/web_research_guard_browser_test.js",
+    "assertion_line": 162,
+    "assertion": "assert.ok((await page.locator(\"main\").textContent()).includes(\"44.44%\"))",
+    "second_existing_assertion_line": 167
+  },
+  "root_cause": {
+    "fixture_file": "implementation/tools/build_web_research_guard_fixture.py",
+    "fixture_line": 94,
+    "holding": {
+      "company_id": "nvda",
+      "ticker": "NVDA",
+      "target_weight": 0.4444
+    },
+    "actual_weight": "omitted",
+    "classification": "PPA_PRESENTATION_COMPATIBILITY_REGRESSION_AGAINST_LEGACY_TARGET_POSITIVE_CONTROL",
+    "explanation": "The primary ACTUAL view correctly displays NOT_AVAILABLE, but the patch removed the only formatted TARGET view the existing guard positive control expects. Guard withholding itself passed."
+  },
+  "local_differential": {
+    "same_unchanged_existing_runner": true,
+    "same_fixture_bytes": true,
+    "current_app": "FAIL same assertion line162",
+    "exact_PR36_baseline_app": "PASS10/10, errors[]",
+    "new_countercases": false
+  },
+  "proposed_repair": {
+    "authorized_scope": [
+      "implementation/src/investment_system/product/web_assets/app.js",
+      "implementation/tools/web_state_presentation_browser_test.js"
+    ],
+    "status": "WAIT_CYCLE2_CLAIM_BEFORE_SOURCE_MUTATION",
+    "implementation": "Keep ACTUAL text exact. Add separate finite TARGET nodes labelled TARGET + existing localized Model weight, after company primary paragraph and in portfolio element without .muted. Pin separation using existing six PPA cases.",
+    "contracts_formulas_workflows": "unchanged",
+    "target_into_actual": "forbidden"
+  },
+  "independent_review": "No semantic concerns; keep TARGET outside ACTUAL .muted selector; guarded D only.",
+  "source_mutations": false,
+  "remote_mutations": false,
+  "evidence": [
+    {
+      "path": "ci-research-guard-37766480805.log",
+      "sha256": "e0e7578e44335388b09a108326a24e3c53145ea41b3f7d374e84f2fb03e5fd64",
+      "bytes": 51545
+    },
+    {
+      "path": "ci-research-guard-37766480805-jobs.json",
+      "sha256": "c7864d95f46d8d804b81bc22e5e4760c6a1fe79ecc53ff0170c43d7b87826fb2",
+      "bytes": 2778
+    },
+    {
+      "path": "guard-current.log",
+      "sha256": "a2c070b120b5b17e3f6f443f5675bb2abc2c953cc2d720abdb6fd10899e3f7ed",
+      "bytes": 680
+    },
+    {
+      "path": "guard-baseline.log",
+      "sha256": "3f54fe7aedfef3d2d2e410d27fb5861ce053644f56561b25d3e8b69b4a912581",
+      "bytes": 871
+    }
+  ]
+}

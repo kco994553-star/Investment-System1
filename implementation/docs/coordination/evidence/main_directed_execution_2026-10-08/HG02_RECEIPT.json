@@ -1,0 +1,108 @@
+{
+  "kind": "HG02_BOUNDED_BEHAVIOR_RECEIPT_V1",
+  "recorded_at_utc": "2026-10-08T10:58:00Z",
+  "ruleset_id": 24499602,
+  "ruleset_mutated_by_this_session": false,
+  "ruleset_target_observed": [
+    "refs/heads/claude/investment-system-top500-validation-alrugm",
+    "refs/heads/hg02-canary"
+  ],
+  "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "identity": {
+    "executor": "Codex connected GitHub API",
+    "authenticated_login": "kco994553-star",
+    "credential_kind": "UNCONFIRMED_APP_VS_PERSONAL_TOKEN",
+    "installed_app_is_not_proof_of_mutation_token_kind": true,
+    "claude_auth_path": "NOT_ACCESSIBLE_NO_CREDENTIALS_REQUESTED"
+  },
+  "preconditions": {
+    "canary_created_at_canonical": true,
+    "canonical_and_canary_applied_rules": "four matching types and parameters from ruleset24499602",
+    "force_probe_is_non_fast_forward": true
+  },
+  "actions": [
+    {
+      "operation": "canonical direct fast-forward marker push",
+      "branch": "claude/investment-system-top500-validation-alrugm",
+      "before": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "target": "25afdda065cb947ca64484f1507e151d788c2f6f",
+      "result": "DENIED_BY_BRANCH_RULES",
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/claude/investment-system-top500-validation-alrugm\\' is protected: Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]"
+          }
+        ],
+        "structuredContent": {
+          "error": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/claude/investment-system-top500-validation-alrugm\\' is protected: Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]",
+          "error_code": "UNKNOWN"
+        },
+        "isError": true
+      },
+      "readback": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
+    },
+    {
+      "operation": "canary direct fast-forward marker push",
+      "branch": "hg02-canary",
+      "before": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "target": "25afdda065cb947ca64484f1507e151d788c2f6f",
+      "result": "DENIED_BY_BRANCH_RULES",
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/hg02-canary\\' is protected: Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]"
+          }
+        ],
+        "structuredContent": {
+          "error": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/hg02-canary\\' is protected: Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]",
+          "error_code": "UNKNOWN"
+        },
+        "isError": true
+      },
+      "readback": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
+    },
+    {
+      "operation": "canary genuine non-fast-forward force-with-lease update",
+      "branch": "hg02-canary",
+      "before": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "target": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "result": "DENIED_BY_BRANCH_RULES",
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/hg02-canary\\' is protected: Cannot force-push to this branch Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]"
+          }
+        ],
+        "structuredContent": {
+          "error": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/hg02-canary\\' is protected: Cannot force-push to this branch Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]",
+          "error_code": "UNKNOWN"
+        },
+        "isError": true
+      },
+      "readback": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
+    }
+  ],
+  "unexecuted": [
+    {
+      "operation": "canary branch deletion",
+      "result": "NOT_RUN_CAPABILITY_DEPENDENCY",
+      "reason": "No authenticated delete-ref callable exists in the enabled GitHub connector; anonymous HTTP denial cannot demonstrate branch-rule enforcement."
+    },
+    {
+      "operation": "same matrix under every other actual executor identity",
+      "result": "WAIT_EXECUTOR_IDENTITY_EVIDENCE"
+    }
+  ],
+  "canonical_force_or_delete_attempted": false,
+  "accepted_forbidden_actions": 0,
+  "canonical_unchanged_after_each_probe": true,
+  "verdict": "PARTIAL_VERIFIED",
+  "target_addition_request": "NOT_NEEDED_USER_ALREADY_ADDED_CANARY_EXTERNALLY",
+  "completion": "Authenticated canary deletion rejection plus complete actual executor identities and the same refusal matrix; do not claim authentication failure as rules denial",
+  "freeze_active": true,
+  "gate_a": "CLOSED",
+  "autonomy_mode": "READ_ONLY"
+}

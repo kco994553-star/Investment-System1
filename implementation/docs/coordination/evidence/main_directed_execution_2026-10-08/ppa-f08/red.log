@@ -1,0 +1,10 @@
+AssertionError [ERR_ASSERTION]: ko-KR company omitted: missing ACTUAL must not display TARGET 34.56%
++ actual - expected
+
++ 'Snapshot에 포함 · 비중 34.56%'
+- 'Snapshot에 포함 · 비중 NOT_AVAILABLE'
+                     ^
+
+    at /workspace/ppa-f08/implementation/tools/web_state_presentation_browser_test.js:133:20
+    at async check (/workspace/ppa-f08/implementation/tools/web_state_presentation_browser_test.js:75:36)
+    at async main (/workspace/ppa-f08/implementation/tools/web_state_presentation_browser_test.js:109:7)

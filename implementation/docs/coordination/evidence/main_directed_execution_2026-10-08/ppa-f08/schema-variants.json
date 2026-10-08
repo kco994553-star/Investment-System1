@@ -1,0 +1,14 @@
+{
+  "kind": "PPA_F08_EXISTING_SCHEMA_VARIANT_VALIDATION",
+  "passed": true,
+  "validator_changed": false,
+  "count": 6,
+  "checks": [
+    "omitted",
+    "null",
+    "unavailable code",
+    "numeric string",
+    "zero",
+    "nonzero"
+  ]
+}

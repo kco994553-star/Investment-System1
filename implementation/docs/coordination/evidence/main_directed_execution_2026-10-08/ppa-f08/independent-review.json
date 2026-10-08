@@ -1,0 +1,10 @@
+{
+  "kind": "PPA_F08_INDEPENDENT_REVIEW_V1",
+  "reviewer": "/root/ppa_f08/final_review",
+  "base_sha": "fb086eac4321140493ce554a541343cebbb81ed6",
+  "head_sha": "5c844f1ab3fab32e0556ce3f1a0638a9a7f481c8",
+  "result": "NO_ACTIONABLE_FINDINGS",
+  "tests_rerun": false,
+  "findings": [],
+  "evidence_note": "RED output was captured before implementation, with pre-fix exact app hash verified in tool output. RED log itself has no contemporaneous invocation/hash header; this manifest is recorded after verification."
+}

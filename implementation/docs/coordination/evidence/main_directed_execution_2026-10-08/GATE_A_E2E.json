@@ -1,0 +1,183 @@
+{
+  "schema": "gate-a-hg03-capability-inspection-v1",
+  "observed_at_utc": "2026-10-08 10:47:35 UTC",
+  "classification": "HG03_PARTIAL_VERIFIED / ACTUAL_E2E_WAIT",
+  "scope": "Read-only product-capability and source inspection; isolated existing controller/executor guard tests; no production wake, mode/config mutation, CI dispatch, repository publication or writer start.",
+  "source_pins": [
+    {
+      "path": "implementation/docs/coordination/governance/AUTONOMY_MODE",
+      "global_commit": "ab9e8863d2e2d2d03a5d1f9b2e6d3bd086d9d7ef",
+      "git_blob": "5594ca31aac358f54b584bbbd853c689a90b1417",
+      "sha256": "d684fd42626fd6c094ea0d7422b68048f109b8645af61ab7b7ebb49c0135fa34",
+      "local_matches_global_source": true
+    },
+    {
+      "path": "implementation/docs/coordination/governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md",
+      "global_commit": "ab9e8863d2e2d2d03a5d1f9b2e6d3bd086d9d7ef",
+      "git_blob": "5fefe575c7977c5fa2864e5a8efecc35b0cdee1b",
+      "sha256": "ecd7a37495e8975da30485ed2102ebe33224b623f7b6a722bfbc47bbb5a3faaf",
+      "local_matches_global_source": true
+    },
+    {
+      "path": "implementation/docs/coordination/governance/evidence/HG03_RUNTIME_WAKE_E2E_2026-10-05.md",
+      "global_commit": "ab9e8863d2e2d2d03a5d1f9b2e6d3bd086d9d7ef",
+      "git_blob": "3150695f681483710728b363fd89f744fa20a9f2",
+      "sha256": "4601133e6e7c7ddf5e2589f7d05e8ae0519c8c334806278c45e9bc6f9e783d41",
+      "local_matches_global_source": true
+    },
+    {
+      "path": "implementation/tools/free_cloud_controller.py",
+      "global_commit": "ab9e8863d2e2d2d03a5d1f9b2e6d3bd086d9d7ef",
+      "git_blob": "6ec6799f8f97777a5fd7b2e386cc9def8552dab0",
+      "sha256": "dbbc28d87060784e2a95af3245824781e8be32f01ca65d7c4707304ec84f5fe1",
+      "local_matches_global_source": true
+    },
+    {
+      "path": "implementation/tools/autonomy_executor_gate.py",
+      "global_commit": "ab9e8863d2e2d2d03a5d1f9b2e6d3bd086d9d7ef",
+      "git_blob": "6426f6c75917f7c6a83550f19ea107812e63b55e",
+      "sha256": "bf6c8e92f60c7f43f2d06498e9d1c3ec4dc0094ebd2bc4b9b2463600a97fe446",
+      "local_matches_global_source": true
+    },
+    {
+      "path": "implementation/tests/test_autonomy_executor_gate.py",
+      "global_commit": "ab9e8863d2e2d2d03a5d1f9b2e6d3bd086d9d7ef",
+      "git_blob": "eb1d3a36b5ce26f9ab7477c538892e97c470061f",
+      "sha256": "b2874624e9accdf1f780c5b406d75f3e21ac9251cee0a76cb595b4e03fc655f7",
+      "local_matches_global_source": true
+    },
+    {
+      "path": "implementation/tests/test_free_cloud_controller.py",
+      "global_commit": "ab9e8863d2e2d2d03a5d1f9b2e6d3bd086d9d7ef",
+      "git_blob": "5655f7d80399774c6361fc1fc50f8dfd80a1dc73",
+      "sha256": "694238adfcb979e6c9c6f39e00175dac177ff85139e375677482ad80a6ee7511",
+      "local_matches_global_source": true
+    }
+  ],
+  "checkout_head": "8ac28b62d86bc9697d607338b4af8d9a8fdc9021",
+  "production": {
+    "autonomy_mode": "READ_ONLY",
+    "gate_a": "CLOSED",
+    "hg01": "VERIFIED",
+    "hg02": "VERIFIED",
+    "hg03": "PARTIAL_VERIFIED",
+    "mode_unchanged_by_this_inspection": true
+  },
+  "tool_inventory": {
+    "inspected_tool_count": 839,
+    "search_basis": "Tool names and complete descriptions inspected for automation immediate-run and target Work/conversation wake/start/receipt capabilities.",
+    "relevant_tools": [
+      "mcp__codex_apps__automations_create",
+      "mcp__codex_apps__automations_list",
+      "mcp__codex_apps__automations_peek",
+      "mcp__codex_apps__automations_run_now",
+      "mcp__codex_apps__automations_update",
+      "mcp__codex_apps__chatgpt_space_create_controller_automation",
+      "mcp__codex_apps__chatgpt_space_run_page_auto_update",
+      "mcp__codex_apps__chatgpt_space_set_page_auto_update"
+    ],
+    "actual_read_call": "mcp__codex_apps__automations_peek({})",
+    "peek_result": "Found 22 automations; selected Main watcher and dedicated executor only.",
+    "run_now_contract": "Run an existing enabled task automation once now by jawbone_id, using its saved prompt and delivery settings without changing its schedule. Use only when the user asks for an immediate run. Look up the task with peek if its ID is unknown. Supports ordinary cloud-scheduled tasks. Success confirms the run was requested, not that execution or delivery has completed.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__codex_apps__automations_run_now(args: { jawbone_id: string; }): Promise<CallToolResult>; };\n```",
+    "run_now_called": false,
+    "supported_existing_work_wake_bridge_found": false,
+    "target_work_start_or_conversation_receipt_read_tool_found": false,
+    "excluded_routes": [
+      "Disabled executor activation requires forbidden automation change and Gate A OPEN.",
+      "Watcher run_now only requests its saved read-only prompt; does not establish executor wake/lease/commit/handoff.",
+      "Page controller creation/activation expands controllers and does not target the existing Main Work.",
+      "Manual active Main execution and Actions FREE_CLOUD_STATUS writer are not product Watcher-to-Work E2E."
+    ]
+  },
+  "observed_saved_automation_configuration": [
+    {
+      "id": "6ac329b131888191848558ca33c73811",
+      "title": "Main 통합 · 전체 변경 감시",
+      "is_enabled": true,
+      "conversation_id": "6ac36eff-c97c-83e8-9b90-3b7c898aeb5c",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T092000Z\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "last_run_time": "2026-10-08T09:30:46.993698+00:00",
+      "updated_at": "2026-10-08T09:31:08.567739+00:00",
+      "authoritative_saved_prompt_excerpts": [
+        "이 예약은 executor/Primary Writer가 아니다.",
+        "Gate A와 실제 wake bridge가 검증되지 않으면 executor를 호출하지 않는다.",
+        "run_now나 예약 생성·활성화로 이 경계를 우회하지 않는다.",
+        "PAUSE이면 신호 없이 종료한다.",
+        "확인된 비-SSoT 공식 Wake 채널이 있을 때만 해당 계약으로 전달하며, 채널이 없으면 이 예약 응답에 'Main에서 최신 SSoT와 이 변경을 재판정하라'라고 표시한다.",
+        "응답 출력이 Main으로 전달되거나 executor가 재개됐다고 주장하지 않는다."
+      ]
+    },
+    {
+      "id": "6ac3299d5f708191a81a83bc0b967ee6",
+      "title": "Main 통합 · 전용 Executor",
+      "is_enabled": false,
+      "conversation_id": "6ac35a70-64bc-83ee-8369-1e0d6836b70a",
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "last_run_time": "2026-10-05T10:53:49.378016+00:00",
+      "updated_at": "2026-10-06T10:10:42.770963+00:00",
+      "authoritative_saved_prompt_excerpts": [
+        "This task is an executor entrypoint, not a watcher; it must only be enabled after Gate A is OPEN. While disabled it performs nothing.",
+        "AUTONOMY_MODE must be RUN; PAUSE or READ_ONLY means exit without mutation."
+      ]
+    }
+  ],
+  "actual_e2e": {
+    "executed": false,
+    "stage_receipts": {
+      "watcher_material_signal": null,
+      "target_work_wake": null,
+      "lease_acquisition": null,
+      "commit": null,
+      "handoff": null
+    },
+    "last_run_metadata_is_not_execution_or_delivery_receipt": true,
+    "actual_pause_no_signal_test_executed": false,
+    "actual_pause_no_signal_receipt": null,
+    "reason": "No supported existing Watcher-to-dedicated-Work bridge with correlated execution receipts is exposed. Existing executor is disabled, Gate A is CLOSED, production mode READ_ONLY; activation/mode changes are prohibited by the current directive.",
+    "dependency": "Product runtime must expose a supported wake/test channel for the existing dedicated Main Work that can operate under the current no-mode-change/no-automation-expansion constraints and return correlated signal, Work execution, lease, commit and handoff receipts. It must also permit an isolated PAUSE case with an observable zero-signal result.",
+    "resume_conditions": [
+      "Supported product wake/test contract is documented and callable for existing Main Work.",
+      "A permitted isolated E2E context can be used without enabling unattended production or changing the saved automation/controller/trigger/write scope.",
+      "Fresh authority/gate/mode/lease admission permits the run; only actual correlated receipts can advance HG03."
+    ]
+  },
+  "isolated_verification": {
+    "classification": "ISOLATED_CONTROLLER_EXECUTOR_GUARD_ONLY",
+    "source_matches_pinned_global": true,
+    "command": "PYTHONDONTWRITEBYTECODE=1 python -m unittest implementation.tests.test_autonomy_executor_gate.HG03ExecutorGateTests.test_pause_blocks_cycle_start implementation.tests.test_autonomy_executor_gate.HG03ExecutorGateTests.test_publish_rechecks_mode implementation.tests.test_free_cloud_controller -v",
+    "result": "7 tests passed",
+    "exit_code": 0,
+    "output": "test_pause_blocks_cycle_start (implementation.tests.test_autonomy_executor_gate.HG03ExecutorGateTests.test_pause_blocks_cycle_start) ... ok\ntest_publish_rechecks_mode (implementation.tests.test_autonomy_executor_gate.HG03ExecutorGateTests.test_publish_rechecks_mode) ... ok\ntest_active_runtime_blocks_duplicate_executor (implementation.tests.test_free_cloud_controller.FreeCloudControllerTests.test_active_runtime_blocks_duplicate_executor) ... ok\ntest_invalid_mode_fails_closed (implementation.tests.test_free_cloud_controller.FreeCloudControllerTests.test_invalid_mode_fails_closed) ... ok\ntest_read_only_is_fail_closed (implementation.tests.test_free_cloud_controller.FreeCloudControllerTests.test_read_only_is_fail_closed) ... ok\ntest_run_open_idle_is_eligible (implementation.tests.test_free_cloud_controller.FreeCloudControllerTests.test_run_open_idle_is_eligible) ... ok\ntest_run_with_closed_gate_is_fail_closed (implementation.tests.test_free_cloud_controller.FreeCloudControllerTests.test_run_with_closed_gate_is_fail_closed) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 0.007s\n\nOK\n",
+    "temporary_pause_controller_fixture": {
+      "allow_mutation": false,
+      "reason": "AUTONOMY_MODE_PAUSE",
+      "mode": "PAUSE",
+      "gate_a_open": true,
+      "runtime_idle": true,
+      "execution_class": "READ_ONLY_CONTROL_PLANE"
+    },
+    "fixture_details": "TemporaryDirectory mode PAUSE, explicit isolated Gate A OPEN marker, runtime IDLE; controller denies with AUTONOMY_MODE_PAUSE. Production mode bytes unchanged.",
+    "limitations": "PAUSE executor admission/pre-publish denial and controller denial are proven in local temporary fixtures. The repository has no executable ChatGPT Watcher signal implementation to exercise; saved Watcher prompt says PAUSE exits without signal. This does not prove actual product-runtime PAUSE silence or Watcher-to-Work E2E."
+  },
+  "historical_evidence": {
+    "source": "implementation/docs/coordination/governance/evidence/HG03_RUNTIME_WAKE_E2E_2026-10-05.md",
+    "recorded_repo_canary_runs": [
+      "37305259790",
+      "37305552562",
+      "37305552582"
+    ],
+    "verification_class": "Existing repository/CI canary evidence, not a newly observed product Work wake.",
+    "latest_known_product_e2e_status": "not demonstrated"
+  },
+  "restrictions_preserved": [
+    "No AUTONOMY_MODE edit",
+    "No automation creation/update/enabling/run_now",
+    "No controller or trigger expansion",
+    "No signal or cross-Work message",
+    "No CI dispatch",
+    "No new writer or lease",
+    "No protected repository mutation by this inspection"
+  ]
+}
