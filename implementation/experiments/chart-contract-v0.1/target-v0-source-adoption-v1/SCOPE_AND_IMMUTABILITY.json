@@ -1,0 +1,77 @@
+{
+  "schema": "target-v0-write-scope-and-immutable-proof/1",
+  "verified_at_utc": "2026-10-08T12:25:24.415788+00:00",
+  "claim_commit": "d21773b88f84fa00a2e1e585d1f3c170f7ec611c",
+  "claim_path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/CODE_LANE_CLAIMS.json",
+  "lease": "target-v0-20261008T114634Z/target-display",
+  "expires_at_utc": "2026-10-08T13:46:34.000Z",
+  "branch": "main/target-v0-display-20261008",
+  "exact_base": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+  "pr_base": "codex/chart-contract-mcp-api-v0-1",
+  "all_changes_in_claim": true,
+  "protected_files_byte_equal": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_contract.mjs",
+      "base_git_blob": "a206d181bb5fdc44d150983f0b13567fe68b6f10",
+      "base_sha256": "9c2e0d1c058e1649a67433361404e45d0dc6c4a147e730f23429f4824c988aac",
+      "current_sha256": "9c2e0d1c058e1649a67433361404e45d0dc6c4a147e730f23429f4824c988aac",
+      "byte_equal": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+      "base_git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+      "base_sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96",
+      "current_sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96",
+      "byte_equal": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/package.json",
+      "base_git_blob": "caa86d9e37bc360f5c6d9b6a1cc081f063a9c892",
+      "base_sha256": "5004688eb8d99eb5de743bcf62671fd4c03fe8b87abd741a83c7e0e3e2c6fbad",
+      "current_sha256": "5004688eb8d99eb5de743bcf62671fd4c03fe8b87abd741a83c7e0e3e2c6fbad",
+      "byte_equal": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/package-lock.json",
+      "base_git_blob": "cabc97d8be06f70f9a26842578702ffa6aa1cf92",
+      "base_sha256": "dbc77dd600c0cb033ffaf9b3d8fcf86b16fa1ba5d030604b806a2118e2442afe",
+      "current_sha256": "dbc77dd600c0cb033ffaf9b3d8fcf86b16fa1ba5d030604b806a2118e2442afe",
+      "byte_equal": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_fixture.mjs",
+      "base_git_blob": "6d7b48c1af34f463b1113e2f68c7afdf93a710c2",
+      "base_sha256": "fe96f3dabbd605c0c4ac457beae694dff0b66230f362e57238c57020b7ed368f",
+      "current_sha256": "fe96f3dabbd605c0c4ac457beae694dff0b66230f362e57238c57020b7ed368f",
+      "byte_equal": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/app.js",
+      "base_git_blob": "3905231956e2485bf4ea7f41058e595ed6c0200b",
+      "base_sha256": "19c85156f4c459a41c3abc3c8bc39f33669572bbe7e17ae2f1ff2fb203028bf5",
+      "current_sha256": "19c85156f4c459a41c3abc3c8bc39f33669572bbe7e17ae2f1ff2fb203028bf5",
+      "byte_equal": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/inventory_app.js",
+      "base_git_blob": "85ffa84cf06678449c0101fc4b394b3e4822e5c5",
+      "base_sha256": "7db24343a666f4c6a99a1c86606c5fe783eb8230503bd707bdc8c2af102adaf6",
+      "current_sha256": "7db24343a666f4c6a99a1c86606c5fe783eb8230503bd707bdc8c2af102adaf6",
+      "byte_equal": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/chart_inventory.json",
+      "base_git_blob": "abdc1bd3cbad8368b0193e26acb59a87b6ea969c",
+      "base_sha256": "80e081f4b16b61e7ff076c7a427a8ded538356c89a01350aa5e545fd5ba48b09",
+      "current_sha256": "80e081f4b16b61e7ff076c7a427a8ded538356c89a01350aa5e545fd5ba48b09",
+      "byte_equal": true
+    }
+  ],
+  "outside_claim_changed_files": [],
+  "source_values_changed": false,
+  "new_dependencies": false,
+  "remote_writes_performed_by_this_lane": false,
+  "owner_ref_writes_performed_by_this_lane": false,
+  "AUTONOMY_MODE_changed": false,
+  "automation_or_controller_scope_changed": false
+}

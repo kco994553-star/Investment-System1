@@ -1,0 +1,209 @@
+{
+  "scope": "USER_TARGET_V0_REFERENCE_AND_FICTIONAL_PORTFOLIO_NO_ACTUAL",
+  "results": [
+    {
+      "width": 360,
+      "locale": "ko",
+      "result": "PASS",
+      "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "mapping": {
+        "admitted": 0,
+        "unresolved": 19
+      },
+      "source_envelope_rejections": [
+        "metadata absent",
+        "metadata empty",
+        "source rows reversed",
+        "source row missing",
+        "source row disagrees with holding",
+        "fake source hash",
+        "fabricated admitted mapping",
+        "changed ticker hint",
+        "changed USER listing",
+        "changed theme_id",
+        "conserved total with inconsistent Theme subtotals",
+        "fabricated known overlap"
+      ],
+      "mode_slot_rejections": [
+        "DEMO in reference slot",
+        "reference disguised as DEMO in reference slot",
+        "reference in DEMO slot"
+      ],
+      "checks": [
+        "user-source-hash-and-declared-current-clocks",
+        "exact-19-label-unit-theme-and-listing-choices",
+        "visible-source-rows-and-zero-mapping",
+        "no-inferred-types-or-security",
+        "GICS-type-overlap-unavailable",
+        "ACTUAL-null-zero-SVG-after-TARGET-and-DEMO",
+        "fictional-105-percent",
+        "unknown-cash-denominator",
+        "exact-set-partition",
+        "three-SVGs",
+        "scope-labels",
+        "inventory-113-search-filter",
+        "reference-restores-TARGET-v0",
+        "invalid-source-envelope-blocked-and-original-restored",
+        "unexpected-DEMO-source-metadata-blocked-and-original-restored",
+        "mode-slot-payload-binding-and-both-original-slots-restored",
+        "observed-demo-blocked",
+        "blocked-clears-stale-TARGET",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "width": 390,
+      "locale": "ko",
+      "result": "PASS",
+      "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "mapping": {
+        "admitted": 0,
+        "unresolved": 19
+      },
+      "source_envelope_rejections": [
+        "metadata absent",
+        "metadata empty",
+        "source rows reversed",
+        "source row missing",
+        "source row disagrees with holding",
+        "fake source hash",
+        "fabricated admitted mapping",
+        "changed ticker hint",
+        "changed USER listing",
+        "changed theme_id",
+        "conserved total with inconsistent Theme subtotals",
+        "fabricated known overlap"
+      ],
+      "mode_slot_rejections": [
+        "DEMO in reference slot",
+        "reference disguised as DEMO in reference slot",
+        "reference in DEMO slot"
+      ],
+      "checks": [
+        "user-source-hash-and-declared-current-clocks",
+        "exact-19-label-unit-theme-and-listing-choices",
+        "visible-source-rows-and-zero-mapping",
+        "no-inferred-types-or-security",
+        "GICS-type-overlap-unavailable",
+        "ACTUAL-null-zero-SVG-after-TARGET-and-DEMO",
+        "fictional-105-percent",
+        "unknown-cash-denominator",
+        "exact-set-partition",
+        "three-SVGs",
+        "scope-labels",
+        "inventory-113-search-filter",
+        "reference-restores-TARGET-v0",
+        "invalid-source-envelope-blocked-and-original-restored",
+        "unexpected-DEMO-source-metadata-blocked-and-original-restored",
+        "mode-slot-payload-binding-and-both-original-slots-restored",
+        "observed-demo-blocked",
+        "blocked-clears-stale-TARGET",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "width": 390,
+      "locale": "en",
+      "result": "PASS",
+      "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "mapping": {
+        "admitted": 0,
+        "unresolved": 19
+      },
+      "source_envelope_rejections": [
+        "metadata absent",
+        "metadata empty",
+        "source rows reversed",
+        "source row missing",
+        "source row disagrees with holding",
+        "fake source hash",
+        "fabricated admitted mapping",
+        "changed ticker hint",
+        "changed USER listing",
+        "changed theme_id",
+        "conserved total with inconsistent Theme subtotals",
+        "fabricated known overlap"
+      ],
+      "mode_slot_rejections": [
+        "DEMO in reference slot",
+        "reference disguised as DEMO in reference slot",
+        "reference in DEMO slot"
+      ],
+      "checks": [
+        "user-source-hash-and-declared-current-clocks",
+        "exact-19-label-unit-theme-and-listing-choices",
+        "visible-source-rows-and-zero-mapping",
+        "no-inferred-types-or-security",
+        "GICS-type-overlap-unavailable",
+        "ACTUAL-null-zero-SVG-after-TARGET-and-DEMO",
+        "fictional-105-percent",
+        "unknown-cash-denominator",
+        "exact-set-partition",
+        "three-SVGs",
+        "scope-labels",
+        "inventory-113-search-filter",
+        "reference-restores-TARGET-v0",
+        "invalid-source-envelope-blocked-and-original-restored",
+        "unexpected-DEMO-source-metadata-blocked-and-original-restored",
+        "mode-slot-payload-binding-and-both-original-slots-restored",
+        "observed-demo-blocked",
+        "blocked-clears-stale-TARGET",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "width": 1280,
+      "locale": "ko",
+      "result": "PASS",
+      "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "mapping": {
+        "admitted": 0,
+        "unresolved": 19
+      },
+      "source_envelope_rejections": [
+        "metadata absent",
+        "metadata empty",
+        "source rows reversed",
+        "source row missing",
+        "source row disagrees with holding",
+        "fake source hash",
+        "fabricated admitted mapping",
+        "changed ticker hint",
+        "changed USER listing",
+        "changed theme_id",
+        "conserved total with inconsistent Theme subtotals",
+        "fabricated known overlap"
+      ],
+      "mode_slot_rejections": [
+        "DEMO in reference slot",
+        "reference disguised as DEMO in reference slot",
+        "reference in DEMO slot"
+      ],
+      "checks": [
+        "user-source-hash-and-declared-current-clocks",
+        "exact-19-label-unit-theme-and-listing-choices",
+        "visible-source-rows-and-zero-mapping",
+        "no-inferred-types-or-security",
+        "GICS-type-overlap-unavailable",
+        "ACTUAL-null-zero-SVG-after-TARGET-and-DEMO",
+        "fictional-105-percent",
+        "unknown-cash-denominator",
+        "exact-set-partition",
+        "three-SVGs",
+        "scope-labels",
+        "inventory-113-search-filter",
+        "reference-restores-TARGET-v0",
+        "invalid-source-envelope-blocked-and-original-restored",
+        "unexpected-DEMO-source-metadata-blocked-and-original-restored",
+        "mode-slot-payload-binding-and-both-original-slots-restored",
+        "observed-demo-blocked",
+        "blocked-clears-stale-TARGET",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    }
+  ]
+}

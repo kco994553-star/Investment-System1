@@ -1,6 +1,9 @@
 // Render pre-aggregated portfolio exposures; no classification or allocation engine.
 (()=>{
  const root=document.querySelector('#portfolio-charts');
+ const requestedLocale=new URLSearchParams(location.search).get('lang');
+ if(['ko','en'].includes(requestedLocale))document.documentElement.lang=requestedLocale;
+ const copy=(ko,en)=>document.documentElement.lang==='en'?en:ko;
  const palette=['#60c7b2','#7fa8ff','#d9ad72','#cd94d9','#8abac8','#b2c779','#c68779','#ab9aea'];
  const neutral='#435269',cashColor='#778ba2';const ns='http://www.w3.org/2000/svg';
  const el=(name,text,cls)=>{const e=document.createElement(name);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;};
@@ -25,8 +28,18 @@
  function unavailable(title,dimension,reason){const card=section(title,dimension,'NOT_AVAILABLE');card.append(el('p',`NOT_AVAILABLE · ${reason}`,'pf-warning'));return card;}
  const unitValue=n=>Number.isSafeInteger(n)&&n>=0;
  const partition=(rows,total)=>Array.isArray(rows)&&rows.every(r=>r&&unitValue(r.units))&&rows.reduce((n,r)=>n+r.units,0)===total;
- function validProjection(d){
-  if(!d||d.weight_basis!=='TARGET'||!['REFERENCE','DEMO'].includes(d.data_state)||d.data_kind!==(d.data_state==='REFERENCE'?'USER_SPEC_REFERENCE':'SYNTHETIC_FIXTURE'))return false;
+ function validUserSource(d){
+  // Exact serialized identity covers rows, supplied Theme units, metadata and pre-aggregates.
+  // No classification/allocation is recomputed here. The build snapshot is local display evidence.
+  const expected=window.TARGET_V0_REFERENCE_CANONICAL;
+  try{return typeof expected==='string'&&JSON.stringify(d)===expected;}catch{return false;}
+ }
+ function validProjection(d,key){
+  // Selected mode defines the allowed source; payload flags cannot relabel another lane.
+  const expectedState=key==='reference'?'REFERENCE':key==='demo'?'DEMO':null;
+  if(!d||!expectedState||d.weight_basis!=='TARGET'||d.data_state!==expectedState||d.data_kind!==(key==='reference'?'USER_SPEC_REFERENCE':'SYNTHETIC_FIXTURE'))return false;
+  if(key==='reference'&&!validUserSource(d))return false;
+  if(key==='demo'&&Object.hasOwn(d,'source_metadata'))return false;
   const total=d.total_units;if(!unitValue(total)||total===0||!unitValue(d.cash_units)||d.cash_units>total)return false;
   if(!Array.isArray(d.holdings)||!d.holdings.every(h=>h&&unitValue(h.weight_units)&&(h.types===null||Array.isArray(h.types)))||d.holdings.reduce((n,h)=>n+h.weight_units,d.cash_units)!==total)return false;
   if(d.industry?.denominator_units!==total||!partition(d.industry.buckets,total)||d.overlap?.denominator_units!==total||!partition(d.overlap.buckets,total))return false;
@@ -39,24 +52,31 @@
  const exposureText=(e,total)=>missingExposure(e)?`${e.type} NOT_AVAILABLE · 미분류`:`${e.type} ${pct(e.member_units,total)}${e.unknown_units>0?' 하한(최소)':''}`;
  function render(key){
   window.__portfolioLab={doc:null,mode:null,render};
+  document.querySelector('#portfolio-heading').textContent=key==='demo'?'Portfolio · DEMO · SAMPLE':key==='actual'?'ACTUAL · NOT_AVAILABLE':'TARGET v0 · USER';
+  document.querySelector('#portfolio-source-tag').textContent=key==='demo'?'SAMPLE · SYNTHETIC_FIXTURE':key==='actual'?'ACTUAL source · NOT_AVAILABLE':'USER source · TARGET';
+  document.querySelector('#portfolio').setAttribute('aria-label',key==='demo'?'SAMPLE Portfolio DEMO':key==='actual'?'ACTUAL NOT_AVAILABLE':'TARGET v0 USER');
   root.replaceChildren();root.dataset.mode=key;root.dataset.basis=key==='actual'?'ACTUAL':'TARGET';
   for(const mode of ['reference','demo','actual'])document.querySelector(`#portfolio-${mode}`).setAttribute('aria-pressed',String(mode===key));
   const meta=el('p',undefined,'pf-meta');meta.id='portfolio-meta';root.append(meta);
   if(key==='actual'){
-   root.dataset.state='NOT_AVAILABLE';document.querySelector('#portfolio-state').textContent='SAMPLE · ACTUAL · NOT_AVAILABLE · 실제 계좌 자료 미제공';
-   meta.textContent='ACTUAL · source / as_of / effective_at / available_at: NOT_AVAILABLE · unit: weight_units · denominator total_units: NOT_AVAILABLE · TARGET 대체 없음';
-   for(const [dimension,title]of [['GICS','GICS'],['STRATEGY_THEME','Strategy Theme / Portfolio Bucket'],['INVESTMENT_TYPE','Investment Type'],['TYPE_OVERLAP','Type Overlap']])root.append(unavailable(title,dimension,'ACTUAL 원본·분모가 없어 표시할 수 없습니다. TARGET 자료로 대체하지 않습니다.'));
+   root.dataset.state='NOT_AVAILABLE';document.querySelector('#portfolio-state').textContent='ACTUAL · NOT_AVAILABLE · '+copy('실제 계좌 자료 미제공','actual account source not supplied');
+   meta.textContent='ACTUAL · source / as_of / effective_at / available_at: NOT_AVAILABLE · unit: weight_units · denominator total_units: NOT_AVAILABLE · '+copy('TARGET 대체 없음','no TARGET replacement');
+   for(const [dimension,title]of [['GICS','GICS'],['STRATEGY_THEME','Strategy Theme / Portfolio Bucket'],['INVESTMENT_TYPE','Investment Type'],['TYPE_OVERLAP','Type Overlap']])root.append(unavailable(title,dimension,copy('ACTUAL 원본·분모가 없어 표시할 수 없습니다. TARGET 자료로 대체하지 않습니다.','ACTUAL source and denominator are unavailable. TARGET values are never substituted.')));
    window.__portfolioLab={doc:null,mode:'actual',render};return;
   }
   const d=window.PORTFOLIO_CHARTS?.[key];
-  if(!validProjection(d)){root.dataset.state='BLOCKED';document.querySelector('#portfolio-state').textContent='SAMPLE · BLOCKED · 표시 가능한 자료 없음';meta.textContent='BLOCKED · source / as_of / unit / denominator: NOT_AVAILABLE';window.__portfolioLab={doc:null,mode:null,render};root.append(el('p','BLOCKED · 이 화면은 검증용 DEMO/목표비중 참고자료만 표시합니다. 누락된 값은 0으로 대체하지 않습니다.'));return;}
+  if(!validProjection(d,key)){root.dataset.state='BLOCKED';document.querySelector('#portfolio-heading').textContent='Portfolio · BLOCKED';document.querySelector('#portfolio-source-tag').textContent='BLOCKED · source validation failed';document.querySelector('#portfolio').setAttribute('aria-label','Portfolio BLOCKED');document.querySelector('#portfolio-state').textContent='BLOCKED · '+copy('표시 가능한 자료 없음','no displayable source');meta.textContent='BLOCKED · source / as_of / unit / denominator: NOT_AVAILABLE';window.__portfolioLab={doc:null,mode:null,render};root.append(el('p','BLOCKED · '+copy('누락된 값은 0으로 대체하지 않습니다.','Missing values are not replaced with zero.')));return;}
   const total=d.total_units;const isReference=d.data_state==='REFERENCE';
   root.dataset.state=d.data_state;
-  document.querySelector('#portfolio-state').textContent=d.data_state==='REFERENCE'?'SAMPLE · REFERENCE · TARGET · 기존 목표비중 참고자료 · 실제 계좌 아님':'SAMPLE · DEMO · TARGET · 가상 기업·비중·유형 · 투자 추천 아님';
-  meta.textContent=`${d.portfolio_version} · basis: ${d.weight_basis} · source: ${d.source} · as_of 관측·추출 stamp (UTC): ${d.as_of} — 권위 있는 효력 시점 아님 · effective_at: ${d.effective_at??'NOT_AVAILABLE (미제공)'} · available_at (Portfolio): ${d.available_at??'NOT_AVAILABLE (미제공)'} · classification.available_at: ${d.classification?.available_at??'NOT_AVAILABLE (미제공)'} · unit: weight_units (제공된 정수 단위), 표시 % · denominator total_units: ${total} (현금 ${d.cash_units} 단위 및 미분류 포함) · PIT NOT_VERIFIED`;
+  const source=d.source_metadata;
+  document.querySelector('#portfolio-state').textContent=isReference&&source?'TARGET v0 · USER · REFERENCE · '+copy('사용자 채택 목표 · 실제 계좌 아님','user-adopted target · no actual account'):d.data_state==='REFERENCE'?'SAMPLE · REFERENCE · TARGET · 기존 목표비중 참고자료 · 실제 계좌 아님':'SAMPLE · DEMO · TARGET · 가상 기업·비중·유형 · 투자 추천 아님';
+  if(isReference&&source){
+   meta.style.overflowWrap='anywhere';
+   meta.textContent=`TARGET ${source.version} · USER · ${source.source_path} · SHA256 ${source.source_sha256} · adopted_at: ${source.declared_clocks.adopted_at} = ${source.adopted_at_utc} · effective_at: ${source.declared_clocks.effective_at} = ${source.effective_at_utc} · available_at: ${source.declared_clocks.available_at} = ${source.available_at_utc} · ${copy('기록된 관측·추출 stamp','recorded observation/extraction stamp')}: ${d.as_of} · ${copy('Security 매핑','Security mapping')}: ${source.mapping.admitted}/${source.mapping.total} · ${copy('미확정','unresolved')} ${source.mapping.unresolved} · unit: weight_units · denominator: ${total} · cash: ${d.cash_units} · ${copy('소급 적용 없음 · 역사 PIT 미인증','no backdating · historical PIT NOT_VERIFIED')} · QGV: ${d.qgv_version}`;
+  }else meta.textContent=`${d.portfolio_version} · basis: ${d.weight_basis} · source: ${d.source} · as_of 관측·추출 stamp (UTC): ${d.as_of} — 권위 있는 효력 시점 아님 · effective_at: ${d.effective_at??'NOT_AVAILABLE (미제공)'} · available_at (Portfolio): ${d.available_at??'NOT_AVAILABLE (미제공)'} · classification.available_at: ${d.classification?.available_at??'NOT_AVAILABLE (미제공)'} · unit: weight_units (제공된 정수 단위), 표시 % · denominator total_units: ${total} (현금 ${d.cash_units} 단위 및 미분류 포함) · PIT NOT_VERIFIED`;
   root.append(unavailable('GICS','GICS','GICS 기업별 배정 및 근거가 제공되지 않았습니다. 사용자 배분 그룹이나 가상 산업을 GICS로 대체하지 않습니다.'));
   const industry=section(isReference?'Strategy Theme / Portfolio Bucket':'보조 예시 · 가상 산업 분류 (GICS 아님)',isReference?'STRATEGY_THEME':null);
-  industry.append(el('p',isReference?'기존 사용자가 정한 4개 TARGET 목표 배분 그룹입니다. Strategy Theme / Portfolio Bucket이며 표준 산업분류(GICS)가 아닙니다.':'명시적으로 제공된 가상 산업 분류입니다. Strategy Theme나 GICS 배정이 아닙니다. 현금과 미분류도 전체 분모에 포함합니다.'));
+  industry.append(el('p',isReference?copy('사용자가 정한 4개 TARGET 목표 배분 그룹입니다. Strategy Theme / Portfolio Bucket이며 표준 산업분류(GICS)가 아닙니다.','Four user-defined TARGET groups: Strategy Theme / Portfolio Bucket. GICS assignments are NOT_AVAILABLE.'):'명시적으로 제공된 가상 산업 분류입니다. Strategy Theme나 GICS 배정이 아닙니다. 현금과 미분류도 전체 분모에 포함합니다.'));
   industry.append(donut(d.industry.buckets.map((b,i)=>({label:b.kind==='CASH'?'현금':b.kind==='UNKNOWN'?(isReference?'Theme 미분류':'가상 산업 미분류'):b.label,units:b.units,color:b.kind==='UNKNOWN'?neutral:b.kind==='CASH'?cashColor:palette[i%palette.length]})),total,'전체 100%',`${isReference?'TARGET Strategy Theme':'SAMPLE 가상 산업'} · 전체 ${total} weight_units · 현금 및 미분류 포함`));
   if(!isReference){root.append(unavailable('Strategy Theme / Portfolio Bucket','STRATEGY_THEME','이 가상 fixture에는 Strategy Theme 배정이 없습니다. 가상 산업을 Theme로 재해석하지 않습니다.'));industry.dataset.auxiliary='FICTIONAL_INDUSTRY';}
   root.append(industry);
@@ -87,8 +107,9 @@
   }
   overlap.append(list);root.append(overlap);
   const details=el('details');details.append(el('summary','보유분별 원본 입력과 분류 확인'));
-  const scroll=el('div',undefined,'scroll');const table=el('table');const thead=el('thead');const tr=el('tr');for(const s of ['보유분','TARGET 비중',isReference?'Strategy Theme / Portfolio Bucket':'가상 산업 (GICS 아님)','Investment Type'])tr.append(el('th',s));thead.append(tr);table.append(thead);const tbody=el('tbody');
-  for(const h of d.holdings){const row=el('tr');for(const v of [h.label,pct(h.weight_units,total),h.industry??'미분류',h.types===null?'미분류':h.types.length?h.types.join(' + '):'명시적으로 없음'])row.append(el('td',v));tbody.append(row);}table.append(tbody);scroll.append(table);details.append(scroll);root.append(details);
+  const scroll=el('div',undefined,'scroll');const table=el('table');const thead=el('thead');const tr=el('tr');const headings=['보유분','TARGET 비중',isReference?'Strategy Theme / Portfolio Bucket':'가상 산업 (GICS 아님)','Investment Type'];if(source)headings.push('ticker_hint','listing','weight_units');for(const s of headings)tr.append(el('th',s));thead.append(tr);table.append(thead);const tbody=el('tbody');
+  const suppliedRows=new Map((source?.source_rows||[]).map(r=>[r.source_pointer,r]));
+  for(const h of d.holdings){const row=el('tr');const values=[h.label,pct(h.weight_units,total),h.industry??'미분류',h.types===null?'미분류':h.types.length?h.types.join(' + '):'명시적으로 없음'];if(source){const supplied=suppliedRows.get(h.holding_id);values.push(supplied.ticker_hint,supplied.listing,String(supplied.weight_units));}for(const v of values)row.append(el('td',v));tbody.append(row);}table.append(tbody);scroll.append(table);details.append(scroll);root.append(details);
   const evidence=el('details');evidence.append(el('summary','계약 및 출처'));const pre=el('pre',JSON.stringify(d,null,2));evidence.append(pre);root.append(evidence);
   window.__portfolioLab={doc:d,mode:key,render};
  }

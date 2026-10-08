@@ -1,0 +1,7 @@
+page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:8877/index.html?lang=ko
+Call log:
+[2m  - navigating to "http://127.0.0.1:8877/index.html?lang=ko", waiting until "load"[22m
+
+    at /workspace/target-v0-display/implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs:112:15 {
+  name: 'Error'
+}
