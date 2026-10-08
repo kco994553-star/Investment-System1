@@ -1,14 +1,16 @@
 """Read-only QGV contract audit. No production import, dispatch or weight wiring.
 
-The checked-in golden file is an observation of the pinned legacy program, not
-an endorsement of its financial semantics. This tool deliberately has no record
-or overwrite-golden option. New policies require new separately reviewed fixtures.
+The checked-in golden file remains an observation of the pinned legacy program.
+The 2026-10-08 user adoption changes only its explicitly listed status/metadata
+expectations in a copied comparison value. Numeric fields and every other field
+remain exact. This tool has no record or overwrite-golden option.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+from copy import deepcopy
 from dataclasses import asdict
 from datetime import date, datetime
 from pathlib import Path
@@ -46,13 +48,67 @@ def evaluate_case(case):
     return value
 
 
+def expected_with_v1_metadata(legacy_expected):
+    """Apply only the explicit user-adopted metadata delta to a copied fixture.
+
+    Do not strip fields from actual output or rewrite historical golden bytes.
+    All scores, score_hex, notes, coverage, provenance and unknown fields remain
+    exact comparisons. Fixed literals keep this expectation independent from
+    implementation constants or calculated output.
+    """
+    value = deepcopy(legacy_expected)
+    metadata = {
+        "standard": "v1",
+        "calibration": "UNCALIBRATED",
+        "standard_status": "STANDARD v1 · UNCALIBRATED",
+        "standard_effective_at": "2026-10-08T11:50:25Z",
+    }
+    if any(key in value for key in metadata):
+        raise ValueError("expected the preserved pre-adoption golden schema")
+    if value["V_policy_status"] != "PROVISIONAL_INITIAL_PRIOR":
+        raise ValueError("unexpected legacy V policy lifecycle")
+    if value["factor_breakdown"]["v_lifecycle"] != "PROVISIONAL_INITIAL_PRIOR":
+        raise ValueError("unexpected legacy V factor lifecycle")
+    if [candidate["candidate_id"] for candidate in value["v_candidates"]] != ["initial_prior", "equal_research", "mos_tilt_research"]:
+        raise ValueError("unexpected legacy V candidate IDs/order")
+    for candidate in value["v_candidates"]:
+        if "standard" in candidate or "calibration" in candidate:
+            raise ValueError("expected preserved pre-adoption V candidate schema")
+        expected_lifecycle = "PROVISIONAL_INITIAL_PRIOR" if candidate["candidate_id"] == "initial_prior" else "RESEARCH"
+        if candidate["lifecycle"] != expected_lifecycle:
+            raise ValueError("unexpected legacy V candidate lifecycle")
+        if candidate["candidate_id"] == "initial_prior":
+            candidate["lifecycle"] = "STANDARD v1 · UNCALIBRATED"
+            candidate["standard"] = "v1"
+            candidate["calibration"] = "UNCALIBRATED"
+        else:
+            candidate["standard"] = None
+            candidate["calibration"] = None
+    value["V_policy_status"] = "STANDARD v1 · UNCALIBRATED"
+    value["factor_breakdown"]["v_lifecycle"] = "STANDARD v1 · UNCALIBRATED"
+    value.update(metadata)
+    return value
+
+
 def verify_golden():
-    fixture = json.loads((DOCS / "golden_cases.json").read_text())
-    failures = [c["case_id"] for c in fixture["cases"] if evaluate_case(c) != c["expected"]]
+    fixture_bytes = (DOCS / "golden_cases.json").read_bytes()
+    fixture = json.loads(fixture_bytes)
+    fixture_sha256 = hashlib.sha256(fixture_bytes).hexdigest()
+    fixture_unchanged = fixture_sha256 == "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040"
+    failures = [c["case_id"] for c in fixture["cases"] if evaluate_case(c) != expected_with_v1_metadata(c["expected"])]
+    if not fixture_unchanged:
+        failures.append("HISTORICAL_FIXTURE_BYTES_CHANGED")
     return {"status": "FAIL" if failures else "PASS", "case_count": len(fixture["cases"]),
             "failures": failures, "baseline_commit": fixture["baseline_commit"],
-            "fixture_sha256": hashlib.sha256((DOCS / "golden_cases.json").read_bytes()).hexdigest(),
-            "scope": "SYNTHETIC_LEGACY_EQUIVALENCE_ONLY"}
+            "fixture_sha256": fixture_sha256,
+            "scope": "SYNTHETIC_LEGACY_SCORES_AND_FULL_FIELDS_WITH_EXPLICIT_USER_V1_METADATA_DELTA",
+            "standard": "v1", "calibration": "UNCALIBRATED",
+            "historical_fixture_unchanged": fixture_unchanged,
+            "authorized_delta_fields": ["V_policy_status", "factor_breakdown.v_lifecycle",
+                "standard", "calibration", "standard_status", "standard_effective_at",
+                "v_candidates[0].lifecycle", "v_candidates[0].standard", "v_candidates[0].calibration",
+                "v_candidates[1].standard", "v_candidates[1].calibration",
+                "v_candidates[2].standard", "v_candidates[2].calibration"]}
 
 
 def validate_spec_record(record):

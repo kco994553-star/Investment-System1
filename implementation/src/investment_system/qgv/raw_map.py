@@ -1,7 +1,7 @@
 """Map raw fundamentals to factor observations. NEW IMPLEMENTATION.
 
 Decision D-09: explicit, fail-closed, no silent zero-fill.
-Decision D-10: growth/margin mapping is a linear clip heuristic, PROVISIONAL.
+Decision D-10: current linear clip rules are STANDARD v1 · UNCALIBRATED.
 Synthetic raw is tagged SYNTHETIC and is not real evidence.
 """
 
@@ -11,6 +11,9 @@ from ..contracts.enums import ProfileKind, QualityState
 from ..contracts.models import FactorObservation
 from ..contracts.raw import RawFundamentals
 from .factors import G_WEIGHTS, Q_WEIGHTS, V_FACTORS
+from .scoring_standard import SCORING_STANDARD_STATUS
+
+RAW_MAP_STATUS = SCORING_STANDARD_STATUS
 
 
 def _clip_score(value: float) -> float:
@@ -43,14 +46,14 @@ def _yoy(cur: float | None, prev: float | None) -> float | None:
 def _growth_to_score(yoy: float | None) -> float | None:
     if yoy is None:
         return None
-    # 0% growth → 50, +25% → 100, -25% → 0. PROVISIONAL.
+    # 0% growth → 50, +25% → 100, -25% → 0. STANDARD v1 · UNCALIBRATED.
     return _clip_score(50.0 + yoy / 0.25 * 50.0)
 
 
 def _spread_to_score(spread: float | None) -> float | None:
     if spread is None:
         return None
-    # ROIC-WACC 0 → 50, +10pp → 100. PROVISIONAL.
+    # ROIC-WACC 0 → 50, +10pp → 100. STANDARD v1 · UNCALIBRATED.
     return _clip_score(50.0 + spread / 0.10 * 50.0)
 
 

@@ -22,6 +22,7 @@ from .pipeline import AnalysisPipeline
 from ..contracts.portfolio_input import equal_weight_input
 from .portfolio import PortfolioEngine
 from ..integration.engine import IntegrationEngine
+from .scoring_standard import SCORING_CALIBRATION, SCORING_STANDARD_EFFECTIVE_AT, SCORING_STANDARD_STATUS, SCORING_STANDARD_VERSION
 
 
 def persist(payload: dict, name: str) -> Path:
@@ -49,6 +50,10 @@ def run_us_synthetic_working(as_of: datetime = DEFAULT_AS_OF) -> dict:
         "excluded": dict(OUT_OF_US_TRACK),
         "kr_deferred": list(KR_DEFERRED),
         "v_null": all(s.V_score is None for s in snaps.values()),
+        "standard": SCORING_STANDARD_VERSION,
+        "calibration": SCORING_CALIBRATION,
+        "standard_status": SCORING_STANDARD_STATUS,
+        "standard_effective_at": SCORING_STANDARD_EFFECTIVE_AT,
         "company_ids": [h.company_id for h in pf.holdings],
     }
 
@@ -113,6 +118,10 @@ def evaluate_current_session(live_prices: dict | None = None) -> dict:
                 "Q": snap.Q_score,
                 "G": snap.G_score,
                 "V": snap.V_score,
+                "standard": snap.standard,
+                "calibration": snap.calibration,
+                "standard_status": snap.standard_status,
+                "standard_effective_at": snap.standard_effective_at,
                 "price": px.get("price"),
                 "price_evidence": px.get("evidence"),
                 "synthetic_qgv": snap.synthetic,
@@ -147,7 +156,13 @@ def evaluate_current_session(live_prices: dict | None = None) -> dict:
         {
             "profile_id": profile.profile_id,
             "parameter_set_hash": profile.parameter_set_hash(),
-            "prediction": {"Q_by_id": {cid: s.Q_score for cid, s in snaps.items()}},
+            "prediction": {
+                "Q_by_id": {cid: s.Q_score for cid, s in snaps.items()},
+                "standard": SCORING_STANDARD_VERSION,
+                "calibration": SCORING_CALIBRATION,
+                "standard_status": SCORING_STANDARD_STATUS,
+                "standard_effective_at": SCORING_STANDARD_EFFECTIVE_AT,
+            },
             "decision": {
                 "gate": integ.gate.value,
                 "target_weights": integ.target_weights,
@@ -161,6 +176,10 @@ def evaluate_current_session(live_prices: dict | None = None) -> dict:
         "kind": "SESSION_MIXED",
         "track": "US",
         "qgv_kind": "SYNTHETIC",
+        "standard": SCORING_STANDARD_VERSION,
+        "calibration": SCORING_CALIBRATION,
+        "standard_status": SCORING_STANDARD_STATUS,
+        "standard_effective_at": SCORING_STANDARD_EFFECTIVE_AT,
         "price_kind": "LIVE_FETCH",
         "stage2": False,
         "real_data_verified": False,

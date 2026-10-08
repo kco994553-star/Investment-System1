@@ -11,7 +11,7 @@ import json
 import pytest
 from jsonschema import ValidationError
 
-from tools.qgv_contract_audit import DOCS, digest, evaluate_case, validate_spec_record
+from tools.qgv_contract_audit import DOCS, digest, evaluate_case, expected_with_v1_metadata, validate_spec_record
 from investment_system.contracts.enums import ProfileKind, QualityState
 from investment_system.contracts.models import DataStamp
 from investment_system.contracts.raw import RawFundamentals
@@ -35,7 +35,9 @@ GOLDEN = json.loads((DOCS / "golden_cases.json").read_text())
 
 @pytest.mark.parametrize("case", GOLDEN["cases"], ids=lambda c: c["case_id"])
 def test_golden_exact_semantics(case):
-    assert evaluate_case(case) == case["expected"]
+    # Preserve historical fixture bytes and every numeric/other expectation;
+    # only the explicit 2026-10-08 user-adopted metadata delta is applied.
+    assert evaluate_case(case) == expected_with_v1_metadata(case["expected"])
 
 
 def test_independent_arithmetic_anchors():

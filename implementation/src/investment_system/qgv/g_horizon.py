@@ -1,16 +1,18 @@
 """G time-horizon policy and quarterly monitor.
 
-NEW IMPLEMENTATION / PROVISIONAL policy layer.
+STANDARD v1 · UNCALIBRATED; user-adopted policy layer from 2026-10-08.
 This module does not change the Frozen G factor names or weights.
 Default G analysis horizon is 3Y by current project decision; horizon performance
-must still be validated by PIT/OOS/Calibration before promotion to a Frozen standard.
+remains uncalibrated. PIT/OOS/Calibration supports a separately decided v2.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
 from typing import Iterable
+from .scoring_standard import SCORING_STANDARD_STATUS
 
+G_HORIZON_STATUS = SCORING_STANDARD_STATUS
 DEFAULT_G_HORIZON = "3Y"
 G_HORIZON_MEANINGS = {
     "1Q": ("Latest Quarter", "최근 분기의 성장 변화와 급변 신호"),

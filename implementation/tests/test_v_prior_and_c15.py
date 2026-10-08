@@ -14,7 +14,7 @@ def test_initial_prior_weights_and_lifecycle():
     assert abs(sum(V_INITIAL_PRIOR.values()) - 1.0) < 1e-12
     assert validate_v_candidate_weights(V_INITIAL_PRIOR) == []
     snap = AnalysisEngine().analyze("nvda", AS_OF, complete_obs())
-    assert snap.V_policy_status == CalibrationLifecycle.PROVISIONAL_INITIAL_PRIOR
+    assert snap.V_policy_status == CalibrationLifecycle.STANDARD_V1_UNCALIBRATED
     assert snap.V_policy_status.value not in {"STANDARD", "CALIBRATED", "VALIDATED"}
 
 

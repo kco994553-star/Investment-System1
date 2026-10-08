@@ -1,4 +1,4 @@
-"""Q/G aggregation and calibration-ready V candidates. NEW IMPLEMENTATION."""
+"""Scoring Standard v1 · UNCALIBRATED aggregation and separate V research."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ from .factors import (
     validate_q_g_weights,
     validate_v_candidate_weights,
 )
+from .scoring_standard import SCORING_CALIBRATION, SCORING_STANDARD_VERSION
 
 
 validate_q_g_weights()
@@ -69,6 +70,7 @@ def score_v_candidates(observations: Mapping[str, FactorObservation]) -> tuple[V
     out: list[VCandidate] = []
     for cid, spec in V_CANDIDATES.items():
         weights: dict[str, float] = spec["weights"]
+        metadata = {"standard": SCORING_STANDARD_VERSION, "calibration": SCORING_CALIBRATION} if cid == "initial_prior" else {}
         errors = validate_v_candidate_weights(weights)
         if errors:
             out.append(
@@ -78,6 +80,7 @@ def score_v_candidates(observations: Mapping[str, FactorObservation]) -> tuple[V
                     weights=weights,
                     v_score=None,
                     blocked_reason=";".join(errors),
+                    **metadata,
                 )
             )
             continue
@@ -102,6 +105,7 @@ def score_v_candidates(observations: Mapping[str, FactorObservation]) -> tuple[V
                     weights=weights,
                     v_score=None,
                     blocked_reason="incomplete V factors; no auto-reweight",
+                    **metadata,
                 )
             )
         else:
@@ -112,6 +116,7 @@ def score_v_candidates(observations: Mapping[str, FactorObservation]) -> tuple[V
                     weights=weights,
                     v_score=acc,
                     blocked_reason=None,
+                    **metadata,
                 )
             )
     return tuple(out)
@@ -124,8 +129,12 @@ def score_v_prior(observations: Mapping[str, FactorObservation], profile: Profil
 
 
 def production_v_score(candidates: tuple[VCandidate, ...], prior_score: float | None = None, prior_cov=None) -> tuple[float | None, CalibrationLifecycle]:
-    """Emit Initial Prior V when computable. Status is never STANDARD/CALIBRATED here."""
-    return prior_score, CalibrationLifecycle.PROVISIONAL_INITIAL_PRIOR
+    """Emit the unchanged v1 Initial Prior, with explicit UNCALIBRATED status.
+
+    Research candidates never substitute for the prior. Missing-data behavior
+    and existing partial coverage are retained; no calibration is performed.
+    """
+    return prior_score, CalibrationLifecycle.STANDARD_V1_UNCALIBRATED
 
 
 def attractiveness_10(q: float | None, g: float | None) -> float | None:
