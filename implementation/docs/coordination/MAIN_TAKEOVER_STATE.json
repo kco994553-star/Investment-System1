@@ -126,7 +126,10 @@
       "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/us_live.py",
       "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/leaderboard.py",
       "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/html_sample.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/validation/historical.py"
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/validation/historical.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_common_contract_vnext.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tools/qgv_contract_audit.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/product/render_app.py"
     ],
     "mode": "READ_ONLY",
     "unattended": false,
@@ -379,7 +382,10 @@
           "implementation/src/investment_system/qgv/us_live.py",
           "implementation/src/investment_system/qgv/leaderboard.py",
           "implementation/src/investment_system/qgv/html_sample.py",
-          "implementation/src/investment_system/validation/historical.py"
+          "implementation/src/investment_system/validation/historical.py",
+          "implementation/tests/test_qgv_common_contract_vnext.py",
+          "implementation/tools/qgv_contract_audit.py",
+          "implementation/src/investment_system/product/render_app.py"
         ],
         "status": "CLAIMED_USER_D3_R_NAMED_ACTIONS",
         "expires_at_utc": "2026-10-08T13:46:34.000Z",
@@ -388,7 +394,7 @@
         "adoption_receipt": "2026-10-08T11:50:25Z",
         "protected_history": "appendC03resolution only; oldbytespreserved",
         "held_missing_data_lease": "qgv-b47-muupb538 preserved",
-        "claim_amendment_reason": "Existing downstream current result copies omit standard/calibration metadata and HTML hardcodes numericV to null; propagate alreadycomputed source values only"
+        "claim_amendment_reason": "Preserve71historicgoldens with exact13authorizedmetadata/status deltas and strict allnumeric invariance; remove2stale active Vnull descriptions. No fixture/runtime/trigger edits."
       },
       {
         "lane_id": "TARGET_DISPLAY_AND_CHART_REJUDGMENT",

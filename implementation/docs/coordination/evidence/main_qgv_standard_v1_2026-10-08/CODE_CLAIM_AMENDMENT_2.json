@@ -1,0 +1,20 @@
+{
+  "parent": "dda9566487d2aff458bead060c7e2a2f74c0d27a",
+  "authority": "CDR040",
+  "mode": "READ_ONLY",
+  "lease": "target-v0-20261008T114634Z/qgv-v1",
+  "paths": [
+    "implementation/tests/test_qgv_common_contract_vnext.py",
+    "implementation/tools/qgv_contract_audit.py",
+    "implementation/src/investment_system/product/render_app.py"
+  ],
+  "reason": "Preserve71historicgoldens with exact13authorizedmetadata/status deltas and strict allnumeric invariance; remove2stale active Vnull descriptions. No fixture/runtime/trigger edits.",
+  "diagnosis": {
+    "goldens": 71,
+    "numeric_differences": 0,
+    "allowed_metadata_paths": 13
+  },
+  "historical_fixtures_unchanged": true,
+  "automation_expansion": false,
+  "ci": "Existing qgv workflow pathfilter applies to existing audittool; nofilterchange"
+}
