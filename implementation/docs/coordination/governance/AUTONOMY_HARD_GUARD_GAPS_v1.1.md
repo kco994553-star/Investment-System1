@@ -18,7 +18,7 @@ Rules:
 | ID | Protection area | Gate | Initial status | Current evidence | Next verification |
 |---|---|---|---|---|---|
 | HG-01 | Frozen/history/evidence destruction | A | VERIFIED | PR #50 exact head `c7738c0`; run `37300758757` SUCCESS. Canonical-target PR #51 exact head `de84abf`; run `37303986881` SUCCESS. Ruleset 24499602 now requires GitHub Actions `repository-guard`; missing/failed check blocks canonical merge | continue registry maintenance under §26A; protection removal/exclusion remains D3-R |
-| HG-02 | canonical mutation | A | VERIFIED | Ruleset `24499602` ACTIVE on exact canonical ref; deletion blocked, non-fast-forward/force-push blocked, PR required with 0 approvals, bypass list empty, required check=`repository-guard` bound to GitHub Actions integration id 15368; canonical `protected=true` | preserve exact ruleset; changes/removal/bypass expansion require D3-R |
+| HG-02 | canonical mutation | A | VERIFIED | **Correction:** ruleset configuration alone was NOT_VERIFIED and the earlier VERIFIED label was premature. PR #51 was merged to canonical as `c109c81a3e417e5f61fd26b67b171fb13628dc21`; after merge, a direct canonical Contents-API create probe was rejected with HTTP 409: `Changes must be made through a pull request` and required status check `repository-guard` expected. Ruleset `24499602` remains ACTIVE, bypass list empty. This rejection test is the first behavior evidence supporting VERIFIED. | preserve exact ruleset; repeat rejection test after any ruleset/protection change; changes/removal/bypass expansion require D3-R |
 | HG-03 | runaway/cost control | A | PARTIAL_VERIFIED | PR #52 merged `f8c9802`; run `37305259790` SUCCESS. PR #53 canary runs `37305552562`/`37305552582` SUCCESS and merged `549f9a8`. Runtime guard behavior is verified. Current scheduled-task interface exposes no supported watcher→dedicated-Work executor invocation, so unattended wake/resume E2E is not yet proven | external product-runtime wake channel or supported Work invocation; production AUTONOMY_MODE remains READ_ONLY until then |
 | HG-04 | real trade/order/fund movement | P | NOT_VERIFIED | no authorization inferred; credential/module isolation not verified | verify no order credential in agent environment and separate execution authority |
 | HG-05 | financial credential/authority expansion | P | NOT_VERIFIED | no credential-access evidence admitted | verify secret isolation and .env read/write protection |
@@ -32,12 +32,12 @@ Rules:
 ## Gate A status
 
 - HG-01: VERIFIED
-- HG-02: VERIFIED
+- HG-02: VERIFIED — post-#51 negative rejection test complete; pre-test status corrected to NOT_VERIFIED
 - HG-03: PARTIAL_VERIFIED
 
 Gate A: **CLOSED / UNATTENDED AUTONOMY DISABLED**
 
-HG-01 and HG-02 are VERIFIED. HG-03 repository/runtime guard behavior is verified by CI canary, but actual Watcher → Work executor wake/resume has not been observed. Gate A remains CLOSED until that product-runtime E2E is proven.
+HG-01 is VERIFIED. HG-02 is VERIFIED only **after** PR #51 merge plus the 2026-10-08 direct-write rejection test; configuration-only state before that test is retrospectively NOT_VERIFIED. HG-03 repository/runtime guard behavior is verified by CI canary, but actual Watcher → Work executor wake/resume has not been observed. Gate A remains CLOSED until that product-runtime E2E is proven.
 
 Latest bounded evidence: `governance/evidence/GATE_A_PR50_VERIFICATION_2026-10-05.md` and `governance/evidence/HG03_RUNTIME_WAKE_E2E_2026-10-05.md`. HG-02 is VERIFIED by active ruleset `24499602`; do not regress or bypass it. HG-03 remains PARTIAL_VERIFIED because the supported product-runtime Watcher → dedicated Work executor invocation path has not been demonstrated.
 
