@@ -21,7 +21,7 @@ const TEXT = {
     contexts: ["QGV context(QGV 맥락)", "Technical context(기술적 분석 맥락)", "Macro context(거시 맥락)"],
     researchSub: "프롬프트 → 맥락·변수 → 미리보기 → 복사", promptLibrary: "Prompt Library(프롬프트 라이브러리)",
     newsNetwork: "News Network(뉴스 관계망)", importFailed: "가져오기 실패:", interest: "관심기업",
-    actualWeight: "실제 비중", snapshotWeight: "Snapshot에 포함 · 비중", portfolioStatus: "Portfolio status(보유 상태)",
+    actualWeight: "실제 비중", modelWeight: "모델 비중", snapshotWeight: "Snapshot에 포함 · 비중", portfolioStatus: "Portfolio status(보유 상태)",
     returnLabel: "수익률", missingValue: "미제공",
   },
   "en-US": {
@@ -34,7 +34,7 @@ const TEXT = {
     contexts: ["QGV context", "Technical context", "Macro context"],
     researchSub: "Prompt → Context / Variables → Preview → Copy", promptLibrary: "Prompt Library",
     newsNetwork: "News Network", importFailed: "Import failed:", interest: "Interests",
-    actualWeight: "Actual weight", snapshotWeight: "Included in snapshot · Weight", portfolioStatus: "Portfolio status",
+    actualWeight: "Actual weight", modelWeight: "Model weight", snapshotWeight: "Included in snapshot · Weight", portfolioStatus: "Portfolio status",
     returnLabel: "Return", missingValue: "Not provided",
   },
 };
@@ -132,6 +132,10 @@ async function main() {
             const status = p.locator("main section.card").filter({ has: p.getByRole("heading", { name: L.portfolioStatus, exact: true }) });
             assert.equal((await status.locator("p").first().innerText()).trim(), `${L.snapshotWeight} ${test.expected}`,
               `${locale} company ${test.name}: missing ACTUAL must not display TARGET 34.56%`);
+            const companyTarget = status.locator('[data-weight-kind="TARGET"]');
+            assert.equal(await companyTarget.count(), 1, "TARGET has its own company presentation element");
+            assert.equal((await companyTarget.innerText()).trim(), `TARGET · ${L.modelWeight} 34.56%`,
+              "persisted TARGET is explicitly labelled independently of the ACTUAL snapshot weight");
             assert.deepEqual(await p.evaluate(() => D), supplied, "company rendering preserves the supplied bundle");
             const holdingEvidence = JSON.parse(await status.locator("pre").textContent());
             assert.deepEqual(holdingEvidence, holding, "ACTUAL and TARGET stay separate and unchanged in Evidence");
@@ -140,6 +144,10 @@ async function main() {
             const weight = p.locator(`main a[href="#company/${encodeURIComponent(holding.company_id)}"] .muted`);
             assert.equal((await weight.innerText()).trim(), `${L.actualWeight} ${test.expected} · ${L.returnLabel} ${L.missingValue}`,
               `${locale} portfolio ${test.name}: ACTUAL stays explicitly labelled`);
+            const portfolioTarget = p.locator(`main a[href="#company/${encodeURIComponent(holding.company_id)}"] [data-weight-kind="TARGET"]`);
+            assert.equal(await portfolioTarget.count(), 1, "TARGET has its own portfolio presentation element");
+            assert.equal((await portfolioTarget.innerText()).trim(), `TARGET · ${L.modelWeight} 34.56%`,
+              "persisted TARGET is explicitly labelled independently of the ACTUAL holding weight");
             assert.deepEqual(await p.evaluate(() => D), supplied, "portfolio rendering preserves the supplied bundle");
             assert.equal(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${locale} ${test.name}: 390px has no overflow`);
             if (test.name === "omitted") await p.screenshot({ path: path.join(evidence, `ppa-f08-portfolio-${locale}-390.png`), fullPage: true });
