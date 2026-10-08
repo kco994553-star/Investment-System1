@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - integration/global-handoff-v1
-    paths:
-      - "implementation/docs/coordination/governance/FREE_CLOUD_WRITE_GRANT_DECISION_PACKAGE_v1.md"
-      - "implementation/docs/coordination/evidence/free_cloud_write_grant_2026-10-06/**"
-      - "implementation/tools/free_cloud_write_contract.py"
-      - "implementation/tools/free_cloud_controller.py"
-      - "implementation/tools/free_cloud_bounded_executor.py"
-      - ".github/workflows/free-cloud-bounded-writer.yml"
   workflow_dispatch:
 
 permissions:
@@ -42,7 +35,7 @@ jobs:
       - name: Verify write contract and negative protected scopes
         working-directory: implementation
         run: |
-          python -m unittest tests.test_free_cloud_write_contract tests.test_free_cloud_controller tests.test_free_cloud_bounded_executor -v
+          python -m unittest tests.test_free_cloud_write_contract tests.test_free_cloud_controller tests.test_free_cloud_bounded_executor tests.test_free_cloud_material_queue -v
           python tools/free_cloud_write_contract.py             --branch automation/free-cloud-state-v1             --path implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json
           if python tools/free_cloud_write_contract.py             --branch integration/global-handoff-v1             --path implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json; then
             echo "::error::Global branch unexpectedly admitted"
@@ -60,6 +53,34 @@ jobs:
       - name: Confirm production Kill Switch remains READ_ONLY
         run: |
           test "$(cat implementation/docs/coordination/governance/AUTONOMY_MODE | tr -d '\r\n')" = "READ_ONLY"
+
+      - name: Build material-change queue from Global delta
+        env:
+          CURRENT_GLOBAL_SHA: ${{ github.sha }}
+        run: |
+          PREVIOUS_SHA=""
+          if git ls-remote --exit-code --heads origin refs/heads/automation/free-cloud-state-v1 >/dev/null 2>&1; then
+            git fetch --no-tags origin refs/heads/automation/free-cloud-state-v1:refs/remotes/origin/automation/free-cloud-state-v1
+            PREVIOUS_SHA="$(git show refs/remotes/origin/automation/free-cloud-state-v1:implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json 2>/dev/null | python -c 'import json,sys; print(json.load(sys.stdin).get("source_global_sha",""))' || true)"
+          fi
+          if [ -z "$PREVIOUS_SHA" ]; then PREVIOUS_SHA="$CURRENT_GLOBAL_SHA"; fi
+          git fetch --no-tags origin integration/global-handoff-v1
+          if git cat-file -e "$PREVIOUS_SHA^{commit}" 2>/dev/null; then
+            git diff --name-only "$PREVIOUS_SHA" "$CURRENT_GLOBAL_SHA" > /tmp/changed_paths.txt
+          else
+            git show --pretty="" --name-only "$CURRENT_GLOBAL_SHA" > /tmp/changed_paths.txt
+          fi
+          python - "$PREVIOUS_SHA" "$CURRENT_GLOBAL_SHA" < /tmp/changed_paths.txt > /tmp/material_queue.json <<'PY'
+          import json, subprocess, sys
+          from pathlib import Path
+          prev, cur = sys.argv[1], sys.argv[2]
+          paths=[x.strip() for x in sys.stdin if x.strip()]
+          mod_path=Path("implementation/tools/free_cloud_material_queue.py").resolve()
+          import importlib.util
+          s=importlib.util.spec_from_file_location("free_cloud_material_queue",mod_path)
+          m=importlib.util.module_from_spec(s); sys.modules[s.name]=m; s.loader.exec_module(m)
+          print(json.dumps(m.build(prev,cur,paths),sort_keys=True))
+          PY
 
       - name: Prepare dedicated automation branch
         run: |
@@ -81,8 +102,9 @@ jobs:
           import json, os
           from pathlib import Path
           p=Path("implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json")
+          material=json.load(open("/tmp/material_queue.json"))
           data={
-            "schema":"free-cloud-status-v1",
+            "schema":"free-cloud-status-v2",
             "canary":"BOUNDED_WRITE",
             "source_global_sha":os.environ["SOURCE_GLOBAL_SHA"],
             "workflow_run_id":os.environ["SOURCE_RUN_ID"],
@@ -91,7 +113,8 @@ jobs:
             "writer_branch":"automation/free-cloud-state-v1",
             "writer_path":"implementation/docs/coordination/automation_free/FREE_CLOUD_STATUS.json",
             "main_gpt_replacement":False,
-            "paid_external_ai":False
+            "paid_external_ai":False,
+            "material_change":material
           }
           p.write_text(json.dumps(data,indent=2,sort_keys=True)+"\n",encoding="utf-8")
           PY
