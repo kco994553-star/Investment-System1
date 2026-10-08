@@ -1,0 +1,16 @@
+{
+  "authority": "CDR040",
+  "parent": "d21773b88f84fa00a2e1e585d1f3c170f7ec611c",
+  "lease": "target-v0-20261008T114634Z/qgv-v1",
+  "recorded_at_utc": "2026-10-08T12:05:00Z",
+  "mode": "READ_ONLY",
+  "paths": [
+    "implementation/src/investment_system/qgv/us_live.py",
+    "implementation/src/investment_system/qgv/leaderboard.py",
+    "implementation/src/investment_system/qgv/html_sample.py",
+    "implementation/src/investment_system/validation/historical.py"
+  ],
+  "reason": "Existing downstream current result copies omit standard/calibration metadata and HTML hardcodes numericV to null; propagate alreadycomputed source values only",
+  "numeric_changes": false,
+  "automation_expansion": false
+}

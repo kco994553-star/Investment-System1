@@ -122,7 +122,11 @@
       "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/page.html",
       "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
       "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
-      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**"
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/us_live.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/leaderboard.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/html_sample.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/validation/historical.py"
     ],
     "mode": "READ_ONLY",
     "unattended": false,
@@ -371,7 +375,11 @@
           "implementation/tests/test_live_sources_and_persist.py",
           "implementation/tests/test_v_prior_and_c15.py",
           "implementation/tests/test_validation_framework.py",
-          "implementation/tests/test_analysis_scoring.py"
+          "implementation/tests/test_analysis_scoring.py",
+          "implementation/src/investment_system/qgv/us_live.py",
+          "implementation/src/investment_system/qgv/leaderboard.py",
+          "implementation/src/investment_system/qgv/html_sample.py",
+          "implementation/src/investment_system/validation/historical.py"
         ],
         "status": "CLAIMED_USER_D3_R_NAMED_ACTIONS",
         "expires_at_utc": "2026-10-08T13:46:34.000Z",
@@ -379,7 +387,8 @@
         "tasks_used": 1,
         "adoption_receipt": "2026-10-08T11:50:25Z",
         "protected_history": "appendC03resolution only; oldbytespreserved",
-        "held_missing_data_lease": "qgv-b47-muupb538 preserved"
+        "held_missing_data_lease": "qgv-b47-muupb538 preserved",
+        "claim_amendment_reason": "Existing downstream current result copies omit standard/calibration metadata and HTML hardcodes numericV to null; propagate alreadycomputed source values only"
       },
       {
         "lane_id": "TARGET_DISPLAY_AND_CHART_REJUDGMENT",
