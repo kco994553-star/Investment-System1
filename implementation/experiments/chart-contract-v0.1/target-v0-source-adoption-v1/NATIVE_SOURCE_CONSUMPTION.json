@@ -1,0 +1,41 @@
+{
+  "method": [
+    "git fetch --no-tags origin a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+    "native git object sha/blob readback and SHA256/byte comparison of both copied source files",
+    "GitHub connector GET PR64 and immutable commit metadata independently confirm merge/tree"
+  ],
+  "observed_at_utc": "2026-10-08T12:08:07.955542+00:00",
+  "source_PR": 64,
+  "source_url": "https://github.com/kco994553-star/Investment-System1/pull/64",
+  "merged": true,
+  "merge_commit": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+  "source_head": "40c7037870f5ad3b5538444fa3a8e545c65d213b",
+  "merge_tree": "c9ce0c0983f6a7775510401ff1f0ce158fc72648",
+  "parents": [
+    "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+    "40c7037870f5ad3b5538444fa3a8e545c65d213b"
+  ],
+  "source_pins": [
+    {
+      "path": "implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+      "commit": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+      "git_blob": "53124085ecc9561fefe45cf6d31bd649abea6f63",
+      "bytes": 4463,
+      "sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "native_blob_equals_local_copy": true
+    },
+    {
+      "path": "implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+      "commit": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+      "git_blob": "63eb86eaf06d6d409f2e7fb59cea1ac5c4b5da3b",
+      "bytes": 172928,
+      "sha256": "d80ab4fe651cb5722005181d6d73968d9deba193e1858aa1efb14c203be4f7bd",
+      "native_blob_equals_local_copy": true
+    }
+  ],
+  "source_branch": "main/chart-source-evidence-v1",
+  "mapping_source_admission": false,
+  "mapping_security_ids_admitted": 0,
+  "mapping_unresolved": 19,
+  "native_file_content_authentication": true
+}

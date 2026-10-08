@@ -1,0 +1,13 @@
+AssertionError [ERR_ASSERTION]: DEMO in reference slot: selected mode must match its permitted payload
+
+'DEMO' !== 'BLOCKED'
+
+    at invalidModeSlotIsWithheld (/workspace/target-v0-display/implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs:117:10)
+    at async /workspace/target-v0-display/implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs:209:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'DEMO',
+  expected: 'BLOCKED',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
