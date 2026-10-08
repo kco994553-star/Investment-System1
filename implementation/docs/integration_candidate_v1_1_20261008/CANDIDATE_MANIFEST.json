@@ -22,5 +22,14 @@
     "red_evidence": "integration-initial.log: ModuleNotFoundError jsonschema",
     "reason": "Full Web regression now collects adopted QGV tests. Existing triggers, permissions and commands remain unchanged."
   },
+  "github_ci_compatibility_repair": {
+    "evidence": "CI_COMPATIBILITY_REPAIR.md",
+    "changes": [
+      "web-mvp-validation checkout fetch-depth: 0",
+      "qgv-common-contract-vnext checkout fetch-depth: 0",
+      "web-mvp-validation Python 3.12 matches adopted QGV AST goldens"
+    ],
+    "preserved": "All scoring source, numeric/AST goldens, historical pins, READ_ONLY state and workflow triggers."
+  },
   "final_subject": "Resolve from actual containing API commit; do not infer from local intermediate merge SHA."
 }
