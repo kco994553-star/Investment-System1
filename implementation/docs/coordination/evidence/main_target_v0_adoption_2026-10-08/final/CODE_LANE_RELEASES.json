@@ -1,0 +1,40 @@
+{
+  "schema": "main-target-v0-code-lane-release-receipt-v1",
+  "recorded_at_utc": "2026-10-08T12:36:16Z",
+  "main_lease": "target-v0-20261008T114634Z",
+  "mode": "READ_ONLY",
+  "all_lanes_done": true,
+  "original_claim": {
+    "path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/CODE_LANE_CLAIMS.json",
+    "sha256": "a937b848ce472b669ab52539e00d4902f0a5eba3d9c1b284ab6acf9d96310366",
+    "bytes_preserved": true
+  },
+  "child_completions": [
+    {
+      "lane_id": "QGV_SCORING_STANDARD_V1",
+      "token": "target-v0-20261008T114634Z/qgv-v1",
+      "already_released": true,
+      "release_declared_in_this_checkpoint": false,
+      "released_at_utc": "2026-10-08T12:18:30Z",
+      "final_completion_observed_at_utc": "2026-10-08T12:36:16Z",
+      "merge": "753f225caa2da1877a1e6391df9e10b1085e9578",
+      "receipt": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json"
+    },
+    {
+      "lane_id": "TARGET_DISPLAY_AND_CHART_REJUDGMENT",
+      "token": "target-v0-20261008T114634Z/target-display",
+      "already_released": true,
+      "release_declared_in_this_checkpoint": false,
+      "released_at_utc": "2026-10-08T12:35:30Z",
+      "final_completion_observed_at_utc": "2026-10-08T12:36:16Z",
+      "merge": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "receipt": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json"
+    }
+  ],
+  "inherited_missing_data_lease": {
+    "token": "qgv-b47-muupb538",
+    "preserved": true
+  },
+  "containing_publication_readback": "PENDING",
+  "checkpoint": "evidence/main_target_v0_adoption_2026-10-08/final/CHECKPOINT_5.json"
+}

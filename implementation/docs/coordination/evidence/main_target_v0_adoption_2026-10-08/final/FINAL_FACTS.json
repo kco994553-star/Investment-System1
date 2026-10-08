@@ -1,0 +1,114 @@
+{
+  "schema": "main-target-v0-final-facts-v1",
+  "recorded_at_utc": "2026-10-08T12:36:16Z",
+  "global_parent": "deb751a027396a1e65ce668d32076da3b90f854d",
+  "mode": "READ_ONLY",
+  "own_lease": "target-v0-20261008T114634Z",
+  "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "pr63": {
+    "number": 63,
+    "base": "integration/web/production-state-presentation-v1",
+    "head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+    "merge": "558108a657839bc909272b103ab00faeaf25c957",
+    "tree": "5876f894a60d917f42ed9e1ab9bb3704c4463cf7",
+    "ci_runs": [
+      37768379561,
+      37768379569,
+      37768379552
+    ],
+    "closed_blocker": "PPA-F08",
+    "platform_closed": 1,
+    "total": 9
+  },
+  "target_source": {
+    "number": 64,
+    "base": "main/chart-source-evidence-v1",
+    "head": "40c7037870f5ad3b5538444fa3a8e545c65d213b",
+    "merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+    "tree": "c9ce0c0983f6a7775510401ff1f0ce158fc72648",
+    "sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+    "bytes": 4463,
+    "mapped": 0,
+    "unresolved": 19,
+    "tests": {
+      "pytest": 13,
+      "mini_pytest": 13
+    }
+  },
+  "target_display": {
+    "number": 66,
+    "base": "codex/chart-contract-mcp-api-v0-1",
+    "head": "4a613a5ce7a87f06a04116a355bc03c3225c4613",
+    "merge": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+    "tree": "94c3d0fdbbb835a163a0accdffbe8dabebfd2a8c",
+    "tests": {
+      "node": 99,
+      "new_source_adapter": 24,
+      "build": "PASS"
+    },
+    "browser": {
+      "passed": 4,
+      "viewports_locales": [
+        "360ko",
+        "390ko",
+        "390en",
+        "1280ko"
+      ],
+      "source_corruptions_per_case": 12,
+      "unexpected_demo_metadata_per_case": 1,
+      "mode_substitutions_per_case": 3,
+      "screenshots": 6
+    },
+    "ci": "NOT_TRIGGERED_BY_EXISTING_WORKFLOW; exacthead0checks0runs; no newworkflow",
+    "receipt_path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
+    "gates_closed": [
+      "A-S1"
+    ],
+    "gates_open": [
+      "A-S2",
+      "A-S3",
+      "A-G1",
+      "A-G2",
+      "A-G3"
+    ]
+  },
+  "qgv": {
+    "number": 65,
+    "base": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+    "head": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+    "merge": "753f225caa2da1877a1e6391df9e10b1085e9578",
+    "tree": "dd9a914ea3cd013f30ef78a30d5f05eb8fcdd669",
+    "tests": {
+      "passed": 503,
+      "existing": 488,
+      "new": 15,
+      "audit_golden": 71
+    },
+    "ci": {
+      "status": "SUCCESS",
+      "run_id": 37775779453,
+      "job_id": 113306115143,
+      "head_sha": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37775779453"
+    },
+    "standard": "v1",
+    "calibration": "UNCALIBRATED",
+    "effective_at": "2026-10-08T11:50:25Z",
+    "C03": "RESOLVED",
+    "numeric_invariance": true,
+    "receipt_path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json"
+  },
+  "all_lanes_done": true,
+  "receipt_inputs": {
+    "target_display": {
+      "path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
+      "sha256": "8a39e23e6487f2c2c8be496a375f06ea878b738f6a984bbfed6639378dc07689",
+      "bytes": 1678
+    },
+    "qgv": {
+      "path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json",
+      "sha256": "afd93fffa9dc4c27dac4ac3393e3c9799721e9c372c22e9c3221464266b5d150",
+      "bytes": 1865
+    }
+  }
+}

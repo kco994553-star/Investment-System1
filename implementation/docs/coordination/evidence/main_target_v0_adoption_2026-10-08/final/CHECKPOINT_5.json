@@ -1,0 +1,1754 @@
+{
+  "schema": "main-target-v0-final-checkpoint-v1",
+  "decision": "CDR-041",
+  "checkpoint": 5,
+  "recorded_at_utc": "2026-10-08T12:36:16Z",
+  "global_parent": "deb751a027396a1e65ce668d32076da3b90f854d",
+  "cycle_id": "target-v0-20261008T114634Z",
+  "mode": "READ_ONLY",
+  "mode_changed": false,
+  "tasks_used": 5,
+  "task_limit": 5,
+  "all_lanes_done": true,
+  "guard_state": {
+    "HG01": "VERIFIED",
+    "HG02": "PARTIAL_VERIFIED",
+    "HG03": "PARTIAL_VERIFIED",
+    "Gate_A": "CLOSED",
+    "actual_pause_wake": "NOT_RUN",
+    "automation_freeze": "ACTIVE",
+    "mode": "READ_ONLY",
+    "unattended_executor": false
+  },
+  "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "canonical_changed": false,
+  "own_lease_release": {
+    "token": "target-v0-20261008T114634Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_USER_TARGET_V0_ADOPTION_AND_PR63",
+    "branch": "integration/global-handoff-v1",
+    "acquired_at_utc": "2026-10-08T11:46:34Z",
+    "expires_at_utc": "2026-10-08T13:46:34.000Z",
+    "ttl_hours": 2,
+    "input_parent": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
+    "scope": [
+      "implementation/docs/coordination/**",
+      "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+      "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+      "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py",
+      "PR63 merge only into integration/web/production-state-presentation-v1",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/enums.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/models.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/factors.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/analysis.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/g_horizon.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/raw_map.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring_standard.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_scoring_standard_v1.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md",
+      "main/qgv-scoring-standard-v1-20261008:Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_book_catalog_financial.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_raw_and_providers.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_live_sources_and_persist.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_v_prior_and_c15.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_validation_framework.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_analysis_scoring.py",
+      "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+      "main/target-v0-display-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+      "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/v0/ADOPTION_RECEIPT.json",
+      "main/target-v0-display-20261008:implementation/docs/strategy_theme_owner/v0/ADOPTION_RECEIPT.json",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.mjs",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.test.mjs",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/build.mjs",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/page.html",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/us_live.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/leaderboard.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/html_sample.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/validation/historical.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_common_contract_vnext.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tools/qgv_contract_audit.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/product/render_app.py"
+    ],
+    "mode": "READ_ONLY",
+    "unattended": false,
+    "authority": "CDR039 explicit user TARGET/file/identity/display/PR63 named actions; no autonomous mode grant",
+    "released_at_utc": "2026-10-08T12:36:16Z",
+    "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_FINAL_PUBLICATION",
+    "reason": "Both directed source/display and QGV lanes completed; remaining dependencies OPEN",
+    "publication_observation": "DECLARED_TARGET_PENDING_REMOTE_READBACK"
+  },
+  "inherited_missing_data_lease": {
+    "token": "qgv-b47-muupb538",
+    "preserved": true
+  },
+  "receipt_inputs": {
+    "target_display": {
+      "path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
+      "sha256": "8a39e23e6487f2c2c8be496a375f06ea878b738f6a984bbfed6639378dc07689",
+      "bytes": 1678
+    },
+    "qgv": {
+      "path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json",
+      "sha256": "afd93fffa9dc4c27dac4ac3393e3c9799721e9c372c22e9c3221464266b5d150",
+      "bytes": 1865
+    }
+  },
+  "final_facts": "evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json",
+  "ready_main": 0,
+  "remaining_dependencies": [
+    "TARGET v0 input request ANSWERED by USER adopted immutable source; no renewed TARGET/listing question. Chart A-S1 CLOSED only on authenticated noncanonical display merge; A-S2/A-S3/A-G1/A-G2/A-G3 OPEN.",
+    "A-S2: 0/19 mapped, 19 UNRESOLVED; approved dated Security/Listing registry and reviewed company-binding source remain missing. ticker_hint and company namespace evidence are not identity.",
+    "A-S3: USER Theme values/catalog adopted; complete reviewed security assignment remains OPEN through A-S2. No synthesized identities or new Theme values.",
+    "A-G1/A-G2: source-bound P01 applicability and full per-path cross-owner/assembled acceptance remain OPEN; display-only adoption confers no Product grant.",
+    "A-G3/FPIA/GIE: independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation and assembled acceptance remain OPEN. Existing F1-F25 intake/history preserved; no new audit or countercase.",
+    "QGV v1 UNCALIBRATED adoption/C03 resolution prospective from 2026-10-08T11:50:25Z; numerical invariance and actual final test/CI facts at evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json. MissingData held lease qgv-b47-muupb538 preserved; production/Official-LIVE categories unchanged.",
+    "Platform PPA-F08 CLOSED after PR63 noncanonical Web merge; Platform closed 1/9, remaining 8. Other blockers, canonical integration and broader Product acceptance remain unchanged.",
+    "HG01 VERIFIED; HG02/HG03 PARTIAL_VERIFIED; actual E2E/PAUSE wake remain unproved; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; READ_ONLY."
+  ],
+  "publication_identity": "RESOLVES_FROM_CONTAINING_COMMIT; REMOTE_BYTE_CONTROL_READBACK_PENDING",
+  "previous_current_selectors": {
+    "main": {
+      "execution_state": "RUNNING_USER_TARGET_V0_NAMED_ACTIONS_READ_ONLY",
+      "last_processed_heads": {
+        "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+        "global_input": "d2e72027d1c80995efee738f9960c157e9e9fedc",
+        "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "chart": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+        "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+        "qgv_missing": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "qgv_reconciliation": "753f225caa2da1877a1e6391df9e10b1085e9578",
+        "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
+        "platform_independent_audit": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+        "platform_pr45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+        "platform_specialist": "3d997d34df8c76d4739d8bf71878cc12fec555d9",
+        "web": "558108a657839bc909272b103ab00faeaf25c957",
+        "qgv_pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+        "execution_coverage": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
+        "fpia_proposal": "7215a9f60ad7128b1748f405051eac684298614f",
+        "global_publication_parent": "dc2305ebc7d87cffa518da41fe94ea9c07139bc3",
+        "authority_proposal": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
+        "global_merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
+        "authority_sync_merge": "18e79a9a320b2a7b21a9fa2daad95d4e5d6eb5b3",
+        "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+        "chart_source_evidence": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+        "global_packet": "74cdffa463b88db0f00175e5f508a71086f159da",
+        "company_analysis_phase_a": "8cabb2e93bbc8425592221456f44801e0f4ca413",
+        "ppa_f08_candidate": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+        "directed_package_publication": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+        "qgv_standard_v1": "c72458c9608c4f7814fa2ed6e251bea465570d7c"
+      },
+      "next_runnable_backlog": [
+        {
+          "id": "CA-PHASE-A-SIDECAR-PREVIEW",
+          "lane": "Web/Chart/Product-contract",
+          "classification": "D1/D2 candidate",
+          "status": "DONE_OFFLINE_CANDIDATE_ONLY",
+          "branch_candidate": "main/company-analysis-phase-a-v1",
+          "write_set": [
+            "new ordinary sidecar paths only; exact files to claim before execution"
+          ],
+          "source": "implementation/docs/company_analysis_extension_v1_1/OWNER_DELTA_ROUTES.json",
+          "production_permission": false,
+          "source_head": "8cabb2e93bbc8425592221456f44801e0f4ca413",
+          "verification": "implementation/docs/coordination/evidence/main_company_analysis_cycle_2026-10-08/VERIFICATION.json"
+        },
+        {
+          "id": "PPA-F08-EXISTING-CI-COMPATIBILITY-REPAIR",
+          "lane": "PPA-F08",
+          "status": "DONE_SOURCE_BLOCKER_VERIFIED_IN_PROPOSAL_ONLY",
+          "classification": "EXISTING_CI_REGRESSION_BOUNDED_REPAIR",
+          "source": "research guard run37766480805/job113275278268 step10 existingbrowser line162/167",
+          "scope": "Show separately labelled persisted TARGET/Model weight beside ACTUAL NOT_AVAILABLE; no ACTUAL fallback. Repair only claimed app.js and existing browser runner; preserve normal cases and pass relevant regression.",
+          "write_set": [
+            "implementation/src/investment_system/product/web_assets/app.js",
+            "implementation/tools/web_state_presentation_browser_test.js"
+          ],
+          "priority": "BEFORE_TARGET_AND_FPIA",
+          "production_permission": false,
+          "source_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+          "verification": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/PPA_F08_COMPLETION.json",
+          "canonical_product_closures": 0
+        },
+        {
+          "id": "TARGET-DECISION-DRAFT-PACKAGE",
+          "lane": "TARGET",
+          "status": "DONE_DRAFT_PACKAGE_ONLY_WAIT_USER_SOURCE_INPUT",
+          "classification": "USER_EXPLICIT_NAMED_ACTION_DRAFT_ONLY",
+          "write_set": [
+            "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
+          ],
+          "scope": "Draft blank decision package; no TARGET values synthesized or source authority inferred",
+          "production_permission": false,
+          "publication": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+          "source_admission": 0
+        },
+        {
+          "id": "FPIA-RECORDED-DEFECT-INVENTORY",
+          "lane": "FPIA",
+          "status": "DONE_EXISTING_F1_F25_INTAKE_ONLY_WAIT_ACCEPTANCE",
+          "classification": "CDR-036_EXISTING_RECORD_CONSUMPTION_ONLY",
+          "source": "#42 / #46 / #47 existing defect and reproduction records",
+          "scope": "Number existing defects F1/F2; retain existing reproduction, current fix and remaining work; no new audit/counterexample; repair only resulting inventory; three same-method failures require 9A replanning",
+          "priority": "AFTER_PPA_F08_AND_HG02",
+          "production_permission": false,
+          "publication": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+          "new_source_fixes": 0,
+          "new_blocker_closures": 0
+        }
+      ],
+      "next_dependency_gates": [
+        "Chart A-S1/A-S2/A-S3: published blank TARGET/Theme and Security19 disposition remain WAIT current user/source authority;18 common-contract source returns and1Tokyo venue choice unresolved; source admission0, Chart6OPEN/Market0of19.",
+        "P01 source-bound TARGET applicability receipt absent; Web/source/Product per-file acceptance absent; original three ordinary asset planning scope preserved",
+        "CDR036 recorded-only FPIA F1-F25 intake consumed: all25 have existing recorded fixes, no code repair queued and no new closure. Independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation, GIE and assembled Chart acceptance remain WAIT/OPEN; B1-B4 discovery terminated.",
+        "QGV Missing-Data held lease qgv-b47-muupb538 preserved; operational policy return d156 consumed with12 hash matches, production categories remain",
+        "PPA-F08 source proposal 50e3d3e6942460468388af9b0ec969f3605f6ab1 draftPR63 verified by local affected checks and exact native CI3SUCCESS; source presentation blocker closed1, canonical integration/production closure0. Platform historical9 product blockers and source-owner ACK UNVERIFIED remain scoped history; no blanket subtraction or Product acceptance inferred.",
+        "HG01 VERIFIED; HG02 PARTIAL_VERIFIED pending authenticated canary deletion and complete executor identity/refusal matrix; HG03 PARTIAL_VERIFIED / actual E2E WAIT_PRODUCT_RUNTIME_CAPABILITY; actual PAUSE wake NOT_RUN; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; mode READ_ONLY."
+      ],
+      "resume_dependencies": [
+        "Chart A-S1/A-S2/A-S3: published blank TARGET/Theme and Security19 disposition remain WAIT current user/source authority;18 common-contract source returns and1Tokyo venue choice unresolved; source admission0, Chart6OPEN/Market0of19.",
+        "P01 source-bound TARGET applicability receipt absent; Web/source/Product per-file acceptance absent; original three ordinary asset planning scope preserved",
+        "CDR036 recorded-only FPIA F1-F25 intake consumed: all25 have existing recorded fixes, no code repair queued and no new closure. Independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation, GIE and assembled Chart acceptance remain WAIT/OPEN; B1-B4 discovery terminated.",
+        "QGV Missing-Data held lease qgv-b47-muupb538 preserved; operational policy return d156 consumed with12 hash matches, production categories remain",
+        "PPA-F08 source proposal 50e3d3e6942460468388af9b0ec969f3605f6ab1 draftPR63 verified by local affected checks and exact native CI3SUCCESS; source presentation blocker closed1, canonical integration/production closure0. Platform historical9 product blockers and source-owner ACK UNVERIFIED remain scoped history; no blanket subtraction or Product acceptance inferred.",
+        "HG01 VERIFIED; HG02 PARTIAL_VERIFIED pending authenticated canary deletion and complete executor identity/refusal matrix; HG03 PARTIAL_VERIFIED / actual E2E WAIT_PRODUCT_RUNTIME_CAPABILITY; actual PAUSE wake NOT_RUN; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; mode READ_ONLY."
+      ],
+      "wait_conditions": {
+        "ready_main_d1_d2": 0,
+        "independent_ready_main": 0,
+        "bounded_repair": 0,
+        "immediate_owner_return_unconsumed": 0,
+        "terminal_ci_unconsumed": 0,
+        "remaining_ssot_update": 0,
+        "product_gate_net_closed": 0,
+        "canonical_candidate": "NOT_READY",
+        "ready_main_d1_d2_d3_a": 0,
+        "gate_a": "PARTIAL_VERIFIED_DISABLED",
+        "pending_d3_reclassification": {
+          "d3_r": 7,
+          "d3_a_candidate": 1,
+          "wait_dependency": 3,
+          "executed": 0
+        },
+        "next_cycle_candidate_count": 0,
+        "current_stop_reason": "READY0_BOUNDED_TASKS_COMPLETE; EXTERNAL_USER_SOURCE_ACCEPTANCE_OR_TOOL_DEPENDENCIES_WAIT",
+        "source_product_blockers_closed": 1
+      },
+      "current_target_decision_bundle": {
+        "status": "USER_TARGET_V0_ADOPTED_SOURCE_AND_DISPLAY_MERGED_A_S1_CLOSED",
+        "source_owner": "USER",
+        "user_decision": "CDR039",
+        "source_head": "40c7037870f5ad3b5538444fa3a8e545c65d213b",
+        "source_merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+        "source_pr": 64,
+        "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+        "effective_at": "2026-10-08T20:37:00+09:00",
+        "target_input_request": "ANSWERED_USER_ARTIFACT_AND_LISTINGS; DO_NOT_REASK",
+        "security_mapping": {
+          "mapped": 0,
+          "unresolved": 19,
+          "dependency": "Approved dated Security/Listing registry and reviewed company-binding source missing"
+        },
+        "remaining_user_target_value_decisions": [],
+        "display": {
+          "schema": "target-v0-display-merge-completion-v1",
+          "authority": "CDR039",
+          "mode": "READ_ONLY",
+          "recorded_at_utc": "2026-10-08T12:35:30Z",
+          "pr": 66,
+          "base": "codex/chart-contract-mcp-api-v0-1",
+          "base_before": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+          "head": "4a613a5ce7a87f06a04116a355bc03c3225c4613",
+          "merge": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+          "tree": "94c3d0fdbbb835a163a0accdffbe8dabebfd2a8c",
+          "local_head": "6ac426653d260b00967dd7842a2cdd51579911df",
+          "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+          "source_pr": 64,
+          "source_merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+          "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+          "source_bytes": 4463,
+          "raw_source_unchanged": true,
+          "tests": {
+            "node": 99,
+            "new_source_adapter": 24,
+            "build": "PASS"
+          },
+          "browser": {
+            "passed": 4,
+            "viewports_locales": [
+              "360ko",
+              "390ko",
+              "390en",
+              "1280ko"
+            ],
+            "source_corruptions_per_case": 12,
+            "unexpected_demo_metadata_per_case": 1,
+            "mode_substitutions_per_case": 3,
+            "screenshots": 6
+          },
+          "ci": "NOT_TRIGGERED_BY_EXISTING_WORKFLOW; exacthead0checks0runs; no newworkflow",
+          "mapped": 0,
+          "unresolved": 19,
+          "gates_closed": [
+            "A-S1"
+          ],
+          "gates_open": [
+            "A-S2",
+            "A-S3",
+            "A-G1",
+            "A-G2",
+            "A-G3"
+          ],
+          "actual": "NOT_AVAILABLE_NO_TARGET_FALLBACK",
+          "qgv_recalculated": false,
+          "weights_or_themes_changed": false,
+          "canonical_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+          "holdout_consumed": false,
+          "automation_expansion": false,
+          "independent_review": "NO_REMAINING_CRITICAL_OR_IMPORTANT_FINDINGS"
+        }
+      },
+      "active_scoped_execution": {
+        "cycle_id": "target-v0-20261008T114634Z",
+        "authority": "CDR039",
+        "mode": "READ_ONLY",
+        "task_limit": 5,
+        "tasks_used": 4,
+        "lane_leases": [
+          {
+            "lane_id": "PR63_AUTHORIZED_NONCANONICAL_MERGE",
+            "branch": "integration/web/production-state-presentation-v1",
+            "head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+            "status": "DONE_PR63_MERGED_PLATFORM_PPA_F08_CLOSED"
+          },
+          {
+            "lane_id": "TARGET_V0_SOURCE",
+            "source_owner": "USER",
+            "proposal_branch": "main/target-v0-source-20261008",
+            "base_branch": "main/chart-source-evidence-v1",
+            "write_set": [
+              "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+              "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+              "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py"
+            ],
+            "status": "DONE_NONCANONICAL_PR64_MERGED"
+          },
+          {
+            "lane_id": "QGV_SCORING_STANDARD_V1",
+            "token": "target-v0-20261008T114634Z/qgv-v1",
+            "holder": "/root/qgv_standard_v1 under Main",
+            "branch": "main/qgv-scoring-standard-v1-20261008",
+            "base": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
+            "pr_base": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+            "write_set": [
+              "implementation/src/investment_system/contracts/enums.py",
+              "implementation/src/investment_system/contracts/models.py",
+              "implementation/src/investment_system/qgv/factors.py",
+              "implementation/src/investment_system/qgv/scoring.py",
+              "implementation/src/investment_system/qgv/analysis.py",
+              "implementation/src/investment_system/qgv/g_horizon.py",
+              "implementation/src/investment_system/qgv/raw_map.py",
+              "implementation/src/investment_system/qgv/scoring_standard.py",
+              "implementation/tests/test_qgv_scoring_standard_v1.py",
+              "implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md",
+              "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+              "implementation/tests/test_book_catalog_financial.py",
+              "implementation/tests/test_raw_and_providers.py",
+              "implementation/tests/test_live_sources_and_persist.py",
+              "implementation/tests/test_v_prior_and_c15.py",
+              "implementation/tests/test_validation_framework.py",
+              "implementation/tests/test_analysis_scoring.py",
+              "implementation/src/investment_system/qgv/us_live.py",
+              "implementation/src/investment_system/qgv/leaderboard.py",
+              "implementation/src/investment_system/qgv/html_sample.py",
+              "implementation/src/investment_system/validation/historical.py",
+              "implementation/tests/test_qgv_common_contract_vnext.py",
+              "implementation/tools/qgv_contract_audit.py",
+              "implementation/src/investment_system/product/render_app.py"
+            ],
+            "status": "DONE_NONCANONICAL_PR65_MERGED_LEASE_RELEASED",
+            "expires_at_utc": "2026-10-08T13:46:34.000Z",
+            "task_limit": 5,
+            "tasks_used": 5,
+            "adoption_receipt": "2026-10-08T11:50:25Z",
+            "protected_history": "appendC03resolution only; oldbytespreserved",
+            "held_missing_data_lease": "qgv-b47-muupb538 preserved",
+            "claim_amendment_reason": "Preserve71historicgoldens with exact13authorizedmetadata/status deltas and strict allnumeric invariance; remove2stale active Vnull descriptions. No fixture/runtime/trigger edits.",
+            "lease_active": false,
+            "released_at_utc": "2026-10-08T12:18:30Z"
+          },
+          {
+            "lane_id": "TARGET_DISPLAY_AND_CHART_REJUDGMENT",
+            "token": "target-v0-20261008T114634Z/target-display",
+            "holder": "/root/gate_a_e2e under Main",
+            "branch": "main/target-v0-display-20261008",
+            "base": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+            "pr_base": "codex/chart-contract-mcp-api-v0-1",
+            "write_set": [
+              "implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+              "implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+              "implementation/docs/portfolio_target_owner/v0/ADOPTION_RECEIPT.json",
+              "implementation/docs/strategy_theme_owner/v0/ADOPTION_RECEIPT.json",
+              "implementation/experiments/chart-contract-v0.1/target_v0_source.mjs",
+              "implementation/experiments/chart-contract-v0.1/target_v0_source.test.mjs",
+              "implementation/experiments/chart-contract-v0.1/build.mjs",
+              "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+              "implementation/experiments/chart-contract-v0.1/page.html",
+              "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+              "implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
+              "implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**"
+            ],
+            "status": "DONE_PR66_MERGED_LEASE_RELEASED",
+            "expires_at_utc": "2026-10-08T13:46:34.000Z",
+            "immutable_paths": [
+              "portfolio_contract.mjs",
+              "portfolio_reference.json",
+              "Product/P01/assembler/validator/identity/calculation contracts"
+            ],
+            "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+            "lease_active": false,
+            "released_at_utc": "2026-10-08T12:35:30Z"
+          }
+        ]
+      },
+      "directed_execution_checkpoint": {
+        "checkpoint": 2,
+        "decision": "CDR-038",
+        "status": "FINAL_DIRECTED_RECONCILIATION_WAIT_DEPENDENCIES",
+        "PPA_F08": {
+          "status": "VERIFIED_SOURCE_PRESENTATION_BLOCKER_CLOSED_IN_PROPOSAL_ONLY",
+          "pr": 63,
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/63",
+          "branch": "fix/ppa-f08-actual-availability-20261008",
+          "source_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+          "local_head": "a90e5d386f79eead3dbfba180f4f664bc0f53cc6",
+          "source_tree": "5876f894a60d917f42ed9e1ab9bb3704c4463cf7",
+          "source_parent": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+          "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+          "python_checks": 41,
+          "browser_checks": 31,
+          "research_guard_browser_checks": 10,
+          "repair_rounds": 2,
+          "source_evidence_sha256": "c0e7bbf7a258025db4a984f04c527e3c1385a276fd3e0226ac775e5ea0b2f5e3",
+          "source_verification_receipt": "ppa-f08-cycle2/verification-receipt.json",
+          "ci_status": "3_OF_3_EXACT_HEAD_SUCCESS",
+          "ci_runs": [
+            {
+              "id": 37768379561,
+              "name": "web-research-guard",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379561"
+            },
+            {
+              "id": 37768379569,
+              "name": "web-state-presentation",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379569"
+            },
+            {
+              "id": 37768379552,
+              "name": "web-mvp-validation",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379552"
+            }
+          ],
+          "ci_run_ids": [
+            37768379561,
+            37768379569,
+            37768379552
+          ],
+          "product_blocker_source_closed": [
+            "PPA-F08"
+          ],
+          "source_product_blockers_closed": 1,
+          "canonical_product_closures": 0,
+          "source_admission": false,
+          "merged": false,
+          "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/PPA_F08_COMPLETION.json",
+          "presentation": "ACTUAL remains finite-only or NOT_AVAILABLE; finite persisted TARGET/Model is separately labelled; original positive controls and relevant existing regressions retained"
+        },
+        "TARGET": {
+          "status": "DRAFT_PACKAGE_PUBLISHED_WAIT_USER_AND_SOURCE_INPUT",
+          "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+          "files": 7,
+          "path": "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/",
+          "source_admission": 0,
+          "security_admitted": 0,
+          "non_tokyo_rows": "18_WAIT_COMMON_CONTRACT_SOURCE_RETURNS",
+          "tokyo_row": "1_WAIT_USER_D29_VENUE_CHOICE",
+          "TARGET_Theme_values": "BLANK_WAIT_CURRENT_USER_AUTHORING_OR_EXACT_ADOPTED_ARTIFACT",
+          "decision_request": "ONE_26E_QUESTION_SENT_ASYNC_TO_CURRENT_USER_SESSION; RESPONSE_PENDING; NO_TIMEOUT_APPROVAL"
+        },
+        "FPIA": {
+          "status": "F1_F25_RECORDED_INTAKE_CONSUMED_NO_IMPLEMENTATION_REPAIR_QUEUED",
+          "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+          "files": 3,
+          "path": "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/",
+          "recorded_defects": 25,
+          "recorded_fixed_in_existing_candidate": 25,
+          "new_source_fixes": 0,
+          "new_blocker_closures": 0,
+          "new_audits_or_counterexamples": 0,
+          "remaining_acceptance": [
+            "Independently authorized exact verifier/launcher/runtime receipt; source consistency and greenCI are insufficient authentication.",
+            "Actual authenticated compound execution/receipt selection.",
+            "Acceptance-relevant dynamic/transitive/descendant/external coverage or independently verified enforced isolation; preserve NOT_CLAIMED/NOT_ANALYSED.",
+            "Generic optional importer packaging/attribution for any future subject that contains it; PR47 exact tree omits the recorded optional PR28 paths.",
+            "GIE/governance review and actual assembled merge-result acceptance remain OPEN/NOT_RUN."
+          ],
+          "B1_B4_discovery": "TERMINATED_BY_CDR036"
+        },
+        "next_ready": [],
+        "old_active_scoped_execution": {
+          "cycle_id": "main-directed-cycle2-20261008T110350Z",
+          "checkpoint": 2,
+          "classification": "USER_EXPLICIT_NAMED_ACTIONS_ONLY",
+          "production_autonomy_mode": "READ_ONLY",
+          "task_limit": 5,
+          "tasks_used": 4,
+          "lane_leases": [
+            {
+              "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
+              "branch": "fix/ppa-f08-actual-availability-20261008",
+              "base": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+              "write_set": [
+                "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
+                "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
+              ],
+              "status": "CLAIMED_USER_SCOPE",
+              "repair_rounds": 1
+            },
+            {
+              "lane_id": "TARGET_DECISION_PACKAGE",
+              "write_set": [
+                "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
+              ],
+              "status": "CLAIMED_DRAFT_ONLY"
+            },
+            {
+              "lane_id": "FPIA_EXISTING_RECORDED_DEFECT_INVENTORY",
+              "write_set": [
+                "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/**"
+              ],
+              "status": "CLAIMED_EXISTING_RECORDS_ONLY",
+              "no_new_cases": true
+            },
+            {
+              "lane_id": "HG02_CANARY_DELETE_REFUSAL",
+              "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+              "branch": "hg02-canary",
+              "expected_head": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+              "write_set": [
+                "single canary delete-ref denial test using documented updateRefs zero afterOid"
+              ],
+              "status": "CLAIMED_EXPLICIT_USER_PROBE",
+              "expires_at_utc": "2026-10-08T13:03:50.000Z"
+            }
+          ],
+          "progress": [
+            {
+              "task": 1,
+              "status": "PPA_COMPATIBILITY_REPAIR_IN_PROGRESS"
+            },
+            {
+              "task": 2,
+              "status": "TARGET_BLANK_DECISION_PACKAGE_PREPARED"
+            },
+            {
+              "task": 3,
+              "status": "FPIA_RECORDED_F1_F25_INTAKE_PREPARED_NO_CODE_REPAIR_QUEUED"
+            }
+          ]
+        },
+        "canonical_PR51": {
+          "head": "de84abf11df64041f666628493b8ae54f2e6df4a",
+          "guard_run": 37303986881,
+          "guard_job": 111743115747,
+          "guard_status": "SUCCESS_REUSED",
+          "merge": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+          "merged_at_utc": "2026-10-08T10:41:37Z",
+          "merged_by": "kco994553-star",
+          "merge_performed_by_this_session": false
+        },
+        "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/FINAL_RECEIPT.json",
+        "completed_lane_leases": [
+          {
+            "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
+            "branch": "fix/ppa-f08-actual-availability-20261008",
+            "base": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+            "write_set": [
+              "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
+              "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
+            ],
+            "status": "DONE_VERIFIED_SOURCE_PROPOSAL_ONLY",
+            "repair_rounds": 1,
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "TARGET_DECISION_PACKAGE",
+            "write_set": [
+              "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
+            ],
+            "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "FPIA_EXISTING_RECORDED_DEFECT_INVENTORY",
+            "write_set": [
+              "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/**"
+            ],
+            "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
+            "no_new_cases": true,
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "HG02_CANARY_DELETE_REFUSAL",
+            "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+            "branch": "hg02-canary",
+            "expected_head": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+            "write_set": [
+              "single canary delete-ref denial test using documented updateRefs zero afterOid"
+            ],
+            "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY",
+            "expires_at_utc": "2026-10-08T13:03:50.000Z",
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false,
+            "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
+            "GitHub_deletion_rule_proof": "NOT_RUN",
+            "canonical_and_canary_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
+          }
+        ],
+        "HG02_canary_deletion_attempt": {
+          "method": "Documented GraphQL updateRefs zero afterOid through existing update_ref wrapper",
+          "claim": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_CLAIM.json",
+          "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_RECEIPT.json",
+          "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
+          "reached_GitHub_branch_rule_enforcement": false,
+          "branch_rule_deletion_refusal_proven": false,
+          "canonical_and_canary_after": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+          "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY"
+        }
+      },
+      "last_checkpoint_at_utc": "2026-10-08T11:13:57Z",
+      "last_bounded_cycle": {
+        "cycle_id": "main-directed-cycle2-20261008T110350Z",
+        "checkpoint": 2,
+        "authority": "CDR035 same user-directed named actions plus CDR036 FPIA recorded-only override",
+        "global_publication_parent": "dc2305ebc7d87cffa518da41fe94ea9c07139bc3",
+        "tasks_used": 5,
+        "tasks_max": 5,
+        "task_ledger": {
+          "1": "Cycle2 own claim and bounded PPA-F08 TARGET/ACTUAL compatibility repair",
+          "2": "Seven blank TARGET decision artifacts published; one async26E question sent, admission0",
+          "3": "F1-F25 existing FPIA records published/consumed; all recorded fixes inherited, no repair queued or new closure",
+          "4": "Final exact PPA source/tree/local checks and three native SUCCESS CI runs consumed; bounded canary deletion wrapper attempt completed as tool dependency, not GitHub rule proof",
+          "5": "Containing final handoff/reconciliation targets own lease release and runtimeIDLE; remote byte/control readback follows"
+        },
+        "repair_rounds": {
+          "PPA_F08_RECORDED_TOTAL": 2
+        },
+        "end_reason": "TASK_CAP_COMPLETED_AND_READY0_ONLY_EXTERNAL_ACCEPTANCE_INPUT_OR_TOOL_DEPENDENCIES_REMAIN",
+        "end_mode": "READ_ONLY",
+        "mode_changed": false,
+        "unattended_enabled": false,
+        "source_product_blockers_closed": 1,
+        "production_gates_closed": 0,
+        "canonical_product_closures": 0,
+        "remaining_production_gates": 6,
+        "source_admissions": 0,
+        "main_D3_A_executed": 0,
+        "PPA_F08": {
+          "status": "VERIFIED_SOURCE_PRESENTATION_BLOCKER_CLOSED_IN_PROPOSAL_ONLY",
+          "pr": 63,
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/63",
+          "branch": "fix/ppa-f08-actual-availability-20261008",
+          "source_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+          "local_head": "a90e5d386f79eead3dbfba180f4f664bc0f53cc6",
+          "source_tree": "5876f894a60d917f42ed9e1ab9bb3704c4463cf7",
+          "source_parent": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+          "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+          "python_checks": 41,
+          "browser_checks": 31,
+          "research_guard_browser_checks": 10,
+          "repair_rounds": 2,
+          "source_evidence_sha256": "c0e7bbf7a258025db4a984f04c527e3c1385a276fd3e0226ac775e5ea0b2f5e3",
+          "source_verification_receipt": "ppa-f08-cycle2/verification-receipt.json",
+          "ci_status": "3_OF_3_EXACT_HEAD_SUCCESS",
+          "ci_runs": [
+            {
+              "id": 37768379561,
+              "name": "web-research-guard",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379561"
+            },
+            {
+              "id": 37768379569,
+              "name": "web-state-presentation",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379569"
+            },
+            {
+              "id": 37768379552,
+              "name": "web-mvp-validation",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379552"
+            }
+          ],
+          "ci_run_ids": [
+            37768379561,
+            37768379569,
+            37768379552
+          ],
+          "product_blocker_source_closed": [
+            "PPA-F08"
+          ],
+          "source_product_blockers_closed": 1,
+          "canonical_product_closures": 0,
+          "source_admission": false,
+          "merged": false,
+          "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/PPA_F08_COMPLETION.json",
+          "presentation": "ACTUAL remains finite-only or NOT_AVAILABLE; finite persisted TARGET/Model is separately labelled; original positive controls and relevant existing regressions retained"
+        },
+        "TARGET": {
+          "status": "DRAFT_PACKAGE_PUBLISHED_WAIT_USER_AND_SOURCE_INPUT",
+          "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+          "files": 7,
+          "path": "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/",
+          "source_admission": 0,
+          "security_admitted": 0,
+          "non_tokyo_rows": "18_WAIT_COMMON_CONTRACT_SOURCE_RETURNS",
+          "tokyo_row": "1_WAIT_USER_D29_VENUE_CHOICE",
+          "TARGET_Theme_values": "BLANK_WAIT_CURRENT_USER_AUTHORING_OR_EXACT_ADOPTED_ARTIFACT",
+          "decision_request": "ONE_26E_QUESTION_SENT_ASYNC_TO_CURRENT_USER_SESSION; RESPONSE_PENDING; NO_TIMEOUT_APPROVAL"
+        },
+        "FPIA": {
+          "status": "F1_F25_RECORDED_INTAKE_CONSUMED_NO_IMPLEMENTATION_REPAIR_QUEUED",
+          "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+          "files": 3,
+          "path": "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/",
+          "recorded_defects": 25,
+          "recorded_fixed_in_existing_candidate": 25,
+          "new_source_fixes": 0,
+          "new_blocker_closures": 0,
+          "new_audits_or_counterexamples": 0,
+          "remaining_acceptance": [
+            "Independently authorized exact verifier/launcher/runtime receipt; source consistency and greenCI are insufficient authentication.",
+            "Actual authenticated compound execution/receipt selection.",
+            "Acceptance-relevant dynamic/transitive/descendant/external coverage or independently verified enforced isolation; preserve NOT_CLAIMED/NOT_ANALYSED.",
+            "Generic optional importer packaging/attribution for any future subject that contains it; PR47 exact tree omits the recorded optional PR28 paths.",
+            "GIE/governance review and actual assembled merge-result acceptance remain OPEN/NOT_RUN."
+          ],
+          "B1_B4_discovery": "TERMINATED_BY_CDR036"
+        },
+        "hard_guards": {
+          "HG01": "VERIFIED",
+          "HG02": "PARTIAL_VERIFIED",
+          "HG03": "PARTIAL_VERIFIED",
+          "unattended": "DISABLED"
+        },
+        "gate_a": "CLOSED",
+        "freeze_active": true,
+        "next_ready": [],
+        "recorded_at_utc": "2026-10-08T11:13:57Z",
+        "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/FINAL_RECEIPT.json",
+        "completed_lane_leases": [
+          {
+            "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
+            "branch": "fix/ppa-f08-actual-availability-20261008",
+            "base": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+            "write_set": [
+              "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
+              "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
+            ],
+            "status": "DONE_VERIFIED_SOURCE_PROPOSAL_ONLY",
+            "repair_rounds": 1,
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "TARGET_DECISION_PACKAGE",
+            "write_set": [
+              "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
+            ],
+            "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "FPIA_EXISTING_RECORDED_DEFECT_INVENTORY",
+            "write_set": [
+              "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/**"
+            ],
+            "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
+            "no_new_cases": true,
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "HG02_CANARY_DELETE_REFUSAL",
+            "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+            "branch": "hg02-canary",
+            "expected_head": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+            "write_set": [
+              "single canary delete-ref denial test using documented updateRefs zero afterOid"
+            ],
+            "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY",
+            "expires_at_utc": "2026-10-08T13:03:50.000Z",
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false,
+            "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
+            "GitHub_deletion_rule_proof": "NOT_RUN",
+            "canonical_and_canary_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
+          }
+        ],
+        "HG02_canary_deletion_attempt": {
+          "method": "Documented GraphQL updateRefs zero afterOid through existing update_ref wrapper",
+          "claim": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_CLAIM.json",
+          "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_RECEIPT.json",
+          "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
+          "reached_GitHub_branch_rule_enforcement": false,
+          "branch_rule_deletion_refusal_proven": false,
+          "canonical_and_canary_after": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+          "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY"
+        }
+      },
+      "execution_budget": {
+        "new_agents": 0,
+        "repeat_audits": 0,
+        "local_full_repo_rerun": false,
+        "affected_FPIA": 294,
+        "net_blocker_reduction_current_delta": 0,
+        "current_cycle": {
+          "tasks_used": 5,
+          "max_tasks": 5,
+          "ci_dispatch": 0,
+          "full_audits": 0,
+          "d3_a_executed": 0,
+          "production_gate_closures": 0,
+          "product_blocker_source_fixed": 1,
+          "final_product_blockers_closed": 0,
+          "canonical_product_closures": 0,
+          "source_product_blockers_closed": 1,
+          "recorded_PPA_repair_rounds": 2
+        }
+      },
+      "governance_checkpoint": {
+        "decision": "CDR-024",
+        "merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
+        "proposal_head": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
+        "exact_blobs": {
+          "decision_register": "4ead1ef620d7b4f5addbb201681242020d0d55ca",
+          "historical_v1_0": "425c0b647073c16b021fb501c71b78c2d0248320",
+          "adopted_v1_1": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
+        },
+        "hard_guard_gaps": 11,
+        "gate_a": "PARTIAL_VERIFIED_DISABLED",
+        "pending_d3": {
+          "d3_r": 7,
+          "d3_a_candidate": 1,
+          "wait_dependency": 3,
+          "executed": 0
+        },
+        "receipt": "implementation/docs/coordination/evidence/main_autonomy_ssot_v1_1_2026-10-05/STATE_RECONCILIATION_RECEIPT.json",
+        "current_hard_guards": {
+          "HG01": "VERIFIED",
+          "HG02": "PARTIAL_VERIFIED",
+          "HG03": "PARTIAL_VERIFIED",
+          "unattended": "DISABLED"
+        },
+        "current_guard_verification": {
+          "HG02": {
+            "status": "PARTIAL_VERIFIED",
+            "canonical_direct_contents_api": "REJECTED_HTTP409_DOCUMENTED_IN_PR62_HISTORY",
+            "canonical_direct_push": "DENIED_BY_BRANCH_RULES",
+            "canary_direct_push": "DENIED_BY_BRANCH_RULES",
+            "canary_force_push": "DENIED_BY_BRANCH_RULES_GENUINE_NON_FAST_FORWARD",
+            "canary_delete": "NOT_RUN_GITHUB_RULE_ENFORCEMENT; WRAPPER_REFUSED_BEFORE_GITHUB",
+            "actor_login": "kco994553-star",
+            "credential_kind": "UNCONFIRMED_APP_VS_PERSONAL_TOKEN",
+            "claude_auth_path": "UNAVAILABLE",
+            "canonical_force_push_delete": "NOT_RUN_PROHIBITED_BY_USER",
+            "ruleset_id": 24499602,
+            "ruleset_state": "ACTIVE_EMPTY_BYPASS_CANONICAL_AND_HG02_CANARY",
+            "ruleset_target_updated_externally_at_utc": "2026-10-08T10:44:36Z",
+            "ruleset_mutated_by_this_session": false,
+            "target_addition_request": "NOT_NEEDED_EXTERNAL_USER_UPDATE_ALREADY_OBSERVED",
+            "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_RECEIPT.json",
+            "canary_delete_attempt": {
+              "method": "Documented GraphQL updateRefs zero afterOid through existing update_ref wrapper",
+              "claim": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_CLAIM.json",
+              "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_RECEIPT.json",
+              "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
+              "reached_GitHub_branch_rule_enforcement": false,
+              "branch_rule_deletion_refusal_proven": false,
+              "canonical_and_canary_after": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+              "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY"
+            }
+          },
+          "HG03": {
+            "status": "PARTIAL_VERIFIED",
+            "repository_runtime_canary": "EXISTING_EVIDENCE_REUSED",
+            "isolated_controller_executor_checks": "7_PASS",
+            "actual_e2e": "WAIT_PRODUCT_RUNTIME_CAPABILITY",
+            "actual_pause_wake": "NOT_RUN",
+            "isolated_pause_fixture": "PASS_NOT_ACTUAL_WAKE_PROOF",
+            "watcher_enabled": true,
+            "dedicated_executor_enabled": false,
+            "official_existing_work_wake_start": "UNAVAILABLE",
+            "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/GATE_A_E2E.json"
+          },
+          "gate_a_verdict": "CLOSED",
+          "automation_expansion_freeze": "ACTIVE",
+          "mode_change_authority": "USER_ONLY"
+        }
+      },
+      "current_cycle_evidence": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/"
+    },
+    "runtime": {
+      "schema": "autonomy-runtime-state-v1",
+      "cycle_id": "target-v0-20261008T114634Z",
+      "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "branch": "integration/global-handoff-v1",
+      "started_at_epoch": 1791459994,
+      "lease_expires_at_epoch": 1791467194,
+      "tasks_used": 4,
+      "repair_rounds": {},
+      "status": "RUNNING_USER_DIRECTED_READ_ONLY",
+      "activation": "CDR039_EXPLICIT_NAMED_ACTIONS_NO_MODE_CHANGE",
+      "unattended_executor": false,
+      "last_cycle": {
+        "cycle_id": "main-directed-cycle2-20261008T110350Z",
+        "checkpoint": 2,
+        "authority": "CDR035 same user-directed named actions plus CDR036 FPIA recorded-only override",
+        "global_publication_parent": "dc2305ebc7d87cffa518da41fe94ea9c07139bc3",
+        "tasks_used": 5,
+        "tasks_max": 5,
+        "task_ledger": {
+          "1": "Cycle2 own claim and bounded PPA-F08 TARGET/ACTUAL compatibility repair",
+          "2": "Seven blank TARGET decision artifacts published; one async26E question sent, admission0",
+          "3": "F1-F25 existing FPIA records published/consumed; all recorded fixes inherited, no repair queued or new closure",
+          "4": "Final exact PPA source/tree/local checks and three native SUCCESS CI runs consumed; bounded canary deletion wrapper attempt completed as tool dependency, not GitHub rule proof",
+          "5": "Containing final handoff/reconciliation targets own lease release and runtimeIDLE; remote byte/control readback follows"
+        },
+        "repair_rounds": {
+          "PPA_F08_RECORDED_TOTAL": 2
+        },
+        "end_reason": "TASK_CAP_COMPLETED_AND_READY0_ONLY_EXTERNAL_ACCEPTANCE_INPUT_OR_TOOL_DEPENDENCIES_REMAIN",
+        "end_mode": "READ_ONLY",
+        "mode_changed": false,
+        "unattended_enabled": false,
+        "source_product_blockers_closed": 1,
+        "production_gates_closed": 0,
+        "canonical_product_closures": 0,
+        "remaining_production_gates": 6,
+        "source_admissions": 0,
+        "main_D3_A_executed": 0,
+        "PPA_F08": {
+          "status": "VERIFIED_SOURCE_PRESENTATION_BLOCKER_CLOSED_IN_PROPOSAL_ONLY",
+          "pr": 63,
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/63",
+          "branch": "fix/ppa-f08-actual-availability-20261008",
+          "source_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+          "local_head": "a90e5d386f79eead3dbfba180f4f664bc0f53cc6",
+          "source_tree": "5876f894a60d917f42ed9e1ab9bb3704c4463cf7",
+          "source_parent": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+          "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+          "python_checks": 41,
+          "browser_checks": 31,
+          "research_guard_browser_checks": 10,
+          "repair_rounds": 2,
+          "source_evidence_sha256": "c0e7bbf7a258025db4a984f04c527e3c1385a276fd3e0226ac775e5ea0b2f5e3",
+          "source_verification_receipt": "ppa-f08-cycle2/verification-receipt.json",
+          "ci_status": "3_OF_3_EXACT_HEAD_SUCCESS",
+          "ci_runs": [
+            {
+              "id": 37768379561,
+              "name": "web-research-guard",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379561"
+            },
+            {
+              "id": 37768379569,
+              "name": "web-state-presentation",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379569"
+            },
+            {
+              "id": 37768379552,
+              "name": "web-mvp-validation",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379552"
+            }
+          ],
+          "ci_run_ids": [
+            37768379561,
+            37768379569,
+            37768379552
+          ],
+          "product_blocker_source_closed": [
+            "PPA-F08"
+          ],
+          "source_product_blockers_closed": 1,
+          "canonical_product_closures": 0,
+          "source_admission": false,
+          "merged": false,
+          "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/PPA_F08_COMPLETION.json",
+          "presentation": "ACTUAL remains finite-only or NOT_AVAILABLE; finite persisted TARGET/Model is separately labelled; original positive controls and relevant existing regressions retained"
+        },
+        "TARGET": {
+          "status": "DRAFT_PACKAGE_PUBLISHED_WAIT_USER_AND_SOURCE_INPUT",
+          "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+          "files": 7,
+          "path": "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/",
+          "source_admission": 0,
+          "security_admitted": 0,
+          "non_tokyo_rows": "18_WAIT_COMMON_CONTRACT_SOURCE_RETURNS",
+          "tokyo_row": "1_WAIT_USER_D29_VENUE_CHOICE",
+          "TARGET_Theme_values": "BLANK_WAIT_CURRENT_USER_AUTHORING_OR_EXACT_ADOPTED_ARTIFACT",
+          "decision_request": "ONE_26E_QUESTION_SENT_ASYNC_TO_CURRENT_USER_SESSION; RESPONSE_PENDING; NO_TIMEOUT_APPROVAL"
+        },
+        "FPIA": {
+          "status": "F1_F25_RECORDED_INTAKE_CONSUMED_NO_IMPLEMENTATION_REPAIR_QUEUED",
+          "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+          "files": 3,
+          "path": "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/",
+          "recorded_defects": 25,
+          "recorded_fixed_in_existing_candidate": 25,
+          "new_source_fixes": 0,
+          "new_blocker_closures": 0,
+          "new_audits_or_counterexamples": 0,
+          "remaining_acceptance": [
+            "Independently authorized exact verifier/launcher/runtime receipt; source consistency and greenCI are insufficient authentication.",
+            "Actual authenticated compound execution/receipt selection.",
+            "Acceptance-relevant dynamic/transitive/descendant/external coverage or independently verified enforced isolation; preserve NOT_CLAIMED/NOT_ANALYSED.",
+            "Generic optional importer packaging/attribution for any future subject that contains it; PR47 exact tree omits the recorded optional PR28 paths.",
+            "GIE/governance review and actual assembled merge-result acceptance remain OPEN/NOT_RUN."
+          ],
+          "B1_B4_discovery": "TERMINATED_BY_CDR036"
+        },
+        "hard_guards": {
+          "HG01": "VERIFIED",
+          "HG02": "PARTIAL_VERIFIED",
+          "HG03": "PARTIAL_VERIFIED",
+          "unattended": "DISABLED"
+        },
+        "gate_a": "CLOSED",
+        "freeze_active": true,
+        "next_ready": [],
+        "recorded_at_utc": "2026-10-08T11:13:57Z",
+        "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/FINAL_RECEIPT.json",
+        "completed_lane_leases": [
+          {
+            "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
+            "branch": "fix/ppa-f08-actual-availability-20261008",
+            "base": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+            "write_set": [
+              "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
+              "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
+            ],
+            "status": "DONE_VERIFIED_SOURCE_PROPOSAL_ONLY",
+            "repair_rounds": 1,
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "TARGET_DECISION_PACKAGE",
+            "write_set": [
+              "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
+            ],
+            "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "FPIA_EXISTING_RECORDED_DEFECT_INVENTORY",
+            "write_set": [
+              "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/**"
+            ],
+            "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
+            "no_new_cases": true,
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "HG02_CANARY_DELETE_REFUSAL",
+            "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+            "branch": "hg02-canary",
+            "expected_head": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+            "write_set": [
+              "single canary delete-ref denial test using documented updateRefs zero afterOid"
+            ],
+            "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY",
+            "expires_at_utc": "2026-10-08T13:03:50.000Z",
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false,
+            "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
+            "GitHub_deletion_rule_proof": "NOT_RUN",
+            "canonical_and_canary_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
+          }
+        ],
+        "HG02_canary_deletion_attempt": {
+          "method": "Documented GraphQL updateRefs zero afterOid through existing update_ref wrapper",
+          "claim": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_CLAIM.json",
+          "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_RECEIPT.json",
+          "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
+          "reached_GitHub_branch_rule_enforcement": false,
+          "branch_rule_deletion_refusal_proven": false,
+          "canonical_and_canary_after": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+          "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY"
+        }
+      }
+    },
+    "ledger": {
+      "summary": {
+        "lane_a_open": 6,
+        "lane_a_closed": 0,
+        "lane_b_admitted": 0,
+        "lane_b_total": 19,
+        "lane_b_families": 8
+      },
+      "fresh_scope": {
+        "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "global": "087f4c1f2ea54b5a8182aea8cb3b1a0ca5b5aa2b",
+        "chart": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+        "chart_lease": null,
+        "global_input": "648e86871f91c81f37f67d8c6a7a939b8f18f094",
+        "platform": "78a51462f89eac8e34647cddc4e53ed97e831178",
+        "fpia_successor": "7215a9f60ad7128b1748f405051eac684298614f",
+        "qgv_reconciliation": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
+        "platform_specialist": "3d997d34df8c76d4739d8bf71878cc12fec555d9",
+        "global_publication_parent": "aaedbed36c30411195679eaddc06ad7e4d2ff9e5",
+        "authority_proposal": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
+        "global_merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
+        "authority_policy_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+        "chart_source_evidence": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
+      },
+      "chart_gate_rejudgement": {
+        "head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+        "CLOSED": 0,
+        "total": 6,
+        "gates": {
+          "A-S1": "OWNER_UNASSIGNED",
+          "A-S2": "OWNER_UNASSIGNED",
+          "A-S3": "OWNER_UNASSIGNED",
+          "A-G1": "OWNER_ACTION_PENDING",
+          "A-G2": "PARTIALLY_RESOLVED",
+          "A-G3": "PARTIALLY_RESOLVED"
+        },
+        "evidence": "implementation/docs/coordination/evidence/main_chart_owner_cycle_2026-10-06/FINAL_RECEIPT.json",
+        "reason": "No actual source owner claim/admitted return, Product/Web return or independent trust/governance acceptance received."
+      },
+      "current_dependency_reconciliation": "evidence/main_single_control_cycle_2026-10-07/DEPENDENCY_RECONCILIATION.json",
+      "current_source_evidence_roles": {
+        "schema": "main-bounded-source-evidence-roles-v1",
+        "authority": [
+          "USER_SINGLE_CONTROL_V1",
+          "CDR-029",
+          "CDR-030"
+        ],
+        "scope": "new docs-only evidence extraction; no old owner path written",
+        "roles": [
+          {
+            "gate": "A-S1",
+            "role": "Portfolio TARGET evidence writer",
+            "accountable_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+            "session": "main-single-control-20261007T104552Z",
+            "branch": "main/chart-source-evidence-v1",
+            "base_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+            "write_set": [
+              "implementation/docs/portfolio_target_owner/**"
+            ],
+            "claim": "MAIN_ASSIGNED_EVIDENCE_SCOPE",
+            "source_admission": false,
+            "protected_source_owner_transfer": false,
+            "claim_lease": {
+              "token": "main-single-control-20261007T104552Z",
+              "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+              "ttl_hours": 2,
+              "expires_at_utc": "2026-10-07T12:49:36.888779+00:00"
+            },
+            "lease": null,
+            "lease_status": "RELEASED_IN_SOURCE_RETURN_PUBLICATION",
+            "return_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
+          },
+          {
+            "gate": "A-S2",
+            "role": "Common Security19 evidence writer",
+            "accountable_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+            "session": "main-single-control-20261007T104552Z",
+            "branch": "main/chart-source-evidence-v1",
+            "base_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+            "write_set": [
+              "implementation/docs/security_map19_owner/**"
+            ],
+            "claim": "MAIN_ASSIGNED_EVIDENCE_SCOPE",
+            "source_admission": false,
+            "protected_source_owner_transfer": false,
+            "claim_lease": {
+              "token": "main-single-control-20261007T104552Z",
+              "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+              "ttl_hours": 2,
+              "expires_at_utc": "2026-10-07T12:49:36.888779+00:00"
+            },
+            "lease": null,
+            "lease_status": "RELEASED_IN_SOURCE_RETURN_PUBLICATION",
+            "return_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
+          },
+          {
+            "gate": "A-S3",
+            "role": "Strategy Theme source-evidence writer",
+            "accountable_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+            "session": "main-single-control-20261007T104552Z",
+            "branch": "main/chart-source-evidence-v1",
+            "base_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+            "write_set": [
+              "implementation/docs/strategy_theme_owner/**"
+            ],
+            "claim": "MAIN_ASSIGNED_EVIDENCE_SCOPE",
+            "source_admission": false,
+            "protected_source_owner_transfer": false,
+            "claim_lease": {
+              "token": "main-single-control-20261007T104552Z",
+              "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+              "ttl_hours": 2,
+              "expires_at_utc": "2026-10-07T12:49:36.888779+00:00"
+            },
+            "lease": null,
+            "lease_status": "RELEASED_IN_SOURCE_RETURN_PUBLICATION",
+            "return_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5"
+          }
+        ],
+        "absent_before_claim": true,
+        "gate_closures": 0,
+        "source_authority_status": "UNRESOLVED_REQUIRED_FIELDS_RETAINED",
+        "source_publication": {
+          "commit": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+          "tree": "4b5dc8b2fe2efb9820d05fbf6a5b512665cf9389",
+          "identity": "TREE_IDENTICAL / API_NATIVE_COMMIT",
+          "readback_verified": true
+        }
+      },
+      "current_mode": "READ_ONLY",
+      "current_main_lease": null,
+      "directed_execution_checkpoint": {
+        "checkpoint": 2,
+        "decision": "CDR-038",
+        "status": "FINAL_DIRECTED_RECONCILIATION_WAIT_DEPENDENCIES",
+        "PPA_F08": {
+          "status": "VERIFIED_SOURCE_PRESENTATION_BLOCKER_CLOSED_IN_PROPOSAL_ONLY",
+          "pr": 63,
+          "url": "https://github.com/kco994553-star/Investment-System1/pull/63",
+          "branch": "fix/ppa-f08-actual-availability-20261008",
+          "source_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+          "local_head": "a90e5d386f79eead3dbfba180f4f664bc0f53cc6",
+          "source_tree": "5876f894a60d917f42ed9e1ab9bb3704c4463cf7",
+          "source_parent": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+          "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+          "python_checks": 41,
+          "browser_checks": 31,
+          "research_guard_browser_checks": 10,
+          "repair_rounds": 2,
+          "source_evidence_sha256": "c0e7bbf7a258025db4a984f04c527e3c1385a276fd3e0226ac775e5ea0b2f5e3",
+          "source_verification_receipt": "ppa-f08-cycle2/verification-receipt.json",
+          "ci_status": "3_OF_3_EXACT_HEAD_SUCCESS",
+          "ci_runs": [
+            {
+              "id": 37768379561,
+              "name": "web-research-guard",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379561"
+            },
+            {
+              "id": 37768379569,
+              "name": "web-state-presentation",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379569"
+            },
+            {
+              "id": 37768379552,
+              "name": "web-mvp-validation",
+              "status": "completed",
+              "conclusion": "success",
+              "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+              "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379552"
+            }
+          ],
+          "ci_run_ids": [
+            37768379561,
+            37768379569,
+            37768379552
+          ],
+          "product_blocker_source_closed": [
+            "PPA-F08"
+          ],
+          "source_product_blockers_closed": 1,
+          "canonical_product_closures": 0,
+          "source_admission": false,
+          "merged": false,
+          "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/PPA_F08_COMPLETION.json",
+          "presentation": "ACTUAL remains finite-only or NOT_AVAILABLE; finite persisted TARGET/Model is separately labelled; original positive controls and relevant existing regressions retained"
+        },
+        "TARGET": {
+          "status": "DRAFT_PACKAGE_PUBLISHED_WAIT_USER_AND_SOURCE_INPUT",
+          "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+          "files": 7,
+          "path": "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/",
+          "source_admission": 0,
+          "security_admitted": 0,
+          "non_tokyo_rows": "18_WAIT_COMMON_CONTRACT_SOURCE_RETURNS",
+          "tokyo_row": "1_WAIT_USER_D29_VENUE_CHOICE",
+          "TARGET_Theme_values": "BLANK_WAIT_CURRENT_USER_AUTHORING_OR_EXACT_ADOPTED_ARTIFACT",
+          "decision_request": "ONE_26E_QUESTION_SENT_ASYNC_TO_CURRENT_USER_SESSION; RESPONSE_PENDING; NO_TIMEOUT_APPROVAL"
+        },
+        "FPIA": {
+          "status": "F1_F25_RECORDED_INTAKE_CONSUMED_NO_IMPLEMENTATION_REPAIR_QUEUED",
+          "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+          "files": 3,
+          "path": "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/",
+          "recorded_defects": 25,
+          "recorded_fixed_in_existing_candidate": 25,
+          "new_source_fixes": 0,
+          "new_blocker_closures": 0,
+          "new_audits_or_counterexamples": 0,
+          "remaining_acceptance": [
+            "Independently authorized exact verifier/launcher/runtime receipt; source consistency and greenCI are insufficient authentication.",
+            "Actual authenticated compound execution/receipt selection.",
+            "Acceptance-relevant dynamic/transitive/descendant/external coverage or independently verified enforced isolation; preserve NOT_CLAIMED/NOT_ANALYSED.",
+            "Generic optional importer packaging/attribution for any future subject that contains it; PR47 exact tree omits the recorded optional PR28 paths.",
+            "GIE/governance review and actual assembled merge-result acceptance remain OPEN/NOT_RUN."
+          ],
+          "B1_B4_discovery": "TERMINATED_BY_CDR036"
+        },
+        "next_ready": [],
+        "old_active_scoped_execution": {
+          "cycle_id": "main-directed-cycle2-20261008T110350Z",
+          "checkpoint": 2,
+          "classification": "USER_EXPLICIT_NAMED_ACTIONS_ONLY",
+          "production_autonomy_mode": "READ_ONLY",
+          "task_limit": 5,
+          "tasks_used": 4,
+          "lane_leases": [
+            {
+              "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
+              "branch": "fix/ppa-f08-actual-availability-20261008",
+              "base": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+              "write_set": [
+                "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
+                "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
+              ],
+              "status": "CLAIMED_USER_SCOPE",
+              "repair_rounds": 1
+            },
+            {
+              "lane_id": "TARGET_DECISION_PACKAGE",
+              "write_set": [
+                "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
+              ],
+              "status": "CLAIMED_DRAFT_ONLY"
+            },
+            {
+              "lane_id": "FPIA_EXISTING_RECORDED_DEFECT_INVENTORY",
+              "write_set": [
+                "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/**"
+              ],
+              "status": "CLAIMED_EXISTING_RECORDS_ONLY",
+              "no_new_cases": true
+            },
+            {
+              "lane_id": "HG02_CANARY_DELETE_REFUSAL",
+              "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+              "branch": "hg02-canary",
+              "expected_head": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+              "write_set": [
+                "single canary delete-ref denial test using documented updateRefs zero afterOid"
+              ],
+              "status": "CLAIMED_EXPLICIT_USER_PROBE",
+              "expires_at_utc": "2026-10-08T13:03:50.000Z"
+            }
+          ],
+          "progress": [
+            {
+              "task": 1,
+              "status": "PPA_COMPATIBILITY_REPAIR_IN_PROGRESS"
+            },
+            {
+              "task": 2,
+              "status": "TARGET_BLANK_DECISION_PACKAGE_PREPARED"
+            },
+            {
+              "task": 3,
+              "status": "FPIA_RECORDED_F1_F25_INTAKE_PREPARED_NO_CODE_REPAIR_QUEUED"
+            }
+          ]
+        },
+        "canonical_PR51": {
+          "head": "de84abf11df64041f666628493b8ae54f2e6df4a",
+          "guard_run": 37303986881,
+          "guard_job": 111743115747,
+          "guard_status": "SUCCESS_REUSED",
+          "merge": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+          "merged_at_utc": "2026-10-08T10:41:37Z",
+          "merged_by": "kco994553-star",
+          "merge_performed_by_this_session": false
+        },
+        "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/FINAL_RECEIPT.json",
+        "completed_lane_leases": [
+          {
+            "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
+            "branch": "fix/ppa-f08-actual-availability-20261008",
+            "base": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+            "write_set": [
+              "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
+              "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
+            ],
+            "status": "DONE_VERIFIED_SOURCE_PROPOSAL_ONLY",
+            "repair_rounds": 1,
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "TARGET_DECISION_PACKAGE",
+            "write_set": [
+              "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
+            ],
+            "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "FPIA_EXISTING_RECORDED_DEFECT_INVENTORY",
+            "write_set": [
+              "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/**"
+            ],
+            "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
+            "no_new_cases": true,
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false
+          },
+          {
+            "lane_id": "HG02_CANARY_DELETE_REFUSAL",
+            "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+            "branch": "hg02-canary",
+            "expected_head": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+            "write_set": [
+              "single canary delete-ref denial test using documented updateRefs zero afterOid"
+            ],
+            "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY",
+            "expires_at_utc": "2026-10-08T13:03:50.000Z",
+            "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
+            "lease_active": false,
+            "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
+            "GitHub_deletion_rule_proof": "NOT_RUN",
+            "canonical_and_canary_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
+          }
+        ],
+        "HG02_canary_deletion_attempt": {
+          "method": "Documented GraphQL updateRefs zero afterOid through existing update_ref wrapper",
+          "claim": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_CLAIM.json",
+          "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_RECEIPT.json",
+          "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
+          "reached_GitHub_branch_rule_enforcement": false,
+          "branch_rule_deletion_refusal_proven": false,
+          "canonical_and_canary_after": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+          "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY"
+        }
+      }
+    },
+    "ledger_entries": {
+      "MAIN-CHART-A-S1-20261005": {
+        "id": "MAIN-CHART-A-S1-20261005",
+        "finding": "A-S1",
+        "authoritative_owner": null,
+        "owner_assignment": "BOUNDED_MAIN_EVIDENCE_ROLE_ASSIGNED_SOURCE_AUTHORITY_UNVERIFIED",
+        "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+        "exact_path_branch_pr": {
+          "branch": "main/chart-source-evidence-v1",
+          "head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+          "pr": null,
+          "write_set": [
+            "implementation/docs/portfolio_target_owner/**"
+          ]
+        },
+        "acceptance_criteria": "Owner-admitted current TARGET root+revision: exact19 rows, cash, current applicability, independently evidenced availability, source/hash/use, completeness+denominator.",
+        "dependencies": [],
+        "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+        "source_decision": [
+          "CDR-015",
+          "CDR-016 §13",
+          "CDR-017",
+          "user takeover directive 2026-10-05"
+        ],
+        "delivery_channel": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+        "delivered_at": null,
+        "receipt": null,
+        "last_consumed_revision": null,
+        "state": "ROUTED",
+        "next_action": "Consume reference-only RETURN; acquire missing authoritative source fields before admission; no ticker-generated identity or Theme version",
+        "production_gate": "OPEN",
+        "request_status": "WAIT_SOURCE_AUTHORITY",
+        "latest_source_owner_intake": {
+          "cycle_id": "main-single-control-20261007T104552Z",
+          "issue": 54,
+          "status": "EVIDENCE_ROLE_ASSIGNED_REFERENCE_RETURNED_SOURCE_ADMISSION_UNVERIFIED",
+          "owner_claim_received": true,
+          "source_branch": "main/chart-source-evidence-v1",
+          "source_write_set": [
+            "implementation/docs/portfolio_target_owner/**"
+          ],
+          "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+          "source_authority_admitted": false,
+          "routed": true
+        },
+        "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+        "evidence_owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "evidence_role": "Portfolio TARGET evidence writer",
+        "delivery_history": [
+          {
+            "issue": 54,
+            "comment_id": 6036635943,
+            "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+            "status": "ROUTED_EXACT_READBACK_VERIFIED",
+            "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+            "byte_readback_verified": true,
+            "received_by_owner": false,
+            "automatically_executed": false
+          }
+        ],
+        "delivery_comment_id": 6036635943,
+        "delivery_body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+        "evidence_state": "EVIDENCE_READY_REFERENCE_ONLY"
+      },
+      "MAIN-CHART-A-S2-20261005": {
+        "id": "MAIN-CHART-A-S2-20261005",
+        "finding": "A-S2",
+        "authoritative_owner": null,
+        "owner_assignment": "BOUNDED_MAIN_EVIDENCE_ROLE_ASSIGNED_SOURCE_AUTHORITY_UNVERIFIED",
+        "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+        "exact_path_branch_pr": {
+          "branch": "main/chart-source-evidence-v1",
+          "head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+          "pr": null,
+          "write_set": [
+            "implementation/docs/security_map19_owner/**"
+          ]
+        },
+        "acceptance_criteria": "Exact19 root-row to reviewed company/issuer/common security mapping, share form, dated provenance/revision, C25/D29 preserved; no ticker-generated identity.",
+        "dependencies": [
+          "A-S1 root binding"
+        ],
+        "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+        "source_decision": [
+          "CDR-015",
+          "CDR-016 §13",
+          "CDR-017",
+          "user takeover directive 2026-10-05"
+        ],
+        "delivery_channel": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+        "delivered_at": null,
+        "receipt": null,
+        "last_consumed_revision": null,
+        "state": "ROUTED",
+        "next_action": "Consume reference-only RETURN; acquire missing authoritative source fields before admission; no ticker-generated identity or Theme version",
+        "production_gate": "OPEN",
+        "request_status": "WAIT_SOURCE_AUTHORITY",
+        "latest_source_owner_intake": {
+          "cycle_id": "main-single-control-20261007T104552Z",
+          "issue": 54,
+          "status": "EVIDENCE_ROLE_ASSIGNED_REFERENCE_RETURNED_SOURCE_ADMISSION_UNVERIFIED",
+          "owner_claim_received": true,
+          "source_branch": "main/chart-source-evidence-v1",
+          "source_write_set": [
+            "implementation/docs/security_map19_owner/**"
+          ],
+          "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+          "source_authority_admitted": false,
+          "routed": true
+        },
+        "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+        "evidence_owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "evidence_role": "Common Security19 evidence writer",
+        "delivery_history": [
+          {
+            "issue": 54,
+            "comment_id": 6036635943,
+            "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+            "status": "ROUTED_EXACT_READBACK_VERIFIED",
+            "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+            "byte_readback_verified": true,
+            "received_by_owner": false,
+            "automatically_executed": false
+          }
+        ],
+        "delivery_comment_id": 6036635943,
+        "delivery_body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+        "evidence_state": "EVIDENCE_READY_REFERENCE_ONLY"
+      },
+      "MAIN-CHART-A-S3-20261005": {
+        "id": "MAIN-CHART-A-S3-20261005",
+        "finding": "A-S3",
+        "authoritative_owner": null,
+        "owner_assignment": "BOUNDED_MAIN_EVIDENCE_ROLE_ASSIGNED_SOURCE_AUTHORITY_UNVERIFIED",
+        "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+        "exact_path_branch_pr": {
+          "branch": "main/chart-source-evidence-v1",
+          "head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+          "pr": null,
+          "write_set": [
+            "implementation/docs/strategy_theme_owner/**"
+          ]
+        },
+        "acceptance_criteria": "Adopted user-defined Theme catalog/concepts/version and complete security assignment revision; source/hash/validity+root binding, authored30/25/20/25 preserved.",
+        "dependencies": [
+          "A-S1",
+          "A-S2"
+        ],
+        "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+        "source_decision": [
+          "CDR-015",
+          "CDR-016 §13",
+          "CDR-017",
+          "user takeover directive 2026-10-05"
+        ],
+        "delivery_channel": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+        "delivered_at": null,
+        "receipt": null,
+        "last_consumed_revision": null,
+        "state": "ROUTED",
+        "next_action": "Consume reference-only RETURN; acquire missing authoritative source fields before admission; no ticker-generated identity or Theme version",
+        "production_gate": "OPEN",
+        "request_status": "WAIT_SOURCE_AUTHORITY",
+        "latest_source_owner_intake": {
+          "cycle_id": "main-single-control-20261007T104552Z",
+          "issue": 54,
+          "status": "EVIDENCE_ROLE_ASSIGNED_REFERENCE_RETURNED_SOURCE_ADMISSION_UNVERIFIED",
+          "owner_claim_received": true,
+          "source_branch": "main/chart-source-evidence-v1",
+          "source_write_set": [
+            "implementation/docs/strategy_theme_owner/**"
+          ],
+          "source_head": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+          "source_authority_admitted": false,
+          "routed": true
+        },
+        "latest_chart_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+        "evidence_owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "evidence_role": "Strategy Theme source-evidence writer",
+        "delivery_history": [
+          {
+            "issue": 54,
+            "comment_id": 6036635943,
+            "body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+            "status": "ROUTED_EXACT_READBACK_VERIFIED",
+            "url": "https://github.com/kco994553-star/Investment-System1/issues/54#issuecomment-6036635943",
+            "byte_readback_verified": true,
+            "received_by_owner": false,
+            "automatically_executed": false
+          }
+        ],
+        "delivery_comment_id": 6036635943,
+        "delivery_body_sha256": "243d3700c80c994c31265c785eed8972f550ad02bb973033a05d625fed84b56a",
+        "evidence_state": "EVIDENCE_READY_REFERENCE_ONLY"
+      },
+      "MAIN-PLATFORM-WEB-PPAF08-20261005": {
+        "id": "MAIN-PLATFORM-WEB-PPAF08-20261005",
+        "finding": "actual_weight fallback to target_weight in Web snapshot context",
+        "authoritative_owner": "Web source owner not yet accepted; existing PR36 protected scope",
+        "owner_assignment": "OWNER_ACTION_REQUIRED",
+        "source_HEAD": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "exact_path_branch_pr": {
+          "branch": "integration/web/production-state-presentation-v1",
+          "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "pr": 36
+        },
+        "state": "ROUTED",
+        "acceptance_criteria": [
+          "bounded writer/write-set/lease before source changes",
+          "missing ACTUAL remains unavailable in snapshot/actual context",
+          "TARGET/model separate; no browser aggregation",
+          "exact negative+valid evidence"
+        ],
+        "delivery_comment_id": 5988663367,
+        "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-5988663367",
+        "delivery_body_sha256": "93e749e90beb84d5826af51b8e61a6a5cd677e2c7721810761ce353e4d995f46",
+        "delivered_at": "2026-10-05T05:27:23Z",
+        "receipt": null,
+        "last_consumed_revision": null,
+        "next_action": "Accountable Web owner returns scope acceptance or OWNER_UNASSIGNED; Main does not seize protected source",
+        "request_status": "SENT"
+      }
+    }
+  },
+  "historical_inputs": {
+    "MAIN_TAKEOVER_STATE.json": {
+      "sha256": "d7e91d2ec237379f3678db490855c7b46ea31e11043d3a9fc01ea43e091f65af",
+      "bytes": 100174
+    },
+    "governance/AUTONOMY_RUNTIME_STATE.json": {
+      "sha256": "e94ffff32759a66a1f7b64c9d0fe0a9ad1cc80377a739461d285bdee7b13ea96",
+      "bytes": 27085
+    },
+    "OWNER_ROUTING_LEDGER.json": {
+      "sha256": "1af5c317c515e834a8095aa1e53ab7eeab2dcd8e883f22201b11548df796f0bc",
+      "bytes": 129281
+    },
+    "evidence/main_target_v0_adoption_2026-10-08/CODE_LANE_CLAIMS.json": {
+      "sha256": "a937b848ce472b669ab52539e00d4902f0a5eba3d9c1b284ab6acf9d96310366",
+      "bytes": 3956
+    },
+    "GLOBAL_CURRENT_HANDOFF.md": {
+      "sha256": "db1b7ee8909ca7289e2d682e01c2c79ad98b046112a2ea2dfeda6ee2ff061c0a",
+      "bytes": 55861
+    },
+    "GLOBAL_STATUS_INDEX.md": {
+      "sha256": "dc16ad826fcc85ffcb7d06bd0fff2e6555f63c3373549c7fa4baed19d02d66ba",
+      "bytes": 45966
+    },
+    "COORDINATION_DECISION_REGISTER.md": {
+      "sha256": "2a9477d20e68eb4def75fd443c4b0a4696a02b2649c3597f22ce7228f5f998d3",
+      "bytes": 111411
+    },
+    "GLOBAL_HANDOFF_HISTORY.md": {
+      "sha256": "b4f69e8912ca19d4fdf74b6606ae37dcf547e0a84064adb6d192f702ed60f094",
+      "bytes": 49812
+    }
+  },
+  "admissions": {
+    "USER_TARGET_weight_root": 1,
+    "Security_identity": 0,
+    "Security_total": 19
+  },
+  "chart_gates_closed": 1,
+  "chart_gates_total": 6,
+  "calibration_adoption": false
+}

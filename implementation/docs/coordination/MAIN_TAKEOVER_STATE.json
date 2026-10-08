@@ -25,10 +25,10 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "RUNNING_USER_TARGET_V0_NAMED_ACTIONS_READ_ONLY",
+  "execution_state": "IDLE_READ_ONLY_DEPENDENCY_WAIT",
   "last_processed_heads": {
     "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
-    "global_input": "d2e72027d1c80995efee738f9960c157e9e9fedc",
+    "global_input": "deb751a027396a1e65ce668d32076da3b90f854d",
     "fpia": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
     "chart": "47dce4c768f315ff6036e8a34c177920c1d50b14",
     "fpia_successor": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
@@ -42,7 +42,7 @@
     "qgv_pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
     "execution_coverage": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
     "fpia_proposal": "7215a9f60ad7128b1748f405051eac684298614f",
-    "global_publication_parent": "dc2305ebc7d87cffa518da41fe94ea9c07139bc3",
+    "global_publication_parent": "deb751a027396a1e65ce668d32076da3b90f854d",
     "authority_proposal": "1d2c8195ffb936c56ba91d9fe41e627ef172a5e7",
     "global_merge_result": "82de599ee90a6beabd774dd22e7e2b939ff75b44",
     "authority_sync_merge": "18e79a9a320b2a7b21a9fa2daad95d4e5d6eb5b3",
@@ -79,63 +79,7 @@
     "unattended_executor": "DISABLED_PENDING_GATE_A"
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": {
-    "token": "target-v0-20261008T114634Z",
-    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "lane_id": "MAIN_USER_TARGET_V0_ADOPTION_AND_PR63",
-    "branch": "integration/global-handoff-v1",
-    "acquired_at_utc": "2026-10-08T11:46:34Z",
-    "expires_at_utc": "2026-10-08T13:46:34.000Z",
-    "ttl_hours": 2,
-    "input_parent": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
-    "scope": [
-      "implementation/docs/coordination/**",
-      "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
-      "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
-      "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py",
-      "PR63 merge only into integration/web/production-state-presentation-v1",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/enums.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/models.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/factors.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/analysis.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/g_horizon.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/raw_map.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring_standard.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_scoring_standard_v1.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md",
-      "main/qgv-scoring-standard-v1-20261008:Investment-System1 · Contract Conflict Register 2026-09-23.md",
-      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_book_catalog_financial.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_raw_and_providers.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_live_sources_and_persist.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_v_prior_and_c15.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_validation_framework.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_analysis_scoring.py",
-      "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
-      "main/target-v0-display-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
-      "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/v0/ADOPTION_RECEIPT.json",
-      "main/target-v0-display-20261008:implementation/docs/strategy_theme_owner/v0/ADOPTION_RECEIPT.json",
-      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.mjs",
-      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.test.mjs",
-      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/build.mjs",
-      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_app.js",
-      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/page.html",
-      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
-      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
-      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/us_live.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/leaderboard.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/html_sample.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/validation/historical.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_common_contract_vnext.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/tools/qgv_contract_audit.py",
-      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/product/render_app.py"
-    ],
-    "mode": "READ_ONLY",
-    "unattended": false,
-    "authority": "CDR039 explicit user TARGET/file/identity/display/PR63 named actions; no autonomous mode grant"
-  },
+  "lease": null,
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -249,7 +193,7 @@
     {
       "id": "PPA-F08-EXISTING-CI-COMPATIBILITY-REPAIR",
       "lane": "PPA-F08",
-      "status": "DONE_SOURCE_BLOCKER_VERIFIED_IN_PROPOSAL_ONLY",
+      "status": "DONE_NONCANONICAL_PR63_MERGED_PLATFORM_PPA_F08_CLOSED",
       "classification": "EXISTING_CI_REGRESSION_BOUNDED_REPAIR",
       "source": "research guard run37766480805/job113275278268 step10 existingbrowser line162/167",
       "scope": "Show separately labelled persisted TARGET/Model weight beside ACTUAL NOT_AVAILABLE; no ACTUAL fallback. Repair only claimed app.js and existing browser runner; preserve normal cases and pass relevant regression.",
@@ -261,12 +205,14 @@
       "production_permission": false,
       "source_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
       "verification": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/PPA_F08_COMPLETION.json",
-      "canonical_product_closures": 0
+      "canonical_product_closures": 0,
+      "merge": "558108a657839bc909272b103ab00faeaf25c957",
+      "superseded_by": "evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json"
     },
     {
       "id": "TARGET-DECISION-DRAFT-PACKAGE",
       "lane": "TARGET",
-      "status": "DONE_DRAFT_PACKAGE_ONLY_WAIT_USER_SOURCE_INPUT",
+      "status": "SUPERSEDED_BY_USER_ADOPTED_TARGET_V0_SOURCE_AND_DISPLAY",
       "classification": "USER_EXPLICIT_NAMED_ACTION_DRAFT_ONLY",
       "write_set": [
         "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
@@ -274,7 +220,8 @@
       "scope": "Draft blank decision package; no TARGET values synthesized or source authority inferred",
       "production_permission": false,
       "publication": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
-      "source_admission": 0
+      "source_admission": 0,
+      "superseded_by": "evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json"
     },
     {
       "id": "FPIA-RECORDED-DEFECT-INVENTORY",
@@ -291,35 +238,74 @@
     }
   ],
   "next_dependency_gates": [
-    "Chart A-S1/A-S2/A-S3: published blank TARGET/Theme and Security19 disposition remain WAIT current user/source authority;18 common-contract source returns and1Tokyo venue choice unresolved; source admission0, Chart6OPEN/Market0of19.",
-    "P01 source-bound TARGET applicability receipt absent; Web/source/Product per-file acceptance absent; original three ordinary asset planning scope preserved",
-    "CDR036 recorded-only FPIA F1-F25 intake consumed: all25 have existing recorded fixes, no code repair queued and no new closure. Independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation, GIE and assembled Chart acceptance remain WAIT/OPEN; B1-B4 discovery terminated.",
-    "QGV Missing-Data held lease qgv-b47-muupb538 preserved; operational policy return d156 consumed with12 hash matches, production categories remain",
-    "PPA-F08 source proposal 50e3d3e6942460468388af9b0ec969f3605f6ab1 draftPR63 verified by local affected checks and exact native CI3SUCCESS; source presentation blocker closed1, canonical integration/production closure0. Platform historical9 product blockers and source-owner ACK UNVERIFIED remain scoped history; no blanket subtraction or Product acceptance inferred.",
-    "HG01 VERIFIED; HG02 PARTIAL_VERIFIED pending authenticated canary deletion and complete executor identity/refusal matrix; HG03 PARTIAL_VERIFIED / actual E2E WAIT_PRODUCT_RUNTIME_CAPABILITY; actual PAUSE wake NOT_RUN; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; mode READ_ONLY."
+    "TARGET v0 input request ANSWERED by USER adopted immutable source; no renewed TARGET/listing question. Chart A-S1 CLOSED only on authenticated noncanonical display merge; A-S2/A-S3/A-G1/A-G2/A-G3 OPEN.",
+    "A-S2: 0/19 mapped, 19 UNRESOLVED; approved dated Security/Listing registry and reviewed company-binding source remain missing. ticker_hint and company namespace evidence are not identity.",
+    "A-S3: USER Theme values/catalog adopted; complete reviewed security assignment remains OPEN through A-S2. No synthesized identities or new Theme values.",
+    "A-G1/A-G2: source-bound P01 applicability and full per-path cross-owner/assembled acceptance remain OPEN; display-only adoption confers no Product grant.",
+    "A-G3/FPIA/GIE: independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation and assembled acceptance remain OPEN. Existing F1-F25 intake/history preserved; no new audit or countercase.",
+    "QGV v1 UNCALIBRATED adoption/C03 resolution prospective from 2026-10-08T11:50:25Z; numerical invariance and actual final test/CI facts at evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json. MissingData held lease qgv-b47-muupb538 preserved; production/Official-LIVE categories unchanged.",
+    "Platform PPA-F08 CLOSED after PR63 noncanonical Web merge; Platform closed 1/9, remaining 8. Other blockers, canonical integration and broader Product acceptance remain unchanged.",
+    "HG01 VERIFIED; HG02/HG03 PARTIAL_VERIFIED; actual E2E/PAUSE wake remain unproved; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; READ_ONLY."
   ],
   "last_lease": {
-    "token": "main-directed-cycle2-20261008T110350Z",
+    "token": "target-v0-20261008T114634Z",
     "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
     "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
-    "lane_id": "MAIN_USER_DIRECTED_BOUNDED_ACTIONS",
+    "lane_id": "MAIN_USER_TARGET_V0_ADOPTION_AND_PR63",
     "branch": "integration/global-handoff-v1",
-    "acquired_at_utc": "2026-10-08T11:03:50Z",
-    "expires_at_utc": "2026-10-08T13:03:50.000Z",
+    "acquired_at_utc": "2026-10-08T11:46:34Z",
+    "expires_at_utc": "2026-10-08T13:46:34.000Z",
     "ttl_hours": 2,
-    "input_parent": "9b18106f86a58b6d908cbbae4e36dbcb4751eae2",
+    "input_parent": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
     "scope": [
       "implementation/docs/coordination/**",
-      "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
-      "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js",
-      "hg02-canary: authenticated deletion-refusal probe only; never canonical force/delete"
+      "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+      "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+      "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py",
+      "PR63 merge only into integration/web/production-state-presentation-v1",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/enums.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/models.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/factors.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/analysis.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/g_horizon.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/raw_map.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring_standard.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_scoring_standard_v1.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md",
+      "main/qgv-scoring-standard-v1-20261008:Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_book_catalog_financial.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_raw_and_providers.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_live_sources_and_persist.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_v_prior_and_c15.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_validation_framework.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_analysis_scoring.py",
+      "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+      "main/target-v0-display-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+      "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/v0/ADOPTION_RECEIPT.json",
+      "main/target-v0-display-20261008:implementation/docs/strategy_theme_owner/v0/ADOPTION_RECEIPT.json",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.mjs",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.test.mjs",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/build.mjs",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/page.html",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
+      "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/us_live.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/leaderboard.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/html_sample.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/validation/historical.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_common_contract_vnext.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/tools/qgv_contract_audit.py",
+      "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/product/render_app.py"
     ],
     "mode": "READ_ONLY",
     "unattended": false,
-    "authority": "CDR035 same direct named-action instruction plus CDR036 inventory override; no mode grant",
-    "released_at_utc": "2026-10-08T11:13:57Z",
+    "authority": "CDR039 explicit user TARGET/file/identity/display/PR63 named actions; no autonomous mode grant",
+    "released_at_utc": "2026-10-08T12:36:16Z",
     "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_FINAL_PUBLICATION",
-    "reason": "Five bounded tasks complete; READY0; remaining lanes WAIT external input, acceptance or capability",
+    "reason": "Both directed source/display and QGV lanes completed; remaining dependencies OPEN",
     "publication_observation": "DECLARED_TARGET_PENDING_REMOTE_READBACK"
   },
   "publication_dedup_rule": "Fresh heads/dependency hashes/exact comment-event IDs/run attempts + consumed immutable returns; own docs-only ref movement with no READY/material delta is a no-op. Last publication identity resolves from containing commit, not fabricated self-reference.",
@@ -330,111 +316,9 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": {
-    "cycle_id": "target-v0-20261008T114634Z",
-    "authority": "CDR039",
-    "mode": "READ_ONLY",
-    "task_limit": 5,
-    "tasks_used": 4,
-    "lane_leases": [
-      {
-        "lane_id": "PR63_AUTHORIZED_NONCANONICAL_MERGE",
-        "branch": "integration/web/production-state-presentation-v1",
-        "head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
-        "status": "DONE_PR63_MERGED_PLATFORM_PPA_F08_CLOSED"
-      },
-      {
-        "lane_id": "TARGET_V0_SOURCE",
-        "source_owner": "USER",
-        "proposal_branch": "main/target-v0-source-20261008",
-        "base_branch": "main/chart-source-evidence-v1",
-        "write_set": [
-          "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
-          "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
-          "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py"
-        ],
-        "status": "DONE_NONCANONICAL_PR64_MERGED"
-      },
-      {
-        "lane_id": "QGV_SCORING_STANDARD_V1",
-        "token": "target-v0-20261008T114634Z/qgv-v1",
-        "holder": "/root/qgv_standard_v1 under Main",
-        "branch": "main/qgv-scoring-standard-v1-20261008",
-        "base": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
-        "pr_base": "codex/qgv-architecture-reconciliation-review-2026-10-05",
-        "write_set": [
-          "implementation/src/investment_system/contracts/enums.py",
-          "implementation/src/investment_system/contracts/models.py",
-          "implementation/src/investment_system/qgv/factors.py",
-          "implementation/src/investment_system/qgv/scoring.py",
-          "implementation/src/investment_system/qgv/analysis.py",
-          "implementation/src/investment_system/qgv/g_horizon.py",
-          "implementation/src/investment_system/qgv/raw_map.py",
-          "implementation/src/investment_system/qgv/scoring_standard.py",
-          "implementation/tests/test_qgv_scoring_standard_v1.py",
-          "implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md",
-          "Investment-System1 · Contract Conflict Register 2026-09-23.md",
-          "implementation/tests/test_book_catalog_financial.py",
-          "implementation/tests/test_raw_and_providers.py",
-          "implementation/tests/test_live_sources_and_persist.py",
-          "implementation/tests/test_v_prior_and_c15.py",
-          "implementation/tests/test_validation_framework.py",
-          "implementation/tests/test_analysis_scoring.py",
-          "implementation/src/investment_system/qgv/us_live.py",
-          "implementation/src/investment_system/qgv/leaderboard.py",
-          "implementation/src/investment_system/qgv/html_sample.py",
-          "implementation/src/investment_system/validation/historical.py",
-          "implementation/tests/test_qgv_common_contract_vnext.py",
-          "implementation/tools/qgv_contract_audit.py",
-          "implementation/src/investment_system/product/render_app.py"
-        ],
-        "status": "DONE_NONCANONICAL_PR65_MERGED_LEASE_RELEASED",
-        "expires_at_utc": "2026-10-08T13:46:34.000Z",
-        "task_limit": 5,
-        "tasks_used": 5,
-        "adoption_receipt": "2026-10-08T11:50:25Z",
-        "protected_history": "appendC03resolution only; oldbytespreserved",
-        "held_missing_data_lease": "qgv-b47-muupb538 preserved",
-        "claim_amendment_reason": "Preserve71historicgoldens with exact13authorizedmetadata/status deltas and strict allnumeric invariance; remove2stale active Vnull descriptions. No fixture/runtime/trigger edits.",
-        "lease_active": false,
-        "released_at_utc": "2026-10-08T12:18:30Z"
-      },
-      {
-        "lane_id": "TARGET_DISPLAY_AND_CHART_REJUDGMENT",
-        "token": "target-v0-20261008T114634Z/target-display",
-        "holder": "/root/gate_a_e2e under Main",
-        "branch": "main/target-v0-display-20261008",
-        "base": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
-        "pr_base": "codex/chart-contract-mcp-api-v0-1",
-        "write_set": [
-          "implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
-          "implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
-          "implementation/docs/portfolio_target_owner/v0/ADOPTION_RECEIPT.json",
-          "implementation/docs/strategy_theme_owner/v0/ADOPTION_RECEIPT.json",
-          "implementation/experiments/chart-contract-v0.1/target_v0_source.mjs",
-          "implementation/experiments/chart-contract-v0.1/target_v0_source.test.mjs",
-          "implementation/experiments/chart-contract-v0.1/build.mjs",
-          "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
-          "implementation/experiments/chart-contract-v0.1/page.html",
-          "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
-          "implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
-          "implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**"
-        ],
-        "status": "DONE_PR66_MERGED_LEASE_RELEASED",
-        "expires_at_utc": "2026-10-08T13:46:34.000Z",
-        "immutable_paths": [
-          "portfolio_contract.mjs",
-          "portfolio_reference.json",
-          "Product/P01/assembler/validator/identity/calculation contracts"
-        ],
-        "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
-        "lease_active": false,
-        "released_at_utc": "2026-10-08T12:35:30Z"
-      }
-    ]
-  },
+  "active_scoped_execution": null,
   "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
-  "last_checkpoint_at_utc": "2026-10-08T11:13:57Z",
+  "last_checkpoint_at_utc": "2026-10-08T12:36:16Z",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
   "dependency_content_hash": "43e318a021affb7dfbc4e7b71d447fc5651deef50e452e5ed7ccf1a312f4c5af",
   "execution_budget": {
@@ -454,7 +338,26 @@
       "final_product_blockers_closed": 0,
       "canonical_product_closures": 0,
       "source_product_blockers_closed": 1,
-      "recorded_PPA_repair_rounds": 2
+      "recorded_PPA_repair_rounds": 2,
+      "cycle_id": "target-v0-20261008T114634Z",
+      "chart_gates_closed": 1,
+      "chart_gates_total": 6,
+      "platform_product_blockers_closed": 1,
+      "target_weight_root_admitted": 1,
+      "security_identity_admitted": 0,
+      "actual_qgv_test_receipt": {
+        "passed": 503,
+        "existing": 488,
+        "new": 15,
+        "audit_golden": 71
+      },
+      "actual_qgv_ci": {
+        "status": "SUCCESS",
+        "run_id": 37775779453,
+        "job_id": 113306115143,
+        "head_sha": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37775779453"
+      }
     }
   },
   "last_terminal_ci": [
@@ -719,7 +622,7 @@
     "product_gate_net_closed": 0,
     "canonical_candidate": "NOT_READY",
     "ready_main_d1_d2_d3_a": 0,
-    "gate_a": "PARTIAL_VERIFIED_DISABLED",
+    "gate_a": "CLOSED",
     "pending_d3_reclassification": {
       "d3_r": 7,
       "d3_a_candidate": 1,
@@ -727,8 +630,12 @@
       "executed": 0
     },
     "next_cycle_candidate_count": 0,
-    "current_stop_reason": "READY0_BOUNDED_TASKS_COMPLETE; EXTERNAL_USER_SOURCE_ACCEPTANCE_OR_TOOL_DEPENDENCIES_WAIT",
-    "source_product_blockers_closed": 1
+    "current_stop_reason": "READY0; ANSWERED_TARGET_SOURCE; REMAINING_CONTRACT_ACCEPTANCE_OR_CAPABILITY_DEPENDENCIES",
+    "source_product_blockers_closed": 1,
+    "platform_product_blockers_closed": 1,
+    "platform_product_blockers_total": 9,
+    "chart_gates_closed": 1,
+    "chart_gates_open": 5
   },
   "delegation_return_checkpoint": {
     "decision": "CDR-023",
@@ -759,7 +666,7 @@
       "adopted_v1_1": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
     },
     "hard_guard_gaps": 11,
-    "gate_a": "PARTIAL_VERIFIED_DISABLED",
+    "gate_a": "CLOSED",
     "pending_d3": {
       "d3_r": 7,
       "d3_a_candidate": 1,
@@ -817,7 +724,8 @@
       "gate_a_verdict": "CLOSED",
       "automation_expansion_freeze": "ACTIVE",
       "mode_change_authority": "USER_ONLY"
-    }
+    },
+    "current_completion_receipt": "evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json"
   },
   "dependency_fingerprint": {
     "basis": "CDR-024 merged identities + hard-guard and pending-D3 blobs",
@@ -840,191 +748,192 @@
     }
   },
   "last_bounded_cycle": {
-    "cycle_id": "main-directed-cycle2-20261008T110350Z",
-    "checkpoint": 2,
-    "authority": "CDR035 same user-directed named actions plus CDR036 FPIA recorded-only override",
-    "global_publication_parent": "dc2305ebc7d87cffa518da41fe94ea9c07139bc3",
-    "tasks_used": 5,
-    "tasks_max": 5,
-    "task_ledger": {
-      "1": "Cycle2 own claim and bounded PPA-F08 TARGET/ACTUAL compatibility repair",
-      "2": "Seven blank TARGET decision artifacts published; one async26E question sent, admission0",
-      "3": "F1-F25 existing FPIA records published/consumed; all recorded fixes inherited, no repair queued or new closure",
-      "4": "Final exact PPA source/tree/local checks and three native SUCCESS CI runs consumed; bounded canary deletion wrapper attempt completed as tool dependency, not GitHub rule proof",
-      "5": "Containing final handoff/reconciliation targets own lease release and runtimeIDLE; remote byte/control readback follows"
-    },
-    "repair_rounds": {
-      "PPA_F08_RECORDED_TOTAL": 2
-    },
-    "end_reason": "TASK_CAP_COMPLETED_AND_READY0_ONLY_EXTERNAL_ACCEPTANCE_INPUT_OR_TOOL_DEPENDENCIES_REMAIN",
-    "end_mode": "READ_ONLY",
+    "schema": "main-target-v0-final-checkpoint-v1",
+    "decision": "CDR-041",
+    "checkpoint": 5,
+    "recorded_at_utc": "2026-10-08T12:36:16Z",
+    "global_parent": "deb751a027396a1e65ce668d32076da3b90f854d",
+    "cycle_id": "target-v0-20261008T114634Z",
+    "mode": "READ_ONLY",
     "mode_changed": false,
-    "unattended_enabled": false,
-    "source_product_blockers_closed": 1,
-    "production_gates_closed": 0,
-    "canonical_product_closures": 0,
-    "remaining_production_gates": 6,
-    "source_admissions": 0,
-    "main_D3_A_executed": 0,
-    "PPA_F08": {
-      "status": "VERIFIED_SOURCE_PRESENTATION_BLOCKER_CLOSED_IN_PROPOSAL_ONLY",
-      "pr": 63,
-      "url": "https://github.com/kco994553-star/Investment-System1/pull/63",
-      "branch": "fix/ppa-f08-actual-availability-20261008",
-      "source_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
-      "local_head": "a90e5d386f79eead3dbfba180f4f664bc0f53cc6",
-      "source_tree": "5876f894a60d917f42ed9e1ab9bb3704c4463cf7",
-      "source_parent": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
-      "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
-      "python_checks": 41,
-      "browser_checks": 31,
-      "research_guard_browser_checks": 10,
-      "repair_rounds": 2,
-      "source_evidence_sha256": "c0e7bbf7a258025db4a984f04c527e3c1385a276fd3e0226ac775e5ea0b2f5e3",
-      "source_verification_receipt": "ppa-f08-cycle2/verification-receipt.json",
-      "ci_status": "3_OF_3_EXACT_HEAD_SUCCESS",
-      "ci_runs": [
-        {
-          "id": 37768379561,
-          "name": "web-research-guard",
-          "status": "completed",
-          "conclusion": "success",
-          "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
-          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379561"
-        },
-        {
-          "id": 37768379569,
-          "name": "web-state-presentation",
-          "status": "completed",
-          "conclusion": "success",
-          "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
-          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379569"
-        },
-        {
-          "id": 37768379552,
-          "name": "web-mvp-validation",
-          "status": "completed",
-          "conclusion": "success",
-          "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
-          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379552"
-        }
-      ],
-      "ci_run_ids": [
-        37768379561,
-        37768379569,
-        37768379552
-      ],
-      "product_blocker_source_closed": [
-        "PPA-F08"
-      ],
-      "source_product_blockers_closed": 1,
-      "canonical_product_closures": 0,
-      "source_admission": false,
-      "merged": false,
-      "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/PPA_F08_COMPLETION.json",
-      "presentation": "ACTUAL remains finite-only or NOT_AVAILABLE; finite persisted TARGET/Model is separately labelled; original positive controls and relevant existing regressions retained"
-    },
-    "TARGET": {
-      "status": "DRAFT_PACKAGE_PUBLISHED_WAIT_USER_AND_SOURCE_INPUT",
-      "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
-      "files": 7,
-      "path": "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/",
-      "source_admission": 0,
-      "security_admitted": 0,
-      "non_tokyo_rows": "18_WAIT_COMMON_CONTRACT_SOURCE_RETURNS",
-      "tokyo_row": "1_WAIT_USER_D29_VENUE_CHOICE",
-      "TARGET_Theme_values": "BLANK_WAIT_CURRENT_USER_AUTHORING_OR_EXACT_ADOPTED_ARTIFACT",
-      "decision_request": "ONE_26E_QUESTION_SENT_ASYNC_TO_CURRENT_USER_SESSION; RESPONSE_PENDING; NO_TIMEOUT_APPROVAL"
-    },
-    "FPIA": {
-      "status": "F1_F25_RECORDED_INTAKE_CONSUMED_NO_IMPLEMENTATION_REPAIR_QUEUED",
-      "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
-      "files": 3,
-      "path": "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/",
-      "recorded_defects": 25,
-      "recorded_fixed_in_existing_candidate": 25,
-      "new_source_fixes": 0,
-      "new_blocker_closures": 0,
-      "new_audits_or_counterexamples": 0,
-      "remaining_acceptance": [
-        "Independently authorized exact verifier/launcher/runtime receipt; source consistency and greenCI are insufficient authentication.",
-        "Actual authenticated compound execution/receipt selection.",
-        "Acceptance-relevant dynamic/transitive/descendant/external coverage or independently verified enforced isolation; preserve NOT_CLAIMED/NOT_ANALYSED.",
-        "Generic optional importer packaging/attribution for any future subject that contains it; PR47 exact tree omits the recorded optional PR28 paths.",
-        "GIE/governance review and actual assembled merge-result acceptance remain OPEN/NOT_RUN."
-      ],
-      "B1_B4_discovery": "TERMINATED_BY_CDR036"
-    },
-    "hard_guards": {
+    "tasks_used": 5,
+    "task_limit": 5,
+    "all_lanes_done": true,
+    "guard_state": {
       "HG01": "VERIFIED",
       "HG02": "PARTIAL_VERIFIED",
       "HG03": "PARTIAL_VERIFIED",
-      "unattended": "DISABLED"
+      "Gate_A": "CLOSED",
+      "actual_pause_wake": "NOT_RUN",
+      "automation_freeze": "ACTIVE",
+      "mode": "READ_ONLY",
+      "unattended_executor": false
     },
-    "gate_a": "CLOSED",
-    "freeze_active": true,
-    "next_ready": [],
-    "recorded_at_utc": "2026-10-08T11:13:57Z",
-    "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/FINAL_RECEIPT.json",
-    "completed_lane_leases": [
-      {
-        "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
-        "branch": "fix/ppa-f08-actual-availability-20261008",
-        "base": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
-        "write_set": [
-          "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
-          "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
-        ],
-        "status": "DONE_VERIFIED_SOURCE_PROPOSAL_ONLY",
-        "repair_rounds": 1,
-        "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
-        "lease_active": false
+    "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+    "canonical_changed": false,
+    "own_lease_release": {
+      "token": "target-v0-20261008T114634Z",
+      "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "lane_id": "MAIN_USER_TARGET_V0_ADOPTION_AND_PR63",
+      "branch": "integration/global-handoff-v1",
+      "acquired_at_utc": "2026-10-08T11:46:34Z",
+      "expires_at_utc": "2026-10-08T13:46:34.000Z",
+      "ttl_hours": 2,
+      "input_parent": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
+      "scope": [
+        "implementation/docs/coordination/**",
+        "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+        "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+        "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py",
+        "PR63 merge only into integration/web/production-state-presentation-v1",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/enums.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/models.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/factors.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/analysis.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/g_horizon.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/raw_map.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring_standard.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_scoring_standard_v1.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md",
+        "main/qgv-scoring-standard-v1-20261008:Investment-System1 · Contract Conflict Register 2026-09-23.md",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_book_catalog_financial.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_raw_and_providers.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_live_sources_and_persist.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_v_prior_and_c15.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_validation_framework.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_analysis_scoring.py",
+        "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+        "main/target-v0-display-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+        "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/v0/ADOPTION_RECEIPT.json",
+        "main/target-v0-display-20261008:implementation/docs/strategy_theme_owner/v0/ADOPTION_RECEIPT.json",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.mjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.test.mjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/build.mjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/page.html",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/us_live.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/leaderboard.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/html_sample.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/validation/historical.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_common_contract_vnext.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tools/qgv_contract_audit.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/product/render_app.py"
+      ],
+      "mode": "READ_ONLY",
+      "unattended": false,
+      "authority": "CDR039 explicit user TARGET/file/identity/display/PR63 named actions; no autonomous mode grant",
+      "released_at_utc": "2026-10-08T12:36:16Z",
+      "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_FINAL_PUBLICATION",
+      "reason": "Both directed source/display and QGV lanes completed; remaining dependencies OPEN",
+      "publication_observation": "DECLARED_TARGET_PENDING_REMOTE_READBACK"
+    },
+    "inherited_missing_data_lease": {
+      "token": "qgv-b47-muupb538",
+      "preserved": true
+    },
+    "receipt_inputs": {
+      "target_display": {
+        "path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
+        "sha256": "8a39e23e6487f2c2c8be496a375f06ea878b738f6a984bbfed6639378dc07689",
+        "bytes": 1678
       },
-      {
-        "lane_id": "TARGET_DECISION_PACKAGE",
-        "write_set": [
-          "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
-        ],
-        "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
-        "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
-        "lease_active": false
-      },
-      {
-        "lane_id": "FPIA_EXISTING_RECORDED_DEFECT_INVENTORY",
-        "write_set": [
-          "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/**"
-        ],
-        "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
-        "no_new_cases": true,
-        "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
-        "lease_active": false
-      },
-      {
-        "lane_id": "HG02_CANARY_DELETE_REFUSAL",
-        "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
-        "branch": "hg02-canary",
-        "expected_head": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
-        "write_set": [
-          "single canary delete-ref denial test using documented updateRefs zero afterOid"
-        ],
-        "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY",
-        "expires_at_utc": "2026-10-08T13:03:50.000Z",
-        "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
-        "lease_active": false,
-        "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
-        "GitHub_deletion_rule_proof": "NOT_RUN",
-        "canonical_and_canary_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
+      "qgv": {
+        "path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json",
+        "sha256": "afd93fffa9dc4c27dac4ac3393e3c9799721e9c372c22e9c3221464266b5d150",
+        "bytes": 1865
       }
+    },
+    "final_facts": "evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json",
+    "ready_main": 0,
+    "remaining_dependencies": [
+      "TARGET v0 input request ANSWERED by USER adopted immutable source; no renewed TARGET/listing question. Chart A-S1 CLOSED only on authenticated noncanonical display merge; A-S2/A-S3/A-G1/A-G2/A-G3 OPEN.",
+      "A-S2: 0/19 mapped, 19 UNRESOLVED; approved dated Security/Listing registry and reviewed company-binding source remain missing. ticker_hint and company namespace evidence are not identity.",
+      "A-S3: USER Theme values/catalog adopted; complete reviewed security assignment remains OPEN through A-S2. No synthesized identities or new Theme values.",
+      "A-G1/A-G2: source-bound P01 applicability and full per-path cross-owner/assembled acceptance remain OPEN; display-only adoption confers no Product grant.",
+      "A-G3/FPIA/GIE: independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation and assembled acceptance remain OPEN. Existing F1-F25 intake/history preserved; no new audit or countercase.",
+      "QGV v1 UNCALIBRATED adoption/C03 resolution prospective from 2026-10-08T11:50:25Z; numerical invariance and actual final test/CI facts at evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json. MissingData held lease qgv-b47-muupb538 preserved; production/Official-LIVE categories unchanged.",
+      "Platform PPA-F08 CLOSED after PR63 noncanonical Web merge; Platform closed 1/9, remaining 8. Other blockers, canonical integration and broader Product acceptance remain unchanged.",
+      "HG01 VERIFIED; HG02/HG03 PARTIAL_VERIFIED; actual E2E/PAUSE wake remain unproved; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; READ_ONLY."
     ],
-    "HG02_canary_deletion_attempt": {
-      "method": "Documented GraphQL updateRefs zero afterOid through existing update_ref wrapper",
-      "claim": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_CLAIM.json",
-      "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_RECEIPT.json",
-      "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
-      "reached_GitHub_branch_rule_enforcement": false,
-      "branch_rule_deletion_refusal_proven": false,
-      "canonical_and_canary_after": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
-      "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY"
+    "publication_identity": "RESOLVES_FROM_CONTAINING_COMMIT; REMOTE_BYTE_CONTROL_READBACK_PENDING",
+    "admissions": {
+      "USER_TARGET_weight_root": 1,
+      "Security_identity": 0,
+      "Security_total": 19
+    },
+    "chart_gates_closed": 1,
+    "chart_gates_total": 6,
+    "calibration_adoption": false,
+    "status": "COMPLETE_USER_DIRECTED_READ_ONLY",
+    "end_mode": "READ_ONLY",
+    "end_reason": "FIVE_TASK_CHECKPOINT_COMPLETE_READY0",
+    "target_display": {
+      "number": 66,
+      "base": "codex/chart-contract-mcp-api-v0-1",
+      "head": "4a613a5ce7a87f06a04116a355bc03c3225c4613",
+      "merge": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "tree": "94c3d0fdbbb835a163a0accdffbe8dabebfd2a8c",
+      "tests": {
+        "node": 99,
+        "new_source_adapter": 24,
+        "build": "PASS"
+      },
+      "browser": {
+        "passed": 4,
+        "viewports_locales": [
+          "360ko",
+          "390ko",
+          "390en",
+          "1280ko"
+        ],
+        "source_corruptions_per_case": 12,
+        "unexpected_demo_metadata_per_case": 1,
+        "mode_substitutions_per_case": 3,
+        "screenshots": 6
+      },
+      "ci": "NOT_TRIGGERED_BY_EXISTING_WORKFLOW; exacthead0checks0runs; no newworkflow",
+      "receipt_path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
+      "gates_closed": [
+        "A-S1"
+      ],
+      "gates_open": [
+        "A-S2",
+        "A-S3",
+        "A-G1",
+        "A-G2",
+        "A-G3"
+      ]
+    },
+    "qgv": {
+      "number": 65,
+      "base": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+      "head": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+      "merge": "753f225caa2da1877a1e6391df9e10b1085e9578",
+      "tree": "dd9a914ea3cd013f30ef78a30d5f05eb8fcdd669",
+      "tests": {
+        "passed": 503,
+        "existing": 488,
+        "new": 15,
+        "audit_golden": 71
+      },
+      "ci": {
+        "status": "SUCCESS",
+        "run_id": 37775779453,
+        "job_id": 113306115143,
+        "head_sha": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37775779453"
+      },
+      "standard": "v1",
+      "calibration": "UNCALIBRATED",
+      "effective_at": "2026-10-08T11:50:25Z",
+      "C03": "RESOLVED",
+      "numeric_invariance": true,
+      "receipt_path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json"
     }
   },
   "lease_history": [
@@ -1135,15 +1044,78 @@
       "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_FINAL_PUBLICATION",
       "reason": "Five bounded tasks complete; READY0; remaining lanes WAIT external input, acceptance or capability",
       "publication_observation": "DECLARED_TARGET_PENDING_REMOTE_READBACK"
+    },
+    {
+      "token": "target-v0-20261008T114634Z",
+      "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "lane_id": "MAIN_USER_TARGET_V0_ADOPTION_AND_PR63",
+      "branch": "integration/global-handoff-v1",
+      "acquired_at_utc": "2026-10-08T11:46:34Z",
+      "expires_at_utc": "2026-10-08T13:46:34.000Z",
+      "ttl_hours": 2,
+      "input_parent": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
+      "scope": [
+        "implementation/docs/coordination/**",
+        "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+        "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+        "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py",
+        "PR63 merge only into integration/web/production-state-presentation-v1",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/enums.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/models.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/factors.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/analysis.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/g_horizon.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/raw_map.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring_standard.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_scoring_standard_v1.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md",
+        "main/qgv-scoring-standard-v1-20261008:Investment-System1 · Contract Conflict Register 2026-09-23.md",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_book_catalog_financial.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_raw_and_providers.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_live_sources_and_persist.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_v_prior_and_c15.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_validation_framework.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_analysis_scoring.py",
+        "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+        "main/target-v0-display-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+        "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/v0/ADOPTION_RECEIPT.json",
+        "main/target-v0-display-20261008:implementation/docs/strategy_theme_owner/v0/ADOPTION_RECEIPT.json",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.mjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.test.mjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/build.mjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/page.html",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/us_live.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/leaderboard.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/html_sample.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/validation/historical.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_common_contract_vnext.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tools/qgv_contract_audit.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/product/render_app.py"
+      ],
+      "mode": "READ_ONLY",
+      "unattended": false,
+      "authority": "CDR039 explicit user TARGET/file/identity/display/PR63 named actions; no autonomous mode grant",
+      "released_at_utc": "2026-10-08T12:36:16Z",
+      "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_FINAL_PUBLICATION",
+      "reason": "Both directed source/display and QGV lanes completed; remaining dependencies OPEN",
+      "publication_observation": "DECLARED_TARGET_PENDING_REMOTE_READBACK"
     }
   ],
   "resume_dependencies": [
-    "Chart A-S1/A-S2/A-S3: published blank TARGET/Theme and Security19 disposition remain WAIT current user/source authority;18 common-contract source returns and1Tokyo venue choice unresolved; source admission0, Chart6OPEN/Market0of19.",
-    "P01 source-bound TARGET applicability receipt absent; Web/source/Product per-file acceptance absent; original three ordinary asset planning scope preserved",
-    "CDR036 recorded-only FPIA F1-F25 intake consumed: all25 have existing recorded fixes, no code repair queued and no new closure. Independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation, GIE and assembled Chart acceptance remain WAIT/OPEN; B1-B4 discovery terminated.",
-    "QGV Missing-Data held lease qgv-b47-muupb538 preserved; operational policy return d156 consumed with12 hash matches, production categories remain",
-    "PPA-F08 source proposal 50e3d3e6942460468388af9b0ec969f3605f6ab1 draftPR63 verified by local affected checks and exact native CI3SUCCESS; source presentation blocker closed1, canonical integration/production closure0. Platform historical9 product blockers and source-owner ACK UNVERIFIED remain scoped history; no blanket subtraction or Product acceptance inferred.",
-    "HG01 VERIFIED; HG02 PARTIAL_VERIFIED pending authenticated canary deletion and complete executor identity/refusal matrix; HG03 PARTIAL_VERIFIED / actual E2E WAIT_PRODUCT_RUNTIME_CAPABILITY; actual PAUSE wake NOT_RUN; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; mode READ_ONLY."
+    "TARGET v0 input request ANSWERED by USER adopted immutable source; no renewed TARGET/listing question. Chart A-S1 CLOSED only on authenticated noncanonical display merge; A-S2/A-S3/A-G1/A-G2/A-G3 OPEN.",
+    "A-S2: 0/19 mapped, 19 UNRESOLVED; approved dated Security/Listing registry and reviewed company-binding source remain missing. ticker_hint and company namespace evidence are not identity.",
+    "A-S3: USER Theme values/catalog adopted; complete reviewed security assignment remains OPEN through A-S2. No synthesized identities or new Theme values.",
+    "A-G1/A-G2: source-bound P01 applicability and full per-path cross-owner/assembled acceptance remain OPEN; display-only adoption confers no Product grant.",
+    "A-G3/FPIA/GIE: independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation and assembled acceptance remain OPEN. Existing F1-F25 intake/history preserved; no new audit or countercase.",
+    "QGV v1 UNCALIBRATED adoption/C03 resolution prospective from 2026-10-08T11:50:25Z; numerical invariance and actual final test/CI facts at evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json. MissingData held lease qgv-b47-muupb538 preserved; production/Official-LIVE categories unchanged.",
+    "Platform PPA-F08 CLOSED after PR63 noncanonical Web merge; Platform closed 1/9, remaining 8. Other blockers, canonical integration and broader Product acceptance remain unchanged.",
+    "HG01 VERIFIED; HG02/HG03 PARTIAL_VERIFIED; actual E2E/PAUSE wake remain unproved; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; READ_ONLY."
   ],
   "single_control_policy": {
     "decision": "CDR-030",
@@ -1159,7 +1131,7 @@
     "runtime_enabled": false,
     "numeric_policy_activated": false
   },
-  "current_cycle_evidence": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/",
+  "current_cycle_evidence": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/final",
   "bounded_cycle_history": [
     {
       "cycle_id": "main-single-control-20261007T104552Z",
@@ -1515,6 +1487,195 @@
         "canonical_and_canary_after": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
         "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY"
       }
+    },
+    {
+      "schema": "main-target-v0-final-checkpoint-v1",
+      "decision": "CDR-041",
+      "checkpoint": 5,
+      "recorded_at_utc": "2026-10-08T12:36:16Z",
+      "global_parent": "deb751a027396a1e65ce668d32076da3b90f854d",
+      "cycle_id": "target-v0-20261008T114634Z",
+      "mode": "READ_ONLY",
+      "mode_changed": false,
+      "tasks_used": 5,
+      "task_limit": 5,
+      "all_lanes_done": true,
+      "guard_state": {
+        "HG01": "VERIFIED",
+        "HG02": "PARTIAL_VERIFIED",
+        "HG03": "PARTIAL_VERIFIED",
+        "Gate_A": "CLOSED",
+        "actual_pause_wake": "NOT_RUN",
+        "automation_freeze": "ACTIVE",
+        "mode": "READ_ONLY",
+        "unattended_executor": false
+      },
+      "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "canonical_changed": false,
+      "own_lease_release": {
+        "token": "target-v0-20261008T114634Z",
+        "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "lane_id": "MAIN_USER_TARGET_V0_ADOPTION_AND_PR63",
+        "branch": "integration/global-handoff-v1",
+        "acquired_at_utc": "2026-10-08T11:46:34Z",
+        "expires_at_utc": "2026-10-08T13:46:34.000Z",
+        "ttl_hours": 2,
+        "input_parent": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
+        "scope": [
+          "implementation/docs/coordination/**",
+          "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+          "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+          "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py",
+          "PR63 merge only into integration/web/production-state-presentation-v1",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/enums.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/models.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/factors.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/analysis.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/g_horizon.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/raw_map.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring_standard.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_scoring_standard_v1.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md",
+          "main/qgv-scoring-standard-v1-20261008:Investment-System1 · Contract Conflict Register 2026-09-23.md",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_book_catalog_financial.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_raw_and_providers.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_live_sources_and_persist.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_v_prior_and_c15.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_validation_framework.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_analysis_scoring.py",
+          "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+          "main/target-v0-display-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+          "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/v0/ADOPTION_RECEIPT.json",
+          "main/target-v0-display-20261008:implementation/docs/strategy_theme_owner/v0/ADOPTION_RECEIPT.json",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.mjs",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.test.mjs",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/build.mjs",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/page.html",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/us_live.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/leaderboard.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/html_sample.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/validation/historical.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_common_contract_vnext.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tools/qgv_contract_audit.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/product/render_app.py"
+        ],
+        "mode": "READ_ONLY",
+        "unattended": false,
+        "authority": "CDR039 explicit user TARGET/file/identity/display/PR63 named actions; no autonomous mode grant",
+        "released_at_utc": "2026-10-08T12:36:16Z",
+        "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_FINAL_PUBLICATION",
+        "reason": "Both directed source/display and QGV lanes completed; remaining dependencies OPEN",
+        "publication_observation": "DECLARED_TARGET_PENDING_REMOTE_READBACK"
+      },
+      "inherited_missing_data_lease": {
+        "token": "qgv-b47-muupb538",
+        "preserved": true
+      },
+      "receipt_inputs": {
+        "target_display": {
+          "path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
+          "sha256": "8a39e23e6487f2c2c8be496a375f06ea878b738f6a984bbfed6639378dc07689",
+          "bytes": 1678
+        },
+        "qgv": {
+          "path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json",
+          "sha256": "afd93fffa9dc4c27dac4ac3393e3c9799721e9c372c22e9c3221464266b5d150",
+          "bytes": 1865
+        }
+      },
+      "final_facts": "evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json",
+      "ready_main": 0,
+      "remaining_dependencies": [
+        "TARGET v0 input request ANSWERED by USER adopted immutable source; no renewed TARGET/listing question. Chart A-S1 CLOSED only on authenticated noncanonical display merge; A-S2/A-S3/A-G1/A-G2/A-G3 OPEN.",
+        "A-S2: 0/19 mapped, 19 UNRESOLVED; approved dated Security/Listing registry and reviewed company-binding source remain missing. ticker_hint and company namespace evidence are not identity.",
+        "A-S3: USER Theme values/catalog adopted; complete reviewed security assignment remains OPEN through A-S2. No synthesized identities or new Theme values.",
+        "A-G1/A-G2: source-bound P01 applicability and full per-path cross-owner/assembled acceptance remain OPEN; display-only adoption confers no Product grant.",
+        "A-G3/FPIA/GIE: independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation and assembled acceptance remain OPEN. Existing F1-F25 intake/history preserved; no new audit or countercase.",
+        "QGV v1 UNCALIBRATED adoption/C03 resolution prospective from 2026-10-08T11:50:25Z; numerical invariance and actual final test/CI facts at evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json. MissingData held lease qgv-b47-muupb538 preserved; production/Official-LIVE categories unchanged.",
+        "Platform PPA-F08 CLOSED after PR63 noncanonical Web merge; Platform closed 1/9, remaining 8. Other blockers, canonical integration and broader Product acceptance remain unchanged.",
+        "HG01 VERIFIED; HG02/HG03 PARTIAL_VERIFIED; actual E2E/PAUSE wake remain unproved; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; READ_ONLY."
+      ],
+      "publication_identity": "RESOLVES_FROM_CONTAINING_COMMIT; REMOTE_BYTE_CONTROL_READBACK_PENDING",
+      "admissions": {
+        "USER_TARGET_weight_root": 1,
+        "Security_identity": 0,
+        "Security_total": 19
+      },
+      "chart_gates_closed": 1,
+      "chart_gates_total": 6,
+      "calibration_adoption": false,
+      "status": "COMPLETE_USER_DIRECTED_READ_ONLY",
+      "end_mode": "READ_ONLY",
+      "end_reason": "FIVE_TASK_CHECKPOINT_COMPLETE_READY0",
+      "target_display": {
+        "number": 66,
+        "base": "codex/chart-contract-mcp-api-v0-1",
+        "head": "4a613a5ce7a87f06a04116a355bc03c3225c4613",
+        "merge": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+        "tree": "94c3d0fdbbb835a163a0accdffbe8dabebfd2a8c",
+        "tests": {
+          "node": 99,
+          "new_source_adapter": 24,
+          "build": "PASS"
+        },
+        "browser": {
+          "passed": 4,
+          "viewports_locales": [
+            "360ko",
+            "390ko",
+            "390en",
+            "1280ko"
+          ],
+          "source_corruptions_per_case": 12,
+          "unexpected_demo_metadata_per_case": 1,
+          "mode_substitutions_per_case": 3,
+          "screenshots": 6
+        },
+        "ci": "NOT_TRIGGERED_BY_EXISTING_WORKFLOW; exacthead0checks0runs; no newworkflow",
+        "receipt_path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
+        "gates_closed": [
+          "A-S1"
+        ],
+        "gates_open": [
+          "A-S2",
+          "A-S3",
+          "A-G1",
+          "A-G2",
+          "A-G3"
+        ]
+      },
+      "qgv": {
+        "number": 65,
+        "base": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+        "head": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+        "merge": "753f225caa2da1877a1e6391df9e10b1085e9578",
+        "tree": "dd9a914ea3cd013f30ef78a30d5f05eb8fcdd669",
+        "tests": {
+          "passed": 503,
+          "existing": 488,
+          "new": 15,
+          "audit_golden": 71
+        },
+        "ci": {
+          "status": "SUCCESS",
+          "run_id": 37775779453,
+          "job_id": 113306115143,
+          "head_sha": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37775779453"
+        },
+        "standard": "v1",
+        "calibration": "UNCALIBRATED",
+        "effective_at": "2026-10-08T11:50:25Z",
+        "C03": "RESOLVED",
+        "numeric_invariance": true,
+        "receipt_path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json"
+      }
     }
   ],
   "company_analysis_phase_a_consumption": {
@@ -1535,266 +1696,136 @@
     "allowed": "bug fixes only for merged #55–#60"
   },
   "directed_execution_checkpoint": {
-    "checkpoint": 2,
-    "decision": "CDR-038",
-    "status": "FINAL_DIRECTED_RECONCILIATION_WAIT_DEPENDENCIES",
-    "PPA_F08": {
-      "status": "VERIFIED_SOURCE_PRESENTATION_BLOCKER_CLOSED_IN_PROPOSAL_ONLY",
-      "pr": 63,
-      "url": "https://github.com/kco994553-star/Investment-System1/pull/63",
-      "branch": "fix/ppa-f08-actual-availability-20261008",
-      "source_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
-      "local_head": "a90e5d386f79eead3dbfba180f4f664bc0f53cc6",
-      "source_tree": "5876f894a60d917f42ed9e1ab9bb3704c4463cf7",
-      "source_parent": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
-      "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
-      "python_checks": 41,
-      "browser_checks": 31,
-      "research_guard_browser_checks": 10,
-      "repair_rounds": 2,
-      "source_evidence_sha256": "c0e7bbf7a258025db4a984f04c527e3c1385a276fd3e0226ac775e5ea0b2f5e3",
-      "source_verification_receipt": "ppa-f08-cycle2/verification-receipt.json",
-      "ci_status": "3_OF_3_EXACT_HEAD_SUCCESS",
-      "ci_runs": [
-        {
-          "id": 37768379561,
-          "name": "web-research-guard",
-          "status": "completed",
-          "conclusion": "success",
-          "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
-          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379561"
-        },
-        {
-          "id": 37768379569,
-          "name": "web-state-presentation",
-          "status": "completed",
-          "conclusion": "success",
-          "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
-          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379569"
-        },
-        {
-          "id": 37768379552,
-          "name": "web-mvp-validation",
-          "status": "completed",
-          "conclusion": "success",
-          "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
-          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379552"
-        }
-      ],
-      "ci_run_ids": [
-        37768379561,
-        37768379569,
-        37768379552
-      ],
-      "product_blocker_source_closed": [
-        "PPA-F08"
-      ],
-      "source_product_blockers_closed": 1,
-      "canonical_product_closures": 0,
-      "source_admission": false,
-      "merged": false,
-      "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/PPA_F08_COMPLETION.json",
-      "presentation": "ACTUAL remains finite-only or NOT_AVAILABLE; finite persisted TARGET/Model is separately labelled; original positive controls and relevant existing regressions retained"
-    },
-    "TARGET": {
-      "status": "DRAFT_PACKAGE_PUBLISHED_WAIT_USER_AND_SOURCE_INPUT",
-      "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
-      "files": 7,
-      "path": "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/",
-      "source_admission": 0,
-      "security_admitted": 0,
-      "non_tokyo_rows": "18_WAIT_COMMON_CONTRACT_SOURCE_RETURNS",
-      "tokyo_row": "1_WAIT_USER_D29_VENUE_CHOICE",
-      "TARGET_Theme_values": "BLANK_WAIT_CURRENT_USER_AUTHORING_OR_EXACT_ADOPTED_ARTIFACT",
-      "decision_request": "ONE_26E_QUESTION_SENT_ASYNC_TO_CURRENT_USER_SESSION; RESPONSE_PENDING; NO_TIMEOUT_APPROVAL"
-    },
-    "FPIA": {
-      "status": "F1_F25_RECORDED_INTAKE_CONSUMED_NO_IMPLEMENTATION_REPAIR_QUEUED",
-      "published_head": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
-      "files": 3,
-      "path": "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/",
-      "recorded_defects": 25,
-      "recorded_fixed_in_existing_candidate": 25,
-      "new_source_fixes": 0,
-      "new_blocker_closures": 0,
-      "new_audits_or_counterexamples": 0,
-      "remaining_acceptance": [
-        "Independently authorized exact verifier/launcher/runtime receipt; source consistency and greenCI are insufficient authentication.",
-        "Actual authenticated compound execution/receipt selection.",
-        "Acceptance-relevant dynamic/transitive/descendant/external coverage or independently verified enforced isolation; preserve NOT_CLAIMED/NOT_ANALYSED.",
-        "Generic optional importer packaging/attribution for any future subject that contains it; PR47 exact tree omits the recorded optional PR28 paths.",
-        "GIE/governance review and actual assembled merge-result acceptance remain OPEN/NOT_RUN."
-      ],
-      "B1_B4_discovery": "TERMINATED_BY_CDR036"
-    },
-    "next_ready": [],
-    "old_active_scoped_execution": {
-      "cycle_id": "main-directed-cycle2-20261008T110350Z",
-      "checkpoint": 2,
-      "classification": "USER_EXPLICIT_NAMED_ACTIONS_ONLY",
-      "production_autonomy_mode": "READ_ONLY",
-      "task_limit": 5,
-      "tasks_used": 4,
-      "lane_leases": [
-        {
-          "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
-          "branch": "fix/ppa-f08-actual-availability-20261008",
-          "base": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
-          "write_set": [
-            "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
-            "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
-          ],
-          "status": "CLAIMED_USER_SCOPE",
-          "repair_rounds": 1
-        },
-        {
-          "lane_id": "TARGET_DECISION_PACKAGE",
-          "write_set": [
-            "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
-          ],
-          "status": "CLAIMED_DRAFT_ONLY"
-        },
-        {
-          "lane_id": "FPIA_EXISTING_RECORDED_DEFECT_INVENTORY",
-          "write_set": [
-            "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/**"
-          ],
-          "status": "CLAIMED_EXISTING_RECORDS_ONLY",
-          "no_new_cases": true
-        },
-        {
-          "lane_id": "HG02_CANARY_DELETE_REFUSAL",
-          "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
-          "branch": "hg02-canary",
-          "expected_head": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
-          "write_set": [
-            "single canary delete-ref denial test using documented updateRefs zero afterOid"
-          ],
-          "status": "CLAIMED_EXPLICIT_USER_PROBE",
-          "expires_at_utc": "2026-10-08T13:03:50.000Z"
-        }
-      ],
-      "progress": [
-        {
-          "task": 1,
-          "status": "PPA_COMPATIBILITY_REPAIR_IN_PROGRESS"
-        },
-        {
-          "task": 2,
-          "status": "TARGET_BLANK_DECISION_PACKAGE_PREPARED"
-        },
-        {
-          "task": 3,
-          "status": "FPIA_RECORDED_F1_F25_INTAKE_PREPARED_NO_CODE_REPAIR_QUEUED"
-        }
-      ]
-    },
-    "canonical_PR51": {
-      "head": "de84abf11df64041f666628493b8ae54f2e6df4a",
-      "guard_run": 37303986881,
-      "guard_job": 111743115747,
-      "guard_status": "SUCCESS_REUSED",
-      "merge": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
-      "merged_at_utc": "2026-10-08T10:41:37Z",
-      "merged_by": "kco994553-star",
-      "merge_performed_by_this_session": false
-    },
-    "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/FINAL_RECEIPT.json",
-    "completed_lane_leases": [
-      {
-        "lane_id": "PPA_F08_EXISTING_CI_COMPATIBILITY_REPAIR",
-        "branch": "fix/ppa-f08-actual-availability-20261008",
-        "base": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
-        "write_set": [
-          "fix/ppa-f08-actual-availability-20261008:implementation/src/investment_system/product/web_assets/app.js",
-          "fix/ppa-f08-actual-availability-20261008:implementation/tools/web_state_presentation_browser_test.js"
-        ],
-        "status": "DONE_VERIFIED_SOURCE_PROPOSAL_ONLY",
-        "repair_rounds": 1,
-        "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
-        "lease_active": false
-      },
-      {
-        "lane_id": "TARGET_DECISION_PACKAGE",
-        "write_set": [
-          "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/**"
-        ],
-        "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
-        "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
-        "lease_active": false
-      },
-      {
-        "lane_id": "FPIA_EXISTING_RECORDED_DEFECT_INVENTORY",
-        "write_set": [
-          "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/**"
-        ],
-        "status": "PACKAGE_CONSUMED_EXTERNAL_ACCEPTANCE_WAIT",
-        "no_new_cases": true,
-        "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
-        "lease_active": false
-      },
-      {
-        "lane_id": "HG02_CANARY_DELETE_REFUSAL",
-        "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
-        "branch": "hg02-canary",
-        "expected_head": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
-        "write_set": [
-          "single canary delete-ref denial test using documented updateRefs zero afterOid"
-        ],
-        "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY",
-        "expires_at_utc": "2026-10-08T13:03:50.000Z",
-        "own_cycle_lease_release": "main-directed-cycle2-20261008T110350Z",
-        "lease_active": false,
-        "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
-        "GitHub_deletion_rule_proof": "NOT_RUN",
-        "canonical_and_canary_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
-      }
-    ],
-    "HG02_canary_deletion_attempt": {
-      "method": "Documented GraphQL updateRefs zero afterOid through existing update_ref wrapper",
-      "claim": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_CLAIM.json",
-      "receipt": "implementation/docs/coordination/evidence/main_directed_execution_2026-10-08/HG02_DELETE_PROBE_RECEIPT.json",
-      "wrapper_response": "InvalidInputException: update_ref cannot delete a branch",
-      "reached_GitHub_branch_rule_enforcement": false,
-      "branch_rule_deletion_refusal_proven": false,
-      "canonical_and_canary_after": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
-      "status": "BOUNDED_ATTEMPT_COMPLETED_TOOL_DEPENDENCY"
-    }
-  },
-  "current_target_decision_bundle": {
-    "status": "USER_TARGET_V0_ADOPTED_SOURCE_AND_DISPLAY_MERGED_A_S1_CLOSED",
-    "source_owner": "USER",
-    "user_decision": "CDR039",
-    "source_head": "40c7037870f5ad3b5538444fa3a8e545c65d213b",
-    "source_merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
-    "source_pr": 64,
-    "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
-    "effective_at": "2026-10-08T20:37:00+09:00",
-    "target_input_request": "ANSWERED_USER_ARTIFACT_AND_LISTINGS; DO_NOT_REASK",
-    "security_mapping": {
-      "mapped": 0,
-      "unresolved": 19,
-      "dependency": "Approved dated Security/Listing registry and reviewed company-binding source missing"
-    },
-    "remaining_user_target_value_decisions": [],
-    "display": {
-      "schema": "target-v0-display-merge-completion-v1",
-      "authority": "CDR039",
+    "schema": "main-target-v0-final-checkpoint-v1",
+    "decision": "CDR-041",
+    "checkpoint": 5,
+    "recorded_at_utc": "2026-10-08T12:36:16Z",
+    "global_parent": "deb751a027396a1e65ce668d32076da3b90f854d",
+    "cycle_id": "target-v0-20261008T114634Z",
+    "mode": "READ_ONLY",
+    "mode_changed": false,
+    "tasks_used": 5,
+    "task_limit": 5,
+    "all_lanes_done": true,
+    "guard_state": {
+      "HG01": "VERIFIED",
+      "HG02": "PARTIAL_VERIFIED",
+      "HG03": "PARTIAL_VERIFIED",
+      "Gate_A": "CLOSED",
+      "actual_pause_wake": "NOT_RUN",
+      "automation_freeze": "ACTIVE",
       "mode": "READ_ONLY",
-      "recorded_at_utc": "2026-10-08T12:35:30Z",
-      "pr": 66,
+      "unattended_executor": false
+    },
+    "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+    "canonical_changed": false,
+    "own_lease_release": {
+      "token": "target-v0-20261008T114634Z",
+      "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+      "lane_id": "MAIN_USER_TARGET_V0_ADOPTION_AND_PR63",
+      "branch": "integration/global-handoff-v1",
+      "acquired_at_utc": "2026-10-08T11:46:34Z",
+      "expires_at_utc": "2026-10-08T13:46:34.000Z",
+      "ttl_hours": 2,
+      "input_parent": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
+      "scope": [
+        "implementation/docs/coordination/**",
+        "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+        "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+        "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py",
+        "PR63 merge only into integration/web/production-state-presentation-v1",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/enums.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/models.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/factors.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/analysis.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/g_horizon.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/raw_map.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring_standard.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_scoring_standard_v1.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md",
+        "main/qgv-scoring-standard-v1-20261008:Investment-System1 · Contract Conflict Register 2026-09-23.md",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_book_catalog_financial.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_raw_and_providers.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_live_sources_and_persist.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_v_prior_and_c15.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_validation_framework.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_analysis_scoring.py",
+        "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+        "main/target-v0-display-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+        "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/v0/ADOPTION_RECEIPT.json",
+        "main/target-v0-display-20261008:implementation/docs/strategy_theme_owner/v0/ADOPTION_RECEIPT.json",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.mjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.test.mjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/build.mjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/page.html",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
+        "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/us_live.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/leaderboard.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/html_sample.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/validation/historical.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_common_contract_vnext.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/tools/qgv_contract_audit.py",
+        "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/product/render_app.py"
+      ],
+      "mode": "READ_ONLY",
+      "unattended": false,
+      "authority": "CDR039 explicit user TARGET/file/identity/display/PR63 named actions; no autonomous mode grant",
+      "released_at_utc": "2026-10-08T12:36:16Z",
+      "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_FINAL_PUBLICATION",
+      "reason": "Both directed source/display and QGV lanes completed; remaining dependencies OPEN",
+      "publication_observation": "DECLARED_TARGET_PENDING_REMOTE_READBACK"
+    },
+    "inherited_missing_data_lease": {
+      "token": "qgv-b47-muupb538",
+      "preserved": true
+    },
+    "receipt_inputs": {
+      "target_display": {
+        "path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
+        "sha256": "8a39e23e6487f2c2c8be496a375f06ea878b738f6a984bbfed6639378dc07689",
+        "bytes": 1678
+      },
+      "qgv": {
+        "path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json",
+        "sha256": "afd93fffa9dc4c27dac4ac3393e3c9799721e9c372c22e9c3221464266b5d150",
+        "bytes": 1865
+      }
+    },
+    "final_facts": "evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json",
+    "ready_main": 0,
+    "remaining_dependencies": [
+      "TARGET v0 input request ANSWERED by USER adopted immutable source; no renewed TARGET/listing question. Chart A-S1 CLOSED only on authenticated noncanonical display merge; A-S2/A-S3/A-G1/A-G2/A-G3 OPEN.",
+      "A-S2: 0/19 mapped, 19 UNRESOLVED; approved dated Security/Listing registry and reviewed company-binding source remain missing. ticker_hint and company namespace evidence are not identity.",
+      "A-S3: USER Theme values/catalog adopted; complete reviewed security assignment remains OPEN through A-S2. No synthesized identities or new Theme values.",
+      "A-G1/A-G2: source-bound P01 applicability and full per-path cross-owner/assembled acceptance remain OPEN; display-only adoption confers no Product grant.",
+      "A-G3/FPIA/GIE: independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation and assembled acceptance remain OPEN. Existing F1-F25 intake/history preserved; no new audit or countercase.",
+      "QGV v1 UNCALIBRATED adoption/C03 resolution prospective from 2026-10-08T11:50:25Z; numerical invariance and actual final test/CI facts at evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json. MissingData held lease qgv-b47-muupb538 preserved; production/Official-LIVE categories unchanged.",
+      "Platform PPA-F08 CLOSED after PR63 noncanonical Web merge; Platform closed 1/9, remaining 8. Other blockers, canonical integration and broader Product acceptance remain unchanged.",
+      "HG01 VERIFIED; HG02/HG03 PARTIAL_VERIFIED; actual E2E/PAUSE wake remain unproved; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; READ_ONLY."
+    ],
+    "publication_identity": "RESOLVES_FROM_CONTAINING_COMMIT; REMOTE_BYTE_CONTROL_READBACK_PENDING",
+    "admissions": {
+      "USER_TARGET_weight_root": 1,
+      "Security_identity": 0,
+      "Security_total": 19
+    },
+    "chart_gates_closed": 1,
+    "chart_gates_total": 6,
+    "calibration_adoption": false,
+    "status": "COMPLETE_USER_DIRECTED_READ_ONLY",
+    "end_mode": "READ_ONLY",
+    "end_reason": "FIVE_TASK_CHECKPOINT_COMPLETE_READY0",
+    "target_display": {
+      "number": 66,
       "base": "codex/chart-contract-mcp-api-v0-1",
-      "base_before": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
       "head": "4a613a5ce7a87f06a04116a355bc03c3225c4613",
       "merge": "47dce4c768f315ff6036e8a34c177920c1d50b14",
       "tree": "94c3d0fdbbb835a163a0accdffbe8dabebfd2a8c",
-      "local_head": "6ac426653d260b00967dd7842a2cdd51579911df",
-      "identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
-      "source_pr": 64,
-      "source_merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
-      "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
-      "source_bytes": 4463,
-      "raw_source_unchanged": true,
       "tests": {
         "node": 99,
         "new_source_adapter": 24,
@@ -1814,8 +1845,7 @@
         "screenshots": 6
       },
       "ci": "NOT_TRIGGERED_BY_EXISTING_WORKFLOW; exacthead0checks0runs; no newworkflow",
-      "mapped": 0,
-      "unresolved": 19,
+      "receipt_path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
       "gates_closed": [
         "A-S1"
       ],
@@ -1825,14 +1855,87 @@
         "A-G1",
         "A-G2",
         "A-G3"
+      ]
+    },
+    "qgv": {
+      "number": 65,
+      "base": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+      "head": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+      "merge": "753f225caa2da1877a1e6391df9e10b1085e9578",
+      "tree": "dd9a914ea3cd013f30ef78a30d5f05eb8fcdd669",
+      "tests": {
+        "passed": 503,
+        "existing": 488,
+        "new": 15,
+        "audit_golden": 71
+      },
+      "ci": {
+        "status": "SUCCESS",
+        "run_id": 37775779453,
+        "job_id": 113306115143,
+        "head_sha": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37775779453"
+      },
+      "standard": "v1",
+      "calibration": "UNCALIBRATED",
+      "effective_at": "2026-10-08T11:50:25Z",
+      "C03": "RESOLVED",
+      "numeric_invariance": true,
+      "receipt_path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json"
+    }
+  },
+  "current_target_decision_bundle": {
+    "status": "USER_TARGET_V0_ADOPTED_AND_DISPLAY_MERGED_A_S1_CLOSED",
+    "source_owner": "USER",
+    "user_decision": "CDR039",
+    "source_head": "40c7037870f5ad3b5538444fa3a8e545c65d213b",
+    "source_merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+    "source_pr": 64,
+    "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+    "effective_at": "2026-10-08T20:37:00+09:00",
+    "target_input_request": "ANSWERED_USER_ARTIFACT_AND_LISTINGS; DO_NOT_REASK",
+    "security_mapping": {
+      "mapped": 0,
+      "unresolved": 19,
+      "dependency": "Approved dated Security/Listing registry and reviewed company-binding source missing"
+    },
+    "remaining_user_target_value_decisions": [],
+    "display": {
+      "number": 66,
+      "base": "codex/chart-contract-mcp-api-v0-1",
+      "head": "4a613a5ce7a87f06a04116a355bc03c3225c4613",
+      "merge": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "tree": "94c3d0fdbbb835a163a0accdffbe8dabebfd2a8c",
+      "tests": {
+        "node": 99,
+        "new_source_adapter": 24,
+        "build": "PASS"
+      },
+      "browser": {
+        "passed": 4,
+        "viewports_locales": [
+          "360ko",
+          "390ko",
+          "390en",
+          "1280ko"
+        ],
+        "source_corruptions_per_case": 12,
+        "unexpected_demo_metadata_per_case": 1,
+        "mode_substitutions_per_case": 3,
+        "screenshots": 6
+      },
+      "ci": "NOT_TRIGGERED_BY_EXISTING_WORKFLOW; exacthead0checks0runs; no newworkflow",
+      "receipt_path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
+      "gates_closed": [
+        "A-S1"
       ],
-      "actual": "NOT_AVAILABLE_NO_TARGET_FALLBACK",
-      "qgv_recalculated": false,
-      "weights_or_themes_changed": false,
-      "canonical_unchanged": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
-      "holdout_consumed": false,
-      "automation_expansion": false,
-      "independent_review": "NO_REMAINING_CRITICAL_OR_IMPORTANT_FINDINGS"
+      "gates_open": [
+        "A-S2",
+        "A-S3",
+        "A-G1",
+        "A-G2",
+        "A-G3"
+      ]
     }
   },
   "current_fpia_recorded_inventory": {
@@ -1991,6 +2094,195 @@
         "merged_by": "kco994553-star",
         "merge_performed_by_this_session": false
       }
+    },
+    {
+      "schema": "main-target-v0-final-checkpoint-v1",
+      "decision": "CDR-041",
+      "checkpoint": 5,
+      "recorded_at_utc": "2026-10-08T12:36:16Z",
+      "global_parent": "deb751a027396a1e65ce668d32076da3b90f854d",
+      "cycle_id": "target-v0-20261008T114634Z",
+      "mode": "READ_ONLY",
+      "mode_changed": false,
+      "tasks_used": 5,
+      "task_limit": 5,
+      "all_lanes_done": true,
+      "guard_state": {
+        "HG01": "VERIFIED",
+        "HG02": "PARTIAL_VERIFIED",
+        "HG03": "PARTIAL_VERIFIED",
+        "Gate_A": "CLOSED",
+        "actual_pause_wake": "NOT_RUN",
+        "automation_freeze": "ACTIVE",
+        "mode": "READ_ONLY",
+        "unattended_executor": false
+      },
+      "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "canonical_changed": false,
+      "own_lease_release": {
+        "token": "target-v0-20261008T114634Z",
+        "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+        "lane_id": "MAIN_USER_TARGET_V0_ADOPTION_AND_PR63",
+        "branch": "integration/global-handoff-v1",
+        "acquired_at_utc": "2026-10-08T11:46:34Z",
+        "expires_at_utc": "2026-10-08T13:46:34.000Z",
+        "ttl_hours": 2,
+        "input_parent": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
+        "scope": [
+          "implementation/docs/coordination/**",
+          "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+          "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+          "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py",
+          "PR63 merge only into integration/web/production-state-presentation-v1",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/enums.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/contracts/models.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/factors.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/analysis.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/g_horizon.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/raw_map.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/scoring_standard.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_scoring_standard_v1.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md",
+          "main/qgv-scoring-standard-v1-20261008:Investment-System1 · Contract Conflict Register 2026-09-23.md",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_book_catalog_financial.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_raw_and_providers.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_live_sources_and_persist.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_v_prior_and_c15.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_validation_framework.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_analysis_scoring.py",
+          "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+          "main/target-v0-display-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+          "main/target-v0-display-20261008:implementation/docs/portfolio_target_owner/v0/ADOPTION_RECEIPT.json",
+          "main/target-v0-display-20261008:implementation/docs/strategy_theme_owner/v0/ADOPTION_RECEIPT.json",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.mjs",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_source.test.mjs",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/build.mjs",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/page.html",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
+          "main/target-v0-display-20261008:implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/us_live.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/leaderboard.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/qgv/html_sample.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/validation/historical.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tests/test_qgv_common_contract_vnext.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/tools/qgv_contract_audit.py",
+          "main/qgv-scoring-standard-v1-20261008:implementation/src/investment_system/product/render_app.py"
+        ],
+        "mode": "READ_ONLY",
+        "unattended": false,
+        "authority": "CDR039 explicit user TARGET/file/identity/display/PR63 named actions; no autonomous mode grant",
+        "released_at_utc": "2026-10-08T12:36:16Z",
+        "release_kind": "OWN_LEASE_RELEASE_IN_CONTAINING_FINAL_PUBLICATION",
+        "reason": "Both directed source/display and QGV lanes completed; remaining dependencies OPEN",
+        "publication_observation": "DECLARED_TARGET_PENDING_REMOTE_READBACK"
+      },
+      "inherited_missing_data_lease": {
+        "token": "qgv-b47-muupb538",
+        "preserved": true
+      },
+      "receipt_inputs": {
+        "target_display": {
+          "path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
+          "sha256": "8a39e23e6487f2c2c8be496a375f06ea878b738f6a984bbfed6639378dc07689",
+          "bytes": 1678
+        },
+        "qgv": {
+          "path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json",
+          "sha256": "afd93fffa9dc4c27dac4ac3393e3c9799721e9c372c22e9c3221464266b5d150",
+          "bytes": 1865
+        }
+      },
+      "final_facts": "evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json",
+      "ready_main": 0,
+      "remaining_dependencies": [
+        "TARGET v0 input request ANSWERED by USER adopted immutable source; no renewed TARGET/listing question. Chart A-S1 CLOSED only on authenticated noncanonical display merge; A-S2/A-S3/A-G1/A-G2/A-G3 OPEN.",
+        "A-S2: 0/19 mapped, 19 UNRESOLVED; approved dated Security/Listing registry and reviewed company-binding source remain missing. ticker_hint and company namespace evidence are not identity.",
+        "A-S3: USER Theme values/catalog adopted; complete reviewed security assignment remains OPEN through A-S2. No synthesized identities or new Theme values.",
+        "A-G1/A-G2: source-bound P01 applicability and full per-path cross-owner/assembled acceptance remain OPEN; display-only adoption confers no Product grant.",
+        "A-G3/FPIA/GIE: independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation and assembled acceptance remain OPEN. Existing F1-F25 intake/history preserved; no new audit or countercase.",
+        "QGV v1 UNCALIBRATED adoption/C03 resolution prospective from 2026-10-08T11:50:25Z; numerical invariance and actual final test/CI facts at evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json. MissingData held lease qgv-b47-muupb538 preserved; production/Official-LIVE categories unchanged.",
+        "Platform PPA-F08 CLOSED after PR63 noncanonical Web merge; Platform closed 1/9, remaining 8. Other blockers, canonical integration and broader Product acceptance remain unchanged.",
+        "HG01 VERIFIED; HG02/HG03 PARTIAL_VERIFIED; actual E2E/PAUSE wake remain unproved; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; READ_ONLY."
+      ],
+      "publication_identity": "RESOLVES_FROM_CONTAINING_COMMIT; REMOTE_BYTE_CONTROL_READBACK_PENDING",
+      "admissions": {
+        "USER_TARGET_weight_root": 1,
+        "Security_identity": 0,
+        "Security_total": 19
+      },
+      "chart_gates_closed": 1,
+      "chart_gates_total": 6,
+      "calibration_adoption": false,
+      "status": "COMPLETE_USER_DIRECTED_READ_ONLY",
+      "end_mode": "READ_ONLY",
+      "end_reason": "FIVE_TASK_CHECKPOINT_COMPLETE_READY0",
+      "target_display": {
+        "number": 66,
+        "base": "codex/chart-contract-mcp-api-v0-1",
+        "head": "4a613a5ce7a87f06a04116a355bc03c3225c4613",
+        "merge": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+        "tree": "94c3d0fdbbb835a163a0accdffbe8dabebfd2a8c",
+        "tests": {
+          "node": 99,
+          "new_source_adapter": 24,
+          "build": "PASS"
+        },
+        "browser": {
+          "passed": 4,
+          "viewports_locales": [
+            "360ko",
+            "390ko",
+            "390en",
+            "1280ko"
+          ],
+          "source_corruptions_per_case": 12,
+          "unexpected_demo_metadata_per_case": 1,
+          "mode_substitutions_per_case": 3,
+          "screenshots": 6
+        },
+        "ci": "NOT_TRIGGERED_BY_EXISTING_WORKFLOW; exacthead0checks0runs; no newworkflow",
+        "receipt_path": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json",
+        "gates_closed": [
+          "A-S1"
+        ],
+        "gates_open": [
+          "A-S2",
+          "A-S3",
+          "A-G1",
+          "A-G2",
+          "A-G3"
+        ]
+      },
+      "qgv": {
+        "number": 65,
+        "base": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+        "head": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+        "merge": "753f225caa2da1877a1e6391df9e10b1085e9578",
+        "tree": "dd9a914ea3cd013f30ef78a30d5f05eb8fcdd669",
+        "tests": {
+          "passed": 503,
+          "existing": 488,
+          "new": 15,
+          "audit_golden": 71
+        },
+        "ci": {
+          "status": "SUCCESS",
+          "run_id": 37775779453,
+          "job_id": 113306115143,
+          "head_sha": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37775779453"
+        },
+        "standard": "v1",
+        "calibration": "UNCALIBRATED",
+        "effective_at": "2026-10-08T11:50:25Z",
+        "C03": "RESOLVED",
+        "numeric_invariance": true,
+        "receipt_path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json"
+      }
     }
   ],
   "qgv_scoring_standard_v1_consumption": {
@@ -2066,5 +2358,152 @@
     ],
     "market_admission": "0/19",
     "evidence": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json"
+  },
+  "last_scoped_execution": {
+    "cycle_id": "target-v0-20261008T114634Z",
+    "authority": "CDR039",
+    "mode": "READ_ONLY",
+    "task_limit": 5,
+    "tasks_used": 5,
+    "lane_leases": [
+      {
+        "lane_id": "PR63_AUTHORIZED_NONCANONICAL_MERGE",
+        "branch": "integration/web/production-state-presentation-v1",
+        "head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+        "status": "DONE_PR63_MERGED_PLATFORM_PPA_F08_CLOSED"
+      },
+      {
+        "lane_id": "TARGET_V0_SOURCE",
+        "source_owner": "USER",
+        "proposal_branch": "main/target-v0-source-20261008",
+        "base_branch": "main/chart-source-evidence-v1",
+        "write_set": [
+          "main/target-v0-source-20261008:implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+          "main/target-v0-source-20261008:implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+          "main/target-v0-source-20261008:implementation/tests/test_portfolio_target_v0.py"
+        ],
+        "status": "DONE_NONCANONICAL_PR64_MERGED"
+      },
+      {
+        "lane_id": "QGV_SCORING_STANDARD_V1",
+        "token": "target-v0-20261008T114634Z/qgv-v1",
+        "holder": "/root/qgv_standard_v1 under Main",
+        "branch": "main/qgv-scoring-standard-v1-20261008",
+        "base": "d1566aeb1bbf11b1d514ad874b069d8b127ff1c7",
+        "pr_base": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+        "write_set": [
+          "implementation/src/investment_system/contracts/enums.py",
+          "implementation/src/investment_system/contracts/models.py",
+          "implementation/src/investment_system/qgv/factors.py",
+          "implementation/src/investment_system/qgv/scoring.py",
+          "implementation/src/investment_system/qgv/analysis.py",
+          "implementation/src/investment_system/qgv/g_horizon.py",
+          "implementation/src/investment_system/qgv/raw_map.py",
+          "implementation/src/investment_system/qgv/scoring_standard.py",
+          "implementation/tests/test_qgv_scoring_standard_v1.py",
+          "implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md",
+          "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+          "implementation/tests/test_book_catalog_financial.py",
+          "implementation/tests/test_raw_and_providers.py",
+          "implementation/tests/test_live_sources_and_persist.py",
+          "implementation/tests/test_v_prior_and_c15.py",
+          "implementation/tests/test_validation_framework.py",
+          "implementation/tests/test_analysis_scoring.py",
+          "implementation/src/investment_system/qgv/us_live.py",
+          "implementation/src/investment_system/qgv/leaderboard.py",
+          "implementation/src/investment_system/qgv/html_sample.py",
+          "implementation/src/investment_system/validation/historical.py",
+          "implementation/tests/test_qgv_common_contract_vnext.py",
+          "implementation/tools/qgv_contract_audit.py",
+          "implementation/src/investment_system/product/render_app.py"
+        ],
+        "status": "DONE_NONCANONICAL_PR65_MERGED_LEASE_RELEASED",
+        "expires_at_utc": "2026-10-08T13:46:34.000Z",
+        "task_limit": 5,
+        "tasks_used": 5,
+        "adoption_receipt": "2026-10-08T11:50:25Z",
+        "protected_history": "appendC03resolution only; oldbytespreserved",
+        "held_missing_data_lease": "qgv-b47-muupb538 preserved",
+        "claim_amendment_reason": "Preserve71historicgoldens with exact13authorizedmetadata/status deltas and strict allnumeric invariance; remove2stale active Vnull descriptions. No fixture/runtime/trigger edits.",
+        "lease_active": false,
+        "released_at_utc": "2026-10-08T12:18:30Z",
+        "final_completion_observed_at_utc": "2026-10-08T12:36:16Z",
+        "authenticated_merge": "753f225caa2da1877a1e6391df9e10b1085e9578",
+        "final_receipt": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json"
+      },
+      {
+        "lane_id": "TARGET_DISPLAY_AND_CHART_REJUDGMENT",
+        "token": "target-v0-20261008T114634Z/target-display",
+        "holder": "/root/gate_a_e2e under Main",
+        "branch": "main/target-v0-display-20261008",
+        "base": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+        "pr_base": "codex/chart-contract-mcp-api-v0-1",
+        "write_set": [
+          "implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+          "implementation/docs/security_map19_owner/TARGET_v0_SECURITY_MAP.json",
+          "implementation/docs/portfolio_target_owner/v0/ADOPTION_RECEIPT.json",
+          "implementation/docs/strategy_theme_owner/v0/ADOPTION_RECEIPT.json",
+          "implementation/experiments/chart-contract-v0.1/target_v0_source.mjs",
+          "implementation/experiments/chart-contract-v0.1/target_v0_source.test.mjs",
+          "implementation/experiments/chart-contract-v0.1/build.mjs",
+          "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+          "implementation/experiments/chart-contract-v0.1/page.html",
+          "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+          "implementation/experiments/chart-contract-v0.1/target_v0_projection.json",
+          "implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/**"
+        ],
+        "status": "DONE_PR66_MERGED_LEASE_RELEASED",
+        "expires_at_utc": "2026-10-08T13:46:34.000Z",
+        "immutable_paths": [
+          "portfolio_contract.mjs",
+          "portfolio_reference.json",
+          "Product/P01/assembler/validator/identity/calculation contracts"
+        ],
+        "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+        "lease_active": false,
+        "released_at_utc": "2026-10-08T12:35:30Z",
+        "final_completion_observed_at_utc": "2026-10-08T12:36:16Z",
+        "authenticated_merge": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+        "final_receipt": "implementation/docs/coordination/evidence/main_target_v0_adoption_2026-10-08/DISPLAY_COMPLETION_RECEIPT.json"
+      }
+    ],
+    "status": "COMPLETE",
+    "completed_at_utc": "2026-10-08T12:36:16Z"
+  },
+  "current_qgv_standard_v1": {
+    "number": 65,
+    "base": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+    "head": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+    "merge": "753f225caa2da1877a1e6391df9e10b1085e9578",
+    "tree": "dd9a914ea3cd013f30ef78a30d5f05eb8fcdd669",
+    "tests": {
+      "passed": 503,
+      "existing": 488,
+      "new": 15,
+      "audit_golden": 71
+    },
+    "ci": {
+      "status": "SUCCESS",
+      "run_id": 37775779453,
+      "job_id": 113306115143,
+      "head_sha": "c72458c9608c4f7814fa2ed6e251bea465570d7c",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37775779453"
+    },
+    "standard": "v1",
+    "calibration": "UNCALIBRATED",
+    "effective_at": "2026-10-08T11:50:25Z",
+    "C03": "RESOLVED",
+    "numeric_invariance": true,
+    "receipt_path": "implementation/docs/coordination/evidence/main_qgv_standard_v1_2026-10-08/COMPLETION_RECEIPT.json"
+  },
+  "current_guard_state": {
+    "HG01": "VERIFIED",
+    "HG02": "PARTIAL_VERIFIED",
+    "HG03": "PARTIAL_VERIFIED",
+    "Gate_A": "CLOSED",
+    "actual_pause_wake": "NOT_RUN",
+    "automation_freeze": "ACTIVE",
+    "mode": "READ_ONLY",
+    "unattended_executor": false
   }
 }
