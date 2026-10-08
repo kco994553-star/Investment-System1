@@ -1,0 +1,117 @@
+{
+  "schema": "chart-ci-followup-terminal-v1",
+  "observed_at_utc": "2026-10-05T06:36:14.933Z",
+  "repository": "kco994553-star/Investment-System1",
+  "chart_owner_branch": "codex/chart-contract-mcp-api-v0-1",
+  "chart_pr": 41,
+  "dependency_pr": 46,
+  "dependency_branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+  "subject": {
+    "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "workflow_name": "track-c-fpia",
+    "run_id": 37267962000,
+    "run_attempt": 1,
+    "run_number": 6,
+    "job_id": 111628676484,
+    "job_name": "fpia",
+    "status": "completed",
+    "conclusion": "failure",
+    "started_at_utc": "2026-10-05T05:28:47Z",
+    "completed_at_utc": "2026-10-05T06:21:31Z",
+    "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000"
+  },
+  "artifact": {
+    "id": 11328740798,
+    "name": "track-c-fpia-a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "size_bytes": 58572,
+    "digest": "sha256:13d7f067019af8530e7a2aaabc21201ffa39018f472b15dbb8510d75c219728c",
+    "result_sha256": "3f7b27e7fc9c1d25fc9dc66cc9db76f37ad43b338289a3022c3c7012d263b41d",
+    "run_sha256": "74ec3f52f48c6aa9101527c50f657c86958812d36f6ba0b132e06eb53ee8cd4b",
+    "verification": "VERIFIED"
+  },
+  "exact_result": {
+    "fpia": "FPIA_FAIL",
+    "reason": "full_regression FAIL",
+    "authority": "PASS",
+    "code_identity": "CODE_IDENTITY_DIVERGED",
+    "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+    "full_regression": {
+      "status": "FAIL",
+      "tests": 2184,
+      "passed": 2182,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0,
+      "deselected": 1,
+      "failed_nodes": [
+        "implementation/tests/test_integration_fpia_self.py::test_no_numeric_thresholds",
+        "implementation/tests/test_integration_fpia_self.py::test_no_sha_or_pr_literals"
+      ]
+    },
+    "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+    "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+    "runtime_provenance": "PASS",
+    "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+    "v2_binding": "PASS",
+    "dynamic_invocation_detection": "NOT_CLAIMED_D3_c",
+    "out_of_tree_code_analysis": "NOT_ANALYSED_D3_e"
+  },
+  "same_subject_workflows": [
+    {
+      "id": 37267962003,
+      "name": "qgv-invalidation-binding",
+      "conclusion": "failure"
+    },
+    {
+      "id": 37267962024,
+      "name": "us-equity-session",
+      "conclusion": "failure"
+    },
+    {
+      "id": 37267961900,
+      "name": "technical-real-model",
+      "conclusion": "failure"
+    },
+    {
+      "id": 37267962109,
+      "name": "technical-real-producer",
+      "conclusion": "failure"
+    },
+    {
+      "id": 37267961987,
+      "name": "p01-research-publication",
+      "conclusion": "failure"
+    },
+    {
+      "id": 37267961909,
+      "name": "sec-primary-disclosure",
+      "conclusion": "failure"
+    },
+    {
+      "id": 37267962000,
+      "name": "track-c-fpia",
+      "conclusion": "failure"
+    }
+  ],
+  "chart_effect": {
+    "requirements_closed": 0,
+    "blockers_closed": 0,
+    "new_chart_product_blockers": 0,
+    "dependency_transition": "PR46_FPIA_IN_PROGRESS_TO_TERMINAL_FAILURE",
+    "lane_a_gate": "A-G3",
+    "lane_a_gate_disposition": "OWNER_ACTION_REQUIRED",
+    "lane_a_open_count": 6,
+    "lane_b_admitted_symbols": 0,
+    "lane_b_total_symbols": 19,
+    "production_ready_contracts": 0,
+    "frontend_ready_contracts": "SAMPLE_ONLY_PREVIOUSLY_VERIFIED",
+    "vertical_slice_progress": "UNCHANGED_IMPLEMENTATION_NOT_READY",
+    "actual_chart_merge_result_fpia": "NOT_RUN",
+    "governance_closure": false
+  },
+  "owner_boundary": {
+    "action_required": "Integration/FPIA owner repairs PR46 current subject and publishes a fresh exact-head result; Chart consumes read-only.",
+    "chart_action": "No retry, dispatch, PR46 branch write, production promotion, or merge.",
+    "note": "This terminal CI result does not by itself close FPIA governance, G7/GIE, source authority, or Chart production gates."
+  }
+}

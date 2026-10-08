@@ -1,0 +1,37 @@
+{
+  "kind": "VERIFICATION_EXPECTATION_REPAIR_NOT_IMPLEMENTATION_FAILURE",
+  "attempts": [
+    {
+      "expected_exit": 2,
+      "observed_exit": 3,
+      "validation": "FAIL_WRONG_TEST_EXPECTATION"
+    },
+    {
+      "expected_exit": 3,
+      "expected_status": "NEEDS_OWNER_INPUT",
+      "observed_status": "INCOMPLETE",
+      "validation": "FAIL_WRONG_STATUS_NAME"
+    },
+    {
+      "expected_exit": 3,
+      "expected_status": "INCOMPLETE",
+      "observed_exit": 3,
+      "observed_status": "INCOMPLETE",
+      "validation": "PASS"
+    }
+  ],
+  "classification": "EXISTING_INCOMPLETE_IS_EXIT3_INVALID_IS_EXIT2",
+  "correction": "Read main() documented return and use existing INCOMPLETE exit3; no CLI code changed",
+  "retest": "PASS",
+  "command": [
+    "python",
+    "-B",
+    "/workspace/scratch/9de0281e56bb/repo/implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+    "--repo",
+    "/workspace/scratch/9de0281e56bb/repo",
+    "--packet",
+    "/workspace/scratch/9de0281e56bb/repo/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+    "--decision-time",
+    "2026-10-05T04:27:44.551858+00:00"
+  ]
+}

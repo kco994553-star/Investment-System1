@@ -1,0 +1,277 @@
+{
+  "kind": "INACTIVE_G_C_EXACT_ARTIFACT_ACCEPTANCE_V1",
+  "task": "QGV_G1_G2_SEMANTIC_CANDIDATE_AND_CONSUMER_CONVERGENCE",
+  "approval_commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+  "prior_commit": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+  "production_enabled": false,
+  "outputs": [
+    {
+      "relative_path": "root/B1_EVIDENCE_DELTA.json",
+      "sha256": "b99c5edcc3accf4318c7bd1d50c89912c03e3b41cc78285ceb8301744bf697bb",
+      "bytes": 1321
+    },
+    {
+      "relative_path": "root/CONTROL_CLAIM.json",
+      "sha256": "055b50f9e46959678ff011f910d4eae7779a6fcee86c8383c1541898caec5714",
+      "bytes": 3096
+    },
+    {
+      "relative_path": "root/DECISION_PACKAGE.md",
+      "sha256": "f00a96a0e646b8c3ca3c90dc44d3b20d993ae8465f4c082fd325399c12657b2e",
+      "bytes": 6571
+    },
+    {
+      "relative_path": "root/SEMANTIC_CONTRACT.md",
+      "sha256": "818be17270af0d43a88005dd5a9cc5f392234742332267bb96d80dac0e0c57a4",
+      "bytes": 2826
+    },
+    {
+      "relative_path": "root/WORK_PLAN.md",
+      "sha256": "663807c1b77c4651526a0ad9b7541a4b7b086f08504f1cde56846271f3f34c79",
+      "bytes": 1699
+    },
+    {
+      "relative_path": "root/acceptance_validator.py",
+      "sha256": "e0c63011e26d906d0d5b7808e516c4db9f6fe1f9ce231083d1b6106c5bbd6eac",
+      "bytes": 4521
+    },
+    {
+      "relative_path": "root/approval.json",
+      "sha256": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c",
+      "bytes": 3596
+    },
+    {
+      "relative_path": "root/fresh_intake.json",
+      "sha256": "34b90f23679e3cbbfd41dd6e2a7d17b4ef16a4eec55ef1d7256628435691f1c1",
+      "bytes": 14716
+    },
+    {
+      "relative_path": "g/G2_INDEPENDENT_FAMILY_REVIEW.md",
+      "sha256": "3eff870054903f5c40252276f30ba4f8c96ddae7f2b29a1114e4d8f63b6a9ee5",
+      "bytes": 2003
+    },
+    {
+      "relative_path": "g/G_CANDIDATE_DIAGNOSTICS.json",
+      "sha256": "ee097d49ba1ca58f7e596a46f9628d75cc7648533cbc98641b800cd0211903c7",
+      "bytes": 29182
+    },
+    {
+      "relative_path": "g/G_CANDIDATE_MATRIX.json",
+      "sha256": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+      "bytes": 34372
+    },
+    {
+      "relative_path": "g/G_CANDIDATE_SOURCE_REQUESTS.json",
+      "sha256": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+      "bytes": 5904
+    },
+    {
+      "relative_path": "g/G_CANDIDATE_VERIFICATION.json",
+      "sha256": "b8fa7e1c24737c6ff59fb879e84d2a3696a367c82625a40fa1aebfc29aeb0f13",
+      "bytes": 4960
+    },
+    {
+      "relative_path": "g/G_METHOD_CANDIDATE_COMPARISON.md",
+      "sha256": "06e754161f2b7bfb47f312ea4e6ca22f58b401564d0b08fb85b41f14f1661595",
+      "bytes": 12810
+    },
+    {
+      "relative_path": "g/G_PRIMARY_SOURCE_NOTES.json",
+      "sha256": "34cea92b1738afc5152a198d2add10bb17b8ac33a30cf8dce400ca04934dee38",
+      "bytes": 2015
+    },
+    {
+      "relative_path": "g/g_candidate_comparison.py",
+      "sha256": "e19ff3fcdcc40eb4750b5d6011832fccab97ca1d5edea78f9e2eb4c9dc4b9116",
+      "bytes": 29680
+    },
+    {
+      "relative_path": "consumer/CONTRACT.md",
+      "sha256": "7618a8f67ea794056ef05eb09317165855ece13e5cca70df17a549680a675ff8",
+      "bytes": 13874
+    },
+    {
+      "relative_path": "consumer/CONTRACT_ACCEPTANCE_RESULTS.json",
+      "sha256": "946dae38b5f33bf7ce47763ccd8780b2f9f7713d37efbc501ce596fb4b8ab386",
+      "bytes": 9539
+    },
+    {
+      "relative_path": "consumer/CONTRACT_EVIDENCE.json",
+      "sha256": "fb6a85157f056d1dfdd02142afa263d289488a1b6c406595cb598f45902ad591",
+      "bytes": 3141
+    },
+    {
+      "relative_path": "consumer/SOURCE_AUTHORITY_MATRIX.json",
+      "sha256": "793b8ce6dab4f432b61246a7303f3fa75461063f880bd381aed6755d55f66a79",
+      "bytes": 16340
+    },
+    {
+      "relative_path": "consumer/assessment_ref_carrier.schema.json",
+      "sha256": "5f37fde7dafac0e3c8eb0128f64359acc53c4427673c5783040ab502ce044fc6",
+      "bytes": 12376
+    },
+    {
+      "relative_path": "consumer/contract_acceptance_probe.py",
+      "sha256": "948340515c6ac749fb115e15b375bd3308a6bb51b23d04370286ff563b31813f",
+      "bytes": 26727
+    },
+    {
+      "relative_path": "consumer/synthetic_carrier.json",
+      "sha256": "8741c846d06f84abf3c5dd78e705fe47e827727af0af85e547289d4c9406bd64",
+      "bytes": 10372
+    },
+    {
+      "relative_path": "consumer/synthetic_reference_contents.json",
+      "sha256": "491491d708f2822bb4e9d0aa2f4ffc8811d06d7eb42647532317b49753e2c616",
+      "bytes": 26687
+    },
+    {
+      "relative_path": "review/independent_review.json",
+      "sha256": "19ca4cb870c98beb6b79641cc019e8903a7e269396b946b3f21d0620b885de03",
+      "bytes": 19691
+    },
+    {
+      "relative_path": "review/independent_review.md",
+      "sha256": "25bc3510ee362f87947fc323f0490b0bc7a3a0e1ceb4e934589f42c307540834",
+      "bytes": 6171
+    }
+  ],
+  "reused_inputs": [
+    {
+      "relative_path": "consumer/CONSUMER_SAFETY_DELTA.md",
+      "sha256": "d137dd43e7d5b4c3dc01d28fbf6b3a516236f265ebb7bdf8c8aca6be1b4a6f40",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer/CONSUMER_SAFETY_DELTA.md"
+    },
+    {
+      "relative_path": "consumer/QGV_CONSISTENCY_MATRIX.md",
+      "sha256": "9fccaa63e04b2c904bf19a3c90ca123263476c61c63077b8125b7e467d42a681",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer/QGV_CONSISTENCY_MATRIX.md"
+    },
+    {
+      "relative_path": "consumer/V_INDEPENDENT_REVIEW.md",
+      "sha256": "41debae3695e99af95be489669e87fccbdcf83edb6ddd42ba7278a59b7587a0e",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer/V_INDEPENDENT_REVIEW.md"
+    },
+    {
+      "relative_path": "consumer/V_INDEPENDENT_REVIEW_EVIDENCE.json",
+      "sha256": "ba85a8adaa6e257c8abceb834750b3b0a22c071014f42e6341e02b4964f239f3",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer/V_INDEPENDENT_REVIEW_EVIDENCE.json"
+    },
+    {
+      "relative_path": "consumer/consumer_lineage_probe.py",
+      "sha256": "949d3a9dae77bac380d724eed6dfe96a0d96da3e9a39cb3c9d24aa6feaf52b50",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer/consumer_lineage_probe.py"
+    },
+    {
+      "relative_path": "consumer/lineage_probe_results.json",
+      "sha256": "ac462d2b942c493b3898d23ecdb619be7dbc2744fc8b571085d1c83eb0d7a69b",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer/lineage_probe_results.json"
+    },
+    {
+      "relative_path": "consumer/source_evidence.json",
+      "sha256": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer/source_evidence.json"
+    },
+    {
+      "relative_path": "g/G_LINEAGE_AUDIT.md",
+      "sha256": "d7a88e5ed91472b367fc669dfd602d320186275d4c427ec0555ee557e96a2537",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/g/G_LINEAGE_AUDIT.md"
+    },
+    {
+      "relative_path": "g/G_LINEAGE_REPLAY.json",
+      "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/g/G_LINEAGE_REPLAY.json"
+    },
+    {
+      "relative_path": "g/G_LINEAGE_VERIFICATION.json",
+      "sha256": "7207436226046b26d752ee1d96a0da91777855fe2aa2bc75834535a8d7039934",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/g/G_LINEAGE_VERIFICATION.json"
+    },
+    {
+      "relative_path": "g/G_METHOD_REPLAY_MANIFEST.json",
+      "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/g/G_METHOD_REPLAY_MANIFEST.json"
+    },
+    {
+      "relative_path": "g/G_SOURCE_READINESS.md",
+      "sha256": "a96ef566ee6244cc53ca8039e72ac158058e5ba204fd736a7636f3b7fc6e0c07",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/g/G_SOURCE_READINESS.md"
+    },
+    {
+      "relative_path": "g/G_SOURCE_READINESS_MATRIX.json",
+      "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/g/G_SOURCE_READINESS_MATRIX.json"
+    },
+    {
+      "relative_path": "g/G_SYNTHETIC_RAW_FIXTURES.json",
+      "sha256": "dca9e8855f7e01dc5bda9404909ae9b05f980f6604341ab5c89729140cc9f90d",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/g/G_SYNTHETIC_RAW_FIXTURES.json"
+    },
+    {
+      "relative_path": "g/build_g_readiness.py",
+      "sha256": "dba6a0457b85e4dbed1846e2eeebabf410311989d07d80092d40c38d18e18a73",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/g/build_g_readiness.py"
+    },
+    {
+      "relative_path": "g/g_lineage_replay.py",
+      "sha256": "80816b3f2006f15bbc516382ac499ce54bbd8183800daa02e80ec3de9c66e4c4",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/g/g_lineage_replay.py"
+    },
+    {
+      "relative_path": "root/B1_EVIDENCE_DELTA.json",
+      "sha256": "80adb099836dee57bd6043ad6eeac27b2334b69f7b286ff4355dee9a3636530b",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/root/B1_EVIDENCE_DELTA.json"
+    },
+    {
+      "relative_path": "root/CONTROL.json",
+      "sha256": "5b0d766bb110f8cc730af25b5e33c8dbb33b127c5eda95b2cfd76ca0268c21da",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/CONTROL.json"
+    },
+    {
+      "relative_path": "root/CURRENT_HANDOFF.md",
+      "sha256": "dd750d41e69693549ca21cb0428a91d70276ee7102e60a773b82ff0d9a6c8c96",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md"
+    },
+    {
+      "relative_path": "root/DECISION_PACKAGE.md",
+      "sha256": "b003e16f9422356f3f1ecdb020cba267bc97b1b0fd4b847f5845eeeebb2fa306",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/root/DECISION_PACKAGE.md"
+    },
+    {
+      "relative_path": "root/fresh_intake.json",
+      "sha256": "e153777821c54245d0b43396541f0127d84b373e4f24268719534c6e405afab9",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/root/fresh_intake.json"
+    },
+    {
+      "relative_path": "root/verification.json",
+      "sha256": "42fed6e01da57c1a327686e46870319f7c51fa161f545941c60d9325f88d0a92",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/root/verification.json"
+    },
+    {
+      "relative_path": "v/V_ALTERNATIVE_RESULTS.json",
+      "sha256": "aaf38955ec7a37ddb2a6378d535806fec92d77d1ce201757dd212087c8695381",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/v/V_ALTERNATIVE_RESULTS.json"
+    },
+    {
+      "relative_path": "v/V_ALTERNATIVE_REVIEW.md",
+      "sha256": "3c4a120cc5c95c30adf4080bf11a4727d36c0b7cdffe8bcefcd9d13af0d60869",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/v/V_ALTERNATIVE_REVIEW.md"
+    },
+    {
+      "relative_path": "v/V_IMPACT_MATRIX.json",
+      "sha256": "cf481e0071b8ad1a3cb58dfb6fde4c95aaf933457a00057056c30630072de524",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/v/V_IMPACT_MATRIX.json"
+    },
+    {
+      "relative_path": "v/build_impact_matrix.py",
+      "sha256": "53454e0a90f4679bf89a80fbedb7547be49be9a58fc977bf0a99bcbcc2e7672b",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/v/build_impact_matrix.py"
+    },
+    {
+      "relative_path": "v/v_alternative_probe.py",
+      "sha256": "f227304605d5b401ea44137b7914f6f65c76da58b38a8d5d32d1998cc5dedfa1",
+      "authenticated_remote_repo_path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/v/v_alternative_probe.py"
+    }
+  ],
+  "operational_sidecars": "Current scoped Handoff, final control, manifest/verification/receipt are verified by authenticated publication tree readback separately; excluded to avoid self-reference"
+}

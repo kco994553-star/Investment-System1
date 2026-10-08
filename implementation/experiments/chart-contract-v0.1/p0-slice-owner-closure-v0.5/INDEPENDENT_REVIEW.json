@@ -1,0 +1,24 @@
+{
+  "kind": "INDEPENDENT_READ_ONLY_PACKET_REVIEW",
+  "reviewer": "publication_reuse_v05",
+  "scope": "v0.5 aggregate/handoff plus own automation protocol",
+  "verdict": "PASS_WITH_ONE_CLARIFICATION_RESOLVED",
+  "checks": [
+    "six independent gates open; zeroclosed",
+    "no alias/security admission",
+    "P01 currentTarget policyownerquestion",
+    "nativeDecimal/taggedstring distinction",
+    "API absent andbuildcopy hostqualified",
+    "minimalv0.2notadopted",
+    "27 mini_pytest-notpytest/notproduction/FPIA",
+    "sourceHead vs publicationHead qualified",
+    "setupverified vs futureexecution distinct",
+    "shared nonforceCAS/bootstrap/provider-accountscope"
+  ],
+  "finding": {
+    "issue": "Retainedowncomment ID+marker could hide latersemantic edits",
+    "resolution": "Require currentbodySHA256 equal retainedpublishedbody; inspect semantic modifiedcomments"
+  },
+  "old_replays_rerun": false,
+  "production_fpia_review": false
+}

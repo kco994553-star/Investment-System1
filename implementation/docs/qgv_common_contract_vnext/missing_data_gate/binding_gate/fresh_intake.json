@@ -1,0 +1,48 @@
+{
+  "observed_at_kst": "2026-10-05T12:10:15.854+09:00",
+  "repo": "kco994553-star/Investment-System1",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "owner_input": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+  "claim": "004e256e50f201b2f095fb715a380c50d67f6d75",
+  "pr44": {
+    "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "state": "Draft/Open",
+    "modified": false
+  },
+  "integration": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "global_routing": "b5b4ca67fce635a5bb2a207e96bcf5399e17deb9",
+  "owner_ahead_at_intake": 7,
+  "owner_behind_at_intake": 0,
+  "actions": [
+    {
+      "id": 37245037812,
+      "head_sha": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 37245014376,
+      "head_sha": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    }
+  ],
+  "new_actions": "NOT_RUN",
+  "comments42": [
+    {
+      "id": 5986162506,
+      "updated_at": "2026-10-05T00:40:32Z",
+      "disposition": "NO_ACTION_CHART_HANDOFF"
+    }
+  ],
+  "approval": "M1_M5_PRINCIPLES_ONLY",
+  "method_package_at_intake": "ABSENT",
+  "lease_at_intake": null,
+  "pending_ci_at_intake": 0,
+  "source": "fresh authenticated GitHub metadata and git fetch; local remote refs match",
+  "limits": "Original skip detailed execution trace unavailable; peek only reports last_run_time and enabled/prompt/schedule/chat"
+}

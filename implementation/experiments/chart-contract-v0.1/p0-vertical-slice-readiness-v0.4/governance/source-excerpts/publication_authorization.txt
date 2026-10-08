@@ -1,0 +1,94 @@
+"""PUBLICATION_AUTHORIZATION v1.
+
+A grant is an explicit event supplied by the caller. This module does not
+issue Research-display, Frozen, or Live grants. The active set is empty.
+"""
+
+from __future__ import annotations
+
+import re
+from datetime import datetime
+
+from .errors import AuthorizationError
+
+CONTRACT = "PUBLICATION_AUTHORIZATION"
+SCHEMA_VERSION = 1
+GRANT_KINDS = ("RESEARCH_DISPLAY", "FROZEN", "LIVE")
+ACTIVE_AUTHORIZATIONS: tuple = ()
+_KEYS = frozenset({
+    "contract",
+    "schema_version",
+    "grant_kind",
+    "authorization_id",
+    "subject_sha256",
+    "issued_at",
+    "explicit_event",
+})
+_HEX64 = re.compile(r"^[0-9a-f]{64}$")
+
+
+def _aware(text: object) -> datetime:
+    if not isinstance(text, str) or not text.strip():
+        raise AuthorizationError("issued_at is required")
+    raw = text.strip()
+    if raw.endswith("Z"):
+        raw = raw[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(raw)
+    except ValueError as exc:
+        raise AuthorizationError("issued_at is not an ISO timestamp") from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise AuthorizationError("issued_at must be timezone-aware")
+    return parsed
+
+
+def validate_authorization(record: object) -> dict:
+    """Reject a record that is not one explicit v1 grant. Does not store it."""
+    if not isinstance(record, dict) or set(record) != _KEYS:
+        raise AuthorizationError("authorization record keys are not the v1 set")
+    if record.get("contract") != CONTRACT or record.get("schema_version") != SCHEMA_VERSION:
+        raise AuthorizationError("authorization contract is not PUBLICATION_AUTHORIZATION v1")
+    if record.get("grant_kind") not in GRANT_KINDS:
+        raise AuthorizationError("grant_kind must be RESEARCH_DISPLAY, FROZEN, or LIVE")
+    if not isinstance(record.get("authorization_id"), str) or not record["authorization_id"].strip():
+        raise AuthorizationError("authorization_id is required")
+    subject = record.get("subject_sha256")
+    if not isinstance(subject, str) or not _HEX64.match(subject):
+        raise AuthorizationError("subject_sha256 must be 64 lowercase hex")
+    if record.get("explicit_event") is not True:
+        raise AuthorizationError("a grant requires its own explicit authorization event")
+    _aware(record.get("issued_at"))
+    return {
+        "contract": CONTRACT,
+        "schema_version": SCHEMA_VERSION,
+        "grant_kind": record["grant_kind"],
+        "authorization_id": record["authorization_id"],
+        "subject_sha256": subject,
+        "issued_at": record["issued_at"],
+        "explicit_event": True,
+    }
+
+
+def summarize_grants(authorizations: tuple | list = ACTIVE_AUTHORIZATIONS) -> dict:
+    """NONE unless that exact kind is present. One kind does not fill another."""
+    found = {kind: "NONE" for kind in GRANT_KINDS}
+    for raw in authorizations:
+        record = validate_authorization(raw)
+        found[record["grant_kind"]] = "PRESENT"
+    return {
+        "research_display": found["RESEARCH_DISPLAY"],
+        "frozen": found["FROZEN"],
+        "live": found["LIVE"],
+    }
+
+
+def matching_grant(authorizations: tuple | list, kind: str, subject_sha256: str) -> bool:
+    """True only when an explicit grant of that kind names that persisted subject."""
+    if kind not in GRANT_KINDS:
+        raise AuthorizationError("unknown grant kind")
+    for raw in authorizations:
+        record = validate_authorization(raw)
+        if record["grant_kind"] == kind and record["subject_sha256"] == subject_sha256:
+            return True
+    return False
+

@@ -1,0 +1,24 @@
+{
+  "key": "web_browser_checks",
+  "sha": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "path": "implementation/tools/validate_web_state_browser.py",
+  "url": "https://raw.githubusercontent.com/kco994553-star/Investment-System1/523e702a806a718d163cfbf62aa3fc29d8c3ef3c/implementation/tools/validate_web_state_browser.py",
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}"
+      }
+    ],
+    "structuredContent": {
+      "error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}",
+      "error_code": "NOT_FOUND",
+      "error_data": {
+        "message": "Not Found",
+        "documentation_url": "https://docs.github.com/rest/repos/contents#get-repository-content",
+        "status": "404"
+      }
+    },
+    "isError": true
+  }
+}

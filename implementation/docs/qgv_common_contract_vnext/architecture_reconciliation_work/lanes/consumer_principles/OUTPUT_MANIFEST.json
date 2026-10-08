@@ -1,0 +1,72 @@
+{
+  "artifact_kind": "B2_B3_B5_B6_PRINCIPLE_APPROVAL_INACTIVE_CLOSURE",
+  "outputs": [
+    {
+      "name": "APPROVED_CONTRACT.md",
+      "sha256": "5343ad6e188a7ad67057703f8bafade0119a04206b7168aabfb402f4f8061b1b",
+      "bytes": 3018
+    },
+    {
+      "name": "AUTHORITY_ACCEPTANCE_RESULTS.json",
+      "sha256": "6e7aaca62948a2ebb0c151bc6c580a739e1f9ef36dee6f03a91d59fee6c34509",
+      "bytes": 5686
+    },
+    {
+      "name": "DECISION_REGISTER.md",
+      "sha256": "84675f99f5aaeb997e0439a12b8603b46e074b71513628e988a83f7e6b1486d9",
+      "bytes": 2842
+    },
+    {
+      "name": "EVIDENCE_REUSE.json",
+      "sha256": "2257a09d28fdd4bb63778bf2649bd28c772acfe6e36e7100a528f3c1c034c62f",
+      "bytes": 21004
+    },
+    {
+      "name": "FRESH_INTAKE.json",
+      "sha256": "4f4b197e832a1b361d959c3b4a3e3d1ae5bb78333cd85ae3e0bb8eb574c5eed0",
+      "bytes": 1533
+    },
+    {
+      "name": "INDEPENDENT_REVIEW.json",
+      "sha256": "4ca7f4fa8dacd5544127969df6bc425f7e32aaff314e76d41b6dd2f0ec333b60",
+      "bytes": 3249
+    },
+    {
+      "name": "MAIN_RETURN.json",
+      "sha256": "b7166d9228e6fc879ad29eb107bbf994d11390c58af11bf2114a6589c9af3cf3",
+      "bytes": 4764
+    },
+    {
+      "name": "OBLIGATION_MAP.json",
+      "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+      "bytes": 5132
+    },
+    {
+      "name": "PRIOR_SCOPE_RETURN_CONSUMPTION.json",
+      "sha256": "15577af6f5baf038339dd6bd70bf851a8305965a1dfa95421479b74035f43fc6",
+      "bytes": 716
+    },
+    {
+      "name": "STATE_RECONCILIATION_BEFORE_REPAIR.json",
+      "sha256": "4ea0f386a6ba22edb18e439c4630696b9f30a6bd2a6b0cdf4c466daeea23d7dd",
+      "bytes": 1143
+    },
+    {
+      "name": "TASK_BOARD.json",
+      "sha256": "e1f82c39f727aa89db9e3ee9657af93bcb1ebb423921bde13344939f0f50c011",
+      "bytes": 3533
+    },
+    {
+      "name": "approval.json",
+      "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+      "bytes": 5247
+    },
+    {
+      "name": "authority_acceptance.py",
+      "sha256": "ce44a21194523c281a6a0a54cc6848805c5d2ac6ca4808ed50c7d9effba7af07",
+      "bytes": 9024
+    }
+  ],
+  "excluding": "Current control/handoff and this manifest/receipt to avoid circular hashes",
+  "runtime_enabled": false
+}

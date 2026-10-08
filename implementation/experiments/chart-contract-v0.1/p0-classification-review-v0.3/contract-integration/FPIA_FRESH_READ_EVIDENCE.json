@@ -1,0 +1,133 @@
+{
+  "evidence_kind": "READ_ONLY_GITHUB_SNAPSHOT_NOT_INDEPENDENT_FPIA_REVIEW",
+  "retrieved_at": "2026-10-04T23:14:55.688Z",
+  "pr": {
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/42",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "head": "integration/fpia-hardened-v1",
+    "head_sha": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "base": "integration/cdr012-successor-trial-2026-10-04",
+    "base_sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "synthetic_merge_commit_sha": "0db0d3087ac1a0dff805348de060f23cae451a2d",
+    "updated_at": "2026-10-04T21:59:24Z"
+  },
+  "run_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682864",
+  "job_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37234682864/job/111531323882",
+  "jobs": {
+    "jobs": [
+      {
+        "id": 111531323882,
+        "name": "fpia",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 37234682864,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Free runner disk (an audit needs about 5 GB of work space)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Fetch every branch for the object store (read-only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Install pinned runtime (FPIA's workflow loader is the vendored PyYAML 6.0.1, AC-32.spoof)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "FPIA Tier 1 tests",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 7
+          },
+          {
+            "name": "FPIA Tier 2 real-history checks (must not skip)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 8
+          },
+          {
+            "name": "FPIA audit (the job fails only on FPIA_FAIL or FPIA_NOT_RUN)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Post Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21
+          }
+        ]
+      }
+    ]
+  },
+  "selected_job_log_lines": [
+    "2026-10-04T21:07:21.1533464Z   ref: 523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "2026-10-04T21:07:28.8153270Z \u001b[36;1mecho \"audit subject T=$tree register_commit=$register cdr=$cdr event=$GITHUB_EVENT_NAME\"\u001b[0m",
+    "2026-10-04T21:07:28.9811369Z audit subject T=523e702a806a718d163cfbf62aa3fc29d8c3ef3c register_commit=9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e cdr=CDR-014 event=pull_request",
+    "2026-10-04T21:55:04.1670301Z FPIA_PASS | CODE_IDENTITY_DIVERGED (code_hash R 0ef3a900 -> T df34b84f; CODE R 2ed79c3c -> T d0c02ac2) | FROZEN_TOOLS_ON_T_FAIL [BRANCH_FROZEN_VALIDATION, verbatim] | HISTORICAL_FROZEN_IDENTITY_PRESERVED (replayed 4 records + 4 CI logs; 27 byte-protected only) | TRACK_C_PROJECTION_PRESERVED | INTEGRATION_INTERFERENCE_NONE | v2_binding PASS | full_regression PASS",
+    "2026-10-04T21:55:04.1678207Z fpia: FPIA_PASS",
+    "2026-10-04T21:55:04.1678615Z authority: PASS",
+    "2026-10-04T21:55:04.1679016Z code_identity: CODE_IDENTITY_DIVERGED",
+    "2026-10-04T21:55:04.1679380Z frozen_tools_on_T: FROZEN_TOOLS_ON_T_FAIL",
+    "2026-10-04T21:55:04.1679717Z full_regression: PASS",
+    "2026-10-04T21:55:04.1681506Z track_c_projection: TRACK_C_PROJECTION_PRESERVED",
+    "2026-10-04T21:55:04.1681857Z v2_binding: PASS",
+    "2026-10-04T21:55:04.1682232Z result_sha256: d85ecc4b4913b31efb61dc2417898d6a51f3d9f7398d9b17bce7f233d847c520",
+    "2026-10-04T21:55:04.1688758Z fpia-output: VERIFIED",
+    "2026-10-04T21:55:04.8995090Z Artifact track-c-fpia-523e702a806a718d163cfbf62aa3fc29d8c3ef3c.zip successfully finalized. Artifact ID 11315618718"
+  ],
+  "open_user_decisions": "## Open user decisions (not implemented; current behaviour kept and recorded)\n- **D3-a** Verifier authentication in CI: pin the auditor to a user-named FPIA version. Today the PR CI runs the PR head's own `track_c_fpia*.py`; `runtime_provenance.verifier` records the commit and blobs only.\n- **D3-b** Restore a content-independent job-id collision rule for spoof detection. Today a job id/name collision with the Track C workflow (e.g. `validate`) is a note (`job_id_collision_note`) on a real finding only; probe S17 is pinned as *not found*.\n- **D3-c** Declare dynamically constructed invocations (string-built paths, paths in shell variables, importlib with computed names) a non-claim. Today they are not detected and the result says so: `integration_interference.dynamic_invocation_detection = NOT_CLAIMED` plus a constant non-claim; probes S15/S16 are pinned as *not found*.\n- **D3-d** #28 attribution (`implementation/docs/codex_takeover/evidence/track_c/independent_c8_audit.py` is an unattributed importer of Track C modules; the T28 merge gives `FPIA_FAIL`). Unchanged; still FOUND.\n\n### Interpretation note for G7 (pending the user's confirmation)\n> `track-c-fpia.yml` now runs its audit job on `pull_request` only when the PR's base or head branch matches `integration/**` (PIW integration / trial merge results); other PRs get a skipped job, not a red check. `workflow_dispatch` is unchanged. This reflects the recommended interpretation **\"FPIA applies to merge results containing R\"**, pending the user's confirmation. It relabels nothing: a tree without R is still `authority FAIL` / `FPIA_FAIL` when audited.\n\n",
+  "not_run": "## NOT_RUN\n- **CLI audits at `523e702a806a718d163cfbf62aa3fc29d8c3ef3c`: NOT_RUN locally** (the local real CLI runs above are at `babf0a4`; `523e702` changes only the loader packaging). The PR CI `track-c-fpia` audit of the head itself ran (success, `FPIA_PASS`, above).\n- **CLI runs of `b9e01a9`, the shallow clone, L1/L2/T28 and `b8e39a2` at the new head: NOT_RUN** (one audit at a time); `b8e39a2`/squash wording and the probes are covered by Tier 1 and by the static screen.\n- **Plain full regression outside FPIA at `523e702a806a718d163cfbf62aa3fc29d8c3ef3c`: NOT_RUN locally** (the owner workflows on `523e702` ran the native suite; see above).\n- **Independent adversarial/completeness review of fix round 2 and of `523e702`: NOT_RUN.**\n- **Real MITM of the authority remote: NOT_RUN** (F2 is disclosure only).\n- **GIE evidence recording on `integration/global-handoff-v1`: NOT_RUN** (PIW action).\n- **Download of the CI artifacts: NOT_RUN** (the blob host is not reachable from this sandbox; CI values are from the job logs).\n- **Live-network node `tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2`: NOT_RUN locally** (single fixed deselection).\n- **Open user decisions D3-a/b/c/d: not decided** (listed at the top).\n- **Canonical merge: `USER_DECISION_REQUIRED`.**\n\n",
+  "limitations": [
+    "Selected logs prove the FPIA audit summary on the exact PR head, not a future chart+integration merge-result.",
+    "Full JSON artifact and all referenced side files have not been downloaded or independently reverified by this Chart audit.",
+    "No tests, FPIA, workflow dispatch or owner writes were executed by this Chart audit."
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "recorded_at_utc": "2026-10-05T09:07:18.623Z",
+  "primaryTool": "MagicPath",
+  "fallback": "LOCAL_EXISTING_RENDERER_BROWSER_ARTIFACTS_WITHOUT_PAYMENT",
+  "tasks": [
+    {
+      "id": "6ac31fca7bb4819183997a9f17f432cb",
+      "titlePreserved": true,
+      "enabledPreserved": true,
+      "updatedSchedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T125654\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+      "priorSchedule": "BEGIN:VEVENT\nDTSTART:20261005T035654Z\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+      "cadence": "Existing2hourinterval preserved from fresh user-modified task; originalUTC start represented explicit Asia/Seoul",
+      "policyReadbackExpected": true
+    },
+    {
+      "id": "6ac2ef0621908191909a27af4c91f101",
+      "titlePreserved": true,
+      "enabledPreserved": true,
+      "updatedSchedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T092850\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+      "priorSchedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+      "cadence": "Existing2hourinterval preserved from fresh user-modified task; originalUTC start represented explicit Asia/Seoul",
+      "policyReadbackExpected": true
+    }
+  ],
+  "classification": {
+    "productiveCI": "WORKING_AS_DESIGNED (v0.11 exact terminal receipt published)",
+    "productiveMain": "UNKNOWN end-to-end; connection/prompt only not execution proof",
+    "triggerMissed": "NOT_PROVEN",
+    "lease": "Previous manual lease released before expiry at ca067990; user-steering fresh verifiedrun42a, no retroactive renewal",
+    "stateStale": "Old bounded mutable HANDOFF hash repair retained; current manifest refreshed only after actual verified publication",
+    "activeDesignPrerequisite": "Figma quota check removed as active prerequisite; oldNOT_RUN retained in pending_history",
+    "selfEvents": "Prefix plus exactSHA/fingerprint preserved, no new framework"
+  },
+  "next": "Fresh exact7215 terminalCI + owner outputs; independent READY tasks autoD1/D2/D3-A, no quota global WAIT",
+  "exact_remote_readback": [
+    {
+      "id": "6ac2ef0621908191909a27af4c91f101",
+      "promptExact": true,
+      "scheduleExact": true,
+      "enabledExact": true,
+      "titleExact": true,
+      "primaryMagicPath": true,
+      "delegatedPolicy": true
+    },
+    {
+      "id": "6ac31fca7bb4819183997a9f17f432cb",
+      "promptExact": true,
+      "scheduleExact": true,
+      "enabledExact": true,
+      "titleExact": true,
+      "primaryMagicPath": true,
+      "delegatedPolicy": true
+    }
+  ],
+  "readbackCheckCorrection": "Case-insensitive primary preference match corrects the initial header-only check; actual task prompts already contain MagicPath primary + fallback; no policy/schedule rewrite."
+}

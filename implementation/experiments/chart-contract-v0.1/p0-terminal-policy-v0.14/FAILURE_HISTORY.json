@@ -1,0 +1,14 @@
+{
+  "failures": [
+    {
+      "stage": "prepare API publication payload",
+      "failure": "Combined local UTF8 file payload exceeded16000-token shell output budget; truncated output could not be parsed as JSON",
+      "classification": "BOUNDED_TRANSPORT_OUTPUT_LIMIT",
+      "mutation_before_failure": false,
+      "repair": "Retry combined read with45000-token budget; verify complete returned JSON and each file SHA256 before create_tree",
+      "retest": "Complete JSON parsed; targeted21 checks PASS; remote publication byte verification follows",
+      "round": 1
+    }
+  ],
+  "financial_or_UI_test_failure": false
+}

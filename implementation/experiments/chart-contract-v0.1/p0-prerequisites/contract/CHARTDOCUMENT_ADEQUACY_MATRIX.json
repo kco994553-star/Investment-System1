@@ -1,0 +1,827 @@
+{
+  "artifact_kind": "EVIDENCE_ADEQUACY_ASSESSMENT_NOT_SCHEMA",
+  "status": "PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+  "assessed_at": "2026-10-04T20:43:17.269331+09:00",
+  "baselines": {
+    "pr41": "97685ddcfb510fe16c2260eae5aed94be230c669",
+    "audit": "8668c69070c7956cb85d1ccf8cbeb8d9d2daf5cf",
+    "trial": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "coordination": "bb4cb174fd4a0af3b2281d4c37ae3abb4d540f88"
+  },
+  "scope_counts_preserved": {
+    "core": 81,
+    "extended": 24,
+    "research_candidate": 8
+  },
+  "verdict": "V01_LOGICAL_INTENT_ADEQUATE_NOT_EXECUTABLE_OR_PRODUCTION_VERIFIED",
+  "runtime_implementation": "NOT_STARTED",
+  "v01_rewritten": false,
+  "policy_or_enums_adopted": false,
+  "numeric_defaults_selected": false,
+  "corrections": [
+    {
+      "id": "C01",
+      "change_class": "STRUCTURAL_DEPENDENCY",
+      "proposal": "Immutable semantic payload versus mutable access/assessment envelope; explicitly pinned hash preimage and upstream hash algorithm identity",
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/producers/contract.py",
+          "line": 86,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/publication/envelope.py",
+          "line": 22,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/personal/versioning.py",
+          "line": 44,
+          "pin": "PR40"
+        }
+      ],
+      "approval": "NOT_APPROVED",
+      "activation": "NOT_ACTIVE"
+    },
+    {
+      "id": "C02",
+      "change_class": "STRUCTURAL_DEPENDENCY",
+      "proposal": "Type-preserving Decimal/float wire representation plus authoritative materialized output and owner context/order provenance; no precision or rounding policy selected",
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "line": 97,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/producers/serialization.py",
+          "line": 15,
+          "pin": "PR40"
+        }
+      ],
+      "approval": "NOT_APPROVED",
+      "activation": "NOT_ACTIVE"
+    },
+    {
+      "id": "C03",
+      "change_class": "CLARIFICATION",
+      "proposal": "Existing NOT_AVAILABLE public result has no data; diagnostics separate; source absence, valid empty source, per-field null and capability availability distinct",
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/producers/contract.py",
+          "line": 109,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/producers/contract.py",
+          "line": 143,
+          "pin": "PR40"
+        }
+      ],
+      "approval": "NOT_APPROVED",
+      "activation": "NOT_ACTIVE"
+    },
+    {
+      "id": "C04",
+      "change_class": "STRUCTURAL_DEPENDENCY",
+      "proposal": "Value/row-to-immutable-input dependency closure including account positions, valuation, conversion original+FX, identity and dated classification; TARGET/ACTUAL distinct",
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "line": 61,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/personal/money.py",
+          "line": 42,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/producers/contract.py",
+          "line": 208,
+          "pin": "PR40"
+        }
+      ],
+      "approval": "NOT_APPROVED",
+      "activation": "NOT_ACTIVE"
+    },
+    {
+      "id": "C05",
+      "change_class": "CLARIFICATION",
+      "proposal": "Role/evidence/meaning of time facts; event, close, publication, receipt and persistence separate; knowledge cutoff independent of access decision time",
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/sessions/binder.py",
+          "line": 83,
+          "pin": "PR40"
+        }
+      ],
+      "approval": "NOT_APPROVED",
+      "activation": "NOT_ACTIVE"
+    },
+    {
+      "id": "C06",
+      "change_class": "CLARIFICATION",
+      "proposal": "Taxonomy catalog version/hash separate from assignment revisions; per-entity complete membership-set evidence and namespace/version typed exact-set key",
+      "source_anchors": [],
+      "approval": "NOT_APPROVED",
+      "activation": "NOT_ACTIVE"
+    },
+    {
+      "id": "C07",
+      "change_class": "STRUCTURAL_DEPENDENCY",
+      "proposal": "Exact document hash bound to owner subject extractor and separately resolved authority/invalidation decision clock, scope, evidence and reasons",
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/publication/predicate.py",
+          "line": 42,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/publication/invalidation.py",
+          "line": 109,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/publication/envelope.py",
+          "line": 22,
+          "pin": "PR40"
+        }
+      ],
+      "approval": "NOT_APPROVED",
+      "activation": "NOT_ACTIVE"
+    }
+  ],
+  "adequacy": [
+    {
+      "dimension": "DECIMAL_PRESERVATION",
+      "assessment": "ADEQUATE_INTENT_MISSING_RUNTIME_SHAPE",
+      "evidence_outcome": "Decimal output cannot use current producer serializer; ambient owner context affects weights",
+      "proposal_refs": [
+        "C02"
+      ],
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "line": 100,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/producers/serialization.py",
+          "line": 15,
+          "pin": "PR40"
+        }
+      ]
+    },
+    {
+      "dimension": "TARGET_ACTUAL",
+      "assessment": "ADEQUATE_INTENT_SOURCE_UNAVAILABLE",
+      "evidence_outcome": "Actual domain exists, real actual source not established; no fallback",
+      "proposal_refs": [
+        "C03",
+        "C04"
+      ],
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "line": 37,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "line": 74,
+          "pin": "PR40"
+        }
+      ]
+    },
+    {
+      "dimension": "EMPTY_MISSING_ACTUAL",
+      "assessment": "ADEQUATE_INTENT_NEEDS_RESULT_BOUNDARY",
+      "evidence_outcome": "No actual source vs complete empty holdings/cash differs; public NOT_AVAILABLE requires data=None",
+      "proposal_refs": [
+        "C03"
+      ],
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/producers/contract.py",
+          "line": 143,
+          "pin": "PR40"
+        }
+      ]
+    },
+    {
+      "dimension": "NULL_ZERO_OHLCV",
+      "assessment": "ADEQUATE_INTENT",
+      "evidence_outcome": "Complete observed sample does not exercise null volume; finite/null invariants preserved",
+      "proposal_refs": [
+        "C03"
+      ],
+      "source_anchors": []
+    },
+    {
+      "dimension": "TEMPORAL_PIT",
+      "assessment": "ADEQUATE_INTENT_SOURCE_UNAVAILABLE",
+      "evidence_outcome": "Source publication/revision missing from sample; acquisition/persistence cannot fill exact availability",
+      "proposal_refs": [
+        "C05"
+      ],
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/sessions/binder.py",
+          "line": 83,
+          "pin": "PR40"
+        }
+      ]
+    },
+    {
+      "dimension": "RAW_PROVENANCE",
+      "assessment": "ADEQUATE_INTENT_NEEDS_IMMUTABLE_BINDING",
+      "evidence_outcome": "NVDA bytes hash verified; artifact ID must resolve expected vintage/hash",
+      "proposal_refs": [
+        "C01",
+        "C04"
+      ],
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/producers/contract.py",
+          "line": 208,
+          "pin": "PR40"
+        }
+      ]
+    },
+    {
+      "dimension": "POSITION_VALUATION_FX",
+      "assessment": "ADEQUATE_INTENT_MISSING_BINDING",
+      "evidence_outcome": "ConvertedMoney retains original+FX but Position stores only Money",
+      "proposal_refs": [
+        "C04"
+      ],
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/personal/money.py",
+          "line": 42,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "line": 61,
+          "pin": "PR40"
+        }
+      ]
+    },
+    {
+      "dimension": "CLASSIFICATION_VERSION",
+      "assessment": "ADEQUATE_INTENT_SOURCE_UNAVAILABLE",
+      "evidence_outcome": "Per-company dated assignment absent; reference groups and taxonomy source not equivalent",
+      "proposal_refs": [
+        "C06"
+      ],
+      "source_anchors": []
+    },
+    {
+      "dimension": "TYPE_SET_COMPLETENESS",
+      "assessment": "ADEQUATE_INTENT",
+      "evidence_outcome": "Complete [] differs from unknown/incomplete; each assignment must prove completeness",
+      "proposal_refs": [
+        "C03",
+        "C06"
+      ],
+      "source_anchors": []
+    },
+    {
+      "dimension": "MULTITYPE_EXACT_OVERLAP",
+      "assessment": "ADEQUATE_INTENT",
+      "evidence_outcome": "Preserve exposures above100; exact-set disjoint count uses authoritative denominator",
+      "proposal_refs": [
+        "C02",
+        "C06"
+      ],
+      "source_anchors": []
+    },
+    {
+      "dimension": "QUARTERLY_HISTORY",
+      "assessment": "ADEQUATE_INTENT_SOURCE_UNAVAILABLE",
+      "evidence_outcome": "Current/repository reference does not provide dated actual/classification/FX input history",
+      "proposal_refs": [
+        "C04",
+        "C05"
+      ],
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "line": 74,
+          "pin": "PR40"
+        }
+      ]
+    },
+    {
+      "dimension": "PUBLICATION_INVALIDATION",
+      "assessment": "ADEQUATE_INTENT_MISSING_BINDING",
+      "evidence_outcome": "Existing predicate is not a chart subject extractor and empty grants cannot publish",
+      "proposal_refs": [
+        "C01",
+        "C07"
+      ],
+      "source_anchors": [
+        {
+          "path": "implementation/src/investment_system/publication/predicate.py",
+          "line": 42,
+          "pin": "PR40"
+        },
+        {
+          "path": "implementation/src/investment_system/publication/envelope.py",
+          "line": 22,
+          "pin": "PR40"
+        }
+      ]
+    },
+    {
+      "dimension": "API_MCP_PARITY",
+      "assessment": "ADEQUATE_INTENT_IMPLEMENTATION_NOT_STARTED",
+      "evidence_outcome": "Same immutable subject/request/authority state yields parity; transport clocks excluded",
+      "proposal_refs": [
+        "C01",
+        "C07"
+      ],
+      "source_anchors": []
+    },
+    {
+      "dimension": "PRODUCTION_READINESS",
+      "assessment": "NOT_ESTABLISHED",
+      "evidence_outcome": "Logical contract not adopted/registered; real actual source unavailable; Market evidence incomplete",
+      "proposal_refs": [],
+      "source_anchors": []
+    }
+  ],
+  "read_only_probes": {
+    "raw_bytes": {
+      "sha256": "469e185faec7925e724efdc23546967e86f6b3ccbc3ba8d05a2767f968f722a6",
+      "bytes": 1758,
+      "bars": 5,
+      "source_available_at_present": false,
+      "source_revision_present": false,
+      "last_bar_epoch": 1790947800,
+      "meta_regular_market_time_epoch": 1790971201
+    },
+    "decimal_serializer": {
+      "exception": "SerializationError",
+      "message": "unsupported type Decimal"
+    },
+    "synthetic_owner_context": {
+      "real_actual_account": false,
+      "precision_settings_are_probe_only_not_defaults": true,
+      "position_value": "1",
+      "cash": "2",
+      "outputs": {
+        "context_precision_10": "0.3333333333",
+        "context_precision_28": "0.3333333333333333333333333333"
+      },
+      "same_input_content_hash": "15729c1baa1c8ff65b226701094f8bab8041fd319ea0dd1f0a7637dd80d4d172"
+    },
+    "test_suite_claim": "No new production test count; previous75 not reclassified"
+  },
+  "boundary_sources": {
+    "p01": {
+      "path": "implementation/tests/test_p01_research_publication.py",
+      "line": 429,
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "exact_protected_paths": [
+        "qgv/pipeline.py",
+        "qgv/leaderboard.py",
+        "qgv/book.py",
+        "technical/engine.py",
+        "macro/engine.py",
+        "product/web_mvp.py",
+        "producers/assembler.py"
+      ],
+      "algorithm": "sha256 concatenation of each listed relative path bytes then file bytes; state-exact expected digest selector"
+    },
+    "track_c": {
+      "path": "implementation/src/investment_system/evl/calibration_contracts.py",
+      "line": 74,
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "scope": "all sorted package root.rglob(*.py)",
+      "algorithm": "sha256 concatenation relative path UTF8 + NUL + file bytes"
+    },
+    "fpia": {
+      "coordination_pin": "bb4cb174fd4a0af3b2281d4c37ae3abb4d540f88",
+      "authority": "CDR-014",
+      "observed_status": "APPROVED_IMPLEMENTATION_VERIFICATION_IN_PROGRESS",
+      "completed_acceptance": "NOT_ESTABLISHED",
+      "exact_merge_result_required": true,
+      "code_divergence_normalization_allowed": false,
+      "pr40_ci_equivalent_to_fpia": false,
+      "p01_repin_authorized": false
+    }
+  },
+  "sources": [
+    {
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/personal/portfolio.py",
+      "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7"
+    },
+    {
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/personal/money.py",
+      "sha256": "894e7cab7e3ca87dcad14ee644ef34448850698fb93dda600cd3aa75e0a37418"
+    },
+    {
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/personal/versioning.py",
+      "sha256": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def"
+    },
+    {
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/producers/serialization.py",
+      "sha256": "c24ff942b763c204ff8429ab7125b68921f96a43ec8ab43c3e2c14749cabbe33"
+    },
+    {
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/producers/contract.py",
+      "sha256": "61b5eea2b32c9283e2407531e614de9a1b255aff9124d62d0a2168df23faaa6f"
+    },
+    {
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/sessions/binder.py",
+      "sha256": "a030a19fbbe812b66a7527b22aa502547d424f14b7ca817b3016046a37880e5a"
+    },
+    {
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/publication/envelope.py",
+      "sha256": "8e654b8d48aab84aba94ca92541711c2cc44cb76932cee6a1a1fc7d71b2a362e"
+    },
+    {
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/publication/predicate.py",
+      "sha256": "c4b10daa9857af9dfc393d79111d9894a72f5344ca27b2b6681ea0c3b95b2b96"
+    },
+    {
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/publication/invalidation.py",
+      "sha256": "804ace62c3a7f6fbe48edbaa46a0c9647e41cb0ece52001cc3bee46ccf17ba27"
+    },
+    {
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/evl/calibration_contracts.py",
+      "sha256": "9579a74ac2da688d0b3a2a09a28deed026a0ea82f565e1099791a285ce9fbb16"
+    },
+    {
+      "pin": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/tests/test_p01_research_publication.py",
+      "sha256": "b195771b34ef1743dfad29bb1654ddcf8d25189f1732de0692e2fb24129b9dc9"
+    },
+    {
+      "pin": "97685ddcfb510fe16c2260eae5aed94be230c669",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-design/P0_CHART_CONTRACT_AND_WIRING_v0.1.md",
+      "sha256": "78eafedefcbecbf5b5ab19f170640413750a1ff0e768443184f36b9959bbb07a"
+    },
+    {
+      "pin": "97685ddcfb510fe16c2260eae5aed94be230c669",
+      "path": "implementation/experiments/chart-contract-v0.1/evidence/portfolio-reference-source.json",
+      "sha256": "a2056e061a99723dc48ab28349d4e30d461da9927588f2ed4fcc3783182537e8"
+    },
+    {
+      "pin": "97685ddcfb510fe16c2260eae5aed94be230c669",
+      "path": "implementation/experiments/chart-contract-v0.1/evidence/2026-10-04-source/fetch-evidence.json",
+      "sha256": "058b87a0b7485d7da73ca95e9fb8f3e297eb5d868fbaf214bfac2966c124a8f4"
+    },
+    {
+      "pin": "97685ddcfb510fe16c2260eae5aed94be230c669",
+      "path": "implementation/experiments/chart-contract-v0.1/evidence/2026-10-04-source/raw-store/manifests/yahoo_chart__NVDA__5d.json",
+      "sha256": "73a5f6f8d1c7ed05a3863b193a468359a61a034c59726a514a75a8bde18d59e1"
+    },
+    {
+      "pin": "97685ddcfb510fe16c2260eae5aed94be230c669",
+      "path": "implementation/experiments/chart-contract-v0.1/evidence/2026-10-04-source/raw-store/blobs/yahoo_chart__NVDA__5d",
+      "sha256": "469e185faec7925e724efdc23546967e86f6b3ccbc3ba8d05a2767f968f722a6"
+    }
+  ],
+  "forbidden_mutations_performed": [],
+  "files_written": [
+    "implementation/experiments/chart-contract-v0.1/p0-prerequisites/contract/CHARTDOCUMENT_V01_ADEQUACY_AND_V02_PROPOSAL.md",
+    "implementation/experiments/chart-contract-v0.1/p0-prerequisites/contract/CHARTDOCUMENT_ADEQUACY_MATRIX.json"
+  ],
+  "additive_new_evidence_review": {
+    "status": "EVIDENCE_REVIEW_ONLY_V02_PROPOSED_NOT_APPROVED_NOT_ACTIVE",
+    "recorded_at": "2026-10-04T20:48:25.098803+09:00",
+    "scope_preserved": true,
+    "distinct_audit_scopes": {
+      "market_evidence_initial_probes": {
+        "requests": 4,
+        "rows": 4953
+      },
+      "market_reference_coverage_expansion": {
+        "requests": 19,
+        "http200": 19,
+        "rows": 23155,
+        "complete_ohlcv": 23154,
+        "complete_envelope_valid": 23150
+      }
+    },
+    "independent_original_byte_replay": {
+      "hashes_checked": 19,
+      "all_hashes_match": true,
+      "raw_rows_reproduced": 23155,
+      "complete_rows_reproduced": 23154,
+      "finite_nonnegative_volume_envelope_valid_rows_reproduced": 23150,
+      "reported_counts_match": true,
+      "numeric_tolerance_used": false,
+      "raw_rows_corrected": false,
+      "production_identity_admitted": 0,
+      "historical_PIT_admitted": 0,
+      "publication_granted": 0
+    },
+    "failures": [
+      {
+        "provider_symbol": "8035.T",
+        "raw_sha256": "4b73393390ac0f41865f6ceab82e682d4b3a69fcf9d42b8264b3ca908c7eb758",
+        "row": {
+          "index": 149,
+          "bar_timestamp_utc": "2022-05-17T00:00:00+00:00",
+          "values": {
+            "open": 3821.333251953125,
+            "high": 3866.666748046875,
+            "low": 3770.666748046875,
+            "close": 3869.333251953125,
+            "volume": 11776500
+          }
+        }
+      },
+      {
+        "provider_symbol": "042700.KS",
+        "raw_sha256": "0fd4f74e03fa3908dda2ae4b7970537fef9e1d855003bd7179c6a3f180390552",
+        "row": {
+          "index": 560,
+          "bar_timestamp_utc": "2024-01-15T00:00:00+00:00",
+          "values": {
+            "open": 57200.0,
+            "high": 57700.0,
+            "low": 56600.0,
+            "close": 56200.0,
+            "volume": 58752
+          }
+        }
+      },
+      {
+        "provider_symbol": "042700.KS",
+        "raw_sha256": "0fd4f74e03fa3908dda2ae4b7970537fef9e1d855003bd7179c6a3f180390552",
+        "row": {
+          "index": 740,
+          "bar_timestamp_utc": "2024-10-14T00:00:00+00:00",
+          "values": {
+            "open": 110200.0,
+            "high": 116000.0,
+            "low": 110200.0,
+            "close": 109500.0,
+            "volume": 916860
+          }
+        }
+      },
+      {
+        "provider_symbol": "042700.KS",
+        "raw_sha256": "0fd4f74e03fa3908dda2ae4b7970537fef9e1d855003bd7179c6a3f180390552",
+        "row": {
+          "index": 859,
+          "bar_timestamp_utc": "2025-04-09T00:00:00+00:00",
+          "values": {
+            "open": 59600.0,
+            "high": 60700.0,
+            "low": 58200.0,
+            "close": 61200.0,
+            "volume": 973664
+          }
+        }
+      }
+    ],
+    "missing_rows": [
+      {
+        "provider_symbol": "042700.KS",
+        "raw_sha256": "0fd4f74e03fa3908dda2ae4b7970537fef9e1d855003bd7179c6a3f180390552",
+        "row": {
+          "index": 970,
+          "bar_timestamp_utc": "2025-09-19T00:00:00+00:00",
+          "values": {
+            "open": null,
+            "high": null,
+            "low": null,
+            "close": null,
+            "volume": null
+          }
+        }
+      }
+    ],
+    "session_conflicts": {
+      "provider_kr_current_regular_end_utc": "2026-10-02T06:00:00+00:00",
+      "provider_kr_quote_time_utc": "2026-10-02T06:30:19+00:00",
+      "market_primary_source_audit_reports_kr_regular_close_local": "15:30",
+      "market_primary_source_audit_reports_jp_change_effective": "2024-11-05",
+      "market_primary_source_audit_reports_jp_close_before_after": [
+        "15:00",
+        "15:30"
+      ],
+      "accepted_calendar_vintage_created": false,
+      "review_scope": "Provider times independently read; official schedule findings from Market/root primary-source audit, not calendar admission"
+    },
+    "correction_supplements": [
+      {
+        "correction": "C03",
+        "supplement": "Row nulls/envelope failures and requested/returned range coverage require explicit capability/absence reasons; complete count does not equal admitted count"
+      },
+      {
+        "correction": "C04",
+        "supplement": "Bind each raw row/hash/request and identity/session/action-basis dependency; label matches are not security identity"
+      },
+      {
+        "correction": "C05",
+        "supplement": "Dated session segments/effective schedule revision, authority/conflict records and role-distinct bar/quote/close/availability facts"
+      },
+      {
+        "correction": "C06",
+        "supplement": "Provider/exchange labels cannot create issuer classification or type assignment; namespace/entity/catalog/assignment joins remain separate"
+      }
+    ],
+    "initial_root_group_mapping": {
+      "C1": [
+        "C01",
+        "C07"
+      ],
+      "C2": [
+        "C03"
+      ],
+      "C3": [
+        "C02"
+      ],
+      "C4": [
+        "C04",
+        "C05"
+      ],
+      "C5": [
+        "C04",
+        "C05"
+      ],
+      "C6": [
+        "C06"
+      ],
+      "C7": [
+        "C03",
+        "C04"
+      ],
+      "C8": [
+        "C03",
+        "C04",
+        "C05"
+      ]
+    },
+    "root_summary_independent_review": {
+      "blocking_overclaim_found": false,
+      "protected_boundary_contradiction_found": false,
+      "nonblocking_findings": [
+        {
+          "finding": "Eight operational labels vs seven contract corrections obscures correspondence",
+          "status": "RESOLVED_REPORTED_BY_ROOT",
+          "resolution": "Root current summary now uses same seven C01-C07 categories"
+        },
+        {
+          "finding": "Quarterly-history graph edge may appear to block current classified TARGET composition",
+          "status": "RESOLVED_REPORTED_BY_ROOT",
+          "resolution": "Root split dated-current classification/composition from optional quarterly-history branch and added explicit nonblocking note"
+        }
+      ],
+      "final_root_runtime_or_schema_certification_claimed": false
+    },
+    "source_hashes": [
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/MARKET_REFERENCE_COVERAGE.json",
+        "sha256": "039bee131478ec18fed5a4888245ea650ed327b7f129e283688dda8614762892",
+        "bytes": 25013,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/MARKET_EVIDENCE.json",
+        "sha256": "5fef20cec9b45eb6206365caa8d0d84c09efa08b0264039a7fe6e3267a936c00",
+        "bytes": 10815,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/SOURCE_COUNTEREXAMPLES.json",
+        "sha256": "f198e0a53c1b07cb66cdccb424723fdcd4a8783636872fe1ab2509a3df2f6f01",
+        "bytes": 2719,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_NVDA_5y_original.json",
+        "sha256": "357347e0031ba982cb145478a076eec0b0a1febd2dc59eb9b624d5281db2183a",
+        "bytes": 141128,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_MSFT_5y_original.json",
+        "sha256": "b2c375cc515006e968e26c17aab6afb3e85029af5988c99d5915dfe9f80f5e98",
+        "bytes": 136251,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_8035_T_5y_original.json",
+        "sha256": "4b73393390ac0f41865f6ceab82e682d4b3a69fcf9d42b8264b3ca908c7eb758",
+        "bytes": 90729,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_042700_KS_5y_original.json",
+        "sha256": "0fd4f74e03fa3908dda2ae4b7970537fef9e1d855003bd7179c6a3f180390552",
+        "bytes": 81041,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ASML_5y_original.json",
+        "sha256": "c7b3505a1c5d6784b86e3641339cc6e65949d96aabdf47e0acf4033da693843e",
+        "bytes": 130725,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_LRCX_5y_original.json",
+        "sha256": "c23b349c319adcc4087c491758130794c5a9b989553cef5446ec5d6f8c198940",
+        "bytes": 136289,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_KLAC_5y_original.json",
+        "sha256": "6e5a02e631565bf779de35c972650e528f9c11fd17cfbfd9fd137005cb76930a",
+        "bytes": 137285,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AMD_5y_original.json",
+        "sha256": "8dbb143fe3876484db36dea404399cd14aef12e06a7b4ac46a56a0480e91be33",
+        "bytes": 136966,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AVGO_5y_original.json",
+        "sha256": "3377478afa855fa5c6bc28983f0636a1c6d19c9cc7e90660d27fff6d4c8db636",
+        "bytes": 137441,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_QCOM_5y_original.json",
+        "sha256": "dc4fbc71bb91ed8c4449431bca3172ab274c4760ce1df30ebc0f22476c602a25",
+        "bytes": 138430,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_INTC_5y_original.json",
+        "sha256": "9e4de576d228cd685133592b562e0ce1a5a7e738dd7da063d70d492d8425ce76",
+        "bytes": 138466,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_GOOGL_5y_original.json",
+        "sha256": "e2653b81ac69270f651791c0d6bf21935a42dc19df621af481d76dbc8d0c1e3e",
+        "bytes": 138533,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AMZN_5y_original.json",
+        "sha256": "67de7fbb3d2813a9fc21902d853e2b5d6375a5bde271b72b6bdcf0502643ef83",
+        "bytes": 138001,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_RTX_5y_original.json",
+        "sha256": "9ceb1b51012bb4c4c330af2ec093736e58ca381e3ea65497dc709e587c091d03",
+        "bytes": 135053,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_SYK_5y_original.json",
+        "sha256": "c68835f64ff4cdf7eea89b51abab5244ace40a9616c8c253b34ea24fca7436ee",
+        "bytes": 133902,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ETN_5y_original.json",
+        "sha256": "de5e8d34652f4d6a46bf3f37242f18091c46c74381bdc0bea7b8e1b1830ce5cc",
+        "bytes": 135258,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_HUBB_5y_original.json",
+        "sha256": "ed33df064271953b559334db099f6f71d3d8852c036a27e015e46ebab8149160",
+        "bytes": 134857,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_GEV_5y_original.json",
+        "sha256": "b770d191537550b1ca9c2ec38c50ec8b8fd66f0134f624260f87fdac76b7c3ee",
+        "bytes": 64526,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ROK_5y_original.json",
+        "sha256": "a3171647d133a09a6719e947a9eb24a9b6399701e7b146606b8cfa059b924179",
+        "bytes": 133627,
+        "source_kind": "ADDITIVE_CURRENT_SOURCE_ACQUISITION_OR_AUDIT_NOT_HISTORICAL_RESTORATION"
+      }
+    ]
+  }
+}

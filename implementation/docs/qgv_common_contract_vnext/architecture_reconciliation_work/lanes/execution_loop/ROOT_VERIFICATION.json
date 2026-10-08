@@ -1,0 +1,27 @@
+{
+  "status": "PASS_BOUNDED_INACTIVE_COMPOSITION",
+  "checks": {
+    "all_compact_outputs_identical": true,
+    "distinct_run_cases_identical": true,
+    "same_script": true,
+    "frozen29": true,
+    "30_pass": true,
+    "no_production_admission": true,
+    "no_candidate_scoring": true,
+    "prior59_not_rerun": true,
+    "manual_hops0": true
+  },
+  "outputs_byte_identical": {
+    "INPUT_PINS.json": true,
+    "SCOPE_FIXTURE_SPEC.json": true,
+    "SCOPE_FIXTURE_DIGESTS.json": true
+  },
+  "cases": 30,
+  "independent_run_command": "python qgv-autonomous-loop/scope/dependency_scope_probe.py --semantic-dir qgv-semantic-lanes-output --pin-manifest qgv-autonomous-loop/scope/FROZEN_INPUT_PINS.json --output-dir qgv-autonomous-loop/root-reproduction",
+  "script_sha256": "80bbd7f2fae59de7d5996c67842e04386cb6243d4196f953639de937d622f045",
+  "runtime_enabled": false,
+  "real_PIT_OOS": "NOT_RUN",
+  "old_checks_reused_not_rerun": 59,
+  "production_blockers_closed": 0,
+  "bounded_acceptance_closed": 1
+}

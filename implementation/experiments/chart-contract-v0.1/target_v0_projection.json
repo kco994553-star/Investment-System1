@@ -1,0 +1,485 @@
+{
+  "contract_version": "PORTFOLIO_CHART_CANDIDATE/0.1",
+  "snapshot_id": "source:PORTFOLIO_TARGET/0.1:v0:sha256:a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+  "portfolio_version": "TARGET v0",
+  "qgv_version": "NOT_AVAILABLE",
+  "as_of": "2026-10-08T12:15:25Z",
+  "source": "USER · implementation/docs/portfolio_target_owner/TARGET_v0.yaml · sha256:a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+  "weight_basis": "TARGET",
+  "data_kind": "USER_SPEC_REFERENCE",
+  "total_units": 10000,
+  "cash_units": 0,
+  "classification": {
+    "version": "PORTFOLIO_TARGET/0.1/v0/USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+    "source": "implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+    "available_at": "2026-10-08T11:37:00Z"
+  },
+  "holdings": [
+    {
+      "holding_id": "/themes/0/holdings/0",
+      "security_id": null,
+      "label": "ASML Holding",
+      "weight_units": 900,
+      "industry": "반도체 장비",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/0/holdings/1",
+      "security_id": null,
+      "label": "Lam Research",
+      "weight_units": 600,
+      "industry": "반도체 장비",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/0/holdings/2",
+      "security_id": null,
+      "label": "KLA Corporation",
+      "weight_units": 550,
+      "industry": "반도체 장비",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/0/holdings/3",
+      "security_id": null,
+      "label": "Tokyo Electron",
+      "weight_units": 500,
+      "industry": "반도체 장비",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/0/holdings/4",
+      "security_id": null,
+      "label": "한미반도체",
+      "weight_units": 450,
+      "industry": "반도체 장비",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/1/holdings/0",
+      "security_id": null,
+      "label": "NVIDIA",
+      "weight_units": 800,
+      "industry": "AI·반도체",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/1/holdings/1",
+      "security_id": null,
+      "label": "Advanced Micro Devices",
+      "weight_units": 500,
+      "industry": "AI·반도체",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/1/holdings/2",
+      "security_id": null,
+      "label": "Broadcom",
+      "weight_units": 500,
+      "industry": "AI·반도체",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/1/holdings/3",
+      "security_id": null,
+      "label": "Qualcomm",
+      "weight_units": 400,
+      "industry": "AI·반도체",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/1/holdings/4",
+      "security_id": null,
+      "label": "Intel",
+      "weight_units": 300,
+      "industry": "AI·반도체",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/2/holdings/0",
+      "security_id": null,
+      "label": "Microsoft",
+      "weight_units": 700,
+      "industry": "Big Tech",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/2/holdings/1",
+      "security_id": null,
+      "label": "Alphabet",
+      "weight_units": 700,
+      "industry": "Big Tech",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/2/holdings/2",
+      "security_id": null,
+      "label": "Amazon",
+      "weight_units": 600,
+      "industry": "Big Tech",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/3/holdings/0",
+      "security_id": null,
+      "label": "RTX Corporation",
+      "weight_units": 600,
+      "industry": "기타산업",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/3/holdings/1",
+      "security_id": null,
+      "label": "Stryker",
+      "weight_units": 550,
+      "industry": "기타산업",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/3/holdings/2",
+      "security_id": null,
+      "label": "Eaton",
+      "weight_units": 500,
+      "industry": "기타산업",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/3/holdings/3",
+      "security_id": null,
+      "label": "Hubbell",
+      "weight_units": 350,
+      "industry": "기타산업",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/3/holdings/4",
+      "security_id": null,
+      "label": "GE Vernova",
+      "weight_units": 300,
+      "industry": "기타산업",
+      "types": null
+    },
+    {
+      "holding_id": "/themes/3/holdings/5",
+      "security_id": null,
+      "label": "Rockwell Automation",
+      "weight_units": 200,
+      "industry": "기타산업",
+      "types": null
+    }
+  ],
+  "data_state": "REFERENCE",
+  "publication_grant": null,
+  "pit_status": "NOT_VERIFIED",
+  "reasons": [
+    "DISPLAY_AGGREGATION_ONLY",
+    "NO_QGV_RECALCULATION",
+    "NO_HISTORICAL_PIT_CERTIFICATION"
+  ],
+  "industry": {
+    "denominator_units": 10000,
+    "buckets": [
+      {
+        "kind": "INDUSTRY",
+        "label": "AI·반도체",
+        "units": 2500
+      },
+      {
+        "kind": "INDUSTRY",
+        "label": "Big Tech",
+        "units": 2000
+      },
+      {
+        "kind": "INDUSTRY",
+        "label": "기타산업",
+        "units": 2500
+      },
+      {
+        "kind": "INDUSTRY",
+        "label": "반도체 장비",
+        "units": 3000
+      },
+      {
+        "kind": "UNKNOWN",
+        "label": "Unknown industry",
+        "units": 0
+      },
+      {
+        "kind": "CASH",
+        "label": "Cash",
+        "units": 0
+      }
+    ]
+  },
+  "types": {
+    "denominator_units": 10000,
+    "exposures": [],
+    "note": "Independent portfolio-denominator rings. Type memberships may sum above 100%; never renormalize."
+  },
+  "overlap": {
+    "denominator_units": 10000,
+    "buckets": [
+      {
+        "kind": "NO_TYPES",
+        "types": [],
+        "units": 0
+      },
+      {
+        "kind": "UNKNOWN",
+        "types": [],
+        "units": 10000
+      },
+      {
+        "kind": "CASH",
+        "types": [],
+        "units": 0
+      }
+    ],
+    "note": "Exclusive exact membership sets; not pairwise correlation or probability."
+  },
+  "source_metadata": {
+    "schema": "PORTFOLIO_TARGET/0.1",
+    "version": "v0",
+    "owner": "USER",
+    "status": "ADOPTED",
+    "source_path": "implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+    "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+    "source_bytes": 4463,
+    "root_identity_role": "IMMUTABLE_SOURCE_PATH_VERSION_HASH_NOT_SECURITY_ID",
+    "holding_key_role": "SOURCE_DOCUMENT_POINTER_NOT_SECURITY_ID",
+    "declared_clocks": {
+      "effective_at": "2026-10-08T20:37:00+09:00",
+      "available_at": "2026-10-08T20:37:00+09:00",
+      "adopted_at": "2026-10-08T20:37:00+09:00"
+    },
+    "effective_at_utc": "2026-10-08T11:37:00Z",
+    "available_at_utc": "2026-10-08T11:37:00Z",
+    "adopted_at_utc": "2026-10-08T11:37:00Z",
+    "observed_at": "2026-10-08T12:15:25Z",
+    "provenance": {
+      "derived_from": "QGV Portfolio Specification v1.1 §2 (2026-09-14, 사용자 작성)",
+      "adopted_by": "USER",
+      "adopted_at": "2026-10-08T20:37:00+09:00",
+      "adoption_note": "사용자가 v1.1 구성을 수정 없이 TARGET v0으로 채택함"
+    },
+    "themes": [
+      {
+        "theme_id": "semi_equipment",
+        "label": "반도체 장비",
+        "target_units": 3000
+      },
+      {
+        "theme_id": "ai_semi",
+        "label": "AI·반도체",
+        "target_units": 2500
+      },
+      {
+        "theme_id": "big_tech",
+        "label": "Big Tech",
+        "target_units": 2000
+      },
+      {
+        "theme_id": "other_industrial",
+        "label": "기타산업",
+        "target_units": 2500
+      }
+    ],
+    "mapping": {
+      "admitted": 0,
+      "unresolved": 19,
+      "total": 19
+    },
+    "source_rows": [
+      {
+        "source_pointer": "/themes/0/holdings/0",
+        "theme_id": "semi_equipment",
+        "theme_label": "반도체 장비",
+        "label": "ASML Holding",
+        "ticker_hint": "ASML",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 900,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/0/holdings/1",
+        "theme_id": "semi_equipment",
+        "theme_label": "반도체 장비",
+        "label": "Lam Research",
+        "ticker_hint": "LRCX",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/0/holdings/2",
+        "theme_id": "semi_equipment",
+        "theme_label": "반도체 장비",
+        "label": "KLA Corporation",
+        "ticker_hint": "KLAC",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 550,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/0/holdings/3",
+        "theme_id": "semi_equipment",
+        "theme_label": "반도체 장비",
+        "label": "Tokyo Electron",
+        "ticker_hint": "8035",
+        "listing": "USER_DECIDED: TSE (Tokyo, 8035)",
+        "weight_units": 500,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/0/holdings/4",
+        "theme_id": "semi_equipment",
+        "theme_label": "반도체 장비",
+        "label": "한미반도체",
+        "ticker_hint": "042700",
+        "listing": "USER_DECIDED: KRX (042700)",
+        "weight_units": 450,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/1/holdings/0",
+        "theme_id": "ai_semi",
+        "theme_label": "AI·반도체",
+        "label": "NVIDIA",
+        "ticker_hint": "NVDA",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 800,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/1/holdings/1",
+        "theme_id": "ai_semi",
+        "theme_label": "AI·반도체",
+        "label": "Advanced Micro Devices",
+        "ticker_hint": "AMD",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/1/holdings/2",
+        "theme_id": "ai_semi",
+        "theme_label": "AI·반도체",
+        "label": "Broadcom",
+        "ticker_hint": "AVGO",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/1/holdings/3",
+        "theme_id": "ai_semi",
+        "theme_label": "AI·반도체",
+        "label": "Qualcomm",
+        "ticker_hint": "QCOM",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 400,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/1/holdings/4",
+        "theme_id": "ai_semi",
+        "theme_label": "AI·반도체",
+        "label": "Intel",
+        "ticker_hint": "INTC",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 300,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/2/holdings/0",
+        "theme_id": "big_tech",
+        "theme_label": "Big Tech",
+        "label": "Microsoft",
+        "ticker_hint": "MSFT",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 700,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/2/holdings/1",
+        "theme_id": "big_tech",
+        "theme_label": "Big Tech",
+        "label": "Alphabet",
+        "ticker_hint": "GOOGL",
+        "listing": "USER_DECIDED: Class A (GOOGL)",
+        "weight_units": 700,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/2/holdings/2",
+        "theme_id": "big_tech",
+        "theme_label": "Big Tech",
+        "label": "Amazon",
+        "ticker_hint": "AMZN",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/0",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "RTX Corporation",
+        "ticker_hint": "RTX",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/1",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "Stryker",
+        "ticker_hint": "SYK",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 550,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/2",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "Eaton",
+        "ticker_hint": "ETN",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/3",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "Hubbell",
+        "ticker_hint": "HUBB",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 350,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/4",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "GE Vernova",
+        "ticker_hint": "GEV",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 300,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/5",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "Rockwell Automation",
+        "ticker_hint": "ROK",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 200,
+        "security_id": null
+      }
+    ]
+  }
+}

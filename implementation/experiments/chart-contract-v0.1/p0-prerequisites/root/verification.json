@@ -1,0 +1,622 @@
+{
+  "recorded_at_kst": "2026-10-04T20:52:43.171797+09:00",
+  "validation_class": "READ_ONLY_EVIDENCE_AND_PRESERVATION_CHECKS",
+  "baseline_pr41": "97685ddcfb510fe16c2260eae5aed94be230c669",
+  "latest_integration_observation": {
+    "fpia_pr": 42,
+    "head": "dc0bf792c4d10ac4e2ab8545d45003f7a59922f0",
+    "branch": "integration/fpia-hardened-v1",
+    "actions": "IN_PROGRESS_AT_FRESH_READ_NOT_FPIA_PASS"
+  },
+  "counts_reproduced_independently": {
+    "raw_files": 19,
+    "rows": 23155,
+    "complete_rows": 23154,
+    "shape_valid_rows": 23150,
+    "all_null_rows": 1,
+    "envelope_failures": 4
+  },
+  "expected_count_match": true,
+  "raw_hash_alignment_order_all_match": true,
+  "raw_checks": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_NVDA_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_MSFT_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_8035_T_5y_original.json",
+      "sha256_match": true,
+      "rows": 1222,
+      "complete": 1222,
+      "shape_valid_only": 1221,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_042700_KS_5y_original.json",
+      "sha256_match": true,
+      "rows": 1221,
+      "complete": 1220,
+      "shape_valid_only": 1217,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ASML_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_LRCX_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_KLAC_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AMD_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AVGO_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_QCOM_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_INTC_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_GOOGL_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AMZN_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_RTX_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_SYK_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ETN_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_HUBB_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_GEV_5y_original.json",
+      "sha256_match": true,
+      "rows": 632,
+      "complete": 632,
+      "shape_valid_only": 632,
+      "aligned": true,
+      "ordered_unique": true
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ROK_5y_original.json",
+      "sha256_match": true,
+      "rows": 1255,
+      "complete": 1255,
+      "shape_valid_only": 1255,
+      "aligned": true,
+      "ordered_unique": true
+    }
+  ],
+  "source_pin_replay_baseline46": true,
+  "new_market_portfolio_source_pin_checks": [
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/personal/portfolio.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/personal/ports.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/personal/money.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/personal/timecontract.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/personal/quality.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/personal/versioning.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/qgv/portfolio.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/qgv/identifiers.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/contracts/portfolio_input.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/contracts/models.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/producers/adapters.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/product/web_assets/app.js",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/product/web_mvp.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/product/entity_metadata.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/src/investment_system/providers/sec_submissions.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/tools/fetch_ishares_reference.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/tools/reconstruct_sp500_from_wikipedia.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/tools/fetch_krx_data.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/tests/test_pil_p0_contracts.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/docs/web_mvp/CONTRACT.md",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "Investment-System1 · CURRENT_HANDOFF.md",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "QGV Portfolio · Specification v1.1.md",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "portfolio",
+      "path": "implementation/data/raw/manifests/ishares_holdings__IWB__20241231.json",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/src/investment_system/contracts/global_universe.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/src/investment_system/sessions/binder.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/src/investment_system/sessions/calendar.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/src/investment_system/sessions/listing.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/src/investment_system/technical/pit_market.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/src/investment_system/ingestion/raw_store.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/src/investment_system/ingestion/replay.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/tools/fetch_real_data.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/tools/fetch_tiingo_prices.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/tools/audit_mcap_store.py",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/docs/us_equity_session/STATUS.md",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/docs/us_equity_session/CONTRACT.md",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/reports/us_sec_tickers_listings.json",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/reports/gate_evidence/ca_unit_price_identity_repair.json",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/reports/gate_evidence/ca_unit_policy_v1.json",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    },
+    {
+      "scope": "market",
+      "path": "implementation/reports/gate_evidence/track_a_data_vintage_comparison_2026-09-27.json",
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "matches": true
+    }
+  ],
+  "all_new_source_pins_match": true,
+  "tracked_files_checked_via_git_diff": 7750,
+  "baseline_tracked_files_changed": [],
+  "v01_byte_identity": true,
+  "scope_counts": {
+    "user_core": 81,
+    "repository_additional": 24,
+    "candidate_extensions": 8,
+    "total_rows": 113
+  },
+  "new_file_manifest": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/P0_IMPLEMENTATION_PREREQUISITES_v0.2.md",
+      "sha256": "aac0d5f068e768a3952d5211626b6d04a4ecd2fd7d2a31579a0f3076433fe97c",
+      "bytes": 18383
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/contract/CHARTDOCUMENT_ADEQUACY_MATRIX.json",
+      "sha256": "9f030d2a51a0a4c0c94860fcc9c2d3382e4a46a3f4f5b623e28ae9c11961f8d5",
+      "bytes": 31516
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/contract/CHARTDOCUMENT_V01_ADEQUACY_AND_V02_PROPOSAL.md",
+      "sha256": "09ec22ad7b5ced46ac29128e22de57713bd18d6b79b0e7133d49738ae6dd413a",
+      "bytes": 26896
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/ADDITIONAL_REFERENCE_US_PROBES.json",
+      "sha256": "243ad41e60cda860717aa27af4af0045f7b5832edc04661243a725467d2081d0",
+      "bytes": 48406
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/MARKET_EVIDENCE.json",
+      "sha256": "5fef20cec9b45eb6206365caa8d0d84c09efa08b0264039a7fe6e3267a936c00",
+      "bytes": 10815
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/MARKET_PREREQUISITE_AUDIT.md",
+      "sha256": "d8eaf4dcbc44b33d126c45a1b632043b187003665a7b88653c35d16b47bf1f9f",
+      "bytes": 21182
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/MARKET_REFERENCE_COVERAGE.json",
+      "sha256": "039bee131478ec18fed5a4888245ea650ed327b7f129e283688dda8614762892",
+      "bytes": 25013
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/PUBLIC_ACQUISITION_PROBES.json",
+      "sha256": "11550dae8500c19d881d6533dd84210912c1a97b8d90c600c27b511a3a26e0a4",
+      "bytes": 12459
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/SOURCE_COUNTEREXAMPLES.json",
+      "sha256": "f198e0a53c1b07cb66cdccb424723fdcd4a8783636872fe1ab2509a3df2f6f01",
+      "bytes": 2719
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_042700_KS_5y_original.json",
+      "sha256": "0fd4f74e03fa3908dda2ae4b7970537fef9e1d855003bd7179c6a3f180390552",
+      "bytes": 81041
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_8035_T_5y_original.json",
+      "sha256": "4b73393390ac0f41865f6ceab82e682d4b3a69fcf9d42b8264b3ca908c7eb758",
+      "bytes": 90729
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AMD_5y_original.json",
+      "sha256": "8dbb143fe3876484db36dea404399cd14aef12e06a7b4ac46a56a0480e91be33",
+      "bytes": 136966
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AMZN_5y_original.json",
+      "sha256": "67de7fbb3d2813a9fc21902d853e2b5d6375a5bde271b72b6bdcf0502643ef83",
+      "bytes": 138001
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ASML_5y_original.json",
+      "sha256": "c7b3505a1c5d6784b86e3641339cc6e65949d96aabdf47e0acf4033da693843e",
+      "bytes": 130725
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AVGO_5y_original.json",
+      "sha256": "3377478afa855fa5c6bc28983f0636a1c6d19c9cc7e90660d27fff6d4c8db636",
+      "bytes": 137441
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ETN_5y_original.json",
+      "sha256": "de5e8d34652f4d6a46bf3f37242f18091c46c74381bdc0bea7b8e1b1830ce5cc",
+      "bytes": 135258
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_GEV_5y_original.json",
+      "sha256": "b770d191537550b1ca9c2ec38c50ec8b8fd66f0134f624260f87fdac76b7c3ee",
+      "bytes": 64526
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_GOOGL_5y_original.json",
+      "sha256": "e2653b81ac69270f651791c0d6bf21935a42dc19df621af481d76dbc8d0c1e3e",
+      "bytes": 138533
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_HUBB_5y_original.json",
+      "sha256": "ed33df064271953b559334db099f6f71d3d8852c036a27e015e46ebab8149160",
+      "bytes": 134857
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_INTC_5y_original.json",
+      "sha256": "9e4de576d228cd685133592b562e0ce1a5a7e738dd7da063d70d492d8425ce76",
+      "bytes": 138466
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_KLAC_5y_original.json",
+      "sha256": "6e5a02e631565bf779de35c972650e528f9c11fd17cfbfd9fd137005cb76930a",
+      "bytes": 137285
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_LRCX_5y_original.json",
+      "sha256": "c23b349c319adcc4087c491758130794c5a9b989553cef5446ec5d6f8c198940",
+      "bytes": 136289
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_MSFT_5y_original.json",
+      "sha256": "b2c375cc515006e968e26c17aab6afb3e85029af5988c99d5915dfe9f80f5e98",
+      "bytes": 136251
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_NVDA_5y_original.json",
+      "sha256": "357347e0031ba982cb145478a076eec0b0a1febd2dc59eb9b624d5281db2183a",
+      "bytes": 141128
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_QCOM_5y_original.json",
+      "sha256": "dc4fbc71bb91ed8c4449431bca3172ab274c4760ce1df30ebc0f22476c602a25",
+      "bytes": 138430
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ROK_5y_original.json",
+      "sha256": "a3171647d133a09a6719e947a9eb24a9b6399701e7b146606b8cfa059b924179",
+      "bytes": 133627
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_RTX_5y_original.json",
+      "sha256": "9ceb1b51012bb4c4c330af2ec093736e58ca381e3ea65497dc709e587c091d03",
+      "bytes": 135053
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_SYK_5y_original.json",
+      "sha256": "c68835f64ff4cdf7eea89b51abab5244ace40a9616c8c253b34ea24fca7436ee",
+      "bytes": 133902
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/portfolio/EVIDENCE.json",
+      "sha256": "9477f1751a24280131103143419fcc20d0a3f4f4babb941c9ef1cc2efbb831fe",
+      "bytes": 10801
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/portfolio/PORTFOLIO_SOURCE_READINESS.md",
+      "sha256": "f622b4d4b0231a481595fa847dab9e00365833d80c4788516cf18fe0a0e2d66a",
+      "bytes": 20401
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/root/source-pin-replay.json",
+      "sha256": "f64b3b33824333118112d62563053fa50768a7e698966175427785bb65119a52",
+      "bytes": 16892
+    }
+  ],
+  "verification_infrastructure_failure_history": [
+    "Initial preservation scanner parsed Git quoted non-ASCII paths as filenames, causing a failed check; no PASS was saved. Corrected with NUL-delimited Git paths and git diff comparison; source bytes were unchanged."
+  ],
+  "runtime_tests": "NOT_RUN_NO_RUNTIME_IMPLEMENTATION",
+  "actions": "NOT_RUN_FOR_THIS_WORK",
+  "FPIA": "NOT_RUN_FOR_THIS_WORK",
+  "production_ready_market_documents": 0,
+  "actual_holdings_source": "NOT_AVAILABLE",
+  "grants_issued": 0,
+  "canonical_merge": false,
+  "maturity_change": "NONE_CHART_CAPABILITY_REMAINS_PREREQUISITE_DESIGN",
+  "independent_review": "Source and contract findings reviewed; root clarity findings resolved"
+}

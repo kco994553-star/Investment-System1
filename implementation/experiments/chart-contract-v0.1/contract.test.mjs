@@ -1,0 +1,49 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {fixture} from './fixture.mjs';
+import {normalizeStoredResponse,validateCandidate,renderInput,hash} from './contract.mjs';
+const doc=()=>{const f=fixture();return normalizeStoredResponse(f.bytes,f.ctx);};
+function rawMutation(fn){const f=fixture();const r=JSON.parse(f.bytes);fn(r.chart.result[0]);f.bytes=Buffer.from(JSON.stringify(r));f.ctx.raw_sha256=hash(f.bytes);return f;}
+test('quote OHLC values retained without mixing adjusted close',()=>{const d=doc();assert.deepEqual([d.points[0].open,d.points[0].high,d.points[0].low,d.points[0].close],[100,104,98,102]);assert.equal(d.price_basis,'UNVERIFIED_PROVIDER_QUOTE');});
+test('zero volume and missing volume remain distinct',()=>{const d=doc();assert.equal(d.points[3].volume,0);assert.equal(d.points[4].volume,null);});
+test('unknown availability is not replaced by fetch/bar timestamp',()=>{const d=doc();assert.equal(d.points[0].available_at,null);assert.equal(d.timezone,null);assert.equal(d.pit_status,'NOT_VERIFIED');});
+test('raw hash mismatch rejected',()=>{const f=fixture();f.ctx.raw_sha256='0'.repeat(64);assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/hash/);});
+test('identity mismatch rejected',()=>{const f=fixture();f.ctx.symbol='NVDA';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/identity/);});
+test('duplicate timestamps rejected',()=>{const f=rawMutation(r=>r.timestamp[1]=r.timestamp[0]);assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/duplicate/);});
+test('out-of-order timestamps rejected',()=>{const f=rawMutation(r=>r.timestamp.reverse());assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/out-of-order/);});
+test('future observations rejected',()=>{const f=fixture();f.ctx.as_of='2023-12-31T00:00:00Z';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/after as_of/);});
+test('missing OHLC creates whitespace without fabricated values',()=>{const f=rawMutation(r=>r.indicators.quote[0].open[0]=null);const d=normalizeStoredResponse(f.bytes,f.ctx);assert.equal(d.points[0].open,null);assert.equal(renderInput(d)[0].open,undefined);});
+test('invalid OHLC envelope rejected',()=>{const f=rawMutation(r=>r.indicators.quote[0].high[0]=99);assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/envelope/);});
+test('negative volume rejected',()=>{const f=rawMutation(r=>r.indicators.quote[0].volume[0]=-1);assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/negative/);});
+test('numeric strings rejected',()=>{const f=rawMutation(r=>r.indicators.quote[0].close[0]='102');assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/finite/);});
+test('naive timestamps rejected',()=>{const f=fixture();f.ctx.as_of='2024-01-13';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/timezone/);});
+test('no LIVE label accepted',()=>{const d=doc();d.data_state='LIVE';assert.throws(()=>validateCandidate(d),/production/);});
+test('nonfixture input withheld even after parsing',()=>{const f=fixture();f.ctx.transport='API';f.ctx.synthetic=false;const d=normalizeStoredResponse(f.bytes,f.ctx);assert.equal(d.data_state,'NOT_AVAILABLE');assert.throws(()=>renderInput(d),/not enabled/);});
+test('MCP requires original upstream evidence',()=>{const f=fixture();f.ctx.transport='MCP';f.ctx.mcp_server='fixture';f.ctx.mcp_tool='read';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/upstream/);});
+test('API and MCP carry same source values, distinct transport lineage',()=>{const f=fixture();const a=normalizeStoredResponse(f.bytes,f.ctx);Object.assign(f.ctx,{transport:'MCP',mcp_server:'fixture',mcp_tool:'read',upstream_evidence_ref:'fixture:raw'});const b=normalizeStoredResponse(f.bytes,f.ctx);assert.deepEqual(a.points,b.points);assert.equal(a.provenance.raw_sha256,b.provenance.raw_sha256);assert.notEqual(a.provenance.transport,b.provenance.transport);});
+test('Alpaca offline shape has same exact series',()=>{const f=fixture('alpaca');const d=normalizeStoredResponse(f.bytes,f.ctx);assert.deepEqual(d.points,doc().points);assert.equal(d.price_basis,'RAW_REQUEST_DECLARED');});
+test('Alpaca unfinished pagination blocked',()=>{const f=fixture('alpaca');const r=JSON.parse(f.bytes);r.next_page_token='page2';f.bytes=Buffer.from(JSON.stringify(r));f.ctx.raw_sha256=hash(f.bytes);assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/pagination/);});
+test('Alpaca adjustment must be explicit; no asof PIT inference',()=>{const f=fixture('alpaca');delete f.ctx.request.adjustment;f.ctx.request.asof='2024-01-01';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/raw only/);});
+test('empty response remains empty',()=>{const f=rawMutation(r=>{r.timestamp=[];for(const key of ['open','high','low','close','volume'])r.indicators.quote[0][key]=[];});assert.equal(normalizeStoredResponse(f.bytes,f.ctx).points.length,0);});
+test('minute feed is not relabelled daily',()=>{const f=rawMutation(r=>r.meta.dataGranularity='1m');assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/daily interval/);});
+test('persisted candidate without identity/provenance rejected',()=>{for(const key of ['identity','provenance']){const d=doc();delete d[key];assert.throws(()=>validateCandidate(d));}});
+test('partial OHLC still enforces available envelope pairs',()=>{const f=rawMutation(r=>{r.indicators.quote[0].open[0]=null;r.indicators.quote[0].high[0]=1;});assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/envelope/);});
+test('invalid calendar day rejected rather than repaired',()=>{const f=fixture();f.ctx.as_of='2024-02-30T00:00:00Z';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/calendar/);});
+test('missing Alpaca OHLC is explicit null',()=>{const f=fixture('alpaca');const r=JSON.parse(f.bytes);delete r.bars.DEMO[0].o;f.bytes=Buffer.from(JSON.stringify(r));f.ctx.raw_sha256=hash(f.bytes);assert.equal(normalizeStoredResponse(f.bytes,f.ctx).points[0].open,null);});
+
+test('malformed quote arrays and multiple quote records rejected',()=>{
+ for(const mutate of [r=>r.indicators.quote.push(r.indicators.quote[0]),r=>r.indicators.quote[0].open={},r=>r.indicators.quote[0].open.pop(),r=>r.indicators.quote[0].volume.push(1)]){
+  const f=rawMutation(mutate);assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/quote/);
+ }
+});
+test('missing whole field remains null, not malformed truncated array',()=>{const f=rawMutation(r=>delete r.indicators.quote[0].volume);assert(normalizeStoredResponse(f.bytes,f.ctx).points.every(p=>p.volume===null));});
+test('observation cannot postdate original response acquisition',()=>{const f=fixture();f.ctx.fetched_at='2024-01-01T00:00:00Z';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/after fetched_at/);});
+test('later acquisition does not become historical availability',()=>{const d=doc();assert(Date.parse(d.provenance.fetched_at)>Date.parse(d.as_of));assert.equal(d.points[0].available_at,null);assert.equal(d.pit_status,'NOT_VERIFIED');});
+test('persisted Alpaca raw basis requires original explicit request',()=>{for(const mutate of [d=>delete d.provenance.request,d=>d.provenance.request.adjustment='all',d=>d.provenance.request.currency='KRW']){const f=fixture('alpaca');const d=normalizeStoredResponse(f.bytes,f.ctx);mutate(d);assert.throws(()=>validateCandidate(d),/raw only|currency/);}});
+test('malformed currency and timezone rejected',()=>{for(const mutate of [r=>r.meta.currency=[],r=>r.meta.exchangeTimezoneName={},r=>r.meta.exchangeTimezoneName='Not/AZone']){const f=rawMutation(mutate);assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/currency|timezone/);}});
+test('request and response interval conflict rejected',()=>{const f=fixture();f.ctx.request={interval:'1m'};assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/daily interval/);});
+test('unverified corporate action references cannot be added to candidate',()=>{const d=doc();d.corporate_action_refs=['made-up'];assert.throws(()=>validateCandidate(d),/corporate action/);});
+
+test('persisted Yahoo interval conflict rejected',()=>{const d=doc();d.provenance.request={interval:'1m'};assert.throws(()=>validateCandidate(d),/daily interval/);});
+
+test('24:00 is not silently advanced to next date',()=>{const f=fixture();f.ctx.as_of='2024-01-13T24:00:00Z';assert.throws(()=>normalizeStoredResponse(f.bytes,f.ctx),/invalid clock/);});

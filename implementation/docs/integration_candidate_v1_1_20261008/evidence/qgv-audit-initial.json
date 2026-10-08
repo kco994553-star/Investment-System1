@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "case_count": 71,
+  "failures": [],
+  "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "fixture_sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040",
+  "scope": "SYNTHETIC_LEGACY_SCORES_AND_FULL_FIELDS_WITH_EXPLICIT_USER_V1_METADATA_DELTA",
+  "standard": "v1",
+  "calibration": "UNCALIBRATED",
+  "historical_fixture_unchanged": true,
+  "authorized_delta_fields": [
+    "V_policy_status",
+    "factor_breakdown.v_lifecycle",
+    "standard",
+    "calibration",
+    "standard_status",
+    "standard_effective_at",
+    "v_candidates[0].lifecycle",
+    "v_candidates[0].standard",
+    "v_candidates[0].calibration",
+    "v_candidates[1].standard",
+    "v_candidates[1].calibration",
+    "v_candidates[2].standard",
+    "v_candidates[2].calibration"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "artifact_kind": "INACTIVE_GENERATED_SCOPE_FIXTURE_DIGESTS",
+  "review_head": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+  "fixture_count": 4,
+  "fixture_canonical_sha256": {
+    "LOCAL_G": "20cb4c0e9ed2f9b9f71cf54f740af869f550d67a0440fe9f3f4f4b9a97beedbb",
+    "SHARED_QG": "13b3d3c4ff468f937e40d7f0ddb75e6f35f56e9b4acae3797623acafe2b930d3",
+    "COMBINED": "96385e340aae2dea78d2de5b47cd0f268c2d1fe90a0b75dad4bb1523037a54bd",
+    "LOCAL_V": "7331fd8da459d4a348cec9815d916ff47ce35413f16ef12ad65c4ae3e099fc3b"
+  },
+  "full_fixture_bundle_canonical_sha256": "1e9900a3791229701f27bbf427420c01335b0b7e7424c7329dadedc0b30c67a9",
+  "reference_contents_canonical_sha256": "e636e9c8398cf59a772757aa17c1f64bdf1ea347ec4dad31ae79e8f0a7f406f9",
+  "reference_document_count": 214,
+  "canonical_encoding": "JSON sort_keys=true, separators=(',',':'), ensure_ascii=false, allow_nan=false; UTF-8",
+  "genuine_raw_inputs_materialized": false
+}

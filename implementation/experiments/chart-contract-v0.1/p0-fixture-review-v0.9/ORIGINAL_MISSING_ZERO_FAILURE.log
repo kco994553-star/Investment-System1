@@ -1,0 +1,19 @@
+AssertionError [ERR_ASSERTION]: all missing memberships must not display measured zero exposure
+    at /workspace/scratch/9de0281e56bb/repo/implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/fixture_browser_test.cjs:23:12 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '포트폴리오 v1.1 · 2026-09-14 · TARGET · 자료 확인 2026-10-04T10:49:27.857Z · PIT NOT_VERIFIED\n' +
+    '\n' +
+    '① 산업군 구성 도넛\n' +
+    '\n' +
+    '기존 사용자가 정한 4개 목표 배분 그룹입니다. 표준 산업분류(GICS)와는 다릅니다.\n' +
+    '\n' +
+    '전체 100%\n' +
+    'AI·반도체 25%\n' +
+    'Big Tech 20%\n' +
+    '기타산업 25%\n' +
+    '...',
+  expected: /확인된 유형 노출:.*0%/,
+  operator: 'doesNotMatch',
+  diff: 'simple'
+}

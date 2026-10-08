@@ -1,0 +1,158 @@
+{
+  "kind": "PRIMARY_DOCUMENTATION_AUDIT_NOT_DATA_ENTITLEMENT",
+  "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+  "sources": [
+    {
+      "id": "GICS-S01",
+      "url": "https://www.msci.com/indexes/index-resources/gics",
+      "title": "MSCI GICS overview",
+      "retrieval_ref": "turn19view0",
+      "locator": "lines 186–192; 225–242",
+      "document_date": null,
+      "observation": "Four-level company classification and annual review described; separate structure/methodology resources linked.",
+      "excerpt_words": 14,
+      "excerpt_hash_scope": "individual exact bounded quotation strings, not original webpage/PDF bytes",
+      "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+      "source_publication_timestamp": "UNKNOWN unless source document date listed; no exact time assumed",
+      "excerpt_sha256_utf8_parts": [
+        "7b051be472d97e7e7c7b886e991a8c7d419b13b4a5bd502115e7f7c047d50221"
+      ]
+    },
+    {
+      "id": "GICS-S02",
+      "url": "https://www.spglobal.com/spdji/en/landing/topic/gics/",
+      "title": "S&P DJI GICS overview",
+      "retrieval_ref": "turn22view0",
+      "locator": "lines 31–35; 119–127",
+      "document_date": null,
+      "observation": "Current page gives hierarchy counts; current/historical taxonomy resources linked, not a company-assignment feed.",
+      "excerpt_words": 10,
+      "excerpt_hash_scope": "individual exact bounded quotation strings, not original webpage/PDF bytes",
+      "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+      "source_publication_timestamp": "UNKNOWN unless source document date listed; no exact time assumed",
+      "excerpt_sha256_utf8_parts": [
+        "a93fd8cc5050b234be90c8e421ea96ed479b1ccf305b601eb8ede9c6c09dcea6"
+      ]
+    },
+    {
+      "id": "GICS-S03",
+      "url": "https://www.spglobal.com/spdji/en/documents/methodologies/methodology-gics.pdf",
+      "title": "S&P DJI GICS methodology",
+      "retrieval_ref": "turn24view0",
+      "locator": "PDF cover; pages 3, 5, 10, 12",
+      "document_date": "2026-04",
+      "observation": "Current linked document is April 2026; company-linked equities inherit company classification; corporate actions can trigger review. Document also states use/display/derivative/distribution constraints.",
+      "excerpt_words": 14,
+      "excerpt_hash_scope": "individual exact bounded quotation strings, not original webpage/PDF bytes",
+      "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+      "source_publication_timestamp": "UNKNOWN unless source document date listed; no exact time assumed",
+      "excerpt_sha256_utf8_parts": [
+        "f65010b0d64eada622e63568d14306fb95986b77a63bcdff07ec4ec51844e6d5"
+      ]
+    },
+    {
+      "id": "GICS-S04",
+      "url": "https://www.marketplace.spglobal.com/en/datasets/gics-%2890%29",
+      "title": "S&P Global Marketplace GICS dataset",
+      "retrieval_ref": "turn17search0; turn22search0",
+      "locator": "Search-retrieved product description and Point In Time Details",
+      "document_date": null,
+      "observation": "Advertises separate current and historical company classifications and historical from/thru validity. Direct page open yielded no extractable lines, so details are search-retrieved marketing, not inspected feed schemas or records.",
+      "excerpt_words": 10,
+      "excerpt_hash_scope": "individual exact bounded quotation strings, not original webpage/PDF bytes",
+      "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+      "source_publication_timestamp": "UNKNOWN unless source document date listed; no exact time assumed",
+      "excerpt_sha256_utf8_parts": [
+        "0010d54f9ca0ea0c71dcd9b1dd95bbacd1f377550d4aa69549ca5e494379a7cd"
+      ]
+    },
+    {
+      "id": "GICS-S05",
+      "url": "https://www.spglobal.com/market-intelligence/en/solutions/differentiated-data",
+      "title": "S&P Global Differentiated Data",
+      "retrieval_ref": "turn20view1",
+      "locator": "lines 1585–1608",
+      "document_date": null,
+      "observation": "GICS Direct and History products and separate cross-reference services described; History advertises company codes, names and identifiers.",
+      "excerpt_words": 6,
+      "excerpt_hash_scope": "individual exact bounded quotation strings, not original webpage/PDF bytes",
+      "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+      "source_publication_timestamp": "UNKNOWN unless source document date listed; no exact time assumed",
+      "excerpt_sha256_utf8_parts": [
+        "f661c8fd8349b7bb030ab094ea002797c7ea9aafbf34df474c67f1b70da7c173"
+      ]
+    },
+    {
+      "id": "GICS-S06",
+      "url": "https://www.msci.com/legal/terms-of-use",
+      "title": "MSCI Terms of use",
+      "retrieval_ref": "turn19view1",
+      "locator": "lines 186; 189; 202–216",
+      "document_date": "2026-07-15",
+      "observation": "Website/service default without an order form is internal non-production. Express order permissions control restrictions on database/derivatives, redistribution/cloud and unauthorized automated/AI/MCP extraction. Separate agreements can override conflicts. No user-specific rights determined.",
+      "excerpt_words": 15,
+      "excerpt_hash_scope": "individual exact bounded quotation strings, not original webpage/PDF bytes",
+      "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+      "source_publication_timestamp": "UNKNOWN unless source document date listed; no exact time assumed",
+      "excerpt_sha256_utf8_parts": [
+        "76d3021f994b18e61522057345d775f3a3effb401eb4daab206be91cc5c28072",
+        "c1d886e80fe759bda6a4605481fc973ae6cc04e8e2e935d298c26883b98f251f"
+      ]
+    },
+    {
+      "id": "GICS-S07",
+      "url": "https://www.spglobal.com/en/terms-of-use",
+      "title": "S&P Global Terms of use",
+      "retrieval_ref": "turn28view0; turn31view0; turn31view1; turn31view2",
+      "locator": "sections 1, 2, 4.2; lines 598, 604–608, 657–659",
+      "document_date": null,
+      "observation": "Public website use is constrained to personal/internal/non-commercial use. SPDJI section separately restricts classification/history database and derived-data creation plus unauthorized display/disclosure. Not a GICS Direct agreement or purchase entitlement.",
+      "excerpt_words": 10,
+      "excerpt_hash_scope": "individual exact bounded quotation strings, not original webpage/PDF bytes",
+      "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+      "source_publication_timestamp": "UNKNOWN unless source document date listed; no exact time assumed",
+      "excerpt_sha256_utf8_parts": [
+        "7ba15a605fc38fe8b5139bc4925e965a7cec9da606ce2f9bcc24c31eb3fe5ef6",
+        "98577331cbb66bd3b1d9691ae8c12d51da83ca63a71839a22b12deb8530d1291"
+      ]
+    },
+    {
+      "id": "GICS-S08",
+      "url": "https://www.msci.com/downloads/documents/indexes/gics/GICS_Press_Release_31_March_2022.pdf",
+      "title": "2023 GICS structure revision announcement",
+      "retrieval_ref": "turn20view3; turn21view0",
+      "locator": "page 1, lines 6 and 18–22",
+      "document_date": "2022-03-31",
+      "observation": "Announcement distinguishes release date, planned client-list availability and March 2023 implementation after close. It is not a complete company feed or evidence of when this project received records.",
+      "excerpt_words": 11,
+      "excerpt_hash_scope": "individual exact bounded quotation strings, not original webpage/PDF bytes",
+      "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+      "source_publication_timestamp": "UNKNOWN unless source document date listed; no exact time assumed",
+      "excerpt_sha256_utf8_parts": [
+        "5e94e924cad31968a617caf4e319442b35f47426743709c0cae293c0894b5a8a"
+      ]
+    },
+    {
+      "id": "GICS-S09",
+      "url": "https://press.spglobal.com/2026-07-17-S-P-DOW-JONES-INDICES-AND-MSCI-ANNOUNCE-CONSULTATION-ON-POTENTIAL-CHANGES-TO-THE-GLOBAL-INDUSTRY-CLASSIFICATION-STANDARD-GICS-R",
+      "title": "2026 GICS consultation announcement",
+      "retrieval_ref": "turn22view1",
+      "locator": "lines 67–81, 125–127",
+      "document_date": "2026-07-17",
+      "observation": "Open consultation addresses AI/semiconductor categories and runs until October 30, with announced outcomes planned for November. Proposed changes are not adopted; affected-company illustrations are client-only.",
+      "excerpt_words": 14,
+      "excerpt_hash_scope": "individual exact bounded quotation strings, not original webpage/PDF bytes",
+      "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+      "source_publication_timestamp": "UNKNOWN unless source document date listed; no exact time assumed",
+      "excerpt_sha256_utf8_parts": [
+        "68b202fed280abc10a602ab76c06cf32c70062b7e0c3f097481057410c02c258"
+      ]
+    }
+  ],
+  "search_policy": "System1 verification attempted; authoritative pages were directly opened. System2 used to recover specific product/terms metadata. Non-primary results not relied upon.",
+  "limitations": [
+    "No login, account/license entitlement check, purchase, feed extraction or company assignment acquisition.",
+    "Marketplace rendered zero lines; source marketing is search-retrieved and corroborated by S&P differentiated-data page.",
+    "No full copyrighted documents/pages copied into repository; bounded excerpt hashes are not raw-source hashes."
+  ]
+}

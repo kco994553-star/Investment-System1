@@ -1,0 +1,15 @@
+{
+  "scope": "TARGET_REFERENCE_ONLY_NOT_ACCOUNT",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "reference_units": "exact authored decimal target_weight x10000; no rounding/optimization",
+  "mapping": "sector field to authored allocation group; not GICS",
+  "types": "all null; no company type classification inferred",
+  "identity": "holding_id is reference row key, security_id unresolved",
+  "as_of_meaning": "repository reference extraction time, not publication/valuation",
+  "files_sha256": {
+    "implementation/src/investment_system/qgv/portfolio.py": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+    "implementation/src/investment_system/qgv/identifiers.py": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+    "QGV Portfolio · Specification v1.1.md": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+  },
+  "reference_sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+}

@@ -1,0 +1,19 @@
+{
+  "scope": "NEW_OWNER_PACKET_CONSISTENCY_ONLY_NOT_SOURCE_REPLAY_OR_PRODUCTION_TEST",
+  "checks": {
+    "exact_19_preserved_source_row_keys": true,
+    "source_weights_and_theme_relation_preserved": true,
+    "only_unresolved_owner_return_fields_are_null": true,
+    "six_existing_gates_preserved": true,
+    "no_admission_schema_activation_grant": true,
+    "eight_target_identity_source_paths_agree": true,
+    "bounded_source_constructor_match_count_zero": true,
+    "actual_unavailable_no_target_fallback": true
+  },
+  "passed": 8,
+  "total": 8,
+  "status": "PASS",
+  "prior_source_replay": "REUSED_NOT_RERUN",
+  "production_test_status": "NOT_RUN",
+  "conflict_register_difference": "Existing Integration overlay; not a new Target source change"
+}

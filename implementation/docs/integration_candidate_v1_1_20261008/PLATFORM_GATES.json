@@ -1,0 +1,65 @@
+{
+  "schema": "platform-gate-reassessment/1",
+  "source_owner": "3d997d34df8c76d4739d8bf71878cc12fec555d9",
+  "source_path": "implementation/docs/product_platform/automation/STATE.json",
+  "closed_count": 1,
+  "total": 9,
+  "open_count": 8,
+  "groups": [
+    {
+      "id": "PPA-F01",
+      "scope": "Auth/session/revocation",
+      "status": "OPEN_UNCHANGED_OUT_OF_CYCLE",
+      "basis": "No accepted product owner runtime/source closure in this cycle"
+    },
+    {
+      "id": "PPA-F02+PPF-005-runtime",
+      "scope": "Trusted user+tenant ownership",
+      "status": "OPEN_UNCHANGED_OUT_OF_CYCLE",
+      "basis": "No accepted product owner runtime/source closure in this cycle"
+    },
+    {
+      "id": "PPA-F03",
+      "scope": "Actual connector lifecycle",
+      "status": "OPEN_UNCHANGED_OUT_OF_CYCLE",
+      "basis": "No accepted product owner runtime/source closure in this cycle"
+    },
+    {
+      "id": "PPA-F04",
+      "scope": "Authenticated Product API",
+      "status": "OPEN_UNCHANGED_OUT_OF_CYCLE",
+      "basis": "No accepted product owner runtime/source closure in this cycle"
+    },
+    {
+      "id": "PPA-F05+PPF-006",
+      "scope": "Durable authenticated raw ledger",
+      "status": "OPEN_UNCHANGED_OUT_OF_CYCLE",
+      "basis": "No accepted product owner runtime/source closure in this cycle"
+    },
+    {
+      "id": "PPF-004+SA-03+SA-04",
+      "scope": "Financial reconciliation completeness",
+      "status": "OPEN_UNCHANGED_OUT_OF_CYCLE",
+      "basis": "No accepted product owner runtime/source closure in this cycle"
+    },
+    {
+      "id": "SA-01",
+      "scope": "Hash-case ref identity",
+      "status": "OPEN_UNCHANGED_OUT_OF_CYCLE",
+      "basis": "No accepted product owner runtime/source closure in this cycle"
+    },
+    {
+      "id": "SA-02",
+      "scope": "Inherited read-only interface drift",
+      "status": "OPEN_UNCHANGED_OUT_OF_CYCLE",
+      "basis": "No accepted product owner runtime/source closure in this cycle"
+    },
+    {
+      "id": "PPA-F08",
+      "scope": "Web ACTUAL/TARGET availability",
+      "status": "CLOSED_IN_CANDIDATE",
+      "basis": "PR63 actual finite-only/TARGET separate; fresh browser tests"
+    }
+  ],
+  "full_platform_verified_capabilities": 0
+}

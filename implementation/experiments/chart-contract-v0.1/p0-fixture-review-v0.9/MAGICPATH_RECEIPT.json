@@ -1,0 +1,53 @@
+{
+  "kind": "USER_SELECTED_PRIVATE_SAMPLE_REVIEW_CANVAS",
+  "project_id": "457727891984232448",
+  "name": "Investment-System1 Chart — SAMPLE review",
+  "target_selection": "User selected dedicated review canvas; generic My First Project not changed",
+  "link": "codex://mcp-app/magicpath@personal/open_magicpath_canvas/projects/457727891984232448",
+  "primary_design_tool": "MagicPath",
+  "figma_used": false,
+  "images": [
+    {
+      "source": "browser/baseline-1280.png",
+      "image_id": "457729538814799872"
+    },
+    {
+      "source": "browser/reference-1280.png",
+      "image_id": "457730714050371584"
+    },
+    {
+      "source": "browser/demo-1280.png",
+      "image_id": "457731136567795712"
+    }
+  ],
+  "reused_components": [
+    "portfolio_app.js el/svg/donut/section helpers",
+    "page.html pf-card/pf-donut/pf-type-grid/pf-overlap styles",
+    "Existing immutable reference and fictional projection contracts"
+  ],
+  "scope": "Native screenshot review and annotations only; executable UI is existing GitHub lab, not a remote component build",
+  "public_listing": false,
+  "production_design_claim": false,
+  "remote_component_build": false,
+  "first_failures_preserved": [
+    {
+      "action": "create_canvas_shapes",
+      "error": "text.props.h Unexpected property",
+      "repair": "omit unsupported h for text"
+    },
+    {
+      "action": "create_canvas_shapes",
+      "error": "note.props.w Unexpected property",
+      "repair": "use native text annotation; verified5shapes prior to thirdimage"
+    }
+  ],
+  "canvas_verified": {
+    "shape_count": 6,
+    "types": {
+      "text": 3,
+      "image": 3
+    },
+    "read_tool": "get_canvas_context",
+    "normal_screenshots_identical_after_independent_edge_repairs": true
+  }
+}

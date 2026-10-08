@@ -1,0 +1,215 @@
+"""Register structural extractors. The predicate never sees which one matched.
+
+Each extractor copies a stored hash and a few status tokens. It does not call
+an engine and it does not put score, rank, regime, zone, or feature values on
+the fact.
+"""
+
+from __future__ import annotations
+
+from ..producers.serialization import canonical_sha256
+from .errors import ExtractionError
+from .facts import make_fact
+
+_MACRO_REASONS = (
+    "SERIES_MAPPING_PROVISIONAL",
+    "EXPOSURE_NOT_APPROVED",
+    "WEB_INDICATORS_NOT_RESHAPED",
+    "NO_APPROVED_LIVE_EXPIRY",
+)
+
+
+def _strings(value: object, label: str) -> tuple:
+    if value is None:
+        return ()
+    if not isinstance(value, (list, tuple)) or not all(isinstance(item, str) for item in value):
+        raise ExtractionError(f"{label} must be a list of strings")
+    return tuple(value)
+
+
+def _validation(value: object) -> str:
+    if value in ("PASS", "FAIL", "NOT_RUN"):
+        return value
+    return "NOT_RUN"
+
+
+def _match_qgv(doc: object) -> bool:
+    if not isinstance(doc, dict):
+        return False
+    semantic = doc.get("semantic")
+    return (
+        doc.get("record_kind") == "QGV_COMPANY_RESULT"
+        and doc.get("record_version") == 1
+        and isinstance(semantic, dict)
+        and isinstance(semantic.get("qgv"), dict)
+        and isinstance(semantic.get("research_state"), dict)
+        and isinstance(doc.get("semantic_sha256"), str)
+    )
+
+
+def _extract_qgv(doc: dict) -> dict:
+    semantic = doc["semantic"]
+    research = semantic["research_state"]
+    status = _validation(semantic.get("status"))
+    lifecycle = research.get("status")
+    if lifecycle is not None and not isinstance(lifecycle, str):
+        raise ExtractionError("research status must be a string or null")
+    return make_fact(
+        subject_sha256=doc["semantic_sha256"],
+        persisted_fingerprint=doc["semantic_sha256"],
+        methodology_lifecycle=lifecycle,
+        producer_validation=status,
+        track_c_validation="NOT_RUN",
+        track_c_claim_ignored=research.get("track_c_validated") is True,
+        data_completeness="PARTIAL" if status == "PASS" else "BLOCKED",
+        research_record_exists=True,
+        research_bytes_withheld=False,
+        synthetic=bool(semantic.get("synthetic")),
+        stale_or_expired=doc.get("stale_or_expired") is True,
+        policy_blockers=_strings(semantic.get("status_reasons"), "status_reasons"),
+        component_labels=(),
+        within_tie_order=None,
+    )
+
+
+def _match_leaderboard(doc: object) -> bool:
+    if not isinstance(doc, dict):
+        return False
+    semantic = doc.get("semantic")
+    return (
+        doc.get("record_kind") == "LEADERBOARD_COMPANY_RESULT"
+        and doc.get("record_version") == 1
+        and isinstance(semantic, dict)
+        and isinstance(semantic.get("research_state"), dict)
+        and isinstance(semantic.get("publication"), dict)
+        and semantic["publication"].get("data_state") == "NOT_AVAILABLE"
+        and isinstance(doc.get("semantic_sha256"), str)
+    )
+
+
+def _extract_leaderboard(doc: dict) -> dict:
+    semantic = doc["semantic"]
+    research = semantic["research_state"]
+    ranking = semantic.get("ranking")
+    tie = None
+    if ranking is not None:
+        if not isinstance(ranking, dict):
+            raise ExtractionError("ranking must be an object or null")
+        tie = ranking.get("within_tie_order_approval")
+        if tie is not None and not isinstance(tie, str):
+            raise ExtractionError("within_tie_order_approval must be a string or null")
+    status = _validation(semantic.get("status"))
+    blocked = tie == "POLICY_BLOCKED" or ranking is None or status != "PASS"
+    lifecycle = research.get("status")
+    if lifecycle is not None and not isinstance(lifecycle, str):
+        raise ExtractionError("research status must be a string or null")
+    return make_fact(
+        subject_sha256=doc["semantic_sha256"],
+        persisted_fingerprint=doc["semantic_sha256"],
+        methodology_lifecycle=lifecycle,
+        producer_validation=status,
+        track_c_validation="NOT_RUN",
+        track_c_claim_ignored=research.get("track_c_validated") is True,
+        data_completeness="BLOCKED" if blocked else "PARTIAL",
+        research_record_exists=True,
+        research_bytes_withheld=False,
+        synthetic=bool(semantic.get("synthetic")),
+        stale_or_expired=doc.get("stale_or_expired") is True,
+        policy_blockers=_strings(semantic.get("status_reasons"), "status_reasons"),
+        component_labels=(),
+        within_tie_order=tie,
+    )
+
+
+def _match_macro(doc: object) -> bool:
+    if not isinstance(doc, dict):
+        return False
+    snap = doc.get("producer_snapshot")
+    reasons = doc.get("publication_reasons")
+    methodology = snap.get("methodology") if isinstance(snap, dict) else None
+    return (
+        doc.get("publication") == "POLICY_BLOCKED"
+        and isinstance(reasons, (list, tuple))
+        and tuple(reasons) == _MACRO_REASONS
+        and isinstance(snap, dict)
+        and snap.get("data") is None
+        and snap.get("data_state") == "NOT_AVAILABLE"
+        and snap.get("reason_code") == "POLICY_BLOCKED"
+        and isinstance(methodology, dict)
+        and methodology.get("status") == "PROVISIONAL"
+    )
+
+
+def _extract_macro(doc: dict) -> dict:
+    # Hash the withheld shell only. The research snapshot is not an input.
+    fingerprint = canonical_sha256(doc["producer_snapshot"])
+    return make_fact(
+        subject_sha256=fingerprint,
+        persisted_fingerprint=fingerprint,
+        methodology_lifecycle="PROVISIONAL",
+        producer_validation=_validation((doc["producer_snapshot"].get("validation") or {}).get("status")),
+        track_c_validation="NOT_RUN",
+        track_c_claim_ignored=False,
+        data_completeness="BLOCKED",
+        research_record_exists=True,
+        research_bytes_withheld=True,
+        synthetic=bool(doc["producer_snapshot"].get("synthetic")),
+        stale_or_expired=doc.get("stale_or_expired") is True,
+        policy_blockers=_MACRO_REASONS,
+        component_labels=(),
+        within_tie_order=None,
+    )
+
+
+def _match_technical(doc: object) -> bool:
+    if not isinstance(doc, dict):
+        return False
+    web = doc.get("web_publication")
+    return (
+        doc.get("contract") == "TECHNICAL_RESEARCH_RECORD"
+        and isinstance(web, dict)
+        and web.get("status") == "BLOCKED"
+        and isinstance(doc.get("semantic_hash"), str)
+        and isinstance(doc.get("methodology"), dict)
+    )
+
+
+def _extract_technical(doc: dict) -> dict:
+    methodology = doc["methodology"]
+    labels = []
+    for key in ("m1", "m2", "m3", "m4"):
+        if key in methodology and isinstance(methodology[key], str):
+            labels.append(f"{key}:{methodology[key]}")
+    return make_fact(
+        subject_sha256=doc["semantic_hash"],
+        persisted_fingerprint=doc["semantic_hash"],
+        methodology_lifecycle=None,
+        producer_validation="NOT_RUN",
+        track_c_validation="NOT_RUN",
+        track_c_claim_ignored=False,
+        data_completeness="BLOCKED",
+        research_record_exists=True,
+        research_bytes_withheld=True,
+        synthetic=bool(doc.get("synthetic")),
+        stale_or_expired=doc.get("stale_or_expired") is True,
+        policy_blockers=(),
+        component_labels=tuple(labels),
+        within_tie_order=None,
+    )
+
+
+_EXTRACTORS = (
+    (_match_qgv, _extract_qgv),
+    (_match_leaderboard, _extract_leaderboard),
+    (_match_macro, _extract_macro),
+    (_match_technical, _extract_technical),
+)
+
+
+def extract(document: object) -> dict:
+    """Exactly one structural match. Zero or several is a refusal, not a guess."""
+    matched = [fn for pred, fn in _EXTRACTORS if pred(document)]
+    if len(matched) != 1:
+        raise ExtractionError(f"persisted document matched {len(matched)} publication extractors")
+    return matched[0](document)
+

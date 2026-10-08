@@ -1,0 +1,2092 @@
+{
+  "schema": "CURRENT_TARGET_IDENTITY_MAP/1.1",
+  "version": "20261008.v1",
+  "status": "RESOLVED_CURRENT_TARGET_SCOPE",
+  "prepared_at": "2026-10-08T23:37:48.143134+00:00",
+  "prepared_by": "Codex v1.1 A-S2 evidence task",
+  "authorization": "2026-10-08 user v1.1 cycle: Frozen US17 issuer mapping; Alphabet ClassA; user-selected TSE8035 and KRX042700",
+  "source_root_version": "TARGET v0",
+  "source_root_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+  "target_effective_at": "2026-10-08T20:37:00+09:00",
+  "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+  "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+  "current_only_no_historical_backdating": true,
+  "autonomy_mode": "READ_ONLY",
+  "source_values_changed": false,
+  "canonical_merge": false,
+  "source_pins": {
+    "target_v0": {
+      "git_commit": "40c7037870f5ad3b5538444fa3a8e545c65d213b",
+      "upstream_path": "implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+      "replay_path": "implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+      "git_blob": "53124085ecc9561fefe45cf6d31bd649abea6f63",
+      "sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "bytes": 4463,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/40c7037870f5ad3b5538444fa3a8e545c65d213b/implementation/docs/portfolio_target_owner/TARGET_v0.yaml"
+    },
+    "common_c39": {
+      "git_commit": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "upstream_path": "implementation/src/investment_system/contracts/global_universe.py",
+      "replay_path": "implementation/src/investment_system/contracts/global_universe.py",
+      "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8",
+      "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+      "bytes": 6228,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/implementation/src/investment_system/contracts/global_universe.py"
+    },
+    "frozen_sec_associations": {
+      "git_commit": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "upstream_path": "implementation/reports/us_sec_tickers_listings.json",
+      "replay_path": "implementation/reports/us_sec_tickers_listings.json",
+      "git_blob": "747a1219e50c639fc5929afe643c6d83c92d30d4",
+      "sha256": "f532cc80edf5305f787e1091cc24244423acd9084375f01727bbd4508d351316",
+      "bytes": 504522,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/implementation/reports/us_sec_tickers_listings.json"
+    },
+    "frozen_ingested_associations": {
+      "git_commit": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "upstream_path": "implementation/reports/us_ingested_facts_listings.json",
+      "replay_path": "implementation/reports/us_ingested_facts_listings.json",
+      "git_blob": "72de913a4e6bdba154f8171053df97a33d926657",
+      "sha256": "74a615614770980a039dc6eb6caf440eebd3a53efbcfe3226846a56346cfbc13",
+      "bytes": 28708,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/implementation/reports/us_ingested_facts_listings.json"
+    },
+    "frozen_nport_reference": {
+      "git_commit": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "upstream_path": "implementation/reports/gate_evidence/russell1000_nport_2024-12-31.json",
+      "replay_path": "implementation/reports/gate_evidence/russell1000_nport_2024-12-31.json",
+      "git_blob": "e8b5b894dc432a7ac54923ca57640269a31953f8",
+      "sha256": "f4309576c3691b625521c769c75647f83cb4599a806736b75ef40b302256dfbe",
+      "bytes": 251747,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/implementation/reports/gate_evidence/russell1000_nport_2024-12-31.json"
+    },
+    "frozen_nport_manifest": {
+      "git_commit": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "upstream_path": "implementation/data/raw/manifests/nport_xml__0001752724-25-034052.json",
+      "replay_path": "implementation/data/raw/manifests/nport_xml__0001752724-25-034052.json",
+      "git_blob": "515cf2cfbfc44ef3def41b7712c1f7af56aa96be",
+      "sha256": "ba2d9dfa77b1234de0fadedaf8ef432dae1477f624938b90262f8e01dde36812",
+      "bytes": 451,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/implementation/data/raw/manifests/nport_xml__0001752724-25-034052.json"
+    },
+    "frozen_nport_original_replay": {
+      "git_commit": null,
+      "upstream_path": null,
+      "replay_path": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/sources/nport_0001752724-25-034052_original.xml.gz",
+      "git_blob": "51d2dc98bf2b3a5ba64c6390301351ebd9be05fb",
+      "sha256": "1c9162bf36195494f709f310502e389edeb8a08e8c645d7cbdd34d57a0a11639",
+      "bytes": 968291,
+      "url": "https://www.sec.gov/Archives/edgar/data/1100663/000175272425034052/primary_doc.xml",
+      "frozen_artifact_id": "nport_xml:0001752724-25-034052",
+      "frozen_manifest_hash_match": true,
+      "retrieved_read_only_at": "2026-10-08T23:37:48.143134+00:00",
+      "http_status": 200,
+      "replay_note": "Exact archival bytes match Frozen manifest. No live dataset or Frozen source was updated.",
+      "compression": "gzip",
+      "compressed_sha256": "c38f510fed68c75bf84e3e940ebd52fa4acd21e59fdb17784d3624f5f9518872"
+    },
+    "sec_exchange_original": {
+      "git_commit": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "upstream_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/sec_tickers_exchange_original.json",
+      "replay_path": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/sources/sec_tickers_exchange_original.json.gz",
+      "git_blob": "3e60e9946bfae318bbcf1369338beb976f633148",
+      "sha256": "2df6dbed748a66dfbb6ed403e1e88b4d7b5590e61188ea74d5548d0f8aec09c1",
+      "bytes": 523512,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/47dce4c768f315ff6036e8a34c177920c1d50b14/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/sec_tickers_exchange_original.json",
+      "compression": "gzip",
+      "compressed_sha256": "de62d566c6ad6ce328e2890577446a53c2dcf14406434c7910355f09769374b3"
+    },
+    "asml_share_form_original": {
+      "git_commit": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "upstream_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/asml_share_form_original.html",
+      "replay_path": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/sources/asml_share_form_original.html.gz",
+      "git_blob": "e065262b053c6bd612eb48cd5aeb252b888c0582",
+      "sha256": "96d96ae1c42958ea81cc78cd9bf3def5eeeb78873a607c1b802401b9220a1add",
+      "bytes": 66032,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/47dce4c768f315ff6036e8a34c177920c1d50b14/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/asml_share_form_original.html",
+      "compression": "gzip",
+      "compressed_sha256": "ea40af1b5acd61664ee0ec0ffe989acd279979e577eec1780a143ee4f74588a0"
+    },
+    "asml_share_form_extract": {
+      "git_commit": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "upstream_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/asml_share_form_extracted.txt",
+      "replay_path": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/sources/asml_share_form_extracted.txt",
+      "git_blob": "17e93cc15df9c3788bcbc28808596e585fd7a56b",
+      "sha256": "2954657228eb5e2911dd97b7ad5a5cbcfe61f4e5c553c274771547959720b832",
+      "bytes": 8674,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/47dce4c768f315ff6036e8a34c177920c1d50b14/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/asml_share_form_extracted.txt"
+    },
+    "tokyo_stock_original": {
+      "git_commit": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "upstream_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/tel_stock_info_original.html",
+      "replay_path": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/sources/tel_stock_info_original.html.gz",
+      "git_blob": "7d29804e81c36dfe5f58453308a3135f12bb3f34",
+      "sha256": "e5220d8728e803236c4ca7450bf58207ae8384f34a00922ec73ebc14f740b9c7",
+      "bytes": 37852,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/47dce4c768f315ff6036e8a34c177920c1d50b14/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/tel_stock_info_original.html",
+      "compression": "gzip",
+      "compressed_sha256": "7bb4d67c924efefba9ca11d7cc848642d978abeb1757adaf11de1044aeaf9d66"
+    },
+    "tokyo_stock_extract": {
+      "git_commit": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "upstream_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/tel_stock_info_extracted.txt",
+      "replay_path": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/sources/tel_stock_info_extracted.txt",
+      "git_blob": "257c1ad7c890b8862803e402d2627a8c9b75bbb1",
+      "sha256": "bbac3d057fc1b4568e4b035c05aa7350de4daea2a85c30594b0eb33f5fc5b599",
+      "bytes": 3525,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/47dce4c768f315ff6036e8a34c177920c1d50b14/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/tel_stock_info_extracted.txt"
+    },
+    "hanmi_dart_original": {
+      "git_commit": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "upstream_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/hanmi_dart_identity_original.html",
+      "replay_path": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/sources/hanmi_dart_identity_original.html.gz",
+      "git_blob": "ddc0b668a17a3c99ed8418dec176c2e62b8c7e79",
+      "sha256": "f4be1952a59d797f2ae9371452864fcda81a3c8dfebc92c49c6b22e107a5d9da",
+      "bytes": 2473,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/47dce4c768f315ff6036e8a34c177920c1d50b14/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/hanmi_dart_identity_original.html",
+      "compression": "gzip",
+      "compressed_sha256": "945223c2da958d785fb55d8d4285d661b449140a9d582236ade95b09b0d819d8"
+    },
+    "hanmi_dart_extract": {
+      "git_commit": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "upstream_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/hanmi_dart_identity_extracted.txt",
+      "replay_path": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/sources/hanmi_dart_identity_extracted.txt",
+      "git_blob": "72c5b25e1e94b41997602fc762d4befc0a54ed9e",
+      "sha256": "c49b23f043e4063fe542fe230517ce614fac61aa4853f2fe133371109562d16f",
+      "bytes": 516,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/47dce4c768f315ff6036e8a34c177920c1d50b14/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/hanmi_dart_identity_extracted.txt"
+    },
+    "chart_source_capture_receipt": {
+      "git_commit": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "upstream_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/OFFICIAL_SOURCE_ACQUISITION.json",
+      "replay_path": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/sources/official_source_capture_receipt.json",
+      "git_blob": "9cce9a7abf7b7658fa783cb09ca4b55d5065a6c9",
+      "sha256": "5324b02c24d864cdc72536af886635dcf89befe5b97ca4072a159114391e4feb",
+      "bytes": 7301,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/47dce4c768f315ff6036e8a34c177920c1d50b14/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/OFFICIAL_SOURCE_ACQUISITION.json"
+    },
+    "asml_source_capture_receipt": {
+      "git_commit": "47dce4c768f315ff6036e8a34c177920c1d50b14",
+      "upstream_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/SHARE_FORM_SOURCE_ACQUISITION.json",
+      "replay_path": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/sources/asml_source_capture_receipt.json",
+      "git_blob": "d6b406361ef7d4294a7520b681536a0eefc3f8c0",
+      "sha256": "fa39d98065805fd6f05479b74ae3674027d4c991950f83504c9d0eb118438193",
+      "bytes": 590,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/47dce4c768f315ff6036e8a34c177920c1d50b14/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/SHARE_FORM_SOURCE_ACQUISITION.json"
+    }
+  },
+  "counts": {
+    "roster": 19,
+    "attempted": 19,
+    "resolved_current_target_refs": 19,
+    "unresolved_current_target_refs": 0,
+    "us_frozen_issuer_matches": 17,
+    "us_source_native_ISIN_security_bindings": 17,
+    "user_exchange_code_security_refs": 2,
+    "c39_issuer_security_object_pairs": 17,
+    "non_us_full_c39_object_pairs": 0,
+    "dated_listing_identities_bound": 0,
+    "new_external_identifiers_invented": 0,
+    "user_decision_blockers": 0
+  },
+  "correction": "Prior0/19 was the unattempted/admitted-internal-ID intake count, not evidence that19 real instruments could not be identified. This cycle attempts19/19 and resolves current TARGET identity references19/19.",
+  "id_policy_evidence": "C-39 requires nonempty opaque identifiers and has no enforced registry/ID-generator rule. Source-native CIK and ISIN strings satisfy existing types. Foreign references retain exact user-approved venue/code objects and are not represented as invented ISINs or full issuer/security/listing objects. No new financial or identity contract is introduced.",
+  "pit_scope": "The new mapping is available only from this evidence assembly time. Frozen2024 NPORT values identify instruments; they do not certify an uninterrupted listing to2026 or make the new mapping available at historical times. Market/session/corporate-action admission remains separate.",
+  "source_priority": {
+    "issuer": "Frozen SEC CIK associations cross-checked against ingested associations and current SEC exchange original",
+    "security_US16": "Exact Frozen NPORT archival XML checksum + reviewed Frozen CIK/CUSIP association; Alphabet title CLASS A selects02079K305",
+    "security_ASML": "Issuer shares original/extract beats legacy ADR comment; NASDAQ form has USN070592100, not Euronext NL0010273215",
+    "security_JP_KR": "Exact user venue/code selection in adopted TARGET, corroborated by issuer/DART original captures",
+    "theme": "User-adopted TARGET v0 values, unchanged"
+  },
+  "remaining_work": "Full dated Market identity/listing/source availability and legacy C-25 calculation bridge are not adopted by this current TARGET mapping. Each row lists missing fields and acquisition sources; none blocks this user-authorized current TARGET identification.",
+  "rows": [
+    {
+      "row_index": 0,
+      "target_row_pointer": "/themes/0/holdings/0",
+      "target_row": {
+        "label": "ASML Holding",
+        "ticker_hint": "ASML",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 900,
+        "theme_id": "semi_equipment"
+      },
+      "legacy_company_reference": "asml",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "USN070592100",
+      "c39_issuer_identity": {
+        "issuer_id": "0000937966",
+        "legal_name": "ASML HOLDING NV",
+        "country_code": "UNKNOWN",
+        "identifiers": [
+          [
+            "CIK",
+            "0000937966"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "USN070592100",
+        "issuer_id": "0000937966",
+        "security_type": "ORDINARY_SHARES",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "USN070592100"
+          ],
+          [
+            "CUSIP",
+            "N07059210"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "asml",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0000937966"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "USN070592100"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "REGISTERED_NASDAQ_ORDINARY_SHARES",
+      "security_evidence": {
+        "source_pin": "asml_share_form_extract",
+        "cusip": "N07059210",
+        "title": "NASDAQ ordinary shares",
+        "exact_extract": "NASDAQ ASML USN070592100 / N07059210 US Dollar",
+        "issuer_source_priority_over_legacy_ADR_comment": true
+      },
+      "current_listing_observation": {
+        "ticker": "ASML",
+        "exchange": "Nasdaq",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "issuer country_code (currently explicit UNKNOWN)",
+          "source": "Frozen SEC submissions raw or ASML corporate-registry record; share-form source does not prove incorporation country",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 1,
+      "target_row_pointer": "/themes/0/holdings/1",
+      "target_row": {
+        "label": "Lam Research",
+        "ticker_hint": "LRCX",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600,
+        "theme_id": "semi_equipment"
+      },
+      "legacy_company_reference": "lrcx",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US5128073062",
+      "c39_issuer_identity": {
+        "issuer_id": "0000707549",
+        "legal_name": "LAM RESEARCH CORPORATION",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0000707549"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US5128073062",
+        "issuer_id": "0000707549",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US5128073062"
+          ],
+          [
+            "CUSIP",
+            "512807306"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "lrcx",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0000707549"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US5128073062"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "512807306",
+          "isin": "US5128073062",
+          "name": "LAM RESEARCH CORPORATION",
+          "title": "LAM RESEARCH CORP"
+        },
+        "cusip": "512807306",
+        "title": "LAM RESEARCH CORP",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "549300I4GMO6D34U1T02",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0000707549",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "LRCX",
+        "exchange": "Nasdaq",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 2,
+      "target_row_pointer": "/themes/0/holdings/2",
+      "target_row": {
+        "label": "KLA Corporation",
+        "ticker_hint": "KLAC",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 550,
+        "theme_id": "semi_equipment"
+      },
+      "legacy_company_reference": "klac",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US4824801009",
+      "c39_issuer_identity": {
+        "issuer_id": "0000319201",
+        "legal_name": "KLA CORPORATION",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0000319201"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US4824801009",
+        "issuer_id": "0000319201",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US4824801009"
+          ],
+          [
+            "CUSIP",
+            "482480100"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "klac",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0000319201"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US4824801009"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "482480100",
+          "isin": "US4824801009",
+          "name": "KLA CORPORATION",
+          "title": "KLA CORP"
+        },
+        "cusip": "482480100",
+        "title": "KLA CORP",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "549300H0BF5JCG96TJ81",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0000319201",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "KLAC",
+        "exchange": "Nasdaq",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 3,
+      "target_row_pointer": "/themes/0/holdings/3",
+      "target_row": {
+        "label": "Tokyo Electron",
+        "ticker_hint": "8035",
+        "listing": "USER_DECIDED: TSE (Tokyo, 8035)",
+        "weight_units": 500,
+        "theme_id": "semi_equipment"
+      },
+      "legacy_company_reference": "tokyo_electron",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": null,
+      "c39_issuer_identity": null,
+      "c39_security_identity": null,
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": null,
+      "issuer_ref": {
+        "scheme": "SOURCE_LEGAL_NAME",
+        "name": "TOKYO ELECTRON LIMITED",
+        "source_pin": "tokyo_stock_extract"
+      },
+      "security_ref": {
+        "scheme": "EXCHANGE_CODE",
+        "exchange": "TSE",
+        "code": "8035"
+      },
+      "security_namespace": "USER_APPROVED_EXCHANGE_CODE_PAIR",
+      "share_form": "DOMESTIC_COMMON_STOCK",
+      "security_evidence": {
+        "user_choice_source": "target_v0",
+        "user_source_pointer": "/themes/0/holdings/3",
+        "corroborating_source_pin": "tokyo_stock_extract",
+        "not_isin": true,
+        "not_global_permanent_id": true,
+        "excluded_different_instrument": "TELWY OTC ADR / CUSIP889110201"
+      },
+      "current_listing_observation": {
+        "exchange": "TSE",
+        "code": "8035",
+        "legal_name": "TOKYO ELECTRON LIMITED",
+        "source_pin": "tokyo_stock_extract",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "User-selected venue/code identifies this current TARGET instrument; no synthetic CIK, ISIN or full C-39 issuer/security/listing objects.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "issuer_id (independent issuer identifier)",
+          "source": "Tokyo Electron official corporate registration/LEI record",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "source-native global security identifier (ISIN/FIGI)",
+          "source": "JPX/TSE listed-security master for8035",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, currency, valid_from/valid_to",
+          "source": "JPX/TSE historical listing master+issuer notices",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 4,
+      "target_row_pointer": "/themes/0/holdings/4",
+      "target_row": {
+        "label": "한미반도체",
+        "ticker_hint": "042700",
+        "listing": "USER_DECIDED: KRX (042700)",
+        "weight_units": 450,
+        "theme_id": "semi_equipment"
+      },
+      "legacy_company_reference": "hanmi",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": null,
+      "c39_issuer_identity": null,
+      "c39_security_identity": null,
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": null,
+      "issuer_ref": {
+        "scheme": "SOURCE_LEGAL_NAME",
+        "name": "HANMI Semiconductor CO., LTD.",
+        "source_pin": "hanmi_dart_extract"
+      },
+      "security_ref": {
+        "scheme": "EXCHANGE_CODE",
+        "exchange": "KRX",
+        "code": "042700"
+      },
+      "security_namespace": "USER_APPROVED_EXCHANGE_CODE_PAIR",
+      "share_form": "USER_SELECTED_KRX_042700_SECURITY",
+      "security_evidence": {
+        "user_choice_source": "target_v0",
+        "user_source_pointer": "/themes/0/holdings/4",
+        "corroborating_source_pin": "hanmi_dart_extract",
+        "not_isin": true,
+        "not_global_permanent_id": true,
+        "excluded_different_instrument": null
+      },
+      "current_listing_observation": {
+        "exchange": "KRX",
+        "code": "042700",
+        "legal_name": "HANMI Semiconductor CO., LTD.",
+        "source_pin": "hanmi_dart_extract",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "User-selected venue/code identifies this current TARGET instrument; no synthetic CIK, ISIN or full C-39 issuer/security/listing objects.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "issuer_id (independent issuer identifier)",
+          "source": "DART corporation registry (registration number120111-0038423 is observed but not bound as an admitted persistent issuer record)",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "source-native global security identifier (ISIN/FIGI)",
+          "source": "KRX security master for042700",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, currency, valid_from/valid_to",
+          "source": "KRX historical listing master+issuer notices",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 5,
+      "target_row_pointer": "/themes/1/holdings/0",
+      "target_row": {
+        "label": "NVIDIA",
+        "ticker_hint": "NVDA",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 800,
+        "theme_id": "ai_semi"
+      },
+      "legacy_company_reference": "nvda",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US67066G1040",
+      "c39_issuer_identity": {
+        "issuer_id": "0001045810",
+        "legal_name": "NVIDIA CORPORATION",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0001045810"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US67066G1040",
+        "issuer_id": "0001045810",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US67066G1040"
+          ],
+          [
+            "CUSIP",
+            "67066G104"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "nvda",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0001045810"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US67066G1040"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "67066G104",
+          "isin": "US67066G1040",
+          "name": "NVIDIA CORPORATION",
+          "title": "NVIDIA CORP"
+        },
+        "cusip": "67066G104",
+        "title": "NVIDIA CORP",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "549300S4KLFTLO7GSQ80",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0001045810",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "NVDA",
+        "exchange": "Nasdaq",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 6,
+      "target_row_pointer": "/themes/1/holdings/1",
+      "target_row": {
+        "label": "Advanced Micro Devices",
+        "ticker_hint": "AMD",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500,
+        "theme_id": "ai_semi"
+      },
+      "legacy_company_reference": "amd",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US0079031078",
+      "c39_issuer_identity": {
+        "issuer_id": "0000002488",
+        "legal_name": "ADVANCED MICRO DEVICES, INC.",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0000002488"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US0079031078",
+        "issuer_id": "0000002488",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US0079031078"
+          ],
+          [
+            "CUSIP",
+            "007903107"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "amd",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0000002488"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US0079031078"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "007903107",
+          "isin": "US0079031078",
+          "name": "ADVANCED MICRO DEVICES, INC.",
+          "title": "ADVANCED MICRO DEVICES INC"
+        },
+        "cusip": "007903107",
+        "title": "ADVANCED MICRO DEVICES INC",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "R2I72C950HOYXII45366",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0000002488",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "AMD",
+        "exchange": "Nasdaq",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 7,
+      "target_row_pointer": "/themes/1/holdings/2",
+      "target_row": {
+        "label": "Broadcom",
+        "ticker_hint": "AVGO",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500,
+        "theme_id": "ai_semi"
+      },
+      "legacy_company_reference": "avgo",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US11135F1012",
+      "c39_issuer_identity": {
+        "issuer_id": "0001730168",
+        "legal_name": "BROADCOM INC.",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0001730168"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US11135F1012",
+        "issuer_id": "0001730168",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US11135F1012"
+          ],
+          [
+            "CUSIP",
+            "11135F101"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "avgo",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0001730168"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US11135F1012"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "11135F101",
+          "isin": "US11135F1012",
+          "name": "BROADCOM INC.",
+          "title": "BROADCOM INC"
+        },
+        "cusip": "11135F101",
+        "title": "BROADCOM INC",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "549300WV6GIDOZJTV909",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0001730168",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "AVGO",
+        "exchange": "Nasdaq",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 8,
+      "target_row_pointer": "/themes/1/holdings/3",
+      "target_row": {
+        "label": "Qualcomm",
+        "ticker_hint": "QCOM",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 400,
+        "theme_id": "ai_semi"
+      },
+      "legacy_company_reference": "qcom",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US7475251036",
+      "c39_issuer_identity": {
+        "issuer_id": "0000804328",
+        "legal_name": "QUALCOMM INCORPORATED",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0000804328"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US7475251036",
+        "issuer_id": "0000804328",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US7475251036"
+          ],
+          [
+            "CUSIP",
+            "747525103"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "qcom",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0000804328"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US7475251036"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "747525103",
+          "isin": "US7475251036",
+          "name": "QUALCOMM INCORPORATED",
+          "title": "QUALCOMM INC"
+        },
+        "cusip": "747525103",
+        "title": "QUALCOMM INC",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "H1J8DDZKZP6H7RWC0H53",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0000804328",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "QCOM",
+        "exchange": "Nasdaq",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 9,
+      "target_row_pointer": "/themes/1/holdings/4",
+      "target_row": {
+        "label": "Intel",
+        "ticker_hint": "INTC",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 300,
+        "theme_id": "ai_semi"
+      },
+      "legacy_company_reference": "intc",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US4581401001",
+      "c39_issuer_identity": {
+        "issuer_id": "0000050863",
+        "legal_name": "INTEL CORPORATION",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0000050863"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US4581401001",
+        "issuer_id": "0000050863",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US4581401001"
+          ],
+          [
+            "CUSIP",
+            "458140100"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "intc",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0000050863"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US4581401001"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "458140100",
+          "isin": "US4581401001",
+          "name": "INTEL CORPORATION",
+          "title": "INTEL CORP"
+        },
+        "cusip": "458140100",
+        "title": "INTEL CORP",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "KNX4USFCNGPY45LOCE31",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0000050863",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "INTC",
+        "exchange": "Nasdaq",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 10,
+      "target_row_pointer": "/themes/2/holdings/0",
+      "target_row": {
+        "label": "Microsoft",
+        "ticker_hint": "MSFT",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 700,
+        "theme_id": "big_tech"
+      },
+      "legacy_company_reference": "msft",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US5949181045",
+      "c39_issuer_identity": {
+        "issuer_id": "0000789019",
+        "legal_name": "MICROSOFT CORPORATION",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0000789019"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US5949181045",
+        "issuer_id": "0000789019",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US5949181045"
+          ],
+          [
+            "CUSIP",
+            "594918104"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "msft",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0000789019"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US5949181045"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "594918104",
+          "isin": "US5949181045",
+          "name": "MICROSOFT CORPORATION",
+          "title": "MICROSOFT CORP"
+        },
+        "cusip": "594918104",
+        "title": "MICROSOFT CORP",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "INR2EJN1ERAN0W5ZP974",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0000789019",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "MSFT",
+        "exchange": "Nasdaq",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 11,
+      "target_row_pointer": "/themes/2/holdings/1",
+      "target_row": {
+        "label": "Alphabet",
+        "ticker_hint": "GOOGL",
+        "listing": "USER_DECIDED: Class A (GOOGL)",
+        "weight_units": 700,
+        "theme_id": "big_tech"
+      },
+      "legacy_company_reference": "googl",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US02079K3059",
+      "c39_issuer_identity": {
+        "issuer_id": "0001652044",
+        "legal_name": "ALPHABET INC.",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0001652044"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US02079K3059",
+        "issuer_id": "0001652044",
+        "security_type": "COMMON_EQUITY",
+        "share_class": "A",
+        "identifiers": [
+          [
+            "ISIN",
+            "US02079K3059"
+          ],
+          [
+            "CUSIP",
+            "02079K305"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "googl",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0001652044"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US02079K3059"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "CLASS_A_COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "02079K305",
+          "isin": "US02079K3059",
+          "name": "ALPHABET INC.",
+          "title": "ALPHABET INC CLASS A"
+        },
+        "cusip": "02079K305",
+        "title": "ALPHABET INC CLASS A",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "5493006MHB84DD0ZWV18",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0001652044",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": false
+      },
+      "current_listing_observation": {
+        "ticker": "GOOGL",
+        "exchange": "Nasdaq",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 12,
+      "target_row_pointer": "/themes/2/holdings/2",
+      "target_row": {
+        "label": "Amazon",
+        "ticker_hint": "AMZN",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600,
+        "theme_id": "big_tech"
+      },
+      "legacy_company_reference": "amzn",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US0231351067",
+      "c39_issuer_identity": {
+        "issuer_id": "0001018724",
+        "legal_name": "AMAZON.COM, INC.",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0001018724"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US0231351067",
+        "issuer_id": "0001018724",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US0231351067"
+          ],
+          [
+            "CUSIP",
+            "023135106"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "amzn",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0001018724"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US0231351067"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "023135106",
+          "isin": "US0231351067",
+          "name": "AMAZON.COM, INC.",
+          "title": "AMAZON COM INC"
+        },
+        "cusip": "023135106",
+        "title": "AMAZON COM INC",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "ZXTILKJKG63JELOEG630",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0001018724",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "AMZN",
+        "exchange": "Nasdaq",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 13,
+      "target_row_pointer": "/themes/3/holdings/0",
+      "target_row": {
+        "label": "RTX Corporation",
+        "ticker_hint": "RTX",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600,
+        "theme_id": "other_industrial"
+      },
+      "legacy_company_reference": "rtx",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US75513E1010",
+      "c39_issuer_identity": {
+        "issuer_id": "0000101829",
+        "legal_name": "RTX CORPORATION",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0000101829"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US75513E1010",
+        "issuer_id": "0000101829",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US75513E1010"
+          ],
+          [
+            "CUSIP",
+            "75513E101"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "rtx",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0000101829"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US75513E1010"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "75513E101",
+          "isin": "US75513E1010",
+          "name": "RTX CORPORATION",
+          "title": "RTX CORP"
+        },
+        "cusip": "75513E101",
+        "title": "RTX CORP",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "I07WOS4YJ0N7YRFE7309",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0000101829",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "RTX",
+        "exchange": "NYSE",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 14,
+      "target_row_pointer": "/themes/3/holdings/1",
+      "target_row": {
+        "label": "Stryker",
+        "ticker_hint": "SYK",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 550,
+        "theme_id": "other_industrial"
+      },
+      "legacy_company_reference": "stry",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US8636671013",
+      "c39_issuer_identity": {
+        "issuer_id": "0000310764",
+        "legal_name": "STRYKER CORPORATION",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0000310764"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US8636671013",
+        "issuer_id": "0000310764",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US8636671013"
+          ],
+          [
+            "CUSIP",
+            "863667101"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "syk",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0000310764"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US8636671013"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "863667101",
+          "isin": "US8636671013",
+          "name": "STRYKER CORPORATION",
+          "title": "STRYKER CORP"
+        },
+        "cusip": "863667101",
+        "title": "STRYKER CORP",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "5493002F0SC4JTBU5137",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0000310764",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "SYK",
+        "exchange": "NYSE",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 15,
+      "target_row_pointer": "/themes/3/holdings/2",
+      "target_row": {
+        "label": "Eaton",
+        "ticker_hint": "ETN",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500,
+        "theme_id": "other_industrial"
+      },
+      "legacy_company_reference": "etn",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "IE00B8KQN827",
+      "c39_issuer_identity": {
+        "issuer_id": "0001551182",
+        "legal_name": "EATON CORPORATION PUBLIC LIMITED COMPANY",
+        "country_code": "IE",
+        "identifiers": [
+          [
+            "CIK",
+            "0001551182"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "IE00B8KQN827",
+        "issuer_id": "0001551182",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "IE00B8KQN827"
+          ],
+          [
+            "CUSIP",
+            "G29183103"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "etn",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0001551182"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "IE00B8KQN827"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "G29183103",
+          "isin": "IE00B8KQN827",
+          "name": "EATON CORPORATION PUBLIC LIMITED COMPANY",
+          "title": "EATON CORP PLC"
+        },
+        "cusip": "G29183103",
+        "title": "EATON CORP PLC",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "IE",
+        "lei": "549300VDIGTMXUNT7H71",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0001551182",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "ETN",
+        "exchange": "NYSE",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 16,
+      "target_row_pointer": "/themes/3/holdings/3",
+      "target_row": {
+        "label": "Hubbell",
+        "ticker_hint": "HUBB",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 350,
+        "theme_id": "other_industrial"
+      },
+      "legacy_company_reference": "hubb",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US4435106079",
+      "c39_issuer_identity": {
+        "issuer_id": "0000048898",
+        "legal_name": "HUBBELL INCORPORATED",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0000048898"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US4435106079",
+        "issuer_id": "0000048898",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US4435106079"
+          ],
+          [
+            "CUSIP",
+            "443510607"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "hubb",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0000048898"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US4435106079"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "443510607",
+          "isin": "US4435106079",
+          "name": "HUBBELL INCORPORATED",
+          "title": "HUBBELL INC"
+        },
+        "cusip": "443510607",
+        "title": "HUBBELL INC",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "54930088VDQ6840Y6597",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0000048898",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "HUBB",
+        "exchange": "NYSE",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 17,
+      "target_row_pointer": "/themes/3/holdings/4",
+      "target_row": {
+        "label": "GE Vernova",
+        "ticker_hint": "GEV",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 300,
+        "theme_id": "other_industrial"
+      },
+      "legacy_company_reference": "gev",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US36828A1016",
+      "c39_issuer_identity": {
+        "issuer_id": "0001996810",
+        "legal_name": "GE VERNOVA INC.",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0001996810"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US36828A1016",
+        "issuer_id": "0001996810",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US36828A1016"
+          ],
+          [
+            "CUSIP",
+            "36828A101"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "gev",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0001996810"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US36828A1016"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "36828A101",
+          "isin": "US36828A1016",
+          "name": "GE VERNOVA INC.",
+          "title": "GE VERNOVA LLC"
+        },
+        "cusip": "36828A101",
+        "title": "GE VERNOVA LLC",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "254900DP080RU6OK2553",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0001996810",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "GEV",
+        "exchange": "NYSE",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "evidence_note": "Preserve NPORT name GE VERNOVA INC. and title GE VERNOVA LLC exactly; existing Frozen CIK-CUSIP association and exact ISIN bind this source instrument. No parent-GE security or spin-off calculation is substituted.",
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    },
+    {
+      "row_index": 18,
+      "target_row_pointer": "/themes/3/holdings/5",
+      "target_row": {
+        "label": "Rockwell Automation",
+        "ticker_hint": "ROK",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 200,
+        "theme_id": "other_industrial"
+      },
+      "legacy_company_reference": "rok",
+      "mapping_status": "RESOLVED_CURRENT_TARGET_SCOPE",
+      "identity_revision_id": "CURRENT_TARGET_IDENTITY_MAP/20261008.v1",
+      "mapping_effective_from": "2026-10-08T23:37:48.143134+00:00",
+      "mapping_available_at": "2026-10-08T23:37:48.143134+00:00",
+      "target_source_ref": "target_v0",
+      "target_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+      "security_id": "US7739031091",
+      "c39_issuer_identity": {
+        "issuer_id": "0001024478",
+        "legal_name": "ROCKWELL AUTOMATION, INC.",
+        "country_code": "US",
+        "identifiers": [
+          [
+            "CIK",
+            "0001024478"
+          ]
+        ]
+      },
+      "c39_security_identity": {
+        "security_id": "US7739031091",
+        "issuer_id": "0001024478",
+        "security_type": "COMMON_EQUITY",
+        "share_class": null,
+        "identifiers": [
+          [
+            "ISIN",
+            "US7739031091"
+          ],
+          [
+            "CUSIP",
+            "773903109"
+          ]
+        ]
+      },
+      "dated_listing_identity": null,
+      "dated_listing_status": "UNRESOLVED_NOT_IN_CURRENT_TARGET_GATE",
+      "source_based_company_relation": "REVIEWED_IN_THIS_CURRENT_TARGET_MAPPING_ONLY; no adoption of C-25 legacy calculation contract",
+      "frozen_company_key": "rok",
+      "issuer_ref": {
+        "scheme": "CIK",
+        "value": "0001024478"
+      },
+      "security_ref": {
+        "scheme": "ISIN",
+        "value": "US7739031091"
+      },
+      "security_namespace": "ISIN",
+      "share_form": "COMMON_EQUITY",
+      "security_evidence": {
+        "source_pin": "frozen_nport_original_replay",
+        "xml_match": {
+          "cusip": "773903109",
+          "isin": "US7739031091",
+          "name": "ROCKWELL AUTOMATION, INC.",
+          "title": "ROCKWELL AUTOMATION INC"
+        },
+        "cusip": "773903109",
+        "title": "ROCKWELL AUTOMATION INC",
+        "asset_category": "EC",
+        "currency": "USD",
+        "investment_country": "US",
+        "lei": "VH3R4HHBHH12O0EXZJ88",
+        "cik_join_source": "frozen_nport_reference",
+        "cik_join_pointer": "/member_cusips/0001024478",
+        "snapshot_date": "2024-12-31",
+        "source_filing_date": "2025-02-24",
+        "current_listing_join_source": "sec_exchange_original",
+        "equity_category_only_no_unobserved_share_class_inferred": true
+      },
+      "current_listing_observation": {
+        "ticker": "ROK",
+        "exchange": "NYSE",
+        "currency": "USD",
+        "source_pin": "sec_exchange_original",
+        "historical_interval_proven": false
+      },
+      "identity_binding_scope": "Source-native ISIN bound to Frozen issuer CIK for current TARGET row; no CIK-only/ticker-only security resolution. Source IDs are preserved without generated identifier strings.",
+      "remaining_full_hierarchy_fields": [
+        {
+          "field": "dated ListingIdentity: listing_id, exact MIC, valid_from/valid_to",
+          "source": "Issuer primary listing notices / exchange historical security master; Frozen SEC associations provide ticker/exchange observations only",
+          "blocking_current_target_mapping": false
+        },
+        {
+          "field": "historical availability and provider-symbol interval",
+          "source": "Dated source capture manifests + historical provider security crosswalk",
+          "blocking_current_target_mapping": false
+        }
+      ],
+      "unresolved_current_target_fields": [],
+      "user_decision_blockers": []
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+name: web-state-presentation
+# Production-shaped state presentation: freshness badges, persisted withheld metadata, ko/en strings and
+# the render-error fallback. Test vectors only. No grant, no engine execution, no real data.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/web-state-presentation.yml'
+      - 'implementation/src/investment_system/product/web_assets/**'
+      - 'implementation/src/investment_system/producers/**'
+      - 'implementation/tools/build_web_state_presentation_fixture.py'
+      - 'implementation/tools/web_state_presentation_browser_test.js'
+      - 'implementation/tests/test_web_state_presentation.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  presentation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest==9.1.1
+      - name: Freshness mirror, locale entries and presentation-only fixture
+        working-directory: implementation
+        run: PYTHONPATH=src python -m pytest -q tests/test_web_state_presentation.py
+      - name: Assembler-shaped fixture and the existing demo build
+        run: |
+          python implementation/tools/build_web_state_presentation_fixture.py --out /tmp/web-state --evidence /tmp/web-state-evidence
+          python implementation/tools/build_web_mvp_demo.py --out /tmp/web-state-demo
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --prefix /tmp/state-browser playwright@1.58.2
+      - run: /tmp/state-browser/node_modules/.bin/playwright install --with-deps chromium
+      - name: Freshness, withheld metadata, ko/en and error fallback E2E (390px)
+        env:
+          NODE_PATH: /tmp/state-browser/node_modules
+        run: node implementation/tools/web_state_presentation_browser_test.js --dir /tmp/web-state --evidence /tmp/web-state-evidence --demo-dir /tmp/web-state-demo
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: web-state-presentation
+          path: /tmp/web-state-evidence

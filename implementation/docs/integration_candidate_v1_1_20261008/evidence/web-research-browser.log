@@ -1,0 +1,11 @@
+PASS served data.json still carries the hand-built research sections unchanged
+PASS ko-KR: withheld sections show NOT_AVAILABLE + reason and no value on every route
+PASS ko-KR: each research-marked section is withheld where it is shown
+PASS ko-KR: valid LIVE, legacy FROZEN universe, DEMO and NOT_AVAILABLE still render
+PASS en-US: withheld sections show NOT_AVAILABLE + reason and no value on every route
+PASS en-US: each research-marked section is withheld where it is shown
+PASS en-US: valid LIVE, legacy FROZEN universe, DEMO and NOT_AVAILABLE still render
+PASS research-marked FROZEN universe is withheld in the companies legend and search rows
+PASS LIVE/FROZEN sections whose producer validation is not PASS are withheld (contract.py L194-199)
+PASS data.json bytes unchanged and no page errors
+{"mode":"fixture","passed":true,"checks":10,"baseline_compared":false}

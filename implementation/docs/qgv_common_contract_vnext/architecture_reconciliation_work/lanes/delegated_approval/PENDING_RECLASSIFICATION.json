@@ -1,0 +1,279 @@
+{
+  "input_head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+  "prior_pending_groups": 10,
+  "current_reserved_groups": 10,
+  "items": [
+    {
+      "prior_id": "G1_ACTUAL_METHOD_INPUT_HORIZON_NUMERIC_SELECTION",
+      "current_class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reason": "G1 long-horizon realized-growth meaning approved; exact current candidate analysis remains UNCOMPUTED. Method/window/domain/numeric selection supplies new result meaning.",
+      "reserved_condition": "NEW_RESULT_AFFECTING_METHODOLOGY",
+      "authority_refs": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+          "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+          "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+        },
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "new_approval": false,
+      "numeric_or_method_selected": false
+    },
+    {
+      "prior_id": "G2_ALTERNATIVE_METHOD_APPLICABILITY_SELECTION",
+      "current_class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reason": "No automatic cross-metric substitution approved. A–D choice, applicability and substitute method are not established by per-share units.",
+      "reserved_condition": "NEW_RESULT_AFFECTING_METHODOLOGY",
+      "authority_refs": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+          "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+          "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+        },
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "new_approval": false,
+      "numeric_or_method_selected": false
+    },
+    {
+      "prior_id": "B1_ACTUAL_FACTOR_REQUIREDNESS",
+      "current_class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reason": "Actual factor roles remain unassigned 0/20; new requiredness changes admissible results and denominator meaning.",
+      "reserved_condition": "UNPROVEN_SSOT_ALIGNMENT",
+      "authority_refs": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+          "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+          "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+        },
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "new_approval": false,
+      "numeric_or_method_selected": false
+    },
+    {
+      "prior_id": "B2_ACTUAL_PREDICATES_BINDINGS_EXCLUSIONS_DENOMINATOR",
+      "current_class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reason": "Reference/scope principles approved. Actual N/A predicates, factor applicability, exclusions and denominator behavior are not fixed.",
+      "reserved_condition": "NEW_RESULT_AFFECTING_METHODOLOGY",
+      "authority_refs": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+          "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+          "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+        },
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "new_approval": false,
+      "numeric_or_method_selected": false
+    },
+    {
+      "prior_id": "B3_ACTUAL_RUBRICS_CUTOFFS_BINDINGS_RUNTIME_ENFORCEMENT",
+      "current_class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reason": "Exact evidence identity and original reason/scope carriage approved; new quality/admission classifications, rubrics, cutoffs and production enforcement candidate not established.",
+      "reserved_condition": "UNPROVEN_SSOT_ALIGNMENT",
+      "authority_refs": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+          "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+          "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+        },
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "new_approval": false,
+      "numeric_or_method_selected": false
+    },
+    {
+      "prior_id": "B5_ACTUAL_ASSESSMENT_METHODS_CRITERIA_FACTOR_ROLES",
+      "current_class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reason": "Independent producer references approved, not actual confidence/coverage/completeness/scoring-validity methods.",
+      "reserved_condition": "NEW_RESULT_AFFECTING_METHODOLOGY",
+      "authority_refs": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+          "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+          "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+        },
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "new_approval": false,
+      "numeric_or_method_selected": false
+    },
+    {
+      "prior_id": "B6_ACTUAL_CONSUMER_COHORT_COMPATIBILITY_CRITERIA_GRANTS_RUNTIME",
+      "current_class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reason": "Same producer refs and separate purpose approved. Cohort/admission/selection/grant criteria affect eligible ranking or publication and are unresolved.",
+      "reserved_condition": "NEW_RESULT_AFFECTING_METHODOLOGY",
+      "authority_refs": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+          "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+          "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+        },
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "new_approval": false,
+      "numeric_or_method_selected": false
+    },
+    {
+      "prior_id": "V1_METHOD_NORMALIZATION_FAMILIES",
+      "current_class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reason": "Valuation economics may differ from Q/G; method/normalizer choice cannot be selected from structural alignment.",
+      "reserved_condition": "NEW_RESULT_AFFECTING_METHODOLOGY",
+      "authority_refs": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+          "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+          "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+        },
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "new_approval": false,
+      "numeric_or_method_selected": false
+    },
+    {
+      "prior_id": "V2_ACTUAL_ASSESSMENT_METHODOLOGY",
+      "current_class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reason": "Metadata ALIGN already allowed; B5/B6 scope principles approved. Actual assessment methodology has no approved concrete meaning.",
+      "reserved_condition": "NEW_RESULT_AFFECTING_METHODOLOGY",
+      "authority_refs": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+          "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+          "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+        },
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "new_approval": false,
+      "numeric_or_method_selected": false
+    },
+    {
+      "prior_id": "PRODUCTION_ACTIVATION_SCORE_HISTORY_MIGRATION_CANONICAL_MERGE",
+      "current_class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reason": "No exact candidate/delta/complete independent acceptance/rollback proves alignment. Generic activation/migration/merge remains Reserved at this intake; Official/LIVE and irreversible migration are always Reserved.",
+      "reserved_condition": "UNPROVEN_SSOT_ALIGNMENT",
+      "authority_refs": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+          "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+          "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+        },
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "new_approval": false,
+      "numeric_or_method_selected": false
+    }
+  ],
+  "faithful_subdecisions": [
+    {
+      "id": "B2_B3_B5_B6_APPROVED_EXACT_REFERENCE_SCOPE_CARRIAGE",
+      "eligibility_class": "D3-A",
+      "execution_state": "DONE_PRIOR_D1_D2_ACCEPTANCE_REUSED",
+      "new_approval": false,
+      "concrete_evidence": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+          "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+          "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+        },
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "boundaries": "Only existing exact reference/scope/identity carriage; no concrete factor-policy binding, new criterion, assessment, grant or runtime activation. Prior compilation and negative acceptance complete; do not repeat."
+    },
+    {
+      "id": "V2_METADATA_REFERENCE_ALIGNMENT",
+      "eligibility_class": "D1/D2",
+      "execution_state": "DONE_PRIOR_ALIGNMENT_REUSED",
+      "new_approval": false,
+      "concrete_evidence": [
+        {
+          "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+          "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+          "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+          "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+        }
+      ],
+      "boundaries": "Existing ALREADY_D1_D2 metadata status and APPROVED_WITH_B5_B6 references only; actual assessment semantics remain D3-R."
+    }
+  ],
+  "new_D3_A_approvals": 0,
+  "production_blockers_closed": 0,
+  "production_blocker_categories_remaining": 3,
+  "avoid_blanket_gate": "Runtime/merge labels are not intrinsically always Reserved: fresh concrete candidates must be classified by latest policy and independent alignment evidence. No such candidate is proven here."
+}

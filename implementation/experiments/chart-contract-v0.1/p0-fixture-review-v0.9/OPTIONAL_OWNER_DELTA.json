@@ -1,0 +1,363 @@
+{
+  "schema": "chart_optional_owner_delta_v09",
+  "kind": "BOUNDED_READ_ONLY_OPTIONAL_OWNER_INTAKE",
+  "recorded_at_utc": "2026-10-05T05:51:47.966Z",
+  "parent_audit": "/workspace/scratch/9de0281e56bb/new_late_owner_intake_v09.json",
+  "scope": [
+    "Only fresh QGV architecture semantics/control diff",
+    "Only new Product Platform storage/auth audit branch delta",
+    "Actual newly open PR and Chart dependency/source admission checks"
+  ],
+  "constraints": {
+    "repo_mutations": false,
+    "tests_executed": false,
+    "account_messages": false,
+    "new_D3": false,
+    "scratch_artifact_only": true
+  },
+  "refs": {
+    "previous_global": "426c8bb750a5237403fee8336be4714548752094",
+    "current_global": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+    "previous_fpia_successor": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "current_fpia_successor": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "current_chart": "eedab5922db453a7b11a851cf57844064ce00f3f",
+    "canonical_unchanged": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "Product_Platform_unchanged": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "Global_handoff": "GCH-018",
+    "Global_index": "GSI-024",
+    "previous_qgv_architecture": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+    "current_qgv_architecture": "2ba29b048c8601145c4a2cca0f85299c07262286",
+    "qgv_branch": "codex/qgv-architecture-reconciliation-review-2026-10-05",
+    "storage_auth_audit": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+    "storage_auth_branch": "codex/product-platform-storage-auth-review-2026-10-05",
+    "storage_auth_parent_and_existing_PR45_head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+    "common_contract_PR44_unchanged": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+  },
+  "fresh_ref_confirmation": {
+    "method": "read-only git ls-remote plus local exact object/ref reads",
+    "output": "11dba838c6e27430aa07957f69e4ae8b270c999b\trefs/heads/codex/product-platform-storage-auth-review-2026-10-05\n2ba29b048c8601145c4a2cca0f85299c07262286\trefs/heads/codex/qgv-architecture-reconciliation-review-2026-10-05\ncb1906b207623168fd70f3dcdb5b30f2d82d807d\trefs/heads/codex/qgv-common-contract-vnext-spec-2026-10-04"
+  },
+  "current_chart_lease_as_last_observed": {
+    "status": "HELD",
+    "run_id": "manual-chart-fixture-review-20261005T052509016Z",
+    "holder_kind": "MANUAL_ROOT",
+    "acquired_at_utc": "2026-10-05T05:25:09.016Z",
+    "expires_at_utc": "2026-10-05T06:25:09.016Z",
+    "ttl_minutes": 60,
+    "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+    "verified_remote_acquisition": true,
+    "acquisition_parent_head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+    "reason": "User selected dedicated SAMPLE review canvas; repair missing-to-zero fixture display and verify existing approved lab UI; fresh owner intake",
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
+  },
+  "qgv_delta": {
+    "files_changed": 5,
+    "insertions": 175,
+    "deletions": 3,
+    "paths": [
+      "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md",
+      "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/CONTROL.json",
+      "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/SEMANTIC_CONTRACT.md",
+      "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/WORK_PLAN.md",
+      "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/approval.json"
+    ],
+    "approval": {
+      "id": "QGV-G1-G2-SEMANTICS-2026-10-05",
+      "user_instruction_at": "2026-10-05T14:16:16+09:00",
+      "status": "APPROVED_SEMANTIC_CONTRACT_ONLY",
+      "G1": "LONG_HORIZON_REALIZED_GROWTH: observed enterprise growth magnitude and persistence across historical periods; legacy revenueYoY remains LEGACY/INTERIM_PROXY",
+      "G2": "NO_AUTOMATIC_CROSS_METRIC_SUBSTITUTION_WITHOUT_SEMANTIC_AUTHORITY: FCF/priorRevenue - 1 remains LEGACY/METHOD_MISMATCH, not EPS equivalence",
+      "factor_id_preserved": "next_3_5y_growth",
+      "method_id_selection": "NOT_APPROVED",
+      "runtime_rename": "NOT_APPROVED"
+    },
+    "authorized_next": [
+      "Inactive G1/G2 candidate comparison",
+      "B2/B3/B5/B6 Result Admission/Consumer Safety convergence",
+      "Score-neutral synthetic/invariant verification and scoped evidence"
+    ],
+    "not_approved": [
+      "Actual formula/window/horizon/CAGR/mean/median/weights/observation count/forecast/EPS replacement",
+      "Normalization/recalculation/History migration",
+      "V/Composite/WeightOverride/runtime/ranking/N/A/requiredness",
+      "PR44 canonical merge",
+      "Holdout/PIT relaxation"
+    ],
+    "runtime_enabled": false,
+    "production_migration_authorized": false,
+    "method_selection": "NOT_APPROVED",
+    "migration": "NOT_APPROVED",
+    "V1_V2": "PENDING",
+    "owner_evidence_lease": {
+      "run_id": "qgv-g12-c-c21c6c4203a444dbaae588bf90c958e5",
+      "status": "ACTIVE",
+      "expires_at": null
+    },
+    "actual_chart_dependency": false,
+    "target_source_admission": false,
+    "production_write_set_admitted": false,
+    "gate_closure_delta": 0,
+    "interpretation": "Material approval within QGV semantic-contract scope only; it does not authorize Target Theme, Product/Web runtime, Chart production writes, or PR44 activation."
+  },
+  "storage_auth_delta": {
+    "status": "INDEPENDENT_STORAGE_AUTH_AUDIT_ONLY",
+    "parent": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+    "files_added": 8,
+    "insertions": 2807,
+    "paths": [
+      "implementation/docs/product_platform/audits/storage_auth_2026-10-05/ADOPTION.md",
+      "implementation/docs/product_platform/audits/storage_auth_2026-10-05/REPORT.md",
+      "implementation/docs/product_platform/audits/storage_auth_2026-10-05/TOOL_EXECUTION_POLICY.md",
+      "implementation/docs/product_platform/audits/storage_auth_2026-10-05/adoption.json",
+      "implementation/docs/product_platform/audits/storage_auth_2026-10-05/evidence.json",
+      "implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.json",
+      "implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.py",
+      "implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.txt"
+    ],
+    "production_files_changed": false,
+    "owner_files_changed": false,
+    "global_or_canonical_changed": false,
+    "existing_harness_changed": false,
+    "product_owner_unchanged": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "supabase": {
+      "intake": "NOT_ADOPTED_IN_OBSERVED_SCOPE",
+      "project_environment": "NOT_ESTABLISHED",
+      "resource_API_calls": 0,
+      "resource_APIs": "NOT_RUN"
+    },
+    "bounded_findings": {
+      "SA01": "Uppercase SHA canonicalization mismatch",
+      "SA02": "Inherited public write-method validation misses",
+      "SA03": "Source-version hash conflicts",
+      "SA04": "Financial coverage/cardinality/completeness",
+      "SA05": "Trusted principal/tenant/raw-record ownership"
+    },
+    "owner_production_repaired": false,
+    "candidate_repairs": "AUDIT_ONLY_FIXTURES",
+    "source_adoption": false,
+    "chart_dependency": false,
+    "target_source_admission": false,
+    "gate_closure_delta": 0,
+    "consistency": "Audit report pins older Global 426; newer Global 7a29 and latest scoped owner receipts remain controlling. Inherited CURRENT_HANDOFF is unchanged; new REPORT carries this audit delta.",
+    "interpretation": "ADOPTION documents absence of adoption; new audit/probe evidence does not supply Chart root:19, security, Theme/Product/Web/Market or authenticated writer authority."
+  },
+  "fresh_PR_inventory": {
+    "method": "github_search_prs repository scope; state open; created descending; topn 12; exact head queries for both optional branches",
+    "observed_newest_open_PR": 46,
+    "no_new_PR47_observed": true,
+    "optional_branch_open_PRs": [],
+    "existing_PR45": {
+      "head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "body_updated_at": "2026-10-05T05:35:02Z",
+      "body_links_storage_auth_descendant": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+      "creates_source_authority": false
+    },
+    "existing_PR44": {
+      "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "status": "DRAFT_OPEN_INACTIVE_SPEC_ONLY"
+    },
+    "metadata": [
+      {
+        "number": 46,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/46",
+        "state": "open",
+        "draft": true,
+        "head": "codex/fpia-fix3-literal-repair-2026-10-05",
+        "created_at": "2026-10-05T04:45:51Z",
+        "updated_at": "2026-10-05T05:28:39Z"
+      },
+      {
+        "number": 45,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/45",
+        "state": "open",
+        "draft": true,
+        "head": "codex/product-platform-foundation-2026-10-05",
+        "created_at": "2026-10-05T04:35:32Z",
+        "updated_at": "2026-10-05T05:35:02Z"
+      },
+      {
+        "number": 44,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/44",
+        "state": "open",
+        "draft": true,
+        "head": "codex/qgv-common-contract-vnext-spec-2026-10-04",
+        "created_at": "2026-10-04T23:47:40Z",
+        "updated_at": "2026-10-05T04:45:00Z"
+      },
+      {
+        "number": 43,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/43",
+        "state": "open",
+        "draft": true,
+        "head": "codex/github-write-path-policy-2026-10-04",
+        "created_at": "2026-10-04T11:55:27Z",
+        "updated_at": "2026-10-04T11:55:27Z"
+      },
+      {
+        "number": 42,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/42",
+        "state": "open",
+        "draft": true,
+        "head": "integration/fpia-hardened-v1",
+        "created_at": "2026-10-04T11:42:10Z",
+        "updated_at": "2026-10-05T03:50:02Z"
+      },
+      {
+        "number": 41,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/41",
+        "state": "open",
+        "draft": true,
+        "head": "codex/chart-contract-mcp-api-v0-1",
+        "created_at": "2026-10-04T10:13:07Z",
+        "updated_at": "2026-10-05T05:25:11Z"
+      },
+      {
+        "number": 40,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/40",
+        "state": "open",
+        "draft": true,
+        "head": "integration/cdr012-successor-trial-2026-10-04",
+        "created_at": "2026-10-04T05:12:01Z",
+        "updated_at": "2026-10-04T05:50:40Z"
+      },
+      {
+        "number": 39,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/39",
+        "state": "open",
+        "draft": true,
+        "head": "integration/cdr011-trial-2026-10-04",
+        "created_at": "2026-10-04T01:59:36Z",
+        "updated_at": "2026-10-04T02:30:17Z"
+      },
+      {
+        "number": 38,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/38",
+        "state": "open",
+        "draft": true,
+        "head": "integration/next-trial-2026-10-03",
+        "created_at": "2026-10-03T12:12:42Z",
+        "updated_at": "2026-10-03T23:33:39Z"
+      },
+      {
+        "number": 37,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/37",
+        "state": "open",
+        "draft": true,
+        "head": "feature/dynamic-workflow-m0",
+        "created_at": "2026-10-03T11:01:22Z",
+        "updated_at": "2026-10-03T11:01:22Z"
+      },
+      {
+        "number": 36,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/36",
+        "state": "open",
+        "draft": true,
+        "head": "integration/web/production-state-presentation-v1",
+        "created_at": "2026-10-03T09:02:37Z",
+        "updated_at": "2026-10-05T05:27:23Z"
+      },
+      {
+        "number": 35,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/35",
+        "state": "open",
+        "draft": true,
+        "head": "codex/integration-hardening-2026-10-03",
+        "created_at": "2026-10-03T08:29:56Z",
+        "updated_at": "2026-10-04T04:15:57Z"
+      }
+    ]
+  },
+  "admission": {
+    "actual_new_Chart_dependency": false,
+    "accepted_production_write_set": false,
+    "accepted_new_source": false,
+    "Chart_target_gates_closed": 0,
+    "Chart_target_gates_open": 6,
+    "Market_progress": "0/19",
+    "Market_gaps_open": 8,
+    "sample_only_scope_unchanged": true,
+    "all_gate_a_g2_closed": false,
+    "no_new_D3": true
+  },
+  "next_exact_action": "Continue the already authorized SAMPLE canvas review within its held lease. Carry optional owner evidence as scoped semantic/audit context only. Production remains waiting for the existing concrete gate/source/adoption receipts.",
+  "source_pins": [
+    {
+      "commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md",
+      "blob": "30ab1edf60b021d85d4b319defb6c5ead84d5d71",
+      "sha256": "32411aecd95085e56728dbf3f3973367557644d610b83730917519e4f5fc4072"
+    },
+    {
+      "commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/CONTROL.json",
+      "blob": "b5cabcf29f2e70416ba85261472c64fb5b0b11f2",
+      "sha256": "055b50f9e46959678ff011f910d4eae7779a6fcee86c8383c1541898caec5714"
+    },
+    {
+      "commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/approval.json",
+      "blob": "750ea433e7670af2ee063ee93ffd0dd219491703",
+      "sha256": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c"
+    },
+    {
+      "commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/SEMANTIC_CONTRACT.md",
+      "blob": "912b674a03b7ba56406d1fc78b177f26da2d3215",
+      "sha256": "8631adce37104632251896de6329588a479be0dc088f64a1f7fab462e653c1cf"
+    },
+    {
+      "commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/WORK_PLAN.md",
+      "blob": "14ebaa9b376164f5da0a87dae5e64dde2ebcba4c",
+      "sha256": "663807c1b77c4651526a0ad9b7541a4b7b086f08504f1cde56846271f3f34c79"
+    },
+    {
+      "commit": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/ADOPTION.md",
+      "blob": "b6215b581e1a6c9b72aa4e74fe59a70ac4dc1d0e",
+      "sha256": "af71ce1d54b6ef0eaf37e51a0fdb8bb820c26f58f93c58c91ea8794b4b0fc78c"
+    },
+    {
+      "commit": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/REPORT.md",
+      "blob": "bad32e97e012565fcf85472feee32e90eb071cd7",
+      "sha256": "2a74575683b94d4f8f16471422b7355d2058f9b29ce8cca8ea72e53d09a813c0"
+    },
+    {
+      "commit": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/TOOL_EXECUTION_POLICY.md",
+      "blob": "46e98a53d7d9b0c4490eb038cf7b0091cf9526ef",
+      "sha256": "dc356442b198130854ef13e31ae9c10691425aceac2575387d61a2cd8cef5e5c"
+    },
+    {
+      "commit": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/adoption.json",
+      "blob": "a15913b34f12bf13afbe0d5db7a817f722321b17",
+      "sha256": "26def936de6eff371ec5201c3d6a9a48d191ce1c8695c1997584f9bc18e132c2"
+    },
+    {
+      "commit": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/evidence.json",
+      "blob": "ed11dab1ac21d8ddef8782027b8ddba9add2097a",
+      "sha256": "bfec66948d3650ea9235a8460d1338470adc9e3c02e23e1e237f3d04e1e6c553"
+    },
+    {
+      "commit": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.json",
+      "blob": "4ca63c992d760dd8229398ec4e4cdb1bc1a2c625",
+      "sha256": "a1bd74574ffa292b4ed62b105ce06c775ca814dba5040c7671fae327e68cf190"
+    },
+    {
+      "commit": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.py",
+      "blob": "6d6566ab6b9f893927e052e93d988699070420ef",
+      "sha256": "9c56538b500f9b0060426c76c016b2e61fb31e6106c09ec3d616c3183338dda3"
+    },
+    {
+      "commit": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+      "path": "implementation/docs/product_platform/audits/storage_auth_2026-10-05/owner_probes.txt",
+      "blob": "4d0712801553527ec7eb87cad94dd4a42b046821",
+      "sha256": "93789b0710bf0a32a9558e5b1796636ff296f71b5ece8754e5eb00f2044f5ca0"
+    }
+  ]
+}

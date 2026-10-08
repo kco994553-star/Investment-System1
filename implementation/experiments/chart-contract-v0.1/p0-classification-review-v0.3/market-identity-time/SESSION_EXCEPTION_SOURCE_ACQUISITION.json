@@ -1,0 +1,13 @@
+{
+  "source_id": "krx_kospi_csat_2025",
+  "url": "https://kind.krx.co.kr/external/2025/10/30/000102/20251030000137/99303.htm",
+  "attempt_started_at": "2026-10-04T23:19:19.694070+00:00",
+  "historical_source_available_at": "UNKNOWN",
+  "status": "CAPTURED",
+  "http_status": 200,
+  "content_type": "text/html",
+  "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/krx_kospi_csat_2025_original.html",
+  "bytes": 9072,
+  "sha256": "f34bd2f0873506c767e4a1985c9885b0be0920bf564564d87460f61b5395df3d",
+  "attempt_completed_at": "2026-10-04T23:19:26.319289+00:00"
+}

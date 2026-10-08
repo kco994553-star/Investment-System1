@@ -1,0 +1,23 @@
+{
+  "scope": "DIAGNOSTIC_ONLY_SYNTHETIC_CLAIMS_NO_ADMISSION",
+  "historical_probe_commit": "32069065a0c4a62e4390d76675eb9c7681456c87",
+  "historical_probe_sha256": "c6a0e6303275e1fdc47cc3b182e3faff787a9cea12907be692af37b5633a3844",
+  "selected_inputs": {
+    "preflight_tool": {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+      "sha256": "5ddfeaced404821d15f9a53cde0d4ee87f742f18e976e390764fd25a4d8364c1"
+    },
+    "fixture_generator": {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py",
+      "sha256": "39721807f2f032b31182cba1478fecbb00c79e20ba4bd4817fd4c5e8c7edf184"
+    },
+    "fixture_baseline": {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "sha256": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c"
+    },
+    "original_archive": {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt",
+      "sha256": "c6a0e6303275e1fdc47cc3b182e3faff787a9cea12907be692af37b5633a3844"
+    }
+  }
+}

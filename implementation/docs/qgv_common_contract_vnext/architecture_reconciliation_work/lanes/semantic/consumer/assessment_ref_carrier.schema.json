@@ -1,0 +1,581 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:investment-system1:qgv:inactive-result-admission-reference-carrier:0.1",
+  "title": "INACTIVE D1/D2 assessment-reference carrier; structural diagnostic scope only",
+  "description": "No positive/admitted runtime policy. Generic reference shape and namespace vocabulary reused from existing Common Contract. Content/type/cross-link and independent authority obligations are described by CONTRACT.md; schema alone cannot enforce them. General aggregate policy is unselected.",
+  "x-runtime-enabled": false,
+  "$defs": {
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256",
+        "locator"
+      ]
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "as_of": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "decision_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "namespace": {
+          "enum": [
+            "OFFICIAL",
+            "CUSTOM_ACTIVE",
+            "SANDBOX",
+            "PREVIEW",
+            "BACKTEST",
+            "FORWARD"
+          ]
+        },
+        "configuration_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "subject_id",
+        "as_of",
+        "decision_time",
+        "namespace",
+        "configuration_ref"
+      ]
+    },
+    "method_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "factor_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "method_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "method_version_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "input_contract_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fallback_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "normalization_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "factor_ref",
+        "method_ref",
+        "method_version_ref",
+        "input_contract_ref",
+        "fallback_ref",
+        "normalization_ref"
+      ]
+    },
+    "assessment_ref_map": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "method_identity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "applicability": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_admission": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provenance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completeness": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scoring_validity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "method_identity",
+        "applicability",
+        "evidence_admission",
+        "provenance",
+        "pit",
+        "coverage",
+        "confidence",
+        "completeness",
+        "scoring_validity"
+      ]
+    },
+    "aggregate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "ordered_child_result_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "child_assessment_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/assessment_ref_map"
+          }
+        },
+        "withheld_child_result_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "planned_basis_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "arithmetic_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "scope_ref",
+        "ordered_child_result_refs",
+        "child_assessment_refs",
+        "withheld_child_result_refs",
+        "planned_basis_ref",
+        "arithmetic_ref"
+      ]
+    },
+    "consumer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose": {
+          "const": "DIAGNOSTIC"
+        },
+        "namespace": {
+          "enum": [
+            "OFFICIAL",
+            "CUSTOM_ACTIVE",
+            "SANDBOX",
+            "PREVIEW",
+            "BACKTEST",
+            "FORWARD"
+          ]
+        },
+        "result_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "scope_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "producer_assessment_refs": {
+          "$ref": "#/$defs/assessment_ref_map"
+        },
+        "policy_ref": {
+          "type": "null"
+        },
+        "admission_decision_ref": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "purpose",
+        "namespace",
+        "result_ref",
+        "scope_ref",
+        "producer_assessment_refs",
+        "policy_ref",
+        "admission_decision_ref"
+      ]
+    },
+    "assessment_document": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "method_identity",
+            "applicability",
+            "evidence_admission",
+            "provenance",
+            "pit",
+            "coverage",
+            "confidence",
+            "completeness",
+            "scoring_validity"
+          ]
+        },
+        "context": {
+          "$ref": "#/$defs/context"
+        },
+        "scope_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "producer_result_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "method_binding_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/method_binding"
+          }
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "policy_ref": {
+          "type": "null"
+        },
+        "disposition": {
+          "enum": [
+            "UNASSESSED",
+            "REJECTED"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "kind",
+        "context",
+        "scope_ref",
+        "producer_result_ref",
+        "method_binding_refs",
+        "source_refs",
+        "policy_ref",
+        "disposition",
+        "reason"
+      ]
+    },
+    "scope_document": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "scope"
+        },
+        "context": {
+          "$ref": "#/$defs/context"
+        },
+        "axis": {
+          "enum": [
+            "Q",
+            "G",
+            "V"
+          ]
+        },
+        "factor_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "input_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "shared_dependency_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "context",
+        "axis",
+        "factor_ids",
+        "input_ids",
+        "shared_dependency_ids"
+      ]
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "artifact_kind": {
+      "const": "INACTIVE_RESULT_ADMISSION_REF_CARRIER"
+    },
+    "version": {
+      "const": "0.1"
+    },
+    "runtime_enabled": {
+      "const": false
+    },
+    "activation_requested": {
+      "const": false
+    },
+    "authority_record_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "context": {
+      "$ref": "#/$defs/context"
+    },
+    "scope_ref": {
+      "$ref": "#/$defs/ref"
+    },
+    "producer_result_ref": {
+      "$ref": "#/$defs/ref"
+    },
+    "legacy_numeric": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "legacy_coverage_literal": {
+      "enum": [
+        "READY",
+        "PARTIAL",
+        "BLOCKED",
+        "SYNTHETIC",
+        null
+      ]
+    },
+    "method_binding_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/method_binding"
+      }
+    },
+    "source_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ref"
+      }
+    },
+    "assessments": {
+      "$ref": "#/$defs/assessment_ref_map"
+    },
+    "aggregate": {
+      "$ref": "#/$defs/aggregate"
+    },
+    "consumer": {
+      "$ref": "#/$defs/consumer"
+    },
+    "publication_decision_ref": {
+      "type": "null"
+    },
+    "unassessed_reasons": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    }
+  },
+  "required": [
+    "artifact_kind",
+    "version",
+    "runtime_enabled",
+    "activation_requested",
+    "authority_record_ref",
+    "context",
+    "scope_ref",
+    "producer_result_ref",
+    "legacy_numeric",
+    "legacy_coverage_literal",
+    "method_binding_refs",
+    "source_refs",
+    "assessments",
+    "aggregate",
+    "consumer",
+    "publication_decision_ref",
+    "unassessed_reasons"
+  ]
+}

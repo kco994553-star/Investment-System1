@@ -1,0 +1,82 @@
+{
+  "receipt_id": "QGV-D3-DELEGATED-POLICY-2026-10-05",
+  "decision": "Adopt latest D1/D2/D3-A/D3-R operational authority and reclassify exact pending QGV scope without selecting outstanding methods or numeric policy.",
+  "classification": "D1_POLICY_RECORD_PLUS_D2_BOUNDED_RECONCILIATION",
+  "status": "COMPLETED_ACCEPTED_POLICY_ONLY",
+  "exact_existing_authority": [
+    {
+      "kind": "EXPLICIT_LATEST_USER_INSTRUCTION",
+      "at_kst": "2026-10-05T17:59:16+09:00",
+      "ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/POLICY.json",
+      "sha256": "42ece375d617676db05d4085545b3be7b2ba47d22525cb341f294311a21e3635"
+    },
+    {
+      "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+      "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+      "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+    },
+    {
+      "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/DECISION_REGISTER.md",
+      "sha256": "84675f99f5aaeb997e0439a12b8603b46e074b71513628e988a83f7e6b1486d9",
+      "git_blob_sha": "f862d5bda1a30ca82151208a4575c88b5b543573"
+    },
+    {
+      "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+      "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+      "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+    }
+  ],
+  "alternatives": [
+    {
+      "option": "Keep all old D3 labels and re-ask principle decisions",
+      "rejected": "Conflicts with current delegated authority and repeats closed decisions."
+    },
+    {
+      "option": "Blanket-adopt broad historical CDR-015",
+      "rejected": "Would permit unapproved new numerical/method meanings contrary to current Reserved list."
+    },
+    {
+      "option": "Concrete scope split, reuse completed faithful work, reserve only unresolved result-affecting/unproven scope",
+      "selected": true
+    }
+  ],
+  "design_alignment": "Retains approved G1/G2 and B2/B3/B5/B6 meanings and current architecture; only operational authority and pending-scope labels change.",
+  "protected_boundaries": {
+    "PIT_no_lookahead_provenance": "PRESERVED",
+    "Frozen_history_evidence": "PRESERVED_ALL_PRIOR_BLOBS_EXCEPT_CURRENT_CONTROL_HANDOFF",
+    "security_tenant_financial_permissions": "NO_CHANGE",
+    "real_trades_funds_credentials": "NONE",
+    "Holdout": "UNCONSUMED_NO_ACCESS",
+    "Official_LIVE_grants": "NO_PROMOTION_OR_GRANT",
+    "method_numeric_score_history": "NO_CHANGE",
+    "other_owner_Global": "NO_WRITES",
+    "runtime": "INACTIVE"
+  },
+  "execution": [
+    "Record latest user policy",
+    "Fresh classify 10 pending groups and faithful completed subdecisions",
+    "Update two existing automation prompts while preserving enabled state/role/schedule/target",
+    "Publish current scoped control/Handoff and Main return",
+    "Re-evaluate independent READY lanes"
+  ],
+  "new_D3_A_approvals": 0,
+  "new_method_numeric_policy_decisions": 0,
+  "verification": {
+    "lane": "FAST_POLICY_DOCS_CONFIGURATION",
+    "targeted": "30/30_PASS",
+    "independent_review": "PASS_WITH_LIMITS",
+    "prior_checks_reused": 193,
+    "old_reruns": 0,
+    "full_regression": "SKIPPED_NO_RUNTIME_SEMANTIC_CHANGE",
+    "Actions": "NOT_RUN",
+    "result_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/VERIFICATION_RESULTS.json",
+    "result_sha256": "6f56167119b7d01d3003b3756770b52edbe67308ff0ebd8546c74ea6c39fa6a5",
+    "independent_review_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/INDEPENDENT_REVIEW.json",
+    "independent_review_sha256": "24a3229ffe48311fe09771427170abf5ae717772e82758e3eefb0df60f3f625b",
+    "validator_sha256": "8c947139caa8a3ea69c92a3126b0bf28d439b554e0fbc1e1a5e6270990d65e0d"
+  },
+  "rollback": "Append a successor decision; revert only new policy/prompt references and current CONTROL overlay to exact prior pins. Restore exact automation before-prompts while keeping latest separately changed controls intact. Retain this event and all evidence; never reset/delete history or force refs."
+}

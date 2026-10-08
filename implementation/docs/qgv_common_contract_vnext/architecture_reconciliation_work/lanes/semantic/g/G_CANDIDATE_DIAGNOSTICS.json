@@ -1,0 +1,663 @@
+{
+  "PIT_vintage_cases": [
+    {
+      "as_of": "2025-03-01T00:00:00+00:00",
+      "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+      "available_at": "2025-02-20T10:00:00+00:00",
+      "method_id": null,
+      "method_version": null,
+      "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+      "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "period": {
+        "end": "2024-12-31",
+        "start": "2024-01-01"
+      },
+      "published_at": "2025-02-20T10:00:00+00:00",
+      "raw_level": 100,
+      "source": "SYNTHETIC_ORIGINAL",
+      "vintage_id": "original"
+    },
+    {
+      "as_of": "2025-03-01T00:00:00+00:00",
+      "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+      "available_at": "2025-06-20T10:00:00+00:00",
+      "method_id": null,
+      "method_version": null,
+      "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+      "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "period": {
+        "end": "2024-12-31",
+        "start": "2024-01-01"
+      },
+      "published_at": "2025-06-20T10:00:00+00:00",
+      "raw_level": 140,
+      "source": "SYNTHETIC_LATER_AMENDMENT",
+      "vintage_id": "later_restatement"
+    },
+    {
+      "as_of": "2025-03-01T00:00:00+00:00",
+      "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+      "available_at": "2025-02-20T10:00:00+00:00",
+      "method_id": null,
+      "method_version": null,
+      "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+      "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "period": {
+        "end": "2024-12-31",
+        "start": "2024-01-01"
+      },
+      "published_at": "2025-06-20T10:00:00+00:00",
+      "raw_level": 150,
+      "source": "SYNTHETIC_INCONSISTENT_STAMPS",
+      "vintage_id": "future_published"
+    },
+    {
+      "as_of": "2025-03-01T00:00:00+00:00",
+      "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+      "available_at": "2025-06-20T10:00:00+00:00",
+      "method_id": null,
+      "method_version": null,
+      "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+      "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "period": {
+        "end": "2024-12-31",
+        "start": "2024-01-01"
+      },
+      "published_at": "2025-02-20T10:00:00+00:00",
+      "raw_level": 160,
+      "source": "SYNTHETIC_INCONSISTENT_STAMPS",
+      "vintage_id": "future_available"
+    }
+  ],
+  "kind": "SYNTHETIC_INPUT_PROPERTIES_ONLY",
+  "new_G1_or_G2_formula_executed": false,
+  "notes": [
+    "Illustrative fixture points are not a minimum observation count or period policy.",
+    "No CAGR/mean/median/normalization is computed.",
+    "Existing raw-derived scores were not recalculated."
+  ],
+  "per_share_semantic_case": {
+    "candidate_factor_score": "UNCOMPUTED",
+    "case": "shared_units_different_economic_quantities",
+    "direction_only": [
+      "EPS_level_increased",
+      "separate_cash_flow_per_share_level_decreased"
+    ],
+    "economic_source_identity": [
+      "declared_earnings_per_share_fixture",
+      "declared_cash_generation_per_share_fixture"
+    ],
+    "observations": [
+      {
+        "EPS_level_fixture": 2.0,
+        "as_of": "2025-03-01T00:00:00+00:00",
+        "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+        "available_at": "2024-02-20T10:00:00+00:00",
+        "method_id": null,
+        "method_version": null,
+        "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+        "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "period": {
+          "end": "2023-12-31",
+          "start": "2023-01-01"
+        },
+        "published_at": "2024-02-20T10:00:00+00:00",
+        "separate_cash_flow_per_share_level_fixture": 10.0,
+        "source": {
+          "provider": "SYNTHETIC_DIAGNOSTIC",
+          "reference": "per-share-comparability:2023"
+        }
+      },
+      {
+        "EPS_level_fixture": 3.0,
+        "as_of": "2025-03-01T00:00:00+00:00",
+        "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+        "available_at": "2025-02-20T10:00:00+00:00",
+        "method_id": null,
+        "method_version": null,
+        "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+        "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "period": {
+          "end": "2024-12-31",
+          "start": "2024-01-01"
+        },
+        "published_at": "2025-02-20T10:00:00+00:00",
+        "separate_cash_flow_per_share_level_fixture": 4.0,
+        "source": {
+          "provider": "SYNTHETIC_DIAGNOSTIC",
+          "reference": "per-share-comparability:2024"
+        }
+      }
+    ],
+    "reported_EPS_levels": [
+      2.0,
+      3.0
+    ],
+    "separate_cash_flow_per_share_levels": [
+      10.0,
+      4.0
+    ],
+    "share_basis": "matched synthetic declaration only; no production numerator/share basis approved",
+    "substitution_allowed": false,
+    "synthetic": true
+  },
+  "production_scorer_called": false,
+  "shape_cases": [
+    {
+      "candidate_factor_score": "UNCOMPUTED",
+      "case": "sustained",
+      "magnitude_estimator": "UNCOMPUTED",
+      "observations": [
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2020-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2019-12-31",
+            "start": "2019-01-01"
+          },
+          "published_at": "2020-02-20T10:00:00+00:00",
+          "raw_level": 100,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "sustained:2019",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2021-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2020-12-31",
+            "start": "2020-01-01"
+          },
+          "published_at": "2021-02-20T10:00:00+00:00",
+          "raw_level": 105,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "sustained:2020",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2022-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2021-12-31",
+            "start": "2021-01-01"
+          },
+          "published_at": "2022-02-20T10:00:00+00:00",
+          "raw_level": 110,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "sustained:2021",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2023-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2022-12-31",
+            "start": "2022-01-01"
+          },
+          "published_at": "2023-02-20T10:00:00+00:00",
+          "raw_level": 115,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "sustained:2022",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2024-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2023-12-31",
+            "start": "2023-01-01"
+          },
+          "published_at": "2024-02-20T10:00:00+00:00",
+          "raw_level": 120,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "sustained:2023",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2025-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2024-12-31",
+            "start": "2024-01-01"
+          },
+          "published_at": "2025-02-20T10:00:00+00:00",
+          "raw_level": 125,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "sustained:2024",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        }
+      ],
+      "persistence_estimator": "UNCOMPUTED",
+      "synthetic": true
+    },
+    {
+      "candidate_factor_score": "UNCOMPUTED",
+      "case": "delayed",
+      "magnitude_estimator": "UNCOMPUTED",
+      "observations": [
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2020-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2019-12-31",
+            "start": "2019-01-01"
+          },
+          "published_at": "2020-02-20T10:00:00+00:00",
+          "raw_level": 100,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "delayed:2019",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2021-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2020-12-31",
+            "start": "2020-01-01"
+          },
+          "published_at": "2021-02-20T10:00:00+00:00",
+          "raw_level": 100,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "delayed:2020",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2022-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2021-12-31",
+            "start": "2021-01-01"
+          },
+          "published_at": "2022-02-20T10:00:00+00:00",
+          "raw_level": 100,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "delayed:2021",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2023-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2022-12-31",
+            "start": "2022-01-01"
+          },
+          "published_at": "2023-02-20T10:00:00+00:00",
+          "raw_level": 100,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "delayed:2022",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2024-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2023-12-31",
+            "start": "2023-01-01"
+          },
+          "published_at": "2024-02-20T10:00:00+00:00",
+          "raw_level": 100,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "delayed:2023",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2025-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2024-12-31",
+            "start": "2024-01-01"
+          },
+          "published_at": "2025-02-20T10:00:00+00:00",
+          "raw_level": 125,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "delayed:2024",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        }
+      ],
+      "persistence_estimator": "UNCOMPUTED",
+      "synthetic": true
+    },
+    {
+      "candidate_factor_score": "UNCOMPUTED",
+      "case": "reversal",
+      "magnitude_estimator": "UNCOMPUTED",
+      "observations": [
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2020-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2019-12-31",
+            "start": "2019-01-01"
+          },
+          "published_at": "2020-02-20T10:00:00+00:00",
+          "raw_level": 100,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "reversal:2019",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2021-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2020-12-31",
+            "start": "2020-01-01"
+          },
+          "published_at": "2021-02-20T10:00:00+00:00",
+          "raw_level": 150,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "reversal:2020",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2022-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2021-12-31",
+            "start": "2021-01-01"
+          },
+          "published_at": "2022-02-20T10:00:00+00:00",
+          "raw_level": 90,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "reversal:2021",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2023-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2022-12-31",
+            "start": "2022-01-01"
+          },
+          "published_at": "2023-02-20T10:00:00+00:00",
+          "raw_level": 140,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "reversal:2022",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2024-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2023-12-31",
+            "start": "2023-01-01"
+          },
+          "published_at": "2024-02-20T10:00:00+00:00",
+          "raw_level": 80,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "reversal:2023",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2025-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2024-12-31",
+            "start": "2024-01-01"
+          },
+          "published_at": "2025-02-20T10:00:00+00:00",
+          "raw_level": 125,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "reversal:2024",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        }
+      ],
+      "persistence_estimator": "UNCOMPUTED",
+      "synthetic": true
+    },
+    {
+      "candidate_factor_score": "UNCOMPUTED",
+      "case": "same_last_pair_different_earlier_path",
+      "magnitude_estimator": "UNCOMPUTED",
+      "observations": [
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2020-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2019-12-31",
+            "start": "2019-01-01"
+          },
+          "published_at": "2020-02-20T10:00:00+00:00",
+          "raw_level": 80,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "same_last_pair_different_earlier_path:2019",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2021-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2020-12-31",
+            "start": "2020-01-01"
+          },
+          "published_at": "2021-02-20T10:00:00+00:00",
+          "raw_level": 140,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "same_last_pair_different_earlier_path:2020",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2022-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2021-12-31",
+            "start": "2021-01-01"
+          },
+          "published_at": "2022-02-20T10:00:00+00:00",
+          "raw_level": 90,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "same_last_pair_different_earlier_path:2021",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2023-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2022-12-31",
+            "start": "2022-01-01"
+          },
+          "published_at": "2023-02-20T10:00:00+00:00",
+          "raw_level": 135,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "same_last_pair_different_earlier_path:2022",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2024-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2023-12-31",
+            "start": "2023-01-01"
+          },
+          "published_at": "2024-02-20T10:00:00+00:00",
+          "raw_level": 120,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "same_last_pair_different_earlier_path:2023",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        },
+        {
+          "as_of": "2025-03-01T00:00:00+00:00",
+          "audit_anchor_role": "Predecessor source context only; not an executed candidate method or authoritative input measurement method",
+          "available_at": "2025-02-20T10:00:00+00:00",
+          "method_id": null,
+          "method_version": null,
+          "observed_audit_source_ref": "observed:revenue-yoy-linearclip",
+          "observed_audit_source_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "period": {
+            "end": "2024-12-31",
+            "start": "2024-01-01"
+          },
+          "published_at": "2025-02-20T10:00:00+00:00",
+          "raw_level": 125,
+          "source": {
+            "provider": "SYNTHETIC_DIAGNOSTIC",
+            "reference": "same_last_pair_different_earlier_path:2024",
+            "value_kind": "unscaled_reported_level_fixture_not_a_chosen_G1_metric"
+          }
+        }
+      ],
+      "persistence_estimator": "UNCOMPUTED",
+      "synthetic": true
+    }
+  ]
+}

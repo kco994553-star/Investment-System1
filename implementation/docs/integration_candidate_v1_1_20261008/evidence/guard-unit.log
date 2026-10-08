@@ -1,0 +1,14 @@
+test_append_only_add_is_allowed (tests.test_autonomy_gate_a_guard.AutonomyGateAGuardTests.test_append_only_add_is_allowed) ... ok
+test_append_only_modify_fails (tests.test_autonomy_gate_a_guard.AutonomyGateAGuardTests.test_append_only_modify_fails) ... ok
+test_append_only_rename_fails (tests.test_autonomy_gate_a_guard.AutonomyGateAGuardTests.test_append_only_rename_fails) ... ok
+test_config_operating_values_are_pinned (tests.test_autonomy_gate_a_guard.AutonomyGateAGuardTests.test_config_operating_values_are_pinned) ... ok
+test_immutable_delete_fails (tests.test_autonomy_gate_a_guard.AutonomyGateAGuardTests.test_immutable_delete_fails) ... ok
+test_immutable_modify_fails (tests.test_autonomy_gate_a_guard.AutonomyGateAGuardTests.test_immutable_modify_fails) ... ok
+test_invalid_mode_fails_closed (tests.test_autonomy_gate_a_guard.AutonomyGateAGuardTests.test_invalid_mode_fails_closed) ... ok
+test_parse_name_status (tests.test_autonomy_gate_a_guard.AutonomyGateAGuardTests.test_parse_name_status) ... ok
+test_unprotected_change_allowed (tests.test_autonomy_gate_a_guard.AutonomyGateAGuardTests.test_unprotected_change_allowed) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.001s
+
+OK

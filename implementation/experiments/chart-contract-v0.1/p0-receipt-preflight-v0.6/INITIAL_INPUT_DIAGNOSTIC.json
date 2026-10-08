@@ -1,0 +1,2082 @@
+{
+  "scope": "OFFLINE_OWNER_RETURN_DIAGNOSTIC_NOT_A_PRODUCTION_CONTRACT",
+  "production_readiness": "IMPLEMENTATION_NOT_READY",
+  "open_gate_ids": [
+    "A-S1",
+    "A-S2",
+    "A-S3",
+    "A-G1",
+    "A-G2",
+    "A-G3"
+  ],
+  "open_count": 6,
+  "closed_count": 0,
+  "source_inspection": "INCOMPLETE",
+  "findings": [
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/portfolio_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/portfolio_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/target_root_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/root_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/snapshot_hash",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/source_receipt_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/current_adoption_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/applicability_semantics",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/completeness_receipt_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/denominator_definition",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/source_use_provenance_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/root_owner_return/authoritative_route_record_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/0/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/1/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/2/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/3/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/4/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/5/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/6/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/7/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/8/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/9/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/10/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/11/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/12/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/13/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/14/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/15/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/16/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/17/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/admitted_target_row_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/issuer_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/security_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/security_namespace",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/security_type",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/share_class_or_form",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/identity_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/identity_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/company_security_link_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/theme_concept_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/taxonomy_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/taxonomy_version",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/catalog_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/assignment_revision_id",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/effective_from",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/available_at",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_FIELD_MISSING",
+      "path": "/constituents/18/owner_return/admission_evidence_ref",
+      "message": "owner receipt not returned",
+      "severity": "MISSING"
+    },
+    {
+      "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+      "path": "/owner_return",
+      "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+      "severity": "WARNING"
+    }
+  ],
+  "owner_receipts_authentication": "NOT_PERFORMED_NO_ADOPTED_RECEIPT_ROUTE",
+  "owner_action_required": [
+    "A-S1",
+    "A-S2",
+    "A-S3",
+    "A-G1",
+    "A-G2",
+    "A-G3"
+  ],
+  "actual": {
+    "status": "NOT_AVAILABLE",
+    "root": null,
+    "fallback_to_target": false
+  },
+  "production_payload": null,
+  "reference_diagnostic": {
+    "weight_basis": "TARGET_AUTHORED_REFERENCE_ONLY",
+    "constituent_count": 19,
+    "total_exact_fraction": "1",
+    "theme_total_exact_fraction": {
+      "반도체 장비": "3/10",
+      "AI·반도체": "1/4",
+      "Big Tech": "1/5",
+      "기타산업": "1/4"
+    },
+    "is_renderable_production_data": false
+  },
+  "production_L5": "NOT_RUN",
+  "chart_merge_result_fpia": "NOT_RUN",
+  "qgv_dependency": "INACTIVE_SPEC_ONLY",
+  "decision_time": "2026-10-05T01:00:00+00:00",
+  "source_objects_checked": 4,
+  "pinned_request": {
+    "commit": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
+    "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+    "sha256": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c"
+  }
+}

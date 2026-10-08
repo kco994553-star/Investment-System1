@@ -1,0 +1,52 @@
+{
+  "scope": "APPEND_ONLY_LATE_MATERIAL_INPUT_RECONSUMPTION",
+  "observed_at_kst": "2026-10-05T13:43:25+09:00",
+  "global": {
+    "head": "af264713b99471fb554e06e8d321f5039be47b47",
+    "handoff": "GCH-016",
+    "decision": "CDR-018",
+    "writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "delta": "Coordination-only transfer; Chart scopes/lease preserved; PIW decision register unchanged/no entries; no TARGET/Product/write-set/FPIA closure receipt",
+    "main_automation": "CONFIGURED_ONLY_END_TO_END_FALSE",
+    "former_runtime": "UNKNOWN_NOT_STOPPED"
+  },
+  "new_pr": {
+    "pr": 45,
+    "branch": "codex/product-platform-foundation-2026-10-05",
+    "head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+    "classification": "DOWNSTREAM_CHART_CONSUMER_AND_OWNER_OVERLAP_NOT_TARGET_PREREQUISITE",
+    "kind": "INDEPENDENT_SYNTHETIC_PLATFORM_AUDIT_NOT_PRODUCTION_AUTHORITY",
+    "actions": [
+      {
+        "id": 37264197708,
+        "head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1
+      },
+      {
+        "id": 37264194566,
+        "head": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1
+      }
+    ],
+    "code_evidence": [
+      "service.py:252 TARGET NOT_AVAILABLE / AUTHORITATIVE_TARGET_NOT_CONNECTED; Chart NOT_AVAILABLE / OWNER_CONTRACT_OR_PUBLICATION_DEPENDENCY",
+      "fixture.py synthetic-security-1 and synthetic-listing-1 are fabricated audit identities",
+      "Owner handoff retains OWNER_ACTION_REQUIRED and admitted ChartDocument/Product/Web/write-set dependency"
+    ],
+    "gate_closures": 0,
+    "chart_repairs_duplicated": false
+  },
+  "qgv": {
+    "head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505",
+    "delta": "CONTROL.json lease claim only; no Chart/source contract change",
+    "common_contract": "INACTIVE_SPEC_ONLY"
+  },
+  "open_pr_count": 40,
+  "lane_a_remaining": 6,
+  "lane_b_admitted": 0,
+  "new_chart_d3": false
+}

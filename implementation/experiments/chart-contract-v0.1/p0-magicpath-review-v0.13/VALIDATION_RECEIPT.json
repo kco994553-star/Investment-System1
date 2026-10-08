@@ -1,0 +1,21 @@
+{
+  "lane": "FAST",
+  "build": "COMPLETED",
+  "exactRemoteSourceFiles": 9,
+  "browser": "18/18PASS",
+  "viewports": [
+    1280,
+    390
+  ],
+  "nativeVisual": "OBSERVED",
+  "screenshots": 4,
+  "persistedMobileScreenshots": 2,
+  "fullRegression": "NOT_RUN_FAST_SCOPE",
+  "productionE2E": "NOT_RUN",
+  "chartFPIA": "NOT_RUN",
+  "financialMeaningChanged": false,
+  "immutableEvidenceReused": true,
+  "productionGatesClosed": 0,
+  "newProductionBlockers": 0,
+  "remaining": 6
+}

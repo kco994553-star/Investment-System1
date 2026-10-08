@@ -74,7 +74,7 @@ def test_map_raw_does_not_zero_fill_missing_rubric():
 def test_pipeline_from_raw_uses_provisional_v():
     snap = AnalysisPipeline().analyze_raw(_raw())
     assert snap.synthetic is True
-    assert snap.V_policy_status.value == "PROVISIONAL_INITIAL_PRIOR"
+    assert snap.V_policy_status.value == "STANDARD v1 · UNCALIBRATED"
     assert snap.Q_score is not None
     assert snap.G_score is not None
     assert snap.coverage_state in {CoverageState.SYNTHETIC, CoverageState.READY, CoverageState.PARTIAL}
@@ -107,7 +107,7 @@ def test_sec_fixture_parser_extracts_revenue():
     assert raw.source_kind == "SYNTHETIC"
     snap = AnalysisPipeline().analyze_raw(raw)
     assert snap.company_id == "nvda"
-    assert snap.V_policy_status.value == "PROVISIONAL_INITIAL_PRIOR"
+    assert snap.V_policy_status.value == "STANDARD v1 · UNCALIBRATED"
 
 
 def test_sec_fixture_respects_as_of_before_filing():

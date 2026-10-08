@@ -1,0 +1,60 @@
+{
+  "schema": "current-target-local-evidence-verification/1",
+  "run_at_utc": "2026-10-08T23:40:50.253772+00:00",
+  "status": "PASS",
+  "source_mapping": "19/19",
+  "c39_US_issuer_security_pairs": "17/17",
+  "user_exchange_code_refs": "2/2",
+  "theme_assignments": "19/19",
+  "negative_and_positive_tests": 12,
+  "source_pins": 16,
+  "independent_final_candidate_review": false,
+  "raw_source_packaging": "Deterministicgzip preserves exact originals; verifier authenticates compressedhash and decompressedsource hash/Gitblob, including FrozenNPORTmanifest.",
+  "commands": [
+    {
+      "command": [
+        "python",
+        "implementation/docs/security_map19_owner/v1_1_cycle_20261008/verify_mapping.py"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"current_target_refs\": \"19/19\",\n  \"c39_issuer_security_pairs\": \"17/17\",\n  \"user_exchange_code_refs\": \"2/2\",\n  \"dated_listing_identity\": \"0/19\",\n  \"source_pins\": 16\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "implementation/docs/security_map19_owner/v1_1_cycle_20261008",
+        "-p",
+        "test_evidence_rejections.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_alphabet_class_c_rejected_even_with_same_issuer (test_evidence_rejections.EvidenceRejections.test_alphabet_class_c_rejected_even_with_same_issuer) ... ok\ntest_asml_euronext_security_cannot_replace_nasdaq_form (test_evidence_rejections.EvidenceRejections.test_asml_euronext_security_cannot_replace_nasdaq_form) ... ok\ntest_asml_not_assumed_adr (test_evidence_rejections.EvidenceRejections.test_asml_not_assumed_adr) ... ok\ntest_cik_cannot_be_security_identity (test_evidence_rejections.EvidenceRejections.test_cik_cannot_be_security_identity) ... ok\ntest_complete_source_evidence_passes (test_evidence_rejections.EvidenceRejections.test_complete_source_evidence_passes) ... ok\ntest_foreign_pair_is_not_fabricated_isin_or_full_hierarchy (test_evidence_rejections.EvidenceRejections.test_foreign_pair_is_not_fabricated_isin_or_full_hierarchy) ... ok\ntest_frozen_source_tampering_rejected (test_evidence_rejections.EvidenceRejections.test_frozen_source_tampering_rejected) ... ok\ntest_hanmi_code_preserves_leading_zero (test_evidence_rejections.EvidenceRejections.test_hanmi_code_preserves_leading_zero) ... ok\ntest_listing_history_is_not_claimed_from_current_ref (test_evidence_rejections.EvidenceRejections.test_listing_history_is_not_claimed_from_current_ref) ... ok\ntest_mapping_is_not_backdated (test_evidence_rejections.EvidenceRejections.test_mapping_is_not_backdated) ... ok\ntest_source_target_weight_rewrite_rejected (test_evidence_rejections.EvidenceRejections.test_source_target_weight_rewrite_rejected) ... ok\ntest_tokyo_otc_adr_cannot_replace_user_tse8035 (test_evidence_rejections.EvidenceRejections.test_tokyo_otc_adr_cannot_replace_user_tse8035) ... ok\n\n----------------------------------------------------------------------\nRan 12 tests in 0.840s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python",
+        "implementation/docs/strategy_theme_owner/v1_1_cycle_20261008/verify_theme.py"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"source_catalog\": \"4/4\",\n  \"security_reference_assignments\": \"19/19\",\n  \"source_units\": 10000,\n  \"source_values_changed\": false\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}

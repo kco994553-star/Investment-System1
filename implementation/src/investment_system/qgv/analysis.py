@@ -16,6 +16,12 @@ from ..versions import (
 )
 from .factors import V_INITIAL_PRIOR
 from .scoring import attractiveness_10, production_v_score, score_g, score_q, score_v_candidates, score_v_prior
+from .scoring_standard import (
+    SCORING_CALIBRATION,
+    SCORING_STANDARD_EFFECTIVE_AT,
+    SCORING_STANDARD_STATUS,
+    SCORING_STANDARD_VERSION,
+)
 
 
 class AnalysisEngine:
@@ -57,10 +63,10 @@ class AnalysisEngine:
 
         total = None
         if q is not None and g is not None:
-            # V excluded from production total until VALIDATED.
+            # Existing Q/G-only total is retained; v1 adoption adds no V fusion.
             total = round((q + g) / 2.0, 4)
 
-        type_adjusted = total  # type-specific matrices CALIBRATION_PENDING
+        type_adjusted = total  # Standard v1 type adjustment is identity.
 
         peers = peer_weights or {}
         if peers:
@@ -121,4 +127,8 @@ class AnalysisEngine:
             quality_states=tuple(qualities),
             synthetic=synthetic,
             g_horizon=g_horizon,
+            standard=SCORING_STANDARD_VERSION,
+            calibration=SCORING_CALIBRATION,
+            standard_status=SCORING_STANDARD_STATUS,
+            standard_effective_at=SCORING_STANDARD_EFFECTIVE_AT,
         )

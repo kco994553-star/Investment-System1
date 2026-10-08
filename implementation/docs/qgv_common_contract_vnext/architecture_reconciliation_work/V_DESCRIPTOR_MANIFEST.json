@@ -1,0 +1,578 @@
+{
+  "artifact_kind": "INACTIVE_V_SOURCE_DESCRIPTOR_MANIFEST",
+  "schema_kind": "audit sidecar using existing id/version/sha256/locator refs; no runtime schema/registry change",
+  "source_owner_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "runtime_enabled": false,
+  "method_replacement_approved": false,
+  "new_numeric_policy": null,
+  "new_requiredness_roles": 0,
+  "records": [
+    {
+      "factor_ref": {
+        "id": "V:fundamental_value",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/factors.py"
+      },
+      "observed_method_source_ref": {
+        "id": "legacy-source-anchor:_central_value_score",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "method_ref": null,
+      "method_version_ref": null,
+      "method_identity_status": "LEGACY_NOT_REGISTERED_CHARACTERIZATION_ONLY",
+      "input_contract_ref": {
+        "id": "legacy-RawFundamentals-container",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/contracts/raw.py"
+      },
+      "normalization_ref": {
+        "id": "legacy-transform-anchor:_central_value_score",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "observed_input_fields": [
+        "dcf_value",
+        "price",
+        "eps"
+      ],
+      "observed_transform": "DCF value/price branch; otherwise positive-EPS P/E reference proxy",
+      "metric_units_horizon_comparator_authority": "UNASSESSED; container fields and finite values do not establish economic compatibility",
+      "unresolved_semantics": "DCF/price basis and unit compatibility, intended fallback authority",
+      "requiredness_assignment": null,
+      "applicability_truth": null,
+      "legacy_reduction_refs": {
+        "prior": {
+          "id": "legacy-score_v_prior-and-_weighted",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        },
+        "candidate": {
+          "id": "legacy-score_v_candidates",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        }
+      },
+      "assessment_refs": {
+        "quality": "Original QualityState/DataStamp only; no semantic upgrade",
+        "confidence": null,
+        "input_coverage": null,
+        "method_completeness": null,
+        "scoring_validity": null,
+        "ranking_eligibility": null,
+        "publication_eligibility": null
+      },
+      "weight_profile_ref": {
+        "id": "existing-weight-tree-contract-not-wired",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/personal/weights.py"
+      },
+      "disposition": {
+        "economic_concept": "KEEP",
+        "control_metadata": "ALIGN_INACTIVE_PROPOSED",
+        "actual_method_or_numeric_policy": "CHANGE_REQUIRES_D3"
+      },
+      "raw_value_caution": "Legacy observation raw_value stores normalized score; actual raw metrics cannot be reconstructed by inversion",
+      "production_enabled": false,
+      "legacy_replay_ref": {
+        "id": "synthetic-current-source-replay",
+        "version": "audit-2026-10-05",
+        "sha256": "15fbdb8acfd4250b4fd100a348325525c0416dfcd68400ea7ef2e4abb5cb9dc6",
+        "locator": "repo:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/v_replay.json"
+      }
+    },
+    {
+      "factor_ref": {
+        "id": "V:peer_relative_value",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/factors.py"
+      },
+      "observed_method_source_ref": {
+        "id": "legacy-source-anchor:map_raw:peer_relative_value",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "method_ref": null,
+      "method_version_ref": null,
+      "method_identity_status": "LEGACY_NOT_REGISTERED_CHARACTERIZATION_ONLY",
+      "input_contract_ref": {
+        "id": "legacy-RawFundamentals-container",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/contracts/raw.py"
+      },
+      "normalization_ref": {
+        "id": "legacy-transform-anchor:map_raw:peer_relative_value",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "observed_input_fields": [
+        "peer_median_multiple",
+        "own_multiple"
+      ],
+      "observed_transform": "Own multiple compared with supplied peer median; truthiness gating",
+      "metric_units_horizon_comparator_authority": "UNASSESSED; container fields and finite values do not establish economic compatibility",
+      "unresolved_semantics": "Multiple definition, negative/zero domain, dated peer set, self inclusion and median convention",
+      "requiredness_assignment": null,
+      "applicability_truth": null,
+      "legacy_reduction_refs": {
+        "prior": {
+          "id": "legacy-score_v_prior-and-_weighted",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        },
+        "candidate": {
+          "id": "legacy-score_v_candidates",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        }
+      },
+      "assessment_refs": {
+        "quality": "Original QualityState/DataStamp only; no semantic upgrade",
+        "confidence": null,
+        "input_coverage": null,
+        "method_completeness": null,
+        "scoring_validity": null,
+        "ranking_eligibility": null,
+        "publication_eligibility": null
+      },
+      "weight_profile_ref": {
+        "id": "existing-weight-tree-contract-not-wired",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/personal/weights.py"
+      },
+      "disposition": {
+        "economic_concept": "KEEP",
+        "control_metadata": "ALIGN_INACTIVE_PROPOSED",
+        "actual_method_or_numeric_policy": "CHANGE_REQUIRES_D3"
+      },
+      "raw_value_caution": "Legacy observation raw_value stores normalized score; actual raw metrics cannot be reconstructed by inversion",
+      "production_enabled": false,
+      "legacy_replay_ref": {
+        "id": "synthetic-current-source-replay",
+        "version": "audit-2026-10-05",
+        "sha256": "15fbdb8acfd4250b4fd100a348325525c0416dfcd68400ea7ef2e4abb5cb9dc6",
+        "locator": "repo:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/v_replay.json"
+      }
+    },
+    {
+      "factor_ref": {
+        "id": "V:historical_valuation",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/factors.py"
+      },
+      "observed_method_source_ref": {
+        "id": "legacy-source-anchor:map_raw:historical_valuation",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "method_ref": null,
+      "method_version_ref": null,
+      "method_identity_status": "LEGACY_NOT_REGISTERED_CHARACTERIZATION_ONLY",
+      "input_contract_ref": {
+        "id": "legacy-RawFundamentals-container",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/contracts/raw.py"
+      },
+      "normalization_ref": {
+        "id": "legacy-transform-anchor:map_raw:historical_valuation",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "observed_input_fields": [
+        "hist_valuation_percentile"
+      ],
+      "observed_transform": "Passthrough normalized-field value; historical helper is a two-point P/E proxy",
+      "metric_units_horizon_comparator_authority": "UNASSESSED; container fields and finite values do not establish economic compatibility",
+      "unresolved_semantics": "Percentile definition/direction/window, source history, actual helper-method distinction",
+      "requiredness_assignment": null,
+      "applicability_truth": null,
+      "legacy_reduction_refs": {
+        "prior": {
+          "id": "legacy-score_v_prior-and-_weighted",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        },
+        "candidate": {
+          "id": "legacy-score_v_candidates",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        }
+      },
+      "assessment_refs": {
+        "quality": "Original QualityState/DataStamp only; no semantic upgrade",
+        "confidence": null,
+        "input_coverage": null,
+        "method_completeness": null,
+        "scoring_validity": null,
+        "ranking_eligibility": null,
+        "publication_eligibility": null
+      },
+      "weight_profile_ref": {
+        "id": "existing-weight-tree-contract-not-wired",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/personal/weights.py"
+      },
+      "disposition": {
+        "economic_concept": "KEEP",
+        "control_metadata": "ALIGN_INACTIVE_PROPOSED",
+        "actual_method_or_numeric_policy": "CHANGE_REQUIRES_D3"
+      },
+      "raw_value_caution": "Legacy observation raw_value stores normalized score; actual raw metrics cannot be reconstructed by inversion",
+      "production_enabled": false,
+      "legacy_replay_ref": {
+        "id": "synthetic-current-source-replay",
+        "version": "audit-2026-10-05",
+        "sha256": "15fbdb8acfd4250b4fd100a348325525c0416dfcd68400ea7ef2e4abb5cb9dc6",
+        "locator": "repo:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/v_replay.json"
+      }
+    },
+    {
+      "factor_ref": {
+        "id": "V:sector_context",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/factors.py"
+      },
+      "observed_method_source_ref": {
+        "id": "legacy-source-anchor:map_raw:sector_context",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "method_ref": null,
+      "method_version_ref": null,
+      "method_identity_status": "LEGACY_NOT_REGISTERED_CHARACTERIZATION_ONLY",
+      "input_contract_ref": {
+        "id": "legacy-RawFundamentals-container",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/contracts/raw.py"
+      },
+      "normalization_ref": {
+        "id": "legacy-transform-anchor:map_raw:sector_context",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "observed_input_fields": [
+        "sector_context_score"
+      ],
+      "observed_transform": "Passthrough externally supplied score",
+      "metric_units_horizon_comparator_authority": "UNASSESSED; container fields and finite values do not establish economic compatibility",
+      "unresolved_semantics": "Rubric authority, time basis, source scope and economic applicability",
+      "requiredness_assignment": null,
+      "applicability_truth": null,
+      "legacy_reduction_refs": {
+        "prior": {
+          "id": "legacy-score_v_prior-and-_weighted",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        },
+        "candidate": {
+          "id": "legacy-score_v_candidates",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        }
+      },
+      "assessment_refs": {
+        "quality": "Original QualityState/DataStamp only; no semantic upgrade",
+        "confidence": null,
+        "input_coverage": null,
+        "method_completeness": null,
+        "scoring_validity": null,
+        "ranking_eligibility": null,
+        "publication_eligibility": null
+      },
+      "weight_profile_ref": {
+        "id": "existing-weight-tree-contract-not-wired",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/personal/weights.py"
+      },
+      "disposition": {
+        "economic_concept": "KEEP",
+        "control_metadata": "ALIGN_INACTIVE_PROPOSED",
+        "actual_method_or_numeric_policy": "CHANGE_REQUIRES_D3"
+      },
+      "raw_value_caution": "Legacy observation raw_value stores normalized score; actual raw metrics cannot be reconstructed by inversion",
+      "production_enabled": false,
+      "legacy_replay_ref": {
+        "id": "synthetic-current-source-replay",
+        "version": "audit-2026-10-05",
+        "sha256": "15fbdb8acfd4250b4fd100a348325525c0416dfcd68400ea7ef2e4abb5cb9dc6",
+        "locator": "repo:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/v_replay.json"
+      }
+    },
+    {
+      "factor_ref": {
+        "id": "V:theme_premium_discount",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/factors.py"
+      },
+      "observed_method_source_ref": {
+        "id": "legacy-source-anchor:map_raw:theme_premium_discount",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "method_ref": null,
+      "method_version_ref": null,
+      "method_identity_status": "LEGACY_NOT_REGISTERED_CHARACTERIZATION_ONLY",
+      "input_contract_ref": {
+        "id": "legacy-RawFundamentals-container",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/contracts/raw.py"
+      },
+      "normalization_ref": {
+        "id": "legacy-transform-anchor:map_raw:theme_premium_discount",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "observed_input_fields": [
+        "theme_premium_score"
+      ],
+      "observed_transform": "Passthrough externally supplied score",
+      "metric_units_horizon_comparator_authority": "UNASSESSED; container fields and finite values do not establish economic compatibility",
+      "unresolved_semantics": "Theme/rubric authority, sign meaning and permitted scale/domain",
+      "requiredness_assignment": null,
+      "applicability_truth": null,
+      "legacy_reduction_refs": {
+        "prior": {
+          "id": "legacy-score_v_prior-and-_weighted",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        },
+        "candidate": {
+          "id": "legacy-score_v_candidates",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        }
+      },
+      "assessment_refs": {
+        "quality": "Original QualityState/DataStamp only; no semantic upgrade",
+        "confidence": null,
+        "input_coverage": null,
+        "method_completeness": null,
+        "scoring_validity": null,
+        "ranking_eligibility": null,
+        "publication_eligibility": null
+      },
+      "weight_profile_ref": {
+        "id": "existing-weight-tree-contract-not-wired",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/personal/weights.py"
+      },
+      "disposition": {
+        "economic_concept": "KEEP",
+        "control_metadata": "ALIGN_INACTIVE_PROPOSED",
+        "actual_method_or_numeric_policy": "CHANGE_REQUIRES_D3"
+      },
+      "raw_value_caution": "Legacy observation raw_value stores normalized score; actual raw metrics cannot be reconstructed by inversion",
+      "production_enabled": false,
+      "legacy_replay_ref": {
+        "id": "synthetic-current-source-replay",
+        "version": "audit-2026-10-05",
+        "sha256": "15fbdb8acfd4250b4fd100a348325525c0416dfcd68400ea7ef2e4abb5cb9dc6",
+        "locator": "repo:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/v_replay.json"
+      }
+    },
+    {
+      "factor_ref": {
+        "id": "V:reverse_dcf",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/factors.py"
+      },
+      "observed_method_source_ref": {
+        "id": "legacy-source-anchor:_reverse_dcf_score",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "method_ref": null,
+      "method_version_ref": null,
+      "method_identity_status": "LEGACY_NOT_REGISTERED_CHARACTERIZATION_ONLY",
+      "input_contract_ref": {
+        "id": "legacy-RawFundamentals-container",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/contracts/raw.py"
+      },
+      "normalization_ref": {
+        "id": "legacy-transform-anchor:_reverse_dcf_score",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "observed_input_fields": [
+        "implied_growth",
+        "price",
+        "eps",
+        "revenue",
+        "revenue_prev"
+      ],
+      "observed_transform": "Supplied implied growth or P/E proxy compared with realized revenue YoY",
+      "metric_units_horizon_comparator_authority": "UNASSESSED; container fields and finite values do not establish economic compatibility",
+      "unresolved_semantics": "Solver/proxy authority, target horizon, realized/forecast comparison and inputs",
+      "requiredness_assignment": null,
+      "applicability_truth": null,
+      "legacy_reduction_refs": {
+        "prior": {
+          "id": "legacy-score_v_prior-and-_weighted",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        },
+        "candidate": {
+          "id": "legacy-score_v_candidates",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        }
+      },
+      "assessment_refs": {
+        "quality": "Original QualityState/DataStamp only; no semantic upgrade",
+        "confidence": null,
+        "input_coverage": null,
+        "method_completeness": null,
+        "scoring_validity": null,
+        "ranking_eligibility": null,
+        "publication_eligibility": null
+      },
+      "weight_profile_ref": {
+        "id": "existing-weight-tree-contract-not-wired",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/personal/weights.py"
+      },
+      "disposition": {
+        "economic_concept": "KEEP",
+        "control_metadata": "ALIGN_INACTIVE_PROPOSED",
+        "actual_method_or_numeric_policy": "CHANGE_REQUIRES_D3"
+      },
+      "raw_value_caution": "Legacy observation raw_value stores normalized score; actual raw metrics cannot be reconstructed by inversion",
+      "production_enabled": false,
+      "legacy_replay_ref": {
+        "id": "synthetic-current-source-replay",
+        "version": "audit-2026-10-05",
+        "sha256": "15fbdb8acfd4250b4fd100a348325525c0416dfcd68400ea7ef2e4abb5cb9dc6",
+        "locator": "repo:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/v_replay.json"
+      }
+    },
+    {
+      "factor_ref": {
+        "id": "V:margin_of_safety",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/factors.py"
+      },
+      "observed_method_source_ref": {
+        "id": "legacy-source-anchor:_mos_score",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "method_ref": null,
+      "method_version_ref": null,
+      "method_identity_status": "LEGACY_NOT_REGISTERED_CHARACTERIZATION_ONLY",
+      "input_contract_ref": {
+        "id": "legacy-RawFundamentals-container",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/contracts/raw.py"
+      },
+      "normalization_ref": {
+        "id": "legacy-transform-anchor:_mos_score",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/raw_map.py"
+      },
+      "observed_input_fields": [
+        "dcf_value",
+        "price",
+        "eps"
+      ],
+      "observed_transform": "Conservative DCF/price branch; otherwise fixed-EPS-multiple proxy",
+      "metric_units_horizon_comparator_authority": "UNASSESSED; container fields and finite values do not establish economic compatibility",
+      "unresolved_semantics": "Conservative value authority, price/value basis, uncertainty/stress/fallback meaning",
+      "requiredness_assignment": null,
+      "applicability_truth": null,
+      "legacy_reduction_refs": {
+        "prior": {
+          "id": "legacy-score_v_prior-and-_weighted",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        },
+        "candidate": {
+          "id": "legacy-score_v_candidates",
+          "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+          "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+          "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/qgv/scoring.py"
+        }
+      },
+      "assessment_refs": {
+        "quality": "Original QualityState/DataStamp only; no semantic upgrade",
+        "confidence": null,
+        "input_coverage": null,
+        "method_completeness": null,
+        "scoring_validity": null,
+        "ranking_eligibility": null,
+        "publication_eligibility": null
+      },
+      "weight_profile_ref": {
+        "id": "existing-weight-tree-contract-not-wired",
+        "version": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+        "locator": "git:4fb08a05728d83519b72a2bd995669f0cb06003a:implementation/src/investment_system/personal/weights.py"
+      },
+      "disposition": {
+        "economic_concept": "KEEP",
+        "control_metadata": "ALIGN_INACTIVE_PROPOSED",
+        "actual_method_or_numeric_policy": "CHANGE_REQUIRES_D3"
+      },
+      "raw_value_caution": "Legacy observation raw_value stores normalized score; actual raw metrics cannot be reconstructed by inversion",
+      "production_enabled": false,
+      "legacy_replay_ref": {
+        "id": "synthetic-current-source-replay",
+        "version": "audit-2026-10-05",
+        "sha256": "15fbdb8acfd4250b4fd100a348325525c0416dfcd68400ea7ef2e4abb5cb9dc6",
+        "locator": "repo:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/v_replay.json"
+      }
+    }
+  ],
+  "historical_result_rewrite": false,
+  "Official_Custom_binding_active": false,
+  "consumer_policy_active": false,
+  "unknown_assessment_rule": "Null is unassessed, not implicitly complete/valid/eligible",
+  "shared_input_overlap": "Fundamental value, MOS and reverse-DCF fallbacks share P/E input family; no independence or new penalty claimed"
+}

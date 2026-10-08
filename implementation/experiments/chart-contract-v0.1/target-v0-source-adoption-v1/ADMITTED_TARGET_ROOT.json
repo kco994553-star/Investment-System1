@@ -1,0 +1,269 @@
+{
+  "schema": "target-v0-admitted-source-root/1",
+  "recorded_at_utc": "2026-10-08T12:11:50.338241+00:00",
+  "root_identity": {
+    "namespace": "USER_SOURCE_DOCUMENT",
+    "portfolio_identity": "Investment-System1 · Portfolio TARGET (user-owned source file)",
+    "identity_basis": "Original user file header, schema PORTFOLIO_TARGET/0.1 and version v0; this is a source-document root, not a runtime financial identifier",
+    "root_reference": "https://github.com/kco994553-star/Investment-System1/blob/a81a45a087b4409d2df11bf34b10a7d79bf82c84/implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+    "root_revision_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+    "portfolio_version": "v0"
+  },
+  "current_source_authority": {
+    "owner": "USER",
+    "adopted_by": "USER",
+    "status": "ADOPTED",
+    "provenance": {
+      "derived_from": "QGV Portfolio Specification v1.1 §2 (2026-09-14, 사용자 작성)",
+      "adopted_by": "USER",
+      "adopted_at": "2026-10-08T20:37:00+09:00",
+      "adoption_note": "사용자가 v1.1 구성을 수정 없이 TARGET v0으로 채택함"
+    },
+    "declared_clocks": {
+      "effective_at": "2026-10-08T20:37:00+09:00",
+      "available_at": "2026-10-08T20:37:00+09:00",
+      "adopted_at": "2026-10-08T20:37:00+09:00"
+    },
+    "utc_equivalence": {
+      "effective_at_utc": "2026-10-08T11:37:00Z",
+      "available_at_utc": "2026-10-08T11:37:00Z",
+      "adopted_at_utc": "2026-10-08T11:37:00Z"
+    },
+    "effective_period_semantics": "Valid from user-declared adoption instant only; no backdating to original2026-09-14. Future changes require user-modified file/new version/adopted_at with previous git versions preserved.",
+    "effective_to": null,
+    "effective_to_role": "Upper validity endpoint not supplied; currentness is source-route readback at this observation, not a perpetual grant.",
+    "authoritative_route": "main/chart-source-evidence-v1",
+    "current_route_readback_commit": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+    "route_readback_method": "GitHub connector GET refs/heads/main/chart-source-evidence-v1; exact source merge still current",
+    "current_as_of": "2026-10-08T12:11:50.338241+00:00"
+  },
+  "complete_source": {
+    "exact_source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+    "source_bytes": 4463,
+    "unit": "weight_units",
+    "denominator_definition": "Full user-supplied TARGET allocation: exactly19 source rows plus explicit cash",
+    "total_units": 10000,
+    "cash_units": 0,
+    "constituent_count": 19,
+    "theme_count": 4,
+    "source_rows": [
+      {
+        "source_pointer": "/themes/0/holdings/0",
+        "theme_id": "semi_equipment",
+        "theme_label": "반도체 장비",
+        "label": "ASML Holding",
+        "ticker_hint": "ASML",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 900,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/0/holdings/1",
+        "theme_id": "semi_equipment",
+        "theme_label": "반도체 장비",
+        "label": "Lam Research",
+        "ticker_hint": "LRCX",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/0/holdings/2",
+        "theme_id": "semi_equipment",
+        "theme_label": "반도체 장비",
+        "label": "KLA Corporation",
+        "ticker_hint": "KLAC",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 550,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/0/holdings/3",
+        "theme_id": "semi_equipment",
+        "theme_label": "반도체 장비",
+        "label": "Tokyo Electron",
+        "ticker_hint": "8035",
+        "listing": "USER_DECIDED: TSE (Tokyo, 8035)",
+        "weight_units": 500,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/0/holdings/4",
+        "theme_id": "semi_equipment",
+        "theme_label": "반도체 장비",
+        "label": "한미반도체",
+        "ticker_hint": "042700",
+        "listing": "USER_DECIDED: KRX (042700)",
+        "weight_units": 450,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/1/holdings/0",
+        "theme_id": "ai_semi",
+        "theme_label": "AI·반도체",
+        "label": "NVIDIA",
+        "ticker_hint": "NVDA",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 800,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/1/holdings/1",
+        "theme_id": "ai_semi",
+        "theme_label": "AI·반도체",
+        "label": "Advanced Micro Devices",
+        "ticker_hint": "AMD",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/1/holdings/2",
+        "theme_id": "ai_semi",
+        "theme_label": "AI·반도체",
+        "label": "Broadcom",
+        "ticker_hint": "AVGO",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/1/holdings/3",
+        "theme_id": "ai_semi",
+        "theme_label": "AI·반도체",
+        "label": "Qualcomm",
+        "ticker_hint": "QCOM",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 400,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/1/holdings/4",
+        "theme_id": "ai_semi",
+        "theme_label": "AI·반도체",
+        "label": "Intel",
+        "ticker_hint": "INTC",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 300,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/2/holdings/0",
+        "theme_id": "big_tech",
+        "theme_label": "Big Tech",
+        "label": "Microsoft",
+        "ticker_hint": "MSFT",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 700,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/2/holdings/1",
+        "theme_id": "big_tech",
+        "theme_label": "Big Tech",
+        "label": "Alphabet",
+        "ticker_hint": "GOOGL",
+        "listing": "USER_DECIDED: Class A (GOOGL)",
+        "weight_units": 700,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/2/holdings/2",
+        "theme_id": "big_tech",
+        "theme_label": "Big Tech",
+        "label": "Amazon",
+        "ticker_hint": "AMZN",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/0",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "RTX Corporation",
+        "ticker_hint": "RTX",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/1",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "Stryker",
+        "ticker_hint": "SYK",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 550,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/2",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "Eaton",
+        "ticker_hint": "ETN",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/3",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "Hubbell",
+        "ticker_hint": "HUBB",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 350,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/4",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "GE Vernova",
+        "ticker_hint": "GEV",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 300,
+        "security_id": null
+      },
+      {
+        "source_pointer": "/themes/3/holdings/5",
+        "theme_id": "other_industrial",
+        "theme_label": "기타산업",
+        "label": "Rockwell Automation",
+        "ticker_hint": "ROK",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 200,
+        "security_id": null
+      }
+    ],
+    "completeness": "19 distinct document-pointer rows; each source row belongs to one declared Theme; supplied Theme subtotal checks and total+cash=10000 pass with no alteration or rescaling.",
+    "mapping": {
+      "admitted": 0,
+      "unresolved": 19,
+      "total": 19
+    },
+    "security_binding_admission": false
+  },
+  "source_integrity_receipt": "NATIVE_SOURCE_CONSUMPTION.json",
+  "product_boundary": {
+    "publication_grant": null,
+    "source_display_state": "TARGET v0 / USER / REFERENCE (bounded display; production not admitted)",
+    "actual": "NOT_AVAILABLE_NO_TARGET_FALLBACK",
+    "historical_pit": "NOT_VERIFIED",
+    "gics_type_overlap": "NOT_AVAILABLE",
+    "no_financial_ids_generated": true
+  },
+  "source_claim_consumption": {
+    "Main_claim_global": "d21773b88f84fa00a2e1e585d1f3c170f7ec611c",
+    "Main_lease": "target-v0-20261008T114634Z/target-display",
+    "branch": "main/target-v0-display-20261008",
+    "expires_at_utc": "2026-10-08T13:46:34Z",
+    "native_files_authenticated": true,
+    "source_PR": 64,
+    "source_merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+    "source_merge_tree": "c9ce0c0983f6a7775510401ff1f0ce158fc72648",
+    "gate_a_s1_identity_dependency": "A-S1 source-root closure independent of A-S2 common Security bindings per pinned Chart criteria line110"
+  }
+}

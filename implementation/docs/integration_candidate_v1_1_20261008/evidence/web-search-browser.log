@@ -1,0 +1,9 @@
+PASS browser global search exact/alias/prefix/fuzzy same canonical route
+PASS browser industry and macro navigation; no fake investor
+PASS browser ko/en UI, persistence, QGV/Technical/Macro/Portfolio/Leaderboard/source_original unchanged
+PASS browser source language filter independent; localized summaries retain raw originals
+PASS browser existing News Network labels use global display locale and preserve model
+PASS browser research controls localized, Frozen payload/preview unchanged
+PASS browser mobile/desktop search and settings without overflow
+PASS browser storage failure preserves settings source
+{"passed":true,"checks":["global search exact/alias/prefix/fuzzy same canonical route","industry and macro navigation; no fake investor","ko/en UI, persistence, QGV/Technical/Macro/Portfolio/Leaderboard/source_original unchanged","source language filter independent; localized summaries retain raw originals","existing News Network labels use global display locale and preserve model","research controls localized, Frozen payload/preview unchanged","mobile/desktop search and settings without overflow","storage failure preserves settings source"],"errors":[]}

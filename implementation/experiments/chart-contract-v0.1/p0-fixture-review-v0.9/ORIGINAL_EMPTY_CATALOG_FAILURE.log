@@ -1,0 +1,14 @@
+AssertionError [ERR_ASSERTION]: empty catalog does not certify type exposure
++ actual - expected
+
++ 'AVAILABLE'
+- 'NOT_AVAILABLE'
+
+    at /workspace/scratch/9de0281e56bb/repo/implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/fixture_browser_test.cjs:32:12 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'AVAILABLE',
+  expected: 'NOT_AVAILABLE',
+  operator: 'strictEqual',
+  diff: 'simple'
+}

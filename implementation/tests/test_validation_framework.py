@@ -39,7 +39,7 @@ def test_adapters_do_not_mutate_qgv():
     TechnicalAdapter().snapshot("nvda", AS_OF, [0.01, 0.02], qgv=qgv)
     MacroAdapter().snapshot(AS_OF, {"growth": 0.02, "inflation": 0.02}, qgv=qgv)
     assert (qgv.Q_score, qgv.G_score, qgv.V_score) == before
-    assert qgv.V_policy_status.value == "PROVISIONAL_INITIAL_PRIOR"
+    assert qgv.V_policy_status.value == "STANDARD v1 · UNCALIBRATED"
 
 
 def test_ablation_and_shared_engine_purpose():

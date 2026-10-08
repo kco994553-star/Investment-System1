@@ -1,0 +1,232 @@
+{
+  "recorded_at_utc": "2026-10-05T01:10:45Z",
+  "canonical": {
+    "branch": "claude/investment-system-top500-validation-alrugm",
+    "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "chart_takeover": {
+    "sha": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
+    "branch": "codex/chart-contract-mcp-api-v0-1",
+    "ahead": 10,
+    "behind": 0
+  },
+  "lease_acquisition": {
+    "sha": "ce978a5bebb17abd5b6072cdbc6f2db82cf21b18",
+    "parent": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
+    "run_id": "manual-root-v06-20261005005901",
+    "verified": true
+  },
+  "global": {
+    "sha": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+    "handoff": "GCH014",
+    "status": "GSI020",
+    "writer": "Claude Primary Integration Writer"
+  },
+  "scoped_prs_at_intake": [
+    {
+      "number": 44,
+      "title": "QGV Common Contract vNext — INACTIVE / SPEC-ONLY",
+      "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "head_ref": "codex/qgv-common-contract-vnext-spec-2026-10-04",
+      "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_ref": "claude/investment-system-top500-validation-alrugm",
+      "draft": true,
+      "state": "open",
+      "updated_at": "2026-10-04T23:54:41Z",
+      "merged_at": null
+    },
+    {
+      "number": 42,
+      "title": "[proposal] Hardened Track C FPIA (CDR-014): integration acceptance on merge-result SHAs; frozen tools unchanged",
+      "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "head_ref": "integration/fpia-hardened-v1",
+      "base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "base_ref": "integration/cdr012-successor-trial-2026-10-04",
+      "draft": true,
+      "state": "open",
+      "updated_at": "2026-10-05T00:40:32Z",
+      "merged_at": null
+    },
+    {
+      "number": 41,
+      "title": "Chart P0 readiness: Target Theme slice and Market admission",
+      "head": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
+      "head_ref": "codex/chart-contract-mcp-api-v0-1",
+      "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "base_ref": "claude/investment-system-top500-validation-alrugm",
+      "draft": true,
+      "state": "open",
+      "updated_at": "2026-10-05T00:43:06Z",
+      "merged_at": null
+    },
+    {
+      "number": 36,
+      "title": "[proposal] Web production-shaped state presentation (freshness, withheld metadata, ko/en, error fallback)",
+      "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "head_ref": "integration/web/production-state-presentation-v1",
+      "base": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "base_ref": "integration/web/research-render-guard-v1",
+      "draft": true,
+      "state": "open",
+      "updated_at": "2026-10-03T11:05:25Z",
+      "merged_at": null
+    },
+    {
+      "number": 34,
+      "title": "[proposal] Web render guard: research/provisional sections never render as LIVE/FROZEN (G3)",
+      "head": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "head_ref": "integration/web/research-render-guard-v1",
+      "base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "base_ref": "feature/producer-infrastructure-v1",
+      "draft": true,
+      "state": "open",
+      "updated_at": "2026-10-03T10:05:44Z",
+      "merged_at": null
+    },
+    {
+      "number": 19,
+      "title": "Add QGV invalidation binding without activating display",
+      "head": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "head_ref": "feature/qgv-invalidation-binding-v1",
+      "base": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "base_ref": "feature/p01-research-publication-v1",
+      "draft": true,
+      "state": "open",
+      "updated_at": "2026-10-02T11:56:48Z",
+      "merged_at": null
+    },
+    {
+      "number": 18,
+      "title": "US equity trading session v1: calendar vintage binder and close-availability guard",
+      "head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "head_ref": "feature/us-equity-session-v1",
+      "base": "ce587040e7beb31b66a423eab6ca89767f2a2cf8",
+      "base_ref": "feature/technical-real-model-v1",
+      "draft": true,
+      "state": "open",
+      "updated_at": "2026-10-02T10:54:13Z",
+      "merged_at": null
+    },
+    {
+      "number": 17,
+      "title": "P01 research publication v1: envelope and predicate, display stays off",
+      "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "head_ref": "feature/p01-research-publication-v1",
+      "base": "f8af596df4d235fee1f29bf0cb6c9a3cc0f89f36",
+      "base_ref": "feature/producer-infrastructure-v1",
+      "draft": true,
+      "state": "open",
+      "updated_at": "2026-10-02T10:11:09Z",
+      "merged_at": null
+    }
+  ],
+  "qgv_missing_data_owner": {
+    "branch": "codex/qgv-missing-data-decision-gate-2026-10-05",
+    "sha": "ed907b8f5a046008319cddecc6ef40b9bd6759dc",
+    "status": "DECISION_READY_NOT_APPROVED_INACTIVE_SPEC_ONLY"
+  },
+  "open_pr_count": 39,
+  "pr42_workflows": [
+    {
+      "id": 37234682865,
+      "name": "technical-real-model",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 26,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682865/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682865/logs",
+      "workflow_id": 372119674
+    },
+    {
+      "id": 37234682891,
+      "name": "us-equity-session",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 24,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682891/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682891/logs",
+      "workflow_id": 372899684
+    },
+    {
+      "id": 37234682853,
+      "name": "qgv-invalidation-binding",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 20,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682853/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682853/logs",
+      "workflow_id": 373058481
+    },
+    {
+      "id": 37234682866,
+      "name": "p01-research-publication",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 22,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682866/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682866/logs",
+      "workflow_id": 372992558
+    },
+    {
+      "id": 37234682873,
+      "name": "technical-real-producer",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 29,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682873/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682873/logs",
+      "workflow_id": 372087969
+    },
+    {
+      "id": 37234682890,
+      "name": "sec-primary-disclosure",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 21,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682890/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682890/logs",
+      "workflow_id": 372894520
+    },
+    {
+      "id": 37234682864,
+      "name": "track-c-fpia",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 3,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682864/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682864/logs",
+      "workflow_id": 374693747
+    }
+  ],
+  "automation_read_only_inventory": [
+    {
+      "id": "6ac2ef0621908191909a27af4c91f101",
+      "title": "Chart CI 후속 확인",
+      "is_enabled": true,
+      "timing_mode": "condition_watch",
+      "conversation_id": "6ac2ef20-372c-83ee-9857-3ed62a8ed411",
+      "updated_at": "2026-10-05T01:04:49.429295+00:00",
+      "last_run_time": "2026-10-05T00:45:19.511130+00:00"
+    },
+    {
+      "id": "6ac2eeedb21c81919f04168d69672f0a",
+      "title": "Chart PR 이벤트 재개",
+      "is_enabled": true,
+      "timing_mode": "condition_watch",
+      "conversation_id": "6ac2f2a6-6938-83ec-8ea0-52e22ad3194f",
+      "updated_at": "2026-10-05T01:01:16.004493+00:00",
+      "last_run_time": "2026-10-05T01:01:15.979853+00:00"
+    }
+  ],
+  "task_conversation_discrepancy": "Actual tool conversation IDs differ from v0.5 setup conversation ID; IDs/enabled state fresh verified; tasks not moved/recreated.",
+  "semantic_owner_delta": "NONE_NO_NEW_ADMISSION_OR_GOVERNANCE_CLOSURE",
+  "chart_authorized_delta": "Offline returned-packet executable preflight gap; current user continuation",
+  "remaining_gate_ids": [
+    "A-S1",
+    "A-S2",
+    "A-S3",
+    "A-G1",
+    "A-G2",
+    "A-G3"
+  ]
+}

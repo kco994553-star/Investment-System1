@@ -1,0 +1,2228 @@
+{
+  "B1_evidence_update": {
+    "finding": "all six observed method inputs pinned; G1/G4 mismatch, G2/G3/G5/G6 authority/period/rubric unresolved; behavior proof is not requiredness authority",
+    "prior_semantic_classification_preserved": true,
+    "production_requiredness_assigned": 0,
+    "promoted_to_supported": []
+  },
+  "committed_SEC_fixture": {
+    "G_scores": {
+      "eps_fcf_per_share_growth": {
+        "factor_id": "eps_fcf_per_share_growth",
+        "notes": "SYNTHETIC;eps or fcf yoy;missing",
+        "quality": "MISSING_DATA",
+        "raw_value": null,
+        "score_0_100": null,
+        "stamp_id": "sec_SYNTHETIC-NVDA-FIXTURE_2025-03-01"
+      },
+      "excess_growth_vs_industry": {
+        "factor_id": "excess_growth_vs_industry",
+        "notes": "SYNTHETIC;yoy minus industry;missing",
+        "quality": "MISSING_DATA",
+        "raw_value": null,
+        "score_0_100": null,
+        "stamp_id": "sec_SYNTHETIC-NVDA-FIXTURE_2025-03-01"
+      },
+      "growth_durability": {
+        "factor_id": "growth_durability",
+        "notes": "SYNTHETIC;rubric;missing",
+        "quality": "MISSING_DATA",
+        "raw_value": null,
+        "score_0_100": null,
+        "stamp_id": "sec_SYNTHETIC-NVDA-FIXTURE_2025-03-01"
+      },
+      "growth_efficiency": {
+        "factor_id": "growth_efficiency",
+        "notes": "SYNTHETIC;yoy / capital intensity",
+        "quality": "SYNTHETIC",
+        "raw_value": 83.95193549669496,
+        "score_0_100": 83.95193549669496,
+        "stamp_id": "sec_SYNTHETIC-NVDA-FIXTURE_2025-03-01"
+      },
+      "next_3_5y_growth": {
+        "factor_id": "next_3_5y_growth",
+        "notes": "SYNTHETIC;proxy: last yoy; not a 3-5y forecast",
+        "quality": "SYNTHETIC",
+        "raw_value": 100.0,
+        "score_0_100": 100.0,
+        "stamp_id": "sec_SYNTHETIC-NVDA-FIXTURE_2025-03-01"
+      },
+      "revenue_growth": {
+        "factor_id": "revenue_growth",
+        "notes": "SYNTHETIC;revenue yoy",
+        "quality": "SYNTHETIC",
+        "raw_value": 100.0,
+        "score_0_100": 100.0,
+        "stamp_id": "sec_SYNTHETIC-NVDA-FIXTURE_2025-03-01"
+      }
+    },
+    "as_of": "2025-03-01T00:00:00+00:00",
+    "evidence_kind": "COMMITTED_SYNTHETIC_SEC_FIXTURE_REPLAY",
+    "fixture_path": "implementation/fixtures/sec_companyfacts_mini.json",
+    "fixture_sha256": "36b7371ae941b63adb5632eee1d5e4dfff50c615248d6471fd4ed3a740a01397",
+    "precision_caveats": [
+      "filed has date precision and is coerced to midnight UTC by legacy resolver",
+      "fixture lacks form/start/fy/fp/accession; annual/adjacency/authoritative filing lineage NOT_VERIFIED",
+      "shared DataStamp period start/end absent; SEC selected row precision not upgraded",
+      "synthetic fixture; no real PIT/OOS eligibility established"
+    ],
+    "raw": {
+      "capital_return": null,
+      "cash": 8589000000.0,
+      "cet1": null,
+      "company_id": "SYNTHETIC-NVDA-FIXTURE",
+      "competitive_advantage_rubric": null,
+      "credit_quality": null,
+      "dcf_value": null,
+      "deposit_funding": null,
+      "ebit": null,
+      "ebit_prev": null,
+      "eps": null,
+      "eps_prev": null,
+      "equity": 79327000000.0,
+      "fcf": null,
+      "growth_durability_rubric": null,
+      "hist_valuation_percentile": null,
+      "industry_revenue_growth": null,
+      "invested_capital": 87790000000.0,
+      "management_quality_rubric": null,
+      "market_share": null,
+      "net_income": 72880000000.0,
+      "nim": null,
+      "own_multiple": null,
+      "peer_median_market_share": null,
+      "peer_median_multiple": null,
+      "period_quality": "PARTIAL",
+      "price": null,
+      "profile_kind": "GENERAL_CORPORATE",
+      "reporting_currency": "USD",
+      "revenue": 130497000000.0,
+      "revenue_prev": 60922000000.0,
+      "reverse_dcf_implied_growth": null,
+      "rotce": null,
+      "sector_context_score": null,
+      "shares": null,
+      "source_kind": "SYNTHETIC",
+      "stamp": {
+        "available_at": "2025-02-26T00:00:00+00:00",
+        "data_stamp_id": "sec_SYNTHETIC-NVDA-FIXTURE_2025-03-01",
+        "estimated": false,
+        "estimation_method": null,
+        "freshness_status": "GREEN",
+        "market_time_status": "CLOSE",
+        "observed_at": "2025-02-26T00:00:00+00:00",
+        "period_end": null,
+        "period_start": null,
+        "published_at": "2025-02-26T00:00:00+00:00",
+        "quality_flags": [
+          "UNLABELED_SEC_FORM"
+        ],
+        "source_provider": "sec-companyfacts",
+        "source_reference": "CIK0001045810",
+        "source_type": "fundamentals",
+        "synthetic": true
+      },
+      "theme_premium_score": null,
+      "total_debt": 8463000000.0,
+      "wacc": null
+    },
+    "selected_revenue_rows": {
+      "current": {
+        "accn": "",
+        "amended": false,
+        "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "end": "2025-01-26",
+        "filed": "2025-02-26T00:00:00+00:00",
+        "form": "",
+        "fp": "",
+        "fy": null,
+        "labeled": false,
+        "start": "",
+        "taxonomy": "us-gaap",
+        "unit": "USD",
+        "value": 130497000000.0
+      },
+      "previous": {
+        "accn": "",
+        "amended": false,
+        "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "end": "2024-01-28",
+        "filed": "2024-02-21T00:00:00+00:00",
+        "form": "",
+        "fp": "",
+        "fy": null,
+        "labeled": false,
+        "start": "",
+        "taxonomy": "us-gaap",
+        "unit": "USD",
+        "value": 60922000000.0
+      }
+    }
+  },
+  "not_run": [
+    "real raw replay",
+    "real PIT/OOS",
+    "forecast comparison",
+    "production replacement",
+    "full regression",
+    "Actions",
+    "Holdout",
+    "scheduler hops"
+  ],
+  "persisted_historical_sample": {
+    "archived_payload_mutated": false,
+    "historical_method_evidence": "NOT_AVAILABLE_IN_PAYLOAD; current source is not retroactively assigned to old result",
+    "historical_method_id": null,
+    "historical_method_version": null,
+    "kind": "INACTIVE_HISTORICAL_IDENTITY_ATTACHMENT_EXAMPLE",
+    "legacy_as_of": "2026-09-14T00:00:00+00:00",
+    "legacy_calculation_version_fields": {
+      "implementation_line": "investment_system_impl-v0.2.0",
+      "qgv_analysis_contract": "v1.7.6",
+      "qgv_standard_version": "v1.5-balanced",
+      "qgv_system_version": "v1.7"
+    },
+    "legacy_report_path": "implementation/reports/official_v11_book_snapshots.json",
+    "legacy_report_sha256": "42222e29c5c310a634c772925daf4f51fb177bbf22e2585b697e781f6019cd5a",
+    "legacy_snapshot_id": "qgv_dc96c8074f4f",
+    "legacy_snapshot_payload_hash": "6562fe38f0a43f5935ed0882a749fb588c00366cbc9586a1407880ee6be02742",
+    "parallel_lineage_design": {
+      "factor_id": "eps_fcf_per_share_growth",
+      "legacy_ref": "qgv_dc96c8074f4f",
+      "new_method_ref": "separate future approved reference; unresolved and not executed",
+      "new_result_ref": "separate result id/hash; never update archived legacy snapshot payload",
+      "revision_parent_ref": "existing optional revision_parent_id can link snapshot revisions but does not bind factor method identity"
+    },
+    "recalculation_performed": false
+  },
+  "production_method_migration": "NOT_STARTED",
+  "real_cached_raw_replay": {
+    "blob_exists": false,
+    "constraint": "Manifest/STORE_INDEX historical disk-count claim is not proof that this checkout has bytes; no re-fetch attempted",
+    "expected_blob_path": "implementation/data/raw/blobs/companyfacts__0001045810",
+    "manifest_path": "implementation/data/raw/manifests/companyfacts__0001045810.json",
+    "manifest_sha256": "455239c4f2c473a44fdcd5555ac9968e4da74e8b52938fdf2cdf7cb1c4adcf1a",
+    "recorded_blob_sha256": "19ef503a5770f5660964b3c3aea6937579d9b359da344afe6a9adf59c63d26ff",
+    "recorded_fetch_time": "2026-09-25T08:29:08.581610+00:00",
+    "status": "NOT_RUN_SOURCE_BLOB_ABSENT"
+  },
+  "scheduler_hops_added": 0,
+  "source_owner_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "status": "CURRENT_SOURCE_LINEAGE_REPLAY_PASS",
+  "synthetic_cases": [
+    {
+      "G_coverage": "READY",
+      "G_notes": [],
+      "G_score": 76.29333333333334,
+      "case": "complete_eps_branch",
+      "factor_results": [
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "03f5e651fc09028258c6330d4a922a5e858eb8e28b67e20d839b839da15694ad",
+          "economic_input_intermediate": 0.19999999999999996,
+          "factor_id": "next_3_5y_growth",
+          "input_hash": "da50bb44c5f14bd40d3cb6a64e154cbfe091c01a2a2989cb56bae730a8073575",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;proxy: last yoy; not a 3-5y forecast",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 90.0,
+          "score": 90.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "695d43cb2adffc72ff1191df631b5dc6df08d41d4e1f23de4e7a350392dab914",
+          "economic_input_intermediate": 0.23999999999999994,
+          "factor_id": "growth_efficiency",
+          "input_hash": "88bd9f828096ec4eabe9847b659d090967381429611204b5d865505fca30db4d",
+          "input_values": {
+            "invested_capital": 100.0,
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;yoy / capital intensity",
+          "observed_method_id": "observed:revenue-yoy-capital-intensity-clip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 54.8,
+          "score": 54.8,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "invested_capital": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "c827109949a6ab70722348dde0dc97c2d22ed740a1e6ae23064e24d2afd6f1c2",
+          "economic_input_intermediate": 0.19999999999999996,
+          "factor_id": "revenue_growth",
+          "input_hash": "da50bb44c5f14bd40d3cb6a64e154cbfe091c01a2a2989cb56bae730a8073575",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;revenue yoy",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 90.0,
+          "score": 90.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "830841a383d4aa374fbfeb2156f33501f3d689d9039b69cbb3276fe8f960d126",
+          "economic_input_intermediate": 0.10000000000000009,
+          "factor_id": "eps_fcf_per_share_growth",
+          "input_hash": "95a9c9ac41ba67035499c647b55660bf1b6c1cc679c0318f0423153f88e56029",
+          "input_values": {
+            "eps": 2.2,
+            "eps_prev": 2.0,
+            "fcf": 20.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;eps or fcf yoy",
+          "observed_method_id": "observed:eps-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 70.00000000000001,
+          "score": 70.00000000000001,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "eps": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD/shares"
+            },
+            "eps_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD/shares"
+            },
+            "fcf": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "47c990e150bb622cd5af1d43888193b50d7bdb14f698c4f73c66296a342d258f",
+          "economic_input_intermediate": 70.0,
+          "factor_id": "growth_durability",
+          "input_hash": "aad479d8c69c155912effcd01f017cce756390c062ab98df9917583eea583207",
+          "input_values": {
+            "growth_durability_rubric": 70.0
+          },
+          "notes": "SYNTHETIC;rubric",
+          "observed_method_id": "observed:precomputed-growth-durability-rubric-passthrough",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 70.0,
+          "score": 70.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "growth_durability_rubric": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "score_0_100"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "1ef0cbb2dd2814aa0986604834bfb35e53abcf6dcc31b47c33519e22743473a1",
+          "economic_input_intermediate": 0.09999999999999995,
+          "factor_id": "excess_growth_vs_industry",
+          "input_hash": "3dedbfc91401df9ea880834ab863f3ed89c39c82675bc11d7d226f191a3883ab",
+          "input_values": {
+            "industry_revenue_growth": 0.1,
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;yoy minus industry",
+          "observed_method_id": "observed:revenue-yoy-industry-spread-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 83.33333333333331,
+          "score": 83.33333333333331,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "industry_revenue_growth": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "ratio"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:complete_eps_branch",
+              "unit": "USD"
+            }
+          }
+        }
+      ],
+      "raw_hash": "bbe2c71f6caaaef7080cc9d548ed139ba5afdb4fc06f6bbaf1141c6efb7cb0e0",
+      "synthetic": true
+    },
+    {
+      "G_coverage": "READY",
+      "G_notes": [],
+      "G_score": 65.79333333333334,
+      "case": "missing_eps_fcf_fallback",
+      "factor_results": [
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "b3976227ce18bfebe1dcf2ec9b72c30da735f470fcf68decec10afb648c8ea9d",
+          "economic_input_intermediate": 0.19999999999999996,
+          "factor_id": "next_3_5y_growth",
+          "input_hash": "da50bb44c5f14bd40d3cb6a64e154cbfe091c01a2a2989cb56bae730a8073575",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;proxy: last yoy; not a 3-5y forecast",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 90.0,
+          "score": 90.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "866fdeadf108ac3cec238018f358c7f21d596066831bac5bfb39475ba95cd714",
+          "economic_input_intermediate": 0.23999999999999994,
+          "factor_id": "growth_efficiency",
+          "input_hash": "88bd9f828096ec4eabe9847b659d090967381429611204b5d865505fca30db4d",
+          "input_values": {
+            "invested_capital": 100.0,
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;yoy / capital intensity",
+          "observed_method_id": "observed:revenue-yoy-capital-intensity-clip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 54.8,
+          "score": 54.8,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "invested_capital": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "b7aaac16135123b39c04200744161fdce758e309def00aeae3511ad3b57691f5",
+          "economic_input_intermediate": 0.19999999999999996,
+          "factor_id": "revenue_growth",
+          "input_hash": "da50bb44c5f14bd40d3cb6a64e154cbfe091c01a2a2989cb56bae730a8073575",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;revenue yoy",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 90.0,
+          "score": 90.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "41c0e217146da3609665872ea44f84aaa426700ec3acb99d86245b0442a352ea",
+          "economic_input_intermediate": -0.8,
+          "factor_id": "eps_fcf_per_share_growth",
+          "input_hash": "dfcc81b06bec695c54b8095b2ca5623332cf72c37659de4980aac4900a95a8bc",
+          "input_values": {
+            "eps": null,
+            "eps_prev": null,
+            "fcf": 20.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;eps or fcf yoy",
+          "observed_method_id": "observed:current-fcf-prior-revenue-minus-one-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 0.0,
+          "score": 0.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "eps": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD/shares"
+            },
+            "eps_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD/shares"
+            },
+            "fcf": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "897110681c8db48e713bf18301bf1e6b68306985935ca63aed9c540aa8e25e12",
+          "economic_input_intermediate": 70.0,
+          "factor_id": "growth_durability",
+          "input_hash": "aad479d8c69c155912effcd01f017cce756390c062ab98df9917583eea583207",
+          "input_values": {
+            "growth_durability_rubric": 70.0
+          },
+          "notes": "SYNTHETIC;rubric",
+          "observed_method_id": "observed:precomputed-growth-durability-rubric-passthrough",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 70.0,
+          "score": 70.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "growth_durability_rubric": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "score_0_100"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "7356955993a9f1fe127f7d022bbf260e693a5367d4b58195a06ad8f252081ef3",
+          "economic_input_intermediate": 0.09999999999999995,
+          "factor_id": "excess_growth_vs_industry",
+          "input_hash": "3dedbfc91401df9ea880834ab863f3ed89c39c82675bc11d7d226f191a3883ab",
+          "input_values": {
+            "industry_revenue_growth": 0.1,
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;yoy minus industry",
+          "observed_method_id": "observed:revenue-yoy-industry-spread-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 83.33333333333331,
+          "score": 83.33333333333331,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "industry_revenue_growth": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "ratio"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_fcf_fallback",
+              "unit": "USD"
+            }
+          }
+        }
+      ],
+      "raw_hash": "b54b6bd2e04ef27103bab28e1344db6a846e3ec060044d6a91614ba73dbaab12",
+      "synthetic": true
+    },
+    {
+      "G_coverage": "READY",
+      "G_notes": [],
+      "G_score": 65.79333333333334,
+      "case": "zero_prior_eps_fcf_fallback",
+      "factor_results": [
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "5a28c6b21960c1227b1eb73a50ea505ac2ab70e56a4259446e624df8ac29ecc0",
+          "economic_input_intermediate": 0.19999999999999996,
+          "factor_id": "next_3_5y_growth",
+          "input_hash": "da50bb44c5f14bd40d3cb6a64e154cbfe091c01a2a2989cb56bae730a8073575",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;proxy: last yoy; not a 3-5y forecast",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 90.0,
+          "score": 90.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "203432ea6385354574967c832bfd86c17b22b1f904d9213f56fccdae7f7d47ba",
+          "economic_input_intermediate": 0.23999999999999994,
+          "factor_id": "growth_efficiency",
+          "input_hash": "88bd9f828096ec4eabe9847b659d090967381429611204b5d865505fca30db4d",
+          "input_values": {
+            "invested_capital": 100.0,
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;yoy / capital intensity",
+          "observed_method_id": "observed:revenue-yoy-capital-intensity-clip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 54.8,
+          "score": 54.8,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "invested_capital": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "53c7c901a01ccca1e5090642032c799d69b12ea534579c145205e2aaa907eec4",
+          "economic_input_intermediate": 0.19999999999999996,
+          "factor_id": "revenue_growth",
+          "input_hash": "da50bb44c5f14bd40d3cb6a64e154cbfe091c01a2a2989cb56bae730a8073575",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;revenue yoy",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 90.0,
+          "score": 90.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "37f86b2125b25f6ea2faf145a7675ac1ddd40db7effafd8a7f33617b028801a6",
+          "economic_input_intermediate": -0.8,
+          "factor_id": "eps_fcf_per_share_growth",
+          "input_hash": "880fae30a91a8f90013605ae3b857515c2def02088f112d00f6c33dbc74f8508",
+          "input_values": {
+            "eps": 2.2,
+            "eps_prev": 0.0,
+            "fcf": 20.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;eps or fcf yoy",
+          "observed_method_id": "observed:current-fcf-prior-revenue-minus-one-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 0.0,
+          "score": 0.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "eps": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD/shares"
+            },
+            "eps_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD/shares"
+            },
+            "fcf": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "fcaef24c41c204f8241a5555ae2ddc3fe5ceb73be7b893992fc0a1be2e29f1d7",
+          "economic_input_intermediate": 70.0,
+          "factor_id": "growth_durability",
+          "input_hash": "aad479d8c69c155912effcd01f017cce756390c062ab98df9917583eea583207",
+          "input_values": {
+            "growth_durability_rubric": 70.0
+          },
+          "notes": "SYNTHETIC;rubric",
+          "observed_method_id": "observed:precomputed-growth-durability-rubric-passthrough",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 70.0,
+          "score": 70.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "growth_durability_rubric": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "score_0_100"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "924116350d95b969db09d590216f6b706eb3bb2bfa0e9e355c2962dddbcbbb25",
+          "economic_input_intermediate": 0.09999999999999995,
+          "factor_id": "excess_growth_vs_industry",
+          "input_hash": "3dedbfc91401df9ea880834ab863f3ed89c39c82675bc11d7d226f191a3883ab",
+          "input_values": {
+            "industry_revenue_growth": 0.1,
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;yoy minus industry",
+          "observed_method_id": "observed:revenue-yoy-industry-spread-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 83.33333333333331,
+          "score": 83.33333333333331,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "industry_revenue_growth": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "ratio"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:zero_prior_eps_fcf_fallback",
+              "unit": "USD"
+            }
+          }
+        }
+      ],
+      "raw_hash": "ad99a81ecfb5d2a39808b599499792a065286baa2da5d7a6f914ab67b361dbea",
+      "synthetic": true
+    },
+    {
+      "G_coverage": "PARTIAL",
+      "G_notes": [
+        "eps_fcf_per_share_growth=MISSING_DATA"
+      ],
+      "G_score": 65.79333333333334,
+      "case": "missing_eps_and_fcf",
+      "factor_results": [
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "3d2eaabc3093c13d7e9b29bd933a75964a57e370cca6f0b89dee733732741496",
+          "economic_input_intermediate": 0.19999999999999996,
+          "factor_id": "next_3_5y_growth",
+          "input_hash": "da50bb44c5f14bd40d3cb6a64e154cbfe091c01a2a2989cb56bae730a8073575",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;proxy: last yoy; not a 3-5y forecast",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 90.0,
+          "score": 90.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "a0fcdab39c98ade13981aeca36091eb89b202a9fc19cf464592d19fdb2a9e0d2",
+          "economic_input_intermediate": 0.23999999999999994,
+          "factor_id": "growth_efficiency",
+          "input_hash": "88bd9f828096ec4eabe9847b659d090967381429611204b5d865505fca30db4d",
+          "input_values": {
+            "invested_capital": 100.0,
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;yoy / capital intensity",
+          "observed_method_id": "observed:revenue-yoy-capital-intensity-clip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 54.8,
+          "score": 54.8,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "invested_capital": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "0c638121f3e71f82084df1c4199daf9cbba7d422170588843432c0eb04e7dfe9",
+          "economic_input_intermediate": 0.19999999999999996,
+          "factor_id": "revenue_growth",
+          "input_hash": "da50bb44c5f14bd40d3cb6a64e154cbfe091c01a2a2989cb56bae730a8073575",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;revenue yoy",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 90.0,
+          "score": 90.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "a2db779cb8155b5b7a09ee6ca31799677679bf1fc5d6cd18778f832373553b71",
+          "economic_input_intermediate": null,
+          "factor_id": "eps_fcf_per_share_growth",
+          "input_hash": "cf3ced683dcef2ee980a3cec355567be245cfc58b5afc8b1304c299b55f4ef3e",
+          "input_values": {
+            "eps": null,
+            "eps_prev": null,
+            "fcf": null,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;eps or fcf yoy;missing",
+          "observed_method_id": "observed:current-fcf-prior-revenue-minus-one-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "MISSING_DATA",
+          "raw_value_in_legacy_observation": null,
+          "score": null,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "eps": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD/shares"
+            },
+            "eps_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD/shares"
+            },
+            "fcf": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "02801c0454c7a5c695cb3b5618b5352e64973a28ceb2bddaa974ddfbbf594542",
+          "economic_input_intermediate": 70.0,
+          "factor_id": "growth_durability",
+          "input_hash": "aad479d8c69c155912effcd01f017cce756390c062ab98df9917583eea583207",
+          "input_values": {
+            "growth_durability_rubric": 70.0
+          },
+          "notes": "SYNTHETIC;rubric",
+          "observed_method_id": "observed:precomputed-growth-durability-rubric-passthrough",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 70.0,
+          "score": 70.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "growth_durability_rubric": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "score_0_100"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "28daf57f61c7f822ddbfdb0edc9e1cd832b286805c576cc6eaaee546d371bc5a",
+          "economic_input_intermediate": 0.09999999999999995,
+          "factor_id": "excess_growth_vs_industry",
+          "input_hash": "3dedbfc91401df9ea880834ab863f3ed89c39c82675bc11d7d226f191a3883ab",
+          "input_values": {
+            "industry_revenue_growth": 0.1,
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;yoy minus industry",
+          "observed_method_id": "observed:revenue-yoy-industry-spread-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 83.33333333333331,
+          "score": 83.33333333333331,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "industry_revenue_growth": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "ratio"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_eps_and_fcf",
+              "unit": "USD"
+            }
+          }
+        }
+      ],
+      "raw_hash": "728ba8fea11869624e816508e716cb8e610f5a787d0b15befdca183a7e230ca7",
+      "synthetic": true
+    },
+    {
+      "G_coverage": "PARTIAL",
+      "G_notes": [
+        "growth_durability=MISSING_DATA",
+        "excess_growth_vs_industry=MISSING_DATA"
+      ],
+      "G_score": 57.46,
+      "case": "missing_industry_and_rubric",
+      "factor_results": [
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "fe135035a81e09c723896165df5f1f807deacb6814a5d6945302368bd6a4c76d",
+          "economic_input_intermediate": 0.19999999999999996,
+          "factor_id": "next_3_5y_growth",
+          "input_hash": "da50bb44c5f14bd40d3cb6a64e154cbfe091c01a2a2989cb56bae730a8073575",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;proxy: last yoy; not a 3-5y forecast",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 90.0,
+          "score": 90.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "9474a680fed2ddcc6c5d316dd7865b385d749b7fb1f3b8f35eac8e86bb8bc051",
+          "economic_input_intermediate": 0.23999999999999994,
+          "factor_id": "growth_efficiency",
+          "input_hash": "88bd9f828096ec4eabe9847b659d090967381429611204b5d865505fca30db4d",
+          "input_values": {
+            "invested_capital": 100.0,
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;yoy / capital intensity",
+          "observed_method_id": "observed:revenue-yoy-capital-intensity-clip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 54.8,
+          "score": 54.8,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "invested_capital": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "d3de114b5b869543a40e21810c92116af73f0141218d88c49ed42244f803f43e",
+          "economic_input_intermediate": 0.19999999999999996,
+          "factor_id": "revenue_growth",
+          "input_hash": "da50bb44c5f14bd40d3cb6a64e154cbfe091c01a2a2989cb56bae730a8073575",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;revenue yoy",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 90.0,
+          "score": 90.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "38370c0e8d7c8cebb0450a53714da22fe7d68ced9e4ab00a08e4957f4b46ee53",
+          "economic_input_intermediate": 0.10000000000000009,
+          "factor_id": "eps_fcf_per_share_growth",
+          "input_hash": "95a9c9ac41ba67035499c647b55660bf1b6c1cc679c0318f0423153f88e56029",
+          "input_values": {
+            "eps": 2.2,
+            "eps_prev": 2.0,
+            "fcf": 20.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;eps or fcf yoy",
+          "observed_method_id": "observed:eps-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 70.00000000000001,
+          "score": 70.00000000000001,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "eps": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD/shares"
+            },
+            "eps_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD/shares"
+            },
+            "fcf": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "cde1c6ce448e9eb7a007c5102fde19d9d4752556c990611db728ac4881f2be7c",
+          "economic_input_intermediate": null,
+          "factor_id": "growth_durability",
+          "input_hash": "1142332a7670657ad72d38d128d0328e9e925fdc830bcea6257e1185d6a1840e",
+          "input_values": {
+            "growth_durability_rubric": null
+          },
+          "notes": "SYNTHETIC;rubric;missing",
+          "observed_method_id": "observed:precomputed-growth-durability-rubric-passthrough",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "MISSING_DATA",
+          "raw_value_in_legacy_observation": null,
+          "score": null,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "growth_durability_rubric": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "score_0_100"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "de2fc4cedc261975dc9b2ba70ad7c2dd793a8a1aa94e2ae175ae08b44eafd582",
+          "economic_input_intermediate": null,
+          "factor_id": "excess_growth_vs_industry",
+          "input_hash": "8042780f54d4748388a13123c623e9fb8d1e2fddb8fcd73d2ecfe41ec0dc55f5",
+          "input_values": {
+            "industry_revenue_growth": null,
+            "revenue": 120.0,
+            "revenue_prev": 100.0
+          },
+          "notes": "SYNTHETIC;yoy minus industry;missing",
+          "observed_method_id": "observed:revenue-yoy-industry-spread-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "MISSING_DATA",
+          "raw_value_in_legacy_observation": null,
+          "score": null,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "industry_revenue_growth": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "ratio"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_industry_and_rubric",
+              "unit": "USD"
+            }
+          }
+        }
+      ],
+      "raw_hash": "906de774d46307bbd82fa34393ecae6fcd6f82b010c5a6f19b9f2f19604834a9",
+      "synthetic": true
+    },
+    {
+      "G_coverage": "PARTIAL",
+      "G_notes": [
+        "next_3_5y_growth=MISSING_DATA",
+        "growth_efficiency=MISSING_DATA",
+        "revenue_growth=MISSING_DATA",
+        "excess_growth_vs_industry=MISSING_DATA"
+      ],
+      "G_score": 21.0,
+      "case": "missing_revenue_base",
+      "factor_results": [
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "bb96380f796383c8139f53cb608439bec7a85fc4f3fd5b59ae71d597b3581293",
+          "economic_input_intermediate": null,
+          "factor_id": "next_3_5y_growth",
+          "input_hash": "0633a662c3f3157de243e256acc7e27bd718a59d5e1929961e4d0589350ed545",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": null
+          },
+          "notes": "SYNTHETIC;proxy: last yoy; not a 3-5y forecast;missing",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "MISSING_DATA",
+          "raw_value_in_legacy_observation": null,
+          "score": null,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "e4673d83104d609caf7598fae0495c93dbd6c0df4e764ac1e08d2ca9fa0cf97f",
+          "economic_input_intermediate": null,
+          "factor_id": "growth_efficiency",
+          "input_hash": "05f2eba201203de71ad5687cbe312ba9cc8cd677b081a6829fa98d6b25f37347",
+          "input_values": {
+            "invested_capital": 100.0,
+            "revenue": 120.0,
+            "revenue_prev": null
+          },
+          "notes": "SYNTHETIC;yoy / capital intensity;missing",
+          "observed_method_id": "observed:revenue-yoy-capital-intensity-clip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "MISSING_DATA",
+          "raw_value_in_legacy_observation": null,
+          "score": null,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "invested_capital": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "b19c217f105f74173805e1ddf0e65f050a14d80fb88a92fc1c250753050f6308",
+          "economic_input_intermediate": null,
+          "factor_id": "revenue_growth",
+          "input_hash": "0633a662c3f3157de243e256acc7e27bd718a59d5e1929961e4d0589350ed545",
+          "input_values": {
+            "revenue": 120.0,
+            "revenue_prev": null
+          },
+          "notes": "SYNTHETIC;revenue yoy;missing",
+          "observed_method_id": "observed:revenue-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "MISSING_DATA",
+          "raw_value_in_legacy_observation": null,
+          "score": null,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "f33c2801e8e64a2ae558b5ee438f85aeb5ca4d58ff080263249fc2d2db77f648",
+          "economic_input_intermediate": 0.10000000000000009,
+          "factor_id": "eps_fcf_per_share_growth",
+          "input_hash": "4fd30df9609f9bc2a7b00ea35a9fca5be7244b58b239ea9f5b73bed698e66663",
+          "input_values": {
+            "eps": 2.2,
+            "eps_prev": 2.0,
+            "fcf": 20.0,
+            "revenue_prev": null
+          },
+          "notes": "SYNTHETIC;eps or fcf yoy",
+          "observed_method_id": "observed:eps-yoy-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 70.00000000000001,
+          "score": 70.00000000000001,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "eps": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD/shares"
+            },
+            "eps_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD/shares"
+            },
+            "fcf": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "741666945480f7a8dde8267dd1983712fe40a8f056fec62b36f8fd543daa4a14",
+          "economic_input_intermediate": 70.0,
+          "factor_id": "growth_durability",
+          "input_hash": "aad479d8c69c155912effcd01f017cce756390c062ab98df9917583eea583207",
+          "input_values": {
+            "growth_durability_rubric": 70.0
+          },
+          "notes": "SYNTHETIC;rubric",
+          "observed_method_id": "observed:precomputed-growth-durability-rubric-passthrough",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "SYNTHETIC",
+          "raw_value_in_legacy_observation": 70.0,
+          "score": 70.0,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "growth_durability_rubric": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": null,
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "score_0_100"
+            }
+          }
+        },
+        {
+          "as_of": "2026-10-05T04:00:00+00:00",
+          "audit_result_lineage_hash": "ade032f673e0e4e3c49ddbb1803b7d294428a12ce03b09db97d7525ae6fa2191",
+          "economic_input_intermediate": null,
+          "factor_id": "excess_growth_vs_industry",
+          "input_hash": "b7661066ce1eb630b29fa21a2e00762cf51d6145e20418b46dda12ca0a9eb490",
+          "input_values": {
+            "industry_revenue_growth": 0.1,
+            "revenue": 120.0,
+            "revenue_prev": null
+          },
+          "notes": "SYNTHETIC;yoy minus industry;missing",
+          "observed_method_id": "observed:revenue-yoy-industry-spread-linearclip",
+          "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+          "quality": "MISSING_DATA",
+          "raw_value_in_legacy_observation": null,
+          "score": null,
+          "stamp": {
+            "available_at": "2026-10-05T04:00:00+00:00",
+            "data_stamp_id": "synthetic-g-lineage-v1",
+            "estimated": false,
+            "estimation_method": null,
+            "freshness_status": "GREEN",
+            "market_time_status": "CLOSE",
+            "observed_at": "2026-10-05T04:00:00+00:00",
+            "period_end": "2025-12-31",
+            "period_start": "2025-01-01",
+            "published_at": "2026-10-05T04:00:00+00:00",
+            "quality_flags": [],
+            "source_provider": "synthetic",
+            "source_reference": "complete_raw_fixture",
+            "source_type": "fixture",
+            "synthetic": true
+          },
+          "synthetic_input_period_basis": {
+            "industry_revenue_growth": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "ratio"
+            },
+            "revenue": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2025-12-31",
+              "period_start": "2025-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD"
+            },
+            "revenue_prev": {
+              "authority": "synthetic declared fixture basis only; does not fill production per-field lineage",
+              "period_end": "2024-12-31",
+              "period_start": "2024-01-01",
+              "source": "G_SYNTHETIC_RAW_FIXTURES.json:missing_revenue_base",
+              "unit": "USD"
+            }
+          }
+        }
+      ],
+      "raw_hash": "4e70efa91999478328f7487ac7bdf58206c65164e6091fe380539f890a890ea1",
+      "synthetic": true
+    }
+  ]
+}

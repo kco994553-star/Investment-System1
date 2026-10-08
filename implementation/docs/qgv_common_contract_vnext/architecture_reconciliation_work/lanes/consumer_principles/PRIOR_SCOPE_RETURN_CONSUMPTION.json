@@ -1,0 +1,14 @@
+{
+  "prior_scope_return_state": "CONSUMED_BY_MAIN",
+  "exact_review_observed": "ebd7ca3d476767af9ff0c92f89cfd132a570c2b3",
+  "prior_original_completion_head": "16f58f20a29516e45e202aee7d3b27b8a1378d5c",
+  "Main_receipt_comment_id": 5990706291,
+  "receipt_url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-5990706291",
+  "receipt_updated_at": "2026-10-05T08:17:16Z",
+  "receipt_sha256": "75c53834d35026c72617ee0b4f63752b27b5f2fce746c5980e75f819669ebcee",
+  "global_head": "8acb3c25046310ebe24e87a3eb253948129a5ee9",
+  "new_principle_approval_consumption": "NOT_EVIDENCED",
+  "owner_implementation_return": "NOT_EVIDENCED",
+  "old_30_cases_rerun": 0,
+  "production_blockers_closed": 0
+}

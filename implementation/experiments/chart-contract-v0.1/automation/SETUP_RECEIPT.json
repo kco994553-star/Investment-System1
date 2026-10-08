@@ -1,0 +1,145 @@
+{
+  "kind": "ACTUAL_AUTOMATION_CONFIGURATION_NOT_PRODUCTION_APPROVAL",
+  "recorded_at": "2026-10-05T00:33:45.843Z",
+  "repository": "kco994553-star/Investment-System1",
+  "owner_branch": "codex/chart-contract-mcp-api-v0-1",
+  "owner_pr": 41,
+  "conversation_id": "6ac21ce4-f050-83ec-bfd4-5fa178fc6936",
+  "duplicates_checked": {
+    "existing_count": 6,
+    "matching_chart_tasks": 0
+  },
+  "tasks": [
+    {
+      "id": "6ac2eeedb21c81919f04168d69672f0a",
+      "title": "Chart PR 이벤트 재개",
+      "is_enabled": true,
+      "mode": "github_webhook",
+      "triggers": [
+        {
+          "connector_type": "github",
+          "webhook_name": "pull_request",
+          "params": {
+            "repository": "kco994553-star/Investment-System1",
+            "pull_request_number": 41,
+            "enable_commit_updates": true,
+            "enable_reviews": true,
+            "enable_comments": true,
+            "only_on_merge": false
+          }
+        },
+        {
+          "connector_type": "github",
+          "webhook_name": "pull_request",
+          "params": {
+            "repository": "kco994553-star/Investment-System1",
+            "pull_request_number": 17,
+            "enable_commit_updates": true,
+            "enable_reviews": true,
+            "enable_comments": true,
+            "only_on_merge": false
+          }
+        },
+        {
+          "connector_type": "github",
+          "webhook_name": "pull_request",
+          "params": {
+            "repository": "kco994553-star/Investment-System1",
+            "pull_request_number": 18,
+            "enable_commit_updates": true,
+            "enable_reviews": true,
+            "enable_comments": true,
+            "only_on_merge": false
+          }
+        },
+        {
+          "connector_type": "github",
+          "webhook_name": "pull_request",
+          "params": {
+            "repository": "kco994553-star/Investment-System1",
+            "pull_request_number": 19,
+            "enable_commit_updates": true,
+            "enable_reviews": true,
+            "enable_comments": true,
+            "only_on_merge": false
+          }
+        },
+        {
+          "connector_type": "github",
+          "webhook_name": "pull_request",
+          "params": {
+            "repository": "kco994553-star/Investment-System1",
+            "pull_request_number": 34,
+            "enable_commit_updates": true,
+            "enable_reviews": true,
+            "enable_comments": true,
+            "only_on_merge": false
+          }
+        },
+        {
+          "connector_type": "github",
+          "webhook_name": "pull_request",
+          "params": {
+            "repository": "kco994553-star/Investment-System1",
+            "pull_request_number": 36,
+            "enable_commit_updates": true,
+            "enable_reviews": true,
+            "enable_comments": true,
+            "only_on_merge": false
+          }
+        },
+        {
+          "connector_type": "github",
+          "webhook_name": "pull_request",
+          "params": {
+            "repository": "kco994553-star/Investment-System1",
+            "pull_request_number": 42,
+            "enable_commit_updates": true,
+            "enable_reviews": true,
+            "enable_comments": true,
+            "only_on_merge": false
+          }
+        },
+        {
+          "connector_type": "github",
+          "webhook_name": "pull_request",
+          "params": {
+            "repository": "kco994553-star/Investment-System1",
+            "pull_request_number": 44,
+            "enable_commit_updates": true,
+            "enable_reviews": true,
+            "enable_comments": true,
+            "only_on_merge": false
+          }
+        }
+      ],
+      "creation_success": true,
+      "update_success": true
+    },
+    {
+      "id": "6ac2ef0621908191909a27af4c91f101",
+      "title": "Chart CI 후속 확인",
+      "is_enabled": true,
+      "mode": "pending_ci_condition_watch",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "timezone": "Asia/Seoul",
+      "creation_success": true,
+      "update_success": true
+    }
+  ],
+  "verification": {
+    "method": "create + update + separate peek",
+    "enabled_and_conversation_re_read": true,
+    "webhook_filter_schema_discovered": true,
+    "triggers_accepted_in_create_and_update": true,
+    "peek_exposes_trigger_registry": false,
+    "end_to_end_event_delivery_test": "NOT_RUN",
+    "pending_ci": [],
+    "first_ci_eligibility": {
+      "remote_state": "NOT_FOUND_DURING_SETUP",
+      "pending": "NONE",
+      "ci_completion_claimed": false
+    }
+  },
+  "boundary": "Only scoped evidence/own state allowed. No production/protected/package/Global/other owner write, merge, grant, Frozen, Official/LIVE, Holdout, PIT relaxation or payment authorized by automation setup."
+}

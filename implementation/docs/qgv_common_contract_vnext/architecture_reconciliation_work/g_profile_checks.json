@@ -1,0 +1,204 @@
+{
+  "status": "CURRENT_BEHAVIOR_CHARACTERIZATION_PASS",
+  "input_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "synthetic_only": true,
+  "production_semantics_changed": false,
+  "new_policy_acceptance": false,
+  "check_count": 20,
+  "pass_count": 20,
+  "checks": [
+    {
+      "case": "G horizon 3Y->5Y changes metadata, not score",
+      "actual": [
+        true,
+        "3Y",
+        "5Y"
+      ],
+      "expected": [
+        true,
+        "3Y",
+        "5Y"
+      ],
+      "pass": true
+    },
+    {
+      "case": "Forecast-label proxy equals current revenue YoY factor",
+      "actual": 90.0,
+      "expected": 90.0,
+      "pass": true
+    },
+    {
+      "case": "Missing EPS fallback uses current FCF/prior revenue",
+      "actual": 0.0,
+      "expected": 0.0,
+      "pass": true
+    },
+    {
+      "case": "Fallback ignores current shares",
+      "actual": 0.0,
+      "expected": 0.0,
+      "pass": true
+    },
+    {
+      "case": "RawFundamentals has no prior FCF or prior shares",
+      "actual": [
+        false,
+        false
+      ],
+      "expected": [
+        false,
+        false
+      ],
+      "pass": true
+    },
+    {
+      "case": "Loss narrows -2->-1 produces minimum score",
+      "actual": 0.0,
+      "expected": 0.0,
+      "pass": true
+    },
+    {
+      "case": "Loss deepens -1->-2 produces maximum score",
+      "actual": 100.0,
+      "expected": 100.0,
+      "pass": true
+    },
+    {
+      "case": "Zero prior EPS routes to fallback",
+      "actual": 0.0,
+      "expected": 0.0,
+      "pass": true
+    },
+    {
+      "case": "Financial profile uses identical G fallback",
+      "actual": 0.0,
+      "expected": 0.0,
+      "pass": true
+    },
+    {
+      "case": "No EPS/no FCF is missing, not zero",
+      "actual": [
+        "MISSING_DATA",
+        null
+      ],
+      "expected": [
+        "MISSING_DATA",
+        null
+      ],
+      "pass": true
+    },
+    {
+      "case": "Quarterly dollar FCF populates fcf_per_share",
+      "actual": 100.0,
+      "expected": 100.0,
+      "pass": true
+    },
+    {
+      "case": "Future-filing quarterly FCF excluded",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "case": "V score change does not enter current composite",
+      "actual": [
+        0.0,
+        100.0,
+        70.0,
+        70.0
+      ],
+      "expected": [
+        0.0,
+        100.0,
+        70.0,
+        70.0
+      ],
+      "pass": true
+    },
+    {
+      "case": "Current type-adjusted equals literal total",
+      "actual": 70.0,
+      "expected": 70.0,
+      "pass": true
+    },
+    {
+      "case": "Zero parent preserves local mix, yields zero global contribution",
+      "actual": [
+        0.5,
+        0.5,
+        0.0,
+        0.0
+      ],
+      "expected": [
+        0.5,
+        0.5,
+        0.0,
+        0.0
+      ],
+      "pass": true
+    },
+    {
+      "case": "Custom override keeps registry hash unchanged",
+      "actual": "770ff5d085ff8060d295f6b7ee26fc48cefe4dc80704b8a4fd396ba4706057c0",
+      "expected": "770ff5d085ff8060d295f6b7ee26fc48cefe4dc80704b8a4fd396ba4706057c0",
+      "pass": true
+    },
+    {
+      "case": "Official namespace rejects override",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "case": "Method identity not a Custom parameter",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "case": "Frozen Q weights not a Custom parameter",
+      "actual": true,
+      "expected": true,
+      "pass": true
+    },
+    {
+      "case": "WeightOverride shape is numeric-only",
+      "actual": [
+        "node_id",
+        "local_weight"
+      ],
+      "expected": [
+        "node_id",
+        "local_weight"
+      ],
+      "pass": true
+    }
+  ],
+  "pinned_source_sha256": {
+    "implementation/src/investment_system/qgv/raw_map.py": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+    "implementation/src/investment_system/qgv/g_horizon.py": "c5241f9178aba9103e663b267fd58818face6cf3c5721b21ee53c8969f091ba2",
+    "implementation/src/investment_system/qgv/pipeline.py": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+    "implementation/src/investment_system/qgv/quarterly_series.py": "1666839c6865b1187cff068bc7881f4e9658457f43b79ca7ded12fa98d89f5cb",
+    "implementation/src/investment_system/qgv/scoring.py": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+    "implementation/src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+    "implementation/src/investment_system/qgv/factors.py": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+    "implementation/src/investment_system/contracts/raw.py": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+    "implementation/src/investment_system/contracts/models.py": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+    "implementation/src/investment_system/contracts/strategy.py": "9c34249656ac7ba0203546584f7acd2dd96c6f2debb7ba54d54069290cbfe9ac",
+    "implementation/src/investment_system/providers/sec_companyfacts.py": "fe236b817858b9698fb2e74d0fe460a46de2e83000134f68ca38f3ab60ee055a",
+    "implementation/src/investment_system/providers/sec_vintage.py": "e0aecc5c02bafa9e9543b03af8fb6a9c961df1f40217b3099829b1934f1c42fd",
+    "implementation/src/investment_system/personal/weights.py": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+    "implementation/src/investment_system/personal/versioning.py": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def",
+    "implementation/docs/qgv_common_contract_vnext/CONTRACT.md": "a7dabcf20b4016964367a5846f3903dae7a3c3985b22af2e59b99474486bf4d8",
+    "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/CONTRACT.md": "5203e09c36c612aa573789a5cdf8bcf1fb76f26fad105171e21b31828e13f76b"
+  },
+  "not_executed": [
+    "new runtime implementation",
+    "full regression",
+    "real PIT/OOS",
+    "Actions",
+    "Holdout",
+    "migration",
+    "scheduler hops"
+  ]
+}

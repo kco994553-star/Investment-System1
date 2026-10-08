@@ -1,0 +1,299 @@
+{
+  "status": "D1_D2_CHARACTERIZATION_PASS_INACTIVE_SPEC_ONLY",
+  "input_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "source_pins_sha256": {
+    "implementation/src/investment_system/qgv/raw_map.py": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+    "implementation/src/investment_system/qgv/factors.py": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+    "implementation/src/investment_system/qgv/scoring.py": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+    "implementation/src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+    "implementation/src/investment_system/qgv/pipeline.py": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+    "implementation/src/investment_system/contracts/models.py": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+    "implementation/src/investment_system/contracts/raw.py": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+    "implementation/src/investment_system/contracts/enums.py": "5cd6c7694544dcba4717590ad24534ab0f8e115d8352235bf88bf37657433bcf",
+    "implementation/src/investment_system/personal/weights.py": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+    "implementation/src/investment_system/contracts/strategy.py": "9c34249656ac7ba0203546584f7acd2dd96c6f2debb7ba54d54069290cbfe9ac",
+    "implementation/src/investment_system/validation/historical.py": "02315a38e102bc312478dd1f00da401865db42d60423b21371b05879849a4aa8",
+    "implementation/src/investment_system/qgv/leaderboard.py": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248",
+    "implementation/docs/qgv_common_contract_vnext/golden_cases.json": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040",
+    "implementation/docs/qgv_common_contract_vnext/contract_record.schema.json": "0caa8345f611c65389786b5eaa55e60484ca8efe8fb77d55cd4746431455e962",
+    "implementation/docs/qgv_common_contract_vnext/current_factor_map.json": "dbddea7a7b098fd4ea1a8c8a16cb2e895259255a9561a81d3f539c86fe5634ce"
+  },
+  "characterization_checks": [
+    {
+      "id": "C01_complete_prior",
+      "pass": true,
+      "observed": {
+        "V": 70.0,
+        "coverage": "READY"
+      }
+    },
+    {
+      "id": "C02_complete_candidates",
+      "pass": true,
+      "observed": {
+        "initial_prior": 70.0,
+        "equal_research": 70.0,
+        "mos_tilt_research": 70.0
+      }
+    },
+    {
+      "id": "C03_missing_prior_partial",
+      "pass": true,
+      "observed": {
+        "V": 52.5,
+        "coverage": "PARTIAL"
+      }
+    },
+    {
+      "id": "C04_missing_candidates_blocked",
+      "pass": true,
+      "observed": {
+        "initial_prior": null,
+        "equal_research": null,
+        "mos_tilt_research": null
+      }
+    },
+    {
+      "id": "C05_overall_QG_coverage_excludes_V",
+      "pass": true,
+      "observed": {
+        "snapshot_coverage": "READY",
+        "V_coverage": "PARTIAL",
+        "V": 52.5,
+        "total": 70.0
+      }
+    },
+    {
+      "id": "C06_numeric_na_prior_excluded",
+      "pass": true,
+      "observed": {
+        "V": 52.5,
+        "coverage": "PARTIAL"
+      }
+    },
+    {
+      "id": "C07_numeric_na_candidates_included",
+      "pass": true,
+      "observed": {
+        "initial_prior": 70.0,
+        "equal_research": 70.0,
+        "mos_tilt_research": 70.0
+      }
+    },
+    {
+      "id": "C08_table_effective_weight_is_not_admitted_weight",
+      "pass": true,
+      "observed": {
+        "V": 52.5,
+        "table": {
+          "factor_id": "fundamental_value",
+          "base_weight": 0.25,
+          "score": 70.0,
+          "confidence": "PIT_UNAVAILABLE",
+          "coverage": "PIT_UNAVAILABLE",
+          "effective_weight": 0.25,
+          "missing_reason": null,
+          "provenance": "SYNTHETIC"
+        }
+      }
+    },
+    {
+      "id": "C09_quality_metadata_conflation",
+      "pass": true,
+      "observed": {
+        "confidence": "PIT_UNAVAILABLE",
+        "coverage": "PIT_UNAVAILABLE"
+      }
+    },
+    {
+      "id": "C10_V_change_does_not_mutate_QG_composite",
+      "pass": true,
+      "observed": {
+        "V_before": 70.0,
+        "V_after": 77.5,
+        "total_before": 70.0,
+        "total_after": 70.0
+      }
+    },
+    {
+      "id": "C11_raw_value_contains_normalized_score",
+      "pass": true,
+      "observed": {
+        "DCF_input": 120,
+        "price_input": 100,
+        "raw_value": 75.0,
+        "score": 75.0
+      }
+    },
+    {
+      "id": "C12_FV_MOS_economically_distinct",
+      "pass": true,
+      "observed": {
+        "FV": 75.0,
+        "MOS": 33.333333333333336
+      }
+    },
+    {
+      "id": "C13_historical_percentile_passthrough_direction",
+      "pass": true,
+      "observed": {
+        "input_10_score": 10.0,
+        "input_90_score": 90.0,
+        "conclusion": "direction authority unresolved; not proof of inversion"
+      }
+    },
+    {
+      "id": "C14_theme_score_has_no_range_validation",
+      "pass": true,
+      "observed": {
+        "raw_input": 1000,
+        "mapped_score": 1000.0
+      }
+    },
+    {
+      "id": "C15_negative_peer_multiple_passes_numeric_mapping",
+      "pass": true,
+      "observed": {
+        "peer_median": -20,
+        "own_multiple": 10,
+        "score": 100.0
+      }
+    },
+    {
+      "id": "C16_zero_multiple_truthiness_is_missing",
+      "pass": true,
+      "observed": {
+        "own_multiple": 0,
+        "score": null,
+        "quality": "MISSING_DATA"
+      }
+    },
+    {
+      "id": "C17_reverse_DCF_does_not_write_G",
+      "pass": true,
+      "observed": {
+        "reverse_DCF_before": 83.33333333333331,
+        "reverse_DCF_after": 16.66666666666665,
+        "G_mapping_unchanged": true
+      }
+    },
+    {
+      "id": "C18_no_tracked_byte_change",
+      "pass": true,
+      "observed": {
+        "tracked_files": 7770,
+        "before": "7446ea3f29125c8dc8fbd61f0210008f93ab3786ba9c0137441cc4652c351ccf",
+        "after": "7446ea3f29125c8dc8fbd61f0210008f93ab3786ba9c0137441cc4652c351ccf"
+      }
+    },
+    {
+      "id": "C19_three_valuation_proxies_share_PE_inputs",
+      "pass": true,
+      "observed": {
+        "dcf_value": null,
+        "price": 100,
+        "eps": 5,
+        "FV": 50.0,
+        "MOS": 0.0,
+        "reverse_DCF": 99.99999999999999,
+        "conclusion": "three conceptually distinct factors use the same PE fallback; not independent intrinsic valuation evidence"
+      }
+    },
+    {
+      "id": "C20_V_factors_share_single_raw_stamp",
+      "pass": true,
+      "observed": {
+        "shared_stamp_id": "v-review-synthetic",
+        "factors": 7,
+        "conclusion": "field-level price/fundamental/peer/history/context lineage is not represented by RawFundamentals stamp alone; external provenance may exist"
+      }
+    },
+    {
+      "id": "C21_singleton_peer_input_accepted",
+      "pass": true,
+      "observed": {
+        "own_multiple": 20,
+        "peer_median_multiple": 20,
+        "peer_relative_score": 50,
+        "conclusion": "mapper cannot establish comparator membership/leave-self-out/sample admissibility; no minimum count proposed"
+      }
+    },
+    {
+      "id": "C22_peer_upper_order_statistic_characterization",
+      "pass": true,
+      "observed": {
+        "source": "validation/historical.py:run_as_of",
+        "peer_values": [
+          10,
+          30
+        ],
+        "selected_peer_med": 30,
+        "ordinary_even_sample_median_for_comparison": 20,
+        "conclusion": "existing candidate chooses upper middle; replacing it is numeric method change requiring D3"
+      }
+    }
+  ],
+  "characterization_count": 22,
+  "existing_regressions_direct_execution": [
+    {
+      "test": "tests.test_analysis_scoring.test_blocked_dependency_blocks_q",
+      "pass": true
+    },
+    {
+      "test": "tests.test_analysis_scoring.test_financial_profile_skips_roic",
+      "pass": true
+    },
+    {
+      "test": "tests.test_analysis_scoring.test_missing_factor_is_not_zero",
+      "pass": true
+    },
+    {
+      "test": "tests.test_analysis_scoring.test_production_v_is_provisional_initial_prior",
+      "pass": true
+    },
+    {
+      "test": "tests.test_analysis_scoring.test_q7_is_management_quality_not_capital_allocation",
+      "pass": true
+    },
+    {
+      "test": "tests.test_analysis_scoring.test_q_weights_sum_to_one",
+      "pass": true
+    },
+    {
+      "test": "tests.test_analysis_scoring.test_snapshot_contract_fields",
+      "pass": true
+    },
+    {
+      "test": "tests.test_v_prior_and_c15.test_fv_and_mos_are_not_identical",
+      "pass": true
+    },
+    {
+      "test": "tests.test_v_prior_and_c15.test_initial_prior_weights_and_lifecycle",
+      "pass": true
+    },
+    {
+      "test": "tests.test_v_prior_and_c15.test_technical_ignores_qgv_scores",
+      "pass": true
+    },
+    {
+      "test": "tests.test_peer_derived_v.test_book_peer_median_can_fill_peer_relative",
+      "pass": true
+    },
+    {
+      "test": "tests.test_hist_peer_ablation_pit.test_hist_and_peer_provenance_and_no_future_price",
+      "pass": true
+    },
+    {
+      "test": "tests.test_v_coverage_matrix.test_v_matrix_is_prior_not_calibrated",
+      "pass": true
+    }
+  ],
+  "existing_regression_count": 13,
+  "pytest_status": "NOT_RUN: installed Python has no pytest; existing selected test functions executed directly without altering assertions",
+  "tracked_bytes_preserved": true,
+  "tracked_tree_sha256_before": "7446ea3f29125c8dc8fbd61f0210008f93ab3786ba9c0137441cc4652c351ccf",
+  "tracked_tree_sha256_after": "7446ea3f29125c8dc8fbd61f0210008f93ab3786ba9c0137441cc4652c351ccf",
+  "production_policy_changed": false,
+  "numeric_policy_selected": false,
+  "scope": "LOCAL_SNAPSHOT_ONLY; no fresh remote transport performed by subagent; parent supplies fresh remote baseline"
+}

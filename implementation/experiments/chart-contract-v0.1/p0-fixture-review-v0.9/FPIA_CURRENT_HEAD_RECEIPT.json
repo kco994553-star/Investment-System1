@@ -1,0 +1,300 @@
+{
+  "scope": "READ_ONLY_PR46_HEAD_ADVANCE_CI_INTAKE",
+  "observed_at_utc": "2026-10-05T05:40:59.928Z",
+  "repository": "kco994553-star/Investment-System1",
+  "pr": {
+    "number": 46,
+    "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "head_branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+    "base_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+    "base_branch": "integration/fpia-hardened-v1",
+    "state": "open",
+    "draft": true,
+    "updated_at": "2026-10-05T05:28:39Z",
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/46"
+  },
+  "head_delta": {
+    "previous": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "current": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "ahead_by": 1,
+    "files": [
+      {
+        "path": "implementation/tests/test_integration_fpia_evidence_identity.py",
+        "status": "added",
+        "git_blob": "de6d862d81b3f659325abf3c30ea493d70ead6d7",
+        "additions": 327,
+        "deletions": 0
+      },
+      {
+        "path": "implementation/tools/integration/track_c_fpia_evidence_identity.py",
+        "status": "added",
+        "git_blob": "5b4ed76a580f07f4f7e3690de7f68236524cf108",
+        "additions": 283,
+        "deletions": 0
+      }
+    ],
+    "local_git_read_attempt": "New head object was absent locally; authoritative compare API used without fetch/write"
+  },
+  "actions": {
+    "count": 7,
+    "all_exact_head": true,
+    "all_attempt_1": true,
+    "all_in_progress": true,
+    "terminal_pass_count": 0,
+    "runs": [
+      {
+        "id": 37267962003,
+        "name": "qgv-invalidation-binding",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "run_attempt": 1,
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "pull_request",
+        "path": ".github/workflows/qgv-invalidation-binding.yml",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962003",
+        "updated_at": "2026-10-05T05:28:47Z"
+      },
+      {
+        "id": 37267962024,
+        "name": "us-equity-session",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "run_attempt": 1,
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "pull_request",
+        "path": ".github/workflows/us-equity-session.yml",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962024",
+        "updated_at": "2026-10-05T05:28:47Z"
+      },
+      {
+        "id": 37267962000,
+        "name": "track-c-fpia",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "run_attempt": 1,
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "pull_request",
+        "path": ".github/workflows/track-c-fpia.yml",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000",
+        "updated_at": "2026-10-05T05:28:48Z"
+      },
+      {
+        "id": 37267961987,
+        "name": "p01-research-publication",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "run_attempt": 1,
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "pull_request",
+        "path": ".github/workflows/p01-research-publication.yml",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961987",
+        "updated_at": "2026-10-05T05:28:48Z"
+      },
+      {
+        "id": 37267961909,
+        "name": "sec-primary-disclosure",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "run_attempt": 1,
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "pull_request",
+        "path": ".github/workflows/sec-primary-disclosure.yml",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961909",
+        "updated_at": "2026-10-05T05:28:47Z"
+      },
+      {
+        "id": 37267962109,
+        "name": "technical-real-producer",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "run_attempt": 1,
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "pull_request",
+        "path": ".github/workflows/technical-real-producer.yml",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962109",
+        "updated_at": "2026-10-05T05:28:47Z"
+      },
+      {
+        "id": 37267961900,
+        "name": "technical-real-model",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "run_attempt": 1,
+        "status": "in_progress",
+        "conclusion": null,
+        "event": "pull_request",
+        "path": ".github/workflows/technical-real-model.yml",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961900",
+        "updated_at": "2026-10-05T05:28:47Z"
+      }
+    ]
+  },
+  "fpia": {
+    "run_id": 37267962000,
+    "run_attempt": 1,
+    "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "status": "in_progress",
+    "conclusion": null,
+    "jobs_total_count": 1,
+    "jobs": [
+      {
+        "id": 111628676484,
+        "run_attempt": 1,
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "status": "in_progress",
+        "conclusion": null,
+        "started_at": "2026-10-05T05:28:47Z",
+        "completed_at": null,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000/job/111628676484",
+        "steps": [
+          {
+            "number": 1,
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:28:48Z",
+            "completed_at": "2026-10-05T05:28:49Z"
+          },
+          {
+            "number": 2,
+            "name": "Free runner disk (an audit needs about 5 GB of work space)",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:28:49Z",
+            "completed_at": "2026-10-05T05:30:45Z"
+          },
+          {
+            "number": 3,
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:30:45Z",
+            "completed_at": "2026-10-05T05:30:47Z"
+          },
+          {
+            "number": 4,
+            "name": "Fetch every branch for the object store (read-only)",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:30:47Z",
+            "completed_at": "2026-10-05T05:30:47Z"
+          },
+          {
+            "number": 5,
+            "name": "Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:30:47Z",
+            "completed_at": "2026-10-05T05:30:47Z"
+          },
+          {
+            "number": 6,
+            "name": "Install pinned runtime (FPIA's workflow loader is the vendored PyYAML 6.0.1, AC-32.spoof)",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-05T05:30:47Z",
+            "completed_at": "2026-10-05T05:30:52Z"
+          },
+          {
+            "number": 7,
+            "name": "FPIA Tier 1 tests",
+            "status": "completed",
+            "conclusion": "skipped",
+            "started_at": "2026-10-05T05:30:52Z",
+            "completed_at": "2026-10-05T05:30:52Z"
+          },
+          {
+            "number": 8,
+            "name": "FPIA Tier 2 real-history checks (must not skip)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "started_at": "2026-10-05T05:30:52Z",
+            "completed_at": "2026-10-05T05:30:52Z"
+          },
+          {
+            "number": 9,
+            "name": "FPIA audit (the job fails only on FPIA_FAIL or FPIA_NOT_RUN)",
+            "status": "in_progress",
+            "conclusion": null,
+            "started_at": "2026-10-05T05:30:52Z",
+            "completed_at": null
+          },
+          {
+            "number": 10,
+            "name": "Run actions/upload-artifact@v4",
+            "status": "pending",
+            "conclusion": null,
+            "started_at": null,
+            "completed_at": null
+          },
+          {
+            "number": 19,
+            "name": "Post Run actions/setup-python@v5",
+            "status": "pending",
+            "conclusion": null,
+            "started_at": null,
+            "completed_at": null
+          },
+          {
+            "number": 20,
+            "name": "Post Run actions/checkout@v4",
+            "status": "pending",
+            "conclusion": null,
+            "started_at": null,
+            "completed_at": null
+          }
+        ]
+      }
+    ],
+    "logs": {
+      "job_id": 111628676484,
+      "status": "NOT_AVAILABLE_WHILE_JOB_IN_PROGRESS",
+      "connector_error": {
+        "error": "GitHub API error 404: ﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>The specified blob does not exist.\nRequestId:6a1d88bd-301e-002c-488c-544720000000\nTime:2026-10-05T05:40:21.8217131Z</Message></Error>",
+        "error_code": "NOT_FOUND",
+        "error_data": {
+          "error_str": "GitHub API error 404: ﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>BlobNotFound</Code><Message>The specified blob does not exist.\nRequestId:6a1d88bd-301e-002c-488c-544720000000\nTime:2026-10-05T05:40:21.8217131Z</Message></Error>"
+        }
+      },
+      "error_is_terminal_failure": false
+    },
+    "actual_audit_subject": "NOT_YET_OBSERVED_IN_LOG",
+    "actual_register_commit": "NOT_YET_OBSERVED_IN_LOG",
+    "result_sha256": null,
+    "run_sha256": null,
+    "artifact_digest": null,
+    "terminal_result": "PENDING",
+    "previous_head_pass_reused": false,
+    "actual_chart_merge_result": "NOT_RUN"
+  },
+  "global": {
+    "head": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+    "source_url": "https://api.github.com/repos/kco994553-star/Investment-System1/git/ref/heads/integration/global-handoff-v1",
+    "handoff": "GCH-018",
+    "status_index": "GSI-024",
+    "piw_decision_source": "https://api.github.com/repos/kco994553-star/Investment-System1/contents/implementation/docs/coordination/PIW_DECISION_RECORDS.md?ref=7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+    "piw_d007_status": "COMPOUND_CONSISTENCY_CONSUMER_IMPLEMENTED / AUTHENTICATED_BINDING_AND_INTEGRATION_ACCEPTANCE_PENDING",
+    "d002_delta": "Finite compound-consistency consumer implemented; technical status supersedes only this finite sub-scope, authentication NOT_VERIFIED and integration_acceptance BLOCKED",
+    "d007_exact_source": "## PIW-D007 · PIW-D002 bounded implementation checkpoint\n\n- Recorded: 2026-10-05T14:32:45.200094+09:00; authority CDR-015 D1/D2 narrowed by CDR-016 §13/CDR-017/CDR-018; CDR-019 supplements tool use only.\n- Status: **COMPOUND_CONSISTENCY_CONSUMER_IMPLEMENTED / AUTHENTICATED_BINDING_AND_INTEGRATION_ACCEPTANCE_PENDING**. Supersedes PIW-D002 technical status only in this finite sub-scope; PIW-D002 history is retained.\n- Decision/reason: publish an additive stdlib importable utility and read-only JSON CLI on existing draft PR46 rather than change raw FPIA semantics. Match the entire workflow/run/attempt/job/subject/nominated-verifier identity; generic labels cannot select evidence, ambiguity/malformed receipts fail closed. Consistency never authenticates caller-supplied strings. All outputs retain authentication NOT_VERIFIED and integration_acceptance BLOCKED.\n- Impact: two new ordinary integration-tool/test files; zero existing source or workflow edits, no new dependencies, no owner contracts or production policy. Exact remote `a3e3f6cf5452d056de2df7845a17014765aa3ff3`, parent `2135962a1e6fd19c3acd220a30c6464431eddf95`, tree `cdade46e1c9402a90272fbe325d6e04398b7b5ea`; TREE_IDENTICAL local/API, no local COMMIT_IDENTICAL claim.\n- Verification: 157 initial RED; independent review exposed 8 owner-hyphen cases RED, fixed before final 165/165 GREEN; root readback 165/165. Evidence `evidence/main_tools_2026-10-05/PIW_D002_IMPLEMENTATION_RECEIPT.json`. New exact-head CI collected once and pending separately; old subject CI7/7 SUCCESS is not reused for new code.\n- Limits/next: actual authenticated expected identity/receipt, independently authorized verifier/launcher, dynamic/transitive/external coverage, importer attribution, applicability and exact final merged subject still required. PIW-D001/D003-D006 remain runnable D1/D2 obligations, not fresh approval requests based on former D3 labels.\n- Recovery: revert this additive utility on its proposal branch if a defect is found; preserve all runs/decision history and fail-closed acceptance. No canonical merge/Frozen rewrite.\n"
+  },
+  "governance": {
+    "a_g3_status": "PARTIALLY_RESOLVED",
+    "integration_acceptance": "BLOCKED",
+    "authenticated_binding": "PENDING",
+    "independently_accepted_verifier": "PENDING",
+    "dynamic_transitive_external_coverage": "PENDING",
+    "importer_attribution": "PENDING",
+    "canonical_applicability": "PENDING",
+    "exact_final_chart_result": "NOT_RUN",
+    "lane_a_open_gate_count": 6,
+    "d1_d2_owner_obligations": "PIW-D001/D003-D006 remain runnable owner D1/D2 obligations; no new user approval inferred from old D3 labels",
+    "raw_github_review_count": 0
+  },
+  "next_exact_step": "Consume terminal exact-head run 37267962000 attempt 1 and exact job 111628676484 when available; verify logged subject/register/result hashes and all latest source-head workflow conclusions. Preserve prior 2135962a terminal receipt as history.",
+  "boundaries": {
+    "repo_changed": false,
+    "remote_changed": false,
+    "tests_executed_here": false,
+    "dispatch": false,
+    "comments": false
+  }
+}

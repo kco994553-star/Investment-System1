@@ -1,0 +1,62 @@
+{
+  "classification": "D2",
+  "recorded_at_utc": "2026-10-05T10:47:21.246Z",
+  "tasks": [
+    {
+      "id": "6ac2ef0621908191909a27af4c91f101",
+      "title": "차트 구현 감사 워크 · CI 후속 확인",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T092850\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+      "default_timezone": "Asia/Seoul",
+      "last_run_time": "2026-10-05T10:42:49.384262+00:00",
+      "updated_at": "2026-10-05T10:46:22.068302+00:00",
+      "prompt_sha256": "c2b16af58bd55120b0b3f56905beacecd5e701e4e72ba071720239a0e48605ac",
+      "prior_prompt_sha256": "d1563f8b504745f693ed0d1023319c23eaaf4e7c7e785f23fca0e40a57967663",
+      "enablement_title_schedule_preserved": true,
+      "prompt_overlay_added": true
+    },
+    {
+      "id": "6ac31fca7bb4819183997a9f17f432cb",
+      "title": "차트 구현 감사 워크 · 자동진행",
+      "is_enabled": false,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T125654\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+      "default_timezone": "Asia/Seoul",
+      "last_run_time": null,
+      "updated_at": "2026-10-05T10:46:24.003510+00:00",
+      "prompt_sha256": "42664f54ed32aee1404dd0a6690524a88e4a7cc728a0bc76bbdc25f921fdaf01",
+      "prior_prompt_sha256": "a7f750d7a8166b78fa55efa96b5a751dad26e80836ca7a3ed27b687daea47304",
+      "enablement_title_schedule_preserved": true,
+      "prompt_overlay_added": true
+    },
+    {
+      "id": "6ac2eeedb21c81919f04168d69672f0a",
+      "title": "Chart PR 이벤트 재개",
+      "is_enabled": false,
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+      "default_timezone": "Asia/Seoul",
+      "last_run_time": "2026-10-05T03:51:11.384912+00:00",
+      "updated_at": "2026-10-05T03:56:36.583970+00:00",
+      "prompt_sha256": "d08973141570a9f442dc04c52155666694b375830a7064a9c856f85c32b368ff",
+      "prior_prompt_sha256": "d08973141570a9f442dc04c52155666694b375830a7064a9c856f85c32b368ff",
+      "enablement_title_schedule_preserved": true,
+      "prompt_overlay_added": false
+    }
+  ],
+  "result": "Main currently PAUSED; active CI read-only watcher; no unattended executor activation; verified prompt policy overlay only.",
+  "main_current": "DISABLED",
+  "main_end_to_end": "NOT_VERIFIED",
+  "ci_current": "READ_ONLY_WAKEUP_ACTIVE; latest provider last_run_time observed",
+  "historical_ci": "WORKING_AS_DESIGNED v0.11 productive receipt preserved; now read-only role supersedes historical mutation instructions",
+  "current_resume_root_cause": "Main is_enabled=false; active CI watcher does not execute/mutate by contract. Additionally adopted Gate A HG01/02/03 NOT_VERIFIED prohibits unattended executor. Pause actor/reason and wake-to-executor delivery are UNKNOWN, no TRIGGER_MISSED inference.",
+  "lease": "Current observed-session exact CAS verification; prior NONE, no stale takeover",
+  "policy_read_before_write": true,
+  "kill_switch": "Designated control absent in inspected Git tree, runtime variable inaccessible through available read scope; NOT_VERIFIED, never assumed RUN or modified. User-observed session explicitly permitted by PART G1.",
+  "queue": "Exact pending PR47 terminal consumed and removed only after evidence publication verification",
+  "self_event_filter": "Exact own commit marker/path/source attribution preserved; no broad author suppression",
+  "new_framework": false,
+  "new_task": false,
+  "unattended_run_enabled": false,
+  "hard_guards_implemented_or_verified": false,
+  "guard_owner": "Main / repository administration; no Chart takeover",
+  "failure_classification": "UNKNOWN end-to-end; CI_FOLLOWUP_ONLY active role; current Main PAUSED explicitly observed"
+}

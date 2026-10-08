@@ -1,0 +1,241 @@
+{
+  "kind": "READ_ONLY_SCOPED_AUDIT_VERIFICATION_NOT_PRODUCTION_TESTS",
+  "generated_at": "2026-10-04T23:23:55.676400+00:00",
+  "checks": [
+    {
+      "name": "original_scope19",
+      "result": "PASS"
+    },
+    {
+      "name": "new_scope19_http200",
+      "result": "PASS"
+    },
+    {
+      "name": "original19_hashes_unchanged",
+      "result": "PASS"
+    },
+    {
+      "name": "new19_hashes_exact",
+      "result": "PASS"
+    },
+    {
+      "name": "original_row_total23155",
+      "result": "PASS"
+    },
+    {
+      "name": "original_missing1_envelope4",
+      "result": "PASS"
+    },
+    {
+      "name": "anomaly_security_unbound",
+      "result": "PASS"
+    },
+    {
+      "name": "anomaly_causes_unknown",
+      "result": "PASS"
+    },
+    {
+      "name": "anomalies_unchanged_between_raws",
+      "result": "PASS"
+    },
+    {
+      "name": "ohlcv_all_observation_values_equal",
+      "result": "PASS"
+    },
+    {
+      "name": "exact_adjclose_difference10862",
+      "result": "PASS"
+    },
+    {
+      "name": "provider_actions283div9split",
+      "result": "PASS"
+    },
+    {
+      "name": "action_dates_not_available_at",
+      "result": "PASS"
+    },
+    {
+      "name": "all19_production_blocked",
+      "result": "PASS"
+    },
+    {
+      "name": "all19_quote_unknown",
+      "result": "PASS"
+    },
+    {
+      "name": "all19_adjustment_unadmitted",
+      "result": "PASS"
+    },
+    {
+      "name": "audit_helpers_parse_without_execution",
+      "result": "PASS"
+    },
+    {
+      "name": "original19_arrays_aligned_and_finite_nonnegative_volume",
+      "result": "PASS"
+    }
+  ],
+  "artifact_hashes": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/ACTION_ACQUISITION_PROBES_v0.3.json",
+      "sha256": "f0457cfbac1ab46682ff945ab69acde799bb63bbf6a1b4412f35d71a9d14c393",
+      "bytes": 52439
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/BASIS_ACTION_PRIMARY_SOURCE_REVIEW_v0.3.json",
+      "sha256": "8adbcbb44f6a56d3f139e7346501d07e788c806fc0b8735d05e5dbe4a305d0dd",
+      "bytes": 5983
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/CURRENT_ACTION_EVENT_CANDIDATES_v0.3.json",
+      "sha256": "27285a0a091a6ceb430b3a0af5eafcc72f19d5a4205f4498f70a11e0afb4c6d3",
+      "bytes": 275711
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/IMMUTABLE_RAW_ANOMALIES_v0.3.json",
+      "sha256": "e1dd4946719c5a8a0c8cde313490d7e9fa94998709881b00744411d03b1b5202",
+      "bytes": 14791
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/MARKET_BASIS_AND_ANOMALY_AUDIT_v0.3.md",
+      "sha256": "46958abe484255f83f6b9ce9ae58f1d69a0a9d4c921974772eac5f7fa3dbd400",
+      "bytes": 15025
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/MARKET_BASIS_READINESS_19_v0.3.json",
+      "sha256": "54cec9431b2944b37896f105e4acf96fcca12c104d0448b04edac615e64cd037",
+      "bytes": 33348
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/PRIMARY_SOURCE_CAPTURES_v0.3.json",
+      "sha256": "342e10d5cda35edeb13672a056f844fb655f7bacb32c949403af2515f41df136",
+      "bytes": 3494
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/SOURCE_FIELD_COMPLETENESS_AND_DIFFERENCE_AMPLITUDE_v0.3.json",
+      "sha256": "11a9d84e1253221f396a52ea29276538a70f0cb0546645db2e4774ef5e4c1d71",
+      "bytes": 39656
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/TWO_OBSERVATIONS_COMPARISON_v0.3.json",
+      "sha256": "28bff2b6e046066828fc9088a4bdad4a9c0962c979183c317f360c568467fc1b",
+      "bytes": 182670
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_042700_KS_5y_daily_original.json",
+      "sha256": "1507040662625575f77795fb58b42aa8144e1239f8d65a80c34e25cbc7d472f7",
+      "bytes": 81334
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_8035_T_5y_daily_original.json",
+      "sha256": "5c28080bb3df05447770736134f3f6eb12032c018314555f8dcf578af26d300e",
+      "bytes": 91429
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_AMD_5y_daily_original.json",
+      "sha256": "fa42d22024a7d12ead175fa3f533490105079a37f691414def0325a3b08a6640",
+      "bytes": 136966
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_AMZN_5y_daily_original.json",
+      "sha256": "7d40f82064c9eb866ff77a416cd0dfe728163b4944bbd5a52fe2b4334ef1424b",
+      "bytes": 138111
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_ASML_5y_daily_original.json",
+      "sha256": "cfee779daa993b05d1d7564761bb699e369af5dc4ec755a7402d317bedf7718b",
+      "bytes": 131662
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_AVGO_5y_daily_original.json",
+      "sha256": "19dcc74e944c19ab30d8c811d4f200d82ce9f0c1bc21fb27859953f605e57a64",
+      "bytes": 138544
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_ETN_5y_daily_original.json",
+      "sha256": "e8986211102f61706e6dbd0ebb5b88a2e1896191af3cb865b23677c86e3d49f6",
+      "bytes": 136219
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_GEV_5y_daily_original.json",
+      "sha256": "aab5b143bc12840c9112468f64913c61cf226201825493b76f428253d590bff5",
+      "bytes": 64900
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_GOOGL_5y_daily_original.json",
+      "sha256": "feda2445194be033e220fa582273838f71fbe1440589aa8181dfa0f570bc9b60",
+      "bytes": 139164
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_HUBB_5y_daily_original.json",
+      "sha256": "4fbf0be807b4e6eda8dd404d1a7e999286c738279c08e18204570942bb4650af",
+      "bytes": 135794
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_INTC_5y_daily_original.json",
+      "sha256": "beafdc0a2367313830092c06b02e1cbb39b3b79dc55cec7cfe5299f0e1088bfc",
+      "bytes": 139055
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_KLAC_5y_daily_original.json",
+      "sha256": "9f8d18f314b04f2d3c61347ded0c758261c56aedf1c3bf55454df6c7fb829e32",
+      "bytes": 138344
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_LRCX_5y_daily_original.json",
+      "sha256": "564c28d75b4421705bfa7a6dbbbe9af7e65cf732f5d854f30e539ce70ea71dc0",
+      "bytes": 137391
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_MSFT_5y_daily_original.json",
+      "sha256": "1928d912a1ce75fce225e5538b9bd009a1e6ad970f0c7d9a551352e44069842f",
+      "bytes": 137156
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_NVDA_5y_daily_original.json",
+      "sha256": "80873407159273f90cfc7100c65c52e4cc5835adb7ca7e9d336e99390bc97435",
+      "bytes": 142207
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_QCOM_5y_daily_original.json",
+      "sha256": "092d0e53dae91ff8782284bf25c99f3b2c3b8b1cf88c6c3269f2f71fd1dd92db",
+      "bytes": 139409
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_ROK_5y_daily_original.json",
+      "sha256": "0bb0ebaaa623cac282cff9f6f749f7c8190e4e293368d6625b9d84a6424a530c",
+      "bytes": 134610
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_RTX_5y_daily_original.json",
+      "sha256": "f09cd1c4bc0949718e1969d5480025e502a8576965f79f79cb17c8439c86c4d6",
+      "bytes": 136064
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_SYK_5y_daily_original.json",
+      "sha256": "a3ec56e97d75caf31b502bf0da90cb4c98419b0ebe1805dd450af8fadae127e2",
+      "bytes": 134884
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/capture_actions_audit.py",
+      "sha256": "8d84e19da9cfa63e24c7d85846d46b3f83c20a6771c28b89f98586c31f1ffa12",
+      "bytes": 2908
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/capture_primary_basis_audit.py",
+      "sha256": "225c8f108bbc20ecb2f412de0e0eace631a65e435ced623c97e5bef243315cf3",
+      "bytes": 2168
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/derive_basis_anomaly_audit.py",
+      "sha256": "9e92d9df44609da32bf89b69a34359537545cac1da5f8b480a00d4bab0751a3f",
+      "bytes": 8980
+    }
+  ],
+  "production_tests": "NOT_RUN",
+  "actions": "NOT_RUN",
+  "FPIA": "NOT_RUN",
+  "raw_mutations": 0,
+  "package_mutations": 0,
+  "grants": 0
+}

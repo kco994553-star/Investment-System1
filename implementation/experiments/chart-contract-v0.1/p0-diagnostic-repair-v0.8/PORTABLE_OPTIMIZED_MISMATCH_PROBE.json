@@ -1,0 +1,10 @@
+{
+  "command_mode": "python -O -B runpy runner with in-memory loader fault injection",
+  "fault": "After authenticated selectedtool import, wrap inspect_packet to replace only source_inspection with FAULT_INJECTION_WRONG_EXPECTATION; sourcefiles/manifests unchanged",
+  "exit": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 19, in <module>\n  File \"<frozen runpy>\", line 287, in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/workspace/scratch/9de0281e56bb/repo/implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/replay_preflight_probes.py\", line 100, in <module>\n    probe('Timezone-equal root start',\n  File \"/workspace/scratch/9de0281e56bb/repo/implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/replay_preflight_probes.py\", line 84, in probe\n    require(status_matches, name + ': unexpected inspection ' + report['source_inspection'])\n  File \"/workspace/scratch/9de0281e56bb/repo/implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/replay_preflight_probes.py\", line 66, in require\n    raise ValueError(message)\nValueError: Timezone-equal root start: unexpected inspection FAULT_INJECTION_WRONG_EXPECTATION\n",
+  "output_created": false,
+  "expected_guard_observed": true,
+  "production_evidence": false
+}

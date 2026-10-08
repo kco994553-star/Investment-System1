@@ -1,0 +1,76 @@
+{
+  "record_kind": "SCOPED_QGV_AUDIT_RETURN_TO_MAIN",
+  "disposition": "PASS_BOUNDED_SCOPE_FIXTURE_AND_EXECUTION_POLICY; BLOCKER_AND_D3_REQUIRED_FOR_PRODUCTION",
+  "owner_role": "INDEPENDENT_QGV_SPECIALIST_AUDITOR_NOT_MISSING_DATA_IMPLEMENTER",
+  "source_review_head": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+  "policy_publication_head": "4a6ddd567f3fab32d8fa6793daf9027e9d8b26f6",
+  "current_return_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/execution_loop/",
+  "domain_semantic_changes": 0,
+  "legacy_scores_recalculated": 0,
+  "bounded_acceptance_closed": [
+    {
+      "task": "BOUND_G_C_SHARED_LOCAL_SCOPE_FIXTURE",
+      "checks": 30,
+      "root_reproduction": "PASS",
+      "meaning": "Inactive declared shared/local reference and reason carriage; no production admission"
+    }
+  ],
+  "production_blockers_closed": 0,
+  "production_gates_closed": 0,
+  "new_production_blockers": 0,
+  "net_domain_blockers": 3,
+  "remaining_blocker_refs": [
+    {
+      "id": "INVALID_NUMERIC_CONSUMER_ADMISSION",
+      "state": "OPEN",
+      "severity": "CRITICAL",
+      "reason": "VERSION_MISMATCH/CALCULATION_ERROR finite numeric result may aggregate/rank in production; inactive fixture does not enforce"
+    },
+    {
+      "id": "METHOD_IDENTITY_HISTORICAL_ATTRIBUTION",
+      "state": "OPEN",
+      "reason": "Legacy actual method/version registration/archival attribution not complete; audit aliases do not grant identity"
+    },
+    {
+      "id": "REAL_SOURCE_PERIOD_SHARE_VINTAGE_PIT",
+      "state": "BLOCKED",
+      "reason": "Exact archived real bytes and matched source/vintage inputs absent; no latest-data replacement"
+    }
+  ],
+  "previous_return_main_consumption": {
+    "head": "cba198e77370ccb214956015aa7cc490e73307ac",
+    "comment_id": 5989173684,
+    "state": "CONSUMED_BY_MAIN",
+    "new_owner_return_consumed_here": 0
+  },
+  "new_return_delivery": "Published on scoped review branch; exact containing commit is delivery watermark; Main consumption not claimed",
+  "protected_owner": {
+    "branch": "codex/qgv-missing-data-decision-gate-2026-10-05",
+    "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "lease": "qgv-b47-muupb538",
+    "release": "NOT_EVIDENCED",
+    "writes": 0
+  },
+  "d3_minimal_next": {
+    "ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/DECISION_PACKAGE.md",
+    "question": "Approve bounded B2/B3/B5/B6 producer-assessment reference/scope/consumer-purpose contract?",
+    "excluded": "Concrete criteria/cutoffs, method/numerics, runtime admission/migration remain separate"
+  },
+  "source_requests": {
+    "ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+    "archived_recovery_ref": "ARCHIVED_SOURCE_RECOVERY.json",
+    "status": "Exact raw source bytes not inspected; transport502 twice; no latest-data substitution"
+  },
+  "scheduler": {
+    "actual_hops": "0/2",
+    "status": "UNVERIFIED",
+    "manual_configuration_credit": 0,
+    "existing_two_hop_plan_unchanged": true
+  },
+  "Main_action": "Consume exact returned source/output/script/validator pins and scoped acceptance; do not duplicate59/30 audit, relabel newHEADCI or close production consumer admission. Route existing exact source/authority packets to actual authorized owner and track returned evidence.",
+  "global_writes": 0,
+  "other_owner_branch_writes": 0,
+  "canonical_merge": false,
+  "publication_input_head": "4a6ddd567f3fab32d8fa6793daf9027e9d8b26f6",
+  "fresh_global_head": "76df9e6a71fa91ff5ee260bc6087185facae3779"
+}

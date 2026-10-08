@@ -1,0 +1,161 @@
+{
+  "scope": "READ_ONLY_BOUNDED_FIXTURE_AND_AUTOMATION_REVIEW",
+  "fixture_review": {
+    "status": "MODIFY_THEN_PASS",
+    "nominal_behavior": "Reviewed TARGET/ACTUAL separation, four dimensions, sample labels, whole-portfolio denominators and time/unit/source text. No production admission, new data/classification grant or protected path change is claimed.",
+    "fresh_independent_probes": [
+      {
+        "case": "valid upstream empty catalog / all type assignments unknown",
+        "construction": "Existing renderPortfolioInput(portfolio_reference snapshot with type_catalog=[]), holdings types=null unchanged",
+        "upstream_result": {
+          "data_state": "REFERENCE",
+          "exposures": [],
+          "unknown_overlap_units": 10000
+        },
+        "browser_observation": {
+          "investment_type_availability": "AVAILABLE",
+          "type_overlap_availability": "AVAILABLE",
+          "unknown_overlap_text": "유형 미분류100% · 10000/10000 단위"
+        },
+        "result": "REPRODUCED_MISSING_STATE_BUG"
+      },
+      {
+        "case": "known-zero display projection while overlap remains unknown",
+        "construction": "Same UI-probe class used in new test; exposures known zero, independent overlap unchanged",
+        "browser_observation": {
+          "investment_type_availability": "AVAILABLE",
+          "type_overlap_availability": "AVAILABLE",
+          "unknown_overlap_units": 10000
+        },
+        "result": "CONFIRMS_OVERLAP_AVAILABILITY_COUPLED_TO_TYPE_EXPOSURES"
+      },
+      {
+        "case": "malformed overlap shape",
+        "construction": "Synthetic demo projection, overlap partition still total100, single bucket kindTYPES with types:null",
+        "browser_observation": {
+          "thrown": "Cannot read properties of null (reading 'map')",
+          "prior_demo_doc_still_exposed": true
+        },
+        "result": "REPRODUCED_FIXTURE_GUARD_GAP"
+      }
+    ],
+    "findings": [
+      {
+        "id": "F09-R1",
+        "severity": "MEDIUM_FIXTURE",
+        "path": "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+        "region": "allUnknown/partial calculation and Type Overlap section availability",
+        "problem": "Empty catalog is accepted by the existing upstream contract, but no exposures makes both allUnknown and partial false. The renderer labels missing type catalog and all-unknown overlap AVAILABLE.",
+        "minimal_repair": "Treat missing/empty type catalog as unavailable where no catalog information exists; derive overlap missing/partial state independently from overlap UNKNOWN units and known partition buckets. Preserve known empty type memberships as distinct from unknown."
+      },
+      {
+        "id": "F09-R2",
+        "severity": "LOW_FIXTURE_ROBUSTNESS",
+        "path": "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+        "region": "validProjection and render state reset",
+        "problem": "Partition-unit checks do not validate overlap bucket fields later dereferenced. A malformed types value crashes mid-render while __portfolioLab retains prior doc/mode.",
+        "minimal_repair": "Validate overlap bucket kind/types shape before rendering and clear exposed current document before rendering. No financial recomputation or new schema framework."
+      }
+    ],
+    "evidence_boundary": "Root's retained 39+36+36 browser checks and75Node are not claimed as independently rerun; reviewer ran only three targeted browser probes plus upstream empty-catalog generation."
+  },
+  "automation_review": {
+    "inventory_source": "/workspace/scratch/9de0281e56bb/new_chart_automation_inventory.json",
+    "main": {
+      "id": "6ac31fca7bb4819183997a9f17f432cb",
+      "enabled": true,
+      "last_run_time": "2026-10-05T04:46:00.604597+00:00",
+      "mode": "HOURLY_GLOBAL_AWARE"
+    },
+    "ci": {
+      "id": "6ac2ef0621908191909a27af4c91f101",
+      "enabled": true,
+      "last_run_time": "2026-10-05T04:13:31.266951+00:00"
+    },
+    "predecessor_event": {
+      "id": "6ac2eeedb21c81919f04168d69672f0a",
+      "enabled": false,
+      "disposition": "INTENTIONALLY_SUPERSEDED"
+    },
+    "state_last_processed": {
+      "at": "2026-10-05T04:55:05.915Z",
+      "run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
+      "global": "af264713b99471fb554e06e8d321f5039be47b47",
+      "ci_terminal_success_consumed": true,
+      "governance_closure": false
+    },
+    "latest_global_input": "Root fresh intake426... plusPR46; later than Main04:46 observed trigger",
+    "lease": {
+      "status": "HELD",
+      "run_id": "manual-chart-fixture-review-20261005T052509016Z",
+      "acquired": "2026-10-05T05:25:09.016Z",
+      "expires": "2026-10-05T06:25:09.016Z"
+    },
+    "pending": [],
+    "classification": {
+      "scheduled_main_invocation": "OBSERVED_CONFIGURED_TRIGGER_NOT_PRODUCTIVE_COMPLETION_PROOF",
+      "productive_completion_after_latest_dependency": "UNVERIFIED",
+      "current_live_writer": "WORKING_AS_DESIGNED_PROTECTS_WRITES",
+      "latest_input_watermarks": "STALE_PRIOR_TO_CURRENT_MANUAL_INTAKE_NOT_PROVEN_TRIGGER_MISS",
+      "old_global_only_coverage": "HISTORICAL_COVERAGE_LIMIT_NEW_HOURLY_MAIN_CONFIGURED_REMEDY",
+      "ci_no_pending": "CI_FOLLOWUP_ONLY_NO_PRODUCTIVE_CI_ACTION_REQUIRED",
+      "framework_failure": "UNKNOWN_NO_REPRODUCIBLE_FAILURE_ESTABLISHED"
+    },
+    "recommendation": "No automation framework/task changes. Current lease owner processes material intake and records verified exact sources after publication, then releases lease. A future scheduled invocation must be assessed by actual receipts/run outcomes. Do not classify old timestamps or event paused status as a lost trigger."
+  },
+  "closure_history": [
+    {
+      "status": "PASS",
+      "findings_closed": [
+        "F09-R1",
+        "F09-R2"
+      ],
+      "scope": "SAMPLE_FIXTURE_ONLY",
+      "fresh_evidence": {
+        "at_utc": "2026-10-05T05:39:42.101Z",
+        "scope": "INDEPENDENT_TARGETED_FIXTURE_CLOSURE",
+        "result": "PASS",
+        "cases": 5,
+        "renderer_sha256": "ab6e2ea167d95d04619b096ce8f3518de6128d7f248d4967424761ffe2eb4016",
+        "results": [
+          {
+            "case": "noCatalog",
+            "typeAvailability": "NOT_AVAILABLE",
+            "overlapAvailability": "NOT_AVAILABLE",
+            "text": "Type Overlap · 유형 중복 조합Investment Type의 완전히 확인된 동일 유형 조합에서 파생합니다. 정확히 같은 유형 조합을 가진 보유분끼리 묶습니다. “성장 + 우량”은 그 두 유형 조합이며, 다른 유형까지 포함한 종목은 별도 조합입니다. 현금·미분류를 포함해 각 보유분은 한 번만 집계합니다. 유형별 노출 합계와 달리 조합 분할의 분모는 전체 100%입니다. 미분류는 빈 유형 조합이 아닙니다.NOT_AVAILABLE · 유형 조합 미분류 · 원본 유형 배정이 없어 확인된 조합을 표시할 수 없습니다."
+          },
+          {
+            "case": "cashOnly",
+            "typeAvailability": "NOT_AVAILABLE",
+            "overlapAvailability": "AVAILABLE",
+            "text": "Type Overlap · 유형 중복 조합Investment Type의 완전히 확인된 동일 유형 조합에서 파생합니다. 정확히 같은 유형 조합을 가진 보유분끼리 묶습니다. “성장 + 우량”은 그 두 유형 조합이며, 다른 유형까지 포함한 종목은 별도 조합입니다. 현금·미분류를 포함해 각 보유분은 한 번만 집계합니다. 유형별 노출 합계와 달리 조합 분할의 분모는 전체 100%입니다. 미분류는 빈 유형 조합이 아닙니다.명시적으로 유형 없음0% · 0/10000 단위유형 미분류0% · 0/10000 단위현금100% · 10000/10000 단위"
+          },
+          {
+            "case": "explicitNoTypes",
+            "typeAvailability": "NOT_AVAILABLE",
+            "overlapAvailability": "AVAILABLE",
+            "text": "Type Overlap · 유형 중복 조합Investment Type의 완전히 확인된 동일 유형 조합에서 파생합니다. 정확히 같은 유형 조합을 가진 보유분끼리 묶습니다. “성장 + 우량”은 그 두 유형 조합이며, 다른 유형까지 포함한 종목은 별도 조합입니다. 현금·미분류를 포함해 각 보유분은 한 번만 집계합니다. 유형별 노출 합계와 달리 조합 분할의 분모는 전체 100%입니다. 미분류는 빈 유형 조합이 아닙니다.명시적으로 유형 없음100% · 10000/10000 단위유형 미분류0% · 0/10000 단위현금0% · 0/10000 단위"
+          },
+          {
+            "case": "known-zero-independent-unknown-overlap",
+            "typeAvailability": "AVAILABLE",
+            "overlapAvailability": "NOT_AVAILABLE",
+            "text": "Type Overlap · 유형 중복 조합Investment Type의 완전히 확인된 동일 유형 조합에서 파생합니다. 정확히 같은 유형 조합을 가진 보유분끼리 묶습니다. “성장 + 우량”은 그 두 유형 조합이며, 다른 유형까지 포함한 종목은 별도 조합입니다. 현금·미분류를 포함해 각 보유분은 한 번만 집계합니다. 유형별 노출 합계와 달리 조합 분할의 분모는 전체 100%입니다. 미분류는 빈 유형 조합이 아닙니다.NOT_AVAILABLE · 유형 조합 미분류 · 원본 유형 배정이 없어 확인된 조합을 표시할 수 없습니다."
+          },
+          {
+            "case": "malformed-overlap",
+            "thrown": null,
+            "state": "BLOCKED",
+            "doc": null,
+            "svgCount": 0
+          }
+        ],
+        "page_errors": []
+      },
+      "root_regression_evidence": "Root running three viewports; not claimed independently rerun",
+      "production_or_owner_gate_effect": "NONE",
+      "original_findings_preserved": true
+    }
+  ],
+  "current_review_status": "PASS_FIXTURE_SCOPE"
+}

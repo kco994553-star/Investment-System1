@@ -1,0 +1,104 @@
+{
+  "assessment_captured_at_utc": "2026-10-04T23:54:36Z",
+  "assessment_kind": "READ_ONLY_GITHUB_AND_BYTE_INSPECTION_NOT_INDEPENDENT_ADVERSARIAL_REVIEW",
+  "reference_pr41": "581c61c4af859f6cbdc3418209bba9be7bbc76a3",
+  "pr42": {
+    "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "draft": true,
+    "state": "open",
+    "merged": false,
+    "branch": "integration/fpia-hardened-v1",
+    "updated_at": "2026-10-04T21:59:24Z"
+  },
+  "global_handoff": {
+    "sha": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+    "commit_date": "2026-10-04T14:30:23Z",
+    "record": "GCH-014",
+    "fpia_status": "IMPLEMENTATION_AND_VERIFICATION_IN_PROGRESS",
+    "temporal_limitation": "Predates final PR42 CI and does not close it"
+  },
+  "worker_contract": {
+    "routing_pr": 21,
+    "head": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
+    "authority": "CDR-001 OPERATIONAL_ROUTING_SSOT_NOT_CANONICAL_MERGE_APPROVAL",
+    "scoped_implementation_details_allowed": true
+  },
+  "fpia_implementation": "PRESENT_ON_EXACT_DRAFT_PR_HEAD_NOT_INTEGRATED",
+  "observed_ci": {
+    "check_runs": 7,
+    "success": 7,
+    "fpia_run": 37234682864,
+    "fpia_job": 111531323882,
+    "fpia_audit": "FPIA_PASS",
+    "subject": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "subject_is_future_chart_merge_result": false,
+    "verbatim_frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+    "code_identity": "CODE_IDENTITY_DIVERGED",
+    "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+    "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+    "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+    "full_regression": "PASS",
+    "v2_binding": "PASS",
+    "result_sha256": "d85ecc4b4913b31efb61dc2417898d6a51f3d9f7398d9b17bce7f233d847c520",
+    "verify_output": "VERIFIED_IN_CI_LOG",
+    "dedicated_tier1_step": "SKIPPED_ON_PULL_REQUEST_BY_WORKFLOW_DESIGN",
+    "dedicated_tier2_step": "SKIPPED_ON_PULL_REQUEST_BY_WORKFLOW_DESIGN",
+    "native_branch_required_status_contexts": [],
+    "required_context_limitation": "Observed base branch says protected=false / enforcement off; [] is not governance waiver",
+    "rulesets": []
+  },
+  "independent_adversarial_completeness_review": {
+    "status": "NOT_RUN_PER_CURRENT_OWNER_PR_BODY",
+    "submitted_github_reviews": 0,
+    "issue_comments": 0,
+    "review_comments": 0,
+    "evidence_not_found_in_fresh_global_handoff": true
+  },
+  "d3_closure": {
+    "status": "OPEN_EXISTING_INTEGRATION_OWNER_DECISIONS",
+    "items": [
+      "D3-a verifier authentication",
+      "D3-b job-id collision rule",
+      "D3-c dynamic invocation non-claim",
+      "D3-d #28 attribution"
+    ],
+    "g7_trigger_interpretation": "PENDING_USER_CONFIRMATION",
+    "new_chart_d3_established": false
+  },
+  "gie_closure": "NOT_RUN_PER_CURRENT_OWNER_PR_BODY_NO_LATEST_CLOSURE_IN_FRESH_HANDOFF",
+  "exact_future_chart_merge_result_fpia": "NOT_RUN_FUTURE_POST_IMPLEMENTATION_GATE",
+  "verdict": "TOOL_CI_VERIFIED_ON_EXACT_PR_HEAD_INTEGRATION_GATE_NOT_CLOSED",
+  "p01": {
+    "active_authorizations": [],
+    "research_display": "NONE",
+    "frozen": "NONE",
+    "live": "NONE",
+    "extractor_chart_registered": false,
+    "user_target_display_path": "OWNER_CLASSIFICATION_AND_APPROVAL_REQUIRED_NOT_AUTO_GRANTED",
+    "direct_digest_proof": "P01_DIGEST_FRESH_READ_PROOF.json"
+  },
+  "not_run_by_this_review": [
+    "FPIA CLI",
+    "production tests",
+    "workflow dispatch",
+    "independent adversarial tool review",
+    "binary artifact download",
+    "Chart merge-result FPIA"
+  ],
+  "prohibited_actions_performed": [],
+  "evidence_files": [
+    "raw/pr42_metadata.json",
+    "raw/pr42_checks.json",
+    "raw/pr42_workflow_runs.json",
+    "raw/pr42_fpia_jobs.json",
+    "raw/pr42_fpia_job_logs.json",
+    "raw/pr42_reviews.json",
+    "raw/pr42_issue_comments.json",
+    "raw/pr42_review_comments.json",
+    "raw/global_handoff_ref.json",
+    "raw/pr42_base_ref.json",
+    "raw/repo_rulesets.json",
+    "raw/pr42_fpia_artifacts.json"
+  ]
+}

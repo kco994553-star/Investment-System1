@@ -1,0 +1,249 @@
+{
+  "status": "BOUNDED_CHARACTERIZATION_COMPLETE",
+  "recommendation": "APPROVE_RECOMMENDED_B4_IDENTITY_SEPARATION_ONLY",
+  "authority": "RECOMMENDATION_NOT_USER_APPROVAL",
+  "runtime_enabled": false,
+  "production_method_replacement": false,
+  "real_PIT_OOS": "NOT_RUN",
+  "archived_executable_replay": "NOT_RUN",
+  "review_input_owner_head": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "recorded_at": "2026-10-05T03:12:55.596030+00:00",
+  "cases": [
+    {
+      "case_id": "B4-01",
+      "mutation": "same factor ID; hypothetical alternative method output (synthetic observation substitution)",
+      "observed": {
+        "factor_id": "next_3_5y_growth",
+        "legacy_proxy_score": 90.0,
+        "substituted_score": 60.0,
+        "G_before": 36.0,
+        "G_after": 28.5,
+        "coarse_versions_equal": true
+      },
+      "detectability": "NO_FACTOR_METHOD_ENFORCEMENT; changed result is visible, cause cannot be certified from method metadata",
+      "proposed_requirement": "immutable method_ref and authenticated method/config closure; unresolved method cannot claim valid new calculation",
+      "scope": "existing analyzer, synthetic substituted output; no production method replacement"
+    },
+    {
+      "case_id": "B4-02",
+      "mutation": "same next_3_5y_growth factor; requested horizon 1Q vs 5Y",
+      "observed": {
+        "G_equal": true,
+        "G_score": 36.0,
+        "horizon_1Q": {
+          "requested": "1Q",
+          "available_quarters": 4,
+          "effective_quarters": 1,
+          "coverage_state": "READY",
+          "fallback_used": false,
+          "mutates_g_score": false
+        },
+        "horizon_5Y": {
+          "requested": "5Y",
+          "available_quarters": 4,
+          "effective_quarters": 4,
+          "coverage_state": "PARTIAL",
+          "fallback_used": true,
+          "mutates_g_score": false
+        },
+        "coarse_versions_equal": true
+      },
+      "detectability": "HORIZON_METADATA_VISIBLE; realized raw-map method/input horizon not authenticated",
+      "proposed_requirement": "pin economic input horizon separately from display/request horizon; changed computation horizon changes method/input-contract ref",
+      "scope": "existing horizon characterization"
+    },
+    {
+      "case_id": "B4-03",
+      "mutation": "EPS branch vs current FCF/prior-revenue fallback; future fallback replacement unapproved",
+      "observed": {
+        "factor_id": "eps_fcf_per_share_growth",
+        "same_notes": "SYNTHETIC;eps or fcf yoy",
+        "fcf_fallback_input": {
+          "fcf": 20,
+          "revenue_prev": 100
+        },
+        "fcf_fallback_ratio_growth": -0.8,
+        "fcf_fallback_score": 0.0,
+        "eps_input": {
+          "eps": 3,
+          "eps_prev": 2
+        },
+        "eps_score": 100.0,
+        "fcf_previous_or_per_share_input_contract_present": false
+      },
+      "detectability": "RAW_INPUT_ARTIFACTS_CAN_HELP_RECONSTRUCT_BRANCH; observation has no selected fallback method identity",
+      "proposed_requirement": "ordered fallback methods plus selected branch ref and input lineage; actual replacement needs D3",
+      "scope": "existing raw-map branches only"
+    },
+    {
+      "case_id": "B4-04",
+      "mutation": "normalization branch change; same-version well-shaped calculation hash change",
+      "observed": {
+        "DCF_vs_PE_observation_equal": true,
+        "score": 50.0,
+        "notes": "SYNTHETIC;central intrinsic; not MOS",
+        "same_version_changed_hash_both_spec_valid": true
+      },
+      "detectability": "BYTE_HASH_CAN_SHOW_DRIFT_IF_COMPARED_TO_TRUSTED_BYTES; inactive validator authenticates neither bytes nor allowed method/version relation",
+      "proposed_requirement": "pin normalization ref/parameters/direction/units and source closure; reject ID+version equivocation",
+      "scope": "actual DCF/PE branches and inactive sample structure; no normalization replacement"
+    },
+    {
+      "case_id": "B4-05",
+      "mutation": "new method/version result then historical record get",
+      "observed": {
+        "historical_payload_unchanged": true,
+        "old_G": 36.0,
+        "new_synthetic_G": 28.5,
+        "method_dispatch_key_in_FactorObservation": false
+      },
+      "detectability": "SAVED_PAYLOAD_IMMUTABILITY_SUPPORTED; authenticated historical calculation-method replay not implemented",
+      "proposed_requirement": "historical snapshot exact refs/bytes; new linked snapshot for new method, never latest-method evaluation under old ID/version",
+      "scope": "in-memory immutable track record; file reload reviewed statically; archived executable replay NOT_RUN"
+    },
+    {
+      "case_id": "B4-06",
+      "mutation": "Personal/custom profile attempts method identity/version/normalization mutation",
+      "observed": {
+        "custom_profile_rejections": [
+          "unknown configurable keys: ['method_identity']",
+          "unknown configurable keys: ['method_version']",
+          "unknown configurable keys: ['normalization_ref']"
+        ],
+        "WeightOverride_unknown_method_field": "TypeError",
+        "WeightOverride_fields": [
+          "node_id",
+          "local_weight"
+        ]
+      },
+      "detectability": "SUPPORTED_CUSTOM_APIS_REJECT_METHOD_MUTATION; future runtime/cache enforcement not inferred",
+      "proposed_requirement": "reuse weight-only overrides and no-silent-rebase; immutable method/config refs outside profile editability",
+      "scope": "supported APIs only; arbitrary parameter dict construction is not scoring authority"
+    }
+  ],
+  "checks": [
+    {
+      "assertion": "case1 accepts alternate synthetic factor output without method metadata",
+      "result": "PASS"
+    },
+    {
+      "assertion": "case1 coarse snapshot versions remain equal",
+      "result": "PASS"
+    },
+    {
+      "assertion": "case2 requested horizon changes metadata",
+      "result": "PASS"
+    },
+    {
+      "assertion": "case2 requested horizon does not select a different G method",
+      "result": "PASS"
+    },
+    {
+      "assertion": "case3 EPS and FCF branches share factor ID and explanatory label",
+      "result": "PASS"
+    },
+    {
+      "assertion": "case3 current FCF branch differs from EPS branch",
+      "result": "PASS"
+    },
+    {
+      "assertion": "case4 DCF and PE branches can emit indistinguishable observations",
+      "result": "PASS"
+    },
+    {
+      "assertion": "case4 same-version changed well-shaped hash remains SPEC_VALID",
+      "result": "PASS"
+    },
+    {
+      "assertion": "case5 immutable track record preserves historical payload",
+      "result": "PASS"
+    },
+    {
+      "assertion": "case5 FactorObservation contains no method/version dispatch key",
+      "result": "PASS"
+    },
+    {
+      "assertion": "case6 supported custom_profile API rejects three method/normalization keys",
+      "result": "PASS"
+    },
+    {
+      "assertion": "case6 WeightOverride is numeric weight only",
+      "result": "PASS"
+    },
+    {
+      "assertion": "synthetic binding fingerprint changes method_ref {\"id\": \"SYNTHETIC_ALT\", \"version\": \"SYNTHETIC_V1\"}",
+      "result": "PASS"
+    },
+    {
+      "assertion": "synthetic binding fingerprint changes input_contract_ref {\"horizon\": \"SYNTHETIC_5Y\"}",
+      "result": "PASS"
+    },
+    {
+      "assertion": "synthetic binding fingerprint changes fallback_ref {\"ordered\": [\"SYNTHETIC_ALT_FCF\"]}",
+      "result": "PASS"
+    },
+    {
+      "assertion": "synthetic binding fingerprint changes normalization_ref {\"id\": \"SYNTHETIC_ALT_NORM\", \"version\": \"SYNTHETIC_V1\"}",
+      "result": "PASS"
+    },
+    {
+      "assertion": "synthetic binding fingerprint changes method_ref {\"id\": \"SYNTHETIC_CURRENT_PROXY\", \"version\": \"SYNTHETIC_V2\"}",
+      "result": "PASS"
+    }
+  ],
+  "assertion_count": 17,
+  "method_manifest_hash_demonstration": [
+    {
+      "changed_ref": "method_ref",
+      "replacement": {
+        "id": "SYNTHETIC_ALT",
+        "version": "SYNTHETIC_V1"
+      },
+      "manifest_hash_differs": true
+    },
+    {
+      "changed_ref": "input_contract_ref",
+      "replacement": {
+        "horizon": "SYNTHETIC_5Y"
+      },
+      "manifest_hash_differs": true
+    },
+    {
+      "changed_ref": "fallback_ref",
+      "replacement": {
+        "ordered": [
+          "SYNTHETIC_ALT_FCF"
+        ]
+      },
+      "manifest_hash_differs": true
+    },
+    {
+      "changed_ref": "normalization_ref",
+      "replacement": {
+        "id": "SYNTHETIC_ALT_NORM",
+        "version": "SYNTHETIC_V1"
+      },
+      "manifest_hash_differs": true
+    },
+    {
+      "changed_ref": "method_ref",
+      "replacement": {
+        "id": "SYNTHETIC_CURRENT_PROXY",
+        "version": "SYNTHETIC_V2"
+      },
+      "manifest_hash_differs": true
+    }
+  ],
+  "source_and_golden_sha256": {
+    "implementation/src/investment_system/qgv/raw_map.py": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+    "implementation/src/investment_system/qgv/factors.py": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+    "implementation/src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+    "implementation/src/investment_system/contracts/models.py": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+    "implementation/src/investment_system/personal/weights.py": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+    "implementation/src/investment_system/personal/versioning.py": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def",
+    "implementation/src/investment_system/versions.py": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11",
+    "implementation/docs/qgv_common_contract_vnext/golden_cases.json": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040"
+  },
+  "claims_limit": "Characterization PASS reproduces observed legacy behavior. It does not certify proposed runtime safety/implementation or approve any B decision."
+}

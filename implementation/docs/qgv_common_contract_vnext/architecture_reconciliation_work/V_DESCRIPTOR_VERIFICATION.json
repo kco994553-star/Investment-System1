@@ -1,0 +1,11 @@
+{
+  "manifest_sha256": "f28dd9af0944bdac7895cb22ea40790a36888a2936931dc4ff4bca8efd4708d5",
+  "records": 7,
+  "source_reference_checks": 35,
+  "all_source_refs_match": true,
+  "no_requiredness_assignments": true,
+  "all_unassessed_states_preserved": true,
+  "runtime_enabled": false,
+  "test_kind": "document/source-binding verification, not new runtime or scheduler validation",
+  "replay_artifact_reference_checks": 7
+}

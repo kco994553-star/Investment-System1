@@ -1,0 +1,28 @@
+{
+  "kind": "QGV_INDEPENDENT_AUDIT_RETURN",
+  "state": "RETURNED_PENDING_MAIN_CONSUMPTION",
+  "disposition": "PASS_WITH_LIMITS_POLICY_ONLY",
+  "exact_delivery_head": "Resolve authenticated containing review commit",
+  "policy_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/POLICY.json",
+  "decision_receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/DECISION_RECEIPT.json",
+  "pending_classification_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json",
+  "previous_principle_return": {
+    "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+    "ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/MAIN_RETURN.json",
+    "Main_consumption": "NOT_EVIDENCED"
+  },
+  "semantic_delta": 0,
+  "production_blockers_closed": 0,
+  "production_blocker_categories_remaining": 3,
+  "reserved_groups": 10,
+  "new_D3_A_production_approvals": 0,
+  "owner_lease_changed": false,
+  "Global_writes": 0,
+  "scheduler_hops_added": 0,
+  "integration_instruction": "Consume exact policy-only scoped return without relabeling as runtime/method/numeric approval. Preserve previous approved principles and reuse exact completed scope evidence. Main owns integration and owner routing.",
+  "new_verification": 30,
+  "independent_review": "PASS_WITH_LIMITS",
+  "prior_evidence_reused": 193,
+  "prior_reruns": 0,
+  "decision_receipt_sha256": "5ecea0a59289793a6fe4cfb8f141f207fdab16d44855bedbcffbb27aa68fe4d6"
+}

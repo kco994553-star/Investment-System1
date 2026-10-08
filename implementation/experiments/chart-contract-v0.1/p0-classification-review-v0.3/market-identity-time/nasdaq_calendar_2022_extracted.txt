@@ -1,0 +1,47 @@
+Trading Calendar 2022
+January                               February                                   March                                April
+M      T   W     T    F   S    S       M    T      W    T    F     S      S       M     T   W    T    F    S     S    M     T    W    T    F    S    S
+                          1    2            1      2    3    4     5      6             1   2    3    4    5     6                         1    2    3
+ 3     4    5    6   7    8    9       7    8      9    10   11   12      13      7     8   9    10   11   12    13   4     5    6    7    8    9    10
+10    11   12   13   14   15   16      14   15     16   17   18   19      20     14   15    16   17   18   19    20   11    12   13   14   15   16   17
+17    18   19   20   21   22   23      21   22     23   24   25   26      27     21   22    23   24   25   26    27   18    19   20   21   22   23   24
+24    25   26   27   28   29   30      28                                        28   29    30   31                   25    26   27   28   29   30
+31
+
+May                                   June                                       July                                 August
+M      T   W     T    F   S    S       M    T      W    T    F     S      S       M     T   W    T    F    S     S    M     T    W    T    F    S    S
+
+                               1                   1    2    3     4      5                           1    2     3    1     2    3    4    5    6    7
+
+ 2     3    4    5   6    7    8       6    7      8    9    10   11      12      4     5   6    7    8    9     10   8     9    10   11   12   13   14
+
+ 9    10   11   12   13   14   15      13   14     15   16   17   18      19     11   12    13   14   15   16    17   15    16   17   18   19   20   21
+
+16    17   18   19   20   21   22      20   21     22   23   24   25      26     18   19    20   21   22   23    24   22    23   24   25   26   27   28
+
+23    24   25   26   27   28   29      27   28     29   30                       25   26    27   28   29   30    31   29    30   31
+
+30    31
+
+September                             October                                    November                             December
+M      T   W     T    F   S    S       M    T      W    T    F     S      S       M     T   W    T    F    S     S    M     T    W    T    F    S    S
+                 1   2    3    4                                   1      2             1   2    3    4    5     6                    1    2    3    4
+ 5     6    7    8   9    10   11      3    4      5    6    7     8      9       7     8   9    10   11   12    13   5     6    7    8    9    10   11
+12    13   14   15   16   17   18      10   11     12   13   14   15      16     14   15    16   17   18   19    20   12    13   14   15   16   17   18
+19    20   21   22   23   24   25      17   18     19   20   21   22      23     21   22    23   24   25   26    27   19    20   21   22   23   24   25
+26    27   28   29   30                24   25     26   27   28   29      30     28   29    30                        26    27   28   29   30   31
+                                       31
+
+
+HOLIDAYS                                                         INDEXES
+     Exchange Holiday                                                  Preliminary additions/deletions for the             Nasdaq-100 Additions
+     Market Close at 1pm ET                                            Russell Indexes published 6pm PT                    & Deletions Announced
+                                                                       Russell Index Reconstitution                        Nasdaq-100 Rebalance
+                                                                       MSCI Quarterly Review                               and Nasdaq Biotech Index
+OPTIONS                                                                                                                    (NBI) Rebalance
+                                                                       MSCI Semi-Annual Review
+     Triple Witch – Expiration of equity options                                                                           Philadelphia SOX Index
+     and index options & futures                                       S&P Indexes Rebalance S&P 500,                      Rebalance
+                                                                       S&P 400, and S&P 600
+     Option Expiration Date                                                                                                Short Interest Release Date
+

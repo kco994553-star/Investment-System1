@@ -1,0 +1,25 @@
+{
+  "gate": "A-S2",
+  "role": "Common Security19 evidence writer",
+  "accountable_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+  "session": "main-single-control-20261007T104552Z",
+  "branch": "main/chart-source-evidence-v1",
+  "base_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "write_set": [
+    "implementation/docs/security_map19_owner/**"
+  ],
+  "claim": "MAIN_ASSIGNED_EVIDENCE_SCOPE",
+  "source_admission": false,
+  "protected_source_owner_transfer": false,
+  "execution_status": "RETURNED_REFERENCE_ONLY_WAIT_SOURCE_AUTHORITY",
+  "lease_status": "RELEASED_IN_CONTAINING_RETURN_PUBLICATION",
+  "return_path": "implementation/docs/security_map19_owner/RETURN.json",
+  "acceptance": "reference completeness only; all production admission fields remain unresolved",
+  "claim_lease": {
+    "token": "main-single-control-20261007T104552Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "ttl_hours": 2,
+    "expires_at_utc": "2026-10-07T12:49:36.888779+00:00"
+  },
+  "lease": null
+}

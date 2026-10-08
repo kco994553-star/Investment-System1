@@ -1,0 +1,311 @@
+{
+  "artifacts": {
+    "G_LINEAGE_REPLAY.json": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3",
+    "G_METHOD_REPLAY_MANIFEST.json": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f",
+    "G_SYNTHETIC_RAW_FIXTURES.json": "dca9e8855f7e01dc5bda9404909ae9b05f980f6604341ab5c89729140cc9f90d"
+  },
+  "checks": [
+    {
+      "actual": 90.0,
+      "case": "complete_eps_branch:next_3_5y_growth:source_replay",
+      "expected": 90.0,
+      "pass": true
+    },
+    {
+      "actual": 54.8,
+      "case": "complete_eps_branch:growth_efficiency:source_replay",
+      "expected": 54.8,
+      "pass": true
+    },
+    {
+      "actual": 90.0,
+      "case": "complete_eps_branch:revenue_growth:source_replay",
+      "expected": 90.0,
+      "pass": true
+    },
+    {
+      "actual": 70.00000000000001,
+      "case": "complete_eps_branch:eps_fcf_per_share_growth:source_replay",
+      "expected": 70.00000000000001,
+      "pass": true
+    },
+    {
+      "actual": 70.0,
+      "case": "complete_eps_branch:growth_durability:source_replay",
+      "expected": 70.0,
+      "pass": true
+    },
+    {
+      "actual": 83.33333333333331,
+      "case": "complete_eps_branch:excess_growth_vs_industry:source_replay",
+      "expected": 83.33333333333331,
+      "pass": true
+    },
+    {
+      "actual": 90.0,
+      "case": "missing_eps_fcf_fallback:next_3_5y_growth:source_replay",
+      "expected": 90.0,
+      "pass": true
+    },
+    {
+      "actual": 54.8,
+      "case": "missing_eps_fcf_fallback:growth_efficiency:source_replay",
+      "expected": 54.8,
+      "pass": true
+    },
+    {
+      "actual": 90.0,
+      "case": "missing_eps_fcf_fallback:revenue_growth:source_replay",
+      "expected": 90.0,
+      "pass": true
+    },
+    {
+      "actual": 0.0,
+      "case": "missing_eps_fcf_fallback:eps_fcf_per_share_growth:source_replay",
+      "expected": 0.0,
+      "pass": true
+    },
+    {
+      "actual": 70.0,
+      "case": "missing_eps_fcf_fallback:growth_durability:source_replay",
+      "expected": 70.0,
+      "pass": true
+    },
+    {
+      "actual": 83.33333333333331,
+      "case": "missing_eps_fcf_fallback:excess_growth_vs_industry:source_replay",
+      "expected": 83.33333333333331,
+      "pass": true
+    },
+    {
+      "actual": 90.0,
+      "case": "zero_prior_eps_fcf_fallback:next_3_5y_growth:source_replay",
+      "expected": 90.0,
+      "pass": true
+    },
+    {
+      "actual": 54.8,
+      "case": "zero_prior_eps_fcf_fallback:growth_efficiency:source_replay",
+      "expected": 54.8,
+      "pass": true
+    },
+    {
+      "actual": 90.0,
+      "case": "zero_prior_eps_fcf_fallback:revenue_growth:source_replay",
+      "expected": 90.0,
+      "pass": true
+    },
+    {
+      "actual": 0.0,
+      "case": "zero_prior_eps_fcf_fallback:eps_fcf_per_share_growth:source_replay",
+      "expected": 0.0,
+      "pass": true
+    },
+    {
+      "actual": 70.0,
+      "case": "zero_prior_eps_fcf_fallback:growth_durability:source_replay",
+      "expected": 70.0,
+      "pass": true
+    },
+    {
+      "actual": 83.33333333333331,
+      "case": "zero_prior_eps_fcf_fallback:excess_growth_vs_industry:source_replay",
+      "expected": 83.33333333333331,
+      "pass": true
+    },
+    {
+      "actual": 90.0,
+      "case": "missing_eps_and_fcf:next_3_5y_growth:source_replay",
+      "expected": 90.0,
+      "pass": true
+    },
+    {
+      "actual": 54.8,
+      "case": "missing_eps_and_fcf:growth_efficiency:source_replay",
+      "expected": 54.8,
+      "pass": true
+    },
+    {
+      "actual": 90.0,
+      "case": "missing_eps_and_fcf:revenue_growth:source_replay",
+      "expected": 90.0,
+      "pass": true
+    },
+    {
+      "actual": null,
+      "case": "missing_eps_and_fcf:eps_fcf_per_share_growth:source_replay",
+      "expected": null,
+      "pass": true
+    },
+    {
+      "actual": 70.0,
+      "case": "missing_eps_and_fcf:growth_durability:source_replay",
+      "expected": 70.0,
+      "pass": true
+    },
+    {
+      "actual": 83.33333333333331,
+      "case": "missing_eps_and_fcf:excess_growth_vs_industry:source_replay",
+      "expected": 83.33333333333331,
+      "pass": true
+    },
+    {
+      "actual": 90.0,
+      "case": "missing_industry_and_rubric:next_3_5y_growth:source_replay",
+      "expected": 90.0,
+      "pass": true
+    },
+    {
+      "actual": 54.8,
+      "case": "missing_industry_and_rubric:growth_efficiency:source_replay",
+      "expected": 54.8,
+      "pass": true
+    },
+    {
+      "actual": 90.0,
+      "case": "missing_industry_and_rubric:revenue_growth:source_replay",
+      "expected": 90.0,
+      "pass": true
+    },
+    {
+      "actual": 70.00000000000001,
+      "case": "missing_industry_and_rubric:eps_fcf_per_share_growth:source_replay",
+      "expected": 70.00000000000001,
+      "pass": true
+    },
+    {
+      "actual": null,
+      "case": "missing_industry_and_rubric:growth_durability:source_replay",
+      "expected": null,
+      "pass": true
+    },
+    {
+      "actual": null,
+      "case": "missing_industry_and_rubric:excess_growth_vs_industry:source_replay",
+      "expected": null,
+      "pass": true
+    },
+    {
+      "actual": null,
+      "case": "missing_revenue_base:next_3_5y_growth:source_replay",
+      "expected": null,
+      "pass": true
+    },
+    {
+      "actual": null,
+      "case": "missing_revenue_base:growth_efficiency:source_replay",
+      "expected": null,
+      "pass": true
+    },
+    {
+      "actual": null,
+      "case": "missing_revenue_base:revenue_growth:source_replay",
+      "expected": null,
+      "pass": true
+    },
+    {
+      "actual": 70.00000000000001,
+      "case": "missing_revenue_base:eps_fcf_per_share_growth:source_replay",
+      "expected": 70.00000000000001,
+      "pass": true
+    },
+    {
+      "actual": 70.0,
+      "case": "missing_revenue_base:growth_durability:source_replay",
+      "expected": 70.0,
+      "pass": true
+    },
+    {
+      "actual": null,
+      "case": "missing_revenue_base:excess_growth_vs_industry:source_replay",
+      "expected": null,
+      "pass": true
+    },
+    {
+      "actual": "READY",
+      "case": "complete_six_G_fields",
+      "expected": "READY",
+      "pass": true
+    },
+    {
+      "actual": "observed:current-fcf-prior-revenue-minus-one-linearclip",
+      "case": "missing_EPS_uses_distinct_fallback_anchor",
+      "expected": "observed:current-fcf-prior-revenue-minus-one-linearclip",
+      "pass": true
+    },
+    {
+      "actual": true,
+      "case": "same_factor_distinct_existing_branch_lineage",
+      "expected": true,
+      "pass": true
+    },
+    {
+      "actual": "MISSING_DATA",
+      "case": "absent_EPS_and_FCF_is_missing",
+      "expected": "MISSING_DATA",
+      "pass": true
+    },
+    {
+      "actual": false,
+      "case": "legacy_observation_no_first_class_method_id",
+      "expected": false,
+      "pass": true
+    },
+    {
+      "actual": false,
+      "case": "legacy_snapshot_no_first_class_method_id",
+      "expected": false,
+      "pass": true
+    },
+    {
+      "actual": 130497000000.0,
+      "case": "committed_SEC_fixture_current_revenue_binding",
+      "expected": 130497000000.0,
+      "pass": true
+    },
+    {
+      "actual": 60922000000.0,
+      "case": "committed_SEC_fixture_prior_revenue_binding",
+      "expected": 60922000000.0,
+      "pass": true
+    },
+    {
+      "actual": [
+        null,
+        null
+      ],
+      "case": "SEC_date_only_stamp_period_not_serialized",
+      "expected": [
+        null,
+        null
+      ],
+      "pass": true
+    },
+    {
+      "actual": [
+        "SYNTHETIC",
+        true
+      ],
+      "case": "persisted_sample_is_explicitly_synthetic",
+      "expected": [
+        "SYNTHETIC",
+        true
+      ],
+      "pass": true
+    },
+    {
+      "actual": "42222e29c5c310a634c772925daf4f51fb177bbf22e2585b697e781f6019cd5a",
+      "case": "historical_payload_bytes_unchanged",
+      "expected": "42222e29c5c310a634c772925daf4f51fb177bbf22e2585b697e781f6019cd5a",
+      "pass": true
+    }
+  ],
+  "count": 47,
+  "passed": 47,
+  "production_semantics_changed": false,
+  "scheduler_hops_added": 0,
+  "script_sha256": "80816b3f2006f15bbc516382ac499ce54bbd8183800daa02e80ec3de9c66e4c4",
+  "source_bytes_unchanged": true,
+  "source_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "status": "SOURCE_PINNED_CURRENT_LINEAGE_VERIFIED_LOCALLY"
+}

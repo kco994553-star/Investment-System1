@@ -1,0 +1,118 @@
+{
+  "kind": "SOURCE_ACTION_ROLE_EVIDENCE_NOT_CORPORATE_ACTION_LEDGER",
+  "generated_at": "2026-10-04T23:21:01.256230+00:00",
+  "rules": [
+    "No captured announcement becomes historical available_at without evidence",
+    "Provider event date, record date, legal effective date, adjusted-trading date and announcement date remain separate",
+    "No CA-UNIT policy generalization or production adapter added"
+  ],
+  "rows": [
+    {
+      "subject_hint": "NVDA",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-first-quarter-fiscal-2025",
+      "source_role": "ISSUER_PRESS_RELEASE_EXISTING_IMMUTABLE_BYTES",
+      "source_path": "implementation/reports/gate_evidence/ca_unit_sources/NVDA.html",
+      "source_sha256": "de513cf9e2db874690e45fa023adbb21520b714e57757433f5660158cce9b6a5",
+      "evidence_status": "SOURCE_BYTES_VERIFIED; EXISTING TRACK_A_POLICY_KEPT_UNCHANGED; NOT_CHART_ADMISSION",
+      "document_date": "2024-05-22",
+      "ratio": "10:1",
+      "first_split_adjusted_trading_date": "2024-06-10",
+      "declared_basis_scope": "NVIDIA common stock split event; not complete dividend/action vintage or full OHLCV transformation",
+      "historical_available_at": null,
+      "available_at_note": "Human-readable source date and current retrieval do not certify exact historical source availability"
+    },
+    {
+      "subject_hint": "LRCX",
+      "source_url": "https://newsroom.lamresearch.com/2024-05-21-Lam-Research-Corporation-Announces-10-Billion-Share-Repurchase-Authorization-and-a-10-for-1-Stock-Split",
+      "web_ref": "turn30view1",
+      "source_role": "ISSUER_PRESS_RELEASE_TEXT_RETRIEVED",
+      "source_bytes_capture": "FAILED_EGRESS_403",
+      "source_sha256": null,
+      "document_date": "2024-05-21",
+      "ratio": "10:1",
+      "legal_effective_role": "Expected after market close 2024-10-02",
+      "first_split_adjusted_trading_role": "Expected at market open 2024-10-03",
+      "event_confirmation": "ANNOUNCEMENT_OF_EXPECTED_ACTION_NOT_COMPLETION_VINTAGE",
+      "historical_available_at": null
+    },
+    {
+      "subject_hint": "KLAC",
+      "source_url": "https://ir.kla.com/sec-filings/all-sec-filings/content/0001193125-26-212093/d116682d8k.htm",
+      "web_ref": "turn30view2",
+      "source_role": "ISSUER_HOSTED_SEC_8K_TEXT_RETRIEVED",
+      "source_bytes_capture": "FAILED_EGRESS_403",
+      "source_sha256": null,
+      "document_date": "2026-05-07",
+      "ratio": "10:1",
+      "record_date": "2026-06-04",
+      "legal_effective_role": "Expected after market close 2026-06-11",
+      "first_split_adjusted_trading_role": "Expected market open 2026-06-12",
+      "historical_available_at": null
+    },
+    {
+      "subject_hint": "AVGO",
+      "source_url": "https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-second-quarter-fiscal-year-2024-financial",
+      "web_ref": "turn30view3",
+      "source_role": "ISSUER_PRESS_RELEASE_TEXT_RETRIEVED",
+      "source_bytes_capture": "FAILED_EGRESS_403",
+      "source_sha256": null,
+      "document_date": "2024-06-12",
+      "ratio": "10:1",
+      "record_date": "2024-07-11",
+      "distribution_date_role": "Expected additional shares after close 2024-07-12",
+      "first_split_adjusted_trading_role": "Expected market open 2024-07-15",
+      "historical_available_at": null
+    },
+    {
+      "subject_hint": "8035.T",
+      "source_url": "https://www.tel.com/ir/library/report/i242su0000000goz-att/fy27q1transcript-e.pdf",
+      "web_ref": "turn35search0",
+      "source_role": "ISSUER_FINANCIAL_TRANSCRIPT_SEARCH_EXTRACT_CANDIDATE",
+      "source_bytes_capture": "NOT_CAPTURED",
+      "source_sha256": null,
+      "document_date": "2026-07-30",
+      "ratio": "5:1",
+      "record_date": "2026-09-30",
+      "legal_effective_date": "2026-10-01",
+      "provider_daily_event_date": "2026-09-29",
+      "event_date_mapping": "UNRESOLVED; preserve provider date separately; legal effective date is not the provider adjustment/trading date",
+      "historical_available_at": null
+    },
+    {
+      "subject_hint": "8035.T",
+      "source_url": "https://www.tel.com/ir/library/report/a4fd9v000000007q-att/fy23q3tanshin-e.pdf",
+      "web_ref": "turn35search10",
+      "source_role": "ISSUER_FINANCIAL_RESULT_SEARCH_EXTRACT_CANDIDATE",
+      "source_bytes_capture": "NOT_CAPTURED",
+      "source_sha256": null,
+      "document_date": "2023-02-09",
+      "ratio": "3:1",
+      "record_date": "2023-03-31",
+      "legal_effective_date": "2023-04-01",
+      "provider_daily_event_date": "2023-03-30",
+      "event_date_mapping": "UNRESOLVED; preserve roles, not a provider error verdict",
+      "historical_available_at": null
+    },
+    {
+      "subject_hint": "PROVIDER_METHODOLOGY",
+      "source_url": "https://www.tiingo.com/documentation/end-of-day",
+      "web_ref": "turn16view0",
+      "source_role": "OFFICIAL_PROVIDER_DOCUMENTATION_TEXT_RETRIEVED",
+      "source_bytes_capture": "FAILED_RESET",
+      "source_sha256": null,
+      "summary": "Documents separate original and adjusted OHLCV, divCash exDate and splitFactor; says split/dividend adjustments follow CRSP; API token required. Usual evening releases and corrections do not establish exact per-record available_at. No account access/API token use performed.",
+      "retrieved_at": "2026-10-05 KST",
+      "historical_available_at": null
+    },
+    {
+      "subject_hint": "PROVIDER_METHODOLOGY",
+      "source_url": "https://help.yahoo.com/kb/SLN28256.html",
+      "web_ref": "turn14search0",
+      "source_role": "OFFICIAL_PROVIDER_HELP_SEARCH_EXTRACT_ONLY",
+      "source_bytes_capture": "FAILED_RESET; WEB_OPEN_429",
+      "source_sha256": null,
+      "summary": "Official help search extract describes adjusted close as including splits and dividend distributions. Complete page not retrieved, and this does not certify O/H/L/V basis or this endpoint transformation lineage.",
+      "historical_available_at": null
+    }
+  ]
+}

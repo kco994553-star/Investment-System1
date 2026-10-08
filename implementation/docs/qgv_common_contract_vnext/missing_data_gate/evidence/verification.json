@@ -1,0 +1,35 @@
+{
+  "verified_at_kst": "2026-10-05T09:23:32.451774+09:00",
+  "status": "PHASE_B_NEW_SCOPED_CHECKS_PASS",
+  "current_behavior": {
+    "direct_snapshots": 77,
+    "zero_weight_diagnostics": 18,
+    "independent_anchors": "PASS",
+    "root_reproduced": "PASS",
+    "first_root_invocation": "ENVIRONMENT_SETUP_ERROR: PYTHONPATH omitted; corrected documented repository PYTHONPATH invocation PASS; no source fix"
+  },
+  "policy_simulation": {
+    "cases": 102,
+    "policy_outputs": 408,
+    "arithmetic_safety_anchors": 270,
+    "root_reproduced": "PASS",
+    "pinned_source_hashes": 33,
+    "read_only_input_preservation": "PASS",
+    "golden_sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040",
+    "scope": "SYNTHETIC_POLICY_DESIGN_ONLY; toy roles/zero vectors are not approved or validated Personal requests"
+  },
+  "independent_review": "PASS after active-positive-weight, zero-requiredness, dated-identity, confidence-scope and config-validity clarifications",
+  "preexisting_tracked_files_unchanged": "PASS",
+  "legacy_score_changed": "NO",
+  "production_semantics_changed": "NO",
+  "history_rewritten": "NO",
+  "official_custom_runtime_isolation": "NOT_TESTED; no wiring introduced",
+  "new_confidence_formula": "NONE",
+  "new_numeric_default_cutoff": "NONE",
+  "pr44_ci": "EXISTING_REMOTE_PASS_RETAINED; NOT_RERUN",
+  "new_phase_b_actions": "NOT_RUN; local scoped simulation/probe verification only",
+  "integration": "EXISTING_SCOPED_PASS_RETAINED; HEAD_UNCHANGED; full acceptance NOT_RUN",
+  "pit_oos": "NOT_RUN",
+  "holdout": "UNCONSUMED",
+  "approval": "M1-M5 PROPOSED / NOT_APPROVED / INACTIVE"
+}

@@ -1,0 +1,21 @@
+{
+  "kind": "DESIGN_INTAKE_CHECKPOINT_AND_OWNER_LEASE_RELEASE",
+  "input_owner_head": "478a7a4d4fd328f0a5cf4ec9b2b9830161ecc142",
+  "lease_commit": "9a07a196c24e995b38023f5853ddf8adf6b54048",
+  "objective": "Method/Profile Binding + Consumer Admission Decision Package",
+  "completed": "Authoritative refs/scoped handoff/approval read only",
+  "not_completed": [
+    "Factor role audit",
+    "Applicability/N.A authority audit",
+    "Method/profile and consumer admission package",
+    "Synthetic/golden impact analysis",
+    "Scoped design handoff update"
+  ],
+  "policy_changes": false,
+  "production_changes": false,
+  "new_tests": false,
+  "new_ci": false,
+  "pending_ci": 0,
+  "holdout": "UNCONSUMED",
+  "next": "Resume the authorized design request under a fresh owner lease; do not repeat M1-M5 or Remote Recovery"
+}

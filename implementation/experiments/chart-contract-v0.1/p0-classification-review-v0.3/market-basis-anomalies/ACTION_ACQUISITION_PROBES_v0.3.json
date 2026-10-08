@@ -1,0 +1,1810 @@
+{
+  "kind": "SCOPED_CURRENT_ACTION_SOURCE_ACQUISITION_NOT_PRODUCTION",
+  "generated_at": "2026-10-04T23:14:45.709096+00:00",
+  "range_requested": "5y",
+  "interval_requested": "1d",
+  "events_requested": [
+    "div",
+    "splits"
+  ],
+  "source_code_sha256": "840005fa3fff7f3dfb30de08de1ae6d404547fccf577e1ea5f2ac7db50444889",
+  "prior_raw_unchanged": true,
+  "rows": [
+    {
+      "provider_symbol": "ASML",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/ASML?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:01.800346+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:07.683472+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 131662,
+      "sha256": "cfee779daa993b05d1d7564761bb699e369af5dc4ec755a7402d317bedf7718b",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_ASML_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:07.683806+00:00",
+      "chart_error": null,
+      "returned_symbol": "ASML",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends"
+      ],
+      "event_counts": {
+        "dividends": 19
+      },
+      "events": {
+        "dividends": {
+          "1635859800": {
+            "amount": 2.084,
+            "date": 1635859800
+          },
+          "1651584600": {
+            "amount": 3.898,
+            "date": 1651584600
+          },
+          "1659619800": {
+            "amount": 1.396,
+            "date": 1659619800
+          },
+          "1667482200": {
+            "amount": 1.34,
+            "date": 1667482200
+          },
+          "1675693800": {
+            "amount": 1.472,
+            "date": 1675693800
+          },
+          "1682947800": {
+            "amount": 1.858,
+            "date": 1682947800
+          },
+          "1690896600": {
+            "amount": 1.593,
+            "date": 1690896600
+          },
+          "1698845400": {
+            "amount": 1.53,
+            "date": 1698845400
+          },
+          "1707143400": {
+            "amount": 1.556,
+            "date": 1707143400
+          },
+          "1714138200": {
+            "amount": 1.873,
+            "date": 1714138200
+          },
+          "1722259800": {
+            "amount": 1.643,
+            "date": 1722259800
+          },
+          "1730208600": {
+            "amount": 1.641,
+            "date": 1730208600
+          },
+          "1739284200": {
+            "amount": 1.57,
+            "date": 1739284200
+          },
+          "1745847000": {
+            "amount": 2.091,
+            "date": 1745847000
+          },
+          "1753795800": {
+            "amount": 1.847,
+            "date": 1753795800
+          },
+          "1761744600": {
+            "amount": 1.864,
+            "date": 1761744600
+          },
+          "1770733800": {
+            "amount": 1.883,
+            "date": 1770733800
+          },
+          "1777296600": {
+            "amount": 3.177,
+            "date": 1777296600
+          },
+          "1785245400": {
+            "amount": 2.138,
+            "date": 1785245400
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "LRCX",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/LRCX?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:01.801297+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:07.737600+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 137391,
+      "sha256": "564c28d75b4421705bfa7a6dbbbe9af7e65cf732f5d854f30e539ce70ea71dc0",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_LRCX_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:07.737957+00:00",
+      "chart_error": null,
+      "returned_symbol": "LRCX",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends",
+        "splits"
+      ],
+      "event_counts": {
+        "dividends": 20,
+        "splits": 1
+      },
+      "events": {
+        "dividends": {
+          "1639492200": {
+            "amount": 0.15,
+            "date": 1639492200
+          },
+          "1647351000": {
+            "amount": 0.15,
+            "date": 1647351000
+          },
+          "1655213400": {
+            "amount": 0.15,
+            "date": 1655213400
+          },
+          "1663075800": {
+            "amount": 0.1725,
+            "date": 1663075800
+          },
+          "1670941800": {
+            "amount": 0.1725,
+            "date": 1670941800
+          },
+          "1678800600": {
+            "amount": 0.1725,
+            "date": 1678800600
+          },
+          "1686663000": {
+            "amount": 0.1725,
+            "date": 1686663000
+          },
+          "1694525400": {
+            "amount": 0.2,
+            "date": 1694525400
+          },
+          "1702391400": {
+            "amount": 0.2,
+            "date": 1702391400
+          },
+          "1710250200": {
+            "amount": 0.2,
+            "date": 1710250200
+          },
+          "1718717400": {
+            "amount": 0.2,
+            "date": 1718717400
+          },
+          "1726579800": {
+            "amount": 0.23,
+            "date": 1726579800
+          },
+          "1733927400": {
+            "amount": 0.23,
+            "date": 1733927400
+          },
+          "1741185000": {
+            "amount": 0.23,
+            "date": 1741185000
+          },
+          "1750253400": {
+            "amount": 0.23,
+            "date": 1750253400
+          },
+          "1758720600": {
+            "amount": 0.26,
+            "date": 1758720600
+          },
+          "1764772200": {
+            "amount": 0.26,
+            "date": 1764772200
+          },
+          "1772634600": {
+            "amount": 0.26,
+            "date": 1772634600
+          },
+          "1781703000": {
+            "amount": 0.26,
+            "date": 1781703000
+          },
+          "1790170200": {
+            "amount": 0.33,
+            "date": 1790170200
+          }
+        },
+        "splits": {
+          "1727962200": {
+            "date": 1727962200,
+            "numerator": 10.0,
+            "denominator": 1.0,
+            "splitRatio": "10:1"
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "KLAC",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/KLAC?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:01.801839+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:07.644045+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 138344,
+      "sha256": "9f8d18f314b04f2d3c61347ded0c758261c56aedf1c3bf55454df6c7fb829e32",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_KLAC_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:07.644442+00:00",
+      "chart_error": null,
+      "returned_symbol": "KLAC",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends",
+        "splits"
+      ],
+      "event_counts": {
+        "dividends": 20,
+        "splits": 1
+      },
+      "events": {
+        "dividends": {
+          "1636727400": {
+            "amount": 0.105,
+            "date": 1636727400
+          },
+          "1644589800": {
+            "amount": 0.105,
+            "date": 1644589800
+          },
+          "1652448600": {
+            "amount": 0.105,
+            "date": 1652448600
+          },
+          "1660311000": {
+            "amount": 0.13,
+            "date": 1660311000
+          },
+          "1668436200": {
+            "amount": 0.13,
+            "date": 1668436200
+          },
+          "1676039400": {
+            "amount": 0.13,
+            "date": 1676039400
+          },
+          "1683898200": {
+            "amount": 0.13,
+            "date": 1683898200
+          },
+          "1692019800": {
+            "amount": 0.13,
+            "date": 1692019800
+          },
+          "1699972200": {
+            "amount": 0.145,
+            "date": 1699972200
+          },
+          "1708007400": {
+            "amount": 0.145,
+            "date": 1708007400
+          },
+          "1715693400": {
+            "amount": 0.145,
+            "date": 1715693400
+          },
+          "1723728600": {
+            "amount": 0.145,
+            "date": 1723728600
+          },
+          "1731940200": {
+            "amount": 0.17,
+            "date": 1731940200
+          },
+          "1740407400": {
+            "amount": 0.17,
+            "date": 1740407400
+          },
+          "1747661400": {
+            "amount": 0.19,
+            "date": 1747661400
+          },
+          "1755523800": {
+            "amount": 0.19,
+            "date": 1755523800
+          },
+          "1763389800": {
+            "amount": 0.19,
+            "date": 1763389800
+          },
+          "1771338600": {
+            "amount": 0.19,
+            "date": 1771338600
+          },
+          "1779111000": {
+            "amount": 0.23,
+            "date": 1779111000
+          },
+          "1786973400": {
+            "amount": 0.23,
+            "date": 1786973400
+          }
+        },
+        "splits": {
+          "1781271000": {
+            "date": 1781271000,
+            "numerator": 10.0,
+            "denominator": 1.0,
+            "splitRatio": "10:1"
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "8035.T",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/8035.T?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:07.646128+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:13.836678+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 91429,
+      "sha256": "5c28080bb3df05447770736134f3f6eb12032c018314555f8dcf578af26d300e",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_8035_T_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:13.837380+00:00",
+      "chart_error": null,
+      "returned_symbol": "8035.T",
+      "interval": "1d",
+      "bar_count": 1222,
+      "event_categories": [
+        "dividends",
+        "splits"
+      ],
+      "event_counts": {
+        "dividends": 10,
+        "splits": 2
+      },
+      "events": {
+        "dividends": {
+          "1648598400": {
+            "amount": 50.666668,
+            "date": 1648598400
+          },
+          "1664409600": {
+            "amount": 57.13333,
+            "date": 1664409600
+          },
+          "1680134400": {
+            "amount": 56.932,
+            "date": 1680134400
+          },
+          "1695859200": {
+            "amount": 29.6,
+            "date": 1695859200
+          },
+          "1711584000": {
+            "amount": 49.0,
+            "date": 1711584000
+          },
+          "1727395200": {
+            "amount": 53.0,
+            "date": 1727395200
+          },
+          "1743120000": {
+            "amount": 65.4,
+            "date": 1743120000
+          },
+          "1759104000": {
+            "amount": 52.8,
+            "date": 1759104000
+          },
+          "1774828800": {
+            "amount": 72.8,
+            "date": 1774828800
+          },
+          "1790640000": {
+            "amount": 384.0,
+            "date": 1790640000
+          }
+        },
+        "splits": {
+          "1680134400": {
+            "date": 1680134400,
+            "numerator": 3.0,
+            "denominator": 1.0,
+            "splitRatio": "3:1"
+          },
+          "1790640000": {
+            "date": 1790640000,
+            "numerator": 5.0,
+            "denominator": 1.0,
+            "splitRatio": "5:1"
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "042700.KS",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/042700.KS?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:07.685169+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:13.835093+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 81334,
+      "sha256": "1507040662625575f77795fb58b42aa8144e1239f8d65a80c34e25cbc7d472f7",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_042700_KS_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:13.835420+00:00",
+      "chart_error": null,
+      "returned_symbol": "042700.KS",
+      "interval": "1d",
+      "bar_count": 1221,
+      "event_categories": [
+        "dividends",
+        "splits"
+      ],
+      "event_counts": {
+        "dividends": 5,
+        "splits": 1
+      },
+      "events": {
+        "dividends": {
+          "1640736000": {
+            "amount": 300.0,
+            "date": 1640736000
+          },
+          "1672185600": {
+            "amount": 200.0,
+            "date": 1672185600
+          },
+          "1709683200": {
+            "amount": 420.0,
+            "date": 1709683200
+          },
+          "1741219200": {
+            "amount": 720.0,
+            "date": 1741219200
+          },
+          "1772668800": {
+            "amount": 800.0,
+            "date": 1772668800
+          }
+        },
+        "splits": {
+          "1649203200": {
+            "date": 1649203200,
+            "numerator": 2.0,
+            "denominator": 1.0,
+            "splitRatio": "2:1"
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "NVDA",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/NVDA?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:07.739584+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:13.919738+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 142207,
+      "sha256": "80873407159273f90cfc7100c65c52e4cc5835adb7ca7e9d336e99390bc97435",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_NVDA_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:13.920399+00:00",
+      "chart_error": null,
+      "returned_symbol": "NVDA",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends",
+        "splits"
+      ],
+      "event_counts": {
+        "dividends": 20,
+        "splits": 1
+      },
+      "events": {
+        "dividends": {
+          "1638369000": {
+            "amount": 0.004,
+            "date": 1638369000
+          },
+          "1646231400": {
+            "amount": 0.004,
+            "date": 1646231400
+          },
+          "1654695000": {
+            "amount": 0.004,
+            "date": 1654695000
+          },
+          "1662557400": {
+            "amount": 0.004,
+            "date": 1662557400
+          },
+          "1669818600": {
+            "amount": 0.004,
+            "date": 1669818600
+          },
+          "1678199400": {
+            "amount": 0.004,
+            "date": 1678199400
+          },
+          "1686144600": {
+            "amount": 0.004,
+            "date": 1686144600
+          },
+          "1694007000": {
+            "amount": 0.004,
+            "date": 1694007000
+          },
+          "1701786600": {
+            "amount": 0.004,
+            "date": 1701786600
+          },
+          "1709649000": {
+            "amount": 0.004,
+            "date": 1709649000
+          },
+          "1718112600": {
+            "amount": 0.01,
+            "date": 1718112600
+          },
+          "1726147800": {
+            "amount": 0.01,
+            "date": 1726147800
+          },
+          "1733409000": {
+            "amount": 0.01,
+            "date": 1733409000
+          },
+          "1741786200": {
+            "amount": 0.01,
+            "date": 1741786200
+          },
+          "1749648600": {
+            "amount": 0.01,
+            "date": 1749648600
+          },
+          "1757597400": {
+            "amount": 0.01,
+            "date": 1757597400
+          },
+          "1764858600": {
+            "amount": 0.01,
+            "date": 1764858600
+          },
+          "1773235800": {
+            "amount": 0.01,
+            "date": 1773235800
+          },
+          "1780579800": {
+            "amount": 0.25,
+            "date": 1780579800
+          },
+          "1789047000": {
+            "amount": 0.25,
+            "date": 1789047000
+          }
+        },
+        "splits": {
+          "1718026200": {
+            "date": 1718026200,
+            "numerator": 10.0,
+            "denominator": 1.0,
+            "splitRatio": "10:1"
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "AMD",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMD?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:13.836063+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:20.048582+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 136966,
+      "sha256": "fa42d22024a7d12ead175fa3f533490105079a37f691414def0325a3b08a6640",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_AMD_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:20.048958+00:00",
+      "chart_error": null,
+      "returned_symbol": "AMD",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [],
+      "event_counts": {},
+      "events": {}
+    },
+    {
+      "provider_symbol": "AVGO",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/AVGO?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:13.838222+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:20.088273+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 138544,
+      "sha256": "19dcc74e944c19ab30d8c811d4f200d82ce9f0c1bc21fb27859953f605e57a64",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_AVGO_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:20.088663+00:00",
+      "chart_error": null,
+      "returned_symbol": "AVGO",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends",
+        "splits"
+      ],
+      "event_counts": {
+        "dividends": 20,
+        "splits": 1
+      },
+      "events": {
+        "dividends": {
+          "1640097000": {
+            "amount": 0.41,
+            "date": 1640097000
+          },
+          "1647869400": {
+            "amount": 0.41,
+            "date": 1647869400
+          },
+          "1655818200": {
+            "amount": 0.41,
+            "date": 1655818200
+          },
+          "1663767000": {
+            "amount": 0.41,
+            "date": 1663767000
+          },
+          "1671460200": {
+            "amount": 0.46,
+            "date": 1671460200
+          },
+          "1679405400": {
+            "amount": 0.46,
+            "date": 1679405400
+          },
+          "1687354200": {
+            "amount": 0.46,
+            "date": 1687354200
+          },
+          "1695216600": {
+            "amount": 0.46,
+            "date": 1695216600
+          },
+          "1702996200": {
+            "amount": 0.525,
+            "date": 1702996200
+          },
+          "1710941400": {
+            "amount": 0.525,
+            "date": 1710941400
+          },
+          "1719235800": {
+            "amount": 0.525,
+            "date": 1719235800
+          },
+          "1726752600": {
+            "amount": 0.53,
+            "date": 1726752600
+          },
+          "1734964200": {
+            "amount": 0.59,
+            "date": 1734964200
+          },
+          "1742477400": {
+            "amount": 0.59,
+            "date": 1742477400
+          },
+          "1750426200": {
+            "amount": 0.59,
+            "date": 1750426200
+          },
+          "1758547800": {
+            "amount": 0.59,
+            "date": 1758547800
+          },
+          "1766413800": {
+            "amount": 0.65,
+            "date": 1766413800
+          },
+          "1774272600": {
+            "amount": 0.65,
+            "date": 1774272600
+          },
+          "1782135000": {
+            "amount": 0.65,
+            "date": 1782135000
+          },
+          "1789997400": {
+            "amount": 0.65,
+            "date": 1789997400
+          }
+        },
+        "splits": {
+          "1721050200": {
+            "date": 1721050200,
+            "numerator": 10.0,
+            "denominator": 1.0,
+            "splitRatio": "10:1"
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "QCOM",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/QCOM?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:13.922314+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:20.097615+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 139409,
+      "sha256": "092d0e53dae91ff8782284bf25c99f3b2c3b8b1cf88c6c3269f2f71fd1dd92db",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_QCOM_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:20.097903+00:00",
+      "chart_error": null,
+      "returned_symbol": "QCOM",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends"
+      ],
+      "event_counts": {
+        "dividends": 20
+      },
+      "events": {
+        "dividends": {
+          "1638369000": {
+            "amount": 0.68,
+            "date": 1638369000
+          },
+          "1646231400": {
+            "amount": 0.68,
+            "date": 1646231400
+          },
+          "1654090200": {
+            "amount": 0.75,
+            "date": 1654090200
+          },
+          "1661952600": {
+            "amount": 0.75,
+            "date": 1661952600
+          },
+          "1669818600": {
+            "amount": 0.75,
+            "date": 1669818600
+          },
+          "1677681000": {
+            "amount": 0.75,
+            "date": 1677681000
+          },
+          "1685539800": {
+            "amount": 0.8,
+            "date": 1685539800
+          },
+          "1693402200": {
+            "amount": 0.8,
+            "date": 1693402200
+          },
+          "1701268200": {
+            "amount": 0.8,
+            "date": 1701268200
+          },
+          "1709130600": {
+            "amount": 0.8,
+            "date": 1709130600
+          },
+          "1717075800": {
+            "amount": 0.85,
+            "date": 1717075800
+          },
+          "1725543000": {
+            "amount": 0.85,
+            "date": 1725543000
+          },
+          "1733409000": {
+            "amount": 0.85,
+            "date": 1733409000
+          },
+          "1741271400": {
+            "amount": 0.85,
+            "date": 1741271400
+          },
+          "1749130200": {
+            "amount": 0.89,
+            "date": 1749130200
+          },
+          "1756992600": {
+            "amount": 0.89,
+            "date": 1756992600
+          },
+          "1764858600": {
+            "amount": 0.89,
+            "date": 1764858600
+          },
+          "1772721000": {
+            "amount": 0.89,
+            "date": 1772721000
+          },
+          "1780579800": {
+            "amount": 0.92,
+            "date": 1780579800
+          },
+          "1788442200": {
+            "amount": 0.92,
+            "date": 1788442200
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "INTC",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/INTC?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:20.050643+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:26.343940+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 139055,
+      "sha256": "beafdc0a2367313830092c06b02e1cbb39b3b79dc55cec7cfe5299f0e1088bfc",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_INTC_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:26.344290+00:00",
+      "chart_error": null,
+      "returned_symbol": "INTC",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends"
+      ],
+      "event_counts": {
+        "dividends": 12
+      },
+      "events": {
+        "dividends": {
+          "1636032600": {
+            "amount": 0.348,
+            "date": 1636032600
+          },
+          "1643985000": {
+            "amount": 0.365,
+            "date": 1643985000
+          },
+          "1651757400": {
+            "amount": 0.365,
+            "date": 1651757400
+          },
+          "1659619800": {
+            "amount": 0.365,
+            "date": 1659619800
+          },
+          "1667568600": {
+            "amount": 0.365,
+            "date": 1667568600
+          },
+          "1675693800": {
+            "amount": 0.365,
+            "date": 1675693800
+          },
+          "1683207000": {
+            "amount": 0.125,
+            "date": 1683207000
+          },
+          "1691155800": {
+            "amount": 0.125,
+            "date": 1691155800
+          },
+          "1699281000": {
+            "amount": 0.125,
+            "date": 1699281000
+          },
+          "1707229800": {
+            "amount": 0.125,
+            "date": 1707229800
+          },
+          "1715002200": {
+            "amount": 0.125,
+            "date": 1715002200
+          },
+          "1723037400": {
+            "amount": 0.125,
+            "date": 1723037400
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "MSFT",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/MSFT?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:20.090202+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:26.306430+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 137156,
+      "sha256": "1928d912a1ce75fce225e5538b9bd009a1e6ad970f0c7d9a551352e44069842f",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_MSFT_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:26.307007+00:00",
+      "chart_error": null,
+      "returned_symbol": "MSFT",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends"
+      ],
+      "event_counts": {
+        "dividends": 20
+      },
+      "events": {
+        "dividends": {
+          "1637159400": {
+            "amount": 0.62,
+            "date": 1637159400
+          },
+          "1645021800": {
+            "amount": 0.62,
+            "date": 1645021800
+          },
+          "1652880600": {
+            "amount": 0.62,
+            "date": 1652880600
+          },
+          "1660743000": {
+            "amount": 0.62,
+            "date": 1660743000
+          },
+          "1668609000": {
+            "amount": 0.68,
+            "date": 1668609000
+          },
+          "1676471400": {
+            "amount": 0.68,
+            "date": 1676471400
+          },
+          "1684330200": {
+            "amount": 0.68,
+            "date": 1684330200
+          },
+          "1692192600": {
+            "amount": 0.68,
+            "date": 1692192600
+          },
+          "1700058600": {
+            "amount": 0.75,
+            "date": 1700058600
+          },
+          "1707921000": {
+            "amount": 0.75,
+            "date": 1707921000
+          },
+          "1715779800": {
+            "amount": 0.75,
+            "date": 1715779800
+          },
+          "1723728600": {
+            "amount": 0.75,
+            "date": 1723728600
+          },
+          "1732199400": {
+            "amount": 0.83,
+            "date": 1732199400
+          },
+          "1740061800": {
+            "amount": 0.83,
+            "date": 1740061800
+          },
+          "1747315800": {
+            "amount": 0.83,
+            "date": 1747315800
+          },
+          "1755783000": {
+            "amount": 0.83,
+            "date": 1755783000
+          },
+          "1763649000": {
+            "amount": 0.91,
+            "date": 1763649000
+          },
+          "1771511400": {
+            "amount": 0.91,
+            "date": 1771511400
+          },
+          "1779370200": {
+            "amount": 0.91,
+            "date": 1779370200
+          },
+          "1787232600": {
+            "amount": 0.91,
+            "date": 1787232600
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "GOOGL",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/GOOGL?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:20.099467+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:26.310979+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 139164,
+      "sha256": "feda2445194be033e220fa582273838f71fbe1440589aa8181dfa0f570bc9b60",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_GOOGL_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:26.311261+00:00",
+      "chart_error": null,
+      "returned_symbol": "GOOGL",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends",
+        "splits"
+      ],
+      "event_counts": {
+        "dividends": 10,
+        "splits": 1
+      },
+      "events": {
+        "dividends": {
+          "1718026200": {
+            "amount": 0.2,
+            "date": 1718026200
+          },
+          "1725888600": {
+            "amount": 0.2,
+            "date": 1725888600
+          },
+          "1733754600": {
+            "amount": 0.2,
+            "date": 1733754600
+          },
+          "1741613400": {
+            "amount": 0.2,
+            "date": 1741613400
+          },
+          "1749475800": {
+            "amount": 0.21,
+            "date": 1749475800
+          },
+          "1757338200": {
+            "amount": 0.21,
+            "date": 1757338200
+          },
+          "1765204200": {
+            "amount": 0.21,
+            "date": 1765204200
+          },
+          "1773063000": {
+            "amount": 0.21,
+            "date": 1773063000
+          },
+          "1780925400": {
+            "amount": 0.22,
+            "date": 1780925400
+          },
+          "1788528600": {
+            "amount": 0.22,
+            "date": 1788528600
+          }
+        },
+        "splits": {
+          "1658151000": {
+            "date": 1658151000,
+            "numerator": 20.0,
+            "denominator": 1.0,
+            "splitRatio": "20:1"
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "AMZN",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/AMZN?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:26.308988+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:33.501550+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 138111,
+      "sha256": "7d40f82064c9eb866ff77a416cd0dfe728163b4944bbd5a52fe2b4334ef1424b",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_AMZN_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:33.501819+00:00",
+      "chart_error": null,
+      "returned_symbol": "AMZN",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "splits"
+      ],
+      "event_counts": {
+        "splits": 1
+      },
+      "events": {
+        "splits": {
+          "1654522200": {
+            "date": 1654522200,
+            "numerator": 20.0,
+            "denominator": 1.0,
+            "splitRatio": "20:1"
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "RTX",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/RTX?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:26.312799+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:33.564852+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 136064,
+      "sha256": "f09cd1c4bc0949718e1969d5480025e502a8576965f79f79cb17c8439c86c4d6",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_RTX_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:33.565306+00:00",
+      "chart_error": null,
+      "returned_symbol": "RTX",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends"
+      ],
+      "event_counts": {
+        "dividends": 20
+      },
+      "events": {
+        "dividends": {
+          "1637245800": {
+            "amount": 0.51,
+            "date": 1637245800
+          },
+          "1645713000": {
+            "amount": 0.51,
+            "date": 1645713000
+          },
+          "1652967000": {
+            "amount": 0.55,
+            "date": 1652967000
+          },
+          "1660829400": {
+            "amount": 0.55,
+            "date": 1660829400
+          },
+          "1668695400": {
+            "amount": 0.55,
+            "date": 1668695400
+          },
+          "1677162600": {
+            "amount": 0.55,
+            "date": 1677162600
+          },
+          "1684416600": {
+            "amount": 0.59,
+            "date": 1684416600
+          },
+          "1692279000": {
+            "amount": 0.59,
+            "date": 1692279000
+          },
+          "1700145000": {
+            "amount": 0.59,
+            "date": 1700145000
+          },
+          "1708612200": {
+            "amount": 0.59,
+            "date": 1708612200
+          },
+          "1715866200": {
+            "amount": 0.63,
+            "date": 1715866200
+          },
+          "1723815000": {
+            "amount": 0.63,
+            "date": 1723815000
+          },
+          "1731681000": {
+            "amount": 0.63,
+            "date": 1731681000
+          },
+          "1740148200": {
+            "amount": 0.63,
+            "date": 1740148200
+          },
+          "1748007000": {
+            "amount": 0.68,
+            "date": 1748007000
+          },
+          "1755264600": {
+            "amount": 0.68,
+            "date": 1755264600
+          },
+          "1763735400": {
+            "amount": 0.68,
+            "date": 1763735400
+          },
+          "1771597800": {
+            "amount": 0.68,
+            "date": 1771597800
+          },
+          "1779456600": {
+            "amount": 0.73,
+            "date": 1779456600
+          },
+          "1786714200": {
+            "amount": 0.73,
+            "date": 1786714200
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "SYK",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/SYK?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:26.345862+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:33.498877+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 134884,
+      "sha256": "a3ec56e97d75caf31b502bf0da90cb4c98419b0ebe1805dd450af8fadae127e2",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_SYK_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:33.499252+00:00",
+      "chart_error": null,
+      "returned_symbol": "SYK",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends"
+      ],
+      "event_counts": {
+        "dividends": 20
+      },
+      "events": {
+        "dividends": {
+          "1640874600": {
+            "amount": 0.695,
+            "date": 1640874600
+          },
+          "1648647000": {
+            "amount": 0.695,
+            "date": 1648647000
+          },
+          "1656509400": {
+            "amount": 0.695,
+            "date": 1656509400
+          },
+          "1664458200": {
+            "amount": 0.695,
+            "date": 1664458200
+          },
+          "1672324200": {
+            "amount": 0.75,
+            "date": 1672324200
+          },
+          "1680183000": {
+            "amount": 0.75,
+            "date": 1680183000
+          },
+          "1688045400": {
+            "amount": 0.75,
+            "date": 1688045400
+          },
+          "1695907800": {
+            "amount": 0.75,
+            "date": 1695907800
+          },
+          "1703773800": {
+            "amount": 0.8,
+            "date": 1703773800
+          },
+          "1711546200": {
+            "amount": 0.8,
+            "date": 1711546200
+          },
+          "1719581400": {
+            "amount": 0.8,
+            "date": 1719581400
+          },
+          "1727703000": {
+            "amount": 0.8,
+            "date": 1727703000
+          },
+          "1735655400": {
+            "amount": 0.84,
+            "date": 1735655400
+          },
+          "1743427800": {
+            "amount": 0.84,
+            "date": 1743427800
+          },
+          "1751290200": {
+            "amount": 0.84,
+            "date": 1751290200
+          },
+          "1759239000": {
+            "amount": 0.84,
+            "date": 1759239000
+          },
+          "1767191400": {
+            "amount": 0.88,
+            "date": 1767191400
+          },
+          "1774963800": {
+            "amount": 0.88,
+            "date": 1774963800
+          },
+          "1782826200": {
+            "amount": 0.88,
+            "date": 1782826200
+          },
+          "1790775000": {
+            "amount": 0.88,
+            "date": 1790775000
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "ETN",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/ETN?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:33.501080+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:39.543890+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 136219,
+      "sha256": "e8986211102f61706e6dbd0ebb5b88a2e1896191af3cb865b23677c86e3d49f6",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_ETN_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:39.544184+00:00",
+      "chart_error": null,
+      "returned_symbol": "ETN",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends"
+      ],
+      "event_counts": {
+        "dividends": 20
+      },
+      "events": {
+        "dividends": {
+          "1636554600": {
+            "amount": 0.76,
+            "date": 1636554600
+          },
+          "1646922600": {
+            "amount": 0.81,
+            "date": 1646922600
+          },
+          "1652362200": {
+            "amount": 0.81,
+            "date": 1652362200
+          },
+          "1660224600": {
+            "amount": 0.81,
+            "date": 1660224600
+          },
+          "1668004200": {
+            "amount": 0.81,
+            "date": 1668004200
+          },
+          "1677853800": {
+            "amount": 0.86,
+            "date": 1677853800
+          },
+          "1683293400": {
+            "amount": 0.86,
+            "date": 1683293400
+          },
+          "1691155800": {
+            "amount": 0.86,
+            "date": 1691155800
+          },
+          "1699018200": {
+            "amount": 0.86,
+            "date": 1699018200
+          },
+          "1709908200": {
+            "amount": 0.94,
+            "date": 1709908200
+          },
+          "1714743000": {
+            "amount": 0.94,
+            "date": 1714743000
+          },
+          "1722864600": {
+            "amount": 0.94,
+            "date": 1722864600
+          },
+          "1730730600": {
+            "amount": 0.94,
+            "date": 1730730600
+          },
+          "1741613400": {
+            "amount": 1.04,
+            "date": 1741613400
+          },
+          "1746451800": {
+            "amount": 1.04,
+            "date": 1746451800
+          },
+          "1754573400": {
+            "amount": 1.04,
+            "date": 1754573400
+          },
+          "1762353000": {
+            "amount": 1.04,
+            "date": 1762353000
+          },
+          "1773149400": {
+            "amount": 1.1,
+            "date": 1773149400
+          },
+          "1778247000": {
+            "amount": 1.1,
+            "date": 1778247000
+          },
+          "1786109400": {
+            "amount": 1.1,
+            "date": 1786109400
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "HUBB",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/HUBB?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:33.503342+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:39.561864+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 135794,
+      "sha256": "4fbf0be807b4e6eda8dd404d1a7e999286c738279c08e18204570942bb4650af",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_HUBB_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:39.562134+00:00",
+      "chart_error": null,
+      "returned_symbol": "HUBB",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends"
+      ],
+      "event_counts": {
+        "dividends": 20
+      },
+      "events": {
+        "dividends": {
+          "1638196200": {
+            "amount": 1.05,
+            "date": 1638196200
+          },
+          "1645799400": {
+            "amount": 1.05,
+            "date": 1645799400
+          },
+          "1653658200": {
+            "amount": 1.05,
+            "date": 1653658200
+          },
+          "1661866200": {
+            "amount": 1.05,
+            "date": 1661866200
+          },
+          "1669732200": {
+            "amount": 1.12,
+            "date": 1669732200
+          },
+          "1677508200": {
+            "amount": 1.12,
+            "date": 1677508200
+          },
+          "1685453400": {
+            "amount": 1.12,
+            "date": 1685453400
+          },
+          "1693402200": {
+            "amount": 1.12,
+            "date": 1693402200
+          },
+          "1701268200": {
+            "amount": 1.22,
+            "date": 1701268200
+          },
+          "1709130600": {
+            "amount": 1.22,
+            "date": 1709130600
+          },
+          "1717162200": {
+            "amount": 1.22,
+            "date": 1717162200
+          },
+          "1725024600": {
+            "amount": 1.22,
+            "date": 1725024600
+          },
+          "1732890600": {
+            "amount": 1.32,
+            "date": 1732890600
+          },
+          "1740753000": {
+            "amount": 1.32,
+            "date": 1740753000
+          },
+          "1748611800": {
+            "amount": 1.32,
+            "date": 1748611800
+          },
+          "1756474200": {
+            "amount": 1.32,
+            "date": 1756474200
+          },
+          "1764340200": {
+            "amount": 1.42,
+            "date": 1764340200
+          },
+          "1772202600": {
+            "amount": 1.42,
+            "date": 1772202600
+          },
+          "1780061400": {
+            "amount": 1.42,
+            "date": 1780061400
+          },
+          "1788183000": {
+            "amount": 1.42,
+            "date": 1788183000
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "GEV",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/GEV?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:33.566963+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:39.534598+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 64900,
+      "sha256": "aab5b143bc12840c9112468f64913c61cf226201825493b76f428253d590bff5",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_GEV_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:39.534930+00:00",
+      "chart_error": null,
+      "returned_symbol": "GEV",
+      "interval": "1d",
+      "bar_count": 632,
+      "event_categories": [
+        "dividends"
+      ],
+      "event_counts": {
+        "dividends": 7
+      },
+      "events": {
+        "dividends": {
+          "1734705000": {
+            "amount": 0.25,
+            "date": 1734705000
+          },
+          "1744896600": {
+            "amount": 0.25,
+            "date": 1744896600
+          },
+          "1753104600": {
+            "amount": 0.25,
+            "date": 1753104600
+          },
+          "1760967000": {
+            "amount": 0.25,
+            "date": 1760967000
+          },
+          "1767623400": {
+            "amount": 0.5,
+            "date": 1767623400
+          },
+          "1773754200": {
+            "amount": 0.5,
+            "date": 1773754200
+          },
+          "1781616600": {
+            "amount": 0.5,
+            "date": 1781616600
+          }
+        }
+      }
+    },
+    {
+      "provider_symbol": "ROK",
+      "certified_security_identity": null,
+      "request_url": "https://query1.finance.yahoo.com/v8/finance/chart/ROK?interval=1d&range=5y&events=div%2Csplits",
+      "started_at": "2026-10-04T23:14:39.535684+00:00",
+      "historical_available_at": null,
+      "authentication": "NONE",
+      "retries": 0,
+      "method": "existing tools/fetch_real_data.py _get unchanged",
+      "acquisition_completed_at": "2026-10-04T23:14:45.706756+00:00",
+      "http_status": 200,
+      "content_type": "application/json;charset=utf-8",
+      "bytes": 134610,
+      "sha256": "0bb0ebaaa623cac282cff9f6f749f7c8190e4e293368d6625b9d84a6424a530c",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_ROK_5y_daily_original.json",
+      "persisted_at": "2026-10-04T23:14:45.707125+00:00",
+      "chart_error": null,
+      "returned_symbol": "ROK",
+      "interval": "1d",
+      "bar_count": 1255,
+      "event_categories": [
+        "dividends"
+      ],
+      "event_counts": {
+        "dividends": 20
+      },
+      "events": {
+        "dividends": {
+          "1636727400": {
+            "amount": 1.12,
+            "date": 1636727400
+          },
+          "1644589800": {
+            "amount": 1.12,
+            "date": 1644589800
+          },
+          "1652448600": {
+            "amount": 1.12,
+            "date": 1652448600
+          },
+          "1660311000": {
+            "amount": 1.12,
+            "date": 1660311000
+          },
+          "1668090600": {
+            "amount": 1.18,
+            "date": 1668090600
+          },
+          "1676644200": {
+            "amount": 1.18,
+            "date": 1676644200
+          },
+          "1683898200": {
+            "amount": 1.18,
+            "date": 1683898200
+          },
+          "1691760600": {
+            "amount": 1.18,
+            "date": 1691760600
+          },
+          "1699626600": {
+            "amount": 1.25,
+            "date": 1699626600
+          },
+          "1708093800": {
+            "amount": 1.25,
+            "date": 1708093800
+          },
+          "1715347800": {
+            "amount": 1.25,
+            "date": 1715347800
+          },
+          "1723469400": {
+            "amount": 1.25,
+            "date": 1723469400
+          },
+          "1731940200": {
+            "amount": 1.31,
+            "date": 1731940200
+          },
+          "1739889000": {
+            "amount": 1.31,
+            "date": 1739889000
+          },
+          "1747661400": {
+            "amount": 1.31,
+            "date": 1747661400
+          },
+          "1755523800": {
+            "amount": 1.31,
+            "date": 1755523800
+          },
+          "1763389800": {
+            "amount": 1.38,
+            "date": 1763389800
+          },
+          "1771857000": {
+            "amount": 1.38,
+            "date": 1771857000
+          },
+          "1779111000": {
+            "amount": 1.38,
+            "date": 1779111000
+          },
+          "1786973400": {
+            "amount": 1.38,
+            "date": 1786973400
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,639 @@
+{
+  "kind": "BOUNDED_MARKET_OWNER_ACTIONS_V05",
+  "baseline": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+  "prior_matrix_ref": {
+    "path": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/lane-b/MARKET_ADMISSION_19_BY_8_v0.4.json",
+    "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+    "sha256": "c53505faa9bd47d6fe688d9e13e052b9ab11dc051e0af3e0db86e8355a601c27",
+    "bytes": 367542
+  },
+  "production_admitted_symbols": 0,
+  "production_blocked_symbols": 19,
+  "shared_evidence_gap_families": 8,
+  "non_ready_field_cells": 152,
+  "actions": [
+    {
+      "action_id": "B01",
+      "priority": 1,
+      "field": "security_identity",
+      "logical_role": "security_identity",
+      "status": "OWNER_ACTION_REQUIRED",
+      "owner": "Track A/common identity owner",
+      "required_receipt_fields": [
+        "existing issuer_id/security_id",
+        "issuer→security relation",
+        "economic instrument/share class/form",
+        "effective interval",
+        "source ID/path/hash",
+        "evidence available_at",
+        "admission authority/scope"
+      ],
+      "acceptance": [
+        "Every priced instrument has an explicit common identity record and evidence-bound issuer relation",
+        "No CIK/company alias/ticker-generated ID substitution",
+        "Tokyo domestic vs ADR and ASML venue/form remain explicit"
+      ],
+      "reuse_capability_ids": [
+        "I01",
+        "I02",
+        "I03",
+        "I04",
+        "I05"
+      ],
+      "non_closing_substitutes": [
+        "synthetic fixture",
+        "caller assertions without source evidence"
+      ],
+      "promotions_this_stage": 0
+    },
+    {
+      "action_id": "B02",
+      "priority": 2,
+      "field": "listing_identity_history",
+      "logical_role": "listing_identity_history",
+      "status": "OWNER_ACTION_REQUIRED",
+      "owner": "Track A/common identity and market source owners",
+      "required_receipt_fields": [
+        "existing listing_id/security_id",
+        "ticker/MIC/currency",
+        "valid_from/valid_to",
+        "provider symbol/series interval",
+        "ticker changes/reuse/delisting/relisting continuity",
+        "GEV when-issued vs regular-way evidence",
+        "source/hash/availability/admission"
+      ],
+      "acceptance": [
+        "Each admitted raw interval joins one verified dated listing/provider relation",
+        "No ticker reuse/venue/regime stitching without admitted continuity",
+        "No backwards application of current ticker map"
+      ],
+      "reuse_capability_ids": [
+        "I01",
+        "I05",
+        "S02",
+        "S03"
+      ],
+      "non_closing_substitutes": [
+        "synthetic fixture",
+        "caller assertions without source evidence"
+      ],
+      "promotions_this_stage": 0
+    },
+    {
+      "action_id": "B03",
+      "priority": 3,
+      "field": "exchange_session_timezone",
+      "logical_role": "exchange_session_timezone",
+      "status": "OWNER_ACTION_REQUIRED",
+      "owner": "US Session PR #18 owner; separate JP/KR session owner",
+      "required_receipt_fields": [
+        "calendar body/hash/ID",
+        "real source notices bytes/hash",
+        "explicit dated OPEN/CLOSED rows",
+        "open/close/breaks/exceptions",
+        "row_available_at meaning/evidence",
+        "IANA timezone/tzdata version",
+        "venue and coverage completeness"
+      ],
+      "acceptance": [
+        "No absent date/weekday/holiday rule invention",
+        "Real calendar notice bytes verified; availability is source-backed",
+        "JPX/KRX supported separately; US v1 not copied"
+      ],
+      "reuse_capability_ids": [
+        "S01"
+      ],
+      "non_closing_substitutes": [
+        "synthetic fixture",
+        "caller assertions without source evidence"
+      ],
+      "promotions_this_stage": 0
+    },
+    {
+      "action_id": "B04",
+      "priority": 4,
+      "field": "dated_session_join",
+      "logical_role": "dated_session_join",
+      "status": "OWNER_ACTION_REQUIRED",
+      "owner": "Session and market source owners",
+      "required_receipt_fields": [
+        "B01/B02 admitted exact relation",
+        "B03 admitted calendar vintage",
+        "original raw bytes/hash",
+        "per-bar date/provider-label/session relation",
+        "decision time and owner scope",
+        "conflict/absence/continuity reasons"
+      ],
+      "acceptance": [
+        "Every input row retains original index and immutable source pointers",
+        "US binder refuses unverified joins/transfers/reuse/order/unknown exchange",
+        "KRX CSAT09:00 source label vs actual10:00 remains unresolved unless supported mapping",
+        "Session eligibility is not source publication eligibility"
+      ],
+      "reuse_capability_ids": [
+        "S02",
+        "S03",
+        "S04",
+        "P03"
+      ],
+      "non_closing_substitutes": [
+        "synthetic fixture",
+        "caller assertions without source evidence"
+      ],
+      "promotions_this_stage": 0
+    },
+    {
+      "action_id": "B05",
+      "priority": 5,
+      "field": "adjustment_basis",
+      "logical_role": "adjustment_basis",
+      "status": "OWNER_ACTION_REQUIRED",
+      "owner": "Price provider/Track A source owner",
+      "required_receipt_fields": [
+        "per O/H/L/C/V/adjclose source semantics",
+        "raw vs split/dividend adjustment",
+        "volume basis",
+        "provider transform/basis/version",
+        "known source revisions/finality policy",
+        "source/hash/coverage/evidence availability"
+      ],
+      "acceptance": [
+        "Each candle field has admitted source/transform basis",
+        "Adjclose does not substitute OHLC or supply adjusted volume",
+        "No approved mcap scalar assumption adopted as full-candle evidence"
+      ],
+      "reuse_capability_ids": [
+        "P01",
+        "P02",
+        "P03",
+        "A01",
+        "A04"
+      ],
+      "non_closing_substitutes": [
+        "synthetic fixture",
+        "caller assertions without source evidence"
+      ],
+      "promotions_this_stage": 0
+    },
+    {
+      "action_id": "B06",
+      "priority": 6,
+      "field": "corporate_action_basis",
+      "logical_role": "corporate_action_basis",
+      "status": "OWNER_ACTION_REQUIRED",
+      "owner": "Track A/source corporate-action owner",
+      "required_receipt_fields": [
+        "identity-continuous action ledger",
+        "event kind/security scope",
+        "announcement/record/ex/legal effect/adjusted-trading times",
+        "provider event labels distinct from legal dates",
+        "source/hash/version/completeness",
+        "actual event availability",
+        "transform linkage where applicable"
+      ],
+      "acceptance": [
+        "Reviewed NVDA event can be referenced inside its own admitted scope",
+        "GE parent event never supplies GEV common identity",
+        "Provider empty/events-not-requested does not assert certified no-actions",
+        "A complete ledger is required before a complete historical basis claim"
+      ],
+      "reuse_capability_ids": [
+        "A01",
+        "A02",
+        "A03"
+      ],
+      "non_closing_substitutes": [
+        "synthetic fixture",
+        "caller assertions without source evidence"
+      ],
+      "promotions_this_stage": 0
+    },
+    {
+      "action_id": "B07",
+      "priority": 7,
+      "field": "historical_available_at",
+      "logical_role": "historical_available_at",
+      "status": "OWNER_ACTION_REQUIRED",
+      "owner": "Provider/PIT source owner",
+      "required_receipt_fields": [
+        "actual historical bar/action publication or access receipt",
+        "vintage/revision ID/hash",
+        "finality/version",
+        "event/provider/session/observed/available/knowledge/ingestion roles",
+        "date precision and applicable interval",
+        "source-supported evidence"
+      ],
+      "acceptance": [
+        "Absence remains NOT_AVAILABLE with value null",
+        "Bar open/close/current fetch/calendar availability never substitutes per-bar availability",
+        "No retroactive present observation or PIT relaxation"
+      ],
+      "reuse_capability_ids": [
+        "R01",
+        "R02",
+        "P01",
+        "P03",
+        "S04"
+      ],
+      "non_closing_substitutes": [
+        "synthetic fixture",
+        "caller assertions without source evidence"
+      ],
+      "promotions_this_stage": 0
+    },
+    {
+      "action_id": "B08",
+      "priority": 8,
+      "field": "quote_state",
+      "logical_role": "quote_state",
+      "status": "OWNER_ACTION_REQUIRED",
+      "owner": "Price provider source owner",
+      "required_receipt_fields": [
+        "exact endpoint/feed/response/row state",
+        "source documentation/version/hash",
+        "state time/availability",
+        "LIVE/DELAYED/CLOSE/UNKNOWN semantics",
+        "delay/finality evidence and scope"
+      ],
+      "acceptance": [
+        "Source state backed by exact feed evidence",
+        "Exchange open/closed and last print do not imply historical row state",
+        "Feed LIVE never grants Product Official/LIVE authority"
+      ],
+      "reuse_capability_ids": [
+        "P01",
+        "P03"
+      ],
+      "non_closing_substitutes": [
+        "synthetic fixture",
+        "caller assertions without source evidence"
+      ],
+      "promotions_this_stage": 0
+    }
+  ],
+  "unchanged_field_states": [
+    {
+      "provider_symbol": "ASML",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ASML_5y_original.json",
+        "sha256": "c7b3505a1c5d6784b86e3641339cc6e65949d96aabdf47e0acf4033da693843e"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "LRCX",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_LRCX_5y_original.json",
+        "sha256": "c23b349c319adcc4087c491758130794c5a9b989553cef5446ec5d6f8c198940"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "KLAC",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_KLAC_5y_original.json",
+        "sha256": "6e5a02e631565bf779de35c972650e528f9c11fd17cfbfd9fd137005cb76930a"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "8035.T",
+      "row_count": 1222,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_8035_T_5y_original.json",
+        "sha256": "4b73393390ac0f41865f6ceab82e682d4b3a69fcf9d42b8264b3ca908c7eb758"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "042700.KS",
+      "row_count": 1221,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_042700_KS_5y_original.json",
+        "sha256": "0fd4f74e03fa3908dda2ae4b7970537fef9e1d855003bd7179c6a3f180390552"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "NVDA",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_NVDA_5y_original.json",
+        "sha256": "357347e0031ba982cb145478a076eec0b0a1febd2dc59eb9b624d5281db2183a"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "AMD",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AMD_5y_original.json",
+        "sha256": "8dbb143fe3876484db36dea404399cd14aef12e06a7b4ac46a56a0480e91be33"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "AVGO",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AVGO_5y_original.json",
+        "sha256": "3377478afa855fa5c6bc28983f0636a1c6d19c9cc7e90660d27fff6d4c8db636"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "QCOM",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_QCOM_5y_original.json",
+        "sha256": "dc4fbc71bb91ed8c4449431bca3172ab274c4760ce1df30ebc0f22476c602a25"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "INTC",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_INTC_5y_original.json",
+        "sha256": "9e4de576d228cd685133592b562e0ce1a5a7e738dd7da063d70d492d8425ce76"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "MSFT",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_MSFT_5y_original.json",
+        "sha256": "b2c375cc515006e968e26c17aab6afb3e85029af5988c99d5915dfe9f80f5e98"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "GOOGL",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_GOOGL_5y_original.json",
+        "sha256": "e2653b81ac69270f651791c0d6bf21935a42dc19df621af481d76dbc8d0c1e3e"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "AMZN",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AMZN_5y_original.json",
+        "sha256": "67de7fbb3d2813a9fc21902d853e2b5d6375a5bde271b72b6bdcf0502643ef83"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "RTX",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_RTX_5y_original.json",
+        "sha256": "9ceb1b51012bb4c4c330af2ec093736e58ca381e3ea65497dc709e587c091d03"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "SYK",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_SYK_5y_original.json",
+        "sha256": "c68835f64ff4cdf7eea89b51abab5244ace40a9616c8c253b34ea24fca7436ee"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "ETN",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ETN_5y_original.json",
+        "sha256": "de5e8d34652f4d6a46bf3f37242f18091c46c74381bdc0bea7b8e1b1830ce5cc"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "HUBB",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_HUBB_5y_original.json",
+        "sha256": "ed33df064271953b559334db099f6f71d3d8852c036a27e015e46ebab8149160"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "GEV",
+      "row_count": 632,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_GEV_5y_original.json",
+        "sha256": "b770d191537550b1ca9c2ec38c50ec8b8fd66f0134f624260f87fdac76b7c3ee"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    },
+    {
+      "provider_symbol": "ROK",
+      "row_count": 1255,
+      "raw_source": {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ROK_5y_original.json",
+        "sha256": "a3171647d133a09a6719e947a9eb24a9b6399701e7b146606b8cfa059b924179"
+      },
+      "fields": {
+        "security_identity": "BLOCKED",
+        "listing_identity_history": "BLOCKED",
+        "exchange_session_timezone": "PARTIAL",
+        "dated_session_join": "BLOCKED",
+        "adjustment_basis": "PARTIAL",
+        "corporate_action_basis": "PARTIAL",
+        "historical_available_at": "NOT_AVAILABLE",
+        "quote_state": "UNKNOWN"
+      },
+      "production_admission": "BLOCKED"
+    }
+  ],
+  "common_governance_dependencies": "Parent handles Product/P01/whole-package code_hash/FPIA; anomaly policy is separate from8field families",
+  "production_adoption": false
+}

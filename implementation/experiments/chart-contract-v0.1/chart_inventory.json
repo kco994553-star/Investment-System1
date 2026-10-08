@@ -1,0 +1,4955 @@
+{
+  "inventory_version": "CHART_REQUIREMENTS/0.2",
+  "count_semantics": "requirements/capabilities, not independent chart components",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "trial": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+  "current_pr": 41,
+  "prior_pr_head": "96d833244f9678cb1f9bbad498f966cf445256d7",
+  "core_denominator": 81,
+  "counts": {
+    "user_core": 81,
+    "repository_additional": 24,
+    "candidate_extensions": 8,
+    "total_rows": 113
+  },
+  "baseline_metrics": {
+    "c": {
+      "backend": 1,
+      "frontend": 0,
+      "validation": 0,
+      "all": 0,
+      "backend_partial": 33,
+      "backend_input": 5
+    },
+    "t": {
+      "backend": 4,
+      "frontend": 0,
+      "validation": 0,
+      "all": 0,
+      "backend_partial": 34,
+      "backend_input": 7
+    }
+  },
+  "cross_cutting": [
+    "실제값/합성/참고자료 구분",
+    "source·as_of·observed_at·available_at·vintage",
+    "가격조정기준·기업행사·통화·timezone/session",
+    "PIT/no-lookahead·분기snapshot 보존",
+    "결측≠0·목표≠실제·확률≠Confidence",
+    "Research/Model·BACKTEST/FORWARD·canonical/PR 구분",
+    "모바일·축/단위·툴팁/범위·빈/차단상태 검증"
+  ],
+  "items": [
+    {
+      "id": "A01",
+      "group": "A",
+      "name": "Candlestick / OHLC",
+      "c": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "OHLC 원문의 fresh 확보 미검증. 두 parser 모두 O/H/L을 출력하지 않음. timestamp+OHLC 계약 필요.",
+      "ev": "MKT,TP,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "parse_chart / parse_bars / pit_bar / to_price_point; lines 20–99"
+        },
+        {
+          "path": "implementation/tests/test_raw_and_providers.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/technical/pit_market.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PitBar / bars_from_yahoo_chart / screen; PR11"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "PR41: 합성 일봉 캔들·거래량/범위/교차선·값 조회 검증. 실제 NVDA5일 원본 사전검사 통과. intraday·세션·PIT·운영 연결은 미완료.",
+      "latest_state": "NON_CANONICAL_DEMO_VERIFIED",
+      "details": ""
+    },
+    {
+      "id": "A02",
+      "group": "A",
+      "name": "Volume",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "I",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "Technical parser가 volume을 보존. 운영 raw bytes 및 chart series adapter·렌더러 없음.",
+      "ev": "TP,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/pit_market.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PitBar / bars_from_yahoo_chart / screen; PR11"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "PR41: 합성 일봉 캔들·거래량/범위/교차선·값 조회 검증. 실제 NVDA5일 원본 사전검사 통과. intraday·세션·PIT·운영 연결은 미완료.",
+      "latest_state": "NON_CANONICAL_DEMO_VERIFIED",
+      "details": ""
+    },
+    {
+      "id": "A03",
+      "group": "A",
+      "name": "Timeframe / range",
+      "c": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "Yahoo interval=1d, range 매개변수만 존재. intraday·리샘플링·범위 계약/조작 없음.",
+      "ev": "MKT,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "parse_chart / parse_bars / pit_bar / to_price_point; lines 20–99"
+        },
+        {
+          "path": "implementation/tests/test_raw_and_providers.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "PR41: 합성 일봉 캔들·거래량/범위/교차선·값 조회 검증. 실제 NVDA5일 원본 사전검사 통과. intraday·세션·PIT·운영 연결은 미완료.",
+      "latest_state": "NON_CANONICAL_DEMO_VERIFIED",
+      "details": ""
+    },
+    {
+      "id": "A04",
+      "group": "A",
+      "name": "Adjusted / unadjusted basis",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "close/adjclose 동시 보존과 basis 설명은 일부. as-of 조정계보·OHLC 전체 동일 basis 보장 없음.",
+      "ev": "MKT,TP,CA",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "parse_chart / parse_bars / pit_bar / to_price_point; lines 20–99"
+        },
+        {
+          "path": "implementation/tests/test_raw_and_providers.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/technical/pit_market.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PitBar / bars_from_yahoo_chart / screen; PR11"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/tools/ca_unit_policy.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Track A CA-UNIT 일반 단위조정 정책; chart OHLC 조정계열 생성 아님"
+        }
+      ],
+      "latest_note": "PR41은 가격 basis·시세상태·PIT를 검증완료로 승격하지 않음. split 원본 표본은 확보했으나 차트 조정·세션 연결 미완료.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "A05",
+      "group": "A",
+      "name": "Corporate Action 표시/처리",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "Universe 주식수/가격 단위 조정과 split 차단 재사용 가능. 차트 전 구간 split/dividend 조정·marker 미완성.",
+      "ev": "CA,TM",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/tools/ca_unit_policy.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Track A CA-UNIT 일반 단위조정 정책; chart OHLC 조정계열 생성 아님"
+        },
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "PR41은 가격 basis·시세상태·PIT를 검증완료로 승격하지 않음. split 원본 표본은 확보했으나 차트 조정·세션 연결 미완료.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "A06",
+      "group": "A",
+      "name": "Current / live / delayed / close",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "Web LIVE/FRESH는 bundle 상태이며 거래소 live/delayed feed 보장이 아님. 시세 상태 계약 필요.",
+      "ev": "MKT,SESSION,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "parse_chart / parse_bars / pit_bar / to_price_point; lines 20–99"
+        },
+        {
+          "path": "implementation/tests/test_raw_and_providers.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/sessions/research.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "sessions/calendar.py 및 binder.py; exchange-calendar close lower bound; PR18"
+        },
+        {
+          "path": "implementation/tests/test_us_equity_session_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "PR41은 가격 basis·시세상태·PIT를 검증완료로 승격하지 않음. split 원본 표본은 확보했으나 차트 조정·세션 연결 미완료.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "A07",
+      "group": "A",
+      "name": "Crosshair / tooltip contract",
+      "c": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "가격 point 일부만 존재. 안정된 chart series id·null/gap·시간축·범위 endpoint 없음. RIG zoom/pan을 금융차트로 계산하지 않음.",
+      "ev": "MKT,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "parse_chart / parse_bars / pit_bar / to_price_point; lines 20–99"
+        },
+        {
+          "path": "implementation/tests/test_raw_and_providers.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "PR41: 합성 일봉 캔들·거래량/범위/교차선·값 조회 검증. 실제 NVDA5일 원본 사전검사 통과. intraday·세션·PIT·운영 연결은 미완료.",
+      "latest_state": "NON_CANONICAL_DEMO_VERIFIED",
+      "details": ""
+    },
+    {
+      "id": "A08",
+      "group": "A",
+      "name": "Zoom / pan series",
+      "c": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "가격 point 일부만 존재. 안정된 chart series id·null/gap·시간축·범위 endpoint 없음. RIG zoom/pan을 금융차트로 계산하지 않음.",
+      "ev": "MKT,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "parse_chart / parse_bars / pit_bar / to_price_point; lines 20–99"
+        },
+        {
+          "path": "implementation/tests/test_raw_and_providers.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "PR41: 합성 일봉 캔들·거래량/범위/교차선·값 조회 검증. 실제 NVDA5일 원본 사전검사 통과. intraday·세션·PIT·운영 연결은 미완료.",
+      "latest_state": "NON_CANONICAL_DEMO_VERIFIED",
+      "details": ""
+    },
+    {
+      "id": "A09",
+      "group": "A",
+      "name": "Market Session 상태",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "I",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "거래소 calendar vintage binder·close guard 있음. 실제 calendar replay 및 장중 session UI 없음.",
+      "ev": "SESSION",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/sessions/research.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "sessions/calendar.py 및 binder.py; exchange-calendar close lower bound; PR18"
+        },
+        {
+          "path": "implementation/tests/test_us_equity_session_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "PR41은 가격 basis·시세상태·PIT를 검증완료로 승격하지 않음. split 원본 표본은 확보했으나 차트 조정·세션 연결 미완료.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B01",
+      "group": "B",
+      "name": "SMA",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "요구는 있으나 해당 지표 계산/series를 찾지 못함. 실제 구현 전 지표 정의·기간·가격 basis 확정 필요.",
+      "ev": "TM,SPEC_T",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "Technical Analysis System · Consolidated Record v0.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B02",
+      "group": "B",
+      "name": "EMA",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "요구는 있으나 해당 지표 계산/series를 찾지 못함. 실제 구현 전 지표 정의·기간·가격 basis 확정 필요.",
+      "ev": "TM,SPEC_T",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "Technical Analysis System · Consolidated Record v0.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B03",
+      "group": "B",
+      "name": "RSI",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "요구는 있으나 해당 지표 계산/series를 찾지 못함. 실제 구현 전 지표 정의·기간·가격 basis 확정 필요.",
+      "ev": "TM,SPEC_T",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "Technical Analysis System · Consolidated Record v0.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B04",
+      "group": "B",
+      "name": "MACD",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "요구는 있으나 해당 지표 계산/series를 찾지 못함. 실제 구현 전 지표 정의·기간·가격 basis 확정 필요.",
+      "ev": "TM,SPEC_T",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "Technical Analysis System · Consolidated Record v0.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B05",
+      "group": "B",
+      "name": "Bollinger Bands",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "요구는 있으나 해당 지표 계산/series를 찾지 못함. 실제 구현 전 지표 정의·기간·가격 basis 확정 필요.",
+      "ev": "TM,SPEC_T",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "Technical Analysis System · Consolidated Record v0.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B06",
+      "group": "B",
+      "name": "ATR",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "요구는 있으나 해당 지표 계산/series를 찾지 못함. 실제 구현 전 지표 정의·기간·가격 basis 확정 필요.",
+      "ev": "TM,SPEC_T",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "Technical Analysis System · Consolidated Record v0.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B07",
+      "group": "B",
+      "name": "Volatility",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "I",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "PR15 sigma20/sigma252 및 volatility state 있음. ATR/beta/모든 요청기간과 동일하지 않으며 history adapter 미구현.",
+      "ev": "TM",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B08",
+      "group": "B",
+      "name": "Support / resistance",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "Confirmed swing/structure 재사용 후보. 일반적인 지지·저항 가격구간 series로 과장할 수 없음.",
+      "ev": "TM",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B09",
+      "group": "B",
+      "name": "Trend / regime",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "I",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "M1/M2 연구용 계산 가능. session/split 입력·real 검증 필요. UI는 regime scalar 카드, 시계열 overlay 없음.",
+      "ev": "TM,SESSION,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/sessions/research.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "sessions/calendar.py 및 binder.py; exchange-calendar close lower bound; PR18"
+        },
+        {
+          "path": "implementation/tests/test_us_equity_session_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B10",
+      "group": "B",
+      "name": "Technical State",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "I",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "M1/M2 연구용 계산 가능. session/split 입력·real 검증 필요. UI는 regime scalar 카드, 시계열 overlay 없음.",
+      "ev": "TM,SESSION,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/sessions/research.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "sessions/calendar.py 및 binder.py; exchange-calendar close lower bound; PR18"
+        },
+        {
+          "path": "implementation/tests/test_us_equity_session_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B11",
+      "group": "B",
+      "name": "Entry / Add / Wait / Risk-Reduction Zone",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "Regime 기반 zone 일부 반환. 가격 레벨 및 Entry/Add 수치구간은 차단/미구현.",
+      "ev": "TM,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B12",
+      "group": "B",
+      "name": "Invalidation",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "구조/정성 invalidation 슬롯. 검증된 가격선·이벤트 수명 chart contract 없음.",
+      "ev": "TM,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B13",
+      "group": "B",
+      "name": "Signal / event marker",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "신호 및 SEC/RIG 이벤트 경로는 일부. 기업/시점/축에 매핑하는 chart event adapter 없음.",
+      "ev": "TM,RIG",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/rig/network/render.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "render_page 및 rig/discovery/present.py impact_svg; canonical implemented"
+        },
+        {
+          "path": "implementation/tests/test_rig_p1_network.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B14",
+      "group": "B",
+      "name": "Research Indicator / Model Indicator 분리",
+      "c": [
+        "S",
+        "S",
+        "P",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "Model 연구 레코드 및 publication 보호는 있음. 두 표시 계층과 research 지표 catalog/renderer 미구현.",
+      "ev": "TM,PUB,SPEC_T",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/publication/predicate.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "display eligibility and grants; PR17/19"
+        },
+        {
+          "path": "implementation/tests/test_research_publication_contract.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "Technical Analysis System · Consolidated Record v0.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "B15",
+      "group": "B",
+      "name": "Future Path / probability fan",
+      "c": [
+        "S",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "S",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "구조적 placeholder는 모델 완성이 아님. M3 NOT_AVAILABLE; 경로/확률/calibration·fan renderer 없음.",
+      "ev": "TM,SPEC_T",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/technical/real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "build_research_record / _sigma / _regime / _zone_for; PR15"
+        },
+        {
+          "path": "implementation/tests/test_technical_real_model_v1.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "Technical Analysis System · Consolidated Record v0.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": "경로 S=1~N, 범위·trigger·confirmation·invalidation·QGV 적합성·확률/Confidence 분리, horizon별 불확실성·실제 forward 비교. 120/252일 예시는 확정 상수 아님."
+    },
+    {
+      "id": "C01",
+      "group": "C",
+      "name": "Q/G/V breakdown",
+      "c": [
+        "P",
+        "I",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "R",
+        "R",
+        "R",
+        "P",
+        "P"
+      ],
+      "gap": "PR10 실제 보존 snapshot 3×500개. V는 Initial Prior; missing coverage 보존. UI scalar 목록만 있고 breakdown 그래프 없음.",
+      "ev": "QGV,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "C02",
+      "group": "C",
+      "name": "Total / attractiveness",
+      "c": [
+        "P",
+        "I",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "R",
+        "R",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "Total은 Q/G 평균, attractiveness는 provisional 휴리스틱. 완전한 QGV 합성점수로 해석 금지. attraction 전용 UI 없음.",
+      "ev": "QGV,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "C03",
+      "group": "C",
+      "name": "Confidence",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "저장값 MEDIUM은 caller/default 라벨. Q/G/V별 독립 confidence 또는 calibration으로 해석 금지.",
+      "ev": "QGV,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "C04",
+      "group": "C",
+      "name": "Historical QGV",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "R",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "3개 날짜의 보존 snapshot은 있음. 연속 history query·revision 시계열 assembler 없음.",
+      "ev": "QGV,RECORD",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/track_record.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "decision/outcome record primitives; validation/records.py 병존. no chart aggregation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "C05",
+      "group": "C",
+      "name": "Historical valuation",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "V prior/factor 입력은 존재. 가치평가 history product series 아님.",
+      "ev": "QGV",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "C06",
+      "group": "C",
+      "name": "Valuation range",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "DCF 입력 field/점수는 valuation range 산출이 아님. range 계산·계약·렌더러 없음.",
+      "ev": "QGV,SPEC_Q",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "C07",
+      "group": "C",
+      "name": "Margin of safety",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "qgv/raw_map.py의 MOS 및 reverse-DCF proxy 점수는 존재. 실제 안전마진 range·역DCF solver/sensitivity series와 구분.",
+      "ev": "QGV,SPEC_Q",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "C08",
+      "group": "C",
+      "name": "Reverse DCF 표시",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "qgv/raw_map.py의 MOS 및 reverse-DCF proxy 점수는 존재. 실제 안전마진 range·역DCF solver/sensitivity series와 구분.",
+      "ev": "QGV,SPEC_Q",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "C09",
+      "group": "C",
+      "name": "Negative / Neutral / Positive scenario",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "Spec 요구. 해당 시나리오 가치/목표가 생산 계산·계약·renderer 미발견.",
+      "ev": "QGV,SPEC_Q",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "C10",
+      "group": "C",
+      "name": "Target price / range",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "Spec 요구. 해당 시나리오 가치/목표가 생산 계산·계약·renderer 미발견.",
+      "ev": "QGV,SPEC_Q",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "C11",
+      "group": "C",
+      "name": "Peer comparison",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "Peer median/factor 입력 일부. 보존 snapshot peer_weights는 비어 있음. 기업 간 비교 contract/화면 없음.",
+      "ev": "QGV",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "C12",
+      "group": "C",
+      "name": "Key Drivers / Risk 연결 시각화",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "Key drivers가 raw_map/source_kind/g_horizon 같은 기술 메타데이터. 투자 driver/risk 비교·링크 시각화 미완성.",
+      "ev": "QGV,RECORD",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/track_record.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "decision/outcome record primitives; validation/records.py 병존. no chart aggregation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "D01",
+      "group": "D",
+      "name": "Analyst count",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "ConsensusSnapshot은 설계 문서 수준. 실제 typed runtime schema·provider ingestion·history·비교 계산이 확인되지 않음. Leaderboard scalar 슬롯만으로 준비 완료 아님.",
+      "ev": "CONS,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "D02",
+      "group": "D",
+      "name": "Average target",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "ConsensusSnapshot은 설계 문서 수준. 실제 typed runtime schema·provider ingestion·history·비교 계산이 확인되지 않음. Leaderboard scalar 슬롯만으로 준비 완료 아님.",
+      "ev": "CONS,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "D03",
+      "group": "D",
+      "name": "Median target",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "ConsensusSnapshot은 설계 문서 수준. 실제 typed runtime schema·provider ingestion·history·비교 계산이 확인되지 않음. Leaderboard scalar 슬롯만으로 준비 완료 아님.",
+      "ev": "CONS,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "D04",
+      "group": "D",
+      "name": "High / low target",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "ConsensusSnapshot은 설계 문서 수준. 실제 typed runtime schema·provider ingestion·history·비교 계산이 확인되지 않음. Leaderboard scalar 슬롯만으로 준비 완료 아님.",
+      "ev": "CONS,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "D05",
+      "group": "D",
+      "name": "Revision direction",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "ConsensusSnapshot은 설계 문서 수준. 실제 typed runtime schema·provider ingestion·history·비교 계산이 확인되지 않음. Leaderboard scalar 슬롯만으로 준비 완료 아님.",
+      "ev": "CONS,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "D06",
+      "group": "D",
+      "name": "Consensus history",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "ConsensusSnapshot은 설계 문서 수준. 실제 typed runtime schema·provider ingestion·history·비교 계산이 확인되지 않음. Leaderboard scalar 슬롯만으로 준비 완료 아님.",
+      "ev": "CONS,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "D07",
+      "group": "D",
+      "name": "Current price vs target",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "Current price source 일부 존재; target ingestion 및 비교 계산 없음. ConsensusSnapshot은 설계 문서 수준.",
+      "ev": "CONS,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "D08",
+      "group": "D",
+      "name": "QGV target vs Consensus",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "ConsensusSnapshot은 설계 문서 수준. 실제 typed runtime schema·provider ingestion·history·비교 계산이 확인되지 않음. Leaderboard scalar 슬롯만으로 준비 완료 아님.",
+      "ev": "CONS,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "E01",
+      "group": "E",
+      "name": "산업 구성 도넛",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "정적 sector/목표비중 fixture만 존재. 시점별 분류·가중집계·chart contract/renderer 없음.",
+      "ev": "PF,SPEC_P",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PortfolioEngine.from_input / official_v11 / evaluate"
+        },
+        {
+          "path": "implementation/tests/test_generic_portfolio_input.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "PR41: 기존19종목 목표비중의 산업군 참고자료와 가상 기업의 유형별 독립 도넛·정확한 중복 조합 표시를 검증. 실제 계좌·기업별 유형·분기 이력은 미연결.",
+      "latest_state": "NON_CANONICAL_REFERENCE_DEMO_VERIFIED",
+      "details": "분기 immutable snapshot 연결, 실제/목표 산업비중과 변화."
+    },
+    {
+      "id": "E02",
+      "group": "E",
+      "name": "유형 구성 도넛",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "다중 기업유형 membership/history·유형별 집계·중복 계약·renderer 없음. 중복합계>100%를 임의 정규화 금지.",
+      "ev": "PF,SPEC_P",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PortfolioEngine.from_input / official_v11 / evaluate"
+        },
+        {
+          "path": "implementation/tests/test_generic_portfolio_input.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "PR41: 기존19종목 목표비중의 산업군 참고자료와 가상 기업의 유형별 독립 도넛·정확한 중복 조합 표시를 검증. 실제 계좌·기업별 유형·분기 이력은 미연결.",
+      "latest_state": "NON_CANONICAL_REFERENCE_DEMO_VERIFIED",
+      "details": "유형 구성 텍스트와 도넛, 중복 허용·합계>100% 보존, 분기 snapshot."
+    },
+    {
+      "id": "E03",
+      "group": "E",
+      "name": "유형 중복 Overlap Chart",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "다중 기업유형 membership/history·유형별 집계·중복 계약·renderer 없음. 중복합계>100%를 임의 정규화 금지.",
+      "ev": "PF,SPEC_P",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PortfolioEngine.from_input / official_v11 / evaluate"
+        },
+        {
+          "path": "implementation/tests/test_generic_portfolio_input.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "PR41: 기존19종목 목표비중의 산업군 참고자료와 가상 기업의 유형별 독립 도넛·정확한 중복 조합 표시를 검증. 실제 계좌·기업별 유형·분기 이력은 미연결.",
+      "latest_state": "NON_CANONICAL_REFERENCE_DEMO_VERIFIED",
+      "details": "정확한 유형 조합과 중복 노출, 분기 immutable snapshot."
+    },
+    {
+      "id": "E04",
+      "group": "E",
+      "name": "Actual vs target weight",
+      "c": [
+        "P",
+        "I",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "I",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "P0 supplied Position→weights/target 계산 존재. 실제 계좌 snapshot 미연결. UI는 actual 또는 target 하나만 표시.",
+      "ev": "PIL,PF,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "ActualPortfolioSnapshot.weights / portfolio_gap"
+        },
+        {
+          "path": "implementation/tests/test_pil_p0_contracts.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PortfolioEngine.from_input / official_v11 / evaluate"
+        },
+        {
+          "path": "implementation/tests/test_generic_portfolio_input.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "E05",
+      "group": "E",
+      "name": "Weight gap",
+      "c": [
+        "P",
+        "I",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "I",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "portfolio_gap은 model−actual, QGV evaluate는 actual−target. 방향을 명시할 adapter/실제 입력 없음. 초기 Holding.weight_gap=0은 실제 gap 증거 아님.",
+      "ev": "PIL,PF",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "ActualPortfolioSnapshot.weights / portfolio_gap"
+        },
+        {
+          "path": "implementation/tests/test_pil_p0_contracts.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PortfolioEngine.from_input / official_v11 / evaluate"
+        },
+        {
+          "path": "implementation/tests/test_generic_portfolio_input.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "E06",
+      "group": "E",
+      "name": "Concentration",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "P",
+        "S"
+      ],
+      "gap": "일부 분류/비중과 Exposure JSON 텍스트 슬롯. 투자시점 분류·노출/집중도 집계·chart contract는 없음.",
+      "ev": "PF,PIL,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PortfolioEngine.from_input / official_v11 / evaluate"
+        },
+        {
+          "path": "implementation/tests/test_generic_portfolio_input.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "ActualPortfolioSnapshot.weights / portfolio_gap"
+        },
+        {
+          "path": "implementation/tests/test_pil_p0_contracts.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "E07",
+      "group": "E",
+      "name": "Sector / industry exposure",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "P",
+        "S"
+      ],
+      "gap": "일부 분류/비중과 Exposure JSON 텍스트 슬롯. 투자시점 분류·노출/집중도 집계·chart contract는 없음.",
+      "ev": "PF,PIL,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PortfolioEngine.from_input / official_v11 / evaluate"
+        },
+        {
+          "path": "implementation/tests/test_generic_portfolio_input.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "ActualPortfolioSnapshot.weights / portfolio_gap"
+        },
+        {
+          "path": "implementation/tests/test_pil_p0_contracts.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "E08",
+      "group": "E",
+      "name": "Contribution",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "EVL cash/P&L path는 종목 attribution 완성이 아님. 기간·현금흐름·통화·종목기여도 계산 필요.",
+      "ev": "EVL,PF",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PortfolioEngine.from_input / official_v11 / evaluate"
+        },
+        {
+          "path": "implementation/tests/test_generic_portfolio_input.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "E09",
+      "group": "E",
+      "name": "Unrealized P&L",
+      "c": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "S"
+      ],
+      "gap": "Position average_cost/평가부품 존재. 실제 원가/FX/포지션 데이터와 미실현손익 계산 path 없음.",
+      "ev": "PIL,PF",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/personal/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "ActualPortfolioSnapshot.weights / portfolio_gap"
+        },
+        {
+          "path": "implementation/tests/test_pil_p0_contracts.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PortfolioEngine.from_input / official_v11 / evaluate"
+        },
+        {
+          "path": "implementation/tests/test_generic_portfolio_input.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "E10",
+      "group": "E",
+      "name": "Portfolio drawdown",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "P"
+      ],
+      "gap": "trial 연구 aggregate MDD 부품만 재사용 후보. 실제 계좌 가치 시계열·cashflow 처리·drawdown series 계약 없음.",
+      "ev": "EVL,SIM",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "E11",
+      "group": "E",
+      "name": "Correlation / risk visualization",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "가격 primitive는 있음. 정렬된 portfolio return panel·상관행렬/risk attribution 계산·UI 필요.",
+      "ev": "SIM,EVL",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "F01",
+      "group": "F",
+      "name": "Portfolio equity curve",
+      "c": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "canonical SimulationResult는 ending_value/total_return만. EVL research equity rows는 날짜별 제품 curve 계약 미완성.",
+      "ev": "SIM,EVL",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "F02",
+      "group": "F",
+      "name": "S&P 500 TR",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "이름 붙인 benchmark PIT/TR 수집·dividend/reinvestment·currency series 없음. 임의 benchmark_return 입력은 named TR 계산/수집 증거 아님.",
+      "ev": "SIM,EVL,SPEC_S",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "F03",
+      "group": "F",
+      "name": "Equal Weight TR",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "이름 붙인 benchmark PIT/TR 수집·dividend/reinvestment·currency series 없음. 임의 benchmark_return 입력은 named TR 계산/수집 증거 아님.",
+      "ev": "SIM,EVL,SPEC_S",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "F04",
+      "group": "F",
+      "name": "Growth Index",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "이름 붙인 benchmark PIT/TR 수집·dividend/reinvestment·currency series 없음. 임의 benchmark_return 입력은 named TR 계산/수집 증거 아님.",
+      "ev": "SIM,EVL,SPEC_S",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "F05",
+      "group": "F",
+      "name": "Sector / factor benchmark",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "이름 붙인 benchmark PIT/TR 수집·dividend/reinvestment·currency series 없음. 임의 benchmark_return 입력은 named TR 계산/수집 증거 아님.",
+      "ev": "SIM,EVL,SPEC_S",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "F06",
+      "group": "F",
+      "name": "Drawdown",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "P"
+      ],
+      "gap": "trial EVL supplied returns의 aggregate MDD 계산만 존재. chart용 drawdown 시계열·benchmark 실자료 연결 없음.",
+      "ev": "SIM,EVL",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "F07",
+      "group": "F",
+      "name": "Rolling return",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "연구 단일기간 수익률과 rolling-window chart series는 다름. rolling 계산·창/결측 계약 없음.",
+      "ev": "SIM,EVL",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "F08",
+      "group": "F",
+      "name": "Quarterly performance",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "연구 ReturnPeriod 부품만 존재. 분기별 전 종목·weight·성과 grouping/product assembler 없음.",
+      "ev": "SIM,EVL,SPEC_S",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": "모든 보유종목·비중·시작/종료가격·수익률·QGV 및 산업/유형 노출 변화."
+    },
+    {
+      "id": "F09",
+      "group": "F",
+      "name": "Holding / weight history",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "canonical 단일 snapshot, trial EVL positions path 존재. 날짜별 normalized weight history·endpoint·renderer 없음.",
+      "ev": "EVL,PF",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PortfolioEngine.from_input / official_v11 / evaluate"
+        },
+        {
+          "path": "implementation/tests/test_generic_portfolio_input.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "F10",
+      "group": "F",
+      "name": "Trade / execution position",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "trial 체결/cost/delay 기록은 존재. 월 저가~고가 내 체결위치 계산·band contract는 없음.",
+      "ev": "EVL,MKT,SPEC_S",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "parse_chart / parse_bars / pit_bar / to_price_point; lines 20–99"
+        },
+        {
+          "path": "implementation/tests/test_raw_and_providers.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "G01",
+      "group": "G",
+      "name": "Macro regime history",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "as_of scalar regime 연구 계산만. 연속 PIT regime history·운영 source·cycle/chart adapter 없음.",
+      "ev": "MAC,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/macro/real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "VintageSeries / produce / company_industry_exposure; PR12"
+        },
+        {
+          "path": "implementation/tests/test_macro_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "G02",
+      "group": "G",
+      "name": "Cycle / regime visualization",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "as_of scalar regime 연구 계산만. 연속 PIT regime history·운영 source·cycle/chart adapter 없음.",
+      "ev": "MAC,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/macro/real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "VintageSeries / produce / company_industry_exposure; PR12"
+        },
+        {
+          "path": "implementation/tests/test_macro_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "G03",
+      "group": "G",
+      "name": "Rates",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "FRED/ALFRED dated parser와 scalar snapshot 계산 재사용 가능. historical transformed series/chart 계약 없음. real ALFRED E2E는 미검증.",
+      "ev": "MAC",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/macro/real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "VintageSeries / produce / company_industry_exposure; PR12"
+        },
+        {
+          "path": "implementation/tests/test_macro_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "G04",
+      "group": "G",
+      "name": "Inflation",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "FRED/ALFRED dated parser와 scalar snapshot 계산 재사용 가능. historical transformed series/chart 계약 없음. real ALFRED E2E는 미검증.",
+      "ev": "MAC",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/macro/real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "VintageSeries / produce / company_industry_exposure; PR12"
+        },
+        {
+          "path": "implementation/tests/test_macro_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "G05",
+      "group": "G",
+      "name": "Liquidity",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "FRED/ALFRED dated parser와 scalar snapshot 계산 재사용 가능. historical transformed series/chart 계약 없음. real ALFRED E2E는 미검증.",
+      "ev": "MAC",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/macro/real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "VintageSeries / produce / company_industry_exposure; PR12"
+        },
+        {
+          "path": "implementation/tests/test_macro_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "G06",
+      "group": "G",
+      "name": "Growth",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "FRED/ALFRED dated parser와 scalar snapshot 계산 재사용 가능. historical transformed series/chart 계약 없음. real ALFRED E2E는 미검증.",
+      "ev": "MAC",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/macro/real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "VintageSeries / produce / company_industry_exposure; PR12"
+        },
+        {
+          "path": "implementation/tests/test_macro_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "G07",
+      "group": "G",
+      "name": "Probability / confidence",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "상태/quality 라벨은 probability/calibrated confidence가 아님. 해당 계산·시계열·계약 없음.",
+      "ev": "MAC",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/macro/real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "VintageSeries / produce / company_industry_exposure; PR12"
+        },
+        {
+          "path": "implementation/tests/test_macro_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "G08",
+      "group": "G",
+      "name": "Sector impact",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "company_industry_exposure가 PolicyBlocked. trial blocker/미제공 계약과 테스트만 존재. 승인된 계수/sector impact 계산 없음.",
+      "ev": "MAC,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/macro/real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "VintageSeries / produce / company_industry_exposure; PR12"
+        },
+        {
+          "path": "implementation/tests/test_macro_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "H01",
+      "group": "H",
+      "name": "QGV ranking",
+      "c": [
+        "P",
+        "I",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "R",
+        "R",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "보존 research ranking·snapshot refs 있음. Q/G 기반 provisional 의미 및 tie 한계 유지. UI scalar list; research publication blocked.",
+      "ev": "LB,QGV,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "H02",
+      "group": "H",
+      "name": "Market-cap rank",
+      "c": [
+        "R",
+        "R",
+        "R",
+        "H",
+        "P"
+      ],
+      "t": [
+        "R",
+        "R",
+        "R",
+        "P",
+        "P"
+      ],
+      "gap": "Track A 고정 기준일 500개 순위 실자료 있음. 최신 순위가 아니며 chart/비교 화면은 없음. PR Web 기업목록에서 scalar 표시.",
+      "ev": "UNIV,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/contracts/universe.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "canonical UniverseMember/UniverseSnapshot + universe/engine.py; PR Web repository_bundle에서 frozen 500 rank 재사용"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "H03",
+      "group": "H",
+      "name": "Price / daily return",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "P",
+        "P"
+      ],
+      "gap": "가격점은 있음. Leaderboard row에 최신 price/daily return 생산 연결 없음; Web daily_move 슬롯과 backend 불일치.",
+      "ev": "MKT,LB,ADAPT,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "parse_chart / parse_bars / pit_bar / to_price_point; lines 20–99"
+        },
+        {
+          "path": "implementation/tests/test_raw_and_providers.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/producers/adapters.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "WEB_READS / SECTION_COMPATIBILITY; serializer != complete chart contract"
+        },
+        {
+          "path": "implementation/tests/test_producer_infrastructure.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "H04",
+      "group": "H",
+      "name": "Target prices",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "P",
+        "P"
+      ],
+      "gap": "화면 generic scalar 슬롯은 존재하나 해당 값 생성·공급되지 않음. null/미제공 표시를 구현 완료로 계산하지 않음.",
+      "ev": "CONS,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "H05",
+      "group": "H",
+      "name": "Consensus",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "P",
+        "P"
+      ],
+      "gap": "화면 generic scalar 슬롯은 존재하나 해당 값 생성·공급되지 않음. null/미제공 표시를 구현 완료로 계산하지 않음.",
+      "ev": "CONS,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "H06",
+      "group": "H",
+      "name": "Scenario targets",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "P",
+        "P"
+      ],
+      "gap": "화면 generic scalar 슬롯은 존재하나 해당 값 생성·공급되지 않음. null/미제공 표시를 구현 완료로 계산하지 않음.",
+      "ev": "CONS,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "H07",
+      "group": "H",
+      "name": "Historical rank",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "R",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "3개 날짜 snapshot을 history product query/순위 변화 chart로 연결하는 계층 없음.",
+      "ev": "LB,RECORD",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/track_record.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "decision/outcome record primitives; validation/records.py 병존. no chart aggregation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "H08",
+      "group": "H",
+      "name": "Company comparison",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "S"
+      ],
+      "gap": "단일 기업 snapshot 재사용 가능. 비교선택·동일기준 metric alignment·peer/회사 비교 renderer 없음.",
+      "ev": "QGV,LB,UI",
+      "scope": "USER_CORE",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/analysis.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "AnalysisEngine.analyze; raw_map.py 57–85 MOS/reverse DCF proxy; scoring.py production_v_score 126–128; PR10 persisted records"
+        },
+        {
+          "path": "implementation/tests/test_qgv_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/leaderboard.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "LeaderboardEngine.build; PR14 producer/export"
+        },
+        {
+          "path": "implementation/tests/test_leaderboard_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/product/web_assets/app.js",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "summaryFor 279–281; portfolio 305–308; leaderboard 310–314; render_app.py 131–148"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I01",
+      "group": "I",
+      "name": "Portfolio scenario value range",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "Portfolio Spec 시나리오별 가치범위 요구. 기업별 scenario target·portfolio aggregate 계산·계약 없음.",
+      "ev": "PF,SPEC_P",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/portfolio.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "PortfolioEngine.from_input / official_v11 / evaluate"
+        },
+        {
+          "path": "implementation/tests/test_generic_portfolio_input.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": "회사별 비중·scenario 조건, 주요 기여/손실 기업."
+    },
+    {
+      "id": "I02",
+      "group": "I",
+      "name": "개별 보유종목 return curve",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "가격 primitive가 개별 종목의 배당/비용 반영 wealth series를 제공하지 않음.",
+      "ev": "SPEC_S,SIM",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I03",
+      "group": "I",
+      "name": "보유종목 평균 curve",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "완전한 holding curve와 시점별 유형 membership·평균 집계·계약 없음.",
+      "ev": "SPEC_S,SIM",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I04",
+      "group": "I",
+      "name": "기업 유형별 평균 curve",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "완전한 holding curve와 시점별 유형 membership·평균 집계·계약 없음.",
+      "ev": "SPEC_S,SIM",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I05",
+      "group": "I",
+      "name": "Top500 Universe return curve",
+      "c": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "PIT Universe membership은 존재. 해당 universe의 total-return benchmark path는 없음.",
+      "ev": "SPEC_S,SIM,UNIV",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/contracts/universe.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "canonical UniverseMember/UniverseSnapshot + universe/engine.py; PR Web repository_bundle에서 frozen 500 rank 재사용"
+        },
+        {
+          "path": "implementation/tests/test_web_mvp.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I06",
+      "group": "I",
+      "name": "공통 시작값 정규화·series on/off",
+      "c": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "초기자산 compounding 일부. 다중 curve 공통기준 alignment·series toggle UI 없음.",
+      "ev": "SPEC_S,SIM,EVL",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        },
+        {
+          "path": "implementation/src/investment_system/evl/execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "execute_path / evaluate_execution; PR4 lineage in PR40"
+        },
+        {
+          "path": "implementation/tests/test_evl_c6_execution.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": "공통 시작값·개별 series toggle·zoom."
+    },
+    {
+      "id": "I07",
+      "group": "I",
+      "name": "Growth/Quality/Momentum 중 최소 2개 비교",
+      "c": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "t": [
+        "S",
+        "S",
+        "S",
+        "H",
+        "S"
+      ],
+      "gap": "Simulation Spec §7 요구. 실제 named index source·TR series·비교 계약 없음.",
+      "ev": "SPEC_S,SIM",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "QGV Simulation · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        },
+        {
+          "path": "implementation/src/investment_system/qgv/simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "SimulationEngine.run; validation/engine.py"
+        },
+        {
+          "path": "implementation/tests/test_pit_simulation.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I08",
+      "group": "I",
+      "name": "Macro Risk pillar history",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "S"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "S"
+      ],
+      "gap": "FRED BAMLH0A0HYM2 raw parser/latest scalar 존재. PIT chart history·unit/series contract·renderer 없음.",
+      "ev": "MAC",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/macro/real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "VintageSeries / produce / company_industry_exposure; PR12"
+        },
+        {
+          "path": "implementation/tests/test_macro_real_producer.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I09",
+      "group": "I",
+      "name": "Company QGV revision / outcome timeline",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "immutable record/outcome primitive는 존재. history query·timeline aggregation·plot 미완성.",
+      "ev": "RECORD,SPEC_R",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/track_record.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "decision/outcome record primitives; validation/records.py 병존. no chart aggregation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": "Q/G/V 변화 vs 매출/EPS/FCF/ROIC 실현과 수익률, Key Driver 실현상태."
+    },
+    {
+      "id": "I10",
+      "group": "I",
+      "name": "Portfolio decision history",
+      "c": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "P",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "immutable record/outcome primitive는 존재. history query·timeline aggregation·plot 미완성.",
+      "ev": "RECORD,SPEC_R",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/track_record.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "decision/outcome record primitives; validation/records.py 병존. no chart aggregation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I11",
+      "group": "I",
+      "name": "QGV version별 성과·표본수",
+      "c": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "기록 payload/외부 supplied outcome metric 슬롯만 존재. 해당 specialized 집계/calibration/비교 계산 없음. EVL 연구 calibration은 QGV scenario calibration의 대체 아님.",
+      "ev": "RECORD,SPEC_R",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/track_record.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "decision/outcome record primitives; validation/records.py 병존. no chart aggregation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I12",
+      "group": "I",
+      "name": "Scenario calibration",
+      "c": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "기록 payload/외부 supplied outcome metric 슬롯만 존재. 해당 specialized 집계/calibration/비교 계산 없음. EVL 연구 calibration은 QGV scenario calibration의 대체 아님.",
+      "ev": "RECORD,SPEC_R",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/track_record.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "decision/outcome record primitives; validation/records.py 병존. no chart aggregation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I13",
+      "group": "I",
+      "name": "Confidence calibration",
+      "c": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "기록 payload/외부 supplied outcome metric 슬롯만 존재. 해당 specialized 집계/calibration/비교 계산 없음. EVL 연구 calibration은 QGV scenario calibration의 대체 아님.",
+      "ev": "RECORD,SPEC_R",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/track_record.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "decision/outcome record primitives; validation/records.py 병존. no chart aggregation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I14",
+      "group": "I",
+      "name": "Leaderboard cohort outcome",
+      "c": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "기록 payload/외부 supplied outcome metric 슬롯만 존재. 해당 specialized 집계/calibration/비교 계산 없음. EVL 연구 calibration은 QGV scenario calibration의 대체 아님.",
+      "ev": "RECORD,SPEC_R",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/track_record.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "decision/outcome record primitives; validation/records.py 병존. no chart aggregation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I15",
+      "group": "I",
+      "name": "Simulation vs Forward 비교",
+      "c": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "P"
+      ],
+      "t": [
+        "P",
+        "S",
+        "P",
+        "H",
+        "P"
+      ],
+      "gap": "기록 payload/외부 supplied outcome metric 슬롯만 존재. 해당 specialized 집계/calibration/비교 계산 없음. EVL 연구 calibration은 QGV scenario calibration의 대체 아님.",
+      "ev": "RECORD,SPEC_R",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/qgv/track_record.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "decision/outcome record primitives; validation/records.py 병존. no chart aggregation"
+        },
+        {
+          "path": "QGV Track Record · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Spec evidence; not implementation proof"
+        }
+      ],
+      "latest_note": "기존 감사 판정 유지. 새 코드가 canonical에 반영된 것은 아닙니다.",
+      "latest_state": "BASELINE_AUDIT",
+      "details": ""
+    },
+    {
+      "id": "I16",
+      "group": "I",
+      "name": "RIG News Network / Discovery",
+      "c": [
+        "P",
+        "I",
+        "R",
+        "R",
+        "P"
+      ],
+      "t": [
+        "P",
+        "I",
+        "R",
+        "R",
+        "P"
+      ],
+      "gap": "실제 SVG 관계망·legend·evidence·zoom/pan/drag/filter 존재. fixture 기반 software UI 검증; 전체 real news 서비스 운영 완료 아님.",
+      "ev": "RIG",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/rig/network/render.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "render_page 및 rig/discovery/present.py impact_svg; canonical implemented"
+        },
+        {
+          "path": "implementation/tests/test_rig_p1_network.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 RIG SVG renderer 존재. 실뉴스 서비스 전체 운영 완료와는 구분.",
+      "latest_state": "CANONICAL_RENDERER_EXISTS",
+      "details": ""
+    },
+    {
+      "id": "I17",
+      "group": "I",
+      "name": "RIG Potential Impact Path",
+      "c": [
+        "P",
+        "I",
+        "R",
+        "R",
+        "P"
+      ],
+      "t": [
+        "P",
+        "I",
+        "R",
+        "R",
+        "P"
+      ],
+      "gap": "impact_svg의 점선 잠재 영향 경로 renderer와 static 검증 존재. 실제 경제 영향 확률/강도 계산 완료를 의미하지 않음.",
+      "ev": "RIG",
+      "scope": "REPOSITORY_SPEC",
+      "evidence": [
+        {
+          "path": "implementation/src/investment_system/rig/network/render.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "render_page 및 rig/discovery/present.py impact_svg; canonical implemented"
+        },
+        {
+          "path": "implementation/tests/test_rig_p1_network.py",
+          "sha": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+          "note": "Related test scope; not full chart validation"
+        }
+      ],
+      "latest_note": "기존 RIG SVG renderer 존재. 실뉴스 서비스 전체 운영 완료와는 구분.",
+      "latest_state": "CANONICAL_RENDERER_EXISTS",
+      "details": ""
+    },
+    {
+      "id": "J01",
+      "group": "J",
+      "name": "Portfolio QGV 평균·분포",
+      "scope": "REPOSITORY_SPEC_ADDITION",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "이번 완전성 점검에서 별도 식별한 UI 요구. 기존 엔진의 해당 전체 계층 coverage는 추가 감사 대상이며 완료로 추정하지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "§13,17의 명시 요구. 문서의 과거 완료 선언을 현재 구현 증거로 쓰지 않음.",
+      "evidence": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "§13,17"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "J02",
+      "group": "J",
+      "name": "Portfolio Confidence 분포",
+      "scope": "REPOSITORY_SPEC_ADDITION",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "이번 완전성 점검에서 별도 식별한 UI 요구. 기존 엔진의 해당 전체 계층 coverage는 추가 감사 대상이며 완료로 추정하지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "§13의 명시 요구. 문서의 과거 완료 선언을 현재 구현 증거로 쓰지 않음.",
+      "evidence": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "§13"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "J03",
+      "group": "J",
+      "name": "Portfolio Valuation / Safety Margin 노출",
+      "scope": "REPOSITORY_SPEC_ADDITION",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "이번 완전성 점검에서 별도 식별한 UI 요구. 기존 엔진의 해당 전체 계층 coverage는 추가 감사 대상이며 완료로 추정하지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "§13,17의 명시 요구. 문서의 과거 완료 선언을 현재 구현 증거로 쓰지 않음.",
+      "evidence": [
+        {
+          "path": "QGV Portfolio · Specification v1.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "§13,17"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "J04",
+      "group": "J",
+      "name": "기업 재평가 Trigger: 변화량·임계값·거리·상태",
+      "scope": "REPOSITORY_SPEC_ADDITION",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "이번 완전성 점검에서 별도 식별한 UI 요구. 기존 엔진의 해당 전체 계층 coverage는 추가 감사 대상이며 완료로 추정하지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "§18,19의 명시 요구. 문서의 과거 완료 선언을 현재 구현 증거로 쓰지 않음.",
+      "evidence": [
+        {
+          "path": "QGV Leaderboard · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "§18,19"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "J05",
+      "group": "J",
+      "name": "Full VMR 비교: Beta·percentile·비정상 움직임",
+      "scope": "REPOSITORY_SPEC_ADDITION",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "이번 완전성 점검에서 별도 식별한 UI 요구. 기존 엔진의 해당 전체 계층 coverage는 추가 감사 대상이며 완료로 추정하지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "§19의 명시 요구. 문서의 과거 완료 선언을 현재 구현 증거로 쓰지 않음.",
+      "evidence": [
+        {
+          "path": "QGV Leaderboard · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "§19"
+        }
+      ],
+      "details": "1D/5D/20D 수익률,20D/60D/1Y 변동성,일간sigma,ATR14%,Beta,변동성percentile,drawdown,기업/산업/시장 및 초과 움직임."
+    },
+    {
+      "id": "J06",
+      "group": "J",
+      "name": "재평가 이벤트 이력·사후 관찰·Calibration",
+      "scope": "REPOSITORY_SPEC_ADDITION",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "이번 완전성 점검에서 별도 식별한 UI 요구. 기존 엔진의 해당 전체 계층 coverage는 추가 감사 대상이며 완료로 추정하지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "§20의 명시 요구. 문서의 과거 완료 선언을 현재 구현 증거로 쓰지 않음.",
+      "evidence": [
+        {
+          "path": "QGV Leaderboard · Specification v1.0.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "§20"
+        }
+      ],
+      "details": "고정 trigger event, QGV 전후, 원인, D+5/D+20/63D/252D 관찰. 자동 승격 금지."
+    },
+    {
+      "id": "J07",
+      "group": "J",
+      "name": "Technical QGV Fusion 결과·원점수 분리",
+      "scope": "REPOSITORY_SPEC_ADDITION",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "이번 완전성 점검에서 별도 식별한 UI 요구. 기존 엔진의 해당 전체 계층 coverage는 추가 감사 대상이며 완료로 추정하지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "§14의 명시 요구. 문서의 과거 완료 선언을 현재 구현 증거로 쓰지 않음.",
+      "evidence": [
+        {
+          "path": "Technical Analysis System · Consolidated Record v0.1.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "§14"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "K01",
+      "group": "K",
+      "name": "8개 거시 축의 수준·방향·모멘텀·surprise·stress·confidence",
+      "scope": "CANDIDATE_SPEC",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "Macro v0.1.4 Candidate 확장. 기본 확정 사양·수치 정책·구현 완료로 승격하지 않음.",
+      "latest_state": "CANDIDATE_SPEC_ONLY",
+      "latest_note": "별도 후보 설계 범위. 기존81개 완료율 분모에서 제외.",
+      "evidence": [
+        {
+          "path": "Macro System · Latest Consolidated Record v0.1.4 Candidate.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Candidate extension"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "K02",
+      "group": "K",
+      "name": "가변 Macro scenario 경로·분포",
+      "scope": "CANDIDATE_SPEC",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "Macro v0.1.4 Candidate 확장. 기본 확정 사양·수치 정책·구현 완료로 승격하지 않음.",
+      "latest_state": "CANDIDATE_SPEC_ONLY",
+      "latest_note": "별도 후보 설계 범위. 기존81개 완료율 분모에서 제외.",
+      "evidence": [
+        {
+          "path": "Macro System · Latest Consolidated Record v0.1.4 Candidate.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Candidate extension"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "K03",
+      "group": "K",
+      "name": "Factor→경제 경로→산업→기업→Q/G/V 전달",
+      "scope": "CANDIDATE_SPEC",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "Macro v0.1.4 Candidate 확장. 기본 확정 사양·수치 정책·구현 완료로 승격하지 않음.",
+      "latest_state": "CANDIDATE_SPEC_ONLY",
+      "latest_note": "별도 후보 설계 범위. 기존81개 완료율 분모에서 제외.",
+      "evidence": [
+        {
+          "path": "Macro System · Latest Consolidated Record v0.1.4 Candidate.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Candidate extension"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "K04",
+      "group": "K",
+      "name": "구조적·실증적·시장내재·이벤트 노출 비교",
+      "scope": "CANDIDATE_SPEC",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "Macro v0.1.4 Candidate 확장. 기본 확정 사양·수치 정책·구현 완료로 승격하지 않음.",
+      "latest_state": "CANDIDATE_SPEC_ONLY",
+      "latest_note": "별도 후보 설계 범위. 기존81개 완료율 분모에서 제외.",
+      "evidence": [
+        {
+          "path": "Macro System · Latest Consolidated Record v0.1.4 Candidate.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Candidate extension"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "K05",
+      "group": "K",
+      "name": "QGV base/context·Technical base/조건부 확률 비교",
+      "scope": "CANDIDATE_SPEC",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "Macro v0.1.4 Candidate 확장. 기본 확정 사양·수치 정책·구현 완료로 승격하지 않음.",
+      "latest_state": "CANDIDATE_SPEC_ONLY",
+      "latest_note": "별도 후보 설계 범위. 기존81개 완료율 분모에서 제외.",
+      "evidence": [
+        {
+          "path": "Macro System · Latest Consolidated Record v0.1.4 Candidate.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Candidate extension"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "K06",
+      "group": "K",
+      "name": "Portfolio 거시 요인 집중·위험 문맥",
+      "scope": "CANDIDATE_SPEC",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "Macro v0.1.4 Candidate 확장. 기본 확정 사양·수치 정책·구현 완료로 승격하지 않음.",
+      "latest_state": "CANDIDATE_SPEC_ONLY",
+      "latest_note": "별도 후보 설계 범위. 기존81개 완료율 분모에서 제외.",
+      "evidence": [
+        {
+          "path": "Macro System · Latest Consolidated Record v0.1.4 Candidate.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Candidate extension"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "K07",
+      "group": "K",
+      "name": "역사적·가상·Reverse stress 영향·기여도",
+      "scope": "CANDIDATE_SPEC",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "Macro v0.1.4 Candidate 확장. 기본 확정 사양·수치 정책·구현 완료로 승격하지 않음.",
+      "latest_state": "CANDIDATE_SPEC_ONLY",
+      "latest_note": "별도 후보 설계 범위. 기존81개 완료율 분모에서 제외.",
+      "evidence": [
+        {
+          "path": "Macro System · Latest Consolidated Record v0.1.4 Candidate.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Candidate extension"
+        }
+      ],
+      "details": ""
+    },
+    {
+      "id": "K08",
+      "group": "K",
+      "name": "Macro ablation·attribution·calibration·forward 비교",
+      "scope": "CANDIDATE_SPEC",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "Macro v0.1.4 Candidate 확장. 기본 확정 사양·수치 정책·구현 완료로 승격하지 않음.",
+      "latest_state": "CANDIDATE_SPEC_ONLY",
+      "latest_note": "별도 후보 설계 범위. 기존81개 완료율 분모에서 제외.",
+      "evidence": [
+        {
+          "path": "Macro System · Latest Consolidated Record v0.1.4 Candidate.md",
+          "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "note": "Candidate extension"
+        }
+      ],
+      "details": ""
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "runner": "actual subprocess CLI smoke; no synthetic source admitted",
+  "pass": 6,
+  "fail": 0,
+  "cases": [
+    {
+      "case": "current_incomplete",
+      "exit_code": 3,
+      "source_inspection": "INCOMPLETE",
+      "open_gates": 6,
+      "production_payload": null
+    },
+    {
+      "case": "fake_filled_no_authority",
+      "exit_code": 0,
+      "source_inspection": "INPUT_COMPLETE_UNAUTHENTICATED",
+      "open_gates": 6,
+      "production_payload": null
+    },
+    {
+      "case": "dropped_constituent",
+      "exit_code": 2,
+      "source_inspection": "INVALID",
+      "open_gates": 6,
+      "production_payload": null
+    },
+    {
+      "case": "duplicate_json_key",
+      "exit_code": 2,
+      "source_inspection": "INVALID",
+      "open_gates": 6,
+      "production_payload": null
+    },
+    {
+      "case": "nonfinite_json",
+      "exit_code": 2,
+      "source_inspection": "INVALID",
+      "open_gates": 6,
+      "production_payload": null
+    },
+    {
+      "case": "missing_pinned_git_baseline",
+      "exit_code": 2,
+      "source_inspection": "INVALID",
+      "fallback": false
+    }
+  ]
+}

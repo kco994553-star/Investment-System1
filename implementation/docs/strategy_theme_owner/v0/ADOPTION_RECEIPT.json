@@ -1,0 +1,158 @@
+{
+  "schema": "target-v0-theme-adoption-receipt/1",
+  "recorded_at_utc": "2026-10-08T12:11:50.338241+00:00",
+  "gate": "A-S3",
+  "full_gate_status": "OPEN_WAIT_DEPENDENCY_COMMON_SECURITY19_ASSIGNMENTS",
+  "source_catalog_subpart_status": "ADOPTED_USER_SOURCE_CATALOG_AND_FULL_SOURCE_ROW_MEMBERSHIP",
+  "source_authority": "USER",
+  "source_version": "v0",
+  "source_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+  "source_merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+  "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+  "catalog": [
+    {
+      "theme_id": "semi_equipment",
+      "label": "반도체 장비"
+    },
+    {
+      "theme_id": "ai_semi",
+      "label": "AI·반도체"
+    },
+    {
+      "theme_id": "big_tech",
+      "label": "Big Tech"
+    },
+    {
+      "theme_id": "other_industrial",
+      "label": "기타산업"
+    }
+  ],
+  "declared_clocks": {
+    "effective_at": "2026-10-08T20:37:00+09:00",
+    "available_at": "2026-10-08T20:37:00+09:00",
+    "adopted_at": "2026-10-08T20:37:00+09:00"
+  },
+  "source_assignments": [
+    {
+      "source_pointer": "/themes/0/holdings/0",
+      "theme_id": "semi_equipment",
+      "theme_label": "반도체 장비",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/0/holdings/1",
+      "theme_id": "semi_equipment",
+      "theme_label": "반도체 장비",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/0/holdings/2",
+      "theme_id": "semi_equipment",
+      "theme_label": "반도체 장비",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/0/holdings/3",
+      "theme_id": "semi_equipment",
+      "theme_label": "반도체 장비",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/0/holdings/4",
+      "theme_id": "semi_equipment",
+      "theme_label": "반도체 장비",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/1/holdings/0",
+      "theme_id": "ai_semi",
+      "theme_label": "AI·반도체",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/1/holdings/1",
+      "theme_id": "ai_semi",
+      "theme_label": "AI·반도체",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/1/holdings/2",
+      "theme_id": "ai_semi",
+      "theme_label": "AI·반도체",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/1/holdings/3",
+      "theme_id": "ai_semi",
+      "theme_label": "AI·반도체",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/1/holdings/4",
+      "theme_id": "ai_semi",
+      "theme_label": "AI·반도체",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/2/holdings/0",
+      "theme_id": "big_tech",
+      "theme_label": "Big Tech",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/2/holdings/1",
+      "theme_id": "big_tech",
+      "theme_label": "Big Tech",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/2/holdings/2",
+      "theme_id": "big_tech",
+      "theme_label": "Big Tech",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/3/holdings/0",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/3/holdings/1",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/3/holdings/2",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/3/holdings/3",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/3/holdings/4",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "security_id": null
+    },
+    {
+      "source_pointer": "/themes/3/holdings/5",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "security_id": null
+    }
+  ],
+  "root_receipt": "implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/ADMITTED_TARGET_ROOT.json",
+  "security_assignments": null,
+  "security_map_status": "0ADMITTED/19UNRESOLVED",
+  "remaining_evidence": "Exact19 reviewed common Security→Theme assignments bound to this admitted source root and map, with immutable revision/provenance/current validity/completeness",
+  "gics_type_overlap_adoption": false,
+  "economic_meaning_or_weights_modified": false,
+  "legacy_catalog_evidence_overwritten": false
+}

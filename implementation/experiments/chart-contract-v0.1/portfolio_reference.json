@@ -1,0 +1,180 @@
+{
+  "snapshot_id": "reference:portfolio-v1.1:2026-09-14",
+  "portfolio_version": "포트폴리오 v1.1 · 2026-09-14",
+  "qgv_version": "NOT_BOUND",
+  "as_of": "2026-10-04T10:49:27.857Z",
+  "source": "canonical b8e39a2: QGV Portfolio Specification v1.1 §2 and OFFICIAL_V11_TARGETS; TARGET REFERENCE ONLY",
+  "weight_basis": "TARGET",
+  "data_kind": "USER_SPEC_REFERENCE",
+  "total_units": 10000,
+  "cash_units": 0,
+  "type_catalog": [
+    "성장",
+    "가치",
+    "배당",
+    "우량",
+    "경기민감",
+    "경기방어",
+    "주도",
+    "테마"
+  ],
+  "classification": {
+    "version": "USER_ALLOCATION_GROUPS_V1.1; TYPES_UNRESOLVED",
+    "source": "QGV Portfolio Specification v1.1 §§2,9; sector mapping from qgv/identifiers.py (not GICS)",
+    "available_at": null
+  },
+  "holdings": [
+    {
+      "holding_id": "reference:company:asml",
+      "security_id": null,
+      "label": "ASML Holding",
+      "weight_units": 900,
+      "industry": "반도체 장비",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:lrcx",
+      "security_id": null,
+      "label": "Lam Research",
+      "weight_units": 600,
+      "industry": "반도체 장비",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:klac",
+      "security_id": null,
+      "label": "KLA Corporation",
+      "weight_units": 550,
+      "industry": "반도체 장비",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:tokyo_electron",
+      "security_id": null,
+      "label": "Tokyo Electron Limited · 시장 식별 미확정",
+      "weight_units": 500,
+      "industry": "반도체 장비",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:hanmi",
+      "security_id": null,
+      "label": "Hanmi Semiconductor",
+      "weight_units": 450,
+      "industry": "반도체 장비",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:nvda",
+      "security_id": null,
+      "label": "NVIDIA Corporation",
+      "weight_units": 800,
+      "industry": "AI·반도체",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:amd",
+      "security_id": null,
+      "label": "Advanced Micro Devices",
+      "weight_units": 500,
+      "industry": "AI·반도체",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:avgo",
+      "security_id": null,
+      "label": "Broadcom",
+      "weight_units": 500,
+      "industry": "AI·반도체",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:qcom",
+      "security_id": null,
+      "label": "Qualcomm",
+      "weight_units": 400,
+      "industry": "AI·반도체",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:intc",
+      "security_id": null,
+      "label": "Intel",
+      "weight_units": 300,
+      "industry": "AI·반도체",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:msft",
+      "security_id": null,
+      "label": "Microsoft",
+      "weight_units": 700,
+      "industry": "Big Tech",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:googl",
+      "security_id": null,
+      "label": "Alphabet",
+      "weight_units": 700,
+      "industry": "Big Tech",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:amzn",
+      "security_id": null,
+      "label": "Amazon",
+      "weight_units": 600,
+      "industry": "Big Tech",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:rtx",
+      "security_id": null,
+      "label": "RTX Corporation",
+      "weight_units": 600,
+      "industry": "기타산업",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:stry",
+      "security_id": null,
+      "label": "Stryker",
+      "weight_units": 550,
+      "industry": "기타산업",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:etn",
+      "security_id": null,
+      "label": "Eaton",
+      "weight_units": 500,
+      "industry": "기타산업",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:hubb",
+      "security_id": null,
+      "label": "Hubbell",
+      "weight_units": 350,
+      "industry": "기타산업",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:gev",
+      "security_id": null,
+      "label": "GE Vernova",
+      "weight_units": 300,
+      "industry": "기타산업",
+      "types": null
+    },
+    {
+      "holding_id": "reference:company:rok",
+      "security_id": null,
+      "label": "Rockwell Automation",
+      "weight_units": 200,
+      "industry": "기타산업",
+      "types": null
+    }
+  ]
+}

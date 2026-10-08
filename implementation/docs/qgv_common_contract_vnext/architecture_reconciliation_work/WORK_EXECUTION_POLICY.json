@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "record_kind": "EXPLICIT_USER_WORK_EXECUTION_POLICY_NOT_DOMAIN_POLICY_APPROVAL",
+  "authority": "Current explicit user instruction in this Work",
+  "recorded_at_kst": "2026-10-05T13:06:16.236985+09:00",
+  "user_text": "앞으로 이 Work는 QGV 재감사 자동진행과 동일한 실행 정책을 사용한다. 최신 GitHub·Global/Scoped Handoff·Decision/Approval evidence를 fresh-read하고, Q/G/V scoring architecture reconciliation, Missing-Data, requiredness/applicability, method/version identity, G 3–5Y, EPS→FCF, V normalization/metadata, Composite, WeightOverride를 계속 수렴시켜라. D1/D2의 감사·설계·반례검증·score-neutral test/evidence는 사용자에게 묻지 말고 자동 진행하고, 실제 production semantics 변경·numeric policy·method replacement·WeightOverride production wiring·legacy migration·PIT/Frozen/Holdout/Official/canonical merge만 D3로 사용자에게 올려라. 특히 V는 기존 Q/G 구조와 최대한 일관되게 설계하고 불일치를 KEEP/ALIGN/CHANGE로 분류하라. 한 D3가 막혀도 독립 D1/D2 작업은 계속하라.",
+  "d1_d2": [
+    "fresh_source_audit",
+    "inactive_contract_design",
+    "source_method_profile_mapping",
+    "counterexample_and_adversarial_checks",
+    "score_neutral_tests",
+    "compatibility_evidence",
+    "scoped_handoff"
+  ],
+  "d3": [
+    "actual_production_semantics",
+    "numeric_policy",
+    "actual_method_replacement",
+    "WeightOverride_production_wiring",
+    "calculation_or_legacy_migration",
+    "PIT_Frozen_Holdout_Official_change",
+    "canonical_or_PR_merge"
+  ],
+  "approval_preservation": {
+    "M1_M5": "APPROVED_PRINCIPLES_ONLY",
+    "B4_B7": "EXPLICIT_USER_APPROVED_PRINCIPLES_ONLY_OWNER_RECORD_PUBLICATION_PENDING_AT_INTAKE",
+    "B1": "MORE_EVIDENCE_REQUIRED",
+    "B2_B3_B5_B6": "RECOMMENDED_NOT_YET_APPROVED"
+  },
+  "authority_resolution": "This current explicit narrower Work scope prevails over broader Global CDR-015 labels. KEEP/ALIGN/CHANGE are design dispositions, not method/production approval.",
+  "owner_protection": {
+    "branch": "codex/qgv-missing-data-decision-gate-2026-10-05",
+    "input_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "active_lease_token": "qgv-b47-muupb538",
+    "action": "READ_ONLY_NO_SHARED_MUTATION"
+  },
+  "live_automation": {
+    "id": "6ac31fdb7f388191be588ea61f5a2009",
+    "is_enabled": true,
+    "schedule": "BEGIN:VEVENT\nDTSTART:20261005T035711Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+    "conversation_id": "6ac21e38-55f8-83ee-97af-8b9e30c57c11",
+    "prompt_readback_match": true,
+    "schedule_changed": false,
+    "new_automation_created": false,
+    "manual_work_is_scheduler_hop": false
+  },
+  "continuation": {
+    "event_and_state_independent": true,
+    "D3_blocks_only_dependent_path": true,
+    "existing_canary_preserved": true,
+    "actual_scheduler_hops": "0/2_NO_ACCEPTED_REMOTE_HOP_EVIDENCE_AT_INTAKE",
+    "AUTONOMOUS_CONTINUATION": "UNVERIFIED"
+  },
+  "production_semantics_changed": false,
+  "numeric_policies_approved": false
+}

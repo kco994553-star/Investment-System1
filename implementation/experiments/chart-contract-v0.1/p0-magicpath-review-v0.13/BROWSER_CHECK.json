@@ -1,0 +1,55 @@
+{
+  "delivery": "LOCAL_HTTP_MIRROR_OF_EXACT_DOWNLOADED_MAGICPATH_BUILD",
+  "originalDirectBrowserFailure": "ERR_EMPTY_RESPONSE (preserved separately); curl exact HTML/JS/CSS download succeeded",
+  "scope": "FAST_PRESENTATION_ONLY_EXACT_MAGICPATH_BUILD_BROWSER",
+  "componentId": "457764208520613888",
+  "revisionId": "457764208524808192",
+  "url": "https://designs.magicpath.ai/v1/wisely-world-3816",
+  "checkedAt": "2026-10-05T08:05:26.041Z",
+  "result": "PASS",
+  "viewports": [
+    {
+      "width": 1280,
+      "status": "PASS",
+      "checks": [
+        "four-distinct-dimensions",
+        "explicit-sample-target",
+        "exact-source-clock-unit-denominator-provenance",
+        "original-124-subset-font-loaded",
+        "literal-source-svg-and-legend",
+        "eight-type-values-not-available",
+        "no-horizontal-overflow-both-modes",
+        "actual-not-available-with-zero-target-geometry",
+        "keyboard-target-return-no-page-errors"
+      ],
+      "font": {
+        "family": "\"Noto Sans KR\", system-ui, sans-serif",
+        "loaded": true
+      },
+      "pageErrors": []
+    },
+    {
+      "width": 390,
+      "status": "PASS",
+      "checks": [
+        "four-distinct-dimensions",
+        "explicit-sample-target",
+        "exact-source-clock-unit-denominator-provenance",
+        "original-124-subset-font-loaded",
+        "literal-source-svg-and-legend",
+        "eight-type-values-not-available",
+        "no-horizontal-overflow-both-modes",
+        "actual-not-available-with-zero-target-geometry",
+        "keyboard-target-return-no-page-errors"
+      ],
+      "font": {
+        "family": "\"Noto Sans KR\", system-ui, sans-serif",
+        "loaded": true
+      },
+      "pageErrors": []
+    }
+  ],
+  "fullRegressionRun": false,
+  "productionE2E": "NOT_RUN",
+  "financialSemanticsChanged": false
+}

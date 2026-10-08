@@ -1,0 +1,102 @@
+{
+  "kind": "PRESERVED_INITIAL_INDEPENDENT_OBSERVATION",
+  "note": "Captured before current diagnostic repair; initial lease/draft/code-hash wording belongs to the recorded observation. Final disposition and verification are in HANDOFF/VALIDATION_RECEIPT/GATES_AND_GAPS.",
+  "observation": {
+    "artifact_kind": "DIFFERENTIAL_READ_ONLY_SOURCE_REAUDIT_DRAFT",
+    "recorded_at_utc": "2026-10-05T04:17:39.574850+00:00",
+    "heads": {
+      "origin/codex/chart-contract-mcp-api-v0-1": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+      "origin/integration/global-handoff-v1": "b3532a2ebbe95310bbf222937466eb04a0211263",
+      "origin/ccr-41677301-10nj3u": "a013f1c1758642f90a65fe11df69fc234c143a48",
+      "origin/integration/a1-adoption/pr7-entity-metadata": "9626ab06cd2b93cdd250159347cdda5d08f76e03",
+      "origin/codex/qgv-architecture-reconciliation-review-2026-10-05": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "origin/HEAD": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+    },
+    "old_chart_checkpoint": "74df6784071137bdca911964af94c8e1b6928c92",
+    "new_chart_head": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+    "old_global_checkpoint": "b5b4ca67fce635a5bb2a207e96bcf5399e17deb9",
+    "new_global_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+    "scope": "Differential fresh read of source refs and owner routing; broad prior982blob scan not repeated",
+    "material_delta": [
+      "CDR015 delegation recorded; responsible owners self-decide D1/D2 with evidence",
+      "CDR016 explicitly routes A-S1→Portfolio/A-S2→Identity/A-S3→Portfolio-Classification and explicitly says Decimal100% does not establish authoritative root",
+      "CDR017 reinforces owner-consumable packet and acceptance/receipt/re-consumption loop",
+      "Current Chart v07 records newer13:01:31KST scoped policy/protected boundary; authority delegation is not an admission receipt",
+      "New QGV architecture ref is read-only; compared source/Personal objects unchanged and no new Portfolio/Identity owner ref identified by main fresh inventory"
+    ],
+    "source_gate_statuses": {
+      "A-S1": "OWNER_ACTION_REQUIRED",
+      "A-S2": "OWNER_ACTION_REQUIRED",
+      "A-S3": "OWNER_ACTION_REQUIRED"
+    },
+    "closed_source_gates": 0,
+    "source_gates_remaining": 3,
+    "owner_routing": {
+      "A-S1": "Portfolio/Target source owner",
+      "A-S2": "Identity; Target owner root-row relation",
+      "A-S3": "Portfolio/Classification"
+    },
+    "source_objects": {
+      "QGV Portfolio · Specification v1.1.md": {
+        "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+        "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+        "unchanged_in_compared_current_refs": true
+      },
+      "implementation/src/investment_system/qgv/portfolio.py": {
+        "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+        "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+        "unchanged_in_compared_current_refs": true
+      },
+      "implementation/src/investment_system/qgv/identifiers.py": {
+        "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+        "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+        "unchanged_in_compared_current_refs": true
+      },
+      "implementation/src/investment_system/contracts/global_universe.py": {
+        "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8",
+        "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+        "unchanged_in_compared_current_refs": true
+      },
+      "implementation/src/investment_system/personal/security.py": {
+        "git_blob": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+        "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0",
+        "unchanged_in_compared_current_refs": true
+      },
+      "implementation/src/investment_system/personal/portfolio.py": {
+        "git_blob": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+        "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+        "unchanged_in_compared_current_refs": true
+      },
+      "Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md": {
+        "git_blob": "f4988e024e90098484ab3462cabe1710b5c6510c",
+        "sha256": "64bb27df6dc389477b219a63c276e6ee71041773845017229f3d6043a010287c",
+        "unchanged_in_compared_current_refs": true
+      }
+    },
+    "existing_request_state": {
+      "root_return_field_count": 15,
+      "root_nonnull": 0,
+      "constituents": 19,
+      "security_nonnull": 0,
+      "taxonomy_nonnull": 0,
+      "assignment_nonnull": 0
+    },
+    "source_admission_conclusion": "No adopted current root/full19 common Security relation/root-bound Theme catalog assignment receipt observed in the specifically inspected scoped owner/routing paths. Do not assert universal registry/data absence; differently shaped or unpublished data is outside this differential check.",
+    "preflight_review": {
+      "tool_sha256": "ca3a8bf5af7e2618a6e362b38d45d6ac59a2b6c5de9dda5bcb3423f89f90d6c3",
+      "review_mode": "Read-only code review, not new29/9 test execution",
+      "current_unit_tests": "29PASS as reported by main fresh validation; not rerun by source agent",
+      "v07_independent_probes": "9PASS retained prior evidence; not claimed fresh",
+      "new_material_source_numeric_join_authentication_defect": "NOT_FOUND_IN_THIS_REVIEW",
+      "trust_boundary": "CLI reads fixed SOURCE_COMMIT request; typed immutable fields and source blob/SHA256 checks reject mutation before numeric replay. inspect_packet itself is an internal diagnostic accepting a baseline parameter; never production admission. Complete-shaped claims intentionally remain INPUT_COMPLETE_UNAUTHENTICATED,6OPEN,nullpayload.",
+      "authentication_limit": "Adopted owner receipt route and subject hash preimage remain outside diagnostic tool scope; missing owner evidence is dependency, not a repairable verifier success path.",
+      "concrete_reproducibility_gap": "v07 archive uses hardcoded old checkout which main verified still exists; it can select that different checkout instead of current requested repository and its output remains HERE/nine_preflight_probe_results.json inside current repository despite no-repository-write claim. Main prepares additive --repo/--output portable successor with outside-repository output enforcement; preserve archive/history.",
+      "independent_code_change_by_source_agent": false
+    },
+    "d1_d2_work": "Read/pin and diagnose owner receipts; minimal mechanical Theme version/provenance design within owner-adopted root/security. Root main portable replay successor is actionable independent Chart work.",
+    "new_chart_d3": false,
+    "production_payload_adopted": false,
+    "repository_changes_by_source_agent": false,
+    "next_exact_source_step": "PIW routes machine-checkable packets to named source owners; consume actual owner receipt/ref using existing structural diagnostic and separate adopted authentication, rejudge A-S1/S2/S3; no invented root/security/dates/catalog activation."
+  }
+}

@@ -1,0 +1,506 @@
+{
+  "schema": "FPIA_RECORDED_DEFECT_CANDIDATE_TRIAGE/1",
+  "subject": "e3619846d77176d280321826ecd0d8f2c8485a30",
+  "external_verifier": "7215a9f60ad7128b1748f405051eac684298614f",
+  "source_inventory_ref": "59cc73a005196f73e92af8c47c594a9da8341a6c",
+  "source_inventory_path": "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/INVENTORY.json",
+  "f1_f25_remaining_candidate_implementation_blockers": 0,
+  "f1_f25_later_items": 25,
+  "separate_fpia_acceptance_blocker": "Existing applicability preflight BLOCKED; exact FPIA audit and Frozen integration acceptance NOT_RUN.",
+  "acceptance_blocking_fixed_rules": [
+    "F13",
+    "F14",
+    "F23"
+  ],
+  "rules_status": "These conservative rules are existing fixes, not open recorded defects.",
+  "decision_needed_if_formal_fpia_acceptance_required": "Current four-PR subset cannot receive authenticated OUTSIDE_SCOPE or FPIA_PASS under unchanged existing verifier. An exemption or scope-method change would be a new acceptance decision, beyond recorded F1-F25 repairs.",
+  "items": [
+    {
+      "id": "F1",
+      "title": "Literal executable source filenames with spaces or non-code suffix missed AC-32.spoof",
+      "recorded_fix_ref": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_UNFIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F2",
+      "title": "AC-32 workflow identity bypasses from literal expressions, confusables and invisible characters",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F3",
+      "title": "AC-32 claimed literal invocation and reached-source bypasses",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F4",
+      "title": "Explicit job and service container declarations missing external inventory",
+      "recorded_fix_ref": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_UNFIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F5",
+      "title": "Environment paths and OS user altered result hash or produced false FAIL",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F6",
+      "title": "Output verifier/run metadata and output handling gaps",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F7",
+      "title": "Fetch rejection parsing confused ref text or Unicode line separators",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F8",
+      "title": "AC-04 classification omitted new Track C namespace paths and summary printed empty details",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F9",
+      "title": "Verifier provenance inventory omitted files outside the primary modules",
+      "recorded_fix_ref": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F10",
+      "title": "Installed PyYAML dependency broke existing native owner CI",
+      "recorded_fix_ref": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F11",
+      "title": "Compound evidence identity accepted invalid GitHub owner names",
+      "recorded_fix_ref": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "D002_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F12",
+      "title": "D002 implementation introduced threshold/SHA literal self-constraint failures",
+      "recorded_fix_ref": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "D002_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F13",
+      "title": "Applicability incorrectly treated relative imports and unresolved dynamic calls as outside scope",
+      "recorded_fix_ref": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "DELIBERATE_FIXED_FAIL_CLOSED_POLICY",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F14",
+      "title": "Applicability skipped .pyw and extensionless executable source",
+      "recorded_fix_ref": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "DELIBERATE_FIXED_FAIL_CLOSED_POLICY",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F15",
+      "title": "Workflow selected old subject checkout that could lack the FPIA tooling",
+      "recorded_fix_ref": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F16",
+      "title": "Workflow-source observer rejected separate workflow checkout or confused actual subject identity",
+      "recorded_fix_ref": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F17",
+      "title": "PR47 native CI retained a stale integration-branch workflow regression",
+      "recorded_fix_ref": "7215a9f60ad7128b1748f405051eac684298614f",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR46": "D006_NEW_UTILITY_NOT_PRESENT; this later regression not introduced",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F18",
+      "title": "Shallow/incomplete Git inputs or fetch refusals could yield determinate statuses",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F19",
+      "title": "Frozen tools canonical premise trusted caller-local tracking ref",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F20",
+      "title": "A_V-type content without authenticated V ancestry was incorrectly not applicable",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F21",
+      "title": "Frozen tool stdout/stderr evidence was truncated instead of retained verbatim",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F22",
+      "title": "AC-32 spoof attribution and generic job-name collision scope were incorrect",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F23",
+      "title": "PR scheduling and subject/register/artifact collection omitted intended audit coverage",
+      "recorded_fix_ref": "50fa7f49080b3fa3d1808f9745d8f97770d1c9df",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "EARLIER_PR_TRIGGER_REPAIR_PRESENT; branch-prefix limitation retained",
+        "PR46": "EARLIER_PR_TRIGGER_REPAIR_PRESENT; branch-prefix limitation retained",
+        "PR47": "RECORDED_FIXED branch-independent applicability at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "DELIBERATE_FIXED_FAIL_CLOSED_POLICY",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F24",
+      "title": "Historical Frozen byte-protected-only scope was not explicitly disclosed",
+      "recorded_fix_ref": "465354a6479810a175fbefe32ef2c993b1e214c2",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    },
+    {
+      "id": "F25",
+      "title": "Authority transport environment disclosure was missing",
+      "recorded_fix_ref": "babf0a41dd8a740190743ee1e27289b17d8118d3",
+      "fix_is_ancestor_of_external_verifier": true,
+      "candidate_triage": "LATER",
+      "candidate_implementation_defect_reproduced": false,
+      "reason": "Candidate contains no FPIA implementation or workflow; the externally executed existing fixed verifier blocked applicability conservatively rather than reproducing this recorded defect.",
+      "remaining_tasks_from_published_inventory": [],
+      "recorded_fix_status": "FIXED_RECORDED; PRESENT_ON_CURRENT_STACKED_CANDIDATE",
+      "recorded_status_by_current_pr_head": {
+        "PR42": "RECORDED_FIXED at11d2f25e",
+        "PR46": "RECORDED_FIXED at6fea6c7f",
+        "PR47": "RECORDED_FIXED at7215a9f6"
+      },
+      "candidate_status": "LATER",
+      "blocking_behavior_class": "AFFECTED_VERIFIER_IMPLEMENTATION_ABSENT_FROM_CANDIDATE",
+      "candidate_implementation_status": "NO_REPRODUCED_RECORDED_DEFECT"
+    }
+  ],
+  "source_changes": false,
+  "remote_mutations": false,
+  "formal_acceptance_blocker_count": 1,
+  "formal_acceptance_blocker": "FPIA applicability scope could not be established by unchanged existing rules; audit and acceptance NOT_RUN.",
+  "applicability_input_head": "e3619846d77176d280321826ecd0d8f2c8485a30",
+  "root_final_head": null,
+  "root_final_head_preflight": "PENDING_FINAL_ROOT_HEAD_FREEZE",
+  "authority_authentication": "PASS",
+  "raw_applicability_authentication_field": "NOT_VERIFIED (unchanged existing tool output)",
+  "applicability_status": "BLOCKED",
+  "fpia_status": "NOT_RUN",
+  "integration_acceptance": "BLOCKED"
+}

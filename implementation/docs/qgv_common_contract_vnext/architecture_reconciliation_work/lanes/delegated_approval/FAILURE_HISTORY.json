@@ -1,0 +1,31 @@
+{
+  "attempts": [
+    {
+      "id": "INITIAL_LOCAL_INPUT_PIN_CHECK",
+      "status": "FAIL",
+      "cause": "apply_patch transport added one trailing LF to fresh text input copies; original Git blob mismatch detected before final publication. Initial weaker 30-check validator output is SUPERSEDED and not counted as final verified pins.",
+      "repair": "Restore exact fetch_file content via separate safely quoted JSON payloads; compare actual bytes against authenticated Git blobs and rebuild every derivative ref/suffix."
+    },
+    {
+      "id": "BULK_EXACT_INPUT_RECOVERY",
+      "status": "TOOL_ERROR",
+      "cause": "One command payload exceeded OS argument length; no input writes occurred.",
+      "repair": "Use individual bounded exact-byte payloads."
+    },
+    {
+      "id": "STRICT_INPUT_CHECK_BEFORE_DERIVATIVE_REBUILD",
+      "status": "EXPECTED_FAIL",
+      "cause": "Strict validator correctly rejected stale pre-recovery Handoff SHA256.",
+      "repair": "Rebuild successor refs and exact original Handoff suffix from recovered input; rerun strict validator."
+    },
+    {
+      "id": "LOCAL_API_COMMIT_IDENTITY",
+      "status": "INITIAL_MISMATCH_REPAIRED",
+      "cause": "API raw commit uses original +0900 offsets and no message trailing LF; initial reconstruction assumed a final LF.",
+      "repair": "Recovered exact original representation; local Git object and API claim commit SHA identical. No ref/history rewrite."
+    }
+  ],
+  "final_result_ref": "VERIFICATION_RESULTS.json",
+  "remote_branch_history_rewrite": false,
+  "automation_preservation_failure": false
+}

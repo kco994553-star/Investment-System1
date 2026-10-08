@@ -1,0 +1,2544 @@
+{
+  "schema_version": "chart-owner-resume-state-v1",
+  "repository": "kco994553-star/Investment-System1",
+  "owner_branch": "codex/chart-contract-mcp-api-v0-1",
+  "chart_pr": 41,
+  "conversation_id": "6ac21ce4-f050-83ec-bfd4-5fa178fc6936",
+  "state_kind": "OWNER_EVIDENCE_ONLY_PRECODE_AUTOMATION_COORDINATION_NOT_PRODUCTION_AUTHORITY",
+  "initialized_at_utc": "2026-10-05T00:31:02Z",
+  "automations_setup_verified": true,
+  "automation_verification_source": "Root created, updated and peeked both enabled tasks in this exact conversation; setup proof is separate from future run completion.",
+  "automations": {
+    "event": {
+      "id": "6ac2eeedb21c81919f04168d69672f0a",
+      "title": "Chart PR 이벤트 재개",
+      "enabled": false,
+      "conversation_id": "6ac21ce4-f050-83ec-bfd4-5fa178fc6936",
+      "selectors": {
+        "pull_requests": [
+          41,
+          17,
+          18,
+          19,
+          34,
+          36,
+          42,
+          44
+        ],
+        "enable_commit_updates": true,
+        "enable_reviews": true,
+        "enable_comments": true,
+        "only_on_merge": false
+      },
+      "current_disposition": "EXTERNALLY_SUPERSEDED_KEEP_PAUSED",
+      "is_enabled": false,
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+      "role": "READ_ONLY_WATCHER",
+      "verified_at_utc": "2026-10-05T10:56:45.810Z"
+    },
+    "ci_followup": {
+      "id": "6ac2ef0621908191909a27af4c91f101",
+      "title": "차트 구현 감사 워크 · CI 후속 확인",
+      "enabled": true,
+      "conversation_id": "6ac21ce4-f050-83ec-bfd4-5fa178fc6936",
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T092850\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+      "setup_first_run": {
+        "observed_by_root": true,
+        "remote_state": "404_NOT_YET_PUBLISHED",
+        "pending_items": 0,
+        "semantic_work_delta": false,
+        "disposition": "READ_ONLY_NOOP",
+        "ci_completion_claim": false
+      },
+      "is_enabled": true,
+      "role": "READ_ONLY_WATCHER",
+      "verified_at_utc": "2026-10-05T10:56:45.810Z"
+    },
+    "main": {
+      "id": "6ac31fca7bb4819183997a9f17f432cb",
+      "title": "차트 구현 감사 워크 · 자동진행",
+      "enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T125654\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+      "conversation_id": "6ac21e38-55f8-83ee-97af-8b9e30c57c11",
+      "global_only_dependency_intake": true,
+      "is_enabled": false,
+      "role": "READ_ONLY_WATCHER",
+      "verified_at_utc": "2026-10-05T10:56:45.810Z"
+    }
+  },
+  "last_observed": {
+    "input_heads": {
+      "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "41": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+      "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "47": "7215a9f60ad7128b1748f405051eac684298614f"
+    },
+    "observed_at_utc": "2026-10-05T10:56:45.810Z",
+    "owner_output_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+    "event_watermarks": {
+      "17": {
+        "issue_comments": {
+          "status": "COMPLETE_FRESH_DISCUSSION_READ",
+          "observed_at_utc": "2026-10-05T10:55:00.036Z",
+          "observed_count": 1,
+          "last_id": 5988265306,
+          "items": [
+            {
+              "id": 5988265306,
+              "updated_at": "2026-10-05T04:44:18Z",
+              "body_sha256": "219c87643e46bf46a2bcaa48453958a64f49347188f217cbb19e8f7f281b2971"
+            }
+          ],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json"
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "18": {
+        "issue_comments": {
+          "status": "COMPLETE_FRESH_DISCUSSION_READ",
+          "observed_at_utc": "2026-10-05T10:55:00.036Z",
+          "observed_count": 2,
+          "last_id": 5988265466,
+          "items": [
+            {
+              "id": 5950833091,
+              "updated_at": "2026-10-02T10:54:13Z",
+              "body_sha256": "e7354fd9eb298954e750257b8fa8f58f5ffec8526587ed566fea2faee841e185"
+            },
+            {
+              "id": 5988265466,
+              "updated_at": "2026-10-05T04:44:19Z",
+              "body_sha256": "b6846638d591437159001865e85bbeb7cfd759e89d9b3252360c40ee7a17f969"
+            }
+          ],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json"
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "19": {
+        "issue_comments": {
+          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
+          "observed_at_utc": "2026-10-05T05:23:14.033Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": [],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "34": {
+        "issue_comments": {
+          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
+          "observed_at_utc": "2026-10-05T05:23:14.033Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": [],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "36": {
+        "issue_comments": {
+          "status": "COMPLETE_FRESH_DISCUSSION_READ",
+          "observed_at_utc": "2026-10-05T10:55:00.036Z",
+          "observed_count": 2,
+          "last_id": 5988663367,
+          "items": [
+            {
+              "id": 5988265604,
+              "updated_at": "2026-10-05T04:44:20Z",
+              "body_sha256": "bdbb491a262fdbda87b1e0258a1381adbf0158ee4808ecce62cf45319fa8e2b1"
+            },
+            {
+              "id": 5988663367,
+              "updated_at": "2026-10-05T05:27:23Z",
+              "body_sha256": "93e749e90beb84d5826af51b8e61a6a5cd677e2c7721810761ce353e4d995f46"
+            }
+          ],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json"
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "41": {
+        "issue_comments": {
+          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
+          "observed_at_utc": "2026-10-05T05:23:14.033Z",
+          "observed_count": 1,
+          "last_id": 5988265763,
+          "items": [
+            {
+              "id": 5988265763,
+              "updated_at": "2026-10-05T04:44:21Z",
+              "body_sha256": "79cab015f3b63869db83e28a5734d3d31cfae07f04aef5d3a54eec8ec8c50d6d"
+            }
+          ],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "42": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 1,
+          "last_id": 5986162506,
+          "items": [
+            {
+              "id": 5986162506,
+              "updated_at": "2026-10-05T00:40:32Z",
+              "body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f"
+            }
+          ]
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "44": {
+        "issue_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "reviews": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        },
+        "review_comments": {
+          "status": "COMPLETE_OBSERVED_ALL_ITEMS_SINGLE_PAGE",
+          "observed_at_utc": "2026-10-05T01:17:25Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": []
+        }
+      },
+      "45": {
+        "issue_comments": {
+          "status": "COMPLETE_BOUNDED_FRESH_OWNER_READ",
+          "observed_at_utc": "2026-10-05T05:23:14.033Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": [],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json"
+        }
+      },
+      "47": {
+        "issue_comments": {
+          "status": "COMPLETE_FRESH_DISCUSSION_READ",
+          "observed_at_utc": "2026-10-05T10:55:00.036Z",
+          "observed_count": 0,
+          "last_id": 0,
+          "items": [],
+          "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json"
+        }
+      }
+    },
+    "global_head": "1596649912554116196c1ad3c1d41797219f5241",
+    "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "global_semantic_refs": [
+      "CDR-015",
+      "CDR-016",
+      "CDR-017",
+      "CDR-021",
+      "CDR-022",
+      "PIWD-011",
+      "PIWD-012",
+      "User D3 Delegated Approval v1.0"
+    ],
+    "round3_ci_runs": [
+      {
+        "id": 37260997662,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "technical-real-producer",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997662"
+      },
+      {
+        "id": 37260997773,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "technical-real-model",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997773"
+      },
+      {
+        "id": 37260997788,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "track-c-fpia",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997788",
+        "status_source": "Prior exact terminal receipt preserved at v0.8"
+      },
+      {
+        "id": 37260997660,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "sec-primary-disclosure",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997660"
+      },
+      {
+        "id": 37260997658,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "us-equity-session",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997658"
+      },
+      {
+        "id": 37260997655,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "qgv-invalidation-binding",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997655"
+      },
+      {
+        "id": 37260997708,
+        "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "name": "p01-research-publication",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "attempt": 1,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997708"
+      }
+    ],
+    "qgv_architecture_head": "2ba29b048c8601145c4a2cca0f85299c07262286",
+    "exact_fpia_terminal": {
+      "pr": 47,
+      "head": "7215a9f60ad7128b1748f405051eac684298614f",
+      "run_id": 37284465900,
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/CI_TERMINAL_RECEIPT.json"
+    },
+    "platform_owner_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "platform_storage_auth_audit_head": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+    "latest_PR46_runs": [
+      {
+        "id": 37267962000,
+        "name": "track-c-fpia",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "in_progress",
+        "conclusion": null,
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000"
+      },
+      {
+        "id": 37267962003,
+        "name": "qgv-invalidation-binding",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962003"
+      },
+      {
+        "id": 37267962024,
+        "name": "us-equity-session",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962024"
+      },
+      {
+        "id": 37267961987,
+        "name": "p01-research-publication",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961987"
+      },
+      {
+        "id": 37267961909,
+        "name": "sec-primary-disclosure",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961909"
+      },
+      {
+        "id": 37267962109,
+        "name": "technical-real-producer",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962109"
+      },
+      {
+        "id": 37267961900,
+        "name": "technical-real-model",
+        "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961900"
+      }
+    ],
+    "latest_PR47_runs": [
+      {
+        "id": 37284465856,
+        "name": "p01-research-publication",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465967,
+        "name": "us-equity-session",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284466007,
+        "name": "technical-real-producer",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465977,
+        "name": "technical-real-model",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465865,
+        "name": "qgv-invalidation-binding",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465941,
+        "name": "sec-primary-disclosure",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465900,
+        "name": "track-c-fpia",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "latest_PR46_runs_note": "Old a3 history preserved; current6fea terminal7/7 hash-verifiedrawPASS v0.12 separately consumed",
+    "effective_policy_ref": {
+      "version": "v1.1",
+      "decision": "CDR-024",
+      "global_head": "1596649912554116196c1ad3c1d41797219f5241",
+      "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "git_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "supersedes_conflicting_historical_policy": true
+    }
+  },
+  "last_processed": {
+    "source_head": "cda174542f1a1ae95345726f308c24b60262c03b",
+    "owner_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+    "processed_at_utc": "2026-10-05T10:56:45.810Z",
+    "run_id": "manual-chart-terminal-policy-2026-10-05T104549543Z",
+    "input_heads": {
+      "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+      "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+      "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+      "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+      "41": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+      "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+      "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "47": "7215a9f60ad7128b1748f405051eac684298614f"
+    },
+    "global_head": "1596649912554116196c1ad3c1d41797219f5241",
+    "status": "V014_EXACT_TERMINAL_AND_ADOPTED_POLICY_CONSUMED_VERIFIED",
+    "evidence_refs": [
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/CI_TERMINAL_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/VALIDATION_RECEIPT.json"
+    ],
+    "ci_terminal_claim": true,
+    "governance_closure": false,
+    "actual_chart_merge_result_fpia": "NOT_RUN"
+  },
+  "pending": [],
+  "readiness": {
+    "scope": "OFFLINE_PREFLIGHT_VERIFIED_PRODUCTION_OWNER_GATED",
+    "lane_a": "IMPLEMENTATION_NOT_READY",
+    "precode_gates_open": [
+      "A-S1",
+      "A-S2",
+      "A-S3",
+      "A-G1",
+      "A-G2",
+      "A-G3"
+    ],
+    "open_count": 6,
+    "closed_count": 0,
+    "lane_b_admitted_symbols": 0,
+    "lane_b_total_symbols": 19,
+    "production_tests": "NOT_RUN",
+    "chart_merge_result_fpia": "NOT_RUN",
+    "qgv_common_contract": "INACTIVE_SPEC_ONLY",
+    "new_chart_d3": false,
+    "preflight_unittest_pass": 33,
+    "preflight_cli_pass": 6,
+    "portable_probe_pass": 9,
+    "portable_optimized_probe_pass": 9,
+    "gate_statuses": {
+      "A-S1": "OWNER_ACTION_REQUIRED",
+      "A-S2": "OWNER_ACTION_REQUIRED",
+      "A-S3": "OWNER_ACTION_REQUIRED",
+      "A-G1": "OWNER_ACTION_REQUIRED",
+      "A-G2": "PARTIALLY_RESOLVED",
+      "A-G3": "PARTIALLY_RESOLVED"
+    },
+    "current_independent_repairs": "IMPLEMENTED_VERIFIED",
+    "production_owner_dependency_count": 6,
+    "fpia_owner_ci": "PR47_EXACT7215_TECHNICAL7_OF7_SUCCESS_RAWPASS_ARTIFACT_DIGEST_VERIFIED; TIER1_TIER2_SKIPPED; GOVERNANCE_OPEN",
+    "fpia_tool_governance": "MAIN_D006_IMPLEMENTED_CURRENT_AUTHORITY_COVERAGE_REVIEW_GIE_ADMISSIBILITY_OWNER_ACTION_REQUIRED",
+    "sample_renderer": "IMPLEMENTED_VERIFIED",
+    "latest_run_metrics": {
+      "sample_delivery_acceptance_closed": 1,
+      "production_requirements_closed": 0,
+      "production_blockers_closed": 0,
+      "new_production_blockers": 0,
+      "lane_a_remaining_blockers": 6,
+      "vertical_slice_progress": "Unchanged verified native SAMPLE reused; new exact CI and adopted authority consumed; production owner gates unchanged",
+      "production_ready_contracts": "NONE_ADMITTED_FOR_CURRENT_TARGET",
+      "frontend_ready_contracts": "EXISTING_VERIFIED_SAMPLE_CONTRACT_AND_NATIVE_REACT_RENDERER",
+      "independent_ready_work_remaining": 0,
+      "quota_blocks_independent_work": false,
+      "D3_A_R": "ADOPTED",
+      "new_D3_R_required": false,
+      "terminal_ci_intakes_closed": 1,
+      "effective_policy_bindings_closed": 1
+    },
+    "actual_chart_merge_result_fpia": "NOT_RUN",
+    "L1_L5": "L1 reference verified/current root+Security+Theme owner-gated; L2 preflight implemented/production absent; L3 Product/Chart projection owner-gated; L4 native MagicPath SAMPLE React IMPLEMENTED_VERIFIED; L5 exact-build SAMPLE browser18/18PASS, productionE2E/actualChartFPIA NOT_RUN",
+    "figma_sample": "EDITABLE_CREATED_STRUCTURAL_PASS_POST_FIX_VISUAL_TOOL_QUOTA_BLOCKED",
+    "magicpath_sample": "NATIVE_EDITABLE_REACT_IMPLEMENTED_VERIFIED_EXACT_BUILD_BROWSER18_OF18"
+  },
+  "lease": {
+    "status": "NONE",
+    "last_run_id": "manual-chart-terminal-policy-2026-10-05T104549543Z",
+    "released_after_verified_publication": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+    "released_at_utc": "2026-10-05T10:56:45.810Z",
+    "reason": "Observed-session terminal/policy publication verified; no READY task remains; production owner dependencies not held under lease",
+    "release_commit_note": "Containing final HEAD resolved via Git metadata"
+  },
+  "publication": {
+    "status": "VERIFIED_SCOPED_EVIDENCE_AND_CURRENT_POLICY",
+    "latest_published_owner_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+    "scoped_output_paths": [
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
+      "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ARCHIVED_RUN_OBSERVATION.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/AUTOMATION_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CLI_EXPECTATION_CORRECTION.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CURRENT_INPUT_DIAGNOSTIC.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DECIMAL_REFERENCE_VERIFY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DIAGNOSTIC_INPUT_PINS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FRESH_GITHUB_READ.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GOVERNANCE_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MALFORMED_JSON_REPAIR_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MARKET_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ORIGINAL_MALFORMED_JSON_FAILURE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_INPUT_HASH_MISMATCH_PROBE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_OPTIMIZED_MISMATCH_PROBE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_NORMAL.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_OPTIMIZED.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/README.md",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/REFERENCE_REPLAY_REPAIR_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/SOURCE_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/WRITE_SET.json",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/replay_preflight_probes.py",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_diagnostic_repairs.py",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_reference_replay_status.py",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/BROWSER_CHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_CALLS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/AUTOMATION_RECHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_CANDLES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_EXISTING_PORTFOLIO.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_LATE_STATUS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DECIMAL_REFERENCE_VERIFY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DOCS_AND_VERSION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_CURRENT_HEAD_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_TERMINAL_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/INDEPENDENT_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/LATE_OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/MAGICPATH_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/NODE_75_PASS.log",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/OPTIONAL_OWNER_DELTA.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_BROWSER_PATH_FAILURE.log",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_EMPTY_CATALOG_FAILURE.log",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.log",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/REVIEW_CLOSURE_PROBES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/WRITE_SET.json",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/baseline-1280.png",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/demo-1280.png",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-1280.png",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-390.png",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/fixture_browser_test.cjs",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/AUTOMATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BROWSER_CHECK.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BUILD_MANIFEST.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/MAGICPATH_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/actual-390.png",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/target-390.png",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/LICENSE-Noto-Sans-KR.txt",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/App.tsx",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.css",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.tsx",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/chartSampleView.ts",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-0.css",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-1.css",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-2.css",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-3.css",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/index.css",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CLI_SMOKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CURRENT_INPUT_DIAGNOSTIC.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/EVENT_STREAMS_OBSERVED.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FINAL_UNITTEST.log",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FRESH_BASELINE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INDEPENDENT_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INITIAL_INPUT_DIAGNOSTIC.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/README.md",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/VALIDATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_review_edges.py",
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md",
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/INDEPENDENT_REVIEW.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/AUTHORITY_ARTIFACT_MANIFEST_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/OWNER_PACKET_CONSISTENCY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_DELTA_EVIDENCE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/EXISTING_CAPABILITY_PINS_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/LANE_B_VERIFY_RECEIPT_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py",
+      "implementation/experiments/chart-contract-v0.1/page.html",
+      "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+      "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/GATES_AND_GAPS.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/AUTOMATION_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/CI_TERMINAL_RECEIPT.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/FAILURE_HISTORY.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/WRITE_SET.json",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/VALIDATION_RECEIPT.json"
+    ],
+    "output_sha256": {
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "dafd0d0eb663171f5b01dbfa8462ae7b37920ae8cdeea4c968e969c8c1998dd2",
+      "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md": "8f63904e26044f22dd42d023a428284a29ec24a6d52cc9e6845831b879337522",
+      "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json": "754a8d97e82af9d2b79fd6bf495d803f85112b3c7cea75666ea794860cfecef0",
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/HANDOFF.md": "05a1ec7f0500ab13f3dcbe8741411daec214a95b028d2c72ad41a63cf4092b30",
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json": "019f36b212ff865b4b3d86077e671166ce1d894d251127d6bda741e3cbe9ff17",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md": "8a297da09ba107dce84c022d269a3cd163525ea86070c9eb3aa6b84880eaf9a4",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md": "178170d313766970182a6f49a5793b946c17928a8a9c78cec7d52b8ca85bac71",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json": "1f1cc6bcfbcfcebbe1566cc4f1974c4c174832e3050a38b0b98e21e1bd322976",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json": "337e4c907e4c0f89375494c68ed850beedbdde748d33af14a15f53f6d131a81b",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt": "c6a0e6303275e1fdc47cc3b182e3faff787a9cea12907be692af37b5633a3844",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ARCHIVED_RUN_OBSERVATION.json": "c04d5e719c4908cc950719c09aaad8815fdb7bf0719a4fa2ed79028c88e50799",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/AUTOMATION_RECHECK.json": "463da11084cfcf5f09ce575092deb1d061d2e2c937207012d594fae2854ba085",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CLI_EXPECTATION_CORRECTION.json": "c74001ad3a04ecf9f15d2cf789400d74171f3aa6990e565d7560db49be275e7a",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/CURRENT_INPUT_DIAGNOSTIC.json": "acebcefa6ae94ba16911dc512682a7180d61b95cabf3d7994c6d02a451c5a7e3",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DECIMAL_REFERENCE_VERIFY.json": "6ac7c963c1b5673c2bf4c94f703175e7a9836dab89c14f4edf201efffa58526c",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/DIAGNOSTIC_INPUT_PINS.json": "3295568f8a03db29a920307a98d3346283d96b9356f470b218465dfa336a21dc",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json": "0d34e29b3186a4b4121f8541d34b478d95ac9302c7409a55f11d790f0e942eb6",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FRESH_GITHUB_READ.json": "8ca7d0f946196512e03f5e972ae5b72232f9a293e8ea869ae0c8c9b02b9913ca",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GATES_AND_GAPS.json": "532227e1c8ea70c9fb8045cd8bb259e789dd7f10a2eca82fae4e8ccfe020556f",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GOVERNANCE_RECHECK.json": "1da5fff339fbfbe002ebf6b6badb2ad586d560e6fd143f7e09fe5c95364ce54e",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md": "c32d2521636b9567407ee653f8e5b4906e8413bf0ce37348cdc7003332f0b64d",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json": "1f2e0c7d6b00fa9145f546c67ebc358af256e5e6a06cf0e130df360116aae24c",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MALFORMED_JSON_REPAIR_RECEIPT.json": "fe4eafd3418775742cc52e6e88063dcc0ec82eb7e2ef945de8d17ac66abe26b4",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/MARKET_RECHECK.json": "59b5ffacf5c9c62805c69f0a766ae6563119658a246bbe8b5b0150b304303317",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/ORIGINAL_MALFORMED_JSON_FAILURE.json": "54e153b53f487067b20fc08b6c6428988e437e2cdb1e5a3e85dfa5f3fcc44b4a",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_INPUT_HASH_MISMATCH_PROBE.json": "fd0774ce1a97e33b3766b99192a06f8f7da9d5aeb2e4890f727157ad49f13352",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_OPTIMIZED_MISMATCH_PROBE.json": "777e2a5aa5c11cc510018abaeaa364be554b302af62b1fa2f36d7ff8473676c5",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_NORMAL.json": "24171aafe04392790229cbd74ea1f6476ff1d1015a0ba8d2c24ef03532bc5adf",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REPLAY_OPTIMIZED.json": "8845051ed4a82d67c1d181623b8f4379880c8b719457ad8f6207761e4c046335",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PORTABLE_REVIEW.json": "d4856fa5def2dc9e78a58895dcf8d0ed31eec5311376c28bd50bf86e1923ff30",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json": "bd5e29ff8c0c3f78e1e4dd740dd5ea825f8b96c59da3eab4cf18ddac5a02740f",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/README.md": "fb9a6913dacc65a401a95661ef5049b77958544762239e11ca13ca053a93a65d",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/REFERENCE_REPLAY_REPAIR_RECEIPT.json": "8fbcfb0ce04528e8055b987b1d81a1c7b49d7724f4e766dd369df3ac018d9905",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/SOURCE_RECHECK.json": "be3f366dde148af13da35193d31af80759a62410779c62313f50bdb8c5c41598",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/VALIDATION_RECEIPT.json": "c3c3c3fc75f7eb2daf7513a767d0a43b6ec57a532b5f3ce8fab625ce4c3b0b24",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/WRITE_SET.json": "2682f8f4aeea530d622114a659fe4c29d6a889d3274a119d3cfda99c8c78ee73",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/replay_preflight_probes.py": "dcec8bbffbf5be647048b348b9feb2a71c981bd20505c5de95871721739daad5",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_diagnostic_repairs.py": "24b3e6a0f901c8768770eef97d0d92e3231f0cb1516ef7c44ad70ee6b9a3c674",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_reference_replay_status.py": "8c36acc65d892a86e42ba8277a25aa0155834c55e2f3d9d36b10512274bed208",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/BROWSER_CHECK.json": "363b443697c017e762eab8fafbd981860a32921a5072c25e7bda040bc3d5e2ce",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_CALLS.json": "7f6a32c08598502ca2a2d21c1caf99e101cf4e87de3afea8200165516acf705e",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json": "0b63213cd7eeaa23a1b11ee5f80096a1a081f12a53716c90343b837ba83987b6",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json": "2c2792b6694e32ec9ad1cfb8b9b585ecaace9ae51a313e0ace3b0c6f5f4cded8",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json": "1104d448c3dd08a7a07698de9c3310d0ff3ce6ff6dad3e62eadfe046982aab9b",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "677dc6c52a5066dbdd1237c34c4958b522cee5d78caff31eb0397185086cc3c3",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json": "c37a32a43dc7a1a5ec54d671152a58b8a4ef623957f1a62e3961098d7ae95fa3",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json": "5f0987ad86b4cfb3e50a28facf3141e1ab75f5ab0ecf53a1bd05924d73bd192a",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json": "ce0431f5a991ff9dd376d6794b8118a654473279cd39e00271e8c8cba82bbb4a",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json": "197bc50dc796b1c5de98b57fefaec7279dae737e2f2471e474b9bf2cc22192f7",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/AUTOMATION_RECHECK.json": "a39718e0bda470778a1097d83ed0276f15a1de34556a9e41aa895f24d001df25",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_CANDLES.json": "97542489b878925db5833728c06df1b0178d5e28163fa777d317368c12f2e614",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_EXISTING_PORTFOLIO.json": "6fa1659d9eb753ec3bf9d3a36e050d40b610e1036cda30ed96f3fb317889cdb3",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_REVIEW.json": "209ea26a1c990f72bebad89e8142253b4d7f30578e77d8d2a746bb2e400958ba",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json": "90eae08265c9e99be6c8f6ebdb8b845f0e30e6b07cf8d615dac3dd2f43545b34",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_LATE_STATUS.json": "36cd7153828670aa0ab5d544fb6ed52ec7b40dbe6cf4934bae0927343d7d045c",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DECIMAL_REFERENCE_VERIFY.json": "69c9d7f78bc19aa31919edafcb4463bb63ce52e192fbf2a429af76df1297c919",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DOCS_AND_VERSION_RECEIPT.json": "545da2b76a514b5432cc06e71b092cfd071ea36be0e9dbe5fc3e658b6e473a0c",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_CURRENT_HEAD_RECEIPT.json": "32e988158c14e516afa4842e3909287df93174fe4ef743619c6aa131fd3f6884",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_TERMINAL_RECEIPT.json": "f03fc6e57b7c51c344b3b429e0c69b4769c0f66c312f4ba9ee0e1c7e95d121d1",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json": "917ffc6c3f4b25c859132bfe39decc1757b591a7bdae40349c7ec00c65995b06",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/GATES_AND_GAPS.json": "e593d695bf82ccd7a74053df05a4e2553bf0769a6d0f974d1e935cc1f9924be7",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/HANDOFF.md": "707387334ddf8cbc095ffd483809aab9b6e35f9d41cd81b2e5b1e353ef324a19",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/INDEPENDENT_REVIEW.json": "b90cf9d494ccb976d26a3638778305f46ab1d3cca962ee97cb53b024073e4d0a",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/LATE_OWNER_INTAKE.json": "b18fab2bb93d235608adfea9ce32cb1d756e205f625575701ab63851e0204a8d",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/MAGICPATH_RECEIPT.json": "39fca6e09418fdfb44ef288d914c22819ef37426f430572f616254edf501726f",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/NODE_75_PASS.log": "f9752faf003a288825de60264de8c7e27c00200c3dc7f3259dc3af84fc78c18a",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/OPTIONAL_OWNER_DELTA.json": "e0dc0157d336a911a8645d3652d181de6b93ae84182da039933e7c442079bd0a",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_BROWSER_PATH_FAILURE.log": "23d401c49c765592264862a26006e9bd7f65b92b3d874fc973770b4486a4584a",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_EMPTY_CATALOG_FAILURE.log": "81b5a6106efb2c13c84b3a84fa6324ec309a31631daa3fe9157d16f933834d35",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.json": "40089c470d465ec225892a0a099b5568c27d3ea26f055e83b2168d46b80a03b5",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.log": "f5c0d79bac6d87dbe81d97096375e4f6d2697cf2a44f4a52af1a424c9f859997",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/REVIEW_CLOSURE_PROBES.json": "e6806d3d1314b06a77d132d8df11ede45b42ac71f7293fe88da2536aa3e01b03",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/VALIDATION_RECEIPT.json": "9dae94405e131bc9afba300e7230dda81594da280591eba1e4534ec7880151d1",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/WRITE_SET.json": "89052fd3a3bc0e8c3b1a1e585492b36881217fd0fb511762707017132c39b337",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/baseline-1280.png": "e83a32c89910fa8acda68314fe150992c7ffac48a96745f9063bf5faa2038a82",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/demo-1280.png": "4a021314538c412efb8e030110afc627629008d082d032f5247324ee47aa55dd",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-1280.png": "5757129040497fecf9b5dbbbb959185fc007649d65c89c42bb14679b852535e6",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-390.png": "f4b485768fd1f5c33d3111e8d47e9b446c6e01054f8a5ecdeb0535779bd816f9",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/fixture_browser_test.cjs": "7f295d0b18cfad6a937eb77d990116ef1f1332bd25c63c6455c8e7d0f648bfc8",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/AUTOMATION_RECEIPT.json": "f5ada17c6095c9c295d206b4fdcc981aca59a3ac8432d763bf599f411825037e",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BROWSER_CHECK.json": "15b2625f9a669c7a1555f88c22d9e025388a508ec07dd207812ac1620bb24470",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BUILD_MANIFEST.json": "a11e46336d5f34057f946ffa1ff165cd282fc1beda533c67eaa14c61aefe1fe5",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json": "7743ef04790e6b9356b10e8d6be0168e4a4c2efe02e65a6f78830578cc42f9e0",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/GATES_AND_GAPS.json": "eb99158dec9aebbaf6a3bdb8d4a53d408b959e9a6ae9b2c051a61c746382e437",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md": "117b7a37aeb76ba07c654f7b17ae2d4c92ca4905c7958cc61f8ef0ad0d448bf4",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/MAGICPATH_RECEIPT.json": "93c6fe209ff1562444c9634c47a4c817ebd0cb775b12b73d544aa9819fde6b15",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/OWNER_INTAKE.json": "8074ee686630125833f55135bbaddb535ef789aeed22e1d716297e0931e00fcf",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/VALIDATION_RECEIPT.json": "efaf94527420a6d0190b3b95d1193acb0f459429728879f959e6b23fcc6ca15f",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json": "bb684544013d9e939dca2bc2687f87b0079412b012808011895fd660e94fde5b",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/actual-390.png": "5416ca2bb61c436f8b7c315fc6c4649d6c4a72d53936abfbb486aba5015ca440",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/browser/target-390.png": "c8d78a269e6064085af130c7c2dabcaf78553cb1462bebcc5509ab9607fec21a",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/LICENSE-Noto-Sans-KR.txt": "18aabf190848725e2576eefb5c29ba06aac1029d02132252a7f312eac2e50cf3",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/App.tsx": "a7d42b4975d1fff5c03cd541fc55ce6a1a4d27b3a8a611a73c448de10f8d2681",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.css": "8cf9ea613222c55e2af7935b24c63fa9c1085c9fb0694234c3fb14dccd5d0829",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/ChartStrategyThemeSAMPLEACTUALUnavailable.tsx": "a47adbf4e7574f0640ba862d6e8a9578863d645847ea65a74cc93cf6be87d0ac",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/chartSampleView.ts": "e1a8a4499efd16cb75cd89b2277a00641fc382bbcfe40d4b3fed5a95ebd7e90b",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-0.css": "e1092e58393157917dba2e7fa6c801f81ae60de2b594921c685bc2fec010671d",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-1.css": "37d3bcdafd566ccc7e4f1da733f893a17ee05446e1db096ab05c1807ecc6ed94",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-2.css": "7e4e2545ce0cf4dee3deff4f87ac3117312a78efaedbe65366dae65c8630bcf5",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/components/generated/noto-fonts-3.css": "e9c23ec753bef15b62ba2da58572d4210ce28dbe57c0fe388504778a66d6f4d5",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/component/src/index.css": "7ed623c33948e02ee7bd28e26d94eb11685b365c97237f514d60b51e06fa210f",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CLI_SMOKE.json": "7a86993addf952d871e3940557128969616efd0b2bf2ac75a48bd71a9705c65b",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CURRENT_INPUT_DIAGNOSTIC.json": "2a0af6419e050cf214343c12ca755255c3e59e04e84ca4d6e4bb31e48c261302",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/EVENT_STREAMS_OBSERVED.json": "7c22a86c9a16ee94ef972970235f5d3a2d97af8c423328031256ad854c8d1af3",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FINAL_UNITTEST.log": "8dd054ae0a3f2a5833bb0ac24532fc4d580cabbab5ab31d95b137b2cf16cc368",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FRESH_BASELINE.json": "4efb6998e1440a359f7e1c7bd833b559cd504575a8dd7701f67e02ec673f8269",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md": "08c665ff35fccdf31fdaec2c2078dc4b0d6c93a6864df03653029a355fd356e2",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INDEPENDENT_REVIEW.json": "7dcdf9d69b98468ae0f75ad6ee1b1eb011000d4514c8a36c46c96be74712603d",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INITIAL_INPUT_DIAGNOSTIC.json": "476b5edaf3474105d45c3dc345e363c7d7746b8b1f61c504c43de3b0b02d4769",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/PUBLICATION_RECEIPT.json": "79683e0e1034810a174d056f786cf22c3ad32f862de60209d7be8d38b6727237",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/README.md": "03552cb11208784abd9a48693669c02c328636871c22215d23f29030a5479fb7",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/VALIDATION_RECEIPT.json": "539c09fa4d08f0a81832472f4202252a142162f8d4fa4edf51fa7599399a8d1a",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py": "5ddfeaced404821d15f9a53cde0d4ee87f742f18e976e390764fd25a4d8364c1",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py": "39721807f2f032b31182cba1478fecbb00c79e20ba4bd4817fd4c5e8c7edf184",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_review_edges.py": "417c1267b270be7e74aa6eb07c5078a6abfd7fbb5a72d949dabf73cb88b1bdf9",
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md": "cc3bc3b20f7caea56645255c5a4cdef7e8f7fea1d1139f812dd5d676be228c64",
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/HANDOFF.md": "30b50a6dd0018624c395f4905b54428016d0a7a24a1b8ec7ca433616f0636c68",
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json": "eca6ab1d5094b2ef485d32c7e698a1726ebae216d75a2fbf93331578318804f0",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/CHECKPOINT_FILES.json": "699dd0c832c105666420adfd9c3be0c9863cf3392992dc8f561280cb7417decb",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json": "3bb3c6ee5b7d5016f3acb7651ebd020a8508a0a8243a8340ddc059f0c0c77cfc",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md": "568eeeec27b63b3da41c6a16584e5727ee79bc47e0afa88caa86f9d53349eaf5",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/INDEPENDENT_REVIEW.json": "ba09a028ce6c73bf4e365028ed48faba508e1e076b21186bb9a04485c4d2739f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md": "4b33475fcfe7528b3beb29acffb0c818fade656a2317a00aa88218730373b607",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json": "514c7ddfd9e46b1a5b0f26ad7cb798dcc67efc51518218bbcf8ec6a38f787b83",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/AUTHORITY_ARTIFACT_MANIFEST_v0.5.json": "43daa13655f929249ec0ad2137a8f44316e66f985a41f327dfaf1c442ed18d0d",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json": "dde5503cd37c840f3127011d88cdf1b9c5a25a6c3d39a52fe60e95113a50a513",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json": "62b10722f88d242cc1a0aa8f590fe1cbac1ea0eeb3833dff4ce66b42c1a1d4fb",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md": "0b15e87e97c9bdb5cafc6efd4c9cab88efa01e9521eaa65a72fac15d723ee028",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py": "21300a2f55b8f27b3436b4467e507cfd27dccb7200d7cedf50e083b81005d12a",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/OWNER_PACKET_CONSISTENCY.json": "a6a96fe495ae5775c60054283ef5f20d152ed9bcbd6fb8b5c5b24285144f4f42",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_DELTA_EVIDENCE.json": "7d8aff4b12017797cf89e8f00d1ccea852da95e6382fe037f4ca4e842009633f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md": "f5019aa52649dc83bee5c41616e53d299d6cbd12fa64212be5f0c0cb9b5f48a7",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/EXISTING_CAPABILITY_PINS_v0.5.json": "9ee1dbaba37d1984d5428f8aada1b3d88f93c1ff77a0781ea19405bf39beab82",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json": "d274b1e8cc127aff34a5f1bf654cb969328df96753e503bd463d215ac8693545",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/LANE_B_VERIFY_RECEIPT_v0.5.json": "10725c567a78dae4c0ba7f0433e74be943efa47a846c228b7d5eb9041e218c65",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json": "96500808ea2b47b58c6d7a0ff7f7c2141e096467ee379f1a609afb5a0cf628d6",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md": "da9eb10534a98c57418fc09bcac0cfbd4c43fef58875b3bde3248c2f4693369f",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py": "72e7960e878fda278ec2562c66690265ab28c14c647aaefd2c63907618d1f67f",
+      "implementation/experiments/chart-contract-v0.1/page.html": "80d549d2c2040ccac633059f642c3dc2a7b11f5f05484dd456c08a621efea7d2",
+      "implementation/experiments/chart-contract-v0.1/portfolio_app.js": "ab6e2ea167d95d04619b096ce8f3518de6128d7f248d4967424761ffe2eb4016",
+      "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs": "b4bf3053b40b9bdfc14874fb377ed9820bca64efe7c9b7062f1284d4c8dd7c9a",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/GATES_AND_GAPS.json": "52815db36196ec258dbe1da6c0e2c3a9beb768ce99eb1d404f31c63e6c05e694",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/HANDOFF.md": "ea67623a48ce3276d58b536f52c3b01002ffdf529f5dee40572e711887cbca44",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json": "3092f92062f0f62d97d045e7cf28251e3037718b4f6290d99118c122f9c9c988",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/AUTOMATION_RECEIPT.json": "ed019eb5a90ff0480c5215b45641efa00649f358153d8bac28b3b38f0e5a995a",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/CI_TERMINAL_RECEIPT.json": "9ebadbd5c396d9831e03f1ebae9e917a77be2fe712337c892ef7f47eb53a8fb3",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/FAILURE_HISTORY.json": "74c636c258d3e482163699f6640f148ed722a68d63c5fa64682ddd2dc129ce0a",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/OWNER_INTAKE.json": "6904c245234a8c862a2aeaa02442cdcffed862b83203df25fe97e77d97a9f69a",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/WRITE_SET.json": "77b9127c38d3a05934f44d59aeb3e2c81d4adef776484fa1dd5e1e93add2655d",
+      "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/VALIDATION_RECEIPT.json": "f28e960776f2f49420fa64e1d0888d497de45b53bee50dec433a3c773bdefad7"
+    },
+    "retained_comment_ids": [
+      5986162506
+    ],
+    "commit_ids": [
+      "df1743b22680cd6d56dd286fd737cb053a7175ad",
+      "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
+      "ce978a5bebb17abd5b6072cdbc6f2db82cf21b18",
+      "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
+      "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+      "74df6784071137bdca911964af94c8e1b6928c92",
+      "1e8c24c6f77030425b3dbf59ef8aa6539cafd748",
+      "32069065a0c4a62e4390d76675eb9c7681456c87",
+      "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+      "52e751501cb95ab3150398dc45586035276ab0d2",
+      "c552d0108091bb48ec851e42f43e6ae852d4bdba",
+      "a5403a969021021cd3f489173603bc657365097f",
+      "7ba5f2dac74487d1ce504e80081213e23894cc09",
+      "395a24eef42fde2ddec8831808daba5e768d72e2",
+      "eedab5922db453a7b11a851cf57844064ce00f3f",
+      "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+      "d187495286697d1e3ceab31d33bc2d0f5e56fd8f",
+      "c21d47d8d5d0c59b1ae9795258fc21cb3667a127",
+      "a5cf1a1862aac7340dabfe169f4383da89f610cb",
+      "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+      "01a150a2b640c188436fe8cd4fc988a2482c57f8",
+      "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+      "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
+      "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
+      "5288d038e800c09ca40af0604a947911c4370d9e",
+      "ca067990f5a81e06c23171bb92238e22f4eede9b",
+      "42a186e1e892d0e2da692553bd223d1e1b1e0336",
+      "64f6057eb34e6b70c828433a53c5364f325e28b3",
+      "d84afa219221e31ca78f5759360ae97489a0c8d2",
+      "837a14276470c51d6cc2800b75be0fa16a011e70",
+      "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+      "00d3d2be6459b35946f84cb920a6a941a0c16207",
+      "c16b164a1d379ec4c26a36f178651f22b23f5ed3"
+    ],
+    "update_after_publish": "Only after remote HEAD/file bytes and output hashes are verified. STATE.json itself is excluded from output fingerprint; current commit identity cannot be self-embedded.",
+    "bootstrap_verified_owner_head": "df1743b22680cd6d56dd286fd737cb053a7175ad",
+    "retained_comments": [
+      {
+        "pr": 42,
+        "id": 5986162506,
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/42#issuecomment-5986162506",
+        "body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f"
+      }
+    ],
+    "coordination_head_note": "State release containing this receipt is resolved from current PR/Git metadata, not self-embedded.",
+    "previous_checkpoint_receipts": [
+      {
+        "head": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
+        "immutable_state_ref": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+      },
+      {
+        "head": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
+        "immutable_state_ref": "1e8c24c6f77030425b3dbf59ef8aa6539cafd748:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+      },
+      {
+        "head": "395a24eef42fde2ddec8831808daba5e768d72e2",
+        "immutable_state_ref": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+      },
+      {
+        "head": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+        "immutable_state_ref": "4752bca2d58a61ef5821a0556b6480fc527fac80:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+      }
+    ],
+    "latest_evidence_tree": "180efc047837f7b1aa041a1b5a481a9577e88ca5",
+    "verification": {
+      "verified_at_utc": "2026-10-05T10:56:45.810Z",
+      "head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+      "exact_new_file_readbacks": 11,
+      "sha256_manifest_paths": 151,
+      "mismatches": 0,
+      "targeted_checks_passed": 21,
+      "state_excluded_from_hash_manifest": true,
+      "lease_release_followup": "Containing release HEAD resolved by Git metadata"
+    },
+    "current_PR41_Actions": {
+      "source_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
+      "runs": [],
+      "production_Chart_FPIA": "NOT_RUN",
+      "scope": "FAST SAMPLE/evidence, no product CI dispatched"
+    },
+    "verification_history": [
+      {
+        "exact_written_bytes_match_remote": true,
+        "text_written_files": 11,
+        "prior_output_hashes_checked": 108,
+        "prior_unchanged_outputs": 107,
+        "known_stale_mutable_root_hash_repaired": 1,
+        "all_current_manifest_hashes_match": true,
+        "prior_prefix_preservation": true,
+        "unintended_paths": 0,
+        "protected_paths_changed": 0,
+        "new_product_test_runs": 0,
+        "new_browser_checks": 12,
+        "postfix_figma_visual": "NOT_RUN_TOOL_QUOTA_BLOCKED",
+        "task_exact_prompt_readback": true,
+        "task_schedules_enabled_unchanged": true,
+        "verified_at_utc": "2026-10-05T07:23:44.868132+00:00",
+        "late_exact_written_files": 4,
+        "late_Global": "7dac637f499a0771b3eb54da24295624f0803558"
+      },
+      {
+        "exact_written_bytes_match_remote": true,
+        "new_packet_files": 22,
+        "prior_output_hashes_checked": 120,
+        "prior_unchanged_outputs": 119,
+        "intended_root_handoff_append": 1,
+        "prior_prefix_preservation": true,
+        "all_current_manifest_hashes_match": true,
+        "current_manifest_count": 142,
+        "remote_exact9_component_hashes_match": true,
+        "protected_or_unintended_paths": 0,
+        "nativeBuild": "COMPLETED",
+        "browser_checks": 18,
+        "task_readback_exact": true,
+        "task_schedule_cadence_enabled_title_preserved": true,
+        "verified_at_utc": "2026-10-05T09:14:49.571Z",
+        "write_set_reference_repair": {
+          "exact_remote_bytes": true,
+          "real_conditional_owner_receipt_verified": true,
+          "all_gate_a_g2_closed": false,
+          "all_other141_current_hashes_match": true,
+          "first_invalid_reference_retained": true,
+          "verified_at_utc": "2026-10-05T09:18:52.550Z"
+        }
+      }
+    ]
+  },
+  "self_update_filter": {
+    "automation_titles": [
+      "Chart PR 이벤트 재개",
+      "Chart CI 후속 확인",
+      "Chart 감사 자동진행"
+    ],
+    "owned_commit_prefixes": [
+      "[chart-owner-resume]",
+      "[chart-owner-checkpoint]"
+    ],
+    "retained_owned_commit_ids": [
+      "df1743b22680cd6d56dd286fd737cb053a7175ad",
+      "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
+      "ce978a5bebb17abd5b6072cdbc6f2db82cf21b18",
+      "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
+      "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+      "74df6784071137bdca911964af94c8e1b6928c92",
+      "1e8c24c6f77030425b3dbf59ef8aa6539cafd748",
+      "32069065a0c4a62e4390d76675eb9c7681456c87",
+      "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+      "52e751501cb95ab3150398dc45586035276ab0d2",
+      "c552d0108091bb48ec851e42f43e6ae852d4bdba",
+      "a5403a969021021cd3f489173603bc657365097f",
+      "7ba5f2dac74487d1ce504e80081213e23894cc09",
+      "395a24eef42fde2ddec8831808daba5e768d72e2",
+      "eedab5922db453a7b11a851cf57844064ce00f3f",
+      "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+      "d187495286697d1e3ceab31d33bc2d0f5e56fd8f",
+      "c21d47d8d5d0c59b1ae9795258fc21cb3667a127",
+      "a5cf1a1862aac7340dabfe169f4383da89f610cb",
+      "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+      "01a150a2b640c188436fe8cd4fc988a2482c57f8",
+      "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+      "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
+      "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
+      "5288d038e800c09ca40af0604a947911c4370d9e",
+      "ca067990f5a81e06c23171bb92238e22f4eede9b",
+      "42a186e1e892d0e2da692553bd223d1e1b1e0336",
+      "64f6057eb34e6b70c828433a53c5364f325e28b3",
+      "d84afa219221e31ca78f5759360ae97489a0c8d2",
+      "837a14276470c51d6cc2800b75be0fa16a011e70",
+      "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+      "00d3d2be6459b35946f84cb920a6a941a0c16207",
+      "c16b164a1d379ec4c26a36f178651f22b23f5ed3"
+    ],
+    "owned_comment_marker": "<!-- chart-owner-handoff:v0.5 -->",
+    "retained_owned_comment_ids": [
+      5986162506
+    ],
+    "require_comment_marker_and_retained_returned_id": true,
+    "connected_account_login_is_not_ownership_proof": true,
+    "allowlisted_write_scopes": [
+      "implementation/experiments/chart-contract-v0.1/automation/",
+      "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/",
+      "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/",
+      "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/",
+      "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/",
+      "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/",
+      "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+      "implementation/experiments/chart-contract-v0.1/page.html",
+      "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs",
+      "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/",
+      "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/",
+      "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/",
+      "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/**"
+    ],
+    "do_not_ignore_dependency_semantics_from_an_owned_checkpoint": true,
+    "require_current_comment_body_sha256_match": true,
+    "edited_own_comments": "Read semantic change; retained ID/marker alone never suppresses modified content.",
+    "retained_owned_comments": [
+      {
+        "id": 5986162506,
+        "body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f",
+        "marker": "<!-- chart-owner-handoff:v0.5 -->"
+      }
+    ]
+  },
+  "fingerprint_policy": {
+    "include": "Relevant fresh dependency source/head/authority/decision changes, relevant comment or review revisions, scoped owner source inputs, and pending exact-subject CI state.; Global-only Chart-relevant source/decision/receipt blob fingerprints independently of PR HEAD. Ignore unrelated Global/index clocks.",
+    "exclude_paths": [
+      "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    ],
+    "exclude_only_attributed_self_updates": true,
+    "output_exclusion": "Mutable lease timestamps and state commit identity do not create a work delta by themselves.",
+    "no_op": "No semantic delta and no actionable pending item means no lease acquisition, no state/commit/comment/PR write."
+  },
+  "atomic_protocol": {
+    "provider_lock_available": false,
+    "required_remote_operation": "Fresh owner HEAD→commit whose only parent is that HEAD→non-force fast-forward update_ref→verify exact remote SHA and lease run_id/expiry.",
+    "compare_and_swap_condition": "If competing divergent commit moves owner ref, update_ref fails; do not force or automatically rebase lease/output onto the winner. Re-read and remain read-only.",
+    "renewal": "While unexpired, fresh-read remote state and verify same run_id before publishing renewal with new parent/current HEAD and same-holder expiry.",
+    "expiry": "Expired or mismatching run_id prevents every mutation; fresh evaluation and a new verified atomic acquisition are required.",
+    "missing_atomic_capability": "Read-only audit is allowed; every write must be abstained from."
+  },
+  "forbidden_actions": [
+    "canonical_merge",
+    "other_owner_branch_write",
+    "Global_Handoff_write",
+    "Frozen_change",
+    "Track_C_code_hash_or_P01_digest_repin",
+    "grant_issue",
+    "Official_or_LIVE_promotion",
+    "Holdout_access",
+    "PIT_relaxation",
+    "QGV_semantic_activation",
+    "paid_action",
+    "unaccepted_cross_owner_or_protected_production_write_set"
+  ],
+  "workflow_rule": "Reuse prior audit/history. Process only a real bounded material delta or actionable pending CI; decisions/readiness never advance from scheduling alone.",
+  "verification_ref": "implementation/experiments/chart-contract-v0.1/automation/SETUP_RECEIPT.json",
+  "automation_delivery_observed": {
+    "synchronize_webhooks_seen": [
+      {
+        "id": "c6a58c40-c054-11f1-8074-9ef8b625a3b4",
+        "event": "synchronize",
+        "pr": 41,
+        "own_commit": "df1743b22680cd6d56dd286fd737cb053a7175ad"
+      },
+      {
+        "id": "285358a0-c055-11f1-9070-7a3eabeb507d",
+        "event": "synchronize",
+        "pr": 41,
+        "own_commit": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c"
+      }
+    ],
+    "event_delivery_into_this_chat": "OBSERVED",
+    "review_comment_merge_delivery_test": "NOT_RUN",
+    "self_event_processing": "No duplicate production/evidence work; live manual lease and narrow attribution preserved."
+  },
+  "approval_pins": {
+    "explicit_user_scope": "2026-10-05 latest Chart continuation through success within Chart-owned scope; no canonical merge/Frozen/Holdout/PIT/Official or other-owner writes",
+    "global_routing_head": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+    "worker_routing_pr21": "f1b5afb2c9c2e2e6cf0ed8dfccbc740a05647798",
+    "fpia_governance": "OWNER_ACTION_REQUIRED_AFTER_PIW_D001_D007_PROGRESS",
+    "qgv": "INACTIVE_SPEC_ONLY",
+    "production_continuation": "All6actual owner gates close -> implement approved exact write-set through deterministic validation/E2E/required actual-result FPIA/handoff autonomously. Protected production/new policy/canonical/Frozen/PIT/Official and other explicit current scoped D3 boundaries need actual approval; wider previous Global delegation cannot override later explicit Chart boundary.",
+    "latest_scope_handoff": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/HANDOFF.md",
+    "latest_scoped_user_policy_effective_kst": "2026-10-05T14:18:36+09:00",
+    "current_primary_integration_writer": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "tool_target": "User selected dedicated private MagicPath SAMPLE review; no existing service readiness assumed"
+  },
+  "automations_current_inventory": {
+    "observed_at_utc": "2026-10-05T10:56:45.810Z",
+    "tasks": [
+      {
+        "id": "6ac2ef0621908191909a27af4c91f101",
+        "title": "차트 구현 감사 워크 · CI 후속 확인",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T092850\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+        "last_run_time": "2026-10-05T10:42:49.384262+00:00",
+        "role": "READ_ONLY_WATCHER"
+      },
+      {
+        "id": "6ac31fca7bb4819183997a9f17f432cb",
+        "title": "차트 구현 감사 워크 · 자동진행",
+        "is_enabled": false,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Asia/Seoul:20261005T125654\nRRULE:FREQ=HOURLY;INTERVAL=2\nEND:VEVENT",
+        "last_run_time": null,
+        "role": "READ_ONLY_WATCHER"
+      },
+      {
+        "id": "6ac2eeedb21c81919f04168d69672f0a",
+        "title": "Chart PR 이벤트 재개",
+        "is_enabled": false,
+        "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+        "last_run_time": "2026-10-05T03:51:11.384912+00:00",
+        "role": "READ_ONLY_WATCHER"
+      }
+    ],
+    "receipt": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/AUTOMATION_RECEIPT.json"
+  },
+  "automation_conversation_discrepancy": "Actual tool conversation IDs differ from v0.5 setup conversation ID; IDs/enabled state fresh verified; tasks not moved/recreated.",
+  "execution_policy": {
+    "version": "chart-v0.10",
+    "path": "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md",
+    "authority": "Latest explicit user Risk-Proportional Verification instruction 2026-10-05",
+    "global_only_semantic_change_is_input": true,
+    "after_all_six_closed": "AUTOMATIC_APPROVED_WRITE_SET_PRODUCTION_VERTICAL_SLICE",
+    "actual_D3_boundary_preserved": true,
+    "latest_user_continuation_kst": "2026-10-05T19:40:00+09:00",
+    "independent_d1_d2_completion": "Existing SAMPLE UI defects, validation/evidence/handoff continue while production owner/CI inputs remain",
+    "latest_user_tools_instruction_kst": "2026-10-05T14:18:36+09:00",
+    "tools_use_scope": "Read actual versions/docs/access first; use one design tool selected target; no new design/approval restart; connected service is not production authority",
+    "risk_proportional_verification": true,
+    "classes": [
+      "FAST",
+      "STANDARD",
+      "CRITICAL"
+    ],
+    "full_regression_by_default": false,
+    "agent_budget": {
+      "default_chart_owner": 1,
+      "optional_backend_pit_verifier": 1,
+      "visual_adversarial_panel": false
+    },
+    "evidence_reuse": "Exact current tree/input compatibility; no repeated completed UI/raw audits; reused PASS remains historical",
+    "latest_user_risk_policy": "2026-10-05",
+    "run_metrics": [
+      "requirements_closed",
+      "blockers_closed",
+      "new_blockers",
+      "vertical_slice_progress",
+      "production_ready_contracts",
+      "frontend_ready_contracts"
+    ],
+    "primary_design_tool": {
+      "provider": "MagicPath",
+      "project_id": "457727891984232448",
+      "component_id": "457764208520613888",
+      "revision_id": "457764208524808192",
+      "scope": "SAMPLE_PRESENTATION_IMPLEMENTED_VERIFIED",
+      "fallback": "EXISTING_GITHUB_RENDERER_LOCAL_BROWSER_ARTIFACTS_AUTO_CONTINUE",
+      "historicalFigma": "Preserve3views; historicalfinalvisualNOT_RUN notactiveprerequisite"
+    },
+    "ssot_execution_loop": {
+      "decision": "CDR-022",
+      "global": "7dac637f499a0771b3eb54da24295624f0803558",
+      "independent_ready_continue_after_checkpoint": true,
+      "protected_authority_unchanged": true
+    },
+    "delegated_approval": {
+      "version": "Autonomous Execution & Decision Authority SSoT v1.1",
+      "classes": [
+        "D1",
+        "D2",
+        "D3-A",
+        "D3-R"
+      ],
+      "condition": "Concrete SSoT alignment +26A triggers +26B independent separate execution +26D rollback +26F semantic_delta conservative synthesis",
+      "reserved": "User supplied full reserved list in DECISION_RECEIPT.json",
+      "unknown": "D3-R",
+      "scope": "Only dependentlane waits; does not replace actualsource facts/ownerwrite-set/governance",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "new_D3_A_executed": 0
+    },
+    "effective_common_authority": {
+      "version": "v1.1",
+      "decision": "CDR-024",
+      "global_head": "1596649912554116196c1ad3c1d41797219f5241",
+      "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "git_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "supersedes_conflicting_historical_policy": true
+    },
+    "execution_context": {
+      "current": "USER_OBSERVED_SESSION",
+      "unattended": "DISABLED_PENDING_GATE_A",
+      "watchers": "READ_ONLY_WAKEUP",
+      "hard_guard_gate_a": "HG01_HG02_HG03_NOT_VERIFIED",
+      "max_tasks_per_cycle": 5,
+      "lease_ttl_hours": 2,
+      "repair_cap": 3,
+      "kill_switch": "NOT_VERIFIED_NO_RUN_ASSUMPTION"
+    }
+  },
+  "lease_history": [
+    {
+      "state_at_commit": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "MANUAL_ROOT",
+        "acquired_at_utc": "2026-10-05T03:03:26.899Z",
+        "expires_at_utc": "2026-10-05T05:02:54.234Z",
+        "ttl_minutes": 60,
+        "allowed_automatic_ttl_minutes": 30,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+        "mutual_exclusion": "PROTOCOL_NOT_PROVIDER_GUARANTEE",
+        "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease.",
+        "acquisition_commit": "74df6784071137bdca911964af94c8e1b6928c92",
+        "verified_at_utc": "2026-10-05T04:02:54.236Z",
+        "verified_published_packet": "32069065a0c4a62e4390d76675eb9c7681456c87",
+        "previous_run_id": "manual-chart-dependency-delta-20261005T030326898Z",
+        "reason": "Current user authorizes durable Global-only dependency intake and automatic approved-write-set production continuation; renewal before expiry",
+        "renewed_at_utc": "2026-10-05T04:02:54.236Z",
+        "released_at_utc": "2026-10-05T04:14:14.034Z"
+      }
+    },
+    {
+      "state_at_commit": "a5403a969021021cd3f489173603bc657365097f",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "MANUAL_ROOT",
+        "acquired_at_utc": "2026-10-05T04:18:27.682Z",
+        "expires_at_utc": "2026-10-05T04:48:27.682Z",
+        "ttl_minutes": 30,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+        "reason": "Actual archived replay uses another checkout and writes inside repository; portable source-pinned replay and malformed packet diagnostic repair",
+        "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+        "acquisition_commit": "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+        "verified_at_utc": "2026-10-05T04:18:27.682Z",
+        "previous_run_id": "manual-chart-portable-preflight-20261005T041827682Z",
+        "released_at_utc": "2026-10-05T04:47:13.892913+00:00",
+        "verified_published_packet": "c552d0108091bb48ec851e42f43e6ae852d4bdba"
+      }
+    },
+    {
+      "state_at_commit": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "MANUAL_ROOT",
+        "acquired_at_utc": "2026-10-05T04:50:05.736Z",
+        "expires_at_utc": "2026-10-05T05:20:05.736Z",
+        "ttl_minutes": 30,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "a5403a969021021cd3f489173603bc657365097f",
+        "reason": "Exact pending FPIA run just reached terminal SUCCESS; consume receipt and clear CI queue without governance promotion",
+        "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+        "acquisition_commit": "7ba5f2dac74487d1ce504e80081213e23894cc09",
+        "verified_at_utc": "2026-10-05T04:53:10.015213+00:00",
+        "previous_run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
+        "released_at_utc": "2026-10-05T04:55:05.915Z",
+        "verified_published_packet": "395a24eef42fde2ddec8831808daba5e768d72e2"
+      }
+    },
+    {
+      "recorded_at_utc": "2026-10-05T06:19:47.755Z",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "MANUAL_ROOT",
+        "acquired_at_utc": "2026-10-05T05:25:09.016Z",
+        "expires_at_utc": "2026-10-05T06:25:09.016Z",
+        "ttl_minutes": 60,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+        "reason": "User selected dedicated SAMPLE review canvas; repair missing-to-zero fixture display and verify existing approved lab UI; fresh owner intake",
+        "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+        "previous_run_id": "manual-chart-fixture-review-20261005T052509016Z",
+        "acquisition_commit": "eedab5922db453a7b11a851cf57844064ce00f3f",
+        "released_at_utc": "2026-10-05T05:57:20.531Z",
+        "verified_published_packet": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+        "verified_at_utc": "2026-10-05T05:54:56.485Z"
+      }
+    },
+    {
+      "state_at_commit": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "CI_FOLLOWUP_AUTOMATION",
+        "acquired_at_utc": "2026-10-05T06:32:43.306Z",
+        "expires_at_utc": "2026-10-05T07:02:43.306Z",
+        "ttl_minutes": 30,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
+        "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
+        "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+        "acquisition_commit": "40a5c266322d36dbf30a683f6f632508352145bc",
+        "verified_at_utc": "2026-10-05T06:36:14.933Z",
+        "previous_run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+        "released_at_utc": "2026-10-05T06:37:31.129Z",
+        "verified_published_packet": "01a150a2b640c188436fe8cd4fc988a2482c57f8"
+      }
+    },
+    {
+      "recorded_at_utc": "2026-10-05T06:45:15.261Z",
+      "lease": {
+        "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+        "run_id": null,
+        "holder_kind": "CI_FOLLOWUP_AUTOMATION",
+        "acquired_at_utc": "2026-10-05T06:32:43.306Z",
+        "expires_at_utc": "2026-10-05T07:02:43.306Z",
+        "ttl_minutes": 30,
+        "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+        "verified_remote_acquisition": true,
+        "acquisition_parent_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
+        "reason": "Consume exact terminal failure for pending PR46 track-c-fpia run 37267962000 attempt 1; owner branch remains read-only",
+        "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+        "acquisition_commit": "40a5c266322d36dbf30a683f6f632508352145bc",
+        "verified_at_utc": "2026-10-05T06:36:14.933Z",
+        "previous_run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+        "released_at_utc": "2026-10-05T06:37:31.129Z",
+        "verified_published_packet": "01a150a2b640c188436fe8cd4fc988a2482c57f8"
+      }
+    },
+    {
+      "status": "VERIFIED_ACQUIRED_AND_RELEASED",
+      "run_id": "manual-chart-figma-20261005T064515261Z",
+      "holder_kind": "MANUAL_ROOT",
+      "acquired_at_utc": "2026-10-05T06:45:15.261Z",
+      "expires_at_utc": "2026-10-05T07:45:15.261Z",
+      "ttl_minutes": 60,
+      "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+      "verified_remote_acquisition": true,
+      "acquisition_parent_head": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+      "reason": "Existing SAMPLE UI to editable Figma desktop/mobile, reuse source/fixtures/evidence; FAST browser/render checks, scoped handoff; no production semantic change",
+      "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+      "acquisition_commit": "a5cf1a1862aac7340dabfe169f4383da89f610cb",
+      "release_reason": "Authorized independent Figma/native/source browser/evidence checkpoint published and verified; no lease held on optional quota or owner governance"
+    },
+    {
+      "status": "VERIFIED_ACQUIRED_AND_RELEASED",
+      "run_id": "manual-chart-late-global-20261005T072727874Z",
+      "holder_kind": "MANUAL_ROOT",
+      "acquired_at_utc": "2026-10-05T07:27:27.874Z",
+      "expires_at_utc": "2026-10-05T07:47:27.874Z",
+      "ttl_minutes": 20,
+      "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+      "verified_remote_acquisition": true,
+      "acquisition_parent_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
+      "reason": "Consume actual late Global7dac Main execution-coverage receipt/CDR022; no new audits or product code",
+      "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+      "acquisition_commit": "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
+      "release_reason": "Late actual Main return consumed; independentREADY0, optional toolaccess and accountableownerinputs external"
+    },
+    {
+      "event": "USER_STEERING_SAFE_CHECKPOINT_RELEASE",
+      "lease": {
+        "status": "ACTIVE",
+        "run_id": "manual-chart-magicpath-primary-2026-10-05T080033754Z",
+        "owner": "/root Chart owner",
+        "owner_branch": "codex/chart-contract-mcp-api-v0-1",
+        "acquired_at_utc": "2026-10-05T08:00:33.754Z",
+        "expires_at_utc": "2026-10-05T09:00:33.754Z",
+        "source_start_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
+        "reason": "User-authorized MagicPath primary + automatic local fallback policy; existing SAMPLE renderer build/browser/evidence only",
+        "write_set": [
+          "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/**",
+          "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+          "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+        ],
+        "protected_writes": 0,
+        "release_responsibility": "After verified scoped publication; no lease held for tool quota/owner gate"
+      },
+      "at_utc": "2026-10-05T09:00:20.069Z",
+      "publication": "UNPUBLISHED_WORK_PRESERVED_LOCALLY",
+      "reason": "Release current manual lease before expiry; next fresh run incorporates latest delegated approval policy"
+    },
+    {
+      "event": "VERIFIED_PUBLICATION_RELEASE",
+      "lease": {
+        "status": "ACTIVE",
+        "run_id": "manual-chart-magicpath-d3a-2026-10-05T090050954Z",
+        "owner": "/root Chart owner",
+        "acquired_at_utc": "2026-10-05T09:00:50.954Z",
+        "expires_at_utc": "2026-10-05T09:45:50.954Z",
+        "source_start_head": "ca067990f5a81e06c23171bb92238e22f4eede9b",
+        "write_set": [
+          "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/**",
+          "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+          "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+        ],
+        "reason": "Publish already verified MagicPath SAMPLE build + latest D3-A/R policy and fresh owner receipts; no protected production changes"
+      },
+      "evidence_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
+      "released_at_utc": "2026-10-05T09:14:49.571Z"
+    },
+    {
+      "event": "VERIFIED_REFERENCE_REPAIR_RELEASE",
+      "lease": {
+        "status": "ACTIVE",
+        "run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
+        "owner": "/root Chart owner",
+        "acquired_at_utc": "2026-10-05T09:17:29.146Z",
+        "expires_at_utc": "2026-10-05T09:32:29.146Z",
+        "source_start_head": "2ebccd24c00442539b12c6a5ab3b28c22f5c28e2",
+        "reason": "Correct one dangling production planning reference discovered during handoff review; preserve first reference in receipt",
+        "write_set": [
+          "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/WRITE_SET.json",
+          "implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+        ]
+      },
+      "evidence_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+      "released_at_utc": "2026-10-05T09:18:52.550Z"
+    },
+    {
+      "status": "HELD",
+      "run_id": "manual-chart-terminal-policy-2026-10-05T104549543Z",
+      "holder_kind": "USER_OBSERVED_CHART_OWNER_SESSION",
+      "acquired_at_utc": "2026-10-05T10:45:49.543Z",
+      "expires_at_utc": "2026-10-05T12:45:49.543Z",
+      "ttl_minutes": 120,
+      "target_branch": "codex/chart-contract-mcp-api-v0-1",
+      "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+      "verified_remote_acquisition": true,
+      "acquisition_parent_head": "cda174542f1a1ae95345726f308c24b60262c03b",
+      "reason": "Consume newly terminal PR47 and adopted CDR024 v1.1; Gate A remains disabled",
+      "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED",
+      "released_after_verified_publication": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+      "released_at_utc": "2026-10-05T10:56:45.810Z"
+    }
+  ],
+  "automation_audit": {
+    "classification": "UNKNOWN",
+    "coordination_classification": "WORKING_AS_DESIGNED",
+    "scheduled_invocation": "OBSERVED_MAIN_06_18_46_CI_05_57_06",
+    "productive_scheduled_completion_after_latest_input": "UNVERIFIED",
+    "no_repeatable_framework_failure_found": true,
+    "trigger_missed_proven": false,
+    "previous_event": "INTENTIONALLY_PAUSED_SUPERSEDED",
+    "current_pending": 0,
+    "latest_dependency_watermarks": "ADOPTED_ONLY_AFTER_VERIFIED_PUBLICATION",
+    "task_configuration_modified": true,
+    "proof": "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json",
+    "task_configuration_scope": "Existing Main/CI prompt only; cadence/enabled unchanged; latest scoped risk policy",
+    "latest_v012": {
+      "CI": "WORKING_AS_DESIGNED_V011_PRODUCTIVE_TERMINAL_RECEIPT",
+      "Main": "UNKNOWN_PRODUCTIVE_COMPLETION",
+      "state_issue": "STATE_STALE_ONE_MUTABLE_HANDOFF_HASH",
+      "no_framework_repair": true,
+      "prompt_readback": [
+        {
+          "id": "6ac31fca7bb4819183997a9f17f432cb",
+          "prompt_exact": true,
+          "schedule_unchanged": true,
+          "enabled_unchanged": true,
+          "last_run": null
+        },
+        {
+          "id": "6ac2ef0621908191909a27af4c91f101",
+          "prompt_exact": true,
+          "schedule_unchanged": true,
+          "enabled_unchanged": true,
+          "last_run": "2026-10-05T07:12:30.221740+00:00"
+        }
+      ],
+      "state_issue_repair": "Verified current publication119output hashes; historical receipt bytes retained"
+    },
+    "magicpath_primary_checkpoint": {
+      "at_utc": "2026-10-05T09:14:49.571Z",
+      "classifications": [
+        "WORKING_AS_DESIGNED_CI_PATH",
+        "UNKNOWN_MAIN_PRODUCTIVE_END_TO_END"
+      ],
+      "actual_task_prompt_schedule_readback": [
+        {
+          "id": "6ac2ef0621908191909a27af4c91f101",
+          "promptExact": true,
+          "scheduleExact": true,
+          "enabledExact": true,
+          "titleExact": true,
+          "primaryMagicPath": true,
+          "delegatedPolicy": true
+        },
+        {
+          "id": "6ac31fca7bb4819183997a9f17f432cb",
+          "promptExact": true,
+          "scheduleExact": true,
+          "enabledExact": true,
+          "titleExact": true,
+          "primaryMagicPath": true,
+          "delegatedPolicy": true
+        }
+      ],
+      "lease": "SHARED_FRESH_VERIFIED_MANUAL_LEASE; NO_EXPIRED_RETROACTIVE_RENEWAL",
+      "pending_ci": "ONE_EXACT_PR47_RUN",
+      "quota_fallback": "LOCAL_EXISTING_RENDERER_BROWSER_ARTIFACTS",
+      "proven_trigger_loss": false,
+      "historicalFigmaQuota": "Optional historicalvisualNOT_RUN; noactivewholeWorkWAIT"
+    },
+    "latest_v014": {
+      "classification": "CI_FOLLOWUP_ONLY",
+      "main_current": "DISABLED",
+      "main_end_to_end": "NOT_VERIFIED",
+      "ci_current": "ENABLED_READ_ONLY_WATCHER",
+      "gate_a": "UNATTENDED_EXECUTOR_DISABLED_NOT_VERIFIED",
+      "root_cause": "Main disabled; enabled watcher is not executor; GateA not satisfied. Pause actor/reason and wake delivery UNKNOWN, no trigger loss proved",
+      "terminal_consumption": "USER_OBSERVED_SESSION_VERIFIED",
+      "pending_after": 0,
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/AUTOMATION_RECEIPT.json",
+      "hard_guard_verification_claim": false
+    }
+  },
+  "dependency_classifications": {
+    "45": "DOWNSTREAM_CHART_CONSUMER_OWNER_OVERLAP_NOT_TARGET_PREREQUISITE"
+  },
+  "processed_history": [
+    {
+      "checkpoint": {
+        "source_head": "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+        "owner_head": "32069065a0c4a62e4390d76675eb9c7681456c87",
+        "processed_at_utc": "2026-10-05T04:14:14.034Z",
+        "run_id": "manual-chart-dependency-delta-20261005T030326898Z",
+        "input_heads": {
+          "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+          "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "41": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
+          "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+        },
+        "global_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+        "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "approval_effective_kst": "2026-10-05T13:01:31+09:00",
+        "status": "SCOPED_POLICY_ADOPTED_INDEPENDENT_PROBES_VERIFIED_PENDING_INTEGRATION_CI_AND_OWNER_INPUTS",
+        "evidence_refs": [
+          "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md",
+          "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
+          "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json",
+          "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json"
+        ],
+        "ci_terminal_claim": false,
+        "semantic_input_fingerprint": "1df6fffb6df1522652e9fd6ee0acdd1a399bb222948b639b5de5cb6d61acdb6b"
+      },
+      "immutable_state_ref": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    },
+    {
+      "checkpoint": {
+        "source_head": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+        "owner_head": "c552d0108091bb48ec851e42f43e6ae852d4bdba",
+        "processed_at_utc": "2026-10-05T04:47:13.892913+00:00",
+        "run_id": "manual-chart-portable-preflight-20261005T041827682Z",
+        "input_heads": {
+          "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+          "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "41": "395a24eef42fde2ddec8831808daba5e768d72e2",
+          "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+          "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
+        },
+        "global_head": "af264713b99471fb554e06e8d321f5039be47b47",
+        "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "qgv_architecture_head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505",
+        "approval_effective_kst": "2026-10-05T13:13:37+09:00",
+        "status": "INDEPENDENT_DIAGNOSTIC_REPAIRS_IMPLEMENTED_VERIFIED_LATE_OWNER_EVIDENCE_RECONSUMED",
+        "evidence_refs": [
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/VALIDATION_RECEIPT.json",
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/LATE_OWNER_INTAKE.json",
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json"
+        ],
+        "ci_terminal_claim": false,
+        "semantic_input_fingerprint": "86a374fbf00c231f289f7607e0f4705c283f35aa582004ca1a9d263a20fc2548"
+      },
+      "immutable_state_ref": "a5403a969021021cd3f489173603bc657365097f:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    },
+    {
+      "checkpoint": {
+        "source_head": "a5403a969021021cd3f489173603bc657365097f",
+        "owner_head": "395a24eef42fde2ddec8831808daba5e768d72e2",
+        "processed_at_utc": "2026-10-05T04:55:05.915Z",
+        "run_id": "manual-chart-fpia-terminal-20261005T045005736Z",
+        "input_heads": {
+          "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+          "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "41": "395a24eef42fde2ddec8831808daba5e768d72e2",
+          "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+          "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65"
+        },
+        "global_head": "af264713b99471fb554e06e8d321f5039be47b47",
+        "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "qgv_architecture_head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505",
+        "approval_effective_kst": "2026-10-05T13:13:37+09:00",
+        "status": "EXACT_FPIA_TERMINAL_SUCCESS_CONSUMED_QUEUE_CLEARED_GOVERNANCE_OWNER_GATED",
+        "evidence_refs": [
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/HANDOFF.md",
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json",
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/GATES_AND_GAPS.json",
+          "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/PUBLICATION_RECEIPT.json"
+        ],
+        "ci_terminal_claim": true,
+        "governance_closure": false,
+        "actual_chart_merge_result_fpia": "NOT_RUN",
+        "semantic_input_fingerprint_subject": {
+          "global": "af264713b99471fb554e06e8d321f5039be47b47",
+          "fpia_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "run": 37260997788,
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "result_sha256": "bec51ed8f57db64ebd6239fc6cb25437b87cfd3fbc3e64c1e7de25214f83633d",
+          "remaining_gates": 6
+        },
+        "semantic_input_fingerprint": "6d81a843c55dd5c441fa99e9101edeee6fe6198cdeaad05ee49ffbfc02b37778"
+      },
+      "immutable_state_ref": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    },
+    {
+      "retained_at_utc": "2026-10-05T06:27:01.193Z",
+      "last_processed": {
+        "source_head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+        "owner_head": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+        "processed_at_utc": "2026-10-05T05:57:20.531Z",
+        "run_id": "manual-chart-fixture-review-20261005T052509016Z",
+        "input_heads": {
+          "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+          "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "41": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+          "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+          "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+          "46": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
+        },
+        "global_head": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+        "qgv_architecture_head": "2ba29b048c8601145c4a2cca0f85299c07262286",
+        "platform_owner_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+        "platform_storage_auth_audit_head": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+        "approval_effective_kst": "2026-10-05T14:18:36+09:00",
+        "status": "INDEPENDENT_SAMPLE_RENDERER_IMPLEMENTED_VERIFIED_FRESH_OWNER_INTAKE_COMPLETE_SIX_PRODUCTION_GATES_OPEN",
+        "evidence_refs": [
+          "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/HANDOFF.md",
+          "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/VALIDATION_RECEIPT.json",
+          "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/INDEPENDENT_REVIEW.json",
+          "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/GATES_AND_GAPS.json",
+          "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json"
+        ],
+        "ci_terminal_claim": false,
+        "semantic_input_fingerprint": "8725e6dc12163dbf8a4ecb44d46fd6eb73e35d6fa5b6b108784273f6ef00bc33",
+        "ci_terminal_observations": {
+          "latest_a3_non_FPIA_FAILURE": 6,
+          "latest_a3_FPIA": "IN_PROGRESS",
+          "integration_bundle_success_claim": false
+        }
+      },
+      "reason": "Preserve verified v09 product evidence before policy-only v010 continuation"
+    },
+    {
+      "checkpoint": {
+        "source_head": "4752bca2d58a61ef5821a0556b6480fc527fac80",
+        "owner_head": "c21d47d8d5d0c59b1ae9795258fc21cb3667a127",
+        "processed_at_utc": "2026-10-05T06:27:01.193Z",
+        "run_id": "manual-chart-risk-policy-20261005T061947755Z",
+        "input_heads": {
+          "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+          "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "41": "c21d47d8d5d0c59b1ae9795258fc21cb3667a127",
+          "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+          "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+          "46": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
+        },
+        "global_head": "9cd598c5564827418115ebb15c1c88a0e7811bab",
+        "qgv_architecture_head": "2ba29b048c8601145c4a2cca0f85299c07262286",
+        "platform_owner_head": "78a51462f89eac8e34647cddc4e53ed97e831178",
+        "platform_storage_auth_audit_head": "11dba838c6e27430aa07957f69e4ae8b270c999b",
+        "approval_effective_kst": "2026-10-05T14:18:36+09:00",
+        "status": "RISK_POLICY_ADOPTED_EXISTING_PRODUCT_EVIDENCE_REUSED_NO_NEW_PRODUCTION_GATE_CLOSURE",
+        "evidence_refs": [
+          "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/HANDOFF.md",
+          "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json",
+          "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md"
+        ],
+        "ci_terminal_claim": false,
+        "semantic_input_fingerprint": "ed2f3a1be326fdc9d918dfbc9a158a917d03dc18411e1ae20f3f6301e6fc16f2",
+        "ci_terminal_observations": {
+          "latest_a3_non_FPIA_FAILURE": 6,
+          "latest_a3_FPIA": "IN_PROGRESS",
+          "integration_bundle_success_claim": false
+        },
+        "policy_version": "chart-v0.10",
+        "new_product_verification": false
+      },
+      "immutable_state_ref": "40a5c266322d36dbf30a683f6f632508352145bc:implementation/experiments/chart-contract-v0.1/automation/STATE.json"
+    },
+    {
+      "source_head": "40a5c266322d36dbf30a683f6f632508352145bc",
+      "owner_head": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
+      "processed_at_utc": "2026-10-05T06:37:31.129Z",
+      "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+      "input_heads": {
+        "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+        "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+        "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "41": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
+        "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+        "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+        "46": "a3e3f6cf5452d056de2df7845a17014765aa3ff3"
+      },
+      "global_head": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "status": "PR46_EXACT_FPIA_TERMINAL_FAILURE_CONSUMED_QUEUE_CLEARED_OWNER_ACTION_REQUIRED",
+      "evidence_refs": [
+        "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/HANDOFF.md"
+      ],
+      "ci_terminal_claim": true,
+      "governance_closure": false,
+      "actual_chart_merge_result_fpia": "NOT_RUN",
+      "metrics": {
+        "requirements_closed": 0,
+        "blockers_closed": 0,
+        "new_chart_product_blockers": 0,
+        "vertical_slice_progress": "UNCHANGED_IMPLEMENTATION_NOT_READY",
+        "production_ready_contracts": 0,
+        "frontend_ready_contracts": "SAMPLE_ONLY_PREVIOUSLY_VERIFIED"
+      },
+      "semantic_input_fingerprint_subject": {
+        "pr": 46,
+        "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "run": 37267962000,
+        "attempt": 1,
+        "job": 111628676484,
+        "status": "completed",
+        "conclusion": "failure",
+        "result_sha256": "3f7b27e7fc9c1d25fc9dc66cc9db76f37ad43b338289a3022c3c7012d263b41d",
+        "remaining_gates": 6
+      }
+    },
+    {
+      "source_head": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+      "owner_head": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+      "processed_at_utc": "2026-10-05T07:23:44.868132+00:00",
+      "run_id": "manual-chart-figma-20261005T064515261Z",
+      "input_heads": {
+        "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+        "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+        "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "41": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+        "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+        "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+        "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6"
+      },
+      "global_head": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
+      "status": "FIGMA_EDITABLE_SAMPLE_STRUCTURAL_VERIFIED_POST_FIX_VISUAL_QUOTA_BLOCKED_PR46_EXACT_FPIA_PASS_CONSUMED",
+      "evidence_refs": [
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json"
+      ],
+      "ci_terminal_claim": true,
+      "governance_closure": false,
+      "actual_chart_merge_result_fpia": "NOT_RUN"
+    },
+    {
+      "at_utc": "2026-10-05T09:14:49.571Z",
+      "last_processed": {
+        "source_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
+        "owner_head": "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
+        "processed_at_utc": "2026-10-05T07:31:00.597Z",
+        "run_id": "manual-chart-late-global-20261005T072727874Z",
+        "input_heads": {
+          "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+          "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "41": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+          "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+          "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+          "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6"
+        },
+        "global_head": "7dac637f499a0771b3eb54da24295624f0803558",
+        "status": "LATE_MAIN_COVERAGE_RECEIPT_CDR022_CONSUMED_GATES6_UNCHANGED_READY_INDEPENDENT0",
+        "evidence_refs": [
+          "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json",
+          "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md"
+        ],
+        "ci_terminal_claim": true,
+        "governance_closure": false,
+        "actual_chart_merge_result_fpia": "NOT_RUN"
+      },
+      "reason": "Verified nativeSAMPLE implementation + delegatedpolicy checkpoint"
+    },
+    {
+      "at_utc": "2026-10-05T09:18:52.550Z",
+      "last_processed": {
+        "source_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
+        "owner_head": "d84afa219221e31ca78f5759360ae97489a0c8d2",
+        "processed_at_utc": "2026-10-05T09:14:49.571Z",
+        "run_id": "manual-chart-magicpath-d3a-2026-10-05T090050954Z",
+        "input_heads": {
+          "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+          "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+          "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+          "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+          "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+          "41": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+          "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+          "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+          "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+          "47": "7215a9f60ad7128b1748f405051eac684298614f"
+        },
+        "global_head": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+        "status": "NATIVE_MAGICPATH_SAMPLE_IMPLEMENTED_VERIFIED_D3AR_ADOPTED_GATES6_UNCHANGED",
+        "evidence_refs": [
+          "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md",
+          "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json",
+          "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BROWSER_CHECK.json"
+        ],
+        "ci_terminal_claim": false,
+        "governance_closure": false,
+        "actual_chart_merge_result_fpia": "NOT_RUN"
+      },
+      "reason": "D1 one dangling planning reference corrected and byte verified; immutable first reference in scoped correction_history"
+    },
+    {
+      "source_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
+      "owner_head": "1e8d6334a8b99cdba77ea4ea1d59492d72ecfaa8",
+      "processed_at_utc": "2026-10-05T09:18:52.550Z",
+      "run_id": "manual-chart-write-set-link-2026-10-05T091729146Z",
+      "input_heads": {
+        "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+        "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+        "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "41": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+        "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+        "45": "17244b4f1be0d3b2423d91f76af8b0ad2c262a65",
+        "46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+        "47": "7215a9f60ad7128b1748f405051eac684298614f"
+      },
+      "global_head": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+      "status": "V013_NATIVE_SAMPLE_AND_POLICY_VERIFIED_SCOPED_REFERENCE_REPAIR_COMPLETE",
+      "evidence_refs": [
+        "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/HANDOFF.md",
+        "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/BROWSER_CHECK.json"
+      ],
+      "ci_terminal_claim": false,
+      "governance_closure": false,
+      "actual_chart_merge_result_fpia": "NOT_RUN"
+    }
+  ],
+  "pending_history": [
+    {
+      "immutable_state_ref": "a5403a969021021cd3f489173603bc657365097f:implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+      "pending": [
+        {
+          "kind": "READ_ONLY_OWNER_DEPENDENCY_CI",
+          "run_id": "manual-chart-dependency-delta-20261005T030326898Z",
+          "pr": 42,
+          "owner_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+          "last_observed_at_utc": "2026-10-05T04:29:58Z",
+          "runs": [
+            {
+              "id": 37260997788,
+              "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+              "name": "track-c-fpia",
+              "event": "pull_request",
+              "status": "in_progress",
+              "conclusion": null,
+              "attempt": 1,
+              "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997788"
+            }
+          ],
+          "required_disposition": "Re-read exact run_id+attempt+head, record actual conclusion; no other-owner dispatch/write. CI completion alone does not close A-G3; independent owner review/governance/G7/GIE still required.",
+          "evidence_refs": [
+            "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json",
+            "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FRESH_GITHUB_READ.json"
+          ]
+        }
+      ],
+      "disposition": "EXACT_COMPLETED_SUCCESS_CONSUMED",
+      "consumed_at_utc": "2026-10-05T04:53:10.015213+00:00",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/FPIA_TERMINAL_RECEIPT.json"
+    },
+    {
+      "immutable_state_ref": "166cf26ad2d2982bf890e5b4446019d7f873ff6d:implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+      "pending": [],
+      "disposition": "NEW_EXACT_A3_CI_DELTA_6_FAILURES_CONSUMED_ONE_RUNNING",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json",
+      "consumed_at_utc": "2026-10-05T05:57:20.531Z"
+    },
+    {
+      "immutable_state_ref": "40a5c266322d36dbf30a683f6f632508352145bc:implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+      "pending": [
+        {
+          "kind": "READ_ONLY_OWNER_DEPENDENCY_CI",
+          "pr": 46,
+          "owner_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "runs": [
+            {
+              "id": 37267962000,
+              "name": "track-c-fpia",
+              "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+              "attempt": 1,
+              "status": "in_progress",
+              "conclusion": null,
+              "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000"
+            }
+          ],
+          "last_observed_at_utc": "2026-10-05T05:59:21.347883+00:00",
+          "required_disposition": "Re-read exact run+attempt+head/job/log; consume actual terminal status; six other owner workflows already failed with two deterministic D002 self-constraint regressions. No retry/dispatch/owner branch write. Terminal CI does not close A-G3.",
+          "evidence_refs": [
+            "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_LATE_STATUS.json",
+            "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json"
+          ]
+        }
+      ],
+      "disposition": "EXACT_TERMINAL_FAILURE_CONSUMED_NO_RETRY_OTHER_OWNER_ACTION_REQUIRED",
+      "consumed_at_utc": "2026-10-05T06:37:31.129Z",
+      "receipt": "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json"
+    },
+    {
+      "at_utc": "2026-10-05T09:08:30.805Z",
+      "pending": [
+        {
+          "kind": "READ_ONLY_FIGMA_POST_FIX_VISUAL_CHECK",
+          "file_key": "CoAKYXmagWAS8LRRkpqbZr",
+          "node_ids": [
+            "6:36",
+            "6:37",
+            "6:38"
+          ],
+          "disposition": "EXTERNAL_TOOL_QUOTA_BLOCKED; retry only when access restored, no paid upgrade/newfile/productiongate",
+          "required": "Three post-fix screenshots compare with SOURCE_VIEW/current browser; no source implementation rerun",
+          "does_not_block_independent_chart_work": true
+        }
+      ],
+      "disposition": "FigmaNOT_RUN retained as historical evidence; userMagicPathprimary supersedes active design prerequisite"
+    },
+    {
+      "prior": {
+        "kind": "OWNER_EXACT_CI_FOLLOWUP",
+        "pr": 47,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "run_id": 37284465900,
+        "attempt": 1,
+        "workflow": "track-c-fpia",
+        "observed_status": "in_progress",
+        "last_observed_at_utc": "2026-10-05T09:08:30.805Z",
+        "role": "Read-only consume currentterminalreceipt, Mainownsrepair/governance",
+        "does_not_block_independent_chart_work": true
+      },
+      "disposition": "CONSUMED_TERMINAL_SUCCESS",
+      "recorded_at_utc": "2026-10-05T10:56:45.810Z",
+      "evidence_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+      "evidence": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/CI_TERMINAL_RECEIPT.json",
+      "governance_closed": false
+    }
+  ],
+  "prepared_publication": {
+    "status": "REMOTE_BYTES_VERIFIED",
+    "evidence_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+    "packet": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/",
+    "files": 11,
+    "manifest": 151
+  },
+  "owner_actions_current": {
+    "fpia_latest_source": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+    "owner": "Main/Integration",
+    "ci_failures": [],
+    "technical_ci": "7_OF_7_SUCCESS_FPIA_PASS",
+    "governance_closure": false,
+    "next_action": "Current review/coverage/launcher/admissibility/GIE receipt; no Chart duplicate Main implementation",
+    "coverage_proposal": "ce2ea5b08b600b07c9a6ba9179a47ea8e199c497",
+    "coverage_status": "COVERAGE_BLOCKED"
+  },
+  "coordination_repair_history": [
+    {
+      "scope": "CURRENT_RELEASE_SCRATCH_PREPARATION",
+      "failure": "apply_patch rejected delete/add same file operations; no mutation",
+      "repair": "Rewrote scratch release draft with Python; validate content, fingerprint and hashes before API publication"
+    },
+    {
+      "scope": "V012_PUBLICATION_READBACK",
+      "failure": "Immediate post-update PR41 GET had previous head; no retry mutation performed",
+      "repair": "Fresh ref,branch,PR,commit and git ls-remote all matched f3ec522; all11writtenbytes verified",
+      "classification": "TRANSIENT_READ_PROPAGATION",
+      "initial_failure_preserved": true
+    },
+    {
+      "scope": "LATE_INTAKE_SCRATCH",
+      "failure": "Local variable text shadowed output helper after files prepared; no ref mutation from failed script",
+      "repair": "Resumed saved prepared content; exact4remote files verified",
+      "initial_failure_preserved": true
+    },
+    {
+      "at_utc": "2026-10-05T09:09:24.591Z",
+      "kind": "LOCAL_DRAFT_WRITE",
+      "first_failure": "exec Argument list too long, no process created/no file mutation",
+      "repair": "Write JSON string chunks through apply_patch and atomic concat; no authority/financial change"
+    },
+    {
+      "at_utc": "2026-10-05T09:18:52.550Z",
+      "type": "D1_WRITE_SET_REFERENCE_CORRECTION",
+      "first_reference": "p0-owner-intake-v0.9/WRITE_SET.json nonexistent",
+      "repair": "Existing p0-fixture-review-v0.9/WRITE_SET.json#production_candidates + exact Main conditional acceptance receipt, all_gatefalse verified",
+      "production_gate_delta": 0
+    }
+  ],
+  "execution_policy_history": [
+    {
+      "policy": {
+        "version": "chart-v0.7",
+        "path": "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
+        "authority": "Latest explicit user Chart instruction 2026-10-05T13:01:31+09:00",
+        "global_only_semantic_change_is_input": true,
+        "after_all_six_closed": "AUTOMATIC_APPROVED_WRITE_SET_PRODUCTION_VERTICAL_SLICE",
+        "actual_D3_boundary_preserved": true,
+        "latest_user_continuation_kst": "2026-10-05T13:13:37+09:00",
+        "independent_d1_d2_completion": "Existing SAMPLE UI defects, validation/evidence/handoff continue while production owner/CI inputs remain",
+        "latest_user_tools_instruction_kst": "2026-10-05T14:18:36+09:00",
+        "tools_use_scope": "Read actual versions/docs/access first; use one design tool selected target; no new design/approval restart; connected service is not production authority"
+      },
+      "superseded_by": "chart-v0.10"
+    },
+    {
+      "at_utc": "2026-10-05T09:08:30.805Z",
+      "policy": {
+        "version": "chart-v0.10",
+        "path": "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md",
+        "authority": "Latest explicit user Risk-Proportional Verification instruction 2026-10-05",
+        "global_only_semantic_change_is_input": true,
+        "after_all_six_closed": "AUTOMATIC_APPROVED_WRITE_SET_PRODUCTION_VERTICAL_SLICE",
+        "actual_D3_boundary_preserved": true,
+        "latest_user_continuation_kst": "2026-10-05T13:13:37+09:00",
+        "independent_d1_d2_completion": "Existing SAMPLE UI defects, validation/evidence/handoff continue while production owner/CI inputs remain",
+        "latest_user_tools_instruction_kst": "2026-10-05T14:18:36+09:00",
+        "tools_use_scope": "Read actual versions/docs/access first; use one design tool selected target; no new design/approval restart; connected service is not production authority",
+        "risk_proportional_verification": true,
+        "classes": [
+          "FAST",
+          "STANDARD",
+          "CRITICAL"
+        ],
+        "full_regression_by_default": false,
+        "agent_budget": {
+          "default_chart_owner": 1,
+          "optional_backend_pit_verifier": 1,
+          "visual_adversarial_panel": false
+        },
+        "evidence_reuse": "Exact current tree/input compatibility; no repeated completed UI/raw audits; reused PASS remains historical",
+        "latest_user_risk_policy": "2026-10-05",
+        "run_metrics": [
+          "requirements_closed",
+          "blockers_closed",
+          "new_blockers",
+          "vertical_slice_progress",
+          "production_ready_contracts",
+          "frontend_ready_contracts"
+        ],
+        "primary_design_tool": {
+          "provider": "MagicPath",
+          "project_id": "457727891984232448",
+          "component_id": "457764208520613888",
+          "revision_id": "457764208524808192",
+          "scope": "SAMPLE_PRESENTATION_IMPLEMENTED_VERIFIED",
+          "fallback": "EXISTING_GITHUB_RENDERER_LOCAL_BROWSER_ARTIFACTS_AUTO_CONTINUE",
+          "historicalFigma": "Preserve3views; historicalfinalvisualNOT_RUN notactiveprerequisite"
+        },
+        "ssot_execution_loop": {
+          "decision": "CDR-022",
+          "global": "7dac637f499a0771b3eb54da24295624f0803558",
+          "independent_ready_continue_after_checkpoint": true,
+          "protected_authority_unchanged": true
+        },
+        "delegated_approval": {
+          "version": "D3 Delegated Approval Policy v1.0",
+          "classes": [
+            "D1",
+            "D2",
+            "D3-A",
+            "D3-R"
+          ],
+          "condition": "All user conditions + concrete existingSSoT authority proof, reversible independently/deterministically verified conservative choice",
+          "reserved": "User supplied full reserved list in DECISION_RECEIPT.json",
+          "unknown": "D3-R",
+          "scope": "Only dependentlane waits; does not replace actualsource facts/ownerwrite-set/governance",
+          "receipt": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json"
+        }
+      },
+      "reason": "Latest user MagicPath primary/fallback and D3-A/R delegated authority"
+    },
+    {
+      "version": "chart-v0.10",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/EXECUTION_POLICY.md",
+      "authority": "Latest explicit user Risk-Proportional Verification instruction 2026-10-05",
+      "global_only_semantic_change_is_input": true,
+      "after_all_six_closed": "AUTOMATIC_APPROVED_WRITE_SET_PRODUCTION_VERTICAL_SLICE",
+      "actual_D3_boundary_preserved": true,
+      "latest_user_continuation_kst": "2026-10-05T13:13:37+09:00",
+      "independent_d1_d2_completion": "Existing SAMPLE UI defects, validation/evidence/handoff continue while production owner/CI inputs remain",
+      "latest_user_tools_instruction_kst": "2026-10-05T14:18:36+09:00",
+      "tools_use_scope": "Read actual versions/docs/access first; use one design tool selected target; no new design/approval restart; connected service is not production authority",
+      "risk_proportional_verification": true,
+      "classes": [
+        "FAST",
+        "STANDARD",
+        "CRITICAL"
+      ],
+      "full_regression_by_default": false,
+      "agent_budget": {
+        "default_chart_owner": 1,
+        "optional_backend_pit_verifier": 1,
+        "visual_adversarial_panel": false
+      },
+      "evidence_reuse": "Exact current tree/input compatibility; no repeated completed UI/raw audits; reused PASS remains historical",
+      "latest_user_risk_policy": "2026-10-05",
+      "run_metrics": [
+        "requirements_closed",
+        "blockers_closed",
+        "new_blockers",
+        "vertical_slice_progress",
+        "production_ready_contracts",
+        "frontend_ready_contracts"
+      ],
+      "primary_design_tool": {
+        "provider": "MagicPath",
+        "project_id": "457727891984232448",
+        "component_id": "457764208520613888",
+        "revision_id": "457764208524808192",
+        "scope": "SAMPLE_PRESENTATION_IMPLEMENTED_VERIFIED",
+        "fallback": "EXISTING_GITHUB_RENDERER_LOCAL_BROWSER_ARTIFACTS_AUTO_CONTINUE",
+        "historicalFigma": "Preserve3views; historicalfinalvisualNOT_RUN notactiveprerequisite"
+      },
+      "ssot_execution_loop": {
+        "decision": "CDR-022",
+        "global": "7dac637f499a0771b3eb54da24295624f0803558",
+        "independent_ready_continue_after_checkpoint": true,
+        "protected_authority_unchanged": true
+      },
+      "delegated_approval": {
+        "version": "D3 Delegated Approval Policy v1.0",
+        "classes": [
+          "D1",
+          "D2",
+          "D3-A",
+          "D3-R"
+        ],
+        "condition": "All user conditions + concrete existingSSoT authority proof, reversible independently/deterministically verified conservative choice",
+        "reserved": "User supplied full reserved list in DECISION_RECEIPT.json",
+        "unknown": "D3-R",
+        "scope": "Only dependentlane waits; does not replace actualsource facts/ownerwrite-set/governance",
+        "receipt": "implementation/experiments/chart-contract-v0.1/p0-magicpath-review-v0.13/DECISION_RECEIPT.json"
+      }
+    }
+  ],
+  "prepared_publication_history": [
+    {
+      "status": "VERIFIED_REMOTE_PUBLICATION",
+      "run_id": "manual-chart-fixture-review-20261005T052509016Z",
+      "source_start_head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+      "preparation_parent": "eedab5922db453a7b11a851cf57844064ce00f3f",
+      "Global": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "PR46": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "output_sha256": {
+        "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "d9cd1f8aedad88efe6a4801d2b27d7516da8250646253d90033f98905c47a4cc",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/AUTOMATION_RECHECK.json": "a39718e0bda470778a1097d83ed0276f15a1de34556a9e41aa895f24d001df25",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_CANDLES.json": "97542489b878925db5833728c06df1b0178d5e28163fa777d317368c12f2e614",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_EXISTING_PORTFOLIO.json": "6fa1659d9eb753ec3bf9d3a36e050d40b610e1036cda30ed96f3fb317889cdb3",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/BROWSER_REVIEW.json": "209ea26a1c990f72bebad89e8142253b4d7f30578e77d8d2a746bb2e400958ba",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_FAILURE_CLASSIFICATION.json": "90eae08265c9e99be6c8f6ebdb8b845f0e30e6b07cf8d615dac3dd2f43545b34",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/CI_LATE_STATUS.json": "36cd7153828670aa0ab5d544fb6ed52ec7b40dbe6cf4934bae0927343d7d045c",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DECIMAL_REFERENCE_VERIFY.json": "69c9d7f78bc19aa31919edafcb4463bb63ce52e192fbf2a429af76df1297c919",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/DOCS_AND_VERSION_RECEIPT.json": "545da2b76a514b5432cc06e71b092cfd071ea36be0e9dbe5fc3e658b6e473a0c",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_CURRENT_HEAD_RECEIPT.json": "32e988158c14e516afa4842e3909287df93174fe4ef743619c6aa131fd3f6884",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FPIA_TERMINAL_RECEIPT.json": "f03fc6e57b7c51c344b3b429e0c69b4769c0f66c312f4ba9ee0e1c7e95d121d1",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/FRESH_OWNER_INTAKE.json": "917ffc6c3f4b25c859132bfe39decc1757b591a7bdae40349c7ec00c65995b06",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/GATES_AND_GAPS.json": "e593d695bf82ccd7a74053df05a4e2553bf0769a6d0f974d1e935cc1f9924be7",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/HANDOFF.md": "707387334ddf8cbc095ffd483809aab9b6e35f9d41cd81b2e5b1e353ef324a19",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/INDEPENDENT_REVIEW.json": "b90cf9d494ccb976d26a3638778305f46ab1d3cca962ee97cb53b024073e4d0a",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/LATE_OWNER_INTAKE.json": "b18fab2bb93d235608adfea9ce32cb1d756e205f625575701ab63851e0204a8d",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/MAGICPATH_RECEIPT.json": "39fca6e09418fdfb44ef288d914c22819ef37426f430572f616254edf501726f",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/NODE_75_PASS.log": "f9752faf003a288825de60264de8c7e27c00200c3dc7f3259dc3af84fc78c18a",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/OPTIONAL_OWNER_DELTA.json": "e0dc0157d336a911a8645d3652d181de6b93ae84182da039933e7c442079bd0a",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_BROWSER_PATH_FAILURE.log": "23d401c49c765592264862a26006e9bd7f65b92b3d874fc973770b4486a4584a",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_EMPTY_CATALOG_FAILURE.log": "81b5a6106efb2c13c84b3a84fa6324ec309a31631daa3fe9157d16f933834d35",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.json": "40089c470d465ec225892a0a099b5568c27d3ea26f055e83b2168d46b80a03b5",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/ORIGINAL_MISSING_ZERO_FAILURE.log": "f5c0d79bac6d87dbe81d97096375e4f6d2697cf2a44f4a52af1a424c9f859997",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/REVIEW_CLOSURE_PROBES.json": "e6806d3d1314b06a77d132d8df11ede45b42ac71f7293fe88da2536aa3e01b03",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/VALIDATION_RECEIPT.json": "9dae94405e131bc9afba300e7230dda81594da280591eba1e4534ec7880151d1",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/WRITE_SET.json": "89052fd3a3bc0e8c3b1a1e585492b36881217fd0fb511762707017132c39b337",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/baseline-1280.png": "e83a32c89910fa8acda68314fe150992c7ffac48a96745f9063bf5faa2038a82",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/demo-1280.png": "4a021314538c412efb8e030110afc627629008d082d032f5247324ee47aa55dd",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-1280.png": "5757129040497fecf9b5dbbbb959185fc007649d65c89c42bb14679b852535e6",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/browser/reference-390.png": "f4b485768fd1f5c33d3111e8d47e9b446c6e01054f8a5ecdeb0535779bd816f9",
+        "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/fixture_browser_test.cjs": "7f295d0b18cfad6a937eb77d990116ef1f1332bd25c63c6455c8e7d0f648bfc8",
+        "implementation/experiments/chart-contract-v0.1/page.html": "80d549d2c2040ccac633059f642c3dc2a7b11f5f05484dd456c08a621efea7d2",
+        "implementation/experiments/chart-contract-v0.1/portfolio_app.js": "ab6e2ea167d95d04619b096ce8f3518de6128d7f248d4967424761ffe2eb4016",
+        "implementation/experiments/chart-contract-v0.1/portfolio_browser_test.cjs": "b4bf3053b40b9bdfc14874fb377ed9820bca64efe7c9b7062f1284d4c8dd7c9a"
+      },
+      "scoped_handoff": "implementation/experiments/chart-contract-v0.1/p0-fixture-review-v0.9/HANDOFF.md",
+      "do_not_advance_processed_before_remote_verification": true,
+      "optional_owner_heads": {
+        "qgv_architecture": "2ba29b048c8601145c4a2cca0f85299c07262286",
+        "platform_storage_auth_audit": "11dba838c6e27430aa07957f69e4ae8b270c999b"
+      },
+      "verified_head": "166cf26ad2d2982bf890e5b4446019d7f873ff6d",
+      "verified_at_utc": "2026-10-05T05:54:56.485Z"
+    },
+    {
+      "status": "VERIFIED_REMOTE_PUBLICATION",
+      "run_id": "ci-chart-pr46-terminal-20261005T063243306Z",
+      "source_start_head": "a7cd5053274849b2cfe2407bdb4da0b9d96dfc72",
+      "subject_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "workflow_run_id": 37267962000,
+      "evidence_paths": [
+        "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/PR46_FPIA_TERMINAL_FAILURE_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-ci-followup-v0.11/HANDOFF.md",
+        "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
+      ],
+      "do_not_advance_processed_before_remote_verification": true,
+      "evidence_commit": "01a150a2b640c188436fe8cd4fc988a2482c57f8",
+      "verified_at_utc": "2026-10-05T06:37:31.129Z"
+    },
+    {
+      "status": "VERIFIED_REMOTE_PUBLICATION",
+      "run_id": "manual-chart-figma-20261005T064515261Z",
+      "source_start_head": "cff8172625ab8602a75b334cddf5fd5c0dc942d3",
+      "preparation_parent": "a5cf1a1862aac7340dabfe169f4383da89f610cb",
+      "Global": "f03ac7134b3eede061a85b1f0ef2b6e9ab5631e8",
+      "PR46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "output_sha256": {
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/BROWSER_CHECK.json": "363b443697c017e762eab8fafbd981860a32921a5072c25e7bda040bc3d5e2ce",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_CALLS.json": "7f6a32c08598502ca2a2d21c1caf99e101cf4e87de3afea8200165516acf705e",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json": "0b63213cd7eeaa23a1b11ee5f80096a1a081f12a53716c90343b837ba83987b6",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json": "2c2792b6694e32ec9ad1cfb8b9b585ecaace9ae51a313e0ace3b0c6f5f4cded8",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json": "1104d448c3dd08a7a07698de9c3310d0ff3ce6ff6dad3e62eadfe046982aab9b",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "c33306c865112950f4881ebc83676ca58b8e0a951eddb3b39ee4624e3846b57c",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json": "5f0987ad86b4cfb3e50a28facf3141e1ab75f5ab0ecf53a1bd05924d73bd192a",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json": "ce0431f5a991ff9dd376d6794b8118a654473279cd39e00271e8c8cba82bbb4a",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json": "197bc50dc796b1c5de98b57fefaec7279dae737e2f2471e474b9bf2cc22192f7",
+        "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "637bc08332ec20ede69180706edfd4c4c49fa4c0ad73eb4db6743b062eeeac27"
+      },
+      "evidence_paths": [
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/BROWSER_CHECK.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_CALLS.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FIGMA_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/FPIA_CURRENT_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/GATES_AND_GAPS.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/SOURCE_VIEW.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/VALIDATION_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/WRITE_SET.json",
+        "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
+      ],
+      "do_not_advance_processed_before_remote_verification": true,
+      "remaining_production_gates": 6,
+      "postfix_figma_visual": "NOT_RUN_TOOL_QUOTA_BLOCKED",
+      "evidence_commit": "f3ec522d20c44ee30eb334c20e15014fc036f66f",
+      "verified_at_utc": "2026-10-05T07:23:44.868132+00:00"
+    },
+    {
+      "status": "VERIFIED_REMOTE_PUBLICATION",
+      "run_id": "manual-chart-late-global-20261005T072727874Z",
+      "source_start_head": "e8bd9969ec73e218cd0ba17ff6a877d698c7dfee",
+      "preparation_parent": "5ad8432cefcf12a802395bc349cc34abd7a2eb45",
+      "Global": "7dac637f499a0771b3eb54da24295624f0803558",
+      "PR46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+      "output_sha256": {
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json": "c37a32a43dc7a1a5ec54d671152a58b8a4ef623957f1a62e3961098d7ae95fa3",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md": "677dc6c52a5066dbdd1237c34c4958b522cee5d78caff31eb0397185086cc3c3",
+        "implementation/experiments/chart-contract-v0.1/HANDOFF.md": "aed7f626f4c81ea3174b9383a859ea6cd6e4a2860935e9e22b54dd6ba54e27c3"
+      },
+      "evidence_paths": [
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/LATE_GLOBAL_RECEIPT.json",
+        "implementation/experiments/chart-contract-v0.1/p0-figma-review-v0.12/HANDOFF.md",
+        "implementation/experiments/chart-contract-v0.1/HANDOFF.md"
+      ],
+      "do_not_advance_processed_before_remote_verification": true,
+      "remaining_production_gates": 6,
+      "evidence_commit": "3c8610bb2e2862b532c46d0ef304d061e7932f9e",
+      "verified_at_utc": "2026-10-05T07:31:00.597Z"
+    }
+  ],
+  "policy_adoption_receipts": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-risk-policy-v0.10/POLICY_RECEIPT.json",
+      "policy_version": "chart-v0.10",
+      "product_requirements_closed": 0,
+      "production_gates_closed": 0
+    },
+    {
+      "classification": "D1_EXISTING_ADOPTED_POLICY_CONSUMPTION",
+      "decision": "CDR-024",
+      "global_head": "1596649912554116196c1ad3c1d41797219f5241",
+      "evidence_head": "c16b164a1d379ec4c26a36f178651f22b23f5ed3",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/POLICY_ADOPTION_RECEIPT.json",
+      "new_D3_A": 0,
+      "semantic_delta": "NONE"
+    }
+  ],
+  "owner_actions_history": [
+    {
+      "fpia_latest_source": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "owner": "Main/Integration",
+      "ci_failures": [
+        {
+          "id": 37267962003,
+          "name": "qgv-invalidation-binding",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962003"
+        },
+        {
+          "id": 37267962024,
+          "name": "us-equity-session",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962024"
+        },
+        {
+          "id": 37267961987,
+          "name": "p01-research-publication",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961987"
+        },
+        {
+          "id": 37267961909,
+          "name": "sec-primary-disclosure",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961909"
+        },
+        {
+          "id": 37267962109,
+          "name": "technical-real-producer",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962109"
+        },
+        {
+          "id": 37267961900,
+          "name": "technical-real-model",
+          "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+          "attempt": 1,
+          "status": "completed",
+          "conclusion": "failure",
+          "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961900"
+        }
+      ],
+      "root_cause": "D002 numeric threshold512 and literal40hex fixtures violate existing self-constraints; all6fullsuites2FAILED/2183PASSED",
+      "required": "Owner repairs own additive files and verifies full constraints/regression/successor CI; authenticated evidence/admissibility still required",
+      "chart_mutation_allowed": false,
+      "new_chart_D3": false
+    }
+  ]
+}

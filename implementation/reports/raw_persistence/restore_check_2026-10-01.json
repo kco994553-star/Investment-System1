@@ -1,0 +1,86 @@
+{
+ "kind": "RAW_ARTIFACT_RESTORE_CHECK",
+ "run": "https://github.com/kco994553-star/Investment-System1/actions/runs/36850391139",
+ "job_id": 110330389345,
+ "workflow": ".github/workflows/raw-artifact-restore-check.yml",
+ "head_sha": "4c2f2d006c62c016fa8a26dcafbf8598b92cfa73",
+ "conclusion": "success",
+ "artifact": {
+  "id": 10927496280,
+  "name": "c21-raw-store-36305927245",
+  "expired": false,
+  "expires_at": "2026-12-26T08:21:15Z",
+  "digest": "sha256:712e43bcc1fcd137e5e99ccdda2440850eda56015e02037293d8eac8db399f94",
+  "api_checked": "2026-10-01"
+ },
+ "timings_s": {
+  "download": 21,
+  "extract": 26,
+  "verify": 5.7
+ },
+ "extracted_bytes_du": 6186073534,
+ "top_level": [
+  "data",
+  "reports"
+ ],
+ "result": {
+  "archive_bytes": 451439890,
+  "archive_sha_match": true,
+  "blob_verification": {
+   "expected": 6808,
+   "present": 6808,
+   "verified": 6808,
+   "mismatched": [],
+   "status": "PASS"
+  },
+  "n_restored_manifests": 6808,
+  "restored_manifests_equal_committed": true,
+  "manifest_set_sha256": "1793423426f3272d909683c4f3595a70793350eae7047343a8d50a270899e828",
+  "restored_manifest_set_sha256": "1793423426f3272d909683c4f3595a70793350eae7047343a8d50a270899e828",
+  "n_history_dirs": 96,
+  "offline_replay_smoke": {
+   "passed": true,
+   "price_bars": {
+    "yahoo_chart:A:5y": 1253,
+    "yahoo_chart:AA:5y": 1253,
+    "yahoo_chart:AAL:5y": 1254
+   },
+   "companyfacts_json_parse": {
+    "companyfacts:0000001800": 3,
+    "companyfacts:0000002488": 5,
+    "companyfacts:0000002809": 3
+   }
+  },
+  "gate_evidence_vs_repo_info": {
+   "identical": 68,
+   "different": 7,
+   "only_in_artifact": 0,
+   "note": "information only; repo evidence finalized after run 36305927245"
+  },
+  "passed": true
+ },
+ "container_download": "BLOCKED: egress policy denied productionresultssa10.blob.core.windows.net (Claude cloud container); runner download succeeded",
+ "side_effects": "none: no upload, commit, release, deletion or retention change; downloading does not extend artifact retention",
+ "license_partition": {
+  "SEC_PUBLIC": {
+   "n": 3940,
+   "mb": 5932.7
+  },
+  "YAHOO": {
+   "n": 2700,
+   "mb": 178.7
+  },
+  "TIINGO": {
+   "n": 139,
+   "mb": 24.1
+  },
+  "STOOQ": {
+   "n": 28,
+   "mb": 0.0
+  },
+  "ISHARES": {
+   "n": 1,
+   "mb": 1.5
+  }
+ }
+}

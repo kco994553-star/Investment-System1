@@ -1,0 +1,81 @@
+{
+  "contract_id": "QGV_COMMON_CONTRACT_VNEXT_0.1",
+  "status": "INACTIVE_SPEC_ONLY",
+  "runtime_enabled": false,
+  "subject_ref": {
+    "id": "nvda-synthetic-audit",
+    "version": "synthetic-0.1",
+    "sha256": "b877426aa35af570e754b0be0ecff9f45830ce73bce558ee179b327e02e350b8",
+    "locator": "synthetic:subject"
+  },
+  "as_of": "2026-09-14T00:00:00Z",
+  "decision_time": "2026-09-14T00:00:00Z",
+  "calculated_at": "2026-10-04T11:28:23.405351+00:00",
+  "calculation_ref": {
+    "id": "legacy-analysis",
+    "version": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+    "locator": "git:b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/analysis.py"
+  },
+  "legacy_snapshot_ref": {
+    "id": "synthetic-golden-all70",
+    "version": "golden-0.1",
+    "sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040",
+    "locator": "golden_cases.json#all_70"
+  },
+  "config_binding_ref": null,
+  "namespace": "SANDBOX",
+  "inputs": [],
+  "factor_ref": {
+    "id": "Q:competitive_advantage",
+    "version": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+    "locator": "git:b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py"
+  },
+  "weight_ref": {
+    "id": "legacy-Q-weights",
+    "version": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+    "locator": "git:b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/factors.py"
+  },
+  "aggregation_ref": {
+    "id": "legacy-weighted",
+    "version": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+    "locator": "git:b8e39a2196a6d7794a04a0cd5393c68329e126ca:implementation/src/investment_system/qgv/scoring.py"
+  },
+  "legacy_score": 70,
+  "legacy_score_scale": "legacy factor score_0_100",
+  "confidence": {
+    "assessment": "UNASSESSED",
+    "level": null,
+    "method_ref": null,
+    "evidence_refs": [],
+    "reason_codes": [
+      "LEGACY_QUALITY_IS_NOT_CONFIDENCE"
+    ]
+  },
+  "coverage": {
+    "assessment": "UNASSESSED",
+    "legacy_state": "SYNTHETIC",
+    "numerator": null,
+    "denominator": null,
+    "ratio": null,
+    "method_ref": null,
+    "reason_codes": [
+      "NO_NEW_COVERAGE_FORMULA"
+    ]
+  },
+  "pit": {
+    "status": "UNASSESSED",
+    "policy_ref": null,
+    "reason_codes": [
+      "SYNTHETIC_GOLDEN_NOT_PIT_EVIDENCE"
+    ]
+  },
+  "limitations": [
+    "DOCUMENTATION_SAMPLE_ONLY",
+    "NO_RUNTIME_BINDING",
+    "RAW_VALUE_NOT_RECONSTRUCTED_FROM_NORMALIZED_SCORE"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "kind": "MANUAL_SETUP_AND_BOUNDED_CHECKPOINT_COMPLETION",
+  "packet_head": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c",
+  "source_head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+  "bootstrap_head": "df1743b22680cd6d56dd286fd737cb053a7175ad",
+  "validated_packet_tree": "edbce91adb942a43528ba1baa41b95f87a44046f",
+  "packet_changed_paths": 25,
+  "exact_bytes_verified": true,
+  "history_prefix_preserved": true,
+  "production_paths_changed": 0,
+  "handoff_comment": {
+    "id": 5986162506,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/42#issuecomment-5986162506",
+    "updated_at": "2026-10-05T00:40:32Z"
+  },
+  "handoff_body_sha256": "914a297f853ace5b89889161bdc041336b2d6ee24b098d996bed4d725d8fa84f",
+  "automations_enabled_in_this_chat": 2,
+  "actual_synchronize_delivery_observed": [
+    {
+      "id": "c6a58c40-c054-11f1-8074-9ef8b625a3b4",
+      "event": "synchronize",
+      "pr": 41,
+      "own_commit": "df1743b22680cd6d56dd286fd737cb053a7175ad"
+    },
+    {
+      "id": "285358a0-c055-11f1-9070-7a3eabeb507d",
+      "event": "synchronize",
+      "pr": 41,
+      "own_commit": "1a79c4bce4d0dc5ee8a63b5a2b7fa5975e98863c"
+    }
+  ],
+  "ci_pending": 0,
+  "lane_a": "IMPLEMENTATION_NOT_READY",
+  "open_gates": 6,
+  "closed_gates": 0,
+  "lane_b_admitted": 0,
+  "production_tests": "NOT_RUN",
+  "chart_merge_result_fpia": "NOT_RUN",
+  "coordination_release_head": "Resolve current containing commit/PR metadata; not a self-hash."
+}

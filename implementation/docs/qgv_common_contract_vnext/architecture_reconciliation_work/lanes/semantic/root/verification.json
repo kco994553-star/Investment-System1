@@ -1,0 +1,14 @@
+{
+  "C_new_checks": 38,
+  "G_new_checks": 21,
+  "approval_commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+  "manifest_sha256": "47fa4124d5f36d3d72ca201d2f39b0ee924428edf8b2befef0c0a411618b50b0",
+  "outputs_verified": 26,
+  "production_enforcement": "NOT_IMPLEMENTED",
+  "real_PIT_OOS": "NOT_RUN",
+  "reused_inputs_verified": 27,
+  "runtime_enabled": false,
+  "scheduler_hops_added": 0,
+  "status": "PASS_INACTIVE_ARTIFACT_AUTHORITY_CLOSURE_ONLY",
+  "validator_sha256": "e0c63011e26d906d0d5b7808e516c4db9f6fe1f9ce231083d1b6106c5bbd6eac"
+}

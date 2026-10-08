@@ -1,0 +1,19 @@
+{
+  "url": "https://query1.finance.yahoo.com/v8/finance/chart/NVDA?interval=1mo&range=5y&events=split",
+  "started_at": "2026-10-04T10:23:58.390860+00:00",
+  "http_status": 200,
+  "bytes": 8183,
+  "sha256": "928602422cfb5d63d7df588480705a413ddf78d2a24f1bc3e347d50727287a26",
+  "events": {
+    "splits": {
+      "1717214400": {
+        "date": 1718026200,
+        "numerator": 10.0,
+        "denominator": 1.0,
+        "splitRatio": "10:1"
+      }
+    }
+  },
+  "interval": "1mo",
+  "completed_at": "2026-10-04T10:24:05.099565+00:00"
+}

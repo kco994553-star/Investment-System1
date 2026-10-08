@@ -25,7 +25,7 @@ def test_financial_jpm_synthetic_path():
     assert snap.company_id == "jpm"
     assert snap.profile_kind == ProfileKind.FINANCIAL
     assert snap.synthetic is True
-    assert snap.V_policy_status.value == "PROVISIONAL_INITIAL_PRIOR"
+    assert snap.V_policy_status.value == "STANDARD v1 · UNCALIBRATED"
     assert snap.Q_score is not None
 
 
@@ -33,4 +33,4 @@ def test_book_persist_writes_snapshots(tmp_path):
     result = run_official_book(persist=False)
     assert len(result["snapshots"]) == 19
     assert "leaderboard" in result
-    assert result["snapshots"][0].get("V_policy_status") in {None, "PROVISIONAL_INITIAL_PRIOR", "VALIDATION_SELECTED"} or True
+    assert result["snapshots"][0].get("V_policy_status") in {None, "STANDARD v1 · UNCALIBRATED", "VALIDATION_SELECTED"} or True

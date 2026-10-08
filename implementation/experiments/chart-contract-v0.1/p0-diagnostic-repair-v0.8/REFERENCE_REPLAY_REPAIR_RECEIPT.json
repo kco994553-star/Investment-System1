@@ -1,0 +1,159 @@
+{
+  "kind": "REFERENCE_REPLAY_DIAGNOSTIC_REPAIR_V08",
+  "recorded_at_utc": "2026-10-05T04:22:42.589718+00:00",
+  "implementation_parent": "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+  "old_failure_history": {
+    "source_file_sha256": "4a7144057d259021380f12ad314156a6c97b7115f068f16a64daef29654d6d49",
+    "original_tool_sha256": "ca3a8bf5af7e2618a6e362b38d45d6ac59a2b6c5de9dda5bcb3423f89f90d6c3",
+    "original_probe_cases_preserved": [
+      {
+        "case": "missing_raw_source",
+        "fault_injection_scope": "In-memory replacement of one trusted source read only; no repository/raw bytes changed",
+        "read_paths": [
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "QGV Portfolio · Specification v1.1.md"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/src/investment_system/qgv/portfolio.py"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/src/investment_system/qgv/identifiers.py"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json"
+          }
+        ],
+        "source_inspection": "INVALID",
+        "open_count": 6,
+        "closed_count": 0,
+        "production_payload": null,
+        "actual": {
+          "status": "NOT_AVAILABLE",
+          "root": null,
+          "fallback_to_target": false
+        },
+        "input_unchanged": true,
+        "allocation_function_calls": 0,
+        "source_objects_checked": 4,
+        "findings": [
+          {
+            "code": "SOURCE_PIN_UNRESOLVED",
+            "path": "QGV Portfolio · Specification v1.1.md",
+            "message": "Command '['git', 'show', 'd93c7ace37603d91f1d9342152c97e8acb3d4e8c:QGV Portfolio · Specification v1.1.md']' returned non-zero exit status 128.",
+            "severity": "ERROR"
+          },
+          {
+            "code": "INVALID_REFERENCE_ALLOCATION",
+            "path": "/constituents",
+            "message": "immutable source checks failed; untrusted allocation is not evaluated",
+            "severity": "ERROR"
+          },
+          {
+            "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+            "path": "/owner_return",
+            "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+            "severity": "WARNING"
+          }
+        ],
+        "finding_result": "FAIL-CLOSED; secondary allocation diagnostic labels unexecuted computation as invalid"
+      },
+      {
+        "case": "raw_source_hash_mismatch",
+        "fault_injection_scope": "In-memory replacement of one trusted source read only; no repository/raw bytes changed",
+        "read_paths": [
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "QGV Portfolio · Specification v1.1.md"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/src/investment_system/qgv/portfolio.py"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/src/investment_system/qgv/identifiers.py"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json"
+          }
+        ],
+        "source_inspection": "INVALID",
+        "open_count": 6,
+        "closed_count": 0,
+        "production_payload": null,
+        "actual": {
+          "status": "NOT_AVAILABLE",
+          "root": null,
+          "fallback_to_target": false
+        },
+        "input_unchanged": true,
+        "allocation_function_calls": 0,
+        "source_objects_checked": 4,
+        "findings": [
+          {
+            "code": "SOURCE_HASH_MISMATCH",
+            "path": "QGV Portfolio · Specification v1.1.md",
+            "message": "exact Git source bytes differ",
+            "severity": "ERROR"
+          },
+          {
+            "code": "INVALID_REFERENCE_ALLOCATION",
+            "path": "/constituents",
+            "message": "immutable source checks failed; untrusted allocation is not evaluated",
+            "severity": "ERROR"
+          },
+          {
+            "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+            "path": "/owner_return",
+            "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+            "severity": "WARNING"
+          }
+        ],
+        "finding_result": "FAIL-CLOSED; secondary allocation diagnostic labels unexecuted computation as invalid"
+      }
+    ]
+  },
+  "repair_scope": "Numeric replay prerequisite branching only; no formulas, source pins, inputs, owner receipt schema, authentication, readiness gates or production route changed. Concurrent independent JSON RecursionError repair is owned by governance reviewer.",
+  "new_diagnostic_field": {
+    "name": "reference_replay",
+    "scope": "Reached reference replay stage only; no admission or publication authority",
+    "states": {
+      "NOT_RUN_SOURCE_INVALID": "Existing immutable/source prerequisite findings contain ERROR; arithmetic is not attempted.",
+      "FAILED": "Arithmetic was attempted and failed; INVALID_REFERENCE_ALLOCATION is retained.",
+      "COMPLETED_DIAGNOSTIC": "Reference-only rational arithmetic finished, with production rendering still prohibited."
+    }
+  },
+  "observed_tests": {
+    "command": "python -B implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_reference_replay_status.py -v",
+    "runner": "stdlib unittest actual execution",
+    "exit_code": 0,
+    "passed": 3,
+    "failed": 0,
+    "scenarios": [
+      "missing trusted source: SOURCE_PIN_UNRESOLVED, exact_decimal calls0, no INVALID_REFERENCE_ALLOCATION",
+      "hash-invalid trusted source: SOURCE_HASH_MISMATCH, exact_decimal calls0, no INVALID_REFERENCE_ALLOCATION",
+      "numeric failure: FAILED and INVALID_REFERENCE_ALLOCATION; successful replay: COMPLETED_DIAGNOSTIC and INPUT_COMPLETE_UNAUTHENTICATED"
+    ],
+    "all_six_gates_open": true,
+    "production_payload": null,
+    "actual": "NOT_AVAILABLE",
+    "input_mutations": 0
+  },
+  "snapshot_pins": {
+    "tool_relative_path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+    "tool_sha256_at_validation": "5ddfeaced404821d15f9a53cde0d4ee87f742f18e976e390764fd25a4d8364c1",
+    "test_relative_path": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/test_reference_replay_status.py",
+    "test_sha256": "8c36acc65d892a86e42ba8277a25aa0155834c55e2f3d9d36b10512274bed208"
+  },
+  "production_tests": "NOT_RUN",
+  "actual_chart_fpia": "NOT_RUN",
+  "source_collection": 0,
+  "source_mutations": 0,
+  "new_d3": [],
+  "commit_or_publish": false
+}

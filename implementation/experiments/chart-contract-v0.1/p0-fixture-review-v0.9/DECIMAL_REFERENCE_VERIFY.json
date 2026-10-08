@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "source": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+  "source_sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96",
+  "source_authority": "USER_SPEC_REFERENCE_ONLY_NOT_CURRENT_TARGET_ADMISSION",
+  "constituents": 19,
+  "denominator": "10000",
+  "cash_units": 0,
+  "group_percent": {
+    "반도체 장비": "30.0",
+    "AI·반도체": "25.00",
+    "Big Tech": "20.0",
+    "기타산업": "25.00"
+  },
+  "sum_percent": "100",
+  "actual": "NOT_AVAILABLE",
+  "types_unknown": true,
+  "security_unresolved": true
+}

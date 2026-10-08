@@ -1,0 +1,52 @@
+{
+  "schema": "qgv-publication-attempt-history-v1",
+  "initial_review_head": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+  "claim_head": "02c41495b1e80cc9326ddcd318cc2652c341cfbe",
+  "prepared_candidate": "b8726714e8500a58d69c78e43eaf264c1397fdff",
+  "prepared_candidate_tree": "85a787bb493b25669b886fd93b3df147972082ae",
+  "prior_manifest_sha256": "8c1f9a33bc016eee00c51ad795ac5c720be92a7f00dc5d901ac5f0c788a7ed9e",
+  "failure_history": [
+    {
+      "step": "Reproduce prepared API commit locally before moving ref",
+      "attempt": 1,
+      "error": "KeyError: tree",
+      "cause": "create_commit tool returned normalized commit identity; helper requires full git-commit object",
+      "classification": "REPLAN",
+      "repair": "Read exact git/commits/candidate and retain normalized + detailed payload; reconstruct exact local commit SHA from full author/committer/tree/parents/message",
+      "repair_attempt": 1,
+      "result": {
+        "local_commit": "b8726714e8500a58d69c78e43eaf264c1397fdff",
+        "api_commit": "b8726714e8500a58d69c78e43eaf264c1397fdff",
+        "identity": "IDENTICAL",
+        "author_timezone": "+0900",
+        "committer_timezone": "+0900",
+        "message_trailing_lf": 0,
+        "tree": "85a787bb493b25669b886fd93b3df147972082ae",
+        "ordered_parents": [
+          "02c41495b1e80cc9326ddcd318cc2652c341cfbe"
+        ]
+      },
+      "remote_ref_mutation_on_failure": false
+    }
+  ],
+  "prepared_tree_verification": {
+    "tree": "85a787bb493b25669b886fd93b3df147972082ae",
+    "baseline": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+    "nontruncated": true,
+    "payload_blob_matches": 12,
+    "old_blob_changes": [
+      "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md",
+      "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/CONTROL.json"
+    ],
+    "new_blob_files": 10,
+    "deleted": 0,
+    "unexpected_changes": 0,
+    "preserved_blobs": 7900,
+    "runtime_changes": 0
+  },
+  "successor_change": "Append publication failure/recovery history and extend manifest; no runtime/contract/semantic evidence changed",
+  "scope": "OWN_SCOPED_AUDIT_DOCUMENTS_ONLY",
+  "runtime_changes": 0,
+  "production_blockers_closed": 0,
+  "new_D3_A": 0
+}

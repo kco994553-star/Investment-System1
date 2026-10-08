@@ -1,0 +1,44 @@
+name: web-research-guard
+# G3 render-time guard: research/provisional sections never render as LIVE/FROZEN_SNAPSHOT.
+# Test vectors only. No grant, no engine execution, no real data.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/web-research-guard.yml'
+      - 'implementation/src/investment_system/product/web_assets/**'
+      - 'implementation/src/investment_system/producers/contract.py'
+      - 'implementation/tools/build_web_research_guard_fixture.py'
+      - 'implementation/tools/web_research_guard_browser_test.js'
+      - 'implementation/tests/test_web_research_guard.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest==9.1.1
+      - name: Guard constants mirror the producer contract
+        working-directory: implementation
+        run: PYTHONPATH=src python -m pytest -q tests/test_web_research_guard.py
+      - name: Hand-built research fixture through the existing Web build
+        run: python implementation/tools/build_web_research_guard_fixture.py --out /tmp/web-research-guard --evidence /tmp/web-research-guard-evidence
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --prefix /tmp/guard-browser playwright@1.58.2
+      - run: /tmp/guard-browser/node_modules/.bin/playwright install --with-deps chromium
+      - name: Render-time guard E2E (ko/en, withheld vs rendered sections)
+        env:
+          NODE_PATH: /tmp/guard-browser/node_modules
+        run: node implementation/tools/web_research_guard_browser_test.js --dir /tmp/web-research-guard --evidence /tmp/web-research-guard-evidence
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: web-research-guard
+          path: /tmp/web-research-guard-evidence

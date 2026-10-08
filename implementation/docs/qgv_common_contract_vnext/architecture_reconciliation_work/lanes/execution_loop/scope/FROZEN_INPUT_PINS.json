@@ -1,0 +1,210 @@
+{
+  "head": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+  "authenticated_intake_receipt_sha256": "56ad6bbac6be0b88bc9893d8b090e1188314224f0ee2e73b43383166730b6204",
+  "artifact_count": 29,
+  "artifacts": {
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/CONTRACT.md": {
+      "semantic_relative_path": "consumer/CONTRACT.md",
+      "git_blob_sha": "f0715da4a58feb4d727fe9791e8f0d3add2ab35a",
+      "size": 13874,
+      "sha256": "7618a8f67ea794056ef05eb09317165855ece13e5cca70df17a549680a675ff8",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/CONTRACT_ACCEPTANCE_RESULTS.json": {
+      "semantic_relative_path": "consumer/CONTRACT_ACCEPTANCE_RESULTS.json",
+      "git_blob_sha": "3839ed65fb685dd8ac75ad6dab7813c5fe6afc24",
+      "size": 9539,
+      "sha256": "946dae38b5f33bf7ce47763ccd8780b2f9f7713d37efbc501ce596fb4b8ab386",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/CONTRACT_EVIDENCE.json": {
+      "semantic_relative_path": "consumer/CONTRACT_EVIDENCE.json",
+      "git_blob_sha": "a40b2a221c1f34e2ebc048aaa8c4be486e0256b0",
+      "size": 3141,
+      "sha256": "fb6a85157f056d1dfdd02142afa263d289488a1b6c406595cb598f45902ad591",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/SOURCE_AUTHORITY_MATRIX.json": {
+      "semantic_relative_path": "consumer/SOURCE_AUTHORITY_MATRIX.json",
+      "git_blob_sha": "d7c362b39ebec68542e43c2d53a59ec8aa177b3a",
+      "size": 16340,
+      "sha256": "793b8ce6dab4f432b61246a7303f3fa75461063f880bd381aed6755d55f66a79",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/assessment_ref_carrier.schema.json": {
+      "semantic_relative_path": "consumer/assessment_ref_carrier.schema.json",
+      "git_blob_sha": "7c18380692ddac140359edea4776ef0e5cd99125",
+      "size": 12376,
+      "sha256": "5f37fde7dafac0e3c8eb0128f64359acc53c4427673c5783040ab502ce044fc6",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/contract_acceptance_probe.py": {
+      "semantic_relative_path": "consumer/contract_acceptance_probe.py",
+      "git_blob_sha": "990755786e3d4c38fc6fd67594280cd104f0c439",
+      "size": 26727,
+      "sha256": "948340515c6ac749fb115e15b375bd3308a6bb51b23d04370286ff563b31813f",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_carrier.json": {
+      "semantic_relative_path": "consumer/synthetic_carrier.json",
+      "git_blob_sha": "41ef14a27bd7f69b8c495ed6fbec2aefe848b918",
+      "size": 10372,
+      "sha256": "8741c846d06f84abf3c5dd78e705fe47e827727af0af85e547289d4c9406bd64",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/consumer/synthetic_reference_contents.json": {
+      "semantic_relative_path": "consumer/synthetic_reference_contents.json",
+      "git_blob_sha": "6c47e207252a34660999e2d0a2bbe1f4e75025bc",
+      "size": 26687,
+      "sha256": "491491d708f2822bb4e9d0aa2f4ffc8811d06d7eb42647532317b49753e2c616",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G2_INDEPENDENT_FAMILY_REVIEW.md": {
+      "semantic_relative_path": "g/G2_INDEPENDENT_FAMILY_REVIEW.md",
+      "git_blob_sha": "18386e527c84157650940d02af9887a0e4a1c015",
+      "size": 2003,
+      "sha256": "3eff870054903f5c40252276f30ba4f8c96ddae7f2b29a1114e4d8f63b6a9ee5",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_DIAGNOSTICS.json": {
+      "semantic_relative_path": "g/G_CANDIDATE_DIAGNOSTICS.json",
+      "git_blob_sha": "10f3a789769ac6a72f3b29a78d0da33bc3a158be",
+      "size": 29182,
+      "sha256": "ee097d49ba1ca58f7e596a46f9628d75cc7648533cbc98641b800cd0211903c7",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_MATRIX.json": {
+      "semantic_relative_path": "g/G_CANDIDATE_MATRIX.json",
+      "git_blob_sha": "807d2e398e8fe2580e64751e54cc1e500aeda2d1",
+      "size": 34372,
+      "sha256": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json": {
+      "semantic_relative_path": "g/G_CANDIDATE_SOURCE_REQUESTS.json",
+      "git_blob_sha": "c7abfa1076f8180dd96ef8f7de1544d234d4b52a",
+      "size": 5904,
+      "sha256": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_VERIFICATION.json": {
+      "semantic_relative_path": "g/G_CANDIDATE_VERIFICATION.json",
+      "git_blob_sha": "08304518944e40374b39a1247f1c186ef75dbdde",
+      "size": 4960,
+      "sha256": "b8fa7e1c24737c6ff59fb879e84d2a3696a367c82625a40fa1aebfc29aeb0f13",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_METHOD_CANDIDATE_COMPARISON.md": {
+      "semantic_relative_path": "g/G_METHOD_CANDIDATE_COMPARISON.md",
+      "git_blob_sha": "4af32ae84769a38ea060f5785478bf8d318714bd",
+      "size": 12810,
+      "sha256": "06e754161f2b7bfb47f312ea4e6ca22f58b401564d0b08fb85b41f14f1661595",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_PRIMARY_SOURCE_NOTES.json": {
+      "semantic_relative_path": "g/G_PRIMARY_SOURCE_NOTES.json",
+      "git_blob_sha": "8683cb23640532a4d3b405683d58f629a618a2c0",
+      "size": 2015,
+      "sha256": "34cea92b1738afc5152a198d2add10bb17b8ac33a30cf8dce400ca04934dee38",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/g_candidate_comparison.py": {
+      "semantic_relative_path": "g/g_candidate_comparison.py",
+      "git_blob_sha": "6895b87fbc1959f139945d2442d4b8e2f5afc833",
+      "size": 29680,
+      "sha256": "e19ff3fcdcc40eb4750b5d6011832fccab97ca1d5edea78f9e2eb4c9dc4b9116",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/review/independent_review.json": {
+      "semantic_relative_path": "review/independent_review.json",
+      "git_blob_sha": "dc0f4d5cdd399e7c90c370199ea6ab934b399c70",
+      "size": 19691,
+      "sha256": "19ca4cb870c98beb6b79641cc019e8903a7e269396b946b3f21d0620b885de03",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/review/independent_review.md": {
+      "semantic_relative_path": "review/independent_review.md",
+      "git_blob_sha": "ef7be364fe0299c6e780c75641f4e71b3d52c6ee",
+      "size": 6171,
+      "sha256": "25bc3510ee362f87947fc323f0490b0bc7a3a0e1ceb4e934589f42c307540834",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/B1_EVIDENCE_DELTA.json": {
+      "semantic_relative_path": "root/B1_EVIDENCE_DELTA.json",
+      "git_blob_sha": "86eae2141c64481a64149f22aa2cbb094c2dc65a",
+      "size": 1321,
+      "sha256": "b99c5edcc3accf4318c7bd1d50c89912c03e3b41cc78285ceb8301744bf697bb",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/COMPLETION_RECEIPT.json": {
+      "semantic_relative_path": "root/COMPLETION_RECEIPT.json",
+      "git_blob_sha": "f74284a2850c916d1f808c7234b1f449daaa6770",
+      "size": 10386,
+      "sha256": "5fb357791cfe49a58ad2d0993939604d107f918e778b4f26304683fbbb5894fa",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/CONTROL_CLAIM.json": {
+      "semantic_relative_path": "root/CONTROL_CLAIM.json",
+      "git_blob_sha": "b5cabcf29f2e70416ba85261472c64fb5b0b11f2",
+      "size": 3096,
+      "sha256": "055b50f9e46959678ff011f910d4eae7779a6fcee86c8383c1541898caec5714",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/DECISION_PACKAGE.md": {
+      "semantic_relative_path": "root/DECISION_PACKAGE.md",
+      "git_blob_sha": "ab1ec644610ab3536f21fa8093bc4cc338c4431a",
+      "size": 6571,
+      "sha256": "f00a96a0e646b8c3ca3c90dc44d3b20d993ae8465f4c082fd325399c12657b2e",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/OUTPUT_MANIFEST.json": {
+      "semantic_relative_path": "root/OUTPUT_MANIFEST.json",
+      "git_blob_sha": "1d369a3335a263b93bb0fd6f8659fdcd3fff8e3e",
+      "size": 13297,
+      "sha256": "47fa4124d5f36d3d72ca201d2f39b0ee924428edf8b2befef0c0a411618b50b0",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/SEMANTIC_CONTRACT.md": {
+      "semantic_relative_path": "root/SEMANTIC_CONTRACT.md",
+      "git_blob_sha": "e9af4b6916955f25ecd0f2c24ca73c7089123986",
+      "size": 2826,
+      "sha256": "818be17270af0d43a88005dd5a9cc5f392234742332267bb96d80dac0e0c57a4",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/WORK_PLAN.md": {
+      "semantic_relative_path": "root/WORK_PLAN.md",
+      "git_blob_sha": "14ebaa9b376164f5da0a87dae5e64dde2ebcba4c",
+      "size": 1699,
+      "sha256": "663807c1b77c4651526a0ad9b7541a4b7b086f08504f1cde56846271f3f34c79",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/acceptance_validator.py": {
+      "semantic_relative_path": "root/acceptance_validator.py",
+      "git_blob_sha": "88e02a08b42c8eb41e3d9c40e48a6084939f8442",
+      "size": 4521,
+      "sha256": "e0c63011e26d906d0d5b7808e516c4db9f6fe1f9ce231083d1b6106c5bbd6eac",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/approval.json": {
+      "semantic_relative_path": "root/approval.json",
+      "git_blob_sha": "750ea433e7670af2ee063ee93ffd0dd219491703",
+      "size": 3596,
+      "sha256": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/fresh_intake.json": {
+      "semantic_relative_path": "root/fresh_intake.json",
+      "git_blob_sha": "36528627568db19200f028265b69f76822eb9a3e",
+      "size": 14716,
+      "sha256": "34b90f23679e3cbbfd41dd6e2a7d17b4ef16a4eec55ef1d7256628435691f1c1",
+      "verified": true
+    },
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/verification.json": {
+      "semantic_relative_path": "root/verification.json",
+      "git_blob_sha": "f5d8da32ee75b16c1b6b790f1e7d540b7a1628d2",
+      "size": 543,
+      "sha256": "762b9197556ddda6a88c4335e4230ba2d51e49a615f3fd5cb092542797283699",
+      "verified": true
+    }
+  }
+}

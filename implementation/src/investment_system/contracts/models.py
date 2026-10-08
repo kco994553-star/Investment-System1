@@ -88,6 +88,8 @@ class VCandidate:
     weights: dict[str, float]
     v_score: Optional[float]
     blocked_reason: Optional[str] = None
+    standard: Optional[str] = None
+    calibration: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -120,6 +122,11 @@ class QGVSnapshot:
     revision_parent_id: Optional[str] = None
     synthetic: bool = False
     g_horizon: Optional[dict[str, Any]] = None
+    # Unset defaults preserve historical records; the current engine assigns v1.
+    standard: Optional[str] = None
+    calibration: Optional[str] = None
+    standard_status: Optional[str] = None
+    standard_effective_at: Optional[str] = None
 
     def to_dict(self) -> dict[str, Any]:
         return _to_json(asdict(self))
@@ -204,6 +211,10 @@ class LeaderboardRow:
     V_score: Optional[float]
     total_score: Optional[float]
     freshness: str
+    standard: Optional[str] = None
+    calibration: Optional[str] = None
+    standard_status: Optional[str] = None
+    standard_effective_at: Optional[str] = None
 
 
 @dataclass(frozen=True)

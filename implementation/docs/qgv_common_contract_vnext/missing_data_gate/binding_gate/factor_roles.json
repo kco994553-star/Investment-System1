@@ -1,0 +1,945 @@
+{
+  "status": "AUDIT_ONLY_INACTIVE_SPEC_NOT_REGISTRY",
+  "production_enabled": false,
+  "canonical_source_pin": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "fresh_owner_intake_pin": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+  "principle_authority": "../implementation_contract/approval.json M1-M5 APPROVED_PRINCIPLES_ONLY",
+  "classification_scope": "Intended factor semantic role evidence, not factor requiredness, OfficialRegistry maturity, source confidence or new admission. Observed implementation facts are separately characterized. All20 production REQUIRED/OPTIONAL/CONDITIONAL roles remain UNASSIGNED.",
+  "classification_counts": {
+    "SUPPORTED": 3,
+    "PROPOSED": 10,
+    "UNRESOLVED": 7
+  },
+  "requiredness_assigned_count": 0,
+  "source_map_sha256": "dbddea7a7b098fd4ea1a8c8a16cb2e895259255a9561a81d3f539c86fe5634ce",
+  "reference_catalog": {
+    "weights": "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+    "requiredness_absent": "implementation/src/investment_system/contracts/models.py:74-81; implementation/src/investment_system/qgv/factors.py:103-117",
+    "prior_missing": "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+    "candidate_missing": "implementation/src/investment_system/qgv/scoring.py:68-117",
+    "observation_provenance": "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+    "provider_pit": "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+    "raw_entry": "implementation/src/investment_system/qgv/pipeline.py:21-43",
+    "axis_consumer": "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+    "weight_authority": "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82",
+    "financial_applicability": "implementation/src/investment_system/qgv/factors.py:42,103-106; implementation/src/investment_system/qgv/raw_map.py:104-115,163-165",
+    "Q7_conflict": "Investment-System1 · Contract Conflict Register 2026-09-23.md:23-27",
+    "G_provisional": "implementation/src/investment_system/qgv/raw_map.py:1-5,37-54",
+    "V_maturity": "implementation/src/investment_system/qgv/factors.py:65-100; implementation/src/investment_system/qgv/scoring.py:126-128"
+  },
+  "factors": [
+    {
+      "factor_id": "competitive_advantage",
+      "axis": "Q",
+      "role_evidence_status": "SUPPORTED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "rubric direct score; actual rubric taxonomy and observer authority are not complete here",
+      "preserved_semantic_purpose": "competitive advantage remains a rubric-driven Quality concept",
+      "current_input": [
+        "competitive_advantage_rubric"
+      ],
+      "current_local_weight": 0.2,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:132"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Bind the preserved rubric method and its source/version first; requiredness stays unassigned.",
+        "confidence": "MEDIUM",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:132",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "roic_wacc",
+      "axis": "Q",
+      "role_evidence_status": "PROPOSED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "net_income/invested_capital minus supplied WACC; a proxy, with financial exclusion",
+      "preserved_semantic_purpose": "return-versus-capital-cost Quality construct",
+      "current_input": [
+        "net_income",
+        "invested_capital",
+        "wacc"
+      ],
+      "current_local_weight": 0.2,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "Current structural exclusion: FINANCIAL roic_wacc before reading observation; General applicable.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:96-97,133,163-165"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Keep legacy spread literal; require separate proxy/input-unit and financial applicability authority before roles.",
+        "confidence": "MEDIUM",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:96-97,133,163-165",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "market_position",
+      "axis": "Q",
+      "role_evidence_status": "PROPOSED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "share-versus-peer linear clip; share-only *400 fallback",
+      "preserved_semantic_purpose": "market-share-relative Quality construct",
+      "current_input": [
+        "market_share",
+        "peer_median_market_share"
+      ],
+      "current_local_weight": 0.15,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:117-121,134"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Record relative-share and share-only as separate method branches; do not infer roles from positive weight.",
+        "confidence": "MEDIUM",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:117-121,134",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "fcf_quality",
+      "axis": "Q",
+      "role_evidence_status": "PROPOSED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "FCF/revenue margin linear clip; FCF itself may be CFO-abs(capex)",
+      "preserved_semantic_purpose": "cash-generation Quality construct",
+      "current_input": [
+        "fcf",
+        "revenue"
+      ],
+      "current_local_weight": 0.15,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:95,108-110,135; implementation/src/investment_system/providers/sec_companyfacts.py:218-238"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Bind numerator production and period/unit lineage; FCF margin is not proof of complete cash-flow quality rubric.",
+        "confidence": "MEDIUM",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:95,108-110,135; implementation/src/investment_system/providers/sec_companyfacts.py:218-238",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "margin_quality",
+      "axis": "Q",
+      "role_evidence_status": "PROPOSED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "EBIT/revenue linear clip; FINANCIAL with NIM overrides using separate mapping",
+      "preserved_semantic_purpose": "operating-margin Quality construct with financial alternative",
+      "current_input": [
+        "ebit",
+        "revenue",
+        "nim"
+      ],
+      "current_local_weight": 0.1,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:94,111-115,136"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Resolve one shared issuer context and distinguish EBIT-margin versus NIM methods before role binding.",
+        "confidence": "MEDIUM",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:94,111-115,136",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "financial_health",
+      "axis": "Q",
+      "role_evidence_status": "PROPOSED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "net cash/revenue clip; FINANCIAL CET1 overrides when supplied",
+      "preserved_semantic_purpose": "balance-sheet Quality construct with financial alternative",
+      "current_input": [
+        "cash",
+        "total_debt",
+        "revenue",
+        "cet1"
+      ],
+      "current_local_weight": 0.1,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:98-106,137"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Record net-cash and CET1 alternatives with predicate evidence; no completeness authority from their availability.",
+        "confidence": "MEDIUM",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:98-106,137",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "management_quality",
+      "axis": "Q",
+      "role_evidence_status": "UNRESOLVED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "direct management_quality_rubric, not a capital-allocation method",
+      "preserved_semantic_purpose": "Q7 management quality versus capital allocation remains disputed",
+      "current_input": [
+        "management_quality_rubric"
+      ],
+      "current_local_weight": 0.1,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:138; Investment-System1 · Contract Conflict Register 2026-09-23.md:23-27",
+        "Q7 C-03 unresolved authority."
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Preserve management_quality legacy identity. Defer fixed requiredness until C-03 semantic choice.",
+        "confidence": "LOW",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:138; Investment-System1 · Contract Conflict Register 2026-09-23.md:23-27",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "next_3_5y_growth",
+      "axis": "G",
+      "role_evidence_status": "UNRESOLVED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "same revenue/revenue_prev-1 mapping as revenue_growth, no forecast/CAGR",
+      "preserved_semantic_purpose": "3–5Y label versus historical revenue YoY proxy",
+      "current_input": [
+        "revenue",
+        "revenue_prev"
+      ],
+      "current_local_weight": 0.25,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:92,139; implementation/src/investment_system/qgv/pipeline.py:27,36-42"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Preserve legacy proxy; defer horizon/method semantics and requiredness. Horizon metadata cannot promote a forecast.",
+        "confidence": "LOW",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:92,139; implementation/src/investment_system/qgv/pipeline.py:27,36-42",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "growth_efficiency",
+      "axis": "G",
+      "role_evidence_status": "PROPOSED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "50 + revenue YoY/max(invested_capital/revenue,.05)*20, clipped",
+      "preserved_semantic_purpose": "growth versus capital-intensity construct",
+      "current_input": [
+        "revenue",
+        "revenue_prev",
+        "invested_capital"
+      ],
+      "current_local_weight": 0.2,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:123-125,140"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Pin the existing heuristic and its units/horizon; do not adopt .05 as a new policy default.",
+        "confidence": "MEDIUM",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:123-125,140",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "revenue_growth",
+      "axis": "G",
+      "role_evidence_status": "SUPPORTED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "revenue/revenue_prev-1 through provisional linear clipping",
+      "preserved_semantic_purpose": "historical revenue growth remains the explicit current/prior comparison",
+      "current_input": [
+        "revenue",
+        "revenue_prev"
+      ],
+      "current_local_weight": 0.15,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:37-47,92,141"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Preserve the YoY semantic label and distinguish method/input-period version. REQUIRED/OPTIONAL still unresolved.",
+        "confidence": "MEDIUM",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:37-47,92,141",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "eps_fcf_per_share_growth",
+      "axis": "G",
+      "role_evidence_status": "UNRESOLVED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "EPS/eps_prev-1 else FCF/revenue_prev-1; no FCF prior or shares in fallback",
+      "preserved_semantic_purpose": "EPS versus FCF-per-share growth label and fallback not equivalent",
+      "current_input": [
+        "eps",
+        "eps_prev",
+        "fcf",
+        "revenue_prev"
+      ],
+      "current_local_weight": 0.15,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:93,142; implementation/src/investment_system/contracts/raw.py:20,26-28"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Bind the actual EPS branch and incompatible fallback separately. Defer semantic replacement and fixed roles.",
+        "confidence": "LOW",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:93,142; implementation/src/investment_system/contracts/raw.py:20,26-28",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "growth_durability",
+      "axis": "G",
+      "role_evidence_status": "SUPPORTED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "direct growth_durability_rubric score; rubric authority not completed here",
+      "preserved_semantic_purpose": "growth durability remains a rubric-driven Growth concept",
+      "current_input": [
+        "growth_durability_rubric"
+      ],
+      "current_local_weight": 0.15,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:143"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Bind rubric provenance/version; factor identity is supported, no production requiredness inferred.",
+        "confidence": "MEDIUM",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:143",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "excess_growth_vs_industry",
+      "axis": "G",
+      "role_evidence_status": "PROPOSED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "revenue YoY minus supplied industry_revenue_growth, linear clip",
+      "preserved_semantic_purpose": "relative historical growth versus an industry reference",
+      "current_input": [
+        "revenue",
+        "revenue_prev",
+        "industry_revenue_growth"
+      ],
+      "current_local_weight": 0.1,
+      "weight_maturity": "CODE_FROZEN_AUTHORITY_NOT_REPROMOTED",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis Q/G axis contributes to total=(Q+G)/2; Leaderboard sorts total and carries axes without completeness gate; Portfolio attaches snapshot reference; Track Record stores Q/G/V predictions.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:127-129,144"
+      ],
+      "research_vs_official_maturity": "Q/G legacy implementation preserved; no new PRODUCTION registry promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Bind company and industry period/units/reference universe before any requiredness/completeness claim.",
+        "confidence": "MEDIUM",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:127-129,144",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82"
+      ]
+    },
+    {
+      "factor_id": "fundamental_value",
+      "axis": "V",
+      "role_evidence_status": "UNRESOLVED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "supplied DCF/price scaling else price/EPS versus fixed PE20; no solver",
+      "preserved_semantic_purpose": "intrinsic central value label versus DCF input/fixed-PE heuristic",
+      "current_input": [
+        "dcf_value",
+        "price",
+        "eps"
+      ],
+      "current_local_weight": 0.25,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass. V research candidates instead require complete seven-factor vector, but this is algorithmic not semantic requiredness.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis emits provisional V prior plus candidates and factor table; V excluded from total; Leaderboard carries V display without V eligibility; Portfolio attaches whole snapshot; research/track payloads may store V.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:57-63,145"
+      ],
+      "research_vs_official_maturity": "Prior PROVISIONAL_INITIAL_PRIOR; equal/mos candidates RESEARCH; no STANDARD/CALIBRATED promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Separate supplied-DCF and PE-proxy methods; no intrinsic-value maturity or role promotion.",
+        "confidence": "LOW",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:57-63,145",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82",
+        "implementation/src/investment_system/qgv/scoring.py:68-117",
+        "implementation/src/investment_system/qgv/factors.py:65-100; implementation/src/investment_system/qgv/scoring.py:126-128"
+      ]
+    },
+    {
+      "factor_id": "reverse_dcf",
+      "axis": "V",
+      "role_evidence_status": "UNRESOLVED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "supplied implied growth else clipped (PE-15)/100 compared with revenue YoY",
+      "preserved_semantic_purpose": "reverse-DCF label versus supplied implied-growth or PE proxy",
+      "current_input": [
+        "reverse_dcf_implied_growth",
+        "price",
+        "eps",
+        "revenue",
+        "revenue_prev"
+      ],
+      "current_local_weight": 0.2,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass. V research candidates instead require complete seven-factor vector, but this is algorithmic not semantic requiredness.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis emits provisional V prior plus candidates and factor table; V excluded from total; Leaderboard carries V display without V eligibility; Portfolio attaches whole snapshot; research/track payloads may store V.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:76-84,155"
+      ],
+      "research_vs_official_maturity": "Prior PROVISIONAL_INITIAL_PRIOR; equal/mos candidates RESEARCH; no STANDARD/CALIBRATED promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Bind actual proxy branches/input horizon; do not call proxy evidence a reverse-DCF solver.",
+        "confidence": "LOW",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:76-84,155",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82",
+        "implementation/src/investment_system/qgv/scoring.py:68-117",
+        "implementation/src/investment_system/qgv/factors.py:65-100; implementation/src/investment_system/qgv/scoring.py:126-128"
+      ]
+    },
+    {
+      "factor_id": "peer_relative_value",
+      "axis": "V",
+      "role_evidence_status": "PROPOSED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "relative own/peer supplied multiples; historical provider median of current raw cohort",
+      "preserved_semantic_purpose": "peer multiple relative Value construct",
+      "current_input": [
+        "peer_median_multiple",
+        "own_multiple"
+      ],
+      "current_local_weight": 0.15,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass. V research candidates instead require complete seven-factor vector, but this is algorithmic not semantic requiredness.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis emits provisional V prior plus candidates and factor table; V excluded from total; Leaderboard carries V display without V eligibility; Portfolio attaches whole snapshot; research/track payloads may store V.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:146-151; implementation/src/investment_system/validation/historical.py:177-189"
+      ],
+      "research_vs_official_maturity": "Prior PROVISIONAL_INITIAL_PRIOR; equal/mos candidates RESEARCH; no STANDARD/CALIBRATED promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Require comparable multiple, peer membership and PIT cohort evidence; no sector-peer authority inferred.",
+        "confidence": "MEDIUM",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:146-151; implementation/src/investment_system/validation/historical.py:177-189",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82",
+        "implementation/src/investment_system/qgv/scoring.py:68-117",
+        "implementation/src/investment_system/qgv/factors.py:65-100; implementation/src/investment_system/qgv/scoring.py:126-128"
+      ]
+    },
+    {
+      "factor_id": "historical_valuation",
+      "axis": "V",
+      "role_evidence_status": "UNRESOLVED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "direct hist_valuation_percentile field; historical provider uses two-point PE change score",
+      "preserved_semantic_purpose": "own valuation history percentile label versus historical provider proxy",
+      "current_input": [
+        "hist_valuation_percentile"
+      ],
+      "current_local_weight": 0.15,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass. V research candidates instead require complete seven-factor vector, but this is algorithmic not semantic requiredness.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis emits provisional V prior plus candidates and factor table; V excluded from total; Leaderboard carries V display without V eligibility; Portfolio attaches whole snapshot; research/track payloads may store V.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:152; implementation/src/investment_system/validation/historical.py:179-184"
+      ],
+      "research_vs_official_maturity": "Prior PROVISIONAL_INITIAL_PRIOR; equal/mos candidates RESEARCH; no STANDARD/CALIBRATED promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Separate true-percentile input from two-point PE-change method; defer historical method and requiredness.",
+        "confidence": "LOW",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:152; implementation/src/investment_system/validation/historical.py:179-184",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82",
+        "implementation/src/investment_system/qgv/scoring.py:68-117",
+        "implementation/src/investment_system/qgv/factors.py:65-100; implementation/src/investment_system/qgv/scoring.py:126-128"
+      ]
+    },
+    {
+      "factor_id": "margin_of_safety",
+      "axis": "V",
+      "role_evidence_status": "UNRESOLVED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "75% of supplied DCF else 12*EPS, then price scaling; not adopted vNext rules",
+      "preserved_semantic_purpose": "conservative-value safety label versus fixed DCF/PE constants",
+      "current_input": [
+        "dcf_value",
+        "price",
+        "eps"
+      ],
+      "current_local_weight": 0.1,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass. V research candidates instead require complete seven-factor vector, but this is algorithmic not semantic requiredness.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis emits provisional V prior plus candidates and factor table; V excluded from total; Leaderboard carries V display without V eligibility; Portfolio attaches whole snapshot; research/track payloads may store V.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:66-73,156"
+      ],
+      "research_vs_official_maturity": "Prior PROVISIONAL_INITIAL_PRIOR; equal/mos candidates RESEARCH; no STANDARD/CALIBRATED promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Pin observed heuristics and defer conservative-value/normalization authority.",
+        "confidence": "LOW",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:66-73,156",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82",
+        "implementation/src/investment_system/qgv/scoring.py:68-117",
+        "implementation/src/investment_system/qgv/factors.py:65-100; implementation/src/investment_system/qgv/scoring.py:126-128"
+      ]
+    },
+    {
+      "factor_id": "sector_context",
+      "axis": "V",
+      "role_evidence_status": "PROPOSED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "direct sector_context_score; no current historical source producer",
+      "preserved_semantic_purpose": "sector context Value construct distinct from theme",
+      "current_input": [
+        "sector_context_score"
+      ],
+      "current_local_weight": 0.1,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass. V research candidates instead require complete seven-factor vector, but this is algorithmic not semantic requiredness.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis emits provisional V prior plus candidates and factor table; V excluded from total; Leaderboard carries V display without V eligibility; Portfolio attaches whole snapshot; research/track payloads may store V.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:153; implementation/tests/test_hist_peer_ablation_pit.py:48-51"
+      ],
+      "research_vs_official_maturity": "Prior PROVISIONAL_INITIAL_PRIOR; equal/mos candidates RESEARCH; no STANDARD/CALIBRATED promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Require sector methodology/input authority. Absence is missing, not economic N/A.",
+        "confidence": "LOW",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:153; implementation/tests/test_hist_peer_ablation_pit.py:48-51",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82",
+        "implementation/src/investment_system/qgv/scoring.py:68-117",
+        "implementation/src/investment_system/qgv/factors.py:65-100; implementation/src/investment_system/qgv/scoring.py:126-128"
+      ]
+    },
+    {
+      "factor_id": "theme_premium_discount",
+      "axis": "V",
+      "role_evidence_status": "PROPOSED",
+      "observed_implementation_status": "SUPPORTED_SOURCE_CHARACTERIZATION_ONLY",
+      "current_meaning": "direct theme_premium_score; no current historical source producer",
+      "preserved_semantic_purpose": "theme overlay Value construct distinct from sector",
+      "current_input": [
+        "theme_premium_score"
+      ],
+      "current_local_weight": 0.05,
+      "weight_maturity": "PROVISIONAL_INITIAL_PRIOR",
+      "weight_authority_caveat": "Code-frozen or provisional weights do not supply OfficialRegistry maturity or factor requiredness (C-30).",
+      "applicability_logic": "factor_applicable returns True in both current profiles; that bool is not provenance-backed applicability truth.",
+      "current_missing_behavior": "Prior skips absent/None/MISSING_DATA/PIT_UNAVAILABLE/NOT_APPLICABLE contribution, keeps registered denominator1; applicable BLOCKED_DEPENDENCY blocks axis. Numeric integrity states can pass. V research candidates instead require complete seven-factor vector, but this is algorithmic not semantic requiredness.",
+      "pit_provenance_availability": "Raw shares one DataStamp with both available_at and published_at; observation only stamp_id plus notes. Provider path guards both times; direct analyze_raw does not perform require_available. Factor-level input/branch/rubric/applicability lineage is not fully represented.",
+      "consumer_usage": "Analysis emits provisional V prior plus candidates and factor table; V excluded from total; Leaderboard carries V display without V eligibility; Portfolio attaches whole snapshot; research/track payloads may store V.",
+      "historical_authority_evidence": [
+        "Frozen source v1.7.6 §18.3 is referenced by factors.py but original factor-role registry not supplied; current conflict register records Q/G RECORDED and C-30 open.",
+        "implementation/src/investment_system/qgv/raw_map.py:154; implementation/tests/test_hist_peer_ablation_pit.py:48-51"
+      ],
+      "research_vs_official_maturity": "Prior PROVISIONAL_INITIAL_PRIOR; equal/mos candidates RESEARCH; no STANDARD/CALIBRATED promotion.",
+      "requiredness_binding": {
+        "current": "No factor REQUIRED/OPTIONAL/CONDITIONAL declaration; input Optional types mean availability only.",
+        "production_role": null,
+        "status": "UNRESOLVED_NOT_ASSIGNED",
+        "proposed_role": "Require theme rubric/source authority. Absence is missing, not economic N/A.",
+        "confidence": "LOW",
+        "score_impact": "No current change. New requiredness changes availability/completeness/ranking. Any N/A exclusion changes effective denominator; method replacement can change score.",
+        "approval_required": "D3 for actual roles/predicates/method/version migration; D1 audit and D2 bounded recommendation only."
+      },
+      "evidence_refs": [
+        "implementation/src/investment_system/qgv/raw_map.py:154; implementation/tests/test_hist_peer_ablation_pit.py:48-51",
+        "implementation/src/investment_system/qgv/factors.py:13-42,65-100",
+        "implementation/src/investment_system/qgv/scoring.py:24-57; implementation/src/investment_system/qgv/factors.py:109-117",
+        "implementation/src/investment_system/qgv/raw_map.py:20-28,87-90,159-169; implementation/src/investment_system/contracts/models.py:34-50,74-81",
+        "implementation/src/investment_system/providers/memory.py:20-28,44-46; implementation/src/investment_system/pit/resolver.py:21-38",
+        "implementation/src/investment_system/qgv/pipeline.py:21-43",
+        "implementation/src/investment_system/qgv/analysis.py:36-61,92-119; implementation/src/investment_system/qgv/leaderboard.py:30-54; implementation/src/investment_system/qgv/portfolio.py:46-64; implementation/src/investment_system/validation/historical.py:195-214",
+        "Investment-System1 · Contract Conflict Register 2026-09-23.md:363-369; implementation/src/investment_system/personal/weights.py:3-6,49-82",
+        "implementation/src/investment_system/qgv/scoring.py:68-117",
+        "implementation/src/investment_system/qgv/factors.py:65-100; implementation/src/investment_system/qgv/scoring.py:126-128"
+      ]
+    }
+  ],
+  "financial_decomposition": {
+    "status": "SYNTHETIC_COMPARISON_ONLY_NOT_MIGRATION",
+    "fixture": "financial_na",
+    "applicable_uniform_score": 70,
+    "registered_weight": 1,
+    "roic_na_weight": 0.2,
+    "planned_applicable_weight": 0.8,
+    "legacy_numerator": 56,
+    "legacy_score": 56,
+    "hypothetical_na_excluded_score": 70,
+    "delta": 14,
+    "ordinary_market_position_missing_extra_weight": 0.15,
+    "ordinary_missing_numerator": 45.5,
+    "na_only_denominator_score": 56.875,
+    "unsafe_available_only_score": 70
+  },
+  "context_divergence_probe": {
+    "status": "ACTUAL_CURRENT_FUNCTIONS_ON_SYNTHETIC_INPUTS_ONLY",
+    "input": "synthetic_jpm copied with ebit/revenue=.25, cash=debt=0, CET1=.14, NIM=.03; snapshot scoring profile FINANCIAL in both",
+    "raw_general": {
+      "margin_quality": 100,
+      "financial_health": 50,
+      "Q": 35.8
+    },
+    "raw_financial": {
+      "margin_quality": 66.66666666666666,
+      "financial_health": 75.00000000000003,
+      "Q": 34.96666666666667
+    },
+    "reason": "map_raw uses raw.profile_kind; analyze_raw scoring profile_kind can independently override context."
+  }
+}

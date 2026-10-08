@@ -1,0 +1,103 @@
+"""Pure publication predicate.
+
+The decision reads an eligibility fact and explicit grants. It does not read a
+producer name, and it does not recompute a score, rank, regime, zone, or order.
+Schema-1 data_state stays NOT_AVAILABLE. DISPLAY_RESEARCH is an envelope mode,
+not a schema-1 state, and it is not reached when the active grant set is empty.
+"""
+
+from __future__ import annotations
+
+from ..producers.contract import RESEARCH_STATUSES
+from .authorization import ACTIVE_AUTHORIZATIONS, matching_grant, summarize_grants
+from .errors import PromotionForbidden
+from .facts import FACT_KEYS, make_fact
+
+SCHEMA1_DATA_STATE = "NOT_AVAILABLE"
+PUBLISHED = frozenset({"LIVE", "FROZEN_SNAPSHOT", "OFFICIAL", "VALIDATED", "RESEARCH"})
+
+
+def reject_promotion(requested: str) -> None:
+    """There is no success path from this layer to a published or official state."""
+    if requested in PUBLISHED:
+        raise PromotionForbidden(
+            f"{requested} is not issued here; schema-1 gains no RESEARCH state and no grant is created"
+        )
+    raise PromotionForbidden(f"{requested} is not a publication mode of this layer")
+
+
+def _as_fact(fact: dict) -> dict:
+    if not isinstance(fact, dict):
+        raise PromotionForbidden("eligibility fact must be an object")
+    return make_fact(**{key: fact[key] for key in FACT_KEYS})
+
+
+def _blocked_score(fact: dict) -> bool:
+    if fact["data_completeness"] == "BLOCKED" or fact["within_tie_order"] == "POLICY_BLOCKED":
+        return True
+    return any(item == "BLOCKED" or item == "POLICY_BLOCKED" or item.endswith("_POLICY_BLOCKED")
+               for item in fact["policy_blockers"])
+
+
+def decide(fact: dict, authorizations: tuple | list = ACTIVE_AUTHORIZATIONS) -> dict:
+    """One function for every fact. `authorizations` defaults to the empty active set."""
+    fact = _as_fact(fact)
+    grants = summarize_grants(authorizations)
+    research_granted = matching_grant(authorizations, "RESEARCH_DISPLAY", fact["subject_sha256"])
+    frozen_granted = matching_grant(authorizations, "FROZEN", fact["subject_sha256"])
+    live_granted = matching_grant(authorizations, "LIVE", fact["subject_sha256"])
+    denied = []
+    if not research_granted:
+        denied.append("RESEARCH_DISPLAY_GRANT_NONE")
+    if fact["research_bytes_withheld"]:
+        denied.append("RESEARCH_BYTES_WITHHELD")
+    if fact["stale_or_expired"]:
+        denied.append("STALE_DOES_NOT_FALL_BACK_TO_DISPLAY_RESEARCH")
+    if fact["synthetic"]:
+        denied.append("SYNTHETIC_IS_NOT_RESEARCH_DISPLAY")
+    if _blocked_score(fact):
+        denied.append("BLOCKED_NOT_A_SCORE")
+    not_authority = ["TRACK_C_ATTESTATION_NOT_ACCEPTED"]
+    if fact["producer_validation"] == "PASS":
+        not_authority.append("PRODUCER_VALIDATION_IS_NOT_A_GRANT")
+    if fact["methodology_lifecycle"] in RESEARCH_STATUSES or fact["research_record_exists"]:
+        not_authority.append("METHODOLOGY_LIFECYCLE_IS_NOT_SCHEMA1_STATE")
+    if fact["component_labels"]:
+        not_authority.append("COMPONENT_LABEL_IS_NOT_TRACK_C")
+    if fact["track_c_claim_ignored"]:
+        not_authority.append("TRACK_C_CLAIM_IGNORED")
+    if frozen_granted and not research_granted:
+        not_authority.append("FROZEN_GRANT_DOES_NOT_SATISFY_RESEARCH_DISPLAY")
+    if live_granted and not research_granted:
+        not_authority.append("LIVE_GRANT_DOES_NOT_SATISFY_RESEARCH_DISPLAY")
+    if live_granted or frozen_granted:
+        not_authority.append("PUBLISHED_GRANT_DOES_NOT_CHANGE_SCHEMA1")
+    if denied:
+        mode = "NOT_AVAILABLE"
+        reasons = tuple(denied)
+    else:
+        mode = "DISPLAY_RESEARCH"
+        token = "DISCLOSURE_PARTIAL" if fact["data_completeness"] == "PARTIAL" else "DISCLOSURE_READY"
+        reasons = (token,)
+    decision = {
+        "contract": "PUBLICATION_DECISION",
+        "schema_version": 1,
+        "schema1_data_state": SCHEMA1_DATA_STATE,
+        "publication_mode": mode,
+        "official": False,
+        "live": False,
+        "track_c_validated": False,
+        "grants": grants,
+        "reasons": reasons,
+        "not_authority": tuple(not_authority),
+        "subject_sha256": fact["subject_sha256"],
+        "persisted_fingerprint": fact["persisted_fingerprint"],
+        "data_completeness": fact["data_completeness"],
+        "within_tie_order": fact["within_tie_order"],
+    }
+    if decision["schema1_data_state"] != "NOT_AVAILABLE" or decision["official"] or decision["live"] or decision["track_c_validated"]:
+        raise PromotionForbidden("predicate must not promote schema-1 or official state")
+    if decision["publication_mode"] == "DISPLAY_RESEARCH" and not research_granted:
+        raise PromotionForbidden("DISPLAY_RESEARCH requires an explicit research-display grant")
+    return decision
+

@@ -1,0 +1,26 @@
+{
+  "scope": "NEGATIVE_DIAGNOSTIC_INPUT_PIN_GUARD_OPTIMIZED_PYTHON",
+  "initial_test_history": {
+    "location": "scratch parent checkout",
+    "expected": "hash guard",
+    "observed": "outside runner repository guard exit2",
+    "classification": "TEST_SETUP_ERROR_EARLIER_GUARD_CORRECTLY_BLOCKED",
+    "repair": "Move temporary runner and output outside ancestor Git checkout"
+  },
+  "fault": "Incorrect manifest expected tool hash in external temporary runner copy; actual repo input bytes unchanged",
+  "command": [
+    "python",
+    "-O",
+    "-B",
+    "/tmp/chart-negative-pin-2vic9i7m/replay_preflight_probes.py",
+    "--repo",
+    "/workspace/scratch/9de0281e56bb/repo",
+    "--output",
+    "/tmp/chart-negative-pin-2vic9i7m/negative.json"
+  ],
+  "exit": 2,
+  "stderr": "usage: replay_preflight_probes.py [-h] --repo REPO --output OUTPUT\nreplay_preflight_probes.py: error: selected diagnostic input hash differs: preflight_tool\n",
+  "output_created": false,
+  "original_manifest_unchanged": true,
+  "outcome": "PASS"
+}
