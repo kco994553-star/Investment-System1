@@ -9,6 +9,7 @@ from ..contracts.enums import WorkspaceId
 from ..contracts.product import NAV_PAGES, workspace_pages
 from ..contracts.strategy import builtin_profile
 from ..qgv.factors import G_WEIGHTS, Q_WEIGHTS
+from ..qgv.scoring_standard import SCORING_STANDARD_STATUS
 from ..versions import IMPLEMENTATION_LINE, MACRO_CONFIRMED, PORTFOLIO_OFFICIAL, PORTFOLIO_US_WORKING
 
 
@@ -112,10 +113,10 @@ def bodies() -> dict[str, tuple[str, str]]:
         <div class="card"><b>Macro</b><p>시장 단위 Workspace. Snapshot만 타 모듈이 참조</p></div>
         <div class="card"><b>Integration</b><p>최종 Decision은 여기서만. 모듈별 독자 Decision 없음</p></div>
       </section>
-      <p class="note">Official portfolio {PORTFOLIO_OFFICIAL} · US working {PORTFOLIO_US_WORKING} · Macro confirmed {MACRO_CONFIRMED} · Q factors {qn} / G factors {gn} frozen · V production null</p>
+      <p class="note">Official portfolio {PORTFOLIO_OFFICIAL} · US working {PORTFOLIO_US_WORKING} · Macro confirmed {MACRO_CONFIRMED} · Q factors {qn} / G factors {gn} · {SCORING_STANDARD_STATUS}</p>
             """,
         ),
-        "qgv_analysis": ("QGV 분석", "<h1>QGV 분석</h1><p class='sub'>기업 검색 → 기업 분석. Security Context를 Technical과 공유한다.</p><p>Backend: AnalysisEngine / AnalysisPipeline. V_score는 생산 경로에서 null.</p>"),
+        "qgv_analysis": ("QGV 분석", f"<h1>QGV 분석</h1><p class='sub'>기업 검색 → 기업 분석. Security Context를 Technical과 공유한다.</p><p>QGV 기준: {SCORING_STANDARD_STATUS}. V는 기존 Initial Prior 운영 점수이며 보정 전 상태다.</p>"),
         "qgv_sim": ("QGV 모의투자", "<h1>QGV 모의투자</h1><p class='sub'>PIT-safe simulation. Backtest와 Track Record는 다른 개념이다.</p>"),
         "qgv_pf": ("QGV 포트폴리오", "<h1>QGV 포트폴리오</h1><p class='sub'>Official v1.1 19종목은 보존. 현재 구현선은 US working 17종목.</p>"),
         "qgv_lb": ("QGV 리더보드", "<h1>QGV 리더보드</h1><p class='sub'>기존 Snapshot을 재채점하지 않는다.</p>"),

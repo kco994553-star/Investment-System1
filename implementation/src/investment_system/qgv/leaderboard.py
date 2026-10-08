@@ -51,6 +51,10 @@ class LeaderboardEngine:
                     V_score=s.V_score,
                     total_score=s.total_score,
                     freshness="SYNTHETIC" if s.synthetic else s.coverage_state.value,
+                    standard=s.standard,
+                    calibration=s.calibration,
+                    standard_status=s.standard_status,
+                    standard_effective_at=s.standard_effective_at,
                 )
             )
         return LeaderboardSnapshot(

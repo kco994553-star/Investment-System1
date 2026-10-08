@@ -48,13 +48,13 @@ def test_production_v_is_provisional_initial_prior():
     engine = AnalysisEngine()
     snap = engine.analyze("nvda", AS_OF, complete_obs(), synthetic=True, key_drivers=("scale", "cuda"))
     assert snap.V_score == 70
-    assert snap.V_policy_status == CalibrationLifecycle.PROVISIONAL_INITIAL_PRIOR
+    assert snap.V_policy_status == CalibrationLifecycle.STANDARD_V1_UNCALIBRATED
     assert snap.Q_score == 70
     assert snap.G_score == 70
     assert snap.synthetic is True
     assert len(snap.v_candidates) >= 1
     v, policy = production_v_score(snap.v_candidates, snap.V_score)
-    assert v == 70 and policy == CalibrationLifecycle.PROVISIONAL_INITIAL_PRIOR
+    assert v == 70 and policy == CalibrationLifecycle.STANDARD_V1_UNCALIBRATED
 
 
 def test_snapshot_contract_fields():
