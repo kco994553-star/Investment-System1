@@ -2035,6 +2035,37 @@
     }
   },
   "current_dependency_reconciliation": "evidence/main_single_control_cycle_2026-10-07/DEPENDENCY_RECONCILIATION.json",
-  "current_mode": "READ_ONLY",
-  "current_main_lease": null
+  "current_mode": "RUN",
+  "current_main_lease": {
+    "token": "main-ca-phase-a-20261008T093552Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_COMPANY_ANALYSIS_PHASE_A",
+    "branch": "integration/global-handoff-v1",
+    "source_branch": "main/company-analysis-phase-a-v1",
+    "acquired_at_utc": "2026-10-08T09:35:52.934Z",
+    "expires_at_utc": "2026-10-08T11:35:52.934Z",
+    "ttl_hours": 2,
+    "input_parent": "c2dad0c1b09a89c5688d8253d53f8a137237bef8",
+    "scope": [
+      "implementation/docs/coordination/**",
+      "main/company-analysis-phase-a-v1:implementation/docs/company_analysis_extension_v1_1/preview/**",
+      "main/company-analysis-phase-a-v1:implementation/src/investment_system/product/company_price_context_v1.py",
+      "main/company-analysis-phase-a-v1:implementation/tests/test_company_price_context_v1.py"
+    ],
+    "unattended": false
+  },
+  "company_analysis_phase_a": {
+    "cycle_id": "main-ca-phase-a-20261008T093552Z",
+    "state": "CLAIMED",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "branch": "main/company-analysis-phase-a-v1",
+    "write_set": [
+      "main/company-analysis-phase-a-v1:implementation/docs/company_analysis_extension_v1_1/preview/**",
+      "main/company-analysis-phase-a-v1:implementation/src/investment_system/product/company_price_context_v1.py",
+      "main/company-analysis-phase-a-v1:implementation/tests/test_company_price_context_v1.py"
+    ],
+    "source_admission": false,
+    "production_gate_closures": 0
+  }
 }

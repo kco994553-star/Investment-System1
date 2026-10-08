@@ -1,3 +1,9 @@
+# GCH-033 · Observed Main Phase A cycle claimed · 2026-10-08T09:35:52.934Z
+
+CDR033 new five-task observed RUN grant; own Main lease main-ca-phase-a-20261008T093552Z expires 2026-10-08T11:35:52.934Z. Branch candidate main/company-analysis-phase-a-v1, new preview/** and company_price_context_v1 module/test only. Active/specialist owner paths retained; MissingData held lease untouched. Phase A supplied-input display context, no source admission/score/runtime route or production closure. Exact plan/approval/claim: evidence/main_company_analysis_cycle_2026-10-08/. On completion/cap/WAIT/D3-R/tool blocker Main restores READ_ONLY and releases own lease. Gate A CLOSED/unattendedfalse; canonical b8e39a2 unchanged.
+
+---
+
 # GCH-032 · Main Single-Control cycle complete / READ_ONLY · 2026-10-07T11:09:49.723867+00:00
 
 Five observed tasks complete; CDR029 grant ends. Containing publication sets AUTONOMY_MODE=READ_ONLY, Mainlease=null, runtimeIDLE. CDR030 Single-Control adoption gives one user-control entry point without unattended/GateA/standing mode permission. CDR031 PhaseA Company Analysis/HistoricalPrice contract remains inactive; no new weights/reference thresholds/calibration/runtime behavior.

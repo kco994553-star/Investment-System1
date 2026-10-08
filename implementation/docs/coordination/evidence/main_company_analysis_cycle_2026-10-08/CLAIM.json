@@ -1,0 +1,45 @@
+{
+  "schema": "main-ca-phase-a-claim-v1",
+  "authority": "CDR-033",
+  "cycle_id": "main-ca-phase-a-20261008T093552Z",
+  "lease": {
+    "token": "main-ca-phase-a-20261008T093552Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_COMPANY_ANALYSIS_PHASE_A",
+    "branch": "integration/global-handoff-v1",
+    "source_branch": "main/company-analysis-phase-a-v1",
+    "acquired_at_utc": "2026-10-08T09:35:52.934Z",
+    "expires_at_utc": "2026-10-08T11:35:52.934Z",
+    "ttl_hours": 2,
+    "input_parent": "c2dad0c1b09a89c5688d8253d53f8a137237bef8",
+    "scope": [
+      "implementation/docs/coordination/**",
+      "main/company-analysis-phase-a-v1:implementation/docs/company_analysis_extension_v1_1/preview/**",
+      "main/company-analysis-phase-a-v1:implementation/src/investment_system/product/company_price_context_v1.py",
+      "main/company-analysis-phase-a-v1:implementation/tests/test_company_price_context_v1.py"
+    ],
+    "unattended": false
+  },
+  "exact_scoped_readbacks": [
+    {
+      "scope": "chart",
+      "blob": "295012a2a3d7b9110daa658ae25bb136d0ccecb0"
+    },
+    {
+      "scope": "qgv",
+      "blob": "76ee4bdf45d658dbbc8e63adbf4366f43b05be15"
+    },
+    {
+      "scope": "missing",
+      "blob": "4c6c6c231472d345152cbd0485e136189e4c0879"
+    },
+    {
+      "scope": "platform",
+      "blob": "580e2403209598eeda8eb087ea226f784aaf7ff1"
+    }
+  ],
+  "candidate_base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "collision_paths_absent": true,
+  "protected_source_transfer": false
+}

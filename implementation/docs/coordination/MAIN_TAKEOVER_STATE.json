@@ -25,7 +25,7 @@
     "actual accounts/credentials/production auth",
     "trade/order/fund transfer"
   ],
-  "execution_state": "IDLE_READ_ONLY_CYCLE_COMPLETE",
+  "execution_state": "RUNNING_OBSERVED_COMPANY_ANALYSIS_PHASE_A",
   "last_processed_heads": {
     "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
     "global_input": "d2e72027d1c80995efee738f9960c157e9e9fedc",
@@ -75,7 +75,25 @@
     "unattended_executor": "DISABLED_PENDING_GATE_A"
   },
   "source_attachment_sha256": "e82ca6832c553f1f4cb7bf12c9a5e657e5d9b2b892c659417ef35ebc664f8667",
-  "lease": null,
+  "lease": {
+    "token": "main-ca-phase-a-20261008T093552Z",
+    "holder": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "lane_id": "MAIN_COMPANY_ANALYSIS_PHASE_A",
+    "branch": "integration/global-handoff-v1",
+    "source_branch": "main/company-analysis-phase-a-v1",
+    "acquired_at_utc": "2026-10-08T09:35:52.934Z",
+    "expires_at_utc": "2026-10-08T11:35:52.934Z",
+    "ttl_hours": 2,
+    "input_parent": "c2dad0c1b09a89c5688d8253d53f8a137237bef8",
+    "scope": [
+      "implementation/docs/coordination/**",
+      "main/company-analysis-phase-a-v1:implementation/docs/company_analysis_extension_v1_1/preview/**",
+      "main/company-analysis-phase-a-v1:implementation/src/investment_system/product/company_price_context_v1.py",
+      "main/company-analysis-phase-a-v1:implementation/tests/test_company_price_context_v1.py"
+    ],
+    "unattended": false
+  },
   "last_processed_event_ids": [
     "b3b45590-c076-11f1-9878-3bcc8f58670c",
     "6d001840-c077-11f1-8d6f-701149cf3529",
@@ -221,9 +239,20 @@
     "evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
     "evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json"
   ],
-  "active_scoped_execution": null,
+  "active_scoped_execution": {
+    "cycle_id": "main-ca-phase-a-20261008T093552Z",
+    "branch": "main/company-analysis-phase-a-v1",
+    "write_set": [
+      "main/company-analysis-phase-a-v1:implementation/docs/company_analysis_extension_v1_1/preview/**",
+      "main/company-analysis-phase-a-v1:implementation/src/investment_system/product/company_price_context_v1.py",
+      "main/company-analysis-phase-a-v1:implementation/tests/test_company_price_context_v1.py"
+    ],
+    "classification": "D1/D2_ISOLATED_DISPLAY_CONTEXT",
+    "task_limit": 5,
+    "tasks_used": 1
+  },
   "last_terminal_ci_evidence": "evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
-  "last_checkpoint_at_utc": "2026-10-07T11:09:49.723867+00:00",
+  "last_checkpoint_at_utc": "2026-10-08T09:35:52.934Z",
   "verification_policy": "CDR-021 / Verification & Execution Acceleration v1.0",
   "dependency_content_hash": "43e318a021affb7dfbc4e7b71d447fc5651deef50e452e5ed7ccf1a312f4c5af",
   "execution_budget": {
