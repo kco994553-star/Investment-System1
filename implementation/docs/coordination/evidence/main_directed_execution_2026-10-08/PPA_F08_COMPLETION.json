@@ -1,0 +1,74 @@
+{
+  "kind": "PPA_F08_COMPLETION_V1",
+  "status": "VERIFIED_SOURCE_PRESENTATION_BLOCKER_CLOSED_IN_PROPOSAL",
+  "pr": 63,
+  "url": "https://github.com/kco994553-star/Investment-System1/pull/63",
+  "branch": "fix/ppa-f08-actual-availability-20261008",
+  "source_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+  "remote_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+  "local_head": "a90e5d386f79eead3dbfba180f4f664bc0f53cc6",
+  "source_tree": "5876f894a60d917f42ed9e1ab9bb3704c4463cf7",
+  "source_parent": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+  "original_subject": "fb086eac4321140493ce554a541343cebbb81ed6",
+  "tree_verified": true,
+  "tree_identical": true,
+  "publication_identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+  "python_checks": 41,
+  "browser_checks": 31,
+  "research_guard_browser_checks": 10,
+  "browser_errors": [],
+  "viewport": "390x844",
+  "locales": [
+    "ko-KR",
+    "en-US"
+  ],
+  "separate_target_presentation": true,
+  "actual_unavailable_literal": "NOT_AVAILABLE",
+  "source_evidence_sha256": "c0e7bbf7a258025db4a984f04c527e3c1385a276fd3e0226ac775e5ea0b2f5e3",
+  "source_verification_receipt": "ppa-f08-cycle2/verification-receipt.json",
+  "existing_tests_preserved": true,
+  "independent_review_findings": 0,
+  "ci": {
+    "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+    "status": "SUCCESS_3_OF_3",
+    "runs": [
+      {
+        "id": 37768379561,
+        "name": "web-research-guard",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379561"
+      },
+      {
+        "id": 37768379569,
+        "name": "web-state-presentation",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379569"
+      },
+      {
+        "id": 37768379552,
+        "name": "web-mvp-validation",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379552"
+      }
+    ]
+  },
+  "source_product_blocker_closures": 1,
+  "source_product_blocker_ids": [
+    "PPA-F08"
+  ],
+  "canonical_product_closures": 0,
+  "merged": false,
+  "mode": "READ_ONLY",
+  "production_validation": "NOT_RUN",
+  "protected_contract_formula_threshold_locale_workflow_changes": 0,
+  "repair_rounds": 2,
+  "initial_native_failure_preserved": true,
+  "recorded_at_utc": "2026-10-08T11:13:24.942887+00:00",
+  "same_failure_attempts": 1
+}

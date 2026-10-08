@@ -1,0 +1,35 @@
+{
+  "kind": "HG02_DELETE_REFUSAL_CAPABILITY_RECEIPT_V1",
+  "claim_global": "dc2305ebc7d87cffa518da41fe94ea9c07139bc3",
+  "authority": "CDR035 explicit canary deletion test; existing owncycle2 lease",
+  "branch": "hg02-canary",
+  "before_sha": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "applied_ruleset": 24499602,
+  "method": "existing native update_ref maps to documented GraphQL updateRefs afterOid zero deletion",
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "InvalidInputException: update_ref cannot delete a branch"
+      }
+    ],
+    "structuredContent": {
+      "error": "InvalidInputException: update_ref cannot delete a branch",
+      "error_code": "UNKNOWN"
+    },
+    "isError": true
+  },
+  "result": "CONNECTOR_REJECTED_DELETE_BEFORE_GITHUB_RULES",
+  "branch_protection_deletion_verdict": "NOT_RUN",
+  "after_sha": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "canonical_unchanged": true,
+  "canonical_force_or_delete_attempted": false,
+  "accepted_forbidden_actions": 0,
+  "HG02": "PARTIAL_VERIFIED",
+  "remaining": [
+    "authenticated canary deletion refusal evidence",
+    "actual app/PAT kind and every other executor identity/refusal evidence"
+  ],
+  "ruleset_mutated": false,
+  "mode": "READ_ONLY"
+}

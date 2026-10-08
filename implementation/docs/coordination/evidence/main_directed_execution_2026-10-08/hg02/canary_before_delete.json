@@ -1,0 +1,14 @@
+{
+  "method": "GET",
+  "url": "https://api.github.com/repos/kco994553-star/Investment-System1/git/ref/heads/hg02-canary",
+  "data": {
+    "ref": "refs/heads/hg02-canary",
+    "node_id": "REF_kwDOUjo5VbZyZWZzL2hlYWRzL2hnMDItY2FuYXJ5",
+    "url": "https://api.github.com/repos/kco994553-star/Investment-System1/git/refs/heads/hg02-canary",
+    "object": {
+      "sha": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "type": "commit",
+      "url": "https://api.github.com/repos/kco994553-star/Investment-System1/git/commits/c109c81a3e417e5f61fd26b67b171fb13628dc21"
+    }
+  }
+}

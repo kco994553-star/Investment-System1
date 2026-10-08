@@ -1,0 +1,21 @@
+input RefUpdate {
+  """
+  The value this ref should be updated to.
+  """
+  afterOid: GitObjectID!
+
+  """
+  The value this ref needs to point to before the update.
+  """
+  beforeOid: GitObjectID
+
+  """
+  Force a non fast-forward update.
+  """
+  force: Boolean = false
+
+  """
+  The fully qualified name of the ref to be update. For example `refs/heads/branch-name`
+  """
+  name: GitRefname!
+}

@@ -1,0 +1,28 @@
+{
+  "kind": "WEB_RESEARCH_GUARD_BROWSER_VALIDATION_V1",
+  "mode": "fixture",
+  "passed": true,
+  "checks": [
+    "served data.json still carries the hand-built research sections unchanged",
+    "ko-KR: withheld sections show NOT_AVAILABLE + reason and no value on every route",
+    "ko-KR: each research-marked section is withheld where it is shown",
+    "ko-KR: valid LIVE, legacy FROZEN universe, DEMO and NOT_AVAILABLE still render",
+    "en-US: withheld sections show NOT_AVAILABLE + reason and no value on every route",
+    "en-US: each research-marked section is withheld where it is shown",
+    "en-US: valid LIVE, legacy FROZEN universe, DEMO and NOT_AVAILABLE still render",
+    "research-marked FROZEN universe is withheld in the companies legend and search rows",
+    "LIVE/FROZEN sections whose producer validation is not PASS are withheld (contract.py L194-199)",
+    "data.json bytes unchanged and no page errors"
+  ],
+  "errors": [],
+  "baseline_compared": false,
+  "runtime": {
+    "node": "v24.19.0",
+    "chromium": "151.0.7922.173"
+  },
+  "observed": {},
+  "research_display": "NONE",
+  "frozen_grant": "NONE",
+  "live_grant": "NONE",
+  "real_data_validation": "NOT_RUN"
+}

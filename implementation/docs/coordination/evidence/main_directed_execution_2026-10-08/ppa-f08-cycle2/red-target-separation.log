@@ -1,0 +1,7 @@
+AssertionError [ERR_ASSERTION]: TARGET has its own company presentation element
+
+0 !== 1
+
+    at /workspace/ppa-f08/implementation/tools/web_state_presentation_browser_test.js:136:20
+    at async check (/workspace/ppa-f08/implementation/tools/web_state_presentation_browser_test.js:75:36)
+    at async main (/workspace/ppa-f08/implementation/tools/web_state_presentation_browser_test.js:109:7)

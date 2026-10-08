@@ -1,0 +1,32 @@
+PASS ko-KR: PPA-F08 missing or unusable ACTUAL never falls back to TARGET; finite ACTUAL is unchanged
+PASS ko-KR: U1 LIVE, FRESH and STALE are separate labelled badges; STALE has its own style rule
+PASS ko-KR: U1 the existing view-time rule decides FRESH vs STALE before/after expires_at; nothing else is derived
+PASS ko-KR: U1 an expires_at this browser cannot parse is never FRESH (fail closed as STALE)
+PASS ko-KR: U1 an expires_at outside the strict ISO form ('(' / U+0000 separators) is never FRESH after its Python-parsed expiry, in every time zone
+PASS ko-KR: U1 strict-form expires_at (Z, +-hh:mm, with and without fractional seconds) is FRESH before expiry and STALE after it, in every time zone
+PASS ko-KR: U1 NOT_USABLE carried by the bundle is shown as withheld
+PASS ko-KR: U2 withheld/unavailable sections show persisted reason_code, as_of, methodology, freshness, counts
+PASS ko-KR: U2 sparse bundle shows only what is persisted (no fabricated metadata)
+PASS ko-KR: U2 only code-shaped reason_code and token-shaped methodology id/version are displayed
+PASS ko-KR: U2 a count is displayed only under a code/token-shaped key; free-text keys are omitted
+PASS ko-KR: U3 loading text and remaining UI strings follow the display locale
+PASS ko-KR: U3 demo holdings count, network frame title and interest toggle label are localized
+PASS ko-KR: U4 a render error after hashchange shows the DATA UNAVAILABLE fallback, then recovers
+PASS ko-KR: 390px routes have no horizontal overflow and data.json is unchanged
+PASS en-US: PPA-F08 missing or unusable ACTUAL never falls back to TARGET; finite ACTUAL is unchanged
+PASS en-US: U1 LIVE, FRESH and STALE are separate labelled badges; STALE has its own style rule
+PASS en-US: U1 the existing view-time rule decides FRESH vs STALE before/after expires_at; nothing else is derived
+PASS en-US: U1 an expires_at this browser cannot parse is never FRESH (fail closed as STALE)
+PASS en-US: U1 an expires_at outside the strict ISO form ('(' / U+0000 separators) is never FRESH after its Python-parsed expiry, in every time zone
+PASS en-US: U1 strict-form expires_at (Z, +-hh:mm, with and without fractional seconds) is FRESH before expiry and STALE after it, in every time zone
+PASS en-US: U1 NOT_USABLE carried by the bundle is shown as withheld
+PASS en-US: U2 withheld/unavailable sections show persisted reason_code, as_of, methodology, freshness, counts
+PASS en-US: U2 sparse bundle shows only what is persisted (no fabricated metadata)
+PASS en-US: U2 only code-shaped reason_code and token-shaped methodology id/version are displayed
+PASS en-US: U2 a count is displayed only under a code/token-shaped key; free-text keys are omitted
+PASS en-US: U3 loading text and remaining UI strings follow the display locale
+PASS en-US: U3 demo holdings count, network frame title and interest toggle label are localized
+PASS en-US: U4 a render error after hashchange shows the DATA UNAVAILABLE fallback, then recovers
+PASS en-US: 390px routes have no horizontal overflow and data.json is unchanged
+PASS no page errors
+{"passed":true,"checks":31}

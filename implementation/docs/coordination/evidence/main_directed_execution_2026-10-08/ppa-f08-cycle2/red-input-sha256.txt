@@ -1,0 +1,2 @@
+9e865d2005bddfc06daeab28e64c919074933c599ba6a3464a037ce6b933308b  implementation/src/investment_system/product/web_assets/app.js
+fb97be033ef212fe0c9ce8bd7421cd8e2d8a39bd033306025a7bedf81aefeba6  implementation/tools/web_state_presentation_browser_test.js

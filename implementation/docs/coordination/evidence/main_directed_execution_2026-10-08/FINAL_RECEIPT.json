@@ -1,0 +1,320 @@
+{
+  "schema": "main-directed-final-receipt-v1",
+  "recorded_at_utc": "2026-10-08T11:16:01.366071+00:00",
+  "authority": [
+    "CDR035 original direct named actions",
+    "CDR036 verbatim FPIA replacement",
+    "CDR038 bounded execution receipt"
+  ],
+  "cycles": [
+    {
+      "checkpoint": 1,
+      "tasks_used": 5,
+      "publication": "9b18106f86a58b6d908cbbae4e36dbcb4751eae2",
+      "remote_controls_verified": true
+    },
+    {
+      "checkpoint": 2,
+      "tasks_used": 5,
+      "claim": "2f44c70ea467a0ad1c10a53b8a3eeb09d0201b66",
+      "package_publication": "dd3729f71e7f3cdc790e8859b238b13f568c77ff",
+      "verification_claim": "dc2305ebc7d87cffa518da41fe94ea9c07139bc3"
+    }
+  ],
+  "publication": {
+    "expected_parent": "dc2305ebc7d87cffa518da41fe94ea9c07139bc3",
+    "branch": "integration/global-handoff-v1",
+    "force": false,
+    "containing_commit_identity": "RESOLVES_FROM_GIT_METADATA",
+    "local_api_tree_equality": "REQUIRED_BEFORE_REF_UPDATE",
+    "remote_byte_control_readback": "REQUIRED_AFTER_PUBLICATION; external local receipt records containing identity"
+  },
+  "closed_product_blockers": {
+    "source_proposal_count": 1,
+    "ids": [
+      "PPA-F08"
+    ],
+    "canonical_integrated_count": 0,
+    "source_admissions": 0,
+    "production_gate_closures": 0
+  },
+  "PPA_F08": {
+    "kind": "PPA_F08_COMPLETION_V1",
+    "status": "VERIFIED_SOURCE_PRESENTATION_BLOCKER_CLOSED_IN_PROPOSAL",
+    "pr": 63,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/63",
+    "branch": "fix/ppa-f08-actual-availability-20261008",
+    "source_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+    "remote_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+    "local_head": "a90e5d386f79eead3dbfba180f4f664bc0f53cc6",
+    "source_tree": "5876f894a60d917f42ed9e1ab9bb3704c4463cf7",
+    "source_parent": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+    "original_subject": "fb086eac4321140493ce554a541343cebbb81ed6",
+    "tree_verified": true,
+    "tree_identical": true,
+    "publication_identity": "TREE_IDENTICAL_API_NATIVE_COMMIT",
+    "python_checks": 41,
+    "browser_checks": 31,
+    "research_guard_browser_checks": 10,
+    "browser_errors": [],
+    "viewport": "390x844",
+    "locales": [
+      "ko-KR",
+      "en-US"
+    ],
+    "separate_target_presentation": true,
+    "actual_unavailable_literal": "NOT_AVAILABLE",
+    "source_evidence_sha256": "c0e7bbf7a258025db4a984f04c527e3c1385a276fd3e0226ac775e5ea0b2f5e3",
+    "source_verification_receipt": "ppa-f08-cycle2/verification-receipt.json",
+    "existing_tests_preserved": true,
+    "independent_review_findings": 0,
+    "ci": {
+      "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+      "status": "SUCCESS_3_OF_3",
+      "runs": [
+        {
+          "id": 37768379561,
+          "name": "web-research-guard",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379561"
+        },
+        {
+          "id": 37768379569,
+          "name": "web-state-presentation",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379569"
+        },
+        {
+          "id": 37768379552,
+          "name": "web-mvp-validation",
+          "status": "completed",
+          "conclusion": "success",
+          "head_sha": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+          "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37768379552"
+        }
+      ]
+    },
+    "source_product_blocker_closures": 1,
+    "source_product_blocker_ids": [
+      "PPA-F08"
+    ],
+    "canonical_product_closures": 0,
+    "merged": false,
+    "mode": "READ_ONLY",
+    "production_validation": "NOT_RUN",
+    "protected_contract_formula_threshold_locale_workflow_changes": 0,
+    "repair_rounds": 2,
+    "initial_native_failure_preserved": true,
+    "recorded_at_utc": "2026-10-08T11:13:24.942887+00:00",
+    "same_failure_attempts": 1
+  },
+  "PR51": {
+    "head": "de84abf11df64041f666628493b8ae54f2e6df4a",
+    "merged_at": "2026-10-08T10:41:37Z",
+    "merged_by": "kco994553-star",
+    "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+    "repository_guard": "SUCCESS",
+    "run": 37303986881,
+    "merge_called_by_this_executor": false
+  },
+  "HG": {
+    "HG01": "VERIFIED",
+    "HG02": "PARTIAL_VERIFIED",
+    "HG03": "PARTIAL_VERIFIED",
+    "Gate_A": "CLOSED",
+    "HG02_branch_rule_denials": [
+      {
+        "operation": "canonical direct fast-forward marker push",
+        "branch": "claude/investment-system-top500-validation-alrugm",
+        "before": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+        "target": "25afdda065cb947ca64484f1507e151d788c2f6f",
+        "result": "DENIED_BY_BRANCH_RULES",
+        "response": {
+          "content": [
+            {
+              "type": "text",
+              "text": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/claude/investment-system-top500-validation-alrugm\\' is protected: Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]"
+            }
+          ],
+          "structuredContent": {
+            "error": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/claude/investment-system-top500-validation-alrugm\\' is protected: Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]",
+            "error_code": "UNKNOWN"
+          },
+          "isError": true
+        },
+        "readback": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
+      },
+      {
+        "operation": "canary direct fast-forward marker push",
+        "branch": "hg02-canary",
+        "before": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+        "target": "25afdda065cb947ca64484f1507e151d788c2f6f",
+        "result": "DENIED_BY_BRANCH_RULES",
+        "response": {
+          "content": [
+            {
+              "type": "text",
+              "text": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/hg02-canary\\' is protected: Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]"
+            }
+          ],
+          "structuredContent": {
+            "error": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/hg02-canary\\' is protected: Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]",
+            "error_code": "UNKNOWN"
+          },
+          "isError": true
+        },
+        "readback": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
+      },
+      {
+        "operation": "canary genuine non-fast-forward force-with-lease update",
+        "branch": "hg02-canary",
+        "before": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+        "target": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "result": "DENIED_BY_BRANCH_RULES",
+        "response": {
+          "content": [
+            {
+              "type": "text",
+              "text": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/hg02-canary\\' is protected: Cannot force-push to this branch Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]"
+            }
+          ],
+          "structuredContent": {
+            "error": "GithubGraphQLAPIError: [{'type': 'UNPROCESSABLE', 'path': ['updateRefs'], 'locations': [{'line': 3, 'column': 5}], 'message': 'Branch \\'refs/heads/hg02-canary\\' is protected: Cannot force-push to this branch Changes must be made through a pull request. Required status check \"repository-guard\" is expected..'}]",
+            "error_code": "UNKNOWN"
+          },
+          "isError": true
+        },
+        "readback": "c109c81a3e417e5f61fd26b67b171fb13628dc21"
+      }
+    ],
+    "HG02_delete_capability_attempt": {
+      "kind": "HG02_DELETE_REFUSAL_CAPABILITY_RECEIPT_V1",
+      "claim_global": "dc2305ebc7d87cffa518da41fe94ea9c07139bc3",
+      "authority": "CDR035 explicit canary deletion test; existing owncycle2 lease",
+      "branch": "hg02-canary",
+      "before_sha": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "applied_ruleset": 24499602,
+      "method": "existing native update_ref maps to documented GraphQL updateRefs afterOid zero deletion",
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "InvalidInputException: update_ref cannot delete a branch"
+          }
+        ],
+        "structuredContent": {
+          "error": "InvalidInputException: update_ref cannot delete a branch",
+          "error_code": "UNKNOWN"
+        },
+        "isError": true
+      },
+      "result": "CONNECTOR_REJECTED_DELETE_BEFORE_GITHUB_RULES",
+      "branch_protection_deletion_verdict": "NOT_RUN",
+      "after_sha": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "canonical_unchanged": true,
+      "canonical_force_or_delete_attempted": false,
+      "accepted_forbidden_actions": 0,
+      "HG02": "PARTIAL_VERIFIED",
+      "remaining": [
+        "authenticated canary deletion refusal evidence",
+        "actual app/PAT kind and every other executor identity/refusal evidence"
+      ],
+      "ruleset_mutated": false,
+      "mode": "READ_ONLY"
+    },
+    "identities": {
+      "executor": "Codex connected GitHub API",
+      "authenticated_login": "kco994553-star",
+      "credential_kind": "UNCONFIRMED_APP_VS_PERSONAL_TOKEN",
+      "installed_app_is_not_proof_of_mutation_token_kind": true,
+      "claude_auth_path": "NOT_ACCESSIBLE_NO_CREDENTIALS_REQUESTED"
+    },
+    "Watcher_Work_actual_E2E": "WAIT_PRODUCT_RUNTIME_CAPABILITY",
+    "PAUSE_isolated_guard": "PASS",
+    "PAUSE_actual_product_wake": "NOT_RUN"
+  },
+  "D3_R": {
+    "request_count": 1,
+    "channel": "CURRENT_USER_SESSION_ASYNC_QUESTION",
+    "status": "AWAIT_USER_INPUT_NO_TIMEOUT_APPROVAL",
+    "bundle": "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/DECISION_REQUEST_26E.md",
+    "user_value_defaults": 0,
+    "security19": {
+      "admitted": 0,
+      "source_contract_dependencies": 18,
+      "user_venue_choices": 1
+    }
+  },
+  "FPIA": {
+    "inventory": "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/INVENTORY.json",
+    "summary": "implementation/docs/coordination/evidence/main_fpia_recorded_defects_2026-10-08/SUMMARY.md",
+    "count": 25,
+    "ids": "F1-F25",
+    "recorded_fixes": "ALL_INHERITED_IN_EXISTING_CANDIDATE_7215a9f6",
+    "new_code_repairs": 0,
+    "new_audits": 0,
+    "new_counterexamples": 0,
+    "new_tests_or_CI_reruns": 0,
+    "existing_native_CI": "six suites each2242PASS +seventhFPIASUCCESS; Tier1/Tier2 still skipped",
+    "independent_trust_runtime_coverage_GIE_and_actual_merge_acceptance": "OPEN"
+  },
+  "remaining_dependencies": [
+    "Chart A-S1/A-S2/A-S3: published blank TARGET/Theme and Security19 disposition remain WAIT current user/source authority;18 common-contract source returns and1Tokyo venue choice unresolved; source admission0, Chart6OPEN/Market0of19.",
+    "P01 source-bound TARGET applicability receipt absent; Web/source/Product per-file acceptance absent; original three ordinary asset planning scope preserved",
+    "CDR036 recorded-only FPIA F1-F25 intake consumed: all25 have existing recorded fixes, no code repair queued and no new closure. Independent verifier/launcher/runtime, authenticated compound selection, dynamic/transitive/external coverage/isolation, GIE and assembled Chart acceptance remain WAIT/OPEN; B1-B4 discovery terminated.",
+    "QGV Missing-Data held lease qgv-b47-muupb538 preserved; operational policy return d156 consumed with12 hash matches, production categories remain",
+    "PPA-F08 source proposal 50e3d3e6942460468388af9b0ec969f3605f6ab1 draftPR63 verified by local affected checks and exact native CI3SUCCESS; source presentation blocker closed1, canonical integration/production closure0. Platform historical9 product blockers and source-owner ACK UNVERIFIED remain scoped history; no blanket subtraction or Product acceptance inferred.",
+    "HG01 VERIFIED; HG02 PARTIAL_VERIFIED pending authenticated canary deletion and complete executor identity/refusal matrix; HG03 PARTIAL_VERIFIED / actual E2E WAIT_PRODUCT_RUNTIME_CAPABILITY; actual PAUSE wake NOT_RUN; Gate A CLOSED; automation freeze ACTIVE; unattended executor disabled; mode READ_ONLY."
+  ],
+  "final_control_target": {
+    "AUTONOMY_MODE": "READ_ONLY",
+    "Main_lease": null,
+    "runtime": "IDLE",
+    "unattended": false,
+    "automation_expansion_freeze": true,
+    "READY": 0,
+    "other_owner_refs_leases_history_preserved": true,
+    "missing_data_lease": "qgv-b47-muupb538"
+  },
+  "verification": {
+    "root_cycle2_evidence_hashes": 15,
+    "all_match": true,
+    "packaging": "PASS_SCOPE_ONLY",
+    "metadata_history_and_owner_scope_checks": "PASS",
+    "hard_guard_document_blob": "644af4c198257406a3027da1bbd2d280c166998b"
+  },
+  "reconciliation": {
+    "schema": "oct08-final-local-reconciliation-result-v1",
+    "recorded_at_utc": "2026-10-08T11:13:57Z",
+    "cycle_id": "main-directed-cycle2-20261008T110350Z",
+    "expected_publication_parent": "dc2305ebc7d87cffa518da41fe94ea9c07139bc3",
+    "source_head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+    "source_tree": "5876f894a60d917f42ed9e1ab9bb3704c4463cf7",
+    "exact_native_CI_success_run_ids": [
+      37768379561,
+      37768379569,
+      37768379552
+    ],
+    "hard_guard_document_blob": "644af4c198257406a3027da1bbd2d280c166998b",
+    "source_PPA_blockers_closed": 1,
+    "canonical_product_closures": 0,
+    "READY": 0,
+    "publication_control_readback": "PENDING_REMOTE_PUBLICATION",
+    "changed_files": [
+      "implementation/docs/coordination/MAIN_TAKEOVER_STATE.json",
+      "implementation/docs/coordination/OWNER_ROUTING_LEDGER.json",
+      "implementation/docs/coordination/governance/AUTONOMY_RUNTIME_STATE.json",
+      "implementation/docs/coordination/governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md",
+      "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+      "implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md",
+      "implementation/docs/coordination/GLOBAL_HANDOFF_HISTORY.md",
+      "implementation/docs/coordination/GLOBAL_STATUS_INDEX.md"
+    ],
+    "source_or_runtime_tests_run_by_this_script": 0,
+    "remote_writes": 0
+  }
+}

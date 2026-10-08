@@ -1,0 +1,10 @@
+{
+  "kind": "PPA_F08_CYCLE2_INDEPENDENT_REVIEW",
+  "reviewer": "/root/ppa_f08/final_review",
+  "base_sha": "c6e00273b212a8d2c134909ec6ed803f8a43fb46",
+  "head_sha": "a90e5d386f79eead3dbfba180f4f664bc0f53cc6",
+  "result": "NO_ACTIONABLE_FINDINGS",
+  "findings": [],
+  "tests_rerun_by_review": false,
+  "evidence_note": "RED input snapshot hashes match, and chronology is supported. No separate RED served-build hash or contemporaneous invocation file was captured; commands are recorded here after verification."
+}

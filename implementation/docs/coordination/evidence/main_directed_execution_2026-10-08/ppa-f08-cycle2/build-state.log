@@ -1,0 +1,205 @@
+{
+ "kind": "WEB_STATE_PRESENTATION_FIXTURE_V1",
+ "scope": "TEST VECTORS ONLY; NOT_REAL_DATA; NO GRANT",
+ "assembly_clock": "2026-01-02T00:00:00+00:00",
+ "browser_clock": "2026-10-03T12:00:00Z",
+ "company": "nvda",
+ "as_of": "2026-01-01T20:00:00+00:00",
+ "persisted": {
+  "universe": {
+   "state": "FROZEN_SNAPSHOT",
+   "freshness": "NOT_APPLICABLE",
+   "reason_code": null
+  },
+  "qgv": {
+   "state": "NOT_AVAILABLE",
+   "freshness": "NOT_APPLICABLE",
+   "reason_code": "RESEARCH_DISPLAY_GRANT_NONE"
+  },
+  "technical": {
+   "state": "LIVE",
+   "freshness": "STALE",
+   "reason_code": null
+  },
+  "macro": {
+   "state": "LIVE",
+   "freshness": "FRESH",
+   "reason_code": null
+  },
+  "portfolio": {
+   "state": "NOT_AVAILABLE",
+   "freshness": "NOT_APPLICABLE",
+   "reason_code": "PORTFOLIO_NO_ACTUAL_HOLDINGS"
+  },
+  "leaderboard": {
+   "state": "NOT_AVAILABLE",
+   "freshness": "NOT_USABLE",
+   "reason_code": "EXPIRED_NOT_USABLE"
+  },
+  "news": {
+   "state": "NOT_AVAILABLE",
+   "freshness": "NOT_APPLICABLE",
+   "reason_code": "NEWS_NO_SOURCE"
+  },
+  "relationships": {
+   "state": "NOT_AVAILABLE",
+   "freshness": "NOT_APPLICABLE",
+   "reason_code": "RELATIONSHIPS_OUT_OF_BUNDLE"
+  },
+  "changes": {
+   "state": "LIVE",
+   "freshness": "FRESH",
+   "reason_code": null
+  }
+ },
+ "expected_view": {
+  "macro": "LIVE+FRESH",
+  "technical": "LIVE+STALE",
+  "changes": "LIVE+STALE (view-time)",
+  "leaderboard": "NOT_AVAILABLE+NOT_USABLE",
+  "qgv": "NOT_AVAILABLE+metadata"
+ },
+ "withheld_probes": [
+  "4321.98765",
+  "NOT_USABLE_PROBE_NEWS",
+  "NOT_USABLE_PROBE_CHANGES"
+ ],
+ "variants": [
+  "variant-expiry-basic-format.json",
+  "variant-expiry-comma-fraction.json",
+  "variant-expiry-nul-separator.json",
+  "variant-expiry-paren-separator-utc.json",
+  "variant-expiry-paren-separator.json",
+  "variant-expiry-strict-fraction-z.json",
+  "variant-expiry-strict-microseconds.json",
+  "variant-expiry-strict-minus-1200-fraction.json",
+  "variant-expiry-strict-minutes-z.json",
+  "variant-expiry-strict-plus-0900.json",
+  "variant-expiry-strict-z.json",
+  "variant-expiry-week-date.json",
+  "variant-free-text-count-keys.json",
+  "variant-free-text-metadata.json",
+  "variant-not-usable.json",
+  "variant-render-error.json",
+  "variant-sparse-metadata.json"
+ ],
+ "unparsable_expiry": {
+  "variant-expiry-basic-format.json": "20260103T000000Z",
+  "variant-expiry-week-date.json": "2026-W01-6T00:00:00+00:00",
+  "variant-expiry-comma-fraction.json": "2026-01-03T00:00:00,5+00:00"
+ },
+ "free_text_probes": [
+  "FREE_TEXT_PROBE_REASON",
+  "FREE TEXT PROBE METHOD",
+  "LONG_PROBE_VERSION_",
+  "LONG_PROBE_CODE_",
+  "lower_probe_code"
+ ],
+ "edge": {
+  "news.reason_code": "EDGE_CODE_999999999999999999999999999999999999999999999999999999",
+  "relationships.methodology.version": "EDGE_TOKEN_99999999999999999999999999999999999999999999999999999"
+ },
+ "misparsed_expiry": {
+  "variant-expiry-paren-separator.json": {
+   "form": "2026-01-03(00:00+23:59",
+   "python_expires_at": "2026-01-02T00:01:00.000Z",
+   "after_expiry_clocks": [
+    "2026-01-02T00:02:00.000Z",
+    "2026-01-02T06:01:00.000Z",
+    "2026-01-02T12:01:00.000Z"
+   ]
+  },
+  "variant-expiry-nul-separator.json": {
+   "form": "2026-01-03\u000000:00+23:59",
+   "python_expires_at": "2026-01-02T00:01:00.000Z",
+   "after_expiry_clocks": [
+    "2026-01-02T00:02:00.000Z",
+    "2026-01-02T06:01:00.000Z",
+    "2026-01-02T12:01:00.000Z"
+   ]
+  },
+  "variant-expiry-paren-separator-utc.json": {
+   "form": "2026-01-03(00:00:00+00:00",
+   "python_expires_at": "2026-01-03T00:00:00.000Z",
+   "after_expiry_clocks": [
+    "2026-01-03T00:01:00.000Z",
+    "2026-01-03T06:00:00.000Z",
+    "2026-01-03T12:00:00.000Z"
+   ]
+  }
+ },
+ "strict_expiry": {
+  "variant-expiry-strict-z.json": {
+   "form": "2026-01-03T00:00:00Z",
+   "python_expires_at": "2026-01-03T00:00:00.000Z",
+   "fresh_clock": "2026-01-02T23:59:59.000Z",
+   "stale_clock": "2026-01-03T00:00:01.000Z"
+  },
+  "variant-expiry-strict-minutes-z.json": {
+   "form": "2026-01-03T00:00Z",
+   "python_expires_at": "2026-01-03T00:00:00.000Z",
+   "fresh_clock": "2026-01-02T23:59:59.000Z",
+   "stale_clock": "2026-01-03T00:00:01.000Z"
+  },
+  "variant-expiry-strict-fraction-z.json": {
+   "form": "2026-01-03T00:00:00.5Z",
+   "python_expires_at": "2026-01-03T00:00:00.500Z",
+   "fresh_clock": "2026-01-02T23:59:59.500Z",
+   "stale_clock": "2026-01-03T00:00:01.500Z"
+  },
+  "variant-expiry-strict-microseconds.json": {
+   "form": "2026-01-03T00:00:00.123456+00:00",
+   "python_expires_at": "2026-01-03T00:00:00.123Z",
+   "fresh_clock": "2026-01-02T23:59:59.123Z",
+   "stale_clock": "2026-01-03T00:00:01.123Z"
+  },
+  "variant-expiry-strict-plus-0900.json": {
+   "form": "2026-01-03T09:00:00+09:00",
+   "python_expires_at": "2026-01-03T00:00:00.000Z",
+   "fresh_clock": "2026-01-02T23:59:59.000Z",
+   "stale_clock": "2026-01-03T00:00:01.000Z"
+  },
+  "variant-expiry-strict-minus-1200-fraction.json": {
+   "form": "2026-01-02T12:00:00.250000-12:00",
+   "python_expires_at": "2026-01-03T00:00:00.250Z",
+   "fresh_clock": "2026-01-02T23:59:59.250Z",
+   "stale_clock": "2026-01-03T00:00:01.250Z"
+  }
+ },
+ "timezones": [
+  "UTC",
+  "Etc/GMT+12",
+  "Pacific/Kiritimati",
+  "Asia/Seoul"
+ ],
+ "count_key_probe": "COUNT_KEY_PROBE",
+ "free_text_count_keys": {
+  "qgv.validation.coverage_counts": {
+   "See memo COUNT_KEY_PROBE_SPACE": 7,
+   "COUNT_KEY_PROBE_NEWLINE\nsecond line": 1,
+   "COUNT_KEY_PROBE_LONG_99999999999999999999999999999999999999999999": 2,
+   "_COUNT_KEY_PROBE_UNDERSCORE": 3,
+   "COUNT_KEY_PROBE-DASH": 4,
+   "<b>COUNT_KEY_PROBE_HTML</b>": 5
+  },
+  "qgv.validation": {
+   "free text COUNT_KEY_PROBE_VALIDATION_count": 9,
+   "COUNT_KEY_PROBE_VLONG_9999999999999999999999999999999999999_count": 11
+  },
+  "leaderboard.validation": {
+   "Ranked rows (see memo) COUNT_KEY_PROBE_LB_count": 1
+  }
+ },
+ "count_key_edge": {
+  "qgv.validation.coverage_counts": {
+   "EDGE_COUNT_KEY_9999999999999999999999999999999999999999999999999": 6,
+   "lower_case_key": 8
+  },
+  "qgv.validation": {
+   "edge_99999999999999999999999999999999999999999999999999999_count": 10
+  }
+ },
+ "research_display": "NONE",
+ "frozen_grant": "NONE",
+ "live_grant": "NONE"
+}

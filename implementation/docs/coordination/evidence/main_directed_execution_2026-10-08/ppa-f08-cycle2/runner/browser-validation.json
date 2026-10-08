@@ -1,0 +1,63 @@
+{
+  "kind": "WEB_STATE_PRESENTATION_BROWSER_VALIDATION_V1",
+  "passed": true,
+  "checks": [
+    "ko-KR: PPA-F08 missing or unusable ACTUAL never falls back to TARGET; finite ACTUAL is unchanged",
+    "ko-KR: U1 LIVE, FRESH and STALE are separate labelled badges; STALE has its own style rule",
+    "ko-KR: U1 the existing view-time rule decides FRESH vs STALE before/after expires_at; nothing else is derived",
+    "ko-KR: U1 an expires_at this browser cannot parse is never FRESH (fail closed as STALE)",
+    "ko-KR: U1 an expires_at outside the strict ISO form ('(' / U+0000 separators) is never FRESH after its Python-parsed expiry, in every time zone",
+    "ko-KR: U1 strict-form expires_at (Z, +-hh:mm, with and without fractional seconds) is FRESH before expiry and STALE after it, in every time zone",
+    "ko-KR: U1 NOT_USABLE carried by the bundle is shown as withheld",
+    "ko-KR: U2 withheld/unavailable sections show persisted reason_code, as_of, methodology, freshness, counts",
+    "ko-KR: U2 sparse bundle shows only what is persisted (no fabricated metadata)",
+    "ko-KR: U2 only code-shaped reason_code and token-shaped methodology id/version are displayed",
+    "ko-KR: U2 a count is displayed only under a code/token-shaped key; free-text keys are omitted",
+    "ko-KR: U3 loading text and remaining UI strings follow the display locale",
+    "ko-KR: U3 demo holdings count, network frame title and interest toggle label are localized",
+    "ko-KR: U4 a render error after hashchange shows the DATA UNAVAILABLE fallback, then recovers",
+    "ko-KR: 390px routes have no horizontal overflow and data.json is unchanged",
+    "en-US: PPA-F08 missing or unusable ACTUAL never falls back to TARGET; finite ACTUAL is unchanged",
+    "en-US: U1 LIVE, FRESH and STALE are separate labelled badges; STALE has its own style rule",
+    "en-US: U1 the existing view-time rule decides FRESH vs STALE before/after expires_at; nothing else is derived",
+    "en-US: U1 an expires_at this browser cannot parse is never FRESH (fail closed as STALE)",
+    "en-US: U1 an expires_at outside the strict ISO form ('(' / U+0000 separators) is never FRESH after its Python-parsed expiry, in every time zone",
+    "en-US: U1 strict-form expires_at (Z, +-hh:mm, with and without fractional seconds) is FRESH before expiry and STALE after it, in every time zone",
+    "en-US: U1 NOT_USABLE carried by the bundle is shown as withheld",
+    "en-US: U2 withheld/unavailable sections show persisted reason_code, as_of, methodology, freshness, counts",
+    "en-US: U2 sparse bundle shows only what is persisted (no fabricated metadata)",
+    "en-US: U2 only code-shaped reason_code and token-shaped methodology id/version are displayed",
+    "en-US: U2 a count is displayed only under a code/token-shaped key; free-text keys are omitted",
+    "en-US: U3 loading text and remaining UI strings follow the display locale",
+    "en-US: U3 demo holdings count, network frame title and interest toggle label are localized",
+    "en-US: U4 a render error after hashchange shows the DATA UNAVAILABLE fallback, then recovers",
+    "en-US: 390px routes have no horizontal overflow and data.json is unchanged",
+    "no page errors"
+  ],
+  "errors": [],
+  "observed": {
+    "badge_colors": {
+      "live": "rgb(220, 239, 227)",
+      "fresh": "rgb(228, 242, 234)",
+      "stale": "rgb(251, 226, 194)",
+      "notAvailable": "rgb(237, 240, 237)",
+      "staleRule": true,
+      "liveRule": true
+    },
+    "misparsed_expiry_date_parse_minus_python_ms": {
+      "variant-expiry-paren-separator.json": 129540000,
+      "variant-expiry-nul-separator.json": 86340000,
+      "variant-expiry-paren-separator-utc.json": 43200000
+    }
+  },
+  "viewport": "390x844 (+360/1280 overflow)",
+  "browser_clock": "2026-10-03T12:00:00Z",
+  "runtime": {
+    "node": "v24.19.0",
+    "chromium": "151.0.7922.173"
+  },
+  "research_display": "NONE",
+  "frozen_grant": "NONE",
+  "live_grant": "NONE",
+  "real_data_validation": "NOT_RUN"
+}
