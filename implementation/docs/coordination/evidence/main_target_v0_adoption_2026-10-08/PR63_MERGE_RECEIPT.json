@@ -1,0 +1,17 @@
+{
+  "pr": 63,
+  "merged": true,
+  "base": "integration/web/production-state-presentation-v1",
+  "canonical_base": false,
+  "head": "50e3d3e6942460468388af9b0ec969f3605f6ab1",
+  "merge_commit": "558108a657839bc909272b103ab00faeaf25c957",
+  "merge_tree": "5876f894a60d917f42ed9e1ab9bb3704c4463cf7",
+  "tree_identical": true,
+  "CI": "3/3SUCCESS",
+  "closed_blocker": "PPA-F08",
+  "Platform_closed": 1,
+  "Platform_total": 9,
+  "Platform_remaining": 8,
+  "canonical_unchanged": true,
+  "mode": "READ_ONLY"
+}

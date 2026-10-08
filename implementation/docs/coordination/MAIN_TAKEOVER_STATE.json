@@ -321,6 +321,13 @@
       {
         "lane_id": "TARGET_DISPLAY_AND_CHART_REJUDGMENT",
         "status": "READ_INTAKE_BEFORE_EXACT_WRITESET_CLAIM"
+      },
+      {
+        "lane_id": "QGV_SCORING_STANDARD_V1",
+        "source_decision": "CDR040",
+        "status": "READ_ONLY_EXACT_BASE_AND_WRITESET_INTAKE_BEFORE_CODE_CLAIM",
+        "source_or_target_lane_coupling": false,
+        "owner_scope": "Main successor proposal only; held MissingData lease preserved"
       }
     ]
   },
