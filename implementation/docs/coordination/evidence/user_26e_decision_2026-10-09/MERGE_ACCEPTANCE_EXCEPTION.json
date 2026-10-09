@@ -1,0 +1,44 @@
+{
+  "schema": "USER_AUTHORIZED_PR67_SUBSTITUTE_ACCEPTANCE/1",
+  "subject": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+  "tree": "d1b8efa97947743ed56d402cc415b340f434cf4a",
+  "expected_base": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "authority": "CDR-042 / exact USER_DECISION.txt",
+  "fpia_verifier": "7215a9f60ad7128b1748f405051eac684298614f",
+  "fpia_scope_attempt": "BLOCKED_TOOL_INDETERMINATE_EXECUTION_IMPORT_CLASSIFICATION",
+  "fpia_audit": "NOT_RUN",
+  "fpia_exception_reason": "Untouched existing applicability tool cannot establish this non-EVL reference/presentation subset scope:19253 conservative unclassified records; no PASS/OUTSIDE_SCOPE manufactured. User expressly authorized substitution for this exact tool limitation.",
+  "substitute_acceptance": "USER_AUTHORIZED",
+  "ci": {
+    "head": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+    "repository_guard": "PASS",
+    "run_id": 37861673301,
+    "job_id": 113598638928,
+    "all_five_workflows": "SUCCESS"
+  },
+  "independent": {
+    "fresh_context": true,
+    "fresh_remote_clone": true,
+    "technical_verdict": "PASS",
+    "full_python": 665,
+    "subtests": 93,
+    "guard_records": 801,
+    "guard_violations": 0,
+    "receipt_sha256": "00c11d0817d68c0d29655dde6dc30381b6b8ade51d758aa113a0f40c7f325bf3"
+  },
+  "deployment_condition": {
+    "observable_linkage": false,
+    "pages_enabled": false,
+    "registered_deployments": 0,
+    "registered_environments": 0,
+    "canonical_deployment_workflows": 0,
+    "connected_scope_vercel_projects": 0,
+    "evidence_sha256": "ed9cb84de3fd6d7bb43ead640dae59d43e1f006e8577da83c9dea3c0883a9baa"
+  },
+  "scope": "PR67 canonical merge only; no new ACTUAL canonical merge or deployment authorization",
+  "formal_fpia_status_unchanged": "BLOCKED_NOT_RUN",
+  "f1_f25_later": 25,
+  "rollback": "revert PR; no history rewrite",
+  "mode": "READ_ONLY_UNCHANGED",
+  "merge_execution": "NOT_YET_PERFORMED_AT_THIS_RECORD"
+}

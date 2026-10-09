@@ -1799,3 +1799,46 @@ QGV [PR65](https://github.com/kco994553-star/Investment-System1/pull/65) merged 
 HG01 VERIFIED; HG02/HG03 PARTIAL_VERIFIED; actual E2E/PAUSE wake unproved, Gate A CLOSED, automation freeze ACTIVE, unattended executor disabled, AUTONOMY_MODE READ_ONLY. Canonical `c109c81a3e417e5f61fd26b67b171fb13628dc21` unchanged. Inherited MissingData lease `qgv-b47-muupb538` and historical returns remain intact; authorized noncanonical Chart/QGV base changes are recorded above. Existing FPIA records are unchanged; no new audit/countercase.
 
 Both directed lanes are done. Checkpoint5 releases only matching own Main lease `target-v0-20261008T114634Z` and any remaining own child leases; previously recorded child releases retain their original timestamps. runtime IDLE, READY0. Remaining reviewed identity, complete Theme assignment, Product/cross-owner acceptance, independent FPIA/GIE and hard-guard runtime capabilities remain OPEN/WAIT. This is an execution receipt, with no new grant. Containing publication identity resolves from the actual commit; remote exact-byte/control readback follows. [Final facts](evidence/main_target_v0_adoption_2026-10-08/final/FINAL_FACTS.json) · [Checkpoint5](evidence/main_target_v0_adoption_2026-10-08/final/CHECKPOINT_5.json)
+
+
+## CDR-042 · 2026-10-09 · USER26E conditional PR67 merge and device-only ACTUAL adoption
+
+Direct user decision responding to the2026-10-08 request; exact original follows and is retained at [USER_DECISION.txt](evidence/user_26e_decision_2026-10-09/USER_DECISION.txt). User-submission timestamp is not inferred beyond session date. Applies to named observed work with READ_ONLY unchanged. No public deployment, standing autonomy, GateA, Holdout, new scoring or force-push grant.
+
+PR67 exact candidate ab295f7d4e66b5cada04a8ad93361152d4e6d665 is conditionally approved: attempt unchanged FPIA scope classification; PASS/OUTSIDE_SCOPE permits PR merge, or documented tool-indeterminate scope may use current repository-guard CI and independent fresh-session technical PASS as the explicit user exception. Public web deployment linkage is a hard pre-merge report boundary. Any problem rolls back through a revert PR. F1–F25 LATER remain separate; this exception grants no global FPIA PASS or policy rewrite.
+
+ACTUAL design/implementation is authorized on a scoped branch: user-device IndexedDB,19A-S2 instruments, quantity/averagecost/currency, supplied-price calculations or NOT_AVAILABLE, user-owned versioned JSON backup/import/delete, no private holdings in repo/build/CI/logs/network, privacy guard and390pxko/en flow verification. Public deployment and merging the new ACTUAL implementation into canonical require separate review/authorization; the current canonical merge authorization is PR67 only.
+
+```text
+26E 결정 (2026-10-08 요청분, Decision Register에 원문과 함께 append-only 기록)
+
+1. PR #67 병합: 조건부 승인
+- 다음 사이클 안에 #67에 대한 FPIA 적용 범위를 판정한다.
+- PASS 또는 "적용 대상 아님"이면 #67을 PR로 병합한다(force push 금지).
+- FPIA 도구 한계로 판정할 수 없으면 repository-guard CI 통과와 독립 세션 재검증 PASS를 대체 근거로 병합하고,
+  이 예외와 사유를 Decision Register에 기록한다. FPIA LATER 항목은 별도로 계속한다.
+- 기준 브랜치가 공개 웹 배포와 연결돼 있으면 병합하지 말고 먼저 보고한다.
+- 병합 후 문제가 생기면 revert PR로 되돌린다.
+
+2. ACTUAL 입력 방식: 휴대폰 브라우저 내 저장 (사용자 기기 전용)
+- 저장소는 공개로 유지한다. 저장소·빌드·CI·로그 어디에도 실제 보유 데이터를 두지 않는다.
+- 웹 cockpit에 ACTUAL 입력 화면을 추가한다: 종목(A-S2 식별자 기준 19종목)별 수량·평균단가·통화 입력.
+  데이터는 사용자 기기의 브라우저 저장소(IndexedDB 등)에만 저장하고 서버나 외부로 전송하지 않는다.
+- 화면은 기기 내 데이터로 비중·평가액·TARGET 대비 차이를 계산해 표시한다. 시세가 없으면 해당 값은 NOT_AVAILABLE.
+  데이터가 없으면 기존처럼 ACTUAL NOT_AVAILABLE.
+- 백업: JSON 파일 내보내기/가져오기 기능을 제공한다. 파일 형식은 TARGET_v0.yaml과 같은 구조
+  (사용자 소유, 버전, effective_at·available_at, A-S2 식별자)로 해서 나중에 DB로 옮길 수 있게 한다.
+- 데이터 삭제 버튼과 "이 기기에만 저장됨" 안내를 표시한다.
+- 실제 데이터가 담긴 파일이 커밋되면 실패하는 검사를 repository-guard에 추가한다.
+- 웹 cockpit을 GitHub Pages 등 공개 주소로 배포하는 것은 데이터가 포함되지 않음을 확인한 뒤 별도 승인으로 한다.
+- 브라우저 검증: 390px 휴대폰, ko/en, 입력→저장→새로고침 후 유지→내보내기→삭제→가져오기.
+```
+
+
+## CDR-043 · 2026-10-09 · PR67 explicit substitute acceptance / pre-merge receipt
+
+Execution of CDR042, not a standing FPIA waiver. Exact head ab295f7d4e66b5cada04a8ad93361152d4e6d665/tree d1b8efa97947743ed56d402cc415b340f434cf4a/base c109c81a3e417e5f61fd26b67b171fb13628dc21. Fresh untouched7215/CDR014 applicability returned BLOCKED exit2/NOT_RUN, nested authorityPASS but top authenticationNOT_VERIFIED, with19253 unclassified records over307files. Existing conservative execution/import rules cannot classify the subset. Do not relabel this as FPIA_PASS or OUTSIDE_SCOPE. The user explicitly approved guardCI+independentPASS as substitute for this tool limitation for PR67.
+
+Fresh independent remote-clone technicalPASS:665Python+93subtests, guard801records/0violations, modeREAD_ONLY, identities19/19/themes19/19, original source7426files preserved. Exact-head all5GitHubchecksSUCCESS, repository-guard run37861673301/job113598638928. Deployment condition checked: has_pages=false, Pages404, deployments200empty, environments0, no canonical push/deploy workflows or tracked hosting config, exact-repository Vercel search0 in connected scope. No observable public deployment linkage; unseen external accounts/hooks are not asserted impossible.
+
+Substitute acceptance is authorized for PR67 only; F1–F25 remain25LATER, broader formal FPIA and production gates remain unchanged. Merge through normal PR with exact-head check and no force push; rollback by revert PR. ACTUAL implementation is separate and undeployed. [Exception](evidence/user_26e_decision_2026-10-09/MERGE_ACCEPTANCE_EXCEPTION.json) · [Independent receipt](evidence/user_26e_decision_2026-10-09/INDEPENDENT_TECHNICAL_RECEIPT.json) · [Release audit](evidence/user_26e_decision_2026-10-09/RELEASE_AUDIT_RECEIPT.json).

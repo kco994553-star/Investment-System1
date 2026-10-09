@@ -1,0 +1,146 @@
+{
+  "schema": "pr67-fresh-independent-technical-review/1",
+  "verdict": "PASS",
+  "verified_at": "2026-10-09T00:24:59.793237+00:00",
+  "repository": "kco994553-star/Investment-System1",
+  "pr": 67,
+  "head": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+  "tree": "d1b8efa97947743ed56d402cc415b340f434cf4a",
+  "base": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "independence": "New technical-verification agent session; fresh remote clone and fresh executions; no author verdict reused; existing venv used only for dependencies. GitHub PR/source metadata inspected as subject context.",
+  "remote_mutations": false,
+  "source_edits": false,
+  "checkout_clean": true,
+  "python_version": "Python 3.12.14",
+  "commands": [
+    {
+      "cwd": "repo/implementation",
+      "command": "PYTHONPATH=src:. /workspace/cycle-venv/bin/python -m pytest -q",
+      "exit": 0,
+      "result": "665 passed, 93 subtests passed in 27.26s",
+      "output": "python-regression.log"
+    },
+    {
+      "cwd": "repo/implementation",
+      "command": "/workspace/cycle-venv/bin/python tools/autonomy_gate_a_guard.py diff --base c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "exit": 0,
+      "result": "PASS; 801 records; violations=[]; READ_ONLY",
+      "output": "repository-guard.log"
+    },
+    {
+      "cwd": "repo/implementation",
+      "command": "/workspace/cycle-venv/bin/python -m unittest tests.test_autonomy_gate_a_guard -v",
+      "exit": 0,
+      "result": "9 tests OK",
+      "output": "guard-unit.log"
+    },
+    {
+      "cwd": "repo/implementation",
+      "command": "/workspace/cycle-venv/bin/python tools/autonomy_gate_a_guard.py mode",
+      "exit": 0,
+      "result": "READ_ONLY",
+      "output": "mode.log"
+    },
+    {
+      "cwd": "repo",
+      "command": "/workspace/cycle-venv/bin/python implementation/docs/security_map19_owner/v1_1_cycle_20261008/verify_mapping.py",
+      "exit": 0,
+      "result": "PASS; current refs19/19; C39 pairs17/17; foreign pairs2/2; dated identities0/19; pins16",
+      "output": "identity.log"
+    },
+    {
+      "cwd": "repo",
+      "command": "/workspace/cycle-venv/bin/python implementation/docs/strategy_theme_owner/v1_1_cycle_20261008/verify_theme.py",
+      "exit": 0,
+      "result": "PASS; catalog4/4; assignments19/19; source units10000; unchanged source values",
+      "output": "theme.log"
+    },
+    {
+      "cwd": "repo",
+      "command": "/workspace/cycle-venv/bin/python implementation/docs/security_map19_owner/v1_1_cycle_20261008/test_evidence_rejections.py -v",
+      "exit": 0,
+      "result": "12 tests OK",
+      "output": "identity-rejections.log"
+    },
+    {
+      "cwd": "repo/implementation",
+      "command": "PYTHONPATH=src:. /workspace/cycle-venv/bin/python tools/qgv_contract_audit.py --verify",
+      "exit": 0,
+      "result": "PASS;71 golden cases; failures=[]; unchanged historical fixture",
+      "output": "qgv-audit.log"
+    },
+    {
+      "cwd": "repo/implementation/experiments/chart-contract-v0.1",
+      "command": "node --test *.test.mjs",
+      "exit": 0,
+      "result": "99 passed;0 failed",
+      "output": "chart-node.log"
+    },
+    {
+      "cwd": "/workspace",
+      "command": "/workspace/cycle-venv/bin/python /workspace/pr67-20261009-independent/source_review.py",
+      "exit": 0,
+      "result": "PASS;source pins16;historical Git-source pins15;frozen manifest hashes17;computational raw-map AST functions10 unchanged",
+      "output": "source-review.log"
+    }
+  ],
+  "github_current_exact_head_checks": [
+    {
+      "id": 113598639043,
+      "name": "neutral-contract",
+      "head_sha": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37861673365/job/113598639043"
+    },
+    {
+      "id": 113598638928,
+      "name": "repository-guard",
+      "head_sha": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37861673301/job/113598638928"
+    },
+    {
+      "id": 113598638848,
+      "name": "presentation",
+      "head_sha": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37861673302/job/113598638848"
+    },
+    {
+      "id": 113598638730,
+      "name": "validate",
+      "head_sha": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37861673285/job/113598638730"
+    },
+    {
+      "id": 113598638709,
+      "name": "guard",
+      "head_sha": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37861673306/job/113598638709"
+    }
+  ],
+  "source_review": "source-review.json",
+  "dependency_source_code_consumption": "source-code-consumption.json",
+  "baseline_reports_data_integrity": {
+    "evidence": "baseline-report-data-integrity.json",
+    "byte_identical_paths": 7426
+  },
+  "subject_context": {
+    "title": "Integrate PR63–66 and source-backed TARGET identity evidence",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "mergeable": true
+  },
+  "boundary": "Technical verification only. FPIA applicability/formal acceptance and deployment linkage are assigned to another auditor; this receipt does not infer those outcomes. No merge performed.",
+  "limitations": [
+    "CI conclusions and job-step statuses fetched successfully through GitHub API. CI job-log download was denied by the external storage endpoint; local fresh output logs are complete. Browser flows were not locally rerun in this session; exact-head GitHub browser-validation workflows passed."
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "schema": "PR67_RELEASE_AUDIT_20261009/1",
+  "observed_at": "2026-10-09T00:22:01.932198+00:00",
+  "read_only_scope": "No code/ref/decision/PR/merge mutations; local standalone evidence files only; public REST reads supplied no Authorization header.",
+  "fresh_remote_source": {
+    "pr": 67,
+    "head": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+    "base": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+    "base_ref": "claude/investment-system-top500-validation-alrugm",
+    "state": "open",
+    "draft": true,
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "default_branch": "claude/investment-system-top500-validation-alrugm"
+  },
+  "fpia": {
+    "source_commit": "7215a9f60ad7128b1748f405051eac684298614f",
+    "source_bytes_verified": true,
+    "register_commit": "59cc73a005196f73e92af8c47c594a9da8341a6c",
+    "authority_tip": "59cc73a005196f73e92af8c47c594a9da8341a6c",
+    "cdr": "CDR-014",
+    "status": "BLOCKED",
+    "authentication": "NOT_VERIFIED",
+    "authority_status": "PASS",
+    "fpia_status": "NOT_RUN",
+    "integration_acceptance": "BLOCKED",
+    "reason_records": 19253,
+    "affected_paths": 307,
+    "reason_counts": {
+      "NON_PYTHON_EXECUTION_UNCLASSIFIED": 24,
+      "CALL_TARGET_UNCLASSIFIED": 18799,
+      "DYNAMIC_EXECUTION_UNCLASSIFIED": 83,
+      "TRACK_C_IMPORT_OR_EXECUTABLE_MENTION": 1,
+      "RELATIVE_OR_STAR_IMPORT_UNCLASSIFIED": 346
+    },
+    "track_c_mention_records": [
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py",
+        "reason": "TRACK_C_IMPORT_OR_EXECUTABLE_MENTION"
+      }
+    ]
+  },
+  "exact_head_ci": [
+    {
+      "id": 113598639043,
+      "name": "neutral-contract",
+      "head_sha": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37861673365/job/113598639043"
+    },
+    {
+      "id": 113598638928,
+      "name": "repository-guard",
+      "head_sha": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37861673301/job/113598638928"
+    },
+    {
+      "id": 113598638848,
+      "name": "presentation",
+      "head_sha": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37861673302/job/113598638848"
+    },
+    {
+      "id": 113598638730,
+      "name": "validate",
+      "head_sha": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37861673285/job/113598638730"
+    },
+    {
+      "id": 113598638709,
+      "name": "guard",
+      "head_sha": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37861673306/job/113598638709"
+    }
+  ],
+  "public_deployment": {
+    "observed_verdict": "NO_OBSERVABLE_CANONICAL_PUBLIC_DEPLOYMENT_LINKAGE",
+    "github_pages_enabled": false,
+    "homepage": null,
+    "public_pages_settings_http": 404,
+    "registered_deployments": [],
+    "environments": {
+      "total_count": 0,
+      "environments": []
+    },
+    "canonical_workflows": [
+      ".github/workflows/autonomy-gate-a.yml",
+      ".github/workflows/c21-real-data.yml"
+    ],
+    "canonical_push_triggers": 0,
+    "candidate_canonical_push_triggers": 0,
+    "deployment_workflow_actions_or_environment_bindings": 0,
+    "tracked_provider_configuration_paths": [],
+    "domain_search_only_external_library_documentation": [
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/README.md",
+        "line": 76,
+        "text": "- https://tradingview.github.io/lightweight-charts/docs \u2014 renderer/build variants; library is not a data source."
+      },
+      {
+        "path": "implementation/experiments/chart-contract-v0.1/reviews/frontend_architecture_review.md",
+        "line": 30,
+        "text": "- https://tradingview.github.io/lightweight-charts/docs (retrieved ref turn4view0; current v5.2; lines 28\u201348 client-side/ES2020/IIFE; 52\u201357 attribution notice + TradingView link; 77\u201385 series families; 119\u2013135 candles)"
+      }
+    ],
+    "vercel_exact_repository_project_search": "no projects in current connected scope",
+    "other_branch_public_deployment": "no registered deployment records; Web/QGV branch push triggers are validation only",
+    "limits": "No assertion that an unseen external hook or unconnected hosting account cannot exist. Supported connector endpoint rejections were resolved with authorized unauthenticated public REST reads; required public deployment evidence was accessible."
+  },
+  "evidence_sha256": {
+    "CDR014-fresh-source.txt": "551ef81e682035f18f13a7c70972faa7a944ea9bc4e25ae5ce510b5739720c4c",
+    "fresh-fpia-applicability.command.json": "6a91e50514cce642820d26799697d09638f3d52e1ddc98d4510cdeba58fd5e57",
+    "fresh-fpia-applicability.json": "feeb3e738307b23d6bed5c57fd7d8b639be0013de05b36e95ed68ce91d93d6cb",
+    "fresh-fpia-applicability.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fresh-fpia-applicability.stdout": "57ae2fe82645cb38f3b828263b6ee49a867e4d57a08fcc77c2306594981188d2",
+    "github-baseChecks.json": "f946bf8f33e2aae6ef36b0cf862ddd3bdaf86c27593d462b702f90183fb498e2",
+    "github-baseStatus.json": "df25928b39a2e0662a74d3edcd45663860904151d591138b9540a67455b3f14b",
+    "github-branches.json": "22d04372f1258db0720b3b43f1812e9583ccd862350e84507944bb5a4b6f5a43",
+    "github-deployments.json": "dde49a396410c7144ea7adb833ee8b73b965b644e05c7282b25cb1dff8838238",
+    "github-environments.json": "dde49a396410c7144ea7adb833ee8b73b965b644e05c7282b25cb1dff8838238",
+    "github-globalRegister.json": "5df82a6967978aa529ba6beb94c3fc8e3fa12614f1c6abec7330839b04a6003f",
+    "github-globalTree.json": "5c491a2b120f8d880bf95877d4473706c87f590e03e592af84d6e39c836a8cdc",
+    "github-headChecks.json": "7593bd683296cec8c08e1f681a74414dfd7bc2b165f3c751058b89a18a60e186",
+    "github-headStatus.json": "ce03275bddfa21055461db21b1e0e50e97fee8df10af1b54420127fa3ceadece",
+    "github-issue47.json": "6a79d0bb13a273086790ceb71d3793f4197146aeecd8acd085bd33c2d1b19043",
+    "github-pages.json": "dde49a396410c7144ea7adb833ee8b73b965b644e05c7282b25cb1dff8838238",
+    "github-pr67.json": "69981174b53ff61e5477fac248a5ff78d7fa8fcc7471b95287bffdc85e0642ed",
+    "github-repo.json": "40b0c8cddc6b4e091fee78952c444eac5b2abab1ebaede4595ebea49141f2417",
+    "github-runs.json": "bb837e79916d7d21d30ead695ab3e6ea3718805defca2fd06dc2b4a7cd9c5ab4",
+    "public-github-deployment-reads.py": "85db36ab1dd2f69e83ac7b72aa76be93fafb3dc01a9b955ff2920902a67ad7c0",
+    "public-github-deployments.json": "63bb9c7daec7077bce849983cb9a8aee0d5a601e059295f9a05b1997ca0ff1a3",
+    "public-github-environments.json": "dfd05c68a2086a7f95ea42c30d9822d65cfb5953b12b8f796c80e6e0d546c1c5",
+    "public-github-pages.json": "a6362828cd9388173517ea356afad7792d24ad3b040aa4ccaf2f6156488aacbf",
+    "run_fresh_applicability.py": "3cfc2befd3e742fbb27a7b4337f80889c35c48e115ca30bc4365a04b73912340",
+    "tracked-deployment-scan.json": "649aa5cb2c563e394388e2a0ee5da97d90553c4017195286b85d2beaa9532a3b",
+    "vercel-exact-repository-project-search.json": "66576190f287da616f79f42610af95f452c4dc07c8c01bfd4cb075d1e52d217e",
+    "verifier-source-byte-integrity.json": "f508c57982e27ae7ddabfc4c094e70b0a3ad7309a425185050124540030ce216"
+  }
+}
