@@ -2,6 +2,7 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
     <meta
       name="viewport"
       content="width=device-width,initial-scale=1,viewport-fit=cover"
@@ -9,6 +10,7 @@
     <meta name="theme-color" content="#152d2b" />
     <title>Investment System · 개인 투자</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="device-actual.css" />
   </head>
   <body>
     <a class="skip" href="#content" data-i18n="본문으로">본문으로</a>
@@ -37,6 +39,7 @@
     <div id="notice" role="status" aria-live="polite"></div>
     <script src="locale.js"></script>
     <script src="entity-search.js"></script>
+    <script src="device-actual.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
