@@ -99,13 +99,10 @@ Twelve Data 개인 플랜은 개인·내부 사용이며 재배포를 허용하�
 
 **조건부 허용 근거는 있다.** Tiingo 약관 §1.6(c)는 원자료·서비스를 대체하지
 않고 다른 공개 정보와 결합해도 원자료를 복원할 수 없는 파생 결과의 배포를
-허용한다. 순위·점수와 수익률도 이 조건을 충족할 때만 예시로 든다. 단일
-종목의 연속 수익률·100 기준 경로는 외부 기준가격 하나로 복원할 수 있어
-금지 예시에 해당한다. 무료 Starter/Trial은 원자료와 파생값의 **기간과 무관한
-지속/내구 저장**을 금지하고 작업 완료까지 일시적 휘발성 메모리/비지속 cache
-처리만 허용한다. 짧은 TTL의 파일/IndexedDB나 공개 Git 스냅샷도 허용된
-보관 경로가 아니다. 유료 접근권과 기존 공개 출력의
-복원 가능성을 먼저 확인해야 한다. 기존 점수·방법론을 바꾸는 우회는 없다.
+허용한다. 복원 가능한 단일 종목의 연속 수익률·100 기준 경로는 금지 예시에
+해당한다. 무료 Starter/Trial은 원자료와 파생값의 **기간과 무관한 지속/내구 저장**을
+금지한다. 짧은 TTL의 파일/IndexedDB나 공개 Git 스냅샷도 허용된 보관 경로가 아니다.
+기존 점수·방법론을 바꾸는 우회는 없다. 아래 Tiingo 검토의 계정·약관 적용일 구분을 따른다.
 [Tiingo 약관 §1.6(2026-10-06 개정)](https://app.tiingo.com/tos/)
 
 Twelve Data는 복원 불가능한 Derived Data 생성과 고객 권리를 규정하지만
@@ -137,10 +134,70 @@ Market Data의 교육·저널리즘 조건은 복원 불가능한 집계 발표�
   명시한다. D4 일봉 해결책으로 확장하지 않는다. Tokyo 미지원에 대한 기존
   실측 결정을 유지한다. [Google 공식 제한](https://support.google.com/docs/answer/3093281?hl=en)
 - **Tiingo 사용자 키:** 공식 문서는 앱 사용자가 각자 자신의 키를 넣고 앱이
-  데이터를 배포하지 않는 방식의 라이선스 경계를 설명한다. 그러나 무료
-  지속/내구 저장 금지 및 한국·일본 지원·CORS 미확인이 있어 D4 19종목 기기
-  보관 전체의 무료 대안으로 확정하지 않는다.
-  [공식 API 설명](https://www.tiingo.com/documentation/), [보관 약관](https://app.tiingo.com/tos/)
+  데이터를 배포하지 않는 방식과 공급자가 수집해 재배포하는 방식을 구분한다.
+  후자는 별도 redistribution license가 필요하다. 기존 Secret의 서버 수집·공개 권리를
+  이 기기 직접 조회 모델로 대신하지 않는다. [Developer Program](https://www.tiingo.com/documentation/appendix/developers)
+
+### Tiingo
+
+기존 Secret·무료/현재 요금제와 정확한 19종목을 검토했다.
+
+**`TIINGO_API_KEY`**가 정확한 이름이다. `.github/workflows/c21-real-data.yml:160`의
+`secrets.TIINGO_API_KEY` 참조를 확인했다. 존재는 사용자 확인을 근거로 한다.
+이름 목록 조회는 HTTP 403으로 거부돼 독립적으로 확인하지 못했으며 값 조회나
+인증 호출로 우회하지 않았다. **실제 계정 플랜·잔여 한도·적용 약관/추가 계약은 미확인**이다.
+
+공식 [가격표](https://www.tiingo.com/pricing)의 공개 개인 요금제 비교(2026-10-09 UTC):
+
+| 항목 | Starter | Power |
+| --- | --- | --- |
+| 가격 | **$0/월** | **$30/월** |
+| 월 unique symbols | **500** | 110,229 |
+| 최대 요청/시간 | **50** | 10,000 |
+| 최대 요청/일 | **1,000** | 100,000 |
+| 월 대역폭 | **1GB** | 40GB |
+| 라이선스 | **Internal Use Only** | **Internal Use Only** |
+
+과거 안내의 50 unique tickers를 현재 월 한도로 쓰지 않는다. [한도 안내](https://www.tiingo.com/documentation/general/overview)는
+시간 한도를 매시간, 일 한도를 midnight EST에 초기화하며 분/초 고정 한도는 없다고 한다.
+종목당 요청 1개라면 17~19회/일은 요청·심볼 예산 안이지만 백필·재시도·대역폭도 합산한다.
+가격표의 30+년은 각 회사 30년 이력을 보장하지 않는다.
+
+| 정확한 D4 범위 | 공개 지원목록 확인 |
+| --- | --- |
+| 미국 · USD | **17/17 존재**: `ASML, LRCX, KLAC, NVDA, AMD, AVGO, QCOM, INTC, MSFT, GOOGL, AMZN, RTX, SYK, ETN, HUBB, GEV, ROK`; 모두 `endDate=2026-10-08` |
+| 일본 · JPY | **TSE:8035 본상장 없음**, TSE 거래소 항목 없음 |
+| 한국 · KRW | **KRX:042700 본상장 없음**, KRX 거래소 항목 없음 |
+
+[Symbology](https://www.tiingo.com/documentation/appendix/symbology)는 미국 주식/ETF/펀드와 중국 주식을
+안내하고 [EOD 상품](https://www.tiingo.com/products/end-of-day-stock-price-data)의 거래소 목록에도
+TSE·KRX가 없다. 인증 없이 읽은 [공식 supported_tickers.zip](https://apimedia.tiingo.com/docs/tiingo/daily/supported_tickers.zip)
+108,972행에서 두 거래소와 `8035`·`042700` 본상장을 찾지 못했다(2026-10-09 UTC).
+Tokyo Electron 미국 OTC `TOELY`·`TOELF`·`TELWY`는 TSE 8035의 대체물로 쓰지 않는다.
+[EOD 문서](https://www.tiingo.com/documentation/end-of-day)는 예약 심볼도 목록에 포함된다고 경고한다.
+17개 목록 존재는 실제 계정 API 성공·전체 이력 완전성의 증명이 아니다.
+공개목록상 GEV는 2024-03-27, HUBB는 2015-12-24부터다.
+
+[공식 약관](https://app.tiingo.com/tos/)의 최종 변경 표시는 **2026-10-06**, 조회는 **2026-10-09 UTC**다.
+
+| 조항 | 짧은 원문 | 설계 적용 |
+| --- | --- | --- |
+| §1.6(a) | “any persistent or durable storage” | Starter/Trial 원본·파생물의 비휘발성 저장 금지; 일시적인 파일·로그·DB 저장도 포함 |
+| §1.6(c) | “simple transformations of open, high, low, close, volume” | 형식/필드명 변경으로 가격 JSON 공개 권리가 생기지 않음 |
+| §7.3 | “special request and permission” | API 재배포는 별도 허가·추가 비용 필요 |
+| §7.3 | “Data sourced by Tiingo” | 허가 후에도 출처 표시와 Tiingo 링크 필요 |
+
+§1.6(b)의 유효 유료 플랜 내부 저장도 종료·다운그레이드 시 원본 삭제가 필요하다.
+§1.6 예외는 Start-up/Enterprise/Institutional의 별도 서면 계약으로만 가능하며 Starter/Power에는 제공하지 않는다.
+기존 이용자의 개정 적용은 게시/이메일 통지 후 30일 조건이고 추가 약관이 우선할 수 있다.
+**10월 6일 변경 표시만으로 이 계정의 10월 9일 적용 약관을 확정하지 않는다.**
+공개 최신 조건을 설계 기준으로 삼되 실제 계약·통지일은 미확인이다.
+EOD 상품의 Display Redistribution 가격도 원시 JSON·Git 이력 배포 허가를 확정하지 않는다.
+
+**판정: 미국 17종목 내부 사용 후보는 조건부 가능. 무료 Starter의 비휘발성 저장과 별도 계약 없는
+공개 Pages OHLCV JSON은 공개 최신 조건상 불가. TSE 8035·KRX 042700은 다른 출처가 필요해
+Tiingo 단독 19종목 선택지는 채택하지 않는다.** 현재 fallback은 종가·UTC 21:00·USD 중심이므로
+19종목 전체 OHLCV 어댑터로 그대로 재사용하지 않는다. 기존 코드·워크플로·데이터는 변경하지 않는다.
 
 Yahoo 비공식 호출·운영 스크래핑·출처 불명 공개 JSON은 후보에서 제외한다.
 
