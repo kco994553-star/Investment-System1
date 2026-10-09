@@ -6,7 +6,7 @@
   "acquired_at_utc": "2026-10-09T03:03:33Z",
   "expires_at_utc": "2026-10-09T05:03:33Z",
   "ttl_hours": 2,
-  "status": "HELD",
+  "status": "RELEASED",
   "branch": "codex/chart-public-reference-20261009",
   "base": "d71243bcc79139149541f3627e8f227a32c463c5",
   "authority": "Main direct user instruction 2026-10-09; named execution/deployment only; AUTONOMY_MODE READ_ONLY unchanged",
@@ -34,5 +34,7 @@
     "automation settings",
     "other owner refs",
     "PR70"
-  ]
+  ],
+  "released_at_utc": "2026-10-09T03:21:00Z",
+  "reason": "New explicit user direction supersedes unfinished publication. PR71 left open, not merged; documentation-only docs/cockpit-ia-v1 work begins separately."
 }
