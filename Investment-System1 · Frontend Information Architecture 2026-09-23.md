@@ -1,3 +1,4 @@
+> SUPERSEDED by implementation/docs/frontend_ia_v1/COCKPIT_IA_v1.md (2026-10-09). 기록 보존용.
 # Frontend Information Architecture · 2026-09-23
 
 Status: DESIGN PROVISIONAL overlay. Does not change Frozen Contracts, scoring, Integration policy, or C-15.
