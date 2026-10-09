@@ -1,0 +1,44 @@
+{
+  "assessment": "PASS_WITH_MINOR_FINDING",
+  "head": "17b8f82bd09bce4cd0655e9f0795f3670bd805d8",
+  "tree": "f0462875d374da2f7edcc9324090a7df8590d4ce",
+  "reviewed_code_head": "a4798d373dd74e93ac2cd4f3ae24ed1578727b1e",
+  "base": "e03b9a10997e195f3681a32b5315feb998d55312",
+  "counts": {
+    "pytest": 701,
+    "subtests": 99,
+    "device_node": 17,
+    "device_browser": 40,
+    "independent_browser": 21,
+    "legacy_browser": 10,
+    "search_browser": 8,
+    "search_node": 26,
+    "independent_guard": 3
+  },
+  "checks": [
+    "final remote source/docs byte equality to locally tested candidate",
+    "only workflow path-filter changed after candidate",
+    "final remote guard PASS READ_ONLY",
+    "no input values in console request URLs headers bodies",
+    "no private canary matches in 20 evidence/data files",
+    "public catalog exact19 identity pins",
+    "JSON YAML CSV renamed and deleted new-history privacy rejection"
+  ],
+  "findings": [
+    {
+      "severity": "minor",
+      "file": "implementation/tools/autonomy_gate_a_guard.py",
+      "line": 120,
+      "description": "Filename-based partial holdings detection also flags generated public actual-catalog.json containing only identity and TARGET metadata; this is a false positive if that output is scanned or committed."
+    }
+  ],
+  "ci_at_last_check": {
+    "guard": "success",
+    "validate": "in_progress",
+    "presentation": "success",
+    "repository-guard": "success"
+  },
+  "draft": true,
+  "merged": false,
+  "public_deployment_performed": false
+}

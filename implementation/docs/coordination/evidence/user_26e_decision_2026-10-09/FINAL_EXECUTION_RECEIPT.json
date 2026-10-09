@@ -1,0 +1,116 @@
+{
+  "schema": "user-26e-execution-receipt/1",
+  "recorded_at": "2026-10-09T00:42:29.361956+00:00",
+  "authority": "CDR-042; PR67 substitute exception CDR-043 only",
+  "mode": "READ_ONLY",
+  "pr67": {
+    "number": 67,
+    "merged": true,
+    "source_head": "ab295f7d4e66b5cada04a8ad93361152d4e6d665",
+    "merge_commit": "e03b9a10997e195f3681a32b5315feb998d55312",
+    "merged_at": "2026-10-09T00:28:02Z",
+    "merge_tree": "d1b8efa97947743ed56d402cc415b340f434cf4a",
+    "verified_source_and_merge_tree_equal": true,
+    "merge_method": "normal PR merge; no force push",
+    "fpia_applicability": "BLOCKED_TOOL_CLASSIFICATION_INDETERMINATE",
+    "fpia_audit": "NOT_RUN",
+    "user_authorized_substitute": "current repository-guard CI + fresh independent technical PASS",
+    "fpia_recorded_defect_blockers": 0,
+    "fpia_later_items": 25,
+    "public_deployment_linkage": "no observable linkage in examined GitHub/config/connected Vercel evidence",
+    "rollback": "revert PR if a problem is observed"
+  },
+  "actual": {
+    "pr": 68,
+    "head": "17b8f82bd09bce4cd0655e9f0795f3670bd805d8",
+    "tree": "f0462875d374da2f7edcc9324090a7df8590d4ce",
+    "base": "e03b9a10997e195f3681a32b5315feb998d55312",
+    "ready_for_review": true,
+    "merged": false,
+    "identity_count": 19,
+    "storage": "user device browser IndexedDB only",
+    "backup": "local user-owned versioned JSON export/import",
+    "prices_available_in_current_build": false,
+    "valuation_weight_delta": "NOT_AVAILABLE without accepted prices/FX",
+    "private_user_holdings_used": false,
+    "repository_build_ci_logs_holdings_canary_matches": 0,
+    "independent_result": "PASS_WITH_MINOR_FINDING",
+    "critical_findings": 0,
+    "important_findings": 0,
+    "minor_findings": [
+      {
+        "severity": "minor",
+        "file": "implementation/tools/autonomy_gate_a_guard.py",
+        "line": 120,
+        "description": "Filename-based partial holdings detection also flags generated public actual-catalog.json containing only identity and TARGET metadata; this is a false positive if that output is scanned or committed."
+      }
+    ],
+    "independent_counts": {
+      "pytest": 701,
+      "subtests": 99,
+      "device_node": 17,
+      "device_browser": 40,
+      "independent_browser": 21,
+      "legacy_browser": 10,
+      "search_browser": 8,
+      "search_node": 26,
+      "independent_guard": 3
+    },
+    "independent_receipt_sha256": "2ec43605136c1abef8ff342ef85cea9b9b046055c330adb304ff468db8a40166",
+    "independent_ci_observation": "review receipt captured validate in progress; all four final exact-head CI jobs later SUCCESS as recorded below",
+    "exact_head_ci": [
+      {
+        "run_id": 37865830515,
+        "job_id": 113612208278,
+        "name": "repository-guard",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37865830515"
+      },
+      {
+        "run_id": 37865830465,
+        "job_id": 113612208340,
+        "name": "validate",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37865830465"
+      },
+      {
+        "run_id": 37865830508,
+        "job_id": 113612208334,
+        "name": "presentation",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37865830508"
+      },
+      {
+        "run_id": 37865830555,
+        "job_id": 113612208894,
+        "name": "guard",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37865830555"
+      }
+    ],
+    "repository_guard": "PASS; recognizable populated JSON/YAML/CSV including renamed/deleted new history",
+    "guard_limit": "conservative generated public actual-catalog filename false positive; arbitrary encrypted/encoded/binary formats not exhaustively recognized",
+    "public_deployment_performed": false,
+    "next_authorization": "PR68 merge decision; public deployment separate"
+  },
+  "progress": {
+    "a_s2_current_target_resolved": 19,
+    "a_s2_current_target_unresolved": 0,
+    "a_s3_assignments": 19,
+    "chart_source_gates_closed": 3,
+    "chart_total_gates": 6,
+    "chart_open": {
+      "A-G1": "original Product/P01 authority/read/invalidation/denial policy",
+      "A-G2": "original production route and affected-owner per-file acceptance",
+      "A-G3": "broader formal production FPIA acceptance; PR67 substitute is bounded and does not close this original governance gate"
+    },
+    "platform_closed": 1,
+    "platform_total": 9,
+    "full_dated_listing_admission": "0/19 unchanged and separate from current target references",
+    "automation_gate_a_and_operational_data_updates": "deferred unchanged"
+  }
+}
