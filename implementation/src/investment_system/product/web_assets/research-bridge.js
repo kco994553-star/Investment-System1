@@ -56,6 +56,7 @@ const controls=new Map([
 for(const [value,key] of [...controls]) controls.set(AppLanguage.text(key,"en-US"),key);
 function localizeControls() {
   document.documentElement.lang=displayLocale;
+  if(window.plvFieldGuideLocalize) window.plvFieldGuideLocalize(displayLocale);
   // Explicit control selectors prevent source-original catalog and preview mutation.
   for(const e of document.querySelectorAll("summary,#detail h3,#copy,#copied,#status p,select option[value='']")) {
     const key=controls.get(e.textContent);
@@ -79,3 +80,53 @@ window.addEventListener("message",e=>{
     displayLocale=e.data.locale;localizeControls();
   }
 });
+
+// Optional public analysis imports. The parent projects an allowlist from its public read model;
+// this page never reads device storage, fetches a snapshot or serializes arbitrary parent objects.
+let publicResearchContext={fields:{},companies:[]};
+const importText=key=>AppLanguage.text(key,displayLocale);
+function publicImportValue(name) {
+  const value=publicResearchContext.fields?.[name];if(!value) return null;
+  if(["qgv_snapshot_summary","technical_input"].includes(name)) {
+    const input=document.querySelector('[data-v="ticker"]') || document.querySelector('[data-v="seed_ticker"]');
+    const ticker=input?.value.trim().toUpperCase();
+    const matches=publicResearchContext.companies?.filter(company=>company.ticker.toUpperCase()===ticker) || [];
+    if(matches.length!==1) return null;
+    const rows=value.rows?.filter(row=>row.company_id===matches[0].company_id && row.ticker.toUpperCase()===ticker) || [];
+    if(rows.length!==1) return null;
+    return {...value,rows};
+  }
+  return value;
+}
+function renderPublicImports() {
+  for(const slot of document.querySelectorAll('[data-system-import]')) {
+    const name=slot.dataset.systemImport,value=publicImportValue(name),button=slot.querySelector('button');
+    if(value) {
+      if(!button) {
+        slot.replaceChildren();const control=document.createElement('button');control.type='button';
+        control.dataset.publicImport=name;control.textContent=importText('가져오기');
+        control.onclick=()=>{
+          const current=publicImportValue(name),field=document.querySelector('[data-v="'+name+'"]');
+          if(!current || !field) return;
+          field.value=JSON.stringify(current,null,2);field.dispatchEvent(new Event('input',{bubbles:true}));
+        };slot.append(control);
+      } else if(button.textContent!==importText('가져오기')) button.textContent=importText('가져오기');
+    } else {
+      let note=slot.querySelector('[data-import-unavailable]');
+      if(!note) {slot.replaceChildren();note=document.createElement('span');note.dataset.importUnavailable=name;note.className='muted';slot.append(note);}
+      const hasMode=!!document.querySelector('[data-v="input_mode"]'),
+        key=hasMode?'현재 앱에 자료 없음 — 직접 입력하거나 STANDALONE 사용':'현재 앱에 자료 없음 — 직접 입력하세요.';
+      if(note.textContent!==importText(key)) note.textContent=importText(key);
+    }
+  }
+}
+document.getElementById('form')?.addEventListener('input',renderPublicImports);
+document.getElementById('detail').addEventListener('input',event=>{
+  if(event.target.matches('[data-v="ticker"],[data-v="seed_ticker"]')) renderPublicImports();
+});
+new MutationObserver(renderPublicImports).observe(document.getElementById('detail'),{childList:true,subtree:true});
+window.addEventListener('message',event=>{
+  if(event.source!==parent || event.origin!==location.origin || event.data?.type!=='research_public_context') return;
+  publicResearchContext=event.data.context || {fields:{},companies:[]};renderPublicImports();
+});
+if(parent!==window) parent.postMessage({type:'research_public_context_request'},location.origin);

@@ -84,6 +84,7 @@
     "← QGV":{"ko-KR":"← QGV","en-US":"← QGV"},
     "← 검증":{"ko-KR":"← 검증","en-US":"← Validation"}
   });
+  Object.assign(UI,{"가져오기":{"ko-KR":"가져오기","en-US":"Import"},"현재 앱에 자료 없음 — 직접 입력하거나 STANDALONE 사용":{"ko-KR":"현재 앱에 자료 없음 — 직접 입력하거나 STANDALONE 사용","en-US":"No data in the app — enter it yourself or use STANDALONE."},"현재 앱에 자료 없음 — 직접 입력하세요.":{"ko-KR":"현재 앱에 자료 없음 — 직접 입력하세요.","en-US":"No data in the app — enter it yourself."}});
   const TERMS=Object.freeze({
     free_cash_flow:["Free Cash Flow","잉여현금흐름"], drawdown:["Drawdown","낙폭"],
     operating_margin:["Operating Margin","영업이익률"], Q_score:["Quality","품질"],

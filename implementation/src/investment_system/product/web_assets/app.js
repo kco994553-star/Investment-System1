@@ -567,7 +567,77 @@ document.addEventListener("change", (e) => {
     save();
   }
 });
+// Public research context: project only approved analysis fields. Device holdings, quotes,
+// portfolio values, account settings and arbitrary evidence objects are never read or forwarded.
+function researchPublicContext() {
+  const out={fields:{},companies:[]}, states=["LIVE","FROZEN_SNAPSHOT","DEMO"];
+  const privateAlias=/(?:ya29\.|spreadsheets\/|(?:api|app)[\s_-]*(?:key|secret)|(?:sheet|spreadsheet)[\s_-]*(?:id|url)|(?:access|refresh|auth|bearer)[\s_-]*token|client[\s_-]*secret|private[\s_-]*key|password|authorization\s*:\s*bearer)/i;
+  const privateMetadataKeys=new Set([
+    "quantity","quantities","shares","amount","cash","balance","account","accountnumber","accountid",
+    "price","prices","quotes","fxrate","exchangerate","marketvalue","averagecost","avgcost","costbasis",
+    "money","moneyvalue","mcap","cutoffmcap","marketcap","marketcapitalization","purchaseprice","networth",
+    "holdings","positions","actualholdings","investedamount","totalcost","cost","valueamount","cashbalance",
+    "portfolioamount","portfoliovalue","actualweight","spreadsheetid","spreadsheeturl","sheetid","sheeturl",
+    "apikey","appkey","appsecret","accesstoken","refreshtoken","clientsecret","authtoken","bearertoken",
+    "token","credential","credentials","secret","password","privatekey"
+  ]);
+  const privateMetadata=v=>(v.match(/[A-Za-z][A-Za-z0-9_-]*/g) || []).some(k=>privateMetadataKeys.has(k.replace(/[_-]/g,"").toLowerCase()));
+  const token=v=>typeof v==="string" && /^[A-Za-z0-9_.:-]{1,128}$/.test(v) &&
+    !privateAlias.test(v)?v:null;
+  const text=v=>typeof v==="string" && v.length<=512 && !/[\r\n]/.test(v) &&
+    !privateAlias.test(v) && !privateMetadata(v)?v:null;
+  const instant=v=>text(v) && (/^\d{4}-\d{2}-\d{2}$/.test(v) || EXPIRES_AT.test(v))?v:null;
+  const number=v=>typeof v==="number" && Number.isFinite(v)?v:null;
+  const eligible=s=>s && states.includes(s.state) && s.data!==null && !s.withheld && instant(s.as_of) && text(s.source);
+  const snapshotId=v=>token(v) && !privateMetadata(v)?v:null;
+  const meta=(name,s)=>({section:name,state:s.state,as_of:instant(s.as_of),source:text(s.source),
+    freshness:freshnessOf(name,s),snapshot_id:snapshotId(s.producer?.snapshot_id)});
+  const pick=(v,numeric,codes)=>{
+    const row={};for(const k of numeric) {const value=number(v?.[k]);if(value!==null) row[k]=value;}
+    for(const k of codes) {const value=token(v?.[k]);if(value!==null && !privateMetadata(value)) row[k]=value;}
+    return row;
+  };
+  const companies=new Map();
+  for(const c of D.companies) if(token(c.company_id) && token(c.ticker)) {
+    const entry={company_id:c.company_id,ticker:c.ticker};out.companies.push(entry);companies.set(c.company_id,entry);
+  }
+  for(const [name,numeric,codes] of [
+    ["qgv",["Q_score","G_score","V_score","total_score","confidence"],["confidence","coverage_state"]],
+    ["technical",[],["regime","execution_zone"]]
+  ]) {
+    const s=D[name];if(!eligible(s)) continue;
+    const rows=[];
+    for(const [id,v] of Object.entries(s.data || {})) if(companies.has(id)) {
+      const values=pick(v,numeric,codes);if(Object.keys(values).length) rows.push({...companies.get(id),...values});
+    }
+    if(!rows.length) continue;
+    const value={...meta(name,s),rows};
+    if(name==="qgv") out.fields.qgv_snapshot_summary=value;
+    else {out.fields.technical_input=value;out.fields.technical_screen_summary=value;}
+  }
+  const l=D.leaderboard;
+  if(eligible(l)) {
+    const rows=(Array.isArray(l.data?.rows)?l.data.rows:[]).filter(r=>companies.has(r?.company_id)).map(r=>
+      ({...companies.get(r.company_id),...pick(r,["rank","total_score"],[])}));
+    if(rows.length) out.fields.existing_system_candidates={...meta("leaderboard",l),rows};
+  }
+  const m=D.macro;
+  if(eligible(m)) {
+    const values=pick(m.data,[],["state","regime"]);
+    if(Object.keys(values).length) {
+      out.fields.macro_input={...meta("macro",m),values};out.fields.macro_snapshot_summary=out.fields.macro_input;
+    }
+  }
+  // This Web contract has no integrated judgment, coverage or its snapshot references.
+  // Individual QGV coverage and available snapshot IDs do not establish those relationships.
+  return out;
+}
 window.addEventListener("message", (e) => {
+  const research=$("#research-frame");
+  if(e.origin===location.origin && e.source===research?.contentWindow && e.data?.type==="research_public_context_request") {
+    research.contentWindow.postMessage({type:"research_public_context",context:researchPublicContext()},location.origin);
+    return;
+  }
   const frame = $("#network-frame");
   if (
     e.origin !== location.origin ||

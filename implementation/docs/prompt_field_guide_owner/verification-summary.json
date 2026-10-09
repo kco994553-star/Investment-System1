@@ -1,0 +1,55 @@
+{
+  "status": "LOCAL_VERIFICATION_PASS_BASE_DECISION_PENDING",
+  "canonical_base": "c8b9debecaeaebf392672c74f5bfd50b20217227",
+  "requested_base": "canonical after PR #75 merge",
+  "pr_75_state": "OPEN",
+  "work_branch": "codex/prompt-field-guide",
+  "frozen_sha256": "f0a6ed9005e22b8fa534d51135cc3e734aa9577150438a35d65823a4c283e68e",
+  "python_tests": 860,
+  "python_subtests": 345,
+  "new_guide_browser_checks": 16833,
+  "node_device_google_checks": 84,
+  "node_language_search_checks": 26,
+  "existing_browser_checks": {
+    "pages": 10,
+    "device_actual": 40,
+    "manual_quotes": 119,
+    "google_mocked": 40,
+    "google_storage": 13,
+    "state_presentation": 31,
+    "research_guard": 10,
+    "web_mvp": 10,
+    "global_language": 8
+  },
+  "viewports": [
+    390,
+    1280
+  ],
+  "locales": [
+    "ko-KR",
+    "en-US"
+  ],
+  "traffic": {
+    "external": 0,
+    "unsafe": 0,
+    "failed_responses": 0,
+    "page_errors": 0,
+    "csp_violations": 0
+  },
+  "screenshots": [
+    "prompt-guide-empty-ko-KR-390.png",
+    "prompt-guide-empty-en-US-390.png",
+    "prompt-guide-empty-ko-KR-1280.png",
+    "prompt-guide-empty-en-US-1280.png"
+  ],
+  "screenshot_state": "DEVICE_EMPTY_PROMPT_BLANK",
+  "public_files": 16,
+  "changed_public_files": [
+    "app.js",
+    "locale.js",
+    "research.html"
+  ],
+  "public_json_and_csp_unchanged": true,
+  "private_payload_files_written": 0,
+  "github_ci": "PENDING_PR_BASE_DECISION"
+}
