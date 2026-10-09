@@ -23,6 +23,7 @@ test('auth exports exist without starting a network request', () => {
 test('spreadsheet IDs accept a strict Google URL and reject unrelated origins', () => {
   assert.ok(api.extractSpreadsheetId(ID) === ID);
   assert.ok(api.extractSpreadsheetId('https://docs.google.com/spreadsheets/d/' + ID + '/edit#gid=0') === ID);
+  for (const account of [0, 2]) assert.ok(api.extractSpreadsheetId('https://docs.google.com/spreadsheets/u/' + account + '/d/' + ID + '/edit?gid=0') === ID);
   for (const bad of ['https://example.org/spreadsheets/d/' + ID, 'https://docs.google.com.evil.invalid/spreadsheets/d/' + ID, 'http://docs.google.com/spreadsheets/d/' + ID, 'https://secret@docs.google.com/spreadsheets/d/' + ID, 'https://docs.google.com/spreadsheets/d/' + ID + '/unknown', ID + '?secret', 'short']) assert.throws(() => api.extractSpreadsheetId(bad), { message: 'INVALID' });
 });
 test('Sheets endpoint encodes range and fixes render modes', () => {

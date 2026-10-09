@@ -28,7 +28,7 @@
     if (/^[A-Za-z0-9_-]{20,100}$/.test(value)) return value;
     let url; try { url = new URL(value); } catch (_) { fail('INVALID'); }
     if (url.protocol !== 'https:' || url.hostname !== 'docs.google.com' || url.port || url.username || url.password) fail('INVALID');
-    const match = /^\/spreadsheets\/d\/([A-Za-z0-9_-]{20,100})(?:\/(?:edit|view|preview|copy))?\/?$/.exec(url.pathname);
+    const match = /^\/spreadsheets\/(?:u\/\d+\/)?d\/([A-Za-z0-9_-]{20,100})(?:\/(?:edit|view|preview|copy))?\/?$/.exec(url.pathname);
     if (!match) fail('INVALID'); return match[1];
   }
   function sheetsURL(id, range) {

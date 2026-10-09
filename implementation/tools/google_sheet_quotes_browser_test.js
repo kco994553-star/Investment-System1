@@ -64,7 +64,7 @@ async function open(locale,width,missingClient=false) {
 }
 async function configure(session) {
   const {page,root}=session;await root.locator('[data-sheet-enabled]').check();
-  await root.locator('[data-sheet-id]').fill('https://docs.google.com/spreadsheets/d/'+ID+'/edit#gid=0');
+  await root.locator('[data-sheet-id]').fill('https://docs.google.com/spreadsheets/u/0/d/'+ID+'/edit#gid=0');
   await root.locator('[data-sheet-action="save"]').click();await waitNotice(page,'saved');
 }
 async function login(session) {
