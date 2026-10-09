@@ -85,3 +85,27 @@ ID로 추출하도록 보완했습니다. HTTPS·정확한 Google 호스트·자
 다시 통과했습니다. 독립 검토의 추가 잘못된 URL7개도 모두 거부했습니다.
 개인정보·공개16파일 가드가 통과했으며 동일 PR #73에 후속 커밋으로 반영합니다.
 canonical 병합·배포는 여전히 사용자 승인 대기입니다.
+
+
+## GSQ-004 — PR #73 병합 승인 및 공개 CSP 최소 수정 범위 (2026-10-09)
+
+기존 GSQ-001~003 원문은 보존하고 최신 사용자 승인만 끝에 추가한다.
+
+> #73 병합을 승인합니다. PR #73을 canonical에 병합하고 GitHub Pages 배포가 성공하는지 확인.
+> 다른 PR 병합 금지. force push·ruleset 변경·AUTONOMY_MODE 변경 금지.
+> 공개 사이트 실제 확인(실제 구글 로그인은 하지 않음). CSP 위반이 있으면 구글 공식 권장 범위 안에서만 최소 수정하여 별도 PR로 올리고 병합은 대기.
+> Cockpit IA v1 공식화 + 차트 목록 보강(문서 전용 PR)을 이어서 진행. 병합은 사용자 승인 대기.
+
+승인된 PR #73만 canonical `13e025b0e545fb3da14c15ce065a6a8e4a368eb0`에
+병합했다. Pages run `37897789996`의 build·deploy가 성공했다. 공개 16파일
+승인 산출물·개인정보 가드 PASS, 실제 시세·시트 ID·접근 토큰 공개 없음.
+
+ko/en × 390/1280px 실제 공개 런타임 80검사에서 OFF·설정·붙여넣기·실제 GIS
+로드·실제 token-client 초기화는 통과했으나 SDK inline style CSP 위반은 각
+화면 1개였다. 실제 로그인·토큰 요청·Sheets 호출은 하지 않았다. 수정은 별도
+브랜치 `codex/google-sheet-csp-20261009`에서 exact Google 공식 CSS URL의
+`style-src` 허용과 준비 버튼에서 외부 CSS 선로드만 다룬다. SDK 내부 marker
+의존성과 token-client 전용 검증 한계는 [공개 점검 기록](GOOGLE_SHEET_QUOTES_PUBLIC_CHECK_20261009.md)에
+명시한다. CSP 수정 PR과 기존 IA 문서 PR #72는 사용자 병합 승인을 기다린다.
+투자 방법론·TARGET·공급처 상태·READ_ONLY·scope·메모리 토큰·기기 직접 읽기·
+수동 입력 유지·백업 제외 경계는 변경하지 않는다.

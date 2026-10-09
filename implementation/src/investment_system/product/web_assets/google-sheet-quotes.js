@@ -7,6 +7,11 @@
   'use strict';
   const SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
   const CLIENT_SCRIPT = 'https://accounts.google.com/gsi/client';
+  const CLIENT_STYLE = 'https://accounts.google.com/gsi/style';
+  // The current GIS token-client SDK skips its inline button styles when this
+  // marker exists. Load Google's external CSS under a strict CSP. GIS buttons
+  // and One Tap are outside this integration; recheck this marker on updates.
+  const STYLE_ID = 'googleidentityservice_button_styles';
   const DEFAULT_RANGE = 'Quotes!A1:C22', sessions = new WeakMap(), hosts = new WeakMap();
   const TEXT = {
     title: ['구글 시트 시세 · 선택 기능', 'Google Sheet quotes · Optional'],
@@ -52,11 +57,30 @@
       if (!enabled || !clientId) return Promise.reject(new Error('OFF'));
       if (oauth()) return Promise.resolve();
       if (preparing) return preparing;
+      const attempt = epoch;
       preparing = new Promise((resolve, reject) => {
-        const script = view.document.createElement('script'); script.src = CLIENT_SCRIPT; script.async = true; script.referrerPolicy = 'no-referrer';
-        script.onload = () => { if (oauth()) resolve(); else reject(new Error('AUTH_FAILED')); };
-        script.onerror = () => reject(new Error('AUTH_FAILED'));
-        view.document.head.append(script);
+        function loadScript() {
+          if (!enabled || attempt !== epoch) { reject(new Error('CANCELED')); return; }
+          const script = view.document.createElement('script'); script.src = CLIENT_SCRIPT; script.async = true; script.referrerPolicy = 'no-referrer';
+          script.onload = () => {
+            if (!enabled || attempt !== epoch) reject(new Error('CANCELED'));
+            else if (oauth()) resolve();
+            else reject(new Error('AUTH_FAILED'));
+          };
+          script.onerror = () => { script.remove(); reject(new Error('AUTH_FAILED')); };
+          view.document.head.append(script);
+        }
+        const existing = view.document.getElementById(STYLE_ID);
+        if (existing) {
+          if (existing.tagName === 'LINK' && existing.rel === 'stylesheet' && existing.href === CLIENT_STYLE && existing.dataset.googleSheetReady === 'true') loadScript();
+          else reject(new Error('AUTH_FAILED'));
+          return;
+        }
+        const style = view.document.createElement('link');
+        style.id = STYLE_ID; style.rel = 'stylesheet'; style.href = CLIENT_STYLE; style.referrerPolicy = 'no-referrer';
+        style.onload = () => { style.dataset.googleSheetReady = 'true'; loadScript(); };
+        style.onerror = () => { style.remove(); reject(new Error('AUTH_FAILED')); };
+        view.document.head.append(style);
       }).finally(() => { preparing = null; notify(); });
       notify(); return preparing;
     }
