@@ -10,7 +10,8 @@
     "user_core": 81,
     "repository_additional": 24,
     "candidate_extensions": 8,
-    "total_rows": 113
+    "cockpit_ia_v1_additional": 8,
+    "total_rows": 121
   },
   "baseline_metrics": {
     "c": {
@@ -39,6 +40,194 @@
     "Research/Model·BACKTEST/FORWARD·canonical/PR 구분",
     "모바일·축/단위·툴팁/범위·빈/차단상태 검증"
   ],
+  "cockpit_ia_v1": {
+    "scope": "DOCS_ONLY_REQUIREMENT_IDENTIFICATION",
+    "audit_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+    "data_supplier": "UNDECIDED",
+    "requirement_document": {
+      "path": "implementation/experiments/chart-contract-v0.1/CHART_INVENTORY.md",
+      "section": "L. 기업분석 시안 추가 (Cockpit IA v1)",
+      "evidence_semantics": "requirement text only; not source-data or implementation evidence; no source SHA asserted"
+    },
+    "original_total_rows": 113,
+    "new_requirement_ids": [
+      "L01",
+      "L02",
+      "L03",
+      "L04",
+      "L05",
+      "L06",
+      "L07",
+      "L09"
+    ],
+    "reviewed_existing_groups": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K"
+    ],
+    "mappings": [
+      {
+        "candidate": "L01",
+        "existing_ids": [
+          "C11",
+          "H08"
+        ],
+        "decision": "NEW_DISTINCT_SCOPE_WITH_EXISTING_ID_CONNECTION",
+        "reason": "C11 is QGV peer comparison and H08 is generic company comparison. Company/competitor market-share bars and market-share history are the new explicit requirement.",
+        "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+        "data_supplier": "UNDECIDED",
+        "counted_as_new_requirement": true
+      },
+      {
+        "candidate": "L02",
+        "existing_ids": [
+          "E01",
+          "E07"
+        ],
+        "decision": "NEW_DISTINCT_SCOPE_WITH_EXISTING_ID_CONNECTION",
+        "reason": "E01/E07 describe portfolio industry composition/exposure. A company’s business-segment and geography revenue composition is the new explicit requirement.",
+        "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+        "data_supplier": "UNDECIDED",
+        "counted_as_new_requirement": true
+      },
+      {
+        "candidate": "L03",
+        "existing_ids": [
+          "I09"
+        ],
+        "decision": "NEW_DISTINCT_SCOPE_WITH_EXISTING_ID_CONNECTION",
+        "reason": "Standalone quarterly/annual financial charts are new; QGV revision versus realized fundamentals remains I09.",
+        "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+        "data_supplier": "UNDECIDED",
+        "counted_as_new_requirement": true
+      },
+      {
+        "candidate": "L04",
+        "existing_ids": [
+          "F02",
+          "F05",
+          "I02",
+          "I06"
+        ],
+        "decision": "NEW_DISTINCT_SCOPE_WITH_EXISTING_ID_CONNECTION",
+        "reason": "Company quarterly/annual benchmark comparison is distinct from F08 portfolio quarterly performance; benchmark, holding curve and series alignment requirements remain existing.",
+        "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+        "data_supplier": "UNDECIDED",
+        "counted_as_new_requirement": true
+      },
+      {
+        "candidate": "L05",
+        "existing_ids": [
+          "A01",
+          "A04",
+          "A05",
+          "B13",
+          "J06"
+        ],
+        "decision": "NEW_DISTINCT_SCOPE_WITH_EXISTING_ID_CONNECTION",
+        "reason": "Typed non-reevaluation company events on price and post-event observations form the new scope. Common price/marker requirements and S reevaluation history with D+5/D+20 observations remain existing; no new calibration.",
+        "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+        "data_supplier": "UNDECIDED",
+        "counted_as_new_requirement": true
+      },
+      {
+        "candidate": "L06",
+        "existing_ids": [
+          "A05"
+        ],
+        "decision": "NEW_DISTINCT_SCOPE_WITH_EXISTING_ID_CONNECTION",
+        "reason": "Dividend/buyback trends are distinct from corporate-action price adjustment and markers.",
+        "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+        "data_supplier": "UNDECIDED",
+        "counted_as_new_requirement": true
+      },
+      {
+        "candidate": "L07",
+        "existing_ids": [
+          "D01",
+          "D02",
+          "D03",
+          "D04",
+          "D05",
+          "D06"
+        ],
+        "decision": "NEW_DISTINCT_SCOPE_WITH_EXISTING_ID_CONNECTION",
+        "reason": "Per-broker targets and source opinions are distinct from analyst count and aggregate target/revision/consensus history; existing aggregate requirements are not duplicated.",
+        "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+        "data_supplier": "UNDECIDED",
+        "counted_as_new_requirement": true
+      },
+      {
+        "candidate": "L08",
+        "existing_ids": [
+          "K01"
+        ],
+        "decision": "EXISTING_ID_CONNECTION_ONLY",
+        "label": "→ 기존 ID 연결",
+        "reason": "Same eight-axis requirement as K01. The user-selected official UI axes are recorded by source reference only; no L08 item is created and K01 remains CANDIDATE_SPEC_ONLY without an implementation re-audit.",
+        "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+        "data_supplier": "UNDECIDED",
+        "counted_as_new_requirement": false
+      },
+      {
+        "candidate": "L09",
+        "existing_ids": [],
+        "decision": "NEW_DISTINCT_REQUIREMENT",
+        "reason": "No A–K item specifies counts of MATCH, MISMATCH, NOT_AVAILABLE, NOT_COMPARABLE, PARTIAL and NO_DATA. This is a reconciliation summary, independent of chart audit layers and core completion metrics.",
+        "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+        "data_supplier": "UNDECIDED",
+        "counted_as_new_requirement": true
+      }
+    ],
+    "label_policy": "English IDs/chart codes/labels are documentation identifiers, separate from Korean UI copy. Event E/P/L/M/S, reconciliation states and audit layer/status codes are different namespaces.",
+    "boundary_note": "Original 113 items, source evidence, baseline metrics and core denominator 81 are preserved. No implementation, re-audit, new values, methodology, weights, formulas, TARGET change, financial personal data, orders or broader gate closure.",
+    "document_version": "COCKPIT_IA/1",
+    "review_baseline_commit": "011b75648f48f2890736d37c4a354f57004cf1f0",
+    "review_semantics": "All A–K requirement objects and their nested audit/evidence metadata reviewed for documentation deduplication only; no implementation re-audit.",
+    "official_macro_ui_reference": {
+      "candidate": "L08",
+      "existing_ids": [
+        "K01"
+      ],
+      "user_decision_date": "2026-10-09",
+      "path": "Macro System · Latest Consolidated Record v0.1.4 Candidate.md",
+      "section": "15. Macro Factors와 State",
+      "ia_reference": {
+        "path": "implementation/docs/frontend_ia_v1/COCKPIT_IA_v1.md",
+        "section": "3.8 S09: 8축과 6상태"
+      },
+      "axes": [
+        "Growth",
+        "Inflation",
+        "Liquidity",
+        "Monetary Policy",
+        "Credit",
+        "Labor",
+        "Fiscal",
+        "FX"
+      ],
+      "axis_states": [
+        "Level",
+        "Direction",
+        "Momentum",
+        "Surprise",
+        "Stress",
+        "Confidence"
+      ],
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "data_supplier": "UNDECIDED",
+      "counted_as_new_requirement": false,
+      "evidence_semantics": "User-selected official UI reference and existing source-text match only. Legacy K01 audit state, evidence and Candidate scope remain unchanged; no model/methodology promotion, private-canvas inspection or implementation re-audit."
+    }
+  },
   "items": [
     {
       "id": "A01",
@@ -4950,6 +5139,261 @@
         }
       ],
       "details": ""
+    },
+    {
+      "id": "L01",
+      "group": "L",
+      "name": "Market share: company / competitors / share trend",
+      "scope": "COCKPIT_IA_V1_REQUIREMENT",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "시장 범위·경쟁사 집합·기간·비교가능성 및 source/구현/검증 미결정·미재감사. 임의 점유율을 채우지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "Cockpit IA v1 문서 요구만 식별. 공급처 UNDECIDED; 원본/구현 증거를 주장하지 않음.",
+      "data_supplier": "UNDECIDED",
+      "evidence": [],
+      "requirement_document": {
+        "path": "implementation/experiments/chart-contract-v0.1/CHART_INVENTORY.md",
+        "section": "L. 기업분석 시안 추가 (Cockpit IA v1)"
+      },
+      "details": "기업/경쟁사 시장점유율 막대 + 점유율 추이. 기존 C11 peer/H08 기업 비교와 구별되는 특정 요구."
+    },
+    {
+      "id": "L02",
+      "group": "L",
+      "name": "Revenue composition: business unit / region",
+      "scope": "COCKPIT_IA_V1_REQUIREMENT",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "사업부/지역 분류·기간·통화·segment 재작성의 비교가능성 및 source/구현/검증 미결정·미재감사. 합계/누락 추정 금지.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "Cockpit IA v1 문서 요구만 식별. 공급처 UNDECIDED; 원본/구현 증거를 주장하지 않음.",
+      "data_supplier": "UNDECIDED",
+      "evidence": [],
+      "requirement_document": {
+        "path": "implementation/experiments/chart-contract-v0.1/CHART_INVENTORY.md",
+        "section": "L. 기업분석 시안 추가 (Cockpit IA v1)"
+      },
+      "details": "사업부/지역별 기업 매출 구성. E 그룹 포트폴리오 산업/유형 구성과 다른 범위."
+    },
+    {
+      "id": "L03",
+      "group": "L",
+      "name": "Financial trends: revenue / growth / EPS / ROIC",
+      "scope": "COCKPIT_IA_V1_REQUIREMENT",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "재무 정의·기간·restatement 기준 및 source/구현/검증 미결정·미재감사. 새 수식/산출정책을 만들지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "Cockpit IA v1 문서 요구만 식별. 공급처 UNDECIDED; 원본/구현 증거를 주장하지 않음.",
+      "data_supplier": "UNDECIDED",
+      "evidence": [],
+      "requirement_document": {
+        "path": "implementation/experiments/chart-contract-v0.1/CHART_INVENTORY.md",
+        "section": "L. 기업분석 시안 추가 (Cockpit IA v1)"
+      },
+      "details": "독립 분기/연간 매출 막대 + 성장률/EPS/ROIC 추이. QGV revision 대비 실현 관계는 → 기존 ID 연결 I09."
+    },
+    {
+      "id": "L04",
+      "group": "L",
+      "name": "Periodic returns: company / S&P 500 / industry",
+      "scope": "COCKPIT_IA_V1_REQUIREMENT",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "가격수익률/TR·통화·기간·industry 정의 및 source/구현/검증 미결정·미재감사. 기업/benchmark 비교가능성을 가정하지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "Cockpit IA v1 문서 요구만 식별. 공급처 UNDECIDED; 원본/구현 증거를 주장하지 않음.",
+      "data_supplier": "UNDECIDED",
+      "evidence": [],
+      "requirement_document": {
+        "path": "implementation/experiments/chart-contract-v0.1/CHART_INVENTORY.md",
+        "section": "L. 기업분석 시안 추가 (Cockpit IA v1)"
+      },
+      "details": "분기/연간 toggle의 단일 기업/S&P 500/산업 수익률 비교. → 기존 ID 연결 F02,F05,I02,I06. 전 보유종목·비중·QGV/노출을 포함한 F08 포트폴리오 성과와 구별."
+    },
+    {
+      "id": "L05",
+      "group": "L",
+      "name": "Company events on price: E / P / L / M / S",
+      "scope": "COCKPIT_IA_V1_REQUIREMENT",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "거래일/달력일·event timestamp·수익률 basis 및 source/구현/검증 미결정·미재감사. 인과 효과·새 calibration·자동 승격 금지.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "Cockpit IA v1 문서 요구만 식별. 공급처 UNDECIDED; 원본/구현 증거를 주장하지 않음.",
+      "data_supplier": "UNDECIDED",
+      "evidence": [],
+      "requirement_document": {
+        "path": "implementation/experiments/chart-contract-v0.1/CHART_INVENTORY.md",
+        "section": "L. 기업분석 시안 추가 (Cockpit IA v1)"
+      },
+      "details": "E 실적/P 제품/L 규제·소송/M M&A·파트너십/S 재평가 + 주가와 이벤트 후 5/20일 수익률. 비재평가 유형·가격 연결·관찰 조합만 신규. 가격/basis/기업행사/marker는 → 기존 ID 연결 A01,A04,A05,B13; S 이력 및 D+5/D+20은 → 기존 ID 연결 J06.",
+      "event_markers": {
+        "E": "Earnings",
+        "P": "Product",
+        "L": "Regulation / Litigation",
+        "M": "Acquisition / Partnership",
+        "S": "Reassessment"
+      }
+    },
+    {
+      "id": "L06",
+      "group": "L",
+      "name": "Shareholder return: dividends / buybacks",
+      "scope": "COCKPIT_IA_V1_REQUIREMENT",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "선언/지급·승인/실행 구분·기간·금액/주식수 단위 및 source/구현/검증 미결정·미재감사. 계좌 입금·주문 실행으로 해석하지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "Cockpit IA v1 문서 요구만 식별. 공급처 UNDECIDED; 원본/구현 증거를 주장하지 않음.",
+      "data_supplier": "UNDECIDED",
+      "evidence": [],
+      "requirement_document": {
+        "path": "implementation/experiments/chart-contract-v0.1/CHART_INVENTORY.md",
+        "section": "L. 기업분석 시안 추가 (Cockpit IA v1)"
+      },
+      "details": "배당/자사주 매입 추이. 가격조정/기업행사 marker 처리는 → 기존 ID 연결 A05이며 신규 주주환원 추이와 구별."
+    },
+    {
+      "id": "L07",
+      "group": "L",
+      "name": "Broker targets / opinions table",
+      "scope": "COCKPIT_IA_V1_REQUIREMENT",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "기관/작성시점·의견 원문·목표가 basis 및 source/구현/검증 미결정·미재감사. 의견 변환 규칙/임의 목표가를 만들지 않음.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "Cockpit IA v1 문서 요구만 식별. 공급처 UNDECIDED; 원본/구현 증거를 주장하지 않음.",
+      "data_supplier": "UNDECIDED",
+      "evidence": [],
+      "requirement_document": {
+        "path": "implementation/experiments/chart-contract-v0.1/CHART_INVENTORY.md",
+        "section": "L. 기업분석 시안 추가 (Cockpit IA v1)"
+      },
+      "details": "증권사별 목표주가/의견 표만 신규. analyst 수·평균/중앙/최고/최저·revision/consensus history는 → 기존 ID 연결 D01–D06."
+    },
+    {
+      "id": "L09",
+      "group": "L",
+      "name": "Reconciliation state count summary",
+      "scope": "COCKPIT_IA_V1_REQUIREMENT",
+      "c": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "t": [
+        "U",
+        "U",
+        "U",
+        "U",
+        "U"
+      ],
+      "gap": "집계대상·중복/시점 규칙 및 source/구현/검증 미결정·미재감사. 실제 값/0건을 채우지 않음; 감사 계층/완료율과 혼합 금지.",
+      "latest_state": "REQUIREMENT_IDENTIFIED_NOT_REAUDITED",
+      "latest_note": "Cockpit IA v1 문서 요구만 식별. 공급처 UNDECIDED; 원본/구현 증거를 주장하지 않음.",
+      "data_supplier": "UNDECIDED",
+      "evidence": [],
+      "requirement_document": {
+        "path": "implementation/experiments/chart-contract-v0.1/CHART_INVENTORY.md",
+        "section": "L. 기업분석 시안 추가 (Cockpit IA v1)"
+      },
+      "details": "MATCH/MISMATCH/NOT_AVAILABLE/NOT_COMPARABLE/PARTIAL/NO_DATA별 건수 요약. R/I/P/S/H/U 감사 상태·Confidence·핵심81 완료율과 다른 namespace.",
+      "reconciliation_states": [
+        "MATCH",
+        "MISMATCH",
+        "NOT_AVAILABLE",
+        "NOT_COMPARABLE",
+        "PARTIAL",
+        "NO_DATA"
+      ]
     }
   ]
 }

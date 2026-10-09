@@ -1,3 +1,4 @@
+> SUPERSEDED by implementation/docs/frontend_ia_v1/COCKPIT_IA_v1.md (2026-10-09). 기록 보존용.
 # Product / UI Architecture mapping
 
 Status: PROVISIONAL overlay on Architecture v1.0. Existing engines not rewritten.
