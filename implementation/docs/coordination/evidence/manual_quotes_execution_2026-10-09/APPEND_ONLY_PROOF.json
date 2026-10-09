@@ -1,0 +1,12 @@
+{
+  "base": "1a18ba697dc2798711ca6eac101d5fb24202dfc7",
+  "previous_register_bytes": 143028,
+  "previous_register_sha256": "20efe8cc1932d45fac85ff6e119039fec94af6cdd75b34f96b3d960f32331157",
+  "preserved_prefix": true,
+  "new_register_bytes": 146873,
+  "other_existing_paths_modified": [],
+  "existing_paths_verified": 8074,
+  "only_modified_existing_path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+  "all_other_existing_blobs_modes_preserved": true,
+  "legacy_global_guard": "FAIL name/status-only register M; exact byte-prefix PASS"
+}

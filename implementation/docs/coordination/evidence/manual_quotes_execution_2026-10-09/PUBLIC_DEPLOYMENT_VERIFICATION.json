@@ -1,0 +1,97 @@
+{
+  "checked_at_utc": "2026-10-09T01:33:04.979282+00:00",
+  "site": "https://kco994553-star.github.io/Investment-System1/",
+  "pr69_head": "29bd7f3437f34f40dae319fe875a19b6e19225bb",
+  "merge_commit": "d71243bcc79139149541f3627e8f227a32c463c5",
+  "tree": "3eecea810778f2d78daa51dce29a8bdfe543e02c",
+  "deployment_run": 37869779655,
+  "public_files": [
+    {
+      "asset": "actual-catalog.json",
+      "http_status": 200,
+      "sha256": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
+      "matches_reviewed_asset": true
+    },
+    {
+      "asset": "app.js",
+      "http_status": 200,
+      "sha256": "f828c3b13f2d1bf639bc59c7c17d9dad9ab141090e1e4835fde1ae7040c485ad",
+      "matches_reviewed_asset": true
+    },
+    {
+      "asset": "data.json",
+      "http_status": 200,
+      "sha256": "735aadfdf26197013e1478e60974d42c920c089c19dd99f91687a0dfd38b9536",
+      "matches_reviewed_asset": true
+    },
+    {
+      "asset": "device-actual.css",
+      "http_status": 200,
+      "sha256": "84aa2e390cd9da6121893c250c4e8a0d7cc0d983ffc40fbbba7260716a92e239",
+      "matches_reviewed_asset": true
+    },
+    {
+      "asset": "device-actual.js",
+      "http_status": 200,
+      "sha256": "ac8d410039cf4773da0b6ff134321440de176a29a13f054a5a85262542948d09",
+      "matches_reviewed_asset": true
+    },
+    {
+      "asset": "entities.json",
+      "http_status": 200,
+      "sha256": "465354a2bc2846f4d85ad6306d2dda3aa5cb5601e4d3520281ec013bf402c424",
+      "matches_reviewed_asset": true
+    },
+    {
+      "asset": "entity-search.js",
+      "http_status": 200,
+      "sha256": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
+      "matches_reviewed_asset": true
+    },
+    {
+      "asset": "index.html",
+      "http_status": 200,
+      "sha256": "2e531d02dde298a4c29d15120c2769a9a681d681f5cff9fb95c68b50f225e933",
+      "matches_reviewed_asset": true
+    },
+    {
+      "asset": "locale.js",
+      "http_status": 200,
+      "sha256": "c43cc076521250008d9406ae39492be9cf3f665556c43822151e975675a1663d",
+      "matches_reviewed_asset": true
+    },
+    {
+      "asset": "research.html",
+      "http_status": 200,
+      "sha256": "ef7665e2079df06c4bf7265206d9113ddb4716f93cf87e0ec0735c6b5fbae219",
+      "matches_reviewed_asset": true
+    },
+    {
+      "asset": "style.css",
+      "http_status": 200,
+      "sha256": "de98839bbb4469b693e2ad34009910071cc03e31161cea593e67b4080996d526",
+      "matches_reviewed_asset": true
+    }
+  ],
+  "all11_match": true,
+  "page_checks": 10,
+  "actual390_checks": 40,
+  "actual1280_checks": 40,
+  "locales": [
+    "ko-KR",
+    "en-US"
+  ],
+  "screenshot_state": "ACTUAL_EMPTY",
+  "screenshots": [
+    "actual-empty-1280-en-US.png",
+    "actual-empty-1280-ko-KR.png",
+    "actual-empty-390-en-US.png",
+    "actual-empty-390-ko-KR.png"
+  ],
+  "holdings_network_attempts": 0,
+  "posted_payloads": 0,
+  "unhandled_runtime_errors": 0,
+  "new_manual_feature_deployed": false,
+  "pages_source": "GitHub Actions userconfirmed; configure-pages successful",
+  "settings_changed_by_agent": false
+}

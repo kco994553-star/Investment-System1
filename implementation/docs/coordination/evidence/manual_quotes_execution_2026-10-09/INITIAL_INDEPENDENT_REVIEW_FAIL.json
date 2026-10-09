@@ -1,0 +1,99 @@
+{
+  "review_stage": "INITIAL_CANDIDATE_REJECTED_PENDING_CORRECTION",
+  "verdict": "FAIL",
+  "local_head": "ac80befe923e2c3b034ecc3a4b2aa49aa896a4bb",
+  "remote_head": "8506a18b2634b26976ae7bf7f9f53736ac56959f",
+  "tree": "8ea3e2a10ce48b0ffb434c1eac6d8cb7794b62b7",
+  "base_parent": "d71243bcc79139149541f3627e8f227a32c463c5",
+  "fresh_checks": {
+    "python_tests": 790,
+    "python_subtests": 271,
+    "node_actual": 17,
+    "node_market": 34,
+    "manual_browser": 70,
+    "legacy_browser": 40,
+    "pages_browser": 10,
+    "independent_numeric_clock_probes": 32,
+    "independent_privacy_artifact_probes": 27,
+    "public_build": true,
+    "directory_guard_files": 12,
+    "raw_tar_guard_files": 12,
+    "repository_guard": {
+      "mode": "READ_ONLY",
+      "records": 38,
+      "violations": [],
+      "device_actual_privacy_guard": "PASS",
+      "gate_a_repository_guard": "PASS"
+    }
+  },
+  "findings": {
+    "critical": [],
+    "important": [
+      {
+        "id": "R1",
+        "file": "implementation/src/investment_system/product/web_assets/device-actual.js",
+        "line": 210,
+        "issue": "Corrupt initial state bypasses compare-and-swap during explicit deletion, so stale tab deletes a newer valid actual+market pair. API-settings deletion shares this bypass.",
+        "independent_repro": {
+          "corrupt_save_blocked": true,
+          "cross_tab_valid_pair_before": 2,
+          "cross_tab_valid_pair_after_stale_corrupt_delete": 0,
+          "cross_tab_pair_preserved": false,
+          "privacy": {
+            "external": 0,
+            "requests_with_body": 0,
+            "console": 1,
+            "pageerrors": 0
+          }
+        },
+        "required_fix": "Compare raw structured-clone records inside the write transaction even for corrupt-state deletion; preserve newer values while permitting unchanged corrupt records to be explicitly deleted."
+      }
+    ],
+    "minor": []
+  },
+  "preservation": {
+    "protected_baseline_paths_checked": 4,
+    "changed_protected_paths": 0,
+    "canonical_public_json_pins_checked": 3,
+    "canonical_public_json_pins_unchanged": true,
+    "native_currency_counts": {
+      "USD": 17,
+      "JPY": 1,
+      "KRW": 1
+    },
+    "expected_listing_tickers_present": true,
+    "candidate_clean": true
+  },
+  "privacy": {
+    "real_credentials_or_quotes_requested": false,
+    "external_provider_requests": 0,
+    "screenshots_saved": 0,
+    "populated_fixture_or_backup_evidence_files": 0,
+    "browser_suite_network": {
+      "manual": {
+        "outside_attempts": 0,
+        "post_attempts": 0,
+        "body_attempts": 0,
+        "canary_attempts": 0,
+        "console_canary_count": 0
+      },
+      "legacy": {
+        "post_attempts": 0,
+        "canary_attempts": 0,
+        "body_attempts": 0
+      }
+    },
+    "adversarial_console_events": 1,
+    "adversarial_pageerrors": 0,
+    "notes": [
+      "Screenshot calls executed into memory through an external preload; named screenshot lists in original helper receipts do not represent saved images.",
+      "Existing full Python suite creates and removes its own temporary synthetic guard fixtures; no populated review evidence retained."
+    ]
+  },
+  "limitations": [
+    "Final corrected candidate and its actual CI-uploaded immutable Pages archive remain to be verified.",
+    "Official provider receipts reviewed as checked-in evidence only; no authenticated coverage/FX/CORS claim independently established.",
+    "Exact artifact pins fail closed; heuristic repository scans do not establish arbitrary-encoding secret detection.",
+    "No populated screenshot captured or retained; empty-state screenshot operations ran memory-only."
+  ]
+}

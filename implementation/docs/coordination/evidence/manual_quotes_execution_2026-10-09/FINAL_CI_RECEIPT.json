@@ -1,0 +1,64 @@
+{
+  "checked_at_utc": "2026-10-09 02:04:11 UTC",
+  "head": "80704d3f600ac034705a46eab16f22ed522e0ed9",
+  "tree": "c2fe43912ffede1525bc481892bd44bdb34ecaee",
+  "base": "d71243bcc79139149541f3627e8f227a32c463c5",
+  "pr": 70,
+  "merged": false,
+  "draft": true,
+  "runs": [
+    {
+      "id": 37872438246,
+      "name": "web-research-guard",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 37872438294,
+      "name": "autonomy-gate-a",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 37872438243,
+      "name": "web-state-presentation",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 37872438256,
+      "name": "web-mvp-validation",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 37872438289,
+      "name": "cockpit-pages",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "pages_jobs": [
+    {
+      "id": 113633346521,
+      "name": "build",
+      "conclusion": "success"
+    },
+    {
+      "id": 113634266915,
+      "name": "deploy",
+      "conclusion": "skipped"
+    }
+  ],
+  "actual_pages_artifact": {
+    "id": 11590963470,
+    "run_id": 37872438289,
+    "head": "80704d3f600ac034705a46eab16f22ed522e0ed9",
+    "digest": "sha256:16eeb23f8fbfa8e0779aecb48c1299ee0c7006988a75b822e9238ecb70fd5266",
+    "size_in_bytes": 98138,
+    "independent_archive_byte_check": "BLOCKED_TOOL_FILE_SERVICE_403; NOT_RUN",
+    "independent_local_raw_tar": "PASS12",
+    "native_pre_upload_directory": "PASS12"
+  },
+  "force_push": false
+}

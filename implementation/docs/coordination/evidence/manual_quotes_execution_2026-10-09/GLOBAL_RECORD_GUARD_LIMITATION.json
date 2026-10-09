@@ -1,0 +1,8 @@
+{
+  "mode": "READ_ONLY",
+  "records": 8,
+  "violations": [
+    "append-only existing content changed: M ['implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md']"
+  ],
+  "gate_a_repository_guard": "FAIL"
+}

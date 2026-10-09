@@ -1,0 +1,245 @@
+{
+  "verdict": "PASS_WITH_MINOR_RESIDUAL",
+  "scope": "Final corrected code tree, fresh independent local verification, remote identity and CI evidence. Actual uploaded archive bytes remain independently unverified.",
+  "identity": {
+    "base": "d71243bcc79139149541f3627e8f227a32c463c5",
+    "local_head": "ae3c99984117f6c3af7be9df191a1fdfd5f2f400",
+    "local_parent": "ac80befe923e2c3b034ecc3a4b2aa49aa896a4bb",
+    "remote_head": "80704d3f600ac034705a46eab16f22ed522e0ed9",
+    "remote_parent": "8506a18b2634b26976ae7bf7f9f53736ac56959f",
+    "tree": "c2fe43912ffede1525bc481892bd44bdb34ecaee",
+    "remote_tree_independently_fetched_matches_local": true,
+    "base_ancestor_verified": true,
+    "ci_merge_head": "9d3750b2ab4364a864bbaf3a87ea98c502334016",
+    "ci_merge_parents": [
+      "d71243bcc79139149541f3627e8f227a32c463c5",
+      "80704d3f600ac034705a46eab16f22ed522e0ed9"
+    ],
+    "ci_merge_tree_matches_candidate": true,
+    "worktree_clean": true
+  },
+  "fresh_final_tree_checks": {
+    "python": {
+      "tests_passed": 790,
+      "subtests_passed": 271
+    },
+    "node_actual": {
+      "passed": 17,
+      "failed": 0
+    },
+    "node_market": {
+      "passed": 34,
+      "failed": 0
+    },
+    "manual_browser": {
+      "passed": 119,
+      "failed": 0
+    },
+    "legacy_browser": {
+      "passed": 40,
+      "failed": 0
+    },
+    "pages_browser": {
+      "passed": 10,
+      "failed": 0
+    },
+    "independent_storage": {
+      "passed": 30,
+      "failed": 0
+    },
+    "independent_graph_changes": {
+      "passed": 7,
+      "failed": 0
+    },
+    "independent_numeric_clock": {
+      "passed": 32
+    },
+    "independent_privacy_artifact": {
+      "passed": 27
+    },
+    "directory_guard": {
+      "files_scanned": 12,
+      "pages_artifact_guard": "PASS",
+      "violations": {}
+    },
+    "locally_generated_raw_tar_guard": {
+      "files_scanned": 12,
+      "pages_artifact_guard": "PASS",
+      "violations": {}
+    },
+    "repository_guard": {
+      "mode": "READ_ONLY",
+      "records": 38,
+      "violations": [],
+      "device_actual_privacy_guard": "PASS",
+      "gate_a_repository_guard": "PASS"
+    },
+    "browser": "Chromium 151.0.7922.173",
+    "browser_origin": "http://127.0.0.1:9015/Investment-System1/"
+  },
+  "resolved_initial_finding": {
+    "id": "R1",
+    "initial_verdict": "FAIL",
+    "initial_receipt": "initial-review.json",
+    "initial_independent_storage_results": {
+      "passed": 15,
+      "failed": 15
+    },
+    "final_independent_storage_results": {
+      "passed": 30,
+      "failed": 0
+    },
+    "resolution": "All mutations compare complete raw structured-clone graphs and record presence inside the write transaction. Stale corrupt tabs preserve newer actual/market/API-settings. Unchanged supported corrupt records remain deletable; opaque/resizable cases preserve records conservatively."
+  },
+  "findings": {
+    "critical": [],
+    "important": [],
+    "minor": [
+      {
+        "id": "M1",
+        "category": "supply_chain_residual",
+        "finding": "The exact-SHA-pinned upload-pages-artifact composite action invokes actions/upload-artifact@v4, a mutable nested reference.",
+        "mitigation": "Reviewed public output is hash-pinned and directory-guarded immediately before upload; deployment consumes the immutable artifact ID and runs a raw-tar guard before publication.",
+        "source_verified": "actions/upload-pages-artifact/56afc609e74202658d3ffba0e8f6dda462b719fa/action.yml"
+      },
+      {
+        "id": "M2",
+        "category": "verification_tool_limitation",
+        "finding": "Independent inspection of actual CI-uploaded ZIP/tar bytes is NOT_RUN/BLOCKED_TOOL_FILE_SERVICE_403. Connector supplied a File-Service reference; its signed HTTPS URL returned403, and read-only gh retrieval was forbidden.",
+        "not_claimed": [
+          "actual uploaded raw-tar guard PASS",
+          "actual uploaded file hash equality to independent build"
+        ],
+        "substitute_evidence": "Independently fetched immutable artifact head/run/id/digest; exact CI merge tree; native job logs with two12-file directory PASS receipts, normalized archive command and12 listed files;5 native workflows SUCCESS. Own rebuilt directory and raw-tar12 guards passed."
+      }
+    ]
+  },
+  "ci": {
+    "run_id": 37872438289,
+    "job_id": 113633346521,
+    "workflow_head": "80704d3f600ac034705a46eab16f22ed522e0ed9",
+    "artifact_id": 11590963470,
+    "artifact_digest": "sha256:16eeb23f8fbfa8e0779aecb48c1299ee0c7006988a75b822e9238ecb70fd5266",
+    "artifact_size_in_bytes": 98138,
+    "artifact_created_at": "2026-10-09T02:03:27Z",
+    "build_conclusion": "success",
+    "deploy_conclusion": "skipped",
+    "ci_directory_guard_pass_occurrences": 2,
+    "ci_archive_listed_files": [
+      "locale.js",
+      "device-actual.css",
+      "research.html",
+      "device-actual.js",
+      "index.html",
+      "actual-catalog.json",
+      "entity-search.js",
+      "data.json",
+      "entities.json",
+      "app.js",
+      "style.css",
+      "device-market.js"
+    ],
+    "archive_ownership_normalization_logged": true,
+    "artifact_digest_matches_upload_log": true,
+    "raw_uploaded_archive_independent_status": "NOT_RUN/BLOCKED_TOOL_FILE_SERVICE_403",
+    "download_cli_category": "FORBIDDEN_BINARY_AVAILABLE",
+    "file_service_reference_received": true,
+    "file_service_bytes_received": false,
+    "outer_upload_action_pinned": "56afc609e74202658d3ffba0e8f6dda462b719fa",
+    "nested_upload_reference": "actions/upload-artifact@v4",
+    "all_five_workflows_success": true,
+    "artifact_tar_bytes_independently_received": false,
+    "uploaded_archive_hash_compare_status": "NOT_RUN/BLOCKED_TOOL_FILE_SERVICE_403",
+    "deploy_skipped_on_pull_request": true,
+    "real_archive_predeploy_guard_will_run_on_authorized_merge": true
+  },
+  "preservation": {
+    "baseline_tracked_files": 8516,
+    "baseline_to_final_changed_paths": 38,
+    "existing_control_frozen_target_scoring_holdout_coordination_paths": 67,
+    "changed_existing_control_paths": 0,
+    "canonical_public_json_pins_checked": 3,
+    "canonical_public_json_pins_unchanged": true,
+    "native_currency_counts": {
+      "USD": 17,
+      "JPY": 1,
+      "KRW": 1
+    },
+    "tse8035_jpy": true,
+    "krx042700_krw": true,
+    "autonomy_mode": "READ_ONLY",
+    "candidate_clean": true,
+    "retained_screenshots": 0,
+    "remote_tree_matches_local": true
+  },
+  "privacy": {
+    "manual_browser": {
+      "outside_attempts": 0,
+      "post_attempts": 0,
+      "body_attempts": 0,
+      "canary_attempts": 0,
+      "console_canary_count": 0
+    },
+    "legacy_browser": {
+      "post_attempts": 0,
+      "canary_attempts": 0,
+      "body_attempts": 0
+    },
+    "independent_storage": {
+      "outside_requests": 0,
+      "body_requests": 0,
+      "page_errors": 0,
+      "console_canary": 0
+    },
+    "independent_graphs": {
+      "outside_requests": 0,
+      "body_requests": 0,
+      "page_errors": 0
+    },
+    "manual_page_errors": 0,
+    "legacy_page_errors": 0,
+    "pages_page_errors": 0,
+    "pages_request_problems": 0,
+    "pages_response_problems": 0,
+    "retained_screenshots": 0,
+    "retained_populated_payload_or_backup_evidence_files": 0,
+    "real_quote_fx_key_or_broker_data_requested": false,
+    "api_service": "NOT_SELECTED",
+    "api_enabled": false,
+    "refresh_disabled": true,
+    "polling_or_provider_endpoints_added": false,
+    "external_scripts_added": false,
+    "csp_script_and_connect_self_only": true,
+    "review_github_mutations": 0,
+    "environment_or_account_configuration_changes": 0,
+    "notes": [
+      "Browser helper screenshot calls ran into memory via external preload; their screenshot name arrays do not represent saved images.",
+      "Full Python suite independently created/removed its own temporary synthetic guard fixtures; no populated review evidence retained.",
+      "Initial simple reproduction counted one generic console event without recording content; the initial standard suites and all final canary/network/error privacy counters passed.",
+      "Artifact retrieval failure details retained only as safe categories; no credential/environment contents were inspected or stored."
+    ]
+  },
+  "requirements_review": {
+    "native_currency_mapping": "17USD, Tokyo8035JPY, KRX042700KRW",
+    "manual_prices_fx_and_editable_observation_clocks": "PASS",
+    "quantity_and_average_cost_preservation": "PASS",
+    "complete_krw_denominator_and_target_percentage_point_delta": "PASS",
+    "missing_price_or_required_fx_no_partial_normalization": "PASS",
+    "age_at_least_seven_days_stale_retains_observations": "PASS",
+    "atomic_local_save_import_delete_refresh_and_corruption_preservation": "PASS",
+    "strict_schema2_backup_and_safe_legacy1_import_key_settings_exclusion": "PASS",
+    "separate_password_key_save_delete_no_redisplay_api_off": "PASS",
+    "private_input_repository_history_and_public_upload_boundaries": "PASS within documented structured-payload and immutable-artifact scope",
+    "provider_options": "KIS domestic/US/TSE, costs/delays/key+secret+token/CORS uncertainty and future holdings-only research; FSCV2 domestic daily T+1after13:00/free/CORS; other options; user-owned authenticated WorkersFree relay/server-secret risks; workload estimates explicitly conditional; no free19/19+FX overclaim",
+    "two_source_receipts": "Official credential-field descriptions are prose; no recorded credential values",
+    "control_scope": "READ_ONLY/Frozen/TARGET/scoring/Holdout/control/coordination source paths preserved; no broker integration, paidAPI, newserver or Actions quote collection"
+  },
+  "limitations": [
+    "Actual CI-uploaded archive bytes were unavailable through supported tools; do not equate immutable artifact metadata or native job logs with independent byte inspection.",
+    "Provider documentation receipts were reviewed as checked-in evidence; no actual quotes, FX, authenticated requests, account entitlements or authenticated CORS were requested or verified.",
+    "Opaque or resizable corrupt IndexedDB records are intentionally preserved when equality cannot be established; browser storage controls may be required for such exceptional cleanup.",
+    "Repository private-content recognition is heuristic for supported export/credential structures, not proof against arbitrary encodings or future malicious source changes.",
+    "No populated screenshots were taken or retained; empty-state screenshot calls executed memory-only.",
+    "This review does not merge, deploy, select a provider, or enable external API access."
+  ]
+}

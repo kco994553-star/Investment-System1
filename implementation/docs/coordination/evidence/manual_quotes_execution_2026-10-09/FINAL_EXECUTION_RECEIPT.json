@@ -1,0 +1,101 @@
+{
+  "recorded_at_utc": "2026-10-09T02:08:25.098049+00:00",
+  "authority": [
+    "CDR-048",
+    "CDR-049",
+    "CDR-050"
+  ],
+  "mode": "READ_ONLY",
+  "pr69": {
+    "merged": true,
+    "normal_pr_merge": true,
+    "force_push": false,
+    "merge_commit": "d71243bcc79139149541f3627e8f227a32c463c5",
+    "tree": "3eecea810778f2d78daa51dce29a8bdfe543e02c",
+    "deployment_run": 37869779655,
+    "deployment": "SUCCESS"
+  },
+  "pages": {
+    "url": "https://kco994553-star.github.io/Investment-System1/",
+    "source_confirmation": "USER_ATTESTED_GITHUB_ACTIONS; configure-pages(enablement=false) and actual deploy succeeded",
+    "agent_changed_settings": false,
+    "public_actually_verified": true,
+    "actual_checks": 80,
+    "subpath_checks": 10,
+    "viewports": [
+      390,
+      1280
+    ],
+    "locales": [
+      "ko-KR",
+      "en-US"
+    ],
+    "reviewed_public_files": 11,
+    "new_manual_feature_deployed": false
+  },
+  "pr70": {
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/70",
+    "head": "80704d3f600ac034705a46eab16f22ed522e0ed9",
+    "tree": "c2fe43912ffede1525bc481892bd44bdb34ecaee",
+    "base": "d71243bcc79139149541f3627e8f227a32c463c5",
+    "native_ci_success_count": 5,
+    "independent_verdict": "PASS_WITH_MINOR_RESIDUAL",
+    "merged": false,
+    "merge_authorization": "WAIT_26E; prior named merge grant is PR69",
+    "initial_important_R1": "stale corrupt-tab deletion bypass reproduced then corrected; final fresh adversarial verification in independent receipt",
+    "remaining_critical_important_findings": 0,
+    "web_artifact_files": 12,
+    "actual_ci_archive_independent_byte_check": "BLOCKED_TOOL_FILE_SERVICE_403; NOT_RUN",
+    "local_independent_raw_tar": "PASS12",
+    "ci_pre_upload_directory": "PASS12",
+    "pr_deploy": "SKIPPED"
+  },
+  "api": {
+    "service": "NOT_SELECTED",
+    "requests": "OFF",
+    "refresh": "DISABLED",
+    "credential_location": "USER_DEVICE_ONLY; separate from backups",
+    "selected_currency": "KRW",
+    "providers_compared": [
+      "KIS",
+      "FSC_V2",
+      "Twelve_Data_Basic",
+      "Alpha_Vantage_Free",
+      "Market_Data_Free_Forever"
+    ],
+    "free_single_provider_19_plus_fx": "UNCONFIRMED",
+    "relay": "architecture only; no deployment/account/secret requested",
+    "account_holdings_integration": "OUT_OF_SCOPE"
+  },
+  "progress": {
+    "a_s2_success": 19,
+    "a_s2_unresolved": 0,
+    "a_s3_assigned": 19,
+    "chart": "3/6",
+    "platform": "1/9",
+    "a_g1_open": "original authority/read/invalidation obligations",
+    "a_g2_open": "original production route and affected-owner acceptance",
+    "a_g3_open": "broader formal FPIA; no global PASS",
+    "full_dated_listing_identity": "0/19 separate contract",
+    "fpia_recorded_candidate_defect_blockers": 0,
+    "formal_fpia": "NOT_RUN; no global PASS claimed",
+    "fpia_f1_f25_later": 25
+  },
+  "preserved": [
+    "Frozen",
+    "TARGET",
+    "scoring",
+    "Holdout",
+    "AUTONOMY_MODE",
+    "owner leases",
+    "deferred unattended automation/GateA/operating-data renewal"
+  ],
+  "evidence_sha256": {
+    "INITIAL_INDEPENDENT_REVIEW_FAIL.json": "3f928057c2bc1ef07b7f0a2ec1c50ee4fe9d717eedaaf49ef792eb778925c013",
+    "FINAL_INDEPENDENT_REVIEW.json": "e4cb5ab333ac5eb801b06c7ef6085f634aebc6d53c868360dc542783b8eb1277",
+    "FINAL_CI_RECEIPT.json": "71787adc1c3bd40c9d42f69560ac6fa4bae116062f471ea8ee67f985a1a3980f",
+    "PUBLIC_DEPLOYMENT_VERIFICATION.json": "e223fbfe6f99c72c738690bc140319a82b982464009a5e5c6a3e5919480741ca",
+    "FINAL_MANUAL_BROWSER_RECEIPT.json": "31123c31148d532720b791ea2c7069c6744457a0c459cf74fcb5c62655dcbcd1"
+  },
+  "global_record_guard_limitation": "Existing Global name/status guard rejects register modifications even genuine byte-prefix append; no governance policy modified. Exact prefix and unchanged existing blobs are independently verifiable."
+}
