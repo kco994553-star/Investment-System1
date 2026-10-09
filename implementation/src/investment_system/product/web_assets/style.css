@@ -266,35 +266,41 @@ dd {
   text-align: right;
   overflow-wrap: anywhere;
 }
-nav {
+#primary-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   background: #fff;
   border-top: 1px solid var(--line);
   padding: 7px 3px max(7px, env(safe-area-inset-bottom));
   z-index: 10;
 }
-nav a {
+#primary-nav a {
   text-align: center;
-  font-size: 8px;
+  font-size: 9px;
   padding: 10px 1px;
   color: var(--muted);
   border-radius: 8px;
   min-height: 50px;
+  min-width: 0;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
-nav span {
+#primary-nav span {
   display: block;
   font-size: 11px;
   margin-top: 3px;
 }
-nav a[aria-current="page"] {
+#primary-nav a[aria-current="page"] {
   background: #e8efe9;
   color: #164d3e;
   font-weight: 700;
+}
+.nav-subgroups {
+  display: none;
 }
 .skip {
   position: absolute;
@@ -362,14 +368,14 @@ iframe {
   h1 {
     font-size: 40px;
   }
-  nav {
+  #primary-nav {
     max-width: 800px;
     left: 50%;
     transform: translateX(-50%);
     border: 1px solid var(--line);
     border-radius: 18px 18px 0 0;
   }
-  nav a {
+  #primary-nav a {
     font-size: 12px;
   }
   header {
@@ -404,7 +410,160 @@ iframe {
 #global-results {max-height:50vh;overflow:auto;background:var(--card);padding:0 12px;border:1px solid var(--line);border-radius:12px;}
 .global-search .item {overflow-wrap:anywhere;}
 header {flex-wrap:wrap;}
-header>a:last-child {font-size:12px;min-height:44px;display:flex;align-items:center;}
+header>a:last-child {font-size:12px;min-height:44px;min-width:44px;padding:8px;display:flex;align-items:center;justify-content:center;}
+
+.parent-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 0;
+  margin-bottom: 12px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.hub-grid,
+.axis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(248px, 100%), 1fr));
+  gap: 12px;
+  min-width: 0;
+}
+.hub-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 44px;
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+}
+.hub-card > a {
+  display: block;
+  min-height: 44px;
+  flex: 1;
+}
+a.hub-card:hover,
+.hub-card > a:hover {
+  border-color: var(--accent);
+}
+.hub-card h2,
+.hub-card h3 {
+  margin-top: 0;
+}
+.hub-card .badge {
+  align-self: flex-start;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.hub-group {
+  margin: 24px 0;
+  min-width: 0;
+}
+.hub-group > h2 {
+  margin-bottom: 12px;
+}
+.axis-card {
+  min-width: 0;
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+}
+.axis-card dl {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.axis-card dt,
+.axis-card dd {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.status-card {
+  min-width: 0;
+  border-left: 4px solid var(--accent);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 749px) {
+  header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 10px;
+  }
+  header .brand {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  header .private {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  header > a:last-child {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    padding-left: 240px;
+  }
+  #primary-nav {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    width: 228px;
+    max-width: none;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 12px;
+    border: 0;
+    border-right: 1px solid var(--line);
+    border-radius: 0;
+    transform: none;
+    overflow-y: auto;
+  }
+  #primary-nav > a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 54px;
+    padding: 12px;
+    text-align: left;
+    flex-shrink: 0;
+  }
+  #primary-nav > a span {
+    margin-top: 0;
+    font-size: 12px;
+  }
+  #primary-nav .nav-subgroups {
+    display: grid;
+    gap: 2px;
+    padding-left: 12px;
+    margin-bottom: 12px;
+  }
+  #primary-nav .nav-subgroups a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 9px 12px;
+    border-left: 2px solid var(--line);
+    border-radius: 0 8px 8px 0;
+    text-align: left;
+    font-size: 13px;
+  }
+  main {
+    padding-bottom: 40px;
+  }
+  .personal-reference-footer {
+    padding-bottom: 28px;
+  }
+  #notice:not(:empty) {
+    bottom: 24px;
+    left: 258px;
+  }
+}
 
 /* Production-shaped state presentation. LIVE and each freshness value have their own rule; STALE is never
    a suffix inside the LIVE badge. Colours only; no layout change for existing badges. */

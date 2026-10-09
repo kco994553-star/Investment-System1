@@ -28,8 +28,10 @@ _spec.loader.exec_module(fixture)
 
 def _ui() -> dict:
     ui = json.loads(re.search(r'const UI=(\{.*?\});\n', LOCALE).group(1))
-    for extra in re.findall(r'Object\.assign\(UI,(\{.*\})\);\n', LOCALE):
-        ui.update(json.loads(extra))
+    # Read each JSON dictionary regardless of whitespace or line breaks in locale.js.
+    decoder = json.JSONDecoder()
+    for extra in re.finditer(r'Object\.assign\(UI,\s*', LOCALE):
+        ui.update(decoder.raw_decode(LOCALE, extra.end())[0])
     return ui
 
 

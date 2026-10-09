@@ -44,6 +44,8 @@ jobs:
           NODE_PATH: ${{ runner.temp }}/pages-browser/node_modules
           PAGES_COCKPIT_URL: http://127.0.0.1:8990/Investment-System1/
           PAGES_COCKPIT_EVIDENCE_DIR: ${{ runner.temp }}/pages-browser-evidence
+          APP_NAV_IA_URL: http://127.0.0.1:8990/Investment-System1/
+          APP_NAV_IA_EVIDENCE_DIR: ${{ runner.temp }}/app-nav-ia-evidence
           DEVICE_ACTUAL_URL: http://127.0.0.1:8990/Investment-System1/#actual
           DEVICE_ACTUAL_EVIDENCE_DIR: ${{ runner.temp }}/device-actual-evidence
           MANUAL_QUOTES_URL: http://127.0.0.1:8990/Investment-System1/#actual
@@ -55,6 +57,7 @@ jobs:
           SERVER_PID=$!
           trap 'kill "$SERVER_PID"' EXIT
           node implementation/tools/pages_cockpit_browser_test.js
+          node implementation/tools/app_nav_ia_browser_test.js
           node implementation/tools/device_actual_node_test.js
           node implementation/tools/device_market_node_test.js
           node implementation/tools/google_sheet_core_node_test.js
@@ -70,6 +73,7 @@ jobs:
           name: cockpit-pages-verification
           path: |
             ${{ runner.temp }}/pages-browser-evidence
+            ${{ runner.temp }}/app-nav-ia-evidence
             ${{ runner.temp }}/device-actual-evidence
             ${{ runner.temp }}/manual-quotes-evidence
             ${{ runner.temp }}/google-sheet-evidence

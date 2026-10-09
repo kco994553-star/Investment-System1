@@ -360,6 +360,62 @@ function news(id) {
 function research() {
   return heading("RESEARCH",t("질문에서 근거로"),t("Prompt → Context / Variables → Preview → Copy"))+'<p class="badge">FROZEN_SNAPSHOT · PLV1_CONTENT_V1.0</p><iframe title="'+esc(t("Prompt Library(프롬프트 라이브러리)"))+'" src="research.html" id="research-frame"></iframe>';
 }
+// Navigation only. Availability describes the existing public screens, not investment results.
+function hubCard(title,status,description,href) {
+  const body=`<h3>${esc(t(title))}</h3><span class="badge" data-feature-status="${status}">${esc(t(status))}</span><p class="muted">${esc(t(description))}</p>`;
+  return href?`<a class="card hub-card" href="${href}">${body}</a>`:
+    `<article class="card hub-card">${body}<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span></article>`;
+}
+function qgv() {
+  const groups=[
+    ["investments","내 투자",[
+      ["포트폴리오","부분","기기 보유 요약을 확인합니다. 운영 포트폴리오 Snapshot은 미연결입니다.","#portfolio"],
+      ["실제 보유","사용 가능","이 기기에 보유와 수동 시세를 입력·관리합니다.","#actual"],
+      ["전략 프로필","준비 중","전략 프로필 상세 화면은 준비 중입니다."],
+      ["모델 포트폴리오","준비 중","모델 포트폴리오 상세 화면은 준비 중입니다."]]],
+    ["companies","종목 찾기·분석",[
+      ["전체 기업","부분","과거 기업 목록을 탐색합니다. 운영 기업 분석은 미연결입니다.","#companies"],
+      ["리더보드","부분","순위 화면은 열 수 있습니다. 운영 순위 데이터는 미연결입니다.","#leaderboard"],
+      ["관심 기업","준비 중","관심 기업 전용 화면은 준비 중입니다. 기존 기업 화면의 관심 목록 관리는 유지됩니다."]]],
+    ["market","시장 정보",[
+      ["뉴스·관계망","부분","뉴스·관계망 화면은 열 수 있습니다. 운영 데이터는 미연결입니다.","#news"],
+      ["투자자 13F","준비 중","투자자 13F 상세 화면은 준비 중입니다."]]],
+    ["performance","성과",[
+      ["Track Record","부분","검증 허브에서 준비 상태를 확인합니다. 성과 기록은 미연결입니다.","#validation"]]]
+  ];
+  return heading("QGV",t("QGV 허브"),t("기존 화면과 각 기능의 준비 상태를 확인합니다."))+
+    `<div data-hub="qgv">${groups.map(([id,title,cards])=>`<section class="hub-group" id="qgv-${id}"><h2 tabindex="-1">${esc(t(title))}</h2><div class="hub-grid">${cards.map(args=>hubCard(...args)).join("")}</div></section>`).join("")}</div>`;
+}
+function technical() {
+  const s=D.technical;
+  return `<div data-ia-screen="technical">${heading("TECHNICAL",t("기술적 분석"),t("기존 기록의 연결 상태를 확인합니다."))}
+    <section class="card status-card" data-tech-status="engine"><h2>${t("기술적 분석 엔진")}</h2>${state(s)}<p>${esc(t(s.data===null?s.reason || "운영 Snapshot이 연결되지 않았습니다.":"기존 종목 화면에서 제공된 기술적 분석 기록을 확인합니다."))}</p></section>
+    <section class="card status-card" data-tech-status="chart"><h2>${t("가격·거래량 차트")}</h2><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span><p>${t("실제 가격·거래량 차트가 이 앱에 연결되지 않았습니다.")}</p></section></div>`;
+}
+function macro() {
+  // Official IA v1 axis/state names. No observations, scores or derived values are introduced.
+  const axes=["Growth","Inflation","Liquidity","Monetary Policy","Credit","Labor","Fiscal","FX"],
+    states=["Level","Direction","Momentum","Surprise","Stress","Confidence"];
+  return `<div data-ia-screen="macro">${heading("MACRO",t("매크로"),t("공식 축별 상태를 확인합니다."))}
+    <section class="card status-card"><h2>${t("매크로 엔진 버전")}</h2><p>v0.1.1 · ${t("확정")}</p><p>v0.1.4 · ${t("후보")}</p><p class="muted">${t("후보 버전은 운영 엔진 승격을 뜻하지 않습니다.")}</p>${state(D.macro)}<p>${t("축별 운영 상태가 이 앱에 연결되지 않았습니다.")}</p></section>
+    <div class="axis-grid">${axes.map(axis=>`<section class="card axis-card" data-macro-axis="${axis}"><h2>${esc(t(axis))}</h2><dl>${states.map(name=>`<dt>${esc(t(name))}</dt><dd data-macro-state="${name}"><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span></dd>`).join("")}</dl></section>`).join("")}</div></div>`;
+}
+function validation() {
+  return heading("VALIDATION",t("검증·연구"),t("리서치와 검증 기록의 준비 상태를 확인합니다."))+
+    `<div class="hub-grid" data-hub="validation">${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}${[
+      ["백테스트","공개 앱에 연결된 백테스트 결과가 없습니다."],
+      ["전진검증","공개 앱에 연결된 전진검증 결과가 없습니다."],
+      ["Track Record","공개 앱에 연결된 성과 기록이 없습니다."]
+    ].map(([title,reason])=>hubCard(title,"준비 중",reason)).join("")}</div>`;
+}
+const QGV_CHILDREN=Object.freeze(["companies","company","leaderboard","news","portfolio","actual","entity"]);
+function syncNavigation(route) {
+  const parent=QGV_CHILDREN.includes(route)?"qgv":route==="research"?"validation":route;
+  document.querySelectorAll("[data-nav-tab]").forEach(a=>{
+    if(a.dataset.navTab===parent) a.setAttribute("aria-current","page");
+    else a.removeAttribute("aria-current");
+  });
+}
 let listLimit=30;
 function paintCompanies() {
   const q=$("#search").value,g=prefs.groups.find(g=>g.id===$("#group-filter").value);
@@ -390,12 +446,16 @@ function renderRoute() {
   notice("");syncShell();
   let [route,id]=location.hash.slice(1).split("/");route=route || "home";
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id)};
+  const routes={home,qgv,technical,macro,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id)};
   if(!routes[route]) route="home";
   $("#content").innerHTML=routes[route]();
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') attachDeviceActual('#device-actual-summary',false);
-  document.querySelectorAll("nav a").forEach(a=>a.setAttribute("aria-current",a.hash==="#"+(route==="company"?"companies":route)?"page":"false"));
+  syncNavigation(route);
+  if(QGV_CHILDREN.includes(route) || route==="research") {
+    const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← 검증";
+    $("#content").insertAdjacentHTML("afterbegin",`<a class="parent-link" href="#${parent}">${esc(t(key))}</a>`);
+  }
   if(Object.values(D).some(s=>s?.state==="DEMO")) $("#content").insertAdjacentHTML("afterbegin",'<div class="banner">'+t("DEMO 포함 · 합성 데이터는 투자 판단용이 아닙니다.")+"</div>");
   if(!storageOK) notice(t("개인 설정 저장을 사용할 수 없습니다. 내보내기를 이용하세요."));
   if(!settingsWritable) notice(t("설정을 읽을 수 없습니다. 저장된 원본은 보존합니다."));
@@ -420,6 +480,10 @@ function renderRoute() {
   }
   for(const f of document.querySelectorAll("iframe")) f.onload=()=>f.contentWindow.postMessage({type:"display_locale",locale:appSettings.display_locale},location.origin);
   window.scrollTo(0,0);
+  if(route==="qgv" && ["investments","companies","market","performance"].includes(id)) {
+    const group=$("#qgv-"+id),title=group.querySelector("h2");
+    group.scrollIntoView({block:"start"});title.focus({preventScroll:true});
+  }
 }
 function wireGroups() {
   $("#new-group").onsubmit = (e) => {
