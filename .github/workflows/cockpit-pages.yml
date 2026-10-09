@@ -48,6 +48,8 @@ jobs:
           DEVICE_ACTUAL_EVIDENCE_DIR: ${{ runner.temp }}/device-actual-evidence
           MANUAL_QUOTES_URL: http://127.0.0.1:8990/Investment-System1/#actual
           EVIDENCE_DIR: ${{ runner.temp }}/manual-quotes-evidence
+          GOOGLE_SHEET_QUOTES_URL: http://127.0.0.1:8990/Investment-System1/#settings
+          GOOGLE_SHEET_EVIDENCE_DIR: ${{ runner.temp }}/google-sheet-evidence
         run: |
           python -m http.server 8990 --bind 127.0.0.1 --directory "$RUNNER_TEMP/pages-root" > "$RUNNER_TEMP/pages-server.log" 2>&1 &
           SERVER_PID=$!
@@ -55,8 +57,12 @@ jobs:
           node implementation/tools/pages_cockpit_browser_test.js
           node implementation/tools/device_actual_node_test.js
           node implementation/tools/device_market_node_test.js
+          node implementation/tools/google_sheet_core_node_test.js
+          node implementation/tools/google_sheet_auth_node_test.js
           node implementation/tools/device_actual_browser_test.js
           node implementation/tools/manual_quotes_browser_test.js
+          GOOGLE_SHEET_QUOTES_URL=http://127.0.0.1:8990/Investment-System1/#actual node implementation/tools/google_sheet_storage_browser_test.js
+          node implementation/tools/google_sheet_quotes_browser_test.js
       - name: Keep empty-device screenshots and result counts outside the site
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -66,6 +72,7 @@ jobs:
             ${{ runner.temp }}/pages-browser-evidence
             ${{ runner.temp }}/device-actual-evidence
             ${{ runner.temp }}/manual-quotes-evidence
+            ${{ runner.temp }}/google-sheet-evidence
           if-no-files-found: error
       - name: Fail closed immediately before Pages upload
         run: python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/pages-root/Investment-System1"

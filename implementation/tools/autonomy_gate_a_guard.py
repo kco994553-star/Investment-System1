@@ -6,7 +6,7 @@ This guard does not grant autonomy by itself. It enforces:
 - append-only records cannot rewrite or delete existing bytes;
 - AUTONOMY_MODE is a single explicit state;
 - operating values stay within the adopted CDR-024 configuration.
-- populated user-device holdings, market exports and credentials cannot enter tracked content.
+- populated user-device holdings, market exports, private sheet settings and credentials cannot enter tracked content.
 
 HG-02 still requires GitHub-side branch/ruleset enforcement.
 """
@@ -42,7 +42,23 @@ _MARKET_COLLECTION_KEYS = {"quotes", "fx", "fxrates", "rates", "prices"}
 _CREDENTIAL_KEYS = {
     "apikey", "appkey", "appsecret", "accesstoken", "refreshtoken", "clientsecret",
     "apisecret", "secretkey", "authtoken", "bearertoken",
+    "spreadsheetid", "spreadsheeturl", "sheetid", "sheeturl",
+    "googlesheetid", "googlesheeturl", "googlespreadsheetid", "googlespreadsheeturl",
 }
+# Raw text checks also cover source, logs and Markdown outside export envelopes.
+# IDs need Google URL/setting context: a bare long string can be a public hash
+# or public OAuth client ID. Neither is private spreadsheet configuration.
+_PRIVATE_GOOGLE_PATTERNS = (
+    re.compile(r"ya29\.[A-Za-z0-9._~-]+"),
+    re.compile(
+        r"(?i)(?:docs\.google\.com/spreadsheets/(?:u/\d+/)?d/|"
+        r"sheets\.googleapis\.com/v4/spreadsheets/)[A-Za-z0-9_-]{20,}"
+    ),
+    re.compile(
+        r"(?i)(?<!\w)(?:google[_-]?)?(?:spreadsheet|sheet)[_-]?id"
+        r"[\"']?\s*(?:\]\s*)?[:=]\s*[\"'`][A-Za-z0-9_-]{20,}"
+    ),
+)
 _PRIVATE_MARKET_EXPORT_NAME = re.compile(
     r"(?:^|[-_])(?:device|user|personal|broker|manual)[-_]"
     r"(?:market(?:[-_]data)?|quotes?|fx(?:[-_]rates)?)(?:[-_]|$)", re.IGNORECASE,
@@ -110,6 +126,10 @@ def _credential_fields(fields: dict) -> bool:
     )
 
 
+def _private_google_text(value: object) -> bool:
+    return isinstance(value, str) and any(pattern.search(value) for pattern in _PRIVATE_GOOGLE_PATTERNS)
+
+
 def _market_row(fields: dict, *, timing_fields: bool = False) -> bool:
     record_keys = _MARKET_RECORD_KEYS if timing_fields else _MARKET_RECORD_KEYS - {"asof", "availableat"}
     return any(
@@ -132,9 +152,10 @@ def _structured_private(value: object, named_export: bool, named_market_export: 
     mappings: list[dict] = []
     populated_holdings = False
     populated_market = False
+    populated_google = False
 
     def visit(node: object) -> None:
-        nonlocal populated_holdings, populated_market
+        nonlocal populated_holdings, populated_market, populated_google
         if isinstance(node, dict):
             fields = {_key(key): item for key, item in node.items()}
             mappings.append(fields)
@@ -151,12 +172,16 @@ def _structured_private(value: object, named_export: bool, named_market_export: 
         elif isinstance(node, list):
             for item in node:
                 visit(item)
+        elif isinstance(node, str):
+            # json.loads resolves escaped slashes and unicode before inspection.
+            populated_google |= _private_google_text(node)
 
     visit(value)
     marked = any(_actual_marker(fields) for fields in mappings)
     market_marked = named_market_export or any(_market_marker(fields) for fields in mappings)
     return (
-        any(_credential_fields(fields) for fields in mappings)
+        populated_google
+        or any(_credential_fields(fields) for fields in mappings)
         or (market_marked and (populated_market or any(_market_row(fields) for fields in mappings)))
         or (marked and populated_holdings)
         or any(_holding_row(fields) for fields in mappings)
@@ -323,6 +348,8 @@ def contains_device_actual(content: bytes, path: str) -> bool:
             decoded = content.decode("utf-8-sig")
     except UnicodeDecodeError:
         return False
+    if _private_google_text(decoded):
+        return True
     if "\0" in decoded:
         return False
     filename = Path(path)

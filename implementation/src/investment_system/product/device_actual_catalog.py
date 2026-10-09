@@ -26,9 +26,9 @@ def reject_private_holdings(value) -> None:
             keys = {str(k).lower() for k in item}
             normalized = {re.sub(r'[^a-z0-9]', '', str(k).lower()) for k in item}
             schema = item.get('schema', '')
-            if (isinstance(schema, str) and schema.startswith(('device-market-data/', 'device-api-settings/'))
+            if (isinstance(schema, str) and schema.startswith(('device-market-data/', 'device-api-settings/', 'device-google-sheet-settings/', 'device-market-import-history/'))
                     or keys.intersection({'market_data', 'api_settings', 'api_key', 'api_secret', 'appsecret', 'appkey', 'access_token'})
-                    or normalized.intersection({'apikey', 'apisecret', 'appkey', 'appsecret', 'accesstoken', 'refreshtoken', 'clientsecret'})
+                    or normalized.intersection({'apikey', 'apisecret', 'appkey', 'appsecret', 'accesstoken', 'refreshtoken', 'clientsecret', 'spreadsheetid', 'spreadsheeturl', 'googlesheetsettings'})
                     or 'fx' in keys
                     or {'price', 'currency'}.issubset(keys)
                     or {'rate', 'currency'}.issubset(keys)):
@@ -40,6 +40,9 @@ def reject_private_holdings(value) -> None:
             pending.extend(item.values())
         elif isinstance(item, list):
             pending.extend(item)
+        elif isinstance(item, str) and (re.search(r'(?<![A-Za-z0-9_])ya29\.', item)
+                                       or re.search(r'https://docs\.google\.com/spreadsheets/(?:u/\d+/)?d/[A-Za-z0-9_-]{20,100}', item)):
+            raise ValueError('private device data are forbidden in a public build')
 
 
 def public_actual_catalog(root: Path = ROOT) -> dict:

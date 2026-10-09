@@ -2,7 +2,7 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client; style-src 'self'; connect-src 'self' https://sheets.googleapis.com https://oauth2.googleapis.com; img-src 'self' data:; frame-src 'self' https://accounts.google.com; object-src 'none'; base-uri 'none'; form-action 'none'" />
     <meta
       name="viewport"
       content="width=device-width,initial-scale=1,viewport-fit=cover"
@@ -11,6 +11,7 @@
     <title>Investment System · 개인 투자</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="device-actual.css" />
+    <link rel="stylesheet" href="google-sheet-quotes.css" />
   </head>
   <body>
     <a class="skip" href="#content" data-i18n="본문으로">본문으로</a>
@@ -45,6 +46,9 @@
     <script src="entity-search.js"></script>
     <script src="device-market.js"></script>
     <script src="device-actual.js"></script>
+    <script src="app-config.js"></script>
+    <script src="google-sheet-core.js"></script>
+    <script src="google-sheet-quotes.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

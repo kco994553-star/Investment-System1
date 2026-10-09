@@ -29,6 +29,16 @@ function attachDeviceApiSettings() {
     if(host.isConnected) host.textContent=locale==='en-US'?'API OFF · Device settings unavailable.':'API 꺼짐 · 기기 설정을 열 수 없습니다.';
   });
 }
+function attachGoogleSheetSettings() {
+  const host=document.querySelector('#google-sheet-settings'),locale=appSettings.display_locale;
+  if(!host) return;
+  const clientId=window.InvestmentAppConfig?.googleSheetsClientId || '';
+  deviceCatalog().then(catalog=>{
+    if(host.isConnected) return GoogleSheetQuotes.mount(host,{catalog,locale,clientId});
+  }).catch(()=>{
+    if(host.isConnected) host.textContent=locale==='en-US'?'Device quote import settings unavailable.':'기기 시세 불러오기 설정을 열 수 없습니다.';
+  });
+}
 function actual() {
   return heading('DEVICE ACTUAL',appSettings.display_locale==='en-US'?'ACTUAL holdings':'ACTUAL 보유 입력')+
     '<a href="#portfolio">'+(appSettings.display_locale==='en-US'?'← Portfolio':'← 포트폴리오')+'</a><div id="device-actual-root" aria-live="polite"></div>';
@@ -175,7 +185,7 @@ function settingsUI() {
   <p>${t("표시 언어는 계산 결과에 영향을 주지 않습니다.")}</p>
   <label for="source-language">${t("뉴스 원문 언어")}</label><select id="source-language">${[["all",t("전체 언어")],["ko",t("한국어 원문")],["en",t("영어 원문")]].map(([v,k])=>`<option value="${v}" ${appSettings.source_language===v?"selected":""}>${t(k)}</option>`).join("")}</select>
   <p>${t("원문 언어는 뉴스 필터만 변경합니다.")}</p></section>
-  <section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><div id="device-api-settings"></div>`;
+  <section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><div id="google-sheet-settings"></div><div id="device-api-settings"></div>`;
 }
 function entityRoute(e) {return e.entity_type==="COMPANY"?"#company/"+encodeURIComponent(e.canonical_id):"#entity/"+encodeURIComponent(e.entity_type+":"+e.canonical_id);}
 function entityRow(hit) {
@@ -390,6 +400,7 @@ function renderRoute() {
   if(!storageOK) notice(t("개인 설정 저장을 사용할 수 없습니다. 내보내기를 이용하세요."));
   if(!settingsWritable) notice(t("설정을 읽을 수 없습니다. 저장된 원본은 보존합니다."));
   if(route==="settings") {
+    attachGoogleSheetSettings();
     attachDeviceApiSettings();
     $("#display-locale").onchange=e=>updateSettings({display_locale:e.target.value});
     $("#source-language").onchange=e=>updateSettings({source_language:e.target.value});
