@@ -109,3 +109,45 @@ ko/en × 390/1280px 실제 공개 런타임 80검사에서 OFF·설정·붙여�
 명시한다. CSP 수정 PR과 기존 IA 문서 PR #72는 사용자 병합 승인을 기다린다.
 투자 방법론·TARGET·공급처 상태·READ_ONLY·scope·메모리 토큰·기기 직접 읽기·
 수동 입력 유지·백업 제외 경계는 변경하지 않는다.
+
+
+## GSQ-005 — 26E 가격 경로 결정 및 SEC M1 구현 승인 (2026-10-09)
+
+GSQ-001~004의 바이트는 보존하고 최신 사용자 결정만 끝에 추가한다. 이 항목은
+26E의 가격 권리 후속 결정 기록이며 Global CDR을 대체하거나 새 번호를 부여하지 않는다.
+
+사용자 결정 원문(범위 관련 발췌):
+
+> #78 병합을 승인합니다(문서 전용). 병합 후 CI·Pages 정상 확인.
+>
+> - 가격 옵션: 지금은 유료 재배포 계약 보류. 공개 종목군은 기존 Frozen 유지.
+>   D4 차트는 옵션 1(사용자 본인 키로 기기 직접 조회, 저장 없이 표시) 방향으로 후속 검토.
+>   유료 계약은 M2 진입 시 재판단.
+> - 다음 작업: 제안한 첫 구현 PR "SEC 일일 입력의 PIT 시각·정정 lineage 및 보존 receipt 보완"(M1)을 진행.
+>   작은 issuer 범위(TARGET 미국 17종목 이내), 기존 provider 재사용, 가격 수집·QGV 재점수·예약 워크플로·
+>   Pages 자동 공개는 포함하지 말 것. 병합은 승인 대기.
+> - 별도 확인(문서 1~2쪽, 같은 PR 또는 별도 docs PR): Tiingo 개발자 프로그램의 "사용자 본인 키·기기 직접 조회" 조건으로
+>   미국 17종목 일봉 차트를 저장 없이 표시하는 것이 허용되는지, CORS 가능 여부, 무료 한도.
+> 다른 PR 병합·force push·ruleset·AUTONOMY_MODE 변경 금지. Secret 값 출력 금지.
+
+| 항목 | 현재 결정과 승인 경계 |
+| --- | --- |
+| 유료 재배포 | DEFERRED. M2 진입 시 사용자가 재판단한다. #78의 선택지 비교·당시 추천은 역사 기록으로 보존한다. |
+| 공개 종목군 | 기존 `2024-12-31` FROZEN_SNAPSHOT 유지. 현재 가격·새 시총·종목군 재선정 없음. |
+| D4 차트 | 옵션 1을 후속 검토한다. 각 사용자 본인 키·기기 직접 조회·저장 없는 표시 방향이며 공급자 채택·구현 승인으로 확대하지 않는다. |
+| 기존 시세 기능 | 구글 시트 기본 OFF·수동 입력 유지. 기존 구글 시트 기기 저장 규칙을 D4의 무저장 검토 결정으로 변경하지 않는다. Alpha Vantage OFF, 한국투자증권·중계 DEFERRED 유지. |
+| SEC M1 | 기존 SEC parser·raw store를 재사용하는 입력 PIT 시각·정정 lineage·보존 receipt만 구현. 명시적으로 선택한 미국 TARGET 17개 안의 소수 issuer로 제한한다. |
+| M1 제외 | 가격 수집·QGV 재점수·예약 workflow·Pages 자동 공개·Holdout 선택/사용·투자 방법론/가중치/TARGET 변경 없음. |
+| Tiingo | 공식 문서 및 소량 메타데이터로 개인 키·휘발성 표시 권리, CORS, 무료 한도만 조사한다. 계정/키 발급·유료 가입·실제 가격 수집·서버 우회·CSP 확장 승인 아님. |
+| 운영·병합 | `AUTONOMY_MODE=READ_ONLY` 유지. 승인된 #78만 병합하고 M1 PR은 사용자 병합 승인 대기. |
+
+승인된 문서 PR [#78](https://github.com/kco994553-star/Investment-System1/pull/78)은
+canonical `c31b9556ad584d2132268f77bb98445416c7bca6`에 병합했다.
+[Pages run 37917223708](https://github.com/kco994553-star/Investment-System1/actions/runs/37917223708)의
+build·deploy가 모두 성공했다. 공개 16파일은 이전 승인 산출물과 동일하고
+공개 개인정보·승인 파일 가드도 통과했다.
+
+M1 구현의 실제 경계는 [SEC 입력 계약](../daily_data_pipeline/SEC_M1_INPUT_OWNER.md),
+Tiingo 판정은 [기기 직접 조회 조사](../daily_data_pipeline/TIINGO_DEVICE_DIRECT_REVIEW_M1.md)에
+기록한다. 이 기록은 입력 보존을 LIVE 데이터·전체 PIT 검증·공개 배포 허가로
+승격하지 않는다.

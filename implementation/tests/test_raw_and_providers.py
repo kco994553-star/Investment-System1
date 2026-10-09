@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 from pathlib import Path
+import json
+from urllib.error import URLError
 
 from investment_system.contracts.enums import CoverageState, QualityState
 from investment_system.contracts.models import DataStamp
@@ -117,12 +119,34 @@ def test_sec_fixture_respects_as_of_before_filing():
     assert raw.revenue is None
 
 
-def test_live_sec_fetch_is_optional_and_not_stage2():
+def test_live_sec_fetch_is_optional_and_not_stage2(monkeypatch):
+    """Exercise legacy failure and transport-success semantics offline only."""
+    from investment_system.providers import sec_companyfacts
+
+    def unavailable(*args, **kwargs):
+        raise URLError("offline synthetic transport")
+
+    monkeypatch.setattr(sec_companyfacts, "urlopen", unavailable)
+    assert try_fetch_companyfacts("0001045810", timeout=6.0) is None
+    synthetic_payload = {"cik": 1045810, "facts": {"us-gaap": {"Revenues": {"units": {"USD": [
+        {"val": 7, "filed": "2025-03-01", "form": "10-K", "start": "2024-01-01", "end": "2024-12-31"}
+    ]}}}}}
+
+    class SyntheticResponse:
+        def read(self):
+            return json.dumps(synthetic_payload).encode()
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+    monkeypatch.setattr(sec_companyfacts, "urlopen", lambda *args, **kwargs: SyntheticResponse())
     payload = try_fetch_companyfacts("0001045810", timeout=6.0)
-    if payload is None:
-        assert True  # fail-closed; environment has no live SEC
-        return
+    assert payload == synthetic_payload
     raw = facts_to_raw("nvda", "0001045810", payload, AS_OF, synthetic=False)
     assert raw.source_kind == "LIVE_FETCH"
+    assert raw.revenue == 7
     # Live pull ≠ official Stage 2 PASS. Single-company only.
     assert raw.company_id == "nvda"
