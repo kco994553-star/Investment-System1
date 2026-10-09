@@ -1,0 +1,80 @@
+{
+  "approval_id": "QCC-P01-M1-M5-PRINCIPLES-2026-10-05",
+  "status": "MISSING_DATA_POLICY_PRINCIPLES_APPROVED",
+  "approved_at_kst": "2026-10-05T09:57:52+09:00",
+  "recorded_at_kst": "2026-10-05T10:09:12.522287+09:00",
+  "authority": "Explicit user instruction in this Work conversation; not inferred from PR review/merge/CI",
+  "conversation_id": "6ac230f1-0ff0-83ee-a932-45244e2c4afe",
+  "proposal_ref": {
+    "repository": "kco994553-star/Investment-System1",
+    "commit": "ed907b8f5a046008319cddecc6ef40b9bd6759dc",
+    "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/DECISION_PACKAGE.md",
+    "sha256": "4688ce49186906f0878809113c921eec60ed28d5291a3ba4b6b9be4a5338ae6f",
+    "binding": "Only the explicit user clauses below; not entire prior proposal/simulation"
+  },
+  "clauses": {
+    "M1": {
+      "status": "APPROVED_PRINCIPLE_ONLY",
+      "text": "Requiredness와 economic applicability를 분리한다. 데이터가 필요한 factor인데 값이 없는 경우와, 경제적으로 해당 factor가 적용되지 않는 경우를 동일한 missing 상태로 취급하지 않는다."
+    },
+    "M2": {
+      "status": "APPROVED_PRINCIPLE_ONLY",
+      "text": "일반적인 missing과 PIT/integrity failure를 분리한다. PIT/integrity failure는 scoring weight 적용보다 앞선 validity/admission boundary에서 차단한다. WeightOverride, zero-weight 또는 denominator 변경으로 PIT/integrity failure를 우회할 수 없어야 한다."
+    },
+    "M3": {
+      "status": "APPROVED_PRINCIPLE_ONLY",
+      "text": "일반 missing에서는 planned denominator를 유지한다. Available-only renormalization을 기본 정책으로 사용하지 않는다. 단, 경제적으로 NOT_APPLICABLE임이 contract에 의해 입증된 factor는 denominator에서 제외할 수 있다. N/A 판정 자체는 명시적이고 provenance 가능한 applicability contract를 필요로 한다."
+    },
+    "M4": {
+      "status": "APPROVED_PRINCIPLE_ONLY",
+      "text": "Partial contribution과 complete/ranking eligibility를 분리한다. 부분적으로 계산 가능한 값은 diagnostic/research information으로 보존할 수 있지만, 그것만으로 complete score 또는 ranking eligibility를 자동 획득하지 않는다."
+    },
+    "M5": {
+      "status": "APPROVED_PRINCIPLE_ONLY",
+      "text": "Zero-weight는 numeric contribution만 제거한다. Zero-weight가 requiredness, applicability validation, PIT validation, integrity validation, provenance requirement를 제거하거나 우회해서는 안 된다. Official/Custom isolation도 유지한다."
+    }
+  },
+  "authorized_current_work": [
+    "Inactive implementation contract design",
+    "Existing-structure reuse audit against current mapping",
+    "Denominator/zero-weight invariants and regression plan",
+    "Approval/evidence/scoped Handoff updates"
+  ],
+  "not_approved": [
+    "Individual factor required/optional/conditional assignment",
+    "Concrete N/A taxonomy/predicate rules",
+    "Minimum coverage or ranking eligibility cutoff",
+    "New numeric threshold/default",
+    "Financial-sector score recomputation",
+    "Q/G/V score/calculation version migration",
+    "G 3-5Y change",
+    "EPS-to-FCF fallback change",
+    "V normalization change",
+    "Composite change",
+    "WeightOverride runtime wiring",
+    "Official weight change",
+    "Production implementation/migration",
+    "Historical rewrite",
+    "PR44 or canonical merge",
+    "PIT/no-lookahead weakening",
+    "Holdout consumption",
+    "Paid purchase"
+  ],
+  "additional_proposal_choices_not_adopted": [
+    "Prior simulation all-positive-active completeness rule",
+    "Blanket automatic ranking prohibition/admission for partial outputs",
+    "Universal mandatory N/A exclusion",
+    "Optional-zero input-request suppression optimization",
+    "New confidence formula"
+  ],
+  "runtime_enabled": false,
+  "production_migration_authorized": false,
+  "implementation_contract_status": "PROPOSED_INACTIVE_SPEC_ONLY",
+  "input_heads": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "owner_intake": "ed907b8f5a046008319cddecc6ef40b9bd6759dc",
+    "pr44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "integration": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+  },
+  "history_policy": "Prior proposal, simulation, golden and publication evidence remain historical and unchanged; append this approval event"
+}

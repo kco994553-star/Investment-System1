@@ -1,0 +1,17 @@
+{
+  "schema": "target-v0-build-repeatability/1",
+  "verified_at_utc": "2026-10-08T12:24:51.192082+00:00",
+  "default_recorded_extraction_at_utc": "2026-10-08T12:15:25Z",
+  "fresh_observation_claimed": false,
+  "command": "npm run build (without TARGET_OBSERVED_AT override)",
+  "exit_code": 0,
+  "before_sha256": {
+    "target_v0_projection.json": "2fcc8a8172ac2d9173ea631068e0a06df4cac5887213a7b4271d7319e0093a5b",
+    "dist/portfolio-data.js": "ecbb31cf420b3cf75a06425a5c5ddbee5e96b12e0435715f97254fc8627c3bdf"
+  },
+  "after_sha256": {
+    "target_v0_projection.json": "2fcc8a8172ac2d9173ea631068e0a06df4cac5887213a7b4271d7319e0093a5b",
+    "dist/portfolio-data.js": "ecbb31cf420b3cf75a06425a5c5ddbee5e96b12e0435715f97254fc8627c3bdf"
+  },
+  "byte_equal": true
+}

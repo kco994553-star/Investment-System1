@@ -1,0 +1,391 @@
+{
+  "recorded_at_kst": "2026-10-04T20:38:32.798164+09:00",
+  "status": "SOURCE_PIN_REPLAY_ONLY_NOT_PRODUCTION_VALIDATION",
+  "baseline_pr41": "97685ddcfb510fe16c2260eae5aed94be230c669",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "integration": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+  "global_handoff": "bb4cb174fd4a0af3b2281d4c37ae3abb4d540f88",
+  "source_entry_count": 46,
+  "all_recorded_source_bytes_match": true,
+  "scope_counts": {
+    "user_core": 81,
+    "repository_additional": 24,
+    "candidate_extensions": 8,
+    "total_rows": 113
+  },
+  "source_entries": [
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/ingestion/raw_store.py",
+      "git_blob": "dfd6597a23fc05214234a2c7545316b4d942645c",
+      "sha256": "c4cfdbc314f8d670aee7d0a94f261177967ad3fcdfb36f224111af2f716ebb0e",
+      "bytes": 3395,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+      "git_blob": "2670eee1b5d9f093875ab41100e09d866d7d5e91",
+      "sha256": "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534",
+      "bytes": 3874,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/contracts/raw.py",
+      "git_blob": "7660d70b6a7fa860b5f7b3f8f93a68d86c95d6bf",
+      "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+      "bytes": 2327,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/contracts/models.py",
+      "git_blob": "2367d2ee2dfffa60482ba2f4cb671ece09340b1e",
+      "sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+      "bytes": 6561,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/contracts/global_universe.py",
+      "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8",
+      "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+      "bytes": 6228,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/contracts/portfolio_input.py",
+      "git_blob": "e8363f1c1da7f5f5c94c09fd84ed61e558fb561f",
+      "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+      "bytes": 1215,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/personal/portfolio.py",
+      "git_blob": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+      "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+      "bytes": 5986,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/personal/money.py",
+      "git_blob": "119b29dfec8ff50471bfbddca2591ff44fc7d291",
+      "sha256": "894e7cab7e3ca87dcad14ee644ef34448850698fb93dda600cd3aa75e0a37418",
+      "bytes": 2178,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/personal/security.py",
+      "git_blob": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+      "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0",
+      "bytes": 4196,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/personal/timecontract.py",
+      "git_blob": "0310a7e16bd86308ebcf90888032572269daf14b",
+      "sha256": "dee41dce8153740e75faa1810f9ffa5c150d13f3f4cf3d6f5f452348a7219d73",
+      "bytes": 1893,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/personal/versioning.py",
+      "git_blob": "685e2d6024a6a0bac2183458a01832e2df63a6ab",
+      "sha256": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def",
+      "bytes": 1944,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/personal/ports.py",
+      "git_blob": "495e472fd87ea75ffc4a71e4169aec249cb25a99",
+      "sha256": "a4fa05cc660db1779eb44babbbb8568f0c97723dc1b74a722f977f338be670fb",
+      "bytes": 4257,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/qgv/portfolio.py",
+      "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+      "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+      "bytes": 7686,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/src/investment_system/qgv/identifiers.py",
+      "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+      "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+      "bytes": 3163,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/sessions/calendar.py",
+      "git_blob": "3c31c8ef1d920f51cb8579f66f00f2d78ee16fc6",
+      "sha256": "01fd84ef6e64db1bc8b588127953efb15395abef375b5529b56b4ef7e0f3b19b",
+      "bytes": 10802,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/sessions/listing.py",
+      "git_blob": "0bc31f63f79f565234b5976233a7063016d7f287",
+      "sha256": "6e4ba184c3c707de378f91a9243b7a377cac59d892893d4377588664895112c4",
+      "bytes": 1134,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/sessions/binder.py",
+      "git_blob": "771baf79a43caa3804e0478a87c417ac6fdc25c9",
+      "sha256": "a030a19fbbe812b66a7527b22aa502547d424f14b7ca817b3016046a37880e5a",
+      "bytes": 7749,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/technical/pit_market.py",
+      "git_blob": "85dd0c8ad3b5263e1067e09e775a495d99ae9f9a",
+      "sha256": "9c2a56deec51d6b4cd97d9d9ef5afc9236a3bb32018918b6b7e575fb0119f32e",
+      "bytes": 7218,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/producers/contract.py",
+      "git_blob": "fa9ed3a387d12457419280e611136bcb29d6d730",
+      "sha256": "61b5eea2b32c9283e2407531e614de9a1b255aff9124d62d0a2168df23faaa6f",
+      "bytes": 13283,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/producers/serialization.py",
+      "git_blob": "07219d8ad51002938da0a0183af78b5b8c71f2f1",
+      "sha256": "c24ff942b763c204ff8429ab7125b68921f96a43ec8ab43c3e2c14749cabbe33",
+      "bytes": 2009,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/producers/adapters.py",
+      "git_blob": "55d690a6b5d96d5aa800d0b2c93714adaa78341c",
+      "sha256": "2be3d220c9b84c3bc4d51be48c17cce7b4f62c3c18e73bcc2f49d903a54b6549",
+      "bytes": 4912,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/producers/assembler.py",
+      "git_blob": "aea5236d33f8e7842639a593af53519bdd90abc6",
+      "sha256": "c427daddcb4cfff002c8f4c77a6c0d66ca8c9ebb7087d40fd454761181f1c877",
+      "bytes": 5110,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/publication/envelope.py",
+      "git_blob": "4e4427c46382a3a0304fe79b48cb869ca99c5854",
+      "sha256": "8e654b8d48aab84aba94ca92541711c2cc44cb76932cee6a1a1fc7d71b2a362e",
+      "bytes": 2324,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/publication/predicate.py",
+      "git_blob": "d224d2dc81727829fd8b55d697efa709303c8efd",
+      "sha256": "c4b10daa9857af9dfc393d79111d9894a72f5344ca27b2b6681ea0c3b95b2b96",
+      "bytes": 4758,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/publication/authorization.py",
+      "git_blob": "9a4c39c200062afce02642a1c121341730321264",
+      "sha256": "36786fc7d585d51a77fe50e483af76b9d994ae6c76063c712da94faab12e5aa2",
+      "bytes": 3581,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/product/web_mvp.py",
+      "git_blob": "10ad8c7624a0a31e602be699144cbcb534c96e53",
+      "sha256": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323",
+      "bytes": 7517,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/product/entity_catalog.py",
+      "git_blob": "bb616fc8fbec3d993fe49ed3395e1802695ff850",
+      "sha256": "de754c162255fb7e8940de86cc84f7abb65a68c733bb93ed853b1edfbacf1758",
+      "bytes": 7245,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/product/entity_metadata.py",
+      "git_blob": "42202d4caeaffddb6325b5c48f4c59a42ae56576",
+      "sha256": "7837e316edb7330c60225c95cb3649c4d10bde2ce9bb8ac02ea9c977dd10f012",
+      "bytes": 16998,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/product/web_assets/app.js",
+      "git_blob": "c00ec69fe9222aa5a1516d3f0cec6cd56ea62b25",
+      "sha256": "9774bee4b51b34ed68ce0467b01dc13028306c8f46589bd3e3283b2778a209f2",
+      "bytes": 38098,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/src/investment_system/evl/calibration_contracts.py",
+      "git_blob": "5ed82394b687dd6c9ee2c1d07a6b9bafd9641b5a",
+      "sha256": "9579a74ac2da688d0b3a2a09a28deed026a0ea82f565e1099791a285ce9fbb16",
+      "bytes": 14547,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/tests/test_pil_p0_contracts.py",
+      "git_blob": "d4ce9d26547c23b1f12b5fbf8664b188f7c33f4f",
+      "sha256": "c6e38d1024f3ec9f9c92f15bf215b2c852b6bdef83bfe0b5efa1faca36db9d86",
+      "bytes": 12617,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/tests/test_generic_portfolio_input.py",
+      "git_blob": "389a332d31617f0cf6f4b733ae6975d9243fe4d8",
+      "sha256": "45b612474bd9e3fbf207a6b3b5683ceebca3a5bdb89de76a1a34a8738c99c4c4",
+      "bytes": 1155,
+      "matches_recorded": true
+    },
+    {
+      "commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+      "path": "implementation/tests/test_portfolio_ids.py",
+      "git_blob": "df58e04d6f321b4aceb21baade125f5ce47cb0a4",
+      "sha256": "ec73dde63920418ed386745d1e293293e2cb9c295d448904650824fca4a76105",
+      "bytes": 1083,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/tests/test_p01_research_publication.py",
+      "git_blob": "2557b33ca4f56510e33eec93eac4b3bfd2ffccba",
+      "sha256": "b195771b34ef1743dfad29bb1654ddcf8d25189f1732de0692e2fb24129b9dc9",
+      "bytes": 20076,
+      "matches_recorded": true
+    },
+    {
+      "commit": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "path": "implementation/tests/test_web_research_guard.py",
+      "git_blob": "e6005eed162cb4be4ff907c256665c9567d3ca88",
+      "sha256": "85fc63228c1619b39322e83335a418ff5ed4a8ccb6a598e443d3e790e8235985",
+      "bytes": 8986,
+      "matches_recorded": true
+    },
+    {
+      "commit": "bb4cb174fd4a0af3b2281d4c37ae3abb4d540f88",
+      "path": "implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md",
+      "git_blob": "62ab214385647e2b4e896ea8dc26781b4e801724",
+      "sha256": "8f9afe1bfc6190e3201cb12859afb3ebcd7a43be996b66b414941d235005b793",
+      "bytes": 13115,
+      "matches_recorded": true
+    },
+    {
+      "commit": "bb4cb174fd4a0af3b2281d4c37ae3abb4d540f88",
+      "path": "implementation/docs/coordination/evidence/GIE-012_mac_x1_analysis_2026-10-04.md",
+      "git_blob": "742d2d5463ebec95c46e2560600d1014c5bdeb60",
+      "sha256": "2edb7b014423263f9fc02878a97fc3db67405dc7d380faee3d3275654a816032",
+      "bytes": 10865,
+      "matches_recorded": true
+    },
+    {
+      "commit": "8668c69070c7956cb85d1ccf8cbeb8d9d2daf5cf",
+      "path": "implementation/experiments/chart-contract-v0.1/contract.mjs",
+      "git_blob": "d2d75c290b66b6a21c8158abe6aa3c7140cfe66b",
+      "sha256": "5f10a4975dc1fe40c79171158187328bbf202043ea0a1e5a59e6ddaa5bdc7fbd",
+      "bytes": 10029,
+      "matches_recorded": true
+    },
+    {
+      "commit": "8668c69070c7956cb85d1ccf8cbeb8d9d2daf5cf",
+      "path": "implementation/experiments/chart-contract-v0.1/raw_store_bridge.mjs",
+      "git_blob": "fcf0f8a5488bd210a926f6e1d030f986354865b2",
+      "sha256": "7d84b10835b046dfe015ce43e9dfb04f1437c734dbc6ee2f7feb4735ca3a0b05",
+      "bytes": 8373,
+      "matches_recorded": true
+    },
+    {
+      "commit": "8668c69070c7956cb85d1ccf8cbeb8d9d2daf5cf",
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_contract.mjs",
+      "git_blob": "a206d181bb5fdc44d150983f0b13567fe68b6f10",
+      "sha256": "9c2e0d1c058e1649a67433361404e45d0dc6c4a147e730f23429f4824c988aac",
+      "bytes": 7964,
+      "matches_recorded": true
+    },
+    {
+      "commit": "8668c69070c7956cb85d1ccf8cbeb8d9d2daf5cf",
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_app.js",
+      "git_blob": "4b30aa998bcad3d31ad0aa50983169999eb886bf",
+      "sha256": "b75f1230e224fd6d7ee93d0addc2fbc960d19431838a86bb8f2f0b138756043e",
+      "bytes": 6906,
+      "matches_recorded": true
+    },
+    {
+      "commit": "8668c69070c7956cb85d1ccf8cbeb8d9d2daf5cf",
+      "path": "implementation/experiments/chart-contract-v0.1/chart_inventory.json",
+      "git_blob": "abdc1bd3cbad8368b0193e26acb59a87b6ea969c",
+      "sha256": "80e081f4b16b61e7ff076c7a427a8ded538356c89a01350aa5e545fd5ba48b09",
+      "bytes": 164931,
+      "matches_recorded": true
+    },
+    {
+      "commit": "8668c69070c7956cb85d1ccf8cbeb8d9d2daf5cf",
+      "path": "implementation/experiments/chart-contract-v0.1/CHART_INVENTORY.md",
+      "git_blob": "e8796593979fbaaf5fdd318defcf073a38698788",
+      "sha256": "1f39ba01069ae00d3ed175cf3c07d99a3a1710c537c56be413fa5697d72d8182",
+      "bytes": 20716,
+      "matches_recorded": true
+    },
+    {
+      "commit": "8668c69070c7956cb85d1ccf8cbeb8d9d2daf5cf",
+      "path": "implementation/experiments/chart-contract-v0.1/ACCEPTANCE.json",
+      "git_blob": "21435117ad77af2f9e5537414994e156ad65d134",
+      "sha256": "cd0f38ac5ff36d71f967f82c198fbe64c14aab2d14b384eb9758cb03d150158b",
+      "bytes": 6548,
+      "matches_recorded": true
+    },
+    {
+      "commit": "8668c69070c7956cb85d1ccf8cbeb8d9d2daf5cf",
+      "path": "implementation/experiments/chart-contract-v0.1/evidence/portfolio-reference-source.json",
+      "git_blob": "3928240e87a865a881788dc55c0ca33a352013d6",
+      "sha256": "a2056e061a99723dc48ab28349d4e30d461da9927588f2ed4fcc3783182537e8",
+      "bytes": 983,
+      "matches_recorded": true
+    },
+    {
+      "commit": "8668c69070c7956cb85d1ccf8cbeb8d9d2daf5cf",
+      "path": "implementation/experiments/chart-contract-v0.1/evidence/2026-10-04-source/real-source-preflight.json",
+      "git_blob": "2d0313e5e42d11957b14c102a9345d6cf7210c38",
+      "sha256": "81c34ed6107e86f391375d153baa69c57d94e3a8f428533f746d35131d8b0bdc",
+      "bytes": 2395,
+      "matches_recorded": true
+    }
+  ],
+  "limitations": [
+    "Source-byte integrity does not verify a production ChartDocument",
+    "75 prior tests are historical and not rerun or upgraded",
+    "FPIA NOT_RUN for this docs-only work"
+  ]
+}

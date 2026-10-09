@@ -1,0 +1,41 @@
+{
+  "at_utc": "2026-10-05T05:39:42.101Z",
+  "scope": "INDEPENDENT_TARGETED_FIXTURE_CLOSURE",
+  "result": "PASS",
+  "cases": 5,
+  "renderer_sha256": "ab6e2ea167d95d04619b096ce8f3518de6128d7f248d4967424761ffe2eb4016",
+  "results": [
+    {
+      "case": "noCatalog",
+      "typeAvailability": "NOT_AVAILABLE",
+      "overlapAvailability": "NOT_AVAILABLE",
+      "text": "Type Overlap · 유형 중복 조합Investment Type의 완전히 확인된 동일 유형 조합에서 파생합니다. 정확히 같은 유형 조합을 가진 보유분끼리 묶습니다. “성장 + 우량”은 그 두 유형 조합이며, 다른 유형까지 포함한 종목은 별도 조합입니다. 현금·미분류를 포함해 각 보유분은 한 번만 집계합니다. 유형별 노출 합계와 달리 조합 분할의 분모는 전체 100%입니다. 미분류는 빈 유형 조합이 아닙니다.NOT_AVAILABLE · 유형 조합 미분류 · 원본 유형 배정이 없어 확인된 조합을 표시할 수 없습니다."
+    },
+    {
+      "case": "cashOnly",
+      "typeAvailability": "NOT_AVAILABLE",
+      "overlapAvailability": "AVAILABLE",
+      "text": "Type Overlap · 유형 중복 조합Investment Type의 완전히 확인된 동일 유형 조합에서 파생합니다. 정확히 같은 유형 조합을 가진 보유분끼리 묶습니다. “성장 + 우량”은 그 두 유형 조합이며, 다른 유형까지 포함한 종목은 별도 조합입니다. 현금·미분류를 포함해 각 보유분은 한 번만 집계합니다. 유형별 노출 합계와 달리 조합 분할의 분모는 전체 100%입니다. 미분류는 빈 유형 조합이 아닙니다.명시적으로 유형 없음0% · 0/10000 단위유형 미분류0% · 0/10000 단위현금100% · 10000/10000 단위"
+    },
+    {
+      "case": "explicitNoTypes",
+      "typeAvailability": "NOT_AVAILABLE",
+      "overlapAvailability": "AVAILABLE",
+      "text": "Type Overlap · 유형 중복 조합Investment Type의 완전히 확인된 동일 유형 조합에서 파생합니다. 정확히 같은 유형 조합을 가진 보유분끼리 묶습니다. “성장 + 우량”은 그 두 유형 조합이며, 다른 유형까지 포함한 종목은 별도 조합입니다. 현금·미분류를 포함해 각 보유분은 한 번만 집계합니다. 유형별 노출 합계와 달리 조합 분할의 분모는 전체 100%입니다. 미분류는 빈 유형 조합이 아닙니다.명시적으로 유형 없음100% · 10000/10000 단위유형 미분류0% · 0/10000 단위현금0% · 0/10000 단위"
+    },
+    {
+      "case": "known-zero-independent-unknown-overlap",
+      "typeAvailability": "AVAILABLE",
+      "overlapAvailability": "NOT_AVAILABLE",
+      "text": "Type Overlap · 유형 중복 조합Investment Type의 완전히 확인된 동일 유형 조합에서 파생합니다. 정확히 같은 유형 조합을 가진 보유분끼리 묶습니다. “성장 + 우량”은 그 두 유형 조합이며, 다른 유형까지 포함한 종목은 별도 조합입니다. 현금·미분류를 포함해 각 보유분은 한 번만 집계합니다. 유형별 노출 합계와 달리 조합 분할의 분모는 전체 100%입니다. 미분류는 빈 유형 조합이 아닙니다.NOT_AVAILABLE · 유형 조합 미분류 · 원본 유형 배정이 없어 확인된 조합을 표시할 수 없습니다."
+    },
+    {
+      "case": "malformed-overlap",
+      "thrown": null,
+      "state": "BLOCKED",
+      "doc": null,
+      "svgCount": 0
+    }
+  ],
+  "page_errors": []
+}

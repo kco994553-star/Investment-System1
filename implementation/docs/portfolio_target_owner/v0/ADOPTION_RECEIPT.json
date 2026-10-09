@@ -1,0 +1,32 @@
+{
+  "schema": "target-v0-source-adoption-receipt/1",
+  "recorded_at_utc": "2026-10-08T12:11:50.338241+00:00",
+  "gate": "A-S1",
+  "status": "CLOSED_VERIFIED_CURRENT_TARGET_SOURCE_ROOT",
+  "authority": "User-owned TARGETv0 source and current explicit Main source-consumption instruction",
+  "user_owner": "USER",
+  "original_attachment_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+  "immutable_source_PR": 64,
+  "immutable_source_merge": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+  "source_root_receipt": "implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/ADMITTED_TARGET_ROOT.json",
+  "native_integrity_receipt": "implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/NATIVE_SOURCE_CONSUMPTION.json",
+  "readback_receipt": "implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/GITHUB_SOURCE_READBACK.json",
+  "root_identity_role": "Exact immutable path/schema/v0/source hash names a user source-document root; no runtime portfolio/security identifier synthesized",
+  "completeness": {
+    "rows": 19,
+    "cash_units": 0,
+    "total_units": 10000,
+    "all_original_values_preserved": true
+  },
+  "clocks": {
+    "effective_at": "2026-10-08T20:37:00+09:00",
+    "available_at": "2026-10-08T20:37:00+09:00",
+    "adopted_at": "2026-10-08T20:37:00+09:00"
+  },
+  "historical_backdating": false,
+  "independent_of_A_S2": true,
+  "source_admission": true,
+  "security_admission": false,
+  "product_publication_admission": false,
+  "legacy_root_evidence_overwritten": false
+}

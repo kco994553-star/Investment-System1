@@ -1,0 +1,152 @@
+"""Build inactive review matrix from completed actual-source replay, no valuation math."""
+import hashlib
+import json
+from pathlib import Path
+import sys
+sys.dont_write_bytecode = True
+out = Path(sys.argv[1]).resolve()
+source = json.loads((out / "V_ALTERNATIVE_RESULTS.json").read_text())
+r = source["results"]
+families = [
+    {
+        "id": "V_KEEP_SEVEN_FACTORS_AND_PRIOR_HISTORY", "verdict": "KEEP",
+        "economic_meaning": "Seven legacy concepts remain distinct; source-dependency overlap does not authorize merging or reweighting them.",
+        "data_availability": "Existing descriptors, raw fields and research weights recover current implementation, not complete issuer evidence.",
+        "PIT_reproducibility": "Exact legacy source plus immutable input descriptors can replay; actual per-method vintage lineage remains unregistered.",
+        "peer_comparability": "Not established by factor identity alone.", "historical_comparability": "Preserve source-pinned historical results and prior arithmetic.",
+        "implementation_complexity": "Low additive inactive evidence; no engine needed.", "manipulation_risk": "Do not claim independent evidence from three P/E-derived fallbacks.",
+        "numeric_impact": "No legacy rewrite or adoption; existing results retained.", "approval_class": "D1_D2_INACTIVE; method/weight/history activation remains D3",
+    },
+    {
+        "id": "V_NORMALIZATION_CONTROL_AND_METADATA_SEPARATION", "verdict": "ALIGN",
+        "economic_meaning": "Shared Q/G/V control shape can retain distinct economic transforms; separate raw metric, normalized score and method branch.",
+        "data_availability": "Existing RawFundamentals and original DataStamp are reusable; clipped observation cannot recover original DCF/multiple.",
+        "PIT_reproducibility": "Declare each joined raw/value/price/cohort vintage and method ref; no unstated completeness upgrade.",
+        "peer_comparability": "Needs explicit multiple, cohort and comparator identity.", "historical_comparability": "Add sidecar without overwriting normalized raw_value or old result.",
+        "implementation_complexity": "Low-to-medium sidecar contract; runtime attachment/admission unimplemented.",
+        "manipulation_risk": "Unknown confidence/coverage/validity must remain null; MEDIUM default and quality strings cannot certify methods.",
+        "numeric_impact": "Unchanged literals; source replay observes same numbers. Future consumer activation can change admissions and requires D3.",
+        "approval_class": "D1_D2_INACTIVE; runtime semantic changes D3",
+    },
+    {
+        "id": "V_SUPPLIED_DCF_VS_PE_FALLBACK", "verdict": "MORE_EVIDENCE_REQUIRED",
+        "economic_meaning": "Supplied central valuation vs fixed-multiple proxy is an actual source branch difference, not an evaluated DCF solver.",
+        "data_availability": "Existing supplied dcf_value and price/eps branches; DCF assumptions, unit/per-share basis and conservative-value authority are unresolved.",
+        "PIT_reproducibility": "Requires point-in-time assumptions/price/model and unit basis; fixture arithmetic alone is insufficient.",
+        "peer_comparability": "Fixed multiple is not an industry-relative method; no sector calibration claimed.",
+        "historical_comparability": "Supplied DCF vs proxy must have different method/branch identity and parallel results.",
+        "implementation_complexity": "Current branches already run; real valuation-model generation is not present here.",
+        "manipulation_risk": "DCF assumptions can move scores; switching missing DCF to proxy silently changes economic meaning and shares P/E with MOS/reverse.",
+        "impact_result_refs": ["supplied_dcf_and_implied_growth", "same_dcf_reverse_pe_proxy", "existing_pe_fallback_family", "no_eps_no_dcf"],
+        "numeric_impact": {"supplied_dcf_and_implied_V_prior": r["supplied_dcf_and_implied_growth"]["V_prior"], "pe_fallback_V_prior": r["existing_pe_fallback_family"]["V_prior"], "combined_branch_family_difference_fixture_only": r["supplied_dcf_and_implied_growth"]["V_prior"] - r["existing_pe_fallback_family"]["V_prior"], "controlled_dcf_V_same_reverse_proxy": r["same_dcf_reverse_pe_proxy"]["V_prior"], "controlled_dcf_mos_branch_difference_same_reverse_proxy": r["same_dcf_reverse_pe_proxy"]["V_prior"] - r["existing_pe_fallback_family"]["V_prior"]},
+        "approval_class": "D3_METHOD_OR_FALLBACK_SELECTION_NOT_APPROVED",
+    },
+    {
+        "id": "V_REVERSE_SUPPLIED_IMPLIED_VS_PE_PROXY", "verdict": "MORE_EVIDENCE_REQUIRED",
+        "economic_meaning": "Actual supplied implied-growth input and P/E-implied proxy both compare with realized revenue YoY; neither establishes same-horizon forward requirements.",
+        "data_availability": "Actual field reverse_dcf_implied_growth exists; no executable reverse-DCF solver/assumption model found in this code.",
+        "PIT_reproducibility": "Requires model assumptions/version and as_of/available_at; realized/forecast horizon pairing unresolved.",
+        "peer_comparability": "P/E-to-growth proxy is not peer-normalized.", "historical_comparability": "Separate implied-growth source/branch lineage; do not rewrite prior results.",
+        "implementation_complexity": "Low for existing source replay; unknown for grounded solver design.",
+        "manipulation_risk": "Missing supplied implied growth changes branch without explicit method identity; retrospective assumptions may contaminate vintage.",
+        "impact_result_refs": ["same_dcf_reverse_pe_proxy", "same_dcf_supplied_implied_025"],
+        "numeric_impact": {"pe_proxy_reverse_score": r["same_dcf_reverse_pe_proxy"]["factor_scores"]["reverse_dcf"], "supplied_reverse_score": r["same_dcf_supplied_implied_025"]["factor_scores"]["reverse_dcf"], "pe_proxy_V_prior": r["same_dcf_reverse_pe_proxy"]["V_prior"], "supplied_V_prior": r["same_dcf_supplied_implied_025"]["V_prior"]},
+        "approval_class": "D3_METHOD_SELECTION_NOT_APPROVED",
+    },
+    {
+        "id": "V_PE_PROXY_ADVERTISED_AS_REAL_REVERSE_DCF_SOLVER", "verdict": "REJECT",
+        "economic_meaning": "Source uses clipped P/E transformation; calling it an executed reverse-DCF solver is unsupported economic identity.",
+        "data_availability": "No solver cash-flow/discount/reinvestment inputs in the mapper branch.", "PIT_reproducibility": "Price/EPS may replay proxy; solver lineage cannot replay because not implemented.",
+        "peer_comparability": "Unsupported", "historical_comparability": "Preserve as legacy proxy instead of silently relabeling past values.",
+        "implementation_complexity": "Reject semantic relabeling; no production repair in this task.", "manipulation_risk": "False method identity would bypass approved B4 and exaggerate valuation evidence.",
+        "numeric_impact": None, "numeric_status": "No fabricated solver result", "approval_class": "D1_D2_REJECT_UNSUPPORTED_INTERPRETATION; actual replacement D3",
+    },
+    {
+        "id": "V_PEER_SUPPLIED_COMPARATOR_VS_BOOK_COHORT", "verdict": "MORE_EVIDENCE_REQUIRED",
+        "economic_meaning": "Relative multiple concept is grounded; actual historical runner uses a self-inclusive mixed-book cohort and upper middle for even count.",
+        "data_availability": "Current raw own/median fields and book membership exist; sector-peer comparability and cohort selection authority unresolved.",
+        "PIT_reproducibility": "Provider excludes future bars/filings in this synthetic replay; cohort membership/multiple definitions and component-vintage references must also be pinned.",
+        "peer_comparability": "Swapping fixture sector labels has no effect; membership change alters issuer score even when issuer fundamentals unchanged.",
+        "historical_comparability": "Median/cohort convention change requires method version and new parallel lineage.",
+        "implementation_complexity": "Existing runner replay low; new comparable universe unknown until policy.",
+        "manipulation_risk": "Adding a low-multiple book member moves median30→10 and peer score100→50 for same issuer.",
+        "impact_result_refs": ["book_two_peers", "book_three_peers", "book_sector_labels_swapped"],
+        "numeric_impact": {"nvda_peer_score_two": r["book_two_peers"]["rows"]["nvda"]["factor_scores"]["peer_relative_value"], "nvda_peer_score_three": r["book_three_peers"]["rows"]["nvda"]["factor_scores"]["peer_relative_value"], "nvda_V_two": r["book_two_peers"]["rows"]["nvda"]["V"], "nvda_V_three": r["book_three_peers"]["rows"]["nvda"]["V"]},
+        "sector_bias": "Cohort sensitivity demonstrated; actual sector performance bias magnitude/direction UNASSESSED, not estimated by two fixtures.",
+        "approval_class": "D3_COHORT_MEDIAN_POLICY_NOT_APPROVED",
+    },
+    {
+        "id": "V_HISTORICAL_TWO_POINT_VS_PERCENTILE_FAMILY", "verdict": "MORE_EVIDENCE_REQUIRED",
+        "economic_meaning": "Historical-relative concept grounded; one old P/E vs current P/E change score is not a distribution percentile.",
+        "data_availability": "Two-point helper available; actual percentile/window/polarity/distribution algorithm is absent from this implementation.",
+        "PIT_reproducibility": "Old price selected365days earlier and prior EPS selected independently; no assumption of same aligned period or split/currency basis.",
+        "peer_comparability": "Own history intentionally distinct from peers.", "historical_comparability": "Source versions distinguish two-point metric from any future distribution-based method.",
+        "implementation_complexity": "Current helper low; true percentile construction uncomputed/no new formula supplied.",
+        "manipulation_risk": "Supplied hist_valuation_percentile is accepted as score without declared direction; sparse history loses weighted contribution while retaining finite V.",
+        "impact_result_refs": ["historical_supplied_20", "historical_supplied_80", "book_two_peers", "book_sparse_history"],
+        "numeric_impact": {"actual_two_point_fixture_score": 75, "nvda_V_with_history": r["book_two_peers"]["rows"]["nvda"]["V"], "nvda_V_without_history": r["book_sparse_history"]["rows"]["nvda"]["V"], "sparse_history_difference": r["book_two_peers"]["rows"]["nvda"]["V"] - r["book_sparse_history"]["rows"]["nvda"]["V"]},
+        "true_percentile_numeric_impact": None, "true_percentile_numeric_status": "UNCOMPUTED_NO_GROUNDED_NUMERIC_METHOD",
+        "approval_class": "D3_WINDOW_POLARITY_NORMALIZATION_NOT_APPROVED",
+    },
+    {
+        "id": "V_SECTOR_THEME_RUBRIC_FAMILY", "verdict": "MORE_EVIDENCE_REQUIRED",
+        "economic_meaning": "Sector context and theme premium remain separate economic concepts, both supplied passthrough score fields.",
+        "data_availability": "Fields and prior weights exist; authoritative rubric/taxonomy/version and score domain not established in mapper.",
+        "PIT_reproducibility": "Must pin evidence and rubric at decision time; numeric value alone does not supply vintage.",
+        "peer_comparability": "Requires peer/sector rule declaration; no new mapping implemented.", "historical_comparability": "Passthrough prior history preserved; future rubric revisions need method version.",
+        "implementation_complexity": "Low metadata alignment; rubric/normalization calibration remains separate policy.",
+        "manipulation_risk": "Missing rubric can be replaced by arbitrary numeric input unless producer admission distinguishes evidence from supplied scalar.",
+        "impact_result_refs": ["missing_sector_context"], "numeric_impact": {"missing_sector_numeric_presence": 6, "V_prior_missing_sector": r["missing_sector_context"]["V_prior"], "all_research_candidates": None},
+        "new_rubric_numeric_impact": None, "approval_class": "D3_RUBRIC_OR_NORMALIZATION_NOT_APPROVED",
+    },
+    {
+        "id": "V_EXISTING_WEIGHT_CANDIDATES", "verdict": "KEEP",
+        "economic_meaning": "Keep research comparisons and prior; weight sensitivity is an impact result, not evidence selecting a method or Official weight.",
+        "data_availability": "Only initial_prior/equal_research/mos_tilt_research concrete weights found; PeerDerivedV name appears as test of book comparator, not fourth weights.",
+        "PIT_reproducibility": "Weight arithmetic can replay with frozen fixture vector; no PIT/OOS validation performed.",
+        "peer_comparability": "Different weights cannot fix incomparable underlying methods.", "historical_comparability": "Prior numeric results/history untouched.",
+        "implementation_complexity": "Already implemented; promotion/candidate validation unimplemented here.",
+        "manipulation_risk": "A priori synthetic preference flips must not be used to fit weights after viewing outcomes.",
+        "impact_result_refs": ["company_A_valuation_growth_strength", "company_B_safety_strength", "candidate_score_groups"], "numeric_impact": r["candidate_score_groups"],
+        "approval_class": "D1_D2_RESEARCH_CHARACTERIZATION; promotion/Official weights D3",
+    },
+    {
+        "id": "V_PRODUCER_VALIDITY_CONSUMER_SAFETY", "verdict": "CHANGE_RECOMMENDED",
+        "economic_meaning": "Numeric score is not complete/valid/rankable; producer must retain assessments for consumer admission instead of consumer recomputing QGV.",
+        "data_availability": "New VERSION_MISMATCH/CALCULATION_ERROR comparisons show finite scores; existing seven descriptors have null actual method identity/version.",
+        "PIT_reproducibility": "Provider-run future inputs excluded, but direct future-stamped analyze_raw still scores; distinct entry-point admission authority required.",
+        "peer_comparability": "Do not allow invalid/incomparable method results to become apparently comparable rankings.",
+        "historical_comparability": "Add validity/admission sidecar preserving old numeric result; no history rewrite.",
+        "implementation_complexity": "Existing producer→consumer boundary; policy activation pending B2/B3/B5/B6, no new scoring engine required.",
+        "manipulation_risk": "Numeric quality failures reach ranking; N/A numeric accepted by candidate but excluded by prior; quality duplicated as confidence/coverage.",
+        "impact_result_refs": ["numeric_NOT_APPLICABLE", "numeric_VERSION_MISMATCH", "numeric_CALCULATION_ERROR", "consumer_invalid_method_numeric", "direct_raw_future_stamp_boundary"],
+        "numeric_impact": "Current source values characterized; proposed rejection/admission runtime NOT_RUN and not implemented.",
+        "approval_class": "D3_ADMISSION_ACTIVATION_NOT_APPROVED; D1_D2_INACTIVE_DESIGN_ALLOWED",
+    },
+]
+factor_specs = [
+    ("fundamental_value", "_central_value_score", ["dcf_value", "price", "eps"], "Clipped value/price gap; otherwise fixedP/E reference proxy", "DCF model/unit/basis and fallback authority unresolved", ["V_SUPPLIED_DCF_VS_PE_FALLBACK", "V_NORMALIZATION_CONTROL_AND_METADATA_SEPARATION"]),
+    ("peer_relative_value", "map_raw.inline_peer", ["own_multiple", "peer_median_multiple"], "Clipped supplied own/peer multiple difference; historical runner self-inclusive book uppermiddle", "Comparable multiple/cohort/sample/median authority unresolved", ["V_PEER_SUPPLIED_COMPARATOR_VS_BOOK_COHORT"]),
+    ("historical_valuation", "map_raw.passthrough;historical.run_as_of", ["hist_valuation_percentile"], "Direct supplied field; runner clipped two-point P/E change score", "Percentile direction/window absent; raw old price/priorEPS join may not align", ["V_HISTORICAL_TWO_POINT_VS_PERCENTILE_FAMILY"]),
+    ("sector_context", "map_raw.passthrough_sector", ["sector_context_score"], "Supplied score passthrough", "Rubric/taxonomy/domain/vintage not established", ["V_SECTOR_THEME_RUBRIC_FAMILY"]),
+    ("theme_premium_discount", "map_raw.passthrough_theme", ["theme_premium_score"], "Supplied score passthrough", "Theme/sector remain distinct; rubric/direction/vintage unresolved", ["V_SECTOR_THEME_RUBRIC_FAMILY"]),
+    ("reverse_dcf", "_reverse_dcf_score", ["reverse_dcf_implied_growth", "price", "eps", "revenue", "revenue_prev"], "Clipped realizedYoY minus supplied/P/E-derived implied growth", "Not actual solver; intended target horizon/assumptions/fallback unresolved", ["V_REVERSE_SUPPLIED_IMPLIED_VS_PE_PROXY", "V_PE_PROXY_ADVERTISED_AS_REAL_REVERSE_DCF_SOLVER"]),
+    ("margin_of_safety", "_mos_score", ["dcf_value", "price", "eps"], "Conservative DCF multiplier/value-price comparison; otherwise fixedEPS-multiple proxy", "Conservatism/stress authority, valuation basis and sharedP/E dependence unresolved", ["V_SUPPLIED_DCF_VS_PE_FALLBACK"]),
+]
+matrix = {
+    "artifact_kind": "INACTIVE_V_ALTERNATIVE_IMPACT_MATRIX", "source_head": source["source_head"],
+    "source_pins_sha256": source["source_pins_sha256"], "results_sha256": hashlib.sha256((out / "V_ALTERNATIVE_RESULTS.json").read_bytes()).hexdigest(),
+    "runtime_enabled": False, "method_choice_made": False, "numeric_policy_selected": False, "Official_composite": "UNCHANGED_LITERAL_(Q+G)/2",
+    "factor_records": [{"factor_id": f, "observed_source_anchor": anchor, "registered_method_id": None, "registered_method_version": None, "input_fields": inputs, "current_normalization": norm, "current_metadata": "quality/stamp/notes; normalized value stored in legacy raw_value; no factor method identity", "known_limitation": limit, "alternative_family_refs": alts, "expected_impact": "See source-run results where numeric method exists; missing policy/calibration remains uncomputed", "requiredness_assignment": None, "confidence_assessment": None} for f, anchor, inputs, norm, limit, alts in factor_specs],
+    "candidate_reviews": families,
+    "B1_evidence_delta": "Lineage/branch/data-gap evidence increased; no semantic authority, role or requiredness upgrade inferred. B1 remains MORE_EVIDENCE_REQUIRED with0/20 roles assigned.",
+    "B2_B3_B5_B6_delta": "Explicit evidence-quality/method-validity/different-entrypoint/consumer transport gaps; preserve pipeline from evidence+PIT/integrity through applicability, completeness, validity and consumer-specific admission.",
+    "descriptor_additive_correction": {"factor_id": "reverse_dcf", "prior_descriptor_field": "implied_growth", "actual_public_raw_field": "reverse_dcf_implied_growth", "local_variable_only": "implied", "old_artifact_rewritten": False},
+    "scheduler": {"manual_run_counted_as_hop": False, "actual_scheduler_hops": "0/2", "status": "UNVERIFIED"},
+    "D3_minimal_decisions": [
+        {"id": "V1", "name": "V method/normalization families", "content": "Intended DCF/MOS/P.E proxy authority, reverseimplied/solver horizon, peer cohort/median, historical two-point vs percentile direction/window; do not pick new numeric parameters", "dependency": "B4 lineage and per-factor data/semantics; G1/G2 for horizon/cross-axis input alignment"},
+        {"id": "V2", "name": "V metadata and admission methodology", "content": "Separate raw/normalized value, confidence/quality, coverage/completeness, method validity, ranking/publication admission; activate only after B2/B3/B5/B6 approval", "dependency": "B4/B7 isolation, B2/B3/B5/B6 integrated pipeline; V1 needed for concrete validity predicates"}
+    ],
+}
+(out / "V_IMPACT_MATRIX.json").write_text(json.dumps(matrix, indent=2, sort_keys=True) + "\n")
+print(json.dumps({"matrix_file": str(out / "V_IMPACT_MATRIX.json"), "sha256": hashlib.sha256((out / "V_IMPACT_MATRIX.json").read_bytes()).hexdigest(), "seven_factors": len(matrix["factor_records"]), "families": len(families)}, indent=2))

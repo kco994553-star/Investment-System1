@@ -1,0 +1,429 @@
+# Investment-System1 Claude Code Worker Contract
+
+| Field | Value |
+|---|---|
+| Document ID | `CLAUDE_CODE_WORKER_CONTRACT` |
+| Version | **CLAUDE_CODE_WORKER_CONTRACT_v1.0** |
+| Status | ACTIVE_OPERATING_CONTRACT (작업 운영 계약) |
+| effective_from | 2026-10-03 (KST/UTC 동일 일자). Canonical에 merge되기 전에는 이 문서를 읽도록 지시받은 worker에게만 적용된다 |
+| 승인 근거 | 2026-10-03 사용자 지시 (Claude Code session `session_019znshzTYgyBnuuBmSxdPFN`, "Claude Code Worker Contract를 GitHub SSoT 문서로 추가") |
+| Baseline | canonical `claude/investment-system-top500-validation-alrugm` @ `b8e39a2196a6d7794a04a0cd5393c68329e126ca` |
+| 관리자 | Primary Integration Writer (현재 지정은 `GLOBAL_CURRENT_HANDOFF`에 기록) |
+| 경로 | `implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md` |
+
+이 문서는 Investment-System1에서 작업하는 모든 Claude Code worker(Track A/B/C, QGV, Technical, US Equity Session, Macro, Leaderboard, RIG/News, Producer Infrastructure, P01, Invalidation, Web, Language/Search, Entity Metadata, Portfolio 등)가 공통으로 따르는 **작업 운영 계약**이다. 작업 프롬프트에 공통 안전 규칙을 반복하지 않고, 이 문서를 먼저 읽는 것으로 동일한 규칙을 적용한다.
+
+공통 운영 규칙의 SSoT는 이 문서 하나다. `CLAUDE.md`는 이 문서로 보내는 짧은 routing instruction만 가지며 규칙을 복제하지 않는다.
+
+---
+
+## 0. 지위와 위치
+
+### 0.1 이 계약이 아닌 것
+
+이 Worker Contract는:
+
+- 투자 방법론 SSoT가 아니다.
+- Track C policy SSoT가 아니다.
+- QGV / Technical / Macro 공식 SSoT가 아니다.
+- publication authority가 아니다.
+
+작업 운영 계약이다. Scoped Decision Register와 approval evidence가 정책 권한에서 항상 이 문서보다 우선한다.
+
+### 0.2 Coordination 문서 위치
+
+| 문서 | 위치 | 성격 |
+|---|---|---|
+| Worker Contract (이 문서) | `implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md` | 공통 운영 규칙 SSoT |
+| Routing entry | repository root `CLAUDE.md` | 이 문서를 읽으라는 routing만 |
+| GLOBAL_CURRENT_HANDOFF | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md` | routing/index SSoT (live) |
+| GLOBAL_STATUS_INDEX | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_STATUS_INDEX.md` | capability별 state index, cross-capability dependency index |
+| GLOBAL_HANDOFF_HISTORY | `origin/integration/global-handoff-v1` : `implementation/docs/coordination/GLOBAL_HANDOFF_HISTORY.md` | global handoff append-only history |
+| 기존 root 문서 | `Investment-System1 · CURRENT_HANDOFF.md`, `Investment-System1 · HANDOFF_HISTORY.md`, `Investment-System1 · Master Status Index 2026-09-22.md` | 기존 project/scoped 기록. Rewrite하지 않는다 |
+
+Global 문서의 live 위치는 `integration/global-handoff-v1` branch다. Canonical에 같은 경로의 사본이 있으면 merge 시점의 snapshot이며, live branch가 존재하는 한 live branch를 따른다. 읽는 방법:
+
+```
+git fetch origin
+git show origin/integration/global-handoff-v1:implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md
+```
+
+---
+
+## A. Repository truth hierarchy
+
+작업 시작 시 이전 채팅 요약을 repository SSoT로 사용하지 않는다.
+
+항상 최신 remote를 fetch하고 다음 순서로 상태를 확인한다:
+
+1. GLOBAL_CURRENT_HANDOFF / GLOBAL_STATUS_INDEX — routing/index
+2. 담당 capability의 scoped CURRENT_HANDOFF / STATUS
+3. Decision Register / approval evidence
+4. Freeze / acceptance evidence
+5. exact branch HEAD의 source/tests
+6. latest relevant Actions
+
+Global Handoff는 routing/index SSoT이며 계산·정책 authority가 아니다.
+
+충돌 시 scoped Decision Register, approval evidence, exact SHA가 우선한다.
+
+Draft branch의 결과를 canonical 완료로 취급하지 않는다.
+
+항상 다음을 구분한다:
+
+- `BRANCH_STATE`
+- `INTEGRATION_STATE`
+- `CANONICAL_STATE`
+
+## B. Worker ownership
+
+각 worker는 자신에게 지정된 capability와 owner branch만 수정한다.
+
+다른 active worker의 branch는 READ-ONLY upstream으로 취급한다.
+
+다른 worker branch에:
+
+- force-push
+- rebase
+- reset
+- history rewrite
+- 임의 merge
+- commit
+
+을 하지 않는다.
+
+Shared integration metadata는 Primary Integration Writer만 수정한다. Primary Integration Writer는 사용자가 지정한 단일 session이며, 현재 지정은 GLOBAL_CURRENT_HANDOFF에 기록한다.
+
+특히 다음은 single-writer 대상으로 취급한다:
+
+- GLOBAL_CURRENT_HANDOFF
+- GLOBAL_STATUS_INDEX
+- HANDOFF_HISTORY (GLOBAL_HANDOFF_HISTORY 포함)
+- shared integration evidence
+- cross-capability dependency index
+- 공통 Decision routing metadata
+
+Capability worker는 자신의 scoped STATUS/HANDOFF에 상태를 기록한다. Global 문서에 반영이 필요하면 Primary Integration Writer가 scoped 기록을 읽어 반영한다.
+
+## C. Autonomous Execution
+
+다음 작업은 별도 사용자 승인 없이 계속 수행한다:
+
+- 이미 승인된 범위의 구현
+- implementation detail 결정
+- 버그 수정
+- adapter/wiring
+- branch 생성
+- commit
+- feature branch push
+- Draft PR 생성 및 업데이트
+- CI / GitHub Actions 실행
+- test / fixture / oracle
+- regression
+- deterministic replay
+- evidence 생성
+- documentation
+- compatibility repair
+- dependency audit
+- 승인된 정책의 동일 사례 적용
+
+단, repository의 실제 권한이나 실행환경이 이를 허용하는 범위에서만 수행한다.
+
+권한을 우회하거나 인증을 임의 생성하지 않는다.
+
+## D. Mandatory user decision boundary
+
+다음에만 `USER_DECISION_REQUIRED`로 중단한다:
+
+1. 새로운 투자 계산식
+2. ranking / eligibility 규칙 변경
+3. 새로운 threshold / default
+4. 실제 calibration numeric configuration 결정
+5. Frozen contract 변경
+6. PIT / no-lookahead 경계 완화
+7. CAL_VERIFY 최초 실제 접근/소비
+8. Holdout 실제 소비
+9. Research / Frozen / Live publication grant
+10. Official promotion
+11. 유료 API / 서비스 / 결제
+12. canonical merge
+13. production deployment
+14. 되돌리기 어려운 외부 변경
+15. 합리적인 복수 선택지 중 선택에 따라 투자 결과 또는 검증 결과가 달라지는 경우
+
+단순 진행상황 보고를 위해 멈추지 않는다.
+
+## E. Blocker handling
+
+blocker를 다음으로 분류한다:
+
+- `LOCAL_FIXABLE`
+- `DEPENDENCY_BLOCKED`
+- `DATA_BLOCKED`
+- `POLICY_BLOCKED`
+- `USER_DECISION_REQUIRED`
+- `REMOTE_WRITE_BLOCKED`
+
+`LOCAL_FIXABLE`은 사용자에게 묻지 말고 해결한다.
+
+한 capability가 `DEPENDENCY_BLOCKED` 또는 `DATA_BLOCKED`가 되어도 전체 작업을 중단하지 않는다.
+
+독립 READY 작업이 있으면 worker를 재할당하거나 가능한 범위의 작업을 계속한다.
+
+전체 execution을 멈출 수 있는 것은 실제 `USER_DECISION_REQUIRED`뿐이다.
+
+## F. Dynamic parallelism
+
+worker 수를 고정하지 않는다.
+
+dependency DAG, file ownership, write collision risk를 기준으로 병렬성을 결정한다.
+
+독립 implementation writer는 병렬화할 수 있다.
+
+read-only audit/research/oracle worker는 write worker와 병렬 실행할 수 있다.
+
+동일 shared file에 동시 writer를 두지 않는다.
+
+병렬성 자체가 목표가 아니다.
+
+Investment-System capability가 다음 maturity stage로 이동하는 속도를 최적화한다.
+
+## G. Dynamic Workflow
+
+`DYNAMIC_WORKFLOW_V1_SOFTWARE_FROZEN`을 유지한다.
+
+Dynamic Workflow 자체에 새로운 기능을 추가하지 않는다.
+
+새 orchestration abstraction은 실제 Investment-System capability 구현에 반드시 필요한 경우가 아니면 만들지 않는다.
+
+Dynamic Workflow는 투자시스템 구현을 위한 실행/검증 방식으로만 사용한다.
+
+## H. Capability maturity
+
+진행률을 test count나 commit count로 계산하지 않는다.
+
+각 capability는 다음 maturity를 사용한다:
+
+`DESIGN → IMPLEMENTED → SYNTHETIC_VERIFIED → REAL_DATA_VERIFIED → INTEGRATED → OPERATIONAL`
+
+`SOFTWARE_FROZEN`은 해당 software/contract 범위의 별도 상태이며 `REAL_DATA_VERIFIED`, Official, Holdout-tested 또는 `OPERATIONAL`을 의미하지 않는다.
+
+maturity가 실제 이동했을 때만 진행률 상승으로 기록한다.
+
+## I. Validation semantics
+
+PASS의 의미를 확대하지 않는다.
+
+예:
+
+- producer PASS ≠ fully scored
+- software freeze ≠ real validation
+- synthetic PASS ≠ real-data PASS
+- Track C SOFTWARE_FROZEN ≠ Track C validation PASS
+- research result ≠ Official
+- FRESH ≠ Official
+- persisted result ≠ investment-ready
+
+FAIL / NOT_RUN / BLOCKED / PARTIAL을 PASS로 변환하지 않는다.
+
+## J. PIT / Holdout / provenance
+
+`available_at <= decision_time` 원칙을 유지한다.
+
+`fetched_at`을 `available_at`으로 대체하지 않는다.
+
+미래정보를 보간·추정·현재값으로 대체하지 않는다.
+
+Holdout은 명시적 사용자 승인 없이 읽거나 소비하지 않는다.
+
+source / vintage / hash / lineage가 필요한 계약에서는 누락 시 fail-closed한다.
+
+## K. Existing work preservation
+
+기존:
+
+- Frozen source
+- tests
+- evidence
+- proposal
+- approval record
+- Decision history
+- historical handoff
+
+를 rewrite하지 않는다.
+
+새 승인이나 상태는 history-preserving additive record로 남긴다.
+
+과거 evidence의 hash를 현재 실행 결과로 덮어쓰지 않는다.
+
+## L. Git/GitHub rules
+
+작업 시작 시:
+
+- git status
+- current branch
+- HEAD
+- remote refs
+- ahead/behind
+- worktree
+- unpushed commits
+
+를 확인한다.
+
+local-only/unreferenced commit을 발견하면 삭제하거나 다른 commit으로 대체하지 않는다.
+
+SHA가 다르면 동일 작업이라고 주장하지 않는다.
+
+force-push와 history rewrite는 금지한다.
+
+feature branch push와 Draft PR은 승인된 구현 범위에서 허용한다.
+
+canonical merge는 `USER_DECISION_REQUIRED`다.
+
+CI가 실제 실행되지 않았으면 `CI_VERIFIED`라고 기록하지 않는다.
+
+stale Actions를 current HEAD PASS로 간주하지 않는다.
+
+## M. Integration rules
+
+dependency chain을 보존한다.
+
+stacked PR은 base dependency보다 먼저 canonical integration-ready로 취급하지 않는다.
+
+실제 merge 전에 가능한 경우 trial integration을 수행한다.
+
+확인:
+
+- merge conflict
+- source overlap
+- contract compatibility
+- regression
+- numerical/semantic invariance
+- PIT/provenance
+- cross-track preservation
+- publication/Official escalation 없음
+
+새 기능 추가보다 integration debt 감소가 우선인 상황에서는 기존 Draft PR 통합을 우선한다.
+
+## N. Investment-System protected boundaries
+
+명시적 승인 없이 변경하지 않는다:
+
+- QGV scoring semantics
+- Technical approved methodology
+- Macro approved methodology
+- Leaderboard ranking semantics
+- Portfolio investment policy
+- Track C Frozen phases
+- PIT/no-lookahead rules
+- publication authority
+- Holdout state
+- Official state
+- canonical baseline
+
+다른 capability의 편의를 위해 이 경계를 우회하지 않는다.
+
+## O. Reporting
+
+checkpoint에는 최소 다음을 기록한다:
+
+- exact branch / HEAD
+- base / merge-base
+- changed files
+- maturity before → after
+- tests actually executed
+- Actions actually executed
+- evidence/artifact hash
+- dependency
+- blocker
+- `USER_DECISION_REQUIRED` 여부
+- next autonomous action
+- `BRANCH_STATE`
+- `INTEGRATION_STATE`
+- `CANONICAL_STATE`
+
+실행하지 않은 것은 `NOT_RUN`이라고 기록한다.
+
+추정값을 PASS로 쓰지 않는다.
+
+## P. Routing order for every worker
+
+새 작업 시작 시 이 계약을 읽은 뒤 다음 순서로 읽는다:
+
+GLOBAL_CURRENT_HANDOFF
+→ GLOBAL_STATUS_INDEX
+→ capability scoped STATUS/HANDOFF
+→ Decision Register / approval evidence
+→ Freeze/acceptance evidence
+→ exact HEAD source/tests
+→ latest Actions
+
+Global 문서가 없거나 stale하면 scoped source를 우선하고 그 사실을 보고한다.
+
+## Q. End condition
+
+단순 checkpoint를 위해 작업을 종료하지 않는다.
+
+가능한 READY 작업을 계속 수행한다.
+
+다음 중 하나일 때 checkpoint를 반환한다:
+
+1. capability maturity가 실제 상승
+2. 실제 `USER_DECISION_REQUIRED` 도달
+3. 담당 범위의 모든 독립 READY 작업 소진
+4. 실행환경 자체가 더 이상의 작업을 불가능하게 함
+
+blocker 하나만 발견했다는 이유로 전체 작업을 끝내지 않는다.
+
+---
+
+## R. Versioning and change control
+
+현재 version: `CLAUDE_CODE_WORKER_CONTRACT_v1.0`.
+
+변경 시:
+
+- history-preserving으로 변경한다. 이전 version의 문장을 조용히 덮어쓰지 않고, 아래 Change log에 새 행을 추가한다.
+- 변경 이유를 기록한다.
+- 승인 근거를 기록한다.
+- `effective_from`을 기록한다.
+
+계약 변경 자체가 투자 결과·검증 결과·권한 경계를 바꾸는 경우 사용자 승인을 요구한다.
+
+단순 문구 정리나 routing 보완은 의미 변경이 없음을 검증한 뒤 진행할 수 있다. 이때 Change log에 "의미 변경 없음"과 검증 방법을 기록한다.
+
+### Change log
+
+| Version | effective_from | 변경 | 이유 | 승인 근거 |
+|---|---|---|---|---|
+| v1.0 | 2026-10-03 | 최초 작성. A–Q 규칙, coordination 문서 위치(0.2), versioning(R), 다른 문서와의 관계(S) | 병렬 Claude Code worker에 공통 운영 규칙을 단일 SSoT로 제공 | 2026-10-03 사용자 지시, session `session_019znshzTYgyBnuuBmSxdPFN` |
+
+## S. 다른 문서와의 관계
+
+- Scoped Decision Register와 approval evidence가 정책 권한에서 항상 우선한다. v1.0 작성 시점의 예 (모두 owner branch에만 있고 canonical에는 아직 없음):
+  - Track C: `implementation/reports/track_c_decision_register_2026-10-01.md` (`feature/track-c-evl`, `ccr-22e3ff16-p7n5k5`)
+  - QGV Context & Filter: `implementation/reports/qgv_context_filter_decision_register.md` (`docs/qgv-context-policy-approvals`)
+  - P01 Research Publication: `implementation/docs/producer_infrastructure/P01_APPROVAL_2026-10-02.md` (`feature/producer-infrastructure-v1`)
+- 각 capability의 scoped STATUS/HANDOFF/CONTRACT는 그 capability의 상태와 계약 SSoT다. 이 계약은 그 내용을 바꾸지 않는다.
+- `Investment-System1 · Multi-AI Relay Protocol v1.0.md`와 `Investment-System1_Multi-AI_Relay_Protocol.md`는 Google Drive 기반 순차 relay(GPT → Grok → Claude → GPT) 규약이다. 이 계약은 그 문서를 수정하거나 대체하지 않는다. 두 문서의 검증 원칙(실행하지 않은 테스트를 PASS로 기록하지 않음, PIT 미래정보 금지, 과거 snapshot 덮어쓰기 금지)은 일치한다. 범위 차이: GitHub repository에서 작업하는 Claude Code worker는 2026-10-03 사용자 지시에 따라 최신 GitHub remote를 repository 상태의 기준으로 사용한다.
+- 기존 root `Investment-System1 · CURRENT_HANDOFF.md` / `Investment-System1 · HANDOFF_HISTORY.md`는 기존 기록으로 보존한다. Track C 등 scoped worker가 자기 branch에서 이 파일들에 append하고 있으므로, global handoff는 merge 충돌을 피하기 위해 별도 `GLOBAL_*` 파일을 사용한다.
+
+---
+
+## Appendix 1. 최소 시작 프롬프트 (non-normative)
+
+새 Claude Code worker를 시작할 때 다음만 채워서 사용한다. 공통 규칙은 반복하지 않는다.
+
+```
+Investment-System1 — <capability> worker
+Owner branch: <branch>   Base: <base branch@SHA 또는 "GLOBAL_STATUS_INDEX 참조">
+작업 범위: <승인된 범위 한 줄>
+
+시작 전: git fetch origin 후
+implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md 를 읽고 따른다.
+(canonical에 아직 없으면: git show origin/ccr-2e16018a-qukwmg:implementation/docs/coordination/CLAUDE_CODE_WORKER_CONTRACT.md)
+그 다음 계약 P절의 순서로 GLOBAL_CURRENT_HANDOFF (origin/integration/global-handoff-v1)부터 읽는다.
+```
+
+Primary Integration Writer를 시작할 때는 `<capability>`를 `Primary Integration Writer`로, 작업 범위를 `shared integration metadata 및 integration audit`로 쓴다.
+

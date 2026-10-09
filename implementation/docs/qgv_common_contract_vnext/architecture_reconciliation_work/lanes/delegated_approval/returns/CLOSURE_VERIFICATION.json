@@ -1,0 +1,42 @@
+{
+  "lane": "FAST",
+  "checks": 8,
+  "passed": 8,
+  "failed": 0,
+  "results": [
+    {
+      "id": "registered_Main_consumption_packet",
+      "passed": true
+    },
+    {
+      "id": "exact_completed_principle_HEAD",
+      "passed": true
+    },
+    {
+      "id": "receipt_quotes_exact_sha256:approval.json",
+      "passed": true
+    },
+    {
+      "id": "receipt_quotes_exact_sha256:APPROVED_CONTRACT.md",
+      "passed": true
+    },
+    {
+      "id": "receipt_quotes_exact_sha256:COMPLETION_RECEIPT.json",
+      "passed": true
+    },
+    {
+      "id": "receipt_quotes_exact_sha256:OUTPUT_MANIFEST.json",
+      "passed": true
+    },
+    {
+      "id": "no_new_policy_or_owner_ack_claim",
+      "passed": true
+    },
+    {
+      "id": "bounded_not_production_scope",
+      "passed": true
+    }
+  ],
+  "prior_audit_reruns": 0,
+  "production_scope": false
+}

@@ -1,0 +1,44 @@
+{
+  "record_kind": "FRESH_RESUME_COMPLETION_OF_EXISTING_SCOPE_TASK",
+  "recorded_at_utc": "2026-10-05T07:46:01.392290+00:00",
+  "review_input_head": "4a6ddd567f3fab32d8fa6793daf9027e9d8b26f6",
+  "global_head": "76df9e6a71fa91ff5ee260bc6087185facae3779",
+  "owner_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "canonical_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "pr44_head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+  "review_lease_token": "qgv-ssot-muuxaley-nleyl46w0x",
+  "review_lease_resolution": "Same inherited manual execution, bounded task resumed; own lease released with publication",
+  "owner_lease_resolution": "Unchanged non-expiring qgv-b47-muupb538; not taken over",
+  "semantic_pins_verified_against_current_remote_tree": 29,
+  "fresh_scope_checks": 30,
+  "fresh_scope_failures": 0,
+  "compact_outputs_byte_identical": 3,
+  "prior_59_checks": "REUSED_NOT_RERUN",
+  "prior_full_488": "REUSED_AT_ORIGINAL_SCOPE_NOT_RERUN",
+  "new_agents": 0,
+  "scope_findings_closed": 1,
+  "production_blockers_closed": 0,
+  "net_production_blocker_categories": 3,
+  "global_delta": "GCH-020 FPIA exact CI/coverage result belongs to Main; no QGV approval/owner return or migration authority added",
+  "lookup_failures": [
+    {
+      "path": "coordination/global-handoff",
+      "result": "404",
+      "repair": "Resolved established integration/global-handoff-v1"
+    },
+    {
+      "path": "architecture_reconciliation_work/CONTROL.json",
+      "result": "404",
+      "repair": "Resolved actual lanes/CONTROL.json"
+    },
+    {
+      "path": "coordination/CURRENT_HANDOFF.md",
+      "result": "404",
+      "repair": "Resolved actual GLOBAL_CURRENT_HANDOFF.md from exact tree"
+    }
+  ],
+  "archive_retry": "NOT_REPEATED_UNCHANGED_502_FINGERPRINT",
+  "scheduler_hops": 0,
+  "production_enabled": false,
+  "post_publication_next": "Recheck relevant exact refs once; if unchanged, READY0 and WAIT_DEPENDENCY/D3 only"
+}

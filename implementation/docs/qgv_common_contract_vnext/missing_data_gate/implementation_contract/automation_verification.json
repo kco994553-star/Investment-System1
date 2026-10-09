@@ -1,0 +1,41 @@
+{
+  "verified_at": "2026-10-05T01:16:01.409Z",
+  "automations": [
+    {
+      "id": "6ac2f22087288191abd144fb4a7655f8",
+      "title": "QGV Work 자동 재개",
+      "enabled": true,
+      "chat": "6ac230f1-0ff0-83ee-a932-45244e2c4afe",
+      "updated_at": "2026-10-05T01:14:48.215482+00:00",
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "prompt_has_limited_approval": true,
+      "prompt_has_design_stop": true
+    },
+    {
+      "id": "6ac2efbd34fc8191a60dccbbe338c291",
+      "title": "QGV CI 후속 확인",
+      "enabled": true,
+      "chat": "6ac230f1-0ff0-83ee-a932-45244e2c4afe",
+      "updated_at": "2026-10-05T01:14:44.957773+00:00",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T003153Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "prompt_has_limited_approval": true,
+      "prompt_has_design_stop": true
+    }
+  ],
+  "trigger_update": {
+    "submitted_exact_prs": [
+      44,
+      42
+    ],
+    "commit_updates": true,
+    "comments": true,
+    "reviews": true,
+    "only_on_merge": false,
+    "api_update_success": true,
+    "trigger_inventory_readback": "NOT_EXPOSED",
+    "event_delivery": "NOT_TESTED"
+  },
+  "changes": "Existing two prompts updated, no automation created"
+}

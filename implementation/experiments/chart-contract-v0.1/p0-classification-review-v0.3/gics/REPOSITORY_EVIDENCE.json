@@ -1,0 +1,98 @@
+{
+  "kind": "GICS_BOUNDARY_AND_BOUNDED_COVERAGE_AUDIT",
+  "base_head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+  "recorded_at_utc": "2026-10-04T23:17:19.470779+00:00",
+  "local_files": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-design/P0_CHART_CONTRACT_AND_WIRING_v0.1.md",
+      "sha256": "78eafedefcbecbf5b5ab19f170640413750a1ff0e768443184f36b9959bbb07a",
+      "bytes": 36459
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/P0_IMPLEMENTATION_PREREQUISITES_v0.2.md",
+      "sha256": "aac0d5f068e768a3952d5211626b6d04a4ecd2fd7d2a31579a0f3076433fe97c",
+      "bytes": 18383
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/portfolio/PORTFOLIO_SOURCE_READINESS.md",
+      "sha256": "f622b4d4b0231a481595fa847dab9e00365833d80c4788516cf18fe0a0e2d66a",
+      "bytes": 20401
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+      "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96",
+      "bytes": 4618
+    },
+    {
+      "path": "implementation/reports/gate_evidence/sp500_current_2026_raw.md",
+      "sha256": "3d99117fca09cfca74a3c00f8b7c095a054bf49da1643e3abaebbdebdf4c7d47",
+      "bytes": 63189
+    },
+    {
+      "path": "implementation/tools/reconstruct_sp500_from_wikipedia.py",
+      "sha256": "d22dc13febe8dd8a09a725896f5d0cdf09ce3123e31eb85562ddcba1e09eb29a",
+      "bytes": 4985
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/MARKET_REFERENCE_COVERAGE.json",
+      "sha256": "039bee131478ec18fed5a4888245ea650ed327b7f129e283688dda8614762892",
+      "bytes": 25013
+    }
+  ],
+  "target_provider_symbols": [
+    "NVDA",
+    "MSFT",
+    "8035.T",
+    "042700.KS",
+    "ASML",
+    "LRCX",
+    "KLAC",
+    "AMD",
+    "AVGO",
+    "QCOM",
+    "INTC",
+    "GOOGL",
+    "AMZN",
+    "RTX",
+    "SYK",
+    "ETN",
+    "HUBB",
+    "GEV",
+    "ROK"
+  ],
+  "secondary_gics_label_source": "Wikipedia snapshot, not official/licensed assignment feed",
+  "secondary_label_symbols": [
+    "AMD",
+    "AMZN",
+    "AVGO",
+    "ETN",
+    "GEV",
+    "GOOGL",
+    "HUBB",
+    "INTC",
+    "KLAC",
+    "LRCX",
+    "MSFT",
+    "NVDA",
+    "QCOM",
+    "ROK",
+    "RTX",
+    "SYK"
+  ],
+  "missing_secondary_label_symbols": [
+    "042700.KS",
+    "8035.T",
+    "ASML"
+  ],
+  "official_licensed_assignments_admitted": 0,
+  "actual_production_assignment_records_authored": 0,
+  "reconstruct_parser_result": "parse_constituents retains security/date_added/cik only; named sector/subind regex captures are discarded",
+  "search_scope": [
+    "implementation/src/investment_system",
+    "implementation/tools",
+    "implementation/tests",
+    "existing chart prerequisite/source/design files",
+    "implementation/reports/gate_evidence/sp500_current_2026_raw.md"
+  ],
+  "absence_claim_scope": "No complete 19-company official/authorized production assignment manifest with identity+catalog+effective+available+rights binding found in inspected PR41 checkout. No claim about every branch, unseen user entitlement or all internet sources."
+}

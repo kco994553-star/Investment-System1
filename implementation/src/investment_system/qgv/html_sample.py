@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from html import escape
 
 
 def render_us_book_html(session: dict) -> str:
@@ -10,15 +11,18 @@ def render_us_book_html(session: dict) -> str:
     for r in session.get("rows", []):
         q = "" if r.get("Q") is None else f"{r['Q']:.1f}"
         g = "" if r.get("G") is None else f"{r['G']:.1f}"
+        v = "NOT_AVAILABLE" if r.get("V") is None else f"{r['V']:.1f}"
+        v_status = f"{r['standard']} · {r['calibration']}" if r.get("standard") and r.get("calibration") else "기준 미지정"
         px = "—" if r.get("price") is None else f"{r['price']:,.2f}"
         w = f"{r['target_weight']*100:.2f}%"
         rows.append(
             f"<tr><td>{r['company_id']}</td><td>{r['yahoo']}</td><td>{r['exchange']}</td>"
             f"<td class='num'>{w}</td><td class='num'>{q}</td><td class='num'>{g}</td>"
-            f"<td class='muted'>null</td><td class='num'>{px}</td>"
+            f"<td class='num'>{v}<br/><small>{escape(v_status)}</small></td><td class='num'>{px}</td>"
             f"<td>{r.get('price_evidence') or '—'}</td></tr>"
         )
     body = "\n".join(rows)
+    standard_status = escape(session.get("standard_status") or "기준 미지정")
     return f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -54,19 +58,20 @@ def render_us_book_html(session: dict) -> str:
       <span class="badge">NEW IMPLEMENTATION</span>
       <span class="badge">US TRACK</span>
       <span class="badge">QGV SYNTHETIC</span>
+      <span class="badge">{standard_status}</span>
       <span class="badge">PRICES LIVE_FETCH</span>
       <span class="badge warn">NOT STAGE 2</span>
       <span class="badge warn">KR DEFERRED</span>
     </div>
     <h1>US Working Book · sample console</h1>
-    <p class="sub">Official v1.1은 19종목 그대로. 이 화면은 미국 상장 17종목 working book이다. V 생산점수는 null.</p>
+    <p class="sub">Official v1.1은 19종목 그대로. 이 화면은 미국 상장 17종목 working book이다. V 점수의 기준·보정 상태는 각 결과에 표시한다.</p>
   </header>
   <main>
     <section class="grid">
       <div class="card"><div class="k">Names</div><div class="v">{session.get("names")}</div></div>
       <div class="card"><div class="k">Priced</div><div class="v">{session.get("priced")}</div></div>
       <div class="card"><div class="k">Portfolio</div><div class="v">{session.get("portfolio_version")}</div></div>
-      <div class="card"><div class="k">V production</div><div class="v">null</div></div>
+      <div class="card"><div class="k">V production standard</div><div class="v">{standard_status}</div></div>
     </section>
     <table>
       <thead>

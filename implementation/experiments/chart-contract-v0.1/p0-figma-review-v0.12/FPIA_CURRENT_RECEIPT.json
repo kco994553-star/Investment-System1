@@ -1,0 +1,207 @@
+{
+  "workflow_run_id": 37272321137,
+  "attempt": 1,
+  "pr": 46,
+  "source_head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+  "status": "completed",
+  "conclusion": "success",
+  "artifact_id": 11329459485,
+  "artifact_archive_sha256": "98080e3525bdeb511e03527c6f9935d475183d4d7b01723e0b410e4a3d023861",
+  "artifact_subject": {
+    "tree": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+    "tree_object": "f1f7f01daf98e0f913b36d86b29e6099f53e4817"
+  },
+  "authority_head_used_by_owner_run": "9cd598c5564827418115ebb15c1c88a0e7811bab",
+  "fpia": {
+    "reasons": [],
+    "status": "FPIA_PASS"
+  },
+  "full_regression": {
+    "collect_errors": [],
+    "counts": {
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 2184
+    },
+    "deselect_rule": {
+      "file": "implementation/tests/test_raw_and_providers.py",
+      "node": "tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2",
+      "present_at_T": true,
+      "rule": "honoured only while its file is byte-identical to R's (PIW ruling); disclosed deviation",
+      "valid": true
+    },
+    "deselected": [
+      "implementation/tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2"
+    ],
+    "junit": {
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 2184
+    },
+    "non_track_c_failures": [],
+    "rc": 0,
+    "status": "PASS",
+    "track_c_nodes": 837
+  },
+  "statuses": {
+    "authority": "PASS",
+    "code_identity": "CODE_IDENTITY_DIVERGED",
+    "frozen_tools_on_T": "FROZEN_TOOLS_ON_T_FAIL",
+    "full_regression": "PASS",
+    "historical_frozen_identity": "HISTORICAL_FROZEN_IDENTITY_PRESERVED",
+    "integration_interference": "INTEGRATION_INTERFERENCE_NONE",
+    "runtime_provenance": "PASS",
+    "track_c_projection": "TRACK_C_PROJECTION_PRESERVED",
+    "v2_binding": "PASS"
+  },
+  "result_sha256": "6261005636109c32705ae7a4e9266a1cac3ddab588ce96dcbcab8ac893231500",
+  "run_sha256": "2fa3c9d70428a3c46e74a483fa0007512689c940eeb884320b917fedb65efe66",
+  "checks": [
+    {
+      "check": "no duplicate JSON keys",
+      "status": "PASS"
+    },
+    {
+      "check": "schema",
+      "status": "PASS"
+    },
+    {
+      "actual": "6261005636109c32705ae7a4e9266a1cac3ddab588ce96dcbcab8ac893231500",
+      "check": "result_sha256 equals sha256(canonical result)",
+      "recorded": "6261005636109c32705ae7a4e9266a1cac3ddab588ce96dcbcab8ac893231500",
+      "status": "PASS"
+    },
+    {
+      "actual": "2fa3c9d70428a3c46e74a483fa0007512689c940eeb884320b917fedb65efe66",
+      "check": "run_sha256 equals sha256(canonical run)",
+      "recorded": "2fa3c9d70428a3c46e74a483fa0007512689c940eeb884320b917fedb65efe66",
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "bytes": 47379,
+        "sha256": "f63c147b84636afc93bc38cb88df0a8c435c315a6f424f62e44bb993b27c7385"
+      },
+      "check": "side file sha256/bytes: 07-track_c_c6_acceptance.py.stderr",
+      "recorded": {
+        "bytes": 47379,
+        "sha256": "f63c147b84636afc93bc38cb88df0a8c435c315a6f424f62e44bb993b27c7385"
+      },
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "check": "side file sha256/bytes: 07-track_c_c6_acceptance.py.stdout",
+      "recorded": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "bytes": 47660,
+        "sha256": "9c02aa2e21fb81210a75d85d1832b677a1740fcd4e3ce357728dbd650fbf5599"
+      },
+      "check": "side file sha256/bytes: 08-track_c_c7_acceptance.py.stderr",
+      "recorded": {
+        "bytes": 47660,
+        "sha256": "9c02aa2e21fb81210a75d85d1832b677a1740fcd4e3ce357728dbd650fbf5599"
+      },
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "check": "side file sha256/bytes: 08-track_c_c7_acceptance.py.stdout",
+      "recorded": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "bytes": 47572,
+        "sha256": "533e4aa6a02958dd15020852ccf8d493b2d06852e3ccbee9fda1d407b38a4f06"
+      },
+      "check": "side file sha256/bytes: 09-track_c_c8_partial_acceptance.py.stderr",
+      "recorded": {
+        "bytes": 47572,
+        "sha256": "533e4aa6a02958dd15020852ccf8d493b2d06852e3ccbee9fda1d407b38a4f06"
+      },
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "check": "side file sha256/bytes: 09-track_c_c8_partial_acceptance.py.stdout",
+      "recorded": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "PASS"
+    },
+    {
+      "check": "no unreferenced side files",
+      "status": "PASS",
+      "unreferenced": []
+    }
+  ],
+  "archive_digest_match": true,
+  "independently_recomputed_canonical_hashes": {
+    "result": "6261005636109c32705ae7a4e9266a1cac3ddab588ce96dcbcab8ac893231500",
+    "run": "2fa3c9d70428a3c46e74a483fa0007512689c940eeb884320b917fedb65efe66"
+  },
+  "side_files": [
+    {
+      "file": "07-track_c_c6_acceptance.py.stderr",
+      "sha256": "f63c147b84636afc93bc38cb88df0a8c435c315a6f424f62e44bb993b27c7385",
+      "bytes": 47379,
+      "match": true
+    },
+    {
+      "file": "07-track_c_c6_acceptance.py.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "match": true
+    },
+    {
+      "file": "08-track_c_c7_acceptance.py.stderr",
+      "sha256": "9c02aa2e21fb81210a75d85d1832b677a1740fcd4e3ce357728dbd650fbf5599",
+      "bytes": 47660,
+      "match": true
+    },
+    {
+      "file": "08-track_c_c7_acceptance.py.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "match": true
+    },
+    {
+      "file": "09-track_c_c8_partial_acceptance.py.stderr",
+      "sha256": "533e4aa6a02958dd15020852ccf8d493b2d06852e3ccbee9fda1d407b38a4f06",
+      "bytes": 47572,
+      "match": true
+    },
+    {
+      "file": "09-track_c_c8_partial_acceptance.py.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "match": true
+    }
+  ],
+  "actual_chart_merge_result_fpia": "NOT_RUN",
+  "governance_closure": false,
+  "owner_regression_reused_not_rerun_by_chart": true,
+  "verification_parser": "raw_decode first JSON object plus preserved text footer; full file is JSON followed by summary text"
+}

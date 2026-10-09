@@ -1,0 +1,105 @@
+{
+  "input_head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+  "tree_nontruncated": true,
+  "old_groups": [
+    {
+      "original_checks": 59,
+      "matched_artifacts": 29,
+      "new_reruns": 0
+    },
+    {
+      "original_checks": 79,
+      "matched_artifacts": 25,
+      "new_reruns": 0
+    },
+    {
+      "original_checks": 30,
+      "matched_artifacts": 9,
+      "new_reruns": 0
+    }
+  ],
+  "principle_acceptance_original_checks": 25,
+  "principle_artifacts": [
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/EVIDENCE_REUSE.json",
+      "git_blob_sha": "2a908e90d1cd2da48e4797ebcd04296d882827d8",
+      "sha256": "2257a09d28fdd4bb63778bf2649bd28c772acfe6e36e7100a528f3c1c034c62f"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/PRIOR_SCOPE_RETURN_CONSUMPTION.json",
+      "git_blob_sha": "66c9cf0691b08230f3242494444320aa79aa76a4",
+      "sha256": "15577af6f5baf038339dd6bd70bf851a8305965a1dfa95421479b74035f43fc6"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/FRESH_INTAKE.json",
+      "git_blob_sha": "ce31a5d55177b8d39a18287bd24f5d29a031afd0",
+      "sha256": "4f4b197e832a1b361d959c3b4a3e3d1ae5bb78333cd85ae3e0bb8eb574c5eed0"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/MAIN_RETURN.json",
+      "git_blob_sha": "75ae6af3c6781e9f40e99d266a3a8b4ff25d73c2",
+      "sha256": "b7166d9228e6fc879ad29eb107bbf994d11390c58af11bf2114a6589c9af3cf3"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/STATE_RECONCILIATION_BEFORE_REPAIR.json",
+      "git_blob_sha": "097bee6e4529d7561d8d252ef3cd39d757986333",
+      "sha256": "4ea0f386a6ba22edb18e439c4630696b9f30a6bd2a6b0cdf4c466daeea23d7dd"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OUTPUT_MANIFEST.json",
+      "git_blob_sha": "e1ab3ffa542ee1e1e8bd5ca820d44561ed515ab5",
+      "sha256": "ea3dedd70dab0fd27762a7eb0ff95a1ff2aa3963bcc4f6fab75966ff08f75c42"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/authority_acceptance.py",
+      "git_blob_sha": "d0be5b63b039d1ef55e138126be29cd1e016ca93",
+      "sha256": "ce44a21194523c281a6a0a54cc6848805c5d2ac6ca4808ed50c7d9effba7af07"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/TASK_BOARD.json",
+      "git_blob_sha": "c53354d70b145e3bfec68fbc628fb0a96028e5a7",
+      "sha256": "e1f82c39f727aa89db9e3ee9657af93bcb1ebb423921bde13344939f0f50c011"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+      "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a",
+      "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/APPROVED_CONTRACT.md",
+      "git_blob_sha": "b11905b113a82201b6adc40a1e38fa222872b07c",
+      "sha256": "5343ad6e188a7ad67057703f8bafade0119a04206b7168aabfb402f4f8061b1b"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/COMPLETION_RECEIPT.json",
+      "git_blob_sha": "dbc00e85d48d891932685d860627afac3eb97508",
+      "sha256": "c1dd8f9c1a1f75c3e891d9b0618cc70b7336bb742db4ee28b9d2481523ddd88d"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/AUTHORITY_ACCEPTANCE_RESULTS.json",
+      "git_blob_sha": "1b4ca783df336fba43b3e756cbcf0f60edbbc702",
+      "sha256": "6e7aaca62948a2ebb0c151bc6c580a739e1f9ef36dee6f03a91d59fee6c34509"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/INDEPENDENT_REVIEW.json",
+      "git_blob_sha": "8bc14f401a1daf366d2bfaab0834faf2210a15c5",
+      "sha256": "4ca7f4fa8dacd5544127969df6bc425f7e32aaff314e76d41b6dd2f0ec333b60"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/DECISION_REGISTER.md",
+      "git_blob_sha": "f862d5bda1a30ca82151208a4575c88b5b543573",
+      "sha256": "84675f99f5aaeb997e0439a12b8603b46e074b71513628e988a83f7e6b1486d9"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+      "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b",
+      "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758"
+    }
+  ],
+  "prior_total_checks": 193,
+  "prior_reruns": 0,
+  "scope": "Original immutable inactive audit acceptance only; not current-head CI or production acceptance",
+  "full_regression": "SKIPPED_NO_SHARED_RUNTIME_OR_METHOD_CHANGE",
+  "Actions": "NOT_RUN",
+  "real_PIT_OOS": "NOT_RUN"
+}

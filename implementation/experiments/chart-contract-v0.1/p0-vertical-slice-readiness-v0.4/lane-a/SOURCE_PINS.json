@@ -1,0 +1,475 @@
+{
+  "status": "READ_ONLY_ADDITIVE_SOURCE_EVIDENCE_NOT_PRODUCTION_ADOPTION",
+  "refs": {
+    "pr41_baseline": "581c61c4af859f6cbdc3418209bba9be7bbc76a3",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "cdr012_trial": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "pr42_fpia": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "global_handoff": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e"
+  },
+  "source_pins": [
+    {
+      "path": "QGV Portfolio · Specification v1.1.md",
+      "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+      "size_bytes": 9158,
+      "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+          "same_bytes_as_pr41": true
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+          "same_bytes_as_pr41": true
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "Investment System · Project Index.md",
+      "sha256": "b01794d447f1df6fab95143d3eb802753a87d42af62fc96928cf860145fb039f",
+      "size_bytes": 8097,
+      "git_blob": "59ad9e793d3ec089a1d1c1a4a576a32c9f054248",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "b01794d447f1df6fab95143d3eb802753a87d42af62fc96928cf860145fb039f",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "cbb1a9b8796edb398c6a09639d7fe00f862d995fbc1f946fe24d03aeb8492fd5",
+          "same_bytes_as_pr41": false
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "cbb1a9b8796edb398c6a09639d7fe00f862d995fbc1f946fe24d03aeb8492fd5",
+          "same_bytes_as_pr41": false
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "b01794d447f1df6fab95143d3eb802753a87d42af62fc96928cf860145fb039f",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "Investment-System1 · Master Status Index 2026-09-22.md",
+      "sha256": "a26164f70c9d15568ecaa47276f222ff1f1e9e8f4e51b8515fb2d27a2c845dec",
+      "size_bytes": 19147,
+      "git_blob": "35a85aa51e03925f36e9b1e1edb4bfd80f60d841",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "a26164f70c9d15568ecaa47276f222ff1f1e9e8f4e51b8515fb2d27a2c845dec",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "b133309b524a9a40a0950559b06c686e9c58645e3c6e9de44548ea9d24b1ff8c",
+          "same_bytes_as_pr41": false
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "b133309b524a9a40a0950559b06c686e9c58645e3c6e9de44548ea9d24b1ff8c",
+          "same_bytes_as_pr41": false
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "a26164f70c9d15568ecaa47276f222ff1f1e9e8f4e51b8515fb2d27a2c845dec",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "sha256": "6bd7f8a39fc69cea0bedb3323ea72e5921f1ac1773fd643ced1a08557c1490b3",
+      "size_bytes": 44885,
+      "git_blob": "e63aca909246148723fbfe9cd2528299b6138bf8",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "6bd7f8a39fc69cea0bedb3323ea72e5921f1ac1773fd643ced1a08557c1490b3",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "3e49be6bd61add53c1b278ef07ee2ccfe693a205b8d2c457cc611c276f194455",
+          "same_bytes_as_pr41": false
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "3e49be6bd61add53c1b278ef07ee2ccfe693a205b8d2c457cc611c276f194455",
+          "same_bytes_as_pr41": false
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "6bd7f8a39fc69cea0bedb3323ea72e5921f1ac1773fd643ced1a08557c1490b3",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/portfolio.py",
+      "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+      "size_bytes": 7686,
+      "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+          "same_bytes_as_pr41": true
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+          "same_bytes_as_pr41": true
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/identifiers.py",
+      "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+      "size_bytes": 3163,
+      "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+          "same_bytes_as_pr41": true
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+          "same_bytes_as_pr41": true
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/portfolio_input.py",
+      "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+      "size_bytes": 1215,
+      "git_blob": "e8363f1c1da7f5f5c94c09fd84ed61e558fb561f",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+          "same_bytes_as_pr41": true
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+          "same_bytes_as_pr41": true
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "implementation/src/investment_system/personal/portfolio.py",
+      "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+      "size_bytes": 5986,
+      "git_blob": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+          "same_bytes_as_pr41": true
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+          "same_bytes_as_pr41": true
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "5b68de0501a7db435d3b21448dc805709b40f250babd7fee1bb264dfa96909d7",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "implementation/src/investment_system/versions.py",
+      "sha256": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11",
+      "size_bytes": 616,
+      "git_blob": "a9b854b93580a7349f89a1aee13eb2eda2cf2964",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11",
+          "same_bytes_as_pr41": true
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11",
+          "same_bytes_as_pr41": true
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "ad3a90621826b1397a87056ca1374c4c306ba420292395fd56349c31e0011f11",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "implementation/src/investment_system/markets/us.py",
+      "sha256": "7c87cefacd152c59044bb6a14b4bbc7ce2ffd44ceb27daa22095b1f76ae3950b",
+      "size_bytes": 2413,
+      "git_blob": "921a99458da93c06f79e6f46421acc1aa0bb5f79",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "7c87cefacd152c59044bb6a14b4bbc7ce2ffd44ceb27daa22095b1f76ae3950b",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "7c87cefacd152c59044bb6a14b4bbc7ce2ffd44ceb27daa22095b1f76ae3950b",
+          "same_bytes_as_pr41": true
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "7c87cefacd152c59044bb6a14b4bbc7ce2ffd44ceb27daa22095b1f76ae3950b",
+          "same_bytes_as_pr41": true
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "7c87cefacd152c59044bb6a14b4bbc7ce2ffd44ceb27daa22095b1f76ae3950b",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "implementation/src/investment_system/qgv/book.py",
+      "sha256": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84",
+      "size_bytes": 2897,
+      "git_blob": "227cbc13de59731925255fd852d75c26a96509e8",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84",
+          "same_bytes_as_pr41": true
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84",
+          "same_bytes_as_pr41": true
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "implementation/src/investment_system/providers/catalog.py",
+      "sha256": "5e0326fdf1904d36904ff08bac2ab20096e1727cba17d8e657228743bf13b2f5",
+      "size_bytes": 1944,
+      "git_blob": "d185e664bc76417e7a4d94fed782ae71b9b8d56a",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "5e0326fdf1904d36904ff08bac2ab20096e1727cba17d8e657228743bf13b2f5",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "5e0326fdf1904d36904ff08bac2ab20096e1727cba17d8e657228743bf13b2f5",
+          "same_bytes_as_pr41": true
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "5e0326fdf1904d36904ff08bac2ab20096e1727cba17d8e657228743bf13b2f5",
+          "same_bytes_as_pr41": true
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "5e0326fdf1904d36904ff08bac2ab20096e1727cba17d8e657228743bf13b2f5",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "implementation/tests/test_generic_portfolio_input.py",
+      "sha256": "45b612474bd9e3fbf207a6b3b5683ceebca3a5bdb89de76a1a34a8738c99c4c4",
+      "size_bytes": 1155,
+      "git_blob": "389a332d31617f0cf6f4b733ae6975d9243fe4d8",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "45b612474bd9e3fbf207a6b3b5683ceebca3a5bdb89de76a1a34a8738c99c4c4",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "45b612474bd9e3fbf207a6b3b5683ceebca3a5bdb89de76a1a34a8738c99c4c4",
+          "same_bytes_as_pr41": true
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "45b612474bd9e3fbf207a6b3b5683ceebca3a5bdb89de76a1a34a8738c99c4c4",
+          "same_bytes_as_pr41": true
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "45b612474bd9e3fbf207a6b3b5683ceebca3a5bdb89de76a1a34a8738c99c4c4",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "implementation/tests/test_portfolio_ids.py",
+      "sha256": "ec73dde63920418ed386745d1e293293e2cb9c295d448904650824fca4a76105",
+      "size_bytes": 1083,
+      "git_blob": "df58e04d6f321b4aceb21baade125f5ce47cb0a4",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": true,
+          "sha256": "ec73dde63920418ed386745d1e293293e2cb9c295d448904650824fca4a76105",
+          "same_bytes_as_pr41": true
+        },
+        "cdr012_trial": {
+          "present": true,
+          "sha256": "ec73dde63920418ed386745d1e293293e2cb9c295d448904650824fca4a76105",
+          "same_bytes_as_pr41": true
+        },
+        "pr42_fpia": {
+          "present": true,
+          "sha256": "ec73dde63920418ed386745d1e293293e2cb9c295d448904650824fca4a76105",
+          "same_bytes_as_pr41": true
+        },
+        "global_handoff": {
+          "present": true,
+          "sha256": "ec73dde63920418ed386745d1e293293e2cb9c295d448904650824fca4a76105",
+          "same_bytes_as_pr41": true
+        }
+      }
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+      "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96",
+      "size_bytes": 4618,
+      "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": false,
+          "sha256": null,
+          "same_bytes_as_pr41": null
+        },
+        "cdr012_trial": {
+          "present": false,
+          "sha256": null,
+          "same_bytes_as_pr41": null
+        },
+        "pr42_fpia": {
+          "present": false,
+          "sha256": null,
+          "same_bytes_as_pr41": null
+        },
+        "global_handoff": {
+          "present": false,
+          "sha256": null,
+          "same_bytes_as_pr41": null
+        }
+      }
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/evidence/portfolio-reference-source.json",
+      "sha256": "a2056e061a99723dc48ab28349d4e30d461da9927588f2ed4fcc3783182537e8",
+      "size_bytes": 983,
+      "git_blob": "3928240e87a865a881788dc55c0ca33a352013d6",
+      "other_pinned_refs": {
+        "canonical": {
+          "present": false,
+          "sha256": null,
+          "same_bytes_as_pr41": null
+        },
+        "cdr012_trial": {
+          "present": false,
+          "sha256": null,
+          "same_bytes_as_pr41": null
+        },
+        "pr42_fpia": {
+          "present": false,
+          "sha256": null,
+          "same_bytes_as_pr41": null
+        },
+        "global_handoff": {
+          "present": false,
+          "sha256": null,
+          "same_bytes_as_pr41": null
+        }
+      }
+    }
+  ],
+  "scope": "Lane A Target root and Strategy Theme membership only; no runtime import or source mutation",
+  "absence_searches": [
+    {
+      "ref": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "scope": "implementation/src/**/*.py",
+      "expression": "ModelPortfolioSnapshot constructors / official_v11 / OFFICIAL_V11_TARGETS",
+      "result": "No ModelPortfolioSnapshot constructor in package source; Official runner is synthetic, official_v11 is REFERENCE_FIXTURE"
+    },
+    {
+      "ref": "581c61c4af859f6cbdc3418209bba9be7bbc76a3",
+      "scope": "implementation/src/**/*.py and implementation/tests/**/*.py",
+      "expression": "ModelPortfolioSnapshot constructors",
+      "result": "ModelPortfolioSnapshot constructed only by tests/test_pil_p0_contracts.py; class definition alone is not a source"
+    }
+  ]
+}

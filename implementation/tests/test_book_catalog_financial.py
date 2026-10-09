@@ -49,7 +49,7 @@ def test_financial_profile_marks_roic_na_and_uses_cet1():
     snap = AnalysisPipeline().analyze_raw(raw)
     assert snap.profile_kind == ProfileKind.FINANCIAL
     assert snap.Q_score is not None
-    assert snap.V_policy_status.value == "PROVISIONAL_INITIAL_PRIOR"
+    assert snap.V_policy_status.value == "STANDARD v1 · UNCALIBRATED"
 
 
 def test_official_catalog_covers_v11_book():

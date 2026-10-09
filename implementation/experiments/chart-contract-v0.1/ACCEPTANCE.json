@@ -1,0 +1,209 @@
+{
+  "date": "2026-10-04",
+  "baseline": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "scope": "OHLCV_DEMO_REAL_SOURCE_PREFLIGHT_PORTFOLIO_REFERENCE_DEMO",
+  "contract_tests": {
+    "passed": 36,
+    "failed": 0
+  },
+  "independent_adversarial_probes": {
+    "historical_passed": 6,
+    "current_review": "reviews/chart_guard_review.md",
+    "deferred": "G6 exchange-local daily label/session binding"
+  },
+  "browser_runtime": {
+    "playwright": "1.58.2",
+    "chromium_distribution": "@sparticuz/chromium@153.0.0"
+  },
+  "browser": [
+    {
+      "width": 360,
+      "result": "PASS",
+      "checks": [
+        "no-overflow",
+        "OHLC-exact",
+        "zero-vs-null-volume",
+        "crosshair-values",
+        "range",
+        "empty",
+        "blocked",
+        "restore",
+        "no-page-errors",
+        "keyboard-and-buttons",
+        "no-stale-values",
+        "contract-download"
+      ]
+    },
+    {
+      "width": 390,
+      "result": "PASS",
+      "checks": [
+        "no-overflow",
+        "OHLC-exact",
+        "zero-vs-null-volume",
+        "crosshair-values",
+        "range",
+        "empty",
+        "blocked",
+        "restore",
+        "no-page-errors",
+        "keyboard-and-buttons",
+        "no-stale-values",
+        "contract-download"
+      ]
+    },
+    {
+      "width": 1280,
+      "result": "PASS",
+      "checks": [
+        "no-overflow",
+        "OHLC-exact",
+        "zero-vs-null-volume",
+        "crosshair-values",
+        "range",
+        "empty",
+        "blocked",
+        "restore",
+        "no-page-errors",
+        "keyboard-and-buttons",
+        "no-stale-values",
+        "contract-download"
+      ]
+    }
+  ],
+  "visual_review": "390px screenshot inspected; Korean text and OHLCV chart readable",
+  "production_API": "NOT_CONNECTED; standalone source acquisition succeeded",
+  "MCP_server": "NOT_IMPLEMENTED",
+  "historical_PIT": "NOT_VERIFIED",
+  "canonical_merge": "NOT_PERFORMED",
+  "full_existing_regression": "NOT_RUN",
+  "build": {
+    "contract": "CHART_CANDIDATE/0.1",
+    "fixture": true,
+    "raw_sha256": "f2c9f37007cb607e64801d3d2fd349d8f9f5031793c9b442c44412b00f02b400",
+    "data_sha256": "d006c4947c738b618397894a0b3c27e3c237377ed3697f260f9e474300ea0925",
+    "renderer": "lightweight-charts@5.2.1",
+    "renderer_sha256": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",
+    "state": "DEMO_ONLY"
+  },
+  "previous_checkpoint": "evidence/acceptance-source-v02.json",
+  "raw_store_bridge_tests": {
+    "passed": 17,
+    "failed": 0
+  },
+  "captured_source_replay_tests": {
+    "passed": 3,
+    "failed": 0
+  },
+  "total_tests": {
+    "passed": 75,
+    "failed": 0
+  },
+  "source_capture": {
+    "provider": "yahoo-chart",
+    "scope": "SINGLE_SYMBOL_SOURCE_FEASIBILITY_ONLY",
+    "http_status": 200,
+    "point_count": 5,
+    "raw_sha256": "469e185faec7925e724efdc23546967e86f6b3ccbc3ba8d05a2767f968f722a6",
+    "acquisition_evidence": "evidence/2026-10-04-source/fetch-evidence.json",
+    "preflight": "evidence/2026-10-04-source/real-source-preflight.json",
+    "identity_binding": "BLOCKED_MISSING_SOURCED_MAPPING"
+  },
+  "canonical_raw_store_audit": "evidence/2026-10-04-source/canonical-store-summary.json",
+  "timestamp_kst": "2026-10-04T19:56:16.811607+09:00",
+  "reviewed_files_sha256": {
+    "contract.mjs": "5f10a4975dc1fe40c79171158187328bbf202043ea0a1e5a59e6ddaa5bdc7fbd",
+    "raw_store_bridge.mjs": "7d84b10835b046dfe015ce43e9dfb04f1437c734dbc6ee2f7feb4735ca3a0b05",
+    "app.js": "19c85156f4c459a41c3abc3c8bc39f33669572bbe7e17ae2f1ff2fb203028bf5",
+    "store_cli.mjs": "de643a801c2741174f16561e93d31a99b108de97ff15774eb1af53e15201b80b",
+    "browser_test.cjs": "bfa16bee52c103326655c494b2b72b2b90c7aeb8705fa63dbc0657e5df6a654b",
+    "portfolio_contract.mjs": "9c2e0d1c058e1649a67433361404e45d0dc6c4a147e730f23429f4824c988aac",
+    "portfolio_app.js": "b75f1230e224fd6d7ee93d0addc2fbc960d19431838a86bb8f2f0b138756043e",
+    "portfolio_fixture.mjs": "fe96f3dabbd605c0c4ac457beae694dff0b66230f362e57238c57020b7ed368f",
+    "portfolio_reference.json": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96",
+    "portfolio_browser_test.cjs": "3646babf09bd940ce06a841d51653e4acf3e9c758a9e4aba847c7b4ebb30f51c",
+    "inventory_app.js": "7db24343a666f4c6a99a1c86606c5fe783eb8230503bd707bdc8c2af102adaf6",
+    "chart_inventory.json": "80e081f4b16b61e7ff076c7a427a8ded538356c89a01350aa5e545fd5ba48b09"
+  },
+  "standalone_export_browser": "PASS at 360,390,1280; explicit chart scroll before crosshair coordinates",
+  "portfolio_tests": {
+    "passed": 19,
+    "failed": 0
+  },
+  "portfolio_independent_oracle": {
+    "passed_checks": 11,
+    "generated_cases_in_one_check": 40,
+    "review": "reviews/portfolio_source_review.md"
+  },
+  "portfolio_browser": [
+    {
+      "width": 360,
+      "result": "PASS",
+      "checks": [
+        "reference-19-exact-groups",
+        "no-inferred-types-or-security",
+        "fictional-105-percent",
+        "unknown-cash-denominator",
+        "exact-set-partition",
+        "three-SVGs",
+        "scope-labels",
+        "inventory-113-search-filter",
+        "reference-restore",
+        "observed-blocked",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "width": 390,
+      "result": "PASS",
+      "checks": [
+        "reference-19-exact-groups",
+        "no-inferred-types-or-security",
+        "fictional-105-percent",
+        "unknown-cash-denominator",
+        "exact-set-partition",
+        "three-SVGs",
+        "scope-labels",
+        "inventory-113-search-filter",
+        "reference-restore",
+        "observed-blocked",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "width": 1280,
+      "result": "PASS",
+      "checks": [
+        "reference-19-exact-groups",
+        "no-inferred-types-or-security",
+        "fictional-105-percent",
+        "unknown-cash-denominator",
+        "exact-set-partition",
+        "three-SVGs",
+        "scope-labels",
+        "inventory-113-search-filter",
+        "reference-restore",
+        "observed-blocked",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    }
+  ],
+  "inventory": {
+    "core": 81,
+    "additional_spec": 24,
+    "macro_candidate": 8,
+    "total": 113,
+    "unique_ids": 113,
+    "source_links_git_tree_check": "ALL_PATHS_EXIST_AT_PINNED_SHA",
+    "new_J_scope": "requirements identified; layer coverage not fully reaudited"
+  },
+  "portfolio_limits": [
+    "TARGET_REFERENCE_NOT_ACTUAL",
+    "REAL_TYPES_UNKNOWN",
+    "QUARTERLY_HISTORY_NOT_CONNECTED",
+    "PIT_NOT_VERIFIED"
+  ]
+}

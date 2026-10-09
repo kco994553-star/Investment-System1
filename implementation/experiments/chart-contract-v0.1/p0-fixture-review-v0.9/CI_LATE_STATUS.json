@@ -1,0 +1,74 @@
+{
+  "kind": "APPEND_ONLY_LATEST_EXACT_ACTIONS_OBSERVATION",
+  "observed_at_utc": "2026-10-05T05:50:48.634Z",
+  "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+  "runs": [
+    {
+      "id": 37267962000,
+      "name": "track-c-fpia",
+      "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962000"
+    },
+    {
+      "id": 37267962003,
+      "name": "qgv-invalidation-binding",
+      "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962003"
+    },
+    {
+      "id": 37267962024,
+      "name": "us-equity-session",
+      "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962024"
+    },
+    {
+      "id": 37267961987,
+      "name": "p01-research-publication",
+      "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961987"
+    },
+    {
+      "id": 37267961909,
+      "name": "sec-primary-disclosure",
+      "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961909"
+    },
+    {
+      "id": 37267962109,
+      "name": "technical-real-producer",
+      "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267962109"
+    },
+    {
+      "id": 37267961900,
+      "name": "technical-real-model",
+      "head_sha": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37267961900"
+    }
+  ],
+  "terminal_failure_count": 6,
+  "in_progress_count": 1,
+  "old213_success_applies": false,
+  "classification": "FAILED_JOB_LOG_CLASSIFICATION_PENDING_OWNER_BRANCH_UNTOUCHED"
+}

@@ -1,0 +1,591 @@
+{
+  "kind": "OFFLINE_AUDIT_REPLAY_NOT_PRODUCTION_CERTIFICATION",
+  "recorded_at_utc": "2026-10-04T23:32:26.545059+00:00",
+  "source_head": "54ee25446ccf6cfa32ddf164a8ed31b7e1036b9a",
+  "checks": {
+    "no_existing_tracked_file_changed": true,
+    "only_authorized_new_folder": true,
+    "nineteen_same_unique_symbols": true,
+    "identity_raw_hashes_19": true,
+    "basis_original_hashes_19": true,
+    "all_production_admission_blocked": true,
+    "source_structure_17_ready_2_partial": true,
+    "no_certified_historical_availability_or_quote_state": true,
+    "equal_array_lengths_NVDA": true,
+    "finite_nonnegative_volume_NVDA": true,
+    "equal_array_lengths_MSFT": true,
+    "finite_nonnegative_volume_MSFT": true,
+    "equal_array_lengths_8035.T": true,
+    "finite_nonnegative_volume_8035.T": true,
+    "equal_array_lengths_042700.KS": true,
+    "finite_nonnegative_volume_042700.KS": true,
+    "equal_array_lengths_ASML": true,
+    "finite_nonnegative_volume_ASML": true,
+    "equal_array_lengths_LRCX": true,
+    "finite_nonnegative_volume_LRCX": true,
+    "equal_array_lengths_KLAC": true,
+    "finite_nonnegative_volume_KLAC": true,
+    "equal_array_lengths_AMD": true,
+    "finite_nonnegative_volume_AMD": true,
+    "equal_array_lengths_AVGO": true,
+    "finite_nonnegative_volume_AVGO": true,
+    "equal_array_lengths_QCOM": true,
+    "finite_nonnegative_volume_QCOM": true,
+    "equal_array_lengths_INTC": true,
+    "finite_nonnegative_volume_INTC": true,
+    "equal_array_lengths_GOOGL": true,
+    "finite_nonnegative_volume_GOOGL": true,
+    "equal_array_lengths_AMZN": true,
+    "finite_nonnegative_volume_AMZN": true,
+    "equal_array_lengths_RTX": true,
+    "finite_nonnegative_volume_RTX": true,
+    "equal_array_lengths_SYK": true,
+    "finite_nonnegative_volume_SYK": true,
+    "equal_array_lengths_ETN": true,
+    "finite_nonnegative_volume_ETN": true,
+    "equal_array_lengths_HUBB": true,
+    "finite_nonnegative_volume_HUBB": true,
+    "equal_array_lengths_GEV": true,
+    "finite_nonnegative_volume_GEV": true,
+    "equal_array_lengths_ROK": true,
+    "finite_nonnegative_volume_ROK": true,
+    "raw_rows_missing_envelope_counts": true,
+    "five_exact_anomaly_records": true,
+    "anomaly_exact_tokens_PR41-RAW-8035.T-2022-05-17": true,
+    "anomaly_exact_tokens_PR41-RAW-042700.KS-2024-01-15": true,
+    "anomaly_exact_tokens_PR41-RAW-042700.KS-2024-10-14": true,
+    "anomaly_exact_tokens_PR41-RAW-042700.KS-2025-04-09": true,
+    "anomaly_exact_tokens_PR41-RAW-042700.KS-2025-09-19": true,
+    "comparison_ohlcv_unchanged": true,
+    "adjclose_10862_exact_differences": true,
+    "actions_283_dividend_9_split_candidates": true,
+    "preserved_19_reference_rows_theme_partition": true,
+    "reference_no_inferred_security_or_types": true,
+    "requirements_81_24_8": true,
+    "all_pinned_source_bytes_match": true,
+    "no_compiled_python_artifacts": true,
+    "new_python_only_nonpackage_audit": true,
+    "all_new_json_parses": true,
+    "relative_link_market-identity-time/MARKET_IDENTITY_TIME_AUDIT_v0.3.md": true,
+    "relative_link_market-identity-time/MARKET19_IDENTITY_TIME_READINESS.json": true,
+    "relative_link_market-basis-anomalies/MARKET_BASIS_AND_ANOMALY_AUDIT_v0.3.md": true,
+    "relative_link_market-basis-anomalies/MARKET_BASIS_READINESS_19_v0.3.json": true,
+    "relative_link_market-basis-anomalies/IMMUTABLE_RAW_ANOMALIES_v0.3.json": true,
+    "relative_link_gics/GICS_FEASIBILITY_AUDIT_v0.3.md": true,
+    "relative_link_gics/SOURCE_REGISTER.json": true,
+    "relative_link_CHARTDOCUMENT_v0.2_PROPOSAL.md": true,
+    "relative_link_contract-integration/FPIA_FRESH_READ_EVIDENCE.json": true,
+    "relative_link_contract-integration/CHARTDOCUMENT_V02_CANDIDATE_AND_FPIA_REVIEW_v0.3.md": true,
+    "relative_link_portfolio-architecture/PORTFOLIO_CLASSIFICATION_ARCHITECTURE_v0.3.md": true
+  },
+  "summary": {
+    "raw_rows": 23155,
+    "missing": 1,
+    "ohlc_envelope_failures": 4,
+    "adjclose_exact_cross_request_differences": 10862,
+    "requirements": {
+      "core": 81,
+      "extended": 24,
+      "research_candidate": 8
+    }
+  },
+  "immutable_new_artifact_manifest": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/CHARTDOCUMENT_v0.2_PROPOSAL.md",
+      "bytes": 8032,
+      "sha256": "57f45dacb5ebe16ba964920cb61275359d621d427e44c1fd734ff88767682609"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/GITHUB_FRESH_READ_CHECKPOINT.json",
+      "bytes": 3492,
+      "sha256": "7f01bb13ddb8da6539ead2c0497bdec59f6fa372383dd8a96545e16fa83fa2bf"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/P0_MARKET_AND_PORTFOLIO_CLASSIFICATION_REVIEW_v0.3.md",
+      "bytes": 29809,
+      "sha256": "a36d4af198d14ff20bb54974c41816ed53227fd046f6924f2aac35ecd35570dc"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/contract-integration/CHARTDOCUMENT_V02_CANDIDATE_AND_FPIA_REVIEW_v0.3.md",
+      "bytes": 20339,
+      "sha256": "029a4dc00d4b6bc5c45ef760b6c033fd791f72f95b9bf2ce9c9e61e00ce39137"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/contract-integration/FPIA_FRESH_READ_EVIDENCE.json",
+      "bytes": 8440,
+      "sha256": "8842a0baf9fd4fbdac7949a81e5429c9a6df8bfa131dc9e8dd74c7f0086f18f1"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/contract-integration/PROTECTED_IMPACT_READONLY_PROOF.json",
+      "bytes": 842,
+      "sha256": "f27cc3c0e9b84abcff4bee6292cfb6424e9b059409b34b839dda75750096b190"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/gics/BOUNDED_EXCERPTS.json",
+      "bytes": 1210,
+      "sha256": "19e31d5d078db858439613acab20a29ba4bf053b66d8a41e8eadd7903e7a3427"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/gics/GICS_FEASIBILITY_AUDIT_v0.3.md",
+      "bytes": 10575,
+      "sha256": "1aa828c213e2399f7b8bfc7cb78b83b83470428da6eddb05bf0e6cbc799b23cd"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/gics/REPOSITORY_EVIDENCE.json",
+      "bytes": 3163,
+      "sha256": "7db45fadbe2e7b3e9e277be7db5b17e73f27cff491ec8944dccf06bcf5c5ebee"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/gics/SHA256SUMS.json",
+      "bytes": 1027,
+      "sha256": "ef87a70c7769a0b3ce7ce83451236a33daf4fe8cc2bd43e570abaaf5dfde3cf6"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/gics/SOURCE_REGISTER.json",
+      "bytes": 9360,
+      "sha256": "579b8f0de614a007dae6e8889a063bd21b891bf059344df4cd51daf9d23f0177"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/ACTION_ACQUISITION_PROBES_v0.3.json",
+      "bytes": 52439,
+      "sha256": "f0457cfbac1ab46682ff945ab69acde799bb63bbf6a1b4412f35d71a9d14c393"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/BASIS_ACTION_PRIMARY_SOURCE_REVIEW_v0.3.json",
+      "bytes": 5983,
+      "sha256": "8adbcbb44f6a56d3f139e7346501d07e788c806fc0b8735d05e5dbe4a305d0dd"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/CURRENT_ACTION_EVENT_CANDIDATES_v0.3.json",
+      "bytes": 275711,
+      "sha256": "27285a0a091a6ceb430b3a0af5eafcc72f19d5a4205f4498f70a11e0afb4c6d3"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/IMMUTABLE_RAW_ANOMALIES_v0.3.json",
+      "bytes": 14791,
+      "sha256": "e1dd4946719c5a8a0c8cde313490d7e9fa94998709881b00744411d03b1b5202"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/INDEPENDENT_SCOPED_VERIFICATION_v0.3.json",
+      "bytes": 10210,
+      "sha256": "d41e33788a66a0e5bc2228e717153c9bad63d0230ee4f85921db236533984bc3"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/MARKET_BASIS_AND_ANOMALY_AUDIT_v0.3.md",
+      "bytes": 15025,
+      "sha256": "46958abe484255f83f6b9ce9ae58f1d69a0a9d4c921974772eac5f7fa3dbd400"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/MARKET_BASIS_READINESS_19_v0.3.json",
+      "bytes": 33348,
+      "sha256": "54cec9431b2944b37896f105e4acf96fcca12c104d0448b04edac615e64cd037"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/PRIMARY_SOURCE_CAPTURES_v0.3.json",
+      "bytes": 3494,
+      "sha256": "342e10d5cda35edeb13672a056f844fb655f7bacb32c949403af2515f41df136"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/SOURCE_FIELD_COMPLETENESS_AND_DIFFERENCE_AMPLITUDE_v0.3.json",
+      "bytes": 39656,
+      "sha256": "11a9d84e1253221f396a52ea29276538a70f0cb0546645db2e4774ef5e4c1d71"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/TWO_OBSERVATIONS_COMPARISON_v0.3.json",
+      "bytes": 182670,
+      "sha256": "28bff2b6e046066828fc9088a4bdad4a9c0962c979183c317f360c568467fc1b"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_042700_KS_5y_daily_original.json",
+      "bytes": 81334,
+      "sha256": "1507040662625575f77795fb58b42aa8144e1239f8d65a80c34e25cbc7d472f7"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_8035_T_5y_daily_original.json",
+      "bytes": 91429,
+      "sha256": "5c28080bb3df05447770736134f3f6eb12032c018314555f8dcf578af26d300e"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_AMD_5y_daily_original.json",
+      "bytes": 136966,
+      "sha256": "fa42d22024a7d12ead175fa3f533490105079a37f691414def0325a3b08a6640"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_AMZN_5y_daily_original.json",
+      "bytes": 138111,
+      "sha256": "7d40f82064c9eb866ff77a416cd0dfe728163b4944bbd5a52fe2b4334ef1424b"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_ASML_5y_daily_original.json",
+      "bytes": 131662,
+      "sha256": "cfee779daa993b05d1d7564761bb699e369af5dc4ec755a7402d317bedf7718b"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_AVGO_5y_daily_original.json",
+      "bytes": 138544,
+      "sha256": "19dcc74e944c19ab30d8c811d4f200d82ce9f0c1bc21fb27859953f605e57a64"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_ETN_5y_daily_original.json",
+      "bytes": 136219,
+      "sha256": "e8986211102f61706e6dbd0ebb5b88a2e1896191af3cb865b23677c86e3d49f6"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_GEV_5y_daily_original.json",
+      "bytes": 64900,
+      "sha256": "aab5b143bc12840c9112468f64913c61cf226201825493b76f428253d590bff5"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_GOOGL_5y_daily_original.json",
+      "bytes": 139164,
+      "sha256": "feda2445194be033e220fa582273838f71fbe1440589aa8181dfa0f570bc9b60"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_HUBB_5y_daily_original.json",
+      "bytes": 135794,
+      "sha256": "4fbf0be807b4e6eda8dd404d1a7e999286c738279c08e18204570942bb4650af"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_INTC_5y_daily_original.json",
+      "bytes": 139055,
+      "sha256": "beafdc0a2367313830092c06b02e1cbb39b3b79dc55cec7cfe5299f0e1088bfc"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_KLAC_5y_daily_original.json",
+      "bytes": 138344,
+      "sha256": "9f8d18f314b04f2d3c61347ded0c758261c56aedf1c3bf55454df6c7fb829e32"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_LRCX_5y_daily_original.json",
+      "bytes": 137391,
+      "sha256": "564c28d75b4421705bfa7a6dbbbe9af7e65cf732f5d854f30e539ce70ea71dc0"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_MSFT_5y_daily_original.json",
+      "bytes": 137156,
+      "sha256": "1928d912a1ce75fce225e5538b9bd009a1e6ad970f0c7d9a551352e44069842f"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_NVDA_5y_daily_original.json",
+      "bytes": 142207,
+      "sha256": "80873407159273f90cfc7100c65c52e4cc5835adb7ca7e9d336e99390bc97435"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_QCOM_5y_daily_original.json",
+      "bytes": 139409,
+      "sha256": "092d0e53dae91ff8782284bf25c99f3b2c3b8b1cf88c6c3269f2f71fd1dd92db"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_ROK_5y_daily_original.json",
+      "bytes": 134610,
+      "sha256": "0bb0ebaaa623cac282cff9f6f749f7c8190e4e293368d6625b9d84a6424a530c"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_RTX_5y_daily_original.json",
+      "bytes": 136064,
+      "sha256": "f09cd1c4bc0949718e1969d5480025e502a8576965f79f79cb17c8439c86c4d6"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/actions_SYK_5y_daily_original.json",
+      "bytes": 134884,
+      "sha256": "a3ec56e97d75caf31b502bf0da90cb4c98419b0ebe1805dd450af8fadae127e2"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/capture_actions_audit.py",
+      "bytes": 2908,
+      "sha256": "8d84e19da9cfa63e24c7d85846d46b3f83c20a6771c28b89f98586c31f1ffa12"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/capture_primary_basis_audit.py",
+      "bytes": 2168,
+      "sha256": "225c8f108bbc20ecb2f412de0e0eace631a65e435ced623c97e5bef243315cf3"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/derive_basis_anomaly_audit.py",
+      "bytes": 8980,
+      "sha256": "9e92d9df44609da32bf89b69a34359537545cac1da5f8b480a00d4bab0751a3f"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/ADDITIONAL_SOURCE_ACQUISITION.json",
+      "bytes": 7509,
+      "sha256": "8cdd77569a97cdabe5f1e742e597d3d9d701c073c0a6c1f0670e909b47a25030"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/AUDIT_VERIFICATION.json",
+      "bytes": 2913,
+      "sha256": "5b94ba0361e9758fe28e38b1e2e8593338045159acd7219e014f79681560de64"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/MARKET19_IDENTITY_TIME_READINESS.json",
+      "bytes": 352034,
+      "sha256": "ec7ea7b94056591cc52e7735d1d66d901c90debf7b177a3c050ef829e8ef8425"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/MARKET_IDENTITY_TIME_AUDIT_v0.3.md",
+      "bytes": 14875,
+      "sha256": "f40dd182fb3d09ded098526ca5ae96ade7c8890a655a7d2de0017053c8b1e913"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/OFFICIAL_SOURCE_ACQUISITION.json",
+      "bytes": 7301,
+      "sha256": "5324b02c24d864cdc72536af886635dcf89befe5b97ca4072a159114391e4feb"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/SESSION_EXCEPTION_SOURCE_ACQUISITION.json",
+      "bytes": 616,
+      "sha256": "d01003b3d040f6059f9823d2b9322c1e54ff1d2342f8c07c2315a6e0afafac24"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/SHARE_FORM_SOURCE_ACQUISITION.json",
+      "bytes": 590,
+      "sha256": "fa39d98065805fd6f05479b74ae3674027d4c991950f83504c9d0eb118438193"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/SOURCE_PIN_REPLAY.json",
+      "bytes": 3886,
+      "sha256": "184083062c05093dd1efc13e97a5744d4c18a149c584b692fbb113913f076899"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/TIMESTAMP_AND_LISTING_COUNTEREXAMPLES.json",
+      "bytes": 2256,
+      "sha256": "8777f6d43f832b30f84b618a31305d35d412670192134e84e3899863dc8c64be"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/asml_share_form_extracted.txt",
+      "bytes": 8674,
+      "sha256": "2954657228eb5e2911dd97b7ad5a5cbcfe61f4e5c553c274771547959720b832"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/asml_share_form_original.html",
+      "bytes": 66032,
+      "sha256": "96d96ae1c42958ea81cc78cd9bf3def5eeeb78873a607c1b802401b9220a1add"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/gev_regular_way_extracted.txt",
+      "bytes": 12472,
+      "sha256": "bfb9c12e8dcf4d1f0cba30a3256c3862d6b588786932a23f212b2154c332ecc7"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/gev_regular_way_original.html",
+      "bytes": 94111,
+      "sha256": "1208437633fe54ed14c18cee8616b4b888bcba3c1af2d38cd81f9ddcaa1946f6"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/gev_when_issued_extracted.txt",
+      "bytes": 11246,
+      "sha256": "00f83884f535a160b839f6fa22e5a58d37698fcbb0cdf9cb73a8ff42f223870f"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/gev_when_issued_original.html",
+      "bytes": 86142,
+      "sha256": "f1d4997fc37093db28cbe3893b496d94253579dc84ad0207ac35a97c63b1f147"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/hanmi_dart_identity_extracted.txt",
+      "bytes": 516,
+      "sha256": "c49b23f043e4063fe542fe230517ce614fac61aa4853f2fe133371109562d16f"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/hanmi_dart_identity_original.html",
+      "bytes": 2473,
+      "sha256": "f4be1952a59d797f2ae9371452864fcda81a3c8dfebc92c49c6b22e107a5d9da"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/jpx_2024_actual_go_live_extracted.txt",
+      "bytes": 1474,
+      "sha256": "7cdb0ba36049ff0256c0ed41bf496592ab6dfe84e949f24eb451f1c9e4d85b59"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/jpx_2024_actual_go_live_original.pdf",
+      "bytes": 108637,
+      "sha256": "947fdca57cd852ea9eaf5f6d131d18c54704373ff0d1e210d6a9a41642197d5b"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/jpx_calendar_extracted.txt",
+      "bytes": 3570,
+      "sha256": "035a4859451fbf50598878441b75eea441da924ad4f3087e5e06aaf6b209fa2e"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/jpx_calendar_original.html",
+      "bytes": 33103,
+      "sha256": "32c6d13a925aff109c135947f2e809b5b9de1ae3d4dfb77b876f4a05d809090a"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/jpx_hours_extracted.txt",
+      "bytes": 2699,
+      "sha256": "ddc1a8e8f52d2f5073e5aecb801dd345d5cfbc9103bae29d3d3fffce3780f770"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/jpx_hours_original.html",
+      "bytes": 28916,
+      "sha256": "d0226641b1555a76675d89c85655cd5a706807df1a379e6c007620655220b386"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/krx_kospi_csat_2025_extracted.txt",
+      "bytes": 1711,
+      "sha256": "145f58234a796045863b0ca77933029fa799eb691e8d33e6f1ab8501382744ff"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/krx_kospi_csat_2025_original.html",
+      "bytes": 9072,
+      "sha256": "f34bd2f0873506c767e4a1985c9885b0be0920bf564564d87460f61b5395df3d"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/krx_stock_hours_extracted.txt",
+      "bytes": 2620,
+      "sha256": "627077e58c053586de9fd2ee0f16e8215aab7469c837450e9f5d6047c15ed12e"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/krx_stock_hours_original.html",
+      "bytes": 4654,
+      "sha256": "beccdf071e36ca2d8cd2313fd0de3363760480f0e312c0f3dca80b3ea5153266"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_calendar_2021_extracted.txt",
+      "bytes": 4700,
+      "sha256": "ba8cb6183c3449e685f5dc2ecb5cb2041a3890ea0709da30615c3170fe56d756"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_calendar_2021_original.pdf",
+      "bytes": 86671,
+      "sha256": "cb79aa6a25698c658027cc6decdfcfd05ad35a8f39b5bc2a28d612918cd060a8"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_calendar_2022_extracted.txt",
+      "bytes": 4575,
+      "sha256": "cad569d0e3cf9b2650225e1f2e11450090f4940a0c64ef917875f2a22a4cc989"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_calendar_2022_original.pdf",
+      "bytes": 120950,
+      "sha256": "c886ec149e38d2cc84f33355c600d59d946a270fce6054323df147b4dd50b6ce"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_calendar_2023_extracted.txt",
+      "bytes": 4921,
+      "sha256": "571cad292dbbafd43e3c26b1ae4fad79b04cb6637a01cdfa98269e5589b5e711"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_calendar_2023_original.pdf",
+      "bytes": 274749,
+      "sha256": "3781aa7ec98e429b39c9b1cbdb3677043b8ba622084b8c9d5e10fd7836d9a13b"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_calendar_2024_extracted.txt",
+      "bytes": 4722,
+      "sha256": "b0e463babe298fb593d0381108752edad533642f976fd91d8683d80805e90df3"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_calendar_2024_original.pdf",
+      "bytes": 105969,
+      "sha256": "5a417265c706abe1e2eaa24e0c1fde1787e79fdd472eca105466a019f8ff1101"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_calendar_2025_extracted.txt",
+      "bytes": 4792,
+      "sha256": "c71447e93de9d1c2ac94dc11b1597a3fa101e44b6bf02af45403dec6bf135a5a"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_calendar_2025_original.pdf",
+      "bytes": 146717,
+      "sha256": "fb761082d449ef76461d2ca8448ccebb79862a0acd124fad2e914469c9086037"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_carter_2025_closure_extracted.txt",
+      "bytes": 6213,
+      "sha256": "c1d90e9bc0e59524958799c1053a501fc06c9f98b4684bdb46b816abe3fd1185"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_carter_2025_closure_original.html",
+      "bytes": 57795,
+      "sha256": "9da82e1d84978c95f4805003cafc42bb917a654cd88159fa021a60ccbe9b4e9f"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_system_hours_extracted.txt",
+      "bytes": 2605,
+      "sha256": "7ee136afd13db4ff385dfb0ac4b492dfff12bd482640bd93198cf1b115e16a67"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaq_system_hours_original.pdf",
+      "bytes": 36023,
+      "sha256": "7f2bbf723729c2465711b26a26937a35b78dbf9b8f638b3843c47fd12cc361f8"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaqtrader_calendar_extracted.txt",
+      "bytes": 6979,
+      "sha256": "09670059bc783f3d7621def2821fdd7eed5524bfc2c2bcf4b7fc04d5eea7276b"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nasdaqtrader_calendar_original.html",
+      "bytes": 54628,
+      "sha256": "c51f8a88d28eac9b8105e1b7f64d27a32441b31d5d3d7f048cd04f010ff52afe"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nyse_hours_calendar_extracted.txt",
+      "bytes": 6393,
+      "sha256": "2c0d5ac2bb78e9cf00855425237c5be8f18bc78ad63652ccc688a9d77487fe2b"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/nyse_hours_calendar_original.html",
+      "bytes": 109229,
+      "sha256": "79602f7be5a8f1d39c2b1cac4dd02c4c07f18cf9f92d70602834069154719bad"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/sec_association_documentation_extracted.txt",
+      "bytes": 14460,
+      "sha256": "ec678a0377f4052baaf798e2a7060c0ff14899c5b2da63275b5ff3a3952a665b"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/sec_association_documentation_original.html",
+      "bytes": 80344,
+      "sha256": "76c4a04108b40b6c199f47e99f5726f62fc163709871adcfd4e5cd165a52b7e5"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/sec_tickers_exchange_original.json",
+      "bytes": 523512,
+      "sha256": "2df6dbed748a66dfbb6ed403e1e88b4d7b5590e61188ea74d5548d0f8aec09c1"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/tel_stock_info_extracted.txt",
+      "bytes": 3525,
+      "sha256": "bbac3d057fc1b4568e4b035c05aa7350de4daea2a85c30594b0eb33f5fc5b599"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/tel_stock_info_original.html",
+      "bytes": 37852,
+      "sha256": "e5220d8728e803236c4ca7450bf58207ae8384f34a00922ec73ebc14f740b9c7"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/yahoo_exchange_delay_extracted.txt",
+      "bytes": 13114,
+      "sha256": "be5be5a367e369981036f69e8441ef68e7d28888489a2e41721c7460f09dd62c"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/yahoo_exchange_delay_original.html",
+      "bytes": 157780,
+      "sha256": "c75f149489afac56eff4bea4aaad38d0bbc46ed9af9ccac12702d749e3bca667"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/portfolio-architecture/EVIDENCE.json",
+      "bytes": 9258,
+      "sha256": "81d0ca0ad0b6fc564e7e425e22c294aa7e0eec27ac313c7df286b810480537ad"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/portfolio-architecture/PORTFOLIO_CLASSIFICATION_ARCHITECTURE_v0.3.md",
+      "bytes": 20526,
+      "sha256": "79e21cb887b6b8577735c909b225b89b982cffb973ab7754423e000e708a2ac5"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/verify_checkpoint.py",
+      "bytes": 7268,
+      "sha256": "f40419f2cfb3992bc5d6283d2f945c226ecf96bb447f4d7e9a955da8985a9235"
+    }
+  ],
+  "manifest_scope": "All completed checkpoint artifacts except this newly created receipt itself; no self-hash.",
+  "production_tests": "NOT_RUN",
+  "chart_fpia": "NOT_RUN",
+  "runtime_imports": false,
+  "canonical_merge": false,
+  "grant": false,
+  "official_live_promotion": false
+}

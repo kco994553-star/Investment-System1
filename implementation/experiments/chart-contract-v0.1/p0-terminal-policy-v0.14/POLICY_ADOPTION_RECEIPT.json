@@ -1,0 +1,53 @@
+{
+  "classification": "D1_EXPLICIT_EXISTING_ADOPTION",
+  "decision": "Consume adopted CDR024 v1.1; replace scoped stale v1.0 effective policy pointers while preserving old evidence/history.",
+  "authority": {
+    "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+    "branch": "integration/global-handoff-v1",
+    "head": "1596649912554116196c1ad3c1d41797219f5241",
+    "git_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+    "sha256": "e193544159babd5ccb7d74671d9925fa6fd4de406a0e215cda1b08b2264dba3b"
+  },
+  "adopted_file_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+  "guard_register": {
+    "path": "implementation/docs/coordination/governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md",
+    "branch": "integration/global-handoff-v1",
+    "head": "1596649912554116196c1ad3c1d41797219f5241",
+    "git_blob": "1018ff50fc8e624be3b1c9ab403337a4dfc9bb02",
+    "sha256": "e091014187f28f49a793199a444842db002341f3218a093bfdb8760edbff4ead"
+  },
+  "reclassification": {
+    "path": "implementation/docs/coordination/governance/PENDING_D3_RECLASSIFICATION_v1.1.md",
+    "branch": "integration/global-handoff-v1",
+    "head": "1596649912554116196c1ad3c1d41797219f5241",
+    "git_blob": "a556817d4819ed2ec06823a7721927f6f330b975",
+    "sha256": "b2a1e54c8b507b7d70f5eb1b3036058d7b96fe48e2d73b8a63beb421bb543d30"
+  },
+  "semantic_delta": "NONE",
+  "new_D3_A_executed": 0,
+  "new_D3_R_request": false,
+  "cross_work_change": false,
+  "protected_semantic_change": false,
+  "operating_values": {
+    "max_tasks": 5,
+    "lease_ttl_hours": 2,
+    "repair_cap": 3,
+    "d3_a_digest_decisions": 10,
+    "d3_a_digest_max_days": 7,
+    "same_contract_cap": 5,
+    "veto_hours": 72,
+    "chain_depth": 3
+  },
+  "current_execution": "USER_OBSERVED_SESSION_ALLOWED",
+  "unattended": "DISABLED_PENDING_GATE_A",
+  "guards": "HG01/HG02/HG03 NOT_VERIFIED; do not claim prompt=hard guard",
+  "pending_Chart_D3": "No concrete new decision; missing source/owner evidence WAIT_DEPENDENCY (RD3-10), FPIA admissibility RD3-09",
+  "Product_question": "Reuse routed P01 applicability A/B/C; missing answer OWNER_ACTION_REQUIRED; creating research grant is distinct reserved RD3-06 and not requested here",
+  "alternatives": [
+    "Use actual adopted policy, conservative scoped read-only watcher",
+    "Rejected: infer RUN from historical enabled prompt or fabricate owner/grant/governance acceptance"
+  ],
+  "rollback": "Scoped metadata/overlay reversible; history preserved; old task prompts retained by prior immutable receipts; no external paid/production side effects",
+  "verification": "VALIDATION_RECEIPT.json; live task readback exact, source identity + CI API consistency; no financial computation changes",
+  "boundary": "Own Chart experiment branch only; Global/Main guards/canonical/other-owner protected code read-only"
+}

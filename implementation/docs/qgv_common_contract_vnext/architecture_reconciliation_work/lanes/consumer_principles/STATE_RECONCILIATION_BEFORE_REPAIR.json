@@ -1,0 +1,21 @@
+{
+  "state": "FINDING",
+  "previous_current_completion": {
+    "task_id": "BOUND_G_C_SHARED_LOCAL_SCOPE_FIXTURE",
+    "task_fingerprint": "0a6f01b60afad4bca0f4f8a031d07debfea47df0b3b1982528902f0dd0b7ada6",
+    "status": "COMPLETED_ACCEPTED_INACTIVE_EVIDENCE_ONLY",
+    "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/execution_loop/COMPLETION_RECEIPT.json",
+    "new_distinct_checks": 30,
+    "bounded_acceptance_closed": 1,
+    "production_blockers_closed": 0,
+    "production_enabled": false,
+    "scheduler_hops": 0,
+    "next_task": "Fresh-read material owner/source/decision change; no synthetic third task",
+    "receipt_sha256": "6fc395c8d65e913c7fdac9cafaf0a99b24de8d5437d5e677e59771dc228afd5d",
+    "output_manifest_sha256": "b084ae4790959ae2040f61412052952fcf611cd7ab1fa9a5d7a53977f370466d"
+  },
+  "previous_control_sha256": "131b90e405a515244cdecfc50376f417a767b519ec76430db15fc580f99665ba",
+  "finding": "Current completion referred to historical fixture",
+  "repair": "New exact receipt reference, old completion preserved in checkpoint_history",
+  "history_preserved": true
+}

@@ -1,0 +1,55 @@
+{
+  "inspection": "READ_ONLY_RECONSTRUCTION_FROM_FRESH_GITHUB_RAW_TEXT_NOT_P01_TEST_OR_FPIA",
+  "subject": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "p01_seven_file_digest": "e6de46714f4405b52d4b25a418cc4081ff6df9d8891f332f59cc47e5ccc6c909",
+  "expected_c28_adopted_digest": "e6de46714f4405b52d4b25a418cc4081ff6df9d8891f332f59cc47e5ccc6c909",
+  "digest_matches_expected": true,
+  "files": [
+    {
+      "path": "qgv/pipeline.py",
+      "source_sha": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "bytes": 2310,
+      "sha256": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4"
+    },
+    {
+      "path": "qgv/leaderboard.py",
+      "source_sha": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "bytes": 2270,
+      "sha256": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248"
+    },
+    {
+      "path": "qgv/book.py",
+      "source_sha": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "bytes": 2897,
+      "sha256": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84"
+    },
+    {
+      "path": "technical/engine.py",
+      "source_sha": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "bytes": 3312,
+      "sha256": "86607bf7004804b923f50cda1db7dbffaf4dd782002a7e0f56ca3c95be625c2c"
+    },
+    {
+      "path": "macro/engine.py",
+      "source_sha": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "bytes": 2194,
+      "sha256": "a0a7c983bebd098aeb8bed81095d849c5bec2dbfd18233408b6ba8929573ee10"
+    },
+    {
+      "path": "product/web_mvp.py",
+      "source_sha": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "bytes": 7517,
+      "sha256": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323"
+    },
+    {
+      "path": "producers/assembler.py",
+      "source_sha": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "bytes": 5110,
+      "sha256": "c427daddcb4cfff002c8f4c77a6c0d66ca8c9ebb7087d40fd454761181f1c877"
+    }
+  ],
+  "track_c_hash_rule": "sha256(concat(sorted(path_relative_to_investment_system) UTF8 + NUL + raw bytes) for every package *.py recursively)",
+  "whole_package_code_hash_recomputed": false,
+  "historical_v03_proof_at_same_subject": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/contract-integration/PROTECTED_IMPACT_READONLY_PROOF.json",
+  "production_files_modified": false
+}

@@ -1,0 +1,552 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:investment-system1:qgv-common-contract-vnext:inactive:0.1",
+  "title": "INACTIVE QGV audit-sidecar schema; never a runtime evaluation request",
+  "$defs": {
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256",
+        "locator"
+      ]
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "metric_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "raw_value": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "period_start": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "period_end": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            },
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "available_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "vintage_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "value_state": {
+          "enum": [
+            "PRESENT",
+            "ABSENT",
+            "UNASSESSED"
+          ]
+        },
+        "applicability": {
+          "enum": [
+            "APPLICABLE",
+            "NOT_APPLICABLE",
+            "UNASSESSED"
+          ]
+        },
+        "legacy_quality": {
+          "enum": [
+            "OK",
+            "MISSING_DATA",
+            "STALE_DATA",
+            "ESTIMATED_DATA",
+            "CONFLICTING_SOURCE",
+            "PIT_UNAVAILABLE",
+            "VERSION_MISMATCH",
+            "IDENTIFIER_CHANGED",
+            "CALCULATION_ERROR",
+            "BLOCKED_DEPENDENCY",
+            "NOT_APPLICABLE",
+            "SYNTHETIC",
+            "IDENTIFIER_AMBIGUOUS",
+            null
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "normalized_value": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "normalization_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "metric_id",
+        "raw_value",
+        "unit",
+        "period_start",
+        "period_end",
+        "available_at",
+        "source_ref",
+        "vintage_ref",
+        "value_state",
+        "applicability",
+        "legacy_quality",
+        "reason_codes",
+        "normalized_value",
+        "normalization_ref"
+      ]
+    },
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "assessment": {
+          "enum": [
+            "UNASSESSED",
+            "ASSESSED"
+          ]
+        },
+        "level": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "assessment",
+        "level",
+        "method_ref",
+        "evidence_refs",
+        "reason_codes"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "assessment": {
+                "const": "UNASSESSED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "level": {
+                "type": "null"
+              },
+              "method_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "assessment": {
+                "const": "ASSESSED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "method_ref": {
+                "$ref": "#/$defs/ref"
+              }
+            },
+            "required": [
+              "method_ref"
+            ]
+          }
+        }
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "assessment": {
+          "enum": [
+            "UNASSESSED",
+            "ASSESSED"
+          ]
+        },
+        "legacy_state": {
+          "enum": [
+            "READY",
+            "PARTIAL",
+            "BLOCKED",
+            "SYNTHETIC",
+            null
+          ]
+        },
+        "numerator": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "denominator": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "ratio": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "method_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "assessment",
+        "legacy_state",
+        "numerator",
+        "denominator",
+        "ratio",
+        "method_ref",
+        "reason_codes"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "assessment": {
+                "const": "UNASSESSED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "numerator": {
+                "type": "null"
+              },
+              "denominator": {
+                "type": "null"
+              },
+              "ratio": {
+                "type": "null"
+              },
+              "method_ref": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "assessment": {
+                "const": "ASSESSED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "method_ref": {
+                "$ref": "#/$defs/ref"
+              }
+            },
+            "required": [
+              "method_ref"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "QGV_COMMON_CONTRACT_VNEXT_0.1"
+    },
+    "status": {
+      "const": "INACTIVE_SPEC_ONLY"
+    },
+    "runtime_enabled": {
+      "const": false
+    },
+    "subject_ref": {
+      "$ref": "#/$defs/ref"
+    },
+    "as_of": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decision_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "calculated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "calculation_ref": {
+      "$ref": "#/$defs/ref"
+    },
+    "legacy_snapshot_ref": {
+      "$ref": "#/$defs/ref"
+    },
+    "config_binding_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "namespace": {
+      "enum": [
+        "OFFICIAL",
+        "CUSTOM_ACTIVE",
+        "SANDBOX",
+        "PREVIEW",
+        "BACKTEST",
+        "FORWARD"
+      ]
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/input"
+      }
+    },
+    "factor_ref": {
+      "$ref": "#/$defs/ref"
+    },
+    "weight_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "aggregation_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "legacy_score": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "legacy_score_scale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "confidence": {
+      "$ref": "#/$defs/confidence"
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "pit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "UNASSESSED",
+            "ELIGIBLE",
+            "INELIGIBLE"
+          ]
+        },
+        "policy_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "status",
+        "policy_ref",
+        "reason_codes"
+      ]
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "contract_id",
+    "status",
+    "runtime_enabled",
+    "subject_ref",
+    "as_of",
+    "decision_time",
+    "calculated_at",
+    "calculation_ref",
+    "legacy_snapshot_ref",
+    "config_binding_ref",
+    "namespace",
+    "inputs",
+    "factor_ref",
+    "weight_ref",
+    "aggregation_ref",
+    "legacy_score",
+    "legacy_score_scale",
+    "confidence",
+    "coverage",
+    "pit",
+    "limitations"
+  ]
+}

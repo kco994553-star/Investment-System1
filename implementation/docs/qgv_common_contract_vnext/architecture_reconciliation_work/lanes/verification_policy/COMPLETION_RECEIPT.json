@@ -1,0 +1,136 @@
+{
+  "task_id": "RISK_PROPORTIONAL_VERIFICATION_POLICY_V1",
+  "policy_id": "QGV-RISK-PROPORTIONAL-VERIFICATION-2026-10-05",
+  "status": "COMPLETED_TARGETED_POLICY_AND_CONFIGURATION_READBACK_PASS",
+  "disposition": "PASS",
+  "task_fingerprint": "55f45c68ff8ce4d595c494478dbeda068f02260a21e92db34f944dd802e1fece",
+  "input_review_head": "cba198e77370ccb214956015aa7cc490e73307ac",
+  "input_review_tree": "3fee4d4e89095592141d0aa4d8ba4981cd6b2986",
+  "policy_claim_head": "dc2dce6d538d4d66b71f98b59dc47b873312f7d9",
+  "policy_files": [
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/verification_policy/POLICY.json",
+      "sha256": "61f6391979169318ae7d75b58d4a3cde6916b24031931cdc26de67509d492c23"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/verification_policy/POLICY.md",
+      "sha256": "b26d2c2f7f787ae56f51e7032fb26a4882be1c339fc62bab85d6eddb3b42b05b"
+    }
+  ],
+  "verification_lane": "FAST",
+  "semantic_changes": 0,
+  "reused_evidence": [
+    {
+      "exact_head": "cba198e77370ccb214956015aa7cc490e73307ac",
+      "receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/COMPLETION_RECEIPT.json",
+      "receipt_sha256": "5fb357791cfe49a58ad2d0993939604d107f918e778b4f26304683fbbb5894fa",
+      "checks": 59,
+      "independent_review": "PASS_WITH_LIMITS at original immutable evidence pin",
+      "rerun": false,
+      "applicability": "Prior G1/G2 and G/C evidence retains exact source/output pins; this docs/configuration-only policy changes no QGV runtime or semantic artifact."
+    }
+  ],
+  "new_verification": {
+    "status": "PASS",
+    "checks_passed": 22,
+    "checks": {
+      "approved_policy_identity": true,
+      "independent_role": true,
+      "fast_targeted_stop": true,
+      "standard_bounded_sequence": true,
+      "critical_strong": true,
+      "critical_semantic_surfaces": true,
+      "independent_review_required": true,
+      "semantic_effect_over_filename": true,
+      "no_duplicate_review": true,
+      "exact_evidence_reuse": true,
+      "same_tree_repeat_disallowed": true,
+      "prior_pass_not_new_head_actions": true,
+      "full_regression_trigger_scope": true,
+      "auditor_budget": true,
+      "decision_package_minimal": true,
+      "audit_to_closure": true,
+      "main_dispositions": true,
+      "report_fields": true,
+      "approvals_and_d3_preserved": true,
+      "no_production_or_other_owner_mutation": true,
+      "scheduler_zero_and_unchanged_acceptance": true,
+      "policy_byte_pin": true
+    },
+    "policy_sha256": "61f6391979169318ae7d75b58d4a3cde6916b24031931cdc26de67509d492c23"
+  },
+  "existing_automation_configuration_readback": [
+    {
+      "id": "6ac31fdb7f388191be588ea61f5a2009",
+      "prompt_exact": true,
+      "schedule_unchanged": true,
+      "conversation_unchanged": true,
+      "enabled_unchanged": true,
+      "timezone_unchanged": true,
+      "title_unchanged": true
+    },
+    {
+      "id": "6ac2efbd34fc8191a60dccbbe338c291",
+      "prompt_exact": true,
+      "schedule_unchanged": true,
+      "conversation_unchanged": true,
+      "enabled_unchanged": true,
+      "timezone_unchanged": true,
+      "title_unchanged": true
+    }
+  ],
+  "automation_execution_or_ci_pass_claimed": false,
+  "skipped_expensive_verification": [
+    "Prior G/C 59 checks and independent review repeat",
+    "Existing G/V audits/simulations",
+    "Same-tree 488 PASS full-regression repeat",
+    "Extra agent, new critical adversarial run, new Actions PASS or real PIT run"
+  ],
+  "findings_closed": 0,
+  "findings_opened": 0,
+  "net_qgv_blocker_change": 0,
+  "existing_blockers_preserved": [
+    "Invalid numeric VERSION_MISMATCH / CALCULATION_ERROR result can reach aggregate/ranking",
+    "Actual method/version registration and historical attribution incomplete",
+    "Real source-period/share/vintage/PIT closure incomplete"
+  ],
+  "d3": {
+    "new_decision_required": false,
+    "existing_decisions": [
+      "G1_ACTUAL_METHOD_INPUT_HORIZON_NUMERIC_SELECTION",
+      "G2_ALTERNATIVE_METHOD_APPLICABILITY_SELECTION",
+      "B2_B3_B5_B6_REFERENCE_SCOPE_AUTHORITY_AND_CONCRETE_CONSUMER_BINDINGS",
+      "V1_METHOD_NORMALIZATION_FAMILIES",
+      "V2_RESIDUAL_METADATA_METHODOLOGY_WITH_B2_B3_B5_B6",
+      "PRODUCTION_ACTIVATION_MIGRATION"
+    ],
+    "method_selection": "NOT_APPROVED",
+    "migration": "NOT_APPROVED"
+  },
+  "agent_budget_used": {
+    "auditors": 1,
+    "additional_agents": 0
+  },
+  "scheduler": {
+    "status": "0/2_UNVERIFIED",
+    "credited_hops": 0,
+    "exact_task_acceptance_unchanged": true
+  },
+  "lease": {
+    "token": "qgv-rpv-1fcae4e93ee74420b0a0316bece43610",
+    "input_parent": "cba198e77370ccb214956015aa7cc490e73307ac",
+    "release": "Atomic null lease in final scoped policy publication"
+  },
+  "main_handoff": "PASS for policy adoption; prior QGV BLOCKER / D3_REQUIRED retained. Main/authorized owner retains implementation/integration.",
+  "acceptance_scope": "Targeted policy assertions and exact configuration readback only; prior critical acceptance is not relabeled as new HEAD PASS.",
+  "publication_safety_checks": {
+    "previous_completion_preserved": true,
+    "semantic_approvals_preserved": true,
+    "previous_d3_preserved": true,
+    "previous_handoff_bytes_retained": true,
+    "own_lease_released": true,
+    "production_and_methods_inactive": true,
+    "zero_scheduler_hops": true,
+    "exact_existing_configuration_readbacks": true
+  }
+}

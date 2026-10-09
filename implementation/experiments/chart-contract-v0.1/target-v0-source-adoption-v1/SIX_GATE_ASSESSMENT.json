@@ -1,0 +1,95 @@
+{
+  "schema": "target-v0-six-gate-rejudgment/1",
+  "recorded_at_utc": "2026-10-08T12:11:50.338241+00:00",
+  "prior_chart_exact_head": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+  "prior_gates_open": 6,
+  "prior_gates_closed": 0,
+  "gates": [
+    {
+      "id": "A-S1",
+      "status": "CLOSED",
+      "basis": "Immutable merged USER source-root authority/version/hash/current clocks/exact19+cash/denominator/completeness and native-authenticated consumption; full root gate independent of Security mapping",
+      "proof": "implementation/experiments/chart-contract-v0.1/target-v0-source-adoption-v1/ADMITTED_TARGET_ROOT.json",
+      "name": "Authoritative current TARGET root",
+      "acceptance_criteria": "Main obtains explicit bounded source-owner/session/branch/write-set/lease claim; owner returns immutable current TARGET root/version/effective applicability/source-backed availability, exact19 rows+cash, denominator/completeness/provenance and adoption. Chart authenticates returned root, does not invent it.",
+      "fulfilled_source_closure_predicates": [
+        "Owner names one immutable current TARGET root and revision with source receipt/hash and unambiguous portfolio identity/version.",
+        "Owner states current applicability/effective-period semantics and separately evidenced availability; the document date/extraction/Git clock is not substituted.",
+        "Root binds exact19 source rows and explicit cash with completeness and full-portfolio denominator, and resolves authored spec vs reference fixture vs adopted root routing.",
+        "Any difference from pinned authored values is recorded in a new owner revision; no Chart-side arbitrary selection/rewrite."
+      ]
+    },
+    {
+      "id": "A-S2",
+      "status": "OPEN_WAIT_DEPENDENCY",
+      "basis": "0 reviewed common Security IDs admitted; all19 null/unresolved. User listing choices preserved, not reopened. No fake IDs.",
+      "name": "Reviewed common Security/share-form bindings",
+      "acceptance_criteria": "Assign bounded authoritative identity owner; reuse explicit common security namespace for reviewed all19 root-row↔issuer/security/share-form evidence and revision. Reject uncertain/ticker-only/CIK-only relations."
+    },
+    {
+      "id": "A-S3",
+      "status": "OPEN_WAIT_DEPENDENCY",
+      "basis": "USER catalog/source-row assignments adopted; full original19 Security-scoped assignments wait A-S2. Source-authority subpart resolved.",
+      "name": "Adopted Strategy Theme catalog/assignment revisions",
+      "acceptance_criteria": "Accountable source/classification owner adopts user-defined Strategy Theme/Portfolio Bucket catalog/concepts/version and complete assignment revision bound to admitted root+common Security, preserving authored economic meaning."
+    },
+    {
+      "id": "A-G1",
+      "status": "OPEN",
+      "basis": "Bounded TARGET v0 / USER / REFERENCE display permission does not supply original production Product/P01 exact-subject/current read authority adoption.",
+      "name": "Product applicability/exact subject/current read authority",
+      "acceptance_criteria": "Product/P01 returns applicability A existing/B separate Target route/C insufficient with adopted policy reference, exact subject/preimage/hash/root/catalog/assignment dependencies, explicit clock/current authority/invalidation and denial clearing. Chart consumes exact owner evidence. Private account Platform applicability must not become current TARGET prerequisite."
+    },
+    {
+      "id": "A-G2",
+      "status": "OPEN",
+      "basis": "Current direct user per-file claim admits this own Main ordinary display successor. Original full production integration base/write-set affected-owner acceptance remains separate and OPEN.",
+      "name": "Accepted exact integration base/full per-file write set",
+      "acceptance_criteria": "Consume conditional receipt as planning evidence; after source/read-route adoption obtain actual current base and smallest full file subset/per-file writer+lease from all affected owners, protected/digest/package code_hash impacts and required final checks. Assets copied by existing build do not provide admitted allocation service."
+    },
+    {
+      "id": "A-G3",
+      "status": "OPEN",
+      "basis": "Local independent code review/browser source display proof is not accepted FPIA verifier/runtime/G7/GIE or actual assembled production Chart FPIA.",
+      "name": "FPIA governance/admissibility/review/G7/GIE",
+      "acceptance_criteria": "Consume accepted independent authority/GIE admissibility evidence; actual Chart merge-result FPIA only on actual assembled subject when admitted. Do not duplicate Main repair or CI."
+    }
+  ],
+  "closed_count": 1,
+  "open_count": 5,
+  "production_implementation": "NOT_READY",
+  "actual": "NOT_AVAILABLE_NO_TARGET_FALLBACK",
+  "source_values_changed": false,
+  "new_identity_ids": 0,
+  "new_product_grants": 0,
+  "market_admission": "0/19_UNCHANGED",
+  "autonomy_mode": "READ_ONLY_UNCHANGED",
+  "gate_A_autonomy_hg03": "PARTIAL_VERIFIED_UNCHANGED",
+  "canonical_merge": false,
+  "scope": "Main-owned bounded source-consuming display successor; original Chart owner ref and protected contracts preserved",
+  "criteria_source_pins": [
+    {
+      "commit": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-terminal-policy-v0.14/GATES_AND_GAPS.json",
+      "git_blob": "8b170a8437197b4d3326f8eb6195adc42bbc5c4a",
+      "sha256": "52815db36196ec258dbe1da6c0e2c3a9beb768ce99eb1d404f31c63e6c05e694"
+    },
+    {
+      "commit": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/lane-a/TARGET_ROOT_AND_THEME_MEMBERSHIP_v0.4.md",
+      "git_blob": "5d03706c2449f9cd378e8c0fa01ef04fe301b51c",
+      "sha256": "368ed252d1726c1c502a0d072afabe6572f53fd29fd3c27104bb771f9f75a281"
+    },
+    {
+      "commit": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "git_blob": "693cc6bf15aeb9448aff995fe1898f669297e451",
+      "sha256": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c"
+    }
+  ],
+  "independent_root_closure_basis": {
+    "path": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/lane-a/TARGET_ROOT_AND_THEME_MEMBERSHIP_v0.4.md",
+    "line": 110,
+    "quote": "Closing A-S1 does not itself resolve A-S2 or A-S3: a root can have complete weights with unresolved security identity or unadopted classifications."
+  }
+}

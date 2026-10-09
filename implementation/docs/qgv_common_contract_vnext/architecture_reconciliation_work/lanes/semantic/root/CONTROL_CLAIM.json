@@ -1,0 +1,69 @@
+{
+  "scope": "QGV_GV_EVIDENCE_LANES_ONLY",
+  "status": "RUNNING_G1_G2_APPROVED_SEMANTIC_CANDIDATE_CONSUMER_EVIDENCE",
+  "lease": {
+    "token": "qgv-g12-c-c21c6c4203a444dbaae588bf90c958e5",
+    "owner": "QGV_G1_G2_SEMANTIC_WORK",
+    "input_owner_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+    "task_fingerprint": "8cdd1af81b68e7056fe0041f84fe59689b1954b54a92cc6b7c9d71c703921d50",
+    "task": "QGV_G1_G2_SEMANTIC_CANDIDATE_AND_CONSUMER_CONVERGENCE",
+    "claimed_at_utc": "2026-10-05T05:23:02.435569+00:00",
+    "expiry": null
+  },
+  "tasks": [
+    "G_INPUT_METHOD_LINEAGE_AUDIT",
+    "V_ALTERNATIVE_IMPACT_ANALYSIS",
+    "COMMON_CONTRACT_CONSUMER_SAFETY_EVIDENCE"
+  ],
+  "authorized_write_paths": [
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/",
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md"
+  ],
+  "other_owner_branch_read_only": "codex/qgv-missing-data-decision-gate-2026-10-05",
+  "production_enabled": false,
+  "manual_execution": true,
+  "actual_scheduler_hops_credited": 0,
+  "d3_scope": "Current explicit user request: no semantic replacement, numeric adoption, runtime wiring, migration, historical rewrite, PIT/Frozen/Holdout/Official change or canonical/PR merge",
+  "last_lease_token": "qgv-gv-lanes-ce04703e5823",
+  "completion": {
+    "g_lineage": "COMPLETE_INACTIVE",
+    "v_impact": "COMPLETE_INACTIVE_NO_METHOD_SELECTED",
+    "independent_review": "PASS_WITH_LIMITS",
+    "new_characterizations_passed": 79,
+    "production_enabled": false,
+    "scheduler_actual_hops": 0,
+    "scheduler_status": "0/2_UNVERIFIED",
+    "next_task": "INACTIVE_SCOPE_PRESERVING_PRODUCER_CONSUMER_ASSESSMENT_REFERENCE_CLOSURE"
+  },
+  "d3_decisions": [
+    "G1_HORIZON_SEMANTICS",
+    "G2_EPS_FCF_SUBSTITUTE_SEMANTICS",
+    "V1_METHOD_NORMALIZATION_FAMILIES",
+    "V2_RESIDUAL_METADATA_METHODOLOGY_WITH_B2_B3_B5_B6"
+  ],
+  "current_task": {
+    "task": "QGV_G1_G2_SEMANTIC_CANDIDATE_AND_CONSUMER_CONVERGENCE",
+    "version": 1,
+    "approval_id": "QGV-G1-G2-SEMANTICS-2026-10-05",
+    "approval_sha256": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c",
+    "work_spec_sha256": "663807c1b77c4651526a0ad9b7541a4b7b086f08504f1cde56846271f3f34c79",
+    "semantic_evidence": [
+      {
+        "path": "lanes/g/G_METHOD_REPLAY_MANIFEST.json",
+        "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+      },
+      {
+        "path": "lanes/g/G_SOURCE_READINESS_MATRIX.json",
+        "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+      },
+      {
+        "path": "lanes/consumer/lineage_probe_results.json",
+        "sha256": "ac462d2b942c493b3898d23ecdb619be7dbc2744fc8b571085d1c83eb0d7a69b"
+      }
+    ],
+    "acceptance": "Exact source/approval/ref/output hash validation plus independent new inactive-contract checks; no production semantic choice",
+    "fingerprint": "8cdd1af81b68e7056fe0041f84fe59689b1954b54a92cc6b7c9d71c703921d50",
+    "approved_semantics_only": true,
+    "manual_scheduler_hops": 0
+  }
+}

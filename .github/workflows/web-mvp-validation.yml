@@ -1,0 +1,41 @@
+name: web-mvp-validation
+on:
+  push:
+    branches: [feature/web-mvp-v1, feature/global-language-search-v1]
+  pull_request:
+    paths: ['implementation/src/investment_system/product/**', 'implementation/tests/test_web_mvp.py', 'implementation/tests/test_global_language_search.py', 'implementation/tools/global_language_search*.js', 'implementation/tools/build_web_mvp_demo.py', 'implementation/tools/web_mvp_browser_test.js', '.github/workflows/web-mvp-validation.yml']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install pytest==9.1.1 jsonschema==4.26.0
+      - run: python -m pytest -q
+        working-directory: implementation
+      - run: |
+          npm install --no-save playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - run: |
+          mkdir -p implementation/reports/web_mvp
+          PYTHONPATH=implementation/src python -m investment_system.product.web_mvp --out /tmp/web-mvp
+          python implementation/tools/build_web_mvp_demo.py --out /tmp/web-mvp-demo
+          python -m http.server 8765 --bind 127.0.0.1 --directory /tmp > /tmp/web-server.log 2>&1 &
+          node implementation/tools/global_language_search_test.js /tmp/web-mvp-demo
+          node implementation/tools/web_mvp_browser_test.js
+          node implementation/tools/global_language_search_browser_test.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: web-mvp-validation
+          path: implementation/reports/web_mvp

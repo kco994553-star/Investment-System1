@@ -1,0 +1,1037 @@
+{
+  "schema": "chart-late-owner-intake-v09-v1",
+  "kind": "BOUNDED_READ_ONLY_DEPENDENCY_DELTA_NOT_PRODUCTION_ADMISSION",
+  "recorded_at_utc": "2026-10-05T05:41:52.615Z",
+  "parent_audit": "/workspace/scratch/9de0281e56bb/new_owner_gate_review.json",
+  "read_scope": "Only changed Global/FPIA and directly surfaced owner return evidence. Preserved prior source/Market findings reused; no full restart or repeat runtime audit.",
+  "refs": {
+    "previous_global": "426c8bb750a5237403fee8336be4714548752094",
+    "current_global": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+    "previous_fpia_successor": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "current_fpia_successor": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "current_chart": "eedab5922db453a7b11a851cf57844064ce00f3f",
+    "canonical_unchanged": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "Product_Platform_unchanged": "78a51462f89eac8e34647cddc4e53ed97e831178",
+    "Global_handoff": "GCH-018",
+    "Global_index": "GSI-024"
+  },
+  "fresh_ref_confirmation": "git ls-remote returned exact current Global7a29/FPIAa3e3/Charteedab; fresh branch Global handoff and Chart state blobs recorded below.",
+  "comparisons": {
+    "Global": {
+      "repository_full_name": "kco994553-star/Investment-System1",
+      "base": "426c8bb750a5237403fee8336be4714548752094",
+      "head": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "status": "ahead",
+      "ahead_by": 2,
+      "behind_by": 0,
+      "total_commits": 2,
+      "too_large": null,
+      "base_commit": {
+        "sha": "426c8bb750a5237403fee8336be4714548752094",
+        "url": "https://api.github.com/repos/kco994553-star/Investment-System1/commits/426c8bb750a5237403fee8336be4714548752094",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/commit/426c8bb750a5237403fee8336be4714548752094"
+      },
+      "merge_base_commit": {
+        "sha": "426c8bb750a5237403fee8336be4714548752094",
+        "url": "https://api.github.com/repos/kco994553-star/Investment-System1/commits/426c8bb750a5237403fee8336be4714548752094",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/commit/426c8bb750a5237403fee8336be4714548752094"
+      },
+      "files": [
+        {
+          "filename": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+          "status": "modified",
+          "additions": 9,
+          "deletions": 0,
+          "changes": 9,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md",
+          "status": "modified",
+          "additions": 11,
+          "deletions": 10,
+          "changes": 21,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/GLOBAL_HANDOFF_HISTORY.md",
+          "status": "modified",
+          "additions": 9,
+          "deletions": 0,
+          "changes": 9,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/GLOBAL_STATUS_INDEX.md",
+          "status": "modified",
+          "additions": 15,
+          "deletions": 14,
+          "changes": 29,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/MAIN_TAKEOVER_STATE.json",
+          "status": "modified",
+          "additions": 59,
+          "deletions": 47,
+          "changes": 106,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/OWNER_ROUTING_LEDGER.json",
+          "status": "modified",
+          "additions": 97,
+          "deletions": 23,
+          "changes": 120,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/PIW_DECISION_RECORDS.md",
+          "status": "modified",
+          "additions": 11,
+          "deletions": 0,
+          "changes": 11,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/evidence/main_tools_2026-10-05/FPIA_2135962a_summary.txt",
+          "status": "added",
+          "additions": 1,
+          "deletions": 0,
+          "changes": 1,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
+          "status": "added",
+          "additions": 126,
+          "deletions": 0,
+          "changes": 126,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json",
+          "status": "added",
+          "additions": 212,
+          "deletions": 0,
+          "changes": 212,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/evidence/main_tools_2026-10-05/PIW_D002_IMPLEMENTATION_RECEIPT.json",
+          "status": "added",
+          "additions": 59,
+          "deletions": 0,
+          "changes": 59,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/evidence/main_tools_2026-10-05/PLATFORM_OWNER_DELTA_PROBES.json",
+          "status": "added",
+          "additions": 63,
+          "deletions": 0,
+          "changes": 63,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/evidence/main_tools_2026-10-05/RAW_TEST_LOGS.json",
+          "status": "added",
+          "additions": 27,
+          "deletions": 0,
+          "changes": 27,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/docs/coordination/evidence/main_tools_2026-10-05/USER_TOOL_USAGE_DIRECTIVES.md",
+          "status": "added",
+          "additions": 43,
+          "deletions": 0,
+          "changes": 43,
+          "previous_filename": null
+        }
+      ]
+    },
+    "FPIA": {
+      "repository_full_name": "kco994553-star/Investment-System1",
+      "base": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+      "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "status": "ahead",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "too_large": null,
+      "base_commit": {
+        "sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "url": "https://api.github.com/repos/kco994553-star/Investment-System1/commits/2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/commit/2135962a1e6fd19c3acd220a30c6464431eddf95"
+      },
+      "merge_base_commit": {
+        "sha": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "url": "https://api.github.com/repos/kco994553-star/Investment-System1/commits/2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/commit/2135962a1e6fd19c3acd220a30c6464431eddf95"
+      },
+      "files": [
+        {
+          "filename": "implementation/tests/test_integration_fpia_evidence_identity.py",
+          "status": "added",
+          "additions": 327,
+          "deletions": 0,
+          "changes": 327,
+          "previous_filename": null
+        },
+        {
+          "filename": "implementation/tools/integration/track_c_fpia_evidence_identity.py",
+          "status": "added",
+          "additions": 283,
+          "deletions": 0,
+          "changes": 283,
+          "previous_filename": null
+        }
+      ]
+    }
+  },
+  "current_chart_lease": {
+    "status": "HELD",
+    "run_id": "manual-chart-fixture-review-20261005T052509016Z",
+    "holder_kind": "MANUAL_ROOT",
+    "acquired_at_utc": "2026-10-05T05:25:09.016Z",
+    "expires_at_utc": "2026-10-05T06:25:09.016Z",
+    "ttl_minutes": 60,
+    "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+    "verified_remote_acquisition": true,
+    "acquisition_parent_head": "b6f15eef43c6f302ac8c3397b4f50d37eef3e676",
+    "reason": "User selected dedicated SAMPLE review canvas; repair missing-to-zero fixture display and verify existing approved lab UI; fresh owner intake",
+    "mutual_exclusion": "VERIFIED_NON_FORCE_ANCESTRY_CAS_REQUIRED"
+  },
+  "current_Main_lease": null,
+  "current_Main_last_lease": {
+    "token": "main-d002-owner-intake-20261005-3a80dcef6444",
+    "owner": "gpt-work-main-2026-10-05-3a80dcef6444",
+    "acquired_at": "2026-10-05T05:17:37.238Z",
+    "expires_at": "2026-10-05T05:47:37.238Z",
+    "scope": "Global checkpoint + bounded PIW-D002 evidence identity implementation",
+    "reason": "Existing Main continues; event/followup must coalesce without duplicate writer",
+    "released_at": "2026-10-05T05:32:45.200078+00:00",
+    "release_reason": "Bounded D002 implementation and owner evidence/routing checkpoint published; no shared lease during CI wait"
+  },
+  "lease_disposition": "Parent/root owns current HELD SAMPLE-canvas repair lease. This subtask acquires no lease and writes no owner state. Global Main released its lease for new CI wait.",
+  "new_authority": {
+    "CDR019": "Supplemental tool-use/first-use constraints only; GitHub remains code/contract/approval/evidence authority; no new owner takeover/protected scope/cost/account/auth/tenant/deployment authority.",
+    "CDR019_blob": "10d8900beccd35198362eda201b1998afac76618",
+    "PIW_D007": "COMPOUND_CONSISTENCY_CONSUMER_IMPLEMENTED / AUTHENTICATED_BINDING_AND_INTEGRATION_ACCEPTANCE_PENDING",
+    "PIW_D007_scope": "Finite additive PIW-D002 consistency utility only; history/rawFPIA semantics/gates unchanged.",
+    "new_chart_D3": false
+  },
+  "material_deltas": [
+    {
+      "id": "LATE-GLOBAL-GCH018",
+      "scope": "A-G3",
+      "delta": "Main recovered old213 exact terminal artifact/run/sidehash evidence without rerun, then publishedD002 utility on newa3e3head. Old terminalCI applies only213."
+    },
+    {
+      "id": "LATE-FPIA-D002",
+      "scope": "A-G3",
+      "delta": "Two new files: importable stdlib consistency consumer/read-only JSON CLI and focused tests; zero existing source/workflow edits. Whole workflow/run/attempt/job/subject/nominated-verifier fields compare, labels diagnostic, malformed/ambiguous failclosed.",
+      "evidence": {
+        "schema": "main-piw-d002-implementation-v1",
+        "observed_at_utc": "2026-10-05T05:32:45.200078+00:00",
+        "subject": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "parent": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "tree": "cdade46e1c9402a90272fbe325d6e04398b7b5ea",
+        "local_tree_identical": true,
+        "local_commit_identity": "NOT_CLAIMED; API commit is authoritative, local prior parent differs",
+        "write_set": [
+          {
+            "path": "implementation/tools/integration/track_c_fpia_evidence_identity.py",
+            "sha256": "b7393fcdfe12cbe77302c568caa6bb09c5ae684fc729b37d7808948db7c9c6e5",
+            "blob": "5b4ed76a580f07f4f7e3690de7f68236524cf108"
+          },
+          {
+            "path": "implementation/tests/test_integration_fpia_evidence_identity.py",
+            "sha256": "df9c595e65e6202797b2baaddeee08ddc0e031aac128f5c3a2aa9ae768aef8d3",
+            "blob": "de6d862d81b3f659325abf3c30ea493d70ead6d7"
+          }
+        ],
+        "existing_source_files_changed": 0,
+        "new_dependencies": 0,
+        "local_runtime": "Python 3.12.14; pytest9.1.1 existing venv",
+        "ci_previous_runtime": "Python3.11.16",
+        "tests": {
+          "initial_red": 157,
+          "review_correction_red": 8,
+          "final_green": 165,
+          "root_readback_green": 165,
+          "root_duration_s": 0.68,
+          "full_regression_rerun": false
+        },
+        "independent_review": {
+          "finding": "GitHub owner trailing/consecutive hyphens accepted, including verifier repository",
+          "red_evidence": "8 failed before regex fix",
+          "corrected": true,
+          "remaining_concrete_findings": 0
+        },
+        "features": [
+          "compound repository/workflow/run/attempt/job/subject/verifier matching",
+          "labels diagnostic only",
+          "malformed/duplicate/conflicting execution receipts fail closed",
+          "strict duplicate-key and nonfinite-constant JSON parsing",
+          "importable consumer and read-only JSON CLI"
+        ],
+        "integration_wiring": "ADDITIVE_IMPORTABLE_UTILITY_AND_CLI; NO_RAW_FPIA_GATE_REWRITE",
+        "actual_authenticated_receipt": "NOT_SUPPLIED",
+        "authentication": "NOT_VERIFIED",
+        "integration_acceptance": "BLOCKED",
+        "remaining_obligations": [
+          "PIW-D001 authorized verifier/launcher",
+          "PIW-D002 actual authenticated selection/receipt binding",
+          "PIW-D003 dynamic coverage",
+          "PIW-D004 generic optional importer attribution",
+          "PIW-D005 external runtime influence",
+          "PIW-D006 authenticated applicability and exact final subject"
+        ],
+        "test_log_archive": "RAW_TEST_LOGS.json; lossless gzip+base64 with raw/compressed hashes"
+      },
+      "does_not_authenticate": true,
+      "does_not_close_A_G3": true
+    },
+    {
+      "id": "LATE-PLATFORM-OWNER-RETURN",
+      "scope": "Relatedowner evidence only",
+      "delta": "Main ledger now CONSUMED Platform78 source603d1c64/run37265731093attempt1 receipt. No claimed owner consumption of old37263497936. PPF003 contract validation and blankidentityPPF005 subfinding independently closed; runtime/auth/durable/financial remainOPEN. PR45 independent reconsumption requested, no returned receipt."
+    },
+    {
+      "id": "LATE-WEB-PPAF08",
+      "scope": "RelatedWeb evidence; no A-G2adoption",
+      "delta": "Exact absentACTUAL fallback request5988663367 supplements existingA-G2 request; asks bounded writer/base/write-set/lease and negative+valid controls. Delivery only; no source repair or accepted Web write authority."
+    },
+    {
+      "id": "LATE-CHART-LEASE",
+      "scope": "Coordination only",
+      "delta": "Global acknowledges current parentSAMPLE-canvas repair lease through06:25:09.016Z. Lease/sourceclock is not production gate closure; no completedSAMPLE repair claim inGlobal."
+    }
+  ],
+  "lane_a": {
+    "status": "IMPLEMENTATION_NOT_READY",
+    "open": 6,
+    "closed": 0,
+    "gates": [
+      {
+        "id": "A-S1",
+        "status": "OWNER_ACTION_REQUIRED",
+        "production_gate": "OPEN",
+        "change": "NO_ADMISSION_DELTA",
+        "reason": "OWNER_UNASSIGNED/FOUND; authoritative owner claim and root receipt remain null.",
+        "ledger": {
+          "id": "MAIN-CHART-A-S1-20261005",
+          "finding": "A-S1",
+          "authoritative_owner": null,
+          "owner_assignment": "OWNER_UNASSIGNED",
+          "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+          "exact_path_branch_pr": {
+            "branch": null,
+            "head": null,
+            "pr": null
+          },
+          "acceptance_criteria": "Owner-admitted current TARGET root+revision: exact19 rows, cash, current applicability, independently evidenced availability, source/hash/use, completeness+denominator.",
+          "dependencies": [],
+          "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+          "source_decision": [
+            "CDR-015",
+            "CDR-016 §13",
+            "CDR-017",
+            "user takeover directive 2026-10-05"
+          ],
+          "delivery_channel": null,
+          "delivered_at": null,
+          "receipt": null,
+          "last_consumed_revision": null,
+          "state": "FOUND",
+          "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+          "production_gate": "OPEN"
+        }
+      },
+      {
+        "id": "A-S2",
+        "status": "OWNER_ACTION_REQUIRED",
+        "production_gate": "OPEN",
+        "change": "NO_ADMISSION_DELTA",
+        "reason": "OWNER_UNASSIGNED/FOUND; reviewed19 common security/share-form relation receipt remains null.",
+        "ledger": {
+          "id": "MAIN-CHART-A-S2-20261005",
+          "finding": "A-S2",
+          "authoritative_owner": null,
+          "owner_assignment": "OWNER_UNASSIGNED",
+          "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+          "exact_path_branch_pr": {
+            "branch": null,
+            "head": null,
+            "pr": null
+          },
+          "acceptance_criteria": "Exact19 root-row to reviewed company/issuer/common security mapping, share form, dated provenance/revision, C25/D29 preserved; no ticker-generated identity.",
+          "dependencies": [
+            "A-S1 root binding"
+          ],
+          "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+          "source_decision": [
+            "CDR-015",
+            "CDR-016 §13",
+            "CDR-017",
+            "user takeover directive 2026-10-05"
+          ],
+          "delivery_channel": null,
+          "delivered_at": null,
+          "receipt": null,
+          "last_consumed_revision": null,
+          "state": "FOUND",
+          "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+          "production_gate": "OPEN"
+        }
+      },
+      {
+        "id": "A-S3",
+        "status": "OWNER_ACTION_REQUIRED",
+        "production_gate": "OPEN",
+        "change": "NO_ADMISSION_DELTA",
+        "reason": "OWNER_UNASSIGNED/FOUND; adopted catalog/assignment/root binding receipt remains null.",
+        "ledger": {
+          "id": "MAIN-CHART-A-S3-20261005",
+          "finding": "A-S3",
+          "authoritative_owner": null,
+          "owner_assignment": "OWNER_UNASSIGNED",
+          "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+          "exact_path_branch_pr": {
+            "branch": null,
+            "head": null,
+            "pr": null
+          },
+          "acceptance_criteria": "Adopted user-defined Theme catalog/concepts/version and complete security assignment revision; source/hash/validity+root binding, authored30/25/20/25 preserved.",
+          "dependencies": [
+            "A-S1",
+            "A-S2"
+          ],
+          "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+          "source_decision": [
+            "CDR-015",
+            "CDR-016 §13",
+            "CDR-017",
+            "user takeover directive 2026-10-05"
+          ],
+          "delivery_channel": null,
+          "delivered_at": null,
+          "receipt": null,
+          "last_consumed_revision": null,
+          "state": "FOUND",
+          "next_action": "Resolve explicit bounded owner claim, branch, write-set and lease; no authoritative evidence owner is assumed",
+          "production_gate": "OPEN"
+        }
+      },
+      {
+        "id": "A-G1",
+        "status": "OWNER_ACTION_REQUIRED",
+        "production_gate": "OPEN",
+        "change": "NO_ADMISSION_DELTA",
+        "reason": "P01 applicability request ROUTED with null receipt/consumed revision. New Platform CI acceptance is not a TARGET applicability/current subject/read authority adoption.",
+        "ledger": {
+          "id": "MAIN-CHART-A-G1-20261005",
+          "finding": "A-G1",
+          "authoritative_owner": "Product/P01 capability; current individual session unconfirmed",
+          "owner_assignment": "RESOLVED_CAPABILITY_ROUTE",
+          "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json",
+          "exact_path_branch_pr": {
+            "branch": "feature/p01-research-publication-v1",
+            "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+            "pr": 17
+          },
+          "acceptance_criteria": "Policy applicability A/B/C, exact subject/current authority/read route, hash recomputation, explicit clock, denial clears values; source admission and grant distinct.",
+          "dependencies": [
+            "A-S1",
+            "A-S2",
+            "A-S3"
+          ],
+          "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+          "source_decision": [
+            "CDR-015",
+            "CDR-016 §13",
+            "CDR-017",
+            "user takeover directive 2026-10-05"
+          ],
+          "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/17#issuecomment-5988265306",
+          "delivered_at": "2026-10-05T04:44:18Z",
+          "receipt": null,
+          "last_consumed_revision": null,
+          "state": "ROUTED",
+          "next_action": "Owner supplies source-bound acceptance artifact; Main verifies then Chart re-consumes",
+          "production_gate": "OPEN",
+          "delivery_comment_id": 5988265306,
+          "delivery_body_sha256": "219c87643e46bf46a2bcaa48453958a64f49347188f217cbb19e8f7f281b2971"
+        }
+      },
+      {
+        "id": "A-G2",
+        "status": "PARTIALLY_RESOLVED",
+        "production_gate": "OPEN",
+        "change": "NO_NEW_ACCEPTANCE",
+        "reason": "Conditional integration planning receipt exact blob766ef029 unchanged; all_gate_a_g2_closed=false. New PPAF08 route asks protected Web writer scope and actual/target separation; no owner acceptance.",
+        "ledger": {
+          "id": "MAIN-CHART-A-G2-20261005",
+          "finding": "A-G2",
+          "authoritative_owner": "Web capability previously Primary Integration Writer; full cross-owner acceptance pending",
+          "owner_assignment": "RESOLVED_CAPABILITY_ROUTE",
+          "required_artifact": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/governance/IMPLEMENTATION_PATH_MATRIX.json",
+          "exact_path_branch_pr": {
+            "branch": "integration/web/production-state-presentation-v1",
+            "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+            "pr": 36
+          },
+          "acceptance_criteria": "Exact base+selected paths+per-path writer+lease+P01 route/digest impact+code identity+checks+future merge-result FPIA; all affected owners accept.",
+          "dependencies": [
+            "A-G1",
+            "writer transfer",
+            "Chart/Portfolio/Product/Web/Integration receipts"
+          ],
+          "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+          "source_decision": [
+            "CDR-015",
+            "CDR-016 §13",
+            "CDR-017",
+            "user takeover directive 2026-10-05"
+          ],
+          "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-5988265604",
+          "delivered_at": "2026-10-05T04:44:20Z",
+          "receipt": null,
+          "last_consumed_revision": null,
+          "state": "ROUTED",
+          "next_action": "Owner supplies source-bound acceptance artifact; Main verifies then Chart re-consumes",
+          "production_gate": "OPEN",
+          "integration_side_conditional_acceptance_ref": "MAIN-CHART-AG2-INTEGRATION-20261005",
+          "integration_side_status": "ADOPTED_CONDITIONAL_PLANNING_ONLY",
+          "delivery_comment_id": 5988265604,
+          "delivery_body_sha256": "bdbb491a262fdbda87b1e0258a1381adbf0158ee4808ecce62cf45319fa8e2b1"
+        }
+      },
+      {
+        "id": "A-G3",
+        "status": "PARTIALLY_RESOLVED",
+        "production_gate": "OPEN",
+        "change": "BOUNDED_D002_CONSISTENCY_SUBSCOPE_IMPLEMENTED",
+        "reason": "PIW-D007 supersedes PIW-D002 technical status only for finite consistency consumer. AuthenticationNOT_VERIFIED/actual_authenticated_receiptNOT_SUPPLIED/integrationBLOCKED. New exactheadCIpending; PIW-D001/D003-D006 plus authenticatedD002/finalGIE/actualChartresult remain pending.",
+        "ledger": {
+          "id": "MAIN-CHART-A-G3-20261005",
+          "finding": "A-G3",
+          "authoritative_owner": "GPT Work Main Integration",
+          "owner_assignment": "RESOLVED_CAPABILITY_ROUTE",
+          "required_artifact": "implementation/docs/coordination/evidence/GIE-014_main_takeover_fpia_2026-10-05.md",
+          "exact_path_branch_pr": {
+            "branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+            "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+            "pr": 46
+          },
+          "acceptance_criteria": "Final exact tool head Actions plus independent/adversarial/completeness evidence; current authority decisions a-e/G7 and GIE closure; future Chart result audit separate.",
+          "dependencies": [
+            "FPIA fix3 review",
+            "CDR-015/016/017 scoped decisions"
+          ],
+          "source_HEAD": "52e751501cb95ab3150398dc45586035276ab0d2",
+          "source_decision": [
+            "CDR-015",
+            "CDR-016 §13",
+            "CDR-017",
+            "user takeover directive 2026-10-05"
+          ],
+          "delivery_channel": "https://github.com/kco994553-star/Investment-System1/pull/42",
+          "delivered_at": null,
+          "receipt": null,
+          "last_consumed_revision": null,
+          "state": "IN_PROGRESS",
+          "next_action": "Consume PR46 new-head CI; implement/verify PIW-D001..006 obligations; exact Chart result audit later",
+          "production_gate": "OPEN"
+        }
+      }
+    ],
+    "gate_reduction": 0
+  },
+  "lane_b": {
+    "admitted": 0,
+    "total": 19,
+    "evidence_family_count": 8,
+    "immutable_rows": 23155,
+    "new_collection": 0,
+    "gaps": [
+      {
+        "id": "B01",
+        "family": "internal Security identity",
+        "status": "BLOCKED",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "change": "NO_EVIDENCE_ADOPTION_DELTA",
+        "production_gate": "OPEN"
+      },
+      {
+        "id": "B02",
+        "family": "dated Listing/provider relation",
+        "status": "BLOCKED",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "change": "NO_EVIDENCE_ADOPTION_DELTA",
+        "production_gate": "OPEN"
+      },
+      {
+        "id": "B03",
+        "family": "exchange/session/timezone",
+        "status": "PARTIAL",
+        "owner_assignment": "US_SESSION_PR18_US_ONLY_OTHER_ROLES_UNASSIGNED",
+        "change": "NO_EVIDENCE_ADOPTION_DELTA",
+        "production_gate": "OPEN"
+      },
+      {
+        "id": "B04",
+        "family": "dated session join",
+        "status": "BLOCKED",
+        "owner_assignment": "US_SESSION_PR18_US_ONLY_OTHER_ROLES_UNASSIGNED",
+        "change": "NO_EVIDENCE_ADOPTION_DELTA",
+        "production_gate": "OPEN"
+      },
+      {
+        "id": "B05",
+        "family": "adjustment basis",
+        "status": "PARTIAL",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "change": "NO_EVIDENCE_ADOPTION_DELTA",
+        "production_gate": "OPEN"
+      },
+      {
+        "id": "B06",
+        "family": "corporate-action basis",
+        "status": "PARTIAL",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "change": "NO_EVIDENCE_ADOPTION_DELTA",
+        "production_gate": "OPEN"
+      },
+      {
+        "id": "B07",
+        "family": "historical available_at",
+        "status": "NOT_AVAILABLE",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "change": "NO_EVIDENCE_ADOPTION_DELTA",
+        "production_gate": "OPEN"
+      },
+      {
+        "id": "B08",
+        "family": "quote/feed state",
+        "status": "UNKNOWN",
+        "owner_assignment": "OWNER_UNASSIGNED",
+        "change": "NO_EVIDENCE_ADOPTION_DELTA",
+        "production_gate": "OPEN"
+      }
+    ],
+    "anomaly_cause": "UNKNOWN",
+    "anomalies_and_original_rows_preserved": true,
+    "reason": "NoMarket identity/listing/calendar/session/basis/action/historical availability/feed-state returned evidence or changedsource found in boundedGlobal/FPIAdelta. Routing US requests remains distinct from actual admission.",
+    "not_target_theme_prerequisites": true
+  },
+  "admission": {
+    "current_target_root": false,
+    "reviewed19_security": false,
+    "Theme_revision": false,
+    "Target_Product_applicability": false,
+    "complete_production_write_set": false,
+    "final_FPIA_governance": false,
+    "newly_accepted_source": "NONE",
+    "newly_accepted_adoption": "NONE_FOR_CHART_PRODUCTION",
+    "actual": "NOT_AVAILABLE",
+    "target_fallback": false
+  },
+  "conditional_plan": {
+    "unchanged": true,
+    "git_blob": "766ef02953ab370b700d05d29304c3567eaa349b",
+    "receipt": {
+      "id": "MAIN-CHART-AG2-INTEGRATION-20261005",
+      "status": "ADOPTED_CONDITIONAL_INTEGRATION_PLANNING_ONLY",
+      "source_global": "af264713",
+      "source_chart": "52e751501cb95ab3150398dc45586035276ab0d2",
+      "authority_refs": [
+        "CDR-016",
+        "CDR-017",
+        "CDR-018"
+      ],
+      "accepting_role": "Primary Integration Coordinator only",
+      "candidate_review_base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+      "conditionally_accepted_plan_paths": [
+        "implementation/src/investment_system/product/web_assets/target-theme.html",
+        "implementation/src/investment_system/product/web_assets/target-theme-chart.js",
+        "implementation/src/investment_system/product/web_assets/target-theme.css"
+      ],
+      "conditions": [
+        "Product applicability and current subject/read authority adopted",
+        "Portfolio and Identity source receipts verified",
+        "Chart/Web exact per-file writer and scope acceptance",
+        "No protected source/digest or existing owner source changes in this plan",
+        "Fresh final assembled subject and applicable exact merge-result FPIA",
+        "No canonical merge/production activation from this receipt"
+      ],
+      "all_gate_a_g2_closed": false,
+      "reason": "Smallest v0.5/v0.8 additive asset route avoids existing Web/P01 protected files while preserving a single accepted source/result/authority path. It reduces integration-side ambiguity without pretending other owner acceptance.",
+      "alternatives_considered": [
+        "Broad existing app.js/locale/style edits deferred",
+        "Protected web_mvp/assembler edits not necessary for ordinary asset copying",
+        "No new package Python merely to create a page"
+      ],
+      "impact": "Coordination/planning only. No source edits, grants, policy activation or asset implementation. If later package source needed, code identity divergence must be separately checked.",
+      "verification": "Three candidate paths absent at exact review base; Chart v0.8 source/evidence hash and AST verification PASS. No repeated runtime tests.",
+      "recovery": "Withdraw or supersede conditional planning receipt additively if base/source/authority/owner acceptance changes; no deployed behavior to roll back.",
+      "publication_receipt": {
+        "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-5988265604",
+        "id": 5988265604,
+        "created_at": "2026-10-05T04:44:20Z"
+      }
+    }
+  },
+  "old213_terminal_receipt": {
+    "schema": "main-ci-recovery-v1",
+    "observed_at_utc": "2026-10-05T05:32:45.200078+00:00",
+    "subject": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+    "runs": [
+      {
+        "id": 37264932317,
+        "name": "sec-primary-disclosure",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932317"
+      },
+      {
+        "id": 37264932370,
+        "name": "us-equity-session",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932370"
+      },
+      {
+        "id": 37264932346,
+        "name": "qgv-invalidation-binding",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932346"
+      },
+      {
+        "id": 37264932313,
+        "name": "p01-research-publication",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932313"
+      },
+      {
+        "id": 37264932324,
+        "name": "technical-real-model",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932324"
+      },
+      {
+        "id": 37264932310,
+        "name": "technical-real-producer",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932310"
+      },
+      {
+        "id": 37264932348,
+        "name": "track-c-fpia",
+        "head": "2135962a1e6fd19c3acd220a30c6464431eddf95",
+        "attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37264932348"
+      }
+    ],
+    "rerun_performed": false,
+    "track_c_fpia": {
+      "run_id": 37264932348,
+      "job_id": 111619607882,
+      "attempt": 1,
+      "artifact_id": 11327061190,
+      "artifact_archive_sha256": "ff7f5eed1fb62bb7325f459671fb3ceac69119c09afdb406b027c38293831b84",
+      "archive_digest_independently_matched": true,
+      "side_file_hashes_verified": 6,
+      "result_sha256": "992fd396abc47d03f3075b717f2640f78654fd9f92bf00f936135631dc67409f",
+      "run_sha256": "4198136fb7cc9d5376320631c8b52bbe28a013680c1b814b81132f5a272e90f4",
+      "raw_verdict": {
+        "reasons": [],
+        "status": "FPIA_PASS"
+      },
+      "code_identity": "CODE_IDENTITY_DIVERGED",
+      "frozen_tools_on_subject": "FROZEN_TOOLS_ON_T_FAIL",
+      "full_regression": {
+        "collect_errors": [],
+        "counts": {
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0,
+          "tests": 2019
+        },
+        "deselect_rule": {
+          "file": "implementation/tests/test_raw_and_providers.py",
+          "node": "tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2",
+          "present_at_T": true,
+          "rule": "honoured only while its file is byte-identical to R's (PIW ruling); disclosed deviation",
+          "valid": true
+        },
+        "deselected": [
+          "implementation/tests/test_raw_and_providers.py::test_live_sec_fetch_is_optional_and_not_stage2"
+        ],
+        "junit": {
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0,
+          "tests": 2019
+        },
+        "non_track_c_failures": [],
+        "rc": 0,
+        "status": "PASS",
+        "track_c_nodes": 837
+      },
+      "ci_tier1": "SKIPPED_DISPATCH_ONLY",
+      "ci_tier2": "SKIPPED_DISPATCH_ONLY",
+      "integrity_readback": "verify-output EXIT_0; result/run/side hashes matched",
+      "verifier_authentication": "NOT_INDEPENDENTLY_AUTHORIZED",
+      "governance_closure": "BLOCKED",
+      "exact_merge_result_acceptance": "BLOCKED"
+    },
+    "successor_head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+    "successor_ci_result": "PENDING_SEPARATE_EXACT_HEAD",
+    "old_success_applies_to_new_head": false
+  },
+  "fresh_new_a3e3_CI": {
+    "source": "github_fetch_commit_workflow_runs fresh exactcommit read",
+    "workflow_runs": [
+      {
+        "id": 37267962003,
+        "name": "qgv-invalidation-binding",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 23,
+        "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267962003/jobs",
+        "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267962003/logs",
+        "workflow_id": 373058481
+      },
+      {
+        "id": 37267962024,
+        "name": "us-equity-session",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 27,
+        "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267962024/jobs",
+        "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267962024/logs",
+        "workflow_id": 372899684
+      },
+      {
+        "id": 37267962000,
+        "name": "track-c-fpia",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 6,
+        "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267962000/jobs",
+        "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267962000/logs",
+        "workflow_id": 374693747
+      },
+      {
+        "id": 37267961987,
+        "name": "p01-research-publication",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 25,
+        "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267961987/jobs",
+        "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267961987/logs",
+        "workflow_id": 372992558
+      },
+      {
+        "id": 37267961909,
+        "name": "sec-primary-disclosure",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 24,
+        "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267961909/jobs",
+        "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267961909/logs",
+        "workflow_id": 372894520
+      },
+      {
+        "id": 37267962109,
+        "name": "technical-real-producer",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 32,
+        "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267962109/jobs",
+        "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267962109/logs",
+        "workflow_id": 372087969
+      },
+      {
+        "id": 37267961900,
+        "name": "technical-real-model",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 29,
+        "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267961900/jobs",
+        "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37267961900/logs",
+        "workflow_id": 372119674
+      }
+    ],
+    "observed_status": "7_IN_PROGRESS_NULL",
+    "recorded_attempts_from_current_Main_state": [
+      {
+        "id": 37267962003,
+        "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1
+      },
+      {
+        "id": 37267962024,
+        "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1
+      },
+      {
+        "id": 37267962000,
+        "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1
+      },
+      {
+        "id": 37267961987,
+        "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1
+      },
+      {
+        "id": 37267961909,
+        "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1
+      },
+      {
+        "id": 37267962109,
+        "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1
+      },
+      {
+        "id": 37267961900,
+        "head": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+        "attempt": 1
+      }
+    ],
+    "old_success_reusable": false,
+    "do_not_dispatch_or_rerun": true,
+    "CI_governance_and_actual_Chart_merge_result_distinct": true
+  },
+  "new_owner_routes": [
+    {
+      "packet": "MAIN-PLATFORM-PPF-RETURN-20261005",
+      "comment_id": 5988659420,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/45#issuecomment-5988659420",
+      "created_at": "2026-10-05T05:27:00Z",
+      "body_sha256": "bbad9a80395fd60f94526c35c852beb184a22acc46b590dc94ebede1862361ba",
+      "state": "ROUTED",
+      "receipt": null,
+      "Chart_gate_impact": "NONE"
+    },
+    {
+      "packet": "MAIN-PLATFORM-WEB-PPAF08-20261005",
+      "comment_id": 5988663367,
+      "url": "https://github.com/kco994553-star/Investment-System1/pull/36#issuecomment-5988663367",
+      "created_at": "2026-10-05T05:27:23Z",
+      "body_sha256": "93e749e90beb84d5826af51b8e61a6a5cd677e2c7721810761ce353e4d995f46",
+      "state": "ROUTED",
+      "receipt": null,
+      "Chart_gate_impact": "No source/write-set acceptance; existing Target/Actual separation reinforced"
+    }
+  ],
+  "consistency_caveats": [
+    "OWNER_ROUTING_LEDGER A-G3 entry still pins2135962a while latest scoped implementation receipt/Main state/Globaloverride pina3e3; use actual latest subject. This stale routing field is not adopted future Chart-result condition.",
+    "Ledger oldplatform_pr45.open_findings stilllistsPPF003..006; newerplatform_delta/current exactprobe/ownerreceipt narrows contract-subfinding closure. Do not treat wholePPF005 orChartgate asclosed.",
+    "OldPR46 terminalCI is213 exactsubject; currenta3e3 has separateCI obligation. Integrity hashes/consistency matches are not independently authorized verifier authentication."
+  ],
+  "source_pins": [
+    {
+      "commit": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "path": "implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md",
+      "git_blob": "d32928233a0b0a41eba349f89cf0b3ec58ae7823",
+      "sha256": "94947926b45ac543387dbca07fdbaeb4f2f8bfdaf82d2151841816a1e1851516"
+    },
+    {
+      "commit": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+      "git_blob": "10d8900beccd35198362eda201b1998afac76618"
+    },
+    {
+      "commit": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "path": "implementation/docs/coordination/PIW_DECISION_RECORDS.md",
+      "git_blob": "c4c3e3b4180a3e25f9286dd8331fedc8b6befc39",
+      "sha256": "6b7d15fe837d3b5d1f16dc8c6ddbc28597e7223d07b870aa440665d1747fbe40"
+    },
+    {
+      "commit": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "path": "implementation/docs/coordination/OWNER_ROUTING_LEDGER.json",
+      "git_blob": "03e6fc9660cdf6ace0701646f0a289190dc4a79d"
+    },
+    {
+      "commit": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "path": "implementation/docs/coordination/MAIN_TAKEOVER_STATE.json",
+      "git_blob": "db58ea679c4d2b951057e21bae24a7b8f5725f7a",
+      "sha256": "b833ab0209d996874ed295936d756e63df51e2ceeb7564d5a843d360a2fcf3fa"
+    },
+    {
+      "commit": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "path": "implementation/docs/coordination/evidence/main_tools_2026-10-05/PIW_D002_IMPLEMENTATION_RECEIPT.json",
+      "git_blob": "067bc148b020c0d1cdaaf60ffe564ee11bda5eb6",
+      "sha256": "fba0fa861f833c5e5bb0831b111cef0b1c32dc46056abc523305832aa874d8e7"
+    },
+    {
+      "commit": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "path": "implementation/docs/coordination/evidence/main_tools_2026-10-05/FPIA_TERMINAL_CI_RECEIPT.json",
+      "git_blob": "c3e1b394336b3d0b28ef73fec7e16a38d8745d05",
+      "sha256": "041da45e75610493eb4ca8ca47cdfa72f900c2ac015c79c14722e117e5b6ad26"
+    },
+    {
+      "commit": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "path": "implementation/docs/coordination/evidence/main_tools_2026-10-05/OWNER_RETURN_DELIVERIES.json",
+      "git_blob": "8cd90b74a8f7024e1a48c161ae7b2fd17b94409e",
+      "sha256": "33a825ef26cf05864eedb35126ec8362e50697dbce050bc959b2cd20e74fdfc2"
+    },
+    {
+      "commit": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "path": "implementation/docs/coordination/evidence/main_takeover_2026-10-05/INTEGRATION_SIDE_CONDITIONAL_ACCEPTANCE.json",
+      "git_blob": "766ef02953ab370b700d05d29304c3567eaa349b",
+      "sha256": "a4a4e5fdc64c384d0e6c6e03ef778d2ea3d1c31c96cb9bbb2aa7227ffdcd55e9"
+    },
+    {
+      "commit": "a3e3f6cf5452d056de2df7845a17014765aa3ff3",
+      "path": "implementation/tools/integration/track_c_fpia_evidence_identity.py",
+      "git_blob": "5b4ed76a580f07f4f7e3690de7f68236524cf108",
+      "sha256": "b7393fcdfe12cbe77302c568caa6bb09c5ae684fc729b37d7808948db7c9c6e5"
+    },
+    {
+      "commit": "7a29f5aa0620a0e1a889d1e41ab2823c41bce17b",
+      "path": "implementation/docs/coordination/GLOBAL_STATUS_INDEX.md",
+      "git_blob": "c1eaf082522f70a3ae92e62fa34c9fcdb6ab2c42"
+    },
+    {
+      "commit": "eedab5922db453a7b11a851cf57844064ce00f3f",
+      "path": "implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+      "git_blob": "d86ccc0d45144698aa902b9bf9afb7ff30ffdfc4"
+    }
+  ],
+  "verification_performed": "Read-only source/receipt/compare/API status inspection and JSON parsing/hash computation only. No runtime or old audits/tests executed.",
+  "constraints": {
+    "repo_source_edits": 0,
+    "local_git_fetch_or_ref_updates": 0,
+    "remote_mutations": 0,
+    "account_messages_sent": 0,
+    "tests_executed": [],
+    "new_approval_requests": 0,
+    "only_written_artifact": "/workspace/scratch/9de0281e56bb/new_late_owner_intake_v09.json"
+  },
+  "next_exact_action": "Parent continues already authorized SAMPLE canvas repair under its existing lease and consumes this changed owner evidence in its scoped handoff/state. NewGlobal/FPIA progress does not unlock production. Main tracks existinga3e3CI, then authorized verifier/launcher/authenticatedreceipt/coverage/attribution/applicability/GIE obligations; Chart consumes actual source/Product/fullwrite-set returns and rejudges six unchangedrootgates."
+}

@@ -1,0 +1,67 @@
+{
+  "heads": {
+    "review": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+    "owner": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+    "main": "6d029732e6bee02038a25685badb937b2666d04e",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "claim_head": "06e5f163a4f871ab99c767a46673c19da5d5ad1c",
+  "tree": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+  "tree_nontruncated": true,
+  "authority_submission_at_kst": "2026-10-05T17:59:16+09:00",
+  "recorded_at_utc": "2026-10-05T09:06:01.010Z",
+  "Global_CDR015": "HISTORICAL_BROADER_DELEGATION_CONFLICT_SUPERSEDED_FOR_CURRENT_SCOPE",
+  "Missing_Data_owner": "ACTIVE_NON_EXPIRING_LEASE_PRESERVED",
+  "new_principle_Main_consumption": "NOT_EVIDENCED",
+  "current_comments_consumed": [
+    "5989173684: prior G1/G2 return only",
+    "5990706291: prior scope return only"
+  ],
+  "lookup_failure_history": [
+    {
+      "action": "Initial CONTROL and owner STATE lookup",
+      "result": "404",
+      "classification": "REPLAN",
+      "repair": "Resolved exact lanes/CONTROL.json and missing_data_gate/automation/STATE.json from nontruncated authenticated tree; no remote mutation on lookup failure"
+    }
+  ],
+  "raw_input_refs": [
+    {
+      "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md",
+      "sha256": "9f159879ac89c96ede7bb2fa76ca6f6dac162328e5f9c76710fce03ba6ecd087",
+      "git_blob_sha": "3055c8d0e7d11c7b297287e6bc18463da40d2755"
+    },
+    {
+      "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/DECISION_REGISTER.md",
+      "sha256": "84675f99f5aaeb997e0439a12b8603b46e074b71513628e988a83f7e6b1486d9",
+      "git_blob_sha": "f862d5bda1a30ca82151208a4575c88b5b543573"
+    },
+    {
+      "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+      "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758",
+      "git_blob_sha": "120a7ab21b7ae07178dec6150f486192d5a3489b"
+    },
+    {
+      "head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OBLIGATION_MAP.json",
+      "sha256": "f67b49cffbc702af9a0743eb9586c3dc28fd07f92b208013160628a2a6ee419f",
+      "git_blob_sha": "8f1d5e0623767bc931e35bc42fc1862c9246049a"
+    },
+    {
+      "head": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+      "path": "implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md",
+      "sha256": "0ea4b02d48ed2358d1ba403c696a4a99bc91af384a5bdff7f5d3cf102bd6cd2f",
+      "git_blob_sha": null
+    },
+    {
+      "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/automation/STATE.json",
+      "sha256": "4c5f9448f905d636434fe043a58c721061bf0aa1e1320afb22610e3f953938df",
+      "git_blob_sha": "4c6c6c231472d345152cbd0485e136189e4c0879"
+    }
+  ]
+}

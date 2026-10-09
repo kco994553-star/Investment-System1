@@ -1,0 +1,5842 @@
+{
+  "kind": "NO_REPLACEMENT_NO_VINTAGE_INFERENCE",
+  "rows": [
+    {
+      "provider_symbol": "NVDA",
+      "prior_raw_sha256": "357347e0031ba982cb145478a076eec0b0a1febd2dc59eb9b624d5281db2183a",
+      "comparison_raw_sha256": "80873407159273f90cfc7100c65c52e4cc5835adb7ca7e9d336e99390bc97435",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 748
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "19.64547348022461",
+          "new_token": "19.645471572875977",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2021-10-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "20.361318588256836",
+          "new_token": "20.361310958862305",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2021-10-06T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "20.609224319458008",
+          "new_token": "20.609222412109375",
+          "old_index": 2,
+          "new_index": 2
+        },
+        {
+          "timestamp_utc": "2021-10-11T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "20.604244232177734",
+          "new_token": "20.60424041748047",
+          "old_index": 5,
+          "new_index": 5
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "20.580350875854492",
+          "new_token": "20.580352783203125",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "20.847171783447266",
+          "new_token": "20.84717559814453",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "21.650636672973633",
+          "new_token": "21.6506404876709",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "21.766130447387695",
+          "new_token": "21.766128540039062",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-18T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "22.12455177307129",
+          "new_token": "22.124553680419922",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "22.006072998046875",
+          "new_token": "22.00606918334961",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-21T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "22.59248924255371",
+          "new_token": "22.592487335205078",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "22.626338958740234",
+          "new_token": "22.6263427734375",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "23.06441307067871",
+          "new_token": "23.064407348632812",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-26T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "24.60860824584961",
+          "new_token": "24.608606338500977",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2021-10-27T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "24.343774795532227",
+          "new_token": "24.34377670288086",
+          "old_index": 17,
+          "new_index": 17
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "25.713741302490234",
+          "new_token": "25.713743209838867",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "26.285221099853516",
+          "new_token": "26.28522491455078",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "26.48135757446289",
+          "new_token": "26.481359481811523",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "29.67030906677246",
+          "new_token": "29.67031478881836",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2021-11-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "29.62152671813965",
+          "new_token": "29.621530532836914",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "30.668914794921875",
+          "new_token": "30.668916702270508",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "30.522563934326172",
+          "new_token": "30.522560119628906",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "29.329818725585938",
+          "new_token": "29.329814910888672",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "29.893329620361328",
+          "new_token": "29.893333435058594",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "30.070552825927734",
+          "new_token": "30.070547103881836",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-18T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.536094665527344",
+          "new_token": "31.53609848022461",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "32.84035110473633",
+          "new_token": "32.840362548828125",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.815868377685547",
+          "new_token": "31.81586456298828",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-23T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.60678482055664",
+          "new_token": "31.606786727905273",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-24T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "32.53070831298828",
+          "new_token": "32.53071975708008",
+          "old_index": 37,
+          "new_index": 37
+        },
+        {
+          "timestamp_utc": "2021-11-26T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.36484718322754",
+          "new_token": "31.364850997924805",
+          "old_index": 38,
+          "new_index": 38
+        },
+        {
+          "timestamp_utc": "2021-11-30T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "32.53269577026367",
+          "new_token": "32.53269958496094",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-01T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.300981521606445",
+          "new_token": "31.300979614257812",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2021-12-02T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.98903465270996",
+          "new_token": "31.98902702331543",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "30.562145233154297",
+          "new_token": "30.5621395111084",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-06T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "29.908939361572266",
+          "new_token": "29.9089412689209",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.6903133392334",
+          "new_token": "31.690309524536133",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-13T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "28.040939331054688",
+          "new_token": "28.04093360900879",
+          "old_index": 49,
+          "new_index": 49
+        },
+        {
+          "timestamp_utc": "2021-12-14T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "28.216184616088867",
+          "new_token": "28.216188430786133",
+          "old_index": 50,
+          "new_index": 50
+        },
+        {
+          "timestamp_utc": "2021-12-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "30.329145431518555",
+          "new_token": "30.329139709472656",
+          "old_index": 51,
+          "new_index": 51
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "MSFT",
+      "prior_raw_sha256": "b2c375cc515006e968e26c17aab6afb3e85029af5988c99d5915dfe9f80f5e98",
+      "comparison_raw_sha256": "1928d912a1ce75fce225e5538b9bd009a1e6ad970f0c7d9a551352e44069842f",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 743
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "271.7083740234375",
+          "new_token": "271.70843505859375",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2021-10-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "277.130859375",
+          "new_token": "277.1308898925781",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "282.97552490234375",
+          "new_token": "282.9756164550781",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-08T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "282.97552490234375",
+          "new_token": "282.9756164550781",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2021-10-11T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "282.38055419921875",
+          "new_token": "282.3805847167969",
+          "old_index": 5,
+          "new_index": 5
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "281.0848693847656",
+          "new_token": "281.0849609375",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "291.9585876464844",
+          "new_token": "291.9586486816406",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-18T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "294.91461181640625",
+          "new_token": "294.91455078125",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "295.8167419433594",
+          "new_token": "295.81671142578125",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "295.0296936035156",
+          "new_token": "295.02978515625",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-21T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "298.2447814941406",
+          "new_token": "298.244873046875",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "296.7092590332031",
+          "new_token": "296.70928955078125",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "295.7207946777344",
+          "new_token": "295.72076416015625",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-26T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "297.62103271484375",
+          "new_token": "297.62091064453125",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2021-10-27T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "310.1550598144531",
+          "new_token": "310.1551208496094",
+          "old_index": 17,
+          "new_index": 17
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "311.28753662109375",
+          "new_token": "311.28759765625",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "318.2647705078125",
+          "new_token": "318.2647399902344",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "316.1054382324219",
+          "new_token": "316.10540771484375",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "319.71392822265625",
+          "new_token": "319.7139587402344",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "320.5489196777344",
+          "new_token": "320.5488586425781",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "322.8906555175781",
+          "new_token": "322.8905334472656",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2021-11-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "322.5259704589844",
+          "new_token": "322.5259094238281",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "323.4185485839844",
+          "new_token": "323.41851806640625",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "322.42041015625",
+          "new_token": "322.4203796386719",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "317.4778137207031",
+          "new_token": "317.47772216796875",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-12T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "323.1593322753906",
+          "new_token": "323.159423828125",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "322.5354919433594",
+          "new_token": "322.5355529785156",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "325.83709716796875",
+          "new_token": "325.8370666503906",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "326.0582275390625",
+          "new_token": "326.05816650390625",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-18T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "328.1253662109375",
+          "new_token": "328.1252746582031",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "329.8944396972656",
+          "new_token": "329.8944091796875",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "326.74078369140625",
+          "new_token": "326.7408142089844",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-23T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "324.6736755371094",
+          "new_token": "324.6736145019531",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-24T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "324.8947448730469",
+          "new_token": "324.8946838378906",
+          "old_index": 37,
+          "new_index": 37
+        },
+        {
+          "timestamp_utc": "2021-12-01T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "317.3663024902344",
+          "new_token": "317.3663330078125",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "310.568603515625",
+          "new_token": "310.56866455078125",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-06T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "313.62615966796875",
+          "new_token": "313.6261291503906",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "322.0679626464844",
+          "new_token": "322.0680236816406",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "320.2700500488281",
+          "new_token": "320.27008056640625",
+          "old_index": 47,
+          "new_index": 47
+        },
+        {
+          "timestamp_utc": "2021-12-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "329.3464050292969",
+          "new_token": "329.34637451171875",
+          "old_index": 48,
+          "new_index": 48
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "8035.T",
+      "prior_raw_sha256": "4b73393390ac0f41865f6ceab82e682d4b3a69fcf9d42b8264b3ca908c7eb758",
+      "comparison_raw_sha256": "5c28080bb3df05447770736134f3f6eb12032c018314555f8dcf578af26d300e",
+      "prior_rows": 1222,
+      "new_rows": 1222,
+      "shared_timestamp_count": 1222,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 566
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-05T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2658.2353515625",
+          "new_token": "2658.235595703125",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2021-10-07T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2644.979248046875",
+          "new_token": "2644.97900390625",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-08T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2730.858642578125",
+          "new_token": "2730.85888671875",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2021-10-11T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2698.005615234375",
+          "new_token": "2698.00537109375",
+          "old_index": 5,
+          "new_index": 5
+        },
+        {
+          "timestamp_utc": "2021-10-13T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2636.90966796875",
+          "new_token": "2636.909912109375",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-15T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2855.931640625",
+          "new_token": "2855.931396484375",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-18T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2882.445068359375",
+          "new_token": "2882.44482421875",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-19T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2936.048095703125",
+          "new_token": "2936.0478515625",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-20T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2937.20068359375",
+          "new_token": "2937.2001953125",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-21T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2801.75244140625",
+          "new_token": "2801.752685546875",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-25T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2889.361328125",
+          "new_token": "2889.361572265625",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-26T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "2957.374267578125",
+          "new_token": "2957.373291015625",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2021-11-02T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3183.31201171875",
+          "new_token": "3183.311767578125",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-04T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3242.10205078125",
+          "new_token": "3242.1025390625",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-05T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3262.275634765625",
+          "new_token": "3262.275146484375",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2021-11-08T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3303.19775390625",
+          "new_token": "3303.1982421875",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-11T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3257.663818359375",
+          "new_token": "3257.6640625",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-12T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3321.64208984375",
+          "new_token": "3321.641845703125",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-15T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3353.91845703125",
+          "new_token": "3353.918701171875",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-16T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3400.604736328125",
+          "new_token": "3400.60498046875",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-17T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3512.99755859375",
+          "new_token": "3512.997802734375",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-18T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3493.40087890625",
+          "new_token": "3493.4013671875",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-22T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3633.45947265625",
+          "new_token": "3633.459716796875",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-24T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3568.32958984375",
+          "new_token": "3568.329833984375",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-25T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3589.655517578125",
+          "new_token": "3589.6552734375",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-30T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3449.019775390625",
+          "new_token": "3449.020263671875",
+          "old_index": 39,
+          "new_index": 39
+        },
+        {
+          "timestamp_utc": "2021-12-01T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3454.207763671875",
+          "new_token": "3454.20751953125",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-03T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3417.89599609375",
+          "new_token": "3417.896240234375",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-06T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3461.7001953125",
+          "new_token": "3461.70068359375",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-07T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3526.83056640625",
+          "new_token": "3526.830322265625",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2021-12-09T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3609.8291015625",
+          "new_token": "3609.828857421875",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-10T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3564.294677734375",
+          "new_token": "3564.294921875",
+          "old_index": 47,
+          "new_index": 47
+        },
+        {
+          "timestamp_utc": "2021-12-13T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3613.287353515625",
+          "new_token": "3613.287109375",
+          "old_index": 48,
+          "new_index": 48
+        },
+        {
+          "timestamp_utc": "2021-12-14T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3547.00390625",
+          "new_token": "3547.004150390625",
+          "old_index": 49,
+          "new_index": 49
+        },
+        {
+          "timestamp_utc": "2021-12-17T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3531.44189453125",
+          "new_token": "3531.441650390625",
+          "old_index": 52,
+          "new_index": 52
+        },
+        {
+          "timestamp_utc": "2021-12-20T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3435.187255859375",
+          "new_token": "3435.1875",
+          "old_index": 53,
+          "new_index": 53
+        },
+        {
+          "timestamp_utc": "2021-12-21T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3586.197509765625",
+          "new_token": "3586.197265625",
+          "old_index": 54,
+          "new_index": 54
+        },
+        {
+          "timestamp_utc": "2021-12-22T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3612.710205078125",
+          "new_token": "3612.71044921875",
+          "old_index": 55,
+          "new_index": 55
+        },
+        {
+          "timestamp_utc": "2021-12-23T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3659.97314453125",
+          "new_token": "3659.972900390625",
+          "old_index": 56,
+          "new_index": 56
+        },
+        {
+          "timestamp_utc": "2021-12-24T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "3703.777587890625",
+          "new_token": "3703.77734375",
+          "old_index": 57,
+          "new_index": 57
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "042700.KS",
+      "prior_raw_sha256": "0fd4f74e03fa3908dda2ae4b7970537fef9e1d855003bd7179c6a3f180390552",
+      "comparison_raw_sha256": "1507040662625575f77795fb58b42aa8144e1239f8d65a80c34e25cbc7d472f7",
+      "prior_rows": 1221,
+      "new_rows": 1221,
+      "shared_timestamp_count": 1221,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 259
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-08T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "14006.095703125",
+          "new_token": "14006.0947265625",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-15T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "14958.8916015625",
+          "new_token": "14958.890625",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-18T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "14839.791015625",
+          "new_token": "14839.7919921875",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-21T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "14363.3935546875",
+          "new_token": "14363.3955078125",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-22T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "14553.953125",
+          "new_token": "14553.9521484375",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-26T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "15077.9892578125",
+          "new_token": "15077.9912109375",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-28T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "15506.7490234375",
+          "new_token": "15506.748046875",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2021-11-01T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "14958.8916015625",
+          "new_token": "14958.890625",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-11-02T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "15077.9892578125",
+          "new_token": "15077.9912109375",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-03T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "14768.3330078125",
+          "new_token": "14768.33203125",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-04T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "14958.8916015625",
+          "new_token": "14958.890625",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-09T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "15411.46875",
+          "new_token": "15411.4677734375",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-10T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "14982.7099609375",
+          "new_token": "14982.7109375",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-11T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "14815.970703125",
+          "new_token": "14815.9716796875",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2021-11-12T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "15340.0087890625",
+          "new_token": "15340.009765625",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-15T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "16411.904296875",
+          "new_token": "16411.90625",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-17T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "16483.36328125",
+          "new_token": "16483.365234375",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-18T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "16793.0234375",
+          "new_token": "16793.021484375",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-19T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17055.0390625",
+          "new_token": "17055.041015625",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-24T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17007.400390625",
+          "new_token": "17007.40234375",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-25T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "16483.36328125",
+          "new_token": "16483.365234375",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-26T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "16126.064453125",
+          "new_token": "16126.0654296875",
+          "old_index": 37,
+          "new_index": 37
+        },
+        {
+          "timestamp_utc": "2021-11-29T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "15816.4052734375",
+          "new_token": "15816.40625",
+          "old_index": 38,
+          "new_index": 38
+        },
+        {
+          "timestamp_utc": "2021-12-01T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "16531.00390625",
+          "new_token": "16531.001953125",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-02T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17388.51953125",
+          "new_token": "17388.517578125",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2021-12-03T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17507.6171875",
+          "new_token": "17507.619140625",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-06T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17936.376953125",
+          "new_token": "17936.375",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-07T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17936.376953125",
+          "new_token": "17936.375",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2021-12-14T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17674.357421875",
+          "new_token": "17674.359375",
+          "old_index": 49,
+          "new_index": 49
+        },
+        {
+          "timestamp_utc": "2021-12-15T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17483.796875",
+          "new_token": "17483.798828125",
+          "old_index": 50,
+          "new_index": 50
+        },
+        {
+          "timestamp_utc": "2021-12-17T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "16816.84375",
+          "new_token": "16816.841796875",
+          "old_index": 52,
+          "new_index": 52
+        },
+        {
+          "timestamp_utc": "2021-12-23T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17197.958984375",
+          "new_token": "17197.962890625",
+          "old_index": 56,
+          "new_index": 56
+        },
+        {
+          "timestamp_utc": "2021-12-24T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17197.958984375",
+          "new_token": "17197.962890625",
+          "old_index": 57,
+          "new_index": 57
+        },
+        {
+          "timestamp_utc": "2021-12-27T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17436.162109375",
+          "new_token": "17436.16015625",
+          "old_index": 58,
+          "new_index": 58
+        },
+        {
+          "timestamp_utc": "2021-12-29T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17918.470703125",
+          "new_token": "17918.47265625",
+          "old_index": 60,
+          "new_index": 60
+        },
+        {
+          "timestamp_utc": "2021-12-30T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "18330.109375",
+          "new_token": "18330.111328125",
+          "old_index": 61,
+          "new_index": 61
+        },
+        {
+          "timestamp_utc": "2022-01-04T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "18039.5390625",
+          "new_token": "18039.541015625",
+          "old_index": 62,
+          "new_index": 62
+        },
+        {
+          "timestamp_utc": "2022-01-10T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17070.9765625",
+          "new_token": "17070.974609375",
+          "old_index": 66,
+          "new_index": 66
+        },
+        {
+          "timestamp_utc": "2022-01-12T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "17095.189453125",
+          "new_token": "17095.19140625",
+          "old_index": 68,
+          "new_index": 68
+        },
+        {
+          "timestamp_utc": "2022-01-17T00:00:00+00:00",
+          "field": "adjclose",
+          "old_token": "18039.5390625",
+          "new_token": "18039.541015625",
+          "old_index": 71,
+          "new_index": 71
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "ASML",
+      "prior_raw_sha256": "c7b3505a1c5d6784b86e3641339cc6e65949d96aabdf47e0acf4033da693843e",
+      "comparison_raw_sha256": "cfee779daa993b05d1d7564761bb699e369af5dc4ec755a7402d317bedf7718b",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 757
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "680.2025756835938",
+          "new_token": "680.2025146484375",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2021-10-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "699.2175903320312",
+          "new_token": "699.2174682617188",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "712.5269775390625",
+          "new_token": "712.52685546875",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-08T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "696.73681640625",
+          "new_token": "696.7367553710938",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "691.7565307617188",
+          "new_token": "691.756591796875",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "710.2369384765625",
+          "new_token": "710.2371215820312",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "742.5518188476562",
+          "new_token": "742.5516967773438",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "753.151611328125",
+          "new_token": "753.1517333984375",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "764.1809692382812",
+          "new_token": "764.1808471679688",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "732.447998046875",
+          "new_token": "732.4481811523438",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "764.1903076171875",
+          "new_token": "764.1904296875",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "752.2356567382812",
+          "new_token": "752.2357177734375",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-26T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "754.8975830078125",
+          "new_token": "754.897705078125",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2021-10-27T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "764.2188110351562",
+          "new_token": "764.2189331054688",
+          "old_index": 17,
+          "new_index": 17
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "775.5533447265625",
+          "new_token": "775.5535278320312",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "770.3728637695312",
+          "new_token": "770.372802734375",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "776.737548828125",
+          "new_token": "776.7376098632812",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "793.9557495117188",
+          "new_token": "793.9556274414062",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "813.5361328125",
+          "new_token": "813.5361938476562",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2021-11-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "810.1978149414062",
+          "new_token": "810.1976928710938",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "813.0005493164062",
+          "new_token": "813.0004272460938",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "813.115234375",
+          "new_token": "813.1152954101562",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2021-11-11T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "797.17919921875",
+          "new_token": "797.1790771484375",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "823.1589965820312",
+          "new_token": "823.1590576171875",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "819.9258422851562",
+          "new_token": "819.92578125",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-23T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "772.3949584960938",
+          "new_token": "772.3948974609375",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-24T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "767.5261840820312",
+          "new_token": "767.5260620117188",
+          "old_index": 37,
+          "new_index": 37
+        },
+        {
+          "timestamp_utc": "2021-11-26T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "748.0410766601562",
+          "new_token": "748.041259765625",
+          "old_index": 38,
+          "new_index": 38
+        },
+        {
+          "timestamp_utc": "2021-11-29T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "779.5977783203125",
+          "new_token": "779.5977172851562",
+          "old_index": 39,
+          "new_index": 39
+        },
+        {
+          "timestamp_utc": "2021-11-30T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "757.1187744140625",
+          "new_token": "757.1188354492188",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-01T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "769.0660400390625",
+          "new_token": "769.0662231445312",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2021-12-02T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "755.0814819335938",
+          "new_token": "755.0814208984375",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "737.997314453125",
+          "new_token": "737.9974365234375",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "747.8689575195312",
+          "new_token": "747.8690795898438",
+          "old_index": 48,
+          "new_index": 48
+        },
+        {
+          "timestamp_utc": "2021-12-13T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "731.2538452148438",
+          "new_token": "731.2536010742188",
+          "old_index": 49,
+          "new_index": 49
+        },
+        {
+          "timestamp_utc": "2021-12-14T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "721.61181640625",
+          "new_token": "721.6116333007812",
+          "old_index": 50,
+          "new_index": 50
+        },
+        {
+          "timestamp_utc": "2021-12-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "757.7979736328125",
+          "new_token": "757.798095703125",
+          "old_index": 51,
+          "new_index": 51
+        },
+        {
+          "timestamp_utc": "2021-12-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "722.195068359375",
+          "new_token": "722.1951293945312",
+          "old_index": 52,
+          "new_index": 52
+        },
+        {
+          "timestamp_utc": "2021-12-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "717.2880859375",
+          "new_token": "717.2880249023438",
+          "old_index": 53,
+          "new_index": 53
+        },
+        {
+          "timestamp_utc": "2021-12-21T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "749.0167846679688",
+          "new_token": "749.016845703125",
+          "old_index": 55,
+          "new_index": 55
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "LRCX",
+      "prior_raw_sha256": "c23b349c319adcc4087c491758130794c5a9b989553cef5446ec5d6f8c198940",
+      "comparison_raw_sha256": "564c28d75b4421705bfa7a6dbbbe9af7e65cf732f5d854f30e539ce70ea71dc0",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 746
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "52.29643249511719",
+          "new_token": "52.29642868041992",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2021-10-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "52.84397506713867",
+          "new_token": "52.8439826965332",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2021-10-06T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "52.447574615478516",
+          "new_token": "52.44758605957031",
+          "old_index": 2,
+          "new_index": 2
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "52.836368560791016",
+          "new_token": "52.83636474609375",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-08T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "52.29833221435547",
+          "new_token": "52.29832458496094",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2021-10-11T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "52.515071868896484",
+          "new_token": "52.51506423950195",
+          "old_index": 5,
+          "new_index": 5
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "51.9770393371582",
+          "new_token": "51.977027893066406",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "51.75173568725586",
+          "new_token": "51.751731872558594",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "53.98755645751953",
+          "new_token": "53.987548828125",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-18T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "54.06074523925781",
+          "new_token": "54.06074905395508",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "54.26322555541992",
+          "new_token": "54.263221740722656",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "52.923828125",
+          "new_token": "52.9238395690918",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "52.47038650512695",
+          "new_token": "52.47039031982422",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "53.79933166503906",
+          "new_token": "53.79933547973633",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "53.57309341430664",
+          "new_token": "53.573081970214844",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "54.44668960571289",
+          "new_token": "54.446693420410156",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "54.587379455566406",
+          "new_token": "54.58738708496094",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "55.268001556396484",
+          "new_token": "55.26800537109375",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "56.91539764404297",
+          "new_token": "56.915401458740234",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2021-11-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "58.0599365234375",
+          "new_token": "58.059932708740234",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "57.8983268737793",
+          "new_token": "57.89833068847656",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "59.11890411376953",
+          "new_token": "59.118892669677734",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2021-11-11T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "58.338462829589844",
+          "new_token": "58.33845138549805",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-12T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "59.35750198364258",
+          "new_token": "59.357505798339844",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "59.91264724731445",
+          "new_token": "59.912654876708984",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-18T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "60.43928527832031",
+          "new_token": "60.43928909301758",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "61.26631164550781",
+          "new_token": "61.26630783081055",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "61.47544860839844",
+          "new_token": "61.475440979003906",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-23T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "62.865211486816406",
+          "new_token": "62.865230560302734",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-24T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "62.814842224121094",
+          "new_token": "62.81485366821289",
+          "old_index": 37,
+          "new_index": 37
+        },
+        {
+          "timestamp_utc": "2021-11-26T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "61.02675247192383",
+          "new_token": "61.026756286621094",
+          "old_index": 38,
+          "new_index": 38
+        },
+        {
+          "timestamp_utc": "2021-11-30T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "64.6266860961914",
+          "new_token": "64.62670135498047",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-01T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "65.92710876464844",
+          "new_token": "65.92709350585938",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2021-12-02T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "62.884239196777344",
+          "new_token": "62.88424301147461",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "62.879493713378906",
+          "new_token": "62.87948226928711",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-06T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "63.458396911621094",
+          "new_token": "63.45839309692383",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "67.8758773803711",
+          "new_token": "67.87584686279297",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "66.48417663574219",
+          "new_token": "66.48418426513672",
+          "old_index": 47,
+          "new_index": 47
+        },
+        {
+          "timestamp_utc": "2021-12-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "67.10871887207031",
+          "new_token": "67.10871124267578",
+          "old_index": 48,
+          "new_index": 48
+        },
+        {
+          "timestamp_utc": "2021-12-13T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "65.1134033203125",
+          "new_token": "65.11341094970703",
+          "old_index": 49,
+          "new_index": 49
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "KLAC",
+      "prior_raw_sha256": "6e5a02e631565bf779de35c972650e528f9c11fd17cfbfd9fd137005cb76930a",
+      "comparison_raw_sha256": "9f8d18f314b04f2d3c61347ded0c758261c56aedf1c3bf55454df6c7fb829e32",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 748
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-06T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.348114013671875",
+          "new_token": "31.348115921020508",
+          "old_index": 2,
+          "new_index": 2
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.4433650970459",
+          "new_token": "31.443376541137695",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-08T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.057588577270508",
+          "new_token": "31.057594299316406",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "30.438432693481445",
+          "new_token": "30.438430786132812",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "30.520353317260742",
+          "new_token": "30.520349502563477",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.412893295288086",
+          "new_token": "31.412891387939453",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.348114013671875",
+          "new_token": "31.348115921020508",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-18T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.126169204711914",
+          "new_token": "31.12616539001465",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.637685775756836",
+          "new_token": "31.63768196105957",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.531959533691406",
+          "new_token": "31.531951904296875",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-21T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "31.958694458007812",
+          "new_token": "31.958690643310547",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "32.67499923706055",
+          "new_token": "32.67500305175781",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "32.694053649902344",
+          "new_token": "32.69405746459961",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-26T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "32.57402420043945",
+          "new_token": "32.574039459228516",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "33.84757614135742",
+          "new_token": "33.84758377075195",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "36.2213134765625",
+          "new_token": "36.22130584716797",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "37.03001022338867",
+          "new_token": "37.03001403808594",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "37.49866485595703",
+          "new_token": "37.49867248535156",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "38.96652603149414",
+          "new_token": "38.96653366088867",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "39.32469177246094",
+          "new_token": "39.32468795776367",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "39.73141860961914",
+          "new_token": "39.731422424316406",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "38.51598358154297",
+          "new_token": "38.51597595214844",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-11T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "39.31991958618164",
+          "new_token": "39.31992721557617",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-12T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "39.466983795166016",
+          "new_token": "39.46699142456055",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "39.445980072021484",
+          "new_token": "39.445987701416016",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "40.414329528808594",
+          "new_token": "40.41432189941406",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "40.093448638916016",
+          "new_token": "40.09345626831055",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-18T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "40.41813659667969",
+          "new_token": "40.41814041137695",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "40.33600997924805",
+          "new_token": "40.33600616455078",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "38.953216552734375",
+          "new_token": "38.95322036743164",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-23T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "39.34284210205078",
+          "new_token": "39.342838287353516",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-24T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "39.468902587890625",
+          "new_token": "39.46890640258789",
+          "old_index": 37,
+          "new_index": 37
+        },
+        {
+          "timestamp_utc": "2021-11-30T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "38.975189208984375",
+          "new_token": "38.975181579589844",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-01T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "39.3619384765625",
+          "new_token": "39.361942291259766",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2021-12-02T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "38.44039535522461",
+          "new_token": "38.440391540527344",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "38.263736724853516",
+          "new_token": "38.26372146606445",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-07T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "40.027557373046875",
+          "new_token": "40.02755355834961",
+          "old_index": 45,
+          "new_index": 45
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "40.23097229003906",
+          "new_token": "40.23096466064453",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "39.09360122680664",
+          "new_token": "39.093597412109375",
+          "old_index": 47,
+          "new_index": 47
+        },
+        {
+          "timestamp_utc": "2021-12-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "39.21965026855469",
+          "new_token": "39.21965789794922",
+          "old_index": 48,
+          "new_index": 48
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "AMD",
+      "prior_raw_sha256": "8dbb143fe3876484db36dea404399cd14aef12e06a7b4ac46a56a0480e91be33",
+      "comparison_raw_sha256": "fa42d22024a7d12ead175fa3f533490105079a37f691414def0325a3b08a6640",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 0
+      },
+      "differences_sample_max40": [],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "AVGO",
+      "prior_raw_sha256": "3377478afa855fa5c6bc28983f0636a1c6d19c9cc7e90660d27fff6d4c8db636",
+      "comparison_raw_sha256": "19dcc74e944c19ab30d8c811d4f200d82ce9f0c1bc21fb27859953f605e57a64",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 776
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "43.56789016723633",
+          "new_token": "43.56788635253906",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2021-10-06T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "44.74232482910156",
+          "new_token": "44.742332458496094",
+          "old_index": 2,
+          "new_index": 2
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.21283721923828",
+          "new_token": "45.21284103393555",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-08T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.11489486694336",
+          "new_token": "45.11488723754883",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2021-10-11T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.068206787109375",
+          "new_token": "45.06820297241211",
+          "old_index": 5,
+          "new_index": 5
+        },
+        {
+          "timestamp_utc": "2021-10-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "44.39722442626953",
+          "new_token": "44.3972282409668",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.5496940612793",
+          "new_token": "45.54970169067383",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-18T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.07696533203125",
+          "new_token": "46.07695770263672",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.72048568725586",
+          "new_token": "46.72047805786133",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.628944396972656",
+          "new_token": "46.62894821166992",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-21T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "47.064666748046875",
+          "new_token": "47.06467056274414",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "47.18001174926758",
+          "new_token": "47.18000793457031",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-26T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "48.869808197021484",
+          "new_token": "48.869815826416016",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2021-10-27T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "47.884857177734375",
+          "new_token": "47.88486099243164",
+          "old_index": 17,
+          "new_index": 17
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "48.476192474365234",
+          "new_token": "48.476200103759766",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "48.66842269897461",
+          "new_token": "48.66843795776367",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "48.337059020996094",
+          "new_token": "48.33705139160156",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "49.647884368896484",
+          "new_token": "49.647891998291016",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "51.16286849975586",
+          "new_token": "51.16284942626953",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "51.16559982299805",
+          "new_token": "51.16560745239258",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "50.233734130859375",
+          "new_token": "50.233741760253906",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-11T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "50.84063720703125",
+          "new_token": "50.84064483642578",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "51.78990173339844",
+          "new_token": "51.789894104003906",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "52.064510345458984",
+          "new_token": "52.064517974853516",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "52.14414596557617",
+          "new_token": "52.1441535949707",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-18T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "52.617408752441406",
+          "new_token": "52.61741256713867",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2021-11-23T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "50.81501388549805",
+          "new_token": "50.81502151489258",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-29T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "51.659000396728516",
+          "new_token": "51.65900421142578",
+          "old_index": 39,
+          "new_index": 39
+        },
+        {
+          "timestamp_utc": "2021-11-30T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "50.68320083618164",
+          "new_token": "50.683197021484375",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-01T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "50.78205108642578",
+          "new_token": "50.78205871582031",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2021-12-02T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "50.57059860229492",
+          "new_token": "50.57060623168945",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "51.08962631225586",
+          "new_token": "51.089637756347656",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-07T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "54.044498443603516",
+          "new_token": "54.044490814208984",
+          "old_index": 45,
+          "new_index": 45
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "53.87606430053711",
+          "new_token": "53.87605667114258",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "53.40556716918945",
+          "new_token": "53.40555191040039",
+          "old_index": 47,
+          "new_index": 47
+        },
+        {
+          "timestamp_utc": "2021-12-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "57.823219299316406",
+          "new_token": "57.823211669921875",
+          "old_index": 48,
+          "new_index": 48
+        },
+        {
+          "timestamp_utc": "2021-12-13T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "56.90599822998047",
+          "new_token": "56.906002044677734",
+          "old_index": 49,
+          "new_index": 49
+        },
+        {
+          "timestamp_utc": "2021-12-14T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "56.28811264038086",
+          "new_token": "56.288124084472656",
+          "old_index": 50,
+          "new_index": 50
+        },
+        {
+          "timestamp_utc": "2021-12-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "58.57200622558594",
+          "new_token": "58.57201385498047",
+          "old_index": 51,
+          "new_index": 51
+        },
+        {
+          "timestamp_utc": "2021-12-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "56.81629180908203",
+          "new_token": "56.81629943847656",
+          "old_index": 52,
+          "new_index": 52
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "QCOM",
+      "prior_raw_sha256": "dc4fbc71bb91ed8c4449431bca3172ab274c4760ce1df30ebc0f22476c602a25",
+      "comparison_raw_sha256": "092d0e53dae91ff8782284bf25c99f3b2c3b8b1cf88c6c3269f2f71fd1dd92db",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 688
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "113.62911987304688",
+          "new_token": "113.62913513183594",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2021-10-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "114.39154815673828",
+          "new_token": "114.39157104492188",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2021-10-06T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "114.86697387695312",
+          "new_token": "114.8669662475586",
+          "old_index": 2,
+          "new_index": 2
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "114.66962432861328",
+          "new_token": "114.66963195800781",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-11T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "112.0683822631836",
+          "new_token": "112.06838989257812",
+          "old_index": 5,
+          "new_index": 5
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "110.28340911865234",
+          "new_token": "110.28341674804688",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "116.7864761352539",
+          "new_token": "116.78649139404297",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-18T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "116.71473693847656",
+          "new_token": "116.71472930908203",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-21T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "119.34285736083984",
+          "new_token": "119.34290313720703",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "118.0602035522461",
+          "new_token": "118.06021118164062",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "118.3382797241211",
+          "new_token": "118.3382568359375",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-26T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "118.34724426269531",
+          "new_token": "118.34723663330078",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2021-10-27T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "117.6834716796875",
+          "new_token": "117.68345642089844",
+          "old_index": 17,
+          "new_index": 17
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "119.91696166992188",
+          "new_token": "119.91694641113281",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "119.33391571044922",
+          "new_token": "119.33389282226562",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "120.92157745361328",
+          "new_token": "120.92155456542969",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "121.29829406738281",
+          "new_token": "121.29827880859375",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "124.21346282958984",
+          "new_token": "124.2134780883789",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "140.02720642089844",
+          "new_token": "140.0271759033203",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2021-11-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "146.23431396484375",
+          "new_token": "146.2342987060547",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "148.7637481689453",
+          "new_token": "148.76376342773438",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "149.56207275390625",
+          "new_token": "149.5620574951172",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "143.33700561523438",
+          "new_token": "143.3370361328125",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-11T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "147.48106384277344",
+          "new_token": "147.48104858398438",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-12T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "147.94749450683594",
+          "new_token": "147.94754028320312",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "151.14971923828125",
+          "new_token": "151.14968872070312",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "163.0795440673828",
+          "new_token": "163.0795135498047",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-18T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "167.12489318847656",
+          "new_token": "167.12490844726562",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "165.94085693359375",
+          "new_token": "165.9408416748047",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "162.7117462158203",
+          "new_token": "162.71177673339844",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-23T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "162.29913330078125",
+          "new_token": "162.2991943359375",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-26T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "157.6348876953125",
+          "new_token": "157.63490295410156",
+          "old_index": 38,
+          "new_index": 38
+        },
+        {
+          "timestamp_utc": "2021-11-29T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "164.81068420410156",
+          "new_token": "164.8106689453125",
+          "old_index": 39,
+          "new_index": 39
+        },
+        {
+          "timestamp_utc": "2021-11-30T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "161.95831298828125",
+          "new_token": "161.95828247070312",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-02T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "159.39224243164062",
+          "new_token": "159.39227294921875",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "158.9240264892578",
+          "new_token": "158.92404174804688",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-06T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "157.96966552734375",
+          "new_token": "157.9696502685547",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2021-12-07T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "165.41567993164062",
+          "new_token": "165.4157257080078",
+          "old_index": 45,
+          "new_index": 45
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "164.43434143066406",
+          "new_token": "164.434326171875",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "165.55979919433594",
+          "new_token": "165.5597686767578",
+          "old_index": 48,
+          "new_index": 48
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "INTC",
+      "prior_raw_sha256": "9e4de576d228cd685133592b562e0ce1a5a7e738dd7da063d70d492d8425ce76",
+      "comparison_raw_sha256": "beafdc0a2367313830092c06b02e1cbb39b3b79dc55cec7cfe5299f0e1088bfc",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 310
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "49.24913787841797",
+          "new_token": "49.249141693115234",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2021-10-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "49.691246032714844",
+          "new_token": "49.691253662109375",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2021-10-06T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "49.71887969970703",
+          "new_token": "49.7188835144043",
+          "old_index": 2,
+          "new_index": 2
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "49.90309524536133",
+          "new_token": "49.9030876159668",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "48.051753997802734",
+          "new_token": "48.051761627197266",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "48.13465881347656",
+          "new_token": "48.1346549987793",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "49.64520263671875",
+          "new_token": "49.64519500732422",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "50.16099166870117",
+          "new_token": "50.160987854003906",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-18T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "50.17020034790039",
+          "new_token": "50.17020797729492",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "50.851783752441406",
+          "new_token": "50.85177993774414",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "50.99916458129883",
+          "new_token": "50.99916076660156",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-21T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "51.57942581176758",
+          "new_token": "51.57942199707031",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.55569076538086",
+          "new_token": "45.55567932128906",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.50962829589844",
+          "new_token": "45.5096321105957",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-27T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "44.109619140625",
+          "new_token": "44.109622955322266",
+          "old_index": 17,
+          "new_index": 17
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "44.28462600708008",
+          "new_token": "44.28462219238281",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.13199996948242",
+          "new_token": "45.13199234008789",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.638580322265625",
+          "new_token": "45.63857650756836",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.660831451416016",
+          "new_token": "46.66083526611328",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2021-11-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "47.226585388183594",
+          "new_token": "47.22658920288086",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "47.81088638305664",
+          "new_token": "47.810890197753906",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "47.48628234863281",
+          "new_token": "47.48627853393555",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "47.078189849853516",
+          "new_token": "47.07819747924805",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-11T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.864871978759766",
+          "new_token": "46.86487579345703",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-12T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.660831451416016",
+          "new_token": "46.66083526611328",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.67010498046875",
+          "new_token": "46.67009735107422",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.93907928466797",
+          "new_token": "46.9390754699707",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.58663558959961",
+          "new_token": "46.586631774902344",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.92813491821289",
+          "new_token": "45.928138732910156",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.21565246582031",
+          "new_token": "46.21565628051758",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-24T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.15073013305664",
+          "new_token": "46.150726318359375",
+          "old_index": 37,
+          "new_index": 37
+        },
+        {
+          "timestamp_utc": "2021-11-26T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.24180603027344",
+          "new_token": "45.2418098449707",
+          "old_index": 38,
+          "new_index": 38
+        },
+        {
+          "timestamp_utc": "2021-11-29T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.37331771850586",
+          "new_token": "46.37332534790039",
+          "old_index": 39,
+          "new_index": 39
+        },
+        {
+          "timestamp_utc": "2021-12-01T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.074859619140625",
+          "new_token": "45.07486343383789",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "45.67771530151367",
+          "new_token": "45.67771911621094",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "47.99637985229492",
+          "new_token": "47.99638748168945",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.92052459716797",
+          "new_token": "46.920528411865234",
+          "old_index": 48,
+          "new_index": 48
+        },
+        {
+          "timestamp_utc": "2021-12-13T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.37331771850586",
+          "new_token": "46.37332534790039",
+          "old_index": 49,
+          "new_index": 49
+        },
+        {
+          "timestamp_utc": "2021-12-14T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.0950813293457",
+          "new_token": "46.09507751464844",
+          "old_index": 50,
+          "new_index": 50
+        },
+        {
+          "timestamp_utc": "2021-12-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "46.99471664428711",
+          "new_token": "46.994712829589844",
+          "old_index": 51,
+          "new_index": 51
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "GOOGL",
+      "prior_raw_sha256": "e2653b81ac69270f651791c0d6bf21935a42dc19df621af481d76dbc8d0c1e3e",
+      "comparison_raw_sha256": "feda2445194be033e220fa582273838f71fbe1440589aa8181dfa0f570bc9b60",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 709
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "134.74081420898438",
+          "new_token": "134.7408447265625",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "137.91265869140625",
+          "new_token": "137.9126739501953",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-08T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "138.46786499023438",
+          "new_token": "138.4678955078125",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "135.162841796875",
+          "new_token": "135.16282653808594",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "139.82049560546875",
+          "new_token": "139.82052612304688",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "140.0354461669922",
+          "new_token": "140.03546142578125",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "141.88682556152344",
+          "new_token": "141.88685607910156",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "140.43267822265625",
+          "new_token": "140.4326934814453",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-21T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "140.548583984375",
+          "new_token": "140.54859924316406",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "136.15142822265625",
+          "new_token": "136.1514434814453",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "144.47421264648438",
+          "new_token": "144.47422790527344",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "146.65052795410156",
+          "new_token": "146.65054321289062",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "142.14437866210938",
+          "new_token": "142.14439392089844",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "144.06167602539062",
+          "new_token": "144.0616455078125",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "147.4489288330078",
+          "new_token": "147.44891357421875",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "147.62623596191406",
+          "new_token": "147.62625122070312",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "147.5147705078125",
+          "new_token": "147.51478576660156",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "144.51828002929688",
+          "new_token": "144.51829528808594",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-12T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "147.2765655517578",
+          "new_token": "147.2765350341797",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "147.05267333984375",
+          "new_token": "147.0526885986328",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "146.65150451660156",
+          "new_token": "146.65151977539062",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-18T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "148.42611694335938",
+          "new_token": "148.42613220214844",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "147.52272033691406",
+          "new_token": "147.522705078125",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-23T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "144.40786743164062",
+          "new_token": "144.40785217285156",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-24T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "144.74266052246094",
+          "new_token": "144.74267578125",
+          "old_index": 37,
+          "new_index": 37
+        },
+        {
+          "timestamp_utc": "2021-11-26T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "140.84280395507812",
+          "new_token": "140.84278869628906",
+          "old_index": 38,
+          "new_index": 38
+        },
+        {
+          "timestamp_utc": "2021-11-29T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "144.15870666503906",
+          "new_token": "144.1587371826172",
+          "old_index": 39,
+          "new_index": 39
+        },
+        {
+          "timestamp_utc": "2021-11-30T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "140.5599822998047",
+          "new_token": "140.55999755859375",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "140.66297912597656",
+          "new_token": "140.66299438476562",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-06T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "141.8056182861328",
+          "new_token": "141.80563354492188",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "146.78970336914062",
+          "new_token": "146.78968811035156",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "146.2468719482422",
+          "new_token": "146.24685668945312",
+          "old_index": 47,
+          "new_index": 47
+        },
+        {
+          "timestamp_utc": "2021-12-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "146.6064453125",
+          "new_token": "146.60647583007812",
+          "old_index": 48,
+          "new_index": 48
+        },
+        {
+          "timestamp_utc": "2021-12-14T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "142.55050659179688",
+          "new_token": "142.550537109375",
+          "old_index": 50,
+          "new_index": 50
+        },
+        {
+          "timestamp_utc": "2021-12-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "145.0606231689453",
+          "new_token": "145.06063842773438",
+          "old_index": 51,
+          "new_index": 51
+        },
+        {
+          "timestamp_utc": "2021-12-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "143.08348083496094",
+          "new_token": "143.08346557617188",
+          "old_index": 52,
+          "new_index": 52
+        },
+        {
+          "timestamp_utc": "2021-12-20T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "140.27220153808594",
+          "new_token": "140.272216796875",
+          "old_index": 54,
+          "new_index": 54
+        },
+        {
+          "timestamp_utc": "2021-12-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "145.03489685058594",
+          "new_token": "145.0348663330078",
+          "old_index": 56,
+          "new_index": 56
+        },
+        {
+          "timestamp_utc": "2021-12-23T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "145.53164672851562",
+          "new_token": "145.53167724609375",
+          "old_index": 57,
+          "new_index": 57
+        },
+        {
+          "timestamp_utc": "2021-12-28T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "145.30433654785156",
+          "new_token": "145.30435180664062",
+          "old_index": 59,
+          "new_index": 59
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "AMZN",
+      "prior_raw_sha256": "67de7fbb3d2813a9fc21902d853e2b5d6375a5bde271b72b6bdcf0502643ef83",
+      "comparison_raw_sha256": "7d40f82064c9eb866ff77a416cd0dfe728163b4944bbd5a52fe2b4334ef1424b",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 0
+      },
+      "differences_sample_max40": [],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "RTX",
+      "prior_raw_sha256": "9ceb1b51012bb4c4c330af2ec093736e58ca381e3ea65497dc709e587c091d03",
+      "comparison_raw_sha256": "f09cd1c4bc0949718e1969d5480025e502a8576965f79f79cb17c8439c86c4d6",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 743
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "79.68637084960938",
+          "new_token": "79.68635559082031",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "80.97076416015625",
+          "new_token": "80.97077178955078",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-11T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "80.73723602294922",
+          "new_token": "80.73725128173828",
+          "old_index": 5,
+          "new_index": 5
+        },
+        {
+          "timestamp_utc": "2021-10-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "80.54862976074219",
+          "new_token": "80.54864501953125",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "80.09056091308594",
+          "new_token": "80.090576171875",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "81.66236114501953",
+          "new_token": "81.66236877441406",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-18T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "81.5545883178711",
+          "new_token": "81.55459594726562",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "81.94082641601562",
+          "new_token": "81.9408187866211",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "82.34500122070312",
+          "new_token": "82.34498596191406",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-21T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "82.28209686279297",
+          "new_token": "82.2821273803711",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "82.50665283203125",
+          "new_token": "82.50666046142578",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "82.00367736816406",
+          "new_token": "82.00366973876953",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "80.10851287841797",
+          "new_token": "80.1085205078125",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "79.8121337890625",
+          "new_token": "79.81212615966797",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "78.86005401611328",
+          "new_token": "78.86006927490234",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "79.64146423339844",
+          "new_token": "79.64147186279297",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "79.09357452392578",
+          "new_token": "79.09356689453125",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "81.4737548828125",
+          "new_token": "81.47374725341797",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "81.72522735595703",
+          "new_token": "81.7252426147461",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "80.99771881103516",
+          "new_token": "80.99772644042969",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-11T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "79.98278045654297",
+          "new_token": "79.98277282714844",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-12T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "79.8121337890625",
+          "new_token": "79.81212615966797",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "80.25223541259766",
+          "new_token": "80.25222778320312",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "79.84806060791016",
+          "new_token": "79.84805297851562",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "78.5456771850586",
+          "new_token": "78.54568481445312",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-18T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "78.51860046386719",
+          "new_token": "78.51858520507812",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "77.18147277832031",
+          "new_token": "77.1814956665039",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "78.4192123413086",
+          "new_token": "78.41921997070312",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-23T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "78.87995147705078",
+          "new_token": "78.87996673583984",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-26T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "74.98612976074219",
+          "new_token": "74.98609924316406",
+          "old_index": 38,
+          "new_index": 38
+        },
+        {
+          "timestamp_utc": "2021-11-30T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "73.10693359375",
+          "new_token": "73.10694885253906",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-01T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "71.41751098632812",
+          "new_token": "71.4175033569336",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2021-12-02T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "73.77550506591797",
+          "new_token": "73.77549743652344",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "73.27859497070312",
+          "new_token": "73.27860260009766",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "78.14816284179688",
+          "new_token": "78.14817810058594",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "77.84100341796875",
+          "new_token": "77.84101867675781",
+          "old_index": 47,
+          "new_index": 47
+        },
+        {
+          "timestamp_utc": "2021-12-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "77.84100341796875",
+          "new_token": "77.84101867675781",
+          "old_index": 48,
+          "new_index": 48
+        },
+        {
+          "timestamp_utc": "2021-12-13T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "76.18770599365234",
+          "new_token": "76.18769073486328",
+          "old_index": 49,
+          "new_index": 49
+        },
+        {
+          "timestamp_utc": "2021-12-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "75.37459564208984",
+          "new_token": "75.37458801269531",
+          "old_index": 51,
+          "new_index": 51
+        },
+        {
+          "timestamp_utc": "2021-12-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "74.33562469482422",
+          "new_token": "74.33563232421875",
+          "old_index": 53,
+          "new_index": 53
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "SYK",
+      "prior_raw_sha256": "c68835f64ff4cdf7eea89b51abab5244ace40a9616c8c253b34ea24fca7436ee",
+      "comparison_raw_sha256": "a3ec56e97d75caf31b502bf0da90cb4c98419b0ebe1805dd450af8fadae127e2",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 694
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "248.86424255371094",
+          "new_token": "248.86427307128906",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2021-10-06T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "250.17333984375",
+          "new_token": "250.17337036132812",
+          "old_index": 2,
+          "new_index": 2
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "252.29833984375",
+          "new_token": "252.2982940673828",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-08T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "250.1354217529297",
+          "new_token": "250.13536071777344",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2021-10-11T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "245.44912719726562",
+          "new_token": "245.44918823242188",
+          "old_index": 5,
+          "new_index": 5
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "244.91796875",
+          "new_token": "244.91793823242188",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "243.32421875",
+          "new_token": "243.32424926757812",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "252.63980102539062",
+          "new_token": "252.63978576660156",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-18T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "248.58909606933594",
+          "new_token": "248.58914184570312",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "259.6976013183594",
+          "new_token": "259.6976623535156",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-21T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "262.2400207519531",
+          "new_token": "262.23992919921875",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "261.5665588378906",
+          "new_token": "261.5664367675781",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "259.02410888671875",
+          "new_token": "259.0240478515625",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-26T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "259.1474914550781",
+          "new_token": "259.1474304199219",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2021-10-27T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "254.70782470703125",
+          "new_token": "254.7078399658203",
+          "old_index": 17,
+          "new_index": 17
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "254.65093994140625",
+          "new_token": "254.65089416503906",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "252.40264892578125",
+          "new_token": "252.4026336669922",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "254.61300659179688",
+          "new_token": "254.61294555664062",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "257.895263671875",
+          "new_token": "257.8952331542969",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "256.1876525878906",
+          "new_token": "256.1877136230469",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2021-11-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "261.974365234375",
+          "new_token": "261.9743347167969",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "261.3957214355469",
+          "new_token": "261.3956604003906",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "257.1363830566406",
+          "new_token": "257.1362609863281",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-11T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "249.88882446289062",
+          "new_token": "249.88876342773438",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-12T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "250.76153564453125",
+          "new_token": "250.7615203857422",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "248.4373779296875",
+          "new_token": "248.43734741210938",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "248.8263397216797",
+          "new_token": "248.82626342773438",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "248.5985565185547",
+          "new_token": "248.59861755371094",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-18T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "246.35983276367188",
+          "new_token": "246.35984802246094",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "250.14492797851562",
+          "new_token": "250.1448974609375",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "246.9290313720703",
+          "new_token": "246.9290008544922",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-24T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "242.04356384277344",
+          "new_token": "242.04359436035156",
+          "old_index": 37,
+          "new_index": 37
+        },
+        {
+          "timestamp_utc": "2021-11-26T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "230.97305297851562",
+          "new_token": "230.9730224609375",
+          "old_index": 38,
+          "new_index": 38
+        },
+        {
+          "timestamp_utc": "2021-11-29T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "230.9919891357422",
+          "new_token": "230.9920196533203",
+          "old_index": 39,
+          "new_index": 39
+        },
+        {
+          "timestamp_utc": "2021-11-30T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "224.4749298095703",
+          "new_token": "224.47496032714844",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-01T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "226.8180389404297",
+          "new_token": "226.81805419921875",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2021-12-06T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "241.34161376953125",
+          "new_token": "241.34158325195312",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2021-12-07T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "247.16615295410156",
+          "new_token": "247.16619873046875",
+          "old_index": 45,
+          "new_index": 45
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "247.8586883544922",
+          "new_token": "247.85867309570312",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "246.83421325683594",
+          "new_token": "246.83416748046875",
+          "old_index": 48,
+          "new_index": 48
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "ETN",
+      "prior_raw_sha256": "de5e8d34652f4d6a46bf3f37242f18091c46c74381bdc0bea7b8e1b1830ce5cc",
+      "comparison_raw_sha256": "e8986211102f61706e6dbd0ebb5b88a2e1896191af3cb865b23677c86e3d49f6",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 712
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "137.28880310058594",
+          "new_token": "137.28883361816406",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2021-10-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "139.97239685058594",
+          "new_token": "139.97242736816406",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2021-10-06T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "140.37953186035156",
+          "new_token": "140.37954711914062",
+          "old_index": 2,
+          "new_index": 2
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "142.4338836669922",
+          "new_token": "142.4339141845703",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-08T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "142.1007537841797",
+          "new_token": "142.1007843017578",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "140.30557250976562",
+          "new_token": "140.30552673339844",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "141.94345092773438",
+          "new_token": "141.94342041015625",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "147.6622772216797",
+          "new_token": "147.66229248046875",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "149.4020233154297",
+          "new_token": "149.40200805664062",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-18T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "149.23544311523438",
+          "new_token": "149.2354278564453",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "149.4297637939453",
+          "new_token": "149.42971801757812",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "151.02142333984375",
+          "new_token": "151.02137756347656",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-21T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "150.02200317382812",
+          "new_token": "150.02195739746094",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "150.2625732421875",
+          "new_token": "150.26260375976562",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-26T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "149.3002166748047",
+          "new_token": "149.30020141601562",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "152.65008544921875",
+          "new_token": "152.65003967285156",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "152.4649658203125",
+          "new_token": "152.46498107910156",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "152.0763397216797",
+          "new_token": "152.07630920410156",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "158.82232666015625",
+          "new_token": "158.82229614257812",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "156.84197998046875",
+          "new_token": "156.84202575683594",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "158.51695251464844",
+          "new_token": "158.5169219970703",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "159.7395477294922",
+          "new_token": "159.73947143554688",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-11T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "157.9271240234375",
+          "new_token": "157.92709350585938",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-12T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "159.67442321777344",
+          "new_token": "159.67445373535156",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "160.54812622070312",
+          "new_token": "160.548095703125",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "161.5332794189453",
+          "new_token": "161.53326416015625",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "160.8826904296875",
+          "new_token": "160.88272094726562",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-18T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "161.08714294433594",
+          "new_token": "161.08717346191406",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "160.1390838623047",
+          "new_token": "160.13914489746094",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "160.15774536132812",
+          "new_token": "160.15773010253906",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-23T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "160.39012145996094",
+          "new_token": "160.39007568359375",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2021-11-26T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "155.68722534179688",
+          "new_token": "155.68724060058594",
+          "old_index": 38,
+          "new_index": 38
+        },
+        {
+          "timestamp_utc": "2021-11-29T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "155.56642150878906",
+          "new_token": "155.56637573242188",
+          "old_index": 39,
+          "new_index": 39
+        },
+        {
+          "timestamp_utc": "2021-12-02T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "154.86932373046875",
+          "new_token": "154.8693389892578",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "154.69271850585938",
+          "new_token": "154.69273376464844",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-06T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "157.8434600830078",
+          "new_token": "157.84344482421875",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2021-12-07T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "158.54981994628906",
+          "new_token": "158.54983520507812",
+          "old_index": 45,
+          "new_index": 45
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "157.9271240234375",
+          "new_token": "157.92709350585938",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "156.69097900390625",
+          "new_token": "156.6909637451172",
+          "old_index": 47,
+          "new_index": 47
+        },
+        {
+          "timestamp_utc": "2021-12-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "158.42898559570312",
+          "new_token": "158.4290008544922",
+          "old_index": 48,
+          "new_index": 48
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "HUBB",
+      "prior_raw_sha256": "ed33df064271953b559334db099f6f71d3d8852c036a27e015e46ebab8149160",
+      "comparison_raw_sha256": "4fbf0be807b4e6eda8dd404d1a7e999286c738279c08e18204570942bb4650af",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 732
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "167.1335906982422",
+          "new_token": "167.13357543945312",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2021-10-06T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "170.42202758789062",
+          "new_token": "170.42198181152344",
+          "old_index": 2,
+          "new_index": 2
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "170.3201141357422",
+          "new_token": "170.32009887695312",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-08T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "167.19842529296875",
+          "new_token": "167.19847106933594",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2021-10-11T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "166.40185546875",
+          "new_token": "166.40182495117188",
+          "old_index": 5,
+          "new_index": 5
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "165.7904815673828",
+          "new_token": "165.7904510498047",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "168.6435089111328",
+          "new_token": "168.64349365234375",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "173.5714569091797",
+          "new_token": "173.57144165039062",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "174.4236602783203",
+          "new_token": "174.42361450195312",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "175.8131103515625",
+          "new_token": "175.81309509277344",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "177.27667236328125",
+          "new_token": "177.2766876220703",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "177.91580200195312",
+          "new_token": "177.91586303710938",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "176.22067260742188",
+          "new_token": "176.22068786621094",
+          "old_index": 15,
+          "new_index": 15
+        },
+        {
+          "timestamp_utc": "2021-10-26T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "177.23036193847656",
+          "new_token": "177.2303924560547",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2021-10-27T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "176.6190185546875",
+          "new_token": "176.61900329589844",
+          "old_index": 17,
+          "new_index": 17
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "183.08465576171875",
+          "new_token": "183.08462524414062",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "184.67784118652344",
+          "new_token": "184.6778564453125",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "185.83575439453125",
+          "new_token": "185.8357696533203",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "187.66986083984375",
+          "new_token": "187.6698455810547",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "187.05845642089844",
+          "new_token": "187.05850219726562",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "192.58856201171875",
+          "new_token": "192.5885467529297",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2021-11-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "193.24620056152344",
+          "new_token": "193.24623107910156",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "192.7274932861328",
+          "new_token": "192.7274627685547",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-11T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "192.6348419189453",
+          "new_token": "192.63487243652344",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-12T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "192.8294219970703",
+          "new_token": "192.829345703125",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "192.92198181152344",
+          "new_token": "192.92201232910156",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "193.7464141845703",
+          "new_token": "193.74644470214844",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-18T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "194.16326904296875",
+          "new_token": "194.1632537841797",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "194.61717224121094",
+          "new_token": "194.61715698242188",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "193.13504028320312",
+          "new_token": "193.13507080078125",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-24T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "193.13504028320312",
+          "new_token": "193.13507080078125",
+          "old_index": 37,
+          "new_index": 37
+        },
+        {
+          "timestamp_utc": "2021-11-26T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "188.78138732910156",
+          "new_token": "188.7814178466797",
+          "old_index": 38,
+          "new_index": 38
+        },
+        {
+          "timestamp_utc": "2021-11-29T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "187.47787475585938",
+          "new_token": "187.4778594970703",
+          "old_index": 39,
+          "new_index": 39
+        },
+        {
+          "timestamp_utc": "2021-12-02T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "188.5113983154297",
+          "new_token": "188.51138305664062",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "188.33447265625",
+          "new_token": "188.3345184326172",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-06T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "190.5691375732422",
+          "new_token": "190.56910705566406",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2021-12-07T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "194.65664672851562",
+          "new_token": "194.65667724609375",
+          "old_index": 45,
+          "new_index": 45
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "194.61013793945312",
+          "new_token": "194.61007690429688",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "193.2693328857422",
+          "new_token": "193.26930236816406",
+          "old_index": 47,
+          "new_index": 47
+        },
+        {
+          "timestamp_utc": "2021-12-13T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "195.5784912109375",
+          "new_token": "195.57847595214844",
+          "old_index": 49,
+          "new_index": 49
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "GEV",
+      "prior_raw_sha256": "b770d191537550b1ca9c2ec38c50ec8b8fd66f0134f624260f87fdac76b7c3ee",
+      "comparison_raw_sha256": "aab5b143bc12840c9112468f64913c61cf226201825493b76f428253d590bff5",
+      "prior_rows": 632,
+      "new_rows": 632,
+      "shared_timestamp_count": 632,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 215
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2024-03-27T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "130.6976776123047",
+          "new_token": "130.69769287109375",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2024-03-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "136.17454528808594",
+          "new_token": "136.174560546875",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2024-04-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "139.41085815429688",
+          "new_token": "139.41087341308594",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2024-04-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "136.76205444335938",
+          "new_token": "136.76206970214844",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2024-04-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "125.529541015625",
+          "new_token": "125.52953338623047",
+          "old_index": 5,
+          "new_index": 5
+        },
+        {
+          "timestamp_utc": "2024-04-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "122.18365478515625",
+          "new_token": "122.18367767333984",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2024-04-09T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "131.6138153076172",
+          "new_token": "131.61383056640625",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2024-04-10T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "137.78775024414062",
+          "new_token": "137.78773498535156",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2024-04-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "133.4361114501953",
+          "new_token": "133.43614196777344",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2024-04-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "131.19557189941406",
+          "new_token": "131.19558715820312",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2024-04-17T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "134.1829833984375",
+          "new_token": "134.18295288085938",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2024-04-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "134.53150939941406",
+          "new_token": "134.531494140625",
+          "old_index": 16,
+          "new_index": 16
+        },
+        {
+          "timestamp_utc": "2024-04-23T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "147.20794677734375",
+          "new_token": "147.20791625976562",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2024-04-24T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "145.56488037109375",
+          "new_token": "145.56483459472656",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2024-04-25T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "147.6859130859375",
+          "new_token": "147.68589782714844",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2024-04-26T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "152.42587280273438",
+          "new_token": "152.42588806152344",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2024-04-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "158.3408966064453",
+          "new_token": "158.34085083007812",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2024-04-30T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "153.0631866455078",
+          "new_token": "153.06320190429688",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2024-05-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "151.0317840576172",
+          "new_token": "151.03176879882812",
+          "old_index": 24,
+          "new_index": 24
+        },
+        {
+          "timestamp_utc": "2024-05-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "153.1826629638672",
+          "new_token": "153.1826934814453",
+          "old_index": 25,
+          "new_index": 25
+        },
+        {
+          "timestamp_utc": "2024-05-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "165.5603790283203",
+          "new_token": "165.5603485107422",
+          "old_index": 26,
+          "new_index": 26
+        },
+        {
+          "timestamp_utc": "2024-05-06T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "168.42825317382812",
+          "new_token": "168.42823791503906",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2024-05-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "166.65574645996094",
+          "new_token": "166.65573120117188",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2024-05-08T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "163.3098602294922",
+          "new_token": "163.3098907470703",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2024-05-10T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "166.5661163330078",
+          "new_token": "166.56610107421875",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2024-05-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "164.9330291748047",
+          "new_token": "164.93301391601562",
+          "old_index": 33,
+          "new_index": 33
+        },
+        {
+          "timestamp_utc": "2024-05-17T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "161.93568420410156",
+          "new_token": "161.9356689453125",
+          "old_index": 36,
+          "new_index": 36
+        },
+        {
+          "timestamp_utc": "2024-05-23T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "160.98968505859375",
+          "new_token": "160.9897003173828",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2024-05-24T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "176.68333435058594",
+          "new_token": "176.68336486816406",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2024-05-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "177.34059143066406",
+          "new_token": "177.34060668945312",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2024-05-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "176.5738525390625",
+          "new_token": "176.57383728027344",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2024-05-30T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "174.34324645996094",
+          "new_token": "174.34326171875",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2024-05-31T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "175.15980529785156",
+          "new_token": "175.1597900390625",
+          "old_index": 45,
+          "new_index": 45
+        },
+        {
+          "timestamp_utc": "2024-06-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "169.65306091308594",
+          "new_token": "169.65304565429688",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2024-06-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "162.35391235351562",
+          "new_token": "162.35389709472656",
+          "old_index": 47,
+          "new_index": 47
+        },
+        {
+          "timestamp_utc": "2024-06-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "161.39796447753906",
+          "new_token": "161.39793395996094",
+          "old_index": 50,
+          "new_index": 50
+        },
+        {
+          "timestamp_utc": "2024-06-11T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "167.52207946777344",
+          "new_token": "167.52206420898438",
+          "old_index": 52,
+          "new_index": 52
+        },
+        {
+          "timestamp_utc": "2024-06-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "175.42864990234375",
+          "new_token": "175.4286651611328",
+          "old_index": 54,
+          "new_index": 54
+        },
+        {
+          "timestamp_utc": "2024-06-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "169.4539031982422",
+          "new_token": "169.45391845703125",
+          "old_index": 55,
+          "new_index": 55
+        },
+        {
+          "timestamp_utc": "2024-06-17T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "168.0498504638672",
+          "new_token": "168.04983520507812",
+          "old_index": 56,
+          "new_index": 56
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    },
+    {
+      "provider_symbol": "ROK",
+      "prior_raw_sha256": "a3171647d133a09a6719e947a9eb24a9b6399701e7b146606b8cfa059b924179",
+      "comparison_raw_sha256": "0bb0ebaaa623cac282cff9f6f749f7c8190e4e293368d6625b9d84a6424a530c",
+      "prior_rows": 1255,
+      "new_rows": 1255,
+      "shared_timestamp_count": 1255,
+      "prior_only_timestamps": [],
+      "new_only_timestamps": [],
+      "different_field_counts": {
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "volume": 0,
+        "adjclose": 716
+      },
+      "differences_sample_max40": [
+        {
+          "timestamp_utc": "2021-10-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "269.2674560546875",
+          "new_token": "269.2674865722656",
+          "old_index": 0,
+          "new_index": 0
+        },
+        {
+          "timestamp_utc": "2021-10-05T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "274.3998107910156",
+          "new_token": "274.3999328613281",
+          "old_index": 1,
+          "new_index": 1
+        },
+        {
+          "timestamp_utc": "2021-10-06T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "274.2895202636719",
+          "new_token": "274.28955078125",
+          "old_index": 2,
+          "new_index": 2
+        },
+        {
+          "timestamp_utc": "2021-10-07T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "280.3876647949219",
+          "new_token": "280.38763427734375",
+          "old_index": 3,
+          "new_index": 3
+        },
+        {
+          "timestamp_utc": "2021-10-08T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "277.1591491699219",
+          "new_token": "277.1592712402344",
+          "old_index": 4,
+          "new_index": 4
+        },
+        {
+          "timestamp_utc": "2021-10-11T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "274.73101806640625",
+          "new_token": "274.73095703125",
+          "old_index": 5,
+          "new_index": 5
+        },
+        {
+          "timestamp_utc": "2021-10-12T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "274.0595397949219",
+          "new_token": "274.0596008300781",
+          "old_index": 6,
+          "new_index": 6
+        },
+        {
+          "timestamp_utc": "2021-10-13T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "275.81634521484375",
+          "new_token": "275.8162841796875",
+          "old_index": 7,
+          "new_index": 7
+        },
+        {
+          "timestamp_utc": "2021-10-14T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "285.29931640625",
+          "new_token": "285.2993469238281",
+          "old_index": 8,
+          "new_index": 8
+        },
+        {
+          "timestamp_utc": "2021-10-15T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "288.9968566894531",
+          "new_token": "288.9969482421875",
+          "old_index": 9,
+          "new_index": 9
+        },
+        {
+          "timestamp_utc": "2021-10-18T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "289.72344970703125",
+          "new_token": "289.7235412597656",
+          "old_index": 10,
+          "new_index": 10
+        },
+        {
+          "timestamp_utc": "2021-10-19T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "290.78125",
+          "new_token": "290.7812805175781",
+          "old_index": 11,
+          "new_index": 11
+        },
+        {
+          "timestamp_utc": "2021-10-20T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "293.7797546386719",
+          "new_token": "293.77978515625",
+          "old_index": 12,
+          "new_index": 12
+        },
+        {
+          "timestamp_utc": "2021-10-21T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "292.2161865234375",
+          "new_token": "292.216064453125",
+          "old_index": 13,
+          "new_index": 13
+        },
+        {
+          "timestamp_utc": "2021-10-22T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "290.92840576171875",
+          "new_token": "290.9283752441406",
+          "old_index": 14,
+          "new_index": 14
+        },
+        {
+          "timestamp_utc": "2021-10-27T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "288.5461730957031",
+          "new_token": "288.5462646484375",
+          "old_index": 17,
+          "new_index": 17
+        },
+        {
+          "timestamp_utc": "2021-10-28T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "293.14520263671875",
+          "new_token": "293.1451416015625",
+          "old_index": 18,
+          "new_index": 18
+        },
+        {
+          "timestamp_utc": "2021-10-29T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "293.7797546386719",
+          "new_token": "293.77978515625",
+          "old_index": 19,
+          "new_index": 19
+        },
+        {
+          "timestamp_utc": "2021-11-01T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "294.23052978515625",
+          "new_token": "294.2304992675781",
+          "old_index": 20,
+          "new_index": 20
+        },
+        {
+          "timestamp_utc": "2021-11-02T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "315.86395263671875",
+          "new_token": "315.8638610839844",
+          "old_index": 21,
+          "new_index": 21
+        },
+        {
+          "timestamp_utc": "2021-11-03T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "312.08349609375",
+          "new_token": "312.0835266113281",
+          "old_index": 22,
+          "new_index": 22
+        },
+        {
+          "timestamp_utc": "2021-11-04T13:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "314.4657287597656",
+          "new_token": "314.4658203125",
+          "old_index": 23,
+          "new_index": 23
+        },
+        {
+          "timestamp_utc": "2021-11-10T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "306.7303161621094",
+          "new_token": "306.73040771484375",
+          "old_index": 27,
+          "new_index": 27
+        },
+        {
+          "timestamp_utc": "2021-11-11T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "303.2168273925781",
+          "new_token": "303.2167663574219",
+          "old_index": 28,
+          "new_index": 28
+        },
+        {
+          "timestamp_utc": "2021-11-12T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "308.698974609375",
+          "new_token": "308.6990051269531",
+          "old_index": 29,
+          "new_index": 29
+        },
+        {
+          "timestamp_utc": "2021-11-15T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "309.2342529296875",
+          "new_token": "309.23419189453125",
+          "old_index": 30,
+          "new_index": 30
+        },
+        {
+          "timestamp_utc": "2021-11-16T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "314.3194580078125",
+          "new_token": "314.3195495605469",
+          "old_index": 31,
+          "new_index": 31
+        },
+        {
+          "timestamp_utc": "2021-11-17T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "315.5931396484375",
+          "new_token": "315.5932312011719",
+          "old_index": 32,
+          "new_index": 32
+        },
+        {
+          "timestamp_utc": "2021-11-19T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "321.3338317871094",
+          "new_token": "321.33367919921875",
+          "old_index": 34,
+          "new_index": 34
+        },
+        {
+          "timestamp_utc": "2021-11-22T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "320.48468017578125",
+          "new_token": "320.4847412109375",
+          "old_index": 35,
+          "new_index": 35
+        },
+        {
+          "timestamp_utc": "2021-11-24T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "318.3527526855469",
+          "new_token": "318.3526916503906",
+          "old_index": 37,
+          "new_index": 37
+        },
+        {
+          "timestamp_utc": "2021-11-29T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "314.32879638671875",
+          "new_token": "314.3287353515625",
+          "old_index": 39,
+          "new_index": 39
+        },
+        {
+          "timestamp_utc": "2021-11-30T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "310.2864074707031",
+          "new_token": "310.2864685058594",
+          "old_index": 40,
+          "new_index": 40
+        },
+        {
+          "timestamp_utc": "2021-12-01T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "306.41937255859375",
+          "new_token": "306.4193420410156",
+          "old_index": 41,
+          "new_index": 41
+        },
+        {
+          "timestamp_utc": "2021-12-02T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "317.17144775390625",
+          "new_token": "317.17138671875",
+          "old_index": 42,
+          "new_index": 42
+        },
+        {
+          "timestamp_utc": "2021-12-03T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "318.84185791015625",
+          "new_token": "318.8418273925781",
+          "old_index": 43,
+          "new_index": 43
+        },
+        {
+          "timestamp_utc": "2021-12-06T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "318.334228515625",
+          "new_token": "318.3341979980469",
+          "old_index": 44,
+          "new_index": 44
+        },
+        {
+          "timestamp_utc": "2021-12-07T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "323.72418212890625",
+          "new_token": "323.72412109375",
+          "old_index": 45,
+          "new_index": 45
+        },
+        {
+          "timestamp_utc": "2021-12-08T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "321.5921630859375",
+          "new_token": "321.59222412109375",
+          "old_index": 46,
+          "new_index": 46
+        },
+        {
+          "timestamp_utc": "2021-12-09T14:30:00+00:00",
+          "field": "adjclose",
+          "old_token": "319.8570861816406",
+          "new_token": "319.85711669921875",
+          "old_index": 47,
+          "new_index": 47
+        }
+      ],
+      "interpretation": "Two current observations only; not historical vintage/availability or cause proof"
+    }
+  ]
+}

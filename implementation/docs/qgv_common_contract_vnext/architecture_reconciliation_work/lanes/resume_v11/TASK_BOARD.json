@@ -1,0 +1,176 @@
+{
+  "status": "V11_OPERATIONAL_ADOPTED_CURRENT_MAIN_INTAKE_RECONCILED_READY0",
+  "decision_classes": [
+    "D1",
+    "D2",
+    "D3-A",
+    "D3-R"
+  ],
+  "items": [
+    {
+      "id": "LATEST_POLICY_AND_PENDING_RECLASSIFICATION",
+      "class": "D1/D2",
+      "state": "DONE"
+    },
+    {
+      "id": "AUTOMATION_PROMPT_AUTHORITY_ALIGNMENT",
+      "class": "D1",
+      "state": "DONE",
+      "execution_credit": 0
+    },
+    {
+      "id": "ALREADY_COMPLETED_REFERENCE_SCOPE_ALIGNMENT",
+      "class": "D3-A_ELIGIBLE_SCOPE",
+      "state": "DONE",
+      "new_execution": false
+    },
+    {
+      "id": "G1_ACTUAL_METHOD_INPUT_HORIZON_NUMERIC_SELECTION",
+      "class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json"
+    },
+    {
+      "id": "G2_ALTERNATIVE_METHOD_APPLICABILITY_SELECTION",
+      "class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json"
+    },
+    {
+      "id": "B1_ACTUAL_FACTOR_REQUIREDNESS",
+      "class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json"
+    },
+    {
+      "id": "B2_ACTUAL_PREDICATES_BINDINGS_EXCLUSIONS_DENOMINATOR",
+      "class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json"
+    },
+    {
+      "id": "B3_ACTUAL_RUBRICS_CUTOFFS_BINDINGS_RUNTIME_ENFORCEMENT",
+      "class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json"
+    },
+    {
+      "id": "B5_ACTUAL_ASSESSMENT_METHODS_CRITERIA_FACTOR_ROLES",
+      "class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json"
+    },
+    {
+      "id": "B6_ACTUAL_CONSUMER_COHORT_COMPATIBILITY_CRITERIA_GRANTS_RUNTIME",
+      "class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json"
+    },
+    {
+      "id": "V1_METHOD_NORMALIZATION_FAMILIES",
+      "class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json"
+    },
+    {
+      "id": "V2_ACTUAL_ASSESSMENT_METHODOLOGY",
+      "class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json"
+    },
+    {
+      "id": "PRODUCTION_ACTIVATION_SCORE_HISTORY_MIGRATION_CANONICAL_MERGE",
+      "class": "D3-R",
+      "state": "D3_REQUIRED",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/PENDING_RECLASSIFICATION.json"
+    },
+    {
+      "id": "EXACT_SOURCE_PERIOD_SHARE_VINTAGE_PIT",
+      "state": "WAIT_DEPENDENCY",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/g/G_CANDIDATE_SOURCE_REQUESTS.json",
+      "trigger": "Exact DATA-G-01..05/AUTH-G-06 bytes/authority arrive or previously failed archive transport materially recovers; validate requested hashes before consumption."
+    },
+    {
+      "id": "MISSING_DATA_OWNER_RELEASE_AND_RETURN",
+      "state": "WAIT_DEPENDENCY",
+      "owner_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "lease": "qgv-b47-muupb538",
+      "trigger": "Authenticated release/completion and accepted exact source/validator/output/canary receipt."
+    },
+    {
+      "id": "NEW_PRINCIPLE_MAIN_RETURN_CONSUMPTION",
+      "state": "DONE",
+      "reference": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/MAIN_RETURN.json",
+      "trigger": "Main independently consumes exact ab07f6a principle closure; prior 30-case acknowledgement is insufficient.",
+      "closure_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/returns/PRINCIPLE_MAIN_CONSUMPTION.json",
+      "receipt_id": 5991476557
+    },
+    {
+      "id": "D3_POLICY_RETURN_MAIN_CONSUMPTION",
+      "state": "WAIT_DEPENDENCY",
+      "reference": "7fdfc449bc99c374526f6d9ac3646790a5b9f17b:implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/delegated_approval/MAIN_RETURN.json",
+      "trigger": "Main exact policy-only receipt; principle packet receipt5991476557 is not policy acknowledgement."
+    },
+    {
+      "id": "CDR024_V11_SCOPED_OPERATIONAL_ADOPTION",
+      "class": "D1",
+      "state": "DONE",
+      "receipt": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/AUTHORITY_RECEIPT.json"
+    },
+    {
+      "id": "MAIN_CBB_GENERIC_INTAKE_RECONCILIATION",
+      "class": "D1",
+      "state": "DONE",
+      "receipt": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/STATE_RECONCILIATION.json",
+      "tracking_closed": 0
+    },
+    {
+      "id": "RD3_03_EXACT_APPROVED_CONSUMER_RUNTIME_CANDIDATE",
+      "class": "D3_A_CANDIDATE",
+      "state": "WAIT_DEPENDENCY",
+      "source": {
+        "head": "1596649912554116196c1ad3c1d41797219f5241",
+        "path": "implementation/docs/coordination/governance/PENDING_D3_RECLASSIFICATION_v1.1.md",
+        "sha256": "b2a1e54c8b507b7d70f5eb1b3036058d7b96fe48e2d73b8a63beb421bb543d30",
+        "git_blob_sha": "a556817d4819ed2ec06823a7721927f6f330b975"
+      },
+      "trigger": "Exact approved-semantics/runtime candidate and Main coordination + independent verification; old reference carriage completion is not a new runtime diff."
+    }
+  ],
+  "wait_condition": {
+    "ready_d1_d2_d3_a": 0,
+    "independent_ready": 0,
+    "bounded_repair": 0,
+    "immediate_owner_return": 0,
+    "immediate_terminal_CI": 0,
+    "outstanding_scoped_update_after_publication": 0
+  },
+  "scheduler": {
+    "peek_result": "EMPTY_CURRENT_CONFIGURATION_NOT_VISIBLE",
+    "configuration_changed": false,
+    "last_verified_configuration": "READ_ONLY_WATCHER_ENABLED_EXECUTOR_PAUSED",
+    "unattended_activation": false,
+    "genuine_execution_hops": 0,
+    "required_hops": 2,
+    "status": "UNVERIFIED"
+  },
+  "next_automatic_action": "On a real Work/session wake: fresh STATUS/ref/evidence hashes, apply v1.1, consume exact accepted owner/source/candidate results, execute within5-task cap. Watcher only signals; unattended execution stays disabled before Gate A. No duplicate polls/reruns or unchanged D3-R requests.",
+  "checkpoint_history": [
+    {
+      "head": "7fdfc449bc99c374526f6d9ac3646790a5b9f17b",
+      "prior_board_sha256": "9577e40cbfba4479c102ce628454358298cb00bf76a0ea45f3f75a95b61be081",
+      "prior_principle_consumption": "WAIT_DEPENDENCY"
+    },
+    {
+      "head": "cbb4655d84ec8b5c0aec1c56e654c2a70e61badf",
+      "prior_board_sha256": "0eff4a68f0f204cda94f64353a88822fc780088a0e4e46cb7a79bae73e9bd369",
+      "status": "MAIN_PRINCIPLE_CONSUMPTION_CLOSED_READY0_WAIT_SOURCE_OWNER_RESERVED"
+    }
+  ],
+  "common_authority": {
+    "head": "1596649912554116196c1ad3c1d41797219f5241",
+    "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+    "sha256": "e193544159babd5ccb7d74671d9925fa6fd4de406a0e215cda1b08b2264dba3b",
+    "git_blob_sha": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
+  }
+}

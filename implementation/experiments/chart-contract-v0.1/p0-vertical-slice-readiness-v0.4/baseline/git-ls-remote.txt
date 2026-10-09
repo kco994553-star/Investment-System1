@@ -1,0 +1,5 @@
+b8e39a2196a6d7794a04a0cd5393c68329e126ca	refs/heads/claude/investment-system-top500-validation-alrugm
+581c61c4af859f6cbdc3418209bba9be7bbc76a3	refs/heads/codex/chart-contract-mcp-api-v0-1
+acaf1b5a82859ac2750a130ebe88f8b4d272ac66	refs/heads/integration/cdr012-successor-trial-2026-10-04
+523e702a806a718d163cfbf62aa3fc29d8c3ef3c	refs/heads/integration/fpia-hardened-v1
+9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e	refs/heads/integration/global-handoff-v1

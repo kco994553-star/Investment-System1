@@ -1,0 +1,702 @@
+{
+  "kind": "MARKET_EXISTING_OWNER_CAPABILITY_PINS_V05",
+  "baselines": {
+    "chart": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "session_pr18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+    "integration_pr42": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+  },
+  "capabilities": [
+    {
+      "capability_id": "I01",
+      "symbols_or_scope": [
+        "IssuerIdentity",
+        "SecurityIdentity",
+        "ListingIdentity.active_on",
+        "EligibilityRecord"
+      ],
+      "owner": "Track A/common identity",
+      "reuse_scope": "Structural common identities and explicit eligibility PIT contract",
+      "unmet_preconditions": "No admitted 19-security/listing record data or provider intervals",
+      "source": {
+        "path": "implementation/src/investment_system/contracts/global_universe.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+        "bytes": 6228
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b"
+        }
+      }
+    },
+    {
+      "capability_id": "I02",
+      "symbols_or_scope": [
+        "IdentityLookup"
+      ],
+      "owner": "Track A/common identity; RIG consumes",
+      "reuse_scope": "Read-only upstream identity protocol",
+      "unmet_preconditions": "Protocol is not production lookup/data",
+      "source": {
+        "path": "implementation/src/investment_system/rig/gate.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "bffd0201b85b0b20edd5b06dd41a0faa49e24200eaf42bf254d16f18e3903666",
+        "bytes": 11363
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "bffd0201b85b0b20edd5b06dd41a0faa49e24200eaf42bf254d16f18e3903666"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "bffd0201b85b0b20edd5b06dd41a0faa49e24200eaf42bf254d16f18e3903666"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "bffd0201b85b0b20edd5b06dd41a0faa49e24200eaf42bf254d16f18e3903666"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "bffd0201b85b0b20edd5b06dd41a0faa49e24200eaf42bf254d16f18e3903666"
+        }
+      }
+    },
+    {
+      "capability_id": "I03",
+      "symbols_or_scope": [
+        "InMemorySecurityResolver.resolve",
+        "CompanyLink"
+      ],
+      "owner": "Personal/identity owner",
+      "reuse_scope": "Deterministic resolution from explicit active records; separate PROPOSED company link",
+      "unmet_preconditions": "No real 19 input records; Frozen contract is unchanged",
+      "source": {
+        "path": "implementation/src/investment_system/personal/security.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0",
+        "bytes": 4196
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0"
+        }
+      }
+    },
+    {
+      "capability_id": "I04",
+      "symbols_or_scope": [
+        "IdentifierRegistry",
+        "OFFICIAL_PORTFOLIO_V11",
+        "AMBIGUOUS_TICKERS"
+      ],
+      "owner": "QGV identity owner",
+      "reuse_scope": "Legacy company alias set and TEL ambiguity",
+      "unmet_preconditions": "Company aliases are not economic identity admission",
+      "source": {
+        "path": "implementation/src/investment_system/qgv/identifiers.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+        "bytes": 3163
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+        }
+      }
+    },
+    {
+      "capability_id": "I05",
+      "symbols_or_scope": [
+        "current_ticker_map",
+        "resolve_roster"
+      ],
+      "owner": "Track A/universe owner",
+      "reuse_scope": "Dated roster ticker→CIK/company ID scope",
+      "unmet_preconditions": "Not common security/share-class/listing lookup",
+      "source": {
+        "path": "implementation/src/investment_system/universe/resolve.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "ecbe90a5e5b0f0ba16ad16cd2f8c0eca6a3e96306d2dde4767f90e97c1d4e7fd",
+        "bytes": 3705
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "ecbe90a5e5b0f0ba16ad16cd2f8c0eca6a3e96306d2dde4767f90e97c1d4e7fd"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "ecbe90a5e5b0f0ba16ad16cd2f8c0eca6a3e96306d2dde4767f90e97c1d4e7fd"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "ecbe90a5e5b0f0ba16ad16cd2f8c0eca6a3e96306d2dde4767f90e97c1d4e7fd"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "ecbe90a5e5b0f0ba16ad16cd2f8c0eca6a3e96306d2dde4767f90e97c1d4e7fd"
+        }
+      }
+    },
+    {
+      "capability_id": "R01",
+      "symbols_or_scope": [
+        "RawDatasetStore.get_bytes",
+        "RawDatasetStore.get_manifest",
+        "RawDatasetStore.list_history"
+      ],
+      "owner": "Track A/source owner",
+      "reuse_scope": "Bytes/provenance/history reuse",
+      "unmet_preconditions": "Manifest presence is not source bytes or historical availability",
+      "source": {
+        "path": "implementation/src/investment_system/ingestion/raw_store.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "c4cfdbc314f8d670aee7d0a94f261177967ad3fcdfb36f224111af2f716ebb0e",
+        "bytes": 3395
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "c4cfdbc314f8d670aee7d0a94f261177967ad3fcdfb36f224111af2f716ebb0e"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "c4cfdbc314f8d670aee7d0a94f261177967ad3fcdfb36f224111af2f716ebb0e"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "c4cfdbc314f8d670aee7d0a94f261177967ad3fcdfb36f224111af2f716ebb0e"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "c4cfdbc314f8d670aee7d0a94f261177967ad3fcdfb36f224111af2f716ebb0e"
+        }
+      }
+    },
+    {
+      "capability_id": "R02",
+      "symbols_or_scope": [
+        "build_manifest"
+      ],
+      "owner": "Track A/source owner",
+      "reuse_scope": "Ingestion-time evidence distinctly named fetched_at",
+      "unmet_preconditions": "No retroactive PIT availability proof",
+      "source": {
+        "path": "implementation/src/investment_system/ingestion/manifest.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "4251396c956c2583b76e667eed0c98ac7b81c3effb69d6070929176040ddcb76",
+        "bytes": 1709
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "4251396c956c2583b76e667eed0c98ac7b81c3effb69d6070929176040ddcb76"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "4251396c956c2583b76e667eed0c98ac7b81c3effb69d6070929176040ddcb76"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "4251396c956c2583b76e667eed0c98ac7b81c3effb69d6070929176040ddcb76"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "4251396c956c2583b76e667eed0c98ac7b81c3effb69d6070929176040ddcb76"
+        }
+      }
+    },
+    {
+      "capability_id": "P01",
+      "symbols_or_scope": [
+        "parse_bars",
+        "to_price_point"
+      ],
+      "owner": "Price provider owner",
+      "reuse_scope": "Existing close/adjclose scalar parser/stamp",
+      "unmet_preconditions": "Float, null-close omission, missing OHLCV, inherited bar-time stamp",
+      "source": {
+        "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534",
+        "bytes": 3874
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "1a1c98653f4ab0dbcfdf796344edf3fd11734c58604a926325ec32505d6ac534"
+        }
+      }
+    },
+    {
+      "capability_id": "P02",
+      "symbols_or_scope": [
+        "load_price_bars"
+      ],
+      "owner": "Track A/source owner",
+      "reuse_scope": "Existing offline scalar replay",
+      "unmet_preconditions": "Calls scalar Yahoo parser; cannot supply lossless candle admission",
+      "source": {
+        "path": "implementation/src/investment_system/ingestion/replay.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "cc48fd32461f170acd6b0bf339752a35076ddbcf5c0ad535afc15c656d606b3c",
+        "bytes": 4507
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "cc48fd32461f170acd6b0bf339752a35076ddbcf5c0ad535afc15c656d606b3c"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "cc48fd32461f170acd6b0bf339752a35076ddbcf5c0ad535afc15c656d606b3c"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "cc48fd32461f170acd6b0bf339752a35076ddbcf5c0ad535afc15c656d606b3c"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "cc48fd32461f170acd6b0bf339752a35076ddbcf5c0ad535afc15c656d606b3c"
+        }
+      }
+    },
+    {
+      "capability_id": "S01",
+      "symbols_or_scope": [
+        "load_calendar_vintage",
+        "CalendarVintage.admissible_at",
+        "runtime_tzdata_version"
+      ],
+      "owner": "US Session PR #18 owner",
+      "reuse_scope": "Explicit immutable US regular calendar vintages with source hashes/timezone",
+      "unmet_preconditions": "Real vintage + notice bytes + supported availability; no populated real 19 input calendar",
+      "source": {
+        "path": "implementation/src/investment_system/sessions/calendar.py",
+        "commit": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "sha256": "01fd84ef6e64db1bc8b588127953efb15395abef375b5529b56b4ef7e0f3b19b",
+        "bytes": 10802
+      },
+      "tree_presence": {
+        "chart": {
+          "present": false,
+          "sha256": null
+        },
+        "canonical": {
+          "present": false,
+          "sha256": null
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "01fd84ef6e64db1bc8b588127953efb15395abef375b5529b56b4ef7e0f3b19b"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "01fd84ef6e64db1bc8b588127953efb15395abef375b5529b56b4ef7e0f3b19b"
+        }
+      }
+    },
+    {
+      "capability_id": "S02",
+      "symbols_or_scope": [
+        "ListingEvidence"
+      ],
+      "owner": "US Session/common identity owners",
+      "reuse_scope": "One common dated listing and aware evidence/hash wrapper",
+      "unmet_preconditions": "Underlying source economic/admission facts are caller responsibility",
+      "source": {
+        "path": "implementation/src/investment_system/sessions/listing.py",
+        "commit": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "sha256": "6e4ba184c3c707de378f91a9243b7a377cac59d892893d4377588664895112c4",
+        "bytes": 1134
+      },
+      "tree_presence": {
+        "chart": {
+          "present": false,
+          "sha256": null
+        },
+        "canonical": {
+          "present": false,
+          "sha256": null
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "6e4ba184c3c707de378f91a9243b7a377cac59d892893d4377588664895112c4"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "6e4ba184c3c707de378f91a9243b7a377cac59d892893d4377588664895112c4"
+        }
+      }
+    },
+    {
+      "capability_id": "S03",
+      "symbols_or_scope": [
+        "bind_yahoo_bars",
+        "listing_refusal",
+        "YAHOO_EXCHANGE_MIC"
+      ],
+      "owner": "US Session PR #18 owner",
+      "reuse_scope": "Exact one-listing full-series open match and close lower-bound guard",
+      "unmet_preconditions": "No actual Chart run without owner-admitted calendar/listing; no full OHLC/basis/PIT/feed admission",
+      "source": {
+        "path": "implementation/src/investment_system/sessions/binder.py",
+        "commit": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "sha256": "a030a19fbbe812b66a7527b22aa502547d424f14b7ca817b3016046a37880e5a",
+        "bytes": 7749
+      },
+      "tree_presence": {
+        "chart": {
+          "present": false,
+          "sha256": null
+        },
+        "canonical": {
+          "present": false,
+          "sha256": null
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "a030a19fbbe812b66a7527b22aa502547d424f14b7ca817b3016046a37880e5a"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "a030a19fbbe812b66a7527b22aa502547d424f14b7ca817b3016046a37880e5a"
+        }
+      }
+    },
+    {
+      "capability_id": "S04",
+      "symbols_or_scope": [
+        "bind_research_inputs",
+        "GUARD"
+      ],
+      "owner": "US Session/Technical owners",
+      "reuse_scope": "Shared existing Technical path with explicit false publication claim",
+      "unmet_preconditions": "Not full source availability or product authority; not a Chart calculation module",
+      "source": {
+        "path": "implementation/src/investment_system/sessions/research.py",
+        "commit": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "sha256": "b7ba0fea36bcb6409781b878010165d10147108ff987bbc95e1f5239183609bc",
+        "bytes": 8281
+      },
+      "tree_presence": {
+        "chart": {
+          "present": false,
+          "sha256": null
+        },
+        "canonical": {
+          "present": false,
+          "sha256": null
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "b7ba0fea36bcb6409781b878010165d10147108ff987bbc95e1f5239183609bc"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "b7ba0fea36bcb6409781b878010165d10147108ff987bbc95e1f5239183609bc"
+        }
+      }
+    },
+    {
+      "capability_id": "P03",
+      "symbols_or_scope": [
+        "bars_from_yahoo_chart"
+      ],
+      "owner": "Technical owner",
+      "reuse_scope": "Null close/volume retention and raw ordering",
+      "unmet_preconditions": "Inherited available_at=bar stamp is software scope, not new source proof",
+      "source": {
+        "path": "implementation/src/investment_system/technical/pit_market.py",
+        "commit": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "sha256": "9c2a56deec51d6b4cd97d9d9ef5afc9236a3bb32018918b6b7e575fb0119f32e",
+        "bytes": 7218
+      },
+      "tree_presence": {
+        "chart": {
+          "present": false,
+          "sha256": null
+        },
+        "canonical": {
+          "present": false,
+          "sha256": null
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "9c2a56deec51d6b4cd97d9d9ef5afc9236a3bb32018918b6b7e575fb0119f32e"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "9c2a56deec51d6b4cd97d9d9ef5afc9236a3bb32018918b6b7e575fb0119f32e"
+        }
+      }
+    },
+    {
+      "capability_id": "A01",
+      "symbols_or_scope": [
+        "load_splits",
+        "split_factor_after",
+        "mcap_price"
+      ],
+      "owner": "Track A source/CA owner",
+      "reuse_scope": "Approved market-cap close reconstruction reuse",
+      "unmet_preconditions": "Not full adjusted OHLCV/dividend/volume/ledger admission",
+      "source": {
+        "path": "implementation/tools/audit_mcap_store.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "c44d803792e584aa94b3eb3d1e7e3cfccea73404ad637832cb7bc202cd124007",
+        "bytes": 35768
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "c44d803792e584aa94b3eb3d1e7e3cfccea73404ad637832cb7bc202cd124007"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "c44d803792e584aa94b3eb3d1e7e3cfccea73404ad637832cb7bc202cd124007"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "c44d803792e584aa94b3eb3d1e7e3cfccea73404ad637832cb7bc202cd124007"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "c44d803792e584aa94b3eb3d1e7e3cfccea73404ad637832cb7bc202cd124007"
+        }
+      }
+    },
+    {
+      "capability_id": "A02",
+      "symbols_or_scope": [
+        "provider_events",
+        "document_errors",
+        "reconcile"
+      ],
+      "owner": "Track A source/CA owner",
+      "reuse_scope": "Reviewed primary share-unit normalization before ranking",
+      "unmet_preconditions": "Not price-field adjustment/finality or complete historical action ledger",
+      "source": {
+        "path": "implementation/tools/ca_unit_policy.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "d30d382288541caf4af02d734b465d507678eaf91f6929944a83d0ef32ef54ac",
+        "bytes": 10898
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "d30d382288541caf4af02d734b465d507678eaf91f6929944a83d0ef32ef54ac"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "d30d382288541caf4af02d734b465d507678eaf91f6929944a83d0ef32ef54ac"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "d30d382288541caf4af02d734b465d507678eaf91f6929944a83d0ef32ef54ac"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "d30d382288541caf4af02d734b465d507678eaf91f6929944a83d0ef32ef54ac"
+        }
+      }
+    },
+    {
+      "capability_id": "A03",
+      "symbols_or_scope": [
+        "checked",
+        "prepare"
+      ],
+      "owner": "Track A source/CA owner",
+      "reuse_scope": "Bundled primary evidence source pins",
+      "unmet_preconditions": "No execution/ingestion here; own approved scope only",
+      "source": {
+        "path": "implementation/tools/prepare_ca_unit_evidence.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "04f9d0baee3583a96b59768538b294c75228db0f6bb8a76a6fbb919e0c65f502",
+        "bytes": 2913
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "04f9d0baee3583a96b59768538b294c75228db0f6bb8a76a6fbb919e0c65f502"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "04f9d0baee3583a96b59768538b294c75228db0f6bb8a76a6fbb919e0c65f502"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "04f9d0baee3583a96b59768538b294c75228db0f6bb8a76a6fbb919e0c65f502"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "04f9d0baee3583a96b59768538b294c75228db0f6bb8a76a6fbb919e0c65f502"
+        }
+      }
+    },
+    {
+      "capability_id": "A04",
+      "symbols_or_scope": [
+        "parse_eod",
+        "to_chart"
+      ],
+      "owner": "Track A price source owner",
+      "reuse_scope": "Existing raw close-only fallback evidence",
+      "unmet_preconditions": "Fixed21UTC derived labels and no full OHLCV/session/PIT admission",
+      "source": {
+        "path": "implementation/tools/fetch_tiingo_prices.py",
+        "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+        "sha256": "284852bfdef5d796d365425216e7b48f00d4a54bf0436d2733ba8036afab6c1b",
+        "bytes": 14055
+      },
+      "tree_presence": {
+        "chart": {
+          "present": true,
+          "sha256": "284852bfdef5d796d365425216e7b48f00d4a54bf0436d2733ba8036afab6c1b"
+        },
+        "canonical": {
+          "present": true,
+          "sha256": "284852bfdef5d796d365425216e7b48f00d4a54bf0436d2733ba8036afab6c1b"
+        },
+        "session_pr18": {
+          "present": true,
+          "sha256": "284852bfdef5d796d365425216e7b48f00d4a54bf0436d2733ba8036afab6c1b"
+        },
+        "integration_pr42": {
+          "present": true,
+          "sha256": "284852bfdef5d796d365425216e7b48f00d4a54bf0436d2733ba8036afab6c1b"
+        }
+      }
+    }
+  ],
+  "evidence_sources": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/lane-b/MARKET_ADMISSION_19_BY_8_v0.4.json",
+      "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+      "sha256": "c53505faa9bd47d6fe688d9e13e052b9ab11dc051e0af3e0db86e8355a601c27",
+      "bytes": 367542
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/lane-b/PRESERVED_RAW_ANOMALIES_v0.4.json",
+      "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+      "sha256": "cbf466f5c3bda0eef10198646fa0e0b19322ef35151aa9c3b70c518f548c2b15",
+      "bytes": 15161
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/lane-b/OFFLINE_EVIDENCE_REPLAY_v0.4.json",
+      "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+      "sha256": "b6040f622c5d9c2277683d89116fe7d6c53e9eded5a48efeb4ccaf4f2542a119",
+      "bytes": 25190
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/TIMESTAMP_AND_LISTING_COUNTEREXAMPLES.json",
+      "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+      "sha256": "8777f6d43f832b30f84b618a31305d35d412670192134e84e3899863dc8c64be",
+      "bytes": 2256
+    },
+    {
+      "path": "implementation/reports/gate_evidence/ca_unit_policy_v1.json",
+      "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+      "sha256": "839d856de07c2614ef396227b33a4b8c22cfc09fd47af35b442ee2d4eb4f7573",
+      "bytes": 41566
+    },
+    {
+      "path": "implementation/reports/gate_evidence/ca_unit_sources/NVDA.html",
+      "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+      "sha256": "de513cf9e2db874690e45fa023adbb21520b714e57757433f5660158cce9b6a5",
+      "bytes": 305190
+    },
+    {
+      "path": "implementation/reports/gate_evidence/track_a_price_identity_audit_2026-09-27.json",
+      "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+      "sha256": "d2c7a2f048fa3b79f3580096a832d9b3630d525eb67557d4311807fa3bd353b7",
+      "bytes": 431426
+    },
+    {
+      "path": "implementation/reports/us_sec_tickers_listings.json",
+      "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+      "sha256": "f532cc80edf5305f787e1091cc24244423acd9084375f01727bbd4508d351316",
+      "bytes": 504522
+    },
+    {
+      "path": "implementation/docs/us_equity_session/CONTRACT.md",
+      "commit": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "sha256": "5db9bf7cdedb6d79a5dffeb12d72a1b5ff481dafdc30bd36310e5e4820942162",
+      "bytes": 3761
+    },
+    {
+      "path": "implementation/docs/us_equity_session/STATUS.md",
+      "commit": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "sha256": "d1dceac6025db1cced10231e00db3b49d8c7f57a7ee634075a8bdf7b67e3df25",
+      "bytes": 4438
+    },
+    {
+      "path": "implementation/tests/test_us_equity_session_v1.py",
+      "commit": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+      "sha256": "e427606ea17899ff2f94018ccefd78735a75eec5c16b4aaacdb10b5a1111be21",
+      "bytes": 27841
+    }
+  ],
+  "claims": {
+    "new_network_requests": 0,
+    "new_calendar_engine": false,
+    "new_identity_system": false,
+    "new_adjustment_engine": false,
+    "production_admission_promotion": 0,
+    "production_code_changed": false
+  }
+}

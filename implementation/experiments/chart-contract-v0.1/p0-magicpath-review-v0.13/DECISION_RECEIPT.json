@@ -1,0 +1,87 @@
+{
+  "schema": "chart-delegated-decision-receipt-v1",
+  "at_utc": "2026-10-05T09:07:18.623Z",
+  "policy": "User explicit Investment-System1 D3 Delegated Approval Policy v1.0",
+  "decisions": [
+    {
+      "decision": "Adopt D1/D2/D3-A/D3-R and receipt-based self execution",
+      "classification": "D1",
+      "authority": "Current user's explicitpolicy; existing CDR021/022 risk and autonomous continuation",
+      "alternatives": [
+        "Repeated blanket D3 approval",
+        "Delegated only proved SSoT-aligned conservative decisions"
+      ],
+      "chosen": "Second; uncertain/reserved decisions D3-R, lane-local WAIT",
+      "verification": "Applied to task prompts/STATE/HANDOFF, direct readback required",
+      "rollback": "Revert append-only policy configuration, preserve receipt history"
+    },
+    {
+      "decision": "Use existingMagicPath nativeSAMPLE and localrenderer/browser fallback if unavailable",
+      "classification": "D3-A (fallback path concretization; underlying SAMPLEwork alreadyD1/D2authorized)",
+      "authority": [
+        "User MagicPath primary + auto fallback instructions",
+        "Existing Chart v0.9/v0.12 SAMPLE renderer/source contract",
+        "Current riskFAST and source-owner boundary"
+      ],
+      "alternatives": [
+        "WAIT on quota",
+        "Buycredits/newpaidresource",
+        "Reuse exact admitted SAMPLE source + local verification"
+      ],
+      "chosen": "Reuse current exactSAMPLE source and localverification; nopaidresource",
+      "designAlignment": "Same firstStrategyTheme visualization, originalsourceSVG/text/denominator, fourdimensions separate, ACTUALNOT_AVAILABLE; no source/identity/publicationauthority invention",
+      "protectedBoundary": "PIT/Frozen/Holdout/provenance/history/security/tenant/auth/financialaccounts unchanged; otherowner/global protectedwrites0",
+      "validation": "MagicPathcompleted + nativepreviewobserved + exactcompiledbrowser18/18PASS; preciseuploaded/returned/compiledhashes",
+      "rollback": "Remove additivev13 artifact and activepolicy switch; oldrenderer/Figma/history untouched"
+    }
+  ],
+  "oldPendingReclassification": [
+    {
+      "id": "A-S1",
+      "status": "OWNER_ACTION_REQUIRED",
+      "approvalClassification": "NOT_A_PENDING_USER_D3; actual owner evidence/acceptance prerequisite",
+      "autoApprovalMayReplaceAbsentFact": false
+    },
+    {
+      "id": "A-S2",
+      "status": "OWNER_ACTION_REQUIRED",
+      "approvalClassification": "NOT_A_PENDING_USER_D3; actual owner evidence/acceptance prerequisite",
+      "autoApprovalMayReplaceAbsentFact": false
+    },
+    {
+      "id": "A-S3",
+      "status": "OWNER_ACTION_REQUIRED",
+      "approvalClassification": "NOT_A_PENDING_USER_D3; actual owner evidence/acceptance prerequisite",
+      "autoApprovalMayReplaceAbsentFact": false
+    },
+    {
+      "id": "A-G1",
+      "status": "OWNER_ACTION_REQUIRED",
+      "approvalClassification": "NOT_A_PENDING_USER_D3; actual owner evidence/acceptance prerequisite",
+      "autoApprovalMayReplaceAbsentFact": false
+    },
+    {
+      "id": "A-G2",
+      "status": "PARTIALLY_RESOLVED",
+      "approvalClassification": "NOT_A_PENDING_USER_D3; actual owner evidence/acceptance prerequisite",
+      "autoApprovalMayReplaceAbsentFact": false
+    },
+    {
+      "id": "A-G3",
+      "status": "PARTIALLY_RESOLVED",
+      "approvalClassification": "NOT_A_PENDING_USER_D3; actual owner evidence/acceptance prerequisite",
+      "autoApprovalMayReplaceAbsentFact": false
+    }
+  ],
+  "reserved": [
+    "Payment/newpaidresource",
+    "Trading/orders/funds/realfinancialcredentials",
+    "Holdout/OfficialLIVE/PITrelaxation",
+    "DestructiveFrozen/history/evidence or irreversiblemigration",
+    "Security/tenantweakening",
+    "Material newmethodology/numericpolicy",
+    "UnprovedSSoTalignment"
+  ],
+  "newUserD3R": [],
+  "ownerBoundaries": "Delegation does not assign otherowner branch/write-set or self-accept governance. Canonical merge outsideChart ownership remains unexecuted."
+}

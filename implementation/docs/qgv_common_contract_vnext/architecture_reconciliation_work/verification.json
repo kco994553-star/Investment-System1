@@ -1,0 +1,34 @@
+{
+  "root_independent_replay": {
+    "V_characterizations": 22,
+    "existing_test_functions": 13,
+    "G_profile_characterizations": 20,
+    "control_unittest": 32,
+    "tracked_content_preserved": true,
+    "G_output_sha256": "00bb57fb13ee92240a5b98c01740301665ae8840a24eddfa207a6be0702dcd7c"
+  },
+  "source_pins": {
+    "implementation/src/investment_system/qgv/raw_map.py": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+    "implementation/src/investment_system/qgv/g_horizon.py": "c5241f9178aba9103e663b267fd58818face6cf3c5721b21ee53c8969f091ba2",
+    "implementation/src/investment_system/qgv/pipeline.py": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+    "implementation/src/investment_system/qgv/quarterly_series.py": "1666839c6865b1187cff068bc7881f4e9658457f43b79ca7ded12fa98d89f5cb",
+    "implementation/src/investment_system/qgv/scoring.py": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+    "implementation/src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+    "implementation/src/investment_system/qgv/factors.py": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+    "implementation/src/investment_system/contracts/raw.py": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+    "implementation/src/investment_system/contracts/models.py": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+    "implementation/src/investment_system/contracts/strategy.py": "9c34249656ac7ba0203546584f7acd2dd96c6f2debb7ba54d54069290cbfe9ac",
+    "implementation/src/investment_system/providers/sec_companyfacts.py": "fe236b817858b9698fb2e74d0fe460a46de2e83000134f68ca38f3ab60ee055a",
+    "implementation/src/investment_system/providers/sec_vintage.py": "e0aecc5c02bafa9e9543b03af8fb6a9c961df1f40217b3099829b1934f1c42fd",
+    "implementation/src/investment_system/personal/weights.py": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5",
+    "implementation/src/investment_system/personal/versioning.py": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def",
+    "implementation/docs/qgv_common_contract_vnext/CONTRACT.md": "a7dabcf20b4016964367a5846f3903dae7a3c3985b22af2e59b99474486bf4d8",
+    "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/CONTRACT.md": "5203e09c36c612aa573789a5cdf8bcf1fb76f26fad105171e21b31828e13f76b"
+  },
+  "verification_scope": "current-source characterization and inactive descriptor/reference verification",
+  "production_semantics_changed": false,
+  "Actions": "NOT_RUN",
+  "full_integration": "NOT_RUN",
+  "actual_scheduler_hops": "0/2; no accepted remote canary artifacts at intake",
+  "legacy_characterization_is_method_approval": false
+}

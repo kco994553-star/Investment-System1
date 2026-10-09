@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "case_count": 71,
+  "failures": [],
+  "baseline_commit": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "fixture_sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040",
+  "scope": "SYNTHETIC_LEGACY_EQUIVALENCE_ONLY"
+}

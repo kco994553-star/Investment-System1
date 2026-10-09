@@ -1,0 +1,238 @@
+{
+  "scope": "NINE_READ_ONLY_OFFLINE_PREFLIGHT_PROBES_NOT_PRODUCTION_EVIDENCE",
+  "synthetic_owner_claims_only": true,
+  "observed_at_utc": "2026-10-05T04:25:52.504657+00:00",
+  "decision_time": "2026-10-05T03:00:00+00:00",
+  "repository": "/workspace/scratch/9de0281e56bb/repo",
+  "tool": {
+    "path": "/workspace/scratch/9de0281e56bb/repo/implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+    "sha256": "5ddfeaced404821d15f9a53cde0d4ee87f742f18e976e390764fd25a4d8364c1"
+  },
+  "fixture_generator": {
+    "path": "/workspace/scratch/9de0281e56bb/repo/implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py",
+    "sha256": "39721807f2f032b31182cba1478fecbb00c79e20ba4bd4817fd4c5e8c7edf184"
+  },
+  "fixture_baseline": {
+    "path": "/workspace/scratch/9de0281e56bb/repo/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+    "sha256": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c"
+  },
+  "pinned_request": {
+    "commit": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
+    "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+    "sha256": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c",
+    "equals_current_fixture_baseline": true,
+    "constituent_count": 19
+  },
+  "reproducer_sha256": "dcec8bbffbf5be647048b348b9feb2a71c981bd20505c5de95871721739daad5",
+  "input_pin_manifest_sha256": "3295568f8a03db29a920307a98d3346283d96b9356f470b218465dfa336a21dc",
+  "historical_probe_commit": "32069065a0c4a62e4390d76675eb9c7681456c87",
+  "historical_probe_sha256": "c6a0e6303275e1fdc47cc3b182e3faff787a9cea12907be692af37b5633a3844",
+  "case_count": 9,
+  "pass_count": 9,
+  "cases": [
+    {
+      "name": "Timezone-equal root start",
+      "expected_source_inspection": "INPUT_COMPLETE_UNAUTHENTICATED",
+      "observed_source_inspection": "INPUT_COMPLETE_UNAUTHENTICATED",
+      "input_unchanged": true,
+      "open_count": 6,
+      "closed_count": 0,
+      "production_readiness": "IMPLEMENTATION_NOT_READY",
+      "production_payload_is_null": true,
+      "findings": [
+        {
+          "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+          "path": "/owner_return",
+          "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+          "severity": "WARNING"
+        }
+      ],
+      "outcome": "PASS"
+    },
+    {
+      "name": "Earlier covering row start",
+      "expected_source_inspection": "INPUT_COMPLETE_UNAUTHENTICATED",
+      "observed_source_inspection": "INPUT_COMPLETE_UNAUTHENTICATED",
+      "input_unchanged": true,
+      "open_count": 6,
+      "closed_count": 0,
+      "production_readiness": "IMPLEMENTATION_NOT_READY",
+      "production_payload_is_null": true,
+      "findings": [
+        {
+          "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+          "path": "/owner_return",
+          "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+          "severity": "WARNING"
+        }
+      ],
+      "outcome": "PASS"
+    },
+    {
+      "name": "Later row start misses root beginning",
+      "expected_source_inspection": "INVALID",
+      "observed_source_inspection": "INVALID",
+      "input_unchanged": true,
+      "open_count": 6,
+      "closed_count": 0,
+      "production_readiness": "IMPLEMENTATION_NOT_READY",
+      "production_payload_is_null": true,
+      "findings": [
+        {
+          "code": "ASSIGNMENT_INTERVAL_INCOMPLETE",
+          "path": "/constituents/0/owner_return",
+          "message": "assignment does not cover claimed root interval",
+          "severity": "ERROR"
+        },
+        {
+          "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+          "path": "/owner_return",
+          "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+          "severity": "WARNING"
+        }
+      ],
+      "outcome": "PASS"
+    },
+    {
+      "name": "Finite row cannot cover indefinite root",
+      "expected_source_inspection": "INVALID",
+      "observed_source_inspection": "INVALID",
+      "input_unchanged": true,
+      "open_count": 6,
+      "closed_count": 0,
+      "production_readiness": "IMPLEMENTATION_NOT_READY",
+      "production_payload_is_null": true,
+      "findings": [
+        {
+          "code": "ASSIGNMENT_INTERVAL_INCOMPLETE",
+          "path": "/constituents/0/owner_return",
+          "message": "assignment does not cover claimed root interval",
+          "severity": "ERROR"
+        },
+        {
+          "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+          "path": "/owner_return",
+          "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+          "severity": "WARNING"
+        }
+      ],
+      "outcome": "PASS"
+    },
+    {
+      "name": "Finite row misses finite root end",
+      "expected_source_inspection": "INVALID",
+      "observed_source_inspection": "INVALID",
+      "input_unchanged": true,
+      "open_count": 6,
+      "closed_count": 0,
+      "production_readiness": "IMPLEMENTATION_NOT_READY",
+      "production_payload_is_null": true,
+      "findings": [
+        {
+          "code": "ASSIGNMENT_INTERVAL_INCOMPLETE",
+          "path": "/constituents/0/owner_return",
+          "message": "assignment does not cover claimed root interval",
+          "severity": "ERROR"
+        },
+        {
+          "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+          "path": "/owner_return",
+          "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+          "severity": "WARNING"
+        }
+      ],
+      "outcome": "PASS"
+    },
+    {
+      "name": "Source rows may reorder without identity reassignment",
+      "expected_source_inspection": "INPUT_COMPLETE_UNAUTHENTICATED",
+      "observed_source_inspection": "INPUT_COMPLETE_UNAUTHENTICATED",
+      "input_unchanged": true,
+      "open_count": 6,
+      "closed_count": 0,
+      "production_readiness": "IMPLEMENTATION_NOT_READY",
+      "production_payload_is_null": true,
+      "findings": [
+        {
+          "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+          "path": "/owner_return",
+          "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+          "severity": "WARNING"
+        }
+      ],
+      "outcome": "PASS"
+    },
+    {
+      "name": "Nested invalid float in unchanged source shape",
+      "expected_source_inspection": "INVALID",
+      "observed_source_inspection": "INVALID",
+      "input_unchanged": true,
+      "open_count": 6,
+      "closed_count": 0,
+      "production_readiness": "IMPLEMENTATION_NOT_READY",
+      "production_payload_is_null": true,
+      "findings": [
+        {
+          "code": "INVALID_JSON_VALUE",
+          "path": "/constituents/0",
+          "message": "Out of range float values are not JSON compliant: inf",
+          "severity": "ERROR"
+        },
+        {
+          "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+          "path": "/owner_return",
+          "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+          "severity": "WARNING"
+        }
+      ],
+      "outcome": "PASS"
+    },
+    {
+      "name": "Explicit available-at exactly decision",
+      "expected_source_inspection": "INPUT_COMPLETE_UNAUTHENTICATED",
+      "observed_source_inspection": "INPUT_COMPLETE_UNAUTHENTICATED",
+      "input_unchanged": true,
+      "open_count": 6,
+      "closed_count": 0,
+      "production_readiness": "IMPLEMENTATION_NOT_READY",
+      "production_payload_is_null": true,
+      "findings": [
+        {
+          "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+          "path": "/owner_return",
+          "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+          "severity": "WARNING"
+        }
+      ],
+      "outcome": "PASS"
+    },
+    {
+      "name": "Expired row end is exclusive",
+      "expected_source_inspection": "INVALID",
+      "observed_source_inspection": "INVALID",
+      "input_unchanged": true,
+      "open_count": 6,
+      "closed_count": 0,
+      "production_readiness": "IMPLEMENTATION_NOT_READY",
+      "production_payload_is_null": true,
+      "findings": [
+        {
+          "code": "INVALID_OWNER_TIME",
+          "path": "/constituents/0/owner_return",
+          "message": "half-open effective interval does not contain decision time",
+          "severity": "ERROR"
+        },
+        {
+          "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+          "path": "/owner_return",
+          "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+          "severity": "WARNING"
+        }
+      ],
+      "outcome": "PASS"
+    }
+  ],
+  "review_recommendation": "NO_CHANGE",
+  "all_six_gates_remain_open": true,
+  "repository_files_modified": false
+}

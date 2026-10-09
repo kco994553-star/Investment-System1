@@ -1,0 +1,42 @@
+{
+  "status": "CONFIGURATION_READBACK_PASS_NOT_EXECUTION",
+  "checks": [
+    {
+      "id": "6ac31fdb7f388191be588ea61f5a2009",
+      "prompt_exact": true,
+      "schedule_unchanged": true,
+      "enabled_unchanged": true,
+      "target_unchanged": true,
+      "timezone_unchanged": true,
+      "title_unchanged": true,
+      "timing_mode_unchanged": true,
+      "configured_enabled": true,
+      "execution_verified": false
+    },
+    {
+      "id": "6ac2efbd34fc8191a60dccbbe338c291",
+      "prompt_exact": true,
+      "schedule_unchanged": true,
+      "enabled_unchanged": true,
+      "target_unchanged": true,
+      "timezone_unchanged": true,
+      "title_unchanged": true,
+      "timing_mode_unchanged": true,
+      "configured_enabled": true,
+      "execution_verified": false
+    }
+  ],
+  "actual_hops_credited": 0,
+  "recorded_at_utc": "2026-10-05T07:24:31.469Z",
+  "failure_history": [
+    {
+      "initial": "Prompt update generated different titles despite omitted title",
+      "repair": "Restored original titles using title-only update",
+      "final": "READBACK_PASS"
+    },
+    {
+      "initial": "Rejected patch used delete and add on same target",
+      "repair": "Existing JSON updated directly; no remote impact"
+    }
+  ]
+}

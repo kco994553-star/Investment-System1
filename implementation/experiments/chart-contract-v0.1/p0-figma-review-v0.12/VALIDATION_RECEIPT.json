@@ -1,0 +1,29 @@
+{
+  "recorded_at_utc": "2026-10-05T07:19:07.492658+00:00",
+  "risk": "FAST",
+  "prior_output_hashes_checked": 108,
+  "unchanged_matches": 107,
+  "known_stale_mutable_hash": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "recorded": "0811cedd14d37341f9486e6f4c0c64cbdbaab9da5eb2068764075744e6d075b8",
+      "actual": "545d1d813699fb9b1cdc8aa7553abf51d644b83071a0dc0f4acef46a388511b2"
+    }
+  ],
+  "source_renderer_hash_match": true,
+  "root_handoff_original_prefix_preserved": true,
+  "source_reference_decimal_total": 10000,
+  "native_geometry_checks": 8,
+  "geometry_pass": true,
+  "native_layout_overlaps": 0,
+  "source_browser": "2 viewports ×6 targeted checks PASS",
+  "figma_postfix_visual": "NOT_RUN_TOOL_QUOTA_BLOCKED",
+  "fpia_archive_result_run_side_hashes": "VERIFIED_OWNER_EVIDENCE_REUSED",
+  "protected_paths_changed": 0,
+  "new_python_or_full_regression_runs": 0,
+  "new_fpia_runs": 0,
+  "task_prompt_exact_readback": true,
+  "product_gates_closed": 0,
+  "remaining": 6,
+  "new_d3": false
+}

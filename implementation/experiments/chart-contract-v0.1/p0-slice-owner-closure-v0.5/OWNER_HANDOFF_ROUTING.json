@@ -1,0 +1,35 @@
+{
+  "kind": "EXPLICIT_USER_AUTHORIZED_OWNER_HANDOFF_ROUTING",
+  "intended_recipient_role": "Primary Integration Writer / Integration-FPIA owner",
+  "resolved_route": {
+    "repository": "kco994553-star/Investment-System1",
+    "pr": 42,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/42",
+    "branch": "integration/fpia-hardened-v1",
+    "head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+  },
+  "evidence": [
+    {
+      "source": "GLOBAL_CURRENT_HANDOFF.md@9d9b2b2",
+      "fact": "Single Primary Integration Writer is session_019znshzTYgyBnuuBmSxdPFN."
+    },
+    {
+      "source": "COORDINATION_DECISION_REGISTER CDR-014",
+      "fact": "Primary Integration Writer implements/verifies FPIA on its own branch."
+    },
+    {
+      "source": "fresh PR42 metadata/body",
+      "fact": "Active integration/fpia-hardened-v1 implements CDR-014; chart handoff belongs to this owner path."
+    }
+  ],
+  "alternative_routes_excluded": [
+    "PR35 is Codex hardening, not the designated Global writer",
+    "PR40 is prior integration trial, not the active FPIA implementation",
+    "PR44 is read-only QGV dependency, not the integration recipient"
+  ],
+  "surface": "One top-level GitHub PR42 Conversation handoff comment, no @mention/person/account inference and no review approval.",
+  "user_authorization": "User section25 requests scoped handoff/evidence delivery to Integration owner; no Global write authority.",
+  "status": "RESOLVED_FOR_HANDOFF_NOT_YET_SENT",
+  "skill": "resolve-recipients",
+  "audience_expansion": false
+}

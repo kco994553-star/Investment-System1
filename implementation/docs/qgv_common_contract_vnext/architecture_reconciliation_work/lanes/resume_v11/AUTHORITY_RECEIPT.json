@@ -1,0 +1,78 @@
+{
+  "id": "QGV-CDR024-V11-SCOPED-ADOPTION-2026-10-05",
+  "classification": "D1",
+  "state": "ADOPTED_OPERATIONAL_GOVERNANCE_ONLY",
+  "recorded_at_utc": "2026-10-05T10:48:56.488780+00:00",
+  "authority_decision": "CDR-024",
+  "identity_clarification": "CDR-026",
+  "canonical_authority": {
+    "head": "1596649912554116196c1ad3c1d41797219f5241",
+    "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+    "sha256": "e193544159babd5ccb7d74671d9925fa6fd4de406a0e215cda1b08b2264dba3b",
+    "git_blob_sha": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f"
+  },
+  "approval_register": {
+    "head": "1596649912554116196c1ad3c1d41797219f5241",
+    "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+    "sha256": "27329fc02ea91cb4ab00e42f774092f6211ee1119bd9d1c9dce67c9c967cee9c",
+    "git_blob_sha": "c1d7c9c45ae65516cef01e6481aee91e5b7c4aad"
+  },
+  "historical_adopted_blob": "89b48bca0aeeff54bdc0fc97d6ee768e5f0e326c",
+  "current_merged_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+  "operation": "Use already user-adopted common SSoT v1.1 for this scoped QGV audit; preserve original scoped policy/history and narrower methodology boundaries.",
+  "semantic_delta": "NONE",
+  "alternatives": [
+    "Apply adopted common governance with exact merged-file pin (selected)",
+    "Keep old scoped operational authority despite material common adoption (stale)"
+  ],
+  "operating_values": {
+    "maximum_tasks_per_cycle": 5,
+    "lease_ttl_seconds": 7200,
+    "deadlock_escalation_ttl_multiple": 2,
+    "repair_round_cap": 3,
+    "digest_decision_limit": 10,
+    "digest_max_days": 7,
+    "module_decision_limit_per_window": 5,
+    "rolling_windows": 3,
+    "veto_hours": 72,
+    "dependent_chain_depth_during_veto": 3,
+    "token_budget": null
+  },
+  "no_new_values_selected": true,
+  "protection_boundaries_preserved": [
+    "QGV_METHOD_AND_NUMERIC_POLICY",
+    "PIT_NO_LOOKAHEAD_PROVENANCE",
+    "FROZEN_HISTORY_EVIDENCE",
+    "SECURITY_TENANT_FINANCIAL_PERMISSIONS",
+    "HOLDOUT",
+    "OFFICIAL_LIVE",
+    "CANONICAL_MERGE",
+    "OWNER_SINGLE_WRITER"
+  ],
+  "execution_mode": "USER_OBSERVED_SESSION_ONLY",
+  "hard_guard_input": {
+    "head": "1596649912554116196c1ad3c1d41797219f5241",
+    "path": "implementation/docs/coordination/governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md",
+    "sha256": "e091014187f28f49a793199a444842db002341f3218a093bfdb8760edbff4ead",
+    "git_blob_sha": "1018ff50fc8e624be3b1c9ab403337a4dfc9bb02"
+  },
+  "gate_A": "NOT_VERIFIED_UNATTENDED_DISABLED",
+  "kill_switch": {
+    "control_locator": "NOT_YET_IMPLEMENTATION_VERIFIED_BY_MAIN",
+    "session_permission": "CDR-024 and PART G explicitly allow user-observed/session execution before Gate A",
+    "agent_control_change": false,
+    "unattended_activation": false
+  },
+  "d3_A_requirements": [
+    "26A escalation triggers",
+    "26B independent execution",
+    "26C digest/veto drift limits",
+    "26D reversible no-loss rollback",
+    "26F conservative semantic_delta synthesis"
+  ],
+  "new_d3_A_approvals": 0,
+  "runtime_or_method_authorization": false,
+  "rollback": "Normal revert of scoped operational locator/metadata; common adopted policy and historic evidence remain in immutable history. No external-system side effect.",
+  "verification_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/VERIFICATION.json",
+  "independent_review_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/resume_v11/INDEPENDENT_REVIEW.json"
+}

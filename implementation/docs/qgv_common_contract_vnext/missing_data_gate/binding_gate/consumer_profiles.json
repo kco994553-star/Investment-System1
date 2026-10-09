@@ -1,0 +1,446 @@
+{
+  "status": "INDEPENDENT_CONSUMER_PROFILE_REVIEW / INACTIVE / SPEC_ONLY",
+  "source_heads": {
+    "owner_intake": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "integration": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c"
+  },
+  "source_evidence": [
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/contracts/models.py",
+      "sha256": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/qgv/analysis.py",
+      "sha256": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/qgv/scoring.py",
+      "sha256": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/qgv/leaderboard.py",
+      "sha256": "f3246131c2219a6f3ea869aa7c88d6cefb30e735992dbcb3b5fc095ff3565248"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/qgv/portfolio.py",
+      "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/qgv/track_record.py",
+      "sha256": "53710f90fd8dd0b3eb1db5cf8fc86979a6cd53215e8f7a542a60c14c0269e4a3"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/contracts/strategy.py",
+      "sha256": "9c34249656ac7ba0203546584f7acd2dd96c6f2debb7ba54d54069290cbfe9ac"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/personal/weights.py",
+      "sha256": "2bfdb278feaa3892e9c2b0129419b93c7725570a81b37fe5d6643228357b14f5"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/personal/versioning.py",
+      "sha256": "af84bfd95e198c3e1c29381ca9d688728da8a7a128dec4994da49d5186416def"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/personal/quality.py",
+      "sha256": "b6cefc19927bb3da00060920174de0f2d21dd7616299d9ebd81ad65870a349b7"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/personal/ports.py",
+      "sha256": "a4fa05cc660db1779eb44babbbb8568f0c97723dc1b74a722f977f338be670fb"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/personal/fit.py",
+      "sha256": "d7c569cbf8496d752b0782b63986011e6e3e86a7436785bca94fadf7973565a5"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/validation/vertical_slice.py",
+      "sha256": "4ab06fce30064ccf0a54f2c8e6dd39b4b97fdb996511958fac24d25d031a98dc"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/src/investment_system/integration/compatibility.py",
+      "sha256": "4bc843e6bb19ab934a202e360009375540ddbbebdf93040e2e108523d5a7a7a0"
+    },
+    {
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/leaderboard_producer/rank.py",
+      "sha256": "e66b8029811eddbf7fa250232cdda6d94837f7e7393b7c96c65513d6477a822a"
+    },
+    {
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/leaderboard_producer/qgv_input.py",
+      "sha256": "b65a36cbf486cfb932c8148a49043b0bc1045e30f7a0fefc13faddd756fde3f2"
+    },
+    {
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/publication/predicate.py",
+      "sha256": "c4b10daa9857af9dfc393d79111d9894a72f5344ca27b2b6681ea0c3b95b2b96"
+    },
+    {
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/publication/authorization.py",
+      "sha256": "36786fc7d585d51a77fe50e483af76b9d994ae6c76063c712da94faab12e5aa2"
+    },
+    {
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/publication/qgv_binding.py",
+      "sha256": "f28d94273d94a1bad06daff308182f7cde7f66ec235b2e47882994e591c85853"
+    },
+    {
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/publication/envelope.py",
+      "sha256": "8e654b8d48aab84aba94ca92541711c2cc44cb76932cee6a1a1fc7d71b2a362e"
+    },
+    {
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/publication/facts.py",
+      "sha256": "b81838adad0954e6879981071613e4f61744bc6f2071f5917218b04ee6bf57d8"
+    },
+    {
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/product/web_mvp.py",
+      "sha256": "870fd2888ec857a4bcc3c77f06cf3a3e1041288d4e7d5d0e12615c1a7cdc7323"
+    },
+    {
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/product/web_assets/app.js",
+      "sha256": "9774bee4b51b34ed68ce0467b01dc13028306c8f46589bd3e3283b2778a209f2"
+    },
+    {
+      "commit": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+      "path": "implementation/src/investment_system/producers/contract.py",
+      "sha256": "61b5eea2b32c9283e2407531e614de9a1b255aff9124d62d0a2168df23faaa6f"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/docs/qgv_common_contract_vnext/golden_cases.json",
+      "sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/approval.json",
+      "sha256": "65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf"
+    },
+    {
+      "commit": "1e79920bdea5f5580bf46414a083c06d5d3604d6",
+      "path": "implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/CONTRACT.md",
+      "sha256": "5203e09c36c612aa573789a5cdf8bcf1fb76f26fad105171e21b31828e13f76b"
+    }
+  ],
+  "authority": "Technical recommendations are not user approval. No runtime enablement, production implementation, grant or migration.",
+  "independent_decisions": [
+    {
+      "id": "B5",
+      "verdict": "APPROVE_RECOMMENDED",
+      "recommendation": "Separate contribution, coverage, completeness, scoring-validity, ranking and publication assessments. Unknown policy remains unassessed; legacy scalar/coverage remain literal.",
+      "dependencies": [
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ],
+      "score_impact": "Zero now; future assessment can affect use without arithmetic change.",
+      "pit_impact": "Number/READY/actionable PARTIAL is not PIT proof.",
+      "migration_impact": "Additive inactive reference design; consumer adoption separately authorized.",
+      "classification": {
+        "audit": "D1",
+        "recommendation": "D2",
+        "actual_criteria_adoption": "D3"
+      }
+    },
+    {
+      "id": "B6",
+      "verdict": "APPROVE_RECOMMENDED",
+      "recommendation": "Separate consumer/version/method/namespace policy. Diagnostic partial and mechanical producer PASS do not imply normal ranking/selection. Research display and diagnostic archive retain separate authority.",
+      "dependencies": [
+        "B5",
+        "B3",
+        "B4",
+        "P01 authorization"
+      ],
+      "score_impact": "Zero now; future eligibility changes can change ranks/selection with unchanged numeric scores.",
+      "pit_impact": "Persistence PASS cannot become full PIT PASS.",
+      "migration_impact": "Preserve legacy ranks; future boards need new policy/version/cohort and impact comparison.",
+      "classification": {
+        "audit": "D1",
+        "recommendation": "D2",
+        "new_filter_selection_adoption": "D3"
+      }
+    },
+    {
+      "id": "B7",
+      "verdict": "APPROVE_RECOMMENDED",
+      "recommendation": "Reuse immutable registry/version/numeric override only; factor/method identity, requiredness, applicability truth, admission/provenance and Official validity/ranking cannot be mutated by Custom weight profile.",
+      "dependencies": [
+        "B4",
+        "B1",
+        "B2",
+        "B3",
+        "B5",
+        "B6",
+        "C-24/C-30"
+      ],
+      "score_impact": "Zero now; authorized future Custom contribution may differ, Official immutable.",
+      "pit_impact": "Zero cannot remove obligations; current weight tree is not an admission engine.",
+      "migration_impact": "No new profile engine/dataset; cache/storage/consumer identity pins namespace, registry, method and override hash.",
+      "classification": {
+        "audit": "D1",
+        "recommendation": "D2",
+        "runtime_wiring": "D3"
+      }
+    }
+  ],
+  "synthetic_counterexamples": [
+    {
+      "case_id": "CP-PARTIAL-LEADERBOARD",
+      "fixture_ref": "golden_cases.json:competitive_advantage__MISSING_DATA__numeric",
+      "actual": {
+        "Q": 56.0,
+        "G": 70.0,
+        "total": 63.0,
+        "coverage": "PARTIAL",
+        "rank": 2,
+        "board_rows": 2
+      },
+      "finding": "PARTIAL total exists and is ranked by legacy engine; freshness records PARTIAL but no admission filter exists.",
+      "verification": "ACTUAL_PINNED_RUNTIME_CHARACTERIZATION_PASS"
+    },
+    {
+      "case_id": "CP-PARTIAL-PORTFOLIO-SELECTION",
+      "actual": {
+        "company_id": "partial-fixture",
+        "eligible": true,
+        "Q": 56.0,
+        "G": 70.0,
+        "V": 70.0,
+        "rank": 1
+      },
+      "finding": "Existing provisional Q/G-presence selection accepts partial arithmetic; not Official selection.",
+      "verification": "ACTUAL_PINNED_RUNTIME_CHARACTERIZATION_PASS"
+    },
+    {
+      "case_id": "CP-PERSONAL-PARTIAL",
+      "actual": {
+        "is_actionable_PARTIAL": true
+      },
+      "finding": "Presentation helper is not a QGV completeness/rank/PIT criterion.",
+      "verification": "ACTUAL_PINNED_RUNTIME_CHARACTERIZATION_PASS"
+    },
+    {
+      "case_id": "CP-WEIGHT-ISOLATION",
+      "actual": {
+        "registry_hash_before": "f2362b626047cff2f4a765edaa599a75af3e620a70bfb2f910aeaafdfa297fc7",
+        "registry_hash_after": "f2362b626047cff2f4a765edaa599a75af3e620a70bfb2f910aeaafdfa297fc7",
+        "custom_zero_global_weight": 0.0,
+        "rejected_changes": [
+          "a (WEIGHT/PRODUCTION) is not editable in OFFICIAL",
+          "unknown configurable keys: ['method_identity']",
+          "frozen keys cannot be customized: ['q_weights']"
+        ],
+        "override_fields": [
+          "node_id",
+          "local_weight"
+        ]
+      },
+      "finding": "Registry unchanged; Official weight edit, StrategyProfile method key and frozen Q weight key rejected. Does not prove QGV runtime admission invariant.",
+      "verification": "ACTUAL_PINNED_RUNTIME_CHARACTERIZATION_PASS"
+    },
+    {
+      "case_id": "CP-PUBLICATION-INDEPENDENT",
+      "fixture": "Manufactured eligibility facts and local-only fixture grant; not persisted company data/real grant",
+      "actual": {
+        "active_authorizations": [],
+        "partial_without_grant": {
+          "contract": "PUBLICATION_DECISION",
+          "schema_version": 1,
+          "schema1_data_state": "NOT_AVAILABLE",
+          "publication_mode": "NOT_AVAILABLE",
+          "official": false,
+          "live": false,
+          "track_c_validated": false,
+          "grants": {
+            "research_display": "NONE",
+            "frozen": "NONE",
+            "live": "NONE"
+          },
+          "reasons": [
+            "RESEARCH_DISPLAY_GRANT_NONE"
+          ],
+          "not_authority": [
+            "TRACK_C_ATTESTATION_NOT_ACCEPTED",
+            "PRODUCER_VALIDATION_IS_NOT_A_GRANT",
+            "METHODOLOGY_LIFECYCLE_IS_NOT_SCHEMA1_STATE"
+          ],
+          "subject_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "persisted_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "data_completeness": "PARTIAL",
+          "within_tie_order": null
+        },
+        "partial_with_fixture_grant": {
+          "contract": "PUBLICATION_DECISION",
+          "schema_version": 1,
+          "schema1_data_state": "NOT_AVAILABLE",
+          "publication_mode": "DISPLAY_RESEARCH",
+          "official": false,
+          "live": false,
+          "track_c_validated": false,
+          "grants": {
+            "research_display": "PRESENT",
+            "frozen": "NONE",
+            "live": "NONE"
+          },
+          "reasons": [
+            "DISCLOSURE_PARTIAL"
+          ],
+          "not_authority": [
+            "TRACK_C_ATTESTATION_NOT_ACCEPTED",
+            "PRODUCER_VALIDATION_IS_NOT_A_GRANT",
+            "METHODOLOGY_LIFECYCLE_IS_NOT_SCHEMA1_STATE"
+          ],
+          "subject_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "persisted_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "data_completeness": "PARTIAL",
+          "within_tie_order": null
+        },
+        "blocked_with_fixture_grant": {
+          "contract": "PUBLICATION_DECISION",
+          "schema_version": 1,
+          "schema1_data_state": "NOT_AVAILABLE",
+          "publication_mode": "NOT_AVAILABLE",
+          "official": false,
+          "live": false,
+          "track_c_validated": false,
+          "grants": {
+            "research_display": "PRESENT",
+            "frozen": "NONE",
+            "live": "NONE"
+          },
+          "reasons": [
+            "BLOCKED_NOT_A_SCORE"
+          ],
+          "not_authority": [
+            "TRACK_C_ATTESTATION_NOT_ACCEPTED",
+            "PRODUCER_VALIDATION_IS_NOT_A_GRANT",
+            "METHODOLOGY_LIFECYCLE_IS_NOT_SCHEMA1_STATE"
+          ],
+          "subject_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "persisted_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "data_completeness": "BLOCKED",
+          "within_tie_order": null
+        },
+        "rejected_promotions": [
+          "PROMOTION_FORBIDDEN: LIVE is not issued here; schema-1 gains no RESEARCH state and no grant is created",
+          "PROMOTION_FORBIDDEN: OFFICIAL is not issued here; schema-1 gains no RESEARCH state and no grant is created"
+        ]
+      },
+      "finding": "Existing approved P01 predicate separates research partial disclosure from ranking and Official/Live. Active production set remains empty. Completeness alone cannot grant publication.",
+      "verification": "ACTUAL_PINNED_INTEGRATION_RUNTIME_CHARACTERIZATION_PASS"
+    }
+  ],
+  "consumer_policy_design": [
+    {
+      "consumer": "Analysis",
+      "diagnostic_partial": "Explicit diagnostic/research contribution/reasons, no valid-score claim for blocked numeric",
+      "normal_use": "Method-specific completeness/validity refs",
+      "publication": "Separate authority"
+    },
+    {
+      "consumer": "Leaderboard",
+      "diagnostic_partial": "No normal ranking solely from numeric existence; explicit partial research cohort policy required if chosen",
+      "normal_use": "Independent approved ranking policy/version and comparable cohort",
+      "publication": "Rank is not grant"
+    },
+    {
+      "consumer": "Portfolio",
+      "diagnostic_partial": "Read-only diagnostic context possible; selection/allocation needs consumer policy",
+      "normal_use": "Independent selection/decision policy",
+      "publication": "Actual holdings are not QGV endorsement"
+    },
+    {
+      "consumer": "Track Record",
+      "diagnostic_partial": "Immutable archive allowed with exact rejection/assessment refs",
+      "normal_use": "Record existence does not prove score validity",
+      "publication": "No inherited grant"
+    },
+    {
+      "consumer": "Research display/publication",
+      "diagnostic_partial": "Explicit exact RESEARCH_DISPLAY grant plus existing no-blocked/withheld/expired/synthetic predicate",
+      "normal_use": "No automatic Official/Live promotion",
+      "publication": "ACTIVE_AUTHORIZATIONS empty; production display inactive"
+    },
+    {
+      "consumer": "Personal/Custom",
+      "diagnostic_partial": "Namespace-separated diagnostic context; actionable PARTIAL is not QGV ranking/PIT proof",
+      "normal_use": "Resolved custom policy/version only",
+      "publication": "No Official or inherited grant"
+    },
+    {
+      "consumer": "Web/API",
+      "diagnostic_partial": "Render producer assessments/envelope, never infer eligibility in browser",
+      "normal_use": "Authorized persisted scores/ranks; frontend does not rescore/filter",
+      "publication": "Existing schema-1/P01 guards; no API implementation added"
+    }
+  ],
+  "verification_limits": {
+    "production_vnext": "NOT_IMPLEMENTED",
+    "new_ranking_runtime": "NOT_RUN",
+    "full_regression": "NOT_RERUN_NO_PRODUCTION_CHANGE",
+    "real_pit_oos": "NOT_RUN",
+    "holdout": "UNCONSUMED"
+  },
+  "historical_policy": "Existing score/rank/selection/grant evidence remains literal. No current runtime mutation.",
+  "checks": {
+    "counterexample_families": 5,
+    "characterization_checks": 20,
+    "passed": 20,
+    "failed": 0,
+    "asserted_conditions": [
+      "partial total equals 63",
+      "partial coverage equals PARTIAL",
+      "legacy board includes both supplied snapshots",
+      "partial snapshot receives legacy rank 2",
+      "provisional Portfolio selector accepts Q/G-present partial",
+      "Personal actionable helper accepts PARTIAL",
+      "Custom zero has zero global contribution weight",
+      "Official registry content hash unchanged after Custom resolution",
+      "Official override rejected",
+      "StrategyProfile method identity key rejected",
+      "StrategyProfile frozen Q weights key rejected",
+      "WeightOverride fields exactly numeric node_id/local_weight",
+      "production active grants remain empty",
+      "partial without grant stays NOT_AVAILABLE",
+      "partial with local fixture grant allows DISPLAY_RESEARCH",
+      "fixture-granted partial disclosure reason preserved",
+      "BLOCKED with fixture grant stays NOT_AVAILABLE",
+      "BLOCKED reason remains explicit",
+      "LIVE promotion rejected",
+      "OFFICIAL promotion rejected"
+    ],
+    "meaning": "Existing-boundary characterization only; not vNext consumer-policy acceptance."
+  },
+  "reproduction": {
+    "owner_worktree": "owner source at intake pin; PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=implementation/src",
+    "golden_setup": "Load all_70 and competitive_advantage__MISSING_DATA__numeric observations as FactorObservation; call AnalysisEngine with fixture company IDs and synthetic=True. Pass those two snapshots to existing LeaderboardEngine with explicit fixture tickers. Pass partial Q/G/V scalar to rank_cross_section.",
+    "profile_setup": "Use a SYNTHETIC_REGISTRY root and two PRODUCTION-maturity WEIGHT nodes, local 0.5/0.5; Custom overrides 0/1; verify immutable registry hash, Official override rejection, StrategyProfile frozen/unknown-key rejection.",
+    "publication_setup": "Use exact integration worktree and existing make_fact/decide/reject_promotion. Manufacture fact with PARTIAL and no blocker/withheld/synthetic/expired flag solely to characterize predicate; pass local-only fixture grant, never update ACTIVE_AUTHORIZATIONS. Verify blocked variant and reject LIVE/OFFICIAL.",
+    "script_ref": "consumer_profile_probe.py",
+    "script_sha256": "2f496859773bf08ef81e2af5472a260b9aa2e3ad2af5bc7154a043611b47dec2",
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=implementation/src python implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/consumer_profile_probe.py --out <scratch>/consumer-profile-probe.json",
+    "rerun": "PASS / 5 families / 20 assertions / case actual fields match original evidence"
+  }
+}

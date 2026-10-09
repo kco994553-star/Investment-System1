@@ -1,0 +1,1463 @@
+{
+  "document_type": "IMMUTABLE_TRANSPORT_REPUBLICATION_PROVENANCE",
+  "original_local_commit": "4b3919715a71c146c088a5530851e0761e7a9396",
+  "original_tree": "a951276e66ed01614e27b0b00c4c14bb4f3e00ca",
+  "public_replacement_commit": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+  "public_replacement_tree": "a951276e66ed01614e27b0b00c4c14bb4f3e00ca",
+  "equivalence": "TREE_IDENTICAL / CONTENT_IDENTICAL",
+  "reason": "Exact original commit publication unavailable because current authenticated write interface cannot reproduce original commit metadata.",
+  "original_commit_publication": "NOT_ACHIEVED",
+  "commit_identity_equivalence": "NOT_CLAIMED",
+  "original_commit_remote_get": "404_NOT_FOUND",
+  "original_bundle_raw_metadata_commit_request": "UNAVAILABLE_IN_THIS_SESSION; none edited/deleted/rewritten",
+  "original_parent_metadata": "NOT_INDEPENDENTLY_AVAILABLE; documented canonical/base and user fresh ahead=1 behind=0 supplied",
+  "original_message_metadata": "NOT_AVAILABLE; not invented or represented as preserved",
+  "replacement_parent": [
+    "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  ],
+  "replacement_metadata": {
+    "sha": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "node_id": "C_kwDOUjo5VdoAKGNiMTkwNmIyMDc2MjMxNjhmZDcwZjNkY2RiNWIzMGYyZDgyZDgwN2Q",
+    "url": "https://api.github.com/repos/kco994553-star/Investment-System1/git/commits/cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "html_url": "https://github.com/kco994553-star/Investment-System1/commit/cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "author": {
+      "name": "kco994553-star",
+      "email": "kco994553@gmail.com",
+      "date": "2026-10-04T23:47:04Z"
+    },
+    "committer": {
+      "name": "kco994553-star",
+      "email": "kco994553@gmail.com",
+      "date": "2026-10-04T23:47:04Z"
+    },
+    "tree": {
+      "sha": "a951276e66ed01614e27b0b00c4c14bb4f3e00ca",
+      "url": "https://api.github.com/repos/kco994553-star/Investment-System1/git/trees/a951276e66ed01614e27b0b00c4c14bb4f3e00ca"
+    },
+    "message": "chore(qgv): transport republication of inactive Common Contract vNext\n\nTRANSPORT / REPUBLICATION COMMIT only; no new QGV semantic revision.\nOriginal-Local-Commit: 4b3919715a71c146c088a5530851e0761e7a9396\nOriginal-Tree: a951276e66ed01614e27b0b00c4c14bb4f3e00ca\nEquivalence: TREE_IDENTICAL / CONTENT_IDENTICAL\nReason: Exact original commit publication unavailable because current authenticated write interface cannot reproduce original commit metadata.\nOriginal parent/message metadata and bundle are unavailable in this session; replacement uses the documented canonical base.",
+    "parents": [
+      {
+        "sha": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "url": "https://api.github.com/repos/kco994553-star/Investment-System1/git/commits/b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/commit/b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+      }
+    ],
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "allowed_scope": "TRANSPORT / REPUBLICATION only; INACTIVE / SPEC-ONLY",
+  "tree_equivalence": "PASS",
+  "content_equivalence": "PASS",
+  "prepublication_checks": {
+    "original_commit": "4b3919715a71c146c088a5530851e0761e7a9396",
+    "expected_tree": "a951276e66ed01614e27b0b00c4c14bb4f3e00ca",
+    "verified_tree": "a951276e66ed01614e27b0b00c4c14bb4f3e00ca",
+    "tree_hash_recomputed": "PASS",
+    "directories_verified": 41,
+    "file_count": 7718,
+    "canonical_file_count": 7698,
+    "added_files": 20,
+    "modified_existing_files": 0,
+    "deleted_files": 0,
+    "blob_sha_bytes_modes_verified": "20/20 PASS",
+    "blobs": [
+      {
+        "path": ".github/workflows/qgv-common-contract-vnext.yml",
+        "mode": "100644",
+        "sha": "d5ce212023a42de059d5d1a99a97ffeeaf32c281",
+        "bytes": 1538,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/AUDIT.md",
+        "mode": "100644",
+        "sha": "b611bdc40792d0b84bb61df6eac5367c0a540bd3",
+        "bytes": 19788,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/COMPATIBILITY.md",
+        "mode": "100644",
+        "sha": "59ddaa7b840024f9085f7fa1d5bf31c9b48c1e37",
+        "bytes": 6187,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/CONTRACT.md",
+        "mode": "100644",
+        "sha": "3e28d1cd09bba6762dff7ae5e5c60dd0e073b5ee",
+        "bytes": 13425,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/STATUS.md",
+        "mode": "100644",
+        "sha": "b2a96879b438b4889f46733b99f8edee94889fad",
+        "bytes": 6191,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/contract_record.example.json",
+        "mode": "100644",
+        "sha": "79091c11a12642333f332be7df60cd897164d7ea",
+        "bytes": 2777,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/contract_record.schema.json",
+        "mode": "100644",
+        "sha": "106a6c94d958c11b494760f3f9a425f1090b1ec2",
+        "bytes": 11074,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/current_factor_map.json",
+        "mode": "100644",
+        "sha": "80e1c72c0ca717e4df098e3a813033596ca856f6",
+        "bytes": 13880,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/evidence/baseline.json",
+        "mode": "100644",
+        "sha": "880f75f984ef41743e36178ec994b73b8bb8ec8c",
+        "bytes": 5954,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/evidence/baseline_full.txt",
+        "mode": "100644",
+        "sha": "6cc42d80606d1283f5a4c7d1caf3b1941079c4f5",
+        "bytes": 511,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/evidence/contract_targeted.txt",
+        "mode": "100644",
+        "sha": "66f08398e32117dbd829b0a8165b663d8ff62cc6",
+        "bytes": 179,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/evidence/contract_targeted_first_attempt.txt",
+        "mode": "100644",
+        "sha": "785f83cd1de6cac4e3b10cfefb6bfdaa54b2bd93",
+        "bytes": 1475,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/evidence/existing_targeted.txt",
+        "mode": "100644",
+        "sha": "f96bcf2e3db575c0fc3e8ac7df140e7e22480b91",
+        "bytes": 99,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/evidence/existing_targeted_final.txt",
+        "mode": "100644",
+        "sha": "4aac2e8f6181eb87e333abb3ec6efe92e34dfe48",
+        "bytes": 99,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/evidence/final_full.txt",
+        "mode": "100644",
+        "sha": "49ecf750dfbfcc71c327f1467a733749daee53fd",
+        "bytes": 591,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/evidence/golden_verification.json",
+        "mode": "100644",
+        "sha": "ad17925690d282f990a65f67ad7d1ee206c240b9",
+        "bytes": 262,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/evidence/integration_neutral_overlay.txt",
+        "mode": "100644",
+        "sha": "dbff7ce393a89d8b6e8764490bd990920a1e3428",
+        "bytes": 179,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/docs/qgv_common_contract_vnext/golden_cases.json",
+        "mode": "100644",
+        "sha": "f5583027c331a0a4be49c97e4fb851f1437ea33e",
+        "bytes": 741804,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/tests/test_qgv_common_contract_vnext.py",
+        "mode": "100644",
+        "sha": "0a0642cbb327bd913433731726c89b556ee56bcf",
+        "bytes": 10449,
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/tools/qgv_contract_audit.py",
+        "mode": "100644",
+        "sha": "2947bcaa6604516434b56887da843fbe123380b6",
+        "bytes": 5441,
+        "status": "PASS"
+      }
+    ],
+    "protected_subtrees": {
+      "implementation/src": {
+        "sha": "0c266697ccb226c813d4e045fa9ffb262e7e1a89",
+        "status": "IDENTICAL"
+      },
+      "implementation/fixtures": {
+        "sha": "1146602f73a8e14006814887479d3d5d3d066a2c",
+        "status": "IDENTICAL"
+      }
+    },
+    "legacy_score_changed": "NO",
+    "production_semantics_changed": "NO",
+    "original_identity_authority": "User supplied expected original tree SHA; raw original commit/bundle unavailable in this session",
+    "replacement_parent": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "original_parent_metadata": "UNAVAILABLE; not represented as independently verified",
+    "content_equivalence": "PASS (cryptographic original tree identity)",
+    "commit_identity_equivalence": "NOT_CLAIMED",
+    "holdout": "UNCONSUMED"
+  },
+  "post_ci_checks": {
+    "all_paths_modes_types_shas": "ALL_ENTRIES_IDENTICAL",
+    "file_count": 7718,
+    "added_blobs": "20/20 BYTE_IDENTICAL PASS",
+    "branch_head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "canonical_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "ahead": 1,
+    "behind": 0
+  },
+  "remote_branch": "codex/qgv-common-contract-vnext-spec-2026-10-04",
+  "draft_pr": {
+    "number": 44,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/44",
+    "draft": true,
+    "merged": false,
+    "head_sha": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+  },
+  "actions": {
+    "status": "PASS",
+    "head_sha": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "runs": [
+      {
+        "event": "push",
+        "run_id": 37245014376,
+        "job_id": 111561063928,
+        "conclusion": "success",
+        "checkout_sha": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37245014376"
+      },
+      {
+        "event": "pull_request",
+        "run_id": 37245037812,
+        "job_id": 111561134208,
+        "conclusion": "success",
+        "checkout_sha": "8779c43c29b105d764c3252e139f65b6d587d1e8",
+        "head_sha": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+        "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37245037812",
+        "checkout_tree": "a951276e66ed01614e27b0b00c4c14bb4f3e00ca",
+        "test_merge_parents": [
+          "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+          "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+        ]
+      }
+    ]
+  },
+  "targeted": {
+    "status": "PASS",
+    "tests": 39,
+    "kind": "ACTUAL_GITHUB_ACTIONS"
+  },
+  "contract": {
+    "status": "PASS",
+    "tests": 92,
+    "kind": "ACTUAL_GITHUB_ACTIONS",
+    "includes": "Official/Custom synthetic isolation, provenance, metadata and golden"
+  },
+  "golden": {
+    "status": "PASS",
+    "cases": 71,
+    "kind": "ACTUAL_GITHUB_ACTIONS",
+    "fixture_sha256": "ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040"
+  },
+  "full_regression": {
+    "status": "PASS",
+    "tests": 488,
+    "kind": "ACTUAL_GITHUB_ACTIONS"
+  },
+  "repository_checks": {
+    "tracked_content_after_tests": "PASS git diff --exit-code",
+    "preexisting_files": "7698/7698 unchanged SHA/mode",
+    "existing_source_and_fixtures": "IDENTICAL_SUBTREES"
+  },
+  "integration_head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "integration_compatibility": {
+    "integration_head": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+    "integration_branch": "integration/fpia-hardened-v1",
+    "integration_tree": "18de1b11a0ed6cd64150937c362baa822a8e4943",
+    "source_blob_checks": [
+      {
+        "path": "implementation/src/investment_system/__init__.py",
+        "sha": "cc307dccf2aa81aa7499e0f5832f486a7e3cc63c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/__init__.py",
+        "sha": "11e24cd703c6e67eac10907cef07281558677654",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/context.py",
+        "sha": "310ad43563fd3f296b9711c263065786dabe3a09",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/enums.py",
+        "sha": "4adf48f6b0648c6a7692cb6b0893201e646fe3e7",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/global_universe.py",
+        "sha": "4dcbb8d7cb65aa35e91d680ea19b169346defee8",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/lineage.py",
+        "sha": "288cabadcd0fe975fb9e2605f1f39b767ccc462b",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/models.py",
+        "sha": "ef4f80ec91622ffd332f641daf6501d66d87372d",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/portfolio_input.py",
+        "sha": "e8363f1c1da7f5f5c94c09fd84ed61e558fb561f",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/prediction.py",
+        "sha": "8e8643a7f38ba9bbd01b90c1205b05e40c51d1f7",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/product.py",
+        "sha": "26834a7d7af21c221eb86ef8ac5d6059b99e0f92",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/raw.py",
+        "sha": "7660d70b6a7fa860b5f7b3f8f93a68d86c95d6bf",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/strategy.py",
+        "sha": "7c1d482f81a58a1e277cbb19b0e57b9238b777c0",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/contracts/universe.py",
+        "sha": "fba6050d7449e6fdf1444e4a03bbf262a7334d6e",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/__init__.py",
+        "sha": "c41a9319773a2fddeaeaffad28505be54a64ed6a",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/bindings.py",
+        "sha": "4a52c10415e20e48bc155b02c6275e571a108bef",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/calibration_contracts.py",
+        "sha": "5ed82394b687dd6c9ee2c1d07a6b9bafd9641b5a",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/calibration_evidence.py",
+        "sha": "5ed024353fa93ad394f2f8f82f27c3c737d8653f",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/calibration_ledger.py",
+        "sha": "fe3ec89dc05cadede671f92bbdd6447e74b4da07",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/calibration_protocol.py",
+        "sha": "67bca6aad59c3cc117d800e2a037983be8f94e9c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/contracts.py",
+        "sha": "561317afd651052eedef37d4f6e72ccce3cee73e",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/execution.py",
+        "sha": "5b9df023bfb3d5337264107850cbcbba7506dfa1",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/experiments.py",
+        "sha": "53bf8cd96bc65765c10e30b69efef18367a38f3f",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/gsup_source_identity.py",
+        "sha": "fa93bf88f8d77b293421a8d0b5095757b22f72d8",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/landscape.py",
+        "sha": "830a691d1097bb011fed13360f3dabc75f0d3d5b",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/ledger.py",
+        "sha": "dab59520d7f51227d9db992aaf5408912dd9b849",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/metrics.py",
+        "sha": "e6e0e7eb288bd40a1b466e2ba69e6fcb701c8b27",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/pit.py",
+        "sha": "502075488d97041c8cd9d79e76c4f8261529a47c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/profile_selection.py",
+        "sha": "cc0811ddc2d784081f45d0cd9de6f4e9e44946c9",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/robustness.py",
+        "sha": "405515af03f58175829efa196799a81279082fed",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/search.py",
+        "sha": "84e4e4a404c6eee3f575e9ac5ab177ea1fcad09f",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/selection.py",
+        "sha": "08a19c2ff5b53adc812f8f29b6270b6a5c09b612",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/selection_contracts.py",
+        "sha": "18e9758bb5805cc3e6f994eb1b122c18b9f3a5b9",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/splits.py",
+        "sha": "59212ec60338b5d682886384cbd97687b4087f02",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/statistical_kernels.py",
+        "sha": "28e1c1842625bacabc6ffc9c9b172261e7d6585a",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/superiority.py",
+        "sha": "8a1254d7b77514f6015dfff4af0e4a53f57f22af",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/superiority_source_identity.py",
+        "sha": "71bf737578866b762a0ee82506f8f5db9418f8ba",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/superiority_v2.py",
+        "sha": "8e56a66e011c83f0d8a7bc222c1705c407887268",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/evl/walkforward.py",
+        "sha": "6aa2f0d4be2a59f3839e1a9f6271871d27fdbcb2",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/ingestion/__init__.py",
+        "sha": "4bee27ed3af0e39d1e13c414e626709aa7634f1d",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/ingestion/manifest.py",
+        "sha": "abbeaec186c8d39741eadff7ed165ef0e8274c5c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/ingestion/raw_store.py",
+        "sha": "dfd6597a23fc05214234a2c7545316b4d942645c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/ingestion/replay.py",
+        "sha": "e12a6e7672a7aab0009cbb8e5c491f73e9fe33a0",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/integration/__init__.py",
+        "sha": "4ec1efbffcb58ee6aaebc64bbc5f1f702a88963d",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/integration/compatibility.py",
+        "sha": "0604ffb1d5475ff71aae34e4f5655fdbce182bdb",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/integration/engine.py",
+        "sha": "931d00b7104495f0da161d822c8bfe44ea875037",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/integration/policy.py",
+        "sha": "e66378c4de695b9a158bbcc49cd1e1f92a84f5e3",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/leaderboard_producer/__init__.py",
+        "sha": "7b61b7d5d40c18124865e1ed3d6bb15cb1726f0d",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/leaderboard_producer/canonical.py",
+        "sha": "9812c9849f7c4803c50fc0462fd97458be7a8d95",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/leaderboard_producer/errors.py",
+        "sha": "0a6ff7988617cb31e4f8fb7b055b2d33613ff99c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/leaderboard_producer/exporter.py",
+        "sha": "f2f183c620daa8d9c409781b9a28142173627b27",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/leaderboard_producer/infra_boundary.py",
+        "sha": "a5290d618a30b17c5f4ac1ecf8998284cc65ba40",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/leaderboard_producer/qgv_input.py",
+        "sha": "fa49333598ba169bb4d0ae3c1217a11a8d4e3688",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/leaderboard_producer/rank.py",
+        "sha": "b7f8bd279b5338f772e3c0c633ffa22e805870ed",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/leaderboard_producer/research_publication.py",
+        "sha": "360eccc10c720536bb49bea4a968c4803a32e985",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/macro/__init__.py",
+        "sha": "eb8e7571a58289e37a021ac8606cfe0af61d69f8",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/macro/engine.py",
+        "sha": "08d79c20147d2a13413e98269042e6cf7d3973a8",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/macro/real_producer.py",
+        "sha": "c8dbba1635c4f6aaa15d26dd241cd2140e4cfe09",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/markets/__init__.py",
+        "sha": "ae550ca8d66d322b2f30f92a714e6948e0b4cd24",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/markets/kr.py",
+        "sha": "d4261b65a61ada7113294d7a09731dc37f29c8f6",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/markets/us.py",
+        "sha": "921a99458da93c06f79e6f46421acc1aa0bb5f79",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/personal/__init__.py",
+        "sha": "7bcf75b7c4c697723bdfc49958d5c04695481b7d",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/personal/fit.py",
+        "sha": "4a6264c01ec20a865baecdfebba68873251dd125",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/personal/money.py",
+        "sha": "119b29dfec8ff50471bfbddca2591ff44fc7d291",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/personal/portfolio.py",
+        "sha": "9e1d8f288cc0a78e41d6ccfb56bc2210ba37937e",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/personal/ports.py",
+        "sha": "495e472fd87ea75ffc4a71e4169aec249cb25a99",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/personal/quality.py",
+        "sha": "0ee6796efb0ab97e781852509953f3e30e3f16d2",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/personal/security.py",
+        "sha": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/personal/timecontract.py",
+        "sha": "0310a7e16bd86308ebcf90888032572269daf14b",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/personal/versioning.py",
+        "sha": "685e2d6024a6a0bac2183458a01832e2df63a6ab",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/personal/weights.py",
+        "sha": "b564215fd1a0ceecb32033e5da377f58f9fa4b0b",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/pit/__init__.py",
+        "sha": "d1dc9b812c473c2085ca4d386840c98b4f32be82",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/pit/resolver.py",
+        "sha": "871487d06200de89fe585190f698fd6b5a5210f0",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/producers/__init__.py",
+        "sha": "2dc5c2b2cfd2fc850f3cb357bb222a1c421db0d6",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/producers/adapters.py",
+        "sha": "55d690a6b5d96d5aa800d0b2c93714adaa78341c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/producers/assembler.py",
+        "sha": "aea5236d33f8e7842639a593af53519bdd90abc6",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/producers/contract.py",
+        "sha": "fa9ed3a387d12457419280e611136bcb29d6d730",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/producers/errors.py",
+        "sha": "b7f705c27a559248d755207a3925447e885951ae",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/producers/freshness.py",
+        "sha": "365aa497b1f7739a033e2419943107182ba973e5",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/producers/raw_persistence.py",
+        "sha": "23731284590d33e6342cba004e361ab6ca81b485",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/producers/registry.py",
+        "sha": "45c9f85b1a2c12c5866cf9d7f97a8e51b97a0a6d",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/producers/serialization.py",
+        "sha": "07219d8ad51002938da0a0183af78b5b8c71f2f1",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/__init__.py",
+        "sha": "7277f091eb546b18bdc6fd88d511285ee2520b14",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/entity_catalog.py",
+        "sha": "bb616fc8fbec3d993fe49ed3395e1802695ff850",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/entity_metadata.py",
+        "sha": "42202d4caeaffddb6325b5c48f4c59a42ae56576",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/render_app.py",
+        "sha": "8e077a4036e675c5bf1d115b8f10a690f84a4a03",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/web_assets/app.js",
+        "sha": "c00ec69fe9222aa5a1516d3f0cec6cd56ea62b25",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/web_assets/entity-search.js",
+        "sha": "c27764dba4ef3d9404a3597cb3085b8251dc099d",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/web_assets/index.html",
+        "sha": "acbdf10742df680f37f9cb6bde000655083d9dea",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/web_assets/locale.js",
+        "sha": "53e808bb9021667c90bd50f9cd0abbbbe1ddb55e",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/web_assets/network-bridge.js",
+        "sha": "4592ea56fc5e6c12e48a3c590a23e6d284ee7331",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/web_assets/network-style.css",
+        "sha": "354969a3036993dc399f48b80ed66b4c1b2b8fb7",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/web_assets/research-bridge.js",
+        "sha": "dafa71defe29147c2c29ea7a1bc498282c2e67e7",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/web_assets/research-style.css",
+        "sha": "d294bf43fd317678fa9d6c2737f33d23e7885766",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/web_assets/style.css",
+        "sha": "438be86ada83f03872b8014fc696e1d4ba08a854",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/product/web_mvp.py",
+        "sha": "10ad8c7624a0a31e602be699144cbcb534c96e53",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/prompt_library/__init__.py",
+        "sha": "ba320d150d720f8b7462fb78b27d038ab4c37b88",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/prompt_library/catalog.py",
+        "sha": "048d77a9addc8b07b6368f43eb5a414eeb71ee26",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/prompt_library/fill.py",
+        "sha": "28793b9bf484e15baec1f7c1ad7f674d917bfec3",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/prompt_library/search.py",
+        "sha": "75653c86c84f6bf3c1c22e8096ef65f9602e8388",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/prompt_library/ui.py",
+        "sha": "29dc6590eae74897ca85efa55014e6922d195c0a",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/prompt_library/validation.py",
+        "sha": "7c751f6ccdae815c8149d1aebe0fa6e5d524ccb5",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/__init__.py",
+        "sha": "66d33f04b758f079a53553b9e50a9085d2a8df88",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/base.py",
+        "sha": "dd9427f55d3eba6b013a3fa107f64529e2fc7778",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/catalog.py",
+        "sha": "d185e664bc76417e7a4d94fed782ae71b9b8d56a",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/env_price.py",
+        "sha": "58e23adccd7c87d26aaeeb797fe31d461cc92416",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/fred_alfred.py",
+        "sha": "f072a0855f096ccb63c3c7ec8ce51b1ab87255b5",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/fred_csv.py",
+        "sha": "a9a0b14c5508f9a52b47a4168f571c7e9f2dc09f",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/memory.py",
+        "sha": "ee501356a3ad73b8c753d258bfe0bb37f97f8015",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/sec_accn_reconcile.py",
+        "sha": "0308dac9db8d676f7a8520b261a2d36758c08822",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/sec_companyfacts.py",
+        "sha": "61b98c01b3799763060b85b02454eb19d732225c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/sec_cover_shares.py",
+        "sha": "04ac0699df85c520dd69b9014ba91a548f758ea0",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/sec_submissions.py",
+        "sha": "039d9be5dfcba7ccc6f50e2dc21d3ab43fc52acf",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/sec_vintage.py",
+        "sha": "559a155e123405b2dca63614d08ef2000a9cdc6a",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/us_sec.py",
+        "sha": "53eac147b3f6238d924785cb81323368a550c30b",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/providers/yahoo_chart.py",
+        "sha": "2670eee1b5d9f093875ab41100e09d866d7d5e91",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/publication/__init__.py",
+        "sha": "c90def1986bd285cfd9d7943f85cc84d5034c101",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/publication/authorization.py",
+        "sha": "9a4c39c200062afce02642a1c121341730321264",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/publication/envelope.py",
+        "sha": "4e4427c46382a3a0304fe79b48cb869ca99c5854",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/publication/errors.py",
+        "sha": "6d71207901380bf6674f8f9ee7cf856c1d7c6ab3",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/publication/extractors.py",
+        "sha": "20612eff0908476b78935382f895fe876e0a88c5",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/publication/facts.py",
+        "sha": "ce657e3f1d45fb2bea3fe77410535353bd6be6c5",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/publication/invalidation.py",
+        "sha": "a5a12ea862977d57154d76e64a55fc780e0983f3",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/publication/predicate.py",
+        "sha": "d224d2dc81727829fd8b55d697efa709303c8efd",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/publication/qgv_binding.py",
+        "sha": "78fc41dfbdfbc2b25754bac0c026d533930f5e20",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/__init__.py",
+        "sha": "d1030bf59f796c0caa5467f8028c05aa64af5a85",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/analysis.py",
+        "sha": "fc91d9fc7f9803759cbff07f59bfb325aae150b4",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/book.py",
+        "sha": "227cbc13de59731925255fd852d75c26a96509e8",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/compatibility.py",
+        "sha": "0c67cdfc4d574f0abcff14be15d842825966a524",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/factors.py",
+        "sha": "20c6fb2d1383a100c54e5b4ef6d64ff553449690",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/financial_issuer.py",
+        "sha": "2e73ee0977f4d28094bb41c99614d9ab48a03997",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/g_horizon.py",
+        "sha": "d69a9dcf77e33ac3532f3468973cca9156861a67",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/html_sample.py",
+        "sha": "b4eea11a411f5128e061e27584e2c42fe6126854",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/identifiers.py",
+        "sha": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/leaderboard.py",
+        "sha": "2670d81b67fa309cd4fb305926fd8169991c4f20",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/pipeline.py",
+        "sha": "6b89f2aac4cb270850a32d74609110c28442d383",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/portfolio.py",
+        "sha": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/quarterly_series.py",
+        "sha": "ff532b30d6581a33771e765fdf7edf91ab0ae0e5",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/raw_map.py",
+        "sha": "038c1c6027da0da83c734cb8ca28d16d93a92e62",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/scoring.py",
+        "sha": "05672d2cde18b4d3563579ce57aadc64cb0182f8",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/simulation.py",
+        "sha": "01ed3c3f10b1b949dea3c43ab124cf41764a8a7f",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/track_record.py",
+        "sha": "d67ba42a5a51f1cb57b2d15282a89a7c7faf320d",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv/us_live.py",
+        "sha": "392d9184c938e712d053be605d59f2da393ab5db",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv_producer/__init__.py",
+        "sha": "26a3427e2027675b416ebfd10cb65748d8324930",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv_producer/batch.py",
+        "sha": "37c830c3104fe814788bfe0f856fcff420ccf375",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv_producer/capture.py",
+        "sha": "ebdd8311511a72ec46d8c4c5ccb8660688f512d3",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv_producer/exporter.py",
+        "sha": "16b7af96729a4f77a9f7ad0094c41e19dc3fff34",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv_producer/infra_boundary.py",
+        "sha": "fc0443dd2a6fa59512ca1d6e7aa0043d9cfbbd14",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/qgv_producer/record.py",
+        "sha": "caa062ae01821626dab84271e2899bf4dc9a2532",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/__init__.py",
+        "sha": "610f9b7d7f208b6ec136975d5bb4e252027919d4",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/adapter.py",
+        "sha": "6cc56c4ae81094b202ce868300a7f01d2f5f19e6",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/discovery/__init__.py",
+        "sha": "3c98137e8fc5e6c90b1a8a41c0ec99611c67dbc1",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/discovery/discovery.py",
+        "sha": "af2e1ccd2b63d404f1dd10d88698c742ec0c1335",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/discovery/impact.py",
+        "sha": "6195f50ea65b929a72517cac54e559f2ae6cf109",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/discovery/present.py",
+        "sha": "42fb04627606f24afdae06cf6eb48fafb053583c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/gate.py",
+        "sha": "fe28db00e7fe4327e13a76ceb6f47012a52b2abf",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ingest/__init__.py",
+        "sha": "631b56ad74b6779803cce3dc8a380e04060fea5e",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ingest/contract.py",
+        "sha": "72c21b84a2ae795cc10b89aee2978dff055e83d2",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ingest/dedup.py",
+        "sha": "ce5a5c62ed484939960ad2b38b6dffd1ae360869",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ingest/entities.py",
+        "sha": "e68205e1ca70391be1fb5ee9369c162a64a4926d",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ingest/errors.py",
+        "sha": "a1af199fff0b0f2038cc76ee9a0e5f322e5ce634",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ingest/normalize.py",
+        "sha": "0a04664156fdf27c6202ccec8e9d117b634db02d",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ingest/pipeline.py",
+        "sha": "6731fb6f5efaf5de61c6fc291d500034e15fa481",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ingest/producer.py",
+        "sha": "df3d2037ee8de0ece8fc8bbe45627ee8b8369e3b",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ingest/raw.py",
+        "sha": "1f6562addec600f56a5198e7971dda23f3476d46",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ingest/rig_input.py",
+        "sha": "b57f25db7ae4bd1f2e99867a06ac3d361aa71c0c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ingest/sec_primary_disclosure_v1.py",
+        "sha": "9a9138e8bc277ca370a4b958533a9799ab627564",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/intel/__init__.py",
+        "sha": "0d386102e983b49279a798c3c4814825178c185f",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/intel/intel.py",
+        "sha": "57e575280da2953fdc82f8443721d46ec5950662",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/intel/present.py",
+        "sha": "6a05b09244258665ce88c78209080b605fe7f32c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/ledger.py",
+        "sha": "730a522cc30ff579bd0558c83bc0aaa6070df726",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/model.py",
+        "sha": "f38532c2e99b434fe99c913865b48baefad48219",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/myview/__init__.py",
+        "sha": "ebc1699694a042253b88d433f69dd5479171f3b0",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/myview/prefs.py",
+        "sha": "71fae37c8834be9335e3a78b4bdd8cabc386c792",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/myview/present.py",
+        "sha": "df52d6ae8de62cb42a877eed4f03a9e3aa27abac",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/myview/scope.py",
+        "sha": "583302f0e47ab496227f06c31dcefb49e70949b4",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/network/__init__.py",
+        "sha": "aae49c58bf41ccefa8300632e87d35fe1da3b45f",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/network/labels.py",
+        "sha": "7467f4befd00fe131b7b6766da26e92ca2b42fed",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/network/render.py",
+        "sha": "02775d9906087dd7d360c27a93e53c89ae725412",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/rig/network/views.py",
+        "sha": "7646734e5fe4be3864ab4acdf16f127e5999d6fd",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/sessions/__init__.py",
+        "sha": "c6dcc9ba835c01c15e141523332534b4f1774639",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/sessions/binder.py",
+        "sha": "771baf79a43caa3804e0478a87c417ac6fdc25c9",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/sessions/calendar.py",
+        "sha": "3c31c8ef1d920f51cb8579f66f00f2d78ee16fc6",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/sessions/errors.py",
+        "sha": "8edfc2f03be3b8d0a8c9018a74bf03b7f6b58740",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/sessions/listing.py",
+        "sha": "0bc31f63f79f565234b5976233a7063016d7f287",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/sessions/research.py",
+        "sha": "4a2a446efa3c1f1cd67a8a0a85bb75bc1a911290",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/__init__.py",
+        "sha": "90be47912527786bbd5815ed6d99de790d24418f",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/codec.py",
+        "sha": "02233c8435d18efd68c141989ac149d2039c9c32",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/engine.py",
+        "sha": "5365653fda6374aeace986c63cce9939921ebb64",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/errors.py",
+        "sha": "592167c6459e476489e7514bd502dc088872f5d5",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/exporter.py",
+        "sha": "32b00b53b480067b881e2fef4906cc7c790912b7",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/persistence.py",
+        "sha": "7d4234d548d681bbfd7516b96826f288f24fe5c4",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/pit_market.py",
+        "sha": "85dd0c8ad3b5263e1067e09e775a495d99ae9f9a",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/producer.py",
+        "sha": "8f225c40678feedae11c978855860864bcdd8586",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/technical/real_model_v1.py",
+        "sha": "ae27c0ddfecc5dc11c1b22ec0cd8f5ccffd9b186",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/universe/__init__.py",
+        "sha": "042ac64bf8489f19ee46ccac8303f105043fde88",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/universe/engine.py",
+        "sha": "2c1917cea43c04f0c2dff9416240da27f59358f6",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/universe/events.py",
+        "sha": "8630b9caa9a20860898548083ca970e514269093",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/universe/recon.py",
+        "sha": "1fb29b9b11ca63a1f6a2a7d1cb3f3f36f559e3a5",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/universe/resolve.py",
+        "sha": "b6a6f75cc35a21504cd663a48e682a73eacaf457",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/universe/sources.py",
+        "sha": "63fb0d42b7a07a741aa419f6b5e99314d88481e6",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/__init__.py",
+        "sha": "a7dfcc0b5cf6f2474f82d30600df09815097cadb",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/ablation.py",
+        "sha": "838ff955765d06767142b2a72ffbab6e77c6377b",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/adapters.py",
+        "sha": "b8635750ebc0ea63e8854b5a02253d85933e3d93",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/backtest.py",
+        "sha": "0a35949c8d665daa5ff4c7610ae2a31750b6787b",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/e2e.py",
+        "sha": "9d7a1c7bfe1d923a8047ff30fc7494336db2af3e",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/engine.py",
+        "sha": "85d827d3ad181ceef1fc17c138cf4c1e9a195345",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/file_store.py",
+        "sha": "b1c5869cfffa807ee7c58c44e1f6f6dd86e53f93",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/historical.py",
+        "sha": "ffade49fa31b2fc738dbe099afcf67980501c0ca",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/integrated.py",
+        "sha": "f183810638a24a682cf908dc555b10962c321bd6",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/outcome.py",
+        "sha": "f47f83f58b7f40b4905caffb1df7eae0f82a153a",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/records.py",
+        "sha": "037cfeb871cb9357e0b80d512a4e4c34bd9862eb",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/validation/vertical_slice.py",
+        "sha": "c227b9e2afdffa17786ac1bed77422d4dfb7300c",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/src/investment_system/versions.py",
+        "sha": "a9b854b93580a7349f89a1aee13eb2eda2cf2964",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/tests/helpers.py",
+        "sha": "a71f3cefefceeb49ac9bb5cc924da69ae0ec14dc",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/tests/__init__.py",
+        "sha": "112489c4fd357533a1526ad04e6bcb9e022eeb1e",
+        "status": "PASS"
+      },
+      {
+        "path": "implementation/tests/conftest.py",
+        "sha": "e53f642c2960a916bc51fafc070bbe48f48f6f06",
+        "status": "PASS"
+      }
+    ],
+    "source_files_verified": 216,
+    "overlay_paths": [
+      ".github/workflows/qgv-common-contract-vnext.yml",
+      "implementation/docs/qgv_common_contract_vnext/AUDIT.md",
+      "implementation/docs/qgv_common_contract_vnext/COMPATIBILITY.md",
+      "implementation/docs/qgv_common_contract_vnext/CONTRACT.md",
+      "implementation/docs/qgv_common_contract_vnext/STATUS.md",
+      "implementation/docs/qgv_common_contract_vnext/contract_record.example.json",
+      "implementation/docs/qgv_common_contract_vnext/contract_record.schema.json",
+      "implementation/docs/qgv_common_contract_vnext/current_factor_map.json",
+      "implementation/docs/qgv_common_contract_vnext/evidence/baseline.json",
+      "implementation/docs/qgv_common_contract_vnext/evidence/baseline_full.txt",
+      "implementation/docs/qgv_common_contract_vnext/evidence/contract_targeted.txt",
+      "implementation/docs/qgv_common_contract_vnext/evidence/contract_targeted_first_attempt.txt",
+      "implementation/docs/qgv_common_contract_vnext/evidence/existing_targeted.txt",
+      "implementation/docs/qgv_common_contract_vnext/evidence/existing_targeted_final.txt",
+      "implementation/docs/qgv_common_contract_vnext/evidence/final_full.txt",
+      "implementation/docs/qgv_common_contract_vnext/evidence/golden_verification.json",
+      "implementation/docs/qgv_common_contract_vnext/evidence/integration_neutral_overlay.txt",
+      "implementation/docs/qgv_common_contract_vnext/golden_cases.json",
+      "implementation/tests/test_qgv_common_contract_vnext.py",
+      "implementation/tools/qgv_contract_audit.py"
+    ],
+    "source_overlap": "0 (20 additive package paths absent from integration)",
+    "validation_kind": "LOCAL_EXACT_SOURCE_NEUTRAL_OVERLAY",
+    "contract": {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_qgv_common_contract_vnext.py"
+      ],
+      "exit_code": 0,
+      "output": "........................................................................ [ 78%]\n....................                                                     [100%]\n92 passed in 0.53s\n",
+      "status": "PASS"
+    },
+    "golden": {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "tools/qgv_contract_audit.py",
+        "--verify"
+      ],
+      "exit_code": 0,
+      "output": "{\n  \"status\": \"PASS\",\n  \"case_count\": 71,\n  \"failures\": [],\n  \"baseline_commit\": \"b8e39a2196a6d7794a04a0cd5393c68329e126ca\",\n  \"fixture_sha256\": \"ed01c7f25e6a01b23c9f474b9f66f1f204828834bbdbc25efc286d96050c5040\",\n  \"scope\": \"SYNTHETIC_LEGACY_EQUIVALENCE_ONLY\"\n}\n",
+      "status": "PASS"
+    },
+    "imports": {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-c",
+        "import importlib; modules = [\"investment_system.qgv.analysis\", \"investment_system.qgv.pipeline\", \"investment_system.qgv.scoring\", \"investment_system.qgv.raw_map\", \"investment_system.qgv.leaderboard\", \"investment_system.qgv.portfolio\", \"investment_system.qgv.simulation\", \"investment_system.qgv.track_record\", \"investment_system.personal.weights\", \"investment_system.contracts.models\", \"tools.qgv_contract_audit\"]; [importlib.import_module(m) for m in modules]; print(\"11 modules IMPORT PASS\")"
+      ],
+      "exit_code": 0,
+      "output": "11 modules IMPORT PASS\n",
+      "status": "PASS"
+    },
+    "full_integration_acceptance": "NOT_RUN",
+    "canonical_merge": "NOT_PERFORMED",
+    "holdout": "UNCONSUMED",
+    "pit_oos": "NOT_RUN",
+    "integration_compatibility": "PASS (contract/golden/import/relevant source overlap only)"
+  },
+  "full_integration_acceptance": "NOT_RUN",
+  "legacy_score_changed": "NO",
+  "production_semantics_changed": "NO",
+  "history_rewritten": "NO",
+  "holdout": "UNCONSUMED",
+  "pit_oos": "NOT_RUN",
+  "canonical_merge": "NOT_PERFORMED",
+  "runtime_migration": "NOT_STARTED",
+  "new_blockers": [],
+  "status": "QGV COMMON CONTRACT vNext = REMOTE_VERIFIED / DRAFT_PR_CI_VERIFIED",
+  "next_decision_gate": "Missing-Data Semantics; STOP with no semantic policy implementation",
+  "evidence_storage": "This provenance record is committed on a separate evidence-only branch so that the replacement branch keeps the exact original tree."
+}

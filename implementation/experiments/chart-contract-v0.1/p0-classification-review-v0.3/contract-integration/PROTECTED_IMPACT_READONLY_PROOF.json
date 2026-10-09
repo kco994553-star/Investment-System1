@@ -1,0 +1,22 @@
+{
+  "inspection": "Read-only byte inspection at exact FPIA head, not tests or FPIA",
+  "subject": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "p01_observed_seven_file_digest": "e6de46714f4405b52d4b25a418cc4081ff6df9d8891f332f59cc47e5ccc6c909",
+  "p01_files": [
+    "qgv/pipeline.py",
+    "qgv/leaderboard.py",
+    "qgv/book.py",
+    "technical/engine.py",
+    "macro/engine.py",
+    "product/web_mvp.py",
+    "producers/assembler.py"
+  ],
+  "whole_package_python_files": 204,
+  "whole_package_code_hash": "df34b84f54308fda6f084d59a574aa5da2cebdcd88b5c764b2ec2de2b63415d0",
+  "source_excerpts": {
+    "code_hash": "implementation/src/investment_system/evl/calibration_contracts.py:74-77",
+    "p01_guard": "implementation/tests/test_p01_research_publication.py:429-445"
+  },
+  "unchanged_by_chart_audit": true,
+  "no_runtime_import": true
+}

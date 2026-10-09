@@ -1,0 +1,4105 @@
+{
+  "artifact_kind": "TARGET_V0_SECURITY19_MAPPING_DISPOSITION",
+  "schema": "target-v0-security-map/1",
+  "status": "EXISTING_REGISTRY_SEARCH_COMPLETE_19_UNRESOLVED_NO_ADMISSION",
+  "repository": "kco994553-star/Investment-System1",
+  "prepared_by": "read-only delegated identity inspection; no ownership claim",
+  "user_target_source": {
+    "local_path": "/tmp/codex-remote-attachments/01a11afa-819c-765a-801f-740be0f1f034/c9ab16fa-b65b-41e8-842b-9a205e989b32/1-TARGET_v0.yaml",
+    "bytes": 4463,
+    "sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+    "schema": "PORTFOLIO_TARGET/0.1",
+    "version": "v0",
+    "status": "ADOPTED",
+    "owner": {
+      "role": "USER",
+      "note": "사용자가 정의한 투자 목표. 에이전트는 값을 제안·추정·보정하지 않는다."
+    },
+    "provenance": {
+      "derived_from": "QGV Portfolio Specification v1.1 §2 (2026-09-14, 사용자 작성)",
+      "adopted_by": "USER",
+      "adopted_at": "2026-10-08T20:37:00+09:00",
+      "adoption_note": "사용자가 v1.1 구성을 수정 없이 TARGET v0으로 채택함"
+    },
+    "effective_at": "2026-10-08T20:37:00+09:00",
+    "available_at": "2026-10-08T20:37:00+09:00",
+    "content_modified": false,
+    "repository_path": "implementation/docs/portfolio_target_owner/TARGET_v0.yaml"
+  },
+  "pinned_refs": {
+    "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+    "source_owner_branch": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+    "chart_PR41": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+    "main_prior_disposition": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9"
+  },
+  "remote_ref_readback": {
+    "canonical": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+    "main/chart-source-evidence-v1": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+    "codex/chart-contract-mcp-api-v0-1": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+    "method": "targeted git ls-remote read-only"
+  },
+  "evidence_pins": {
+    "personal_security_contract": {
+      "ref": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "path": "implementation/src/investment_system/personal/security.py",
+      "git_blob": "4bba65c8092c4a29f0974ab35eac975c3b06f1da",
+      "sha256": "c1b54651cbb096bf928415bed09dc4f05ac5370b923004d299c539850858a8e0",
+      "bytes": 4196,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": true,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/implementation/src/investment_system/personal/security.py"
+    },
+    "common_identity_types": {
+      "ref": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "path": "implementation/src/investment_system/contracts/global_universe.py",
+      "git_blob": "4dcbb8d7cb65aa35e91d680ea19b169346defee8",
+      "sha256": "7fc8e433d072095bd2c3dda3319d7105569756b3bb79febe88e8f86a46cf0a4b",
+      "bytes": 6228,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": true,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/implementation/src/investment_system/contracts/global_universe.py"
+    },
+    "legacy_company_registry": {
+      "ref": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "path": "implementation/src/investment_system/qgv/identifiers.py",
+      "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+      "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917",
+      "bytes": 3163,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": true,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/implementation/src/investment_system/qgv/identifiers.py"
+    },
+    "conflict_register": {
+      "ref": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "path": "Investment-System1 · Contract Conflict Register 2026-09-23.md",
+      "git_blob": "e63aca909246148723fbfe9cd2528299b6138bf8",
+      "sha256": "6bd7f8a39fc69cea0bedb3323ea72e5921f1ac1773fd643ced1a08557c1490b3",
+      "bytes": 44885,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": true,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/Investment-System1 · Contract Conflict Register 2026-09-23.md"
+    },
+    "global_korea_contract": {
+      "ref": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "path": "Investment-System1 · Global-Korea Universe and Information Source Contract 2026-09-24.md",
+      "git_blob": "a30a55d8223440913285ddc0d02e066aa5e8b4ef",
+      "sha256": "ec2374de458f72b12889e74644ac2c7d8eb79d1d0afa09d235b51286e0d92ad6",
+      "bytes": 5749,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": true,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/Investment-System1 · Global-Korea Universe and Information Source Contract 2026-09-24.md"
+    },
+    "source_owner_return": {
+      "ref": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "path": "implementation/docs/security_map19_owner/RETURN.json",
+      "git_blob": "8ffc7a26895abc15a1770b103022ba3fdce40fdc",
+      "sha256": "3c90c93df65d30ead91122805b2249c5729a9cec298938676178101c513757e6",
+      "bytes": 56550,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": true,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5/implementation/docs/security_map19_owner/RETURN.json"
+    },
+    "source_owner_receipt": {
+      "ref": "7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5",
+      "path": "implementation/docs/security_map19_owner/OWNER_RECEIPT.json",
+      "git_blob": "b7b2f4da365ad9de908b30d1d7339dfd59f02db7",
+      "sha256": "d8a267ec384f874ab80c8e13c27d1284ecb0448901c2d17262da314d367131fa",
+      "bytes": 1009,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": true,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/7b27b8be538dc50cb32d5d2b08cc9d0def2f19a5/implementation/docs/security_map19_owner/OWNER_RECEIPT.json"
+    },
+    "chart_existing_fact_readiness": {
+      "ref": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/MARKET19_IDENTITY_TIME_READINESS.json",
+      "git_blob": "f198816b6971c660e749b7b6855ae07f5d10aba3",
+      "sha256": "ec7ea7b94056591cc52e7735d1d66d901c90debf7b177a3c050ef829e8ef8425",
+      "bytes": 352034,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": true,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/MARKET19_IDENTITY_TIME_READINESS.json"
+    },
+    "prior_main_security_disposition": {
+      "ref": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
+      "path": "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/SECURITY19_DISPOSITION.json",
+      "git_blob": "9825d99046275513f398177346158891a1e1fd6b",
+      "sha256": "1f09536dc9c44c9ef92a0a54780b4cdf78f7143ae70bdcf37171d0f11f79c838",
+      "bytes": 68513,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": true,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/5c7492695d6ede2ce3bca8ecf60b24045d0f48e9/implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/SECURITY19_DISPOSITION.json"
+    },
+    "prior_main_source_manifest": {
+      "ref": "5c7492695d6ede2ce3bca8ecf60b24045d0f48e9",
+      "path": "implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/SOURCE_MANIFEST.json",
+      "git_blob": "0e20bae468ccf8a276673ffe2d575334244b3728",
+      "sha256": "a373a1286dd880b766b6c553fa9c41de41e03588bab3a595004b6160fdcede39",
+      "bytes": 28840,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": true,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/5c7492695d6ede2ce3bca8ecf60b24045d0f48e9/implementation/docs/coordination/evidence/main_target_decision_bundle_2026-10-08/SOURCE_MANIFEST.json"
+    },
+    "legacy_us_company_map": {
+      "ref": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "path": "implementation/src/investment_system/markets/us.py",
+      "git_blob": "921a99458da93c06f79e6f46421acc1aa0bb5f79",
+      "sha256": "7c87cefacd152c59044bb6a14b4bbc7ce2ffd44ceb27daa22095b1f76ae3950b",
+      "bytes": 2413,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": false,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/implementation/src/investment_system/markets/us.py",
+      "verification": "Existing object in remotely pinned canonical/Chart tree; Git blob SHA independently recomputed"
+    },
+    "sec_current_company_associations": {
+      "ref": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "path": "implementation/reports/us_sec_tickers_listings.json",
+      "git_blob": "747a1219e50c639fc5929afe643c6d83c92d30d4",
+      "sha256": "f532cc80edf5305f787e1091cc24244423acd9084375f01727bbd4508d351316",
+      "bytes": 504522,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": false,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/implementation/reports/us_sec_tickers_listings.json",
+      "verification": "Existing object in remotely pinned canonical/Chart tree; Git blob SHA independently recomputed"
+    },
+    "ingested_company_associations": {
+      "ref": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+      "path": "implementation/reports/us_ingested_facts_listings.json",
+      "git_blob": "72de913a4e6bdba154f8171053df97a33d926657",
+      "sha256": "74a615614770980a039dc6eb6caf440eebd3a53efbcfe3226846a56346cfbc13",
+      "bytes": 28708,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": false,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/c109c81a3e417e5f61fd26b67b171fb13628dc21/implementation/reports/us_ingested_facts_listings.json",
+      "verification": "Existing object in remotely pinned canonical/Chart tree; Git blob SHA independently recomputed"
+    },
+    "chart_portfolio_reference": {
+      "ref": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+      "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+      "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96",
+      "bytes": 4618,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": false,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+      "verification": "Existing object in remotely pinned canonical/Chart tree; Git blob SHA independently recomputed"
+    },
+    "chart_market_admission_matrix": {
+      "ref": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/lane-b/MARKET_ADMISSION_19_BY_8_v0.4.json",
+      "git_blob": "e4817ef7f8c232aaaa57bb0ea028c21f12a3a4e7",
+      "sha256": "c53505faa9bd47d6fe688d9e13e052b9ab11dc051e0af3e0db86e8355a601c27",
+      "bytes": 367542,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": false,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/lane-b/MARKET_ADMISSION_19_BY_8_v0.4.json",
+      "verification": "Existing object in remotely pinned canonical/Chart tree; Git blob SHA independently recomputed"
+    },
+    "chart_target_owner_request": {
+      "ref": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "git_blob": "693cc6bf15aeb9448aff995fe1898f669297e451",
+      "sha256": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c",
+      "bytes": 54070,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": false,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "verification": "Existing object in remotely pinned canonical/Chart tree; Git blob SHA independently recomputed"
+    },
+    "asml_existing_capture": {
+      "ref": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/SHARE_FORM_SOURCE_ACQUISITION.json",
+      "git_blob": "d6b406361ef7d4294a7520b681536a0eefc3f8c0",
+      "sha256": "fa39d98065805fd6f05479b74ae3674027d4c991950f83504c9d0eb118438193",
+      "bytes": 590,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": false,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/SHARE_FORM_SOURCE_ACQUISITION.json",
+      "verification": "Existing object in remotely pinned canonical/Chart tree; Git blob SHA independently recomputed"
+    },
+    "tokyo_existing_source_extract": {
+      "ref": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/tel_stock_info_extracted.txt",
+      "git_blob": "257c1ad7c890b8862803e402d2627a8c9b75bbb1",
+      "sha256": "bbac3d057fc1b4568e4b035c05aa7350de4daea2a85c30594b0eb33f5fc5b599",
+      "bytes": 3525,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": false,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/tel_stock_info_extracted.txt",
+      "verification": "Existing object in remotely pinned canonical/Chart tree; Git blob SHA independently recomputed"
+    },
+    "hanmi_existing_source_extract": {
+      "ref": "2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9",
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/hanmi_dart_identity_extracted.txt",
+      "git_blob": "72c5b25e1e94b41997602fc762d4befc0a54ed9e",
+      "sha256": "c49b23f043e4063fe542fe230517ce614fac61aa4853f2fe133371109562d16f",
+      "bytes": 516,
+      "git_blob_hash_recomputed": true,
+      "github_connector_blob_readback_verified": false,
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/2a0a2d278d4e61ba694ac545792ab17c1a4cdcb9/implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/hanmi_dart_identity_extracted.txt",
+      "verification": "Existing object in remotely pinned canonical/Chart tree; Git blob SHA independently recomputed"
+    }
+  },
+  "contract_findings": {
+    "approved_shared_hierarchy": "IssuerIdentity -> SecurityIdentity -> dated ListingIdentity (C-39 resolved implementation; types only)",
+    "C25_status": "OPEN; no adopted common CompanyLink mapping policy or reviewed relation found in the scoped existing records",
+    "private_CompanyLink_status": "PROPOSED placeholder; preserve frozen private code",
+    "resolver_rule": "Explicit certain dated SecurityRecords; ISIN/FIGI or ticker+exchange with required share class; ticker alone never resolves",
+    "C25_existing_adopted_policy_ref": null,
+    "source_registry_admitted_count": 0,
+    "chart_production_identity_bound_count": 0,
+    "historical_availability_promoted": false,
+    "entity_metadata_identity_authority_used": false
+  },
+  "counts": {
+    "roster": 19,
+    "existing_approved_security_ids_found": 0,
+    "resolved": 0,
+    "unresolved": 19,
+    "new_ids_generated": 0,
+    "new_source_collections": 0,
+    "new_tests_or_audits_run": 0
+  },
+  "scope_limits": [
+    "Existing canonical contracts/registry, source19 owner return and immutable Chart/Main findings only; no financial credentials or new collection",
+    "Scratch intake/report only; no repo/worktree/ref edits, remote writes, runtime execution, source admission, new contract/method/grant or ownership claim",
+    "Historical observations are not a certified security interval at the newly supplied TARGET effective_at",
+    "User-owned TARGET/Theme source authority and listing choices are inputs; this file does not change weights, themes, labels or listing input values",
+    "Missing source or reviewed/adopted mapping authority remains dependency, not19 invented reserved user choices"
+  ],
+  "rows": [
+    {
+      "row_index": 0,
+      "user_source_pointer": "/themes/0/holdings/0",
+      "theme_id": "semi_equipment",
+      "theme_label": "반도체 장비",
+      "owner_listing_input": {
+        "label": "ASML Holding",
+        "ticker_hint": "ASML",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 900
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "asml",
+        "name": "ASML Holding",
+        "display_name": "ASML",
+        "ticker": "ASML",
+        "exchange": "NASDAQ",
+        "line": 15,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/0",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:asml",
+          "company_id": "asml",
+          "authored_label": "ASML",
+          "observed_target_weight": {
+            "decimal_ratio": "0.09",
+            "exact_fraction": "9/100",
+            "percent": "9",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "반도체 장비",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 15,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 19,
+              "literal": "0.09",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 15,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/0",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "ASML",
+        "existing_repository_mapping": {
+          "company_id": "asml",
+          "yahoo": "ASML",
+          "cik": "0000937966"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000937966",
+              "name": "ASML HOLDING NV",
+              "ticker": "ASML",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "PARTIAL",
+            "value": {
+              "NASDAQ_ISIN": "USN070592100",
+              "NASDAQ_CUSIP": "N07059210"
+            },
+            "reason": "Issuer current NASDAQ listing identifiers; different Euronext ISIN retained separately. No historical validity/availability interval.",
+            "source_refs": [
+              "asml_share_form"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000937966",
+              "name": "ASML HOLDING NV",
+              "ticker": "ASML",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "registered ASML NASDAQ ordinary shares",
+            "reason": "Issuer source distinguishes Euronext and NASDAQ registered forms; do not guess ADR from foreign issuer status. No full dated identity interval.",
+            "source_refs": [
+              "asml_share_form"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/0"
+      },
+      "prior_disposition_pointer": "/rows/0",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing issuer capture describes registered NASDAQ ordinary shares and external NASDAQ ISIN/CUSIP; the legacy markets/us.py ADR comment conflicts. Existing evidence remains partial and has no admitted dated security record/CompanyLink. No new user venue choice is invented.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 1,
+      "user_source_pointer": "/themes/0/holdings/1",
+      "theme_id": "semi_equipment",
+      "theme_label": "반도체 장비",
+      "owner_listing_input": {
+        "label": "Lam Research",
+        "ticker_hint": "LRCX",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "lrcx",
+        "name": "Lam Research",
+        "display_name": "LRCX",
+        "ticker": "LRCX",
+        "exchange": "NASDAQ",
+        "line": 16,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/1",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:lrcx",
+          "company_id": "lrcx",
+          "authored_label": "LRCX",
+          "observed_target_weight": {
+            "decimal_ratio": "0.06",
+            "exact_fraction": "3/50",
+            "percent": "6",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "반도체 장비",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 15,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 20,
+              "literal": "0.06",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 16,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/1",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "LRCX",
+        "existing_repository_mapping": {
+          "company_id": "lrcx",
+          "yahoo": "LRCX",
+          "cik": "0000707549"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000707549",
+              "name": "LAM RESEARCH CORP",
+              "ticker": "LRCX",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000707549",
+              "name": "LAM RESEARCH CORP",
+              "ticker": "LRCX",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_LRCX_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/1"
+      },
+      "prior_disposition_pointer": "/rows/1",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current LRCX/Nasdaq issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 2,
+      "user_source_pointer": "/themes/0/holdings/2",
+      "theme_id": "semi_equipment",
+      "theme_label": "반도체 장비",
+      "owner_listing_input": {
+        "label": "KLA Corporation",
+        "ticker_hint": "KLAC",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 550
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "klac",
+        "name": "KLA Corporation",
+        "display_name": "KLAC",
+        "ticker": "KLAC",
+        "exchange": "NASDAQ",
+        "line": 17,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/2",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:klac",
+          "company_id": "klac",
+          "authored_label": "KLAC",
+          "observed_target_weight": {
+            "decimal_ratio": "0.055",
+            "exact_fraction": "11/200",
+            "percent": "5.5",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "반도체 장비",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 15,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 21,
+              "literal": "0.055",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 17,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/2",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "KLAC",
+        "existing_repository_mapping": {
+          "company_id": "klac",
+          "yahoo": "KLAC",
+          "cik": "0000319201"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000319201",
+              "name": "KLA CORP",
+              "ticker": "KLAC",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000319201",
+              "name": "KLA CORP",
+              "ticker": "KLAC",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_KLAC_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/2"
+      },
+      "prior_disposition_pointer": "/rows/2",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current KLAC/Nasdaq issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 3,
+      "user_source_pointer": "/themes/0/holdings/3",
+      "theme_id": "semi_equipment",
+      "theme_label": "반도체 장비",
+      "owner_listing_input": {
+        "label": "Tokyo Electron",
+        "ticker_hint": "8035",
+        "listing": "USER_DECIDED: TSE (Tokyo, 8035)",
+        "weight_units": 500
+      },
+      "user_instrument_selection_supplied": true,
+      "legacy_company_reference": {
+        "company_id": "tokyo_electron",
+        "name": "Tokyo Electron Limited",
+        "display_name": "Tokyo Electron",
+        "ticker": "TEL",
+        "exchange": null,
+        "line": 18,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/3",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:tokyo_electron",
+          "company_id": "tokyo_electron",
+          "authored_label": "TEL",
+          "observed_target_weight": {
+            "decimal_ratio": "0.05",
+            "exact_fraction": "1/20",
+            "percent": "5",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "반도체 장비",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 15,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 22,
+              "literal": "0.05",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 18,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/3",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "8035.T",
+        "existing_repository_mapping": "NOT_AVAILABLE",
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "tel_stock_info"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "name": "Tokyo Electron Limited",
+              "domestic_security_code": "8035",
+              "exchange": "Tokyo Stock Exchange",
+              "market": "Prime",
+              "excluded_different_instrument": "TELWY ADR / OTC / CUSIP889110201"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "tel_stock_info"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "tel_stock_info"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "tel_stock_info"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "name": "Tokyo Electron Limited",
+              "domestic_security_code": "8035",
+              "exchange": "Tokyo Stock Exchange",
+              "market": "Prime",
+              "excluded_different_instrument": "TELWY ADR / OTC / CUSIP889110201"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "tel_stock_info"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "tel_stock_info"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "Tokyo domestic common stock code8035",
+            "reason": "Issuer current common-stock listing; ADR TELWY is a separate instrument.",
+            "source_refs": [
+              "tel_stock_info"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/3"
+      },
+      "prior_disposition_pointer": "/rows/3",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "User fixes TSE (Tokyo,8035) in TARGET v0; the prior D-29 venue choice is supplied. Existing TEL/8035.T source observations still do not supply an approved dated domestic-security registry record and reviewed CompanyLink. TELWY OTC ADR and its identifiers must not be reused.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 4,
+      "user_source_pointer": "/themes/0/holdings/4",
+      "theme_id": "semi_equipment",
+      "theme_label": "반도체 장비",
+      "owner_listing_input": {
+        "label": "한미반도체",
+        "ticker_hint": "042700",
+        "listing": "USER_DECIDED: KRX (042700)",
+        "weight_units": 450
+      },
+      "user_instrument_selection_supplied": true,
+      "legacy_company_reference": {
+        "company_id": "hanmi",
+        "name": "Hanmi Semiconductor",
+        "display_name": "한미반도체",
+        "ticker": "042700",
+        "exchange": "KRX",
+        "line": 28,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/4",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:hanmi",
+          "company_id": "hanmi",
+          "authored_label": "한미반도체",
+          "observed_target_weight": {
+            "decimal_ratio": "0.045",
+            "exact_fraction": "9/200",
+            "percent": "4.5",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "반도체 장비",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 15,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 23,
+              "literal": "0.045",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 28,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/4",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "042700.KS",
+        "existing_repository_mapping": "NOT_AVAILABLE",
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "hanmi_dart_identity"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "name": "HANMI Semiconductor CO., LTD.",
+              "company_code": "042700",
+              "market": "KOSPI Market"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "hanmi_dart_identity"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "hanmi_dart_identity"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "hanmi_dart_identity"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "name": "HANMI Semiconductor CO., LTD.",
+              "company_code": "042700",
+              "market": "KOSPI Market"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "hanmi_dart_identity"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "hanmi_dart_identity"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_042700_KS_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/4"
+      },
+      "prior_disposition_pointer": "/rows/4",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "User fixes KRX (042700) in TARGET v0. Existing DART company-code/KOSPI observation does not supply an approved dated security/share-form registry record, common internal issuer/security/listing IDs or reviewed CompanyLink.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 5,
+      "user_source_pointer": "/themes/1/holdings/0",
+      "theme_id": "ai_semi",
+      "theme_label": "AI·반도체",
+      "owner_listing_input": {
+        "label": "NVIDIA",
+        "ticker_hint": "NVDA",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 800
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "nvda",
+        "name": "NVIDIA Corporation",
+        "display_name": "NVDA",
+        "ticker": "NVDA",
+        "exchange": "NASDAQ",
+        "line": 29,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/5",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:nvda",
+          "company_id": "nvda",
+          "authored_label": "NVDA",
+          "observed_target_weight": {
+            "decimal_ratio": "0.08",
+            "exact_fraction": "2/25",
+            "percent": "8",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "AI·반도체",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 16,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 24,
+              "literal": "0.08",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 29,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/5",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "NVDA",
+        "existing_repository_mapping": {
+          "company_id": "nvda",
+          "yahoo": "NVDA",
+          "cik": "0001045810"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001045810",
+              "name": "NVIDIA CORP",
+              "ticker": "NVDA",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001045810",
+              "name": "NVIDIA CORP",
+              "ticker": "NVDA",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_NVDA_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/5"
+      },
+      "prior_disposition_pointer": "/rows/5",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current NVDA/Nasdaq issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 6,
+      "user_source_pointer": "/themes/1/holdings/1",
+      "theme_id": "ai_semi",
+      "theme_label": "AI·반도체",
+      "owner_listing_input": {
+        "label": "Advanced Micro Devices",
+        "ticker_hint": "AMD",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "amd",
+        "name": "Advanced Micro Devices",
+        "display_name": "AMD",
+        "ticker": "AMD",
+        "exchange": "NASDAQ",
+        "line": 30,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/6",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:amd",
+          "company_id": "amd",
+          "authored_label": "AMD",
+          "observed_target_weight": {
+            "decimal_ratio": "0.05",
+            "exact_fraction": "1/20",
+            "percent": "5",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "AI·반도체",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 16,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 25,
+              "literal": "0.05",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 30,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/6",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "AMD",
+        "existing_repository_mapping": {
+          "company_id": "amd",
+          "yahoo": "AMD",
+          "cik": "0000002488"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000002488",
+              "name": "ADVANCED MICRO DEVICES INC",
+              "ticker": "AMD",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000002488",
+              "name": "ADVANCED MICRO DEVICES INC",
+              "ticker": "AMD",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AMD_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/6"
+      },
+      "prior_disposition_pointer": "/rows/6",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current AMD/Nasdaq issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 7,
+      "user_source_pointer": "/themes/1/holdings/2",
+      "theme_id": "ai_semi",
+      "theme_label": "AI·반도체",
+      "owner_listing_input": {
+        "label": "Broadcom",
+        "ticker_hint": "AVGO",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "avgo",
+        "name": "Broadcom",
+        "display_name": "AVGO",
+        "ticker": "AVGO",
+        "exchange": "NASDAQ",
+        "line": 31,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/7",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:avgo",
+          "company_id": "avgo",
+          "authored_label": "AVGO",
+          "observed_target_weight": {
+            "decimal_ratio": "0.05",
+            "exact_fraction": "1/20",
+            "percent": "5",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "AI·반도체",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 16,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 26,
+              "literal": "0.05",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 31,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/7",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "AVGO",
+        "existing_repository_mapping": {
+          "company_id": "avgo",
+          "yahoo": "AVGO",
+          "cik": "0001730168"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001730168",
+              "name": "Broadcom Inc.",
+              "ticker": "AVGO",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001730168",
+              "name": "Broadcom Inc.",
+              "ticker": "AVGO",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AVGO_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/7"
+      },
+      "prior_disposition_pointer": "/rows/7",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current AVGO/Nasdaq issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 8,
+      "user_source_pointer": "/themes/1/holdings/3",
+      "theme_id": "ai_semi",
+      "theme_label": "AI·반도체",
+      "owner_listing_input": {
+        "label": "Qualcomm",
+        "ticker_hint": "QCOM",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 400
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "qcom",
+        "name": "Qualcomm",
+        "display_name": "QCOM",
+        "ticker": "QCOM",
+        "exchange": "NASDAQ",
+        "line": 32,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/8",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:qcom",
+          "company_id": "qcom",
+          "authored_label": "QCOM",
+          "observed_target_weight": {
+            "decimal_ratio": "0.04",
+            "exact_fraction": "1/25",
+            "percent": "4",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "AI·반도체",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 16,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 27,
+              "literal": "0.04",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 32,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/8",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "QCOM",
+        "existing_repository_mapping": {
+          "company_id": "qcom",
+          "yahoo": "QCOM",
+          "cik": "0000804328"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000804328",
+              "name": "QUALCOMM INC/DE",
+              "ticker": "QCOM",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000804328",
+              "name": "QUALCOMM INC/DE",
+              "ticker": "QCOM",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_QCOM_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/8"
+      },
+      "prior_disposition_pointer": "/rows/8",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current QCOM/Nasdaq issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 9,
+      "user_source_pointer": "/themes/1/holdings/4",
+      "theme_id": "ai_semi",
+      "theme_label": "AI·반도체",
+      "owner_listing_input": {
+        "label": "Intel",
+        "ticker_hint": "INTC",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 300
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "intc",
+        "name": "Intel",
+        "display_name": "INTC",
+        "ticker": "INTC",
+        "exchange": "NASDAQ",
+        "line": 33,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/9",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:intc",
+          "company_id": "intc",
+          "authored_label": "INTC",
+          "observed_target_weight": {
+            "decimal_ratio": "0.03",
+            "exact_fraction": "3/100",
+            "percent": "3",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "AI·반도체",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 16,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 28,
+              "literal": "0.03",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 33,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/9",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "INTC",
+        "existing_repository_mapping": {
+          "company_id": "intc",
+          "yahoo": "INTC",
+          "cik": "0000050863"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000050863",
+              "name": "INTEL CORP",
+              "ticker": "INTC",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000050863",
+              "name": "INTEL CORP",
+              "ticker": "INTC",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_INTC_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/9"
+      },
+      "prior_disposition_pointer": "/rows/9",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current INTC/Nasdaq issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 10,
+      "user_source_pointer": "/themes/2/holdings/0",
+      "theme_id": "big_tech",
+      "theme_label": "Big Tech",
+      "owner_listing_input": {
+        "label": "Microsoft",
+        "ticker_hint": "MSFT",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 700
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "msft",
+        "name": "Microsoft",
+        "display_name": "MSFT",
+        "ticker": "MSFT",
+        "exchange": "NASDAQ",
+        "line": 34,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/10",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:msft",
+          "company_id": "msft",
+          "authored_label": "MSFT",
+          "observed_target_weight": {
+            "decimal_ratio": "0.07",
+            "exact_fraction": "7/100",
+            "percent": "7",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "Big Tech",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 17,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 29,
+              "literal": "0.07",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 34,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/10",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "MSFT",
+        "existing_repository_mapping": {
+          "company_id": "msft",
+          "yahoo": "MSFT",
+          "cik": "0000789019"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000789019",
+              "name": "MICROSOFT CORP",
+              "ticker": "MSFT",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000789019",
+              "name": "MICROSOFT CORP",
+              "ticker": "MSFT",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_MSFT_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/10"
+      },
+      "prior_disposition_pointer": "/rows/10",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current MSFT/Nasdaq issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 11,
+      "user_source_pointer": "/themes/2/holdings/1",
+      "theme_id": "big_tech",
+      "theme_label": "Big Tech",
+      "owner_listing_input": {
+        "label": "Alphabet",
+        "ticker_hint": "GOOGL",
+        "listing": "USER_DECIDED: Class A (GOOGL)",
+        "weight_units": 700
+      },
+      "user_instrument_selection_supplied": true,
+      "legacy_company_reference": {
+        "company_id": "googl",
+        "name": "Alphabet",
+        "display_name": "GOOGL",
+        "ticker": "GOOGL",
+        "exchange": "NASDAQ",
+        "line": 35,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/11",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:googl",
+          "company_id": "googl",
+          "authored_label": "GOOGL",
+          "observed_target_weight": {
+            "decimal_ratio": "0.07",
+            "exact_fraction": "7/100",
+            "percent": "7",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "Big Tech",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 17,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 30,
+              "literal": "0.07",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 35,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/11",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "GOOGL",
+        "existing_repository_mapping": {
+          "company_id": "googl",
+          "yahoo": "GOOGL",
+          "cik": "0001652044"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001652044",
+              "name": "Alphabet Inc.",
+              "ticker": "GOOGL",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001652044",
+              "name": "Alphabet Inc.",
+              "ticker": "GOOGL",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_GOOGL_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/11"
+      },
+      "prior_disposition_pointer": "/rows/11",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "User fixes Alphabet Class A (GOOGL) in TARGET v0. That intended class is preserved; existing SEC company/ticker association and provider EQUITY do not supply reviewed Class A security admission or a dated common registry/CompanyLink.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 12,
+      "user_source_pointer": "/themes/2/holdings/2",
+      "theme_id": "big_tech",
+      "theme_label": "Big Tech",
+      "owner_listing_input": {
+        "label": "Amazon",
+        "ticker_hint": "AMZN",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "amzn",
+        "name": "Amazon",
+        "display_name": "AMZN",
+        "ticker": "AMZN",
+        "exchange": "NASDAQ",
+        "line": 36,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/12",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:amzn",
+          "company_id": "amzn",
+          "authored_label": "AMZN",
+          "observed_target_weight": {
+            "decimal_ratio": "0.06",
+            "exact_fraction": "3/50",
+            "percent": "6",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "Big Tech",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 17,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 31,
+              "literal": "0.06",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 36,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/12",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "AMZN",
+        "existing_repository_mapping": {
+          "company_id": "amzn",
+          "yahoo": "AMZN",
+          "cik": "0001018724"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001018724",
+              "name": "AMAZON COM INC",
+              "ticker": "AMZN",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001018724",
+              "name": "AMAZON COM INC",
+              "ticker": "AMZN",
+              "exchange": "Nasdaq"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_AMZN_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/12"
+      },
+      "prior_disposition_pointer": "/rows/12",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current AMZN/Nasdaq issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 13,
+      "user_source_pointer": "/themes/3/holdings/0",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "owner_listing_input": {
+        "label": "RTX Corporation",
+        "ticker_hint": "RTX",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 600
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "rtx",
+        "name": "RTX Corporation",
+        "display_name": "RTX",
+        "ticker": "RTX",
+        "exchange": "NYSE",
+        "line": 37,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/13",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:rtx",
+          "company_id": "rtx",
+          "authored_label": "RTX",
+          "observed_target_weight": {
+            "decimal_ratio": "0.06",
+            "exact_fraction": "3/50",
+            "percent": "6",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "기타산업",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 18,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 32,
+              "literal": "0.06",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 37,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/13",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "RTX",
+        "existing_repository_mapping": {
+          "company_id": "rtx",
+          "yahoo": "RTX",
+          "cik": "0000101829"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000101829",
+              "name": "RTX Corp",
+              "ticker": "RTX",
+              "exchange": "NYSE"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000101829",
+              "name": "RTX Corp",
+              "ticker": "RTX",
+              "exchange": "NYSE"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_RTX_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/13"
+      },
+      "prior_disposition_pointer": "/rows/13",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current RTX/NYSE issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 14,
+      "user_source_pointer": "/themes/3/holdings/1",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "owner_listing_input": {
+        "label": "Stryker",
+        "ticker_hint": "SYK",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 550
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "stry",
+        "name": "Stryker",
+        "display_name": "Stryker",
+        "ticker": "SYK",
+        "exchange": "NYSE",
+        "line": 38,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/14",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:stry",
+          "company_id": "stry",
+          "authored_label": "Stryker",
+          "observed_target_weight": {
+            "decimal_ratio": "0.055",
+            "exact_fraction": "11/200",
+            "percent": "5.5",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "기타산업",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 18,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 33,
+              "literal": "0.055",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 38,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/14",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "SYK",
+        "existing_repository_mapping": {
+          "company_id": "syk",
+          "yahoo": "SYK",
+          "cik": "0000310764"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000310764",
+              "name": "STRYKER CORP",
+              "ticker": "SYK",
+              "exchange": "NYSE"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000310764",
+              "name": "STRYKER CORP",
+              "ticker": "SYK",
+              "exchange": "NYSE"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_SYK_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/14"
+      },
+      "prior_disposition_pointer": "/rows/14",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Canonical authored-portfolio company_id is stry; the Chart existing_repository_mapping for SYK calls it syk. Both observed namespaces are retained. No automatic alias reconciliation or approved CompanyLink was found.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 15,
+      "user_source_pointer": "/themes/3/holdings/2",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "owner_listing_input": {
+        "label": "Eaton",
+        "ticker_hint": "ETN",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 500
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "etn",
+        "name": "Eaton",
+        "display_name": "Eaton",
+        "ticker": "ETN",
+        "exchange": "NYSE",
+        "line": 39,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/15",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:etn",
+          "company_id": "etn",
+          "authored_label": "Eaton",
+          "observed_target_weight": {
+            "decimal_ratio": "0.05",
+            "exact_fraction": "1/20",
+            "percent": "5",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "기타산업",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 18,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 34,
+              "literal": "0.05",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 39,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/15",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "ETN",
+        "existing_repository_mapping": {
+          "company_id": "etn",
+          "yahoo": "ETN",
+          "cik": "0001551182"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001551182",
+              "name": "Eaton Corp plc",
+              "ticker": "ETN",
+              "exchange": "NYSE"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001551182",
+              "name": "Eaton Corp plc",
+              "ticker": "ETN",
+              "exchange": "NYSE"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ETN_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/15"
+      },
+      "prior_disposition_pointer": "/rows/15",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current ETN/NYSE issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 16,
+      "user_source_pointer": "/themes/3/holdings/3",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "owner_listing_input": {
+        "label": "Hubbell",
+        "ticker_hint": "HUBB",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 350
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "hubb",
+        "name": "Hubbell",
+        "display_name": "Hubbell",
+        "ticker": "HUBB",
+        "exchange": "NYSE",
+        "line": 40,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/16",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:hubb",
+          "company_id": "hubb",
+          "authored_label": "Hubbell",
+          "observed_target_weight": {
+            "decimal_ratio": "0.035",
+            "exact_fraction": "7/200",
+            "percent": "3.5",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "기타산업",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 18,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 35,
+              "literal": "0.035",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 40,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/16",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "HUBB",
+        "existing_repository_mapping": {
+          "company_id": "hubb",
+          "yahoo": "HUBB",
+          "cik": "0000048898"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000048898",
+              "name": "HUBBELL INC",
+              "ticker": "HUBB",
+              "exchange": "NYSE"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0000048898",
+              "name": "HUBBELL INC",
+              "ticker": "HUBB",
+              "exchange": "NYSE"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_HUBB_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/16"
+      },
+      "prior_disposition_pointer": "/rows/16",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current HUBB/NYSE issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 17,
+      "user_source_pointer": "/themes/3/holdings/4",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "owner_listing_input": {
+        "label": "GE Vernova",
+        "ticker_hint": "GEV",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 300
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "gev",
+        "name": "GE Vernova",
+        "display_name": "GE Vernova",
+        "ticker": "GEV",
+        "exchange": "NYSE",
+        "line": 41,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/17",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:gev",
+          "company_id": "gev",
+          "authored_label": "GE Vernova",
+          "observed_target_weight": {
+            "decimal_ratio": "0.03",
+            "exact_fraction": "3/100",
+            "percent": "3",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "기타산업",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 18,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 36,
+              "literal": "0.03",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 41,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/17",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "GEV",
+        "existing_repository_mapping": {
+          "company_id": "gev",
+          "yahoo": "GEV",
+          "cik": "0001996810"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001996810",
+              "name": "GE Vernova Inc.",
+              "ticker": "GEV",
+              "exchange": "NYSE"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001996810",
+              "name": "GE Vernova Inc.",
+              "ticker": "GEV",
+              "exchange": "NYSE"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_GEV_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/17"
+      },
+      "prior_disposition_pointer": "/rows/17",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current GEV/NYSE issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    },
+    {
+      "row_index": 18,
+      "user_source_pointer": "/themes/3/holdings/5",
+      "theme_id": "other_industrial",
+      "theme_label": "기타산업",
+      "owner_listing_input": {
+        "label": "Rockwell Automation",
+        "ticker_hint": "ROK",
+        "listing": "UNRESOLVED_BY_AGENT",
+        "weight_units": 200
+      },
+      "user_instrument_selection_supplied": false,
+      "legacy_company_reference": {
+        "company_id": "rok",
+        "name": "Rockwell Automation",
+        "display_name": "Rockwell",
+        "ticker": "ROK",
+        "exchange": "NYSE",
+        "line": 42,
+        "source_pin": "legacy_company_registry",
+        "json_scope": "OFFICIAL_PORTFOLIO_V11 authored-company reference; not an admitted SecurityRecord"
+      },
+      "prior_source_owner_return_pointer": "/rows/18",
+      "prior_source_owner_return": {
+        "source_row": {
+          "source_row_key": "reference:company:rok",
+          "company_id": "rok",
+          "authored_label": "Rockwell",
+          "observed_target_weight": {
+            "decimal_ratio": "0.02",
+            "exact_fraction": "1/50",
+            "percent": "2",
+            "role": "AUTHORED_REFERENCE_VALUE"
+          },
+          "observed_theme_name": "기타산업",
+          "classification_kind": "USER_DEFINED_STRATEGY_THEME_PORTFOLIO_BUCKET",
+          "source_refs": [
+            {
+              "path": "QGV Portfolio · Specification v1.1.md",
+              "line": 18,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "4dbe4cb91c03db37a8d891808052ff644d1f6b07",
+              "sha256": "d24eda232102bbb8163fe06d5cdb0d70611f5dc8abd5048941a00f6c11b0fa3e"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/portfolio.py",
+              "line": 37,
+              "literal": "0.02",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "de1d17e10c6ca50c57e63de28a6f018aabb998e7",
+              "sha256": "ecb44165cb163d2e975e94c39c343a18ed3e2d43538431394065b4523246da49"
+            },
+            {
+              "path": "implementation/src/investment_system/qgv/identifiers.py",
+              "line": 42,
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "3c25a9d1e2b320b04c76bb5c5aabbcd2c4b7b6f5",
+              "sha256": "38c68c1dc35546f6a7a9800340999f6ad7780aab0c09fa8f2dd51ffc7a04c917"
+            },
+            {
+              "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json",
+              "pointer": "/holdings/18",
+              "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+              "git_blob": "0c8f92e4d0a6f91bf8daa8abc2cb42ca5cfff37e",
+              "sha256": "05f38b9e3266eac7271a10a1c080367c4c73176bf6469b52850733f84a5d2a96"
+            }
+          ],
+          "owner_return": {
+            "admitted_target_row_id": null,
+            "issuer_id": null,
+            "security_id": null,
+            "security_namespace": null,
+            "security_type": null,
+            "share_class_or_form": null,
+            "identity_revision_id": null,
+            "identity_evidence_ref": null,
+            "company_security_link_ref": null,
+            "theme_concept_id": null,
+            "taxonomy_id": null,
+            "taxonomy_version": null,
+            "catalog_revision_id": null,
+            "assignment_revision_id": null,
+            "effective_from": null,
+            "effective_to": null,
+            "available_at": null,
+            "admission_evidence_ref": null
+          },
+          "status": "OWNER_ACTION_REQUIRED_ALL_ADMITTED_BINDINGS_UNRESOLVED"
+        },
+        "security_id": null,
+        "issuer_id": null,
+        "share_form": null,
+        "identity_revision": null,
+        "reviewed_relation_receipt": null,
+        "status": "UNRESOLVED_NOT_SYNTHESIZED"
+      },
+      "existing_chart_observation": {
+        "provider_symbol": "ROK",
+        "existing_repository_mapping": {
+          "company_id": "rok",
+          "yahoo": "ROK",
+          "cik": "0001024478"
+        },
+        "production_admission": "BLOCKED",
+        "fields": {
+          "internal_issuer_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "Current issuer authority association exists but no admitted internal issuer mapping for this series.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "issuer_authority_association": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001024478",
+              "name": "ROCKWELL AUTOMATION, INC",
+              "ticker": "ROK",
+              "exchange": "NYSE"
+            },
+            "reason": "Current official issuer/ticker/exchange association captured; not a dated security-master interval. SEC explicitly does not guarantee accuracy or scope.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_security_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No sourced admitted SecurityIdentity for the price series; ticker or company_id is not a security ID.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "external_security_identifiers": {
+            "readiness": "NOT_AVAILABLE",
+            "value": "UNKNOWN",
+            "reason": "No actual external security identifier binding verified for this exact priced instrument. TELWY ADR CUSIP must not be assigned to8035.T.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "current_listing_authority": {
+            "readiness": "PARTIAL",
+            "value": {
+              "cik": "0001024478",
+              "name": "ROCKWELL AUTOMATION, INC",
+              "ticker": "ROK",
+              "exchange": "NYSE"
+            },
+            "reason": "Official current association corroborates venue/name; share class, historical intervals and provider crosswalk are not fully bound.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "internal_listing_id": {
+            "readiness": "BLOCKED",
+            "value": "UNKNOWN",
+            "reason": "No admitted ListingIdentity ID/effective interval/available_at/source binding.",
+            "source_refs": [
+              "sec_tickers_exchange"
+            ]
+          },
+          "security_form": {
+            "readiness": "PARTIAL",
+            "value": "EQUITY",
+            "reason": "Raw EQUITY is a broad provider type, not an authoritative share-class binding.",
+            "source_refs": [
+              "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_ROK_5y_original.json"
+            ]
+          }
+        },
+        "source_pin": "chart_existing_fact_readiness",
+        "json_pointer": "/rows/18"
+      },
+      "prior_disposition_pointer": "/rows/18",
+      "prior_disposition_source_pin": "prior_main_security_disposition",
+      "existing_approved_security_id": null,
+      "security_id": null,
+      "issuer_id": null,
+      "listing_id": null,
+      "reviewed_company_link": null,
+      "status": "UNRESOLVED",
+      "source_admission": false,
+      "precise_blocked_fact": "Existing SEC current ROK/NYSE issuer association is partial; it is not an approved security registry interval or reviewed common company-security relationship at TARGET v0 effective_at.",
+      "missing_common_admission_evidence": [
+        "issuer_id",
+        "security_id",
+        "security_namespace",
+        "share_class_or_form",
+        "identity_revision_id",
+        "identity_evidence_ref",
+        "reviewed_company_security_link_ref",
+        "effective_from",
+        "effective_to",
+        "available_at",
+        "admission_evidence_ref"
+      ],
+      "dependency_class": "WAIT_DEPENDENCY_EXISTING_SOURCE_AND_COMMON_CONTRACT_AUTHORITY",
+      "user_choices_reopened": false
+    }
+  ],
+  "bounded_registry_inventory": {
+    "status": "NO_USABLE_EXISTING_ADMITTED_ROSTER_FOUND_IN_SCOPED_RECORDS",
+    "scope": [
+      "canonical/source implementation/data, implementation/fixtures and implementation/reports searches for security_id/issuer_id/share_class/SecurityRecord/SecurityIdentity/CompanyLink",
+      "canonical authored company registry and US company/CIK mapping/report records",
+      "Chart named portfolio reference, current identity/time readiness, Market admission matrix and TARGET owner admission request"
+    ],
+    "result": "No approved/admitted SecurityRecord, SecurityIdentity or reviewed CompanyLink registry covering the19 TARGET holdings; named source/admission records explicitly retain null internal security admission",
+    "limitation": "Scoped retained trees and records only; not a universal absence claim about every branch or external registry",
+    "new_cases_or_audits_run": 0,
+    "source_collection": false
+  },
+  "source_admission": false,
+  "consumed_intake": {
+    "sha256": "53aaefd705a189aee91a8b1cced4f95c0251ba6e8e6b0268fac3dbbebd56b9b9",
+    "bytes": 172464,
+    "schema": "scratch-security19-intake/1",
+    "artifact_kind": "READ_ONLY_TARGET_V0_SECURITY19_INTAKE",
+    "counts_meaning": "Retained counts describe the read-only identity intake, not package software validation."
+  }
+}

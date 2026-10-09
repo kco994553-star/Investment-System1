@@ -1,0 +1,92 @@
+{
+  "recorded_at_utc": "2026-10-05T09:07:18.623Z",
+  "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+  "baseline": {
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "source_start_head": "8fc47b0a3c9a262718b706519d6d91a051629636",
+    "lease": "42a186e1e892d0e2da692553bd223d1e1b1e0336",
+    "global": "a83fcccf053bf202ddf77d1c3e73aabb7cf1e981",
+    "pr46": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+    "pr47": "7215a9f60ad7128b1748f405051eac684298614f"
+  },
+  "new_dependency": {
+    "pr": 47,
+    "branch": "codex/fpia-execution-coverage-2026-10-05",
+    "head": "7215a9f60ad7128b1748f405051eac684298614f",
+    "priorHeads": [
+      "9abeb376614dcd14c30f23bb7a99e4652edf0d83",
+      "50fa7f49080b3fa3d1808f9745d8f97770d1c9df"
+    ],
+    "workflowRuns": [
+      {
+        "id": 37284465900,
+        "attempt": 1,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "name": "track-c-fpia",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "id": 37284465856,
+        "attempt": 1,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "name": "p01-research-publication",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465967,
+        "attempt": 1,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "name": "us-equity-session",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284466007,
+        "attempt": 1,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "name": "technical-real-producer",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465977,
+        "attempt": 1,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "name": "technical-real-model",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465865,
+        "attempt": 1,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "name": "qgv-invalidation-binding",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37284465941,
+        "attempt": 1,
+        "head": "7215a9f60ad7128b1748f405051eac684298614f",
+        "name": "sec-primary-disclosure",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "delta": "D006 authenticated applicability/source checkout + legacy regression repair implemented. 294affected and sixCI2242 PASS owner evidence reused; authentication/coverage/governance acceptance remainsOPEN."
+  },
+  "priorPR46": {
+    "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+    "actions": "7/7SUCCESS",
+    "fpia": "HASH_VERIFIED_RAW_PASS_REUSED_V0.12",
+    "governance": "NOT_CLOSED"
+  },
+  "sourceOwnerRouting": "Global current still sixChart productiongates OPEN; no adopted authoritative root/19Security/theme receipt/P01 applicability/full write-set returned. Existing owner packets reused.",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "canonicalChanged": false,
+  "chartActualFPIA": "NOT_RUN",
+  "github_vs_handoff": "Global chart5288 active oldlease is historical snapshot; GitHub latest42a fresh token wins. No otherowner code reimplemented.",
+  "qgv": "Latest bounded scope owner return reused; inactive production remains, no QGV method selected."
+}

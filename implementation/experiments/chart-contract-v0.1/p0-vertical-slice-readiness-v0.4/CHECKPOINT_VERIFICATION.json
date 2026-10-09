@@ -1,0 +1,24 @@
+{
+  "status": "PASS_CHECKPOINT_ONLY",
+  "baseline": "581c61c4af859f6cbdc3418209bba9be7bbc76a3",
+  "existing_baseline_files_byte_equal": 7881,
+  "existing_paths_changed": 0,
+  "inventory_scope_preserved": {
+    "user_core": 81,
+    "repository_additional": 24,
+    "candidate_extensions": 8,
+    "total_rows": 113
+  },
+  "current_target_production_root": "NOT_AVAILABLE_NOT_ADMITTED",
+  "target_pre_code_closure_gates": 6,
+  "new_chart_d3": 0,
+  "new_checkpoint_files_observed": 92,
+  "new_manifested_artifact_hashes_verified": 90,
+  "local_links_resolve": true,
+  "json_and_gzip_parse": true,
+  "production_code_writes": 0,
+  "production_tests": "NOT_RUN",
+  "chart_merge_result_fpia": "NOT_RUN",
+  "canonical_merge": "NOT_DONE",
+  "network_requests_by_verifier": 0
+}

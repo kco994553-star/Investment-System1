@@ -1,0 +1,94 @@
+{
+  "recorded_at_utc": "2026-10-05T01:17:25Z",
+  "owner_branch": "codex/chart-contract-mcp-api-v0-1",
+  "evidence_commit": "d56ddb26f43a5c9a4acc9decdd0d444295de3b88",
+  "parent": "ce978a5bebb17abd5b6072cdbc6f2db82cf21b18",
+  "takeover": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
+  "tree": "463be77de7dc8c5a2eec505ab3e6eacc11469dcf",
+  "publication": "GitHub-created commit fetched verbatim; no pre-existing local commit reconstructed; non-force ref only",
+  "local_downloaded_git_file_byte_matches": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/HANDOFF.md",
+      "sha256": "49c8c9996bc9307fe5123c515121be5e61acc17c86b9f30ce1312b9075a6df2b",
+      "bytes": 7658
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CLI_SMOKE.json",
+      "sha256": "7a86993addf952d871e3940557128969616efd0b2bf2ac75a48bd71a9705c65b",
+      "bytes": 1115
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/CURRENT_INPUT_DIAGNOSTIC.json",
+      "sha256": "2a0af6419e050cf214343c12ca755255c3e59e04e84ca4d6e4bb31e48c261302",
+      "bytes": 65687
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/EVENT_STREAMS_OBSERVED.json",
+      "sha256": "7c22a86c9a16ee94ef972970235f5d3a2d97af8c423328031256ad854c8d1af3",
+      "bytes": 15509
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FINAL_UNITTEST.log",
+      "sha256": "8dd054ae0a3f2a5833bb0ac24532fc4d580cabbab5ab31d95b137b2cf16cc368",
+      "bytes": 5146
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/FRESH_BASELINE.json",
+      "sha256": "4efb6998e1440a359f7e1c7bd833b559cd504575a8dd7701f67e02ec673f8269",
+      "bytes": 8990
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/HANDOFF.md",
+      "sha256": "08c665ff35fccdf31fdaec2c2078dc4b0d6c93a6864df03653029a355fd356e2",
+      "bytes": 7677
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INDEPENDENT_REVIEW.json",
+      "sha256": "7dcdf9d69b98468ae0f75ad6ee1b1eb011000d4514c8a36c46c96be74712603d",
+      "bytes": 1923
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/INITIAL_INPUT_DIAGNOSTIC.json",
+      "sha256": "476b5edaf3474105d45c3dc345e363c7d7746b8b1f61c504c43de3b0b02d4769",
+      "bytes": 65514
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/README.md",
+      "sha256": "03552cb11208784abd9a48693669c02c328636871c22215d23f29030a5479fb7",
+      "bytes": 2899
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/VALIDATION_RECEIPT.json",
+      "sha256": "539c09fa4d08f0a81832472f4202252a142162f8d4fa4edf51fa7599399a8d1a",
+      "bytes": 4275
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/receipt_preflight.py",
+      "sha256": "ca3a8bf5af7e2618a6e362b38d45d6ac59a2b6c5de9dda5bcb3423f89f90d6c3",
+      "bytes": 17544
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_receipt_preflight.py",
+      "sha256": "39721807f2f032b31182cba1478fecbb00c79e20ba4bd4817fd4c5e8c7edf184",
+      "bytes": 11877
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-receipt-preflight-v0.6/test_review_edges.py",
+      "sha256": "417c1267b270be7e74aa6eb07c5078a6abfd7fbb5a72d949dabf73cb88b1bdf9",
+      "bytes": 5345
+    }
+  ],
+  "remote_ref_verified": true,
+  "remote_actions_at_evidence_commit": {
+    "total_count": 0,
+    "runs": []
+  },
+  "pr_metadata_updated": true,
+  "scope": "offline preflight complete; production owner prerequisites remain open",
+  "readiness": "IMPLEMENTATION_NOT_READY",
+  "open_gate_count": 6,
+  "new_Chart_D3": false,
+  "canonical_merge": false,
+  "production_FPIA": "NOT_RUN",
+  "release_head": "Resolved from current remote PR/ref; this receipt cannot embed its own containing commit SHA"
+}

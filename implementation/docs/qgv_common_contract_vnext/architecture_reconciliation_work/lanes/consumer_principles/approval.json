@@ -1,0 +1,130 @@
+{
+  "approval_id": "QGV-B2-B3-B5-B6-PRINCIPLES-2026-10-05",
+  "status": "APPROVED_SEMANTIC_CONTRACT_PRINCIPLES_ONLY",
+  "authority": "Explicit current user instruction in QGV independent audit Work",
+  "user_instruction_verbatim": "B2/B3/B5/B6의 Decision Package 추천안을 승인한다. 단, 이번 승인은 semantic/contract principles에 한정하며 numeric policy, 개별 factor binding, runtime activation, score/history migration, canonical merge는 포함하지 않는다. 승인 내용을 Decision Register와 scoped Handoff에 history-preserving 방식으로 기록하고, 승인으로 새로 열린 D1/D2 작업은 자율 진행하라. D3에서만 다시 요청하라.",
+  "user_instruction_received_at_kst": "2026-10-05T17:07:34+09:00",
+  "recorded_at_kst": "2026-10-05T17:16:16.637989+09:00",
+  "timestamp_basis": "User submission time is platform-provided; recorded time is actual execution clock; no scheduler-hop authority",
+  "decision_package": {
+    "head": "16f58f20a29516e45e202aee7d3b27b8a1378d5c",
+    "git_blob_sha": "ab1ec644610ab3536f21fa8093bc4cc338c4431a",
+    "ref": {
+      "id": "B2_B3_B5_B6_RECOMMENDED_REFERENCE_SCOPE_PACKAGE",
+      "version": "16f58f2-recommended",
+      "sha256": "f00a96a0e646b8c3ca3c90dc44d3b20d993ae8465f4c082fd325399c12657b2e",
+      "locator": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/DECISION_PACKAGE.md"
+    }
+  },
+  "clauses": {
+    "B2": {
+      "status": "APPROVED_SEMANTIC_CONTRACT_PRINCIPLES_ONLY",
+      "principle": "Producer assessment pins dated subject/context and predeclared predicate/input dependency scope; N/A proof and denominator permission are distinct references.",
+      "obligations": [
+        "dated_subject_context",
+        "predeclared_predicate_input_scope",
+        "separate_na_proof_and_denominator_permission"
+      ],
+      "excluded": [
+        "actual_na_predicates",
+        "factor_applicability_assignments",
+        "actual_exclusions",
+        "denominator_changes"
+      ]
+    },
+    "B3": {
+      "status": "APPROVED_SEMANTIC_CONTRACT_PRINCIPLES_ONLY",
+      "principle": "Assessment binds exact method/input/source/PIT evidence and preserves reason plus affected scope; unresolved or rejected evidence cannot manufacture an affirmative assessment.",
+      "obligations": [
+        "exact_method_input_source_pit_refs",
+        "preserved_original_reason_and_affected_scope",
+        "no_unresolved_or_rejected_to_affirmative_promotion"
+      ],
+      "excluded": [
+        "quality_rubric",
+        "stale_estimated_conflicting_source_cutoffs",
+        "actual_evidence_classification",
+        "runtime_enforcement"
+      ]
+    },
+    "B5": {
+      "status": "APPROVED_SEMANTIC_CONTRACT_PRINCIPLES_ONLY",
+      "principle": "Coverage, confidence, completeness, scoring validity and numeric existence have independent producer-owned assessment references tied to the exact result/context.",
+      "obligations": [
+        "independent_producer_owned_assessments",
+        "exact_result_context_binding",
+        "numeric_existence_is_not_validity_confidence_or_completeness"
+      ],
+      "excluded": [
+        "assessment_formulas",
+        "completeness_rules",
+        "coverage_thresholds",
+        "factor_requiredness_assignments",
+        "actual_scoring_validity_criteria"
+      ]
+    },
+    "B6": {
+      "status": "APPROVED_SEMANTIC_CONTRACT_PRINCIPLES_ONLY",
+      "principle": "Each consumer consumes those same exact references through its own purpose/cohort/admission decision; diagnostic structural acceptance grants no ranking, portfolio or publication eligibility.",
+      "obligations": [
+        "same_exact_producer_refs",
+        "separate_consumer_purpose_cohort_admission",
+        "diagnostic_structure_does_not_grant_eligibility"
+      ],
+      "excluded": [
+        "cohort_compatibility_criteria",
+        "ranking_portfolio_criteria",
+        "ranking_cutoffs",
+        "grants",
+        "production_wiring"
+      ]
+    }
+  },
+  "excluded": [
+    "numeric_policy",
+    "individual_factor_binding",
+    "runtime_activation",
+    "score_history_migration",
+    "canonical_merge"
+  ],
+  "preserved_prior_approvals": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "B4",
+    "B7",
+    "G1_SEMANTIC",
+    "G2_SEMANTIC"
+  ],
+  "V2": {
+    "metadata_alignment": "ALREADY_D1_D2",
+    "assessment_reference_scope_principles": "APPROVED_WITH_B5_B6",
+    "actual_assessment_methodology": "NOT_APPROVED"
+  },
+  "remaining_other_d3": [
+    "B1_requiredness_0_of_20",
+    "actual_G1_G2_methods_horizon_numerics",
+    "V1_method_normalization",
+    "V2_actual_assessment_methodology",
+    "composite",
+    "WeightOverride_runtime",
+    "Official_grants",
+    "Holdout",
+    "PIT_relaxation"
+  ],
+  "numeric_policy": null,
+  "factor_bindings": [],
+  "runtime_enabled": false,
+  "activation_authorized": false,
+  "score_history_migration_authorized": false,
+  "canonical_merge_authorized": false,
+  "authorized_next_work": [
+    "Record scoped approval event",
+    "Compile principle-to-contract obligation mapping",
+    "Bounded inactive authority/scope acceptance",
+    "Publish audit return; preserve owner lease"
+  ],
+  "scheduler_actual_hops_credited": 0
+}

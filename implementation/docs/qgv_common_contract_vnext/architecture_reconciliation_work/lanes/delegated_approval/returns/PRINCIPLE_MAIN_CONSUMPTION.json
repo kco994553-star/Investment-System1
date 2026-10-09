@@ -1,0 +1,46 @@
+{
+  "id": "QGV-MAIN-PRINCIPLE-RETURN-CONSUMPTION-2026-10-05",
+  "classification": "D1_BOUNDED_OWNER_RETURN_CONSUMPTION",
+  "state": "CLOSED",
+  "state_path": [
+    "OPEN",
+    "RETURNED",
+    "INDEPENDENTLY_VERIFIED",
+    "CONSUMED",
+    "CLOSED"
+  ],
+  "exact_return_head": "ab07f6aa4d3734a929f4e6253567e97b64fcb595",
+  "Main_receipt": {
+    "id": 5991476557,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/44#issuecomment-5991476557",
+    "created_at": "2026-10-05T09:10:28Z",
+    "updated_at": "2026-10-05T09:10:28Z",
+    "sha256": "40359ea55c79510af7c1761717041c29ef8180fb3629fd2b085c7f010315e191",
+    "body_sha256": "69ef327be4be9484d2c34efd792252883705fc0b5d1dc073f7ded3807e29eaa9"
+  },
+  "verified_quoted_pins": [
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/approval.json",
+      "sha256": "4b531ea06bf484ef2a4c185d94f32080c2d01fe52161697d565e34d3fd21d758"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/APPROVED_CONTRACT.md",
+      "sha256": "5343ad6e188a7ad67057703f8bafade0119a04206b7168aabfb402f4f8061b1b"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/COMPLETION_RECEIPT.json",
+      "sha256": "c1dd8f9c1a1f75c3e891d9b0618cc70b7336bb742db4ee28b9d2481523ddd88d"
+    },
+    {
+      "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/consumer_principles/OUTPUT_MANIFEST.json",
+      "sha256": "ea3dedd70dab0fd27762a7eb0ff95a1ff2aa3963bcc4f6fab75966ff08f75c42"
+    }
+  ],
+  "Main_reported_verification": "1 positive +5 authority-expansion negatives at original inactive scope; external evidence reused, not rerun",
+  "new_verification": 8,
+  "production_blockers_closed": 0,
+  "policy_return_Main_ack": "NOT_EVIDENCED",
+  "Missing_Data_owner_return_ack": "NOT_EVIDENCED",
+  "scheduler_hops": 0,
+  "failure_history": []
+}

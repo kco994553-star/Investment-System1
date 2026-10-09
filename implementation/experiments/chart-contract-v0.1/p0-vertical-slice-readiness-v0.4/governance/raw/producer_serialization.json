@@ -1,0 +1,28 @@
+{
+  "key": "producer_serialization",
+  "sha": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "path": "implementation/src/investment_system/producers/serialization.py",
+  "url": "https://raw.githubusercontent.com/kco994553-star/Investment-System1/523e702a806a718d163cfbf62aa3fc29d8c3ef3c/implementation/src/investment_system/producers/serialization.py",
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "\"\"\"Deterministic canonical JSON. Same logical value -> same bytes -> same sha256.\"\"\"\nfrom __future__ import annotations\n\nimport dataclasses\nimport hashlib\nimport json\nimport math\nfrom datetime import date, datetime\nfrom enum import Enum\nfrom typing import Any\n\nfrom .errors import SerializationError, TimestampError\n\n\ndef to_jsonable(value: Any) -> Any:\n    if dataclasses.is_dataclass(value) and not isinstance(value, type):\n        return {f.name: to_jsonable(getattr(value, f.name)) for f in dataclasses.fields(value)}\n    if isinstance(value, Enum):\n        return to_jsonable(value.value)\n    if isinstance(value, datetime):\n        if value.tzinfo is None or value.utcoffset() is None:\n            raise TimestampError('naive datetime cannot be serialized deterministically')\n        return value.isoformat()\n    if isinstance(value, date):\n        return value.isoformat()\n    if isinstance(value, dict):\n        out = {}\n        for k, v in value.items():\n            if not isinstance(k, str):\n                raise SerializationError(f'non-string key {k!r}')\n            out[k] = to_jsonable(v)\n        return out\n    if isinstance(value, (list, tuple)):\n        return [to_jsonable(v) for v in value]\n    if isinstance(value, (set, frozenset)):\n        raise SerializationError('sets have no deterministic order; supply a sorted list')\n    if isinstance(value, float) and not math.isfinite(value):\n        raise SerializationError('NaN/Infinity is not valid JSON')\n    if value is None or isinstance(value, (str, int, float, bool)):\n        return value\n    raise SerializationError(f'unsupported type {type(value).__name__}')\n\n\ndef canonical_bytes(value: Any) -> bytes:\n    return json.dumps(to_jsonable(value), sort_keys=True, separators=(',', ':'),\n                      ensure_ascii=False, allow_nan=False).encode('utf-8')\n\n\ndef sha256_hex(data: bytes) -> str:\n    return hashlib.sha256(data).hexdigest()\n\n\ndef canonical_sha256(value: Any) -> str:\n    return sha256_hex(canonical_bytes(value))\n",
+      "title": "serialization.py",
+      "modified_date": "2026-10-01T10:28:59Z",
+      "url": "https://github.com/kco994553-star/Investment-System1/blob/523e702a806a718d163cfbf62aa3fc29d8c3ef3c/implementation/src/investment_system/producers/serialization.py",
+      "display_url": "https://github.com/kco994553-star/Investment-System1/blob/523e702a806a718d163cfbf62aa3fc29d8c3ef3c/implementation/src/investment_system/producers/serialization.py",
+      "display_title": "serialization.py",
+      "structuredContent": {
+        "title": "serialization.py",
+        "content": "\"\"\"Deterministic canonical JSON. Same logical value -> same bytes -> same sha256.\"\"\"\nfrom __future__ import annotations\n\nimport dataclasses\nimport hashlib\nimport json\nimport math\nfrom datetime import date, datetime\nfrom enum import Enum\nfrom typing import Any\n\nfrom .errors import SerializationError, TimestampError\n\n\ndef to_jsonable(value: Any) -> Any:\n    if dataclasses.is_dataclass(value) and not isinstance(value, type):\n        return {f.name: to_jsonable(getattr(value, f.name)) for f in dataclasses.fields(value)}\n    if isinstance(value, Enum):\n        return to_jsonable(value.value)\n    if isinstance(value, datetime):\n        if value.tzinfo is None or value.utcoffset() is None:\n            raise TimestampError('naive datetime cannot be serialized deterministically')\n        return value.isoformat()\n    if isinstance(value, date):\n        return value.isoformat()\n    if isinstance(value, dict):\n        out = {}\n        for k, v in value.items():\n            if not isinstance(k, str):\n                raise SerializationError(f'non-string key {k!r}')\n            out[k] = to_jsonable(v)\n        return out\n    if isinstance(value, (list, tuple)):\n        return [to_jsonable(v) for v in value]\n    if isinstance(value, (set, frozenset)):\n        raise SerializationError('sets have no deterministic order; supply a sorted list')\n    if isinstance(value, float) and not math.isfinite(value):\n        raise SerializationError('NaN/Infinity is not valid JSON')\n    if value is None or isinstance(value, (str, int, float, bool)):\n        return value\n    raise SerializationError(f'unsupported type {type(value).__name__}')\n\n\ndef canonical_bytes(value: Any) -> bytes:\n    return json.dumps(to_jsonable(value), sort_keys=True, separators=(',', ':'),\n                      ensure_ascii=False, allow_nan=False).encode('utf-8')\n\n\ndef sha256_hex(data: bytes) -> str:\n    return hashlib.sha256(data).hexdigest()\n\n\ndef canonical_sha256(value: Any) -> str:\n    return sha256_hex(canonical_bytes(value))\n",
+        "display_url": "https://github.com/kco994553-star/Investment-System1/blob/523e702a806a718d163cfbf62aa3fc29d8c3ef3c/implementation/src/investment_system/producers/serialization.py"
+      }
+    },
+    "isError": false
+  }
+}

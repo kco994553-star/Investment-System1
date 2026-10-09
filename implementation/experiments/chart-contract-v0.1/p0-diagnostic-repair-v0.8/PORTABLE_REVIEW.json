@@ -1,0 +1,121 @@
+{
+  "artifact_kind": "INDEPENDENT_PORTABLE_DIAGNOSTIC_REPLAY_REVIEW",
+  "recorded_at_utc": "2026-10-05T04:24:55.588270+00:00",
+  "scope": "Preservednineprobe definitions and portableCLI/repository/output guards; diagnostic tools only",
+  "status": "VERIFIED_DIAGNOSTIC_ONLY",
+  "runner": {
+    "path": "implementation/experiments/chart-contract-v0.1/p0-diagnostic-repair-v0.8/replay_preflight_probes.py",
+    "sha256": "dcec8bbffbf5be647048b348b9feb2a71c981bd20505c5de95871721739daad5"
+  },
+  "historical_archive": {
+    "path": "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/reproduce_nine_preflight_probes.py.txt",
+    "sha256": "c6a0e6303275e1fdc47cc3b182e3faff787a9cea12907be692af37b5633a3844",
+    "unchanged_original_c6a0e630": true,
+    "executed_by_reviewer": false
+  },
+  "ast_semantic_checks": {
+    "nine_calls_exactly_equal": true,
+    "original_case_count": 9,
+    "successor_case_count": 9,
+    "finite_function_equal": true,
+    "clock_exact_equal": true,
+    "clock": "2026-10-05T03:00:00+00:00",
+    "probe_runtime_predicates_equal": true,
+    "probe_step_count": 12,
+    "asserts_remaining": 0
+  },
+  "observed_guard_tests": [
+    {
+      "case": "reject_selected_inside",
+      "exit": 2,
+      "output_exists_after": false,
+      "stderr_last_line": "replay_preflight_probes.py: error: --output must be outside input and runner repositories"
+    },
+    {
+      "case": "reject_runner_inside_with_other_repo",
+      "exit": 2,
+      "output_exists_after": false,
+      "stderr_last_line": "replay_preflight_probes.py: error: --output must be outside input and runner repositories"
+    },
+    {
+      "case": "reject_existing_output",
+      "exit": 2,
+      "output_exists_after": true,
+      "stderr_last_line": "replay_preflight_probes.py: error: --output must be a new file; overwrite is forbidden"
+    },
+    {
+      "case": "reject_nonrepo",
+      "exit": 2,
+      "output_exists_after": false,
+      "stderr_last_line": "replay_preflight_probes.py: error: --repo must be a Git checkout root"
+    }
+  ],
+  "exclusive_guard_test": {
+    "existing_external_output_preserved": true,
+    "inside_repo_output_never_created": true
+  },
+  "finding_history": [
+    {
+      "id": "PORTABLE-R1",
+      "initial_finding": "Runtime verificationasserts disappear underPythonoptimization, allowing falsePASS claims if toolresults differ from ninecaseexpectations",
+      "status": "REPAIRED_IN_CURRENT_DRAFT",
+      "repair": "Explicitrequire() ValueError predicates with sameconditions; zeroAssert AST nodes remain",
+      "verification": "OrderedprobeAST comparison andbaseline predicates retained; normal9/optimized9 actualreplayPASS; under-O deliberatelywrongsource_inspection aborts at firstprobe withValueError and createsnooutput. Verified Pythonoptimization cannot erase require checks."
+    }
+  ],
+  "new_diagnostic_field_review": {
+    "field": "reference_replay",
+    "verdict": "HARMLESS_DIAGNOSTIC_SCOPE_WITH_CLEARER_NOT_RUN",
+    "cases": [
+      "NOT_RUN_SOURCE_INVALID whenprerequisite sourcehash/pin/mutationfails; numericreplayunattempted",
+      "FAILED onlywhenattemptedreferencearithmetic raises",
+      "COMPLETED_DIAGNOSTIC afterexactreference checks"
+    ],
+    "financial_source_or_gate_semantics_changed": false,
+    "six_open_gates_retained": true,
+    "production_payload_null_retained": true,
+    "actual_not_available_no_target_fallback_retained": true,
+    "historic_receipts_rewritten": false,
+    "limitation": "Thisfield doesnotauthenticateownerreceipts orproduceproductiondata."
+  },
+  "manifest_review": {
+    "status": "VERIFIED_ALL_FOUR_SELECTED_INPUTS_AND_PRESERVED_ARCHIVE_BOUND",
+    "sha256": "3295568f8a03db29a920307a98d3346283d96b9356f470b218465dfa336a21dc",
+    "selected_input_names": [
+      "preflight_tool",
+      "fixture_generator",
+      "fixture_baseline",
+      "original_archive"
+    ],
+    "inputs_match_current_bytes": true,
+    "history_declaration_matches_archive": true,
+    "historical_probe_commit": "32069065a0c4a62e4390d76675eb9c7681456c87",
+    "historical_archive Git identity unchanged": true
+  },
+  "runtime_normal_optimized_replay": {
+    "status": "PASS",
+    "normal9": 9,
+    "optimized9": 9,
+    "case_results_exactly_equal": true,
+    "six_open_null_payload_each_case": true,
+    "outputs_created_outside_checkout": true,
+    "evidence": [
+      "PORTABLE_REPLAY_NORMAL.json",
+      "PORTABLE_REPLAY_OPTIMIZED.json",
+      "PORTABLE_OPTIMIZED_MISMATCH_PROBE.json"
+    ],
+    "optimized_wrong_status_fault": {
+      "status": "PASS_NEGATIVE_GUARD",
+      "exit": 1,
+      "output_created": false,
+      "caught_before_any_success_evidence": true
+    }
+  },
+  "reviewer_repo_changes": [
+    "thisnewreviewJSON",
+    "completed immutable copies PORTABLE_REPLAY_NORMAL.json/PORTABLE_REPLAY_OPTIMIZED.json/PORTABLE_OPTIMIZED_MISMATCH_PROBE.json"
+  ],
+  "source_owner_gate_closure": 0,
+  "new_chart_d3": false,
+  "completed_at_utc": "2026-10-05T04:26:54.103460+00:00"
+}

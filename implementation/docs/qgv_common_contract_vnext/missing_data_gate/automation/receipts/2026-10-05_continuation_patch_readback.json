@@ -1,0 +1,58 @@
+{
+  "observed_at": "2026-10-05T03:14:30.152Z",
+  "status": "AUTOMATION_PATCH_APPLIED_READBACK_VERIFIED",
+  "automations": [
+    {
+      "id": "6ac2efbd34fc8191a60dccbbe338c291",
+      "team_id": null,
+      "title": "QGV CI·State 후속 실행",
+      "prompt": "이 예약은 기존 시간당 후속 확인을 유지하며 CI와 unfinished D1/D2 STATE continuation을 함께 처리한다. 먼저 pending CI를 read-only 확인하고, pending이 없어도 아래 STATE selector로 finite eligible task를 수행한다. 이는 이전 'pending 없으면 새 작업 금지' 및 'binding design도 새 승인 필요' 문장을 D1/D2 범위에서만 대체한다. D3 production 제한은 유지한다.\n\nInvestment-System1 QGV Work를 Actual GitHub > explicit approval/decision evidence > scoped Handoff > Global routing > 과거 prompt 순으로 이어간다. repo=kco994553-star/Investment-System1; only write branch=codex/qgv-missing-data-decision-gate-2026-10-05 and paths=implementation/docs/qgv_common_contract_vnext/missing_data_gate/. PR44(codex/qgv-common-contract-vnext-spec-2026-10-04), PR42(integration/fpia-hardened-v1), canonical default and integration/global-handoff-v1 are read-only. Exact remote HEAD, scoped CURRENT_HANDOFF, implementation_contract/approval.json, binding_gate/DECISION_PACKAGE.md, automation/STATE.json, task plan/receipts and CONTINUATION_PROTOCOL.md를 fresh-read한다. 이미 끝난 audit/M1-M5/Remote Recovery를 반복하지 않는다.\n\nCONTINUATION PROTOCOL v2: EVENT-DRIVEN inputs(PR/HEAD/new review/comment/CI/dependency)와 STATE-DRIVEN unfinished authorized D1/D2 tasks를 독립적으로 판정한다. 새 event 없음, 자기 control-only event, CI pending 없음, owner PR 없음은 task completion이 아니다. STATE.task_plan과 Handoff의 unfinished D1/D2에 exact source/approval/method-policy refs가 일치하고 dependency가 충족되며 active owner lease와 accepted completed output receipt가 없으면 실제 bounded task를 수행한다. automation/continuation_probe.py는 read-only eligibility reference다. 자기 event는 중복 event만 suppress하고 eligible state task를 suppress하지 않는다. pending D3 path만 대기하고 독립 D1/D2는 계속한다.\n\nM1-M5 POLICY PRINCIPLES APPROVED; Implementation Contract DESIGN_READY/INACTIVE; B1-B7 PROPOSED/NOT_APPROVED. D1/D2 audit/mapping/inactive spec/schema, source-pinned manifest, synthetic/adversarial/invariant and score-neutral compatibility verification, technical recommendation, evidence/scoped Handoff publication은 승인됐다. B4 factor vs method/version identity 검증과 B1-B7 dependency/consumer/profile 검토는 D1/D2다. 실제 method replacement/Official factor semantics, factor requiredness/N.A production predicate, ranking/coverage numeric cutoff/default, normalization/composite, WeightOverride production wiring, calculation/legacy score migration, PIT/no-lookahead 완화, Frozen/history/Holdout, grant/Official/LIVE, PR44/canonical merge, deployment, 다른 owner branch/Global Handoff 수정, paid use는 D3이며 사용자 승인 없이 수행하지 않는다. 기술 추천/CI PASS/자기 receipt는 승인이 아니다.\n\nTask fingerprint는 task ID/version/work spec + exact semantic source path/content hashes + approval ID/scope/hash + method/policy refs + exact prerequisite output + acceptance-validator ref/output contract로 만든다. 임의 owner HEAD/time/control noise는 task identity가 아니다. COMPLETED는 실제 모든 output hash가 일치하고 exact acceptance validator PASS인 receipt로만 인정한다. intake/NO_ACTION/wait/FAILED/approval pending은 완료가 아니다. 동일 FAILED fingerprint는 구체적 corrective action과 versioned finite replan 없이 재시도하지 않는다. source/input drift는 affected scope만 재판정하고 latest를 조용히 역사 input으로 바꾸지 않는다.\n\n모든 mutation은 shared owner lease: fresh owner HEAD를 parent로 unique token/RUNNING/input task fingerprint 기록→GitHub API tree/commit→force:false ref update→remote token 확인. 같은 parent sibling claim 거절/기존 active lease면 write하지 않는다. 매 mutation 전에 token 재확인, lease 상실시 cached writes를 다른 token 위로 rebase/retry하지 않는다. 오래됐다는 이유로 lease를 탈취하지 않는다. durable state/safe ref update 불가시 read-only. 종료/실패/D3/externalCI wait시 자기 lease release. Git transport push 차단을 write 불가로 보지 말고 authenticated GitHub API object/ref 경로 사용, remote SHA/tree 확인. no force/history rewrite.\n\nFinite real scheduler canary: HOP1 legacy20 source-pinned method/input/fallback/normalization/history replay manifest; HOP2 exact HOP1 output hash를 소비하는 독립 dependency/test closure. 현재 plan의 task spec/validator를 따르고 production/policy 선택을 canary로 쓰지 않는다. HOP2 후 TERMINAL_D1_D2_COMPLETE_AWAITING_D3, 새로운 일을 임의 생성하지 않는다. verify_on_next_execution으로 prior receipts/source/output/lease 증거를 읽는다. 두 distinct actual scheduler executions와 genuine execution evidence, exact accepted HOP1→HOP2 연결이 있을 때만 AUTONOMOUS_CONTINUATION_VERIFIED. manual/local two-step simulation은 scheduler hop이 아니다. 실행 ID/증거가 노출되지 않으면 REAL_EXECUTION_EVIDENCE_REQUIRED 유지, ID를 만들지 않는다.\n\n새 CI는 original SHA/run_id/attempt로 pending 기록, 대기하며 lease 보유하지 않는다. Local PASS≠Actions PASS. control/receipt-only commit CI를 semantic pending으로 queue하지 말고 CI→receipt→CI loop를 막는다. watermark는 성공/명시 disposition 후에만 전진, task completion과 분리. 의미있는 결과/새 blocker/최소 D3 결정만 간단히 보고한다. 진짜 no-op은 EVENT와 STATE 둘 다 실행 가능 input이 없고 pending CI도 없을 때만 ::SKIP_COMPLETION::.",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261005T003153Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "display_schedule": null,
+      "is_enabled": true,
+      "conversation_id": "6ac3012d-9bf4-83e8-b2ba-bb8c3ab9d10a",
+      "default_timezone": "Asia/Seoul",
+      "next_run_time": null,
+      "last_run_time": "2026-10-05T02:09:22.080184+00:00",
+      "updated_at": "2026-10-05T03:14:18.483437+00:00"
+    },
+    {
+      "id": "6ac2f22087288191abd144fb4a7655f8",
+      "team_id": null,
+      "title": "QGV Work 자동 재개",
+      "prompt": "이 예약은 기존 exact PR #44/#42 이벤트 wake-up을 유지한다. 각 matching event를 처리한 뒤 아래 state selector도 검사한다.\n\nInvestment-System1 QGV Work를 Actual GitHub > explicit approval/decision evidence > scoped Handoff > Global routing > 과거 prompt 순으로 이어간다. repo=kco994553-star/Investment-System1; only write branch=codex/qgv-missing-data-decision-gate-2026-10-05 and paths=implementation/docs/qgv_common_contract_vnext/missing_data_gate/. PR44(codex/qgv-common-contract-vnext-spec-2026-10-04), PR42(integration/fpia-hardened-v1), canonical default and integration/global-handoff-v1 are read-only. Exact remote HEAD, scoped CURRENT_HANDOFF, implementation_contract/approval.json, binding_gate/DECISION_PACKAGE.md, automation/STATE.json, task plan/receipts and CONTINUATION_PROTOCOL.md를 fresh-read한다. 이미 끝난 audit/M1-M5/Remote Recovery를 반복하지 않는다.\n\nCONTINUATION PROTOCOL v2: EVENT-DRIVEN inputs(PR/HEAD/new review/comment/CI/dependency)와 STATE-DRIVEN unfinished authorized D1/D2 tasks를 독립적으로 판정한다. 새 event 없음, 자기 control-only event, CI pending 없음, owner PR 없음은 task completion이 아니다. STATE.task_plan과 Handoff의 unfinished D1/D2에 exact source/approval/method-policy refs가 일치하고 dependency가 충족되며 active owner lease와 accepted completed output receipt가 없으면 실제 bounded task를 수행한다. automation/continuation_probe.py는 read-only eligibility reference다. 자기 event는 중복 event만 suppress하고 eligible state task를 suppress하지 않는다. pending D3 path만 대기하고 독립 D1/D2는 계속한다.\n\nM1-M5 POLICY PRINCIPLES APPROVED; Implementation Contract DESIGN_READY/INACTIVE; B1-B7 PROPOSED/NOT_APPROVED. D1/D2 audit/mapping/inactive spec/schema, source-pinned manifest, synthetic/adversarial/invariant and score-neutral compatibility verification, technical recommendation, evidence/scoped Handoff publication은 승인됐다. B4 factor vs method/version identity 검증과 B1-B7 dependency/consumer/profile 검토는 D1/D2다. 실제 method replacement/Official factor semantics, factor requiredness/N.A production predicate, ranking/coverage numeric cutoff/default, normalization/composite, WeightOverride production wiring, calculation/legacy score migration, PIT/no-lookahead 완화, Frozen/history/Holdout, grant/Official/LIVE, PR44/canonical merge, deployment, 다른 owner branch/Global Handoff 수정, paid use는 D3이며 사용자 승인 없이 수행하지 않는다. 기술 추천/CI PASS/자기 receipt는 승인이 아니다.\n\nTask fingerprint는 task ID/version/work spec + exact semantic source path/content hashes + approval ID/scope/hash + method/policy refs + exact prerequisite output + acceptance-validator ref/output contract로 만든다. 임의 owner HEAD/time/control noise는 task identity가 아니다. COMPLETED는 실제 모든 output hash가 일치하고 exact acceptance validator PASS인 receipt로만 인정한다. intake/NO_ACTION/wait/FAILED/approval pending은 완료가 아니다. 동일 FAILED fingerprint는 구체적 corrective action과 versioned finite replan 없이 재시도하지 않는다. source/input drift는 affected scope만 재판정하고 latest를 조용히 역사 input으로 바꾸지 않는다.\n\n모든 mutation은 shared owner lease: fresh owner HEAD를 parent로 unique token/RUNNING/input task fingerprint 기록→GitHub API tree/commit→force:false ref update→remote token 확인. 같은 parent sibling claim 거절/기존 active lease면 write하지 않는다. 매 mutation 전에 token 재확인, lease 상실시 cached writes를 다른 token 위로 rebase/retry하지 않는다. 오래됐다는 이유로 lease를 탈취하지 않는다. durable state/safe ref update 불가시 read-only. 종료/실패/D3/externalCI wait시 자기 lease release. Git transport push 차단을 write 불가로 보지 말고 authenticated GitHub API object/ref 경로 사용, remote SHA/tree 확인. no force/history rewrite.\n\nFinite real scheduler canary: HOP1 legacy20 source-pinned method/input/fallback/normalization/history replay manifest; HOP2 exact HOP1 output hash를 소비하는 독립 dependency/test closure. 현재 plan의 task spec/validator를 따르고 production/policy 선택을 canary로 쓰지 않는다. HOP2 후 TERMINAL_D1_D2_COMPLETE_AWAITING_D3, 새로운 일을 임의 생성하지 않는다. verify_on_next_execution으로 prior receipts/source/output/lease 증거를 읽는다. 두 distinct actual scheduler executions와 genuine execution evidence, exact accepted HOP1→HOP2 연결이 있을 때만 AUTONOMOUS_CONTINUATION_VERIFIED. manual/local two-step simulation은 scheduler hop이 아니다. 실행 ID/증거가 노출되지 않으면 REAL_EXECUTION_EVIDENCE_REQUIRED 유지, ID를 만들지 않는다.\n\n새 CI는 original SHA/run_id/attempt로 pending 기록, 대기하며 lease 보유하지 않는다. Local PASS≠Actions PASS. control/receipt-only commit CI를 semantic pending으로 queue하지 말고 CI→receipt→CI loop를 막는다. watermark는 성공/명시 disposition 후에만 전진, task completion과 분리. 의미있는 결과/새 blocker/최소 D3 결정만 간단히 보고한다. 진짜 no-op은 EVENT와 STATE 둘 다 실행 가능 input이 없고 pending CI도 없을 때만 ::SKIP_COMPLETION::.",
+      "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+      "timing_mode": "condition_watch",
+      "display_schedule": null,
+      "is_enabled": true,
+      "conversation_id": "6ac230f1-0ff0-83ee-a932-45244e2c4afe",
+      "default_timezone": "Asia/Seoul",
+      "next_run_time": null,
+      "last_run_time": null,
+      "updated_at": "2026-10-05T03:14:13.192126+00:00"
+    }
+  ],
+  "trigger_submission": {
+    "exact_prs": [
+      44,
+      42
+    ],
+    "commit_updates": true,
+    "reviews": true,
+    "comments": true,
+    "only_on_merge": false,
+    "complete_existing_set_preserved": true,
+    "trigger_readback": "NOT_EXPOSED"
+  },
+  "event_delivery": "NOT_TESTED",
+  "state_driven_scheduler_execution": "NOT_TESTED",
+  "two_hop": "PLAN_READY_REAL_EXECUTION_NOT_VERIFIED",
+  "routing": {
+    "original_chat": "6ac230f1-0ff0-83ee-a932-45244e2c4afe",
+    "event": "6ac230f1-0ff0-83ee-a932-45244e2c4afe",
+    "ci": "6ac3012d-9bf4-83e8-b2ba-bb8c3ab9d10a",
+    "can_modify_conversation_via_update": false,
+    "disposition": "Different CI chat readback preserved; both use same repository STATE/lease. Same-chat delivery cannot be claimed. No duplicate watch created."
+  }
+}

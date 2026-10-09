@@ -1,0 +1,121 @@
+{
+ "kind": "PRODUCER_INFRASTRUCTURE_V1_VALIDATION",
+ "recorded_utc": "2026-10-01",
+ "branch": "feature/producer-infrastructure-v1",
+ "base": "origin/feature/global-language-search-v1@eda65bf5d9203aee05f4d28992d1ccfcd815ebd4 (PR #6, stacked on PR #5)",
+ "validated_code_commit": "bcfdcd2",
+ "remote_refs_at_start": {
+  "canonical": "b8e39a2",
+  "pr5": "a4e49c8",
+  "pr6": "eda65bf",
+  "track_c": "15fed50 (advanced from 9cf4d7d during audit; read-only)",
+  "parallel_search_metadata": "ccr-41677301-10nj3u@773b264 (read-only)"
+ },
+ "tests": {
+  "new_producer_infrastructure_pytest": "22 passed",
+  "full_pytest_branch": "431 passed (409 PR6 baseline + 22)",
+  "full_mini_pytest_branch": "431 passed, 0 failed",
+  "trial_merge_with_track_c_15fed50_full_pytest": "664 passed (local detached commit-tree only; no ref created/pushed)",
+  "trial_merge_conflicts": {
+   "track_c": "none",
+   "ccr-41677301-10nj3u": "none"
+  },
+  "web_browser_on_exporter_built_default_bundle": {
+   "passed": true,
+   "checks": [
+    "default fail-closed missing data",
+    "six routes 360/390/1280 without overflow",
+    "portfolio to company and original QGV",
+    "interest persistence and group membership",
+    "news-network switch, node focus, expansion, zoom, filters",
+    "research canonical select fill preview copy",
+    "network pan and drag preserve view state",
+    "group rename delete and preferences backup",
+    "back navigation and deep link",
+    "no page errors"
+   ],
+   "errors": []
+  },
+  "global_language_search_browser": {
+   "passed": true,
+   "checks": [
+    "global search exact/alias/prefix/fuzzy same canonical route",
+    "industry and macro navigation; no fake investor",
+    "ko/en UI, persistence, QGV/Technical/Macro/Portfolio/Leaderboard/source_original unchanged",
+    "source language filter independent; localized summaries retain raw originals",
+    "existing News Network labels use global display locale and preserve model",
+    "research controls localized, Frozen payload/preview unchanged",
+    "mobile/desktop search and settings without overflow",
+    "storage failure preserves settings source"
+   ],
+   "errors": []
+  },
+  "global_language_search_node": "26 checks PASS",
+  "browser_runtime": "local Chromium (/opt/pw-browsers) + playwright 1.56.1 global; CI pins 1.58.2 — local run, not a CI claim"
+ },
+ "engine_numerical_fingerprint": {
+  "tool": "tools/producer_engine_fingerprint.py",
+  "base_eda65bf": {
+   "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+   "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+   "n_qgv": 19,
+   "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+   "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+   "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+  },
+  "branch": {
+   "leaderboard": "112b245b4f9963787ab7b2780f287e99515f05c231bfc127f656a57736e9b4c1",
+   "macro": "7bbfad69ac46b5886fb30f32b871ce68983adbc089d7ea21ae3b6317d108732f",
+   "n_qgv": 19,
+   "portfolio_official_book": "53d930a7e3d2009347ac36f84e8a3b7504e6e5e9b0a4fe62fa5d1fb1be5a4a68",
+   "qgv": "a17144803746000dc11efa630797fccbf76d2985e58ca7ae55797e7842d7ce3e",
+   "technical": "82165414a2c86c5c489b7c071c44b967c344dd654238af445714bb0fe14097c7"
+  },
+  "identical": true,
+  "repeatable": true
+ },
+ "default_export": {
+  "bundle_sha256_at_now_2026-10-01T00:00:00Z": "cdf58ad451ba7eeefd2c686635b4e5a502a3074f13f8305f316f8a7e5df0aa68",
+  "byte_identical_rerun": true,
+  "semantics_equal_repository_bundle": "companies, universe data/source, NOT_AVAILABLE sections and reasons equal"
+ },
+ "raw_persistence": {
+  "manifest": "reports/raw_persistence/raw_dataset_manifest_2026-10-01.json",
+  "n_artifacts": 6808,
+  "bytes": 6136954924,
+  "manifest_set_sha256": "1793423426f3272d909683c4f3595a70793350eae7047343a8d50a270899e828",
+  "retention": "AT_RISK_ONLY_EXPIRING_COPIES",
+  "loss_deadline_if_no_action": "2026-12-26T08:21:15Z"
+ },
+ "cross_track_diff_vs_base": {
+  "qgv/technical/macro/universe/personal/rig/prompt_library/ingestion/validation/contracts/providers/pit/markets/integration": 0,
+  "reports/gate_evidence": 0,
+  "data/raw": 0,
+  "track_c_evl_files_on_branch": 0,
+  "changed_existing_file": "product/web_mvp.py (validate_bundle error typing only)"
+ },
+ "verdicts": {
+  "PRODUCER_INFRASTRUCTURE_IMPLEMENTED": "YES",
+  "WEB_BUNDLE_EXPORTER_READY": "YES (contract/exporter; currently exports Universe FROZEN_SNAPSHOT + explicit NOT_AVAILABLE)",
+  "RAW_ARTIFACT_PERSISTENCE_DESIGNED": "YES (storage choice P03 pending; not durable yet)",
+  "REAL_PRODUCER_READY": "NO",
+  "DAILY_OPERATION_READY": "NO"
+ },
+ "not_done": [
+  "canonical merge",
+  "PR merge",
+  "Track C change",
+  "Track A frozen artifact change",
+  "new calculation",
+  "Universe policy",
+  "QGV promotion",
+  "Technical model",
+  "portfolio policy",
+  "news/consensus/hosting provider",
+  "paid API",
+  "secret",
+  "deployment",
+  "schedule activation",
+  "raw artifact move/copy/upload"
+ ]
+}

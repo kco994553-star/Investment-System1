@@ -1,0 +1,26 @@
+{
+  "key": "pr42_review_comments",
+  "url": "https://api.github.com/repos/kco994553-star/Investment-System1/pulls/42/comments?per_page=100",
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "[]",
+      "title": "comments",
+      "modified_date": null,
+      "url": "https://api.github.com/repos/kco994553-star/Investment-System1/pulls/42/comments?per_page=100",
+      "display_url": "https://api.github.com/repos/kco994553-star/Investment-System1/pulls/42/comments?per_page=100",
+      "display_title": "comments",
+      "structuredContent": {
+        "title": "comments",
+        "content": "[]",
+        "display_url": "https://api.github.com/repos/kco994553-star/Investment-System1/pulls/42/comments?per_page=100"
+      }
+    },
+    "isError": false
+  }
+}

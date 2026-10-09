@@ -1,0 +1,331 @@
+{
+  "status": "INDEPENDENT_REVIEW_PASS_WITH_LIMITS_INACTIVE_SPEC_ONLY",
+  "reviewer_role": "independent documentation/inactive-evidence review; not user approval or production acceptance",
+  "approval_claim_commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+  "predecessor_commit": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+  "source_owner_commit": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "remote_authenticated_by": "Root; this reviewer independently checked final local bytes and new deterministic scripts, not GitHub network",
+  "input_sha256": {
+    "root/B1_EVIDENCE_DELTA.json": "b99c5edcc3accf4318c7bd1d50c89912c03e3b41cc78285ceb8301744bf697bb",
+    "root/CONTROL_CLAIM.json": "055b50f9e46959678ff011f910d4eae7779a6fcee86c8383c1541898caec5714",
+    "root/CURRENT_HANDOFF.md": "412270fc4aba3057aa520d58cb4dd2de085e9ca90f224df73298705928334425",
+    "root/DECISION_PACKAGE.md": "f00a96a0e646b8c3ca3c90dc44d3b20d993ae8465f4c082fd325399c12657b2e",
+    "root/SEMANTIC_CONTRACT.md": "818be17270af0d43a88005dd5a9cc5f392234742332267bb96d80dac0e0c57a4",
+    "root/WORK_PLAN.md": "663807c1b77c4651526a0ad9b7541a4b7b086f08504f1cde56846271f3f34c79",
+    "root/acceptance_validator.py": "e0c63011e26d906d0d5b7808e516c4db9f6fe1f9ce231083d1b6106c5bbd6eac",
+    "root/approval.json": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c",
+    "root/fresh_intake.json": "34b90f23679e3cbbfd41dd6e2a7d17b4ef16a4eec55ef1d7256628435691f1c1",
+    "g/G2_INDEPENDENT_FAMILY_REVIEW.md": "3eff870054903f5c40252276f30ba4f8c96ddae7f2b29a1114e4d8f63b6a9ee5",
+    "g/G_CANDIDATE_DIAGNOSTICS.json": "ee097d49ba1ca58f7e596a46f9628d75cc7648533cbc98641b800cd0211903c7",
+    "g/G_CANDIDATE_MATRIX.json": "bf52ed54f5789c665d5923fa9f865158814c32caa2ad335a07b40620009301e4",
+    "g/G_CANDIDATE_SOURCE_REQUESTS.json": "af622045a4c516e54bfcc0ba0fb8cb0760826710e0eec155ba4fc078ea2b1d59",
+    "g/G_CANDIDATE_VERIFICATION.json": "b8fa7e1c24737c6ff59fb879e84d2a3696a367c82625a40fa1aebfc29aeb0f13",
+    "g/G_METHOD_CANDIDATE_COMPARISON.md": "06e754161f2b7bfb47f312ea4e6ca22f58b401564d0b08fb85b41f14f1661595",
+    "g/G_PRIMARY_SOURCE_NOTES.json": "34cea92b1738afc5152a198d2add10bb17b8ac33a30cf8dce400ca04934dee38",
+    "g/g_candidate_comparison.py": "e19ff3fcdcc40eb4750b5d6011832fccab97ca1d5edea78f9e2eb4c9dc4b9116",
+    "consumer/CONTRACT.md": "7618a8f67ea794056ef05eb09317165855ece13e5cca70df17a549680a675ff8",
+    "consumer/CONTRACT_ACCEPTANCE_RESULTS.json": "946dae38b5f33bf7ce47763ccd8780b2f9f7713d37efbc501ce596fb4b8ab386",
+    "consumer/CONTRACT_EVIDENCE.json": "fb6a85157f056d1dfdd02142afa263d289488a1b6c406595cb598f45902ad591",
+    "consumer/SOURCE_AUTHORITY_MATRIX.json": "793b8ce6dab4f432b61246a7303f3fa75461063f880bd381aed6755d55f66a79",
+    "consumer/assessment_ref_carrier.schema.json": "5f37fde7dafac0e3c8eb0128f64359acc53c4427673c5783040ab502ce044fc6",
+    "consumer/contract_acceptance_probe.py": "948340515c6ac749fb115e15b375bd3308a6bb51b23d04370286ff563b31813f",
+    "consumer/synthetic_carrier.json": "8741c846d06f84abf3c5dd78e705fe47e827727af0af85e547289d4c9406bd64",
+    "consumer/synthetic_reference_contents.json": "491491d708f2822bb4e9d0aa2f4ffc8811d06d7eb42647532317b49753e2c616"
+  },
+  "source_and_frozen_hash_checks": [
+    {
+      "path": "consumer/CONTRACT.md",
+      "kind": "frozen_consumer_artifact",
+      "expected": "7618a8f67ea794056ef05eb09317165855ece13e5cca70df17a549680a675ff8",
+      "actual": "7618a8f67ea794056ef05eb09317165855ece13e5cca70df17a549680a675ff8",
+      "pass": true
+    },
+    {
+      "path": "consumer/assessment_ref_carrier.schema.json",
+      "kind": "frozen_consumer_artifact",
+      "expected": "5f37fde7dafac0e3c8eb0128f64359acc53c4427673c5783040ab502ce044fc6",
+      "actual": "5f37fde7dafac0e3c8eb0128f64359acc53c4427673c5783040ab502ce044fc6",
+      "pass": true
+    },
+    {
+      "path": "consumer/SOURCE_AUTHORITY_MATRIX.json",
+      "kind": "frozen_consumer_artifact",
+      "expected": "793b8ce6dab4f432b61246a7303f3fa75461063f880bd381aed6755d55f66a79",
+      "actual": "793b8ce6dab4f432b61246a7303f3fa75461063f880bd381aed6755d55f66a79",
+      "pass": true
+    },
+    {
+      "path": "consumer/contract_acceptance_probe.py",
+      "kind": "frozen_consumer_artifact",
+      "expected": "948340515c6ac749fb115e15b375bd3308a6bb51b23d04370286ff563b31813f",
+      "actual": "948340515c6ac749fb115e15b375bd3308a6bb51b23d04370286ff563b31813f",
+      "pass": true
+    },
+    {
+      "path": "consumer/CONTRACT_ACCEPTANCE_RESULTS.json",
+      "kind": "frozen_consumer_artifact",
+      "expected": "946dae38b5f33bf7ce47763ccd8780b2f9f7713d37efbc501ce596fb4b8ab386",
+      "actual": "946dae38b5f33bf7ce47763ccd8780b2f9f7713d37efbc501ce596fb4b8ab386",
+      "pass": true
+    },
+    {
+      "path": "consumer/synthetic_carrier.json",
+      "kind": "frozen_consumer_artifact",
+      "expected": "8741c846d06f84abf3c5dd78e705fe47e827727af0af85e547289d4c9406bd64",
+      "actual": "8741c846d06f84abf3c5dd78e705fe47e827727af0af85e547289d4c9406bd64",
+      "pass": true
+    },
+    {
+      "path": "consumer/synthetic_reference_contents.json",
+      "kind": "frozen_consumer_artifact",
+      "expected": "491491d708f2822bb4e9d0aa2f4ffc8811d06d7eb42647532317b49753e2c616",
+      "actual": "491491d708f2822bb4e9d0aa2f4ffc8811d06d7eb42647532317b49753e2c616",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/QGV_CONSISTENCY_MATRIX.md",
+      "kind": "reused_predecessor_artifacts",
+      "expected": "9fccaa63e04b2c904bf19a3c90ca123263476c61c63077b8125b7e467d42a681",
+      "actual": "9fccaa63e04b2c904bf19a3c90ca123263476c61c63077b8125b7e467d42a681",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/CONSUMER_SAFETY_DELTA.md",
+      "kind": "reused_predecessor_artifacts",
+      "expected": "d137dd43e7d5b4c3dc01d28fbf6b3a516236f265ebb7bdf8c8aca6be1b4a6f40",
+      "actual": "d137dd43e7d5b4c3dc01d28fbf6b3a516236f265ebb7bdf8c8aca6be1b4a6f40",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/consumer_lineage_probe.py",
+      "kind": "reused_predecessor_artifacts",
+      "expected": "949d3a9dae77bac380d724eed6dfe96a0d96da3e9a39cb3c9d24aa6feaf52b50",
+      "actual": "949d3a9dae77bac380d724eed6dfe96a0d96da3e9a39cb3c9d24aa6feaf52b50",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/lineage_probe_results.json",
+      "kind": "reused_predecessor_artifacts",
+      "expected": "ac462d2b942c493b3898d23ecdb619be7dbc2744fc8b571085d1c83eb0d7a69b",
+      "actual": "ac462d2b942c493b3898d23ecdb619be7dbc2744fc8b571085d1c83eb0d7a69b",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/source_evidence.json",
+      "kind": "reused_predecessor_artifacts",
+      "expected": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "actual": "ed7d9cbd0d8d6eb81ec916cffb347c3811a0c5d215e712c382afd433dd730371",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/V_INDEPENDENT_REVIEW.md",
+      "kind": "reused_predecessor_artifacts",
+      "expected": "41debae3695e99af95be489669e87fccbdcf83edb6ddd42ba7278a59b7587a0e",
+      "actual": "41debae3695e99af95be489669e87fccbdcf83edb6ddd42ba7278a59b7587a0e",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-gv-lanes-output/consumer/V_INDEPENDENT_REVIEW_EVIDENCE.json",
+      "kind": "reused_predecessor_artifacts",
+      "expected": "ba85a8adaa6e257c8abceb834750b3b0a22c071014f42e6341e02b4964f239f3",
+      "actual": "ba85a8adaa6e257c8abceb834750b3b0a22c071014f42e6341e02b4964f239f3",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/contract_record.schema.json",
+      "kind": "owner_published_inactive_sources",
+      "expected": "0caa8345f611c65389786b5eaa55e60484ca8efe8fb77d55cd4746431455e962",
+      "actual": "0caa8345f611c65389786b5eaa55e60484ca8efe8fb77d55cd4746431455e962",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/CONTRACT.md",
+      "kind": "owner_published_inactive_sources",
+      "expected": "5203e09c36c612aa573789a5cdf8bcf1fb76f26fad105171e21b31828e13f76b",
+      "actual": "5203e09c36c612aa573789a5cdf8bcf1fb76f26fad105171e21b31828e13f76b",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/implementation_contract/approval.json",
+      "kind": "owner_published_inactive_sources",
+      "expected": "65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf",
+      "actual": "65a360a410121aeca7f17fbc93369dae59f57e2ed9265f33aeb52c9263a448cf",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/DECISION_PACKAGE.md",
+      "kind": "owner_published_inactive_sources",
+      "expected": "d673cbbe55317af632e1ce6acf626b8aa572087ee4fc882094961240bb5b1867",
+      "actual": "d673cbbe55317af632e1ce6acf626b8aa572087ee4fc882094961240bb5b1867",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/CONSUMER_PROFILE_REVIEW.md",
+      "kind": "owner_published_inactive_sources",
+      "expected": "4d911d4662312fe88f405917aec664fe023277a144327edceb673f0b3f064ac4",
+      "actual": "4d911d4662312fe88f405917aec664fe023277a144327edceb673f0b3f064ac4",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/B4_REVIEW.md",
+      "kind": "owner_published_inactive_sources",
+      "expected": "46248a360163c66347fe733e6a24130a650d91e5e5161e03dc187f752536ed37",
+      "actual": "46248a360163c66347fe733e6a24130a650d91e5e5161e03dc187f752536ed37",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-policy-reconciliation-2026-10-05/implementation/docs/qgv_common_contract_vnext/missing_data_gate/binding_gate/factor_roles.json",
+      "kind": "owner_published_inactive_sources",
+      "expected": "fcca6d59c6f735202c6b6e6d5e45e5ed2a06423759184ff949162677a49b78b1",
+      "actual": "fcca6d59c6f735202c6b6e6d5e45e5ed2a06423759184ff949162677a49b78b1",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/contracts/models.py",
+      "kind": "reused_production_source_receipts_locally_verified",
+      "expected": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+      "actual": "fa386626f19fcdd0dfc97fd7d9b56ba1c56493ae9e1cfaecac42a5214297ed92",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/qgv/analysis.py",
+      "kind": "reused_production_source_receipts_locally_verified",
+      "expected": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+      "actual": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/qgv_producer/record.py",
+      "kind": "reused_production_source_receipts_locally_verified",
+      "expected": "525fa0b082a0012c20b11adbd6f15dfdd7446494fd90c19322275983d899b948",
+      "actual": "525fa0b082a0012c20b11adbd6f15dfdd7446494fd90c19322275983d899b948",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/qgv_producer/batch.py",
+      "kind": "reused_production_source_receipts_locally_verified",
+      "expected": "9b8be7b1def6b9d98290a937c4278d8ece11b8d6794030c6cd0881a65380e95c",
+      "actual": "9b8be7b1def6b9d98290a937c4278d8ece11b8d6794030c6cd0881a65380e95c",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/leaderboard_producer/qgv_input.py",
+      "kind": "reused_production_source_receipts_locally_verified",
+      "expected": "b65a36cbf486cfb932c8148a49043b0bc1045e30f7a0fefc13faddd756fde3f2",
+      "actual": "b65a36cbf486cfb932c8148a49043b0bc1045e30f7a0fefc13faddd756fde3f2",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/leaderboard_producer/rank.py",
+      "kind": "reused_production_source_receipts_locally_verified",
+      "expected": "e66b8029811eddbf7fa250232cdda6d94837f7e7393b7c96c65513d6477a822a",
+      "actual": "e66b8029811eddbf7fa250232cdda6d94837f7e7393b7c96c65513d6477a822a",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/publication/qgv_binding.py",
+      "kind": "reused_production_source_receipts_locally_verified",
+      "expected": "f28d94273d94a1bad06daff308182f7cde7f66ec235b2e47882994e591c85853",
+      "actual": "f28d94273d94a1bad06daff308182f7cde7f66ec235b2e47882994e591c85853",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/publication/extractors.py",
+      "kind": "reused_production_source_receipts_locally_verified",
+      "expected": "d88b3b745964d7fcd41630144eb4a72f384acdd27edc667fad73c3926a20a47b",
+      "actual": "d88b3b745964d7fcd41630144eb4a72f384acdd27edc667fad73c3926a20a47b",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/publication/predicate.py",
+      "kind": "reused_production_source_receipts_locally_verified",
+      "expected": "c4b10daa9857af9dfc393d79111d9894a72f5344ca27b2b6681ea0c3b95b2b96",
+      "actual": "c4b10daa9857af9dfc393d79111d9894a72f5344ca27b2b6681ea0c3b95b2b96",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-integration-2026-10-05/implementation/src/investment_system/publication/authorization.py",
+      "kind": "reused_production_source_receipts_locally_verified",
+      "expected": "36786fc7d585d51a77fe50e483af76b9d994ae6c76063c712da94faab12e5aa2",
+      "actual": "36786fc7d585d51a77fe50e483af76b9d994ae6c76063c712da94faab12e5aa2",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-semantic-lanes-output/root/approval.json",
+      "kind": "approved_semantic_record",
+      "expected": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c",
+      "actual": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c",
+      "pass": true
+    },
+    {
+      "path": "/workspace/scratch/5f9c0923784f/qgv-semantic-lanes-output/root/SEMANTIC_CONTRACT.md",
+      "kind": "semantic_contract_record",
+      "expected": "818be17270af0d43a88005dd5a9cc5f392234742332267bb96d80dac0e0c57a4",
+      "actual": "818be17270af0d43a88005dd5a9cc5f392234742332267bb96d80dac0e0c57a4",
+      "pass": true
+    }
+  ],
+  "new_focused_execution": {
+    "G": {
+      "checks_passed": 21,
+      "replay_output_bytes_identical": true,
+      "selected_future_method": false
+    },
+    "Consumer": {
+      "checks_passed": 38,
+      "replay_output_bytes_identical": true,
+      "operational_admission_evaluated": false
+    },
+    "total_distinct": 59,
+    "old_GV_characterization_rerun": false
+  },
+  "findings": [
+    {
+      "id": "R-01",
+      "status": "CLOSED_IN_CURRENT_SEMANTIC_CONTRACT",
+      "severity": "clarification",
+      "finding": "Future candidate observation/PIT prerequisites must not retroactively judge legacy history.",
+      "evidence": "root/SEMANTIC_CONTRACT.md now limits requirements to future candidate PIT claims, retains unresolved legacy method attribution and literal history."
+    },
+    {
+      "id": "R-02",
+      "status": "FINAL_CONTROL_PUBLICATION_CHECK_REQUIRED",
+      "severity": "control clarity",
+      "finding": "Inherited CONTROL_CLAIM old d3_decisions list G1/G2 semantic meanings. Final control must supersede this list with approved G1/G2 meanings and separately pending actual method/numeric authority.",
+      "evidence": "CONTROL_CLAIM is an archived claim input; parent committed to final superseding control. This review does not edit claim history or final control."
+    },
+    {
+      "id": "R-03",
+      "status": "OPEN_PRODUCTION_MIGRATION_BLOCKER_REUSED_EVIDENCE",
+      "severity": "critical for production; no new inactive-contract blocker",
+      "finding": "Existing finite VERSION_MISMATCH/CALCULATION_ERROR and incomplete method/validity evidence can reach aggregates/ranking.",
+      "evidence": "root/DECISION_PACKAGE.md and consumer/CONTRACT.md preserve this blocker. C26/C27 retain numeric70 with REJECTED original reason and NOT_EVALUATED semantic/consumer status; C28 forbids rank-purpose promotion."
+    }
+  ],
+  "dispositions": {
+    "G1_semantic_approval_fidelity": "PASS long-horizon realized magnitude+persistence only; forecast authority absent",
+    "G2_semantic_approval_fidelity": "PASS no unauthorized automatic cross-metric substitution; A-D unselected",
+    "factor_method_identity": "PASS existing factor IDs preserved; candidate method_id/version null; symbolic aliases audit-only",
+    "historical_protection": "PASS document/evidence scope; actual historical migration NOT_RUN",
+    "endpoint_standalone_rejection": "PASS bounded economic-fit inference; not chosen alternative method",
+    "numeric_requiredness_applicability": "PASS no formulas/defaults/cutoffs/roles/N_A binding selected",
+    "typed_reference_relations": "PASS finite trusted-fixture links; not authenticated remote authority",
+    "unknown_rejected_states": "PASS independently preserved; structural PASS does not imply valid/rankable",
+    "zero_Custom": "PASS obligation-ref comparison only; no runtime WeightOverride test claimed",
+    "V1_V2": "PENDING unchanged",
+    "M1_M5_B4_B7": "approved principles reused without redundant approval request",
+    "B1": "MORE_EVIDENCE_REQUIRED_0_OF_20",
+    "B2_B3_B5_B6": "PROPOSED_UNAPPROVED_REFERENCE_SCOPE_BUNDLE",
+    "scheduler": "0_OF_2_UNVERIFIED_MANUAL_CREDIT_ZERO"
+  },
+  "limits": [
+    "No production source/canonical/Global/owner STATE writes by reviewer",
+    "No actual G candidate score or selected horizon/window",
+    "No genuine historical source-vintage replay or real PIT/OOS",
+    "No positive admitted consumer path, multi-child/withheld aggregate evaluator or runtime assessment producer",
+    "No JSONSchema engine execution claimed; schema only parsed as JSON",
+    "No production ranking/portfolio/publication policy, grant or WeightOverride wiring",
+    "Final remote publication/readback/protected-tree/lease release are root responsibilities and remain outside this independent local review"
+  ],
+  "next_executable_D1_D2": "Consume exact G candidate/source-request and consumer carrier hashes to design bounded shared-versus-local integration fixtures preserving null/UNASSESSED/rejected reasons, while actual methods, numeric criteria, real source bytes, activation and migration remain unresolved."
+}

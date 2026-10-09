@@ -1,0 +1,25 @@
+{
+  "url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682864/artifacts?per_page=100",
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "{\"total_count\":1,\"artifacts\":[{\"id\":11315618718,\"node_id\":\"MDg6QXJ0aWZhY3QxMTMxNTYxODcxOA==\",\"name\":\"track-c-fpia-523e702a806a718d163cfbf62aa3fc29d8c3ef3c\",\"size_in_bytes\":51254,\"url\":\"https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11315618718\",\"archive_download_url\":\"https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11315618718/zip\",\"expired\":false,\"digest\":\"sha256:e1d16877accf451bb8d490d58bc3e5e51c2f34e4a1a6decf591ffb118689c226\",\"created_at\":\"2026-10-04T21:55:04Z\",\"updated_at\":\"2026-10-04T21:55:04Z\",\"expires_at\":\"2027-01-02T21:05:43Z\",\"workflow_run\":{\"id\":37234682864,\"repository_id\":1379547477,\"head_repository_id\":1379547477,\"head_branch\":\"integration/fpia-hardened-v1\",\"head_sha\":\"523e702a806a718d163cfbf62aa3fc29d8c3ef3c\"}}]}",
+      "title": "artifacts",
+      "modified_date": null,
+      "url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682864/artifacts?per_page=100",
+      "display_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682864/artifacts?per_page=100",
+      "display_title": "artifacts",
+      "structuredContent": {
+        "title": "artifacts",
+        "content": "{\"total_count\":1,\"artifacts\":[{\"id\":11315618718,\"node_id\":\"MDg6QXJ0aWZhY3QxMTMxNTYxODcxOA==\",\"name\":\"track-c-fpia-523e702a806a718d163cfbf62aa3fc29d8c3ef3c\",\"size_in_bytes\":51254,\"url\":\"https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11315618718\",\"archive_download_url\":\"https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11315618718/zip\",\"expired\":false,\"digest\":\"sha256:e1d16877accf451bb8d490d58bc3e5e51c2f34e4a1a6decf591ffb118689c226\",\"created_at\":\"2026-10-04T21:55:04Z\",\"updated_at\":\"2026-10-04T21:55:04Z\",\"expires_at\":\"2027-01-02T21:05:43Z\",\"workflow_run\":{\"id\":37234682864,\"repository_id\":1379547477,\"head_repository_id\":1379547477,\"head_branch\":\"integration/fpia-hardened-v1\",\"head_sha\":\"523e702a806a718d163cfbf62aa3fc29d8c3ef3c\"}}]}",
+        "display_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37234682864/artifacts?per_page=100"
+      }
+    },
+    "isError": false
+  }
+}

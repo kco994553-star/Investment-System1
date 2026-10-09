@@ -1,0 +1,208 @@
+{
+  "kind": "PRESERVED_INITIAL_INDEPENDENT_OBSERVATION",
+  "note": "Captured before current diagnostic repair; initial lease/draft/code-hash wording belongs to the recorded observation. Final disposition and verification are in HANDOFF/VALIDATION_RECEIPT/GATES_AND_GAPS.",
+  "observation": {
+    "reviewed_at_utc": "2026-10-05T04:17:50.354824+00:00",
+    "scope": "READ_ONLY_REUSE_PRIOR_AUDIT",
+    "local_snapshot": "32069065a0c4a62e4390d76675eb9c7681456c87",
+    "fresh_remote_head": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+    "classification": "CURRENT_REMOTE_WORKING_AS_DESIGNED_PENDING_EXACT_CI; productive_future_main_resume_UNKNOWN",
+    "task_inventory": [
+      {
+        "id": "6ac2ef0621908191909a27af4c91f101",
+        "team_id": null,
+        "title": "Chart CI 후속 확인",
+        "schedule": "BEGIN:VEVENT\nDTSTART:20261005T002850Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+        "timing_mode": "condition_watch",
+        "display_schedule": null,
+        "is_enabled": true,
+        "conversation_id": "6ac2ef20-372c-83ee-9857-3ed62a8ed411",
+        "default_timezone": "Asia/Seoul",
+        "next_run_time": null,
+        "last_run_time": "2026-10-05T04:13:31.266951+00:00",
+        "updated_at": "2026-10-05T04:13:52.713596+00:00"
+      },
+      {
+        "id": "6ac31fca7bb4819183997a9f17f432cb",
+        "team_id": null,
+        "title": "Chart 감사 자동진행",
+        "schedule": "BEGIN:VEVENT\nDTSTART:20261005T035654Z\nRRULE:FREQ=HOURLY\nEND:VEVENT",
+        "timing_mode": "condition_watch",
+        "display_schedule": null,
+        "is_enabled": true,
+        "conversation_id": "6ac21e38-55f8-83ee-97af-8b9e30c57c11",
+        "default_timezone": "Asia/Seoul",
+        "next_run_time": null,
+        "last_run_time": "2026-10-05T03:58:42.998067+00:00",
+        "updated_at": "2026-10-05T04:06:21.977053+00:00"
+      },
+      {
+        "id": "6ac2eeedb21c81919f04168d69672f0a",
+        "team_id": null,
+        "title": "Chart PR 이벤트 재개",
+        "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT",
+        "timing_mode": "condition_watch",
+        "display_schedule": null,
+        "is_enabled": false,
+        "conversation_id": "6ac2f2a6-6938-83ec-8ea0-52e22ad3194f",
+        "default_timezone": "Asia/Seoul",
+        "next_run_time": null,
+        "last_run_time": "2026-10-05T03:51:11.384912+00:00",
+        "updated_at": "2026-10-05T03:56:36.583970+00:00"
+      }
+    ],
+    "lease": {
+      "status": "RELEASED_AFTER_VERIFIED_PUBLICATION",
+      "run_id": null,
+      "holder_kind": "MANUAL_ROOT",
+      "acquired_at_utc": "2026-10-05T03:03:26.899Z",
+      "expires_at_utc": "2026-10-05T05:02:54.234Z",
+      "ttl_minutes": 60,
+      "allowed_automatic_ttl_minutes": 30,
+      "scope": "ONE_SHARED_LEASE_EVENT_CI_MANUAL",
+      "verified_remote_acquisition": true,
+      "acquisition_parent_head": "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+      "mutual_exclusion": "PROTOCOL_NOT_PROVIDER_GUARANTEE",
+      "release_responsibility": "Root releases after successful publication and verification; active local initialization alone is not a verified remote lease.",
+      "acquisition_commit": "74df6784071137bdca911964af94c8e1b6928c92",
+      "verified_at_utc": "2026-10-05T04:02:54.236Z",
+      "verified_published_packet": "32069065a0c4a62e4390d76675eb9c7681456c87",
+      "previous_run_id": "manual-chart-dependency-delta-20261005T030326898Z",
+      "reason": "Current user authorizes durable Global-only dependency intake and automatic approved-write-set production continuation; renewal before expiry",
+      "renewed_at_utc": "2026-10-05T04:02:54.236Z",
+      "released_at_utc": "2026-10-05T04:14:14.034Z"
+    },
+    "last_processed": {
+      "source_head": "1f8008dc0c8bc14dda8033f4da105218ab1b7e85",
+      "owner_head": "32069065a0c4a62e4390d76675eb9c7681456c87",
+      "processed_at_utc": "2026-10-05T04:14:14.034Z",
+      "run_id": "manual-chart-dependency-delta-20261005T030326898Z",
+      "input_heads": {
+        "17": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "18": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+        "19": "c3dbf8a02c9c5ed0cf4ffb15c5532d31ae45fa3e",
+        "34": "a3cbf1317b7e2afa6bf25d05889d10bfdb5a8d8a",
+        "36": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "41": "a89ac6dd4336027ddab52b145ab87e3bc5edb3e5",
+        "42": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "44": "cb1906b207623168fd70f3dcdb5b30f2d82d807d"
+      },
+      "global_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+      "qgv_successor_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+      "approval_effective_kst": "2026-10-05T13:01:31+09:00",
+      "status": "SCOPED_POLICY_ADOPTED_INDEPENDENT_PROBES_VERIFIED_PENDING_INTEGRATION_CI_AND_OWNER_INPUTS",
+      "evidence_refs": [
+        "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/HANDOFF.md",
+        "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/EXECUTION_POLICY.md",
+        "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/VERIFY.json",
+        "implementation/experiments/chart-contract-v0.1/p0-dependency-continuation-v0.7/INDEPENDENT_PROBES.json"
+      ],
+      "ci_terminal_claim": false,
+      "semantic_input_fingerprint": "1df6fffb6df1522652e9fd6ee0acdd1a399bb222948b639b5de5cb6d61acdb6b"
+    },
+    "pending_run": {
+      "id": 37260997788,
+      "attempt": 1,
+      "head_sha": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+      "status": "in_progress",
+      "conclusion": null,
+      "job": [
+        {
+          "id": 111608006037,
+          "status": "in_progress",
+          "conclusion": null,
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Free runner disk (an audit needs about 5 GB of work space)",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Run actions/checkout@v4",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Fetch every branch for the object store (read-only)",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "number": 5,
+              "name": "Run actions/setup-python@v5",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "number": 6,
+              "name": "Install pinned runtime (FPIA's workflow loader is the vendored PyYAML 6.0.1, AC-32.spoof)",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "number": 7,
+              "name": "FPIA Tier 1 tests",
+              "status": "completed",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 8,
+              "name": "FPIA Tier 2 real-history checks (must not skip)",
+              "status": "completed",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 9,
+              "name": "FPIA audit (the job fails only on FPIA_FAIL or FPIA_NOT_RUN)",
+              "status": "in_progress",
+              "conclusion": null
+            },
+            {
+              "number": 10,
+              "name": "Run actions/upload-artifact@v4",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "number": 19,
+              "name": "Post Run actions/setup-python@v5",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "number": 20,
+              "name": "Post Run actions/checkout@v4",
+              "status": "pending",
+              "conclusion": null
+            }
+          ]
+        }
+      ]
+    },
+    "verification": {
+      "publication_output_hashes": {
+        "pass": 43,
+        "total": 43,
+        "subject": "32069065a0c4a62e4390d76675eb9c7681456c87"
+      },
+      "last_processed_evidence_refs_resolve": {
+        "pass": 4,
+        "total": 4
+      },
+      "v07_scope_filter_registered": true,
+      "no_op_or_self_event_loop_repro": "NONE_FOUND",
+      "terminal_CI_claim": false
+    },
+    "root_cause_delta": "Prior Global-only selector coverage gap has a configured hourly Main remedy. New Main prompt includes Global blob/decision fingerprint intake and current scoped authorization. The initial apparent active lease/stale last_processed belonged to local pre-release32069065; fresh remotea0ad46bb resolves both. No materially different status exists for queued exact FPIA run yet.",
+    "minimal_action": "No automation framework/code/task repair. Continue read-only actual pending run/head/attempt follow-up. On actual terminal change, common lease holder may record outcome and retire queue item without governance promotion. Do not write a checkpoint for identical in_progress read. Future Main execution completion after prompt update remains unverified."
+  }
+}

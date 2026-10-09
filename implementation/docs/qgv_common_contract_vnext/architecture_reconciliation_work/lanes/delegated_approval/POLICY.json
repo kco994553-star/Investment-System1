@@ -1,0 +1,86 @@
+{
+  "policy_id": "INVESTMENT-SYSTEM1-D3-DELEGATED-APPROVAL",
+  "version": "1.0",
+  "authority": "EXPLICIT_LATEST_USER_INSTRUCTION",
+  "submitted_at_kst": "2026-10-05T17:59:16+09:00",
+  "recorded_at_utc": "2026-10-05T09:06:01.010Z",
+  "user_instruction": "Investment-System1 — D3 Delegated Approval Policy v1.0\n기존 D1/D2/D3 체계를 D1 / D2 / D3-A / D3-R로 확장한다.\nD3-A(Design-Aligned Delegated Approval)는 사용자가 이미 승인한 제품 목표, Architecture, SSoT, Decision Register, 보호원칙과 실질적으로 같은 방향의 결정을 의미한다. 다음 조건을 모두 충족하면 별도 사용자 재승인 없이 자동 승인·실행한다.\n기존 승인된 목적과 설계 방향을 유지한다.\n새로운 투자방법론·경제적 의미·점수 의미를 만들지 않는다.\n기존 보호경계를 완화하지 않는다.\nPIT/no-lookahead/provenance/Frozen/history를 약화시키지 않는다.\n보안·Tenant·금융계정 권한을 확대하지 않는다.\n실제 매매·주문·자금이동을 발생시키지 않는다.\n기존 evidence/history를 삭제·rewrite하지 않는다.\n합리적으로 rollback 가능하다.\ndeterministic 또는 독립 검증이 가능하다.\n복수 선택지가 있으면 기존 SSoT와 가장 정합적이고 보수적인 방법을 선택한다.\nD3-A로 판정하면 CLASSIFY → AUTO-APPROVE → EXECUTE → VERIFY → DECISION RECEIPT → UPDATE SSoT → RE-EVALUATE → CONTINUE로 처리한다. 사용자에게 “승인할까요?”라고 다시 묻지 않는다.\nDecision Receipt에는 최소한 결정, 근거가 된 기존 SSoT/승인, 대안, 설계정합성, 보호경계 보존 여부, 검증 결과, rollback 가능성을 기록한다.\nD3-R(Reserved)은 사용자 승인을 유지한다. 다음은 자동승인하지 않는다.\n유료 결제 또는 새로운 유료 자원\n실제 매매·주문·자금이동\n실제 금융기관 credential 제공 또는 권한 확대\nHoldout 최초 소비 또는 재소비\nOfficial/LIVE 승격\nPIT/no-lookahead 완화\nFrozen/history/evidence의 파괴적 변경\n보안·Tenant isolation 완화\nirreversible delete/migration\nQGV/13F/백테스트/투자판단 결과의 의미를 실질적으로 변경하는 새로운 방법론\n새로운 numeric threshold/default/cutoff/weight 등 결과를 실질적으로 변경하는 수치정책\n기존 SSoT만으로 설계 정합성을 입증할 수 없는 결정\n단순히 합리적으로 보인다는 이유만으로 D3-A로 분류하지 않는다. 기존 SSoT/Decision Register/승인된 Architecture와의 정합성을 구체적인 evidence로 입증할 수 있어야 한다. 불확실하면 D3-R이다.\nD3-R이 한 lane에서 발생해도 Work 전체를 중지하지 않는다. 해당 dependent lane만 WAIT시키고 독립적인 D1/D2/D3-A를 계속 실행한다.\n기존 D3 중 이미 pending인 항목도 fresh SSoT에서 재분류한다. 기존 설계방향을 단순 구체화하는 항목이면 D3-A로 전환하여 자동 처리하고, Reserved 조건에 해당하는 것만 D3-R로 유지한다.\n이 정책은 새로운 제품·투자방법론을 승인하는 포괄 위임이 아니다. 사용자가 이미 결정한 설계 방향을 반복 승인하는 병목을 제거하기 위한 delegated authority다.\n목표: Human approval frequency ↓ / Autonomous completion ↑ / Protection boundary 유지 / Decision traceability 유지.",
+  "decision_classes": [
+    "D1",
+    "D2",
+    "D3-A",
+    "D3-R"
+  ],
+  "D3_A_all_conditions": [
+    "EXACT_APPROVED_GOAL_ARCHITECTURE_SSOT_ALIGNMENT",
+    "NO_NEW_INVESTMENT_ECONOMIC_SCORE_MEANING",
+    "NO_PROTECTION_WEAKENING",
+    "PIT_NO_LOOKAHEAD_PROVENANCE_FROZEN_HISTORY_PRESERVED",
+    "SECURITY_TENANT_FINANCIAL_PERMISSIONS_NOT_EXPANDED",
+    "NO_TRADES_ORDERS_FUNDS",
+    "NO_EVIDENCE_HISTORY_DELETE_REWRITE",
+    "REASONABLE_ROLLBACK",
+    "DETERMINISTIC_OR_INDEPENDENT_VERIFICATION",
+    "MOST_CONSERVATIVE_SSOT_ALIGNED_ALTERNATIVE"
+  ],
+  "D3_R_any_condition": [
+    "PAID_OR_NEW_PAID_RESOURCE",
+    "REAL_TRADES_ORDERS_FUNDS",
+    "REAL_FINANCIAL_CREDENTIAL_OR_PERMISSION_EXPANSION",
+    "HOLDOUT_FIRST_OR_REPEAT_CONSUMPTION",
+    "OFFICIAL_LIVE_PROMOTION",
+    "PIT_NO_LOOKAHEAD_RELAXATION",
+    "DESTRUCTIVE_FROZEN_HISTORY_EVIDENCE",
+    "SECURITY_TENANT_RELAXATION",
+    "IRREVERSIBLE_DELETE_MIGRATION",
+    "NEW_RESULT_AFFECTING_METHODOLOGY",
+    "NEW_MATERIAL_NUMERIC_POLICY",
+    "UNPROVEN_SSOT_ALIGNMENT"
+  ],
+  "uncertain_classification": "D3-R",
+  "D3_A_loop": [
+    "CLASSIFY",
+    "AUTO_APPROVE",
+    "EXECUTE",
+    "VERIFY",
+    "DECISION_RECEIPT",
+    "UPDATE_SSOT",
+    "RE_EVALUATE",
+    "CONTINUE"
+  ],
+  "receipt_required": [
+    "decision",
+    "exact_existing_authority",
+    "alternatives",
+    "design_alignment",
+    "protected_boundaries",
+    "verification",
+    "rollback"
+  ],
+  "precedence": "Latest direct user policy supersedes conflicting historical CDR-015 and old blanket D3 labels; original approved methodology and immutable history are preserved. Earlier explicit exclusions are not erased; concrete faithful subdecisions may qualify under the new delegation, while unresolved economic/numeric scope remains Reserved.",
+  "role": "INDEPENDENT_QGV_SPECIALIST_AUDITOR",
+  "write_scope": [
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/",
+    "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md"
+  ],
+  "owner_boundary": "Main integrates. Other owner branch/STATE/lease and Global are read-only. No duplicate completed acceptance.",
+  "verification_policy": {
+    "policy_id": "QGV-RISK-PROPORTIONAL-VERIFICATION-2026-10-05",
+    "version": "1.0",
+    "policy_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/verification_policy/POLICY.json",
+    "policy_sha256": "61f6391979169318ae7d75b58d4a3cde6916b24031931cdc26de67509d492c23",
+    "authority": "Explicit user instruction 2026-10-05T15:11:50+09:00",
+    "role": "INDEPENDENT_QGV_SPECIALIST_AUDITOR",
+    "default_auditors": 1,
+    "additional_specialists_when_needed": 1,
+    "completion_receipt_ref": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/verification_policy/COMPLETION_RECEIPT.json",
+    "semantic_changes": 0,
+    "disposition": "PASS",
+    "new_d3_decision_required": false
+  },
+  "wait_rule": "Only dependent D3-R lane waits; execute all independent READY D1/D2/D3-A; no busy polling.",
+  "existing_scheduler_role_preserved": true,
+  "manual_scheduler_credit": 0,
+  "result_semantic_changes": 0,
+  "production_enabled": false
+}

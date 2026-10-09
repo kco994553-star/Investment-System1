@@ -1,13 +1,21 @@
-"""Frozen Q/G weights and V candidate constraints. NEW IMPLEMENTATION.
+"""QGV Scoring Standard v1 weights and V candidate constraints.
 
 Source: QGV Analysis v1.7.6 §18.3
-Q7 remains Management Quality (C-03 OPEN vs Integrated Spec Capital Allocation).
-V production aggregate is not emitted.
+STANDARD v1 · UNCALIBRATED, user adopted 2026-10-08 (CDR040).
+Q7 is Management Quality (경영진 품질); Capital Allocation is a subordinate
+interpretation, not a different factor. C-03 is resolved by the user decision.
+Operational V uses the existing Initial Prior. Research candidates stay separate.
 """
 
 from __future__ import annotations
 
 from ..contracts.enums import CalibrationLifecycle, ProfileKind, QualityState
+from .scoring_standard import SCORING_STANDARD_STATUS
+
+
+Q_WEIGHTS_STATUS = SCORING_STANDARD_STATUS
+G_WEIGHTS_STATUS = SCORING_STANDARD_STATUS
+V_WEIGHTS_STATUS = SCORING_STANDARD_STATUS
 
 
 Q_WEIGHTS = {
@@ -17,7 +25,7 @@ Q_WEIGHTS = {
     "fcf_quality": 0.15,
     "margin_quality": 0.10,
     "financial_health": 0.10,
-    "management_quality": 0.10,  # C-03: do not rename to capital_allocation
+    "management_quality": 0.10,  # C-03 RESOLVED; Capital Allocation is subordinate.
 }
 
 G_WEIGHTS = {
@@ -62,7 +70,7 @@ def validate_v_candidate_weights(weights: dict[str, float]) -> list[str]:
     return errors
 
 
-# User-directed Initial Prior. PROVISIONAL. Not STANDARD / not CALIBRATED.
+# User-adopted Scoring Standard v1 · UNCALIBRATED. Exact Initial Prior retained.
 V_INITIAL_PRIOR = {
     "fundamental_value": 0.25,
     "reverse_dcf": 0.20,
@@ -75,10 +83,10 @@ V_INITIAL_PRIOR = {
 
 EQUAL_V_RESEARCH = {k: 1.0 / 7.0 for k in V_FACTORS}
 
-# Research-only candidates. Not production.
+# Initial Prior is the v1 operational definition; alternatives remain RESEARCH.
 V_CANDIDATES = {
     "initial_prior": {
-        "lifecycle": CalibrationLifecycle.PROVISIONAL_INITIAL_PRIOR,
+        "lifecycle": CalibrationLifecycle.STANDARD_V1_UNCALIBRATED,
         "weights": V_INITIAL_PRIOR,
     },
     "equal_research": {

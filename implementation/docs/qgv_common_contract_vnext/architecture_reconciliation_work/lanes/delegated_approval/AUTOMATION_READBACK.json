@@ -1,0 +1,35 @@
+{
+  "status": "CONFIGURATION_READBACK_PASS_NOT_EXECUTION",
+  "checks": [
+    {
+      "id": "6ac2efbd34fc8191a60dccbbe338c291",
+      "prompt_exact": true,
+      "schedule_unchanged": true,
+      "timing_mode_unchanged": true,
+      "is_enabled_unchanged": true,
+      "conversation_id_unchanged": true,
+      "default_timezone_unchanged": true,
+      "title_unchanged": true,
+      "is_enabled": true,
+      "role": "READ_ONLY_WAKE_UP_WATCHER",
+      "execution_verified": false
+    },
+    {
+      "id": "6ac31fdb7f388191be588ea61f5a2009",
+      "prompt_exact": true,
+      "schedule_unchanged": true,
+      "timing_mode_unchanged": true,
+      "is_enabled_unchanged": true,
+      "conversation_id_unchanged": true,
+      "default_timezone_unchanged": true,
+      "title_unchanged": true,
+      "is_enabled": false,
+      "role": "PAUSED_EXECUTOR",
+      "execution_verified": false
+    }
+  ],
+  "actual_hops_credited": 0,
+  "active_role": "READ_ONLY_WAKE_UP_WATCHER",
+  "executor": "PAUSED_PRESERVED_LATEST_STATE",
+  "failure_history": []
+}

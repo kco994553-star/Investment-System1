@@ -1,0 +1,641 @@
+{
+  "artifact_kind": "INACTIVE_G_SOURCE_PINNED_METHOD_REPLAY_MANIFEST",
+  "new_method_registry": false,
+  "new_requiredness_roles": 0,
+  "records": [
+    {
+      "applicability_truth": null,
+      "current_runtime_applicability": "factor_applicable returns true for all G in GENERAL_CORPORATE/FINANCIAL; observed bool is not authority",
+      "factor_id": "next_3_5y_growth",
+      "factor_ref": {
+        "id": "G:next_3_5y_growth",
+        "locator": "implementation/src/investment_system/qgv/factors.py",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "source_version": "4fb08a05728d83519b72a2bd995669f0cb06003a"
+      },
+      "fallback_method": null,
+      "identity_authority": "AUDIT_ONLY_SOURCE_ANCHOR_NOT_AN_APPROVED_RUNTIME_METHOD_REGISTRY",
+      "input_contract_ref": {
+        "path": "implementation/src/investment_system/contracts/raw.py",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a"
+      },
+      "input_fields": [
+        "revenue",
+        "revenue_prev"
+      ],
+      "input_period": "latest/prior selected annual period; no forward or 3–5Y series input",
+      "input_source_map": {
+        "revenue": {
+          "basis": "latest accepted annual-duration vintage; flow",
+          "concepts": [
+            [
+              "us-gaap",
+              "Revenues",
+              "USD"
+            ],
+            [
+              "us-gaap",
+              "RevenueFromContractWithCustomerExcludingAssessedTax",
+              "USD"
+            ],
+            [
+              "us-gaap",
+              "RevenueFromContractWithCustomerExcludingAssessedTax",
+              "EUR"
+            ],
+            [
+              "ifrs-full",
+              "Revenue",
+              "EUR"
+            ],
+            [
+              "ifrs-full",
+              "Revenue",
+              "USD"
+            ]
+          ],
+          "producer": "sec_companyfacts.facts_to_raw select_across_concepts(REVENUE_CONCEPTS)"
+        },
+        "revenue_prev": {
+          "basis": "other fy/fp/end group; one-year adjacency not guaranteed",
+          "concepts": "same concept/unit selected for revenue",
+          "producer": "sec_companyfacts.facts_to_raw select_previous for selected revenue concept/unit"
+        }
+      },
+      "method_id": null,
+      "method_version": null,
+      "normalization": {
+        "authority": "EXISTING_PROVISIONAL_CURRENT_SOURCE_ONLY",
+        "expression": "_growth_to_score(_yoy(revenue, revenue_prev))",
+        "new_numeric_policy": null
+      },
+      "observed_method_id": "observed:revenue-yoy-linearclip",
+      "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "pit_fields": {
+        "as_of": "QGVSnapshot.as_of",
+        "available_at": "raw.stamp.available_at",
+        "direct_analyze_raw_admission": "no require_available call; stamps/finite values alone do not authenticate PIT",
+        "per_input_vintage": "not in RawFundamentals; audit-only SEC row sidecars below",
+        "period_end": "raw.stamp.period_end optional",
+        "period_start": "raw.stamp.period_start optional",
+        "published_at": "raw.stamp.published_at"
+      },
+      "requiredness": null,
+      "result_lineage": {
+        "factor_observations_in_snapshot": false,
+        "historical_method_attribution": "UNRESOLVED unless exact archived source/input proof exists",
+        "legacy_observation": "factor_id,raw_value,score_0_100,quality,stamp_id,notes; raw_value already normalized",
+        "method_ref_in_legacy_observation": false,
+        "sidecar_bind": "immutable payload hash + snapshot/result ref + method source anchor + input/source hashes"
+      },
+      "runtime_enabled": false,
+      "source_code_ref": {
+        "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "path": "implementation/src/investment_system/qgv/raw_map.py",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac"
+      },
+      "source_lineage": {
+        "raw_container": "one shared DataStamp; raw selected per-field FactVintage rows not serialized",
+        "raw_fixture_ref": "G_SYNTHETIC_RAW_FIXTURES.json",
+        "replay_cases_ref": "G_LINEAGE_REPLAY.json"
+      },
+      "unresolved_semantics": "G 3–5Y conceptual/label intent unresolved against executed last-YoY; code explicitly calls it proxy",
+      "verdict": "INTERIM_PROXY"
+    },
+    {
+      "applicability_truth": null,
+      "current_runtime_applicability": "factor_applicable returns true for all G in GENERAL_CORPORATE/FINANCIAL; observed bool is not authority",
+      "factor_id": "growth_efficiency",
+      "factor_ref": {
+        "id": "G:growth_efficiency",
+        "locator": "implementation/src/investment_system/qgv/factors.py",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "source_version": "4fb08a05728d83519b72a2bd995669f0cb06003a"
+      },
+      "fallback_method": null,
+      "identity_authority": "AUDIT_ONLY_SOURCE_ANCHOR_NOT_AN_APPROVED_RUNTIME_METHOD_REGISTRY",
+      "input_contract_ref": {
+        "path": "implementation/src/investment_system/contracts/raw.py",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a"
+      },
+      "input_fields": [
+        "revenue",
+        "revenue_prev",
+        "invested_capital"
+      ],
+      "input_period": "revenue current/prior plus current invested capital; selected field periods not enforced",
+      "input_source_map": {
+        "invested_capital": {
+          "basis": "selected latest balance; equity-only branch possible; no matched fiscal date enforced",
+          "concepts": "StockholdersEquity or StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest, LongTermDebt or LongTermDebtNoncurrent (USD/EUR)",
+          "producer": "sec_companyfacts.facts_to_raw equity+debt if both else equity"
+        },
+        "revenue": {
+          "basis": "latest accepted annual-duration vintage; flow",
+          "concepts": [
+            [
+              "us-gaap",
+              "Revenues",
+              "USD"
+            ],
+            [
+              "us-gaap",
+              "RevenueFromContractWithCustomerExcludingAssessedTax",
+              "USD"
+            ],
+            [
+              "us-gaap",
+              "RevenueFromContractWithCustomerExcludingAssessedTax",
+              "EUR"
+            ],
+            [
+              "ifrs-full",
+              "Revenue",
+              "EUR"
+            ],
+            [
+              "ifrs-full",
+              "Revenue",
+              "USD"
+            ]
+          ],
+          "producer": "sec_companyfacts.facts_to_raw select_across_concepts(REVENUE_CONCEPTS)"
+        },
+        "revenue_prev": {
+          "basis": "other fy/fp/end group; one-year adjacency not guaranteed",
+          "concepts": "same concept/unit selected for revenue",
+          "producer": "sec_companyfacts.facts_to_raw select_previous for selected revenue concept/unit"
+        }
+      },
+      "method_id": null,
+      "method_version": null,
+      "normalization": {
+        "authority": "EXISTING_PROVISIONAL_CURRENT_SOURCE_ONLY",
+        "expression": "clip(50 + revenue_yoy / max(invested_capital / revenue, 0.05) * 20)",
+        "new_numeric_policy": null
+      },
+      "observed_method_id": "observed:revenue-yoy-capital-intensity-clip",
+      "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "pit_fields": {
+        "as_of": "QGVSnapshot.as_of",
+        "available_at": "raw.stamp.available_at",
+        "direct_analyze_raw_admission": "no require_available call; stamps/finite values alone do not authenticate PIT",
+        "per_input_vintage": "not in RawFundamentals; audit-only SEC row sidecars below",
+        "period_end": "raw.stamp.period_end optional",
+        "period_start": "raw.stamp.period_start optional",
+        "published_at": "raw.stamp.published_at"
+      },
+      "requiredness": null,
+      "result_lineage": {
+        "factor_observations_in_snapshot": false,
+        "historical_method_attribution": "UNRESOLVED unless exact archived source/input proof exists",
+        "legacy_observation": "factor_id,raw_value,score_0_100,quality,stamp_id,notes; raw_value already normalized",
+        "method_ref_in_legacy_observation": false,
+        "sidecar_bind": "immutable payload hash + snapshot/result ref + method source anchor + input/source hashes"
+      },
+      "runtime_enabled": false,
+      "source_code_ref": {
+        "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "path": "implementation/src/investment_system/qgv/raw_map.py",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac"
+      },
+      "source_lineage": {
+        "raw_container": "one shared DataStamp; raw selected per-field FactVintage rows not serialized",
+        "raw_fixture_ref": "G_SYNTHETIC_RAW_FIXTURES.json",
+        "replay_cases_ref": "G_LINEAGE_REPLAY.json"
+      },
+      "unresolved_semantics": "capital intensity denominator uses balance/flow values; accounting basis and period pairing unresolved",
+      "verdict": "MORE_EVIDENCE_REQUIRED"
+    },
+    {
+      "applicability_truth": null,
+      "current_runtime_applicability": "factor_applicable returns true for all G in GENERAL_CORPORATE/FINANCIAL; observed bool is not authority",
+      "factor_id": "revenue_growth",
+      "factor_ref": {
+        "id": "G:revenue_growth",
+        "locator": "implementation/src/investment_system/qgv/factors.py",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "source_version": "4fb08a05728d83519b72a2bd995669f0cb06003a"
+      },
+      "fallback_method": null,
+      "identity_authority": "AUDIT_ONLY_SOURCE_ANCHOR_NOT_AN_APPROVED_RUNTIME_METHOD_REGISTRY",
+      "input_contract_ref": {
+        "path": "implementation/src/investment_system/contracts/raw.py",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a"
+      },
+      "input_fields": [
+        "revenue",
+        "revenue_prev"
+      ],
+      "input_period": "latest/prior selected annual periods, not necessarily adjacent annual periods",
+      "input_source_map": {
+        "revenue": {
+          "basis": "latest accepted annual-duration vintage; flow",
+          "concepts": [
+            [
+              "us-gaap",
+              "Revenues",
+              "USD"
+            ],
+            [
+              "us-gaap",
+              "RevenueFromContractWithCustomerExcludingAssessedTax",
+              "USD"
+            ],
+            [
+              "us-gaap",
+              "RevenueFromContractWithCustomerExcludingAssessedTax",
+              "EUR"
+            ],
+            [
+              "ifrs-full",
+              "Revenue",
+              "EUR"
+            ],
+            [
+              "ifrs-full",
+              "Revenue",
+              "USD"
+            ]
+          ],
+          "producer": "sec_companyfacts.facts_to_raw select_across_concepts(REVENUE_CONCEPTS)"
+        },
+        "revenue_prev": {
+          "basis": "other fy/fp/end group; one-year adjacency not guaranteed",
+          "concepts": "same concept/unit selected for revenue",
+          "producer": "sec_companyfacts.facts_to_raw select_previous for selected revenue concept/unit"
+        }
+      },
+      "method_id": null,
+      "method_version": null,
+      "normalization": {
+        "authority": "EXISTING_PROVISIONAL_CURRENT_SOURCE_ONLY",
+        "expression": "_growth_to_score(_yoy(revenue, revenue_prev))",
+        "new_numeric_policy": null
+      },
+      "observed_method_id": "observed:revenue-yoy-linearclip",
+      "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "pit_fields": {
+        "as_of": "QGVSnapshot.as_of",
+        "available_at": "raw.stamp.available_at",
+        "direct_analyze_raw_admission": "no require_available call; stamps/finite values alone do not authenticate PIT",
+        "per_input_vintage": "not in RawFundamentals; audit-only SEC row sidecars below",
+        "period_end": "raw.stamp.period_end optional",
+        "period_start": "raw.stamp.period_start optional",
+        "published_at": "raw.stamp.published_at"
+      },
+      "requiredness": null,
+      "result_lineage": {
+        "factor_observations_in_snapshot": false,
+        "historical_method_attribution": "UNRESOLVED unless exact archived source/input proof exists",
+        "legacy_observation": "factor_id,raw_value,score_0_100,quality,stamp_id,notes; raw_value already normalized",
+        "method_ref_in_legacy_observation": false,
+        "sidecar_bind": "immutable payload hash + snapshot/result ref + method source anchor + input/source hashes"
+      },
+      "runtime_enabled": false,
+      "source_code_ref": {
+        "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "path": "implementation/src/investment_system/qgv/raw_map.py",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac"
+      },
+      "source_lineage": {
+        "raw_container": "one shared DataStamp; raw selected per-field FactVintage rows not serialized",
+        "raw_fixture_ref": "G_SYNTHETIC_RAW_FIXTURES.json",
+        "replay_cases_ref": "G_LINEAGE_REPLAY.json"
+      },
+      "unresolved_semantics": "execution is reproducible; YoY claim needs adjacent, matched period/unit evidence",
+      "verdict": "MORE_EVIDENCE_REQUIRED"
+    },
+    {
+      "applicability_truth": null,
+      "current_runtime_applicability": "factor_applicable returns true for all G in GENERAL_CORPORATE/FINANCIAL; observed bool is not authority",
+      "factor_id": "eps_fcf_per_share_growth",
+      "factor_ref": {
+        "id": "G:eps_fcf_per_share_growth",
+        "locator": "implementation/src/investment_system/qgv/factors.py",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "source_version": "4fb08a05728d83519b72a2bd995669f0cb06003a"
+      },
+      "fallback_method": "observed:current-fcf-prior-revenue-minus-one-linearclip",
+      "identity_authority": "AUDIT_ONLY_SOURCE_ANCHOR_NOT_AN_APPROVED_RUNTIME_METHOD_REGISTRY",
+      "input_contract_ref": {
+        "path": "implementation/src/investment_system/contracts/raw.py",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a"
+      },
+      "input_fields": [
+        "eps",
+        "eps_prev",
+        "fcf",
+        "revenue_prev"
+      ],
+      "input_period": "EPS latest/prior; fallback current FCF divided by prior revenue; no prior FCF/shares",
+      "input_source_map": {
+        "eps": {
+          "basis": "latest EPS series; diluted/basic and share basis may differ by selected concept",
+          "concepts": [
+            [
+              "us-gaap",
+              "EarningsPerShareDiluted",
+              "USD/shares"
+            ],
+            [
+              "us-gaap",
+              "EarningsPerShareDiluted",
+              "EUR/shares"
+            ],
+            [
+              "us-gaap",
+              "EarningsPerShareDiluted",
+              "USD-per-shares"
+            ],
+            [
+              "us-gaap",
+              "EarningsPerShareBasic",
+              "USD/shares"
+            ],
+            [
+              "us-gaap",
+              "EarningsPerShareBasic",
+              "EUR/shares"
+            ],
+            [
+              "us-gaap",
+              "EarningsPerShareDiluted",
+              "pure"
+            ]
+          ],
+          "producer": "sec_companyfacts.facts_to_raw pick_series"
+        },
+        "eps_prev": {
+          "basis": "previous distinct vintage group; corporate-action/adjacency not guaranteed",
+          "concepts": "selected EPS concept/unit",
+          "producer": "sec_companyfacts.facts_to_raw pick_series select_previous"
+        },
+        "fcf": {
+          "basis": "flow; selected fcf_prev is discarded; current raw shares not used in G fallback",
+          "concepts": [
+            [
+              "us-gaap",
+              "FreeCashFlow",
+              "USD/EUR"
+            ],
+            [
+              "us-gaap",
+              "NetCashProvidedByUsedInOperatingActivities",
+              "USD/EUR"
+            ],
+            [
+              "us-gaap",
+              "PaymentsToAcquirePropertyPlantAndEquipment",
+              "USD/EUR"
+            ]
+          ],
+          "producer": "sec_companyfacts.facts_to_raw pick_series(FreeCashFlow), otherwise current CFO-abs(capex)"
+        },
+        "revenue_prev": {
+          "basis": "other fy/fp/end group; one-year adjacency not guaranteed",
+          "concepts": "same concept/unit selected for revenue",
+          "producer": "sec_companyfacts.facts_to_raw select_previous for selected revenue concept/unit"
+        }
+      },
+      "method_id": null,
+      "method_version": null,
+      "normalization": {
+        "authority": "EXISTING_PROVISIONAL_CURRENT_SOURCE_ONLY",
+        "expression": "_growth_to_score(eps_yoy if eps_yoy is not None else _yoy(fcf, revenue_prev))",
+        "new_numeric_policy": null
+      },
+      "observed_method_id": "observed:eps-yoy-or-cross-measure-fcf-prior-revenue-linearclip",
+      "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "pit_fields": {
+        "as_of": "QGVSnapshot.as_of",
+        "available_at": "raw.stamp.available_at",
+        "direct_analyze_raw_admission": "no require_available call; stamps/finite values alone do not authenticate PIT",
+        "per_input_vintage": "not in RawFundamentals; audit-only SEC row sidecars below",
+        "period_end": "raw.stamp.period_end optional",
+        "period_start": "raw.stamp.period_start optional",
+        "published_at": "raw.stamp.published_at"
+      },
+      "requiredness": null,
+      "result_lineage": {
+        "factor_observations_in_snapshot": false,
+        "historical_method_attribution": "UNRESOLVED unless exact archived source/input proof exists",
+        "legacy_observation": "factor_id,raw_value,score_0_100,quality,stamp_id,notes; raw_value already normalized",
+        "method_ref_in_legacy_observation": false,
+        "sidecar_bind": "immutable payload hash + snapshot/result ref + method source anchor + input/source hashes"
+      },
+      "runtime_enabled": false,
+      "source_code_ref": {
+        "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "path": "implementation/src/investment_system/qgv/raw_map.py",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac"
+      },
+      "source_lineage": {
+        "raw_container": "one shared DataStamp; raw selected per-field FactVintage rows not serialized",
+        "raw_fixture_ref": "G_SYNTHETIC_RAW_FIXTURES.json",
+        "replay_cases_ref": "G_LINEAGE_REPLAY.json"
+      },
+      "unresolved_semantics": "EPS branch is EPS ratio-minus-one; fallback compares distinct measures and cannot establish FCF/per-share growth",
+      "verdict": "METHOD_MISMATCH"
+    },
+    {
+      "applicability_truth": null,
+      "current_runtime_applicability": "factor_applicable returns true for all G in GENERAL_CORPORATE/FINANCIAL; observed bool is not authority",
+      "factor_id": "growth_durability",
+      "factor_ref": {
+        "id": "G:growth_durability",
+        "locator": "implementation/src/investment_system/qgv/factors.py",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "source_version": "4fb08a05728d83519b72a2bd995669f0cb06003a"
+      },
+      "fallback_method": null,
+      "identity_authority": "AUDIT_ONLY_SOURCE_ANCHOR_NOT_AN_APPROVED_RUNTIME_METHOD_REGISTRY",
+      "input_contract_ref": {
+        "path": "implementation/src/investment_system/contracts/raw.py",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a"
+      },
+      "input_fields": [
+        "growth_durability_rubric"
+      ],
+      "input_period": "no method-specific period/horizon in raw container",
+      "input_source_map": {
+        "growth_durability_rubric": {
+          "basis": "rubric method/version, scorer and target period not represented",
+          "concepts": null,
+          "producer": "direct RawFundamentals supplied value; SEC adapter does not fill"
+        }
+      },
+      "method_id": null,
+      "method_version": null,
+      "normalization": {
+        "authority": "EXISTING_PROVISIONAL_CURRENT_SOURCE_ONLY",
+        "expression": "growth_durability_rubric directly assigned",
+        "new_numeric_policy": null
+      },
+      "observed_method_id": "observed:precomputed-growth-durability-rubric-passthrough",
+      "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "pit_fields": {
+        "as_of": "QGVSnapshot.as_of",
+        "available_at": "raw.stamp.available_at",
+        "direct_analyze_raw_admission": "no require_available call; stamps/finite values alone do not authenticate PIT",
+        "per_input_vintage": "not in RawFundamentals; audit-only SEC row sidecars below",
+        "period_end": "raw.stamp.period_end optional",
+        "period_start": "raw.stamp.period_start optional",
+        "published_at": "raw.stamp.published_at"
+      },
+      "requiredness": null,
+      "result_lineage": {
+        "factor_observations_in_snapshot": false,
+        "historical_method_attribution": "UNRESOLVED unless exact archived source/input proof exists",
+        "legacy_observation": "factor_id,raw_value,score_0_100,quality,stamp_id,notes; raw_value already normalized",
+        "method_ref_in_legacy_observation": false,
+        "sidecar_bind": "immutable payload hash + snapshot/result ref + method source anchor + input/source hashes"
+      },
+      "runtime_enabled": false,
+      "source_code_ref": {
+        "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "path": "implementation/src/investment_system/qgv/raw_map.py",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac"
+      },
+      "source_lineage": {
+        "raw_container": "one shared DataStamp; raw selected per-field FactVintage rows not serialized",
+        "raw_fixture_ref": "G_SYNTHETIC_RAW_FIXTURES.json",
+        "replay_cases_ref": "G_LINEAGE_REPLAY.json"
+      },
+      "unresolved_semantics": "direct supplied rubric score; no rubric/input/time authority in this mapper",
+      "verdict": "MORE_EVIDENCE_REQUIRED"
+    },
+    {
+      "applicability_truth": null,
+      "current_runtime_applicability": "factor_applicable returns true for all G in GENERAL_CORPORATE/FINANCIAL; observed bool is not authority",
+      "factor_id": "excess_growth_vs_industry",
+      "factor_ref": {
+        "id": "G:excess_growth_vs_industry",
+        "locator": "implementation/src/investment_system/qgv/factors.py",
+        "sha256": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+        "source_version": "4fb08a05728d83519b72a2bd995669f0cb06003a"
+      },
+      "fallback_method": null,
+      "identity_authority": "AUDIT_ONLY_SOURCE_ANCHOR_NOT_AN_APPROVED_RUNTIME_METHOD_REGISTRY",
+      "input_contract_ref": {
+        "path": "implementation/src/investment_system/contracts/raw.py",
+        "sha256": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a"
+      },
+      "input_fields": [
+        "revenue",
+        "revenue_prev",
+        "industry_revenue_growth"
+      ],
+      "input_period": "company current/prior; industry period/universe/unit unspecified",
+      "input_source_map": {
+        "industry_revenue_growth": {
+          "basis": "industry universe, weighted measure, period, revisions and availability not represented",
+          "concepts": null,
+          "producer": "direct RawFundamentals supplied value; SEC adapter does not fill"
+        },
+        "revenue": {
+          "basis": "latest accepted annual-duration vintage; flow",
+          "concepts": [
+            [
+              "us-gaap",
+              "Revenues",
+              "USD"
+            ],
+            [
+              "us-gaap",
+              "RevenueFromContractWithCustomerExcludingAssessedTax",
+              "USD"
+            ],
+            [
+              "us-gaap",
+              "RevenueFromContractWithCustomerExcludingAssessedTax",
+              "EUR"
+            ],
+            [
+              "ifrs-full",
+              "Revenue",
+              "EUR"
+            ],
+            [
+              "ifrs-full",
+              "Revenue",
+              "USD"
+            ]
+          ],
+          "producer": "sec_companyfacts.facts_to_raw select_across_concepts(REVENUE_CONCEPTS)"
+        },
+        "revenue_prev": {
+          "basis": "other fy/fp/end group; one-year adjacency not guaranteed",
+          "concepts": "same concept/unit selected for revenue",
+          "producer": "sec_companyfacts.facts_to_raw select_previous for selected revenue concept/unit"
+        }
+      },
+      "method_id": null,
+      "method_version": null,
+      "normalization": {
+        "authority": "EXISTING_PROVISIONAL_CURRENT_SOURCE_ONLY",
+        "expression": "clip(50 + (revenue_yoy - industry_revenue_growth) / 0.15 * 50)",
+        "new_numeric_policy": null
+      },
+      "observed_method_id": "observed:revenue-yoy-industry-spread-linearclip",
+      "observed_method_version": "audit-source-sha256:79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+      "pit_fields": {
+        "as_of": "QGVSnapshot.as_of",
+        "available_at": "raw.stamp.available_at",
+        "direct_analyze_raw_admission": "no require_available call; stamps/finite values alone do not authenticate PIT",
+        "per_input_vintage": "not in RawFundamentals; audit-only SEC row sidecars below",
+        "period_end": "raw.stamp.period_end optional",
+        "period_start": "raw.stamp.period_start optional",
+        "published_at": "raw.stamp.published_at"
+      },
+      "requiredness": null,
+      "result_lineage": {
+        "factor_observations_in_snapshot": false,
+        "historical_method_attribution": "UNRESOLVED unless exact archived source/input proof exists",
+        "legacy_observation": "factor_id,raw_value,score_0_100,quality,stamp_id,notes; raw_value already normalized",
+        "method_ref_in_legacy_observation": false,
+        "sidecar_bind": "immutable payload hash + snapshot/result ref + method source anchor + input/source hashes"
+      },
+      "runtime_enabled": false,
+      "source_code_ref": {
+        "head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+        "path": "implementation/src/investment_system/qgv/raw_map.py",
+        "sha256": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac"
+      },
+      "source_lineage": {
+        "raw_container": "one shared DataStamp; raw selected per-field FactVintage rows not serialized",
+        "raw_fixture_ref": "G_SYNTHETIC_RAW_FIXTURES.json",
+        "replay_cases_ref": "G_LINEAGE_REPLAY.json"
+      },
+      "unresolved_semantics": "company/industry comparable period and universe lineage not serialized",
+      "verdict": "MORE_EVIDENCE_REQUIRED"
+    }
+  ],
+  "reused_prior_probe": {
+    "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/g_profile_checks.json",
+    "rerun_prior_counterexamples": false,
+    "sha256": "00bb57fb13ee92240a5b98c01740301665ae8840a24eddfa207a6be0702dcd7c"
+  },
+  "runtime_enabled": false,
+  "source_owner_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "source_sha256": {
+    "implementation/src/investment_system/contracts/models.py": "5313bbd41224da718580ba529f622d091787d33d62d70c6d5a6bc3073d6ac506",
+    "implementation/src/investment_system/contracts/raw.py": "52b3606eeb8c45016661f949b9af78f7b3f9532987842e2c3a8dc905dd89253a",
+    "implementation/src/investment_system/ingestion/raw_store.py": "c4cfdbc314f8d670aee7d0a94f261177967ad3fcdfb36f224111af2f716ebb0e",
+    "implementation/src/investment_system/ingestion/replay.py": "cc48fd32461f170acd6b0bf339752a35076ddbcf5c0ad535afc15c656d606b3c",
+    "implementation/src/investment_system/providers/sec_companyfacts.py": "fe236b817858b9698fb2e74d0fe460a46de2e83000134f68ca38f3ab60ee055a",
+    "implementation/src/investment_system/providers/sec_vintage.py": "e0aecc5c02bafa9e9543b03af8fb6a9c961df1f40217b3099829b1934f1c42fd",
+    "implementation/src/investment_system/qgv/analysis.py": "bfd4e1310dde9f908f60a8a2030cb9928f4267f73180c3eb5b12bc7947e3de88",
+    "implementation/src/investment_system/qgv/book.py": "cbc334cf10e089792c1a119536109de2fe3cafc0e492e1e77676fd0b8bf7cf84",
+    "implementation/src/investment_system/qgv/factors.py": "0df21503c383e3ff79a91bf143c003a8e131718918eb1fe57abecea7e6781a6e",
+    "implementation/src/investment_system/qgv/g_horizon.py": "c5241f9178aba9103e663b267fd58818face6cf3c5721b21ee53c8969f091ba2",
+    "implementation/src/investment_system/qgv/pipeline.py": "00e95ad07d827988f3191fbd2f2fc343133f640a12a58168d20106d227a11ef4",
+    "implementation/src/investment_system/qgv/quarterly_series.py": "1666839c6865b1187cff068bc7881f4e9658457f43b79ca7ded12fa98d89f5cb",
+    "implementation/src/investment_system/qgv/raw_map.py": "79995e768babddf8f7d85e0d10a4a9bb3f7571138520975e569670adea1ff0ac",
+    "implementation/src/investment_system/qgv/scoring.py": "1aa4802a65175210be802c7d1d08e17e8af5cfa40a9b6faaa014447354d9e629",
+    "implementation/src/investment_system/qgv/track_record.py": "53710f90fd8dd0b3eb1db5cf8fc86979a6cd53215e8f7a542a60c14c0269e4a3",
+    "implementation/src/investment_system/universe/events.py": "ca56c17ce60a918bbc8c27b57ddb1eed5ca4651d6d80bf4db095ab3c61179f33",
+    "implementation/src/investment_system/validation/file_store.py": "0f4a0cafe6ae466e91fb07e8e300cf562f484fe3ae5e33cdc72366fe700ca751",
+    "implementation/src/investment_system/validation/records.py": "98034bec6eb5a4f7b17074c366e9961ecf69f218bca63c4a20d72f93b8238995"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "schema_version": "qgv-gv-lanes-intake-v1",
+  "execution_kind": "MANUAL_WORK_D1_D2",
+  "repository": "kco994553-star/Investment-System1",
+  "priority": [
+    "Actual GitHub",
+    "explicit approval/evidence",
+    "latest scoped Handoff",
+    "historical prompt"
+  ],
+  "source_owner_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "review_evidence_parent": "df5c70447dfa83805395b7cbbcacbc2024e77f3d",
+  "scope_claim_head": "17a442e7b247e9426e6bc1ee8e91e3cc2f541505",
+  "canonical_head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "pr44": {
+    "number": 44,
+    "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "draft": true,
+    "state": "open",
+    "touched": false
+  },
+  "pr42": {
+    "number": 42,
+    "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+    "draft": true,
+    "state": "open",
+    "full_integration_acceptance": "NOT_RUN"
+  },
+  "global_intake_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+  "global_refreshed_head": "af264713b99471fb554e06e8d321f5039be47b47",
+  "material_global_delta": {
+    "decision": "CDR-018",
+    "effect": "Main coordinator/writer transfer only; QGV production semantics remain scoped and D3",
+    "global_written": false,
+    "latest_configuration_delta": "6d029→af264 modifies only Main state/own routing lease and automation configuration; no QGV semantics approval"
+  },
+  "authority": {
+    "M1_M5": "APPROVED_PRINCIPLES_ONLY",
+    "B4_B7": "USER_APPROVED_PRINCIPLES_ONLY; owner remote delivery still active",
+    "B1": "MORE_EVIDENCE_REQUIRED",
+    "B2_B3_B5_B6": "RECOMMENDATIONS_NOT_APPROVED",
+    "this_manual_work": "explicit current user instruction controls exact D1/D2 scope and D3 exclusions"
+  },
+  "owner_lease": {
+    "token": "qgv-b47-muupb538",
+    "owner": "manual-B4-B7-explicit-user-approval",
+    "input_owner_head": "36b6b1840fe4bd22d7bb310407e2cea4050e0c2d",
+    "task": "approved-identity-invariants-and-admission-consolidation",
+    "claimed_at_kst": "2026-10-05T12:39:35.838071+09:00",
+    "expiry": null,
+    "mutated": false
+  },
+  "own_scope": "QGV_GV_EVIDENCE_LANES_ONLY",
+  "lease_token": "qgv-gv-lanes-ce04703e5823",
+  "scheduler": {
+    "actual_hops": 0,
+    "expected_hops": 2,
+    "status": "UNVERIFIED",
+    "manual_hops_credited": 0,
+    "accepted_canary_paths_in_fresh_owner_tree": [],
+    "existing_configuration": [
+      {
+        "id": "6ac31fdb7f388191be588ea61f5a2009",
+        "title": "QGV 재감사 자동진행",
+        "is_enabled": true,
+        "updated_at": "2026-10-05T04:14:19.998721+00:00",
+        "schedule": "BEGIN:VEVENT\nDTSTART:20261005T035711Z\nRRULE:FREQ=HOURLY\nEND:VEVENT"
+      },
+      {
+        "id": "6ac2efbd34fc8191a60dccbbe338c291",
+        "title": "QGV CI·State 후속 실행",
+        "is_enabled": true,
+        "updated_at": "2026-10-05T03:46:44.911840+00:00",
+        "schedule": "BEGIN:VEVENT\nDTSTART:20261005T003153Z\nRRULE:FREQ=HOURLY\nEND:VEVENT"
+      },
+      {
+        "id": "6ac2f22087288191abd144fb4a7655f8",
+        "title": "QGV Work 자동 재개",
+        "is_enabled": false,
+        "updated_at": "2026-10-05T03:56:41.341858+00:00",
+        "schedule": "BEGIN:VEVENT\nX-UNSCHEDULED:1\nEND:VEVENT"
+      }
+    ],
+    "changed_this_work": false
+  },
+  "production_semantics_changed": false,
+  "new_numeric_policy": false,
+  "holdout": "UNCONSUMED",
+  "canonical_merge": false
+}

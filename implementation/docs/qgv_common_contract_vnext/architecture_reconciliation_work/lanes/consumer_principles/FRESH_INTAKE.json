@@ -1,0 +1,37 @@
+{
+  "heads": {
+    "review": "16f58f20a29516e45e202aee7d3b27b8a1378d5c",
+    "owner": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+    "global": "19a1c3a1470cd974983fd489760516ee247a40b4",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "package_git_blob": "ab1ec644610ab3536f21fa8093bc4cc338c4431a",
+  "scope": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work",
+  "recorded_at_utc": "2026-10-05T08:09:38.735Z",
+  "lookup_failure_history": [
+    {
+      "lookup": "implementation/docs/coordination/GLOBAL_HANDOFF.md",
+      "outcome": "404",
+      "repair": "Resolve actual path from fresh Global tree"
+    }
+  ],
+  "own_claim_head": "ebd7ca3d476767af9ff0c92f89cfd132a570c2b3",
+  "global_handoff_path": "implementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md",
+  "global_handoff_sha256": "8f42bcd9be26ec9fcfbf0af883f5ae2005acb04369ab33caf86292b867136a99",
+  "owner_state_sha256": "4c5f9448f905d636434fe043a58c721061bf0aa1e1320afb22610e3f953938df",
+  "owner_lease_changed": false,
+  "failure_history": [
+    {
+      "action": "Initial Global path lookup",
+      "result": "404",
+      "class": "REPLAN",
+      "repair": "Resolved actual path from authenticated nontruncated Global tree"
+    },
+    {
+      "action": "Local commit identity from normalized API date +0000",
+      "result": "SHA_MISMATCH",
+      "class": "REPAIR",
+      "repair": "Actual original author/committer timezone +0900 recovered; exact API/local commit SHA verified; no branch/history rewrite"
+    }
+  ]
+}

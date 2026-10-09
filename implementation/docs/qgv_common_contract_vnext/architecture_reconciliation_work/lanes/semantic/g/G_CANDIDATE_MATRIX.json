@@ -1,0 +1,642 @@
+{
+  "B1": "MORE_EVIDENCE_REQUIRED",
+  "approval_ref": {
+    "approval_id": "QGV-G1-G2-SEMANTICS-2026-10-05",
+    "artifact": "lanes/semantic/root/approval.json",
+    "authenticated_remote_commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+    "sha256": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c",
+    "status": "APPROVED_SEMANTIC_CONTRACT_ONLY"
+  },
+  "approved_semantics": {
+    "G1": {
+      "economic_target": "LONG_HORIZON_REALIZED_GROWTH",
+      "factor_identity_policy": "Preserve existing next_3_5y_growth identity; LONG_HORIZON_GROWTH is the approved meaning, not an authorized production rename",
+      "legacy_revenue_yoy": "LEGACY / INTERIM_PROXY",
+      "meaning": "Magnitude and persistence of actual observed enterprise growth over multiple historical periods",
+      "semantic_equivalence_to_3_5y_authoritative_method": false,
+      "status": "APPROVED",
+      "user_text": "장기 실현 성장(Long-horizon realized growth)"
+    },
+    "G2": {
+      "alternative_requires": "Semantic equivalence evidence or an explicitly approved alternative method",
+      "eps_growth_semantic_equivalence": false,
+      "future_families_authorized_for_comparison_only": [
+        "FACTOR_UNAVAILABLE",
+        "ECONOMICALLY_COMPARABLE_PER_SHARE_GROWTH",
+        "SEPARATE_CASH_FLOW_GROWTH_METHOD",
+        "CONDITIONAL_APPLICABILITY"
+      ],
+      "legacy_classification": "LEGACY METHOD / METHOD_MISMATCH",
+      "legacy_expression": "FCF / prior revenue - 1",
+      "principle": "NO_AUTOMATIC_CROSS_METRIC_SUBSTITUTION_WITHOUT_SEMANTIC_AUTHORITY",
+      "status": "APPROVED",
+      "user_text": "EPS가 unavailable이라는 이유만으로 경제적 의미가 다른 metric을 자동 substitute하지 않는다."
+    }
+  },
+  "artifact_kind": "INACTIVE_G_METHOD_CANDIDATE_MATRIX",
+  "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+  "candidate_count": 8,
+  "candidates": [
+    {
+      "approved_production_formula": null,
+      "candidate_id": "G1-LEGACY",
+      "consumer_migration": "BLOCKED_BY_UNAPPROVED_RESULT_AND_CONSUMER_ADMISSION",
+      "decision": "G1",
+      "disposition_for_new_economic_target": "REJECT_AS_AUTHORITATIVE_LONG_HORIZON_METHOD",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/records/0",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_LINEAGE_REPLAY.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/persisted_historical_sample",
+          "sha256": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3"
+        }
+      ],
+      "existing_normalization_ref": "Frozen legacy source expression only; no candidate adoption",
+      "factor_id": "next_3_5y_growth",
+      "family": "Legacy latest-revenue-YoY proxy",
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "method_id": null,
+      "method_version": null,
+      "new_requiredness": null,
+      "numeric_policy": null,
+      "observed_legacy_expression": "_growth_to_score(_yoy(revenue, revenue_prev))",
+      "observed_legacy_method_source_id": "observed:revenue-yoy-linearclip",
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "production_eligibility": "NOT_AUTHORIZED",
+      "rationale": "Actual executed branch is preserved literal evidence; one pair does not establish long-horizon realized magnitude and persistence.",
+      "runtime_enabled": false,
+      "source_requests": [
+        "No new inputs requested to preserve archived legacy results; exact archived method attribution still requires archived proof."
+      ],
+      "verdict": "KEEP_ARCHIVAL_ONLY"
+    },
+    {
+      "approved_production_formula": null,
+      "candidate_id": "G1-ENDPOINT",
+      "consumer_migration": "BLOCKED_BY_UNAPPROVED_RESULT_AND_CONSUMER_ADMISSION",
+      "cyclical_or_sector_bias": "Different observed paths can share endpoints; any sector/phase comparability remains data-dependent",
+      "decision": "G1",
+      "economic_meaning": "Observed change between two historical endpoints; not by itself sustained realization across intervening periods",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/records/0/input_source_map",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/4",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        }
+      ],
+      "factor_id": "next_3_5y_growth",
+      "family": "Realized endpoint-summary family",
+      "historical_compatibility": "Separate candidate/result lineage; does not relabel old YoY results",
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "method_id": null,
+      "method_version": null,
+      "new_requiredness": null,
+      "numeric_policy": null,
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "pit": "Both endpoints need exact availability/publication and archived source vintage at each evaluation time",
+      "production_eligibility": "NOT_AUTHORIZED",
+      "rationale": "Can describe start-to-end realized magnitude but loses the path. Distinct persistent, delayed and cyclical sequences can share endpoints.",
+      "restatement": "Later restated endpoint cannot replace the value known at historical decision time",
+      "runtime_enabled": false,
+      "source_requests": [
+        "Exact paired realized endpoints with matched accounting scope/unit/period/vintage",
+        "Separate persistence evidence if this family is retained as a component"
+      ],
+      "sparse_or_young_history": "Available endpoints can hide missing intervening periods; no assumed coverage adequacy",
+      "three_vs_five_year_stability": "Endpoint/phase choice changes consumed inputs; empirical stability UNCOMPUTED and 3Y/5Y selection unapproved",
+      "verdict": "REJECT_AS_STANDALONE_FOR_APPROVED_TARGET"
+    },
+    {
+      "approved_production_formula": null,
+      "candidate_id": "G1-SERIES",
+      "consumer_migration": "BLOCKED_BY_UNAPPROVED_RESULT_AND_CONSUMER_ADMISSION",
+      "cyclical_or_sector_bias": "Input sequence exposes reversals/one-time realization; industry accounting/seasonality scope needs evidence and separate policy",
+      "decision": "G1",
+      "economic_meaning": "Multi-period realized observations; averaging, median, CAGR, slope and any other aggregation are not approved",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/records/0",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/1",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/2",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/4",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        }
+      ],
+      "factor_id": "next_3_5y_growth",
+      "family": "Matched realized-period sequence-summary family",
+      "historical_compatibility": "Parallel inactive lineage; unknown method until exact approved contract and input scope exist",
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "method_id": null,
+      "method_version": null,
+      "new_requiredness": null,
+      "numeric_policy": null,
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "pit": "Every observation is a dated vintage; the later full-series view cannot certify earlier knowledge",
+      "production_eligibility": "NOT_AUTHORIZED",
+      "rationale": "Preserves observations across the historical window, permitting magnitude and persistence evidence. The summary statistic and normalization remain unselected.",
+      "restatement": "Retain original and revised source identities; historical run consumes only revisions then available",
+      "runtime_enabled": false,
+      "source_requests": [
+        "Matched per-period source values with source concepts/units/fiscal durations",
+        "Archived vintage and per-observation availability/publication",
+        "Explicit handling authority for missing periods, discontinuities, negative/zero bases and reporting changes"
+      ],
+      "sparse_or_young_history": "Gaps/short listing history remain explicit; neither interpolation nor minimum count selected",
+      "three_vs_five_year_stability": "Compare identical issuer data using separately identified windows after source readiness; numerical stability UNCOMPUTED",
+      "verdict": "MORE_EVIDENCE_REQUIRED"
+    },
+    {
+      "approved_production_formula": null,
+      "candidate_id": "G1-MAGNITUDE-PERSISTENCE",
+      "consumer_migration": "BLOCKED_BY_UNAPPROVED_RESULT_AND_CONSUMER_ADMISSION",
+      "cyclical_or_sector_bias": "Separates endpoint magnitude from path evidence; sector-specific meaning and calibration remain unselected",
+      "decision": "G1",
+      "economic_meaning": "Magnitude and persistence separately assessed; no score, threshold, blend or extra factor is created",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/records/0",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/records/4",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/2",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        }
+      ],
+      "factor_id": "next_3_5y_growth",
+      "family": "Separate realized magnitude and persistence assessments",
+      "historical_compatibility": "No new factor ID; declared candidate method is not registered or retroactively attached to history",
+      "independent_factor_overlap": "growth_durability rubric authority unresolved; shared input does not prove independent evidence or justify weight changes",
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "method_id": null,
+      "method_version": null,
+      "new_requiredness": null,
+      "numeric_policy": null,
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "pit": "Both assessments cite the same exact eligible source sequence, without Profile or zero-weight waivers",
+      "production_eligibility": "NOT_AUTHORIZED",
+      "rationale": "Keeps the two approved economic dimensions visible rather than replacing persistence with a single endpoint scalar. This is a semantic decomposition, not a chosen formula.",
+      "restatement": "Late revisions preserve predecessor source/result identities and never rewrite archived results",
+      "runtime_enabled": false,
+      "source_requests": [
+        "Same PIT-bound realized period sequence as G1-SERIES",
+        "Explicit definitions and economic authority for magnitude and persistence",
+        "Comparison with existing growth_durability concept to avoid undocumented evidence reuse/composite duplication"
+      ],
+      "sparse_or_young_history": "Assessment may remain unknown with sparse/young inputs; no automatic N/A or denominator exclusion",
+      "three_vs_five_year_stability": "Window sensitivity and each assessment stability remain UNCOMPUTED; keep requested window in lineage",
+      "verdict": "ALIGN_CANDIDATE_TO_APPROVED_MEANING"
+    },
+    {
+      "approved_production_formula": null,
+      "candidate_id": "G2-A",
+      "consumer_migration": "BLOCKED_BY_UNAPPROVED_RESULT_AND_CONSUMER_ADMISSION",
+      "decision": "G2",
+      "dilution_corporate_actions": "Exact security/issuer, diluted/basic treatment, splits/issuance/buybacks and revision evidence; none inferred from a finite ratio",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/records/3",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/6",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/8",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/9",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/10",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/13",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        }
+      ],
+      "factor_id": "eps_fcf_per_share_growth",
+      "family": "Factor unavailable when no admitted authorized substitute exists",
+      "historical_compatibility": "Legacy FCF/prior-revenue result stays LEGACY/METHOD_MISMATCH, separately hash-bound",
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "method_id": null,
+      "method_version": null,
+      "missingness": "Missing EPS alone never authorizes cross-metric substitution; missing predicate evidence never proves N/A; invalid input never becomes complete/valid/rankable",
+      "new_requiredness": null,
+      "numeric_policy": null,
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "per_share_and_capital_structure": "Attributable numerator and matched period/share basis required if per-share; current shares cannot stand in for prior weighted/diluted shares",
+      "pit": "Every numerator/denominator/predicate/corporate-action observation carries source, period, as_of, available_at, published_at and audit method source; actual method refs remain null",
+      "production_eligibility": "NOT_AUTHORIZED",
+      "rationale": "Preserves the EPS target and does not manufacture another metric. Availability consequences still need B2/B3/B5/B6 approval.",
+      "runtime_enabled": false,
+      "semantic_comparability": "Preserves the EPS target and does not manufacture another metric. Availability consequences still need B2/B3/B5/B6 approval.",
+      "source_requests": [
+        "Reasoned unavailable status with exact failed/missing input refs",
+        "No zero/N/A/denominator-exclusion/ranking implication"
+      ],
+      "verdict": "PRINCIPLE_COMPATIBLE_CONTRACT_CANDIDATE",
+      "volatility_domain": "Observed zero/negative bases or changing cash-flow components expose domain questions; no smoothing, epsilon, transform, cutoff or normalization selected"
+    },
+    {
+      "approved_production_formula": null,
+      "candidate_id": "G2-B",
+      "consumer_migration": "BLOCKED_BY_UNAPPROVED_RESULT_AND_CONSUMER_ADMISSION",
+      "decision": "G2",
+      "dilution_corporate_actions": "Exact security/issuer, diluted/basic treatment, splits/issuance/buybacks and revision evidence; none inferred from a finite ratio",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/records/3",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/6",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/8",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/9",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/10",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/13",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        }
+      ],
+      "factor_id": "eps_fcf_per_share_growth",
+      "family": "Economically comparable per-share alternative",
+      "historical_compatibility": "Legacy FCF/prior-revenue result stays LEGACY/METHOD_MISMATCH, separately hash-bound",
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "method_id": null,
+      "method_version": null,
+      "missingness": "Missing EPS alone never authorizes cross-metric substitution; missing predicate evidence never proves N/A; invalid input never becomes complete/valid/rankable",
+      "new_requiredness": null,
+      "numeric_policy": null,
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "per_share_and_capital_structure": "Attributable numerator and matched period/share basis required if per-share; current shares cannot stand in for prior weighted/diluted shares",
+      "pit": "Every numerator/denominator/predicate/corporate-action observation carries source, period, as_of, available_at, published_at and audit method source; actual method refs remain null",
+      "production_eligibility": "NOT_AUTHORIZED",
+      "rationale": "Per-share units alone do not establish EPS-equivalent earnings meaning; exact numerator, shareholder claim, accounting basis and periods need authority.",
+      "runtime_enabled": false,
+      "semantic_comparability": "Per-share units alone do not establish EPS-equivalent earnings meaning; exact numerator, shareholder claim, accounting basis and periods need authority.",
+      "source_requests": [
+        "Approved economic target/equivalence or explicit alternative authority",
+        "Paired attributable numerator and compatible share basis",
+        "Basic/diluted, split, issuance/buyback/restatement and issuer/security lineage"
+      ],
+      "verdict": "MORE_EVIDENCE_REQUIRED",
+      "volatility_domain": "Observed zero/negative bases or changing cash-flow components expose domain questions; no smoothing, epsilon, transform, cutoff or normalization selected"
+    },
+    {
+      "approved_production_formula": null,
+      "candidate_id": "G2-C",
+      "consumer_migration": "BLOCKED_BY_UNAPPROVED_RESULT_AND_CONSUMER_ADMISSION",
+      "decision": "G2",
+      "dilution_corporate_actions": "Exact security/issuer, diluted/basic treatment, splits/issuance/buybacks and revision evidence; none inferred from a finite ratio",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/records/3",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/6",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/8",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/9",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/10",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/13",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        }
+      ],
+      "factor_id": "eps_fcf_per_share_growth",
+      "family": "Separately declared cash-flow method family",
+      "historical_compatibility": "Legacy FCF/prior-revenue result stays LEGACY/METHOD_MISMATCH, separately hash-bound",
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "method_id": null,
+      "method_version": null,
+      "missingness": "Missing EPS alone never authorizes cross-metric substitution; missing predicate evidence never proves N/A; invalid input never becomes complete/valid/rankable",
+      "new_requiredness": null,
+      "numeric_policy": null,
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "per_share_and_capital_structure": "Attributable numerator and matched period/share basis required if per-share; current shares cannot stand in for prior weighted/diluted shares",
+      "pit": "Every numerator/denominator/predicate/corporate-action observation carries source, period, as_of, available_at, published_at and audit method source; actual method refs remain null",
+      "production_eligibility": "NOT_AUTHORIZED",
+      "rationale": "Cash generation can be separately described only under distinct economic meaning and method/version; it does not automatically inherit EPS semantics.",
+      "runtime_enabled": false,
+      "semantic_comparability": "Cash generation can be separately described only under distinct economic meaning and method/version; it does not automatically inherit EPS semantics.",
+      "source_requests": [
+        "Exact current/prior cash-flow definitions and direct-versus-constructed component sources",
+        "Matched period/currency/vintage/domain and potential share basis",
+        "Explicit approved cash-flow target and label if selected, without selecting an equation here"
+      ],
+      "verdict": "MORE_EVIDENCE_REQUIRED",
+      "volatility_domain": "Observed zero/negative bases or changing cash-flow components expose domain questions; no smoothing, epsilon, transform, cutoff or normalization selected"
+    },
+    {
+      "approved_production_formula": null,
+      "candidate_id": "G2-D",
+      "consumer_migration": "BLOCKED_BY_UNAPPROVED_RESULT_AND_CONSUMER_ADMISSION",
+      "decision": "G2",
+      "dilution_corporate_actions": "Exact security/issuer, diluted/basic treatment, splits/issuance/buybacks and revision evidence; none inferred from a finite ratio",
+      "evidence_refs": [
+        {
+          "artifact": "G_METHOD_REPLAY_MANIFEST.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/records/3",
+          "sha256": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/6",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/8",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/9",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/10",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        },
+        {
+          "artifact": "G_SOURCE_READINESS_MATRIX.json",
+          "authenticated_review_head": "4d53aa3047ba397cda992d2e784316a9d889bc22",
+          "json_pointer": "/rows/13",
+          "sha256": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+        }
+      ],
+      "factor_id": "eps_fcf_per_share_growth",
+      "family": "Conditional method applicability",
+      "historical_compatibility": "Legacy FCF/prior-revenue result stays LEGACY/METHOD_MISMATCH, separately hash-bound",
+      "method_equation": "UNKNOWN_UNSELECTED",
+      "method_id": null,
+      "method_version": null,
+      "missingness": "Missing EPS alone never authorizes cross-metric substitution; missing predicate evidence never proves N/A; invalid input never becomes complete/valid/rankable",
+      "new_requiredness": null,
+      "numeric_policy": null,
+      "outputs": {
+        "3Y_5Y_stability_estimate": "UNCOMPUTED",
+        "G_aggregate": "UNCOMPUTED",
+        "OOS_performance": "UNCOMPUTED",
+        "QGV_composite": "UNCOMPUTED",
+        "candidate_factor_score": "UNCOMPUTED",
+        "confidence_calibration": "UNCOMPUTED",
+        "coverage_threshold": "UNCOMPUTED",
+        "normalization": "UNCOMPUTED",
+        "ranking": "UNCOMPUTED",
+        "sector_bias_estimate": "UNCOMPUTED"
+      },
+      "per_share_and_capital_structure": "Attributable numerator and matched period/share basis required if per-share; current shares cannot stand in for prior weighted/diluted shares",
+      "pit": "Every numerator/denominator/predicate/corporate-action observation carries source, period, as_of, available_at, published_at and audit method source; actual method refs remain null",
+      "production_eligibility": "NOT_AUTHORIZED",
+      "rationale": "Applicability is method/context authority, not an alternative metric and not a rule to choose the available/favorable branch.",
+      "runtime_enabled": false,
+      "semantic_comparability": "Applicability is method/context authority, not an alternative metric and not a rule to choose the available/favorable branch.",
+      "source_requests": [
+        "Exact separately authorized method/context predicate with evidence",
+        "Issuer/sector/economic scope known at decision time",
+        "Unknown/missing evidence preserved instead of converted into N/A"
+      ],
+      "verdict": "MORE_EVIDENCE_REQUIRED",
+      "volatility_domain": "Observed zero/negative bases or changing cash-flow components expose domain questions; no smoothing, epsilon, transform, cutoff or normalization selected"
+    }
+  ],
+  "factor_ids_preserved": [
+    "next_3_5y_growth",
+    "eps_fcf_per_share_growth"
+  ],
+  "forward_estimate_inclusion": "NOT_APPROVED; not included as an authoritative G1 realized method",
+  "minimal_remaining_D3": [
+    {
+      "already_approved": "Long-horizon realized magnitude and persistence target",
+      "clause": "G1_CALCULATION_INPUT_CONTRACT",
+      "requires_reapproval_of_economic_target": false,
+      "still_unselected": [
+        "Exact accounting measure/input scope",
+        "3Y/5Y window and period resolution",
+        "Realized summary/persistence method",
+        "Observation/domain requirements",
+        "Normalization/scoring policy"
+      ]
+    },
+    {
+      "already_approved": "No automatic unauthorized cross-metric substitution",
+      "clause": "G2_SUBSTITUTION_METHOD_CONTRACT",
+      "requires_reapproval_of_principle": false,
+      "still_unselected": [
+        "A/B/C/D exact branch/applicability treatment",
+        "Specific alternative target and input basis if any",
+        "Domain, missingness and normalization/scoring consequences"
+      ]
+    },
+    {
+      "clause": "DEPENDENT_ADMISSION_MIGRATION",
+      "purpose": "Separate gating; current comparison does not authorize activation",
+      "still_unselected": [
+        "B2/B3/B5/B6 evidence/result/consumer policy",
+        "Production method binding and exact migration scope"
+      ]
+    }
+  ],
+  "new_formula_or_numeric_default": null,
+  "new_requiredness_assignments": 0,
+  "old_lineage_checks_rerun": false,
+  "prior_evidence_refs": {
+    "G_LINEAGE_REPLAY.json": "77f8300c2ebf594e640582dc213d8af1b012f7c11bf825a2c2b5f536fd2595d3",
+    "G_METHOD_REPLAY_MANIFEST.json": "139757a9b5cfca3317aa009bb94e92f8af72034838ea0a88711d0b1fe505216f",
+    "G_SOURCE_READINESS_MATRIX.json": "4e8a76dcbf19c723b18b35eb2b9ed1439dca9bdd94e44572be70cf3b24c9f113"
+  },
+  "production_method_registration": null,
+  "production_migration_authorized": false,
+  "real_scoring_or_real_input_replay": "NOT_RUN",
+  "result_and_consumer_admission": "B2/B3/B5/B6 not yet approved; any selected future method still has migration blocker",
+  "runtime_enabled": false,
+  "scheduler_hops_added": 0,
+  "source_owner_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "status": "COMPARISON_COMPLETE_METHODS_UNSELECTED"
+}

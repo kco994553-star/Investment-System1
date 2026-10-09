@@ -1,0 +1,108 @@
+{
+  "scope": "NEW_V05_EVIDENCE_FILES_ONLY",
+  "source_head": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+  "files": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/FRESH_BASELINE.json",
+      "bytes": 10367,
+      "sha256": "3bb3c6ee5b7d5016f3acb7651ebd020a8508a0a8243a8340ddc059f0c0c77cfc"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/HANDOFF.md",
+      "bytes": 7071,
+      "sha256": "568eeeec27b63b3da41c6a16584e5727ee79bc47e0afa88caa86f9d53349eaf5"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/INDEPENDENT_REVIEW.json",
+      "bytes": 949,
+      "sha256": "ba09a028ce6c73bf4e365028ed48faba508e1e076b21186bb9a04485c4d2739f"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_CLOSURE_DELTA_v0.5.md",
+      "bytes": 9421,
+      "sha256": "4b33475fcfe7528b3beb29acffb0c818fade656a2317a00aa88218730373b607"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/OWNER_HANDOFF_ROUTING.json",
+      "bytes": 1550,
+      "sha256": "514c7ddfd9e46b1a5b0f26ad7cb798dcc67efc51518218bbcf8ec6a38f787b83"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/AUTHORITY_ARTIFACT_MANIFEST_v0.5.json",
+      "bytes": 1005,
+      "sha256": "43daa13655f929249ec0ad2137a8f44316e66f985a41f327dfaf1c442ed18d0d"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/EXISTING_AUTHORITY_INTERFACE_DIAGNOSTIC_v0.5.json",
+      "bytes": 11127,
+      "sha256": "dde5503cd37c840f3127011d88cdf1b9c5a25a6c3d39a52fe60e95113a50a513"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/OWNER_INTERFACE_DECISION_INPUT_v0.5.json",
+      "bytes": 1804,
+      "sha256": "62b10722f88d242cc1a0aa8f590fe1cbac1ea0eeb3833dff4ce66b42c1a1d4fb"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/TARGET_THEME_AUTHORITY_OWNER_PACKET_v0.5.md",
+      "bytes": 17044,
+      "sha256": "0b15e87e97c9bdb5cafc6efd4c9cab88efa01e9521eaa65a72fac15d723ee028"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/authority/replay_existing_authority.py",
+      "bytes": 9586,
+      "sha256": "21300a2f55b8f27b3436b4467e507cfd27dccb7200d7cedf50e083b81005d12a"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/OWNER_PACKET_CONSISTENCY.json",
+      "bytes": 754,
+      "sha256": "a6a96fe495ae5775c60054283ef5f20d152ed9bcbd6fb8b5c5b24285144f4f42"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_ADMISSION_REQUEST.json",
+      "bytes": 54070,
+      "sha256": "4d0e163d2ff5be0df6be85babd7c96ca57ae87caac819cdb7fb85c72c3c5f06c"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_OWNER_DELTA_EVIDENCE.json",
+      "bytes": 15900,
+      "sha256": "7d8aff4b12017797cf89e8f00d1ccea852da95e6382fe037f4ca4e842009633f"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-a/TARGET_SOURCE_OWNER_CLOSURE_PACKET_v0.5.md",
+      "bytes": 10304,
+      "sha256": "f5019aa52649dc83bee5c41616e53d299d6cbd12fa64212be5f0c0cb9b5f48a7"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/EXISTING_CAPABILITY_PINS_v0.5.json",
+      "bytes": 25672,
+      "sha256": "9ee1dbaba37d1984d5428f8aada1b3d88f93c1ff77a0781ea19405bf39beab82"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json",
+      "bytes": 15265,
+      "sha256": "d274b1e8cc127aff34a5f1bf654cb969328df96753e503bd463d215ac8693545"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/LANE_B_VERIFY_RECEIPT_v0.5.json",
+      "bytes": 9463,
+      "sha256": "10725c567a78dae4c0ba7f0433e74be943efa47a846c228b7d5eb9041e218c65"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_ACTIONS_v0.5.json",
+      "bytes": 23129,
+      "sha256": "96500808ea2b47b58c6d7a0ff7f7c2141e096467ee379f1a609afb5a0cf628d6"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/MARKET_OWNER_REUSE_AND_CLOSURE_v0.5.md",
+      "bytes": 14269,
+      "sha256": "da9eb10534a98c57418fc09bcac0cfbd4c43fef58875b3bde3248c2f4693369f"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py",
+      "bytes": 8748,
+      "sha256": "72e7960e878fda278ec2562c66690265ab28c14c647aaefd2c63907618d1f67f"
+    }
+  ],
+  "self_excluded": true,
+  "production_source_changes": 0
+}

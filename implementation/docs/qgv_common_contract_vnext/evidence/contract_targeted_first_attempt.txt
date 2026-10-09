@@ -1,0 +1,25 @@
+........................................................................ [ 80%]
+...............F..                                                       [100%]
+=================================== FAILURES ===================================
+____ test_spec_rejects_false_activation_and_metadata_conflation[naive_time] ____
+
+mutation = 'naive_time'
+
+    @pytest.mark.parametrize("mutation", ['runtime','status','confidence','coverage','source_hash','nan','naive_time'])
+    def test_spec_rejects_false_activation_and_metadata_conflation(mutation):
+        doc=sample()
+        if mutation=='runtime': doc['runtime_enabled']=True
+        if mutation=='status': doc['status']='ACTIVE'
+        if mutation=='confidence': doc['confidence']='OK'
+        if mutation=='coverage': doc['coverage']='OK'
+        if mutation=='source_hash': doc['calculation_ref']['sha256']='unknown'
+        if mutation=='nan': doc['legacy_score']=float('nan')
+        if mutation=='naive_time': doc['decision_time']='2026-09-14T00:00:00'
+>       with pytest.raises((ValueError,ValidationError)):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE any of (ValueError, ValidationError)
+
+tests/test_qgv_common_contract_vnext.py:166: Failed
+=========================== short test summary info ============================
+FAILED tests/test_qgv_common_contract_vnext.py::test_spec_rejects_false_activation_and_metadata_conflation[naive_time]
+1 failed, 89 passed in 0.25s

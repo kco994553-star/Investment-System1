@@ -1,0 +1,198 @@
+{
+  "input_head": "4fb08a05728d83519b72a2bd995669f0cb06003a",
+  "characterization_count": 22,
+  "checks": [
+    {
+      "id": "C01",
+      "pass": true,
+      "observed": [
+        70.0,
+        "READY"
+      ]
+    },
+    {
+      "id": "C02",
+      "pass": true,
+      "observed": {
+        "initial_prior": 70.0,
+        "equal_research": 70.0,
+        "mos_tilt_research": 70.0
+      }
+    },
+    {
+      "id": "C03",
+      "pass": true,
+      "observed": [
+        52.5,
+        "PARTIAL"
+      ]
+    },
+    {
+      "id": "C04",
+      "pass": true,
+      "observed": "all candidate scores null"
+    },
+    {
+      "id": "C05",
+      "pass": true,
+      "observed": [
+        "READY",
+        "PARTIAL",
+        52.5
+      ]
+    },
+    {
+      "id": "C06",
+      "pass": true,
+      "observed": [
+        52.5,
+        "PARTIAL"
+      ]
+    },
+    {
+      "id": "C07",
+      "pass": true,
+      "observed": "all candidate scores 70"
+    },
+    {
+      "id": "C08",
+      "pass": true,
+      "observed": {
+        "factor_id": "fundamental_value",
+        "base_weight": 0.25,
+        "score": 70.0,
+        "confidence": "PIT_UNAVAILABLE",
+        "coverage": "PIT_UNAVAILABLE",
+        "effective_weight": 0.25,
+        "missing_reason": null,
+        "provenance": "SYNTHETIC"
+      }
+    },
+    {
+      "id": "C09",
+      "pass": true,
+      "observed": [
+        "PIT_UNAVAILABLE",
+        "PIT_UNAVAILABLE"
+      ]
+    },
+    {
+      "id": "C10",
+      "pass": true,
+      "observed": [
+        70.0,
+        77.5,
+        70.0,
+        70.0
+      ]
+    },
+    {
+      "id": "C11",
+      "pass": true,
+      "observed": [
+        75.0,
+        75.0
+      ]
+    },
+    {
+      "id": "C12",
+      "pass": true,
+      "observed": [
+        75.0,
+        33.333333333333336
+      ]
+    },
+    {
+      "id": "C13",
+      "pass": true,
+      "observed": [
+        10.0,
+        90.0
+      ]
+    },
+    {
+      "id": "C14",
+      "pass": true,
+      "observed": 1000.0
+    },
+    {
+      "id": "C15",
+      "pass": true,
+      "observed": 100.0
+    },
+    {
+      "id": "C16",
+      "pass": true,
+      "observed": "MISSING_DATA"
+    },
+    {
+      "id": "C17",
+      "pass": true,
+      "observed": [
+        83.33333333333331,
+        16.66666666666665
+      ]
+    },
+    {
+      "id": "C19",
+      "pass": true,
+      "observed": {
+        "fundamental_value": 50.0,
+        "margin_of_safety": 0.0,
+        "reverse_dcf": 99.99999999999999
+      }
+    },
+    {
+      "id": "C20",
+      "pass": true,
+      "observed": {
+        "fundamental_value": "v-review-synthetic",
+        "peer_relative_value": "v-review-synthetic",
+        "historical_valuation": "v-review-synthetic",
+        "sector_context": "v-review-synthetic",
+        "theme_premium_discount": "v-review-synthetic",
+        "reverse_dcf": "v-review-synthetic",
+        "margin_of_safety": "v-review-synthetic"
+      }
+    },
+    {
+      "id": "C21",
+      "pass": true,
+      "observed": 50
+    },
+    {
+      "id": "C22",
+      "pass": true,
+      "observed": "source-extracted upper middle 30; not full run_as_of execution"
+    },
+    {
+      "id": "C18",
+      "pass": true,
+      "observed": {
+        "tracked_files": 7770,
+        "before": "7446ea3f29125c8dc8fbd61f0210008f93ab3786ba9c0137441cc4652c351ccf",
+        "after": "7446ea3f29125c8dc8fbd61f0210008f93ab3786ba9c0137441cc4652c351ccf"
+      }
+    }
+  ],
+  "existing_regression_count": 13,
+  "existing_regressions_direct_execution": [
+    "tests.test_analysis_scoring.test_blocked_dependency_blocks_q",
+    "tests.test_analysis_scoring.test_financial_profile_skips_roic",
+    "tests.test_analysis_scoring.test_missing_factor_is_not_zero",
+    "tests.test_analysis_scoring.test_production_v_is_provisional_initial_prior",
+    "tests.test_analysis_scoring.test_q7_is_management_quality_not_capital_allocation",
+    "tests.test_analysis_scoring.test_q_weights_sum_to_one",
+    "tests.test_analysis_scoring.test_snapshot_contract_fields",
+    "tests.test_v_prior_and_c15.test_fv_and_mos_are_not_identical",
+    "tests.test_v_prior_and_c15.test_initial_prior_weights_and_lifecycle",
+    "tests.test_v_prior_and_c15.test_technical_ignores_qgv_scores",
+    "tests.test_peer_derived_v.test_book_peer_median_can_fill_peer_relative",
+    "tests.test_hist_peer_ablation_pit.test_hist_and_peer_provenance_and_no_future_price",
+    "tests.test_v_coverage_matrix.test_v_matrix_is_prior_not_calibrated"
+  ],
+  "tracked_bytes_preserved": true,
+  "production_policy_changed": false,
+  "pytest_suite": "NOT_RUN",
+  "scope": "LOCAL_SNAPSHOT_ONLY"
+}

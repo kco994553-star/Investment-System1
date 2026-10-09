@@ -1,0 +1,359 @@
+{
+  "attempt": 1,
+  "review_head": "19e4e47d3f8fc02fb35d33399f7b052317896b62",
+  "validation_level": "STANDARD",
+  "check_scope": "Targeted compatibility, negative, and affected composition fixtures only",
+  "cases": [
+    {
+      "case": "S01_frozen_29_inputs_unchanged",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {
+        "pins_verified": 29,
+        "prior_checks_rerun": 0
+      }
+    },
+    {
+      "case": "S02_imported_C_frozen_template_compatibility",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {
+        "structural_acceptance": "PASS",
+        "semantic_validity": "NOT_EVALUATED",
+        "consumer_admission": "NOT_EVALUATED",
+        "runtime_enabled": false,
+        "limitation": "Fixture scope only; no production authority or new admission criteria"
+      }
+    },
+    {
+      "case": "S03_local_G_mismatch_only_G",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {
+        "structural_acceptance": "PASS_STRUCTURAL_ONLY",
+        "semantic_validity": "NOT_EVALUATED",
+        "consumer_admission": "NOT_EVALUATED",
+        "runtime_enabled": false,
+        "reason_scope": {
+          "METHOD_MISMATCH": [
+            "G"
+          ]
+        },
+        "unrelated_axes_without_rejection": [
+          "Q",
+          "V"
+        ],
+        "g_candidate_disposition": "UNASSESSED",
+        "candidate_scores": "UNCOMPUTED"
+      }
+    },
+    {
+      "case": "S04_shared_QG_PIT_excludes_V",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {
+        "structural_acceptance": "PASS_STRUCTURAL_ONLY",
+        "semantic_validity": "NOT_EVALUATED",
+        "consumer_admission": "NOT_EVALUATED",
+        "runtime_enabled": false,
+        "reason_scope": {
+          "SYNTHETIC_PIT_REJECTION": [
+            "Q",
+            "G"
+          ]
+        },
+        "unrelated_axes_without_rejection": [
+          "V"
+        ],
+        "g_candidate_disposition": "UNASSESSED",
+        "candidate_scores": "UNCOMPUTED"
+      }
+    },
+    {
+      "case": "S05_combined_G_retains_local_and_shared_reasons",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {
+        "structural_acceptance": "PASS_STRUCTURAL_ONLY",
+        "semantic_validity": "NOT_EVALUATED",
+        "consumer_admission": "NOT_EVALUATED",
+        "runtime_enabled": false,
+        "reason_scope": {
+          "METHOD_MISMATCH": [
+            "G"
+          ],
+          "SYNTHETIC_PIT_REJECTION": [
+            "Q",
+            "G"
+          ]
+        },
+        "unrelated_axes_without_rejection": [
+          "V"
+        ],
+        "g_candidate_disposition": "UNASSESSED",
+        "candidate_scores": "UNCOMPUTED"
+      }
+    },
+    {
+      "case": "S06_local_V_source_excludes_QG",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {
+        "structural_acceptance": "PASS_STRUCTURAL_ONLY",
+        "semantic_validity": "NOT_EVALUATED",
+        "consumer_admission": "NOT_EVALUATED",
+        "runtime_enabled": false,
+        "reason_scope": {
+          "SYNTHETIC_LOCAL_SOURCE_REJECTION": [
+            "V"
+          ]
+        },
+        "unrelated_axes_without_rejection": [
+          "Q",
+          "G"
+        ],
+        "g_candidate_disposition": "UNASSESSED",
+        "candidate_scores": "UNCOMPUTED"
+      }
+    },
+    {
+      "case": "S07_coherent_dependency_drop",
+      "expected": "DEPENDENCY_SCOPE_DROP_OR_EXPANSION",
+      "actual": "DEPENDENCY_SCOPE_DROP_OR_EXPANSION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S08_coherent_dependency_expansion_to_V",
+      "expected": "DEPENDENCY_SCOPE_DROP_OR_EXPANSION",
+      "actual": "DEPENDENCY_SCOPE_DROP_OR_EXPANSION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S09_source_content_drift",
+      "expected": "REFERENCE_CONTENT_DRIFT",
+      "actual": "REFERENCE_CONTENT_DRIFT",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S10_coherent_artifact_hash_drift",
+      "expected": "EVIDENCE_ATTACHMENT_PIN_DRIFT",
+      "actual": "EVIDENCE_ATTACHMENT_PIN_DRIFT",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S11_coherent_source_request_selector_drift",
+      "expected": "EVIDENCE_ATTACHMENT_SELECTOR_OR_CLOSURE_DRIFT",
+      "actual": "EVIDENCE_ATTACHMENT_SELECTOR_OR_CLOSURE_DRIFT",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S12_aggregate_cannot_drop_local_reason",
+      "expected": "AGGREGATE_REASON_CARRIAGE_DROP_OR_EXPANSION",
+      "actual": "AGGREGATE_REASON_CARRIAGE_DROP_OR_EXPANSION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S13_consumer_cannot_drop_shared_Q_reason",
+      "expected": "CONSUMER_REASON_CARRIAGE_DROP_OR_EXPANSION",
+      "actual": "CONSUMER_REASON_CARRIAGE_DROP_OR_EXPANSION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S14_local_G_reason_cannot_expand_to_Q",
+      "expected": "PRODUCER_REASON_SCOPE_DRIFT",
+      "actual": "PRODUCER_REASON_SCOPE_DRIFT",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S15_shared_QG_reason_cannot_drop_Q",
+      "expected": "PRODUCER_REASON_SCOPE_DRIFT",
+      "actual": "PRODUCER_REASON_SCOPE_DRIFT",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S16_no_blanket_V_PIT_rejection",
+      "expected": "UNDECLARED_ASSESSMENT_REJECTION_OR_PROMOTION",
+      "actual": "UNDECLARED_ASSESSMENT_REJECTION_OR_PROMOTION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S17_zero_profile_preserves_obligations",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {
+        "structural_acceptance": "PASS_STRUCTURAL_ONLY",
+        "semantic_validity": "NOT_EVALUATED",
+        "consumer_admission": "NOT_EVALUATED",
+        "runtime_enabled": false,
+        "reason_scope": {
+          "METHOD_MISMATCH": [
+            "G"
+          ],
+          "SYNTHETIC_PIT_REJECTION": [
+            "Q",
+            "G"
+          ]
+        },
+        "unrelated_axes_without_rejection": [
+          "V"
+        ],
+        "g_candidate_disposition": "UNASSESSED",
+        "candidate_scores": "UNCOMPUTED"
+      }
+    },
+    {
+      "case": "S18_zero_profile_cannot_drop_G_PIT_ref",
+      "expected": "ZERO_OR_PROFILE_SEMANTIC_WAIVER",
+      "actual": "ZERO_OR_PROFILE_SEMANTIC_WAIVER",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S19_custom_profile_cannot_replace_method",
+      "expected": "ZERO_OR_PROFILE_SEMANTIC_WAIVER",
+      "actual": "ZERO_OR_PROFILE_SEMANTIC_WAIVER",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S20_zero_profile_cannot_rewrite_dependency_scope",
+      "expected": "ZERO_OR_PROFILE_SEMANTIC_WAIVER",
+      "actual": "ZERO_OR_PROFILE_SEMANTIC_WAIVER",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S21_candidate_evidence_cannot_be_admitted",
+      "expected": "G_CANDIDATE_EVIDENCE_PROMOTION",
+      "actual": "G_CANDIDATE_EVIDENCE_PROMOTION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S22_candidate_method_cannot_be_invented",
+      "expected": "G_METHOD_CALCULATION_NOT_AUTHORIZED",
+      "actual": "G_METHOD_CALCULATION_NOT_AUTHORIZED",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S23_candidate_score_must_remain_UNCOMPUTED",
+      "expected": "G_CANDIDATE_SCORE_NOT_UNCOMPUTED",
+      "actual": "G_CANDIDATE_SCORE_NOT_UNCOMPUTED",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S24_structural_acceptance_never_promotes_ranking",
+      "expected": "INACTIVE_COMPOSITION_CONSUMER_PROMOTION",
+      "actual": "INACTIVE_COMPOSITION_CONSUMER_PROMOTION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S25_activation_forbidden",
+      "expected": "PRODUCTION_ACTIVATION_FORBIDDEN",
+      "actual": "PRODUCTION_ACTIVATION_FORBIDDEN",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S26_consumer_cannot_expand_result_inventory",
+      "expected": "CONSUMER_CHILD_REFERENCE_DROP_OR_EXPANSION",
+      "actual": "CONSUMER_CHILD_REFERENCE_DROP_OR_EXPANSION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S27_aggregate_cannot_drop_assessments",
+      "expected": "AGGREGATE_CHILD_REFERENCE_DROP_OR_EXPANSION",
+      "actual": "AGGREGATE_CHILD_REFERENCE_DROP_OR_EXPANSION",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S28_original_rejection_not_ordinary_unknown",
+      "expected": "ORIGINAL_ASSESSMENT_REASON_NOT_RETAINED",
+      "actual": "ORIGINAL_ASSESSMENT_REASON_NOT_RETAINED",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S29_coherent_event_scope_cannot_expand",
+      "expected": "EVENT_DEPENDENCY_RELEVANCE_DRIFT",
+      "actual": "EVENT_DEPENDENCY_RELEVANCE_DRIFT",
+      "pass": true,
+      "observations": {}
+    },
+    {
+      "case": "S30_genuine_source_request_remains_unresolved",
+      "expected": "PASS_STRUCTURAL_ONLY",
+      "actual": "PASS_STRUCTURAL_ONLY",
+      "pass": true,
+      "observations": {
+        "request_id": "DATA-G-01",
+        "genuine_source_bytes": "ABSENT",
+        "recorded_blob_sha256": "19ef503a5770f5660964b3c3aea6937579d9b359da344afe6a9adf59c63d26ff",
+        "restoration_or_refetch_executed": false,
+        "candidate_calculation": "UNCOMPUTED",
+        "real_PIT_OOS": "NOT_RUN"
+      }
+    }
+  ],
+  "input_pins_verified_before_and_after": 29,
+  "initial_failures_preserved": true,
+  "prior_59_checks_rerun": false,
+  "production_semantics_changed": false,
+  "runtime_enabled": false,
+  "candidate_scoring_executed": false,
+  "consumer_policy_activated": false,
+  "scheduler_hops_added": 0,
+  "real_PIT_OOS": "NOT_RUN",
+  "method_selection": "NOT_APPROVED",
+  "fixture_count": 4,
+  "g_candidates": "8 exact descriptor attachments; UNASSESSED / UNCOMPUTED",
+  "checks_executed": 30,
+  "checks_passed": 30,
+  "checks_failed": 0,
+  "script_sha256": "90cccab965e5d3464bbb79a36e4b0584cc11c169878360955a2261f842a4b5b9",
+  "fixture_canonical_sha256": "891f9345ca072db0449ef65873c26a60878a94adf604dd08f8e351e500968211",
+  "reference_contents_canonical_sha256": "a2104f60f3bbe936b1c667a74fdbab2f5d979529d914192d1ae5e1112a179d69",
+  "remaining_D3": [
+    "Exact G1/G2 method/input/window/domain/normalization and selected branch",
+    "B2/B3/B5/B6 actual criteria, consumer purpose/policy and migration/activation authority",
+    "B1 real requirements and V1/V2 pending methodology"
+  ],
+  "remaining_data": [
+    "DATA-G-01",
+    "DATA-G-02",
+    "DATA-G-03",
+    "DATA-G-04",
+    "DATA-G-05",
+    "AUTH-G-06"
+  ],
+  "limits": "Only finite producer/aggregate/consumer carriage and exact declared relevance. Q/V scaffolding is synthetic. Actual artifact attachments are not genuine inputs; no general aggregate or failure evaluator, JSONSchema engine, runtime producer, WeightOverride wiring, PIT replay, admission rubric, cutoff, formula or ranking path.",
+  "status": "PASS_INACTIVE_BOUNDED_SCOPE_FIXTURES",
+  "artifact_sha256": {
+    "INPUT_PINS.json": "f4f8d7cd0bfacfcf095f1c0fe0dab3b4f30c76d272b6c274c62620d38d9f51f8",
+    "SCOPE_FIXTURES.json": "6af0f392059e70833c4ffbd4eb83e9cd5d3abb196b0d9e0bbe4dc639843cf7cb",
+    "SCOPE_REFERENCE_CONTENTS.json": "38c24cf652b0823ebe39ef7f8e572a30b91834cb43b87e01d7f0c67ebb5a62bc"
+  },
+  "executed_command": "python qgv-autonomous-loop/scope/dependency_scope_probe.py --semantic-dir qgv-semantic-lanes-output --pin-manifest qgv-autonomous-loop/scope/FROZEN_INPUT_PINS.json --output-dir qgv-autonomous-loop/scope"
+}

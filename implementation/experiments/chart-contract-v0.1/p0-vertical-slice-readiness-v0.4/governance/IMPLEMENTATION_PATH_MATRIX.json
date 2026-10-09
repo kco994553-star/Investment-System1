@@ -1,0 +1,261 @@
+{
+  "status": "EXACT_CANDIDATE_PATHS_PROPOSED_NOT_APPROVED_NOT_IMPLEMENTED",
+  "basis_sha": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "chart_current_sha": "581c61c4af859f6cbdc3418209bba9be7bbc76a3",
+  "integration_base_acceptance": "OPEN_OWNER_ACTION",
+  "recommended_p01_digest_impact": "NONE_IF_SELECTED_ADDITIVE_ROUTE_ACCEPTED_AND_ALL_SEVEN_PROTECTED_FILES_UNCHANGED",
+  "track_c_code_hash_impact": "YES_FOR_ANY_NEW_OR_CHANGED_PACKAGE_PYTHON",
+  "track_c_classification": "CODE_IDENTITY_DIVERGED_MUST_BE_REPORTED_NO_NORMALIZATION",
+  "schema1_compatibility": "NO_ASSUMED_EXTENSION_OR_NEW_STATE",
+  "frozen_files_to_edit": [],
+  "excluded_implementation": [
+    "personal Frozen contract edits",
+    "evl Track C owned/protected projection",
+    "publication/authorization.py grant activation",
+    "publication/predicate.py policy relaxation",
+    "schema Freeze",
+    "MCP implementation"
+  ],
+  "candidates": [
+    {
+      "path": "implementation/src/investment_system/charts/__init__.py",
+      "change": "NEW",
+      "owners": "Chart",
+      "purpose": "namespace marker",
+      "p01_digest": false,
+      "track_c_code_hash": true,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/src/investment_system/charts/target_source.py",
+      "change": "NEW",
+      "owners": "Chart + Personal/Portfolio",
+      "purpose": "accept owner-admitted target root and membership evidence; refuse unresolved/current identity",
+      "p01_digest": false,
+      "track_c_code_hash": true,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/src/investment_system/charts/target_theme.py",
+      "change": "NEW",
+      "owners": "Chart + Personal/Portfolio",
+      "purpose": "aggregate supplied target weights exactly by supplied Strategy Theme assignment; no ACTUAL/GICS calculation",
+      "p01_digest": false,
+      "track_c_code_hash": true,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/src/investment_system/contracts/chart.py",
+      "change": "NEW",
+      "owners": "Chart + Product contract owner",
+      "purpose": "scoped immutable Target Theme contract; exact strings; external current-authority envelope",
+      "p01_digest": false,
+      "track_c_code_hash": true,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/src/investment_system/product/chart_api.py",
+      "change": "NEW",
+      "owners": "Product/API + Chart + P01/publication",
+      "purpose": "single read-service query of same verified Chart subject; attach current admitted authority/invalidation decision",
+      "p01_digest": false,
+      "track_c_code_hash": true,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/src/investment_system/publication/extractors.py",
+      "change": "OPTIONAL_MODIFY_ONLY_IF_P01_ROUTE_ACCEPTED",
+      "owners": "P01/publication",
+      "purpose": "register exact Chart subject only if owner selects P01 path; existing registry has no chart",
+      "p01_digest": false,
+      "track_c_code_hash": true,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/tools/serve_chart_api.py",
+      "change": "OPTIONAL_NEW_IF_RUNTIME_API_HOST_NEEDED",
+      "owners": "Product/API + Web",
+      "purpose": "mount accepted query handler; no independent domain calculation; repository Web currently static",
+      "p01_digest": false,
+      "track_c_code_hash": false,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/src/investment_system/product/web_assets/target-theme-chart.js",
+      "change": "NEW",
+      "owners": "Web + Chart contract",
+      "purpose": "render precomputed segments; selection shows exact constituent rows without classification recomputation",
+      "p01_digest": false,
+      "track_c_code_hash": false,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/src/investment_system/product/web_assets/app.js",
+      "change": "MODIFY",
+      "owners": "Web",
+      "purpose": "route contract consumer and explicit TARGET/ACTUAL presentation; remove production actual_weight ?? target_weight semantics",
+      "p01_digest": false,
+      "track_c_code_hash": false,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/src/investment_system/product/web_assets/locale.js",
+      "change": "MODIFY",
+      "owners": "Web/Language",
+      "purpose": "Target Strategy Theme/user-defined labels and accessible state messages",
+      "p01_digest": false,
+      "track_c_code_hash": false,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/src/investment_system/product/web_assets/style.css",
+      "change": "MODIFY",
+      "owners": "Web",
+      "purpose": "segment and accessible selection presentation",
+      "p01_digest": false,
+      "track_c_code_hash": false,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/tests/test_target_theme_domain.py",
+      "change": "NEW",
+      "owners": "Chart + Personal/Portfolio",
+      "purpose": "exact lexical-Decimal oracle, complete assignment, total100, permuted inputs and duplicates, history binding",
+      "p01_digest": false,
+      "track_c_code_hash": false,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/tests/test_target_theme_product_contract.py",
+      "change": "NEW",
+      "owners": "Chart + Product + P01",
+      "purpose": "deterministic hash subject / changing authority envelope; unavailable vs diagnostics vs valid-empty; denial without admitted authority",
+      "p01_digest": false,
+      "track_c_code_hash": false,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/tests/test_target_theme_api.py",
+      "change": "NEW",
+      "owners": "Product/API + Chart",
+      "purpose": "same source subject/hash/calc output at API and Web; admitted/withheld states and invalidation",
+      "p01_digest": false,
+      "track_c_code_hash": false,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/tools/target_theme_chart_browser_test.js",
+      "change": "NEW",
+      "owners": "Web + Chart",
+      "purpose": "source to rendered segment and drilldown; keyboard selection, labels and no target-to-actual fallback",
+      "p01_digest": false,
+      "track_c_code_hash": false,
+      "exact_merge_result_fpia": "REQUIRED_IF_SELECTED",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/src/investment_system/product/web_mvp.py",
+      "change": "DEFERRED_ALTERNATIVE_NOT_NEEDED_BY_RECOMMENDED_ROUTE",
+      "owners": "Web + P01 + Integration",
+      "purpose": "only if owner rejects additive independent Chart API; seven-file protected source",
+      "p01_digest": true,
+      "track_c_code_hash": true,
+      "exact_merge_result_fpia": "REQUIRED_AND_SEPARATE_PROTECTED_AUTHORIZATION",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    },
+    {
+      "path": "implementation/src/investment_system/producers/assembler.py",
+      "change": "DEFERRED_ALTERNATIVE_NOT_NEEDED_BY_RECOMMENDED_ROUTE",
+      "owners": "Producer + P01 + Integration",
+      "purpose": "only if owner selects schema-1 central assembler wiring; seven-file protected source",
+      "p01_digest": true,
+      "track_c_code_hash": true,
+      "exact_merge_result_fpia": "REQUIRED_AND_SEPARATE_PROTECTED_AUTHORIZATION",
+      "path_acceptance": "PROPOSED_NOT_OWNER_ACCEPTED",
+      "executed": false
+    }
+  ],
+  "non_source_gate_blockers": [
+    {
+      "id": "G1",
+      "title": "Shared Product/Chart registration and exact-subject current authority admission",
+      "status": "OPEN",
+      "owner": "Product/Chart + P01/publication",
+      "closure": "Owner accepts scoped contract, exact source/subject extraction and dependencies, current authority/invalidation route, withheld response; confirms whether user-defined current TARGET uses P01 or another approved product path. No implicit grant."
+    },
+    {
+      "id": "G2",
+      "title": "Accepted cross-owner exact write set, integration base and P01 branch",
+      "status": "OPEN",
+      "owner": "Chart + Personal/Portfolio + Product/API + Web + P01 + Integration",
+      "closure": "Owner accepts candidates at fresh base, additive no-seven-file-digest route or explicitly adjudicated protected alternative, owner checks and exact-tree future FPIA plan. No silent repin."
+    },
+    {
+      "id": "G3",
+      "title": "FPIA tool governance closure",
+      "status": "OPEN",
+      "owner": "Primary Integration Writer + independent reviewer; existing Integration user decisions",
+      "closure": "Independent/adversarial completeness review of final approved tool head; existing D3-a/b/c/d and G7 interpretation handled in owner route; final GIE/global closure receipt. CI PASS alone insufficient."
+    }
+  ],
+  "alignment_requirements_not_additional_blockers": [
+    {
+      "id": "A_NUMERIC",
+      "state": "CONCRETIZED_BY_ROOT_MINIMAL_CONTRACT_DESIGN_NOT_ACTIVE_SCHEMA",
+      "description": "Exact lexical Decimal aggregation with explicit weight unit, string wire values, canonical hash preimage excludes self-hash/current authority. No new threshold/default inferred."
+    },
+    {
+      "id": "A_RIGHTS",
+      "state": "SOURCE_PROVENANCE_AND_ADMISSIBLE_USE_BELONG_TO_S1",
+      "description": "Record user-defined Target source use separately from product publication authority (C08). No GICS feed/licence dependency or invented licence/grant blocker for user-authored Theme."
+    }
+  ],
+  "combined_root_count": {
+    "source_blockers": 3,
+    "source_ids": [
+      "S1",
+      "S2",
+      "S3"
+    ],
+    "non_source_blockers": 3,
+    "non_source_ids": [
+      "G1",
+      "G2",
+      "G3"
+    ],
+    "total": 6,
+    "testing_not_run_is_separate_post_implementation_gate_not_counted": true,
+    "exact_chart_merge_result_fpia_is_future_gate_not_duplicate_G3": true,
+    "new_chart_d3": 0
+  }
+}

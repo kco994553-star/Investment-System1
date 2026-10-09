@@ -1,0 +1,178 @@
+{
+  "kind": "PRESERVED_INITIAL_INDEPENDENT_OBSERVATION",
+  "note": "Captured before current diagnostic repair; initial lease/draft/code-hash wording belongs to the recorded observation. Final disposition and verification are in HANDOFF/VALIDATION_RECEIPT/GATES_AND_GAPS.",
+  "observation": {
+    "kind": "READ_ONLY_LANE_B_DIFFERENTIAL_RESUME_AUDIT",
+    "recorded_at_utc": "2026-10-05T04:18:01.440442+00:00",
+    "chart_head": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+    "global_head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+    "fpia_head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+    "session_pr18_head": "2c088cea34314af0ccc33fd2e2dc1ccf21502cb4",
+    "material_changes": {
+      "global_changed_files": [
+        "M\timplementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+        "M\timplementation/docs/coordination/GLOBAL_CURRENT_HANDOFF.md",
+        "M\timplementation/docs/coordination/GLOBAL_HANDOFF_HISTORY.md",
+        "M\timplementation/docs/coordination/GLOBAL_STATUS_INDEX.md",
+        "A\timplementation/docs/coordination/PIW_DECISION_RECORDS.md"
+      ],
+      "fpia_changed_files": [
+        "M\t.github/workflows/track-c-fpia.yml",
+        "M\timplementation/tests/test_integration_fpia_fix2.py",
+        "A\timplementation/tests/test_integration_fpia_fix3.py",
+        "M\timplementation/tools/integration/track_c_fpia.py",
+        "M\timplementation/tools/integration/track_c_fpia_checks.py",
+        "M\timplementation/tools/integration/track_c_fpia_child.py",
+        "M\timplementation/tools/integration/track_c_fpia_git.py",
+        "M\timplementation/tools/integration/track_c_fpia_runner.py",
+        "M\timplementation/tools/integration/track_c_fpia_workflows.py"
+      ],
+      "fpia_market_input_paths_changed": []
+    },
+    "eight_gaps": {
+      "security_identity": "BLOCKED",
+      "listing_identity_history": "BLOCKED",
+      "exchange_session_timezone": "PARTIAL",
+      "dated_session_join": "BLOCKED",
+      "adjustment_basis": "PARTIAL",
+      "corporate_action_basis": "PARTIAL",
+      "historical_available_at": "NOT_AVAILABLE",
+      "quote_state": "UNKNOWN"
+    },
+    "authority_delta": "CDR015 delegates many decisions to the responsible owners; CDR016/017 route current TARGET/Identity/Theme/Product/write-set/FPIA dependencies and retain protected boundaries. This makes owner decisions actionable without repeated user approval but does not provide admitted identities, calendars, source basis, historical available_at or state receipts.",
+    "actual_admission_promotions": 0,
+    "market_admitted_count": 0,
+    "market_subject_count": 19,
+    "material_source_input_change_found": false,
+    "prior_raw_integrity_not_rerun": "No material input change; previous 23155raw/68file/195check evidence retained by reference, not reported as freshly executed.",
+    "preflight_source_sha256": "ca3a8bf5af7e2618a6e362b38d45d6ac59a2b6c5de9dda5bcb3423f89f90d6c3",
+    "preflight_differential_probes": [
+      {
+        "case": "missing_raw_source",
+        "fault_injection_scope": "In-memory replacement of one trusted source read only; no repository/raw bytes changed",
+        "read_paths": [
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "QGV Portfolio · Specification v1.1.md"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/src/investment_system/qgv/portfolio.py"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/src/investment_system/qgv/identifiers.py"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json"
+          }
+        ],
+        "source_inspection": "INVALID",
+        "open_count": 6,
+        "closed_count": 0,
+        "production_payload": null,
+        "actual": {
+          "status": "NOT_AVAILABLE",
+          "root": null,
+          "fallback_to_target": false
+        },
+        "input_unchanged": true,
+        "allocation_function_calls": 0,
+        "source_objects_checked": 4,
+        "findings": [
+          {
+            "code": "SOURCE_PIN_UNRESOLVED",
+            "path": "QGV Portfolio · Specification v1.1.md",
+            "message": "Command '['git', 'show', 'd93c7ace37603d91f1d9342152c97e8acb3d4e8c:QGV Portfolio · Specification v1.1.md']' returned non-zero exit status 128.",
+            "severity": "ERROR"
+          },
+          {
+            "code": "INVALID_REFERENCE_ALLOCATION",
+            "path": "/constituents",
+            "message": "immutable source checks failed; untrusted allocation is not evaluated",
+            "severity": "ERROR"
+          },
+          {
+            "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+            "path": "/owner_return",
+            "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+            "severity": "WARNING"
+          }
+        ],
+        "finding_result": "FAIL-CLOSED; secondary allocation diagnostic labels unexecuted computation as invalid"
+      },
+      {
+        "case": "raw_source_hash_mismatch",
+        "fault_injection_scope": "In-memory replacement of one trusted source read only; no repository/raw bytes changed",
+        "read_paths": [
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "QGV Portfolio · Specification v1.1.md"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/src/investment_system/qgv/portfolio.py"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/src/investment_system/qgv/identifiers.py"
+          },
+          {
+            "commit": "d93c7ace37603d91f1d9342152c97e8acb3d4e8c",
+            "path": "implementation/experiments/chart-contract-v0.1/portfolio_reference.json"
+          }
+        ],
+        "source_inspection": "INVALID",
+        "open_count": 6,
+        "closed_count": 0,
+        "production_payload": null,
+        "actual": {
+          "status": "NOT_AVAILABLE",
+          "root": null,
+          "fallback_to_target": false
+        },
+        "input_unchanged": true,
+        "allocation_function_calls": 0,
+        "source_objects_checked": 4,
+        "findings": [
+          {
+            "code": "SOURCE_HASH_MISMATCH",
+            "path": "QGV Portfolio · Specification v1.1.md",
+            "message": "exact Git source bytes differ",
+            "severity": "ERROR"
+          },
+          {
+            "code": "INVALID_REFERENCE_ALLOCATION",
+            "path": "/constituents",
+            "message": "immutable source checks failed; untrusted allocation is not evaluated",
+            "severity": "ERROR"
+          },
+          {
+            "code": "OWNER_RECEIPTS_UNAUTHENTICATED",
+            "path": "/owner_return",
+            "message": "Filled claims cannot authenticate adopted roots, identities, Theme or current authority. A-G1/A-G2/A-G3 remain separate owner prerequisites.",
+            "severity": "WARNING"
+          }
+        ],
+        "finding_result": "FAIL-CLOSED; secondary allocation diagnostic labels unexecuted computation as invalid"
+      }
+    ],
+    "bounded_diagnostic_defect": {
+      "id": "RAW_SOURCE_FAILURE_SECONDARY_ALLOCATION_MISLABEL",
+      "severity": "DIAGNOSTIC_ONLY",
+      "reproduced": true,
+      "trigger": "One pinned immutable source cannot be read or fails its hash; packet owner fields are otherwise complete synthetic claims.",
+      "observed": "SOURCE_PIN_UNRESOLVED/SOURCE_HASH_MISMATCH is correct, but catch-all emits INVALID_REFERENCE_ALLOCATION even though exact_decimal was never called.",
+      "impact": "Owner follow-up can misattribute a missing/corrupt source object to numerical allocation. All six gates remain open and payload null; no false admission.",
+      "minimum_repair": "Separate the prerequisite-invalid branch from the numeric replay try/except, set reference replay NOT_RUN/source invalid diagnostic instead of INVALID_REFERENCE_ALLOCATION. Preserve source failure code, original failure history and six OPEN gates; numeric parse/total failures still use INVALID_REFERENCE_ALLOCATION.",
+      "lease_boundary": "READONLY now; active Chart writer lease prohibits repository changes. Minimal implementation/negative regression is a next authorized owner action after the existing lease permits it."
+    },
+    "upcoming_owner_intake": "Keep raw candidate bytes and SHA256 plus actual branch/PR/commit/blob path before parsing; reuse existing strict JSON, source pins and structural preflight; never fill owner slots from delegation. Existing v05 request and v06 tool suffice; no new receipt framework needed.",
+    "repository_writes": 0,
+    "remote_publication": false,
+    "source_collection": 0,
+    "production_tests": "NOT_RUN",
+    "actual_chart_fpia": "NOT_RUN"
+  }
+}

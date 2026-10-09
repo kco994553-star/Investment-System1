@@ -1,0 +1,35 @@
+{
+  "schema": "bounded-integration-candidate/1",
+  "base": "c109c81a3e417e5f61fd26b67b171fb13628dc21",
+  "canonical_branch": "claude/investment-system-top500-validation-alrugm",
+  "source_merges": {
+    "63": "558108a657839bc909272b103ab00faeaf25c957",
+    "64": "a81a45a087b4409d2df11bf34b10a7d79bf82c84",
+    "65": "753f225caa2da1877a1e6391df9e10b1085e9578",
+    "66": "47dce4c768f315ff6036e8a34c177920c1d50b14"
+  },
+  "initial_union_tree": "76fe10499a6a5552312857bd076eb083bb039f01",
+  "merge_conflicts": 0,
+  "branch": "codex/v1-1-identity-integration-20261008",
+  "mode": "READ_ONLY",
+  "canonical_merge": false,
+  "scope": "research/reference display and source-backed identity evidence; no production promotion",
+  "dependency_strategy": "Merge four original source results with their inherited required ancestors. PR40/47 EVL/automation stacks are not source dependencies.",
+  "workflow_compatibility_repair": {
+    "path": ".github/workflows/web-mvp-validation.yml",
+    "before": "pip install pytest",
+    "after": "python -m pip install pytest==9.1.1 jsonschema==4.26.0",
+    "red_evidence": "integration-initial.log: ModuleNotFoundError jsonschema",
+    "reason": "Full Web regression now collects adopted QGV tests. Existing triggers, permissions and commands remain unchanged."
+  },
+  "github_ci_compatibility_repair": {
+    "evidence": "CI_COMPATIBILITY_REPAIR.md",
+    "changes": [
+      "web-mvp-validation checkout fetch-depth: 0",
+      "qgv-common-contract-vnext checkout fetch-depth: 0",
+      "web-mvp-validation Python 3.12 matches adopted QGV AST goldens"
+    ],
+    "preserved": "All scoring source, numeric/AST goldens, historical pins, READ_ONLY state and workflow triggers."
+  },
+  "final_subject": "Resolve from actual containing API commit; do not infer from local intermediate merge SHA."
+}

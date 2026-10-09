@@ -1,0 +1,13 @@
+{
+  "source_id": "asml_share_form",
+  "url": "https://www.asml.com/en/investors/shares",
+  "attempt_started_at": "2026-10-04T23:17:36.486932+00:00",
+  "historical_source_available_at": "UNKNOWN",
+  "status": "CAPTURED",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-identity-time/asml_share_form_original.html",
+  "bytes": 66032,
+  "sha256": "96d96ae1c42958ea81cc78cd9bf3def5eeeb78873a607c1b802401b9220a1add",
+  "attempt_completed_at": "2026-10-04T23:17:48.159505+00:00"
+}

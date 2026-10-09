@@ -1,0 +1,193 @@
+{
+  "recorded_at_utc": "2026-10-05T10:47:21.246Z",
+  "baseline": {
+    "chart_start_head": "cda174542f1a1ae95345726f308c24b60262c03b",
+    "global_head": "1596649912554116196c1ad3c1d41797219f5241",
+    "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "lease_head": "00d3d2be6459b35946f84cb920a6a941a0c16207"
+  },
+  "sources": [
+    {
+      "path": "implementation/docs/coordination/policies/Investment-System1_Autonomous_Execution_Decision_Authority_SSoT_v1_1.md",
+      "branch": "integration/global-handoff-v1",
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "git_blob": "4736bbcb508ce1f4310fbe96cbcfdd8e080b275f",
+      "sha256": "e193544159babd5ccb7d74671d9925fa6fd4de406a0e215cda1b08b2264dba3b"
+    },
+    {
+      "path": "implementation/docs/coordination/governance/AUTONOMY_HARD_GUARD_GAPS_v1.1.md",
+      "branch": "integration/global-handoff-v1",
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "git_blob": "1018ff50fc8e624be3b1c9ab403337a4dfc9bb02",
+      "sha256": "e091014187f28f49a793199a444842db002341f3218a093bfdb8760edbff4ead"
+    },
+    {
+      "path": "implementation/docs/coordination/governance/PENDING_D3_RECLASSIFICATION_v1.1.md",
+      "branch": "integration/global-handoff-v1",
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "git_blob": "a556817d4819ed2ec06823a7721927f6f330b975",
+      "sha256": "b2a1e54c8b507b7d70f5eb1b3036058d7b96fe48e2d73b8a63beb421bb543d30"
+    },
+    {
+      "path": "implementation/docs/coordination/evidence/main_terminal_7215_2026-10-05/RECEIPT.json",
+      "branch": "integration/global-handoff-v1",
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "git_blob": "f824be713d3db5533bfe82094511b398d1d5a33b",
+      "sha256": "01826ca81881325d1828d0b8cd9d29946a52c9f9a0028db6d71ad71349561116"
+    },
+    {
+      "path": "implementation/docs/coordination/OWNER_ROUTING_LEDGER.json",
+      "branch": "integration/global-handoff-v1",
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "git_blob": "64d7724e625998552ccc8de700c8fcff53819f2d",
+      "sha256": "064cb5dab4fc2f8c4aa72b512aeeff49a2fce309c87e898f6acdeb170e2ae4c1"
+    },
+    {
+      "path": "implementation/docs/coordination/GLOBAL_STATUS_INDEX.md",
+      "branch": "integration/global-handoff-v1",
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "git_blob": "2ca59d8935267ada959adec4291f00da4ad6da3a",
+      "sha256": "9f01cedb189b3180a17083992a3eebcb985ea11e89c588fd9327d69bf15e3993"
+    },
+    {
+      "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+      "branch": "integration/global-handoff-v1",
+      "head": "1596649912554116196c1ad3c1d41797219f5241",
+      "git_blob": "c1d7c9c45ae65516cef01e6481aee91e5b7c4aad",
+      "sha256": "27329fc02ea91cb4ab00e42f774092f6211ee1119bd9d1c9dce67c9c967cee9c"
+    }
+  ],
+  "gitHub_precedence": [
+    "Global ledger still shows obsolete HELD Chart lease; actual fresh Chart STATE NONE then verified own session lease wins.",
+    "GSI historical GSI033 PR48 PROPOSED superseded by GSI034/CDR024/CDR025/CDR026 adopted actual merge.",
+    "Prior STATE PR47 IN_PROGRESS superseded by exact completed SUCCESS; prior evidence preserved.",
+    "Prior handoff describes enabled Main, fresh provider readback Main disabled wins; actor/reason not available."
+  ],
+  "routing": [
+    {
+      "id": "MAIN-CHART-A-S1-20261005",
+      "state": "FOUND",
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      }
+    },
+    {
+      "id": "MAIN-CHART-A-S2-20261005",
+      "state": "FOUND",
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      }
+    },
+    {
+      "id": "MAIN-CHART-A-S3-20261005",
+      "state": "FOUND",
+      "owner_assignment": "OWNER_UNASSIGNED",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "exact_path_branch_pr": {
+        "branch": null,
+        "head": null,
+        "pr": null
+      }
+    },
+    {
+      "id": "MAIN-CHART-A-G1-20261005",
+      "state": "ROUTED",
+      "owner_assignment": "RESOLVED_CAPABILITY_ROUTE",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "exact_path_branch_pr": {
+        "branch": "feature/p01-research-publication-v1",
+        "head": "21039a0a7f9677b123abd8587fd8d89784a73a3c",
+        "pr": 17
+      }
+    },
+    {
+      "id": "MAIN-CHART-A-G2-20261005",
+      "state": "ROUTED",
+      "owner_assignment": "RESOLVED_CAPABILITY_ROUTE",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "exact_path_branch_pr": {
+        "branch": "integration/web/production-state-presentation-v1",
+        "head": "fb086eac4321140493ce554a541343cebbb81ed6",
+        "pr": 36
+      }
+    },
+    {
+      "id": "MAIN-CHART-A-G3-20261005",
+      "state": "IN_PROGRESS",
+      "owner_assignment": "RESOLVED_CAPABILITY_ROUTE",
+      "receipt": null,
+      "last_consumed_revision": null,
+      "exact_path_branch_pr": {
+        "branch": "codex/fpia-fix3-literal-repair-2026-10-05",
+        "head": "6fea6c7f0a191a4e621941ce3f6a7cac83a7f3d6",
+        "pr": 46
+      }
+    }
+  ],
+  "comments": [
+    {
+      "pr": 17,
+      "complete": true,
+      "items": [
+        {
+          "id": 5988265306,
+          "updated_at": "2026-10-05T04:44:18Z",
+          "body_sha256": "219c87643e46bf46a2bcaa48453958a64f49347188f217cbb19e8f7f281b2971"
+        }
+      ]
+    },
+    {
+      "pr": 18,
+      "complete": true,
+      "items": [
+        {
+          "id": 5950833091,
+          "updated_at": "2026-10-02T10:54:13Z",
+          "body_sha256": "e7354fd9eb298954e750257b8fa8f58f5ffec8526587ed566fea2faee841e185"
+        },
+        {
+          "id": 5988265466,
+          "updated_at": "2026-10-05T04:44:19Z",
+          "body_sha256": "b6846638d591437159001865e85bbeb7cfd759e89d9b3252360c40ee7a17f969"
+        }
+      ]
+    },
+    {
+      "pr": 36,
+      "complete": true,
+      "items": [
+        {
+          "id": 5988265604,
+          "updated_at": "2026-10-05T04:44:20Z",
+          "body_sha256": "bdbb491a262fdbda87b1e0258a1381adbf0158ee4808ecce62cf45319fa8e2b1"
+        },
+        {
+          "id": 5988663367,
+          "updated_at": "2026-10-05T05:27:23Z",
+          "body_sha256": "93e749e90beb84d5826af51b8e61a6a5cd677e2c7721810761ce353e4d995f46"
+        }
+      ]
+    },
+    {
+      "pr": 47,
+      "complete": true,
+      "items": []
+    }
+  ],
+  "new_owner_production_acceptance": false,
+  "sourceOwners": "Portfolio/Identity/Theme unassigned; P01/Web routes have unanswered requests; no new admission returned.",
+  "new_collection": 0
+}

@@ -1,0 +1,53 @@
+{
+  "captured_at_kst": "2026-10-05T09:18:17.501816+09:00",
+  "repo": "kco994553-star/Investment-System1",
+  "canonical": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+  "pr44": {
+    "number": 44,
+    "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+    "draft": true,
+    "state": "open",
+    "merged": false,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/44",
+    "tree": "a951276e66ed01614e27b0b00c4c14bb4f3e00ca"
+  },
+  "publication_evidence_head": "11cd2f5ac545af54d943dc206396c1fb6926689c",
+  "integration": "523e702a806a718d163cfbf62aa3fc29d8c3ef3c",
+  "actions": [
+    {
+      "id": 37245037812,
+      "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37245037812"
+    },
+    {
+      "id": 37245014376,
+      "head": "cb1906b207623168fd70f3dcdb5b30f2d82d807d",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37245014376"
+    }
+  ],
+  "checks": [
+    {
+      "name": "neutral-contract",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "neutral-contract",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "head_impact": "PR44 transport replacement has the original tree. Production sources unchanged. Retain existing verified remote contract/golden/regression; no recovery repeated.",
+  "scope": "MISSING_DATA_DECISION_DESIGN_ONLY; RECOMMENDED_NOT_APPROVED; NO_PRODUCTION_MIGRATION",
+  "global_handoff_head": "9d9b2b2b942cfa6d1f7b296ad81d380ec6a70b3e",
+  "source_head_impact": {
+    "original_to_published_tree_diff": "",
+    "integration_changed": false
+  }
+}

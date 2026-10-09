@@ -1,0 +1,115 @@
+{
+  "schema": "CHART_SCOPED_FRESH_GITHUB_READ_RECEIPT_V08",
+  "observed_at_kst": "2026-10-05T13:29:58+09:00",
+  "canonical": {
+    "branch": "claude/investment-system-top500-validation-alrugm",
+    "head": "b8e39a2196a6d7794a04a0cd5393c68329e126ca"
+  },
+  "chart": {
+    "branch": "codex/chart-contract-mcp-api-v0-1",
+    "pr": 41,
+    "takeover_head": "a0ad46bb56b1cca137550e3ca88d5d066cdc61f1",
+    "verified_lease_head": "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+    "base": "b8e39a2196a6d7794a04a0cd5393c68329e126ca",
+    "state": "open",
+    "draft": true
+  },
+  "global": {
+    "branch": "integration/global-handoff-v1",
+    "head": "b3532a2ebbe95310bbf222937466eb04a0211263",
+    "decision_entries": [
+      "CDR-015",
+      "CDR-016",
+      "CDR-017"
+    ],
+    "handoff": "GCH-015",
+    "status_index": "GSI-022",
+    "actual_decision_receipt_entries": 0
+  },
+  "fpia": {
+    "pr": 42,
+    "branch": "integration/fpia-hardened-v1",
+    "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+    "base": "acaf1b5a82859ac2750a130ebe88f8b4d272ac66",
+    "reviews_count": 0,
+    "runs": [
+      {
+        "id": 37260997662,
+        "attempt": 1,
+        "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "status": "completed",
+        "conclusion": "success",
+        "name": "technical-real-producer",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997662"
+      },
+      {
+        "id": 37260997773,
+        "attempt": 1,
+        "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "status": "completed",
+        "conclusion": "success",
+        "name": "technical-real-model",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997773"
+      },
+      {
+        "id": 37260997788,
+        "attempt": 1,
+        "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "status": "in_progress",
+        "conclusion": null,
+        "name": "track-c-fpia",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997788"
+      },
+      {
+        "id": 37260997660,
+        "attempt": 1,
+        "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "status": "completed",
+        "conclusion": "success",
+        "name": "sec-primary-disclosure",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997660"
+      },
+      {
+        "id": 37260997658,
+        "attempt": 1,
+        "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "status": "completed",
+        "conclusion": "success",
+        "name": "us-equity-session",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997658"
+      },
+      {
+        "id": 37260997655,
+        "attempt": 1,
+        "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "status": "completed",
+        "conclusion": "success",
+        "name": "qgv-invalidation-binding",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997655"
+      },
+      {
+        "id": 37260997708,
+        "attempt": 1,
+        "head": "11d2f25ef8bef3459ca969f50eec190099f15ecb",
+        "status": "completed",
+        "conclusion": "success",
+        "name": "p01-research-publication",
+        "html_url": "https://github.com/kco994553-star/Investment-System1/actions/runs/37260997708"
+      }
+    ],
+    "governance_closure": false,
+    "chart_merge_result": "NOT_RUN"
+  },
+  "chart_takeover_actions": {
+    "head": "ebeb8b1f2693703d33cff2610c277c7ce3dcbb18",
+    "total": 0,
+    "production_actions": "NOT_RUN"
+  },
+  "pr_body_conflict": {
+    "pr42": "Body retained older FPIA head/status; exact Git/Actions source governs"
+  },
+  "source_inspection_ref": "SOURCE_RECHECK.json",
+  "governance_inspection_ref": "GOVERNANCE_RECHECK.json",
+  "market_inspection_ref": "MARKET_RECHECK.json",
+  "open_pr_inventory": "39 open PRs freshly read at 13:22 KST; no additional Portfolio/Identity/Platform Chart dependency observed"
+}

@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "scope": "Operational policy targeted consistency only",
+  "checks": {
+    "scope_preserved": true,
+    "D3_preserved": true,
+    "production_inactive": true,
+    "all_wait_conditions": true,
+    "re_evaluate": true,
+    "risk_policy_exact": true,
+    "manual_hops_zero": true,
+    "no_duplicate_poll": true,
+    "bounded_agents": true
+  },
+  "policy_sha256": "5037e5dcaa0ca55afff4e6641de418d9542507786d1ad06c6ad851142bbd3ce8",
+  "method_semantic_changes": 0,
+  "new_Actions": false
+}

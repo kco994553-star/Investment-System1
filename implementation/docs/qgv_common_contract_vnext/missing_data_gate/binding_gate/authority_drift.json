@@ -1,0 +1,12 @@
+{
+  "observed_global_head": "d92363f0dd4e4865bcd329d577c5de7bfdd029c8",
+  "register_path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+  "register_sha256": "e4dfb35392e173f4ad780e447608613c16010bd6214358e4dc41461424a738eb",
+  "decision_id": "CDR-015",
+  "recorded_scope": "Global user delegation includes policy/migration/merge as D2 and only paid resources as D3",
+  "verbatim_record_location": "d92363f0dd4e4865bcd329d577c5de7bfdd029c8:implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+  "current_turn_scope": "Explicit current QGV request prohibits production implementation/method replacement/role predicate adoption/migration/merge and limits this execution to recommendation and continuation repair",
+  "resolution": "Finish this specifically bounded task as requested; retain new global delegation as observed evidence, do not infer repeal of current explicit narrower task limitations or adopt result-affecting policy in this execution",
+  "production_change": false,
+  "global_write": false
+}

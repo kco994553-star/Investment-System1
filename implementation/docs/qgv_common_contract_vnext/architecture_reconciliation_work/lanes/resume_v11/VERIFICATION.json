@@ -1,0 +1,69 @@
+{
+  "lane": "FAST",
+  "checks": 12,
+  "passed": 12,
+  "failed": 0,
+  "results": [
+    {
+      "id": "current_merged_authority_exact_CDR026",
+      "passed": true
+    },
+    {
+      "id": "all_twelve_raw_input_identities_match_immutable_remote_trees",
+      "passed": true
+    },
+    {
+      "id": "three_Main_quoted_return_hashes_match_original_completed_scope",
+      "passed": true
+    },
+    {
+      "id": "negative_generic_consumption_cannot_close_explicitly_unacknowledged_policy",
+      "passed": true
+    },
+    {
+      "id": "all_ten_reserved_groups_unchanged_and_no_D3_A_executed",
+      "passed": true
+    },
+    {
+      "id": "semantic_and_protected_control_fields_preserved",
+      "passed": true
+    },
+    {
+      "id": "history_preserved_exact_suffix_and_prior_completion",
+      "passed": true
+    },
+    {
+      "id": "seventyeight_unchanged_artifacts_reuse_original193checks_without_rerun",
+      "passed": true
+    },
+    {
+      "id": "candidate_has_no_autoapproval_or_runtime_readiness",
+      "passed": true
+    },
+    {
+      "id": "session_only_no_killswitch_or_scheduler_activation",
+      "passed": true
+    },
+    {
+      "id": "only_own_lease_released",
+      "passed": true
+    },
+    {
+      "id": "independent_delivery_review_pass_and_remaining_READY_zero",
+      "passed": true
+    }
+  ],
+  "original_runtime_suite_reruns": 0,
+  "production_blockers_closed": 0,
+  "new_D3_A": 0,
+  "independent_review_sha256": "a6a00c7a9bb5ebd68f81ac18e2e91eb36ae98b8128f55dd9eb13a92486557d81",
+  "not_claimed": [
+    "new_HEAD_CI",
+    "runtime_acceptance",
+    "policy_specific_Main_ACK",
+    "real_PIT_OOS",
+    "genuine_scheduler_continuation",
+    "Hard_Guard_verified",
+    "unattended_execution"
+  ]
+}

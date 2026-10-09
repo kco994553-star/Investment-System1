@@ -1,0 +1,39 @@
+name: qgv-common-contract-vnext
+on:
+  push:
+    branches: ['codex/qgv-common-contract-vnext-spec-2026-10-04']
+  pull_request:
+    paths:
+      - 'implementation/docs/qgv_common_contract_vnext/**'
+      - 'implementation/tools/qgv_contract_audit.py'
+      - 'implementation/tests/test_qgv_common_contract_vnext.py'
+      - '.github/workflows/qgv-common-contract-vnext.yml'
+permissions:
+  contents: read
+jobs:
+  neutral-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: implementation
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test-only dependencies
+        run: python -m pip install pytest==9.1.1 jsonschema==4.26.0
+      - name: Existing targeted regression
+        run: PYTHONPATH=src:. python -m pytest -q tests/test_analysis_scoring.py tests/test_v_prior_and_c15.py tests/test_g_horizon.py tests/test_raw_and_providers.py tests/test_pil_p0_contracts.py tests/test_product_strategy_validation.py
+      - name: Inactive contract and golden/isolation/provenance checks
+        run: |
+          PYTHONPATH=src:. python -m pytest -q tests/test_qgv_common_contract_vnext.py
+          PYTHONPATH=src:. python tools/qgv_contract_audit.py --verify
+      - name: Existing plus additive regression
+        run: PYTHONPATH=src:. python -m pytest -q
+      - name: Preserve tracked content
+        run: git diff --exit-code

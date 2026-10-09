@@ -1,0 +1,27 @@
+PASS NVDA resolves COMPANY:nvda
+PASS nvda resolves COMPANY:nvda
+PASS NVIDIA resolves COMPANY:nvda
+PASS NVIDIA Corporation resolves COMPANY:nvda
+PASS 엔비디아 resolves COMPANY:nvda
+PASS nvida resolves COMPANY:nvda
+PASS nvdia resolves COMPANY:nvda
+PASS 엔디비아 resolves COMPANY:nvda
+PASS nvd resolves COMPANY:nvda
+PASS 엔비디 resolves COMPANY:nvda
+PASS ASML
+PASS 에이에스엠엘
+PASS industry
+PASS macro
+PASS no fabricated investor
+PASS false-positive zzzzzzzz
+PASS false-positive unrelated penguin
+PASS false-positive 엔진오일
+PASS false-positive n
+PASS normalization
+PASS explainability
+PASS deterministic ties and ranking
+PASS registered investor, historical name, duplicate alias
+PASS ko/en deterministic fallback and terminology
+PASS locale/source independence and corrupt storage preservation
+PASS index and locale never mutate producer data or ranks
+{"passed":true,"checks":26,"entities":509,"average_query_ms":0.8100297499999999}

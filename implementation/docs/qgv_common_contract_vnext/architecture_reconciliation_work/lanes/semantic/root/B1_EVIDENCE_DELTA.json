@@ -1,0 +1,23 @@
+{
+  "record_kind": "ADDITIVE_B1_EVIDENCE_NOT_REQUIREDNESS_BINDING",
+  "approval_id": "QGV-G1-G2-SEMANTICS-2026-10-05",
+  "approval_ref": {
+    "commit": "2ba29b048c8601145c4a2cca0f85299c07262286",
+    "path": "implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/lanes/semantic/root/approval.json",
+    "sha256": "5be72465e1882f5913f723e7857d8ee6b27f0f8f4e9d051b88ab2b809a0f0f2c"
+  },
+  "new_authority": {
+    "G1_factor_economic_target": "SUPPORTED_BY_EXPLICIT_USER_APPROVAL_LONG_HORIZON_REALIZED_GROWTH",
+    "G1_legacy_proxy_equivalence": "EXPLICITLY_NOT_EQUIVALENT",
+    "G2_substitution_boundary": "SUPPORTED_BY_EXPLICIT_USER_APPROVAL_NO_AUTOMATIC_CROSS_METRIC_SUBSTITUTION",
+    "G2_legacy_fallback_equivalence": "EXPLICITLY_NOT_EQUIVALENT"
+  },
+  "remaining_gaps": ["Actual approved method/input obligations", "Horizon/window/observation and vintage policy", "EPS alternative/applicability policy", "Exact per-input period/unit/share/source closure", "Independent consumer admission authority"],
+  "B1": "MORE_EVIDENCE_REQUIRED",
+  "requiredness_assignments": 0,
+  "factor_count": 20,
+  "requiredness_candidate_promotions": 0,
+  "prior_3_SUPPORTED_10_PROPOSED_7_UNRESOLVED_inventory": "PRESERVED_WITHOUT_REWRITE",
+  "runtime_enabled": false,
+  "production_requiredness_approved": false
+}

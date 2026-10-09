@@ -1,0 +1,50 @@
+{
+  "kind": "READ_ONLY_DETERMINISTIC_EVIDENCE_NOT_PRODUCTION_TEST",
+  "cases": [
+    {
+      "kind": "BAR_LABEL_NOT_ACTUAL_SESSION_OPEN",
+      "symbol": "042700.KS",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_042700_KS_5y_original.json",
+      "raw_sha256": "0fd4f74e03fa3908dda2ae4b7970537fef9e1d855003bd7179c6a3f180390552",
+      "raw_index": 1004,
+      "raw_timestamp": 1762992000,
+      "raw_local_time": "2025-11-13T09:00:00+09:00",
+      "official_session_open_local": "2025-11-13T10:00:00+09:00",
+      "official_session_close_local": "2025-11-13T16:30:00+09:00",
+      "authority_source": "krx_kospi_csat_2025",
+      "deterministic_result": "RAW_TIMESTAMP_DIFFERS_FROM_ACTUAL_SESSION_OPEN",
+      "possible_explanation": "UNKNOWN; no provider timestamp semantics documentation captured",
+      "treatment": "Preserve raw label; require explicit provider-label\u2192dated-session rule; do not move raw timestamp or copy US exact-open binder blindly."
+    },
+    {
+      "kind": "PROVIDER_SYMBOL_SERIES_PRECEDES_REGULAR_WAY_LISTING",
+      "symbol": "GEV",
+      "raw_path": "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/probe_GEV_5y_original.json",
+      "raw_sha256": "b770d191537550b1ca9c2ec38c50ec8b8fd66f0134f624260f87fdac76b7c3ee",
+      "pre_regular_way_rows": [
+        {
+          "raw_index": 0,
+          "timestamp": 1711546200,
+          "local_time": "2024-03-27T09:30:00-04:00"
+        },
+        {
+          "raw_index": 1,
+          "timestamp": 1711632600,
+          "local_time": "2024-03-28T09:30:00-04:00"
+        },
+        {
+          "raw_index": 2,
+          "timestamp": 1711978200,
+          "local_time": "2024-04-01T09:30:00-04:00"
+        }
+      ],
+      "authority_sources": [
+        "gev_when_issued",
+        "gev_regular_way"
+      ],
+      "deterministic_result": "3_RAW_BARS_BEFORE_CONFIRMED_REGULAR_WAY_START",
+      "possible_explanation": "Issuer documents anticipated GEV WI when-issued period, consistent in dates; exact vendor series origin/mapping UNKNOWN. Not certified equivalence.",
+      "treatment": "Preserve rows; bind trading regime and effective listing/provider interval before historical admission."
+    }
+  ]
+}

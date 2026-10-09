@@ -519,3 +519,24 @@ Conservative D2 containment is implemented: the Gate blocks on UNRECONCILED_SHAR
 ## Track A final Freeze record — 2026-09-27T20:50:49.316653+09:00
 
 Track A REAL-DATA Baseline **FROZEN** in local commit/package; canonical GitHub upload is still blocked (prior integration HTTP403). Validated source `682bbae1687d237f72c3f2266913b8bf61f1ff0b`. C-40/C-41 resolved; CA-UNIT-v1.0 approved; original20+3 D3-C cases audited. Corrected Gate and exact Official consistency pass for 2024-06-30/09-30/12-31; 3-date Walk-Forward equals singles; network-inclusive500 benchmark completed; raw6830 integrity and regression396/396 pass. No new D3-P. Baseline freeze does not promote PROVISIONAL_RESEARCH calibration or modify other tracks. Final machine record: `implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json`. Work stopped as instructed. Earlier Track A blocked entries are historical and superseded by this record.
+
+
+## C-03 → RESOLVED · QGV Scoring Standard v1 adoption · 2026-10-08
+
+Status: RESOLVED, effective receipt time 2026-10-08T11:50:25Z.
+Authority: explicit user D3-R, Global Decision Register CDR040. Q7 is
+**Management Quality (경영진 품질)**; Capital Allocation is a subordinate
+interpretation of Management Quality. `management_quality` factor identity and
+10% weight remain unchanged. This entry supersedes the earlier C-03
+DECISION REQUIRED/OPEN-ISOLATED status from the adoption time; historical
+entries and prior provisional evidence above are preserved verbatim.
+
+Standard: **STANDARD v1 · UNCALIBRATED**. No calibration/type matrix is applied,
+no past record is relabelled, and no earlier adoption is asserted.
+Specification: `implementation/docs/qgv_scoring_standard/QGV_SCORING_STANDARD_v1.md`,
+source exact HEAD `d1566aeb1bbf11b1d514ad874b069d8b127ff1c7`.
+Verification: fixed v1 weights, Q7 identity/name, unchanged scores, research V
+isolation and forward adoption tests; all existing QGV native regressions.
+The verification result and final implementation HEAD are recorded in the
+Main completion receipt after execution. No other conflict is resolved by
+this C-03 entry.
