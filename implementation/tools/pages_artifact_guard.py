@@ -32,7 +32,7 @@ APPROVED_SHA256 = {
     "app.js": "ab19b9506b02a8a1619a486fd1361ee1e3c35ee1b9012a9e9eecd97721e06e5d",
     "data.json": "735aadfdf26197013e1478e60974d42c920c089c19dd99f91687a0dfd38b9536",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
-    "device-actual.js": "6529d532ef0a538bc368a808cb78f2fcbc965f6509d4c4a76c1e323e34e791fd",
+    "device-actual.js": "29bbc4369c808434c6b870d4861da6be3f642d068f2ca6bf935d04c22e81d20b",
     "device-market.js": "922c99ea78487a736b89a81d643c4f814355f0bad603fb370a086629bba7e916",
     "entities.json": "465354a2bc2846f4d85ad6306d2dda3aa5cb5601e4d3520281ec013bf402c424",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",

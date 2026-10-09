@@ -8,6 +8,7 @@
   const SCHEMA = 'device-actual-holdings/1';
   const DB_NAME = 'investment-device-actual-v1', STORE = 'snapshots', KEY = 'actual', MARKET_KEY = 'market', API_RECORD_KEY = 'api-settings';
   const MAX_FILE_BYTES = 131072, CURRENCIES = Object.freeze(['USD', 'JPY', 'KRW']);
+  const MISSING_RECORD = Object.freeze({ missingRecord: true });
   const DECIMAL = /^(?:0|[1-9]\d{0,14})(?:\.\d{1,12})?$/;
   const hosts = new WeakMap();
   const UI = {
@@ -192,35 +193,73 @@
       const values = {}; let tx;
       try {
         tx = db.transaction(STORE, 'readonly'); const store = tx.objectStore(STORE);
-        for (const key of requestedKeys) { const request = store.get(key); request.onsuccess = () => { values[key] = request.result === undefined ? null : request.result; }; }
+        for (const key of requestedKeys) {
+          const request = store.get(key); request.onsuccess = () => { values[key] = request.result; };
+          const presence = store.getKey(key); presence.onsuccess = () => { if (presence.result === undefined) values[key] = MISSING_RECORD; };
+        }
       } catch (_) { db.close(); reject(new Error('STORAGE')); return; }
       tx.oncomplete = () => { db.close(); resolve(values); };
       tx.onabort = tx.onerror = () => { db.close(); reject(new Error('STORAGE')); };
     });
   }
-  async function commitStored(view, values, expected, explicitDeletion = false) {
+  function storedEqual(left, right, forward = new Map(), reverse = new Map()) {
+    if (Object.is(left, right)) return true;
+    if (left === MISSING_RECORD || right === MISSING_RECORD || left === null || right === null || typeof left !== 'object' || typeof right !== 'object') return false;
+    if (forward.has(left) || reverse.has(right)) return forward.get(left) === right && reverse.get(right) === left;
+    const tag = Object.prototype.toString.call(left);
+    if (tag !== Object.prototype.toString.call(right) || Object.getPrototypeOf(left) !== Object.getPrototypeOf(right)) return false;
+    forward.set(left, right); reverse.set(right, left);
+    const equal = (a, b) => storedEqual(a, b, forward, reverse);
+    if (tag === '[object Date]') return Object.is(left.getTime(), right.getTime());
+    if (tag === '[object RegExp]') return left.source === right.source && left.flags === right.flags && left.lastIndex === right.lastIndex;
+    if (tag === '[object Map]') {
+      if (left.size !== right.size) return false;
+      const other = right.entries();
+      for (const [key, value] of left) { const next = other.next().value; if (!equal(key, next[0]) || !equal(value, next[1])) return false; }
+      return true;
+    }
+    if (tag === '[object Set]') {
+      if (left.size !== right.size) return false;
+      const other = right.values();
+      for (const value of left) if (!equal(value, other.next().value)) return false;
+      return true;
+    }
+    if (tag === '[object ArrayBuffer]') {
+      // Resizable buffers and their views carry hidden length-tracking state.
+      // Preserve these corrupt records instead of comparing only current bytes.
+      if (left.resizable || right.resizable) return false;
+      if (left.byteLength !== right.byteLength) return false;
+      const a = new Uint8Array(left), b = new Uint8Array(right);
+      return a.every((value, i) => value === b[i]);
+    }
+    if (ArrayBuffer.isView(left)) return left.byteOffset === right.byteOffset && left.byteLength === right.byteLength && equal(left.buffer, right.buffer);
+    if (['[object Boolean]', '[object Number]', '[object String]', '[object BigInt]'].includes(tag)) return Object.is(left.valueOf(), right.valueOf());
+    // Opaque structured clones (for example Blob/File) cannot be compared by
+    // metadata alone. Preserve them rather than guessing that cleanup is safe.
+    if (!['[object Object]', '[object Array]', '[object Error]'].includes(tag)) return false;
+    const a = Object.getOwnPropertyNames(left).sort(), b = Object.getOwnPropertyNames(right).sort();
+    return a.length === b.length && a.every((key, i) => key === b[i] && equal(left[key], right[key]));
+  }
+  function storedValues(values) { return Object.fromEntries(Object.entries(values).map(([key, value]) => [key, value === null ? MISSING_RECORD : value])); }
+  async function commitStored(view, values, expected) {
     const db = await openDatabase(view);
     return new Promise((resolve, reject) => {
       let tx, conflict = false;
       try {
         tx = db.transaction(STORE, 'readwrite'); const store = tx.objectStore(STORE), entries = Object.entries(values);
         const write = () => { for (const [key, value] of entries) { if (value === null) store.delete(key); else store.put(value, key); } };
-        // Explicit deletion can clear corrupt structured-clone values, including
-        // circular objects and BigInts that cannot be serialized for comparison.
-        if (explicitDeletion) write();
-        else {
-          const current = {}; let pending = entries.length;
-          for (const [key] of entries) {
-            const request = store.get(key);
-            request.onsuccess = () => {
-              current[key] = request.result === undefined ? null : request.result;
-              if (--pending) return;
-              try {
-                if (entries.some(([key]) => canonical(current[key]) !== canonical(expected[key]))) { conflict = true; tx.abort(); return; }
-                write();
-              } catch (_) { try { tx.abort(); } catch (_) {} }
-            };
-          }
+        const current = {}; let pending = entries.length;
+        for (const [key] of entries) {
+          const request = store.get(key); request.onsuccess = () => { current[key] = request.result; };
+          const presence = store.getKey(key);
+          presence.onsuccess = () => {
+            if (presence.result === undefined) current[key] = MISSING_RECORD;
+            if (--pending) return;
+            try {
+              if (entries.some(([key]) => !storedEqual(current[key], expected[key]))) { conflict = true; tx.abort(); return; }
+              write();
+            } catch (_) { try { tx.abort(); } catch (_) {} }
+          };
         }
       } catch (_) { if (tx) { try { tx.abort(); } catch (_) {} } db.close(); reject(new Error('STORAGE')); return; }
       tx.oncomplete = () => { db.close(); resolve(); };
@@ -329,7 +368,7 @@
       const next = makeSnapshot(state.catalog, rows, state.snapshot), market = marketApi(state).makeMarket(state.catalog, quotes, fx, state.market);
       const raw = { [KEY]: next, [MARKET_KEY]: market };
       await commitStored(state.view, raw, state.raw);
-      state.snapshot = next; state.market = market; state.raw = raw; repaintSummary(state); notice(state, 'saved'); announce(state);
+      state.snapshot = next; state.market = market; state.raw = storedValues(raw); repaintSummary(state); notice(state, 'saved'); announce(state);
     } catch (error) { errorNotice(state, error); } finally { setBusy(state, false); }
   }
   async function importFile(state, file) {
@@ -341,7 +380,7 @@
       if (new state.view.TextEncoder().encode(text).byteLength > MAX_FILE_BYTES) { notice(state, 'tooLarge'); return; }
       const payload = JSON.parse(text), imported = marketApi(state).importBackup(payload, state.catalog);
       const sourceSnapshot = validate(imported.snapshot, state.catalog);
-      if ((state.raw[KEY] !== null || state.raw[MARKET_KEY] !== null) && !state.view.confirm(t(state, 'overwrite'))) { notice(state, 'canceled'); return; }
+      if ((state.raw[KEY] !== MISSING_RECORD || state.raw[MARKET_KEY] !== MISSING_RECORD) && !state.view.confirm(t(state, 'overwrite'))) { notice(state, 'canceled'); return; }
       const next = prepareImport(sourceSnapshot, state.catalog, state.snapshot);
       let market = null;
       if (payload.schema !== SCHEMA) {
@@ -352,7 +391,7 @@
       }
       const raw = { [KEY]: next, [MARKET_KEY]: market };
       await commitStored(state.view, raw, state.raw);
-      state.snapshot = next; state.market = market; state.raw = raw; populate(state); repaintSummary(state); notice(state, 'imported'); announce(state);
+      state.snapshot = next; state.market = market; state.raw = storedValues(raw); populate(state); repaintSummary(state); notice(state, 'imported'); announce(state);
     } catch (error) { errorNotice(state, error); } finally { state.importInput.value = ''; setBusy(state, false); }
   }
   function exportFile(state) {
@@ -370,18 +409,18 @@
     setBusy(state, true);
     try {
       const raw = { [KEY]: null, [MARKET_KEY]: null };
-      await commitStored(state.view, raw, state.raw, state.storageProblem);
-      state.raw = raw; state.snapshot = null; state.market = null; state.storageProblem = false; populate(state); repaintSummary(state); notice(state, 'removed'); announce(state);
+      await commitStored(state.view, raw, state.raw);
+      state.raw = storedValues(raw); state.snapshot = null; state.market = null; state.storageProblem = false; populate(state); repaintSummary(state); notice(state, 'removed'); announce(state);
     } catch (error) { errorNotice(state, error); } finally { setBusy(state, false); }
   }
   async function initialState(host, options) {
     if (!host || !host.ownerDocument || !options) fail('INVALID'); catalogIndex(options.catalog);
-    const state = { host, view: host.ownerDocument.defaultView, catalog: clone(options.catalog), locale: options.locale === 'en-US' ? 'en-US' : 'ko-KR', quotes: options.quotes || [], externalQuotes: Object.prototype.hasOwnProperty.call(options, 'quotes'), snapshot: null, market: null, raw: { [KEY]: null, [MARKET_KEY]: null }, storageProblem: false, busy: false, formRows: [], fxRows: [] };
+    const state = { host, view: host.ownerDocument.defaultView, catalog: clone(options.catalog), locale: options.locale === 'en-US' ? 'en-US' : 'ko-KR', quotes: options.quotes || [], externalQuotes: Object.prototype.hasOwnProperty.call(options, 'quotes'), snapshot: null, market: null, raw: { [KEY]: MISSING_RECORD, [MARKET_KEY]: MISSING_RECORD }, storageProblem: false, busy: false, formRows: [], fxRows: [] };
     try {
       state.raw = await readStored(state.view);
-      if (state.raw[KEY] !== null) state.snapshot = validate(state.raw[KEY], state.catalog);
-      if (state.raw[MARKET_KEY] !== null) state.market = marketApi(state).validateMarket(state.raw[MARKET_KEY], state.catalog);
-    } catch (error) { state.snapshot = null; state.market = null; state.storageProblem = true; state.initialError = state.raw[KEY] !== null || state.raw[MARKET_KEY] !== null ? 'corrupt' : 'readFailed'; }
+      if (state.raw[KEY] !== MISSING_RECORD) state.snapshot = validate(state.raw[KEY], state.catalog);
+      if (state.raw[MARKET_KEY] !== MISSING_RECORD) state.market = marketApi(state).validateMarket(state.raw[MARKET_KEY], state.catalog);
+    } catch (error) { state.snapshot = null; state.market = null; state.storageProblem = true; state.initialError = state.raw[KEY] !== MISSING_RECORD || state.raw[MARKET_KEY] !== MISSING_RECORD ? 'corrupt' : 'readFailed'; }
     hosts.set(host, state); return state;
   }
   function inputLabel(state, row, field, text, attributes = {}) {
@@ -433,7 +472,7 @@
     const update = async () => {
       if (!host.isConnected || hosts.get(host) !== state) { host.ownerDocument.removeEventListener('device-actual-changed', update); return; }
       try {
-        const raw = await readStored(state.view), snapshot = raw[KEY] === null ? null : validate(raw[KEY], state.catalog), market = raw[MARKET_KEY] === null ? null : marketApi(state).validateMarket(raw[MARKET_KEY], state.catalog);
+        const raw = await readStored(state.view), snapshot = raw[KEY] === MISSING_RECORD ? null : validate(raw[KEY], state.catalog), market = raw[MARKET_KEY] === MISSING_RECORD ? null : marketApi(state).validateMarket(raw[MARKET_KEY], state.catalog);
         state.snapshot = snapshot; state.market = market; state.raw = raw; repaintSummary(state);
       } catch (_) { state.snapshot = null; state.market = null; repaintSummary(state); }
     };
@@ -447,9 +486,9 @@
   }
   async function settings(host, options) {
     if (!host || !host.ownerDocument || !options) fail('INVALID'); catalogIndex(options.catalog);
-    const state = { host, view: host.ownerDocument.defaultView, locale: options.locale === 'en-US' ? 'en-US' : 'ko-KR', raw: { [API_RECORD_KEY]: null }, busy: false, storageProblem: false };
+    const state = { host, view: host.ownerDocument.defaultView, locale: options.locale === 'en-US' ? 'en-US' : 'ko-KR', raw: { [API_RECORD_KEY]: MISSING_RECORD }, busy: false, storageProblem: false };
     let stored = false;
-    try { state.raw = await readStored(state.view, [API_RECORD_KEY]); if (state.raw[API_RECORD_KEY] !== null) { validateSettings(state.raw[API_RECORD_KEY]); stored = true; } }
+    try { state.raw = await readStored(state.view, [API_RECORD_KEY]); if (state.raw[API_RECORD_KEY] !== MISSING_RECORD) { validateSettings(state.raw[API_RECORD_KEY]); stored = true; } }
     catch (_) { state.storageProblem = true; }
     const root = el(state, 'section', undefined, { class: 'device-actual actual-api-settings', 'data-device-api-settings': '' }); state.root = root;
     root.append(el(state, 'h2', t(state, 'apiTitle')), el(state, 'p', t(state, 'apiPrivacy')), el(state, 'p', t(state, 'apiPending')));
@@ -465,13 +504,13 @@
       event.preventDefault(); if (state.busy || state.storageProblem) return; setBusy(state, true);
       try {
         const value = validateSettings({ schema: 'device-api-settings/1', service: 'NOT_SELECTED', enabled: false, api_key: state.keyInput.value });
-        const raw = { [API_RECORD_KEY]: value }; await commitStored(state.view, raw, state.raw); state.raw = raw; state.keyInput.value = ''; setStatus(true); notice(state, 'apiSaved');
+        const raw = { [API_RECORD_KEY]: value }; await commitStored(state.view, raw, state.raw); state.raw = storedValues(raw); state.keyInput.value = ''; setStatus(true); notice(state, 'apiSaved');
       } catch (error) { notice(state, ['STORAGE', 'CONFLICT'].includes(error.message) ? 'apiStorage' : 'apiInvalid'); }
       finally { state.keyInput.value = ''; setBusy(state, false); }
     });
     removeButton.addEventListener('click', async () => {
       if (state.busy) return; setBusy(state, true);
-      try { const raw = { [API_RECORD_KEY]: null }; await commitStored(state.view, raw, state.raw, state.storageProblem); state.raw = raw; state.storageProblem = false; state.keyInput.value = ''; setStatus(false); notice(state, 'apiRemoved'); }
+      try { const raw = { [API_RECORD_KEY]: null }; await commitStored(state.view, raw, state.raw); state.raw = storedValues(raw); state.storageProblem = false; state.keyInput.value = ''; setStatus(false); notice(state, 'apiRemoved'); }
       catch (_) { notice(state, 'apiStorage'); } finally { setBusy(state, false); }
     });
     host.replaceChildren(root); setBusy(state, false); if (state.storageProblem) notice(state, 'apiStorage');

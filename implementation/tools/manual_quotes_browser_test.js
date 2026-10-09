@@ -34,6 +34,43 @@ async function putRecord(page, key, value) {
     finally { db.close(); }
   }, { key, value });
 }
+async function corruptClone(page, key, kind, marker, inspect = false) {
+  return page.evaluate(async ({ key, kind, marker, inspect }) => {
+    const db = await new Promise(resolve => { const request = indexedDB.open("investment-device-actual-v1"); request.onsuccess = () => resolve(request.result); });
+    try {
+      if (!inspect) {
+        let value = { schema: "broken" };
+        if (kind === "null") value = null;
+        if (kind === "undefined") value = undefined;
+        if (kind === "cyclic") { value.value = marker; value.self = value; }
+        if (kind === "date") value.value = new Date(marker);
+        if (kind === "map") value.value = new Map([["marker", marker], ["cycle", value]]);
+        if (kind === "set") value.value = new Set([marker, value]);
+        if (kind === "bigint") value.value = BigInt(marker);
+        if (kind === "binary") value.value = new Uint8Array([marker]);
+        if (kind === "non-json") value.value = { marker, nan: NaN, missing: undefined, negativeZero: -0 };
+        if (kind === "opaque") value.value = new Blob(["same-size-bounded-" + marker], { type: "text/plain" });
+        if (kind === "resizable") value.value = new ArrayBuffer(1, { maxByteLength: marker + 1 });
+        if (kind === "tracking") { const buffer = new ArrayBuffer(2, { maxByteLength: 4 }); value.value = marker === 1 ? new Uint8Array(buffer, 0, 2) : new Uint8Array(buffer, 0); }
+        await new Promise((resolve, reject) => { const tx = db.transaction("snapshots", "readwrite"); tx.objectStore("snapshots").put(value, key); tx.oncomplete = resolve; tx.onabort = tx.onerror = () => reject(new Error("storage")); }); return true;
+      }
+      return await new Promise(resolve => {
+        const store = db.transaction("snapshots", "readonly").objectStore("snapshots"); let present = false;
+        const presence = store.getKey(key); presence.onsuccess = () => { present = presence.result !== undefined; };
+        const request = store.get(key);
+        request.onsuccess = () => {
+          const value = request.result;
+          if (kind === "null" || kind === "undefined") { resolve(present && (kind === "null" ? value === null : value === undefined)); return; }
+          if (!value || value.schema !== "broken") { resolve(false); return; }
+          if (kind === "opaque") { if (value.value instanceof Blob) value.value.text().then(text => resolve(text === "same-size-bounded-" + marker)); else resolve(false); return; }
+          if (kind === "resizable") { resolve(value.value.resizable === true && value.value.byteLength === 1 && value.value.maxByteLength === marker + 1); return; }
+          if (kind === "tracking") { const view = value.value; if (!view.buffer.resizable) { resolve(false); return; } view.buffer.resize(3); resolve(view.length === (marker === 1 ? 2 : 3)); return; }
+          resolve(kind === "cyclic" ? value.value === marker && value.self === value : kind === "date" ? Object.prototype.toString.call(value.value) === '[object Date]' && value.value.getTime() === marker : kind === "map" ? value.value instanceof Map && value.value.get("marker") === marker && value.value.get("cycle") === value : kind === "set" ? value.value instanceof Set && value.value.has(marker) && value.value.has(value) : kind === "bigint" ? value.value === BigInt(marker) : kind === "binary" ? value.value instanceof Uint8Array && value.value[0] === marker : value.value.marker === marker && Number.isNaN(value.value.nan) && value.value.missing === undefined && Object.is(value.value.negativeZero, -0));
+        };
+      });
+    } finally { db.close(); }
+  }, { key, kind, marker, inspect });
+}
 async function waitNotice(page, root, notice) { await page.waitForFunction(({ notice }) => document.querySelector('[data-actual-notice]')?.dataset.notice === notice, { notice }); }
 async function save(page, root) { await root.locator('[data-action="save"]').click(); await page.waitForFunction(() => document.querySelector('[data-action="save"]')?.disabled === false); await waitNotice(page, root, "saved"); }
 async function dialog(page, run) { const listener = prompt => prompt.accept(); page.on("dialog", listener); try { await run(); } finally { page.off("dialog", listener); } }
@@ -93,6 +130,22 @@ async function main() {
   fs.mkdirSync(evidence, { recursive: true });
   try {
     browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_EXECUTABLE_PATH ? { executablePath: process.env.CHROMIUM_EXECUTABLE_PATH } : {}) });
+    await check("storage: resizable buffers and tracking views remain preserved on cleanup", async () => {
+      for (const kind of ["resizable", "tracking"]) {
+        const probe = await open("ko-KR", 390);
+        try {
+          await corruptClone(probe.page, "market", kind, 1);
+          if (!(await corruptClone(probe.page, "market", kind, 1, true))) continue; // Older browsers may serialize these as fixed buffers.
+          await probe.page.reload({ waitUntil: "networkidle" }); await probe.root.locator('[data-security-index]').last().waitFor();
+          await corruptClone(probe.page, "market", kind, 2);
+          await dialog(probe.page, async () => { await probe.root.locator('[data-action="delete"]').click(); await probe.page.waitForFunction(() => document.querySelector('[data-action="delete"]')?.disabled === false); });
+          verify(await corruptClone(probe.page, "market", kind, 2, true), "resizable clone or view tracking state erased"); await waitNotice(probe.page, probe.root, "storage");
+          await probe.page.reload({ waitUntil: "networkidle" }); await probe.root.locator('[data-security-index]').last().waitFor();
+          await dialog(probe.page, async () => { await probe.root.locator('[data-action="delete"]').click(); await probe.page.waitForFunction(() => document.querySelector('[data-action="delete"]')?.disabled === false); });
+          verify(await corruptClone(probe.page, "market", kind, 2, true), "unverifiable resizable clone erased"); await waitNotice(probe.page, probe.root, "storage");
+        } finally { await probe.context.close(); }
+      }
+    });
     for (const width of [390, 1280]) for (const locale of ["ko-KR", "en-US"]) {
       const label = width + "px " + locale, session = await open(locale, width);
       let { page, root, catalog } = session;
@@ -241,6 +294,64 @@ async function main() {
           }); verify(preserved, "corrupt original overwritten");
           await dialog(page, async () => { await root.locator('[data-action="delete"]').click(); await waitNotice(page, root, "removed"); });
           const cleared = await stored(page); verify(cleared.actual === null && cleared.market === null, "explicit deletion did not clear corrupt market and actual");
+        });
+        await check(label + ": stale corrupt editor cannot delete another tab's restored pair", async () => {
+          await importMemory(page, root, backup); await corruptClone(page, "market", "cyclic", 1);
+          await page.reload({ waitUntil: "networkidle" }); await root.locator('[data-security-index]').last().waitFor();
+          verify(await root.locator('[data-actual-notice]').getAttribute('data-notice') === "corrupt", "stale editor did not observe corruption");
+          const other = await session.context.newPage(); other.on("pageerror", () => { pageErrors++; });
+          try {
+            const recoveredRoot = await returnActual(other);
+            await dialog(other, async () => { await recoveredRoot.locator('[data-action="delete"]').click(); await waitNotice(other, recoveredRoot, "removed"); });
+            await importMemory(other, recoveredRoot, backup); const recovered = await stored(other);
+            await dialog(page, async () => { await root.locator('[data-action="delete"]').click(); await page.waitForFunction(() => document.querySelector('[data-action="delete"]')?.disabled === false); });
+            verify(JSON.stringify(await stored(other)) === JSON.stringify(recovered), "stale corrupt editor erased restored pair");
+            await waitNotice(page, root, "storage");
+          } finally { await other.close(); }
+          await page.reload({ waitUntil: "networkidle" }); await root.locator('[data-security-index]').last().waitFor();
+        });
+        await check(label + ": stale corrupt settings cannot delete another tab's saved key", async () => {
+          await corruptClone(page, "api-settings", "cyclic", 1); const stale = await settings(page);
+          const other = await session.context.newPage(); other.on("pageerror", () => { pageErrors++; });
+          try {
+            const recovered = await settings(other); await recovered.locator('[data-api-action="delete"]').click();
+            await other.waitForFunction(() => document.querySelector('[data-api-notice]')?.dataset.notice === "apiRemoved");
+            await recovered.locator('[data-api-key]').fill(KEY); await recovered.locator('[data-api-action="save"]').click();
+            await other.waitForFunction(() => document.querySelector('[data-api-status]')?.dataset.stored === "yes");
+            const before = await stored(other); await stale.locator('[data-api-action="delete"]').click();
+            await page.waitForFunction(() => document.querySelector('[data-api-action="delete"]')?.disabled === false);
+            verify(JSON.stringify(await stored(other)) === JSON.stringify(before), "stale corrupt settings erased saved key");
+            verify(await stale.locator('[data-api-notice]').getAttribute('data-notice') === "apiStorage", "stale key delete claimed success");
+          } finally { await other.close(); }
+          root = await returnActual(page);
+        });
+        for (const kind of ["cyclic", "date", "map", "set", "bigint", "binary", "non-json"]) {
+          await check(label + ": unchanged corrupt " + kind + " can clear while changed clone is preserved", async () => {
+            await corruptClone(page, "market", kind, 1); await page.reload({ waitUntil: "networkidle" }); await root.locator('[data-security-index]').last().waitFor();
+            verify(await root.locator('[data-actual-notice]').getAttribute('data-notice') === "corrupt", "clone corruption not detected");
+            await corruptClone(page, "market", kind, 2);
+            await dialog(page, async () => { await root.locator('[data-action="delete"]').click(); await page.waitForFunction(() => document.querySelector('[data-action="delete"]')?.disabled === false); });
+            verify(await corruptClone(page, "market", kind, 2, true), "changed corrupt clone erased"); await waitNotice(page, root, "storage");
+            await page.reload({ waitUntil: "networkidle" }); await root.locator('[data-security-index]').last().waitFor();
+            await dialog(page, async () => { await root.locator('[data-action="delete"]').click(); await waitNotice(page, root, "removed"); });
+            const after = await stored(page); verify(after.actual === null && after.market === null, "unchanged corrupt clone could not clear");
+          });
+        }
+        for (const kind of ["null", "undefined"]) {
+          await check(label + ": stored " + kind + " remains distinct from absent and can clear", async () => {
+            await corruptClone(page, "market", kind, 1); await page.reload({ waitUntil: "networkidle" }); await root.locator('[data-security-index]').last().waitFor();
+            verify(await root.locator('[data-actual-notice]').getAttribute('data-notice') === "corrupt", "stored nil treated as absent");
+            verify(await corruptClone(page, "market", kind, 1, true), "stored nil was not preserved");
+            await dialog(page, async () => { await root.locator('[data-action="delete"]').click(); await waitNotice(page, root, "removed"); });
+          });
+        }
+        await check(label + ": opaque clone cleanup preserves bytes instead of trusting metadata", async () => {
+          await corruptClone(page, "market", "opaque", 1); await page.reload({ waitUntil: "networkidle" }); await root.locator('[data-security-index]').last().waitFor();
+          for (const marker of [1, 2]) {
+            if (marker === 2) await corruptClone(page, "market", "opaque", 2);
+            await dialog(page, async () => { await root.locator('[data-action="delete"]').click(); await page.waitForFunction(() => document.querySelector('[data-action="delete"]')?.disabled === false); });
+            verify(await corruptClone(page, "market", "opaque", marker, true), "opaque bytes erased by metadata comparison"); await waitNotice(page, root, "storage");
+          }
         });
       } finally { await session.context.close(); }
       await check(label + ": screenshot uses fresh empty storage and fields", async () => {

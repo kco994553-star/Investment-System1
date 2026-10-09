@@ -46,7 +46,7 @@ Interfaces: existing DeviceActual.mount/summary; new DeviceActual.settings(host,
 
 - [x] Write browser behavior assertions and observe missing manual-price RED.
 - [x] Add editable price/time and FX/time, provenance/stale/native/KRW/%p display, atomic optimistic writes/import/delete, password key storage and separate deletion, disabled refresh.
-- [x] Run390/1280ko/en mixed-currency/save/reload/export/delete/import, missing/stale/invalid/conflict/key privacy tests; capture four empty screenshots.
+- [x] Run390/1280ko/en119checks mixed-currency/save/reload/export/delete/import, missing/stale/invalid/conflict/key privacy tests; capture four empty screenshots.
 
 ### Task3: integration and public artifact boundary (root)
 
