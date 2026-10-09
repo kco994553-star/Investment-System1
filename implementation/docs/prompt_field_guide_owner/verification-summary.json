@@ -1,11 +1,11 @@
 {
-  "status": "LOCAL_VERIFICATION_PASS_BASE_DECISION_PENDING",
-  "canonical_base": "c8b9debecaeaebf392672c74f5bfd50b20217227",
+  "status": "LOCAL_VERIFICATION_PASS",
+  "canonical_base": "771a3bf67a330e72349591b4879891e03340d7c1",
   "requested_base": "canonical after PR #75 merge",
-  "pr_75_state": "OPEN",
+  "pr_75_state": "MERGED",
   "work_branch": "codex/prompt-field-guide",
   "frozen_sha256": "f0a6ed9005e22b8fa534d51135cc3e734aa9577150438a35d65823a4c283e68e",
-  "python_tests": 860,
+  "python_tests": 861,
   "python_subtests": 345,
   "new_guide_browser_checks": 16833,
   "node_device_google_checks": 84,
@@ -51,8 +51,8 @@
   ],
   "public_json_and_csp_unchanged": true,
   "private_payload_files_written": 0,
-  "github_ci": "PENDING_PR_BASE_DECISION",
-  "screenshot_build": "unmerged PR #75 plus guide commit; local compatibility build",
+  "github_ci": "SEE_PULL_REQUEST_CHECKS",
+  "screenshot_build": "rebased guide source 7cc1f2e8c9a280f396a03989cdc7018756410936 on canonical 771a3bf67a330e72349591b4879891e03340d7c1",
   "local_after75_compatibility": {
     "source_commit": "0c02d41",
     "pr_75_head": "23ac32eb8e021a5c89ca4bf2eef46fb94bf73d87",
@@ -65,5 +65,18 @@
     "csp_violations": 0,
     "runtime_errors": 0,
     "remote_changes": false
+  },
+  "tested_source_commit": "7cc1f2e8c9a280f396a03989cdc7018756410936",
+  "checked_at_utc": "2026-10-09 09:34:00 UTC",
+  "pr_75_pages": {
+    "run_id": 37911200599,
+    "head_sha": "771a3bf67a330e72349591b4879891e03340d7c1",
+    "build": "SUCCESS",
+    "deploy": "SUCCESS",
+    "public_files_match": 16,
+    "public_guard": "PASS",
+    "public_nav_browser_checks": 741,
+    "csp_violations": 0,
+    "google_calls": 0
   }
 }
