@@ -32,14 +32,14 @@ APPROVED_SHA256 = {
     "app.js": "ab19b9506b02a8a1619a486fd1361ee1e3c35ee1b9012a9e9eecd97721e06e5d",
     "data.json": "735aadfdf26197013e1478e60974d42c920c089c19dd99f91687a0dfd38b9536",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
-    "device-actual.js": "29bbc4369c808434c6b870d4861da6be3f642d068f2ca6bf935d04c22e81d20b",
+    "device-actual.js": "4d5a503abd0436cc6f30a2222fe0926d5da1f553ab76b67edb13e38809b5a8a0",
     "device-market.js": "922c99ea78487a736b89a81d643c4f814355f0bad603fb370a086629bba7e916",
     "entities.json": "465354a2bc2846f4d85ad6306d2dda3aa5cb5601e4d3520281ec013bf402c424",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
-    "index.html": "bb93ac04d606468f683e5fb498332e17fa0802d7bcf0ed37658747a05caa6aab",
-    "locale.js": "c43cc076521250008d9406ae39492be9cf3f665556c43822151e975675a1663d",
+    "index.html": "b29fdf5f89e6244905d9e641e2f7e9db0e9a7cbf4c79fa0f2da74e6fbcf45889",
+    "locale.js": "d240bd1e66ddea0ee515874765645cb87c8926f0f4221580bf59624b14e55043",
     "research.html": "ef7665e2079df06c4bf7265206d9113ddb4716f93cf87e0ec0735c6b5fbae219",
-    "style.css": "de98839bbb4469b693e2ad34009910071cc03e31161cea593e67b4080996d526",
+    "style.css": "0f8f4d3be8d7cb0682ff21fb2e1c5684444726a88d9c6ab8d60697c7d7938537",
 }
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024

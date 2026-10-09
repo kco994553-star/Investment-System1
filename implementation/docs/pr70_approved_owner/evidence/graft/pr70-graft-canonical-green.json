@@ -1,0 +1,13 @@
+{
+  "phase": "GREEN-graft",
+  "worktree": "canonical",
+  "tests_run": 122,
+  "new_graft_cases": 2,
+  "failures": 0,
+  "errors": 0,
+  "failed_tests": [],
+  "files": {
+    "implementation/tests/test_autonomy_gate_a_guard.py": "0641deb919ce422a60e93f51a96fe61ee5bb1065c78aa3c2b4b8c63b1fb3b136",
+    "implementation/tools/autonomy_gate_a_guard.py": "88d7c15922fc16675fa4bb243738f8336fad79e2781699d28be17a122e7743ba"
+  }
+}

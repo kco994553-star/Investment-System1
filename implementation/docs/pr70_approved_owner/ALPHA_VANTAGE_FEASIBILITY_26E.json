@@ -1,0 +1,702 @@
+{
+  "schema": "26E.alpha-vantage.review-only.safe-receipt.v1",
+  "created_at_utc": "2026-10-09T04:14:27.863858+00:00",
+  "status": {
+    "user_strategy": "PARTIAL_API_MANUAL_REVIEW_ONLY",
+    "priority_provider": "Alpha Vantage Free candidate",
+    "api": "OFF",
+    "implementation_approval": "NOT_GRANTED",
+    "kis_worker": "DEFERRED",
+    "overall": "CONDITIONALLY_POSSIBLE_DOCUMENTED_AND_DEMO; OWN_KEY_COVERAGE_TERMS_UNCONFIRMED; NO_IMPLEMENTATION_OR_DEPLOYMENT_APPROVAL"
+  },
+  "authorization_boundary": {
+    "research_only": true,
+    "app_implementation_performed": false,
+    "repo_edits_performed": false,
+    "commit_performed": false,
+    "github_mutations_performed": false,
+    "signup_performed": false,
+    "actual_user_key_requested_or_used": false,
+    "secret_or_environment_values_inspected": false,
+    "server_relay_paid_apis_performed": false
+  },
+  "privacy": {
+    "actual_price_fx_values_logged_or_persisted": false,
+    "actual_provider_time_values_logged_or_persisted": false,
+    "api_raw_response_bodies_persisted": false,
+    "allowed_response_evidence": "status, schema field names/presence, symbol/currency match booleans, byte count, SHA-256 only",
+    "market_body_sanitization": "Parsed in volatile browser memory; returned only approved metadata; no tracing/HAR/screenshots/API response logs",
+    "each_user_key_device_only": true,
+    "backup_excludes_key": true,
+    "keyless_manual_remains": true
+  },
+  "network": {
+    "policy_file": "/etc/codex/network-policy.json",
+    "policy_version": 1,
+    "http_policy": "unrestricted",
+    "observed_policy_state": "enforced",
+    "observations_current": true,
+    "proxy_server": "http://proxy:8080",
+    "vpn_configured": false,
+    "tls_verification_enabled": true,
+    "ignore_https_errors": false,
+    "inherited_proxy_tls_preserved": true,
+    "proxy_bypass_or_policy_changes": false
+  },
+  "sources": [
+    {
+      "name": "support",
+      "url": "https://www.alphavantage.co/support/",
+      "retrieved_at_utc": "2026-10-09T04:08:20.262374+00:00",
+      "http_status": 200,
+      "sha256": "ad2bb73f91f88d99967848d90d2a80caaec2d8e3703bcd791d6b57d1ac950fbb",
+      "content_type": null,
+      "bytes": 24453,
+      "tls_verification_enabled": true,
+      "inherited_proxy_preserved": true
+    },
+    {
+      "name": "documentation",
+      "url": "https://www.alphavantage.co/documentation/",
+      "retrieved_at_utc": "2026-10-09T04:11:00.832908+00:00",
+      "http_status": 200,
+      "sha256": "02e7ca9478216075ce5241929f53835cb431d702458106896d3fef851c0a4bc2",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 1060772,
+      "selected_statements": [
+        "Examples in this documentation are for demo purposes. Claim your free API key today to explore our full API offerings! Time Series Stock Data APIs This suite of APIs provides global equity data in 4 different temporal resolutions: (1) daily, (2) weekly, (3) monthly, and (4) intraday, with 25+ years of historical depth and split/dividend-based adjus",
+        "You can specify one ticker per API request. If you would like to query a large universe of tickers in bulk, you may want to try out our Realtime Bulk Quotes API, which accepts up to 100 tickers per API request. API Parameters ❚ Required: function The API function of your choice. ❚ Required: symbol The symbol of the global ticker of your choice. For",
+        "by default, the quote endpoint is updated at the end of each trading day for all users. If you would like to access realtime or 15-minute delayed stock quote data for the US market, please subscribe to a premium membership plan for your personal use. For commercial use, please contact sales. * Realtime and 15-minute delayed US market data is regula",
+        "This API returns the realtime exchange rate for a pair of fiat currencies (e.g., USD, EUR, CNY, etc.). 💡 Tip: Looking for gold and silver spot prices? Please check out our dedicated gold & silver APIs in the Commodities section. API Parameters ❚ Required: function The function of your choice. In this case, function=CURRENCY_EXCHANGE_RATE ❚ Required",
+        "The destination currency for the exchange rate. It can either be a physical currency or cryptocurrency. For example: to_currency=USD or to_currency=BTC. ❚ Required: apikey Your API key. Claim your free API key here. Examples (click for JSON output) US Dollar to Japanese Yen: https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_cur"
+      ],
+      "endpoint_sections": [
+        {
+          "anchor": "latestprice",
+          "title": "Quote Endpoint Trending",
+          "heading_marked_premium": false,
+          "own_key_instruction_present": true,
+          "example_urls": [
+            "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo",
+            "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=300135.SHZ&apikey=demo",
+            "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo&datatype=csv"
+          ]
+        },
+        {
+          "anchor": "symbolsearch",
+          "title": "Search Endpoint Utility",
+          "heading_marked_premium": false,
+          "own_key_instruction_present": true,
+          "example_urls": [
+            "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=tesco&apikey=demo",
+            "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=tencent&apikey=demo",
+            "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=BA&apikey=demo",
+            "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=SAIC&apikey=demo"
+          ]
+        },
+        {
+          "anchor": "currency-exchange",
+          "title": "CURRENCY_EXCHANGE_RATE Trending",
+          "heading_marked_premium": false,
+          "own_key_instruction_present": true,
+          "example_urls": [
+            "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey=demo",
+            "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=BTC&to_currency=EUR&apikey=demo"
+          ]
+        },
+        {
+          "anchor": "crypto-exchange",
+          "title": "CURRENCY_EXCHANGE_RATE Trending",
+          "heading_marked_premium": false,
+          "own_key_instruction_present": true,
+          "example_urls": [
+            "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=BTC&to_currency=EUR&apikey=demo",
+            "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey=demo"
+          ]
+        }
+      ],
+      "tls_verification_enabled": true,
+      "inherited_proxy_preserved": true
+    },
+    {
+      "name": "currencies",
+      "url": "https://www.alphavantage.co/physical_currency_list/",
+      "retrieved_at_utc": "2026-10-09T04:08:20.918873+00:00",
+      "http_status": 200,
+      "sha256": "154f2d4e6bb8aee7e0a58379cb08d5bf842afce2dc5942de2a78474f59171f69",
+      "content_type": null,
+      "bytes": 3403,
+      "tls_verification_enabled": true,
+      "inherited_proxy_preserved": true
+    },
+    {
+      "name": "terms_pdf",
+      "requested_url": "https://www.alphavantage.co/terms_of_service/",
+      "retrieved_utc": "2026-10-09T04:10:38.874666Z",
+      "curl_exit_code": 0,
+      "final_url": "https://www.alphavantage.co/terms_of_service/",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "byte_count": 156583,
+      "sha256": "88ed3d22fe0f3624e76e53a210db3498b4a90712ab0d934356cc84b19ed1468a",
+      "tls_verification_enabled": true,
+      "inherited_proxy_preserved": true,
+      "terms_section_2a_sentence": "a. Alpha Vantage grants the right to install, use, access, display and run the software on any computer or mobile device, where applicable, that you own or control, for personal, non-commercial use, unless you and Alpha Vantage have agreed otherwise in writing, and provided that you comply with all terms and conditions of the End User License Agreement (see below).",
+      "terms_section_2a_iv": "iv. You are currently employed or have an active affiliation with a financial planning advisor, insurance company, investment advisor, investment bank, money manager, registered representative, securities broker-dealer, or any owner, partner, affiliate or associated person of the preceding.",
+      "quote_extraction_note": "PDF text extracted with pdftotext; layout whitespace normalized and the line-wrapped broker-dealer joined."
+    },
+    {
+      "name": "support_key_form",
+      "requested_url": "https://www.alphavantage.co/support/#api-key",
+      "retrieved_utc": "2026-10-09T04:10:38.848585Z",
+      "curl_exit_code": 0,
+      "final_url": "https://www.alphavantage.co/support/#api-key",
+      "http_status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "byte_count": 24092,
+      "sha256": "4c446527f2ca3a2219057a58c6529b1cc1fb3c4840c11827ec7592ddd57e7a2b",
+      "tls_verification_enabled": true,
+      "inherited_proxy_preserved": true
+    },
+    {
+      "name": "premium",
+      "requested_url": "https://www.alphavantage.co/premium/",
+      "retrieved_utc": "2026-10-09T04:10:38.795700Z",
+      "curl_exit_code": 0,
+      "final_url": "https://www.alphavantage.co/premium/",
+      "http_status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "byte_count": 38317,
+      "sha256": "7e16e79c7e4168f94a74263cbb0c023028aba3592f870ab247ac37adef595372",
+      "tls_verification_enabled": true,
+      "inherited_proxy_preserved": true
+    },
+    {
+      "name": "privacy_pdf",
+      "requested_url": "https://www.alphavantage.co/privacy/",
+      "retrieved_utc": "2026-10-09T04:10:38.846964Z",
+      "curl_exit_code": 0,
+      "final_url": "https://www.alphavantage.co/privacy/",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "byte_count": 170261,
+      "sha256": "178fd84c0c0966bffdc400540593826d804fdf2a357308f27e6c42fbac61cf37",
+      "tls_verification_enabled": true,
+      "inherited_proxy_preserved": true
+    }
+  ],
+  "official_quotes": [
+    {
+      "source_url": "https://www.alphavantage.co/support/",
+      "retrieved_at_utc": "2026-10-09T04:08:20.262374+00:00",
+      "quote": "25 API requests per day and unlimited API requests for verified open-source or educational projects",
+      "supports": "current free daily allowance; verified exception only"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/documentation/#latestprice",
+      "retrieved_at_utc": "2026-10-09T04:11:00.832908+00:00",
+      "quote": "You can specify one ticker per API request.",
+      "supports": "one request per quote symbol"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/documentation/#latestprice",
+      "retrieved_at_utc": "2026-10-09T04:11:00.832908+00:00",
+      "quote": "by default, the quote endpoint is updated at the end of each trading day for all users.",
+      "supports": "default EOD; no realtime free claim"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/documentation/#latestprice",
+      "retrieved_at_utc": "2026-10-09T04:11:00.832908+00:00",
+      "quote": "If you would like to access realtime or 15-minute delayed stock quote data for the US market, please subscribe to a premium membership plan for your personal use.",
+      "supports": "premium US realtime and 15-minute delayed data"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/documentation/#currency-exchange",
+      "retrieved_at_utc": "2026-10-09T04:11:00.832908+00:00",
+      "quote": "This API returns the realtime exchange rate for a pair of fiat currencies (e.g., USD, EUR, CNY, etc.).",
+      "supports": "FX function purpose; not exact KRW-pair free entitlement"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/documentation/",
+      "retrieved_at_utc": "2026-10-09T04:11:00.832908+00:00",
+      "quote": "Examples in this documentation are for demo purposes.",
+      "supports": "public demo limitation"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/physical_currency_list/",
+      "retrieved_at_utc": "2026-10-09T04:08:20.918873+00:00",
+      "quote": "USD,United States Dollar; JPY,Japanese Yen; KRW,South Korean Won",
+      "quote_note": "Three separate official CSV rows joined by semicolons, not a contiguous source sentence.",
+      "supports": "currency code presence only"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/terms_of_service/",
+      "retrieved_at_utc": "2026-10-09T04:10:38.874666Z",
+      "section": "2(a)",
+      "quote": "Alpha Vantage grants the right to install, use, access, display and run the software on any computer or mobile device, where applicable, that you own or control, for personal, non-commercial use, unless you and Alpha Vantage have agreed otherwise in writing, and provided that you comply with all terms and conditions of the End User License Agreement (see below).",
+      "supports": "conditional personal noncommercial owned/controlled device display"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/terms_of_service/",
+      "retrieved_at_utc": "2026-10-09T04:10:38.874666Z",
+      "section": "2(a)(i)",
+      "quote": "activities that are private and individual in nature",
+      "supports": "private individual usage scope"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/terms_of_service/",
+      "retrieved_at_utc": "2026-10-09T04:10:38.874666Z",
+      "section": "2(a)(iv)",
+      "quote": "You are currently employed or have an active affiliation with a financial planning advisor, insurance company, investment advisor, investment bank, money manager, registered representative, securities broker-dealer, or any owner, partner, affiliate or associated person of the preceding.",
+      "supports": "affiliation criterion; user eligibility unconfirmed"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/terms_of_service/",
+      "retrieved_at_utc": "2026-10-09T04:10:38.874666Z",
+      "section": "3",
+      "quote": "non-exclusive, non-sublicensable, non-transferable, non-assignable, revocable",
+      "supports": "license qualifiers; no public redistribution permission established"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/premium/",
+      "retrieved_at_utc": "2026-10-09T04:10:38.795700Z",
+      "quote": "Please keep your API key at a safe physical or digital place",
+      "supports": "provider key-safety guidance; not explicit browser permission or ban"
+    },
+    {
+      "source_url": "https://www.alphavantage.co/support/#api-key",
+      "retrieved_at_utc": "2026-10-09T04:10:38.848585Z",
+      "quote": "Get Free API Key",
+      "supports": "official self-service free key form; no submission performed"
+    }
+  ],
+  "quota": {
+    "official_free_requests_per_day": 25,
+    "quote_symbols_per_request": 1,
+    "us_quote_requests": 17,
+    "fx_requests": 2,
+    "full_refresh_requests": 19,
+    "daily_remaining_after_one_full_refresh": 6,
+    "two_full_refresh_requests": 38,
+    "one_full_refresh_arithmetic": "17+2=19<=25; 6 remaining, before other calls/errors/retries",
+    "second_full_refresh_arithmetic": "19*2=38>25; not allowed by ordinary free allowance",
+    "all19_response_success_verified": false,
+    "reset_time_or_timezone": "UNCONFIRMED",
+    "utc_midnight_reset": "UNCONFIRMED; no current relevant official evidence found",
+    "current_free_per_minute_limit": "UNCONFIRMED",
+    "error_requests_counted": "UNCONFIRMED",
+    "verified_open_source_educational_exception_applied": false
+  },
+  "exact_us17": [
+    {
+      "requested_symbol": "ASML",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "LRCX",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "KLAC",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "NVDA",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "AMD",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "AVGO",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "QCOM",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "INTC",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "MSFT",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "GOOGL",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "AMZN",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "RTX",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "SYK",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "ETN",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "HUBB",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "GEV",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    },
+    {
+      "requested_symbol": "ROK",
+      "approved_market": "US",
+      "approved_currency": "USD",
+      "alpha_symbol_acceptance": "UNCONFIRMED",
+      "free_quote_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "symbol_search_metadata_acquired": false
+    }
+  ],
+  "fx": [
+    {
+      "from_currency": "USD",
+      "to_currency": "KRW",
+      "desired_unit": "KRW per 1 USD",
+      "endpoint": "CURRENCY_EXCHANGE_RATE",
+      "official_currency_codes_present": true,
+      "documented_request_format_supported": true,
+      "heading_marked_premium": false,
+      "free_endpoint_candidate_evidence": "General free majority-of-datasets FAQ, non-premium heading, documented public FX demo. Does not prove exact-pair own-key free entitlement.",
+      "exact_pair_free_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "actual_unit_and_time_fields_verified_for_requested_pair": false
+    },
+    {
+      "from_currency": "JPY",
+      "to_currency": "KRW",
+      "desired_unit": "KRW per 1 JPY",
+      "endpoint": "CURRENCY_EXCHANGE_RATE",
+      "official_currency_codes_present": true,
+      "documented_request_format_supported": true,
+      "heading_marked_premium": false,
+      "free_endpoint_candidate_evidence": "General free majority-of-datasets FAQ, non-premium heading, documented public FX demo. Does not prove exact-pair own-key free entitlement.",
+      "exact_pair_free_entitlement": "UNCONFIRMED",
+      "valid_own_free_key_success_verified": false,
+      "actual_unit_and_time_fields_verified_for_requested_pair": false
+    }
+  ],
+  "manual": [
+    {
+      "instrument": "Tokyo Electron",
+      "approved_symbol": "TSE:8035",
+      "approved_currency": "JPY",
+      "state": "MANUAL"
+    },
+    {
+      "instrument": "Hanmi Semiconductor",
+      "approved_symbol": "KRX:042700",
+      "approved_currency": "KRW",
+      "state": "MANUAL"
+    }
+  ],
+  "browser_probe": {
+    "browser": "Chromium 151.0.7922.173",
+    "origin": "http://127.0.0.1:47861",
+    "mobile_emulation": true,
+    "ignore_https_errors": false,
+    "proxy_policy_preserved": true,
+    "probes": [
+      {
+        "retrieved_at_utc": "2026-10-09T04:09:18.051492+00:00",
+        "origin": "http://127.0.0.1:47861",
+        "request": {
+          "url": "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo",
+          "api_key_kind": "official_public_demo",
+          "method": "GET",
+          "mode": "cors",
+          "credentials": "omit"
+        },
+        "response_headers": [
+          {
+            "url": "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo",
+            "http_status": 200,
+            "acao": "*",
+            "content_type": "application/json",
+            "date_header_present": true
+          }
+        ],
+        "browser_fetch_result": {
+          "fetch_readable": true,
+          "status": 200,
+          "ok": true,
+          "response_type": "cors",
+          "json_parsed": true,
+          "top_level_keys": [
+            "Global Quote"
+          ],
+          "quote_object_present": true,
+          "quote_field_names": [
+            "01. symbol",
+            "02. open",
+            "03. high",
+            "04. low",
+            "05. price",
+            "06. volume",
+            "07. latest trading day",
+            "08. previous close",
+            "09. change",
+            "10. change percent"
+          ],
+          "symbol_present": true,
+          "symbol_matches_requested": true,
+          "price_field_present": true,
+          "time_field_present": true,
+          "currency_field_present": false,
+          "error_keys": [],
+          "bytes": 383,
+          "sha256": "ac98c0324e4382debaf0e193fab557332e88c1fcec16df42c6d97af0dfda13fd"
+        },
+        "response_header_capture_status": "captured",
+        "actual_market_values_persisted": false
+      },
+      {
+        "retrieved_at_utc": "2026-10-09T04:09:55.661058+00:00",
+        "origin": "http://127.0.0.1:47861",
+        "request": {
+          "url": "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey=demo",
+          "api_key_kind": "official_public_demo",
+          "method": "GET",
+          "mode": "cors",
+          "credentials": "omit"
+        },
+        "response_headers": [
+          {
+            "http_status": 200,
+            "acao": "*",
+            "content_type": "application/json",
+            "date_header_present": true
+          }
+        ],
+        "browser_fetch_result": {
+          "fetch_readable": true,
+          "status": 200,
+          "ok": true,
+          "response_type": "cors",
+          "json_parsed": true,
+          "top_level_keys": [
+            "Realtime Currency Exchange Rate"
+          ],
+          "fx_object_present": true,
+          "fx_field_names": [
+            "1. From_Currency Code",
+            "2. From_Currency Name",
+            "3. To_Currency Code",
+            "4. To_Currency Name",
+            "5. Exchange Rate",
+            "6. Last Refreshed",
+            "7. Time Zone",
+            "8. Bid Price",
+            "9. Ask Price"
+          ],
+          "from_currency_field_present": true,
+          "to_currency_field_present": true,
+          "from_currency_matches_requested": true,
+          "to_currency_matches_requested": true,
+          "exchange_rate_field_present": true,
+          "time_field_present": true,
+          "timezone_field_present": true,
+          "error_keys": [],
+          "error_classification": {
+            "missing_or_invalid_key": false,
+            "demo_restriction": false,
+            "rate_limit": false
+          },
+          "bytes": 438,
+          "sha256": "6e8cc302ee435d2858414519791e67a4dc751c18af9f60cc5f81eb8cedf83afb"
+        },
+        "response_header_capture_status": "captured",
+        "actual_market_values_persisted": false
+      },
+      {
+        "retrieved_at_utc": "2026-10-09T04:09:55.728751+00:00",
+        "origin": "http://127.0.0.1:47861",
+        "request": {
+          "url": "https://www.alphavantage.co/query",
+          "api_key_kind": "no_key_error_control",
+          "method": "GET",
+          "mode": "cors",
+          "credentials": "omit"
+        },
+        "response_headers": [],
+        "browser_fetch_result": {
+          "fetch_readable": true,
+          "status": 200,
+          "ok": true,
+          "response_type": "cors",
+          "json_parsed": true,
+          "top_level_keys": [
+            "Error Message"
+          ],
+          "fx_object_present": false,
+          "fx_field_names": [],
+          "from_currency_field_present": false,
+          "to_currency_field_present": false,
+          "from_currency_matches_requested": false,
+          "to_currency_matches_requested": false,
+          "exchange_rate_field_present": false,
+          "time_field_present": false,
+          "timezone_field_present": false,
+          "error_keys": [
+            "Error Message"
+          ],
+          "error_classification": {
+            "missing_or_invalid_key": true,
+            "demo_restriction": false,
+            "rate_limit": false
+          },
+          "bytes": 189,
+          "sha256": "180d5a7a221ac5c7a20507ad525709d7ecba971e73ce45022f658651dec0a624"
+        },
+        "response_header_capture_status": "not_captured",
+        "actual_market_values_persisted": false,
+        "acao_header": "UNCONFIRMED; browser fetch was readable, header callback not captured"
+      }
+    ],
+    "page_url": "http://127.0.0.1:47861/alpha-cors-probe",
+    "origin_document_implementation": "Playwright local route fulfillment; no cockpit or repo changes",
+    "csp": "default-src 'none'; script-src 'unsafe-inline'; connect-src https://www.alphavantage.co",
+    "fetch_options": {
+      "method": "GET",
+      "mode": "cors",
+      "credentials": "omit",
+      "cache": "no-store"
+    },
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "device_scale_factor": 3,
+      "is_mobile": true,
+      "has_touch": true
+    },
+    "actual_mobile_device_tested": false,
+    "api_get_count": 3,
+    "private_or_real_user_key_request_count": 0,
+    "requested_us17_quote_request_count": 0,
+    "requested_krw_pair_request_count": 0,
+    "public_demo_cors_verdict": "PASS for both observed published demos; own-key and real-mobile results UNCONFIRMED",
+    "no_key_control_verdict": "HTTP 200 Error Message JSON; not quote/FX success"
+  },
+  "terms_verdict": {
+    "personal_noncommercial_owned_controlled_device_display": "EXPLICITLY_ALLOWED_SUBJECT_TO_FULL_TERMS",
+    "user_noncommercial_qualification": "UNCONFIRMED; section 2(a)(iv) affiliations can classify use as commercial",
+    "public_redistribution_or_shared_key_permission": "NOT_ESTABLISHED; OUT_OF_SCOPE",
+    "own_device_browser_visible_key_use_permission": "UNCONFIRMED; no explicit allowance or ban found in reviewed official materials",
+    "demo_cors_does_not_establish_key_publication_permission": true,
+    "provider_confirmation_needed_for_browser_key_model": true
+  },
+  "official_free_key_page": {
+    "url": "https://www.alphavantage.co/support/#api-key",
+    "form_confirmed": true,
+    "instruction": "Visit the official page, choose occupation, complete organization/email fields, review provider Terms/Privacy, click Get Free API Key yourself; enter own key only on own device; exclude from backup.",
+    "signup_or_submission_performed": false
+  },
+  "limitations": [
+    "Public demo success is not own-key free entitlement proof.",
+    "Exact 17 symbols and two KRW pair responses all UNCONFIRMED.",
+    "Browser proof uses mobile-emulated Chromium only, not actual iOS/Android.",
+    "No-key HTTP 200 error is not a quote/FX success.",
+    "No-key response headers were not separately captured.",
+    "Current quota UTC reset/per-minute/error debit policy not established.",
+    "User noncommercial eligibility and provider browser-key model permission remain unconfirmed.",
+    "No app implementation, provider account creation, or GitHub mutation."
+  ],
+  "source_attempt_notes": [
+    "Initial urllib default User-Agent returned HTTP 403 for official Support/Documentation/Premium; normal browser-style User-Agent succeeded through unchanged proxy/TLS.",
+    "An optional guessed official /forex/ product page returned HTTP 404 and was not used as evidence. No additional provider calls are planned."
+  ]
+}

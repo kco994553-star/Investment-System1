@@ -43,6 +43,8 @@
     manual: ['수동', 'Manual'], none: ['없음', 'None'], fxTitle: ['수동 환율 · KRW 기준', 'Manual FX · KRW base'], fxTime: ['환율 기준 시점 · ISO 8601', 'FX as-of · ISO 8601'], fxRate: ['1 단위당 KRW', 'KRW per 1 unit'],
     native: ['원통화 시장 평가액', 'Native market value'], provenance: ['가격 출처·기준 시점', 'Price source and as-of'], fxProvenance: ['환율 출처·기준 시점', 'FX source and as-of'], stale: ['STALE · 7일 이상 지난 입력', 'STALE · Input at least 7 days old'],
     apiTitle: ['기기 API 키 설정', 'Device API key settings'], apiPrivacy: ['브라우저 직접 호출이 승인된 API 키만 입력하세요. 앱 시크릿이나 액세스 토큰은 입력하지 마세요. 키는 이 브라우저의 IndexedDB에만 저장되며 JSON 백업에 포함되지 않습니다.', 'Enter only an API key approved for direct browser calls. Do not enter an app secret or access token. The key is stored only in this browser’s IndexedDB and is excluded from JSON backups.'],
+    apiKeyIssuance: ['Alpha Vantage 공식 무료 API 키 발급 (새 탭)', 'Alpha Vantage official free API key issuance (new tab)'],
+    apiGuidance: ['본인의 무료 키는 이 기기에만 저장되고 백업에서 제외됩니다. 검증 전까지 API는 꺼져 있습니다. 키 없이도 가격·환율을 수동 입력할 수 있습니다.', 'Your own free key stays on this device and is excluded from backups. API remains OFF pending validation. You can manually enter prices and FX without a key.'],
     apiPending: ['서비스 선택 대기 · API 사용 안 함. 시세 갱신과 자동 호출은 비활성 상태입니다.', 'Service selection pending · API disabled. Quote refresh and automatic calls are disabled.'], apiService: ['API 서비스', 'API service'], apiKey: ['API 키', 'API key'], apiSave: ['API 키를 이 기기에 저장', 'Save API key on this device'], apiDelete: ['기기 API 키 삭제', 'Delete device API key'], apiRefresh: ['시세 새로고침', 'Refresh quotes'],
     apiYes: ['저장된 API 키: 있음', 'Stored API key: Yes'], apiNo: ['저장된 API 키: 없음', 'Stored API key: No'], apiSaved: ['API 키를 이 기기에 저장했습니다. API 호출은 비활성 상태입니다.', 'API key saved on this device. API calls remain disabled.'], apiRemoved: ['기기 API 키를 삭제했습니다.', 'Device API key deleted.'], apiInvalid: ['API 키 형식이 유효하지 않습니다. 저장된 키는 변경하지 않았습니다.', 'The API key format is invalid. The stored key was not changed.'], apiStorage: ['API 키 저장소를 사용할 수 없습니다. 저장된 키는 변경하지 않았습니다.', 'API key storage is unavailable. The stored key was not changed.']
   };
@@ -492,6 +494,9 @@
     catch (_) { state.storageProblem = true; }
     const root = el(state, 'section', undefined, { class: 'device-actual actual-api-settings', 'data-device-api-settings': '' }); state.root = root;
     root.append(el(state, 'h2', t(state, 'apiTitle')), el(state, 'p', t(state, 'apiPrivacy')), el(state, 'p', t(state, 'apiPending')));
+    const issuance = el(state, 'p');
+    issuance.append(el(state, 'a', t(state, 'apiKeyIssuance'), { href: 'https://www.alphavantage.co/support/#api-key', target: '_blank', rel: 'noopener noreferrer', referrerpolicy: 'no-referrer', 'data-api-key-issuance': '' }));
+    root.append(issuance, el(state, 'p', t(state, 'apiGuidance'), { 'data-api-guidance': '' }));
     const serviceLabel = el(state, 'label', t(state, 'apiService')), service = el(state, 'select', undefined, { 'data-api-service': '', disabled: '' }); service.append(el(state, 'option', t(state, 'apiPending'), { value: 'NOT_SELECTED' })); serviceLabel.append(service); root.append(serviceLabel);
     const form = el(state, 'form', undefined, { class: 'actual-api-form' }), label = el(state, 'label', t(state, 'apiKey'));
     state.keyInput = el(state, 'input', undefined, { type: 'password', autocomplete: 'new-password', maxlength: '512', 'data-api-key': '', 'aria-label': t(state, 'apiKey'), spellcheck: 'false' }); label.append(state.keyInput); form.append(label);
