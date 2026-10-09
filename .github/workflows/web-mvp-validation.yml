@@ -3,7 +3,7 @@ on:
   push:
     branches: [feature/web-mvp-v1, feature/global-language-search-v1]
   pull_request:
-    paths: ['implementation/src/investment_system/product/**', 'implementation/tests/test_web_mvp.py', 'implementation/tests/test_global_language_search.py', 'implementation/tools/global_language_search*.js', 'implementation/tools/build_web_mvp_demo.py', 'implementation/tools/web_mvp_browser_test.js', '.github/workflows/web-mvp-validation.yml']
+    paths: ['implementation/src/investment_system/product/**', 'implementation/tests/test_web_mvp.py', 'implementation/tests/test_global_language_search.py', 'implementation/tests/test_device_actual_build.py', 'implementation/tools/device_actual*.js', 'implementation/tools/global_language_search*.js', 'implementation/tools/build_web_mvp_demo.py', 'implementation/tools/web_mvp_browser_test.js', '.github/workflows/web-mvp-validation.yml']
 permissions:
   contents: read
 jobs:
