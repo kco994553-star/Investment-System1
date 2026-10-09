@@ -1,0 +1,8 @@
+.private-history { min-width:0; }
+.private-history select, .private-history button { margin:0 .5rem .5rem 0; }
+.private-history svg { display:block; max-width:100%; color:var(--acc,#1d4f61); }
+.private-history details { max-width:100%; overflow-x:auto; }
+.private-history table { border-collapse:collapse; width:100%; min-width:720px; }
+.private-history th, .private-history td { padding:.5rem; border-bottom:1px solid var(--line,#d8cfc0); text-align:left; white-space:nowrap; font-size:.85rem; }
+[data-private-history-settings] input { display:block; width:100%; max-width:36rem; margin:.5rem 0; }
+[data-history-meta] { overflow-wrap:anywhere; }

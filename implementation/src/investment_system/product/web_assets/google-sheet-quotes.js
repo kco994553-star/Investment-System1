@@ -5,7 +5,11 @@
   else root.GoogleSheetQuotes = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  const SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+  const READONLY_SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+  const SCOPE = READONLY_SCOPE + ' email';
+  const HISTORY_SYMBOLS = new Set(['ASML','LRCX','KLAC','NVDA','AMD','AVGO','QCOM','INTC','MSFT','GOOGL','AMZN','RTX','SYK','ETN','HUBB','GEV','ROK','042700.KS','8035.T']);
+  const HISTORY_RANGES = new Set(['1mo','3mo','6mo','1y','2y','5y']);
+  const HISTORY_ERRORS = new Set(['CONFIG_UNAVAILABLE','AUTH_FORBIDDEN','AUTH_UNAVAILABLE','REQUEST_INVALID','ORIGIN_FORBIDDEN','RATE_LIMITED','RATE_LIMIT_UNAVAILABLE','YAHOO_BLOCKED','YAHOO_UNAVAILABLE','YAHOO_TIMEOUT','YAHOO_FORMAT_CHANGED','YAHOO_TOO_LARGE','HISTORY_UNAVAILABLE']);
   const CLIENT_SCRIPT = 'https://accounts.google.com/gsi/client';
   const CLIENT_STYLE = 'https://accounts.google.com/gsi/style';
   // The current GIS token-client SDK skips its inline button styles when this
@@ -40,8 +44,26 @@
     if (extractSpreadsheetId(id) !== id || typeof range !== 'string' || !range.trim() || range.length > 160 || /[\x00-\x1f\x7f]/.test(range)) fail('INVALID');
     return 'https://sheets.googleapis.com/v4/spreadsheets/' + encodeURIComponent(id) + '/values/' + encodeURIComponent(range) + '?valueRenderOption=UNFORMATTED_VALUE&dateTimeRenderOption=SERIAL_NUMBER';
   }
+  function validScope(value) {
+    if (typeof value !== 'string') return false;
+    const scopes = new Set(value.trim().split(/\s+/).map(scope => scope === 'https://www.googleapis.com/auth/userinfo.email' ? 'email' : scope));
+    return scopes.size === 2 && scopes.has(READONLY_SCOPE) && scopes.has('email');
+  }
+  function historyOrigin(value) {
+    const label = '[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?';
+    if (typeof value !== 'string' || !new RegExp('^https://' + label + '\\.' + label + '\\.workers\\.dev/?$').test(value)) fail('REQUEST_INVALID');
+    return value.replace(/\/$/, '');
+  }
+  function sessionFor(view, clientId) {
+    let shared = sessions.get(view);
+    if (!shared || shared.clientId !== clientId) {
+      if (shared) void shared.session.disconnect();
+      shared = {clientId,session:createSession(view,{clientId})}; sessions.set(view,shared);
+    }
+    return shared.session;
+  }
   function createSession(view, options) {
-    const clientId = options.clientId, now = options.now || (() => Date.now()), listeners = new Set();
+    const clientId = options.clientId, now = options.now || (() => Date.now()), listeners = new Set(), controllers = new Set();
     let enabled = false, token = '', expiresAt = 0, epoch = 0, pending = false, preparing = null, timer = null, controller = null, error = '';
     function oauth() { return view.google && view.google.accounts && view.google.accounts.oauth2; }
     function notify() { for (const listener of listeners) listener(); }
@@ -49,6 +71,7 @@
       token = ''; expiresAt = 0; pending = false; epoch++;
       if (timer !== null) { view.clearTimeout(timer); timer = null; }
       if (controller) { controller.abort(); controller = null; }
+      for (const abort of controllers) abort.abort(); controllers.clear();
     }
     function expire() { if (token && expiresAt <= now()) { invalidate(); error = 'AUTH_REQUIRED'; notify(); } }
     function state() { expire(); return { enabled, ready: !!oauth(), connected: !!token, pending, preparing: !!preparing, error }; }
@@ -93,7 +116,7 @@
         const client = oauth().initTokenClient({ client_id: clientId, scope: SCOPE, include_granted_scopes: false,
           callback(response) {
             if (attempt !== epoch || !enabled) return;
-            if (!response || response.error || typeof response.access_token !== 'string' || !/^[A-Za-z0-9._~-]{1,4096}$/.test(response.access_token) || !Number.isFinite(Number(response.expires_in)) || Number(response.expires_in) <= 0 || (response.token_type && response.token_type !== 'Bearer') || typeof response.scope !== 'string' || response.scope.trim() !== SCOPE) { rejected(); return; }
+            if (!response || response.error || typeof response.access_token !== 'string' || !/^[A-Za-z0-9._~-]{1,4096}$/.test(response.access_token) || !Number.isFinite(Number(response.expires_in)) || Number(response.expires_in) <= 0 || (response.token_type && response.token_type !== 'Bearer') || !validScope(response.scope)) { rejected(); return; }
             token = response.access_token; expiresAt = now() + Math.min(Number(response.expires_in), 3600) * 1000; pending = false;
             timer = view.setTimeout(() => { expire(); }, Math.max(1, expiresAt - now())); notify();
           }, error_callback: rejected });
@@ -123,7 +146,38 @@
         fail('READ_FAILED');
       } finally { if (controller === abort) controller = null; }
     }
-    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, revision: () => epoch,
+    async function fetchHistory(origin, symbol, range, options = {}) {
+      const destination = historyOrigin(origin);
+      if (!options.approvedOrigin || historyOrigin(options.approvedOrigin) !== options.approvedOrigin || destination !== options.approvedOrigin || !HISTORY_SYMBOLS.has(symbol) || !HISTORY_RANGES.has(range)) fail('REQUEST_INVALID');
+      expire(); if (!enabled || !token) fail('AUTH_REQUIRED');
+      const attempt = epoch, abort = new view.AbortController(), signal = options.signal;
+      const cancel = () => abort.abort();
+      if (signal) { if (signal.aborted) fail('CANCELED'); signal.addEventListener('abort',cancel,{once:true}); }
+      controllers.add(abort);
+      const current = () => attempt === epoch && enabled && !!token && !abort.signal.aborted;
+      try {
+        const response = await view.fetch(destination + '/history?symbol=' + encodeURIComponent(symbol) + '&range=' + encodeURIComponent(range), {
+          method:'GET',headers:{Authorization:'Bearer ' + token},credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',redirect:'error',signal:abort.signal
+        });
+        expire(); if (!current()) fail('CANCELED');
+        if (response.status === 401) { invalidate(); error='AUTH_REQUIRED'; notify(); fail('AUTH_REQUIRED'); }
+        const payload = await response.json(); expire(); if (!current()) fail('CANCELED');
+        if (!response.ok) {
+          const code = payload && payload.error && HISTORY_ERRORS.has(payload.error.code) ? payload.error.code : 'YAHOO_UNAVAILABLE';
+          if (code === 'AUTH_FORBIDDEN') { invalidate(); error='AUTH_REQUIRED'; notify(); }
+          fail(code);
+        }
+        if (!payload || typeof payload !== 'object' || Array.isArray(payload)) fail('YAHOO_UNAVAILABLE');
+        return payload;
+      } catch (caught) {
+        if (['AUTH_REQUIRED','AUTH_FORBIDDEN'].includes(caught.message)) throw caught;
+        if (!current()) fail('CANCELED');
+        if (HISTORY_ERRORS.has(caught.message)) throw caught;
+        fail('YAHOO_UNAVAILABLE');
+      } finally { controllers.delete(abort); if(signal)signal.removeEventListener('abort',cancel); }
+    }
+    if (view.addEventListener) view.addEventListener('pagehide', () => { invalidate(); error='AUTH_REQUIRED'; notify(); });
+    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, fetchHistory, revision: () => epoch,
       subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); } });
   }
   function translate(state, key) { return TEXT[key][state.locale === 'en-US' ? 1 : 0]; }
@@ -217,9 +271,7 @@
     catch (_) { state.settings = { schema: 'device-google-sheet-settings/1', enabled: false, spreadsheet_id: '', range: DEFAULT_RANGE }; state.storageFailed = true; }
     if (!live(state)) return;
     if (options.clientId) {
-      let shared = sessions.get(view);
-      if (!shared || shared.clientId !== options.clientId) { if (shared) await shared.session.disconnect(); shared = { clientId: options.clientId, session: createSession(view, { clientId: options.clientId }) }; sessions.set(view, shared); }
-      state.session = shared.session; state.session.setEnabled(state.settings.enabled);
+      state.session = sessionFor(view,options.clientId); state.session.setEnabled(state.settings.enabled);
       const toggle = element(state, 'label', undefined, { class: 'sheet-toggle' });
       state.enable = element(state, 'input', undefined, { type: 'checkbox', 'data-sheet-enabled': '' }); toggle.append(state.enable, element(state, 'span', translate(state, 'enable'))); state.root.append(toggle);
       state.googleControls = element(state, 'div', undefined, { 'data-sheet-google-controls': '' });
@@ -253,5 +305,5 @@
     }
     if (state.storageFailed) notice(state, 'storage'); else await history(state);
   }
-  return Object.freeze({ mount, extractSpreadsheetId, sheetsURL, createSession });
+  return Object.freeze({ mount, extractSpreadsheetId, sheetsURL, createSession, sessionFor, historyOrigin });
 });
