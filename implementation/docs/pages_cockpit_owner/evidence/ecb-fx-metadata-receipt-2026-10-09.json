@@ -1,0 +1,21 @@
+{
+  "fetched_date": "2026-10-09",
+  "url": "https://data-api.ecb.europa.eu/service/data/EXR/D.USD+JPY+KRW.EUR.SP00.A?detail=serieskeysonly&format=csvdata",
+  "method": "GET",
+  "purpose": "Series metadata only. Official documentation states serieskeysonly excludes observations and attributes.",
+  "request_api_key": "none",
+  "request_authorization": "none",
+  "request_origin": "https://example.invalid",
+  "status": 200,
+  "response_headers": {
+    "content-type": "text/csv",
+    "access-control-allow-origin": "*",
+    "vary": "accept"
+  },
+  "received_bytes": 171,
+  "row_count_including_header": 4,
+  "columns": ["KEY", "FREQ", "CURRENCY", "CURRENCY_DENOM", "EXR_TYPE", "EXR_SUFFIX"],
+  "sha256": "459463b5b18271c4a01d4083d825ffce95a1f645030929fdad8ac558217fa5ca",
+  "observation_marker_present": false,
+  "scope_limit": "No observation request or browser production flow was tested. Header behavior is an observation of this metadata request, not a future guarantee."
+}

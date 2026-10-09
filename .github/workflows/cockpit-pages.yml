@@ -1,0 +1,109 @@
+name: cockpit-pages
+on:
+  push:
+    branches: [claude/investment-system-top500-validation-alrugm]
+  workflow_dispatch:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: cockpit-pages-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      artifact_id: ${{ steps.pages-upload.outputs.artifact_id }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Full regression and public build/privacy tests
+        working-directory: implementation
+        run: |
+          python -m pip install pytest==9.1.1 jsonschema==4.26.0
+          python -m pytest -q
+      - name: Build only the public cockpit
+        run: python implementation/tools/build_pages_cockpit.py --out "$RUNNER_TEMP/pages-root/Investment-System1"
+      - name: Check public output before browser verification
+        run: python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/pages-root/Investment-System1"
+      - name: Install browser validation dependency
+        run: |
+          npm install --prefix "$RUNNER_TEMP/pages-browser" playwright@1.58.2
+          "$RUNNER_TEMP/pages-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Project subpath, mobile/desktop screenshots and ACTUAL device flow
+        env:
+          NODE_PATH: ${{ runner.temp }}/pages-browser/node_modules
+          PAGES_COCKPIT_URL: http://127.0.0.1:8990/Investment-System1/
+          PAGES_COCKPIT_EVIDENCE_DIR: ${{ runner.temp }}/pages-browser-evidence
+          DEVICE_ACTUAL_URL: http://127.0.0.1:8990/Investment-System1/#actual
+          DEVICE_ACTUAL_EVIDENCE_DIR: ${{ runner.temp }}/device-actual-evidence
+        run: |
+          python -m http.server 8990 --bind 127.0.0.1 --directory "$RUNNER_TEMP/pages-root" > "$RUNNER_TEMP/pages-server.log" 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID"' EXIT
+          node implementation/tools/pages_cockpit_browser_test.js
+          node implementation/tools/device_actual_node_test.js
+          node implementation/tools/device_actual_browser_test.js
+      - name: Keep empty-device screenshots and result counts outside the site
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: cockpit-pages-verification
+          path: |
+            ${{ runner.temp }}/pages-browser-evidence
+            ${{ runner.temp }}/device-actual-evidence
+          if-no-files-found: error
+      - name: Fail closed immediately before Pages upload
+        run: python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/pages-root/Investment-System1"
+      - name: Upload only the web output folder
+        id: pages-upload
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        env:
+          TAR_OPTIONS: --owner=0 --group=0 --numeric-owner
+        with:
+          path: ${{ runner.temp }}/pages-root/Investment-System1
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/claude/investment-system-top500-validation-alrugm'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Read Pages configuration without enabling or changing its source
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+        with:
+          enablement: false
+      - name: Download the immutable artifact from this exact build
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact_id }}
+          path: ${{ runner.temp }}/pages-upload
+          merge-multiple: true
+      - name: Recheck actual uploaded archive immediately before public deployment
+        run: python implementation/tools/pages_artifact_guard.py --pages-artifact "$RUNNER_TEMP/pages-upload/artifact.tar"
+      - name: Deploy the verified Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+        with:
+          artifact_name: github-pages

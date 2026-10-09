@@ -1,0 +1,182 @@
+[
+  {
+    "id": "twelve-exchanges",
+    "url": "https://twelvedata.com/exchanges",
+    "final_url": "https://twelvedata.com/exchanges",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:06.249226+00:00",
+    "bytes": 333203,
+    "sha256": "9509a641195242bbb2850b0c55f66a44d6aefe45928ab54160fa4dcfebfe88bf"
+  },
+  {
+    "id": "twelve-tokyo",
+    "url": "https://twelvedata.com/exchanges/xjpx",
+    "final_url": "https://twelvedata.com/exchanges/xjpx",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:06.427989+00:00",
+    "bytes": 171714,
+    "sha256": "b74bb6478ecc63f61e02529a64257c42aab5a9a3c27e5c719c0abb749410f7fe"
+  },
+  {
+    "id": "twelve-korea",
+    "url": "https://twelvedata.com/exchanges/xkrx",
+    "final_url": "https://twelvedata.com/exchanges/xkrx",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:06.690751+00:00",
+    "bytes": 169697,
+    "sha256": "88fd9c8d1ba749f7daf4b0c41367050aa4cf2425b1746cd82381810f732ff784"
+  },
+  {
+    "id": "twelve-business-pricing",
+    "url": "https://twelvedata.com/pricing-business",
+    "final_url": "https://twelvedata.com/pricing-business",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:05.926096+00:00",
+    "bytes": 445033,
+    "sha256": "0a44f0230f30c45f3a9d311e87641c4a9fd63a8e6ea78b579808539e8664ed93"
+  },
+  {
+    "id": "twelve-use-policy",
+    "url": "https://support.twelvedata.com/en/articles/5332349-commercial-and-personal-usage",
+    "final_url": "https://support.twelvedata.com/en/articles/5332349-commercial-and-personal-usage",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:05.029963+00:00",
+    "bytes": 77082,
+    "sha256": "4904951543d21842103b6ca98fcb3e42e920858ea8fa55b68f6f90666a42290d"
+  },
+  {
+    "id": "eodhd-exchanges",
+    "url": "https://eodhd.com/financial-apis/exchanges-api-list-of-tickers-and-trading-hours",
+    "final_url": "https://eodhd.com/financial-apis/exchanges-api-list-of-tickers-and-trading-hours",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:05.353584+00:00",
+    "bytes": 167543,
+    "sha256": "76f2774db08fd64ea3cdc26252bc30b2f4b5b623f8af2e9ae1168f93250184d6"
+  },
+  {
+    "id": "eodhd-business",
+    "url": "https://eodhd.com/lp/b2b-solution",
+    "final_url": "https://eodhd.com/lp/b2b-solution",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:05.184081+00:00",
+    "bytes": 89143,
+    "sha256": "66b3867c358549ab676992c8378fc90bf224a491a043df05954cac0c3161ed03"
+  },
+  {
+    "id": "krx-openapi-terms",
+    "url": "https://openapi.krx.co.kr/contents/OPP/INFO/OPPINFO002.jsp",
+    "final_url": "https://openapi.krx.co.kr/contents/OPP/INFO/OPPINFO002.jsp",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:06.030403+00:00",
+    "bytes": 29832,
+    "sha256": "f1dd54bba0048be7224fb7514e41465842493fefd7afa4f450bd08f0f9d2d94e"
+  },
+  {
+    "id": "krx-data-reception",
+    "url": "https://openapi.krx.co.kr/contents/OPP/DATA/OPPDATA003.jsp",
+    "final_url": "https://openapi.krx.co.kr/contents/OPP/DATA/OPPDATA003.jsp",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:06.249314+00:00",
+    "bytes": 20939,
+    "sha256": "eab2dd02afc7abd29cda7fcc2b4959441d3a8a52399c196df0d5d27f714becf4"
+  },
+  {
+    "id": "jpx-fees",
+    "url": "https://www.jpx.co.jp/english/markets/paid-info-equities/realtime/01.html",
+    "final_url": "https://www.jpx.co.jp/english/markets/paid-info-equities/realtime/01.html",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:05.761992+00:00",
+    "bytes": 31135,
+    "sha256": "1c5ce2e531a28977e358ca428a1958af4813d054f90208ef8f8826d375a3678a"
+  },
+  {
+    "id": "github-actions-schedule",
+    "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows",
+    "final_url": "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:05.570215+00:00",
+    "bytes": 1072947,
+    "sha256": "a5179ac4b2f772254f0a396f411a816be869a0af650e06dcaaf10e74e89c0345"
+  },
+  {
+    "id": "github-actions-billing",
+    "url": "https://docs.github.com/en/billing/concepts/product-billing/github-actions",
+    "final_url": "https://docs.github.com/en/billing/concepts/product-billing/github-actions",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:06.085478+00:00",
+    "bytes": 226118,
+    "sha256": "811880923da6dc3d966d25e2d880cdbc4abc674057f694ee4d62d9505fb70a75"
+  },
+  {
+    "id": "eodhd-stock-markets",
+    "url": "https://eodhd.com/list-of-stock-markets",
+    "final_url": "https://eodhd.com/list-of-stock-markets",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:55.827004+00:00",
+    "bytes": 84584,
+    "sha256": "79d4fceab0782cf3dc6f6a6d751e979eeef7e03eb732a08b106ef71509a65c04"
+  },
+  {
+    "id": "twelve-hanmi-catalog",
+    "url": "https://twelvedata.com/markets/180577/stock/krx/042700",
+    "final_url": "https://twelvedata.com/markets/180577/stock/krx/042700",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:57.233295+00:00",
+    "bytes": 146110,
+    "sha256": "a5f1527d54b0c96f56d3ec227d9c3ef5127f2b0a2395cb8cfeca29cf7bcb0ed2"
+  },
+  {
+    "id": "twelve-tokyo-electron-catalog",
+    "url": "https://twelvedata.com/markets/433047/stock/jpx/8035",
+    "final_url": "https://twelvedata.com/markets/433047/stock/jpx/8035",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:59.468777+00:00",
+    "bytes": 150164,
+    "sha256": "b928dfec775059af599465a9c36521a7f5cddad027d4209d503e9cdc515111ea"
+  },
+  {
+    "id": "twelve-us-policy",
+    "url": "https://support.twelvedata.com/en/articles/9935903-us-equities-market-data",
+    "final_url": "https://support.twelvedata.com/en/articles/9935903-us-equities-market-data",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:54:59.866500+00:00",
+    "bytes": 92866,
+    "sha256": "7c33475122ba865275e0825132371f756253ef468d3b0d96d02f1ee00fb111e1"
+  },
+  {
+    "id": "twelve-docs",
+    "url": "https://twelvedata.com/docs",
+    "final_url": "https://twelvedata.com/docs",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:55:01.731387+00:00",
+    "bytes": 6273259,
+    "sha256": "66d8fcd6431d762c101a814d991dbc7097b1dc60988f20e785df8874dacfb930"
+  },
+  {
+    "id": "eodhd-pricing",
+    "url": "https://eodhd.com/pricing",
+    "final_url": "https://eodhd.com/pricing",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:55:02.258670+00:00",
+    "bytes": 316222,
+    "sha256": "cc3ef8fc68bb6f73bcea2a8b811de13a9ed19ec5c5e72935e38a52e5e5964955"
+  },
+  {
+    "id": "alpha-pricing",
+    "url": "https://www.alphavantage.co/premium/",
+    "final_url": "https://www.alphavantage.co/premium/",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:55:02.641764+00:00",
+    "bytes": 38678,
+    "sha256": "f42bbbd6d5e9a0df3ba5cffbe667a35c346681112b59d3bb1860db49e2521681"
+  },
+  {
+    "id": "alpha-terms",
+    "url": "https://www.alphavantage.co/terms_of_service/",
+    "final_url": "https://www.alphavantage.co/terms_of_service/",
+    "http_status": 200,
+    "fetched_at": "2026-10-09T00:55:04.369007+00:00",
+    "bytes": 156583,
+    "sha256": "88ed3d22fe0f3624e76e53a210db3498b4a90712ab0d934356cc84b19ed1468a"
+  }
+]

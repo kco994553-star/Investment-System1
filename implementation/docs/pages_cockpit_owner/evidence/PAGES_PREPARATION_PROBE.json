@@ -1,0 +1,14 @@
+{
+  "repo": {
+    "status": 200,
+    "has_pages": false,
+    "private": false,
+    "default_branch": "claude/investment-system-top500-validation-alrugm"
+  },
+  "pages": {
+    "status": 404
+  },
+  "planned_url": {
+    "status": 404
+  }
+}

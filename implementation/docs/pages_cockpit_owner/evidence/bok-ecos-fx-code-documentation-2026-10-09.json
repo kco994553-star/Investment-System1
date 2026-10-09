@@ -1,0 +1,552 @@
+{
+  "fetched_date": "2026-10-09",
+  "visible_documentation_url": "https://ecos.bok.or.kr/api/#/DevGuide/StatisticalCodeSearch",
+  "document_content_url": "https://ecos.bok.or.kr/api/serviceEndpoint/httpService/request.json",
+  "document_request_trxCd": "OSUUA01R03",
+  "document_request_data": {
+    "dsId": "731Y001",
+    "statItmId": "ACC_ITEM",
+    "statItmNm": "계정항목",
+    "statItmEngNm": "accounts item",
+    "cdGrpId": "G12023",
+    "cdGrpNm": "계정항목",
+    "cdGrpEngNm": "Selection of Currencies",
+    "cdHircGrpId": null,
+    "untColYn": "Y"
+  },
+  "data": {
+    "dataCcnt": 53,
+    "statClfItmCdList": [
+      {
+        "cd": "0000001",
+        "cdNm": "원/미국달러(매매기준율)",
+        "cdEngNm": "Won per United States Dollar(Basic Exchange Rate)",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000053",
+        "cdNm": "원/위안(매매기준율)",
+        "cdEngNm": "Won per Yuan(Basic Exchange Rate)",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000002",
+        "cdNm": "원/일본엔(100엔)",
+        "cdEngNm": "Won per Japanese Yen(100Yen)",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000003",
+        "cdNm": "원/유로",
+        "cdEngNm": "Won per Euro",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000004",
+        "cdNm": "원/독일마르크",
+        "cdEngNm": "Won per German Mark",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000005",
+        "cdNm": "원/프랑스프랑",
+        "cdEngNm": "Won per French Franc",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000006",
+        "cdNm": "원/이태리리라(100리라)",
+        "cdEngNm": "Won per Italian Lira(100Lira)",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000007",
+        "cdNm": "원/벨기에프랑",
+        "cdEngNm": "Won per Belgian Franc",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000008",
+        "cdNm": "원/오스트리아실링",
+        "cdEngNm": "Won per Austrian Schilling",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000009",
+        "cdNm": "원/네덜란드길더",
+        "cdEngNm": "Won per Netherlands Guilder",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000010",
+        "cdNm": "원/스페인페세타(100페세타)",
+        "cdEngNm": "Won per Spanish Peseta(100Peseta)",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000011",
+        "cdNm": "원/핀란드마르카",
+        "cdEngNm": "Won per Finland Markka",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000012",
+        "cdNm": "원/영국파운드",
+        "cdEngNm": "Won per United Kingdom Pound",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000013",
+        "cdNm": "원/캐나다달러",
+        "cdEngNm": "Won per Canadian Dollar",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000014",
+        "cdNm": "원/스위스프랑",
+        "cdEngNm": "Won per Swiss Franc",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000017",
+        "cdNm": "원/호주달러",
+        "cdEngNm": "Won per Australian Dollar",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000026",
+        "cdNm": "원/뉴질랜드달러",
+        "cdEngNm": "Won per New Zealand Dollar",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000027",
+        "cdNm": "원/중국위안",
+        "cdEngNm": "Won per Chinese Renminbi(China Yuan)",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000030",
+        "cdNm": "원/홍콩위안",
+        "cdEngNm": "Won per Chinese Renminbi(Hong Kong Yuan)",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000015",
+        "cdNm": "원/홍콩달러",
+        "cdEngNm": "Won per Hongkong Dollar",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000031",
+        "cdNm": "원/대만달러",
+        "cdEngNm": "Won per Taiwanese Dollar",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000032",
+        "cdNm": "원/몽골투그릭",
+        "cdEngNm": "Won per Mongolian Tugrik",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000033",
+        "cdNm": "원/카자흐스탄텡게",
+        "cdEngNm": "Won per Kazakhstan Tenge",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000028",
+        "cdNm": "원/태국바트",
+        "cdEngNm": "Won per Thai Baht",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000024",
+        "cdNm": "원/싱가포르달러",
+        "cdEngNm": "Won per Singapore Dollar",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000029",
+        "cdNm": "원/인도네시아루피아(100루피아)",
+        "cdEngNm": "Won per Indonesian Rupiah",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000025",
+        "cdNm": "원/말레이지아링깃",
+        "cdEngNm": "Won per Malaysian Ringgit",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000034",
+        "cdNm": "원/필리핀페소",
+        "cdEngNm": "Won per Philippine Peso",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000035",
+        "cdNm": "원/베트남동(100동)",
+        "cdEngNm": "Won per Vietnamese Dong",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000036",
+        "cdNm": "원/브루나이달러",
+        "cdEngNm": "Won per Brunei Dollar",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000037",
+        "cdNm": "원/인도루피",
+        "cdEngNm": "Won per Indian Rupee",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000038",
+        "cdNm": "원/파키스탄루피",
+        "cdEngNm": "Won per Pakistani Rupee",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000039",
+        "cdNm": "원/방글라데시타카",
+        "cdEngNm": "Won per Bangladesh Taka",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000040",
+        "cdNm": "원/멕시코 페소",
+        "cdEngNm": "Won per Mexican Peso",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000041",
+        "cdNm": "원/브라질 헤알",
+        "cdEngNm": "Won per Brazilian Real",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000042",
+        "cdNm": "원/아르헨티나페소",
+        "cdEngNm": "Won per Argentine Peso",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000016",
+        "cdNm": "원/스웨덴크로나",
+        "cdEngNm": "Won per Swdish Krona",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000018",
+        "cdNm": "원/덴마크크로나",
+        "cdEngNm": "Won per Danish Krone",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000019",
+        "cdNm": "원/노르웨이크로나",
+        "cdEngNm": "Won per Norwagian Krone",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000043",
+        "cdNm": "원/러시아루블",
+        "cdEngNm": "Won per Russian Ruble",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000044",
+        "cdNm": "원/헝가리포린트",
+        "cdEngNm": "Won per Hungarian Forint",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000045",
+        "cdNm": "원/폴란트즈워티",
+        "cdEngNm": "Won per Polish Zloty",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000046",
+        "cdNm": "원/체코코루나",
+        "cdEngNm": "Won per Czech Koruna",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000020",
+        "cdNm": "원/사우디아라비아리얄",
+        "cdEngNm": "Won per Saudi Riyal",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000047",
+        "cdNm": "원/카타르리얄",
+        "cdEngNm": "Won per Qatari Riyal",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000048",
+        "cdNm": "원/이스라엘셰켈",
+        "cdEngNm": "Won per Israeli Shekel",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000049",
+        "cdNm": "원/요르단디나르",
+        "cdEngNm": "Won per Jordanian Dinar",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000021",
+        "cdNm": "원/쿠웨이트디나르",
+        "cdEngNm": "Won per Kuwaiti Dinar",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000022",
+        "cdNm": "원/바레인디나르",
+        "cdEngNm": "Won per Bahraini Dinar",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000023",
+        "cdNm": "원/아랍에미리트디르함",
+        "cdEngNm": "Won per United Arab Emirates Dirham",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000050",
+        "cdNm": "원/튀르키예리라",
+        "cdEngNm": "Won per Turkish Lira",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000051",
+        "cdNm": "원/남아프리카공화국랜드",
+        "cdEngNm": "Won per South African Rand",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      },
+      {
+        "cd": "0000052",
+        "cdNm": "원/이집트파운드",
+        "cdEngNm": "Won per Egyptian Pound",
+        "uppCd": null,
+        "lvl": "1",
+        "untNm": "원",
+        "untEngNm": "Won",
+        "hircSlctYn": "N"
+      }
+    ]
+  }
+}
