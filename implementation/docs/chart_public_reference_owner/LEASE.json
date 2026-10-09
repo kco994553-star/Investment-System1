@@ -1,0 +1,40 @@
+{
+  "schema": "chart-public-reference-lease/1",
+  "lane_id": "CHART_PUBLIC_REFERENCE_B",
+  "holder": "/root user-observed Main-directed session",
+  "run_id": "chart-public-reference-20261009T030333Z",
+  "acquired_at_utc": "2026-10-09T03:03:33Z",
+  "expires_at_utc": "2026-10-09T05:03:33Z",
+  "ttl_hours": 2,
+  "status": "RELEASED",
+  "branch": "codex/chart-public-reference-20261009",
+  "base": "d71243bcc79139149541f3627e8f227a32c463c5",
+  "authority": "Main direct user instruction 2026-10-09; named execution/deployment only; AUTONOMY_MODE READ_ONLY unchanged",
+  "task_limit": 5,
+  "write_set": [
+    "implementation/docs/chart_public_reference_owner/**",
+    "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
+    "implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+    "implementation/src/investment_system/product/target_reference_assets/**",
+    "implementation/src/investment_system/product/web_assets/index.html",
+    "implementation/tools/build_pages_cockpit.py",
+    "implementation/tools/pages_artifact_guard.py",
+    "implementation/tools/target_reference_browser_test.js",
+    "implementation/tests/test_target_reference_public.py",
+    "implementation/tests/test_pages_cockpit_build.py",
+    "implementation/tests/test_pages_artifact_guard.py",
+    ".github/workflows/cockpit-pages.yml"
+  ],
+  "immutable": [
+    "TARGET_v0.yaml",
+    "security/theme source packets",
+    "scoring/Frozen/Holdout/history",
+    "device_actual data contracts",
+    "AUTONOMY_MODE",
+    "automation settings",
+    "other owner refs",
+    "PR70"
+  ],
+  "released_at_utc": "2026-10-09T03:21:00Z",
+  "reason": "New explicit user direction supersedes unfinished publication. PR71 left open, not merged; documentation-only docs/cockpit-ia-v1 work begins separately."
+}

@@ -24,11 +24,10 @@ class PagesArtifactGuardTests(unittest.TestCase):
         cls.baseline_temp = tempfile.TemporaryDirectory()
         cls.addClassCleanup(cls.baseline_temp.cleanup)
         cls.baseline = Path(cls.baseline_temp.name) / "site"
-        bundle = deepcopy(repository_bundle())
-        bundle["universe"]["data"].pop("cutoff_mcap")
-        for member in bundle["universe"]["data"]["members"]:
-            member.pop("mcap")
-        build(cls.baseline, bundle=bundle)
+        spec = importlib.util.spec_from_file_location("pages_build", GUARD_PATH.with_name("build_pages_cockpit.py"))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.build_public_cockpit(cls.baseline)
 
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -47,7 +46,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         receipt = json.loads(result.stdout)
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 11)
+        self.assertEqual(receipt["files_scanned"], 15)
         self.assertEqual(receipt["violations"], {})
         self.assertEqual(result.stderr, "")
 
@@ -326,7 +325,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
     def test_github_pages_tar_shape_passes_same_guard(self):
         receipt = self.tar_receipt()
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 11)
+        self.assertEqual(receipt["files_scanned"], 15)
         self.assertEqual(receipt["violations"], {})
 
     def test_exact_upload_action_tar_command_with_normalized_owners_passes(self):

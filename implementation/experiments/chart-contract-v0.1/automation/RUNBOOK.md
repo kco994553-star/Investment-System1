@@ -1,5 +1,15 @@
 # Chart owner resume automation runbook
 
+## Current reconciliation · Main directive 2026-10-09
+
+Current TARGET source readiness is **closed3/open3**, not the historical closed0/open6: A-S1 CLOSED; A-S2/A-S3 CLOSED_CURRENT_TARGET_SCOPE; A-G1/A-G2/A-G3 remain open in the original production scope. Source: canonical `d71243bcc79139149541f3627e8f227a32c463c5`, `implementation/docs/security_map19_owner/v1_1_cycle_20261008/SIX_GATE_REJUDGMENT.json`, blob `077929319e6bafd7b8c48e1d73fc5fe6b7f1b824`. Narrow public-reference decisions and verification are recorded separately under `implementation/docs/chart_public_reference_owner/`; they do not grant broader production acceptance.
+
+The wake signal's explicit merged PR reference is corrected to **PR #67**, merge `e03b9a10997e195f3681a32b5315feb998d55312`. Main's directive describes PR #41 as Draft/Open; fresh GitHub REST readback instead reports Draft=true, closed/merged with the same merge SHA. Preserve this discrepancy, do not represent the API state as Open, and do not mutate PR #41 to reconcile it.
+
+Scheduled tasks remain READ_ONLY watchers under Main Single-Control and CDR-024. Historical executor/lease instructions below are not watcher permissions. This named user-observed Main-directed publication does not change AUTONOMY_MODE, task enablement/cadence, or protected owner scopes.
+
+## Historical setup (not current authority)
+
 Scope: existing Chart PR #41 owner work, evidence/design only, six pre-code gates open. The two enabled tasks are **Chart PR 이벤트 재개** (`6ac2eeedb21c81919f04168d69672f0a`) and **Chart CI 후속 확인** (`6ac2ef0621908191909a27af4c91f101`) in conversation `6ac21ce4-f050-83ec-bfd4-5fa178fc6936`. Root verified creation, update and enabled/current-conversation settings. Scheduling is not production approval or proof that a run completed.
 
 Event selectors watch PR #41/#17/#18/#19/#34/#36/#42/#44 commits, reviews and comments, including unmerged PR changes. The CI task runs hourly to inspect exact pending owner work. Its first setup run found remote STATE absent (404), no pending item and no semantic Chart work delta, so it took a read-only no-op and made no CI-completion claim. This observation does not create a pending item.
@@ -45,7 +55,7 @@ Use the verified GitHub API path when transport push is unavailable, preserving 
 
 ## Boundaries and readiness
 
-Six pre-code gates remain A-S1/A-S2/A-S3/A-G1/A-G2/A-G3, closed0/open6. Market admitted0/19; ACTUAL NOT_AVAILABLE. Automation setup neither closes these gates nor authorizes production package/protected Web work. No canonical merge, other owner branch or Global write, Frozen change, P01/TrackC digest/hash repin, grant, Official/LIVE promotion, Holdout, PIT relaxation, payment, MCP implementation or inactive QGV semantic activation is permitted by this setup. Any future newly authorized scope requires its own exact evidence and ownership assessment; the lease supplies coordination only.
+Current source rejudgment: six pre-code gates A-S1/A-S2/A-S3/A-G1/A-G2/A-G3, closed3/open3, from the exact SIX_GATE_REJUDGMENT source above. Market admitted0/19; ACTUAL remains device-local and is not server-derived. Automation setup neither closes governance gates nor authorizes production package/protected Web work. No canonical merge, other owner branch or Global write, Frozen change, P01/TrackC digest/hash repin, grant, Official/LIVE promotion, Holdout, PIT relaxation, payment, MCP implementation or inactive QGV semantic activation is permitted by automation setup. Any newly authorized user-observed scope requires its own exact evidence and ownership assessment; a lease supplies coordination only.
 
 
 ## v0.7 current execution policy and automation inventory

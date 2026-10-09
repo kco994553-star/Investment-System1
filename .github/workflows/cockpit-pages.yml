@@ -46,6 +46,8 @@ jobs:
           PAGES_COCKPIT_EVIDENCE_DIR: ${{ runner.temp }}/pages-browser-evidence
           DEVICE_ACTUAL_URL: http://127.0.0.1:8990/Investment-System1/#actual
           DEVICE_ACTUAL_EVIDENCE_DIR: ${{ runner.temp }}/device-actual-evidence
+          TARGET_REFERENCE_URL: http://127.0.0.1:8990/Investment-System1/target.html
+          TARGET_REFERENCE_EVIDENCE_DIR: ${{ runner.temp }}/target-reference-evidence
         run: |
           python -m http.server 8990 --bind 127.0.0.1 --directory "$RUNNER_TEMP/pages-root" > "$RUNNER_TEMP/pages-server.log" 2>&1 &
           SERVER_PID=$!
@@ -53,6 +55,7 @@ jobs:
           node implementation/tools/pages_cockpit_browser_test.js
           node implementation/tools/device_actual_node_test.js
           node implementation/tools/device_actual_browser_test.js
+          node implementation/tools/target_reference_browser_test.js
       - name: Keep empty-device screenshots and result counts outside the site
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -61,6 +64,7 @@ jobs:
           path: |
             ${{ runner.temp }}/pages-browser-evidence
             ${{ runner.temp }}/device-actual-evidence
+            ${{ runner.temp }}/target-reference-evidence
           if-no-files-found: error
       - name: Fail closed immediately before Pages upload
         run: python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/pages-root/Investment-System1"
@@ -76,6 +80,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     permissions:
       contents: read
       pages: write
@@ -107,3 +113,43 @@ jobs:
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
         with:
           artifact_name: github-pages
+  verify-public:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/claude/investment-system-top500-validation-alrugm'
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Install existing browser verification dependency
+        run: |
+          npm install --prefix "$RUNNER_TEMP/pages-browser" playwright@1.58.2
+          "$RUNNER_TEMP/pages-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Actual public address, mobile/desktop and ko/en verification
+        env:
+          NODE_PATH: ${{ runner.temp }}/pages-browser/node_modules
+          PUBLIC_COCKPIT_URL: ${{ needs.deploy.outputs.page_url }}
+          PAGES_COCKPIT_EVIDENCE_DIR: ${{ runner.temp }}/public-cockpit-evidence
+          TARGET_REFERENCE_EVIDENCE_DIR: ${{ runner.temp }}/public-target-evidence
+          DEVICE_ACTUAL_EVIDENCE_DIR: ${{ runner.temp }}/public-device-evidence
+        run: |
+          export PAGES_COCKPIT_URL="$PUBLIC_COCKPIT_URL"
+          export TARGET_REFERENCE_URL="${PUBLIC_COCKPIT_URL}target.html"
+          export DEVICE_ACTUAL_URL="${PUBLIC_COCKPIT_URL}#actual"
+          node implementation/tools/pages_cockpit_browser_test.js
+          node implementation/tools/target_reference_browser_test.js
+          node implementation/tools/device_actual_browser_test.js
+      - name: Preserve actual public verification outside the deployed site
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: cockpit-pages-public-verification
+          path: |
+            ${{ runner.temp }}/public-cockpit-evidence
+            ${{ runner.temp }}/public-target-evidence
+            ${{ runner.temp }}/public-device-evidence
+          if-no-files-found: error

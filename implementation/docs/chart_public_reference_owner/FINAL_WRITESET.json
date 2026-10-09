@@ -1,0 +1,114 @@
+{
+  "schema": "chart-public-reference-final-writeset/1",
+  "base": "d71243bcc79139149541f3627e8f227a32c463c5",
+  "candidate_parent": "e32cea46a98f26d100bbcf183674270e9345e290",
+  "authority_receipt": "implementation/docs/chart_public_reference_owner/DECISION_RECEIPT.json",
+  "scope": "EXPLICIT_PUBLIC_REFERENCE_B_ONLY",
+  "files": [
+    {
+      "path": ".github/workflows/cockpit-pages.yml",
+      "sha256": "4259200b52a0dea5dd0a1918fb449f6fac7cb4cdb7f6da1f075c0215edefa87b"
+    },
+    {
+      "path": "implementation/docs/chart_public_reference_owner/DECISION_RECEIPT.json",
+      "sha256": "899d22fe821007fc7b168d9a58a8fbb6656a0c4d5c30971ab26d38514262dce9"
+    },
+    {
+      "path": "implementation/docs/chart_public_reference_owner/HANDOFF.md",
+      "sha256": "54911c14d9c09c76cb0799d92be17519c1ccb43b43fd716ad09ad3dff8cf5867"
+    },
+    {
+      "path": "implementation/docs/chart_public_reference_owner/IMPLEMENTATION_PLAN.md",
+      "sha256": "2fb1328b2c04868932751fdb821c4621f490b3d3045f1a8d5dbc4feac8c1c087"
+    },
+    {
+      "path": "implementation/docs/chart_public_reference_owner/LOCAL_VERIFICATION.json",
+      "sha256": "d836991a62a79f0cee0f2cdd28376797d21df176b5b89a31d8b1df2b76f99ae5"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/automation/RUNBOOK.md",
+      "sha256": "112bd22f62ac896149db1a69fea35dacedc9b94ca2c397fc0ec681e027d4f6d9"
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/automation/STATE.json",
+      "sha256": "ffa7bfa33351312d5de98d950eee55e037e31c24180db5b0fa060336f3f2a11b"
+    },
+    {
+      "path": "implementation/src/investment_system/product/target_reference_assets/target.css",
+      "sha256": "74b655a67ba3ae77875ac336bb58dd87e26c4eb7ab12e866328c224ed7b698f5"
+    },
+    {
+      "path": "implementation/src/investment_system/product/target_reference_assets/target.html",
+      "sha256": "78108d9a16c66712bcbe9a3298e7bd8a0da4113e24abd3e8c3485e6770063ce9"
+    },
+    {
+      "path": "implementation/src/investment_system/product/target_reference_assets/target.js",
+      "sha256": "aaddc7f3cd6dd9c35c5d813a6d268cfa5a53cdabb3d7e1991affe7eca8b8d09f"
+    },
+    {
+      "path": "implementation/src/investment_system/product/web_assets/index.html",
+      "sha256": "52409559b78a02e51e40a47dff58cc571e206d17fc8019592fcfa5b7b2e2fc07"
+    },
+    {
+      "path": "implementation/tests/test_pages_artifact_guard.py",
+      "sha256": "bb179713a6c21c6e471bff4ab9172e7e9c30fe15ab0ad518d6dd2c47c2138168"
+    },
+    {
+      "path": "implementation/tests/test_pages_cockpit_build.py",
+      "sha256": "cf6d4789627ecdf6c573fc28f9aac09a869f3a97c8f148979c12fe67f364346c"
+    },
+    {
+      "path": "implementation/tests/test_target_reference_public.py",
+      "sha256": "ce9f1cd0519f10d87115b66f7fdad8eacb97a0b177463655dd1adff050ffb998"
+    },
+    {
+      "path": "implementation/tools/build_pages_cockpit.py",
+      "sha256": "10338aab0141ddf83ecc7f7d2e376a2e7922a1fe29dbd2991e1d8999b2f968ab"
+    },
+    {
+      "path": "implementation/tools/pages_artifact_guard.py",
+      "sha256": "6183c211ff07bce84a61448116d1de5643937b9b413fedc63341a5f3d1336691"
+    },
+    {
+      "path": "implementation/tools/target_reference_browser_test.js",
+      "sha256": "7451055707b210107b808e346bfe1964498df69149d9055026c63aa81ad5afb4"
+    }
+  ],
+  "coordination_file": {
+    "path": "implementation/docs/chart_public_reference_owner/LEASE.json",
+    "authority": "Exact parent lease commit; owned candidate branch only, a canonical copy does not grant a canonical lease"
+  },
+  "manifest_self_excluded": true,
+  "public_artifact_sha256": {
+    "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
+    "app.js": "f828c3b13f2d1bf639bc59c7c17d9dad9ab141090e1e4835fde1ae7040c485ad",
+    "data.json": "735aadfdf26197013e1478e60974d42c920c089c19dd99f91687a0dfd38b9536",
+    "device-actual.css": "84aa2e390cd9da6121893c250c4e8a0d7cc0d983ffc40fbbba7260716a92e239",
+    "device-actual.js": "ac8d410039cf4773da0b6ff134321440de176a29a13f054a5a85262542948d09",
+    "entities.json": "465354a2bc2846f4d85ad6306d2dda3aa5cb5601e4d3520281ec013bf402c424",
+    "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
+    "index.html": "7edd6be9c28c1d4d13d86caf40fff9686fc7b40e9b70ca0c5fda4179fe18f341",
+    "locale.js": "c43cc076521250008d9406ae39492be9cf3f665556c43822151e975675a1663d",
+    "research.html": "ef7665e2079df06c4bf7265206d9113ddb4716f93cf87e0ec0735c6b5fbae219",
+    "style.css": "de98839bbb4469b693e2ad34009910071cc03e31161cea593e67b4080996d526",
+    "target-reference.json": "4fe4c00f5c0a2270a0322e557334f12b825d8eff123918162aa73185adac40d7",
+    "target.css": "74b655a67ba3ae77875ac336bb58dd87e26c4eb7ab12e866328c224ed7b698f5",
+    "target.html": "78108d9a16c66712bcbe9a3298e7bd8a0da4113e24abd3e8c3485e6770063ce9",
+    "target.js": "21ff0d7c25e231ca4678f00739149e321044180d428216bab078eb46dfd9caad"
+  },
+  "unchanged": [
+    "original TARGET_v0.yaml",
+    "source identity map and theme assignments",
+    "device ACTUAL contracts/runtime",
+    "scoring/PIT/Frozen/Holdout/history",
+    "AUTONOMY_MODE",
+    "PR70",
+    "other owner refs"
+  ],
+  "checks_required": [
+    "exact candidate native CI terminal success",
+    "separate-session independent technical review",
+    "actual post-deploy public390/1280ko/en verification"
+  ],
+  "FPIA": "NOT_RUN_GOVERNANCE_BLOCKED"
+}
