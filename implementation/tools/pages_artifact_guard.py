@@ -29,8 +29,8 @@ import tarfile
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
-    "app-config.js": "3748880c0b35e3a0d49d3e44208e816d3a0149fce4d2d1630de745f83b35fca2",
-    "app.js": "5a3b7a207728d7f128e94eeaab70ed8a79e3b1cbd6a4fd597d635ed0da0a2bbb",
+    "app-config.js": "6f966a489b348a0332acbda0e330c43d7fb0abf5345d371e90b8e54ae84c0690",
+    "app.js": "fa38393706ba208db8fca5f93709db8eb66fcbb33ac67e7b4e1dae62b04399c9",
     "data.json": "735aadfdf26197013e1478e60974d42c920c089c19dd99f91687a0dfd38b9536",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "e1625314c50c5891d48ce9ad1d4ac6c958022230ce27d8c8500896046c4c0c21",
@@ -38,10 +38,12 @@ APPROVED_SHA256 = {
     "entities.json": "465354a2bc2846f4d85ad6306d2dda3aa5cb5601e4d3520281ec013bf402c424",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "92b59b5eb30dd8780de77463cd348cd8f1c26cb0ad6a36b772334ba0272792af",
+    "google-sheet-quotes.js": "53d790bf12c8ef767bcfaa0a56a7f63439f354d5465dedbf339de947f7d14561",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "2f0eb451d302ee712cd3d6969d4c1017be1d5ec75682713e67a42011172d0b70",
+    "index.html": "febc66d1c6ac44fcab2a179a1942dfed3a010cc500bd232db12cca8489bb91be",
     "locale.js": "0e27312c7885dd1edbaf5c5eed939ba4b642695e5541653a21c786dcff9089fc",
+    "private-history.css": "dbac5b571505658a71935456fd6303c034c3c2f29a0fc2edb947159a4da6d89f",
+    "private-history.js": "45bb16f4b8827ed38f537336224b894774bd7558b58ac2e570c60563eb38f916",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "1acfc2cee6112897fc901972053033009d51e537fe0aced7e7804f799547486e",
 }

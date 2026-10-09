@@ -134,7 +134,7 @@ def test_google_sheet_assets_config_and_minimal_csp(tmp_path):
     assert 'unsafe-inline' not in parser.policy and 'unsafe-eval' not in parser.policy
     assert 'style-src-elem' not in directives and 'style-src-attr' not in directives
     assert 'https://accounts.google.com/gsi/style' not in html.replace(parser.policy, '')
-    for name in ('app-config.js', 'google-sheet-core.js', 'google-sheet-quotes.js', 'google-sheet-quotes.css'):
+    for name in ('app-config.js', 'google-sheet-core.js', 'google-sheet-quotes.js', 'google-sheet-quotes.css', 'private-history.js', 'private-history.css'):
         assert (tmp_path / name).is_file() and name in html
     assert html.index('google-sheet-core.js') < html.index('google-sheet-quotes.js') < html.index('app.js')
     config = (tmp_path / 'app-config.js').read_text()

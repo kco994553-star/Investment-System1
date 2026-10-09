@@ -1,0 +1,19 @@
+name = "private-investment-history"
+main = "src/index.js"
+compatibility_date = "2026-10-09"
+preview_urls = false
+keep_vars = true
+
+[observability]
+enabled = false
+
+[vars]
+REQUESTS_PER_MINUTE = "12"
+
+[[durable_objects.bindings]]
+name = "HISTORY_RATE_LIMITER"
+class_name = "HistoryRateLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["HistoryRateLimiter"]
