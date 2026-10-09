@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self' https://raw.githubusercontent.com/kco994553-star/Investment-System1/refs/heads/claude/investment-system-top500-validation-alrugm/implementation/docs/portfolio_target_owner/TARGET_v0.yaml; img-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+    <title>TARGET · Public reference</title>
+    <link rel="stylesheet" href="target.css">
+    <script src="target.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#target-main" data-copy="skip">본문으로</a>
+    <header>
+      <a class="brand" href="index.html">INVESTMENT SYSTEM</a>
+      <span class="badge" data-copy="badge">PUBLIC / READ ONLY</span>
+      <div class="language">
+        <label for="target-language" data-copy="language">언어</label>
+        <select id="target-language"><option value="ko">한국어</option><option value="en">English</option></select>
+      </div>
+    </header>
+    <main id="target-main" tabindex="-1">
+      <p class="eyebrow">TARGET / REFERENCE</p>
+      <h1 data-copy="title">공개 TARGET 참고 화면</h1>
+      <p class="lead" data-copy="scope">사용자가 채택한 목표 비중을 읽기 전용으로 표시합니다. 실제 보유 내역(ACTUAL)이 아닙니다.</p>
+      <p class="disclaimer" data-target-disclaimer data-copy="disclaimer">투자 권유 아님 / 참고용</p>
+      <section class="verification" aria-labelledby="verification-title">
+        <h2 id="verification-title" data-copy="verification">원본 확인 상태</h2>
+        <p class="status" role="status" aria-live="polite" data-target-status data-state="NOT_AVAILABLE">NOT_AVAILABLE</p>
+        <p data-target-reason data-copy="checking">표시 전에 공개 원본과 메타데이터를 확인합니다.</p>
+        <p class="muted" data-copy="checkScope">확인은 화면을 열거나 다시 보거나 수동으로 요청할 때 수행됩니다. 지속적인 실시간 감시는 아닙니다.</p>
+        <p class="muted" data-target-verified></p>
+        <button id="target-recheck" type="button" data-copy="recheck">원본 다시 확인</button>
+      </section>
+      <div data-target-output></div>
+      <noscript><p>NOT_AVAILABLE · JavaScript is required to verify the original public TARGET. No weights are displayed.</p></noscript>
+      <section class="boundary" aria-labelledby="boundary-title">
+        <h2 id="boundary-title" data-copy="boundary">TARGET와 ACTUAL은 별개입니다</h2>
+        <p data-copy="privacy">이 화면은 기기의 보유 내역이나 설정을 읽거나 저장하지 않습니다. 가격·환율·평가금액·투자 점수도 제공하지 않습니다.</p>
+        <p data-copy="failClosed">원본을 확인할 수 없거나 원본이 변경되면 모든 목표 비중과 테마 막대를 지웁니다. 이전 값으로 대체하지 않습니다.</p>
+        <div class="links">
+          <a href="index.html#actual" data-copy="actual">기기 전용 ACTUAL 화면</a>
+          <a href="https://raw.githubusercontent.com/kco994553-star/Investment-System1/refs/heads/claude/investment-system-top500-validation-alrugm/implementation/docs/portfolio_target_owner/TARGET_v0.yaml" target="_blank" rel="noopener noreferrer" data-copy="source">공개 TARGET 원본</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

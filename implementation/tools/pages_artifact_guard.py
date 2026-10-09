@@ -1,7 +1,7 @@
 """Fail closed on anything outside the reviewed, immutable public Pages artifact.
 
-Pins describe the WEB-only build at 17b8f82, with ONLY ``cutoff_mcap`` and
-each universe member's ``mcap`` removed. HTML/CSS/JS use byte hashes; JSON
+Pins describe the reviewed public-reference B build based on d71243b, with
+``cutoff_mcap`` and each universe member's ``mcap`` removed. HTML/CSS/JS use byte hashes; JSON
 uses canonical hashes so formatting and object-key order are immaterial.
 Updating public data or assets requires reviewing and updating these pins.
 
@@ -35,10 +35,14 @@ APPROVED_SHA256 = {
     "device-actual.js": "ac8d410039cf4773da0b6ff134321440de176a29a13f054a5a85262542948d09",
     "entities.json": "465354a2bc2846f4d85ad6306d2dda3aa5cb5601e4d3520281ec013bf402c424",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
-    "index.html": "2e531d02dde298a4c29d15120c2769a9a681d681f5cff9fb95c68b50f225e933",
+    "index.html": "7edd6be9c28c1d4d13d86caf40fff9686fc7b40e9b70ca0c5fda4179fe18f341",
     "locale.js": "c43cc076521250008d9406ae39492be9cf3f665556c43822151e975675a1663d",
     "research.html": "ef7665e2079df06c4bf7265206d9113ddb4716f93cf87e0ec0735c6b5fbae219",
     "style.css": "de98839bbb4469b693e2ad34009910071cc03e31161cea593e67b4080996d526",
+    "target-reference.json": "4fe4c00f5c0a2270a0322e557334f12b825d8eff123918162aa73185adac40d7",
+    "target.css": "74b655a67ba3ae77875ac336bb58dd87e26c4eb7ab12e866328c224ed7b698f5",
+    "target.html": "78108d9a16c66712bcbe9a3298e7bd8a0da4113e24abd3e8c3485e6770063ce9",
+    "target.js": "21ff0d7c25e231ca4678f00739149e321044180d428216bab078eb46dfd9caad",
 }
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024

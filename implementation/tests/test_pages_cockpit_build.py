@@ -45,7 +45,8 @@ class PagesBuildTest(unittest.TestCase):
             self.assertEqual({p.name for p in out.iterdir()}, {
                 'index.html', 'style.css', 'app.js', 'locale.js', 'entity-search.js',
                 'device-actual.js', 'device-actual.css', 'data.json', 'entities.json',
-                'actual-catalog.json', 'research.html'})
+                'actual-catalog.json', 'research.html', 'target.html', 'target.css',
+                'target.js', 'target-reference.json'})
             catalog = json.loads((out / 'actual-catalog.json').read_text())
             self.assertEqual(len(catalog['instruments']), 19)
             self.assertTrue(all('quantity' not in r and 'average_cost' not in r

@@ -1,0 +1,19 @@
+{
+  "schema": "chart-public-reference-local-verification/1",
+  "date": "2026-10-09",
+  "base": "d71243bcc79139149541f3627e8f227a32c463c5",
+  "full_native_python": {"command": "python -m pytest -q (implementation)", "exit_code": 0, "passed": 752, "subtests_passed": 219},
+  "initial_environment_failure": "Shallow clone omitted pinned historical Git baseline; nine failure reports included three subfailures. Read-only unshallow fetch resolved PINNED_BASELINE_UNAVAILABLE/SOURCE_PIN_UNRESOLVED; no production source or historical test was changed.",
+  "new_target_TDD": "Initial missing-route/preflight tests RED; focused tests GREEN; in-memory real-byte WebCrypto/runtime mutation test proves stale numeric output is rejected",
+  "artifact_guard": {"result": "PASS", "files_scanned": 15, "violations": {}},
+  "device_actual_node": {"result": "PASS", "tests": 17},
+  "javascript_syntax": "PASS",
+  "diff_whitespace": "PASS",
+  "local_native_browser": {"result": "NOT_RUN", "reason": "Existing Playwright Chromium download returned truncated/non-zip payload; browser executable missing. No native browser PASS or screenshots claimed."},
+  "remote_native_browser": "PENDING_EXACT_CANDIDATE_CI",
+  "actual_public_browser": "PENDING_POST_DEPLOY_VERIFY_PUBLIC_JOB",
+  "original_target_sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+  "inherited_public_artifact_hashes": "Ten inherited assets unchanged; index bilingual notice/Pages-only link and four separate TARGET files are the only public artifact delta",
+  "FPIA": "NOT_RUN",
+  "governance_acceptance": false
+}

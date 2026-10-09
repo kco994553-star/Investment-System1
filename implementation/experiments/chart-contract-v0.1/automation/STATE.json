@@ -582,19 +582,41 @@
     "actual_chart_merge_result_fpia": "NOT_RUN"
   },
   "pending": [],
+  "public_reference_readiness": {
+    "scope": "MAIN_20261009_EXPLICIT_PUBLIC_REFERENCE_B_ONLY",
+    "source_closed_count": 3,
+    "closed_count": 4,
+    "open_count": 2,
+    "gate_statuses": {
+      "A-S1": "CLOSED",
+      "A-S2": "CLOSED_CURRENT_TARGET_SCOPE",
+      "A-S3": "CLOSED_CURRENT_TARGET_SCOPE",
+      "A-G1": "CLOSED_PUBLIC_REFERENCE_SCOPE_ONLY",
+      "A-G2": "PENDING_EXACT_CANDIDATE_CI_AND_INDEPENDENT_REVIEW",
+      "A-G3": "BLOCKED_FPIA_NOT_RUN"
+    },
+    "decision_receipt": "implementation/docs/chart_public_reference_owner/DECISION_RECEIPT.json",
+    "original_production_gate_closure": false,
+    "AUTONOMY_MODE_changed": false,
+    "market_quotes_fx_in_scope": false
+  },
   "readiness": {
-    "scope": "OFFLINE_PREFLIGHT_VERIFIED_PRODUCTION_OWNER_GATED",
+    "scope": "CURRENT_TARGET_SOURCE_GATES_REJUDGED_PRODUCTION_GOVERNANCE_OPEN",
     "lane_a": "IMPLEMENTATION_NOT_READY",
     "precode_gates_open": [
-      "A-S1",
-      "A-S2",
-      "A-S3",
       "A-G1",
       "A-G2",
       "A-G3"
     ],
-    "open_count": 6,
-    "closed_count": 0,
+    "precode_gates_closed": ["A-S1", "A-S2", "A-S3"],
+    "open_count": 3,
+    "closed_count": 3,
+    "gate_count_source": {
+      "commit": "d71243bcc79139149541f3627e8f227a32c463c5",
+      "path": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/SIX_GATE_REJUDGMENT.json",
+      "blob": "077929319e6bafd7b8c48e1d73fc5fe6b7f1b824",
+      "scope": "Current TARGET source gates; public-reference governance is separately adjudicated"
+    },
     "lane_b_admitted_symbols": 0,
     "lane_b_total_symbols": 19,
     "production_tests": "NOT_RUN",
@@ -606,15 +628,15 @@
     "portable_probe_pass": 9,
     "portable_optimized_probe_pass": 9,
     "gate_statuses": {
-      "A-S1": "OWNER_ACTION_REQUIRED",
-      "A-S2": "OWNER_ACTION_REQUIRED",
-      "A-S3": "OWNER_ACTION_REQUIRED",
+      "A-S1": "CLOSED",
+      "A-S2": "CLOSED_CURRENT_TARGET_SCOPE",
+      "A-S3": "CLOSED_CURRENT_TARGET_SCOPE",
       "A-G1": "OWNER_ACTION_REQUIRED",
       "A-G2": "PARTIALLY_RESOLVED",
       "A-G3": "PARTIALLY_RESOLVED"
     },
     "current_independent_repairs": "IMPLEMENTED_VERIFIED",
-    "production_owner_dependency_count": 6,
+    "production_owner_dependency_count": 3,
     "fpia_owner_ci": "PR47_EXACT7215_TECHNICAL7_OF7_SUCCESS_RAWPASS_ARTIFACT_DIGEST_VERIFIED; TIER1_TIER2_SKIPPED; GOVERNANCE_OPEN",
     "fpia_tool_governance": "MAIN_D006_IMPLEMENTED_CURRENT_AUTHORITY_COVERAGE_REVIEW_GIE_ADMISSIBILITY_OWNER_ACTION_REQUIRED",
     "sample_renderer": "IMPLEMENTED_VERIFIED",
@@ -623,7 +645,7 @@
       "production_requirements_closed": 0,
       "production_blockers_closed": 0,
       "new_production_blockers": 0,
-      "lane_a_remaining_blockers": 6,
+      "lane_a_remaining_blockers": 3,
       "vertical_slice_progress": "Unchanged verified native SAMPLE reused; new exact CI and adopted authority consumed; production owner gates unchanged",
       "production_ready_contracts": "NONE_ADMITTED_FOR_CURRENT_TARGET",
       "frontend_ready_contracts": "EXISTING_VERIFIED_SAMPLE_CONTRACT_AND_NATIVE_REACT_RENDERER",

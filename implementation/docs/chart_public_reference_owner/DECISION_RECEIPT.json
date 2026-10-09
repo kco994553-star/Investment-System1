@@ -1,0 +1,36 @@
+{
+  "schema": "chart-public-reference-decision/1",
+  "decision_id": "MAIN-20261009-A-G1-PUBLIC-REFERENCE-B",
+  "authority_kind": "EXPLICIT_USER_DECISION_NOT_AUTONOMOUS_D3_APPROVAL",
+  "authority": "[Main 지시 · 2026-10-09] §1: Pages Source GitHub Actions completed; deployment PR merge approved; public read-only reference cockpit, holdings only on each user's device; separate TARGET route B; original TARGET changes invalidate display",
+  "authority_global_head": "1f8229154f1e6e298509654db974c65ee726e0ab",
+  "candidate_base": "d71243bcc79139149541f3627e8f227a32c463c5",
+  "gate": "A-G1",
+  "status": "CLOSED_PUBLIC_REFERENCE_SCOPE_ONLY",
+  "decision": "Publish a reference-only static cockpit with a separate fail-closed TARGET source route B and bilingual disclaimer; user holdings remain device-local",
+  "alternatives": [
+    {"route": "A", "disposition": "NOT_SELECTED", "reason": "Would couple TARGET source reference to broader portfolio/ACTUAL route semantics"},
+    {"route": "B", "disposition": "USER_SELECTED", "reason": "Separate source reference, explicit lineage and no ACTUAL or live market claim"}
+  ],
+  "design_alignment": "Uses approved current TARGET/catalog identities and existing static Pages publication and device-only ACTUAL boundaries. No new target allocation, scoring, economic meaning or financial policy.",
+  "target_root": {
+    "path": "implementation/docs/portfolio_target_owner/TARGET_v0.yaml",
+    "sha256": "a4424f9e9c4e463963d719a3f10949c311902238bc71ca926f0dd045cdf6cb8b",
+    "verification": "Re-read current canonical public raw bytes with no-store; mismatch, timeout or missing source clears numeric display. Revalidate on pageshow and visibility return; not a continuous push subscription."
+  },
+  "protected_boundaries": {
+    "AUTONOMY_MODE": "READ_ONLY_UNCHANGED_NAMED_USER_OBSERVED_SCOPE_ONLY",
+    "holdings": "DEVICE_ONLY_NO_SERVER_UPLOAD_OR_NEW_STORAGE_CONTRACT",
+    "source_target_identity_theme": "IMMUTABLE",
+    "TARGET_ACTUAL": "SEPARATE",
+    "GICS_StrategyTheme_InvestmentType_Overlap": "NO_RECLASSIFICATION",
+    "market_quotes_fx": "OUT_OF_SCOPE_NO_PR70_INTAKE",
+    "login_server_general_service": "OUT_OF_SCOPE",
+    "Official_LIVE_Holdout_PIT_Frozen_history_secrets": "UNCHANGED"
+  },
+  "validation": "Requires exact candidate native CI and separate-session technical verification, followed by actual deployed 390px/1280px ko/en checks; CI is not FPIA governance acceptance",
+  "rollback": "If implementation or publication fails verification, stop publication and keep the existing approved deployment. If a deployed regression is found, prepare a scoped reviewed revert of this candidate; no force/history rewrite and no source-target alteration.",
+  "semantic_delta": "Presentation/source-freshness enforcement only; allocation/financial/security policy delta NONE",
+  "broader_production_gate_status": "OPEN",
+  "signal_is_completion": false
+}
