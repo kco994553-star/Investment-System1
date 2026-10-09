@@ -1,194 +1,239 @@
-# 개인 전용 무료 주가 경로 조사·설계
+# 개인 전용 무료 주가 경로 조사·설계 — Yahoo 1순위
 
-조회일: **2026-10-09 UTC**. 사용자 결정은 **무료 + 사용자 본인만 사용**이며 유료 계약·공개 재배포는 하지 않는다.
-이 문서는 조사·후속 설계만 다룬다. 가입·키/계정 접근·실제 가격/시트 조회·Worker/OAuth 설정·구현·재점수를 실행하지 않았다.
-현재 계정 플랜·개인 이용 분류·적용 계약은 사용자가 확인할 사항이다.
-변경 근거는 [26E GSQ-006](../pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md#gsq-006--26e-무료본인-전용-가격-경로-조사-결정-2026-10-09-utc)에 append-only 기록한다.
+조회일: **2026-10-09 UTC**. 최신 사용자 결정은 **무료 + 사용자 본인만 사용, Yahoo Finance 비공식 chart를 주가 1순위로 검토**하는 것이다.
+앞선 A~H의 Tiingo·Google 시트 중심 설계를 이 문서의 1~7로 대체한다. 기존 비교는 7절에 남긴다.
+이 문서는 조사·설계만 다룬다. 가입·키/계정 접근·실제 가격/시트 조회·Worker/OAuth 설정·구현·배포·QGV 재점수를 실행하지 않았다.
+결정은 [26E GSQ-007](../pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md#gsq-007--26e-yahoo-finance-우선-개인-가격-경로-정정-2026-10-09-utc)에 append-only 기록한다.
 
-## 결정과 A~F 판정
+## 최신 결정과 1~7 판정
 
-주가 원자료와 **가격 기반 파생값(V=Valuation·시총 순위·가격을 포함한 QGV 등)**은 공개 저장소·Pages·Actions 로그/산출물에 저장·게시하지 않는다.
-SEC·DART의 공개 재무 자료는 기존 공개 입력 경로를 유지한다. 공개 재무 fact에 가격을 결합한 결과는 개인 경로로만 취급한다.
-공개 종목군의 Frozen 구성은 유지하되 현재 Top 500/V/QGV를 완성했다고 표시하지 않는다.
-기존 공개물에 있는 가격 기반 값까지 새 원칙을 충족했는지는 별도 구현 감사 대상이며 이 문서가 공개물 삭제·비공개 전환을 대신하지 않는다.
+주가 원자료와 **가격 기반 파생값(V=Valuation·시총 순위·가격을 결합한 QGV 등)**은 공개 저장소·Pages·Actions 로그/산출물에 저장·게시하지 않는다.
+SEC·DART 공개 재무 자료는 기존 공개 경로와 PIT·검증 기준을 유지한다. 재무와 가격을 결합한 결과는 본인 전용 경로에서만 처리한다.
+기존 Frozen 종목 **구성**을 유지하며 오늘의 Top 500을 새로 발견한 목록으로 표시하지 않는다. 투자 방법론·점수식·TARGET·Holdout·운영 모드를 바꾸지 않는다.
+이 결정은 [기존 공개 가격 선택안](../pages_cockpit_owner/QUOTES_FX_OPTIONS_26E.md)의 Yahoo 운영 채택 금지를 **본인 전용 조회·표시 후보 범위에서 변경**한다.
+과거 문서는 이력으로 남기며, 개인 경로를 공개 가격 배포 권한으로 확대하지 않는다.
+
+**핵심 한계:** Yahoo의 공식 약관은 사전 허가 없는 자동 수집을 금지한다. 사용자 선택·키 없음·개인 사용·저빈도·무저장은 공급자의 허가를 대신하지 않는다.
+따라서 아래 기술 설계를 작성할 수 있으나 **사전 허가 없는 Yahoo 자동 조회는 현행 약관에 부합한다고 판정할 수 없다**. 공식 허가 근거는 확인되지 않았다.
+
+| 요구 | 판정 | 확인된 범위와 남은 조건 |
+| --- | --- | --- |
+| 1 Yahoo → 본인 Worker → 휴대폰 | **기술 조건부 / 무허가 자동 조회는 약관 부적합** | 키 없는 비공식 endpoint는 기존 코드에 있다. 본인 인증·모바일 CORS·무료 CPU와 Yahoo 접근 허가 확인이 필요하다. |
+| 2 한 기업 과거 일봉·무저장·짧은 캐시 | **조건부 / 지속 캐시 미채택** | 일봉 파서 참고 가능. 실제 3종목 이력·기업행위·표시권은 미확인. 짧은 RAM 재사용도 허가된 조회의 동일 작업 안으로 제한한다. |
+| 3 하루 1회 현재가 → 개인 V·순위 | **조건부** | 종목별 요청 예산·기기 RAM 계산 설계 가능. Yahoo 자동 수집권, 500개 완전성·주식수/통화/시각·현재 QGV 엔진 상태가 남는다. |
+| 4 3시장 심볼·기존 provider | **심볼 규칙 가능 / 코드 재사용 조건부** | 미국 티커, `042700.KS`, `8035.T`. 기존 Python endpoint/파서만 참고하며 잘못된 통화·시각 fallback과 저장 도구는 재사용하지 않는다. |
+| 5 무료 중계·본인 접근·비용 0 | **조건부** | Workers Free·본인 1명 인증·cap 초과 중단. CPU·전화기 로그인/CORS 실측, Free 가입/요금 조건 확인 필요. |
+| 6 약관·차단·형식 감지와 대체 | **설계 가능 / 실동작 미검증** | 비가격 상태 메타데이터로 감지, 우회 없이 공급자별 차단·대체·결측 처리. 실제 장애시험은 구현 범위다. |
+| 7 대체 출처 비교 | **조건부 후보 / 일부 무료안 불가** | Tiingo(미국), KRX(한국), 본인 Sheet 현재가, 수동을 우선순위로 둔다. Alpha·Twelve Data·FMP·Polygon/Massive는 비교이며 자동 채택하지 않는다. |
 
 ### 현재 공개 경로에 남은 차단 과제
 
-저장소 읽기 전용 점검에서 아래 **필드의 포함·non-null 여부만** 확인했다. 가격·점수의 값은 출력하지 않았다.
+읽기 전용 점검에서 아래 **필드의 포함·non-null 여부만** 확인했다. 실제 가격·V·순위 값은 출력하지 않았다.
 
 | 현재 경로 | 새 원칙과의 gap |
 | --- | --- |
 | `reports/gate_evidence/official_snapshot_2024-*.json` | tracked Frozen 원문에 `cutoff_mcap`, `members[].mcap/rank`가 있다. |
-| `reports/v_coverage_us17_2026-09-23.json`, `reports/official_v11_book_snapshots.json` | 가격 기반 V 결과/후보 필드가 있다. 기본 Pages QGV가 실제 V를 연결한다는 확인은 아니다. |
-| `data/raw/tiingo_run_1790379027.json`, `reports/gate_evidence/nport_reported_prices_2024-06-30.json` | tracked 원문에 가격 필드가 있다. 이 문서에서 삭제/재출판하지 않았다. |
-| [Pages 빌더](../../tools/build_pages_cockpit.py), [공개 bundle](../../src/investment_system/product/web_mvp.py) | 시총 금액은 제거하지만 `market_cap_rank`/Frozen `rank`는 공개 projection에 남긴다. |
-| [기존 Actions](../../../.github/workflows/c21-real-data.yml), [가격 도구](../../tools/nport_reported_prices.py) | 원문·gate evidence artifact/자동 커밋·가격 stdout 경로가 있어 후속 감사가 필요하다. 현재 외부 배포/과거 로그의 실제 내용은 조사하지 않았다. |
+| `reports/v_coverage_us17_2026-09-23.json`, `reports/official_v11_book_snapshots.json` | 가격 기반 V 결과/후보 필드가 있다. 기본 Pages에 실제 V가 연결된다는 확인은 아니다. |
+| `data/raw/tiingo_run_1790379027.json`, `reports/gate_evidence/nport_reported_prices_2024-06-30.json` | tracked 원문에 가격 필드가 있다. 이 문서에서 삭제·재출판하지 않았다. |
+| [Pages 빌더](../../tools/build_pages_cockpit.py), [공개 bundle](../../src/investment_system/product/web_mvp.py) | 시총 금액은 제거하지만 `market_cap_rank`/Frozen `rank`가 공개 projection에 남는다. |
+| [기존 Actions](../../../.github/workflows/c21-real-data.yml), [가격 도구](../../tools/nport_reported_prices.py) | 원문·gate evidence artifact/자동 커밋·가격 stdout 경로가 있어 후속 감사가 필요하다. 기존 외부 배포·과거 로그의 실제 내용은 조사하지 않았다. |
 
-기존 [artifact guard](../../tools/pages_artifact_guard.py)의 PASS는 새 가격/V/순위 금지 규칙의 PASS와 다르다.
-공개 Frozen **구성** 유지와 가격 기반 금액/순위 제거는 별개의 요구다. 보호된 이력·evidence를 문서 작업에서 지우거나 gate를 우회하지 않는다.
+기존 [artifact guard](../../tools/pages_artifact_guard.py)의 PASS는 새 가격/V/순위 금지 경계의 PASS와 다르다.
+공개 Frozen 구성 유지와 가격 기반 금액·순위 제거는 별개다. 보호된 이력·evidence를 문서 작업에서 지우거나 gate를 우회하지 않는다.
+후속 구현은 공개 **membership-only** 식별 자료와 공개 재무 입력만 읽고, 개인 가격·점수·시총 순위를 공개 bundle로 돌려보내지 않아야 한다.
+기존 [entity catalog](../../src/investment_system/product/entity_catalog.py)의 `entities.json` COMPANY 목록은 가격·rank 없는 후보이나,
+exchange/currency/provider_symbol과 pin된 Frozen as_of/universe_id/hash가 없어 listing map으로 바로 사용할 수 없다.
+TARGET19는 [actual catalog](../../src/investment_system/product/device_actual_catalog.py)의 식별·통화·hash를 참고하고 별도 Yahoo mapping을 대조한다.
 
-| 항목 | 종합 판정 | 조건·불가한 변형 |
-| --- | --- | --- |
-| A 본인 키 → 본인 전용 중계 → 휴대폰 | **조건부** | Worker 서버 fetch·Secret·본인 인증은 기술적 후보. 공급자 약관의 private relay 허용, 실제 앱 인증/CORS 확인이 필요하다. 공개 프록시·다른 사용자 접근은 불가. |
-| B 연 기업 1개 과거 일봉 무저장 차트 | **조건부** | Tiingo 무료 한도 내 요청·휘발성 처리. 원시 차트의 표시 권리와 실제 계정 조건 확인 필요. 무저장만으로 허용을 확정하지 않는다. |
-| C 하루 1회 개인 V·순위 | **조건부 / 일부 불가** | F에 따라 본인 Sheet 현재값을 1순위로 검토하고 기기에서만 계산·표시. 정확한 EOD·500개 완전성·가공 권리와 Tiingo 사용 변형의 비복원 파생 조건이 남는다. Tiingo 500개 즉시 조회와 Starter 원문/파생 영구 저장은 불가. |
-| D 무료 중계·Secret·접근 제한 | **조건부** | Cloudflare Free cap, 본인 1명 인증, 로그/캐시 비보존, CPU·모바일 로그인 실측 필요. Paid/유료 저장/도메인 구매를 비용 0 설계에 넣지 않는다. |
-| E 도쿄 8035·한미 042700 | **가능: 현행 유지** | 기존 본인 Google 시트·수동 입력 유지. Tokyo Electron은 기존 확인처럼 수동 입력을 유지하며 Sheet 지원을 확정하지 않는다. OTC/ADR/다른 상장으로 자동 치환하지 않는다. |
-| F 본인 GOOGLEFINANCE 500행 리더보드 | **조건부: 1순위 후보** | Sheets 1 batch read 예산은 충분한 후보. 500행 성공 SLA·#N/A 실측·정확한 종가·개인 가공의 명시 허용은 미확인. Tiingo는 차트 전용, 대체는 Alpha Vantage 최근 최대 100개 거래 관측. |
+## 1. Yahoo → 사용자 전용 중계 → 휴대폰
 
-**최신 F가 초기 C의 Tiingo 종목군 수집안보다 우선한다.** 리더보드 500 현재값과 과거 차트를 분리한다.
-무료 조건/허용이 충족되지 않으면 해당 기능은 NOT_AVAILABLE이며 유료 업그레이드나 다른 출처 대량 조회로 우회하지 않는다.
+제안 흐름은 **본인 앱 → 본인 인증 Worker → Yahoo chart → 본인 앱 RAM**이다.
+가격 조회·가격 결합 QGV 계산을 GitHub Actions로 실행하거나 공개 JSON 생산자에 연결하지 않는다.
+Worker는 허용된 회사·시장별 심볼·일봉 interval·기간·응답 크기만 받는다. 임의 URL을 전달하는 공개 프록시를 만들지 않는다.
+Yahoo에는 API 키를 넣지 않는다. Cookie/crumb가 요구되면 인증 우회·타인 세션·키 회전·프록시 회전으로 해결하지 않고 중단한다.
 
-## A. 두 입력 경로와 개인 경계
+[기존 provider](../../src/investment_system/providers/yahoo_chart.py)는
+`https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range={range}`를 사용한다.
+이것은 비공식 접근점이며 공식 무료 API 상품·SLA·정량 호출 한도·chart 이용 라이선스는 확인되지 않았다.
+Yahoo 서버 fetch와 휴대폰→Worker/Access CORS는 서로 다르다. Yahoo의 브라우저 CORS 허용을 문서화하거나 실측하지 않았다.
+기존 repository에서 호출한 사실을 허가·향후 3시장 가용성의 증거로 쓰지 않는다.
 
-| 경로 | 제안 데이터 흐름 | 보존 경계 |
-| --- | --- | --- |
-| 기업 차트 | 본인 앱 → 본인 인증 Worker → 본인 Tiingo 키로 선택 기업 일봉 → 본인 앱 RAM 차트 | 처리 RAM만 사용. 응답·화면 작업 종료 시 제거. 차트 닫기/표시 끄기 때 가격 참조 제거. 가격 archive·로컬 DB·원문 로그 없음. |
-| 리더보드 | 본인 기기 기존 Google 읽기 전용 로그인 → 본인 비공개 Sheet 500행 batch read → 공개 SEC/DART 재무 입력과 기기 RAM에서 결합 → 개인 V/순위 표시 | 기존 짧은 수명 Sheets token과 시세 응답은 기기 메모리만. 가격·가격 결합 QGV·V·시총 순위를 공개 경로로 돌려보내지 않는다. |
+### Yahoo 약관 원문과 캐시 판단
 
-두 번째 경로는 **사용자가 하루 한 번 로그인/읽기를 시작하는 방식**을 우선 검토한다.
-기존 메모리 전용 token으로 무인 일일 실행이 가능하다고 가정하지 않는다. offline refresh 권한·server token 저장·Cron을 자동 추가하지 않는다.
-Worker에서 순위까지 계산하는 대안은 별도 권한·CPU·입력 전달 검증 대상이다. 첫 후보에서는 Sheets token을 Worker 신원 증명으로 보내지 않는다.
-회사/거래소·허용된 endpoint·기간·응답 크기·호출 수를 제한하며 임의 URL을 받아 전달하는 범용 프록시를 만들지 않는다.
-공개 앱 코드/재무 JSON에는 키·시세·개인 결과를 넣지 않는다. 앱 응답을 GitHub에 업로드하거나 Actions에서 가격을 대신 조회하는 방식은 제외한다.
+[Yahoo US TOS](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html)의 표시 개정일은 **2026-08-04**다.
+[Singapore TOS](https://legal.yahoo.com/sg/en/yahoo/terms/otos/index.html)는 **2026-08-19**이며 실제 적용 지역·계약은 사용자 확인 사항이다.
+US §2(d)(ix)는 자동 수집에 대해 **“for any purpose without our express, prior permission”**이라고 제한한다.
+§2(e)는 제공 interface·instruction 이외 접근 방법을 제한한다. 공개 URL과 키 없는 접근은 이 제한의 예외가 아니다.
+§2(d)(x)의 경쟁·실질 대체 앱/data feed 제한에 해당하는지도 미확인이며 모든 개인 분석이 금지됐다고 확대하지 않는다.
+본인용 원시 차트·V/순위 가공·외부 클라우드 중계의 명시 허가도 확인되지 않았다.
 
-## B. Tiingo 무료 과거 일봉과 표시 권리
+[Yahoo Finance 공식 Help](https://help.yahoo.com/kb/finance/SLN2310.html)는 **“You must not redistribute information displayed on or provided by Yahoo Finance.”**라고 명시한다.
+정보용·as-is·정확성/계속 제공 비보장이며, 시장별 데이터 공급자와 지연이 다르다.
+LSEG 콘텐츠의 caching 포함 재사용에는 별도 동의 조건도 있다. 모든 chart가 LSEG라고 단정하지 않지만 짧은 TTL이면 자동 허용된다고 판단하지 않는다.
+범용 [Yahoo Developer API 약관](https://legal.yahoo.com/us/en/yahoo/terms/product-atos/apiforydn/index.html)의 user data 24시간 조건을 비공식 chart 가격 보관 허가로 전용하지 않는다.
 
-[현재 Starter 가격표](https://www.tiingo.com/pricing)는 **$0, 월 500 unique symbols, 시간 50회, 일 1,000회, 월 1GB**를 표시한다.
-이것을 현재 사용자 계정의 확인 결과로 쓰지 않는다. [Connecting](https://www.tiingo.com/documentation/general/connecting)은 서버용 REST와 Authorization Token 인증을 문서화한다.
-[Developer Program](https://www.tiingo.com/documentation/appendix/developers)은 “Each user must have their own API token.”이라고 요구한다.
-자기 키 모델에 부합할 근거가 있지만 본인 인증 Worker를 통한 단일 사용자 중계를 명시적으로 승인한 문구는 확인하지 못했다.
-Worker 로그인을 Tiingo 가입/로그인 대행으로 만들거나 Tiingo 비밀번호를 앱에서 받지 않는다.
+**기본은 지속 캐시 없음**이다. 허가된 요청의 진행 중 중복 클릭을 같은 in-flight 응답으로 합치는 RAM 처리만 후보로 둔다.
+캐시 예산 후보는 동일 화면·동일 작업에서 최대 60초 RAM 재사용이며 **허가·실제 약관 적합성을 확인하기 전 활성화하지 않는다**.
+차트 닫기·로그아웃·작업 종료 시 제거한다. Worker isolate RAM은 다른 요청에 남을 수 있으므로 사용자를 섞는 module-global price cache는 제외한다.
+Cache API·KV/D1/R2·파일·localStorage·IndexedDB·service worker·로그·백업에 짧은 TTL로 적재하는 방식도 채택하지 않는다.
 
-[공개 TOS](https://app.tiingo.com/tos/) 표시 변경일은 2026-10-06이다. 기존 이용자에게 게시·통지 후 30일 적용 조항이 있어 실제 계정 적용 시점은 미확인이다.
-§1의 “personal or internal business purposes”에도 Starter의 별도 조건이 적용된다.
-§1.6(a)의 “only transiently in volatile memory”는 원문과 **파생 결과** 모두에 적용되고, 본인을 대신해 운영되는 서비스도 포함한다.
-작업에 필요한 동안만 RAM/비영구 임시 처리 후 즉시 제거하며 늦어도 작업·세션 종료 전에 지운다.
-Worker Cache API·KV/D1/R2·로그·큐·백업·앱 IndexedDB/localStorage·service worker cache를 가격/파생 결과 저장소로 쓰지 않는다.
+## 2. 연 기업 한 개의 과거 일봉
 
-§1.6(c)는 비대체·비복원 “rankings, scores”를 잠재적 허용 예시로 들고, 원본을 드러내는 “dashboards, charts”를 제한 예시에 포함한다.
-이를 모든 개인 일시 차트의 확정 금지로 단정하지 않지만, 구체적인 raw 차트 표시와 적용 계약의 정합성이 확인되지 않아 **B는 조건부**다.
-원가격을 버리는 것만으로 V의 보존·복원 가능성이나 차트 표시 권리가 해결되지는 않는다.
+사용자가 차트를 연 회사 하나만 요청하고 자동 polling·미리 전체 종목 차트 수집을 하지 않는다.
+기존 endpoint/`parse_bars`의 `timestamp`, `indicators.quote.close`, `indicators.adjclose.adjclose`가 해석 참고점이다.
+현재 파서는 close/adjclose만 만들므로 OHLC·거래량 전체 차트 계약을 이미 제공한다고 표시하지 않는다.
+범위는 후속 구현에서 고정 allowlist와 크기 상한을 적용한다. 비공식 chart의 최대 과거 기간·세 시장별 전체 이력은 이번 조사에서 확정하지 않았다.
 
-자체 예산 후보는 **차트 40회/시간 + 오류·재시도 여유 10회**, 일 한도·월 대역폭·월 종목 합집합을 함께 관리하는 것이다.
-동일 종목의 새로고침도 요청 수/대역폭을 사용한다. 1개 차트씩 요청하고 무제한 polling/동시 열기를 제한한다.
-500행 리더보드를 Tiingo로 자동 수집하지 않는다. 월 unique는 watchlist 크기가 아닌 같은 Tiingo 계정에서 실제 조회한 모든 symbol의 월간 합집합으로 관리하며, 다른 개인 사용·중계의 요청도 계정 한도에 포함한다.
-월중 새 회사·상장 변경·종목 대체도 unique 합집합에 포함되며 한도를 넘으면 다음 허용 구간까지 조회를 중단한다. 키 추가 발급으로 우회하지 않는다.
+화면 출처는 **Yahoo Finance(비공식)**, 거래소·원 심볼·통화·daily·raw/adjusted basis·최근 session·실제 관측 수·취득 시각이다.
+일봉 timestamp를 가격의 최초 공개 시각으로 쓰지 않는다. 마지막 bar가 진행 중인 시장 세션이면 완료 종가와 분리한다.
+관측 길이 불일치·null·비유한/0 이하 가격·중복·역순·통화/심볼 불일치·기업행위/조정 배열 결측은 감지해 결측 또는 지원 불가로 표시한다.
+공급자별 raw/adjusted를 한 연속 시리즈에 이어 붙이거나 누락을 0·전일값으로 메우지 않는다.
+가격을 보존하지 않으므로 과거 가격 PIT replay·과거 QGV의 완전한 재현을 제공한다고 표시하지 않는다.
 
-Tiingo의 브라우저 CORS는 [이전 직접 조회 조사](TIINGO_DEVICE_DIRECT_RESEARCH.md)에서 익명 OPTIONS 허용 헤더가 관측되지 않았다.
-Worker→Tiingo 서버 요청은 그 브라우저 preflight와 다른 경로지만 **앱→Worker/Access** 인증·CORS의 성공까지 증명하지는 않는다.
+## 3. 하루 1회 개인 리더보드·QGV
 
-## C. 개인 V·순위, EOD와 500심볼
+본인이 하루 한 번 foreground 작업을 시작하고, 서버 가격 archive·무인 가격 예약 작업은 이 첫 설계에 넣지 않는다.
+현재 입력은 `meta.regularMarketPrice`와 대응하는 `regularMarketTime`을 검증하는 후보이며 장중/지연값과 최근 완료 종가를 구분한다.
+누락 시 마지막 close로 대체하려면 **그 close의 실제 bar timestamp와 basis**를 같이 사용하고 현재가로 위장하지 않는다.
+`read_at`은 실제 취득 시각이며 `price_as_of`가 아니다. 최신 값이 지연되거나 시각을 모르면 `DELAYED/UNKNOWN`이다.
 
-V는 거래량(volume)이 아닌 **QGV Valuation**이다. 시총 순위는 주가 크기 순위가 아니다.
-현재가만 있으면 시총을 만들 수 없고, 검증한 동일 통화의 market cap 또는 같은 주식 종류의 shares·시각/basis가 필요하다.
-재무 가용 시각·통화·단위·정정 vintage와 가격시각을 대조하며 기존 투자 방법론/가중치/점수 수식을 이 문서에서 바꾸지 않는다.
-공개 재무 자료는 계속 공개로 받을 수 있으나 가격을 결합한 V·순위·QGV 결과는 본인 화면 RAM에서만 표시하는 후보다.
-원가격·P/E·시총·복원이 가능한 비율을 결과에 함께 붙여 비복원 점수라고 주장하지 않는다. 어떤 V 출력이 원가격을 복원할 수 있는지는 알고리즘별 검증 대상이다.
-Tiingo Starter를 사용하는 변형에서는 하루 결과를 KV/파일에 남기는 것도 파생 영구 저장 제한에 맞지 않는다.
-Google/Alpha 자료의 보존·가공 권리는 Tiingo 조건으로 대신 판정하지 않는다.
-
-F의 GOOGLEFINANCE 현재값은 지연·종목별 비동기 갱신을 포함하므로 **정확한 일일 EOD snapshot과 동일하지 않다**.
-하루 한 번 읽었다는 사실만으로 EOD, 현재 Top 500, 완전한 일일 V/QGV를 표시하지 않는다.
-종가/완료 세션·타임존·전체 종목 시각 정합성이 확인되지 않으면 `PERSONAL_DELAYED_CURRENT_INPUT`, EOD/전체 순위는 UNKNOWN이다.
-가격을 보존하지 않는 설계는 완전한 가격 PIT replay·과거 점수 재현을 제공하지 않는다. 공개 재무 receipt를 가격 보존 증거로 쓰지 않는다.
-
-초기 C의 Tiingo EOD안은 다음 예산으로 비교하되 **최신 설계에서 채택하지 않는다**.
-
-| 종목군안 | 무료 예산과 한계 |
+| 자체 운용 예산 제안 — 공급자 허용 한도가 아님 | 호출량·완전성 |
 | --- | --- |
-| 미국 17종목 | 종목당 요청 1회라면 17회. 같은 시간 3회 전체 새로고침은 51회로 50/hour 초과. 다른 차트·retry도 포함한다. |
-| 고정 500종목 | 500 unique가 월 허용량 전체를 쓰므로 종목군 밖 차트 여유가 없다. 요청 500회는 50/hour의 10개 시간 구간 예산을 사용하며 한 번에 처리 불가. 장시간 취득은 같은 시각의 전체 EOD라는 증거가 아니다. |
-| 축소·순서안 | 별도 선택이 필요하다면 공개 TARGET 미국17→사용자가 정한 subset→나머지 순서, 40/hour 같은 여유 예산과 월 고정 allowlist를 제안한다. 조회하지 않은 회사는 NOT_AVAILABLE이며 subset 순위를 Top 500처럼 표시하지 않는다. 순서 변경은 권리·월 unique 문제를 해결하지 않는다. |
+| 기본 속도 | 본인 계정 전체에서 **최대 1 upstream 요청/5초, 동시 1개**, foreground 한 작업만. 공식 허용 수치가 아닌 보수적 후보이며 이 속도도 차단되지 않는다는 보장은 없다. |
+| TARGET 19 | 미국17 + 한국1 + 일본1이면 단순 최소 19회, 대기 간격만 약 95초 예산. 실제 가용성·응답 시간·휴장·재시도는 별도다. 공개 TARGET은 실제 보유목록이 아니다. |
+| Frozen 500 | 기존 단일-symbol chart 방식이면 최소 **500 upstream 요청**. 5초 간격만 약 42분이며 정확히 동시에 관측한 현재가가 아니다. 공개 quote batch를 새로 가정해 요청 수를 줄이지 않는다. |
+| 일일 상한 후보 | 종목군 최대 500회 + 사용자가 연 차트 20회 + 제한된 retry 10회 = **최대 530회/일**, 다른 본인 호출까지 합산. 초과는 다음 작업까지 중단. 무한 retry·다중 탭/키로 상한 우회 없음. |
+| 무료 Worker 경계 | 요청마다 upstream 1개를 우선해 subrequest 상한을 피한다. 더 큰 묶음은 JWT/JSON CPU·payload·모바일 연결을 실측한 뒤에만 검토한다. 500 요청은 Worker 일 100,000보다 작지만 CPU·제공자 사용권의 증명은 아니다. |
 
-## D. Cloudflare 무료 중계·인증·Secret
+TARGET19와 Frozen500은 별도 예산 사례다. 두 집합을 합치면 최대519 listing이므로 동일 상장만 중복 제거하고,
+500회 종목군 상한을 넘는 요청은 별도 작업으로 자동 추가하지 않는다. 요청되지 않은 항목은 결측/subset으로 표시한다.
+전역 순차 속도와 하루 1회 보장은 isolate RAM counter만으로 구현되지 않는다. 후속 구현에서 가격 없는 작업 상태/count/reset-time만 private 직렬화하거나,
+단일 기기 세션으로 동시 실행을 막는 한계를 명시해야 한다. 저장 제품 추가 시 별도 Free 한도·요금 검증이 필요하며 가격/파생값은 넣지 않는다.
+작업 완료 후 결과는 본인 앱 RAM에서만 계산·표시한다. 앱 종료 후 다음 날까지 점수를 보관하는 방식은 기본 설계에 넣지 않는다.
+
+V는 volume이 아닌 **Valuation**이다. 현재가만으로 시총이 생기지 않으며 같은 주식 종류의 검증된 shares 또는 market cap·통화·basis가 필요하다.
+chart 응답에 시총·현재 주식수가 항상 있다고 가정하지 않는다. 공개 SEC/DART 재무 입력은 통화·단위·주식 종류·공시 가용 시각·정정 vintage를 대조한다.
+500 회사 중 필수 입력이 하나라도 빠지면 완전한 500 순위는 UNKNOWN이다. 유효 499행을 새 분모로 전체 순위처럼 표시하지 않는다.
+일부 subset 결과는 subset·기준시각 범위를 표시한다. 이 설계는 기존 QGV 점수식·생산자 연구 상태를 운영 검증 완료로 승격하지 않는다.
+장시간 500 조회와 시장별 휴장/지연을 고려해 `PERSONAL_DELAYED_CURRENT_INPUT`을 사용하며 EOD·현재 Top 500·정확한 일일 PIT로 표시하지 않는다.
+
+## 4. 3시장 심볼과 기존 provider 재사용
+
+[Yahoo 공식 거래소 표](https://help.yahoo.com/kb/finance/SLN2310.html)는 한국 유가증권시장 `.KS`, KOSDAQ `.KQ`, 도쿄 `.T`를 안내한다.
+KRX와 Tokyo의 표에는 **20분 지연**이 표시된다. 이는 실제 응답의 지연·종목 가용성 SLA가 아니다.
+
+| 회사/시장 | Yahoo 심볼 규칙 | 통화·시간 검증 |
+| --- | --- | --- |
+| 공개 TARGET 미국17 | 승인된 미국 상장 ticker 유지: 예 `NVDA`, `GOOGL`, NASDAQ `ASML`. class/security mapping을 먼저 확인. | USD·미국 해당 exchange/timezone. 클래스 구분 기호는 회사별 명시 mapping으로 검증. |
+| 한미반도체 KRX 042700 | **`042700.KS`**, 선행 0 보존. KOSDAQ `.KQ`나 OTC로 치환하지 않는다. | KRW·Asia/Seoul 후보를 provider meta와 거래소에 대조. |
+| Tokyo Electron TSE 8035 | **`8035.T`**, 같은 회사의 미국 OTC/ADR로 치환하지 않는다. | JPY·Asia/Tokyo 후보를 검증. |
+
+이 두 개별 Yahoo 심볼의 실응답은 조회하지 않았으므로 규칙과 실제 coverage를 구분한다.
+[기존 `yahoo_chart.py`](../../src/investment_system/providers/yahoo_chart.py)는 Python/urllib이므로 Worker에 그대로 배포하는 것으로 설계하지 않는다.
+endpoint·응답 파서·PricePoint/DataStamp의 개념을 재사용 대상으로 문서화하되 다음 계약 보완이 필요하다.
+
+- `parse_chart`의 누락 통화→USD, 누락 시각→현재 UTC fallback은 제거 대상이다. 원 통화/시각 미확인은 UNKNOWN으로 남긴다.
+- 마지막 close fallback의 시각과 quote 시각을 분리한다. `published_at/available_at=observed_at`을 실제 최초 공개/PIT 증거로 인정하지 않는다.
+- `parse_bars`의 adjclose 우선 선택을 전체 시리즈의 기업행위 조정 검증으로 간주하지 않는다. 원 close·adjclose·basis를 구분한다.
+- [기존 수집 도구](../../tools/fetch_real_data.py)의 `yahoo_symbol`은 `.`을 `-`로 바꾸므로 `042700.KS/8035.T`에 적용하지 않는다. 시장별 provider_symbol을 명시한다.
+- 같은 도구의 RawDatasetStore·manifest·ingest report·stdout, 공개 가격이 결합되는 기존 pipeline을 개인 경로로 실행하지 않는다.
+
+개인 응답 계약 후보는 `provider`, `provider_symbol`, `exchange`, `currency`, `interval`, `price_as_of/session`, `read_at`, `basis`, `delay_status`, `availability_reason`이다.
+실제 숫자 가격과 V/순위는 본인 인증 응답/RAM에만 있고 공개 receipt·Actions artifact·PR·로그에는 넣지 않는다.
+
+## 5. Cloudflare 무료 중계·접근 제한·비용 0
 
 [Workers Free 한도](https://developers.cloudflare.com/workers/platform/limits/)는 계정 합산 **100,000 요청/일(UTC 자정 reset)**,
-HTTP/Cron **CPU 10 ms**, isolate 메모리 **128MB**, 외부 subrequest **50/호출**, 동시에 응답 헤더를 기다리는 외부 연결 **6/호출**, Cron **5/account**다.
-네트워크 대기는 CPU와 다르지만 JWT·JSON·500행 계산이 10ms에 들어오는지는 실측 전 미확인이다. 무료 범위에서 실패하면 미제공 상태로 끝낸다.
-Free 일 한도 초과 1027, CPU/메모리 초과 1102를 성공 응답으로 처리하지 않는다. route의 **fail closed**를 택해 인증 Worker 우회를 막는다.
+HTTP/Cron **CPU 10 ms**, isolate **128MB**, 외부 subrequest **50/호출**, 동시에 응답 헤더를 기다리는 외부 연결 **6/호출**, Cron **5/account**다.
+네트워크 대기는 CPU와 다르다. JWT·전체시장 KRX 응답·JSON이 10ms에 들어오는지는 미확인이다. 계산은 기기에 두며 Free 실패 시 미제공으로 끝낸다.
+한도 초과 1027·CPU/메모리 초과 1102를 처리하고 route는 fail closed를 사용한다.
+[Workers Paid 최소 $5/월](https://developers.cloudflare.com/workers/platform/pricing/)은 선택하지 않는다. egress 별도 요금 없음이 다른 제품의 무료 보장은 아니다.
+[workers.dev](https://developers.cloudflare.com/workers/configuration/routing/workers-dev/)로 도메인 구매 없는 개인 URL을 검토하며 유료 add-on·저장·로그·Containers는 추가하지 않는다.
 
-[가격 문서](https://developers.cloudflare.com/workers/platform/pricing/)의 Workers Paid는 최소 $5/월이므로 선택하지 않는다.
-Workers egress/bandwidth 별도 요금 없음은 다른 제품의 무료 보장이 아니다. 유료 add-on·저장·로그·Containers를 붙이지 않는다.
-[workers.dev](https://developers.cloudflare.com/workers/configuration/routing/workers-dev/)로 도메인 구매 없이 개인용 URL을 검토한다.
-custom domain 등록/갱신 비용까지 0이라고 가정하지 않는다. 기본 URL과 preview/version URL은 본인 인증 없이는 제공하지 않는다.
-
-| 보안·운영 항목 | 제안 조건 |
+| 항목 | 설계 조건 |
 | --- | --- |
-| 본인만 접근 | [Google IdP](https://developers.cloudflare.com/cloudflare-one/integrations/identity-providers/google/) + Access의 정확한 본인 계정 Allow·Google 인증 Require. Everyone/도메인 전체/Bypass 금지. Google 로그인 성공만으로 어느 사용자든 허용하지 않는다. |
-| Worker 검증 | [Workers Access](https://developers.cloudflare.com/workers/configuration/cloudflare-access/)의 직접 인증 invocation에서 검증된 `ctx.access` identity를 확인한다. 미인증 undefined는 거부. Static Assets 내부 router/Service Binding으로 identity가 전파된다고 가정하지 않는다. 헤더 존재·Origin allowlist는 인증이 아니다. |
-| ID token 대안 | [Google 서버 검증](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token)의 서명·issuer·audience·expiry·본인 `sub` 검증. 기존 Sheets readonly access token을 그대로 신원 증명으로 신뢰하지 않는다. |
-| Secret | [Secret binding](https://developers.cloudflare.com/workers/configuration/secrets/)에 본인 Tiingo/Alpha 키를 보관한다. plaintext vars·소스·클라이언트 bundle·URL·환경 dump·예외 로그 금지. GitHub Actions의 기존 키를 가격 작업에 활성화하지 않는다. |
-| 무저장 | 서버 fetch `cache: no-store`, 응답 `Cache-Control: private, no-store` 방향. 원문/파생물 Cache API·파일·DB·외부 분석·백업 금지. no-store만으로 공급자/플랫폼 내부의 모든 보존이 0이라고 증명하지 않는다. |
-| 로그 | [새 Worker observability 기본 enabled](https://developers.cloudflare.com/workers/observability/logs/workers-logs/)이므로 배포 전에 Workers Logs/observability·invocation 로그 수집을 명시적으로 비활성화하고 body/custom 로그가 없음을 확인한다. 가격·V·순위·Secret·Authorization·응답/실제 키 URL을 어떤 로그에도 넣지 않는다. Access 로그인 운영 메타데이터까지 플랫폼 보존 0이라고 주장하지 않는다. |
-| 앱 CORS | [Access CORS](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/cors/)의 인증 cookie·preflight 조건을 휴대폰에서 확인한다. 서버 fetch가 가능하다는 이유로 모바일→Access CORS까지 통과했다고 표시하지 않는다. |
-| 한도 관리 | isolate RAM counter와 [Rate Limiting binding](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/)은 전역 정확한 월 unique/시간 예산 장부가 아니다. 공급자 한도·여유 예산·허용 symbol·중단을 적용한다. 전역 보장이 필요하면 가격 없는 count/reset-time/승인 symbol 집합만 private 직렬화하는 별도 무료 저장안을 검증한다. |
+| 본인 인증 | [Google IdP](https://developers.cloudflare.com/cloudflare-one/integrations/identity-providers/google/) + Access에서 정확한 본인 계정 Allow·Google 인증 Require. Everyone/전체 도메인/Bypass 금지. 로그인만 성공한 다른 계정은 거부. |
+| Worker identity | [Workers Access](https://developers.cloudflare.com/workers/configuration/cloudflare-access/) 직접 인증 invocation의 검증된 `ctx.access`만 사용하고 undefined는 거부. Static Assets 내부 router/Service Binding에 identity 전파를 가정하지 않는다. 기본/preview URL도 보호한다. |
+| 대안 인증 | [Google ID token](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token) 서명·issuer·audience·expiry·본인 sub 검증. 기존 Sheets readonly access token은 Worker 신원 증명이 아니다. Origin/CORS는 인증이 아니다. |
+| 키 | Yahoo 키는 없음. 선택한 Tiingo·KRX 등 본인 키는 [Worker Secret binding](https://developers.cloudflare.com/workers/configuration/secrets/)에만 보관한다. KRX 보유 여부는 사용자 확인 예정, 이름은 `KRX_API_KEY`. DART 재무용 `DART_API_KEY`와 가격 키를 섞지 않는다. 이번 작업에서 이름 외 값·존재 여부를 조회하지 않았다. |
+| 비보존 | upstream `cache: no-store`, 개인 응답 `Cache-Control: private, no-store`, 가격/V/순위 Cache API·DB·파일·외부 분석·백업 금지. 공급자/플랫폼 내부 모든 메타데이터 보존이 0이라는 보장은 아니다. |
+| 로그 | [새 Worker observability 기본 enabled](https://developers.cloudflare.com/workers/observability/logs/workers-logs/)이므로 배포 전 Workers Logs/observability·invocation 로그 수집을 명시적으로 끈다. body/custom 로그·Authorization·실제 키 URL·가격·개인 점수 출력 없음. |
+| CORS | [Access CORS](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/cors/)의 cookie/preflight를 실제 휴대폰 origin에서 확인한다. 서버 fetch 성공이 이 검증을 대신하지 않는다. |
+| 한도 | isolate RAM과 [Rate Limiting binding](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/)은 정확한 전역 한도 장부가 아니다. own run·provider별 count·중단·개인 상태 메타데이터 별도 검증이 필요하다. |
 
-Access는 [2026 공식 안내](https://blog.cloudflare.com/adaptive-access-user-risk-scoring/)에 50명까지 무료 근거가 있으나 현재 가입 화면의 좌석/플랜은 사용자가 재확인한다.
-이 설계는 본인 1명만 허용한다. [Zero Trust setup](https://developers.cloudflare.com/cloudflare-one/setup/)은
-“If you chose the Zero Trust Free plan, this step is still needed but you will not be charged.”라고 하며 **Free도 payment details 입력이 필요**하다.
-이것을 Workers Free 자체의 동일 가입 조건으로 혼동하지 않는다. 결제정보 등록을 원치 않으면 ID token 직접 검증 대안도 조건부로 남긴다.
-계정·프로젝트의 Free 선택, 다른 구독 없음, cap 초과 중단, 주기적 가격/한도 확인이 비용 0 유지 조건이다. 미래의 요금제 변경까지 무료를 보장하지 않는다.
-[Cloudflare Developer Platform 약관 §4](https://www.cloudflare.com/service-specific-terms-developer-platform/)는 해당 문서와 제3자 약관 준수를 요구한다.
-Cloudflare 중계 기능이 Tiingo/Google/Alpha의 데이터 권리를 대신하지 않는다.
+Access는 [2026 공식 안내](https://blog.cloudflare.com/adaptive-access-user-risk-scoring/)에 50명까지 무료 근거가 있으나 현재 Free 가입 화면은 사용자가 확인한다. 본인 1명만 허용한다.
+[Zero Trust setup](https://developers.cloudflare.com/cloudflare-one/setup/)은 Free도 payment details 입력이 필요하나 청구하지 않는다고 안내한다.
+결제정보 등록을 원치 않으면 ID-token 직접 검증 대안도 조건부다. Workers Free 가입 자체의 동일 조건으로 혼동하지 않는다.
+Free 선택·다른 구독 없음·초과 시 중단·주기적 요금/한도 재확인이 비용 0 조건이다. 무료 계정의 미래 요금 유지까지 보장하지 않는다.
+[Cloudflare Developer Platform 약관 §4](https://www.cloudflare.com/service-specific-terms-developer-platform/)의 제3자 약관 준수 조건을 따르며 중계 기술로 Yahoo/대체 출처 사용권을 대신하지 않는다.
 
-## E. 한국·일본 현행 경로
+## 6. 약관·차단·형식 감지와 대체 규칙
 
-한미반도체 **KRX 042700**, Tokyo Electron **TSE 8035**는 기존 본인 Google 시트·수동 입력을 유지한다.
-확인되지 않는 GOOGLEFINANCE 종목은 manual 상태이며 다른 거래소/OTC 심볼로 바꾸지 않는다.
-이 경로의 현재가 지원을 과거 일봉 지원으로 확장하지 않는다. Tiingo의 미국 데이터 문서를 19종목 전체 커버리지 근거로 쓰지 않는다.
-기존 사용자 시트·수동 입력의 저장 기능을 이번 조사 PR에서 변경하지 않는다.
-그 개인 저장의 허용 범위는 각 출처 약관과 별도 검토하며, 새 Tiingo 데이터에 기존 저장 기능을 자동 적용하지 않는다.
+| 감지 | 동작·기록 경계 |
+| --- | --- |
+| 약관/출처 조건 변경 | 구현 시작 전·주기적 수동 검토에서 공식 URL/개정일/허용 범위를 다시 확인. 허용 근거가 없거나 철회되면 공급자 중단. 공개 조사에는 약관 URL·개정일·판정만 남기고 가격 응답을 첨부하지 않는다. |
+| HTTP 401/403/429·captcha/HTML·crumb 요구 | 즉시 해당 Yahoo 경로를 멈춘다. Retry-After가 있어도 만료가 재허가/성공 보장은 아니다. 같은 실행에서 재폭주·IP/UA/쿠키 회전·차단 우회 없음. 다음 사용자 작업에서도 계속 막히면 출처 unavailable. |
+| timeout/5xx | 전체 일일 retry 예산 안에서 최대 1회만 bounded backoff 후보. 연속 실패는 공급자 작업 중단·대체. 오류 원문/HTML/가격 포함 body는 저장·로그하지 않는다. |
+| chart.error/result 없음·schema/type/배열/identity 변경 | 내부 reason·HTTP code·provider·실패 count/reset-time 같은 **비가격 메타데이터만** 개인 운영 상태로 사용. UNKNOWN/NOT_AVAILABLE를 반환하며 parser 추측·통화/시각/가격 0 default 금지. |
+| 오래된 시각·잘못된 통화/조정·부분 universe | 해당 행 결측/지연 표시. 완전한 순위/QGV 산출 불가이면 UNKNOWN. 진입일·휴장·진행중 세션은 거래일 검증으로 구분. |
 
-## F. GOOGLEFINANCE 500행과 차트 대체 규칙
-
-[GOOGLEFINANCE 문서](https://support.google.com/docs/answer/3093281?hl=en)는 current `price` 최대 20분 지연,
-`tradetime`·`datadelay`·`currency`와 거래소:심볼 식별을 안내한다. [계산 설정](https://support.google.com/docs/answer/58515?hl=en)도 외부 자료 지연을 안내한다.
-읽기/재계산 설정을 바꾸면 정확한 최신 종가가 확보된다고 가정하지 않는다.
-날짜를 지정한 **역사 GOOGLEFINANCE**는 Sheets API/Apps Script에서 #N/A 제한이 있다. 이것을 현재값 전체의 API 금지나 과거 일봉 대체 허가로 해석하지 않는다.
-
-[Sheets API 기본 read 한도](https://developers.google.com/workspace/sheets/api/limits)는 **300회/분/project, 60회/분/user/project**이며
-분당 한도 내 별도 일일 요청 상한은 없다. payload 2MB 이하 권장, 처리 timeout 180초다.
-[values.batchGet](https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/batchGet) 1회로 500행의 고정 범위를 읽는 후보는 **정상 1 read/일**이다.
-예를 들어 최초 1회+bounded retry 최대 2회=3 reads/일을 자체 예산으로 둔다. 함수 500개의 재계산은 Sheets read quota와 다른 문제다.
-현재 standard use 추가 비용 없음 안내에 **2026년 후반 초과쿼터 과금 계획**도 있으므로 무료/과금 상태를 실행 전 확인하고 quota 초과 경로는 쓰지 않는다.
-기존 [readonly scope](https://developers.google.com/workspace/sheets/api/scopes)와 [token model](https://developers.google.com/identity/oauth2/web/guides/use-token-model)을 유지한다.
-scope 자체가 한 탭만 읽도록 제한하는 권한은 아니므로 사용자 Sheet ID·범위를 앱에서 고정하고 토큰은 기기 메모리만 사용한다.
-
-**500행 안정성·#N/A 비율은 아직 실측하지 않았다.** 공식 500행 전부 성공 SLA·고정 갱신 주기·확정 GOOGLEFINANCE 함수 한도는 확인되지 않았다.
-기존 19종목 실측을 500행 검증으로 확대하지 않는다. 후속 사용자가 할 평가는 다음과 같다.
-
-- 승인된 Frozen 500 기대집합과 거래소/종목을 고정한다. 현재가·currency·tradetime·datadelay, 필요한 market cap/주식수 근거를 구분한다.
-- 기기에서 하루 한 번 유효/500·fresh/500·#N/A/500·누락/500·시각 미확인/500와 거래시각 분포·HTTP 지연을 휘발성으로 집계한다. 가격·순위·응답을 파일/로그로 남기지 않는다.
-- [빈 끝행/열 생략](https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values)을 기대집합에 대조해 결측으로 센다. 중복·알 수 없는 종목·비숫자·0 이하 가격·통화/basis 불일치를 구분한다.
-- read_at을 price_as_of로 바꾸지 않는다. Sheet timezone이 미확인이면 시각 UNKNOWN, 휴장/주말에는 최근 완료 session 기준을 따로 적용한다.
-- 필수 한 행이라도 부족하면 완전한 500종목 순위는 UNKNOWN이다. 유효 499행만 새 분모로 삼아 Top 500을 선언하지 않는다. 짧은 표본 성공도 SLA/장중 안정성 증명이 아니다.
-
-[Finance 면책](https://www.google.com/googlefinance/disclaimer/)은 정보용·정확성/가용성 비보장과 저장·가공·전송·재배포 등에 대한 사전 동의 조건을 둔다.
-[Google API 약관 §5](https://developers.google.com/terms)도 API 접근권이 제3자 콘텐츠 권리를 대신하지 않음을 설명한다.
-**개인 기기의 500종목 V/순위 가공까지 명시적으로 허용됐다는 근거는 확인하지 못했다.** 본인 시트와 무저장 설계만으로 이를 해소했다고 표시하지 않는다.
-
-| 용도·상태 | 출처 선택/대체 | 출처 표시 |
+| 용도·시장 | 최신 사용자 대체 순서 | 표시·불가한 대체 |
 | --- | --- | --- |
-| 개인 리더보드 현재값 | 본인 GOOGLEFINANCE Sheet 1순위. 실패하면 해당 행/전체 순위 NOT_AVAILABLE/UNKNOWN. **Tiingo/Alpha로 500행 자동 대체하지 않는다.** | GOOGLEFINANCE·본인 비공개 시트·개인 일일 읽기·최대 20분 지연 안내·정보용, 원 trade 시각/미확인·read 시각·Frozen 구성 기준일. |
-| 미국 기업 과거 차트 | Tiingo 1순위, 조건/한도 실패 시 **Alpha Vantage compact** 조건 확인 후 대체. 같은 종목·주식 종류·거래소·통화 검증. | provider·symbol/exchange·daily·raw/adjusted basis·마지막 session·실제 관측 수·취득 시각. |
-| Alpha 대체 | [TIME_SERIES_DAILY compact](https://www.alphavantage.co/documentation/#daily): 무료의 **최근 최대 100 data points**, 달력 100일이 아닌 거래 관측이다. raw/as-traded OHLCV. 차트 전체 시리즈를 교체하고 Tiingo 조정값과 이어붙이지 않는다. | Alpha Vantage·비조정 일봉·최근 최대 100개 관측. IPO/중단/결측이면 실제 개수 표시, 누락을 0/전일값/다른 공급자 가격으로 채우지 않는다. |
-| Alpha 한도/권리 | [공식 FAQ](https://www.alphavantage.co/support/) **25 requests/day**. 자체 예산 20회+여유5 같은 후보, 모든 retry 포함. full/adjusted는 premium이므로 제외. | 현재 계정·symbol 지원은 미검증. 무료 일봉을 현재 실시간 가격으로 표시하지 않는다. |
-| 한국·일본 현재값 | 기존 본인 시트/수동 유지. 과거 차트는 지원 미확인으로 남긴다. | Google 시트 또는 수동, 정확한 KRX042700/TSE8035·통화·입력/가격 시각·basis/미확인. |
+| 미국 과거 차트 | **Yahoo → Tiingo(미국) → 수동/NOT_AVAILABLE** | 허가·계정 한도 충족 출처만 사용. Tiingo 실패 후 Alpha 등 비교 후보로 자동 이동하지 않는다. Sheet 현재가로 과거 시리즈를 만들지 않는다. |
+| 한국 과거 차트 | **Yahoo `042700.KS` → KRX → 수동/NOT_AVAILABLE** | KRX는 승인·중계권 확인된 비수정 일봉만. raw/adjusted가 바뀌면 시리즈 전체 교체. |
+| 일본 과거 차트 | **Yahoo `8035.T` → 수동/NOT_AVAILABLE** | Tiingo 미국/KRX 한국은 일본 대체가 아니다. Google 시트 현재값이나 OTC/ADR로 일봉을 대체하지 않는다. |
+| 현재가/개인 V 입력 | **Yahoo → 시장에 맞는 Tiingo(미국)/KRX(한국) → 본인 Google 시트 현재가 → 수동** | KRX의 전일 종가는 현재 실시간 값이 아니므로 별도 종가/지연 표시. Japanese는 맞는 중간 공급자가 없으면 본인 Sheet 지원 여부 확인 후 수동. |
+| 마지막 실패 | 해당 값 결측, 관련 V/순위 UNKNOWN | **0·전일값·다른 상장 종목으로 대체하지 않는다.** 단일 수동 가격이 과거 일봉 이력을 충족한다고 표시하지 않는다. |
 
-[Alpha Vantage TOS §2·3](https://www.alphavantage.co/terms_of_service/)는 개인·비상업, 비양도/재허여불가 조건을 둔다.
-금융업 고용/제휴 등은 commercial 분류에 포함될 수 있어 사용자 확인이 필요하다. 개인 Worker 중계와 상세 보존 기간의 명시 허용은 미확인이다.
-따라서 Alpha도 본인 키·본인 인증·무저장 차트로만 조건부 검토한다. [조정 일봉](https://www.alphavantage.co/documentation/#dailyadj), full 및 [실시간/지연 데이터](https://www.alphavantage.co/realtime_data_policy/) 유료 경로로 전환하지 않는다.
+자동 대체의 전제는 각 출처의 개인 사용·무저장·중계·무료 한도 확인이다. Yahoo 차단이 다른 공급자 허가를 만들지 않는다.
+차트는 전체 시리즈를 교체하며 자료를 이어 붙이지 않는다. 순위 입력에 출처가 섞이면 행별 공급자·가격 시각·통화·basis를 표시하고 비교 시각 범위/결측 수를 드러낸다.
+출처 표시는 **Yahoo Finance(비공식)** / Tiingo / **한국거래소 통계정보(KRX Open API)** / GOOGLEFINANCE(본인 시트) / 수동이다.
+본인 표시에서도 정보용·지연/비공식 상태를 유지하며 실제 체결·투자 판단용 가격 정확성을 보장하지 않는다.
 
-## 사용자가 해야 할 일과 구현 전 확인
+## 7. 대체 출처 — 기존 비교 축약 보존
 
-1. 본인 개인 이용 분류·현재 Tiingo 플랜/적용 약관·잔여 unique/요청/대역폭을 확인한다. 본인 전용 relay·raw 차트·V/순위 가공 권리가 불명확하면 공급자에 직접 확인하고 허용 전 실행하지 않는다. 유료 계약은 선택하지 않는다.
-2. 본인 비공개 Google Sheet의 500개 매핑·지원 속성·시각/통화, 기존 readonly 로그인, 프로젝트 실제 quota/과금 상태를 확인한다. 500행 실측은 기기 휘발성 집계로만 하고 Google 개인 가공 조건을 확인한다.
-3. 중계 선택 시 Cloudflare Free 계정·2FA, workers.dev, 필요 시 Zero Trust Free/payment onboarding·Google IdP를 준비한다. 본인 1명 allowlist와 대체 ID-token 검증 방식을 결정한다. 이번 조사에서 가입/설정하지 않았다.
-4. 본인 Tiingo 키와 선택한 Alpha 무료 키를 사용자 소유 Worker Secret으로만 등록한다. 키를 채팅/코드/로그/PR에 붙이지 않는다. 현재 GitHub 키 존재는 새 개인 중계 사용 승인이나 등록 결과가 아니다.
-5. 후속 구현에서 미인증·다른 Google 계정·preview URL 우회·CORS·quota/CPU 초과·로그/캐시 비보존을 확인한다. 무료 cap에서 종료하고 유료 플랜을 활성화하지 않는다.
-6. 기존 공개 저장소/Pages/Actions 산출물의 가격·V·시총 순위 노출을 별도 구현 감사한다. 문서의 원칙 기록과 기존 guard PASS만으로 새 금지 경계 준수 완료를 선언하지 않는다.
+아래는 비교이며 Yahoo 1순위와 최신 fallback 순서를 변경하지 않는다. 무료 플랜·실제 사용자 계정·3시장 개별 종목 접근권은 별도다.
+브라우저 CORS 허용은 공급자 권리와 다르며 서버 relay에서 upstream CORS가 없어져도 앱→Worker 인증/CORS 검증은 남는다.
 
-모든 숫자·권리 판정은 공식 공개 문서 조회에 근거하며 실제 사용자 계정·500행 안정성·휴대폰 경로 성공은 미확인이다.
-**추천은 F의 본인 Sheet 일일 읽기와 B의 조건 확인된 차트 중계를 분리하는 최소 개인 경로**다.
-이 PR의 병합은 공급자 채택·키 발급·중계 배포·가격 수집·QGV 계산 실행 승인이 아니다.
+| 출처 | 무료 한도·과거 기간 | CORS·개인 이용·판정 |
+| --- | --- | --- |
+| Tiingo(미국) | Starter **$0·500 unique/month·50 requests/hour·1,000/day·1GB/month**. 제공되는 EOD 역사 범위는 종목별, 사용자 계정 플랜은 사용자 확인 예정. | 직접 브라우저 CORS는 이전 익명 OPTIONS에서 허용 헤더 미관측. 자기 token developer 모델이나 private relay/raw 차트 명시 허가는 미확인. Starter 원문·파생은 작업/세션 중 RAM만, 지속 저장 불가. **조건부 대체**. |
+| KRX(한국) | **무료·키당10,000/day**(0시~24시), 초/분별 별도 cap 없음. `stk_bydd_trd`: **2010-01-04부터**, 전일 자료 **익일 영업일08:00** 갱신. 비수정 OHLCV. | 승인 키+해당 API 활용 승인 모두 필요. basDd 한 날짜의 전체 유가증권시장 응답에서 종목을 검증·선별; 과거 날짜 수만큼 호출. 개인 연구/투자 비상업, 제3자 제공 금지. 외부 본인 Worker 허용·CORS는 미확인. **조건부 대체**. |
+| 본인 GOOGLEFINANCE Sheet | 현재값 최대20분 지연. Sheets read **300/min/project·60/min/user/project**, 분당 한도 내 별도 daily cap 없음. 500행 **1 batchGet/일 + 최대2 retry** 후보. 역사값은 Sheets API/Apps Script #N/A 제한. | 기존 readonly 기기 OAuth 사용, token RAM. 500행 성공 SLA·#N/A 비율 실측 없음. 개인 V/순위 가공의 명시 허가 미확인. **현재가 fallback 후보**, 과거 차트 불가. |
+| Alpha Vantage | 무료 **25 requests/day**. DAILY compact **최근 최대100 거래 관측**, raw/as-traded. full·DAILY_ADJUSTED 유료 제외. | 개인/비상업·금융업 종사 commercial 분류 확인. 무료 자체 예산20+여유5 후보. private relay·CORS·정확한 KR/JP 접근권 미확인. **비교 후보**, 최신 자동 fallback에 추가하지 않음. |
+| Twelve Data | Basic **8 API credits/min·800/day**, time_series 종목당1 credit·요청 최대5,000관측. 미국 EOD 후보, JP/KR은 유료 Pro 범위. 개별 종목 전체 무료 역사 기간은 미확인. | Basic은 **Internal non-display usage**, 화면 표시 접근은 유료 Grow에 배치. 본인 화면도 non-display라고 단정하지 않는다. CORS 보장 미확인. **무료 차트 채택 보류**. |
+| FMP | Basic **250 calls/day·최근30일500MB**, 무료 EOD 포함. **비교표상 역사5년**이나 각 endpoint/symbol 무료 entitlement는 별도 확인. | 개인·비상업 근거와 별도 Data Display and Licensing Agreement 요구를 함께 적용. JP/KR 무료 coverage·CORS 보장 미확인. **표시 권한 확인 전 보류**. |
+| Polygon → Massive | Stocks Basic **5 calls/min·2년 이력·EOD**. 미국 주식 전용, JP/KR 현지시장 불가. | 개인·비상업·비전문가 display 조건부. non-display/V 파생 허용으로 확대하지 않는다. CORS 보장 미확인. **비교 후보**, 최신 자동 fallback에 추가하지 않음. |
+
+### 비교 근거와 남은 조건
+
+- **Tiingo:** [가격](https://www.tiingo.com/pricing), [TOS](https://app.tiingo.com/tos/), [Developer Program](https://www.tiingo.com/documentation/appendix/developers), [이전 직접 조회](TIINGO_DEVICE_DIRECT_RESEARCH.md).
+  TOS 표시 변경일2026-10-06, 기존 이용자는 통지 후30일 적용 조항이 있어 실제 계정 적용 시점은 미확인. §1.6(a) **“only transiently in volatile memory”**는 원문·파생과 본인 대신 운영되는 서비스에도 적용.
+  §1.6(c)의 비복원·비대체 rankings/scores 조건과 raw charts/dashboard 제한을 확인해야 하며 원가격 삭제만으로 V가 비복원이라고 판단하지 않는다.
+  월 unique는 watchlist 크기가 아닌 계정 전체에서 실제 요청한 symbol 합집합이다. 500 리더보드 자동 대체는 500 unique 전체와 최소500 호출을 소비하며 채택하지 않는다.
+- **KRX:** [약관](https://openapi.krx.co.kr/contents/OPP/INFO/OPPINFO002.jsp), [이용방법](https://openapi.krx.co.kr/contents/OPP/INFO/OPPINFO003.jsp), [FAQ](https://openapi.krx.co.kr/contents/OPP/COMM/faq/OPPCOMM004.cmd), [공식 FAQ 원문](https://openapi.krx.co.kr/contents/OPP/COMM/faq/OPPCOMM004D1.cmd?pageNum=1&rowCount=100&totalCount=0&pageCount=10), [유가증권 명세](https://openapi.krx.co.kr/contents/OPP/USES/service/OPPUSES002_S2.cmd?BO_ID=JvJFzlAENzZlPBDNGAWC).
+  약관 시행2025-12-26. §6② 비상업, §11② **“제3자에게 제공할 수 없다”**, §10③ 화면 **“한국거래소 통계정보”** 표시. 키1년 이용/연장·12개월 미사용 삭제 가능, 키 양도 금지.
+  FAQ 무료·비수정·익영업일08시 안내의 시간대 이름은 미명시. 공식 명세의 `ISU_CD`와042700 식별은 실응답 검증 전 미확인이다. 공개 UI sample URL을 production URL로 확정하지 않았다. KRX 키 보유 여부는 사용자 확인 예정이며 보유 시 Secret 이름 `KRX_API_KEY`만 문서화한다.
+- **Google:** [함수/지연/역사 제한](https://support.google.com/docs/answer/3093281?hl=en), [Sheets quota](https://developers.google.com/workspace/sheets/api/limits), [batchGet](https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/batchGet), [Finance 면책](https://www.google.com/googlefinance/disclaimer/), [API 약관 §5](https://developers.google.com/terms).
+  payload2MB 이하 권장·180초 timeout. Standard use 무료 안내와2026년 후반 초과쿼터 과금 계획을 함께 확인하며 실제 프로젝트 무료/과금은 실행 전 확인. Sheets token을 Worker에 전달하지 않는다.
+  500개 함수 재계산은 API read quota와 별개. 기대500 고정 분모로 유효·fresh·#N/A·누락/시각미확인 비율을 **기기 RAM**에서만 집계하고 끝행 생략도 결측으로 센다. 최대20분 지연 현재값은 정확한 EOD가 아니다.
+  Finance 면책의 저장·가공·전송 사전 동의 조건을 본인 시트로 해소했다고 표시하지 않는다. Tokyo 현행 수동 입력과 종목별 미지원 상태를 유지한다.
+- **Alpha Vantage:** [FAQ](https://www.alphavantage.co/support/), [DAILY](https://www.alphavantage.co/documentation/#daily), [TOS](https://www.alphavantage.co/terms_of_service/). 최근100은 달력100일/전체 역사가 아니다. 서로 다른 출처·조정 시리즈를 이어 붙이지 않는다.
+- **Twelve Data:** [Individual 가격표](https://twelvedata.com/pricing), [약관](https://twelvedata.com/terms), [시장표](https://twelvedata.com/exchanges), [미국 EOD Basic](https://support.twelvedata.com/en/articles/9935903-us-equities-market-data), [역사 관측 수](https://support.twelvedata.com/en/articles/5656039-how-to-get-historical-prices).
+  약관 수정2026-01-01. **“Internal non-display usage”**와 **“Internal display data access”**를 구분한다. 시장 전체 카탈로그가 무료 접근권을 뜻하지 않는다.
+- **FMP:** [가격표](https://site.financialmodelingprep.com/pricing-plans), [TOS](https://site.financialmodelingprep.com/terms-of-service), [공식 CORS/중계 가이드](https://site.financialmodelingprep.com/insights/platform/api-access/should-you-call-the-fmp-api-from-the-front-end-back-end-or-a).
+  TOS 수정2023-08-01, 개인·비사업·비상업과 가격표의 **“requires a specific Data Display and Licensing Agreement with FMP”** 조건을 함께 확인한다. 하단 비교표 Basic 첫 셀의5년 표시를 확인했으나 개별 가격 endpoint/종목의 무료 접근까지 보장하지 않는다.
+- **Polygon/Massive:** [현행 가격](https://massive.com/pricing?product=stocks), [시장 범위](https://massive.com/knowledge-base/article/does-massive-offer-international-data), [Market Data Terms](https://massive.com/legal/market-data-terms-of-service), [2025-10-30 리브랜드](https://massive.com/blog/polygon-is-now-massive).
+  약관 수정2025-08-28, §2 **“strictly for display use only”**와 §5(d)의 non-display/파생 제한을 구분한다. 오래된 Polygon PDF를 현행 라이선스로 쓰지 않는다.
+
+## 사용자가 해야 할 일
+
+1. Yahoo 자동 접근의 공식 허가 여부와 적용 지역 약관을 확인한다. 사용자 결정만으로 허가된 것으로 처리하지 않으며 허가 근거가 없으면 Yahoo 자동 조회를 실행하지 않고 허용된 대체/수동을 검토한다.
+2. 무료 중계 선택 시 본인 Cloudflare 계정·2FA·Workers Free·workers.dev를 준비한다. Access Free/payment onboarding+Google IdP 또는 본인 ID-token 검증을 고르고 정확한 본인1명만 허용한다. 이번 작업에서 계정을 만들지 않았다.
+3. 폰 앱 origin/로그인 흐름, 3시장 심볼·통화·시각·chart basis와 Frozen 구성만 담은 입력 목록을 확인한다. 500 조회 시간·결측을 수용하거나 subset 표시를 선택하며 전체 순위로 오인하지 않게 한다.
+4. 대체를 원하면 본인 Tiingo 플랜/조건·월 unique, KRX 키 보유/기한·해당 API 승인/중계 허용 여부를 확인한다. 보유 시 `KRX_API_KEY` 등 키는 사용자 소유 Worker Secret에만 등록하며 채팅·소스·로그·커밋·PR에 값은 넣지 않는다. 이번 조사에서 키 존재를 확인하거나 등록하지 않았다.
+5. Google fallback은 본인 비공개 Sheet·기존 readonly 로그인·종목별 지원/시각·가공권·프로젝트 quota/무료 상태를 확인한다. Tokyo 미지원이면 현행 수동을 유지한다. 추가 유료 계약·자동 유료 전환은 하지 않는다.
+6. 후속 구현에서 본인 인증/다른 계정 거부·preview 우회·CORS·CPU/cap 초과·차단/형식변경·결측·로그/캐시 비보존을 확인하고, 기존 공개물의 가격/V/시총 순위 노출을 별도 감사한다. 이 문서/기존 guard PASS가 감사 완료를 뜻하지 않는다.
+
+**추천은 허가·Free 조건이 충족된 출처만 본인 경로에서 낮은 빈도로 조회하고, 확인되지 않으면 결측/수동을 유지하는 방식**이다.
+이 PR은 문서만이며 병합 승인 대기다. 병합이 공급자 허가·키 발급·중계 배포·가격 수집·QGV 실행 승인은 아니다.
