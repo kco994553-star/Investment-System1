@@ -46,13 +46,17 @@ jobs:
           PAGES_COCKPIT_EVIDENCE_DIR: ${{ runner.temp }}/pages-browser-evidence
           DEVICE_ACTUAL_URL: http://127.0.0.1:8990/Investment-System1/#actual
           DEVICE_ACTUAL_EVIDENCE_DIR: ${{ runner.temp }}/device-actual-evidence
+          MANUAL_QUOTES_URL: http://127.0.0.1:8990/Investment-System1/#actual
+          EVIDENCE_DIR: ${{ runner.temp }}/manual-quotes-evidence
         run: |
           python -m http.server 8990 --bind 127.0.0.1 --directory "$RUNNER_TEMP/pages-root" > "$RUNNER_TEMP/pages-server.log" 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID"' EXIT
           node implementation/tools/pages_cockpit_browser_test.js
           node implementation/tools/device_actual_node_test.js
+          node implementation/tools/device_market_node_test.js
           node implementation/tools/device_actual_browser_test.js
+          node implementation/tools/manual_quotes_browser_test.js
       - name: Keep empty-device screenshots and result counts outside the site
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -61,6 +65,7 @@ jobs:
           path: |
             ${{ runner.temp }}/pages-browser-evidence
             ${{ runner.temp }}/device-actual-evidence
+            ${{ runner.temp }}/manual-quotes-evidence
           if-no-files-found: error
       - name: Fail closed immediately before Pages upload
         run: python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/pages-root/Investment-System1"

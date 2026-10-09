@@ -15,9 +15,18 @@ function attachDeviceActual(selector,input) {
   if(!host) return;
   deviceCatalog().then(catalog=>{
     if(!host.isConnected) return;
-    return input?DeviceActual.mount(host,{catalog,locale,quotes:[]}):DeviceActual.summary(host,{catalog,locale,quotes:[]});
+    return input?DeviceActual.mount(host,{catalog,locale}):DeviceActual.summary(host,{catalog,locale});
   }).catch(()=>{
     if(host.isConnected) host.textContent=locale==='en-US'?'ACTUAL NOT_AVAILABLE · Local holdings could not be opened.':'ACTUAL NOT_AVAILABLE · 기기 보유 데이터를 열 수 없습니다.';
+  });
+}
+function attachDeviceApiSettings() {
+  const host=document.querySelector('#device-api-settings'),locale=appSettings.display_locale;
+  if(!host) return;
+  deviceCatalog().then(catalog=>{
+    if(host.isConnected) return DeviceActual.settings(host,{catalog,locale});
+  }).catch(()=>{
+    if(host.isConnected) host.textContent=locale==='en-US'?'API OFF · Device settings unavailable.':'API 꺼짐 · 기기 설정을 열 수 없습니다.';
   });
 }
 function actual() {
@@ -166,7 +175,7 @@ function settingsUI() {
   <p>${t("표시 언어는 계산 결과에 영향을 주지 않습니다.")}</p>
   <label for="source-language">${t("뉴스 원문 언어")}</label><select id="source-language">${[["all",t("전체 언어")],["ko",t("한국어 원문")],["en",t("영어 원문")]].map(([v,k])=>`<option value="${v}" ${appSettings.source_language===v?"selected":""}>${t(k)}</option>`).join("")}</select>
   <p>${t("원문 언어는 뉴스 필터만 변경합니다.")}</p></section>
-  <section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section>`;
+  <section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><div id="device-api-settings"></div>`;
 }
 function entityRoute(e) {return e.entity_type==="COMPANY"?"#company/"+encodeURIComponent(e.canonical_id):"#entity/"+encodeURIComponent(e.entity_type+":"+e.canonical_id);}
 function entityRow(hit) {
@@ -381,6 +390,7 @@ function renderRoute() {
   if(!storageOK) notice(t("개인 설정 저장을 사용할 수 없습니다. 내보내기를 이용하세요."));
   if(!settingsWritable) notice(t("설정을 읽을 수 없습니다. 저장된 원본은 보존합니다."));
   if(route==="settings") {
+    attachDeviceApiSettings();
     $("#display-locale").onchange=e=>updateSettings({display_locale:e.target.value});
     $("#source-language").onchange=e=>updateSettings({source_language:e.target.value});
   }

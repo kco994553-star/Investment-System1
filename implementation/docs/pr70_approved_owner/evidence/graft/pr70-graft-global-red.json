@@ -1,0 +1,11 @@
+{
+  "phase": "RED-graft",
+  "worktree": "global",
+  "tests_run": 2,
+  "failures": 2,
+  "errors": 0,
+  "failed_tests": [
+    "test_native_graft_cannot_hide_rewrite_restore_history",
+    "test_redirected_graft_cannot_hide_rewrite_restore_history"
+  ]
+}

@@ -6,8 +6,9 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
   const SCHEMA = 'device-actual-holdings/1';
-  const DB_NAME = 'investment-device-actual-v1', STORE = 'snapshots', KEY = 'actual';
+  const DB_NAME = 'investment-device-actual-v1', STORE = 'snapshots', KEY = 'actual', MARKET_KEY = 'market', API_RECORD_KEY = 'api-settings';
   const MAX_FILE_BYTES = 131072, CURRENCIES = Object.freeze(['USD', 'JPY', 'KRW']);
+  const MISSING_RECORD = Object.freeze({ missingRecord: true });
   const DECIMAL = /^(?:0|[1-9]\d{0,14})(?:\.\d{1,12})?$/;
   const hosts = new WeakMap();
   const UI = {
@@ -15,8 +16,8 @@
     device: ['이 기기에만 저장됨', 'Stored only on this device'],
     privacy: ['보유 정보는 이 브라우저의 IndexedDB에만 저장됩니다. 서버로 전송되지 않습니다.', 'Holdings are stored only in this browser’s IndexedDB. They are never sent to a server.'],
     backup: ['JSON 내보내기 파일은 기기에 남을 수 있습니다. 기기 삭제는 내보낸 파일을 삭제하지 않습니다.', 'An exported JSON file may remain on your device. Deleting browser holdings does not delete exported files.'],
-    entry: ['수량·평균 매입가·통화를 입력하세요. 두 숫자 칸을 비우면 해당 종목을 제외합니다.', 'Enter quantity, average cost and currency. Leave both number fields blank to exclude an instrument.'],
-    quote: ['평가액은 제공된 시장가격으로만 계산됩니다. 평균 매입가는 시장가격이 아닙니다. 가격 또는 환율이 없으면 비중·TARGET 차이는 NOT_AVAILABLE입니다.', 'Market value uses supplied market prices only. Average cost is not a market price. Without prices or FX, weights and TARGET deltas are NOT_AVAILABLE.'],
+    entry: ['수량·평균 매입가·통화를 입력하세요. 두 보유 숫자 칸을 비우면 해당 종목을 제외합니다. 가격과 환율은 보유 없이도 저장할 수 있습니다.', 'Enter quantity, average cost and currency. Leave both holdings number fields blank to exclude an instrument. Prices and FX can also be saved without holdings.'],
+    quote: ['시장가격·환율과 기준 시점을 직접 입력하세요. 입력 시점의 기본값은 현재이며 수정할 수 있습니다. 7일 이상 지난 값은 STALE로 표시하고 계산에 유지합니다. 가격 또는 필요한 환율이 없으면 총 평가액·비중·TARGET 차이는 NOT_AVAILABLE입니다.', 'Enter market prices, FX and their as-of timestamps. Timestamps default to now and can be edited. Values at least 7 days old are marked STALE and remain in calculations. Without any held price or required FX, the total, weights and TARGET deltas are NOT_AVAILABLE.'],
     quantity: ['수량', 'Quantity'], average: ['평균 매입가', 'Average cost'], currency: ['통화', 'Currency'],
     save: ['이 기기에 저장', 'Save on this device'], export: ['JSON 내보내기', 'Export JSON'], import: ['JSON 가져오기', 'Import JSON'], delete: ['기기 보유 정보 삭제', 'Delete device holdings'],
     saved: ['이 기기에 저장했습니다.', 'Saved on this device.'], imported: ['가져온 보유 정보를 이 기기에 저장했습니다.', 'Imported holdings were saved on this device.'],
@@ -37,7 +38,15 @@
     missing: ['시장가격 미제공 · NOT_AVAILABLE', 'Market prices missing · NOT_AVAILABLE'], fx: ['환율 계약 미제공 · NOT_AVAILABLE', 'FX contract missing · NOT_AVAILABLE'],
     zero: ['양수 보유가 없음 · NOT_AVAILABLE', 'No positive holdings · NOT_AVAILABLE'], calculation: ['계산 범위 초과 · NOT_AVAILABLE', 'Calculation out of range · NOT_AVAILABLE'], available: ['제공된 시장가격 기준', 'Based on supplied market prices'],
     summary: ['내 실제 보유 요약', 'My actual holdings summary'], target: ['TARGET 비중', 'TARGET weight'],
-    readFailed: ['기기 저장소를 열 수 없습니다. ACTUAL · NOT_AVAILABLE', 'Cannot open device storage. ACTUAL · NOT_AVAILABLE']
+    readFailed: ['기기 저장소를 열 수 없습니다. ACTUAL · NOT_AVAILABLE', 'Cannot open device storage. ACTUAL · NOT_AVAILABLE'],
+    price: ['수동 시장가격', 'Manual market price'], priceTime: ['가격 기준 시점 · ISO 8601', 'Price as-of · ISO 8601'], source: ['가격 출처', 'Price source'],
+    manual: ['수동', 'Manual'], none: ['없음', 'None'], fxTitle: ['수동 환율 · KRW 기준', 'Manual FX · KRW base'], fxTime: ['환율 기준 시점 · ISO 8601', 'FX as-of · ISO 8601'], fxRate: ['1 단위당 KRW', 'KRW per 1 unit'],
+    native: ['원통화 시장 평가액', 'Native market value'], provenance: ['가격 출처·기준 시점', 'Price source and as-of'], fxProvenance: ['환율 출처·기준 시점', 'FX source and as-of'], stale: ['STALE · 7일 이상 지난 입력', 'STALE · Input at least 7 days old'],
+    apiTitle: ['기기 API 키 설정', 'Device API key settings'], apiPrivacy: ['브라우저 직접 호출이 승인된 API 키만 입력하세요. 앱 시크릿이나 액세스 토큰은 입력하지 마세요. 키는 이 브라우저의 IndexedDB에만 저장되며 JSON 백업에 포함되지 않습니다.', 'Enter only an API key approved for direct browser calls. Do not enter an app secret or access token. The key is stored only in this browser’s IndexedDB and is excluded from JSON backups.'],
+    apiKeyIssuance: ['Alpha Vantage 공식 무료 API 키 발급 (새 탭)', 'Alpha Vantage official free API key issuance (new tab)'],
+    apiGuidance: ['본인의 무료 키는 이 기기에만 저장되고 백업에서 제외됩니다. 검증 전까지 API는 꺼져 있습니다. 키 없이도 가격·환율을 수동 입력할 수 있습니다.', 'Your own free key stays on this device and is excluded from backups. API remains OFF pending validation. You can manually enter prices and FX without a key.'],
+    apiPending: ['서비스 선택 대기 · API 사용 안 함. 시세 갱신과 자동 호출은 비활성 상태입니다.', 'Service selection pending · API disabled. Quote refresh and automatic calls are disabled.'], apiService: ['API 서비스', 'API service'], apiKey: ['API 키', 'API key'], apiSave: ['API 키를 이 기기에 저장', 'Save API key on this device'], apiDelete: ['기기 API 키 삭제', 'Delete device API key'], apiRefresh: ['시세 새로고침', 'Refresh quotes'],
+    apiYes: ['저장된 API 키: 있음', 'Stored API key: Yes'], apiNo: ['저장된 API 키: 없음', 'Stored API key: No'], apiSaved: ['API 키를 이 기기에 저장했습니다. API 호출은 비활성 상태입니다.', 'API key saved on this device. API calls remain disabled.'], apiRemoved: ['기기 API 키를 삭제했습니다.', 'Device API key deleted.'], apiInvalid: ['API 키 형식이 유효하지 않습니다. 저장된 키는 변경하지 않았습니다.', 'The API key format is invalid. The stored key was not changed.'], apiStorage: ['API 키 저장소를 사용할 수 없습니다. 저장된 키는 변경하지 않았습니다.', 'API key storage is unavailable. The stored key was not changed.']
   };
   function fail(code) { throw new Error(code); }
   function plain(value) { return value !== null && typeof value === 'object' && !Array.isArray(value) && (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null); }
@@ -180,33 +189,81 @@
       request.onsuccess = () => { if (settled) request.result.close(); else { request.result.onversionchange = () => request.result.close(); resolve(request.result); } };
     });
   }
-  async function readStored(view) {
+  async function readStored(view, requestedKeys = [KEY, MARKET_KEY]) {
     const db = await openDatabase(view);
     return new Promise((resolve, reject) => {
-      let value, tx;
-      try { tx = db.transaction(STORE, 'readonly'); const request = tx.objectStore(STORE).get(KEY); request.onsuccess = () => { value = request.result; }; } catch (_) { db.close(); reject(new Error('STORAGE')); return; }
-      tx.oncomplete = () => { db.close(); resolve(value === undefined ? null : value); };
+      const values = {}; let tx;
+      try {
+        tx = db.transaction(STORE, 'readonly'); const store = tx.objectStore(STORE);
+        for (const key of requestedKeys) {
+          const request = store.get(key); request.onsuccess = () => { values[key] = request.result; };
+          const presence = store.getKey(key); presence.onsuccess = () => { if (presence.result === undefined) values[key] = MISSING_RECORD; };
+        }
+      } catch (_) { db.close(); reject(new Error('STORAGE')); return; }
+      tx.oncomplete = () => { db.close(); resolve(values); };
       tx.onabort = tx.onerror = () => { db.close(); reject(new Error('STORAGE')); };
     });
   }
-  async function commitStored(view, snapshot, expected) {
+  function storedEqual(left, right, forward = new Map(), reverse = new Map()) {
+    if (Object.is(left, right)) return true;
+    if (left === MISSING_RECORD || right === MISSING_RECORD || left === null || right === null || typeof left !== 'object' || typeof right !== 'object') return false;
+    if (forward.has(left) || reverse.has(right)) return forward.get(left) === right && reverse.get(right) === left;
+    const tag = Object.prototype.toString.call(left);
+    if (tag !== Object.prototype.toString.call(right) || Object.getPrototypeOf(left) !== Object.getPrototypeOf(right)) return false;
+    forward.set(left, right); reverse.set(right, left);
+    const equal = (a, b) => storedEqual(a, b, forward, reverse);
+    if (tag === '[object Date]') return Object.is(left.getTime(), right.getTime());
+    if (tag === '[object RegExp]') return left.source === right.source && left.flags === right.flags && left.lastIndex === right.lastIndex;
+    if (tag === '[object Map]') {
+      if (left.size !== right.size) return false;
+      const other = right.entries();
+      for (const [key, value] of left) { const next = other.next().value; if (!equal(key, next[0]) || !equal(value, next[1])) return false; }
+      return true;
+    }
+    if (tag === '[object Set]') {
+      if (left.size !== right.size) return false;
+      const other = right.values();
+      for (const value of left) if (!equal(value, other.next().value)) return false;
+      return true;
+    }
+    if (tag === '[object ArrayBuffer]') {
+      // Resizable buffers and their views carry hidden length-tracking state.
+      // Preserve these corrupt records instead of comparing only current bytes.
+      if (left.resizable || right.resizable) return false;
+      if (left.byteLength !== right.byteLength) return false;
+      const a = new Uint8Array(left), b = new Uint8Array(right);
+      return a.every((value, i) => value === b[i]);
+    }
+    if (ArrayBuffer.isView(left)) return left.byteOffset === right.byteOffset && left.byteLength === right.byteLength && equal(left.buffer, right.buffer);
+    if (['[object Boolean]', '[object Number]', '[object String]', '[object BigInt]'].includes(tag)) return Object.is(left.valueOf(), right.valueOf());
+    // Opaque structured clones (for example Blob/File) cannot be compared by
+    // metadata alone. Preserve them rather than guessing that cleanup is safe.
+    if (!['[object Object]', '[object Array]', '[object Error]'].includes(tag)) return false;
+    const a = Object.getOwnPropertyNames(left).sort(), b = Object.getOwnPropertyNames(right).sort();
+    return a.length === b.length && a.every((key, i) => key === b[i] && equal(left[key], right[key]));
+  }
+  function storedValues(values) { return Object.fromEntries(Object.entries(values).map(([key, value]) => [key, value === null ? MISSING_RECORD : value])); }
+  async function commitStored(view, values, expected) {
     const db = await openDatabase(view);
     return new Promise((resolve, reject) => {
       let tx, conflict = false;
       try {
-        tx = db.transaction(STORE, 'readwrite'); const store = tx.objectStore(STORE);
-        // Confirmed deletion also clears corrupt structured-clone records.
-        if (snapshot === null) store.delete(KEY);
-        else {
-          const request = store.get(KEY);
-          request.onsuccess = () => {
+        tx = db.transaction(STORE, 'readwrite'); const store = tx.objectStore(STORE), entries = Object.entries(values);
+        const write = () => { for (const [key, value] of entries) { if (value === null) store.delete(key); else store.put(value, key); } };
+        const current = {}; let pending = entries.length;
+        for (const [key] of entries) {
+          const request = store.get(key); request.onsuccess = () => { current[key] = request.result; };
+          const presence = store.getKey(key);
+          presence.onsuccess = () => {
+            if (presence.result === undefined) current[key] = MISSING_RECORD;
+            if (--pending) return;
             try {
-              if (canonical(request.result === undefined ? null : request.result) !== canonical(expected)) { conflict = true; tx.abort(); return; }
-              store.put(snapshot, KEY);
-            } catch (_) { tx.abort(); }
+              if (entries.some(([key]) => !storedEqual(current[key], expected[key]))) { conflict = true; tx.abort(); return; }
+              write();
+            } catch (_) { try { tx.abort(); } catch (_) {} }
           };
         }
-      } catch (_) { db.close(); reject(new Error('STORAGE')); return; }
+      } catch (_) { if (tx) { try { tx.abort(); } catch (_) {} } db.close(); reject(new Error('STORAGE')); return; }
       tx.oncomplete = () => { db.close(); resolve(); };
       tx.onabort = tx.onerror = () => { db.close(); reject(new Error(conflict ? 'CONFLICT' : 'STORAGE')); };
     });
@@ -216,24 +273,44 @@
     const element = state.host.ownerDocument.createElement(tag); if (text !== undefined) element.textContent = text;
     for (const [key, value] of Object.entries(attributes)) element.setAttribute(key, String(value)); return element;
   }
+  function marketApi(state) { const api = state.view.DeviceMarket; if (!api) fail('STORAGE'); return api; }
   function notice(state, key) { state.notice.textContent = t(state, key); state.notice.dataset.notice = key; }
   function errorNotice(state, error) { notice(state, error.message === 'INCOMPATIBLE' ? 'incompatible' : error.message === 'VERSION' ? 'version' : ['STORAGE', 'CONFLICT'].includes(error.message) ? 'storage' : 'invalid'); }
   function number(state, value) { return new Intl.NumberFormat(state.locale, { maximumFractionDigits: 8 }).format(value); }
-  function percentage(state, value, signed = false) { return value === null ? 'NOT_AVAILABLE' : new Intl.NumberFormat(state.locale, { style: 'percent', maximumFractionDigits: 2, ...(signed ? { signDisplay: 'always' } : {}) }).format(value); }
+  function percentage(state, value) { return value === null ? 'NOT_AVAILABLE' : new Intl.NumberFormat(state.locale, { style: 'percent', maximumFractionDigits: 2 }).format(value); }
+  function points(state, value) { return value === null ? 'NOT_AVAILABLE' : new Intl.NumberFormat(state.locale, { maximumFractionDigits: 2, signDisplay: 'always' }).format(value * 100) + ' %p'; }
+  function source(state, value) { return value === 'API' ? 'API' : value === 'MANUAL' ? t(state, 'manual') : t(state, 'none'); }
+  function provenance(state, record) {
+    if (!record) return t(state, 'none') + ' · NOT_AVAILABLE';
+    return source(state, record.source) + ' · ' + record.as_of + ' · ' + marketApi(state).staleness(record.as_of);
+  }
+  function valuesFor(state) {
+    if (state.snapshot) validate(state.snapshot, state.catalog);
+    // External quote arrays remain available to legacy callers; production
+    // mounts use the independent device market record instead.
+    if (state.externalQuotes) return valuation(state.snapshot, state.catalog, state.quotes);
+    return marketApi(state).valuation(state.snapshot, state.catalog, state.market);
+  }
   function summaryContent(state) {
     const box = el(state, 'section', undefined, { 'data-actual-summary': '', class: 'actual-summary' });
     box.append(el(state, 'h3', t(state, 'summary')));
-    const status = el(state, 'p', state.snapshot ? t(state, 'existing') : t(state, 'unavailable'), { 'data-actual-status': '', role: 'status' }); box.append(status);
-    const values = valuation(state.snapshot, state.catalog, state.quotes);
+    box.append(el(state, 'p', state.snapshot ? t(state, 'existing') : t(state, 'unavailable'), { 'data-actual-status': '', role: 'status' }));
+    const values = valuesFor(state);
     box.append(el(state, 'p', t(state, values.reason === 'FX_NOT_AVAILABLE' ? 'fx' : values.reason === 'QUOTED' ? 'available' : values.reason === 'NO_POSITIONS' ? 'zero' : values.reason === 'CALCULATION_ERROR' ? 'calculation' : 'missing')));
+    if (values.stale) box.append(el(state, 'p', t(state, 'stale'), { class: 'actual-stale', 'data-market-stale': '' }));
     box.append(el(state, 'p', t(state, 'total') + ': ' + (values.total === null ? 'NOT_AVAILABLE' : number(state, values.total) + ' ' + values.currency), { class: 'actual-total', 'data-market-total': '' }));
-    if (values.reason === 'FX_NOT_AVAILABLE') for (const [currency, total] of Object.entries(values.currency_totals)) box.append(el(state, 'p', currency + ': ' + (total === null ? 'NOT_AVAILABLE' : number(state, total))));
     if (values.rows.length) {
       const list = el(state, 'div', undefined, { class: 'actual-value-list' });
       for (const row of values.rows) {
         const instrument = state.catalog.instruments.find(candidate => canonical(candidate.security_reference) === canonical(row.security_reference));
         const card = el(state, 'div', undefined, { class: 'actual-value-row' }); card.append(el(state, 'strong', instrument.label + (instrument.ticker ? ' · ' + instrument.ticker : '')));
-        const fields = [[t(state, 'quantity'), row.quantity], [t(state, 'average'), row.average_cost + ' ' + row.currency], [t(state, 'market'), row.market_value === null ? 'NOT_AVAILABLE' : number(state, row.market_value) + ' ' + row.currency], [t(state, 'target'), percentage(state, row.target_units / state.catalog.total_units)], [t(state, 'weight'), percentage(state, row.weight)], [t(state, 'delta'), percentage(state, row.delta, true)]];
+        const marketCurrency = state.externalQuotes ? row.currency : values.currency;
+        const fields = [[t(state, 'quantity'), row.quantity], [t(state, 'average'), row.average_cost + ' ' + row.currency], [t(state, 'market') + ' · ' + marketCurrency, row.market_value === null ? 'NOT_AVAILABLE' : number(state, row.market_value) + ' ' + marketCurrency], [t(state, 'target'), percentage(state, row.target_units / state.catalog.total_units)], [t(state, 'weight'), percentage(state, row.weight)], [t(state, 'delta') + ' (%p)', points(state, row.delta)]];
+        if (!state.externalQuotes) {
+          fields.push([t(state, 'native'), row.market_value_native === null ? 'NOT_AVAILABLE' : number(state, row.market_value_native) + ' ' + row.market_currency_native]);
+          fields.push([t(state, 'provenance'), source(state, row.quote_source) + ' · ' + (row.quote_as_of || 'NOT_AVAILABLE') + ' · ' + row.quote_status]);
+          if (instrument.currency !== 'KRW') fields.push([t(state, 'fxProvenance'), source(state, row.fx_source) + ' · ' + (row.fx_as_of || 'NOT_AVAILABLE') + ' · ' + row.fx_status]);
+        }
         const details = el(state, 'dl'); for (const [label, value] of fields) details.append(el(state, 'dt', label), el(state, 'dd', value)); card.append(details); list.append(card);
       }
       box.append(list);
@@ -243,32 +320,57 @@
   function repaintSummary(state) {
     const old = state.root.querySelector('[data-actual-summary]'); if (old) old.replaceWith(summaryContent(state));
     if (state.exportButton) state.exportButton.disabled = !state.snapshot || state.busy;
+    updateSources(state);
+  }
+  function updateSources(state) {
+    const quotes = new Map(state.market ? state.market.quotes.map(quote => [canonical(quote.security_reference), quote]) : []);
+    for (const row of state.formRows) row.source.textContent = t(state, 'source') + ': ' + provenance(state, quotes.get(canonical(row.instrument.security_reference)));
+    for (const row of state.fxRows) row.source.textContent = provenance(state, state.market ? state.market.fx.find(fx => fx.currency === row.currency) : null);
   }
   function populate(state) {
     const saved = new Map(state.snapshot ? state.snapshot.themes.flatMap(theme => theme.holdings).map(row => [canonical(row.security_reference), row]) : []);
+    const quotes = new Map(state.market ? state.market.quotes.map(quote => [canonical(quote.security_reference), quote]) : []), timestamp = new Date().toISOString();
     for (const row of state.formRows) {
-      const value = saved.get(canonical(row.instrument.security_reference)); row.quantity.value = value ? value.quantity : ''; row.average_cost.value = value ? value.average_cost : ''; row.currency.value = value ? value.currency : row.instrument.currency;
+      const value = saved.get(canonical(row.instrument.security_reference)), quote = quotes.get(canonical(row.instrument.security_reference));
+      row.quantity.value = value ? value.quantity : ''; row.average_cost.value = value ? value.average_cost : ''; row.currency.value = value ? value.currency : row.instrument.currency;
+      row.price.value = quote ? quote.price : ''; row.price_as_of.value = quote ? quote.as_of : timestamp;
     }
+    for (const row of state.fxRows) {
+      const fx = state.market ? state.market.fx.find(fx => fx.currency === row.currency) : null;
+      row.rate.value = fx ? fx.rate : ''; row.fx_as_of.value = fx ? fx.as_of : timestamp;
+    }
+    updateSources(state);
   }
   function setBusy(state, busy) {
     state.busy = busy; for (const control of state.root.querySelectorAll('button, input, select')) control.disabled = busy;
-    if (!busy && state.storageProblem) { state.saveButton.disabled = true; state.importInput.disabled = true; }
+    if (!busy && state.storageProblem) { if (state.saveButton) state.saveButton.disabled = true; if (state.importInput) state.importInput.disabled = true; }
     if (state.exportButton) state.exportButton.disabled = busy || !state.snapshot;
+    for (const control of state.root.querySelectorAll('[data-api-service], [data-api-refresh]')) control.disabled = true;
   }
   function announce(state) { state.host.ownerDocument.dispatchEvent(new state.view.Event('device-actual-changed')); }
   async function save(state) {
     if (state.busy || state.storageProblem) return;
     setBusy(state, true);
     try {
-      const rows = [];
+      const rows = [], quotes = [], fx = [], timestamp = new Date().toISOString();
       for (const row of state.formRows) {
         const quantity = row.quantity.value.trim(), average_cost = row.average_cost.value.trim();
-        if (!quantity && !average_cost) continue;
-        rows.push({ security_reference: clone(row.instrument.security_reference), quantity, average_cost, currency: row.currency.value });
+        if (quantity || average_cost) rows.push({ security_reference: clone(row.instrument.security_reference), quantity, average_cost, currency: row.currency.value });
+        const price = row.price.value.trim(), as_of = row.price_as_of.value.trim();
+        if (!price) continue;
+        const previous = state.market ? state.market.quotes.find(quote => canonical(quote.security_reference) === canonical(row.instrument.security_reference)) : null;
+        const unchanged = previous && previous.price === price && previous.as_of === as_of;
+        quotes.push({ security_reference: clone(row.instrument.security_reference), price, currency: row.instrument.currency, as_of, available_at: unchanged ? previous.available_at : timestamp, source: unchanged ? previous.source : 'MANUAL' });
       }
-      const next = makeSnapshot(state.catalog, rows, state.snapshot);
-      await commitStored(state.view, next, state.raw);
-      state.snapshot = next; state.raw = next; repaintSummary(state); notice(state, 'saved'); announce(state);
+      for (const row of state.fxRows) {
+        const rate = row.rate.value.trim(), as_of = row.fx_as_of.value.trim(); if (!rate) continue;
+        const previous = state.market ? state.market.fx.find(fx => fx.currency === row.currency) : null, unchanged = previous && previous.rate === rate && previous.as_of === as_of;
+        fx.push({ currency: row.currency, rate, as_of, available_at: unchanged ? previous.available_at : timestamp, source: unchanged ? previous.source : 'MANUAL' });
+      }
+      const next = makeSnapshot(state.catalog, rows, state.snapshot), market = marketApi(state).makeMarket(state.catalog, quotes, fx, state.market);
+      const raw = { [KEY]: next, [MARKET_KEY]: market };
+      await commitStored(state.view, raw, state.raw);
+      state.snapshot = next; state.market = market; state.raw = storedValues(raw); repaintSummary(state); notice(state, 'saved'); announce(state);
     } catch (error) { errorNotice(state, error); } finally { setBusy(state, false); }
   }
   async function importFile(state, file) {
@@ -278,17 +380,27 @@
       if (file.size > MAX_FILE_BYTES) { notice(state, 'tooLarge'); return; }
       const text = await file.text();
       if (new state.view.TextEncoder().encode(text).byteLength > MAX_FILE_BYTES) { notice(state, 'tooLarge'); return; }
-      const source = validate(JSON.parse(text), state.catalog);
-      if (state.raw !== null && !state.view.confirm(t(state, 'overwrite'))) { notice(state, 'canceled'); return; }
-      const next = prepareImport(source, state.catalog, state.snapshot);
-      await commitStored(state.view, next, state.raw);
-      state.snapshot = next; state.raw = next; populate(state); repaintSummary(state); notice(state, 'imported'); announce(state);
+      const payload = JSON.parse(text), imported = marketApi(state).importBackup(payload, state.catalog);
+      const sourceSnapshot = validate(imported.snapshot, state.catalog);
+      if ((state.raw[KEY] !== MISSING_RECORD || state.raw[MARKET_KEY] !== MISSING_RECORD) && !state.view.confirm(t(state, 'overwrite'))) { notice(state, 'canceled'); return; }
+      const next = prepareImport(sourceSnapshot, state.catalog, state.snapshot);
+      let market = null;
+      if (payload.schema !== SCHEMA) {
+        market = marketApi(state).validateMarket(imported.market, state.catalog);
+        if (state.market) market.version = Math.max(market.version, state.market.version + 1);
+        market.available_at = new Date().toISOString();
+        market = marketApi(state).validateMarket(market, state.catalog, state.market ? { minimumVersion: state.market.version } : {});
+      }
+      const raw = { [KEY]: next, [MARKET_KEY]: market };
+      await commitStored(state.view, raw, state.raw);
+      state.snapshot = next; state.market = market; state.raw = storedValues(raw); populate(state); repaintSummary(state); notice(state, 'imported'); announce(state);
     } catch (error) { errorNotice(state, error); } finally { state.importInput.value = ''; setBusy(state, false); }
   }
   function exportFile(state) {
     if (!state.snapshot || state.busy) return;
     try {
-      const blob = new state.view.Blob([JSON.stringify(validate(state.snapshot, state.catalog), null, 2)], { type: 'application/json' });
+      const snapshot = validate(state.snapshot, state.catalog), payload = marketApi(state).exportBackup(snapshot, state.market, state.catalog);
+      const blob = new state.view.Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       const url = state.view.URL.createObjectURL(blob), anchor = el(state, 'a', undefined, { href: url, download: 'device-actual-holdings.json' });
       state.root.append(anchor); anchor.click(); anchor.remove(); state.view.setTimeout(() => state.view.URL.revokeObjectURL(url), 1000); notice(state, 'exported');
     } catch (error) { errorNotice(state, error); }
@@ -298,16 +410,24 @@
     if (!state.view.confirm(t(state, 'removeConfirm'))) { notice(state, 'canceled'); return; }
     setBusy(state, true);
     try {
-      await commitStored(state.view, null, state.raw);
-      state.raw = null; state.snapshot = null; state.storageProblem = false; populate(state); repaintSummary(state); notice(state, 'removed'); announce(state);
+      const raw = { [KEY]: null, [MARKET_KEY]: null };
+      await commitStored(state.view, raw, state.raw);
+      state.raw = storedValues(raw); state.snapshot = null; state.market = null; state.storageProblem = false; populate(state); repaintSummary(state); notice(state, 'removed'); announce(state);
     } catch (error) { errorNotice(state, error); } finally { setBusy(state, false); }
   }
   async function initialState(host, options) {
     if (!host || !host.ownerDocument || !options) fail('INVALID'); catalogIndex(options.catalog);
-    const state = { host, view: host.ownerDocument.defaultView, catalog: clone(options.catalog), locale: options.locale === 'en-US' ? 'en-US' : 'ko-KR', quotes: options.quotes || [], snapshot: null, raw: null, storageProblem: false, busy: false, formRows: [] };
-    try { state.raw = await readStored(state.view); if (state.raw !== null) state.snapshot = validate(state.raw, state.catalog); }
-    catch (error) { state.storageProblem = true; state.initialError = state.raw !== null ? 'corrupt' : 'readFailed'; }
+    const state = { host, view: host.ownerDocument.defaultView, catalog: clone(options.catalog), locale: options.locale === 'en-US' ? 'en-US' : 'ko-KR', quotes: options.quotes || [], externalQuotes: Object.prototype.hasOwnProperty.call(options, 'quotes'), snapshot: null, market: null, raw: { [KEY]: MISSING_RECORD, [MARKET_KEY]: MISSING_RECORD }, storageProblem: false, busy: false, formRows: [], fxRows: [] };
+    try {
+      state.raw = await readStored(state.view);
+      if (state.raw[KEY] !== MISSING_RECORD) state.snapshot = validate(state.raw[KEY], state.catalog);
+      if (state.raw[MARKET_KEY] !== MISSING_RECORD) state.market = marketApi(state).validateMarket(state.raw[MARKET_KEY], state.catalog);
+    } catch (error) { state.snapshot = null; state.market = null; state.storageProblem = true; state.initialError = state.raw[KEY] !== MISSING_RECORD || state.raw[MARKET_KEY] !== MISSING_RECORD ? 'corrupt' : 'readFailed'; }
     hosts.set(host, state); return state;
+  }
+  function inputLabel(state, row, field, text, attributes = {}) {
+    const label = el(state, 'label', text), control = el(state, 'input', undefined, { type: 'text', autocomplete: 'off', 'data-field': field, 'aria-label': text, ...attributes });
+    label.append(control); row.append(label); return control;
   }
   async function mount(host, options) {
     const state = await initialState(host, options);
@@ -318,16 +438,23 @@
       const row = el(state, 'fieldset', undefined, { class: 'actual-input-row', 'data-security-index': i });
       row.append(el(state, 'legend', instrument.label + (instrument.ticker ? ' · ' + instrument.ticker : '')));
       const controls = { instrument };
-      for (const [field, key] of [['quantity', 'quantity'], ['average_cost', 'average'], ['currency', 'currency']]) {
-        const label = el(state, 'label', t(state, key)), id = 'actual-' + i + '-' + field;
-        const control = field === 'currency' ? el(state, 'select', undefined, { 'data-field': field, 'aria-label': t(state, key) }) : el(state, 'input', undefined, { type: 'text', inputmode: 'decimal', maxlength: '28', autocomplete: 'off', 'data-field': field, 'aria-label': t(state, key) });
-        control.id = id; label.setAttribute('for', id);
-        if (field === 'currency') for (const currency of CURRENCIES) control.append(el(state, 'option', currency, { value: currency }));
-        label.append(control); row.append(label); controls[field] = control;
-      }
+      controls.quantity = inputLabel(state, row, 'quantity', t(state, 'quantity'), { inputmode: 'decimal', maxlength: '28' });
+      controls.average_cost = inputLabel(state, row, 'average_cost', t(state, 'average'), { inputmode: 'decimal', maxlength: '28' });
+      const currencyLabel = el(state, 'label', t(state, 'currency')); controls.currency = el(state, 'select', undefined, { 'data-field': 'currency', 'aria-label': t(state, 'currency') });
+      for (const currency of CURRENCIES) controls.currency.append(el(state, 'option', currency, { value: currency })); currencyLabel.append(controls.currency); row.append(currencyLabel);
+      controls.price = inputLabel(state, row, 'price', t(state, 'price') + ' · ' + instrument.currency, { inputmode: 'decimal', maxlength: '28' });
+      controls.price_as_of = inputLabel(state, row, 'price_as_of', t(state, 'priceTime'), { maxlength: '35', placeholder: 'YYYY-MM-DDTHH:mm:ss.sssZ' });
+      controls.source = el(state, 'p', '', { class: 'actual-quote-source', 'data-quote-source': '' }); row.append(controls.source);
       state.formRows.push(controls); form.append(row);
     });
-    state.saveButton = el(state, 'button', t(state, 'save'), { type: 'submit', 'data-action': 'save' }); form.append(state.saveButton);
+    const fxBox = el(state, 'fieldset', undefined, { class: 'actual-fx-box' }); fxBox.append(el(state, 'legend', t(state, 'fxTitle')));
+    for (const currency of ['USD', 'JPY']) {
+      const row = el(state, 'div', undefined, { class: 'actual-fx-row', 'data-fx-currency': currency }), controls = { currency };
+      controls.rate = inputLabel(state, row, 'rate', currency + '/KRW · ' + t(state, 'fxRate'), { inputmode: 'decimal', maxlength: '28' });
+      controls.fx_as_of = inputLabel(state, row, 'fx_as_of', t(state, 'fxTime'), { maxlength: '35', placeholder: 'YYYY-MM-DDTHH:mm:ss.sssZ' });
+      controls.source = el(state, 'p', '', { class: 'actual-quote-source', 'data-fx-source': currency }); row.append(controls.source); fxBox.append(row); state.fxRows.push(controls);
+    }
+    form.append(fxBox); state.saveButton = el(state, 'button', t(state, 'save'), { type: 'submit', 'data-action': 'save' }); form.append(state.saveButton);
     form.addEventListener('submit', event => { event.preventDefault(); void save(state); }); root.append(form);
     const actions = el(state, 'div', undefined, { class: 'actual-actions' });
     state.exportButton = el(state, 'button', t(state, 'export'), { type: 'button', 'data-action': 'export' }); state.exportButton.addEventListener('click', () => exportFile(state));
@@ -346,10 +473,53 @@
     host.replaceChildren(state.root);
     const update = async () => {
       if (!host.isConnected || hosts.get(host) !== state) { host.ownerDocument.removeEventListener('device-actual-changed', update); return; }
-      try { const raw = await readStored(state.view); state.snapshot = raw === null ? null : validate(raw, state.catalog); repaintSummary(state); } catch (_) { state.snapshot = null; repaintSummary(state); }
+      try {
+        const raw = await readStored(state.view), snapshot = raw[KEY] === MISSING_RECORD ? null : validate(raw[KEY], state.catalog), market = raw[MARKET_KEY] === MISSING_RECORD ? null : marketApi(state).validateMarket(raw[MARKET_KEY], state.catalog);
+        state.snapshot = snapshot; state.market = market; state.raw = raw; repaintSummary(state);
+      } catch (_) { state.snapshot = null; state.market = null; repaintSummary(state); }
     };
     host.ownerDocument.addEventListener('device-actual-changed', update);
     return { state: state.snapshot ? 'ACTUAL' : 'NOT_AVAILABLE' };
   }
-  return Object.freeze({ mount, summary, validate, makeSnapshot, prepareImport, valuation });
+  function validateSettings(value) {
+    keys(value, ['schema', 'service', 'enabled', 'api_key']);
+    if (value.schema !== 'device-api-settings/1' || value.service !== 'NOT_SELECTED' || value.enabled !== false || typeof value.api_key !== 'string' || !/^[\x21-\x7e]{1,512}$/.test(value.api_key)) fail('INVALID');
+    return clone(value);
+  }
+  async function settings(host, options) {
+    if (!host || !host.ownerDocument || !options) fail('INVALID'); catalogIndex(options.catalog);
+    const state = { host, view: host.ownerDocument.defaultView, locale: options.locale === 'en-US' ? 'en-US' : 'ko-KR', raw: { [API_RECORD_KEY]: MISSING_RECORD }, busy: false, storageProblem: false };
+    let stored = false;
+    try { state.raw = await readStored(state.view, [API_RECORD_KEY]); if (state.raw[API_RECORD_KEY] !== MISSING_RECORD) { validateSettings(state.raw[API_RECORD_KEY]); stored = true; } }
+    catch (_) { state.storageProblem = true; }
+    const root = el(state, 'section', undefined, { class: 'device-actual actual-api-settings', 'data-device-api-settings': '' }); state.root = root;
+    root.append(el(state, 'h2', t(state, 'apiTitle')), el(state, 'p', t(state, 'apiPrivacy')), el(state, 'p', t(state, 'apiPending')));
+    const issuance = el(state, 'p');
+    issuance.append(el(state, 'a', t(state, 'apiKeyIssuance'), { href: 'https://www.alphavantage.co/support/#api-key', target: '_blank', rel: 'noopener noreferrer', referrerpolicy: 'no-referrer', 'data-api-key-issuance': '' }));
+    root.append(issuance, el(state, 'p', t(state, 'apiGuidance'), { 'data-api-guidance': '' }));
+    const serviceLabel = el(state, 'label', t(state, 'apiService')), service = el(state, 'select', undefined, { 'data-api-service': '', disabled: '' }); service.append(el(state, 'option', t(state, 'apiPending'), { value: 'NOT_SELECTED' })); serviceLabel.append(service); root.append(serviceLabel);
+    const form = el(state, 'form', undefined, { class: 'actual-api-form' }), label = el(state, 'label', t(state, 'apiKey'));
+    state.keyInput = el(state, 'input', undefined, { type: 'password', autocomplete: 'new-password', maxlength: '512', 'data-api-key': '', 'aria-label': t(state, 'apiKey'), spellcheck: 'false' }); label.append(state.keyInput); form.append(label);
+    state.saveButton = el(state, 'button', t(state, 'apiSave'), { type: 'submit', 'data-api-action': 'save' }); form.append(state.saveButton); root.append(form);
+    const actions = el(state, 'div', undefined, { class: 'actual-actions' }), removeButton = el(state, 'button', t(state, 'apiDelete'), { type: 'button', 'data-api-action': 'delete' }), refresh = el(state, 'button', t(state, 'apiRefresh'), { type: 'button', 'data-api-refresh': '', disabled: '' }); actions.append(removeButton, refresh); root.append(actions);
+    const status = el(state, 'p', '', { 'data-api-status': '', role: 'status' }); root.append(status);
+    const setStatus = value => { status.textContent = t(state, value ? 'apiYes' : 'apiNo'); status.dataset.stored = value ? 'yes' : 'no'; };
+    state.notice = el(state, 'p', '', { 'data-api-notice': '', role: 'status', 'aria-live': 'polite' }); root.append(state.notice); setStatus(stored);
+    form.addEventListener('submit', async event => {
+      event.preventDefault(); if (state.busy || state.storageProblem) return; setBusy(state, true);
+      try {
+        const value = validateSettings({ schema: 'device-api-settings/1', service: 'NOT_SELECTED', enabled: false, api_key: state.keyInput.value });
+        const raw = { [API_RECORD_KEY]: value }; await commitStored(state.view, raw, state.raw); state.raw = storedValues(raw); state.keyInput.value = ''; setStatus(true); notice(state, 'apiSaved');
+      } catch (error) { notice(state, ['STORAGE', 'CONFLICT'].includes(error.message) ? 'apiStorage' : 'apiInvalid'); }
+      finally { state.keyInput.value = ''; setBusy(state, false); }
+    });
+    removeButton.addEventListener('click', async () => {
+      if (state.busy) return; setBusy(state, true);
+      try { const raw = { [API_RECORD_KEY]: null }; await commitStored(state.view, raw, state.raw); state.raw = storedValues(raw); state.storageProblem = false; state.keyInput.value = ''; setStatus(false); notice(state, 'apiRemoved'); }
+      catch (_) { notice(state, 'apiStorage'); } finally { setBusy(state, false); }
+    });
+    host.replaceChildren(root); setBusy(state, false); if (state.storageProblem) notice(state, 'apiStorage');
+    return { service: 'NOT_SELECTED', enabled: false, keyStored: stored };
+  }
+  return Object.freeze({ mount, summary, settings, validate, makeSnapshot, prepareImport, valuation });
 });

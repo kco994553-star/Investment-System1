@@ -1,0 +1,13 @@
+{
+  "phase": "GREEN",
+  "worktree": "global",
+  "tests_run": 56,
+  "new_cases": 47,
+  "failures": 0,
+  "errors": 0,
+  "failed_tests": [],
+  "files": {
+    "implementation/tests/test_autonomy_gate_a_guard.py": "38395f27ba6bcf11ab3759ac51f86942552ff389871b4b125f496fe6bc0625df",
+    "implementation/tools/autonomy_gate_a_guard.py": "cc935dbc02886d778020bdc8f0c1d1bd66e3f52d17c741ecb278c9c416fb1e1b"
+  }
+}

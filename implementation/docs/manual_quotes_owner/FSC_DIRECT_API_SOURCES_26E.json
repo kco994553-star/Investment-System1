@@ -1,0 +1,383 @@
+{
+  "decision": "Investment-System1 26E",
+  "as_of_date": "2026-10-09",
+  "service_state": "OFF",
+  "gate": "26E WAIT",
+  "scope": "Official FSC stock API documentation and keyless no-data response headers only. Public TARGET is a 19-ticker catalogue; no holdings or portfolio data.",
+  "request_controls": {
+    "inherited_proxy_preserved": true,
+    "tls_verification_enabled": true,
+    "credential_environment_inspection": false,
+    "service_key_used": false,
+    "service_key_created": false,
+    "authenticated_request": false,
+    "market_data_query": false,
+    "quote_observations": false,
+    "fx_observations": false,
+    "api_response_bodies_read": false
+  },
+  "sources": [
+    {
+      "source_id": "FSC-PORTAL",
+      "url": "https://www.data.go.kr/data/15094808/openapi.do",
+      "method": "GET",
+      "checked_at_utc": "2026-10-09T01:29:16.642776+00:00",
+      "status": 200,
+      "final_url": "https://www.data.go.kr/data/15094808/openapi.do",
+      "headers": {
+        "date": "Fri, 09 Oct 2026 01:29:15 GMT",
+        "strict-transport-security": "max-age=31536000 ; includeSubDomains",
+        "content-type": "text/html;charset=UTF-8"
+      },
+      "sha256": "f7ba7bc808c25c5ee6f31ed614df1ac8c430c99bc4fc4cd1cb7c73b5656a8513",
+      "metadata_excerpts": [
+        "기본 정보",
+        "OpenAPI 명",
+        "금융위원회_주식시세정보",
+        "분류체계",
+        "일반공공행정 - 재정·금융",
+        "제공기관",
+        "금융위원회",
+        "관리부서명",
+        "금융공공데이터팀",
+        "관리부서 전화번호",
+        "상세 및 제공정보",
+        "오픈API 에러코드 안내",
+        "설명",
+        "주식시세정보는 한국거래소에서 제공하는 상장 주식 및 관련 증권의 실시간 시세 정보를 제공하는 데이터입니다.\r\n주식, 수익증권, 신주인수권증권, 신주인수권증서 등 다양한 증권 종목의 시가, 종가, 고가, 저가, 거래량 등 상세 시세 항목을 포함하고 있습니다.\r\n\r\n이 데이터는 4개 오퍼레이션으로 구성되어 있습니다.\r\n각 오퍼레이션은 다음과 같습니다.\r\n\r\n① 주식 시세 : 상장 주식의 시세 정보를 종목 코드 및 일자 기준으로 조회합니다.\r\n② 수익증권 시세 : 상장된 수익증권의 시세 정보를 제공합니다.\r\n③ 신주인수권증권 시세 : 신주인수권증권의 시세를 종목별로 조회할 수 있습니다.\r\n④ 신주인수권증서 시세 : 신주인수권증서의 시세 정보를 조회합니다.\r\n\r\n데이터를 활용하는 예로는 등락률 순위로 정렬, 특정 날짜의 종가 기준 시세 조회, 거래량/거래대금 기준 인기 종목 분석 등이 있습니다.\r\n\r\n※ 데이터 갱신주기는 일 1회입니다.\r\n※ 금융위원회의 모든 API는 데이터 보유기관으로부터 데이터를 연계받아 수집 후 개방하고 있습니다.\r\n금융위원회에서 제공하는 모든 서비스는 실시간이 아니며, 데이터 갱신은 기준일자로부터 영업일 하루 뒤 오후 1시 이후에 업데이트됩니다.\r\n예를 들어, 금요일 데이터는 차주 월요일에 제공됩니다. (월요일이 공휴일인 경우, 다음 영업일에 제공됩니다)\r\n\r\n※ 본 개방데이터는 공공누리 4유형임을 참고하시기 바랍니다.\r\n이용허락범위 제4유형 : 출처표시 + 상업적 이용금지 + 변경금지\r\n본 데이터는 상업적 목적 여부와 상관 없이 제3자 무단 제공 및 재배포가 엄격히 금지됩니다. \r\n만약 상업적 목적으로 이용할 경우 원천 소유자인 한국거래소의 KRX Data Marketplace(data.krx.co.kr)에서 유료로 구매하여야 합니다. 이 경우에도 아래의 목적으로만 상업적 활용이 가능합니다.\r\n\r\n< 아 래 >\r\n1. 가공을 통해 독창성 있는 저작물을 생산\r\n2. 제 3자의 방문, 가입을 통한 간접 수익 창출\r\n데이터 구매 및 이용 문의: 한국거래소 데이터사업부 (krxdata@krx.co.kr)",
+        "API 유형",
+        "REST",
+        "데이터 포맷",
+        "JSON+XML",
+        "공간범위",
+        "-",
+        "시간범위",
+        "-",
+        "키워드",
+        "수익증권,신주인수권증권,신주인수권증서,주식시세,수익증권시세,신주인수권증권시세,신주인수권증서시세,거래소시세",
+        "활용신청 수",
+        "21452",
+        "등록일",
+        "2021-11-16",
+        "수정일",
+        "2026-09-07",
+        "이용 조건 및 라이선스 정보",
+        "비용부과유무",
+        "무료",
+        "업데이트 주기",
+        "실시간",
+        "이용허락범위",
+        "공공저작물 : 출처표시, 상업적 이용금지, 변경금지 (제 4유형)",
+        "심의유형",
+        "개발단계 :\n                        \n                            자동승인\n                            \n                        \n                        / 운영단계 :\n                        \n                            자동승인",
+        "신청 가능 트래픽",
+        "개발계정 : 10,000\n                                / 운영계정 : 활용사례 등록시 신청하면 트래픽 증가 가능",
+        "참고문서",
+        "금융위원회_주식시세정보_활용자가이드.docx",
+        "다운로드",
+        "표준 메타데이터",
+        "※ 데이터 연계 및 검색을 위한 표준 메타데이터입니다.",
+        "Schema.org",
+        "DCAT"
+      ],
+      "swagger": {
+        "host": "apis.data.go.kr/1160100/GetStockSecuritiesInfoService_V2",
+        "schemes": [
+          "https",
+          "http"
+        ],
+        "operations": [
+          {
+            "path": "/getStockPriceInfo_V2",
+            "summary": "주식시세",
+            "description": "KRX에 상장된 주식의 시세 정보를 제공"
+          },
+          {
+            "path": "/getSecuritiesPriceInfo_V2",
+            "summary": "수익증권시세",
+            "description": "KRX에 상장된 수익증권의 시세 정보를 제공"
+          },
+          {
+            "path": "/getPreemptiveRightSecuritiesPriceInfo_V2",
+            "summary": "신주인수권증권시세",
+            "description": "KRX에 상장된 신주인수권증권시세 정보를 제공"
+          },
+          {
+            "path": "/getPreemptiveRightCertificatePriceInfo_V2",
+            "summary": "신주인수권증서시세",
+            "description": "KRX에 상장된 신주인수권증서시세 정보를 제공"
+          }
+        ],
+        "stock_response_fields": {
+          "itmsNm": {
+            "type": "string",
+            "description": "유가증권 국제인증 고유번호 코드 이름"
+          },
+          "mrktCtg": {
+            "type": "string",
+            "description": "주식의 시장 구분 (KOSPI/KOSDAQ/KONEX 중 1)"
+          },
+          "clpr": {
+            "type": "string",
+            "description": "정규시장의 매매시간종료시까지 형성되는 최종가격"
+          },
+          "basDt": {
+            "type": "string",
+            "description": "기준일자"
+          },
+          "srtnCd": {
+            "type": "string",
+            "description": "종목 코드보다 짧으면서 유일성이 보장되는 코드(6자리)"
+          },
+          "isinCd": {
+            "type": "string",
+            "description": "국제 채권 식별 번호. 유가증권(채권)의 국제인증 고유번호"
+          }
+        },
+        "service_key_schema_example": {
+          "paramtrNm": "serviceKey",
+          "paramtrDc": "공공데이터포털에서 받은 인증키",
+          "paramtrBassValue": "",
+          "paramtrTy": "string",
+          "paramtrDivision": "필수",
+          "ck": true
+        }
+      },
+      "reference_file_id": "FILE_000000007632094",
+      "data_observation": false
+    },
+    {
+      "url": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000007632094&fileDetailSn=1",
+      "method": "GET",
+      "checked_at_utc": "2026-10-09T01:28:20.533104+00:00",
+      "status": 200,
+      "final_url": "https://www.data.go.kr/cmm/cmm/fileDownload.do?atchFileId=FILE_000000007632094&fileDetailSn=1",
+      "headers": {
+        "date": "Fri, 09 Oct 2026 01:28:21 GMT",
+        "content-disposition": "attachment; filename=\"ê¸ìµììí_ì£¼ììì¸ì ë³´_íì©ìê°ì´ë.docx\"",
+        "strict-transport-security": "max-age=31536000 ; includeSubDomains",
+        "content-length": "2156892",
+        "content-type": "application/octet-stream; charset=UTF-8"
+      },
+      "sha256": "0ac42d46b5292ccf802770fe8c849bf1f8d43ca45ff1bfb1ba16fd34ba1246e4",
+      "relevant_paragraphs": [
+        "※ 주식시세정보API의 데이터 적재 작업 주기는 일 1회입니다.",
+        "※ 금융위원회의 모든 API는 데이터 보유기관으로부터 데이터를 연계 받아 수집 후 개방하고 있습니다. 금융위원회에서 제공하는 모든 서비스는 실시간이 아니며, 데이터 개방은 연계받은 영업일 하루 뒤 오후 1시 이후에 업데이트 됩니다. 예를 들어, 금요일 데이터는 차주 월요일에 제공됩니다. (월요일이 공휴일인 경우, 다음 영업일에 제공됩니다.) ",
+        "[O] serviceKey    [ ] 인증서 (GPKI/NPKI)",
+        "https://apis.data.go.kr/1160100/GetStockSecuritiesInfoService_V2/getStockPriceInfo_V2",
+        "[안내사항]본 데이터는 상업적 목적 여부와 상관 없이 제3자 무단 제공 및 재배포가 엄격히 금지됩니다. 만약 상업적 목적으로 이용할 경우 원천 소유자인 한국거래소의 KRX Data Marketplace(data.krx.co.kr)에서 유료로 구매하여야 합니다. 이 경우에도 아래의 목적으로만 상업적 활용이 가능합니다.< 아 래 >1. 가공을 통해 독창성 있는 저작물을 생산2. 제 3자의 방문, 가입을 통한 간접 수익 창출데이터 구매 및 이용 문의: 한국거래소 데이터사업부The unauthorized redistribution of this data to third parties is strictly prohibited, regardless of commercial purposes. If you intend to use the data for commercial purposes, you must purchase it from the KRX Data Marketplace(data.krx.co.kr) of the Korea Exchange(KRX), the original owner. Even in such cases, monetization may be allowed only if it is determined that it falls under any of the followings:1. where the User has created a work with originality by processing the data purchased; or2. where the User generates indirect revenue through visits and subscriptions/membership registration of third parties.Data Purchase and Use Inquiries: Market Data Business Department at the Korea Exchange"
+      ],
+      "source_id": "FSC-DOCX",
+      "document_properties_modified_utc": "2026-08-26T07:38:00Z",
+      "extracted_stock_fields": [
+        {
+          "field": "basDt",
+          "label": "기준일자",
+          "description": "기준 일자"
+        },
+        {
+          "field": "srtnCd",
+          "label": "단축코드",
+          "description": "종목 코드보다 짧으면서 유일성이 보장되는 코드(6자리)"
+        },
+        {
+          "field": "isinCd",
+          "label": "ISIN코드",
+          "description": "국제 채권 식별 번호. 유가증권(채권)의 국제인증 고유번호"
+        },
+        {
+          "field": "itmsNm",
+          "label": "종목명",
+          "description": "종목의 명칭"
+        },
+        {
+          "field": "mrktCtg",
+          "label": "시장구분",
+          "description": "주식의 시장 구분 (KOSPI/KOSDAQ/KONEX 중 1)"
+        },
+        {
+          "field": "clpr",
+          "label": "종가",
+          "description": "정규시장의 매매시간 종료시까지 형성되는 최종가격"
+        },
+        {
+          "field": "mkp",
+          "label": "시가",
+          "description": "정규시장의 매매시간개시 후 형성되는 최초가격"
+        },
+        {
+          "field": "hipr",
+          "label": "고가",
+          "description": "하루 중 가격의 최고치"
+        },
+        {
+          "field": "lopr",
+          "label": "저가",
+          "description": "하루 중 가격의 최저치"
+        }
+      ],
+      "currency_unit_explicitly_found": false
+    },
+    {
+      "url": "https://www.data.go.kr/ugs/selectPortalPolicyView.do",
+      "method": "GET",
+      "checked_at_utc": "2026-10-09T01:27:13.772878+00:00",
+      "status": 200,
+      "final_url": "https://www.data.go.kr/ugs/selectPortalPolicyView.do",
+      "sha256": "e04d4136a33727efa6e05cb89641001a124b8a9cb3494303e32f0c3551054d08",
+      "headers": {
+        "date": "Fri, 09 Oct 2026 01:27:14 GMT",
+        "strict-transport-security": "max-age=31536000 ; includeSubDomains",
+        "content-type": "text/html;charset=UTF-8"
+      },
+      "relevant_lines": [
+        "저작권 등 제3자 권리가 포함된 공공데이터는 권리자의 정당한 이용허락을 확보해야 합니다.",
+        "저작물이 포함된 공공데이터를 제공하는 경우에는 저작권법 등 관련 법령에 따른 공공누리 유형을 부착하도록 합니다.",
+        "공공기관의 장은 저작물이 포함된 공공데이터를 제공할 때에는 「저작권법」 등 관련 법령에 따른 공공누리 유형을 부착하여 공공데이터의 이용허락 범위를 표시해야 한다. 이 경우 소관 공공데이터에 제3자의 권리가 포함된 경우라도 권리자가 허락하는 경우에는 이용자가 저작물을 자유롭게 이용할 수 있도록 제공해야 한다.",
+        "참고 2 - 공공누리 유형안내",
+        "공공누리 바로가기",
+        "제7조 회원의 정보 보안",
+        "회원이 포털의 회원가입 절차를 완료하는 순간부터 회원은 ID와 비밀번호 등 관련 정보를 안전하게 관리할 책임이 있으며, 자신의 정보 및 계정(ID, 비밀번호 등) 등을 타인에게 제공하여서는 아니 되고, 해당 책임을 다하지 않음으로써 발생하는 결과에 대한 모든 책임은 회원이 부담합니다.",
+        "자신의 ID 및 비밀번호를 제3자에게 이용하게 하거나 다른 회원의 ID를 부정 사용하는 행위"
+      ],
+      "source_id": "PORTAL-POLICY"
+    },
+    {
+      "url": "https://www.data.go.kr/ugs/selectPublicDataUseGuideMetView.do",
+      "method": "GET",
+      "checked_at_utc": "2026-10-09T01:28:20.532695+00:00",
+      "status": 200,
+      "final_url": "https://www.data.go.kr/ugs/selectPublicDataUseGuideMetView.do",
+      "headers": {
+        "date": "Fri, 09 Oct 2026 01:28:21 GMT",
+        "strict-transport-security": "max-age=31536000 ; includeSubDomains",
+        "content-type": "text/html;charset=UTF-8"
+      },
+      "sha256": "29c13c5d8fc4c0db5739ce28e416bebd77aa35a7a03c2402d4e3e22f6caea5d4",
+      "relevant_lines": [
+        "자동승인이란?",
+        "별도 확인 없이 승인신청과 동시에 자동으로 승인되는 경우를 말합니다. 활용 신청 건에 대해 제공기관 담당자의 별도 확인 없이 신속하게 승인 처리를 받을 수 있습니다.",
+        "심의승인이란?",
+        "오픈API 인증키 발급",
+        "승인이 완료됐다면 활용신청 건에 대해 1인당 하나의 인증키를 발급받을 수 있습니다. 프로그램에 데이터 제공 주소(URL)와 오픈API 인증키를 입력한 뒤 API를 호출하면 원하는 데이터를 손쉽게 받아 서비스 개발에 활용할 수 있습니다."
+      ],
+      "source_id": "PORTAL-API-USE-GUIDE"
+    }
+  ],
+  "header_receipts": [
+    {
+      "url": "https://apis.data.go.kr/1160100/GetStockSecuritiesInfoService_V2/getStockPriceInfo_V2",
+      "method": "HEAD",
+      "query_parameters": false,
+      "service_key_used": false,
+      "request_headers": {},
+      "checked_at_utc": "2026-10-09T01:27:24.847083+00:00",
+      "response_body_read": false,
+      "status": 400,
+      "final_url": "https://apis.data.go.kr/1160100/GetStockSecuritiesInfoService_V2/getStockPriceInfo_V2",
+      "headers": {
+        "vary": "Origin,Access-Control-Request-Method,Access-Control-Request-Headers",
+        "content-type": "application/xml",
+        "content-length": "286",
+        "strict-transport-security": "max-age=31536000 ; includeSubDomains",
+        "date": "Fri, 09 Oct 2026 01:27:25 GMT",
+        "server": "envoy"
+      }
+    },
+    {
+      "url": "https://apis.data.go.kr/1160100/GetStockSecuritiesInfoService_V2/getStockPriceInfo_V2",
+      "method": "HEAD",
+      "query_parameters": false,
+      "service_key_used": false,
+      "request_headers": {
+        "Origin": "https://investment-system1.example"
+      },
+      "checked_at_utc": "2026-10-09T01:27:24.847791+00:00",
+      "response_body_read": false,
+      "status": 403,
+      "final_url": "https://apis.data.go.kr/1160100/GetStockSecuritiesInfoService_V2/getStockPriceInfo_V2",
+      "headers": {
+        "vary": "Origin,Access-Control-Request-Method,Access-Control-Request-Headers",
+        "strict-transport-security": "max-age=31536000 ; includeSubDomains",
+        "date": "Fri, 09 Oct 2026 01:27:26 GMT",
+        "server": "envoy"
+      }
+    },
+    {
+      "url": "https://apis.data.go.kr/1160100/GetStockSecuritiesInfoService_V2/getStockPriceInfo_V2",
+      "method": "OPTIONS",
+      "query_parameters": false,
+      "service_key_used": false,
+      "request_headers": {
+        "Origin": "https://investment-system1.example",
+        "Access-Control-Request-Method": "GET"
+      },
+      "checked_at_utc": "2026-10-09T01:27:24.848251+00:00",
+      "response_body_read": false,
+      "status": 200,
+      "final_url": "https://apis.data.go.kr/1160100/GetStockSecuritiesInfoService_V2/getStockPriceInfo_V2",
+      "headers": {
+        "vary": "Origin,Access-Control-Request-Method,Access-Control-Request-Headers",
+        "access-control-allow-origin": "https://investment-system1.example",
+        "access-control-allow-methods": "GET,OPTIONS",
+        "strict-transport-security": "max-age=31536000 ; includeSubDomains",
+        "content-length": "0",
+        "date": "Fri, 09 Oct 2026 01:27:25 GMT",
+        "server": "envoy"
+      }
+    },
+    {
+      "url": "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo",
+      "method": "HEAD",
+      "query_parameters": false,
+      "service_key_used": false,
+      "request_headers": {
+        "Origin": "https://investment-system1.example"
+      },
+      "checked_at_utc": "2026-10-09T01:27:24.848695+00:00",
+      "response_body_read": false,
+      "status": 403,
+      "final_url": "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo",
+      "headers": {
+        "vary": "Origin,Access-Control-Request-Method,Access-Control-Request-Headers",
+        "strict-transport-security": "max-age=31536000 ; includeSubDomains",
+        "date": "Fri, 09 Oct 2026 01:27:25 GMT",
+        "server": "envoy"
+      }
+    },
+    {
+      "url": "https://apis.data.go.kr/1160100/GetStockSecuritiesInfoService_V2/getStockPriceInfo_V2",
+      "method": "GET",
+      "query_parameters": false,
+      "service_key_used": false,
+      "request_headers": {
+        "Origin": "https://investment-system1.example"
+      },
+      "checked_at_utc": "2026-10-09T01:27:52.348681+00:00",
+      "response_body_read": false,
+      "status": 400,
+      "final_url": "https://apis.data.go.kr/1160100/GetStockSecuritiesInfoService_V2/getStockPriceInfo_V2",
+      "headers": {
+        "vary": "Origin,Access-Control-Request-Method,Access-Control-Request-Headers",
+        "access-control-allow-origin": "https://investment-system1.example",
+        "content-type": "application/xml",
+        "content-length": "286",
+        "strict-transport-security": "max-age=31536000 ; includeSubDomains",
+        "date": "Fri, 09 Oct 2026 01:27:52 GMT",
+        "server": "envoy"
+      }
+    }
+  ],
+  "uncertainties": [
+    "The current official API is V2; the historical /1160100/service/GetStockSecuritiesInfoService URL is not established as currently authorized.",
+    "Exact API data coverage for 042700 Hanmi Semiconductor has not been individually proved.",
+    "The docs establish clpr as close but do not explicitly establish currency or price unit; native KRW is domestic-market context inference only.",
+    "The summary update metadata says real-time while explicit portal and DOCX caveats say once daily, after 13:00 on the next business day.",
+    "Publication time's explicit timezone and service-level guarantee are not stated in the cited text.",
+    "Successful approved GET, error classification, real browser execution, and target-origin policy remain untested.",
+    "A keyless CORS success or browser CORS error does not establish an authorized data flow.",
+    "No serviceKey-specific confidentiality clause was found in the cited text; account security terms and prudent credential design are distinguished.",
+    "Permission for a user-only relay and for any data transformation remains subject to current provider/rights-holder terms; a relay does not remove the license restrictions.",
+    "Relay hosting free tier terms and operational zero cost are outside this provider-specific evidence."
+  ]
+}
