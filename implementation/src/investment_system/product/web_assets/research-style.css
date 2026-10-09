@@ -62,3 +62,73 @@ header .sub {
 details .row {
   margin: 4px 0;
 }
+.field-group {
+  padding: 14px;
+  min-width: 0;
+}
+.field-guide > label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+.field-required {
+  margin-left: 0;
+}
+.field-guide input,
+.field-guide select,
+.field-guide textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  font-size: 16px;
+}
+.field-guide input::placeholder,
+.field-guide textarea::placeholder {
+  color: var(--muted);
+  opacity: .85;
+}
+.field-guide input:focus-visible,
+.field-guide select:focus-visible,
+.field-guide textarea:focus-visible,
+.field-date-row button:focus-visible,
+.field-import-slot button:focus-visible {
+  outline: 3px solid var(--acc);
+  outline-offset: 2px;
+}
+.field-source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+.field-source [data-guide-source] {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+.field-import-slot {
+  max-width: 100%;
+}
+.field-import-slot button {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+}
+.field-import-slot [role="status"] {
+  min-width: 0;
+  font-size: 12px;
+}
+@media (max-width: 480px) {
+  main {
+    padding: 16px 12px;
+  }
+  .field-group {
+    padding: 12px;
+  }
+  .field-date-row {
+    flex-wrap: wrap;
+  }
+  .field-date-row input {
+    flex-basis: 180px;
+  }
+}

@@ -30,7 +30,7 @@ import tarfile
 APPROVED_SHA256 = {
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "3748880c0b35e3a0d49d3e44208e816d3a0149fce4d2d1630de745f83b35fca2",
-    "app.js": "3542b114d379b2893acaaa2e057e9aa122a95e8bc6cf323b89989c85337f215b",
+    "app.js": "5a3b7a207728d7f128e94eeaab70ed8a79e3b1cbd6a4fd597d635ed0da0a2bbb",
     "data.json": "735aadfdf26197013e1478e60974d42c920c089c19dd99f91687a0dfd38b9536",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "e1625314c50c5891d48ce9ad1d4ac6c958022230ce27d8c8500896046c4c0c21",
@@ -41,8 +41,8 @@ APPROVED_SHA256 = {
     "google-sheet-quotes.js": "92b59b5eb30dd8780de77463cd348cd8f1c26cb0ad6a36b772334ba0272792af",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
     "index.html": "2f0eb451d302ee712cd3d6969d4c1017be1d5ec75682713e67a42011172d0b70",
-    "locale.js": "eaf98e0e61d8a2ad33829c6cc1116e66838fa84943603cda1044ea22e5e3d19a",
-    "research.html": "ef7665e2079df06c4bf7265206d9113ddb4716f93cf87e0ec0735c6b5fbae219",
+    "locale.js": "0e27312c7885dd1edbaf5c5eed939ba4b642695e5541653a21c786dcff9089fc",
+    "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "1acfc2cee6112897fc901972053033009d51e537fe0aced7e7804f799547486e",
 }
 MAX_FILE_BYTES = 2 * 1024 * 1024

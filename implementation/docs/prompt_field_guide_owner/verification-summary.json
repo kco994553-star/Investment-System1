@@ -1,0 +1,82 @@
+{
+  "status": "LOCAL_VERIFICATION_PASS",
+  "canonical_base": "771a3bf67a330e72349591b4879891e03340d7c1",
+  "requested_base": "canonical after PR #75 merge",
+  "pr_75_state": "MERGED",
+  "work_branch": "codex/prompt-field-guide",
+  "frozen_sha256": "f0a6ed9005e22b8fa534d51135cc3e734aa9577150438a35d65823a4c283e68e",
+  "python_tests": 861,
+  "python_subtests": 345,
+  "new_guide_browser_checks": 16833,
+  "node_device_google_checks": 84,
+  "node_language_search_checks": 26,
+  "existing_browser_checks": {
+    "pages": 10,
+    "device_actual": 40,
+    "manual_quotes": 119,
+    "google_mocked": 40,
+    "google_storage": 13,
+    "state_presentation": 31,
+    "research_guard": 10,
+    "web_mvp": 10,
+    "global_language": 8
+  },
+  "viewports": [
+    390,
+    1280
+  ],
+  "locales": [
+    "ko-KR",
+    "en-US"
+  ],
+  "traffic": {
+    "external": 0,
+    "unsafe": 0,
+    "failed_responses": 0,
+    "page_errors": 0,
+    "csp_violations": 0
+  },
+  "screenshots": [
+    "prompt-guide-empty-ko-KR-390.png",
+    "prompt-guide-empty-en-US-390.png",
+    "prompt-guide-empty-ko-KR-1280.png",
+    "prompt-guide-empty-en-US-1280.png"
+  ],
+  "screenshot_state": "DEVICE_EMPTY_PROMPT_BLANK",
+  "public_files": 16,
+  "changed_public_files": [
+    "app.js",
+    "locale.js",
+    "research.html"
+  ],
+  "public_json_and_csp_unchanged": true,
+  "private_payload_files_written": 0,
+  "github_ci": "SEE_PULL_REQUEST_CHECKS",
+  "screenshot_build": "rebased guide source 7cc1f2e8c9a280f396a03989cdc7018756410936 on canonical 771a3bf67a330e72349591b4879891e03340d7c1",
+  "local_after75_compatibility": {
+    "source_commit": "0c02d41",
+    "pr_75_head": "23ac32eb8e021a5c89ca4bf2eef46fb94bf73d87",
+    "python_tests": 861,
+    "python_subtests": 345,
+    "nav_browser_checks": 741,
+    "guide_browser_checks": 16833,
+    "public_guard": "PASS",
+    "external_calls": 0,
+    "csp_violations": 0,
+    "runtime_errors": 0,
+    "remote_changes": false
+  },
+  "tested_source_commit": "7cc1f2e8c9a280f396a03989cdc7018756410936",
+  "checked_at_utc": "2026-10-09 09:34:00 UTC",
+  "pr_75_pages": {
+    "run_id": 37911200599,
+    "head_sha": "771a3bf67a330e72349591b4879891e03340d7c1",
+    "build": "SUCCESS",
+    "deploy": "SUCCESS",
+    "public_files_match": 16,
+    "public_guard": "PASS",
+    "public_nav_browser_checks": 741,
+    "csp_violations": 0,
+    "google_calls": 0
+  }
+}
