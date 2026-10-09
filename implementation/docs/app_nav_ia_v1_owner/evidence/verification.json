@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "screenshot_state": "DEVICE_EMPTY",
+  "traffic": {
+    "external": 0,
+    "unsafe": 0,
+    "failed_responses": 0,
+    "page_errors": 0,
+    "csp_violations": 0,
+    "console_csp_warnings": 0
+  },
+  "payload_files_written": 0,
+  "checks_passed": 741,
+  "screenshots_captured": 16,
+  "screenshots_attached": [
+    "ia-qgv-en-US-1280.png",
+    "ia-qgv-en-US-390.png",
+    "ia-qgv-ko-KR-1280.png",
+    "ia-qgv-ko-KR-390.png"
+  ],
+  "python_passed": 856,
+  "python_subtests_passed": 345,
+  "node_passed": 84,
+  "existing_browser_passed": 222,
+  "source_base": "c8b9debecaeaebf392672c74f5bfd50b20217227",
+  "public_guard_files": 16,
+  "public_guard_violations": 0
+}

@@ -30,7 +30,11 @@ async function personalNotices(page, locale) {
       const style = getComputedStyle(node);
       const left = Math.max(0, box.left), right = Math.min(innerWidth, box.right);
       const x = (left + right) / 2, y = (box.top + box.bottom) / 2;
-      return box.top >= 0 && box.bottom <= nav.top && box.width > 0 &&
+      const range = document.createRange(); range.selectNodeContents(node);
+      const textVisible = [...range.getClientRects()].every(rect =>
+        rect.top >= 0 && rect.bottom <= innerHeight && rect.left >= 0 && rect.right <= innerWidth &&
+        (rect.right <= nav.left || rect.left >= nav.right || rect.bottom <= nav.top || rect.top >= nav.bottom));
+      return box.top >= 0 && box.bottom <= innerHeight && box.width > 0 && textVisible &&
         parseFloat(style.fontSize) >= 12 && style.visibility === "visible" &&
         node.contains(document.elementFromPoint(x, y));
     }), "personal notice is obscured or unreadable");
