@@ -22,6 +22,7 @@
     "implementation/tools/target_reference_browser_test.js",
     "implementation/tests/test_target_reference_public.py",
     "implementation/tests/test_pages_cockpit_build.py",
+    "implementation/tests/test_pages_artifact_guard.py",
     ".github/workflows/cockpit-pages.yml"
   ],
   "immutable": [
