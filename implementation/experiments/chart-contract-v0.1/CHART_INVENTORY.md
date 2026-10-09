@@ -179,7 +179,7 @@ Canonical/PR40의 L1–L5 판정은 `chart_inventory.json`에 보존했다. R=�
 | G01–G08 | 거시 history·금리·물가·유동성·성장 등은 기존 요구에 연결한다. L08 8축 board는 더 직접적인 K01로 연결한다. |
 | H01–H08 | 기업 순위·가격·목표가·consensus·기업 비교는 기존 요구다. 일반 기업 비교 `H08`만으로 특정 시장점유율/매출 구성 요구를 중복으로 간주하지 않는다. |
 | I01–I17 | L03의 QGV 변화와 매출/EPS/FCF/ROIC 실현 관계는 → 기존 ID 연결 `I09`; 독립 분기/연간 재무 그래프는 별도다. L04의 보유종목 curve·공통 series 정렬/토글은 → 기존 ID 연결 `I02`, `I06`; 단일 기업 기간별 benchmark 비교는 별도다. |
-| J01–J07 | L05의 S 재평가 이력·QGV 전후·D+5/D+20 사후 관찰은 → 기존 ID 연결 `J06`이며 신규 calibration을 만들지 않는다. L09는 포트폴리오 분포 J01–J03이나 trigger/VMR J04–J05와 다른 reconciliation 상태별 건수 요약이다. |
+| J01–J07 | L05의 R 재평가 이력·QGV 전후·D+5/D+20 사후 관찰은 → 기존 ID 연결 `J06`이며 신규 calibration을 만들지 않는다. L09는 포트폴리오 분포 J01–J03이나 trigger/VMR J04–J05와 다른 reconciliation 상태별 건수 요약이다. |
 | K01–K08 | L08 공식 UI 8축 board는 → 기존 ID 연결 `K01`. 사용자 UI 결정과 원문 8축 참조를 기록하며, K01의 기존 `CANDIDATE_SPEC_ONLY`·감사·evidence는 보존한다. K02–K08의 경로/전달/비교/집중/검증도 기존 상태를 유지한다. |
 
 | 후보 | 판정 | 이유 | 요구사항 상태 | 데이터 공급처 |
@@ -188,7 +188,7 @@ Canonical/PR40의 L1–L5 판정은 `chart_inventory.json`에 보존했다. R=�
 | L02 Revenue composition | 신규 `L02`; → 기존 ID 연결 `E01`, `E07` | 사업부/지역별 기업 매출 구성은 포트폴리오 산업 구성·노출과 다른 재무 범위. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
 | L03 Financial trends | 신규 `L03`; → 기존 ID 연결 `I09` | 독립 분기/연간 매출 막대·성장률/EPS/ROIC 추이만 신규. QGV revision/outcome 관계는 I09를 재사용. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
 | L04 Periodic returns | 신규 `L04`; → 기존 ID 연결 `F02`, `F05`, `I02`, `I06` | 단일 기업의 분기/연간 toggle과 기업/S&P 500/산업 비교. F08 포트폴리오 성과를 대체하거나 재등록하지 않음. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
-| L05 Company events on price | 신규 `L05`; → 기존 ID 연결 `A01`, `A04`, `A05`, `B13`, `J06` | 비재평가 기업 이벤트 분류와 가격/사후수익률 조합만 신규. 공통 가격/marker·S 재평가 이력 및 관찰은 기존 ID. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
+| L05 Company events on price | 신규 `L05`; → 기존 ID 연결 `A01`, `A04`, `A05`, `B13`, `J06` | 비재평가 기업 이벤트 분류와 가격/사후수익률 조합만 신규. 공통 가격/marker·R 재평가 이력 및 관찰은 기존 ID. B(내 매수)는 기기 전용 개인 표시 요구에 연결. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
 | L06 Shareholder return | 신규 `L06`; → 기존 ID 연결 `A05` | 배당·자사주 매입 추이와 corporate-action 가격 처리/marker는 서로 다른 요구. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
 | L07 Broker targets / opinions | 신규 `L07`; → 기존 ID 연결 `D01–D06` | 증권사별 표만 신규이며 consensus aggregate/history는 기존 ID. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
 | L08 Macro 8-axis board | → 기존 ID 연결 `K01` | 같은 8축 요구. 신규 L08 ID/JSON item을 만들지 않음. 공식 UI 참조만 기록하고 K01 기존 감사 상태는 보존. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
@@ -206,12 +206,16 @@ Canonical/PR40의 L1–L5 판정은 `chart_inventory.json`에 보존했다. R=�
 - **L02 Revenue composition: business unit / region** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 사업부 및 지역별 기업 매출 구성. 분류·기간·통화·segment 재작성의 비교가능성은 미결정이며 합계/누락을 추정하지 않는다.
 - **L03 Financial trends: revenue / growth / EPS / ROIC** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 분기/연간 매출 막대와 성장률·EPS·ROIC 추이. 재무 정의·기간·restatement 기준은 미결정이며 새 수식/산출정책을 만들지 않는다. QGV 변화 대비 실현 관계는 → 기존 ID 연결 `I09`.
 - **L04 Periodic returns: company / S&P 500 / industry** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 분기/연간 toggle의 단일 기업·S&P 500·산업 수익률 비교. 기업/benchmark 정렬과 가격수익률/TR·통화·기간·industry 정의는 미결정. 기존 benchmark/curve/정렬 요구는 → 기존 ID 연결 `F02`, `F05`, `I02`, `I06`; `F08`의 계좌/포트폴리오 분기 성과와 구분한다.
-- **L05 Company events on price: E / P / L / M / S** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 영문 marker는 E Earnings(실적발표), P Product(제품발표), L Regulation / Litigation(규제/소송), M Acquisition / Partnership(M&A/파트너십), S Reassessment(재평가)다. 주가와 함께 보여주는 기업 이벤트 시안 및 이벤트 후 5/20일 수익률 요구. 새 범위는 비재평가 기업 이벤트의 유형화·가격 연결·관찰 조합이다. 가격 basis/기업행사/공통 marker는 → 기존 ID 연결 `A01`, `A04`, `A05`, `B13`; S 이력과 D+5/D+20 관찰은 → 기존 ID 연결 `J06`. 거래일/달력일·event timestamp·수익률 basis는 미결정이며 인과 효과·새 calibration·자동 승격을 주장하지 않는다.
+- **L05 Company events on price: E / P / L / M / R; B(내 매수, 기기 전용)** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 영문 marker는 E Earnings(실적발표), P Product(제품발표), L Regulation / Litigation(규제/소송), M Acquisition / Partnership(M&A/파트너십), R Re-rating(재평가)다. 기존 재평가 표기 S는 R로 변경하며 B Buy(내 매수)는 아래 개인 표시 요구의 기기 전용 marker다. 주가와 함께 보여주는 기업 이벤트 시안 및 이벤트 후 5/20일 수익률 요구. 새 범위는 비재평가 기업 이벤트의 유형화·가격 연결·관찰 조합이다. 가격 basis/기업행사/공통 marker는 → 기존 ID 연결 `A01`, `A04`, `A05`, `B13`; R 이력과 D+5/D+20 관찰은 → 기존 ID 연결 `J06`. 거래일/달력일·event timestamp·수익률 basis는 미결정이며 인과 효과·새 calibration·자동 승격을 주장하지 않는다.
 - **L06 Shareholder return: dividends / buybacks** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 배당 및 자사주 매입 추이. 선언/지급·승인/실행 구분과 기간·금액/주식수 단위는 미결정. 가격조정/marker 처리는 → 기존 ID 연결 `A05`; 기업 주주환원을 계좌 입금·주문 실행으로 해석하지 않는다.
 - **L07 Broker targets / opinions table** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 증권사별 목표주가/의견 표. 기관/작성시점·의견 원문·목표가 basis는 미결정. 수·평균/중앙/최고/최저·revision/history는 → 기존 ID 연결 `D01–D06`; 의견 변환 규칙이나 임의 목표가는 만들지 않는다.
 - **L09 Reconciliation state count summary** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. `MATCH`, `MISMATCH`, `NOT_AVAILABLE`, `NOT_COMPARABLE`, `PARTIAL`, `NO_DATA`별 건수 요약. 집계대상·중복/시점 규칙은 미결정이며 값이나 0건을 채우지 않는다. 기존 R/I/P/S/H/U 감사 계층·Confidence·핵심81 완료율과 혼합하지 않는다.
 
-영문 ID/chart code/label은 문서 식별자이며 한국어 UI copy와 별도 관리한다. `E/P/L/M/S` 이벤트 코드, L09 reconciliation 상태, 기존 감사 `L1–L5`/`R/I/P/S/H/U`는 서로 다른 문맥이다. 공급처·원본·정의·비교가능성·입력 승인·구현·검증은 여전히 미결정/미재감사다. 이 추가는 TARGET, 가중치, 방법론, 수식, 금융 개인정보, 주문/체결 또는 기존 broader gate를 변경하거나 닫지 않는다.
+영문 ID/chart code/label은 문서 식별자이며 한국어 UI copy와 별도 관리한다. `E/P/L/M/R` 기업 이벤트 코드, 기기 전용 `B/S` 개인 거래 표시, L09 reconciliation 상태, 기존 감사 `L1–L5`/`R/I/P/S/H/U`는 서로 다른 문맥이다. 공급처·원본·정의·비교가능성·입력 승인·구현·검증은 여전히 미결정/미재감사다. 이 추가는 TARGET, 가중치, 방법론, 수식, 금융 개인정보, 주문/체결 또는 기존 broader gate를 변경하거나 닫지 않는다.
+
+### 개인 표시 요구 (1개; 문서 요구 추가)
+
+- **내 거래 표시: AVG 선과 B/S 거래일 marker** — 요구 상태 `REQUIREMENT`, 구현 상태 `NOT_IMPLEMENTED`. 기존 기기 입력의 `average_cost`를 `AVG` 평균단가 선으로 D4 일봉 차트 위에 기기 안에서 그리는 표시만 먼저 요구한다. D4는 일일 데이터 파이프라인 설계의 가격 차트 경로를 가리킨다. 후속 B Buy(내 매수) / S Sell(내 매도) 거래일 marker는 사용자의 비공개 Google Sheets `Trades`를 기존 Google 로그인으로 읽기 전용으로 읽는 방식 또는 직접 입력 중 선택하며, 이번 문서에서 연결을 구현하지 않는다. 평균단가·거래일·가격·수량 등 개인 데이터는 기기에만 두고 공개 저장소·JSON·Pages 산출물에 싣지 않는다. 주문·매수·매도 실행 기능을 추가하지 않으며 투자 방법론·TARGET·평균단가 계산 규칙은 유지한다. 기존 121개 inventory 항목과 핵심81 완료율 분모는 보존하고, 이 개인 표시 요구 1개를 구현 완료로 계산하지 않는다.
 
 ## 상태 해석
 
