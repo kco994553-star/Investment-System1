@@ -114,6 +114,32 @@ def test_cockpit_loads_local_market_module_before_actual_and_mounts_key_settings
     assert "connect-src 'self'" in html
 
 
+def test_google_sheet_assets_config_and_minimal_csp(tmp_path):
+    from html.parser import HTMLParser
+    build(tmp_path)
+    class PolicyParser(HTMLParser):
+        policy = ''
+        def handle_starttag(self, tag, attrs):
+            attrs = dict(attrs)
+            if tag == 'meta' and attrs.get('http-equiv') == 'Content-Security-Policy':
+                self.policy = attrs['content']
+    parser = PolicyParser()
+    html = (tmp_path / 'index.html').read_text()
+    parser.feed(html)
+    directives = {parts[0]: parts[1:] for raw in parser.policy.split(';') if (parts := raw.split())}
+    assert directives['script-src'] == ["'self'", 'https://accounts.google.com/gsi/client']
+    assert directives['connect-src'] == ["'self'", 'https://sheets.googleapis.com', 'https://oauth2.googleapis.com']
+    assert directives['frame-src'] == ["'self'", 'https://accounts.google.com']
+    assert 'unsafe-inline' not in parser.policy and 'unsafe-eval' not in parser.policy
+    for name in ('app-config.js', 'google-sheet-core.js', 'google-sheet-quotes.js', 'google-sheet-quotes.css'):
+        assert (tmp_path / name).is_file() and name in html
+    assert html.index('google-sheet-core.js') < html.index('google-sheet-quotes.js') < html.index('app.js')
+    config = (tmp_path / 'app-config.js').read_text()
+    assert 'googleSheetsClientId' in config and 'apps.googleusercontent.com' in config
+    assert 'client_secret' not in config and 'spreadsheet_id' not in config
+    assert 'GoogleSheetQuotes.mount' in (tmp_path / 'app.js').read_text()
+
+
 @pytest.mark.parametrize('payload', [
     {'schema': 'device-market-data/1', 'quotes': [], 'fx': []},
     {'market_data': {'quotes': [{'price': '2', 'currency': 'USD'}]}},
@@ -123,6 +149,11 @@ def test_cockpit_loads_local_market_module_before_actual_and_mounts_key_settings
     {'apiKey': 'SYNTHETIC_PRIVATE_TEST_VALUE'},
     {'appSecret': 'SYNTHETIC_PRIVATE_TEST_VALUE'},
     {'accessToken': 'SYNTHETIC_PRIVATE_TEST_VALUE'},
+    {'schema': 'device-google-sheet-settings/1', 'enabled': False},
+    {'schema': 'device-market-import-history/1', 'entries': []},
+    {'spreadsheetId': '_'.join(['synthetic'] * 5)},
+    {'spreadsheet_url': 'https://docs.google.com/spreadsheets/d/' + '_'.join(['synthetic'] * 5)},
+    {'renamed': '.'.join(['ya29', 'constructed_runtime_token'])},
 ])
 def test_build_rejects_private_quotes_fx_and_credential_inputs(tmp_path, payload):
     bundle = deepcopy(repository_bundle())

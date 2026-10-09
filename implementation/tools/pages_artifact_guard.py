@@ -1,6 +1,6 @@
 """Fail closed on anything outside the reviewed, immutable public Pages artifact.
 
-Pins describe the reviewed device-manual-quotation WEB-only build, with ONLY ``cutoff_mcap`` and
+Pins describe the reviewed optional Google Sheet/device-quotation WEB-only build, with ONLY ``cutoff_mcap`` and
 each universe member's ``mcap`` removed. HTML/CSS/JS use byte hashes; JSON
 uses canonical hashes so formatting and object-key order are immaterial.
 Updating public data or assets requires reviewing and updating these pins.
@@ -29,14 +29,18 @@ import tarfile
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
-    "app.js": "ab19b9506b02a8a1619a486fd1361ee1e3c35ee1b9012a9e9eecd97721e06e5d",
+    "app-config.js": "3748880c0b35e3a0d49d3e44208e816d3a0149fce4d2d1630de745f83b35fca2",
+    "app.js": "2f528e3fc8bd5dd1c6bb55797b9e623f195d9d05cfbf437ad88f1706b684c470",
     "data.json": "735aadfdf26197013e1478e60974d42c920c089c19dd99f91687a0dfd38b9536",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
-    "device-actual.js": "4d5a503abd0436cc6f30a2222fe0926d5da1f553ab76b67edb13e38809b5a8a0",
-    "device-market.js": "922c99ea78487a736b89a81d643c4f814355f0bad603fb370a086629bba7e916",
+    "device-actual.js": "e1625314c50c5891d48ce9ad1d4ac6c958022230ce27d8c8500896046c4c0c21",
+    "device-market.js": "bac5297a393fcd0254266ee5144c8ce05979b9fa90c1a8a67451a1e7193e567d",
     "entities.json": "465354a2bc2846f4d85ad6306d2dda3aa5cb5601e4d3520281ec013bf402c424",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
-    "index.html": "b29fdf5f89e6244905d9e641e2f7e9db0e9a7cbf4c79fa0f2da74e6fbcf45889",
+    "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
+    "google-sheet-quotes.js": "68665331e97ee79434f0f061c08d6a115340d4cf9bd69ca22823209a34e86fae",
+    "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
+    "index.html": "4f67e389a22d2e03ddc97c6b7ef7e4bd0829d9ed7cb84a5507ac200fa4cbdbd5",
     "locale.js": "d240bd1e66ddea0ee515874765645cb87c8926f0f4221580bf59624b14e55043",
     "research.html": "ef7665e2079df06c4bf7265206d9113ddb4716f93cf87e0ec0735c6b5fbae219",
     "style.css": "0f8f4d3be8d7cb0682ff21fb2e1c5684444726a88d9c6ab8d60697c7d7938537",
@@ -53,8 +57,11 @@ SENSITIVE_KEYS = frozenset({
     "marketcapitalization", "costbasis", "purchaseprice", "networth",
     "holdings", "positions", "actualholdings", "investedamount",
     "totalcost", "cost", "price", "valueamount", "cashbalance",
+    "spreadsheetid", "spreadsheeturl", "accesstoken", "refreshtoken", "clientsecret",
 })
 SECRET_PATTERNS = (
+    re.compile(r"(?<![A-Za-z0-9_])ya29\.[A-Za-z0-9._~-]+"),
+    re.compile(r"https://docs\.google\.com/spreadsheets/(?:u/\d+/)?d/[A-Za-z0-9_-]{20,100}"),
     re.compile(r"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY-----"),
     re.compile(
         r"(?i)(?<!\w)(?:api[_-]?key|access[_-]?token|refresh[_-]?token|"

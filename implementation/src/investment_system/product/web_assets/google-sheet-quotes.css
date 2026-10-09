@@ -1,0 +1,26 @@
+.google-sheet-quotes { min-width: 0; color: var(--ink, #173733); }
+.google-sheet-quotes h2 { margin: 0 0 12px; font-size: 24px; }
+.google-sheet-quotes h3 { margin: 22px 0 10px; font-size: 18px; }
+.google-sheet-quotes p, .google-sheet-quotes li { overflow-wrap: anywhere; max-width: 72ch; }
+.google-sheet-quotes [hidden] { display: none !important; }
+.google-sheet-quotes label { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 14px; }
+.google-sheet-quotes .sheet-toggle { flex-direction: row; align-items: center; margin: 18px 0; font-weight: 700; }
+.google-sheet-quotes .sheet-toggle input { width: 22px; min-height: 22px; margin: 0; }
+.google-sheet-quotes .sheet-settings-form { display: grid; gap: 12px; max-width: 650px; }
+.google-sheet-quotes input, .google-sheet-quotes textarea { width: 100%; box-sizing: border-box; min-width: 0; padding: 10px; color: inherit; background: #fff; border: 1px solid #b5c5ba; border-radius: 6px; font: inherit; font-size: 16px; }
+.google-sheet-quotes textarea { resize: vertical; }
+.google-sheet-quotes button { min-height: 44px; padding: 10px 15px; border: 1px solid #b5c5ba; border-radius: 7px; color: inherit; background: #fff; font: inherit; cursor: pointer; overflow-wrap: anywhere; }
+.google-sheet-quotes [data-sheet-action="fetch"], .google-sheet-quotes [data-sheet-action="paste"] { background: var(--accent, #216a56); border-color: var(--accent, #216a56); color: #fff; }
+.google-sheet-quotes button:disabled { opacity: .55; cursor: default; }
+.google-sheet-quotes input:focus-visible, .google-sheet-quotes textarea:focus-visible, .google-sheet-quotes button:focus-visible { outline: 3px solid #669e7d; outline-offset: 2px; }
+.google-sheet-quotes .sheet-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.google-sheet-quotes .sheet-paste-box { display: grid; gap: 10px; max-width: 650px; }
+.google-sheet-quotes [data-sheet-notice], .google-sheet-quotes [data-sheet-summary] { min-height: 1.5em; font-weight: 600; }
+.google-sheet-quotes [data-notice="invalid"], .google-sheet-quotes [data-notice="storage"], .google-sheet-quotes [data-notice="auth"], .google-sheet-quotes [data-notice="readFailed"] { color: #8c4625; }
+.google-sheet-quotes [data-sheet-history] { padding-left: 20px; }
+.google-sheet-quotes [data-sheet-history] li { margin: 8px 0; }
+@media (max-width: 520px) {
+  .google-sheet-quotes h2 { font-size: 21px; }
+  .google-sheet-quotes .sheet-actions { flex-direction: column; align-items: stretch; }
+  .google-sheet-quotes button { width: 100%; }
+}

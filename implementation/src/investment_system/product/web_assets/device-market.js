@@ -93,8 +93,16 @@
     if (clock(value.effective_at) > clock(value.available_at) || clock(value.available_at) > nowMillis(options.now)) fail();
   }
   function observation(value, current) {
-    if (!['MANUAL', 'API'].includes(value.source)) fail();
+    if (!['MANUAL', 'API', 'GOOGLEFINANCE'].includes(value.source)) fail();
     if (clock(value.as_of) > clock(value.available_at) || clock(value.available_at) > current) fail();
+  }
+  function observationKeys(value, expected, isFX = false) {
+    const hasStatus = plain(value) && Object.prototype.hasOwnProperty.call(value, 'time_status');
+    keys(value, hasStatus ? [...expected, 'time_status'] : expected);
+    if (value.source === 'GOOGLEFINANCE') {
+      if (!hasStatus || !(isFX ? ['KNOWN', 'UNKNOWN', 'FX_UNKNOWN'] : ['KNOWN', 'UNKNOWN']).includes(value.time_status)) fail();
+      if (value.time_status !== 'KNOWN' && value.as_of !== value.available_at) fail();
+    } else if (hasStatus) fail();
   }
   function validateMarket(market, catalog, options = {}) {
     const index = catalogIndex(catalog), current = nowMillis(options.now);
@@ -103,14 +111,14 @@
       || market.quotes.length > index.instruments.size || market.fx.length > FX_CURRENCIES.length) fail();
     const seenQuotes = new Set(), seenFX = new Set();
     for (const quote of market.quotes) {
-      keys(quote, ['security_reference', 'price', 'currency', 'as_of', 'available_at', 'source']);
+      observationKeys(quote, ['security_reference', 'price', 'currency', 'as_of', 'available_at', 'source']);
       if (!plain(quote.security_reference)) fail();
       const id = canonical(quote.security_reference), instrument = index.instruments.get(id);
       if (!instrument || seenQuotes.has(id) || quote.currency !== instrument.currency) fail();
       seenQuotes.add(id); decimal(quote.price, true); observation(quote, current);
     }
     for (const rate of market.fx) {
-      keys(rate, ['currency', 'rate', 'as_of', 'available_at', 'source']);
+      observationKeys(rate, ['currency', 'rate', 'as_of', 'available_at', 'source'], true);
       if (!FX_CURRENCIES.includes(rate.currency) || seenFX.has(rate.currency)) fail();
       seenFX.add(rate.currency); decimal(rate.rate, true); observation(rate, current);
     }
@@ -189,9 +197,11 @@
       return {...row, theme_id: theme.theme_id, target_units: instrument.target_units,
         market_currency_native: currency, market_value_native: native, market_value: converted, weight: null, delta: null,
         quote_as_of: quote ? quote.as_of : null, quote_available_at: quote ? quote.available_at : null,
+        quote_time_status: quote ? quote.time_status || 'KNOWN' : null,
         quote_source: quote ? quote.source : null, quote_status: staleness(quote ? quote.as_of : null, current),
         fx_as_of: currency !== 'KRW' && rate ? rate.as_of : null,
         fx_available_at: currency !== 'KRW' && rate ? rate.available_at : null,
+        fx_time_status: currency !== 'KRW' && rate ? rate.time_status || 'KNOWN' : null,
         fx_source: currency !== 'KRW' && rate ? rate.source : null,
         fx_status: currency === 'KRW' ? 'NOT_REQUIRED' : staleness(rate ? rate.as_of : null, current)};
     }));

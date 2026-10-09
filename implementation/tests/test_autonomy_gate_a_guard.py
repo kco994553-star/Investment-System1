@@ -419,6 +419,121 @@ class DeviceActualPrivacyGuardTests(unittest.TestCase):
                 payload = {"settings": {field: "SYNTHETIC_TEST_CREDENTIAL_ONLY"}}
                 self.assertTrue(guard.contains_device_actual(json.dumps(payload).encode(), "innocent.dat"))
 
+    @staticmethod
+    def synthetic_sheet_id():
+        return "1" + "synthetic" * 6
+
+    @staticmethod
+    def synthetic_google_token():
+        return "ya" + "29." + "SYNTHETIC_TOKEN_ONLY"
+
+    def test_google_sheet_id_fields_fail_in_structured_formats(self):
+        for field in ("spreadsheet_id", "spreadsheetId", "SPREADSHEET-ID", "sheet_id",
+                      "google_sheet_id", "google_spreadsheet_id"):
+            for suffix, payload in (
+                ("json", json.dumps({"settings": {field: self.synthetic_sheet_id()}})),
+                ("yaml", "settings:\n  " + field + ": " + self.synthetic_sheet_id() + "\n"),
+                ("csv", field + "\n" + self.synthetic_sheet_id() + "\n"),
+            ):
+                with self.subTest(field=field, format=suffix):
+                    self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent." + suffix))
+
+    def test_google_sheet_private_urls_fail_in_arbitrary_text(self):
+        paths = (
+            "https://docs.google.com/spreadsheets/d/" + self.synthetic_sheet_id() + "/edit",
+            "https://docs.google.com/spreadsheets/u/0/d/" + self.synthetic_sheet_id() + "/edit",
+            "https://sheets.googleapis.com/v4/spreadsheets/" + self.synthetic_sheet_id() + "/values/Quotes",
+        )
+        for url in paths:
+            for suffix in ("md", "log", "js", "txt", "json"):
+                with self.subTest(format=suffix, api_url="googleapis" in url):
+                    self.assertTrue(guard.contains_device_actual(("request " + url).encode(), "innocent." + suffix))
+
+    def test_google_sheet_id_source_assignments_fail(self):
+        for field in ("spreadsheet_id", "spreadsheetId", "sheetId", "googleSheetId"):
+            for separator in (" = ", ": "):
+                with self.subTest(field=field, assignment=separator.strip()):
+                    payload = "const settings = { " + field + separator + "'" + self.synthetic_sheet_id() + "' };"
+                    self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent.js"))
+
+    def test_google_sheet_id_template_computed_and_truncated_assignments_fail(self):
+        sheet_id = self.synthetic_sheet_id()
+        payloads = (
+            "const spreadsheetId = `" + sheet_id + "`;",
+            'settings["spreadsheetId"] = "' + sheet_id + '";',
+            "settings['spreadsheet_id'] = '" + sheet_id + "';",
+            "const spreadsheetId = '" + sheet_id,
+        )
+        for index, payload in enumerate(payloads):
+            with self.subTest(case=index):
+                self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent.js"))
+
+    def test_decoded_json_google_strings_fail_without_private_field_names(self):
+        sheet_url = "https://docs.google.com/spreadsheets/d/" + self.synthetic_sheet_id() + "/edit"
+        token = self.synthetic_google_token()
+        payloads = (
+            json.dumps({"message": sheet_url}).replace("/", r"\/"),
+            json.dumps({"message": token}).replace("ya" + "29.", "ya" + r"\u0032" + "9."),
+            json.dumps([{"renamed": [sheet_url, token]}], ensure_ascii=True).replace("/", r"\/"),
+            json.dumps(token).replace("ya" + "29.", "ya" + r"\u0032" + "9."),
+        )
+        for index, payload in enumerate(payloads):
+            with self.subTest(case=index):
+                self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent.json"))
+
+    def test_google_access_token_fails_in_every_text_format(self):
+        for token in (self.synthetic_google_token(), "ya" + "29." + "x"):
+            for suffix in ("md", "log", "js", "py", "json", "txt", "map"):
+                with self.subTest(format=suffix, truncated=len(token) < 8):
+                    payload = "arbitrary text " + token
+                    self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent." + suffix))
+
+    def test_google_sheet_settings_staged_then_scrubbed_still_fail(self):
+        self.write("sensitive-file.js", "const spreadsheetId = '" + self.synthetic_sheet_id() + "';", committed=False)
+        self.write("sensitive-file.js", "// cleared", tracked=False)
+        result, output = self.check()
+        self.assertEqual(result, 1)
+        self.assertEqual(json.loads(output)["device_actual_privacy_guard"], "FAIL")
+        self.assertNotIn(self.synthetic_sheet_id(), output)
+        self.assertNotIn("sensitive-file", output)
+
+    def test_google_access_token_removed_before_head_fails_history_scan(self):
+        base = self.git("rev-parse", "HEAD").strip()
+        self.write("sensitive-file.log", self.synthetic_google_token())
+        self.git("rm", "sensitive-file.log")
+        self.git("commit", "-qm", "Synthetic Google token removal")
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        self.assertEqual(json.loads(output)["device_actual_privacy_guard"], "FAIL")
+        self.assertNotIn(self.synthetic_google_token(), output)
+        self.assertNotIn("sensitive-file", output)
+
+    def test_empty_google_sheet_settings_and_schema_descriptions_pass(self):
+        payloads = (
+            json.dumps({"spreadsheet_id": "", "sheet_id": None}),
+            json.dumps({"properties": {"spreadsheet_id": {"type": "string"}}}),
+            "spreadsheet_id: null\nsheet_id: ''\n",
+            "spreadsheet_id,sheet_id\n,\n",
+            "Use spreadsheet_id only on the device; a token starts with ya29.\n",
+        )
+        for index, payload in enumerate(payloads):
+            with self.subTest(case=index):
+                self.assertFalse(guard.contains_device_actual(payload.encode(), "guide.dat"))
+
+    def test_google_public_client_id_hash_and_fixed_mapping_pass(self):
+        public_client_id = "437589281514-r5hasrua70busongkklplctm8j206k3s.apps.googleusercontent.com"
+        payloads = (
+            json.dumps({"googleClientId": public_client_id}),
+            "const GOOGLE_CLIENT_ID = '" + public_client_id + "';",
+            json.dumps({"sha256": "abcdef0123456789" * 4, "code": "NASDAQ:ASML"}),
+            "https://sheets.googleapis.com/v4/spreadsheets/{id}/values/{range}\n",
+            "https://docs.google.com/spreadsheets/d/<YOUR_SHEET_ID>/edit\n",
+            "const settings = { spreadsheet_id: '', range: 'Quotes!A1:C22' };",
+        )
+        for index, payload in enumerate(payloads):
+            with self.subTest(case=index):
+                self.assertFalse(guard.contains_device_actual(payload.encode(), "source.js"))
+
     def test_nested_api_settings_record_fails_with_service_disabled(self):
         self.write("sensitive-file.json", json.dumps({"settings": self.api_envelope()}))
         self.assert_market_or_credential_failure()

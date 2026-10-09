@@ -47,7 +47,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         receipt = json.loads(result.stdout)
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 12)
+        self.assertEqual(receipt["files_scanned"], 16)
         self.assertEqual(receipt["violations"], {})
         self.assertEqual(result.stderr, "")
 
@@ -326,7 +326,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
     def test_github_pages_tar_shape_passes_same_guard(self):
         receipt = self.tar_receipt()
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 12)
+        self.assertEqual(receipt["files_scanned"], 16)
         self.assertEqual(receipt["violations"], {})
 
     def test_exact_upload_action_tar_command_with_normalized_owners_passes(self):

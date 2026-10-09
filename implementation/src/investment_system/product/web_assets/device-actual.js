@@ -7,6 +7,7 @@
   'use strict';
   const SCHEMA = 'device-actual-holdings/1';
   const DB_NAME = 'investment-device-actual-v1', STORE = 'snapshots', KEY = 'actual', MARKET_KEY = 'market', API_RECORD_KEY = 'api-settings';
+  const SHEET_SETTINGS_KEY = 'google-sheet-settings', IMPORT_HISTORY_KEY = 'market-import-history';
   const MAX_FILE_BYTES = 131072, CURRENCIES = Object.freeze(['USD', 'JPY', 'KRW']);
   const MISSING_RECORD = Object.freeze({ missingRecord: true });
   const DECIMAL = /^(?:0|[1-9]\d{0,14})(?:\.\d{1,12})?$/;
@@ -243,13 +244,16 @@
     return a.length === b.length && a.every((key, i) => key === b[i] && equal(left[key], right[key]));
   }
   function storedValues(values) { return Object.fromEntries(Object.entries(values).map(([key, value]) => [key, value === null ? MISSING_RECORD : value])); }
-  async function commitStored(view, values, expected) {
+  async function commitStored(view, values, expected, isCurrent) {
     const db = await openDatabase(view);
     return new Promise((resolve, reject) => {
       let tx, conflict = false;
       try {
         tx = db.transaction(STORE, 'readwrite'); const store = tx.objectStore(STORE), entries = Object.entries(values);
-        const write = () => { for (const [key, value] of entries) { if (value === null) store.delete(key); else store.put(value, key); } };
+        const write = () => {
+          if (isCurrent && !isCurrent()) fail('CANCELLED');
+          for (const [key, value] of entries) { if (value === null) store.delete(key); else store.put(value, key); }
+        };
         const current = {}; let pending = entries.length;
         for (const [key] of entries) {
           const request = store.get(key); request.onsuccess = () => { current[key] = request.result; };
@@ -279,10 +283,20 @@
   function number(state, value) { return new Intl.NumberFormat(state.locale, { maximumFractionDigits: 8 }).format(value); }
   function percentage(state, value) { return value === null ? 'NOT_AVAILABLE' : new Intl.NumberFormat(state.locale, { style: 'percent', maximumFractionDigits: 2 }).format(value); }
   function points(state, value) { return value === null ? 'NOT_AVAILABLE' : new Intl.NumberFormat(state.locale, { maximumFractionDigits: 2, signDisplay: 'always' }).format(value * 100) + ' %p'; }
-  function source(state, value) { return value === 'API' ? 'API' : value === 'MANUAL' ? t(state, 'manual') : t(state, 'none'); }
+  function source(state, value) {
+    if (value === 'GOOGLEFINANCE') return state.locale === 'en-US'
+      ? 'GOOGLEFINANCE · Up to 20 minutes delayed · For information only'
+      : 'GOOGLEFINANCE · 최대 20분 지연 · 정보용';
+    return value === 'API' ? 'API' : value === 'MANUAL' ? t(state, 'manual') : t(state, 'none');
+  }
+  function timeStatus(state, value) {
+    if (value === 'UNKNOWN') return state.locale === 'en-US' ? ' · Time unknown · Import time' : ' · 시각 미확인 · 불러온 시각';
+    if (value === 'FX_UNKNOWN') return state.locale === 'en-US' ? ' · FX time unknown · Import time' : ' · 환율 시각 미확인 · 불러온 시각';
+    return '';
+  }
   function provenance(state, record) {
     if (!record) return t(state, 'none') + ' · NOT_AVAILABLE';
-    return source(state, record.source) + ' · ' + record.as_of + ' · ' + marketApi(state).staleness(record.as_of);
+    return source(state, record.source) + ' · ' + record.as_of + timeStatus(state, record.time_status) + ' · ' + marketApi(state).staleness(record.as_of);
   }
   function valuesFor(state) {
     if (state.snapshot) validate(state.snapshot, state.catalog);
@@ -308,8 +322,8 @@
         const fields = [[t(state, 'quantity'), row.quantity], [t(state, 'average'), row.average_cost + ' ' + row.currency], [t(state, 'market') + ' · ' + marketCurrency, row.market_value === null ? 'NOT_AVAILABLE' : number(state, row.market_value) + ' ' + marketCurrency], [t(state, 'target'), percentage(state, row.target_units / state.catalog.total_units)], [t(state, 'weight'), percentage(state, row.weight)], [t(state, 'delta') + ' (%p)', points(state, row.delta)]];
         if (!state.externalQuotes) {
           fields.push([t(state, 'native'), row.market_value_native === null ? 'NOT_AVAILABLE' : number(state, row.market_value_native) + ' ' + row.market_currency_native]);
-          fields.push([t(state, 'provenance'), source(state, row.quote_source) + ' · ' + (row.quote_as_of || 'NOT_AVAILABLE') + ' · ' + row.quote_status]);
-          if (instrument.currency !== 'KRW') fields.push([t(state, 'fxProvenance'), source(state, row.fx_source) + ' · ' + (row.fx_as_of || 'NOT_AVAILABLE') + ' · ' + row.fx_status]);
+          fields.push([t(state, 'provenance'), source(state, row.quote_source) + ' · ' + (row.quote_as_of || 'NOT_AVAILABLE') + timeStatus(state, row.quote_time_status) + ' · ' + row.quote_status]);
+          if (instrument.currency !== 'KRW') fields.push([t(state, 'fxProvenance'), source(state, row.fx_source) + ' · ' + (row.fx_as_of || 'NOT_AVAILABLE') + timeStatus(state, row.fx_time_status) + ' · ' + row.fx_status]);
         }
         const details = el(state, 'dl'); for (const [label, value] of fields) details.append(el(state, 'dt', label), el(state, 'dd', value)); card.append(details); list.append(card);
       }
@@ -360,12 +374,12 @@
         if (!price) continue;
         const previous = state.market ? state.market.quotes.find(quote => canonical(quote.security_reference) === canonical(row.instrument.security_reference)) : null;
         const unchanged = previous && previous.price === price && previous.as_of === as_of;
-        quotes.push({ security_reference: clone(row.instrument.security_reference), price, currency: row.instrument.currency, as_of, available_at: unchanged ? previous.available_at : timestamp, source: unchanged ? previous.source : 'MANUAL' });
+        quotes.push(unchanged ? clone(previous) : { security_reference: clone(row.instrument.security_reference), price, currency: row.instrument.currency, as_of, available_at: timestamp, source: 'MANUAL' });
       }
       for (const row of state.fxRows) {
         const rate = row.rate.value.trim(), as_of = row.fx_as_of.value.trim(); if (!rate) continue;
         const previous = state.market ? state.market.fx.find(fx => fx.currency === row.currency) : null, unchanged = previous && previous.rate === rate && previous.as_of === as_of;
-        fx.push({ currency: row.currency, rate, as_of, available_at: unchanged ? previous.available_at : timestamp, source: unchanged ? previous.source : 'MANUAL' });
+        fx.push(unchanged ? clone(previous) : { currency: row.currency, rate, as_of, available_at: timestamp, source: 'MANUAL' });
       }
       const next = makeSnapshot(state.catalog, rows, state.snapshot), market = marketApi(state).makeMarket(state.catalog, quotes, fx, state.market);
       const raw = { [KEY]: next, [MARKET_KEY]: market };
@@ -410,8 +424,9 @@
     if (!state.view.confirm(t(state, 'removeConfirm'))) { notice(state, 'canceled'); return; }
     setBusy(state, true);
     try {
-      const raw = { [KEY]: null, [MARKET_KEY]: null };
-      await commitStored(state.view, raw, state.raw);
+      const history = await readStored(state.view, [IMPORT_HISTORY_KEY]);
+      const raw = { [KEY]: null, [MARKET_KEY]: null, [IMPORT_HISTORY_KEY]: null };
+      await commitStored(state.view, raw, {...state.raw, ...history});
       state.raw = storedValues(raw); state.snapshot = null; state.market = null; state.storageProblem = false; populate(state); repaintSummary(state); notice(state, 'removed'); announce(state);
     } catch (error) { errorNotice(state, error); } finally { setBusy(state, false); }
   }
@@ -521,5 +536,85 @@
     host.replaceChildren(root); setBusy(state, false); if (state.storageProblem) notice(state, 'apiStorage');
     return { service: 'NOT_SELECTED', enabled: false, keyStored: stored };
   }
-  return Object.freeze({ mount, summary, settings, validate, makeSnapshot, prepareImport, valuation });
+  function validateSheetSettings(value) {
+    keys(value, ['schema', 'enabled', 'spreadsheet_id', 'range']);
+    if (value.schema !== 'device-google-sheet-settings/1' || typeof value.enabled !== 'boolean'
+      || typeof value.spreadsheet_id !== 'string' || (value.spreadsheet_id !== '' && !/^[A-Za-z0-9_-]{20,100}$/.test(value.spreadsheet_id))
+      || typeof value.range !== 'string' || value.range.length < 1 || value.range.length > 160
+      || /[\x00-\x1f\x7f]/.test(value.range) || /https?:|ya29\./i.test(value.range)) fail('INVALID');
+    return clone(value);
+  }
+  async function sheetSettings(view, value) {
+    const raw = await readStored(view, [SHEET_SETTINGS_KEY]);
+    const previous = raw[SHEET_SETTINGS_KEY] === MISSING_RECORD
+      ? {schema:'device-google-sheet-settings/1',enabled:false,spreadsheet_id:'',range:'Quotes!A1:C22'}
+      : validateSheetSettings(raw[SHEET_SETTINGS_KEY]);
+    if (value === undefined) return previous;
+    const next = validateSheetSettings(value);
+    await commitStored(view, {[SHEET_SETTINGS_KEY]:next}, raw);
+    return next;
+  }
+  function approvedImportNames(catalog) {
+    catalogIndex(catalog);
+    return new Set([...catalog.instruments.map(row => row.label), 'USD/KRW', 'JPY/KRW']);
+  }
+  function validateImportHistory(value, catalog, marketApi) {
+    keys(value, ['schema', 'entries']);
+    if (value.schema !== 'device-market-import-history/1' || !Array.isArray(value.entries) || value.entries.length > 1000) fail('INVALID');
+    const names = approvedImportNames(catalog);
+    let previous = 0;
+    for (const entry of value.entries) {
+      keys(entry, ['at', 'method', 'success_count', 'failure_names', 'warning_count', 'quotes', 'fx']);
+      const at = clock(entry.at);
+      if (at < previous || at > Date.now() || !['google-sheet','paste'].includes(entry.method)
+        || !Number.isSafeInteger(entry.success_count) || entry.success_count < 0 || entry.success_count > 21
+        || !Number.isSafeInteger(entry.warning_count) || entry.warning_count < 0 || entry.warning_count > 1000
+        || !Array.isArray(entry.failure_names) || entry.failure_names.length > 21
+        || new Set(entry.failure_names).size !== entry.failure_names.length || entry.failure_names.some(name => !names.has(name))) fail('INVALID');
+      const checked = marketApi.makeMarket(catalog, entry.quotes, entry.fx, null, at);
+      if (checked.quotes.length + checked.fx.length !== entry.success_count
+        || [...checked.quotes, ...checked.fx].some(row => row.source !== 'GOOGLEFINANCE')) fail('INVALID');
+      previous = at;
+    }
+    return clone(value);
+  }
+  async function readMarketImportHistory(view, catalog) {
+    const raw = await readStored(view, [IMPORT_HISTORY_KEY]);
+    const history = raw[IMPORT_HISTORY_KEY] === MISSING_RECORD ? {entries:[]}
+      : validateImportHistory(raw[IMPORT_HISTORY_KEY], catalog, view.DeviceMarket);
+    return history.entries.map(({at,method,success_count,failure_names,warning_count}) => ({at,method,success_count,failure_names,warning_count}));
+  }
+  async function applyMarketImport(view, catalog, result, options = {}) {
+    const active = () => !options.isCurrent || options.isCurrent();
+    if (!active()) fail('CANCELLED');
+    if (!plain(result) || !Array.isArray(result.quotes) || !Array.isArray(result.fx)
+      || !Array.isArray(result.successes) || !Array.isArray(result.failures) || !Array.isArray(result.warnings)
+      || result.successes.length + result.failures.length > 21 || result.warnings.length > 1000
+      || !['google-sheet','paste'].includes(options.method)) fail('INVALID');
+    const api = view.DeviceMarket;
+    if (!api || !view.GoogleSheetCore) fail('STORAGE');
+    const names = approvedImportNames(catalog);
+    if ([...result.successes,...result.failures].some(row => !plain(row) || !names.has(row.name))
+      || new Set([...result.successes,...result.failures].map(row => row.name)).size !== result.successes.length + result.failures.length
+      || result.failures.some(row => row.state !== 'NOT_AVAILABLE')) fail('INVALID');
+    const now = options.now === undefined ? Date.now() : nowMillis(options.now), at = new Date(now).toISOString();
+    const fresh = api.makeMarket(catalog, result.quotes, result.fx, null, now);
+    if (fresh.quotes.length + fresh.fx.length !== result.successes.length
+      || [...fresh.quotes,...fresh.fx].some(row => row.source !== 'GOOGLEFINANCE')) fail('INVALID');
+    const raw = await readStored(view, [MARKET_KEY, IMPORT_HISTORY_KEY]);
+    if (!active()) fail('CANCELLED');
+    const previous = raw[MARKET_KEY] === MISSING_RECORD ? null : api.validateMarket(raw[MARKET_KEY], catalog, {now});
+    const history = raw[IMPORT_HISTORY_KEY] === MISSING_RECORD ? {schema:'device-market-import-history/1',entries:[]}
+      : validateImportHistory(raw[IMPORT_HISTORY_KEY], catalog, api);
+    history.entries.push({at,method:options.method,success_count:result.successes.length,
+      failure_names:result.failures.map(row => row.name),warning_count:result.warnings.length,quotes:fresh.quotes,fx:fresh.fx});
+    validateImportHistory(history, catalog, api);
+    const values = {[IMPORT_HISTORY_KEY]:history};
+    if (result.successes.length) values[MARKET_KEY] = view.GoogleSheetCore.apply(catalog, previous, result, now);
+    await commitStored(view, values, raw, active);
+    if (view.document) view.document.dispatchEvent(new view.Event('device-actual-changed'));
+    return result;
+  }
+  return Object.freeze({ mount, summary, settings, validate, makeSnapshot, prepareImport, valuation,
+    sheetSettings, applyMarketImport, readMarketImportHistory });
 });

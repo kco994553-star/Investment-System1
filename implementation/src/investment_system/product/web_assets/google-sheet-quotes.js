@@ -1,0 +1,233 @@
+/* Google credentials are held only by this module's memory closures. */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else root.GoogleSheetQuotes = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+  const CLIENT_SCRIPT = 'https://accounts.google.com/gsi/client';
+  const DEFAULT_RANGE = 'Quotes!A1:C22', sessions = new WeakMap(), hosts = new WeakMap();
+  const TEXT = {
+    title: ['구글 시트 시세 · 선택 기능', 'Google Sheet quotes · Optional'],
+    detail: ['비공개 구글 시트를 이 기기에서 읽기 전용으로 읽습니다. 최대 20분 지연 · 정보용. 수동 입력은 계속 사용할 수 있습니다.', 'Read your private Google Sheet directly on this device with read-only access. Up to 20 minutes delayed · Informational. Manual entry remains available.'],
+    enable: ['구글 시트 사용 · 기본 OFF', 'Use Google Sheets · OFF by default'],
+    id: ['스프레드시트 ID 또는 구글 시트 URL', 'Spreadsheet ID or Google Sheet URL'], range: ['읽을 범위', 'Range to read'],
+    privacy: ['ID·범위는 이 기기에만 저장되며 백업에서 제외됩니다. 로그인 토큰은 메모리에만 보관하며 약 1시간 후 다시 연결해야 합니다.', 'ID and range stay on this device and are excluded from backups. The sign-in token stays only in memory; reconnect after about one hour.'],
+    save: ['시트 설정을 이 기기에 저장', 'Save Sheet settings on this device'], saved: ['시트 설정을 이 기기에 저장했습니다.', 'Sheet settings saved on this device.'],
+    prepare: ['구글 로그인 준비', 'Prepare Google sign-in'], login: ['구글 로그인 · 읽기 전용', 'Google sign-in · Read-only'], fetch: ['구글 시트에서 불러오기', 'Load from Google Sheet'], disconnect: ['구글 연결 해제', 'Disconnect Google'],
+    ready: ['로그인 준비가 끝났습니다. 로그인 버튼을 눌러 연결하세요.', 'Sign-in is ready. Press the sign-in button to connect.'], connected: ['구글 연결됨 · 읽기 전용 · 약 1시간', 'Google connected · Read-only · About one hour'], off: ['OFF · 구글 호출 없음', 'OFF · No Google requests'], disconnected: ['연결되지 않음 · 불러오기는 버튼을 누를 때만 실행됩니다.', 'Disconnected · Quotes load only when you press the button.'],
+    pasteTitle: ['예비 입력 · 일괄 붙여넣기', 'Fallback · Bulk paste'], pasteHelp: ['시트의 A~C열(code, price, tradetime)을 복사해 붙여넣으세요. 탭 또는 쉼표 구분, 로그인 없이 사용할 수 있습니다.', 'Copy and paste Sheet columns A–C (code, price, tradetime). Tab or comma separated; no sign-in required.'], pasteLabel: ['시트에서 복사한 텍스트', 'Text copied from the Sheet'], paste: ['붙여넣은 시세를 이 기기에 저장', 'Save pasted quotes on this device'],
+    success: ['성공', 'Success'], failure: ['실패', 'Failed'], warning: ['경고', 'Warning'], history: ['시세 불러오기 변경 이력', 'Quote import history'], emptyHistory: ['불러오기 이력이 없습니다.', 'No imports yet.'], methodGoogle: ['구글 시트', 'Google Sheet'], methodPaste: ['붙여넣기', 'Paste'], unknown: ['표에 없는 코드는 무시했습니다.', 'Unmapped codes were ignored.'], duplicate: ['중복 코드의 시세는 NOT_AVAILABLE입니다.', 'Quotes with duplicate codes are NOT_AVAILABLE.'],
+    invalid: ['시트 ID·범위 또는 붙여넣기 형식을 확인하세요. 기존 시세는 유지됩니다.', 'Check the Sheet ID, range or pasted format. Existing quotes are preserved.'], storage: ['기기 저장을 완료하지 못했습니다. 기존 시세는 유지됩니다.', 'Device saving did not complete. Existing quotes are preserved.'], auth: ['로그인이 만료되었거나 연결되지 않았습니다. 구글 로그인 버튼을 다시 누르세요.', 'Sign-in expired or is disconnected. Press Google sign-in again.'], authFailed: ['구글 연결을 완료하지 못했습니다. 로그인 버튼으로 다시 시도하세요.', 'Google connection did not complete. Try the sign-in button again.'], readFailed: ['구글 시트를 읽지 못했습니다. 접근 권한·ID·범위를 확인하세요. 기존 시세는 유지됩니다.', 'Could not read the Google Sheet. Check access, ID and range. Existing quotes are preserved.'], removed: ['구글 연결을 해제하고 메모리 토큰을 삭제했습니다.', 'Google disconnected and the memory token was removed.'], canceled: ['불러오기를 취소했습니다. 기존 시세는 유지됩니다.', 'Import canceled. Existing quotes are preserved.'], busy: ['처리 중…', 'Working…']
+  };
+  function fail(code) { throw new Error(code); }
+  function extractSpreadsheetId(input) {
+    if (typeof input !== 'string') fail('INVALID');
+    const value = input.trim();
+    if (/^[A-Za-z0-9_-]{20,100}$/.test(value)) return value;
+    let url; try { url = new URL(value); } catch (_) { fail('INVALID'); }
+    if (url.protocol !== 'https:' || url.hostname !== 'docs.google.com' || url.port || url.username || url.password) fail('INVALID');
+    const match = /^\/spreadsheets\/d\/([A-Za-z0-9_-]{20,100})(?:\/(?:edit|view|preview|copy))?\/?$/.exec(url.pathname);
+    if (!match) fail('INVALID'); return match[1];
+  }
+  function sheetsURL(id, range) {
+    if (extractSpreadsheetId(id) !== id || typeof range !== 'string' || !range.trim() || range.length > 160 || /[\x00-\x1f\x7f]/.test(range)) fail('INVALID');
+    return 'https://sheets.googleapis.com/v4/spreadsheets/' + encodeURIComponent(id) + '/values/' + encodeURIComponent(range) + '?valueRenderOption=UNFORMATTED_VALUE&dateTimeRenderOption=SERIAL_NUMBER';
+  }
+  function createSession(view, options) {
+    const clientId = options.clientId, now = options.now || (() => Date.now()), listeners = new Set();
+    let enabled = false, token = '', expiresAt = 0, epoch = 0, pending = false, preparing = null, timer = null, controller = null, error = '';
+    function oauth() { return view.google && view.google.accounts && view.google.accounts.oauth2; }
+    function notify() { for (const listener of listeners) listener(); }
+    function invalidate() {
+      token = ''; expiresAt = 0; pending = false; epoch++;
+      if (timer !== null) { view.clearTimeout(timer); timer = null; }
+      if (controller) { controller.abort(); controller = null; }
+    }
+    function expire() { if (token && expiresAt <= now()) { invalidate(); error = 'AUTH_REQUIRED'; notify(); } }
+    function state() { expire(); return { enabled, ready: !!oauth(), connected: !!token, pending, preparing: !!preparing, error }; }
+    function setEnabled(value) { enabled = value === true; error = ''; if (!enabled) invalidate(); notify(); }
+    function prepare() {
+      if (!enabled || !clientId) return Promise.reject(new Error('OFF'));
+      if (oauth()) return Promise.resolve();
+      if (preparing) return preparing;
+      preparing = new Promise((resolve, reject) => {
+        const script = view.document.createElement('script'); script.src = CLIENT_SCRIPT; script.async = true; script.referrerPolicy = 'no-referrer';
+        script.onload = () => { if (oauth()) resolve(); else reject(new Error('AUTH_FAILED')); };
+        script.onerror = () => reject(new Error('AUTH_FAILED'));
+        view.document.head.append(script);
+      }).finally(() => { preparing = null; notify(); });
+      notify(); return preparing;
+    }
+    function login() {
+      if (!enabled || !clientId) fail('OFF');
+      if (!oauth()) fail('NOT_READY');
+      invalidate(); const attempt = epoch; pending = true; error = ''; notify();
+      function rejected() { if (attempt !== epoch || !enabled) return; pending = false; error = 'AUTH_FAILED'; notify(); }
+      try {
+        const client = oauth().initTokenClient({ client_id: clientId, scope: SCOPE, include_granted_scopes: false,
+          callback(response) {
+            if (attempt !== epoch || !enabled) return;
+            if (!response || response.error || typeof response.access_token !== 'string' || !/^[A-Za-z0-9._~-]{1,4096}$/.test(response.access_token) || !Number.isFinite(Number(response.expires_in)) || Number(response.expires_in) <= 0 || (response.token_type && response.token_type !== 'Bearer') || typeof response.scope !== 'string' || response.scope.trim() !== SCOPE) { rejected(); return; }
+            token = response.access_token; expiresAt = now() + Math.min(Number(response.expires_in), 3600) * 1000; pending = false;
+            timer = view.setTimeout(() => { expire(); }, Math.max(1, expiresAt - now())); notify();
+          }, error_callback: rejected });
+        // This call remains synchronous with the user's real button click.
+        client.requestAccessToken({ prompt: 'consent' });
+      } catch (_) { rejected(); }
+    }
+    async function disconnect() {
+      const previous = token; invalidate(); error = ''; notify();
+      if (previous && oauth()) { try { oauth().revoke(previous, () => {}); } catch (_) { /* Memory is cleared even if revocation fails. */ } }
+    }
+    async function fetchValues(id, range) {
+      expire(); if (!enabled || !token) fail('AUTH_REQUIRED');
+      const url = sheetsURL(id, range), attempt = epoch;
+      controller = new view.AbortController(); const abort = controller;
+      try {
+        const response = await view.fetch(url, { method: 'GET', headers: { Authorization: 'Bearer ' + token }, credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer', signal: abort.signal });
+        if (attempt !== epoch || !enabled) fail('CANCELED');
+        if (response.status === 401) { invalidate(); error = 'AUTH_REQUIRED'; notify(); fail('AUTH_REQUIRED'); }
+        if (!response.ok) fail('READ_FAILED');
+        const value = await response.json(); expire();
+        if (attempt !== epoch || !enabled || !token) fail('CANCELED');
+        if (!value || !Array.isArray(value.values)) fail('READ_FAILED'); return value;
+      } catch (caught) {
+        if (attempt !== epoch || abort.signal.aborted) { if (caught.message === 'AUTH_REQUIRED') throw caught; fail('CANCELED'); }
+        if (['INVALID', 'READ_FAILED', 'AUTH_REQUIRED', 'CANCELED'].includes(caught.message)) throw caught;
+        fail('READ_FAILED');
+      } finally { if (controller === abort) controller = null; }
+    }
+    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, revision: () => epoch,
+      subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); } });
+  }
+  function translate(state, key) { return TEXT[key][state.locale === 'en-US' ? 1 : 0]; }
+  function element(state, tag, label, attributes = {}) {
+    const node = state.doc.createElement(tag); if (label !== undefined) node.textContent = label;
+    for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, value); return node;
+  }
+  function notice(state, key) { state.notice.dataset.notice = key; state.notice.textContent = translate(state, key); }
+  function live(state) { return hosts.get(state.host) === state && state.host.isConnected; }
+  function renderStatus(state) {
+    state.pasteButton.disabled = state.busy;
+    if (!state.enable) return;
+    const current = state.session.state();
+    state.enable.checked = state.settings.enabled;
+    state.googleControls.hidden = !state.settings.enabled;
+    state.prepare.hidden = current.ready || current.connected;
+    state.prepare.disabled = current.preparing || state.busy;
+    state.login.hidden = !current.ready || current.connected;
+    state.login.disabled = current.pending || state.busy;
+    state.fetch.hidden = !current.connected; state.fetch.disabled = state.busy || !state.settings.spreadsheet_id;
+    state.disconnect.hidden = !current.connected && !current.pending;
+    state.status.textContent = translate(state, !state.settings.enabled ? 'off' : current.connected ? 'connected' : current.pending || current.preparing ? 'busy' : 'disconnected');
+    state.saveButton.disabled = state.busy;
+    if (current.error === 'AUTH_REQUIRED') notice(state, 'auth'); else if (current.error === 'AUTH_FAILED') notice(state, 'authFailed');
+  }
+  async function history(state) {
+    try {
+      const entries = await state.view.DeviceActual.readMarketImportHistory(state.view, state.catalog);
+      if (!live(state)) return; state.history.replaceChildren();
+      if (!entries.length) { state.history.append(element(state, 'p', translate(state, 'emptyHistory'))); return; }
+      for (const entry of entries.slice(-10).reverse()) {
+        const names = entry.failure_names.length ? ' (' + entry.failure_names.join(', ') + ')' : '';
+        state.history.append(element(state, 'li', entry.at + ' · ' + translate(state, entry.method === 'paste' ? 'methodPaste' : 'methodGoogle') + ' · ' + translate(state, 'success') + ' ' + entry.success_count + ' / ' + translate(state, 'failure') + ' ' + entry.failure_names.length + names + ' · ' + translate(state, 'warning') + ' ' + entry.warning_count));
+      }
+    } catch (_) { if (live(state)) notice(state, 'storage'); }
+  }
+  async function saveSettings(state) {
+    if (state.busy) return;
+    state.busy = true; renderStatus(state);
+    try {
+      const rawId = state.id.value.trim();
+      const value = { schema: 'device-google-sheet-settings/1', enabled: state.settings.enabled, spreadsheet_id: rawId ? extractSpreadsheetId(rawId) : '', range: state.range.value.trim() || DEFAULT_RANGE };
+      await state.view.DeviceActual.sheetSettings(state.view, value);
+      if (!live(state)) return;
+      state.settings = value; state.id.value = value.spreadsheet_id; state.range.value = value.range; notice(state, 'saved');
+    } catch (error) { if (live(state)) notice(state, error.message === 'INVALID' ? 'invalid' : 'storage'); }
+    finally { state.busy = false; if (live(state)) renderStatus(state); }
+  }
+  async function setEnabled(state) {
+    const value = state.enable.checked;
+    // Cancel pending Google reads synchronously before asynchronous device storage.
+    state.settings.enabled = value; state.session.setEnabled(value); renderStatus(state);
+    try { await state.view.DeviceActual.sheetSettings(state.view, state.settings); }
+    catch (_) { if (live(state)) { state.settings.enabled = false; state.session.setEnabled(false); notice(state, 'storage'); renderStatus(state); } }
+  }
+  async function importQuotes(state, method) {
+    if (state.busy) return;
+    state.busy = true; state.summary.textContent = ''; renderStatus(state);
+    const revision = state.session.revision();
+    const current = () => live(state) && (method === 'paste' || (state.settings.enabled && state.session.revision() === revision && state.session.state().connected));
+    try {
+      let now = new Date().toISOString(), result;
+      if (method === 'paste') result = state.view.GoogleSheetCore.parsePaste(state.paste.value, state.catalog, { now });
+      else {
+        const payload = await state.session.fetchValues(state.settings.spreadsheet_id, state.settings.range);
+        if (!current()) fail('CANCELED'); now = new Date().toISOString(); result = state.view.GoogleSheetCore.parseValues(payload.values, state.catalog, { now });
+      }
+      if (!current()) fail('CANCELED');
+      await state.view.DeviceActual.applyMarketImport(state.view, state.catalog, result, { now, method, isCurrent: current });
+      if (!current()) return;
+      if (method === 'paste') state.paste.value = '';
+      const failed = result.failures.map(row => row.name);
+      state.summary.dataset.successCount = result.successes.length; state.summary.dataset.failureCount = result.failures.length;
+      const warnings = [...new Set(result.warnings)].map(code => translate(state, code === 'DUPLICATE_CODE_NOT_AVAILABLE' ? 'duplicate' : 'unknown'));
+      state.summary.textContent = translate(state, 'success') + ' ' + result.successes.length + ' / ' + translate(state, 'failure') + ' ' + result.failures.length + (failed.length ? ' (' + failed.join(', ') + ') · NOT_AVAILABLE' : '') + (warnings.length ? ' · ' + translate(state, 'warning') + ' ' + result.warnings.length + ': ' + warnings.join(' ') : '');
+      state.notice.textContent = ''; state.notice.dataset.notice = 'imported'; await history(state);
+    } catch (error) {
+      if (live(state)) notice(state, error.message === 'AUTH_REQUIRED' ? 'auth' : ['CANCELED', 'CANCELLED'].includes(error.message) ? 'canceled' : error.message === 'READ_FAILED' ? 'readFailed' : ['INVALID', 'CATALOG', 'INPUT'].includes(error.message) ? 'invalid' : 'storage');
+    } finally { state.busy = false; if (live(state)) renderStatus(state); }
+  }
+  async function mount(host, options) {
+    const previous = hosts.get(host); if (previous && previous.unsubscribe) previous.unsubscribe();
+    const doc = host.ownerDocument, view = doc.defaultView;
+    const state = { host, doc, view, catalog: options.catalog, locale: options.locale === 'en-US' ? 'en-US' : 'ko-KR', busy: false };
+    hosts.set(host, state);
+    state.root = element(state, 'section', undefined, { class: 'google-sheet-quotes card', 'data-google-sheet-quotes': '' });
+    state.root.append(element(state, 'h2', translate(state, 'title')), element(state, 'p', translate(state, 'detail')));
+    state.notice = element(state, 'p', '', { 'data-sheet-notice': '', role: 'status', 'aria-live': 'polite' });
+    host.replaceChildren(state.root);
+    try { state.settings = await view.DeviceActual.sheetSettings(view); }
+    catch (_) { state.settings = { schema: 'device-google-sheet-settings/1', enabled: false, spreadsheet_id: '', range: DEFAULT_RANGE }; state.storageFailed = true; }
+    if (!live(state)) return;
+    if (options.clientId) {
+      let shared = sessions.get(view);
+      if (!shared || shared.clientId !== options.clientId) { if (shared) await shared.session.disconnect(); shared = { clientId: options.clientId, session: createSession(view, { clientId: options.clientId }) }; sessions.set(view, shared); }
+      state.session = shared.session; state.session.setEnabled(state.settings.enabled);
+      const toggle = element(state, 'label', undefined, { class: 'sheet-toggle' });
+      state.enable = element(state, 'input', undefined, { type: 'checkbox', 'data-sheet-enabled': '' }); toggle.append(state.enable, element(state, 'span', translate(state, 'enable'))); state.root.append(toggle);
+      state.googleControls = element(state, 'div', undefined, { 'data-sheet-google-controls': '' });
+      const form = element(state, 'form', undefined, { class: 'sheet-settings-form' });
+      const idLabel = element(state, 'label', translate(state, 'id')), rangeLabel = element(state, 'label', translate(state, 'range'));
+      state.id = element(state, 'input', undefined, { type: 'text', 'data-sheet-id': '', autocomplete: 'off', spellcheck: 'false', maxlength: '512' }); state.id.value = state.settings.spreadsheet_id;
+      state.range = element(state, 'input', undefined, { type: 'text', 'data-sheet-range': '', autocomplete: 'off', spellcheck: 'false', maxlength: '160' }); state.range.value = state.settings.range;
+      idLabel.append(state.id); rangeLabel.append(state.range);
+      state.saveButton = element(state, 'button', translate(state, 'save'), { type: 'submit', 'data-sheet-action': 'save' }); form.append(idLabel, rangeLabel, state.saveButton); form.addEventListener('submit', event => { event.preventDefault(); void saveSettings(state); });
+      const actions = element(state, 'div', undefined, { class: 'sheet-actions' });
+      for (const action of ['prepare', 'login', 'fetch', 'disconnect']) { state[action] = element(state, 'button', translate(state, action), { type: 'button', 'data-sheet-action': action }); actions.append(state[action]); }
+      state.status = element(state, 'p', '', { 'data-sheet-status': '', role: 'status' });
+      state.googleControls.append(form, element(state, 'p', translate(state, 'privacy')), actions); state.root.append(state.googleControls, state.status);
+      state.enable.addEventListener('change', () => { void setEnabled(state); });
+      state.prepare.addEventListener('click', () => { void state.session.prepare().then(() => { if (live(state) && state.settings.enabled) notice(state, 'ready'); }).catch(() => { if (live(state)) notice(state, 'authFailed'); }); });
+      state.login.addEventListener('click', () => { try { state.session.login(); } catch (_) { notice(state, 'authFailed'); } });
+      state.fetch.addEventListener('click', () => { void importQuotes(state, 'google-sheet'); });
+      state.disconnect.addEventListener('click', () => { void state.session.disconnect(); notice(state, 'removed'); });
+    } else {
+      const shared = sessions.get(view); if (shared) shared.session.setEnabled(false);
+      state.session = { revision: () => 0 }; state.settings.enabled = false;
+    }
+    const pasteBox = element(state, 'section', undefined, { class: 'sheet-paste-box' }); pasteBox.append(element(state, 'h3', translate(state, 'pasteTitle')), element(state, 'p', translate(state, 'pasteHelp')));
+    const pasteLabel = element(state, 'label', translate(state, 'pasteLabel')); state.paste = element(state, 'textarea', undefined, { 'data-sheet-paste': '', rows: '5', maxlength: '65536', autocomplete: 'off', spellcheck: 'false' }); pasteLabel.append(state.paste);
+    state.pasteButton = element(state, 'button', translate(state, 'paste'), { type: 'button', 'data-sheet-action': 'paste' }); state.pasteButton.addEventListener('click', () => { void importQuotes(state, 'paste'); }); pasteBox.append(pasteLabel, state.pasteButton); state.root.append(pasteBox);
+    state.summary = element(state, 'p', '', { 'data-sheet-summary': '', role: 'status', 'aria-live': 'polite' });
+    state.history = element(state, 'ul', undefined, { 'data-sheet-history': '' }); state.root.append(state.notice, state.summary, element(state, 'h3', translate(state, 'history')), state.history);
+    if (options.clientId) {
+      state.unsubscribe = state.session.subscribe(() => { if (live(state)) renderStatus(state); else if (state.unsubscribe) state.unsubscribe(); });
+      renderStatus(state);
+    }
+    if (state.storageFailed) notice(state, 'storage'); else await history(state);
+  }
+  return Object.freeze({ mount, extractSpreadsheetId, sheetsURL, createSession });
+});
