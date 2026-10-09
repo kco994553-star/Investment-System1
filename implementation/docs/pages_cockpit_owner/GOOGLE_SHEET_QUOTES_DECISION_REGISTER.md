@@ -219,3 +219,30 @@ force push·ruleset·운영 모드 변경도 포함하지 않는다. 기존 공�
 **PR #84 → PR #85 순서로 병합**하도록 승인했다. 이 승인은 두 문서 PR에만 적용한다.
 병합 이후 **다음 작업은 대기**하며, 다른 PR 병합·force push·ruleset·
 `AUTONOMY_MODE` 변경은 금지한다. 기존 기록과 Yahoo 약관 판정은 그대로 보존한다.
+
+
+## GSQ-008 — 26E 카드 없는 Workers Free·Google access token 본인 인증 결정 (2026-10-09 UTC)
+
+권한 근거는 **2026-10-09 이번 대화의 사용자 명시 결정**이다. 기존 GSQ-001~007과
+GSQ-007의 사용자 인지·수용 기록은 그대로 보존하고 이번 결정을 끝에 추가한다.
+GSQ-007의 Yahoo 약관 판정인 **무허가 자동 조회 부적합**과 이에 대한 사용자
+인지·수용은 유지한다. 이번 결정은 중계·본인 인증 방식의 문서상 변경이며
+공급자의 사전 허가를 얻었다는 의미가 아니다.
+
+| 항목 | 이번 사용자 결정과 승인 범위 |
+| --- | --- |
+| 중계·비용 | **Cloudflare Zero Trust/Access는 무료 요금제도 카드 등록을 요구하므로 사용하지 않는다. Workers Free만 사용하며 비용 0·카드 없음이 조건**이다. 유료 전환·유료 add-on·카드 등록을 진행하지 않는다. |
+| 기존 앱 로그인 | 앱의 기존 **Google Identity Services** 로그인에 scope **`email`**을 추가하는 방향을 기록한다. 기존 **`https://www.googleapis.com/auth/spreadsheets.readonly`**는 유지한다. |
+| 앱 → Worker | 앱이 로그인으로 받은 **Google access token**을 본인 인증 검증을 위해 Worker로 전달한다. 이 경로는 기존 문서의 Sheets token 미전달·ID-token/Access 방식에 대한 최신 변경이다. 토큰을 Yahoo나 다른 가격 공급자로 전달하지 않는다. |
+| Worker 검증 | Worker가 **Google tokeninfo**로 `aud`가 **기존 OAuth 클라이언트 ID**, `email`이 **사용자 본인 이메일**, `email_verified`가 **참**, 만료 정보가 **유효·미만료**인지 모두 확인한다. 앱의 자기 주장이나 Origin만으로 인증하지 않는다. 실제 클라이언트 ID·본인 이메일·토큰 값은 이 문서에 넣지 않는다. |
+| 거부 조건 | 위 조건 중 하나라도 불일치·누락·미확인이거나 토큰이 만료된 경우 거부한다. tokeninfo 오류·검증 실패도 허용으로 대체하지 않고 거부한다. 다른 Google 계정의 정상 로그인만으로는 본인 접근을 허용하지 않는다. |
+| 토큰 취급 | 앱과 Worker에서 검증에 필요한 휘발성 메모리로만 취급한다. **토큰 저장·로그 출력 금지**. 파일·DB·브라우저 지속 저장·캐시·관측/오류 로그·공개 저장소·PR·Actions 산출물에 토큰을 넣지 않는다. |
+| CORS | 허용 Origin은 **`https://kco994553-star.github.io` 하나뿐**이다. wildcard·다른 Origin은 허용하지 않는다. CORS는 본인 인증을 대신하지 않으며 허용 Origin의 요청도 tokeninfo 검증을 통과해야 한다. |
+| 보류 대안 | **비밀 접속 코드 방식은 보류**한다. 코드를 생성·등록·배포하지 않는다. |
+| 설계 문서 반영 | [개인 전용 무료 주가 경로 조사·설계](../daily_data_pipeline/PRIVATE_FREE_PRICE_PATH_RESEARCH.md)의 기존 인증 절을 수정하지 않고, 끝에 **GSQ-008에 따른 변경** 메모 절만 추가한다. 충돌하는 중계·인증·토큰 전달 선택은 이번 결정이 우선한다. |
+
+이번 승인은 **문서 PR 1개 작성과 append-only 결정 기록**이다. 앱 scope·Worker·
+Google tokeninfo·CORS의 실제 구현·설정·인증 호출·가입·배포는 실행하지 않는다.
+문서 PR은 **병합 대기**이며 별도 승인이 필요하다. 다른 PR 병합·force push·
+ruleset·`AUTONOMY_MODE` 변경은 금지한다. 가격·가격 기반 파생값의 공개 금지와
+SEC·DART 공개 재무 경로 등 GSQ-007의 나머지 경계는 유지한다.

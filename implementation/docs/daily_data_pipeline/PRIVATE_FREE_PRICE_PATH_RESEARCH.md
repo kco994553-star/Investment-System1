@@ -237,3 +237,31 @@ Free 선택·다른 구독 없음·초과 시 중단·주기적 요금/한도 �
 
 **추천은 허가·Free 조건이 충족된 출처만 본인 경로에서 낮은 빈도로 조회하고, 확인되지 않으면 결측/수동을 유지하는 방식**이다.
 이 PR은 문서만이며 병합 승인 대기다. 병합이 공급자 허가·키 발급·중계 배포·가격 수집·QGV 실행 승인은 아니다.
+
+
+## GSQ-008에 따른 변경
+
+최신 사용자 결정은 [26E GSQ-008](../pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md)에 append-only 기록한다.
+**기존 인증 절과 위 본문은 수정하지 않고 이 메모만 끝에 추가한다.** 아래 변경은
+기존 본문의 Zero Trust/Access·본인 ID-token 검증 후보 및 Sheets token을 Worker에
+전달하지 않는 선택에 우선하는 최신 중계·인증 결정이다.
+
+- **중계:** 카드 등록을 요구하는 Cloudflare Zero Trust/Access는 사용하지 않는다.
+  **Workers Free만 사용하며 비용 0·카드 없음**을 조건으로 둔다. 유료 전환·유료 add-on·카드 등록은 진행하지 않는다.
+- **로그인 scope:** 기존 Google Identity Services 로그인에 **`email`**을 추가한다.
+  기존 **`https://www.googleapis.com/auth/spreadsheets.readonly`**는 유지한다.
+- **검증 흐름:** **앱 → Worker로 Google access token 전달 → Worker가 Google tokeninfo로 검증**한다.
+  `aud`는 기존 OAuth 클라이언트 ID, `email`은 사용자 본인 이메일과 일치해야 하며,
+  `email_verified`는 참이고 만료 정보는 유효·미만료여야 한다. 하나라도 불일치·누락·
+  미확인·만료 또는 tokeninfo 오류이면 거부한다. 실제 ID·이메일·토큰 값은 문서에 넣지 않는다.
+- **토큰:** 앱과 Worker의 필요한 휘발성 메모리에서만 취급하며 **저장·로그 출력 금지**다.
+  지속 저장·캐시·관측/오류 로그·공개 산출물에 넣거나 Yahoo/다른 가격 공급자로 전달하지 않는다.
+- **CORS:** **`https://kco994553-star.github.io`만 허용**한다. wildcard·다른 Origin은
+  허용하지 않는다. CORS 허용 여부와 별개로 모든 요청에 본인 tokeninfo 검증이 필요하다.
+- **대안:** 비밀 접속 코드 방식은 **보류**한다.
+
+이번 변경은 문서상 결정 기록이다. 앱 scope·Worker·tokeninfo·CORS의 실제 구현·
+설정·인증 호출·가입·배포는 실행하지 않으며 **문서 PR 1개는 병합 대기**다.
+GSQ-007의 **Yahoo 무허가 자동 조회 부적합 판정과 사용자 인지·수용** 및 가격/파생값
+공개 금지·SEC/DART 공개 재무 경로는 유지한다. 다른 PR 병합·force push·ruleset·
+`AUTONOMY_MODE` 변경은 금지한다.
