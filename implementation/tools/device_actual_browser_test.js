@@ -58,6 +58,10 @@ function checkNormalizedImport(stored, imported, prior, started, ended) {
   requireCheck(!!stored, "import did not persist an ACTUAL snapshot");
   const preserved = (snapshot) => {
     const copy = { ...snapshot };
+    if (copy.schema === 'device-actual-holdings/2') {
+      copy.schema = 'device-actual-holdings/1';
+      delete copy.market_data;
+    }
     delete copy.version;
     delete copy.available_at;
     return JSON.stringify(canonical(copy));
@@ -294,10 +298,15 @@ async function main() {
         await check(`${locale}: export is a local Blob kept entirely in memory`, async () => {
           exported = await exportMemory(page, root);
           const payload = JSON.parse(exported);
-          requireCheck(JSON.stringify(canonical(payload)) === JSON.stringify(canonical(original)), "export differs from the saved envelope");
-          requireCheck(payload.schema === "device-actual-holdings/1" && payload.kind === "ACTUAL" &&
+          const actualPart = { ...payload, schema: 'device-actual-holdings/1' };
+          delete actualPart.market_data;
+          requireCheck(JSON.stringify(canonical(actualPart)) === JSON.stringify(canonical(original)), "export differs from the saved holdings envelope");
+          requireCheck(payload.schema === "device-actual-holdings/2" && payload.kind === "ACTUAL" &&
             payload.ownership === "USER_DEVICE_ONLY" && typeof payload.version === "number" &&
-            Array.isArray(payload.themes) && payload.themes.some((theme) => theme.holdings.length > 0), "export envelope is malformed");
+            Array.isArray(payload.themes) && payload.themes.some((theme) => theme.holdings.length > 0) &&
+            payload.market_data?.schema === 'device-market-data/1' &&
+            Array.isArray(payload.market_data.quotes) && Array.isArray(payload.market_data.fx) &&
+            !('api_key' in payload) && !('api_settings' in payload), "export envelope is malformed");
         });
 
         for (const fault of ["quota", "abort"]) {

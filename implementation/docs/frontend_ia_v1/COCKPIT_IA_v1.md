@@ -1,6 +1,6 @@
 # Investment-System1 · Cockpit IA v1
 
-기준일: 2026-10-09 · 범위: 정보구조·화면 요구사항 문서만 · 사용자 PR 병합 승인 필요
+기준일: 2026-10-09 · 기준 canonical: `011b75648f48f2890736d37c4a354f57004cf1f0` (PR #70 병합 이후) · 범위: 정보구조·화면 요구사항 문서만 · 사용자 PR 병합 승인 필요
 
 이 문서는 Cockpit의 새 화면·탐색 구조 기준이다. 구현 완료, 데이터 가용성, 모델 검증, 운영 적격성 또는 투자성과를 인증하지 않는다. 코드·데이터·계산·계약·워크플로·자동화 control을 변경하지 않는다. 사용자 병합 전에는 제안 문서이며, 병합 후에도 구현·배포 권한을 부여하지 않는다. 디자인 출처 및 접근 경계는 [DESIGN_SOURCE.md](DESIGN_SOURCE.md)를 따른다.
 
@@ -58,9 +58,9 @@ GICS(산업), 전략 테마, 투자 유형은 서로 다른 세 축이다. 테�
 | S06 | 리더보드 | S02 | 기본/내 프로필, 필터 8개, 9열 순위표, 재평가 정상·관찰·근접·재평가, 과거 순위·기업 비교·QGV 수정·코호트 성과 |
 | S07 | 뉴스·관계망 | S02 | 뉴스 카드(상태·구조적/일시적 호재/악재·범위·영향 6항목), 관계망 그래프, 잠재 영향경로. Investment Overlay 기본 OFF |
 | S08 | 기술적 분석 | 하단 메뉴 기술 | 차트 / 상태 / 실행 / 기록, 지표군 6개(추세·모멘텀·거래량·상대강도·구조·변동성), 모델/연구용 구분, 시나리오 경로(확률·신뢰도·무효화), 실행 구간. 주문 기능이 아닌 읽기 전용 분석 |
-| S09 | 매크로 | 하단 메뉴 매크로 | 정상·경고·비상, 국면, 공식 8축 Growth·Inflation·Liquidity·Monetary Policy·Credit·Labor·Fiscal·FX와 축별 6상태, 국면 이력, 신호→근거, 시나리오, 전달 요인→경제→업종→기업→QGV, 업종 영향, 포트폴리오 매크로 노출 candidate |
+| S09 | 매크로 | 하단 메뉴 매크로 | 정상·경고·비상, 국면, 공식 8축 Growth·Inflation·Liquidity·Monetary Policy·Credit·Labor·Fiscal·FX와 축별 6상태 보존·단일 점수 없음(임금은 Labor, 생산성은 Growth의 세부 지표), 주식시장 상태 참고 카드(거시 축 아님), 국면 이력, 신호→근거, 시나리오, 전달 요인→경제→업종→기업→QGV, 업종 영향, 포트폴리오 매크로 노출 candidate |
 | S10 | 검증·연구 | 하단 메뉴 검증 | 모의투자 / 백테스트 / 전진검증 / Track Record / 실험기록 / 리서치, 기준값 100 자산곡선·series on/off, 지표 6개, 분기 성과, calibration, Track A 기준선. Holdout 사용 선택 아님 |
-| S11 | 계정·금융기록·설정 | 홈 우측 설정 아이콘 | 로그인 준비중, 계좌 마지막 4자리만, 보유/거래/현금, 대조 6상태, append-only 변경 이력, 주문 불가 안내, 시세 입력·API 키 기기 내만/백업 제외·백업/삭제 |
+| S11 | 계정·금융기록·설정 | 홈 우측 설정 아이콘 | 로그인 준비중, 계좌 마지막 4자리만, 보유/거래/현금, 대사 6상태, append-only 변경 이력, 주문 불가 안내, 시세 입력·API 키 기기 내만/백업 제외·백업/삭제 |
 | S12 | PC 홈 | PC | 좌측 사이드바 오늘 / QGV 4하위 그룹 / 기술 / 매크로 / 검증, S01 내용 + 이탈표·변동 종목 |
 
 ### 3.1 S01·S12: 요약은 판단을 합치지 않는다
@@ -130,18 +130,33 @@ Track A 기준선을 사용한다. 이 IA는 Holdout 사용을 선택하지 않�
 
 로그인은 준비중이라는 시안 요구이며 실제 인증 기능의 완료를 뜻하지 않는다. 계좌는 마지막 4자리만 표시한다. 보유·거래·현금 기록과 수정 이유·변경 전후는 append-only 이력으로 보존한다. 실제 계좌번호·잔고·거래·키를 문서나 예시로 기록하지 않는다.
 
-| 대조 코드 | 표시 의미·경계 |
+| 대사 코드 | 표시 의미·경계 |
 |---|---|
 | MATCH | 비교 가능한 근거가 일치하는 경우의 요구 상태 |
 | MISMATCH | 비교 가능한 근거가 불일치하는 경우의 요구 상태 |
 | NOT_AVAILABLE | 필요한 근거를 사용할 수 없음 |
 | NOT_COMPARABLE | 기준·범위·시점 등이 달라 직접 비교할 수 없음 |
 | PARTIAL | 일부 근거만 확인 가능 |
-| NO_DATA | 데이터 없음. 대조 완료·일치 또는 확인된 0을 뜻하지 않음 |
+| NO_DATA | 데이터 없음. 대사 완료·일치 또는 확인된 0을 뜻하지 않음 |
 
-2026-10-09의 26E 선택은 **① 앱에서 시세·환율 수동 입력 + KRW 기준 표시**다. 이 문서는 그 선택의 기록이며 입력·계산·환율 연결을 구현하지 않는다. 다른 ②/③ 대안은 채택하지 않았다. 원본 통화·환율·입력 기준시점을 보존하고 수동 입력을 LIVE 수집으로 포장하지 않는다.
+2026-10-09 사용자 결정: **시세·환율 수동 입력 + KRW 기준**은 [PR #70](https://github.com/kco994553-star/Investment-System1/pull/70)에서 구현·기록 완료됐다. S11은 [기존 수동 입력·기기 저장·백업/삭제 상태](../manual_quotes_owner/README.md)를 연결한다. **Alpha Vantage는 REVIEW ONLY·API OFF**이며 [기존 검증 기록](../pr70_approved_owner/ALPHA_VANTAGE_FEASIBILITY_26E.md)을 상태 근거로 연결한다. 이번 문서 PR에서는 시세·환율 방식의 재선정·재연구·구현을 다루지 않는다.
 
-시세 입력, 기기 내 API 키, 백업·삭제는 향후 설정 요구사항이다. API 키는 사용자 기기 내에만 두고 백업에서 제외한다. 코드·서버·로그·문서·공개 artifact에 저장하지 않는다. 보유·거래·현금·대조·변경 이력도 사용자 개인정보이며 공개 배포에 넣지 않는다. 삭제·백업의 정확한 범위·예외·복구 안내는 향후 사용자 검토를 거쳐야 한다. “주문 기능 없음” 안내를 유지한다.
+API 키는 사용자 기기에만 저장하고 백업에서 제외한다. 실제 보유·시세·환율·계좌·키 값은 저장소·빌드·CI·로그에 기록하지 않는다. 보유·거래·현금·대사·변경 이력은 읽기 전용 금융 기록 요구이며 계좌 연결·인증 구현 완료를 뜻하지 않는다. “주문 기능 없음” 안내와 READ_ONLY hard gate를 유지한다. 매수·매도·주문·이체·출금 기능을 설계하지 않는다. 원본 통화·입력 시점 등 실제 상태는 링크된 기존 기록을 기준으로 표시하고 결측은 `NOT_AVAILABLE`이다.
+
+## 사용자 결정 기록 (2026-10-09)
+
+- 매크로 축은 `Macro System · Latest Consolidated Record v0.1.4 Candidate.md` §15의 **기존 공식 8축을 유지**한다. 사용자 확인으로 시안도 8축으로 수정 완료됐다. 임금은 Labor, 생산성은 Growth의 세부 지표이며 주식시장 국면은 거시 축이 아닌 참고 카드다. 축 추가는 별도 방법론 버전에서만 다룬다. 축별 Level / Direction / Momentum / Surprise / Stress / Confidence의 6상태를 보존하며 단일 점수로 합치지 않는다.
+- 시세·환율 결정은 **수동 입력 + KRW 기준, PR #70 구현·기록 완료**다. Alpha Vantage는 **REVIEW ONLY·API OFF**다. 이번 PR은 이를 다시 검토하지 않으며 S11의 기존 기록 링크만 상태 근거로 사용한다.
+
+## OPEN — 상세 시안과 배치 확인
+
+| 미정 항목 | 상태 | 사용자 결정·확인 필요 |
+| --- | --- | --- |
+| S02 전략 프로필 상세 화면 | OPEN · NOT_AVAILABLE | 시안 없음. 상세 화면 제공·배치 확인 필요 |
+| S02 모델 포트폴리오 상세 화면 | OPEN · NOT_AVAILABLE | 시안 없음. 상세 화면 제공·배치 확인 필요 |
+| S02 관심 기업 상세 화면 | OPEN · NOT_AVAILABLE | 시안 없음. 상세 화면 제공·배치 확인 필요 |
+| S02 13F 상세 화면 | OPEN · NOT_AVAILABLE | 시안 없음. 상세 화면 제공·배치 확인 필요 |
+| S03 요약 8칸·보유 12열, S06 필터 8개·순위 9열, S07 영향 6항목, S10 지표 6개의 정확한 원문 매핑 | OPEN · REQUIREMENT_IDENTIFIED_NOT_REAUDITED | 지정 개수는 유지하되 세부 명칭·결합 배치는 시안 및 기존 요구의 이관 확인 전 임의로 정하지 않음 |
 
 ## 4. 기존 스택과 시각 기준
 
@@ -153,7 +168,7 @@ Track A 기준선을 사용한다. 이 IA는 Holdout 사용을 선택하지 않�
 | 브라우저 검증 | 기존 Playwright 1.58.2. 본 문서의 작성은 새 브라우저 테스트 완료를 뜻하지 않는다. |
 | 구조 | 기존 정적·native JS/CSS 접근을 존중한다. 프레임워크·라이브러리 교체 또는 신규 설치를 결정하지 않는다. |
 
-저장소 확인 근거: `implementation/experiments/chart-contract-v0.1/package.json`, 같은 경로의 `README.md`. 실제 검증은 후속 구현 PR에서 390px·1440px, 종목 이동·뒤로·키보드 접근·빈 상태·시점·배지·표 내부 스크롤·차트 근거 보존을 대상으로 별도 수행한다. 이전 360/390·1280 검증을 새 1440px 합격으로 간주하지 않는다.
+저장소 확인 근거: `implementation/experiments/chart-contract-v0.1/package.json`, `implementation/experiments/chart-contract-v0.1/README.md`. 실제 검증은 후속 구현 PR에서 390px·1440px, 종목 이동·뒤로·키보드 접근·빈 상태·시점·배지·표 내부 스크롤·차트 근거 보존을 대상으로 별도 수행한다. 이전 360/390·1280 검증을 새 1440px 합격으로 간주하지 않는다.
 
 | 토큰 | 값 |
 |---|---|
@@ -224,6 +239,9 @@ Track A 기준선을 사용한다. 이 IA는 Holdout 사용을 선택하지 않�
 | A33 | 관계망 줌/팬/드래그/초점/확장/필터, Claim/Evidence 추적·관계/거래 상태·Fact/Impact 구분 | `Investment-System1 · RIG News Architecture v0.1.md` Fact Graph vs Impact Graph·P1~P4 기록; `implementation/docs/web_mvp/CONTRACT.md` M4 | S07. 그래프를 시간·가격 차트로 재사용하지 않음 |
 | A34 | 분류별 회사 exposure·sensitivity, base vs conditional, stress Historical/Hypothetical/Reverse·no invented probability | `Macro System · Latest Consolidated Record v0.1.4 Candidate.md` §18·20·22 | S09 candidate 확장. Exposure≠Sensitivity·Scenario≠Stress |
 | A35 | Macro PIT vintages·ablation/attribution·국면/전달/portfolio 기여별 Track Record·forward lifecycle/model risk | 같은 기록 §23~27 | S09/S10 candidate 상세 배치. 자동 정책변경·모델 승격 금지 |
-| A36 | Frozen 70 prompt 검색/필터/변수미리보기/복사·관심그룹 export/import·deep-link/back·키보드 접근 | `implementation/docs/web_mvp/CONTRACT.md` M1·M5~M7 | S02/S10/S11. 기존 사용자 기능 이관 위치 미확정; Frozen prompt 본문 변경 금지 |
+| A36 | Frozen 70 prompt 검색/필터/starter/bundle/변수미리보기/복사·관심기업 단일목록·그룹 생성/이름/삭제/멤버십·기기 저장/reload/저장실패·export/import merge·deep-link/back·키보드 접근 | `implementation/docs/web_mvp/CONTRACT.md` W-D04/W-D07·M1·M5~M7; `implementation/docs/web_mvp/README.md` Personal preferences | S02/S10/S11. 기존 사용자 기능 배치 확인; Frozen prompt 본문·투자분류 변경, 계정 동기화 또는 새 생성 기능 없음 |
+| A37 | QGV Record 종류·Revision 이유/방법론 변경 구분·평가창/Price·Total·Benchmark Return 분리·Q/G/V/Driver/Portfolio Decision 검증·Failure Taxonomy·원 Snapshot drill-down·감사 이력 | `QGV Track Record · Specification v1.0.md` §2~17 | S04/S05/S06/S10. 상세 배치 확인; 기존 평가창·지표를 새 정책·계산·완료 주장으로 승격하지 않음 |
+| A38 | Official/Custom 분리·immutable Strategy Version/참조·Model/Actual/Gap·Personal Fit 다축·Dashboard·freshness/identity 제한·Preview/Sandbox/Backtest/Forward/Actual 구분 | `Investment-System1 · PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md` §7~9·15~23 | S02 OPEN/S04/S11. 기존 근거 표시·배치 확인만; editor·새 가중치·수식·종합점수·계좌/주문 권한 추가 없음 |
+| A39 | canonical ID 기반 선택·ticker 충돌 후보 분리·검색순위≠QGV순위·locale 변경의 원본/순위/식별 불변·source language≠display locale·fallback·Frozen prompt 원문 유지 | `implementation/docs/global_language_search/CONTRACT.md` Language boundary·Search boundary·Deterministic ranking and fuzzy policy·Integration and protection | 공통 탐색/S04/S07/S11. 기존 동작 이관 위치 확인; 새 검색·번역·fuzzy 정책 채택 아님 |
 
 부록에 인용한 도메인 사양·계약은 화면 기준이 바뀌었다는 이유로 superseded 처리하지 않는다. 예전 숫자·가중치·threshold·추정·상태는 원문 보존 대상이지 새 IA가 승인한 투자정책이 아니다.

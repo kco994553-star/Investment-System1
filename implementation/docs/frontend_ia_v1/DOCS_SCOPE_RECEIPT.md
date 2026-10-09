@@ -1,5 +1,7 @@
 # Cockpit IA v1 문서 전용 작업 범위 영수증
 
+다음 「PR #70 이후 문서 전용 범위」가 현재 작업 기준이다. 아래 최초 작업 기록은 당시 이력으로 보존하며, 과거 write-set·검증 결과를 현재 범위·결과로 재사용하지 않는다.
+
 - 사용자 권한: 2026-10-09 「Cockpit IA v1 공식화 + 차트 목록 보강 + 26E 결정」 문서 전용 PR 지시.
 - 기준 canonical: `d71243bcc79139149541f3627e8f227a32c463c5` (PR69 병합 이후).
 - 작업 브랜치: `docs/cockpit-ia-v1`.
@@ -31,3 +33,13 @@
 - 로컬 가드 단위검증 37 tests OK. 기존 전체 Python 회귀 745 passed, 217 subtests passed. 관측값 수집·Holdout 선택/사용·방법론 변경 없이 기존 테스트만 실행했다.
 - 검토 후보의 개인정보 가드·repository guard PASS, AUTONOMY_MODE READ_ONLY. GitHub repository-guard도 검토 후보에서 success; 이 반환 기록 이후 최종 HEAD의 CI는 별도 확인해야 한다. CI PASS는 gate 승격이나 API 채택 승인이 아니다.
 - 남은 항목: 사용자 PR 병합 검토, 상세 시안 OPEN 4개, 이관 확인36묶음, 기기 직접 API의 미확인 gate와 별도 사용자 선택. 후속 구현·배포는 실행하지 않는다.
+
+## PR #70 이후 문서 전용 범위 (2026-10-09)
+
+- 사용자 지시: 「Cockpit IA v1 공식화 + 차트 목록 보강 (문서 전용 PR)」. 기준 canonical은 `011b75648f48f2890736d37c4a354f57004cf1f0`이며, 작업 브랜치는 `docs/cockpit-ia-v1`이다.
+- 결과는 기존 [PR #72](https://github.com/kco994553-star/Investment-System1/pull/72) 한 개를 갱신한다. 기존 브랜치 이력을 보존하며 force push·canonical 병합을 하지 않는다. 병합은 사용자 승인 대기다.
+- 현재 write-set은 이 폴더의 IA·디자인 출처·범위 영수증, 과거 IA Markdown 3개의 안내 한 줄, `implementation/experiments/chart-contract-v0.1/CHART_INVENTORY.md`와 문서용 `implementation/experiments/chart-contract-v0.1/chart_inventory.json` 동기화뿐이다. 실행 데이터·코드·계산식·워크플로·DOCX는 변경하지 않는다.
+- 최초 작업의 `pages_cockpit_owner` 시세 조사 문서 변경은 현재 기준 canonical 내용으로 되돌린다. 당시 커밋 이력은 보존하지만 이번 PR의 최종 변경 범위에는 포함하지 않는다. 시세·환율 결정은 S11의 PR #70 구현 기록과 Alpha Vantage REVIEW ONLY·API OFF 기록 링크로만 연결한다.
+- 신규 차트 요구는 L01–L07·L09의 8개이며 L08은 기존 K01 연결이다. 총 121개이고 기존 핵심 분모 81·113개 항목·감사 결과는 유지한다. 모든 새 요구·연결은 `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`, 공급처는 `UNDECIDED`다.
+- 검증은 현재 최종 문서 내용·원문 바이트·DOCX·상대 링크·기존 inventory 보존·개인정보 가드·repository-guard와 별도 독립 문서 검토를 대상으로 새로 수행한다. 위 최초 작업의 테스트·CI 결과는 현재 HEAD의 증거가 아니다.
+- READ_ONLY 유지. 상세 시안 OPEN 및 이관 배치 확인은 후속 문서 검토 사항이며 구현·배포·새 계산법·API 채택 권한을 부여하지 않는다.

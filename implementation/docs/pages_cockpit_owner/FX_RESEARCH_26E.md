@@ -1,15 +1,5 @@
 # Official foreign exchange sources for KRW USD and JPY
 
-## 현재 사용자 선택 (2026-10-09)
-
-**26E 결정 = ① 시세·환율 수동 입력 + KRW 기준 표시 (사용자 선택, 2026-10-09).**
-수동 입력 범위만 READY이며 자동 수집·공개 JSON(②)·실시간 API(③)는 미채택이다.
-아래 조사는 선택 전 자료로 보존한다. 아래의 USD 대안은 현재 선택이 아니며,
-과거 메타데이터 요청 영수증은 이번 문서 전용 PR의 새 관측값 호출이 아니다.
-[결정 영수증·SSoT §8/§26D 영향](DEPLOYMENT_DECISION_26E.md),
-[기기 직접 API의 미채택 후속 조사](DEVICE_DIRECT_QUOTES_RESEARCH.md).
-이번 작업은 환율·계산식·입력값·앱 코드·데이터를 변경하지 않는다.
-
 Official sources and documentation were fetched on 2026-10-09. ECB reference rates are a strong public daily FX candidate; Bank of Korea ECOS offers direct won-based series with an issued API key. A manual, device-local FX option could support KRW and USD valuation after separate selection and implementation while preserving an explicit N/A result whenever a required conversion rate is missing. This research changes no application or repository source.
 
 ## Confirmed ECB facts

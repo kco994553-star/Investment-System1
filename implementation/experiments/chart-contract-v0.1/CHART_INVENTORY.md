@@ -1,4 +1,4 @@
-# 전체 차트·시각화 요구 목록 v0.3
+# 전체 차트·시각화 요구 목록 v0.2
 
 기준: canonical `b8e39a2196a6d7794a04a0cd5393c68329e126ca`, 기존 통합시험 `acaf1b5a82859ac2750a130ebe88f8b4d272ac66`, chart owner PR41. 최신 PR 변경은 별도 note이며 canonical 구현으로 계산하지 않는다.
 
@@ -164,7 +164,7 @@ Canonical/PR40의 L1–L5 판정은 `chart_inventory.json`에 보존했다. R=�
 
 ## L. 기업분석 시안 추가 (Cockpit IA v1)
 
-문서 요구 식별만 수행했다. A–K의 기존 113개 요구를 먼저 대조했으며 기존 ID의 상태·계층 판정·source evidence는 그대로 보존한다. 아래 신규 8개 요구의 상태는 모두 `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`, 데이터 공급처는 모두 `UNDECIDED`이다. 기존 ID 연결도 이번에 재감사하거나 완료로 승격한 것이 아니다. 기존 `core_denominator = 81` 및 baseline 완료 지표는 바꾸지 않는다.
+문서 요구 식별만 수행했다. 문서 중복 대조 기준은 canonical `011b75648f48f2890736d37c4a354f57004cf1f0`의 A–K 기존 113개 요구와 JSON 전체 객체이며, 위의 과거 감사 기준·metadata는 보존한다. 기존 ID의 상태·계층 판정·source evidence도 그대로 유지한다. 아래 9개 후보는 신규 8개와 기존 ID 연결 1개로 구분하며, 후보별 요구사항 상태는 모두 `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`, 데이터 공급처는 모두 `UNDECIDED`이다. 기존 ID 연결도 이번에 구현을 재감사하거나 완료로 승격한 것이 아니다. 기존 `core_denominator = 81` 및 baseline 완료 지표는 바꾸지 않는다.
 
 ### A–K 중복 대조와 기존 ID 연결
 
@@ -180,27 +180,33 @@ Canonical/PR40의 L1–L5 판정은 `chart_inventory.json`에 보존했다. R=�
 | H01–H08 | 기업 순위·가격·목표가·consensus·기업 비교는 기존 요구다. 일반 기업 비교 `H08`만으로 특정 시장점유율/매출 구성 요구를 중복으로 간주하지 않는다. |
 | I01–I17 | L03의 QGV 변화와 매출/EPS/FCF/ROIC 실현 관계는 → 기존 ID 연결 `I09`; 독립 분기/연간 재무 그래프는 별도다. L04의 보유종목 curve·공통 series 정렬/토글은 → 기존 ID 연결 `I02`, `I06`; 단일 기업 기간별 benchmark 비교는 별도다. |
 | J01–J07 | L05의 S 재평가 이력·QGV 전후·D+5/D+20 사후 관찰은 → 기존 ID 연결 `J06`이며 신규 calibration을 만들지 않는다. L09는 포트폴리오 분포 J01–J03이나 trigger/VMR J04–J05와 다른 reconciliation 상태별 건수 요약이다. |
-| K01–K08 | L08 8개 거시 축 board는 → 기존 ID 연결 `K01`. 이 연결은 `CANDIDATE_SPEC_ONLY`를 공식 정책·실데이터 완료로 승격하지 않는다. K02–K08의 경로/전달/비교/집중/검증도 기존 상태를 유지한다. |
+| K01–K08 | L08 공식 UI 8축 board는 → 기존 ID 연결 `K01`. 사용자 UI 결정과 원문 8축 참조를 기록하며, K01의 기존 `CANDIDATE_SPEC_ONLY`·감사·evidence는 보존한다. K02–K08의 경로/전달/비교/집중/검증도 기존 상태를 유지한다. |
 
-| 후보 | 판정 | 이유 |
-| --- | --- | --- |
-| L01 Market share | 신규 `L01` | 기업/경쟁사 점유율 막대 + 점유율 추이는 기존 peer/기업 비교보다 구체적인 별도 요구. |
-| L02 Revenue composition | 신규 `L02` | 사업부/지역별 매출 구성은 포트폴리오 구성 도넛과 다른 기업 재무 범위. |
-| L03 Financial trends | 신규 `L03`; → 기존 ID 연결 `I09` | 독립 재무 추이만 신규. QGV revision/outcome 관계는 I09를 재사용. |
-| L04 Periodic returns | 신규 `L04`; → 기존 ID 연결 `F02`, `F05`, `I02`, `I06` | 단일 기업의 분기/연간 toggle과 기업/S&P 500/산업 비교. F08 포트폴리오 성과를 대체하거나 재등록하지 않음. |
-| L05 Company events on price | 신규 `L05`; → 기존 ID 연결 `A01`, `A04`, `A05`, `B13`, `J06` | 비재평가 기업 이벤트 분류와 가격/사후수익률 조합만 신규. 공통 가격/marker·S 재평가 이력 및 관찰은 기존 ID. |
-| L06 Shareholder return | 신규 `L06`; → 기존 ID 연결 `A05` | 배당·자사주 매입 추이와 corporate-action 가격 처리/marker는 서로 다른 요구. |
-| L07 Broker targets / opinions | 신규 `L07`; → 기존 ID 연결 `D01–D06` | 증권사별 표만 신규이며 consensus aggregate/history는 기존 ID. |
-| L08 Macro 8-axis board | → 기존 ID 연결 `K01` | 같은 8축 요구. 신규 L08 ID/JSON item을 만들지 않음. “공식” 표현은 승인 완료 주장이 아님. |
-| L09 Reconciliation state counts | 신규 `L09` | 기존 차트 감사 계층/완료율이 아닌 reconciliation 6상태 건수 요약. |
+| 후보 | 판정 | 이유 | 요구사항 상태 | 데이터 공급처 |
+| --- | --- | --- | --- | --- |
+| L01 Market share | 신규 `L01`; → 기존 ID 연결 `C11`, `H08` | 기업/경쟁사 점유율 막대 + 점유율 추이는 기존 QGV peer/일반 기업 비교보다 구체적인 별도 요구. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
+| L02 Revenue composition | 신규 `L02`; → 기존 ID 연결 `E01`, `E07` | 사업부/지역별 기업 매출 구성은 포트폴리오 산업 구성·노출과 다른 재무 범위. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
+| L03 Financial trends | 신규 `L03`; → 기존 ID 연결 `I09` | 독립 분기/연간 매출 막대·성장률/EPS/ROIC 추이만 신규. QGV revision/outcome 관계는 I09를 재사용. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
+| L04 Periodic returns | 신규 `L04`; → 기존 ID 연결 `F02`, `F05`, `I02`, `I06` | 단일 기업의 분기/연간 toggle과 기업/S&P 500/산업 비교. F08 포트폴리오 성과를 대체하거나 재등록하지 않음. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
+| L05 Company events on price | 신규 `L05`; → 기존 ID 연결 `A01`, `A04`, `A05`, `B13`, `J06` | 비재평가 기업 이벤트 분류와 가격/사후수익률 조합만 신규. 공통 가격/marker·S 재평가 이력 및 관찰은 기존 ID. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
+| L06 Shareholder return | 신규 `L06`; → 기존 ID 연결 `A05` | 배당·자사주 매입 추이와 corporate-action 가격 처리/marker는 서로 다른 요구. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
+| L07 Broker targets / opinions | 신규 `L07`; → 기존 ID 연결 `D01–D06` | 증권사별 표만 신규이며 consensus aggregate/history는 기존 ID. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
+| L08 Macro 8-axis board | → 기존 ID 연결 `K01` | 같은 8축 요구. 신규 L08 ID/JSON item을 만들지 않음. 공식 UI 참조만 기록하고 K01 기존 감사 상태는 보존. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
+| L09 Reconciliation state counts | 신규 `L09` | 기존 차트 감사 계층/완료율이 아닌 reconciliation 6상태 건수 요약. | `REQUIREMENT_IDENTIFIED_NOT_REAUDITED` | `UNDECIDED` |
+
+중복 경계의 원문 근거는 `QGV Simulation · Specification v1.0.md` §6–9(F02/F05/I02/I06 공유 범위 및 F08 전 보유종목 분기 보고), `QGV Track Record · Specification v1.0.md` §7·14·16(I09 revision/outcome), `QGV Leaderboard · Specification v1.0.md` §8·20(D 그룹 aggregate consensus와 J06 고정 재평가/사후 관찰), `QGV System · Common Schema & API Contract v1.0.md` §6(aggregate Consensus Snapshot), `Macro System · Latest Consolidated Record v0.1.4 Candidate.md` §15(K01 동일 8축)이다. 원문 요구 대조이며 현재 코드·원본 입력·차트 구현의 재감사가 아니다.
+
+### L08 → 기존 ID 연결 K01 (신규 계수 제외)
+
+2026-10-09 사용자 결정의 공식 UI 8축은 **Growth / Inflation / Liquidity / Monetary Policy / Credit / Labor / Fiscal / FX**다. [Cockpit IA v1](../../docs/frontend_ia_v1/COCKPIT_IA_v1.md) §3.8과 `Macro System · Latest Consolidated Record v0.1.4 Candidate.md` §15를 참조하며, 각 축의 **Level / Direction / Momentum / Surprise / Stress / Confidence** 요구가 기존 K01과 동일하다. 이 후보 연결의 상태는 `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`, 데이터 공급처는 `UNDECIDED`이다. 공식 UI 참조와 원문 일치만 기록한다. K01의 기존 `CANDIDATE_SPEC_ONLY`·scope·감사 계층·evidence를 변경하거나 모델·방법론·실데이터·구현 검증 완료를 주장하지 않는다.
 
 ### 신규 요구 (8)
 
 - **L01 Market share: company / competitors / share trend** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 기업과 경쟁사의 시장점유율 막대 및 점유율 추이. 시장 범위·경쟁사 집합·기간·비교가능성은 미결정이며 임의 점유율을 채우지 않는다.
 - **L02 Revenue composition: business unit / region** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 사업부 및 지역별 기업 매출 구성. 분류·기간·통화·segment 재작성의 비교가능성은 미결정이며 합계/누락을 추정하지 않는다.
 - **L03 Financial trends: revenue / growth / EPS / ROIC** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 분기/연간 매출 막대와 성장률·EPS·ROIC 추이. 재무 정의·기간·restatement 기준은 미결정이며 새 수식/산출정책을 만들지 않는다. QGV 변화 대비 실현 관계는 → 기존 ID 연결 `I09`.
-- **L04 Periodic returns: company / S&P 500 / sector** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 분기/연간 toggle의 단일 기업·S&P 500·산업 수익률 비교. 기업/benchmark 정렬과 가격수익률/TR·통화·기간·sector 정의는 미결정. 기존 benchmark/curve/정렬 요구는 → 기존 ID 연결 `F02`, `F05`, `I02`, `I06`; `F08`의 계좌/포트폴리오 분기 성과와 구분한다.
-- **L05 Company events on price: E / P / L / M / S** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. E 실적발표, P 제품발표, L 규제/소송, M M&A/파트너십, S 재평가를 주가와 함께 보여주는 기업 이벤트 시안 및 이벤트 후 5/20일 수익률 요구. 새 범위는 비재평가 기업 이벤트의 유형화·가격 연결·관찰 조합이다. 가격 basis/기업행사/공통 marker는 → 기존 ID 연결 `A01`, `A04`, `A05`, `B13`; S 이력과 D+5/D+20 관찰은 → 기존 ID 연결 `J06`. 거래일/달력일·event timestamp·수익률 basis는 미결정이며 인과 효과·새 calibration·자동 승격을 주장하지 않는다.
+- **L04 Periodic returns: company / S&P 500 / industry** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 분기/연간 toggle의 단일 기업·S&P 500·산업 수익률 비교. 기업/benchmark 정렬과 가격수익률/TR·통화·기간·industry 정의는 미결정. 기존 benchmark/curve/정렬 요구는 → 기존 ID 연결 `F02`, `F05`, `I02`, `I06`; `F08`의 계좌/포트폴리오 분기 성과와 구분한다.
+- **L05 Company events on price: E / P / L / M / S** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 영문 marker는 E Earnings(실적발표), P Product(제품발표), L Regulation / Litigation(규제/소송), M Acquisition / Partnership(M&A/파트너십), S Reassessment(재평가)다. 주가와 함께 보여주는 기업 이벤트 시안 및 이벤트 후 5/20일 수익률 요구. 새 범위는 비재평가 기업 이벤트의 유형화·가격 연결·관찰 조합이다. 가격 basis/기업행사/공통 marker는 → 기존 ID 연결 `A01`, `A04`, `A05`, `B13`; S 이력과 D+5/D+20 관찰은 → 기존 ID 연결 `J06`. 거래일/달력일·event timestamp·수익률 basis는 미결정이며 인과 효과·새 calibration·자동 승격을 주장하지 않는다.
 - **L06 Shareholder return: dividends / buybacks** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 배당 및 자사주 매입 추이. 선언/지급·승인/실행 구분과 기간·금액/주식수 단위는 미결정. 가격조정/marker 처리는 → 기존 ID 연결 `A05`; 기업 주주환원을 계좌 입금·주문 실행으로 해석하지 않는다.
 - **L07 Broker targets / opinions table** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. 증권사별 목표주가/의견 표. 기관/작성시점·의견 원문·목표가 basis는 미결정. 수·평균/중앙/최고/최저·revision/history는 → 기존 ID 연결 `D01–D06`; 의견 변환 규칙이나 임의 목표가는 만들지 않는다.
 - **L09 Reconciliation state count summary** — `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`; 데이터 공급처 `UNDECIDED`. `MATCH`, `MISMATCH`, `NOT_AVAILABLE`, `NOT_COMPARABLE`, `PARTIAL`, `NO_DATA`별 건수 요약. 집계대상·중복/시점 규칙은 미결정이며 값이나 0건을 채우지 않는다. 기존 R/I/P/S/H/U 감사 계층·Confidence·핵심81 완료율과 혼합하지 않는다.

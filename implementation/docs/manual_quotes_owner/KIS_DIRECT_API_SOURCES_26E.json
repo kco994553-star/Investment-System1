@@ -1,0 +1,771 @@
+{
+  "decision": "26E",
+  "as_of_date": "2026-10-09",
+  "service_state": "UNDECIDED_OFF_26EWAIT",
+  "scope": "Public official KIS documentation and official GitHub only; no live quote orFXobservation,token request,credentials,accountlinking,holdings request,trading,paidservice,repoedit.",
+  "network": "Inherited proxy; default TLSverification preserved. Environment/credential status not inspected per userrestriction; networkpolicy read only.",
+  "instrument_access": "UNKNOWN_ALL_TARGET19; base-price-containing masters not fetched.",
+  "sources": [
+    {
+      "id": "repo",
+      "url": "https://api.github.com/repos/koreainvestment/open-trading-api",
+      "fetched_at_utc": "2026-10-09T01:26:31.213963+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Official owner koreainvestment; repository open-trading-api; public official sample source."
+      ]
+    },
+    {
+      "id": "tree",
+      "url": "https://api.github.com/repos/koreainvestment/open-trading-api/git/trees/main?recursive=1",
+      "fetched_at_utc": "2026-10-09T01:26:31.635914+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Official repository main-branch path listing used to locate price,authentication,balance,andstocks_info sample files; no instrument responses."
+      ]
+    },
+    {
+      "id": "readme",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/README.md",
+      "fetched_at_utc": "2026-10-09T01:26:31.816029+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Account opening and ID linking; apply for OpenAPI; issue App Key and App Secret; separate live and paper keys.",
+        "Domestic and overseas stocks documented in the same API sample suite.",
+        "Account product01 is brokerage/general; other product types22,29,03,08 listed in sample configuration."
+      ]
+    },
+    {
+      "id": "developers",
+      "url": "https://apiportal.koreainvestment.com/",
+      "fetched_at_utc": "2026-10-09T01:26:34.839944+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "REST API obtains a token using the account Appkey and Appsecret; token used for REST calls."
+      ]
+    },
+    {
+      "id": "guide",
+      "url": "https://apiportal.koreainvestment.com/apiservice-apiservice",
+      "fetched_at_utc": "2026-10-09T01:27:09.468844+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Official guide frontend reads public API documentation metadata from /api/apis/public/detail and /api/apis/guide/property/{id}."
+      ]
+    },
+    {
+      "id": "category",
+      "url": "https://apiportal.koreainvestment.com/apiservice-category",
+      "fetched_at_utc": "2026-10-09T01:27:09.109440+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Official instrument information download section; capability/list source rather than a target-symbol query."
+      ]
+    },
+    {
+      "id": "price",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/overseas_stock/price/price.py",
+      "fetched_at_utc": "2026-10-09T01:27:05.439491+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "GET /uapi/overseas-price/v1/quotations/price; TR_ID HHDFS00000300; AUTH empty, EXCD exchange, SYMB symbol."
+      ]
+    },
+    {
+      "id": "dailyprice",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/overseas_stock/dailyprice/dailyprice.py",
+      "fetched_at_utc": "2026-10-09T01:27:05.443730+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Official overseas dailyprice sample: /uapi/overseas-price/v1/quotations/dailyprice with EXCD,SYMB,period,date,andadjustment parameters; sample was not executed."
+      ]
+    },
+    {
+      "id": "price_detail",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/overseas_stock/price_detail/price_detail.py",
+      "fetched_at_utc": "2026-10-09T01:27:05.444488+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "GET /uapi/overseas-price/v1/quotations/price-detail; official sample EXCD examples include HKS,NYS,NAS,AMS,TSE."
+      ]
+    },
+    {
+      "id": "krx_price",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/domestic_stock/inquire_price/inquire_price.py",
+      "fetched_at_utc": "2026-10-09T01:27:05.492435+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "GET /uapi/domestic-stock/v1/quotations/inquire-price; TR_ID FHKST01010100; FID market code and input symbol."
+      ]
+    },
+    {
+      "id": "auth_token",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/auth/auth_token/auth_token.py",
+      "fetched_at_utc": "2026-10-09T01:27:05.640608+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "POST /oauth2/tokenP with grant_type client_credentials, appkey and appsecret in JSON body."
+      ]
+    },
+    {
+      "id": "auth_ws_token",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/auth/auth_ws_token/auth_ws_token.py",
+      "fetched_at_utc": "2026-10-09T01:27:05.646031+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Separate WebSocket approval key flow documented; no key requested in this research."
+      ]
+    },
+    {
+      "id": "kis_auth",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/kis_auth.py",
+      "fetched_at_utc": "2026-10-09T01:27:05.668757+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Official sample attaches Bearer authorization, appkey, and appsecret to base request headers."
+      ]
+    },
+    {
+      "id": "overseas_balance",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/overseas_stock/inquire_balance/inquire_balance.py",
+      "fetched_at_utc": "2026-10-09T01:27:05.705197+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Overseas balance API accepts account/product, OVRS_EXCG_CD (US NASD/NYSE/AMEX and Japan TKSE), TR_CRCY_CD USD/JPY."
+      ]
+    },
+    {
+      "id": "present_balance",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/overseas_stock/inquire_present_balance/inquire_present_balance.py",
+      "fetched_at_utc": "2026-10-09T01:27:05.801992+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Execution-based overseas balance endpoint documents country392 Japan and840 US; stock services registration required."
+      ]
+    },
+    {
+      "id": "krx_balance",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/domestic_stock/inquire_balance/inquire_balance.py",
+      "fetched_at_utc": "2026-10-09T01:27:05.779681+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Domestic-stock balance sample documented; account/product identifiers required."
+      ]
+    },
+    {
+      "id": "master_reader",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/stocks_info/overseas_stock_code.py",
+      "fetched_at_utc": "2026-10-09T01:27:05.816848+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Official script maps nas/nys/ams/tse master archives to Nasdaq/New York/Amex/Tokyo.",
+        "The script includes base-price fields and disables TLS verification; neither script nor archives were executed/downloaded in this research."
+      ]
+    },
+    {
+      "id": "master_spec",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/stocks_info/%ED%95%B4%EC%99%B8%EC%A2%85%EB%AA%A9%EC%BD%94%EB%93%9C%EC%A0%95%EB%B3%B4(%EB%AF%B8%EA%B5%AD,%EC%A4%91%EA%B5%AD,%EC%9D%BC%EB%B3%B8,%ED%99%8D%EC%BD%A9,%EB%B2%A0%ED%8A%B8%EB%82%A8).h",
+      "fetched_at_utc": "2026-10-09T01:27:05.871298+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Master format documents symbol, exchange, currency, and base-price fields; no instrument records retrieved."
+      ]
+    },
+    {
+      "id": "fx_chart_sample",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/overseas_stock/inquire_daily_chartprice/inquire_daily_chartprice.py",
+      "fetched_at_utc": "2026-10-09T01:28:49.327576+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Official generic FXchart mode FID_COND_MRKT_DIV_CODE X; does not supply required USDKRW/JPYKRW identifiers or units."
+      ]
+    },
+    {
+      "id": "fx_chart_check",
+      "url": "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/overseas_stock/inquire_daily_chartprice/chk_inquire_daily_chartprice.py",
+      "fetched_at_utc": "2026-10-09T01:28:49.548415+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "Official test sample documents same generic X=FX; sample not executed."
+      ]
+    },
+    {
+      "id": "fx_chart_doc",
+      "url": "https://apiportal.koreainvestment.com/api/apis/public/detail?accessUrl=%2Fuapi%2Foverseas-price%2Fv1%2Fquotations%2Finquire-daily-chartprice",
+      "fetched_at_utc": "2026-10-09T01:28:50.726041+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "GET overseas-price inquire-daily-chartprice handles stock/index/FXperiodprices; USstock selection restricted to Dow30/Nasdaq100/S&P500 for this endpoint."
+      ]
+    },
+    {
+      "id": "fx_chart_properties",
+      "url": "https://apiportal.koreainvestment.com/api/apis/guide/property/da63a88a-e288-426f-9498-42db0b537bf3",
+      "fetched_at_utc": "2026-10-09T01:28:51.265284+00:00",
+      "http_status": 200,
+      "evidence_kind": "public_documentation",
+      "relevant_excerpts_paraphrased": [
+        "FID_COND_MRKT_DIV_CODE X=FX; instrument code refers to overseas-index master; no explicit USDKRW/JPYKRW code or1vs100JPY units."
+      ]
+    },
+    {
+      "id": "cors_options",
+      "url": "https://openapi.koreainvestment.com:9443/uapi/overseas-price/v1/quotations/price",
+      "method": "OPTIONS",
+      "origin": "http://localhost:5173",
+      "keys_sent": false,
+      "token_sent": false,
+      "symbol_sent": false,
+      "body_read": false,
+      "fetched_at_utc": "2026-10-09T01:28:23.046079+00:00",
+      "http_status": 501,
+      "response_headers": {
+        "date": "Fri, 09 Oct 2026 01:28:23 GMT",
+        "content-type": "text/html",
+        "server": "envoy"
+      },
+      "evidence_kind": "no_key_no_symbol_response_headers_only",
+      "relevant_excerpts_paraphrased": [
+        "Observed via inherited proxy with TLSverification; no credentials,account,symbol,query,orbody read.",
+        "Error-response CORS headers cannot establish authenticated browser access."
+      ]
+    },
+    {
+      "id": "unauth_no_symbol_get",
+      "url": "https://openapi.koreainvestment.com:9443/uapi/overseas-price/v1/quotations/price",
+      "method": "GET",
+      "origin": "http://localhost:5173",
+      "keys_sent": false,
+      "token_sent": false,
+      "symbol_sent": false,
+      "body_read": false,
+      "fetched_at_utc": "2026-10-09T01:28:23.686626+00:00",
+      "http_status": 500,
+      "response_headers": {
+        "date": "Fri, 09 Oct 2026 01:28:24 GMT",
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "server": "envoy"
+      },
+      "evidence_kind": "no_key_no_symbol_response_headers_only",
+      "relevant_excerpts_paraphrased": [
+        "Observed via inherited proxy with TLSverification; no credentials,account,symbol,query,orbody read.",
+        "Error-response CORS headers cannot establish authenticated browser access."
+      ]
+    },
+    {
+      "id": "doc_price",
+      "url": "https://apiportal.koreainvestment.com/api/apis/public/detail?accessUrl=%2Fuapi%2Foverseas-price%2Fv1%2Fquotations%2Fprice",
+      "fetched_at_utc": "2026-10-09T01:31:01.936137+00:00",
+      "http_status": 200,
+      "document_id": "3eeac674-072d-4674-a5a7-f0ed01194a81",
+      "relevant_excerpts_paraphrased": [
+        "해외주식 현재체결가[v1_해외주식-009]",
+        "해외주식종목의 현재체결가를 확인하는 API 입니다.\r\n\r\n해외주식 시세는 무료시세(지연시세)만이 제공되며, API로는 유료시세(실시간시세)를 받아보실 수 없습니다.\r\n\r\n※ 지연시세 지연시간 : 미국 - 실시간무료(0분 지연, 나스닥 마켓센터에서 거래되는 호가 및 호가 잔량 정보)\r\n                                홍콩, 베트남, 중국, 일본 - 15분지연\r\n   미국의 경우 0분 지연 시세로 제공되나, 장중 당일 시가는 상이할 수 있으며, 익일 정정 표시됩니다.\r\n\r\n[미국주식시세 이용시 유의사항]\r\n■ 무료 실시간 시세(나스닥 토탈뷰)를 별도 신청없이 제공하고 있으며, 유료 시세 서비스를 신청하시더라도 OpenAPI의 경우 무료 시세로만 제공하고있습니다.\r\n※ 무료(매수/매도 각 10호가) : 나스닥 마켓센터에서 거래되는 호가 및 호가 잔량 정보\r\n※ 유료(매수/매도 각 1호가) : OpenAPI 서비스 미제공\r\n■ 무료 실시간 시세 서비스는 유료 실시간 시세 서비스 대비 평균 50% 수준에 해당하는 정보이므로 현재가/호가/순간체결량/차트 등에서 일시적·부분적 차이가 있을 수 있습니다. \r\n■ 무료 실시간 시세 서비스의 시가, 저가, 고가, 종가는 타 매체의 유료 실시간 시세 서비스와 다를 수 있으며, 이로 인해 발생하는 손실에 대해서 당사가 책임지지 않습니다.\r\n    이용에 유의 부탁드립니다.",
+        "Overseas current-price official API summary says Hong Kong, Vietnam, China and Japan prices are free delayed data with 15-minute delay. Paid real-time stock data is not available through OpenAPI even if the customer purchases paid real-time stock service. The United States has free zero-minute Nasdaq TotalView data with limited coverage, not a consolidated full-market equivalence claim. No Tokyo instrument response was requested or observed."
+      ],
+      "short_official_excerpts": [
+        "홍콩, 베트남, 중국, 일본 - 15분지연"
+      ]
+    },
+    {
+      "id": "doc_detail",
+      "url": "https://apiportal.koreainvestment.com/api/apis/public/detail?accessUrl=%2Fuapi%2Foverseas-price%2Fv1%2Fquotations%2Fprice-detail",
+      "fetched_at_utc": "2026-10-09T01:31:02.554584+00:00",
+      "http_status": 200,
+      "document_id": "abc66a03-8103-4f6d-8ba8-450c2b935e14",
+      "relevant_excerpts_paraphrased": [
+        "해외주식 현재가상세[v1_해외주식-029]",
+        "해외주식 현재가상세 API입니다.\r\n\r\n해당 API를 활용하여 해외주식 종목의 매매단위(vnit), 호가단위(e_hogau), PER, PBR, EPS, BPS 등의 데이터를 확인하실 수 있습니다.\r\n\r\n해외주식 시세는 무료시세(지연시세)만이 제공되며, API로는 유료시세(실시간시세)를 받아보실 수 없습니다.\r\n\r\n※ 지연시세 지연시간 : 미국 - 실시간무료(0분 지연, 나스닥 마켓센터에서 거래되는 호가 및 호가 잔량 정보)\r\n                                홍콩, 베트남, 중국, 일본 - 15분지연\r\n   미국의 경우 0분 지연 시세로 제공되나, 장중 당일 시가는 상이할 수 있으며, 익일 정정 표시됩니다.\r\n\r\n[미국주식시세 이용시 유의사항]\r\n■ 무료 실시간 시세(나스닥 토탈뷰)를 별도 신청없이 제공하고 있으며, 유료 시세 서비스를 신청하시더라도 OpenAPI의 경우 무료 시세로만 제공하고있습니다.\r\n※ 무료(매수/매도 각 10호가) : 나스닥 마켓센터에서 거래되는 호가 및 호가 잔량 정보\r\n※ 유료(매수/매도 각 1호가) : OpenAPI 서비스 미제공\r\n■ 무료 실시간 시세 서비스는 유료 실시간 시세 서비스 대비 평균 50% 수준에 해당하는 정보이므로 현재가/호가/순간체결량/차트 등에서 일시적·부분적 차이가 있을 수 있습니다. \r\n■ 무료 실시간 시세 서비스의 시가, 저가, 고가, 종가는 타 매체의 유료 실시간 시세 서비스와 다를 수 있으며, 이로 인해 발생하는 손실에 대해서 당사가 책임지지 않습니다.\r\n    이용에 유의 부탁드립니다."
+      ]
+    },
+    {
+      "id": "doc_dailyprice",
+      "url": "https://apiportal.koreainvestment.com/api/apis/public/detail?accessUrl=%2Fuapi%2Foverseas-price%2Fv1%2Fquotations%2Fdailyprice",
+      "fetched_at_utc": "2026-10-09T01:31:02.397873+00:00",
+      "http_status": 200,
+      "document_id": "0e9fb2ba-bbac-4735-925a-a35e08c9a790",
+      "relevant_excerpts_paraphrased": [
+        "해외주식 기간별시세[v1_해외주식-010]",
+        "해외주식의 기간별시세를 확인하는 API 입니다.\r\n실전계좌/모의계좌의 경우, 한 번의 호출에 최대 100건까지 확인 가능합니다.\r\n\r\n해외주식 시세는 무료시세(지연체결가)만이 제공되며, API로는 유료시세(실시간체결가)를 받아보실 수 없습니다.\r\n\r\n해외주식 시세는 무료시세(지연시세)만이 제공되며, API로는 유료시세(실시간시세)를 받아보실 수 없습니다.\r\n\r\n※ 지연시세 지연시간 : 미국 - 실시간무료(0분 지연, 나스닥 마켓센터에서 거래되는 호가 및 호가 잔량 정보)\r\n                                홍콩, 베트남, 중국, 일본 - 15분지연\r\n   미국의 경우 0분 지연 시세로 제공되나, 장중 당일 시가는 상이할 수 있으며, 익일 정정 표시됩니다.\r\n\r\n[미국주식시세 이용시 유의사항]\r\n■ 무료 실시간 시세(나스닥 토탈뷰)를 별도 신청없이 제공하고 있으며, 유료 시세 서비스를 신청하시더라도 OpenAPI의 경우 무료 시세로만 제공하고있습니다.\r\n※ 무료(매수/매도 각 10호가) : 나스닥 마켓센터에서 거래되는 호가 및 호가 잔량 정보\r\n※ 유료(매수/매도 각 1호가) : OpenAPI 서비스 미제공\r\n■ 무료 실시간 시세 서비스는 유료 실시간 시세 서비스 대비 평균 50% 수준에 해당하는 정보이므로 현재가/호가/순간체결량/차트 등에서 일시적·부분적 차이가 있을 수 있습니다. \r\n■ 무료 실시간 시세 서비스의 시가, 저가, 고가, 종가는 타 매체의 유료 실시간 시세 서비스와 다를 수 있으며, 이로 인해 발생하는 손실에 대해서 당사가 책임지지 않습니다.\r\n    이용에 유의 부탁드립니다."
+      ]
+    },
+    {
+      "id": "doc_krx",
+      "url": "https://apiportal.koreainvestment.com/api/apis/public/detail?accessUrl=%2Fuapi%2Fdomestic-stock%2Fv1%2Fquotations%2Finquire-price",
+      "fetched_at_utc": "2026-10-09T01:31:02.683545+00:00",
+      "http_status": 200,
+      "document_id": "07802512-4f49-4486-91b4-1050b6f5dc9d",
+      "relevant_excerpts_paraphrased": [
+        "주식현재가 시세[v1_국내주식-008]",
+        "주식 현재가 시세 API입니다. 실시간 시세를 원하신다면 웹소켓 API를 활용하세요.\r\n\r\n※ 종목코드 마스터파일 파이썬 정제코드는 한국투자증권 Github 참고 부탁드립니다.\r\n   https://github.com/koreainvestment/open-trading-api/tree/main/stocks_info"
+      ]
+    },
+    {
+      "id": "doc_token",
+      "url": "https://apiportal.koreainvestment.com/api/apis/public/detail?accessUrl=%2Foauth2%2FtokenP",
+      "fetched_at_utc": "2026-10-09T01:31:02.527605+00:00",
+      "http_status": 200,
+      "document_id": "fa778c98-f68d-451e-8fff-b1c6bfe5cd30",
+      "relevant_excerpts_paraphrased": [
+        "접근토큰발급(P)[인증-001]",
+        "본인 계좌에 필요한 인증 절차로, 인증을 통해 접근 토큰을 부여받아 오픈API 활용이 가능합니다.\r\n\r\n1. 접근토큰(access_token)의 유효기간은 24시간 이며(1일 1회발급 원칙) \r\n   갱신발급주기는 6시간 입니다.(6시간 이내는 기존 발급키로 응답)\r\n\r\n2. 접근토큰발급(/oauth2/tokenP) 시 접근토큰값(access_token)과 함께 수신되는 \r\n   접근토큰 유효기간(acess_token_token_expired)을 이용해 접근토큰을 관리하실 수 있습니다.\r\n\r\n\r\n[참고]\r\n\r\n'23.4.28 이후 지나치게 잦은 토큰 발급 요청건을 제어 하기 위해 신규 접근토큰발급 이후 일정시간 이내에 재호출 시에는 직전 토큰값을 리턴하게 되었습니다. 일정시간 이후 접근토큰발급 API 호출 시에는 신규 토큰값을 리턴합니다. \r\n접근토큰발급 API 호출 및 코드 작성하실 때 해당 사항을 참고하시길 바랍니다.\r\n\r\n※ 참고 : 포럼 &gt; 공지사항 &gt;  [수정] [중요] 접근 토큰 발급 변경 안내"
+      ]
+    },
+    {
+      "id": "doc_overseas_balance",
+      "url": "https://apiportal.koreainvestment.com/api/apis/public/detail?accessUrl=%2Fuapi%2Foverseas-stock%2Fv1%2Ftrading%2Finquire-balance",
+      "fetched_at_utc": "2026-10-09T01:31:02.750816+00:00",
+      "http_status": 200,
+      "document_id": "0482dfb1-154c-476c-8a3b-6fc1da498dbf",
+      "relevant_excerpts_paraphrased": [
+        "해외주식 잔고[v1_해외주식-006]",
+        "해외주식 잔고를 조회하는 API 입니다.\r\n한국투자 HTS(eFriend Plus) &gt; [7600] 해외주식 종합주문 화면의 좌측 하단 '실시간잔고' 기능을 API로 개발한 사항으로, 해당 화면을 참고하시면 기능을 이해하기 쉽습니다. \r\n다만 미국주간거래 가능종목에 대해서는 frcr_evlu_pfls_amt(외화평가손익금액), evlu_pfls_rt(평가손익율), ovrs_stck_evlu_amt(해외주식평가금액), now_pric2(현재가격2) 값이 HTS와는 상이하게 표출될 수 있습니다.\r\n(주간시간 시간대에 HTS는 주간시세로 노출, API로는 야간시세로 노출)\r\n\r\n실전계좌의 경우, 한 번의 호출에 최대 100건까지 확인 가능하며, 이후의 값은 연속조회를 통해 확인하실 수 있습니다. \r\n\r\n* 해외주식 서비스 신청 후 이용 가능합니다. (아래 링크 3번 해외증권 거래신청 참고)\r\nhttps://securities.koreainvestment.com/main/bond/research/_static/TF03ca010001.jsp\r\n\r\n* 미니스탁 잔고는 해당 API로 확인이 불가합니다."
+      ]
+    },
+    {
+      "id": "doc_present_balance",
+      "url": "https://apiportal.koreainvestment.com/api/apis/public/detail?accessUrl=%2Fuapi%2Foverseas-stock%2Fv1%2Ftrading%2Finquire-present-balance",
+      "fetched_at_utc": "2026-10-09T01:31:03.233943+00:00",
+      "http_status": 200,
+      "document_id": "09baff2a-6e9d-4502-ba66-d7bb94094b67",
+      "relevant_excerpts_paraphrased": [
+        "해외주식 체결기준현재잔고[v1_해외주식-008]",
+        "해외주식 잔고를 체결 기준으로 확인하는 API 입니다. \r\n\r\nHTS(eFriend Plus) [0839] 해외 체결기준잔고 화면을 API로 구현한 사항으로 화면을 함께 보시면 기능 이해가 쉽습니다.\r\n\r\n(※모의계좌의 경우 output3(외화평가총액 등 확인 가능)만 정상 출력됩니다. \r\n잔고 확인을 원하실 경우에는 해외주식 잔고[v1_해외주식-006] API 사용을 부탁드립니다.)\r\n\r\n* 해외주식 서비스 신청 후 이용 가능합니다. (아래 링크 3번 해외증권 거래신청 참고)\r\nhttps://securities.koreainvestment.com/main/bond/research/_static/TF03ca010001.jsp\r\n\r\n해외주식 체결기준현재잔고 유의사항\r\n1. 해외증권 체결기준 잔고현황을 조회하는 화면입니다.\r\n2. 온라인국가는 수수료(국내/해외)가 반영된 최종 정산금액으로 잔고가 변동되며, 결제작업 지연등으로 인해 조회시간은 차이가 발생할 수 있습니다.\r\n   - 아시아 온라인국가 : 매매일 익일    08:40 ~ 08:45분 경\r\n   - 미국 온라인국가   : 당일 장 종료후 08:40 ~ 08:45분 경\r\n  ※ 단, 애프터연장 참여 신청계좌는 10:30 ~ 10:35분 경(Summer Time : 09:30 ~ 09:35분 경)에 최종 정산금액으로 변동됩니다.\r\n3. 미국 현재가 항목은 주간시세 및 애프터시세는 반영하지 않으며, 정규장 마감 후에는 종가로 조회됩니다.\r\n4. 온라인국가를 제외한 국가의 현재가는 실시간 시세가 아니므로 주문화면의 잔고 평가금액 등과 차이가 발생할 수 있습니다.\r\n5. 해외주식 담보대출 매도상환 체결내역은 해당 잔고화면에 반영되지 않습니다.\r\n   결제가 완료된 이후 외화잔고에 포함되어 반영되오니 참고하여 주시기 바랍니다.\r\n6. 외화평가금액은 당일 최초고시환율이 적용된 금액으로 실제 환전금액과는 차이가 있습니다. \r\n7. 미국은 메인 시스템이 아닌 별도 시스템을 통해 거래되므로, 18시 10~15분 이후 발생하는 미국 매매내역은 해당 화면에 실시간으로 반영되지 않으니 하단 내용을 참고하여 안내하여 주시기 바랍니다. \r\n   [외화잔고 및 해외 유가증권 현황 조회]\r\n   - 일반/통합증거금 계좌 : 미국장 종료 + 30분 후 부터 조회 가능\r\n                            단, 통합증거금 계좌에 한해 주문금액은 외화잔고 항목에 실시간 반영되며, 해외 유가증권 현황은 반영되지\r\n                            않아 해외 유가증권 평가금액이 과다 또는 과소 평가될 수 있습니다. \r\n   - 애프터연장 신청계좌  : 실시간 반영 \r\n                            단, 시스템정산작업시간(23:40~00:10) 및 거래량이 많은 경우 메인시스템에 반영되는 시간으로 인해 차이가 \r\n                            발생할 수 있습니다.\r\n   ※ 배치작업시간에 따라 시간은 변동될 수 있습니다. "
+      ]
+    },
+    {
+      "id": "doc_price_properties",
+      "url": "https://apiportal.koreainvestment.com/api/apis/guide/property/3eeac674-072d-4674-a5a7-f0ed01194a81",
+      "fetched_at_utc": "2026-10-09T01:31:03.666829+00:00",
+      "http_status": 200,
+      "relevant_excerpts_paraphrased": [
+        "EXCD: 거래소코드 — HKS : 홍콩<br/>NYS : 뉴욕<br/>NAS : 나스닥<br/>AMS : 아멕스<br/>TSE : 도쿄<br/>SHS : 상해<br/>SZS : 심천<br/>SHI : 상해지수<br/>SZI : 심천지수<br/>HSX : 호치민<br/>HNX : 하노이<br/>BAY : 뉴욕(주간)<br/>BAQ : 나스닥(주간)<br/>BAA : 아멕스(주간)",
+        "SYMB: 종목코드 — ",
+        "authorization: 접근토큰 — OAuth 토큰이 필요한 API 경우 발급한 Access token<br/>일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)<br/>법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)<br/><br/>※ 토큰 지정시 토큰 타입(\"Bearer\") 지정 필요. 즉, 발급받은 접근토큰 앞에 앞에 \"Bearer\" 붙여서 호출<br/>EX) \"Bearer eyJ..........8GA\"",
+        "appkey field description — 앱키  — 한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)",
+        "appsecret field description — 앱시크릿키 — 한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)",
+        "tr_id: 거래ID — [실전투자/모의투자]<br/>HHDFS00000300",
+        "tr_id: 거래ID — 요청한 tr_id"
+      ]
+    },
+    {
+      "id": "doc_detail_properties",
+      "url": "https://apiportal.koreainvestment.com/api/apis/guide/property/abc66a03-8103-4f6d-8ba8-450c2b935e14",
+      "fetched_at_utc": "2026-10-09T01:31:03.651086+00:00",
+      "http_status": 200,
+      "relevant_excerpts_paraphrased": [
+        "EXCD: 거래소명 — \tHKS : 홍콩<br/>NYS : 뉴욕<br/>NAS : 나스닥<br/>AMS : 아멕스<br/>TSE : 도쿄<br/>SHS : 상해<br/>SZS : 심천<br/>SHI : 상해지수<br/>SZI : 심천지수<br/>HSX : 호치민<br/>HNX : 하노이<br/>BAY : 뉴욕(주간)<br/>BAQ : 나스닥(주간)<br/>BAA : 아멕스(주간)",
+        "SYMB: 종목코드 —  ",
+        "authorization: 접근토큰 — OAuth 토큰이 필요한 API 경우 발급한 Access token <br/>일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용) <br/>법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)",
+        "appkey field description — 앱키 — 한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)",
+        "appsecret field description — 앱시크릿키 — 한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)",
+        "tr_id: 거래ID — HHDFS76200200",
+        "t_rate: 당일환율 —  ",
+        "p_rate: 전일환율 —  ",
+        "tr_id: 거래ID — 요청한 tr_id"
+      ]
+    },
+    {
+      "id": "doc_dailyprice_properties",
+      "url": "https://apiportal.koreainvestment.com/api/apis/guide/property/0e9fb2ba-bbac-4735-925a-a35e08c9a790",
+      "fetched_at_utc": "2026-10-09T01:31:03.666767+00:00",
+      "http_status": 200,
+      "relevant_excerpts_paraphrased": [
+        "EXCD: 거래소코드 — HKS : 홍콩<br/>NYS : 뉴욕<br/>NAS : 나스닥<br/>AMS : 아멕스<br/>TSE : 도쿄<br/>SHS : 상해<br/>SZS : 심천<br/>SHI : 상해지수<br/>SZI : 심천지수<br/>HSX : 호치민<br/>HNX : 하노이",
+        "SYMB: 종목코드 — 종목코드 (ex. TSLA)",
+        "authorization: 접근토큰 — OAuth 토큰이 필요한 API 경우 발급한 Access token<br/>일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)<br/>법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)<br/><br/>※ 토큰 지정시 토큰 타입(\"Bearer\") 지정 필요. 즉, 발급받은 접근토큰 앞에 앞에 \"Bearer\" 붙여서 호출<br/>EX) \"Bearer eyJ..........8GA\"",
+        "appkey field description — 앱키  — 한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)",
+        "appsecret field description — 앱시크릿키 — 한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)",
+        "tr_id: 거래ID — [실전투자/모의투자]<br/>HHDFS76240000",
+        "tr_id: 거래ID — 요청한 tr_id"
+      ]
+    },
+    {
+      "id": "doc_krx_properties",
+      "url": "https://apiportal.koreainvestment.com/api/apis/guide/property/07802512-4f49-4486-91b4-1050b6f5dc9d",
+      "fetched_at_utc": "2026-10-09T01:31:03.833372+00:00",
+      "http_status": 200,
+      "relevant_excerpts_paraphrased": [
+        "FID_COND_MRKT_DIV_CODE: 조건 시장 분류 코드 — J:KRX, NX:NXT, UN:통합",
+        "FID_INPUT_ISCD: 입력 종목코드 — 종목코드 (ex 005930 삼성전자)  // ETN은 종목코드 6자리 앞에 Q 입력 필수",
+        "authorization: 접근토큰 — OAuth 토큰이 필요한 API 경우 발급한 Access token <br/>일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용) <br/>법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)",
+        "appkey field description — 앱키 — 한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)",
+        "appsecret field description — 앱시크릿키 — 한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)",
+        "tr_id: 거래ID — FHKST01010100",
+        "tr_id: 거래ID — 요청한 tr_id"
+      ]
+    },
+    {
+      "id": "doc_token_properties",
+      "url": "https://apiportal.koreainvestment.com/api/apis/guide/property/fa778c98-f68d-451e-8fff-b1c6bfe5cd30",
+      "fetched_at_utc": "2026-10-09T01:31:03.484257+00:00",
+      "http_status": 200,
+      "relevant_excerpts_paraphrased": [
+        "grant_type: 권한부여 Type — client_credentials",
+        "appkey field description — 앱키 — 한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)",
+        "appsecret field description — 앱시크릿키 — 한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+      ]
+    },
+    {
+      "id": "doc_overseas_balance_properties",
+      "url": "https://apiportal.koreainvestment.com/api/apis/guide/property/0482dfb1-154c-476c-8a3b-6fc1da498dbf",
+      "fetched_at_utc": "2026-10-09T01:31:04.084664+00:00",
+      "http_status": 200,
+      "relevant_excerpts_paraphrased": [
+        "OVRS_EXCG_CD: 해외거래소코드 — [모의]<br/>NASD : 나스닥<br/>NYSE : 뉴욕 <br/>AMEX : 아멕스<br/><br/>[실전]<br/>NASD : 미국전체<br/>NAS : 나스닥<br/>NYSE : 뉴욕 <br/>AMEX : 아멕스<br/><br/>[모의/실전 공통]<br/>SEHK : 홍콩<br/>SHAA : 중국상해<br/>SZAA : 중국심천<br/>TKSE : 일본<br/>HASE : 베트남 하노이<br/>VNSE : 베트남 호치민",
+        "TR_CRCY_CD: 거래통화코드 — USD : 미국달러<br/>HKD : 홍콩달러<br/>CNY : 중국위안화<br/>JPY : 일본엔화<br/>VND : 베트남동",
+        "authorization: 접근토큰 — OAuth 토큰이 필요한 API 경우 발급한 Access token<br/>일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)<br/>법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, Oauth 2.0의 Authorization Code Grant 절차를 준용)<br/><br/>※ 토큰 지정시 토큰 타입(\"Bearer\") 지정 필요. 즉, 발급받은 접근토큰 앞에 앞에 \"Bearer\" 붙여서 호출<br/>EX) \"Bearer eyJ..........8GA\"",
+        "appkey field description — 앱키  — 한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)",
+        "appsecret field description — 앱시크릿키 — 한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)",
+        "tr_id: 거래ID — [실전투자]<br/>TTTS3012R<br/><br/>[모의투자]<br/>VTTS3012R",
+        "tr_id: 거래ID — 요청한 tr_id"
+      ]
+    },
+    {
+      "id": "doc_present_balance_properties",
+      "url": "https://apiportal.koreainvestment.com/api/apis/guide/property/09baff2a-6e9d-4502-ba66-d7bb94094b67",
+      "fetched_at_utc": "2026-10-09T01:31:04.375371+00:00",
+      "http_status": 200,
+      "relevant_excerpts_paraphrased": [
+        "authorization: 접근토큰 — OAuth 토큰이 필요한 API 경우 발급한 Access token<br/>일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)<br/>법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, Oauth 2.0의 Authorization Code Grant 절차를 준용)<br/><br/>※ 토큰 지정시 토큰 타입(\"Bearer\") 지정 필요. 즉, 발급받은 접근토큰 앞에 앞에 \"Bearer\" 붙여서 호출<br/>EX) \"Bearer eyJ..........8GA\"",
+        "appkey field description — 앱키  — 한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)",
+        "appsecret field description — 앱시크릿키 — 한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)",
+        "tr_id: 거래ID — [실전투자]<br/>CTRP6504R<br/><br/>[모의투자]<br/>VTRP6504R",
+        "bass_exrt: 기준환율 — 원화 평가 시 적용 환율",
+        "frst_bltn_exrt: 최초고시환율 — ",
+        "tr_id: 거래ID — 요청한 tr_id"
+      ]
+    },
+    {
+      "id": "howto",
+      "url": "https://apiportal.koreainvestment.com/about-howto",
+      "final_url": "https://apiportal.koreainvestment.com/about-howto",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:27:06.569885+00:00",
+      "content_type": "text/html;charset=UTF-8",
+      "html_path": "/workspace/manual-quotes-cycle-evidence/kis-terms-public/howto.html",
+      "bytes": 77297,
+      "tls_verification": true,
+      "request_scope": "Public documentation GET without account or market-data API access",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "Official public navigation page used to discover the corresponding public documentation or FAQ content; no account or market data."
+      ]
+    },
+    {
+      "id": "openapi",
+      "url": "https://apiportal.koreainvestment.com/about-open-api",
+      "final_url": "https://apiportal.koreainvestment.com/about-open-api",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:27:06.570093+00:00",
+      "content_type": "text/html;charset=UTF-8",
+      "html_path": "/workspace/manual-quotes-cycle-evidence/kis-terms-public/openapi.html",
+      "bytes": 78153,
+      "tls_verification": true,
+      "request_scope": "Public documentation GET without account or market-data API access",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "Official public navigation page used to discover the corresponding public documentation or FAQ content; no account or market data."
+      ]
+    },
+    {
+      "id": "faq",
+      "url": "https://apiportal.koreainvestment.com/faq-faq",
+      "final_url": "https://apiportal.koreainvestment.com/community/10000000-0000-0011-0000-000000000002",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:27:06.570284+00:00",
+      "content_type": "text/html;charset=UTF-8",
+      "html_path": "/workspace/manual-quotes-cycle-evidence/kis-terms-public/faq.html",
+      "bytes": 158341,
+      "tls_verification": true,
+      "request_scope": "Public documentation GET without account or market-data API access",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "Official public navigation page used to discover the corresponding public documentation or FAQ content; no account or market data."
+      ]
+    },
+    {
+      "id": "account",
+      "url": "https://securities.koreainvestment.com/main/customer/systemdown/RestAPIService.jsp",
+      "final_url": "https://securities.koreainvestment.com/main/member/login/login.jsp?returnUrl=%2Fmain%2Fcustomer%2Fsystemdown%2FRestAPIService.jsp&isXecurePass=Y",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:27:06.570427+00:00",
+      "content_type": "text/html; charset=utf-8",
+      "html_path": "/workspace/manual-quotes-cycle-evidence/kis-terms-public/account.html",
+      "bytes": 314358,
+      "tls_verification": true,
+      "request_scope": "Public documentation GET without account or market-data API access",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "Public service-application URL returned HTTP200 after redirect to login HTML. No login, account action, credential discovery or service application was attempted."
+      ]
+    },
+    {
+      "id": "provider",
+      "url": "https://apiportal.koreainvestment.com/provider-info",
+      "final_url": "https://apiportal.koreainvestment.com/provider-info",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:27:06.570543+00:00",
+      "content_type": "text/html;charset=UTF-8",
+      "html_path": "/workspace/manual-quotes-cycle-evidence/kis-terms-public/provider.html",
+      "bytes": 84317,
+      "tls_verification": true,
+      "request_scope": "Public documentation GET without account or market-data API access",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "Individual customers may use price data for their own investment and a webpage for their own viewing/analysis. Providing business services or externally distributing an application with KIS price data requires a direct information agreement with the relevant provider/exchange. Corporate customers, including general corporations and affiliates, must enter a separate market-data information agreement before API price use/display."
+      ],
+      "short_official_excerpts": [
+        "시세 데이터를 활용한 비즈니스 서비스 제공 또는 외부 서비스(앱) 배포는 불가능합니다."
+      ]
+    },
+    {
+      "id": "howto-content",
+      "url": "https://apiportal.koreainvestment.com/api/contents/kind?title=HOWTO&kind=CONTENTS",
+      "final_url": "https://apiportal.koreainvestment.com/api/contents/kind?title=HOWTO&kind=CONTENTS",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:27:46.066047+00:00",
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 12948,
+      "tls_verification": true,
+      "request_scope": "Public website documentation JSON GET; not a broker account, quotation or FX observation API",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "KIS account ownership plus account/ID linkage, service application and identity/account verification are required for service use. Terms art8 rejects under-19 applicants. These requirements describe eligibility; no account was accessed or created."
+      ]
+    },
+    {
+      "id": "openapi-content",
+      "url": "https://apiportal.koreainvestment.com/api/contents/kind?title=OPENAPI&kind=CONTENTS",
+      "final_url": "https://apiportal.koreainvestment.com/api/contents/kind?title=OPENAPI&kind=CONTENTS",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:27:46.066312+00:00",
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 7673,
+      "tls_verification": true,
+      "request_scope": "Public website documentation JSON GET; not a broker account, quotation or FX observation API",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "KIS account ownership plus account/ID linkage, service application and identity/account verification are required for service use. Terms art8 rejects under-19 applicants. These requirements describe eligibility; no account was accessed or created.",
+        "Individual customers may use price data for their own investment and a webpage for their own viewing/analysis. Providing business services or externally distributing an application with KIS price data requires a direct information agreement with the relevant provider/exchange. Corporate customers, including general corporations and affiliates, must enter a separate market-data information agreement before API price use/display."
+      ],
+      "short_official_excerpts": [
+        "시세 데이터를 활용한 비즈니스 서비스 제공 또는 외부 서비스(앱) 배포는 불가능합니다."
+      ]
+    },
+    {
+      "id": "faq-list",
+      "url": "https://apiportal.koreainvestment.com/api/forums/10000000-0000-0011-0000-000000000002/posts?size=200&sort=fixOnTop,desc",
+      "final_url": "https://apiportal.koreainvestment.com/api/forums/10000000-0000-0011-0000-000000000002/posts?size=200&sort=fixOnTop,desc",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:27:46.066540+00:00",
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 174489,
+      "tls_verification": true,
+      "request_scope": "Public website documentation JSON GET; not a broker account, quotation or FX observation API",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "No official FAQ found establishing USDKRW/JPYKRW pair identifiers, reciprocal direction, KRW per 1 JPY vs KRW per 100 JPY normalization, timing or standalone fresh FX suitability. No FX observations or balances were fetched. Additional official schemas were researched by the parent; their unit/direction evidence belongs in the parent report.",
+        "No official FAQ CORS or direct-browser support statement found. Fetching public documentation successfully is not evidence of browser CORS support on production broker APIs."
+      ]
+    },
+    {
+      "id": "market-terms",
+      "url": "https://apiportal.koreainvestment.com/api/terms/public?termsType=MARKET",
+      "final_url": "https://apiportal.koreainvestment.com/api/terms/public?termsType=MARKET",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:27:46.066717+00:00",
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 28849,
+      "tls_verification": true,
+      "request_scope": "Public website documentation JSON GET; not a broker account, quotation or FX observation API",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "Official FAQ says the basic service is 0 KRW with no plan to charge the basic allocation. Its then-current 10 requests/second figure is from a FAQ created 2022-03-15, so this is not evidence of the current rate limit. Terms art11 reserves fee details to the posted schedule; do not describe this as an irrevocable free guarantee.",
+        "KIS account ownership plus account/ID linkage, service application and identity/account verification are required for service use. Terms art8 rejects under-19 applicants. These requirements describe eligibility; no account was accessed or created.",
+        "Individual customers may use price data for their own investment and a webpage for their own viewing/analysis. Providing business services or externally distributing an application with KIS price data requires a direct information agreement with the relevant provider/exchange. Corporate customers, including general corporations and affiliates, must enter a separate market-data information agreement before API price use/display."
+      ],
+      "short_official_excerpts": [
+        "현재 기본서비스로 제공되는 유량(현재 초당 10건)은 0원으로 제공됩니다.",
+        "시세 데이터를 활용한 비즈니스 서비스 제공 또는 외부 서비스(앱) 배포는 불가능합니다."
+      ]
+    },
+    {
+      "id": "faq-eligible",
+      "url": "https://apiportal.koreainvestment.com/api/forums/10000000-0000-0011-0000-000000000002/posts/0b29069f-812b-4a70-94db-63d07d5ad54c",
+      "human_url": "https://apiportal.koreainvestment.com/community/10000000-0000-0011-0000-000000000002/post/0b29069f-812b-4a70-94db-63d07d5ad54c",
+      "final_url": "https://apiportal.koreainvestment.com/api/forums/10000000-0000-0011-0000-000000000002/posts/0b29069f-812b-4a70-94db-63d07d5ad54c",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:28:15.227876+00:00",
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 2452,
+      "tls_verification": true,
+      "request_scope": "Public FAQ documentation GET only",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "FAQ created 2026-03-26 lists 위탁(01), 연금저축(22), ISA(01), 국내선물옵션(03), 해외선물옵션(08), RIA(01) for orders/account inquiry/quote inquiry; IRP(29) permits account and quote inquiry but no orders; DC가입자(55) cannot apply/use OpenAPI. This does not establish trading/quotation eligibility for every security or exchange in each account."
+      ]
+    },
+    {
+      "id": "faq-fee",
+      "url": "https://apiportal.koreainvestment.com/api/forums/10000000-0000-0011-0000-000000000002/posts/beb2459a-f6b4-432e-928a-d3462dd0daef",
+      "human_url": "https://apiportal.koreainvestment.com/community/10000000-0000-0011-0000-000000000002/post/beb2459a-f6b4-432e-928a-d3462dd0daef",
+      "final_url": "https://apiportal.koreainvestment.com/api/forums/10000000-0000-0011-0000-000000000002/posts/beb2459a-f6b4-432e-928a-d3462dd0daef",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:28:15.228145+00:00",
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1736,
+      "tls_verification": true,
+      "request_scope": "Public FAQ documentation GET only",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "Official FAQ says the basic service is 0 KRW with no plan to charge the basic allocation. Its then-current 10 requests/second figure is from a FAQ created 2022-03-15, so this is not evidence of the current rate limit. Terms art11 reserves fee details to the posted schedule; do not describe this as an irrevocable free guarantee."
+      ],
+      "short_official_excerpts": [
+        "현재 기본서비스로 제공되는 유량(현재 초당 10건)은 0원으로 제공됩니다."
+      ]
+    },
+    {
+      "id": "faq-public-web",
+      "url": "https://apiportal.koreainvestment.com/api/forums/10000000-0000-0011-0000-000000000002/posts/01a0b635-3630-4aee-8970-42f83828118c",
+      "human_url": "https://apiportal.koreainvestment.com/community/10000000-0000-0011-0000-000000000002/post/01a0b635-3630-4aee-8970-42f83828118c",
+      "final_url": "https://apiportal.koreainvestment.com/api/forums/10000000-0000-0011-0000-000000000002/posts/01a0b635-3630-4aee-8970-42f83828118c",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:28:15.228319+00:00",
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 1718,
+      "tls_verification": true,
+      "request_scope": "Public FAQ documentation GET only",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "Individual customers may use price data for their own investment and a webpage for their own viewing/analysis. Providing business services or externally distributing an application with KIS price data requires a direct information agreement with the relevant provider/exchange. Corporate customers, including general corporations and affiliates, must enter a separate market-data information agreement before API price use/display."
+      ],
+      "short_official_excerpts": [
+        "시세 데이터를 활용한 비즈니스 서비스 제공 또는 외부 서비스(앱) 배포는 불가능합니다."
+      ]
+    },
+    {
+      "id": "faq-exchange-terms",
+      "url": "https://apiportal.koreainvestment.com/api/forums/10000000-0000-0011-0000-000000000002/posts/c6884ede-2379-4811-a82d-9ca0b0d6aa77",
+      "human_url": "https://apiportal.koreainvestment.com/community/10000000-0000-0011-0000-000000000002/post/c6884ede-2379-4811-a82d-9ca0b0d6aa77",
+      "final_url": "https://apiportal.koreainvestment.com/api/forums/10000000-0000-0011-0000-000000000002/posts/c6884ede-2379-4811-a82d-9ca0b0d6aa77",
+      "http_status": 200,
+      "fetched_at_utc": "2026-10-09T01:28:15.228507+00:00",
+      "content_type": "application/json;charset=UTF-8",
+      "bytes": 6432,
+      "tls_verification": true,
+      "request_scope": "Public FAQ documentation GET only",
+      "fetch_method": "Python urllib HTTPS through inherited proxy; ssl.create_default_context(); no custom auth headers",
+      "relevant_excerpts_paraphrased": [
+        "Individual customers may use price data for their own investment and a webpage for their own viewing/analysis. Providing business services or externally distributing an application with KIS price data requires a direct information agreement with the relevant provider/exchange. Corporate customers, including general corporations and affiliates, must enter a separate market-data information agreement before API price use/display."
+      ],
+      "short_official_excerpts": [
+        "시세 데이터를 활용한 비즈니스 서비스 제공 또는 외부 서비스(앱) 배포는 불가능합니다."
+      ]
+    }
+  ],
+  "terms_claims": [
+    {
+      "id": "free-basic",
+      "result": "supported_with_date_caveat",
+      "statement": "Official FAQ says the basic service is 0 KRW with no plan to charge the basic allocation. Its then-current 10 requests/second figure is from a FAQ created 2022-03-15, so this is not evidence of the current rate limit. Terms art11 reserves fee details to the posted schedule; do not describe this as an irrevocable free guarantee.",
+      "sources": [
+        "faq-fee",
+        "market-terms"
+      ],
+      "excerpt": "현재 기본서비스로 제공되는 유량(현재 초당 10건)은 0원으로 제공됩니다."
+    },
+    {
+      "id": "account-required",
+      "result": "supported",
+      "statement": "KIS account ownership plus account/ID linkage, service application and identity/account verification are required for service use. Terms art8 rejects under-19 applicants. These requirements describe eligibility; no account was accessed or created.",
+      "sources": [
+        "howto-content",
+        "openapi-content",
+        "market-terms"
+      ]
+    },
+    {
+      "id": "eligible-product-accounts",
+      "result": "supported_general_eligibility_only",
+      "statement": "FAQ created 2026-03-26 lists 위탁(01), 연금저축(22), ISA(01), 국내선물옵션(03), 해외선물옵션(08), RIA(01) for orders/account inquiry/quote inquiry; IRP(29) permits account and quote inquiry but no orders; DC가입자(55) cannot apply/use OpenAPI. This does not establish trading/quotation eligibility for every security or exchange in each account.",
+      "sources": [
+        "faq-eligible"
+      ]
+    },
+    {
+      "id": "private-use-and-redistribution",
+      "result": "supported",
+      "statement": "Individual customers may use price data for their own investment and a webpage for their own viewing/analysis. Providing business services or externally distributing an application with KIS price data requires a direct information agreement with the relevant provider/exchange. Corporate customers, including general corporations and affiliates, must enter a separate market-data information agreement before API price use/display.",
+      "sources": [
+        "openapi-content",
+        "faq-public-web",
+        "faq-exchange-terms",
+        "provider",
+        "market-terms"
+      ],
+      "excerpt": "시세 데이터를 활용한 비즈니스 서비스 제공 또는 외부 서비스(앱) 배포는 불가능합니다."
+    },
+    {
+      "id": "japan-free-delayed",
+      "result": "supported_general_market_policy_only",
+      "statement": "Overseas current-price official API summary says Hong Kong, Vietnam, China and Japan prices are free delayed data with 15-minute delay. Paid real-time stock data is not available through OpenAPI even if the customer purchases paid real-time stock service. The United States has free zero-minute Nasdaq TotalView data with limited coverage, not a consolidated full-market equivalence claim. No Tokyo instrument response was requested or observed.",
+      "sources": [
+        "doc_price"
+      ],
+      "excerpt": "홍콩, 베트남, 중국, 일본 - 15분지연"
+    },
+    {
+      "id": "fx-pairs-units",
+      "result": "unverified",
+      "statement": "No official FAQ found establishing USDKRW/JPYKRW pair identifiers, reciprocal direction, KRW per 1 JPY vs KRW per 100 JPY normalization, timing or standalone fresh FX suitability. No FX observations or balances were fetched. Additional official schemas were researched by the parent; their unit/direction evidence belongs in the parent report.",
+      "sources": [
+        "faq-list"
+      ]
+    },
+    {
+      "id": "cors-browser-use",
+      "result": "unverified",
+      "statement": "No official FAQ CORS or direct-browser support statement found. Fetching public documentation successfully is not evidence of browser CORS support on production broker APIs.",
+      "sources": [
+        "faq-list"
+      ]
+    },
+    {
+      "id": "service-application-page",
+      "result": "login_redirect_only",
+      "statement": "Public service-application URL returned HTTP200 after redirect to login HTML. No login, account action, credential discovery or service application was attempted.",
+      "sources": [
+        "account"
+      ]
+    }
+  ],
+  "limitations": [
+    "Policy and schema claims are not proof of any exact instrument or live observation.",
+    "No Tokyo symbol mapping checked in this child report.",
+    "No affirmative FX unit/direction/CORS claim is justified by the checked documentation."
+  ],
+  "excerpt_normalization": "Credential field descriptions are prose, not assignments; no credential values were requested or recorded."
+}

@@ -17,8 +17,8 @@ MagicPath는 과거 차트 SAMPLE·컴포넌트 시안·검토 기록의 역사�
 | 디자인 SSoT | Claude owner-private canvas 「투자시스템 Cockpit 시안」 | owner 관리, private URL 미기록 |
 | 화면·탐색 기준 | `implementation/docs/frontend_ia_v1/COCKPIT_IA_v1.md` | docs-only 제안, 사용자 PR 병합 승인 필요 |
 | Macro 8축의 기존 기록 | `Macro System · Latest Consolidated Record v0.1.4 Candidate.md` §15 | 본문의 8축·6상태 확인; 엔진·운영 승격 아님 |
-| 기존 renderer·검증 스택 | `implementation/experiments/chart-contract-v0.1/package.json`·`README.md` | Lightweight Charts 5.2.1, native SVG, Noto Sans KR, Playwright 1.58.2 유지; 새 의존성 없음 |
-| 과거 IA·독립 검토 | IA 본문 §5의 실제 경로 목록 | Markdown 안내 1줄 외 원문 보존, 실제 legacy DOCX 변경 없음 |
+| 기존 renderer·검증 스택 | `implementation/experiments/chart-contract-v0.1/package.json`·`implementation/experiments/chart-contract-v0.1/README.md` | Lightweight Charts 5.2.1, native SVG, Noto Sans KR, Playwright 1.58.2 유지; 새 의존성 없음 |
+| 과거 IA·독립 검토 | IA 본문의 「과거 IA 대체와 원문 보존」 실제 경로 목록 | Markdown 안내 1줄 외 원문 보존, 실제 legacy DOCX 변경 없음 |
 | 계산·원본 계약·데이터 | 기존 각 owner의 계약·snapshot·판단 | canvas 또는 IA로 원점수·가중치·PIT·권한 변경 금지 |
 
 ## 3. 2026-10-09 사용자 결정
@@ -28,7 +28,6 @@ MagicPath는 과거 차트 SAMPLE·컴포넌트 시안·검토 기록의 역사�
 | 매크로 축 | Growth / Inflation / Liquidity / Monetary Policy / Credit / Labor / Fiscal / FX의 기존 8축. 각 축 Level / Direction / Momentum / Surprise / Stress / Confidence 보존 | 새 단일 Macro Score, 모델 방법론 변경·추가축·엔진 승격 |
 | 디자인 정합성 | 사용자 보고: 시안의 8축 수정 완료. 임금은 Labor 하위, 생산성은 Growth 하위, 주식시장은 국면 참고 패널 | 임금/생산성/주식시장을 독립 축으로 추가; private canvas 직접 재감사·앱 구현 완료 주장 |
 | 추가 축 | 필요하면 별도 방법론 버전으로 검토 | 화면 시안만으로 자동 채택 |
-| 26E | ① 앱 시세·환율 수동 입력 + KRW 기준 표시 | 기능·환율 계산·feed 구현. 다른 ②/③ 대안 채택 |
 
 ### 기존 기술 스택과 색상 토큰
 

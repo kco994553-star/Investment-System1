@@ -1,0 +1,16 @@
+{
+  "verification": "PASS",
+  "bytes": 23770,
+  "main_source_records": 41,
+  "mandatory_source_manifests": 2,
+  "local_links_checked": true,
+  "target19_quote_responses_verified": false,
+  "authenticated_browser_flow_verified": false,
+  "service_choice": "undecided",
+  "external_lookup_B": "OFF",
+  "repository_mutations_by_this_research": false,
+  "failures": [],
+  "mandatory_nested_source_and_header_records": 60,
+  "mandatory_receipt_fields_checked": true,
+  "checked_at_utc": "2026-10-09T01:35:08.545604+00:00"
+}

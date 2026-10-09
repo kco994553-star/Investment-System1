@@ -1,0 +1,39 @@
+{
+  "verification": "PASS",
+  "scope": "fresh final-source author execution, not independent review or deployed build",
+  "canonical_python": {
+    "passed": 839,
+    "subtests_passed": 271
+  },
+  "global_python": {
+    "passed": 484
+  },
+  "node_actual": 17,
+  "node_market": 34,
+  "manual_browser": 119,
+  "legacy_actual_browser": 40,
+  "pages_browser": 10,
+  "viewports": [
+    390,
+    1280
+  ],
+  "locales": [
+    "ko-KR",
+    "en-US"
+  ],
+  "device_payload_files": 0,
+  "screenshots": "ACTUAL_EMPTY",
+  "global_real_committed_diff_guard": "PASS; 9 records, READ_ONLY, no violations",
+  "global_local_head": "976049acfd88faffe7af9fc5d41a4fd65263d786",
+  "global_tree": "9a3c3c80f07cdde405a31bd3aa137aff95bd5ab9",
+  "guard_config_changed": false,
+  "bypass": false,
+  "legacy_harness_setup": "Initial root run omitted #actual; configuration corrected and complete 40 checks rerun, no product change.",
+  "graft_fix": {
+    "independent_initial_blocker": "local Git grafts could hide forbidden intermediate history; fixed before publication",
+    "canonical_focused_passed": 122,
+    "global_focused_passed": 58,
+    "new_graft_cases_each": 2,
+    "native_and_env_override_fail_closed": true
+  }
+}

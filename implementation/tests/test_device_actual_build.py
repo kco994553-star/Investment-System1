@@ -100,3 +100,34 @@ def test_cockpit_blocks_external_scripts_and_form_submission(tmp_path):
     assert "script-src 'self'" in html
     assert "form-action 'none'" in html
     assert "object-src 'none'" in html
+
+
+def test_cockpit_loads_local_market_module_before_actual_and_mounts_key_settings(tmp_path):
+    build(tmp_path)
+    html = (tmp_path / 'index.html').read_text()
+    assert 'device-market.js' in html
+    assert html.index('device-market.js') < html.index('device-actual.js')
+    assert (tmp_path / 'device-market.js').exists()
+    script = (tmp_path / 'app.js').read_text()
+    assert 'DeviceActual.settings' in script
+    assert 'device-api-settings' in script
+    assert "connect-src 'self'" in html
+
+
+@pytest.mark.parametrize('payload', [
+    {'schema': 'device-market-data/1', 'quotes': [], 'fx': []},
+    {'market_data': {'quotes': [{'price': '2', 'currency': 'USD'}]}},
+    {'fx': [{'currency': 'JPY', 'rate': '3'}]},
+    {'api_settings': {'provider': None}},
+    {'api_key': 'SYNTHETIC_PRIVATE_TEST_VALUE'},
+    {'apiKey': 'SYNTHETIC_PRIVATE_TEST_VALUE'},
+    {'appSecret': 'SYNTHETIC_PRIVATE_TEST_VALUE'},
+    {'accessToken': 'SYNTHETIC_PRIVATE_TEST_VALUE'},
+])
+def test_build_rejects_private_quotes_fx_and_credential_inputs(tmp_path, payload):
+    bundle = deepcopy(repository_bundle())
+    bundle['renamed_private'] = payload
+    with pytest.raises(ValueError, match='private device data') as exc:
+        build(tmp_path, bundle=bundle)
+    assert 'SYNTHETIC_PRIVATE_TEST_VALUE' not in str(exc.value)
+    assert not list(tmp_path.iterdir())

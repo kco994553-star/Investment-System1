@@ -6,7 +6,7 @@ This guard does not grant autonomy by itself. It enforces:
 - append-only records cannot rewrite or delete existing bytes;
 - AUTONOMY_MODE is a single explicit state;
 - operating values stay within the adopted CDR-024 configuration.
-- populated user-device ACTUAL holdings cannot enter tracked repository content.
+- populated user-device holdings, market exports and credentials cannot enter tracked content.
 
 HG-02 still requires GitHub-side branch/ruleset enforcement.
 """
@@ -36,13 +36,25 @@ _COST_KEYS = {"averagecost", "avgcost", "averageprice", "avgprice", "costbasis",
 _CURRENCY_KEYS = {"currency", "ccy"}
 _IDENTITY_KEYS = {"securityreference", "securityid", "symbol", "ticker", "tickerhint", "isin", "cusip"}
 _COLLECTION_KEYS = {"positions", "holdings"}
+_MARKET_VALUE_KEYS = {"price", "rate", "fxrate", "exchangerate"}
+_MARKET_RECORD_KEYS = _MARKET_VALUE_KEYS | _IDENTITY_KEYS | _CURRENCY_KEYS | {"asof", "availableat", "source"}
+_MARKET_COLLECTION_KEYS = {"quotes", "fx", "fxrates", "rates", "prices"}
+_CREDENTIAL_KEYS = {
+    "apikey", "appkey", "appsecret", "accesstoken", "refreshtoken", "clientsecret",
+    "apisecret", "secretkey", "authtoken", "bearertoken",
+}
+_PRIVATE_MARKET_EXPORT_NAME = re.compile(
+    r"(?:^|[-_])(?:device|user|personal|broker|manual)[-_]"
+    r"(?:market(?:[-_]data)?|quotes?|fx(?:[-_]rates)?)(?:[-_]|$)", re.IGNORECASE,
+)
 _PRIVATE_EXPORT_NAME = re.compile(
     r"(?:^|[-_])(?:actual(?:[-_](?:holdings|positions|portfolio|v\d+))?"
     r"|(?:device|user|personal|broker)[-_](?:actual[-_])?(?:holdings|positions|portfolio))"
     r"(?:[-_]|$)", re.IGNORECASE,
 )
 _YAML_FIELD = re.compile(
-    r"(?:^[ \t]*(?:-[ \t]*)?|[,{][ \t]*)['\"]?([A-Za-z_][\w .-]*)['\"]?[ \t]*:[ \t]*([^,}\]\n]*)",
+    r"(?:^[ \t]*(?:-[ \t]*)?|[,{][ \t]*)['\"]?([A-Za-z_][\w .-]*)['\"]?[ \t]*:[ \t]*"
+    r"((?:&[\w-]+[ \t]+)?(?:'(?:''|[^'])*'|\"(?:\\.|[^\"\\])*\"|[^,}\]\n]*))",
     re.MULTILINE,
 )
 
@@ -83,6 +95,29 @@ def _actual_marker(fields: dict) -> bool:
     )
 
 
+def _market_marker(fields: dict) -> bool:
+    return _actual_marker(fields) or any(
+        key == "schema" and str(value).lower().startswith("device-market-data/")
+        for key, value in fields.items()
+    )
+
+
+def _credential_fields(fields: dict) -> bool:
+    # Property/type descriptions are mappings, not populated credential strings.
+    return any(
+        key in _CREDENTIAL_KEYS and isinstance(value, str) and _populated(value)
+        for key, value in fields.items()
+    )
+
+
+def _market_row(fields: dict, *, timing_fields: bool = False) -> bool:
+    record_keys = _MARKET_RECORD_KEYS if timing_fields else _MARKET_RECORD_KEYS - {"asof", "availableat"}
+    return any(
+        key in record_keys and isinstance(value, (str, int, float)) and _populated(value)
+        for key, value in fields.items()
+    )
+
+
 def _holding_row(fields: dict, *, partial: bool = False) -> bool:
     quantity = any(_number(fields.get(key)) for key in _QUANTITY_KEYS)
     identity = any(_populated(fields.get(key)) for key in _IDENTITY_KEYS)
@@ -93,17 +128,22 @@ def _holding_row(fields: dict, *, partial: bool = False) -> bool:
     )
 
 
-def _structured_private(value: object, named_export: bool) -> bool:
+def _structured_private(value: object, named_export: bool, named_market_export: bool = False) -> bool:
     mappings: list[dict] = []
     populated_holdings = False
+    populated_market = False
 
     def visit(node: object) -> None:
-        nonlocal populated_holdings
+        nonlocal populated_holdings, populated_market
         if isinstance(node, dict):
             fields = {_key(key): item for key, item in node.items()}
             mappings.append(fields)
             populated_holdings |= any(
                 key in _COLLECTION_KEYS and isinstance(item, (list, dict)) and _populated(item)
+                for key, item in fields.items()
+            )
+            populated_market |= any(
+                key in _MARKET_COLLECTION_KEYS and isinstance(item, (list, dict)) and _populated(item)
                 for key, item in fields.items()
             )
             for item in node.values():
@@ -114,55 +154,115 @@ def _structured_private(value: object, named_export: bool) -> bool:
 
     visit(value)
     marked = any(_actual_marker(fields) for fields in mappings)
+    market_marked = named_market_export or any(_market_marker(fields) for fields in mappings)
     return (
-        (marked and populated_holdings)
+        any(_credential_fields(fields) for fields in mappings)
+        or (market_marked and (populated_market or any(_market_row(fields) for fields in mappings)))
+        or (marked and populated_holdings)
         or any(_holding_row(fields) for fields in mappings)
         or (named_export and any(_holding_row(fields, partial=True) for fields in mappings))
     )
 
 
-def _yaml_private(content: str, named_export: bool) -> bool:
+def _yaml_scalar(raw_value: str) -> tuple[str, bool]:
+    raw_value = raw_value.strip()
+    if raw_value.startswith(("'", '"')):
+        pattern = r"^'((?:''|[^'])*)'" if raw_value[0] == "'" else r'^"((?:\\.|[^"\\])*)"'
+        match = re.match(pattern, raw_value)
+        if match and raw_value[0] == '"':
+            try:
+                return json.loads(match.group(0)), True
+            except ValueError:
+                pass
+        # Incomplete quoted text remains a conservative population signal.
+        return (match.group(1) if match else raw_value[1:]), True
+    return ("" if raw_value.startswith("#") else raw_value.split(" #", 1)[0].strip()), False
+
+
+def _yaml_quote_continues(content: str, quote: str) -> bool:
+    index = 0
+    while index < len(content):
+        if quote == '"' and content[index] == "\\":
+            index += 2
+        elif content[index] == quote:
+            if quote == "'" and content[index:index + 2] == "''":
+                index += 2
+            else:
+                return False
+        else:
+            index += 1
+    return True
+
+
+def _yaml_private(content: str, named_export: bool, named_market_export: bool = False) -> bool:
     """Recognize export-shaped YAML without requiring a CI YAML dependency.
 
     Only mapping/sequence documents are considered, so source code describing the
     format is not treated as a payload. Flow mappings, anchors and stream markers
     are accepted. This is deliberately a shape check, not a YAML schema validator.
     """
-    lines = [line for line in content.splitlines() if line.strip() and not line.lstrip().startswith("#")]
+    lines = [line for line in content.splitlines() if line.strip()]
     if not lines:
         return False
     block_indent = None
+    credential_block = False
+    continued_quote = None
     scan_lines: list[str] = []
     for line in lines:
         stripped = line.strip()
         indent = len(line) - len(line.lstrip())
+        if continued_quote is not None:
+            scan_lines.append(line)
+            if not _yaml_quote_continues(line, continued_quote):
+                continued_quote = None
+            continue
         if block_indent is not None and indent > block_indent:
+            if credential_block:
+                return True
             continue
         block_indent = None
+        credential_block = False
+        if stripped.startswith("#"):
+            continue
         if stripped in {"---", "...", "[", "]", "{", "}"} or stripped.startswith(("%", "!")):
             scan_lines.append(line)
             continue
         if not (indent or re.match(r"^[ \t]*(?:-[ \t]+|(?:['\"]?[A-Za-z_][\w .-]*['\"]?[ \t]*:|[\[{]|[&*][\w-]+))", line)):
             return False
         scan_lines.append(line)
+        for field in _YAML_FIELD.finditer(line):
+            raw_value = re.sub(r"^&[\w-]+[ \t]+", "", field.group(2).strip())
+            if raw_value.startswith(("'", '"')) and _yaml_quote_continues(raw_value[1:], raw_value[0]):
+                continued_quote = raw_value[0]
         if re.search(r":\s*[|>][-+]?\s*(?:#.*)?$", line):
             block_indent = indent
+            match = _YAML_FIELD.search(line)
+            credential_block = match is not None and _key(match.group(1)) in _CREDENTIAL_KEYS
 
     fields: dict[str, str] = {}
-    anchors: dict[str, str] = {}
+    market_fields: dict[str, str] = {}
+    anchors: dict[str, tuple[str, bool]] = {}
     marked = False
+    market_marked = named_market_export
+    credentials = False
     for match in _YAML_FIELD.finditer("\n".join(scan_lines)):
-        value = match.group(2).split(" #", 1)[0].strip().strip("'\"")
-        anchor = re.match(r"^&([\w-]+)[ \t]+(.*)$", value)
+        raw_value = match.group(2).strip()
+        anchor = re.match(r"^&([\w-]+)[ \t]+(.*)$", raw_value, re.DOTALL)
+        value, quoted = _yaml_scalar(anchor.group(2) if anchor else raw_value)
         if anchor:
-            value = anchor.group(2).strip().strip("'\"")
-            anchors[anchor.group(1)] = value
-        if value.startswith("*"):
-            value = anchors.get(value[1:], value)
-        if value.lower() in {"null", "~"} or value in {"[]", "{}"}:
+            anchors[anchor.group(1)] = (value, quoted)
+        if not quoted and value.startswith("*"):
+            value, quoted = anchors.get(value[1:], (value, quoted))
+        if not quoted and (value.lower() in {"null", "~"} or value in {"[]", "{}"}):
             value = ""
         key = _key(match.group(1))
         marked |= _actual_marker({key: value})
+        market_marked |= _market_marker({key: value})
+        scalar = quoted or (not value.startswith(("{", "[")) and not re.fullmatch(r"[|>][-+]?", value))
+        if scalar:
+            credentials |= _credential_fields({key: value})
+            if key not in market_fields or (_populated(value) and (not _number(market_fields[key]) or _number(value))):
+                market_fields[key] = value
         # Never let a later placeholder erase evidence of an exported row.
         if key not in fields or (_populated(value) and (not _number(fields[key]) or _number(value))):
             fields[key] = value
@@ -174,23 +274,37 @@ def _yaml_private(content: str, named_export: bool) -> bool:
         _number(fields.get(key)) for key in _COST_KEYS
     ) and any(_populated(fields.get(key)) for key in _CURRENCY_KEYS)
     holding_data = any(_number(fields.get(key)) for key in _QUANTITY_KEYS | _COST_KEYS) or identity
-    return generic_row or ((marked or named_export) and holding_data)
+    market_data = _market_row(market_fields, timing_fields=bool(_MARKET_COLLECTION_KEYS.intersection(fields)))
+    return credentials or (market_marked and market_data) or generic_row or ((marked or named_export) and holding_data)
 
 
-def _csv_private(content: str, named_export: bool) -> bool:
+def _csv_private(content: str, named_export: bool, named_market_export: bool = False) -> bool:
     content = content.lstrip("\r\n \t")
     first_line = next((line for line in content.splitlines() if line.strip()), "")
     for delimiter in (",", "\t", ";"):
-        if delimiter not in first_line:
+        if delimiter not in first_line and (
+            delimiter != "," or not re.fullmatch(r"['\"]?[A-Za-z_][\w .-]*['\"]?", first_line.strip())
+        ):
             continue
         try:
-            reader = csv.DictReader(io.StringIO(content), delimiter=delimiter)
-            headers = {_key(key) for key in reader.fieldnames or []}
-            if not headers.intersection(_QUANTITY_KEYS | _IDENTITY_KEYS):
+            reader = csv.reader(io.StringIO(content), delimiter=delimiter)
+            headers = [_key(key) for key in next(reader, [])]
+            if not set(headers).intersection(_QUANTITY_KEYS | _MARKET_RECORD_KEYS | _CREDENTIAL_KEYS):
                 continue
             for row in reader:
-                fields = {_key(key): value for key, value in row.items() if key is not None}
-                if _holding_row(fields) or ((_actual_marker(fields) or named_export) and _holding_row(fields, partial=True)):
+                pairs = list(zip(headers, row))
+                fields: dict[str, str] = {}
+                for key, value in pairs:
+                    # Duplicate or normalized headers cannot erase an earlier
+                    # populated cell, including zero-valued market/holding data.
+                    if key not in fields or (_populated(value) and (not _number(fields[key]) or _number(value))):
+                        fields[key] = value
+                if (
+                    any(_credential_fields({key: value}) for key, value in pairs)
+                    or ((any(_market_marker({key: value}) for key, value in pairs) or named_market_export) and _market_row(fields, timing_fields=True))
+                    or _holding_row(fields)
+                    or ((any(_actual_marker({key: value}) for key, value in pairs) or named_export) and _holding_row(fields, partial=True))
+                ):
                     return True
         except csv.Error:
             # No parser text is returned: parse errors may include private values.
@@ -215,12 +329,15 @@ def contains_device_actual(content: bytes, path: str) -> bool:
     named_export = filename.suffix.lower() in {".json", ".yaml", ".yml", ".csv", ".tsv", ".txt", ".dat"} and bool(
         _PRIVATE_EXPORT_NAME.search(filename.stem)
     )
+    named_market_export = filename.suffix.lower() in {".json", ".yaml", ".yml", ".csv", ".tsv", ".txt", ".dat"} and bool(
+        _PRIVATE_MARKET_EXPORT_NAME.search(filename.stem)
+    )
     try:
-        if _structured_private(json.loads(decoded), named_export):
+        if _structured_private(json.loads(decoded), named_export, named_market_export):
             return True
     except (ValueError, RecursionError):
         pass
-    if _csv_private(decoded, named_export) or _yaml_private(decoded, named_export):
+    if _csv_private(decoded, named_export, named_market_export) or _yaml_private(decoded, named_export, named_market_export):
         return True
     # Payloads pasted into Markdown/logs are still repository content. Ordinary
     # source/tests are not searched for string literals describing this schema.
@@ -274,7 +391,7 @@ def device_actual_violations(base: str | None = None) -> list[str]:
 
     Reading blobs catches staged/committed values hidden by working-tree edits.
     Reading tracked worktree files also catches a payload before it is staged.
-    Findings intentionally omit filenames, parser details, and holdings values.
+    Findings intentionally omit filenames, parser details, and private values.
     """
     blobs: dict[tuple[str, str], None] = {}
     tracked_paths: set[str] = set()
@@ -350,66 +467,285 @@ def load_config(path: Path = CONFIG_PATH) -> dict:
 
 
 def parse_name_status(raw: str) -> list[tuple[str, list[str]]]:
+    """Accept Git's unquoted NUL format and the legacy unit-test text format."""
     out: list[tuple[str, list[str]]] = []
+    if "\0" in raw:
+        fields = raw.split("\0")
+        if fields.pop() != "":
+            raise GuardError("incomplete protected-content diff metadata")
+        index = 0
+        while index < len(fields):
+            status = fields[index]
+            count = 2 if status.startswith(("R", "C")) else 1
+            paths = fields[index + 1:index + 1 + count]
+            if not re.fullmatch(r"[ACDMRTUXB][0-9]*", status) or len(paths) != count or not all(paths):
+                raise GuardError("invalid protected-content diff metadata")
+            out.append((status, paths))
+            index += count + 1
+        return out
     for line in raw.splitlines():
         if not line.strip():
             continue
         parts = line.split("\t")
-        status = parts[0]
-        paths = parts[1:]
-        if not paths:
-            raise GuardError(f"invalid diff record: {line!r}")
-        out.append((status, paths))
+        if len(parts) < 2:
+            raise GuardError("invalid protected-content diff metadata")
+        out.append((parts[0], parts[1:]))
     return out
 
 
 def _touches(path: str, cfg: dict) -> bool:
-    if path in cfg["immutable_exact_paths"]:
-        return True
-    if path in cfg["append_only_exact_paths"]:
-        return True
-    return any(path.startswith(prefix) for prefix in cfg["append_only_prefixes"])
+    return (
+        path in cfg["immutable_exact_paths"]
+        or path in cfg["append_only_exact_paths"]
+        or any(path.startswith(prefix) for prefix in cfg["append_only_prefixes"])
+    )
 
 
-def classify_diff(records: list[tuple[str, list[str]]], cfg: dict) -> list[str]:
+def classify_diff(records: list[tuple[str, list[str]]], cfg: dict, append_verifier=None) -> list[str]:
+    """An M may append only to an exact log with independent content proof.
+
+    Without a verifier this remains conservative. Evidence-directory entries
+    and immutable paths never use the log append exception.
+    """
     violations: list[str] = []
     immutable = set(cfg["immutable_exact_paths"])
     append_files = set(cfg["append_only_exact_paths"])
     prefixes = tuple(cfg["append_only_prefixes"])
-
     for status, paths in records:
+        if not status or not paths:
+            raise GuardError("invalid protected-content diff metadata")
         code = status[0]
-        old_path = paths[0]
-        new_path = paths[-1]
-
+        old_path, new_path = paths[0], paths[-1]
         if old_path in immutable or new_path in immutable:
-            if code in {"M", "D", "R", "C", "T"}:
+            if code != "A":
                 violations.append(f"immutable path changed: {status} {paths}")
             continue
-
-        append_hit = (
-            old_path in append_files
-            or new_path in append_files
-            or old_path.startswith(prefixes)
-            or new_path.startswith(prefixes)
-        )
-        if append_hit and code in {"M", "D", "R", "C", "T"}:
-            violations.append(f"append-only existing content changed: {status} {paths}")
-
+        evidence_hit = old_path.startswith(prefixes) or new_path.startswith(prefixes)
+        append_hit = old_path in append_files or new_path in append_files or evidence_hit
+        if append_hit and code != "A":
+            proven_append = (
+                code == "M" and old_path == new_path and old_path in append_files
+                and not evidence_hit and append_verifier is not None
+                and append_verifier(old_path)
+            )
+            if not proven_append:
+                violations.append(f"append-only existing content changed: {status} {paths}")
     return violations
 
 
-def git_name_status(base: str) -> str:
+def _guard_git_bytes(args: list[str]) -> bytes:
     proc = subprocess.run(
-        ["git", "diff", "--name-status", f"{base}...HEAD"],
-        cwd=REPO_ROOT,
-        check=False,
-        capture_output=True,
-        text=True,
+        ["git", "--no-replace-objects", *args], cwd=REPO_ROOT,
+        check=False, capture_output=True,
     )
     if proc.returncode:
-        raise GuardError(proc.stderr.strip() or "git diff failed")
+        raise GuardError("protected-content verification could not read repository state")
     return proc.stdout
+
+
+def _reject_grafted_history() -> None:
+    """Grafts can conceal committed states despite --no-replace-objects."""
+    if "GIT_GRAFT_FILE" in os.environ:
+        raise GuardError("protected-content verification does not support grafted history")
+    graft_path = _guard_git_bytes([
+        "rev-parse", "--path-format=absolute", "--git-path", "info/grafts",
+    ]).removesuffix(b"\n")
+    if not graft_path:
+        raise GuardError("protected-content verification could not locate history metadata")
+    try:
+        os.lstat(os.fsdecode(graft_path))
+    except FileNotFoundError:
+        return
+    except OSError:
+        raise GuardError("protected-content verification could not inspect history metadata") from None
+    raise GuardError("protected-content verification does not support grafted history")
+
+
+def resolve_comparison(base: str) -> tuple[str, str]:
+    """Freeze the same unique merge base and HEAD used by the reported diff."""
+    _reject_grafted_history()
+    def commit(ref):
+        oid = _guard_git_bytes(["rev-parse", "--verify", "--end-of-options", ref + "^{commit}"]).strip()
+        if not re.fullmatch(rb"[0-9a-f]{40}|[0-9a-f]{64}", oid):
+            raise GuardError("invalid protected-content comparison commit")
+        return oid.decode("ascii")
+    base_commit, head = commit(base), commit("HEAD")
+    bases = _guard_git_bytes(["merge-base", "--all", base_commit, head]).splitlines()
+    if len(bases) != 1 or not re.fullmatch(rb"[0-9a-f]{40}|[0-9a-f]{64}", bases[0]):
+        raise GuardError("protected-content verification requires one unambiguous merge base")
+    if _guard_git_bytes(["rev-parse", "--is-shallow-repository"]).strip() != b"false":
+        raise GuardError("protected-content verification requires complete repository history")
+    return bases[0].decode("ascii"), head
+
+
+def git_name_status(base: str, *, head: str | None = None) -> str:
+    if head is None:
+        base, head = resolve_comparison(base)
+    return _guard_git_bytes([
+        "diff", "--name-status", "-z", "--no-renames", "--no-ext-diff",
+        "--no-textconv", "--ignore-submodules=none", base, head, "--",
+    ]).decode("utf-8", "surrogateescape")
+
+
+def _safe_git_path(raw_path: bytes) -> str:
+    path = raw_path.decode("utf-8", "surrogateescape")
+    if not path or path.startswith("/") or any(part in {"", ".", ".."} for part in path.split("/")):
+        raise GuardError("invalid protected-content repository path")
+    return path
+
+
+def _protected_tree(tree: str, cfg: dict) -> dict:
+    state = {}
+    for entry in _guard_git_bytes(["ls-tree", "-r", "--full-tree", "-z", tree]).split(b"\0"):
+        if not entry:
+            continue
+        try:
+            metadata, raw_path = entry.split(b"\t", 1)
+            mode, kind, oid = metadata.split()
+        except ValueError:
+            raise GuardError("invalid protected-content tree metadata") from None
+        path = _safe_git_path(raw_path)
+        if _touches(path, cfg):
+            state[path] = (mode.decode("ascii"), kind.decode("ascii"), oid.decode("ascii"))
+    return state
+
+
+def _protected_index(cfg: dict) -> dict:
+    state = {}
+    for entry in _guard_git_bytes(["ls-files", "--stage", "-z"]).split(b"\0"):
+        if not entry:
+            continue
+        try:
+            metadata, raw_path = entry.split(b"\t", 1)
+            mode, oid, stage = metadata.split()
+        except ValueError:
+            raise GuardError("invalid protected-content index metadata") from None
+        path = _safe_git_path(raw_path)
+        if _touches(path, cfg):
+            if stage != b"0" or path in state:
+                raise GuardError("protected-content verification requires a resolved index")
+            state[path] = (mode.decode("ascii"), "commit" if mode == b"160000" else "blob", oid.decode("ascii"))
+    return state
+
+
+def _protected_worktree_entry(path: str):
+    """Read a protected tracked file without following any symlink component."""
+    if not hasattr(os, "O_NOFOLLOW"):
+        raise GuardError("protected-content verification requires no-follow filesystem support")
+    directory = file_fd = None
+    try:
+        directory = os.open(REPO_ROOT, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        parts = path.split("/")
+        for part in parts[:-1]:
+            child = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=directory)
+            os.close(directory)
+            directory = child
+        file_fd = os.open(parts[-1], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
+        before = os.fstat(file_fd)
+        if not stat.S_ISREG(before.st_mode):
+            return None
+        with os.fdopen(file_fd, "rb") as file:
+            file_fd = None
+            content = file.read()
+            after = os.fstat(file.fileno())
+        stable_fields = ("st_dev", "st_ino", "st_mode", "st_size", "st_mtime_ns", "st_ctime_ns")
+        if any(getattr(before, field) != getattr(after, field) for field in stable_fields):
+            raise GuardError("protected-content file changed during verification")
+        mode = "100755" if before.st_mode & stat.S_IXUSR else "100644"
+        return mode, "blob", content
+    except OSError as exc:
+        if exc.errno in {errno.ENOENT, errno.ELOOP, errno.ENOTDIR}:
+            return None
+        raise GuardError("protected-content verification could not read a tracked file") from None
+    finally:
+        if file_fd is not None:
+            os.close(file_fd)
+        if directory is not None:
+            os.close(directory)
+
+
+def _regular_entry(entry) -> bool:
+    return entry is not None and entry[0] in {"100644", "100755"} and entry[1] == "blob"
+
+
+def _log_text(content: bytes) -> bool:
+    if b"\0" in content:
+        return False
+    try:
+        content.decode("utf-8")
+        return True
+    except UnicodeDecodeError:
+        return False
+
+
+def _protected_transition(before: dict, after: dict, cfg: dict, blob_cache: dict) -> list[str]:
+    def content(entry):
+        value = entry[2]
+        if isinstance(value, bytes):
+            return value
+        if value not in blob_cache:
+            blob_cache[value] = _guard_git_bytes(["cat-file", "blob", value])
+        return blob_cache[value]
+
+    def append_proof(path):
+        old, new = before[path], after[path]
+        if not _regular_entry(old) or not _regular_entry(new) or old[:2] != new[:2]:
+            return False
+        old_bytes, new_bytes = content(old), content(new)
+        return _log_text(old_bytes) and _log_text(new_bytes) and new_bytes.startswith(old_bytes)
+
+    records, invalid = [], []
+    for path in sorted(before.keys() | after.keys()):
+        old, new = before.get(path), after.get(path)
+        if old == new:
+            continue
+        if old is None:
+            code = "A"
+            if not _regular_entry(new) or (
+                path in cfg["append_only_exact_paths"] and not _log_text(content(new))
+            ):
+                invalid.append("protected repository addition requires a regular artifact of the configured type")
+        elif new is None:
+            code = "D"
+        elif old[:2] != new[:2] or not _regular_entry(old) or not _regular_entry(new):
+            code = "T"
+        elif content(old) == content(new):
+            continue
+        else:
+            code = "M"
+        records.append((code, [path]))
+    return invalid + classify_diff(records, cfg, append_proof)
+
+
+def protected_repository_violations(comparison: str, head: str, cfg: dict) -> list[str]:
+    """Verify every committed parent edge, final tree, index, and tracked files."""
+    trees, blobs = {}, {}
+    def tree(oid):
+        if oid not in trees:
+            trees[oid] = _protected_tree(oid, cfg)
+        return trees[oid]
+    violations = _protected_transition(tree(comparison), tree(head), cfg, blobs)
+    history = _guard_git_bytes([
+        "rev-list", "--reverse", "--topo-order", "--parents", f"{comparison}..{head}", "--",
+    ])
+    for line in history.splitlines():
+        commits = line.decode("ascii").split()
+        if not commits or not all(re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", oid) for oid in commits):
+            raise GuardError("invalid protected-content history metadata")
+        commit, parents = commits[0], commits[1:]
+        for parent in parents:
+            violations.extend(_protected_transition(tree(parent), tree(commit), cfg, blobs))
+        if not parents:
+            violations.extend(_protected_transition({}, tree(commit), cfg, blobs))
+    index = _protected_index(cfg)
+    violations.extend(_protected_transition(tree(head), index, cfg, blobs))
+    worktree = {}
+    for path in tree(head).keys() | index.keys():
+        entry = _protected_worktree_entry(path)
+        if entry is not None:
+            worktree[path] = entry
+    violations.extend(_protected_transition(index, worktree, cfg, blobs))
+    return list(dict.fromkeys(violations))
 
 
 def validate_mode(cfg: dict) -> str:
@@ -423,9 +759,10 @@ def validate_mode(cfg: dict) -> str:
 def cmd_diff(base: str) -> int:
     cfg = load_config()
     mode = validate_mode(cfg)
-    records = parse_name_status(git_name_status(base))
-    violations = classify_diff(records, cfg)
-    privacy_violations = device_actual_violations(base)
+    comparison, head = resolve_comparison(base)
+    records = parse_name_status(git_name_status(comparison, head=head))
+    violations = protected_repository_violations(comparison, head, cfg)
+    privacy_violations = device_actual_violations(comparison)
     if privacy_violations:
         # Other rule diagnostics include paths; a private export's filename may
         # itself carry account/holdings information. Preserve failure counts.

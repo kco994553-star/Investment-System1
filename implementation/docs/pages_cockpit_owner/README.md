@@ -1,18 +1,5 @@
 # GitHub Actions Pages cockpit
 
-## 현재 문서 기준 (2026-10-09)
-
-- IA/디자인 기준: [Cockpit IA v1](../frontend_ia_v1/COCKPIT_IA_v1.md) 및 [DESIGN_SOURCE](../frontend_ia_v1/DESIGN_SOURCE.md).
-- **26E 결정 = ① 시세·환율 수동 입력 + KRW 기준 표시 (사용자 선택, 2026-10-09)**.
-  수동 입력 범위만 READY. 자동 수집·공개 JSON(②)·실시간 API(③)는 미채택.
-- [26E 결정 영수증 및 SSoT §8/§26D 범위 영향](DEPLOYMENT_DECISION_26E.md),
-  [선택 전 비교 자료](QUOTES_FX_OPTIONS_26E.md), [기기 직접 API 공식 문서 조사](DEVICE_DIRECT_QUOTES_RESEARCH.md).
-  기기 직접 API는 후보 조사이며 새 사용자 선택 없이는 도입하지 않는다.
-- 이번 PR은 문서 전용이다. 아래 배포 준비 시점의 설정·관측값·NOT_RUN은 역사적 기록이며,
-  지금의 실제 공개 주소 검증이나 구현 완료로 승격하지 않는다. 사용자에게 이미 받은 결정을 다시 요청하지 않는다.
-
-## 기존 배포 준비 기록 (보존)
-
 This bounded PR adds publication for intermediate review and personal use, as
 explicitly authorized by user26E on2026-10-09. READ_ONLY remains unchanged.
 

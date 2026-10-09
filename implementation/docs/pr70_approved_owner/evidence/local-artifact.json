@@ -1,0 +1,23 @@
+{
+  "pages_artifact_guard": "PASS",
+  "files_scanned": 12,
+  "violations": {},
+  "directory_and_raw_tar_checked": true,
+  "public_data_json_pins_unchanged": true,
+  "device_records_in_artifact": false,
+  "api_provider_calls": "OFF",
+  "hashes": {
+    "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
+    "app.js": "ab19b9506b02a8a1619a486fd1361ee1e3c35ee1b9012a9e9eecd97721e06e5d",
+    "data.json": "735aadfdf26197013e1478e60974d42c920c089c19dd99f91687a0dfd38b9536",
+    "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
+    "device-actual.js": "4d5a503abd0436cc6f30a2222fe0926d5da1f553ab76b67edb13e38809b5a8a0",
+    "device-market.js": "922c99ea78487a736b89a81d643c4f814355f0bad603fb370a086629bba7e916",
+    "entities.json": "465354a2bc2846f4d85ad6306d2dda3aa5cb5601e4d3520281ec013bf402c424",
+    "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
+    "index.html": "b29fdf5f89e6244905d9e641e2f7e9db0e9a7cbf4c79fa0f2da74e6fbcf45889",
+    "locale.js": "d240bd1e66ddea0ee515874765645cb87c8926f0f4221580bf59624b14e55043",
+    "research.html": "ef7665e2079df06c4bf7265206d9113ddb4716f93cf87e0ec0735c6b5fbae219",
+    "style.css": "0f8f4d3be8d7cb0682ff21fb2e1c5684444726a88d9c6ab8d60697c7d7938537"
+  }
+}

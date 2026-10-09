@@ -3,7 +3,14 @@
 .device-actual p { max-width: 72ch; overflow-wrap: anywhere; }
 .device-actual .actual-device-badge { display: inline-block; margin: 0 0 10px; padding: 5px 11px; background: #e1eee7; color: #194c38; border-radius: 20px; font-weight: 700; font-size: 13px; }
 .device-actual .actual-form { display: grid; gap: 12px; }
-.device-actual .actual-input-row { display: grid; grid-template-columns: 1fr 1fr 100px; gap: 10px; min-width: 0; margin: 0; padding: 13px; border: 1px solid var(--line, #dce2d9); border-radius: 10px; background: var(--card, #fff); }
+.device-actual .actual-input-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 100px; gap: 10px; min-width: 0; margin: 0; padding: 13px; border: 1px solid var(--line, #dce2d9); border-radius: 10px; background: var(--card, #fff); }
+.device-actual .actual-input-row label:nth-of-type(5) { grid-column: 2 / -1; }
+.device-actual .actual-quote-source { grid-column: 1 / -1; margin: 0; font-size: 12px; color: var(--muted, #62736d); }
+.device-actual .actual-fx-box { min-width: 0; margin: 0; padding: 13px; border: 1px solid var(--line, #dce2d9); border-radius: 10px; }
+.device-actual .actual-fx-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 10px; margin: 10px 0; }
+.device-actual .actual-stale { color: #8c4625; font-weight: 600; }
+.device-actual .actual-api-form { display: grid; gap: 12px; max-width: 600px; margin-top: 14px; }
+.device-actual.actual-api-settings > label { max-width: 600px; }
 .device-actual legend { font-weight: 700; max-width: 100%; padding: 0 5px; overflow-wrap: anywhere; }
 .device-actual label { display: flex; flex-direction: column; gap: 5px; min-width: 0; font-size: 13px; }
 .device-actual input, .device-actual select { box-sizing: border-box; min-width: 0; width: 100%; margin: 0; padding: 9px; font: inherit; font-size: 16px; color: inherit; border: 1px solid #b5c5ba; border-radius: 5px; background: #fff; }
@@ -29,7 +36,9 @@
 @media (max-width: 520px) {
   .device-actual h2 { font-size: 21px; }
   .device-actual .actual-input-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 11px; gap: 9px; }
-  .device-actual .actual-input-row label:last-child { grid-column: 1 / -1; width: 110px; }
+  .device-actual .actual-input-row label:nth-of-type(3) { grid-column: 1 / -1; width: 110px; }
+  .device-actual .actual-input-row label:nth-of-type(4), .device-actual .actual-input-row label:nth-of-type(5) { grid-column: 1 / -1; }
+  .device-actual .actual-fx-row { grid-template-columns: minmax(0, 1fr); }
   .device-actual .actual-actions { flex-direction: column; align-items: stretch; }
   .device-actual .actual-import-label input { max-width: 100%; }
   .device-actual button[data-action="save"] { width: 100%; }
