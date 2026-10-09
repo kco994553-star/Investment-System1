@@ -1,0 +1,36 @@
+.device-actual { color: var(--ink, #173733); min-width: 0; }
+.device-actual h2 { margin: 0 0 12px; font-size: 24px; }
+.device-actual p { max-width: 72ch; overflow-wrap: anywhere; }
+.device-actual .actual-device-badge { display: inline-block; margin: 0 0 10px; padding: 5px 11px; background: #e1eee7; color: #194c38; border-radius: 20px; font-weight: 700; font-size: 13px; }
+.device-actual .actual-form { display: grid; gap: 12px; }
+.device-actual .actual-input-row { display: grid; grid-template-columns: 1fr 1fr 100px; gap: 10px; min-width: 0; margin: 0; padding: 13px; border: 1px solid var(--line, #dce2d9); border-radius: 10px; background: var(--card, #fff); }
+.device-actual legend { font-weight: 700; max-width: 100%; padding: 0 5px; overflow-wrap: anywhere; }
+.device-actual label { display: flex; flex-direction: column; gap: 5px; min-width: 0; font-size: 13px; }
+.device-actual input, .device-actual select { box-sizing: border-box; min-width: 0; width: 100%; margin: 0; padding: 9px; font: inherit; font-size: 16px; color: inherit; border: 1px solid #b5c5ba; border-radius: 5px; background: #fff; }
+.device-actual button { min-height: 44px; padding: 10px 15px; border: 1px solid #b5c5ba; border-radius: 7px; color: inherit; background: #fff; font: inherit; cursor: pointer; overflow-wrap: anywhere; }
+.device-actual button[data-action="save"] { background: var(--accent, #216a56); color: #fff; border-color: var(--accent, #216a56); justify-self: start; }
+.device-actual button:disabled, .device-actual input:disabled { opacity: .55; cursor: default; }
+.device-actual input:focus-visible, .device-actual button:focus-visible, .device-actual select:focus-visible { outline: 3px solid #669e7d; outline-offset: 2px; }
+.device-actual .actual-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 20px; }
+.device-actual .actual-import-label { max-width: 100%; }
+.device-actual .actual-import-label input { max-width: 270px; padding: 8px; font-size: 13px; }
+.device-actual .actual-backup-note { font-size: 13px; color: var(--muted, #62736d); }
+.device-actual [data-actual-notice] { min-height: 1.5em; font-weight: 600; }
+.device-actual [data-notice="storage"], .device-actual [data-notice="invalid"], .device-actual [data-notice="corrupt"] { color: #8c4625; }
+.device-actual .actual-summary { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line, #dce2d9); }
+.device-actual .actual-summary h3 { margin: 0 0 10px; font-size: 18px; }
+.device-actual .actual-total { font-weight: 700; }
+.device-actual .actual-value-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px; }
+.device-actual .actual-value-row { background: var(--card, #fff); padding: 13px; border: 1px solid var(--line, #dce2d9); border-radius: 8px; overflow-wrap: anywhere; }
+.device-actual dl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 5px 10px; margin: 12px 0 0; font-size: 13px; }
+.device-actual dt { color: var(--muted, #62736d); }
+.device-actual dd { margin: 0; text-align: right; overflow-wrap: anywhere; }
+.device-actual.actual-compact .actual-summary { margin-top: 0; }
+@media (max-width: 520px) {
+  .device-actual h2 { font-size: 21px; }
+  .device-actual .actual-input-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 11px; gap: 9px; }
+  .device-actual .actual-input-row label:last-child { grid-column: 1 / -1; width: 110px; }
+  .device-actual .actual-actions { flex-direction: column; align-items: stretch; }
+  .device-actual .actual-import-label input { max-width: 100%; }
+  .device-actual button[data-action="save"] { width: 100%; }
+}

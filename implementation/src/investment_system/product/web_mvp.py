@@ -24,6 +24,8 @@ def envelope(data, state, as_of, source):
 
 def validate_bundle(bundle):
     """Validate presentation envelope, not investment logic. Fail closed on false provenance."""
+    from .device_actual_catalog import reject_private_holdings
+    reject_private_holdings(bundle)
     b = deepcopy(bundle)
     if b.get('schema_version') != 1:
         raise ValueError('unsupported web bundle schema')
@@ -109,6 +111,7 @@ def compose(html, css='', js=''):
 def build(out, bundle=None, demo=False, rig_page=None):
     from ..prompt_library.ui import render_html
     from .entity_catalog import entity_catalog
+    from .device_actual_catalog import public_actual_catalog
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     b = validate_bundle(bundle) if bundle else repository_bundle()
@@ -116,11 +119,13 @@ def build(out, bundle=None, demo=False, rig_page=None):
         b = demo_bundle(b)
     if b['relationships']['data'] is not None and not rig_page and not demo:
         raise ValueError('relationships require the reviewed Track D rendered page')
+    device_catalog = public_actual_catalog()
     for f in ASSETS.iterdir():
         if f.suffix in ('.html', '.css', '.js') and not f.name.startswith(('research-', 'network-')):
             shutil.copyfile(f, out / f.name)
     (out / 'data.json').write_text(json.dumps(b, ensure_ascii=False), encoding='utf-8')
     (out / 'entities.json').write_text(json.dumps(entity_catalog(b), ensure_ascii=False), encoding='utf-8')
+    (out / 'actual-catalog.json').write_text(json.dumps(device_catalog, ensure_ascii=False), encoding='utf-8')
     research = compose(render_html(), (ASSETS/'research-style.css').read_text(), (ASSETS/'research-bridge.js').read_text())
     (out / 'research.html').write_text(research, encoding='utf-8')
     if rig_page and not demo:

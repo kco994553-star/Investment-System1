@@ -3,6 +3,27 @@ let D,
   prefs = { version: 1, interests: [], groups: [] },
   storageOK = true,
   corruptStorage = false;
+let deviceCatalogPromise;
+function deviceCatalog() {
+  if(!deviceCatalogPromise) deviceCatalogPromise=fetch('actual-catalog.json',{cache:'no-store'}).then(r=>{
+    if(!r.ok) throw Error('PUBLIC_CATALOG_UNAVAILABLE');return r.json();
+  }).catch(()=>{deviceCatalogPromise=null;throw Error('PUBLIC_CATALOG_UNAVAILABLE');});
+  return deviceCatalogPromise;
+}
+function attachDeviceActual(selector,input) {
+  const host=document.querySelector(selector),locale=appSettings.display_locale;
+  if(!host) return;
+  deviceCatalog().then(catalog=>{
+    if(!host.isConnected) return;
+    return input?DeviceActual.mount(host,{catalog,locale,quotes:[]}):DeviceActual.summary(host,{catalog,locale,quotes:[]});
+  }).catch(()=>{
+    if(host.isConnected) host.textContent=locale==='en-US'?'ACTUAL NOT_AVAILABLE · Local holdings could not be opened.':'ACTUAL NOT_AVAILABLE · 기기 보유 데이터를 열 수 없습니다.';
+  });
+}
+function actual() {
+  return heading('DEVICE ACTUAL',appSettings.display_locale==='en-US'?'ACTUAL holdings':'ACTUAL 보유 입력')+
+    '<a href="#portfolio">'+(appSettings.display_locale==='en-US'?'← Portfolio':'← 포트폴리오')+'</a><div id="device-actual-root" aria-live="polite"></div>';
+}
 const KEY = "investment.web.v1.personal";
 let appSettings=AppLanguage.settings(), settingsWritable=true, searchIndex;
 const t=key=>AppLanguage.text(key,appSettings.display_locale);
@@ -304,7 +325,7 @@ function detail(id) {
 }
 function portfolio() {
   const p=D.portfolio.data;
-  return heading("PORTFOLIO",t("내 포트폴리오"))+block("portfolio",t("보유 현황"),`<p>${esc(p?.role || "")}</p><dl><dt>${t("수익률")}</dt><dd>${pct(p?.return)}</dd><dt>${t("평가금액")}</dt><dd>${fmt(p?.market_value)} ${esc(p?.currency || "")}</dd><dt>${t("Exposure(노출)")}</dt><dd>${esc(p?.exposure?JSON.stringify(p.exposure):t("미제공"))}</dd></dl><ul class="list">${(p?.holdings || []).map(h=>`<li class="item"><a href="#company/${encodeURIComponent(h.company_id)}"><b>${esc(h.ticker)}</b><div class="muted">${t("실제 비중")} ${Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"} · ${t("수익률")} ${pct(h.return)}</div>${Number.isFinite(h.target_weight)?`<div class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</div>`:""}</a>${star(h.company_id)}</li>`).join("")}</ul>`)+
+  return heading("PORTFOLIO",t("내 포트폴리오"))+`<section class="card"><h2>ACTUAL · ${appSettings.display_locale==='en-US'?'This device':'이 기기'}</h2><a href="#actual" class="button">${appSettings.display_locale==='en-US'?'Enter / manage ACTUAL holdings':'ACTUAL 입력·관리'}</a><div id="device-actual-summary" aria-live="polite"></div></section>`+block("portfolio",t("보유 현황"),`<p>${esc(p?.role || "")}</p><dl><dt>${t("수익률")}</dt><dd>${pct(p?.return)}</dd><dt>${t("평가금액")}</dt><dd>${fmt(p?.market_value)} ${esc(p?.currency || "")}</dd><dt>${t("Exposure(노출)")}</dt><dd>${esc(p?.exposure?JSON.stringify(p.exposure):t("미제공"))}</dd></dl><ul class="list">${(p?.holdings || []).map(h=>`<li class="item"><a href="#company/${encodeURIComponent(h.company_id)}"><b>${esc(h.ticker)}</b><div class="muted">${t("실제 비중")} ${Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"} · ${t("수익률")} ${pct(h.return)}</div>${Number.isFinite(h.target_weight)?`<div class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</div>`:""}</a>${star(h.company_id)}</li>`).join("")}</ul>`)+
   `<div class="grid">${block("qgv",t("QGV context(QGV 맥락)"),'<a href="#companies">'+t("기업별 분석 →")+"</a>")}${block("technical",t("Technical context(기술적 분석 맥락)"),'<a href="#companies">'+t("기업별 신호 →")+"</a>")}${block("macro",t("Macro context(거시 맥락)"),`<p>${esc(D.macro.data?.regime || "")}</p>`)}</div><a href="#news">${t("중요 뉴스·관계 변화 →")}</a>`;
 }
 function leaderboard() {
@@ -350,9 +371,11 @@ function renderRoute() {
   notice("");syncShell();
   let [route,id]=location.hash.slice(1).split("/");route=route || "home";
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,companies,portfolio,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id)};
+  const routes={home,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id)};
   if(!routes[route]) route="home";
   $("#content").innerHTML=routes[route]();
+  if(route==='actual') attachDeviceActual('#device-actual-root',true);
+  if(route==='portfolio') attachDeviceActual('#device-actual-summary',false);
   document.querySelectorAll("nav a").forEach(a=>a.setAttribute("aria-current",a.hash==="#"+(route==="company"?"companies":route)?"page":"false"));
   if(Object.values(D).some(s=>s?.state==="DEMO")) $("#content").insertAdjacentHTML("afterbegin",'<div class="banner">'+t("DEMO 포함 · 합성 데이터는 투자 판단용이 아닙니다.")+"</div>");
   if(!storageOK) notice(t("개인 설정 저장을 사용할 수 없습니다. 내보내기를 이용하세요."));
