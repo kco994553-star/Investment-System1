@@ -1894,3 +1894,45 @@ Quotes/FX are public data, while holdings remain on device. Authorized work is a
 
 포함하지 않는 것: 시세 수집 구현, 유료 서비스, 새 투자 계산법, Holdout, AUTONOMY_MODE 변경.
 ```
+
+
+## CDR-046 · 2026-10-09 · USER Pages cockpit deployment preparation directive
+
+Latest steering retains the existing CDR045 quote-options lane. Exact original follows and is retained at [USER_DIRECTIVE.txt](evidence/pages_cockpit_preparation_2026-10-09/USER_DIRECTIVE.txt). This names the already-authorized preparation workflow: canonical-target PR, repository-guard, GitHub upload/deploy Pages actions, canonical merge plus manual triggers, only web output, fail-closed holdings/monetary/secrets/local exclusion, minimal three permissions, project-subpath/PWA review and390/1280screenshots. The final26E must request PR merge approval and the user-operated Source change together. Agent settings mutation and merging the new deployment PR before the named final approval are not authorized. READ_ONLY and holdings-only-on-device remain.
+
+```text
+[웹 cockpit GitHub Pages 배포 준비 — v1.1 범위, READ_ONLY 유지]
+
+사용자 결정(2026-10-09, Decision Register에 append-only 기록):
+웹 cockpit을 중간 확인과 개인 사용을 위해 GitHub Pages로 배포한다. 보유 데이터는 계속 휴대폰 브라우저 안에만 둔다.
+
+1. 배포 workflow를 PR로 추가한다(기준 브랜치 대상, repository-guard 통과).
+   - 방식: GitHub Actions (actions/upload-pages-artifact + actions/deploy-pages)
+   - 실행 조건: 기준 브랜치에 병합될 때 + 수동 실행(workflow_dispatch)
+   - 웹 cockpit 빌드 산출물 폴더만 업로드한다. 저장소 전체를 올리지 않는다.
+   - 업로드 직전 검사: 실제 보유 데이터, 금액성 필드, 비밀 값, local/ 파일이 산출물에 있으면 배포를 중단한다.
+   - 권한은 pages: write, id-token: write, contents: read만 준다.
+2. 산출물이 GitHub Pages 하위 경로(/Investment-System1/)에서 정상 동작하는지 확인한다(상대 경로·PWA 설정).
+3. 390px·1280px 브라우저 검사와 스크린샷을 첨부한다.
+4. PR이 준비되면 26E로 두 가지를 요청한다: PR 병합 승인, Pages Source를 GitHub Actions로 변경.
+   Pages 설정은 사용자가 한다.
+```
+
+
+## CDR-047 · 2026-10-09 · PR68 merge execution / independently verified Pages PR69 ready for final26E
+
+Execution receipt of CDR045/046, no new grant. [PR68](https://github.com/kco994553-star/Investment-System1/pull/68) normally merged at2026-10-09T00:56:05Z: source17b8f82bd09bce4cd0655e9f0795f3670bd805d8, mergec8c2073ad5cdee3cc11d03fc2fe895b7d8d77114, exact verified/merged treef0462875d374da2f7edcc9324090a7df8590d4ce. Its native CI4SUCCESS and independent technicalPASS were rechecked before merge. CDR045 applies the bounded CDR043 tool-indeterminate substitute, not global FPIA_PASS or policy rewrite. No force push or public deployment. Revert PR remains the authorized code rollback.
+
+Pages [PR69](https://github.com/kco994553-star/Investment-System1/pull/69) is prepared against canonical at exact head29bd7f3437f34f40dae319fe875a19b6e19225bb/tree3eecea810778f2d78daa51dce29a8bdfe543e02c/basec8c2073ad5cdee3cc11d03fc2fe895b7d8d77114; unmerged. All8494baseline tracked blobs/modes are unchanged. Publication-only projection omits501public monetary fields; identity/rank/provenance/clocks and original producers/TARGET/scoring are preserved. Only11reviewed web files are uploaded. Directory and downloaded immutable-ID raw-tar checks reject populated private/monetary fields, secrets, local/extra paths, links, extended metadata, padding and trailing payload before upload/deploy. No actual user holdings were requested, used or retained in repository/build/CI/logs. Direct Actions are pinned; privileged deployment job is canonical push/manual only, uses only contents:read/pages:write/id-token:write and does not enable/change Pages settings.
+
+Native exact-head CI2SUCCESS: repository-guard run37868295034/job113620188643 and Pages build run37868295036/job113620189440. Deploy job113620753739 is SKIPPED on PR as intended, not evidence of deployment. Fresh separate-context independent review PASS_WITH_MINOR_RESIDUAL, critical/important findings0:745Python+217subtests,17Node,10subpath390/1280ko/en,40ACTUAL390ko/en and17additional adversarial checks. Four empty-device screenshots are attached to PR69. Reviewer independently downloaded actual Pages artifact11589101948:11raw-tar files PASS and all bytes identical to its independent build. Minor1: official pinned upload-pages-artifact composite internally references mutable upload-artifact@v4; immutable-ID raw-tar validation passed, without a claim of a fully pinned transitive dependency graph.
+
+Pages is still user-attested SourceNone; public repo has_pages=false, Pages API404 and planned address https://kco994553-star.github.io/Investment-System1/ returns404. Authenticated Source enum was not read by the agent. Relative resources work under /Investment-System1/; no manifest/service-worker currently exists or is added. Public-address mobile validation remains NOT_RUN until final approval and user Source change cause actual deployment. Final [deployment26E](https://github.com/kco994553-star/Investment-System1/blob/29bd7f3437f34f40dae319fe875a19b6e19225bb/implementation/docs/pages_cockpit_owner/DEPLOYMENT_DECISION_26E.md) requests PR69 normal merge approval and user-operated SourceGitHubActions together; WAIT without timeout permission. Settings are exclusively the user's action. Code rollback uses revert PR; a previously deployed site may persist until an approved replacement deployment or user disablement.
+
+The [quote/FX26E comparison](https://github.com/kco994553-star/Investment-System1/blob/29bd7f3437f34f40dae319fe875a19b6e19225bb/implementation/docs/pages_cockpit_owner/QUOTES_FX_OPTIONS_26E.md) presents manual on-device prices/FX, daily Actions publicJSON and real-time API with costs/terms/effort/risks;19instruments and USD/JPY/KRW are listed. Automatic19/19coverage and redistribution permission are not yet confirmed. FX references are ECB and BOKECOS (JPY unit100). KRW/USD base currency remains a user choice. No observation collection, quotation integration or paid service was performed. Quote implementation remains WAIT for a separate decision.
+
+A-S2 current-TARGET resolved19/19/unresolved0 and A-S3 assigned19/19. Chart source gates3/6, Platform1/9 remain. A-G1 original production authority/read/invalidation, A-G2 original production route/affected-owner acceptance, A-G3 broader formal FPIA remain OPEN; full dated ListingIdentity0/19 remains separate. Recorded F1–F25 defect blockers0,25LATER; no formal global FPIA_PASS. READ_ONLY, Frozen/TARGET/scoring/Holdout histories and existing owner leases are preserved. Deferred GateA, unattended automation and operational refresh are outside this cycle.
+
+[Final execution receipt](evidence/pages_cockpit_preparation_2026-10-09/FINAL_EXECUTION_RECEIPT.json) · [Fresh independent review including actual uploaded tar](evidence/pages_cockpit_preparation_2026-10-09/INDEPENDENT_REVIEW_RECEIPT.json) · [Pages preparation probes](evidence/pages_cockpit_preparation_2026-10-09/PAGES_PREPARATION_PROBE.json)
+
+The unchanged Global-branch conservative name/status guard reports one register-M violation even for this genuine append; it does not inspect byte prefixes. [Append-only proof](evidence/pages_cockpit_preparation_2026-10-09/APPEND_ONLY_VERIFICATION.json) verifies all127489prior register bytes and every other original blob/mode are preserved, with controls/leases unchanged. The explicit user record instruction is fulfilled without changing guard/policy or declaring this Global check PASS. This separate documentation-tool limit does not change PR69's exact-head native repository-guard SUCCESS.

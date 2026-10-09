@@ -1,0 +1,15 @@
+[웹 cockpit GitHub Pages 배포 준비 — v1.1 범위, READ_ONLY 유지]
+
+사용자 결정(2026-10-09, Decision Register에 append-only 기록):
+웹 cockpit을 중간 확인과 개인 사용을 위해 GitHub Pages로 배포한다. 보유 데이터는 계속 휴대폰 브라우저 안에만 둔다.
+
+1. 배포 workflow를 PR로 추가한다(기준 브랜치 대상, repository-guard 통과).
+   - 방식: GitHub Actions (actions/upload-pages-artifact + actions/deploy-pages)
+   - 실행 조건: 기준 브랜치에 병합될 때 + 수동 실행(workflow_dispatch)
+   - 웹 cockpit 빌드 산출물 폴더만 업로드한다. 저장소 전체를 올리지 않는다.
+   - 업로드 직전 검사: 실제 보유 데이터, 금액성 필드, 비밀 값, local/ 파일이 산출물에 있으면 배포를 중단한다.
+   - 권한은 pages: write, id-token: write, contents: read만 준다.
+2. 산출물이 GitHub Pages 하위 경로(/Investment-System1/)에서 정상 동작하는지 확인한다(상대 경로·PWA 설정).
+3. 390px·1280px 브라우저 검사와 스크린샷을 첨부한다.
+4. PR이 준비되면 26E로 두 가지를 요청한다: PR 병합 승인, Pages Source를 GitHub Actions로 변경.
+   Pages 설정은 사용자가 한다.

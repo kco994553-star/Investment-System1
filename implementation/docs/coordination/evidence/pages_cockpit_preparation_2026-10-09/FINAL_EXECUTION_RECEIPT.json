@@ -1,0 +1,144 @@
+{
+  "recorded_at_utc": "2026-10-09T01:13:03.871071+00:00",
+  "authority": [
+    "CDR-045",
+    "CDR-046"
+  ],
+  "mode": "READ_ONLY",
+  "user_directive": {
+    "bytes": 1250,
+    "sha256": "951981343a25c502dc7da6808897d641bd32ba8d35981fcee4a706d2eb5a75f6"
+  },
+  "pr68": {
+    "number": 68,
+    "merged": true,
+    "merged_at": "2026-10-09T00:56:05Z",
+    "head": "17b8f82bd09bce4cd0655e9f0795f3670bd805d8",
+    "merge_commit": "c8c2073ad5cdee3cc11d03fc2fe895b7d8d77114",
+    "verified_merged_tree": "f0462875d374da2f7edcc9324090a7df8590d4ce",
+    "ci_success_count": 4,
+    "independent_review": "PASS_WITH_MINOR_FINDING",
+    "normal_pr_merge": true,
+    "force_push": false,
+    "formal_fpia": "NOT_RUN; no global PASS; bounded CDR-045 acceptance only"
+  },
+  "pr69": {
+    "number": 69,
+    "url": "https://github.com/kco994553-star/Investment-System1/pull/69",
+    "head": "29bd7f3437f34f40dae319fe875a19b6e19225bb",
+    "tree": "3eecea810778f2d78daa51dce29a8bdfe543e02c",
+    "base": "c8c2073ad5cdee3cc11d03fc2fe895b7d8d77114",
+    "merged": false,
+    "native_ci": [
+      {
+        "name": "repository-guard",
+        "run_id": 37868295034,
+        "job_id": 113620188643,
+        "conclusion": "success"
+      },
+      {
+        "name": "cockpit-pages/build",
+        "run_id": 37868295036,
+        "job_id": 113620189440,
+        "conclusion": "success"
+      },
+      {
+        "name": "cockpit-pages/deploy",
+        "run_id": 37868295036,
+        "job_id": 113620753739,
+        "conclusion": "skipped"
+      }
+    ],
+    "independent_review": "PASS_WITH_MINOR_RESIDUAL",
+    "critical_findings": 0,
+    "important_findings": 0,
+    "uploaded_pages_artifact": {
+      "artifact_id": 11589101948,
+      "run_id": 37868295036,
+      "guard": {
+        "files_scanned": 11,
+        "pages_artifact_guard": "PASS",
+        "violations": {}
+      },
+      "files_byte_identical_to_independent_build": 11,
+      "tar_sha256": "5694290b1c6188356cb83976214f4f81220eed5dbf79add7f6f953ddf96bcd5b"
+    },
+    "baseline_files_modes_unchanged": 8494,
+    "python_passed": 745,
+    "python_subtests_passed": 217,
+    "node_passed": 17,
+    "subpath_browser_checks": 10,
+    "actual_mobile_browser_checks": 40,
+    "independent_extra_checks": 17,
+    "empty_screenshots": 4,
+    "viewports": [
+      390,
+      1280
+    ],
+    "locales": [
+      "ko-KR",
+      "en-US"
+    ],
+    "public_monetary_fields_excluded_from_projection": 501,
+    "original_sources_changed": false,
+    "minor_residual": "Pinned upload-pages-artifact composite internally references mutable upload-artifact@v4; separate immutable-ID raw-tar validation passed."
+  },
+  "pages": {
+    "user_attested_source": "None",
+    "public_has_pages": false,
+    "public_pages_endpoint_status": 404,
+    "planned_url": "https://kco994553-star.github.io/Investment-System1/",
+    "planned_url_status": 404,
+    "settings_changed_by_agent": false,
+    "deployed_address_browser_test": "NOT_RUN",
+    "next_decisions": [
+      "PR69 normal merge approval",
+      "User changes Pages Source to GitHub Actions"
+    ],
+    "merge_and_deployment": "WAIT for user; no timeout approval"
+  },
+  "quotes": {
+    "comparison": "implementation/docs/pages_cockpit_owner/QUOTES_FX_OPTIONS_26E.md in PR69",
+    "methods": [
+      "manual on-device prices/FX",
+      "daily public close/FX via Actions",
+      "real-time API"
+    ],
+    "base_currency_options": [
+      "KRW",
+      "USD"
+    ],
+    "implementation": "NOT_STARTED; WAIT for selection",
+    "automatic_19_instrument_coverage": "UNCONFIRMED",
+    "fx_sources": [
+      "ECB USD/JPY/KRW reference rates",
+      "BOK ECOS 731Y001; JPY quote unit 100"
+    ],
+    "paid_service_used": false
+  },
+  "progress": {
+    "a_s2_resolved": 19,
+    "a_s2_unresolved": 0,
+    "a_s3_assigned": 19,
+    "chart_closed": 3,
+    "chart_total": 6,
+    "platform_closed": 1,
+    "platform_total": 9,
+    "a_g1_open": "Original production authority/read/invalidation obligations remain.",
+    "a_g2_open": "Original production route and affected-owner acceptance remain.",
+    "a_g3_open": "Broader formal FPIA remains; scoped substitute is not global closure.",
+    "full_dated_listing_identity_resolved": 0,
+    "fpia_f1_f25_recorded_defect_blockers": 0,
+    "fpia_f1_f25_later": 25
+  },
+  "preserved": [
+    "Frozen",
+    "TARGET",
+    "scoring",
+    "Holdout",
+    "AUTONOMY_MODE",
+    "owner leases",
+    "Gate A and unattended automation deferral"
+  ],
+  "independent_receipt_sha256": "53ab87c7d84bc4a76f5005a07be78f1df18f10fb13c2b8fa503ddb9391a002d7"
+}

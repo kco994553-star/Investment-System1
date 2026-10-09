@@ -1,0 +1,29 @@
+{
+  "base": "f92a448e5cf52a8b57f7f08a1cf67c0430839ebf",
+  "checked_local_head": "b6840c9f2da9e7d51dc785a1a603bf7708b8bfef",
+  "register_prefix_bytes_preserved": 127489,
+  "register_prefix_sha256": "30cdcacb52d3b3340ddbb792b65502af2a2f5b4ef9aa5401ae751605b3fb1683",
+  "register_new_bytes": 134557,
+  "append_only_byte_proof": "PASS",
+  "all_other_original_blobs_modes_unchanged": 8064,
+  "diff_records": [
+    "M\timplementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+    "A\timplementation/docs/coordination/evidence/pages_cockpit_preparation_2026-10-09/FINAL_EXECUTION_RECEIPT.json",
+    "A\timplementation/docs/coordination/evidence/pages_cockpit_preparation_2026-10-09/INDEPENDENT_REVIEW_RECEIPT.json",
+    "A\timplementation/docs/coordination/evidence/pages_cockpit_preparation_2026-10-09/PAGES_PREPARATION_PROBE.json",
+    "A\timplementation/docs/coordination/evidence/pages_cockpit_preparation_2026-10-09/USER_DIRECTIVE.txt"
+  ],
+  "controls_and_leases_unchanged": true,
+  "mode": "READ_ONLY",
+  "conservative_global_guard": {
+    "mode": "READ_ONLY",
+    "records": 5,
+    "violations": [
+      "append-only existing content changed: M ['implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md']"
+    ],
+    "gate_a_repository_guard": "FAIL"
+  },
+  "guard_exit_code": 1,
+  "root_cause": "Unchanged old guard classify_diff rejects every M append-only path by name-status without inspecting bytes, including a genuine append. Explicit user-authorized register recording is verified byte-for-byte; guard/policy are not changed. This is not PR69 CI, which passed.",
+  "pr69_repository_guard_native": "SUCCESS run37868295034 job113620188643"
+}
