@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -23,7 +24,15 @@ def reject_private_holdings(value) -> None:
         item = pending.pop()
         if isinstance(item, dict):
             keys = {str(k).lower() for k in item}
+            normalized = {re.sub(r'[^a-z0-9]', '', str(k).lower()) for k in item}
             schema = item.get('schema', '')
+            if (isinstance(schema, str) and schema.startswith(('device-market-data/', 'device-api-settings/'))
+                    or keys.intersection({'market_data', 'api_settings', 'api_key', 'api_secret', 'appsecret', 'appkey', 'access_token'})
+                    or normalized.intersection({'apikey', 'apisecret', 'appkey', 'appsecret', 'accesstoken', 'refreshtoken', 'clientsecret'})
+                    or 'fx' in keys
+                    or {'price', 'currency'}.issubset(keys)
+                    or {'rate', 'currency'}.issubset(keys)):
+                raise ValueError('private device data are forbidden in a public build')
             if (isinstance(schema, str) and schema.startswith('device-actual-holdings/')
                     or 'device_actual' in keys
                     or {'quantity', 'average_cost', 'currency'}.issubset(keys)):

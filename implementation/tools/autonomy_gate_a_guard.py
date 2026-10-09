@@ -6,7 +6,7 @@ This guard does not grant autonomy by itself. It enforces:
 - append-only records cannot rewrite or delete existing bytes;
 - AUTONOMY_MODE is a single explicit state;
 - operating values stay within the adopted CDR-024 configuration.
-- populated user-device ACTUAL holdings cannot enter tracked repository content.
+- populated user-device holdings, market exports and credentials cannot enter tracked content.
 
 HG-02 still requires GitHub-side branch/ruleset enforcement.
 """
@@ -36,13 +36,25 @@ _COST_KEYS = {"averagecost", "avgcost", "averageprice", "avgprice", "costbasis",
 _CURRENCY_KEYS = {"currency", "ccy"}
 _IDENTITY_KEYS = {"securityreference", "securityid", "symbol", "ticker", "tickerhint", "isin", "cusip"}
 _COLLECTION_KEYS = {"positions", "holdings"}
+_MARKET_VALUE_KEYS = {"price", "rate", "fxrate", "exchangerate"}
+_MARKET_RECORD_KEYS = _MARKET_VALUE_KEYS | _IDENTITY_KEYS | _CURRENCY_KEYS | {"asof", "availableat", "source"}
+_MARKET_COLLECTION_KEYS = {"quotes", "fx", "fxrates", "rates", "prices"}
+_CREDENTIAL_KEYS = {
+    "apikey", "appkey", "appsecret", "accesstoken", "refreshtoken", "clientsecret",
+    "apisecret", "secretkey", "authtoken", "bearertoken",
+}
+_PRIVATE_MARKET_EXPORT_NAME = re.compile(
+    r"(?:^|[-_])(?:device|user|personal|broker|manual)[-_]"
+    r"(?:market(?:[-_]data)?|quotes?|fx(?:[-_]rates)?)(?:[-_]|$)", re.IGNORECASE,
+)
 _PRIVATE_EXPORT_NAME = re.compile(
     r"(?:^|[-_])(?:actual(?:[-_](?:holdings|positions|portfolio|v\d+))?"
     r"|(?:device|user|personal|broker)[-_](?:actual[-_])?(?:holdings|positions|portfolio))"
     r"(?:[-_]|$)", re.IGNORECASE,
 )
 _YAML_FIELD = re.compile(
-    r"(?:^[ \t]*(?:-[ \t]*)?|[,{][ \t]*)['\"]?([A-Za-z_][\w .-]*)['\"]?[ \t]*:[ \t]*([^,}\]\n]*)",
+    r"(?:^[ \t]*(?:-[ \t]*)?|[,{][ \t]*)['\"]?([A-Za-z_][\w .-]*)['\"]?[ \t]*:[ \t]*"
+    r"((?:&[\w-]+[ \t]+)?(?:'(?:''|[^'])*'|\"(?:\\.|[^\"\\])*\"|[^,}\]\n]*))",
     re.MULTILINE,
 )
 
@@ -83,6 +95,29 @@ def _actual_marker(fields: dict) -> bool:
     )
 
 
+def _market_marker(fields: dict) -> bool:
+    return _actual_marker(fields) or any(
+        key == "schema" and str(value).lower().startswith("device-market-data/")
+        for key, value in fields.items()
+    )
+
+
+def _credential_fields(fields: dict) -> bool:
+    # Property/type descriptions are mappings, not populated credential strings.
+    return any(
+        key in _CREDENTIAL_KEYS and isinstance(value, str) and _populated(value)
+        for key, value in fields.items()
+    )
+
+
+def _market_row(fields: dict, *, timing_fields: bool = False) -> bool:
+    record_keys = _MARKET_RECORD_KEYS if timing_fields else _MARKET_RECORD_KEYS - {"asof", "availableat"}
+    return any(
+        key in record_keys and isinstance(value, (str, int, float)) and _populated(value)
+        for key, value in fields.items()
+    )
+
+
 def _holding_row(fields: dict, *, partial: bool = False) -> bool:
     quantity = any(_number(fields.get(key)) for key in _QUANTITY_KEYS)
     identity = any(_populated(fields.get(key)) for key in _IDENTITY_KEYS)
@@ -93,17 +128,22 @@ def _holding_row(fields: dict, *, partial: bool = False) -> bool:
     )
 
 
-def _structured_private(value: object, named_export: bool) -> bool:
+def _structured_private(value: object, named_export: bool, named_market_export: bool = False) -> bool:
     mappings: list[dict] = []
     populated_holdings = False
+    populated_market = False
 
     def visit(node: object) -> None:
-        nonlocal populated_holdings
+        nonlocal populated_holdings, populated_market
         if isinstance(node, dict):
             fields = {_key(key): item for key, item in node.items()}
             mappings.append(fields)
             populated_holdings |= any(
                 key in _COLLECTION_KEYS and isinstance(item, (list, dict)) and _populated(item)
+                for key, item in fields.items()
+            )
+            populated_market |= any(
+                key in _MARKET_COLLECTION_KEYS and isinstance(item, (list, dict)) and _populated(item)
                 for key, item in fields.items()
             )
             for item in node.values():
@@ -114,55 +154,115 @@ def _structured_private(value: object, named_export: bool) -> bool:
 
     visit(value)
     marked = any(_actual_marker(fields) for fields in mappings)
+    market_marked = named_market_export or any(_market_marker(fields) for fields in mappings)
     return (
-        (marked and populated_holdings)
+        any(_credential_fields(fields) for fields in mappings)
+        or (market_marked and (populated_market or any(_market_row(fields) for fields in mappings)))
+        or (marked and populated_holdings)
         or any(_holding_row(fields) for fields in mappings)
         or (named_export and any(_holding_row(fields, partial=True) for fields in mappings))
     )
 
 
-def _yaml_private(content: str, named_export: bool) -> bool:
+def _yaml_scalar(raw_value: str) -> tuple[str, bool]:
+    raw_value = raw_value.strip()
+    if raw_value.startswith(("'", '"')):
+        pattern = r"^'((?:''|[^'])*)'" if raw_value[0] == "'" else r'^"((?:\\.|[^"\\])*)"'
+        match = re.match(pattern, raw_value)
+        if match and raw_value[0] == '"':
+            try:
+                return json.loads(match.group(0)), True
+            except ValueError:
+                pass
+        # Incomplete quoted text remains a conservative population signal.
+        return (match.group(1) if match else raw_value[1:]), True
+    return ("" if raw_value.startswith("#") else raw_value.split(" #", 1)[0].strip()), False
+
+
+def _yaml_quote_continues(content: str, quote: str) -> bool:
+    index = 0
+    while index < len(content):
+        if quote == '"' and content[index] == "\\":
+            index += 2
+        elif content[index] == quote:
+            if quote == "'" and content[index:index + 2] == "''":
+                index += 2
+            else:
+                return False
+        else:
+            index += 1
+    return True
+
+
+def _yaml_private(content: str, named_export: bool, named_market_export: bool = False) -> bool:
     """Recognize export-shaped YAML without requiring a CI YAML dependency.
 
     Only mapping/sequence documents are considered, so source code describing the
     format is not treated as a payload. Flow mappings, anchors and stream markers
     are accepted. This is deliberately a shape check, not a YAML schema validator.
     """
-    lines = [line for line in content.splitlines() if line.strip() and not line.lstrip().startswith("#")]
+    lines = [line for line in content.splitlines() if line.strip()]
     if not lines:
         return False
     block_indent = None
+    credential_block = False
+    continued_quote = None
     scan_lines: list[str] = []
     for line in lines:
         stripped = line.strip()
         indent = len(line) - len(line.lstrip())
+        if continued_quote is not None:
+            scan_lines.append(line)
+            if not _yaml_quote_continues(line, continued_quote):
+                continued_quote = None
+            continue
         if block_indent is not None and indent > block_indent:
+            if credential_block:
+                return True
             continue
         block_indent = None
+        credential_block = False
+        if stripped.startswith("#"):
+            continue
         if stripped in {"---", "...", "[", "]", "{", "}"} or stripped.startswith(("%", "!")):
             scan_lines.append(line)
             continue
         if not (indent or re.match(r"^[ \t]*(?:-[ \t]+|(?:['\"]?[A-Za-z_][\w .-]*['\"]?[ \t]*:|[\[{]|[&*][\w-]+))", line)):
             return False
         scan_lines.append(line)
+        for field in _YAML_FIELD.finditer(line):
+            raw_value = re.sub(r"^&[\w-]+[ \t]+", "", field.group(2).strip())
+            if raw_value.startswith(("'", '"')) and _yaml_quote_continues(raw_value[1:], raw_value[0]):
+                continued_quote = raw_value[0]
         if re.search(r":\s*[|>][-+]?\s*(?:#.*)?$", line):
             block_indent = indent
+            match = _YAML_FIELD.search(line)
+            credential_block = match is not None and _key(match.group(1)) in _CREDENTIAL_KEYS
 
     fields: dict[str, str] = {}
-    anchors: dict[str, str] = {}
+    market_fields: dict[str, str] = {}
+    anchors: dict[str, tuple[str, bool]] = {}
     marked = False
+    market_marked = named_market_export
+    credentials = False
     for match in _YAML_FIELD.finditer("\n".join(scan_lines)):
-        value = match.group(2).split(" #", 1)[0].strip().strip("'\"")
-        anchor = re.match(r"^&([\w-]+)[ \t]+(.*)$", value)
+        raw_value = match.group(2).strip()
+        anchor = re.match(r"^&([\w-]+)[ \t]+(.*)$", raw_value, re.DOTALL)
+        value, quoted = _yaml_scalar(anchor.group(2) if anchor else raw_value)
         if anchor:
-            value = anchor.group(2).strip().strip("'\"")
-            anchors[anchor.group(1)] = value
-        if value.startswith("*"):
-            value = anchors.get(value[1:], value)
-        if value.lower() in {"null", "~"} or value in {"[]", "{}"}:
+            anchors[anchor.group(1)] = (value, quoted)
+        if not quoted and value.startswith("*"):
+            value, quoted = anchors.get(value[1:], (value, quoted))
+        if not quoted and (value.lower() in {"null", "~"} or value in {"[]", "{}"}):
             value = ""
         key = _key(match.group(1))
         marked |= _actual_marker({key: value})
+        market_marked |= _market_marker({key: value})
+        scalar = quoted or (not value.startswith(("{", "[")) and not re.fullmatch(r"[|>][-+]?", value))
+        if scalar:
+            credentials |= _credential_fields({key: value})
+            if key not in market_fields or (_populated(value) and (not _number(market_fields[key]) or _number(value))):
+                market_fields[key] = value
         # Never let a later placeholder erase evidence of an exported row.
         if key not in fields or (_populated(value) and (not _number(fields[key]) or _number(value))):
             fields[key] = value
@@ -174,23 +274,37 @@ def _yaml_private(content: str, named_export: bool) -> bool:
         _number(fields.get(key)) for key in _COST_KEYS
     ) and any(_populated(fields.get(key)) for key in _CURRENCY_KEYS)
     holding_data = any(_number(fields.get(key)) for key in _QUANTITY_KEYS | _COST_KEYS) or identity
-    return generic_row or ((marked or named_export) and holding_data)
+    market_data = _market_row(market_fields, timing_fields=bool(_MARKET_COLLECTION_KEYS.intersection(fields)))
+    return credentials or (market_marked and market_data) or generic_row or ((marked or named_export) and holding_data)
 
 
-def _csv_private(content: str, named_export: bool) -> bool:
+def _csv_private(content: str, named_export: bool, named_market_export: bool = False) -> bool:
     content = content.lstrip("\r\n \t")
     first_line = next((line for line in content.splitlines() if line.strip()), "")
     for delimiter in (",", "\t", ";"):
-        if delimiter not in first_line:
+        if delimiter not in first_line and (
+            delimiter != "," or not re.fullmatch(r"['\"]?[A-Za-z_][\w .-]*['\"]?", first_line.strip())
+        ):
             continue
         try:
-            reader = csv.DictReader(io.StringIO(content), delimiter=delimiter)
-            headers = {_key(key) for key in reader.fieldnames or []}
-            if not headers.intersection(_QUANTITY_KEYS | _IDENTITY_KEYS):
+            reader = csv.reader(io.StringIO(content), delimiter=delimiter)
+            headers = [_key(key) for key in next(reader, [])]
+            if not set(headers).intersection(_QUANTITY_KEYS | _MARKET_RECORD_KEYS | _CREDENTIAL_KEYS):
                 continue
             for row in reader:
-                fields = {_key(key): value for key, value in row.items() if key is not None}
-                if _holding_row(fields) or ((_actual_marker(fields) or named_export) and _holding_row(fields, partial=True)):
+                pairs = list(zip(headers, row))
+                fields: dict[str, str] = {}
+                for key, value in pairs:
+                    # Duplicate or normalized headers cannot erase an earlier
+                    # populated cell, including zero-valued market/holding data.
+                    if key not in fields or (_populated(value) and (not _number(fields[key]) or _number(value))):
+                        fields[key] = value
+                if (
+                    any(_credential_fields({key: value}) for key, value in pairs)
+                    or ((any(_market_marker({key: value}) for key, value in pairs) or named_market_export) and _market_row(fields, timing_fields=True))
+                    or _holding_row(fields)
+                    or ((any(_actual_marker({key: value}) for key, value in pairs) or named_export) and _holding_row(fields, partial=True))
+                ):
                     return True
         except csv.Error:
             # No parser text is returned: parse errors may include private values.
@@ -215,12 +329,15 @@ def contains_device_actual(content: bytes, path: str) -> bool:
     named_export = filename.suffix.lower() in {".json", ".yaml", ".yml", ".csv", ".tsv", ".txt", ".dat"} and bool(
         _PRIVATE_EXPORT_NAME.search(filename.stem)
     )
+    named_market_export = filename.suffix.lower() in {".json", ".yaml", ".yml", ".csv", ".tsv", ".txt", ".dat"} and bool(
+        _PRIVATE_MARKET_EXPORT_NAME.search(filename.stem)
+    )
     try:
-        if _structured_private(json.loads(decoded), named_export):
+        if _structured_private(json.loads(decoded), named_export, named_market_export):
             return True
     except (ValueError, RecursionError):
         pass
-    if _csv_private(decoded, named_export) or _yaml_private(decoded, named_export):
+    if _csv_private(decoded, named_export, named_market_export) or _yaml_private(decoded, named_export, named_market_export):
         return True
     # Payloads pasted into Markdown/logs are still repository content. Ordinary
     # source/tests are not searched for string literals describing this schema.
@@ -274,7 +391,7 @@ def device_actual_violations(base: str | None = None) -> list[str]:
 
     Reading blobs catches staged/committed values hidden by working-tree edits.
     Reading tracked worktree files also catches a payload before it is staged.
-    Findings intentionally omit filenames, parser details, and holdings values.
+    Findings intentionally omit filenames, parser details, and private values.
     """
     blobs: dict[tuple[str, str], None] = {}
     tracked_paths: set[str] = set()

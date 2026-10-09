@@ -327,6 +327,285 @@ class DeviceActualPrivacyGuardTests(unittest.TestCase):
         }}))
         self.assertEqual(self.check()[0], 0)
 
+    @staticmethod
+    def market_envelope(*, fx_only=False):
+        quote = {
+            "security_reference": {"scheme": "SYNTHETIC_TEST_ONLY", "value": "SYNTHETIC_TEST_SECURITY_ONLY"},
+            "price": "77331.2468", "currency": "ZZZ",
+            "as_of": "2099-01-01T00:00:00Z", "available_at": "2099-01-01T00:00:00Z",
+            "source": "SYNTHETIC_TEST_MANUAL_ONLY",
+        }
+        fx = {
+            "currency": "ZZZ", "rate": "66321.1357",
+            "as_of": "2099-01-01T00:00:00Z", "available_at": "2099-01-01T00:00:00Z",
+            "source": "SYNTHETIC_TEST_MANUAL_ONLY",
+        }
+        return {"schema": "device-market-data/1", "quotes": [] if fx_only else [quote], "fx": [fx]}
+
+    @staticmethod
+    def api_envelope():
+        return {"schema": "device-api-settings/1", "service": "NOT_SELECTED",
+                "enabled": False, "api_key": "SYNTHETIC_TEST_CREDENTIAL_ONLY"}
+
+    def assert_market_or_credential_failure(self, base="HEAD"):
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        data = json.loads(output)
+        self.assertEqual(data["gate_a_repository_guard"], "FAIL")
+        self.assertEqual(data["device_actual_privacy_guard"], "FAIL")
+        self.assertEqual(data["mode"], "READ_ONLY")
+        for private in ("77331", "66321", "SYNTHETIC_TEST_SECURITY_ONLY",
+                        "SYNTHETIC_TEST_MANUAL_ONLY", "SYNTHETIC_TEST_CREDENTIAL_ONLY", "sensitive-file"):
+            self.assertNotIn(private, output)
+
+    def test_committed_device_market_quotes_under_arbitrary_name_fail(self):
+        self.write("sensitive-file.dat", json.dumps(self.market_envelope()))
+        self.assert_market_or_credential_failure()
+
+    def test_fx_only_device_market_export_fails(self):
+        self.write("sensitive-file.json", json.dumps(self.market_envelope(fx_only=True)))
+        self.assert_market_or_credential_failure()
+
+    def test_yaml_device_market_quotes_fail(self):
+        self.write("sensitive-file.yaml", "schema: device-market-data/1\nquotes:\n"
+            "  - security_reference: SYNTHETIC_TEST_SECURITY_ONLY\n"
+            "    price: '77331.2468'\n    currency: ZZZ\n    source: SYNTHETIC_TEST_MANUAL_ONLY\n")
+        self.assert_market_or_credential_failure()
+
+    def test_yaml_fx_anchor_and_zero_rate_fail(self):
+        payload = "schema: device-market-data/1\nshared: &fx 0\nfx_rates:\n"
+        payload += "  - {currency: ZZZ, rate: *fx, source: SYNTHETIC_TEST_MANUAL_ONLY}\n"
+        self.write("sensitive-file.dat", payload)
+        self.assert_market_or_credential_failure()
+
+    def test_csv_device_market_quotes_fail(self):
+        self.write("sensitive-file.csv", "schema,security_reference,price,currency,source\n"
+            "device-market-data/1,SYNTHETIC_TEST_SECURITY_ONLY,77331.2468,ZZZ,SYNTHETIC_TEST_MANUAL_ONLY\n")
+        self.assert_market_or_credential_failure()
+
+    def test_csv_fx_without_security_identity_fails(self):
+        self.write("sensitive-file.dat", "schema,currency,rate,source\n"
+            "device-market-data/1,ZZZ,66321.1357,SYNTHETIC_TEST_MANUAL_ONLY\n")
+        self.assert_market_or_credential_failure()
+
+    def test_private_market_export_names_reject_unmarked_records(self):
+        quote = self.market_envelope()["quotes"][0]
+        cases = (
+            ("device-quotes.json", json.dumps({"quotes": [quote]})),
+            ("user-fx.csv", "currency,rate\nZZZ,66321.1357\n"),
+            ("device-market-data.yaml", "fx_rates:\n  - currency: ZZZ\n    rate: 0\n"),
+        )
+        for path, payload in cases:
+            with self.subTest(format=Path(path).suffix):
+                self.assertTrue(guard.contains_device_actual(payload.encode(), path))
+
+    def test_private_storage_marker_rejects_quote_record(self):
+        payload = {"ownership": "USER_DEVICE_ONLY", "quotes": self.market_envelope()["quotes"]}
+        self.write("sensitive-file.json", json.dumps(payload))
+        self.assert_market_or_credential_failure()
+
+    def test_private_market_partial_records_and_zero_values_fail(self):
+        for row in ({"price": 0}, {"rate": "0"}):
+            with self.subTest(field=next(iter(row))):
+                payload = {"schema": "device-market-data/1", "quotes": [row]}
+                self.assertTrue(guard.contains_device_actual(json.dumps(payload).encode(), "innocent.dat"))
+
+    def test_json_credential_fields_normalize_case_and_separators(self):
+        for field in ("api_key", "API-KEY", "apiKey", "AppKey", "app_secret", "ACCESS_TOKEN",
+                      "refresh-token", "clientSecret", "api_secret", "secret_key", "auth_token", "bearer_token"):
+            with self.subTest(field=field):
+                payload = {"settings": {field: "SYNTHETIC_TEST_CREDENTIAL_ONLY"}}
+                self.assertTrue(guard.contains_device_actual(json.dumps(payload).encode(), "innocent.dat"))
+
+    def test_nested_api_settings_record_fails_with_service_disabled(self):
+        self.write("sensitive-file.json", json.dumps({"settings": self.api_envelope()}))
+        self.assert_market_or_credential_failure()
+
+    def test_yaml_credential_alias_fails(self):
+        self.write("sensitive-file.yaml", "shared: &canary SYNTHETIC_TEST_CREDENTIAL_ONLY\n"
+            "settings:\n  App_Secret: *canary\n")
+        self.assert_market_or_credential_failure()
+
+    def test_yaml_multiline_credential_fails(self):
+        self.write("sensitive-file.yaml", "api_key: |\n  SYNTHETIC_TEST_CREDENTIAL_ONLY\n")
+        self.assert_market_or_credential_failure()
+
+    def test_yaml_credential_block_comment_text_is_populated(self):
+        payload = "api_key: |\n  # SYNTHETIC_TEST_CREDENTIAL_ONLY\n"
+        self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent.yaml"))
+
+    def test_csv_credential_only_column_fails(self):
+        self.write("sensitive-file.csv", "Access_Token\nSYNTHETIC_TEST_CREDENTIAL_ONLY\n")
+        self.assert_market_or_credential_failure()
+
+    def test_market_staged_payload_cannot_be_hidden_by_worktree_scrub(self):
+        self.write("sensitive-file.json", json.dumps(self.market_envelope()), committed=False)
+        self.write("sensitive-file.json", "{}", tracked=False)
+        self.assert_market_or_credential_failure()
+
+    def test_market_tracked_worktree_payload_fails(self):
+        self.write("sensitive-file.json", "{}")
+        self.write("sensitive-file.json", json.dumps(self.market_envelope()), tracked=False)
+        self.assert_market_or_credential_failure()
+
+    def test_credential_staged_payload_cannot_be_hidden_by_worktree_scrub(self):
+        self.write("sensitive-file.json", json.dumps(self.api_envelope()), committed=False)
+        self.write("sensitive-file.json", "{}", tracked=False)
+        self.assert_market_or_credential_failure()
+
+    def test_renamed_market_export_remains_rejected(self):
+        self.write("sensitive-file.json", json.dumps(self.market_envelope()))
+        self.git("mv", "sensitive-file.json", "innocent.dat")
+        self.git("commit", "-qm", "Synthetic market rename")
+        self.assert_market_or_credential_failure()
+
+    def test_source_named_market_export_removed_before_head_fails_history_scan(self):
+        base = self.git("rev-parse", "HEAD").strip()
+        self.write("sensitive-file.py", json.dumps(self.market_envelope()))
+        self.git("rm", "sensitive-file.py")
+        self.git("commit", "-qm", "Synthetic market removal")
+        self.assert_market_or_credential_failure(base)
+
+    def test_credential_export_removed_before_head_fails_history_scan(self):
+        base = self.git("rev-parse", "HEAD").strip()
+        self.write("sensitive-file.json", json.dumps(self.api_envelope()))
+        self.git("rm", "sensitive-file.json")
+        self.git("commit", "-qm", "Synthetic credential removal")
+        self.assert_market_or_credential_failure(base)
+
+    def test_private_market_failure_redacts_other_guard_path_diagnostics(self):
+        path = guard.load_config()["append_only_prefixes"][0] + "sensitive-file.json"
+        self.write(path, "{}")
+        self.write(path, json.dumps(self.market_envelope()))
+        self.assert_market_or_credential_failure("HEAD^")
+
+    def test_untracked_market_and_credentials_are_not_read(self):
+        self.write("sensitive-file.json", json.dumps(self.market_envelope()), tracked=False)
+        self.write("device-api-settings.json", json.dumps(self.api_envelope()), tracked=False)
+        self.assertEqual(self.check()[0], 0)
+
+    def test_empty_market_and_credential_placeholders_pass(self):
+        blank = {"security_reference": None, "price": None, "currency": None,
+                 "as_of": None, "available_at": None, "source": None}
+        self.write("device-market-data.json", json.dumps({"schema": "device-market-data/1", "quotes": [blank], "fx_rates": []}))
+        self.write("device-api-settings.json", json.dumps({"schema": "device-api-settings/1", "api_key": "", "appkey": None, "access_token": "  "}))
+        self.write("device-fx.csv", "currency,rate,as_of,available_at,source\n,,,,\n")
+        self.write("empty.yaml", "schema: device-market-data/1\nquotes: []\nfx_rates: []\napi_key: null\nappsecret: ''\n")
+        self.assertEqual(self.check()[0], 0)
+
+    def test_public_price_and_fx_records_remain_allowed(self):
+        self.write("public.json", json.dumps({"quotes": self.market_envelope()["quotes"], "fx_rates": self.market_envelope()["fx"]}))
+        self.write("public.yaml", "quotes:\n  - security_reference: SYNTHETIC_TEST_SECURITY_ONLY\n    price: 77331.2468\n    currency: ZZZ\n")
+        self.write("public.csv", "currency,rate\nZZZ,66321.1357\n")
+        self.assertEqual(self.check()[0], 0)
+
+    def test_auth_guides_schema_fields_and_source_descriptions_pass(self):
+        self.write("schema.json", json.dumps({"properties": {
+            "api_key": {"type": "string"}, "appsecret": {"type": "string"}, "access_token": {"type": "string"},
+        }}))
+        self.write("source.py", "payload = " + repr(self.api_envelope()))
+        self.write("guide.md", "Use api_key in a local request.\n```json\n{\"api_key\": \"\"}\n```\n"
+            "CSP example: https://example.invalid/prices?api_key=LOCAL_PARAMETER\n")
+        self.write("description.yaml", "description: |\n  api_key: SYNTHETIC_TEST_CREDENTIAL_ONLY\n")
+        self.assertEqual(self.check()[0], 0)
+
+    def test_blank_yaml_credentials_with_comments_and_metadata_pass(self):
+        payloads = (
+            "api_key: # Local setting only\nservice: NOT_SELECTED\nenabled: false\n",
+            "api_key:\nservice: NOT_SELECTED\nenabled: false\n",
+            "api_key: |\nservice: NOT_SELECTED\nenabled: false\n",
+        )
+        for index, payload in enumerate(payloads):
+            with self.subTest(case=index):
+                self.assertFalse(guard.contains_device_actual(payload.encode(), "schema.yaml"))
+
+
+    def test_yaml_quoted_credentials_are_strings_even_when_null_or_container_shaped(self):
+        payloads = (
+            "api_key: 'null'\n", "api_key: '~'\n", "api_key: '[SYNTHETIC_TEST_ONLY]'\n",
+            "api_key: '{SYNTHETIC_TEST_ONLY}'\n", "api_key: '|'\n", "api_key: ' # SYNTHETIC_TEST_ONLY'\n",
+            "shared: &canary 'null'\napi_key: *canary\n",
+        )
+        for index, payload in enumerate(payloads):
+            with self.subTest(case=index):
+                self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent.yaml"))
+
+    def test_marked_partial_market_records_fail_consistently_in_yaml_and_csv(self):
+        payloads = (
+            "schema: device-market-data/1\nquotes:\n  - security_reference: SYNTHETIC_TEST_SECURITY_ONLY\n    price: null\n",
+            "schema: device-market-data/1\nfx:\n  - currency: ZZZ\n    rate: null\n",
+            "schema: device-market-data/1\nquotes:\n  - source: SYNTHETIC_TEST_MANUAL_ONLY\n    price: null\n",
+            "schema,security_reference,price,currency,source\ndevice-market-data/1,SYNTHETIC_TEST_SECURITY_ONLY,,,\n",
+            "schema,currency,rate,source\ndevice-market-data/1,ZZZ,,\n",
+            "schema,source\ndevice-market-data/1,SYNTHETIC_TEST_MANUAL_ONLY\n",
+        )
+        for index, payload in enumerate(payloads):
+            with self.subTest(case=index):
+                self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent.dat"))
+
+
+    def test_csv_duplicate_credential_headers_cannot_erase_populated_cells(self):
+        for header in ("API-KEY,api_key", "api_key,api_key"):
+            with self.subTest(normalized_duplicate=header.startswith("API")):
+                payload = header + "\nSYNTHETIC_TEST_CREDENTIAL_ONLY,\n"
+                self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent.csv"))
+
+
+    def test_empty_quoted_yaml_credentials_with_inline_comments_pass(self):
+        for quote in ("''", '\"\"'):
+            with self.subTest(double_quote=quote.startswith('\"')):
+                payload = "api_key: " + quote + " # Local setting only\n"
+                self.assertFalse(guard.contains_device_actual(payload.encode(), "schema.yaml"))
+
+    def test_yaml_quoted_alias_literals_and_anchored_comment_text_fail(self):
+        payloads = (
+            "shared: &blank ''\napi_key: '*blank'\n",
+            "shared: &canary ' # SYNTHETIC_TEST_ONLY'\napi_key: *canary\n",
+        )
+        for index, payload in enumerate(payloads):
+            with self.subTest(case=index):
+                self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent.yaml"))
+
+
+    def test_marked_yaml_market_schema_property_mappings_are_descriptions(self):
+        payloads = (
+            "schema: device-market-data/1\nproperties:\n  price: {type: number}\n  source: {type: string}\n",
+            "schema: device-market-data/1\nproperties:\n  rate:\n    type: number\n  currency:\n    type: string\n",
+        )
+        for index, payload in enumerate(payloads):
+            with self.subTest(case=index):
+                self.assertFalse(guard.contains_device_actual(payload.encode(), "schema.yaml"))
+
+
+    def test_yaml_quoted_credential_delimiters_and_multiline_text_are_populated(self):
+        for quote in ("'", '\"'):
+            for prefix in (",", "]", "}", "\n  "):
+                with self.subTest(double_quote=quote == '\"', multiline=prefix.startswith("\n")):
+                    payload = "api_key: " + quote + prefix + "SYNTHETIC_TEST_ONLY" + quote + "\n"
+                    self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent.yaml"))
+        payload = "shared: &canary '\n  SYNTHETIC_TEST_ONLY'\napi_key: *canary\n"
+        self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent.yaml"))
+
+
+    def test_multiline_quoted_credential_comment_lines_are_literal_text(self):
+        payloads = (
+            "api_key: '\n  # SYNTHETIC_TEST_ONLY\n  '\n",
+            "shared: &canary '\n  # SYNTHETIC_TEST_ONLY\n  '\napi_key: *canary\n",
+        )
+        for index, payload in enumerate(payloads):
+            with self.subTest(case=index):
+                self.assertTrue(guard.contains_device_actual(payload.encode(), "innocent.yaml"))
+
+
+    def test_escaped_whitespace_credential_fields_are_blank(self):
+        payloads = (
+            json.dumps({"api_key": "\n\t"}),
+            'api_key: "\\n\\t"\n',
+        )
+        for index, payload in enumerate(payloads):
+            with self.subTest(case=index):
+                self.assertFalse(guard.contains_device_actual(payload.encode(), "blank.dat"))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,6 @@
 """Fail closed on anything outside the reviewed, immutable public Pages artifact.
 
-Pins describe the WEB-only build at 17b8f82, with ONLY ``cutoff_mcap`` and
+Pins describe the reviewed device-manual-quotation WEB-only build, with ONLY ``cutoff_mcap`` and
 each universe member's ``mcap`` removed. HTML/CSS/JS use byte hashes; JSON
 uses canonical hashes so formatting and object-key order are immaterial.
 Updating public data or assets requires reviewing and updating these pins.
@@ -29,13 +29,14 @@ import tarfile
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
-    "app.js": "f828c3b13f2d1bf639bc59c7c17d9dad9ab141090e1e4835fde1ae7040c485ad",
+    "app.js": "ab19b9506b02a8a1619a486fd1361ee1e3c35ee1b9012a9e9eecd97721e06e5d",
     "data.json": "735aadfdf26197013e1478e60974d42c920c089c19dd99f91687a0dfd38b9536",
-    "device-actual.css": "84aa2e390cd9da6121893c250c4e8a0d7cc0d983ffc40fbbba7260716a92e239",
-    "device-actual.js": "ac8d410039cf4773da0b6ff134321440de176a29a13f054a5a85262542948d09",
+    "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
+    "device-actual.js": "6529d532ef0a538bc368a808cb78f2fcbc965f6509d4c4a76c1e323e34e791fd",
+    "device-market.js": "922c99ea78487a736b89a81d643c4f814355f0bad603fb370a086629bba7e916",
     "entities.json": "465354a2bc2846f4d85ad6306d2dda3aa5cb5601e4d3520281ec013bf402c424",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
-    "index.html": "2e531d02dde298a4c29d15120c2769a9a681d681f5cff9fb95c68b50f225e933",
+    "index.html": "bb93ac04d606468f683e5fb498332e17fa0802d7bcf0ed37658747a05caa6aab",
     "locale.js": "c43cc076521250008d9406ae39492be9cf3f665556c43822151e975675a1663d",
     "research.html": "ef7665e2079df06c4bf7265206d9113ddb4716f93cf87e0ec0735c6b5fbae219",
     "style.css": "de98839bbb4469b693e2ad34009910071cc03e31161cea593e67b4080996d526",

@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "path": "/Investment-System1/",
+  "checks": [
+    "390px ko-KR: subpath routes, empty ACTUAL, refresh and screenshot",
+    "390px ko-KR: relative resources and no PWA cache/scope",
+    "390px en-US: subpath routes, empty ACTUAL, refresh and screenshot",
+    "390px en-US: relative resources and no PWA cache/scope",
+    "1280px ko-KR: subpath routes, empty ACTUAL, refresh and screenshot",
+    "1280px ko-KR: relative resources and no PWA cache/scope",
+    "1280px en-US: subpath routes, empty ACTUAL, refresh and screenshot",
+    "1280px en-US: relative resources and no PWA cache/scope",
+    "all resources stay under the Pages project path",
+    "no failed resources or unhandled runtime errors"
+  ],
+  "screenshots": [
+    "actual-empty-390-ko-KR.png",
+    "actual-empty-390-en-US.png",
+    "actual-empty-1280-ko-KR.png",
+    "actual-empty-1280-en-US.png"
+  ],
+  "screenshot_state": "ACTUAL_EMPTY",
+  "request_problems": 0,
+  "response_problems": 0,
+  "page_errors": 0,
+  "pwa_manifest_count": 0,
+  "service_worker_count": 0
+}
