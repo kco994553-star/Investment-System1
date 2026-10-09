@@ -1855,3 +1855,42 @@ Fresh independent session PASS_WITH_MINOR_FINDING at exact final source tree:701
 Current-target A-S2 resolves19/19, unresolved0; A-S3 assignments19/19. Chart source gates3/6 and Platform1/9 remain distinct from broader production closure: A-G1 original authority/read/invalidation, A-G2 original production route/affected-owner acceptance, A-G3 broader formal FPIA remain open. PR67's scoped substitute does not waive those production obligations. Full dated ListingIdentity0/19 remains separate. READ_ONLY, Frozen/TARGET/scoring histories and deferred GateA/unattended automation/operational refresh remain unchanged.
 
 The existing merge authorization covered PR67; PR68 canonical merge awaits a separate [26E decision](evidence/user_26e_decision_2026-10-09/PR68_MERGE_DECISION_26E.md). Public deployment awaits separate approval after data-exclusion confirmation. No timeout grant. [Final execution receipt](evidence/user_26e_decision_2026-10-09/FINAL_EXECUTION_RECEIPT.json) · [Independent ACTUAL review](evidence/user_26e_decision_2026-10-09/ACTUAL_INDEPENDENT_REVIEW_RECEIPT.json) · [ACTUAL browser results](evidence/user_26e_decision_2026-10-09/ACTUAL_BROWSER_RESULTS.json)
+
+
+## CDR-045 · 2026-10-09 · USER26E PR68 merge approval and conditional GitHub Actions Pages deployment
+
+Exact original user directive retained at [USER_DECISION.txt](evidence/user_26e_pages_quotes_2026-10-09/USER_DECISION.txt) and reproduced below. Authorizes normal PR68 merge after confirming exact-head native CI and independent PASS; no force push and rollback through revert PR. The user applies PR67's bounded conditions to PR68, without declaring global formal FPIA PASS.
+
+User attests on2026-10-09 that Pages Source is None and PR67 did not deploy. Public cockpit deployment is conditionally authorized through GitHub Actions only: prepare a deployment-workflow PR with fail-closed pre-deployment exclusion of real holdings, monetary fields, secrets and local/ files; upload only the generated web folder. Before merging that PR, request its merge approval and a user-operated Pages Source change to GitHub Actions together in26E. Agent must not change Pages settings. After actual deployment, verify its served URL at390px through ACTUAL input/save/refresh/export/import. Preparing and verifying the requested PR is authorized now; its merge and public execution await the named final user decisions.
+
+Quotes/FX are public data, while holdings remain on device. Authorized work is a26E comparison only: manual current-price input, daily close/FX publicJSON via Actions, real-time API; include costs/terms/effort/risks and all19US17/TSE8035/KRX042700 coverage, USD/JPY/KRWFX sources and KRW/USDbase-currency decision. No quotation collection/integration, paid service, new scoring/calculation method, Holdout or AUTONOMY_MODE change is authorized. READ_ONLY remains. GateA/unattended automation and operational data refresh remain outside the directed scope.
+
+```text
+26E 결정 (Decision Register에 원문과 함께 append-only 기록)
+
+1. PR #68 병합: 승인
+- 조건은 #67과 같다. CI·독립 검증 PASS 상태를 확인하고 PR로 병합한다(force push 금지).
+- 문제가 생기면 revert PR로 되돌린다.
+
+2. 웹 cockpit 공개 배포: 조건부 승인
+- 사용자 확인(2026-10-09): GitHub Pages는 현재 비활성(Source None). #67 병합으로 배포된 것은 없다.
+- 배포는 "GitHub Actions" 방식으로 한다. 배포 workflow를 PR로 추가하되, 배포 직전에
+  실제 보유 데이터·금액성 필드·비밀 값·local/ 파일이 산출물에 있으면 실패하는 검사 단계를 넣는다.
+- 웹 산출물 폴더만 배포한다(저장소 전체를 올리지 않는다).
+- PR이 준비되면 병합 승인과 "Pages Source를 GitHub Actions로 변경" 요청을 26E로 함께 올린다.
+  Pages 설정 변경은 사용자가 한다.
+- 배포 후 주소에서 390px 휴대폰 기준으로 ACTUAL 입력→저장→새로고침 후 유지→내보내기→가져오기를 검증한다.
+
+3. 시세 연결: 선택지 요청 (구현 금지)
+- 시세·환율은 개인정보가 아니므로 공개 데이터로 다룬다. 보유 정보는 계속 휴대폰 안에만 둔다.
+- 다음 선택지를 비용·이용약관·소요·위험과 함께 26E로 정리한다.
+  · 앱에서 현재가를 사용자가 직접 입력
+  · 매일 종가·환율을 GitHub Actions로 받아 공개 JSON으로 저장하고 앱이 읽기
+  · 실시간 시세 API (유료 가능성)
+- 19종목 전체(미국 17, TSE 8035, KRX 042700) 커버 여부와 USD·JPY·KRW 환율 소스를 포함한다.
+- 기준 통화 선택지(KRW / USD)도 함께 묻는다.
+
+이번 사이클 보고: #68 병합, Pages 설정 확인 결과와 배포 주소, 휴대폰 검증 결과, 시세 선택지 묶음, Chart n/6, Platform n/9.
+
+포함하지 않는 것: 시세 수집 구현, 유료 서비스, 새 투자 계산법, Holdout, AUTONOMY_MODE 변경.
+```
