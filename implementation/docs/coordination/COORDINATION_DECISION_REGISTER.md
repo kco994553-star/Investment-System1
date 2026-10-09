@@ -1936,3 +1936,78 @@ A-S2 current-TARGET resolved19/19/unresolved0 and A-S3 assigned19/19. Chart sour
 [Final execution receipt](evidence/pages_cockpit_preparation_2026-10-09/FINAL_EXECUTION_RECEIPT.json) · [Fresh independent review including actual uploaded tar](evidence/pages_cockpit_preparation_2026-10-09/INDEPENDENT_REVIEW_RECEIPT.json) · [Pages preparation probes](evidence/pages_cockpit_preparation_2026-10-09/PAGES_PREPARATION_PROBE.json)
 
 The unchanged Global-branch conservative name/status guard reports one register-M violation even for this genuine append; it does not inspect byte prefixes. [Append-only proof](evidence/pages_cockpit_preparation_2026-10-09/APPEND_ONLY_VERIFICATION.json) verifies all127489prior register bytes and every other original blob/mode are preserved, with controls/leases unchanged. The explicit user record instruction is fulfilled without changing guard/policy or declaring this Global check PASS. This separate documentation-tool limit does not change PR69's exact-head native repository-guard SUCCESS.
+
+
+## CDR-048 · 2026-10-09 · USER26E PR69 merge approval / manual device quotations and KRW adoption
+
+Exact original follows and is retained at [USER_DECISION.txt](evidence/manual_quotes_decision_2026-10-09/USER_DECISION.txt). Authorizes normal PR69 merge without force push. User operates Pages Source; only after change confirmation run the deployment workflow and verify the actual public address at390/1280ko/en through ACTUAL input/save/refresh/export/delete/import. READ_ONLY remains; no standing autonomy grant.
+
+Manual quotations/FX are authorized now on a scoped feature branch:19A-S2-native current prices and editable input timestamps, >=7days STALE, missing prices/FX NOT_AVAILABLE without estimated substitutes, KRW valuation/weights/TARGET percentage-point differences with native values shown. Data remains only on device. API-key structure is also authorized but provider selection is a separate26E; no provider is selected and API remains OFF/no automatic polling. Key stored separately on device, explicit delete, excluded from holdings/quote/FX/time backup; no external script, CSP connect allowance stays self-only until a reviewed provider is chosen. No Actions price collection, public quote files, paid API, Frozen/TARGET/scoring/Holdout or mode changes. The named canonical merge grant is PR69; a subsequently prepared implementation PR is a separate reviewable result, not an inferred new named-PR merge grant.
+
+Root owns integration/build/CSP/privacy guards/docs/workflow tests; manual_market_core owns only new market module/Node test and manual_quotes_ui owns existing ACTUAL module/CSS/new browser test. No lease takeover or unrelated controls rewrite. Existing holdings schema1 stays local; versioned backup2 includes strict market metadata without keys and imports schema1 safely. Storage/import must be atomic and preserve prior state on invalid/canceled/conflicting operations. Implementation choices follow the explicit user design and do not require repeating a design-permission flow. [Authority receipt](evidence/manual_quotes_decision_2026-10-09/USER_DECISION_RECEIPT.json).
+
+```text
+26E 결정 (Decision Register에 원문과 함께 append-only 기록)
+
+1. PR #69 병합: 승인. PR로 병합한다(force push 금지).
+
+2. Pages Source: 사용자가 GitHub Actions로 변경한다. 변경을 확인하면 배포 workflow를 실행하고
+   공개 주소에서 390px·1280px, ko/en, ACTUAL 입력→저장→새로고침 후 유지→내보내기→삭제→가져오기를 검증한다.
+
+3. 시세: 수동 입력 + 사용자 API 키 직접 조회 (두 방식 병행)
+   A. 수동 입력 (이번에 구현)
+   - 종목별 현재가와 입력 시각을 사용자가 입력한다. 데이터는 휴대폰 브라우저 안에만 저장한다.
+   - 입력 시각을 표시하고, 7일 이상 지난 시세는 STALE로 표시한다.
+   - 시세가 없는 종목은 평가액·비중을 NOT_AVAILABLE로 둔다. 추정하거나 대체하지 않는다.
+   B. 사용자 API 키로 휴대폰에서 직접 조회 (구조만 구현, 서비스 선택은 26E)
+   - 사용자가 앱 설정에 본인의 무료 API 키를 입력하면, 휴대폰 브라우저가 시세 서비스에 직접 요청한다.
+     서버·GitHub Actions·저장소를 거치지 않으므로 시세를 재배포하지 않는다.
+   - API 키는 휴대폰 브라우저 안에만 저장한다. 저장소·빌드·로그에 넣지 않고, 백업 JSON 내보내기에서도 제외한다.
+     키 삭제 버튼을 둔다.
+   - 시세 출처는 종목별로 "API / 수동 / 없음"을 표시한다. API가 실패하거나 지원하지 않는 종목은 수동 입력으로 대체한다.
+   - 키 보호를 위해 외부 스크립트를 불러오지 않고, 연결 허용 주소를 선택한 시세 서비스로 제한한다(CSP).
+   - 무료 호출 한도를 넘지 않도록 자동 갱신은 하지 않고, 사용자가 "시세 새로고침"을 누를 때만 조회한다.
+   - 시세 서비스 선택지를 26E로 정리한다: 브라우저 직접 호출 가능 여부(CORS), 19종목 커버리지
+     (미국 17, TSE 8035, KRX 042700), 환율 지원, 무료 한도, 개인 사용 약관. 서비스가 정해지기 전까지 B는 꺼진 상태로 둔다.
+
+4. 기준 통화: KRW
+   - USD/KRW, JPY/KRW 환율은 수동 입력(또는 B에서 선택한 서비스)으로 받고 입력·조회 시각을 표시한다.
+   - 종목별로 원래 통화(USD·JPY·KRW) 값도 함께 보여준다.
+   - 화면: 평가액(KRW), 실제 비중, TARGET 대비 차이(비중 %p).
+
+5. 백업 JSON에는 보유 정보·시세·환율과 시각을 포함하고, API 키는 포함하지 않는다.
+
+이번 범위가 아닌 것: GitHub Actions 기반 시세 수집, 공개 저장소에 시세 저장, 유료 API.
+보고: 배포 주소, 공개 주소 검증 결과, 390px·1280px 스크린샷, 시세 서비스 선택지, Chart n/6, Platform n/9.
+```
+
+
+## CDR-049 · 2026-10-09 · USER confirms Pages Source changed to GitHub Actions
+
+User response to the setup-completion question confirms the Source change is complete. This is user attestation, not an authenticated Pages settings enum observed by the agent. Agent did not change settings. Together with CDR048 it satisfies the named pre-deployment wait: recheck unchanged PR69 exact-head CI/independent PASS, then normal merge triggers the authorized canonical deployment; manual dispatch is needed only if no push run executes. Verify deployed address rather than claiming local tests prove publication. Exact response retained at [PAGES_SOURCE_USER_CONFIRMATION.txt](evidence/manual_quotes_decision_2026-10-09/PAGES_SOURCE_USER_CONFIRMATION.txt):
+
+```text
+Source를 GitHub Actions로 변경하신 뒤 완료 여부를 알려주세요
+변경했어
+```
+
+
+## CDR-050 · 2026-10-09 · USER supplements API-provider26E candidates and user-only free relay alternative
+
+Exact original follows and is retained at [USER_API_AMENDMENT.txt](evidence/manual_quotes_decision_2026-10-09/USER_API_AMENDMENT.txt). Requires KISDevelopers and FinancialServicesCommission public stock-price data among candidates; verify19coverage/free delay/auth/token/possible future holdings linkage, CORS and phone-secret risks. User's broad KISmarket statement is a candidate requirement, not agent-verified endpoint/plan/instrument coverage. If direct browser access is blocked or a secret is required, describe user-only free relay such as CloudflareWorkers with credentials exclusively server-side secret storage and its access-control/cost/abuse risks. This authorizes options/structure research only, no relay setup or broker holdings connection. Provider remains unselected/API OFF. Already-authorized PR69 merge/Pages/manual implementation continue; no restart or scope cancellation.
+
+```text
+[추가 지시 — 앞 지시 3번 B 보완]
+
+시세 서비스 선택지(26E)에 다음 후보를 반드시 포함한다.
+- 한국투자증권 Open API(KIS Developers): 국내 KRX + 해외(미국 NAS·NYS·AMS, 도쿄 TSE)를 한 계정으로 조회 가능.
+  19종목 전체 커버 여부, 무료 지연 시세 범위, 앱 키·시크릿·토큰 방식, 향후 보유 내역 연동 가능성.
+- 공공데이터포털 금융위원회 주식시세정보: 국내 종목, 무료, 갱신 주기.
+
+각 후보마다 브라우저 직접 호출 가능 여부(CORS)와 키·시크릿을 휴대폰에 둘 때의 위험을 적는다.
+직접 호출이 안 되거나 시크릿이 필요하면 "사용자 전용 무료 중계 서버(예: Cloudflare Workers, 키는 서버 비밀 저장소에만)"
+방식의 구조와 위험도 함께 적는다.
+
+서비스가 정해지기 전까지 API 조회는 꺼둔다. 증권 계좌 연동(보유 내역 조회)은 이번 범위가 아니다.
+이미 진행 중인 #69 병합, Pages 배포, 수동 시세 입력 작업은 그대로 진행한다.
+```

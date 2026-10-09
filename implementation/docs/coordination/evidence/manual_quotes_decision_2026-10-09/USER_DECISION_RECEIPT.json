@@ -1,0 +1,34 @@
+{
+  "recorded_at_utc": "2026-10-09T01:25:01.609084+00:00",
+  "previous_register_prefix_bytes": 135156,
+  "previous_register_prefix_sha256": "b838751a35f18b42d26ef85801f0b53e2661f88547eaf5690ccdd9e44fccabdb",
+  "user_original_sha256": "9e1320b127ead4eedf0df5696b1dc26bdd266656ca32714efc1b9d4bcf001256",
+  "source_confirmation_original_sha256": "786a55d45a8f197d95779f1aab832761879460eef284d9825361e6b3142a9fe5",
+  "pages_source_confirmation": "USER_ATTESTED_GITHUB_ACTIONS",
+  "agent_changed_pages_settings": false,
+  "authorized_merge_pr": 69,
+  "authorized_feature": "manual device quotes/FX KRW + disabled APIkey structure",
+  "source_base": "29bd7f3437f34f40dae319fe875a19b6e19225bb",
+  "mode": "READ_ONLY",
+  "ownership_write_set": {
+    "root": [
+      "app.js",
+      "index.html",
+      "build/CSP/privacy guards",
+      "workflow test additions",
+      "owner docs/receipts"
+    ],
+    "manual_market_core": [
+      "device-market.js",
+      "device_market_node_test.js"
+    ],
+    "manual_quotes_ui": [
+      "device-actual.js",
+      "device-actual.css",
+      "manual_quotes_browser_test.js"
+    ]
+  },
+  "api_provider_selection": "WAIT_26E",
+  "api_requests": "DISABLED",
+  "paid_service": false
+}
