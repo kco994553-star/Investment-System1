@@ -1,0 +1,24 @@
+{
+  "base_commit": "1f8229154f1e6e298509654db974c65ee726e0ab",
+  "prior_bytes": 146873,
+  "prior_sha256": "cb4c7b69e279bb62da73f0c65c3c765dc757c486c227b5e40033db26276d98d1",
+  "new_bytes": 149562,
+  "new_sha256": "06dff28edd98eda8519996521887f9adeb5ae24a8ae5c48a369e29ee54f2f278",
+  "prefix_unchanged": true,
+  "rule": "exact register UTF8 regular same-mode byte-prefix append; existing evidence immutable",
+  "config_changed": false,
+  "mode": "READ_ONLY",
+  "focused_canonical_guard": {
+    "passed": 120,
+    "new_adversarial_cases": 47
+  },
+  "focused_global_guard": {
+    "passed": 56,
+    "new_adversarial_cases": 47
+  },
+  "global_full_suite": {
+    "passed": 482
+  },
+  "original_decision": "CDR-052",
+  "old_fail_waiver": false
+}

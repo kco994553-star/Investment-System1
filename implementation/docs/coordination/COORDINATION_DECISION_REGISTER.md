@@ -2022,3 +2022,31 @@ PR70 head80704d3f600ac034705a46eab16f22ed522e0ed9 / treec2fe43912ffede1525bc4818
 Manual19native prices and USD/KRW·JPY/KRW inputs/timestamps stay in the device; KRW/native values and TARGET%p require complete supplied denominator, missing data NOT_AVAILABLE,>=7days STALE. Backup2 includes holdings/quotes/FX/clocks but no credentials; legacy1 remains supported. API-key structure has separate local password storage/delete, serviceNOT_SELECTED/queryOFF/disabledrefresh, self-only CSP, no outside scripts/polling/provider URL. KIS and FSC V2 plus3other free candidates are compared with coverage/FX/delay/limits/terms/authentication/CORS/secret risks and estimated implementation effort. No single free19/19+FX provider is confirmed; selected-service26E WAIT. User-only authenticated free Worker/server-secret relay is architecture only, not deployed. Broker holdings linking remains out of scope.
 
 A-S2 mapping19/19, unresolved0; themes19/19. Chart source3/6 and Platform1/9 remain. A-G1 original authority/read/invalidation, A-G2 original production route/affected-owner acceptance and A-G3 broader formalFPIA obligations stay open. Recorded candidate defect blockers0 after R1 correction; formalFPIA NOT_RUN, F1–F25 LATER25, no globalPASS. Frozen/TARGET/scoring/Holdout/READ_ONLY/leases and operating-data/automation deferrals unchanged. The old Global guard rejects a register M by name/status despite true append; do not bypass or rewrite its governance policy. Exact prior bytes and all existing unrelated blobs are preserved and proved below.
+
+
+## CDR-052 · 2026-10-09 · USER26E approves PR70 conditional notice; partial direct API review and actual append guard fix
+
+Exact original retained below and at [USER_DECISION.txt](evidence/pr70_approved_2026-10-09/USER_DECISION.txt). Authorizes normal PR70 merge without repeating approval after exact ko/en personal-reference notices are added and final checks pass. Verify notice on actual public address afterdeployment. Add brief official free-key issuance guidance; keyless users keep manual input.
+
+API remains OFF and service unselected. Research priority Alpha Vantage: direct browser CORS,17US symbols plusUSD/KRW·JPY/KRW daily25budget and personal display terms; report supported/unsupported with evidence before later implementation approval. Tokyo8035/KRX042700 remain manual. KIS+user-only relay deferred; noserver/proxy,eachuser's ownfreekey only ondevice,never inbackup. This supersedes previous relay architecture option as a candidate for this cycle; original old records remain historical.
+
+Correct Global andcanonical appendguard rules rather than allowing a failed check: exact textregister append may preserve all prior bytes, while edits/deletion/rename/type/mode/history rewrite and existing evidence changes remain rejected. No config exclusions,oldFAIL waiver,guard skipping or modechange. Frozen/TARGET/scoring/Holdout/leases and deferred automation remain.
+
+```text
+[26E 사용자 결정]
+
+① #70 병합 승인. 조건: 병합 전 화면 상단/하단에 안내 문구 추가
+- ko: "개인 참고용입니다. 투자 권유나 자문이 아닙니다."
+- en: "For personal reference only. Not investment advice."
+- 배포 후 공개 주소에서 문구 노출 확인.
+
+② 시세 방식: "부분 API + 미지원 종목 수동"으로 검토 진행 (API는 아직 OFF 유지)
+- KIS + 전용 중계는 보류: 공개 사이트에서 개인 App Secret을 서버에 두는 구조는 채택하지 않음.
+- 원칙: 각 사용자가 자기 무료 API 키를 자기 기기에만 저장, 서버·중계 없음, 키는 백업에서 제외.
+- 1순위 후보 Alpha Vantage 검증: 브라우저 직접 호출(CORS) 가능 여부, 미국 17종목 + USD/KRW + JPY/KRW가 하루 25회 안에 되는지, 개인 화면 표시 약관.
+- Tokyo Electron(TSE 8035)·한미반도체(KRX 042700)는 수동 입력 유지.
+- 검증 결과를 "가능/불가 + 근거"로 보고하고, 구현은 승인 후 진행.
+- 키가 없는 사용자는 수동 입력으로 계속 사용 가능하게 유지. 키 발급 방법 안내를 화면에 짧게 추가.
+
+③ 잔여: Decision Register append를 전역 guard가 오탐하는 문제는 guard 규칙을 고쳐서 해결. 우회 금지.
+```

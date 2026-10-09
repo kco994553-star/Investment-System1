@@ -1,0 +1,189 @@
+{
+  "verdict": "BLOCKED",
+  "reviewer": "independent-global",
+  "base": "1f8229154f1e6e298509654db974c65ee726e0ab",
+  "head": "4e4db91e1f539b5fa7910f8e7487fcfb193a7a45",
+  "tree": "9e53eeb76edbbfd24a9dad306568bb23076d5ed6",
+  "timestamp_utc": "2026-10-09T04:18:14.897847+00:00",
+  "worktree": "/workspace/pr70-guard-independent",
+  "worktree_clean": true,
+  "commands": [
+    {
+      "command": "git diff --check 1f8229154f1e6e298509654db974c65ee726e0ab HEAD",
+      "outcome": "PASS",
+      "exit_code": 0
+    },
+    {
+      "command": "PYTHONPATH=src /workspace/cycle-venv/bin/python -m pytest -q -p no:cacheprovider --junitxml=/workspace/pr70-approved-cycle-evidence/independent-global/pytest.xml",
+      "cwd": "/workspace/pr70-guard-independent/implementation",
+      "outcome": "PASS",
+      "exit_code": 0,
+      "summary": {
+        "tests": 482,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "command": "/workspace/cycle-venv/bin/python implementation/tools/autonomy_gate_a_guard.py diff --base 1f8229154f1e6e298509654db974c65ee726e0ab",
+      "cwd": "/workspace/pr70-guard-independent",
+      "outcome": "PASS",
+      "exit_code": 0,
+      "mode": "READ_ONLY",
+      "records": 6,
+      "violations": 0
+    },
+    {
+      "command": "/workspace/cycle-venv/bin/python /workspace/pr70-approved-cycle-evidence/independent-global/real_git_probes.py",
+      "outcome": "BLOCKED",
+      "cases": 39,
+      "matched_expected": 37,
+      "unexpected": [
+        "legacy_graft_hides_forbidden_history",
+        "environment_graft_override_hides_forbidden_history"
+      ]
+    }
+  ],
+  "requirements": {
+    "prefix": {
+      "old_length": 146873,
+      "new_length": 149562,
+      "suffix_length": 2689,
+      "exact_preservation": true,
+      "old_sha256": "cb4c7b69e279bb62da73f0c65c3c765dc757c486c227b5e40033db26276d98d1",
+      "cdr052_suffix_occurrences": 1,
+      "receipt_prefix_matches": true
+    },
+    "original_user": {
+      "bytes": 1286,
+      "sha256": "a4b271120225fb99a90fca8e8481baeee12f93c1c55e434c92c06264163b89bf",
+      "matches_expected_sha256": true,
+      "receipt_hash_and_bytes_match": true
+    },
+    "receipt_fields": {
+      "recorded_at_utc": {
+        "type": "str",
+        "string_utf8_bytes": 32,
+        "equals_user_literal": false
+      },
+      "original_bytes": {
+        "type": "int",
+        "string_utf8_bytes": null,
+        "equals_user_literal": false
+      },
+      "original_sha256": {
+        "type": "str",
+        "string_utf8_bytes": 64,
+        "equals_user_literal": false
+      },
+      "register_prior_prefix_bytes": {
+        "type": "int",
+        "string_utf8_bytes": null,
+        "equals_user_literal": false
+      },
+      "register_prior_prefix_sha256": {
+        "type": "str",
+        "string_utf8_bytes": 64,
+        "equals_user_literal": false
+      },
+      "mode": {
+        "type": "str",
+        "string_utf8_bytes": 9,
+        "equals_user_literal": false
+      },
+      "merge_authorized_pr": {
+        "type": "int",
+        "string_utf8_bytes": null,
+        "equals_user_literal": false
+      },
+      "merge_condition": {
+        "type": "str",
+        "string_utf8_bytes": 83,
+        "equals_user_literal": false
+      },
+      "api": {
+        "type": "str",
+        "string_utf8_bytes": 49,
+        "equals_user_literal": false
+      },
+      "relay": {
+        "type": "str",
+        "string_utf8_bytes": 41,
+        "equals_user_literal": false
+      },
+      "alpha_candidate": {
+        "type": "str",
+        "string_utf8_bytes": 69,
+        "equals_user_literal": false
+      },
+      "guard": {
+        "type": "str",
+        "string_utf8_bytes": 101,
+        "equals_user_literal": false
+      }
+    },
+    "config_unchanged": true,
+    "mode_unchanged": true,
+    "existing_frozen_and_evidence": {
+      "entries_checked": 337,
+      "unchanged_mode_type_blob": true
+    },
+    "all_three_registers": [
+      {
+        "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+        "same_mode_type": true,
+        "base_bytes_preserved": true,
+        "base_bytes": 146873,
+        "head_bytes": 149562
+      },
+      {
+        "path": "implementation/docs/coordination/PIW_DECISION_RECORDS.md",
+        "same_mode_type": true,
+        "base_bytes_preserved": true,
+        "base_bytes": 23927,
+        "head_bytes": 23927
+      },
+      {
+        "path": "implementation/src/investment_system/prompt_library/content/Investment_Prompt_Library_v1_Decision_History.md",
+        "same_mode_type": true,
+        "base_bytes_preserved": true,
+        "base_bytes": 11784,
+        "head_bytes": 11784
+      }
+    ]
+  },
+  "blockers": [
+    {
+      "severity": "P1",
+      "title": "Legacy native or environment-redirected graft metadata hides forbidden intermediate history",
+      "locations": [
+        "implementation/tools/autonomy_gate_a_guard.py:109",
+        "implementation/tools/autonomy_gate_a_guard.py:127",
+        "implementation/tools/autonomy_gate_a_guard.py:282"
+      ],
+      "reproduction": "Create baseline regular UTF8 register; commit forbidden rewrite; commit restore plus append. Guard rejects without graft. Set native .git/info/grafts or GIT_GRAFT_FILE to line HEAD BASE. Git rev-list hides rewrite and unchanged guard returns PASS; HEAD and merge base remain unchanged, shallow=false.",
+      "evidence": {
+        "name": "legacy_graft_hides_forbidden_history",
+        "expected": "REJECT",
+        "observed": "PASS",
+        "returncode": 0,
+        "reported_state": "PASS",
+        "violation_count": 0,
+        "matches_expectation": false,
+        "raw_history_commits": 2,
+        "git_grafted_history_commits": 1,
+        "is_shallow": "false",
+        "head_object_unchanged": true
+      },
+      "required_resolution": "Read genuine raw-parent history, or reliably disable/reject all active native and redirected graft metadata before comparison and proof."
+    }
+  ],
+  "scope": "All six changed paths inspected against BASE. Preservation review only; privacy scanner from canonical guard is outside this Global version scope. Existing author APPEND_ONLY_PROOF outcomes were not used. Source inspection delegated to separate read-only reviewer; commands, bytes, fullpytest, and realGit probes executed fresh here.",
+  "limitations": [
+    "Local evidence only; no GitHub mutations, branch/ruleset or remote Actions verification performed.",
+    "Synthetic realGit adversarial fixtures contain public synthetic data only.",
+    "No arbitrary Git executable replacement or concurrent malicious filesystem mutation threat modeled.",
+    "Awaiting graft correction and new frozen final head/tree; this verdict applies only to stated commit."
+  ]
+}

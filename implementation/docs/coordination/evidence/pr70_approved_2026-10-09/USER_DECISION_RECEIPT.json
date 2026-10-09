@@ -1,0 +1,14 @@
+{
+  "recorded_at_utc": "2026-10-09T04:13:09.814096+00:00",
+  "original_bytes": 1286,
+  "original_sha256": "a4b271120225fb99a90fca8e8481baeee12f93c1c55e434c92c06264163b89bf",
+  "register_prior_prefix_bytes": 146873,
+  "register_prior_prefix_sha256": "cb4c7b69e279bb62da73f0c65c3c765dc757c486c227b5e40033db26276d98d1",
+  "mode": "READ_ONLY",
+  "merge_authorized_pr": 70,
+  "merge_condition": "Exact ko/en personal reference notice beforemerge and live verification afterdeploy",
+  "api": "OFF; research only, implement after laterapproval",
+  "relay": "DEFERRED; no server-secret design adopted",
+  "alpha_candidate": "FREE directbrowser own-device key; US17+FX2; TSE8035/KRX042700 manual",
+  "guard": "RULE_FIX_REQUIRED; no bypass/waiver; Global andCanonical actualguard PASS required before publication"
+}
