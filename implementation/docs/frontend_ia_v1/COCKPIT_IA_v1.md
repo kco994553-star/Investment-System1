@@ -1,6 +1,6 @@
 # Investment-System1 · Cockpit IA v1
 
-기준일: 2026-10-09 · 기준 canonical: `011b75648f48f2890736d37c4a354f57004cf1f0` (PR #70 병합 이후) · 범위: 정보구조·화면 요구사항 문서만 · 사용자 PR 병합 승인 필요
+기준일: 2026-10-09 · 기준 canonical: `13e025b0e545fb3da14c15ce065a6a8e4a368eb0` (PR #73 승인 병합 이후) · 범위: 정보구조·화면 요구사항 문서만 · 사용자 PR 병합 승인 필요
 
 이 문서는 Cockpit의 새 화면·탐색 구조 기준이다. 구현 완료, 데이터 가용성, 모델 검증, 운영 적격성 또는 투자성과를 인증하지 않는다. 코드·데이터·계산·계약·워크플로·자동화 control을 변경하지 않는다. 사용자 병합 전에는 제안 문서이며, 병합 후에도 구현·배포 권한을 부여하지 않는다. 디자인 출처 및 접근 경계는 [DESIGN_SOURCE.md](DESIGN_SOURCE.md)를 따른다.
 
@@ -60,7 +60,7 @@ GICS(산업), 전략 테마, 투자 유형은 서로 다른 세 축이다. 테�
 | S08 | 기술적 분석 | 하단 메뉴 기술 | 차트 / 상태 / 실행 / 기록, 지표군 6개(추세·모멘텀·거래량·상대강도·구조·변동성), 모델/연구용 구분, 시나리오 경로(확률·신뢰도·무효화), 실행 구간. 주문 기능이 아닌 읽기 전용 분석 |
 | S09 | 매크로 | 하단 메뉴 매크로 | 정상·경고·비상, 국면, 공식 8축 Growth·Inflation·Liquidity·Monetary Policy·Credit·Labor·Fiscal·FX와 축별 6상태 보존·단일 점수 없음(임금은 Labor, 생산성은 Growth의 세부 지표), 주식시장 상태 참고 카드(거시 축 아님), 국면 이력, 신호→근거, 시나리오, 전달 요인→경제→업종→기업→QGV, 업종 영향, 포트폴리오 매크로 노출 candidate |
 | S10 | 검증·연구 | 하단 메뉴 검증 | 모의투자 / 백테스트 / 전진검증 / Track Record / 실험기록 / 리서치, 기준값 100 자산곡선·series on/off, 지표 6개, 분기 성과, calibration, Track A 기준선. Holdout 사용 선택 아님 |
-| S11 | 계정·금융기록·설정 | 홈 우측 설정 아이콘 | 로그인 준비중, 계좌 마지막 4자리만, 보유/거래/현금, 대사 6상태, append-only 변경 이력, 주문 불가 안내, 시세 입력·API 키 기기 내만/백업 제외·백업/삭제 |
+| S11 | 계정·금융기록·설정 | 홈 우측 설정 아이콘 | 일반 계정 로그인 준비중, 별도 선택형 Google 시트 시세 인증(기본 OFF), 계좌 마지막 4자리만, 보유/거래/현금, 대사 6상태, append-only 변경 이력, 주문 불가 안내, 수동 시세·일괄 붙여넣기, 시트 ID/범위 기기 내만·메모리 토큰·백업 제외·백업/삭제 |
 | S12 | PC 홈 | PC | 좌측 사이드바 오늘 / QGV 4하위 그룹 / 기술 / 매크로 / 검증, S01 내용 + 이탈표·변동 종목 |
 
 ### 3.1 S01·S12: 요약은 판단을 합치지 않는다
@@ -128,7 +128,7 @@ Track A 기준선을 사용한다. 이 IA는 Holdout 사용을 선택하지 않�
 
 ### 3.10 S11: 개인정보·금융기록과 26E
 
-로그인은 준비중이라는 시안 요구이며 실제 인증 기능의 완료를 뜻하지 않는다. 계좌는 마지막 4자리만 표시한다. 보유·거래·현금 기록과 수정 이유·변경 전후는 append-only 이력으로 보존한다. 실제 계좌번호·잔고·거래·키를 문서나 예시로 기록하지 않는다.
+일반 앱 계정 로그인·계좌 연결은 준비중이라는 시안 요구다. PR #73의 Google 인증은 본인 비공개 시트의 시세를 읽기 위한 별도 인증이며 앱 계정 로그인·계좌 연결·동기화의 완료를 뜻하지 않는다. 계좌는 마지막 4자리만 표시한다. 보유·거래·현금 기록과 수정 이유·변경 전후는 append-only 이력으로 보존한다. 실제 계좌번호·잔고·거래·키를 문서나 예시로 기록하지 않는다.
 
 | 대사 코드 | 표시 의미·경계 |
 |---|---|
@@ -141,12 +141,17 @@ Track A 기준선을 사용한다. 이 IA는 Holdout 사용을 선택하지 않�
 
 2026-10-09 사용자 결정: **시세·환율 수동 입력 + KRW 기준**은 [PR #70](https://github.com/kco994553-star/Investment-System1/pull/70)에서 구현·기록 완료됐다. S11은 [기존 수동 입력·기기 저장·백업/삭제 상태](../manual_quotes_owner/README.md)를 연결한다. **Alpha Vantage는 REVIEW ONLY·API OFF**이며 [기존 검증 기록](../pr70_approved_owner/ALPHA_VANTAGE_FEASIBILITY_26E.md)을 상태 근거로 연결한다. 이번 문서 PR에서는 시세·환율 방식의 재선정·재연구·구현을 다루지 않는다.
 
-API 키는 사용자 기기에만 저장하고 백업에서 제외한다. 실제 보유·시세·환율·계좌·키 값은 저장소·빌드·CI·로그에 기록하지 않는다. 보유·거래·현금·대사·변경 이력은 읽기 전용 금융 기록 요구이며 계좌 연결·인증 구현 완료를 뜻하지 않는다. “주문 기능 없음” 안내와 READ_ONLY hard gate를 유지한다. 매수·매도·주문·이체·출금 기능을 설계하지 않는다. 원본 통화·입력 시점 등 실제 상태는 링크된 기존 기록을 기준으로 표시하고 결측은 `NOT_AVAILABLE`이다.
+같은 날 후속 결정으로 [PR #73](https://github.com/kco994553-star/Investment-System1/pull/73)이 승인 병합됐다. **Google 시트 연결은 선택 기능·기본 OFF**이며 Google에서 사용자 휴대폰으로 직접 읽는다. 사용자가 버튼을 누를 때만 Google Identity Services token client로 `https://www.googleapis.com/auth/spreadsheets.readonly` 하나를 요청하고, 시세 불러오기도 별도 버튼으로만 실행한다. 접근 토큰은 메모리에만 보관하며 약 1시간 뒤 만료 시 재연결한다. 연결 해제는 revoke와 메모리 삭제로 처리한다. 시트 ID/URL에서 추출한 ID와 범위는 기기 안에만 저장하고 백업에서 제외한다. 공개 OAuth 클라이언트 ID는 앱 설정값이며 client secret은 사용하지 않는다.
+
+수동 입력은 유지하고 A~C열 일괄 붙여넣기는 로그인 없이 사용할 수 있다. 잘못된 값·`#N/A`는 `NOT_AVAILABLE`로 표시하고 기존 저장값을 보존한다. 도쿄일렉트론은 수동 입력을 유지한다. 출처는 `GOOGLEFINANCE · 최대 20분 지연 · 정보용`이며 시각 미확인 표시와 기존 7일 신선도 규칙을 따른다. 상세 설정은 [Google 시트 설정 안내](https://github.com/kco994553-star/Investment-System1/blob/13e025b0e545fb3da14c15ce065a6a8e4a368eb0/implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_SETUP.md), 결정은 [scoped append-only 기록](https://github.com/kco994553-star/Investment-System1/blob/13e025b0e545fb3da14c15ce065a6a8e4a368eb0/implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md), 기존 모의 검증과 한계는 [PR #73 검증 기록](https://github.com/kco994553-star/Investment-System1/blob/13e025b0e545fb3da14c15ce065a6a8e4a368eb0/implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_VERIFICATION.md)에 연결한다. 실제 계정 로그인·휴대폰 동작·공개 사이트 CSP의 이번 확인 결과는 이 문서 PR의 검증으로 주장하지 않는다.
+
+시트 ID·접근 토큰·실제 보유·시세·환율·계좌·키 값은 저장소·공개 JSON·Pages·CI·로그에 기록하지 않는다. API 키가 필요한 별도 공급처는 기기 내만·백업 제외라는 기존 경계를 유지하며 Google 시트에는 API 키를 요구하지 않는다. 서버·중계·GitHub Actions 시세 수집·백그라운드·주기 호출은 없다. 한국투자증권·중계 서버는 `DEFERRED`이고 Alpha Vantage는 OFF다. 보유·거래·현금·대사·변경 이력은 읽기 전용 금융 기록 요구이며 계좌 연결·인증 구현 완료를 뜻하지 않는다. “주문 기능 없음” 안내와 READ_ONLY hard gate를 유지한다. 매수·매도·주문·이체·출금 기능을 설계하지 않는다. 원본 통화·입력 시점 등 실제 상태는 링크된 기존 기록을 기준으로 표시하고 결측은 `NOT_AVAILABLE`이다.
 
 ## 사용자 결정 기록 (2026-10-09)
 
 - 매크로 축은 `Macro System · Latest Consolidated Record v0.1.4 Candidate.md` §15의 **기존 공식 8축을 유지**한다. 사용자 확인으로 시안도 8축으로 수정 완료됐다. 임금은 Labor, 생산성은 Growth의 세부 지표이며 주식시장 국면은 거시 축이 아닌 참고 카드다. 축 추가는 별도 방법론 버전에서만 다룬다. 축별 Level / Direction / Momentum / Surprise / Stress / Confidence의 6상태를 보존하며 단일 점수로 합치지 않는다.
-- 시세·환율 결정은 **수동 입력 + KRW 기준, PR #70 구현·기록 완료**다. Alpha Vantage는 **REVIEW ONLY·API OFF**다. 이번 PR은 이를 다시 검토하지 않으며 S11의 기존 기록 링크만 상태 근거로 사용한다.
+- 시세·환율 최초 결정은 **수동 입력 + KRW 기준, PR #70 구현·기록 완료**다. Alpha Vantage는 **REVIEW ONLY·API OFF**다. 이번 PR은 이를 다시 검토하지 않으며 S11의 기존 기록 링크만 상태 근거로 사용한다.
+- 후속 결정인 **선택형 Google 시트 직접 읽기·기본 OFF·수동 유지**는 PR #73 승인 병합 기록으로 연결한다. 일반 앱 계정 로그인과 시세 소스 인증은 별개다. 한국투자증권·중계 서버는 `DEFERRED`를 유지하며 이 문서 PR은 새 API·인증·주문 구현을 추가하지 않는다.
 
 ## OPEN — 상세 시안과 배치 확인
 

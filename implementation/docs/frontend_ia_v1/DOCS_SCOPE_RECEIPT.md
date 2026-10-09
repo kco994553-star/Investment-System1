@@ -43,3 +43,17 @@
 - 신규 차트 요구는 L01–L07·L09의 8개이며 L08은 기존 K01 연결이다. 총 121개이고 기존 핵심 분모 81·113개 항목·감사 결과는 유지한다. 모든 새 요구·연결은 `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`, 공급처는 `UNDECIDED`다.
 - 검증은 현재 최종 문서 내용·원문 바이트·DOCX·상대 링크·기존 inventory 보존·개인정보 가드·repository-guard와 별도 독립 문서 검토를 대상으로 새로 수행한다. 위 최초 작업의 테스트·CI 결과는 현재 HEAD의 증거가 아니다.
 - READ_ONLY 유지. 상세 시안 OPEN 및 이관 배치 확인은 후속 문서 검토 사항이며 구현·배포·새 계산법·API 채택 권한을 부여하지 않는다.
+
+## PR #73 승인 병합 이후 문서 작업 재개 (2026-10-09)
+
+이 절이 최신 작업 기준이며 앞의 PR #69·#70 기준과 검증 기록은 당시 이력으로 보존한다. 기존 본문 바이트를 수정·삭제하지 않고 이 절만 끝에 추가한다.
+
+- 최신 사용자 지시: 「#73 병합을 승인합니다」와 「이전에 전달한 "Cockpit IA v1 공식화 + 차트 목록 보강 (문서 전용 PR)" 지시를 이어서 진행. 아직 시작하지 않았다면 지금 시작. 병합은 사용자 승인 대기」. PR #73만 승인 병합 대상이며 PR #72·다른 PR 병합은 승인되지 않았다.
+- 문서 기준 canonical: `13e025b0e545fb3da14c15ce065a6a8e4a368eb0` (PR #73 승인 병합). 기존 `docs/cockpit-ia-v1` 이력과 PR #72를 이어서 사용하며 force push·ruleset·AUTONOMY_MODE 변경을 하지 않는다.
+- 이번 추가 수정은 이 폴더의 `COCKPIT_IA_v1.md`, `DESIGN_SOURCE.md`, 본 영수증 3개뿐이다. 기존 전체 PR write-set 8개 문서 경계를 유지한다. 실행 코드·데이터·워크플로·DOCX·기존 차트 항목·감사 판정을 변경하지 않는다.
+- S11은 PR #70의 수동 입력·KRW와 PR #73의 선택형 기본 OFF Google 시트 직접 읽기·단일 readonly scope·메모리 토큰·기기 ID/범위·백업 제외·로그인 없는 붙여넣기를 기존 owner 기록 링크로 연결한다. 일반 앱 계정 로그인·계좌 연결·동기화와 시세 소스 인증을 구분한다. Alpha Vantage OFF, 한국투자증권·중계 서버 DEFERRED, 수동 유지·주문 없음은 그대로다.
+- IA 12화면·이관 확인39묶음, 차트 총121·핵심81·기존113, 신규 L01–L07·L09의 8개 및 L08→K01 연결을 유지한다. 신규 요구·연결은 `REQUIREMENT_IDENTIFIED_NOT_REAUDITED`, 공급처는 `UNDECIDED`다.
+- 실제 Google 로그인은 하지 않는다. 실제 스크립트·공개 사이트 CSP·390/1280px 기기 확인은 별도 실행 작업이며 이 문서 PR의 PASS로 재사용하지 않는다. 문서 병합·구현·배포는 사용자 승인을 기다린다.
+- 이번 문서 후보의 새 확인: 추가 수정 3개·전체 PR 문서 8개, 앞선 영수증 본문 prefix 보존, 과거 Markdown 3개 안내 한 줄 이후 원문 및 DOCX 바이트 보존, 12화면·이관39·차트121·기존113 항목 deep equality·핵심81·기존 baseline metrics·신규8/L08→K01 모두 PASS. 상대 링크7개·S11 절 anchor1개·PR #73 canonical owner 문서 링크3개가 실제 파일·절로 연결됨을 확인했다. `git diff --check` 통과.
+- 현재 docs 브랜치 이력·작업 파일 가드와 PR #73 canonical에 문서8개만 적용한 별도 staged 후보의 최신 개인정보·repository guard가 각각 PASS, violations `[]`, mode `READ_ONLY`다. 최신 가드 단위 테스트 132개 PASS. 실제 관측값 호출·실제 Google 로그인·화면 코드 수정 없이 실행했다.
+- 별도 읽기 전용 독립 문서 검토에서도 위 원문·inventory·요구사항 상태·인증 구분·Markdown 링크15개를 확인했고 material finding은 없었다. 새 게시 커밋의 native CI는 게시 후 따로 확인해야 하며 앞선 PR #72·#73의 테스트/CI 결과를 새 후보의 결과로 재사용하지 않는다.
