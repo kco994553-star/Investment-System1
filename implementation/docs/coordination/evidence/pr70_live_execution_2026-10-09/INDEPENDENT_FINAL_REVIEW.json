@@ -1,0 +1,167 @@
+{
+  "review": "Independent final PR70 review",
+  "reviewer": "/root/pr70_final_fresh_review",
+  "reviewed_at_utc": "2026-10-09T04:23:44.740076+00:00",
+  "identity": {
+    "base_commit": "d71243bcc79139149541f3627e8f227a32c463c5",
+    "head_commit": "85d181a3ec58a34851ac49f1787e6ba10ce928b3",
+    "head_tree": "2dde5e377da6b5f822146a39abf04762186f9bda",
+    "worktree": "/workspace/pr70-final-independent",
+    "detached": true,
+    "clean": true
+  },
+  "independence": {
+    "author_test_results_reused": false,
+    "own_detached_checkout": true,
+    "all_checks_run_fresh": true,
+    "browser_artifact_identity": "All 12 independently browser-tested file bytes exactly match a fresh build from final HEAD. Guard-only successor changes were independently reviewed and freshly retested.",
+    "repository_edits_or_commits": false,
+    "GitHub_mutations": false
+  },
+  "outcomes": {
+    "whole_final_diff_review": {
+      "status": "PASS",
+      "changed_paths": 62,
+      "guard_successor_diff_reviewed": true,
+      "protected_configuration_and_READ_ONLY_unchanged": true,
+      "public_catalog_and_data_pins_unchanged": [
+        "actual-catalog.json",
+        "data.json",
+        "entities.json"
+      ]
+    },
+    "full_python": {
+      "status": "PASS",
+      "tests": 839,
+      "subtests": 271,
+      "log": "final-python-full.log"
+    },
+    "focused_guard": {
+      "status": "PASS",
+      "tests": 122,
+      "subtests": 59,
+      "includes": "all exact registers, UTF-8/mode/prefix proof, committed parent history, final tree, index/worktree, evidence immutability, missing proof, native and redirected graft cases",
+      "log": "final-guard-focused.log"
+    },
+    "repository_privacy_guard": {
+      "status": "PASS",
+      "mode": "READ_ONLY",
+      "records": 62,
+      "violations": 0,
+      "receipt": "final-repository-guard.json"
+    },
+    "node": {
+      "status": "PASS",
+      "legacy_cases": 17,
+      "market_backup_cases": 34
+    },
+    "manual_browser": {
+      "status": "PASS",
+      "checks": 119,
+      "widths": [
+        390,
+        1280
+      ],
+      "locales": [
+        "ko-KR",
+        "en-US"
+      ],
+      "receipt": "manual/manual-quotes-browser.json",
+      "payload_files_written": 0,
+      "screenshots": "empty device only"
+    },
+    "legacy_actual_browser": {
+      "status": "PASS",
+      "checks": 40,
+      "receipt": "actual/device-actual-browser.json"
+    },
+    "pages_browser": {
+      "status": "PASS",
+      "checks": 10,
+      "routes": 10,
+      "widths": [
+        390,
+        1280
+      ],
+      "locales": [
+        "ko-KR",
+        "en-US"
+      ],
+      "exact_top_bottom_notices": true,
+      "official_free_key_link": true,
+      "API_NOT_SELECTED_OFF": true,
+      "keyless_manual_controls": true,
+      "receipt": "pages/pages-browser.json"
+    },
+    "additional_adversarial_browser": {
+      "status": "PASS",
+      "checks": 6,
+      "includes": "normal key-key and delete-save races; complete nineteen-row native/KRW weights; missing nineteenth price blocks denominator; reload and network privacy",
+      "receipt": "extra-browser.json",
+      "payload_or_screenshot_files_written": 0
+    },
+    "additional_storage_comparator_review": {
+      "status": "PASS",
+      "cases": 24,
+      "scope": "memory-only independent source probe of clone equality, cycles/alias topology, typed bytes and opaque fail-closed preservation"
+    },
+    "public_build_directory": {
+      "status": "PASS",
+      "files": 12,
+      "fresh_final_HEAD_build": true,
+      "identity_receipt": "final-build-identity.json"
+    },
+    "local_raw_tar": {
+      "status": "PASS",
+      "files": 12,
+      "archive": "final-local-pages-artifact.tar",
+      "transport": "exact normalized upload-action command shape",
+      "actual_GitHub_artifact": false
+    },
+    "additional_artifact_adversarial": {
+      "status": "PASS",
+      "cases": 8,
+      "archives": "memory-only",
+      "receipt": "extra-artifact.json"
+    },
+    "additional_graft_override": {
+      "status": "PASS",
+      "expected_fail_closed_exit": 2,
+      "receipt": "extra-graft.json"
+    },
+    "research_scope": {
+      "status": "PASS",
+      "API": "OFF",
+      "implementation": "NOT_APPROVED",
+      "KIS_relay": "DEFERRED",
+      "exact_17_plus_2_own_key_entitlements_and_terms": "UNCONFIRMED",
+      "19_le_25": "arithmetic only",
+      "demo_CORS": "research receipt level; not represented as actual own-key or device validation"
+    }
+  },
+  "blockers": {
+    "critical": [],
+    "important": [],
+    "minor": []
+  },
+  "resolved_finding": {
+    "issue": "Git grafts could hide a forbidden historical rewrite despite --no-replace-objects",
+    "status": "RESOLVED",
+    "fresh_proof": "122 guard tests incl native and redirected grafts plus independent env override fail-closed probe"
+  },
+  "readiness": "PASS",
+  "readiness_scope": "Exact final local PR70 code and review readiness for the authorized normal merge, subject to applicable native CI and exact remote-head checks.",
+  "external_verification_limits": {
+    "actual_GitHub_uploaded_artifact": "NOT independently downloaded/verified here; known File Service 403 limitation must not be converted to PASS. Native predeploy raw-tar check remains required.",
+    "public_deployed_12_file_hashes_and_browsers": "PENDING root post-merge verification",
+    "native_CI": "PENDING root observation"
+  },
+  "no_broad_closure_claims": [
+    "FPIA",
+    "PIT",
+    "scoring",
+    "Holdout",
+    "Chart source3/6",
+    "Platform1/9"
+  ]
+}

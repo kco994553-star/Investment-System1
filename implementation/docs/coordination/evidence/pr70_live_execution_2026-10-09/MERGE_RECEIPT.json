@@ -1,0 +1,13 @@
+{
+  "pr": 70,
+  "url": "https://github.com/kco994553-star/Investment-System1/pull/70",
+  "merged": true,
+  "merged_at": "2026-10-09T04:26:30Z",
+  "merged_sha": "011b75648f48f2890736d37c4a354f57004cf1f0",
+  "head": "1a816306a9d7e659201cf3e78b8d03df5c509483",
+  "base": "d71243bcc79139149541f3627e8f227a32c463c5",
+  "tree": "2dde5e377da6b5f822146a39abf04762186f9bda",
+  "merge_method": "normal PR merge; no force",
+  "approval": "CDR052",
+  "conditional_notice_satisfied_before_merge": true
+}

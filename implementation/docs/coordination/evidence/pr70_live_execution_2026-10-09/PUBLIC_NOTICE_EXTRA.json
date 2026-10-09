@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "exact_top_bottom_notices": true,
+  "screenshots": [
+    "personal-footer-390-ko-KR.png",
+    "personal-footer-1280-en-US.png"
+  ],
+  "screenshot_state": "DEVICE_EMPTY",
+  "external_or_data_requests": 0
+}

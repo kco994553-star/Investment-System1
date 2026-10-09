@@ -1,0 +1,235 @@
+{
+  "run_id": 37883891058,
+  "event": "push",
+  "head_sha": "011b75648f48f2890736d37c4a354f57004cf1f0",
+  "tree": "2dde5e377da6b5f822146a39abf04762186f9bda",
+  "conclusion": "SUCCESS",
+  "url": "https://kco994553-star.github.io/Investment-System1/",
+  "jobs": [
+    {
+      "id": 113669464264,
+      "name": "build",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 37883891058,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Full regression and public build/privacy tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Build only the public cockpit",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Check public output before browser verification",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Install browser validation dependency",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Project subpath, mobile/desktop screenshots and ACTUAL device flow",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Keep empty-device screenshots and result counts outside the site",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Fail closed immediately before Pages upload",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Upload only the web output folder",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        }
+      ]
+    },
+    {
+      "id": 113670328012,
+      "name": "deploy",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 37883891058,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Read Pages configuration without enabling or changing its source",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Download the immutable artifact from this exact build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Recheck actual uploaded archive immediately before public deployment",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Deploy the verified Pages artifact",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 11595457773,
+      "name": "cockpit-pages-verification",
+      "size_in_bytes": 694461,
+      "url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11595457773",
+      "archive_download_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11595457773/zip",
+      "expired": false,
+      "created_at": "2026-10-09T04:30:05Z",
+      "expires_at": "2027-01-07T04:26:32Z",
+      "updated_at": "2026-10-09T04:30:05Z",
+      "digest": "sha256:2e3a478667274b668027c0712df11de36b2aafad68fcef008652d12d4ece051e",
+      "workflow_run": {
+        "id": 37883891058,
+        "repository_id": 1379547477,
+        "head_repository_id": 1379547477,
+        "head_branch": "claude/investment-system-top500-validation-alrugm",
+        "head_sha": "011b75648f48f2890736d37c4a354f57004cf1f0"
+      }
+    },
+    {
+      "id": 11595432931,
+      "name": "github-pages",
+      "size_in_bytes": 98844,
+      "url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11595432931",
+      "archive_download_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/artifacts/11595432931/zip",
+      "expired": false,
+      "created_at": "2026-10-09T04:30:06Z",
+      "expires_at": "2026-10-10T04:30:05Z",
+      "updated_at": "2026-10-09T04:30:06Z",
+      "digest": "sha256:17d35ab99c57f4b3e4ac155ee939864b4da408906005e07385a70c3d52dac772",
+      "workflow_run": {
+        "id": 37883891058,
+        "repository_id": 1379547477,
+        "head_repository_id": 1379547477,
+        "head_branch": "claude/investment-system-top500-validation-alrugm",
+        "head_sha": "011b75648f48f2890736d37c4a354f57004cf1f0"
+      }
+    }
+  ],
+  "native_actual_immutable_uploaded_rawtar_guard": [
+    {
+      "files_scanned": 12,
+      "pages_artifact_guard": "PASS",
+      "violations": {}
+    }
+  ],
+  "independent_archive_download": "NOT_RUN; File Service403 limitation",
+  "pages_source_setting_changed_by_agent": false
+}

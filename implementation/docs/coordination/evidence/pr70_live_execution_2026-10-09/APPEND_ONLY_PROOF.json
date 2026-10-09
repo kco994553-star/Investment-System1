@@ -1,0 +1,11 @@
+{
+  "base_commit": "5b3db9f6f7d5f2cc9b6bb622cebf0fa2c48009fa",
+  "record": "CDR-053",
+  "prior_prefix_bytes": 149562,
+  "prior_prefix_sha256": "06dff28edd98eda8519996521887f9adeb5ae24a8ae5c48a369e29ee54f2f278",
+  "prefix_preserved": true,
+  "append_bytes": 3569,
+  "mode": "READ_ONLY",
+  "guard_rule_bypass": false,
+  "recorded_at_utc": "2026-10-09T04:34:19.684794+00:00"
+}

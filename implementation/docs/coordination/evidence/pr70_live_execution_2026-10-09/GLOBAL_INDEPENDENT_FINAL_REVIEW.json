@@ -1,0 +1,218 @@
+{
+  "verdict": "PASS",
+  "reviewer": "independent-global",
+  "base": "1f8229154f1e6e298509654db974c65ee726e0ab",
+  "head": "976049acfd88faffe7af9fc5d41a4fd65263d786",
+  "tree": "9a3c3c80f07cdde405a31bd3aa137aff95bd5ab9",
+  "timestamp_utc": "2026-10-09T04:21:09.282497+00:00",
+  "worktree": "/workspace/pr70-guard-independent",
+  "worktree_clean": true,
+  "changed_paths_reviewed": [
+    "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+    "implementation/docs/coordination/evidence/pr70_approved_2026-10-09/APPEND_ONLY_PROOF.json",
+    "implementation/docs/coordination/evidence/pr70_approved_2026-10-09/USER_DECISION.txt",
+    "implementation/docs/coordination/evidence/pr70_approved_2026-10-09/USER_DECISION_RECEIPT.json",
+    "implementation/docs/coordination/evidence/pr70_guard_revalidation_2026-10-09/INITIAL_INDEPENDENT_BLOCKED.json",
+    "implementation/docs/coordination/evidence/pr70_guard_revalidation_2026-10-09/pr70-graft-global-green.json",
+    "implementation/docs/coordination/evidence/pr70_guard_revalidation_2026-10-09/pr70-graft-global-red.json",
+    "implementation/tests/test_autonomy_gate_a_guard.py",
+    "implementation/tools/autonomy_gate_a_guard.py"
+  ],
+  "commands": [
+    {
+      "command": "git diff --check 1f8229154f1e6e298509654db974c65ee726e0ab HEAD",
+      "cwd": "/workspace/pr70-guard-independent",
+      "exit_code": 0,
+      "outcome": "PASS"
+    },
+    {
+      "command": "PYTHONPATH=src /workspace/cycle-venv/bin/python -m pytest -q -p no:cacheprovider --junitxml=/workspace/pr70-approved-cycle-evidence/independent-global/pytest.xml",
+      "cwd": "/workspace/pr70-guard-independent/implementation",
+      "exit_code": 0,
+      "outcome": "PASS",
+      "summary": {
+        "tests": 484,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "command": "/workspace/cycle-venv/bin/python implementation/tools/autonomy_gate_a_guard.py diff --base 1f8229154f1e6e298509654db974c65ee726e0ab",
+      "cwd": "/workspace/pr70-guard-independent",
+      "exit_code": 0,
+      "outcome": "PASS",
+      "mode": "READ_ONLY",
+      "records": 9,
+      "violations": 0
+    },
+    {
+      "command": "/workspace/cycle-venv/bin/python /workspace/pr70-approved-cycle-evidence/independent-global/real_git_probes.py",
+      "cwd": "/workspace/pr70-guard-independent",
+      "exit_code": 0,
+      "outcome": "PASS",
+      "cases": 41,
+      "matched_expected": 41,
+      "unexpected": []
+    }
+  ],
+  "requirements": {
+    "prefix": {
+      "old_length": 146873,
+      "new_length": 149562,
+      "suffix_length": 2689,
+      "exact_preservation": true,
+      "old_sha256": "cb4c7b69e279bb62da73f0c65c3c765dc757c486c227b5e40033db26276d98d1",
+      "cdr052_suffix_occurrences": 1,
+      "receipt_prefix_matches": true
+    },
+    "original_user": {
+      "bytes": 1286,
+      "sha256": "a4b271120225fb99a90fca8e8481baeee12f93c1c55e434c92c06264163b89bf",
+      "matches_expected_sha256": true,
+      "receipt_hash_and_bytes_match": true,
+      "preserved_from_initial_approved_commit": true
+    },
+    "config_unchanged": true,
+    "mode_unchanged": true,
+    "existing_frozen_and_evidence": {
+      "entries_checked": 337,
+      "unchanged_mode_type_blob": true
+    },
+    "initial_commit_frozen_and_evidence": {
+      "entries_checked": 340,
+      "unchanged_mode_type_blob": true
+    },
+    "new_evidence": {
+      "files_checked": 6,
+      "all_regular_100644_blobs": true,
+      "all_utf8": true,
+      "all_json_structures_valid": true
+    },
+    "all_three_registers": [
+      {
+        "path": "implementation/docs/coordination/COORDINATION_DECISION_REGISTER.md",
+        "same_mode_type": true,
+        "base_bytes_preserved": true,
+        "base_bytes": 146873,
+        "head_bytes": 149562
+      },
+      {
+        "path": "implementation/docs/coordination/PIW_DECISION_RECORDS.md",
+        "same_mode_type": true,
+        "base_bytes_preserved": true,
+        "base_bytes": 23927,
+        "head_bytes": 23927
+      },
+      {
+        "path": "implementation/src/investment_system/prompt_library/content/Investment_Prompt_Library_v1_Decision_History.md",
+        "same_mode_type": true,
+        "base_bytes_preserved": true,
+        "base_bytes": 11784,
+        "head_bytes": 11784
+      }
+    ],
+    "source_sha256": {
+      "implementation/tools/autonomy_gate_a_guard.py": "902a6b9947813343905236909201f256be13f3955f2f6b7697ad9ea4c6f7dd6f",
+      "implementation/tests/test_autonomy_gate_a_guard.py": "0bfcd37d2d432c056e0894289f2180a9abc067e28d1203c479bfe2a317ed3d18"
+    }
+  },
+  "protected_path_configuration": {
+    "immutable_exact_paths": 2,
+    "append_only_exact_paths": 3,
+    "append_only_prefixes": 1,
+    "config_blob_unchanged": true,
+    "autonomy_mode_bytes_unchanged": true,
+    "no_new_skip_or_waiver": true
+  },
+  "blockers": [],
+  "resolved_findings": [
+    {
+      "severity": "P1",
+      "title": "Legacy native/environment-directed grafts concealed forbidden intermediate rewrite history",
+      "initial_head": "4e4db91e1f539b5fa7910f8e7487fcfb193a7a45",
+      "initial_verdict": "BLOCKED",
+      "initial_report": "initial-4e4db91/FINAL_REVIEW.json",
+      "resolution": "Before comparison resolution, final guard rejects presence of GIT_GRAFT_FILE and a native graft path resolved through Git, including linked-worktree common-directory metadata. No process/global environment mutation.",
+      "fresh_graft_cases": [
+        {
+          "name": "rewrite_restore_without_graft_control",
+          "expected": "REJECT",
+          "observed": "REJECT",
+          "returncode": 1,
+          "reported_state": "FAIL",
+          "violation_count": 1,
+          "matches_expectation": true
+        },
+        {
+          "name": "legacy_graft_hides_forbidden_history",
+          "expected": "REJECT",
+          "observed": "REJECT",
+          "returncode": 2,
+          "reported_state": "FAIL_CLOSED",
+          "violation_count": null,
+          "matches_expectation": true,
+          "raw_history_commits": 2,
+          "git_grafted_history_commits": 1,
+          "is_shallow": "false",
+          "head_object_unchanged": true
+        },
+        {
+          "name": "removing_graft_restores_rejection_control",
+          "expected": "REJECT",
+          "observed": "REJECT",
+          "returncode": 1,
+          "reported_state": "FAIL",
+          "violation_count": 1,
+          "matches_expectation": true
+        },
+        {
+          "name": "environment_graft_override_hides_forbidden_history",
+          "expected": "REJECT",
+          "observed": "REJECT",
+          "returncode": 2,
+          "reported_state": "FAIL_CLOSED",
+          "violation_count": null,
+          "matches_expectation": true,
+          "head_object_unchanged": true
+        },
+        {
+          "name": "linked_worktree_without_graft_rejects_bad_raw_history",
+          "expected": "REJECT",
+          "observed": "REJECT",
+          "returncode": 1,
+          "reported_state": "FAIL",
+          "violation_count": 1,
+          "matches_expectation": true
+        },
+        {
+          "name": "linked_worktree_common_directory_graft_rejected",
+          "expected": "REJECT",
+          "observed": "REJECT",
+          "returncode": 2,
+          "reported_state": "FAIL_CLOSED",
+          "violation_count": null,
+          "matches_expectation": true,
+          "native_graft_file_is_in_common_directory": true,
+          "fails_closed": true
+        }
+      ]
+    }
+  ],
+  "proof_review": {
+    "all_committed_parent_edges_in_branch_and_merge_side_history": true,
+    "final_tree_index_and_tracked_worktree_states_checked_separately": true,
+    "append_proof_requires_utf8_no_nul_regular_blob_same_git_mode": true,
+    "old_bytes_preserved_by_exact_byte_prefix_comparison": true,
+    "existing_evidence_entries_have_no_append_exception": true,
+    "missing_or_ambiguous_proof_fails_closed": true,
+    "native_and_env_graft_metadata_fails_closed": true
+  },
+  "independence": "Fresh detached exact-commit worktree. Source diff and all changed paths inspected independently; original source bytes and prior byte prefix hashed directly; full suite, actual branch guard, and independent synthetic realGit CLI probes rerun here. Existing author APPEND_ONLY_PROOF/RED/GREEN results were not used as verification evidence.",
+  "limitations": [
+    "Local execution only; remote GitHub Actions, branch/ruleset enforcement, and merge operations were not performed.",
+    "Preservation-only review of this Global guard; canonical privacy scanner behavior is outside this task.",
+    "Adversarial fixtures use synthetic public text and standard Git executable/filesystem trust. Arbitrary Git executable/object replacement and concurrent malicious filesystem mutation were not modeled.",
+    "Graft metadata presence is conservatively rejected, including environment override presence, so callers using graft-based history must remove it before obtaining a PASS."
+  ]
+}

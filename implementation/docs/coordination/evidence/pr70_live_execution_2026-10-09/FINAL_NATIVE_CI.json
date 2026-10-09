@@ -1,0 +1,179 @@
+{
+  "pr": 70,
+  "head": "1a816306a9d7e659201cf3e78b8d03df5c509483",
+  "tree": "2dde5e377da6b5f822146a39abf04762186f9bda",
+  "base": "d71243bcc79139149541f3627e8f227a32c463c5",
+  "all_five": "SUCCESS",
+  "workflow_runs": [
+    {
+      "id": 37883468603,
+      "name": "web-research-guard",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 22,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37883468603/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37883468603/logs",
+      "workflow_id": 373779791
+    },
+    {
+      "id": 37883468570,
+      "name": "web-state-presentation",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 20,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37883468570/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37883468570/logs",
+      "workflow_id": 373796396
+    },
+    {
+      "id": 37883468598,
+      "name": "autonomy-gate-a",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 40,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37883468598/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37883468598/logs",
+      "workflow_id": 375325948
+    },
+    {
+      "id": 37883468552,
+      "name": "web-mvp-validation",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 47,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37883468552/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37883468552/logs",
+      "workflow_id": 369058605
+    },
+    {
+      "id": 37883468589,
+      "name": "cockpit-pages",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 9,
+      "jobs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37883468589/jobs",
+      "logs_url": "https://api.github.com/repos/kco994553-star/Investment-System1/actions/runs/37883468589/logs",
+      "workflow_id": 379167989
+    }
+  ],
+  "pages_jobs": [
+    {
+      "id": 113668144977,
+      "name": "build",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 37883468589,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Full regression and public build/privacy tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Build only the public cockpit",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Check public output before browser verification",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Install browser validation dependency",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Project subpath, mobile/desktop screenshots and ACTUAL device flow",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Keep empty-device screenshots and result counts outside the site",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Fail closed immediately before Pages upload",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Upload only the web output folder",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Post Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25
+        }
+      ]
+    },
+    {
+      "id": 113668983597,
+      "name": "deploy",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 37883468589,
+      "logs_url": null,
+      "steps": null
+    }
+  ],
+  "merge_authorized": "CDR052; exact notices added and verified",
+  "api": "OFF",
+  "guard_bypass": false
+}
