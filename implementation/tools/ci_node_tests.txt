@@ -19,3 +19,4 @@ watchlist_node_test.js
 private_history_contract_test.mjs
 private_subset_node_test.js
 ops_status_node_test.js
+global_language_search_test.js

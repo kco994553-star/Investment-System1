@@ -23,3 +23,13 @@ thirteenf_filings_browser_test.js
 ops_status_browser_test.js
 company_portfolio_screens_browser_test.js
 leaderboard_profile_screens_browser_test.js
+technical_macro_validation_browser_test.js
+app_nav_ia_browser_test.js
+device_actual_browser_test.js
+google_sheet_storage_browser_test.js
+manual_quotes_browser_test.js
+prompt_field_guide_browser_test.js
+web_mvp_browser_test.js
+web_research_guard_browser_test.js
+web_state_presentation_browser_test.js
+global_language_search_browser_test.js
