@@ -4,7 +4,7 @@
 
 ## 기준 HEAD·운영 경계
 
-- canonical: `claude/investment-system-top500-validation-alrugm`. 확인한 원격 HEAD **`57549cddb2470570875806cbbb1c1394ed5fe0e8`** (#129 병합 후). 이 상태 문서 PR 자체의 병합 HEAD는 GitHub에서 확인한다.
+- canonical: `claude/investment-system-top500-validation-alrugm`. 확인한 원격 HEAD **`8ff194cc2661ac555d207775bd20626cdab90b9f`** (#134 병합 후). 이 상태 문서 PR 자체의 병합 HEAD는 GitHub에서 확인한다.
 - 코덱1 #98 확인 후 승인 순서 #104→#105→#106, 이어 #108·#110·#112를 병합했다. 이번 로드맵 **#118도 병합**했고 #103·#107은 지시대로 닫았다. #109는 이미 CLOSED이며 코덱1에게 종료 유지 확인만 요청했다.
 - 코덱1 #113·#114·#116·#117·#119·#120 병합을 metadata에서 확인했다. #119는 candle/MA/기기 AVG, #120은 비공개 Trades1회 읽기·RAM B/S 표시다. 코드와 실제 본인 기기 운영 성공은 구분한다.
 - 코덱2 수정은 허용된 Python src(웹 제외)·관련 tests/tools·문서다. Worker/web_assets/workflows·Frozen/TARGET·가중치·AUTONOMY_MODE·ruleset·force push 변경 없음. 실제 키/계정·가격/환율·provider 관측치 수집·배포·Holdout 사용 없음. 이번 사용자 승인에 따라 비공개 Universe A열의 code 504개만 1회 읽어 코드 전용 자산으로 제공했다; 시트 ID/URL·B/C열은 기록하거나 읽지 않았다.
@@ -46,6 +46,12 @@ canonical3e99e061에 이 대기열의 Python 코드·합성 fixture·테스트�
 - **Macro:** #128 정부 screen 함수는8×6 raw evidence·Decimal문자열·취득 cutoff를 제공하지만 공개 producer/앱 연결은 없다. GDP 수준·CPI 지수→기존 growth/inflation fraction 정의 미정으로 실제 국면은 NOT_AVAILABLE다. 후속4축 exact series/basis·모든 새6상태 규칙은 미채택이며 파서는 명시적 binding만 받는다. Fed는 확인된 DataSet fragment만 지원하고 full-feed/ZIP 추출 계보는 미검증이다. FRED/ALFRED 차단 유지.
 - **실적/13F:** SEC 제출 패턴은 확정 실적 발표일이 아니다.13F NEW/ADD/REDUCE/EXIT는 공개 보고 수량 변화이며 실제 매매·현재 보유 추론이 아니다. 비공개·추가 정정·부분 표·비연속분기·미확인 귀속은 비교 차단한다. 투자자 기본 목록은 없고 사용자가 공급한다.
 - **기기:** #116 통합 백업·#117 Research JS·#119 candle/MA·#120 private Trades 코드와 실기기 검증을 구분한다. M3 개인 선정·가격·시총·순위·Universe ID·키/토큰은 공개/새 백업에 넣지 않는다. M3 기본N20·불일치10%와 근거 있는 SHARE_CLASS_BASIS 표시만/자동 보정 없음은 확정이다.
+
+## 긴급 SEC daily 진단
+
+사용자 즉시 자체 병합 승인에 따라 고정 코드·HTTP 상태·fetch/parse/normalize·회사 순번만 노출하고 부분 실패를 분리했다. [연결 계약](implementation/docs/daily_data_pipeline/SEC_COLLECTION_DIAGNOSTICS.md). 전체1918개+358subtests 통과·실패0(45.14초), 관련86개·reader review 중요 미해결0. v1 전체 성공 유지, 일부 성공은 strict v2 LIVE/NOT_AVAILABLE17행, 전부 실패면 exit1·이전 파일 보존. 실행 환경 SEC_USER_AGENT 미설정으로 실제 Actions와 동일 조건의 재현은 미실행; UA/HTTP 원인은 아직 미확정. 워크플로·웹·Worker 수정 없음.
+
+유형/GSQ-017은 #135 승인 대기, 테마 #136 확인 대기 제안·자동NA. 화면용 공개 JSON CLI·JS 이식 벡터가 새 최우선이고, DCF 작업은 그 뒤 계속한다. EDINET 후순위·DART 등록 알림 전 비착수.
 
 ## 다음 할 일5개 — GSQ-017 대기열
 

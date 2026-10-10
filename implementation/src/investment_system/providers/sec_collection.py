@@ -38,6 +38,11 @@ RETRY_STATUSES = frozenset({429, 500, 502, 503, 504})
 class SecCollectionError(OSError):
     """Fixed value-free error codes suitable for the existing batch runner."""
 
+    def __init__(self, code, *, stage=None, http_status=None):
+        super().__init__(code)
+        self.stage = stage if stage in ('fetch', 'parse', 'normalize') else None
+        self.http_status = http_status if type(http_status) is int and 400 <= http_status <= 599 else None
+
 
 @dataclass(frozen=True)
 class SecResponse:
@@ -257,12 +262,14 @@ class SecCollectionClient:
             if len(response.body) > MAX_BODY_BYTES:
                 raise SecCollectionError("SEC_RESPONSE_TOO_LARGE") from None
             if response.status == 200:
-                _validate_body(response.body, cik)
+                try: _validate_body(response.body, cik)
+                except SecCollectionError as error:
+                    raise SecCollectionError(error.args[0], stage='parse') from None
                 return response.body
             if response.status not in RETRY_STATUSES:
-                raise SecCollectionError(f"SEC_HTTP_{response.status}") from None
+                raise SecCollectionError(f"SEC_HTTP_{response.status}", stage="fetch", http_status=response.status) from None
             if attempt == MAX_ATTEMPTS - 1:
-                raise SecCollectionError("SEC_HTTP_RETRIES_EXHAUSTED") from None
+                raise SecCollectionError("SEC_HTTP_RETRIES_EXHAUSTED", stage="fetch", http_status=response.status) from None
             self._pause(self._retry_wait(response.retry_after, 2.0 ** (attempt + 1)))
         raise SecCollectionError("SEC_TRANSPORT_FAILED") from None
 
