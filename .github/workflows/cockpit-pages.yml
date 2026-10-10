@@ -31,6 +31,7 @@ jobs:
         env:
           NODE_PATH: ${{ runner.temp }}/pages-browser/node_modules
           PAGES_COCKPIT_URL: http://127.0.0.1:8990/
+          PRIVATE_HISTORY_URL: http://127.0.0.1:8990/
           PAGES_COCKPIT_EVIDENCE_DIR: ${{ runner.temp }}/pages-browser-evidence
         run: |
           npm install --prefix "$RUNNER_TEMP/pages-browser" playwright@1.58.2
@@ -38,11 +39,13 @@ jobs:
           node implementation/tools/device_actual_node_test.js
           node implementation/tools/device_market_node_test.js
           node implementation/tools/google_sheet_core_node_test.js
+          node implementation/tools/google_sheet_auth_node_test.js
           node implementation/tools/private_history_node_test.js
           python -m http.server 8990 --bind 127.0.0.1 --directory "$RUNNER_TEMP/public-cockpit" > "$RUNNER_TEMP/pages-server.log" 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID"' EXIT
           node implementation/tools/pages_cockpit_browser_test.js
+          node implementation/tools/private_history_browser_test.js
           (cd implementation && PYTHONPATH=src python -m tests.build_sec_m2_candidate_fixture --out "$RUNNER_TEMP/m2-test-sites")
           python -m http.server 8992 --bind 127.0.0.1 --directory "$RUNNER_TEMP/m2-test-sites" > "$RUNNER_TEMP/m2-test-server.log" 2>&1 &
           M2_SERVER_PID=$!
