@@ -100,12 +100,14 @@ async function exportsPrivacy(page) {
   }, [...PRIVATE_CANARIES, ORIGIN, STORAGE_KEY, 'adjusted_close']);
   try {
     await page.locator('#export').click();
+    await page.waitForFunction(() => window.__historyExportAudit.length === 1);
     verify(await page.evaluate(async () => window.__historyExportAudit.length === 1 && (await Promise.all(window.__historyExportAudit)).every(Boolean)));
     await navigate(page, 'actual');
     const actual = page.locator('#device-actual-root');
     await actual.locator('[data-action="save"]').click();
     await actual.locator('[data-actual-notice][data-notice="saved"]').waitFor();
     await actual.locator('[data-action="export"]').click();
+    await page.waitForFunction(() => window.__historyExportAudit.length === 2);
     verify(await page.evaluate(async () => window.__historyExportAudit.length === 2 && (await Promise.all(window.__historyExportAudit)).every(Boolean)));
     verify(await persistentPrivacy(page));
   } finally { await page.evaluate(() => { window.__historyRestoreExport(); delete window.__historyRestoreExport; delete window.__historyExportAudit; }); }
