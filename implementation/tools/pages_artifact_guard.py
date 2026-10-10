@@ -31,7 +31,10 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "profile-defaults.js": "c23dbc3b30f1638864bf2d55c0e0baa357ecfe3d16f2554ffe6921252505741b",
+    "sec-m3-adapter.js": "f3962d7283ae0e8731ad66ee23652d5f8c9e88f2cd4050b70b4cd1048956d6e5",
+    "private-subset.js": "5dfa945113a84ec8fde2cb2020f71343e1cd453a5de41771165a0a8b531a6fec",
+    "engine-preview.js": "47abbaa77101f7c33fe2b741d340c63e1a41aaaf11fdbd475a4cb0ea72aca7fb",
+    "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
     "device-profiles.js": "5e2ddb99ca448647ad8434c2a80b7801aa4034a293e462828c0c765437b99fcf",
     "public-screens.js": "0c736310a42da10c1482b1c1a0b80fc59e72e5dda6c93b48802b8cb22554186f",
     "pwa.js": "f8d5df267d323fd465821416f1825f38d4065030ec5368b7a37bfc4ed875affd",
@@ -59,7 +62,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "fc7c6fa6f477752cf38386612e19c33087602a52334f34b181b0e610d23f16b6",
+    "index.html": "15702492fe21854be79953d49c95c5878be1aeb9c83ef131e309b76ad120832e",
     "locale.js": "0e27312c7885dd1edbaf5c5eed939ba4b642695e5541653a21c786dcff9089fc",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",
