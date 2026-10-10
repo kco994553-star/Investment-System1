@@ -52,7 +52,7 @@
  function mount(host,data,options={}){
   if(!host)return;const en=options.locale==='en-US',doc=host.ownerDocument,el=(tag,text,attrs={})=>{const node=doc.createElement(tag);if(text!==undefined)node.textContent=text;for(const [k,v] of Object.entries(attrs))node.setAttribute(k,v);return node;};
   const card=el('section',undefined,{class:'card','data-sec-reported':''});card.append(el('h2',en?'SEC reported inputs':'SEC 공개 입력'),el('p',en?'Reported observations · No prices · No share-class corrections':'공시 원자료 · 가격 미포함 · 주식 종류 보정 없음',{class:'small'}));
-  const rows=options.companyId?(data?.companies[options.companyId]?[data.companies[options.companyId]]:[]):Object.values(data?.companies||{});
+  const rows=options.companyId?(data?.companies[options.companyId]?[data.companies[options.companyId]]:[]):Object.values(data?.companies||{}).filter(r=>!options.companyIds||options.companyIds.includes(r.company_id));
   if(!rows.length)card.append(el('p',en?'NOT_AVAILABLE · SEC input is not connected.':'NOT_AVAILABLE · SEC 공개 입력이 연결되지 않았습니다.',{class:'empty','data-sec-unavailable':''}));
   for(const row of rows){const article=el('article',undefined,{'data-sec-company':row.company_id});const link=el('a',row.company_id.toUpperCase(),{href:'#company/'+encodeURIComponent(row.company_id)});article.append(link,el('p',row.status+(row.reason_codes.length?' · '+row.reason_codes.join(' · '):'')));
    if(row.acquired_at)article.append(el('p',(en?'Acquired: ':'수집: ')+row.acquired_at,{class:'meta'}));
