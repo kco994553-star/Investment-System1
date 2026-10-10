@@ -1,6 +1,6 @@
 # 현행 TechnicalEngine 세 계산 — RAM 참조 구현
 
-2026-10-10 사용자 결정으로 #111의 범위를 **전체 returns 모집단형 표준편차·마지막 return·마지막 5개 합**으로 확정했다. #105의 [daily_input.py](../../src/investment_system/technical/daily_input.py) 검증을 재사용하며 기존 engine·임계값·snapshot·QGV 계약을 바꾸지 않는다. Research 표시 지표는 GSQ-015의 별도 PR이며 이 세 계산의 입력이 아니다.
+2026-10-10 사용자 결정으로 #111의 범위를 **전체 returns 모집단형 표준편차·마지막 return·마지막 5개 합**으로 확정했다. #105의 [daily_input.py](../../src/investment_system/technical/daily_input.py) 검증을 재사용하며 기존 engine·임계값·snapshot·QGV 계약을 바꾸지 않는다. Research 표시 runtime·GSQ-015는 별도 #115이며 이 세 계산의 입력이 아니다. 최신 대기열에 따라 #111은 기기 구현 대조용 독립 Python 참조 도구·합성 JSON 벡터를 함께 제공한다.
 
 ## 구현 계약
 
@@ -24,4 +24,4 @@
 PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src:. python -m pytest -p no:cacheprovider -q tests/test_technical_engine_calculations.py tests/test_technical_daily_input.py
 ```
 
-코드 PR #111은 구현/검증 후 **사용자 병합 승인 대기**다. 승인 없이 병합하지 않는다. SMA/EMA/RSI/MACD/Bollinger/ATR의 Research 표시 구현·기본값은 별도 PR에 한정하고 Model/TSV/QGV에 연결하지 않는다.
+최신 사용자 선택에 따라 26E 미변경 PR은 최종 실행 필수 체크 전부 성공·실패0일 때 자체 병합 가능하다. 현재 canonical의 앱 CSP 기대값 회귀가 남아 있어 #111은 전체 suite 성공으로 표시하지 않는다. SMA/EMA/RSI/MACD/Bollinger/ATR의 Research 표시 구현·기본값은 별도 PR에 한정하고 Model/TSV/QGV에 연결하지 않는다.

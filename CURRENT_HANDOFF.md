@@ -5,9 +5,9 @@
 ## 기준 HEAD
 
 - 기본 브랜치: `claude/investment-system-top500-validation-alrugm`.
-- 확인한 원격 canonical HEAD: **`67e9d4f28cffa2f62c343ed0f7cafe5face0eb19`** (#117 병합 후). 이 현황 문서 PR 자체의 병합 HEAD는 해당 GitHub PR에서 확인한다.
+- 확인한 원격 canonical HEAD: **`eb3c86aebc4eb1bf0ba7708786fa9baa0fa46810`** (#118 병합 후). 이 현황 문서 PR 자체의 병합 HEAD는 해당 GitHub PR에서 확인한다.
 - 코덱1 #98 병합 확인 후 사용자 승인 순서 #104→#105→#106을 병합했고 #108 GSQ-014, #110 근거 있는 SHARE_CLASS_BASIS, #112 원기관 Macro 후속4축 출처 조사가 병합됐다. 각 코덱2 병합의 최종 실행 체크·단계 성공·실패0을 확인했다.
-- #95·#96·#97·#100·#101은 병합된 기준선이다. #102·#113·#114·#116·#117도 GitHub metadata에서 병합을 확인했다. 코덱1 변경분을 수정하지 않고 현재 상태에 반영한다. Frozen·원본 TARGET·공개 가격 차단 유지, force push·ruleset·AUTONOMY_MODE 변경 없음.
+- #95·#96·#97·#100·#101은 병합된 기준선이다. #102·#113·#114·#116·#117·#118도 GitHub metadata에서 병합을 확인했다. 코덱1 변경분을 수정하지 않고 현재 상태에 반영한다. Frozen·원본 TARGET·공개 가격 차단 유지, force push·ruleset·AUTONOMY_MODE 변경 없음.
 - #111·#115는 **열림·미병합**이다. 최신 사용자 선택에 따라26E 미변경 PR은 최종 필수 체크 성공·실패0이면 자체 병합 가능하며, GSQ-015 기록을 포함한 #115는 별도 승인 대기다. 최신 코드가 canonical에 들어갔다고 간주하지 않는다.
 
 ## 배포·입력 상태
@@ -24,7 +24,7 @@
 
 | PR | 상태·내용 |
 | --- | --- |
-| [#111](https://github.com/kco994553-star/Investment-System1/pull/111) | 현행 engine 세 계산·#105 연결 완성. 관련62개 통과·독립 리뷰 중대 지적 없음·최종 CI6개/실행53단계 성공. 전체1502통과·1실패·subtests358(아래 CSP 장애). 미병합·회귀 해소/최종 체크 대기(조건부 자체 병합 가능). |
+| [#111](https://github.com/kco994553-star/Investment-System1/pull/111) | 현행 engine 세 계산·#105 연결 완성. 독립 Python 참조/합성 전체 JSON 추가. 관련103개 통과·TA-Lib336개/JS8120값 대조 실패0. 전체1543통과·1실패·subtests358(아래 CSP 장애). 미병합·회귀 해소/최종 체크 대기(조건부 자체 병합 가능). |
 | [#115](https://github.com/kco994553-star/Investment-System1/pull/115) | 독립 Research 표시 지표·GSQ-015. 관련89개 통과·독립 리뷰 지적 없음·최종 CI6개/실행53단계 성공. 전체1529통과·1실패·subtests358(같은 CSP 장애). 미병합·승인 대기. |
 | [#103](https://github.com/kco994553-star/Investment-System1/pull/103) | 사용자 지시로 닫음. canonical 단일 인수인계가 최신 현황을 반영하므로 이전 현황 초안을 이력으로 보존. |
 | [#107](https://github.com/kco994553-star/Investment-System1/pull/107) | 사용자 지시로 닫음. 정식 M3 #106·#108·#110 이후 이전 계약 테스트 초안을 정리하며 미병합 브랜치/이력 보존. |
@@ -49,7 +49,7 @@
 아래 순서로 항목당 PR1개를 보존하고 중간 항목 보고 없이 완료/필수 결정 시 묶어 보고한다. **26E 결정 기록 변경이 없는 PR은 실행된 필수 체크 전부 성공·실패0이면 자체 병합 가능**하다. 이 선택은 force push·ruleset·AUTONOMY_MODE·워크플로/Worker/웹 수정 허가가 아니다.
 
 1. 실행 로드맵 v2·#103/#107 종료(이번 문서 PR), #109는 이미닫힘·코덱1 확인 요청만.
-2. #111 현행 세 계산 마무리·차트 지표 Python 참조/코덱1 JSON 합성 벡터. 기존 #115 표시 지표·26E 기록의 분리 경계는 최신 요청과 조율한다.
+2. #111 현행 세 계산 마무리·차트 지표 Python 참조/코덱1 JSON 합성 벡터. 기존 #115 표시 runtime·26E 기록은 분리 유지하고 #111 참조는 독립 합성 검증 도구로 제공한다.
 3. US17 SEC companyfacts/submissions 취득 모듈·Secret 이름 참조·retry/rate limit·실행 진입점(워크플로는 코덱1), 실제 호출/Secret 출력 없음.
 4. SEC 10-Q/10-K 제출 패턴의 **예상 시기**(확정 실적 발표일 아님), 이어서 기존 정의만 사용하는 가격 인자/RAM-only Vv1 순수 함수·미확정 요소 NOT_AVAILABLE.
 5. 공식v1 비중 복사본/사용자 비중·합100·결측수·PREVIEW 재계산, 4축→기존 Macro 엔진/정부 자료 화면JSON·후속4축 입력, 13F parser/분기변화 순으로 각각 별도 PR.
