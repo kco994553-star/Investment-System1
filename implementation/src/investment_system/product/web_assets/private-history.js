@@ -90,6 +90,7 @@
   function status(state,code) { state.status.dataset.code=code; state.status.textContent=code==='OFF' ? words(state,'OFF · 가격 호출 없음','OFF · No price requests') : code; }
   function clear(state) {
     state.revision++; if (state.controller) { state.controller.abort(); state.controller=null; }
+    if(state.tradeController){state.tradeController.abort();state.tradeController=null;}state.trades=null;state.tradeBusy=false;state.tradeMessage='';
     state.data=null; state.indicators=null; state.average=null; state.results.replaceChildren(); state.busy=false;
   }
   function available(state) {
@@ -103,7 +104,7 @@
   function update(state) {
     if (!mounted(state)) return;
     const code=available(state);
-    state.fetch.disabled=state.busy || code!=='READY'; state.range.disabled=state.busy || !state.enabled || !state.symbol;
+    state.fetch.disabled=state.busy || code!=='READY'; if(state.tradeButton)state.tradeButton.disabled=state.tradeBusy||state.busy||code!=='READY'||!state.data; state.range.disabled=state.busy || !state.enabled || !state.symbol;
     if (!state.busy) status(state,code);
   }
   function renderData(state) {
@@ -117,8 +118,9 @@
       button.addEventListener('click',()=>{if(state.selected.has(id))state.selected.delete(id);else state.selected.add(id);renderData(state);state.results.querySelector('[data-chart-overlay="'+id+'"]').focus();});buttons.append(button);
     }
     state.results.append(buttons,node(state,'p','RESEARCH_DISPLAY_ONLY · '+words(state,'모델 채택 아님 · warm-up·결측·미완결 세션은 선 없음','Not a model · No lines during warm-up, missing or incomplete sessions')));
-    state.view.TechnicalChart.render(state.results,{bars:data.bars,indicators:state.indicators,selected:state.selected,average:state.average,locale:state.locale});
+    state.view.TechnicalChart.render(state.results,{bars:data.bars,indicators:state.indicators,selected:state.selected,average:state.average,locale:state.locale,trades:state.trades?state.view.PrivateTrades.markers(state.trades,data.bars,data.symbol,data.timezone):[]});
     state.results.append(node(state,'p',state.average===null?'AVG · NOT_AVAILABLE':words(state,'AVG · 기기 보유의 평균 매입원가 · '+data.currency,'AVG · Device holding average cost · '+data.currency),{'data-average-status':state.average===null?'NOT_AVAILABLE':'AVAILABLE'}));
+    state.results.append(node(state,'p',state.tradeMessage||words(state,'내 거래 · 아직 불러오지 않음','My trades · Not loaded'),{'data-trades-status':''}));
     const research=node(state,'details'),title=node(state,'summary',words(state,'연구용 지표 · RAM 전용','Research indicators · RAM only')),values=node(state,'dl');
     for(const item of state.indicators.indicators){values.append(node(state,'dt',item.indicator_id),node(state,'dd',item.values.at(-1)===null?'NOT_AVAILABLE · '+item.unavailable_reasons.at(-1):String(item.values.at(-1)),{'data-research-value':item.indicator_id}));}
     research.append(title,values);state.results.append(research);
@@ -149,8 +151,20 @@
       if (!mounted(state) || state.revision!==revision) return;
       state.data=null;state.results.replaceChildren();status(state,CODES.has(error.message) ? error.message : 'YAHOO_UNAVAILABLE');
     } finally {
-      if (mounted(state)&&state.revision===revision) {state.busy=false;state.controller=null;state.range.disabled=false;state.fetch.disabled=available(state)!=='READY';if (state.data) status(state,'READY');}
+      if (mounted(state)&&state.revision===revision) {state.busy=false;state.controller=null;state.range.disabled=false;state.fetch.disabled=available(state)!=='READY';if (state.data) {status(state,'READY');state.tradeButton.disabled=state.tradeBusy||available(state)!=='READY';}}
     }
+  }
+  async function loadTrades(state) {
+    if(!state.data||state.tradeBusy||available(state)!=='READY')return;
+    const revision=state.revision,sessionRevision=state.session.revision(),current=()=>mounted(state)&&state.revision===revision&&state.session.revision()===sessionRevision&&state.session.state().connected;
+    state.tradeBusy=true;state.tradeButton.disabled=true;state.tradeController=new state.view.AbortController();
+    try {
+      const parsed=await state.view.PrivateTrades.read(state.view,state.session,{signal:state.tradeController.signal});
+      if(!current())return;state.trades=parsed;
+      const matching=parsed.rows.filter(r=>r.state==='USER_DEVICE_ONLY'&&r.symbol===state.symbol),markers=state.view.PrivateTrades.markers(parsed,state.data.bars,state.symbol,state.data.timezone);
+      state.tradeMessage='B/S · '+markers.length+' · '+(parsed.row_limit_reached?'ROW_LIMIT_REACHED':parsed.rows.some(r=>r.state==='NOT_AVAILABLE')?'TRADES_PARTIAL':'READ_ONLY')+(matching.length>markers.length?' · UNMATCHED_SESSION '+(matching.length-markers.length):'');
+    }catch(error){if(!current())return;state.trades=null;state.tradeMessage=['TRADES_SOURCE_REQUIRED','TRADES_SOURCE_INVALID','SOURCE_TOO_LARGE','AUTH_REQUIRED','CANCELED'].includes(error.message)?error.message:'TRADES_READ_FAILED';}
+    finally{if(current()){state.tradeBusy=false;state.tradeController=null;state.tradeButton.disabled=false;renderData(state);}}
   }
   function dispose(state) {
     if (state.disposed) return;
@@ -159,16 +173,18 @@
   }
   async function mount(host,options={}) {
     const doc=host.ownerDocument,view=doc.defaultView,config=options.config||{};
-    const state={host,doc,view,locale:options.locale,symbol:symbolFor(options.companyId),enabled:config.privateHistoryEnabled===true,approvedOrigin:config.privateHistoryWorkerOrigin||'',revision:0,data:null,indicators:null,average:null,getAverage:options.getAverage,selected:new Set(['SMA_5','SMA_20','SMA_60','SMA_120','AVG']),busy:false,disposed:false,controller:null};
+    const state={host,doc,view,locale:options.locale,symbol:symbolFor(options.companyId),enabled:config.privateHistoryEnabled===true,approvedOrigin:config.privateHistoryWorkerOrigin||'',revision:0,data:null,indicators:null,average:null,getAverage:options.getAverage,trades:null,tradeBusy:false,tradeMessage:'',tradeController:null,selected:new Set(['SMA_5','SMA_20','SMA_60','SMA_120','AVG']),busy:false,disposed:false,controller:null};
     active.add(state);
     const root=node(state,'section',undefined,{class:'card private-history','data-private-history':''});
     root.append(node(state,'h2',words(state,'가격 차트 · 비공개 일별 이력','Price chart · Private daily history')));
     state.status=node(state,'p','',{role:'status','data-history-status':''});state.range=node(state,'select',undefined,{'data-history-range':'','aria-label':words(state,'가격 기간','History range')});
     for (const range of RANGES) state.range.append(node(state,'option',range,{value:range}));state.range.value='1y';
     state.fetch=node(state,'button',words(state,'가격 불러오기','Load prices'),{type:'button','data-history-action':'fetch'});
+    state.tradeButton=node(state,'button',words(state,'내 거래 B/S 불러오기','Load my B/S trades'),{type:'button','data-history-action':'trades'});
     const close=node(state,'button',words(state,'가격 지우기','Clear prices'),{type:'button','data-history-action':'close'});
     state.results=node(state,'div',undefined,{'data-history-results':''});
-    root.append(state.status,state.range,state.fetch,close,state.results);host.replaceChildren(root);
+    root.append(state.status,state.range,state.fetch,state.tradeButton,close,state.results);host.replaceChildren(root);
+    state.tradeButton.addEventListener('click',()=>{void loadTrades(state);});
     state.fetch.addEventListener('click',()=>{void load(state);});state.range.addEventListener('change',()=>{clear(state);update(state);});close.addEventListener('click',()=>{clear(state);update(state);});
     state.pagehide=()=>{dispose(state);};view.addEventListener('pagehide',state.pagehide);
     if(view.MutationObserver){state.observer=new view.MutationObserver(()=>{if(!host.isConnected)dispose(state);});state.observer.observe(doc.documentElement,{childList:true,subtree:true});}
