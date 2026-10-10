@@ -1,14 +1,43 @@
 /* Device drafts contain configuration only. Calculated scores remain in RAM. */
 (function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./profile-defaults.js'):root.ProfileDefaults);if(typeof module==='object'&&module.exports)module.exports=api;else root.DeviceProfiles=api;})(globalThis,function(defaults){
 'use strict';const KEY='investment.web.v1.profile-drafts',SCHEMA='device-profile-drafts/1';
+const node=typeof module==='object'&&module.exports,typeDefaults=()=>node?require('./type-config-defaults.js'):globalThis.TypeConfigDefaults,engineApi=()=>node?require('./engine-preview.js'):globalThis.EnginePreview;
 function need(v){if(!v)throw Error('PROFILE_INVALID');}
 function keys(v,ks){need(v&&typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).length===ks.length&&ks.every(k=>Object.hasOwn(v,k)));}
 function empty(){return {schema:SCHEMA,strategies:[],types:[]};}
 function copyOfficial(){return structuredClone(defaults.weights);}
 function weights(w){keys(w,['Q','G','V']);for(const axis of ['Q','G','V']){keys(w[axis],Object.keys(defaults.weights[axis]));for(const v of Object.values(w[axis]))need(typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=100);need(Math.abs(Object.values(w[axis]).reduce((a,b)=>a+b,0)-100)<=defaults.sum_tolerance);}return structuredClone(w);}
-function validate(v){keys(v,['schema','strategies','types']);need(v.schema===SCHEMA&&Array.isArray(v.strategies)&&v.strategies.length<=20&&Array.isArray(v.types)&&v.types.length===0);const ids=new Set();const strategies=v.strategies.map(p=>{keys(p,['id','name','weights']);need(typeof p.id==='string'&&/^[a-z0-9-]{1,80}$/.test(p.id)&&!ids.has(p.id)&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=60&&!/[\x00-\x1f]/.test(p.name));ids.add(p.id);return{id:p.id,name:p.name,weights:weights(p.weights)};});return{schema:SCHEMA,strategies,types:[]};}
+function copyOfficialTypes(){const c=structuredClone(typeDefaults());c.status='CUSTOM_PREVIEW';return c;}
+function typeConfig(c){const engine=engineApi();need(engine&&c&&typeof c==='object'&&!Array.isArray(c)&&c.status==='CUSTOM_PREVIEW');const text=JSON.stringify(c);need(text.length<=65536&&!/NaN|Infinity/.test(JSON.stringify(c,(k,v)=>typeof v==='number'&&!Number.isFinite(v)?'NaN':v)));need(engine.validateTypeConfig(c).length===0);return JSON.parse(text);}
+function validate(v){keys(v,['schema','strategies','types']);need(v.schema===SCHEMA&&Array.isArray(v.strategies)&&v.strategies.length<=20&&Array.isArray(v.types)&&v.types.length<=10);const ids=new Set();const strategies=v.strategies.map(p=>{keys(p,['id','name','weights']);need(typeof p.id==='string'&&/^[a-z0-9-]{1,80}$/.test(p.id)&&!ids.has(p.id)&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=60&&!/[\x00-\x1f]/.test(p.name));ids.add(p.id);return{id:p.id,name:p.name,weights:weights(p.weights)};});const typeIds=new Set(),types=v.types.map(p=>{keys(p,['id','name','config']);need(typeof p.id==='string'&&/^[a-z0-9-]{1,80}$/.test(p.id)&&!typeIds.has(p.id)&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=60&&!/[\x00-\x1f]/.test(p.name));typeIds.add(p.id);return{id:p.id,name:p.name,config:typeConfig(p.config)};});return{schema:SCHEMA,strategies,types};}
 function read(storage){const raw=storage.getItem(KEY);return raw?validate(JSON.parse(raw)):empty();}
 function write(storage,v){const next=validate(v);storage.setItem(KEY,JSON.stringify(next));return next;}
+// S13 custom company types: device copy of type_config v1 (PREVIEW). Official config is never modified.
+function mountTypes(section,status,el,view,en){
+ const engine=engineApi();let state=empty(),writable=true,draft=null,selectedId=null,checked=false;try{state=read(view.localStorage);}catch(_){writable=false;status.textContent='PROFILE_STORAGE_UNREADABLE';}
+ status.textContent='OFFICIAL_PROVISIONAL · type_config/1 · '+(en?'Copy to edit':'복사해서 편집');
+ const name=el('input',undefined,{id:'type-profile-name',maxlength:'60',placeholder:en?'Name':'이름'}),label=el('label',en?'Name':'이름',{for:'type-profile-name'}),editor=el('div',undefined,{'data-type-fields':''}),errors=el('p','',{'data-type-errors':'',class:'small'}),saved=el('ul',undefined,{class:'list','data-saved-types':''});
+ const copy=el('button',en?'Copy official':'공식값 복사',{type:'button',id:'type-copy'}),check=el('button',en?'Preview':'미리보기',{type:'button',id:'type-preview',disabled:''}),save=el('button',en?'Save on device':'기기 저장',{type:'button',id:'type-save',disabled:''});
+ const changed=()=>{checked=false;save.disabled=true;errors.textContent='';status.textContent='PREVIEW · '+(en?'Draft changed':'초안 수정됨');};
+ function numberInput(id,value,set,attrs={}){const input=el('input',undefined,{id,type:'number',step:'any',...attrs});input.value=String(value);input.oninput=()=>{set(input.value.trim()===''?NaN:Number(input.value));changed();};return input;}
+ function weightsField(legend,w,prefix){const field=el('fieldset');field.append(el('legend',legend));for(const p of ['Q','G','V']){const id=prefix+'-'+p;field.append(el('label',p,{for:id}),numberInput(id,w[p],v=>{w[p]=v;},{min:'0',max:'100','data-type-weight':prefix+'-'+p}));}return field;}
+ function render(){editor.replaceChildren();for(const t of draft.types){if(!t.affects_qgv){editor.append(el('p',t.name+' · '+(en?'exposure only, no Q/G/V weight':'노출 전용, Q/G/V 비중 없음'),{class:'small'}));continue;}const field=weightsField(t.name+' · Q/G/V',t.weights,'type-'+t.id);
+   if(t.rule.kind==='ramp'||t.rule.kind==='gated_ramp')for(const k of ['lower','upper']){const id='type-'+t.id+'-'+k;field.append(el('label',t.rule.metric+' '+k,{for:id}),numberInput(id,t.rule[k],v=>{t.rule[k]=v;}));}
+   else if(t.rule.kind==='unresolved')field.append(el('p','NOT_AVAILABLE · '+t.rule.reasons.join(' · '),{class:'small'}));editor.append(field);}
+  editor.append(weightsField(draft.fallback.name+' · Q/G/V',draft.fallback.weights,'type-fallback'));
+  const mix=el('fieldset');mix.append(el('legend',en?'Mixing':'혼합 규칙'));for(const k of ['minimum_membership','maximum_types','pillar_min','pillar_max']){const id='type-mix-'+k;mix.append(el('label',k,{for:id}),numberInput(id,draft.mixing[k],v=>{draft.mixing[k]=v;}));}editor.append(mix);check.disabled=false;save.disabled=true;}
+ function renderSaved(){saved.replaceChildren();for(const p of state.types){const row=el('li',undefined,{class:'card'}),open=el('button',p.name,{type:'button','data-open-type':p.id}),remove=el('button',en?'Delete':'삭제',{type:'button','data-remove-type':p.id});
+   open.onclick=()=>{selectedId=p.id;name.value=p.name;draft=structuredClone(p.config);checked=false;render();status.textContent='PREVIEW · '+(en?'Saved configuration copied into draft':'저장 설정을 초안으로 복사했습니다.');};
+   remove.onclick=()=>{if(!writable)return;try{state=write(view.localStorage,{...state,types:state.types.filter(x=>x.id!==p.id)});if(selectedId===p.id){selectedId=null;checked=false;save.disabled=true;}renderSaved();}catch(_){status.textContent='PROFILE_SAVE_FAILED';}};remove.disabled=!writable;row.append(open,remove);saved.append(row);}
+  if(!state.types.length)saved.append(el('li',en?'No saved type configurations.':'저장한 유형 설정이 없습니다.',{class:'empty'}));}
+ copy.onclick=()=>{draft=copyOfficialTypes();selectedId=null;checked=false;name.value=en?'My types':'내 유형';render();status.textContent='PREVIEW · '+(en?'Official type_config/1 copied':'공식 type_config/1을 복사했습니다.');};
+ name.oninput=changed;
+ check.onclick=()=>{const codes=engine?engine.validateTypeConfig(draft):['ENGINE_NOT_AVAILABLE'];let ok=!codes.length&&name.value.trim().length>0;try{if(ok)typeConfig(draft);}catch(_){ok=false;}
+  checked=ok;save.disabled=!ok||!writable;errors.textContent=codes.length?codes.join(' · '):name.value.trim()?'':(en?'Enter a name.':'이름이 필요합니다.');
+  status.textContent=ok?'PREVIEW · '+(en?'Configuration valid · company results NOT_AVAILABLE · price-free type metrics are not published':'설정 유효 · 기업별 결과 NOT_AVAILABLE · 가격 불필요 유형 지표 미게시'):'TYPE_CONFIG_INVALID';};
+ save.onclick=()=>{if(!checked||!writable)return;try{const id=selectedId||'type-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);state=write(view.localStorage,{...state,types:[...state.types.filter(x=>x.id!==id),{id,name:name.value.trim(),config:draft}]});selectedId=id;status.textContent='PREVIEW · '+(en?'Saved on this device':'이 기기에 저장했습니다.');renderSaved();}catch(_){status.textContent='PROFILE_SAVE_FAILED';}};
+ section.append(el('p',en?'Industry, strategy theme and investment type are separate axes. Raw QGV and type-adjusted QGV are both kept.':'산업·전략 테마·투자 유형은 서로 다른 축입니다. 원 QGV와 유형조정 QGV를 함께 보존합니다.',{class:'small'}),label,name,copy,editor,check,errors,save,el('h3',en?'Saved type configurations':'저장한 유형 설정'),saved);renderSaved();
+}
 // RAM-only PREVIEW: published price-free Q/G factors under official vs draft leaf weights. Never stored.
 function previewRanks(payload,draft,engine){
  const companies=payload?.data?.companies;if(!engine||!companies||typeof companies!=='object')return{state:'NOT_AVAILABLE',reason:'PUBLIC_QG_NOT_AVAILABLE',rows:[]};
@@ -22,7 +51,7 @@ function previewRanks(payload,draft,engine){
 function mount(host,{locale,mode='strategy',qgFactors=()=>null,engine=globalThis.EnginePreview}={}){
  if(!host)return;const doc=host.ownerDocument,view=doc.defaultView,en=locale==='en-US',el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};const section=el('section',undefined,{class:'card','data-profile-editor':mode});section.append(el('h2',mode==='types'?(en?'Custom company types':'기업 유형 커스텀'):(en?'Strategy profiles':'전략 프로필')),el('p','PREVIEW · '+(en?'Device configuration · Official values are preserved':'기기 설정 · 공식값 유지'),{class:'badge'}));
  const status=el('p','NOT_AVAILABLE · '+(mode==='types'?'TYPE_CONFIG_PENDING_MERGE':'PREVIEW_NOT_RUN'),{role:'status','data-profile-status':''});section.append(status);
- if(mode==='types'){section.append(el('p',en?'Official type configuration is awaiting approval.':'공식 유형 설정 승인 대기 중입니다.'));for(const text of ['공식값 복사','초안 수정','미리보기','기기 저장']){const b=el('button',text,{type:'button',disabled:''});section.append(b);}host.replaceChildren(section);return;}
+ if(mode==='types'){mountTypes(section,status,el,view,en);host.replaceChildren(section);return;}
  let state=empty(),writable=true,draft=null,selectedId=null,previewed=false;try{state=read(view.localStorage);}catch(_){writable=false;status.textContent='PROFILE_STORAGE_UNREADABLE';}
  const name=el('input',undefined,{id:'profile-name',maxlength:'60',placeholder:en?'Profile name':'프로필 이름'}),label=el('label',en?'Name':'이름',{for:'profile-name'}),editor=el('div',undefined,{'data-profile-fields':''}),saved=el('ul',undefined,{class:'list','data-saved-profiles':''});const results=el('div',undefined,{'data-profile-preview':'','aria-live':'polite'});
  const copy=el('button',en?'Copy official':'공식값 복사',{type:'button',id:'profile-copy'}),preview=el('button',en?'Preview':'미리보기',{type:'button',id:'profile-preview',disabled:''}),save=el('button',en?'Save on device':'기기 저장',{type:'button',id:'profile-save',disabled:''});
@@ -36,5 +65,5 @@ function mount(host,{locale,mode='strategy',qgFactors=()=>null,engine=globalThis
  save.onclick=()=>{if(!previewed||!writable)return;try{const id=selectedId||'device-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10),p={id,name:name.value.trim(),weights:weights(draft)},next={...state,strategies:[...state.strategies.filter(x=>x.id!==id),p]};state=write(view.localStorage,next);selectedId=id;status.textContent='PREVIEW · '+(en?'Saved on this device':'이 기기에 저장했습니다.');renderSaved();}catch(_){status.textContent='PROFILE_SAVE_FAILED';}};
  section.append(label,name,copy,editor,preview,results,save,el('h3',en?'Saved profiles':'저장한 프로필'),saved);renderSaved();host.replaceChildren(section);
 }
-return Object.freeze({KEY,SCHEMA,empty,copyOfficial,weights,validate,read,write,previewRanks,mount});
+return Object.freeze({KEY,SCHEMA,empty,copyOfficial,copyOfficialTypes,typeConfig,weights,validate,read,write,previewRanks,mount});
 });

@@ -31,12 +31,13 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "watchlist.js": "6d707c1f7beb0d4ceaf32cea18320049bbd1ba768bf91578ba6a664596f536cf",
     "sec-m3-adapter.js": "f3962d7283ae0e8731ad66ee23652d5f8c9e88f2cd4050b70b4cd1048956d6e5",
     "private-subset.js": "5dfa945113a84ec8fde2cb2020f71343e1cd453a5de41771165a0a8b531a6fec",
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
-    "device-profiles.js": "e3a0fea09eaa4df6f3d9d8eb032aa44077b11bc039c6be0cff4d3085505420d6",
+    "device-profiles.js": "b0d2b9c0fa59de3b7f255a081c9da57b87704903ce32578369a8cd0f5333dfe6",
     "public-screens.js": "5779fd0dfcd378dd1855c28566fd5e85a02afb14419dd0ad552475c6a3fd3111",
     "pwa.js": "f8d5df267d323fd465821416f1825f38d4065030ec5368b7a37bfc4ed875affd",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
@@ -63,7 +64,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "21e59f6415e2febdd94751bae6ae50473685146c47176df1d733194bbb81d73d",
+    "index.html": "777302f9bf0fabf7ea84878c174e1371fc3f0a20b3b863b47879e55dabb69e03",
     "locale.js": "a7552bc8a6b1aa0dcd5b8c89b120d361a836daef4ec5cb48ca1733f5b02e5b98",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",
