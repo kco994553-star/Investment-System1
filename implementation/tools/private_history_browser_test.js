@@ -100,12 +100,14 @@ async function exportsPrivacy(page) {
   }, [...PRIVATE_CANARIES, ORIGIN, STORAGE_KEY, 'adjusted_close']);
   try {
     await page.locator('#export').click();
+    await page.waitForFunction(() => window.__historyExportAudit.length === 1);
     verify(await page.evaluate(async () => window.__historyExportAudit.length === 1 && (await Promise.all(window.__historyExportAudit)).every(Boolean)));
     await navigate(page, 'actual');
     const actual = page.locator('#device-actual-root');
     await actual.locator('[data-action="save"]').click();
     await actual.locator('[data-actual-notice][data-notice="saved"]').waitFor();
     await actual.locator('[data-action="export"]').click();
+    await page.waitForFunction(() => window.__historyExportAudit.length === 2);
     verify(await page.evaluate(async () => window.__historyExportAudit.length === 2 && (await Promise.all(window.__historyExportAudit)).every(Boolean)));
     verify(await persistentPrivacy(page));
   } finally { await page.evaluate(() => { window.__historyRestoreExport(); delete window.__historyRestoreExport; delete window.__historyExportAudit; }); }
@@ -195,7 +197,7 @@ async function fetchHistory(session, range) {
 async function verifyResults(session) {
   const { page } = session, root = page.locator('[data-private-history]');
   await root.locator('[data-history-table] tbody tr').first().waitFor({ state: 'attached' });
-  await root.locator('[data-history-results] summary').click();
+  await root.locator('details:has([data-history-table]) > summary').click();
   verify(await root.locator('[data-history-chart]').count() === 1);
   const rows = await root.locator('[data-history-table] tbody tr').allTextContents();
   verify(rows.length === 4 && rows[0].includes('53.375') && rows[0].includes('52.875') && rows[0].includes('103'));
@@ -221,7 +223,8 @@ async function verifyResults(session) {
     return lines.some(node => (node.getAttribute('d').match(/M/g) || []).length >= 2) || lines.length + polylines.length >= 2;
   });
   verify(chartSafe);
-  verify(await root.locator('[data-history-chart]').evaluate(svg => [...svg.querySelectorAll('path')].some(path => /620\.00,20\.00$/.test(path.getAttribute('d') || ''))));
+  verify(await root.locator('[data-history-chart] [data-candle-index]').count() > 0);
+  verify(await root.locator('[data-history-chart]').evaluate(svg => ![...svg.querySelectorAll('[d],rect')].some(node => /NaN|Infinity/.test(node.outerHTML))));
   verify(await persistentPrivacy(page));
 }
 async function deployedChecks(locale, width) {

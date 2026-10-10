@@ -219,17 +219,14 @@ test('snapshot numeric currency identity and theme duplicates are validated loca
     const value = snapshot(c); change(value); rejects(() => api.valuation(value, c, validMarket, {now}));
   }
 });
-test('v2 backup exports only validated holdings and market data', () => {
-  const c = catalog(), holdings = snapshot(c), quotes = market(c), backup = api.exportBackup(holdings, quotes, c, {now});
-  assert.equal(backup.schema, 'device-actual-holdings/2'); assert.equal(backup.market_data.schema, 'device-market-data/1');
-  assert.deepEqual(Object.keys(backup).sort(), [...Object.keys(holdings), 'market_data'].sort());
-  assert.deepEqual(backup.market_data, quotes); assert.deepEqual(backup.themes, holdings.themes);
-  backup.themes[0].holdings[0].quantity = '99'; assert.equal(holdings.themes[0].holdings[0].quantity, '1');
+test('new holdings export excludes quotes and FX', () => {
+  const c=catalog(), holdings=snapshot(c), backup=api.exportBackup(holdings,market(c),c,{now});
+  assert.equal(backup.schema,'device-actual-holdings/1');assert.deepEqual(backup,holdings);assert.ok(!Object.hasOwn(backup,'market_data'));
+  const restored=api.importBackup(backup,c,{now});assert.deepEqual(restored.snapshot,holdings);assert.deepEqual(restored.market.quotes,[]);assert.deepEqual(restored.market.fx,[]);
 });
-test('backup round trips preserve observations numeric strings and ownership', () => {
-  const c = catalog(), holdings = snapshot(c), quotes = market(c), backup = api.exportBackup(holdings, quotes, c, {now});
-  const restored = api.importBackup(backup, c, {now}); assert.deepEqual(restored.snapshot, holdings); assert.deepEqual(restored.market, quotes);
-  restored.market.quotes[0].price = '99'; assert.equal(backup.market_data.quotes[0].price, '10');
+test('legacy v2 imports validate then discard prices', () => {
+  const c=catalog(),holdings=snapshot(c), backup={...holdings,schema:'device-actual-holdings/2',market_data:market(c)};
+  const restored=api.importBackup(backup,c,{now});assert.deepEqual(restored.snapshot,holdings);assert.deepEqual(restored.market.quotes,[]);
 });
 test('legacy backup restores holdings with an empty market', () => {
   ready(); const c = catalog(), holdings = snapshot(c), restored = api.importBackup(holdings, c, {now});
@@ -242,11 +239,11 @@ test('API keys settings and unknown fields cannot be exported or imported', () =
     const value = copy(holdings); change(value); rejects(() => api.exportBackup(value, quotes, c, {now}));
     rejects(() => api.importBackup(value, c, {now}));
   }
-  const value = api.exportBackup(holdings, quotes, c, {now}); value.market_data.api_key = 'SYNTHETIC';
+  const value = {...holdings,schema:'device-actual-holdings/2',market_data:quotes}; value.market_data.api_key = 'SYNTHETIC';
   rejects(() => api.importBackup(value, c, {now}));
 });
 test('invalid v2 market or missing market cannot partially restore holdings', () => {
-  const c = catalog(), backup = api.exportBackup(snapshot(c), market(c), c, {now});
+  const c = catalog(), backup = {...snapshot(c),schema:'device-actual-holdings/2',market_data:market(c)};
   for (const change of [value => {value.market_data.quotes[0].currency = 'KRW';}, value => {delete value.market_data;},
     value => {value.market_data.identity_map_sha256 = 'incompatible';}, value => {value.schema = 'device-actual-holdings/3';}]) {
     const value = copy(backup); change(value); rejects(() => api.importBackup(value, c, {now}));

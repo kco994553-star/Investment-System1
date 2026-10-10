@@ -228,8 +228,7 @@
   }
   function exportBackup(snapshot, market, catalog, options = {}) {
     const actual = validateActual(snapshot, catalog, options);
-    const data = market === null || market === undefined ? emptyMarket(catalog, options.now) : validateMarket(market, catalog, options);
-    return {...actual, schema: BACKUP_SCHEMA, market_data: data};
+    return actual; // Market quotes, FX and imported prices are never backed up.
   }
   function importBackup(payload, catalog, options = {}) {
     if (!plain(payload)) fail();
@@ -240,7 +239,7 @@
     const snapshot = {};
     for (const field of ACTUAL_KEYS) snapshot[field] = payload[field];
     snapshot.schema = ACTUAL_SCHEMA;
-    return {snapshot: validateActual(snapshot, catalog, options), market: validateMarket(payload.market_data, catalog, options)};
+    return {snapshot: validateActual(snapshot, catalog, options), market: (validateMarket(payload.market_data, catalog, options), emptyMarket(catalog, options.now))};
   }
   return Object.freeze({canonical: safe(canonical), validateMarket: safe(validateMarket), makeMarket: safe(makeMarket),
     emptyMarket: safe(emptyMarket), valuation: safe(valuation), exportBackup: safe(exportBackup), importBackup: safe(importBackup), staleness: safe(staleness)});

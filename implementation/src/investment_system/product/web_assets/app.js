@@ -185,7 +185,7 @@ function settingsUI() {
   <p>${t("표시 언어는 계산 결과에 영향을 주지 않습니다.")}</p>
   <label for="source-language">${t("뉴스 원문 언어")}</label><select id="source-language">${[["all",t("전체 언어")],["ko",t("한국어 원문")],["en",t("영어 원문")]].map(([v,k])=>`<option value="${v}" ${appSettings.source_language===v?"selected":""}>${t(k)}</option>`).join("")}</select>
   <p>${t("원문 언어는 뉴스 필터만 변경합니다.")}</p></section>
-  <section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="device-api-settings"></div>`;
+  <section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="device-api-settings"></div>`;
 }
 function entityRoute(e) {return e.entity_type==="COMPANY"?"#company/"+encodeURIComponent(e.canonical_id):"#entity/"+encodeURIComponent(e.entity_type+":"+e.canonical_id);}
 function entityRow(hit) {
@@ -447,8 +447,9 @@ function qgv() {
 function technical() {
   const s=D.technical;
   return `<div data-ia-screen="technical">${heading("TECHNICAL",t("기술적 분석"),t("기존 기록의 연결 상태를 확인합니다."))}
+    <div id="technical-price-chart" data-tech-status="chart"></div>
     <section class="card status-card" data-tech-status="engine"><h2>${t("기술적 분석 엔진")}</h2>${state(s)}<p>${esc(t(s.data===null?s.reason || "운영 Snapshot이 연결되지 않았습니다.":"기존 종목 화면에서 제공된 기술적 분석 기록을 확인합니다."))}</p></section>
-    <section class="card status-card" data-tech-status="chart"><h2>${t("가격·거래량 차트")}</h2><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span><p>${t("실제 가격·거래량 차트가 이 앱에 연결되지 않았습니다.")}</p></section></div>`;
+    </div>`;
 }
 function macro() {
   // Official IA v1 axis/state names. No observations, scores or derived values are introduced.
@@ -510,7 +511,8 @@ function renderRoute() {
   $("#content").innerHTML=routes[route]();
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') attachDeviceActual('#device-actual-summary',false);
-  if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig});
+  if(route==='technical') PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
+  if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
   syncNavigation(route);
   if(QGV_CHILDREN.includes(route) || route==="research") {
     const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← 검증";
@@ -520,6 +522,8 @@ function renderRoute() {
   if(!storageOK) notice(t("개인 설정 저장을 사용할 수 없습니다. 내보내기를 이용하세요."));
   if(!settingsWritable) notice(t("설정을 읽을 수 없습니다. 저장된 원본은 보존합니다."));
   if(route==="settings") {
+    $("#device-backup-export").onclick=()=>void exportDeviceBackup();
+    $("#device-backup-import").onchange=async e=>{try{const f=e.target.files[0];if(!f||f.size>1000000)throw Error("BACKUP_TOO_LARGE");await restoreDeviceBackup(JSON.parse(await f.text()));}catch(_){notice("BACKUP_RESTORE_FAILED");}};
     attachGoogleSheetSettings();
     PrivateHistory.mountSettings($('#private-history-settings'),{locale:appSettings.display_locale});
     attachDeviceApiSettings();
@@ -555,20 +559,14 @@ function wireGroups() {
     save();
     render();
   };
-  $("#export").onclick = () => {
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(
-      new Blob([JSON.stringify(prefs, null, 2)], { type: "application/json" }),
-    );
-    a.download = "investment-personal.json";
-    a.click();
-    URL.revokeObjectURL(a.href);
-  };
+  $("#export").onclick = () => void exportDeviceBackup();
   $("#import").onchange = async (e) => {
     try {
       const f = e.target.files[0];
       if (!f || f.size > 1000000) throw Error(t("1MB 이하 JSON을 선택하세요."));
-      const p = validatePrefs(JSON.parse(await f.text()));
+      const payload = JSON.parse(await f.text());
+      if (payload.schema === DeviceBackup.SCHEMA) { await restoreDeviceBackup(payload); return; }
+      const p = validatePrefs(payload);
       prefs.interests = [...new Set([...prefs.interests, ...p.interests])];
       for (const g of p.groups) {
         const old = prefs.groups.find((x) => x.id === g.id);
@@ -578,7 +576,7 @@ function wireGroups() {
       save();
       render();
     } catch (err) {
-      notice(t("가져오기 실패:") + " " + err.message);
+      notice("BACKUP_IMPORT_FAILED");
     }
   };
 }
@@ -759,3 +757,23 @@ Promise.all(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fet
   for(const name of publicSections) safeData[name]={state:"NOT_AVAILABLE",as_of:null,source:null,reason:"공개 가격 경계에 따라 제공되지 않습니다. (GSQ-010)",data:null};
   D=guardSections(safeData);searchIndex=EntitySearch.createIndex(catalog.entities.filter(e=>e.entity_type!=="COMPANY"));load();render();paintGlobalSearch();
 }).catch(showUnavailable);
+
+async function exportDeviceBackup(){
+  try{const catalog=await deviceCatalog();DeviceBackup.download(window,await DeviceBackup.read(window,catalog));}
+  catch(_){notice('BACKUP_EXPORT_FAILED');}
+}
+async function restoreDeviceBackup(payload){
+  const catalog=await deviceCatalog();DeviceBackup.parse(payload,catalog,DeviceMarket,AppLanguage);
+  if(!confirm(appSettings.display_locale==='en-US'?'Replace device interests, groups, portfolio and language settings?':'기기 관심 기업·그룹·포트폴리오·언어 설정을 백업으로 바꿀까요?'))return;
+  await DeviceBackup.restore(window,catalog,payload);load();const read=AppLanguage.read(localStorage);appSettings=read.value;settingsWritable=read.writable;render();
+}
+document.addEventListener('device-backup-restored',()=>{load();appSettings=AppLanguage.read(localStorage).value;render();});
+
+async function deviceAverageCost(symbol){
+  const catalog=await deviceCatalog(),snapshot=await DeviceActual.readHoldings(window,catalog);
+  if(!snapshot)return null;
+  const ticker=symbol.replace(/\.(KS|T)$/,''),instrument=catalog.instruments.find(i=>i.ticker===ticker);
+  if(!instrument)return null;
+  const row=snapshot.themes.flatMap(t=>t.holdings).find(r=>DeviceMarket.canonical(r.security_reference)===DeviceMarket.canonical(instrument.security_reference));
+  return row&&Number(row.quantity)>0&&row.currency===instrument.currency&&Number(row.average_cost)>0?Number(row.average_cost):null;
+}

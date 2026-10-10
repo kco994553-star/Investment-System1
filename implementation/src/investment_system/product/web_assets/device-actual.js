@@ -394,7 +394,13 @@
       if (file.size > MAX_FILE_BYTES) { notice(state, 'tooLarge'); return; }
       const text = await file.text();
       if (new state.view.TextEncoder().encode(text).byteLength > MAX_FILE_BYTES) { notice(state, 'tooLarge'); return; }
-      const payload = JSON.parse(text), imported = marketApi(state).importBackup(payload, state.catalog);
+      const payload = JSON.parse(text);
+      if (payload.schema === state.view.DeviceBackup?.SCHEMA) {
+        if (!state.view.confirm(t(state, 'overwrite'))) return;
+        await state.view.DeviceBackup.restore(state.view, state.catalog, payload);
+        state.view.document.dispatchEvent(new state.view.Event('device-backup-restored')); return;
+      }
+      const imported = marketApi(state).importBackup(payload, state.catalog);
       const sourceSnapshot = validate(imported.snapshot, state.catalog);
       if ((state.raw[KEY] !== MISSING_RECORD || state.raw[MARKET_KEY] !== MISSING_RECORD) && !state.view.confirm(t(state, 'overwrite'))) { notice(state, 'canceled'); return; }
       const next = prepareImport(sourceSnapshot, state.catalog, state.snapshot);
@@ -410,10 +416,10 @@
       state.snapshot = next; state.market = market; state.raw = storedValues(raw); populate(state); repaintSummary(state); notice(state, 'imported'); announce(state);
     } catch (error) { errorNotice(state, error); } finally { state.importInput.value = ''; setBusy(state, false); }
   }
-  function exportFile(state) {
+  async function exportFile(state) {
     if (!state.snapshot || state.busy) return;
     try {
-      const snapshot = validate(state.snapshot, state.catalog), payload = marketApi(state).exportBackup(snapshot, state.market, state.catalog);
+      const payload = await state.view.DeviceBackup.read(state.view, state.catalog);
       const blob = new state.view.Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       const url = state.view.URL.createObjectURL(blob), anchor = el(state, 'a', undefined, { href: url, download: 'device-actual-holdings.json' });
       state.root.append(anchor); anchor.click(); anchor.remove(); state.view.setTimeout(() => state.view.URL.revokeObjectURL(url), 1000); notice(state, 'exported');
@@ -615,6 +621,19 @@
     if (view.document) view.document.dispatchEvent(new view.Event('device-actual-changed'));
     return result;
   }
+  async function readHoldings(view, catalog) {
+    const raw = await readStored(view, [KEY]);
+    return raw[KEY] === MISSING_RECORD ? null : validate(raw[KEY], catalog);
+  }
+  async function restoreHoldings(view, catalog, snapshot) {
+    if (snapshot !== null) validate(snapshot, catalog);
+    const raw = await readStored(view, [KEY]);
+    const previous = raw[KEY] === MISSING_RECORD ? null : validate(raw[KEY], catalog);
+    const next = snapshot === null ? null : prepareImport(snapshot, catalog, previous);
+    await commitStored(view, {[KEY]:next}, raw);
+    if (view.document) view.document.dispatchEvent(new view.Event('device-actual-changed'));
+    return next;
+  }
   return Object.freeze({ mount, summary, settings, validate, makeSnapshot, prepareImport, valuation,
-    sheetSettings, applyMarketImport, readMarketImportHistory });
+    sheetSettings, applyMarketImport, readMarketImportHistory, readHoldings, restoreHoldings });
 });

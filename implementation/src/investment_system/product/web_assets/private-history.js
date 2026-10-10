@@ -90,7 +90,7 @@
   function status(state,code) { state.status.dataset.code=code; state.status.textContent=code==='OFF' ? words(state,'OFF · 가격 호출 없음','OFF · No price requests') : code; }
   function clear(state) {
     state.revision++; if (state.controller) { state.controller.abort(); state.controller=null; }
-    state.data=null; state.results.replaceChildren(); state.busy=false;
+    state.data=null; state.indicators=null; state.average=null; state.results.replaceChildren(); state.busy=false;
   }
   function available(state) {
     if (!state.enabled) return 'OFF';
@@ -108,13 +108,21 @@
   }
   function renderData(state) {
     const data=state.data;
+    state.results.replaceChildren();
     state.results.append(node(state,'p',data.provider+' · '+data.symbol+' · '+data.exchange+' · '+data.currency+' · '+data.timezone+' · '+data.interval+' · RAW_CLOSE · delay_status: UNKNOWN · read_at: '+data.read_at,{'data-history-meta':''}));
-    const svg=state.doc.createElementNS('http://www.w3.org/2000/svg','svg');
-    svg.setAttribute('viewBox','0 0 640 240'); svg.setAttribute('width','100%');svg.setAttribute('role','img');svg.setAttribute('aria-label',words(state,'원시 종가 · 빈 값은 공백','Raw close · Missing values remain gaps'));svg.setAttribute('data-history-chart','');
-    for (const points of chartPaths(data.bars)) {
-      const path=state.doc.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',points);path.setAttribute('fill','none');path.setAttribute('stroke','currentColor');path.setAttribute('stroke-width','2');path.setAttribute('stroke-linecap','round');svg.append(path);
+    state.indicators=state.view.ResearchIndicators.calculate(data.bars,{includeSma240:state.selected.has('SMA_240')});
+    const buttons=node(state,'div',undefined,{class:'chart-controls',role:'group','aria-label':words(state,'연구용 이동평균','Research moving averages')});
+    for(const id of ['SMA_5','SMA_20','SMA_60','SMA_120','SMA_240','EMA_20','AVG']){
+      const button=node(state,'button',id.replace('_',''),{type:'button','data-chart-overlay':id,'aria-pressed':String(state.selected.has(id))});
+      button.addEventListener('click',()=>{if(state.selected.has(id))state.selected.delete(id);else state.selected.add(id);renderData(state);state.results.querySelector('[data-chart-overlay="'+id+'"]').focus();});buttons.append(button);
     }
-    state.results.append(svg,node(state,'p',words(state,'원시 종가만 차트에 표시합니다. 수정 종가는 아래 표에서 별도 표시하며, 빈 값은 보간하지 않습니다. 세션 상태는 공급자 추정값입니다.','The chart uses raw close. Adjusted close is separate below; missing values stay empty. Session status is a provider estimate.')));
+    state.results.append(buttons,node(state,'p','RESEARCH_DISPLAY_ONLY · '+words(state,'모델 채택 아님 · warm-up·결측·미완결 세션은 선 없음','Not a model · No lines during warm-up, missing or incomplete sessions')));
+    state.view.TechnicalChart.render(state.results,{bars:data.bars,indicators:state.indicators,selected:state.selected,average:state.average,locale:state.locale});
+    state.results.append(node(state,'p',state.average===null?'AVG · NOT_AVAILABLE':words(state,'AVG · 기기 보유의 평균 매입원가 · '+data.currency,'AVG · Device holding average cost · '+data.currency),{'data-average-status':state.average===null?'NOT_AVAILABLE':'AVAILABLE'}));
+    const research=node(state,'details'),title=node(state,'summary',words(state,'연구용 지표 · RAM 전용','Research indicators · RAM only')),values=node(state,'dl');
+    for(const item of state.indicators.indicators){values.append(node(state,'dt',item.indicator_id),node(state,'dd',item.values.at(-1)===null?'NOT_AVAILABLE · '+item.unavailable_reasons.at(-1):String(item.values.at(-1)),{'data-research-value':item.indicator_id}));}
+    research.append(title,values);state.results.append(research);
+    state.results.append(node(state,'p',words(state,'원시 OHLC 일봉입니다. 수정 종가는 아래 표에 별도로 표시합니다. 빈 값은 보간하지 않으며 세션 상태는 공급자 추정입니다.','Raw daily OHLC. Adjusted close remains separate below. Missing values are not interpolated; session status is a provider estimate.')));
     const details=node(state,'details'),summary=node(state,'summary',words(state,'일별 가격 표 · 세션 상태','Daily prices · Session status')),table=node(state,'table',undefined,{'data-history-table':''});
     const head=node(state,'thead'),labels=node(state,'tr');
     for (const label of ['UTC time','Open','High','Low','Raw close','Adjusted close','Volume','Session status']) labels.append(node(state,'th',label,{scope:'col'}));
@@ -134,7 +142,9 @@
     try {
       const payload=await state.session.fetchHistory(storedOrigin(state.view),state.symbol,range,{approvedOrigin:state.approvedOrigin,signal:state.controller.signal});
       if (!current()) return;
-      state.data=validateHistory(payload,{symbol:state.symbol,range});renderData(state);
+      const data=validateHistory(payload,{symbol:state.symbol,range});
+      let average=null;try{average=state.getAverage?await state.getAverage(state.symbol):null;}catch(_){}
+      if(!current())return;state.data=data;state.average=typeof average==='number'&&Number.isFinite(average)&&average>0?average:null;renderData(state);
     } catch (error) {
       if (!mounted(state) || state.revision!==revision) return;
       state.data=null;state.results.replaceChildren();status(state,CODES.has(error.message) ? error.message : 'YAHOO_UNAVAILABLE');
@@ -149,7 +159,7 @@
   }
   async function mount(host,options={}) {
     const doc=host.ownerDocument,view=doc.defaultView,config=options.config||{};
-    const state={host,doc,view,locale:options.locale,symbol:symbolFor(options.companyId),enabled:config.privateHistoryEnabled===true,approvedOrigin:config.privateHistoryWorkerOrigin||'',revision:0,data:null,busy:false,disposed:false,controller:null};
+    const state={host,doc,view,locale:options.locale,symbol:symbolFor(options.companyId),enabled:config.privateHistoryEnabled===true,approvedOrigin:config.privateHistoryWorkerOrigin||'',revision:0,data:null,indicators:null,average:null,getAverage:options.getAverage,selected:new Set(['SMA_5','SMA_20','SMA_60','SMA_120','AVG']),busy:false,disposed:false,controller:null};
     active.add(state);
     const root=node(state,'section',undefined,{class:'card private-history','data-private-history':''});
     root.append(node(state,'h2',words(state,'가격 차트 · 비공개 일별 이력','Price chart · Private daily history')));
@@ -177,6 +187,13 @@
     }
     return Object.freeze({clear(){clear(state);update(state);},dispose(){dispose(state);}});
   }
+  function mountTechnical(host,options={}) {
+    const state={doc:host.ownerDocument,view:host.ownerDocument.defaultView,locale:options.locale};
+    const select=node(state,'select',undefined,{'data-technical-symbol':'','aria-label':words(state,'기술 차트 종목','Technical chart symbol')}),child=node(state,'div');
+    for(const[id,symbol]of Object.entries(TARGETS))select.append(node(state,'option',symbol,{value:id}));
+    select.value=symbolFor(options.companyId)?options.companyId:'asml';
+    host.replaceChildren(select,child);const show=()=>{disposeAll();child.replaceChildren();void mount(child,{...options,companyId:select.value});};select.addEventListener('change',show);show();
+  }
   function disposeAll() { for(const state of [...active])dispose(state); }
-  return Object.freeze({mount,mountSettings,disposeAll,validateHistory,chartPaths,symbolFor,parseWorkerOrigin});
+  return Object.freeze({mount,mountTechnical,mountSettings,disposeAll,validateHistory,chartPaths,symbolFor,parseWorkerOrigin});
 });
