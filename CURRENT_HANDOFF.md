@@ -25,7 +25,7 @@
 | PR | 상태·내용 |
 | --- | --- |
 | [#111](https://github.com/kco994553-star/Investment-System1/pull/111) | 현행 engine 세 계산·#105 연결 완성. 관련62개 통과·독립 리뷰 중대 지적 없음·최종 CI6개/실행53단계 성공. 전체1502통과·1실패·subtests358(아래 CSP 장애). 미병합·회귀 해소/최종 체크 대기(조건부 자체 병합 가능). |
-| [#115](https://github.com/kco994553-star/Investment-System1/pull/115) | 독립 Research 표시 runtime·Python 참조/전체 합성 JSON·GSQ-015. 관련130개 검증 예정·독립 리뷰 지적 없음·최종 CI6개/실행53단계 성공. 전체1529통과·1실패·subtests358(같은 CSP 장애). 미병합·승인 대기. |
+| [#115](https://github.com/kco994553-star/Investment-System1/pull/115) | 독립 Research 표시 runtime·Python 참조/전체 합성 JSON·GSQ-015. 관련130개 통과·독립 리뷰 지적 없음·최종 CI6개/실행53단계 성공. 참조 이동 전 전체1529통과·1canonical CSP실패·subtests358(같은 CSP 장애). 미병합·승인 대기. |
 | [#103](https://github.com/kco994553-star/Investment-System1/pull/103) | 사용자 지시로 닫음. canonical 단일 인수인계가 최신 현황을 반영하므로 이전 현황 초안을 이력으로 보존. |
 | [#107](https://github.com/kco994553-star/Investment-System1/pull/107) | 사용자 지시로 닫음. 정식 M3 #106·#108·#110 이후 이전 계약 테스트 초안을 정리하며 미병합 브랜치/이력 보존. |
 | [#109](https://github.com/kco994553-star/Investment-System1/pull/109) | 이미 CLOSED·미병합 확인. 코덱1에게 종료 유지 확인만 요청; 코덱2는 PR 상태·Worker·브랜치 변경 없음. |
