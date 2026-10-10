@@ -31,6 +31,8 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "profile-defaults.js": "c23dbc3b30f1638864bf2d55c0e0baa357ecfe3d16f2554ffe6921252505741b",
+    "device-profiles.js": "5e2ddb99ca448647ad8434c2a80b7801aa4034a293e462828c0c765437b99fcf",
     "public-screens.js": "0c736310a42da10c1482b1c1a0b80fc59e72e5dda6c93b48802b8cb22554186f",
     "pwa.js": "f8d5df267d323fd465821416f1825f38d4065030ec5368b7a37bfc4ed875affd",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
@@ -43,11 +45,11 @@ APPROVED_SHA256 = {
     "private-trades.js": "86d59b4c5ef341ab47f1892fe65b483ca8256e367cfde06e1c9a0b580530fb9f",
     "technical-chart.js": "64b581fd186cdcb39f31def58412052dfa777dc2920a4f2432c1842b19c65eb8",
     "chart-indicators.js": "30cf6571f32c0496acd247099feb5f71fce0acf8870dcd78781018b872291fcc",
-    "device-backup.js": "d8229be35d744153ecd5cda57ca700aac080297bd3c80d7f07d076ba35d63323",
+    "device-backup.js": "f06e03d5b1cafa4bc10640167f7c281ed30fe8ce7d7f774e7b6ccd19c04f4af0",
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "1f2bd2b4dae50d39efe8fe3b2da5756f7a45c802732f1a8a3a7ae0ce5683c6a0",
+    "app.js": "9a13f0022b704c8e631b3e3ac48a1563698f14b9f41d94b2ce8c3567b0e92869",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "05770dd8e99d40c43d320970549f7f91f8c93bd77496553c593172ab5a1f7407",
@@ -57,7 +59,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "fb1d659aae838f2d17b61b6f46ede43de6fb6448c4deefb44c488152e824fdf7",
+    "index.html": "fc7c6fa6f477752cf38386612e19c33087602a52334f34b181b0e610d23f16b6",
     "locale.js": "0e27312c7885dd1edbaf5c5eed939ba4b642695e5541653a21c786dcff9089fc",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",

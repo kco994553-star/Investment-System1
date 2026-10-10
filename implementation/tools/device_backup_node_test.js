@@ -11,7 +11,7 @@ test('combined empty portfolio backup preserves preferences groups and language'
 });
 test('export allowlist excludes private settings and extra preference keys',()=>{
  const b=B.create({...prefs,workerOrigin:'private',token:'private'},{version:1,display_locale:'ko-KR',source_language:'all',workerOrigin:'private',spreadsheetId:'private'},null,null,M,L);
- assert.deepEqual(Object.keys(b).sort(),['portfolio','preferences','schema','settings']);assert.deepEqual(Object.keys(b.settings).sort(),['display_locale','source_language','version']);assert.ok(!JSON.stringify(b).includes('private'));
+ assert.deepEqual(Object.keys(b).sort(),['portfolio','preferences','profiles','schema','settings']);assert.deepEqual(Object.keys(b.settings).sort(),['display_locale','source_language','version']);assert.ok(!JSON.stringify(b).includes('private'));
 });
 test('backup rejects unknown fields and invalid group memberships',()=>{
  const b=B.create(prefs,L.settings(),null,null,M,L);
