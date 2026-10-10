@@ -1,15 +1,17 @@
 # 현재 인수인계
 
-확인일: 2026-10-10 UTC. 현재 상태는 이 파일에서 시작하고 운영은 [WORKING_RULES.md](WORKING_RULES.md)를 따른다. 현재 사용자 결정은 [26E GSQ-014](implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md#gsq-014--26e-m3-설정-확정병합-순서주식-종류-기준-표시-2026-10-10-utc)다.
+확인일: 2026-10-10 UTC. 현재 상태는 이 파일에서 시작하고 운영은 [WORKING_RULES.md](WORKING_RULES.md)를 따른다. 최신 사용자 결정은 [26E GSQ-015](implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md#gsq-015--26e-research-표시-전용-기본값한국식-모델-채택-아님-2026-10-10-utc), **표시 전용 기본값(한국식), 모델 채택 아님**이다. M3의 N=20·10%는 GSQ-014를 유지한다.
 
 ## 기준 HEAD
 
 - 기본 브랜치: `claude/investment-system-top500-validation-alrugm`.
-- 확인한 원격 코드 HEAD: `83a2d0e3e5bf7ecf539a74a67f1a32c08480d0bb` (#110 병합). 이 인수인계 문서 PR 자체의 병합 HEAD는 GitHub에서 확인한다.
+- 확인한 원격 코드 HEAD: `83a2d0e3e5bf7ecf539a74a67f1a32c08480d0bb` (#110 병합). 확인한 원격 canonical 문서 HEAD는 `31932c25d06ec27648c70f87153c94c92f3290d0` (#112 병합)이다. 이후 이 Research 코드 PR은 병합 승인 대기이며 기준 코드에 포함됐다고 간주하지 않는다.
 - 코덱1의 [#98](https://github.com/kco994553-star/Investment-System1/pull/98) 병합을 먼저 확인했다. 이후 사용자 승인 순서로 [#104](https://github.com/kco994553-star/Investment-System1/pull/104) → [#105](https://github.com/kco994553-star/Investment-System1/pull/105) → [#106](https://github.com/kco994553-star/Investment-System1/pull/106)를 병합했다. 각각 최종 HEAD의 실행 체크 6개와 실행 단계 전부 성공·실패 0을 확인했다.
 - #104는 최신 canonical을 정상 병합으로 반영하고 base를 canonical로 전환했다. #98 변경분은 수정하지 않았고 각 구현 PR diff는 허용된 Python·tests·.md 범위다. force push·ruleset·AUTONOMY_MODE 변경은 없다.
 - #95·#96·#97·#100·#101은 이전에 병합됐다. 공개 가격 수집·출력 차단, Frozen 메타데이터·원본 TARGET 보존은 유지한다.
 - #108은 GSQ-014·인수인계 문서로 병합됐다. 이후 사용자가 승인한 [#110](https://github.com/kco994553-star/Investment-System1/pull/110)에 최신 canonical을 정상 병합으로 반영하고 최종 실행 체크 6개·실행 단계 53개 전부 성공·실패 0 확인 후 병합했다. SHARE_CLASS_BASIS는 근거 기반 표시이며 자동 보정·기기/Worker 연결은 추가하지 않았다.
+
+- [#112](https://github.com/kco994553-star/Investment-System1/pull/112)는 Macro 나머지4축 원기관 조사·인수인계의 .md 전용 PR로 병합됐다. 최종 실행 체크6개·실행 단계53개 전부 성공·실패0을 확인했으며 구현·실제 수집·새6상태 규칙은 없다.
 
 ## 배포 상태
 
@@ -28,12 +30,12 @@
 | [#103](https://github.com/kco994553-star/Investment-System1/pull/103) | 이전 인수인계 현황 갱신 | 열려 있는 별도 현황 PR; 이 문서는 최신 결정·병합 결과를 반영. 닫기·병합하지 않음. |
 | [#107](https://github.com/kco994553-star/Investment-System1/pull/107) | M3 계산 계약 초안 | 코덱1의 보존된 초안; 기기·Worker 연결은 코덱1 범위. |
 | [#109](https://github.com/kco994553-star/Investment-System1/pull/109) | Worker 대시보드 단일 파일·메모리 제한 대안 | 코덱1의 별도 Worker PR; 이 작업에서 병합·배포하지 않음. |
-| [#111](https://github.com/kco994553-star/Investment-System1/pull/111) | 기술 지표 v1 | WIP. DESIGN에 개별 지표 산식·period·warm-up 미확정이 명시돼 계산 범위 확인 대기. 현재는 범위 문서만 있으며 코드·테스트는 아직 미구현; 같은 PR에서 계속한다. |
-| [#112](https://github.com/kco994553-star/Investment-System1/pull/112) | Macro 나머지 4축 원기관 조사·현재 인수인계 | Liquidity/Credit/Fiscal/FX 공식 설명 17개·발표 주기·archive/PIT 한계. 구현 없음; .md 전용으로 최종 실행 체크 모두 성공·실패 0이면 자체 병합. 실제 PR 상태는 GitHub를 참조한다. |
+| [#111](https://github.com/kco994553-star/Investment-System1/pull/111) | 현행 engine 세 계산·#105 어댑터 연결 | 완성·병합 승인 대기. 새22개+기존 일봉40개=62 통과; 전체1503·subtests358 통과. 독립 리뷰 중대 지적 없음, 최종 CI6개·실행 단계53개 성공·실패0. |
+| 이번 Research PR | 표시 전용 지표 v1·GSQ-015 | #111과 독립된 canonical 기반 코드 PR. SMA5/20/60/120·선택240, EMA20·RSI14·MACD12/26/9·Bollinger20/2σ·ATR14. 합성/TA-Lib 참조값·warm-up 검증; 공개 serializer·Model/TSV/QGV 연결 없음. 병합 승인 대기. |
 
 ## 결정 대기
 
-1. **기술 지표 v1의 기존 계산 범위**. DESIGN §3.2·§5·§10은 SMA/EMA/RSI/MACD/Bollinger/ATR의 산식·period·warm-up을 미확정으로 명시한다. 현행 engine의 마지막 수익률·마지막 5개 합·모집단형 표준편차부터 제공할지, 다른 지표의 기존 확정 정의를 제공할지 대화에서 확인 요청했다. 답변 전 새 period·산식·임계값을 선택하지 않는다. #111 완성 뒤 코드 병합은 별도 사용자 승인이다.
+1. **#111 및 별도 Research 코드 PR 병합 승인**. 사용자 결정으로 현행 세 계산과 표시 전용 기본값의 구현 범위는 확정됐다. 두 PR은 각각 완성·검증 후 보존하고 사용자 승인 없이 병합하지 않는다. Research 지표는 표시용이며 모델 채택 또는 Model/TSV/QGV 입력 승인이 아니다.
 2. 코덱1의 기기·Worker 연결 및 인증 설정 준비. 실제 비밀값·시트 ID는 대화나 저장소에 기록하지 않는다.
 3. QGV v2 착수와 forward 검증 시작 시점은 향후 사용자 결정이다. 기존 Holdout은 **UNCONFIRMED 유지·v2 검증 근거 제외**이며 에이전트는 기간을 선택·사용하지 않는다.
 4. **DART 착수 조건:** 사용자가 **10/11 18시 이후 DART_API_KEY 등록을 알리면** 시작한다. 그전에는 코드 작성·키 존재 확인·인증/API 실행을 포함해 착수하지 않는다. 현재 등록 알림은 없으며 시간 경과만으로 승인/등록을 추정하지 않는다.
@@ -44,8 +46,8 @@ SEC 주식 수와 해당 상장 주식 종류의 기준 차이가 근거로 확�
 
 ## 다음 할 일 5개
 
-1. 코덱2는 #111의 계산 범위 확인 답변 후 동일 PR에서 #105 위의 합성 기술 지표를 구현한다. 출력은 RAM 전용이며 공개 serializer를 연결하지 않는다. 미확정 지표·period·임계값은 추가하지 않는다.
-2. 코덱2는 [나머지 4축 조사](implementation/docs/macro_data_rights/REMAINING_FOUR_AXES_PRIMARY_SOURCES.md)와 이 인수인계의 문서 PR을 검증·조건부 자체 병합한다. 자료군은 후보이며 구현·실제 수집·새 6상태 규칙은 추가하지 않는다. FRED/ALFRED는 차단한다.
+1. 코덱2는 완성한 #111과 별도 Research 표시 전용 코드 PR의 사용자 병합 승인을 기다린다. 현행 engine 세 계산과 Research 표시 지표는 분리하며 출력은 RAM 전용이다.
+2. 코덱1은 향후 [Research 표시 계약](implementation/docs/technical_live_data/RESEARCH_DISPLAY_INDICATORS_V1.md)을 기기 차트에 연결할 때 role·null·가격 basis 경계를 유지한다. 이번 Python PR은 화면·Worker를 수정하지 않으며 Model/TSV/QGV·공개 serializer 연결은 금지다.
 3. 코덱1은 #106·#110의 [M3 계약](implementation/docs/daily_data_pipeline/M3_SUBSET_IMPLEMENTATION_SPEC.md)을 기기·Worker에 연결한다. N=20·10%와 근거 기반 표시를 사용하며 identity·주식 종류·통화/단위·가용 시각·권리 미확인은 차단한다. #98 M2 실제 입력·배포도 코덱1 범위다.
 4. 코덱2는 DART 등록 알림을 기다린다. 지정 시각 이후에도 사용자 알림이 없으면 착수하지 않으며 키 값을 조회·출력하지 않는다.
 5. QGV v2는 보류하고 Holdout은 사용하지 않는다. 새 코드 PR은 완성·검증 뒤 사용자 병합 승인 대기로 보존한다.

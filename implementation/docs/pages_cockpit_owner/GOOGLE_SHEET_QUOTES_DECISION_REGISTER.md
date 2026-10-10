@@ -355,3 +355,20 @@ GSQ-009의 KRX 대체 출처 후보와 나머지 경계는 유지한다. 과거 
 | 담당·대기 | 코덱2는 Python 데이터·엔진 및 문서, 코덱1은 M3 기기·Worker 연결. 후속 표시 코드 PR은 생성 후 별도 병합 승인 대기로 보존하고 이후 대기한다. |
 
 현재 Python 계산 함수의 명시 configuration/검증 경계는 유지한다. 이번 설정 확정은 실제 source mapping·권리·통화·경제적 단위·Free coverage 확인이나 기기 실행 연결 완료를 뜻하지 않는다. 시트 ID·실제 ★/Universe 목록·가격·시총·순위·Secret을 저장소에 기록하지 않는다. 기존 Holdout은 UNCONFIRMED·v2 근거 제외를 유지하며 기간 선택·사용을 하지 않는다. force push·ruleset·AUTONOMY_MODE 변경은 금지한다.
+
+
+## GSQ-015 — 26E Research 표시 전용 기본값(한국식), 모델 채택 아님 (2026-10-10 UTC)
+
+권한 근거는 이번 대화의 사용자 명시 결정 **“둘 다 진행, 단 분리”**다. GSQ-001~014와 과거 기록의 bytes를 그대로 보존하고 끝에 추가한다. **표시 전용 기본값(한국식), 모델 채택 아님**을 기록한다.
+
+| 항목 | 사용자 결정 |
+| --- | --- |
+| 현행 engine 계산 | #111에서 #105 일봉 입력 어댑터와 **전체 returns 모집단 표준편차·마지막 return·마지막5개 합**을 연결해 구현·테스트한다. 전체 returns는 기존 어댑터가 제공하는 returns(현재 last20)이며 새 지표·임계값을 추가하지 않는다. |
+| 분리된 Research 지표 | **별도 코드 PR**로 차트 Research 표시 전용 지표 v1을 구현한다. 현행 engine 세 계산의 PR과 합치거나 Research 지표를 모델 계산으로 채택하지 않는다. |
+| 이동평균 | **SMA5/20/60/120 기본 표시**, SMA240은 선택 항목·기본 OFF. EMA20. |
+| 나머지 승인 기본값 | **RSI14(Wilder), MACD12/26/9, Bollinger20·2σ(모집단 표준편차), ATR14(Wilder)**. 매수/매도 신호·새 임계값·새 모델 방법론·가중치를 승인하지 않는다. |
+| 역할·경계 | 출력에 **role=RESEARCH_DISPLAY_ONLY**. **Model/TSV/QGV 입력 연결 금지**, RAM 전용·공개 serializer 연결 금지. 기기·Worker 연결은 코덱1 후속 범위다. |
+| 거래일·warm-up | 미국·한국·일본 모두 동일한 **거래일 수 기준**. warm-up 부족은 **null(NOT_AVAILABLE)**, 0 대체 금지. 상장120거래일 미만이면 SMA120을 만들지 않는다. 달력 일수로 채우거나 결측을 보간하지 않는다. |
+| 검증·병합 | **합성 데이터 테스트 + 알려진 참조값 대조 테스트**. 실제 수집·공개 가격 산출물 연결 없이 구현한다. **코드 PR은 사용자 승인 후 병합**하며 구현 승인만으로 병합하지 않는다. |
+
+구체 초기값·가용성 처리 및 재현 방법은 [Research 표시 전용 구현 계약](../technical_live_data/RESEARCH_DISPLAY_INDICATORS_V1.md)에 명시한다. 기존 Holdout은 UNCONFIRMED·v2 검증 근거 제외를 유지하고 에이전트는 기간을 선택·사용하지 않는다. QGV v2 착수와 forward 시작 시점은 향후 사용자 결정이다. DART는 10/11 18시 이후 사용자 DART_API_KEY 등록 알림 전 착수하지 않는다. FRED/ALFRED 차단·개인 가격/파생값 공개 금지·Secret 출력 금지·force push/ruleset/AUTONOMY_MODE 변경 금지는 유지한다.
