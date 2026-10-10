@@ -180,7 +180,7 @@ function updateSettings(patch) {
   if(!settingsWritable) notice(t("설정을 저장할 수 없습니다."));
 }
 function settingsUI() {
-  return heading("SETTINGS",t("설정"))+`<section class="card">
+  return heading("SETTINGS",t("설정"))+`<div id="google-first-setup"></div><section class="card">
   <label for="display-locale">${t("표시 언어")}</label><select id="display-locale"><option value="ko-KR" ${appSettings.display_locale==="ko-KR"?"selected":""}>한국어</option><option value="en-US" ${appSettings.display_locale==="en-US"?"selected":""}>English</option></select>
   <p>${t("표시 언어는 계산 결과에 영향을 주지 않습니다.")}</p>
   <label for="source-language">${t("뉴스 원문 언어")}</label><select id="source-language">${[["all",t("전체 언어")],["ko",t("한국어 원문")],["en",t("영어 원문")]].map(([v,k])=>`<option value="${v}" ${appSettings.source_language===v?"selected":""}>${t(k)}</option>`).join("")}</select>
@@ -503,6 +503,7 @@ function render() {
 }
 function renderRoute() {
   window.PrivateHistory?.disposeAll();
+  window.GoogleSheetSetup?.disposeAll();
   notice("");syncShell();
   let [route,id]=location.hash.slice(1).split("/");route=route || "home";
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
@@ -524,6 +525,7 @@ function renderRoute() {
   if(route==="settings") {
     $("#device-backup-export").onclick=()=>void exportDeviceBackup();
     $("#device-backup-import").onchange=async e=>{try{const f=e.target.files[0];if(!f||f.size>1000000)throw Error("BACKUP_TOO_LARGE");await restoreDeviceBackup(JSON.parse(await f.text()));}catch(_){notice("BACKUP_RESTORE_FAILED");}};
+    deviceCatalog().then(catalog=>{const host=$("#google-first-setup");if(host?.isConnected)void GoogleSheetSetup.mount(host,{catalog,config:InvestmentAppConfig,locale:appSettings.display_locale});});
     attachGoogleSheetSettings();
     PrivateHistory.mountSettings($('#private-history-settings'),{locale:appSettings.display_locale});
     PrivateTrades.mountSettings($('#private-trades-settings'),{locale:appSettings.display_locale});
@@ -778,3 +780,5 @@ async function deviceAverageCost(symbol){
   const row=snapshot.themes.flatMap(t=>t.holdings).find(r=>DeviceMarket.canonical(r.security_reference)===DeviceMarket.canonical(instrument.security_reference));
   return row&&Number(row.quantity)>0&&row.currency===instrument.currency&&Number(row.average_cost)>0?Number(row.average_cost):null;
 }
+
+window.addEventListener('device-sheet-source-changed',()=>{if(location.hash==='#settings'){attachGoogleSheetSettings();PrivateTrades.mountSettings($('#private-trades-settings'),{locale:appSettings.display_locale});}});

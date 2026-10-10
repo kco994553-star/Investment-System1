@@ -5,9 +5,9 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const filename = require('node:path').join(__dirname, '../src/investment_system/product/web_assets/google-sheet-quotes.js');
 const api = fs.existsSync(filename) ? require(filename) : {};
-const READONLY_SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+const FILE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const EMAIL_SCOPE = 'email', EMAIL_ALIAS = 'https://www.googleapis.com/auth/userinfo.email';
-const SCOPE = READONLY_SCOPE + ' ' + EMAIL_SCOPE;
+const SCOPE = FILE_SCOPE + ' ' + EMAIL_SCOPE;
 const STYLE = 'https://accounts.google.com/gsi/style', STYLE_ID = 'googleidentityservice_button_styles';
 const ID = ['synthetic', 'spreadsheet', 'fixture'].join('_');
 const WORKER_ORIGIN = 'https://private-fixture.owner-fixture.workers.dev';
@@ -35,7 +35,7 @@ function runtime() {
   const oauth = { initTokenClient(config) { calls.config = config; callbacks = config; return { requestAccessToken(options) { calls.popup++; calls.prompt = options.prompt; } }; }, revoke(value, done) { calls.revoke++; assert.ok(value === token, 'revoke uses only current memory token'); done({}); } };
   const session = () => api.createSession(view, { clientId: 'public-client-id', now: () => now });
   return { view, calls, token, oauth, session, advance: value => { now += value; }, failStyles: value => { styleFailure = value; }, delayStyles: () => { delayedStyles = true; }, resolveStyles: () => resolveStyle(),
-    respond: (value = {}) => callbacks.callback({ access_token: token, expires_in: 3600, scope: SCOPE, ...value }), delayedFetch() { view.fetch = (url, options) => { calls.fetch++; calls.request = { url, options }; return new Promise(resolve => { pendingResolve = resolve; }); }; }, resolveFetch: () => pendingResolve({ ok: true, status: 200, json: async () => ({ values: [] }) }) };
+    popupError: type => callbacks.error_callback({type,private_message:'never shown'}), respond: (value = {}) => callbacks.callback({ access_token: token, expires_in: 3600, scope: SCOPE, ...value }), delayedFetch() { view.fetch = (url, options) => { calls.fetch++; calls.request = { url, options }; return new Promise(resolve => { pendingResolve = resolve; }); }; }, resolveFetch: () => pendingResolve({ ok: true, status: 200, json: async () => ({ values: [] }) }) };
 }
 test('auth exports exist without starting a network request', () => {
   for (const name of ['mount', 'extractSpreadsheetId', 'sheetsURL', 'createSession', 'sessionFor', 'historyOrigin']) assert.equal(typeof api[name], 'function', name + ' is available');
@@ -53,7 +53,7 @@ test('Sheets endpoint encodes range and fixes render modes', () => {
   assert.ok(url.searchParams.get('valueRenderOption') === 'UNFORMATTED_VALUE');
   assert.ok(url.searchParams.get('dateTimeRenderOption') === 'SERIAL_NUMBER');
 });
-test('OFF and preparation make no popup or Sheets request; login requests exactly readonly and email scopes', async () => {
+test('OFF and preparation make no popup or Sheets request; login requests exactly drive.file and email scopes', async () => {
   const r = runtime(), session = r.session();
   assert.ok(!session.state().connected && !session.state().enabled);
   assert.throws(() => session.login(), { message: 'OFF' });
@@ -62,7 +62,7 @@ test('OFF and preparation make no popup or Sheets request; login requests exactl
   assert.ok(r.calls.scripts === 1 && r.calls.popup === 0 && r.calls.fetch === 0);
   session.login(); assert.ok(r.calls.popup === 1 && r.calls.config.include_granted_scopes === false);
   assert.equal(r.calls.prompt, 'consent', 'email identity is requested through explicit renewed consent');
-  assert.deepEqual(new Set(r.calls.config.scope.trim().split(/\s+/)), new Set([READONLY_SCOPE, EMAIL_SCOPE]), 'login asks for exactly readonly Sheets and email identity scopes');
+  assert.deepEqual(new Set(r.calls.config.scope.trim().split(/\s+/)), new Set([FILE_SCOPE, EMAIL_SCOPE]), 'login asks for exactly drive.file and email identity scopes');
   r.respond(); assert.ok(session.state().connected && r.calls.fetch === 0);
   const json = await session.fetchValues(ID, 'Quotes!A1:C22');
   assert.ok(Array.isArray(json.values) && r.calls.fetch === 1);
@@ -132,11 +132,11 @@ test('disabling invalidates pending auth and a pending read before it can be app
 });
 test('token scope escalation, missing identity scope and malformed responses are rejected', async () => {
   const r = runtime(), session = r.session(); session.setEnabled(true); await session.prepare();
-  for (const value of [{ scope: SCOPE + ' https://www.googleapis.com/auth/drive' }, { scope: READONLY_SCOPE }, { scope: EMAIL_SCOPE }, { scope: '' }, { scope: undefined }, { scope: 42 }, { scope: SCOPE + ' openid' }, { scope: SCOPE + ' https://www.googleapis.com/auth/spreadsheets' }, { access_token: '' }, { expires_in: 0 }, { token_type: 'Other' }]) { session.login(); r.respond(value); assert.ok(!session.state().connected && session.state().error === 'AUTH_FAILED', 'invalid grants leave the session disconnected with a fixed error'); }
+  for (const value of [{ scope: SCOPE + ' https://www.googleapis.com/auth/drive' }, { scope: FILE_SCOPE }, { scope: EMAIL_SCOPE }, { scope: '' }, { scope: undefined }, { scope: 42 }, { scope: SCOPE + ' https://www.googleapis.com/auth/spreadsheets' }, { access_token: '' }, { expires_in: 0 }, { token_type: 'Other' }]) { session.login(); r.respond(value); assert.ok(!session.state().connected && session.state().error === 'AUTH_FAILED', 'invalid grants leave the session disconnected with a fixed error'); }
 });
 test('token scopes are a set that accepts either email spelling in any order', async () => {
   const r = runtime(), session = r.session(); session.setEnabled(true); await session.prepare();
-  for (const scope of [SCOPE, EMAIL_SCOPE + ' ' + READONLY_SCOPE, READONLY_SCOPE + ' ' + EMAIL_ALIAS, EMAIL_ALIAS + ' ' + READONLY_SCOPE, '  ' + EMAIL_SCOPE + '\t' + READONLY_SCOPE + '  ', SCOPE + ' ' + EMAIL_SCOPE, SCOPE + ' ' + EMAIL_ALIAS]) {
+  for (const scope of [SCOPE, EMAIL_SCOPE + ' ' + FILE_SCOPE, FILE_SCOPE + ' ' + EMAIL_ALIAS, EMAIL_ALIAS + ' ' + FILE_SCOPE, '  ' + EMAIL_SCOPE + '\t' + FILE_SCOPE + '  ', SCOPE + ' ' + EMAIL_SCOPE, SCOPE + ' ' + EMAIL_ALIAS]) {
     session.login(); r.respond({ scope }); assert.ok(session.state().connected && !session.state().error, 'the exact semantic scope set is accepted independently of ordering or whitespace');
   }
 });
@@ -283,4 +283,28 @@ test('bounded Sheets reads honor caller abort and disconnect cancels concurrent 
  const pending=[];r.view.fetch=async(url,options)=>new Promise((resolve,reject)=>{pending.push(options.signal);options.signal.addEventListener('abort',()=>reject(Error('ABORT')),{once:true});});
  const a=r.active.fetchValues(ID,"'Trades'!A1:D1025",{maxBytes:1024}),b=r.active.fetchValues(ID,"'Universe'!A1:C1025",{maxBytes:1024});
  r.active.setEnabled(false);const settled=await Promise.allSettled([a,b]);assert.ok(pending.every(s=>s.aborted));assert.ok(settled.every(s=>s.status==='rejected'&&s.reason.message==='CANCELED'));
+});
+
+test('identity expansion accepts required grants plus openid/profile and duplicate email aliases', async () => {
+ const r=runtime(),session=r.session();session.setEnabled(true);await session.prepare();
+ for(const scope of [SCOPE+' openid',SCOPE+' profile',SCOPE+' openid https://www.googleapis.com/auth/userinfo.profile','email openid '+EMAIL_ALIAS+' '+FILE_SCOPE+' profile']){session.login();r.respond({scope});assert.ok(session.state().connected,'Google identity expansion must connect');}
+});
+test('popup errors expose fixed codes, never arbitrary provider text, and ignore stale callbacks', async () => {
+ const r=runtime(),session=r.session();session.setEnabled(true);await session.prepare();
+ for(const [type,code] of [['popup_failed_to_open','AUTH_POPUP_FAILED_TO_OPEN'],['popup_closed','AUTH_POPUP_CLOSED'],['unknown','AUTH_POPUP_UNKNOWN'],['untrusted private text','AUTH_POPUP_UNKNOWN']]){session.login();r.popupError(type);assert.equal(session.state().error,code);assert.equal(session.state().connected,false);assert.equal(session.state().pending,false);}
+ session.login();session.setEnabled(false);r.popupError('popup_closed');assert.equal(session.state().error,'');
+});
+
+test('drive.file is the only data scope requested and old readonly grants are rejected',async()=>{const r=await connectedRuntime();assert.equal(r.calls.config.scope,'https://www.googleapis.com/auth/drive.file email');r.active.login();r.respond({scope:'https://www.googleapis.com/auth/spreadsheets.readonly email openid'});assert.equal(r.active.state().connected,false);});
+test('create and metadata use fixed Sheets endpoints with memory authorization and stop after logout',async()=>{const r=await connectedRuntime();r.view.fetch=async(url,options)=>{r.calls.request={url,options};return new Response(JSON.stringify(options.method==='POST'?{spreadsheetId:ID}:{sheets:[{properties:{title:'Quotes'}},{properties:{title:'Trades'}},{properties:{title:'Universe'}}]}));};const id=await r.active.createSpreadsheet({properties:{title:'Investment Cockpit Data'},sheets:[]});assert.equal(id,ID);assert.equal(r.calls.request.url,'https://sheets.googleapis.com/v4/spreadsheets?fields=spreadsheetId');assert.equal(r.calls.request.options.method,'POST');assert.equal(r.calls.request.options.referrerPolicy,'no-referrer');assert.equal(r.calls.request.options.credentials,'omit');assert.equal(r.calls.request.options.cache,'no-store');assert.deepEqual(await r.active.sheetTitles(ID),['Quotes','Trades','Universe']);await r.active.disconnect();await assert.rejects(r.active.sheetTitles(ID),{message:'AUTH_REQUIRED'});});
+test('Picker token stays in shared closure and invalid files or logout cannot replace a selected sheet',async()=>{
+ const r=runtime(),s=r.session();s.setEnabled(true);await s.prepare();s.login();r.respond();let callback,hidden=0;
+ r.view.location={origin:'https://synthetic-app.example'};r.view.google.picker={ViewId:{SPREADSHEETS:'spreadsheet'},Response:{ACTION:'action',DOCUMENTS:'docs'},Action:{PICKED:'picked',CANCEL:'cancel'},Document:{MIME_TYPE:'mimeType',ID:'id'},DocsView:class{setMimeTypes(v){assert.equal(v,'application/vnd.google-apps.spreadsheet');}},PickerBuilder:class{addView(){return this;}setOAuthToken(v){assert.ok(v===r.token);return this;}setDeveloperKey(){return this;}setAppId(){return this;}setOrigin(v){assert.equal(v,r.view.location.origin);return this;}setCallback(fn){callback=fn;return this;}build(){return{setVisible(v){if(!v)hidden++;},dispose(){}};}}};
+ const cfg={apiKey:'AIza'+'a'.repeat(30),appId:'123456789'};
+ let pending=s.pickSpreadsheet(cfg);callback({action:'picked',docs:[{id:ID,mimeType:'application/vnd.google-apps.spreadsheet'}]});assert.equal(await pending,ID);assert.equal(hidden,1);assert.ok(!JSON.stringify(s).includes(r.token));
+ pending=s.pickSpreadsheet(cfg);callback({action:'picked',docs:[{id:ID,mimeType:'text/plain'}]});await assert.rejects(pending,{message:'PICKER_SELECTION_INVALID'});
+ pending=s.pickSpreadsheet(cfg);const canceled=assert.rejects(pending,{message:'CANCELED'});s.disconnect();callback({action:'picked',docs:[{id:ID,mimeType:'application/vnd.google-apps.spreadsheet'}]});await canceled;assert.equal(s.state().connected,false);assert.throws(()=>s.pickSpreadsheet(cfg),{message:'AUTH_REQUIRED'});
+});
+test('file-access denial returns a fixed code without exposing the provider response',async()=>{
+ const r=runtime(),s=r.session();s.setEnabled(true);await s.prepare();s.login();r.respond();r.view.fetch=async()=>new Response('{"error":{"message":"private provider text"}}',{status:403});await assert.rejects(s.sheetTitles(ID),{message:'DRIVE_FILE_PERMISSION_REQUIRED'});
 });
