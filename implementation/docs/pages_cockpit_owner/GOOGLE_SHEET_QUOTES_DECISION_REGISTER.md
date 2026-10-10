@@ -309,3 +309,18 @@ GSQ-009의 KRX 대체 출처 후보와 나머지 경계는 유지한다. 과거 
 이번 작업의 실행 범위는 **append-only 결정 기록, 구현 명세 작성, 저장소의 metadata/문서/소스에 근거한 Holdout 보호 판정, 문서 PR 검증 및 조건 충족 병합**이다. 코드·테스트·워크플로를 수정하거나 실제 가격/통계 수집·공급자 인증·Secret 조회/출력·배포를 실행하지 않는다. force push·ruleset·`AUTONOMY_MODE` 변경, 새 방법론·가중치, Holdout 사용은 금지한다. 코덱1의 후속 code PR에 필요한 review·구현/운영 승인과 병합 경계는 별도다.
 
 산출물: [Macro 4축 구현 명세](../macro_data_rights/PHASE1_FOUR_AXES_IMPLEMENTATION_SPEC.md), [Holdout 보호 확인 실행 기록 — UNCONFIRMED](../qgv_v2_readiness/HOLDOUT_PROTECTION_CHECK_20261010.md), [M3 개인 부분집합 구현 명세](../daily_data_pipeline/M3_SUBSET_IMPLEMENTATION_SPEC.md). 구체 관심/대형주 roster, provider 실제 접근·권리, owner의 외부 보호 metadata는 확인됐다고 추정하지 않는다.
+
+
+## GSQ-012 — 26E 기기 ★ 기반 M3 1차 및 향후 forward 검증 결정 (2026-10-10 UTC)
+
+권한 근거는 이번 대화의 사용자 명시 결정이다. GSQ-001~011과 과거 기록의 bytes를 보존하고 이 결정을 끝에 추가한다. 아래 M3 1차 범위는 GSQ-011의 관심/대형주 일부·약100개 계획보다 우선한다.
+
+| 항목 | 사용자 결정 |
+| --- | --- |
+| M3 1차 | **TARGET 19종목 + 사용자 기기의 관심 기업(★) 목록**. 목록은 저장소에 기록하지 않고 기기에서 읽는다. 기존 `prefs.interests`의 작업 snapshot을 선택 입력으로 쓰며 실제 목록 제출·공개·Worker의 영구 선택 roster 복제를 요구하지 않는다. |
+| 대형주 | **추가는 후속**. 시총 계산 부하·권리 확인 후 다룬다. 현재 1차를 약100개로 채우거나 자동 확대하지 않는다. |
+| 기존 Holdout | **UNCONFIRMED 유지**, v2 검증 근거로 사용하지 않는다. 미소비/보호 확정으로 승격하지 않으며 기존 확인 기록은 당시의 근거로 보존한다. |
+| 향후 v2 검증 | 향후 누적되는 **전진(forward) 데이터**로 검증한다. **시작 시점은 v2 착수 시 사용자가 결정**한다. 에이전트는 기간을 선택·사용하지 않는다. 이번 결정으로 v2 착수·수집·검증을 실행하지 않는다. |
+| 이번 실행 | [#99의 M3 구현 명세](../daily_data_pipeline/M3_SUBSET_IMPLEMENTATION_SPEC.md)를 1차 선택 출처·기기 입력/수명·함수·테스트 수준에서 갱신한다. 문서 병합 후 대기한다. |
+
+문서 전용 PR(.md만 변경)은 최종 head의 실행된 필수 체크 전부 성공·실패0이면 자체 병합한다. code/mixed PR 병합 금지, force push·ruleset·AUTONOMY_MODE 변경 금지, 코드·테스트·워크플로 수정 금지, Secret 출력 금지, 새 방법론·가중치 및 Holdout 사용 금지는 유지한다. 이번 작업은 기기의 실제 ★ 목록·가격·개인 자료를 조회하거나 기록하지 않는다.
