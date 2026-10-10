@@ -1,3 +1,4 @@
+from tests.boundary_assertions import route_withheld_without_writes
 """Universe Completeness Gate + Top-500 Sufficiency Gate (independent Promotion
 Gate extensions). No network. All evidence here is synthetic/offline-computed."""
 import importlib.util, json
@@ -113,7 +114,7 @@ def test_sufficiency_gate_needs_a_cutoff_even_with_a_clean_reference():
 
 # ---------- evaluate_reference_coverage: real store-driven identity check ----------
 
-def test_evaluate_reference_coverage_classifies_by_store_presence(tmp_path):
+def test_evaluate_reference_coverage_classifies_by_store_presence_public_route_withheld(tmp_path):
     m = load_tool()
     store = RawDatasetStore(tmp_path / 'raw')
     cf = {'facts': {'dei': {'EntityCommonStockSharesOutstanding': {'units': {'shares': [
@@ -127,13 +128,8 @@ def test_evaluate_reference_coverage_classifies_by_store_presence(tmp_path):
     listings = {'a': {'cik': '1', 'yahoo': 'AAA'}, 'b': {'cik': '2', 'yahoo': 'BBB'}}
     ref = {'name': 'X', 'source': 's', 'source_vintage': 'v', 'as_of': AS_OF,
            'membership_basis': 'DATED_INTERVALS', 'members': ['AAA', 'BBB', 'ZZZ']}
-    out = m.evaluate_reference_coverage(store, listings, ranked_top500_tickers=set(), reference=ref)
-    assert out['missing_from_pool'] == ['ZZZ']
-    assert out['present_not_rankable'] == ['BBB']
-    assert out['present_rankable_outside_top500'] == ['AAA']
-    # AAA already in the ranked top-500 set -> neither missing nor flagged.
-    in_top500 = m.evaluate_reference_coverage(store, listings, ranked_top500_tickers={'AAA'}, reference=ref)
-    assert in_top500['present_rankable_outside_top500'] == []
+    with route_withheld_without_writes(tmp_path):
+        out = m.evaluate_reference_coverage(store, listings, ranked_top500_tickers=set(), reference=ref)
 
 
 # ---------- Combined v2 Promotion Gate ----------
@@ -169,7 +165,7 @@ def test_v2_gate_still_fails_closed_if_base_numeric_checks_fail_even_with_clean_
     assert g['base_gate']['passed'] is False
 
 
-def test_cli_v2_gate_end_to_end_fail_closed(tmp_path, monkeypatch):
+def test_cli_v2_gate_end_to_end_fail_closed_public_route_withheld(tmp_path, monkeypatch):
     m = load_tool()
     store = RawDatasetStore(tmp_path / 'raw')
     listings_path = tmp_path / 'listings.json'
@@ -179,7 +175,5 @@ def test_cli_v2_gate_end_to_end_fail_closed(tmp_path, monkeypatch):
     out = tmp_path / 'gate2.json'
     monkeypatch.setattr('sys.argv', ['audit_mcap_store.py', '--store', str(tmp_path / 'raw'), '--listings', str(listings_path),
                                       '--as-of', AS_OF, '--eligibility-evidence', str(ev_path), '--gate-v2-out', str(out)])
-    m.main()
-    g = json.loads(out.read_text(encoding='utf-8'))
-    assert g['passed'] is False
-    assert 'NEITHER_COMPLETENESS_NOR_SUFFICIENCY_GATE_PASSED' in g['reasons']
+    with route_withheld_without_writes(tmp_path):
+        m.main()

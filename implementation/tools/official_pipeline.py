@@ -41,6 +41,8 @@ def _dt(s: str) -> datetime:
 
 def load_official(as_of: str) -> tuple[object | None, dict]:
     """(Official UniverseSnapshot or None, status) for one as_of, from its own gate evidence."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     p = GE / f"gate_chain_{as_of}_real_gha.json"
     if not p.exists():
         return None, {"as_of": as_of, "status": "NO_GATE_EVIDENCE"}
@@ -119,6 +121,8 @@ def walk_forward_consistency(single_results: dict, walk_forward: dict) -> dict:
 
 
 def main() -> None:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
     ap.add_argument("--dates", required=True, help="comma-separated as_of dates, each with its own passing gate run")

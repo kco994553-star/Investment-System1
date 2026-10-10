@@ -121,6 +121,8 @@ def investigate(store: RawDatasetStore, as_of: str, ciks: list[str]) -> dict:
     """Issuers with NO market close from any permitted source (e.g. WRK 2024-06-30): what does the reference N-PORT
     report for them? Written to nport_price_investigation_<as_of>.json with status INVESTIGATION_ONLY_NOT_APPLIED.
     The gate chain never reads this file; only the user-approved exception file + nport_reported_prices apply."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     ref_p = GE / f"russell1000_nport_{as_of}.json"
     if not ref_p.exists():
         return {}
@@ -146,6 +148,8 @@ def investigate(store: RawDatasetStore, as_of: str, ciks: list[str]) -> dict:
 
 
 def main() -> None:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
     ap.add_argument("--as-of", default="2024-12-31")

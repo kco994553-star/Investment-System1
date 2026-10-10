@@ -68,7 +68,10 @@ def _section(state: str, data, source: str, status: str | None = None) -> dict:
 
 
 def fixture_bundle() -> dict:
-    b = repository_bundle()  # Track A FROZEN_SNAPSHOT universe (legacy, no producer metadata)
+    b = repository_bundle()
+    # Pure in-memory contract vectors have no dependency on actual Frozen data.
+    b['companies'] = [{'company_id': COMPANY, 'ticker': 'NVDA', 'name': 'Test identity'}]
+    b['universe'] = _section('FROZEN_SNAPSHOT', {'test_vector': True}, 'TEST VECTOR / universe')
     # (a) LIVE + methodology.status in RESEARCH_STATUSES
     b["qgv"] = _section("LIVE", {COMPANY: {"Q_score": 11.11, "G_score": 11.11, "V_score": 11.11, "total_score": 11.11,
                                            "confidence": 11.11, "coverage_state": "RESEARCH_PROBE_QGV"}},
@@ -128,6 +131,8 @@ def manifest() -> dict:
 
 
 def build_fixture(out, evidence) -> dict:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     out, evidence = Path(out).resolve(), Path(evidence).resolve()
     if out == evidence or out in evidence.parents:
         raise ValueError("evidence must be outside the served Web folder")
@@ -145,6 +150,8 @@ def build_fixture(out, evidence) -> dict:
 
 
 def main():
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--out", required=True)
     p.add_argument("--evidence", required=True)

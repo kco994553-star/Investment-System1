@@ -88,30 +88,12 @@ def test_render_errors_fall_back_to_data_unavailable():
     assert '.catch(showUnavailable)' in APP
 
 
-def test_fixture_is_assembler_shaped_and_build_is_presentation_only(tmp_path):
+def test_fixture_publication_is_withheld_before_output(tmp_path):
+    import pytest
     out, evidence = tmp_path / 'web', tmp_path / 'evidence'
-    m = fixture.build_fixture(out, evidence)
-    served = json.loads((out / 'data.json').read_text(encoding='utf-8'))
-    assert served == fixture.fixture_bundle()
-    for name in ('app.js', 'locale.js', 'style.css', 'index.html'):
-        assert (out / name).read_bytes() == (ASSETS / name).read_bytes()
-    persisted = {n: (s['state'], s['freshness'], s['reason_code']) for n, s in served['producer_manifest']['sections'].items()}
-    assert persisted['macro'] == ('LIVE', freshness.FRESH, None)
-    assert persisted['technical'] == ('LIVE', freshness.STALE, None)
-    assert persisted['changes'] == ('LIVE', freshness.FRESH, None)
-    assert persisted['leaderboard'] == ('NOT_AVAILABLE', freshness.NOT_USABLE, 'EXPIRED_NOT_USABLE')
-    assert served['leaderboard']['data'] is None and served['leaderboard']['producer']['freshness'] == freshness.NOT_USABLE
-    assert persisted['qgv'] == ('NOT_AVAILABLE', freshness.NOT_APPLICABLE, 'RESEARCH_DISPLAY_GRANT_NONE')
-    # The view-time STALE of `changes` holds for the pinned browser clock.
-    assert served['changes']['expires_at'] < m['browser_clock'].replace('Z', '+00:00')
-    raw = (out / 'data.json').read_text(encoding='utf-8')
-    assert not any(p in raw for p in fixture.WITHHELD_PROBES)
-    for name in m['variants']:
-        variant = json.loads((evidence / name).read_text(encoding='utf-8'))
-        validate_bundle(variant)
-        assert set(SECTION_NAMES) <= set(variant)
-        assert {variant[s]['state'] for s in SECTION_NAMES} <= STATES
-    assert m['research_display'] == m['frozen_grant'] == m['live_grant'] == 'NONE'
+    with pytest.raises(ValueError, match='PUBLIC_PRICE_BOUNDARY'):
+        fixture.build_fixture(out, evidence)
+    assert not out.exists() and not evidence.exists()
 
 
 def _function_body(name: str) -> str:

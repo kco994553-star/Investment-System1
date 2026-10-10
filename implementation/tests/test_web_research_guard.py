@@ -76,15 +76,12 @@ def test_fixture_methodology_markers_are_exactly_what_the_producer_contract_reje
     assert used == set(contract.RESEARCH_STATUSES)
 
 
-def test_fixture_build_is_presentation_only(tmp_path):
+def test_fixture_publication_is_withheld_before_output(tmp_path):
+    import pytest
     out, evidence = tmp_path / 'web', tmp_path / 'evidence'
-    m = fixture.build_fixture(out, evidence)
-    served = json.loads((out / 'data.json').read_text(encoding='utf-8'))
-    assert served == fixture.fixture_bundle()
-    assert served['qgv']['state'] == 'LIVE' and served['qgv']['data']['nvda']['Q_score'] == 11.11
-    assert (out / 'app.js').read_bytes() == (ASSETS / 'app.js').read_bytes()
-    assert json.loads((evidence / 'fixture-manifest.json').read_text(encoding='utf-8')) == json.loads(json.dumps(m))
-    assert m['research_display'] == m['frozen_grant'] == m['live_grant'] == 'NONE'
+    with pytest.raises(ValueError, match='PUBLIC_PRICE_BOUNDARY'):
+        fixture.build_fixture(out, evidence)
+    assert not out.exists() and not evidence.exists()
 
 
 def _function_body(name: str) -> str:
@@ -98,7 +95,7 @@ def test_guard_is_applied_on_load_and_mirrors_both_halves_of_the_contract_rule()
     # Every assignment of the in-page view D goes through guardSections (data.json is never used as is).
     assigned = re.findall(r'(?<![\w$.])D\s*=(?!=)\s*([^;]*)', APP)
     assert assigned and all(a.startswith('guardSections(') for a in assigned), assigned
-    assert 'D=guardSections(data)' in APP
+    assert 'D=guardSections(safeData)' in APP
     guard = _function_body('guardSections')
     for term in ('SECTION_NAMES', 'PUBLISHED_STATES.includes(s.state)', 'validationMarker(s)', 'researchMarker(s)',
                  'state:"NOT_AVAILABLE"', 'data:null'):

@@ -1,15 +1,9 @@
-"""Fail closed on anything outside the reviewed, immutable public Pages artifact.
+"""Fail closed on the GSQ-010 price-free public Pages artifact.
 
-Pins describe the reviewed optional Google Sheet/device-quotation WEB-only build, with ONLY ``cutoff_mcap`` and
-each universe member's ``mcap`` removed. HTML/CSS/JS use byte hashes; JSON
-uses canonical hashes so formatting and object-key order are immaterial.
-Updating public data or assets requires reviewing and updating these pins.
-
-This is an exact-artifact allowlist, not a claim to recognize arbitrary secret
-encodings. Sensitive-field and secret heuristics only explain failures with
-category counts. UI source strings and the identity/TARGET-only public actual
-catalog are approved assets; they are not device holdings. No quote or FX
-payload is approved in this cycle. Both entry points return safe receipts.
+Byte/canonical hashes protect reviewed assets. The independent public bundle
+contract rejects legacy ranks, membership order, prices and arbitrary nested
+values even if a legacy or modified payload hash is repinned. Private device
+quotation code is an asset, never permission to publish device data.
 """
 from __future__ import annotations
 
@@ -24,18 +18,22 @@ from pathlib import Path
 import re
 import stat
 import tarfile
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from investment_system.public_price_boundary import require_public_bundle, require_public_catalog, PublicPriceBoundaryError
 
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "6f966a489b348a0332acbda0e330c43d7fb0abf5345d371e90b8e54ae84c0690",
-    "app.js": "fa38393706ba208db8fca5f93709db8eb66fcbb33ac67e7b4e1dae62b04399c9",
-    "data.json": "735aadfdf26197013e1478e60974d42c920c089c19dd99f91687a0dfd38b9536",
+    "app.js": "0b11b2ada1575f0a769c8d517c0324badebdfe96b7e14d327cefb0dd3ff52505",
+    "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "e1625314c50c5891d48ce9ad1d4ac6c958022230ce27d8c8500896046c4c0c21",
     "device-market.js": "bac5297a393fcd0254266ee5144c8ce05979b9fa90c1a8a67451a1e7193e567d",
-    "entities.json": "465354a2bc2846f4d85ad6306d2dda3aa5cb5601e4d3520281ec013bf402c424",
+    "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "53d790bf12c8ef767bcfaa0a56a7f63439f354d5465dedbf339de947f7d14561",
@@ -53,6 +51,8 @@ MAX_ENTRIES = 64
 MAX_JSON_DEPTH = 64
 
 SENSITIVE_KEYS = frozenset({
+    "rank", "marketcaprank", "rankislowerbound", "vscore", "totalscore",
+    "periodreturn", "realizedreturn", "dailyreturn", "performance",
     "quantity", "quantities", "averagecost", "avgcost", "amount", "cash",
     "balance", "account", "accountnumber", "accountid", "marketvalue",
     "money", "moneyvalue", "mcap", "cutoffmcap", "marketcap",
@@ -130,6 +130,14 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         if name.endswith(".json"):
             value = json.loads(text, object_pairs_hook=_unique_pairs, parse_constant=_reject_constant)
             _inspect_json(value, violations)
+            if name in {'data.json', 'entities.json', 'actual-catalog.json'}:
+                try:
+                    if name == 'data.json':
+                        require_public_bundle(value)
+                    else:
+                        require_public_catalog(name, value)
+                except PublicPriceBoundaryError:
+                    violations['public_price_boundary'] += 1
             payload = json.dumps(
                 value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False,
             ).encode("utf-8", errors="strict")

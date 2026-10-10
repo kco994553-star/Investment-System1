@@ -7,7 +7,6 @@ NOT_AVAILABLE producers that carry the audit blocker; nothing is fabricated.
 """
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Protocol
@@ -16,7 +15,6 @@ from ..product.web_mvp import ROOT, repository_bundle
 from .contract import SECTION_NAMES, make_snapshot, not_available, validate_snapshot
 from .errors import IdentityError
 from .freshness import require_aware
-from .serialization import sha256_hex
 
 INFRA_VERSION = 'PRODUCER_INFRA_V1'
 DEFAULT_REASON = '운영 Snapshot이 연결되지 않았습니다.'  # identical to web_mvp.repository_bundle
@@ -57,8 +55,7 @@ class UnavailableProducer:
 
 @dataclass(frozen=True)
 class FrozenUniverseProducer:
-    """Track A FROZEN_VERIFIED Official Universe, loaded through the existing hash-verified
-    web_mvp.repository_bundle() path. Point-in-time; never presented as current."""
+    """Legacy producer identity retained; public price-derived universe is withheld."""
     producer_id: str = 'track_a.official_universe.frozen'
     section: str = 'universe'
     cadence: str = 'FROZEN (new as_of requires gate chain + CA review; interim policy = PROPOSAL_P02)'
@@ -69,23 +66,10 @@ class FrozenUniverseProducer:
         return repository_bundle()['companies']
 
     def produce(self, request: ProduceRequest) -> dict:
-        b = repository_bundle()  # raises on frozen hash / identity mismatch
-        u = b['universe']['data']
-        manifest = json.loads((ROOT / self.manifest_file).read_text())
-        inputs = [{'artifact_id': 'file:' + f, 'sha256': sha256_hex((ROOT / f).read_bytes()),
-                   'bytes': (ROOT / f).stat().st_size} for f in (self.snapshot_file, self.manifest_file)]
-        snap = make_snapshot(
-            producer_id=self.producer_id, producer_version=manifest['validated_source_commit'],
-            section='universe', data_state='FROZEN_SNAPSHOT',
-            as_of=datetime.fromisoformat(u['as_of'] + 'T00:00:00+00:00').isoformat(),
-            requested_as_of=request.requested_as_of.isoformat(), generated_at=request.now.isoformat(),
-            methodology={'id': u['kind'], 'version': u['universe_kind'], 'status': manifest['status']},
-            synthetic=False,
-            provenance={'source': b['universe']['source'], 'inputs': inputs,
-                        'universe_id': u['universe_id'], 'gate_evidence': u['gate_evidence']},
-            validation={'status': 'PASS', 'checks': ['freeze_manifest_sha256_match', 'universe_id_match']},
-            data=u)
-        return validate_snapshot(snap)
+        # GSQ-010: source hashes are receipts, not a grant to publish legacy values.
+        return UnavailableProducer(
+            'universe', 'PUBLIC_PRICE_BOUNDARY', 'GSQ-010: price-derived membership withheld',
+            producer_id=self.producer_id).produce(request)
 
 
 # Audit blockers (implementation/reports/producer_readiness_audit_2026-10-01.md §7).

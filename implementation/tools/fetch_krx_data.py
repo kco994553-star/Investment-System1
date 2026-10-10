@@ -28,11 +28,15 @@ ENDPOINTS={
 }
 
 def _get(url,key):
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     req=Request(url,headers={'AUTH_KEY':key,'Accept':'application/json','User-Agent':'Investment-System1/0.2'})
     with urlopen(req,timeout=30) as r:
         return r.read(),r.status,r.headers.get('Content-Type','application/json')
 
 def run(store_dir:Path,bas_dd:str,kinds:list[str],refresh=False):
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     key=os.environ.get('KRX_AUTH_KEY','').strip()
     if not key: raise RuntimeError('KRX_AUTH_KEY environment variable is required')
     if len(bas_dd)!=8 or not bas_dd.isdigit(): raise ValueError('bas_dd must be YYYYMMDD')

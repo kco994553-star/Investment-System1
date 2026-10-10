@@ -19,24 +19,18 @@ def load_tool():
 
 
 class PagesBuildTest(unittest.TestCase):
-    def test_publication_excludes_amounts_and_preserves_original_source(self):
+    def test_publication_withholds_price_derived_membership_and_order(self):
         original = repository_bundle()
         before = deepcopy(original)
         with tempfile.TemporaryDirectory() as folder:
             out = Path(folder) / 'site'
             load_tool().build_public_cockpit(out)
             public = json.loads((out / 'data.json').read_text())
-            self.assertNotIn('cutoff_mcap', public['universe']['data'])
-            self.assertEqual(len(public['universe']['data']['members']), 500)
-            self.assertTrue(all('mcap' not in row for row in public['universe']['data']['members']))
-            self.assertEqual(public['companies'], original['companies'])
-            self.assertEqual(public['universe']['state'], original['universe']['state'])
-            self.assertEqual(public['universe']['as_of'], original['universe']['as_of'])
-            self.assertEqual(public['universe']['source'], original['universe']['source'])
-            self.assertEqual([r['company_id'] for r in public['universe']['data']['members']],
-                             [r['company_id'] for r in original['universe']['data']['members']])
+            self.assertEqual(public['companies'], [])
+            self.assertIsNone(public['universe']['data'])
+            self.assertEqual(public['universe']['state'], 'NOT_AVAILABLE')
+            self.assertEqual(public, before)
         self.assertEqual(original, before)
-        self.assertEqual(repository_bundle(), before)
 
     def test_only_web_assets_and_public_identity_catalog_are_exported(self):
         with tempfile.TemporaryDirectory() as folder:

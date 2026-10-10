@@ -20,6 +20,8 @@ class EmptyHoldings:
     def held_issuer_ids(self, as_of): return frozenset()
 
 def main():
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     p=argparse.ArgumentParser();p.add_argument('--out',required=True);a=p.parse_args()
     b=demo_bundle(repository_bundle());s=standard();at=T0+timedelta(days=60)
     graph=s.ledger.graph_as_of(at)

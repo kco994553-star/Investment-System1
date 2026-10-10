@@ -70,6 +70,8 @@ def is_stooq_csv(body: bytes) -> bool:
 
 def target_symbols(store: RawDatasetStore, rows: dict, as_of: datetime, chain) -> list[str]:
     """Primary lines of eligible issuers + priced cover classes whose Yahoo chart has no as-of bar."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     listings, _ = chain.company_level_listings(store, rows)
     listings, _ = chain.eligibility_filter(store, listings, as_of)
     syms = {str(m.get("yahoo") or "") for m in listings.values()}
@@ -88,6 +90,8 @@ def target_symbols(store: RawDatasetStore, rows: dict, as_of: datetime, chain) -
 
 
 def run(store_dir: Path, as_of: datetime, symbols: list[str], chart_range: str = "5y", sleep: float = 0.5) -> dict:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     frd = _load("fetch_real_data")
     ibr = _load("import_bulk_real_data")
     store = RawDatasetStore(store_dir)
@@ -154,6 +158,8 @@ def resolve_cik_candidates(ge: Path, as_of: str) -> Path:
 
 
 def main() -> None:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
     ap.add_argument("--as-of", default="2024-12-31")

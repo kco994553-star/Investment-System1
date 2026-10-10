@@ -1,46 +1,26 @@
 name: web-state-presentation
-# Production-shaped state presentation: freshness badges, persisted withheld metadata, ko/en strings and
-# the render-error fallback. Test vectors only. No grant, no engine execution, no real data.
 on:
   pull_request:
-    paths:
-      - '.github/workflows/web-state-presentation.yml'
-      - 'implementation/src/investment_system/product/web_assets/**'
-      - 'implementation/src/investment_system/producers/**'
-      - 'implementation/tools/build_web_state_presentation_fixture.py'
-      - 'implementation/tools/web_state_presentation_browser_test.js'
-      - 'implementation/tests/test_web_state_presentation.py'
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   presentation:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          python-version: '3.11'
-      - run: python -m pip install pytest==9.1.1
-      - name: Freshness mirror, locale entries and presentation-only fixture
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Offline public boundary regression (GSQ-010)
         working-directory: implementation
-        run: PYTHONPATH=src python -m pytest -q tests/test_web_state_presentation.py
-      - name: Assembler-shaped fixture and the existing demo build
         run: |
-          python implementation/tools/build_web_state_presentation_fixture.py --out /tmp/web-state --evidence /tmp/web-state-evidence
-          python implementation/tools/build_web_mvp_demo.py --out /tmp/web-state-demo
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - run: npm install --prefix /tmp/state-browser playwright@1.58.2
-      - run: /tmp/state-browser/node_modules/.bin/playwright install --with-deps chromium
-      - name: Freshness, withheld metadata, ko/en and error fallback E2E (390px)
-        env:
-          NODE_PATH: /tmp/state-browser/node_modules
-        run: node implementation/tools/web_state_presentation_browser_test.js --dir /tmp/web-state --evidence /tmp/web-state-evidence --demo-dir /tmp/web-state-demo
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: web-state-presentation
-          path: /tmp/web-state-evidence
+          python -m pip install pytest==9.1.1 jsonschema==4.26.0
+          python -m pytest -q --tb=no tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py
+      - name: Build and inspect local price-free cockpit
+        run: |
+          python implementation/tools/build_pages_cockpit.py --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"

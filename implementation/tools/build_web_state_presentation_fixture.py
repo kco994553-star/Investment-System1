@@ -156,13 +156,13 @@ def snapshots() -> dict:
 
 
 def fixture_bundle() -> dict:
-    return assemble_bundle(FrozenUniverseProducer().companies(), snapshots(), NOW)
+    return assemble_bundle([{'company_id': COMPANY, 'ticker': 'NVDA', 'name': 'Test identity'}], snapshots(), NOW)
 
 
 def _assembled(edit) -> dict:
     snaps = snapshots()
     edit(snaps)
-    return assemble_bundle(FrozenUniverseProducer().companies(), snaps, NOW)
+    return assemble_bundle([{'company_id': COMPANY, 'ticker': 'NVDA', 'name': 'Test identity'}], snaps, NOW)
 
 
 def _expiry(form):
@@ -257,6 +257,8 @@ def manifest(bundle: dict) -> dict:
 
 
 def build_fixture(out, evidence) -> dict:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     out, evidence = Path(out).resolve(), Path(evidence).resolve()
     if out == evidence or out in evidence.parents:
         raise ValueError("evidence must be outside the served Web folder")
@@ -274,6 +276,8 @@ def build_fixture(out, evidence) -> dict:
 
 
 def main():
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--out", required=True)
     p.add_argument("--evidence", required=True)

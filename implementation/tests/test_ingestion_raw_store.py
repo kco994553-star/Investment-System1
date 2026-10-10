@@ -103,20 +103,20 @@ def test_network_runner_writes_correct_artifact_ids_with_stubbed_http(tmp_path, 
     spec.loader.exec_module(mod)
     routes = {
         mod.SEC_TICKERS_URL: (b'{"0":{"cik_str":320193,"ticker":"AAPL","title":"Apple"}}', 200),
-        mod.SEC_FACTS_URL.format(cik="0000320193"): (b'{"facts": {}}', 200),
+        mod.SEC_FACTS_URL.format(cik="0000320193"): (b'{"cik": 320193, "facts": {}}', 200),
         mod.SEC_SUBS_URL.format(cik="0000320193"): (b'{"filings": {}}', 200),
         mod.YAHOO_CHART_URL.format(symbol="AAPL", range="1y"): (json.dumps(_chart_json("AAPL", [1, 2])).encode(), 200),
     }
     _stub_urlopen(monkeypatch, mod, routes)
     monkeypatch.setattr(mod.time, "sleep", lambda s: None)
-    rep = mod.run(Path(tmp_path), ["320193"], ["AAPL"], "1y", 0.0, skip_tickers=False)
+    rep = mod.run(Path(tmp_path), ["320193"], [], "1y", 0.0, skip_tickers=False)
     assert rep["n_failed"] == 0 and rep["real_data_verified"] is False
     store = RawDatasetStore(tmp_path)
-    assert sorted(store.list_ids()) == sorted(["sec_tickers", "companyfacts:0000320193", "submissions:0000320193", "yahoo_chart:AAPL:1y"])
+    assert sorted(store.list_ids()) == sorted(["sec_tickers", "companyfacts:0000320193", "submissions:0000320193"])
     man = store.get_manifest("companyfacts:0000320193")
     assert man["source_kind"] == "SEC_COMPANYFACTS" and man["http_status"] == 200
     # Second run must not re-fetch (idempotent / doesn't waste a request budget).
-    rep2 = mod.run(Path(tmp_path), ["320193"], ["AAPL"], "1y", 0.0, skip_tickers=False)
+    rep2 = mod.run(Path(tmp_path), ["320193"], [], "1y", 0.0, skip_tickers=False)
     assert all(r["status"] == "SKIPPED_ALREADY_PRESENT" for r in rep2["log"])
 
 
@@ -130,8 +130,8 @@ def test_network_runner_fails_closed_per_artifact_not_crash(tmp_path, monkeypatc
 
     monkeypatch.setattr(mod, "urlopen", deny)
     monkeypatch.setattr(mod.time, "sleep", lambda s: None)
-    rep = mod.run(Path(tmp_path), ["320193"], ["AAPL"], "1y", 0.0, skip_tickers=False)
-    assert rep["n_ok"] == 0 and rep["n_failed"] == 4
+    rep = mod.run(Path(tmp_path), ["320193"], [], "1y", 0.0, skip_tickers=False)
+    assert rep["n_ok"] == 0 and rep["n_failed"] == 3
     assert all(r["status"] == "HTTP_403" for r in rep["log"])
     store = RawDatasetStore(tmp_path)
     assert store.list_ids() == []  # nothing partially written on failure

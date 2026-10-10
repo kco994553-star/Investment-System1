@@ -106,10 +106,12 @@ async function emptyDevice(page) {
         const { entities } = await response.json();
         const company = entities.find(entity => entity.entity_type === "COMPANY");
         const other = entities.find(entity => entity.entity_type !== "COMPANY");
-        return company && other ? ["company/" + encodeURIComponent(company.canonical_id),
-          "entity/" + encodeURIComponent(other.entity_type + ":" + other.canonical_id)] : [];
+        const bundle = await (await fetch(new URL("data.json", location.href))).json();
+        if (company || bundle.companies.length || bundle.universe.data !== null)
+          throw new Error("public membership must be withheld under GSQ-010");
+        return other ? ["entity/" + encodeURIComponent(other.entity_type + ":" + other.canonical_id)] : [];
       });
-      verify(detailRoutes.length === 2, "company and entity route coverage unavailable");
+      verify(detailRoutes.length === 1, "price-free entity route coverage unavailable");
       for (const route of ["home", "companies", "portfolio", "leaderboard", "news", "research", ...detailRoutes, "settings", "actual"]) {
         await page.goto(new URL("#" + route, base).href);
         await page.waitForFunction(() => document.querySelector("main h1, main h2, main iframe"));
