@@ -5,8 +5,8 @@
   else root.GoogleSheetQuotes = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  const READONLY_SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
-  const SCOPE = READONLY_SCOPE + ' email';
+  const FILE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+  const SCOPE = FILE_SCOPE + ' email';
   const HISTORY_SYMBOLS = new Set(['ASML','LRCX','KLAC','NVDA','AMD','AVGO','QCOM','INTC','MSFT','GOOGL','AMZN','RTX','SYK','ETN','HUBB','GEV','ROK','042700.KS','8035.T']);
   const HISTORY_RANGES = new Set(['1mo','3mo','6mo','1y','2y','5y']);
   const HISTORY_ERRORS = new Set(['CONFIG_UNAVAILABLE','AUTH_FORBIDDEN','AUTH_UNAVAILABLE','REQUEST_INVALID','ORIGIN_FORBIDDEN','RATE_LIMITED','RATE_LIMIT_UNAVAILABLE','YAHOO_BLOCKED','YAHOO_UNAVAILABLE','YAHOO_TIMEOUT','YAHOO_FORMAT_CHANGED','YAHOO_TOO_LARGE','HISTORY_UNAVAILABLE']);
@@ -48,8 +48,8 @@
     if (typeof value !== 'string') return false;
     const aliases = {'https://www.googleapis.com/auth/userinfo.email':'email','https://www.googleapis.com/auth/userinfo.profile':'profile'};
     const scopes = new Set(value.trim().split(/\s+/).map(scope => Object.hasOwn(aliases,scope)?aliases[scope]:scope));
-    const allowed = new Set([READONLY_SCOPE,'email','openid','profile']);
-    return scopes.has(READONLY_SCOPE) && scopes.has('email') && [...scopes].every(scope=>allowed.has(scope));
+    const allowed = new Set([FILE_SCOPE,'email','openid','profile']);
+    return scopes.has(FILE_SCOPE) && scopes.has('email') && [...scopes].every(scope=>allowed.has(scope));
   }
   function historyOrigin(value) {
     const label = '[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?';
@@ -67,9 +67,11 @@
   function createSession(view, options) {
     const clientId = options.clientId, now = options.now || (() => Date.now()), listeners = new Set(), controllers = new Set();
     let enabled = false, token = '', expiresAt = 0, epoch = 0, pending = false, preparing = null, timer = null, controller = null, error = '';
+    let pickerCancel = null;
     function oauth() { return view.google && view.google.accounts && view.google.accounts.oauth2; }
     function notify() { for (const listener of listeners) listener(); }
     function invalidate() {
+      if(pickerCancel){const stop=pickerCancel;pickerCancel=null;stop();}
       token = ''; expiresAt = 0; pending = false; epoch++;
       if (timer !== null) { view.clearTimeout(timer); timer = null; }
       if (controller) { controller.abort(); controller = null; }
@@ -132,6 +134,49 @@
     async function disconnect() {
       const previous = token; invalidate(); error = ''; notify();
       if (previous && oauth()) { try { oauth().revoke(previous, () => {}); } catch (_) { /* Memory is cleared even if revocation fails. */ } }
+    }
+    async function sheetRequest(path,method='GET',body=null) {
+      expire();if(!enabled||!token)fail('AUTH_REQUIRED');
+      const attempt=epoch,abort=new view.AbortController();controllers.add(abort);
+      const current=()=>enabled&&token&&epoch===attempt&&!abort.signal.aborted;
+      try{
+        const response=await view.fetch('https://sheets.googleapis.com/v4/spreadsheets'+path,{method,headers:{Authorization:'Bearer '+token,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',redirect:'error',signal:abort.signal});
+        if(!current())fail('CANCELED');
+        if(response.status===401){invalidate();error='AUTH_REQUIRED';notify();fail('AUTH_REQUIRED');}
+        if(response.status===403)fail('DRIVE_FILE_PERMISSION_REQUIRED');
+        if(!response.ok)fail(method==='POST'?'SHEET_CREATE_FAILED':'READ_FAILED');
+        const advertised=response.headers.get('content-length');if(advertised&&/^\d+$/.test(advertised)&&Number(advertised)>65536){await response.body?.cancel();fail('SOURCE_TOO_LARGE');}
+        if(!response.body)fail('READ_FAILED');const reader=response.body.getReader(),chunks=[];let length=0;
+        try{while(true){const {done,value}=await reader.read();if(done)break;length+=value.byteLength;if(length>65536||!current()){await reader.cancel();fail(length>65536?'SOURCE_TOO_LARGE':'CANCELED');}chunks.push(value);}}finally{reader.releaseLock();}
+        const bytes=new Uint8Array(length);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
+        const value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));expire();if(!current())fail('CANCELED');return value;
+      }catch(caught){if(!current()&&caught.message!=='AUTH_REQUIRED')fail('CANCELED');if(['AUTH_REQUIRED','CANCELED','DRIVE_FILE_PERMISSION_REQUIRED','SOURCE_TOO_LARGE','READ_FAILED','SHEET_CREATE_FAILED'].includes(caught.message))throw caught;fail(method==='POST'?'SHEET_CREATE_UNCERTAIN':'READ_FAILED');}
+      finally{controllers.delete(abort);}
+    }
+    async function createSpreadsheet(body){
+      if(!body||body.properties?.title!=='Investment Cockpit Data'||!Array.isArray(body.sheets)||JSON.stringify(body).length>1048576)fail('INVALID');
+      const value=await sheetRequest('?fields=spreadsheetId','POST',body);return extractSpreadsheetId(value.spreadsheetId);
+    }
+    async function sheetTitles(id){
+      if(extractSpreadsheetId(id)!==id)fail('INVALID');const value=await sheetRequest('/'+encodeURIComponent(id)+'?fields=sheets(properties(title))');
+      if(!Array.isArray(value.sheets)||value.sheets.length>200)fail('READ_FAILED');
+      const titles=value.sheets.map(s=>s?.properties?.title);if(titles.some(x=>typeof x!=='string'||x.length>100))fail('READ_FAILED');return titles;
+    }
+    function pickSpreadsheet(config){
+      expire();if(!enabled||!token)fail('AUTH_REQUIRED');const api=view.google?.picker;
+      if(!api||!config||typeof config.apiKey!=='string'||!/^AIza[A-Za-z0-9_-]{20,80}$/.test(config.apiKey)||!/^\d{1,20}$/.test(config.appId))fail('PICKER_CONFIG_INVALID');
+      if(pickerCancel)fail('PICKER_BUSY');const attempt=epoch;
+      return new Promise((resolve,reject)=>{let picker,settled=false;
+        const finish=(code,id)=>{if(settled)return;settled=true;pickerCancel=null;try{picker?.setVisible(false);picker?.dispose?.();}catch(_){}if(code)reject(Error(code));else resolve(id);};
+        pickerCancel=()=>finish('CANCELED');
+        try{const selected=new api.DocsView(api.ViewId.SPREADSHEETS);selected.setMimeTypes('application/vnd.google-apps.spreadsheet');
+          picker=new api.PickerBuilder().addView(selected).setOAuthToken(token).setDeveloperKey(config.apiKey).setAppId(config.appId).setOrigin(view.location.origin).setCallback(data=>{
+            if(attempt!==epoch||!enabled||!token){finish('CANCELED');return;}
+            const action=data&&data[api.Response.ACTION];if(action===api.Action.CANCEL){finish('PICKER_CANCELED');return;}if(action!==api.Action.PICKED)return;
+            try{const docs=data[api.Response.DOCUMENTS];if(!Array.isArray(docs)||docs.length!==1||docs[0][api.Document.MIME_TYPE]!=='application/vnd.google-apps.spreadsheet')fail('INVALID');finish(null,extractSpreadsheetId(docs[0][api.Document.ID]));}catch(_){finish('PICKER_SELECTION_INVALID');}
+          }).build();picker.setVisible(true);
+        }catch(_){finish('PICKER_UNAVAILABLE');}
+      });
     }
     async function fetchValues(id, range, options = {}) {
       expire(); if (!enabled || !token) fail('AUTH_REQUIRED');
@@ -196,7 +241,7 @@
       } finally { controllers.delete(abort); if(signal)signal.removeEventListener('abort',cancel); }
     }
     if (view.addEventListener) view.addEventListener('pagehide', () => { invalidate(); error='AUTH_REQUIRED'; notify(); });
-    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, fetchHistory, revision: () => epoch,
+    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, fetchHistory, createSpreadsheet, sheetTitles, pickSpreadsheet, revision: () => epoch,
       subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); } });
   }
   function translate(state, key) { return TEXT[key][state.locale === 'en-US' ? 1 : 0]; }
@@ -302,7 +347,7 @@
       state.id = element(state, 'input', undefined, { type: 'text', 'data-sheet-id': '', autocomplete: 'off', spellcheck: 'false', maxlength: '512' }); state.id.value = state.settings.spreadsheet_id;
       state.range = element(state, 'input', undefined, { type: 'text', 'data-sheet-range': '', autocomplete: 'off', spellcheck: 'false', maxlength: '160' }); state.range.value = state.settings.range;
       idLabel.append(state.id); rangeLabel.append(state.range);
-      state.saveButton = element(state, 'button', translate(state, 'save'), { type: 'submit', 'data-sheet-action': 'save' }); form.append(idLabel, rangeLabel, state.saveButton); form.addEventListener('submit', event => { event.preventDefault(); void saveSettings(state); });
+      state.saveButton = element(state, 'button', translate(state, 'save'), { type: 'submit', 'data-sheet-action': 'save' }); const advanced=element(state,'details',undefined,{'data-sheet-advanced':''});advanced.append(element(state,'summary',state.locale==='en-US'?'Advanced · individual sheet ID / range':'고급 · 개별 시트 ID / 범위'),idLabel,rangeLabel,state.saveButton);form.append(advanced); form.addEventListener('submit', event => { event.preventDefault(); void saveSettings(state); });
       const actions = element(state, 'div', undefined, { class: 'sheet-actions' });
       for (const action of ['prepare', 'login', 'fetch', 'disconnect']) { state[action] = element(state, 'button', translate(state, action), { type: 'button', 'data-sheet-action': action }); actions.append(state[action]); }
       state.status = element(state, 'p', '', { 'data-sheet-status': '', role: 'status' });
