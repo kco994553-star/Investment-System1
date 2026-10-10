@@ -608,6 +608,23 @@ main, .card, .grid > *, .axis-grid > *, .hub-grid > * {min-width:0;}
   #primary-nav a[aria-current="page"] .nav-flow {background: var(--accent); color: #fff;}
   .nav-device-note {display: block; margin-top: auto; padding: 12px; font-size: 12px; color: var(--muted);}
 }
+/* S03 portfolio / S04 company summary / S05 company analysis (design canvas). */
+.kv {grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: baseline;}
+.kv dd {font-variant-numeric: tabular-nums;}
+.num {font-variant-numeric: tabular-nums;}
+.badge.partial {background: #fbead2; color: #7a4600;}
+.axis-chips {list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 8px;}
+.axis-chips li {padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; overflow-wrap: anywhere;}
+.section-title {margin: 20px 0 10px;}
+.analysis-tabs button {min-height: 44px; padding: 6px 12px; border-radius: 16px; font-size: 13px;}
+.analysis-tabs button[aria-selected="true"] {background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700;}
+.analysis-panel[hidden] {display: none;}
+.subcard {margin-top: 12px; padding-top: 4px; border-top: 1px solid var(--line);}
+.ring-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 12px;}
+.ring-cell {text-align: center; min-width: 0;}
+.ring-cell svg {display: block; margin: 6px auto;}
+.combo-list {list-style: none; margin: 8px 0 0; padding: 0;}
+.combo-list li {display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere;}
 
 /* S13 official weight bars. */
 .weight-bars {margin: 8px 0;}
