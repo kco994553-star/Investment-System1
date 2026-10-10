@@ -241,3 +241,56 @@ def test_production_pins_are_bound_to_canonical_metadata_only_receipt():
     receipt = json.loads(data)
     assert receipt["authority_source_commit"] == production._CLEANUP_AUTHORITY_COMMIT
     assert {item["path"]: item["git_blob_sha1"] for item in receipt["authority_sources"]} == production._CLEANUP_AUTHORITY_PINS
+
+
+@pytest.mark.parametrize("target", [READINESS, RECEIPT])
+@pytest.mark.parametrize("kind", ["descendant_directory", "ancestor_file", "ancestor_symlink", "ancestor_gitlink", "exact_gitlink"])
+@pytest.mark.parametrize("context", ["parent_history", "index_hidden_by_worktree"])
+def test_structural_obstructions_never_count_as_exact_path_absence(repo, target, kind, context):
+    import shutil
+
+    repo.clean()
+    repo.commit()
+    cleanup_head = repo.git("rev-parse", "HEAD").strip()
+    path = repo.root / target
+    obstruction = path.parent if kind.startswith("ancestor_") else path
+    if obstruction.is_dir():
+        shutil.rmtree(obstruction)
+    elif obstruction.exists():
+        obstruction.unlink()
+    if kind == "descendant_directory":
+        repo.write(target + "/nested/sentinel.txt", b"independent structural sentinel\n")
+    elif kind == "ancestor_file":
+        obstruction.write_bytes(b"independent non-directory ancestor\n")
+    elif kind == "ancestor_symlink":
+        obstruction.symlink_to("unresolved-independent-target")
+    repo.git("add", "-A")
+    if kind.endswith("gitlink"):
+        repo.git("update-index", "--add", "--cacheinfo", "160000," + cleanup_head + "," + obstruction.relative_to(repo.root).as_posix())
+    if context == "parent_history":
+        repo.git("commit", "-qm", "Synthetic obstructed state")
+        obstructed_head = repo.git("rev-parse", "HEAD").strip()
+        state = guard._protected_tree(obstructed_head, repo.cfg)
+    else:
+        state = guard._protected_index(repo.cfg)
+    # Independently inspect occupancy before removing the physical obstruction.
+    assert target in state, "a structural obstruction was misclassified as absence"
+    assert not guard._regular_entry(state[target])
+    shutil.rmtree(repo.root / "implementation")
+    repo.write(RECEIPT, repo.authority)
+    if context == "parent_history":
+        # Restore the exact known index even when Git still sees a submodule
+        # at an ancestor; git add alone treats that location as a gitlink.
+        repo.git("read-tree", cleanup_head)
+        repo.git("commit", "-qm", "Synthetic restored cleanup state")
+    assert repo.violations(), "a hidden parent/index obstruction was accepted"
+
+
+def test_normal_cleanup_path_ancestor_directories_remain_allowed(repo):
+    repo.clean()
+    repo.commit()
+    # Unrelated regular siblings imply normal ancestor trees, not obstructions.
+    repo.write("implementation/reports/gate_evidence/public-metadata.txt", b"independent metadata\n")
+    repo.write("implementation/docs/public_price_boundary/public-metadata.txt", b"independent metadata\n")
+    repo.commit()
+    assert not repo.violations()

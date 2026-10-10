@@ -4,15 +4,12 @@ Run from the repository root. The generated verification uses exclusive create;
 it cannot replace a previous receipt. Captured sources are never rewritten.
 """
 
-# GSQ-010: retained historical algorithm; removed inputs cannot be replayed.
-from pathlib import Path as _CleanupPath
+# GSQ-010: this historical entrypoint is retired even if old paths reappear.
+# Original algorithms remain below for provenance; no replay is authorized here.
 import json as _cleanup_json
 import sys as _cleanup_sys
-_cleanup_root = next(p for p in _CleanupPath(__file__).resolve().parents if p.name == "implementation").parent
-_cleanup_removed_inputs = ['implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/IMMUTABLE_RAW_ANOMALIES_v0.3.json']
-if any(not (_cleanup_root / p).is_file() for p in _cleanup_removed_inputs):
-    print(_cleanup_json.dumps({"status": "NOT_AVAILABLE", "reason": "GSQ-010: archived inputs removed"}))
-    _cleanup_sys.exit(2)
+print(_cleanup_json.dumps({"status": "NOT_AVAILABLE", "reason": "GSQ-010: archived inputs removed"}))
+_cleanup_sys.exit(2)
 
 import hashlib
 import json

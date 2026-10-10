@@ -102,7 +102,9 @@ def test_default_public_bundle_never_needs_deleted_frozen_payloads():
 
 
 @pytest.mark.parametrize("consumer", json.loads((DOCS / "ARCHIVED_CONSUMERS.json").read_text())["consumers"])
-def test_retired_archived_consumers_stop_before_any_payload_or_process_access(consumer, monkeypatch, capsys):
+@pytest.mark.parametrize("input_presence", [False, True])
+@pytest.mark.parametrize("run_name", ["__main__", "independent_import_probe"])
+def test_retired_archived_consumers_stop_before_any_payload_or_process_access(consumer, input_presence, run_name, monkeypatch, capsys):
     import runpy
     import socket
     import subprocess
@@ -110,11 +112,19 @@ def test_retired_archived_consumers_stop_before_any_payload_or_process_access(co
     def forbidden(*args, **kwargs):
         raise AssertionError("retired consumer attempted an input, subprocess, or network access")
 
+    presence_probes = []
+
+    def presence(*args, **kwargs):
+        presence_probes.append(True)
+        return input_presence
+
+    monkeypatch.setattr(Path, "is_file", presence)
     monkeypatch.setattr(Path, "read_text", forbidden)
     monkeypatch.setattr(Path, "read_bytes", forbidden)
     monkeypatch.setattr(socket.socket, "connect", forbidden)
     monkeypatch.setattr(subprocess, "Popen", forbidden)
     with pytest.raises(SystemExit) as stopped:
-        runpy.run_path(str(ROOT / consumer["path"]), run_name="__main__")
+        runpy.run_path(str(ROOT / consumer["path"]), run_name=run_name)
     assert stopped.value.code == 2
     assert json.loads(capsys.readouterr().out) == {"status": "NOT_AVAILABLE", "reason": "GSQ-010: archived inputs removed"}
+    assert not presence_probes, "retirement must not depend on input existence"

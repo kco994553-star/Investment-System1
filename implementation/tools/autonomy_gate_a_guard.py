@@ -635,9 +635,20 @@ def _safe_git_path(raw_path: bytes) -> str:
     return path
 
 
+def _cleanup_structural_obstructions(path: str, kind: str) -> set[str]:
+    """A tree at a cleanup leaf or a non-directory ancestor is not absence."""
+    return {
+        target for target in (_CLEANUP_READINESS_PATH, _CLEANUP_RECEIPT_PATH)
+        if (path == target and kind == "tree")
+        or path.startswith(target + "/")
+        or (target.startswith(path + "/") and kind != "tree")
+    }
+
+
 def _protected_tree(tree: str, cfg: dict) -> dict:
     state = {}
-    for entry in _guard_git_bytes(["ls-tree", "-r", "--full-tree", "-z", tree]).split(b"\0"):
+    obstructed = set()
+    for entry in _guard_git_bytes(["ls-tree", "-r", "-t", "--full-tree", "-z", tree]).split(b"\0"):
         if not entry:
             continue
         try:
@@ -646,13 +657,18 @@ def _protected_tree(tree: str, cfg: dict) -> dict:
         except ValueError:
             raise GuardError("invalid protected-content tree metadata") from None
         path = _safe_git_path(raw_path)
+        obstructed.update(_cleanup_structural_obstructions(path, kind.decode("ascii")))
+        if kind == b"tree":
+            continue  # Ordinary ancestor directories are not protected leaf files.
         if _touches(path, cfg) or oid.decode("ascii") == _CLEANUP_READINESS_BLOB_SHA1:
             state[path] = (mode.decode("ascii"), kind.decode("ascii"), oid.decode("ascii"))
+    state.update({path: ("INVALID", "structural-obstruction", b"") for path in obstructed})
     return state
 
 
 def _protected_index(cfg: dict) -> dict:
     state = {}
+    obstructed = set()
     for entry in _guard_git_bytes(["ls-files", "--stage", "-z"]).split(b"\0"):
         if not entry:
             continue
@@ -662,10 +678,16 @@ def _protected_index(cfg: dict) -> dict:
         except ValueError:
             raise GuardError("invalid protected-content index metadata") from None
         path = _safe_git_path(raw_path)
+        kind = "commit" if mode == b"160000" else "tree" if mode == b"040000" else "blob"
+        affected = _cleanup_structural_obstructions(path, kind)
+        obstructed.update(affected)
+        if affected and stage != b"0":
+            raise GuardError("protected-content verification requires a resolved index")
         if _touches(path, cfg) or oid.decode("ascii") == _CLEANUP_READINESS_BLOB_SHA1:
             if stage != b"0" or path in state:
                 raise GuardError("protected-content verification requires a resolved index")
-            state[path] = (mode.decode("ascii"), "commit" if mode == b"160000" else "blob", oid.decode("ascii"))
+            state[path] = (mode.decode("ascii"), kind, oid.decode("ascii"))
+    state.update({path: ("INVALID", "structural-obstruction", b"") for path in obstructed})
     return state
 
 
@@ -790,6 +812,8 @@ def _protected_transition(before: dict, after: dict, cfg: dict, blob_cache: dict
     for state in (before, after):
         receipt = state.get(_CLEANUP_RECEIPT_PATH)
         readiness = state.get(_CLEANUP_READINESS_PATH)
+        if any(entry is not None and not _regular_entry(entry) for entry in (receipt, readiness)):
+            invalid.append("cleanup paths require regular leaf artifacts or exact absence, without structural obstruction")
         if receipt is not None and (not receipt_valid(state) or (readiness is not None and not original_readiness(readiness))):
             invalid.append("cleanup requires the exact pinned regular authority receipt and legacy preimage or absence")
         if cleanup_authority and readiness is None and not receipt_valid(state):

@@ -5,15 +5,12 @@ Run from anywhere: python -B <this file>. The receipt is printed to stdout.
 """
 from __future__ import annotations
 
-# GSQ-010: retained historical algorithm; removed inputs cannot be replayed.
-from pathlib import Path as _CleanupPath
+# GSQ-010: this historical entrypoint is retired even if old paths reappear.
+# Original algorithms remain below for provenance; no replay is authorized here.
 import json as _cleanup_json
 import sys as _cleanup_sys
-_cleanup_root = next(p for p in _CleanupPath(__file__).resolve().parents if p.name == "implementation").parent
-_cleanup_removed_inputs = ['implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json', 'implementation/reports/gate_evidence/ca_unit_policy_v1.json']
-if any(not (_cleanup_root / p).is_file() for p in _cleanup_removed_inputs):
-    print(_cleanup_json.dumps({"status": "NOT_AVAILABLE", "reason": "GSQ-010: archived inputs removed"}))
-    _cleanup_sys.exit(2)
+print(_cleanup_json.dumps({"status": "NOT_AVAILABLE", "reason": "GSQ-010: archived inputs removed"}))
+_cleanup_sys.exit(2)
 
 
 import ast
