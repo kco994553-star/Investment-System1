@@ -43,6 +43,8 @@ jobs:
           node implementation/tools/google_sheet_auth_node_test.js
           node implementation/tools/google_sheet_setup_node_test.js
           node implementation/tools/private_history_node_test.js
+          node implementation/tools/private_history_fallback_node_test.js
+          node --test implementation/worker/tests/*.test.mjs
           node implementation/tools/research_indicators_node_test.js
           node implementation/tools/technical_chart_node_test.js
           node implementation/tools/private_trades_node_test.js
@@ -54,6 +56,7 @@ jobs:
           node implementation/tools/technical_chart_browser_test.js
           node implementation/tools/private_trades_browser_test.js
           node implementation/tools/private_history_browser_test.js
+          node implementation/tools/private_history_fallback_browser_test.js
           node implementation/tools/google_login_browser_test.js
           node implementation/tools/google_sheet_setup_browser_test.js
           (cd implementation && PYTHONPATH=src python -m tests.build_sec_m2_candidate_fixture --out "$RUNNER_TEMP/m2-test-sites")

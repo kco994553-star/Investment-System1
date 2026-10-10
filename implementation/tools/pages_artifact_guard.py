@@ -29,8 +29,8 @@ from investment_system.product.sec_m2_candidates import require_public_candidate
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
     "google-sheet-setup.js": "6627c571debea9b76daef4c1123aa9076b2fa025be6cd637150ec5510f1f05aa",
-    "private-trades.js": "8df2f699fdff4a7748867bd77af36a029181aa3728b336893fbb70ee7ee6bb82",
-    "technical-chart.js": "5819ccdff1573ef6c2009160de518f61c874126658f14576164a85e141357705",
+    "private-trades.js": "86d59b4c5ef341ab47f1892fe65b483ca8256e367cfde06e1c9a0b580530fb9f",
+    "technical-chart.js": "64b581fd186cdcb39f31def58412052dfa777dc2920a4f2432c1842b19c65eb8",
     "chart-indicators.js": "30cf6571f32c0496acd247099feb5f71fce0acf8870dcd78781018b872291fcc",
     "device-backup.js": "d8229be35d744153ecd5cda57ca700aac080297bd3c80d7f07d076ba35d63323",
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
@@ -44,12 +44,12 @@ APPROVED_SHA256 = {
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "91f7e41be40eee58ea675b84d93156ca9d30f28415fd16ea806ed4c9e1e0df79",
+    "google-sheet-quotes.js": "a944575fcbd4edb5269fe76da985c87e0805e5e392fd488d2a269789ab35b4d1",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
     "index.html": "b41b6c6e68ed941bf4466752c5d03c3d48f68dd471cfa437eb5f83427f002743",
     "locale.js": "0e27312c7885dd1edbaf5c5eed939ba4b642695e5541653a21c786dcff9089fc",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
-    "private-history.js": "5c08a58d38b0be1cc757307f48ca8e98f048592421a9fa54adf897957b07d871",
+    "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "035930c2bdeb760f768562f8a9fb6b7aec703bc4663392b8f91db5796145b56e",
 }

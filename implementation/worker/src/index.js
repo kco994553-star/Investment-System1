@@ -153,6 +153,60 @@ function normalizeHistory(payload, symbol, range, readAt) {
   };
 }
 
+// Provider dates are session labels, not intraday execution timestamps.
+function calendarDate(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const time = Date.parse(value + 'T00:00:00Z');
+  return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === value ? value : null;
+}
+
+function localDate(time, timezone) {
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(time);
+  const get = (name) => parts.find((p) => p.type === name).value;
+  return get('year') + '-' + get('month') + '-' + get('day');
+}
+
+function dateWindow(range, readAt, timezone) {
+  const end = localDate(readAt, timezone), date = new Date(end + 'T00:00:00Z'), day = date.getUTCDate();
+  date.setUTCDate(1);
+  date.setUTCMonth(date.getUTCMonth() - ({ '1mo': 1, '3mo': 3, '6mo': 6, '1y': 12, '2y': 24, '5y': 60 })[range]);
+  const last = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate();
+  date.setUTCDate(Math.min(day, last));
+  return { start: date.toISOString().slice(0, 10), end };
+}
+
+function fallbackBar(row, day, end, code, adjusted = null) {
+  const invalid = () => { throw new Failure(code, 502); };
+  const fields = ['open', 'high', 'low', 'close'];
+  if (!calendarDate(day) || !fields.every((k) => typeof row[k] === 'number' && Number.isFinite(row[k]) && row[k] > 0)
+    || row.low > Math.min(row.open, row.close) || row.high < Math.max(row.open, row.close) || row.low > row.high
+    || typeof row.volume !== 'number' || !Number.isFinite(row.volume) || row.volume < 0
+    || (adjusted !== null && (typeof adjusted !== 'number' || !Number.isFinite(adjusted) || adjusted <= 0))) invalid();
+  return { timestamp: Date.parse(day + 'T00:00:00Z') / 1000, session_date: day,
+    open: row.open, high: row.high, low: row.low, close: row.close, adjusted_close: adjusted, volume: row.volume,
+    session_status: day < end ? 'COMPLETE' : 'UNKNOWN' };
+}
+
+function fallbackResult(provider, symbol, range, readAt, exchange, bars) {
+  if (!bars.length) throw new Failure('HISTORY_UNAVAILABLE', 404);
+  const market = MARKETS.get(symbol);
+  return { schema: 'private-history/1', provider, symbol, range, currency: market.currency, exchange,
+    timezone: market.timezone, interval: '1d', basis: 'RAW_CLOSE', delay_status: 'UNKNOWN',
+    timestamp_kind: 'PROVIDER_SESSION_LABEL', read_at: new Date(readAt).toISOString(), bars };
+}
+
+function providerSecret(env, name) {
+  const value = env[name];
+  return typeof value === 'string' && /^[\x21-\x7e]{1,4096}$/.test(value) ? value : null;
+}
+
+function krxNumber(value) {
+  if (typeof value !== 'string' || !/^(?:\d+|[1-9]\d{0,2}(?:,\d{3})+)(?:\.\d+)?$/.test(value)) throw new Failure('KRX_FORMAT_CHANGED', 502);
+  const result = Number(value.replaceAll(',', ''));
+  if (!Number.isFinite(result)) throw new Failure('KRX_FORMAT_CHANGED', 502);
+  return result;
+}
+
 export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.now, setTimeout: schedule = globalThis.setTimeout, clearTimeout: cancel = globalThis.clearTimeout } = {}) {
   async function timed(milliseconds, code, status, operation) {
     const controller = new AbortController();
@@ -223,6 +277,65 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     }
   }
 
+  async function fallbackHistory(symbol, range, env, yahooError) {
+    const provider = US_SYMBOLS.includes(symbol) ? 'TIINGO' : symbol === '042700.KS' ? 'KRX' : null;
+    const secret = provider && providerSecret(env, provider + '_API_KEY');
+    // Existing installs remain Yahoo-only until the corresponding Secret is set.
+    if (!secret || !yahooError || !(yahooError.code.startsWith('YAHOO_') || yahooError.code === 'HISTORY_UNAVAILABLE')) throw yahooError;
+    if (provider === 'KRX' && range !== '1mo') throw new Failure('KRX_RANGE_UNSUPPORTED', 422);
+    const readAt = now(), window = dateWindow(range, readAt, MARKETS.get(symbol).timezone);
+    try {
+      return await timed(15_000, provider + '_TIMEOUT', 504, async (signal) => {
+        const request = async (url, limit = MAX_BODY_BYTES) => {
+          if (signal.aborted) throw new Failure(provider + '_TIMEOUT', 504);
+          const response = await fetchImpl(url, { ...NO_CACHE, method: 'GET', signal,
+            headers: provider === 'TIINGO' ? { Accept: 'application/json', Authorization: 'Token ' + secret } : { Accept: 'application/json', AUTH_KEY: secret } });
+          if (!response.ok) return closeAndFail(response, provider + '_UNAVAILABLE', 503);
+          return readJson(response, limit, provider + '_FORMAT_CHANGED', provider + '_TOO_LARGE', 502);
+        };
+        if (provider === 'TIINGO') {
+          const root = 'https://api.tiingo.com/tiingo/daily/' + symbol.toLowerCase();
+          const meta = await request(root, 32 * 1024);
+          if (!meta || typeof meta.ticker !== 'string' || meta.ticker.toUpperCase() !== symbol
+            || !['NASDAQ', 'NYSE', 'NYSE ARCA', 'NYSE MKT', 'BATS'].includes(meta.exchangeCode)) throw new Failure('TIINGO_FORMAT_CHANGED', 502);
+          const rows = await request(root + '/prices?startDate=' + window.start + '&endDate=' + window.end + '&resampleFreq=daily');
+          if (!Array.isArray(rows)) throw new Failure('TIINGO_FORMAT_CHANGED', 502);
+          if (rows.length > MAX_BARS) throw new Failure('TIINGO_TOO_LARGE', 502);
+          let previous = '';
+          const bars = rows.map((row) => {
+            if (!row || typeof row.date !== 'string' || !/^\d{4}-\d{2}-\d{2}T00:00:00(?:\.000)?Z$/.test(row.date)) throw new Failure('TIINGO_FORMAT_CHANGED', 502);
+            const day = row.date.slice(0, 10);
+            if (day <= previous || day < window.start || day > window.end) throw new Failure('TIINGO_FORMAT_CHANGED', 502);
+            previous = day;
+            return fallbackBar(row, day, window.end, 'TIINGO_FORMAT_CHANGED', row.adjClose === undefined ? null : row.adjClose);
+          });
+          return fallbackResult('Tiingo EOD', symbol, range, readAt, meta.exchangeCode, bars);
+        }
+        const bars = [], start = Date.parse(window.start + 'T00:00:00Z'), end = Date.parse(window.end + 'T00:00:00Z');
+        // One market-wide response per calendar day. No long-range truncation or cache.
+        if ((end - start) / 86400000 + 1 > 32) throw new Failure('KRX_RANGE_UNSUPPORTED', 422);
+        for (let time = start; time <= end; time += 86400000) {
+          const date = new Date(time);
+          if ([0, 6].includes(date.getUTCDay())) continue;
+          const day = date.toISOString().slice(0, 10), compact = day.replaceAll('-', '');
+          const payload = await request('https://data-dbg.krx.co.kr/svc/apis/sto/stk_bydd_trd?basDd=' + compact, 1024 * 1024);
+          if (!payload || !Array.isArray(payload.OutBlock_1) || payload.OutBlock_1.length > 5000) throw new Failure('KRX_FORMAT_CHANGED', 502);
+          const rows = payload.OutBlock_1.filter((row) => row && row.ISU_CD === '042700');
+          if (rows.length > 1) throw new Failure('KRX_FORMAT_CHANGED', 502);
+          if (!rows.length) continue; // Holidays and missing listings remain absent.
+          const row = rows[0];
+          if (row.BAS_DD !== compact || row.MKT_NM !== 'KOSPI') throw new Failure('KRX_FORMAT_CHANGED', 502);
+          bars.push(fallbackBar({ open: krxNumber(row.TDD_OPNPRC), high: krxNumber(row.TDD_HGPRC), low: krxNumber(row.TDD_LWPRC),
+            close: krxNumber(row.TDD_CLSPRC), volume: krxNumber(row.ACC_TRDVOL) }, day, window.end, 'KRX_FORMAT_CHANGED'));
+        }
+        return fallbackResult('KRX OPEN API', symbol, range, readAt, 'KOSPI', bars);
+      });
+    } catch (error) {
+      if (error instanceof Failure) throw error;
+      throw new Failure(provider + '_UNAVAILABLE', 503);
+    }
+  }
+
   return async function handle(request, env) {
     const origin = request.headers.get('Origin');
     if (origin !== ORIGIN) return failureResponse(new Failure('ORIGIN_FORBIDDEN', 403));
@@ -246,7 +359,9 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       if (admission.denied) return failureResponse(new Failure('RATE_LIMITED', 429), origin, { 'Retry-After': String(admission.retryAfter) });
       let response;
       try {
-        const result = await history(symbol, range);
+        let result;
+        try { result = await history(symbol, range); }
+        catch (error) { result = await fallbackHistory(symbol, range, env, error); }
         response = new Response(JSON.stringify(result), { status: 200, headers: headers(origin) });
       } catch (error) { response = failureResponse(error instanceof Failure ? error : new Failure('YAHOO_UNAVAILABLE', 503), origin); }
       finally {
