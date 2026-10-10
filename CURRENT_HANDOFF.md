@@ -1,75 +1,73 @@
 # 현재 인수인계
 
-확인일: **2026-10-10 UTC**. 현재 상태는 이 파일에서 시작하고 운영은 [WORKING_RULES.md](WORKING_RULES.md), 실행 순서는 [실행 로드맵 v2](implementation/docs/ROADMAP_2026Q4.md)를 따른다. canonical의 26E는 [GSQ-014까지](implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md)이며, 최신 대화의 **GSQ-015 ‘표시 전용 기본값(한국식), 모델 채택 아님’** 기록은 [#115](https://github.com/kco994553-star/Investment-System1/pull/115)에 포함돼 병합 대기다. 이번 로드맵 정리는 새 GSQ·receipt·fingerprint를 만들지 않는다.
+확인일: **2026-10-10 UTC**. 현재 상태는 이 파일에서 시작하고 [WORKING_RULES.md](WORKING_RULES.md)·[실행 로드맵 v2](implementation/docs/ROADMAP_2026Q4.md)를 따른다. canonical26E는 [GSQ-014까지](implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md)이며, GSQ-015 ‘표시 전용 기본값(한국식), 모델 채택 아님’은 **#115 병합 대기**다. 작은 구현 변경에 새 GSQ·receipt·fingerprint를 만들지 않았다.
 
-## 기준 HEAD
+## 기준 HEAD·운영 경계
 
-- 기본 브랜치: `claude/investment-system-top500-validation-alrugm`.
-- 확인한 원격 canonical HEAD: **`67e9d4f28cffa2f62c343ed0f7cafe5face0eb19`** (#117 병합 후). 이 현황 문서 PR 자체의 병합 HEAD는 해당 GitHub PR에서 확인한다.
-- 코덱1 #98 병합 확인 후 사용자 승인 순서 #104→#105→#106을 병합했고 #108 GSQ-014, #110 근거 있는 SHARE_CLASS_BASIS, #112 원기관 Macro 후속4축 출처 조사가 병합됐다. 각 코덱2 병합의 최종 실행 체크·단계 성공·실패0을 확인했다.
-- #95·#96·#97·#100·#101은 병합된 기준선이다. #102·#113·#114·#116·#117도 GitHub metadata에서 병합을 확인했다. 코덱1 변경분을 수정하지 않고 현재 상태에 반영한다. Frozen·원본 TARGET·공개 가격 차단 유지, force push·ruleset·AUTONOMY_MODE 변경 없음.
-- #111·#115는 **열림·미병합**이다. 최신 사용자 선택에 따라26E 미변경 PR은 최종 필수 체크 성공·실패0이면 자체 병합 가능하며, GSQ-015 기록을 포함한 #115는 별도 승인 대기다. 최신 코드가 canonical에 들어갔다고 간주하지 않는다.
+- canonical: `claude/investment-system-top500-validation-alrugm`. 확인한 원격 HEAD **`3e99e06194902d36667f9f1c0f6823a3407a377f`** (#120 병합 후). 이 상태 문서 PR 자체의 병합 HEAD는 GitHub에서 확인한다.
+- 코덱1 #98 확인 후 승인 순서 #104→#105→#106, 이어 #108·#110·#112를 병합했다. 이번 로드맵 **#118도 병합**했고 #103·#107은 지시대로 닫았다. #109는 이미 CLOSED이며 코덱1에게 종료 유지 확인만 요청했다.
+- 코덱1 #113·#114·#116·#117·#119·#120 병합을 metadata에서 확인했다. #119는 candle/MA/기기 AVG, #120은 비공개 Trades1회 읽기·RAM B/S 표시다. 코드와 실제 본인 기기 운영 성공은 구분한다.
+- 코덱2 수정은 허용된 Python src(웹 제외)·관련 tests/tools·문서다. Worker/web_assets/workflows·Frozen/TARGET·가중치·AUTONOMY_MODE·ruleset·force push 변경 없음. 실제 키/계정/시트·가격/환율·provider 관측치 수집·배포·Holdout 사용 없음.
+- **26E 미변경 PR은 실행된 필수 체크 모두 성공·실패0이면 자체 병합 가능**하다는 최신 사용자 선택을 적용한다. 코드 PR은 아래 canonical CSP 회귀 때문에 현재 자체 병합을 보류했으며26E를 바꾸는 #115는 사용자 병합 승인 대기다.
 
-## 배포·입력 상태
+## 현재 PR·검증
 
-- #113은 검증된 Worker에 앱 private history를 연결하고 email 재동의를 추가한 코덱1 PR이다. #114는 public artifact·브라우저 검증 후 수동 Pages 게시 경로다. 이번 작업은 GitHub metadata·저장소 근거만 확인했으며 실제 Worker/Pages 조회·배포·키·계정·개인 시트 호출은 실행하지 않았다.
-- #103의 Worker 실행38018407666 보고는 당시 배포 성공/마지막 무인증 검사 실패(`ANONYMOUS_CHECK_CACHE_FAILED`) 기록이다. 당시 private history OFF·설정 미준비를 현재 앱 상태로 재사용하지 않는다. 현재 서비스 성공은 코덱1의 후속 운영 검증과 구분해 확인해야 한다.
-- SEC M1은 US17 수동 취득 CLI·보존/replay 구현이 있고 #98은 가격 없는 Q/G 후보 표시다. 실제 취득·일일 Actions 운영은 미확인/미구현이며 V는 NOT_AVAILABLE다.
-- Macro #104는 원기관4축 raw 입력/48칸 근거 계약, #112는 후속4축 출처 조사다. 실제8축 국면 계산·producer·앱 연결은 완료되지 않았다. FRED/ALFRED는 차단한다.
-- #116은 기기 관심·그룹·포트폴리오·안전 설정의 통합 백업/불러오기를 연결했고 #117은 표시 전용 JS 지표·합성 참조 대조를 병합했다. 기존 Python #115는 여전히 미병합이다. 추가 범위와 통합 복원 동작을 확인하되 M3 가격/파생 결과·시트 ID·토큰/키는 백업 제외다.
+사용자가 기존 분리를 확정했다. **#111은 현행 엔진 세 계산만**, Python 표시 참조·합성 JSON 벡터는 **#115에만** 포함한다. 아래 구현은 열린 PR이며 canonical에 들어갔다고 간주하지 않는다.
 
-## 열린 PR 및 정리
+| PR | 내용·상태 | 관련 검증 |
+| --- | --- | --- |
+| [#118](https://github.com/kco994553-star/Investment-System1/pull/118) | 실행 로드맵 v2·이전 PR 정리, **병합** | 최종 필수6개/실행53단계 성공·실패0, .md만 변경 |
+| [#111](https://github.com/kco994553-star/Investment-System1/pull/111) | 현행 returns 모집단표준편차·마지막return·마지막5합, OPEN | 합성/기존 입력62개 통과 |
+| [#115](https://github.com/kco994553-star/Investment-System1/pull/115) | Research 표시 Python·GSQ-015 + Python 참조/JSON 벡터, OPEN·승인 대기 |130개 통과; canonical JS 대조8120값/진단0실패 |
+| [#121](https://github.com/kco994553-star/Investment-System1/pull/121) | US17 SEC companyfacts/submissions 수집 모듈·진입점, OPEN |171개 통과; 모의 transport·retry/rate·값 없는 오류 |
+| [#123](https://github.com/kco994553-star/Investment-System1/pull/123) | SEC10-Q/10-K 제출 패턴 **예상 시기**·확정일 아님, OPEN |31개 통과 |
+| [#125](https://github.com/kco994553-star/Investment-System1/pull/125) | 기존 v1 가격 인자 V 순수 함수·RAM, OPEN |52개 통과 |
+| [#127](https://github.com/kco994553-star/Investment-System1/pull/127) | 공식 v1 축내부 비중 복사본·사용자 합100·결측수·PREVIEW, OPEN |57개 통과(신규29+v1 15+PIL13) |
+| [#128](https://github.com/kco994553-star/Investment-System1/pull/128) | 정부 raw8축 화면 경계·합성 기존 Macro engine 연결·후속4축 공급 payload 파서, OPEN |93개 통과 |
+| [#129](https://github.com/kco994553-star/Investment-System1/pull/129) | 사용자 선택 manager13F 정보표·분기 **보고 수량 변화**, OPEN |54개 통과 |
 
-이번 사용자 지시와 대기열에 관련된 항목만 다룬다. 다른 열린 PR을 닫거나 브랜치를 삭제하지 않는다.
+#111·#115·#121·#123·#125·#127·#128·#129는 확인한 head의 최종 필수6개/실행53단계 성공·실패0이다. canonical 동기화 후 head 및 이번 문서 PR의 최종 체크는 묶음 보고 전에 다시 확인한다. deploy의 실행 없는 SKIPPED는 배포 성공으로 세지 않는다.
 
-| PR | 상태·내용 |
-| --- | --- |
-| [#111](https://github.com/kco994553-star/Investment-System1/pull/111) | 현행 engine 세 계산·#105 연결 완성. 관련62개 통과·독립 리뷰 중대 지적 없음·최종 CI6개/실행53단계 성공. 전체1502통과·1실패·subtests358(아래 CSP 장애). 미병합·회귀 해소/최종 체크 대기(조건부 자체 병합 가능). |
-| [#115](https://github.com/kco994553-star/Investment-System1/pull/115) | 독립 Research 표시 지표·GSQ-015. 관련89개 통과·독립 리뷰 지적 없음·최종 CI6개/실행53단계 성공. 전체1529통과·1실패·subtests358(같은 CSP 장애). 미병합·승인 대기. |
-| [#103](https://github.com/kco994553-star/Investment-System1/pull/103) | 사용자 지시로 닫음. canonical 단일 인수인계가 최신 현황을 반영하므로 이전 현황 초안을 이력으로 보존. |
-| [#107](https://github.com/kco994553-star/Investment-System1/pull/107) | 사용자 지시로 닫음. 정식 M3 #106·#108·#110 이후 이전 계약 테스트 초안을 정리하며 미병합 브랜치/이력 보존. |
-| [#109](https://github.com/kco994553-star/Investment-System1/pull/109) | 이미 CLOSED·미병합 확인. 코덱1에게 종료 유지 확인만 요청; 코덱2는 PR 상태·Worker·브랜치 변경 없음. |
+코덱1 열린 작업은 **#122 M3 기기 Universe JS**, **#124 Tiingo/KRX 예비 가격**, **#126 SEC daily 공개 비가격 입력/Actions**다. 이 PR을 코덱2가 수정·닫기·병합하지 않았다. #121 Python 모듈과 별도 소관이며 실제 daily 운영은 아직 미완료다.
 
-## 현재 검증 장애
+## 전체 통합 검증과 CSP 회귀
 
-`tests/test_app_nav_ia.py::test_navigation_does_not_expand_approved_external_csp_permissions`가 #113 이후 canonical07ba93e3 단독 checkout과 #111·#115에서 동일하게 실패했다. CSP connect-src에 Worker 출처1개가 추가됐지만 기대값은 이전 목록이다. #114는 해당 앱/테스트를 바꾸지 않았다. 코덱1 앱/CSP 계약 검증 범위이며 두 Python PR의 diff 밖이다. 코덱2는 테스트를 완화하거나 앱·워크플로를 수정하지 않는다.
+canonical3e99e061에 이 대기열의 Python 코드·합성 fixture·테스트만 결합한 검증용 worktree에서 **1858 passed, 358 subtests passed, 1 failed(40.77초)**를 확인했다. 실패는 아래 기존 canonical CSP 검사1개다. 새 전략 함수를 독립 PIL 패키지에서 QGV bridge로 이동한 뒤 기존 PIL13개를 포함한 관련57개도 통과했다. 개별 관련 테스트 수는 중복을 포함하므로 합산하지 않는다.
 
-최신 canonical 이전에는 #111 전체1503·#115 전체1530과 각각 subtests358이 통과했다. 제한된 CI 성공을 전체 suite 성공으로 보고하지 않으며 26E 미변경 PR은 조건부 자체 병합할 수 있으나 현재 코드의 회귀 해소를 기다린다. 26E 변경 PR은 별도 사용자 승인을 기다린다. 문서 PR의 자체 병합은 .md만 변경·최종 실행 필수 체크 성공·실패0이라는 기존 사용자 승인 범위를 따른다.
+`tests/test_app_nav_ia.py::test_navigation_does_not_expand_approved_external_csp_permissions`가 #113 이후 canonical07ba93e3 및 최신3e99e061에서도 재현된다. connect-src Worker 출처 추가와 이전 기대값 차이이며 코덱1 앱/CSP 검증 범위다. 코덱2는 해당 앱/테스트/워크플로를 수정하거나 검사를 완화하지 않는다. 필수CI 성공을 전체 suite 성공으로 보고하지 않는다.
 
-## 결정 대기·유지 경계
+## 구현의 실제 연결 상태·미확정 정의
 
-- 필요한 결정은 [로드맵 v2의 별도 표](implementation/docs/ROADMAP_2026Q4.md#사용자-결정조치가-필요한-항목)에 모았다: 26E 변경 PR(#115) 병합, SEC 운영 범위/일정, V 재계산, Macro 후속 입력 의미, 추가 백업/Trades, DART 알림, EDINET 등록, 예비 가격 조건, 실적/13F/뉴스 범위, 모델6관점, forward 시작.
-- M3는 TARGET19 + 기기 ★ + 비공개 Universe 검증 시총 상위N. **N=20·시총 불일치10%**는 확정이며 근거 있는 SHARE_CLASS_BASIS는 표시만·자동 보정 없음. identity/주식 종류·통화/단위·가용시각·권리 근거 부족은 차단한다. 개인 목록·가격·시총·순위·시트 ID는 공개하지 않는다.
-- Research 기본값은 사용자 승인 표시 범위이며 Model/TSV/QGV 채택이 아니다. warm-up null·0 대체 금지·RAM 전용·공개 serializer 연결 금지를 유지한다.
-- **DART는 사용자가 10/11 18시 이후 DART_API_KEY 등록을 알린 뒤에만 착수**한다. 아직 알림이 없으며 시간 경과를 등록/승인으로 추정하지 않는다. 그전에는 코드·키 존재 확인·인증/API 실행도 금지다.
-- QGV v2 보류, 기존 Holdout **UNCONFIRMED·v2 근거 제외·미사용** 유지. forward 데이터 시작 시점은 향후 사용자 결정이며 에이전트는 기간을 선택·사용하지 않는다.
+- **SEC:** #121은 실제 호출 없이 모의 응답으로 검증한 수집기/명시적 live 진입점이다. SEC_USER_AGENT는 이름만 참조한다. 실제 US17 취득·daily Actions·공개 재무 producer는 코덱1 연결/운영 후 확인하며 ASML20-F 원문 취득 가능성과 기존10-K M1 READY는 별개다.
+- **V:** 가격은 명시적 인자·RAM-only, 기존 raw_map 산식만 재사용한다. DCF/역DCF solver, 가격→자체multiple, 역사/sector/theme 가격 매핑은 미정이며 해당 미제공 요소를0으로 만들지 않는다. 통화·주당/ADR/split·시점 basis 근거도 자동 생성하지 않는다.
+- **전략:** Q/G/V **축 내부** 공식 비중·사용자 비중을 재계산한다. 공식 Q/G/V 부모 비중·Technical/Macro 합성·새 모델/6관점은 미정이다. Q/G 기존 평균과 V를 분리한 PREVIEW이며 모델 채택/저장 snapshot을 바꾸지 않는다.
+- **Macro:** #128 정부 screen 함수는8×6 raw evidence·Decimal문자열·취득 cutoff를 제공하지만 공개 producer/앱 연결은 없다. GDP 수준·CPI 지수→기존 growth/inflation fraction 정의 미정으로 실제 국면은 NOT_AVAILABLE다. 후속4축 exact series/basis·모든 새6상태 규칙은 미채택이며 파서는 명시적 binding만 받는다. Fed는 확인된 DataSet fragment만 지원하고 full-feed/ZIP 추출 계보는 미검증이다. FRED/ALFRED 차단 유지.
+- **실적/13F:** SEC 제출 패턴은 확정 실적 발표일이 아니다.13F NEW/ADD/REDUCE/EXIT는 공개 보고 수량 변화이며 실제 매매·현재 보유 추론이 아니다. 비공개·추가 정정·부분 표·비연속분기·미확인 귀속은 비교 차단한다. 투자자 기본 목록은 없고 사용자가 공급한다.
+- **기기:** #116 통합 백업·#117 Research JS·#119 candle/MA·#120 private Trades 코드와 실기기 검증을 구분한다. M3 개인 선정·가격·시총·순위·Universe ID·키/토큰은 공개/새 백업에 넣지 않는다. M3 기본N20·불일치10%와 근거 있는 SHARE_CLASS_BASIS 표시만/자동 보정 없음은 확정이다.
 
-## 현재 사용자 대기열
+## 사용자 결정·다음 할 일5개
 
-아래 순서로 항목당 PR1개를 보존하고 중간 항목 보고 없이 완료/필수 결정 시 묶어 보고한다. **26E 결정 기록 변경이 없는 PR은 실행된 필수 체크 전부 성공·실패0이면 자체 병합 가능**하다. 이 선택은 force push·ruleset·AUTONOMY_MODE·워크플로/Worker/웹 수정 허가가 아니다.
+1. 코덱1이 CSP 회귀의 승인된 출처/기대값을 정합화한다. 코드 자체 병합을 재개하면 최신 canonical·head의 실행 필수 체크 성공·실패0을 다시 확인한다.
+2. **#115 병합 승인**: GSQ-015 표시용 기본값 기록·Python 참조/JSON 벡터를 포함하며 모델 채택이 아니다. 사용자 답변대로 #111 분리를 유지한다.
+3. **Macro 입력 의미**: GDP/CPI→기존 국면 입력과 후속4축 exact series/단위/SA/basis 채택이 필요하다. 새 상태 산식·가중치를 임의로 만들지 않는다. V 미확정 solver/매핑·Q/G/V 부모 비중/6관점 정의는 별도 결정 대기다.
+4. **EDINET KEY_REQUIRED**: [키 요구 확인](implementation/docs/fundamentals_sources/EDINET_V2_KEY_WAIT.md). 비공개 키 등록 알림·adapter 착수 결정을 기다리며 아직 코드를 시작하지 않았다. **DART는10/11 18시 이후 DART_API_KEY 등록 알림 전 코드·키 존재 확인·인증/API 비착수**다. 시간대를 임의로 정하거나 시간 경과를 알림으로 간주하지 않는다.
+5. 코덱1이 승인 범위에서 #122/#124/#126·앱/Python 연결과 실제 본인 기기/공개 비가격 운영을 확인한다. 실적 확정 출처·사용자13F 투자자 목록·뉴스·모델6관점·forward 시작 등 [로드맵 결정 표](implementation/docs/ROADMAP_2026Q4.md#사용자-결정조치가-필요한-항목)는 유지한다.
 
-1. 실행 로드맵 v2·#103/#107 종료(이번 문서 PR), #109는 이미닫힘·코덱1 확인 요청만.
-2. #111 현행 세 계산 마무리·차트 지표 Python 참조/코덱1 JSON 합성 벡터. 기존 #115 표시 지표·26E 기록의 분리 경계는 최신 요청과 조율한다.
-3. US17 SEC companyfacts/submissions 취득 모듈·Secret 이름 참조·retry/rate limit·실행 진입점(워크플로는 코덱1), 실제 호출/Secret 출력 없음.
-4. SEC 10-Q/10-K 제출 패턴의 **예상 시기**(확정 실적 발표일 아님), 이어서 기존 정의만 사용하는 가격 인자/RAM-only Vv1 순수 함수·미확정 요소 NOT_AVAILABLE.
-5. 공식v1 비중 복사본/사용자 비중·합100·결측수·PREVIEW 재계산, 4축→기존 Macro 엔진/정부 자료 화면JSON·후속4축 입력, 13F parser/분기변화 순으로 각각 별도 PR.
-6. EDINET은 키 요구를 확인하고 필요하면 보고 후 대기. DART는 지정 시각 이후 사용자 등록 알림 전 비착수다.
-
-코덱1은 앱/CSP 회귀·기기/Worker/Actions 연결을 맡는다. 모델6관점/forward 시작·보관·입력 의미 등의 별도 사용자 결정과 로드맵의 나머지 항목은 유지한다. 이번 구현 대기열을 실제 대량 수집·배포·Holdout·새 방법론/가중치 승인의 근거로 확대하지 않는다.
+기존 Holdout은 **UNCONFIRMED·v2 근거 제외·미사용**, QGV v2는 보류다. 검증은 향후 누적 forward 데이터이며 시작 시점은 사용자가 결정한다. 에이전트는 기간을 선택·사용하지 않는다. 본 대기열1~8은 PR로 보존했고9는 키 요구 확인 후 대기,10은 등록 알림 대기다.
 
 ## 외부 서비스·저장 위치
 
-설정 이름만 기록한다. 실제 값·서비스 응답·개인 계정을 이번 작업에서 조회하지 않았다.
+설정 이름만 기록하며 실제 값·계정·키/시트 존재 여부를 이번 작업에서 확인하지 않았다.
 
-| 서비스 | 현재 범위 | 저장 경계 |
+| 서비스 | 현재 범위 | 저장/연결 경계 |
 | --- | --- | --- |
-| BLS·BEA·Treasury | 원기관 요청 계획/제공 응답 파서. BEA 설정 이름 BEA_USERID. | Macro 근거와 개인 가격 보관 조건은 별개, 공개 앱 연결 미완료. |
-| FRED·ALFRED | 서면 허가 전 차단. | 새 호출/키 조회 없음. |
-| SEC EDGAR | M1 수동 CLI·Q/G 후보·SEC shares 검증. SEC_USER_AGENT·INVESTMENT_SYSTEM_SEC_UA. | 공개 가능 재무만 후속 Actions 후보, 가격/개인 선택 roster는 제외. |
-| Google Identity·Sheets | 기존 readonly 로그인·Quotes, Universe/M3·Trades 후속 연결. | 토큰/RAM 파생값·Universe ID는 저장/공개 제외. 기존 Quotes와 M3 RAM 경계를 구분. |
-| Cloudflare·Pages | #102·#113·#114 코드/metadata 확인. CLOUDFLARE_API_TOKEN·CLOUDFLARE_ACCOUNT_ID·ALLOWED_EMAIL·GOOGLE_CLIENT_ID. | 실제 배포·인증은 코덱1 확인 범위; DO는 가격 일봉 저장소가 아님. |
-| DART·EDINET | 숫자 재무 adapter 준비/등록 대기. DART_API_KEY는 이름만. | 사용자 등록 알림/조건 전 실제 호출·키 조회 없음. |
-| Tiingo·KRX 등 가격 출처 | 무료/권리/시장 coverage 조건 확인 대기. KRX_API_KEY는 GSQ-009 등록 보고. | 개인 RAM·공개 금지 유지, 실제 계정/키 검증 없음. |
+| BLS·BEA·Treasury·Fed | 공급 응답 파서·원기관 근거, BEA_USERID는 이름만 | 모델 의미/실제 수집·앱 연결 미완료; FX·가격 성격 입력 RAM-only |
+| FRED·ALFRED | 서면 허가 전 차단 | 호출·키 조회·fallback 없음 |
+| SEC EDGAR | #121 수집 모듈, #123 예상 패턴, #129 정보표 | SEC_USER_AGENT 이름만; daily 공개는 비가격 자료만·개인 선정 제외 |
+| Google Identity·Sheets | 기존 readonly Quotes·private history/Trades, M3 #122 대기 | 개인 가격/파생·선정·Universe ID·토큰은 공개/새 저장 제외 |
+| Cloudflare·Pages | 코덱1 Worker/Pages 코드·metadata 범위 확인 | 실제 배포/본인 인증/운영 검증은 이번 Python·문서 작업과 별개 |
+| EDINET·DART | 키 요구/등록 조건 대기 | EDINET Subscription-Key·DART_API_KEY 값 출력/조회 없음; adapter 비착수 |
+| Tiingo·KRX | #124 예비 경로 조건 대기 | 기존 등록 보고와 실제 인증/권리·3시장 coverage를 구분 |
 
 ### 이전 열린 PR 정리안 (#100 작성 시점 참고)
 
