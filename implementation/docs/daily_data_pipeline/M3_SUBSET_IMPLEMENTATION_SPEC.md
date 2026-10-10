@@ -187,7 +187,7 @@ PR A는 실제 가격/주식 수·개인 관심 목록을 fixture에 넣지 않�
 | test 이름(A Node) | assertions |
 | --- | --- |
 | `target19_identity_is_preserved_without_weights_or_holdings` | 19 identity, stry→SYK, KR/JP 본상장, weight/holdings 입력 변경 없음 |
-| `device_star_snapshot_union_deduplicates_listing_and_keeps_origin_tags` | 합성 prefs 관심 ID를 copy, TARGET 중복 tag 병합, 같은 listing만 dedup, 빈 정상 ★이면19·COMPLETE, 원 prefs 불변 |
+| `device_star_snapshot_union_deduplicates_listing_and_keeps_origin_tags` | 합성 prefs 관심 ID를 copy, TARGET 중복 tag 병합, 같은 listing만 dedup, 빈 정상 ★는 AVAILABLE·TARGET 기본19 유지, 최종 selection_status는 Universe 상태와 결합, 원 prefs 불변 |
 | `device_star_unreadable_or_unknown_ids_do_not_select_large_caps` | corrupt storage와 빈 정상 목록 구별, unknown ID missing, Groups/holdings 미사용, SEC 순서/가격/시총으로 보충 없음, LARGE_CAP 입력 거부 |
 | `catalog_cik_ticker_and_identity_ambiguity_fail_closed` | paddedCIK/current metadata 한계 유지, ticker reuse/class/issuer mismatch 거부 |
 | `manifest_hash_binds_private_identity_and_source_mapping` | 필드 변경→hash 변경, 가격/token/관심 목록 dump 없음, version 충돌 거부 |
