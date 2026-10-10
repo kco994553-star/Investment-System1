@@ -6,8 +6,10 @@ const { chromium } = require("playwright");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const URL_UNDER_TEST = process.env.DEVICE_ACTUAL_URL || "http://127.0.0.1:8765/web-mvp-demo/#actual";
-const EVIDENCE_DIR = path.resolve(process.env.DEVICE_ACTUAL_EVIDENCE_DIR || "/workspace/device-actual-module-evidence");
+// The ACTUAL screen of the public Pages build (PAGES_COCKPIT_URL, as the other browser tests); never a populated fixture.
+const URL_UNDER_TEST = process.env.DEVICE_ACTUAL_URL ||
+  new URL("#actual", process.env.PAGES_COCKPIT_URL || "http://127.0.0.1:9003/Investment-System1/").href;
+const EVIDENCE_DIR = path.resolve(process.env.DEVICE_ACTUAL_EVIDENCE_DIR || process.env.PAGES_COCKPIT_EVIDENCE_DIR || "/tmp/device-actual-module-evidence");
 const DB_NAME = "investment-device-actual-v1";
 const STORE_NAME = "snapshots";
 const SETTINGS_KEY = "investment.web.v1.settings";
@@ -96,6 +98,23 @@ async function withDialog(page, accept, operation) {
   };
   page.on("dialog", listener);
   try { await operation(); } finally { page.off("dialog", listener); }
+  return count;
+}
+
+async function withExpectedDialog(page, accept, operation) {
+  // The device-backup restore path asks for confirmation first and sets no notice, so wait for the dialog itself.
+  let count = 0;
+  const listener = async (dialog) => {
+    count += 1;
+    if (accept) await dialog.accept(); else await dialog.dismiss();
+  };
+  page.on("dialog", listener);
+  try {
+    await operation();
+    const deadline = Date.now() + 5000;
+    while (count === 0 && Date.now() < deadline) await page.waitForTimeout(40);
+    await page.waitForTimeout(150);
+  } finally { page.off("dialog", listener); }
   return count;
 }
 
@@ -274,6 +293,7 @@ async function main() {
       const { context, page, root } = opened;
       try {
         let exported;
+        let holdingsFile; // the holdings member of the backup: the plain holdings-file import format
         let original;
         await check(`${locale}: manual save persists only in IndexedDB after refresh`, async () => {
           const row = root.locator("[data-security-index]").first();
@@ -298,20 +318,24 @@ async function main() {
         await check(`${locale}: export is a local Blob kept entirely in memory`, async () => {
           exported = await exportMemory(page, root);
           const payload = JSON.parse(exported);
-          const actualPart = { ...payload, schema: 'device-actual-holdings/1' };
-          delete actualPart.market_data;
-          requireCheck(JSON.stringify(canonical(actualPart)) === JSON.stringify(canonical(original)), "export differs from the saved holdings envelope");
-          requireCheck(payload.schema === "device-actual-holdings/2" && payload.kind === "ACTUAL" &&
-            payload.ownership === "USER_DEVICE_ONLY" && typeof payload.version === "number" &&
-            Array.isArray(payload.themes) && payload.themes.some((theme) => theme.holdings.length > 0) &&
-            payload.market_data?.schema === 'device-market-data/1' &&
-            Array.isArray(payload.market_data.quotes) && Array.isArray(payload.market_data.fx) &&
-            !('api_key' in payload) && !('api_settings' in payload), "export envelope is malformed");
+          // Current contract: the export is the unified price-free device backup (investment-device-backup/2,
+          // since "Unify device backups"); holdings travel in its portfolio member and quotes, FX and API
+          // settings are never exported.
+          requireCheck(JSON.stringify(Object.keys(payload).sort()) === JSON.stringify(["portfolio", "preferences", "profiles", "schema", "settings"]) &&
+            payload.schema === "investment-device-backup/2", "export is not the unified device backup envelope");
+          const portfolio = payload.portfolio;
+          requireCheck(JSON.stringify(canonical(portfolio)) === JSON.stringify(canonical(original)), "export differs from the saved holdings envelope");
+          requireCheck(portfolio.schema === "device-actual-holdings/1" && portfolio.kind === "ACTUAL" &&
+            portfolio.ownership === "USER_DEVICE_ONLY" && typeof portfolio.version === "number" &&
+            Array.isArray(portfolio.themes) && portfolio.themes.some((theme) => theme.holdings.length > 0), "export holdings envelope is malformed");
+          requireCheck(!exported.includes("market_data") && !("market_data" in portfolio) && !("api_key" in payload) && !("api_settings" in payload) &&
+            Object.keys(payload.settings).sort().join() === "display_locale,source_language,version", "export carries market, API or private settings data");
+          holdingsFile = JSON.stringify(portfolio);
         });
 
         for (const fault of ["quota", "abort"]) {
         await check(`${locale}: ${fault === "quota" ? "quota failures" : "transaction aborts after put"} preserve ACTUAL and never claim save or import success`, async () => {
-          const newer = JSON.parse(exported);
+          const newer = JSON.parse(holdingsFile);
           newer.version += 1;
           newer.themes.find((theme) => theme.holdings.length > 0).holdings[0].quantity = REPLACEMENT_QUANTITY;
           await page.evaluate((fault) => {
@@ -327,6 +351,7 @@ async function main() {
           let manualStorageNotice = false;
           let importPreserved = false;
           let importStorageNotice = false;
+          let backupPreserved = false;
           try {
             const row = root.locator("[data-security-index]").first();
             await row.locator('[data-field="quantity"]').fill(REPLACEMENT_QUANTITY);
@@ -340,6 +365,15 @@ async function main() {
             });
             importPreserved = await storedEquals(page, original);
             importStorageNotice = await root.locator("[data-actual-notice]").getAttribute("data-notice") === "storage";
+            // The same newer holdings inside a device backup file: restore must roll back and never report success.
+            const newerBackup = JSON.parse(exported);
+            newerBackup.portfolio = newer;
+            await withExpectedDialog(page, true, async () => {
+              await importBytes(root, JSON.stringify(newerBackup));
+              await waitIdle(root);
+            });
+            backupPreserved = await storedEquals(page, original) &&
+              await root.locator("[data-actual-notice]").getAttribute("data-notice") !== "imported";
           } finally {
             await page.evaluate(() => {
               IDBObjectStore.prototype.put = window.__deviceActualOriginalPut;
@@ -348,6 +382,7 @@ async function main() {
           }
           requireCheck(manualPreserved && manualStorageNotice, "manual storage failure changed ACTUAL or claimed success");
           requireCheck(importPreserved && importStorageNotice, "import storage failure changed ACTUAL or claimed success");
+          requireCheck(backupPreserved, "device backup restore failure changed ACTUAL or claimed success");
           await page.reload({ waitUntil: "networkidle" });
           await statusIncludes(root, "ACTUAL");
           requireCheck(await storedEquals(page, original), "storage failure changed persisted ACTUAL after refresh");
@@ -393,7 +428,7 @@ async function main() {
         });
 
         await check(`${locale}: invalid imports preserve the existing snapshot`, async () => {
-          const invalid = JSON.parse(exported);
+          const invalid = JSON.parse(holdingsFile);
           invalid.target_root_sha256 = "invalid-target-root";
           for (const bytes of ["{", JSON.stringify(invalid)]) {
             const before = await root.locator("[data-actual-notice]").textContent();
@@ -407,7 +442,7 @@ async function main() {
         let replacement;
         let replacementStored;
         await check(`${locale}: overwrite confirmation cancel preserves ACTUAL`, async () => {
-          replacement = JSON.parse(exported);
+          replacement = JSON.parse(holdingsFile);
           replacement.version += 1;
           replacement.effective_at = new Date().toISOString();
           replacement.available_at = replacement.effective_at;
@@ -438,12 +473,11 @@ async function main() {
         for (const backupAge of ["older", "same-version"]) {
         await check(`${locale}: ${backupAge} backup cancellation preserves ACTUAL and confirmed restore advances revision`, async () => {
           const backup = JSON.parse(exported);
-          if (backupAge === "same-version") backup.version = replacementStored.version;
+          if (backupAge === "same-version") backup.portfolio.version = replacementStored.version;
           const before = replacementStored;
-          const canceledCount = await withDialog(page, false, async () => {
-            const noticeBefore = await root.locator("[data-actual-notice]").textContent();
+          // A device backup file is confirmed before it is read and sets no import notice, unlike a plain holdings file.
+          const canceledCount = await withExpectedDialog(page, false, async () => {
             await importBytes(root, JSON.stringify(backup));
-            await noticeSettled(page, root, noticeBefore);
           });
           requireCheck(canceledCount === 1, "backup restore confirmation is missing");
           requireCheck(await storedEquals(page, before), "cancelled backup restore changed ACTUAL");
@@ -454,7 +488,7 @@ async function main() {
           });
           requireCheck(acceptedCount === 1, "backup restore confirmation is missing");
           replacementStored = await readStored(page);
-          checkNormalizedImport(replacementStored, backup, before, started, Date.now());
+          checkNormalizedImport(replacementStored, backup.portfolio, before, started, Date.now());
           await page.reload({ waitUntil: "networkidle" });
           await statusIncludes(root, "ACTUAL");
           requireCheck(await storedEquals(page, replacementStored), "restored backup did not survive refresh");
