@@ -84,6 +84,7 @@
     "← QGV":{"ko-KR":"← QGV","en-US":"← QGV"},
     "← 검증":{"ko-KR":"← 검증","en-US":"← Validation"}
   });
+  Object.assign(UI,{"관심·그룹은 이 기기에만 저장됩니다.": {"ko-KR": "관심·그룹은 이 기기에만 저장됩니다.", "en-US": "Favorites and groups are stored only on this device."}, "관심기업 우선": {"ko-KR": "관심기업 우선", "en-US": "Favorites first"}, "그룹 관리 →": {"ko-KR": "그룹 관리 →", "en-US": "Manage groups →"}, "기업명 순": {"ko-KR": "기업명 순", "en-US": "By name"}, "리더보드에서 관심 기업만 보기 →": {"ko-KR": "리더보드에서 관심 기업만 보기 →", "en-US": "Show only favorites in the leaderboard →"}, "산업 / 전략 테마 / 투자 유형은 서로 다른 축입니다.": {"ko-KR": "산업 / 전략 테마 / 투자 유형은 서로 다른 축입니다.", "en-US": "Industry / strategy theme / investment type are separate axes."}, "이 휴대폰에만 저장 · 백업으로 이동": {"ko-KR": "이 휴대폰에만 저장 · 백업으로 이동", "en-US": "Stored only on this phone · move via backup"}, "정렬": {"ko-KR": "정렬", "en-US": "Sort"}, "추가한 순": {"ko-KR": "추가한 순", "en-US": "By date added"}, "티커 순": {"ko-KR": "티커 순", "en-US": "By ticker"}});
   Object.assign(UI,{"가져오기":{"ko-KR":"가져오기","en-US":"Import"},"현재 앱에 자료 없음 — 직접 입력하거나 STANDALONE 사용":{"ko-KR":"현재 앱에 자료 없음 — 직접 입력하거나 STANDALONE 사용","en-US":"No data in the app — enter it yourself or use STANDALONE."},"현재 앱에 자료 없음 — 직접 입력하세요.":{"ko-KR":"현재 앱에 자료 없음 — 직접 입력하세요.","en-US":"No data in the app — enter it yourself."}});
   Object.assign(UI,{"기업 유형 커스텀": {"ko-KR": "기업 유형 커스텀", "en-US": "Custom company types"}});
   const TERMS=Object.freeze({
