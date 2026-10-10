@@ -61,7 +61,7 @@ APPROVED_SHA256 = {
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "035930c2bdeb760f768562f8a9fb6b7aec703bc4663392b8f91db5796145b56e",
+    "style.css": "827fc6458c88a24f86ef775cae619867ff922de40cfc30fa5bef4a51d7ced905",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
