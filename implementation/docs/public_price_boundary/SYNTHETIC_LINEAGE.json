@@ -1,0 +1,24 @@
+{
+  "schema": "public-price-independent-synthetic-lineage-v1",
+  "generation": "INDEPENDENT_AUTHORED_ARITHMETIC_NO_CAPTURED_INPUT_READS",
+  "fundamentals": "REUSE_EXISTING_EXPLICIT_SYNTHETIC_CATALOG",
+  "helper": "implementation/tests/synthetic_cleanup_inputs.py",
+  "identities": "cleanup_case_<index>, cleanup_sec_case, SYNTHETIC_RIGHTS",
+  "removed_capture_price_scalar_sha256": [
+    "3e93ebbf88584600d5ecf0ae5b76ff6b0856085873455f8d9144afea6aba4a27",
+    "763f1cf5d461bd75cc1cffd58572906f900fad757be0d638d0dab0ea4caa1bc2"
+  ],
+  "consumers": [
+    "implementation/tests/test_session_envelope_sec_form.py",
+    "implementation/tests/test_us_session_html.py"
+  ],
+  "class_rights": "Independently authored prose, two proven classes and optional unsupported class; unchanged production quote, arithmetic, lower-bound and PIT verifier.",
+  "no_new_methodology": true,
+  "additional_identity_consumer": {
+    "test": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/test_evidence_rejections.py",
+    "helper": "implementation/docs/security_map19_owner/v1_1_cycle_20261008/synthetic_mapping_evidence.py",
+    "lineage": "Independent XML and source envelopes generated from retained identity/target metadata; named ASML/Alphabet identity regression constants preserved; no captured N-PORT, price, shares or valuation input read.",
+    "no_market_value_fields": true
+  },
+  "helper_sha256": "e0876a2d3296a9c05bd46dee7528aa2082268a15cc26e6e4257c7315df439f74"
+}

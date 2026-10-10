@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import csv
 import errno
+import hashlib
 import io
 import json
 import os
@@ -28,6 +29,18 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 IMPLEMENTATION_ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = IMPLEMENTATION_ROOT / "docs/coordination/governance/AUTONOMY_GUARD_CONFIG.v1.json"
+
+
+# GSQ-010 grants exactly one protected preimage-to-absence transition. The JSON
+# is metadata evidence, not configurable permission; its complete bytes are pinned.
+_CLEANUP_READINESS_PATH = "implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json"
+_CLEANUP_RECEIPT_PATH = "implementation/docs/public_price_boundary/CLEANUP_AUTHORITY.json"
+_CLEANUP_READINESS_BLOB_SHA1 = "d369dd3af1b7f10ccf5233cf9e04694bc7fad165"
+_CLEANUP_READINESS_SHA256 = "5789dc3d3b10dd29d466931bf9c6f459d2569d15071f80dfd50236d0b0cef006"
+_CLEANUP_READINESS_BYTES = 8781
+_CLEANUP_RECEIPT_SHA256 = "43b9fa232185a21530d0310e1c866cc58e2594d5b89d1d7791bfc1d6a3997e19"
+_CLEANUP_AUTHORITY_COMMIT = "ee039041ae7f5cb94e6a127930c7e43effb811ec"
+_CLEANUP_AUTHORITY_PINS = {'implementation/docs/public_price_boundary/AUDIT.md': '780af5763ff24a10ce1538f083aa5aac80d470cd', 'implementation/docs/public_price_boundary/RECEIPTS.md': '55469fc2c68adc6fc380244b838e53b0a0b13a92', 'implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md': '4fc2fc62461cde4e86f96102f285696ea3a07ddb'}
 
 # These are shape signals, not an allowlist of synthetic or trusted filenames.
 # A synthetic label never permits a populated device export in the public tree.
@@ -522,7 +535,8 @@ def parse_name_status(raw: str) -> list[tuple[str, list[str]]]:
 
 def _touches(path: str, cfg: dict) -> bool:
     return (
-        path in cfg["immutable_exact_paths"]
+        path in {_CLEANUP_READINESS_PATH, _CLEANUP_RECEIPT_PATH}
+        or path in cfg["immutable_exact_paths"]
         or path in cfg["append_only_exact_paths"]
         or any(path.startswith(prefix) for prefix in cfg["append_only_prefixes"])
     )
@@ -535,7 +549,7 @@ def classify_diff(records: list[tuple[str, list[str]]], cfg: dict, append_verifi
     and immutable paths never use the log append exception.
     """
     violations: list[str] = []
-    immutable = set(cfg["immutable_exact_paths"])
+    immutable = set(cfg["immutable_exact_paths"]) | {_CLEANUP_RECEIPT_PATH}
     append_files = set(cfg["append_only_exact_paths"])
     prefixes = tuple(cfg["append_only_prefixes"])
     for status, paths in records:
@@ -632,7 +646,7 @@ def _protected_tree(tree: str, cfg: dict) -> dict:
         except ValueError:
             raise GuardError("invalid protected-content tree metadata") from None
         path = _safe_git_path(raw_path)
-        if _touches(path, cfg):
+        if _touches(path, cfg) or oid.decode("ascii") == _CLEANUP_READINESS_BLOB_SHA1:
             state[path] = (mode.decode("ascii"), kind.decode("ascii"), oid.decode("ascii"))
     return state
 
@@ -648,7 +662,7 @@ def _protected_index(cfg: dict) -> dict:
         except ValueError:
             raise GuardError("invalid protected-content index metadata") from None
         path = _safe_git_path(raw_path)
-        if _touches(path, cfg):
+        if _touches(path, cfg) or oid.decode("ascii") == _CLEANUP_READINESS_BLOB_SHA1:
             if stage != b"0" or path in state:
                 raise GuardError("protected-content verification requires a resolved index")
             state[path] = (mode.decode("ascii"), "commit" if mode == b"160000" else "blob", oid.decode("ascii"))
@@ -670,7 +684,7 @@ def _protected_worktree_entry(path: str):
         file_fd = os.open(parts[-1], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
         before = os.fstat(file_fd)
         if not stat.S_ISREG(before.st_mode):
-            return None
+            return ("INVALID", "nonregular", b"")
         with os.fdopen(file_fd, "rb") as file:
             file_fd = None
             content = file.read()
@@ -682,13 +696,51 @@ def _protected_worktree_entry(path: str):
         return mode, "blob", content
     except OSError as exc:
         if exc.errno in {errno.ENOENT, errno.ELOOP, errno.ENOTDIR}:
-            return None
+            return None if _physically_absent(path) else ("INVALID", "nonregular", b"")
         raise GuardError("protected-content verification could not read a tracked file") from None
     finally:
         if file_fd is not None:
             os.close(file_fd)
         if directory is not None:
             os.close(directory)
+
+
+def _physically_absent(path: str) -> bool:
+    """Absence never includes symlinks, non-directory parents or special files."""
+    current = REPO_ROOT
+    for part in path.split("/"):
+        current = current / part
+        try:
+            info = current.lstat()
+        except FileNotFoundError:
+            return True
+        except OSError:
+            return False
+        if stat.S_ISLNK(info.st_mode):
+            return False
+        if current != REPO_ROOT / path and not stat.S_ISDIR(info.st_mode):
+            return False
+    return False
+
+
+def _cleanup_authority_known() -> bool:
+    """Read historical metadata at the pinned source commit, never current docs."""
+    try:
+        raw = _guard_git_bytes(["ls-tree", "-r", "--full-tree", "-z", _CLEANUP_AUTHORITY_COMMIT])
+    except GuardError:
+        return False
+    found = {}
+    for item in raw.split(b"\0"):
+        if not item:
+            continue
+        metadata, path = item.split(b"\t", 1)
+        path = path.decode("utf-8", "surrogateescape")
+        if path in _CLEANUP_AUTHORITY_PINS:
+            mode, kind, oid = metadata.decode("ascii").split()
+            if (mode, kind) != ("100644", "blob"):
+                return False
+            found[path] = oid
+    return found == _CLEANUP_AUTHORITY_PINS
 
 
 def _regular_entry(entry) -> bool:
@@ -705,7 +757,7 @@ def _log_text(content: bytes) -> bool:
         return False
 
 
-def _protected_transition(before: dict, after: dict, cfg: dict, blob_cache: dict) -> list[str]:
+def _protected_transition(before: dict, after: dict, cfg: dict, blob_cache: dict, cleanup_authority: bool = False) -> list[str]:
     def content(entry):
         value = entry[2]
         if isinstance(value, bytes):
@@ -721,7 +773,38 @@ def _protected_transition(before: dict, after: dict, cfg: dict, blob_cache: dict
         old_bytes, new_bytes = content(old), content(new)
         return _log_text(old_bytes) and _log_text(new_bytes) and new_bytes.startswith(old_bytes)
 
+    def receipt_valid(state):
+        entry = state.get(_CLEANUP_RECEIPT_PATH)
+        return (cleanup_authority and entry is not None and entry[:2] == ("100644", "blob")
+                and hashlib.sha256(content(entry)).hexdigest() == _CLEANUP_RECEIPT_SHA256)
+
+    def original_readiness(entry):
+        if entry is None or entry[:2] != ("100644", "blob"):
+            return False
+        data = content(entry)
+        oid = hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
+        return (oid == _CLEANUP_READINESS_BLOB_SHA1 and len(data) == _CLEANUP_READINESS_BYTES
+                and hashlib.sha256(data).hexdigest() == _CLEANUP_READINESS_SHA256)
+
     records, invalid = [], []
+    for state in (before, after):
+        receipt = state.get(_CLEANUP_RECEIPT_PATH)
+        readiness = state.get(_CLEANUP_READINESS_PATH)
+        if receipt is not None and (not receipt_valid(state) or (readiness is not None and not original_readiness(readiness))):
+            invalid.append("cleanup requires the exact pinned regular authority receipt and legacy preimage or absence")
+        if cleanup_authority and readiness is None and not receipt_valid(state):
+            invalid.append("removed readiness requires its pinned metadata receipt in every state")
+        for path, entry in state.items():
+            if path != _CLEANUP_READINESS_PATH and _regular_entry(entry):
+                value = entry[2]
+                # Blob aliases in trees/index and their physical worktree contents.
+                if value == _CLEANUP_READINESS_BLOB_SHA1 or (isinstance(value, bytes) and original_readiness(entry)):
+                    invalid.append("cleanup cannot relocate the protected readiness payload")
+    if before.get(_CLEANUP_RECEIPT_PATH) is not None and after.get(_CLEANUP_RECEIPT_PATH) is None:
+        invalid.append("cleanup authority receipt cannot be removed")
+    if (before.get(_CLEANUP_READINESS_PATH) is None and receipt_valid(before)
+            and after.get(_CLEANUP_READINESS_PATH) is not None):
+        invalid.append("removed readiness cannot be reintroduced")
     for path in sorted(before.keys() | after.keys()):
         old, new = before.get(path), after.get(path)
         if old == new:
@@ -733,6 +816,8 @@ def _protected_transition(before: dict, after: dict, cfg: dict, blob_cache: dict
             ):
                 invalid.append("protected repository addition requires a regular artifact of the configured type")
         elif new is None:
+            if path == _CLEANUP_READINESS_PATH and original_readiness(old) and receipt_valid(after):
+                continue
             code = "D"
         elif old[:2] != new[:2] or not _regular_entry(old) or not _regular_entry(new):
             code = "T"
@@ -747,11 +832,12 @@ def _protected_transition(before: dict, after: dict, cfg: dict, blob_cache: dict
 def protected_repository_violations(comparison: str, head: str, cfg: dict) -> list[str]:
     """Verify every committed parent edge, final tree, index, and tracked files."""
     trees, blobs = {}, {}
+    cleanup_authority = _cleanup_authority_known()
     def tree(oid):
         if oid not in trees:
             trees[oid] = _protected_tree(oid, cfg)
         return trees[oid]
-    violations = _protected_transition(tree(comparison), tree(head), cfg, blobs)
+    violations = _protected_transition(tree(comparison), tree(head), cfg, blobs, cleanup_authority)
     history = _guard_git_bytes([
         "rev-list", "--reverse", "--topo-order", "--parents", f"{comparison}..{head}", "--",
     ])
@@ -761,17 +847,17 @@ def protected_repository_violations(comparison: str, head: str, cfg: dict) -> li
             raise GuardError("invalid protected-content history metadata")
         commit, parents = commits[0], commits[1:]
         for parent in parents:
-            violations.extend(_protected_transition(tree(parent), tree(commit), cfg, blobs))
+            violations.extend(_protected_transition(tree(parent), tree(commit), cfg, blobs, cleanup_authority))
         if not parents:
-            violations.extend(_protected_transition({}, tree(commit), cfg, blobs))
+            violations.extend(_protected_transition({}, tree(commit), cfg, blobs, cleanup_authority))
     index = _protected_index(cfg)
-    violations.extend(_protected_transition(tree(head), index, cfg, blobs))
+    violations.extend(_protected_transition(tree(head), index, cfg, blobs, cleanup_authority))
     worktree = {}
-    for path in tree(head).keys() | index.keys():
+    for path in tree(head).keys() | index.keys() | {_CLEANUP_READINESS_PATH, _CLEANUP_RECEIPT_PATH}:
         entry = _protected_worktree_entry(path)
         if entry is not None:
             worktree[path] = entry
-    violations.extend(_protected_transition(index, worktree, cfg, blobs))
+    violations.extend(_protected_transition(index, worktree, cfg, blobs, cleanup_authority))
     return list(dict.fromkeys(violations))
 
 

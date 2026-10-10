@@ -1,0 +1,70 @@
+{
+  "schema": "public-price-archived-consumers-v1",
+  "status": "NOT_AVAILABLE",
+  "reason": "GSQ-010: archived inputs removed",
+  "consumers": [
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/derive_basis_anomaly_audit.py",
+      "removed_inputs": [
+        "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/IMMUTABLE_RAW_ANOMALIES_v0.3.json",
+        "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/MARKET_REFERENCE_COVERAGE.json"
+      ]
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/verify_checkpoint.py",
+      "removed_inputs": [
+        "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/IMMUTABLE_RAW_ANOMALIES_v0.3.json"
+      ]
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/verify_owner_reuse.py",
+      "removed_inputs": [
+        "implementation/experiments/chart-contract-v0.1/p0-slice-owner-closure-v0.5/lane-b/IMMUTABLE_MARKET_ADMISSION_CASES_v0.5.json",
+        "implementation/reports/gate_evidence/ca_unit_policy_v1.json"
+      ]
+    },
+    {
+      "path": "implementation/experiments/chart-contract-v0.1/p0-vertical-slice-readiness-v0.4/lane-b/verify_market_evidence.py",
+      "removed_inputs": [
+        "implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/IMMUTABLE_RAW_ANOMALIES_v0.3.json",
+        "implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/MARKET_REFERENCE_COVERAGE.json"
+      ]
+    },
+    {
+      "path": "implementation/reports/gate_evidence/ca_unit_final_revalidation_runner.py",
+      "removed_inputs": [
+        "implementation/reports/gate_evidence/ca_unit_policy_v1.json",
+        "implementation/reports/gate_evidence/ca_unit_policy_v1.json"
+      ]
+    },
+    {
+      "path": "implementation/reports/gate_evidence/track_a_compare_vintages_runner.py",
+      "removed_inputs": [
+        "implementation/reports/gate_evidence/track_a_data_vintage_comparison_2026-09-27.json"
+      ]
+    },
+    {
+      "path": "implementation/reports/gate_evidence/track_a_explain_vintage_runner.py",
+      "removed_inputs": [
+        "implementation/reports/gate_evidence/gate_chain_2024-12-31_real_gha.json",
+        "implementation/reports/gate_evidence/track_a_data_vintage_comparison_2026-09-27.json"
+      ]
+    },
+    {
+      "path": "implementation/reports/gate_evidence/track_a_final_audit_runner.py",
+      "removed_inputs": [
+        "implementation/reports/gate_evidence/ca_unit_policy_v1.json",
+        "implementation/reports/gate_evidence/ca_unit_policy_v1.json",
+        "implementation/reports/gate_evidence/track_a_ca_unit_20_case_revalidation_2026-09-27.json",
+        "implementation/reports/gate_evidence/track_a_ca_unit_20_case_revalidation_2026-09-27.json",
+        "implementation/reports/gate_evidence/track_a_pit_provenance_audit_2026-09-27.json"
+      ]
+    },
+    {
+      "path": "implementation/reports/gate_evidence/track_a_network_benchmark_runner.py",
+      "removed_inputs": [
+        "implementation/reports/gate_evidence/track_a_network_500_benchmark_2026-09-27.json"
+      ]
+    }
+  ]
+}

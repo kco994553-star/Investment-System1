@@ -1,3 +1,14 @@
+
+# GSQ-010: retained historical algorithm; removed inputs cannot be replayed.
+from pathlib import Path as _CleanupPath
+import json as _cleanup_json
+import sys as _cleanup_sys
+_cleanup_root = next(p for p in _CleanupPath(__file__).resolve().parents if p.name == "implementation").parent
+_cleanup_removed_inputs = ['implementation/reports/gate_evidence/track_a_data_vintage_comparison_2026-09-27.json']
+if any(not (_cleanup_root / p).is_file() for p in _cleanup_removed_inputs):
+    print(_cleanup_json.dumps({"status": "NOT_AVAILABLE", "reason": "GSQ-010: archived inputs removed"}))
+    _cleanup_sys.exit(2)
+
 import sys,json
 from pathlib import Path
 sys.path[:0]=['src','tools']

@@ -4,6 +4,17 @@ No network, package import, raw repair, timestamp substitution, or file writes.
 Exact provider numeric tokens are retained; Decimal is only used for comparisons.
 """
 
+# GSQ-010: retained historical algorithm; removed inputs cannot be replayed.
+from pathlib import Path as _CleanupPath
+import json as _cleanup_json
+import sys as _cleanup_sys
+_cleanup_root = next(p for p in _CleanupPath(__file__).resolve().parents if p.name == "implementation").parent
+_cleanup_removed_inputs = ['implementation/experiments/chart-contract-v0.1/p0-classification-review-v0.3/market-basis-anomalies/IMMUTABLE_RAW_ANOMALIES_v0.3.json', 'implementation/experiments/chart-contract-v0.1/p0-prerequisites/market/MARKET_REFERENCE_COVERAGE.json']
+if any(not (_cleanup_root / p).is_file() for p in _cleanup_removed_inputs):
+    print(_cleanup_json.dumps({"status": "NOT_AVAILABLE", "reason": "GSQ-010: archived inputs removed"}))
+    _cleanup_sys.exit(2)
+
+
 from collections import Counter
 from decimal import Decimal
 import hashlib

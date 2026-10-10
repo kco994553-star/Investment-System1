@@ -15,7 +15,14 @@ def test_integrated_e2e_reload_and_immutable_outcome(tmp_path):
     assert store.exists() and store.stat().st_size > 0
 
 
-def test_live_candidate_never_self_promotes():
+def test_live_candidate_never_self_promotes(monkeypatch):
+    from investment_system.providers import sec_companyfacts, yahoo_chart
+
+    def unavailable(*args, **kwargs):
+        raise OSError("independent offline candidate test")
+
+    monkeypatch.setattr(sec_companyfacts, "urlopen", unavailable)
+    monkeypatch.setattr(yahoo_chart, "urlopen", unavailable)
     result = run_live_candidate(("nvda",))
     assert result["real_data_verified"] is False
     assert result["stage2"] is False
