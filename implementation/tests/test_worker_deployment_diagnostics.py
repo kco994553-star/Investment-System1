@@ -41,6 +41,7 @@ class DeploymentDiagnosticTests(unittest.TestCase):
                     "CLOUDFLARE_ACCOUNT_ID": " \n" + ACCOUNT + "\t ",
                     "GITHUB_STEP_SUMMARY": str(self.summary), "GITHUB_OUTPUT": str(self.output)}
         self.calls = []
+        self.sleeps = []
 
     def execute(self, results, operation="deploy", transport=None):
         sequence = iter(results)
@@ -54,7 +55,8 @@ class DeploymentDiagnosticTests(unittest.TestCase):
 
         captured = io.StringIO()
         with contextlib.redirect_stdout(captured), contextlib.redirect_stderr(captured):
-            status = helper.main(operation, environ=self.env, runner=runner, transport=transport)
+            status = helper.main(operation, environ=self.env, runner=runner, transport=transport,
+                                 sleep=self.sleeps.append)
         self.logs = captured.getvalue()
         self.summary_text = self.summary.read_text() if self.summary.exists() else ""
         self.output_text = self.output.read_text() if self.output.exists() else ""
@@ -333,36 +335,110 @@ class DeploymentDiagnosticTests(unittest.TestCase):
         self.assertEqual(self.execute([self.result(output), self.result(ORIGIN)]), 0)
         self.assert_private()
 
-    def test_anonymous_checks_use_no_auth_and_keep_existing_contract(self):
+    def test_anonymous_checks_use_explicit_user_agent_and_keep_existing_contract(self):
         self.env["WORKER_ORIGIN"] = ORIGIN
         requests = []
+        request_headers = []
+        read_limits = []
 
         class Response:
             def __init__(self, index):
-                self.status = 503 if index == 2 else 403
+                self.status = 403
                 self.headers = {"Cache-Control": "private, no-store, max-age=0"}
                 if index == 2:
                     self.headers["Access-Control-Allow-Origin"] = "https://kco994553-star.github.io"
-                self.code = "CONFIG_UNAVAILABLE" if index == 2 else "ORIGIN_FORBIDDEN"
+                self.code = "AUTH_FORBIDDEN" if index == 2 else "ORIGIN_FORBIDDEN"
             def __enter__(self): return self
             def __exit__(self, *args): pass
-            def read(self, limit): return json.dumps({"error": {"code": self.code}}).encode()
+            def read(self, limit):
+                read_limits.append(limit)
+                return json.dumps({"error": {"code": self.code}}).encode()
 
         def transport(request, timeout):
             requests.append(request)
+            request_headers.append(dict(request.header_items()))
             return Response(len(requests) - 1)
 
         self.assertEqual(self.execute([], "verify", transport), 0)
         self.assertEqual(len(requests), 3)
+        user_agent = "InvestmentSystem1-DeploymentVerification/1.0"
+        expected_headers = [
+            {"User-agent": user_agent},
+            {"User-agent": user_agent, "Origin": "https://invalid-origin.example"},
+            {"User-agent": user_agent, "Origin": helper.ALLOWED_ORIGIN},
+        ]
+        self.assertTrue(request_headers == expected_headers,
+                        "Anonymous request headers do not match verification contract")
+        self.assertEqual(read_limits, [4097] * 3)
         self.assertTrue(all(request.full_url == ORIGIN + "/history?symbol=NVDA&range=1mo" for request in requests))
         self.assertTrue(all(request.get_header("Authorization") is None for request in requests))
         self.assertIn("App feature remains OFF", self.summary_text)
+        self.assert_private()
+
+    def test_verify_retries_transport_and_pending_config_without_logging_payloads(self):
+        self.env["WORKER_ORIGIN"] = ORIGIN
+        requests = []
+        class Response:
+            def __init__(self, allowed, pending=False):
+                self.status = 503 if pending else 403
+                self.headers = {"Cache-Control": "private, no-store, max-age=0"}
+                if allowed:
+                    self.headers["Access-Control-Allow-Origin"] = helper.ALLOWED_ORIGIN
+                self.code = "CONFIG_UNAVAILABLE" if pending else "AUTH_FORBIDDEN" if allowed else "ORIGIN_FORBIDDEN"
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def read(self, limit): return json.dumps({"error": {"code": self.code}}).encode()
+        pending_count = 0
+        def transport(request, timeout):
+            nonlocal pending_count
+            self.assertEqual(timeout, 10)
+            requests.append(request)
+            if len(requests) == 1:
+                raise RuntimeError(TOKEN + EMAIL + ACCOUNT)
+            allowed = request.get_header("Origin") == helper.ALLOWED_ORIGIN
+            if allowed and pending_count < 2:
+                pending_count += 1
+                return Response(True, pending=True)
+            return Response(allowed)
+        self.assertEqual(self.execute([], "verify", transport), 0)
+        self.assertEqual(self.sleeps, [2, 2, 4])
+        self.assertEqual(len(requests), 6)
+        self.assertNotIn("CONFIG_UNAVAILABLE", self.public)
+        self.assertEqual(len(self.logs.splitlines()), 2)
+        self.assertIn("NO_ORIGIN: HTTP 403 ORIGIN_FORBIDDEN", self.logs)
+        self.assertIn("ALLOWED_ORIGIN_NO_AUTH: HTTP 403 AUTH_FORBIDDEN", self.logs)
+        self.assertTrue(all(request.get_header("Authorization") is None for request in requests))
+        self.assertTrue(all(request.get_method() == "GET" and request.data is None for request in requests))
+        self.assert_private()
+
+    def test_verify_pending_config_exhausts_bounded_retries_and_fails_closed(self):
+        self.env["WORKER_ORIGIN"] = ORIGIN
+        requests = []
+        class Response:
+            def __init__(self, allowed):
+                self.status = 503 if allowed else 403
+                self.headers = {"Cache-Control": "private, no-store, max-age=0"}
+                if allowed: self.headers["Access-Control-Allow-Origin"] = helper.ALLOWED_ORIGIN
+                self.code = "CONFIG_UNAVAILABLE" if allowed else "ORIGIN_FORBIDDEN"
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def read(self, limit): return json.dumps({"error": {"code": self.code}}).encode()
+        def transport(request, timeout):
+            requests.append(request)
+            return Response(request.get_header("Origin") == helper.ALLOWED_ORIGIN)
+        self.assertEqual(self.execute([], "verify", transport), 1)
+        self.assertEqual(self.sleeps, [2, 4, 8, 16])
+        self.assertEqual(len(requests), 7)
+        self.assertIn("ANONYMOUS_AUTH_CONFIG_CHECK_FAILED", self.public)
+        self.assertNotIn("NO_ORIGIN: HTTP", self.logs)
+        self.assert_private()
 
     def test_anonymous_transport_exception_is_not_echoed(self):
         self.env["WORKER_ORIGIN"] = ORIGIN
         def transport(*args, **kwargs): raise RuntimeError(TOKEN + EMAIL + ACCOUNT)
         self.assertEqual(self.execute([], "verify", transport), 1)
         self.assertIn("TRANSPORT_FAILED", self.public)
+        self.assertEqual(self.sleeps, [2, 4, 8, 16])
         self.assert_private()
 
     def test_anonymous_invalid_origin_never_calls_transport(self):
