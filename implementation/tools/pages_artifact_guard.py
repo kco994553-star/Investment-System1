@@ -30,8 +30,8 @@ from investment_system.product.sec_m2_candidates import require_public_candidate
 APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
-    "app-config.js": "6f966a489b348a0332acbda0e330c43d7fb0abf5345d371e90b8e54ae84c0690",
-    "app.js": "9a037c72c03771a29d000934520dbe0bef847ff752ddca7f2ab375cc33db446a",
+    "app-config.js": "e69b8fe9fe492969a765a66f33170684e1d5fd0f40f47434cdb361a4b50a0361",
+    "app.js": "8356b240ffcd5089ec3c46ec581ecf418766de85f5c1ba82217a1d309df462ac",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "e1625314c50c5891d48ce9ad1d4ac6c958022230ce27d8c8500896046c4c0c21",
@@ -41,10 +41,10 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "53d790bf12c8ef767bcfaa0a56a7f63439f354d5465dedbf339de947f7d14561",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "febc66d1c6ac44fcab2a179a1942dfed3a010cc500bd232db12cca8489bb91be",
+    "index.html": "c573279274469f9a0a6a2e1ac4a7f1802ce1cf22d5a860482121a557a028c446",
     "locale.js": "0e27312c7885dd1edbaf5c5eed939ba4b642695e5541653a21c786dcff9089fc",
     "private-history.css": "dbac5b571505658a71935456fd6303c034c3c2f29a0fc2edb947159a4da6d89f",
-    "private-history.js": "45bb16f4b8827ed38f537336224b894774bd7558b58ac2e570c60563eb38f916",
+    "private-history.js": "753a4efdc411c02ab19ed118aa142f70b67fb24ac44da661e7880de6954679d2",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "035930c2bdeb760f768562f8a9fb6b7aec703bc4663392b8f91db5796145b56e",
 }

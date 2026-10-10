@@ -2,7 +2,7 @@
 'use strict';
 const { chromium } = require('playwright');
 const base = new URL(process.env.PRIVATE_HISTORY_URL || 'http://127.0.0.1:8990/Investment-System1/');
-const ORIGIN = 'https://synthetic-history.example-account.workers.dev';
+const ORIGIN = 'https://private-investment-history.kco994553.workers.dev';
 const OTHER_ORIGIN = 'https://another-history.example-account.workers.dev';
 const SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly email';
 const TOKEN = ['memory', 'only', 'synthetic', 'history', 'credential'].join('-');
@@ -59,7 +59,7 @@ async function login(session) {
   verify(await page.evaluate(() => window.__historyMock.scopes.every(scope => {
     const scopes = new Set(scope.trim().split(/\s+/));
     return scopes.size === 2 && scopes.has('email') && scopes.has('https://www.googleapis.com/auth/spreadsheets.readonly');
-  }) && window.__historyMock.scopes.length > 0 && window.__historyMock.gestureFailures === 0));
+  }) && window.__historyMock.scopes.length > 0 && window.__historyMock.prompts.every(prompt => prompt === 'consent') && window.__historyMock.prompts.length > 0 && window.__historyMock.gestureFailures === 0));
 }
 async function logout(session) {
   await session.page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).disconnect());
@@ -110,7 +110,7 @@ async function exportsPrivacy(page) {
     verify(await persistentPrivacy(page));
   } finally { await page.evaluate(() => { window.__historyRestoreExport(); delete window.__historyRestoreExport; delete window.__historyExportAudit; }); }
 }
-async function open({ enabled = false, approvedOrigin = ORIGIN, locale = 'en-US', width = 1280, storageUnavailable = false } = {}) {
+async function open({ enabled = false, deployedConfig = false, approvedOrigin = ORIGIN, locale = 'en-US', width = 1280, storageUnavailable = false } = {}) {
   const context = await browser.newContext({ viewport: { width, height: 844 }, locale, serviceWorkers: 'block' });
   const mode = { reads: 0, googleReads: 0, styles: 0, scripts: 0, revokes: 0, status: 200, code: '', malformed: false, delayed: false, pending: null };
   await context.addInitScript(({ locale, origin, storageUnavailable }) => {
@@ -135,15 +135,8 @@ async function open({ enabled = false, approvedOrigin = ORIGIN, locale = 'en-US'
     try {
       if (url.origin === base.origin) {
         verify(request.method() === 'GET' && !request.postData());
-        if (enabled && url.pathname.endsWith('/app-config.js')) {
-          await route.fulfill({ contentType: 'application/javascript', body: 'window.InvestmentAppConfig=Object.freeze(' + JSON.stringify({ googleSheetsClientId: 'synthetic-public.apps.googleusercontent.com', privateHistoryEnabled: true, privateHistoryWorkerOrigin: approvedOrigin }) + ');' });
-          return;
-        }
-        if (enabled && (url.pathname.endsWith('/index.html') || url.pathname.endsWith('/'))) {
-          const response = await route.fetch();
-          const html = await response.text();
-          verify((html.match(/connect-src /g) || []).length === 1);
-          await route.fulfill({ response, body: html.replace(/connect-src ([^;\"]+)/, (_, sources) => 'connect-src ' + sources + ' ' + ORIGIN) });
+        if (!deployedConfig && url.pathname.endsWith('/app-config.js')) {
+          await route.fulfill({ contentType: 'application/javascript', body: 'window.InvestmentAppConfig=Object.freeze(' + JSON.stringify({ googleSheetsClientId: 'synthetic-public.apps.googleusercontent.com', privateHistoryEnabled: enabled, privateHistoryWorkerOrigin: approvedOrigin }) + ');' });
           return;
         }
         await route.continue(); return;
@@ -155,7 +148,7 @@ async function open({ enabled = false, approvedOrigin = ORIGIN, locale = 'en-US'
       if (url.href === 'https://accounts.google.com/gsi/client') {
         verify(request.method() === 'GET' && !request.postData() && !request.headers().referer);
         mode.scripts++;
-        await route.fulfill({ contentType: 'application/javascript', body: `window.__historyMock={scopes:[],gestureFailures:0};window.google={accounts:{oauth2:{initTokenClient(config){window.__historyMock.scopes.push(config.scope);return {requestAccessToken(){if(!navigator.userActivation.isActive)window.__historyMock.gestureFailures++;config.callback({access_token:${JSON.stringify(TOKEN)},expires_in:3600,scope:${JSON.stringify(SCOPE)},token_type:'Bearer'});}};},revoke(token,done){fetch('https://oauth2.googleapis.com/revoke',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'token='+encodeURIComponent(token),credentials:'omit',referrerPolicy:'no-referrer'}).then(()=>done({}));}}}};` }); return;
+        await route.fulfill({ contentType: 'application/javascript', body: `window.__historyMock={scopes:[],prompts:[],gestureFailures:0};window.google={accounts:{oauth2:{initTokenClient(config){window.__historyMock.scopes.push(config.scope);return {requestAccessToken(options){window.__historyMock.prompts.push(options.prompt);if(!navigator.userActivation.isActive)window.__historyMock.gestureFailures++;config.callback({access_token:${JSON.stringify(TOKEN)},expires_in:3600,scope:${JSON.stringify(SCOPE)},token_type:'Bearer'});}};},revoke(token,done){fetch('https://oauth2.googleapis.com/revoke',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'token='+encodeURIComponent(token),credentials:'omit',referrerPolicy:'no-referrer'}).then(()=>done({}));}}}};` }); return;
       }
       if (url.origin === 'https://oauth2.googleapis.com' && url.pathname === '/revoke') {
         verify(request.method() === 'POST' && new URLSearchParams(request.postData()).get('token') === TOKEN);
@@ -230,6 +223,36 @@ async function verifyResults(session) {
   verify(chartSafe);
   verify(await root.locator('[data-history-chart]').evaluate(svg => [...svg.querySelectorAll('path')].some(path => /620\.00,20\.00$/.test(path.getAttribute('d') || ''))));
   verify(await persistentPrivacy(page));
+}
+async function deployedChecks(locale, width) {
+  const session = await open({ enabled: true, deployedConfig: true, locale, width });
+  const { page, mode } = session;
+  try {
+    await check('deployed_config_no_auto_requests_' + locale + '_' + width, async () => {
+      verify(await page.evaluate(origin => InvestmentAppConfig.privateHistoryEnabled === true && InvestmentAppConfig.privateHistoryWorkerOrigin === origin, ORIGIN));
+      const settings = page.locator('[data-private-history-settings]');
+      verify(await settings.locator('[data-history-worker-url]').inputValue() === ORIGIN);
+      const text = await settings.textContent();
+      verify(text.includes(locale === 'ko-KR' ? '이메일 확인 권한에 다시 동의' : 'consent again to email verification'));
+      verify(await settings.locator('[data-history-company]').count() === 19);
+      await chart(session); await waitCode(page, 'ORIGIN_UNAPPROVED');
+      verify(mode.reads === 0 && mode.googleReads === 0 && mode.styles === 0 && mode.scripts === 0);
+    });
+    await check('deployed_consent_and_private_history_' + locale + '_' + width, async () => {
+      await navigate(page, 'settings');
+      await page.locator('[data-history-action="save"]').click();
+      await page.locator('[data-history-settings-status][data-code="SAVED"]').waitFor();
+      await chart(session); await waitCode(page, 'AUTH_REQUIRED');
+      await navigate(page, 'settings'); await login(session);
+      await page.locator('[data-history-company="nvda"]').click();
+      await waitCode(page, 'READY');
+      verify(mode.reads === 0 && mode.googleReads === 0);
+      await fetchHistory(session); await verifyResults(session);
+      verify(mode.reads === 1 && mode.googleReads === 0);
+      verify(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      await exportsPrivacy(page);
+    });
+  } finally { await closeContext(session); }
 }
 async function defaultChecks(locale, width) {
   const session = await open({ locale, width }), { page, mode } = session;
@@ -358,10 +381,15 @@ async function main() {
     browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
     for (const locale of ['ko-KR', 'en-US']) for (const width of [390, 1280]) await defaultChecks(locale, width);
     for (const locale of ['ko-KR', 'en-US']) for (const width of [390, 1280]) await enabledChecks(locale, width);
+    for (const locale of ['ko-KR', 'en-US']) for (const width of [390, 1280]) await deployedChecks(locale, width);
     await errorChecks(); await otherBoundaryChecks();
     for (const action of ['close', 'navigation', 'logout', 'expiry', 'pagehide']) await cancelCheck(action);
     await check('external_requests_are_mocked_and_evidence_has_no_payloads', async () => verify(Object.values(traffic).every(value => value === 0)));
-  } catch (_) { console.error('FAIL ' + currentCheck); process.exitCode = 1; }
+  } catch (error) {
+    const frames = String(error.stack || '').match(/private_history_browser_test\.js:\d+:\d+/g) || [];
+    console.error('FAIL ' + currentCheck + ' ' + (frames[1] || frames[0] || 'BROWSER_FAILURE'));
+    process.exitCode = 1;
+  }
   finally { if (browser) await browser.close(); }
 }
 main();
