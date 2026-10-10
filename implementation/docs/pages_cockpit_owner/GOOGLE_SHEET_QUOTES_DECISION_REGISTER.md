@@ -309,3 +309,34 @@ GSQ-009의 KRX 대체 출처 후보와 나머지 경계는 유지한다. 과거 
 이번 작업의 실행 범위는 **append-only 결정 기록, 구현 명세 작성, 저장소의 metadata/문서/소스에 근거한 Holdout 보호 판정, 문서 PR 검증 및 조건 충족 병합**이다. 코드·테스트·워크플로를 수정하거나 실제 가격/통계 수집·공급자 인증·Secret 조회/출력·배포를 실행하지 않는다. force push·ruleset·`AUTONOMY_MODE` 변경, 새 방법론·가중치, Holdout 사용은 금지한다. 코덱1의 후속 code PR에 필요한 review·구현/운영 승인과 병합 경계는 별도다.
 
 산출물: [Macro 4축 구현 명세](../macro_data_rights/PHASE1_FOUR_AXES_IMPLEMENTATION_SPEC.md), [Holdout 보호 확인 실행 기록 — UNCONFIRMED](../qgv_v2_readiness/HOLDOUT_PROTECTION_CHECK_20261010.md), [M3 개인 부분집합 구현 명세](../daily_data_pipeline/M3_SUBSET_IMPLEMENTATION_SPEC.md). 구체 관심/대형주 roster, provider 실제 접근·권리, owner의 외부 보호 metadata는 확인됐다고 추정하지 않는다.
+
+
+## GSQ-012 — 26E 기기 ★ 기반 M3 1차 및 향후 forward 검증 결정 (2026-10-10 UTC)
+
+권한 근거는 이번 대화의 사용자 명시 결정이다. GSQ-001~011과 과거 기록의 bytes를 보존하고 이 결정을 끝에 추가한다. 아래 M3 1차 범위는 GSQ-011의 관심/대형주 일부·약100개 계획보다 우선한다.
+
+| 항목 | 사용자 결정 |
+| --- | --- |
+| M3 1차 | **TARGET 19종목 + 사용자 기기의 관심 기업(★) 목록**. 목록은 저장소에 기록하지 않고 기기에서 읽는다. 기존 `prefs.interests`의 작업 snapshot을 선택 입력으로 쓰며 실제 목록 제출·공개·Worker의 영구 선택 roster 복제를 요구하지 않는다. |
+| 대형주 | **추가는 후속**. 시총 계산 부하·권리 확인 후 다룬다. 현재 1차를 약100개로 채우거나 자동 확대하지 않는다. |
+| 기존 Holdout | **UNCONFIRMED 유지**, v2 검증 근거로 사용하지 않는다. 미소비/보호 확정으로 승격하지 않으며 기존 확인 기록은 당시의 근거로 보존한다. |
+| 향후 v2 검증 | 향후 누적되는 **전진(forward) 데이터**로 검증한다. **시작 시점은 v2 착수 시 사용자가 결정**한다. 에이전트는 기간을 선택·사용하지 않는다. 이번 결정으로 v2 착수·수집·검증을 실행하지 않는다. |
+| 이번 실행 | [#99의 M3 구현 명세](../daily_data_pipeline/M3_SUBSET_IMPLEMENTATION_SPEC.md)를 1차 선택 출처·기기 입력/수명·함수·테스트 수준에서 갱신한다. 문서 병합 후 대기한다. |
+
+문서 전용 PR(.md만 변경)은 최종 head의 실행된 필수 체크 전부 성공·실패0이면 자체 병합한다. code/mixed PR 병합 금지, force push·ruleset·AUTONOMY_MODE 변경 금지, 코드·테스트·워크플로 수정 금지, Secret 출력 금지, 새 방법론·가중치 및 Holdout 사용 금지는 유지한다. 이번 작업은 기기의 실제 ★ 목록·가격·개인 자료를 조회하거나 기록하지 않는다.
+
+
+## GSQ-013 — 26E 비공개 Universe 시트·시총 품질 비교·상위 N 결정 (2026-10-10 UTC)
+
+권한 근거는 이번 대화의 사용자 명시 결정이다. GSQ-001~012와 과거 기록의 bytes는 보존하고 이 결정을 끝에 추가한다. GSQ-012의 기기 ★ 읽기를 유지하며 대형주 후속 경로를 아래 범위로 구체화한다.
+
+| 항목 | 사용자 결정/보고 |
+| --- | --- |
+| Universe 입력 | 사용자 비공개 구글 시트 **Universe**, 탭 Universe, A=code·B=marketcap·C=price, GOOGLEFINANCE. 앱이 **기존 읽기 전용 로그인으로1회 읽어 기기에서 정렬·선택**한다. **시트 ID는 저장소 기록 금지**다. 실제 ID/목록/값을 제출받거나 공개하지 않는다. |
+| 후보/실측 보고 | 사용자 설명: 후보504개=현재 S&P500 구성+ASML. 2026-10-10 보고:503/504 값 있음·PSKY 빈칸, BLK·BNY 일부 marketcap이 실제보다 수십~수백 배 작음. 이번 작업의 직접 측정/공식 membership·완전성/PIT 확인이 아니다. |
+| 품질 검사 | **SEC 발행주식 수×같은 row의 price**로 시총을 재계산해 Google marketcap과 비교한다. 차이가 임계 이상이면 재계산값 사용과 **‘검증 불일치’** 표시가 필요하다. issuer/share-class/ADR·통화·단위·가용성 근거가 없으면 비교를 통과시키지 않는다. |
+| M3 범위 | **TARGET19 + 사용자 기기의 ★ 관심 기업 + Universe 시트의 검증된 시총 상위 N**. N은 사용자 설정이며 기본값을 근거와 함께 제안한다. 개인 기기 정렬/선택이며 실제 가격·시총·선정 membership/순위·시트 ID를 공개하지 않는다. |
+| 확인 대기 제안 | [M3 구현 명세](../daily_data_pipeline/M3_SUBSET_IMPLEMENTATION_SPEC.md)에서 **기본 N=20**, `abs(G-R)/R >= 10%`의 품질 임계 제안을 근거·한계와 함께 표시한다. **사용자 확인 대상이며 확정/자동 적용이 아니다**. 임계는 품질 표시이며 기존 shares×price 수식·QGV 방법론/가중치를 바꾸지 않는다. |
+| 유지 | GSQ-012의 기존 Holdout UNCONFIRMED·v2 검증 근거 제외·향후 forward 검증과 시작 시점 사용자 결정·에이전트 기간 선택/사용 금지를 유지한다. |
+
+이번 실행은 .md 전용 기록·명세 갱신과 최종 head의 필수 체크 검증/조건 충족 병합이다. 실제 시트/시트 ID/개인 목록/값·Secret·Holdout은 조회하지 않고 코드·테스트·워크플로·ruleset·AUTONOMY_MODE·방법론·가중치를 수정하지 않는다. 문서 전용이며 실행된 필수 체크 전부 성공·실패0이면 자체 병합하고 병합 PR만 보고한다. code/mixed PR·force push·Holdout 사용 금지는 유지한다.
