@@ -92,6 +92,7 @@
   Object.assign(UI,{"공식 설정 복사·PREVIEW·기기 저장":{"ko-KR":"공식 설정 복사·PREVIEW·기기 저장","en-US":"Copy official config · PREVIEW · save on device"}});
   Object.assign(UI,{"예상 시기 · 확정일 아님":{"ko-KR":"예상 시기 · 확정일 아님","en-US":"Estimated timing · not a confirmed date"}});
   Object.assign(UI,{"데이터 운영 상태 →":{"ko-KR":"데이터 운영 상태 →","en-US":"Data operations status →"}});
+  Object.assign(UI,{"정보 제공용, 투자 판단 덧씌우기(Overlay)는 기본 OFF": {"ko-KR": "정보 제공용, 투자 판단 덧씌우기(Overlay)는 기본 OFF", "en-US": "Information only; investment overlay is OFF by default"}, "뉴스 무료 출처 미정: NOT_AVAILABLE": {"ko-KR": "뉴스 무료 출처 미정: NOT_AVAILABLE", "en-US": "Free news source not chosen: NOT_AVAILABLE"}, "전체": {"ko-KR": "전체", "en-US": "All"}, "업종": {"ko-KR": "업종", "en-US": "Industry"}, "정치": {"ko-KR": "정치", "en-US": "Politics"}, "경제": {"ko-KR": "경제", "en-US": "Economy"}, "읽기 전용": {"ko-KR": "읽기 전용", "en-US": "Read only"}, "이 휴대폰에만 저장": {"ko-KR": "이 휴대폰에만 저장", "en-US": "Stored only on this phone"}, "주문 기능 없음": {"ko-KR": "주문 기능 없음", "en-US": "No order function"}});
   const TERMS=Object.freeze({
     free_cash_flow:["Free Cash Flow","잉여현금흐름"], drawdown:["Drawdown","낙폭"],
     operating_margin:["Operating Margin","영업이익률"], Q_score:["Quality","품질"],

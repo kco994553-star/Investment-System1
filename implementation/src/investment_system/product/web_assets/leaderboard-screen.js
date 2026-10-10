@@ -1,0 +1,33 @@
+/* S06 leaderboard table. Price-free public data only; QGV total, ranks and price columns stay NOT_AVAILABLE (—) until real inputs exist.
+   'My profile' view is a RAM-only PREVIEW from published Q/G factors; nothing calculated is stored. */
+(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.LeaderboardScreen=api;})(globalThis,function(){
+'use strict';
+const COLUMNS=[['rank','순위','Rank'],['company','기업·시총 순위','Company · cap rank'],['qgv','QGV','QGV'],['daily','일간','Daily'],['consensus','컨센서스','Consensus'],['target','목표','Target'],['scenario','QGV 시나리오','QGV scenario'],['reeval','재평가','Re-evaluation'],['earnings','실적','Earnings'],['vmr','VMR','VMR']];
+const STAGES=[['정상','Normal'],['관찰','Watch'],['근접','Near'],['재평가','Re-evaluate']];
+// Pure: one row per identity, using only published price-free inputs.
+function rowsFor(identities,{publicScreens={},engine=null,filings=null,weights=null}={}){
+ const factors=publicScreens['sec-qg-factors.json']?.data?.companies||{},windows=publicScreens['sec-filing-windows.json']?.data?.companies||{};
+ return identities.map(c=>{const obs={};for(const[f,v]of Object.entries(factors[c.company_id]?.factors||{}))if(v&&v.score!==null&&v.state!=='NOT_AVAILABLE')obs[f]={score:v.score,quality:v.state==='LIVE'?'OK':'STALE_DATA'};
+  const has=Object.keys(obs).length>0&&engine,r=has?engine.strategy({observations:obs,...(weights?{user_weights:weights}:{})}):null,axis=a=>typeof r?.axes?.[a]?.score==='number'?r.axes[a].score:null,partial=a=>r?.axes?.[a]?.coverage&&r.axes[a].coverage!=='READY';
+  const w=windows[c.company_id]&&windows[c.company_id].state!=='NOT_AVAILABLE'&&filings?filings.nextFilingWindow(windows[c.company_id]):null;
+  return{company_id:c.company_id,ticker:c.ticker,name:c.name,q:axis('Q'),g:axis('G'),partial:partial('Q')||partial('G'),qg_total:typeof r?.qg_preview_total==='number'?r.qg_preview_total:null,next_window:w?w.start+'–'+w.end:null};});}
+function mount(host,identities,{publicScreens={},locale,view='default',profiles=[],profileId=null,onView=()=>{},engine=globalThis.EnginePreview,filings=globalThis.PublicScreens}={}){
+ if(!host)return;const doc=host.ownerDocument,en=locale==='en-US',el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
+ const card=el('section',undefined,{class:'card','data-leaderboard-screen':view});
+ card.append(el('div',undefined,{class:'chips data-badges'}));card.lastChild.append(el('span',en?'US top 500 · target scope':'미국 상위 500 · 목표 범위',{class:'badge'}),el('span',en?'Score basis v1 · uncalibrated':'점수 기준 v1 · 보정 전',{class:'badge'}),el('span',(en?'Daily snapshot: ':'일별 스냅샷: ')+(publicScreens['sec-qg-factors.json']?.as_of||'NOT_AVAILABLE'),{class:'badge'}));
+ const tabs=el('div',undefined,{class:'chips screen-tabs',role:'group'});for(const[id,label]of [['default',en?'Default':'기본'],['profile',en?'My profile (PREVIEW)':'내 프로필 기준(PREVIEW)'],['device',en?'My device (M3)':'내 기기 기준(M3)']]){const b=el('button',label,{type:'button','data-leaderboard-view':id,'aria-pressed':String(view===id)});b.onclick=()=>onView({view:id});tabs.append(b);}card.append(tabs);
+ let weights=null;if(view==='profile'){const select=el('select',undefined,{'data-leaderboard-profile':'','aria-label':en?'Profile':'프로필'});select.append(el('option',en?'Choose a saved profile':'저장한 프로필 선택',{value:''}));for(const p of profiles){const o=el('option',p.name,{value:p.id});if(p.id===profileId)o.selected=true;select.append(o);}select.onchange=()=>onView({view,profileId:select.value||null});card.append(select);
+  const chosen=profiles.find(p=>p.id===profileId);if(chosen)weights=chosen.weights;card.append(el('p',chosen?(en?'PREVIEW · RAM only · Q/G recalculated with your profile; not mixed with official results':'PREVIEW · 메모리 전용 · 내 프로필로 Q/G 재계산, 공식 결과와 섞지 않음'):(en?'No saved profile selected. Create one in Strategy profile.':'선택한 프로필이 없습니다. 전략 프로필에서 만드세요.'),{class:'small','data-leaderboard-preview-note':''}));}
+ if(view==='device'){card.append(el('p',en?'My device view reads your private Universe sheet in RAM. Open it below.':'내 기기 기준은 비공개 Universe 시트를 메모리에서 읽습니다. 아래에서 여세요.',{class:'small'}));}
+ const rows=rowsFor(identities,{publicScreens,engine,filings,weights}),show=v=>v===null?'—':(Math.round(v*10)/10).toFixed(1);
+ const wrap=el('div',undefined,{class:'table-wrap'}),table=el('table',undefined,{'data-leaderboard-table':''}),head=el('tr'),body=el('tbody'),thead=el('thead');for(const[,ko,enl]of COLUMNS)head.append(el('th',en?enl:ko));thead.append(head);
+ for(const r of rows){const tr=el('tr',undefined,{'data-leaderboard-row':r.company_id}),link=el('a',r.ticker,{href:'#company/'+encodeURIComponent(r.company_id)}),company=el('td');company.append(link,el('span',' · —',{class:'small'}));
+  const qgv=el('td','—');if(r.q!==null||r.g!==null)qgv.append(el('span',' Q '+show(r.q)+' · G '+show(r.g)+(r.partial?(en?' (partial)':' (부분)'):'')+(view==='profile'&&weights?' · PREVIEW':''),{class:'small','data-leaderboard-qg':''}));
+  tr.append(el('td','—'),company,qgv,el('td','—'),el('td','—'),el('td','—'),el('td','—'),el('td','—'),el('td',r.next_window?r.next_window+(en?' (est.)':' (예상)'):'—'),el('td','—'));body.append(tr);}
+ if(!rows.length){const tr=el('tr');tr.append(el('td',en?'No matching companies.':'일치하는 기업이 없습니다.',{colspan:String(COLUMNS.length)}));body.append(tr);}
+ table.append(thead,body);wrap.append(table);card.append(wrap,el('p',en?'— = NOT_AVAILABLE. QGV total, ranks, daily move, consensus, target and VMR need prices or unconnected inputs. Earnings show the estimated filing window, not a confirmed date.':'— = NOT_AVAILABLE. QGV 합계·순위·일간·컨센서스·목표·VMR은 가격 또는 미연결 입력이 필요합니다. 실적은 제출 패턴의 예상 시기이며 확정일이 아닙니다.',{class:'small'}));
+ const stages=el('details',undefined,{'data-reeval-stages':''});stages.append(el('summary',en?'Re-evaluation signal stages':'재평가 신호 단계'));const list=el('ol');for(const[ko,enl]of STAGES)list.append(el('li',en?enl:ko));stages.append(list,el('p',en?'Price change, threshold and distance are shown once the signal is connected (NOT_AVAILABLE now).':'신호가 연결되면 가격 변화량·임계값·거리를 함께 보여 줍니다(현재 NOT_AVAILABLE).',{class:'small'}));card.append(stages);
+ const actions=el('div',undefined,{class:'chips'});for(const label of [en?'Send selection to paper trading':'선택 종목 모의투자',en?'Send to backtest':'백테스트로 보내기']){const b=el('button',label,{type:'button',disabled:''});actions.append(b);}card.append(actions,el('p',en?'Paper trading and backtest are not connected yet.':'모의투자·백테스트는 아직 연결되지 않았습니다.',{class:'small'}));
+ host.replaceChildren(card);}
+return Object.freeze({COLUMNS,rowsFor,mount});
+});
