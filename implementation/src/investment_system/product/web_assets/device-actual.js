@@ -395,7 +395,7 @@
       const text = await file.text();
       if (new state.view.TextEncoder().encode(text).byteLength > MAX_FILE_BYTES) { notice(state, 'tooLarge'); return; }
       const payload = JSON.parse(text);
-      if (payload.schema === state.view.DeviceBackup?.SCHEMA) {
+      if (state.view.DeviceBackup?.accepts ? state.view.DeviceBackup.accepts(payload) : payload.schema === state.view.DeviceBackup?.SCHEMA) {
         if (!state.view.confirm(t(state, 'overwrite'))) return;
         await state.view.DeviceBackup.restore(state.view, state.catalog, payload);
         state.view.document.dispatchEvent(new state.view.Event('device-backup-restored')); return;

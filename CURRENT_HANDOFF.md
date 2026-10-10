@@ -7,13 +7,14 @@
 - 작업 방식: 기능 단위 PR, 독립 작업은 서브에이전트 최대 3개가 각자 worktree·브랜치에서 병렬 진행, 진척마다 push, 병합 때마다 이 절 갱신.
 - 로컬 검증 도구(세션 scratchpad, 없으면 재작성): `pin_assets.sh`(가드 해시·files_scanned), `ci_local.sh`(필수 CI 동등 실행), `run_browser.sh`, `pytest_full.sh`(py3.12). Playwright는 1.58.2.
 - 병합 대기·진행 중 브랜치:
-  - `claude/a2b-s03-s04-s05-screens` → S03 포트폴리오·S04 종목 요약·S05 기업분석(이 PR).
-  - `claude/py313-compat-and-investor-star-backup` → py3.13 테스트 호환 + 백업 `/3`(투자자 ★). 병합 시 app.js `#import` 판별을 `DeviceBackup.accepts`로 바꿔야 함.
+  - (병합 완료) #161 S03 포트폴리오·S04 종목 요약·S05 기업분석.
+  - (병합 완료) #162 py3.13 테스트 호환 + 백업 `/3`(투자자 ★).
   - `claude/legacy-browser-tests-revival` → 레거시 브라우저 테스트 9종 복구(진행 중).
-  - `claude/s06-s13-screens` (WIP) → S06 리더보드 표 모듈·S13 공식 보기. app.js 연결 남음.
+  - `claude/s06-s13-screens` → S06 리더보드 표·보기 전환, S07 안내, S11 배지, S13 공식 보기(이 PR).
+  - `claude/docs-roadmap-decisions-20261010` = #163 문서(ROADMAP 상태 + USER_DECISIONS_PENDING.md).
   - `claude/type-metrics-public` (WIP, **공개 데이터 경계 → 승인 필요**) → 공개 유형 JSON에 revenue_cagr_3y·roic 추가 + 기기 유형 미리보기. public-screens.js 검증기 수정 남음.
   - `ccr-fbc4f278-dnjicl` = #156 (**워크플로 → 승인 필요**) CI manifest. 새 테스트는 여기 manifest에 추가.
-- 다음 할 일: 위 순서로 병합 → S06/S07/S11/S12 정합 → 유형 지표 draft 완성 → 사용자 결정 대기 항목 재확인.
+- 다음 할 일: S06 PR·#163 병합 → 레거시 테스트 PR 병합 → 유형 지표 draft 완성(공개 검증기 수정) → 사용자 결정 대기(USER_DECISIONS_PENDING.md).
 
 ## 읽기 순서와 운영 경계
 

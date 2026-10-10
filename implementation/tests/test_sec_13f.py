@@ -3,6 +3,7 @@ from dataclasses import FrozenInstanceError, replace
 from datetime import date, datetime, timedelta, timezone
 import hashlib
 from importlib import import_module
+import sys
 from xml.sax.saxutils import escape
 from zoneinfo import ZoneInfo
 
@@ -12,6 +13,9 @@ import pytest
 NS = "http://www.sec.gov/edgar/document/thirteenf/informationtable"
 MANAGER = "0000000123"
 AS_OF = datetime(2026, 10, 10, tzinfo=timezone.utc)
+# dataclasses.replace() on an init=False field raises ValueError up to 3.12 and
+# TypeError from 3.13; either way the role cannot be replaced.
+REPLACE_INIT_FALSE_ERROR = TypeError if sys.version_info >= (3, 13) else ValueError
 
 
 def _api():
@@ -443,7 +447,7 @@ def test_results_rows_keys_changes_are_frozen_and_private_in_repr():
     with pytest.raises(TypeError):
         current.raw_rows[0].raw_fields["value"] = "private"
     for obj in (current, result, result.changes[0]):
-        with pytest.raises(ValueError):
+        with pytest.raises(REPLACE_INIT_FALSE_ERROR):
             replace(obj, role="ACTUAL_TRADE")
 
 

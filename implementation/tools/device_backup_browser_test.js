@@ -27,6 +27,39 @@ const {chromium}=require('playwright');
    return document.documentElement.scrollWidth<=innerWidth;
   });
   if(valid){pass++;console.log('PASS backup restore browser '+width);}else{fail++;console.log('FAIL backup restore browser '+width);}
+  const stars=await page.evaluate(async()=>{
+   const catalog=await (await fetch('actual-catalog.json')).json(),K=PublicScreens.STAR_KEY,mine=['0000000011','0000000022'],other=JSON.stringify(['0000000099']);
+   if(DeviceBackup.STAR_KEY!==K||DeviceBackup.SCHEMA!=='investment-device-backup/3')return 'schema';
+   const marker='SYNTHETIC-PRIVATE-MARKER',planted=['investment.web.v1.unified-sheet-source','investment.web.v1.universe-source','investment.web.v1.trades-source','investment.web.v1.private-history-origin','investment.web.v1.sheet-create-pending'];
+   localStorage.setItem(K,JSON.stringify(mine));planted.forEach(k=>localStorage.setItem(k,JSON.stringify({spreadsheetId:marker,token:marker,workerOrigin:marker})));
+   const backup=await DeviceBackup.read(window,catalog),text=JSON.stringify(backup);planted.forEach(k=>localStorage.removeItem(k));
+   if(JSON.stringify(backup.investor_stars)!==JSON.stringify(mine)||text.includes(marker)||text.includes('market_data')||/token|spreadsheet|worker/i.test(Object.keys(backup.settings).join()))return 'export';
+   localStorage.setItem(K,other);await DeviceBackup.restore(window,catalog,JSON.parse(text));
+   if(JSON.stringify(PublicScreens.readStars(localStorage))!==JSON.stringify(mine))return 'restore3';
+   for(const schema of ['investment-device-backup/2','investment-device-backup/1']){
+    const old={...backup,schema};delete old.investor_stars;if(schema.endsWith('/1'))delete old.profiles;
+    localStorage.setItem(K,other);await DeviceBackup.restore(window,catalog,old);if(localStorage.getItem(K)!==other)return 'legacy'+schema;
+    localStorage.removeItem(K);await DeviceBackup.restore(window,catalog,old);if(localStorage.getItem(K)!==null)return 'legacy-absent'+schema;
+   }
+   localStorage.setItem(K,other);const personal=localStorage.getItem('investment.web.v1.personal');
+   for(const bad of [['0000000011','0000000011'],['11'],Array.from({length:51},(_,i)=>String(i+1).padStart(10,'0'))]){
+    try{await DeviceBackup.restore(window,catalog,{...backup,investor_stars:bad});return 'invalid';}catch(_){}
+    if(localStorage.getItem(K)!==other||localStorage.getItem('investment.web.v1.personal')!==personal)return 'invalid-write';
+   }
+   const api=window.DeviceActual;window.DeviceActual={...api,restoreHoldings:async()=>{throw Error('STORAGE');}};
+   try{await DeviceBackup.restore(window,catalog,backup);return 'rollback';}catch(_){}finally{window.DeviceActual=api;}
+   return localStorage.getItem(K)===other?'ok':'rollback-write';
+  });
+  page.on('dialog',d=>d.accept());const K='investment.web.v1.investor-stars';
+  const file=async(payload,name)=>{await page.locator('#device-backup-import').setInputFiles({name,mimeType:'application/json',buffer:Buffer.from(JSON.stringify(payload))});};
+  const exported=await page.evaluate(async()=>{localStorage.setItem('investment.web.v1.investor-stars',JSON.stringify(['0000000033']));return DeviceBackup.read(window,await (await fetch('actual-catalog.json')).json());});
+  await page.evaluate(k=>localStorage.setItem(k,JSON.stringify(['0000000044'])),K);await file(exported,'v3.json');
+  await page.waitForFunction(k=>localStorage.getItem(k)===JSON.stringify(['0000000033']),K,{timeout:8000});
+  const v2={...exported,schema:'investment-device-backup/2',preferences:{version:1,interests:['legacy-interest'],groups:[]}};delete v2.investor_stars;
+  await page.locator('#device-backup-import').waitFor();await file(v2,'v2.json');
+  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('investment.web.v1.personal')||'{}').interests?.[0]==='legacy-interest',undefined,{timeout:8000});
+  const ui=await page.evaluate(k=>localStorage.getItem(k),K)===JSON.stringify(['0000000033'])&&await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth);
+  if(stars==='ok'&&ui){pass++;console.log('PASS investor stars backup schema 3 browser '+width);}else{fail++;console.log('FAIL investor stars backup schema 3 browser '+width+' '+stars+' ui='+ui);}
   await context.close();
  }}catch(_){fail++;console.log('FAIL backup browser fixed diagnostic');}finally{await browser.close();}
  console.log('COUNTS pass='+pass+' fail='+fail);if(fail)process.exitCode=1;
