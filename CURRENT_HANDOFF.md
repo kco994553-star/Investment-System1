@@ -1,6 +1,6 @@
 # Claude Code 인수인계 — 2026-10-10
 
-메인 개발을 Claude Code로 이전한다. 코덱1은 새 기능 착수를 중단하고 진행 중 변경을 원격 WIP로 보존했다. 이 문서가 현재 상태의 기준이다. **코덱2의 종료 여부는 미확인**이며, 코덱2가 나중에 끝나면 최신 HEAD·배포·PR 상태를 보존하여 이 파일의 최종 갱신 PR을 병합한다.
+메인 개발을 Claude Code로 이전한다. 코덱1은 새 기능 착수를 중단하고 진행 중 변경을 원격 WIP로 보존했다. **코덱2 최종 인수인계 #154의 필수6체크 SUCCESS·실패0을 확인하여 병합한 뒤, 코덱1의 최신 운영·WIP 결과를 이 파일에 통합했다.** 이 문서 PR #155가 이번 최종 인수인계본이며 이후 변경이 있으면 최신 상태를 보존해 갱신한다.
 
 ## 읽기 순서와 운영 경계
 
@@ -9,7 +9,7 @@
 3. [ROADMAP_2026Q4.md](implementation/docs/ROADMAP_2026Q4.md): 범위·연구 및 후속 정책. 작성 당시 OPEN/배포 대기 표는 아래 최신 상태로 대체한다.
 4. [DESIGN_CANVAS_SCREENS_v1.md](implementation/docs/cockpit_ia/DESIGN_CANVAS_SCREENS_v1.md): #149로 병합된 S01~S16 정본, 390px/1440px. 추가 4화면 명세 대기는 해소됐다.
 
-최신 사용자 승인: **승인 필요 표시 없는 PR은 실행된 필수 체크 전부 성공·실패0이면 자체 병합 가능**. Worker 변경·workflow 변경 등 별도 승인 필요 항목은 사용자 승인 범위를 확인한다. WORKING_RULES의 과거 #95 승인 대기 문구는 이후 병합·배포 승인과 결과로 대체됐다. 미완성 WIP는 체크 통과만으로 완료로 간주하지 않는다. force push·ruleset·AUTONOMY_MODE 변경·임의 PR 닫기·브랜치 삭제 금지.
+최신 사용자 승인: **승인 필요 표시 없는 PR은 실행된 필수 체크 전부 성공·실패0이면 자체 병합 가능**. Worker 변경·workflow 변경 등 별도 승인 필요 항목은 사용자 승인 범위를 확인한다. WORKING_RULES의 과거 #95 승인 대기 문구는 이후 병합·배포 승인과 결과로 대체됐다. 26E 결정 기록 변경·미승인 가중치/새 방법론은 별도 승인 대상이다. 미완성 WIP는 체크 통과만으로 완료로 간주하지 않는다. force push·ruleset·AUTONOMY_MODE 변경·임의 PR 닫기·브랜치 삭제 금지.
 
 테스트·CI·필요한 브라우저 검사·계산 정확성·Frozen/원본 TARGET 불변·개인정보 가드는 유지한다. 작은 변경의 gate/receipt/fingerprint/GSQ 행정 기록과 대량 증거 파일은 만들지 않는다. A-G1~G3는 1인용 범위 해당 없음으로 종료됐다. 기술·매크로를 QGV 원점수에 혼합하지 않고 새 방법론·가중치·미정 기본값을 만들지 않는다. 산업(SIC)·테마·유형, MODEL·TARGET·ACTUAL을 분리한다. 결측은 NOT_AVAILABLE/—이며 0·합성값으로 대체하지 않는다. 주문 기능 없음.
 
@@ -19,7 +19,7 @@
 
 - 저장소: `kco994553-star/Investment-System1`.
 - canonical: `claude/investment-system-top500-validation-alrugm`.
-- **이 인수인계 PR 직전 원격 HEAD: `342174dbd67045f3f9aded8806b3ed9b3df8bf1c`** (#149까지). 문서 PR 병합 후 HEAD는 GitHub canonical에서 확인한다.
+- **이 인수인계 PR 직전 원격 HEAD: `f5d13be8f3e22fb9b5dae3f93bea6b5bdc29831c`** (#154까지). 문서 PR 병합 후 HEAD는 GitHub canonical에서 확인한다.
 - Pages: https://kco994553-star.github.io/Investment-System1/ . 마지막 확인된 실제 배포는 **SEC run 38042681260**, deployment 6979119251, **2026-10-10 09:52:34 UTC**, SHA `f8b55ce509853606b5fde0a3c7d4389ab4201ea8`(#144), SUCCESS. #142 PWA와 #144 공개 JSON 연결 포함. **#148 프로필과 그 이후 canonical은 아직 이 배포에 포함되지 않는다.** PR의 deploy SKIPPED를 배포 성공으로 세지 않는다. 이번 정리에서 추가 배포는 실행하지 않았다.
 - Worker: `private-investment-history.kco994553.workers.dev`. 마지막 실제 수동 배포 **38034132303, 2026-10-10 07:21:11 UTC, SUCCESS**. #124 Tiingo/KRX 예비 경로 포함, KRX는 1개월 비상용. 이전 Actions 익명 검사: Origin 없음 `403 ORIGIN_FORBIDDEN`, 앱 Origin·토큰 없음 `403 AUTH_FORBIDDEN`. 이번 환경의 직접 GET 재점검은 `HTTP 0 CHECK_FAILED`로 응답을 검증하지 못했다. 이것을 Worker 중단/정상 증거로 바꾸지 않는다. 재배포하지 않았다.
 - SEC 매일: `.github/workflows/sec-daily-public-inputs.yml`, **매일 22:17 UTC**, 수동 workflow_dispatch도 가능. 현재 실제 범위는 **US TARGET 17개**. #145의 504 코드/분할 수집 모듈은 병합됐으나 workflow 확장은 미연결; 500회사 커버리지로 표시하지 않는다.
@@ -49,6 +49,7 @@ PUBLIC_SCREENS_OK files=5
 
 | PR | 완료/상태 | 남은 의존·다음 단계 |
 | --- | --- | --- |
+| [#153](https://github.com/kco994553-star/Investment-System1/pull/153) | 코덱2의 #104 채택 이전 과거 매크로 로컬 스냅샷 보존 | 현 canonical #104/#128 대비 차이 검토용. 그대로 병합하지 않는다. 최신 통합 테스트 미실행. |
 | [#150](https://github.com/kco994553-star/Investment-System1/pull/150) | DCF/역DCF/V/전략/M3/SEC 어댑터 JS 라이브러리. #146 벡터 중 **31/36** 브라우저 대조 PASS, 입력 불변·RAM 경계. profile-defaults 요소 순서·번역 누락 수정 포함 | 기업 유형 JS **5벡터 미완료**, `TYPE_JS_PORT_PENDING`은 이 PR의 미완료다. #135는 이미 병합. 전체 suite 및 실제 화면/가격 입력 연결 필요. |
 | [#151](https://github.com/kco994553-star/Investment-System1/pull/151) | 승인 identity 19개 기반 ★/그룹/검색/정렬/관심 화면/리더보드 필터. Node·390/1440px 브라우저 PASS | 최신 canonical과 **merge conflict** 있음: app/index/asset guard 등을 통합하고 프로필/차트 보존. 새 locale 및 전체 suite/필수 CI 확인. 전체 500개 디렉터리/순위 아님. |
 | [#152](https://github.com/kco994553-star/Investment-System1/pull/152) | #136 참고 메타데이터·14개 제안 바스켓, 종목 상위2·쏠림 위치 NA. 참조/guard/390·1440px PASS | 바스켓 승인·소속도 정규화·공식 노출 입력 대기. 수치 쏠림/경고 구현 없음; 임계값 발명 금지. |
@@ -76,12 +77,14 @@ PUBLIC_SCREENS_OK files=5
 | #7 | draft entity metadata | #6 위 stack였던 Frozen Top500 검색 metadata, 현재 504 code-only와 별개 |
 | #4 | draft Track C | C8~C10 정책 승인/연구 범위 의존; 기존 Holdout 사용 금지 |
 
+코덱2의 최종 결과/대응표 문서 PR #154는 필수6체크 성공·실패0 확인 후 병합했다. [19종목 결과·500회사 커버리지](implementation/docs/company_types/QUEUE_RESULTS_AND_COVERAGE.md), [8축 대응표 제안](implementation/docs/macro_data_rights/EIGHT_AXIS_MAPPING_PROPOSAL.md), ROADMAP 및 Python/JS 계약 갱신을 보존한다. 해당 결과표의 raw blobs 0건·19종목 NA는 **코덱2 로컬 환경의 원문 부재**에 대한 판정이며, 위 Actions에서 취득·배포한 US17 재무/QG 요소 성공과 구분한다. 504 listing 코드와 500 issuer coverage도 다르다.
+
 ## 의존 대기·사용자 결정
 
 - **SIC 매핑 확인**: 제안 SIC→업종군 대응표 승인 전 경기민감/경기방어 소속도 NA. 테마로 업종을 대체하지 않는다.
-- **DCF 기본값**: 할인율·말기 성장률·cash-flow/통화·주당/ADR/split basis 확인 대기. explicit years 5 외 미확정 값은 null/confirmed=false; 계산 임의 기본값 금지.
+- **DCF 기본값**: 할인율·말기 성장률·cash-flow/통화·주당/ADR/split basis 확인 대기. 할인율 10%·영구성장 2%는 코덱2 문서의 미채택 제안이며 앱 기본값이 아니다. explicit years 5 외 미확정 값은 null/confirmed=false; 계산 임의 기본값 금지.
 - **매크로 8축 대응표**: exact series/단위/SA/PIT·GDP/CPI→기존 축 대응 및 6칸 의미 확인 대기. 정부 입력만, FRED/ALFRED 금지. 실제 국면/확률 합성 금지.
-- **DART 키 등록 예정**: 사용자의 등록 완료 알림 전 키 존재 확인·API·adapter 착수 금지. 이후 엔진 어댑터가 병합되면 한미반도체 재무 연결.
+- **DART 키 등록 예정**: 사용자의 등록 예정 안내는 10/11 18시 이후(원 공지 시간대 미명시)다. 등록 완료 알림 전 키 존재 확인·API·adapter 착수 금지. 이후 엔진 어댑터가 병합되면 한미반도체 재무 연결.
 - **테마**: #136 바스켓 승인·정규화 입력 대기. 포트폴리오 쏠림 수치/임계는 새로 만들지 않는다.
 - **13F·Macro 실제 취득 입력**: 화면/공개 serializer는 있으나 공급 입력 미연결. 투자자 ★는 기기 저장이고 추천 목록을 합성하지 않는다. 13F는 보고 수량 변화이며 실제 매매/현재 보유 확정이 아니다.
 - **검증/연구**: 기존 Holdout UNCONFIRMED, v2 근거 제외·사용 금지. forward 시작 시점은 사용자 결정 전 선택하지 않는다.
@@ -120,6 +123,7 @@ SEC 504 분할 workflow 연결은 기존 운영 확장 후속이며 #145 모듈�
 | Cloudflare Worker | 위 실제 deploy SUCCESS, 본인 가격 경로 | ALLOWED_EMAIL, GOOGLE_CLIENT_ID, TIINGO_API_KEY, KRX_API_KEY | Worker: ALLOWED_EMAIL/TIINGO_API_KEY/KRX_API_KEY Secret, GOOGLE_CLIENT_ID Text; 값 기록 금지 |
 | Worker 배포 Actions | 마지막 수동 deploy SUCCESS | CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID | GitHub Actions Secrets, 값/계정 ID 출력 금지 |
 | Google OAuth/Drive/Picker/Sheets | API/scope/리퍼러 제한 키 설정 완료 사용자 통지; 첫 설정 코드 병합 | Google OAuth client ID, Picker browser key/app ID | 공개 제한된 앱 설정은 app-config.js, OAuth token RAM, 생성/선택 시트 ID 기기 설정만·백업 제외 |
+| BEA | 공급 입력 모듈만, 실제 Macro 입력 미연결 | BEA_USERID | GitHub Actions Secret, 값 출력 금지 |
 | SEC EDGAR | US17 manual SUCCESS·daily 등록 | SEC_USER_AGENT | GitHub Actions Secret, 값/이메일 출력 금지 |
 | DART | 등록 완료 알림 대기 | DART_API_KEY | GitHub Actions Secret 예정, 알림 전 확인/호출 금지 |
 | EDINET | 장기 후순위·등록/착수 미승인 | Subscription-Key | 미등록/미운영으로 취급, 값 기록 금지 |
