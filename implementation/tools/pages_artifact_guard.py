@@ -33,7 +33,7 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 APPROVED_SHA256 = {
     "sec-m3-adapter.js": "f3962d7283ae0e8731ad66ee23652d5f8c9e88f2cd4050b70b4cd1048956d6e5",
     "private-subset.js": "5dfa945113a84ec8fde2cb2020f71343e1cd453a5de41771165a0a8b531a6fec",
-    "engine-preview.js": "8ec39b6d0e5ecdc280ffbe3aab9d8689c5e2a6a60216565a119863e6f622b1e1",
+    "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
     "device-profiles.js": "5e2ddb99ca448647ad8434c2a80b7801aa4034a293e462828c0c765437b99fcf",
     "public-screens.js": "0c736310a42da10c1482b1c1a0b80fc59e72e5dda6c93b48802b8cb22554186f",
