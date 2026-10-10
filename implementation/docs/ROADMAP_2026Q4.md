@@ -393,3 +393,15 @@ canonical 고정 링크는 `12b5cbcbc52ce8af5bd22a9abf1c4722cd4b53df`의 경로�
 | M3 개인 종목군·순위 | [기기 RAM 계산·본인 Worker relay 설계](daily_data_pipeline/M3_PRIVATE_UNIVERSE_DESIGN.md) 작성. 개인 가격에서 선정한 현재 구성 목록도 공개하지 않는다. | 전체 적격 풀·권리·비용0·PIT·identity/CA와 기존 Official gate가 없으면 현재 Top500/전체 순위 UNKNOWN. P02 중간 시점 정책과 PRICE→QGV 자동 재계산 정책을 선택하지 않는다. |
 
 #88 이후 canonical에는 본인 인증 Worker와 개인 일봉 표시 코드가 존재한다. 위의 과거 ‘Worker 미구현/미연결’ 상태는 작성 당시의 기록이다. 현재 코드의 존재는 실제 배포/조회 성공·공급자 허가·전체 미국 후보·Technical/Macro/QGV runtime 연결의 증거가 아니다. [M3 설계의 현재 연결 상태](daily_data_pipeline/M3_PRIVATE_UNIVERSE_DESIGN.md#현재-연결-상태)를 함께 적용한다.
+
+## 2026-10-10 GSQ-011 사용자 결정 및 실행 후속 기록
+
+이 절은 앞선 본문을 보존한 append-only 후속 기록이다. 읽기 기준 canonical `8d7fcb55728920a4d9d8f39023c1b4d566cd3e13`(#94) 및 [26E GSQ-011](pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md)을 적용한다. 앞 절의 원기관 채택 대기·전체 M3 설계는 아래 최신 범위로 구체화한다. 실행 완료는 문서·저장소 근거 확인이며 실제 입력 연결/개인 순위/모델 완료가 아니다.
+
+| 항목 | 최신 결정·산출물 | 남는 구현/운영 경계 |
+| --- | --- | --- |
+| Macro | 무료 원기관 직접 경로 채택. 1차 Inflation(BLS CPI)·Labor(BLS)·Monetary Policy/금리(Treasury)·Growth(BEA GDP). [코덱1 4축 구현 명세](macro_data_rights/PHASE1_FOUR_AXES_IMPLEMENTATION_SPEC.md)에 정확 endpoint/ID·원 단위·capture/release/vintage·cutoff·48칸·20개 합성 테스트를 지정했다. | FRED/ALFRED 서면 허가 전 차단. 나머지4축 후속. 첫 구현은 offline raw evidence이며 기존 상태 계산식·가중치를 바꾸지 않는다. 실제 키/권리/schema·발표본·strict PIT·producer 연결은 미완료다. |
+| QGV v2/Holdout | **v2 착수 보류**. [보호 확인 실행 기록](qgv_v2_readiness/HOLDOUT_PROTECTION_CHECK_20261010.md)의 판정은 **UNCONFIRMED**다. 저장소 source/정책·파일명 검색에서 대상별 보호 registry/소비 event/atomic gate의 실증 근거를 확보하지 못했다. | 미소비 또는 CONSUMED로 단정하지 않는다. 이미 존재하는 봉인의 owner metadata·ACL/로그 coverage·소비 상태 receipt가 필요하다. 기간 선택·데이터/결과 열람·Holdout 사용은 하지 않는다. |
+| M3 | TARGET19+본인 관심 기업+대형주 일부 약100개 부분집합부터, 기기/본인 Worker 계산·비공개. [코덱1 부분집합 구현 명세](daily_data_pipeline/M3_SUBSET_IMPLEMENTATION_SPEC.md)에 명시 seed·SEC catalog/shares·인증 relay·기기 순수 함수·기존 shares×price·테스트·공개 경계를 지정했다. | 전체500 후속. 실제 추가 seed는 사용자 비공개 입력이 필요하다. 가격 권리·basis/finality·KR/JP shares/통화 한계가 남는다. USD 검증 행의 개인 부분순위이며 전체 적격 풀/전체 순위·Official·현재 QGV 재점수 완료가 아니다. |
+
+GSQ-011 및 두 구현 명세·확인 기록의 이번 write-set은 .md만이다. 후속 code/mixed PR은 자체 병합하지 않는다. force push·ruleset·AUTONOMY_MODE·코드·테스트·워크플로·Secret·방법론·가중치·Holdout 사용 금지는 유지한다. 문서 PR 병합은 최종 head의 실행된 필수 체크 전부 성공·실패0 확인 후에만 적용한다.
