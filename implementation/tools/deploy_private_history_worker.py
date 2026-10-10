@@ -21,17 +21,20 @@ ANSI = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
 CONTROL_STRING = re.compile(r"(?:\x1b\]|\x9d)[\s\S]*?(?:\x07|\x1b\\|\x9c|$)|(?:\x1b[P^_X]|[\x90\x98\x9e\x9f])[\s\S]*?(?:\x1b\\|\x9c|$)")
 JSON_ESCAPE = re.compile(r'\\(?:u[0-9a-fA-F]{4}|["\\/bfnrt])')
 ENCODED_REMAINDER = re.compile(r'\\(?:u[0-9a-fA-F]{4}|x[0-9a-fA-F]{2}|["\\/bfnrt])|%[0-9a-fA-F]{2}|&(?:[a-zA-Z]+|#[xX]?[0-9a-fA-F]+);')
+SIZE_OMITTED = "Oversized diagnostic omitted."
+CONTROL_OMITTED = "Incomplete terminal-control diagnostic omitted."
+ENCODING_OMITTED = "Encoded diagnostic omitted because normalization remained ambiguous."
 
 
 def canonical_message(message: str) -> str:
     """Bound decoding, then reconnect values split by terminal formatting."""
     if len(message) > 12000:
-        return "Oversized diagnostic omitted."
+        return SIZE_OMITTED
     for _ in range(4):
         previous = message
         if any(not match.group(0).endswith(("\x07", "\x1b\\", "\x9c"))
                for match in CONTROL_STRING.finditer(message)):
-            return "Incomplete terminal-control diagnostic omitted."
+            return CONTROL_OMITTED
         # Remove original ST-terminated strings before JSON decoding can consume
         # the terminator's backslash; repeat after decoding encoded controls.
         message = CONTROL_STRING.sub("", message)
@@ -40,19 +43,19 @@ def canonical_message(message: str) -> str:
         message = urllib.parse.unquote(html.unescape(message))
         if any(not match.group(0).endswith(("\x07", "\x1b\\", "\x9c"))
                for match in CONTROL_STRING.finditer(message)):
-            return "Incomplete terminal-control diagnostic omitted."
+            return CONTROL_OMITTED
         message = CONTROL_STRING.sub("", message)
         message = ANSI.sub("", message)
         message = "".join(c for c in message if c.isprintable() or c in "\n\r\t")
         if message == previous:
             break
     if ENCODED_REMAINDER.search(message):
-        return "Encoded diagnostic omitted because normalization remained ambiguous."
+        return ENCODING_OMITTED
     return message
 
 
-def safe_message(message: str, environ: dict[str, str]) -> str:
-    """Redact before escaping any untrusted text for a GitHub Markdown Summary."""
+def redact_message(message: str, environ: dict[str, str]) -> str:
+    """Normalize and redact the complete block before selecting any lines."""
     message = canonical_message(message)
     for name in ("CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"):
         value = environ.get(name, "").strip()
@@ -65,6 +68,12 @@ def safe_message(message: str, environ: dict[str, str]) -> str:
     message = re.sub(r"[\w.!#$%&'*+/=?^`{|}~-]+@[\w.-]+", "[REDACTED_EMAIL]", message)
     message = re.sub(r"\b[0-9a-f]{32}\b", "[REDACTED_ACCOUNT]", message, flags=re.I)
     message = re.sub(r"[A-Za-z0-9_+/=-]{20,}", "[REDACTED_VALUE]", message)
+    return message
+
+
+def safe_message(message: str, environ: dict[str, str]) -> str:
+    """Redact before escaping any untrusted text for a GitHub Markdown Summary."""
+    message = redact_message(message, environ)
     message = " ".join("".join(c if c.isprintable() else " " for c in message).split())[:600]
     message = html.escape(message, quote=True)
     return re.sub(r"([\\`*_{}\[\]()#!|~])", r"\\\1", message)
@@ -85,9 +94,14 @@ def fail(environ: dict[str, str], status: str, result=None) -> int:
         raw = ANSI.sub("", (result.stdout or "") + "\n" + (result.stderr or ""))
         codes = sorted(set(re.findall(r"\[code:\s*([0-9]{1,10})\]", raw, flags=re.I)))[:10]
         details.append("Wrangler error codes: " + (", ".join(codes) if codes else "unavailable"))
+        # Controls can cross physical lines. Normalize and redact the bounded
+        # stdout/stderr block before any line can become publishable text.
+        normalized = redact_message(raw, environ)
+        if normalized in (SIZE_OMITTED, CONTROL_OMITTED, ENCODING_OMITTED):
+            normalized = "[ERROR] " + normalized
         messages = []
         in_error = False
-        for line in raw.splitlines():
+        for line in normalized.splitlines():
             if "[ERROR]" in line:
                 in_error = True
                 line = line.split("[ERROR]", 1)[1]

@@ -101,6 +101,44 @@ class DeploymentDiagnosticTests(unittest.TestCase):
             self.assert_private(first, last)
             self.assertIn("10000", self.summary_text)
 
+    def test_multiline_osc_bel_control_cannot_publish_short_credential_suffix(self):
+        private_token = "unit_" + "a7" * 17 + "q"
+        self.env["CLOUDFLARE_API_TOKEN"] = " \n" + private_token + "\t "
+        first, last = private_token[:28], private_token[28:]
+        text = "[ERROR] Credential rejected: " + first + "\x1b]0;title\nshort\x07" + last + " [code: 10000]"
+        self.assertEqual(self.execute([self.result(text, 1)]), 1)
+        self.assert_private(private_token, first, last)
+        self.assertIn("10000", self.summary_text)
+        self.assertIn("Credential rejected", self.summary_text)
+
+    def test_multiline_dcs_st_control_cannot_publish_short_credential_suffix(self):
+        private_token = "unit_" + "a7" * 17 + "q"
+        self.env["CLOUDFLARE_API_TOKEN"] = " \n" + private_token + "\t "
+        first, last = private_token[:28], private_token[28:]
+        text = "[ERROR] Credential rejected: " + first + "\x1bPq\nz\x1b\\" + last + " [code: 10000]"
+        self.assertEqual(self.execute([self.result(text, 1)]), 1)
+        self.assert_private(private_token, first, last)
+        self.assertIn("10000", self.summary_text)
+        self.assertIn("Credential rejected", self.summary_text)
+
+    def test_encoded_multiline_control_is_processed_before_summary_line_selection(self):
+        private_token = "unit_" + "a7" * 17 + "q"
+        self.env["CLOUDFLARE_API_TOKEN"] = private_token
+        first, last = private_token[:28], private_token[28:]
+        text = "[ERROR] Credential rejected: " + first + "\\u001b]0;title\nshort\\u0007" + last + " [code: 10000]"
+        self.assertEqual(self.execute([self.result(text, 1)]), 1)
+        self.assert_private(private_token, first, last)
+        self.assertIn("10000", self.summary_text)
+
+    def test_oversized_crossline_control_omits_whole_diagnostic_not_suffix(self):
+        private_token = "unit_" + "a7" * 17 + "q"
+        self.env["CLOUDFLARE_API_TOKEN"] = private_token
+        first, last = private_token[:28], private_token[28:]
+        text = "[ERROR] Credential rejected: " + first + "\x1b]0;" + "z" * 13000 + "\nq\x07" + last + " [code: 10000]"
+        self.assertEqual(self.execute([self.result(text, 1)]), 1)
+        self.assert_private(private_token, first, last)
+        self.assertIn("10000", self.summary_text)
+
     def test_failed_whoami_reports_code_and_stops_before_deploy(self):
         status = self.execute([self.result("[ERROR] Authentication error [code: 10000]", 1)])
         self.assertEqual(status, 1)
