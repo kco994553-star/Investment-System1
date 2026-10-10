@@ -35,7 +35,7 @@ function runtime() {
   const oauth = { initTokenClient(config) { calls.config = config; callbacks = config; return { requestAccessToken(options) { calls.popup++; calls.prompt = options.prompt; } }; }, revoke(value, done) { calls.revoke++; assert.ok(value === token, 'revoke uses only current memory token'); done({}); } };
   const session = () => api.createSession(view, { clientId: 'public-client-id', now: () => now });
   return { view, calls, token, oauth, session, advance: value => { now += value; }, failStyles: value => { styleFailure = value; }, delayStyles: () => { delayedStyles = true; }, resolveStyles: () => resolveStyle(),
-    respond: (value = {}) => callbacks.callback({ access_token: token, expires_in: 3600, scope: SCOPE, ...value }), delayedFetch() { view.fetch = (url, options) => { calls.fetch++; calls.request = { url, options }; return new Promise(resolve => { pendingResolve = resolve; }); }; }, resolveFetch: () => pendingResolve({ ok: true, status: 200, json: async () => ({ values: [] }) }) };
+    popupError: type => callbacks.error_callback({type,private_message:'never shown'}), respond: (value = {}) => callbacks.callback({ access_token: token, expires_in: 3600, scope: SCOPE, ...value }), delayedFetch() { view.fetch = (url, options) => { calls.fetch++; calls.request = { url, options }; return new Promise(resolve => { pendingResolve = resolve; }); }; }, resolveFetch: () => pendingResolve({ ok: true, status: 200, json: async () => ({ values: [] }) }) };
 }
 test('auth exports exist without starting a network request', () => {
   for (const name of ['mount', 'extractSpreadsheetId', 'sheetsURL', 'createSession', 'sessionFor', 'historyOrigin']) assert.equal(typeof api[name], 'function', name + ' is available');
@@ -132,7 +132,7 @@ test('disabling invalidates pending auth and a pending read before it can be app
 });
 test('token scope escalation, missing identity scope and malformed responses are rejected', async () => {
   const r = runtime(), session = r.session(); session.setEnabled(true); await session.prepare();
-  for (const value of [{ scope: SCOPE + ' https://www.googleapis.com/auth/drive' }, { scope: READONLY_SCOPE }, { scope: EMAIL_SCOPE }, { scope: '' }, { scope: undefined }, { scope: 42 }, { scope: SCOPE + ' openid' }, { scope: SCOPE + ' https://www.googleapis.com/auth/spreadsheets' }, { access_token: '' }, { expires_in: 0 }, { token_type: 'Other' }]) { session.login(); r.respond(value); assert.ok(!session.state().connected && session.state().error === 'AUTH_FAILED', 'invalid grants leave the session disconnected with a fixed error'); }
+  for (const value of [{ scope: SCOPE + ' https://www.googleapis.com/auth/drive' }, { scope: READONLY_SCOPE }, { scope: EMAIL_SCOPE }, { scope: '' }, { scope: undefined }, { scope: 42 }, { scope: SCOPE + ' https://www.googleapis.com/auth/spreadsheets' }, { access_token: '' }, { expires_in: 0 }, { token_type: 'Other' }]) { session.login(); r.respond(value); assert.ok(!session.state().connected && session.state().error === 'AUTH_FAILED', 'invalid grants leave the session disconnected with a fixed error'); }
 });
 test('token scopes are a set that accepts either email spelling in any order', async () => {
   const r = runtime(), session = r.session(); session.setEnabled(true); await session.prepare();
@@ -283,4 +283,14 @@ test('bounded Sheets reads honor caller abort and disconnect cancels concurrent 
  const pending=[];r.view.fetch=async(url,options)=>new Promise((resolve,reject)=>{pending.push(options.signal);options.signal.addEventListener('abort',()=>reject(Error('ABORT')),{once:true});});
  const a=r.active.fetchValues(ID,"'Trades'!A1:D1025",{maxBytes:1024}),b=r.active.fetchValues(ID,"'Universe'!A1:C1025",{maxBytes:1024});
  r.active.setEnabled(false);const settled=await Promise.allSettled([a,b]);assert.ok(pending.every(s=>s.aborted));assert.ok(settled.every(s=>s.status==='rejected'&&s.reason.message==='CANCELED'));
+});
+
+test('identity expansion accepts required grants plus openid/profile and duplicate email aliases', async () => {
+ const r=runtime(),session=r.session();session.setEnabled(true);await session.prepare();
+ for(const scope of [SCOPE+' openid',SCOPE+' profile',SCOPE+' openid https://www.googleapis.com/auth/userinfo.profile','email openid '+EMAIL_ALIAS+' '+READONLY_SCOPE+' profile']){session.login();r.respond({scope});assert.ok(session.state().connected,'Google identity expansion must connect');}
+});
+test('popup errors expose fixed codes, never arbitrary provider text, and ignore stale callbacks', async () => {
+ const r=runtime(),session=r.session();session.setEnabled(true);await session.prepare();
+ for(const [type,code] of [['popup_failed_to_open','AUTH_POPUP_FAILED_TO_OPEN'],['popup_closed','AUTH_POPUP_CLOSED'],['unknown','AUTH_POPUP_UNKNOWN'],['untrusted private text','AUTH_POPUP_UNKNOWN']]){session.login();r.popupError(type);assert.equal(session.state().error,code);assert.equal(session.state().connected,false);assert.equal(session.state().pending,false);}
+ session.login();session.setEnabled(false);r.popupError('popup_closed');assert.equal(session.state().error,'');
 });
