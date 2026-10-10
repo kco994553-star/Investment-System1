@@ -1,0 +1,8 @@
+/* Exposure context stays separate from Q/G/V and portfolio TARGET. */
+(function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./theme-reference.js'):root.ThemeReference);if(typeof module==='object'&&module.exports)module.exports=api;else root.ThemeDisplay=api;})(globalThis,function(reference){
+'use strict';
+function mount(host,{mode='company',locale}={}){if(!host)return;const doc=host.ownerDocument,en=locale==='en-US',el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};const card=el('section',undefined,{class:'card','data-theme-display':mode});card.append(el('h2',mode==='portfolio'?(en?'Portfolio theme exposure':'포트폴리오 테마 노출'):(en?'Top two themes':'종목 테마 상위 2개')),el('p','EXPOSURE_ONLY',{class:'badge'}));
+if(mode==='portfolio')card.append(el('p',en?'Concentration assessment: NOT_AVAILABLE':'테마 쏠림 판단: NOT_AVAILABLE',{'data-theme-concentration':'NOT_AVAILABLE',class:'banner'}));else{const list=el('dl');for(let i=1;i<=reference.maximum_display;i++)list.append(el('dt',(en?'Theme ':'테마 ')+i),el('dd','NOT_AVAILABLE',{'data-theme-slot':String(i)}));card.append(list);}
+card.append(el('p',en?'Theme membership data is being prepared.':'테마 소속도 자료를 준비 중입니다.'),el('p',reference.reason_codes.join(' · '),{class:'small'}));const details=el('details'),summary=el('summary',en?'14 proposed theme baskets':'테마 바스켓 제안 14개'),list=el('ul');for(const t of reference.themes)list.append(el('li',t.name+' · '+t.etfs.join(', ')));details.append(summary,list);card.append(details);host.replaceChildren(card);}
+return Object.freeze({mount});
+});
