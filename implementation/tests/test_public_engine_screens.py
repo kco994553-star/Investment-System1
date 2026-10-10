@@ -77,10 +77,10 @@ def test_public_schema_rejects_price_unknown_fields_and_unbounded_text(tmp_path,
 
 
 def test_cli_preserves_existing_assets_and_passes_pages_artifact_guard(tmp_path,capsys):
-    from investment_system.product.web_mvp import build as build_site,repository_bundle
+    from build_pages_cockpit import build_public_cockpit as build_site
     from pages_artifact_guard import scan_artifact
     mod=importlib.import_module('public_engine_screens')
-    site=tmp_path/'site';build_site(site,bundle=repository_bundle())
+    site=tmp_path/'site';build_site(site)
     source=tmp_path/'manifest.json';source.write_text(json.dumps(manifest()))
     assert mod.main(['--manifest',str(source),'--output-dir',str(site),'--as-of',NOW.isoformat(),'--stale-after-hours','48'])==0
     assert scan_artifact(site)['pages_artifact_guard']=='PASS'
@@ -105,7 +105,7 @@ def test_guard_rejects_status_and_provenance_contradictions(tmp_path,mutate):
 
 
 def macro_manifest(tmp_path):
-    from implementation.tests.test_macro_primary_input import bls_payload,bea_payload,treasury_body,BLS_IDS
+    from tests.test_macro_primary_input import bls_payload,bea_payload,treasury_body,BLS_IDS
     m=manifest()
     for provider,body,extra in [('BLS',json.dumps(bls_payload()).encode(),{'series_ids':list(BLS_IDS)}),('BEA',json.dumps(bea_payload()).encode(),{'table':'T10106'}),('TREASURY',treasury_body(),{})]:
         name=provider+'.input';(tmp_path/name).write_bytes(body)
@@ -123,7 +123,7 @@ def test_macro_nonempty_raw_levels_only_no_regime_or_private_request(tmp_path):
 
 
 def thirteen_f_manifest(tmp_path):
-    from implementation.tests.test_sec_13f import _xml,_row,_metadata
+    from tests.test_sec_13f import _xml,_row,_metadata
     from dataclasses import fields
     from datetime import date
     m=manifest();pair={'synthetic':False}
@@ -151,10 +151,10 @@ def test_13f_projects_public_reported_quantity_not_dollar_value_or_trades(tmp_pa
 
 
 def test_new_sidecars_checked_in_plain_pages_tar_and_price_injection_blocked(tmp_path):
-    from investment_system.product.web_mvp import build as build_site,repository_bundle
+    from build_pages_cockpit import build_public_cockpit as build_site
     from pages_artifact_guard import scan_artifact,validate_pages_tar
     import tarfile
-    site=tmp_path/'site';build_site(site,bundle=repository_bundle())
+    site=tmp_path/'site';build_site(site)
     for name,payload in build(tmp_path).items():(site/name).write_text(json.dumps(payload))
     archive=tmp_path/'artifact.tar'
     with tarfile.open(archive,'w',format=tarfile.GNU_FORMAT) as tar:
@@ -169,7 +169,7 @@ def test_new_sidecars_checked_in_plain_pages_tar_and_price_injection_blocked(tmp
 
 
 def remaining_manifest(tmp_path,provider='FED_H41',unit=None):
-    from implementation.tests.test_macro_remaining import binding,fed_body,mts_payload,api as remaining_api,MTS_URL,FED_URL
+    from tests.test_macro_remaining import binding,fed_body,mts_payload,api as remaining_api,MTS_URL,FED_URL
     from dataclasses import fields
     obj=binding(remaining_api(),provider)
     values={f.name:getattr(obj,f.name) for f in fields(obj)}
