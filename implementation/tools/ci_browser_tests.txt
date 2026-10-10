@@ -19,3 +19,4 @@ private_subset_browser_test.js
 design_responsive_browser_test.js
 design_canvas_browser_test.js
 profile_preview_browser_test.js
+thirteenf_filings_browser_test.js
