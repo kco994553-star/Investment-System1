@@ -25,6 +25,8 @@ from investment_system.public_price_boundary import require_public_bundle, requi
 
 
 from investment_system.product.sec_m2_candidates import require_public_candidates
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
@@ -53,6 +55,7 @@ APPROVED_SHA256 = {
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "035930c2bdeb760f768562f8a9fb6b7aec703bc4663392b8f91db5796145b56e",
 }
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME}
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 64
@@ -154,7 +157,12 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
             payload = json.dumps(
                 value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False,
             ).encode("utf-8", errors="strict")
-        if hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
+        if name == SEC_PUBLIC_FILENAME:
+            try:
+                require_public_inputs(value)
+            except ValueError:
+                violations["sec_public_boundary"] += 1
+        elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
             violations["unapproved_content"] += 1
     except (ValueError, UnicodeError, RecursionError, OverflowError):
         violations["invalid_format"] += 1
@@ -191,14 +199,14 @@ def scan_artifact(artifact_dir: str | Path) -> dict:
                         violations["excessive_entries"] += 1
                         break
                     name = entry.name
-                    if name not in APPROVED_SHA256:
+                    if name not in ALLOWED_NAMES:
                         violations["unexpected_entries"] += 1
                     else:
                         seen.add(name)
                     if not entry.is_file(follow_symlinks=False):
                         violations["nonregular_entries"] += 1
                         continue
-                    if name not in APPROVED_SHA256:
+                    if name not in ALLOWED_NAMES:
                         continue
                     try:
                         fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=root_fd)
@@ -336,7 +344,7 @@ def validate_pages_tar(archive_path: str | Path) -> dict:
                             root_seen = True
                             continue
                         name = member.name[2:] if member.name.startswith("./") else member.name
-                        if name not in APPROVED_SHA256:
+                        if name not in ALLOWED_NAMES:
                             violations["unexpected_entries"] += 1
                         elif name in seen:
                             violations["duplicate_entries"] += 1
@@ -345,7 +353,7 @@ def validate_pages_tar(archive_path: str | Path) -> dict:
                         if member.type not in {tarfile.REGTYPE, tarfile.AREGTYPE}:
                             violations["nonregular_entries"] += 1
                             continue
-                        if name not in APPROVED_SHA256:
+                        if name not in ALLOWED_NAMES:
                             continue
                         if member.size < 0 or member.size > MAX_FILE_BYTES:
                             violations["oversized_files"] += 1
