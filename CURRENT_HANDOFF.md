@@ -1,157 +1,131 @@
-# 현재 인수인계
+# Claude Code 인수인계 — 2026-10-10
 
-확인일: **2026-10-10 UTC**. 현재 상태는 이 파일에서 시작하고 [WORKING_RULES.md](WORKING_RULES.md)·[실행 로드맵 v2](implementation/docs/ROADMAP_2026Q4.md)를 따른다. canonical26E는 [GSQ-015까지](implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md)이며, GSQ-015는 승인 후 #115 병합됐다. 최신 GSQ-017 기업 유형 PROVISIONAL 설정은 #135 구현/기록 PR 승인 대기다. 작은 구현 변경에 새 GSQ·receipt·fingerprint를 만들지 않았다.
+메인 개발을 Claude Code로 이전한다. 코덱1은 새 기능 착수를 중단하고 진행 중 변경을 원격 WIP로 보존했다. **코덱2 최종 인수인계 #154의 필수6체크 SUCCESS·실패0을 확인하여 병합한 뒤, 코덱1의 최신 운영·WIP 결과를 이 파일에 통합했다.** 이 문서 PR #155가 이번 최종 인수인계본이며 이후 변경이 있으면 최신 상태를 보존해 갱신한다.
 
-## 기준 HEAD·운영 경계
+## 읽기 순서와 운영 경계
 
-- canonical: `claude/investment-system-top500-validation-alrugm`. 확인한 원격 HEAD **`a1608f27`** (#138·코덱1 SEC schema/3 consumer 병합 후). 이 상태 문서 PR 자체의 병합 HEAD는 GitHub에서 확인한다.
-- 코덱1 #98 확인 후 승인 순서 #104→#105→#106, 이어 #108·#110·#112를 병합했다. 이번 로드맵 **#118도 병합**했고 #103·#107은 지시대로 닫았다. #109는 이미 CLOSED이며 코덱1에게 종료 유지 확인만 요청했다.
-- 코덱1 #113·#114·#116·#117·#119·#120 병합을 metadata에서 확인했다. #119는 candle/MA/기기 AVG, #120은 비공개 Trades1회 읽기·RAM B/S 표시다. 코드와 실제 본인 기기 운영 성공은 구분한다.
-- 코덱2 수정은 허용된 Python src(웹 제외)·관련 tests/tools·문서다. Worker/web_assets/workflows·Frozen/TARGET·가중치·AUTONOMY_MODE·ruleset·force push 변경 없음. 실제 키/계정·가격/환율·provider 관측치 수집·배포·Holdout 사용 없음. 이번 사용자 승인에 따라 비공개 Universe A열의 code 504개만 1회 읽어 코드 전용 자산으로 제공했다; 시트 ID/URL·B/C열은 기록하거나 읽지 않았다.
-- **26E 미변경 PR은 실행된 필수 체크 모두 성공·실패0이면 자체 병합 가능**하다는 최신 사용자 선택을 적용한다. 사용자가 기존 CSP 차이는 코덱1 범위임을 명시하고 #115를 승인했다. #115→#121→#111→#123→#125→#127→#128→#129를 각각 최종 필수6개/실행53단계 성공·실패0 확인 후 병합했다. #131의 로그인/CSP 기대값 수정은 코덱1 변경분으로 보존한다.
+1. [WORKING_RULES.md](WORKING_RULES.md): 1인용 혼합 운영 규칙.
+2. 이 파일: 실제 완료·미완료·의존·운영 상태.
+3. [ROADMAP_2026Q4.md](implementation/docs/ROADMAP_2026Q4.md): 범위·연구 및 후속 정책. 작성 당시 OPEN/배포 대기 표는 아래 최신 상태로 대체한다.
+4. [DESIGN_CANVAS_SCREENS_v1.md](implementation/docs/cockpit_ia/DESIGN_CANVAS_SCREENS_v1.md): #149로 병합된 S01~S16 정본, 390px/1440px. 추가 4화면 명세 대기는 해소됐다.
 
-SEC Universe 확장 후속: `SEC_UNIVERSE_SHARDS.md`·명시적 registry/일 단위 파티션·CLI 준비. 기존US17 범위 유지, 504코드만 허용·CIK 중복 취득 방지·serial rate/retry 재사용. 실제 대량 실행/워크플로 연결/실측504커버는 미실행.
-DCF 후속: `implementation/docs/valuation/DCF_V1_PARAMETERS.md`와 `qgv/dcf.py`의2단계/역DCF는 RAM-only 순수 함수다. 금융 기본값 confirmed=false/null이며 사용자 확인 전 NOT_AVAILABLE다. 35개 합성/Decimal 참조 테스트·독립 검토 중요 미해결0. 공개 JSON #141은 병합됐고 앱/워크플로 연결은 코덱1 범위다.
+최신 사용자 승인: **승인 필요 표시 없는 PR은 실행된 필수 체크 전부 성공·실패0이면 자체 병합 가능**. Worker 변경·workflow 변경 등 별도 승인 필요 항목은 사용자 승인 범위를 확인한다. WORKING_RULES의 과거 #95 승인 대기 문구는 이후 병합·배포 승인과 결과로 대체됐다. 26E 결정 기록 변경·미승인 가중치/새 방법론은 별도 승인 대상이다. 미완성 WIP는 체크 통과만으로 완료로 간주하지 않는다. force push·ruleset·AUTONOMY_MODE 변경·임의 PR 닫기·브랜치 삭제 금지.
 
-JS 이식 후속: `PYTHON_JS_REFERENCE_V1.md`와36개 합성JSON 사례·Python replay 준비. DCF/V/전략/M3 31개는canonical 대조, type5개는#135 참조값/미병합 의존성 차단 검증. JS 실제일치 및 UI연결은코덱1 후속이며 테스트가격/시총artifact 공개금지.
+테스트·CI·필요한 브라우저 검사·계산 정확성·Frozen/원본 TARGET 불변·개인정보 가드는 유지한다. 작은 변경의 gate/receipt/fingerprint/GSQ 행정 기록과 대량 증거 파일은 만들지 않는다. A-G1~G3는 1인용 범위 해당 없음으로 종료됐다. 기술·매크로를 QGV 원점수에 혼합하지 않고 새 방법론·가중치·미정 기본값을 만들지 않는다. 산업(SIC)·테마·유형, MODEL·TARGET·ACTUAL을 분리한다. 결측은 NOT_AVAILABLE/—이며 0·합성값으로 대체하지 않는다. 주문 기능 없음.
 
-## 현재 PR·검증
+가격·가격 파생값·M3 선정/순위는 기기 RAM 전용이다. 토큰·시트 ID·Worker 주소·가격은 새 통합 백업에 넣지 않는다. 관심/그룹·프로필 등 승인된 개인 설정은 기기 저장 및 백업에 포함한다. 공개 JSON/Pages에는 허용된 비가격 자료만 넣고 raw SEC 임시 파일·벡터 테스트 가격을 배포하지 않는다. 기존 수동 입력/legacy 백업과 새 RAM 산출물의 경계를 유지한다.
 
-사용자가 기존 분리를 확정했다. **#111은 현행 엔진 세 계산만**, Python 표시 참조·합성 JSON 벡터는 **#115에만** 포함한다. 아래 기존 구현 PR은 승인된 순서로 canonical에 병합됐다. 실제 provider/앱 운영 연결은 별도 상태다.
+## canonical·배포 상태
 
-| PR | 내용·상태 | 관련 검증 |
+- 저장소: `kco994553-star/Investment-System1`.
+- canonical: `claude/investment-system-top500-validation-alrugm`.
+- **이 인수인계 PR 직전 원격 HEAD: `f5d13be8f3e22fb9b5dae3f93bea6b5bdc29831c`** (#154까지). 문서 PR 병합 후 HEAD는 GitHub canonical에서 확인한다.
+- Pages: https://kco994553-star.github.io/Investment-System1/ . 마지막 확인된 실제 배포는 **SEC run 38042681260**, deployment 6979119251, **2026-10-10 09:52:34 UTC**, SHA `f8b55ce509853606b5fde0a3c7d4389ab4201ea8`(#144), SUCCESS. #142 PWA와 #144 공개 JSON 연결 포함. **#148 프로필과 그 이후 canonical은 아직 이 배포에 포함되지 않는다.** PR의 deploy SKIPPED를 배포 성공으로 세지 않는다. 이번 정리에서 추가 배포는 실행하지 않았다.
+- Worker: `private-investment-history.kco994553.workers.dev`. 마지막 실제 수동 배포 **38034132303, 2026-10-10 07:21:11 UTC, SUCCESS**. #124 Tiingo/KRX 예비 경로 포함, KRX는 1개월 비상용. 이전 Actions 익명 검사: Origin 없음 `403 ORIGIN_FORBIDDEN`, 앱 Origin·토큰 없음 `403 AUTH_FORBIDDEN`. 이번 환경의 직접 GET 재점검은 `HTTP 0 CHECK_FAILED`로 응답을 검증하지 못했다. 이것을 Worker 중단/정상 증거로 바꾸지 않는다. 재배포하지 않았다.
+- SEC 매일: `.github/workflows/sec-daily-public-inputs.yml`, **매일 22:17 UTC**, 수동 workflow_dispatch도 가능. 현재 실제 범위는 **US TARGET 17개**. #145의 504 코드/분할 수집 모듈은 병합됐으나 workflow 확장은 미연결; 500회사 커버리지로 표시하지 않는다.
+
+마지막 수동 SEC 실행 38042681260은 수집·공개 경계 build·Pages 배포 모두 SUCCESS. 출력은 다음과 같고 SEC_FAILURE 줄은 없었다.
+
+```text
+SEC_EXCLUDED company_index=8 code=VALUE_INVALID count=1
+SEC_PUBLIC_BUILD_OK failed_companies=0
+PUBLIC_SCREENS_OK files=5
+```
+
+## 이미 병합된 연결과 남은 경계
+
+| 범위 | 최신 완료 | 미완료/주의 |
 | --- | --- | --- |
-| [#118](https://github.com/kco994553-star/Investment-System1/pull/118) | 실행 로드맵 v2·이전 PR 정리, **병합** | 최종 필수6개/실행53단계 성공·실패0, .md만 변경 |
-| [#111](https://github.com/kco994553-star/Investment-System1/pull/111) | 현행 returns 모집단표준편차·마지막return·마지막5합, 병합 | 합성/기존 입력62개 통과 |
-| [#115](https://github.com/kco994553-star/Investment-System1/pull/115) | Research 표시 Python·GSQ-015 + Python 참조/JSON 벡터, 병합 |130개 통과; canonical JS 대조8120값/진단0실패 |
-| [#121](https://github.com/kco994553-star/Investment-System1/pull/121) | US17 SEC companyfacts/submissions 수집 모듈·진입점, 병합 |171개 통과; 모의 transport·retry/rate·값 없는 오류 |
-| [#123](https://github.com/kco994553-star/Investment-System1/pull/123) | SEC10-Q/10-K 제출 패턴 **예상 시기**·확정일 아님, 병합 |31개 통과 |
-| [#125](https://github.com/kco994553-star/Investment-System1/pull/125) | 기존 v1 가격 인자 V 순수 함수·RAM, 병합 |52개 통과 |
-| [#127](https://github.com/kco994553-star/Investment-System1/pull/127) | 공식 v1 축내부 비중 복사본·사용자 합100·결측수·PREVIEW, 병합 |57개 통과(신규29+v1 15+PIL13) |
-| [#128](https://github.com/kco994553-star/Investment-System1/pull/128) | 정부 raw8축 화면 경계·합성 기존 Macro engine 연결·후속4축 공급 payload 파서, 병합 |93개 통과 |
-| [#129](https://github.com/kco994553-star/Investment-System1/pull/129) | 사용자 선택 manager13F 정보표·분기 **보고 수량 변화**, 병합 |54개 통과 |
+| 로그인·통합 시트 | #131 로그인·#132 CSP 필수 CI 수정, #133 첫 설정/자동 생성/Picker. Quotes·Trades·Universe 이름 기반, 기존 로그인 재사용, 요청 scope는 drive.file와 email | 시트 ID는 기기 설정에만. 본인 휴대폰 실제 연결 성공을 코드/CI 성공으로 대신하지 않는다. |
+| 기기·기술 | #116 백업, #117 Research JS, #119 캔들/MA/AVG, #120 Trades B/S, #142 PWA | Research 표시 전용, warm-up 부족 선 숨김. PWA는 승인 정적 셸만 캐시; 인증/가격/개인 데이터 캐시 금지. |
+| SEC consumer | #139 schema /3 및 /1·/2 하위 호환, 제외 사유 수·주식 종류 주의 표시. #140 고급 접기·빈 붙여넣기 안내 | 주식 종류 자동 합산/보정 없음. |
+| 공개 표시 JSON | 엔진 #141, 앱/Pages/SEC 연결 #144. `public-screens.js`, `public_screens_pipeline.py`, `preserve_public_screens.py` | 5개 파일: macro-screen.json, sec-13f-changes.json, sec-filing-windows.json, sec-qg-factors.json, company-types-pricefree.json. 매크로/13F 실제 입력 없음→NA. Q/G는 제공 요소만, V 공개 금지; 실적은 제출 패턴의 예상 시기·확정일 아님. 기존 정본 값을 합성 채우지 않는다. |
+| 엔진 기반 | #123 실적 패턴, #125 V 요소, #127 전략 재계산, #128 Macro 8×6, #129 13F, #134 SEC 식별/Universe 코드, #135 유형 설정, #136 테마, #143 DCF, #145 SEC 분할, #146 JS 사양/36벡터, #149 디자인 정본 모두 병합 | #135 미병합 의존은 해소됨. 매크로 실제 국면 mapping·테마 정규화·DCF 금융 기본값은 미정. 자료가 있어도 근거 없는 산출 금지. |
+| 프로필 골격 | #148 공식 복사·초안 비중·합100 확인·기기 저장·통합 백업 /2(기존 /1 호환), 유형 커스텀 골격 | 실제 PREVIEW 재계산·리더보드 순위 변화·유형 config 연결은 미완료. 공식 축내부 비중과 유형 Q/G/V 부모 비중을 혼동하지 않는다. |
 
-#111·#115·#121·#123·#125·#127·#128·#129는 확인한 head의 최종 필수6개/실행53단계 성공·실패0이다. canonical 동기화 후 head 및 이번 문서 PR의 최종 체크는 묶음 보고 전에 다시 확인한다. deploy의 실행 없는 SKIPPED는 배포 성공으로 세지 않는다.
+## 열린 PR과 의존 관계
 
-코덱1 **#122 M3 기기 Universe JS**는 SEC 입력 연결 후속이며 **#124 Tiingo/KRX·#126 SEC daily는 병합**됐다. 이 PR을 코덱2가 수정·닫기·병합하지 않았다. #121 Python 모듈과 별도 소관이며 실제 daily 운영은 아직 미완료다.
+아래 현재 작업은 **모두 원격 push된 draft WIP**다. PR 본문에 완료/남은 것/다음 단계를 적었다. 새 기능은 더 시작하지 않았다.
 
-## 통합 검증과 이전 CSP 회귀
-
-#131에서 코덱1이 CSP 기대값을 수정했다. 현재 SEC 입력 어댑터까지 합성 검증한 전체 suite는 1890 passed·358 subtests passed·실패0(36.61초)이다. 아래 실패 기록은 수정 전 이력이다.
-
-canonical3e99e061에 이 대기열의 Python 코드·합성 fixture·테스트만 결합한 검증용 worktree에서 **1858 passed, 358 subtests passed, 1 failed(40.77초)**를 확인했다. 실패는 아래 기존 canonical CSP 검사1개다. 새 전략 함수를 독립 PIL 패키지에서 QGV bridge로 이동한 뒤 기존 PIL13개를 포함한 관련57개도 통과했다. 개별 관련 테스트 수는 중복을 포함하므로 합산하지 않는다.
-
-`tests/test_app_nav_ia.py::test_navigation_does_not_expand_approved_external_csp_permissions`가 #113 이후 canonical07ba93e3 및 최신3e99e061에서도 재현된다. connect-src Worker 출처 추가와 이전 기대값 차이이며 코덱1 앱/CSP 검증 범위다. 코덱2는 해당 앱/테스트/워크플로를 수정하거나 검사를 완화하지 않는다. 필수CI 성공을 전체 suite 성공으로 보고하지 않는다.
-
-## 구현의 실제 연결 상태·미확정 정의
-
-- **SEC:** #121은 실제 호출 없이 모의 응답으로 검증한 수집기/명시적 live 진입점이다. SEC_USER_AGENT는 이름만 참조한다. 실제 US17 취득·daily Actions·공개 재무 producer는 코덱1 연결/운영 후 확인하며 ASML20-F 원문 취득 가능성과 기존10-K M1 READY는 별개다.
-- **V:** 가격은 명시적 인자·RAM-only, 기존 raw_map 산식만 재사용한다. DCF/역DCF solver, 가격→자체multiple, 역사/sector/theme 가격 매핑은 미정이며 해당 미제공 요소를0으로 만들지 않는다. 통화·주당/ADR/split·시점 basis 근거도 자동 생성하지 않는다.
-- **전략:** Q/G/V **축 내부** 공식 비중·사용자 비중을 재계산한다. GSQ-017의 유형별 Q/G/V 부모 비중은 사용자 승인 PROVISIONAL 값으로 새 설정 PR에서 구현한다. Technical/Macro 합성·새 모델/6관점은 별도다. Q/G 기존 평균과 V를 분리한 PREVIEW이며 모델 채택/저장 snapshot을 바꾸지 않는다.
-- **Macro:** #128 정부 screen 함수는8×6 raw evidence·Decimal문자열·취득 cutoff를 제공하지만 공개 producer/앱 연결은 없다. GDP 수준·CPI 지수→기존 growth/inflation fraction 정의 미정으로 실제 국면은 NOT_AVAILABLE다. 후속4축 exact series/basis·모든 새6상태 규칙은 미채택이며 파서는 명시적 binding만 받는다. Fed는 확인된 DataSet fragment만 지원하고 full-feed/ZIP 추출 계보는 미검증이다. FRED/ALFRED 차단 유지.
-- **실적/13F:** SEC 제출 패턴은 확정 실적 발표일이 아니다.13F NEW/ADD/REDUCE/EXIT는 공개 보고 수량 변화이며 실제 매매·현재 보유 추론이 아니다. 비공개·추가 정정·부분 표·비연속분기·미확인 귀속은 비교 차단한다. 투자자 기본 목록은 없고 사용자가 공급한다.
-- **기기:** #116 통합 백업·#117 Research JS·#119 candle/MA·#120 private Trades 코드와 실기기 검증을 구분한다. M3 개인 선정·가격·시총·순위·Universe ID·키/토큰은 공개/새 백업에 넣지 않는다. M3 기본N20·불일치10%와 근거 있는 SHARE_CLASS_BASIS 표시만/자동 보정 없음은 확정이다.
-
-## 긴급 SEC daily 진단
-
-사용자 즉시 자체 병합 승인에 따라 고정 코드·HTTP 상태·fetch/parse/normalize·회사 순번만 노출하고 부분 실패를 분리했다. [연결 계약](implementation/docs/daily_data_pipeline/SEC_COLLECTION_DIAGNOSTICS.md). 전체1918개+358subtests 통과·실패0(45.14초), 관련86개·reader review 중요 미해결0. v1 전체 성공 유지, 일부 성공은 strict v2 LIVE/NOT_AVAILABLE17행, 전부 실패면 exit1·이전 파일 보존. 실행 환경 SEC_USER_AGENT 미설정으로 실제 Actions와 동일 조건의 재현은 미실행; UA/HTTP 원인은 아직 미확정. 워크플로·웹·Worker 수정 없음.
-
-후속 긴급 사용자 결정: 개별 malformed share fact를 사유별 제외하며 core fact가 남으면 회사를 유지한다. IFRS NumberOfSharesOutstanding·20-F·전환10-KT/10-QT 및 수정 보고서를 보존하고 optional null은 미제공으로 처리한다. 공개schema/3는 status·고정 excluded_fact_counts·UNCONFIRMED share_class_basis·별도 share_class_notice를 포함하며 guard는 구/1·/2도 유지한다. 명시 종류 차원은 CLASS_SPLIT/SHARE_CLASS_BASIS 표시만·합산 없음; 일반 수치 충돌은 FACT_CONFLICT다. 상세 계약은 위 연결 문서에 갱신했다. 실제 Actions3실패(AVGO/HUBB/MSFT)를 확인했으나 SEC_USER_AGENT 미설정·연결 도구 차단으로 원문 재현은 미실행이다. 관련117개·전체1886개+265subtests 통과·실패0(34.39초), 공개 Pages guard 통과, reader review 중요 미해결0. 코덱1 workflow_dispatch의 failed_companies=0 확인 대기다.
-
-유형/GSQ-017은 #135 승인 대기, 테마 #136 확인 대기 제안·자동NA. 화면용 공개 JSON CLI는 [연결 계약](implementation/docs/daily_data_pipeline/PUBLIC_ENGINE_SCREENS.md)의5개 price-free sidecar·strict guard로 준비했다. 합성27개가 통과했으며 source/취득 TTL/단위 배율을 검증한다. type engine #135는26E 승인 대기로 소속도는 명시NA다. 워크플로/앱 연결·실제 provider 운영 성공과 구분한다. JS 이식 벡터와 DCF·504 분할 구조를 연속 진행한다. EDINET 후순위·DART 등록 알림 전 비착수.
-
-## 다음 할 일5개 — GSQ-017 대기열
-
-1. 이 PR의 SEC M3 어댑터·504 code-only JSON을 코덱1 #122/#126 loadInputs 연결에 사용한다. cover 근거 없는 종목은 NA; 주식 종류 차이는 표시만이다.
-2. GSQ-017 versioned type_config·순수 유형 계산·기기 custom PREVIEW를 구현한다. 승인된 비중/램프 이외 미정값은 만들지 않는다.
-3. 14개 테마 ETF 바스켓/키워드·소속도 정규화 후보와 DCF 파라미터 기본값을 사용자 확인 대상으로 제안한다.
-4. Macro GDP/CPI·후속 series→8축 대응표 초안을 문서화하고 채택 전에 계산/상태 규칙을 바꾸지 않는다.
-5. EDINET은 사용자 결정으로 후순위 보류한다. DART는 사용자 키 등록 알림 전 코드·키 조회·인증/API 비착수다.
-
-기존 Holdout은 **UNCONFIRMED·v2 근거 제외·미사용**, QGV v2는 보류다. 검증은 향후 누적 forward 데이터이며 시작 시점은 사용자가 결정한다. 에이전트는 기간을 선택·사용하지 않는다. 기존 구현8개 PR은 병합됐으며 새 대기열은 [구현 계획](implementation/docs/ENGINE_QUEUE_GSQ017_PLAN.md)을 따른다.
-
-## 외부 서비스·저장 위치
-
-설정 이름만 기록하며 실제 값·계정·키/시트 존재 여부를 이번 작업에서 확인하지 않았다.
-
-| 서비스 | 현재 범위 | 저장/연결 경계 |
+| PR | 완료/상태 | 남은 의존·다음 단계 |
 | --- | --- | --- |
-| BLS·BEA·Treasury·Fed | 공급 응답 파서·원기관 근거, BEA_USERID는 이름만 | 모델 의미/실제 수집·앱 연결 미완료; FX·가격 성격 입력 RAM-only |
-| FRED·ALFRED | 서면 허가 전 차단 | 호출·키 조회·fallback 없음 |
-| SEC EDGAR | #121 수집 모듈, #123 예상 패턴, #129 정보표 | SEC_USER_AGENT 이름만; daily 공개는 비가격 자료만·개인 선정 제외 |
-| Google Identity·Sheets | 기존 readonly Quotes·private history/Trades, M3 #122 대기 | 개인 가격/파생·선정·Universe ID·토큰은 공개/새 저장 제외 |
-| Cloudflare·Pages | 코덱1 Worker/Pages 코드·metadata 범위 확인 | 실제 배포/본인 인증/운영 검증은 이번 Python·문서 작업과 별개 |
-| EDINET·DART | 사용자 결정으로 후순위 보류 | EDINET Subscription-Key·DART_API_KEY 값 출력/조회 없음; adapter 비착수 |
-| Tiingo·KRX | #124 예비 경로 조건 대기 | 기존 등록 보고와 실제 인증/권리·3시장 coverage를 구분 |
+| [#153](https://github.com/kco994553-star/Investment-System1/pull/153) | 코덱2의 #104 채택 이전 과거 매크로 로컬 스냅샷 보존 | 현 canonical #104/#128 대비 차이 검토용. 그대로 병합하지 않는다. 최신 통합 테스트 미실행. |
+| [#150](https://github.com/kco994553-star/Investment-System1/pull/150) | DCF/역DCF/V/전략/M3/SEC 어댑터 JS 라이브러리. #146 벡터 중 **31/36** 브라우저 대조 PASS, 입력 불변·RAM 경계. profile-defaults 요소 순서·번역 누락 수정 포함 | 기업 유형 JS **5벡터 미완료**, `TYPE_JS_PORT_PENDING`은 이 PR의 미완료다. #135는 이미 병합. 전체 suite 및 실제 화면/가격 입력 연결 필요. |
+| [#151](https://github.com/kco994553-star/Investment-System1/pull/151) | 승인 identity 19개 기반 ★/그룹/검색/정렬/관심 화면/리더보드 필터. Node·390/1440px 브라우저 PASS | 최신 canonical과 **merge conflict** 있음: app/index/asset guard 등을 통합하고 프로필/차트 보존. 새 locale 및 전체 suite/필수 CI 확인. 전체 500개 디렉터리/순위 아님. |
+| [#152](https://github.com/kco994553-star/Investment-System1/pull/152) | #136 참고 메타데이터·14개 제안 바스켓, 종목 상위2·쏠림 위치 NA. 참조/guard/390·1440px PASS | 바스켓 승인·소속도 정규화·공식 노출 입력 대기. 수치 쏠림/경고 구현 없음; 임계값 발명 금지. |
+| [#147](https://github.com/kco994553-star/Investment-System1/pull/147) | 기존 12화면 반응형·색상·빈 상태·하단 메뉴 테스트 PASS, 필수6체크 SUCCESS | #149의 16화면 정본으로 전체 구조/번호 배지/QGV 탐색/활성 막대/S05/S14 등 정합 필요. 명세 자체 대기는 해소됨. |
+| [#122](https://github.com/kco994553-star/Investment-System1/pull/122) | 기존 M3 JS/기기 보기 prototype | #150 라이브러리 완료 후 통합 시트 Universe 탭·SEC 식별/basis·loadInputs·앱 리더보드 연결. N=20, 10% 경계, SHARE_CLASS_BASIS는 표시만. 부분 cover는 전체 cover로 추론하지 않는다. |
 
-### 이전 열린 PR 정리안 (#100 작성 시점 참고)
+기존 장기 PR은 이 인수인계에서 수정·닫기·병합하지 않았다. 과거 gate 문구가 최신 혼합 운영을 되돌리는 근거가 아니다. 실제 원격 PR base 및 본문을 확인하고 새 장기 대기열과 중복 여부를 판단한다.
 
-아래는 #100 작성 시점의 열린 PR46개에 대한 과거 정리안이다. #95·#96·#97·#100은 이후 병합되어 현재 열린 PR이 아니다. #99는 그 작성 시점에도 이미 병합됐다. 표는 권고만 기록하며 이 정리 작업에서 닫기·병합을 실행하지 않았다.
+| PR | 현재 열린 범위 | 기존 의존/주의 |
+| --- | --- | --- |
+| #71 | Chart public reference (일반 OPEN, WIP 아님) | 과거 TARGET/locale/공개 경계 변경과 현 canonical의 중복 검토 필요, 자동 재개/병합하지 않음 |
+| #43 | draft GitHub write-path 문서 | 과거 문서 지침의 현 WORKING_RULES와 중복 검토 |
+| #31 | draft Track C CDR-012 | 과거 stacked Track C 및 합성 검증 범위, 현 forward/Holdout 결정과 분리 |
+| #29 | draft Web producer 계약/E2E | producer/P01 공개 경계와 현 앱 구현 중복 검토 |
+| #19 | draft QGV invalidation binding | 표시 활성화 미포함, 기존 binding/원점수 계약 검토 |
+| #18 | draft US equity session | PR base가 #15 기술 model branch; calendar vintage/close basis |
+| #17 | draft P01 publication | 기존 #9 infrastructure stack와 명시적 research display 승인 의존 |
+| #16 | draft SEC 8-K disclosure | 8-K 공개 제출 경계; 일반 뉴스 제공 아님 |
+| #15 | draft technical REAL model | #11 위 stack, 모델 입력/공개 권한 미완료 |
+| #14 | draft leaderboard REAL producer | 기존 P01/Track C 및 공개 권한, within-tie 정책 미완료; 현재 개인 M3와 별개 |
+| #13 | draft RIG news | 공급자 활성화·유사도/영향 정책 미정 |
+| #12 | draft Macro REAL producer | 과거 provisional series/exposure/mapping 미정; 현재 정부 #128과 중복 검토 |
+| #11 | draft technical real producer | 가격 시계열/return 변환·모델 입력 미완료 |
+| #10 | draft QGV REAL producer | rubric 실입력·PIT/공개 경계 미완료; 현재 Q/G 후보와 구분 |
+| #7 | draft entity metadata | #6 위 stack였던 Frozen Top500 검색 metadata, 현재 504 code-only와 별개 |
+| #4 | draft Track C | C8~C10 정책 승인/연구 범위 의존; 기존 Holdout 사용 금지 |
 
-| 번호 | 제목 | 권장 | 이유 |
+코덱2의 최종 결과/대응표 문서 PR #154는 필수6체크 성공·실패0 확인 후 병합했다. [19종목 결과·500회사 커버리지](implementation/docs/company_types/QUEUE_RESULTS_AND_COVERAGE.md), [8축 대응표 제안](implementation/docs/macro_data_rights/EIGHT_AXIS_MAPPING_PROPOSAL.md), ROADMAP 및 Python/JS 계약 갱신을 보존한다. 해당 결과표의 raw blobs 0건·19종목 NA는 **코덱2 로컬 환경의 원문 부재**에 대한 판정이며, 위 Actions에서 취득·배포한 US17 재무/QG 요소 성공과 구분한다. 504 listing 코드와 500 issuer coverage도 다르다.
+
+## 의존 대기·사용자 결정
+
+- **SIC 매핑 확인**: 제안 SIC→업종군 대응표 승인 전 경기민감/경기방어 소속도 NA. 테마로 업종을 대체하지 않는다.
+- **DCF 기본값**: 할인율·말기 성장률·cash-flow/통화·주당/ADR/split basis 확인 대기. 할인율 10%·영구성장 2%는 코덱2 문서의 미채택 제안이며 앱 기본값이 아니다. explicit years 5 외 미확정 값은 null/confirmed=false; 계산 임의 기본값 금지.
+- **매크로 8축 대응표**: exact series/단위/SA/PIT·GDP/CPI→기존 축 대응 및 6칸 의미 확인 대기. 정부 입력만, FRED/ALFRED 금지. 실제 국면/확률 합성 금지.
+- **DART 키 등록 예정**: 사용자의 등록 예정 안내는 10/11 18시 이후(원 공지 시간대 미명시)다. 등록 완료 알림 전 키 존재 확인·API·adapter 착수 금지. 이후 엔진 어댑터가 병합되면 한미반도체 재무 연결.
+- **테마**: #136 바스켓 승인·정규화 입력 대기. 포트폴리오 쏠림 수치/임계는 새로 만들지 않는다.
+- **13F·Macro 실제 취득 입력**: 화면/공개 serializer는 있으나 공급 입력 미연결. 투자자 ★는 기기 저장이고 추천 목록을 합성하지 않는다. 13F는 보고 수량 변화이며 실제 매매/현재 보유 확정이 아니다.
+- **검증/연구**: 기존 Holdout UNCONFIRMED, v2 근거 제외·사용 금지. forward 시작 시점은 사용자 결정 전 선택하지 않는다.
+
+## 다음 할 일 — 사용자 장기 대기열 순서 유지
+
+기존 A1~C12를 그대로 보존한다. 의존이 막히면 다음으로 넘어가고 해소되면 돌아온다. Claude Code가 작업 재개 시 현재 WIP 통합과 검증 회귀를 먼저 확인한다.
+
+1. **A1 PWA**: #142 코드/정적 셸 검증 완료·#144 배포 포함. 실기기 설치/오프라인 운영 확인은 별도.
+2. **A2 16화면 정합**: #147 이어서 #149 디자인 정본 적용, 빈 상태/NOT_AVAILABLE/390·1440px/하단5메뉴.
+3. **A3 유형 커스텀·프로필 골격**: #148 병합, 실제 함수/type_config 연결은 B9. locale 누락 회귀는 아래 #150 수정 참조.
+4. **A4 테마**: #152 이어서 승인된 #136 입력 연결, 실제 쏠림·종목 상위2는 의존 대기.
+5. **A5 ★·그룹**: #151 canonical 충돌 해소·전체 검증 후 연결 완료.
+6. **B6 공개 JSON**: #144 기본 연결 완료. 실제 정부/13F 입력, #135 이후 price-free 유형 갱신 및 최신 앱 재배포 필요.
+7. **B7 JS 이식**: #150 유형 5개를 포함한 **36벡터 전부 대조** 및 전체 검증. 가격은 RAM-only.
+8. **B8 M3**: #122 통합 Universe 읽기·SEC 식별/basis·N20·10% 경계 연결, 리더보드 ‘내 기기 기준’/‘내 프로필 기준’.
+9. **B9 유형·전략**: #148 골격과 #150 함수를 공식 type_config/재계산에 연결, PREVIEW/원 QGV 보존·기기 저장/백업.
+10. **B10 13F·실적·매크로**: #144 reader 유지, 실제 입력/투자자 ★ 저장, ‘확정일 아님’, 8축×6칸 NA 처리.
+11. **C11 운영 상태 UI**: 마지막 성공 시각·실패 회사 수·STALE 표시 미착수. 공개 가능한 운영 메타데이터 계약 필요.
+12. **C12 DART**: 등록 알림+엔진 어댑터 병합 이후만 착수.
+
+SEC 504 분할 workflow 연결은 기존 운영 확장 후속이며 #145 모듈을 실제 연결하기 전 현재 17개 범위를 유지한다. 새 작업 착수/수집 범위 확대/별도 승인 필요 변경은 최신 사용자 승인을 확인한다.
+
+## 재개할 때 확인할 검증·로컬 보존
+
+- #150 최종 로컬: 공개 build/가격 경계 guard, 기존 Node 검사, engine_reference_browser_test.js **31벡터**, 프로필/Cockpit/차트 브라우저 PASS. 새 유형 5개와 전체 suite는 미완료. #150/#152 최종 필수6체크 SUCCESS·실패0을 확인했으나 미완성이므로 WIP를 유지했다. #151은 canonical 충돌로 원격 체크가 실행되지 않았다.
+- 기존 #148 브랜치 full Python: **1 failed, 2045 passed, 360 subtests passed**. 실패는 `test_web_state_presentation.py::test_every_ui_string_has_ko_and_en_entries`의 `기업 유형 커스텀` locale 누락. 최신 canonical 관련 검사에서도 1 failed·12 passed를 확인했다. #150 locale.js에 수정이 있고 관련 13개 검사는 PASS이나 **이 수정은 아직 canonical에 병합되지 않았다**. 필수 CI 성공을 전체 suite 성공으로 표현하지 않는다.
+- 테스트: `cd implementation && PYTHONPATH=src python -m pytest -q`. RAM 이식 Node: `node implementation/tools/engine_preview_node_test.js`. 기존 Pages workflow의 build/asset guard 및 각 browser 테스트를 함께 유지한다. 벡터 fixture는 배포하지 않는다.
+- 최종 필수 체크 이름: repository-guard, ingest-and-gate, build, validate, guard, presentation. 모두 최종 PR head에서 SUCCESS이고 실행 체크 실패0인지 확인한다. deploy SKIPPED는 배포 아님.
+- 이번 WIP push 후 모든 로컬 브랜치에 같은 이름의 origin 원격 브랜치가 있고 **로컬 전용 커밋 0건·로컬 전용 브랜치 0건·작업 트리 미커밋 변경 0건**을 확인했다. 이 문서 PR push/병합 후 다시 확인한다. 다른 기기/코덱2 환경의 미push 작업은 이 환경에서 보증하지 않는다.
+
+## 비밀값·외부 서비스 — 이름과 저장 위치만
+
+| 서비스 | 상태 | 필요한 이름 | 저장 위치 |
 | --- | --- | --- | --- |
-| [#100](https://github.com/kco994553-star/Investment-System1/pull/100) | docs: 1인용 혼합 작업 규칙과 현재 인수인계 정리 | 병합 | 사용자 결정의 혼합 규칙과 최신 현황을 두 문서에 통합; 승인 후 반영. |
-| [#98](https://github.com/kco994553-star/Investment-System1/pull/98) | [WIP] M2 Q·G 후보 앱 표시 — V NOT_AVAILABLE·가격 미포함 | 유지 | 최종 코드 리뷰·실제 입력 연결이 남아 WIP 보존; 전체·브라우저·CI 통과. |
-| [#97](https://github.com/kco994553-star/Investment-System1/pull/97) | 공개 가격 DATA 140개 정리 및 보류·Frozen 메타데이터 보존 | 병합 | 공개 가격 DATA 140개 정리와 Frozen·보류 보존이 승인 범위이며 CI 6개 통과; #96 다음 순서로 병합. |
-| [#96](https://github.com/kco994553-star/Investment-System1/pull/96) | Public boundary A: 공개 출력·수집 경로 28개 차단 | 병합 | 공개 출력·수집 28개 경로 차단과 SEC 식별 보존이 현 정책에 부합하고 CI 6개 통과; #97보다 먼저 병합. |
-| [#95](https://github.com/kco994553-star/Investment-System1/pull/95) | Worker: 배포 오류 마스킹 진단과 토큰·계정 사전 점검 | 병합 | 승인된 Worker 오류 마스킹·배포 사전 점검이며 CI 통과; 병합 뒤 실제 배포 재실행으로 장애 원인 확인. |
-| [#71](https://github.com/kco994553-star/Investment-System1/pull/71) | Chart public reference B: verified TARGET freshness, bilingual notice and scoped gate correction | 유지 | 미반영 TARGET 최신성·한영 안내 기능은 보존하되, 구 A-G/FPIA 문서와 오래된 배포 변경을 현 정책에 맞춰 정리 필요. |
-| [#61](https://github.com/kco994553-star/Investment-System1/pull/61) | Web: close PPA-F08 ACTUAL/TARGET fallback | 닫기 | ACTUAL→TARGET 대체 방지는 #63 계열로 이미 반영됐고 현재 코드는 유한값 검사·별도 TARGET 표기로 더 강화됨. |
-| [#47](https://github.com/kco994553-star/Investment-System1/pull/47) | FPIA coverage, workflow-source observation and branch-independent applicability | 닫기 | FPIA 실행 coverage·workflow 출처·영수증 검증만 확장하므로 중단한 운영 증빙 범위에 해당. |
-| [#46](https://github.com/kco994553-star/Investment-System1/pull/46) | [FPIA successor] Fix literal-source false PASS and inventory container images | 닫기 | FPIA literal-source·증거 식별 검증기 보수이므로 폐지한 FPIA 운영 절차와 함께 정리. |
-| [#45](https://github.com/kco994553-star/Investment-System1/pull/45) | Independent Product Platform audit: synthetic fail-closed harness and owner evidence | 닫기 | tenant·서버 세션·동기화 저장소 중심 다중 사용자 플랫폼으로 현 1인용 범위 밖; 독립 보안 예제 코드는 브랜치 보존. |
-| [#43](https://github.com/kco994553-star/Investment-System1/pull/43) | docs(ops): common GitHub API write-path instruction | 유지 | Git 전송 실패 시 API 대체 안내는 유효하므로 보존하되, 구 Global 담당자·과도한 증빙 요구를 현 운영 문서로 축약 필요. |
-| [#42](https://github.com/kco994553-star/Investment-System1/pull/42) | [proposal] Hardened Track C FPIA (CDR-014): integration acceptance on merge-result SHAs; frozen tools unchanged | 닫기 | 약 1.8만 줄의 FPIA 승인 검증기·전용 CI·vendoring으로 현 단일 사용자 운영에서 제외된 절차. |
-| [#40](https://github.com/kco994553-star/Investment-System1/pull/40) | CDR-012 successor trial: #39 + PR #31 (F1 d*d, F3 NOT_RUN) + PR #35 (fresh heads) | 닫기 | #39에 #31·#35를 겹친 구 통합 시험이므로 종료하되, #31 계산 코드와 개별 기능 PR은 보존. |
-| [#39](https://github.com/kco994553-star/Investment-System1/pull/39) | CDR-011 integration trial: #38 + PR #31 (CDR-010 M-B v2) + PR #35 (fresh heads) | 닫기 | #38에 이전 #31·#35를 겹친 통합 시험이며 #40으로도 대체되어 별도 유지 실익이 없음. |
-| [#38](https://github.com/kco994553-star/Investment-System1/pull/38) | Integration trial: #30 + C-28 evidence (#32/#33) + Web render guard (#34) + production-state UI (#36) | 닫기 | UI guard·상태 표시는 이미 기본 브랜치에 들어갔고 남은 adoption 증빙 중심의 옛 통합 시험. |
-| [#37](https://github.com/kco994553-star/Investment-System1/pull/37) | Dynamic Workflow M0: deterministic risk router and trace | 닫기 | 제품 계산 없이 작업 위험도와 trace만 분류하는 운영 라우터라 현재 단순화한 1인용 범위에서 제외. |
-| [#36](https://github.com/kco994553-star/Investment-System1/pull/36) | [proposal] Web production-shaped state presentation (freshness, withheld metadata, ko/en, error fallback) | 닫기 | 현재 HEAD 전체가 기본 브랜치에 이미 포함되어 UI 상태·한영·오류 처리 기능을 보존한 채 중복 PR 정리 가능. |
-| [#35](https://github.com/kco994553-star/Investment-System1/pull/35) | Integration: CI-verified CDR-012 PR31 dependency with preserved shared-source protection | 닫기 | 구 통합 source-compat·fingerprint 증빙 묶음이므로 종료하고 필요한 소스 호환 검사는 일반 테스트로 보존. |
-| [#34](https://github.com/kco994553-star/Investment-System1/pull/34) | [proposal] Web render guard: research/provisional sections never render as LIVE/FROZEN (G3) | 닫기 | 연구 결과의 LIVE/FROZEN 오표시를 막는 guard가 기본 브랜치에 이미 포함되어 중복 PR 정리 가능. |
-| [#33](https://github.com/kco994553-star/Investment-System1/pull/33) | [proposal] #7 C-28 adoption evidence record (CDR-004) | 닫기 | 검색 코드 변경 없이 C-28 adoption fingerprint 기록 2개만 추가하므로 중단한 증빙 업무에 해당. |
-| [#32](https://github.com/kco994553-star/Investment-System1/pull/32) | [proposal] #9 C-28 adoption evidence record (CDR-004) | 닫기 | producer 코드 변경 없이 C-28 adoption 기록 2개만 추가하므로 중단한 증빙 업무에 해당. |
-| [#31](https://github.com/kco994553-star/Investment-System1/pull/31) | Track C: approved CDR-012 v2 squaring and all-degenerate fail-closed | 유지 | 실제 bootstrap 제곱 계산·전부 퇴화 시 차단 수정이 있어 보존하되, 대량 증빙·통합 변경을 분리하기 전 병합 보류. |
-| [#30](https://github.com/kco994553-star/Investment-System1/pull/30) | Integration trial: preserved C-28 adoption, producer compatibility and existing-Web E2E | 닫기 | 여러 미반영 엔진·producer를 묶은 352개 파일의 옛 통합 시험이므로 개별 #4/#7/#10~19를 남기고 종료. |
-| [#29](https://github.com/kco994553-star/Investment-System1/pull/29) | Existing Web: withheld producer-contract fixture and locale/mobile/failure E2E | 유지 | 보류 데이터 누출·한영·모바일·오류 상태를 검증하는 실제 브라우저 테스트가 유용하므로 현 UI에 맞춰 보존. |
-| [#28](https://github.com/kco994553-star/Investment-System1/pull/28) | Fresh takeover audit: exact remote state, capability inventory and verified integration receipts | 닫기 | 제품 코드 없이 412개 인수인계·상태·통합 영수증 파일을 추가하므로 중단한 대량 증빙 작업에 해당. |
-| [#27](https://github.com/kco994553-star/Investment-System1/pull/27) | [proposal] #17 C-28 adoption re-pin (CDR-004) | 닫기 | P01 기능 추가 없이 C-28 fingerprint 재고정·상태·불변성 증빙만 변경하므로 정리. |
-| [#26](https://github.com/kco994553-star/Investment-System1/pull/26) | [proposal] #14 C-28 adoption re-pin (CDR-004) | 닫기 | Leaderboard 기능 추가 없이 C-28 fingerprint 재고정과 증빙만 변경하므로 정리. |
-| [#25](https://github.com/kco994553-star/Investment-System1/pull/25) | [proposal] #12 C-28 adoption re-pin (CDR-004) | 닫기 | Macro 계산 추가 없이 C-28 재고정·lineage adoption 증빙과 기존 테스트만 변경하므로 정리. |
-| [#24](https://github.com/kco994553-star/Investment-System1/pull/24) | [proposal] #18 C-28 adoption re-pin (CDR-004) | 닫기 | 거래 세션 기능 추가 없이 C-28 fingerprint 재고정·상태·증빙만 변경하므로 정리. |
-| [#23](https://github.com/kco994553-star/Investment-System1/pull/23) | [proposal] #15 C-28 adoption re-pin (CDR-004) | 닫기 | Technical 모델 추가 없이 C-28 fingerprint 재고정·상태·증빙만 변경하므로 정리. |
-| [#22](https://github.com/kco994553-star/Investment-System1/pull/22) | [proposal] #11 C-28 adoption re-pin (CDR-004) | 닫기 | Technical 입력 기능 추가 없이 C-28 fingerprint 재고정·adoption 기록만 변경하므로 정리. |
-| [#21](https://github.com/kco994553-star/Investment-System1/pull/21) | Claude Code Worker Contract v1.0 + CLAUDE.md routing (docs only) | 닫기 | 옛 다중 worker·Global 단일 작성자·증빙 운영 계약이 현재 단순화 정책과 맞지 않아 새 운영 문서로 대체. |
-| [#19](https://github.com/kco994553-star/Investment-System1/pull/19) | Add QGV invalidation binding without activating display | 유지 | QGV 입력 변경·무효화 사건을 판별하는 실제 안전 코드가 미반영이므로 표시 허용과 분리해 보존. |
-| [#18](https://github.com/kco994553-star/Investment-System1/pull/18) | US equity trading session v1: calendar vintage binder and close-availability guard | 유지 | 거래일·상장 식별·종가 이용시점 검증 코드가 미반영이므로 사설 가격 경로와의 연결 검토용으로 보존. |
-| [#17](https://github.com/kco994553-star/Investment-System1/pull/17) | P01 research publication v1: envelope and predicate, display stays off | 유지 | 연구 결과의 상태·표시 허용을 구분하는 실제 envelope·predicate가 미반영이므로 필요한 안전 경계 보존. |
-| [#16](https://github.com/kco994553-star/Investment-System1/pull/16) | SEC 8-K primary disclosure v1 (general news stays unavailable) | 유지 | SEC 8-K 원문 공시 adapter는 1인용 공개정보 수집에도 유용하고 미반영이라 일반 뉴스와 구분해 보존. |
-| [#15](https://github.com/kco994553-star/Investment-System1/pull/15) | Technical REAL Model v1: M1 features and M2 regime (M3 held) | 유지 | 실제 M1 지표·M2 regime 계산이 미반영이므로 보존하고 사설 일봉 입력 설계에 맞춘 검증 뒤 통합. |
-| [#14](https://github.com/kco994553-star/Investment-System1/pull/14) | Leaderboard REAL Producer v1: existing engine replay, research snapshot, publication blocked | 유지 | 기존 엔진 순위 재현·동점·누락 처리 코드가 미반영이므로 보존하되 현재 공개 가격 차단 정책에 맞춰 범위 조정. |
-| [#13](https://github.com/kco994553-star/Investment-System1/pull/13) | RIG news ingestion v1: implementation baseline / integration wait | 유지 | 뉴스 정규화·중복 제거·기업 식별 안전 코드가 미반영이므로 보존하되 실제 공급자 연결은 별도 검토. |
-| [#12](https://github.com/kco994553-star/Investment-System1/pull/12) | Macro REAL Producer v1: implementation baseline / integration wait | 유지 | Macro의 PIT vintage 선택·필수값 누락 차단 코드가 미반영이므로 보존하고 현 입력 경로와 통합 검토. |
-| [#11](https://github.com/kco994553-star/Investment-System1/pull/11) | Technical real-input producer v1 (PIT gate, model NOT_AVAILABLE) | 유지 | Technical 입력의 PIT·식별·출처 검증 코드가 미반영이므로 보존하되 사설 Worker 경로와 정합성 검토 필요. |
-| [#10](https://github.com/kco994553-star/Investment-System1/pull/10) | QGV Real Producer v1: per-company PIT persistence, batch manifest, exporter | 유지 | 기업별 QGV·PIT 저장과 batch exporter가 미반영이므로 보존하되 기존 가격 의존·대량 보고서는 새 QG 경로와 재정리. |
-| [#9](https://github.com/kco994553-star/Investment-System1/pull/9) | Producer Infrastructure v1: producer contract, fail-closed bundle exporter, raw persistence design (stacked on PR #6) | 닫기 | producer 계약·기본 exporter·raw 보존 기반의 HEAD 전체가 기본 브랜치에 이미 포함되어 중복 PR 정리 가능. |
-| [#7](https://github.com/kco994553-star/Investment-System1/pull/7) | Entity Metadata Coverage: CIK-bound Top-500 search metadata (stacked on #6) | 유지 | CIK·종목·Universe 일치로 묶는 검색 메타데이터 확장이 미반영이므로 오인 연결 방지와 함께 보존. |
-| [#6](https://github.com/kco994553-star/Investment-System1/pull/6) | Global Language & Search implementation baseline | 닫기 | 한영·검색 구현 HEAD 전체가 기본 브랜치에 이미 포함되어 기능을 보존한 채 중복 PR 정리 가능. |
-| [#4](https://github.com/kco994553-star/Investment-System1/pull/4) | Track C: C7 software frozen; C8-C10 policy packages await approval | 유지 | EVL·시계열 분할·검증 계산 코드가 대량 미반영이므로 보존하되 구 승인 문서·미승인 C8~C10과 분리 전 병합 보류. |
+| Cloudflare Worker | 위 실제 deploy SUCCESS, 본인 가격 경로 | ALLOWED_EMAIL, GOOGLE_CLIENT_ID, TIINGO_API_KEY, KRX_API_KEY | Worker: ALLOWED_EMAIL/TIINGO_API_KEY/KRX_API_KEY Secret, GOOGLE_CLIENT_ID Text; 값 기록 금지 |
+| Worker 배포 Actions | 마지막 수동 deploy SUCCESS | CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID | GitHub Actions Secrets, 값/계정 ID 출력 금지 |
+| Google OAuth/Drive/Picker/Sheets | API/scope/리퍼러 제한 키 설정 완료 사용자 통지; 첫 설정 코드 병합 | Google OAuth client ID, Picker browser key/app ID | 공개 제한된 앱 설정은 app-config.js, OAuth token RAM, 생성/선택 시트 ID 기기 설정만·백업 제외 |
+| BEA | 공급 입력 모듈만, 실제 Macro 입력 미연결 | BEA_USERID | GitHub Actions Secret, 값 출력 금지 |
+| SEC EDGAR | US17 manual SUCCESS·daily 등록 | SEC_USER_AGENT | GitHub Actions Secret, 값/이메일 출력 금지 |
+| DART | 등록 완료 알림 대기 | DART_API_KEY | GitHub Actions Secret 예정, 알림 전 확인/호출 금지 |
+| EDINET | 장기 후순위·등록/착수 미승인 | Subscription-Key | 미등록/미운영으로 취급, 값 기록 금지 |
 
-## 흩어진 현황 문서
-
-아래 문서는 세부 설계·과거 상태의 참고 자료다. 운영상 충돌은 WORKING_RULES.md와 위 현재 상태가 우선한다.
-
-- [이전 전체 상태 색인](Investment-System1%20%C2%B7%20Master%20Status%20Index%202026-09-22.md)
-- [이전 프로젝트 인수인계](Investment-System1%20%C2%B7%20CURRENT_HANDOFF.md)
-- [인수인계 이력](Investment-System1%20%C2%B7%20HANDOFF_HISTORY.md)
-- [개인 투자 레이어 인수인계](Investment-System1%20%C2%B7%20PERSONAL_INVESTMENT_LAYER_V1_HANDOFF.md)
-- [Track A 실제 데이터 상태](Investment-System1%20%C2%B7%20TRACK_A_REAL_DATA_STATUS.md)
-- [프롬프트 라이브러리 상태](Investment-System1%20%C2%B7%20TRACK_E_PROMPT_LIBRARY_V1_STATUS.md)
-- [분기 로드맵](implementation/docs/ROADMAP_2026Q4.md)
-- [웹 MVP 상태](implementation/docs/web_mvp/STATUS.md)
-- [언어·검색 상태](implementation/docs/global_language_search/STATUS.md)
-- [Producer 기반 상태](implementation/docs/producer_infrastructure/STATUS.md)
-- [QGV 계약 작업 상태](implementation/docs/qgv_common_contract_vnext/STATUS.md)
-- [QGV 구조 조정 인수인계](implementation/docs/qgv_common_contract_vnext/architecture_reconciliation_work/CURRENT_HANDOFF.md)
-- [34개 변수 설명](implementation/docs/prompt_field_guide_owner/VARIABLE_MEANINGS.md)
-- [D 상세 명세](implementation/docs/technical_live_data/FIRST_IMPLEMENTATION_SPEC.md)
+원본 재무 자료는 수집 임시 경로에서 처리하고 공개 가능 결과만 Pages에 보존한다. 개인 보유·거래·관심·그룹·프로필은 기기 전용이다. 어떤 비밀값도 이 문서·PR 본문·로그에 넣지 않는다.
