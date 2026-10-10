@@ -27,7 +27,7 @@
 | [#103](https://github.com/kco994553-star/Investment-System1/pull/103) | 이전 인수인계 현황 갱신 | 열려 있는 별도 현황 PR; 이 문서는 최신 결정·병합 결과를 반영. 닫기·병합하지 않음. |
 | [#107](https://github.com/kco994553-star/Investment-System1/pull/107) | M3 계산 계약 초안 | 코덱1의 보존된 초안; 기기·Worker 연결은 코덱1 범위. |
 | [#108](https://github.com/kco994553-star/Investment-System1/pull/108) | GSQ-014·현재 인수인계 | 문서 전용; 최종 실행 체크 모두 성공·실패 0이면 자체 병합. |
-| 번호 미정 | SHARE_CLASS_BASIS 표시 | 순수 Python·합성 검사·명세. 생성 후 별도 코드 병합 승인 대기; 자동 보정 없음. |
+| [#110](https://github.com/kco994553-star/Investment-System1/pull/110) | SHARE_CLASS_BASIS 표시 | 순수 Python·합성 검사·명세. 생성 후 별도 코드 병합 승인 대기; 자동 보정 없음. |
 
 ## 결정 대기
 
