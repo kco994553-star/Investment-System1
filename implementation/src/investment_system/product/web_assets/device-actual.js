@@ -395,7 +395,7 @@
       const text = await file.text();
       if (new state.view.TextEncoder().encode(text).byteLength > MAX_FILE_BYTES) { notice(state, 'tooLarge'); return; }
       const payload = JSON.parse(text);
-      if (payload.schema === state.view.DeviceBackup?.SCHEMA) {
+      if (state.view.DeviceBackup?.accepts ? state.view.DeviceBackup.accepts(payload) : payload.schema === state.view.DeviceBackup?.SCHEMA) {
         if (!state.view.confirm(t(state, 'overwrite'))) return;
         await state.view.DeviceBackup.restore(state.view, state.catalog, payload);
         state.view.document.dispatchEvent(new state.view.Event('device-backup-restored')); return;
@@ -634,6 +634,21 @@
     if (view.document) view.document.dispatchEvent(new view.Event('device-actual-changed'));
     return next;
   }
+  // RAM-only read projection for the S03/S04 screens: weights and quote status, never amounts. Not persisted or sent anywhere.
+  async function ramView(view, catalog) {
+    const none = reason => ({ state: 'NOT_AVAILABLE', reason, stale: false, quote_as_of: null, rows: [], themes: [] });
+    try {
+      const index = catalogIndex(catalog), api = view.DeviceMarket, raw = await readStored(view, [KEY, MARKET_KEY]);
+      if (!api) return none('READ_FAILED');
+      if (raw[KEY] === MISSING_RECORD) return none('NO_ACTUAL');
+      const snapshot = validate(raw[KEY], catalog), market = raw[MARKET_KEY] === MISSING_RECORD ? null : api.validateMarket(raw[MARKET_KEY], catalog);
+      const result = api.valuation(snapshot, catalog, market);
+      const stamps = result.rows.map(row => row.quote_as_of).filter(value => typeof value === 'string').sort();
+      return { state: result.state, reason: result.reason, stale: result.stale === true, quote_as_of: stamps.length ? stamps[0] : null,
+        rows: result.rows.map(row => ({ ticker: index.instruments.get(canonical(row.security_reference)).ticker, theme_id: row.theme_id, weight: row.weight, delta: row.delta })),
+        themes: result.themes.map(theme => ({ theme_id: theme.theme_id, weight: theme.weight, delta: theme.delta })) };
+    } catch (_) { return none('READ_FAILED'); }
+  }
   return Object.freeze({ mount, summary, settings, validate, makeSnapshot, prepareImport, valuation,
-    sheetSettings, applyMarketImport, readMarketImportHistory, readHoldings, restoreHoldings });
+    sheetSettings, applyMarketImport, readMarketImportHistory, readHoldings, restoreHoldings, ramView });
 });

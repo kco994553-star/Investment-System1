@@ -5,6 +5,7 @@ from dataclasses import fields
 from datetime import datetime
 import hashlib
 import inspect
+import sys
 
 from investment_system.contracts.enums import CalibrationLifecycle, ProfileKind, QualityState
 from investment_system.contracts.models import FactorObservation, QGVSnapshot
@@ -60,9 +61,13 @@ def test_v1_d10_all_current_mapping_rules_are_fixed():
         "_reverse_dcf_score": "257290a7af24e6c2e52df2b7494716e74473378d74222402b08484c7651004fe",
         "map_raw": "1c6006fd3480a7be77641f02bed905c80996bd7bd371c7eebb04eb39d0895ce5",
     }
+    # Python 3.13 ast.dump() omits empty lists/None fields unless show_empty=True;
+    # show_empty=True reproduces the 3.12 dump byte-for-byte, so the pins are unchanged.
+    dump_options = {"show_empty": True} if sys.version_info >= (3, 13) else {}
     for name, digest in expected.items():
         node = ast.parse(inspect.getsource(getattr(raw_map, name))).body[0]
-        assert hashlib.sha256(ast.dump(node, include_attributes=False).encode()).hexdigest() == digest
+        dumped = ast.dump(node, include_attributes=False, **dump_options)
+        assert hashlib.sha256(dumped.encode()).hexdigest() == digest
 
 
 def test_v1_linear_clip_anchors_and_missing_values():
