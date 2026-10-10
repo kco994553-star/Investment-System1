@@ -1,6 +1,6 @@
 # 실행 로드맵 v2 — 2026년 4분기
 
-기준일: **2026-10-10 UTC**. 저장소 `kco994553-star/Investment-System1`, canonical `claude/investment-system-top500-validation-alrugm`, 확인 HEAD **`5edee59c5c53421471a8aa032d28c652840fa5f0`** (#146/#145 병합 후). 현재 상태의 단일 진입점은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md), 운영 규칙은 [WORKING_RULES](../../WORKING_RULES.md)다. 아래는 다음 실행을 정하는 문서이며 수집·예약 실행·배포·새 방법론·가중치·방법론 채택의 추가 승인이 아니다. 최신 대화에서 허용한 **26E 결정 기록 변경이 없는 PR의 조건부 자체 병합**은 최종 실행 필수 체크 전부 성공·실패0일 때 적용한다.
+기준일: **2026-10-10 UTC**. 저장소 `kco994553-star/Investment-System1`, canonical `claude/investment-system-top500-validation-alrugm`, 확인 HEAD **`c96f05e9a10b7ba494a43b5f7fabf825ba89f21e`** (#135 사용자 승인 병합 후). 현재 상태의 단일 진입점은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md), 운영 규칙은 [WORKING_RULES](../../WORKING_RULES.md)다. 아래는 다음 실행을 정하는 문서이며 수집·예약 실행·배포·새 방법론·가중치·방법론 채택의 추가 승인이 아니다. 최신 대화에서 허용한 **26E 결정 기록 변경이 없는 PR의 조건부 자체 병합**은 최종 실행 필수 체크 전부 성공·실패0일 때 적용한다.
 
 **Gate A·FPIA·HG: 1인용 범위 해당 없음(종료)** — #100 이후 현행 작업의 선행 조건으로 재사용하지 않는다. 계산·입력·개인정보 검사와 Frozen·원본 TARGET 불변은 유지한다.
 

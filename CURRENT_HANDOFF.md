@@ -4,7 +4,7 @@
 
 ## 기준 HEAD·운영 경계
 
-- canonical `claude/investment-system-top500-validation-alrugm`, 확인 HEAD `5edee59c5c53421471a8aa032d28c652840fa5f0` (#146/#145 병합 후). 이 문서 자체와 이후 병합 HEAD는 GitHub에서 확인한다.
+- canonical `claude/investment-system-top500-validation-alrugm`, 확인 HEAD `c96f05e9a10b7ba494a43b5f7fabf825ba89f21e` (#135 사용자 승인 병합 후). 이 문서 자체와 이후 병합 HEAD는 GitHub에서 확인한다.
 - 사용자 선택: **26E 미변경 PR은 실행된 필수 체크 전부 성공·실패0이면 자체 병합**. #135는 사용자 병합 승인을 받았고 이후26E 변경 포함 PR은 별도 승인 대상. deploy 실행 없는 SKIPPED는 배포 성공이 아니다.
 - 코덱2는 Python src(웹 제외)·관련tests/tools·문서. 코덱1의 웹/Worker/Actions 변경은 canonical 병합으로 보존한다. force push·ruleset·AUTONOMY_MODE·Secret 출력·새 미승인 산식/가중치·Holdout 사용 없음.
 - Gate A·FPIA·HG는 **1인용 범위 해당 없음(종료)**. 계산/결측/입력/공개 개인정보 가드·Frozen/원본 TARGET 불변은 유지한다.

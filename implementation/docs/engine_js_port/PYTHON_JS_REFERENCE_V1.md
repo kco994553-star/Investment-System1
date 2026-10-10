@@ -34,3 +34,7 @@ PYTHONPATH=implementation/src python -m pytest -q implementation/tests/test_pyth
 ## 파일 경계
 
 JS는웹/Worker담당코덱1이작성한다. 이PR은워크플로·웹·Worker를변경하지않는다. 테스트벡터·가격계산출력·기기선정/별표/SheetID/로그인정보는공개producer입력이나백업에넣지않는다. 공개SEC식별asset은#134의가격없는별도projection이며bodyhash를다시pack하면originalSHA와repackedSHA를구분한다.
+
+## #135 병합 후 상태 (2026-10-10)
+
+사용자 승인과 필수 체크 성공 후 #135가 병합되어 타입5사례도 canonical Python으로 replay한다. 전체36개 합성 expected를 대조할 수 있으며 fixture의 type_dependency=PR135_APPROVAL_PENDING은 생성 당시 이력이지 현재 런타임 차단 플래그가 아니다. SIC 표는 별도 사용자 확인 전 비활성, 경기민감·방어는 NOT_AVAILABLE다. JS 구현/실제 parity와 금융 기본값 채택은 여전히 별도다.
