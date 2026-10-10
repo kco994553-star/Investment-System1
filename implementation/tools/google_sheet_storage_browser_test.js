@@ -2,7 +2,7 @@
 // All observation/settings canaries are constructed and checked in browser memory.
 // This tool never saves a populated screenshot, export, identifier or token.
 const {chromium} = require('playwright');
-const base = process.env.GOOGLE_SHEET_QUOTES_URL || 'http://127.0.0.1:8990/Investment-System1/#actual';
+const base = process.env.GOOGLE_SHEET_QUOTES_URL || new URL('#actual', process.env.PAGES_COCKPIT_URL || 'http://127.0.0.1:8990/Investment-System1/').href;
 let checks = 0;
 function verify(value, label) { if (!value) throw new Error(label); checks++; }
 (async () => {
