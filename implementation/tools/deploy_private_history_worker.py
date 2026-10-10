@@ -190,7 +190,10 @@ def verify(environ: dict[str, str], transport=None) -> int:
              ("ALLOWED_ORIGIN_NO_AUTH", {"Origin": ALLOWED_ORIGIN})]
     receipts = []
     for name, headers in cases:
-        request = urllib.request.Request(origin + "/history?symbol=NVDA&range=1mo", headers=headers)
+        request = urllib.request.Request(
+            origin + "/history?symbol=NVDA&range=1mo",
+            headers={"User-Agent": "InvestmentSystem1-DeploymentVerification/1.0", **headers},
+        )
         try:
             try:
                 response = transport(request, timeout=30)

@@ -333,9 +333,11 @@ class DeploymentDiagnosticTests(unittest.TestCase):
         self.assertEqual(self.execute([self.result(output), self.result(ORIGIN)]), 0)
         self.assert_private()
 
-    def test_anonymous_checks_use_no_auth_and_keep_existing_contract(self):
+    def test_anonymous_checks_use_explicit_user_agent_and_keep_existing_contract(self):
         self.env["WORKER_ORIGIN"] = ORIGIN
         requests = []
+        request_headers = []
+        read_limits = []
 
         class Response:
             def __init__(self, index):
@@ -346,17 +348,30 @@ class DeploymentDiagnosticTests(unittest.TestCase):
                 self.code = "CONFIG_UNAVAILABLE" if index == 2 else "ORIGIN_FORBIDDEN"
             def __enter__(self): return self
             def __exit__(self, *args): pass
-            def read(self, limit): return json.dumps({"error": {"code": self.code}}).encode()
+            def read(self, limit):
+                read_limits.append(limit)
+                return json.dumps({"error": {"code": self.code}}).encode()
 
         def transport(request, timeout):
             requests.append(request)
+            request_headers.append(dict(request.header_items()))
             return Response(len(requests) - 1)
 
         self.assertEqual(self.execute([], "verify", transport), 0)
         self.assertEqual(len(requests), 3)
+        user_agent = "InvestmentSystem1-DeploymentVerification/1.0"
+        expected_headers = [
+            {"User-agent": user_agent},
+            {"User-agent": user_agent, "Origin": "https://invalid-origin.example"},
+            {"User-agent": user_agent, "Origin": helper.ALLOWED_ORIGIN},
+        ]
+        self.assertTrue(request_headers == expected_headers,
+                        "Anonymous request headers do not match verification contract")
+        self.assertEqual(read_limits, [4097] * 3)
         self.assertTrue(all(request.full_url == ORIGIN + "/history?symbol=NVDA&range=1mo" for request in requests))
         self.assertTrue(all(request.get_header("Authorization") is None for request in requests))
         self.assertIn("App feature remains OFF", self.summary_text)
+        self.assert_private()
 
     def test_anonymous_transport_exception_is_not_echoed(self):
         self.env["WORKER_ORIGIN"] = ORIGIN
