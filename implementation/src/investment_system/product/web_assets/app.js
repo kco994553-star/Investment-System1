@@ -335,6 +335,7 @@ function groupsUI() {
   return `<p class="muted">${t("이 기기의 브라우저에 저장됩니다. 즐겨찾기와 관심기업은 같은 목록입니다.")}</p><form id="new-group"><label for="group-name">${t("새 그룹 이름")}</label><div class="row"><input id="group-name" required maxlength="60" placeholder="${t("예: 반도체")}"><button>${t("그룹 만들기")}</button></div></form><div id="groups">${prefs.groups.map(g=>`<div class="group"><b>${esc(g.name)}</b> <span class="muted">${g.members.length} ${t("개")}</span><div class="row"><input aria-label="${t("그룹 이름")} ${esc(g.name)}" data-rename-input="${esc(g.id)}" value="${esc(g.name)}" maxlength="60"><button data-rename="${esc(g.id)}">${t("이름 변경")}</button><button data-delete="${esc(g.id)}">${t("그룹 삭제")}</button></div>${prefs.interests.map(id=>`<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id)?"checked":""}> ${esc(company(id)?.ticker || id)}</label>`).join("")}</div>`).join("")}</div><div class="toolbar"><button id="export">${t("내보내기")}</button><label>${t("설정 병합 가져오기")} <input type="file" id="import" accept="application/json"></label></div>`;
 }
 // Public M2 sidecar is separate from published snapshots and prompt context.
+let secReported=null;
 let m2Candidates={display_state:'NOT_AVAILABLE',companies:{}};
 function guardM2Candidates(value) {
   const fail=()=>{throw Error('M2_CANDIDATE_INVALID');};
@@ -393,10 +394,10 @@ function detail(id) {
   const c=company(id);
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
-  if(!c && (candidate || historySymbol)) return heading("COMPANY RESEARCH",esc(candidate?.ticker || historySymbol))+'<div id="private-history-chart"></div>'+m2Panel(id);
+  if(!c && (candidate || historySymbol)) return heading("COMPANY RESEARCH",esc(candidate?.ticker || historySymbol))+'<div id="private-history-chart"></div><div id="sec-reported-panel"></div>'+m2Panel(id);
   if(!c) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id),e=searchIndex.resolve("COMPANY",id);
-  return `<a class="small" href="#companies">${t("← 기업 목록")}</a><div class="row">${heading("COMPANY DETAIL",esc(c.ticker),esc(label(e) || c.name))}${star(id)}</div><div id="private-history-chart"></div><div class="grid">${summaryFor("qgv",id)}${summaryFor("technical",id)}</div>`+
+  return `<a class="small" href="#companies">${t("← 기업 목록")}</a><div class="row">${heading("COMPANY DETAIL",esc(c.ticker),esc(label(e) || c.name))}${star(id)}</div><div id="private-history-chart"></div><div id="sec-reported-panel"></div><div class="grid">${summaryFor("qgv",id)}${summaryFor("technical",id)}</div>`+
   block("macro",t("Macro exposure / context(거시 노출)"),`<p>${esc(D.macro.data?.regime || "")}</p><p>${t("기업 노출:")} ${esc(D.macro.data?.exposures?.[id] || t("미제공"))}</p>`)+
   `<section class="card"><h2>${t("Portfolio status(보유 상태)")}</h2>${state(D.portfolio)}<p>${h?t("Snapshot에 포함 · 비중")+" "+(Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"):D.portfolio.data?t("제공된 Snapshot에 없음"):t("실제 보유 상태 미제공")}</p>${h && Number.isFinite(h.target_weight)?`<p class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</p>`:""}${h?evidence(h):""}</section><section class="card"><h2>${t("News / Relationships(뉴스·관계)")}</h2>${state(D.news)}<a href="#news/${encodeURIComponent(id)}">${t("이 기업의 뉴스·관계망 확인 →")}</a></section>${evidence(c)}`;
 }
@@ -408,7 +409,7 @@ function portfolio() {
 function leaderboard() {
   const l=D.leaderboard.data;
   return heading("LEADERBOARD",appSettings.display_locale==='en-US'?"Company research":"기업 연구")+
-  m2Panel()+block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
+  '<div id="sec-reported-panel"></div>'+m2Panel()+block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
 }
 function news(id) {
   const c=company(id);
@@ -514,6 +515,7 @@ function renderRoute() {
   if(route==='portfolio') attachDeviceActual('#device-actual-summary',false);
   if(route==='technical') PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
   if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
+  if(route==='company'||route==='leaderboard') SecReported.mount($('#sec-reported-panel'),secReported,{companyId:route==='company'?id:undefined,locale:appSettings.display_locale});
   syncNavigation(route);
   if(QGV_CHILDREN.includes(route) || route==="research") {
     const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← 검증";
@@ -749,9 +751,10 @@ document.addEventListener("click",e=>{
 try {const saved=AppLanguage.read(localStorage);appSettings=saved.value;settingsWritable=saved.writable;}
 catch(e) {settingsWritable=false;}
 syncShell();
-Promise.all(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
+Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
-}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))).then(([data,catalog,candidates])=>{
+}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window)]).then(([data,catalog,candidates,reported])=>{
+  secReported=reported;
   m2Candidates=guardM2Candidates(candidates);
   // GSQ-010: legacy public producer payloads are withheld, including membership/order.
   // The private device catalog and device/session data have their own boundary.

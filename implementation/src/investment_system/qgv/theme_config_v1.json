@@ -1,0 +1,362 @@
+{
+  "schema_version": 1,
+  "config_version": "theme_config/1",
+  "status": "PROPOSED_PENDING_APPROVAL",
+  "role": "EXPOSURE_ONLY",
+  "baskets_confirmed": false,
+  "membership_rule": null,
+  "maximum_display": 2,
+  "keyword_rule": "LITERAL_PHRASE_FREQUENCY_ONLY",
+  "themes": [
+    {
+      "id": "ai",
+      "name": "AI",
+      "etfs": [
+        {
+          "ticker": "AIQ",
+          "official_url": "https://www.globalxetfs.com/funds/aiq/",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "artificial intelligence",
+        "generative ai",
+        "machine learning"
+      ],
+      "limitations": "BOTZ는 로봇 바스켓에서 사용; 반도체와 중복 가능"
+    },
+    {
+      "id": "semiconductors",
+      "name": "반도체",
+      "etfs": [
+        {
+          "ticker": "SOXX",
+          "official_url": "https://www.ishares.com/us/products/239705/ishares-phlx-semiconductor-etf",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        },
+        {
+          "ticker": "SMH",
+          "official_url": "https://www.vaneck.com/us/en/investments/semiconductor-etf-smh/",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "semiconductor",
+        "integrated circuit",
+        "wafer",
+        "chip fabrication"
+      ],
+      "limitations": "장비·설계·파운드리 혼합"
+    },
+    {
+      "id": "cloud_software",
+      "name": "클라우드·소프트웨어",
+      "etfs": [
+        {
+          "ticker": "SKYY",
+          "official_url": "https://www.ftportfolios.com/Retail/Etf/EtfSummary.aspx?Ticker=SKYY",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        },
+        {
+          "ticker": "CLOU",
+          "official_url": "https://www.globalxetfs.com/funds/clou/",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "cloud computing",
+        "software as a service",
+        "enterprise software"
+      ],
+      "limitations": "순수 클라우드 아닌 소프트웨어 포함"
+    },
+    {
+      "id": "cybersecurity",
+      "name": "사이버보안",
+      "etfs": [
+        {
+          "ticker": "CIBR",
+          "official_url": "https://www.ftportfolios.com/Retail/Etf/EtfSummary.aspx?Ticker=CIBR",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        },
+        {
+          "ticker": "HACK",
+          "official_url": "https://www.amplifyetfs.com/hack/",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "cybersecurity",
+        "cyber security",
+        "endpoint security",
+        "network security"
+      ],
+      "limitations": "광범위 IT와 중복"
+    },
+    {
+      "id": "fintech_payments",
+      "name": "핀테크·결제",
+      "etfs": [
+        {
+          "ticker": "FINX",
+          "official_url": "https://www.globalxetfs.com/funds/finx/",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        },
+        {
+          "ticker": "IPAY",
+          "official_url": "https://www.amplifyetfs.com/ipay/",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "payment processing",
+        "digital payments",
+        "financial technology"
+      ],
+      "limitations": "핀테크와 결제업무를 구분할 수 없음"
+    },
+    {
+      "id": "ecommerce",
+      "name": "전자상거래",
+      "etfs": [
+        {
+          "ticker": "IBUY",
+          "official_url": "https://www.amplifyetfs.com/ibuy/",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        },
+        {
+          "ticker": "EBIZ",
+          "official_url": "https://www.globalxetfs.com/funds/ebiz/",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "e-commerce",
+        "ecommerce",
+        "online marketplace"
+      ],
+      "limitations": "유통·플랫폼 혼합"
+    },
+    {
+      "id": "power_infrastructure",
+      "name": "전력 인프라",
+      "etfs": [
+        {
+          "ticker": "GRID",
+          "official_url": "https://www.ftportfolios.com/Retail/Etf/EtfSummary.aspx?Ticker=GRID",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        },
+        {
+          "ticker": "PAVE",
+          "official_url": "https://www.globalxetfs.com/funds/pave/",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "electric grid",
+        "power transmission",
+        "grid infrastructure",
+        "power distribution"
+      ],
+      "limitations": "PAVE는 미국 인프라 전반이며 전력 순수성 낮음"
+    },
+    {
+      "id": "clean_energy",
+      "name": "클린에너지",
+      "etfs": [
+        {
+          "ticker": "ICLN",
+          "official_url": "https://www.ishares.com/us/products/239738/ishares-global-clean-energy-etf",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        },
+        {
+          "ticker": "QCLN",
+          "official_url": "https://www.ftportfolios.com/Retail/Etf/EtfSummary.aspx?Ticker=QCLN",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "renewable energy",
+        "solar energy",
+        "wind power",
+        "clean energy"
+      ],
+      "limitations": "공급망·전기차 혼합, 수익성/가치 판정 아님"
+    },
+    {
+      "id": "defense_aerospace",
+      "name": "방산·우주항공",
+      "etfs": [
+        {
+          "ticker": "ITA",
+          "official_url": "https://www.ishares.com/us/products/239502/ishares-us-aerospace-defense-etf",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        },
+        {
+          "ticker": "XAR",
+          "official_url": "https://www.ssga.com/us/en/individual/etfs/spdr-sp-aerospace-defense-etf-xar",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "aerospace",
+        "defense systems",
+        "defence systems",
+        "space systems"
+      ],
+      "limitations": "민항을 포함; 우주 전용 바스켓 아님"
+    },
+    {
+      "id": "biotech_obesity",
+      "name": "바이오·비만치료제",
+      "etfs": [
+        {
+          "ticker": "IBB",
+          "official_url": "https://www.ishares.com/us/products/239699/ishares-nasdaq-biotechnology-etf",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        },
+        {
+          "ticker": "XBI",
+          "official_url": "https://www.ssga.com/us/en/individual/etfs/spdr-sp-biotech-etf-xbi",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "biotechnology",
+        "glp-1",
+        "obesity treatment",
+        "weight management"
+      ],
+      "limitations": "비만치료제 순수 노출 아님; 대형 제약 누락 가능"
+    },
+    {
+      "id": "medical_devices",
+      "name": "의료기기",
+      "etfs": [
+        {
+          "ticker": "IHI",
+          "official_url": "https://www.ishares.com/us/products/239516/ishares-us-medical-devices-etf",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "medical device",
+        "surgical instrument",
+        "diagnostic device"
+      ],
+      "limitations": "미국 의료기기 중심이며 해외 coverage 제한"
+    },
+    {
+      "id": "datacenter_reits",
+      "name": "데이터센터·리츠",
+      "etfs": [
+        {
+          "ticker": "DTCR",
+          "official_url": "https://www.globalxetfs.com/funds/dtcr/",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "data center",
+        "data centre",
+        "digital infrastructure",
+        "colocation"
+      ],
+      "limitations": "DTCR에는 데이터센터 외 디지털 인프라 포함"
+    },
+    {
+      "id": "robotics_automation",
+      "name": "로봇·자동화",
+      "etfs": [
+        {
+          "ticker": "BOTZ",
+          "official_url": "https://www.globalxetfs.com/funds/botz/",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        },
+        {
+          "ticker": "ROBO",
+          "official_url": "https://www.roboglobaletfs.com/robo",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "robotics",
+        "industrial automation",
+        "robotic automation"
+      ],
+      "limitations": "AI·산업장비와 중복"
+    },
+    {
+      "id": "consumer_brands",
+      "name": "소비자 브랜드",
+      "etfs": [
+        {
+          "ticker": "XLP",
+          "official_url": "https://www.ssga.com/us/en/individual/etfs/the-consumer-staples-select-sector-spdr-fund-xlp",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        },
+        {
+          "ticker": "XLY",
+          "official_url": "https://www.ssga.com/us/en/individual/etfs/the-consumer-discretionary-select-sector-spdr-fund-xly",
+          "identity_check": "ISSUER_PAGE_200_2026-10-10",
+          "nport_series_id": null,
+          "nport_class_id": null
+        }
+      ],
+      "keywords": [
+        "consumer brand",
+        "branded products",
+        "brand portfolio"
+      ],
+      "limitations": "미국 소비 업종 proxy이며 브랜드 분류와 동일하지 않음"
+    }
+  ]
+}

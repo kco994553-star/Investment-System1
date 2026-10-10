@@ -1,13 +1,13 @@
 # 현재 인수인계
 
-확인일: **2026-10-10 UTC**. 현재 상태는 이 파일에서 시작하고 [WORKING_RULES.md](WORKING_RULES.md)·[실행 로드맵 v2](implementation/docs/ROADMAP_2026Q4.md)를 따른다. canonical26E는 [GSQ-015까지](implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md)이며, GSQ-015는 승인 후 #115 병합됐다. 최신 GSQ-017 기업 유형 PROVISIONAL 설정은 별도 구현/26E 기록 PR에서 승인 대기다. 이 PR의 전체1943개+358subtests 통과·실패0(38.58초). 작은 구현 변경에 새 GSQ·receipt·fingerprint를 만들지 않았다.
+확인일: **2026-10-10 UTC**. 현재 상태는 이 파일에서 시작하고 [WORKING_RULES.md](WORKING_RULES.md)·[실행 로드맵 v2](implementation/docs/ROADMAP_2026Q4.md)를 따른다. canonical26E는 [GSQ-015까지](implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md)이며, GSQ-015는 승인 후 #115 병합됐다. 최신 GSQ-017 기업 유형 PROVISIONAL 설정은 #135 구현/기록 PR 승인 대기다. 작은 구현 변경에 새 GSQ·receipt·fingerprint를 만들지 않았다.
 
 ## 기준 HEAD·운영 경계
 
-- canonical: `claude/investment-system-top500-validation-alrugm`. 확인한 원격 HEAD **`8ff194cc2661ac555d207775bd20626cdab90b9f`** (#134 병합 후). 이 상태 문서 PR 자체의 병합 HEAD는 GitHub에서 확인한다.
+- canonical: `claude/investment-system-top500-validation-alrugm`. 확인한 원격 HEAD **`78180443d3a149f36ed616662e97318d76b3d940`** (#137 병합 후). 이 상태 문서 PR 자체의 병합 HEAD는 GitHub에서 확인한다.
 - 코덱1 #98 확인 후 승인 순서 #104→#105→#106, 이어 #108·#110·#112를 병합했다. 이번 로드맵 **#118도 병합**했고 #103·#107은 지시대로 닫았다. #109는 이미 CLOSED이며 코덱1에게 종료 유지 확인만 요청했다.
 - 코덱1 #113·#114·#116·#117·#119·#120 병합을 metadata에서 확인했다. #119는 candle/MA/기기 AVG, #120은 비공개 Trades1회 읽기·RAM B/S 표시다. 코드와 실제 본인 기기 운영 성공은 구분한다.
-- 코덱2 수정은 허용된 Python src(웹 제외)·관련 tests/tools·문서다. Worker/web_assets/workflows·기존Frozen/TARGET·기존가중치·AUTONOMY_MODE·ruleset·force push 변경 없음. 실제 키/계정·가격/환율·provider 관측치 수집·배포·Holdout 사용 없음. 이번 사용자 승인에 따라 비공개 Universe A열의 code 504개만 1회 읽어 코드 전용 자산으로 제공했다; 시트 ID/URL·B/C열은 기록하거나 읽지 않았다.
+- 코덱2 수정은 허용된 Python src(웹 제외)·관련 tests/tools·문서다. Worker/web_assets/workflows·Frozen/TARGET·가중치·AUTONOMY_MODE·ruleset·force push 변경 없음. 실제 키/계정·가격/환율·provider 관측치 수집·배포·Holdout 사용 없음. 이번 사용자 승인에 따라 비공개 Universe A열의 code 504개만 1회 읽어 코드 전용 자산으로 제공했다; 시트 ID/URL·B/C열은 기록하거나 읽지 않았다.
 - **26E 미변경 PR은 실행된 필수 체크 모두 성공·실패0이면 자체 병합 가능**하다는 최신 사용자 선택을 적용한다. 사용자가 기존 CSP 차이는 코덱1 범위임을 명시하고 #115를 승인했다. #115→#121→#111→#123→#125→#127→#128→#129를 각각 최종 필수6개/실행53단계 성공·실패0 확인 후 병합했다. #131의 로그인/CSP 기대값 수정은 코덱1 변경분으로 보존한다.
 
 ## 현재 PR·검증
@@ -28,7 +28,7 @@
 
 #111·#115·#121·#123·#125·#127·#128·#129는 확인한 head의 최종 필수6개/실행53단계 성공·실패0이다. canonical 동기화 후 head 및 이번 문서 PR의 최종 체크는 묶음 보고 전에 다시 확인한다. deploy의 실행 없는 SKIPPED는 배포 성공으로 세지 않는다.
 
-코덱1 열린 작업은 **#122 M3 기기 Universe JS**다. #124 예비 가격·#126 SEC daily 공개 비가격 입력/Actions는 코덱1이 병합했다. 코덱2가 수정·닫기·병합하지 않았다. #134 SEC 입력 어댑터와 code-only504개는 관련101개·필수6개/실행53단계 성공·실패0 후 병합했다. #126 공개 파일은 주식 수/filing allowlist만 포함해 실제 유형 재무 입력과 다르다.
+코덱1 **#122 M3 기기 Universe JS**는 SEC 입력 연결 후속이며 **#124 Tiingo/KRX·#126 SEC daily는 병합**됐다. 이 PR을 코덱2가 수정·닫기·병합하지 않았다. #121 Python 모듈과 별도 소관이며 실제 daily 운영은 아직 미완료다.
 
 ## 통합 검증과 이전 CSP 회귀
 
@@ -47,10 +47,18 @@ canonical3e99e061에 이 대기열의 Python 코드·합성 fixture·테스트�
 - **실적/13F:** SEC 제출 패턴은 확정 실적 발표일이 아니다.13F NEW/ADD/REDUCE/EXIT는 공개 보고 수량 변화이며 실제 매매·현재 보유 추론이 아니다. 비공개·추가 정정·부분 표·비연속분기·미확인 귀속은 비교 차단한다. 투자자 기본 목록은 없고 사용자가 공급한다.
 - **기기:** #116 통합 백업·#117 Research JS·#119 candle/MA·#120 private Trades 코드와 실기기 검증을 구분한다. M3 개인 선정·가격·시총·순위·Universe ID·키/토큰은 공개/새 백업에 넣지 않는다. M3 기본N20·불일치10%와 근거 있는 SHARE_CLASS_BASIS 표시만/자동 보정 없음은 확정이다.
 
+## 긴급 SEC daily 진단
+
+사용자 즉시 자체 병합 승인에 따라 고정 코드·HTTP 상태·fetch/parse/normalize·회사 순번만 노출하고 부분 실패를 분리했다. [연결 계약](implementation/docs/daily_data_pipeline/SEC_COLLECTION_DIAGNOSTICS.md). 전체1918개+358subtests 통과·실패0(45.14초), 관련86개·reader review 중요 미해결0. v1 전체 성공 유지, 일부 성공은 strict v2 LIVE/NOT_AVAILABLE17행, 전부 실패면 exit1·이전 파일 보존. 실행 환경 SEC_USER_AGENT 미설정으로 실제 Actions와 동일 조건의 재현은 미실행; UA/HTTP 원인은 아직 미확정. 워크플로·웹·Worker 수정 없음.
+
+후속 긴급 사용자 결정: 개별 malformed share fact를 사유별 제외하며 core fact가 남으면 회사를 유지한다. IFRS NumberOfSharesOutstanding·20-F·전환10-KT/10-QT 및 수정 보고서를 보존하고 optional null은 미제공으로 처리한다. 공개schema/3는 status·고정 excluded_fact_counts·UNCONFIRMED share_class_basis·별도 share_class_notice를 포함하며 guard는 구/1·/2도 유지한다. 명시 종류 차원은 CLASS_SPLIT/SHARE_CLASS_BASIS 표시만·합산 없음; 일반 수치 충돌은 FACT_CONFLICT다. 상세 계약은 위 연결 문서에 갱신했다. 실제 Actions3실패(AVGO/HUBB/MSFT)를 확인했으나 SEC_USER_AGENT 미설정·연결 도구 차단으로 원문 재현은 미실행이다. 관련117개·전체1886개+265subtests 통과·실패0(34.39초), 공개 Pages guard 통과, reader review 중요 미해결0. 코덱1 workflow_dispatch의 failed_companies=0 확인 대기다.
+
+유형/GSQ-017은 #135 승인 대기, 테마 #136 확인 대기 제안·자동NA. #135는 공식 불변 type_config/1·기기 사용자복사본 PREVIEW·합100/램프/유형ID 검증·승인 램프/혼합을 구현했다. [기업 유형 설계](implementation/docs/company_types/DESIGN_V1.md)와 [TARGET19 결과](implementation/docs/company_types/TARGET19_RESULT_V1.md)를 참조한다. 미확정 조건과 취득 원문 부족은0 대신NA이며26E GSQ-017 append-only 변경을 포함해 명시 병합 승인 대기다. 화면용 공개 JSON CLI·JS 이식 벡터가 새 최우선이고, DCF 작업은 그 뒤 계속한다. EDINET 후순위·DART 등록 알림 전 비착수.
+
 ## 다음 할 일5개 — GSQ-017 대기열
 
 1. 이 PR의 SEC M3 어댑터·504 code-only JSON을 코덱1 #122/#126 loadInputs 연결에 사용한다. cover 근거 없는 종목은 NA; 주식 종류 차이는 표시만이다.
-2. GSQ-017 type_config·순수 유형 계산·custom PREVIEW는 새 PR에 준비했다. 26E 기록을 바꾸므로 사용자 병합 확인 대기. [TARGET19 결과](implementation/docs/company_types/TARGET19_RESULT_V1.md)는 원문 bytes 부재/입력 미확정으로 NA, 합성값을 종목 실측으로 사용하지 않았다.
+2. GSQ-017 versioned type_config·순수 유형 계산·기기 custom PREVIEW를 구현한다. 승인된 비중/램프 이외 미정값은 만들지 않는다.
 3. 14개 테마 ETF 바스켓/키워드·소속도 정규화 후보와 DCF 파라미터 기본값을 사용자 확인 대상으로 제안한다.
 4. Macro GDP/CPI·후속 series→8축 대응표 초안을 문서화하고 채택 전에 계산/상태 규칙을 바꾸지 않는다.
 5. EDINET은 사용자 결정으로 후순위 보류한다. DART는 사용자 키 등록 알림 전 코드·키 조회·인증/API 비착수다.
@@ -68,7 +76,7 @@ canonical3e99e061에 이 대기열의 Python 코드·합성 fixture·테스트�
 | SEC EDGAR | #121 수집 모듈, #123 예상 패턴, #129 정보표 | SEC_USER_AGENT 이름만; daily 공개는 비가격 자료만·개인 선정 제외 |
 | Google Identity·Sheets | 기존 readonly Quotes·private history/Trades, M3 #122 대기 | 개인 가격/파생·선정·Universe ID·토큰은 공개/새 저장 제외 |
 | Cloudflare·Pages | 코덱1 Worker/Pages 코드·metadata 범위 확인 | 실제 배포/본인 인증/운영 검증은 이번 Python·문서 작업과 별개 |
-| EDINET·DART | EDINET 후순위 보류·DART 등록 알림 대기 | EDINET Subscription-Key·DART_API_KEY 값 출력/조회 없음; adapter 비착수 |
+| EDINET·DART | 사용자 결정으로 후순위 보류 | EDINET Subscription-Key·DART_API_KEY 값 출력/조회 없음; adapter 비착수 |
 | Tiingo·KRX | #124 예비 경로 조건 대기 | 기존 등록 보고와 실제 인증/권리·3시장 coverage를 구분 |
 
 ### 이전 열린 PR 정리안 (#100 작성 시점 참고)

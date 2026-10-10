@@ -30,6 +30,7 @@ from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_in
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "sec-reported.js": "765e8ff9d4107e3519a3a666f32ea927840fc0e1425a9c1210f9db74d17dd3cd",
     "google-sheet-setup.js": "6627c571debea9b76daef4c1123aa9076b2fa025be6cd637150ec5510f1f05aa",
     "private-trades.js": "86d59b4c5ef341ab47f1892fe65b483ca8256e367cfde06e1c9a0b580530fb9f",
     "technical-chart.js": "64b581fd186cdcb39f31def58412052dfa777dc2920a4f2432c1842b19c65eb8",
@@ -38,7 +39,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "83f915d09991b1a13ed12ca84f702fbdad8c6b7d4beb0433ba0bb7a993b754e1",
+    "app.js": "f23be9cf3e3bc74c03c42a6d4eb2ea20f901a5bc8ea0e0c2b521b81ba21749f2",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "05770dd8e99d40c43d320970549f7f91f8c93bd77496553c593172ab5a1f7407",
@@ -46,9 +47,9 @@ APPROVED_SHA256 = {
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "a944575fcbd4edb5269fe76da985c87e0805e5e392fd488d2a269789ab35b4d1",
+    "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "b41b6c6e68ed941bf4466752c5d03c3d48f68dd471cfa437eb5f83427f002743",
+    "index.html": "9f0f344a5cd37003fe0134ee75a7039af757e22e4cb88b0d482a375a6d753db8",
     "locale.js": "0e27312c7885dd1edbaf5c5eed939ba4b642695e5541653a21c786dcff9089fc",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",
