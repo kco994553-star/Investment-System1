@@ -19,7 +19,7 @@ jobs:
         working-directory: implementation
         run: |
           python -m pip install pytest==9.1.1 jsonschema==4.26.0
-          python -m pytest -q --tb=no tests/test_app_nav_ia.py tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py tests/test_sec_m2_candidates.py tests/test_worker_deployment_diagnostics.py tests/test_public_sec_inputs.py tests/test_sec_reported_consumer.py tests/test_preserve_public_sec_inputs.py
+          python -m pytest -q --tb=no tests/test_app_nav_ia.py tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py tests/test_sec_m2_candidates.py tests/test_worker_deployment_diagnostics.py tests/test_public_sec_inputs.py tests/test_sec_reported_consumer.py tests/test_public_engine_screens.py tests/test_public_screens_pipeline.py tests/test_preserve_public_sec_inputs.py
       - name: Build and inspect local price-free cockpit
         run: |
           python implementation/tools/build_pages_cockpit.py --out "$RUNNER_TEMP/public-cockpit"
@@ -28,6 +28,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         run: |
           python implementation/tools/preserve_public_sec_inputs.py --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/preserve_public_screens.py --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
@@ -48,6 +49,7 @@ jobs:
           node implementation/tools/google_sheet_auth_node_test.js
           node implementation/tools/pwa_node_test.js
           node implementation/tools/sec_reported_node_test.js
+          node implementation/tools/public_screens_node_test.js
           node implementation/tools/google_sheet_setup_node_test.js
           node implementation/tools/private_history_node_test.js
           node implementation/tools/private_history_fallback_node_test.js
@@ -69,6 +71,7 @@ jobs:
           node implementation/tools/settings_import_browser_test.js
           node implementation/tools/design_responsive_browser_test.js
           node implementation/tools/sec_reported_browser_test.js
+          node implementation/tools/public_screens_browser_test.js
           node implementation/tools/google_sheet_setup_browser_test.js
           (cd implementation && PYTHONPATH=src python -m tests.build_sec_m2_candidate_fixture --out "$RUNNER_TEMP/m2-test-sites")
           python -m http.server 8992 --bind 127.0.0.1 --directory "$RUNNER_TEMP/m2-test-sites" > "$RUNNER_TEMP/m2-test-server.log" 2>&1 &

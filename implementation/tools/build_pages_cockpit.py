@@ -19,6 +19,8 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     assets = Path(__file__).resolve().parents[1] / 'src/investment_system/product/web_assets'
     for name in ('manifest.json', 'icon-192.png', 'icon-512.png'):
         shutil.copyfile(assets / name, out / name)
+    from public_screens_pipeline import emit
+    emit(out)
     return result
 
 
