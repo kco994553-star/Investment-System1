@@ -2,10 +2,27 @@
 const assert=require("node:assert/strict");
 const fs=require("node:fs");
 const path=require("node:path");
+const {spawnSync}=require("node:child_process");
 const S=require("../src/investment_system/product/web_assets/entity-search.js");
 const L=require("../src/investment_system/product/web_assets/locale.js");
-const root=process.argv[2] || "/tmp/web-mvp-demo";
-const catalog=JSON.parse(fs.readFileSync(path.join(root,"entities.json"),"utf8"));
+// The public build ships no producer company rows (GSQ-010), and the old web-mvp-demo fixture builder is withheld.
+// The catalog is therefore built by the REAL producer-side adapter (product/entity_catalog.py) from explicit synthetic
+// company registrations that never reach a build or a bundle. A directory argument (with entities.json) is still
+// honoured for a catalog that carries COMPANY entities.
+const SYNTHETIC_COMPANIES={nvda:"NVIDIA Corporation",asml:"ASML Holding N.V.",aapl:"Apple Inc.",msft:"Microsoft Corporation",amd:"Advanced Micro Devices, Inc.",
+  amzn:"Amazon.com, Inc.",googl:"Alphabet Inc.",avgo:"Broadcom Inc.",intc:"Intel Corporation",qcom:"QUALCOMM Incorporated",lrcx:"Lam Research Corporation",klac:"KLA Corporation"};
+function producerCatalog() {
+  const code=["import json,sys","sys.path.insert(0,sys.argv[1])",
+    "from investment_system.product.entity_catalog import entity_catalog",
+    "from investment_system.public_price_boundary import public_bundle",
+    "b=public_bundle()",
+    "b['companies']=[{'company_id':k,'ticker':k.upper(),'name':v} for k,v in json.loads(sys.argv[2]).items()]",
+    "print(json.dumps(entity_catalog(b),ensure_ascii=False))"].join("\n");
+  const run=spawnSync("python3",["-I","-c",code,path.resolve(__dirname,"../src"),JSON.stringify(SYNTHETIC_COMPANIES)],{encoding:"utf8"});
+  assert.equal(run.status,0,"producer catalog adapter failed");
+  return JSON.parse(run.stdout);
+}
+const catalog=process.argv[2]?JSON.parse(fs.readFileSync(path.join(process.argv[2],"entities.json"),"utf8")):producerCatalog();
 const index=S.createIndex(catalog.entities);
 let checks=0;
 function check(name,fn) {fn();checks++;console.log("PASS "+name);}

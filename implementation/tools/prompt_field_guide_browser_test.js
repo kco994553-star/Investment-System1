@@ -3,7 +3,7 @@
 // Validation canaries stay in browser memory; no prompt preview or payload is written.
 const { chromium } = require("playwright");
 const fs = require("node:fs"), path = require("node:path");
-const base = new URL(process.env.PROMPT_FIELD_GUIDE_URL || "http://127.0.0.1:9010/Investment-System1/#research");
+const base = new URL(process.env.PROMPT_FIELD_GUIDE_URL || new URL("#research", process.env.PAGES_COCKPIT_URL || "http://127.0.0.1:9010/Investment-System1/").href);
 const evidence = path.resolve(process.env.PROMPT_FIELD_GUIDE_EVIDENCE_DIR || "/tmp/prompt-field-guide-evidence");
 const NOW = "2026-10-09T16:00:00.000Z", KST_TODAY = "2026-10-10";
 const checks = [], screenshots = [];
@@ -108,6 +108,8 @@ async function publicImports(page, frame, payload) {
   operation = "project browser-memory public fixtures through the real parent handler";
   const frozenBefore = await frame.locator("#plv1-data").textContent();
   const fixture = await page.evaluate(() => {
+    // The public build deliberately ships no producer company rows (GSQ-010), so the in-memory fixture supplies two explicit synthetic ones.
+    D.companies = [{company_id: "fixture_alpha", ticker: "FIXA", name: "Synthetic Alpha"}, {company_id: "fixture_beta", ticker: "FIXB", name: "Synthetic Beta"}];
     const selected = D.companies.slice(0, 2), marker = ["private", "fixture", "excluded"].join("-"),
       blockedToken = ["ya", "29."].join("") + marker,
       secretKeys = ["quantity", "amount", "price", "spreadsheet_id", "access_token", "refresh_token", "client_secret", "api_key", "sheet_id", "app_key", "app_secret", "auth_token", "bearer_token", "password", "portfolio_amount", "actual_weight", "token", "credential", "secret"];
@@ -292,7 +294,8 @@ async function publicImports(page, frame, payload) {
       });
       const page = await context.newPage();
       page.on("pageerror", () => { traffic.page_errors++; });
-      page.on("response", response => { if (response.status() >= 400) traffic.failed_responses++; });
+      // The optional SEC sidecar is absent from a build without collection; any other failure stays an error.
+      page.on("response", response => { if (response.status() >= 400 && !(response.status() === 404 && response.url() === new URL("sec-public-inputs.json", base).href)) traffic.failed_responses++; });
       await page.clock.setFixedTime(new Date(NOW));
       try {
         operation = "open the existing research route";
