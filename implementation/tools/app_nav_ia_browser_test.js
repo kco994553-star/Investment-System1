@@ -46,7 +46,8 @@ async function go(page, hash) {
   await page.waitForFunction(({hash, parent, selector, route, ticker}) => {
     if (location.hash !== "#" + hash || !document.querySelector("main h1, main h2, main iframe")) return false;
     if (selector && !document.querySelector("main " + selector)) return false;
-    if (route === "company" && document.querySelector("main .eyebrow")?.textContent.trim() !== "COMPANY DETAIL") return false;
+    // Identity-only companies (public build) open as COMPANY RESEARCH; producer-backed ones as COMPANY DETAIL. The title is the ticker either way.
+    if (route === "company" && !["COMPANY DETAIL", "COMPANY RESEARCH"].includes(document.querySelector("main .eyebrow")?.textContent.trim())) return false;
     if (route === "company" && ticker && document.querySelector("main h1")?.textContent.trim() !== ticker) return false;
     if (route === "entity" && document.querySelector("main .eyebrow")?.textContent.trim() !== decodeURIComponent(hash.slice("entity/".length)).split(":")[0]) return false;
     if (route === "leaderboard" && document.querySelector("main .eyebrow")?.textContent.trim() !== "LEADERBOARD") return false;
@@ -96,7 +97,8 @@ async function unavailableNewScreen(page, selector) {
       const page = await context.newPage();
       page.on("pageerror", () => { traffic.page_errors++; });
       page.on("console", message => { if (/Content Security Policy|violates.*(?:directive|policy)/i.test(message.text())) traffic.console_csp_warnings++; });
-      page.on("response", response => { if (response.status() >= 400) traffic.failed_responses++; });
+      // The optional SEC sidecar is absent from a build without collection; any other failure stays an error.
+      page.on("response", response => { if (response.status() >= 400 && !(response.status() === 404 && response.url() === new URL("sec-public-inputs.json", base).href)) traffic.failed_responses++; });
       try {
         await go(page, "home");
         verify(await page.locator("#primary-nav").count() === 1, "primary navigation exists");
@@ -123,18 +125,25 @@ async function unavailableNewScreen(page, selector) {
           verify(await page.evaluate(() => window.__iaSpaSentinel === true), "primary link click navigates without reloading the document");
         }
         const original = await page.evaluate(() => fetch("data.json").then(response => response.text()));
-        page.__iaCompanyTickers = Object.fromEntries(JSON.parse(original).companies.map(company => [company.company_id, company.ticker]));
-        const routes = await page.evaluate(async () => {
-          const { entities } = await (await fetch("entities.json")).json();
-          const company = entities.find(entity => entity.entity_type === "COMPANY"), other = entities.find(entity => entity.entity_type !== "COMPANY");
-          return ["company/" + encodeURIComponent(company.canonical_id), "entity/" + encodeURIComponent(other.entity_type + ":" + other.canonical_id)];
+        // The public build ships no producer company rows; companies are the price-free identities listed by the QGV company directory.
+        await go(page, "companies");
+        const listed = await page.locator("#company-list a[href^='#company/']").evaluateAll(nodes => {
+          const node = nodes.find(item => /^[A-Z]{1,5}$/.test(item.querySelector(".ticker")?.textContent.trim() || ""));
+          return node ? { id: decodeURIComponent(node.getAttribute("href").slice("#company/".length)), ticker: node.querySelector(".ticker").textContent.trim() } : null;
         });
+        verify(listed !== null, "company directory lists price-free identities");
+        page.__iaCompanyTickers = { [listed.id]: listed.ticker };
+        const routes = await page.evaluate(async company => {
+          const { entities } = await (await fetch("entities.json")).json();
+          const other = entities.find(entity => entity.entity_type !== "COMPANY");
+          return ["company/" + encodeURIComponent(company), "entity/" + encodeURIComponent(other.entity_type + ":" + other.canonical_id)];
+        }, listed.id);
         await go(page, "qgv"); await active(page, "qgv");
         verify(await page.locator('[data-hub="qgv"] .hub-group').count() === 4, "QGV hub preserves all four groups");
-        const destinations = ["#portfolio", "#actual", "#companies", "#leaderboard", "#news", "#validation"];
+        const destinations = ["#portfolio", "#profiles", "#model", "#actual", "#leaderboard", "#watchlist", "#companies", "#types", "#news", "#thirteenf", "#validation"];
         verify(JSON.stringify(await page.locator('[data-hub="qgv"] a.hub-card').evaluateAll(nodes => nodes.map(node => node.getAttribute("href")))) === JSON.stringify(destinations), "QGV available cards link to existing destinations");
-        verify(await page.locator('[data-hub="qgv"] [data-feature-status]').evaluateAll(nodes => nodes.every(node => ["사용 가능", "부분", "준비 중"].includes(node.dataset.featureStatus))), "QGV cards use explicit availability states");
-        verify(await page.locator('[data-hub="qgv"] [data-feature-status="준비 중"]').evaluateAll(nodes => nodes.every(node => !node.closest("a") && node.closest(".hub-card")?.textContent.includes("NOT_AVAILABLE"))), "pending QGV features have no false navigation target");
+        verify(await page.locator('[data-hub="qgv"] [data-feature-status]').evaluateAll(nodes => nodes.every(node => ["사용 가능", "부분", "준비 중", "설계만"].includes(node.dataset.featureStatus))), "QGV cards use explicit availability states");
+        verify(await page.locator('[data-hub="qgv"] [data-feature-status="준비 중"], [data-hub="qgv"] [data-feature-status="설계만"]').evaluateAll(nodes => nodes.every(node => !node.closest("a") && node.closest(".hub-card")?.textContent.includes("NOT_AVAILABLE"))), "pending QGV features have no false navigation target");
         for (const href of destinations) {
           await go(page, "qgv"); await page.evaluate(() => { window.__iaSpaSentinel = true; });
           await page.locator('[data-hub="qgv"] a[href="' + href + '"]').click();
@@ -151,15 +160,15 @@ async function unavailableNewScreen(page, selector) {
         await go(page, "qgv"); await capture(page, "qgv", locale, width);
         for (const hash of ["companies", "portfolio", "actual", "leaderboard", "news", "news/" + routes[0].slice("company/".length), ...routes]) {
           await go(page, hash); await active(page, "qgv");
-          verify(await page.locator('main > .parent-link[href="#qgv"]').count() === 1, "legacy QGV destination offers a parent link");
-          verify(await page.locator('main > .parent-link[href="#qgv"]').evaluate(node => { const box = node.getBoundingClientRect(); return box.width >= 44 && box.height >= 44; }), "legacy parent navigation meets minimum target size");
+          verify(await page.locator('main > .parent-row > .parent-link[href="#qgv"]').count() === 1, "legacy QGV destination offers a parent link");
+          verify(await page.locator('main > .parent-row > .parent-link[href="#qgv"]').evaluate(node => { const box = node.getBoundingClientRect(); return box.width >= 44 && box.height >= 44; }), "legacy parent navigation meets minimum target size");
           verify(page.url().endsWith("#" + hash), "legacy deep-link hash is preserved");
         }
-        await page.locator('main > .parent-link[href="#qgv"]').click(); await page.locator('[data-hub="qgv"]').waitFor(); await active(page, "qgv");
-        await page.goBack(); await page.waitForFunction(() => !!document.querySelector('main > .parent-link[href="#qgv"]')); await active(page, "qgv");
+        await page.locator('main > .parent-row > .parent-link[href="#qgv"]').click(); await page.locator('[data-hub="qgv"]').waitFor(); await active(page, "qgv");
+        await page.goBack(); await page.waitForFunction(() => !!document.querySelector('main > .parent-row > .parent-link[href="#qgv"]')); await active(page, "qgv");
         await go(page, "technical"); await active(page, "technical"); await unavailableNewScreen(page, '[data-ia-screen="technical"]');
-        verify(await page.locator('[data-ia-screen="technical"] .card').count() === 2, "technical engine and chart availability stay separate");
-        verify(await page.locator('[data-ia-screen="technical"] .card').evaluateAll(nodes => nodes.every(node => node.textContent.includes("NOT_AVAILABLE"))), "both technical cards preserve missing-data status");
+        verify(JSON.stringify(await page.locator('[data-ia-screen="technical"] [data-tech-status]').evaluateAll(nodes => nodes.map(node => node.dataset.techStatus))) === JSON.stringify(["chart", "engine", "execution", "record"]), "technical chart, engine, execution and record availability stay separate");
+        verify(await page.locator('[data-ia-screen="technical"] [data-tech-status="engine"], [data-ia-screen="technical"] [data-tech-status="execution"], [data-ia-screen="technical"] [data-tech-status="record"]').evaluateAll(nodes => nodes.length === 3 && nodes.every(node => node.textContent.includes("NOT_AVAILABLE"))), "technical engine, execution and record cards preserve missing-data status");
         await capture(page, "technical", locale, width);
         await go(page, "macro"); await active(page, "macro"); await unavailableNewScreen(page, '[data-ia-screen="macro"]');
         verify(await page.locator("[data-macro-axis]").count() === 8, "macro preserves eight independent axes");
@@ -169,11 +178,11 @@ async function unavailableNewScreen(page, selector) {
         await capture(page, "macro", locale, width);
         await go(page, "validation"); await active(page, "validation"); await unavailableNewScreen(page, '[data-hub="validation"]');
         verify(await page.locator('[data-hub="validation"] a[href="#research"]').count() === 1, "validation keeps existing research reachable");
-        verify(await page.locator('[data-hub="validation"] .card').filter({ hasText: "NOT_AVAILABLE" }).count() === 3, "three future validation areas remain unavailable");
+        verify(await page.locator('[data-hub="validation"] .card').filter({ hasText: "NOT_AVAILABLE" }).count() === 5, "five S10 validation areas (paper, backtest, forward, track record, trials) remain unavailable");
         await capture(page, "validation", locale, width);
         await page.locator('[data-hub="validation"] a[href="#research"]').click(); await page.locator("#research-frame").waitFor(); await active(page, "validation");
-        verify(await page.locator('main > .parent-link[href="#validation"]').count() === 1, "existing research offers its validation parent");
-        verify(await page.locator('main > .parent-link[href="#validation"]').evaluate(node => { const box = node.getBoundingClientRect(); return box.width >= 44 && box.height >= 44; }), "research parent navigation meets minimum target size");
+        verify(await page.locator('main > .parent-row > .parent-link[href="#validation"]').count() === 1, "existing research offers its validation parent");
+        verify(await page.locator('main > .parent-row > .parent-link[href="#validation"]').evaluate(node => { const box = node.getBoundingClientRect(); return box.width >= 44 && box.height >= 44; }), "research parent navigation meets minimum target size");
         await go(page, "settings"); await active(page, null);
         await page.locator("[data-sheet-enabled]").waitFor();
         verify(!await page.locator("[data-sheet-enabled]").isChecked(), "Google integration remains OFF");
