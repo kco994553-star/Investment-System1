@@ -4,7 +4,7 @@
 
 ## 기준 HEAD·운영 경계
 
-- canonical: `claude/investment-system-top500-validation-alrugm`. 확인한 원격 HEAD **`78180443d3a149f36ed616662e97318d76b3d940`** (#137 병합 후). 이 상태 문서 PR 자체의 병합 HEAD는 GitHub에서 확인한다.
+- canonical: `claude/investment-system-top500-validation-alrugm`. 확인한 원격 HEAD **`a1608f27`** (#138·코덱1 SEC schema/3 consumer 병합 후). 이 상태 문서 PR 자체의 병합 HEAD는 GitHub에서 확인한다.
 - 코덱1 #98 확인 후 승인 순서 #104→#105→#106, 이어 #108·#110·#112를 병합했다. 이번 로드맵 **#118도 병합**했고 #103·#107은 지시대로 닫았다. #109는 이미 CLOSED이며 코덱1에게 종료 유지 확인만 요청했다.
 - 코덱1 #113·#114·#116·#117·#119·#120 병합을 metadata에서 확인했다. #119는 candle/MA/기기 AVG, #120은 비공개 Trades1회 읽기·RAM B/S 표시다. 코드와 실제 본인 기기 운영 성공은 구분한다.
 - 코덱2 수정은 허용된 Python src(웹 제외)·관련 tests/tools·문서다. Worker/web_assets/workflows·Frozen/TARGET·가중치·AUTONOMY_MODE·ruleset·force push 변경 없음. 실제 키/계정·가격/환율·provider 관측치 수집·배포·Holdout 사용 없음. 이번 사용자 승인에 따라 비공개 Universe A열의 code 504개만 1회 읽어 코드 전용 자산으로 제공했다; 시트 ID/URL·B/C열은 기록하거나 읽지 않았다.
@@ -53,7 +53,7 @@ canonical3e99e061에 이 대기열의 Python 코드·합성 fixture·테스트�
 
 후속 긴급 사용자 결정: 개별 malformed share fact를 사유별 제외하며 core fact가 남으면 회사를 유지한다. IFRS NumberOfSharesOutstanding·20-F·전환10-KT/10-QT 및 수정 보고서를 보존하고 optional null은 미제공으로 처리한다. 공개schema/3는 status·고정 excluded_fact_counts·UNCONFIRMED share_class_basis·별도 share_class_notice를 포함하며 guard는 구/1·/2도 유지한다. 명시 종류 차원은 CLASS_SPLIT/SHARE_CLASS_BASIS 표시만·합산 없음; 일반 수치 충돌은 FACT_CONFLICT다. 상세 계약은 위 연결 문서에 갱신했다. 실제 Actions3실패(AVGO/HUBB/MSFT)를 확인했으나 SEC_USER_AGENT 미설정·연결 도구 차단으로 원문 재현은 미실행이다. 관련117개·전체1886개+265subtests 통과·실패0(34.39초), 공개 Pages guard 통과, reader review 중요 미해결0. 코덱1 workflow_dispatch의 failed_companies=0 확인 대기다.
 
-유형/GSQ-017은 #135 승인 대기, 테마 #136 확인 대기 제안·자동NA. #135는 공식 불변 type_config/1·기기 사용자복사본 PREVIEW·합100/램프/유형ID 검증·승인 램프/혼합을 구현했다. [기업 유형 설계](implementation/docs/company_types/DESIGN_V1.md)와 [TARGET19 결과](implementation/docs/company_types/TARGET19_RESULT_V1.md)를 참조한다. 미확정 조건과 취득 원문 부족은0 대신NA이며26E GSQ-017 append-only 변경을 포함해 명시 병합 승인 대기다. 화면용 공개 JSON CLI·JS 이식 벡터가 새 최우선이고, DCF 작업은 그 뒤 계속한다. EDINET 후순위·DART 등록 알림 전 비착수.
+유형/GSQ-017은 #135 승인 대기, 테마 #136 확인 대기 제안·자동NA. 화면용 공개 JSON CLI는 [연결 계약](implementation/docs/daily_data_pipeline/PUBLIC_ENGINE_SCREENS.md)의5개 price-free sidecar·strict guard로 준비했다. 합성27개가 통과했으며 source/취득 TTL/단위 배율을 검증한다. type engine #135는26E 승인 대기로 소속도는 명시NA다. 워크플로/앱 연결·실제 provider 운영 성공과 구분한다. JS 이식 벡터와 DCF·504 분할 구조를 연속 진행한다. EDINET 후순위·DART 등록 알림 전 비착수.
 
 ## 다음 할 일5개 — GSQ-017 대기열
 
