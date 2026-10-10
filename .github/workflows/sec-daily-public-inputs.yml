@@ -68,6 +68,7 @@ jobs:
           node implementation/tools/device_actual_node_test.js
           node implementation/tools/device_market_node_test.js
           node implementation/tools/device_backup_node_test.js
+          node implementation/tools/watchlist_node_test.js
           node implementation/tools/google_sheet_core_node_test.js
           node implementation/tools/google_sheet_auth_node_test.js
           node implementation/tools/pwa_node_test.js
@@ -85,6 +86,7 @@ jobs:
           trap 'kill "$SERVER_PID"' EXIT
           node implementation/tools/pages_cockpit_browser_test.js
           node implementation/tools/device_backup_browser_test.js
+          node implementation/tools/watchlist_browser_test.js
           node implementation/tools/technical_chart_browser_test.js
           node implementation/tools/private_trades_browser_test.js
           node implementation/tools/private_history_browser_test.js
