@@ -22,6 +22,26 @@
 
 B의 asset/guard 변경은 **static code 추가에 한정한 별도 owner 검토 범위**다. 현재 builder는 `web_assets` 파일을 자동 복사하고 public guard는 asset hash/목록을 고정하므로 A를 그 폴더에 추가하면 곧바로 public artifact가 달라진다. A는 위 별도 core 파일을 Node에서 직접 읽어 이 문제를 피한다. B는 private 결과를 `D.leaderboard`/producer/공개 JSON으로 넣거나 실제 가격 파일·Frozen/공개 membership·워크플로를 바꾸지 않는다. 코드 PR에는 합성 fixture만 넣고 실제 관심 목록·가격·순위·토큰·개인 Worker 설정을 넣지 않는다. code/mixed PR은 자체 병합 대상이 아니며 review/승인·병합 대기로 인계한다.
 
+### Python 계산 담당 범위 — 사용자 역할 확대 반영
+
+2026-10-10 사용자가 코덱2에 Python 데이터·엔진을 맡겼으므로 위 JS A 전체를 이번 Python PR로 구현하지 않는다. 계산 경계는 신규 `universe/private_subset.py`, 합성 검사는 `tests/test_m3_private_universe.py`에 구현한다. 기존 JS/Worker/공개 builder를 연결하거나 수정하지 않는다. 파일 경로는 `implementation/src/investment_system/` 기준이다.
+
+| Python 함수 | 입력·출력 |
+| --- | --- |
+| `parse_universe_values(values, receipt, *, identity_lookup)` | A/B/C 행, Sheet ID 없는 취득/hash receipt, 명시 identity mapping → immutable 행·결측 이유·dedup count·행 상한 |
+| `prepare_sec_shares(seed, receipt, basis, as_of)` | supplied facts/submissions bytes+SHA, listing/unit 근거 → dei 우선/eligible GAAP fallback, accession·measurement·취득 상한 |
+| `prepare_universe_price(row, basis, *, as_of)` | 같은 행의 C와 단위 근거 → GOOGLEFINANCE_CURRENT 참고 가격. trade_time=None/exact_eod=False 유지 |
+| `compare_universe_market_cap(row, shares, price, quality_config)` | `QualityConfig(relative_tolerance, confirmed)`를 명시 → R·G·abs(G−R)/R·검증 불일치 표시. 정렬키는 항상 R |
+| `select_verified_universe_top_n(checks, selection_config, *, parsed)` | `SelectionConfig(n, confirmed)`와 전체 parser 결과 → 검증 행의 상위 N, 검증/결측 count, COMPLETE/PARTIAL/UNCONFIRMED |
+
+N·품질 임계의 활성 기본값은 없다. 합성 테스트의 확인값은 사용자 실제 설정 승인을 뜻하지 않는다. identity/basis reference와 hash 검사는 공급된 근거의 결속 검사이며 실제 권리·ADR/class 경제적 단위 확인을 대행하지 않는다. 현재 SEC shares와 Sheet 가격의 동시성을 주장하지 않는다.
+
+R의 정렬 계산은 기존 `shares*price`를 그대로 유지한다. 품질 비교는 같은 `abs(G-R)/R` 공식을 숫자의 명시 decimal 표현에 대해 정확 분수로 계산/비교해 `R=3, G=2.7, τ=0.1` 같은 포함 경계의 binary float label 오류를 막는다. 새 tolerance·rounding·clipping·scale 보정은 없다. CapCheck의 RAM-only shares/price sidecar에 SEC 원 bytes의 SHA·accession·측정일·취득 시각과 같은 시트 row/hash를 보존한다. 전체 parsed identity에서 issuer 중복을 먼저 검사하며, 한 listing의 가격 결측으로 다른 listing의 경제적 단위 미확인이 숨지 않는다.
+
+코덱1은 화면 연결 시 Python 계약과 동일한 계산을 기기 실행 경로에 연결하고 별도 회귀를 확인한다. Python 파일만 추가한 현재 상태에서는 vanilla JS 기기 화면에서 계산이 실행되지 않는다. OAuth·시트 1회 읽기·SEC relay/cache·작업 취소·기기 ★/TARGET 합집합·manifest·화면·static packaging은 코덱1의 후속 범위다. Universe 실패/미확인 결과로 TARGET19 또는 기존 ★ 목록을 지우지 않으며, 합집합에 UNCONFIRMED > PARTIAL > COMPLETE를 유지해야 한다.
+
+모든 supplied/파생 자료는 호출 작업의 RAM 전용이다. dataclass repr에서 행·가격·주식 수·시총·선정 identity를 숨기며 public serializer/producer에 연결하지 않는다. 원 시트 ID·URL·토큰 필드, 실제 자료 fixture, 파일/네트워크/환경/로그 접근을 추가하지 않는다. 정확 EOD·공식 전체 pool·역사적 PIT·QGV 재점수·Holdout/v2는 이 계산 경계의 결과가 아니다.
+
 ## 2. 대상 구성 규칙
 
 1. **TARGET19 필수 seed:** 기존 [device actual identity catalog](../../src/investment_system/product/device_actual_catalog.py)의 pin된 TARGET/identity hash를 확인하고 identity 필드만 읽는다. 비중을 변경·복사하거나 보유 목록으로 해석하지 않는다. 현재 [private-history mapping](../../src/investment_system/product/web_assets/private-history.js)의 company_id→심볼은 아래와 같다.
