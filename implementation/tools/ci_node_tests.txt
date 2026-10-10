@@ -17,3 +17,4 @@ private_trades_node_test.js
 engine_preview_node_test.js
 watchlist_node_test.js
 private_history_contract_test.mjs
+private_subset_node_test.js

@@ -15,3 +15,7 @@ google_sheet_setup_browser_test.js
 engine_reference_browser_test.js
 watchlist_browser_test.js
 google_sheet_quotes_browser_test.js
+private_subset_browser_test.js
+design_responsive_browser_test.js
+design_canvas_browser_test.js
+profile_preview_browser_test.js
