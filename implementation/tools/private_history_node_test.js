@@ -47,7 +47,7 @@ test('raw-close chart segments leave gaps without using adjusted closes', () => 
 test('daily history rejects zero prices, wrong listing currency and future bars', () => {
   const changes=[p=>p.currency='EUR',p=>p.bars[0].close=0,p=>p.bars[0].open=0,p=>p.bars[0].high=0,p=>p.bars[0].low=0,p=>p.bars[0].adjusted_close=0,p=>p.bars[2].timestamp=Date.parse(p.read_at)/1000+1];
   for(const change of changes){const p=daily();change(p);assert.throws(()=>api.validateHistory(p,{symbol:'NVDA',range:'1y'}),{message:'YAHOO_FORMAT_CHANGED'});}
-  for(const [symbol,currency] of [['042700.KS','KRW'],['8035.T','JPY']]){const p=daily();p.symbol=symbol;p.currency=currency;assert.ok(api.validateHistory(p,{symbol,range:'1y'}).currency===currency);}
+  for(const [symbol,currency] of [['042700.KS','KRW'],['8035.T','JPY']]){const p=daily();p.symbol=symbol;p.currency=currency;p.timezone=symbol.endsWith('.KS')?'Asia/Seoul':'Asia/Tokyo';assert.ok(api.validateHistory(p,{symbol,range:'1y'}).currency===currency);}
   const p=daily();p.bars[0].volume=0;assert.ok(api.validateHistory(p,{symbol:'NVDA',range:'1y'}).bars[0].volume===0,'zero volume remains valid');
 });
 test('no bars or no known raw closes are unavailable', () => {

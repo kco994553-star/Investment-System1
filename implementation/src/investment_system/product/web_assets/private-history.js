@@ -8,7 +8,7 @@
   const STORAGE_KEY = 'investment.web.v1.private-history-origin';
   const TARGETS = Object.freeze({asml:'ASML',lrcx:'LRCX',klac:'KLAC',nvda:'NVDA',amd:'AMD',avgo:'AVGO',qcom:'QCOM',intc:'INTC',msft:'MSFT',googl:'GOOGL',amzn:'AMZN',rtx:'RTX',stry:'SYK',etn:'ETN',hubb:'HUBB',gev:'GEV',rok:'ROK',hanmi:'042700.KS',tokyo_electron:'8035.T'});
   const RANGES = ['1mo','3mo','6mo','1y','2y','5y'];
-  const CODES = new Set(['CONFIG_UNAVAILABLE','AUTH_FORBIDDEN','AUTH_UNAVAILABLE','REQUEST_INVALID','ORIGIN_FORBIDDEN','RATE_LIMITED','RATE_LIMIT_UNAVAILABLE','YAHOO_BLOCKED','YAHOO_UNAVAILABLE','YAHOO_TIMEOUT','YAHOO_FORMAT_CHANGED','YAHOO_TOO_LARGE','HISTORY_UNAVAILABLE','AUTH_REQUIRED','CANCELED']);
+  const CODES = new Set(['CONFIG_UNAVAILABLE','AUTH_FORBIDDEN','AUTH_UNAVAILABLE','REQUEST_INVALID','ORIGIN_FORBIDDEN','RATE_LIMITED','RATE_LIMIT_UNAVAILABLE','YAHOO_BLOCKED','YAHOO_UNAVAILABLE','YAHOO_TIMEOUT','YAHOO_FORMAT_CHANGED','YAHOO_TOO_LARGE','TIINGO_UNAVAILABLE','TIINGO_TIMEOUT','TIINGO_FORMAT_CHANGED','TIINGO_TOO_LARGE','KRX_UNAVAILABLE','KRX_TIMEOUT','KRX_FORMAT_CHANGED','KRX_TOO_LARGE','KRX_RANGE_UNSUPPORTED','HISTORY_UNAVAILABLE','AUTH_REQUIRED','CANCELED']);
   const active = new Set();
   function fail(code) { throw new Error(code); }
   function symbolFor(companyId) { return Object.hasOwn(TARGETS, companyId) ? TARGETS[companyId] : null; }
@@ -19,18 +19,26 @@
   }
   function validateHistory(value, expected) {
     const validText = (text, pattern) => typeof text === 'string' && pattern.test(text);
-    if (!value || Array.isArray(value) || typeof value !== 'object' || value.schema !== 'private-history/1' || value.provider !== 'Yahoo Finance(비공식)'
+    const fallback = value && ['Tiingo EOD','KRX OPEN API'].includes(value.provider);
+    if (!value || Array.isArray(value) || typeof value !== 'object' || value.schema !== 'private-history/1' || !['Yahoo Finance(비공식)','Tiingo EOD','KRX OPEN API'].includes(value.provider)
       || value.symbol !== expected.symbol || value.range !== expected.range || !Object.values(TARGETS).includes(value.symbol) || !RANGES.includes(value.range)
       || value.interval !== '1d' || value.basis !== 'RAW_CLOSE' || value.delay_status !== 'UNKNOWN'
       || value.currency !== (value.symbol.endsWith('.KS') ? 'KRW' : value.symbol.endsWith('.T') ? 'JPY' : 'USD') || !validText(value.exchange,/^[A-Za-z0-9._ -]{1,64}$/)
       || !validText(value.timezone,/^[A-Za-z0-9_+\-/]{1,64}$/)
       || !validText(value.read_at,/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/) || !Number.isFinite(Date.parse(value.read_at))
       || !Array.isArray(value.bars) || value.bars.length > 1500) fail('YAHOO_FORMAT_CHANGED');
+    const timezone=value.symbol.endsWith('.KS')?'Asia/Seoul':value.symbol.endsWith('.T')?'Asia/Tokyo':'America/New_York';
+    if(value.timezone!==timezone || (fallback&&(value.timestamp_kind!=='PROVIDER_SESSION_LABEL'
+      || (value.provider==='Tiingo EOD'&&(value.currency!=='USD'||!['NASDAQ','NYSE','NYSE ARCA','NYSE MKT','BATS'].includes(value.exchange)))
+      || (value.provider==='KRX OPEN API'&&(value.symbol!=='042700.KS'||value.exchange!=='KOSPI'||value.range!=='1mo')))))fail('YAHOO_FORMAT_CHANGED');
+    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(Date.parse(value.read_at)),part=name=>parts.find(x=>x.type===name).value,localDay=part('year')+'-'+part('month')+'-'+part('day');
     let previous = 0;
     const bars = value.bars.map(bar => {
-      if (!bar || Array.isArray(bar) || !Number.isSafeInteger(bar.timestamp) || bar.timestamp <= previous || bar.timestamp > Math.floor(Date.parse(value.read_at)/1000) || !['COMPLETE','IN_PROGRESS','UNKNOWN'].includes(bar.session_status)) fail('YAHOO_FORMAT_CHANGED');
+      if (!bar || Array.isArray(bar) || !Number.isSafeInteger(bar.timestamp) || bar.timestamp <= previous || (!fallback&&bar.timestamp > Math.floor(Date.parse(value.read_at)/1000)) || !['COMPLETE','IN_PROGRESS','UNKNOWN'].includes(bar.session_status)) fail('YAHOO_FORMAT_CHANGED');
       previous = bar.timestamp;
       const clean = {timestamp:bar.timestamp};
+      if(fallback){const day=bar.session_date,time=typeof day==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(day)?Date.parse(day+'T00:00:00Z'):NaN;
+        if(!Number.isFinite(time)||new Date(time).toISOString().slice(0,10)!==day||bar.timestamp!==time/1000||day>localDay||(day===localDay&&bar.session_status!=='UNKNOWN'))fail('YAHOO_FORMAT_CHANGED');clean.session_date=day;}
       for (const field of ['open','high','low','close','adjusted_close','volume']) {
         if (bar[field] !== null && (typeof bar[field] !== 'number' || !Number.isFinite(bar[field]) || (field === 'volume' ? bar[field] < 0 : bar[field] <= 0))) fail('YAHOO_FORMAT_CHANGED');
         clean[field] = bar[field];
@@ -38,7 +46,7 @@
       clean.session_status = bar.session_status; return clean;
     });
     if (!bars.length || !bars.some(bar => bar.close !== null)) fail('HISTORY_UNAVAILABLE');
-    return {schema:value.schema,provider:value.provider,symbol:value.symbol,range:value.range,currency:value.currency,exchange:value.exchange,timezone:value.timezone,interval:value.interval,basis:value.basis,delay_status:value.delay_status,read_at:value.read_at,bars};
+    return {schema:value.schema,provider:value.provider,symbol:value.symbol,range:value.range,currency:value.currency,exchange:value.exchange,timezone:value.timezone,interval:value.interval,basis:value.basis,delay_status:value.delay_status,read_at:value.read_at,...(fallback?{timestamp_kind:'PROVIDER_SESSION_LABEL'}:{}),bars};
   }
   function chartPaths(bars) {
     const values = bars.filter(bar => bar.close !== null).map(bar => bar.close);
@@ -130,7 +138,7 @@
     for (const label of ['UTC time','Open','High','Low','Raw close','Adjusted close','Volume','Session status']) labels.append(node(state,'th',label,{scope:'col'}));
     head.append(labels);table.append(head);const body=node(state,'tbody');
     for (const bar of data.bars) {
-      const row=node(state,'tr'); row.append(node(state,'td',new Date(bar.timestamp*1000).toISOString()));
+      const row=node(state,'tr'); row.append(node(state,'td',bar.session_date||new Date(bar.timestamp*1000).toISOString()));
       for (const field of ['open','high','low','close','adjusted_close','volume']) row.append(node(state,'td',bar[field] === null ? '—' : String(bar[field]),{'data-history-field':field,'data-missing':bar[field]===null?'true':'false'}));
       row.append(node(state,'td',bar.session_status));body.append(row);
     }
