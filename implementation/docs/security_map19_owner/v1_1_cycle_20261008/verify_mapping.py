@@ -71,7 +71,10 @@ def target_rows(text):
 
 
 def verify(document=None):
-    document = document or json.loads((HERE / "CURRENT_TARGET_IDENTITY_MAP.json").read_text())
+    if document is None:
+        document = json.loads((HERE / "CURRENT_TARGET_IDENTITY_MAP.json").read_text())
+        if any(not (ROOT / pin["replay_path"]).is_file() for pin in document["source_pins"].values()):
+            return {"status": "NOT_AVAILABLE", "reason": "GSQ-010: archived source evidence removed"}
     require(document["autonomy_mode"] == "READ_ONLY", "autonomy mode changed")
     require(document["source_values_changed"] is False, "source values were changed")
     require(document["current_only_no_historical_backdating"] is True, "mapping PIT scope changed")
@@ -80,6 +83,7 @@ def verify(document=None):
     require(datetime.fromisoformat(document["mapping_available_at"]) >= datetime.fromisoformat(document["target_effective_at"]),
             "new mapping was backdated before TARGET adoption")
     for name, pin in document["source_pins"].items():
+        require((ROOT / pin["replay_path"]).is_file(), "NOT_AVAILABLE: source evidence removed or missing")
         raw = (ROOT / pin["replay_path"]).read_bytes()
         if pin.get("compression") == "gzip":
             require(hashlib.sha256(raw).hexdigest() == pin["compressed_sha256"], f"compressed source hash mismatch: {name}")
@@ -172,4 +176,6 @@ def verify(document=None):
 
 
 if __name__ == "__main__":
-    print(json.dumps(verify(), ensure_ascii=False, indent=2))
+    result = verify()
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    raise SystemExit(0 if result["status"] == "PASS" else 2)

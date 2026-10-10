@@ -117,12 +117,22 @@ def test_sec_fixture_respects_as_of_before_filing():
     assert raw.revenue is None
 
 
-def test_live_sec_fetch_is_optional_and_not_stage2():
-    payload = try_fetch_companyfacts("0001045810", timeout=6.0)
-    if payload is None:
-        assert True  # fail-closed; environment has no live SEC
-        return
-    raw = facts_to_raw("nvda", "0001045810", payload, AS_OF, synthetic=False)
+def test_live_sec_fetch_is_optional_and_not_stage2(monkeypatch):
+    import io
+    import json
+    from investment_system.providers import sec_companyfacts
+    from .synthetic_universe import companyfacts
+
+    def unavailable(*args, **kwargs):
+        raise OSError("independent offline SEC test")
+
+    monkeypatch.setattr(sec_companyfacts, "urlopen", unavailable)
+    assert try_fetch_companyfacts("0000000003", timeout=1.0) is None
+    # Exercise the successful transport branch with independently generated facts.
+    generated = companyfacts(3, full=True)
+    monkeypatch.setattr(sec_companyfacts, "urlopen", lambda *a, **k: io.BytesIO(json.dumps(generated).encode()))
+    payload = try_fetch_companyfacts("0000000003", timeout=1.0)
+    assert payload == generated
+    raw = facts_to_raw("synthetic_sec_case", "0000000003", payload, AS_OF, synthetic=False)
     assert raw.source_kind == "LIVE_FETCH"
-    # Live pull ≠ official Stage 2 PASS. Single-company only.
-    assert raw.company_id == "nvda"
+    assert raw.company_id == "synthetic_sec_case"

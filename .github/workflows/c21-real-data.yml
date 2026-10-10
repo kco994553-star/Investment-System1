@@ -1,251 +1,26 @@
-# C-21 network-enabled runner. Runs the EXISTING tools unchanged on a GitHub-hosted
-# runner (which has outbound HTTPS), because the Claude cloud container's egress
-# policy denies sec.gov / data.sec.gov / Yahoo.
-#   fetch_real_data.py --plan  -> fetch_real_data.py (resume plan) -> run_top500_gate_chain.py
-# Raw store persistence: actions/cache (resume across runs, no re-download) + a run
-# artifact (tar.zst of implementation/data/raw). Only small evidence (manifests,
-# STORE_INDEX, ingest logs, gate-chain report) is committed back to the branch.
 name: c21-real-data
 on:
+  pull_request:
   workflow_dispatch:
-    inputs:
-      as_of:
-        description: "PIT as-of date for the gate chain"
-        default: "2024-12-31"
-        required: true
-      skip_fetch:
-        description: "true = only re-run the gate chain on the cached store"
-        default: "false"
-        required: true
-      reuse_gate_evidence:
-        description: "true = skip gate recomputation and run Official pipeline from committed passing gate evidence"
-        default: "false"
-        required: true
-      seed_run_id:
-        description: "run whose c21-raw-store-<id> artifact seeds the store when no cache exists"
-        default: "36117017112"
-        required: true
-      walk_forward_dates:
-        description: "optional: comma-separated as_of dates (each with its own passing gate run) for the Official pipeline"
-        default: ""
-        required: false
-      final_horizon:
-        description: "outcome date for the last walk-forward as_of"
-        default: "2025-03-31"
-        required: false
 permissions:
-  contents: write
-  actions: read
-concurrency:
-  group: c21-real-data
-  cancel-in-progress: false
+  contents: read
 jobs:
   ingest-and-gate:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
-    defaults:
-      run:
-        working-directory: implementation
-    env:
-      INVESTMENT_SYSTEM_SEC_UA: ${{ secrets.SEC_USER_AGENT }}
+    timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          python-version: "3.11"
-      - name: Require SEC contact User-Agent (SEC fair-access policy)
-        if: inputs.skip_fetch != 'true'
-        run: |
-          if [ -z "$INVESTMENT_SYSTEM_SEC_UA" ]; then
-            echo "::error::Set repository secret SEC_USER_AGENT, e.g. 'Name contact@example.com'"; exit 1; fi
-      - name: Validate committed-gate reuse mode
-        if: inputs.reuse_gate_evidence == 'true'
-        run: |
-          [ "${{ inputs.skip_fetch }}" = "true" ] || { echo "::error::reuse_gate_evidence requires skip_fetch=true"; exit 1; }
-          [ -n "${{ inputs.walk_forward_dates }}" ] || { echo "::error::reuse_gate_evidence requires walk_forward_dates"; exit 1; }
-      - name: Restore persistent raw store
-        id: restore
-        uses: actions/cache/restore@v4
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
-          path: implementation/data/raw
-          key: c21-raw-store-v2-${{ github.run_id }}
-          restore-keys: c21-raw-store-v2-
-      - name: Seed raw store from a previous run artifact (no cache yet)
-        if: steps.restore.outputs.cache-matched-key == ''
-        uses: actions/download-artifact@v4
-        with:
-          name: c21-raw-store-${{ inputs.seed_run_id }}
-          run-id: ${{ inputs.seed_run_id }}
-          github-token: ${{ github.token }}
-          path: /tmp/seed
-      - name: Merge seeded blobs into the store
-        if: steps.restore.outputs.cache-matched-key == ''
+          python-version: '3.12'
+      - name: Offline public boundary regression (GSQ-010)
+        working-directory: implementation
         run: |
-          SRC=$(dirname "$(find /tmp/seed -type d -path '*data/raw/blobs' | head -1)")
-          test -n "$SRC" && cp -rn "$SRC"/. data/raw/ || echo "::warning::no seed store found"
-          echo "blobs after seed: $(ls data/raw/blobs | wc -l)"
-      - name: Offline test baseline
-        run: python tools/mini_pytest.py | tail -1
-      - name: Fetch missing-large-cap priority plan (257 CIK-ready + 25 via sec_tickers)
-        if: inputs.skip_fetch != 'true'
+          python -m pip install pytest==9.1.1 jsonschema==4.26.0
+          python -m pytest -q --tb=no tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py
+      - name: Build and inspect local price-free cockpit
         run: |
-          python tools/fetch_real_data.py --store data/raw --with-split-events \
-            --plan reports/gate_evidence/missing_large_cap_priority_plan_2024-12-31.json > /tmp/run_plan.json
-          python - <<'PY'
-          import json, collections
-          d = json.load(open('/tmp/run_plan.json'))
-          print(d['n_requested'], d['n_ok'], d['n_failed'], collections.Counter(r['status'] for r in d['log']))
-          print(collections.Counter(r['method'] for r in d['plan_resolution'] or []))
-          PY
-      - name: Fetch resume plan (lost 598-pool blobs; present artifacts are skipped)
-        if: inputs.skip_fetch != 'true'
-        run: |
-          CIKS=$(python -c "import json;print(','.join(json.load(open('reports/gate_evidence/c21_resume_plan_2024-12-31.json'))['ciks']))")
-          SYMS=$(python -c "import json;print(','.join(json.load(open('reports/gate_evidence/c21_resume_plan_2024-12-31.json'))['symbols']))")
-          python tools/fetch_real_data.py --store data/raw --skip-tickers --with-split-events --ciks "$CIKS" --symbols "$SYMS" > /tmp/run_resume.json
-          python -c "import json,collections;d=json.load(open('/tmp/run_resume.json'));print(d['n_requested'],d['n_ok'],d['n_failed'],collections.Counter(r['status'] for r in d['log']))"
-      - name: Refresh once the Yahoo charts with no bar on/before as_of (HTTP 200 but truncated; old bytes archived in history/)
-        if: inputs.skip_fetch != 'true'
-        run: |
-          EMPTY=$(AS_OF="${{ inputs.as_of }}" python - <<'PY'
-          import os, sys
-          from datetime import datetime
-          sys.path.insert(0, 'src')
-          from investment_system.ingestion.raw_store import RawDatasetStore
-          from investment_system.ingestion.replay import load_price_bars
-          st = RawDatasetStore('data/raw')
-          d = datetime.fromisoformat(os.environ['AS_OF'] + 'T23:59:59+00:00')
-          ids = [a for a in st.list_ids() if a.startswith('yahoo_chart:') and a.endswith(':5y') and st.has(a)]
-          # never refreshed before (no history) and no usable as-of bar -> one refresh only
-          print(','.join(a.split(':')[1] for a in ids if not st.list_history(a)
-                         and not any(b['observed_at'] <= d for b in load_price_bars(st, a.split(':')[1], '5y'))))
-          PY
-          )
-          echo "empty charts: ${EMPTY:-none}"
-          if [ -n "$EMPTY" ]; then
-            python tools/fetch_real_data.py --store data/raw --skip-tickers --refresh --symbols "$EMPTY" > /tmp/run_refresh.json
-            python -c "import json,collections;d=json.load(open('/tmp/run_refresh.json'));print(d['n_requested'],d['n_ok'],d['n_failed'],collections.Counter(r['status'] for r in d['log']))"
-          fi
-      - name: Fetch delisted S&P CIK candidates (verified later against SEC submissions names)
-        if: inputs.skip_fetch != 'true'
-        run: |
-          C="reports/gate_evidence/delisted_cik_candidates_${{ inputs.as_of }}.json"; [ -f "$C" ] || C="reports/gate_evidence/delisted_cik_candidates_2024-12-31.json"
-          CIKS=$(python -c "import json,sys;print(','.join(c['cik'] for c in json.load(open(sys.argv[1]))['candidates']))" "$C")
-          python tools/fetch_real_data.py --store data/raw --skip-tickers --ciks "$CIKS" > /tmp/run_cand.json
-          python -c "import json,collections;d=json.load(open('/tmp/run_cand.json'));print(d['n_requested'],d['n_ok'],d['n_failed'],collections.Counter(r['status'] for r in d['log']))"
-      - name: Fetch independent PIT reference (Russell 1000 ETF holdings from SEC Form NPORT-P for as_of) and resolve members
-        if: inputs.skip_fetch != 'true'
-        run: python tools/fetch_nport_reference.py --store data/raw --as-of "${{ inputs.as_of }}"
-      - name: Fetch SEC + Yahoo data for reference members not yet in the pool (present artifacts skipped)
-        if: inputs.skip_fetch != 'true'
-        run: |
-          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
-          if [ -f "$X" ]; then
-            CIKS=$(python -c "import json;print(','.join(sorted({v['cik'] for v in json.load(open('$X')).values()})))")
-            SYMS=$(python -c "import json;print(','.join(sorted({v['yahoo'] for v in json.load(open('$X')).values()})))")
-            if [ -n "$CIKS" ]; then
-              python tools/fetch_real_data.py --store data/raw --skip-tickers --with-split-events --ciks "$CIKS" --symbols "$SYMS" > /tmp/run_r1000.json
-              python -c "import json,collections;d=json.load(open('/tmp/run_r1000.json'));print(d['n_requested'],d['n_ok'],d['n_failed'],collections.Counter(r['status'] for r in d['log']))"
-            fi
-          fi
-      - name: Fetch cover-page XBRL share classes (multi-class / unresolved-shares issuers) + class prices
-        if: inputs.skip_fetch != 'true'
-        run: |
-          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
-          EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
-          python tools/fetch_cover_xbrl.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA
-      - name: Tiingo fallback prices for eligible issuers/classes with no as-of Yahoo bar (calibrated, fail-closed)
-        if: inputs.skip_fetch != 'true'
-        env:
-          TIINGO_API_KEY: ${{ secrets.TIINGO_API_KEY }}
-        run: |
-          [ -z "$TIINGO_API_KEY" ] && echo "::warning::repository secret TIINGO_API_KEY is not set; no Tiingo prices"
-          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
-          EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
-          python tools/fetch_tiingo_prices.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA | head -c 6000
-      - name: Stooq fallback prices for issuers/classes still with no as-of bar after Yahoo + Tiingo (calibrated, fail-closed)
-        if: inputs.skip_fetch != 'true'
-        run: |
-          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
-          EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
-          python tools/fetch_stooq_prices.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA | head -c 6000
-      - name: SEC filings (10-K + 10-Q filed <= as_of) of undetermined multi-class issuers; verbatim class-rights passages
-        if: inputs.skip_fetch != 'true'
-        run: python tools/fetch_class_rights_evidence.py --store data/raw --as-of "${{ inputs.as_of }}"
-      - name: N-PORT reported values (legacy exceptions plus D3-P corporate-action candidates)
-        if: inputs.skip_fetch != 'true'
-        run: |
-          G="reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
-          NP=""; [ -f "$G" ] && NP=$(python -c "import json,sys;print(' '.join('--investigate-cik '+str(v['cik']) for v in (json.load(open(sys.argv[1])).get('unrankable_issuers') or {}).values() if v.get('reason')=='NO_AS_OF_PRICE' and v.get('cik')))" "$G")
-          python tools/nport_reported_prices.py --store data/raw --as-of "${{ inputs.as_of }}" $NP
-      - name: N-PORT cross-check (INVESTIGATION ONLY) for issuers with no market close -- calibration vs as-of closes + independent sponsor
-        if: inputs.skip_fetch != 'true'
-        run: |
-          I="reports/gate_evidence/nport_price_investigation_${{ inputs.as_of }}.json"
-          G="reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
-          if [ -f "$I" ] && [ -f "$G" ]; then
-            C=$(python -c "import json,sys;print(' '.join('--cusip '+v['holding_raw']['cusip'] for v in json.load(open(sys.argv[1]))['issuers'].values() if v.get('holding_raw') and v['holding_raw'].get('cusip')))" "$I")
-            python tools/nport_cross_check.py --store data/raw --as-of "${{ inputs.as_of }}" $C \
-              --extra "0000036405|VANGUARD INDEX FUNDS|Vanguard Total Stock Market Index Fund" \
-              --extra "0001100663|ISHARES TRUST|iShares Core S&P 500 ETF" || echo "::warning::cross-check failed (investigation only)"
-          fi
-      - name: Share-count diagnostics for PPLI and every cover-route-unresolved issuer (investigation only; post-as_of facts never applied)
-        if: inputs.skip_fetch != 'true'
-        run: |
-          R="reports/gate_evidence/russell1000_nport_${{ inputs.as_of }}.json"
-          MISS=""; [ -f "$R" ] && MISS=$(python -c "import json,sys;print(' '.join('--cik '+c for c in json.load(open(sys.argv[1])).get('members_not_in_pool_without_current_ticker') or []))" "$R")
-          G="reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
-          SH=""; [ -f "$G" ] && SH=$(python -c "import json,sys;print(' '.join('--cik '+str(v['cik']) for v in (json.load(open(sys.argv[1])).get('unrankable_issuers') or {}).values() if str(v.get('reason','')).startswith('SHARES_') and v.get('cik')))" "$G")
-          python tools/share_count_diagnostic.py --store data/raw --as-of "${{ inputs.as_of }}" --cik 0001800227 --cover-unresolved $MISS $SH
-      - name: Filing documents for issuers whose share count fails the scale cross-check (read by the gate chain)
-        if: inputs.skip_fetch != 'true'
-        run: |
-          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
-          EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
-          python tools/fetch_share_scale_docs.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA
-      - name: Reviewed SEC evidence for D3-P corporate-action and delisting policies
-        if: inputs.skip_fetch != 'true'
-        run: python tools/fetch_corporate_action_evidence.py --store data/raw --as-of "${{ inputs.as_of }}"
-      - name: Recount store
-        id: store2
-        if: always()
-        run: echo "blobs=$(ls data/raw/blobs 2>/dev/null | grep -vc '^.gitkeep$' || true)" >> "$GITHUB_OUTPUT"
-      - name: Save persistent raw store (never an empty store)
-        if: always() && steps.store2.outputs.blobs != '' && steps.store2.outputs.blobs != '0'
-        uses: actions/cache/save@v4
-        with:
-          path: implementation/data/raw
-          key: c21-raw-store-v2-${{ github.run_id }}
-      - name: Restore reviewed CA-UNIT primary evidence and historical security identity
-        run: python tools/prepare_ca_unit_evidence.py --store data/raw
-      - name: Gate chain (coverage -> rankable -> #500 -> Completeness -> Sufficiency -> Promotion Gate v2)
-        if: inputs.reuse_gate_evidence != 'true'
-        run: |
-          X="reports/gate_evidence/russell1000_extra_listings_${{ inputs.as_of }}.json"
-          R="reports/gate_evidence/russell1000_nport_${{ inputs.as_of }}.json"
-          EXTRA=""; [ -f "$X" ] && EXTRA="--extra-listings $X"
-          REF=""; [ -f "$R" ] && REF="--sufficiency-reference $R"
-          python tools/run_top500_gate_chain.py --store data/raw --as-of "${{ inputs.as_of }}" $EXTRA $REF \
-            --out "reports/gate_evidence/gate_chain_${{ inputs.as_of }}_real_gha.json"
-      - name: Official pipeline (only if every date's gate evidence declares Official and passes consistency)
-        if: inputs.walk_forward_dates != ''
-        run: python tools/official_pipeline.py --store data/raw --dates "${{ inputs.walk_forward_dates }}" --final-horizon "${{ inputs.final_horizon }}"
-      - name: Upload raw store + evidence artifact
-        if: always() && steps.store2.outputs.blobs != '' && steps.store2.outputs.blobs != '0'
-        uses: actions/upload-artifact@v4
-        with:
-          name: c21-raw-store-${{ github.run_id }}
-          path: |
-            implementation/data/raw
-            implementation/reports/gate_evidence
-          retention-days: 90
-      - name: Commit small evidence back (no blobs)
-        if: always()
-        run: |
-          git config user.name "c21-real-data-bot"
-          git config user.email "c21-real-data-bot@users.noreply.github.com"
-          git add data/raw/manifests data/raw/STORE_INDEX.json reports/gate_evidence
-          for f in data/raw/*_run_*.json; do [ -e "$f" ] && git add "$f"; done
-          git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
-          git commit -m "C-21 real-data run ${{ github.run_id }}: manifests, STORE_INDEX, gate chain evidence"
-          for i in 1 2 3; do git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && break; sleep $((i*5)); done
+          python implementation/tools/build_pages_cockpit.py --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"

@@ -146,6 +146,8 @@ def _never_files_periodic(store: RawDatasetStore, cik: str) -> bool:
 
 
 def eligibility_filter(store: RawDatasetStore, listings: dict, as_of) -> tuple[dict, dict]:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     kept, excluded, not_registered, unknown, not_trading, no_sec_periodic = {}, [], [], [], [], []
     for cid, m in listings.items():
         st = _filer_status(store, str(m.get("cik") or ""), as_of)
@@ -174,6 +176,8 @@ def eligibility_filter(store: RawDatasetStore, listings: dict, as_of) -> tuple[d
 
 
 def _as_of_price(store: RawDatasetStore, symbol: str, as_of, chart_range: str):
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     amc = _load("audit_mcap_store")
     bars = [b for b in load_price_bars(store, symbol, chart_range) if b["observed_at"] <= as_of]
     return amc.mcap_price(bars[-1], amc.load_splits(store, symbol, chart_range), as_of) if bars else None
@@ -237,6 +241,8 @@ def share_scale_overrides(store: RawDatasetStore, listings: dict, overrides: dic
     """For companyfacts-ranked issuers whose share count fails share_scale_check: use the count printed in the cover text
     of the latest 10-K/10-Q filed <= as_of (sec_filing_doc artifact) when exactly one power-of-ten reading matches;
     otherwise EXCLUDE the issuer (not rankable, fail-closed). Never approximates."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     frc = _load("fetch_class_rights_evidence")
     ev = {}
     for cid, m in listings.items():
@@ -304,6 +310,8 @@ def same_cik_ticker(store: RawDatasetStore, cik10: str, symbol: str) -> str | No
 
 def _as_of_bar(store: RawDatasetStore, symbol: str, as_of, chart_range: str):
     """(price as used by the gate, observed_at) of the last bar on/before as_of, or (None, None)."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     amc = _load("audit_mcap_store")
     bars = [b for b in load_price_bars(store, symbol, chart_range) if b["observed_at"] <= as_of]
     if not bars:
@@ -325,6 +333,8 @@ def gate_audited_candidates(store: RawDatasetStore, listings: dict, overrides: d
     (company_id, ticker, cik, shares, shares_available_at, price, price_observed_at) plus provenance
     (shares_basis, price_basis, gate_mcap). Overrides are expressed as equivalent shares of the reference price
     (gate_mcap / price); excluded issuers are left out. Nothing is recomputed differently from the gate."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     from datetime import datetime as _dt
     out = []
     for cid, m in listings.items():
@@ -426,6 +436,8 @@ def share_price_unit_audit(store: RawDatasetStore, candidates: list[dict], as_of
 def gate_snapshot_consistency(store: RawDatasetStore, listings: dict, top: list[dict], candidates: list[dict], as_of) -> dict:
     """official_mcap500_snapshot_from_store(gate_candidates=...) must reproduce the gate's top 500: same members, same
     order, same market caps (relative 1e-9). Any difference blocks the Official declaration."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     from investment_system.universe.sources import official_mcap500_snapshot_from_store
     snap, rep = official_mcap500_snapshot_from_store(store, listings, as_of, gate_candidates=candidates)
     gate_ids = [r["company_id"] for r in top]
@@ -511,6 +523,8 @@ def registration_share_count_overrides(store: RawDatasetStore, listings: dict, o
     (10-12B, 8-K, 424B) filed on or before as_of stating an exact, unique share count -- never a later periodic
     filing's current count applied backward. Docs must already be in the store (fetch_share_scale_docs /
     share_count_diagnostic fetch them for SHARES_* unrankable issuers)."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     from investment_system.providers.sec_cover_shares import select_filing
     frc = _load("fetch_class_rights_evidence")
     REGISTRATION_FORMS = _load("share_count_diagnostic").REGISTRATION_FORMS
@@ -590,6 +604,8 @@ def cover_mcap_overrides(store: RawDatasetStore, listings: dict, as_of, chart_ra
     """company_id -> {'mcap', 'status', 'classes'} from the cover-page XBRL instance (tools/fetch_cover_xbrl.py).
     Listed classes: class shares x that class's as-of price. Unlisted/unpriced classes are not guessed
     (no conversion ratio in the data): the sum is then a LOWER BOUND."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     out, unresolved = {}, {}
     for cid, m in listings.items():
         c = str(m.get("cik") or "")
@@ -904,6 +920,8 @@ def apply_nport_reported_prices(store: RawDatasetStore, overrides: dict, listing
     """User decision 2026-09-26: issuers listed in the exception file (PINC, WOLF) that have NO market close on/before
     as_of may be valued with the N-PORT reported value per share (valUSD / balance, report date = as_of). Price type
     NPORT_REPORTED_VALUE, never mixed with closes. Everything is re-verified from stored raw artifacts (fail-closed)."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     npr = _load("nport_reported_prices")
     frc = _load("fetch_class_rights_evidence")
     allowed = (exception or {}).get("issuers") or {}
@@ -1022,6 +1040,8 @@ def apply_corporate_action_share_counts(store: RawDatasetStore, overrides: dict,
     This is explicitly a look-ahead reconstruction aid.  Pro-forma, approximate, weighted-average and later-current
     cover counts are not accepted.  Every policy and raw-document condition is checked again here.
     """
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     out = {}
     base_failures = _policy_failures(policy, as_of)
     forbidden = [str(x).casefold() for x in (((policy or {}).get("rules") or {}).get("CA-SHARES-01") or {}).get("forbidden_count_basis") or []]
@@ -1081,6 +1101,8 @@ def apply_corporate_action_prices(store: RawDatasetStore, overrides: dict, listi
                                   investigation: dict | None, cross_check: dict | None, as_of,
                                   chart_range: str = "5y") -> dict:
     """CA-PRICE-01: calibrated Level-1 N-PORT reconstruction when every ordinary close source failed."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     npr = _load("nport_reported_prices")
     rules = (((policy or {}).get("rules") or {}).get("CA-PRICE-01") or {})
     tol = float(rules.get("max_relative_price_difference") or 0)
@@ -1205,6 +1227,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
               nport_prices: dict | None = None, symbol_mappings: dict | None = None,
               corporate_action_policy: dict | None = None, nport_investigation: dict | None = None,
               nport_cross_check: dict | None = None, share_unit_policy: dict | None = None) -> dict:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     amc = _load("audit_mcap_store")
     d = amc._dt(as_of if "T" in as_of else as_of + "T00:00:00+00:00")
     cand = verify_cik_candidates(store, cik_candidates)
@@ -1383,6 +1407,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
 
 
 def main() -> None:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
     ap.add_argument("--listings", type=Path, default=ROOT / "reports" / "us_ingested_facts_listings.json")

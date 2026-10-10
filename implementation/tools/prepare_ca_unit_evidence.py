@@ -24,6 +24,8 @@ def checked(path, sha):
 
 
 def prepare(store):
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     policy = json.loads((GE / "ca_unit_policy_v1.json").read_text())
     for e in policy["events"]:
         for d in e["documents"]:

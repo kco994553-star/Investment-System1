@@ -113,6 +113,8 @@ def to_chart(bars: list[tuple[datetime, float]], symbol: str) -> bytes:
 
 def run(store_dir: Path, as_of: datetime, symbols: list[str], token: str | None, chart_range: str = "5y", sleep: float = 1.5,
         names: dict[str, list[str]] | None = None) -> dict:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     frd = _load("fetch_real_data")
     store = RawDatasetStore(store_dir)
     frd._BLOCKED_HOSTS.clear()
@@ -217,6 +219,8 @@ def run(store_dir: Path, as_of: datetime, symbols: list[str], token: str | None,
 
 
 def _finish(store, frd, report: dict, log: list[dict]) -> dict:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     report["log"] = log
     report["egress_blocked_hosts"] = sorted(frd._BLOCKED_HOSTS)
     report["real_data_verified"] = False
@@ -241,6 +245,8 @@ def sec_names(store: RawDatasetStore, rows: dict, syms: set[str]) -> dict[str, l
 
 
 def main() -> None:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
     ap.add_argument("--as-of", default="2024-12-31")

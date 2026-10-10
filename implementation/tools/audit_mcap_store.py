@@ -63,6 +63,8 @@ def mcap_price(bar:dict, splits:list|None, as_of:datetime)->float:
 def audit(store:RawDatasetStore,listings:dict,as_of:datetime,chart_range='5y',mcap_override:dict|None=None)->dict:
     """mcap_override: company_id -> {'mcap': float} computed elsewhere (e.g. cover-page class sum);
     such issuers are counted as rankable with that market cap."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     counts={'listings':len(listings),'companyfacts':0,'price':0,'rankable':0,'missing_companyfacts':0,'missing_price':0,
             'missing_shares':0,'ambiguous_shares':0,'non_positive':0}
     ranked=[]
@@ -111,6 +113,8 @@ def audit_many(store:RawDatasetStore,listings:dict,as_ofs:list[datetime],chart_r
     than every company's ranking row. Memory is therefore one issuer working
     set + O(500 x dates), independent of universe size.
     """
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     dates=sorted(as_ofs)
     states=[]
     for d in dates:
@@ -191,6 +195,8 @@ def build_pit_gap_plan(store:RawDatasetStore, listings:dict, as_ofs:list[datetim
     a network runner does not blindly refetch an artifact that already exists.
     It is diagnostic only and never proves universe completeness.
     """
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     dates=sorted(as_ofs)
     per_date={d.isoformat():{'rankable':0,'absent_companyfacts':[], 'absent_price':[],
         'missing_shares_in_present_companyfacts':[], 'ambiguous_shares':[],
@@ -466,6 +472,8 @@ def _norm_ticker(t) -> str:
 def ranked_top500(store: RawDatasetStore, listings: dict, as_of: datetime, chart_range: str = "5y",
                   mcap_override: dict | None = None) -> list[dict]:
     """Rank rows (mcap desc, max 500) using the same inputs/rules as audit(); #500 = last row."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     heap: list = []
     for cid, m in listings.items():
         ov = (mcap_override or {}).get(cid)
@@ -491,6 +499,8 @@ def ranked_top500(store: RawDatasetStore, listings: dict, as_of: datetime, chart
 
 def row_detail(store: RawDatasetStore, m: dict, as_of: datetime, chart_range: str = "5y") -> dict:
     """Per-issuer PIT market-cap inputs, for diagnosis and data-quality flags."""
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     cf = load_companyfacts(store, str(m.get("cik", ""))) if m.get("cik") else None
     sh = pit_shares(cf, as_of) if cf is not None else {"status": "NO_COMPANYFACTS", "shares": None, "source": None, "available_at": None}
     sym = str(m.get("yahoo") or "")
@@ -528,6 +538,8 @@ def evaluate_reference_coverage(store: RawDatasetStore, listings: dict, ranked_t
     for one reference by checking store presence per member ticker. Identity-only
     for missing_from_pool (no re-parse needed); companyfacts/price presence for the rest.
     """
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     as_of = _dt(reference["as_of"]) if isinstance(reference.get("as_of"), str) else reference["as_of"]
     # Share-class tickers: references use 'BRK.B', listings/Yahoo use 'BRK-B' (same security).
     by_ticker = {_norm_ticker(m.get("yahoo")): (cid, m) for cid, m in listings.items()}
@@ -585,6 +597,8 @@ def build_promotion_gate_v2(audit_result: dict, eligibility_evidence: dict | Non
 
 
 def main():
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     ap=argparse.ArgumentParser(); ap.add_argument('--store',default=str(ROOT/'data'/'raw')); ap.add_argument('--listings',type=Path,required=True)
     ap.add_argument('--as-of',required=True,action='append',help='Repeat for multi-date audit; issuer blobs are parsed once per run.'); ap.add_argument('--chart-range',default='5y'); ap.add_argument('--out',type=Path); ap.add_argument('--plan-out',type=Path,help='Write missing-artifact resume plan for a network-enabled runner.'); ap.add_argument('--gap-plan-out',type=Path,help='Write usable-PIT gap classification; distinguishes absent from present-but-unusable inputs.'); ap.add_argument('--eligibility-evidence',type=Path,help='Dated eligibility-completeness evidence JSON used only by the fail-closed Official promotion gate.'); ap.add_argument('--gate-out',type=Path,help='Write Official Top-500 promotion-gate result; requires --eligibility-evidence and a single --as-of.')
     ap.add_argument('--exchange-reference',type=Path,help='Dated total-listed-company benchmark JSON (e.g. WFE) for the Universe Completeness Gate.')

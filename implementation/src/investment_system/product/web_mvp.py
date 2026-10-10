@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 from copy import deepcopy
 from datetime import datetime
-import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -70,37 +69,13 @@ def validate_bundle(bundle):
 
 
 def repository_bundle(root=ROOT):
-    folder = root / 'reports/gate_evidence'
-    manifest = json.loads((folder / 'track_a_freeze_readiness_2026-09-27.json').read_text())
-    name = 'official_snapshot_2024-12-31.json'
-    raw = (folder / name).read_bytes()
-    if hashlib.sha256(raw).hexdigest() != manifest['evidence_sha256'][name]:
-        raise ValueError('frozen Universe hash mismatch')
-    u = json.loads(raw)
-    if u['universe_id'] != manifest['per_date'][-1]['universe_id']:
-        raise ValueError('frozen Universe identity mismatch')
-    # Existing ID-keyed reference names are display/search metadata only, not PIT assertions.
-    reference_path = folder / 'russell1000_extra_listings_2024-12-31.json'
-    references = json.loads(reference_path.read_text()) if reference_path.exists() else {}
-    b = {'schema_version': 1, 'companies': [dict(company_id=r['company_id'], ticker=r['ticker'], name=references.get(r['company_id'], {}).get('reference_name') or r['ticker'],
-         market_cap_rank=r['rank'], rank_is_lower_bound=r['rank_is_lower_bound']) for r in u['members']],
-         'universe': envelope(u, 'FROZEN_SNAPSHOT', u['as_of'], 'Track A / '+name)}
-    for s in SECTIONS:
-        b[s] = unavailable('운영 Snapshot이 연결되지 않았습니다.')
-    return validate_bundle(b)
+    from ..public_price_boundary import public_bundle
+    return public_bundle()
 
 
 def demo_bundle(b):
-    b = deepcopy(b)
-    report = json.loads((ROOT / 'reports/official_v11_book_snapshots.json').read_text())
-    known = {c['company_id'] for c in b['companies']}
-    for s in report['snapshots']:
-        if s['company_id'] not in known:
-            b['companies'].append({'company_id': s['company_id'], 'ticker': s['company_id'], 'name': s['company_id']})
-    b['qgv'] = envelope({s['company_id']: s for s in report['snapshots']}, 'DEMO', report['as_of'], 'official_v11_book_snapshots.json / SYNTHETIC')
-    mixed = json.loads((ROOT / 'reports/us_session_mixed_2026-09-23.json').read_text())
-    b['portfolio'] = envelope({'holdings': mixed['holdings'], 'role': 'SYNTHETIC MODEL / NOT ACTUAL'}, 'DEMO', mixed['as_of_session'], 'us_session_mixed_2026-09-23.json')
-    return validate_bundle(b)
+    from ..public_price_boundary import block_public_route
+    block_public_route()
 
 
 def compose(html, css='', js=''):
@@ -113,13 +88,20 @@ def build(out, bundle=None, demo=False, rig_page=None):
     from .entity_catalog import entity_catalog
     from .device_actual_catalog import public_actual_catalog
     out = Path(out)
-    out.mkdir(parents=True, exist_ok=True)
-    b = validate_bundle(bundle) if bundle else repository_bundle()
+    from ..public_price_boundary import require_public_bundle, block_public_route
+    if demo or rig_page:
+        block_public_route()
+    b = repository_bundle() if bundle is None else bundle
+    from .device_actual_catalog import reject_private_holdings
+    reject_private_holdings(b)
+    require_public_bundle(b)
+    b = validate_bundle(b)
     if demo:
         b = demo_bundle(b)
     if b['relationships']['data'] is not None and not rig_page and not demo:
         raise ValueError('relationships require the reviewed Track D rendered page')
     device_catalog = public_actual_catalog()
+    out.mkdir(parents=True, exist_ok=True)
     for f in ASSETS.iterdir():
         if f.suffix in ('.html', '.css', '.js') and not f.name.startswith(('research-', 'network-')):
             shutil.copyfile(f, out / f.name)

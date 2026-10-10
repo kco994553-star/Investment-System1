@@ -14,12 +14,6 @@ def build_public_cockpit(out: Path) -> Path:
     if out.is_symlink() or (out.exists() and (not out.is_dir() or any(out.iterdir()))):
         raise ValueError('Pages output must be an empty regular directory')
     bundle = repository_bundle()
-    # Publication projection only. Immutable Frozen source and existing builder
-    # remain unchanged; identity, membership, ranks and provenance are retained.
-    universe = bundle['universe']['data']
-    universe.pop('cutoff_mcap', None)
-    for member in universe['members']:
-        member.pop('mcap', None)
     return build(out, bundle=bundle)
 
 

@@ -133,6 +133,8 @@ def build(store: RawDatasetStore, as_of: str, holdings: list[dict], pool_symbols
 
 
 def main() -> None:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
     ap.add_argument("--as-of", default="2024-12-31")

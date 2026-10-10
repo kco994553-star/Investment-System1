@@ -4,27 +4,28 @@ import json
 from pathlib import Path
 import tempfile
 import pytest
+from tests.web_contract_fixture import synthetic_bundle
 from investment_system.product.web_mvp import repository_bundle, demo_bundle, validate_bundle, build, ROOT
 
 
-def test_frozen_universe_exact_no_live_fabrication():
-    b=repository_bundle()
-    u=json.loads((ROOT/'reports/gate_evidence/official_snapshot_2024-12-31.json').read_text())
-    assert b['universe']['data']==u and len(b['companies'])==500
+def test_default_universe_is_withheld_without_live_fabrication():
+    b = repository_bundle()
+    assert b['universe']['state'] == 'NOT_AVAILABLE'
+    assert b['universe']['data'] is None and b['companies'] == []
     for name in ('qgv','technical','macro','portfolio','leaderboard','news','relationships'):
-        assert b[name]['state']=='NOT_AVAILABLE' and b[name]['data'] is None
+        assert b[name]['state'] == 'NOT_AVAILABLE' and b[name]['data'] is None
 
 
-def test_demo_opt_in_values_not_rescored():
-    b=demo_bundle(repository_bundle())
-    src=json.loads((ROOT/'reports/official_v11_book_snapshots.json').read_text())
-    assert list(b['qgv']['data'].values())==src['snapshots']
-    assert b['qgv']['state']==b['portfolio']['state']=='DEMO'
-    assert b['leaderboard']['data'] is None
+def test_mixed_demo_is_not_a_public_export(tmp_path):
+    with pytest.raises(ValueError, match='PUBLIC_PRICE_BOUNDARY'):
+        demo_bundle(repository_bundle())
+    with pytest.raises(ValueError, match='PUBLIC_PRICE_BOUNDARY'):
+        build(tmp_path / 'demo', demo=True)
+    assert not (tmp_path / 'demo').exists()
 
 
 def test_false_production_synthetic_missing_provenance_fail_closed():
-    b=demo_bundle(repository_bundle())
+    b=synthetic_bundle()
     for state in ('LIVE','FROZEN_SNAPSHOT'):
         c=deepcopy(b);c['qgv']['state']=state
         with pytest.raises(ValueError):validate_bundle(c)
@@ -35,14 +36,14 @@ def test_false_production_synthetic_missing_provenance_fail_closed():
 
 
 def test_unknown_duplicate_identity_fail_closed():
-    b=repository_bundle();b['companies'].append(b['companies'][0])
+    b=synthetic_bundle();b['companies'].append(b['companies'][0])
     with pytest.raises(ValueError):validate_bundle(b)
-    b=demo_bundle(repository_bundle());b['portfolio']['data']['holdings'][0]['company_id']='not-known'
+    b=synthetic_bundle();b['portfolio']['data']['holdings'][0]['company_id']='not-known'
     with pytest.raises(ValueError):validate_bundle(b)
 
 
 def test_no_mutation_missing_zero_distinction():
-    b=demo_bundle(repository_bundle());b['qgv']['data']['nvda']['Q_score']=0
+    b=synthetic_bundle();b['qgv']['data']['nvda']['Q_score']=0
     before=deepcopy(b);v=validate_bundle(b)
     assert b==before and v==before and v is not b
     assert v['qgv']['data']['nvda']['Q_score']==0

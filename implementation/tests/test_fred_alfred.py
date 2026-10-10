@@ -18,7 +18,13 @@ def test_alfred_parse_and_prior_as_of():
     assert rows[-1]["value"] == 103
 
 
-def test_alfred_collect_from_fixture_not_verified():
+def test_alfred_collect_from_fixture_not_verified(monkeypatch):
+    from investment_system.providers import fred_csv
+
+    def unavailable(*args, **kwargs):
+        raise OSError("independent offline macro test")
+
+    monkeypatch.setattr(fred_csv, "urlopen", unavailable)
     pack = collect_indicators_alfred(
         AS_OF,
         {

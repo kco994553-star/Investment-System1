@@ -1,3 +1,4 @@
+from tests.boundary_assertions import route_withheld_without_writes
 """Regression for the reviewed GRAL first-subsequent-periodic evidence."""
 
 import json
@@ -20,7 +21,7 @@ def _chain():
     return module
 
 
-def test_gral_policy_cites_actual_first_subsequent_10q_and_exact_issuance(tmp_path):
+def test_gral_policy_cites_actual_first_subsequent_10q_and_exact_issuance_public_route_withheld(tmp_path):
     chain = _chain()
     policy = json.loads(POLICY_PATH.read_text(encoding="utf-8"))
     cik = "0001699031"
@@ -48,10 +49,8 @@ def test_gral_policy_cites_actual_first_subsequent_10q_and_exact_issuance(tmp_pa
     }]}}).encode(), "u", "Yahoo", "application/json", "t", 200)
 
     overrides = {}
-    result = chain.apply_corporate_action_share_counts(
-        store, overrides, {"gral": {"cik": cik, "yahoo": "GRAL"}}, policy,
-        datetime(2024, 6, 30, tzinfo=timezone.utc),
-    )
-    assert result["GRAL"]["status"] == "APPLIED"
-    assert overrides["gral"]["shares"] == 31_049_148
-    json.dumps(overrides)
+    with route_withheld_without_writes(tmp_path):
+        result = chain.apply_corporate_action_share_counts(
+            store, overrides, {"gral": {"cik": cik, "yahoo": "GRAL"}}, policy,
+            datetime(2024, 6, 30, tzinfo=timezone.utc),
+        )

@@ -1,0 +1,99 @@
+{
+  "schema": "public-price-uncertain-custody-v1",
+  "retained": [
+    {
+      "path": "implementation/fixtures/yahoo_chart_nvda_mini.json",
+      "audit_id": "H37",
+      "audit_line": 4808,
+      "classification": "UNCERTAIN",
+      "origin": "PR93_reclassification",
+      "bytes": 359,
+      "sha256": "accaa6f01935aa0fb59d56887a31ae5cf9f8a98bf18235d8be8cbc23b5dea912",
+      "git_blob_sha1": "73601554b195d8c1751ba4168fcf4086bd2505da",
+      "instruction": "Missing original r3 handoff generation/capture provenance; retain and do not declare synthetic.",
+      "a_base_commit": "07a47b3659847354928bfe9242bf7cdc8f72db2c",
+      "a_sha256": "accaa6f01935aa0fb59d56887a31ae5cf9f8a98bf18235d8be8cbc23b5dea912",
+      "after_sha256": "accaa6f01935aa0fb59d56887a31ae5cf9f8a98bf18235d8be8cbc23b5dea912"
+    },
+    {
+      "path": "implementation/reports/track_store.json",
+      "audit_id": "H44",
+      "audit_line": 4815,
+      "classification": "UNCERTAIN",
+      "origin": "PR93_reclassification",
+      "bytes": 779531,
+      "sha256": "ac5b2c5cad44b1156efb27a581701349b8fc357c3b6f3837805c44594d73cf07",
+      "git_blob_sha1": "c150ef97bed686897e56fdce3453862cf6a81fe6",
+      "instruction": "No file-level custody receipt binds all archived rows and original sources; retain.",
+      "a_base_commit": "07a47b3659847354928bfe9242bf7cdc8f72db2c",
+      "a_sha256": "ac5b2c5cad44b1156efb27a581701349b8fc357c3b6f3837805c44594d73cf07",
+      "after_sha256": "ac5b2c5cad44b1156efb27a581701349b8fc357c3b6f3837805c44594d73cf07"
+    },
+    {
+      "path": "implementation/tests/test_c21_runner_and_gate_chain.py",
+      "audit_id": "H46",
+      "audit_line": 4817,
+      "classification": "UNCERTAIN",
+      "origin": "PR93_reclassification",
+      "bytes": 163037,
+      "sha256": "af43543a99187680c315c99c13b4a69141f96ac50bdc162c5ab1e66fab7cae15",
+      "git_blob_sha1": "4379967548addc1f262cb54e41d3189a8f98b650",
+      "instruction": "Original two price literals lack recorded origin; no exact stored-report scalar match; retain.",
+      "a_base_commit": "07a47b3659847354928bfe9242bf7cdc8f72db2c",
+      "a_sha256": "fb5f34178d936c097d98b46994c4fef236fa168371e6628be6fb5d4f37e3bd71",
+      "after_sha256": "11511b30e5bd842f06e326a4d665baab328d32b1972a1135124d7f4648b06cd0",
+      "unknown_origin_numeric_custody": [
+        {
+          "function": "_scale_store",
+          "canonical_function": "_scale_store",
+          "original_close_ast_sha256": "7f05f48a086bddfa3edc99becd19e778d792349e1f5d8d30481e6f42acb05fa4",
+          "a_and_b_close_ast_sha256": "7f05f48a086bddfa3edc99becd19e778d792349e1f5d8d30481e6f42acb05fa4",
+          "a_and_b_numeric_ast_sha256": "6d571cee3b9b0756748232413ac9300e26d5c9a57d66e66112f70e28aa48724a",
+          "classification": "UNCERTAIN_ORIGIN_RETAINED_NOT_RELABELLED"
+        },
+        {
+          "function": "test_run44_registration_doc_share_count_amtm_spinoff_public_route_withheld",
+          "canonical_function": "test_run44_registration_doc_share_count_amtm_spinoff",
+          "original_close_ast_sha256": "c5bf080e01d31951e51d38c4a496a36dd78091541854310af21f6def7629aaa9",
+          "a_and_b_close_ast_sha256": "c5bf080e01d31951e51d38c4a496a36dd78091541854310af21f6def7629aaa9",
+          "a_and_b_numeric_ast_sha256": "2aebc0b99d2f8d201345589ad6b3590b57694790579da7811f435debd8af1c88",
+          "classification": "UNCERTAIN_ORIGIN_RETAINED_NOT_RELABELLED"
+        }
+      ],
+      "b_scoped_adaptations": [
+        "test_run29_independent_class_economics_verifies_quotes_and_arithmetic",
+        "test_run49_independent_citations_bind_to_extracted_passage_offsets",
+        "test_c36_independent_paired_units_proven_class_d_left_unvalued"
+      ],
+      "scope": "Only three deleted-DATA consumer tests changed in B; the module remains UNCERTAIN. A route adaptations are bound separately."
+    },
+    {
+      "path": "implementation/tests/test_live_sources_and_persist.py",
+      "audit_id": "H47",
+      "audit_line": 4818,
+      "classification": "UNCERTAIN",
+      "origin": "PR93_reclassification",
+      "bytes": 1364,
+      "sha256": "eb02117cb099534cf0fd520e28232611167d072e360a124c521fffaf76120796",
+      "git_blob_sha1": "ba400c54965a1ba48b6b223914cda72732b5ee76",
+      "instruction": "Capture or explicit synthetic generation provenance remains unavailable; retain.",
+      "a_base_commit": "07a47b3659847354928bfe9242bf7cdc8f72db2c",
+      "a_sha256": "eb02117cb099534cf0fd520e28232611167d072e360a124c521fffaf76120796",
+      "after_sha256": "eb02117cb099534cf0fd520e28232611167d072e360a124c521fffaf76120796"
+    },
+    {
+      "path": "implementation/tests/test_yahoo_adjclose_bars.py",
+      "audit_id": "H50",
+      "audit_line": 4821,
+      "classification": "UNCERTAIN",
+      "origin": "PR93_reclassification",
+      "bytes": 770,
+      "sha256": "c53f2997a517ced9e01799e19b92d6703e766bdc67b591bf248e48ea8cc6891d",
+      "git_blob_sha1": "a3d668b3e2c7cad6a4d8c2efc1a5a8f26f751db4",
+      "instruction": "Test structure/numeric patterns do not establish synthetic lineage; retain.",
+      "a_base_commit": "07a47b3659847354928bfe9242bf7cdc8f72db2c",
+      "a_sha256": "c53f2997a517ced9e01799e19b92d6703e766bdc67b591bf248e48ea8cc6891d",
+      "after_sha256": "c53f2997a517ced9e01799e19b92d6703e766bdc67b591bf248e48ea8cc6891d"
+    }
+  ]
+}
