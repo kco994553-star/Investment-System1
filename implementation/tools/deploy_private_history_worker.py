@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -180,12 +181,14 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def verify(environ: dict[str, str], transport=None) -> int:
+def verify(environ: dict[str, str], transport=None, sleep=None) -> int:
     origin = environ.get("WORKER_ORIGIN", "")
     if not re.fullmatch(ORIGIN_PATTERN, origin):
         return fail(environ, "WORKER_ORIGIN_INVALID")
     if transport is None:
         transport = urllib.request.build_opener(NoRedirect()).open
+    if sleep is None:
+        sleep = time.sleep
     cases = [("NO_ORIGIN", {}), ("DISALLOWED_ORIGIN", {"Origin": "https://invalid-origin.example"}),
              ("ALLOWED_ORIGIN_NO_AUTH", {"Origin": ALLOWED_ORIGIN})]
     receipts = []
@@ -194,30 +197,40 @@ def verify(environ: dict[str, str], transport=None) -> int:
             origin + "/history?symbol=NVDA&range=1mo",
             headers={"User-Agent": "InvestmentSystem1-DeploymentVerification/1.0", **headers},
         )
-        try:
+        for attempt in range(5):
+            failure = None
             try:
-                response = transport(request, timeout=30)
-            except urllib.error.HTTPError as error:
-                response = error
-            with response:
-                status = response.status
-                cors = response.headers.get("Access-Control-Allow-Origin")
-                cache = response.headers.get("Cache-Control")
-                payload = response.read(4097)
-        except Exception:
-            return fail(environ, "ANONYMOUS_CHECK_TRANSPORT_FAILED")
-        try:
-            code = json.loads(payload)["error"]["code"] if len(payload) <= 4096 else None
-        except Exception:
-            code = None
-        if cache != "private, no-store, max-age=0":
-            return fail(environ, "ANONYMOUS_CHECK_CACHE_FAILED")
-        if name != "ALLOWED_ORIGIN_NO_AUTH":
-            if status != 403 or code != "ORIGIN_FORBIDDEN" or cors is not None:
-                return fail(environ, "ORIGIN_REJECTION_CHECK_FAILED")
-        elif cors != ALLOWED_ORIGIN or (status, code) not in [(503, "CONFIG_UNAVAILABLE"), (403, "AUTH_FORBIDDEN")]:
-            return fail(environ, "ANONYMOUS_AUTH_CONFIG_CHECK_FAILED")
-        receipts.append(name + ": HTTP " + str(status) + " " + code)
+                try:
+                    response = transport(request, timeout=10)
+                except urllib.error.HTTPError as error:
+                    response = error
+                with response:
+                    status = response.status
+                    cors = response.headers.get("Access-Control-Allow-Origin")
+                    cache = response.headers.get("Cache-Control")
+                    payload = response.read(4097)
+            except Exception:
+                failure = "ANONYMOUS_CHECK_TRANSPORT_FAILED"
+            if failure is None:
+                try:
+                    code = json.loads(payload)["error"]["code"] if len(payload) <= 4096 else None
+                except Exception:
+                    code = None
+                if cache != "private, no-store, max-age=0":
+                    failure = "ANONYMOUS_CHECK_CACHE_FAILED"
+                elif name != "ALLOWED_ORIGIN_NO_AUTH":
+                    if status != 403 or code != "ORIGIN_FORBIDDEN" or cors is not None:
+                        failure = "ORIGIN_REJECTION_CHECK_FAILED"
+                elif cors != ALLOWED_ORIGIN or (status, code) != (403, "AUTH_FORBIDDEN"):
+                    failure = "ANONYMOUS_AUTH_CONFIG_CHECK_FAILED"
+            if failure is None:
+                if name != "DISALLOWED_ORIGIN":
+                    receipts.append(name + ": HTTP " + str(status) + " " + code)
+                break
+            if attempt == 4:
+                return fail(environ, failure)
+            # Recheck only anonymous requests; never echo remote bodies or exceptions.
+            sleep(2 ** (attempt + 1))
     for receipt in receipts:
         print(receipt)
     summary(environ, "\n".join("- " + receipt for receipt in receipts) +
@@ -225,13 +238,13 @@ def verify(environ: dict[str, str], transport=None) -> int:
     return 0
 
 
-def main(operation: str, environ=None, runner=subprocess.run, transport=None) -> int:
+def main(operation: str, environ=None, runner=subprocess.run, transport=None, sleep=None) -> int:
     environ = dict(os.environ if environ is None else environ)
     try:
         if operation == "deploy":
             return deploy(environ, runner)
         if operation == "verify":
-            return verify(environ, transport)
+            return verify(environ, transport, sleep)
         return fail(environ, "WORKER_OPERATION_INVALID")
     except Exception:
         # Filesystem and unexpected failures must not produce credential-bearing tracebacks.
