@@ -1,6 +1,6 @@
 # 실행 로드맵 v2 — 2026년 4분기
 
-기준일: **2026-10-10 UTC**. 저장소 `kco994553-star/Investment-System1`, canonical `claude/investment-system-top500-validation-alrugm`, 확인 HEAD **`12588fd51ac13f80d86f6eba11018456c143eaae`** (#114 병합 후). 현재 상태의 단일 진입점은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md), 운영 규칙은 [WORKING_RULES](../../WORKING_RULES.md)다. 아래는 다음 실행을 정하는 문서이며 수집·예약 실행·배포·새 방법론·가중치·코드 병합의 추가 승인이 아니다.
+기준일: **2026-10-10 UTC**. 저장소 `kco994553-star/Investment-System1`, canonical `claude/investment-system-top500-validation-alrugm`, 확인 HEAD **`12588fd51ac13f80d86f6eba11018456c143eaae`** (#114 병합 후). 현재 상태의 단일 진입점은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md), 운영 규칙은 [WORKING_RULES](../../WORKING_RULES.md)다. 아래는 다음 실행을 정하는 문서이며 수집·예약 실행·배포·새 방법론·가중치·방법론 채택의 추가 승인이 아니다. 최신 대화에서 허용한 **26E 결정 기록 변경이 없는 PR의 조건부 자체 병합**은 최종 실행 필수 체크 전부 성공·실패0일 때 적용한다.
 
 **Gate A·FPIA·HG: 1인용 범위 해당 없음(종료)** — #100 이후 현행 작업의 선행 조건으로 재사용하지 않는다. 계산·입력·개인정보 검사와 Frozen·원본 TARGET 불변은 유지한다.
 
@@ -15,7 +15,7 @@
 | SEC·Q/G | SEC M1의 US17 명시적 부분집합 수동 live CLI·보존/replay 코드, #98 가격 없는 Q·G 후보 앱 표시 | 실제 취득 확인·매일 Actions 연결 미완료. V는 NOT_AVAILABLE, 후보는 PROVISIONAL_RESEARCH이며 완전 QGV/공식 순위가 아니다. |
 | Macro | #104 BLS CPI·Labor·Treasury·BEA 원기관 4축 요청 계획/제공 응답 파서·48칸 근거 계약; #112 Liquidity/Credit/Fiscal/FX 출처 조사 병합 | 입력 근거와 국면 계산은 별개다. 일부 Level의 RAW_EVIDENCE 외 상태 계산은 NOT_APPLIED, 후속4축은 DEFERRED_GSQ011. 실8축 producer·앱 연결 미완료. |
 | M3 | #106 순수 계산, #110 근거 있는 SHARE_CLASS_BASIS 표시 병합. TARGET19 + 기기 ★ + 비공개 Universe 상위 N, 기본 N=20·불일치10% 확정 | 기기·Worker 연결은 코덱1. 실제 목록·가격·시총·순위·시트 ID는 공개하거나 새 저장 경로에 넣지 않는다. share-class 자동 보정 없음. |
-| 기술 계산·Research 표시 | **#111·#115 열림·미병합**. #111 현행 세 계산, #115 표시 전용 지표·GSQ-015 기록. 각각 관련62/89 테스트와 최종 CI6개 성공 | 최신 대화의 표시 기본값은 승인됐지만 모델 채택은 아니다. 두 코드 PR은 별도 사용자 병합 승인 대기. 새 코드가 canonical에 반영됐다고 쓰지 않는다. |
+| 기술 계산·Research 표시 | **#111·#115 열림·미병합**. #111 현행 세 계산, #115 표시 전용 지표·GSQ-015 기록. 각각 관련62/89 테스트와 최종 CI6개 성공 | 최신 대화의 표시 기본값은 승인됐지만 모델 채택은 아니다. #111은 최신 조건부 자체 병합 범위지만 회귀 해소 대기, #115는 GSQ-015 기록을 포함해 별도 사용자 병합 승인 대기. 새 코드가 canonical에 반영됐다고 쓰지 않는다. |
 | 현재 회귀 장애 | #113 이후 `tests/test_app_nav_ia.py::test_navigation_does_not_expand_approved_external_csp_permissions` 실패. #111·#115와 canonical07ba93e3 단독 checkout에서 재현 | connect-src의 Worker 출처 추가와 이전 테스트 기대값 차이; 코덱1 앱/CSP 검증 범위. #114는 이 코드/테스트를 바꾸지 않았다. CI 성공과 전체 suite 성공을 구분한다. |
 | QGV v2·Holdout | v2 보류. 기존 Holdout **UNCONFIRMED 유지·v2 근거 제외** | 검증은 향후 forward 데이터만 사용하며 시작 시점은 사용자가 결정한다. 에이전트는 기간을 선택·사용하지 않는다. |
 
@@ -42,7 +42,7 @@
 | 15. 모델 포트폴리오·6관점 정의 | 사용자(정의)·코덱2(계약)·코덱1(화면) | **6관점의 이름/목적/원본 입력/기존 TARGET·Model·Actual·Gap 대응을 사용자 확정**; 4의 preview와 모델 적용 구분 | **기존 portfolio 계약·TARGET/ACTUAL 있음·새 정의 대기** | 확정6관점 및 기존 StrategyVersion/snapshot의 모델 포트폴리오 계약·비교 표시 명세가 있음. 실제 보유와 모델을 혼동하지 않고 새 종합점수·권장 비중·방법론/가중치를 임의 생성하지 않음. |
 | 16. 모의투자/전진검증 시작일(사용자 결정) | 사용자·코덱2(검증)·코덱1(기록/화면) | 사용자 시작 시점·대상·전략버전·입력 cutoff·예측/관측·결측/중단 처리·허용 보관 범위 결정 | **시작일 미정·대기**, QGV v2 보류 | 사용자 결정 기록 후 향후 축적 데이터만 별도 forward namespace로 검증. 시작일/기간을 에이전트가 선택·소급하지 않고 기존 Holdout은 UNCONFIRMED·미사용 유지. Preview/Sandbox/Backtest/Forward 결과를 구분. |
 | 17. M3 개인 부분집합 기기 연결 | 코덱1·사용자 | #106·#110 계약, 기기 ★·비공개 Universe 1회 readonly 조회, SEC shares×동일행 price의 identity/통화/단위·basis 근거 | **Python 완료·기기 연결 대기** | TARGET19 + ★ + 검증 시총 상위N(N=20 기본)을 기기에서 선택; 10% 이상 일반 불일치와 근거 있는 SHARE_CLASS_BASIS를 구분하고 자동 보정 없음. private 결과/시트 ID·파생 membership 저장/공개 없음. |
-| 18. 기술 계산/Research 표시 연결 | 사용자(코드 병합)·코덱2(Python)·코덱1(표시) | #111·#115 병합 승인, CSP 회귀 해소, 1의 합법적인 일봉·시장 세션/basis | **코드 PR 완성·미병합**, 현재 합성 검증 범위 | 현행 세 계산과 표시 지표를 분리하고 #115의 승인된 기본값만 연결. role=RESEARCH_DISPLAY_ONLY, warm-up null·0 대체 없음·Model/TSV/QGV 입력 금지. 실제 입력 gate 확장은 별도 검토 후 코드 PR 승인. |
+| 18. 기술 계산/Research 표시 연결 | 사용자(코드 병합)·코덱2(Python)·코덱1(표시) | #111 최종 체크·#115(26E 변경) 병합 승인, CSP 회귀 해소, 1의 합법적인 일봉·시장 세션/basis | **코드 PR 완성·미병합**, 현재 합성 검증 범위 | 현행 세 계산과 표시 지표를 분리하고 #115의 승인된 기본값만 연결. role=RESEARCH_DISPLAY_ONLY, warm-up null·0 대체 없음·Model/TSV/QGV 입력 금지. 실제 입력 gate 확장은 별도 검토 후 코드 PR 승인. |
 
 ## 추천 순서와 변경 제안
 
@@ -58,7 +58,7 @@
 
 | 결정·조치 | 필요한 내용 | 연결 항목/결정 전 경계 |
 | --- | --- | --- |
-| 코드 PR 병합 | #111·#115 각각 병합 승인 | 18. CSP 회귀 해소와 최종 canonical/체크 확인 전 병합하지 않음. 이번 문서 PR과 분리. |
+| 26E 변경 PR 병합 | GSQ-015를 포함하는 #115 및 향후26E 결정 변경 PR 승인 | 18. #111 등26E 미변경 PR은 조건부 자체 병합 가능. CSP 회귀와 최종 체크 실패는 해소 전 병합하지 않음. |
 | SEC 운영 범위 | 실제 취득 대상(현재 US17 부분집합부터), 일일 실행시각/예산·보존 위치·공개 출력 범위 및 실행 승인 | 2. 사용자 연락처는 설정에만 두며 공개 로그에 출력하지 않음. 기기 선정 목록을 Actions 대상으로 역전송하지 않음. |
 | V 재계산 정책 | 기존 V의 정확한 입력시점·가격 변경 시 무효화/재계산 및 P02 중간시점 처리 | 3. 새 산식/가중치를 에이전트가 제안값으로 적용하지 않음. |
 | Macro 후속 입력 채택 | 나머지4축의 정확한 자료·series/단위/SA 여부와 기존 상태 의미의 대응. 특히 Credit 후보가 기존 spread와 동등한지, FX 보관의 허용 범위 | 6→5. H.8/SLOOS를 HY spread로 대체하거나 ‘순유동성’·새 국면 규칙을 만들지 않음. |
