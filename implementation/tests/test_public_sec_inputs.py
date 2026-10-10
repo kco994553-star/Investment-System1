@@ -118,3 +118,12 @@ def test_daily_workflow_is_default_branch_only_and_checks_exact_public_directory
     assert source.index('pages_artifact_guard.py') < source.index('actions/upload-pages-artifact')
     assert source.index('private_trades_browser_test.js') < source.index('actions/upload-pages-artifact')
     assert 'path: ${{ runner.temp }}/public-cockpit' in source and 'needs: build' in source
+
+
+def test_missing_secret_stops_before_factory_or_requests(tmp_path):
+    def forbidden(_setting):
+        raise AssertionError('factory must not run without the named Secret')
+    for value in (None, '', '   '):
+        with pytest.raises(ValueError, match='SEC_USER_AGENT_MISSING'):
+            collect_public_inputs(tmp_path / 'inputs.json', environ={'SEC_USER_AGENT': value}, client_factory=forbidden)
+    assert not (tmp_path / 'inputs.json').exists()

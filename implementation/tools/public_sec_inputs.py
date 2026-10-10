@@ -149,6 +149,8 @@ def build_public_inputs(observations):
 
 def collect_public_inputs(output, *, environ=None, client_factory=None):
     settings = os.environ if environ is None else environ
+    if not isinstance(settings.get('SEC_USER_AGENT'), str) or not settings['SEC_USER_AGENT'].strip():
+        raise ValueError('SEC_USER_AGENT_MISSING')
     if client_factory is None:
         try:
             from investment_system.providers.sec_collection import SecCollectionClient
@@ -185,7 +187,7 @@ def main(argv=None):
     if not args.live: parser.error('SEC_LIVE_REQUIRED')
     try: collect_public_inputs(args.output)
     except Exception as error:
-        code = str(error) if isinstance(error, ValueError) and str(error) in {'SEC_MODULE_NOT_MERGED', 'SEC_COLLECTION_FAILED'} else 'SEC_PUBLIC_BUILD_FAILED'
+        code = str(error) if isinstance(error, ValueError) and str(error) in {'SEC_MODULE_NOT_MERGED', 'SEC_COLLECTION_FAILED', 'SEC_USER_AGENT_MISSING'} else 'SEC_PUBLIC_BUILD_FAILED'
         print(code); return 1
     print('SEC_PUBLIC_BUILD_OK companies=17'); return 0
 
