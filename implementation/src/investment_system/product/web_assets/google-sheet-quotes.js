@@ -46,8 +46,10 @@
   }
   function validScope(value) {
     if (typeof value !== 'string') return false;
-    const scopes = new Set(value.trim().split(/\s+/).map(scope => scope === 'https://www.googleapis.com/auth/userinfo.email' ? 'email' : scope));
-    return scopes.size === 2 && scopes.has(READONLY_SCOPE) && scopes.has('email');
+    const aliases = {'https://www.googleapis.com/auth/userinfo.email':'email','https://www.googleapis.com/auth/userinfo.profile':'profile'};
+    const scopes = new Set(value.trim().split(/\s+/).map(scope => Object.hasOwn(aliases,scope)?aliases[scope]:scope));
+    const allowed = new Set([READONLY_SCOPE,'email','openid','profile']);
+    return scopes.has(READONLY_SCOPE) && scopes.has('email') && [...scopes].every(scope=>allowed.has(scope));
   }
   function historyOrigin(value) {
     const label = '[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?';
@@ -111,7 +113,7 @@
       if (!enabled || !clientId) fail('OFF');
       if (!oauth()) fail('NOT_READY');
       invalidate(); const attempt = epoch; pending = true; error = ''; notify();
-      function rejected() { if (attempt !== epoch || !enabled) return; pending = false; error = 'AUTH_FAILED'; notify(); }
+      function rejected(code='AUTH_FAILED') { if (attempt !== epoch || !enabled) return; pending = false; error = code; notify(); }
       try {
         const client = oauth().initTokenClient({ client_id: clientId, scope: SCOPE, include_granted_scopes: false,
           callback(response) {
@@ -119,7 +121,10 @@
             if (!response || response.error || typeof response.access_token !== 'string' || !/^[A-Za-z0-9._~-]{1,4096}$/.test(response.access_token) || !Number.isFinite(Number(response.expires_in)) || Number(response.expires_in) <= 0 || (response.token_type && response.token_type !== 'Bearer') || !validScope(response.scope)) { rejected(); return; }
             token = response.access_token; expiresAt = now() + Math.min(Number(response.expires_in), 3600) * 1000; pending = false;
             timer = view.setTimeout(() => { expire(); }, Math.max(1, expiresAt - now())); notify();
-          }, error_callback: rejected });
+          }, error_callback: response => {
+            const codes={popup_failed_to_open:'AUTH_POPUP_FAILED_TO_OPEN',popup_closed:'AUTH_POPUP_CLOSED'};
+            rejected(response&&Object.hasOwn(codes,response.type)?codes[response.type]:'AUTH_POPUP_UNKNOWN');
+          } });
         // This call remains synchronous with the user's real button click.
         client.requestAccessToken({ prompt: 'consent' });
       } catch (_) { rejected(); }
@@ -216,6 +221,9 @@
     state.status.textContent = translate(state, !state.settings.enabled ? 'off' : current.connected ? 'connected' : current.pending || current.preparing ? 'busy' : 'disconnected');
     state.saveButton.disabled = state.busy;
     if (current.error === 'AUTH_REQUIRED') notice(state, 'auth'); else if (current.error === 'AUTH_FAILED') notice(state, 'authFailed');
+    else if(['AUTH_POPUP_FAILED_TO_OPEN','AUTH_POPUP_CLOSED','AUTH_POPUP_UNKNOWN'].includes(current.error)){
+      notice(state,'authFailed');state.notice.textContent+=' · '+current.error;
+    }
   }
   async function history(state) {
     try {
