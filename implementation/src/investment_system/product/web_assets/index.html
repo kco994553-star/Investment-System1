@@ -2,11 +2,14 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client https://apis.google.com/js/api.js https://apis.google.com/_/scs/; style-src 'self' https://accounts.google.com/gsi/style; connect-src 'self' https://sheets.googleapis.com https://oauth2.googleapis.com https://private-investment-history.kco994553.workers.dev; img-src 'self' data:; frame-src 'self' https://accounts.google.com https://docs.google.com; object-src 'none'; base-uri 'none'; form-action 'none'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client https://apis.google.com/js/api.js https://apis.google.com/_/scs/; style-src 'self' https://accounts.google.com/gsi/style; worker-src 'self'; manifest-src 'self'; connect-src 'self' https://sheets.googleapis.com https://oauth2.googleapis.com https://private-investment-history.kco994553.workers.dev; img-src 'self' data:; frame-src 'self' https://accounts.google.com https://docs.google.com; object-src 'none'; base-uri 'none'; form-action 'none'" />
     <meta
       name="viewport"
       content="width=device-width,initial-scale=1,viewport-fit=cover"
     />
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="theme-color" content="#152d2b" />
     <title>Investment System · 개인 투자</title>
     <link rel="stylesheet" href="style.css" />
@@ -62,6 +65,7 @@
     <script src="private-trades.js"></script>
     <script src="private-history.js"></script>
     <script src="sec-reported.js"></script>
+    <script src="pwa.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

@@ -25,7 +25,10 @@ class PagesArtifactGuardTests(unittest.TestCase):
         cls.addClassCleanup(cls.baseline_temp.cleanup)
         cls.baseline = Path(cls.baseline_temp.name) / "site"
         bundle = deepcopy(repository_bundle())
-        build(cls.baseline, bundle=bundle)
+        builder_spec = importlib.util.spec_from_file_location('public_cockpit_builder', GUARD_PATH.with_name('build_pages_cockpit.py'))
+        builder = importlib.util.module_from_spec(builder_spec)
+        builder_spec.loader.exec_module(builder)
+        builder.build_public_cockpit(cls.baseline)
 
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -44,7 +47,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         receipt = json.loads(result.stdout)
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 25)
+        self.assertEqual(receipt["files_scanned"], 31)
         self.assertEqual(receipt["violations"], {})
         self.assertEqual(result.stderr, "")
 
@@ -78,11 +81,24 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(self.scan()["pages_artifact_guard"], "PASS")
 
     def test_default_build_is_price_free_and_accepted(self):
-        build(self.site)
+        shutil.rmtree(self.site)
+        spec = importlib.util.spec_from_file_location('public_cockpit_builder', GUARD_PATH.with_name('build_pages_cockpit.py'))
+        builder = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(builder)
+        builder.build_public_cockpit(self.site)
         self.assertEqual(self.scan()["pages_artifact_guard"], "PASS")
         data = json.loads((self.site / "data.json").read_text())
         self.assertEqual(data["companies"], [])
         self.assertIsNone(data["universe"]["data"])
+
+    def test_pwa_icon_bytes_are_allowlisted_without_allowing_hidden_binary_data(self):
+        for name in ('icon-192.png', 'icon-512.png'):
+            with self.subTest(name=name):
+                icon = self.site / name
+                original = icon.read_bytes()
+                icon.write_bytes(original + b'SYNTHETIC_PRIVATE_ICON_CANARY')
+                self.assert_rejected('unapproved_content')
+                icon.write_bytes(original)
 
     def test_legacy_ranked_membership_is_rejected_in_directory_and_tar(self):
         self.write_json(lambda data: data["universe"].update({"data": {
@@ -339,7 +355,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
     def test_github_pages_tar_shape_passes_same_guard(self):
         receipt = self.tar_receipt()
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 25)
+        self.assertEqual(receipt["files_scanned"], 31)
         self.assertEqual(receipt["violations"], {})
 
     def test_exact_upload_action_tar_command_with_normalized_owners_passes(self):
