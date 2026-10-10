@@ -42,6 +42,7 @@ jobs:
           node implementation/tools/google_sheet_core_node_test.js
           node implementation/tools/google_sheet_auth_node_test.js
           node implementation/tools/private_history_node_test.js
+          node implementation/tools/research_indicators_node_test.js
           python -m http.server 8990 --bind 127.0.0.1 --directory "$RUNNER_TEMP/public-cockpit" > "$RUNNER_TEMP/pages-server.log" 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID"' EXIT
