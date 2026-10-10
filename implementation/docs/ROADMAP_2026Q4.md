@@ -1,8 +1,10 @@
 # 실행 로드맵 v2 — 2026년 4분기
 
-기준일: **2026-10-10 UTC**. 저장소 `kco994553-star/Investment-System1`, canonical `claude/investment-system-top500-validation-alrugm`, 확인 HEAD **`c96f05e9a10b7ba494a43b5f7fabf825ba89f21e`** (#135 사용자 승인 병합 후). 현재 상태의 단일 진입점은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md), 운영 규칙은 [WORKING_RULES](../../WORKING_RULES.md)다. 아래는 다음 실행을 정하는 문서이며 수집·예약 실행·배포·새 방법론·가중치·방법론 채택의 추가 승인이 아니다. 최신 대화에서 허용한 **26E 결정 기록 변경이 없는 PR의 조건부 자체 병합**은 최종 실행 필수 체크 전부 성공·실패0일 때 적용한다.
+기준일: **2026-10-10 UTC**. 저장소 `kco994553-star/Investment-System1`, canonical `claude/investment-system-top500-validation-alrugm`, 확인 HEAD **`342174dbd67045f3f9aded8806b3ed9b3df8bf1c`** (#149 화면 정본 병합 후). 현재 상태의 단일 진입점은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md), 운영 규칙은 [WORKING_RULES](../../WORKING_RULES.md)다. 아래는 다음 실행을 정하는 문서이며 수집·예약 실행·배포·새 방법론·가중치·방법론 채택의 추가 승인이 아니다. 최신 대화에서 허용한 **26E 결정 기록 변경이 없는 PR의 조건부 자체 병합**은 최종 실행 필수 체크 전부 성공·실패0일 때 적용한다.
 
 **Gate A·FPIA·HG: 1인용 범위 해당 없음(종료)** — #100 이후 현행 작업의 선행 조건으로 재사용하지 않는다. 계산·입력·개인정보 검사와 Frozen·원본 TARGET 불변은 유지한다.
+
+사용자 인수인계 지시: 메인 개발은 **Claude Code로 이전**, 코덱은 진행 중 PR·인수인계까지만 마무리하고 새 작업을 시작하지 않는다. 현행 장기 대기열1~9·열린 PR 의존성·배포 실행 HEAD·결정 대기는 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md)에 모았다. 화면 기준은 [디자인 캔버스 S01~S16](cockpit_ia/DESIGN_CANVAS_SCREENS_v1.md), #149 병합이다. 아래 기존 실행 로드맵 항목/순서는 보존하며 담당 표시는 이전 역할 기준이다.
 
 ## 현재 상태
 
@@ -69,8 +71,6 @@
 | 실적/13F/뉴스 범위 | 실적 출처의 대상·예정/확정 처리, 13F 추적기관 집합, 뉴스 후보·본문/링크 이용 범위 | 12·13·14. 조사→계약→승인된 수집의 범위를 구분. |
 | 모델 포트폴리오·6관점 | 6관점의 정확한 정의/기존 계약 대응과 모델 표시·적용 구분 | 4·15. 기존 PROVISIONAL 프로필 숫자를 공식 모델로 승격하지 않음. |
 | 모의투자/forward 시작 | 시작 시점·대상/전략버전·입력/결과 보관·검증 규약; v2 착수 여부 | 16. 사용자 결정 전 시작/기간 선택 없음, 기존 Holdout 미사용. |
-
-추가 장기 대기열의 결과/미확정 정의는 [TARGET19·500커버리지](company_types/QUEUE_RESULTS_AND_COVERAGE.md), [8축대응초안](macro_data_rights/EIGHT_AXIS_MAPPING_PROPOSAL.md), [DCF기본값제안](valuation/DCF_V1_PARAMETERS.md)을참조한다. 유형·테마·DCF·매크로의미확정기준은사용자확인전NA이며26E에는확정결정만추가한다.
 
 추가 장기 대기열의 결과/미확정 정의는 [TARGET19·500커버리지](company_types/QUEUE_RESULTS_AND_COVERAGE.md), [8축대응초안](macro_data_rights/EIGHT_AXIS_MAPPING_PROPOSAL.md), [DCF기본값제안](valuation/DCF_V1_PARAMETERS.md)을참조한다. 유형·테마·DCF·매크로의미확정기준은사용자확인전NA이며26E에는확정결정만추가한다.
 
