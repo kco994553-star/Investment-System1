@@ -1,0 +1,40 @@
+{
+  "schema": "public-price-cleanup-authority-receipt-v1",
+  "decision_id": "GSQ-010",
+  "authority_source_commit": "ee039041ae7f5cb94e6a127930c7e43effb811ec",
+  "authority_sources": [
+    {
+      "path": "implementation/docs/public_price_boundary/AUDIT.md",
+      "bytes": 835300,
+      "sha256": "1ca338a358a780d97ff774ae6db8c05356f8596aa86809fa3ed4964f31526dc2",
+      "git_blob_sha1": "780af5763ff24a10ce1538f083aa5aac80d470cd"
+    },
+    {
+      "path": "implementation/docs/public_price_boundary/RECEIPTS.md",
+      "bytes": 17434,
+      "sha256": "f00d2c066286a93b673d74d55be79abcf3d6b6c7e5bd7bffc4dd209a7c424731",
+      "git_blob_sha1": "55469fc2c68adc6fc380244b838e53b0a0b13a92"
+    },
+    {
+      "path": "implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md",
+      "bytes": 30844,
+      "sha256": "55a97615e524d2d235b7b6eef4cda7e4bc1ff307faedbb0fdce1533e2c6dfb38",
+      "git_blob_sha1": "4fc2fc62461cde4e86f96102f285696ea3a07ddb"
+    }
+  ],
+  "scope": "public_price_boundary_HEAD_cleanup",
+  "history_policy": "NO_REWRITE",
+  "private_archive_status": "USER_SEPARATE_ACTION_NOT_PERFORMED",
+  "transition": {
+    "path": "implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json",
+    "before": {
+      "git_blob_sha1": "d369dd3af1b7f10ccf5233cf9e04694bc7fad165",
+      "sha256": "5789dc3d3b10dd29d466931bf9c6f459d2569d15071f80dfd50236d0b0cef006",
+      "bytes": 8781
+    },
+    "before_mode": "100644",
+    "after": null,
+    "action": "DELETE_VALUES_KEEP_METADATA_RECEIPT"
+  },
+  "meaning": "Metadata evidence for this one already-authorized transition; no grant for other changes."
+}

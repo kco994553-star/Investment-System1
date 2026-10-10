@@ -49,7 +49,13 @@ def test_store_roundtrip_and_manifest_is_not_pit_availability(tmp_path):
         store.get_bytes("nope")
 
 
-def test_replay_feeds_run_as_of_through_the_real_pit_path(tmp_path):
+def test_replay_feeds_run_as_of_through_the_real_pit_path(tmp_path, monkeypatch):
+    from investment_system.providers import sec_companyfacts
+
+    def unavailable(*args, **kwargs):
+        raise OSError("independent offline missing-company test")
+
+    monkeypatch.setattr(sec_companyfacts, "urlopen", unavailable)
     store = RawDatasetStore(tmp_path / "store")
     cf = companyfacts(3, full=True)
     store.put("companyfacts:0000000003", json.dumps(cf).encode(), "https://data.sec.gov/x", "SEC_COMPANYFACTS", "application/json", "test")

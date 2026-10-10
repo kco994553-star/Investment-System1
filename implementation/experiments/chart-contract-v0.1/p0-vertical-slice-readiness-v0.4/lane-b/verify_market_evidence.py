@@ -4,6 +4,14 @@ No network, package import, raw repair, timestamp substitution, or file writes.
 Exact provider numeric tokens are retained; Decimal is only used for comparisons.
 """
 
+# GSQ-010: this historical entrypoint is retired even if old paths reappear.
+# Original algorithms remain below for provenance; no replay is authorized here.
+import json as _cleanup_json
+import sys as _cleanup_sys
+print(_cleanup_json.dumps({"status": "NOT_AVAILABLE", "reason": "GSQ-010: archived inputs removed"}))
+_cleanup_sys.exit(2)
+
+
 from collections import Counter
 from decimal import Decimal
 import hashlib

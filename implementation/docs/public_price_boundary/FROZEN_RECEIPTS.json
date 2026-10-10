@@ -1,0 +1,44 @@
+{
+  "schema": "public-price-frozen-metadata-v1",
+  "receipts": [
+    {
+      "receipt_id": "frozen-01",
+      "original_path": "implementation/reports/gate_evidence/official_snapshot_2024-06-30.json",
+      "as_of": "2024-06-30",
+      "kind": "OFFICIAL_US_MCAP_TOP500_PIT",
+      "source_commit": "a8b275e6f509838b3edd516c2d0dfdde6c50ae14",
+      "git_blob_sha1": "da6d5adbff1b0083c52f5ebe4f343f66c5c30a60",
+      "sha256": "1bbc039885ae7606a36f954aedcf955b17834e8a10a5547e59c150e53d788f8d",
+      "bytes": 180625,
+      "source_evidence_path": "implementation/reports/gate_evidence/gate_chain_2024-06-30_real_gha.json",
+      "private_archive": "USER_SEPARATE_ACTION_NOT_PERFORMED",
+      "history": "RESIDUAL_PUBLIC_COPIES_ACCEPTED_NO_REWRITE"
+    },
+    {
+      "receipt_id": "frozen-02",
+      "original_path": "implementation/reports/gate_evidence/official_snapshot_2024-09-30.json",
+      "as_of": "2024-09-30",
+      "kind": "OFFICIAL_US_MCAP_TOP500_PIT",
+      "source_commit": "a8b275e6f509838b3edd516c2d0dfdde6c50ae14",
+      "git_blob_sha1": "5e33aec98c495696cb8c3ea01b1288654a261d64",
+      "sha256": "367b8dba1a00c0b9293a9242d29255c1a9342201684bd5bb1a0168384b21e9e4",
+      "bytes": 180565,
+      "source_evidence_path": "implementation/reports/gate_evidence/gate_chain_2024-09-30_real_gha.json",
+      "private_archive": "USER_SEPARATE_ACTION_NOT_PERFORMED",
+      "history": "RESIDUAL_PUBLIC_COPIES_ACCEPTED_NO_REWRITE"
+    },
+    {
+      "receipt_id": "frozen-03",
+      "original_path": "implementation/reports/gate_evidence/official_snapshot_2024-12-31.json",
+      "as_of": "2024-12-31",
+      "kind": "OFFICIAL_US_MCAP_TOP500_PIT",
+      "source_commit": "a8b275e6f509838b3edd516c2d0dfdde6c50ae14",
+      "git_blob_sha1": "0277ec47f77ef2b0bfbab714352b2e0a76bdd7d6",
+      "sha256": "75f795f838a608a6554e9a3fa3aa8e9e56e72fdfad4e5f8f74623aa00c7a47c9",
+      "bytes": 180645,
+      "source_evidence_path": "implementation/reports/gate_evidence/gate_chain_2024-12-31_real_gha.json",
+      "private_archive": "USER_SEPARATE_ACTION_NOT_PERFORMED",
+      "history": "RESIDUAL_PUBLIC_COPIES_ACCEPTED_NO_REWRITE"
+    }
+  ]
+}

@@ -3,14 +3,24 @@ import copy
 import json
 from pathlib import Path
 import unittest
+import tempfile
+from unittest.mock import patch
 
+import verify_mapping
 from verify_mapping import verify
+from synthetic_mapping_evidence import build
 
 
 class EvidenceRejections(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.document = json.loads((Path(__file__).parent / "CURRENT_TARGET_IDENTITY_MAP.json").read_text())
+        directory = tempfile.TemporaryDirectory()
+        cls.addClassCleanup(directory.cleanup)
+        root = Path(directory.name)
+        cls.document = build(root)
+        override = patch.object(verify_mapping, "ROOT", root)
+        override.start()
+        cls.addClassCleanup(override.stop)
 
     def rejected(self, mutation):
         document = copy.deepcopy(self.document)
@@ -18,8 +28,25 @@ class EvidenceRejections(unittest.TestCase):
         with self.assertRaises(ValueError):
             verify(document)
 
-    def test_complete_source_evidence_passes(self):
+    def test_independent_identity_only_evidence_passes(self):
         self.assertEqual(verify(self.document)["current_target_refs"], "19/19")
+
+    def test_generated_xml_contains_no_price_share_or_value_fields(self):
+        import gzip
+        import xml.etree.ElementTree as ET
+        pin = self.document["source_pins"]["frozen_nport_original_replay"]
+        data = gzip.decompress((verify_mapping.ROOT / pin["replay_path"]).read_bytes())
+        tags = {element.tag for element in ET.fromstring(data).iter()}
+        self.assertEqual(tags, {"syntheticIdentityEvidence", "invstOrSec", "name", "title", "cusip", "assetCat", "curCd", "invCountry", "lei", "isin"})
+
+    def test_missing_explicit_fixture_fails_closed(self):
+        document = copy.deepcopy(self.document)
+        document["source_pins"]["frozen_nport_original_replay"]["replay_path"] = "missing-independent-fixture"
+        with self.assertRaisesRegex(ValueError, "NOT_AVAILABLE"):
+            verify(document)
+
+    def test_default_archived_evidence_is_explicitly_unavailable(self):
+        self.assertEqual(verify()["status"], "NOT_AVAILABLE")
 
     def test_cik_cannot_be_security_identity(self):
         self.rejected(lambda d: d["rows"][5].update(security_ref={"scheme": "CIK", "value": "0001045810"}))

@@ -1,3 +1,11 @@
+
+# GSQ-010: this historical entrypoint is retired even if old paths reappear.
+# Original algorithms remain below for provenance; no replay is authorized here.
+import json as _cleanup_json
+import sys as _cleanup_sys
+print(_cleanup_json.dumps({"status": "NOT_AVAILABLE", "reason": "GSQ-010: archived inputs removed"}))
+_cleanup_sys.exit(2)
+
 import sys,json
 from pathlib import Path
 sys.path[:0]=['src','tools']
