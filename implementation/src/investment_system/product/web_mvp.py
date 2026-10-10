@@ -83,7 +83,7 @@ def compose(html, css='', js=''):
     return html.replace('</head>', '<style>'+css+'</style></head>').replace('</body>', '<script src="locale.js"></script><script>'+js+'</script></body>')
 
 
-def build(out, bundle=None, demo=False, rig_page=None):
+def build(out, bundle=None, demo=False, rig_page=None, *, sec_m2_candidate=None):
     from ..prompt_library.ui import render_html
     from .entity_catalog import entity_catalog
     from .device_actual_catalog import public_actual_catalog
@@ -100,6 +100,8 @@ def build(out, bundle=None, demo=False, rig_page=None):
         b = demo_bundle(b)
     if b['relationships']['data'] is not None and not rig_page and not demo:
         raise ValueError('relationships require the reviewed Track D rendered page')
+    from .sec_m2_candidates import project_candidates, unavailable_candidates
+    candidates = unavailable_candidates() if sec_m2_candidate is None else project_candidates(sec_m2_candidate)
     device_catalog = public_actual_catalog()
     out.mkdir(parents=True, exist_ok=True)
     for f in ASSETS.iterdir():
@@ -107,6 +109,7 @@ def build(out, bundle=None, demo=False, rig_page=None):
             shutil.copyfile(f, out / f.name)
     (out / 'data.json').write_text(json.dumps(b, ensure_ascii=False), encoding='utf-8')
     (out / 'entities.json').write_text(json.dumps(entity_catalog(b), ensure_ascii=False), encoding='utf-8')
+    (out / 'sec-m2-candidates.json').write_text(json.dumps(candidates, ensure_ascii=False, allow_nan=False), encoding='utf-8')
     (out / 'actual-catalog.json').write_text(json.dumps(device_catalog, ensure_ascii=False), encoding='utf-8')
     research = compose(render_html(), (ASSETS/'research-style.css').read_text(), (ASSETS/'research-bridge.js').read_text())
     (out / 'research.html').write_text(research, encoding='utf-8')
@@ -125,8 +128,15 @@ def main():
     p.add_argument('--input', help='Producer-reviewed read-only JSON bundle (schema 1)')
     p.add_argument('--demo', action='store_true')
     p.add_argument('--rig-page', help='Trusted operator-produced Track D HTML, never arbitrary uploaded HTML')
+    p.add_argument('--sec-m2-candidate', help='Explicit private OFFLINE_SEC_QG_CANDIDATE JSON; only a strict price-free projection is public')
     a = p.parse_args()
     b = json.loads(Path(a.input).read_text()) if a.input else None
-    print(build(a.out, b, a.demo, a.rig_page))
+    from .sec_m2_candidates import load_candidates
+    try:
+        candidate = load_candidates(a.sec_m2_candidate) if a.sec_m2_candidate else None
+        build(a.out, b, a.demo, a.rig_page, sec_m2_candidate=candidate)
+    except (OSError, ValueError):
+        p.exit(1, "WEB_BUILD_FAILED\n")
+    print("Web cockpit built")
 
 if __name__ == '__main__': main()
