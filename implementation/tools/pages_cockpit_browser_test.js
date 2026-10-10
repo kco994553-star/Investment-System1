@@ -95,7 +95,11 @@ async function emptyDevice(page) {
         if (url.origin !== base.origin || !url.pathname.startsWith(base.pathname) ||
             request.method() !== "GET" || request.postData() !== null) requestProblems += 1;
       });
-      context.on("response", response => { if (response.status() >= 400) responseProblems += 1; });
+      context.on("response", response => {
+        // The optional SEC sidecar is absent from a build without collection. Other failures remain errors.
+        const missingSec = response.status() === 404 && response.url() === new URL("sec-public-inputs.json", base).href;
+        if (response.status() >= 400 && !missingSec) responseProblems += 1;
+      });
       await page.goto(new URL("#settings", base).href);
       await page.locator("#display-locale").selectOption(locale === "ko-KR" ? "en-US" : "ko-KR");
       await personalNotices(page, locale === "ko-KR" ? "en-US" : "ko-KR");
