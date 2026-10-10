@@ -49,13 +49,24 @@ import time
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
-from urllib.request import Request, urlopen
+from urllib.request import Request, HTTPRedirectHandler, build_opener
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from investment_system.ingestion.raw_store import RawDatasetStore  # noqa: E402
 from investment_system.universe.resolve import current_ticker_map  # noqa: E402
+
+from investment_system.public_price_boundary import block_public_route, require_financial_url
+
+
+class _NoPublicRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        # No unreviewed redirect may turn an approved SEC path into price acquisition.
+        block_public_route()
+
+
+urlopen = build_opener(_NoPublicRedirect()).open
 
 FETCHER = "tools/fetch_real_data.py v1"
 UA = os.environ.get("INVESTMENT_SYSTEM_SEC_UA", "Investment-System1 research contact@example.invalid")
@@ -70,6 +81,7 @@ YAHOO_EVENTS_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?i
 
 
 def _get(url: str, ua: str, headers: dict | None = None) -> tuple[bytes, int, str]:
+    require_financial_url(url)
     # headers: e.g. an API token sent as a header so it never appears in URLs, logs or manifests
     req = Request(url, headers={"User-Agent": ua, "Accept": "*/*", **(headers or {})})
     with urlopen(req, timeout=20) as resp:
@@ -88,6 +100,7 @@ def _is_egress_denial(e: BaseException) -> bool:
 
 
 def _get_with_retry(url: str, ua: str, headers: dict | None = None) -> tuple[bytes, int, str]:
+    require_financial_url(url)
     delay = BACKOFF_BASE
     for attempt in range(MAX_RETRIES + 1):
         try:
@@ -108,6 +121,8 @@ def _get_with_retry(url: str, ua: str, headers: dict | None = None) -> tuple[byt
 
 def _fetch_one(store: RawDatasetStore, artifact_id: str, url: str, source_kind: str, ua: str, log: list[dict], refresh: bool = False,
                headers: dict | None = None) -> bool:
+    from investment_system.public_price_boundary import require_financial_artifact
+    require_financial_artifact(source_kind, url, artifact_id)
     if store.has(artifact_id) and not refresh:
         log.append({"artifact_id": artifact_id, "status": "SKIPPED_ALREADY_PRESENT"})
         return True
@@ -131,6 +146,9 @@ def _fetch_one(store: RawDatasetStore, artifact_id: str, url: str, source_kind: 
         # e.g. InvalidURL for a symbol with spaces, IncompleteRead: one artifact fails, the run continues
         log.append({"artifact_id": artifact_id, "status": f"ERROR_{type(e).__name__}", "url": url})
         return False
+    if source_kind == 'SEC_COMPANYFACTS':
+        from investment_system.public_price_boundary import project_companyfacts
+        body = json.dumps(project_companyfacts(json.loads(body)), separators=(',', ':')).encode()
     store.put(artifact_id, body, url, source_kind, ctype, FETCHER, http_status=status)
     log.append({"artifact_id": artifact_id, "status": "OK", "bytes": len(body)})
     return True
@@ -185,6 +203,9 @@ def _throttle(log: list[dict], sleep: float) -> None:
 
 def run(store_dir: Path, ciks: list[str], symbols: list[str], chart_range: str, sleep: float, skip_tickers: bool, refresh: bool = False,
         plan: dict | None = None, with_split_events: bool = False) -> dict:
+    from investment_system.public_price_boundary import block_public_route
+    if symbols or plan is not None or with_split_events:
+        block_public_route()
     store = RawDatasetStore(store_dir)
     _BLOCKED_HOSTS.clear()
     log: list[dict] = []

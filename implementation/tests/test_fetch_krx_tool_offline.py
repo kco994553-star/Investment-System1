@@ -4,11 +4,11 @@ import importlib.util, os, tempfile
 def load():
  p=Path(__file__).parents[1]/'tools'/'fetch_krx_data.py'; s=importlib.util.spec_from_file_location('fetch_krx_data',p); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); return m
 
-def test_krx_runner_requires_env_secret():
+def test_krx_runner_is_withheld_before_secret_lookup():
  m=load(); old=os.environ.pop('KRX_AUTH_KEY',None)
  try:
   try: m.run(Path(tempfile.mkdtemp()),'20260923',['kospi_daily'])
-  except RuntimeError as e: assert 'KRX_AUTH_KEY' in str(e)
+  except ValueError as e: assert 'PUBLIC_PRICE_BOUNDARY' in str(e)
   else: assert False
  finally:
   if old is not None: os.environ['KRX_AUTH_KEY']=old

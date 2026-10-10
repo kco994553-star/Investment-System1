@@ -26,6 +26,8 @@ from investment_system.producers.registry import FrozenUniverseProducer, Produce
 
 
 def main(argv=None) -> int:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     p = argparse.ArgumentParser()
     p.add_argument('--now', required=True, help='explicit tz-aware evaluation clock')
     p.add_argument('--requested-as-of', help='defaults to --now')

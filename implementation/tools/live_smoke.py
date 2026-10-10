@@ -16,6 +16,8 @@ from investment_system.qgv.financial_issuer import analyze_synthetic_jpm, try_se
 
 
 def main() -> int:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     now = datetime.now(timezone.utc)
     report = {
         "kind": "LIVE_ATTEMPT",

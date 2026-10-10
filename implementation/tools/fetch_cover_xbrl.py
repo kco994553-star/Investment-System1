@@ -111,11 +111,7 @@ def run(store_dir: Path, as_of: datetime, ciks: list[str], chart_range: str = "5
                 symbols.update(chain.same_cik_ticker(store, c, s) or s for s in class_symbols(parse_cover(store.get_bytes(f["artifact_id"]))).values())
             except Exception as e:  # noqa: BLE001 - malformed instance stays a logged gap
                 log.append({"artifact_id": f["artifact_id"], "status": f"PARSE_ERROR_{type(e).__name__}"})
-    for sym in sorted(s.replace(".", "-") for s in symbols):
-        for aid, url, kind in ((f"yahoo_chart:{sym}:{chart_range}", frd.YAHOO_CHART_URL, "YAHOO_CHART"),
-                               (f"yahoo_events:{sym}:{chart_range}", frd.YAHOO_EVENTS_URL, "YAHOO_SPLIT_EVENTS")):
-            frd._fetch_one(store, aid, url.format(symbol=sym, range=chart_range), kind, frd.YAHOO_UA, log, False)
-            frd._throttle(log, sleep)
+    # GSQ-010: cover facts remain available; class price acquisition is withheld.
     ok = sum(1 for r in log if r["status"] in ("OK", "SKIPPED_ALREADY_PRESENT"))
     report = {"kind": "COVER_XBRL_INGEST_RUN", "as_of": as_of.isoformat(), "n_issuers": len(ciks), "n_submission_pages": n_pages,
               "n_filings": len(picked), "n_class_symbols": len(symbols), "n_requested": len(log), "n_ok": ok,

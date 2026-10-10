@@ -1,3 +1,4 @@
+from tests.boundary_assertions import route_withheld_without_writes
 """Universe Completeness Gate + Top-500 Sufficiency Gate (independent Promotion
 Gate extensions). No network. All evidence here is synthetic/offline-computed."""
 import importlib.util, json
@@ -169,7 +170,7 @@ def test_v2_gate_still_fails_closed_if_base_numeric_checks_fail_even_with_clean_
     assert g['base_gate']['passed'] is False
 
 
-def test_cli_v2_gate_end_to_end_fail_closed(tmp_path, monkeypatch):
+def test_cli_v2_gate_end_to_end_fail_closed_public_route_withheld(tmp_path, monkeypatch):
     m = load_tool()
     store = RawDatasetStore(tmp_path / 'raw')
     listings_path = tmp_path / 'listings.json'
@@ -179,7 +180,5 @@ def test_cli_v2_gate_end_to_end_fail_closed(tmp_path, monkeypatch):
     out = tmp_path / 'gate2.json'
     monkeypatch.setattr('sys.argv', ['audit_mcap_store.py', '--store', str(tmp_path / 'raw'), '--listings', str(listings_path),
                                       '--as-of', AS_OF, '--eligibility-evidence', str(ev_path), '--gate-v2-out', str(out)])
-    m.main()
-    g = json.loads(out.read_text(encoding='utf-8'))
-    assert g['passed'] is False
-    assert 'NEITHER_COMPLETENESS_NOR_SUFFICIENCY_GATE_PASSED' in g['reasons']
+    with route_withheld_without_writes(tmp_path):
+        m.main()

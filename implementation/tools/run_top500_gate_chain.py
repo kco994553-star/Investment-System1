@@ -1205,6 +1205,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
               nport_prices: dict | None = None, symbol_mappings: dict | None = None,
               corporate_action_policy: dict | None = None, nport_investigation: dict | None = None,
               nport_cross_check: dict | None = None, share_unit_policy: dict | None = None) -> dict:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     amc = _load("audit_mcap_store")
     d = amc._dt(as_of if "T" in as_of else as_of + "T00:00:00+00:00")
     cand = verify_cik_candidates(store, cik_candidates)
@@ -1383,6 +1385,8 @@ def run_chain(store: RawDatasetStore, listings: dict, as_of: str, detector_refs:
 
 
 def main() -> None:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
     ap.add_argument("--listings", type=Path, default=ROOT / "reports" / "us_ingested_facts_listings.json")

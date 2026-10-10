@@ -9,11 +9,12 @@ from investment_system.qgv.analysis import AnalysisEngine
 from investment_system.technical.engine import TechnicalEngine
 from investment_system.macro.engine import MacroEngine
 from investment_system.qgv.portfolio import PortfolioEngine
+from tests.web_contract_fixture import synthetic_bundle
 from tests.helpers import AS_OF, complete_obs
 
 
 def test_canonical_catalog_reuses_identity_and_does_not_mutate():
-    b = demo_bundle(repository_bundle())
+    b = synthetic_bundle()
     before = deepcopy(b)
     cat = entity_catalog(b)
     assert b == before
@@ -26,7 +27,7 @@ def test_canonical_catalog_reuses_identity_and_does_not_mutate():
 
 
 def test_registered_investor_and_historical_metadata_only():
-    b = repository_bundle()
+    b = synthetic_bundle()
     b['search_entities'] = [{'entity_type': 'INVESTOR', 'canonical_id': 'test-investor',
         'canonical_label': 'Registered Test Investor', 'aliases': {'ko-KR': ['테스트 투자자']},
         'source': 'test registration; no profile'}]
@@ -39,7 +40,7 @@ def test_registered_investor_and_historical_metadata_only():
 
 
 def test_reject_duplicate_entities_and_invalid_aliases():
-    b = repository_bundle()
+    b = synthetic_bundle()
     b['search_entities'] = [{'entity_type':'MACRO','canonical_id':'CPIAUCSL',
         'canonical_label':'Duplicate','source':'test'}]
     with pytest.raises(ValueError):
@@ -55,7 +56,7 @@ def test_build_preserves_numerical_snapshots_and_source_original(tmp_path):
     technical = TechnicalEngine().evaluate('nvda', AS_OF, [0.01, 0.02, -0.01]).to_dict()
     macro = MacroEngine().evaluate(AS_OF, {'growth':0.04,'inflation':0.02}).to_dict()
     portfolio = PortfolioEngine().official_v11(AS_OF).to_dict()
-    b = demo_bundle(repository_bundle())
+    b = synthetic_bundle()
     for key, value in [('qgv',{'nvda':qgv}),('technical',{'nvda':technical}),
                        ('macro',macro),('portfolio',portfolio)]:
         b[key] = envelope(value, 'DEMO', AS_OF.isoformat(), 'test producer / synthetic')
@@ -65,18 +66,17 @@ def test_build_preserves_numerical_snapshots_and_source_original(tmp_path):
         'provenance':{'stamp':'original'},'raw_source_data':'raw SEC filing'}}],
         'DEMO', AS_OF.isoformat(), 'test producer')
     before = deepcopy(b)
-    build(tmp_path, bundle=b)
+    with pytest.raises(ValueError, match='PUBLIC_PRICE_BOUNDARY'):
+        build(tmp_path, bundle=b)
     assert b == before
-    assert json.loads((tmp_path/'data.json').read_text()) == before
-    assert (tmp_path/'locale.js').exists() and (tmp_path/'entity-search.js').exists()
-    assert json.loads((tmp_path/'entities.json').read_text()) == entity_catalog(b)
+    assert not (tmp_path/'data.json').exists()
     # Locale has no path into any engine; browser test changes it against these payload shapes.
     assert 'display_locale' not in json.dumps(before)
 
 
-def test_default_build_company_identity_still_exact_500(tmp_path):
+def test_default_build_withholds_legacy_company_membership(tmp_path):
     b = repository_bundle()
     build(tmp_path, bundle=b)
     cat = json.loads((tmp_path/'entities.json').read_text())
-    assert len([e for e in cat['entities'] if e['entity_type'] == 'COMPANY']) == 500
+    assert len([e for e in cat['entities'] if e['entity_type'] == 'COMPANY']) == 0
     assert json.loads((tmp_path/'data.json').read_text())['universe'] == b['universe']

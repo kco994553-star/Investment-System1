@@ -693,5 +693,10 @@ syncShell();
 Promise.all(["data.json","entities.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
 }))).then(([data,catalog])=>{
-  D=guardSections(data);searchIndex=EntitySearch.createIndex(catalog.entities);load();render();paintGlobalSearch();
+  // GSQ-010: legacy public producer payloads are withheld, including membership/order.
+  // The private device catalog and device/session data have their own boundary.
+  const publicSections=["universe","qgv","technical","macro","portfolio","leaderboard","news","relationships","changes"];
+  const safeData={schema_version:1,companies:[]};
+  for(const name of publicSections) safeData[name]={state:"NOT_AVAILABLE",as_of:null,source:null,reason:"공개 가격 경계에 따라 제공되지 않습니다. (GSQ-010)",data:null};
+  D=guardSections(safeData);searchIndex=EntitySearch.createIndex(catalog.entities.filter(e=>e.entity_type!=="COMPANY"));load();render();paintGlobalSearch();
 }).catch(showUnavailable);

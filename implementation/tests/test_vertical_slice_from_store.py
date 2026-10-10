@@ -59,10 +59,14 @@ def test_stubbed_ingest_then_vertical_slice_then_walk_forward(tmp_path, monkeypa
 
     monkeypatch.setattr(mod, "urlopen", fake)
     monkeypatch.setattr(mod.time, "sleep", lambda s: None)
-    rep = mod.run(Path(tmp_path) / "store", list(ciks.values()), list(syms.values()), "5y", 0.0, skip_tickers=False)
+    rep = mod.run(Path(tmp_path) / "store", list(ciks.values()), [], "5y", 0.0, skip_tickers=False)
     assert rep["n_failed"] == 0
 
     store = RawDatasetStore(Path(tmp_path) / "store")
+    # Price bars are invented in-memory fixtures; the collector cannot acquire them.
+    for sym in syms.values():
+        store.put(f'yahoo_chart:{sym}:5y', json.dumps(_chart(sym, [10., 11., 12., 13.])).encode(),
+                  'test:synthetic', 'SYNTHETIC', 'application/json', 'test')
     roster = tuple(UniverseMember(cid, sym, entered_on="2015-01-01", cik=ciks[cid]) for cid, sym in syms.items())
     t0 = datetime(2026, 3, 31, tzinfo=UTC)
     t1 = datetime(2026, 9, 30, tzinfo=UTC)

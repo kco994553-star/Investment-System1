@@ -103,12 +103,13 @@ def import_sec(store: RawDatasetStore, path: Path, refresh: bool, archive_sha256
                 continue
             body = zf.read(info)
             try:
-                json.loads(body)
-            except (json.JSONDecodeError, UnicodeDecodeError):
+                from investment_system.public_price_boundary import project_companyfacts
+                body = json.dumps(project_companyfacts(json.loads(body)), separators=(',', ':')).encode()
+            except (ValueError, UnicodeDecodeError):
                 bad += 1
                 continue
             store.put(aid, body, SEC_SOURCE, "SEC_COMPANYFACTS_BULK", "application/json", FETCHER, 200,
-                      notes=f"bulk member={info.filename}" + (f"; archive_sha256={archive_sha256}" if archive_sha256 else ""))
+                      notes="GSQ-010 financial fact projection" + (f"; archive_sha256={archive_sha256}" if archive_sha256 else ""))
             ok += 1
     return {"source": "SEC_COMPANYFACTS_BULK", "imported": ok, "skipped": skipped, "bad": bad}
 
@@ -153,6 +154,8 @@ def _stooq_to_chart(body: bytes, symbol: str) -> bytes | None:
 
 
 def import_stooq(store: RawDatasetStore, path: Path, chart_range: str, refresh: bool, archive_sha256: str = "") -> dict:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     ok = skipped = bad = 0
     with zipfile.ZipFile(path) as zf:
         for info in zf.infolist():
@@ -185,6 +188,9 @@ def main() -> int:
     ap.add_argument("--stooq-sha256", help="expected sha256 of --stooq-us (optional)")
     ap.add_argument("--report-out", type=Path)
     a = ap.parse_args()
+    if a.stooq_us and not a.verify_only:
+        from investment_system.public_price_boundary import block_public_route
+        block_public_route()
     if not a.sec_companyfacts and not a.stooq_us:
         ap.error("provide --sec-companyfacts and/or --stooq-us")
     verification = []

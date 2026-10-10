@@ -25,9 +25,6 @@ class PagesArtifactGuardTests(unittest.TestCase):
         cls.addClassCleanup(cls.baseline_temp.cleanup)
         cls.baseline = Path(cls.baseline_temp.name) / "site"
         bundle = deepcopy(repository_bundle())
-        bundle["universe"]["data"].pop("cutoff_mcap")
-        for member in bundle["universe"]["data"]["members"]:
-            member.pop("mcap")
         build(cls.baseline, bundle=bundle)
 
     def setUp(self):
@@ -80,11 +77,26 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertTrue(all("target_units" in row for row in catalog["instruments"]))
         self.assertEqual(self.scan()["pages_artifact_guard"], "PASS")
 
-    def test_default_unredacted_build_reports_only_monetary_field_count(self):
+    def test_default_build_is_price_free_and_accepted(self):
         build(self.site)
-        receipt = self.assert_rejected("sensitive_json_fields")
-        self.assertEqual(receipt["violations"]["sensitive_json_fields"], 501)
-        self.assertNotIn("mcap", json.dumps(receipt))
+        self.assertEqual(self.scan()["pages_artifact_guard"], "PASS")
+        data = json.loads((self.site / "data.json").read_text())
+        self.assertEqual(data["companies"], [])
+        self.assertIsNone(data["universe"]["data"])
+
+    def test_legacy_ranked_membership_is_rejected_in_directory_and_tar(self):
+        self.write_json(lambda data: data["universe"].update({"data": {
+            "members": [{"company_id": "invented", "rank": 1}], "cutoff_mcap": 12345}}))
+        receipt = self.assert_rejected("public_price_boundary")
+        archive = Path(self.temp.name) / 'legacy.tar'
+        with tarfile.open(archive, 'w', format=tarfile.USTAR_FORMAT) as handle:
+            for path in sorted(self.site.iterdir()):
+                info = handle.gettarinfo(str(path), arcname='./' + path.name)
+                info.uid = info.gid = 0
+                info.uname = info.gname = ''
+                with path.open('rb') as body:
+                    handle.addfile(info, body)
+        self.assertEqual(self.guard().validate_pages_tar(archive), receipt)
 
     def test_altered_assets_with_unrecognized_data_fail_pinned_manifest(self):
         for name in ("app.js", "index.html", "style.css", "research.html",
@@ -114,7 +126,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
 
     def test_existing_json_fields_deletions_and_array_order_are_pinned(self):
         mutations = (
-            ("data.json", lambda data: data["companies"][0].update({"name": "SYNTHETIC_RENAMED_ONLY"})),
+            ("data.json", lambda data: data["companies"].append({"name": "SYNTHETIC_RENAMED_ONLY"})),
             ("entities.json", lambda data: data.update({"schema_version": 999})),
             ("actual-catalog.json", lambda data: data["instruments"][0].update({"target_units": 999})),
             ("data.json", lambda data: data.pop("changes")),

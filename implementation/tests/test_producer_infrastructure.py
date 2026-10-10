@@ -35,7 +35,7 @@ H = '0' * 64
 
 
 def companies():
-    return FrozenUniverseProducer().companies()
+    return [{'company_id': 'example', 'ticker': 'EXAMPLE', 'name': 'Synthetic identity'}]
 
 
 def live(**over):
@@ -129,21 +129,24 @@ def test_missing_provenance_fails():
             validate_snapshot(live(provenance=prov))
 
 
-def test_bad_source_hash_fails():
+def test_bad_source_hash_fails(tmp_path):
     for bad in ('abc', 'G' * 64, H.upper().replace('0', 'A')):
         with pytest.raises(SourceHashError):
             validate_snapshot(live(provenance={'source': 's', 'inputs': [{'artifact_id': 'a', 'sha256': bad}]}))
     s = live(); s['data'][next(iter(s['data']))]['regime'] = 'TREND_UP'
     with pytest.raises(SourceHashError):
         validate_snapshot(s)
-    u = FrozenUniverseProducer().produce(ProduceRequest(NOW, NOW))
-    assert len(verify_inputs(u, file_resolver(ROOT))) == 2
+    from hashlib import sha256
+    (tmp_path / 'input.json').write_bytes(b'{}')
+    u = live(provenance={'source': 'invented', 'inputs': [
+        {'artifact_id': 'file:input.json', 'sha256': sha256(b'{}').hexdigest()}]})
+    assert len(verify_inputs(u, file_resolver(tmp_path))) == 1
     t = deepcopy(u); t['provenance']['inputs'][0]['sha256'] = H
     with pytest.raises(SourceHashError):
-        verify_inputs(t, file_resolver(ROOT))
+        verify_inputs(t, file_resolver(tmp_path))
     t = deepcopy(u); t['provenance']['inputs'][0]['artifact_id'] = 'file:../outside.json'
     with pytest.raises(ProvenanceError):
-        verify_inputs(t, file_resolver(ROOT))
+        verify_inputs(t, file_resolver(tmp_path))
 
 
 def test_synthetic_cannot_be_live_or_hidden():
@@ -199,18 +202,13 @@ def test_deterministic_serialization_and_bundle_hash():
                                          NOW + timedelta(seconds=1))) != bundle_sha256(b1)
 
 
-def test_default_export_equals_existing_web_default_semantics():
+def test_legacy_assembled_export_is_withheld_before_public_write(tmp_path):
     b = assemble_bundle(companies(), registry_snaps(), NOW)
-    r = repository_bundle()
-    assert b['companies'] == r['companies'] and b['universe']['data'] == r['universe']['data']
-    assert b['universe']['state'] == 'FROZEN_SNAPSHOT' and b['universe']['source'] == r['universe']['source']
-    for name in ('qgv', 'technical', 'macro', 'portfolio', 'leaderboard', 'news', 'relationships', 'changes'):
-        assert b[name]['state'] == 'NOT_AVAILABLE' and b[name]['data'] is None and b[name]['reason'] == r[name]['reason']
-        assert b[name]['producer']['reason_code']
-    validate_bundle(b)
-    with tempfile.TemporaryDirectory() as d:
-        build(d, b)
-        assert json.loads((Path(d) / 'data.json').read_text())['producer_manifest']['contract'] == 'PRODUCER_BUNDLE'
+    assert b['universe']['state'] == 'NOT_AVAILABLE'
+    validate_bundle(b)  # Internal producer contracts remain usable.
+    with pytest.raises(ValueError, match='PUBLIC_PRICE_BOUNDARY'):
+        build(tmp_path / 'site', b)
+    assert not (tmp_path / 'site').exists()
 
 
 def test_assembler_requires_every_section_and_matching_identity():
@@ -228,7 +226,7 @@ def test_assembler_requires_every_section_and_matching_identity():
 def test_atomic_write_fails_closed_and_preserves_previous():
     with tempfile.TemporaryDirectory() as d:
         out = Path(d) / 'bundle.json'
-        good = assemble_bundle(companies(), registry_snaps(), NOW)
+        good = repository_bundle()
         digest = write_bundle_atomic(good, out)
         before = out.read_bytes()
         assert (Path(d) / 'bundle.json.sha256').read_text().split()[0] == digest == bundle_sha256(good)
@@ -240,6 +238,7 @@ def test_atomic_write_fails_closed_and_preserves_previous():
 
 def test_web_validator_live_missing_expiry_is_value_error_not_key_error():
     b = repository_bundle()
+    b['companies'] = companies()
     cid = b['companies'][0]['company_id']
     b['technical'] = {'state': 'LIVE', 'as_of': '2026-10-01T00:00:00+00:00', 'source': 's', 'data': {cid: {}}}
     with pytest.raises(ValueError) as e:
@@ -280,9 +279,9 @@ def test_adapters_are_verbatim_and_fail_closed():
     assert isinstance(MacroEngine().evaluate(NOW, {}), MacroSnapshot)
 
 
-def test_registry_has_no_live_producer_and_universe_is_frozen():
+def test_registry_has_no_live_producer_and_universe_is_withheld():
     snaps = registry_snaps()
-    assert snaps['universe']['data_state'] == 'FROZEN_SNAPSHOT' and snaps['universe']['as_of'] == '2024-12-31T00:00:00+00:00'
+    assert snaps['universe']['data_state'] == 'NOT_AVAILABLE' and snaps['universe']['data'] is None
     assert snaps['universe']['requested_as_of'] == NOW.isoformat()
     assert all(s['data_state'] == 'NOT_AVAILABLE' for k, s in snaps.items() if k != 'universe')
     assert not any(s['data_state'] in ('LIVE', 'DEMO') for s in snaps.values())

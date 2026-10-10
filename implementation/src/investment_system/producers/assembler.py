@@ -100,6 +100,8 @@ def _atomic_write(path: Path, data: bytes) -> None:
 
 def write_bundle_atomic(bundle: dict, path) -> str:
     """Validate, then write canonical bytes + <name>.sha256. On any failure nothing is replaced."""
+    from ..public_price_boundary import require_public_bundle
+    require_public_bundle(bundle)
     validate_bundle(bundle)
     data = canonical_bytes(bundle)
     digest = sha256_hex(data)

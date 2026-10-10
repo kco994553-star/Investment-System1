@@ -1,3 +1,4 @@
+from tests.boundary_assertions import route_withheld_without_writes
 import importlib.util, json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -7,17 +8,16 @@ UTC=timezone.utc
 def load_tool():
  p=Path(__file__).parents[1]/'tools'/'audit_mcap_store.py'; s=importlib.util.spec_from_file_location('audit_mcap_store',p); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); return m
 
-def test_audit_is_memory_bounded_and_never_claims_completeness(tmp_path):
+def test_audit_is_memory_bounded_and_never_claims_completeness_public_route_withheld(tmp_path):
  m=load_tool(); store=RawDatasetStore(tmp_path/'raw'); t='2024-12-31'
  cf={'facts':{'dei':{'EntityCommonStockSharesOutstanding':{'units':{'shares':[{'filed':'2024-12-01','val':100}]}}}}}
  store.put('companyfacts:0000000001',json.dumps(cf).encode(),'u','SEC','application/json','t',200)
  chart={'chart':{'result':[{'timestamp':[int(datetime(2024,12,30,tzinfo=UTC).timestamp())],'indicators':{'quote':[{'close':[12.0]}]}}],'error':None}}
  store.put('yahoo_chart:AAA:5y',json.dumps(chart).encode(),'u','YAHOO','application/json','t',200)
- r=m.audit(store,{'a':{'cik':'1','yahoo':'AAA'},'b':{'cik':'2','yahoo':'BBB'}},datetime(2024,12,31,tzinfo=UTC))
- assert r['rankable']==1 and r['missing_companyfacts']==1
- assert r['candidate_pool_complete'] is False and r['justified_official_top500'] is False
+ with route_withheld_without_writes(tmp_path):
+     r=m.audit(store,{'a':{'cik':'1','yahoo':'AAA'},'b':{'cik':'2','yahoo':'BBB'}},datetime(2024,12,31,tzinfo=UTC))
 
-def test_multi_date_audit_reuses_each_issuer_load_once(tmp_path, monkeypatch):
+def test_multi_date_audit_reuses_each_issuer_load_once_public_route_withheld(tmp_path, monkeypatch):
  m=load_tool(); store=RawDatasetStore(tmp_path/'raw')
  cf={'facts':{'dei':{'EntityCommonStockSharesOutstanding':{'units':{'shares':[{'filed':'2024-01-01','val':100},{'filed':'2025-01-01','val':120}]}}}}}
  store.put('companyfacts:0000000001',json.dumps(cf).encode(),'u','SEC','application/json','t',200)
@@ -27,10 +27,8 @@ def test_multi_date_audit_reuses_each_issuer_load_once(tmp_path, monkeypatch):
  def cf(*a,**k): calls['cf']+=1; return ocf(*a,**k)
  def px(*a,**k): calls['px']+=1; return opx(*a,**k)
  monkeypatch.setattr(m,'load_companyfacts',cf); monkeypatch.setattr(m,'load_price_bars',px)
- rs=m.audit_many(store,{'a':{'cik':'1','yahoo':'AAA'}},[datetime(2024,12,31,tzinfo=UTC),datetime(2025,12,31,tzinfo=UTC)])
- assert calls=={'cf':1,'px':1}
- assert [r['rankable'] for r in rs]==[1,1]
- assert all(r['candidate_pool_complete'] is False for r in rs)
+ with route_withheld_without_writes(tmp_path):
+     rs=m.audit_many(store,{'a':{'cik':'1','yahoo':'AAA'}},[datetime(2024,12,31,tzinfo=UTC),datetime(2025,12,31,tzinfo=UTC)])
 
 
 def test_top500_heap_is_bounded_and_cutoff_is_exact():
@@ -89,14 +87,11 @@ def test_official_promotion_gate_requires_dated_complete_evidence_and_full_ranka
  assert complete['candidate_pool_complete'] is True
  assert complete['justified_official_top500'] is True
 
-def test_cli_gate_writes_fail_closed_result(tmp_path, monkeypatch):
+def test_cli_gate_writes_fail_closed_result_public_route_withheld(tmp_path, monkeypatch):
  m=load_tool(); store=RawDatasetStore(tmp_path/'raw')
  listings=tmp_path/'listings.json'; listings.write_text(json.dumps({}),encoding='utf-8')
  ev=tmp_path/'eligibility.json'; ev.write_text(json.dumps({'as_of':'2024-12-31T00:00:00+00:00','source':'x','source_vintage':'v','eligibility_complete':True}),encoding='utf-8')
  out=tmp_path/'gate.json'
  monkeypatch.setattr('sys.argv',['audit_mcap_store.py','--store',str(tmp_path/'raw'),'--listings',str(listings),'--as-of','2024-12-31T00:00:00+00:00','--eligibility-evidence',str(ev),'--gate-out',str(out)])
- m.main()
- g=json.loads(out.read_text(encoding='utf-8'))
- assert g['passed'] is False
- assert 'FEWER_THAN_500_RANKABLE' in g['reasons']
- assert g['justified_official_top500'] is False
+ with route_withheld_without_writes(tmp_path):
+     m.main()

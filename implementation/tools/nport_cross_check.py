@@ -99,6 +99,8 @@ def targets(holdings: list[dict], cusips: list[str]) -> dict:
 
 
 def fetch_series_nport(store, frd, fnr, page_mod, log, registrant: str, token: str, series: str, as_of: str) -> dict:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     get = lambda aid, url, kind: (frd._fetch_one(store, aid, url, kind, frd.UA, log, False), frd._throttle(log, 0.15))  # noqa: E731
     get(f"submissions:{registrant}", fnr.SUBMISSIONS_URL.format(cik=registrant), "SEC_SUBMISSIONS")
     sub = load_submissions_merged(store, registrant)[0] or {}
@@ -122,6 +124,8 @@ def fetch_series_nport(store, frd, fnr, page_mod, log, registrant: str, token: s
 
 
 def main() -> None:
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     ap = argparse.ArgumentParser()
     ap.add_argument("--store", default=str(ROOT / "data" / "raw"))
     ap.add_argument("--as-of", required=True)
