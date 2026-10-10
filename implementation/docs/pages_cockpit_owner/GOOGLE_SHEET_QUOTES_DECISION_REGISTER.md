@@ -291,3 +291,21 @@ GSQ-001~009의 내용과 사용자 인지·수용 기록을 그대로 보존하�
 수정과 Secret 값 조회·출력은 금지한다. GSQ-007/008의 개인 가격 경로·공개 가격 금지,
 GSQ-009의 KRX 대체 출처 후보와 나머지 경계는 유지한다. 과거 공개 사본 잔존의
 수용은 앞으로 실제 가격·가격 파생값을 새 공개 경로에 게시하는 허가가 아니다.
+
+
+## GSQ-011 — 26E 원기관 Macro 4축·Holdout 보호 확인·개인 M3 부분집합 결정 (2026-10-10 UTC)
+
+권한 근거는 **2026-10-10 이번 대화의 사용자 명시 결정**이다. GSQ-001~010과 과거 기록의 bytes는 그대로 보존하고 이 결정을 끝에 추가한다. 문서 전용 PR(.md만 변경)은 최종 head의 실행된 필수 체크 전부 성공·실패 0이면 자체 병합할 수 있다는 최신 운영 승인을 적용한다. 코드·데이터·워크플로가 섞인 PR은 병합하지 않는다.
+
+| 항목 | 사용자 결정과 범위 |
+| --- | --- |
+| Macro 경로 | **무료 원기관 직접 경로를 채택**한다. BLS·BEA·Treasury 등 공공 자료를 사용하며 FRED/ALFRED는 서면 허가 전 계속 차단한다. 무료/공공 표시는 개별 자료·서비스 조건·최초 가용 시각·빈티지 확인을 생략하는 허가가 아니다. |
+| Macro 1차 | **Inflation(BLS CPI), Labor(BLS), Monetary Policy/금리(Treasury), Growth(BEA GDP)**의 4축 입력 경계부터 구현 명세를 작성한다. Liquidity·Credit·Fiscal·FX의 나머지 4축은 후속이다. Treasury 수익률은 정책목표 금리와 다른 입력이며 이 결정이 새 금리 해석·6상태 계산식·가중치를 승인하지 않는다. |
+| QGV v2 | **착수 보류**. 기존 Holdout 보호 상태 확인 절차만 먼저 실행한다. 기간·표본 선택 및 Holdout 원자료·label·결과 열람/사용, calibration·v2 실행은 금지한다. 저장소 근거만으로 보호/소비 여부를 판정하며 증거 부재를 미소비로 간주하지 않는다. |
+| M3 1차 | **부분집합부터** 시작한다. TARGET 19 + 관심 기업 + 대형주 일부, 약 100개를 계획 범위로 하며 본인 기기/Worker에서 비공개로 계산한다. 약 100개는 확정 roster·모델 최소 표본·전체 미국 상위100을 뜻하지 않는다. 전체500은 후속이다. 관심/대형주 구체 목록은 본인이 명시하며 개인 자료를 공개 저장소에 추가하지 않는다. |
+| 구현 명세 | 코덱1용 Macro 4축의 endpoint/series·발표/빈티지·PIT·8축6상태·테스트와 M3 대상 구성·SEC 주식 수/Worker 가격·기기 계산·공개 금지·테스트를 문서로 작성한다. 기존 방법론·QGV/Technical/Macro 버전·가중치를 변경하지 않는다. |
+| 공개/저장 경계 | GSQ-007~010의 본인 가격/파생값/현재 선정 membership·순위 공개 금지와 휘발성 처리, GSQ-008 인증/Free 조건을 유지한다. 공개 SEC/DART 재무의 기존 조건은 유지하되 가격 결합 결과를 public bundle로 되돌리지 않는다. |
+
+이번 작업의 실행 범위는 **append-only 결정 기록, 구현 명세 작성, 저장소의 metadata/문서/소스에 근거한 Holdout 보호 판정, 문서 PR 검증 및 조건 충족 병합**이다. 코드·테스트·워크플로를 수정하거나 실제 가격/통계 수집·공급자 인증·Secret 조회/출력·배포를 실행하지 않는다. force push·ruleset·`AUTONOMY_MODE` 변경, 새 방법론·가중치, Holdout 사용은 금지한다. 코덱1의 후속 code PR에 필요한 review·구현/운영 승인과 병합 경계는 별도다.
+
+산출물: [Macro 4축 구현 명세](../macro_data_rights/PHASE1_FOUR_AXES_IMPLEMENTATION_SPEC.md), [Holdout 보호 확인 실행 기록 — UNCONFIRMED](../qgv_v2_readiness/HOLDOUT_PROTECTION_CHECK_20261010.md), [M3 개인 부분집합 구현 명세](../daily_data_pipeline/M3_SUBSET_IMPLEMENTATION_SPEC.md). 구체 관심/대형주 roster, provider 실제 접근·권리, owner의 외부 보호 metadata는 확인됐다고 추정하지 않는다.
