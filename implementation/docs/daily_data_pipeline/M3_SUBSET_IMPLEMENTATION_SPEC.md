@@ -6,7 +6,7 @@
 **Architecture:** 기기 `prefs.interests` snapshot + TARGET identity + 기존 GIS session의 Universe 1회 GET → 기기의 SEC shares/price·marketcap 품질 비교 → 검증 행의 상위 N → 세 출처 합집합 manifest → 개인 RAM 순위. Worker는 필요한 SEC 공개 재무/기존 개인 가격만 relay하며 시트 ID·시트 payload·선정 목록을 전달받지 않는다.
 **Stack:** 기존 vanilla JS/Node test runner/Worker ES modules. 첫 PR은 pure input/계산 계약, 둘째 PR은 본인 인증 relay·기기 연결로 분리한다. 아래 code write-set은 **후속 구현 제안**이며 이번 작업은 .md만 변경한다.
 
-1차 규모는 TARGET19∪기기 ★∪검증된 Universe 상위 N이며 고정100개 목표/최소 표본이 없다. N은 사용자 설정이고 **기본 N/품질 임계값 제안은 §2A에서 사용자 확인 대기**다. 시총 계산 부하·권리 확인 조건을 유지하며 Sheets 읽기 권한을 데이터의 정확성·재배포 권리로 해석하지 않는다. 전체500과 Official/P02 중간 시점 정책도 후속이다. 새 투자 방법론·가중치·FX 변환·share-class/ADR 보정·QGV 점수식을 만들지 않는다. Yahoo 비공식 자동 조회의 **무허가 부적합** 판정과 공급자 허가 미확인은 GSQ-007대로 유지한다. 본인용·무저장·Free가 공급자 허가를 대신하지 않는다.
+1차 규모는 TARGET19∪기기 ★∪검증된 Universe 상위 N이며 고정100개 목표/최소 표본이 없다. N은 사용자 설정이고 **GSQ-014로 기본 N=20·품질 임계10%가 확정**다. 시총 계산 부하·권리 확인 조건을 유지하며 Sheets 읽기 권한을 데이터의 정확성·재배포 권리로 해석하지 않는다. 전체500과 Official/P02 중간 시점 정책도 후속이다. 새 투자 방법론·가중치·FX 변환·share-class/ADR 보정·QGV 점수식을 만들지 않는다. Yahoo 비공식 자동 조회의 **무허가 부적합** 판정과 공급자 허가 미확인은 GSQ-007대로 유지한다. 본인용·무저장·Free가 공급자 허가를 대신하지 않는다.
 
 ## 1. 코드 PR 분할과 파일/함수
 
@@ -34,7 +34,7 @@ B의 asset/guard 변경은 **static code 추가에 한정한 별도 owner 검토
 | `compare_universe_market_cap(row, shares, price, quality_config)` | `QualityConfig(relative_tolerance, confirmed)`를 명시 → R·G·abs(G−R)/R·검증 불일치 표시. 정렬키는 항상 R |
 | `select_verified_universe_top_n(checks, selection_config, *, parsed)` | `SelectionConfig(n, confirmed)`와 전체 parser 결과 → 검증 행의 상위 N, 검증/결측 count, COMPLETE/PARTIAL/UNCONFIRMED |
 
-N·품질 임계의 활성 기본값은 없다. 합성 테스트의 확인값은 사용자 실제 설정 승인을 뜻하지 않는다. identity/basis reference와 hash 검사는 공급된 근거의 결속 검사이며 실제 권리·ADR/class 경제적 단위 확인을 대행하지 않는다. 현재 SEC shares와 Sheet 가격의 동시성을 주장하지 않는다.
+GSQ-014로 사용자 기본 설정은 `SelectionConfig(20, True)`, `QualityConfig(0.10, True)`로 확정됐다. Python 함수는 명시 설정을 계속 요구하며 기기 기본값 연결은 코덱1 범위다. 불량/미확인 configuration은 여전히 차단한다. identity/basis reference와 hash 검사는 공급된 근거의 결속 검사이며 실제 권리·ADR/class 경제적 단위 확인을 대행하지 않는다. 현재 SEC shares와 Sheet 가격의 동시성을 주장하지 않는다.
 
 R의 정렬 계산은 기존 `shares*price`를 그대로 유지한다. 품질 비교는 같은 `abs(G-R)/R` 공식을 숫자의 명시 decimal 표현에 대해 정확 분수로 계산/비교해 `R=3, G=2.7, τ=0.1` 같은 포함 경계의 binary float label 오류를 막는다. 새 tolerance·rounding·clipping·scale 보정은 없다. CapCheck의 RAM-only shares/price sidecar에 SEC 원 bytes의 SHA·accession·측정일·취득 시각과 같은 시트 row/hash를 보존한다. 전체 parsed identity에서 issuer 중복을 먼저 검사하며, 한 listing의 가격 결측으로 다른 listing의 경제적 단위 미확인이 숨지 않는다.
 
@@ -273,3 +273,12 @@ GSQ-013로 1차 선택 출처는 TARGET19 + 기기 ★ + 비공개 Universe 상�
 기존 Holdout은 **UNCONFIRMED로 유지하고 v2 검증 근거로 사용하지 않는다**. 향후 v2 검증은 누적되는 **전진(forward) 데이터**를 사용하며 시작 시점은 v2 착수 시 사용자가 결정한다. 에이전트는 기간을 선택·사용하지 않고, 이번 문서 갱신으로 v2 착수/forward 수집·검증을 실행하지 않는다. 문서 병합 후 대기한다.
 
 근거: [기존 M3 설계](M3_PRIVATE_UNIVERSE_DESIGN.md), [universe/sources.py](../../src/investment_system/universe/sources.py), [SEC M1](../../src/investment_system/providers/sec_m1.py), [listing 계약](../../src/investment_system/contracts/global_universe.py), [Worker](../../worker/src/index.js), [기존 session](../../src/investment_system/product/web_assets/google-sheet-quotes.js), [SEC API/CORS](https://www.sec.gov/search-filings/edgar-application-programming-interfaces), [SEC Fair Access](https://www.sec.gov/about/developer-resources). 외부 설명2개는 2026-10-10 HTTP200으로 확인했으며 company catalog/회사 facts/submissions/가격 endpoint는 호출하지 않았다. SEC 직접 경로는 FRED를 사용하지 않는다.
+
+
+## GSQ-014 반영 — 확정 설정과 주식 종류 기준 차이 표시
+
+2026-10-10 사용자 승인으로 **기본 N=20, 품질 임계0.10(≥ 경계 포함)**이 확정됐다. 위 §2A/§8의 확인 대기 제안은 승인 전 설명이며 현재 설정은 [26E GSQ-014](../pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md#gsq-014--26e-m3-설정-확정병합-순서주식-종류-기준-표시-2026-10-10-utc)를 따른다. 값·단위·basis·cutoff·전체 후보 coverage 검증을 생략하거나 새 가중치로 사용하지 않는다.
+
+후속 Python 표시 계약은 `ShareBasisReceipt.share_class_basis = ALIGNED / DIFFERENT / UNKNOWN`이며 기본은 UNKNOWN이다. 공급된 `source_evidence_ref/source_sha256`가 실제 SEC 주식 수와 선택 listing의 주식 종류 기준 차이를 뒷받침하고 identity/time/synthetic 검사를 통과한 DIFFERENT에만 `SHARE_CLASS_BASIS`를 표시한다. GOOGL/GOOG·BRK.B 같은 티커 이름이나 오차 크기로 원인을 추정하지 않는다. 실제 class/ADR 근거 확인과 기기 receipt 연결은 코덱1의 후속 검토 범위다.
+
+해당 행의 기존 경제적 단위 미확인 차단은 유지한다. SharesInput/PriceInput은 NOT_AVAILABLE, CapCheck의 reason/quality/quality_label은 SHARE_CLASS_BASIS, 재계산/사용 시총은 None이며 순위에 넣지 않는다. 이는 기존 BASIS_UNCONFIRMED를 더 구체적인 이유로 표시하는 계약이다. 다른 출처의 주식 수·class 비율·합산/환산/자동 보정은 없다. ALIGNED/UNKNOWN과 정상 basis의 기존 R 계산·일반 MISMATCH는 그대로다. UI/Worker는 변경하지 않는다.

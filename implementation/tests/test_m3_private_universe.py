@@ -182,6 +182,46 @@ def test_single_value_shares_do_not_prove_class_or_adr_basis():
         assert sh.state=="NOT_AVAILABLE" and sh.reason_codes==("BASIS_UNCONFIRMED",)
 
 
+@pytest.mark.parametrize("symbol",["GOOGL","GOOG","BRK.B"])
+def test_evidenced_share_class_difference_has_distinct_notice_without_correction(symbol):
+    a=api(); s=seed(a,symbol=symbol,provider_symbol=symbol)
+    p=parse(a,[["NYSE:"+symbol,1000,10]],{"NYSE:"+symbol:s})
+    b=replace(basis(a,s),basis_status="UNKNOWN",share_class_basis="DIFFERENT")
+    sh=a.prepare_sec_shares(s,sec(a,s),b,AT)
+    px=a.prepare_universe_price(p.rows[0],b,as_of=AT)
+    c=a.compare_universe_market_cap(p.rows[0],sh,px,a.QualityConfig(.1,True))
+    assert sh.reason_codes==px.reason_codes==c.reason_codes==("SHARE_CLASS_BASIS",)
+    assert c.state=="NOT_AVAILABLE" and c.quality==c.quality_label=="SHARE_CLASS_BASIS"
+    assert sh.shares is None and px.price is None and c.recomputed_cap is c.effective_cap is None
+    assert c.google_mcap==1000 and p.rows[0].sheet_price==10
+    selected=a.select_verified_universe_top_n((c,),a.SelectionConfig(1,True),parsed=p)
+    assert selected.selected_n==0 and selected.selection_status=="PARTIAL"
+    assert selected.missing==((p.rows[0].row_index,("SHARE_CLASS_BASIS",)),)
+
+
+def test_share_class_notice_requires_bound_evidence_and_does_not_infer_from_ticker_or_error():
+    a=api(); s=seed(a,symbol="GOOGL",provider_symbol="GOOGL")
+    p=parse(a,[["NYSE:GOOGL",1000,10]],{"NYSE:GOOGL":s})
+    assert check(a,p.rows[0],s=s).quality=="MISMATCH"
+    for changes in [dict(source_evidence_ref=""),dict(source_sha256=""),dict(security_id="other")]:
+        b=replace(basis(a,s,**changes),basis_status="UNKNOWN",share_class_basis="DIFFERENT")
+        sh=a.prepare_sec_shares(s,sec(a,s),b,AT)
+        assert sh.reason_codes==("BASIS_UNCONFIRMED",)
+
+
+def test_share_class_annotation_does_not_change_valid_cap_formula_or_basis_gate():
+    a=api(); s=seed(a); p=parse(a,[["NYSE:A",90,10]])
+    original=basis(a,s); annotated=replace(original,share_class_basis="ALIGNED")
+    sh=a.prepare_sec_shares(s,sec(a,s),annotated,AT)
+    px=a.prepare_universe_price(p.rows[0],annotated,as_of=AT)
+    c=a.compare_universe_market_cap(p.rows[0],sh,px,a.QualityConfig(.1,True))
+    assert c==check(a,p.rows[0])
+    b=replace(original,basis_status="UNKNOWN")
+    assert a.prepare_sec_shares(s,sec(a,s),b,AT).reason_codes==("BASIS_UNCONFIRMED",)
+    b=replace(original,share_class_basis="made-up")
+    assert a.prepare_sec_shares(s,sec(a,s),b,AT).reason_codes==("BASIS_UNCONFIRMED",)
+
+
 def test_sheet_price_is_current_reference_not_raw_close_or_exact_eod():
     a=api(); s=seed(a); p=parse(a,[["NYSE:A",90,10]])
     px=a.prepare_universe_price(p.rows[0],basis(a,s),as_of=AT)

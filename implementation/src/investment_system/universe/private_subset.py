@@ -19,7 +19,7 @@ REASON_CODES = frozenset((
     "GOOGLE_MCAP_MISSING", "GOOGLE_MCAP_INVALID", "PRICE_NOT_AVAILABLE", "INVALID_INPUT",
     "INVALID_TIMESTAMP", "INVALID_TIME_ORDER", "AVAILABLE_AFTER_AS_OF", "BASIS_UNCONFIRMED",
     "CIK_MISMATCH", "ACCESSION_UNCONFIRMED", "SHARES_NOT_AVAILABLE", "MULTI_CLASS_AMBIGUOUS",
-    "NONFINITE_MCAP", "CONFIG_CONFIRMATION_REQUIRED", "DUPLICATE_ISSUER", "VALIDATION_INCOMPLETE",
+    "NONFINITE_MCAP", "CONFIG_CONFIRMATION_REQUIRED", "DUPLICATE_ISSUER", "VALIDATION_INCOMPLETE", "SHARE_CLASS_BASIS",
 ))
 
 
@@ -87,6 +87,8 @@ class ShareBasisReceipt:
     price_basis: Literal["RAW_CLOSE", "GOOGLEFINANCE_CURRENT"]
     currency: str
     synthetic: bool
+    # Audited caller annotation; never inferred from ticker or cap difference.
+    share_class_basis: Literal["ALIGNED", "DIFFERENT", "UNKNOWN"] = "UNKNOWN"
 
 
 @dataclass(frozen=True)
@@ -321,7 +323,7 @@ def parse_universe_values(values: list, receipt: UniverseReceipt, *, identity_lo
 
 
 def _basis_error(seed,basis,as_of,synthetic):
-    if not isinstance(basis,ShareBasisReceipt) or (basis.listing_id,basis.company_id,basis.security_id)!=(seed.listing_id,seed.company_id,seed.security_id) or basis.basis_status not in ("SINGLE_CLASS_CONFIRMED","CA_UNIT_APPROVED") or not _text(basis.source_evidence_ref) or not _hash(basis.source_sha256) or basis.share_unit!="shares" or basis.price_basis!="GOOGLEFINANCE_CURRENT" or basis.currency!=seed.currency:
+    if not isinstance(basis,ShareBasisReceipt) or (basis.listing_id,basis.company_id,basis.security_id)!=(seed.listing_id,seed.company_id,seed.security_id) or basis.basis_status not in ("SINGLE_CLASS_CONFIRMED","CA_UNIT_APPROVED","UNKNOWN") or basis.share_class_basis not in ("ALIGNED","DIFFERENT","UNKNOWN") or not _text(basis.source_evidence_ref) or not _hash(basis.source_sha256) or basis.share_unit!="shares" or basis.price_basis!="GOOGLEFINANCE_CURRENT" or basis.currency!=seed.currency:
         return "BASIS_UNCONFIRMED"
     if not _aware(basis.available_at):
         return "INVALID_TIMESTAMP"
@@ -329,6 +331,10 @@ def _basis_error(seed,basis,as_of,synthetic):
         return "AVAILABLE_AFTER_AS_OF"
     if type(basis.synthetic) is not bool or basis.synthetic!=synthetic:
         return "MIXED_SYNTHETIC_INPUT"
+    if basis.share_class_basis == "DIFFERENT":
+        return "SHARE_CLASS_BASIS"
+    if basis.basis_status == "UNKNOWN":
+        return "BASIS_UNCONFIRMED"
     return None
 
 
@@ -353,7 +359,10 @@ def _day(value):
 def prepare_sec_shares(seed: ListingSeed, receipt: SecReceipt, basis: ShareBasisReceipt, as_of: datetime) -> SharesInput:
     """Use supplied, hash-bound SEC facts/submissions; never backfill publication."""
     def fail(reason):
-        return SharesInput("NOT_AVAILABLE",seed.listing_id if isinstance(seed,ListingSeed) else None,seed.company_id if isinstance(seed,ListingSeed) else None,seed.security_id if isinstance(seed,ListingSeed) else None,None,None,None,None,None,None,(reason,),receipt.synthetic if isinstance(receipt,SecReceipt) and type(receipt.synthetic) is bool else True)
+        class_notice=reason=="SHARE_CLASS_BASIS"
+        return SharesInput("NOT_AVAILABLE",seed.listing_id if isinstance(seed,ListingSeed) else None,seed.company_id if isinstance(seed,ListingSeed) else None,seed.security_id if isinstance(seed,ListingSeed) else None,None,None,None,None,None,
+                           basis.source_sha256 if class_notice else None,(reason,),receipt.synthetic if isinstance(receipt,SecReceipt) and type(receipt.synthetic) is bool else True,
+                           facts_sha256=receipt.facts_sha256 if class_notice else None,submissions_sha256=receipt.submissions_sha256 if class_notice else None)
     if not isinstance(receipt,SecReceipt):
         return fail("INVALID_INPUT")
     if type(receipt.synthetic) is not bool:
@@ -479,9 +488,11 @@ def prepare_universe_price(row: UniverseRow, basis: ShareBasisReceipt, *, as_of:
 
 def compare_universe_market_cap(row: UniverseRow, shares: SharesInput, price: PriceInput, quality_config: QualityConfig) -> CapCheck:
     def result(reason=None,cap=None,relative=None,quality="UNCONFIRMED"):
+        if reason=="SHARE_CLASS_BASIS":
+            quality="SHARE_CLASS_BASIS"
         return CapCheck(row.row_index if isinstance(row,UniverseRow) else -1,row.listing if isinstance(row,UniverseRow) else None,
                         "VERIFIED" if reason is None else "NOT_AVAILABLE",cap,row.google_mcap if isinstance(row,UniverseRow) else None,relative,cap,quality,
-                        "검증 불일치" if quality=="MISMATCH" else "",() if reason is None else (reason,),row.receipt.content_sha256 if isinstance(row,UniverseRow) and isinstance(row.receipt,UniverseReceipt) else "",row.receipt.synthetic if isinstance(row,UniverseRow) and isinstance(row.receipt,UniverseReceipt) else True,
+                        "검증 불일치" if quality=="MISMATCH" else "SHARE_CLASS_BASIS" if quality=="SHARE_CLASS_BASIS" else "",() if reason is None else (reason,),row.receipt.content_sha256 if isinstance(row,UniverseRow) and isinstance(row.receipt,UniverseReceipt) else "",row.receipt.synthetic if isinstance(row,UniverseRow) and isinstance(row.receipt,UniverseReceipt) else True,
                         shares if reason is None else None,price if reason is None else None)
     if not isinstance(row,UniverseRow) or not isinstance(row.listing,ListingSeed) or not isinstance(row.receipt,UniverseReceipt) or not isinstance(shares,SharesInput) or not isinstance(price,PriceInput):
         return result("IDENTITY_UNCONFIRMED")
@@ -493,6 +504,8 @@ def compare_universe_market_cap(row: UniverseRow, shares: SharesInput, price: Pr
     if not _aware(price.as_of):
         return result("INVALID_TIMESTAMP")
     if shares.state!="INPUT_RESEARCH":
+        if "SHARE_CLASS_BASIS" in shares.reason_codes and (not _hash(shares.basis_sha256) or shares.basis_sha256!=price.basis_sha256 or not _hash(shares.facts_sha256) or not _hash(shares.submissions_sha256)):
+            return result("BASIS_UNCONFIRMED")
         return result(shares.reason_codes[0] if shares.reason_codes else "SHARES_NOT_AVAILABLE")
     if not _aware(shares.shares_available_at) or not _aware(row.receipt.acquired_at):
         return result("INVALID_TIMESTAMP")
