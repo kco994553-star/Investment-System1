@@ -372,7 +372,7 @@ class DeploymentDiagnosticTests(unittest.TestCase):
         self.assertEqual(read_limits, [4097] * 3)
         self.assertTrue(all(request.full_url == ORIGIN + "/history?symbol=NVDA&range=1mo" for request in requests))
         self.assertTrue(all(request.get_header("Authorization") is None for request in requests))
-        self.assertIn("App feature remains OFF", self.summary_text)
+        self.assertIn("Google/Yahoo authenticated verification not run", self.summary_text)
         self.assert_private()
 
     def test_verify_retries_transport_and_pending_config_without_logging_payloads(self):
