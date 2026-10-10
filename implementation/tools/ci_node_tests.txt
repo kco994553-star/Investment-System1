@@ -1,0 +1,16 @@
+# CI test manifest: one implementation/tools file per line. Add new tests here, not in workflows.
+device_actual_node_test.js
+device_market_node_test.js
+device_backup_node_test.js
+device_profiles_node_test.js
+google_sheet_core_node_test.js
+google_sheet_auth_node_test.js
+pwa_node_test.js
+sec_reported_node_test.js
+public_screens_node_test.js
+google_sheet_setup_node_test.js
+private_history_node_test.js
+private_history_fallback_node_test.js
+research_indicators_node_test.js
+technical_chart_node_test.js
+private_trades_node_test.js
