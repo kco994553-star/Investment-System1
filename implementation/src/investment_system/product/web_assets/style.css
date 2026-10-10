@@ -1,11 +1,11 @@
 :root {
-  --ink: #173733;
-  --muted: #62736d;
-  --paper: #f3f4ed;
+  --ink: #17201d;
+  --muted: #5e6863;
+  --paper: #f4f4ef;
   --card: #fff;
-  --line: #dce2d9;
-  --accent: #216a56;
-  --warn: #936326;
+  --line: #e2e2da;
+  --accent: #1e4d43;
+  --warn: #7a4600;
 }
 * {
   box-sizing: border-box;
@@ -153,20 +153,20 @@ p {
   font-weight: 650;
 }
 .badge.DEMO {
-  background: #fff0d7;
-  color: #896012;
+  background: #fbead2;
+  color: #7a4600;
 }
 .badge.NOT_AVAILABLE {
   background: #edf0ed;
-  color: #68716c;
+  color: #5e6863;
 }
 .state {
   margin: 8px 0;
 }
 .banner {
   padding: 10px 12px;
-  border-left: 3px solid #af7d35;
-  background: #f6eddc;
+  border-left: 3px solid #7a4600;
+  background: #fbead2;
   font-size: 12px;
   margin-bottom: 18px;
 }
@@ -295,8 +295,8 @@ dd {
   margin-top: 3px;
 }
 #primary-nav a[aria-current="page"] {
-  background: #e8efe9;
-  color: #164d3e;
+  background: #e3eeea;
+  color: #1e4d43;
   font-weight: 700;
 }
 .nav-subgroups {
@@ -314,7 +314,7 @@ dd {
 a:focus-visible,
 button:focus-visible,
 summary:focus-visible {
-  outline: 3px solid #ad7834;
+  outline: 3px solid #1d4a80;
   outline-offset: 3px;
 }
 iframe {
@@ -330,7 +330,7 @@ iframe {
   left: 18px;
   right: 18px;
   padding: 10px;
-  background: #173733;
+  background: #17201d;
   color: white;
   border-radius: 10px;
   z-index: 20;
@@ -576,3 +576,35 @@ a.hub-card:hover,
 .producer-meta [data-meta] {white-space:normal;}
 
 .m2-candidates .badge{white-space:normal}.m2-row{border-top:1px solid var(--line,#ddd);padding:1rem 0}.m2-scores dd{overflow-wrap:anywhere}.m2-candidates pre{max-width:100%;overflow:auto}.m2-candidates .meta{overflow-wrap:anywhere}
+
+/* Missing states and source identifiers remain readable at device widths. */
+main, .card, .grid > *, .axis-grid > *, .hub-grid > * {min-width:0;}
+.empty, .state, .meta, .badge, .card p, .card dd {overflow-wrap:anywhere;}
+[data-public-screen] article {padding:12px 0;border-bottom:1px solid var(--line);}
+[data-public-screen] article:last-child {border-bottom:0;}
+
+/* Design canvas S01~S16: active tab bar, flow numbers, sub-category and status chip colours. */
+#primary-nav a[aria-current="page"] {box-shadow: inset 0 3px 0 var(--accent);}
+.nav-flow, .nav-device-note {display: none;}
+.flow-step {display: inline-flex; align-items: center; gap: 6px; margin: 0 0 6px; font-size: 12px; font-weight: 700; color: var(--accent);}
+.flow-number {display: inline-grid; place-items: center; min-width: 20px; height: 20px; border-radius: 10px; background: var(--accent); color: #fff; font-size: 11px; font-variant-numeric: tabular-nums;}
+.parent-row {display: flex; align-items: center; gap: 8px; margin: 0 0 6px;}
+.sub-category {font-size: 12px; color: var(--muted);}
+.data-badges {margin: 4px 0 14px;}
+.screen-tabs {margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 6px;}
+.screen-tabs a {padding: 6px 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); font-size: 13px;}
+.hub-legend {margin-top: 16px;}
+[data-feature-status="사용 가능"] {background: #dcefe3; color: #1b5a40;}
+[data-feature-status="부분"] {background: #fbead2; color: #7a4600;}
+[data-feature-status="준비 중"], [data-feature-status="설계만"] {background: #edf0ed; color: #5e6863;}
+.table-wrap {overflow-x: auto;}
+.table-wrap table {width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums;}
+.table-wrap th, .table-wrap td {padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; font-size: 13px; white-space: nowrap;}
+@media (min-width: 1024px) {
+  #primary-nav a[aria-current="page"] {box-shadow: inset 3px 0 0 var(--accent);}
+  #primary-nav > a {justify-content: flex-start;}
+  #primary-nav > a span {margin-left: auto;}
+  .nav-flow {display: inline-grid; place-items: center; min-width: 20px; height: 20px; border-radius: 10px; background: var(--line); color: var(--ink); font-size: 11px; margin-right: 6px;}
+  #primary-nav a[aria-current="page"] .nav-flow {background: var(--accent); color: #fff;}
+  .nav-device-note {display: block; margin-top: auto; padding: 12px; font-size: 12px; color: var(--muted);}
+}
