@@ -447,8 +447,9 @@ function qgv() {
 function technical() {
   const s=D.technical;
   return `<div data-ia-screen="technical">${heading("TECHNICAL",t("기술적 분석"),t("기존 기록의 연결 상태를 확인합니다."))}
+    <div id="technical-price-chart" data-tech-status="chart"></div>
     <section class="card status-card" data-tech-status="engine"><h2>${t("기술적 분석 엔진")}</h2>${state(s)}<p>${esc(t(s.data===null?s.reason || "운영 Snapshot이 연결되지 않았습니다.":"기존 종목 화면에서 제공된 기술적 분석 기록을 확인합니다."))}</p></section>
-    <section class="card status-card" data-tech-status="chart"><h2>${t("가격·거래량 차트")}</h2><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span><p>${t("실제 가격·거래량 차트가 이 앱에 연결되지 않았습니다.")}</p></section></div>`;
+    </div>`;
 }
 function macro() {
   // Official IA v1 axis/state names. No observations, scores or derived values are introduced.
@@ -510,7 +511,8 @@ function renderRoute() {
   $("#content").innerHTML=routes[route]();
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') attachDeviceActual('#device-actual-summary',false);
-  if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig});
+  if(route==='technical') PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
+  if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
   syncNavigation(route);
   if(QGV_CHILDREN.includes(route) || route==="research") {
     const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← 검증";
@@ -766,3 +768,12 @@ async function restoreDeviceBackup(payload){
   await DeviceBackup.restore(window,catalog,payload);load();const read=AppLanguage.read(localStorage);appSettings=read.value;settingsWritable=read.writable;render();
 }
 document.addEventListener('device-backup-restored',()=>{load();appSettings=AppLanguage.read(localStorage).value;render();});
+
+async function deviceAverageCost(symbol){
+  const catalog=await deviceCatalog(),snapshot=await DeviceActual.readHoldings(window,catalog);
+  if(!snapshot)return null;
+  const ticker=symbol.replace(/\.(KS|T)$/,''),instrument=catalog.instruments.find(i=>i.ticker===ticker);
+  if(!instrument)return null;
+  const row=snapshot.themes.flatMap(t=>t.holdings).find(r=>DeviceMarket.canonical(r.security_reference)===DeviceMarket.canonical(instrument.security_reference));
+  return row&&Number(row.quantity)>0&&row.currency===instrument.currency&&Number(row.average_cost)>0?Number(row.average_cost):null;
+}

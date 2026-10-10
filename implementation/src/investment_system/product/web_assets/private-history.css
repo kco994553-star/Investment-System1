@@ -6,3 +6,17 @@
 .private-history th, .private-history td { padding:.5rem; border-bottom:1px solid var(--line,#d8cfc0); text-align:left; white-space:nowrap; font-size:.85rem; }
 [data-private-history-settings] input { display:block; width:100%; max-width:36rem; margin:.5rem 0; }
 [data-history-meta] { overflow-wrap:anywhere; }
+
+.chart-controls { display:flex; flex-wrap:wrap; gap:.35rem; }
+.chart-controls button[aria-pressed="true"] { background:var(--acc,#1e4d43); color:#fff; }
+.daily-candle { stroke-width:1; }
+.candle-up { stroke:#1e4d43; fill:#1e4d43; }
+.candle-down { stroke:#1d4a80; fill:#1d4a80; }
+.daily-candle[data-session="UNKNOWN"], .daily-candle[data-session="IN_PROGRESS"] { opacity:.5; }
+.research-line { stroke-width:1.5; stroke:#7a4600; }
+.sma_5 { stroke:#1e4d43; } .sma_20 { stroke:#1d4a80; }
+.sma_60 { stroke:#7a4600; } .sma_120 { stroke:#6c4181; }
+.sma_240 { stroke:#5e6863; } .ema_20 { stroke:#1d4a80; stroke-dasharray:4 3; }
+.device-average { stroke:#17201d; stroke-width:1.5; stroke-dasharray:6 4; }
+
+.chart-axis { fill:var(--muted,#5e6863); font-size:10px; }
