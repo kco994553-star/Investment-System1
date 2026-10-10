@@ -6,15 +6,13 @@
 
 - 작업 방식: 기능 단위 PR, 독립 작업은 서브에이전트 최대 3개가 각자 worktree·브랜치에서 병렬 진행, 진척마다 push, 병합 때마다 이 절 갱신.
 - 로컬 검증 도구(세션 scratchpad, 없으면 재작성): `pin_assets.sh`(가드 해시·files_scanned), `ci_local.sh`(필수 CI 동등 실행), `run_browser.sh`, `pytest_full.sh`(py3.12). Playwright는 1.58.2.
-- 병합 대기·진행 중 브랜치:
-  - (병합 완료) #161 S03 포트폴리오·S04 종목 요약·S05 기업분석.
-  - (병합 완료) #162 py3.13 테스트 호환 + 백업 `/3`(투자자 ★).
-  - `claude/legacy-browser-tests-revival` → 레거시 브라우저 테스트 9종+node 1종 복구(현재 UI 계약 기준), GSQ-010 사유 영문·가져오기 실패 알림 현지화(이 PR). 병합 후 #156 manifest에 10종 추가.
-  - (병합 완료) #163 문서(ROADMAP 상태 + `implementation/docs/USER_DECISIONS_PENDING.md`), #164 S06·S07·S11·S13.
-  - (병합 완료) #166 S08 지표 6카드(연구용 표시 전용)·S09·S10 세부 구역.
-  - #165 draft `claude/type-metrics-public` (**공개 데이터 경계 → 승인 필요**, 구현·검증 완료) → 공개 유형 JSON에 revenue_cagr_3y·roic 추가 + 기기 유형 미리보기.
-  - `ccr-fbc4f278-dnjicl` = #156 (**워크플로 → 승인 필요**) CI manifest. 새 테스트는 여기 manifest에 추가.
-- 다음 할 일: 이 PR 병합 → 레거시 테스트 PR 병합 → #156 manifest에 새 테스트 추가 → 사용자 결정 대기(USER_DECISIONS_PENDING.md). 남은 미결정 없는 개발 항목은 거의 소진.
+- 이번 세션 추가 병합: #161 S03·S04·S05, #162 py3.13 호환+백업 `/3`(투자자 ★), #163 ROADMAP 상태+[사용자 결정 대기 목록](implementation/docs/USER_DECISIONS_PENDING.md), #164 S06·S07·S11·S13, #166 S08 지표 6카드·S09·S10 세부, #167 레거시 테스트 10종 복구+문구 현지화.
+- 열린 PR(모두 사용자 승인 대기):
+  - #156 (`ccr-fbc4f278-dnjicl`, 워크플로) CI manifest + 전체 pytest + 시간 제한 30/40분. node 21·브라우저 34종 등록, 로컬 fail=0 약 12분. 새 테스트는 이 manifest에 추가.
+  - #165 draft (`claude/type-metrics-public`, 공개 데이터 경계) 공개 유형 JSON에 revenue_cagr_3y·roic + 기기 기업별 유형 미리보기. 구현·검증 완료.
+  - #152 테마(바스켓 승인), #153 보존용(병합 안 함).
+- 다음 할 일: 결정 없이 진행 가능한 개발 항목은 소진. 사용자 결정([USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md)) 후 해당 항목 재개. 승인 시 #156 → #165 순 병합(각각 canonical 재병합·가드 재고정 필요).
+- 알려진 제품 갭(결정 필요 아님, 후속 후보): 전체 검색이 기업을 내지 않음(GSQ-010 identity 디렉터리만), 백업 복원 후 ACTUAL 화면 알림 없음, `sec-public-inputs.json`은 SEC 수집 없는 빌드에서 404.
 
 ## 읽기 순서와 운영 경계
 
