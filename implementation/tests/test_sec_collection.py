@@ -135,8 +135,9 @@ def test_injected_collection_error_cannot_leak_its_arbitrary_message():
 
 def test_http_retry_exhaustion_does_not_request_submissions():
     client, clock, calls = setup([lambda url: SecResponse(429, b"", final_url=url)] * 5)
-    with pytest.raises(SecCollectionError, match="SEC_HTTP_RETRIES_EXHAUSTED"):
+    with pytest.raises(SecCollectionError, match="SEC_HTTP_RETRIES_EXHAUSTED") as caught:
         client.collect("nvda", CIK)
+    assert caught.value.http_status == 429 and caught.value.stage == "fetch"
     assert len(calls) == 5 and all(call[0] == FACTS for call in calls)
     assert clock.sleeps == [2, 4, 8, 16]
 
@@ -309,3 +310,10 @@ def test_default_transport_http_error_body_is_not_read_or_exposed(monkeypatch):
     response = default_transport(FACTS, headers={}, timeout=20, max_body_bytes=32)
     assert response.status == 429 and response.body == b"" and response.retry_after == "7"
     assert "SYNTHETIC_SECRET_CANARY" not in repr(response)
+
+def test_json_failure_reports_parse_stage():
+    from investment_system.providers.sec_collection import SecCollectionClient, SecCollectionError, SecResponse
+    # Use the existing synthetic descriptive setting; no real credential lookup.
+    bad=SecCollectionClient('Synthetic diagnostics test test@example.test',transport=lambda *args,**kwargs:SecResponse(200,b'{"cik":NaN}',final_url=args[0]),sleep=lambda _:None)
+    with pytest.raises(SecCollectionError) as caught:bad.collect('nvda','0001045810')
+    assert str(caught.value)=='SEC_JSON_INVALID' and caught.value.stage=='parse'

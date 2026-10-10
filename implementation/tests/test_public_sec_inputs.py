@@ -127,3 +127,84 @@ def test_missing_secret_stops_before_factory_or_requests(tmp_path):
         with pytest.raises(ValueError, match='SEC_USER_AGENT_MISSING'):
             collect_public_inputs(tmp_path / 'inputs.json', environ={'SEC_USER_AGENT': value}, client_factory=forbidden)
     assert not (tmp_path / 'inputs.json').exists()
+
+@pytest.mark.parametrize('code',['SEC_USER_AGENT_INVALID','SEC_TRANSPORT_FAILED','SEC_HTTP_403','SEC_HTTP_429'])
+def test_fixed_collection_codes_survive_without_arbitrary_values(tmp_path,code):
+    from investment_system.providers.sec_collection import SecCollectionError
+    class Failed:
+        def __init__(self,_):raise SecCollectionError(code)
+    with pytest.raises(ValueError,match=code):collect_public_inputs(tmp_path/'out.json',environ={'SEC_USER_AGENT':'synthetic setting'},client_factory=Failed)
+
+
+def test_partial_failure_keeps_other_companies_and_records_only_fixed_diagnostics(tmp_path):
+    from investment_system.providers.sec_collection import SecCollectionError
+    from datetime import datetime,timezone
+    first=sorted(US_LISTINGS)[0]
+    class Client:
+        def __init__(self,_):pass
+        def collect(self,company,cik):
+            if company==first:raise SecCollectionError('SEC_HTTP_403',stage='fetch',http_status=403)
+            return *(json.dumps(x).encode() for x in raw(company)),datetime(2026,2,2,12,tzinfo=timezone.utc)
+    p=tmp_path/'out.json';result=collect_public_inputs(p,environ={'SEC_USER_AGENT':'synthetic setting'},client_factory=Client)
+    payload=json.loads(p.read_text());require_public_inputs(payload)
+    assert payload['schema']=='public-sec-reported-inputs/2' and result['failed_companies']==1
+    assert payload['companies'][0]['status']=='NOT_AVAILABLE'
+    assert result['diagnostics']==[{'company_index':1,'stage':'fetch','code':'SEC_HTTP_403','http_status':403}]
+    assert len(payload['companies'])==17 and all(x['status']=='LIVE' for x in payload['companies'][1:])
+
+
+def test_parse_and_normalize_failures_have_company_stage_and_later_rows_continue(tmp_path):
+    from datetime import datetime,timezone
+    from investment_system.providers.sec_collection import SecCollectionError
+    ids=sorted(US_LISTINGS)
+    class Client:
+        def __init__(self,_):pass
+        def collect(self,company,cik):
+            if company==ids[0]:raise SecCollectionError('SEC_JSON_INVALID',stage='parse')
+            x=raw(company)
+            if company==ids[1]:x[1]['filings']['recent']['reportDate']=[]
+            return *(json.dumps(v).encode() for v in x),datetime(2026,2,2,12,tzinfo=timezone.utc)
+    result=collect_public_inputs(tmp_path/'out.json',environ={'SEC_USER_AGENT':'synthetic setting'},client_factory=Client)
+    assert result['failed_companies']==2
+    assert [x['stage'] for x in result['diagnostics']]==['parse','normalize']
+    assert [x['company_index'] for x in result['diagnostics']]==[1,2]
+
+
+def test_all_failures_preserve_previous_file_and_cli_fixed_output(tmp_path,capsys,monkeypatch):
+    import public_sec_inputs as module
+    from investment_system.providers.sec_collection import SecCollectionError
+    class Client:
+        def __init__(self,_):pass
+        def collect(self,*_):raise SecCollectionError('SEC_HTTP_429',http_status=429)
+    p=tmp_path/'out.json';p.write_text('previous')
+    with pytest.raises(ValueError) as caught:collect_public_inputs(p,environ={'SEC_USER_AGENT':'synthetic setting'},client_factory=Client)
+    assert p.read_text()=='previous' and caught.value.failed_companies==17
+    def fail(_):raise caught.value
+    monkeypatch.setattr(module,'collect_public_inputs',fail)
+    assert module.main(['--live','--output',str(p)])==1
+    out=capsys.readouterr().out
+    assert 'company_index=1 stage=fetch code=SEC_HTTP_429 http_status=429' in out
+    assert 'failed_companies=17' in out and 'synthetic setting' not in out
+
+
+def test_malicious_error_text_never_becomes_public_diagnostic(tmp_path):
+    from investment_system.providers.sec_collection import SecCollectionError
+    class Client:
+        def __init__(self,_):raise SecCollectionError('private arbitrary sentinel')
+    with pytest.raises(ValueError) as caught:collect_public_inputs(tmp_path/'out.json',environ={'SEC_USER_AGENT':'synthetic setting'},client_factory=Client)
+    assert str(caught.value)=='SEC_COLLECTION_FAILED' and 'sentinel' not in repr(caught.value.diagnostics)
+
+
+def test_partial_payload_still_passes_guard_and_cannot_hide_values_in_na(tmp_path):
+    from datetime import datetime,timezone
+    from investment_system.providers.sec_collection import SecCollectionError
+    class Client:
+        def __init__(self,_):pass
+        def collect(self,company,cik):
+            if company==sorted(US_LISTINGS)[0]:raise SecCollectionError('SEC_HTTP_403',http_status=403)
+            return *(json.dumps(x).encode() for x in raw(company)),datetime(2026,2,2,12,tzinfo=timezone.utc)
+    site=tmp_path/'site';build(site,bundle=repository_bundle())
+    p=site/'sec-public-inputs.json';collect_public_inputs(p,environ={'SEC_USER_AGENT':'synthetic setting'},client_factory=Client)
+    assert scan_artifact(site)['pages_artifact_guard']=='PASS'
+    payload=json.loads(p.read_text());payload['companies'][0]['message']='private sentinel'
+    with pytest.raises(ValueError):require_public_inputs(payload)
