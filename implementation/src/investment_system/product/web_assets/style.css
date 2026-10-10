@@ -576,3 +576,29 @@ a.hub-card:hover,
 .producer-meta [data-meta] {white-space:normal;}
 
 .m2-candidates .badge{white-space:normal}.m2-row{border-top:1px solid var(--line,#ddd);padding:1rem 0}.m2-scores dd{overflow-wrap:anywhere}.m2-candidates pre{max-width:100%;overflow:auto}.m2-candidates .meta{overflow-wrap:anywhere}
+
+/* Design canvas S01~S16: active tab bar, flow numbers, sub-category and status chip colours. */
+#primary-nav a[aria-current="page"] {box-shadow: inset 0 3px 0 var(--accent);}
+.nav-flow, .nav-device-note {display: none;}
+.flow-step {display: inline-flex; align-items: center; gap: 6px; margin: 0 0 6px; font-size: 12px; font-weight: 700; color: var(--accent);}
+.flow-number {display: inline-grid; place-items: center; min-width: 20px; height: 20px; border-radius: 10px; background: var(--accent); color: #fff; font-size: 11px; font-variant-numeric: tabular-nums;}
+.parent-row {display: flex; align-items: center; gap: 8px; margin: 0 0 6px;}
+.sub-category {font-size: 12px; color: var(--muted);}
+.data-badges {margin: 4px 0 14px;}
+.screen-tabs {margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 6px;}
+.screen-tabs a {padding: 6px 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); font-size: 13px;}
+.hub-legend {margin-top: 16px;}
+[data-feature-status="사용 가능"] {background: #dcefe3; color: #1b5a40;}
+[data-feature-status="부분"] {background: #fbead2; color: #7a4600;}
+[data-feature-status="준비 중"], [data-feature-status="설계만"] {background: #edf0ed; color: #5e6863;}
+.table-wrap {overflow-x: auto;}
+.table-wrap table {width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums;}
+.table-wrap th, .table-wrap td {padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; font-size: 13px; white-space: nowrap;}
+@media (min-width: 1024px) {
+  #primary-nav a[aria-current="page"] {box-shadow: inset 3px 0 0 var(--accent);}
+  #primary-nav > a {justify-content: flex-start;}
+  #primary-nav > a span {margin-left: auto;}
+  .nav-flow {display: inline-grid; place-items: center; min-width: 20px; height: 20px; border-radius: 10px; background: var(--line); color: var(--ink); font-size: 11px; margin-right: 6px;}
+  #primary-nav a[aria-current="page"] .nav-flow {background: var(--accent); color: #fff;}
+  .nav-device-note {display: block; margin-top: auto; padding: 12px; font-size: 12px; color: var(--muted);}
+}
