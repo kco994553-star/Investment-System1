@@ -630,3 +630,22 @@ main, .card, .grid > *, .axis-grid > *, .hub-grid > * {min-width:0;}
 .weight-bars {margin: 8px 0;}
 .weight-bar {display: grid; grid-template-columns: minmax(0, 1fr) 40%; align-items: center; gap: 8px;}
 .weight-bar .bar {display: block; height: 6px; border-radius: 3px; background: var(--accent);}
+
+/* S08 indicator cards / S09 / S10 canon sections (display only, NOT_AVAILABLE when no data). */
+.technical-cards {min-width: 0;}
+.mode-toggle button {min-height: 44px; padding: 6px 12px; border-radius: 16px; font-size: 13px;}
+.mode-toggle button[aria-pressed="true"] {background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700;}
+.indicator-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 10px;}
+.indicator-card {min-width: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; overflow-wrap: anywhere;}
+.indicator-card h3 {margin: 0 0 6px; font-size: 15px;}
+.indicator-card dl {display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 10px; margin: 0;}
+.indicator-card dt {color: var(--muted); font-size: 13px;}
+.indicator-card dd {margin: 0; font-variant-numeric: tabular-nums;}
+.indicator-card dd[data-state="NOT_AVAILABLE"], .indicator-card p[data-state="NOT_AVAILABLE"] {color: var(--muted); font-size: 13px;}
+.side-by-side {display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;}
+.side-by-side > div {min-width: 0; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px;}
+.setup-form {display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px 12px;}
+.setup-form label {display: block; font-size: 13px; color: var(--muted);}
+.setup-form select, .setup-form input {width: 100%; min-height: 44px;}
+.chain {display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 8px 0 0; padding: 0;}
+.chain li {padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; min-width: 0;}

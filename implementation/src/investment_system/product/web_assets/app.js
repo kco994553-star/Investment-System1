@@ -502,8 +502,9 @@ function technical() {
   return `<div data-ia-screen="technical">${heading("TECHNICAL",t("기술적 분석"),t("기존 기록의 연결 상태를 확인합니다."))}
     <div class="chips data-badges"><span class="badge">${esc(t("실데이터 검증 전 · 일봉·수정주가 기준"))}</span></div>
     <nav class="chips screen-tabs" aria-label="${esc(t("기술적 분석"))}">${tabs.map(([id,label])=>`<a href="#technical-${id}" data-screen-tab="${id}">${esc(t(label))}</a>`).join("")}</nav>
-    <div id="technical-chart"><div id="technical-price-chart" data-tech-status="chart"></div></div>
+    <div id="technical-chart"><div id="technical-price-chart" data-tech-status="chart"></div><div id="technical-indicators"></div></div>
     <section class="card status-card" id="technical-state" data-tech-status="engine"><h2>${t("기술적 분석 엔진")}</h2>${state(s)}<p>${esc(t(s.data===null?s.reason || "운영 Snapshot이 연결되지 않았습니다.":"기존 종목 화면에서 제공된 기술적 분석 기록을 확인합니다."))}</p><p class="small">${esc(t("QGV 원점수와 기술적 상태는 나란히 볼 뿐 통합하지 않습니다."))}</p></section>
+    ${TechnicalCards.sectionsHtml(appSettings.display_locale)}
     <section class="card" id="technical-execution" data-tech-status="execution"><h2>${t("실행 구간 (시스템 주문 아님)")}</h2><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("검증된 모델 입력이 없어 실행 구간을 만들지 않습니다."))}</p></section>
     <section class="card" id="technical-record" data-tech-status="record"><h2>${t("기술적 기록")}</h2><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("과거 신호와 실제 결과 기록이 아직 없습니다."))}</p></section>
     </div>`;
@@ -513,7 +514,7 @@ function macro() {
     <div class="chips data-badges"><span class="badge">${esc(t("엔진 v0.1.1 확정 · v0.1.4 후보(기본 아님)"))}</span></div>
     <section class="card" data-macro-status><h2>${t("상태판")}</h2><p><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span> ${esc(t("정상·경고·비상 판정에 필요한 실제 입력이 연결되지 않았습니다."))}</p>
     <h3>${t("현재 국면")}</h3><p data-macro-regime>${esc(t("자료 없음"))}</p><p class="small">${esc(t("8개 축의 6칸은 따로 보관하며 하나의 점수로 합치지 않습니다. FRED/ALFRED는 사용하지 않습니다."))}</p></section>
-    <div id="public-macro"></div></div>`;
+    <div id="public-macro"></div>${ScreenDetail.macroHtml(appSettings.display_locale)}</div>`;
 }
 function thirteenf() {
   return heading("SEC 13F",t("투자자 13F"))+ '<div id="public-thirteenf"></div>';
@@ -524,7 +525,7 @@ function validation() {
   return heading("VALIDATION",t("검증·연구"),t("리서치와 검증 기록의 준비 상태를 확인합니다."))+
     `<div class="chips data-badges"><span class="badge">${esc(t("PIT 시점 기준 데이터만"))}</span><span class="badge">${esc(t("Holdout 기간 미정·사용 금지 · 보호 판정 UNCONFIRMED"))}</span></div>`+
     `<nav class="chips screen-tabs" aria-label="${esc(t("검증·연구"))}">${tabs.map(([id,label])=>`<a href="#validation-${id}" data-screen-tab="${id}">${esc(t(label))}</a>`).join("")}<a href="#research" data-screen-tab="research">${esc(t("리서치"))}</a></nav>`+
-    `<div class="hub-grid" data-hub="validation">${tabs.map(([id,title,status,reason])=>`<div id="validation-${id}">${hubCard(title,status,reason)}</div>`).join("")}${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}</div>`;
+    `<div class="hub-grid" data-hub="validation">${tabs.map(([id,title,status,reason])=>`<div id="validation-${id}">${hubCard(title,status,reason)}</div>`).join("")}${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}</div>`+ScreenDetail.validationHtml(appSettings.display_locale);
 }
 // Design canvas S01~S16: analysis flow numbers and QGV sub-categories (navigation only).
 const FLOW_STEPS=Object.freeze({qgv:[1,"QGV"],technical:[2,"기술적 분석"],macro:[3,"매크로"],validation:[4,"검증·연구"]});
@@ -584,7 +585,8 @@ function renderRoute() {
   if(route==='analysis') CompanyScreen.wireTabs($('#content'));
   if(route==='model') {attachDeviceActual('#model-actual-summary',false);paintModel();}
   if(route==='home') deviceCatalog().then(c=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent=c.target_root_version||'NOT_AVAILABLE';}).catch(()=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent='NOT_AVAILABLE';});
-  if(route==='technical') PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
+  if(route==='technical') {const cards=TechnicalCards.mount($('#technical-indicators'),{locale:appSettings.display_locale});
+    PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>cards.update(value)});}
   if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
   if(route==='company'||route==='leaderboard'||route==='analysis') SecReported.mount($('#sec-reported-panel'),secReported,{companyId:route==='leaderboard'?undefined:id,locale:appSettings.display_locale});
   if(route==='profiles') DeviceProfiles.mount($('#device-profile-editor'),{locale:appSettings.display_locale,qgFactors:()=>publicScreens['sec-qg-factors.json']});
