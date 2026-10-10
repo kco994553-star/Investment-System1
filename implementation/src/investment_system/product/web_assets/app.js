@@ -394,7 +394,7 @@ function detail(id) {
   const c=company(id);
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
-  if(!c && (candidate || historySymbol)) return heading("COMPANY RESEARCH",esc(candidate?.ticker || historySymbol))+'<div id="private-history-chart"></div><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div>'+m2Panel(id);
+  if(!c && (candidate || historySymbol)) return heading("COMPANY RESEARCH",esc(candidate?.ticker || historySymbol))+'<div id="private-history-chart"></div><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div><div id="company-theme-display"></div>'+m2Panel(id);
   if(!c) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id),e=searchIndex.resolve("COMPANY",id);
   return `<a class="small" href="#companies">${t("← 기업 목록")}</a><div class="row">${heading("COMPANY DETAIL",esc(c.ticker),esc(label(e) || c.name))}${star(id)}</div><div id="private-history-chart"></div><div id="sec-reported-panel"></div><div class="grid">${summaryFor("qgv",id)}${summaryFor("technical",id)}</div>`+
@@ -403,7 +403,7 @@ function detail(id) {
 }
 function portfolio() {
   const p=D.portfolio.data;
-  return heading("PORTFOLIO",t("내 포트폴리오"))+`<section class="card"><h2>ACTUAL · ${appSettings.display_locale==='en-US'?'This device':'이 기기'}</h2><a href="#actual" class="button">${appSettings.display_locale==='en-US'?'Enter / manage ACTUAL holdings':'ACTUAL 입력·관리'}</a><div id="device-actual-summary" aria-live="polite"></div></section>`+block("portfolio",t("보유 현황"),`<p>${esc(p?.role || "")}</p><dl><dt>${t("수익률")}</dt><dd>${pct(p?.return)}</dd><dt>${t("평가금액")}</dt><dd>${fmt(p?.market_value)} ${esc(p?.currency || "")}</dd><dt>${t("Exposure(노출)")}</dt><dd>${esc(p?.exposure?JSON.stringify(p.exposure):t("미제공"))}</dd></dl><ul class="list">${(p?.holdings || []).map(h=>`<li class="item"><a href="#company/${encodeURIComponent(h.company_id)}"><b>${esc(h.ticker)}</b><div class="muted">${t("실제 비중")} ${Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"} · ${t("수익률")} ${pct(h.return)}</div>${Number.isFinite(h.target_weight)?`<div class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</div>`:""}</a>${star(h.company_id)}</li>`).join("")}</ul>`)+
+  return heading("PORTFOLIO",t("내 포트폴리오"))+'<div id="portfolio-theme-display"></div>'+`<section class="card"><h2>ACTUAL · ${appSettings.display_locale==='en-US'?'This device':'이 기기'}</h2><a href="#actual" class="button">${appSettings.display_locale==='en-US'?'Enter / manage ACTUAL holdings':'ACTUAL 입력·관리'}</a><div id="device-actual-summary" aria-live="polite"></div></section>`+block("portfolio",t("보유 현황"),`<p>${esc(p?.role || "")}</p><dl><dt>${t("수익률")}</dt><dd>${pct(p?.return)}</dd><dt>${t("평가금액")}</dt><dd>${fmt(p?.market_value)} ${esc(p?.currency || "")}</dd><dt>${t("Exposure(노출)")}</dt><dd>${esc(p?.exposure?JSON.stringify(p.exposure):t("미제공"))}</dd></dl><ul class="list">${(p?.holdings || []).map(h=>`<li class="item"><a href="#company/${encodeURIComponent(h.company_id)}"><b>${esc(h.ticker)}</b><div class="muted">${t("실제 비중")} ${Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"} · ${t("수익률")} ${pct(h.return)}</div>${Number.isFinite(h.target_weight)?`<div class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</div>`:""}</a>${star(h.company_id)}</li>`).join("")}</ul>`)+
   `<div class="grid">${block("qgv",t("QGV context(QGV 맥락)"),'<a href="#companies">'+t("기업별 분석 →")+"</a>")}${block("technical",t("Technical context(기술적 분석 맥락)"),'<a href="#companies">'+t("기업별 신호 →")+"</a>")}${block("macro",t("Macro context(거시 맥락)"),`<p>${esc(D.macro.data?.regime || "")}</p>`)}</div><a href="#news">${t("중요 뉴스·관계 변화 →")}</a>`;
 }
 function leaderboard() {
@@ -521,6 +521,8 @@ function renderRoute() {
   if(route==='profiles') DeviceProfiles.mount($('#device-profile-editor'),{locale:appSettings.display_locale});
   if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});
   for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:undefined,locale:appSettings.display_locale});
+  ThemeDisplay.mount($('#company-theme-display'),{locale:appSettings.display_locale});
+  ThemeDisplay.mount($('#portfolio-theme-display'),{locale:appSettings.display_locale,mode:'portfolio'});
   syncNavigation(route);
   if(QGV_CHILDREN.includes(route) || route==="research") {
     const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← 검증";
