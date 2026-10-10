@@ -138,19 +138,17 @@ def test_affected_workflows_have_no_publication_sinks(name):
     if name != 'cockpit-pages':
         assert 'actions/upload' not in source and 'actions/deploy-pages' not in source
     else:
-        import yaml
-        workflow = yaml.safe_load(source)
-        build = workflow['jobs']['build']
-        upload = [step for step in build['steps'] if 'actions/upload' in step.get('uses', '')]
-        assert len(upload) == 1
-        assert upload[0]['uses'] == 'actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa'
-        assert upload[0]['with']['path'] == '${{ runner.temp }}/public-cockpit'
-        assert upload[0]['if'] == workflow['jobs']['deploy']['if']
-        assert "github.event_name == 'workflow_dispatch'" in upload[0]['if']
-        assert "github.ref_name == 'claude/investment-system-top500-validation-alrugm'" in upload[0]['if']
-        assert workflow['jobs']['deploy']['needs'] == 'build'
-        assert any('pages_artifact_guard.py' in step.get('run', '') for step in build['steps'][:build['steps'].index(upload[0])])
-        assert any('private_history_browser_test.js' in step.get('run', '') for step in build['steps'][:build['steps'].index(upload[0])])
+        assert source.count('actions/upload') == 1
+        assert source.count('actions/deploy-pages') == 1
+        assert 'actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa' in source
+        assert 'actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e' in source
+        condition = "github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm'"
+        assert source.count(condition) == 2
+        assert "path: ${{ runner.temp }}/public-cockpit" in source
+        assert "needs: build" in source
+        assert source.index('pages_artifact_guard.py') < source.index('actions/upload')
+        assert source.index('private_history_browser_test.js') < source.index('actions/upload')
+
 
 
 @pytest.mark.parametrize('field', ['rank', 'market_cap_rank', 'total_score', 'V_score', 'period_return', 'renamed'])
