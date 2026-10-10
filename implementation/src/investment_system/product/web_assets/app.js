@@ -430,9 +430,10 @@ function qgv() {
     ["investments","내 투자",[
       ["포트폴리오","부분","기기 보유 요약을 확인합니다. 운영 포트폴리오 Snapshot은 미연결입니다.","#portfolio"],
       ["실제 보유","사용 가능","이 기기에 보유와 수동 시세를 입력·관리합니다.","#actual"],
-      ["전략 프로필","준비 중","전략 프로필 상세 화면은 준비 중입니다."],
+      ["전략 프로필","부분","공식 가중치 복사·초안·PREVIEW·기기 저장","#profiles"],
       ["모델 포트폴리오","준비 중","모델 포트폴리오 상세 화면은 준비 중입니다."]]],
     ["companies","종목 찾기·분석",[
+      ["기업 유형 커스텀","부분","공식 설정 연결 대기·PREVIEW 골격","#types"],
       ["전체 기업","부분","과거 기업 목록을 탐색합니다. 운영 기업 분석은 미연결입니다.","#companies"],
       ["리더보드","부분","순위 화면은 열 수 있습니다. 운영 순위 데이터는 미연결입니다.","#leaderboard"],
       ["관심 기업","준비 중","관심 기업 전용 화면은 준비 중입니다. 기존 기업 화면의 관심 목록 관리는 유지됩니다."]]],
@@ -445,6 +446,8 @@ function qgv() {
   return heading("QGV",t("QGV 허브"),t("기존 화면과 각 기능의 준비 상태를 확인합니다."))+
     `<div data-hub="qgv">${groups.map(([id,title,cards])=>`<section class="hub-group" id="qgv-${id}"><h2 tabindex="-1">${esc(t(title))}</h2><div class="hub-grid">${cards.map(args=>hubCard(...args)).join("")}</div></section>`).join("")}</div>`;
 }
+function profiles() { return heading("PREVIEW",t("전략 프로필"))+'<div id="device-profile-editor"></div>'; }
+function types() { return heading("PREVIEW",t("기업 유형 커스텀"))+'<div id="device-type-editor"></div>'; }
 function technical() {
   const s=D.technical;
   return `<div data-ia-screen="technical">${heading("TECHNICAL",t("기술적 분석"),t("기존 기록의 연결 상태를 확인합니다."))}
@@ -467,7 +470,7 @@ function validation() {
       ["Track Record","공개 앱에 연결된 성과 기록이 없습니다."]
     ].map(([title,reason])=>hubCard(title,"준비 중",reason)).join("")}</div>`;
 }
-const QGV_CHILDREN=Object.freeze(["companies","company","leaderboard","news","portfolio","actual","entity","thirteenf"]);
+const QGV_CHILDREN=Object.freeze(["companies","company","leaderboard","news","portfolio","actual","entity","profiles","types","thirteenf"]);
 function syncNavigation(route) {
   const parent=QGV_CHILDREN.includes(route)?"qgv":route==="research"?"validation":route;
   document.querySelectorAll("[data-nav-tab]").forEach(a=>{
@@ -507,7 +510,7 @@ function renderRoute() {
   notice("");syncShell();
   let [route,id]=location.hash.slice(1).split("/");route=route || "home";
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,qgv,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id)};
+  const routes={home,qgv,profiles,types,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id)};
   if(!routes[route]) route="home";
   $("#content").innerHTML=routes[route]();
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
@@ -515,6 +518,8 @@ function renderRoute() {
   if(route==='technical') PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
   if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
   if(route==='company'||route==='leaderboard') SecReported.mount($('#sec-reported-panel'),secReported,{companyId:route==='company'?id:undefined,locale:appSettings.display_locale});
+  if(route==='profiles') DeviceProfiles.mount($('#device-profile-editor'),{locale:appSettings.display_locale});
+  if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});
   for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:undefined,locale:appSettings.display_locale});
   ThemeDisplay.mount($('#company-theme-display'),{locale:appSettings.display_locale});
   ThemeDisplay.mount($('#portfolio-theme-display'),{locale:appSettings.display_locale,mode:'portfolio'});
@@ -774,7 +779,7 @@ async function exportDeviceBackup(){
 }
 async function restoreDeviceBackup(payload){
   const catalog=await deviceCatalog();DeviceBackup.parse(payload,catalog,DeviceMarket,AppLanguage);
-  if(!confirm(appSettings.display_locale==='en-US'?'Replace device interests, groups, portfolio and language settings?':'기기 관심 기업·그룹·포트폴리오·언어 설정을 백업으로 바꿀까요?'))return;
+  if(!confirm(appSettings.display_locale==='en-US'?'Replace device interests, groups, portfolio, profiles and language settings?':'기기 관심 기업·그룹·포트폴리오·프로필·언어 설정을 백업으로 바꿀까요?'))return;
   await DeviceBackup.restore(window,catalog,payload);load();const read=AppLanguage.read(localStorage);appSettings=read.value;settingsWritable=read.writable;render();
 }
 document.addEventListener('device-backup-restored',()=>{load();appSettings=AppLanguage.read(localStorage).value;render();});
