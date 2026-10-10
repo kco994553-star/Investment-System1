@@ -29,7 +29,7 @@
 | [#107](https://github.com/kco994553-star/Investment-System1/pull/107) | M3 계산 계약 초안 | 코덱1의 보존된 초안; 기기·Worker 연결은 코덱1 범위. |
 | [#109](https://github.com/kco994553-star/Investment-System1/pull/109) | Worker 대시보드 단일 파일·메모리 제한 대안 | 코덱1의 별도 Worker PR; 이 작업에서 병합·배포하지 않음. |
 | [#111](https://github.com/kco994553-star/Investment-System1/pull/111) | 기술 지표 v1 | WIP. DESIGN에 개별 지표 산식·period·warm-up 미확정이 명시돼 계산 범위 확인 대기. 현재는 범위 문서만 있으며 코드·테스트는 아직 미구현; 같은 PR에서 계속한다. |
-| 이번 문서 PR | Macro 나머지 4축 원기관 조사·현재 인수인계 | Liquidity/Credit/Fiscal/FX 공식 설명 17개·발표 주기·archive/PIT 한계. 구현 없음; .md 전용으로 최종 실행 체크 모두 성공·실패 0이면 자체 병합. 실제 PR 상태는 GitHub를 참조한다. |
+| [#112](https://github.com/kco994553-star/Investment-System1/pull/112) | Macro 나머지 4축 원기관 조사·현재 인수인계 | Liquidity/Credit/Fiscal/FX 공식 설명 17개·발표 주기·archive/PIT 한계. 구현 없음; .md 전용으로 최종 실행 체크 모두 성공·실패 0이면 자체 병합. 실제 PR 상태는 GitHub를 참조한다. |
 
 ## 결정 대기
 
