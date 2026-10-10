@@ -271,3 +271,16 @@ test('history cancellation during JSON parsing rejects a late payload', async ()
   cancel.abort(); finish(HISTORY_PAYLOAD);
   await assert.rejects(read, { message: 'CANCELED' });
 });
+test('bounded readonly Sheets reads reject oversized advertised and streamed bodies', async () => {
+  const r=await connectedRuntime();let options;
+  r.view.fetch=async(url,o)=>{options=o;return new Response(JSON.stringify({values:[['date','symbol','B/S','quantity']]}));};
+  const value=await r.active.fetchValues(ID,"'Trades'!A1:D1025",{maxBytes:1024});assert.equal(value.values.length,1);assert.equal(options.redirect,'error');assert.equal(options.cache,'no-store');assert.equal(options.credentials,'omit');assert.equal(options.referrerPolicy,'no-referrer');
+  r.view.fetch=async()=>new Response('{}',{headers:{'content-length':'2048'}});await assert.rejects(r.active.fetchValues(ID,"'Trades'!A1:D1025",{maxBytes:1024}),{message:'SOURCE_TOO_LARGE'});
+  r.view.fetch=async()=>new Response(JSON.stringify({values:[['x'.repeat(2048)]]}));await assert.rejects(r.active.fetchValues(ID,"'Trades'!A1:D1025",{maxBytes:1024}),{message:'SOURCE_TOO_LARGE'});
+});
+test('bounded Sheets reads honor caller abort and disconnect cancels concurrent reads', async () => {
+ const r=await connectedRuntime(),first=new AbortController();first.abort();await assert.rejects(r.active.fetchValues(ID,"'Trades'!A1:D1025",{signal:first.signal,maxBytes:1024}),{message:'CANCELED'});
+ const pending=[];r.view.fetch=async(url,options)=>new Promise((resolve,reject)=>{pending.push(options.signal);options.signal.addEventListener('abort',()=>reject(Error('ABORT')),{once:true});});
+ const a=r.active.fetchValues(ID,"'Trades'!A1:D1025",{maxBytes:1024}),b=r.active.fetchValues(ID,"'Universe'!A1:C1025",{maxBytes:1024});
+ r.active.setEnabled(false);const settled=await Promise.allSettled([a,b]);assert.ok(pending.every(s=>s.aborted));assert.ok(settled.every(s=>s.status==='rejected'&&s.reason.message==='CANCELED'));
+});

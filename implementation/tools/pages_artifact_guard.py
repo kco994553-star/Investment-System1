@@ -28,13 +28,14 @@ from investment_system.product.sec_m2_candidates import require_public_candidate
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "technical-chart.js": "b9d062d7b5294c22ef754a986be7576211a83d2fd71dfc131cd69cf914fdd2c0",
+    "private-trades.js": "99a986a1058cec69d83094e48d634bc08536c7075fb3eb03502fe5b0f7d9cd9d",
+    "technical-chart.js": "5819ccdff1573ef6c2009160de518f61c874126658f14576164a85e141357705",
     "chart-indicators.js": "30cf6571f32c0496acd247099feb5f71fce0acf8870dcd78781018b872291fcc",
     "device-backup.js": "d8229be35d744153ecd5cda57ca700aac080297bd3c80d7f07d076ba35d63323",
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "e69b8fe9fe492969a765a66f33170684e1d5fd0f40f47434cdb361a4b50a0361",
-    "app.js": "0ec37a807e5c584cc69c6c13e37e310b15fb23c5e648c78bd661a99f8724914f",
+    "app.js": "740ae9fa5d9f9abc74f7757b91fee2eeea8bd7d99d524730b0b392566e3154e8",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "05770dd8e99d40c43d320970549f7f91f8c93bd77496553c593172ab5a1f7407",
@@ -42,12 +43,12 @@ APPROVED_SHA256 = {
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "53d790bf12c8ef767bcfaa0a56a7f63439f354d5465dedbf339de947f7d14561",
+    "google-sheet-quotes.js": "145e3e438f8fe1694344cee5864db47f434ca4c21483a855aacdc80aea555580",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "8c10ae6ba705b391fb5f409286a525db289e5ec98696e1929bf9568db4aae839",
+    "index.html": "52f5b901cebfd68a77d99a29ae444f136140b14a917c0dd64fde404fdf8a02d6",
     "locale.js": "0e27312c7885dd1edbaf5c5eed939ba4b642695e5541653a21c786dcff9089fc",
-    "private-history.css": "0170b5bcec293b5556a8c357038a6041736beed103bf1112dfbeb104dbc185d5",
-    "private-history.js": "5936f823185c526849f8f123ebd8449d5ab6f686dc8a9181058c65d0551212d4",
+    "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
+    "private-history.js": "5c08a58d38b0be1cc757307f48ca8e98f048592421a9fa54adf897957b07d871",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "035930c2bdeb760f768562f8a9fb6b7aec703bc4663392b8f91db5796145b56e",
 }

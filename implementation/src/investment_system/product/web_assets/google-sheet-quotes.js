@@ -128,23 +128,37 @@
       const previous = token; invalidate(); error = ''; notify();
       if (previous && oauth()) { try { oauth().revoke(previous, () => {}); } catch (_) { /* Memory is cleared even if revocation fails. */ } }
     }
-    async function fetchValues(id, range) {
+    async function fetchValues(id, range, options = {}) {
       expire(); if (!enabled || !token) fail('AUTH_REQUIRED');
-      const url = sheetsURL(id, range), attempt = epoch;
+      const url = sheetsURL(id, range), attempt = epoch, signal = options.signal;
+      if (options.maxBytes !== undefined && (!Number.isSafeInteger(options.maxBytes) || options.maxBytes < 1024 || options.maxBytes > 1048576)) fail('INVALID');
+      if (signal?.aborted) fail('CANCELED');
       controller = new view.AbortController(); const abort = controller;
+      controllers.add(abort); const cancel = () => abort.abort(); if (signal) signal.addEventListener('abort', cancel, {once:true});
+      const current = () => attempt === epoch && enabled && token && !abort.signal.aborted;
       try {
-        const response = await view.fetch(url, { method: 'GET', headers: { Authorization: 'Bearer ' + token }, credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer', signal: abort.signal });
-        if (attempt !== epoch || !enabled) fail('CANCELED');
+        const response = await view.fetch(url, { method: 'GET', headers: { Authorization: 'Bearer ' + token }, credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer', redirect:'error', signal: abort.signal });
+        if (!current()) fail('CANCELED');
         if (response.status === 401) { invalidate(); error = 'AUTH_REQUIRED'; notify(); fail('AUTH_REQUIRED'); }
         if (!response.ok) fail('READ_FAILED');
-        const value = await response.json(); expire();
-        if (attempt !== epoch || !enabled || !token) fail('CANCELED');
+        let value;
+        if (options.maxBytes !== undefined) {
+          const size = response.headers?.get('content-length');
+          if (size && /^\d+$/.test(size) && Number(size) > options.maxBytes) { await response.body?.cancel(); fail('SOURCE_TOO_LARGE'); }
+          if (!response.body) fail('READ_FAILED');
+          const reader=response.body.getReader(),chunks=[];let length=0;
+          try { while(true) { const {done,value:chunk}=await reader.read(); if(done)break; length+=chunk.byteLength;if(length>options.maxBytes){await reader.cancel();fail('SOURCE_TOO_LARGE');}chunks.push(chunk);if(!current()){await reader.cancel();fail('CANCELED');} } } finally {reader.releaseLock();}
+          const bytes=new Uint8Array(length);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
+          value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
+        } else value = await response.json();
+        expire(); if (!current()) fail('CANCELED');
         if (!value || !Array.isArray(value.values)) fail('READ_FAILED'); return value;
       } catch (caught) {
-        if (attempt !== epoch || abort.signal.aborted) { if (caught.message === 'AUTH_REQUIRED') throw caught; fail('CANCELED'); }
-        if (['INVALID', 'READ_FAILED', 'AUTH_REQUIRED', 'CANCELED'].includes(caught.message)) throw caught;
+        if (caught.message === 'AUTH_REQUIRED') throw caught;
+        if (!current()) fail('CANCELED');
+        if (['INVALID', 'READ_FAILED', 'SOURCE_TOO_LARGE', 'CANCELED'].includes(caught.message)) throw caught;
         fail('READ_FAILED');
-      } finally { if (controller === abort) controller = null; }
+      } finally { if (controller === abort) controller = null; controllers.delete(abort); if(signal)signal.removeEventListener('abort',cancel); }
     }
     async function fetchHistory(origin, symbol, range, options = {}) {
       const destination = historyOrigin(origin);
