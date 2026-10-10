@@ -225,7 +225,7 @@ async function main() {
         await check(label + ": device backup export stays in memory and excludes prices, FX and API settings", async () => {
           // Current contract ("Unify device backups", device_market.exportBackup): quotes, FX and imported prices are never backed up.
           backup = await exportMemory(page, root); const payload = JSON.parse(backup);
-          verify(payload.schema === "investment-device-backup/2" && payload.portfolio?.schema === "device-actual-holdings/1" && payload.portfolio.themes.some(theme => theme.holdings.length > 0), "device backup envelope absent");
+          verify(payload.schema === "investment-device-backup/3" && payload.portfolio?.schema === "device-actual-holdings/1" && payload.portfolio.themes.some(theme => theme.holdings.length > 0), "device backup envelope absent");
           verify(!backup.includes("market_data") && !backup.includes("price_as_of") && !backup.includes("fx_as_of"), "backup includes market data");
           verify(!Object.values(VALUES).some(value => backup.includes(value.price) || (value.rate && backup.includes(value.rate))) && !backup.includes(CURRENT), "backup includes a price, FX rate or quote time");
           verify(!backup.includes(KEY) && !backup.includes("api-settings") && !backup.includes("api_key"), "backup includes API key");

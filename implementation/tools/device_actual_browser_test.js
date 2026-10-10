@@ -318,11 +318,11 @@ async function main() {
         await check(`${locale}: export is a local Blob kept entirely in memory`, async () => {
           exported = await exportMemory(page, root);
           const payload = JSON.parse(exported);
-          // Current contract: the export is the unified price-free device backup (investment-device-backup/2,
-          // since "Unify device backups"); holdings travel in its portfolio member and quotes, FX and API
-          // settings are never exported.
-          requireCheck(JSON.stringify(Object.keys(payload).sort()) === JSON.stringify(["portfolio", "preferences", "profiles", "schema", "settings"]) &&
-            payload.schema === "investment-device-backup/2", "export is not the unified device backup envelope");
+          // Current contract: the export is the unified price-free device backup (investment-device-backup/3,
+          // since "Unify device backups"; /3 adds 13F investor stars); holdings travel in its portfolio member and
+          // quotes, FX and API settings are never exported.
+          requireCheck(JSON.stringify(Object.keys(payload).sort()) === JSON.stringify(["investor_stars", "portfolio", "preferences", "profiles", "schema", "settings"]) &&
+            payload.schema === "investment-device-backup/3", "export is not the unified device backup envelope");
           const portfolio = payload.portfolio;
           requireCheck(JSON.stringify(canonical(portfolio)) === JSON.stringify(canonical(original)), "export differs from the saved holdings envelope");
           requireCheck(portfolio.schema === "device-actual-holdings/1" && portfolio.kind === "ACTUAL" &&
