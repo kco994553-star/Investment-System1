@@ -39,7 +39,7 @@ APPROVED_SHA256 = {
     "private-subset.js": "5dfa945113a84ec8fde2cb2020f71343e1cd453a5de41771165a0a8b531a6fec",
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
-    "device-profiles.js": "b0d2b9c0fa59de3b7f255a081c9da57b87704903ce32578369a8cd0f5333dfe6",
+    "device-profiles.js": "48582334c3af7ea976b09a07f93952dbe945540d8e0d2c5fe3f11a572d92d136",
     "public-screens.js": "f8678956941ec30f1e8eb7d4b7df62ca71aee358c1fa00aa1bfed04d27601a79",
     "pwa.js": "f8d5df267d323fd465821416f1825f38d4065030ec5368b7a37bfc4ed875affd",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",

@@ -31,6 +31,7 @@ AGENCIES = ('SEC_COMPANYFACTS','SEC_SUBMISSIONS','SEC_13F','BLS','BEA','TREASURY
 REASONS = ('NO_ELIGIBLE_INPUT','SOURCE_NOT_AVAILABLE','SYNTHETIC_INPUT_NOT_PUBLIC','SOURCE_AFTER_AS_OF',
     'STALE_INPUT','UPSTREAM_NOT_AVAILABLE','TYPE_ENGINE_PENDING_MERGE','CRITERIA_UNDEFINED','PUBLIC_FX_EXCLUDED','UNAPPROVED_ENGINE_INPUT_MAPPING')
 PRICEFREE_TYPES = ('growth','quality','cyclical','defensive')
+PRICEFREE_METRICS = ('revenue_cagr_3y','roic')
 FACTORS = set(Q_WEIGHTS)|set(G_WEIGHTS)
 
 
@@ -110,7 +111,8 @@ def _require(name,payload):
     if name in ('sec-qg-factors.json','company-types-pricefree.json'):
         rows=_company_rows(data)
         for row in rows.values():
-            _keys(row,('state','factors','source_hashes') if name=='sec-qg-factors.json' else ('state','memberships','config_version','source_hashes'))
+            if name=='sec-qg-factors.json':_keys(row,('state','factors','source_hashes'))
+            else:_keys(row,('state','memberships','config_version','source_hashes','metrics') if 'metrics' in row else ('state','memberships','config_version','source_hashes'))
             _need(row['state'] in STATES);states.append(row['state'])
             _source_refs(row,sources,{'companyfacts':'SEC_COMPANYFACTS','submissions':'SEC_SUBMISSIONS'},cut,payload['stale_after_seconds'],row['state'])
             if name=='sec-qg-factors.json':
@@ -123,6 +125,10 @@ def _require(name,payload):
                 _need(isinstance(row['memberships'],dict) and set(row['memberships'])==set(PRICEFREE_TYPES))
                 for v in row['memberships'].values():_score(v,1)
                 _need((row['state']=='NOT_AVAILABLE')==all(v is None for v in row['memberships'].values()))
+                # Optional price-free SEC ratios behind the memberships; null stays null (never 0).
+                if 'metrics' in row:
+                    _keys(row['metrics'],PRICEFREE_METRICS)
+                    for v in row['metrics'].values():_need(v is None or (_finite(v) and abs(v)<=100))
     elif name=='sec-filing-windows.json':
         _keys(data,('companies',));_need(isinstance(data['companies'],dict) and set(data['companies'])==set(OFFICIAL_V11_TARGETS))
         for row in data['companies'].values():
@@ -263,7 +269,7 @@ def _generate(manifest,root,as_of,stale_after):
     _keys(manifest,('schema_version','sec','macro','thirteen_f'));_need(type(manifest['schema_version']) is int and manifest['schema_version']==1)
     _need(all(isinstance(manifest[k],list) for k in ('sec','macro','thirteen_f')) and len(manifest['sec'])<=17 and len(manifest['macro'])<=64 and len(manifest['thirteen_f'])<=20)
     qg={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'factors':{fid:{'score':None,'state':'NOT_AVAILABLE'} for fid in sorted(FACTORS)}} for cid in OFFICIAL_V11_TARGETS}
-    types={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'memberships':dict.fromkeys(PRICEFREE_TYPES),'config_version':None} for cid in OFFICIAL_V11_TARGETS}
+    types={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'memberships':dict.fromkeys(PRICEFREE_TYPES),'config_version':None,'metrics':dict.fromkeys(PRICEFREE_METRICS)} for cid in OFFICIAL_V11_TARGETS}
     windows={cid:{'state':'NOT_AVAILABLE','role':'ESTIMATED_PATTERN_NOT_CONFIRMED','confirmed_earnings_date':None,'source_hashes':{},'groups':[]} for cid in OFFICIAL_V11_TARGETS}
     sec_sources=[];type_reasons=[];seen=set()
     try:
@@ -296,7 +302,7 @@ def _generate(manifest,root,as_of,stale_after):
                 metrics={'revenue_cagr_3y':_growth(m1),'roic':None if raw.net_income is None or raw.invested_capital in (None,0) else raw.net_income/raw.invested_capital}
                 calc=calculate_company_types(metrics=metrics,original_qgv={'Q':None,'G':None,'V':None},config=config)
                 members={t:calc['memberships'][t]['membership'] for t in PRICEFREE_TYPES}
-                types[cid].update(config_version=calc['config_version'],memberships=members,state=state if any(v is not None for v in members.values()) else 'NOT_AVAILABLE')
+                types[cid].update(config_version=calc['config_version'],memberships=members,metrics={k:metrics[k] if _finite(metrics[k]) and abs(metrics[k])<=100 else None for k in PRICEFREE_METRICS},state=state if any(v is not None for v in members.values()) else 'NOT_AVAILABLE')
     primary=[];remaining=[];macro_sources=[];bindings={}
     for entry in manifest['macro']:
         _need(isinstance(entry,dict) and set(entry)<=set(('provider','file','acquired_at','synthetic','series_ids','table','binding','source_url')) and set(('provider','file','acquired_at','synthetic'))<=set(entry))

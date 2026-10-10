@@ -243,3 +243,18 @@ def test_merged_type_engine_uses_three_year_revenue_ramp_without_price(tmp_path)
     row=out['data']['companies']['nvda']
     assert row['memberships']['growth']==pytest.approx(.5)
     assert row['config_version']=='type_config/1' and row['state']=='LIVE'
+
+
+def test_pricefree_type_metrics_are_published_beside_memberships_and_legacy_rows_still_validate(tmp_path):
+    out=build(tmp_path,sec(tmp_path))['company-types-pricefree.json']
+    row=out['data']['companies']['nvda']
+    assert set(row['metrics'])=={'revenue_cagr_3y','roic'}
+    assert row['metrics']['revenue_cagr_3y']==pytest.approx(.15)
+    assert out['data']['companies']['asml']['metrics']=={'revenue_cagr_3y':None,'roic':None}
+    assert 'price' not in json.dumps(out)
+    legacy=json.loads(json.dumps(out))
+    for r in legacy['data']['companies'].values():r.pop('metrics')
+    api().require_public_screen('company-types-pricefree.json',legacy)
+    for bad in (float('nan'),1e9,'0.1'):
+        broken=json.loads(json.dumps(out));broken['data']['companies']['nvda']['metrics']['roic']=bad
+        with pytest.raises(ValueError):api().require_public_screen('company-types-pricefree.json',broken)
