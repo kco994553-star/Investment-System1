@@ -625,3 +625,8 @@ main, .card, .grid > *, .axis-grid > *, .hub-grid > * {min-width:0;}
 .ring-cell svg {display: block; margin: 6px auto;}
 .combo-list {list-style: none; margin: 8px 0 0; padding: 0;}
 .combo-list li {display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere;}
+
+/* S13 official weight bars. */
+.weight-bars {margin: 8px 0;}
+.weight-bar {display: grid; grid-template-columns: minmax(0, 1fr) 40%; align-items: center; gap: 8px;}
+.weight-bar .bar {display: block; height: 6px; border-radius: 3px; background: var(--accent);}
