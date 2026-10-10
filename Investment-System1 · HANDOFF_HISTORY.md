@@ -254,7 +254,7 @@ Next Action then: Work/원 개발 ZIP 이관 후 재실행.
 ------------------------------------------------------------------------
 
 2026-09-23 14:01 KST · Grok → Next AI
-- Yahoo adjclose used for PIT bars. pytest 82. INTC still ~353% adj=raw in feed.
+- Yahoo adjclose used for PIT bars. pytest 82. INTC still 값 제거됨(GSQ-010), receipt 참조 adj=raw in feed.
 
 ------------------------------------------------------------------------
 
@@ -1291,7 +1291,7 @@ Do Not Repeat
 2026-09-25 (round 7) · Claude Code (cloud container + GitHub Actions runner) → Next AI
 - C-21 data blocker cleared: GitHub push started working; added .github/workflows/c21-real-data.yml (manual dispatch) that runs the existing fetch_real_data.py + run_top500_gate_chain.py on a GitHub-hosted runner with real egress. 2,912 real raw artifacts (2.35 GB) ingested: 604 SEC companyfacts + 604 submissions + 860 Yahoo charts + 843 split-event payloads + sec_tickers.
 - Real-data defects found and fixed (all tested): row-level ranking of preferreds/extra lines per CIK; dividend-adjusted adjclose used as price; post-as_of splits; 10-Q two-date shares misread as multi-class; delisted S&P CIKs verified by SEC name.
-- Result: 604 issuers, 554 rankable, #500 cutoff $12.43B, S&P missing-from-pool 0. Gates still FAIL; Official blocked (gate v2 + 63 foreign ADR rows + 5 rows w/o split events). Walk-forward / benchmark NOT RUN.
+- Result: 604 issuers, 554 rankable, #500 cutoff 값 제거됨(GSQ-010), receipt 참조, S&P missing-from-pool 0. Gates still FAIL; Official blocked (gate v2 + 63 foreign ADR rows + 5 rows w/o split events). Walk-forward / benchmark NOT RUN.
 
 ------------------------------------------------------------------------
 
@@ -1325,12 +1325,12 @@ Persistent raw store (C-21 manifest/evidence policy)
 Code changes this round (minimal, additive, all tested)
 1. run_top500_gate_chain.py: company-level ranking, one line per CIK (primary = first SEC submissions ticker present). Row-level
    listings had 879 rows for 604 issuers (preferreds BAC-PB, OTC lines ASMLF, extra classes), each ranked with the issuer's total
-   shares -> inflated rankable 731 / cutoff $22.0B. Row-level audit still reported for comparison.
+   shares -> inflated rankable 731 / cutoff 값 제거됨(GSQ-010), receipt 참조. Row-level audit still reported for comparison.
 2. audit_mcap_store.py: market-cap price = Yahoo close x split factor after as_of (yahoo_events artifact). Before, parse_bars
    'price' (= dividend-adjusted adjclose) was used, and post-as_of splits shrank caps (ORLY 15:1, BKNG 25:1, KLAC 10:1 in 2025).
-   Verified: ORLY $68.1B, BKNG $165B, KLAC $84.8B at 2024-12-31. Also row_detail() diagnostics.
+   Verified: ORLY 값 제거됨(GSQ-010), receipt 참조, BKNG 값 제거됨(GSQ-010), receipt 참조, KLAC 값 제거됨(GSQ-010), receipt 참조 at 2024-12-31. Also row_detail() diagnostics.
 3. universe/sources.py pit_shares: within the latest filing, use the latest 'end' date before calling values multi-class
-   (10-Q reports period-end and prior-year-end shares). Fixed 13 false MULTI_CLASS_AMBIGUOUS (GOOGL #5 $2.35T, PLTR, DELL, ADM...).
+   (10-Q reports period-end and prior-year-end shares). Fixed 13 false MULTI_CLASS_AMBIGUOUS (GOOGL 값 제거됨(GSQ-010), receipt 참조 값 제거됨(GSQ-010), receipt 참조, PLTR, DELL, ADM...).
    True same-date multi-values stay ambiguous (existing test unchanged).
 4. Delisted 2024-12-31 S&P members (ANSS DAY HES HOLX IPG JNPR K WBA): candidate CIKs in
    reports/gate_evidence/delisted_cik_candidates_2024-12-31.json, accepted ONLY after SEC submissions name match -> 8/8 verified.
@@ -1344,8 +1344,8 @@ Status snapshot (as_of 2024-12-31, evidence: reports/gate_evidence/gate_chain_20
 - Pool: 879 listing rows -> 604 issuers (275 extra lines collapsed; 89 multi-line issuers, all primary chosen from SEC submissions)
 - Reference coverage (S&P 500 reconstructed, 503, detector only): missing_from_pool 0 · present_not_rankable 26 · rankable outside computed top 500: 52
 - rankable: 554 issuers (missing price 13 = 10 delisted/404 on Yahoo + 3; missing shares 29; ambiguous 0; non-positive 8)
-- #500 cutoff: $12.43B
-- Top-500 row quality: 432 clean · 63 FOREIGN_ISSUER_ADR_RATIO_UNRESOLVED (e.g. TM $2.6T, BABA $1.6T, HSBC $0.95T are ADR-ratio-inflated) · 5 SPLIT_EVENTS_MISSING (MOH EPAM CAG POOL KMX)
+- #500 cutoff: 값 제거됨(GSQ-010), receipt 참조
+- Top-500 row quality: 432 clean · 63 FOREIGN_ISSUER_ADR_RATIO_UNRESOLVED (e.g. TM 값 제거됨(GSQ-010), receipt 참조, BABA 값 제거됨(GSQ-010), receipt 참조, HSBC 값 제거됨(GSQ-010), receipt 참조 are ADR-ratio-inflated) · 5 SPLIT_EVENTS_MISSING (MOH EPAM CAG POOL KMX)
 - Universe Completeness Gate: FAIL (604 issuers vs WFE low estimate 3,400)
 - Top-500 Sufficiency Gate: FAIL (NO_REFERENCE_PASSED_ITS_OWN_CHECKS; the S&P detector itself shows 26 not-rankable + 52 outside; detector can never pass it)
 - Promotion Gate v2: FAIL (no dated eligibility attestation; neither completeness nor sufficiency)
@@ -1384,7 +1384,7 @@ Do Not Repeat
 - SEC_USER_AGENT repository secret injected (masked ***); public dispatch input removed.
 - Policy decisions applied: foreign private issuers excluded (PIT, filings <= as_of); multi-class = cover-page XBRL class sum (unlisted classes -> lower bound, fail-closed).
 - Fixed from evidence: empty-cache save, evidence-commit pathspec, InvalidURL crash, preferred-series symbols, PIT CIK (XOM/PSKY), HRL/F class mapping, foreign-flag rule, split events for plan names, truncated charts refresh-once, submissions pages (STT/DB), zero companyfacts shares (CRWD/HOOD/DDOG/CVNA/TAP), reference normalisation.
-- Result (run #18): 530 eligible, 516 rankable, #500 cutoff $8.223B, quality blockers 0 except PSKY lower bound; Completeness/Sufficiency/Promotion Gate v2 FAIL. Official NOT declared. 212 tests.
+- Result (run #18): 530 eligible, 516 rankable, #500 cutoff 값 제거됨(GSQ-010), receipt 참조, quality blockers 0 except PSKY lower bound; Completeness/Sufficiency/Promotion Gate v2 FAIL. Official NOT declared. 212 tests.
 
 ------------------------------------------------------------------------
 
@@ -1406,12 +1406,12 @@ SEC_USER_AGENT: repository secret only (masked in logs).
 
 Current numbers (as_of 2024-12-31)
 - eligible issuers 530 (604 -> company-level; 73 foreign private issuers at as_of excluded; HONA not registered at as_of)
-- rankable 516 · #500 cutoff $8.223B
+- rankable 516 · #500 cutoff 값 제거됨(GSQ-010), receipt 참조
 - class-sum overrides 30 (6 exact, 24 lower bound; lower bound = unlisted class not priced, never guessed)
 - unrankable 14: 13 NO_AS_OF_PRICE (ANSS DAY HES HOLX IPG JNPR K WBA DFS CTRA = Yahoo 404 after delisting;
   AVB EA EQR = Yahoo returns a truncated ~1.3 KB chart, identical on refresh) + SNDK (not listed at as_of; UNKNOWN, kept)
 - top-500 quality flags 0; official blockers: PROMOTION_GATE_V2_FAILED, LOWER_BOUND_ISSUERS_OUTSIDE_TOP500 (PSKY: Paramount
-  Global class B = PARA, delisted, no price -> lower bound $1.1B; true value near the cutoff cannot be proven)
+  Global class B = PARA, delisted, no price -> lower bound 값 제거됨(GSQ-010), receipt 참조; true value near the cutoff cannot be proven)
 - Universe Completeness FAIL (530 / WFE low 3,400 = 15.6%)
 - Top-500 Sufficiency FAIL (only reference = S&P detector: 13 members not rankable, 13 ranked outside computed top 500;
   detector can never pass alone)
@@ -1431,7 +1431,7 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
 2026-09-25 (round 9) · Claude Code (+ Actions runs #19-#24) → Next AI
 - User decisions: Stooq for missing prices; Sufficiency path.
 - Stooq returns a JavaScript proof-of-work bot check to every scripted request (not bypassed; calibrated fallback writes nothing). iShares web CSV returns HTML. Replaced by SEC Form NPORT-P holdings of the iShares Russell 1000 ETF (0001752724-25-034052, report date 2024-12-31): 1,007 equity holdings, 971 resolved to CIKs.
-- Pool expanded with 435 Russell members: 952 eligible, 935 rankable, #500 cutoff $14.41B. Sufficiency (superset) FAIL: 20 members not in pool (delisted, no current ticker), 40 not rankable (14 no as-of price, 26 lower-bound multi-class). Official NOT declared. 226 tests.
+- Pool expanded with 435 Russell members: 952 eligible, 935 rankable, #500 cutoff 값 제거됨(GSQ-010), receipt 참조. Sufficiency (superset) FAIL: 20 members not in pool (delisted, no current ticker), 40 not rankable (14 no as-of price, 26 lower-bound multi-class). Official NOT declared. 226 tests.
 
 ------------------------------------------------------------------------
 
@@ -1441,7 +1441,7 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
 - Fixes: N-PORT name normalisation / PIT-registrant check; per-series and per-exchange cover TradingSymbol (US Steel);
   ticker-change primary line (XYZ); never-periodic SEC filers excluded (OZK, FDIC filer); Tiingo empty-reply retry and
   name-matched alternate series (EQR -> VMRK).
-- Run #30: 979 rankable, cutoff $15.189B; multi-class blockers 0; remaining PINC, WOLF, PPLI (data). Promotion Gate v2 FAIL,
+- Run #30: 979 rankable, cutoff 값 제거됨(GSQ-010), receipt 참조; multi-class blockers 0; remaining PINC, WOLF, PPLI (data). Promotion Gate v2 FAIL,
   Official NOT declared.
 - Personal Investment Layer v1 relay imported (Architecture FROZEN, Implementation NOT STARTED); intake conflicts C-24..C-31;
   Integration zero-actual-weight defect fixed (C-27). 242 tests.
@@ -1477,7 +1477,7 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
 - Run #56: corrected reference identity/coverage passed, but OWL stayed not-rankable because its evidence arrived after
   the run started; Official remained suspended.
 - Run #57: Russell 991 members; missing/not-rankable/non-escrow-unresolved/collisions/missing-CUSIPs all zero. Sufficiency,
-  Promotion Gate v2, and consistency 500/500 PASS; blockers zero; cutoff $15.422B. This round recorded 2024-12-31 as
+  Promotion Gate v2, and consistency 500/500 PASS; blockers zero; cutoff 값 제거됨(GSQ-010), receipt 참조. This round recorded 2024-12-31 as
   Official RESTORED; round 14 supersedes that statement because the persisted Official artifact was not rebuilt.
 - 2024-09-30 remains SUSPENDED pending independent corrected re-run. 2024-06-30 remains open with C-34 WRK and C-35 GRAL.
 - Track B Personal Investment Layer stayed P0 FROZEN and untouched.
@@ -1488,7 +1488,7 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
 - Rechecked the persisted Official artifact after run #57. The gate report passes and its internal audited candidates are
   consistent 500/500, but workflow input `walk_forward_dates` was blank, so `official_pipeline.py` did not run.
 - `official_snapshot_2024-12-31.json` is therefore still the superseded pre-C-36 snapshot (`uni_0ad936238f45`, cutoff
-  $15.338B, TPR rank 500). Corrected run #57 instead has OWL rank 336 at $27.633B, ALGN rank 500 at $15.422B, and no FNF.
+  값 제거됨(GSQ-010), receipt 참조, TPR rank 값 제거됨(GSQ-010), receipt 참조). Corrected run #57 instead has OWL rank 값 제거됨(GSQ-010), receipt 참조 at 값 제거됨(GSQ-010), receipt 참조, ALGN rank 값 제거됨(GSQ-010), receipt 참조 at 값 제거됨(GSQ-010), receipt 참조, and no FNF.
 - Corrected state: 2024-12-31 gate PASS / Official restoration PENDING artifact rebuild; 2024-09-30 SUSPENDED; 2024-06-30
   open. Pre-C-36 single_as_of and benchmark remain superseded. No Track B or policy changes.
 
@@ -1500,8 +1500,8 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
   comparison and fails closed if the Gate ID is absent. Workflow gained a validated committed-Gate reuse mode.
 - 294/294 full regression and 102/102 targeted Official identity regressions PASS; no Track B code changed.
 - Run #59 (id 36233121639, evidence commit 1832747): Gate ID = Official ID = `uni_cf6aa3403869`; 500/500 membership,
-  order/rank, market cap and cutoff identical; #500 ALGN; FNF absent; all share/price provenance preserved.
-- Corrected single_as_of and real 500-company benchmark reran successfully (468 selected/linked; EW -0.01649309224255184;
+  order/rank, market cap and cutoff identical; 값 제거됨(GSQ-010), receipt 참조 ALGN; FNF absent; all share/price provenance preserved.
+- Corrected single_as_of and real 500-company benchmark reran successfully (468 selected/linked; EW 값 제거됨(GSQ-010), receipt 참조;
   benchmark 29.956 s, peak RSS 9,478.8 MB, 0 name errors). 2024-12-31 Official RESTORED. Run #41 and #58 results remain
   superseded. 2024-09-30 remains SUSPENDED pending its independent corrected C-36 run; 2024-06-30 remains open.
 - Track B Personal Investment Layer remained P0 FROZEN and untouched. WRK remains look-only; GRAL remains a blocker.
@@ -1510,7 +1510,7 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
 
 2026-09-26 (round 16, 18:41-19:07 KST) · Codex (+ Actions runs #60-#61) → Next AI
 - Run #60 independently rebuilt the corrected 2024-09-30 reference, Gate, Official snapshot, single_as_of, and benchmark.
-  Gate/Official ID `uni_e334f94a73c3`; 500/500 membership/order/mcap/provenance PASS; cutoff $15.574B; #500 ENPH.
+  Gate/Official ID `uni_e334f94a73c3`; 500/500 membership/order/mcap/provenance PASS; cutoff 값 제거됨(GSQ-010), receipt 참조; 값 제거됨(GSQ-010), receipt 참조 ENPH.
   2024-09-30 Official RESTORED; runs #46/#47 remain superseded.
 - Run #61 independently revalidated 2024-06-30 and failed closed: GRAL shares missing, WRK price missing, plus non-escrow
   unresolved ARDAGH GROUP SA and Liberty SiriusXM holdings. Internal candidate consistency 500/500 passed, but the
@@ -1524,7 +1524,7 @@ Promotion Gate v2 passes: official_mcap500_snapshot_from_store -> >=3 as_of walk
 
 2026-09-26 (round 17, 20:54 KST) · Codex → Next AI
 - Independently read the 2024-06-30 IWB N-PORT XML. Ardagh is a real positive EC position (12,001 shares,
-  $76,686.39, fair-value level 2), not a zero-value residue; Liberty SiriusXM is likewise positive.
+  값 제거됨(GSQ-010), receipt 참조, fair-value level 2), not a zero-value residue; Liberty SiriusXM is likewise positive.
 - SEC Form 25/15 establishes that Ardagh Class A left NYSE and registration/reporting ended in October 2021. Mapping it
   to CIK 0001689662 would still leave a delisted/private issuer outside the current listed-company model. Raised C-38;
   no eligibility exception or reference-line exclusion was invented.
@@ -1601,15 +1601,15 @@ walk-forward (each date gated independently) -> real 500 benchmark -> regression
 
 2024-12-31 Gate (run #57, id 36229163158, evidence commit 195c5da): corrected Russell reference 991 members; 0 missing,
 0 present-not-rankable, 0 non-escrow unresolved holdings, 0 CIK collisions, 0 members missing CUSIPs. Sufficiency PASS,
-Promotion Gate v2 PASS, gate/internal-snapshot consistency PASS 500/500, Official blockers 0, cutoff $15.422B. OWL entered
-at rank 336 on a conservative $27.633B lower bound (Class A + cited 1:1 Class C only); FNF left the prior #500 position and
-ALGN is the corrected #500.
+Promotion Gate v2 PASS, gate/internal-snapshot consistency PASS 500/500, Official blockers 0, cutoff 값 제거됨(GSQ-010), receipt 참조. OWL entered
+at rank 값 제거됨(GSQ-010), receipt 참조 on a conservative 값 제거됨(GSQ-010), receipt 참조 lower bound (Class A + cited 1:1 Class C only); FNF left the prior 값 제거됨(GSQ-010), receipt 참조 position and
+ALGN is the corrected 값 제거됨(GSQ-010), receipt 참조.
 
 2024-12-31 Official rebuild (run #59, id 36233121639, evidence commit 1832747): input Gate universe
 `uni_cf6aa3403869` was preserved as the Official universe ID. Gate and Official membership are identical 500/500 with
-identical order, ranks, market caps and cutoff $15,421,829,271.493835; #500 is ALGN; FNF is absent; every member's audited
+identical order, ranks, market caps and cutoff 값 제거됨(GSQ-010), receipt 참조; 값 제거됨(GSQ-010), receipt 참조 is ALGN; FNF is absent; every member's audited
 `shares_basis`, `price_basis`, `shares_available_at`, and `price_observed_at` is preserved. Corrected single_as_of:
-468 selected/linked, 500 universe, 494 investable, 6 missing, 0 name errors, EW -0.01649309224255184. Corrected real
+468 selected/linked, 500 universe, 494 investable, 6 missing, 0 name errors, EW 값 제거됨(GSQ-010), receipt 참조. Corrected real
 500-company benchmark: 29.956 s, peak RSS 9,478.8 MB, 0 name errors. Run #58 first exposed a random rebuilt-universe-ID
 mismatch (`uni_78060185a0d6` Gate vs `uni_5eb9effc9165` Official); the pipeline now fail-closes on a missing Gate ID and
 reuses that audited ID after exact membership/order verification. Pre-C-36 run #41 and run-#58 outputs remain superseded.
@@ -1617,17 +1617,17 @@ reuses that audited ID after exact membership/order verification. Pre-C-36 run #
 2024-09-30 corrected rebuild (run #60, id 36233560867, evidence commit ab72939): Russell N-PORT 994 members; 0 missing,
 0 present-not-rankable, 0 non-escrow unresolved, 0 duplicate CIK membership, complete member CUSIPs. Sufficiency and
 Promotion Gate v2 PASS; blockers 0. Gate ID = Official ID = `uni_e334f94a73c3`; membership 500/500, order/rank, market
-caps, cutoff $15,573,548,285.00, and every audited share/price provenance field match; #500 ENPH. Corrected single_as_of
-to 2024-12-31: 469 selected/linked, 495 investable, 5 missing, 0 name errors, EW 0.0004569665513276751. Corrected real
+caps, cutoff 값 제거됨(GSQ-010), receipt 참조, and every audited share/price provenance field match; 값 제거됨(GSQ-010), receipt 참조 ENPH. Corrected single_as_of
+to 2024-12-31: 469 selected/linked, 495 investable, 5 missing, 0 name errors, EW 값 제거됨(GSQ-010), receipt 참조. Corrected real
 benchmark: 28.362 s, peak RSS 9,534.8 MB, 0 name errors. 2024-09-30 Official is RESTORED; runs #46/#47 remain superseded.
 
 2024-06-30 D3-P application (run #66, id 36300544234, evidence commit f2a66f8 at 2026-09-27 15:47:10 KST): NOT
 OFFICIAL. Internal snapshot consistency passes 500/500; 991 issuers are rankable and cutoff remains
-$14,021,530,297.505974. General, result-independent policies were applied without cutoff input:
-- CA-PRICE-01 reconstructs WRK at $50.26 from three calibrated Level-1 N-PORT sponsors (two independent), with PIT
-  shares 258,148,056 and market cap $12,974,521,294.56. WRK is rankable outside the Top 500.
+값 제거됨(GSQ-010), receipt 참조. General, result-independent policies were applied without cutoff input:
+- CA-PRICE-01 reconstructs WRK at 값 제거됨(GSQ-010), receipt 참조 from three calibrated Level-1 N-PORT sponsors (two independent), with PIT
+  shares 258,148,056 and market cap 값 제거됨(GSQ-010), receipt 참조. WRK is rankable outside the Top 500.
 - CA-ELIGIBILITY-01 excludes Ardagh from sufficiency only after exact-security Form 25/Form 15 evidence, while preserving
-  the positive $76,686.39 residual source row in audit evidence. CA-SECURITY-01 forbids cross-tracking-group equivalence;
+  the positive 값 제거됨(GSQ-010), receipt 참조 residual source row in audit evidence. CA-SECURITY-01 forbids cross-tracking-group equivalence;
   Liberty no longer remains unresolved under the exact-CUSIP issuer evidence path.
 - CA-SHARES-01 failed closed for GRAL because policy evidence cited its 2025-03-05 10-K, while SEC submissions identify
   a 2024-11-13 10-Q as the first subsequent periodic report. GRAL alone remains present-not-rankable, so the Russell
@@ -1670,3 +1670,5 @@ preserved local commit above remote; the C-39 implementation/documentation is th
 ## Track A final Freeze record — 2026-09-27T20:50:49.316653+09:00
 
 Track A REAL-DATA Baseline **FROZEN** in local commit/package; canonical GitHub upload is still blocked (prior integration HTTP403). Validated source `682bbae1687d237f72c3f2266913b8bf61f1ff0b`. C-40/C-41 resolved; CA-UNIT-v1.0 approved; original20+3 D3-C cases audited. Corrected Gate and exact Official consistency pass for 2024-06-30/09-30/12-31; 3-date Walk-Forward equals singles; network-inclusive500 benchmark completed; raw6830 integrity and regression396/396 pass. No new D3-P. Baseline freeze does not promote PROVISIONAL_RESEARCH calibration or modify other tracks. Final machine record: `implementation/reports/gate_evidence/track_a_freeze_readiness_2026-09-27.json`. Work stopped as instructed. Earlier Track A blocked entries are historical and superseded by this record.
+
+GSQ-010 공개 가격 경계 정리 영수증: [doc-03](implementation/docs/public_price_boundary/RECEIPTS.md#doc-03).
