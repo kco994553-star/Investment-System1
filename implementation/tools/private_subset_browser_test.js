@@ -1,0 +1,15 @@
+'use strict';const {chromium}=require('playwright');
+(async()=>{let pass=0,fail=0,phase='INIT';const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});
+try{for(const width of [390,1440]){
+ const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),page=await context.newPage();await page.route('**/*',r=>new URL(r.request().url()).origin===new URL(process.env.PAGES_COCKPIT_URL).origin?r.continue():r.abort());await page.goto(process.env.PAGES_COCKPIT_URL+'#settings');await page.locator('[data-universe-source]').waitFor();await page.locator('[data-universe-source]').fill('u'.repeat(24));await page.locator('[data-universe-settings] button[type="submit"]').click();
+ phase='SEED';await page.evaluate(async()=>{
+  await DeviceActual.sheetSettings(window,{schema:'device-google-sheet-settings/1',enabled:true,spreadsheet_id:'',range:'Quotes!A1:C22'});
+  let epoch=1,connected=true;const listeners=new Set();window.__subsetAudit={reads:0};window.__subsetLogout=()=>{connected=false;epoch++;listeners.forEach(f=>f());};
+  const session={state:()=>({enabled:true,connected}),revision:()=>epoch,setEnabled(){},subscribe:f=>{listeners.add(f);return()=>listeners.delete(f);},async fetchValues(id,range,options){if(id!=='u'.repeat(24)||range!==PrivateSubsetView.RANGE||options.maxBytes!==1048576||!options.signal)throw Error('READ_FAILED');window.__subsetAudit.reads++;return{values:[['code','marketcap','price'],...Array.from({length:25},(_,i)=>['NYSE:S'+i,100+i,10+i])]};}};window.GoogleSheetQuotes={...GoogleSheetQuotes,sessionFor:()=>session};location.hash='leaderboard';
+ });
+ await page.locator('details:has(#private-subset-root) > summary').click();const root=page.locator('[data-private-subset]');await root.locator('[data-subset-action="read"]:enabled').waitFor();if(await page.evaluate(()=>window.__subsetAudit.reads)!==0)throw Error('AUTO_READ');
+ phase='READ';await root.locator('[data-subset-action="read"]').click();await root.locator('[data-subset-status]').filter({hasText:'SEC_INPUTS_NOT_CONNECTED'}).waitFor();if(await root.locator('[data-private-rank]').count()!==0||await page.evaluate(()=>window.__subsetAudit.reads)!==1)throw Error('FALSE_RANK');
+ const safe=await page.evaluate(async()=>{const c=await(await fetch('actual-catalog.json')).json(),b=await DeviceBackup.read(window,c);return !JSON.stringify(b).includes('u'.repeat(24))&&!Object.hasOwn(b,'universe')&&document.documentElement.scrollWidth<=innerWidth;});if(!safe)throw Error('BOUNDARY');
+ phase='CLEAR';await page.evaluate(()=>window.__subsetLogout());await root.locator('[data-subset-status]').filter({hasText:'AUTH_REQUIRED'}).waitFor();if(await root.locator('[data-subset-quality]').count())throw Error('RAM');
+ pass++;console.log('PASS Universe read fail closed and clear browser '+width);await context.close();
+}}catch(_){fail++;console.log('FAIL M3 browser '+phase);}finally{await browser.close();}console.log('COUNTS pass='+pass+' fail='+fail);if(fail)process.exitCode=1;})();
