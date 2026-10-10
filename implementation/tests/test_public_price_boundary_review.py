@@ -1,6 +1,5 @@
 """Final-review regressions use invented SEC rows and deny all external transport."""
 from copy import deepcopy
-from datetime import datetime, timezone
 import inspect
 import json
 import zipfile
@@ -67,8 +66,8 @@ def test_unsupported_form_cannot_become_unlabeled_eligible_fact():
     facts, _ = payloads(rows=[fact(form='S-1')])
     original = resolve_vintages(facts, 'us-gaap', 'Revenues', 'USD', ACQUIRED, '10-K')
     assert original == []
-    projected = project_companyfacts(facts)
-    assert resolve_vintages(projected, 'us-gaap', 'Revenues', 'USD', ACQUIRED, '10-K') == []
+    with pytest.raises(PublicPriceBoundaryError, match='^PUBLIC_PRICE_BOUNDARY: route withheld under GSQ-010$'):
+        project_companyfacts(facts)
 
 
 @pytest.mark.parametrize('change', [
@@ -77,10 +76,10 @@ def test_unsupported_form_cannot_become_unlabeled_eligible_fact():
     {'accn': 'UNREVIEWED'}, {'accn': None}, {'frame': 'UNREVIEWED'},
     {'filed': '2025-99-99'}, {'start': '2024-99-99'}, {'end': '2024-99-99'},
 ])
-def test_invalid_selection_metadata_excludes_whole_row(change):
+def test_invalid_selection_metadata_rejects_whole_payload(change):
     facts, _ = payloads(rows=[fact(**change)])
-    projected = project_companyfacts(facts)
-    assert projected['facts']['us-gaap']['Revenues']['units']['USD'] == []
+    with pytest.raises(PublicPriceBoundaryError, match='^PUBLIC_PRICE_BOUNDARY: route withheld under GSQ-010$'):
+        project_companyfacts(facts)
 
 
 @pytest.mark.parametrize('fy', [2024, '2024'])
@@ -127,3 +126,30 @@ def test_all_exposed_stored_price_paths_block_before_dependencies(module_name, f
             for p in inspect.signature(fn).parameters.values() if p.default is inspect.Parameter.empty]
     with pytest.raises(PublicPriceBoundaryError):
         fn(*args)
+
+
+@pytest.mark.parametrize('kind', ['projection', 'network', 'bulk'])
+def test_invalid_latest_amendment_rejects_payload_without_promoting_original(tmp_path, monkeypatch, kind):
+    rows = [fact(frame='CY2024'), fact(form='10-K/A', val=101, filed='2025-02-02',
+            accn='0001045810-25-000002', frame='UNREVIEWED')]
+    facts, _ = payloads(rows=rows)
+    selected = select_latest(resolve_vintages(facts, 'us-gaap', 'Revenues', 'USD', ACQUIRED, '10-K'))
+    assert selected.amended and selected.accn == rows[-1]['accn']
+    with pytest.raises(PublicPriceBoundaryError, match='^PUBLIC_PRICE_BOUNDARY: route withheld under GSQ-010$'):
+        if kind == 'projection':
+            project_companyfacts(facts)
+        else:
+            ingest(tmp_path, monkeypatch, kind, facts)
+    assert RawDatasetStore(tmp_path / 'store').list_ids() == []
+
+
+@pytest.mark.parametrize('kind', ['network', 'bulk'])
+def test_valid_latest_amendment_survives_ingestion_and_native_selection(tmp_path, monkeypatch, kind):
+    rows = [fact(frame='CY2024'), fact(form='10-K/A', val=101, filed='2025-02-02',
+            accn='0001045810-25-000002', frame='CY2024')]
+    facts, _ = payloads(rows=rows)
+    selected = select_latest(resolve_vintages(facts, 'us-gaap', 'Revenues', 'USD', ACQUIRED, '10-K'))
+    assert selected.amended and selected.accn == rows[-1]['accn']
+    store = ingest(tmp_path, monkeypatch, kind, facts)
+    projected = json.loads(store.get_bytes('companyfacts:' + CIK))
+    assert select_latest(resolve_vintages(projected, 'us-gaap', 'Revenues', 'USD', ACQUIRED, '10-K')) == selected

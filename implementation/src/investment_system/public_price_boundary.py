@@ -145,7 +145,7 @@ def _canonical_cik(value):
 
 
 def _financial_fact_row(row):
-    """Exclude an entire invalid row; never turn invalid metadata into missing metadata."""
+    """Reject unsafe history as a whole; never promote an older sibling by dropping a row."""
     import math
     import re
     from datetime import date
@@ -158,11 +158,11 @@ def _financial_fact_row(row):
             continue
         value = row[key]
         if not isinstance(value, str) or not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', value):
-            return None
+            block_public_route()
         try:
             date.fromisoformat(value)
         except ValueError:
-            return None
+            block_public_route()
         fact[key] = value
     allowed_forms = {'10-K', '10-Q', '10-K/A', '10-Q/A', '20-F', '20-F/A', '40-F', '40-F/A', '6-K', '8-K'}
     for key in ('form', 'fy', 'fp', 'accn', 'frame'):
@@ -182,7 +182,7 @@ def _financial_fact_row(row):
         else:
             valid = isinstance(value, str) and re.fullmatch(r'CY[0-9]{4}(?:Q[1-4])?I?', value)
         if not valid:
-            return None
+            block_public_route()
         # Preserve the admitted original type/spelling used by vintage grouping.
         fact[key] = value
     return fact
@@ -214,9 +214,7 @@ def project_companyfacts(payload, *, expected_cik=None):
                     block_public_route()
                 projected = []
                 for row in rows:
-                    fact = _financial_fact_row(row)
-                    if fact is not None:
-                        projected.append(fact)
+                    projected.append(_financial_fact_row(row))
                 units[unit] = projected
             clean[concept] = {'units': units}
         if clean:
