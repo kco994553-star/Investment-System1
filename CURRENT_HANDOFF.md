@@ -5,7 +5,7 @@
 ## 기준 HEAD
 
 - 기본 브랜치: `claude/investment-system-top500-validation-alrugm`
-- 확인한 원격 HEAD: `8d7fcb55728920a4d9d8f39023c1b4d566cd3e13` (#94 상세 명세 병합 포함).
+- 확인한 원격 HEAD: `72c80e8c4252d5e6dd6a23ad044e57255e206aa8` (#94·#99 상세 명세 병합 포함).
 - 기본 브랜치와 아래 미병합 작업은 구분한다. #96 → #97 → #98은 순서가 있는 후속 PR이며, #95와 운영 문서 PR은 기본 브랜치에 대한 별도 PR이다.
 - [#76](https://github.com/kco994553-star/Investment-System1/pull/76)은 2026-10-09 09:47:52 UTC에 병합됐다. 현재 기본 브랜치 카탈로그의 입력 변수 34개와 한국어·영어 안내 34개가 모두 일치한다.
 
@@ -24,9 +24,8 @@
 | [#95](https://github.com/kco994553-star/Investment-System1/pull/95) | 마스킹 배포 오류 Summary·whoami·Secret 공백 제거 | 병합·배포 재실행 승인 대기. 필수 CI 성공, deploy 건너뜀. |
 | [#96](https://github.com/kco994553-star/Investment-System1/pull/96) | 공개 출력·수집 28개 경로 차단 | 독립 리뷰 완료, CI 6개 성공. #97보다 먼저 반영. |
 | [#97](https://github.com/kco994553-star/Investment-System1/pull/97) | DATA 140개 정리: 138개 삭제·2개 테스트 입력 교체, 보류 5개·Frozen 메타데이터 보존 | 전체 오프라인 1,259개+하위 검사 347개, 독립 리뷰 완료, CI 6개 성공. |
-| [#98](https://github.com/kco994553-star/Investment-System1/pull/98) | `[WIP]` M2 Q·G 후보 별도 화면, V NOT_AVAILABLE, “보정 전·가격 미포함” | 전체 오프라인 1,304개+하위 검사 347개, 후보·기존 기기 브라우저 각 4개 조합 통과. 최종 커밋 독립 리뷰·실제 입력 연결은 남음. |
-| [#99](https://github.com/kco994553-star/Investment-System1/pull/99) | 원천 macro·사설 M3 상세 명세 | 유지·검토. 새 운영 규칙 아래 기능 명세로 검토하며 GSQ 증빙 절차를 다시 시작하지 않는다. |
-| [운영 문서 PR](https://github.com/kco994553-star/Investment-System1/pulls?q=is%3Aopen+head%3Acodex%2Fsingle-user-working-rules-handoff-20261010) | 혼합 규칙·현재 인수인계 | 이 두 문서를 포함한 PR의 승인 대기. |
+| [#98](https://github.com/kco994553-star/Investment-System1/pull/98) | `[WIP]` M2 Q·G 후보 별도 화면, V NOT_AVAILABLE, “보정 전·가격 미포함” | 전체 오프라인 1,304개+하위 검사 347개, 후보·기존 기기 브라우저 각 4개 조합과 CI 6개 통과. 최종 커밋 독립 리뷰·실제 입력 연결은 남음. |
+| [#100](https://github.com/kco994553-star/Investment-System1/pull/100) | 혼합 규칙·현재 인수인계 | 문서 범위·분량·링크·개인정보 검사 통과. 병합 승인 대기. |
 
 그 밖의 열린 PR은 기능 보존 16개·닫기 권고 25개로 분류했다. 권고는 실행 승인이 아니며 실제 병합·닫기를 하지 않았다. 아래 정리안에 전체 번호·제목·권고·한 줄 이유를 모았다.
 
@@ -34,12 +33,12 @@ M2의 실제 후보·financial blob 입력은 현재 체크아웃에 없다. #98
 
 ### 열린 PR 정리안
 
-운영 문서 PR 생성 직전의 46개 PR이다. 다음 표는 권고만 기록하며 닫기·병합을 실행하지 않았다.
+확인 시점의 열린 PR 46개다. #99는 다른 작업에서 병합되어 열린 목록에서 제외했다. 표는 권고만 기록하며 이 정리 작업에서 닫기·병합을 실행하지 않았다.
 
 | 번호 | 제목 | 권장 | 이유 |
 | --- | --- | --- | --- |
-| [#99](https://github.com/kco994553-star/Investment-System1/pull/99) | docs: GSQ-011 primary macro and private M3 implementation specs | 유지 | macro·사설 M3의 기능 명세는 보존하고 새 혼합 운영 규칙에 맞춰 검토. |
-| [#98](https://github.com/kco994553-star/Investment-System1/pull/98) | [WIP] M2 Q·G 후보 앱 표시 — V NOT_AVAILABLE·가격 미포함 | 유지 | 최종 코드 리뷰·실제 후보 연결이 남아 WIP로 보존; 전체·브라우저 검사 통과. |
+| [#100](https://github.com/kco994553-star/Investment-System1/pull/100) | docs: 1인용 혼합 작업 규칙과 현재 인수인계 정리 | 병합 | 사용자 결정의 혼합 규칙과 최신 현황을 두 문서에 통합; 승인 후 반영. |
+| [#98](https://github.com/kco994553-star/Investment-System1/pull/98) | [WIP] M2 Q·G 후보 앱 표시 — V NOT_AVAILABLE·가격 미포함 | 유지 | 최종 코드 리뷰·실제 입력 연결이 남아 WIP 보존; 전체·브라우저·CI 통과. |
 | [#97](https://github.com/kco994553-star/Investment-System1/pull/97) | 공개 가격 DATA 140개 정리 및 보류·Frozen 메타데이터 보존 | 병합 | 공개 가격 DATA 140개 정리와 Frozen·보류 보존이 승인 범위이며 CI 6개 통과; #96 다음 순서로 병합. |
 | [#96](https://github.com/kco994553-star/Investment-System1/pull/96) | Public boundary A: 공개 출력·수집 경로 28개 차단 | 병합 | 공개 출력·수집 28개 경로 차단과 SEC 식별 보존이 현 정책에 부합하고 CI 6개 통과; #97보다 먼저 병합. |
 | [#95](https://github.com/kco994553-star/Investment-System1/pull/95) | Worker: 배포 오류 마스킹 진단과 토큰·계정 사전 점검 | 병합 | 승인된 Worker 오류 마스킹·배포 사전 점검이며 CI 통과; 병합 뒤 실제 배포 재실행으로 장애 원인 확인. |
@@ -87,7 +86,7 @@ M2의 실제 후보·financial blob 입력은 현재 체크아웃에 없다. #98
 
 ## 결정 대기
 
-1. 운영 문서 PR을 병합할지.
+1. #100 운영 문서 PR을 병합할지.
 2. #95 병합과 Worker 배포 재실행, #96 → #97 순서의 병합을 승인할지.
 3. 최종 보고의 닫기 권고 25개 PR을 정리할지. #98과 미반영 기능 PR은 보존한다.
 
