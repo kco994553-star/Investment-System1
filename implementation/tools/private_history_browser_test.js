@@ -4,7 +4,7 @@ const { chromium } = require('playwright');
 const base = new URL(process.env.PRIVATE_HISTORY_URL || 'http://127.0.0.1:8990/Investment-System1/');
 const ORIGIN = 'https://private-investment-history.kco994553.workers.dev';
 const OTHER_ORIGIN = 'https://another-history.example-account.workers.dev';
-const SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly email';
+const SCOPE = 'https://www.googleapis.com/auth/drive.file email';
 const TOKEN = ['memory', 'only', 'synthetic', 'history', 'credential'].join('-');
 const NOW = '2030-01-08T12:00:00.000Z';
 const UPSTREAM = ['SYNTHETIC', 'UPSTREAM', 'DO_NOT_DISPLAY'].join('_');
@@ -58,7 +58,7 @@ async function login(session) {
   await root.locator('[data-sheet-action="disconnect"]').waitFor({ state: 'visible' });
   verify(await page.evaluate(() => window.__historyMock.scopes.every(scope => {
     const scopes = new Set(scope.trim().split(/\s+/));
-    return scopes.size === 2 && scopes.has('email') && scopes.has('https://www.googleapis.com/auth/spreadsheets.readonly');
+    return scopes.size === 2 && scopes.has('email') && scopes.has('https://www.googleapis.com/auth/drive.file');
   }) && window.__historyMock.scopes.length > 0 && window.__historyMock.prompts.every(prompt => prompt === 'consent') && window.__historyMock.prompts.length > 0 && window.__historyMock.gestureFailures === 0));
 }
 async function logout(session) {
@@ -116,6 +116,7 @@ async function open({ enabled = false, deployedConfig = false, approvedOrigin = 
   const context = await browser.newContext({ viewport: { width, height: 844 }, locale, serviceWorkers: 'block' });
   const mode = { reads: 0, googleReads: 0, styles: 0, scripts: 0, revokes: 0, status: 200, code: '', malformed: false, delayed: false, pending: null };
   await context.addInitScript(({ locale, origin, storageUnavailable }) => {
+    if(!storageUnavailable)localStorage.setItem('investment.web.v1.unified-sheet-source','synthetic_existing_sheet_fixture');
     localStorage.setItem('investment.web.v1.settings', JSON.stringify({ version: 1, display_locale: locale, source_language: 'all' }));
     window.__historyEvidence = { requests: [], aborted: 0, csp: 0 };
     document.addEventListener('securitypolicyviolation', () => { window.__historyEvidence.csp++; });
@@ -150,7 +151,7 @@ async function open({ enabled = false, deployedConfig = false, approvedOrigin = 
       if (url.href === 'https://accounts.google.com/gsi/client') {
         verify(request.method() === 'GET' && !request.postData() && !request.headers().referer);
         mode.scripts++;
-        await route.fulfill({ contentType: 'application/javascript', body: `window.__historyMock={scopes:[],prompts:[],gestureFailures:0};window.google={accounts:{oauth2:{initTokenClient(config){window.__historyMock.scopes.push(config.scope);return {requestAccessToken(options){window.__historyMock.prompts.push(options.prompt);if(!navigator.userActivation.isActive)window.__historyMock.gestureFailures++;config.callback({access_token:${JSON.stringify(TOKEN)},expires_in:3600,scope:${JSON.stringify(SCOPE)},token_type:'Bearer'});}};},revoke(token,done){fetch('https://oauth2.googleapis.com/revoke',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'token='+encodeURIComponent(token),credentials:'omit',referrerPolicy:'no-referrer'}).then(()=>done({}));}}}};` }); return;
+        await route.fulfill({ contentType: 'application/javascript', body: `window.__historyMock={scopes:[],prompts:[],gestureFailures:0};window.google={accounts:{oauth2:{initTokenClient(config){window.__historyMock.scopes.push(config.scope);return {requestAccessToken(options){window.__historyMock.prompts.push(options.prompt);if(!navigator.userActivation.isActive)window.__historyMock.gestureFailures++;config.callback({access_token:${JSON.stringify(TOKEN)},expires_in:3600,scope:${JSON.stringify('email openid https://www.googleapis.com/auth/userinfo.email '+SCOPE+' profile')},token_type:'Bearer'});}};},revoke(token,done){fetch('https://oauth2.googleapis.com/revoke',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'token='+encodeURIComponent(token),credentials:'omit',referrerPolicy:'no-referrer'}).then(()=>done({}));}}}};` }); return;
       }
       if (url.origin === 'https://oauth2.googleapis.com' && url.pathname === '/revoke') {
         verify(request.method() === 'POST' && new URLSearchParams(request.postData()).get('token') === TOKEN);

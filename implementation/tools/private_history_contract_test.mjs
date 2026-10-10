@@ -42,7 +42,7 @@ function harness(tokenOverrides = {}) {
   }};
   const session = createSession(view,{clientId:env.GOOGLE_CLIENT_ID,now:()=>NOW});
   session.setEnabled(true);session.login();
-  callback({access_token:'synthetic-access',expires_in:3600,scope:'email https://www.googleapis.com/auth/spreadsheets.readonly',token_type:'Bearer'});
+  callback({access_token:'synthetic-access',expires_in:3600,scope:'email https://www.googleapis.com/auth/drive.file',token_type:'Bearer'});
   return {session,upstream,appRequests,storage};
 }
 
