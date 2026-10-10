@@ -34,7 +34,7 @@
 
 | 운영 경로 | 마지막 확인한 실행·HEAD | 판정·남은 확인 |
 | --- | --- | --- |
-| Pages | [38040441460](https://github.com/kco994553-star/Investment-System1/actions/runs/38040441460), 2026-10-10 09:10 UTC, `a1608f276360d52f3246564711a04ae06deaf5e4` | 수동 실행 build·deploy **SUCCESS**. 최신 canonical의 #141/#144/#148/#149까지 배포됐다는 증거는 아님. PR의 deploy SKIPPED와 구분. |
+| Pages | [SEC daily 38042681260](https://github.com/kco994553-star/Investment-System1/actions/runs/38042681260), 2026-10-10 09:48 UTC, `f8b55ce509853606b5fde0a3c7d4389ab4201ea8` (#144 병합 HEAD) | SEC daily의 checked Pages artifact deploy **SUCCESS**. 앞선 수동 cockpit-pages 38040441460도 build/deploy 성공. #148/#149 이후 최신 canonical 배포·실기기 성공은 미확인. PR의 deploy SKIPPED와 구분. |
 | Worker | [38034132303](https://github.com/kco994553-star/Investment-System1/actions/runs/38034132303), 2026-10-10 07:21 UTC, `212b90e546bff2f2c5215041a2550001fe949f6d` | 수동 private-history deploy **SUCCESS**. 본인 로그인·현재가/일봉·시장별 coverage 성공은 별도 기기 검증 필요. |
 | SEC daily | [38042681260](https://github.com/kco994553-star/Investment-System1/actions/runs/38042681260), 2026-10-10 09:48 UTC, `f8b55ce509853606b5fde0a3c7d4389ab4201ea8` | dependency·build·deploy **SUCCESS**. 최신 로그의 회사별 결과는 재확인하지 못함. 앞선 38039786166의 BUILD_OK·failed_companies=0은 확인됨. 매일 예약의 실제 연속 성공 이력은 후속 확인. |
 
