@@ -29,12 +29,18 @@
 | [#103](https://github.com/kco994553-star/Investment-System1/pull/103) | 이전 인수인계 현황 갱신 | 열려 있는 별도 현황 PR; 이 문서는 최신 결정·병합 결과를 반영. 닫기·병합하지 않음. |
 | [#107](https://github.com/kco994553-star/Investment-System1/pull/107) | M3 계산 계약 초안 | 코덱1의 보존된 초안; 기기·Worker 연결은 코덱1 범위. |
 | [#109](https://github.com/kco994553-star/Investment-System1/pull/109) | Worker 대시보드 단일 파일·메모리 제한 대안 | 코덱1의 별도 Worker PR; 이 작업에서 병합·배포하지 않음. |
-| [#111](https://github.com/kco994553-star/Investment-System1/pull/111) | 현행 engine 세 계산·#105 어댑터 연결 | 완성·병합 승인 대기. 새22개+기존 일봉40개=62 통과; 전체1503·subtests358 통과. 독립 리뷰 중대 지적 없음, 최종 CI6개·실행 단계53개 성공·실패0. |
-| [#115](https://github.com/kco994553-star/Investment-System1/pull/115) | 표시 전용 지표 v1·GSQ-015 | #111과 독립된 canonical 기반 코드 PR. 새49개+기존 일봉40개=89 통과; 전체1530·subtests358 통과. 독립 리뷰 지적 없음. role=RESEARCH_DISPLAY_ONLY·RAM·null; 공개 serializer·Model/TSV/QGV 연결 없음. 병합 승인 대기, 최종 CI는 PR에서 확인. |
+| [#111](https://github.com/kco994553-star/Investment-System1/pull/111) | 현행 engine 세 계산·#105 어댑터 연결 | 완성·병합 승인 대기. 새22개+기존 일봉40개=62 통과. 최신 canonical 반영 후 전체1502 통과·1 실패·subtests358 통과(아래 기준브랜치 CSP 장애). 독립 리뷰 중대 지적 없음; CI6개 성공과 전체 테스트 실패는 구분한다. |
+| [#115](https://github.com/kco994553-star/Investment-System1/pull/115) | 표시 전용 지표 v1·GSQ-015 | #111과 독립된 canonical 기반 코드 PR. 새49개+기존 일봉40개=89 통과. 최신 canonical 반영 후 전체1529 통과·1 실패·subtests358 통과(아래 동일 CSP 장애). 독립 리뷰 지적 없음. role=RESEARCH_DISPLAY_ONLY·RAM·null; 공개 serializer·Model/TSV/QGV 연결 없음. 병합 승인 대기, 최종 CI는 PR에서 확인. |
+
+## 기준브랜치 검증 장애
+
+`tests/test_app_nav_ia.py::test_navigation_does_not_expand_approved_external_csp_permissions`가 최신 canonical `07ba93e3`와 #111·#115에서 동일하게 실패한다. #113은 앱 CSP의 `connect-src`에 Worker 접속 출처1개를 추가했지만 해당 테스트는 이전3개 출처만 기대한다. 원격 canonical의 별도 detached checkout에서 테스트1개 실패를 재현했다. 실제 Worker/개인 계정/Secret/API를 조회하지 않았고 endpoint 값은 기록하지 않는다.
+
+이 장애는 두 Python 구현 diff 밖의 **코덱1 앱·CSP 계약 검증 범위**다. 코덱2는 앱·워크플로·해당 테스트를 변경하거나 체크를 우회하지 않는다. 최신 canonical 이전에는 #111 전체1503·#115 전체1530과 각각 subtests358이 통과했다. 위 표는 최신 상태로 바꿨으며, CI의 제한된 체크 성공을 전체 suite 성공으로 보고하지 않는다. 코드 병합은 사용자 승인뿐 아니라 이 기준브랜치 장애의 해소도 대기한다.
 
 ## 결정 대기
 
-1. **#111·#115 코드 PR 병합 승인**. 사용자 결정으로 현행 세 계산과 표시 전용 기본값의 구현 범위는 확정됐다. 두 PR은 각각 완성·검증 후 보존하고 사용자 승인 없이 병합하지 않는다. Research 지표는 표시용이며 모델 채택 또는 Model/TSV/QGV 입력 승인이 아니다.
+1. **#111·#115 코드 PR 병합 승인**. 사용자 결정으로 현행 세 계산과 표시 전용 기본값의 구현 범위는 확정됐다. 두 구현은 완성·독립 리뷰 후 보존한다. 기준브랜치 CSP 장애가 남아 있으며 사용자 승인 없이 병합하지 않는다. Research 지표는 표시용이며 모델 채택 또는 Model/TSV/QGV 입력 승인이 아니다.
 2. 코덱1의 기기·Worker 연결 및 인증 설정 준비. 실제 비밀값·시트 ID는 대화나 저장소에 기록하지 않는다.
 3. QGV v2 착수와 forward 검증 시작 시점은 향후 사용자 결정이다. 기존 Holdout은 **UNCONFIRMED 유지·v2 검증 근거 제외**이며 에이전트는 기간을 선택·사용하지 않는다.
 4. **DART 착수 조건:** 사용자가 **10/11 18시 이후 DART_API_KEY 등록을 알리면** 시작한다. 그전에는 코드 작성·키 존재 확인·인증/API 실행을 포함해 착수하지 않는다. 현재 등록 알림은 없으며 시간 경과만으로 승인/등록을 추정하지 않는다.
@@ -45,7 +51,7 @@ SEC 주식 수와 해당 상장 주식 종류의 기준 차이가 근거로 확�
 
 ## 다음 할 일 5개
 
-1. 코덱2는 완성한 #111·#115 Research 표시 전용 코드 PR의 사용자 병합 승인을 기다린다. 현행 engine 세 계산과 Research 표시 지표는 분리하며 출력은 RAM 전용이다.
+1. 코덱2는 #111·#115의 기준브랜치 CSP 장애 해소와 사용자 병합 승인을 기다린다. 현행 engine 세 계산과 Research 표시 지표는 분리하며 출력은 RAM 전용이다.
 2. 코덱1은 향후 [Research 표시 계약](implementation/docs/technical_live_data/RESEARCH_DISPLAY_INDICATORS_V1.md)을 기기 차트에 연결할 때 role·null·가격 basis 경계를 유지한다. 이번 Python PR은 화면·Worker를 수정하지 않으며 Model/TSV/QGV·공개 serializer 연결은 금지다.
 3. 코덱1은 #106·#110의 [M3 계약](implementation/docs/daily_data_pipeline/M3_SUBSET_IMPLEMENTATION_SPEC.md)을 기기·Worker에 연결한다. N=20·10%와 근거 기반 표시를 사용하며 identity·주식 종류·통화/단위·가용 시각·권리 미확인은 차단한다. #98 M2 실제 입력·배포도 코덱1 범위다.
 4. 코덱2는 DART 등록 알림을 기다린다. 지정 시각 이후에도 사용자 알림이 없으면 착수하지 않으며 키 값을 조회·출력하지 않는다.
