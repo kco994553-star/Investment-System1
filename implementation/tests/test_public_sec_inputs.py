@@ -12,7 +12,14 @@ TOOLS = Path(__file__).resolve().parents[1] / 'tools'
 sys.path.insert(0, str(TOOLS))
 from public_sec_inputs import build_public_inputs, collect_public_inputs, require_public_inputs
 from pages_artifact_guard import scan_artifact, validate_pages_tar
-from investment_system.product.web_mvp import build, repository_bundle
+from investment_system.product.web_mvp import repository_bundle
+_builder_spec = importlib.util.spec_from_file_location('public_cockpit_builder', TOOLS / 'build_pages_cockpit.py')
+_builder = importlib.util.module_from_spec(_builder_spec)
+_builder_spec.loader.exec_module(_builder)
+def build(out, *, bundle=None):
+    assert bundle is None or bundle == repository_bundle()
+    return _builder.build_public_cockpit(out)
+
 
 
 def raw(company):

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 from pathlib import Path
 import sys
 
@@ -14,7 +15,11 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     if out.is_symlink() or (out.exists() and (not out.is_dir() or any(out.iterdir()))):
         raise ValueError('Pages output must be an empty regular directory')
     bundle = repository_bundle()
-    return build(out, bundle=bundle, sec_m2_candidate=sec_m2_candidate)
+    result = build(out, bundle=bundle, sec_m2_candidate=sec_m2_candidate)
+    assets = Path(__file__).resolve().parents[1] / 'src/investment_system/product/web_assets'
+    for name in ('manifest.json', 'icon-192.png', 'icon-512.png'):
+        shutil.copyfile(assets / name, out / name)
+    return result
 
 
 def main() -> int:
