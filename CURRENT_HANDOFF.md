@@ -11,6 +11,7 @@
 - **26E 미변경 PR은 실행된 필수 체크 모두 성공·실패0이면 자체 병합 가능**하다는 최신 사용자 선택을 적용한다. 사용자가 기존 CSP 차이는 코덱1 범위임을 명시하고 #115를 승인했다. #115→#121→#111→#123→#125→#127→#128→#129를 각각 최종 필수6개/실행53단계 성공·실패0 확인 후 병합했다. #131의 로그인/CSP 기대값 수정은 코덱1 변경분으로 보존한다.
 
 SEC Universe 확장 후속: `SEC_UNIVERSE_SHARDS.md`·명시적 registry/일 단위 파티션·CLI 준비. 기존US17 범위 유지, 504코드만 허용·CIK 중복 취득 방지·serial rate/retry 재사용. 실제 대량 실행/워크플로 연결/실측504커버는 미실행.
+DCF 후속: `implementation/docs/valuation/DCF_V1_PARAMETERS.md`와 `qgv/dcf.py`의2단계/역DCF는 RAM-only 순수 함수다. 금융 기본값 confirmed=false/null이며 사용자 확인 전 NOT_AVAILABLE다. 35개 합성/Decimal 참조 테스트·독립 검토 중요 미해결0. 공개 JSON #141은 병합됐고 앱/워크플로 연결은 코덱1 범위다.
 
 ## 현재 PR·검증
 
