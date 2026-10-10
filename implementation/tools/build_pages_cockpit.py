@@ -9,20 +9,23 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from investment_system.product.web_mvp import build, repository_bundle
 
 
-def build_public_cockpit(out: Path) -> Path:
+def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     out = Path(out)
     if out.is_symlink() or (out.exists() and (not out.is_dir() or any(out.iterdir()))):
         raise ValueError('Pages output must be an empty regular directory')
     bundle = repository_bundle()
-    return build(out, bundle=bundle)
+    return build(out, bundle=bundle, sec_m2_candidate=sec_m2_candidate)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', required=True)
+    parser.add_argument('--sec-m2-candidate', help='Explicit private M2 JSON, projected into price-free research candidates')
     args = parser.parse_args()
     try:
-        build_public_cockpit(Path(args.out))
+        from investment_system.product.sec_m2_candidates import load_candidates
+        candidate = load_candidates(args.sec_m2_candidate) if args.sec_m2_candidate else None
+        build_public_cockpit(Path(args.out), sec_m2_candidate=candidate)
     except (OSError, ValueError):
         print('Pages public build failed', file=sys.stderr)
         return 1
