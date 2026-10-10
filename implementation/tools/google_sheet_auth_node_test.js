@@ -32,7 +32,7 @@ function runtime() {
       }
     } } },
     fetch: async (url, options) => { calls.fetch++; calls.request = { url, options }; return { ok: true, status: 200, json: async () => ({ values: [['code', 'price', 'tradetime']] }) }; } };
-  const oauth = { initTokenClient(config) { calls.config = config; callbacks = config; return { requestAccessToken() { calls.popup++; } }; }, revoke(value, done) { calls.revoke++; assert.ok(value === token, 'revoke uses only current memory token'); done({}); } };
+  const oauth = { initTokenClient(config) { calls.config = config; callbacks = config; return { requestAccessToken(options) { calls.popup++; calls.prompt = options.prompt; } }; }, revoke(value, done) { calls.revoke++; assert.ok(value === token, 'revoke uses only current memory token'); done({}); } };
   const session = () => api.createSession(view, { clientId: 'public-client-id', now: () => now });
   return { view, calls, token, oauth, session, advance: value => { now += value; }, failStyles: value => { styleFailure = value; }, delayStyles: () => { delayedStyles = true; }, resolveStyles: () => resolveStyle(),
     respond: (value = {}) => callbacks.callback({ access_token: token, expires_in: 3600, scope: SCOPE, ...value }), delayedFetch() { view.fetch = (url, options) => { calls.fetch++; calls.request = { url, options }; return new Promise(resolve => { pendingResolve = resolve; }); }; }, resolveFetch: () => pendingResolve({ ok: true, status: 200, json: async () => ({ values: [] }) }) };
@@ -61,6 +61,7 @@ test('OFF and preparation make no popup or Sheets request; login requests exactl
   session.setEnabled(true); await session.prepare();
   assert.ok(r.calls.scripts === 1 && r.calls.popup === 0 && r.calls.fetch === 0);
   session.login(); assert.ok(r.calls.popup === 1 && r.calls.config.include_granted_scopes === false);
+  assert.equal(r.calls.prompt, 'consent', 'email identity is requested through explicit renewed consent');
   assert.deepEqual(new Set(r.calls.config.scope.trim().split(/\s+/)), new Set([READONLY_SCOPE, EMAIL_SCOPE]), 'login asks for exactly readonly Sheets and email identity scopes');
   r.respond(); assert.ok(session.state().connected && r.calls.fetch === 0);
   const json = await session.fetchValues(ID, 'Quotes!A1:C22');

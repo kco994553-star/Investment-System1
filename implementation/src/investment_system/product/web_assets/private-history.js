@@ -61,23 +61,30 @@
   function storedOrigin(view) { const value = view.localStorage.getItem(STORAGE_KEY); return value ? parseWorkerOrigin(value) : ''; }
   function mountSettings(host,options={}) {
     const state={doc:host.ownerDocument,locale:options.locale},view=state.doc.defaultView;
+    const config=options.config||view.InvestmentAppConfig||{},enabled=config.privateHistoryEnabled===true;
     const root=node(state,'section',undefined,{class:'card','data-private-history-settings':''});
     root.append(node(state,'h2',words(state,'비공개 가격 차트 · Worker 주소','Private price chart · Worker address')),
-      node(state,'p',words(state,'주소만 이 기기에 저장하며 백업에서 제외됩니다. 가격 데이터는 저장하지 않습니다. 현재 기능은 OFF입니다.','Only the address stays on this device and is excluded from backups. Price data is never saved. This feature is currently OFF.')));
+      node(state,'p',enabled ? words(state,'주소를 저장하고 구글 로그인 버튼에서 이메일 확인 권한에 다시 동의하세요. 종목 화면에서 가격 불러오기를 누르면 비공개 일별 이력을 읽습니다. 주소는 백업에서 제외되며 가격 데이터는 저장하지 않습니다.','Save the address and consent again to email verification with the Google sign-in button. Press Load prices on a company screen to read private daily history. The address is excluded from backups and price data is never saved.') : words(state,'주소만 이 기기에 저장하며 백업에서 제외됩니다. 가격 데이터는 저장하지 않습니다. 현재 기능은 OFF입니다.','Only the address stays on this device and is excluded from backups. Price data is never saved. This feature is currently OFF.')));
     const form=node(state,'form',undefined,{novalidate:''}),label=node(state,'label',words(state,'Worker HTTPS 주소','Worker HTTPS address'));
     const input=node(state,'input',undefined,{type:'url','data-history-worker-url':'',autocomplete:'off',spellcheck:'false',maxlength:'256',placeholder:'https://<worker>.<account>.workers.dev'});
     const status=node(state,'p','',{role:'status','data-history-settings-status':''});
-    try { input.value=storedOrigin(view); } catch (_) { status.dataset.code='STORAGE_UNAVAILABLE'; status.textContent='STORAGE_UNAVAILABLE'; }
+    try { input.value=storedOrigin(view)||(enabled&&config.privateHistoryWorkerOrigin ? parseWorkerOrigin(config.privateHistoryWorkerOrigin) : ''); } catch (_) { status.dataset.code='STORAGE_UNAVAILABLE'; status.textContent='STORAGE_UNAVAILABLE'; }
     label.append(input); form.append(label,node(state,'button',words(state,'주소 저장','Save address'),{type:'submit','data-history-action':'save'}));
     form.addEventListener('submit',event => {
       event.preventDefault();
       try {
         const origin=input.value === '' ? '' : parseWorkerOrigin(input.value);
         if (origin) view.localStorage.setItem(STORAGE_KEY,origin); else view.localStorage.removeItem(STORAGE_KEY);
-        input.value=origin; status.dataset.code='SAVED'; status.textContent=words(state,'주소를 이 기기에 저장했습니다. 기능 OFF는 유지됩니다.','Address saved on this device. The feature remains OFF.');
+        input.value=origin; status.dataset.code='SAVED'; status.textContent=enabled ? words(state,'주소를 이 기기에 저장했습니다. 구글 로그인 후 종목 화면에서 가격을 불러오세요.','Address saved on this device. Sign in with Google, then load prices on a company screen.') : words(state,'주소를 이 기기에 저장했습니다. 기능 OFF는 유지됩니다.','Address saved on this device. The feature remains OFF.');
       } catch (error) { status.dataset.code=error.message === 'REQUEST_INVALID' ? 'REQUEST_INVALID' : 'STORAGE_UNAVAILABLE'; status.textContent=status.dataset.code; }
     });
-    root.append(form,status);host.replaceChildren(root);
+    root.append(form,status);
+    if(enabled) {
+      const links=node(state,'div',undefined,{class:'chips',role:'group','aria-label':words(state,'비공개 가격 이력 지원 종목','Symbols supported for private history')});
+      for(const [companyId,symbol] of Object.entries(TARGETS)) links.append(node(state,'a',symbol,{href:'#company/'+companyId,'data-history-company':companyId}));
+      root.append(links);
+    }
+    host.replaceChildren(root);
   }
   function mounted(state) { return !state.disposed && state.host.isConnected; }
   function status(state,code) { state.status.dataset.code=code; state.status.textContent=code==='OFF' ? words(state,'OFF · 가격 호출 없음','OFF · No price requests') : code; }

@@ -234,7 +234,7 @@ def verify(environ: dict[str, str], transport=None, sleep=None) -> int:
     for receipt in receipts:
         print(receipt)
     summary(environ, "\n".join("- " + receipt for receipt in receipts) +
-            "\n\nGoogle/Yahoo verification not run. App feature remains OFF.")
+            "\n\nGoogle/Yahoo authenticated verification not run.")
     return 0
 
 

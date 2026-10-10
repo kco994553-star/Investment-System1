@@ -129,7 +129,8 @@ def test_google_sheet_assets_config_and_minimal_csp(tmp_path):
     directives = {parts[0]: parts[1:] for raw in parser.policy.split(';') if (parts := raw.split())}
     assert directives['script-src'] == ["'self'", 'https://accounts.google.com/gsi/client']
     assert directives['style-src'] == ["'self'", 'https://accounts.google.com/gsi/style']
-    assert directives['connect-src'] == ["'self'", 'https://sheets.googleapis.com', 'https://oauth2.googleapis.com']
+    assert directives['connect-src'] == ["'self'", 'https://sheets.googleapis.com', 'https://oauth2.googleapis.com',
+                                         'https://private-investment-history.kco994553.workers.dev']
     assert directives['frame-src'] == ["'self'", 'https://accounts.google.com']
     assert 'unsafe-inline' not in parser.policy and 'unsafe-eval' not in parser.policy
     assert 'style-src-elem' not in directives and 'style-src-attr' not in directives

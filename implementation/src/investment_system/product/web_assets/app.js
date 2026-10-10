@@ -392,7 +392,8 @@ function m2Panel(id) {
 function detail(id) {
   const c=company(id);
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
-  if(!c && candidate) return heading("COMPANY RESEARCH",esc(candidate.ticker))+m2Panel(id);
+  const historySymbol=PrivateHistory.symbolFor(id);
+  if(!c && (candidate || historySymbol)) return heading("COMPANY RESEARCH",esc(candidate?.ticker || historySymbol))+'<div id="private-history-chart"></div>'+m2Panel(id);
   if(!c) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id),e=searchIndex.resolve("COMPANY",id);
   return `<a class="small" href="#companies">${t("← 기업 목록")}</a><div class="row">${heading("COMPANY DETAIL",esc(c.ticker),esc(label(e) || c.name))}${star(id)}</div><div id="private-history-chart"></div><div class="grid">${summaryFor("qgv",id)}${summaryFor("technical",id)}</div>`+

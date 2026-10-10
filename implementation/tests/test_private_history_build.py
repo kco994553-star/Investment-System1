@@ -1,4 +1,4 @@
-"""Private history ships as local code; public builds stay disabled and data-free."""
+"""Private history connects only to the approved Worker; public data stays price-free."""
 from html.parser import HTMLParser
 import json
 import re
@@ -27,18 +27,20 @@ def test_private_history_assets_are_local_and_load_before_app(tmp_path):
     assert "PrivateHistory.mountSettings" in script and "PrivateHistory.mount" in script
 
 
-def test_private_history_default_build_cannot_connect_to_a_worker(tmp_path):
+def test_private_history_build_pins_one_worker_without_expanding_other_permissions(tmp_path):
     build(tmp_path)
     config = (tmp_path / "app-config.js").read_text()
-    assert re.search(r"privateHistoryEnabled\s*:\s*false\b", config)
-    assert re.search(r"privateHistoryWorkerOrigin\s*:\s*(['\"])\1", config)
+    origin = "https://private-investment-history.kco994553.workers.dev"
+    assert re.search(r"privateHistoryEnabled\s*:\s*true\b", config)
+    assert re.search(r"privateHistoryWorkerOrigin\s*:\s*(['\"])" + re.escape(origin) + r"\1", config)
     parser = PolicyParser()
     parser.feed((tmp_path / "index.html").read_text())
     directives = {parts[0]: parts[1:] for raw in parser.policy.split(";") if (parts := raw.split())}
-    assert directives["connect-src"] == ["'self'", "https://sheets.googleapis.com", "https://oauth2.googleapis.com"]
+    assert directives["connect-src"] == ["'self'", "https://sheets.googleapis.com", "https://oauth2.googleapis.com", origin]
     assert directives["script-src"] == ["'self'", "https://accounts.google.com/gsi/client"]
     assert directives["style-src"] == ["'self'", "https://accounts.google.com/gsi/style"]
-    assert "workers.dev" not in parser.policy
+    assert parser.policy.count("workers.dev") == 1
+    assert "*.workers.dev" not in parser.policy
     assert "unsafe-inline" not in parser.policy and "unsafe-eval" not in parser.policy
 
 
