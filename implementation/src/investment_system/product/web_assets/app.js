@@ -3,7 +3,7 @@ let D,
   prefs = { version: 1, interests: [], groups: [] },
   storageOK = true,
   corruptStorage = false;
-let deviceCatalogPromise;
+let publicScreens={},deviceCatalogPromise;
 function deviceCatalog() {
   if(!deviceCatalogPromise) deviceCatalogPromise=fetch('actual-catalog.json',{cache:'no-store'}).then(r=>{
     if(!r.ok) throw Error('PUBLIC_CATALOG_UNAVAILABLE');return r.json();
@@ -185,7 +185,7 @@ function settingsUI() {
   <p>${t("표시 언어는 계산 결과에 영향을 주지 않습니다.")}</p>
   <label for="source-language">${t("뉴스 원문 언어")}</label><select id="source-language">${[["all",t("전체 언어")],["ko",t("한국어 원문")],["en",t("영어 원문")]].map(([v,k])=>`<option value="${v}" ${appSettings.source_language===v?"selected":""}>${t(k)}</option>`).join("")}</select>
   <p>${t("원문 언어는 뉴스 필터만 변경합니다.")}</p></section>
-  <section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="private-trades-settings"></div><div id="device-api-settings"></div>`;
+  <section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="private-trades-settings"></div><div id="device-api-settings"></div>`;
 }
 function entityRoute(e) {return e.entity_type==="COMPANY"?"#company/"+encodeURIComponent(e.canonical_id):"#entity/"+encodeURIComponent(e.entity_type+":"+e.canonical_id);}
 function entityRow(hit) {
@@ -394,7 +394,7 @@ function detail(id) {
   const c=company(id);
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
-  if(!c && (candidate || historySymbol)) return heading("COMPANY RESEARCH",esc(candidate?.ticker || historySymbol))+'<div id="private-history-chart"></div><div id="sec-reported-panel"></div>'+m2Panel(id);
+  if(!c && (candidate || historySymbol)) return heading("COMPANY RESEARCH",esc(candidate?.ticker || historySymbol))+'<div id="private-history-chart"></div><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div>'+m2Panel(id);
   if(!c) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id),e=searchIndex.resolve("COMPANY",id);
   return `<a class="small" href="#companies">${t("← 기업 목록")}</a><div class="row">${heading("COMPANY DETAIL",esc(c.ticker),esc(label(e) || c.name))}${star(id)}</div><div id="private-history-chart"></div><div id="sec-reported-panel"></div><div class="grid">${summaryFor("qgv",id)}${summaryFor("technical",id)}</div>`+
@@ -409,7 +409,7 @@ function portfolio() {
 function leaderboard() {
   const l=D.leaderboard.data;
   return heading("LEADERBOARD",appSettings.display_locale==='en-US'?"Company research":"기업 연구")+
-  '<div id="sec-reported-panel"></div>'+m2Panel()+block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
+  '<div id="sec-reported-panel"></div><div id="public-qg"></div>'+m2Panel()+block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
 }
 function news(id) {
   const c=company(id);
@@ -438,7 +438,7 @@ function qgv() {
       ["관심 기업","준비 중","관심 기업 전용 화면은 준비 중입니다. 기존 기업 화면의 관심 목록 관리는 유지됩니다."]]],
     ["market","시장 정보",[
       ["뉴스·관계망","부분","뉴스·관계망 화면은 열 수 있습니다. 운영 데이터는 미연결입니다.","#news"],
-      ["투자자 13F","준비 중","투자자 13F 상세 화면은 준비 중입니다."]]],
+      ["투자자 13F","부분","공개 보고 수량 변화를 확인합니다.","#thirteenf"]]],
     ["performance","성과",[
       ["Track Record","부분","검증 허브에서 준비 상태를 확인합니다. 성과 기록은 미연결입니다.","#validation"]]]
   ];
@@ -453,13 +453,12 @@ function technical() {
     </div>`;
 }
 function macro() {
-  // Official IA v1 axis/state names. No observations, scores or derived values are introduced.
-  const axes=["Growth","Inflation","Liquidity","Monetary Policy","Credit","Labor","Fiscal","FX"],
-    states=["Level","Direction","Momentum","Surprise","Stress","Confidence"];
-  return `<div data-ia-screen="macro">${heading("MACRO",t("매크로"),t("공식 축별 상태를 확인합니다."))}
-    <section class="card status-card"><h2>${t("매크로 엔진 버전")}</h2><p>v0.1.1 · ${t("확정")}</p><p>v0.1.4 · ${t("후보")}</p><p class="muted">${t("후보 버전은 운영 엔진 승격을 뜻하지 않습니다.")}</p>${state(D.macro)}<p>${t("축별 운영 상태가 이 앱에 연결되지 않았습니다.")}</p></section>
-    <div class="axis-grid">${axes.map(axis=>`<section class="card axis-card" data-macro-axis="${axis}"><h2>${esc(t(axis))}</h2><dl>${states.map(name=>`<dt>${esc(t(name))}</dt><dd data-macro-state="${name}"><span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span></dd>`).join("")}</dl></section>`).join("")}</div></div>`;
+  return `<div data-ia-screen="macro">${heading("MACRO",t("매크로"),t("공식 축별 상태를 확인합니다."))}<div id="public-macro"></div></div>`;
 }
+function thirteenf() {
+  return heading("SEC 13F",t("투자자 13F"))+ '<div id="public-thirteenf"></div>';
+}
+
 function validation() {
   return heading("VALIDATION",t("검증·연구"),t("리서치와 검증 기록의 준비 상태를 확인합니다."))+
     `<div class="hub-grid" data-hub="validation">${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}${[
@@ -468,7 +467,7 @@ function validation() {
       ["Track Record","공개 앱에 연결된 성과 기록이 없습니다."]
     ].map(([title,reason])=>hubCard(title,"준비 중",reason)).join("")}</div>`;
 }
-const QGV_CHILDREN=Object.freeze(["companies","company","leaderboard","news","portfolio","actual","entity"]);
+const QGV_CHILDREN=Object.freeze(["companies","company","leaderboard","news","portfolio","actual","entity","thirteenf"]);
 function syncNavigation(route) {
   const parent=QGV_CHILDREN.includes(route)?"qgv":route==="research"?"validation":route;
   document.querySelectorAll("[data-nav-tab]").forEach(a=>{
@@ -508,7 +507,7 @@ function renderRoute() {
   notice("");syncShell();
   let [route,id]=location.hash.slice(1).split("/");route=route || "home";
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,qgv,technical,macro,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id)};
+  const routes={home,qgv,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id)};
   if(!routes[route]) route="home";
   $("#content").innerHTML=routes[route]();
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
@@ -516,6 +515,7 @@ function renderRoute() {
   if(route==='technical') PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
   if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
   if(route==='company'||route==='leaderboard') SecReported.mount($('#sec-reported-panel'),secReported,{companyId:route==='company'?id:undefined,locale:appSettings.display_locale});
+  for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:undefined,locale:appSettings.display_locale});
   syncNavigation(route);
   if(QGV_CHILDREN.includes(route) || route==="research") {
     const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← 검증";
@@ -528,6 +528,7 @@ function renderRoute() {
     $("#device-backup-export").onclick=()=>void exportDeviceBackup();
     $("#device-backup-import").onchange=async e=>{try{const f=e.target.files[0];if(!f||f.size>1000000)throw Error("BACKUP_TOO_LARGE");await restoreDeviceBackup(JSON.parse(await f.text()));}catch(_){notice("BACKUP_RESTORE_FAILED");}};
     deviceCatalog().then(catalog=>{const host=$("#google-first-setup");if(host?.isConnected)void GoogleSheetSetup.mount(host,{catalog,config:InvestmentAppConfig,locale:appSettings.display_locale});});
+    DevicePWA.mount($('#device-pwa-settings'),{locale:appSettings.display_locale});
     attachGoogleSheetSettings();
     PrivateHistory.mountSettings($('#private-history-settings'),{locale:appSettings.display_locale});
     PrivateTrades.mountSettings($('#private-trades-settings'),{locale:appSettings.display_locale});
@@ -753,7 +754,8 @@ catch(e) {settingsWritable=false;}
 syncShell();
 Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
-}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window)]).then(([data,catalog,candidates,reported])=>{
+}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window),PublicScreens.load(window)]).then(([data,catalog,candidates,reported,screens])=>{
+  publicScreens=screens;
   secReported=reported;
   m2Candidates=guardM2Candidates(candidates);
   // GSQ-010: legacy public producer payloads are withheld, including membership/order.

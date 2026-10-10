@@ -31,6 +31,13 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "public-screens.js": "0c736310a42da10c1482b1c1a0b80fc59e72e5dda6c93b48802b8cb22554186f",
+    "pwa.js": "f8d5df267d323fd465821416f1825f38d4065030ec5368b7a37bfc4ed875affd",
+    "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
+    "icon-512.png": "7a19587556ba133a21622288ec66a48095b933461f10475e96cf7b3a43afee88",
+    "icon-192.png": "31510ec0c9a07bb7e9de51f8769189d21f69b66c4cdb8a39d996373dce828e3b",
+    "manifest.json": "b4a949507c0859ee3ec158f0a6eaa6ec9cefc5c0e7e630715336817b9c248f8c",
+    "offline.html": "84dabe85364d57ca5ab49018e195871504df443a714e819fdb6a3c614be79bb5",
     "sec-reported.js": "765e8ff9d4107e3519a3a666f32ea927840fc0e1425a9c1210f9db74d17dd3cd",
     "google-sheet-setup.js": "6627c571debea9b76daef4c1123aa9076b2fa025be6cd637150ec5510f1f05aa",
     "private-trades.js": "86d59b4c5ef341ab47f1892fe65b483ca8256e367cfde06e1c9a0b580530fb9f",
@@ -40,7 +47,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "f23be9cf3e3bc74c03c42a6d4eb2ea20f901a5bc8ea0e0c2b521b81ba21749f2",
+    "app.js": "1f2bd2b4dae50d39efe8fe3b2da5756f7a45c802732f1a8a3a7ae0ce5683c6a0",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "05770dd8e99d40c43d320970549f7f91f8c93bd77496553c593172ab5a1f7407",
@@ -50,7 +57,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "9f0f344a5cd37003fe0134ee75a7039af757e22e4cb88b0d482a375a6d753db8",
+    "index.html": "fb1d659aae838f2d17b61b6f46ede43de6fb6448c4deefb44c488152e824fdf7",
     "locale.js": "0e27312c7885dd1edbaf5c5eed939ba4b642695e5541653a21c786dcff9089fc",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",
@@ -134,6 +141,10 @@ def _inspect_json(value: object, violations: Counter, depth: int = 0) -> None:
 
 def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
     try:
+        if name in {'icon-192.png', 'icon-512.png'}:
+            if not payload.startswith(b'\x89PNG\r\n\x1a\n') or hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
+                violations['unapproved_content'] += 1
+            return
         text = payload.decode("utf-8", errors="strict")
         if any(ord(character) < 32 and character not in "\t\n\r" for character in text):
             raise ValueError("binary control character")
