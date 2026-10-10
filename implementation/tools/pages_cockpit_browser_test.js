@@ -136,9 +136,9 @@ async function emptyDevice(page) {
       verify(await page.locator('[data-action="save"]').isEnabled(), "keyless manual save unavailable");
       const pwa = await page.evaluate(async () => ({
         manifests: document.querySelectorAll('link[rel="manifest"]').length,
-        workers: navigator.serviceWorker ? (await navigator.serviceWorker.getRegistrations()).length : 0
+        workers: navigator.serviceWorker ? (await navigator.serviceWorker.getRegistrations()).map(r => ({scope:r.scope, script:(r.active || r.installing || r.waiting)?.scriptURL})) : []
       }));
-      verify(pwa.manifests === 0 && pwa.workers === 0, "unexpected PWA cache or scope");
+      verify(pwa.manifests === 1 && pwa.workers.every(r => r.scope === new URL(".", base).href && r.script === new URL("service-worker.js", base).href), "PWA must stay inside the app subpath");
       const filename = "actual-empty-" + width + "-" + locale + ".png";
       await page.screenshot({ path: path.join(out, filename), fullPage: false });
       captures.push(filename);
@@ -147,7 +147,7 @@ async function emptyDevice(page) {
       verify(await emptyDevice(page), "refresh must preserve empty storage");
       await personalNotices(page, locale);
       checks.push(label + ": subpath routes, exact visible notices, locale switch, empty ACTUAL, refresh and screenshot");
-      checks.push(label + ": official key guidance, API OFF, keyless manual controls, relative resources and no PWA cache/scope");
+      checks.push(label + ": official key guidance, API OFF, keyless manual controls, relative resources and app-scoped PWA");
       await context.close();
     }
     verify(requestProblems === 0, "resource path or unexpected request failed");
@@ -160,7 +160,7 @@ async function emptyDevice(page) {
       screenshot_state: "ACTUAL_EMPTY", request_problems: requestProblems,
       response_problems: responseProblems, page_errors: pageErrors,
       network_data_events: networkDataEvents,
-      pwa_manifest_count: 0, service_worker_count: 0 };
+      pwa_manifest_count: 1, service_worker_scope: new URL(".", base).href };
     fs.writeFileSync(path.join(out, "pages-browser.json"), JSON.stringify(result, null, 2) + "\n");
     for (const check of checks) console.log("PASS " + check);
   } catch (error) {

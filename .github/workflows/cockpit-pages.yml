@@ -46,6 +46,7 @@ jobs:
           node implementation/tools/device_backup_node_test.js
           node implementation/tools/google_sheet_core_node_test.js
           node implementation/tools/google_sheet_auth_node_test.js
+          node implementation/tools/pwa_node_test.js
           node implementation/tools/sec_reported_node_test.js
           node implementation/tools/google_sheet_setup_node_test.js
           node implementation/tools/private_history_node_test.js
@@ -64,6 +65,7 @@ jobs:
           node implementation/tools/private_history_browser_test.js
           node implementation/tools/private_history_fallback_browser_test.js
           node implementation/tools/google_login_browser_test.js
+          node implementation/tools/pwa_browser_test.js
           node implementation/tools/settings_import_browser_test.js
           node implementation/tools/sec_reported_browser_test.js
           node implementation/tools/google_sheet_setup_browser_test.js
