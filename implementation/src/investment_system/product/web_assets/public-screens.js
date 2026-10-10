@@ -72,7 +72,7 @@ function render13F(section,p,el,en,{view='investor',storage=null,rerender=()=>{}
   star.disabled=!storage;star.onclick=()=>{try{toggleStar(storage,r.manager_cik);}catch(_){}rerender({view});};const counts={NEW:0,ADD:0,REDUCE:0,EXIT:0};for(const c of r.changes)if(Object.hasOwn(counts,c.kind))counts[c.kind]++;
   article.append(el('h3',r.manager_cik),star,el('p',r.previous_quarter+' → '+r.current_quarter+' · '+r.state),el('p',Object.entries(counts).map(([k,v])=>k+' '+v).join(' · '),{class:'small'}));
   for(const c of r.changes)article.append(el('p',c.cusip+' · '+c.kind+' · '+c.reported_before+' → '+c.reported_after+' '+c.unit));section.append(article);}
- section.append(el('p',en?'Investor stars are stored only on this device and are not in backups. The app does not recommend investors.':'투자자 ★는 이 기기에만 저장되고 백업에 포함되지 않습니다. 앱이 투자자를 추천하지 않습니다.',{class:'small'}));
+ section.append(el('p',en?'Investor stars are stored only on this device and are included in the device backup (Settings). The app does not recommend investors.':'투자자 ★는 이 기기에만 저장되고 기기 백업(설정)에 포함됩니다. 앱이 투자자를 추천하지 않습니다.',{class:'small'}));
 }
 function mount(host,bundle,options={}){const {kind,companyId,companyIds,locale}=options;
  if(!host)return;const doc=host.ownerDocument,en=locale==='en-US',el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;},section=el('section',undefined,{class:'card','data-public-screen':kind});
