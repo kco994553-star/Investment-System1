@@ -333,6 +333,8 @@ def parse_treasury_yields(body: bytes, receipt: SourceReceipt, *, release: Relea
         if len(properties) != 1:
             return _failed("SCHEMA_MISMATCH", expected, receipt)
         props = properties[0]
+        if any(e.tag.rsplit("}",1)[-1] in ("NEW_DATE", "BC_10YEAR") and e.tag not in (_DATA+"NEW_DATE", _DATA+"BC_10YEAR") for e in props):
+            return _failed("SCHEMA_MISMATCH", expected, receipt)
         dates = props.findall(_DATA + "NEW_DATE")
         rates = props.findall(_DATA + "BC_10YEAR")
         if len(dates) != 1 or len(rates) > 1:
@@ -346,6 +348,8 @@ def parse_treasury_yields(body: bytes, receipt: SourceReceipt, *, release: Relea
                 return _failed("SCHEMA_MISMATCH", expected, receipt)
             value = None
         else:
+            if any(key.rsplit("}",1)[-1] == "null" and key != _META+"null" for key in rates[0].attrib):
+                return _failed("SCHEMA_MISMATCH", expected, receipt)
             null = rates[0].get(_META + "null")
             if null not in (None, "true", "false"):
                 return _failed("SCHEMA_MISMATCH", expected, receipt)

@@ -1,6 +1,7 @@
 """Observed-capture selection and an unscored 8-axis evidence grid."""
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 import re
@@ -8,7 +9,7 @@ import re
 from .primary_contract import (
     AXES, DIMENSIONS, LEVEL_REQUIRED, REASON_CODES, SOURCE_IDS, SOURCE_REGISTRY,
     MacroCell, MacroEvidenceGrid, MacroObservation, ParseResult, aware, make_result,
-    nonempty, observation_id, ordered_reasons, release_error, valid_hash,
+    nonempty, observation_id, ordered_reasons, release_error, valid_hash, utc,
 )
 
 
@@ -38,7 +39,7 @@ def _observation_error(obs: object) -> str | None:
         return "INVALID_RECEIPT"
     if not all(aware(t) for t in (obs.available_at, obs.vintage_at, obs.ingested_at)):
         return "INVALID_TIMESTAMP"
-    if not obs.available_at == obs.vintage_at == obs.ingested_at:
+    if not utc(obs.available_at) == utc(obs.vintage_at) == utc(obs.ingested_at):
         return "INVALID_TIME_ORDER"
     definition = SOURCE_REGISTRY[obs.source_id]
     if (obs.axis != definition.axis or obs.frequency != definition.frequency
@@ -74,7 +75,7 @@ def _collision(observations) -> bool:
         previous = seen.get(obs.observation_id)
         if previous is not None:
             try:
-                if previous != obs:
+                if _instant_view(previous) != _instant_view(obs):
                     return True
             except (InvalidOperation, TypeError, ValueError):
                 # Malformed objects must not escape validation through dataclass
@@ -84,10 +85,18 @@ def _collision(observations) -> bool:
     return False
 
 
+def _instant_view(obs):
+    times = {name: utc(getattr(obs, name)) for name in ("available_at", "vintage_at", "ingested_at") if aware(getattr(obs,name))}
+    release = obs.release
+    if hasattr(release,"release_at") and aware(release.release_at):
+        release = replace(release,release_at=utc(release.release_at))
+    return replace(obs,**times,release=release)
+
+
 def _capture_content(obs: MacroObservation):
     # Different response wrappers/hashes can contain the same capture value.
     return (obs.value, obs.unit, obs.unit_multiplier, obs.metric_name, obs.source_series_code,
-            obs.seasonal_adjustment, obs.source_notes, obs.release, obs.quality_flags)
+            obs.seasonal_adjustment, obs.source_notes, _instant_view(obs).release, obs.quality_flags)
 
 
 def select_observed_vintages(observations: tuple[MacroObservation, ...], as_of: datetime,
@@ -115,11 +124,14 @@ def select_observed_vintages(observations: tuple[MacroObservation, ...], as_of: 
             blocked.add(obs.source_id)
         else:
             valid.append(obs)
-    # Validate same-capture conflicts before choosing a latest capture. A later
-    # observation cannot hide an ambiguous earlier capture of the same source.
+    # Only known captures can conflict at this cutoff. A later eligible capture
+    # cannot hide an ambiguous earlier eligible capture of the same source.
     captures = {}
     for obs in valid:
-        key = (obs.source_id, obs.observation_period, obs.available_at)
+        if utc(obs.available_at) > utc(as_of):
+            reasons.append("AVAILABLE_AFTER_AS_OF")
+            continue
+        key = (obs.source_id, obs.observation_period, utc(obs.available_at))
         previous = captures.get(key)
         if previous is not None and _capture_content(previous) != _capture_content(obs):
             blocked.add(obs.source_id)
@@ -130,11 +142,11 @@ def select_observed_vintages(observations: tuple[MacroObservation, ...], as_of: 
     for obs in captures.values():
         if obs.source_id in blocked:
             continue
-        if obs.available_at > as_of:
+        if utc(obs.available_at) > utc(as_of):
             reasons.append("AVAILABLE_AFTER_AS_OF")
             continue
         key = (obs.source_id, obs.observation_period)
-        if key not in selected or obs.available_at > selected[key].available_at:
+        if key not in selected or utc(obs.available_at) > utc(selected[key].available_at):
             selected[key] = obs
     output = tuple(sorted(selected.values(), key=lambda o: (SOURCE_IDS.index(o.source_id), o.observation_period)))
     return make_result(output, reasons, expected, synthetic=synthetic)

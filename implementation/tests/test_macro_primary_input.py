@@ -33,6 +33,44 @@ def api():
     return SimpleNamespace(**merged)
 
 
+def test_dst_fold_capture_release_and_latest_use_utc_instants():
+    from zoneinfo import ZoneInfo
+    a = api()
+    early = datetime(2030, 11, 3, 1, 30, tzinfo=ZoneInfo("America/New_York"), fold=0)
+    late = early.replace(fold=1)
+    first = bls(a, acquired_at=early)
+    second = bls(a, payload=bls_payload(value="124"), acquired_at=late)
+    selected = a.select_observed_vintages(first.observations+second.observations, early)
+    assert selected.observations == first.observations
+    assert a.select_observed_vintages(first.observations+second.observations, late).observations == second.observations
+    assert "CONFLICTING_VINTAGE" not in selected.reason_codes
+    release = a.ReleaseMetadata(late,"synthetic-release","PUBLISHED_ARTIFACT","REVISED",None)
+    body = encoded(bls_payload())
+    unavailable(a.parse_bls(body,receipt(a,"BLS",body,acquired_at=early),expected_series_ids=BLS_IDS,release=release),"INVALID_TIME_ORDER")
+    malformed = replace(first.observations[0], vintage_at=late)
+    unavailable(a.select_observed_vintages((malformed,),late),"INVALID_TIME_ORDER")
+
+
+def test_treasury_rejects_shadow_fields_and_attributes_in_wrong_namespaces():
+    a = api()
+    for field in ("NEW_DATE", "BC_10YEAR"):
+        body = treasury_body().replace(b'</m:properties>',f'<bad:{field} xmlns:bad="urn:wrong">1</bad:{field}></m:properties>'.encode())
+        unavailable(treasury(a,body),"SCHEMA_MISMATCH")
+    body = treasury_body().replace(b'<d:BC_10YEAR>',b'<d:BC_10YEAR xmlns:bad="urn:wrong" bad:null="true">')
+    unavailable(treasury(a,body),"SCHEMA_MISMATCH")
+
+
+def test_future_conflicting_captures_cannot_remove_known_evidence():
+    a = api()
+    first = bls(a)
+    future1 = bls(a,payload=bls_payload(value="200"),acquired_at=NOW+timedelta(days=1))
+    future2 = bls(a,payload=bls_payload(value="201"),acquired_at=NOW+timedelta(days=1))
+    result = a.select_observed_vintages(first.observations+future1.observations+future2.observations,NOW)
+    assert result.observations == first.observations
+    assert "AVAILABLE_AFTER_AS_OF" in result.reason_codes
+    assert "CONFLICTING_VINTAGE" not in result.reason_codes
+
+
 def encoded(obj):
     return json.dumps(obj).encode()
 

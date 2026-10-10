@@ -169,6 +169,11 @@ def valid_hash(value: object) -> bool:
     return type(value) is str and re.fullmatch(r"[0-9a-f]{64}", value) is not None
 
 
+def utc(value: datetime) -> datetime:
+    """Compare actual instants, including ambiguous local DST fold times."""
+    return value.astimezone(timezone.utc)
+
+
 def ordered_reasons(reasons) -> tuple[str, ...]:
     return tuple(reason for reason in REASON_CODES if reason in reasons)
 
@@ -193,7 +198,7 @@ def release_error(release: object, acquired_at: datetime) -> str | None:
         return None
     if release.release_at is not None and not aware(release.release_at):
         return "INVALID_TIMESTAMP"
-    if release.release_at is not None and release.release_at > acquired_at:
+    if release.release_at is not None and utc(release.release_at) > utc(acquired_at):
         return "INVALID_TIME_ORDER"
     if (release.evidence_kind != "PUBLISHED_ARTIFACT" or release.release_at is None
             or not nonempty(release.release_evidence_ref)):
