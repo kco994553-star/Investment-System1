@@ -664,7 +664,7 @@ function wireGroups() {
       save();
       render();
     } catch (err) {
-      notice("BACKUP_IMPORT_FAILED");
+      notice(t("가져오기 실패")+" · BACKUP_IMPORT_FAILED");
     }
   };
 }

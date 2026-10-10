@@ -459,8 +459,8 @@ async function main() {
         assert.equal(await page.locator("#research-frame").getAttribute("title"), L.promptLibrary);
         await page.go("companies");
         await page.locator("#import").setInputFiles({ name: "broken.json", mimeType: "application/json", buffer: Buffer.from("{broken") });
-        // The current import failure notice is the fixed code BACKUP_IMPORT_FAILED (not localized text).
-        await page.waitForFunction(() => document.querySelector("#notice").textContent.trim() === "BACKUP_IMPORT_FAILED");
+        // The import failure notice is localized text plus the fixed code BACKUP_IMPORT_FAILED.
+        await page.waitForFunction((expected) => document.querySelector("#notice").textContent.trim() === expected, locale === "en-US" ? "Import failed · BACKUP_IMPORT_FAILED" : "가져오기 실패 · BACKUP_IMPORT_FAILED");
       });
 
       await check(`${locale}: U3 demo holdings count, news/network labels and interest toggle label are localized`, async () => {

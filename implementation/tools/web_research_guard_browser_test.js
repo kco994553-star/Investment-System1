@@ -168,8 +168,10 @@ async function main() {
         assert.equal((await hero.locator(".badge.DEMO").innerText()).trim(), "DEMO");
         assert.ok((await hero.innerText()).includes("TEST DEMO / NOT ACTUAL"));
         const main = await page.locator("main").textContent();
-        // NOT_AVAILABLE relationships keep the producer's reason text (the GSQ-010 reason has no English translation yet).
-        assert.ok(main.includes(bundle.relationships.reason), "NOT_AVAILABLE relationships reason");
+        // NOT_AVAILABLE relationships show the producer's reason, localized when a translation exists (GSQ-010 has one).
+        const gsq010 = "공개 가격 경계에 따라 제공되지 않습니다. (GSQ-010)";
+        const reason = locale === "en-US" && bundle.relationships.reason === gsq010 ? "Not provided under the public price boundary (GSQ-010)." : bundle.relationships.reason;
+        assert.ok(main.includes(reason), "NOT_AVAILABLE relationships reason");
         assert.ok((await page.locator(ATTENTION).innerText()).includes(bundle.universe.as_of), "legacy FROZEN universe as_of in Attention");
         await page.view("portfolio", bundle);
         assert.ok((await page.locator("main").textContent()).includes("44.44%"));
