@@ -114,7 +114,7 @@ def test_sufficiency_gate_needs_a_cutoff_even_with_a_clean_reference():
 
 # ---------- evaluate_reference_coverage: real store-driven identity check ----------
 
-def test_evaluate_reference_coverage_classifies_by_store_presence(tmp_path):
+def test_evaluate_reference_coverage_classifies_by_store_presence_public_route_withheld(tmp_path):
     m = load_tool()
     store = RawDatasetStore(tmp_path / 'raw')
     cf = {'facts': {'dei': {'EntityCommonStockSharesOutstanding': {'units': {'shares': [
@@ -128,13 +128,8 @@ def test_evaluate_reference_coverage_classifies_by_store_presence(tmp_path):
     listings = {'a': {'cik': '1', 'yahoo': 'AAA'}, 'b': {'cik': '2', 'yahoo': 'BBB'}}
     ref = {'name': 'X', 'source': 's', 'source_vintage': 'v', 'as_of': AS_OF,
            'membership_basis': 'DATED_INTERVALS', 'members': ['AAA', 'BBB', 'ZZZ']}
-    out = m.evaluate_reference_coverage(store, listings, ranked_top500_tickers=set(), reference=ref)
-    assert out['missing_from_pool'] == ['ZZZ']
-    assert out['present_not_rankable'] == ['BBB']
-    assert out['present_rankable_outside_top500'] == ['AAA']
-    # AAA already in the ranked top-500 set -> neither missing nor flagged.
-    in_top500 = m.evaluate_reference_coverage(store, listings, ranked_top500_tickers={'AAA'}, reference=ref)
-    assert in_top500['present_rankable_outside_top500'] == []
+    with route_withheld_without_writes(tmp_path):
+        out = m.evaluate_reference_coverage(store, listings, ranked_top500_tickers=set(), reference=ref)
 
 
 # ---------- Combined v2 Promotion Gate ----------

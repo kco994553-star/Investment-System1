@@ -103,7 +103,7 @@ def test_network_runner_writes_correct_artifact_ids_with_stubbed_http(tmp_path, 
     spec.loader.exec_module(mod)
     routes = {
         mod.SEC_TICKERS_URL: (b'{"0":{"cik_str":320193,"ticker":"AAPL","title":"Apple"}}', 200),
-        mod.SEC_FACTS_URL.format(cik="0000320193"): (b'{"facts": {}}', 200),
+        mod.SEC_FACTS_URL.format(cik="0000320193"): (b'{"cik": 320193, "facts": {}}', 200),
         mod.SEC_SUBS_URL.format(cik="0000320193"): (b'{"filings": {}}', 200),
         mod.YAHOO_CHART_URL.format(symbol="AAPL", range="1y"): (json.dumps(_chart_json("AAPL", [1, 2])).encode(), 200),
     }

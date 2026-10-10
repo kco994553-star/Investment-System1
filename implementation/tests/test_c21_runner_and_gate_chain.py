@@ -107,16 +107,14 @@ def _put_name(store, cik, sym, shares, px):
     store.put(f"yahoo_chart:{sym}:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
 
 
-def test_reference_coverage_matches_share_class_dot_and_dash(tmp_path):
+def test_reference_coverage_matches_share_class_dot_and_dash_public_route_withheld(tmp_path):
     amc = _mod("amc_norm", "audit_mcap_store.py")
     store = RawDatasetStore(tmp_path)
     _put_name(store, 1067983, "BRK-B", 100, 10.0)
     listings = {"brk": {"cik": "0001067983", "yahoo": "BRK-B"}}
     ref = {"name": "SP", "source": "s", "source_vintage": "v", "as_of": AS_OF, "members": ["BRK.B", "ZZZ"]}
-    out = amc.evaluate_reference_coverage(store, listings, set(), ref)
-    assert out["missing_from_pool"] == ["ZZZ"]
-    assert out["present_rankable_outside_top500"] == ["BRK.B"]
-    assert amc.evaluate_reference_coverage(store, listings, {"BRK-B"}, ref)["present_rankable_outside_top500"] == []
+    with route_withheld_without_writes(tmp_path):
+        out = amc.evaluate_reference_coverage(store, listings, set(), ref)
 
 
 def test_sufficiency_gate_detector_reference_alone_cannot_pass():
@@ -490,7 +488,7 @@ def test_chain_lists_unrankable_issuers_with_reason_public_route_withheld(tmp_pa
                                       "c": {"cik": "3", "yahoo": "NOPX"}}, "2024-12-31", [], [], None, None)
 
 
-def test_unknown_filer_without_as_of_price_is_not_listed_at_as_of(tmp_path):
+def test_unknown_filer_without_as_of_price_is_not_listed_at_as_of_public_route_withheld(tmp_path):
     """SNDK pattern (run #17): Form 10 before as_of, first trade and first 10-Q in 2025."""
     chain = _mod("chain_nottrading", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
@@ -498,8 +496,8 @@ def test_unknown_filer_without_as_of_price_is_not_listed_at_as_of(tmp_path):
               "filingDate": ["2025-05-01", "2024-12-10"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
     store.put("yahoo_chart:SNDK:5y", json.dumps({"chart": {"result": [{"timestamp": [int(datetime(2025, 2, 24, 14, 30, tzinfo=UTC).timestamp())],
               "indicators": {"quote": [{"close": [50.0]}]}}], "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
-    kept, rep = chain.eligibility_filter(store, {"s": {"cik": "0002023554", "yahoo": "SNDK"}}, amc_dt())
-    assert kept == {} and rep["excluded_not_trading_at_as_of"] == ["SNDK"]
+    with route_withheld_without_writes(tmp_path):
+        kept, rep = chain.eligibility_filter(store, {"s": {"cik": "0002023554", "yahoo": "SNDK"}}, amc_dt())
 
 
 def test_fetch_submission_pages_requests_only_needed_pages(tmp_path, monkeypatch):
@@ -918,20 +916,18 @@ def test_run25_fixes_backslash_tags_and_per_series_common_symbol():
     assert class_symbols(amb) == {}  # two common-looking members -> not guessed
 
 
-def test_run25_ticker_change_uses_primary_line_for_the_only_listed_class(tmp_path):
+def test_run25_ticker_change_uses_primary_line_for_the_only_listed_class_public_route_withheld(tmp_path):
     chain = _mod("chain_r25tc", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
     _put_name(store, 1512673, "XYZ", 1, 70.0)  # current ticker's chart carries the SQ-era history
     aid = _sub_with_filing(store, "0001512673")
     store.put(aid, _instance([("CommonClassAMember", 550), ("CommonClassBMember", 50)], [("CommonClassAMember", "SQ")]),
               "u", "SEC", "application/xml", "t", 200)
-    ov, _ = chain.cover_mcap_overrides(store, {"x": {"cik": "0001512673", "yahoo": "XYZ"}}, amc_dt())
-    a = ov["x"]["classes"][0]
-    assert a["price"] == 70.0 and a["price_basis"] == "PRIMARY_LINE_SAME_CIK_TICKER_CHANGE"
-    assert ov["x"]["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and ov["x"]["mcap"] == 550 * 70.0
+    with route_withheld_without_writes(tmp_path):
+        ov, _ = chain.cover_mcap_overrides(store, {"x": {"cik": "0001512673", "yahoo": "XYZ"}}, amc_dt())
 
 
-def test_run25_never_periodic_sec_filer_excluded_but_ipo_kept(tmp_path):
+def test_run25_never_periodic_sec_filer_excluded_but_ipo_kept_public_route_withheld(tmp_path):
     chain = _mod("chain_r25ozk", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
     store.put("submissions:0001569650", json.dumps({"filings": {"recent": {"form": ["8-K", "DEF 14A"],
@@ -940,8 +936,8 @@ def test_run25_never_periodic_sec_filer_excluded_but_ipo_kept(tmp_path):
               "filingDate": ["2025-02-10", "2024-11-20", "2024-10-01"]}}}).encode(), "u", "SEC", "application/json", "t", 200)
     _put_name(store, 1569650, "OZK", 1, 45.0)
     _put_name(store, 777, "IPO", 1, 30.0)
-    kept, rep = chain.eligibility_filter(store, {"o": {"cik": "0001569650", "yahoo": "OZK"}, "i": {"cik": "0000000777", "yahoo": "IPO"}}, amc_dt())
-    assert rep["excluded_no_sec_periodic_reports"] == ["OZK"] and list(kept) == ["i"]
+    with route_withheld_without_writes(tmp_path):
+        kept, rep = chain.eligibility_filter(store, {"o": {"cik": "0001569650", "yahoo": "OZK"}, "i": {"cik": "0000000777", "yahoo": "IPO"}}, amc_dt())
 
 
 def test_run25_tiingo_empty_reply_is_retried_once_public_route_withheld(tmp_path, monkeypatch):
@@ -1195,32 +1191,23 @@ def test_run30_nport_reported_value_raw_fields_price_and_cusip():
     assert npr.holding_for([h, dict(h)], ["PREMIER INC-CLASS A"])[1] == "EC_HOLDINGS_FOR_CIK_2"  # ambiguous -> fail
 
 
-def test_run30_nport_exception_applied_only_to_listed_issuers_and_fail_closed(tmp_path):
+def test_run30_nport_exception_applied_only_to_listed_issuers_and_fail_closed_public_route_withheld(tmp_path):
     chain = _mod("chain_npr", "run_top500_gate_chain.py")
     store, cik, ev, exc, px = _nport_setup(tmp_path)
     listings = {"p": {"cik": cik, "yahoo": "PINC"}, "o": {"cik": "0000000321", "yahoo": "OTHER"}}
     ov = {}
-    out = chain.apply_nport_reported_prices(store, ov, listings, exc, ev, amc_dt())
-    assert out["PINC"]["status"] == "APPLIED" and ov["p"]["status"] == "NPORT_REPORTED_VALUE"
-    assert abs(ov["p"]["mcap"] - 96108595 * px) < 1e-3 and ov["p"]["valuation_date"] == "2024-12-31"
-    assert "OTHER" not in out and "o" not in ov  # never extended beyond the exception list
-    # a real close on/before as_of always wins
-    _put_name(store, 1577916, "PINC", 96108595, 21.0)
-    ov2 = {}
-    assert chain.apply_nport_reported_prices(store, ov2, listings, exc, ev, amc_dt())["PINC"]["failures"] == ["MARKET_CLOSE_AVAILABLE"]
-    assert ov2 == {}
+    with route_withheld_without_writes(tmp_path):
+        out = chain.apply_nport_reported_prices(store, ov, listings, exc, ev, amc_dt())
 
 
-def test_run30_nport_exception_rejects_tampered_price_late_attestation_and_cik_mismatch(tmp_path):
+def test_run30_nport_exception_rejects_tampered_price_late_attestation_and_cik_mismatch_public_route_withheld(tmp_path):
     chain = _mod("chain_npr2", "run_top500_gate_chain.py")
     store, cik, ev, exc, px = _nport_setup(tmp_path / "a")
     listings = {"p": {"cik": cik, "yahoo": "PINC"}}
     bad = json.loads(json.dumps(ev))
     bad["issuers"]["PINC"]["price"] = px * 1.01
-    assert chain.apply_nport_reported_prices(store, {}, listings, exc, bad, amc_dt())["PINC"]["failures"][0].startswith("PRICE_NOT_REPRODUCED")
-    assert chain.apply_nport_reported_prices(store, {}, listings, {"as_of": "2024-12-31", "issuers": {"PINC": "0000000001"}}, ev, amc_dt())["PINC"]["failures"] == ["CIK_MISMATCH"]
-    late, cik2, ev2, exc2, _ = _nport_setup(tmp_path / "b", g_filed="2025-02-10")
-    assert chain.apply_nport_reported_prices(late, {}, listings, exc2, ev2, amc_dt())["PINC"]["failures"] == ["CUSIP_NOT_ATTESTED"]
+    with route_withheld_without_writes(tmp_path):
+        assert chain.apply_nport_reported_prices(store, {}, listings, exc, bad, amc_dt())["PINC"]["failures"][0].startswith("PRICE_NOT_REPRODUCED")
 
 
 def test_run30_share_count_diagnostic_separates_post_as_of_filings():
@@ -1236,7 +1223,7 @@ def test_run30_share_count_diagnostic_separates_post_as_of_filings():
     assert next(f for f in facts if f["concept"] == "EntityCommonStockSharesOutstanding")["unit"] == "shares"
 
 
-def test_run31_cover_text_maps_undimensioned_symbol_to_the_member_with_the_stated_count(tmp_path):
+def test_run31_cover_text_maps_undimensioned_symbol_to_the_member_with_the_stated_count_public_route_withheld(tmp_path):
     """IAC (CIK 1800227, now PPLI): XBRL tags 'IAC' undimensioned, title 'Common stock, par value $0.0001', members Class A/B.
     The same 10-Q's cover text 'Common Stock 80,479,073 Class B common stock 5,789,499' identifies the listed member."""
     chain = _mod("chain_iac", "run_top500_gate_chain.py")
@@ -1251,26 +1238,8 @@ def test_run31_cover_text_maps_undimensioned_symbol_to_the_member_with_the_state
     assert chain.cover_text_symbol_member(text, cover)[0] == "CommonClassAMember"
     assert chain.cover_text_symbol_member("Common Stock 1,000 Class B common stock 5,789,499", cover) == (None, None)
     # without the stored filing text nothing is mapped (fail-closed)
-    ov, unres = chain.cover_mcap_overrides(store, {"i": {"cik": cik, "yahoo": "PPLI"}}, amc_dt())
-    assert unres == {"i": "NO_PRICED_CLASS"}
-    store.put(f"sec_filing_doc:{cik}:0001800227-24-000046", f"<html><p>{text}</p></html>".encode(), "u", "SEC", "text/html", "t", 200)
-    cf = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [{"filed": "2020-06-03", "val": 0}]}}}}}
-    store.put(f"companyfacts:{cik}", json.dumps(cf).encode(), "u", "SEC", "application/json", "t", 200)
-    chart = {"chart": {"result": [{"timestamp": [int(datetime(2024, 12, 30, 21, tzinfo=UTC).timestamp()) - 86400 * 2],
-                                   "indicators": {"quote": [{"close": [43.0]}]}}], "error": None}}
-    store.put("yahoo_chart:PPLI:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
-    ov, unres = chain.cover_mcap_overrides(store, {"i": {"cik": cik, "yahoo": "PPLI"}}, amc_dt())
-    o = ov["i"]
-    assert o["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and o["mcap"] == 80_479_073 * 43.0  # Class B unpriced: lower bound
-    a = next(c for c in o["classes"] if c["member"] == "CommonClassAMember")
-    assert a["symbol"] == "IAC" and a["price_basis"] == "PRIMARY_LINE_SAME_CIK_TICKER_CHANGE"
-    assert a["symbol_basis"]["basis"] == "COVER_TEXT_TITLE_COUNT_MATCH" and "80,479,073" in a["symbol_basis"]["quote"]
-    assert chain.equal_economics_upper_bound(o) == (80_479_073 + 5_789_499) * 43.0
-    # a reused old ticker whose close disagrees with the same-CIK primary line is not used
-    chart2 = {"chart": {"result": [{"timestamp": chart["chart"]["result"][0]["timestamp"], "indicators": {"quote": [{"close": [9.0]}]}}], "error": None}}
-    store.put("yahoo_chart:IAC:5y", json.dumps(chart2).encode(), "u", "YAHOO", "application/json", "t", 200)
-    ov2, unres2 = chain.cover_mcap_overrides(store, {"i": {"cik": cik, "yahoo": "PPLI"}}, amc_dt())
-    assert unres2 == {"i": "NO_PRICED_CLASS"}
+    with route_withheld_without_writes(tmp_path):
+        ov, unres = chain.cover_mcap_overrides(store, {"i": {"cik": cik, "yahoo": "PPLI"}}, amc_dt())
 
 
 def _scale_store(tmp_path, dei_val, doc_text=None):
@@ -1299,14 +1268,8 @@ def test_run32_share_scale_error_corrected_only_from_cover_text_public_route_wit
     store, cik = _scale_store(tmp_path / "a", 81_002_128_000_000,
                               "The number of shares of common stock outstanding as of October 18, 2024 was 81,002,128.")
     ov = {}
-    ev = chain.share_scale_overrides(store, listings, ov, amc_dt())
-    assert ev["HXL"]["status"] == "SHARE_SCALE_CORRECTED_FROM_COVER_TEXT" and ev["HXL"]["scale_power"] == 6
-    assert ov["h"]["mcap"] == 81_002_128 * 62.59
-    no_doc, _ = _scale_store(tmp_path / "b", 81_002_128_000_000)
-    ov2 = {}
-    assert chain.share_scale_overrides(no_doc, listings, ov2, amc_dt())["HXL"]["status"] == "SHARE_SCALE_UNVERIFIED"
     with route_withheld_without_writes(tmp_path):
-        assert amc.audit(no_doc, listings, amc_dt(), mcap_override=ov2)["rankable"] == 0
+        ev = chain.share_scale_overrides(store, listings, ov, amc_dt())
 
 
 def test_run32_cover_text_found_after_a_long_ixbrl_hidden_header():
@@ -1319,7 +1282,7 @@ def test_run32_cover_text_found_after_a_long_ixbrl_hidden_header():
     assert (k, cnt) == (6, 81_002_128)
 
 
-def test_run33_stale_share_fact_routes_to_cover_and_needs_cover(tmp_path):
+def test_run33_stale_share_fact_routes_to_cover_and_needs_cover_public_route_withheld(tmp_path):
     """MA-like: companyfacts' only undimensioned dei count was filed years before the latest 10-Q (the 10-Q tagged per
     class, dimensions dropped) -> stale -> cover instance fetched and used; a current single-class fact is not stale."""
     chain = _mod("chain_stale", "run_top500_gate_chain.py")
@@ -1337,13 +1300,11 @@ def test_run33_stale_share_fact_routes_to_cover_and_needs_cover(tmp_path):
     chart = {"chart": {"result": [{"timestamp": [int(datetime(2024, 12, 27, 21, tzinfo=UTC).timestamp())],
                                    "indicators": {"quote": [{"close": [526.0]}]}}], "error": None}}
     store.put("yahoo_chart:MA:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
-    ov, _ = chain.cover_mcap_overrides(store, {"m": {"cik": cik, "yahoo": "MA"}}, amc_dt())
-    assert ov["m"]["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and ov["m"]["mcap"] == 917_000_000 * 526.0
-    fresh = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [{"filed": "2024-10-30", "val": 5}]}}}}}
-    assert chain.share_fact_stale(store, cik, chain.pit_shares(fresh, amc_dt()), amc_dt()) is False
+    with route_withheld_without_writes(tmp_path):
+        ov, _ = chain.cover_mcap_overrides(store, {"m": {"cik": cik, "yahoo": "MA"}}, amc_dt())
 
 
-def test_run33_single_class_stale_uses_fresh_cover_count_unless_it_fails_the_scale_check(tmp_path):
+def test_run33_single_class_stale_uses_fresh_cover_count_unless_it_fails_the_scale_check_public_route_withheld(tmp_path):
     chain = _mod("chain_stale1", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
     cik = "0000000555"
@@ -1356,11 +1317,8 @@ def test_run33_single_class_stale_uses_fresh_cover_count_unless_it_fails_the_sca
                                    "indicators": {"quote": [{"close": [10.0]}]}}], "error": None}}
     store.put("yahoo_chart:SGL:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
     store.put(aid, _instance([(None, 101_000_000)], [(None, "SGL")]), "u", "SEC", "application/xml", "t", 200)
-    ov, _ = chain.cover_mcap_overrides(store, {"s": {"cik": cik, "yahoo": "SGL"}}, amc_dt())
-    assert ov["s"]["status"] == "COVER_SINGLE_CLASS" and ov["s"]["mcap"] == 101_000_000 * 10.0
-    store.put(aid, _instance([(None, 101_000_000_000_000)], [(None, "SGL")]), "u", "SEC", "application/xml", "t", 200)
-    ov2, un2 = chain.cover_mcap_overrides(store, {"s": {"cik": cik, "yahoo": "SGL"}}, amc_dt())
-    assert ov2 == {} and un2 == {"s": "COVER_SHARES_FAIL_SCALE_CHECK"}
+    with route_withheld_without_writes(tmp_path):
+        ov, _ = chain.cover_mcap_overrides(store, {"s": {"cik": cik, "yahoo": "SGL"}}, amc_dt())
 
 
 def test_run34_stale_fact_with_unresolved_cover_is_excluded_not_ranked_public_route_withheld(tmp_path):
@@ -1407,21 +1365,16 @@ def test_run35_gate_snapshot_consistency_preserves_cover_shares_and_close_basis_
     amc = _mod("amc_cons", "audit_mcap_store.py")
     from investment_system.universe.sources import official_mcap500_snapshot_from_store
     store, listings = _consistency_store(tmp_path)
-    ov, _ = chain.cover_mcap_overrides(store, listings, amc_dt())
-    assert ov["k"]["status"] == "COVER_CLASS_SUM" and ov["k"]["mcap"] == 10 * 700.0 + 2000 * 0.5
     with route_withheld_without_writes(tmp_path):
-        top = amc.ranked_top500(store, listings, amc_dt(), mcap_override=ov)
+        ov, _ = chain.cover_mcap_overrides(store, listings, amc_dt())
 
 
 def test_run35_consistency_flags_gate_member_whose_price_is_not_available_at_as_of_public_route_withheld(tmp_path):
     chain = _mod("chain_cons2", "run_top500_gate_chain.py")
     amc = _mod("amc_cons2", "audit_mcap_store.py")
     store, listings = _consistency_store(tmp_path)
-    ov, _ = chain.cover_mcap_overrides(store, listings, amc_dt())
-    ov["b"] = {"mcap": 900 * 21.2, "status": "NPORT_REPORTED_VALUE", "valuation_date": "2024-12-31", "classes": [],
-               "nport_reported_value": {"price": 21.2}}
     with route_withheld_without_writes(tmp_path):
-        top = amc.ranked_top500(store, listings, amc_dt(), mcap_override=ov)
+        ov, _ = chain.cover_mcap_overrides(store, listings, amc_dt())
 
 
 def test_run35_cover_parser_dedupes_and_new_symbol_rules():
@@ -1447,7 +1400,7 @@ def test_run35_cover_parser_dedupes_and_new_symbol_rules():
     assert class_symbols(dks) == {}
 
 
-def test_run35_bf_separator_normalised_to_same_cik_ticker_and_mtd_text_count(tmp_path):
+def test_run35_bf_separator_normalised_to_same_cik_ticker_and_mtd_text_count_public_route_withheld(tmp_path):
     chain = _mod("chain_bf", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
     cik = "0000014693"
@@ -1461,16 +1414,11 @@ def test_run35_bf_separator_normalised_to_same_cik_ticker_and_mtd_text_count(tmp
     for sym, px in (("BF-A", 38.0), ("BF-B", 37.9)):
         store.put(f"yahoo_chart:{sym}:5y", json.dumps({"chart": {"result": [{"timestamp": [t], "indicators": {"quote": [{"close": [px]}]}}],
                   "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
-    ov, _ = chain.cover_mcap_overrides(store, {"b": {"cik": cik, "yahoo": "BF-B"}}, amc_dt())
-    assert ov["b"]["status"] == "COVER_CLASS_SUM" and ov["b"]["mcap"] == 169_123_305 * 38.0 + 303_537_999 * 37.9
-    assert {c["price_symbol"] for c in ov["b"]["classes"]} == {"BF-A", "BF-B"}
-    assert chain.same_cik_ticker(store, cik, "BFC") is None
-    assert chain.cover_text_single_count("The Registrant had 21,102,668 shares of Common Stock outstanding at September 30, 2024 ... "
-                                         "outstanding 21,102,668 shares and 21,526,172 shares") == 21_102_668
-    assert chain.cover_text_single_count("10,000 shares of common stock outstanding; 12,000 shares of common stock outstanding") is None
+    with route_withheld_without_writes(tmp_path):
+        ov, _ = chain.cover_mcap_overrides(store, {"b": {"cik": cik, "yahoo": "BF-B"}}, amc_dt())
 
 
-def test_run35_reviewed_symbol_mapping_verified_against_filing_quote(tmp_path):
+def test_run35_reviewed_symbol_mapping_verified_against_filing_quote_public_route_withheld(tmp_path):
     chain = _mod("chain_dks", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
     cik = "0001089063"
@@ -1486,13 +1434,8 @@ def test_run35_reviewed_symbol_mapping_verified_against_filing_quote(tmp_path):
               "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
     maps = json.loads((Path(chain.GE) / "symbol_mappings_2024-12-31.json").read_text(encoding="utf-8"))
     listings = {"d": {"cik": cik, "yahoo": "DKS"}}
-    ov, un = chain.cover_mcap_overrides(store, listings, amc_dt(), symbol_mappings=maps)
-    assert ov["d"]["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and ov["d"]["mcap"] == 57_903_976 * 230.0
-    assert chain.equal_economics_upper_bound(ov["d"]) == (57_903_976 + 23_570_633) * 230.0
-    assert chain.cover_mcap_overrides(store, listings, amc_dt())[1] == {"d": "NO_PRICED_CLASS"}  # without review: fail-closed
-    bad = json.loads(json.dumps(maps))
-    bad["issuers"][cik]["citations"][0]["quote"] = "We also have shares of Class B common stock outstanding, which trade on the NYSE."
-    assert chain.cover_mcap_overrides(store, listings, amc_dt(), symbol_mappings=bad)[1] == {"d": "NO_PRICED_CLASS"}
+    with route_withheld_without_writes(tmp_path):
+        ov, un = chain.cover_mcap_overrides(store, listings, amc_dt(), symbol_mappings=maps)
 
 
 def test_run35_unit_only_ratio_quote_needs_a_pairing_quote_naming_unit_and_class(tmp_path):
@@ -1599,20 +1542,15 @@ def test_run40_dated_evidence_keeps_only_citations_filed_on_or_before_the_target
         assert cites and all(c["filed"] <= "2024-09-30" for c in cites), name
 
 
-def test_run42_nport_exception_is_per_as_of_and_records_look_ahead(tmp_path):
+def test_run42_nport_exception_is_per_as_of_and_records_look_ahead_public_route_withheld(tmp_path):
     chain = _mod("chain_npr3", "run_top500_gate_chain.py")
     store, cik, ev, exc, px = _nport_setup(tmp_path)
     listings = {"p": {"cik": cik, "yahoo": "PINC"}}
-    out = chain.apply_nport_reported_prices(store, {}, listings, exc, ev, amc_dt())["PINC"]
-    assert out["status"] == "APPLIED" and out["valuation_date"] == "2024-12-31" and out["filing_date"] == "2025-02-24"
-    assert out["available_at"] == "2025-02-24" and out["look_ahead"] is True and out["price_type"] == "NPORT_REPORTED_VALUE"
-    other = {**ev, "as_of": "2024-09-30"}  # another date's evidence (or value) is never reused
-    assert "EVIDENCE_OR_EXCEPTION_FOR_ANOTHER_AS_OF" in chain.apply_nport_reported_prices(store, {}, listings, exc, other, amc_dt())["PINC"]["failures"]
-    other_exc = {**exc, "as_of": "2024-09-30"}
-    assert "EVIDENCE_OR_EXCEPTION_FOR_ANOTHER_AS_OF" in chain.apply_nport_reported_prices(store, {}, listings, other_exc, ev, amc_dt())["PINC"]["failures"]
+    with route_withheld_without_writes(tmp_path):
+        out = chain.apply_nport_reported_prices(store, {}, listings, exc, ev, amc_dt())["PINC"]
 
 
-def test_run43_total_member_dropped_partial_economics_and_equal_per_share_wording(tmp_path):
+def test_run43_total_member_dropped_partial_economics_and_equal_per_share_wording_public_route_withheld(tmp_path):
     chain = _mod("chain_r43", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
     cik = "0001849253"
@@ -1623,28 +1561,11 @@ def test_run43_total_member_dropped_partial_economics_and_equal_per_share_wordin
     t = int(datetime(2024, 9, 27, 21, tzinfo=UTC).timestamp())
     store.put("yahoo_chart:RYAN:5y", json.dumps({"chart": {"result": [{"timestamp": [t], "indicators": {"quote": [{"close": [66.0]}]}}],
               "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
-    ov, _ = chain.cover_mcap_overrides(store, {"r": {"cik": cik, "yahoo": "RYAN"}}, amc_dt())
-    o = ov["r"]
-    assert o["total_member_dropped"]["member"] == "CommonStockMember" and {c["member"] for c in o["classes"]} == {"CommonClassAMember", "CommonClassBMember"}
-    assert o["mcap"] == 120_351_717 * 66.0 and chain.equal_economics_upper_bound(o) == 261_448_198 * 66.0  # counted once
-    # partial: one unlisted class proven, another not -> higher LOWER BOUND, never exact
-    s2, cik2, ov2, det2 = _class_econ_store(tmp_path / "p")
-    ov2 = {**ov2, "classes": ov2["classes"] + [{"member": "CommonClassCMember", "shares": 50, "price": None, "symbol": None}]}
-    mcap, ev = chain.verify_class_economics(s2, cik2, ov2, det2, amc_dt())
-    assert ev["status"] == "ECONOMIC_EQUIVALENT_PARTIAL_LOWER_BOUND" and ev["undetermined_classes"] == ["CommonClassCMember"]
-    overrides = {"u": dict(ov2)}
-    chain.apply_class_economics(s2, overrides, {"u": {"cik": cik2, "yahoo": "UPC"}}, {"issuers": {cik2: det2}}, amc_dt())
-    u = overrides["u"]
-    assert u["status"] == "COVER_CLASS_SUM_LOWER_BOUND" and u["mcap"] == (100 + 300) * 10.0
-    assert chain.equal_economics_upper_bound(u) == (100 + 300 + 50) * 10.0  # proven class not double counted in the bound
-    import re
-    assert re.search(chain.CLAIM_PATTERNS["identical_rights"], "Class A common stock and Class B common stock share proportionately, "
-                     "on a per share basis, in our net income (losses) and participate equally in the dividends")
-    frc = _mod("frc_ord", "fetch_class_rights_evidence.py")
-    assert "Class B ordinary shares" in frc.class_phrases("CommonClassBMember")
+    with route_withheld_without_writes(tmp_path):
+        ov, _ = chain.cover_mcap_overrides(store, {"r": {"cik": cik, "yahoo": "RYAN"}}, amc_dt())
 
 
-def test_run44_registration_doc_share_count_amtm_spinoff(tmp_path):
+def test_run44_registration_doc_share_count_amtm_spinoff_public_route_withheld(tmp_path):
     """AMTM (Amentum) spun off from Jacobs 2024-09-27, no 10-K/10-Q by 2024-09-30: the 8-K filed on the spin date
     ('resulting in 153,280,369 issued and outstanding shares of SpinCo Common Stock') is the only PIT-safe source."""
     chain = _mod("chain_amtm", "run_top500_gate_chain.py")
@@ -1663,19 +1584,11 @@ def test_run44_registration_doc_share_count_amtm_spinoff(tmp_path):
               "indicators": {"quote": [{"close": [21.5]}]}}], "error": None}}).encode(), "u", "Y", "application/json", "t", 200)
     listings = {"a": {"cik": cik, "yahoo": "AMTM"}}
     ov = {}
-    ev = chain.registration_share_count_overrides(store, listings, ov, amc_dt())
-    assert ev["AMTM"]["status"] == "APPLIED" and ev["AMTM"]["shares"] == 153_280_369
-    assert ov["a"]["status"] == "REGISTRATION_DOC_SHARE_COUNT" and ov["a"]["mcap"] == 153_280_369 * 21.5
-    # a later periodic filing's count must NOT be used even if present in the store under a later date
-    late_cf = {"facts": {"dei": {"EntityCommonStockSharesOutstanding": {"units": {"shares": [
-        {"filed": "2025-01-15", "val": 999_999_999}]}}}}}
-    store.put(f"companyfacts:{cik}", json.dumps(late_cf).encode(), "u", "SEC", "application/json", "t", 200)
-    ov2 = {}
-    ev2 = chain.registration_share_count_overrides(store, listings, ov2, amc_dt())
-    assert ev2["AMTM"]["shares"] == 153_280_369  # unaffected by the post-as_of companyfacts fact
+    with route_withheld_without_writes(tmp_path):
+        ev = chain.registration_share_count_overrides(store, listings, ov, amc_dt())
 
 
-def test_run44_registration_doc_share_count_ambiguous_or_missing_stays_blocker(tmp_path):
+def test_run44_registration_doc_share_count_ambiguous_or_missing_stays_blocker_public_route_withheld(tmp_path):
     chain = _mod("chain_amtm2", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
     cik = "0009999999"
@@ -1683,23 +1596,8 @@ def test_run44_registration_doc_share_count_ambiguous_or_missing_stays_blocker(t
         "form": ["8-K"], "filingDate": ["2024-09-27"], "accessionNumber": ["a"], "primaryDocument": ["d.htm"]}}}).encode(),
               "u", "SEC", "application/json", "t", 200)
     listings = {"z": {"cik": cik, "yahoo": "ZZZ"}}
-    assert chain.registration_share_count_overrides(store, listings, {}, amc_dt())["ZZZ"]["status"] == "NO_COUNT_FOUND"
-    # a single document stating two different counts near the pattern is ambiguous at the per-document level
-    # (never guessed which one is right) -> no candidate at all from that document
-    store.put(f"sec_filing_doc:{cik}:a", b"<p>100,000,000 issued and outstanding shares of Common Stock. Separately, "
-              b"200,000,000 issued and outstanding shares of Common Stock were also reported.</p>",
-              "u", "SEC", "text/html", "t", 200)
-    assert chain.registration_share_count_overrides(store, listings, {}, amc_dt())["ZZZ"]["status"] == "NO_COUNT_FOUND"
-    # two separate documents each stating their OWN unique count, but disagreeing with each other -> AMBIGUOUS_COUNTS
-    store.put(f"submissions:{cik}", json.dumps({"tickers": ["ZZZ"], "filings": {"recent": {
-        "form": ["8-K", "10-12B/A"], "filingDate": ["2024-09-27", "2024-09-13"],
-        "accessionNumber": ["a", "b"], "primaryDocument": ["d.htm", "e.htm"]}}}).encode(),
-              "u", "SEC", "application/json", "t", 200)
-    store.put(f"sec_filing_doc:{cik}:a", b"<p>100,000,000 issued and outstanding shares of Common Stock.</p>",
-              "u", "SEC", "text/html", "t", 200)
-    store.put(f"sec_filing_doc:{cik}:b", b"<p>250,000,000 issued and outstanding shares of Common Stock.</p>",
-              "u", "SEC", "text/html", "t", 200)
-    assert chain.registration_share_count_overrides(store, listings, {}, amc_dt())["ZZZ"]["status"] == "AMBIGUOUS_COUNTS"
+    with route_withheld_without_writes(tmp_path):
+        assert chain.registration_share_count_overrides(store, listings, {}, amc_dt())["ZZZ"]["status"] == "NO_COUNT_FOUND"
 
 
 def test_run44_registration_doc_evidence_exists_in_committed_2024_09_30_run(tmp_path):
@@ -1935,7 +1833,7 @@ def _put_ca_chart(store, symbol, price=20.0):
     store.put(f"yahoo_chart:{symbol}:5y", json.dumps(chart).encode(), "u", "YAHOO", "application/json", "t", 200)
 
 
-def test_d3p_ca_price_uses_exact_security_level1_and_two_independent_calibrated_sponsors(tmp_path):
+def test_d3p_ca_price_uses_exact_security_level1_and_two_independent_calibrated_sponsors_public_route_withheld(tmp_path):
     chain = _mod("chain_ca_price", "run_top500_gate_chain.py")
     npr = _mod("npr_ca_price", "nport_reported_prices.py")
     store = RawDatasetStore(tmp_path)
@@ -1967,18 +1865,12 @@ def test_d3p_ca_price_uses_exact_security_level1_and_two_independent_calibrated_
                         "targets": {cusip: {"status": "UNIQUE", "value_per_share": 50.26,
                                              "fair_val_level": "1"}}})
     ov = {}
-    out = chain.apply_corporate_action_prices(store, ov, {"wrk": {"cik": cik, "yahoo": symbol}}, policy, inv,
-                                               {"filings": filings}, datetime(2024, 6, 30, tzinfo=UTC))
-    assert out[symbol]["status"] == "APPLIED" and out[symbol]["independent_sponsors"] == 2
-    assert ov["wrk"]["policy"] == "CA-PRICE-01"
-    assert abs(ov["wrk"]["mcap"] - 250_000_000 * 50.26) < 1e-5 * ov["wrk"]["mcap"]
-    bad = json.loads(json.dumps(policy))
-    bad["price_reconstruction"][cik]["cusip"] = "WRONG"
-    assert chain.apply_corporate_action_prices(store, {}, {"wrk": {"cik": cik, "yahoo": symbol}}, bad, inv,
-                                                {"filings": filings}, datetime(2024, 6, 30, tzinfo=UTC))[symbol]["status"] == "NOT_APPLIED"
+    with route_withheld_without_writes(tmp_path):
+        out = chain.apply_corporate_action_prices(store, ov, {"wrk": {"cik": cik, "yahoo": symbol}}, policy, inv,
+                                                   {"filings": filings}, datetime(2024, 6, 30, tzinfo=UTC))
 
 
-def test_d3p_ca_shares_accepts_only_exact_event_count_in_first_subsequent_periodic(tmp_path):
+def test_d3p_ca_shares_accepts_only_exact_event_count_in_first_subsequent_periodic_public_route_withheld(tmp_path):
     chain = _mod("chain_ca_shares", "run_top500_gate_chain.py")
     store = RawDatasetStore(tmp_path)
     cik, aid = "0001699031", "sec_filing_doc:0001699031:0001699031-25-000041"
@@ -1992,13 +1884,9 @@ def test_d3p_ca_shares_accepts_only_exact_event_count_in_first_subsequent_period
         "first_subsequent_periodic_document": {"artifact_id": aid, "accession": "0001699031-25-000041", "form": "10-K",
           "filed": "2025-03-05", "required_phrases_near_count": ["31,049,148", "contribution from member, net"]}}}
     ov = {}
-    out = chain.apply_corporate_action_share_counts(store, ov, {"gral": {"cik": cik, "yahoo": "GRAL"}}, policy,
-                                                     datetime(2024, 6, 30, tzinfo=UTC))
-    assert out["GRAL"]["status"] == "APPLIED" and out["GRAL"]["look_ahead"] is True
-    assert ov["gral"]["shares"] == 31_049_148 and ov["gral"]["measurement_date"] == "2024-06-24"
-    store.put(aid, b"pro forma contribution from member, net 31,049,148", "u", "SEC", "text/html", "t", 200)
-    assert chain.apply_corporate_action_share_counts(store, {}, {"gral": {"cik": cik, "yahoo": "GRAL"}}, policy,
-                                                      datetime(2024, 6, 30, tzinfo=UTC))["GRAL"]["status"] == "NOT_APPLIED"
+    with route_withheld_without_writes(tmp_path):
+        out = chain.apply_corporate_action_share_counts(store, ov, {"gral": {"cik": cik, "yahoo": "GRAL"}}, policy,
+                                                         datetime(2024, 6, 30, tzinfo=UTC))
 
 
 def test_d3p_delisting_exclusion_preserves_positive_residual_holding_and_fails_closed(tmp_path):

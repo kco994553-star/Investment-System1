@@ -206,7 +206,7 @@ def test_bulk_financial_import_projects_admitted_facts_and_drops_price_fields(tm
     import zipfile
     from investment_system.ingestion.raw_store import RawDatasetStore
     archive = tmp_path / 'input.zip'
-    payload = {'renamed': {'price': 987654321}, 'facts': {'us-gaap': {
+    payload = {'cik': 1, 'renamed': {'price': 987654321}, 'facts': {'us-gaap': {
         'Revenues': {'units': {'USD': [{'val': 321, 'filed': '2025-01-01', 'price': 987654321}]}},
         'PriceRenamed': {'units': {'USD': [{'val': 987654321}]}}}}}
     with zipfile.ZipFile(archive, 'w') as handle:

@@ -24,8 +24,8 @@ def _chart(symbol, prices, start=1_700_000_000):
 
 
 def _facts(rev_by_year):
-    rows = [{"end": f"{y}-12-31", "val": v, "filed": f"{y + 1}-02-01", "form": "10-K", "fy": y, "fp": "FY", "accn": f"a{y}"} for y, v in rev_by_year.items()]
-    eps = [{"end": f"{y}-12-31", "val": v / 100, "filed": f"{y + 1}-02-01", "form": "10-K", "fy": y, "fp": "FY", "accn": f"a{y}"} for y, v in rev_by_year.items()]
+    rows = [{"end": f"{y}-12-31", "val": v, "filed": f"{y + 1}-02-01", "form": "10-K", "fy": y, "fp": "FY", "accn": f"0001000001-{y % 100:02d}-000001"} for y, v in rev_by_year.items()]
+    eps = [{"end": f"{y}-12-31", "val": v / 100, "filed": f"{y + 1}-02-01", "form": "10-K", "fy": y, "fp": "FY", "accn": f"0001000001-{y % 100:02d}-000001"} for y, v in rev_by_year.items()]
     return {"facts": {"us-gaap": {
         "RevenueFromContractWithCustomerExcludingAssessedTax": {"units": {"USD": rows}},
         "EarningsPerShareDiluted": {"units": {"USD/shares": eps}},
@@ -43,7 +43,7 @@ def test_stubbed_ingest_then_vertical_slice_then_walk_forward(tmp_path, monkeypa
     syms = {"a": "AAA", "b": "BBB", "c": "CCC"}
     routes = {mod.SEC_TICKERS_URL: (b"{}", 200)}
     for cid, cik in ciks.items():
-        routes[mod.SEC_FACTS_URL.format(cik=cik.zfill(10))] = (json.dumps(_facts({2024: 100 + ord(cid), 2025: 120 + ord(cid)})).encode(), 200)
+        routes[mod.SEC_FACTS_URL.format(cik=cik.zfill(10))] = (json.dumps({**_facts({2024: 100 + ord(cid), 2025: 120 + ord(cid)}), "cik": cik}).encode(), 200)
         routes[mod.SEC_SUBS_URL.format(cik=cik.zfill(10))] = (b'{"filings":{"recent":{"form":[],"filingDate":[],"accessionNumber":[]}}}', 200)
     for cid, sym in syms.items():
         routes[mod.YAHOO_CHART_URL.format(symbol=sym, range="5y")] = (json.dumps(_chart(sym, [10.0, 11.0, 12.0, 13.0])).encode(), 200)

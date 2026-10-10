@@ -104,7 +104,7 @@ def import_sec(store: RawDatasetStore, path: Path, refresh: bool, archive_sha256
             body = zf.read(info)
             try:
                 from investment_system.public_price_boundary import project_companyfacts
-                body = json.dumps(project_companyfacts(json.loads(body)), separators=(',', ':')).encode()
+                body = json.dumps(project_companyfacts(json.loads(body), expected_cik=m.group(1)), separators=(',', ':')).encode()
             except (ValueError, UnicodeDecodeError):
                 bad += 1
                 continue

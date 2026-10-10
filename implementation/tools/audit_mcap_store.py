@@ -195,6 +195,8 @@ def build_pit_gap_plan(store:RawDatasetStore, listings:dict, as_ofs:list[datetim
     a network runner does not blindly refetch an artifact that already exists.
     It is diagnostic only and never proves universe completeness.
     """
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     dates=sorted(as_ofs)
     per_date={d.isoformat():{'rankable':0,'absent_companyfacts':[], 'absent_price':[],
         'missing_shares_in_present_companyfacts':[], 'ambiguous_shares':[],
@@ -536,6 +538,8 @@ def evaluate_reference_coverage(store: RawDatasetStore, listings: dict, ranked_t
     for one reference by checking store presence per member ticker. Identity-only
     for missing_from_pool (no re-parse needed); companyfacts/price presence for the rest.
     """
+    from investment_system.public_price_boundary import block_public_route
+    block_public_route()
     as_of = _dt(reference["as_of"]) if isinstance(reference.get("as_of"), str) else reference["as_of"]
     # Share-class tickers: references use 'BRK.B', listings/Yahoo use 'BRK-B' (same security).
     by_ticker = {_norm_ticker(m.get("yahoo")): (cid, m) for cid, m in listings.items()}

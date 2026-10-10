@@ -48,7 +48,7 @@ def test_ingestion_resume_plan_only_lists_absent_artifacts(tmp_path):
  assert p['unresolved_identifiers']==['c']
  assert p['candidate_pool_complete'] is False
 
-def test_pit_gap_plan_distinguishes_absent_from_present_but_unusable(tmp_path):
+def test_pit_gap_plan_distinguishes_absent_from_present_but_unusable_public_route_withheld(tmp_path):
  m=load_tool(); store=RawDatasetStore(tmp_path/'raw')
  # A has both artifacts but its first price is after as_of: refetching the same
  # present artifact blindly is not equivalent to an absent-price case.
@@ -60,12 +60,8 @@ def test_pit_gap_plan_distinguishes_absent_from_present_but_unusable(tmp_path):
  cf_b={'facts':{}}
  store.put('companyfacts:0000000002',json.dumps(cf_b).encode(),'u','SEC','application/json','t',200)
  listings={'a':{'cik':'1','yahoo':'AAA'},'b':{'cik':'2','yahoo':'BBB'},'c':{'cik':'3','yahoo':'CCC'}}
- p=m.build_pit_gap_plan(store,listings,[datetime(2024,12,31,tzinfo=UTC)])
- d=p['dates']['2024-12-31T00:00:00+00:00']
- assert d['no_pit_price_in_present_artifact']==['a']
- assert d['missing_shares_in_present_companyfacts']==['b']
- assert d['absent_companyfacts']==['c']
- assert p['candidate_pool_complete'] is False
+ with route_withheld_without_writes(tmp_path):
+     p=m.build_pit_gap_plan(store,listings,[datetime(2024,12,31,tzinfo=UTC)])
 
 def test_official_promotion_gate_never_passes_on_rank_count_alone():
  m=load_tool()

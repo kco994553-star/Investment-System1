@@ -131,13 +131,71 @@ FINANCIAL_CONCEPTS = frozenset({
 })
 
 
-def project_companyfacts(payload):
-    """Keep typed financial facts, never raw response fragments or arbitrary labels."""
+def _canonical_cik(value):
+    import re
+    if type(value) is int:
+        number = value
+    elif isinstance(value, str) and re.fullmatch(r'[0-9]{1,10}', value):
+        number = int(value)
+    else:
+        block_public_route()
+    if not 0 < number < 10 ** 10:
+        block_public_route()
+    return str(number).zfill(10)
+
+
+def _financial_fact_row(row):
+    """Exclude an entire invalid row; never turn invalid metadata into missing metadata."""
     import math
     import re
+    from datetime import date
+    if (not isinstance(row, dict) or type(row.get('val')) not in (int, float)
+            or not math.isfinite(row['val'])):
+        block_public_route()
+    fact = {'val': row['val']}
+    for key in ('filed', 'start', 'end'):
+        if key not in row:
+            continue
+        value = row[key]
+        if not isinstance(value, str) or not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', value):
+            return None
+        try:
+            date.fromisoformat(value)
+        except ValueError:
+            return None
+        fact[key] = value
+    allowed_forms = {'10-K', '10-Q', '10-K/A', '10-Q/A', '20-F', '20-F/A', '40-F', '40-F/A', '6-K', '8-K'}
+    for key in ('form', 'fy', 'fp', 'accn', 'frame'):
+        if key not in row:
+            continue
+        value = row[key]
+        if key == 'form':
+            valid = isinstance(value, str) and value in allowed_forms
+        elif key == 'fy':
+            valid = ((type(value) is int and 1900 <= value <= 2200)
+                     or (isinstance(value, str) and re.fullmatch(r'[0-9]{4}', value)
+                         and 1900 <= int(value) <= 2200))
+        elif key == 'fp':
+            valid = isinstance(value, str) and value in {'FY', 'Q1', 'Q2', 'Q3', 'Q4'}
+        elif key == 'accn':
+            valid = isinstance(value, str) and re.fullmatch(r'(?:[0-9]{10}-[0-9]{2}-[0-9]{6}|[0-9]{18})', value)
+        else:
+            valid = isinstance(value, str) and re.fullmatch(r'CY[0-9]{4}(?:Q[1-4])?I?', value)
+        if not valid:
+            return None
+        # Preserve the admitted original type/spelling used by vintage grouping.
+        fact[key] = value
+    return fact
+
+
+def project_companyfacts(payload, *, expected_cik=None):
+    """Keep bound issuer identity and typed financial facts, never raw fragments."""
     if not isinstance(payload, dict) or not isinstance(payload.get('facts'), dict):
         block_public_route()
-    result = {'facts': {}}
+    cik = _canonical_cik(payload.get('cik'))
+    if expected_cik is not None and cik != _canonical_cik(expected_cik):
+        block_public_route()
+    result = {'cik': cik, 'facts': {}}
     for taxonomy in ('us-gaap', 'ifrs-full', 'dei'):
         concepts = payload['facts'].get(taxonomy, {})
         if not isinstance(concepts, dict):
@@ -156,26 +214,9 @@ def project_companyfacts(payload):
                     block_public_route()
                 projected = []
                 for row in rows:
-                    if (not isinstance(row, dict) or type(row.get('val')) not in (int, float)
-                            or not math.isfinite(row['val'])):
-                        block_public_route()
-                    fact = {'val': row['val']}
-                    for key in ('filed', 'start', 'end'):
-                        if key in row:
-                            if not isinstance(row[key], str) or not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', row[key]):
-                                block_public_route()
-                            fact[key] = row[key]
-                    if row.get('form') in {'10-K', '10-Q', '10-K/A', '10-Q/A', '20-F', '20-F/A', '40-F', '40-F/A', '6-K', '8-K'}:
-                        fact['form'] = row['form']
-                    if type(row.get('fy')) is int and 1900 <= row['fy'] <= 2200:
-                        fact['fy'] = row['fy']
-                    if row.get('fp') in {'FY', 'Q1', 'Q2', 'Q3', 'Q4'}:
-                        fact['fp'] = row['fp']
-                    if isinstance(row.get('accn'), str) and re.fullmatch(r'[0-9]{10}-[0-9]{2}-[0-9]{6}', row['accn']):
-                        fact['accn'] = row['accn']
-                    if isinstance(row.get('frame'), str) and re.fullmatch(r'CY[0-9]{4}(?:Q[1-4])?I?', row['frame']):
-                        fact['frame'] = row['frame']
-                    projected.append(fact)
+                    fact = _financial_fact_row(row)
+                    if fact is not None:
+                        projected.append(fact)
                 units[unit] = projected
             clean[concept] = {'units': units}
         if clean:

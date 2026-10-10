@@ -148,7 +148,7 @@ def _fetch_one(store: RawDatasetStore, artifact_id: str, url: str, source_kind: 
         return False
     if source_kind == 'SEC_COMPANYFACTS':
         from investment_system.public_price_boundary import project_companyfacts
-        body = json.dumps(project_companyfacts(json.loads(body)), separators=(',', ':')).encode()
+        body = json.dumps(project_companyfacts(json.loads(body), expected_cik=artifact_id.split(":", 1)[1]), separators=(',', ':')).encode()
     store.put(artifact_id, body, url, source_kind, ctype, FETCHER, http_status=status)
     log.append({"artifact_id": artifact_id, "status": "OK", "bytes": len(body)})
     return True
