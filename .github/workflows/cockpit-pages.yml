@@ -27,6 +27,8 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
+      - name: Verify both private Worker variants without live requests
+        run: python -m unittest discover -s implementation/tests -p test_private_history_worker.py
       - name: Verify device features and price-free pages locally
         env:
           NODE_PATH: ${{ runner.temp }}/pages-browser/node_modules

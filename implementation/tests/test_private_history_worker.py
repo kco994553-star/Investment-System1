@@ -1,5 +1,6 @@
 """Run the dependency-free mocked Worker suite in the existing native CI flow."""
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import unittest
@@ -13,15 +14,17 @@ class PrivateHistoryWorkerTests(unittest.TestCase):
     def test_owner_history_worker_mock_suite(self):
         result = subprocess.run(
             [shutil.which("node"), "--test", "worker/tests/worker.test.mjs",
+             "worker/tests/dashboard-worker.test.mjs",
              "tools/private_history_node_test.js", "tools/private_history_contract_test.mjs"],
             cwd=ROOT,
             capture_output=True,
             text=True,
             timeout=90,
         )
-        self.assertEqual(result.returncode, 0, "Mocked Worker suite failed:\n" + result.stdout + result.stderr)
-        self.assertRegex(result.stdout, r"(?:#|ℹ) fail 0\b")
-        self.assertNotRegex(result.stdout, r"(?:#|ℹ) pass 0\b")
+        # Assertion payloads can contain auth fixtures; keep CI output value-free.
+        self.assertEqual(result.returncode, 0, "Mocked Worker suite failed; captured fixture output withheld")
+        self.assertTrue(re.search(r"(?:#|ℹ) fail 0\b", result.stdout), "Worker suite did not report zero failures")
+        self.assertFalse(re.search(r"(?:#|ℹ) pass 0\b", result.stdout), "Worker suite reported zero passing tests")
 
 
 if __name__ == "__main__":
