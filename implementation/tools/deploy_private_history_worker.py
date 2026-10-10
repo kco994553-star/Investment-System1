@@ -9,6 +9,7 @@ import re
 import subprocess
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 
 
@@ -17,11 +18,42 @@ CONFIG = "implementation/worker/wrangler.toml"
 ORIGIN_PATTERN = r"https://private-investment-history\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.workers\.dev"
 ALLOWED_ORIGIN = "https://kco994553-star.github.io"
 ANSI = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
+CONTROL_STRING = re.compile(r"(?:\x1b\]|\x9d)[\s\S]*?(?:\x07|\x1b\\|\x9c|$)|(?:\x1b[P^_X]|[\x90\x98\x9e\x9f])[\s\S]*?(?:\x1b\\|\x9c|$)")
+JSON_ESCAPE = re.compile(r'\\(?:u[0-9a-fA-F]{4}|["\\/bfnrt])')
+ENCODED_REMAINDER = re.compile(r'\\(?:u[0-9a-fA-F]{4}|x[0-9a-fA-F]{2}|["\\/bfnrt])|%[0-9a-fA-F]{2}|&(?:[a-zA-Z]+|#[xX]?[0-9a-fA-F]+);')
+
+
+def canonical_message(message: str) -> str:
+    """Bound decoding, then reconnect values split by terminal formatting."""
+    if len(message) > 12000:
+        return "Oversized diagnostic omitted."
+    for _ in range(4):
+        previous = message
+        if any(not match.group(0).endswith(("\x07", "\x1b\\", "\x9c"))
+               for match in CONTROL_STRING.finditer(message)):
+            return "Incomplete terminal-control diagnostic omitted."
+        # Remove original ST-terminated strings before JSON decoding can consume
+        # the terminator's backslash; repeat after decoding encoded controls.
+        message = CONTROL_STRING.sub("", message)
+        message = ANSI.sub("", message)
+        message = JSON_ESCAPE.sub(lambda match: json.loads('"' + match.group(0) + '"'), message)
+        message = urllib.parse.unquote(html.unescape(message))
+        if any(not match.group(0).endswith(("\x07", "\x1b\\", "\x9c"))
+               for match in CONTROL_STRING.finditer(message)):
+            return "Incomplete terminal-control diagnostic omitted."
+        message = CONTROL_STRING.sub("", message)
+        message = ANSI.sub("", message)
+        message = "".join(c for c in message if c.isprintable() or c in "\n\r\t")
+        if message == previous:
+            break
+    if ENCODED_REMAINDER.search(message):
+        return "Encoded diagnostic omitted because normalization remained ambiguous."
+    return message
 
 
 def safe_message(message: str, environ: dict[str, str]) -> str:
     """Redact before escaping any untrusted text for a GitHub Markdown Summary."""
-    message = ANSI.sub("", message)
+    message = canonical_message(message)
     for name in ("CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"):
         value = environ.get(name, "").strip()
         if value:

@@ -68,8 +68,38 @@ class DeploymentDiagnosticTests(unittest.TestCase):
         return self.result("Logged in with an API Token.\n" + EMAIL + "\nAccount ID: " + ACCOUNT)
 
     def assert_private(self, *values):
+        import html
+        import re
+        readable = html.unescape(re.sub(r"\\([\\`*_{}\[\]()#!|~])", r"\1", self.public))
         for value in (TOKEN, ACCOUNT, EMAIL, *values):
-            self.assertFalse(value in self.public, "Sensitive value escaped into public diagnostic sinks")
+            self.assertFalse(value in self.public or value in readable,
+                             "Sensitive value escaped into public diagnostic sinks")
+
+    def test_ambiguous_overencoded_diagnostics_fail_closed_with_codes_preserved(self):
+        from urllib.parse import quote
+        encoded = "https://private-probe.invalid/private-session-path"
+        for _ in range(8):
+            encoded = quote(encoded, safe="")
+        text = "[ERROR] Request failed " + encoded + " [code: 10000]"
+        self.assertEqual(self.execute([self.result(text, 1)]), 1)
+        self.assert_private("private-probe.invalid", "private-session-path")
+        self.assertIn("10000", self.summary_text)
+        self.assertIn("Encoded diagnostic omitted", self.summary_text)
+
+    def test_canonicalization_work_is_bounded_for_large_error_lines(self):
+        text = "[ERROR] Request failed " + "\\u0041" * 100000 + " [code: 10000]"
+        self.assertEqual(self.execute([self.result(text, 1)]), 1)
+        self.assertLess(len(self.summary_text), 5000)
+        self.assertIn("10000", self.summary_text)
+
+    def test_truncated_or_unterminated_control_strings_do_not_leave_secret_prefixes(self):
+        first, last = TOKEN[:12], TOKEN[12:]
+        for suffix in ("\x1b]0;unfinished", "\x1b]0;" + "z" * 20000 + "\x07" + last):
+            self.summary.write_text("")
+            text = "[ERROR] Credential rejected: " + first + suffix + " [code: 10000]"
+            self.assertEqual(self.execute([self.result(text, 1)]), 1)
+            self.assert_private(first, last)
+            self.assertIn("10000", self.summary_text)
 
     def test_failed_whoami_reports_code_and_stops_before_deploy(self):
         status = self.execute([self.result("[ERROR] Authentication error [code: 10000]", 1)])
@@ -201,6 +231,47 @@ class DeploymentDiagnosticTests(unittest.TestCase):
         text = '[ERROR] Invalid credentials: {"api_token": "' + unknown + '", "secret": "other-key"} [code: 10000]'
         self.assertEqual(self.execute([self.result(text, 1)]), 1)
         self.assert_private(unknown, "other-key")
+
+    def test_json_escaped_url_is_redacted_before_summary(self):
+        hostname = "private-probe.invalid"
+        path = "/private-session-path"
+        url = "https://" + hostname + path
+        text = '[ERROR] Request failed: {"url": "' + url.replace("/", "\\/") + '"} [code: 10000]'
+        self.assertEqual(self.execute([self.result(text, 1)]), 1)
+        self.assert_private(hostname, path)
+        self.assertIn("Request failed", self.summary_text)
+
+    def test_json_unicode_escaped_email_is_redacted_before_summary(self):
+        private_email = "probe" + "@" + "e.io"
+        encoded = private_email.replace("@", "\\u0040").replace(".", "\\u002e")
+        text = '[ERROR] Invalid identity {"email": "' + encoded + '"} [code: 10000]'
+        self.assertEqual(self.execute([self.result(text, 1)]), 1)
+        self.assert_private(encoded, "probe", "e.io")
+        self.assertIn("Invalid identity", self.summary_text)
+
+    def test_osc_control_sequence_within_known_token_is_removed_before_redaction(self):
+        first, last = TOKEN[:12], TOKEN[12:]
+        for terminator in ("\x07", "\x1b\\"):
+            self.summary.write_text("")
+            decorated = first + "\x1b]0;terminal-title" + terminator + last
+            text = "[ERROR] Credential rejected: " + decorated + " [code: 10000]"
+            self.assertEqual(self.execute([self.result(text, 1)]), 1)
+            self.assert_private(first, last, "terminal-title")
+
+    def test_nested_json_percent_encoded_sensitive_values_are_canonicalized(self):
+        from urllib.parse import quote
+        url = "https://private-probe.invalid/private-session-path"
+        encoded = quote(quote(url, safe=""), safe="")
+        text = "[ERROR] Request failed " + encoded + " owner " + EMAIL.replace("@", "\\\\u0040") + " [code: 10000]"
+        self.assertEqual(self.execute([self.result(text, 1)]), 1)
+        self.assert_private(encoded, "private-probe.invalid", "private-session-path", EMAIL.split("@")[0])
+
+    def test_percent_encoded_terminal_controls_cannot_split_known_credential(self):
+        from urllib.parse import quote
+        first, last = TOKEN[:12], TOKEN[12:]
+        text = "[ERROR] Credential rejected: " + first + quote("\x1b]0;title\x07", safe="") + last + " [code: 10000]"
+        self.assertEqual(self.execute([self.result(text, 1)]), 1)
+        self.assert_private(first, last)
 
     def test_metadata_line_cannot_confirm_configured_account_access(self):
         result = self.result("Logged in with an API Token.\nConfigured account: " + ACCOUNT + "\nNo accounts available.")
