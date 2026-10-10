@@ -5,8 +5,8 @@
 ## 기준 HEAD
 
 - 기본 브랜치: `claude/investment-system-top500-validation-alrugm`.
-- 확인한 원격 코드 HEAD: `29528f50317d8c360059b1561bb8e22f71003629`. 이 인수인계 문서 PR 자체의 병합 HEAD는 GitHub에서 확인한다.
-- 코덱1의 [#98](https://github.com/kco994553-star/Investment-System1/pull/98) 병합을 먼저 확인했다. 이후 사용자 승인 순서로 [#104](https://github.com/kco994553-star/Investment-System1/pull/104)를 병합했다. 각각 최종 HEAD의 실행 체크 6개와 실행 단계 전부 성공·실패 0을 확인했다.
+- 확인한 원격 코드 HEAD: `3d9763cd429482976575ade7b1d8efe33259844c`. 이 인수인계 문서 PR 자체의 병합 HEAD는 GitHub에서 확인한다.
+- 코덱1의 [#98](https://github.com/kco994553-star/Investment-System1/pull/98) 병합을 먼저 확인했다. 이후 사용자 승인 순서로 [#104](https://github.com/kco994553-star/Investment-System1/pull/104) → [#105](https://github.com/kco994553-star/Investment-System1/pull/105)를 병합했다. 각각 최종 HEAD의 실행 체크 6개와 실행 단계 전부 성공·실패 0을 확인했다.
 - #104는 최신 canonical을 정상 병합으로 반영하고 base를 canonical로 전환했다. #98 변경분은 수정하지 않았고 각 구현 PR diff는 허용된 Python·tests·.md 범위다. force push·ruleset·AUTONOMY_MODE 변경은 없다.
 - #95·#96·#97·#100·#101은 이전에 병합됐다. 공개 가격 수집·출력 차단, Frozen 메타데이터·원본 TARGET 보존은 유지한다.
 
@@ -23,7 +23,6 @@
 
 | PR | 내용 | 상태·검증 |
 | --- | --- | --- |
-| [#105](https://github.com/kco994553-star/Investment-System1/pull/105) | 모의 일봉 검증·returns 입력 | GSQ-014 승인; 최신 canonical 반영·최종 체크 확인 후 순서대로 병합 예정. |
 | [#106](https://github.com/kco994553-star/Investment-System1/pull/106) | 비공개 M3 순수 계산 | GSQ-014 승인; 최신 canonical 반영·최종 체크 확인 후 순서대로 병합 예정. |
 | [#102](https://github.com/kco994553-star/Investment-System1/pull/102) | Worker 무인증 검증 User-Agent 수정 | 코덱1 범위; 이 작업에서 병합·재배포하지 않음. |
 | [#103](https://github.com/kco994553-star/Investment-System1/pull/103) | 이전 인수인계 현황 갱신 | 열려 있는 별도 현황 PR; 이 문서는 최신 결정·병합 결과를 반영. 닫기·병합하지 않음. |
