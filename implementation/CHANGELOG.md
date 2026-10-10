@@ -580,14 +580,14 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 
 - New .github/workflows/c21-real-data.yml (manual dispatch) runs existing fetch + gate-chain tools on a GitHub-hosted runner with real egress. 2,912 real raw artifacts ingested (2.35 GB; blobs in Actions artifact/cache, manifests + STORE_INDEX in git).
 - Company-level ranking (one line per CIK); PIT market-cap price = close x post-as_of split factor (new yahoo_events artifacts); pit_shares latest-date-within-filing fix; SEC-name-verified delisted CIK candidates; Official blocked by top-500 quality flags.
-- Real result 2024-12-31: 604 issuers, 554 rankable, #500 cutoff $12.43B, S&P missing 0. Gates FAIL; Official not declared.
+- Real result 2024-12-31: 604 issuers, 554 rankable, #500 cutoff 값 제거됨(GSQ-010), receipt 참조, S&P missing 0. Gates FAIL; Official not declared.
 - 194 passed (shim) / 194 passed (real pytest).
 
 ## 2026-09-25 · round 8 · Claude Code (+ Actions runs #7-#18)
 
 - Secret-only SEC UA; never cache an empty store; artifact seed; robust evidence commit.
 - PIT eligibility (filings <= as_of, older submissions pages), foreign private issuers excluded, cover-page XBRL class sums (lower bound when a class is unpriced), PIT CIK corrections (XOM, PSKY), zero-share and truncated-chart handling, reference normalisation, unrankable diagnostics.
-- Run #18: 530 eligible, 516 rankable, #500 cutoff $8.223B. Gates FAIL; Official not declared. 212 tests (shim + pytest).
+- Run #18: 530 eligible, 516 rankable, #500 cutoff 값 제거됨(GSQ-010), receipt 참조. Gates FAIL; Official not declared. 212 tests (shim + pytest).
 
 ## 2026-09-25 · round 9 · Claude Code (+ Actions runs #19-#24)
 
@@ -595,7 +595,7 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - _stooq_to_chart look-ahead fix (bars stamped 21:00 UTC).
 - tools/fetch_nport_reference.py: Russell 1000 ETF holdings from SEC NPORT-P for as_of; CIK resolution by unique normalised name.
 - SUPERSET_REFERENCE sufficiency role; eligibility evidence derived only from a passed superset; UNKNOWN + no price -> not listed.
-- Run #24: 952 eligible, 935 rankable, cutoff $14.408B; Sufficiency/Promotion Gate v2 FAIL; 226 tests.
+- Run #24: 952 eligible, 935 rankable, cutoff 값 제거됨(GSQ-010), receipt 참조; Sufficiency/Promotion Gate v2 FAIL; 226 tests.
 
 ## 2026-09-26 · round 10 · Claude Code (+ Actions runs #25-#30)
 
@@ -604,7 +604,7 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
 - tools/fetch_class_rights_evidence.py + chain verify_class_economics: filing-cited economic-equivalent shares
   (quotes verified verbatim, filed <= as_of, ratio 1 only); H/RKT/TKO/TPG determined.
 - integration/engine.py: actual_weight 0.0 no longer treated as missing (C-27 PATCH).
-- Run #30: 979 rankable, cutoff $15.189B; Promotion Gate v2 FAIL (PINC, WOLF, PPLI). 242 tests.
+- Run #30: 979 rankable, cutoff 값 제거됨(GSQ-010), receipt 참조; Promotion Gate v2 FAIL (PINC, WOLF, PPLI). 242 tests.
 - Personal Investment Layer v1 handoff imported (docs only; no PIL code).
 
 ## 2026-09-26 · round 15 · Codex (+ Actions runs #58-#59)
@@ -615,13 +615,13 @@ No code, evidence, or gate-result changes this round. Tests unchanged: 173/173.
   fails closed when the Gate ID is missing. The workflow can reuse committed Gate evidence only with `skip_fetch=true`
   and explicit dates. Added regressions; full suite 294/294 and targeted set 102/102 passed via mini_pytest shim.
 - Run #59 rebuilt 2024-12-31 Official as `uni_cf6aa3403869`: Gate/Official membership, order, ranks, market caps, cutoff,
-  and audited share/price provenance match exactly; #500 ALGN; FNF absent. Corrected single_as_of and real 500-company
+  and audited share/price provenance match exactly; 값 제거됨(GSQ-010), receipt 참조 ALGN; FNF absent. Corrected single_as_of and real 500-company
   benchmark reran successfully. 2024-12-31 Official restored; 2024-09-30 remains suspended; no walk-forward run.
 
 ## 2026-09-26 · round 16 · Codex (+ Actions runs #60-#61)
 
 - Run #60 independently passed corrected C-36 reference resolution for 2024-09-30 and rebuilt an identity-preserving
-  Official snapshot (`uni_e334f94a73c3`, 500/500, cutoff $15.574B, #500 ENPH), single_as_of, and real benchmark.
+  Official snapshot (`uni_e334f94a73c3`, 500/500, cutoff 값 제거됨(GSQ-010), receipt 참조, 값 제거됨(GSQ-010), receipt 참조 ENPH), single_as_of, and real benchmark.
   2024-09-30 Official restored; pre-C-36 runs remain superseded.
 - Run #61 independently failed closed for 2024-06-30: GRAL/WRK not rankable and ARDAGH GROUP SA/Liberty SiriusXM
   non-escrow holdings unresolved. No Official or downstream result promoted. Liberty tracking-stock handling raised as
@@ -709,3 +709,5 @@ Dated per-slice CIK/ticker input resolution; exact single/walk-forward consisten
 ## Integration verification · 2026-09-28 20:23 KST
 
 Track A — REAL-DATA BASELINE **FROZEN_VERIFIED**. PR #3 was normal-merged into canonical as `bd6bf42bdd9c6274b595471c65e3482f37317f9c`, preserving original Frozen HEAD `a79642f7aa174cc37b981298d0ff1cec6b04e974`. Integration audit re-confirmed the 17-file Freeze evidence manifest, raw 6,830-artifact integrity, CA-UNIT-v1.0 (original 20 + 3 D3-C), exact three-date Gate/Official consistency, 3-date/two-step Walk-Forward, the approved retrospective PIT/provenance boundary, retained Network500 evidence, and 396/396 full regression. This status does not promote `PROVISIONAL_RESEARCH`, claim strict zero-lookahead, or alter Tracks B/C/D/E.
+
+GSQ-010 문서 정리 metadata: [receipt doc-05](docs/public_price_boundary/RECEIPTS.md#doc-05).

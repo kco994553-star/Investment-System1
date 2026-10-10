@@ -125,10 +125,10 @@ Independent read-only replay of all 19 coverage-linked original responses verifi
 
 | Observed provider symbol / timestamp | Raw failure | Required capability disposition |
 |---|---|---|
-| `8035.T` / 2022-05-17 00:00 UTC | close 3869.333251953125 exceeds high 3866.666748046875 | Preserve raw bytes and report failed OHLC-envelope admission; do not clamp high/close |
-| `042700.KS` / 2024-01-15 00:00 UTC | close 56200 is below low 56600 | Preserve row failure and unavailable candle capability |
-| `042700.KS` / 2024-10-14 00:00 UTC | close 109500 is below low 110200 | Same; no source-free correction |
-| `042700.KS` / 2025-04-09 00:00 UTC | close 61200 exceeds high 60700 | Same; no tolerance/default introduced |
+| `8035.T` / 2022-05-17 00:00 UTC | close 값 제거됨(GSQ-010), receipt 참조 exceeds high 값 제거됨(GSQ-010), receipt 참조 | Preserve raw bytes and report failed OHLC-envelope admission; do not clamp high/close |
+| `042700.KS` / 2024-01-15 00:00 UTC | close 값 제거됨(GSQ-010), receipt 참조 is below low 값 제거됨(GSQ-010), receipt 참조 | Preserve row failure and unavailable candle capability |
+| `042700.KS` / 2024-10-14 00:00 UTC | close 값 제거됨(GSQ-010), receipt 참조 is below low 값 제거됨(GSQ-010), receipt 참조 | Same; no source-free correction |
+| `042700.KS` / 2025-04-09 00:00 UTC | close 값 제거됨(GSQ-010), receipt 참조 exceeds high 값 제거됨(GSQ-010), receipt 참조 | Same; no tolerance/default introduced |
 | `042700.KS` / 2025-09-19 00:00 UTC | all O/H/L/C/V values null | Missing source fields remain null with coverage reason; this is not five numeric zeros |
 
 The Japanese and Korean symbols are exploratory provider-label matches. The table identifies source rows; it does not certify issuer/security/listing mappings. Passing shape/envelope checks on the other 23,150 rows proves neither corporate-action basis nor exchange-session validity, source earliest availability, finality, quote state or publication authority.
@@ -166,3 +166,5 @@ Reviewed `P0_IMPLEMENTATION_PREREQUISITES_v0.2.md` after the expanded evidence a
 Two nonblocking clarity points were sent to the root: include the group mapping above; and distinguish current dated-classification admission from optional quarterly-history capability in the dependency graph so missing old quarters do not unnecessarily block a separately eligible current TARGET composition. These do not relax source, PIT or publication requirements. Final root edits should be checked at their own final artifact hash; this review does not certify future revisions automatically.
 
 **Additive resolution record.** The root subsequently reported both clarity points resolved: the current root summary now uses the same seven C01–C07 correction categories; Market session/range/conflict remains C03/C05 obligations. Its graph separates dated classification→current composition from historical snapshots→optional quarterly-history capability, with an explicit note that missing quarterly history does not block an otherwise eligible current TARGET composition. The eight-group mapping above is retained as review history, not the current root categorization. No new independent runtime or final-root certification is claimed by this resolution record.
+
+GSQ-010 문서 정리 metadata: [receipt doc-07](../../../../docs/public_price_boundary/RECEIPTS.md#doc-07).

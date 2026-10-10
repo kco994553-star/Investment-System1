@@ -126,7 +126,7 @@ No new evidence produced -- C-21 reconfirmed BLOCKED, no workaround forced per i
 
 17. Update 2026-09-26 · Claude Code
 - REAL-DATA chain evidence: reports/gate_evidence/gate_chain_2024-12-31_real_gha.json from Actions run #30 (id 36206384858,
-  commit 316ada7): 979 rankable, #500 cutoff $15.189B, Promotion Gate v2 FAIL (Russell superset: PINC, WOLF not rankable;
+  commit 316ada7): 979 rankable, #500 cutoff 값 제거됨(GSQ-010), receipt 참조, Promotion Gate v2 FAIL (Russell superset: PINC, WOLF not rankable;
   PPLI non-positive shares). Official US Market-Cap Top 500 PIT NOT declared. REAL-DATA VERIFIED: NO (gate not passed).
 - class_rights_passages_2024-12-31.json (verbatim 10-K/10-Q passages, filed <= as_of) and class_economics_2024-12-31.json
   (reviewed determinations; verified by the chain: H, RKT, TKO, TPG ECONOMIC_EQUIVALENT_DETERMINED).
@@ -142,10 +142,10 @@ No new evidence produced -- C-21 reconfirmed BLOCKED, no workaround forced per i
   evidence commit. Official remained suspended, correctly fail-closed.
 - Run #57 (id 36229163158, head eb98031, evidence commit 195c5da): corrected Russell reference 991 members; missing 0;
   present-not-rankable 0; non-escrow unresolved 0; collisions 0; missing member CUSIPs 0. Sufficiency PASS; Promotion Gate
-  v2 PASS; gate/snapshot consistency 500/500 PASS; cutoff $15,421,829,271.49; Official blockers 0.
+  v2 PASS; gate/snapshot consistency 500/500 PASS; cutoff 값 제거됨(GSQ-010), receipt 참조; Official blockers 0.
 - Run #57 gate result is eligible for Official restoration, but the persisted `official_snapshot_2024-12-31.json` was not
-  regenerated: it still records universe `uni_0ad936238f45`, cutoff $15.338B, and TPR at rank 500. The corrected gate has
-  OWL rank 336 at $27.633B (Class A + cited 1:1 Class C; Class D unvalued), ALGN rank 500 at $15.422B, and no FNF.
+  regenerated: it still records universe `uni_0ad936238f45`, cutoff 값 제거됨(GSQ-010), receipt 참조, and TPR at rank 값 제거됨(GSQ-010), receipt 참조. The corrected gate has
+  OWL rank 값 제거됨(GSQ-010), receipt 참조 at 값 제거됨(GSQ-010), receipt 참조 (Class A + cited 1:1 Class C; Class D unvalued), ALGN rank 값 제거됨(GSQ-010), receipt 참조 at 값 제거됨(GSQ-010), receipt 참조, and no FNF.
 - Fail-closed correction: 2024-12-31 Official remains SUSPENDED until a single-date `official_pipeline` rebuild consumes
   run #57 evidence. 2024-09-30 remains SUSPENDED pending the same independent revalidation; 2024-06-30 remains open.
   `real_data_verified` is still emitted as false, so REAL-DATA backend Freeze is not claimed.
@@ -159,8 +159,8 @@ No new evidence produced -- C-21 reconfirmed BLOCKED, no workaround forced per i
   and explicit dates. Targeted regressions 102/102; full suite 294/294 (mini_pytest shim); py_compile/diff check PASS.
 - Run #59 (id 36233121639, head 94fb5f8, evidence commit 1832747) used the committed corrected Gate evidence. Official
   snapshot ID = Gate ID = `uni_cf6aa3403869`; membership 500/500, order/rank, market cap and cutoff are identical;
-  cutoff $15,421,829,271.493835; #500 ALGN; FNF absent; all 500 audited share/price provenance records preserved.
-- Corrected single_as_of: 468 selected/linked, 494 investable, 6 missing, 0 name errors, EW -0.01649309224255184.
+  cutoff 값 제거됨(GSQ-010), receipt 참조; 값 제거됨(GSQ-010), receipt 참조 ALGN; FNF absent; all 500 audited share/price provenance records preserved.
+- Corrected single_as_of: 468 selected/linked, 494 investable, 6 missing, 0 name errors, EW 값 제거됨(GSQ-010), receipt 참조.
   Corrected 500-company benchmark: 29.956 s, peak RSS 9,478.8 MB, 0 name errors. Walk-forward correctly remained blocked
   because only one date was supplied. 2024-12-31 Official is RESTORED. 2024-09-30 remains SUSPENDED; 2024-06-30 open.
 
@@ -168,22 +168,22 @@ No new evidence produced -- C-21 reconfirmed BLOCKED, no workaround forced per i
 - Run #60 (id 36233560867, head 1832747, evidence commit ab72939) fetched and resolved the 2024-09-30 reference anew:
   994 members; missing 0; present-not-rankable 0; non-escrow unresolved 0; duplicate membership 0; member CUSIPs complete.
 - Sufficiency and Promotion Gate v2 PASS; Official blockers 0. Gate ID = Official ID = `uni_e334f94a73c3`; membership
-  500/500, order/rank, market caps, cutoff $15,573,548,285.00, and all audited share/price provenance fields match.
-  #500 ENPH. 2024-09-30 Official is RESTORED; pre-C-36 runs #46/#47 remain superseded.
-- Corrected single_as_of: 469 selected/linked, 495 investable, 5 missing, 0 name errors, EW 0.0004569665513276751.
+  500/500, order/rank, market caps, cutoff 값 제거됨(GSQ-010), receipt 참조, and all audited share/price provenance fields match.
+  값 제거됨(GSQ-010), receipt 참조 ENPH. 2024-09-30 Official is RESTORED; pre-C-36 runs #46/#47 remain superseded.
+- Corrected single_as_of: 469 selected/linked, 495 investable, 5 missing, 0 name errors, EW 값 제거됨(GSQ-010), receipt 참조.
   Corrected benchmark: 28.362 s, peak RSS 9,534.8 MB, 0 name errors. Walk-forward not run (single date only).
 
 21. Update 2026-09-26 19:07 KST · Codex / corrected 2024-06-30 independent revalidation
 - Run #61 (id 36234273515, head ab72939, evidence commit 2e04c1b): internal candidate consistency PASS 500/500 and
-  cutoff $14,021,530,297.505974, but the corrected Russell reference fails: GRAL/WRK present-not-rankable plus non-escrow
+  cutoff 값 제거됨(GSQ-010), receipt 참조, but the corrected Russell reference fails: GRAL/WRK present-not-rankable plus non-escrow
   unresolved ARDAGH GROUP SA (L0223L101) and LIBERTY SIRIUS XM (531229813). Sufficiency/Promotion Gate v2 FAIL.
 - Pipeline correctly emitted `BLOCKED_NO_OFFICIAL_DATE`; no single_as_of, benchmark, or walk-forward result was promoted.
   WRK N-PORT remained investigation-only; GRAL's pro-forma count was not promoted. Liberty tracking-stock policy is C-37.
 
 22. Update 2026-09-26 20:54 KST · Codex / Ardagh source-row audit and evidence-preservation fix
 - Re-read SEC N-PORT accession 0001752724-24-189684. ARDAGH GROUP SA (L0223L101 / LU1565283667) is a positive EC
-  position: 12,001 NS, valUSD $76,686.39, long, fair-value level 2. LIBERTY SIRIUS XM (531229813 / US5312298137) is
-  55,497 NS, valUSD $1,229,258.55, long, fair-value level 1. Neither is a zero-value or escrow residue.
+  position: 12,001 NS, valUSD 값 제거됨(GSQ-010), receipt 참조, long, fair-value level 2. LIBERTY SIRIUS XM (531229813 / US5312298137) is
+  55,497 NS, valUSD 값 제거됨(GSQ-010), receipt 참조, long, fair-value level 1. Neither is a zero-value or escrow residue.
 - SEC Form 25 (filed 2021-10-06) removed Ardagh Class A shares from NYSE; Form 15 (filed 2021-10-18) terminated
   registration/suspended reporting and stated 115 record holders. This converts the Ardagh item from an identity-search
   gap into policy conflict C-38: positive delisted/private fund residue versus the listed-company Universe. Structured
@@ -245,3 +245,5 @@ Track A REAL-DATA Baseline **FROZEN** in local commit/package; canonical GitHub 
 ## Integration verification · 2026-09-28 20:23 KST
 
 Track A — REAL-DATA BASELINE **FROZEN_VERIFIED**. PR #3 was normal-merged into canonical as `bd6bf42bdd9c6274b595471c65e3482f37317f9c`, preserving original Frozen HEAD `a79642f7aa174cc37b981298d0ff1cec6b04e974`. Integration audit re-confirmed the 17-file Freeze evidence manifest, raw 6,830-artifact integrity, CA-UNIT-v1.0 (original 20 + 3 D3-C), exact three-date Gate/Official consistency, 3-date/two-step Walk-Forward, the approved retrospective PIT/provenance boundary, retained Network500 evidence, and 396/396 full regression. This status does not promote `PROVISIONAL_RESEARCH`, claim strict zero-lookahead, or alter Tracks B/C/D/E.
+
+GSQ-010 문서 정리 metadata: [receipt doc-01](implementation/docs/public_price_boundary/RECEIPTS.md#doc-01).

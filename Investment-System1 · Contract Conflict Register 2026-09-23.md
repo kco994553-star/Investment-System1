@@ -396,7 +396,7 @@ Evidence (runs #48-#53): WestRock (CIK 0001732845, merged into Smurfit Westrock 
 2024-06-30. Yahoo v8 chart HTTP 404 (symbol dropped), Tiingo NO_TIINGO_BAR_ON_OR_BEFORE_AS_OF, Stooq answers with a
 proof-of-work bot challenge (not bypassed). Exchange/vendor web pages not used (terms of use / bot protection / no
 stored, re-verifiable provenance). Reference N-PORT (0001752724-24-189684, filed 2024-08-26) holding: 193,311 NS,
-valUSD 9,715,810.86 -> 50.26/share, fairValLevel 1 (nport_price_investigation_2024-06-30.json, INVESTIGATION_ONLY).
+valUSD 값 제거됨(GSQ-010), receipt 참조 -> 값 제거됨(GSQ-010), receipt 참조/share, fairValLevel 1 (nport_price_investigation_2024-06-30.json, INVESTIGATION_ONLY).
 nport_cross_check_2024-06-30.json measures whether N-PORT per-share values reproduce 2024-06-28 closes (IWB, Vanguard
 Total Stock Market, iShares Core S&P 500).
 Decision pending: extend NPORT_REPORTED_VALUE under generalized criteria (eligibility: all permitted sources failed +
@@ -436,16 +436,16 @@ separate companies is a separate user decision if it blocks.
 
 Run #57 evidence (id 36229163158; commit 195c5da): corrected Russell reference 991 members; missing 0;
 present-not-rankable 0; non-escrow unresolved 0; collisions 0; missing member CUSIPs 0. Sufficiency PASS; Promotion Gate
-v2 PASS; consistency 500/500 PASS; Official blockers 0; cutoff $15.422B. D&B is the live PIT registrant 0001799208 over
+v2 PASS; consistency 500/500 PASS; Official blockers 0; cutoff 값 제거됨(GSQ-010), receipt 참조. D&B is the live PIT registrant 0001799208 over
 legacy D&B CIK 0001115222. Formula One CUSIPs resolve to current Liberty CIK 0001560385 over legacy CIK 0000869614 where
 applicable. OWL Class C uses only cited 1:1 paired-unit economics; Class D stays unvalued. Run #59 (id 36233121639,
 evidence commit 1832747) preserved Gate universe `uni_cf6aa3403869` in the Official snapshot: 500/500 identical members,
-order and market caps; cutoff $15.422B; ALGN rank 500; FNF absent; audited share/price provenance preserved.
+order and market caps; cutoff 값 제거됨(GSQ-010), receipt 참조; ALGN rank 값 제거됨(GSQ-010), receipt 참조; FNF absent; audited share/price provenance preserved.
 
 Run #60 evidence (id 36233560867; commit ab72939): corrected 2024-09-30 Russell reference 994 members; missing 0;
 present-not-rankable 0; non-escrow unresolved 0; duplicate CIK membership 0; complete member CUSIPs. Sufficiency and
 Promotion Gate v2 PASS; Gate/Official ID `uni_e334f94a73c3`; 500/500 membership/order/mcap/provenance PASS; cutoff
-$15.574B; ENPH rank 500. 2024-09-30 Official RESTORED.
+값 제거됨(GSQ-010), receipt 참조; ENPH rank 값 제거됨(GSQ-010), receipt 참조. 2024-09-30 Official RESTORED.
 
 Run #61 evidence (id 36234273515; commit 2e04c1b): corrected 2024-06-30 reference has 987 resolved members and complete
 member CUSIPs, but fails on GRAL/WRK present-not-rankable and two non-escrow unresolved holdings: ARDAGH GROUP SA
@@ -464,7 +464,7 @@ was introduced. Until resolved, 2024-06-30 stays NOT OFFICIAL and walk-forward s
 
 ## C-38 Ardagh positive delisted/private residual in N-PORT superset -> OPEN-BLOCKING, USER DECISION (Track A, 2026-09-26 20:54 KST)
 The 2024-06-30 IWB N-PORT source (accession 0001752724-24-189684) reports ARDAGH GROUP SA, CUSIP L0223L101,
-ISIN LU1565283667, as common equity: 12,001 NS, valUSD $76,686.39, USD, long, fair-value level 2. It is therefore
+ISIN LU1565283667, as common equity: 12,001 NS, valUSD 값 제거됨(GSQ-010), receipt 참조, USD, long, fair-value level 2. It is therefore
 neither a zero-value residue nor an escrow line. SEC CIK 0001689662 is the unique historical-name identity, but the
 issuer filed Form 25 on 2021-10-06 to remove its Class A common shares from NYSE and Form 15 on 2021-10-18 to terminate
 registration/suspend reporting (115 record holders); SEC submissions show no ticker/exchange and no later periodic
@@ -540,3 +540,5 @@ isolation and forward adoption tests; all existing QGV native regressions.
 The verification result and final implementation HEAD are recorded in the
 Main completion receipt after execution. No other conflict is resolved by
 this C-03 entry.
+
+GSQ-010 문서 정리 metadata: [receipt doc-02](implementation/docs/public_price_boundary/RECEIPTS.md#doc-02).

@@ -19,12 +19,14 @@ CA-UNIT-v1.0 is user-approved and implemented as a repeatable, rank-independent 
 
 Original20: 19 corporate-action reconciliations plus PARA historical price-identity repair. Three further same-policy cases (GE, MMM, MDU) were resolved as D3-C. Original and normalized quantities remain in evidence. SIRI uses contemporaneously published actual successor shares; SCCO uses primary share-dividend ratios, not rounded vendor price factors.
 
-June/September/December Official singles selected and linked 471/469/468 names. Outcome returns are 8.825775%, 0.355827%, -1.529829%; these are provisional research outputs, not performance promises. Three dates create two adjacent Walk-Forward steps. Their outputs equal the corresponding single runs exactly.
+June/September/December Official singles selected and linked 471/469/468 names. Outcome returns are 값 제거됨(GSQ-010), receipt 참조, 값 제거됨(GSQ-010), receipt 참조, 값 제거됨(GSQ-010), receipt 참조; these are provisional research outputs, not performance promises. Three dates create two adjacent Walk-Forward steps. Their outputs equal the corresponding single runs exactly.
 
-The network benchmark includes actual retrieval and replay, with explicitly retained older SEC pages, reviewed alternative prices and 14 missing delisted-source payloads. Fresh-data selection and raw closes match the frozen vintage. Provider adjusted-close precision changed 286 outcomes (maximum absolute per-name delta 4.052e-7; aggregate delta 1.956e-9). Endpoint-price evidence explains each difference. The frozen data vintage is not overwritten.
+The network benchmark includes actual retrieval and replay, with explicitly retained older SEC pages, reviewed alternative prices and 14 missing delisted-source payloads. Fresh-data selection and raw closes match the frozen vintage. Provider adjusted-close precision changed 286 outcomes (maximum absolute per-name delta 값 제거됨(GSQ-010), receipt 참조; aggregate delta 값 제거됨(GSQ-010), receipt 참조). Endpoint-price evidence explains each difference. The frozen data vintage is not overwritten.
 
 PIT means the existing approved reconstruction contract: PINC/WOLF per-date NPORT, WRK CA-PRICE-01, GRAL actual first-subsequent periodic CA-SHARES-01 and dated NPORT reference provenance remain visible. CA-UNIT grants no additional future evidence. The pipeline's broad research/calibration flags remain false; baseline-specific acceptance is recorded in `track_a_freeze_readiness_2026-09-27.json`.
 
 GitHub delivery remains **NOT UPLOADED**: git credentials were unavailable and the integration rejected branch creation with HTTP 403. FROZEN is recorded in the local commit and delivery package; canonical GitHub and Actions are not claimed updated.
 
 Work stops here. No new D3-P remains. Track B/C/D/E code and specifications were not changed.
+
+GSQ-010 문서 정리 metadata: [receipt doc-04](implementation/docs/public_price_boundary/RECEIPTS.md#doc-04).
