@@ -3,6 +3,7 @@
 from copy import deepcopy
 from dataclasses import FrozenInstanceError, asdict, replace
 import json
+import sys
 from types import MappingProxyType
 
 import pytest
@@ -17,6 +18,10 @@ from investment_system.personal.weights import SIBLING_SUM_TOLERANCE
 from investment_system.qgv.analysis import AnalysisEngine
 from investment_system.qgv.factors import G_WEIGHTS, Q_WEIGHTS, V_INITIAL_PRIOR
 from tests.helpers import AS_OF, complete_obs
+
+# dataclasses.replace() on an init=False field raises ValueError up to 3.12 and
+# TypeError from 3.13 (dataclasses change); the guarantee is the same.
+REPLACE_INIT_FALSE_ERROR = TypeError if sys.version_info >= (3, 13) else ValueError
 
 
 def vector_observations():
@@ -330,7 +335,7 @@ def test_result_role_and_every_returned_mapping_are_immutable():
         result.role = "OFFICIAL"
     with pytest.raises(FrozenInstanceError):
         result.axes["Q"].score = 0
-    with pytest.raises(ValueError):
+    with pytest.raises(REPLACE_INIT_FALSE_ERROR):
         replace(result, role="OFFICIAL")
     with pytest.raises(TypeError):
         type(result)(axes=result.axes, qg_preview_total=0,
