@@ -31,13 +31,14 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "c2478c243024437f89189cee8632d704af893e268d3b885e28d131ab0d9bb311",
     "watchlist.js": "6d707c1f7beb0d4ceaf32cea18320049bbd1ba768bf91578ba6a664596f536cf",
     "sec-m3-adapter.js": "f3962d7283ae0e8731ad66ee23652d5f8c9e88f2cd4050b70b4cd1048956d6e5",
     "private-subset.js": "5dfa945113a84ec8fde2cb2020f71343e1cd453a5de41771165a0a8b531a6fec",
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
-    "device-profiles.js": "5e2ddb99ca448647ad8434c2a80b7801aa4034a293e462828c0c765437b99fcf",
+    "device-profiles.js": "b0d2b9c0fa59de3b7f255a081c9da57b87704903ce32578369a8cd0f5333dfe6",
     "public-screens.js": "5779fd0dfcd378dd1855c28566fd5e85a02afb14419dd0ad552475c6a3fd3111",
     "pwa.js": "f8d5df267d323fd465821416f1825f38d4065030ec5368b7a37bfc4ed875affd",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
@@ -54,7 +55,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "3267a973e7694fff772b3b06404e540c7a55dffa08a24c60f4dec486abe22950",
+    "app.js": "f400069e933df899554507c0a1435e82dd695506ebd9482cddfcbce632fce661",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "05770dd8e99d40c43d320970549f7f91f8c93bd77496553c593172ab5a1f7407",
@@ -64,7 +65,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "7cfd1599dc08854d3390259508f826446c09c76d4144f27f39517cdda64eb374",
+    "index.html": "08c0aaaefadbe9ae80a3b76763792fc15f489a296ef28c2b87b0d37787cb40fd",
     "locale.js": "f2038d8eb85a40c98357ad63b9a1eb2ac1bdb39a8df2750a7f33410a9da67cf4",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",
