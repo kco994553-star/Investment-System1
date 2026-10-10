@@ -9,7 +9,7 @@ import pytest
 
 from investment_system.contracts.enums import CoverageState, ProfileKind, QualityState
 from investment_system.contracts.models import FactorObservation
-from investment_system.personal.strategy_preview import (
+from investment_system.qgv.strategy_preview import (
     official_v1_weight_copy,
     recalculate_strategy_preview,
 )

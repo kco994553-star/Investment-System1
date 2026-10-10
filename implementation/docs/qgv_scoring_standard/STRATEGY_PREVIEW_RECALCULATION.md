@@ -1,6 +1,6 @@
 # 전략 프로필 v1 재계산 — PREVIEW
 
-최신 사용자 대기열6번. `personal/strategy_preview.py`는 [공식 Scoring Standard v1](QGV_SCORING_STANDARD_v1.md)의 Q/G/V **각 축 내부 요소 비중**을 복사해 개인 미리보기를 계산한다. 기존 `contracts/strategy.py`의 PROVISIONAL parameter pack과 구분하며, 공식 factor/비중/저장 snapshot을 변경하지 않는다.
+최신 사용자 대기열6번. `qgv/strategy_preview.py`는 [공식 Scoring Standard v1](QGV_SCORING_STANDARD_v1.md)의 Q/G/V **각 축 내부 요소 비중**을 복사해 개인 미리보기를 계산한다. 기존 `contracts/strategy.py`의 PROVISIONAL parameter pack과 구분하며, 공식 factor/비중/저장 snapshot을 변경하지 않는다.
 
 ## 호출 계약
 

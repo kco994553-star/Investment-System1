@@ -14,15 +14,15 @@ from types import MappingProxyType
 
 from ..contracts.enums import CoverageState, ProfileKind, QualityState
 from ..contracts.models import FactorObservation
-from ..qgv.factors import (
+from .factors import (
     G_WEIGHTS,
     Q_WEIGHTS,
     V_INITIAL_PRIOR,
     factor_applicable,
     missing_is_not_zero,
 )
-from ..qgv.scoring import _weighted
-from .weights import SIBLING_SUM_TOLERANCE
+from .scoring import _weighted
+from ..personal.weights import SIBLING_SUM_TOLERANCE
 
 
 @dataclass(frozen=True)
