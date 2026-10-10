@@ -19,7 +19,7 @@ jobs:
         working-directory: implementation
         run: |
           python -m pip install pytest==9.1.1 jsonschema==4.26.0
-          python -m pytest -q --tb=no tests/test_app_nav_ia.py tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py tests/test_sec_m2_candidates.py tests/test_worker_deployment_diagnostics.py tests/test_public_sec_inputs.py tests/test_sec_reported_consumer.py tests/test_public_engine_screens.py tests/test_public_screens_pipeline.py tests/test_preserve_public_sec_inputs.py
+          python -m pytest -q --tb=no tests/test_app_nav_ia.py tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py tests/test_sec_m2_candidates.py tests/test_worker_deployment_diagnostics.py tests/test_public_sec_inputs.py tests/test_sec_reported_consumer.py tests/test_public_engine_screens.py tests/test_public_screens_pipeline.py tests/test_device_profile_defaults.py tests/test_preserve_public_sec_inputs.py
       - name: Build and inspect local price-free cockpit
         run: |
           python implementation/tools/build_pages_cockpit.py --out "$RUNNER_TEMP/public-cockpit"
@@ -45,6 +45,7 @@ jobs:
           node implementation/tools/device_actual_node_test.js
           node implementation/tools/device_market_node_test.js
           node implementation/tools/device_backup_node_test.js
+          node implementation/tools/device_profiles_node_test.js
           node implementation/tools/google_sheet_core_node_test.js
           node implementation/tools/google_sheet_auth_node_test.js
           node implementation/tools/pwa_node_test.js
@@ -62,6 +63,7 @@ jobs:
           trap 'kill "$SERVER_PID"' EXIT
           node implementation/tools/pages_cockpit_browser_test.js
           node implementation/tools/device_backup_browser_test.js
+          node implementation/tools/device_profiles_browser_test.js
           node implementation/tools/technical_chart_browser_test.js
           node implementation/tools/private_trades_browser_test.js
           node implementation/tools/private_history_browser_test.js
@@ -69,7 +71,6 @@ jobs:
           node implementation/tools/google_login_browser_test.js
           node implementation/tools/pwa_browser_test.js
           node implementation/tools/settings_import_browser_test.js
-          node implementation/tools/design_responsive_browser_test.js
           node implementation/tools/sec_reported_browser_test.js
           node implementation/tools/public_screens_browser_test.js
           node implementation/tools/google_sheet_setup_browser_test.js

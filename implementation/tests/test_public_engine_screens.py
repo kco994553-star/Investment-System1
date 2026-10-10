@@ -42,7 +42,16 @@ def test_sec_reuses_qg_mapper_without_price_and_estimate_is_not_confirmed(tmp_pa
     windows=outputs['sec-filing-windows.json']['data']['companies']['nvda']
     assert windows['confirmed_earnings_date'] is None and windows['role']=='ESTIMATED_PATTERN_NOT_CONFIRMED'
     text=json.dumps(outputs)
-    assert '99999' not in text and 'TEST_ONLY_CANARY' not in text and 'StockPrice' not in text
+    def numeric_values(value):
+        if isinstance(value,dict):
+            for child in value.values():yield from numeric_values(child)
+        elif isinstance(value,list):
+            for child in value:yield from numeric_values(child)
+        elif type(value) in (int,float):yield value
+    # A legitimate 0.499999... ramp contains the digit substring; reject the
+    # actual price sentinel value, not unrelated floating-point spellings.
+    assert 99999 not in set(numeric_values(outputs))
+    assert 'TEST_ONLY_CANARY' not in text and 'StockPrice' not in text
     assert len(q['sources'])==2
 
 
@@ -225,3 +234,12 @@ def test_official_bea_chained_dollar_unit_spelling_is_public(tmp_path):
     out=build(tmp_path,m)['macro-screen.json']
     assert next(o for o in out['data']['observations'] if o['provider']=='BEA')['unit']=='Billions of Chained (2017) Dollars'
     assert next(c for c in out['data']['cells'] if c['axis']=='Growth' and c['dimension']=='Level')['state']=='RAW_EVIDENCE'
+
+
+def test_merged_type_engine_uses_three_year_revenue_ramp_without_price(tmp_path):
+    if importlib.util.find_spec('investment_system.qgv.company_types') is None:
+        pytest.skip('type engine awaiting PR135 approval')
+    out=build(tmp_path,sec(tmp_path))['company-types-pricefree.json']
+    row=out['data']['companies']['nvda']
+    assert row['memberships']['growth']==pytest.approx(.5)
+    assert row['config_version']=='type_config/1' and row['state']=='LIVE'
