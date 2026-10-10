@@ -1,0 +1,3656 @@
+{
+  "schema_version": 1,
+  "synthetic": true,
+  "role": "REFERENCE_TEST_ONLY",
+  "numeric_tolerance": {
+    "relative": 1e-10,
+    "absolute": 1e-10
+  },
+  "type_dependency": "PR135_APPROVAL_PENDING",
+  "cases": [
+    {
+      "id": "dcf-0.0",
+      "synthetic": true,
+      "operation": "dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "growth_rate": 0.0,
+        "parameters": {
+          "confirmed": true,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.02,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": true,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD"
+      },
+      "expected": {
+        "state": "PROVISIONAL",
+        "reason_codes": [],
+        "value_per_share": 11.707533638412674,
+        "discounted_cashflows": [
+          0.9090909090909091,
+          0.8264462809917354,
+          0.7513148009015775,
+          0.6830134553650705,
+          0.6209213230591549
+        ],
+        "implied_growth": null,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "reverse-0.0",
+      "synthetic": true,
+      "operation": "reverse_dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "price": 11.707533638412674,
+        "parameters": {
+          "confirmed": true,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.02,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": true,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD",
+        "price_currency": "USD"
+      },
+      "expected": {
+        "state": "PROVISIONAL",
+        "reason_codes": [],
+        "value_per_share": null,
+        "discounted_cashflows": null,
+        "implied_growth": 1.4551915228366852e-11,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "dcf-0.05",
+      "synthetic": true,
+      "operation": "dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "growth_rate": 0.05,
+        "parameters": {
+          "confirmed": true,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.02,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": true,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD"
+      },
+      "expected": {
+        "state": "PROVISIONAL",
+        "reason_codes": [],
+        "value_per_share": 14.462118899836076,
+        "discounted_cashflows": [
+          0.9545454545454545,
+          0.9111570247933883,
+          0.8697407963936887,
+          0.8302071238303393,
+          0.7924704363835058
+        ],
+        "implied_growth": null,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "reverse-0.05",
+      "synthetic": true,
+      "operation": "reverse_dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "price": 14.462118899836076,
+        "parameters": {
+          "confirmed": true,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.02,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": true,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD",
+        "price_currency": "USD"
+      },
+      "expected": {
+        "state": "PROVISIONAL",
+        "reason_codes": [],
+        "value_per_share": null,
+        "discounted_cashflows": null,
+        "implied_growth": 0.05000000000291038,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "dcf-0.2",
+      "synthetic": true,
+      "operation": "dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "growth_rate": 0.2,
+        "parameters": {
+          "confirmed": true,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.02,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": true,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD"
+      },
+      "expected": {
+        "state": "PROVISIONAL",
+        "reason_codes": [],
+        "value_per_share": 26.240010928215277,
+        "discounted_cashflows": [
+          1.0909090909090908,
+          1.190082644628099,
+          1.2982719759579258,
+          1.41629670104501,
+          1.545050946594556
+        ],
+        "implied_growth": null,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "reverse-0.2",
+      "synthetic": true,
+      "operation": "reverse_dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "price": 26.240010928215277,
+        "parameters": {
+          "confirmed": true,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.02,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": true,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD",
+        "price_currency": "USD"
+      },
+      "expected": {
+        "state": "PROVISIONAL",
+        "reason_codes": [],
+        "value_per_share": null,
+        "discounted_cashflows": null,
+        "implied_growth": 0.20000000001164153,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "dcf--0.3",
+      "synthetic": true,
+      "operation": "dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "growth_rate": -0.3,
+        "parameters": {
+          "confirmed": true,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.02,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": true,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD"
+      },
+      "expected": {
+        "state": "PROVISIONAL",
+        "reason_codes": [],
+        "value_per_share": 2.897940714432073,
+        "discounted_cashflows": [
+          0.6363636363636362,
+          0.4049586776859503,
+          0.257700976709241,
+          0.1639915306331534,
+          0.10435824676655214
+        ],
+        "implied_growth": null,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "reverse--0.3",
+      "synthetic": true,
+      "operation": "reverse_dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "price": 2.897940714432073,
+        "parameters": {
+          "confirmed": true,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.02,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": true,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD",
+        "price_currency": "USD"
+      },
+      "expected": {
+        "state": "PROVISIONAL",
+        "reason_codes": [],
+        "value_per_share": null,
+        "discounted_cashflows": null,
+        "implied_growth": -0.3000000000029104,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "unconfirmed",
+      "synthetic": true,
+      "operation": "dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "growth_rate": 0.05,
+        "parameters": {
+          "confirmed": false,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.02,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": true,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD"
+      },
+      "expected": {
+        "state": "NOT_AVAILABLE",
+        "reason_codes": [
+          "PARAMETER_APPROVAL_PENDING"
+        ],
+        "value_per_share": null,
+        "discounted_cashflows": null,
+        "implied_growth": null,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "gordon-order",
+      "synthetic": true,
+      "operation": "dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "growth_rate": 0.05,
+        "parameters": {
+          "confirmed": true,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.1,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": true,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD"
+      },
+      "expected": {
+        "state": "NOT_AVAILABLE",
+        "reason_codes": [
+          "GORDON_RATE_ORDER"
+        ],
+        "value_per_share": null,
+        "discounted_cashflows": null,
+        "implied_growth": null,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "share-basis",
+      "synthetic": true,
+      "operation": "dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "growth_rate": 0.05,
+        "parameters": {
+          "confirmed": true,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.02,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": false,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD"
+      },
+      "expected": {
+        "state": "NOT_AVAILABLE",
+        "reason_codes": [
+          "SHARE_BASIS_UNCONFIRMED"
+        ],
+        "value_per_share": null,
+        "discounted_cashflows": null,
+        "implied_growth": null,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "reverse-not-bracketed",
+      "synthetic": true,
+      "operation": "reverse_dcf",
+      "input": {
+        "cashflow_per_share": 1.0,
+        "price": 1000000000.0,
+        "parameters": {
+          "confirmed": true,
+          "explicit_years": 5,
+          "discount_rate": 0.1,
+          "terminal_growth": 0.02,
+          "cashflow_basis": "FCFE_PER_SHARE",
+          "discount_rate_basis": "COST_OF_EQUITY",
+          "currency": "USD",
+          "per_share_basis_confirmed": true,
+          "solver": {
+            "growth_lower": -0.5,
+            "growth_upper": 1.0,
+            "relative_price_tolerance": 1e-10,
+            "maximum_iterations": 200
+          }
+        },
+        "cashflow_currency": "USD",
+        "price_currency": "USD"
+      },
+      "expected": {
+        "state": "NOT_AVAILABLE",
+        "reason_codes": [
+          "ROOT_NOT_BRACKETED"
+        ],
+        "value_per_share": null,
+        "discounted_cashflows": null,
+        "implied_growth": null,
+        "role": "RAM_ONLY_RESEARCH",
+        "model_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "id": "v-intrinsic",
+      "synthetic": true,
+      "operation": "v_factors",
+      "input": {
+        "price": 80.0,
+        "inputs": {
+          "dcf_value": 100.0,
+          "basis_confirmed": true
+        }
+      },
+      "expected": {
+        "factors": {
+          "fundamental_value": {
+            "score": 81.25,
+            "state": "CALCULATED",
+            "reason": "APPROVED_V1_MAPPING"
+          },
+          "peer_relative_value": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_INPUT"
+          },
+          "historical_valuation": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "sector_context": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "theme_premium_discount": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "reverse_dcf": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_INPUT"
+          },
+          "margin_of_safety": {
+            "score": 39.58333333333333,
+            "state": "CALCULATED",
+            "reason": "APPROVED_V1_MAPPING"
+          }
+        },
+        "role": "RAM_ONLY_V1",
+        "standard": "v1",
+        "calibration": "UNCALIBRATED",
+        "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+        "undefined_price_definitions": [
+          "DCF_SOLVER",
+          "REVERSE_DCF_SOLVER",
+          "OWN_MULTIPLE_PRICE_MAPPING",
+          "HISTORICAL_VALUATION_PRICE_MAPPING",
+          "SECTOR_CONTEXT_PRICE_MAPPING",
+          "THEME_PRICE_MAPPING"
+        ]
+      }
+    },
+    {
+      "id": "v-missing-price",
+      "synthetic": true,
+      "operation": "v_factors",
+      "input": {
+        "price": null,
+        "inputs": {}
+      },
+      "expected": {
+        "factors": {
+          "fundamental_value": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_PRICE"
+          },
+          "peer_relative_value": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_INPUT"
+          },
+          "historical_valuation": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "sector_context": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "theme_premium_discount": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "reverse_dcf": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_PRICE"
+          },
+          "margin_of_safety": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_PRICE"
+          }
+        },
+        "role": "RAM_ONLY_V1",
+        "standard": "v1",
+        "calibration": "UNCALIBRATED",
+        "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+        "undefined_price_definitions": [
+          "DCF_SOLVER",
+          "REVERSE_DCF_SOLVER",
+          "OWN_MULTIPLE_PRICE_MAPPING",
+          "HISTORICAL_VALUATION_PRICE_MAPPING",
+          "SECTOR_CONTEXT_PRICE_MAPPING",
+          "THEME_PRICE_MAPPING"
+        ]
+      }
+    },
+    {
+      "id": "v-eps",
+      "synthetic": true,
+      "operation": "v_factors",
+      "input": {
+        "price": 100.0,
+        "inputs": {
+          "eps": 5.0,
+          "basis_confirmed": true
+        }
+      },
+      "expected": {
+        "factors": {
+          "fundamental_value": {
+            "score": 50.0,
+            "state": "CALCULATED",
+            "reason": "APPROVED_V1_MAPPING"
+          },
+          "peer_relative_value": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_INPUT"
+          },
+          "historical_valuation": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "sector_context": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "theme_premium_discount": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "reverse_dcf": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_INPUT"
+          },
+          "margin_of_safety": {
+            "score": 0.0,
+            "state": "CALCULATED",
+            "reason": "APPROVED_V1_MAPPING"
+          }
+        },
+        "role": "RAM_ONLY_V1",
+        "standard": "v1",
+        "calibration": "UNCALIBRATED",
+        "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+        "undefined_price_definitions": [
+          "DCF_SOLVER",
+          "REVERSE_DCF_SOLVER",
+          "OWN_MULTIPLE_PRICE_MAPPING",
+          "HISTORICAL_VALUATION_PRICE_MAPPING",
+          "SECTOR_CONTEXT_PRICE_MAPPING",
+          "THEME_PRICE_MAPPING"
+        ]
+      }
+    },
+    {
+      "id": "v-supplied-zero-growth",
+      "synthetic": true,
+      "operation": "v_factors",
+      "input": {
+        "price": null,
+        "inputs": {
+          "reverse_dcf_implied_growth": 0.0,
+          "revenue": 120.0,
+          "revenue_prev": 100.0
+        }
+      },
+      "expected": {
+        "factors": {
+          "fundamental_value": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_PRICE"
+          },
+          "peer_relative_value": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_INPUT"
+          },
+          "historical_valuation": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "sector_context": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "theme_premium_discount": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "reverse_dcf": {
+            "score": 100.0,
+            "state": "CALCULATED",
+            "reason": "APPROVED_V1_MAPPING"
+          },
+          "margin_of_safety": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_PRICE"
+          }
+        },
+        "role": "RAM_ONLY_V1",
+        "standard": "v1",
+        "calibration": "UNCALIBRATED",
+        "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+        "undefined_price_definitions": [
+          "DCF_SOLVER",
+          "REVERSE_DCF_SOLVER",
+          "OWN_MULTIPLE_PRICE_MAPPING",
+          "HISTORICAL_VALUATION_PRICE_MAPPING",
+          "SECTOR_CONTEXT_PRICE_MAPPING",
+          "THEME_PRICE_MAPPING"
+        ]
+      }
+    },
+    {
+      "id": "v-unconfirmed",
+      "synthetic": true,
+      "operation": "v_factors",
+      "input": {
+        "price": 100.0,
+        "inputs": {
+          "dcf_value": 120.0
+        }
+      },
+      "expected": {
+        "factors": {
+          "fundamental_value": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "BASIS_UNCONFIRMED"
+          },
+          "peer_relative_value": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_INPUT"
+          },
+          "historical_valuation": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "sector_context": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "theme_premium_discount": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "reverse_dcf": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "BASIS_UNCONFIRMED"
+          },
+          "margin_of_safety": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "BASIS_UNCONFIRMED"
+          }
+        },
+        "role": "RAM_ONLY_V1",
+        "standard": "v1",
+        "calibration": "UNCALIBRATED",
+        "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+        "undefined_price_definitions": [
+          "DCF_SOLVER",
+          "REVERSE_DCF_SOLVER",
+          "OWN_MULTIPLE_PRICE_MAPPING",
+          "HISTORICAL_VALUATION_PRICE_MAPPING",
+          "SECTOR_CONTEXT_PRICE_MAPPING",
+          "THEME_PRICE_MAPPING"
+        ]
+      }
+    },
+    {
+      "id": "v-peer",
+      "synthetic": true,
+      "operation": "v_factors",
+      "input": {
+        "price": null,
+        "inputs": {
+          "own_multiple": 15.0,
+          "peer_median_multiple": 20.0
+        }
+      },
+      "expected": {
+        "factors": {
+          "fundamental_value": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_PRICE"
+          },
+          "peer_relative_value": {
+            "score": 91.66666666666667,
+            "state": "CALCULATED",
+            "reason": "APPROVED_V1_MAPPING"
+          },
+          "historical_valuation": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "sector_context": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "theme_premium_discount": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "UNDEFINED_PRICE_MAPPING"
+          },
+          "reverse_dcf": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_PRICE"
+          },
+          "margin_of_safety": {
+            "score": null,
+            "state": "NOT_AVAILABLE",
+            "reason": "MISSING_PRICE"
+          }
+        },
+        "role": "RAM_ONLY_V1",
+        "standard": "v1",
+        "calibration": "UNCALIBRATED",
+        "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+        "undefined_price_definitions": [
+          "DCF_SOLVER",
+          "REVERSE_DCF_SOLVER",
+          "OWN_MULTIPLE_PRICE_MAPPING",
+          "HISTORICAL_VALUATION_PRICE_MAPPING",
+          "SECTOR_CONTEXT_PRICE_MAPPING",
+          "THEME_PRICE_MAPPING"
+        ]
+      }
+    },
+    {
+      "id": "strategy-official",
+      "synthetic": true,
+      "operation": "strategy",
+      "input": {
+        "observations": {
+          "competitive_advantage": {
+            "score": 10.0,
+            "quality": "SYNTHETIC"
+          },
+          "roic_wacc": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "market_position": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "fcf_quality": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "margin_quality": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "financial_health": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "management_quality": {
+            "score": 70.0,
+            "quality": "SYNTHETIC"
+          },
+          "next_3_5y_growth": {
+            "score": 10.0,
+            "quality": "SYNTHETIC"
+          },
+          "growth_efficiency": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "revenue_growth": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "eps_fcf_per_share_growth": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "growth_durability": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "excess_growth_vs_industry": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "fundamental_value": {
+            "score": 10.0,
+            "quality": "SYNTHETIC"
+          },
+          "reverse_dcf": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "peer_relative_value": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "historical_valuation": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "margin_of_safety": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "sector_context": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "theme_premium_discount": {
+            "score": 70.0,
+            "quality": "SYNTHETIC"
+          }
+        }
+      },
+      "expected": {
+        "axes": {
+          "Q": {
+            "score": 34.5,
+            "coverage": "READY",
+            "missing_factor_ids": [],
+            "not_applicable_ids": [],
+            "missing_factor_count": 0
+          },
+          "G": {
+            "score": 30.5,
+            "coverage": "READY",
+            "missing_factor_ids": [],
+            "not_applicable_ids": [],
+            "missing_factor_count": 0
+          },
+          "V": {
+            "score": 31.5,
+            "coverage": "READY",
+            "missing_factor_ids": [],
+            "not_applicable_ids": [],
+            "missing_factor_count": 0
+          }
+        },
+        "qg_preview_total": 32.5,
+        "official_weights": {
+          "Q": {
+            "competitive_advantage": 20.0,
+            "roic_wacc": 20.0,
+            "market_position": 15.0,
+            "fcf_quality": 15.0,
+            "margin_quality": 10.0,
+            "financial_health": 10.0,
+            "management_quality": 10.0
+          },
+          "G": {
+            "next_3_5y_growth": 25.0,
+            "growth_efficiency": 20.0,
+            "revenue_growth": 15.0,
+            "eps_fcf_per_share_growth": 15.0,
+            "growth_durability": 15.0,
+            "excess_growth_vs_industry": 10.0
+          },
+          "V": {
+            "fundamental_value": 25.0,
+            "reverse_dcf": 20.0,
+            "peer_relative_value": 15.0,
+            "historical_valuation": 15.0,
+            "margin_of_safety": 10.0,
+            "sector_context": 10.0,
+            "theme_premium_discount": 5.0
+          }
+        },
+        "effective_weights": {
+          "Q": {
+            "competitive_advantage": 20.0,
+            "roic_wacc": 20.0,
+            "market_position": 15.0,
+            "fcf_quality": 15.0,
+            "margin_quality": 10.0,
+            "financial_health": 10.0,
+            "management_quality": 10.0
+          },
+          "G": {
+            "next_3_5y_growth": 25.0,
+            "growth_efficiency": 20.0,
+            "revenue_growth": 15.0,
+            "eps_fcf_per_share_growth": 15.0,
+            "growth_durability": 15.0,
+            "excess_growth_vs_industry": 10.0
+          },
+          "V": {
+            "fundamental_value": 25.0,
+            "reverse_dcf": 20.0,
+            "peer_relative_value": 15.0,
+            "historical_valuation": 15.0,
+            "margin_of_safety": 10.0,
+            "sector_context": 10.0,
+            "theme_premium_discount": 5.0
+          }
+        },
+        "role": "PREVIEW",
+        "parent_mix_note": "UNDEFINED_PARENT_WEIGHTS"
+      }
+    },
+    {
+      "id": "strategy-missing",
+      "synthetic": true,
+      "operation": "strategy",
+      "input": {
+        "observations": {
+          "competitive_advantage": {
+            "score": 10.0,
+            "quality": "SYNTHETIC"
+          },
+          "roic_wacc": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "market_position": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "fcf_quality": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "margin_quality": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "financial_health": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "management_quality": {
+            "score": 70.0,
+            "quality": "SYNTHETIC"
+          },
+          "next_3_5y_growth": {
+            "score": 10.0,
+            "quality": "SYNTHETIC"
+          },
+          "growth_efficiency": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "revenue_growth": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "eps_fcf_per_share_growth": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "growth_durability": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "excess_growth_vs_industry": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "reverse_dcf": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "peer_relative_value": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "historical_valuation": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "margin_of_safety": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "sector_context": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "theme_premium_discount": {
+            "score": 70.0,
+            "quality": "SYNTHETIC"
+          }
+        }
+      },
+      "expected": {
+        "axes": {
+          "Q": {
+            "score": 34.5,
+            "coverage": "READY",
+            "missing_factor_ids": [],
+            "not_applicable_ids": [],
+            "missing_factor_count": 0
+          },
+          "G": {
+            "score": 30.5,
+            "coverage": "READY",
+            "missing_factor_ids": [],
+            "not_applicable_ids": [],
+            "missing_factor_count": 0
+          },
+          "V": {
+            "score": 29.0,
+            "coverage": "PARTIAL",
+            "missing_factor_ids": [
+              "fundamental_value"
+            ],
+            "not_applicable_ids": [],
+            "missing_factor_count": 1
+          }
+        },
+        "qg_preview_total": 32.5,
+        "official_weights": {
+          "Q": {
+            "competitive_advantage": 20.0,
+            "roic_wacc": 20.0,
+            "market_position": 15.0,
+            "fcf_quality": 15.0,
+            "margin_quality": 10.0,
+            "financial_health": 10.0,
+            "management_quality": 10.0
+          },
+          "G": {
+            "next_3_5y_growth": 25.0,
+            "growth_efficiency": 20.0,
+            "revenue_growth": 15.0,
+            "eps_fcf_per_share_growth": 15.0,
+            "growth_durability": 15.0,
+            "excess_growth_vs_industry": 10.0
+          },
+          "V": {
+            "fundamental_value": 25.0,
+            "reverse_dcf": 20.0,
+            "peer_relative_value": 15.0,
+            "historical_valuation": 15.0,
+            "margin_of_safety": 10.0,
+            "sector_context": 10.0,
+            "theme_premium_discount": 5.0
+          }
+        },
+        "effective_weights": {
+          "Q": {
+            "competitive_advantage": 20.0,
+            "roic_wacc": 20.0,
+            "market_position": 15.0,
+            "fcf_quality": 15.0,
+            "margin_quality": 10.0,
+            "financial_health": 10.0,
+            "management_quality": 10.0
+          },
+          "G": {
+            "next_3_5y_growth": 25.0,
+            "growth_efficiency": 20.0,
+            "revenue_growth": 15.0,
+            "eps_fcf_per_share_growth": 15.0,
+            "growth_durability": 15.0,
+            "excess_growth_vs_industry": 10.0
+          },
+          "V": {
+            "fundamental_value": 25.0,
+            "reverse_dcf": 20.0,
+            "peer_relative_value": 15.0,
+            "historical_valuation": 15.0,
+            "margin_of_safety": 10.0,
+            "sector_context": 10.0,
+            "theme_premium_discount": 5.0
+          }
+        },
+        "role": "PREVIEW",
+        "parent_mix_note": "UNDEFINED_PARENT_WEIGHTS"
+      }
+    },
+    {
+      "id": "strategy-bad-sum",
+      "synthetic": true,
+      "operation": "strategy",
+      "input": {
+        "observations": {
+          "competitive_advantage": {
+            "score": 10.0,
+            "quality": "SYNTHETIC"
+          },
+          "roic_wacc": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "market_position": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "fcf_quality": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "margin_quality": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "financial_health": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "management_quality": {
+            "score": 70.0,
+            "quality": "SYNTHETIC"
+          },
+          "next_3_5y_growth": {
+            "score": 10.0,
+            "quality": "SYNTHETIC"
+          },
+          "growth_efficiency": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "revenue_growth": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "eps_fcf_per_share_growth": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "growth_durability": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "excess_growth_vs_industry": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "fundamental_value": {
+            "score": 10.0,
+            "quality": "SYNTHETIC"
+          },
+          "reverse_dcf": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "peer_relative_value": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "historical_valuation": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "margin_of_safety": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "sector_context": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "theme_premium_discount": {
+            "score": 70.0,
+            "quality": "SYNTHETIC"
+          }
+        },
+        "user_weights": {
+          "Q": {
+            "competitive_advantage": 0
+          }
+        }
+      },
+      "expected": {
+        "state": "INVALID_INPUT"
+      }
+    },
+    {
+      "id": "strategy-custom",
+      "synthetic": true,
+      "operation": "strategy",
+      "input": {
+        "observations": {
+          "competitive_advantage": {
+            "score": 10.0,
+            "quality": "SYNTHETIC"
+          },
+          "roic_wacc": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "market_position": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "fcf_quality": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "margin_quality": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "financial_health": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "management_quality": {
+            "score": 70.0,
+            "quality": "SYNTHETIC"
+          },
+          "next_3_5y_growth": {
+            "score": 10.0,
+            "quality": "SYNTHETIC"
+          },
+          "growth_efficiency": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "revenue_growth": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "eps_fcf_per_share_growth": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "growth_durability": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "excess_growth_vs_industry": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "fundamental_value": {
+            "score": 10.0,
+            "quality": "SYNTHETIC"
+          },
+          "reverse_dcf": {
+            "score": 20.0,
+            "quality": "SYNTHETIC"
+          },
+          "peer_relative_value": {
+            "score": 30.0,
+            "quality": "SYNTHETIC"
+          },
+          "historical_valuation": {
+            "score": 40.0,
+            "quality": "SYNTHETIC"
+          },
+          "margin_of_safety": {
+            "score": 50.0,
+            "quality": "SYNTHETIC"
+          },
+          "sector_context": {
+            "score": 60.0,
+            "quality": "SYNTHETIC"
+          },
+          "theme_premium_discount": {
+            "score": 70.0,
+            "quality": "SYNTHETIC"
+          }
+        },
+        "user_weights": {
+          "Q": {
+            "competitive_advantage": 100.0,
+            "roic_wacc": 0.0,
+            "market_position": 0.0,
+            "fcf_quality": 0.0,
+            "margin_quality": 0.0,
+            "financial_health": 0.0,
+            "management_quality": 0.0
+          }
+        }
+      },
+      "expected": {
+        "axes": {
+          "Q": {
+            "score": 10.0,
+            "coverage": "READY",
+            "missing_factor_ids": [],
+            "not_applicable_ids": [],
+            "missing_factor_count": 0
+          },
+          "G": {
+            "score": 30.5,
+            "coverage": "READY",
+            "missing_factor_ids": [],
+            "not_applicable_ids": [],
+            "missing_factor_count": 0
+          },
+          "V": {
+            "score": 31.5,
+            "coverage": "READY",
+            "missing_factor_ids": [],
+            "not_applicable_ids": [],
+            "missing_factor_count": 0
+          }
+        },
+        "qg_preview_total": 20.25,
+        "official_weights": {
+          "Q": {
+            "competitive_advantage": 20.0,
+            "roic_wacc": 20.0,
+            "market_position": 15.0,
+            "fcf_quality": 15.0,
+            "margin_quality": 10.0,
+            "financial_health": 10.0,
+            "management_quality": 10.0
+          },
+          "G": {
+            "next_3_5y_growth": 25.0,
+            "growth_efficiency": 20.0,
+            "revenue_growth": 15.0,
+            "eps_fcf_per_share_growth": 15.0,
+            "growth_durability": 15.0,
+            "excess_growth_vs_industry": 10.0
+          },
+          "V": {
+            "fundamental_value": 25.0,
+            "reverse_dcf": 20.0,
+            "peer_relative_value": 15.0,
+            "historical_valuation": 15.0,
+            "margin_of_safety": 10.0,
+            "sector_context": 10.0,
+            "theme_premium_discount": 5.0
+          }
+        },
+        "effective_weights": {
+          "Q": {
+            "competitive_advantage": 100.0,
+            "roic_wacc": 0.0,
+            "market_position": 0.0,
+            "fcf_quality": 0.0,
+            "margin_quality": 0.0,
+            "financial_health": 0.0,
+            "management_quality": 0.0
+          },
+          "G": {
+            "next_3_5y_growth": 25.0,
+            "growth_efficiency": 20.0,
+            "revenue_growth": 15.0,
+            "eps_fcf_per_share_growth": 15.0,
+            "growth_durability": 15.0,
+            "excess_growth_vs_industry": 10.0
+          },
+          "V": {
+            "fundamental_value": 25.0,
+            "reverse_dcf": 20.0,
+            "peer_relative_value": 15.0,
+            "historical_valuation": 15.0,
+            "margin_of_safety": 10.0,
+            "sector_context": 10.0,
+            "theme_premium_discount": 5.0
+          }
+        },
+        "role": "PREVIEW",
+        "parent_mix_note": "UNDEFINED_PARENT_WEIGHTS"
+      }
+    },
+    {
+      "id": "sec-single-class",
+      "synthetic": true,
+      "operation": "m3_sec",
+      "input": {
+        "code": "NASDAQ:DEMO",
+        "companyfacts_body": "{\"cik\": 1, \"facts\": {\"dei\": {\"EntityCommonStockSharesOutstanding\": {\"units\": {\"shares\": [{\"val\": 100, \"end\": \"2026-09-25\", \"filed\": \"2026-10-01\", \"form\": \"10-Q\", \"accn\": \"0000000001-26-000001\"}]}}}}}",
+        "submissions_body": "{\"cik\": 1, \"tickers\": [\"DEMO\"], \"exchanges\": [\"Nasdaq\"], \"filings\": {\"recent\": {\"accessionNumber\": [\"0000000001-26-000001\"], \"form\": [\"10-Q\"], \"filingDate\": [\"2026-10-01\"], \"acceptanceDateTime\": [\"2026-10-01T12:00:00Z\"]}}}",
+        "acquired_at": "2026-10-10T00:00:00Z",
+        "as_of": "2026-10-10T00:00:00Z",
+        "cover_xml": "<xbrl xmlns=\"http://www.xbrl.org/2003/instance\" xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:g=\"http://fasb.org/us-gaap/2026\" xmlns:dei=\"http://xbrl.sec.gov/dei/2026\" xmlns:d=\"http://xbrl.org/2006/xbrldi\"><context id=\"a\"><entity><identifier scheme=\"http://www.sec.gov/CIK\">0000000001</identifier></entity><period><instant>2026-09-25</instant></period></context><unit id=\"u\"><measure>xbrli:shares</measure></unit><dei:TradingSymbol contextRef=\"a\">DEMO</dei:TradingSymbol><dei:Security12bTitle contextRef=\"a\">Common Stock</dei:Security12bTitle><dei:EntityCommonStockSharesOutstanding contextRef=\"a\" unitRef=\"u\">100</dei:EntityCommonStockSharesOutstanding></xbrl>",
+        "cover_accession": "0000000001-26-000001",
+        "cover_acquired_at": "2026-10-10T00:00:00Z"
+      },
+      "expected": {
+        "state": "INPUT_RESEARCH",
+        "reason_codes": [],
+        "shares": 100.0,
+        "basis_status": "SINGLE_CLASS_CONFIRMED",
+        "share_class_basis": "ALIGNED",
+        "listing_id": "XNAS:DEMO:0000000001"
+      }
+    },
+    {
+      "id": "sec-no-cover",
+      "synthetic": true,
+      "operation": "m3_sec",
+      "input": {
+        "code": "NASDAQ:DEMO",
+        "companyfacts_body": "{\"cik\": 1, \"facts\": {\"dei\": {\"EntityCommonStockSharesOutstanding\": {\"units\": {\"shares\": [{\"val\": 100, \"end\": \"2026-09-25\", \"filed\": \"2026-10-01\", \"form\": \"10-Q\", \"accn\": \"0000000001-26-000001\"}]}}}}}",
+        "submissions_body": "{\"cik\": 1, \"tickers\": [\"DEMO\"], \"exchanges\": [\"Nasdaq\"], \"filings\": {\"recent\": {\"accessionNumber\": [\"0000000001-26-000001\"], \"form\": [\"10-Q\"], \"filingDate\": [\"2026-10-01\"], \"acceptanceDateTime\": [\"2026-10-01T12:00:00Z\"]}}}",
+        "acquired_at": "2026-10-10T00:00:00Z",
+        "as_of": "2026-10-10T00:00:00Z",
+        "cover_xml": null,
+        "cover_accession": "0000000001-26-000001",
+        "cover_acquired_at": "2026-10-10T00:00:00Z"
+      },
+      "expected": {
+        "state": "NOT_AVAILABLE",
+        "reason_codes": [
+          "BASIS_UNCONFIRMED"
+        ],
+        "shares": null,
+        "basis_status": null,
+        "share_class_basis": null,
+        "listing_id": "XNAS:DEMO:0000000001"
+      }
+    },
+    {
+      "id": "sec-unexplained-count-mismatch",
+      "synthetic": true,
+      "operation": "m3_sec",
+      "input": {
+        "code": "NASDAQ:DEMO",
+        "companyfacts_body": "{\"cik\": 1, \"facts\": {\"dei\": {\"EntityCommonStockSharesOutstanding\": {\"units\": {\"shares\": [{\"val\": 100, \"end\": \"2026-09-25\", \"filed\": \"2026-10-01\", \"form\": \"10-Q\", \"accn\": \"0000000001-26-000001\"}]}}}}}",
+        "submissions_body": "{\"cik\": 1, \"tickers\": [\"DEMO\"], \"exchanges\": [\"Nasdaq\"], \"filings\": {\"recent\": {\"accessionNumber\": [\"0000000001-26-000001\"], \"form\": [\"10-Q\"], \"filingDate\": [\"2026-10-01\"], \"acceptanceDateTime\": [\"2026-10-01T12:00:00Z\"]}}}",
+        "acquired_at": "2026-10-10T00:00:00Z",
+        "as_of": "2026-10-10T00:00:00Z",
+        "cover_xml": "<xbrl xmlns=\"http://www.xbrl.org/2003/instance\" xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:g=\"http://fasb.org/us-gaap/2026\" xmlns:dei=\"http://xbrl.sec.gov/dei/2026\" xmlns:d=\"http://xbrl.org/2006/xbrldi\"><context id=\"a\"><entity><identifier scheme=\"http://www.sec.gov/CIK\">0000000001</identifier></entity><period><instant>2026-09-25</instant></period></context><unit id=\"u\"><measure>xbrli:shares</measure></unit><dei:TradingSymbol contextRef=\"a\">DEMO</dei:TradingSymbol><dei:Security12bTitle contextRef=\"a\">Common Stock</dei:Security12bTitle><dei:EntityCommonStockSharesOutstanding contextRef=\"a\" unitRef=\"u\">99</dei:EntityCommonStockSharesOutstanding></xbrl>",
+        "cover_accession": "0000000001-26-000001",
+        "cover_acquired_at": "2026-10-10T00:00:00Z"
+      },
+      "expected": {
+        "state": "NOT_AVAILABLE",
+        "reason_codes": [
+          "COVER_FACT_MISMATCH"
+        ],
+        "shares": null,
+        "basis_status": "UNKNOWN",
+        "share_class_basis": "UNKNOWN",
+        "listing_id": "XNAS:DEMO:0000000001"
+      }
+    },
+    {
+      "id": "sec-share-class",
+      "synthetic": true,
+      "operation": "m3_sec",
+      "input": {
+        "code": "NASDAQ:DEMO",
+        "companyfacts_body": "{\"cik\": 1, \"facts\": {\"dei\": {\"EntityCommonStockSharesOutstanding\": {\"units\": {\"shares\": [{\"val\": 150, \"end\": \"2026-09-25\", \"filed\": \"2026-10-01\", \"form\": \"10-Q\", \"accn\": \"0000000001-26-000001\"}]}}}}}",
+        "submissions_body": "{\"cik\": 1, \"tickers\": [\"DEMO\"], \"exchanges\": [\"Nasdaq\"], \"filings\": {\"recent\": {\"accessionNumber\": [\"0000000001-26-000001\"], \"form\": [\"10-Q\"], \"filingDate\": [\"2026-10-01\"], \"acceptanceDateTime\": [\"2026-10-01T12:00:00Z\"]}}}",
+        "acquired_at": "2026-10-10T00:00:00Z",
+        "as_of": "2026-10-10T00:00:00Z",
+        "cover_xml": "<xbrl xmlns=\"http://www.xbrl.org/2003/instance\" xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:g=\"http://fasb.org/us-gaap/2026\" xmlns:dei=\"http://xbrl.sec.gov/dei/2026\" xmlns:d=\"http://xbrl.org/2006/xbrldi\"><context id=\"a\"><entity><identifier scheme=\"http://www.sec.gov/CIK\">0000000001</identifier><segment><d:explicitMember dimension=\"g:StatementClassOfStockAxis\">g:CommonClassAMember</d:explicitMember></segment></entity><period><instant>2026-09-25</instant></period></context><unit id=\"u\"><measure>xbrli:shares</measure></unit><dei:TradingSymbol contextRef=\"a\">DEMO</dei:TradingSymbol><dei:Security12bTitle contextRef=\"a\">Common Stock</dei:Security12bTitle><dei:EntityCommonStockSharesOutstanding contextRef=\"a\" unitRef=\"u\">100</dei:EntityCommonStockSharesOutstanding><context id=\"total\"><entity><identifier scheme=\"http://www.sec.gov/CIK\">0000000001</identifier></entity><period><instant>2026-09-25</instant></period></context><dei:EntityCommonStockSharesOutstanding contextRef=\"total\" unitRef=\"u\">150</dei:EntityCommonStockSharesOutstanding><context id=\"b\"><entity><identifier scheme=\"http://www.sec.gov/CIK\">0000000001</identifier><segment><d:explicitMember dimension=\"g:StatementClassOfStockAxis\">g:CommonClassBMember</d:explicitMember></segment></entity><period><instant>2026-09-25</instant></period></context><dei:EntityCommonStockSharesOutstanding contextRef=\"b\" unitRef=\"u\">50</dei:EntityCommonStockSharesOutstanding></xbrl>",
+        "cover_accession": "0000000001-26-000001",
+        "cover_acquired_at": "2026-10-10T00:00:00Z"
+      },
+      "expected": {
+        "state": "NOT_AVAILABLE",
+        "reason_codes": [
+          "SHARE_CLASS_BASIS"
+        ],
+        "shares": null,
+        "basis_status": "UNKNOWN",
+        "share_class_basis": "DIFFERENT",
+        "listing_id": "XNAS:DEMO:0000000001"
+      }
+    },
+    {
+      "id": "cap-within",
+      "synthetic": true,
+      "operation": "m3_universe",
+      "input": {
+        "sec": {
+          "code": "NASDAQ:DEMO",
+          "companyfacts_body": "{\"cik\": 1, \"facts\": {\"dei\": {\"EntityCommonStockSharesOutstanding\": {\"units\": {\"shares\": [{\"val\": 100, \"end\": \"2026-09-25\", \"filed\": \"2026-10-01\", \"form\": \"10-Q\", \"accn\": \"0000000001-26-000001\"}]}}}}}",
+          "submissions_body": "{\"cik\": 1, \"tickers\": [\"DEMO\"], \"exchanges\": [\"Nasdaq\"], \"filings\": {\"recent\": {\"accessionNumber\": [\"0000000001-26-000001\"], \"form\": [\"10-Q\"], \"filingDate\": [\"2026-10-01\"], \"acceptanceDateTime\": [\"2026-10-01T12:00:00Z\"]}}}",
+          "acquired_at": "2026-10-10T00:00:00Z",
+          "as_of": "2026-10-10T00:00:00Z",
+          "cover_xml": "<xbrl xmlns=\"http://www.xbrl.org/2003/instance\" xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:g=\"http://fasb.org/us-gaap/2026\" xmlns:dei=\"http://xbrl.sec.gov/dei/2026\" xmlns:d=\"http://xbrl.org/2006/xbrldi\"><context id=\"a\"><entity><identifier scheme=\"http://www.sec.gov/CIK\">0000000001</identifier></entity><period><instant>2026-09-25</instant></period></context><unit id=\"u\"><measure>xbrli:shares</measure></unit><dei:TradingSymbol contextRef=\"a\">DEMO</dei:TradingSymbol><dei:Security12bTitle contextRef=\"a\">Common Stock</dei:Security12bTitle><dei:EntityCommonStockSharesOutstanding contextRef=\"a\" unitRef=\"u\">100</dei:EntityCommonStockSharesOutstanding></xbrl>",
+          "cover_accession": "0000000001-26-000001",
+          "cover_acquired_at": "2026-10-10T00:00:00Z"
+        },
+        "values": [
+          [
+            "code",
+            "marketcap",
+            "price"
+          ],
+          [
+            "NASDAQ:DEMO",
+            950,
+            10
+          ]
+        ],
+        "n": 1
+      },
+      "expected": {
+        "rows": [
+          {
+            "state": "VERIFIED",
+            "quality": "WITHIN_TOLERANCE",
+            "reason_codes": [],
+            "effective_cap": 1000.0,
+            "relative_difference": 0.05
+          }
+        ],
+        "selection": {
+          "state": "PERSONAL_REFERENCE",
+          "selection_status": "COMPLETE",
+          "requested_n": 1,
+          "selected_n": 1,
+          "verified_count": 1,
+          "missing_count": 0,
+          "selected_listing_ids": [
+            "XNAS:DEMO:0000000001"
+          ],
+          "reason_codes": []
+        }
+      }
+    },
+    {
+      "id": "cap-exact-ten-pct",
+      "synthetic": true,
+      "operation": "m3_universe",
+      "input": {
+        "sec": {
+          "code": "NASDAQ:DEMO",
+          "companyfacts_body": "{\"cik\": 1, \"facts\": {\"dei\": {\"EntityCommonStockSharesOutstanding\": {\"units\": {\"shares\": [{\"val\": 100, \"end\": \"2026-09-25\", \"filed\": \"2026-10-01\", \"form\": \"10-Q\", \"accn\": \"0000000001-26-000001\"}]}}}}}",
+          "submissions_body": "{\"cik\": 1, \"tickers\": [\"DEMO\"], \"exchanges\": [\"Nasdaq\"], \"filings\": {\"recent\": {\"accessionNumber\": [\"0000000001-26-000001\"], \"form\": [\"10-Q\"], \"filingDate\": [\"2026-10-01\"], \"acceptanceDateTime\": [\"2026-10-01T12:00:00Z\"]}}}",
+          "acquired_at": "2026-10-10T00:00:00Z",
+          "as_of": "2026-10-10T00:00:00Z",
+          "cover_xml": "<xbrl xmlns=\"http://www.xbrl.org/2003/instance\" xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:g=\"http://fasb.org/us-gaap/2026\" xmlns:dei=\"http://xbrl.sec.gov/dei/2026\" xmlns:d=\"http://xbrl.org/2006/xbrldi\"><context id=\"a\"><entity><identifier scheme=\"http://www.sec.gov/CIK\">0000000001</identifier></entity><period><instant>2026-09-25</instant></period></context><unit id=\"u\"><measure>xbrli:shares</measure></unit><dei:TradingSymbol contextRef=\"a\">DEMO</dei:TradingSymbol><dei:Security12bTitle contextRef=\"a\">Common Stock</dei:Security12bTitle><dei:EntityCommonStockSharesOutstanding contextRef=\"a\" unitRef=\"u\">100</dei:EntityCommonStockSharesOutstanding></xbrl>",
+          "cover_accession": "0000000001-26-000001",
+          "cover_acquired_at": "2026-10-10T00:00:00Z"
+        },
+        "values": [
+          [
+            "code",
+            "marketcap",
+            "price"
+          ],
+          [
+            "NASDAQ:DEMO",
+            900,
+            10
+          ]
+        ],
+        "n": 1
+      },
+      "expected": {
+        "rows": [
+          {
+            "state": "VERIFIED",
+            "quality": "MISMATCH",
+            "reason_codes": [],
+            "effective_cap": 1000.0,
+            "relative_difference": 0.1
+          }
+        ],
+        "selection": {
+          "state": "PERSONAL_REFERENCE",
+          "selection_status": "COMPLETE",
+          "requested_n": 1,
+          "selected_n": 1,
+          "verified_count": 1,
+          "missing_count": 0,
+          "selected_listing_ids": [
+            "XNAS:DEMO:0000000001"
+          ],
+          "reason_codes": []
+        }
+      }
+    },
+    {
+      "id": "cap-missing",
+      "synthetic": true,
+      "operation": "m3_universe",
+      "input": {
+        "sec": {
+          "code": "NASDAQ:DEMO",
+          "companyfacts_body": "{\"cik\": 1, \"facts\": {\"dei\": {\"EntityCommonStockSharesOutstanding\": {\"units\": {\"shares\": [{\"val\": 100, \"end\": \"2026-09-25\", \"filed\": \"2026-10-01\", \"form\": \"10-Q\", \"accn\": \"0000000001-26-000001\"}]}}}}}",
+          "submissions_body": "{\"cik\": 1, \"tickers\": [\"DEMO\"], \"exchanges\": [\"Nasdaq\"], \"filings\": {\"recent\": {\"accessionNumber\": [\"0000000001-26-000001\"], \"form\": [\"10-Q\"], \"filingDate\": [\"2026-10-01\"], \"acceptanceDateTime\": [\"2026-10-01T12:00:00Z\"]}}}",
+          "acquired_at": "2026-10-10T00:00:00Z",
+          "as_of": "2026-10-10T00:00:00Z",
+          "cover_xml": "<xbrl xmlns=\"http://www.xbrl.org/2003/instance\" xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:g=\"http://fasb.org/us-gaap/2026\" xmlns:dei=\"http://xbrl.sec.gov/dei/2026\" xmlns:d=\"http://xbrl.org/2006/xbrldi\"><context id=\"a\"><entity><identifier scheme=\"http://www.sec.gov/CIK\">0000000001</identifier></entity><period><instant>2026-09-25</instant></period></context><unit id=\"u\"><measure>xbrli:shares</measure></unit><dei:TradingSymbol contextRef=\"a\">DEMO</dei:TradingSymbol><dei:Security12bTitle contextRef=\"a\">Common Stock</dei:Security12bTitle><dei:EntityCommonStockSharesOutstanding contextRef=\"a\" unitRef=\"u\">100</dei:EntityCommonStockSharesOutstanding></xbrl>",
+          "cover_accession": "0000000001-26-000001",
+          "cover_acquired_at": "2026-10-10T00:00:00Z"
+        },
+        "values": [
+          [
+            "code",
+            "marketcap",
+            "price"
+          ],
+          [
+            "NASDAQ:DEMO",
+            null,
+            10
+          ]
+        ],
+        "n": 1
+      },
+      "expected": {
+        "rows": [
+          {
+            "state": "VERIFIED",
+            "quality": "GOOGLE_MCAP_MISSING",
+            "reason_codes": [],
+            "effective_cap": 1000.0,
+            "relative_difference": null
+          }
+        ],
+        "selection": {
+          "state": "PERSONAL_REFERENCE",
+          "selection_status": "COMPLETE",
+          "requested_n": 1,
+          "selected_n": 1,
+          "verified_count": 1,
+          "missing_count": 0,
+          "selected_listing_ids": [
+            "XNAS:DEMO:0000000001"
+          ],
+          "reason_codes": []
+        }
+      }
+    },
+    {
+      "id": "cap-bad-price",
+      "synthetic": true,
+      "operation": "m3_universe",
+      "input": {
+        "sec": {
+          "code": "NASDAQ:DEMO",
+          "companyfacts_body": "{\"cik\": 1, \"facts\": {\"dei\": {\"EntityCommonStockSharesOutstanding\": {\"units\": {\"shares\": [{\"val\": 100, \"end\": \"2026-09-25\", \"filed\": \"2026-10-01\", \"form\": \"10-Q\", \"accn\": \"0000000001-26-000001\"}]}}}}}",
+          "submissions_body": "{\"cik\": 1, \"tickers\": [\"DEMO\"], \"exchanges\": [\"Nasdaq\"], \"filings\": {\"recent\": {\"accessionNumber\": [\"0000000001-26-000001\"], \"form\": [\"10-Q\"], \"filingDate\": [\"2026-10-01\"], \"acceptanceDateTime\": [\"2026-10-01T12:00:00Z\"]}}}",
+          "acquired_at": "2026-10-10T00:00:00Z",
+          "as_of": "2026-10-10T00:00:00Z",
+          "cover_xml": "<xbrl xmlns=\"http://www.xbrl.org/2003/instance\" xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:g=\"http://fasb.org/us-gaap/2026\" xmlns:dei=\"http://xbrl.sec.gov/dei/2026\" xmlns:d=\"http://xbrl.org/2006/xbrldi\"><context id=\"a\"><entity><identifier scheme=\"http://www.sec.gov/CIK\">0000000001</identifier></entity><period><instant>2026-09-25</instant></period></context><unit id=\"u\"><measure>xbrli:shares</measure></unit><dei:TradingSymbol contextRef=\"a\">DEMO</dei:TradingSymbol><dei:Security12bTitle contextRef=\"a\">Common Stock</dei:Security12bTitle><dei:EntityCommonStockSharesOutstanding contextRef=\"a\" unitRef=\"u\">100</dei:EntityCommonStockSharesOutstanding></xbrl>",
+          "cover_accession": "0000000001-26-000001",
+          "cover_acquired_at": "2026-10-10T00:00:00Z"
+        },
+        "values": [
+          [
+            "code",
+            "marketcap",
+            "price"
+          ],
+          [
+            "NASDAQ:DEMO",
+            1000,
+            null
+          ]
+        ],
+        "n": 1
+      },
+      "expected": {
+        "rows": [
+          {
+            "state": "NOT_AVAILABLE",
+            "quality": "UNCONFIRMED",
+            "reason_codes": [
+              "PRICE_NOT_AVAILABLE"
+            ],
+            "effective_cap": null,
+            "relative_difference": null
+          }
+        ],
+        "selection": {
+          "state": "NOT_AVAILABLE",
+          "selection_status": "PARTIAL",
+          "requested_n": 1,
+          "selected_n": 0,
+          "verified_count": 0,
+          "missing_count": 1,
+          "selected_listing_ids": [],
+          "reason_codes": [
+            "PRICE_NOT_AVAILABLE",
+            "VALIDATION_INCOMPLETE"
+          ]
+        }
+      }
+    },
+    {
+      "id": "partial-top-n",
+      "synthetic": true,
+      "operation": "m3_universe",
+      "input": {
+        "sec": {
+          "code": "NASDAQ:DEMO",
+          "companyfacts_body": "{\"cik\": 1, \"facts\": {\"dei\": {\"EntityCommonStockSharesOutstanding\": {\"units\": {\"shares\": [{\"val\": 100, \"end\": \"2026-09-25\", \"filed\": \"2026-10-01\", \"form\": \"10-Q\", \"accn\": \"0000000001-26-000001\"}]}}}}}",
+          "submissions_body": "{\"cik\": 1, \"tickers\": [\"DEMO\"], \"exchanges\": [\"Nasdaq\"], \"filings\": {\"recent\": {\"accessionNumber\": [\"0000000001-26-000001\"], \"form\": [\"10-Q\"], \"filingDate\": [\"2026-10-01\"], \"acceptanceDateTime\": [\"2026-10-01T12:00:00Z\"]}}}",
+          "acquired_at": "2026-10-10T00:00:00Z",
+          "as_of": "2026-10-10T00:00:00Z",
+          "cover_xml": "<xbrl xmlns=\"http://www.xbrl.org/2003/instance\" xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:g=\"http://fasb.org/us-gaap/2026\" xmlns:dei=\"http://xbrl.sec.gov/dei/2026\" xmlns:d=\"http://xbrl.org/2006/xbrldi\"><context id=\"a\"><entity><identifier scheme=\"http://www.sec.gov/CIK\">0000000001</identifier></entity><period><instant>2026-09-25</instant></period></context><unit id=\"u\"><measure>xbrli:shares</measure></unit><dei:TradingSymbol contextRef=\"a\">DEMO</dei:TradingSymbol><dei:Security12bTitle contextRef=\"a\">Common Stock</dei:Security12bTitle><dei:EntityCommonStockSharesOutstanding contextRef=\"a\" unitRef=\"u\">100</dei:EntityCommonStockSharesOutstanding></xbrl>",
+          "cover_accession": "0000000001-26-000001",
+          "cover_acquired_at": "2026-10-10T00:00:00Z"
+        },
+        "values": [
+          [
+            "NASDAQ:DEMO",
+            1000,
+            10
+          ],
+          [
+            "NASDAQ:UNKNOWN",
+            2000,
+            20
+          ]
+        ],
+        "n": 2
+      },
+      "expected": {
+        "rows": [
+          {
+            "state": "VERIFIED",
+            "quality": "WITHIN_TOLERANCE",
+            "reason_codes": [],
+            "effective_cap": 1000.0,
+            "relative_difference": 0.0
+          },
+          {
+            "state": "NOT_AVAILABLE",
+            "quality": "UNCONFIRMED",
+            "reason_codes": [
+              "IDENTITY_UNCONFIRMED"
+            ],
+            "effective_cap": null,
+            "relative_difference": null
+          }
+        ],
+        "selection": {
+          "state": "PERSONAL_REFERENCE",
+          "selection_status": "PARTIAL",
+          "requested_n": 2,
+          "selected_n": 1,
+          "verified_count": 1,
+          "missing_count": 1,
+          "selected_listing_ids": [
+            "XNAS:DEMO:0000000001"
+          ],
+          "reason_codes": [
+            "IDENTITY_UNCONFIRMED",
+            "VALIDATION_INCOMPLETE"
+          ]
+        }
+      }
+    },
+    {
+      "id": "type-dividend-low",
+      "synthetic": true,
+      "operation": "company_types",
+      "input": {
+        "metrics": {
+          "dividend_yield": 0.015,
+          "dividend_paid_5_consecutive_years": true
+        },
+        "original_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "config": {
+          "schema_version": 1,
+          "config_version": "type_config/1",
+          "status": "OFFICIAL_PROVISIONAL",
+          "calibration": "V2_PENDING",
+          "types": [
+            {
+              "id": "growth",
+              "name": "\uc131\uc7a5",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "ramp",
+                "metric": "revenue_cagr_3y",
+                "lower": 0.1,
+                "upper": 0.2
+              },
+              "weights": {
+                "Q": 30,
+                "G": 50,
+                "V": 20
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "value",
+              "name": "\uac00\uce58",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "DISCOUNT_RAMPS",
+                  "SECTOR_HISTORY_BASIS",
+                  "VALUE_COMBINATION"
+                ],
+                "metrics": [
+                  "pe_discount_sector",
+                  "pe_discount_history",
+                  "ev_ebit_discount_sector",
+                  "ev_ebit_discount_history"
+                ]
+              },
+              "weights": {
+                "Q": 25,
+                "G": 20,
+                "V": 55
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "dividend",
+              "name": "\ubc30\ub2f9",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "gated_ramp",
+                "metric": "dividend_yield",
+                "lower": 0.015,
+                "upper": 0.03,
+                "gate_metric": "dividend_paid_5_consecutive_years"
+              },
+              "weights": {
+                "Q": 40,
+                "G": 15,
+                "V": 45
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "quality",
+              "name": "\uc6b0\ub7c9",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "MARGIN_VOLATILITY_THRESHOLD",
+                  "LOW_DEBT_THRESHOLD",
+                  "QUALITY_COMBINATION"
+                ],
+                "components": [
+                  {
+                    "kind": "ramp",
+                    "metric": "roic",
+                    "lower": 0.1,
+                    "upper": 0.2
+                  }
+                ]
+              },
+              "weights": {
+                "Q": 50,
+                "G": 25,
+                "V": 25
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "cyclical",
+              "name": "\uacbd\uae30\ubbfc\uac10",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "SIC_GROUP_APPROVAL",
+                  "REVENUE_VOLATILITY_RAMP",
+                  "INDUSTRY_VOLATILITY_COMBINATION"
+                ]
+              },
+              "weights": {
+                "Q": 30,
+                "G": 25,
+                "V": 45
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "defensive",
+              "name": "\uacbd\uae30\ubc29\uc5b4",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "SIC_GROUP_APPROVAL",
+                  "REVENUE_VOLATILITY_RAMP",
+                  "INDUSTRY_VOLATILITY_COMBINATION"
+                ]
+              },
+              "weights": {
+                "Q": 45,
+                "G": 20,
+                "V": 35
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "leader",
+              "name": "\uc8fc\ub3c4",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "rank",
+                "metric": "sector_marketcap_rank",
+                "max_rank": 3
+              },
+              "weights": {
+                "Q": 45,
+                "G": 35,
+                "V": 20
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "theme",
+              "name": "\ud14c\ub9c8",
+              "affects_qgv": false,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "THEME_BASKET_APPROVAL",
+                  "THEME_MEMBERSHIP_NORMALIZATION"
+                ]
+              },
+              "type_role": "EXPOSURE_ONLY"
+            }
+          ],
+          "fallback": {
+            "id": "unclassified",
+            "name": "\ubbf8\ubd84\ub958",
+            "weights": {
+              "Q": 34,
+              "G": 33,
+              "V": 33
+            }
+          },
+          "mixing": {
+            "minimum_membership": 0.3,
+            "maximum_types": 3,
+            "exclusive_pairs": [
+              [
+                "cyclical",
+                "defensive"
+              ]
+            ],
+            "tie_break": "CONFIG_ORDER",
+            "pillar_min": 15,
+            "pillar_max": 60,
+            "clamp_then_normalize": true
+          },
+          "value_basis": {
+            "cyclical_type": "cyclical",
+            "normalized_years": 5,
+            "required_metric": "cyclical_v_score",
+            "status": "SCORING_MAPPING_UNRESOLVED"
+          },
+          "industry": {
+            "source": "SEC_SUBMISSIONS_SIC",
+            "mapping_status": "PROPOSED_PENDING_APPROVAL",
+            "groups": []
+          },
+          "dcf": {
+            "explicit_years": 5,
+            "discount_rate": null,
+            "terminal_growth": null,
+            "confirmed": false,
+            "cashflow_basis": null
+          },
+          "themes": {
+            "role": "EXPOSURE_ONLY",
+            "status": "PROPOSED_PENDING_APPROVAL",
+            "maximum_display": 2,
+            "baskets": [],
+            "keywords": {},
+            "membership_rule": null,
+            "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+            "overrides": "DEVICE_ONLY"
+          }
+        }
+      },
+      "expected": {
+        "role": "PREVIEW",
+        "config_status": "CUSTOM_PREVIEW",
+        "config_version": "type_config/1",
+        "calibration": "V2_PENDING",
+        "memberships": {
+          "growth": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "METRIC_NOT_AVAILABLE"
+            ],
+            "evidence": {
+              "revenue_cagr_3y": null
+            }
+          },
+          "value": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "DISCOUNT_RAMPS",
+              "SECTOR_HISTORY_BASIS",
+              "VALUE_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "dividend": {
+            "membership": 0.0,
+            "state": "PROVISIONAL",
+            "reason_codes": [],
+            "evidence": {
+              "dividend_yield": 0.015,
+              "dividend_paid_5_consecutive_years": true
+            }
+          },
+          "quality": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "MARGIN_VOLATILITY_THRESHOLD",
+              "LOW_DEBT_THRESHOLD",
+              "QUALITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": [
+              {
+                "membership": null,
+                "state": "NOT_AVAILABLE",
+                "reason_codes": [
+                  "METRIC_NOT_AVAILABLE"
+                ],
+                "evidence": {
+                  "roic": null
+                }
+              }
+            ]
+          },
+          "cyclical": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "SIC_GROUP_APPROVAL",
+              "REVENUE_VOLATILITY_RAMP",
+              "INDUSTRY_VOLATILITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "defensive": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "SIC_GROUP_APPROVAL",
+              "REVENUE_VOLATILITY_RAMP",
+              "INDUSTRY_VOLATILITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "leader": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "METRIC_NOT_AVAILABLE"
+            ],
+            "evidence": {
+              "sector_marketcap_rank": null
+            }
+          },
+          "theme": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "THEME_BASKET_APPROVAL",
+              "THEME_MEMBERSHIP_NORMALIZATION"
+            ],
+            "evidence": {},
+            "components": []
+          }
+        },
+        "selected_types": [],
+        "excluded_unavailable": [
+          "growth",
+          "value",
+          "quality",
+          "cyclical",
+          "defensive",
+          "leader",
+          "theme"
+        ],
+        "fallback_type": "unclassified",
+        "weights": {
+          "Q": 34.0,
+          "G": 33.0,
+          "V": 33.0
+        },
+        "original_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "adjusted_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "adjusted_score": 69.9,
+        "missing_pillars": [],
+        "reason_codes": [
+          "NO_RECOGNIZED_TYPE"
+        ]
+      }
+    },
+    {
+      "id": "type-dividend-high",
+      "synthetic": true,
+      "operation": "company_types",
+      "input": {
+        "metrics": {
+          "dividend_yield": 0.03,
+          "dividend_paid_5_consecutive_years": true
+        },
+        "original_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "config": {
+          "schema_version": 1,
+          "config_version": "type_config/1",
+          "status": "OFFICIAL_PROVISIONAL",
+          "calibration": "V2_PENDING",
+          "types": [
+            {
+              "id": "growth",
+              "name": "\uc131\uc7a5",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "ramp",
+                "metric": "revenue_cagr_3y",
+                "lower": 0.1,
+                "upper": 0.2
+              },
+              "weights": {
+                "Q": 30,
+                "G": 50,
+                "V": 20
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "value",
+              "name": "\uac00\uce58",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "DISCOUNT_RAMPS",
+                  "SECTOR_HISTORY_BASIS",
+                  "VALUE_COMBINATION"
+                ],
+                "metrics": [
+                  "pe_discount_sector",
+                  "pe_discount_history",
+                  "ev_ebit_discount_sector",
+                  "ev_ebit_discount_history"
+                ]
+              },
+              "weights": {
+                "Q": 25,
+                "G": 20,
+                "V": 55
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "dividend",
+              "name": "\ubc30\ub2f9",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "gated_ramp",
+                "metric": "dividend_yield",
+                "lower": 0.015,
+                "upper": 0.03,
+                "gate_metric": "dividend_paid_5_consecutive_years"
+              },
+              "weights": {
+                "Q": 40,
+                "G": 15,
+                "V": 45
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "quality",
+              "name": "\uc6b0\ub7c9",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "MARGIN_VOLATILITY_THRESHOLD",
+                  "LOW_DEBT_THRESHOLD",
+                  "QUALITY_COMBINATION"
+                ],
+                "components": [
+                  {
+                    "kind": "ramp",
+                    "metric": "roic",
+                    "lower": 0.1,
+                    "upper": 0.2
+                  }
+                ]
+              },
+              "weights": {
+                "Q": 50,
+                "G": 25,
+                "V": 25
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "cyclical",
+              "name": "\uacbd\uae30\ubbfc\uac10",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "SIC_GROUP_APPROVAL",
+                  "REVENUE_VOLATILITY_RAMP",
+                  "INDUSTRY_VOLATILITY_COMBINATION"
+                ]
+              },
+              "weights": {
+                "Q": 30,
+                "G": 25,
+                "V": 45
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "defensive",
+              "name": "\uacbd\uae30\ubc29\uc5b4",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "SIC_GROUP_APPROVAL",
+                  "REVENUE_VOLATILITY_RAMP",
+                  "INDUSTRY_VOLATILITY_COMBINATION"
+                ]
+              },
+              "weights": {
+                "Q": 45,
+                "G": 20,
+                "V": 35
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "leader",
+              "name": "\uc8fc\ub3c4",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "rank",
+                "metric": "sector_marketcap_rank",
+                "max_rank": 3
+              },
+              "weights": {
+                "Q": 45,
+                "G": 35,
+                "V": 20
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "theme",
+              "name": "\ud14c\ub9c8",
+              "affects_qgv": false,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "THEME_BASKET_APPROVAL",
+                  "THEME_MEMBERSHIP_NORMALIZATION"
+                ]
+              },
+              "type_role": "EXPOSURE_ONLY"
+            }
+          ],
+          "fallback": {
+            "id": "unclassified",
+            "name": "\ubbf8\ubd84\ub958",
+            "weights": {
+              "Q": 34,
+              "G": 33,
+              "V": 33
+            }
+          },
+          "mixing": {
+            "minimum_membership": 0.3,
+            "maximum_types": 3,
+            "exclusive_pairs": [
+              [
+                "cyclical",
+                "defensive"
+              ]
+            ],
+            "tie_break": "CONFIG_ORDER",
+            "pillar_min": 15,
+            "pillar_max": 60,
+            "clamp_then_normalize": true
+          },
+          "value_basis": {
+            "cyclical_type": "cyclical",
+            "normalized_years": 5,
+            "required_metric": "cyclical_v_score",
+            "status": "SCORING_MAPPING_UNRESOLVED"
+          },
+          "industry": {
+            "source": "SEC_SUBMISSIONS_SIC",
+            "mapping_status": "PROPOSED_PENDING_APPROVAL",
+            "groups": []
+          },
+          "dcf": {
+            "explicit_years": 5,
+            "discount_rate": null,
+            "terminal_growth": null,
+            "confirmed": false,
+            "cashflow_basis": null
+          },
+          "themes": {
+            "role": "EXPOSURE_ONLY",
+            "status": "PROPOSED_PENDING_APPROVAL",
+            "maximum_display": 2,
+            "baskets": [],
+            "keywords": {},
+            "membership_rule": null,
+            "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+            "overrides": "DEVICE_ONLY"
+          }
+        }
+      },
+      "expected": {
+        "role": "PREVIEW",
+        "config_status": "CUSTOM_PREVIEW",
+        "config_version": "type_config/1",
+        "calibration": "V2_PENDING",
+        "memberships": {
+          "growth": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "METRIC_NOT_AVAILABLE"
+            ],
+            "evidence": {
+              "revenue_cagr_3y": null
+            }
+          },
+          "value": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "DISCOUNT_RAMPS",
+              "SECTOR_HISTORY_BASIS",
+              "VALUE_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "dividend": {
+            "membership": 1.0,
+            "state": "PROVISIONAL",
+            "reason_codes": [],
+            "evidence": {
+              "dividend_yield": 0.03,
+              "dividend_paid_5_consecutive_years": true
+            }
+          },
+          "quality": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "MARGIN_VOLATILITY_THRESHOLD",
+              "LOW_DEBT_THRESHOLD",
+              "QUALITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": [
+              {
+                "membership": null,
+                "state": "NOT_AVAILABLE",
+                "reason_codes": [
+                  "METRIC_NOT_AVAILABLE"
+                ],
+                "evidence": {
+                  "roic": null
+                }
+              }
+            ]
+          },
+          "cyclical": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "SIC_GROUP_APPROVAL",
+              "REVENUE_VOLATILITY_RAMP",
+              "INDUSTRY_VOLATILITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "defensive": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "SIC_GROUP_APPROVAL",
+              "REVENUE_VOLATILITY_RAMP",
+              "INDUSTRY_VOLATILITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "leader": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "METRIC_NOT_AVAILABLE"
+            ],
+            "evidence": {
+              "sector_marketcap_rank": null
+            }
+          },
+          "theme": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "THEME_BASKET_APPROVAL",
+              "THEME_MEMBERSHIP_NORMALIZATION"
+            ],
+            "evidence": {},
+            "components": []
+          }
+        },
+        "selected_types": [
+          "dividend"
+        ],
+        "excluded_unavailable": [
+          "growth",
+          "value",
+          "quality",
+          "cyclical",
+          "defensive",
+          "leader",
+          "theme"
+        ],
+        "fallback_type": null,
+        "weights": {
+          "Q": 40.0,
+          "G": 15.0,
+          "V": 45.0
+        },
+        "original_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "adjusted_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "adjusted_score": 70.5,
+        "missing_pillars": [],
+        "reason_codes": []
+      }
+    },
+    {
+      "id": "type-dividend-gate",
+      "synthetic": true,
+      "operation": "company_types",
+      "input": {
+        "metrics": {
+          "dividend_yield": 0.03,
+          "dividend_paid_5_consecutive_years": false
+        },
+        "original_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "config": {
+          "schema_version": 1,
+          "config_version": "type_config/1",
+          "status": "OFFICIAL_PROVISIONAL",
+          "calibration": "V2_PENDING",
+          "types": [
+            {
+              "id": "growth",
+              "name": "\uc131\uc7a5",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "ramp",
+                "metric": "revenue_cagr_3y",
+                "lower": 0.1,
+                "upper": 0.2
+              },
+              "weights": {
+                "Q": 30,
+                "G": 50,
+                "V": 20
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "value",
+              "name": "\uac00\uce58",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "DISCOUNT_RAMPS",
+                  "SECTOR_HISTORY_BASIS",
+                  "VALUE_COMBINATION"
+                ],
+                "metrics": [
+                  "pe_discount_sector",
+                  "pe_discount_history",
+                  "ev_ebit_discount_sector",
+                  "ev_ebit_discount_history"
+                ]
+              },
+              "weights": {
+                "Q": 25,
+                "G": 20,
+                "V": 55
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "dividend",
+              "name": "\ubc30\ub2f9",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "gated_ramp",
+                "metric": "dividend_yield",
+                "lower": 0.015,
+                "upper": 0.03,
+                "gate_metric": "dividend_paid_5_consecutive_years"
+              },
+              "weights": {
+                "Q": 40,
+                "G": 15,
+                "V": 45
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "quality",
+              "name": "\uc6b0\ub7c9",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "MARGIN_VOLATILITY_THRESHOLD",
+                  "LOW_DEBT_THRESHOLD",
+                  "QUALITY_COMBINATION"
+                ],
+                "components": [
+                  {
+                    "kind": "ramp",
+                    "metric": "roic",
+                    "lower": 0.1,
+                    "upper": 0.2
+                  }
+                ]
+              },
+              "weights": {
+                "Q": 50,
+                "G": 25,
+                "V": 25
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "cyclical",
+              "name": "\uacbd\uae30\ubbfc\uac10",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "SIC_GROUP_APPROVAL",
+                  "REVENUE_VOLATILITY_RAMP",
+                  "INDUSTRY_VOLATILITY_COMBINATION"
+                ]
+              },
+              "weights": {
+                "Q": 30,
+                "G": 25,
+                "V": 45
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "defensive",
+              "name": "\uacbd\uae30\ubc29\uc5b4",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "SIC_GROUP_APPROVAL",
+                  "REVENUE_VOLATILITY_RAMP",
+                  "INDUSTRY_VOLATILITY_COMBINATION"
+                ]
+              },
+              "weights": {
+                "Q": 45,
+                "G": 20,
+                "V": 35
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "leader",
+              "name": "\uc8fc\ub3c4",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "rank",
+                "metric": "sector_marketcap_rank",
+                "max_rank": 3
+              },
+              "weights": {
+                "Q": 45,
+                "G": 35,
+                "V": 20
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "theme",
+              "name": "\ud14c\ub9c8",
+              "affects_qgv": false,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "THEME_BASKET_APPROVAL",
+                  "THEME_MEMBERSHIP_NORMALIZATION"
+                ]
+              },
+              "type_role": "EXPOSURE_ONLY"
+            }
+          ],
+          "fallback": {
+            "id": "unclassified",
+            "name": "\ubbf8\ubd84\ub958",
+            "weights": {
+              "Q": 34,
+              "G": 33,
+              "V": 33
+            }
+          },
+          "mixing": {
+            "minimum_membership": 0.3,
+            "maximum_types": 3,
+            "exclusive_pairs": [
+              [
+                "cyclical",
+                "defensive"
+              ]
+            ],
+            "tie_break": "CONFIG_ORDER",
+            "pillar_min": 15,
+            "pillar_max": 60,
+            "clamp_then_normalize": true
+          },
+          "value_basis": {
+            "cyclical_type": "cyclical",
+            "normalized_years": 5,
+            "required_metric": "cyclical_v_score",
+            "status": "SCORING_MAPPING_UNRESOLVED"
+          },
+          "industry": {
+            "source": "SEC_SUBMISSIONS_SIC",
+            "mapping_status": "PROPOSED_PENDING_APPROVAL",
+            "groups": []
+          },
+          "dcf": {
+            "explicit_years": 5,
+            "discount_rate": null,
+            "terminal_growth": null,
+            "confirmed": false,
+            "cashflow_basis": null
+          },
+          "themes": {
+            "role": "EXPOSURE_ONLY",
+            "status": "PROPOSED_PENDING_APPROVAL",
+            "maximum_display": 2,
+            "baskets": [],
+            "keywords": {},
+            "membership_rule": null,
+            "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+            "overrides": "DEVICE_ONLY"
+          }
+        }
+      },
+      "expected": {
+        "role": "PREVIEW",
+        "config_status": "CUSTOM_PREVIEW",
+        "config_version": "type_config/1",
+        "calibration": "V2_PENDING",
+        "memberships": {
+          "growth": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "METRIC_NOT_AVAILABLE"
+            ],
+            "evidence": {
+              "revenue_cagr_3y": null
+            }
+          },
+          "value": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "DISCOUNT_RAMPS",
+              "SECTOR_HISTORY_BASIS",
+              "VALUE_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "dividend": {
+            "membership": 0.0,
+            "state": "PROVISIONAL",
+            "reason_codes": [],
+            "evidence": {
+              "dividend_yield": 0.03,
+              "dividend_paid_5_consecutive_years": false
+            }
+          },
+          "quality": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "MARGIN_VOLATILITY_THRESHOLD",
+              "LOW_DEBT_THRESHOLD",
+              "QUALITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": [
+              {
+                "membership": null,
+                "state": "NOT_AVAILABLE",
+                "reason_codes": [
+                  "METRIC_NOT_AVAILABLE"
+                ],
+                "evidence": {
+                  "roic": null
+                }
+              }
+            ]
+          },
+          "cyclical": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "SIC_GROUP_APPROVAL",
+              "REVENUE_VOLATILITY_RAMP",
+              "INDUSTRY_VOLATILITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "defensive": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "SIC_GROUP_APPROVAL",
+              "REVENUE_VOLATILITY_RAMP",
+              "INDUSTRY_VOLATILITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "leader": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "METRIC_NOT_AVAILABLE"
+            ],
+            "evidence": {
+              "sector_marketcap_rank": null
+            }
+          },
+          "theme": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "THEME_BASKET_APPROVAL",
+              "THEME_MEMBERSHIP_NORMALIZATION"
+            ],
+            "evidence": {},
+            "components": []
+          }
+        },
+        "selected_types": [],
+        "excluded_unavailable": [
+          "growth",
+          "value",
+          "quality",
+          "cyclical",
+          "defensive",
+          "leader",
+          "theme"
+        ],
+        "fallback_type": "unclassified",
+        "weights": {
+          "Q": 34.0,
+          "G": 33.0,
+          "V": 33.0
+        },
+        "original_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "adjusted_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "adjusted_score": 69.9,
+        "missing_pillars": [],
+        "reason_codes": [
+          "NO_RECOGNIZED_TYPE"
+        ]
+      }
+    },
+    {
+      "id": "type-value-unresolved",
+      "synthetic": true,
+      "operation": "company_types",
+      "input": {
+        "metrics": {},
+        "original_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "config": {
+          "schema_version": 1,
+          "config_version": "type_config/1",
+          "status": "OFFICIAL_PROVISIONAL",
+          "calibration": "V2_PENDING",
+          "types": [
+            {
+              "id": "growth",
+              "name": "\uc131\uc7a5",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "ramp",
+                "metric": "revenue_cagr_3y",
+                "lower": 0.1,
+                "upper": 0.2
+              },
+              "weights": {
+                "Q": 30,
+                "G": 50,
+                "V": 20
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "value",
+              "name": "\uac00\uce58",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "DISCOUNT_RAMPS",
+                  "SECTOR_HISTORY_BASIS",
+                  "VALUE_COMBINATION"
+                ],
+                "metrics": [
+                  "pe_discount_sector",
+                  "pe_discount_history",
+                  "ev_ebit_discount_sector",
+                  "ev_ebit_discount_history"
+                ]
+              },
+              "weights": {
+                "Q": 25,
+                "G": 20,
+                "V": 55
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "dividend",
+              "name": "\ubc30\ub2f9",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "gated_ramp",
+                "metric": "dividend_yield",
+                "lower": 0.015,
+                "upper": 0.03,
+                "gate_metric": "dividend_paid_5_consecutive_years"
+              },
+              "weights": {
+                "Q": 40,
+                "G": 15,
+                "V": 45
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "quality",
+              "name": "\uc6b0\ub7c9",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "MARGIN_VOLATILITY_THRESHOLD",
+                  "LOW_DEBT_THRESHOLD",
+                  "QUALITY_COMBINATION"
+                ],
+                "components": [
+                  {
+                    "kind": "ramp",
+                    "metric": "roic",
+                    "lower": 0.1,
+                    "upper": 0.2
+                  }
+                ]
+              },
+              "weights": {
+                "Q": 50,
+                "G": 25,
+                "V": 25
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "cyclical",
+              "name": "\uacbd\uae30\ubbfc\uac10",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "SIC_GROUP_APPROVAL",
+                  "REVENUE_VOLATILITY_RAMP",
+                  "INDUSTRY_VOLATILITY_COMBINATION"
+                ]
+              },
+              "weights": {
+                "Q": 30,
+                "G": 25,
+                "V": 45
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "defensive",
+              "name": "\uacbd\uae30\ubc29\uc5b4",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "SIC_GROUP_APPROVAL",
+                  "REVENUE_VOLATILITY_RAMP",
+                  "INDUSTRY_VOLATILITY_COMBINATION"
+                ]
+              },
+              "weights": {
+                "Q": 45,
+                "G": 20,
+                "V": 35
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "leader",
+              "name": "\uc8fc\ub3c4",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "rank",
+                "metric": "sector_marketcap_rank",
+                "max_rank": 3
+              },
+              "weights": {
+                "Q": 45,
+                "G": 35,
+                "V": 20
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "theme",
+              "name": "\ud14c\ub9c8",
+              "affects_qgv": false,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "THEME_BASKET_APPROVAL",
+                  "THEME_MEMBERSHIP_NORMALIZATION"
+                ]
+              },
+              "type_role": "EXPOSURE_ONLY"
+            }
+          ],
+          "fallback": {
+            "id": "unclassified",
+            "name": "\ubbf8\ubd84\ub958",
+            "weights": {
+              "Q": 34,
+              "G": 33,
+              "V": 33
+            }
+          },
+          "mixing": {
+            "minimum_membership": 0.3,
+            "maximum_types": 3,
+            "exclusive_pairs": [
+              [
+                "cyclical",
+                "defensive"
+              ]
+            ],
+            "tie_break": "CONFIG_ORDER",
+            "pillar_min": 15,
+            "pillar_max": 60,
+            "clamp_then_normalize": true
+          },
+          "value_basis": {
+            "cyclical_type": "cyclical",
+            "normalized_years": 5,
+            "required_metric": "cyclical_v_score",
+            "status": "SCORING_MAPPING_UNRESOLVED"
+          },
+          "industry": {
+            "source": "SEC_SUBMISSIONS_SIC",
+            "mapping_status": "PROPOSED_PENDING_APPROVAL",
+            "groups": []
+          },
+          "dcf": {
+            "explicit_years": 5,
+            "discount_rate": null,
+            "terminal_growth": null,
+            "confirmed": false,
+            "cashflow_basis": null
+          },
+          "themes": {
+            "role": "EXPOSURE_ONLY",
+            "status": "PROPOSED_PENDING_APPROVAL",
+            "maximum_display": 2,
+            "baskets": [],
+            "keywords": {},
+            "membership_rule": null,
+            "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+            "overrides": "DEVICE_ONLY"
+          }
+        }
+      },
+      "expected": {
+        "role": "PREVIEW",
+        "config_status": "CUSTOM_PREVIEW",
+        "config_version": "type_config/1",
+        "calibration": "V2_PENDING",
+        "memberships": {
+          "growth": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "METRIC_NOT_AVAILABLE"
+            ],
+            "evidence": {
+              "revenue_cagr_3y": null
+            }
+          },
+          "value": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "DISCOUNT_RAMPS",
+              "SECTOR_HISTORY_BASIS",
+              "VALUE_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "dividend": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "GATE_NOT_AVAILABLE"
+            ],
+            "evidence": {
+              "dividend_yield": null,
+              "dividend_paid_5_consecutive_years": null
+            }
+          },
+          "quality": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "MARGIN_VOLATILITY_THRESHOLD",
+              "LOW_DEBT_THRESHOLD",
+              "QUALITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": [
+              {
+                "membership": null,
+                "state": "NOT_AVAILABLE",
+                "reason_codes": [
+                  "METRIC_NOT_AVAILABLE"
+                ],
+                "evidence": {
+                  "roic": null
+                }
+              }
+            ]
+          },
+          "cyclical": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "SIC_GROUP_APPROVAL",
+              "REVENUE_VOLATILITY_RAMP",
+              "INDUSTRY_VOLATILITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "defensive": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "SIC_GROUP_APPROVAL",
+              "REVENUE_VOLATILITY_RAMP",
+              "INDUSTRY_VOLATILITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "leader": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "METRIC_NOT_AVAILABLE"
+            ],
+            "evidence": {
+              "sector_marketcap_rank": null
+            }
+          },
+          "theme": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "THEME_BASKET_APPROVAL",
+              "THEME_MEMBERSHIP_NORMALIZATION"
+            ],
+            "evidence": {},
+            "components": []
+          }
+        },
+        "selected_types": [],
+        "excluded_unavailable": [
+          "growth",
+          "value",
+          "dividend",
+          "quality",
+          "cyclical",
+          "defensive",
+          "leader",
+          "theme"
+        ],
+        "fallback_type": "unclassified",
+        "weights": {
+          "Q": 34.0,
+          "G": 33.0,
+          "V": 33.0
+        },
+        "original_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "adjusted_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "adjusted_score": 69.9,
+        "missing_pillars": [],
+        "reason_codes": [
+          "TYPE_UNCONFIRMED"
+        ]
+      }
+    },
+    {
+      "id": "type-growth-dividend",
+      "synthetic": true,
+      "operation": "company_types",
+      "input": {
+        "metrics": {
+          "revenue_cagr_3y": 0.2,
+          "dividend_yield": 0.03,
+          "dividend_paid_5_consecutive_years": true
+        },
+        "original_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "config": {
+          "schema_version": 1,
+          "config_version": "type_config/1",
+          "status": "OFFICIAL_PROVISIONAL",
+          "calibration": "V2_PENDING",
+          "types": [
+            {
+              "id": "growth",
+              "name": "\uc131\uc7a5",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "ramp",
+                "metric": "revenue_cagr_3y",
+                "lower": 0.1,
+                "upper": 0.2
+              },
+              "weights": {
+                "Q": 30,
+                "G": 50,
+                "V": 20
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "value",
+              "name": "\uac00\uce58",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "DISCOUNT_RAMPS",
+                  "SECTOR_HISTORY_BASIS",
+                  "VALUE_COMBINATION"
+                ],
+                "metrics": [
+                  "pe_discount_sector",
+                  "pe_discount_history",
+                  "ev_ebit_discount_sector",
+                  "ev_ebit_discount_history"
+                ]
+              },
+              "weights": {
+                "Q": 25,
+                "G": 20,
+                "V": 55
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "dividend",
+              "name": "\ubc30\ub2f9",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "gated_ramp",
+                "metric": "dividend_yield",
+                "lower": 0.015,
+                "upper": 0.03,
+                "gate_metric": "dividend_paid_5_consecutive_years"
+              },
+              "weights": {
+                "Q": 40,
+                "G": 15,
+                "V": 45
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "quality",
+              "name": "\uc6b0\ub7c9",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "MARGIN_VOLATILITY_THRESHOLD",
+                  "LOW_DEBT_THRESHOLD",
+                  "QUALITY_COMBINATION"
+                ],
+                "components": [
+                  {
+                    "kind": "ramp",
+                    "metric": "roic",
+                    "lower": 0.1,
+                    "upper": 0.2
+                  }
+                ]
+              },
+              "weights": {
+                "Q": 50,
+                "G": 25,
+                "V": 25
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "cyclical",
+              "name": "\uacbd\uae30\ubbfc\uac10",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "SIC_GROUP_APPROVAL",
+                  "REVENUE_VOLATILITY_RAMP",
+                  "INDUSTRY_VOLATILITY_COMBINATION"
+                ]
+              },
+              "weights": {
+                "Q": 30,
+                "G": 25,
+                "V": 45
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "defensive",
+              "name": "\uacbd\uae30\ubc29\uc5b4",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "SIC_GROUP_APPROVAL",
+                  "REVENUE_VOLATILITY_RAMP",
+                  "INDUSTRY_VOLATILITY_COMBINATION"
+                ]
+              },
+              "weights": {
+                "Q": 45,
+                "G": 20,
+                "V": 35
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "leader",
+              "name": "\uc8fc\ub3c4",
+              "affects_qgv": true,
+              "rule": {
+                "kind": "rank",
+                "metric": "sector_marketcap_rank",
+                "max_rank": 3
+              },
+              "weights": {
+                "Q": 45,
+                "G": 35,
+                "V": 20
+              },
+              "type_role": "QGV_TYPE"
+            },
+            {
+              "id": "theme",
+              "name": "\ud14c\ub9c8",
+              "affects_qgv": false,
+              "rule": {
+                "kind": "unresolved",
+                "reasons": [
+                  "THEME_BASKET_APPROVAL",
+                  "THEME_MEMBERSHIP_NORMALIZATION"
+                ]
+              },
+              "type_role": "EXPOSURE_ONLY"
+            }
+          ],
+          "fallback": {
+            "id": "unclassified",
+            "name": "\ubbf8\ubd84\ub958",
+            "weights": {
+              "Q": 34,
+              "G": 33,
+              "V": 33
+            }
+          },
+          "mixing": {
+            "minimum_membership": 0.3,
+            "maximum_types": 3,
+            "exclusive_pairs": [
+              [
+                "cyclical",
+                "defensive"
+              ]
+            ],
+            "tie_break": "CONFIG_ORDER",
+            "pillar_min": 15,
+            "pillar_max": 60,
+            "clamp_then_normalize": true
+          },
+          "value_basis": {
+            "cyclical_type": "cyclical",
+            "normalized_years": 5,
+            "required_metric": "cyclical_v_score",
+            "status": "SCORING_MAPPING_UNRESOLVED"
+          },
+          "industry": {
+            "source": "SEC_SUBMISSIONS_SIC",
+            "mapping_status": "PROPOSED_PENDING_APPROVAL",
+            "groups": []
+          },
+          "dcf": {
+            "explicit_years": 5,
+            "discount_rate": null,
+            "terminal_growth": null,
+            "confirmed": false,
+            "cashflow_basis": null
+          },
+          "themes": {
+            "role": "EXPOSURE_ONLY",
+            "status": "PROPOSED_PENDING_APPROVAL",
+            "maximum_display": 2,
+            "baskets": [],
+            "keywords": {},
+            "membership_rule": null,
+            "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+            "overrides": "DEVICE_ONLY"
+          }
+        }
+      },
+      "expected": {
+        "role": "PREVIEW",
+        "config_status": "CUSTOM_PREVIEW",
+        "config_version": "type_config/1",
+        "calibration": "V2_PENDING",
+        "memberships": {
+          "growth": {
+            "membership": 1.0,
+            "state": "PROVISIONAL",
+            "reason_codes": [],
+            "evidence": {
+              "revenue_cagr_3y": 0.2
+            }
+          },
+          "value": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "DISCOUNT_RAMPS",
+              "SECTOR_HISTORY_BASIS",
+              "VALUE_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "dividend": {
+            "membership": 1.0,
+            "state": "PROVISIONAL",
+            "reason_codes": [],
+            "evidence": {
+              "dividend_yield": 0.03,
+              "dividend_paid_5_consecutive_years": true
+            }
+          },
+          "quality": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "MARGIN_VOLATILITY_THRESHOLD",
+              "LOW_DEBT_THRESHOLD",
+              "QUALITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": [
+              {
+                "membership": null,
+                "state": "NOT_AVAILABLE",
+                "reason_codes": [
+                  "METRIC_NOT_AVAILABLE"
+                ],
+                "evidence": {
+                  "roic": null
+                }
+              }
+            ]
+          },
+          "cyclical": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "SIC_GROUP_APPROVAL",
+              "REVENUE_VOLATILITY_RAMP",
+              "INDUSTRY_VOLATILITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "defensive": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "SIC_GROUP_APPROVAL",
+              "REVENUE_VOLATILITY_RAMP",
+              "INDUSTRY_VOLATILITY_COMBINATION"
+            ],
+            "evidence": {},
+            "components": []
+          },
+          "leader": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "METRIC_NOT_AVAILABLE"
+            ],
+            "evidence": {
+              "sector_marketcap_rank": null
+            }
+          },
+          "theme": {
+            "membership": null,
+            "state": "NOT_AVAILABLE",
+            "reason_codes": [
+              "THEME_BASKET_APPROVAL",
+              "THEME_MEMBERSHIP_NORMALIZATION"
+            ],
+            "evidence": {},
+            "components": []
+          }
+        },
+        "selected_types": [
+          "growth",
+          "dividend"
+        ],
+        "excluded_unavailable": [
+          "value",
+          "quality",
+          "cyclical",
+          "defensive",
+          "leader",
+          "theme"
+        ],
+        "fallback_type": null,
+        "weights": {
+          "Q": 35.0,
+          "G": 32.5,
+          "V": 32.5
+        },
+        "original_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "adjusted_qgv": {
+          "Q": 60.0,
+          "G": 70.0,
+          "V": 80.0
+        },
+        "adjusted_score": 69.75,
+        "missing_pillars": [],
+        "reason_codes": []
+      }
+    }
+  ]
+}
