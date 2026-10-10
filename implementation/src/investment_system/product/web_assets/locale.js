@@ -91,6 +91,7 @@
   Object.assign(UI,{"요약 ↓":{"ko-KR":"요약 ↓","en-US":"Summary ↓"}});
   Object.assign(UI,{"공식 설정 복사·PREVIEW·기기 저장":{"ko-KR":"공식 설정 복사·PREVIEW·기기 저장","en-US":"Copy official config · PREVIEW · save on device"}});
   Object.assign(UI,{"예상 시기 · 확정일 아님":{"ko-KR":"예상 시기 · 확정일 아님","en-US":"Estimated timing · not a confirmed date"}});
+  Object.assign(UI,{"데이터 운영 상태 →":{"ko-KR":"데이터 운영 상태 →","en-US":"Data operations status →"}});
   const TERMS=Object.freeze({
     free_cash_flow:["Free Cash Flow","잉여현금흐름"], drawdown:["Drawdown","낙폭"],
     operating_margin:["Operating Margin","영업이익률"], Q_score:["Quality","품질"],
