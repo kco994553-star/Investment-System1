@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "config_version": "dcf_config/1",
+  "role": "RAM_ONLY_RESEARCH",
+  "confirmed": false,
+  "explicit_years": 5,
+  "discount_rate": null,
+  "terminal_growth": null,
+  "discount_rate_basis": null,
+  "cashflow_basis": null,
+  "currency": null,
+  "per_share_basis_confirmed": false,
+  "solver": {
+    "growth_lower": null,
+    "growth_upper": null,
+    "relative_price_tolerance": 1e-10,
+    "maximum_iterations": 200
+  },
+  "proposal": {
+    "status": "USER_CONFIRMATION_PENDING",
+    "discount_rate": 0.10,
+    "terminal_growth": 0.02,
+    "explicit_years": 5,
+    "discount_rate_basis": "COST_OF_EQUITY",
+    "cashflow_basis": "FCFE_PER_SHARE",
+    "currency": "USD",
+    "solver_growth_lower": -0.50,
+    "solver_growth_upper": 1.0,
+    "rate_source": "ANALYST_PLACEHOLDER_NOT_OBSERVED_CAPITAL_COST",
+    "terminal_source": "FED_2PCT_INFLATION_TARGET_NOT_CASHFLOW_GROWTH_PROOF"
+  }
+}
