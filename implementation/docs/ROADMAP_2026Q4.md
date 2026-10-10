@@ -1,6 +1,6 @@
 # 실행 로드맵 v2 — 2026년 4분기
 
-기준일: **2026-10-10 UTC**. 저장소 `kco994553-star/Investment-System1`, canonical `claude/investment-system-top500-validation-alrugm`, 확인 HEAD **`12588fd51ac13f80d86f6eba11018456c143eaae`** (#114 병합 후). 현재 상태의 단일 진입점은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md), 운영 규칙은 [WORKING_RULES](../../WORKING_RULES.md)다. 아래는 다음 실행을 정하는 문서이며 수집·예약 실행·배포·새 방법론·가중치·방법론 채택의 추가 승인이 아니다. 최신 대화에서 허용한 **26E 결정 기록 변경이 없는 PR의 조건부 자체 병합**은 최종 실행 필수 체크 전부 성공·실패0일 때 적용한다.
+기준일: **2026-10-10 UTC**. 저장소 `kco994553-star/Investment-System1`, canonical `claude/investment-system-top500-validation-alrugm`, 확인 HEAD **`67e9d4f28cffa2f62c343ed0f7cafe5face0eb19`** (#117 병합 후). 현재 상태의 단일 진입점은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md), 운영 규칙은 [WORKING_RULES](../../WORKING_RULES.md)다. 아래는 다음 실행을 정하는 문서이며 수집·예약 실행·배포·새 방법론·가중치·방법론 채택의 추가 승인이 아니다. 최신 대화에서 허용한 **26E 결정 기록 변경이 없는 PR의 조건부 자체 병합**은 최종 실행 필수 체크 전부 성공·실패0일 때 적용한다.
 
 **Gate A·FPIA·HG: 1인용 범위 해당 없음(종료)** — #100 이후 현행 작업의 선행 조건으로 재사용하지 않는다. 계산·입력·개인정보 검사와 Frozen·원본 TARGET 불변은 유지한다.
 
@@ -11,11 +11,11 @@
 | 범위 | canonical 및 열린 PR에서 확인한 상태 | 남은 일 |
 | --- | --- | --- |
 | 운영·공개 경계 | #100 혼합 운영, #96·#97 공개 가격 수집/출력 정리, #108 GSQ-014 확정 | 공개 가능 비가격 자료와 개인 RAM 가격/파생값을 분리한다. 작은 변경마다 GSQ·receipt·fingerprint를 만들지 않는다. |
-| 시세·Worker·Pages | 수동/선택형 Sheets 구현, #102 검증 수정, #113 앱 Worker 연결·email 재동의, #114 검증 후 수동 Pages 게시 경로가 병합됨 | 병합·mock 검증과 실제 본인 기기의 성공을 구분한다. 이번 문서 작업에서 서비스·키·개인 시트를 조회하거나 배포하지 않았다. |
+| 시세·Worker·Pages | 수동/선택형 Sheets 구현, #102 검증 수정, #113 앱 Worker 연결·email 재동의, #114 검증 후 수동 Pages 게시, #116 통합 기기 백업·#117 표시 전용 JS 지표가 병합됨 | 병합·mock 검증과 실제 본인 기기의 성공을 구분한다. 이번 문서 작업에서 서비스·키·개인 시트를 조회하거나 배포하지 않았다. |
 | SEC·Q/G | SEC M1의 US17 명시적 부분집합 수동 live CLI·보존/replay 코드, #98 가격 없는 Q·G 후보 앱 표시 | 실제 취득 확인·매일 Actions 연결 미완료. V는 NOT_AVAILABLE, 후보는 PROVISIONAL_RESEARCH이며 완전 QGV/공식 순위가 아니다. |
 | Macro | #104 BLS CPI·Labor·Treasury·BEA 원기관 4축 요청 계획/제공 응답 파서·48칸 근거 계약; #112 Liquidity/Credit/Fiscal/FX 출처 조사 병합 | 입력 근거와 국면 계산은 별개다. 일부 Level의 RAW_EVIDENCE 외 상태 계산은 NOT_APPLIED, 후속4축은 DEFERRED_GSQ011. 실8축 producer·앱 연결 미완료. |
 | M3 | #106 순수 계산, #110 근거 있는 SHARE_CLASS_BASIS 표시 병합. TARGET19 + 기기 ★ + 비공개 Universe 상위 N, 기본 N=20·불일치10% 확정 | 기기·Worker 연결은 코덱1. 실제 목록·가격·시총·순위·시트 ID는 공개하거나 새 저장 경로에 넣지 않는다. share-class 자동 보정 없음. |
-| 기술 계산·Research 표시 | **#111·#115 열림·미병합**. #111 현행 세 계산, #115 표시 전용 지표·GSQ-015 기록. 각각 관련62/89 테스트와 최종 CI6개 성공 | 최신 대화의 표시 기본값은 승인됐지만 모델 채택은 아니다. #111은 최신 조건부 자체 병합 범위지만 회귀 해소 대기, #115는 GSQ-015 기록을 포함해 별도 사용자 병합 승인 대기. 새 코드가 canonical에 반영됐다고 쓰지 않는다. |
+| 기술 계산·Research 표시 | **#111·#115 열림·미병합**. #111 현행 세 계산, #115 표시 전용 지표·GSQ-015 기록. 각각 관련62/89 테스트와 최종 CI6개 성공 | 최신 대화의 표시 기본값은 승인됐지만 모델 채택은 아니다. #111은 최신 조건부 자체 병합 범위지만 회귀 해소 대기, #115는 GSQ-015 기록을 포함해 별도 사용자 병합 승인 대기. Python 두 PR이 canonical에 반영됐다고 쓰지 않는다. #117의 JS 표시 계산/합성 대조는 별도 병합된 범위다. |
 | 현재 회귀 장애 | #113 이후 `tests/test_app_nav_ia.py::test_navigation_does_not_expand_approved_external_csp_permissions` 실패. #111·#115와 canonical07ba93e3 단독 checkout에서 재현 | connect-src의 Worker 출처 추가와 이전 테스트 기대값 차이; 코덱1 앱/CSP 검증 범위. #114는 이 코드/테스트를 바꾸지 않았다. CI 성공과 전체 suite 성공을 구분한다. |
 | QGV v2·Holdout | v2 보류. 기존 Holdout **UNCONFIRMED 유지·v2 근거 제외** | 검증은 향후 forward 데이터만 사용하며 시작 시점은 사용자가 결정한다. 에이전트는 기간을 선택·사용하지 않는다. |
 
@@ -31,7 +31,7 @@
 | 4. 전략 프로필 미리보기 | 코덱1(화면)·코덱2(기존 계약) | 기존 PROVISIONAL profile의 값/동결 항목/설명 대응, 사용자 선택이 모델 적용을 뜻하지 않는 경계 | **부분 완료** — builtin/mixed/custom 계약 있음; 상세 preview 화면 OPEN | 기존 프로필의 읽기용 비교/미리보기·provisional/누락 표시를 검증. 모델 재채점·새 weights/threshold editor·Frozen 변경 없이 저장/적용 여부를 명확히 구분. |
 | 5. 매크로 국면 엔진 → 앱 8축 연결 | 코덱2(엔진/producer)·코덱1(앱) | #104 + 6의 원기관 입력, 기존 승인된 국면 계산과 입력 의미의 정확한 대응; v0.1.4-CANDIDATE 자동 승격 금지 | **부분 완료** — 48칸 근거 계약·8축 UI 있음; 실제 계산/연결 미완료 | Growth/Inflation/Monetary Policy/Liquidity/Credit/Fiscal/FX/Labor의 Level·Direction·Momentum·Surprise·Stress·Confidence를 근거/시각/결측과 함께 연결·검증. 미승인 계산·기대치·근거 없는 칸은 NOT_AVAILABLE로 명시. raw 입력을 완성 국면·단일 Macro Score로 바꾸지 않음. |
 | 6. 나머지 매크로 4축 구현 | 코덱2·사용자(입력 의미 채택) | #112 공식 출처 조사에서 정확한 자료/series·단위·발표본/PIT·권리 대응 결정 | **조사 완료·구현 대기** — Liquidity/Credit/Fiscal/FX DEFERRED | 원기관 어댑터·발표/수정/취득시각·cutoff·모의 응답·known missing/error 테스트를 구현한 승인 대상 PR이 있음. H.4.1, H.8/SLOOS, MTS, H.10은 후보이며 자동 채택/합성하지 않음. FRED/ALFRED 금지, 새 국면 규칙/가중치 없음. |
-| 7. 기기 백업·불러오기 확인/구현 | 코덱1·사용자 | 기존 ACTUAL/수동 market schema2·★/Groups prefs 범위를 점검; 추가 포함 범위는 결정 필요 | **기존 구현 있음·통합 확인 대기** | 허용된 기존 개인 입력 export/import·legacy·오류/손상/중복·복원 후 동작을 검증. OAuth 토큰·키·Sheets ID와 M3 파생 membership/가격/결과는 백업 제외. 기존 수동 시세 백업 허용과 새 RAM 파생값 제외를 혼동하지 않음. 추가 구현은 확인된 공백만 처리. |
+| 7. 기기 백업·불러오기 확인/구현 | 코덱1·사용자 | #116 통합 ACTUAL/수동 market·★/Groups/안전 설정 범위를 점검; 추가 포함 범위는 결정 필요 | **#116 통합 구현 병합·실기기 복원 확인 대기** | 허용된 기존 개인 입력 export/import·legacy·오류/손상/중복·복원 후 동작을 검증. OAuth 토큰·키·Sheets ID와 M3 파생 membership/가격/결과는 백업 제외. 기존 수동 시세 백업 허용과 새 RAM 파생값 제외를 혼동하지 않음. 추가 구현은 확인된 공백만 처리. |
 | 8. DART 연결 | 코덱2·사용자, 코덱1(후속 앱/Actions) | **사용자가 10/11 18시 이후 DART_API_KEY 등록을 알린 뒤** 서비스·키 이용 조건/회사 결속 확인. 원 공지 시간대 미명시 | **사용자 알림 대기·착수 금지** | 한미반도체 별도 adapter로 회사/계정 매핑·CFS/OFS·기간/통화/단위·정정/취득 경계를 모의 및 허가된 실제 응답에서 검증. SEC JSON으로 오인하지 않음. 알림 전 코드·키 존재 확인·인증/API 실행 없음. |
 | 9. EDINET(도쿄일렉트론) 연결 | 코덱2·사용자, 코덱1(후속 앱/Actions) | 사용자 API v2 등록/키·약관/MFA, E02652와 TSE8035·secCode80350 결속, 별도 parser 범위 확정 | **조사 완료·연결 대기** | 제출 목록→문서 선택→XBRL/CSV context·연결/별도·회계/단위·정정/철회·시각을 검증한 adapter. 숫자 재사용/가공 출처 조건 준수; 주석/보고서 전문·taxonomy 재배포를 자동 허용하지 않음. |
 | 10. 가격 예비 경로(Tiingo/KRX) | 코덱1(기기/Worker)·코덱2(입력 계약)·사용자 | 시장별 권리·무료 계정/한도·basis/일봉 coverage 확인. KRX_API_KEY는 GSQ-009의 **등록 보고**이며 실제 인증 검증과 구분 | **후보 조사·조건 확인 대기** | Tiingo 미국·KRX 한국의 허용 범위/실패 동작을 검증하고 본인용 fallback을 연결. 일본 본상장은 별도 근거 필요. 권리 미확인 자동 조회 금지, 비용0·개인 RAM·공개 금지 유지, 전체500 자동 확대 없음. |
@@ -42,7 +42,7 @@
 | 15. 모델 포트폴리오·6관점 정의 | 사용자(정의)·코덱2(계약)·코덱1(화면) | **6관점의 이름/목적/원본 입력/기존 TARGET·Model·Actual·Gap 대응을 사용자 확정**; 4의 preview와 모델 적용 구분 | **기존 portfolio 계약·TARGET/ACTUAL 있음·새 정의 대기** | 확정6관점 및 기존 StrategyVersion/snapshot의 모델 포트폴리오 계약·비교 표시 명세가 있음. 실제 보유와 모델을 혼동하지 않고 새 종합점수·권장 비중·방법론/가중치를 임의 생성하지 않음. |
 | 16. 모의투자/전진검증 시작일(사용자 결정) | 사용자·코덱2(검증)·코덱1(기록/화면) | 사용자 시작 시점·대상·전략버전·입력 cutoff·예측/관측·결측/중단 처리·허용 보관 범위 결정 | **시작일 미정·대기**, QGV v2 보류 | 사용자 결정 기록 후 향후 축적 데이터만 별도 forward namespace로 검증. 시작일/기간을 에이전트가 선택·소급하지 않고 기존 Holdout은 UNCONFIRMED·미사용 유지. Preview/Sandbox/Backtest/Forward 결과를 구분. |
 | 17. M3 개인 부분집합 기기 연결 | 코덱1·사용자 | #106·#110 계약, 기기 ★·비공개 Universe 1회 readonly 조회, SEC shares×동일행 price의 identity/통화/단위·basis 근거 | **Python 완료·기기 연결 대기** | TARGET19 + ★ + 검증 시총 상위N(N=20 기본)을 기기에서 선택; 10% 이상 일반 불일치와 근거 있는 SHARE_CLASS_BASIS를 구분하고 자동 보정 없음. private 결과/시트 ID·파생 membership 저장/공개 없음. |
-| 18. 기술 계산/Research 표시 연결 | 사용자(코드 병합)·코덱2(Python)·코덱1(표시) | #111 최종 체크·#115(26E 변경) 병합 승인, CSP 회귀 해소, 1의 합법적인 일봉·시장 세션/basis | **코드 PR 완성·미병합**, 현재 합성 검증 범위 | 현행 세 계산과 표시 지표를 분리하고 #115의 승인된 기본값만 연결. role=RESEARCH_DISPLAY_ONLY, warm-up null·0 대체 없음·Model/TSV/QGV 입력 금지. 실제 입력 gate 확장은 별도 검토 후 코드 PR 승인. |
+| 18. 기술 계산/Research 표시 연결 | 사용자(코드 병합)·코덱2(Python)·코덱1(표시) | #111 최종 체크·#115(26E 변경) 병합 승인, CSP 회귀 해소, 1의 합법적인 일봉·시장 세션/basis | **코드 PR 완성·미병합**, 현재 합성 검증 범위; #117 JS 계산 병합 | 현행 세 계산과 표시 지표를 분리하고 #115의 승인된 기본값만 연결. role=RESEARCH_DISPLAY_ONLY, warm-up null·0 대체 없음·Model/TSV/QGV 입력 금지. 실제 입력 gate 확장은 별도 검토 후 코드 PR 승인. |
 
 ## 추천 순서와 변경 제안
 
