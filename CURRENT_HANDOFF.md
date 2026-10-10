@@ -12,6 +12,8 @@
 
 DCF 후속: `implementation/docs/valuation/DCF_V1_PARAMETERS.md`와 `qgv/dcf.py`의2단계/역DCF는 RAM-only 순수 함수다. 금융 기본값 confirmed=false/null이며 사용자 확인 전 NOT_AVAILABLE다. 35개 합성/Decimal 참조 테스트·독립 검토 중요 미해결0. 공개 JSON #141은 병합됐고 앱/워크플로 연결은 코덱1 범위다.
 
+JS 이식 후속: `PYTHON_JS_REFERENCE_V1.md`와36개 합성JSON 사례·Python replay 준비. DCF/V/전략/M3 31개는canonical 대조, type5개는#135 참조값/미병합 의존성 차단 검증. JS 실제일치 및 UI연결은코덱1 후속이며 테스트가격/시총artifact 공개금지.
+
 ## 현재 PR·검증
 
 사용자가 기존 분리를 확정했다. **#111은 현행 엔진 세 계산만**, Python 표시 참조·합성 JSON 벡터는 **#115에만** 포함한다. 아래 기존 구현 PR은 승인된 순서로 canonical에 병합됐다. 실제 provider/앱 운영 연결은 별도 상태다.
