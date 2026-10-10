@@ -40,7 +40,7 @@ class PagesBuildTest(unittest.TestCase):
                 'index.html', 'style.css', 'app.js', 'locale.js', 'entity-search.js',
                 'device-actual.js', 'device-backup.js', 'device-actual.css', 'device-market.js', 'data.json', 'entities.json',
                 'actual-catalog.json', 'sec-m2-candidates.json', 'research.html', 'app-config.js', 'google-sheet-core.js',
-                'google-sheet-quotes.js', 'google-sheet-quotes.css', 'private-history.js', 'private-history.css', 'chart-indicators.js', 'technical-chart.js', 'private-trades.js', 'private-subset.js', 'private-subset-view.js'})
+                'google-sheet-quotes.js', 'google-sheet-quotes.css', 'private-history.js', 'private-history.css', 'chart-indicators.js', 'technical-chart.js', 'private-trades.js', 'google-sheet-setup.js', 'sec-reported.js', 'pwa.js', 'service-worker.js', 'offline.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'public-screens.js', 'private-subset-view.js', 'profile-defaults.js', 'device-profiles.js', 'engine-preview.js', 'private-subset.js', 'sec-m3-adapter.js', 'macro-screen.json', 'sec-13f-changes.json', 'sec-filing-windows.json', 'sec-qg-factors.json', 'company-types-pricefree.json'})
             catalog = json.loads((out / 'actual-catalog.json').read_text())
             self.assertEqual(len(catalog['instruments']), 19)
             self.assertTrue(all('quantity' not in r and 'average_cost' not in r
@@ -50,16 +50,17 @@ class PagesBuildTest(unittest.TestCase):
                 self.assertEqual(bundle[name]['state'], 'NOT_AVAILABLE')
                 self.assertIsNone(bundle[name]['data'])
 
-    def test_relative_assets_and_no_new_pwa_cache_or_root_scope(self):
+    def test_relative_assets_and_repository_scoped_pwa(self):
         with tempfile.TemporaryDirectory() as folder:
             out = Path(folder) / 'site'
             load_tool().build_public_cockpit(out)
             html = (out / 'index.html').read_text()
             self.assertNotIn('src="/', html)
             self.assertNotIn('href="/', html)
-            self.assertNotIn('rel="manifest"', html)
+            self.assertIn('rel="manifest" href="manifest.json"', html)
             js = '\n'.join(p.read_text() for p in out.glob('*.js'))
-            self.assertNotIn('serviceWorker.register', js)
+            self.assertIn("scope:'./'", js)
+            self.assertNotIn("scope:'/'", js)
 
     def test_nonempty_output_fails_without_removing_existing_files(self):
         with tempfile.TemporaryDirectory() as folder:

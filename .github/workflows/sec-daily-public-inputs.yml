@@ -1,0 +1,127 @@
+name: SEC daily public reported inputs
+on:
+  schedule:
+    - cron: '17 22 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dependency:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.module.outputs.ready }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Check merged Codex2 collection module without credentials
+        id: module
+        run: |
+          python - <<'PYCODE'
+          import os
+          from pathlib import Path
+          ready = Path('implementation/src/investment_system/providers/sec_collection.py').is_file()
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('ready=' + str(ready).lower() + '\n')
+          print('SEC_MODULE_AVAILABLE' if ready else 'SEC_MODULE_NOT_MERGED')
+          PYCODE
+  build:
+    needs: dependency
+    if: needs.dependency.outputs.ready == 'true' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Offline public boundary regression (GSQ-010)
+        working-directory: implementation
+        run: |
+          python -m pip install pytest==9.1.1 jsonschema==4.26.0
+          python -m pytest -q --tb=no tests/test_app_nav_ia.py tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py tests/test_sec_m2_candidates.py tests/test_worker_deployment_diagnostics.py tests/test_public_sec_inputs.py tests/test_sec_reported_consumer.py tests/test_public_engine_screens.py tests/test_public_screens_pipeline.py tests/test_device_profile_defaults.py
+      - name: Build and inspect local price-free cockpit
+        run: |
+          python implementation/tools/build_pages_cockpit.py --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - name: Collect public SEC shares and filing metadata through Codex2 client
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          python implementation/tools/public_screens_pipeline.py --live --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Verify device features and price-free pages locally
+        env:
+          NODE_PATH: ${{ runner.temp }}/pages-browser/node_modules
+          PAGES_COCKPIT_URL: http://127.0.0.1:8990/
+          PRIVATE_HISTORY_URL: http://127.0.0.1:8990/
+          PAGES_COCKPIT_EVIDENCE_DIR: ${{ runner.temp }}/pages-browser-evidence
+        run: |
+          npm install --prefix "$RUNNER_TEMP/pages-browser" playwright@1.58.2
+          "$RUNNER_TEMP/pages-browser/node_modules/.bin/playwright" install --with-deps chromium
+          node implementation/tools/device_actual_node_test.js
+          node implementation/tools/device_market_node_test.js
+          node implementation/tools/device_backup_node_test.js
+          node implementation/tools/device_profiles_node_test.js
+          node implementation/tools/google_sheet_core_node_test.js
+          node implementation/tools/google_sheet_auth_node_test.js
+          node implementation/tools/pwa_node_test.js
+          node implementation/tools/sec_reported_node_test.js
+          node implementation/tools/public_screens_node_test.js
+          node implementation/tools/google_sheet_setup_node_test.js
+          node implementation/tools/private_history_node_test.js
+          node implementation/tools/private_history_fallback_node_test.js
+          node --test implementation/worker/tests/*.test.mjs
+          node implementation/tools/research_indicators_node_test.js
+          node implementation/tools/technical_chart_node_test.js
+          node implementation/tools/private_trades_node_test.js
+          python -m http.server 8990 --bind 127.0.0.1 --directory "$RUNNER_TEMP/public-cockpit" > "$RUNNER_TEMP/pages-server.log" 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID"' EXIT
+          node implementation/tools/pages_cockpit_browser_test.js
+          node implementation/tools/device_backup_browser_test.js
+          node implementation/tools/device_profiles_browser_test.js
+          node implementation/tools/technical_chart_browser_test.js
+          node implementation/tools/private_trades_browser_test.js
+          node implementation/tools/private_history_browser_test.js
+          node implementation/tools/pwa_browser_test.js
+          node implementation/tools/settings_import_browser_test.js
+          node implementation/tools/sec_reported_browser_test.js
+          node implementation/tools/public_screens_browser_test.js
+          node implementation/tools/google_sheet_setup_browser_test.js
+          node implementation/tools/google_login_browser_test.js
+          node implementation/tools/private_history_fallback_browser_test.js
+          (cd implementation && PYTHONPATH=src python -m tests.build_sec_m2_candidate_fixture --out "$RUNNER_TEMP/m2-test-sites")
+          python -m http.server 8992 --bind 127.0.0.1 --directory "$RUNNER_TEMP/m2-test-sites" > "$RUNNER_TEMP/m2-test-server.log" 2>&1 &
+          M2_SERVER_PID=$!
+          trap 'kill "$SERVER_PID" "$M2_SERVER_PID"' EXIT
+          M2_BROWSER_EVIDENCE="$RUNNER_TEMP/m2-browser-evidence" node implementation/tools/sec_m2_candidates_browser_test.js
+
+      - name: Upload checked public SEC Pages artifact
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: ${{ runner.temp }}/public-cockpit
+  deploy:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: checked-cockpit-pages
+      cancel-in-progress: false
+    steps:
+      - name: Deploy checked Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

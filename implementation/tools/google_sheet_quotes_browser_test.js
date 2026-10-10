@@ -2,9 +2,9 @@
 'use strict';
 const { chromium } = require('playwright');
 const fs = require('node:fs'), path = require('node:path');
-const base = new URL(process.env.GOOGLE_SHEET_QUOTES_URL || process.env.GOOGLE_SHEET_URL || 'http://127.0.0.1:8990/Investment-System1/#settings');
+const base = new URL(process.env.GOOGLE_SHEET_QUOTES_URL || process.env.GOOGLE_SHEET_URL || process.env.PAGES_COCKPIT_URL || 'http://127.0.0.1:8990/Investment-System1/#settings');
 const evidence = path.resolve(process.env.GOOGLE_SHEET_QUOTES_EVIDENCE_DIR || process.env.GOOGLE_SHEET_EVIDENCE_DIR || '/tmp/google-sheet-quotes-evidence');
-const NOW = '2030-01-08T12:00:00.000Z', SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+const NOW = '2030-01-08T12:00:00.000Z', SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const STYLE = 'https://accounts.google.com/gsi/style', STYLE_ID = 'googleidentityservice_button_styles';
 const ID = ['synthetic', 'spreadsheet', 'fixture'].join('_'), TOKEN = ['memory', 'only', 'synthetic', 'credential'].join('-');
 const codes = ['NASDAQ:ASML','NASDAQ:LRCX','NASDAQ:KLAC','NASDAQ:NVDA','NASDAQ:AMD','NASDAQ:AVGO','NASDAQ:QCOM','NASDAQ:INTC','NASDAQ:MSFT','NASDAQ:GOOGL','NASDAQ:AMZN','NYSE:RTX','NYSE:SYK','NYSE:ETN','NYSE:HUBB','NYSE:GEV','NYSE:ROK','TYO:8035','KRX:042700','CURRENCY:USDKRW','CURRENCY:JPYKRW'];
@@ -29,6 +29,7 @@ async function open(locale,width,missingClient=false) {
   const context=await browser.newContext({viewport:{width,height:844},locale});
   const mode={status:200,partial:false,unknown:false,delayed:false,pending:null,reads:0,scripts:0,styles:0,styleStatus:200,delayCSS:false,pendingCSS:null,styleStarted:null,loadOrder:[]};
   await context.addInitScript(({locale})=>{
+    localStorage.setItem('investment.web.v1.unified-sheet-source','synthetic_existing_sheet_fixture');
     localStorage.setItem('investment.web.v1.settings',JSON.stringify({version:1,display_locale:locale,source_language:'all'}));
     window.__sheetCsp={count:0};
     document.addEventListener('securitypolicyviolation',()=>{window.__sheetCsp.count++;});
@@ -48,7 +49,7 @@ async function open(locale,width,missingClient=false) {
     }
     if(url.href==='https://accounts.google.com/gsi/client'){
       traffic.gis_mocked++;mode.scripts++;mode.loadOrder.push('sdk-request');
-      await route.fulfill({contentType:'application/javascript',body:`window.__sheetMock={popup:0,revoke:0,gestureFailures:0,scopes:[],pending:null,delayAuth:false,externalStyleReady:[]};function installGisStyles(){let marker=document.getElementById('googleidentityservice_button_styles');window.__sheetMock.externalStyleReady.push(!!marker&&marker.tagName==='LINK'&&marker.href==='https://accounts.google.com/gsi/style'&&marker.rel==='stylesheet'&&!!marker.sheet);if(!marker){marker=document.createElement('style');marker.id='googleidentityservice_button_styles';marker.textContent='.g_id_signin { font-family: Arial; }';document.head.append(marker);}}installGisStyles();window.google={accounts:{oauth2:{initTokenClient(config){installGisStyles();window.__sheetMock.scopes.push(config.scope);return {requestAccessToken(){const m=window.__sheetMock;m.popup++;if(!navigator.userActivation.isActive)m.gestureFailures++;const respond=()=>config.callback({access_token:['memory','only','synthetic','credential'].join('-'),expires_in:3600,scope:'https://www.googleapis.com/auth/spreadsheets.readonly email',token_type:'Bearer'});if(m.delayAuth)m.pending=respond;else respond();}};},revoke(token,done){window.__sheetMock.revoke++;fetch('https://oauth2.googleapis.com/revoke',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'token='+encodeURIComponent(token),credentials:'omit',referrerPolicy:'no-referrer'}).then(()=>done({}));}}}};`});return;
+      await route.fulfill({contentType:'application/javascript',body:`window.__sheetMock={popup:0,revoke:0,gestureFailures:0,scopes:[],pending:null,delayAuth:false,externalStyleReady:[]};function installGisStyles(){let marker=document.getElementById('googleidentityservice_button_styles');window.__sheetMock.externalStyleReady.push(!!marker&&marker.tagName==='LINK'&&marker.href==='https://accounts.google.com/gsi/style'&&marker.rel==='stylesheet'&&!!marker.sheet);if(!marker){marker=document.createElement('style');marker.id='googleidentityservice_button_styles';marker.textContent='.g_id_signin { font-family: Arial; }';document.head.append(marker);}}installGisStyles();window.google={accounts:{oauth2:{initTokenClient(config){installGisStyles();window.__sheetMock.scopes.push(config.scope);return {requestAccessToken(){const m=window.__sheetMock;m.popup++;if(!navigator.userActivation.isActive)m.gestureFailures++;const respond=()=>config.callback({access_token:['memory','only','synthetic','credential'].join('-'),expires_in:3600,scope:'https://www.googleapis.com/auth/drive.file email',token_type:'Bearer'});if(m.delayAuth)m.pending=respond;else respond();}};},revoke(token,done){window.__sheetMock.revoke++;fetch('https://oauth2.googleapis.com/revoke',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'token='+encodeURIComponent(token),credentials:'omit',referrerPolicy:'no-referrer'}).then(()=>done({}));}}}};`});return;
     }
     if(url.origin==='https://sheets.googleapis.com'&&url.pathname===('/v4/spreadsheets/'+ID+'/values/'+encodeURIComponent('Quotes!A1:C22'))){
       traffic.sheets_mocked++;mode.reads++;
@@ -67,12 +68,13 @@ async function open(locale,width,missingClient=false) {
   });
   const page=await context.newPage();page.on('pageerror',()=>{errors++;});page.on('console',message=>{if([ID,TOKEN,'UNMAPPED_PRIVATE_CODE',...values().slice(1).map(row=>String(row[1]))].some(value=>message.text().includes(value)))traffic.console_private++;});
   await page.clock.install({time:new Date(NOW)});
-  const url=new URL(base);url.hash='settings';await page.goto(url.href,{waitUntil:'networkidle'});
-  const root=page.locator('[data-google-sheet-quotes]');await root.locator('[data-sheet-action="paste"]').waitFor();
+  currentCheck='settings initial navigation';const url=new URL(base);url.hash='settings';await page.goto(url.href,{waitUntil:'networkidle'});
+  currentCheck='settings importer attached';const root=page.locator('[data-google-sheet-quotes]');await root.locator('[data-sheet-action="paste"]').waitFor({state:'attached'});
   return {context,page,root,mode};
 }
 async function configure(session) {
   const {page,root}=session;await root.locator('[data-sheet-enabled]').check();
+  await root.locator('[data-sheet-advanced] > summary').click();
   await root.locator('[data-sheet-id]').fill('https://docs.google.com/spreadsheets/u/0/d/'+ID+'/edit#gid=0');
   await root.locator('[data-sheet-action="save"]').click();await waitNotice(page,'saved');
 }
@@ -80,7 +82,7 @@ async function login(session) {
   const {root,page}=session;
   if(await root.locator('[data-sheet-action="prepare"]').isVisible()){await root.locator('[data-sheet-action="prepare"]').click();await root.locator('[data-sheet-action="login"]').waitFor({state:'visible'});}
   await root.locator('[data-sheet-action="login"]').click();await root.locator('[data-sheet-action="fetch"]').waitFor({state:'visible'});
-  verify(await page.evaluate(()=>window.__sheetMock.gestureFailures===0&&window.__sheetMock.scopes.every(scope=>{const grants=new Set(scope.trim().split(/\s+/));return grants.size===2&&grants.has('https://www.googleapis.com/auth/spreadsheets.readonly')&&grants.has('email');})),'login preserves button gesture and exact readonly plus email scopes');
+  verify(await page.evaluate(()=>window.__sheetMock.gestureFailures===0&&window.__sheetMock.scopes.every(scope=>{const grants=new Set(scope.trim().split(/\s+/));return grants.size===2&&grants.has('https://www.googleapis.com/auth/drive.file')&&grants.has('email');})),'login preserves button gesture and exact readonly plus email scopes');
 }
 async function verifyStyles(session) {
   const {page,mode}=session;
@@ -122,7 +124,7 @@ async function main(){
           const before=mode.reads;await page.clock.fastForward(3600001);await root.locator('[data-sheet-action="login"]').waitFor({state:'visible'});verify(mode.reads===before,'expiry does not refresh automatically');await login(session);mode.status=401;await root.locator('[data-sheet-action="fetch"]').click();await waitNotice(page,'auth');await root.locator('[data-sheet-action="login"]').waitFor({state:'visible'});mode.status=200;await login(session);
         });
         await check(label+': disconnect revokes then paste works while Google is OFF',async()=>{
-          const readCount=mode.reads;await root.locator('[data-sheet-action="disconnect"]').click();await waitNotice(page,'removed');verify(await page.evaluate(()=>window.__sheetMock.revoke===1),'disconnect calls revoke');await root.locator('[data-sheet-enabled]').uncheck();await root.locator('[data-sheet-paste]').fill(values().map(row=>row.join('\t')).join('\n'));await root.locator('[data-sheet-action="paste"]').click();await waitImport(page,21,0);verify(await root.locator('[data-sheet-paste]').inputValue()==='','paste clears after save');verify(mode.reads===readCount,'paste requires no Google read');const data=await records(page);verify(data['market-import-history'].entries.at(-1).method==='paste','paste shares batch history');
+          const readCount=mode.reads;await root.locator('[data-sheet-action="disconnect"]').click();await waitNotice(page,'removed');verify(await page.evaluate(()=>window.__sheetMock.revoke===1),'disconnect calls revoke');await root.locator('[data-sheet-enabled]').uncheck();await root.locator('[data-sheet-import-advanced]').evaluate(node=>{node.open=true;});await root.locator('[data-sheet-paste]').fill(values().map(row=>row.join('\t')).join('\n'));await root.locator('[data-sheet-action="paste"]').click();await waitImport(page,21,0);verify(await root.locator('[data-sheet-paste]').inputValue()==='','paste clears after save');verify(mode.reads===readCount,'paste requires no Google read');const data=await records(page);verify(data['market-import-history'].entries.at(-1).method==='paste','paste shares batch history');
         });
         if(locale==='ko-KR'&&width===390){
           await check(label+': disabling rejects delayed auth callback',async()=>{
@@ -136,12 +138,12 @@ async function main(){
       }finally{cspViolations+=await page.evaluate(()=>window.__sheetCsp.count);await session.context.close();}
     }
     await check('empty OAuth configuration hides every Google control while paste remains usable',async()=>{
-      const session=await open('ko-KR',390,true);try{verify(await session.root.locator('[data-sheet-enabled]').count()===0&&await session.root.locator('[data-sheet-action="login"]').count()===0,'missing client hides Google controls');await session.root.locator('[data-sheet-paste]').fill(values().map(row=>row.join(',')).join('\n'));await session.root.locator('[data-sheet-action="paste"]').click();await waitImport(session.page,21,0);verify(session.mode.styles===0&&session.mode.scripts===0&&session.mode.reads===0,'missing config never calls Google CSS or API');}finally{cspViolations+=await session.page.evaluate(()=>window.__sheetCsp.count);await session.context.close();}
+      const session=await open('ko-KR',390,true);try{verify(await session.root.locator('[data-sheet-enabled]').count()===0&&await session.root.locator('[data-sheet-action="login"]').count()===0,'missing client hides Google controls');await session.root.locator('[data-sheet-import-advanced]').evaluate(node=>{node.open=true;});await session.root.locator('[data-sheet-paste]').fill(values().map(row=>row.join(',')).join('\n'));await session.root.locator('[data-sheet-action="paste"]').click();await waitImport(session.page,21,0);verify(session.mode.styles===0&&session.mode.scripts===0&&session.mode.reads===0,'missing config never calls Google CSS or API');}finally{cspViolations+=await session.page.evaluate(()=>window.__sheetCsp.count);await session.context.close();}
     });
     const retry=await open('ko-KR',390);
     try{
       await check('fresh OFF paste makes no Google CSS, SDK or API request',async()=>{
-        await retry.root.locator('[data-sheet-paste]').fill(values().map(row=>row.join('\t')).join('\n'));await retry.root.locator('[data-sheet-action="paste"]').click();await waitImport(retry.page,21,0);verify(retry.mode.styles===0&&retry.mode.scripts===0&&retry.mode.reads===0,'OFF paste never loads Google CSS or SDK');
+        await retry.root.locator('[data-sheet-import-advanced]').evaluate(node=>{node.open=true;});await retry.root.locator('[data-sheet-paste]').fill(values().map(row=>row.join('\t')).join('\n'));await retry.root.locator('[data-sheet-action="paste"]').click();await waitImport(retry.page,21,0);verify(retry.mode.styles===0&&retry.mode.scripts===0&&retry.mode.reads===0,'OFF paste never loads Google CSS or SDK');
       });
       await check('CSS load failure stops SDK and OAuth and preserves local quotes',async()=>{
         await configure(retry);const before=JSON.stringify(await records(retry.page));retry.mode.styleStatus=404;await retry.root.locator('[data-sheet-action="prepare"]').click();await waitNotice(retry.page,'authFailed');verify(retry.mode.styles===1&&retry.mode.scripts===0&&retry.mode.reads===0,'failed CSS cannot load SDK or request a token');verify(!await retry.root.locator('[data-sheet-action="login"]').isVisible(),'CSS failure never shows the token login button');verify(JSON.stringify(await records(retry.page))===before,'CSS failure preserves all device records');verify(await retry.page.evaluate(()=>!window.google&&!document.getElementById('googleidentityservice_button_styles')&&window.__sheetCsp.count===0),'failed stylesheet marker is removed without CSP violations');

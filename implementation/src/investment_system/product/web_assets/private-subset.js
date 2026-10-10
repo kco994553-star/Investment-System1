@@ -3,7 +3,7 @@
  'use strict';
  const CODES=new Set(['UNIVERSE_SCHEMA_MISMATCH','MANIFEST_MISMATCH','SOURCE_TOO_LARGE','ROW_LIMIT_REACHED','IDENTITY_UNCONFIRMED','CURRENCY_SCOPE_NOT_SUPPORTED','MIXED_SYNTHETIC_INPUT','GOOGLE_MCAP_MISSING','GOOGLE_MCAP_INVALID','PRICE_NOT_AVAILABLE','INVALID_INPUT','INVALID_TIMESTAMP','INVALID_TIME_ORDER','AVAILABLE_AFTER_AS_OF','BASIS_UNCONFIRMED','CIK_MISMATCH','ACCESSION_UNCONFIRMED','SHARES_NOT_AVAILABLE','MULTI_CLASS_AMBIGUOUS','NONFINITE_MCAP','CONFIG_CONFIRMATION_REQUIRED','DUPLICATE_ISSUER','VALIDATION_INCOMPLETE','SHARE_CLASS_BASIS']);
  const codes=x=>Array.isArray(x)&&x.every(v=>typeof v==='string'&&CODES.has(v));
- const text=x=>typeof x==='string'&&Boolean(x.trim()),hash=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x),positive=x=>typeof x==='number'&&Number.isFinite(x)&&x>0;
+ const text=x=>typeof x==='string'&&Boolean(x.trim()),hash=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x),positive=x=>typeof x==='number'&&Number.isFinite(x)&&x>0&&(!Number.isInteger(x)||Number.isSafeInteger(x));
  const day=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x)&&Number.isFinite(Date.parse(x+'T00:00:00Z'))&&new Date(x+'T00:00:00Z').toISOString().slice(0,10)===x;
  const time=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(x)&&day(x.slice(0,10))&&Number(x.slice(11,13))<24&&Number(x.slice(14,16))<60&&Number(x.slice(17,19))<60&&Number.isFinite(Date.parse(x));
  const stamp=x=>Date.parse(x),utcDay=x=>new Date(stamp(x)).toISOString().slice(0,10);

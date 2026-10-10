@@ -37,7 +37,7 @@ def test_private_history_build_pins_one_worker_without_expanding_other_permissio
     parser.feed((tmp_path / "index.html").read_text())
     directives = {parts[0]: parts[1:] for raw in parser.policy.split(";") if (parts := raw.split())}
     assert directives["connect-src"] == ["'self'", "https://sheets.googleapis.com", "https://oauth2.googleapis.com", origin]
-    assert directives["script-src"] == ["'self'", "https://accounts.google.com/gsi/client"]
+    assert directives["script-src"] == ["'self'", "https://accounts.google.com/gsi/client", "https://apis.google.com/js/api.js", "https://apis.google.com/_/scs/"]
     assert directives["style-src"] == ["'self'", "https://accounts.google.com/gsi/style"]
     assert parser.policy.count("workers.dev") == 1
     assert "*.workers.dev" not in parser.policy
