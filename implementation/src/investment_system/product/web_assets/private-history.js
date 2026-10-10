@@ -94,12 +94,14 @@
     }
     host.replaceChildren(root);
   }
+  // Optional RAM-only hand-off of the research result to the indicator cards (S08). No storage, no network.
+  function emit(state,value) { try { if(typeof state.onData==='function') state.onData(value); } catch (_) {} }
   function mounted(state) { return !state.disposed && state.host.isConnected; }
   function status(state,code) { state.status.dataset.code=code; state.status.textContent=code==='OFF' ? words(state,'OFF · 가격 호출 없음','OFF · No price requests') : code; }
   function clear(state) {
     state.revision++; if (state.controller) { state.controller.abort(); state.controller=null; }
     if(state.tradeController){state.tradeController.abort();state.tradeController=null;}state.trades=null;state.tradeBusy=false;state.tradeMessage='';
-    state.data=null; state.indicators=null; state.average=null; state.results.replaceChildren(); state.busy=false;
+    state.data=null; state.indicators=null; state.average=null; state.results.replaceChildren(); state.busy=false; emit(state,null);
   }
   function available(state) {
     if (!state.enabled) return 'OFF';
@@ -120,6 +122,7 @@
     state.results.replaceChildren();
     state.results.append(node(state,'p',data.provider+' · '+data.symbol+' · '+data.exchange+' · '+data.currency+' · '+data.timezone+' · '+data.interval+' · RAW_CLOSE · delay_status: UNKNOWN · read_at: '+data.read_at,{'data-history-meta':''}));
     state.indicators=state.view.ResearchIndicators.calculate(data.bars,{includeSma240:state.selected.has('SMA_240')});
+    const lastBar=data.bars.at(-1);emit(state,{indicators:state.indicators,symbol:data.symbol,currency:data.currency,asOf:lastBar.session_date||new Date(lastBar.timestamp*1000).toISOString().slice(0,10)});
     const buttons=node(state,'div',undefined,{class:'chart-controls',role:'group','aria-label':words(state,'연구용 이동평균','Research moving averages')});
     for(const id of ['SMA_5','SMA_20','SMA_60','SMA_120','SMA_240','EMA_20','AVG']){
       const button=node(state,'button',id.replace('_',''),{type:'button','data-chart-overlay':id,'aria-pressed':String(state.selected.has(id))});
@@ -181,7 +184,7 @@
   }
   async function mount(host,options={}) {
     const doc=host.ownerDocument,view=doc.defaultView,config=options.config||{};
-    const state={host,doc,view,locale:options.locale,symbol:symbolFor(options.companyId),enabled:config.privateHistoryEnabled===true,approvedOrigin:config.privateHistoryWorkerOrigin||'',revision:0,data:null,indicators:null,average:null,getAverage:options.getAverage,trades:null,tradeBusy:false,tradeMessage:'',tradeController:null,selected:new Set(['SMA_5','SMA_20','SMA_60','SMA_120','AVG']),busy:false,disposed:false,controller:null};
+    const state={host,doc,view,locale:options.locale,symbol:symbolFor(options.companyId),enabled:config.privateHistoryEnabled===true,approvedOrigin:config.privateHistoryWorkerOrigin||'',revision:0,data:null,indicators:null,average:null,getAverage:options.getAverage,onData:options.onData,trades:null,tradeBusy:false,tradeMessage:'',tradeController:null,selected:new Set(['SMA_5','SMA_20','SMA_60','SMA_120','AVG']),busy:false,disposed:false,controller:null};
     active.add(state);
     const root=node(state,'section',undefined,{class:'card private-history','data-private-history':''});
     root.append(node(state,'h2',words(state,'가격 차트 · 비공개 일별 이력','Price chart · Private daily history')));
