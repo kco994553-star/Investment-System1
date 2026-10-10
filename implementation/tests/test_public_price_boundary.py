@@ -132,9 +132,25 @@ def test_original_27_plus_ishares_routes_are_accounted_for():
 @pytest.mark.parametrize('name', ['c21-real-data', 'cockpit-pages', 'web-mvp-validation', 'web-research-guard', 'web-state-presentation'])
 def test_affected_workflows_have_no_publication_sinks(name):
     source = (ROOT.parent / '.github/workflows' / (name + '.yml')).read_text()
-    for forbidden in ['actions/cache', 'actions/upload', 'actions/deploy-pages', 'git push', 'git commit', 'always()']:
+    for forbidden in ['actions/cache', 'git push', 'git commit', 'always()']:
         assert forbidden not in source
     assert 'test_public_price_boundary.py' in source
+    if name != 'cockpit-pages':
+        assert 'actions/upload' not in source and 'actions/deploy-pages' not in source
+    else:
+        import yaml
+        workflow = yaml.safe_load(source)
+        build = workflow['jobs']['build']
+        upload = [step for step in build['steps'] if 'actions/upload' in step.get('uses', '')]
+        assert len(upload) == 1
+        assert upload[0]['uses'] == 'actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa'
+        assert upload[0]['with']['path'] == '${{ runner.temp }}/public-cockpit'
+        assert upload[0]['if'] == workflow['jobs']['deploy']['if']
+        assert "github.event_name == 'workflow_dispatch'" in upload[0]['if']
+        assert "github.ref_name == 'claude/investment-system-top500-validation-alrugm'" in upload[0]['if']
+        assert workflow['jobs']['deploy']['needs'] == 'build'
+        assert any('pages_artifact_guard.py' in step.get('run', '') for step in build['steps'][:build['steps'].index(upload[0])])
+        assert any('private_history_browser_test.js' in step.get('run', '') for step in build['steps'][:build['steps'].index(upload[0])])
 
 
 @pytest.mark.parametrize('field', ['rank', 'market_cap_rank', 'total_score', 'V_score', 'period_return', 'renamed'])
