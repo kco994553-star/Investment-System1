@@ -27,6 +27,7 @@ from investment_system.public_price_boundary import require_public_bundle, requi
 from investment_system.product.sec_m2_candidates import require_public_candidates
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
+from investment_system.product.public_engine_screens import FILENAMES as SCREEN_FILENAMES, require_public_screen
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
@@ -56,7 +57,7 @@ APPROVED_SHA256 = {
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "035930c2bdeb760f768562f8a9fb6b7aec703bc4663392b8f91db5796145b56e",
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME}
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 64
@@ -163,6 +164,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
                 require_public_inputs(value)
             except ValueError:
                 violations["sec_public_boundary"] += 1
+        elif name in SCREEN_FILENAMES:
+            try: require_public_screen(name, value)
+            except ValueError: violations['public_screen_boundary'] += 1
         elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
             violations["unapproved_content"] += 1
     except (ValueError, UnicodeError, RecursionError, OverflowError):
