@@ -17,7 +17,9 @@ def assert_same(actual,expected):
         for a,e in zip(actual,expected):assert_same(a,e)
     elif type(expected) in (int,float):
         assert type(actual) in (int,float) and actual==pytest.approx(expected,rel=1e-10,abs=1e-10)
-    else:assert actual==expected
+    else:
+        assert type(actual) is type(expected)
+        assert actual==expected
 
 
 def vectors():
@@ -35,3 +37,8 @@ def test_synthetic_python_goldens(case):
 
 def test_live_fixture_refused():
     with pytest.raises(ValueError,match='SYNTHETIC_ONLY'):api().replay({'synthetic':False})
+
+
+@pytest.mark.parametrize('actual,expected',[(1,True),(0,False),(True,1),(False,0)])
+def test_booleans_and_numbers_are_never_interchangeable(actual,expected):
+    with pytest.raises(AssertionError):assert_same(actual,expected)

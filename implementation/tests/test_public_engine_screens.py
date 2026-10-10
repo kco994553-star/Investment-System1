@@ -77,10 +77,10 @@ def test_public_schema_rejects_price_unknown_fields_and_unbounded_text(tmp_path,
 
 
 def test_cli_preserves_existing_assets_and_passes_pages_artifact_guard(tmp_path,capsys):
-    from investment_system.product.web_mvp import build as build_site,repository_bundle
+    from build_pages_cockpit import build_public_cockpit as build_site
     from pages_artifact_guard import scan_artifact
     mod=importlib.import_module('public_engine_screens')
-    site=tmp_path/'site';build_site(site,bundle=repository_bundle())
+    site=tmp_path/'site';build_site(site)
     source=tmp_path/'manifest.json';source.write_text(json.dumps(manifest()))
     assert mod.main(['--manifest',str(source),'--output-dir',str(site),'--as-of',NOW.isoformat(),'--stale-after-hours','48'])==0
     assert scan_artifact(site)['pages_artifact_guard']=='PASS'
@@ -151,10 +151,10 @@ def test_13f_projects_public_reported_quantity_not_dollar_value_or_trades(tmp_pa
 
 
 def test_new_sidecars_checked_in_plain_pages_tar_and_price_injection_blocked(tmp_path):
-    from investment_system.product.web_mvp import build as build_site,repository_bundle
+    from build_pages_cockpit import build_public_cockpit as build_site
     from pages_artifact_guard import scan_artifact,validate_pages_tar
     import tarfile
-    site=tmp_path/'site';build_site(site,bundle=repository_bundle())
+    site=tmp_path/'site';build_site(site)
     for name,payload in build(tmp_path).items():(site/name).write_text(json.dumps(payload))
     archive=tmp_path/'artifact.tar'
     with tarfile.open(archive,'w',format=tarfile.GNU_FORMAT) as tar:
