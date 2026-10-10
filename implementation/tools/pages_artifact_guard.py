@@ -31,6 +31,7 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
     "ops-status.js": "f3c44924f6501b3777579ff3147868ee211c5effc7a87169fe52c0dbd5688318",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "c2478c243024437f89189cee8632d704af893e268d3b885e28d131ab0d9bb311",
@@ -39,7 +40,7 @@ APPROVED_SHA256 = {
     "private-subset.js": "5dfa945113a84ec8fde2cb2020f71343e1cd453a5de41771165a0a8b531a6fec",
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
-    "device-profiles.js": "b0d2b9c0fa59de3b7f255a081c9da57b87704903ce32578369a8cd0f5333dfe6",
+    "device-profiles.js": "fb58f599e4b6699611681c2d882f91b13f726ef198e865c9ec9413366962c19f",
     "public-screens.js": "f8678956941ec30f1e8eb7d4b7df62ca71aee358c1fa00aa1bfed04d27601a79",
     "pwa.js": "f8d5df267d323fd465821416f1825f38d4065030ec5368b7a37bfc4ed875affd",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
@@ -71,7 +72,7 @@ APPROVED_SHA256 = {
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "c28375df0fb19316f49a10a495554d79a460fc0e72e3c02b684df7baf1f4c3ef",
+    "style.css": "19a938ca3419589917b6e0c4a6f9bbb75752a09fc24275096db447bb56220658",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024

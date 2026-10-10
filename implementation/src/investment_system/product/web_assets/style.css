@@ -608,3 +608,8 @@ main, .card, .grid > *, .axis-grid > *, .hub-grid > * {min-width:0;}
   #primary-nav a[aria-current="page"] .nav-flow {background: var(--accent); color: #fff;}
   .nav-device-note {display: block; margin-top: auto; padding: 12px; font-size: 12px; color: var(--muted);}
 }
+
+/* S13 official weight bars. */
+.weight-bars {margin: 8px 0;}
+.weight-bar {display: grid; grid-template-columns: minmax(0, 1fr) 40%; align-items: center; gap: 8px;}
+.weight-bar .bar {display: block; height: 6px; border-radius: 3px; background: var(--accent);}
