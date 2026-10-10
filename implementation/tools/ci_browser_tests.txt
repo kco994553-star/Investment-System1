@@ -12,3 +12,6 @@ settings_import_browser_test.js
 sec_reported_browser_test.js
 public_screens_browser_test.js
 google_sheet_setup_browser_test.js
+engine_reference_browser_test.js
+watchlist_browser_test.js
+google_sheet_quotes_browser_test.js

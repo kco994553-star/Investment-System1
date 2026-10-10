@@ -14,3 +14,6 @@ private_history_fallback_node_test.js
 research_indicators_node_test.js
 technical_chart_node_test.js
 private_trades_node_test.js
+engine_preview_node_test.js
+watchlist_node_test.js
+private_history_contract_test.mjs
