@@ -31,6 +31,7 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "private-subset-view.js": "c2478c243024437f89189cee8632d704af893e268d3b885e28d131ab0d9bb311",
     "watchlist.js": "6d707c1f7beb0d4ceaf32cea18320049bbd1ba768bf91578ba6a664596f536cf",
     "sec-m3-adapter.js": "f3962d7283ae0e8731ad66ee23652d5f8c9e88f2cd4050b70b4cd1048956d6e5",
     "private-subset.js": "5dfa945113a84ec8fde2cb2020f71343e1cd453a5de41771165a0a8b531a6fec",
@@ -53,7 +54,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "c5049827697217fe37a1d4130f0301645400400b0c67f45dab2d4d3c1356480c",
+    "app.js": "2dc4dd57c52cec63e7ce5b5255b98a05679534e22ca6562b38099f3544081d66",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "05770dd8e99d40c43d320970549f7f91f8c93bd77496553c593172ab5a1f7407",
@@ -63,7 +64,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "21e59f6415e2febdd94751bae6ae50473685146c47176df1d733194bbb81d73d",
+    "index.html": "8f1f2b89123e0f11c56015595bb7498486ad36552dce76187eac59f3ee0d7caf",
     "locale.js": "a7552bc8a6b1aa0dcd5b8c89b120d361a836daef4ec5cb48ca1733f5b02e5b98",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",
