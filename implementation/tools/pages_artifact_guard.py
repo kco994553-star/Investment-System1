@@ -24,11 +24,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from investment_system.public_price_boundary import require_public_bundle, require_public_catalog, PublicPriceBoundaryError
 
 
+from investment_system.product.sec_m2_candidates import require_public_candidates
+
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "6f966a489b348a0332acbda0e330c43d7fb0abf5345d371e90b8e54ae84c0690",
-    "app.js": "0b11b2ada1575f0a769c8d517c0324badebdfe96b7e14d327cefb0dd3ff52505",
+    "app.js": "9a037c72c03771a29d000934520dbe0bef847ff752ddca7f2ab375cc33db446a",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "e1625314c50c5891d48ce9ad1d4ac6c958022230ce27d8c8500896046c4c0c21",
@@ -43,7 +46,7 @@ APPROVED_SHA256 = {
     "private-history.css": "dbac5b571505658a71935456fd6303c034c3c2f29a0fc2edb947159a4da6d89f",
     "private-history.js": "45bb16f4b8827ed38f537336224b894774bd7558b58ac2e570c60563eb38f916",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "1acfc2cee6112897fc901972053033009d51e537fe0aced7e7804f799547486e",
+    "style.css": "035930c2bdeb760f768562f8a9fb6b7aec703bc4663392b8f91db5796145b56e",
 }
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
@@ -130,6 +133,11 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         if name.endswith(".json"):
             value = json.loads(text, object_pairs_hook=_unique_pairs, parse_constant=_reject_constant)
             _inspect_json(value, violations)
+            if name == "sec-m2-candidates.json":
+                try:
+                    require_public_candidates(value)
+                except ValueError:
+                    violations["m2_candidate_boundary"] += 1
             if name in {'data.json', 'entities.json', 'actual-catalog.json'}:
                 try:
                     if name == 'data.json':

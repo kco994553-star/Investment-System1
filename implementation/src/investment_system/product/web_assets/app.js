@@ -334,8 +334,65 @@ function companies() {
 function groupsUI() {
   return `<p class="muted">${t("이 기기의 브라우저에 저장됩니다. 즐겨찾기와 관심기업은 같은 목록입니다.")}</p><form id="new-group"><label for="group-name">${t("새 그룹 이름")}</label><div class="row"><input id="group-name" required maxlength="60" placeholder="${t("예: 반도체")}"><button>${t("그룹 만들기")}</button></div></form><div id="groups">${prefs.groups.map(g=>`<div class="group"><b>${esc(g.name)}</b> <span class="muted">${g.members.length} ${t("개")}</span><div class="row"><input aria-label="${t("그룹 이름")} ${esc(g.name)}" data-rename-input="${esc(g.id)}" value="${esc(g.name)}" maxlength="60"><button data-rename="${esc(g.id)}">${t("이름 변경")}</button><button data-delete="${esc(g.id)}">${t("그룹 삭제")}</button></div>${prefs.interests.map(id=>`<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id)?"checked":""}> ${esc(company(id)?.ticker || id)}</label>`).join("")}</div>`).join("")}</div><div class="toolbar"><button id="export">${t("내보내기")}</button><label>${t("설정 병합 가져오기")} <input type="file" id="import" accept="application/json"></label></div>`;
 }
+// Public M2 sidecar is separate from published snapshots and prompt context.
+let m2Candidates={display_state:'NOT_AVAILABLE',companies:{}};
+function guardM2Candidates(value) {
+  const fail=()=>{throw Error('M2_CANDIDATE_INVALID');};
+  const need=v=>{if(!v)fail();};
+  const keys=(v,list)=>need(v&&typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).sort().join('|')===[...list].sort().join('|'));
+  const hash=(v,p='')=>need(typeof v==='string'&&new RegExp('^'+p+'[0-9a-f]{64}$').test(v));
+  const clock=v=>{need(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/.test(v)&&Number.isFinite(Date.parse(v)));return Date.parse(v);};
+  const number=(v,max=100)=>need(v===null||(typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=max));
+  const ids={asml:'ASML',lrcx:'LRCX',klac:'KLAC',nvda:'NVDA',amd:'AMD',avgo:'AVGO',qcom:'QCOM',intc:'INTC',msft:'MSFT',googl:'GOOGL',amzn:'AMZN',rtx:'RTX',stry:'SYK',etn:'ETN',hubb:'HUBB',gev:'GEV',rok:'ROK'};
+  const reasons=['RECEIPT_INTEGRITY_FAILURE','ORIGINAL_REPLAY_MISMATCH','ANNUAL_FORM_REQUIRED','ACQUISITION_AFTER_CUTOFF','M1_NOT_AVAILABLE','AVAILABILITY_AFTER_CUTOFF','UNRESOLVED_CURRENT_FACT_AMBIGUITY','INCOMPLETE_QG','REPLAY_OR_NORMALIZED_INPUT_FAILURE'];
+  try {
+    need(value.contract==='PUBLIC_SEC_QG_CANDIDATES'&&value.version===1);
+    if(value.display_state==='NOT_AVAILABLE') {
+      keys(value,['contract','version','display_state','reason_code','companies']);
+      keys(value.companies,[]);need(value.reason_code==='M2_INPUT_NOT_CONNECTED');return value;
+    }
+    const flags={candidate_only:true,prices_used:false,publication_approved:false,publication_eligible:false,real_data_verified:false,full_pit_historical:false};
+    keys(value,['contract','version','display_state','candidate_id','as_of','evaluated_at','input_kind','synthetic_inputs',...Object.keys(flags),'research_status','publication_grant','scope_basis','public_500_rank','method_sha256','n_calculated','n_unavailable','companies']);
+    need(value.display_state==='RESEARCH_CANDIDATE'&&Object.entries(flags).every(([k,v])=>value[k]===v));
+    need(typeof value.synthetic_inputs==='boolean'&&value.input_kind===(value.synthetic_inputs?'SYNTHETIC':'OBSERVED_UNVERIFIED'));
+    need(value.research_status==='PROVISIONAL_RESEARCH'&&value.publication_grant==='NONE'&&value.scope_basis==='EXPLICIT_RECEIPTS_US17_SUBSET'&&value.public_500_rank===false);
+    hash(value.candidate_id,'sec_m2_');hash(value.method_sha256);const cutoff=clock(value.as_of);need(cutoff<=clock(value.evaluated_at));
+    need(value.companies&&typeof value.companies==='object'&&!Array.isArray(value.companies));
+    let calculated=0;const receipts=new Set();
+    for(const [id,r] of Object.entries(value.companies)) {
+      need(Object.hasOwn(ids,id));keys(r,['company_id','ticker','status','reason_codes','receipt_id','snapshot_id','source','coverage','Q_score','G_score','V_score','V_status']);
+      need(r.company_id===id&&r.ticker===ids[id]&&['CALCULATED','NOT_AVAILABLE'].includes(r.status));
+      const ready=r.status==='CALCULATED';calculated+=Number(ready);
+      need(r.V_score===null&&r.V_status==='NOT_AVAILABLE');number(r.Q_score);number(r.G_score);
+      need(ready?(r.Q_score!==null&&r.G_score!==null):(r.Q_score===null&&r.G_score===null));
+      need(Array.isArray(r.reason_codes)&&r.reason_codes.every(v=>reasons.includes(v))&&(ready?r.reason_codes.length===0:r.reason_codes.length>0));
+      hash(r.receipt_id);need(!receipts.has(r.receipt_id));receipts.add(r.receipt_id);
+      if(r.snapshot_id!==null)hash(r.snapshot_id,'sec_m2_qgv_');need(!ready||r.snapshot_id!==null);
+      if(r.source!==null){
+        keys(r.source,['receipt_sha256','acquired_at','original_availability']);hash(r.source.receipt_sha256);const acquired=clock(r.source.acquired_at),a=r.source.original_availability;
+        keys(a,['available_at','basis','precision','historical_first_publication']);need(a.basis==='OBSERVED_PUBLIC_API_UPPER_BOUND'&&a.precision==='CONSERVATIVE'&&a.historical_first_publication===false);
+        if(a.available_at!==null)clock(a.available_at);need(!ready||(acquired<=cutoff&&a.available_at!==null&&clock(a.available_at)<=cutoff));
+      }need(!ready||r.source!==null);
+      if(r.coverage!==null){keys(r.coverage,['Q_observed_weight','G_observed_weight','native_coverage','weights_renormalized']);number(r.coverage.Q_observed_weight,1);number(r.coverage.G_observed_weight,1);need(r.coverage.Q_observed_weight!==null&&r.coverage.G_observed_weight!==null&&r.coverage.weights_renormalized===false&&['READY','PARTIAL','BLOCKED','SYNTHETIC'].includes(r.coverage.native_coverage));}need(!ready||r.coverage!==null);
+    }
+    need(Number.isInteger(value.n_calculated)&&value.n_calculated===calculated&&Number.isInteger(value.n_unavailable)&&value.n_unavailable>=Object.keys(value.companies).length-calculated&&calculated+value.n_unavailable>=1&&calculated+value.n_unavailable<=17);
+    return value;
+  } catch (_) {return {display_state:'NOT_AVAILABLE',companies:{}};}
+}
+function m2Panel(id) {
+  const en=appSettings.display_locale==='en-US';
+  const title=en?'Q/G research candidates':'Q/G 연구 후보';
+  const badge=en?'Uncalibrated · No prices':'보정 전·가격 미포함';
+  const disclosure=en?'V NOT_AVAILABLE · No publication approval · Not a 500-company ranking':'V NOT_AVAILABLE · 게시 승인 없음 · 500개 기업 순위 아님';
+  const rows=id?(Object.hasOwn(m2Candidates.companies,id)?[m2Candidates.companies[id]]:[]):Object.values(m2Candidates.companies);
+  const row=r=>`<article class="m2-row" data-m2-company="${esc(r.company_id)}"><h3><a href="#company/${encodeURIComponent(r.company_id)}">${esc(r.ticker)}</a></h3><dl class="m2-scores">${['Q','G','V'].map(k=>`<dt>${k}</dt><dd data-score="${k}">${r[k+'_score']===null?'NOT_AVAILABLE':esc(String(r[k+'_score']))}</dd>`).join('')}</dl><p class="meta">${esc(r.status)}${r.reason_codes.length?' · '+r.reason_codes.map(esc).join(' · '):''}</p>${evidence(r)}</article>`;
+  return `<section class="card m2-candidates" data-m2-candidates><h2>${title}</h2><p><span class="badge">${badge}</span></p><p class="small">${disclosure}</p>${m2Candidates.display_state==='RESEARCH_CANDIDATE'?`<p class="meta"><strong>${m2Candidates.synthetic_inputs?'SYNTHETIC · '+(en?'Test inputs':'시험 입력'):'OBSERVED_UNVERIFIED · '+(en?'Unverified research':'미검증 연구')}</strong> · ${esc(m2Candidates.as_of)}</p>${rows.length?rows.map(row).join(''):'<p>NOT_AVAILABLE</p>'}<details><summary>${en?'Candidate provenance':'후보 출처'}</summary><pre>${esc(JSON.stringify({...m2Candidates,companies:undefined},null,2))}</pre></details>`:`<p class="empty">NOT_AVAILABLE · ${en?'M2 Q/G candidate input is not connected.':'M2 Q/G 후보 입력이 연결되지 않았습니다.'}</p>`}</section>`;
+}
+
 function detail(id) {
   const c=company(id);
+  const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
+  if(!c && candidate) return heading("COMPANY RESEARCH",esc(candidate.ticker))+m2Panel(id);
   if(!c) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id),e=searchIndex.resolve("COMPANY",id);
   return `<a class="small" href="#companies">${t("← 기업 목록")}</a><div class="row">${heading("COMPANY DETAIL",esc(c.ticker),esc(label(e) || c.name))}${star(id)}</div><div id="private-history-chart"></div><div class="grid">${summaryFor("qgv",id)}${summaryFor("technical",id)}</div>`+
@@ -349,8 +406,8 @@ function portfolio() {
 }
 function leaderboard() {
   const l=D.leaderboard.data;
-  return heading("LEADERBOARD",t("기업 순위"),t("QGV 순위와 시가총액 순위는 각각 upstream 값을 표시합니다."))+
-  block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
+  return heading("LEADERBOARD",appSettings.display_locale==='en-US'?"Company research":"기업 연구")+
+  m2Panel()+block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
 }
 function news(id) {
   const c=company(id);
@@ -690,9 +747,10 @@ document.addEventListener("click",e=>{
 try {const saved=AppLanguage.read(localStorage);appSettings=saved.value;settingsWritable=saved.writable;}
 catch(e) {settingsWritable=false;}
 syncShell();
-Promise.all(["data.json","entities.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
+Promise.all(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
-}))).then(([data,catalog])=>{
+}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))).then(([data,catalog,candidates])=>{
+  m2Candidates=guardM2Candidates(candidates);
   // GSQ-010: legacy public producer payloads are withheld, including membership/order.
   // The private device catalog and device/session data have their own boundary.
   const publicSections=["universe","qgv","technical","macro","portfolio","leaderboard","news","relationships","changes"];
