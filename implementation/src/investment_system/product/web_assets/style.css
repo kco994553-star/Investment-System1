@@ -574,3 +574,5 @@ a.hub-card:hover,
 .badge.freshness.NOT_USABLE {background:#f5dddd;color:#76262a;box-shadow:inset 0 0 0 1px #b85c60;}
 .producer-meta {margin:4px 0;}
 .producer-meta [data-meta] {white-space:normal;}
+
+.m2-candidates .badge{white-space:normal}.m2-row{border-top:1px solid var(--line,#ddd);padding:1rem 0}.m2-scores dd{overflow-wrap:anywhere}.m2-candidates pre{max-width:100%;overflow:auto}.m2-candidates .meta{overflow-wrap:anywhere}
