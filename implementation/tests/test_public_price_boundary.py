@@ -132,9 +132,23 @@ def test_original_27_plus_ishares_routes_are_accounted_for():
 @pytest.mark.parametrize('name', ['c21-real-data', 'cockpit-pages', 'web-mvp-validation', 'web-research-guard', 'web-state-presentation'])
 def test_affected_workflows_have_no_publication_sinks(name):
     source = (ROOT.parent / '.github/workflows' / (name + '.yml')).read_text()
-    for forbidden in ['actions/cache', 'actions/upload', 'actions/deploy-pages', 'git push', 'git commit', 'always()']:
+    for forbidden in ['actions/cache', 'git push', 'git commit', 'always()']:
         assert forbidden not in source
     assert 'test_public_price_boundary.py' in source
+    if name != 'cockpit-pages':
+        assert 'actions/upload' not in source and 'actions/deploy-pages' not in source
+    else:
+        assert source.count('actions/upload') == 1
+        assert source.count('actions/deploy-pages') == 1
+        assert 'actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa' in source
+        assert 'actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e' in source
+        condition = "github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm'"
+        assert source.count(condition) == 2
+        assert "path: ${{ runner.temp }}/public-cockpit" in source
+        assert "needs: build" in source
+        assert source.index('pages_artifact_guard.py') < source.index('actions/upload')
+        assert source.index('private_history_browser_test.js') < source.index('actions/upload')
+
 
 
 @pytest.mark.parametrize('field', ['rank', 'market_cap_rank', 'total_score', 'V_score', 'period_return', 'renamed'])
