@@ -399,7 +399,7 @@ function detail(id) {
   const c=company(id);
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
-  if((!c || c.identity_only) && (candidate || historySymbol)) return `<div class="row">${heading("COMPANY RESEARCH",esc(c?.name || candidate?.ticker || historySymbol),esc(historySymbol || ""))}${star(id)}</div><div id="company-groups">${companyGroups(id)}</div><p class="small">${t("산업 / 전략 테마 / 투자 유형은 서로 다른 축입니다.")}</p>`+'<div id="private-history-chart"></div><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div>'+m2Panel(id);
+  if((!c || c.identity_only) && (candidate || historySymbol)) return `<div class="row">${heading("COMPANY RESEARCH",esc(candidate?.ticker || historySymbol || c?.ticker || ""),esc(c?.name || ""))}${star(id)}</div><div id="company-groups">${companyGroups(id)}</div><p class="small">${t("산업 / 전략 테마 / 투자 유형은 서로 다른 축입니다.")}</p>`+'<div id="private-history-chart"></div><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div>'+m2Panel(id);
   if(!c) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id),e=searchIndex.resolve("COMPANY",id);
   return `<a class="small" href="#companies">${t("← 기업 목록")}</a><div class="row">${heading("COMPANY DETAIL",esc(c.ticker),esc(label(e) || c.name))}${star(id)}</div><div id="private-history-chart"></div><div id="sec-reported-panel"></div><div class="grid">${summaryFor("qgv",id)}${summaryFor("technical",id)}</div>`+
