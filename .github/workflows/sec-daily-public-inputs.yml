@@ -86,6 +86,7 @@ jobs:
           node implementation/tools/technical_chart_browser_test.js
           node implementation/tools/private_trades_browser_test.js
           node implementation/tools/private_history_browser_test.js
+          node implementation/tools/settings_import_browser_test.js
           node implementation/tools/sec_reported_browser_test.js
           node implementation/tools/google_sheet_setup_browser_test.js
           node implementation/tools/google_login_browser_test.js
