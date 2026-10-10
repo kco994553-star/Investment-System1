@@ -187,7 +187,8 @@ test('Google observations retain seven day staleness and backup excludes connect
   const next = core.apply(c, null, result, now), value = market.valuation(snapshot(c), c, next, {now});
   assert.equal(value.rows[0].quote_status, 'STALE'); assert.equal(value.stale, true);
   const backup = market.exportBackup(snapshot(c), next, c, {now});
-  assert.deepEqual(market.importBackup(backup, c, {now}).market, next);
+  assert.deepEqual(market.importBackup(backup, c, {now}).market.quotes, []);
+  assert.ok(!JSON.stringify(backup).includes('market_data'));
   for (const forbidden of ['spreadsheet_id', 'range', 'access_token', 'google_settings']) assert.ok(!JSON.stringify(backup).includes(forbidden));
 });
 test('apply rejects observations that bypass parsed result validation', () => {

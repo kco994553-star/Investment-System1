@@ -38,16 +38,46 @@ jobs:
           "$RUNNER_TEMP/pages-browser/node_modules/.bin/playwright" install --with-deps chromium
           node implementation/tools/device_actual_node_test.js
           node implementation/tools/device_market_node_test.js
+          node implementation/tools/device_backup_node_test.js
           node implementation/tools/google_sheet_core_node_test.js
           node implementation/tools/google_sheet_auth_node_test.js
           node implementation/tools/private_history_node_test.js
+          node implementation/tools/research_indicators_node_test.js
+          node implementation/tools/technical_chart_node_test.js
+          node implementation/tools/private_trades_node_test.js
           python -m http.server 8990 --bind 127.0.0.1 --directory "$RUNNER_TEMP/public-cockpit" > "$RUNNER_TEMP/pages-server.log" 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID"' EXIT
           node implementation/tools/pages_cockpit_browser_test.js
+          node implementation/tools/device_backup_browser_test.js
+          node implementation/tools/technical_chart_browser_test.js
+          node implementation/tools/private_trades_browser_test.js
           node implementation/tools/private_history_browser_test.js
           (cd implementation && PYTHONPATH=src python -m tests.build_sec_m2_candidate_fixture --out "$RUNNER_TEMP/m2-test-sites")
           python -m http.server 8992 --bind 127.0.0.1 --directory "$RUNNER_TEMP/m2-test-sites" > "$RUNNER_TEMP/m2-test-server.log" 2>&1 &
           M2_SERVER_PID=$!
           trap 'kill "$SERVER_PID" "$M2_SERVER_PID"' EXIT
           M2_BROWSER_EVIDENCE="$RUNNER_TEMP/m2-browser-evidence" node implementation/tools/sec_m2_candidates_browser_test.js
+
+      - name: Upload checked price-free Pages artifact
+        if: github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm'
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: ${{ runner.temp }}/public-cockpit
+  deploy:
+    if: github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: checked-cockpit-pages
+      cancel-in-progress: false
+    steps:
+      - name: Deploy checked Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

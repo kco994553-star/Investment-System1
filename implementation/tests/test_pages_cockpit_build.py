@@ -38,9 +38,9 @@ class PagesBuildTest(unittest.TestCase):
             load_tool().build_public_cockpit(out)
             self.assertEqual({p.name for p in out.iterdir()}, {
                 'index.html', 'style.css', 'app.js', 'locale.js', 'entity-search.js',
-                'device-actual.js', 'device-actual.css', 'device-market.js', 'data.json', 'entities.json',
+                'device-actual.js', 'device-backup.js', 'device-actual.css', 'device-market.js', 'data.json', 'entities.json',
                 'actual-catalog.json', 'sec-m2-candidates.json', 'research.html', 'app-config.js', 'google-sheet-core.js',
-                'google-sheet-quotes.js', 'google-sheet-quotes.css', 'private-history.js', 'private-history.css'})
+                'google-sheet-quotes.js', 'google-sheet-quotes.css', 'private-history.js', 'private-history.css', 'chart-indicators.js', 'technical-chart.js', 'private-trades.js'})
             catalog = json.loads((out / 'actual-catalog.json').read_text())
             self.assertEqual(len(catalog['instruments']), 19)
             self.assertTrue(all('quantity' not in r and 'average_cost' not in r
