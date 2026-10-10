@@ -5,7 +5,7 @@
 ## 기준 HEAD
 
 - 기본 브랜치: `claude/investment-system-top500-validation-alrugm`
-- 확인한 원격 HEAD: `7ffd856fd585dc2862591e2540d56d23eb076f47`.
+- 확인한 원격 HEAD: `6ec5f3312d0ea4e2993e9817bc71d2cb48687a77` (#101 문서 담당자의 별도 명세 병합 포함).
 - 이번 사용자 승인으로 #100 → #95 → #96 → #97을 순서대로 병합했다. #96·#97은 각각 실행된 필수 체크 6개 성공·실패 0건을 병합 직전에 확인했다. 다른 PR은 병합하지 않았다.
 - [#76](https://github.com/kco994553-star/Investment-System1/pull/76)은 2026-10-09 09:47:52 UTC에 병합됐다. 기본 브랜치의 입력 변수 34개와 한국어·영어 안내 34개가 모두 일치한다.
 - #96의 공개 출력·수집 28개 경로 차단과 #97의 DATA 140개 정리(138개 삭제·2개 테스트 입력 교체)가 반영됐다. 보류 5개·Frozen 메타데이터·원본 TARGET은 보존했다. Git 이력과 기존 Pages·Actions 사본은 재작성하지 않았다.
@@ -15,18 +15,21 @@
 - Worker 주소: https://private-investment-history.kco994553.workers.dev
 - [수동 배포 실행 38018407666](https://github.com/kco994553-star/Investment-System1/actions/runs/38018407666): whoami 사전 점검과 실제 Worker·SQLite Durable Objects 배포는 성공했다. 전체 워크플로는 마지막 무인증 검사에서 실패했고 마스킹된 코드는 `ANONYMOUS_CHECK_CACHE_FAILED`다.
 - 별도 읽기 전용 검사에서 명시적인 검증용 User-Agent를 쓰면 3개 경우 모두 통과했다. Origin 없음·허용되지 않은 Origin은 `403 ORIGIN_FORBIDDEN`, 허용 Origin·무인증은 `503 CONFIG_UNAVAILABLE`; 모두 `Cache-Control: private, no-store, max-age=0`다. Google·Yahoo 데이터 요청을 수행하지 않았다. 이 검사가 실패한 워크플로 자체를 성공으로 바꾸지는 않는다.
-- 기존 검증기의 기본 urllib User-Agent 응답 차이를 고치는 별도 코드 PR을 준비한다. 인증 설정이 준비되지 않았으므로 앱 private history는 OFF를 유지한다. 필요한 설정 이름은 `ALLOWED_EMAIL`, `GOOGLE_CLIENT_ID`다. 실제 값은 조회·출력하지 않았다.
+- 기존 검증기의 기본 urllib User-Agent 응답 차이는 별도 코드 PR #102로 준비했다. 인증 설정이 준비되지 않았으므로 앱 private history는 OFF를 유지한다. 필요한 설정 이름은 `ALLOWED_EMAIL`, `GOOGLE_CLIENT_ID`다. 실제 값은 조회·출력하지 않았다.
 - Wrangler 4.149.0에서 `compatibility_date = 2026-10-09`를 유지했고 CI Node 22의 실제 배포도 성공했다. Edit Cloudflare Workers 템플릿의 `Workers Scripts Write` 및 `Account Settings Read`로 사전 점검·SQLite DO 배포가 성공했으며, 추가 DO 전용 권한 부족은 나타나지 않았다.
 - [GitHub Pages](https://kco994553-star.github.io/Investment-System1/)는 이전 HTTP 200 확인만 있다. #96·#97 병합 후 최신 화면 내용·배포 SHA는 별도 확인 대상이다.
 
 ## 열린 PR 요약
 
-확인 시점 열린 PR은 18개다. 새 코드·현황 PR을 만들면 이 표를 같은 현황 PR에서 갱신한다. 아래 추가 구현은 사용자 승인 전 병합하지 않는다.
+확인 시점 열린 PR은 19개다. 새 코드·현황 PR을 만들면 이 표를 같은 현황 PR에서 갱신한다. 아래 추가 구현은 사용자 승인 전 병합하지 않는다.
 
 | PR | 내용 | 상태·검증 |
 | --- | --- | --- |
 | [#98](https://github.com/kco994553-star/Investment-System1/pull/98) | M2 Q·G 후보 앱 표시, V NOT_AVAILABLE, “보정 전·가격 미포함” | WIP. 기존 전체 오프라인 1,304개+하위 검사 347개·후보/기존 화면 한영·모바일/데스크톱 검사 통과. 독립 리뷰에서 모순된 보정 상태·가격 사용 플래그 거절을 보완할 1건 확인, 수정 후 최종 검증 예정. |
-| [#101](https://github.com/kco994553-star/Investment-System1/pull/101) | Codex2의 최신 M3·비공개 Universe 상위 N 명세 | 문서 PR, 병합하지 않음. 최신 명세는 이 PR의 파일을 기준으로 구현한다. N=20·상대오차 10%는 미확정 제안이다. |
+| [#102](https://github.com/kco994553-star/Investment-System1/pull/102) | Worker 무인증 검증 User-Agent 수정 | 배포 진단 테스트 41개·CI 6개 성공. 병합·재실행 승인 대기. |
+| [#103](https://github.com/kco994553-star/Investment-System1/pull/103) | 현재 인수인계 갱신 | 이 현황 PR. 문서 링크·범위·whitespace 검사 통과. 병합 승인 대기. |
+
+[#101](https://github.com/kco994553-star/Investment-System1/pull/101)은 문서 담당자의 별도 작업에서 병합됐다. M3 최신 명세를 적용하되 N=20·상대오차 10%는 미확정 제안으로 남긴다. 기존 Holdout은 UNCONFIRMED·v2 근거 제외, v2는 보류다. 앞으로의 forward 검증 시작 시점은 v2 착수 시 사용자가 정한다.
 
 M2의 실제 후보·financial blob 입력은 현재 체크아웃에 없다. 기본 출력은 NOT_AVAILABLE이며 합성 입력은 검증용이다. 가격 기반 값·원시 근거·새 순위·가중치는 공개 후보 출력에 넣지 않는다.
 
