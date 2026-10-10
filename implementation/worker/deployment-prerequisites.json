@@ -1,0 +1,115 @@
+{
+  "template": "Edit Cloudflare Workers",
+  "template_source": {
+    "commit": "0017e51a284d1be4341ada9f9005850a7b47dc7b",
+    "path": "src/content/docs/fundamentals/api/reference/template.mdx",
+    "blob_sha": "eb89753fcc226a71da7ee7eec29b89c2feed04c0",
+    "url": "https://github.com/cloudflare/cloudflare-docs/blob/0017e51a284d1be4341ada9f9005850a7b47dc7b/src/content/docs/fundamentals/api/reference/template.mdx"
+  },
+  "template_permissions": [
+    {
+      "permission": "Workers Routes Write",
+      "scope": "Zone"
+    },
+    {
+      "permission": "Workers Scripts Write",
+      "scope": "Account"
+    },
+    {
+      "permission": "Workers KV Storage Write",
+      "scope": "Account"
+    },
+    {
+      "permission": "Workers Tail Read",
+      "scope": "Account"
+    },
+    {
+      "permission": "Workers R2 Storage Write",
+      "scope": "Account"
+    },
+    {
+      "permission": "Account Settings Read",
+      "scope": "Account"
+    },
+    {
+      "permission": "User Details Read",
+      "scope": "User"
+    },
+    {
+      "permission": "User Memberships Read",
+      "scope": "User"
+    }
+  ],
+  "required_deployment_permission": "Workers Scripts Write",
+  "dashboard_equivalent": "Account > Workers Scripts > Edit",
+  "preflight_account_permission": "Account Settings Read",
+  "sqlite_durable_object_permission_included": true,
+  "additional_durable_object_permission_required": false,
+  "scope_requirement": "The actual token must grant access to the selected account. No real token was introspected in this workspace.",
+  "api_schema": {
+    "source_url": "https://github.com/cloudflare/api-schemas/blob/main/openapi.json",
+    "blob_sha": "857eda823653b4ee3c179f3940bff4e37338f625",
+    "operations": [
+      {
+        "path": "/accounts/{account_id}/workers/scripts/{script_name}",
+        "method": "put",
+        "operation_id": "worker-script-upload-worker-module",
+        "api_token_group": [
+          "Workers Scripts Write"
+        ]
+      },
+      {
+        "path": "/accounts/{account_id}/workers/durable_objects/namespaces",
+        "method": "get",
+        "operation_id": "durable-objects-namespace-list-namespaces",
+        "api_token_group": [
+          "Workers Scripts Write",
+          "Workers Scripts Read"
+        ]
+      }
+    ]
+  },
+  "compatibility_verification": {
+    "compatibility_date": "2026-10-09",
+    "wrangler": "4.149.0",
+    "dry_run": {
+      "wrangler": "4.149.0",
+      "runtime": "Node v24.19.0",
+      "compatibility_date": "2026-10-09",
+      "command": "npx --yes wrangler@4.149.0 deploy --dry-run --config implementation/worker/wrangler.toml --outdir <scratch>",
+      "returncode": 0,
+      "dry_run_complete": true,
+      "unsupported_date_detected": false,
+      "credentials_removed": true,
+      "raw_output_withheld": true
+    },
+    "local_runtime": {
+      "wrangler": "4.149.0",
+      "runtime": "Node v24.19.0",
+      "compatibility_date": "2026-10-09",
+      "local_runtime_started": true,
+      "anonymous_receipt": {
+        "status": 403,
+        "origin_forbidden": true,
+        "private_cache": true
+      },
+      "fallback_warning_detected": false,
+      "safe_warning_dates": [],
+      "credentials_removed": true,
+      "isolated_local_config": true,
+      "request_had_origin_or_auth": false,
+      "external_provider_requests_authorized": false,
+      "raw_output_withheld": true
+    },
+    "decision": "Keep configured date; bundling and local runtime both verified without fallback.",
+    "limitation": "Local verification used installed Node 24.19.0; GitHub deployment workflow uses Node 22."
+  },
+  "operational_constraints": [
+    "Manual dispatch on default branch only",
+    "SQLite Durable Object binding stays on Free-compatible new_sqlite_classes migration",
+    "Observability disabled",
+    "App feature remains OFF",
+    "Anonymous verification never sends authentication or calls a price provider",
+    "Diagnostic PR requires separate merge and deployment authorization"
+  ]
+}

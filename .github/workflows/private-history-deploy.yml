@@ -24,79 +24,16 @@ jobs:
           node-version: '22'
       - name: Run mocked Worker tests without live providers
         run: node --test implementation/worker/tests/worker.test.mjs
-      - name: Deploy Worker and SQLite binding
+      - name: Test deployment diagnostics without live credentials
+        run: python -m unittest discover -s implementation/tests -p test_worker_deployment_diagnostics.py
+      - name: Preflight and deploy Worker and SQLite binding
         id: worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           WRANGLER_SEND_METRICS: 'false'
-        run: |
-          python - <<'PY'
-          import os, re, subprocess
-          try:
-              result = subprocess.run(
-                  ['npx', '--yes', 'wrangler@4.149.0', 'deploy', '--config', 'implementation/worker/wrangler.toml'],
-                  capture_output=True, text=True, timeout=300,
-              )
-          except (OSError, subprocess.TimeoutExpired):
-              raise SystemExit('WORKER_DEPLOY_COMMAND_FAILED') from None
-          # Keep raw CLI output out of public logs and artifacts.
-          if result.returncode:
-              raise SystemExit('WORKER_DEPLOY_FAILED: verify deployment credential names and account permissions')
-          matches = re.findall(r'https://private-investment-history\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.workers\.dev(?![a-zA-Z0-9.-])', result.stdout)
-          if not matches:
-              raise SystemExit('WORKER_DEPLOY_RETURNED_SUCCESS_BUT_URL_UNAVAILABLE: inspect Worker dashboard')
-          origin = matches[-1]
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
-              output.write('origin=' + origin + '\n')
-          print('WORKER_DEPLOY_SUCCEEDED: ' + origin)
-          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
-              summary.write('Worker address: ' + origin + '\n\n')
-          PY
+        run: python implementation/tools/deploy_private_history_worker.py deploy
       - name: Verify anonymous rejection without Google or Yahoo requests
         env:
           WORKER_ORIGIN: ${{ steps.worker.outputs.origin }}
-        run: |
-          python - <<'PY'
-          import json, os, re, urllib.error, urllib.request
-          origin = os.environ['WORKER_ORIGIN']
-          if not re.fullmatch(r'https://private-investment-history\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.workers\.dev', origin):
-              raise SystemExit('WORKER_ORIGIN_INVALID')
-          class NoRedirect(urllib.request.HTTPRedirectHandler):
-              def redirect_request(self, *args, **kwargs):
-                  return None
-          transport = urllib.request.build_opener(NoRedirect())
-          allowed = 'https://kco994553-star.github.io'
-          cases = [('NO_ORIGIN', {}), ('DISALLOWED_ORIGIN', {'Origin': 'https://invalid-origin.example'}), ('ALLOWED_ORIGIN_NO_AUTH', {'Origin': allowed})]
-          receipts = []
-          for name, headers in cases:
-              # No Authorization header or authentication token is supplied.
-              request = urllib.request.Request(origin + '/history?symbol=NVDA&range=1mo', headers=headers)
-              try:
-                  response = transport.open(request, timeout=30)
-              except urllib.error.HTTPError as error:
-                  response = error
-              except Exception:
-                  raise SystemExit('ANONYMOUS_CHECK_TRANSPORT_FAILED') from None
-              with response:
-                  status = response.status
-                  cors = response.headers.get('Access-Control-Allow-Origin')
-                  cache = response.headers.get('Cache-Control')
-                  payload = response.read(4097)
-              try:
-                  code = json.loads(payload)['error']['code'] if len(payload) <= 4096 else None
-              except Exception:
-                  code = None
-              if cache != 'private, no-store, max-age=0':
-                  raise SystemExit('ANONYMOUS_CHECK_CACHE_FAILED')
-              if name != 'ALLOWED_ORIGIN_NO_AUTH':
-                  if status != 403 or code != 'ORIGIN_FORBIDDEN' or cors is not None:
-                      raise SystemExit('ORIGIN_REJECTION_CHECK_FAILED')
-              elif cors != allowed or (status, code) not in [(503, 'CONFIG_UNAVAILABLE'), (403, 'AUTH_FORBIDDEN')]:
-                  raise SystemExit('ANONYMOUS_AUTH_CONFIG_CHECK_FAILED')
-              receipts.append(name + ': HTTP ' + str(status) + ' ' + code)
-          for receipt in receipts:
-              print(receipt)
-          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
-              summary.write('\n'.join('- ' + receipt for receipt in receipts) + '\n\nGoogle/Yahoo verification not run. App feature remains OFF.\n')
-          PY
+        run: python implementation/tools/deploy_private_history_worker.py verify
