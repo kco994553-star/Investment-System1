@@ -221,3 +221,54 @@ def test_explicit_private_input_cli_projects_and_masks_bad_paths(candidate, tmp_
     assert bad.returncode == 1
     assert bad.stdout == '' and bad.stderr.strip() == 'Pages public build failed'
     assert not (tmp_path / 'bad').exists()
+
+
+@pytest.mark.parametrize(('location', 'field', 'contradiction'), [
+    ('snapshot', 'V_policy_status', 'CALIBRATED'),
+    ('method', 'calibration', 'CALIBRATED'),
+    ('leaderboard_data', 'prices_used', True),
+    ('method', 'standard', 'v2'),
+    ('method', 'standard_status', 'CALIBRATED'),
+    ('leaderboard_data', 'calibration', 'CALIBRATED'),
+    ('leaderboard_data', 'standard', 'v2'),
+    ('leaderboard_data', 'standard_status', 'PRODUCTION'),
+    ('leaderboard_data', 'candidate_only', False),
+    ('leaderboard_data', 'publication_approved', True),
+    ('leaderboard_data', 'publication_eligible', True),
+    ('leaderboard_data', 'real_data_verified', True),
+    ('leaderboard_data', 'full_pit_historical', True),
+    ('v_candidate', 'calibration', 'CALIBRATED'),
+    ('v_candidate', 'lifecycle', 'CALIBRATED'),
+])
+def test_known_native_metadata_rejected_before_public_output(candidate, tmp_path, location, field, contradiction):
+    snapshot = candidate['candidate_data']['qgv']['data']['asml']
+    nodes = {'snapshot': snapshot, 'method': candidate['methodology']['existing_method'],
+             'leaderboard_data': candidate['candidate_data']['leaderboard']['data'],
+             'v_candidate': snapshot['v_candidates'][0]}
+    nodes[location][field] = contradiction
+    with pytest.raises(ValueError, match=r'^M2_CANDIDATE_INVALID$'):
+        build(tmp_path / 'site', sec_m2_candidate=candidate)
+    assert not (tmp_path / 'site').exists()
+
+
+@pytest.mark.parametrize('omission', ['method_absent', 'method_null', 'state_fields_absent', 'state_fields_null'])
+def test_optional_native_metadata_preserves_compatibility(candidate, omission):
+    expected = api().project_candidates(candidate)
+    method = candidate['methodology']['existing_method']
+    snapshot = candidate['candidate_data']['qgv']['data']['asml']
+    if omission == 'method_absent':
+        candidate['methodology'].pop('existing_method')
+    elif omission == 'method_null':
+        candidate['methodology']['existing_method'] = None
+    else:
+        for node, fields in [(method, ('calibration', 'standard', 'standard_status')),
+                             (snapshot, ('V_policy_status',)),
+                             (snapshot['v_candidates'][0], ('standard', 'calibration', 'lifecycle'))]:
+            for field in fields:
+                if omission == 'state_fields_absent':
+                    node.pop(field, None)
+                else:
+                    node[field] = None
+    # Arbitrary raw metadata still drops; validation is limited to known native nodes.
+    candidate['notes'] = {'calibration': 'private uninterpreted text'}
+    assert api().project_candidates(candidate) == expected

@@ -52,6 +52,16 @@ def _flags(value, expected):
         _need(value.get(key) == item and type(value.get(key)) is type(item))
 
 
+def _native_metadata(value):
+    """Validate claims at known native nodes; omitted optional state makes no claim."""
+    _flags(value, {})
+    for key, expected in {'standard': 'v1', 'calibration': 'UNCALIBRATED',
+                          'standard_status': 'STANDARD v1 · UNCALIBRATED',
+                          'V_policy_status': 'STANDARD v1 · UNCALIBRATED'}.items():
+        if value.get(key) is not None:
+            _need(value[key] == expected)
+
+
 def _keys(value, expected):
     _need(isinstance(value, dict) and set(value) == set(expected))
 
@@ -106,9 +116,11 @@ def _snapshot(snapshot, cid, row, synthetic, as_of):
     _need(snapshot['V_score'] is None)
     _need(snapshot.get('calibration') == 'UNCALIBRATED')
     _need(snapshot.get('standard') == 'v1' and snapshot.get('standard_status') == 'STANDARD v1 · UNCALIBRATED')
-    _flags(snapshot, {})
+    _native_metadata(snapshot)
     _need(isinstance(snapshot.get('v_candidates'), list))
     for candidate in snapshot['v_candidates']:
+        _native_metadata(candidate)
+        _need(candidate.get('lifecycle') in {None, 'RESEARCH', 'STANDARD v1 · UNCALIBRATED'})
         _need(candidate.get('v_score') is None)
     return (_score(snapshot['Q_score']), _score(snapshot['G_score']))
 
@@ -123,6 +135,9 @@ def _project(value):
     _flags(value['research_state'], {'status': 'PROVISIONAL_RESEARCH', 'candidate_only': True})
     _flags(value['publication'], {'status': 'NOT_RUN', 'grant': 'NONE'})
     _flags(value['methodology'], {'status': 'PROVISIONAL_RESEARCH'})
+    existing_method = value['methodology'].get('existing_method')
+    if existing_method is not None:
+        _native_metadata(existing_method)
     method = _hash(value['methodology']['method_sha256'])
     scope = value['scope']
     _flags(scope, {'basis': 'EXPLICIT_RECEIPTS_US17_SUBSET', 'public_500_rank': False})
@@ -146,6 +161,7 @@ def _project(value):
     # adapter_synthetic is adapter implementation metadata, not input provenance.
     _need(lb.get('adapter_synthetic') is False)
     lbdata = lb['data']
+    _native_metadata(lbdata)
     _need(lbdata['recomputed_qgv'] is False and _clock(lbdata['generated_at']) == cutoff)
     _hash(lbdata['leaderboard_snapshot_id'], 'sec_m2_lb_')
     lbrows = lbdata['rows']
