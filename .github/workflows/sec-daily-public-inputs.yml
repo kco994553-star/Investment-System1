@@ -1,13 +1,36 @@
-name: cockpit-pages
+name: SEC daily public reported inputs
 on:
-  pull_request:
+  schedule:
+    - cron: '17 22 * * *'
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  build:
+  dependency:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    outputs:
+      ready: ${{ steps.module.outputs.ready }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Check merged Codex2 collection module without credentials
+        id: module
+        run: |
+          python - <<'PYCODE'
+          import os
+          from pathlib import Path
+          ready = Path('implementation/src/investment_system/providers/sec_collection.py').is_file()
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('ready=' + str(ready).lower() + '\n')
+          print('SEC_MODULE_AVAILABLE' if ready else 'SEC_MODULE_NOT_MERGED')
+          PYCODE
+  build:
+    needs: dependency
+    if: needs.dependency.outputs.ready == 'true' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -23,6 +46,12 @@ jobs:
       - name: Build and inspect local price-free cockpit
         run: |
           python implementation/tools/build_pages_cockpit.py --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - name: Collect public SEC shares and filing metadata through Codex2 client
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          python implementation/tools/public_sec_inputs.py --live --output "$RUNNER_TEMP/public-cockpit/sec-public-inputs.json"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
@@ -56,22 +85,22 @@ jobs:
           node implementation/tools/technical_chart_browser_test.js
           node implementation/tools/private_trades_browser_test.js
           node implementation/tools/private_history_browser_test.js
-          node implementation/tools/private_history_fallback_browser_test.js
-          node implementation/tools/google_login_browser_test.js
           node implementation/tools/google_sheet_setup_browser_test.js
+          node implementation/tools/google_login_browser_test.js
+          node implementation/tools/private_history_fallback_browser_test.js
           (cd implementation && PYTHONPATH=src python -m tests.build_sec_m2_candidate_fixture --out "$RUNNER_TEMP/m2-test-sites")
           python -m http.server 8992 --bind 127.0.0.1 --directory "$RUNNER_TEMP/m2-test-sites" > "$RUNNER_TEMP/m2-test-server.log" 2>&1 &
           M2_SERVER_PID=$!
           trap 'kill "$SERVER_PID" "$M2_SERVER_PID"' EXIT
           M2_BROWSER_EVIDENCE="$RUNNER_TEMP/m2-browser-evidence" node implementation/tools/sec_m2_candidates_browser_test.js
 
-      - name: Upload checked price-free Pages artifact
-        if: github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm'
+      - name: Upload checked public SEC Pages artifact
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           path: ${{ runner.temp }}/public-cockpit
   deploy:
-    if: github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm'
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     needs: build
     runs-on: ubuntu-latest
     permissions:

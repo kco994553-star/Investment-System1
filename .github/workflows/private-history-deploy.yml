@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: '22'
       - name: Run mocked Worker tests without live providers
-        run: node --test implementation/worker/tests/worker.test.mjs
+        run: node --test implementation/worker/tests/*.test.mjs
       - name: Test deployment diagnostics without live credentials
         run: python -m unittest discover -s implementation/tests -p test_worker_deployment_diagnostics.py
       - name: Preflight and deploy Worker and SQLite binding

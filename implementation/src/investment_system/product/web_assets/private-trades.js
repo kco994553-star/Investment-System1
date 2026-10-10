@@ -26,8 +26,8 @@
   return Object.freeze({role:'USER_DEVICE_ONLY',rows:Object.freeze(rows),row_limit_reached:end-start>=LIMIT});
  }
  function sessionDate(timestamp,timezone){const parts=new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(timestamp*1000)),get=type=>parts.find(x=>x.type===type)?.value;return get('year')+'-'+get('month')+'-'+get('day');}
- function markers(parsed,bars,ticker,timezone){const dates=new Map();bars.forEach((b,i)=>{const day=sessionDate(b.timestamp,timezone);dates.set(day,dates.has(day)?null:i);});return parsed.rows.filter(r=>r.state==='USER_DEVICE_ONLY'&&r.symbol===ticker&&dates.has(r.date)&&dates.get(r.date)!==null).map(r=>Object.freeze({...r,bar_index:dates.get(r.date)}));}
- function source(view){const value=view.localStorage.getItem(KEY);if(value===null)return '';if(!/^[A-Za-z0-9_-]{20,100}$/.test(value))throw Error('TRADES_SOURCE_INVALID');return value;}
+ function markers(parsed,bars,ticker,timezone){const dates=new Map();bars.forEach((b,i)=>{const day=date(b.session_date)||sessionDate(b.timestamp,timezone);dates.set(day,dates.has(day)?null:i);});return parsed.rows.filter(r=>r.state==='USER_DEVICE_ONLY'&&r.symbol===ticker&&dates.has(r.date)&&dates.get(r.date)!==null).map(r=>Object.freeze({...r,bar_index:dates.get(r.date)}));}
+ function source(view){const unified=view.GoogleSheetSetup?.source(view);if(unified)return unified;const value=view.localStorage.getItem(KEY);if(value===null)return '';if(!/^[A-Za-z0-9_-]{20,100}$/.test(value))throw Error('TRADES_SOURCE_INVALID');return value;}
  async function read(view,session,{signal}={}){const id=source(view);if(!id)throw Error('TRADES_SOURCE_REQUIRED');const payload=await session.fetchValues(id,RANGE,{signal,maxBytes:1048576});return parse(payload.values);}
  function mountSettings(host,{locale='ko-KR'}={}){
   const doc=host.ownerDocument,view=doc.defaultView,english=locale==='en-US',make=(tag,text)=>{const n=doc.createElement(tag);if(text)n.textContent=text;return n;};

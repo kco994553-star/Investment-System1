@@ -25,17 +25,20 @@ from investment_system.public_price_boundary import require_public_bundle, requi
 
 
 from investment_system.product.sec_m2_candidates import require_public_candidates
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "private-trades.js": "99a986a1058cec69d83094e48d634bc08536c7075fb3eb03502fe5b0f7d9cd9d",
-    "technical-chart.js": "5819ccdff1573ef6c2009160de518f61c874126658f14576164a85e141357705",
+    "google-sheet-setup.js": "6627c571debea9b76daef4c1123aa9076b2fa025be6cd637150ec5510f1f05aa",
+    "private-trades.js": "86d59b4c5ef341ab47f1892fe65b483ca8256e367cfde06e1c9a0b580530fb9f",
+    "technical-chart.js": "64b581fd186cdcb39f31def58412052dfa777dc2920a4f2432c1842b19c65eb8",
     "chart-indicators.js": "30cf6571f32c0496acd247099feb5f71fce0acf8870dcd78781018b872291fcc",
     "device-backup.js": "d8229be35d744153ecd5cda57ca700aac080297bd3c80d7f07d076ba35d63323",
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
-    "app-config.js": "e69b8fe9fe492969a765a66f33170684e1d5fd0f40f47434cdb361a4b50a0361",
-    "app.js": "740ae9fa5d9f9abc74f7757b91fee2eeea8bd7d99d524730b0b392566e3154e8",
+    "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
+    "app.js": "83f915d09991b1a13ed12ca84f702fbdad8c6b7d4beb0433ba0bb7a993b754e1",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "05770dd8e99d40c43d320970549f7f91f8c93bd77496553c593172ab5a1f7407",
@@ -43,15 +46,16 @@ APPROVED_SHA256 = {
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "2f7740ca6f12a4385b501967ccf65b5860a875fa81cbe951c6dbc7ef43bd6880",
+    "google-sheet-quotes.js": "a944575fcbd4edb5269fe76da985c87e0805e5e392fd488d2a269789ab35b4d1",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "52f5b901cebfd68a77d99a29ae444f136140b14a917c0dd64fde404fdf8a02d6",
+    "index.html": "b41b6c6e68ed941bf4466752c5d03c3d48f68dd471cfa437eb5f83427f002743",
     "locale.js": "0e27312c7885dd1edbaf5c5eed939ba4b642695e5541653a21c786dcff9089fc",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
-    "private-history.js": "5c08a58d38b0be1cc757307f48ca8e98f048592421a9fa54adf897957b07d871",
+    "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "035930c2bdeb760f768562f8a9fb6b7aec703bc4663392b8f91db5796145b56e",
 }
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME}
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 64
@@ -153,7 +157,12 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
             payload = json.dumps(
                 value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False,
             ).encode("utf-8", errors="strict")
-        if hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
+        if name == SEC_PUBLIC_FILENAME:
+            try:
+                require_public_inputs(value)
+            except ValueError:
+                violations["sec_public_boundary"] += 1
+        elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
             violations["unapproved_content"] += 1
     except (ValueError, UnicodeError, RecursionError, OverflowError):
         violations["invalid_format"] += 1
@@ -190,14 +199,14 @@ def scan_artifact(artifact_dir: str | Path) -> dict:
                         violations["excessive_entries"] += 1
                         break
                     name = entry.name
-                    if name not in APPROVED_SHA256:
+                    if name not in ALLOWED_NAMES:
                         violations["unexpected_entries"] += 1
                     else:
                         seen.add(name)
                     if not entry.is_file(follow_symlinks=False):
                         violations["nonregular_entries"] += 1
                         continue
-                    if name not in APPROVED_SHA256:
+                    if name not in ALLOWED_NAMES:
                         continue
                     try:
                         fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=root_fd)
@@ -335,7 +344,7 @@ def validate_pages_tar(archive_path: str | Path) -> dict:
                             root_seen = True
                             continue
                         name = member.name[2:] if member.name.startswith("./") else member.name
-                        if name not in APPROVED_SHA256:
+                        if name not in ALLOWED_NAMES:
                             violations["unexpected_entries"] += 1
                         elif name in seen:
                             violations["duplicate_entries"] += 1
@@ -344,7 +353,7 @@ def validate_pages_tar(archive_path: str | Path) -> dict:
                         if member.type not in {tarfile.REGTYPE, tarfile.AREGTYPE}:
                             violations["nonregular_entries"] += 1
                             continue
-                        if name not in APPROVED_SHA256:
+                        if name not in ALLOWED_NAMES:
                             continue
                         if member.size < 0 or member.size > MAX_FILE_BYTES:
                             violations["oversized_files"] += 1
