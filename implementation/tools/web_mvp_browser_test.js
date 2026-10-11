@@ -5,6 +5,7 @@
 // lives on the watchlist screen. The old demo-fixture checks (a 90.79 QGV score, the Track D network page) can no longer
 // be built or served, so the equivalent checks assert the fail-closed behaviour instead.
 const { chromium } = require("playwright");
+const { routeEmptyPublicScreens } = require("./empty_public_screens.js");
 const fs = require("fs");
 const os = require("node:os");
 const path = require("node:path");
@@ -32,6 +33,7 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
     permissions: ["clipboard-read", "clipboard-write"],
   });
   await ctx.route("**/*", guard);
+  await routeEmptyPublicScreens(ctx);
   const page = await ctx.newPage();
   responses(page);
   const errors = [];
@@ -214,6 +216,7 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
     // Screenshots only from a fresh context: no interests, groups or other device records are present.
     const fresh = await browser.newContext({ viewport: { width: 390, height: 844 } });
     await fresh.route("**/*", guard);
+    await routeEmptyPublicScreens(fresh);
     const shot = await fresh.newPage();
     responses(shot);
     for (const name of ["home", "portfolio", "company/nvda", "news", "research"]) {

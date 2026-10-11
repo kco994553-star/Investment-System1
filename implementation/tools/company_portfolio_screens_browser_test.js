@@ -1,6 +1,7 @@
 'use strict';
+const {routeEmptyPublicScreens}=require('./empty_public_screens.js');
 // Design canvas S03 portfolio, S04 company summary, S05 company analysis.
-// Phase A: empty device and the published public build (everything missing must read NOT_AVAILABLE, never 0).
+// Phase A: empty device and empty public screens (served from the offline-build fixture, also on live deploy builds) (everything missing must read NOT_AVAILABLE, never 0).
 // Phase B: synthetic, schema-valid sec-qg-factors / company-types-pricefree / sec-filing-windows served by route
 // interception only, plus ACTUAL holdings entered on a throw-away browser context (RAM-only exposure maths).
 const {chromium}=require('playwright'),assert=require('node:assert/strict');
@@ -26,7 +27,7 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let phase='START',pass=0,fail=0;
  try{for(const width of [390,1440]){
   // ---------- Phase A: empty device, public build as published ----------
-  {const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),page=await context.newPage();page.setDefaultTimeout(15000);let errors=0;page.on('pageerror',()=>errors++);
+  {const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});await routeEmptyPublicScreens(context);const page=await context.newPage();page.setDefaultTimeout(15000);let errors=0;page.on('pageerror',()=>errors++);
    try{
     phase='S04-EMPTY';await open(page,'company/nvda','[data-company-card="qgv"]');
     assert.equal(await text(page,'main h1'),'NVDA');assert.equal(await page.locator('main button.star').count(),1);

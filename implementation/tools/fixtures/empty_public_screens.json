@@ -1,0 +1,1868 @@
+{
+ "company-types-pricefree.json": {
+  "as_of": "2026-01-01T00:00:00+00:00",
+  "data": {
+   "availability_basis": "OBSERVED_CAPTURE_ONLY",
+   "companies": {
+    "amd": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "amzn": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "asml": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "avgo": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "etn": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "gev": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "googl": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "hanmi": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "hubb": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "intc": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "klac": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "lrcx": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "msft": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "nvda": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "qcom": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "rok": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "rtx": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "stry": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "tokyo_electron": {
+     "config_version": null,
+     "memberships": {
+      "cyclical": null,
+      "defensive": null,
+      "growth": null,
+      "quality": null
+     },
+     "metrics": {
+      "revenue_cagr_3y": null,
+      "roic": null
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    }
+   },
+   "method_status": "PROVISIONAL_UNCALIBRATED"
+  },
+  "freshness_basis": "SOURCE_ACQUISITION",
+  "kind": "COMPANY_TYPES_PRICEFREE",
+  "reason_codes": [
+   "NO_ELIGIBLE_INPUT"
+  ],
+  "schema_version": 1,
+  "sources": [],
+  "stale_after_seconds": 86400.0,
+  "state": "NOT_AVAILABLE"
+ },
+ "macro-screen.json": {
+  "as_of": "2026-01-01T00:00:00+00:00",
+  "data": {
+   "axes": [
+    "Growth",
+    "Inflation",
+    "Liquidity",
+    "Monetary Policy",
+    "Credit",
+    "Labor",
+    "Fiscal",
+    "FX"
+   ],
+   "cells": [
+    {
+     "axis": "Growth",
+     "dimension": "Level",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Growth",
+     "dimension": "Direction",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Growth",
+     "dimension": "Momentum",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Growth",
+     "dimension": "Surprise",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Growth",
+     "dimension": "Stress",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Growth",
+     "dimension": "Confidence",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Inflation",
+     "dimension": "Level",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Inflation",
+     "dimension": "Direction",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Inflation",
+     "dimension": "Momentum",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Inflation",
+     "dimension": "Surprise",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Inflation",
+     "dimension": "Stress",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Inflation",
+     "dimension": "Confidence",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Liquidity",
+     "dimension": "Level",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Liquidity",
+     "dimension": "Direction",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Liquidity",
+     "dimension": "Momentum",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Liquidity",
+     "dimension": "Surprise",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Liquidity",
+     "dimension": "Stress",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Liquidity",
+     "dimension": "Confidence",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Monetary Policy",
+     "dimension": "Level",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Monetary Policy",
+     "dimension": "Direction",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Monetary Policy",
+     "dimension": "Momentum",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Monetary Policy",
+     "dimension": "Surprise",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Monetary Policy",
+     "dimension": "Stress",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Monetary Policy",
+     "dimension": "Confidence",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Credit",
+     "dimension": "Level",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Credit",
+     "dimension": "Direction",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Credit",
+     "dimension": "Momentum",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Credit",
+     "dimension": "Surprise",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Credit",
+     "dimension": "Stress",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Credit",
+     "dimension": "Confidence",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Labor",
+     "dimension": "Level",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Labor",
+     "dimension": "Direction",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Labor",
+     "dimension": "Momentum",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Labor",
+     "dimension": "Surprise",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Labor",
+     "dimension": "Stress",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Labor",
+     "dimension": "Confidence",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Fiscal",
+     "dimension": "Level",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Fiscal",
+     "dimension": "Direction",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Fiscal",
+     "dimension": "Momentum",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Fiscal",
+     "dimension": "Surprise",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Fiscal",
+     "dimension": "Stress",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "Fiscal",
+     "dimension": "Confidence",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "FX",
+     "dimension": "Level",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "FX",
+     "dimension": "Direction",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "FX",
+     "dimension": "Momentum",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "FX",
+     "dimension": "Surprise",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "FX",
+     "dimension": "Stress",
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "axis": "FX",
+     "dimension": "Confidence",
+     "state": "NOT_AVAILABLE"
+    }
+   ],
+   "dimensions": [
+    "Level",
+    "Direction",
+    "Momentum",
+    "Surprise",
+    "Stress",
+    "Confidence"
+   ],
+   "observations": [],
+   "pit_status": "NOT_VERIFIED",
+   "regime": null
+  },
+  "freshness_basis": "SOURCE_ACQUISITION",
+  "kind": "MACRO",
+  "reason_codes": [
+   "UNAPPROVED_ENGINE_INPUT_MAPPING",
+   "PUBLIC_FX_EXCLUDED"
+  ],
+  "schema_version": 1,
+  "sources": [],
+  "stale_after_seconds": 86400.0,
+  "state": "NOT_AVAILABLE"
+ },
+ "sec-13f-changes.json": {
+  "as_of": "2026-01-01T00:00:00+00:00",
+  "data": {
+   "reports": [],
+   "role": "REPORTED_QUANTITY_CHANGE_NOT_TRADES"
+  },
+  "freshness_basis": "SOURCE_ACQUISITION",
+  "kind": "SEC_13F",
+  "reason_codes": [
+   "NO_ELIGIBLE_INPUT"
+  ],
+  "schema_version": 1,
+  "sources": [],
+  "stale_after_seconds": 86400.0,
+  "state": "NOT_AVAILABLE"
+ },
+ "sec-filing-windows.json": {
+  "as_of": "2026-01-01T00:00:00+00:00",
+  "data": {
+   "companies": {
+    "amd": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "amzn": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "asml": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "avgo": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "etn": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "gev": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "googl": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "hanmi": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "hubb": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "intc": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "klac": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "lrcx": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "msft": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "nvda": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "qcom": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "rok": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "rtx": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "stry": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "tokyo_electron": {
+     "confirmed_earnings_date": null,
+     "groups": [],
+     "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    }
+   }
+  },
+  "freshness_basis": "SOURCE_ACQUISITION",
+  "kind": "SEC_FILING_WINDOWS",
+  "reason_codes": [
+   "NO_ELIGIBLE_INPUT"
+  ],
+  "schema_version": 1,
+  "sources": [],
+  "stale_after_seconds": 86400.0,
+  "state": "NOT_AVAILABLE"
+ },
+ "sec-qg-factors.json": {
+  "as_of": "2026-01-01T00:00:00+00:00",
+  "data": {
+   "availability_basis": "OBSERVED_CAPTURE_ONLY",
+   "companies": {
+    "amd": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "amzn": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "asml": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "avgo": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "etn": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "gev": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "googl": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "hanmi": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "hubb": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "intc": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "klac": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "lrcx": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "msft": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "nvda": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "qcom": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "rok": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "rtx": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "stry": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    },
+    "tokyo_electron": {
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE"
+    }
+   },
+   "method_status": "PROVISIONAL_UNCALIBRATED"
+  },
+  "freshness_basis": "SOURCE_ACQUISITION",
+  "kind": "SEC_QG_FACTORS",
+  "reason_codes": [
+   "NO_ELIGIBLE_INPUT"
+  ],
+  "schema_version": 1,
+  "sources": [],
+  "stale_after_seconds": 86400.0,
+  "state": "NOT_AVAILABLE"
+ }
+}

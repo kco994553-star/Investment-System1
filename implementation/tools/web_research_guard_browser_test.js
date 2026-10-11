@@ -9,6 +9,7 @@
 // only (never served, never persisted), asserting the original G3 behaviour route by route.
 "use strict";
 const { chromium } = require("playwright");
+const { routeEmptyPublicScreens } = require("./empty_public_screens.js");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const os = require("node:os");
@@ -69,6 +70,7 @@ async function main() {
       }
       await route.continue();
     });
+    await routeEmptyPublicScreens(context);
     const page = await context.newPage();
     page.on("pageerror", (e) => errors.push(e.message));
     // The optional SEC sidecar is absent from a build without collection; any other failure stays an error.
