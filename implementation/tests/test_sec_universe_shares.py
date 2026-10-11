@@ -380,3 +380,133 @@ def test_browser_reader_validator_agrees_with_python_validator():
         bad = mutate(path, value)
         result = subprocess.run(['node', '-e', script, str(reader)], input=json.dumps(bad), text=True, capture_output=True)
         assert result.stdout.strip() == 'REJECT'
+
+
+# ---- unlisted cover class (decision 2026-10-11: Alphabet Class B valued at the Class A price) ----
+ALPHA = '0001652044'
+
+
+def alpha_cover(class_b=(300,), goog_title='Class C Common Stock'):
+    """Synthetic Alphabet-shaped cover: Class A (GOOGL) and Class C (GOOG) listed, Class B on the cover without a symbol."""
+    ns = ('<xbrl xmlns="http://www.xbrl.org/2003/instance" xmlns:xbrli="http://www.xbrl.org/2003/instance" '
+          'xmlns:g="http://fasb.org/us-gaap/2026" xmlns:dei="http://xbrl.sec.gov/dei/2026" xmlns:d="http://xbrl.org/2006/xbrldi">')
+    ctx = lambda id_, member: (f'<context id="{id_}"><entity><identifier scheme="http://www.sec.gov/CIK">{ALPHA}</identifier>'
+                               f'<segment><d:explicitMember dimension="g:StatementClassOfStockAxis">g:{member}</d:explicitMember></segment>'
+                               '</entity><period><instant>2026-09-25</instant></period></context>')
+    fact = lambda id_, value: f'<dei:EntityCommonStockSharesOutstanding contextRef="{id_}" unitRef="u">{value}</dei:EntityCommonStockSharesOutstanding>'
+    body = ns + '<unit id="u"><measure>xbrli:shares</measure></unit>'
+    body += ctx('a', 'CommonClassAMember') + ctx('c', 'CommonClassCMember')
+    body += '<dei:TradingSymbol contextRef="a">GOOGL</dei:TradingSymbol><dei:Security12bTitle contextRef="a">Class A Common Stock</dei:Security12bTitle>'
+    body += f'<dei:TradingSymbol contextRef="c">GOOG</dei:TradingSymbol><dei:Security12bTitle contextRef="c">{goog_title}</dei:Security12bTitle>'
+    body += fact('a', 5800) + fact('c', 5400)
+    for i, value in enumerate(class_b):
+        body += ctx(f'b{i}', 'CommonClassBMember') + fact(f'b{i}', value)
+    return (body + '</xbrl>').encode()
+
+
+def alpha_records(**cover_kwargs):
+    subs = json.dumps({'cik': int(ALPHA), 'tickers': ['GOOGL', 'GOOG'], 'exchanges': ['Nasdaq', 'Nasdaq'], 'filings': {'recent': {
+        'accessionNumber': [accn(ALPHA)], 'form': ['10-Q'], 'filingDate': ['2026-10-01'],
+        'acceptanceDateTime': ['2026-10-01T12:00:00Z'], 'reportDate': ['2026-09-30'], 'primaryDocument': ['goog-20260930.htm']}}}).encode()
+    return m.build_issuer_records(codes=('NASDAQ:GOOGL', 'NASDAQ:GOOG'), cik=ALPHA, companyfacts_body=facts(ALPHA, 5800), submissions_body=subs,
+                                  acquired_at=NOW, as_of=NOW, cover_xml=alpha_cover(**cover_kwargs), cover_accession=accn(ALPHA), cover_acquired_at=NOW)
+
+
+def test_unlisted_class_b_count_is_published_from_the_same_cover_as_googl():
+    records, unlisted = alpha_records()
+    googl, goog = records['NASDAQ:GOOGL'], records['NASDAQ:GOOG']
+    assert googl['share_class_basis'] == goog['share_class_basis'] == 'SHARE_CLASS_BASIS'
+    assert googl['basis_evidence']['class_members'] == ['CommonClassAMember', 'CommonClassBMember', 'CommonClassCMember']
+    assert unlisted == {'alphabet': {'cik': ALPHA, 'valued_at': 'NASDAQ:GOOGL', 'accn': googl['accn'], 'measurement_date': '2026-09-25',
+                                     'cover_sha256': googl['source_sha256']['cover'], 'classes': [{'class_member': 'CommonClassBMember', 'shares': 300}],
+                                     'state': 'LIVE', 'reason_codes': []}}
+    payload = merged(records, unlisted_updates=unlisted)
+    assert payload['unlisted_classes'] == unlisted
+    body = m.encode(payload)
+    assert m.require_universe_shares(m.parse_json(body))['unlisted_classes']['alphabet']['classes'][0]['shares'] == 300
+    assert not {'price', 'marketcap', 'market_cap', 'rank'} & set(json.dumps(payload['unlisted_classes']).lower().replace('"', ' ').split())
+
+
+@pytest.mark.parametrize('class_b,reason', [((), 'UNLISTED_CLASS_SHARES_NOT_AVAILABLE'), ((300, 310), 'UNLISTED_CLASS_AMBIGUOUS')])
+def test_unlisted_class_b_missing_or_ambiguous_is_not_available_never_zero(class_b, reason):
+    records, unlisted = alpha_records(class_b=class_b)
+    entry = unlisted['alphabet']
+    assert entry['classes'] == [] and entry['state'] == 'NOT_AVAILABLE' and entry['reason_codes'] == [reason]
+    assert entry['accn'] is None and entry['measurement_date'] is None and entry['cover_sha256'] is None
+    assert merged(records, unlisted_updates=unlisted)['unlisted_classes']['alphabet'] == entry
+
+
+def test_capital_stock_title_stays_basis_unconfirmed_general_rule_not_loosened():
+    """Real-data confirmation of GOOG's cover title is pending: the general title rule is unchanged."""
+    records, unlisted = alpha_records(goog_title='Class C Capital Stock')
+    assert records['NASDAQ:GOOG']['share_class_basis'] == 'BASIS_UNCONFIRMED' and records['NASDAQ:GOOG']['reason_codes'] == ['BASIS_UNCONFIRMED']
+    assert records['NASDAQ:GOOGL']['share_class_basis'] == 'SHARE_CLASS_BASIS' and unlisted['alphabet']['state'] == 'LIVE'
+
+
+def test_unlisted_entry_follows_its_listing_row_through_merge_and_staleness():
+    records, unlisted = alpha_records()
+    first = merged(records, unlisted_updates=unlisted)
+    kept = merged({'NASDAQ:GOOGL': m.empty_record(cik=ALPHA, reasons=('SHARES_NOT_AVAILABLE',))}, previous=first, as_of=NOW + timedelta(days=1))
+    assert kept['unlisted_classes'] == first['unlisted_classes']
+    stale = merged(previous=first, as_of=NOW + timedelta(days=15))
+    entry = stale['unlisted_classes']['alphabet']
+    assert entry['state'] == 'STALE' and entry['reason_codes'] == ['STALE_INPUT'] and entry['classes'][0]['shares'] == 300
+    replaced = merged({'NASDAQ:GOOGL': records['NASDAQ:GOOGL']}, previous=first)  # row replaced without a new entry
+    assert replaced['unlisted_classes']['alphabet']['state'] == 'NOT_AVAILABLE'
+    assert replaced['unlisted_classes']['alphabet']['reason_codes'] == ['UNLISTED_CLASS_SHARES_NOT_AVAILABLE']
+    assert merged()['unlisted_classes']['alphabet']['reason_codes'] == ['NOT_COLLECTED']
+
+
+def test_legacy_previous_copy_is_upgraded_not_discarded(tmp_path, capsys):
+    tool = load_tool('sec_universe_shares')
+    legacy = merged({'NASDAQ:ADBE': record()})
+    del legacy['unlisted_classes']
+    with pytest.raises(ValueError, match='SEC_UNIVERSE_SHARES_INVALID'):
+        m.require_universe_shares(legacy)
+    body = json.dumps(legacy).encode()
+    assert tool.run(tmp_path, live=False, preserve_only=True, now=lambda: NOW + timedelta(hours=1),
+                    open_previous=lambda r, **_: Response(r.full_url, body)) == 0
+    assert 'PREVIOUS_RESTORED' in capsys.readouterr().out
+    out = json.loads((tmp_path / m.FILENAME).read_text())
+    assert out['records']['NASDAQ:ADBE']['shares'] == 100 and out['unlisted_classes']['alphabet']['reason_codes'] == ['NOT_COLLECTED']
+
+
+def alpha_payload():
+    records, unlisted = alpha_records()
+    return merged(records, unlisted_updates=unlisted)
+
+
+@pytest.mark.parametrize('mutate', [
+    lambda p: p.pop('unlisted_classes'),
+    lambda p: p['unlisted_classes'].update(fox=p['unlisted_classes']['alphabet']),
+    lambda p: p['unlisted_classes']['alphabet']['classes'][0].update(shares=0),
+    lambda p: p['unlisted_classes']['alphabet']['classes'][0].update(shares=-1),
+    lambda p: p['unlisted_classes']['alphabet']['classes'][0].update(shares=True),
+    lambda p: p['unlisted_classes']['alphabet']['classes'][0].update(shares='300'),
+    lambda p: p['unlisted_classes']['alphabet']['classes'][0].update(price=1),
+    lambda p: p['unlisted_classes']['alphabet'].update(market_cap=1),
+    lambda p: p['unlisted_classes']['alphabet']['classes'][0].update(class_member='CommonClassAMember'),
+    lambda p: p['unlisted_classes']['alphabet']['classes'][0].update(class_member='CommonClassDMember'),
+    lambda p: p['unlisted_classes']['alphabet'].update(accn='0001652044-26-000009'),
+    lambda p: p['unlisted_classes']['alphabet'].update(measurement_date='2026-09-24'),
+    lambda p: p['unlisted_classes']['alphabet'].update(cover_sha256='0' * 64),
+    lambda p: p['unlisted_classes']['alphabet'].update(state='STALE'),
+    lambda p: p['unlisted_classes']['alphabet'].update(valued_at='NASDAQ:GOOG'),
+    lambda p: p['unlisted_classes']['alphabet'].update(cik='0000000001'),
+    lambda p: p['unlisted_classes']['alphabet'].update(reason_codes=['RANK']),
+    lambda p: p['unlisted_classes']['alphabet']['classes'].append({'class_member': 'CommonClassBMember', 'shares': 300}),
+    lambda p: p['unlisted_classes']['alphabet'].update(classes=[], state='NOT_AVAILABLE', reason_codes=[]),
+    lambda p: p['unlisted_classes']['alphabet'].update(classes=[], state='NOT_AVAILABLE', reason_codes=['UNLISTED_CLASS_SHARES_NOT_AVAILABLE']),
+])
+def test_unlisted_validator_is_strict_in_python_and_js(mutate):
+    payload = alpha_payload()
+    assert m.require_universe_shares(payload) is payload
+    mutate(payload)
+    with pytest.raises(ValueError, match='SEC_UNIVERSE_SHARES_INVALID'):
+        m.require_universe_shares(payload)
+    if shutil.which('node') is not None:
+        reader = ROOT / 'src/investment_system/product/web_assets/sec-universe-shares.js'
+        script = ("const a=require(process.argv[1]),p=JSON.parse(require('fs').readFileSync(0,'utf8'));"
+                  "try{a.validate(p);console.log('OK')}catch(e){console.log('REJECT')}")
+        out = subprocess.run(['node', '-e', script, str(reader)], input=json.dumps(payload), text=True, capture_output=True).stdout.strip()
+        assert out == 'REJECT'

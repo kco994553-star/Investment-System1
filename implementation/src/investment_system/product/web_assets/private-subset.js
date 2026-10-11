@@ -1,7 +1,7 @@
 /* #106/#110 supplied-input M3 port. No provider, model, storage or public serializer. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.PrivateSubset=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
  'use strict';
- const CODES=new Set(['UNIVERSE_SCHEMA_MISMATCH','MANIFEST_MISMATCH','SOURCE_TOO_LARGE','ROW_LIMIT_REACHED','IDENTITY_UNCONFIRMED','CURRENCY_SCOPE_NOT_SUPPORTED','MIXED_SYNTHETIC_INPUT','GOOGLE_MCAP_MISSING','GOOGLE_MCAP_INVALID','PRICE_NOT_AVAILABLE','INVALID_INPUT','INVALID_TIMESTAMP','INVALID_TIME_ORDER','AVAILABLE_AFTER_AS_OF','BASIS_UNCONFIRMED','CIK_MISMATCH','ACCESSION_UNCONFIRMED','SHARES_NOT_AVAILABLE','MULTI_CLASS_AMBIGUOUS','NONFINITE_MCAP','CONFIG_CONFIRMATION_REQUIRED','DUPLICATE_ISSUER','VALIDATION_INCOMPLETE','SHARE_CLASS_BASIS','STALE_INPUT','SHARE_CLASS_GROUP_INCOMPLETE','SHARE_CLASS_GROUP_MISMATCH']);
+ const CODES=new Set(['UNIVERSE_SCHEMA_MISMATCH','MANIFEST_MISMATCH','SOURCE_TOO_LARGE','ROW_LIMIT_REACHED','IDENTITY_UNCONFIRMED','CURRENCY_SCOPE_NOT_SUPPORTED','MIXED_SYNTHETIC_INPUT','GOOGLE_MCAP_MISSING','GOOGLE_MCAP_INVALID','PRICE_NOT_AVAILABLE','INVALID_INPUT','INVALID_TIMESTAMP','INVALID_TIME_ORDER','AVAILABLE_AFTER_AS_OF','BASIS_UNCONFIRMED','CIK_MISMATCH','ACCESSION_UNCONFIRMED','SHARES_NOT_AVAILABLE','MULTI_CLASS_AMBIGUOUS','NONFINITE_MCAP','CONFIG_CONFIRMATION_REQUIRED','DUPLICATE_ISSUER','VALIDATION_INCOMPLETE','SHARE_CLASS_BASIS','STALE_INPUT','SHARE_CLASS_GROUP_INCOMPLETE','SHARE_CLASS_GROUP_MISMATCH','UNLISTED_CLASS_SHARES_NOT_AVAILABLE','UNLISTED_CLASS_AMBIGUOUS']);
  const codes=x=>Array.isArray(x)&&x.every(v=>typeof v==='string'&&CODES.has(v));
  const text=x=>typeof x==='string'&&Boolean(x.trim()),hash=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x),positive=x=>typeof x==='number'&&Number.isFinite(x)&&x>0&&(!Number.isInteger(x)||Number.isSafeInteger(x));
  const day=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x)&&Number.isFinite(Date.parse(x+'T00:00:00Z'))&&new Date(x+'T00:00:00Z').toISOString().slice(0,10)===x;
@@ -95,24 +95,39 @@
   const cap=shares.shares*price.price;if(!positive(cap))return result('NONFINITE_MCAP');if(row.google_mcap===null)return result(null,cap,null,row.reason_codes.includes('GOOGLE_MCAP_MISSING')?'GOOGLE_MCAP_MISSING':'GOOGLE_MCAP_INVALID');if(!positive(row.google_mcap))return result('INVALID_INPUT');const diff=relative(row.google_mcap,cap,config.relative_tolerance);if(!Number.isFinite(diff.value))return result('NONFINITE_MCAP');return result(null,cap,diff.value,diff.mismatch?'MISMATCH':'WITHIN_TOLERANCE');
  }
  /* share_class_groups/v0 config shape (mirrors Python validate_share_class_groups). Throws SHARE_CLASS_GROUPS_INVALID. */
- const GROUP_LABEL='경제적 동일 종류 합산 · v0';
+ const GROUP_LABEL='경제적 동일 종류 합산 · v0',UNLISTED_BASIS='UNLISTED_CLASS_VALUED_AT_CLASS_A',UNLISTED_DECISION='USER_DECISION_2026_10_11_UNLISTED_CLASS_VALUED_AT_CLASS_A_PRICE';
  function validateShareClassGroups(config,codes=null){
   const need=x=>{if(!x)throw Error('SHARE_CLASS_GROUPS_INVALID');},plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x),keys=(x,k)=>plain(x)&&Object.keys(x).length===k.length&&k.every(n=>Object.hasOwn(x,n));
   need(keys(config,['config_version','config_status','decision','basis','groups'])&&config.config_version==='share_class_groups/v0'&&config.config_status==='V0_UNCALIBRATED'&&typeof config.decision==='string'&&typeof config.basis==='string'&&Array.isArray(config.groups)&&config.groups.length<=64);
   const ids=new Set(),ciks=new Set(),seen=new Set();
-  for(const g of config.groups){need(keys(g,['group_id','cik','codes','cover_class_count'])&&typeof g.group_id==='string'&&/^[a-z0-9_]{1,64}$/.test(g.group_id)&&!ids.has(g.group_id)&&typeof g.cik==='string'&&/^\d{10}$/.test(g.cik)&&g.cik!=='0000000000'&&!ciks.has(g.cik));
+  for(const g of config.groups){need(keys(g,['group_id','cik','codes','cover_class_count','unlisted'])&&typeof g.group_id==='string'&&/^[a-z0-9_]{1,64}$/.test(g.group_id)&&!ids.has(g.group_id)&&typeof g.cik==='string'&&/^\d{10}$/.test(g.cik)&&g.cik!=='0000000000'&&!ciks.has(g.cik));
    const m=g.codes;need(Array.isArray(m)&&m.length>=2&&m.length<=8&&new Set(m).size===m.length&&m.every(c=>typeof c==='string'&&/^(NASDAQ|NYSE):[A-Z0-9][A-Z0-9.\-]{0,15}$/.test(c)&&!seen.has(c))&&(codes===null||m.every(c=>codes.includes(c))));
-   need(Number.isInteger(g.cover_class_count)&&g.cover_class_count>=m.length&&g.cover_class_count<=16);ids.add(g.group_id);ciks.add(g.cik);m.forEach(c=>seen.add(c));}
+   need(Number.isInteger(g.cover_class_count)&&g.cover_class_count>=m.length&&g.cover_class_count<=16);
+   /* Unlisted cover classes must be valued explicitly (1:1 at one listed class) or the group cannot exist. */
+   const u=g.unlisted;need((u===null)===(g.cover_class_count===m.length));if(u!==null)need(keys(u,['valued_at','conversion_ratio','basis','decision'])&&typeof u.valued_at==='string'&&m.includes(u.valued_at)&&u.conversion_ratio===1&&u.basis===UNLISTED_BASIS&&u.decision===UNLISTED_DECISION);
+   ids.add(g.group_id);ciks.add(g.cik);m.forEach(c=>seen.add(c));}
   return config;
  }
- /* share_class_groups/v0 (mirrors Python prepare_share_class_groups): company cap = sum of (class cover shares x class Sheet price) over every configured class, all-or-nothing. RAM only. */
- function prepareShareClassGroups(parsed,records,asof,config,quality={relative_tolerance:.1,confirmed:true}){
+ /* Unlisted cover classes of one group (mirrors Python _unlisted_classes): [failure, names, shares, sum]. */
+ function unlistedClasses(group,members,codes,records,entry){
+  const incomplete=['SHARE_CLASS_GROUP_INCOMPLETE','UNLISTED_CLASS_SHARES_NOT_AVAILABLE'],mismatch=['SHARE_CLASS_GROUP_MISMATCH','UNLISTED_CLASS_AMBIGUOUS'],none=f=>[f,[],[],0];
+  if(!entry||typeof entry!=='object'||Array.isArray(entry))return none(incomplete);if(Array.isArray(entry.reason_codes)&&entry.reason_codes.includes('UNLISTED_CLASS_AMBIGUOUS'))return none(mismatch);
+  const classes=entry.classes;if(entry.state!=='LIVE'||!Array.isArray(classes)||!classes.length)return none(incomplete);
+  const spec=group.unlisted,anchor=Object.hasOwn(records,spec.valued_at)?records[spec.valued_at]:null,first=members[codes.indexOf(spec.valued_at)],cover=anchor&&anchor.source_sha256&&typeof anchor.source_sha256==='object'?anchor.source_sha256.cover:null;
+  if(entry.cik!==group.cik||entry.valued_at!==spec.valued_at||entry.accn!==first.accn||entry.measurement_date!==first.measured||!hash(entry.cover_sha256)||entry.cover_sha256!==cover)return none(mismatch);
+  const names=[],values=[];for(const item of classes){if(!item||typeof item!=='object'||typeof item.class_member!=='string'||!positive(item.shares))return none(incomplete);names.push(item.class_member);values.push(item.shares);}
+  const listed=new Set(members.map(m=>m.member));if(new Set(names).size!==names.length||names.some(n=>listed.has(n)||!first.classes.includes(n))||names.length+members.length!==group.cover_class_count)return none(mismatch);
+  let total=0;for(const v of values)total+=v*spec.conversion_ratio;return [null,names,values,total];
+ }
+ /* share_class_groups/v0 (mirrors Python prepare_share_class_groups): company cap = sum of (class cover shares x class Sheet price) over every configured class, all-or-nothing; an unlisted cover class (decision 2026-10-11) adds 1:1 to `unlisted.valued_at` shares at that class's price. RAM only. */
+ function prepareShareClassGroups(parsed,records,asof,config,quality={relative_tolerance:.1,confirmed:true},unlisted={}){
   validateShareClassGroups(config);if(!parsed||!Array.isArray(parsed.rows)||!parsed.receipt||!records||typeof records!=='object')return freeze([]);
   const INCOMPLETE='SHARE_CLASS_GROUP_INCOMPLETE',MISMATCH='SHARE_CLASS_GROUP_MISMATCH',out=[];
   for(const group of config.groups){
    const codes=[...group.codes],byCode=new Map();for(const row of parsed.rows)if(row&&codes.includes(row.code)&&!byCode.has(row.code))byCode.set(row.code,row);if(!byCode.size)continue;
    const anchor=byCode.get(codes.find(c=>byCode.has(c))),present=codes.filter(c=>byCode.has(c)).map(c=>byCode.get(c).row_index);
-   const result=(reasons=[],cap=null,diff=null,q='UNCONFIRMED',shares=[])=>{const good=!reasons.length;return freeze({group_id:group.group_id,config_version:config.config_version,cik:group.cik,row_index:anchor.row_index,listing:anchor.listing,member_codes:freeze(codes),member_row_indexes:freeze(present),member_symbols:freeze(codes.filter(c=>byCode.has(c)).map(c=>byCode.get(c).listing?byCode.get(c).listing.symbol:c)),member_shares:freeze(good?shares:[]),cover_class_count:group.cover_class_count,state:good?'VERIFIED':'NOT_AVAILABLE',recomputed_cap:cap,google_mcap:anchor.google_mcap,relative_difference:diff,effective_cap:cap,quality:q,quality_label:good?GROUP_LABEL+(q==='MISMATCH'?' · 검증 불일치':''):'',reason_codes:freeze([...new Set(reasons)]),content_sha256:parsed.receipt.content_sha256,synthetic:parsed.synthetic});};
+   const spec=group.unlisted;
+   const result=(reasons=[],cap=null,diff=null,q='UNCONFIRMED',shares=[],extra=[[],[]])=>{const good=!reasons.length;return freeze({group_id:group.group_id,config_version:config.config_version,cik:group.cik,row_index:anchor.row_index,listing:anchor.listing,member_codes:freeze(codes),member_row_indexes:freeze(present),member_symbols:freeze(codes.filter(c=>byCode.has(c)).map(c=>byCode.get(c).listing?byCode.get(c).listing.symbol:c)),member_shares:freeze(good?shares:[]),cover_class_count:group.cover_class_count,state:good?'VERIFIED':'NOT_AVAILABLE',recomputed_cap:cap,google_mcap:anchor.google_mcap,relative_difference:diff,effective_cap:cap,quality:q,quality_label:good?GROUP_LABEL+(q==='MISMATCH'?' · 검증 불일치':''):'',reason_codes:freeze([...new Set(reasons)]),content_sha256:parsed.receipt.content_sha256,synthetic:parsed.synthetic,unlisted_valued_at:spec?spec.valued_at:null,unlisted_basis:spec?spec.basis:null,unlisted_class_members:freeze(good?[...extra[0]]:[]),unlisted_shares:freeze(good?[...extra[1]]:[])});};
    if(byCode.size!==codes.length){out.push(result([INCOMPLETE]));continue;}
    let failure=null;const members=[];
    for(const code of codes){
@@ -126,14 +141,15 @@
     if(!Array.isArray(classes)||e.class_count!==group.cover_class_count||classes.length!==group.cover_class_count||new Set(classes).size!==classes.length||typeof member!=='string'||!classes.includes(member)){failure=[MISMATCH,'BASIS_UNCONFIRMED'];break;}
     if(row.reason_codes.includes('INVALID_INPUT')){failure=[INCOMPLETE,'INVALID_INPUT'];break;}if(stamp(row.receipt.acquired_at)>stamp(asof)){failure=[INCOMPLETE,'AVAILABLE_AFTER_AS_OF'];break;}if(!positive(row.sheet_price)){failure=[INCOMPLETE,'PRICE_NOT_AVAILABLE'];break;}
     if(row.receipt.synthetic!==sh.synthetic||row.receipt.synthetic!==parsed.synthetic){failure=[INCOMPLETE,'MIXED_SYNTHETIC_INPUT'];break;}
-    members.push({row,key:JSON.stringify([record.accn,record.measurement_date,classes]),member,value});
+    members.push({row,key:JSON.stringify([record.accn,record.measurement_date,classes]),accn:record.accn,measured:record.measurement_date,classes,member,value});
    }
    if(failure){out.push(result(failure));continue;}
    if(new Set(members.map(m=>m.key)).size!==1||new Set(members.map(m=>m.member)).size!==members.length){out.push(result([MISMATCH,'BASIS_UNCONFIRMED']));continue;}
+   let extra=[[],[]],added=0;if(spec){const u=unlistedClasses(group,members,codes,records,unlisted&&typeof unlisted==='object'&&Object.hasOwn(unlisted,group.group_id)?unlisted[group.group_id]:null);if(u[0]){out.push(result(u[0]));continue;}extra=[u[1],u[2]];added=u[3];}
    if(!quality||quality.confirmed!==true){out.push(result(['CONFIG_CONFIRMATION_REQUIRED']));continue;}if(!positive(quality.relative_tolerance)){out.push(result(['INVALID_INPUT']));continue;}
-   let cap=0;for(const m of members)cap+=m.value*m.row.sheet_price;if(!positive(cap)){out.push(result(['NONFINITE_MCAP']));continue;}
-   const shares=members.map(m=>m.value),primary=members[0].row;if(primary.google_mcap===null){out.push(result([],cap,null,primary.reason_codes.includes('GOOGLE_MCAP_MISSING')?'GOOGLE_MCAP_MISSING':'GOOGLE_MCAP_INVALID',shares));continue;}
-   const diff=relative(primary.google_mcap,cap,quality.relative_tolerance);if(!Number.isFinite(diff.value)){out.push(result(['NONFINITE_MCAP']));continue;}out.push(result([],cap,diff.value,diff.mismatch?'MISMATCH':'WITHIN_TOLERANCE',shares));
+   let cap=0;members.forEach((m,i)=>{cap+=(spec&&codes[i]===spec.valued_at?m.value+added:m.value)*m.row.sheet_price;});if(!positive(cap)){out.push(result(['NONFINITE_MCAP']));continue;}
+   const shares=members.map(m=>m.value),primary=members[0].row;if(primary.google_mcap===null){out.push(result([],cap,null,primary.reason_codes.includes('GOOGLE_MCAP_MISSING')?'GOOGLE_MCAP_MISSING':'GOOGLE_MCAP_INVALID',shares,extra));continue;}
+   const diff=relative(primary.google_mcap,cap,quality.relative_tolerance);if(!Number.isFinite(diff.value)){out.push(result(['NONFINITE_MCAP']));continue;}out.push(result([],cap,diff.value,diff.mismatch?'MISMATCH':'WITHIN_TOLERANCE',shares,extra));
   }
   return freeze(out);
  }
@@ -145,6 +161,7 @@
    const anchor=sourceRows.get(g.row_index);if(g.content_sha256!==sha||!same(g.listing,anchor.listing)||g.google_mcap!==anchor.google_mcap)return 'MANIFEST_MISMATCH';if(typeof g.synthetic!=='boolean'||g.synthetic!==synthetic)return 'MIXED_SYNTHETIC_INPUT';
    if(!['VERIFIED','NOT_AVAILABLE'].includes(g.state)||(g.state==='VERIFIED'&&(!positive(g.effective_cap)||g.effective_cap!==g.recomputed_cap||!g.listing||g.reason_codes.length||g.member_row_indexes.length!==g.member_codes.length||g.member_row_indexes.some(i=>!sourceRows.get(i).listing)||!['WITHIN_TOLERANCE','MISMATCH','GOOGLE_MCAP_MISSING','GOOGLE_MCAP_INVALID'].includes(g.quality))))return 'INVALID_INPUT';
    if(g.state==='NOT_AVAILABLE'&&!g.reason_codes.length)return 'INVALID_INPUT';
+   if(g.state==='VERIFIED'&&g.unlisted_valued_at!=null&&(!Array.isArray(g.unlisted_shares)||!g.unlisted_shares.length||!Array.isArray(g.unlisted_class_members)||g.unlisted_shares.length!==g.unlisted_class_members.length||!g.unlisted_shares.every(positive)))return 'INVALID_INPUT';
   }
   return null;
  }
@@ -159,5 +176,5 @@
   const verified=[],missing=[],reasons=[...parsed.reason_codes];for(const row of parsed.rows){const duplicate=row.listing&&issuers.get(row.listing.issuer_id).size>1,g=grouped.get(row.row_index);if(!duplicate&&g){if(g.state!=='VERIFIED'){missing.push(freeze({row_index:row.row_index,reason_codes:freeze([...g.reason_codes])}));reasons.push(...g.reason_codes);}else if(row.row_index===g.row_index)verified.push(g);continue;}const c=indexed.get(row.row_index),codes=duplicate?['DUPLICATE_ISSUER']:!c||c.state!=='VERIFIED'?c?.reason_codes?.length?c.reason_codes:row.reason_codes.length?row.reason_codes:['VALIDATION_INCOMPLETE']:null;if(codes){missing.push(freeze({row_index:row.row_index,reason_codes:freeze(codes)}));reasons.push(...codes);}else verified.push(c);}
   verified.sort((a,b)=>b.effective_cap-a.effective_cap||(a.listing.company_id<b.listing.company_id?-1:a.listing.company_id>b.listing.company_id?1:0));const selected=verified.slice(0,n),incomplete=missing.length>0||parsed.row_limit_reached||selected.length<n;if(incomplete)reasons.push('VALIDATION_INCOMPLETE');return freeze({state:selected.length?'PERSONAL_REFERENCE':'NOT_AVAILABLE',status:incomplete?'PARTIAL':'COMPLETE',selection_status:incomplete?'PARTIAL':'COMPLETE',content_sha256:parsed.receipt.content_sha256,selected_n:selected.length,verified_count:verified.length,missing_count:missing.length,selected_listing_ids:freeze(selected.map(c=>c.listing.listing_id)),synthetic:parsed.synthetic,source:'PRIVATE_UNIVERSE_VERIFIED_TOP_N',scope:'VERIFIED_UNIVERSE_ROWS',official:false,candidate_pool_complete:false,full_configured_rank_status:'UNKNOWN',selected:freeze(selected),missing:freeze(missing),reason_codes:freeze([...new Set(reasons)]),requested_n:n,selected_count:selected.length,verified_row_count:verified.length,row_count:parsed.row_count});
  }
- return freeze({digest,canonicalValues,parseUniverseValues,prepareSecShares,publicListingSeed,preparePublicShares,prepareUniversePrice,compareUniverseMarketCap,validateShareClassGroups,prepareShareClassGroups,selectVerifiedUniverseTopN});
+ return freeze({digest,canonicalValues,parseUniverseValues,prepareSecShares,publicListingSeed,preparePublicShares,prepareUniversePrice,compareUniverseMarketCap,validateShareClassGroups,prepareShareClassGroups,selectVerifiedUniverseTopN,UNLISTED_BASIS,UNLISTED_DECISION});
 });

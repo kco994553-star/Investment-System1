@@ -35,9 +35,10 @@ function ledger(){return{schema_version:1,kind:'FORWARD_VALIDATION_LEDGER',start
 // Synthetic S17 model: amounts stay hidden ([숨김]/●●●); company names are placeholders.
 async function injectReport(page){return page.evaluate(()=>{try{if(typeof window.disposeReport==='function')window.disposeReport();const R=window.DailyReport,levels=Object.keys(R.LEVEL_KO);
  const holdings=Array.from({length:12},(_,i)=>({company:'syn'+i,name:'SYNTHETIC CO '+String.fromCharCode(65+i),actual_weight:i%5===0?null:2+i*0.7,target_weight:3+(i%4),main:levels[i%levels.length],aux:i%3?[levels[(i+2)%levels.length]]:[],reasons:[],q:i%4===0?null:40+i,g:i%4===0?null:50+i}));
- const m={kind:'MOCK',tab:'SET_A',report_date:'2026-10-22',base_dates:{US:'2026-10-21'},started:true,ledger_state:'OK',ledger_reasons:[],start_date:'2026-10-19',invest_start:null,buy_limit:1000000,sell_limit:1000000,
-  summary:{total_value:10000000,simple_return:0.0123,cash:1000,realized_pnl:0,unrealized_pnl:0},last:null,days:[],holdings,
-  executed:[{side:'BUY',company:'syn1',amount:300000,quantity:1.5,reason_codes:['SYNTHETIC_RULE']},{side:'SELL',company:'syn2',amount:200000,quantity:2,reason_codes:['SYNTHETIC_RULE']}],orders:[],cancelled:[],runner:null,hits:[],buy_total:300000,sell_total:200000,ram_state:'NOT_AVAILABLE'};
+ // Start from the module's own empty model so new fields keep their defaults, then fill a synthetic started ledger.
+ const m=Object.assign(R.buildModel({kind:'MOCK',tab:'SET_A',reportDate:'2026-10-22',baseDates:{US:'2026-10-21'},config:{start_date:'2026-10-19',buy_limit:1000000,sell_limit:1000000}}),{started:true,ledger_state:'OK',ledger_reasons:[],
+  summary:{total_value:10000000,simple_return:0.0123,cash:1000,realized_pnl:0,unrealized_pnl:0},holdings,
+  executed:[{side:'BUY',company:'syn1',amount:300000,quantity:1.5,reason_codes:['SYNTHETIC_RULE']},{side:'SELL',company:'syn2',amount:200000,quantity:2,reason_codes:['SYNTHETIC_RULE']}],buy_total:300000,sell_total:200000});
  document.querySelector('#daily-report').innerHTML=R.screenHtml(m,{hidden:true,locale:'ko-KR'});return 'OK';}catch(e){return 'SKIP '+String(e&&e.message||e);}});}
 const overflow=page=>page.evaluate(()=>({sw:document.documentElement.scrollWidth,cw:document.documentElement.clientWidth}));
 async function tableFacts(page){return page.evaluate(()=>[...document.querySelectorAll('main table')].filter(t=>t.offsetParent!==null).map(t=>{const wrap=t.closest('.table-wrap,.table-scroll')||t.parentElement,th=t.querySelector('thead th');
@@ -56,7 +57,7 @@ const col=(page,sel,i)=>page.locator(sel+' tbody tr').evaluateAll((rows,i)=>rows
   page.on('console',m=>{if(m.type()!=='error')return;const url=(m.location()&&m.location().url)||'';if(/Failed to load resource/.test(m.text())&&/\/(sec-public-inputs|sec-valuation-inputs|sec-universe-shares|company-classification|forward-validation-ledger)\.json/.test(url)){expected404.push(url);return;}errors.push(m.text()+' '+url);});
   try{for(const [screen,route,selector] of ROUTES){phase=dataset+'_'+width+'_'+screen;const before=errors.length;
     await page.goto(BASE+'#'+route);await page.locator(selector).first().waitFor();await page.waitForTimeout(250);
-    if(screen==='S17'&&dataset==='LIVE'){const r=await injectReport(page);if(r!=='OK')console.log('NOTE S17 synthetic report '+r);else await page.locator('[data-report-section="3"] table').waitFor();await page.waitForTimeout(100);}
+    if(screen==='S17'&&dataset==='LIVE'){const r=await injectReport(page);assert.equal(r,'OK','S17 synthetic report');await page.locator('[data-report-section="3"] table').waitFor();await page.waitForTimeout(100);}
     const o=await overflow(page);matrix.push({dataset,width,screen,route,overflow:o.sw-o.cw,console:errors.length-before});
     assert.ok(o.sw<=o.cw,'horizontal overflow '+o.sw+'>'+o.cw);
     const tables=await tableFacts(page);
@@ -65,10 +66,10 @@ const col=(page,sel,i)=>page.locator(sel+' tbody tr').evaluateAll((rows,i)=>rows
      else{assert.equal(t.buttons,0,'sort buttons on phone');assert.notEqual(t.sticky,'sticky');}}
     if(screen==='S12'){const f=await page.evaluate(()=>{const d=document.querySelector('[data-home-dashboard]'),s=getComputedStyle(d),a=d.querySelector('[data-integrated-judgement]').getBoundingClientRect(),b=d.querySelector('.hero').getBoundingClientRect();return{display:s.display,cols:s.gridTemplateColumns.split(' ').length,sameRow:Math.abs(a.top-b.top)<2&&b.left>a.left};});
      if(pc){assert.equal(f.display,'grid');assert.equal(f.cols,width>=1360?3:2);assert.ok(f.sameRow,'judgement and portfolio side by side');}else assert.equal(f.display,'block');}
-    if(screen==='S17'&&await page.locator('[data-report-section="3"] table').count()){const f=await page.evaluate(()=>{const s=document.querySelector('[data-report-summary]'),cells=[s.querySelector('.big'),s.querySelector('.big + p'),...s.querySelectorAll('.grid.two > *')].map(n=>n.getBoundingClientRect());
+    if(screen==='S17'&&dataset==='LIVE'){const f=await page.evaluate(()=>{const s=document.querySelector('[data-report-summary]'),cells=[s.querySelector('.big'),s.querySelector('.big + p'),...s.querySelectorAll('.grid.two > *')].map(n=>n.getBoundingClientRect());
       const ten=document.querySelector('[data-report-section="10"]').getBoundingClientRect(),rest=document.querySelector('[data-report-section="rest"]').getBoundingClientRect(),led=document.querySelector('[data-report-section="3"]').getBoundingClientRect(),host=document.querySelector('#daily-report').getBoundingClientRect();
-      return{cells:cells.length,oneRow:cells.every(c=>Math.abs(c.top-cells[0].top)<2)&&cells.every((c,i)=>!i||c.left>cells[i-1].left),twoCol:Math.abs(ten.top-rest.top)<2&&rest.left>ten.left,ledgerFull:led.width>=host.width-2,ths:document.querySelectorAll('[data-report-section="3"] thead th').length};});
-     assert.equal(f.cells,4);assert.equal(f.ths,4);
+      return{cells:cells.length,oneRow:cells.every(c=>Math.abs(c.top-cells[0].top)<2)&&cells.every((c,i)=>!i||c.left>cells[i-1].left),twoCol:Math.abs(ten.top-rest.top)<2&&rest.left>ten.left,ledgerFull:led.width>=host.width-2,ths:document.querySelectorAll('[data-report-section="3"] thead th').length,tds:document.querySelector('[data-report-section="3"] tbody tr').cells.length};});
+     assert.equal(f.cells,4);assert.ok(f.ths>=4);assert.equal(f.tds,f.ths,'every ledger column rendered');
      if(pc){assert.ok(f.oneRow,'summary numbers in one row');assert.ok(f.twoCol,'sections in two columns');assert.ok(f.ledgerFull,'ledger full width');}else{assert.ok(!f.oneRow,'phone summary unchanged');assert.ok(!f.twoCol,'phone sections stacked');}}
     if(screen==='S16'&&pc&&width>=1440){const cols=await page.evaluate(()=>getComputedStyle(document.querySelector('[data-public-screen="thirteenf"]')).gridTemplateColumns.split(' ').length);assert.ok(cols>=2,'13F cards in columns');}
     if(screen==='S03'&&pc){const cols=await page.evaluate(()=>getComputedStyle(document.querySelector('#company-list')).gridTemplateColumns.split(' ').length);assert.ok(cols>=2,'company list in columns');}
