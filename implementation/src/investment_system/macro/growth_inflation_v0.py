@@ -138,7 +138,8 @@ def growth_series(fmt: str, body: bytes, acquired: datetime) -> dict[str, Decima
 
 def inflation_series(body: bytes, acquired: datetime) -> dict[str, Decimal]:
     from ..providers.macro_primary import parse_bls
-    result = parse_bls(body, _receipt("BLS", body, acquired), expected_series_ids=(INFLATION_SERIES_CODE,))
+    # The BLS request is batched with the Labor raw axis (LNS14000000); both ids are expected.
+    result = parse_bls(body, _receipt("BLS", body, acquired), expected_series_ids=(INFLATION_SERIES_CODE, "LNS14000000"))
     rows = {o.observation_period: o.value for o in result.observations if o.source_id == INFLATION_SOURCE}
     if not rows:
         raise AxisUnavailable(_parsed_reason(result))

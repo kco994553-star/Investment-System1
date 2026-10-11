@@ -69,10 +69,11 @@ def collect(directory, *, environ=None, client_factory=None, macro_v0=None):
 def _print_macro_v0(directory):
     # States and fixed reason codes only: no URL, setting or provider message.
     try:
-        block = json.loads((Path(directory) / 'macro-screen.json').read_text())['data']['growth_inflation_v0']
-        for axis, row in block['axes'].items():
+        data = json.loads((Path(directory) / 'macro-screen.json').read_text())['data']
+        block, raw = data['growth_inflation_v0'], data['raw_axes_v0']
+        for axis, row in list(block['axes'].items()) + list(raw['axes'].items()):
             print('MACRO_V0 axis=%s state=%s reasons=%s' % (axis, row['state'], ','.join(row['reason_codes']) or '-'))
-        print('MACRO_V0 engine=%s regime=%s' % (block['engine']['state'], block['regime']['state']))
+        print('MACRO_V0 engine=%s regime=%s raw_regime=%s' % (block['engine']['state'], block['regime']['state'], raw['regime']['state']))
     except Exception:
         print('MACRO_V0 summary=NOT_AVAILABLE')
 
@@ -80,7 +81,7 @@ def main(argv=None):
     parser = Parser(description=__doc__)
     parser.add_argument('--out', required=True, type=Path)
     parser.add_argument('--live', action='store_true')
-    parser.add_argument('--macro-v0', action='store_true', help='with --live, also collect BLS CUUR0000SA0 and BEA T10101 line 1')
+    parser.add_argument('--macro-v0', action='store_true', help='with --live, also collect the macro v0 official series (BLS CUUR0000SA0+LNS14000000, BEA T10101 line 1, Fed H.15/H.4.1/H.8 DDP CSV, Treasury MTS Table 1)')
     args = parser.parse_args(argv)
     try:
         if args.live:

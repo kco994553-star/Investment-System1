@@ -8,7 +8,8 @@ const module = await import('../src/index.js');
 const { createHandler, HistoryRateLimiter } = module;
 const ORIGIN = 'https://kco994553-star.github.io';
 const NOW = Date.UTC(2026, 9, 9, 18);
-const SYMBOLS = ['ASML', 'LRCX', 'KLAC', 'NVDA', 'AMD', 'AVGO', 'QCOM', 'INTC', 'MSFT', 'GOOGL', 'AMZN', 'RTX', 'SYK', 'ETN', 'HUBB', 'GEV', 'ROK', '042700.KS', '8035.T'];
+const SYMBOLS = ['ASML', 'LRCX', 'KLAC', 'NVDA', 'AMD', 'AVGO', 'QCOM', 'INTC', 'MSFT', 'GOOGL', 'AMZN', 'RTX', 'SYK', 'ETN', 'HUBB', 'GEV', 'ROK', '042700.KS', '8035.T',
+  'SPY', 'SMH', 'XLK', 'XLV', 'XLE', 'XLB', 'XLP', 'XLY', 'XLC', 'XLU', 'XLRE', 'XLF', 'XLI', 'VUG', 'QUAL'];
 const RANGES = ['1mo', '3mo', '6mo', '1y', '2y', '5y'];
 const json = (value, status = 200, headers = {}) => new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json', ...headers } });
 const clone = (value) => structuredClone(value);

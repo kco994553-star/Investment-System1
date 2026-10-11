@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "config_version": "dcf_parameters/v1.1-default",
+  "role": "RAM_ONLY_RESEARCH",
+  "status": "V1_1_UNCALIBRATED_DEFAULT",
+  "decided_at": "2026-10-11",
+  "confirmed": true,
+  "supersedes": "dcf_parameters/v1-default",
+  "explicit_years": 5,
+  "discount_rate": 0.1,
+  "terminal_growth": 0.02,
+  "discount_rate_basis": "COST_OF_EQUITY",
+  "cashflow_basis": "FCFE_PER_SHARE",
+  "currency": "USD",
+  "per_share_basis_confirmed": true,
+  "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+  "fcfe_definition": "fcfe/1.1",
+  "explicit_growth_rule": {
+    "kind": "REVENUE_CAGR_3Y_CLAMP",
+    "metric": "revenue_cagr_3y",
+    "lower": 0.0,
+    "upper": 0.15,
+    "status": "PROVISIONAL"
+  },
+  "solver": {
+    "growth_lower": -0.5,
+    "growth_upper": 1.0,
+    "relative_price_tolerance": 1e-10,
+    "maximum_iterations": 200
+  },
+  "output_version": "v1+dcf_v1_1_default",
+  "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+  "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+}
