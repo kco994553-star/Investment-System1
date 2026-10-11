@@ -16,7 +16,7 @@ function setup(symbol='NVDA', range='1mo', options={}) {
     return options.provider?options.provider(String(url),init):String(url).includes('/prices?')?json([{date:'2026-10-08T00:00:00.000Z',open:100,high:104,low:98,close:102,adjClose:91,volume:10}]):json({ticker:symbol.toLowerCase(),exchangeCode:'NASDAQ'});
   };
   const handler=createHandler({fetch,now:()=>NOW,...options.dependencies});
-  const run=(headers={})=>handler(new Request('https://private.test/history?symbol='+symbol+'&range='+range,{headers:{Origin:'https://kco994553-star.github.io',Authorization:'Bearer synthetic',...headers}}),env);
+  const run=(headers={})=>handler(new Request('https://private.test/history?symbol='+encodeURIComponent(symbol)+'&range='+range,{headers:{Origin:'https://kco994553-star.github.io',Authorization:'Bearer synthetic',...headers}}),env);
   return {run,calls,env,released:()=>released};
 }
 test('Yahoo failure falls back to authenticated Tiingo EOD without leaking keys or changing date labels',async()=>{
@@ -34,8 +34,8 @@ test('KRX falls back only for the Korean listing, keeps explicit session date, a
 test('KRX long ranges fail before any KRX request and never silently truncate history',async()=>{
   const s=setup('042700.KS','5y');const r=await s.run();assert.equal(r.status,422);assert.deepEqual(await r.json(),{error:{code:'KRX_RANGE_UNSUPPORTED'}});assert.ok(!s.calls.some(c=>c.url.includes('krx.co.kr')));assert.equal(s.released(),1);
 });
-test('Japanese listings and missing provider Secrets preserve the Yahoo failure without new providers',async()=>{
-  for(const [symbol,env] of [['8035.T',{}],['NVDA',{TIINGO_API_KEY:''}],['042700.KS',{KRX_API_KEY:''}]]){const s=setup(symbol,'1mo',{env}),r=await s.run();assert.equal(r.status,503);assert.deepEqual(await r.json(),{error:{code:'YAHOO_UNAVAILABLE'}});assert.equal(s.calls.length,2);}
+test('Japanese listings, FX pairs and missing provider Secrets preserve the Yahoo failure without new providers',async()=>{
+  for(const [symbol,env] of [['8035.T',{}],['KRW=X',{}],['JPYKRW=X',{}],['NVDA',{TIINGO_API_KEY:''}],['042700.KS',{KRX_API_KEY:''}]]){const s=setup(symbol,'1mo',{env}),r=await s.run();assert.equal(r.status,503);assert.deepEqual(await r.json(),{error:{code:'YAHOO_UNAVAILABLE'}});assert.equal(s.calls.length,2);}
 });
 test('origin/auth rejection prevents every price provider call',async()=>{
   for(const headers of [{Origin:'https://other.test'},{Authorization:''}]){const s=setup(),r=await s.run(headers);assert.equal(r.status,403);assert.equal(s.calls.length,0);}
