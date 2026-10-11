@@ -1,5 +1,7 @@
 # DCF v1·역DCF — 기본 파라미터 채택(v1 UNCALIBRATED 기본값)
 
+> **v1.1로 대체됨 (2026-10-11).** 현재 기본값은 `dcf_parameters/v1.1-default`(`v1+dcf_v1_1_default`)이며 규칙은 [`DCF_V1_1_PARAMETERS.md`](DCF_V1_1_PARAMETERS.md)에 있다: 미보고 차입 항목 0 가정(`NOT_REPORTED_ASSUMED_ZERO`), IFRS(`ifrs-full`, 20-F/40-F) 지원, 명시기간 성장률 h = 3년 매출 CAGR을 [0, 0.15]로 제한(PROVISIONAL), 순방향 DCF·DCF 안전마진 계산. 이 문서와 `qgv/dcf_parameters_v1_default.json`은 이력으로 남긴다. 아래 '남은 결정' 1·2는 v1.1에서 결정되었다.
+
 ## 사용자 결정 (2026-10-11, 정본)
 
 > "DCF: 5년 / 할인율 10% / 영구성장 2% / 역DCF -50%~+100%. FCFE = 영업현금흐름 − 설비투자 + 순차입, 희석주식수 기준. 정의를 문서에 명시."
