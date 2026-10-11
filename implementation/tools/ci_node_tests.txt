@@ -33,3 +33,4 @@ table_sort_node_test.js
 virtual_ledger_sheets_node_test.js
 virtual_trading_signals_node_test.js
 virtual_trading_v_history_node_test.js
+screens_gaps_node_test.js

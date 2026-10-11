@@ -1,8 +1,9 @@
 // Presentation/navigation E2E on the public Pages build (PAGES_COCKPIT_URL). Public build and in-memory test vectors only.
 //
 // Current contract (GSQ-010 public price boundary): the public build ships no producer company rows and app.js never
-// renders data.json producer sections, so global search offers INDUSTRY / MACRO entities only and company identities live in
-// the price-free device directory. Producer-section presentation (numbers, rankings, news) is therefore exercised on
+// renders data.json producer sections, so global search offers INDUSTRY / MACRO entities plus price-free company identities
+// (TARGET device directory: ticker + catalog label; public Universe504 codes when sec-universe-shares.json is published —
+// covered by screens_gaps_browser_test.js). Producer-section presentation (numbers, rankings, news) is therefore exercised on
 // test vectors assigned to the page's in-memory model (D), never served and never persisted.
 const {chromium}=require("playwright");
 const assert=require("node:assert/strict");
@@ -21,9 +22,9 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
     if(url.origin!==base.origin||!url.pathname.startsWith(base.pathname)) {traffic.external++;await route.abort();return;}
     await route.continue();
   };
-  // The optional SEC sidecar is absent from a build without collection; any other failure stays an error.
+  // The optional SEC sidecars are absent from a build without collection; any other failure stays an error.
   const responses=page=>page.on("response",response=>{
-    if(response.status()>=400&&!(response.status()===404&&response.url()===new URL("sec-public-inputs.json",base).href)) traffic.failed_responses++;
+    if(response.status()>=400&&!(response.status()===404&&["sec-public-inputs.json","sec-universe-shares.json"].some(name=>response.url()===new URL(name,base).href))) traffic.failed_responses++;
   });
   const context=await browser.newContext({viewport:{width:390,height:844}});
   await context.route("**/*",guard);
@@ -71,11 +72,16 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
       await page.keyboard.press("Enter");
       await page.getByRole("heading",{name:"반도체",exact:true}).waitFor();
       assert.ok(page.url().endsWith("#entity/INDUSTRY%3Asemiconductor"));
-      // Company identities are found in the price-free directory (ticker / English name), not fabricated by global search.
-      for(const q of ["NVDA","엔비디아"]) {
+      // Company identities come from the price-free directory (ticker / catalog label); no Korean names are published,
+      // so a Korean query finds no fabricated company.
+      for(const q of ["NVDA","nvda","NVIDIA"]) {
         await page.locator("#global-search").fill(q);
-        assert.equal(await page.locator("#global-results [data-entity-id^='COMPANY:']").count(),0,q);
+        assert.equal(await page.locator("#global-results li").first().getAttribute("data-entity-id"),"COMPANY:nvda",q);
+        assert.equal(await page.locator("#global-results li").first().locator("a").getAttribute("href"),"#company/nvda",q);
+        assert.ok(!/\d+\.\d{2}|\$/.test(await page.locator("#global-results").textContent()),q);
       }
+      await page.locator("#global-search").fill("엔비디아");
+      assert.equal(await page.locator("#global-results [data-entity-id^='COMPANY:']").count(),0);
       await go("companies");await page.locator("#search").fill("ASML");
       assert.equal(await page.locator("#company-list li").count(),1);
       assert.equal(await page.locator("#company-list li a").getAttribute("href"),"#company/asml");
