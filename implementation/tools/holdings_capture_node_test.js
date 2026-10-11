@@ -12,10 +12,10 @@ function catalog() {
 }
 for (const c of vectors.cases) test('python reference vector ' + c.id, () => {
   assert.equal(c.synthetic, true); const input = structuredClone(c.input.values), before = JSON.stringify(input);
-  assert.deepEqual(H.parse(input), c.expected); assert.equal(JSON.stringify(input), before, 'input not mutated');
+  assert.deepEqual(H.parse(input), JSON.parse(c.expected_json)); assert.equal(JSON.stringify(input), before, 'input not mutated');
 });
 test('vector file covers every reason code and both cost bases', () => {
-  const text = JSON.stringify(vectors);
+  const text = JSON.stringify(vectors.cases.map(c => JSON.parse(c.expected_json)));
   for (const code of ['COLUMN_COUNT', 'AS_OF_MISSING', 'AS_OF_FORMAT', 'AS_OF_MISMATCH', 'SYMBOL_MISSING', 'SYMBOL_FORMAT', 'QUANTITY_MISSING', 'QUANTITY_FORMAT',
     'QUANTITY_NOT_POSITIVE', 'AVG_COST_FORMAT', 'COST_KRW_FORMAT', 'CURRENCY_MISSING', 'CURRENCY_FORMAT', 'CURRENCY_MISMATCH', 'CASH_AVG_COST_PRESENT', 'NAME_FORMAT',
     'COST_RANGE', 'DUPLICATE_SYMBOL', 'HEADER_MISMATCH', 'COST_KRW_DIV_QTY', 'AVG_COST_FIELD']) assert.ok(text.includes('"' + code + '"'), code);
@@ -34,7 +34,7 @@ test('prompt fills as_of only with a valid date; seoulDate uses Asia/Seoul', () 
   assert.equal(H.seoulDate('2031-02-03T15:30:00Z'), '2031-02-04'); assert.equal(H.seoulDate('2031-02-03T14:59:59Z'), '2031-02-03');
 });
 test('toActual: 19 instruments become ACTUAL rows; outside, cash and no-cost rows are kept apart', () => {
-  const c = vectors.cases.find(x => x.id === 'mixed-target-and-outside'), split = H.toActual(c.expected, catalog());
+  const c = vectors.cases.find(x => x.id === 'mixed-target-and-outside'), split = H.toActual(JSON.parse(c.expected_json), catalog());
   assert.equal(split.as_of, '2031-02-03');
   assert.deepEqual(split.rows.map(r => [r.security_reference.value, r.quantity, r.average_cost, r.currency]),
     [['ID_0', '2', '950000', 'KRW'], ['ID_3', '1', '30000', 'JPY'], ['ID_4', '10', '123456.7', 'KRW']]);

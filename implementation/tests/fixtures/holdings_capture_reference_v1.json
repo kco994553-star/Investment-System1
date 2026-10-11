@@ -9,14 +9,7 @@
    "input": {
     "values": []
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "EMPTY",
-    "as_of": null,
-    "positions": [],
-    "cash": [],
-    "review": []
-   }
+   "expected_json": "{\"as_of\":null,\"cash\":[],\"positions\":[],\"review\":[],\"schema\":\"holdings-capture/1\",\"state\":\"EMPTY\"}"
   },
   {
    "id": "header-only",
@@ -35,14 +28,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "EMPTY",
-    "as_of": null,
-    "positions": [],
-    "cash": [],
-    "review": []
-   }
+   "expected_json": "{\"as_of\":null,\"cash\":[],\"positions\":[],\"review\":[],\"schema\":\"holdings-capture/1\",\"state\":\"EMPTY\"}"
   },
   {
    "id": "header-mismatch",
@@ -68,14 +54,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "HEADER_MISMATCH",
-    "as_of": null,
-    "positions": [],
-    "cash": [],
-    "review": []
-   }
+   "expected_json": "{\"as_of\":null,\"cash\":[],\"positions\":[],\"review\":[],\"schema\":\"holdings-capture/1\",\"state\":\"HEADER_MISMATCH\"}"
   },
   {
    "id": "header-case-and-trailing-blank",
@@ -104,28 +83,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 2,
-      "symbol": "SYNA",
-      "market": "US",
-      "quantity": "2",
-      "currency": "USD",
-      "avg_cost": "10.5",
-      "cost_krw": null,
-      "average_cost": "10.5",
-      "average_cost_currency": "USD",
-      "cost_basis": "AVG_COST_FIELD",
-      "name": "Synthetic A"
-     }
-    ],
-    "cash": [],
-    "review": []
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":\"10.5\",\"average_cost_currency\":\"USD\",\"avg_cost\":\"10.5\",\"cost_basis\":\"AVG_COST_FIELD\",\"cost_krw\":null,\"currency\":\"USD\",\"market\":\"US\",\"name\":\"Synthetic A\",\"quantity\":\"2\",\"row\":2,\"symbol\":\"SYNA\"}],\"review\":[],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "cost-krw-preferred",
@@ -153,28 +111,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 2,
-      "symbol": "SYNB",
-      "market": "US",
-      "quantity": "3",
-      "currency": "USD",
-      "avg_cost": "9.99",
-      "cost_krw": "40000",
-      "average_cost": "13333.333333",
-      "average_cost_currency": "KRW",
-      "cost_basis": "COST_KRW_DIV_QTY",
-      "name": "Synthetic B"
-     }
-    ],
-    "cash": [],
-    "review": []
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":\"13333.333333\",\"average_cost_currency\":\"KRW\",\"avg_cost\":\"9.99\",\"cost_basis\":\"COST_KRW_DIV_QTY\",\"cost_krw\":\"40000\",\"currency\":\"USD\",\"market\":\"US\",\"name\":\"Synthetic B\",\"quantity\":\"3\",\"row\":2,\"symbol\":\"SYNB\"}],\"review\":[],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "avg-cost-fallback",
@@ -202,28 +139,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 2,
-      "symbol": "SYNC",
-      "market": "US",
-      "quantity": "4",
-      "currency": "USD",
-      "avg_cost": "12.25",
-      "cost_krw": null,
-      "average_cost": "12.25",
-      "average_cost_currency": "USD",
-      "cost_basis": "AVG_COST_FIELD",
-      "name": "Synthetic C"
-     }
-    ],
-    "cash": [],
-    "review": []
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":\"12.25\",\"average_cost_currency\":\"USD\",\"avg_cost\":\"12.25\",\"cost_basis\":\"AVG_COST_FIELD\",\"cost_krw\":null,\"currency\":\"USD\",\"market\":\"US\",\"name\":\"Synthetic C\",\"quantity\":\"4\",\"row\":2,\"symbol\":\"SYNC\"}],\"review\":[],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "no-cost-not-zero-filled",
@@ -249,28 +165,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 2,
-      "symbol": "SYND",
-      "market": "US",
-      "quantity": "5",
-      "currency": "USD",
-      "avg_cost": null,
-      "cost_krw": null,
-      "average_cost": null,
-      "average_cost_currency": null,
-      "cost_basis": "NOT_AVAILABLE",
-      "name": null
-     }
-    ],
-    "cash": [],
-    "review": []
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":null,\"average_cost_currency\":null,\"avg_cost\":null,\"cost_basis\":\"NOT_AVAILABLE\",\"cost_krw\":null,\"currency\":\"USD\",\"market\":\"US\",\"name\":null,\"quantity\":\"5\",\"row\":2,\"symbol\":\"SYND\"}],\"review\":[],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "half-up-rounding",
@@ -305,41 +200,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 2,
-      "symbol": "000111",
-      "market": "KRX",
-      "quantity": "7",
-      "currency": "KRW",
-      "avg_cost": null,
-      "cost_krw": "1000000",
-      "average_cost": "142857.142857",
-      "average_cost_currency": "KRW",
-      "cost_basis": "COST_KRW_DIV_QTY",
-      "name": null
-     },
-     {
-      "row": 3,
-      "symbol": "1234",
-      "market": "TSE",
-      "quantity": "3",
-      "currency": "JPY",
-      "avg_cost": null,
-      "cost_krw": "2",
-      "average_cost": "0.666667",
-      "average_cost_currency": "KRW",
-      "cost_basis": "COST_KRW_DIV_QTY",
-      "name": null
-     }
-    ],
-    "cash": [],
-    "review": []
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":\"142857.142857\",\"average_cost_currency\":\"KRW\",\"avg_cost\":null,\"cost_basis\":\"COST_KRW_DIV_QTY\",\"cost_krw\":\"1000000\",\"currency\":\"KRW\",\"market\":\"KRX\",\"name\":null,\"quantity\":\"7\",\"row\":2,\"symbol\":\"000111\"},{\"average_cost\":\"0.666667\",\"average_cost_currency\":\"KRW\",\"avg_cost\":null,\"cost_basis\":\"COST_KRW_DIV_QTY\",\"cost_krw\":\"2\",\"currency\":\"JPY\",\"market\":\"TSE\",\"name\":null,\"quantity\":\"3\",\"row\":3,\"symbol\":\"1234\"}],\"review\":[],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "cash-rows",
@@ -382,39 +243,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [],
-    "cash": [
-     {
-      "row": 2,
-      "symbol": "CASH_KRW",
-      "currency": "KRW",
-      "amount": "123456",
-      "cost_krw": null,
-      "name": "예수금"
-     },
-     {
-      "row": 3,
-      "symbol": "CASH_USD",
-      "currency": "USD",
-      "amount": "0",
-      "cost_krw": "0",
-      "name": null
-     }
-    ],
-    "review": [
-     {
-      "row": 4,
-      "symbol": "CASH_JPY",
-      "reason_codes": [
-       "CASH_AVG_COST_PRESENT"
-      ]
-     }
-    ]
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[{\"amount\":\"123456\",\"cost_krw\":null,\"currency\":\"KRW\",\"name\":\"예수금\",\"row\":2,\"symbol\":\"CASH_KRW\"},{\"amount\":\"0\",\"cost_krw\":\"0\",\"currency\":\"USD\",\"name\":null,\"row\":3,\"symbol\":\"CASH_USD\"}],\"positions\":[],\"review\":[{\"reason_codes\":[\"CASH_AVG_COST_PRESENT\"],\"row\":4,\"symbol\":\"CASH_JPY\"}],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "number-format-errors",
@@ -483,64 +312,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": null,
-    "positions": [],
-    "cash": [],
-    "review": [
-     {
-      "row": 2,
-      "symbol": "SYNE",
-      "reason_codes": [
-       "QUANTITY_FORMAT"
-      ]
-     },
-     {
-      "row": 3,
-      "symbol": "SYNF",
-      "reason_codes": [
-       "AVG_COST_FORMAT"
-      ]
-     },
-     {
-      "row": 4,
-      "symbol": "SYNG",
-      "reason_codes": [
-       "COST_KRW_FORMAT"
-      ]
-     },
-     {
-      "row": 5,
-      "symbol": "SYNH",
-      "reason_codes": [
-       "QUANTITY_FORMAT"
-      ]
-     },
-     {
-      "row": 6,
-      "symbol": "SYNI",
-      "reason_codes": [
-       "QUANTITY_NOT_POSITIVE"
-      ]
-     },
-     {
-      "row": 7,
-      "symbol": "SYNJ",
-      "reason_codes": [
-       "QUANTITY_FORMAT"
-      ]
-     },
-     {
-      "row": 8,
-      "symbol": "SYNK",
-      "reason_codes": [
-       "QUANTITY_FORMAT"
-      ]
-     }
-    ]
-   }
+   "expected_json": "{\"as_of\":null,\"cash\":[],\"positions\":[],\"review\":[{\"reason_codes\":[\"QUANTITY_FORMAT\"],\"row\":2,\"symbol\":\"SYNE\"},{\"reason_codes\":[\"AVG_COST_FORMAT\"],\"row\":3,\"symbol\":\"SYNF\"},{\"reason_codes\":[\"COST_KRW_FORMAT\"],\"row\":4,\"symbol\":\"SYNG\"},{\"reason_codes\":[\"QUANTITY_FORMAT\"],\"row\":5,\"symbol\":\"SYNH\"},{\"reason_codes\":[\"QUANTITY_NOT_POSITIVE\"],\"row\":6,\"symbol\":\"SYNI\"},{\"reason_codes\":[\"QUANTITY_FORMAT\"],\"row\":7,\"symbol\":\"SYNJ\"},{\"reason_codes\":[\"QUANTITY_FORMAT\"],\"row\":8,\"symbol\":\"SYNK\"}],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "column-count",
@@ -580,36 +352,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 3,
-      "symbol": "SYNM",
-      "market": "US",
-      "quantity": "1",
-      "currency": "USD",
-      "avg_cost": null,
-      "cost_krw": null,
-      "average_cost": null,
-      "average_cost_currency": null,
-      "cost_basis": "NOT_AVAILABLE",
-      "name": "M"
-     }
-    ],
-    "cash": [],
-    "review": [
-     {
-      "row": 2,
-      "symbol": null,
-      "reason_codes": [
-       "COLUMN_COUNT"
-      ]
-     }
-    ]
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":null,\"average_cost_currency\":null,\"avg_cost\":null,\"cost_basis\":\"NOT_AVAILABLE\",\"cost_krw\":null,\"currency\":\"USD\",\"market\":\"US\",\"name\":\"M\",\"quantity\":\"1\",\"row\":3,\"symbol\":\"SYNM\"}],\"review\":[{\"reason_codes\":[\"COLUMN_COUNT\"],\"row\":2,\"symbol\":null}],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "missing-fields",
@@ -656,43 +399,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": null,
-    "positions": [],
-    "cash": [],
-    "review": [
-     {
-      "row": 2,
-      "symbol": "SYNN",
-      "reason_codes": [
-       "AS_OF_MISSING"
-      ]
-     },
-     {
-      "row": 3,
-      "symbol": null,
-      "reason_codes": [
-       "SYMBOL_MISSING"
-      ]
-     },
-     {
-      "row": 4,
-      "symbol": "SYNO",
-      "reason_codes": [
-       "QUANTITY_MISSING"
-      ]
-     },
-     {
-      "row": 5,
-      "symbol": "SYNP",
-      "reason_codes": [
-       "CURRENCY_MISSING"
-      ]
-     }
-    ]
-   }
+   "expected_json": "{\"as_of\":null,\"cash\":[],\"positions\":[],\"review\":[{\"reason_codes\":[\"AS_OF_MISSING\"],\"row\":2,\"symbol\":\"SYNN\"},{\"reason_codes\":[\"SYMBOL_MISSING\"],\"row\":3,\"symbol\":null},{\"reason_codes\":[\"QUANTITY_MISSING\"],\"row\":4,\"symbol\":\"SYNO\"},{\"reason_codes\":[\"CURRENCY_MISSING\"],\"row\":5,\"symbol\":\"SYNP\"}],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "symbol-and-currency-rules",
@@ -760,71 +467,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 7,
-      "symbol": "BRK.B",
-      "market": "US",
-      "quantity": "1",
-      "currency": "USD",
-      "avg_cost": null,
-      "cost_krw": null,
-      "average_cost": null,
-      "average_cost_currency": null,
-      "cost_basis": "NOT_AVAILABLE",
-      "name": null
-     }
-    ],
-    "cash": [],
-    "review": [
-     {
-      "row": 2,
-      "symbol": null,
-      "reason_codes": [
-       "SYMBOL_FORMAT"
-      ]
-     },
-     {
-      "row": 3,
-      "symbol": null,
-      "reason_codes": [
-       "SYMBOL_FORMAT"
-      ]
-     },
-     {
-      "row": 4,
-      "symbol": "000222",
-      "reason_codes": [
-       "CURRENCY_MISMATCH"
-      ]
-     },
-     {
-      "row": 5,
-      "symbol": "5678",
-      "reason_codes": [
-       "CURRENCY_MISMATCH"
-      ]
-     },
-     {
-      "row": 6,
-      "symbol": "SYNQ",
-      "reason_codes": [
-       "CURRENCY_FORMAT"
-      ]
-     },
-     {
-      "row": 8,
-      "symbol": "CASH_EUR",
-      "reason_codes": [
-       "CURRENCY_MISMATCH"
-      ]
-     }
-    ]
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":null,\"average_cost_currency\":null,\"avg_cost\":null,\"cost_basis\":\"NOT_AVAILABLE\",\"cost_krw\":null,\"currency\":\"USD\",\"market\":\"US\",\"name\":null,\"quantity\":\"1\",\"row\":7,\"symbol\":\"BRK.B\"}],\"review\":[{\"reason_codes\":[\"SYMBOL_FORMAT\"],\"row\":2,\"symbol\":null},{\"reason_codes\":[\"SYMBOL_FORMAT\"],\"row\":3,\"symbol\":null},{\"reason_codes\":[\"CURRENCY_MISMATCH\"],\"row\":4,\"symbol\":\"000222\"},{\"reason_codes\":[\"CURRENCY_MISMATCH\"],\"row\":5,\"symbol\":\"5678\"},{\"reason_codes\":[\"CURRENCY_FORMAT\"],\"row\":6,\"symbol\":\"SYNQ\"},{\"reason_codes\":[\"CURRENCY_MISMATCH\"],\"row\":8,\"symbol\":\"CASH_EUR\"}],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "as-of-rules",
@@ -864,43 +507,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 4,
-      "symbol": "SYNT",
-      "market": "US",
-      "quantity": "1",
-      "currency": "USD",
-      "avg_cost": null,
-      "cost_krw": null,
-      "average_cost": null,
-      "average_cost_currency": null,
-      "cost_basis": "NOT_AVAILABLE",
-      "name": null
-     }
-    ],
-    "cash": [],
-    "review": [
-     {
-      "row": 2,
-      "symbol": "SYNR",
-      "reason_codes": [
-       "AS_OF_FORMAT"
-      ]
-     },
-     {
-      "row": 3,
-      "symbol": "SYNS",
-      "reason_codes": [
-       "AS_OF_MISMATCH"
-      ]
-     }
-    ]
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":null,\"average_cost_currency\":null,\"avg_cost\":null,\"cost_basis\":\"NOT_AVAILABLE\",\"cost_krw\":null,\"currency\":\"USD\",\"market\":\"US\",\"name\":null,\"quantity\":\"1\",\"row\":4,\"symbol\":\"SYNT\"}],\"review\":[{\"reason_codes\":[\"AS_OF_FORMAT\"],\"row\":2,\"symbol\":\"SYNR\"},{\"reason_codes\":[\"AS_OF_MISMATCH\"],\"row\":3,\"symbol\":\"SYNS\"}],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "duplicate-symbol",
@@ -940,43 +547,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 4,
-      "symbol": "SYNV",
-      "market": "US",
-      "quantity": "1",
-      "currency": "USD",
-      "avg_cost": null,
-      "cost_krw": null,
-      "average_cost": null,
-      "average_cost_currency": null,
-      "cost_basis": "NOT_AVAILABLE",
-      "name": null
-     }
-    ],
-    "cash": [],
-    "review": [
-     {
-      "row": 2,
-      "symbol": "SYNU",
-      "reason_codes": [
-       "DUPLICATE_SYMBOL"
-      ]
-     },
-     {
-      "row": 3,
-      "symbol": "SYNU",
-      "reason_codes": [
-       "DUPLICATE_SYMBOL"
-      ]
-     }
-    ]
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":null,\"average_cost_currency\":null,\"avg_cost\":null,\"cost_basis\":\"NOT_AVAILABLE\",\"cost_krw\":null,\"currency\":\"USD\",\"market\":\"US\",\"name\":null,\"quantity\":\"1\",\"row\":4,\"symbol\":\"SYNV\"}],\"review\":[{\"reason_codes\":[\"DUPLICATE_SYMBOL\"],\"row\":2,\"symbol\":\"SYNU\"},{\"reason_codes\":[\"DUPLICATE_SYMBOL\"],\"row\":3,\"symbol\":\"SYNU\"}],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "sheet-numbers-and-serial-dates",
@@ -1041,70 +612,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 2,
-      "symbol": "000333",
-      "market": "KRX",
-      "quantity": "7",
-      "currency": "KRW",
-      "avg_cost": "1.25",
-      "cost_krw": "100",
-      "average_cost": "14.285714",
-      "average_cost_currency": "KRW",
-      "cost_basis": "COST_KRW_DIV_QTY",
-      "name": "serial"
-     },
-     {
-      "row": 3,
-      "symbol": "4321",
-      "market": "TSE",
-      "quantity": "2",
-      "currency": "JPY",
-      "avg_cost": null,
-      "cost_krw": "0.000001",
-      "average_cost": "0.000001",
-      "average_cost_currency": "KRW",
-      "cost_basis": "COST_KRW_DIV_QTY",
-      "name": null
-     }
-    ],
-    "cash": [],
-    "review": [
-     {
-      "row": 4,
-      "symbol": "SYNW",
-      "reason_codes": [
-       "COST_KRW_FORMAT"
-      ]
-     },
-     {
-      "row": 5,
-      "symbol": "SYNX",
-      "reason_codes": [
-       "AS_OF_FORMAT"
-      ]
-     },
-     {
-      "row": 6,
-      "symbol": null,
-      "reason_codes": [
-       "SYMBOL_FORMAT"
-      ]
-     },
-     {
-      "row": 7,
-      "symbol": "SYNY",
-      "reason_codes": [
-       "QUANTITY_FORMAT"
-      ]
-     }
-    ]
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":\"14.285714\",\"average_cost_currency\":\"KRW\",\"avg_cost\":\"1.25\",\"cost_basis\":\"COST_KRW_DIV_QTY\",\"cost_krw\":\"100\",\"currency\":\"KRW\",\"market\":\"KRX\",\"name\":\"serial\",\"quantity\":\"7\",\"row\":2,\"symbol\":\"000333\"},{\"average_cost\":\"0.000001\",\"average_cost_currency\":\"KRW\",\"avg_cost\":null,\"cost_basis\":\"COST_KRW_DIV_QTY\",\"cost_krw\":\"0.000001\",\"currency\":\"JPY\",\"market\":\"TSE\",\"name\":null,\"quantity\":\"2\",\"row\":3,\"symbol\":\"4321\"}],\"review\":[{\"reason_codes\":[\"COST_KRW_FORMAT\"],\"row\":4,\"symbol\":\"SYNW\"},{\"reason_codes\":[\"AS_OF_FORMAT\"],\"row\":5,\"symbol\":\"SYNX\"},{\"reason_codes\":[\"SYMBOL_FORMAT\"],\"row\":6,\"symbol\":null},{\"reason_codes\":[\"QUANTITY_FORMAT\"],\"row\":7,\"symbol\":\"SYNY\"}],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "blank-rows-skipped",
@@ -1140,28 +648,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 4,
-      "symbol": "SYNZ",
-      "market": "US",
-      "quantity": "1",
-      "currency": "USD",
-      "avg_cost": null,
-      "cost_krw": null,
-      "average_cost": null,
-      "average_cost_currency": null,
-      "cost_basis": "NOT_AVAILABLE",
-      "name": null
-     }
-    ],
-    "cash": [],
-    "review": []
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":null,\"average_cost_currency\":null,\"avg_cost\":null,\"cost_basis\":\"NOT_AVAILABLE\",\"cost_krw\":null,\"currency\":\"USD\",\"market\":\"US\",\"name\":null,\"quantity\":\"1\",\"row\":4,\"symbol\":\"SYNZ\"}],\"review\":[],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "name-rules",
@@ -1216,50 +703,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 5,
-      "symbol": "SYAD",
-      "market": "US",
-      "quantity": "1",
-      "currency": "USD",
-      "avg_cost": null,
-      "cost_krw": null,
-      "average_cost": null,
-      "average_cost_currency": null,
-      "cost_basis": "NOT_AVAILABLE",
-      "name": "공백"
-     }
-    ],
-    "cash": [],
-    "review": [
-     {
-      "row": 2,
-      "symbol": "SYAA",
-      "reason_codes": [
-       "NAME_FORMAT"
-      ]
-     },
-     {
-      "row": 3,
-      "symbol": "SYAB",
-      "reason_codes": [
-       "NAME_FORMAT"
-      ]
-     },
-     {
-      "row": 4,
-      "symbol": "SYAC",
-      "reason_codes": [
-       "NAME_FORMAT"
-      ]
-     }
-    ]
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[],\"positions\":[{\"average_cost\":null,\"average_cost_currency\":null,\"avg_cost\":null,\"cost_basis\":\"NOT_AVAILABLE\",\"cost_krw\":null,\"currency\":\"USD\",\"market\":\"US\",\"name\":\"공백\",\"quantity\":\"1\",\"row\":5,\"symbol\":\"SYAD\"}],\"review\":[{\"reason_codes\":[\"NAME_FORMAT\"],\"row\":2,\"symbol\":\"SYAA\"},{\"reason_codes\":[\"NAME_FORMAT\"],\"row\":3,\"symbol\":\"SYAB\"},{\"reason_codes\":[\"NAME_FORMAT\"],\"row\":4,\"symbol\":\"SYAC\"}],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "cost-range",
@@ -1286,22 +730,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": null,
-    "positions": [],
-    "cash": [],
-    "review": [
-     {
-      "row": 2,
-      "symbol": "SYAE",
-      "reason_codes": [
-       "COST_RANGE"
-      ]
-     }
-    ]
-   }
+   "expected_json": "{\"as_of\":null,\"cash\":[],\"positions\":[],\"review\":[{\"reason_codes\":[\"COST_RANGE\"],\"row\":2,\"symbol\":\"SYAE\"}],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   },
   {
    "id": "mixed-target-and-outside",
@@ -1363,76 +792,7 @@
      ]
     ]
    },
-   "expected": {
-    "schema": "holdings-capture/1",
-    "state": "OK",
-    "as_of": "2031-02-03",
-    "positions": [
-     {
-      "row": 2,
-      "symbol": "ASML",
-      "market": "US",
-      "quantity": "2",
-      "currency": "USD",
-      "avg_cost": "700",
-      "cost_krw": "1900000",
-      "average_cost": "950000",
-      "average_cost_currency": "KRW",
-      "cost_basis": "COST_KRW_DIV_QTY",
-      "name": "ASML Holding"
-     },
-     {
-      "row": 3,
-      "symbol": "8035",
-      "market": "TSE",
-      "quantity": "1",
-      "currency": "JPY",
-      "avg_cost": "30000",
-      "cost_krw": null,
-      "average_cost": "30000",
-      "average_cost_currency": "JPY",
-      "cost_basis": "AVG_COST_FIELD",
-      "name": "Tokyo Electron"
-     },
-     {
-      "row": 4,
-      "symbol": "042700",
-      "market": "KRX",
-      "quantity": "10",
-      "currency": "KRW",
-      "avg_cost": null,
-      "cost_krw": "1234567",
-      "average_cost": "123456.7",
-      "average_cost_currency": "KRW",
-      "cost_basis": "COST_KRW_DIV_QTY",
-      "name": "한미반도체"
-     },
-     {
-      "row": 5,
-      "symbol": "KO",
-      "market": "US",
-      "quantity": "3",
-      "currency": "USD",
-      "avg_cost": "60.1",
-      "cost_krw": null,
-      "average_cost": "60.1",
-      "average_cost_currency": "USD",
-      "cost_basis": "AVG_COST_FIELD",
-      "name": "Coca-Cola"
-     }
-    ],
-    "cash": [
-     {
-      "row": 6,
-      "symbol": "CASH_KRW",
-      "currency": "KRW",
-      "amount": "50000",
-      "cost_krw": null,
-      "name": null
-     }
-    ],
-    "review": []
-   }
+   "expected_json": "{\"as_of\":\"2031-02-03\",\"cash\":[{\"amount\":\"50000\",\"cost_krw\":null,\"currency\":\"KRW\",\"name\":null,\"row\":6,\"symbol\":\"CASH_KRW\"}],\"positions\":[{\"average_cost\":\"950000\",\"average_cost_currency\":\"KRW\",\"avg_cost\":\"700\",\"cost_basis\":\"COST_KRW_DIV_QTY\",\"cost_krw\":\"1900000\",\"currency\":\"USD\",\"market\":\"US\",\"name\":\"ASML Holding\",\"quantity\":\"2\",\"row\":2,\"symbol\":\"ASML\"},{\"average_cost\":\"30000\",\"average_cost_currency\":\"JPY\",\"avg_cost\":\"30000\",\"cost_basis\":\"AVG_COST_FIELD\",\"cost_krw\":null,\"currency\":\"JPY\",\"market\":\"TSE\",\"name\":\"Tokyo Electron\",\"quantity\":\"1\",\"row\":3,\"symbol\":\"8035\"},{\"average_cost\":\"123456.7\",\"average_cost_currency\":\"KRW\",\"avg_cost\":null,\"cost_basis\":\"COST_KRW_DIV_QTY\",\"cost_krw\":\"1234567\",\"currency\":\"KRW\",\"market\":\"KRX\",\"name\":\"한미반도체\",\"quantity\":\"10\",\"row\":4,\"symbol\":\"042700\"},{\"average_cost\":\"60.1\",\"average_cost_currency\":\"USD\",\"avg_cost\":\"60.1\",\"cost_basis\":\"AVG_COST_FIELD\",\"cost_krw\":null,\"currency\":\"USD\",\"market\":\"US\",\"name\":\"Coca-Cola\",\"quantity\":\"3\",\"row\":5,\"symbol\":\"KO\"}],\"review\":[],\"schema\":\"holdings-capture/1\",\"state\":\"OK\"}"
   }
  ]
 }

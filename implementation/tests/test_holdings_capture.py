@@ -31,11 +31,11 @@ def test_fixture_is_current_generator_output():
 def test_every_case_replays_and_is_synthetic():
     for case in cases():
         assert case['synthetic'] is True
-        assert parse(case['input']['values']) == case['expected']
+        assert parse(case['input']['values']) == json.loads(case['expected_json'])
 
 
 def test_rules_fixed_by_the_prompt_contract():
-    by = {c['id']: c['expected'] for c in cases()}
+    by = {c['id']: json.loads(c['expected_json']) for c in cases()}
     assert HEADER == ('as_of', 'symbol', 'quantity', 'avg_cost', 'currency', 'cost_krw', 'name')
     assert by['header-mismatch']['state'] == 'HEADER_MISMATCH' and by['header-mismatch']['review'] == []
     assert by['cost-krw-preferred']['positions'][0]['cost_basis'] == 'COST_KRW_DIV_QTY'

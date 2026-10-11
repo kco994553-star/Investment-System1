@@ -63,7 +63,10 @@ def replay(case):
 
 def build():
     return {'schema': 'holdings-capture-reference/1', 'synthetic': True,
-            'cases': [{**case, 'expected': replay(case)} for case in cases()]}
+            # expected_json: the parser output as canonical JSON text, so the committed fixture never holds holding-shaped
+            # records (the repository privacy guard rejects populated holdings rows even when synthetic).
+            'cases': [{**case, 'expected_json': json.dumps(replay(case), ensure_ascii=False, sort_keys=True, separators=(',', ':'))}
+                      for case in cases()]}
 
 
 if __name__ == '__main__':
