@@ -649,3 +649,18 @@ main, .card, .grid > *, .axis-grid > *, .hub-grid > * {min-width:0;}
 .setup-form select, .setup-form input {width: 100%; min-height: 44px;}
 .chain {display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 8px 0 0; padding: 0;}
 .chain li {padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; min-width: 0;}
+/* S16 13F manager style badges: tap/click opens the description panel; desktop hover shows the same panel. */
+.mgr-head {display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px;}
+.mgr-head h3 {margin: 0; font-size: 15px; overflow-wrap: anywhere;}
+.mgr-style {display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 0;}
+.mgr-style .style-badge, .mgr-style .style-info {min-height: 36px; padding: 4px 10px; border-radius: 14px; font-size: 12px; font-weight: 650;}
+.style-badge {background: #e9efe5; color: #355746; border-color: #cfdcd2;}
+.style-badge.reference {background: #e8edf7; color: #2f4a7a; border-color: #c9d4ea;}
+.style-badge[aria-expanded="true"], .style-info[aria-expanded="true"] {box-shadow: inset 0 0 0 2px var(--accent);}
+.style-info {min-width: 36px; background: var(--card);}
+.style-panel {flex-basis: 100%; min-width: 0; margin-top: 4px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fafaf6; font-size: 13px; overflow-wrap: anywhere;}
+.style-panel p {margin: 2px 0;}
+@media (hover: hover) and (pointer: fine) {.mgr-style:hover ~ .style-panel[hidden] {display: block;}}
+.style-filter {margin: 8px 0 12px; gap: 6px;}
+.style-filter button {min-height: 40px; padding: 4px 12px; border-radius: 16px; font-size: 13px;}
+.style-filter button[aria-pressed="true"] {background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700;}

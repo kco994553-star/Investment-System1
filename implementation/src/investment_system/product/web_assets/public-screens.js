@@ -17,6 +17,17 @@ function clock(v){need(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2
 function day(v){need(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&new Date(v+'T00:00:00Z').toISOString().slice(0,10)===v);return v;}
 function aggregate(states){return states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';}
 function score(v,max=100){need(v===null||number(v)&&v>=0&&v<=max);}
+// Optional 13F manager verification records: exact SEC name + recent 13F-HR, else NOT_AVAILABLE with a fixed reason.
+const MANAGER_KEYS=['id','cik','state','reason_code','matched_name','verified_at','latest_13f_accession','capture_reason','comparison_reasons'];
+const MANAGER_REASONS=['CIK_NOT_CONFIGURED','SUBMISSIONS_UNAVAILABLE','SUBMISSIONS_INVALID','CIK_MISMATCH','NAME_MISMATCH','NO_RECENT_13F_HR'];
+const CAPTURE_REASONS=['INSUFFICIENT_13F_HISTORY','FILING_INDEX_UNAVAILABLE','INFOTABLE_NOT_IDENTIFIED','COVER_UNAVAILABLE','COVER_INVALID','INFOTABLE_UNAVAILABLE','PUBLIC_SIZE_LIMIT'];
+function managerRecords(list,cut){need(Array.isArray(list)&&list.length<=20);const ids=new Set(),verified=new Set();
+ for(const m of list){keys(m,MANAGER_KEYS);need(typeof m.id==='string'&&/^[a-z][a-z0-9_]{0,47}$/.test(m.id)&&!ids.has(m.id));ids.add(m.id);
+  need(m.cik===null||typeof m.cik==='string'&&/^\d{10}$/.test(m.cik)&&Number(m.cik)>0);
+  need(Array.isArray(m.comparison_reasons)&&m.comparison_reasons.length<=16&&new Set(m.comparison_reasons).size===m.comparison_reasons.length&&m.comparison_reasons.every(r=>typeof r==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/.test(r)));
+  if(m.state==='VERIFIED'){need(m.cik!==null&&!verified.has(m.cik)&&m.reason_code===null&&typeof m.matched_name==='string'&&m.matched_name.length>0&&m.matched_name.length<=150&&!/[\u0000-\u001f<>]/.test(m.matched_name)&&clock(m.verified_at)<=cut&&typeof m.latest_13f_accession==='string'&&/^\d{10}-\d{2}-\d{6}$/.test(m.latest_13f_accession)&&(m.capture_reason===null||CAPTURE_REASONS.includes(m.capture_reason)));verified.add(m.cik);}
+  else need(m.state==='NOT_AVAILABLE'&&MANAGER_REASONS.includes(m.reason_code)&&m.matched_name===null&&m.verified_at===null&&m.latest_13f_accession===null&&m.capture_reason===null&&!m.comparison_reasons.length&&(m.reason_code==='CIK_NOT_CONFIGURED')===(m.cik===null));}
+ return verified;}
 function validate(name,p){
  need(Object.hasOwn(FILES,name)&&new TextEncoder().encode(JSON.stringify(p)).length<=MAX);
  keys(p,['schema_version','kind','as_of','state','sources','reason_codes','freshness_basis','stale_after_seconds','data']);
@@ -43,8 +54,9 @@ function validate(name,p){
   const present=new Set(d.observations.map(o=>o.source_id));for(const c of d.cells){const eligible=LEVEL[c.axis]?LEVEL[c.axis].every(id=>present.has(id)):d.observations.some(o=>o.axis===c.axis);need(c.state===(c.dimension==='Level'&&eligible?'RAW_EVIDENCE':'NOT_AVAILABLE'));}
   need(d.pit_status===(d.observations.length?'OBSERVED_BOUND_ONLY':'NOT_VERIFIED'));
  }else{
-  keys(d,['reports','role']);need(d.role==='REPORTED_QUANTITY_CHANGE_NOT_TRADES'&&Array.isArray(d.reports)&&d.reports.length<=20);
-  for(const r of d.reports){keys(r,['manager_cik','previous_quarter','current_quarter','state','changes','source_hashes']);need(typeof r.manager_cik==='string'&&/^\d{10}$/.test(r.manager_cik)&&Number(r.manager_cik)>0&&day(r.previous_quarter)<day(r.current_quarter)&&r.current_quarter<=p.as_of.slice(0,10)&&STATES.includes(r.state)&&Array.isArray(r.changes)&&(r.state!=='NOT_AVAILABLE'||!r.changes.length));states.push(r.state);refs(r,{previous:'SEC_13F',current:'SEC_13F'});
+  need(object(d)&&Object.hasOwn(d,'reports')&&Object.hasOwn(d,'role')&&(Object.keys(d).length===2||Object.keys(d).length===3&&Object.hasOwn(d,'managers')));need(d.role==='REPORTED_QUANTITY_CHANGE_NOT_TRADES'&&Array.isArray(d.reports)&&d.reports.length<=20);
+  const verified=Object.hasOwn(d,'managers')?managerRecords(d.managers,cut):null;
+  for(const r of d.reports){keys(r,['manager_cik','previous_quarter','current_quarter','state','changes','source_hashes']);need((verified===null||verified.has(r.manager_cik))&&typeof r.manager_cik==='string'&&/^\d{10}$/.test(r.manager_cik)&&Number(r.manager_cik)>0&&day(r.previous_quarter)<day(r.current_quarter)&&r.current_quarter<=p.as_of.slice(0,10)&&STATES.includes(r.state)&&Array.isArray(r.changes)&&(r.state!=='NOT_AVAILABLE'||!r.changes.length));states.push(r.state);refs(r,{previous:'SEC_13F',current:'SEC_13F'});
    for(const c of r.changes){keys(c,['cusip','security_key','unit','kind','reported_before','reported_after','reported_delta']);need(typeof c.cusip==='string'&&/^[0-9A-Z*@#]{9}$/.test(c.cusip)&&hash(c.security_key)&&['SH','PRN'].includes(c.unit)&&[c.reported_before,c.reported_after,c.reported_delta].every(Number.isSafeInteger)&&c.reported_before>=0&&c.reported_after>=0&&c.reported_delta===c.reported_after-c.reported_before);const a=c.reported_before,b=c.reported_after;need(c.kind===(a===0&&b>0?'NEW':b===0&&a>0?'EXIT':b>a&&a>0?'ADD':a>b&&b>0?'REDUCE':null));}
   }
  }
@@ -60,19 +72,58 @@ const STAR_KEY='investment.web.v1.investor-stars';
 function readStars(storage){try{const v=JSON.parse(storage.getItem(STAR_KEY)||'[]');return Array.isArray(v)?v.filter(x=>typeof x==='string'&&/^\d{10}$/.test(x)).slice(0,50):[];}catch(_){return [];}}
 function toggleStar(storage,cik){need(/^\d{10}$/.test(cik));const stars=readStars(storage),next=stars.includes(cik)?stars.filter(x=>x!==cik):[...stars,cik].slice(0,50);storage.setItem(STAR_KEY,JSON.stringify(next));return next;}
 function bySecurity(reports){const map=new Map();for(const r of reports)for(const c of r.changes){if(!map.has(c.cusip))map.set(c.cusip,[]);map.get(c.cusip).push({manager_cik:r.manager_cik,kind:c.kind,reported_before:c.reported_before,reported_after:c.reported_after,unit:c.unit,current_quarter:r.current_quarter});}return [...map.entries()].sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:0);}
-function render13F(section,p,el,en,{view='investor',storage=null,rerender=()=>{}}={}){
+// 13F manager styles come from the user-editable v0 config (manager-styles-v0.js): a general-assessment label, never a recommendation.
+const LIMITS={ko:'13F 한계: 분기 종료 후 최대 45일 지연된 자료입니다. 미국 상장 주식(13F 대상 증권)의 매수 포지션만 담깁니다. 퀀트·매크로 기관은 13F가 전략 전체를 보여 주지 않아 참고용입니다.',en:'13F limits: filed up to 45 days after quarter end (delayed). Only long positions in US-listed equities (13F securities) are included. Quant and macro managers are reference only because 13F does not show their whole strategy.'};
+const MANAGER_REASON_TEXT={CIK_NOT_CONFIGURED:['CIK 미설정','CIK not configured'],SUBMISSIONS_UNAVAILABLE:['SEC 조회 실패','SEC lookup failed'],SUBMISSIONS_INVALID:['SEC 응답 형식 오류','Invalid SEC response'],CIK_MISMATCH:['CIK 불일치','CIK mismatch'],NAME_MISMATCH:['SEC 등록명 불일치','SEC name mismatch'],NO_RECENT_13F_HR:['최근 13F-HR 없음','No recent 13F-HR'],VERIFICATION_NOT_RUN:['CIK 확인 전','CIK not verified yet']};
+function managerStyles(){try{const c=typeof module==='object'&&module.exports?require('./manager-styles-v0.js'):globalThis.ManagerStylesV0;return c&&Array.isArray(c.managers)&&Array.isArray(c.styles)?c:null;}catch(_){return null;}}
+// A configured manager shows reports only when the published record verified exactly its configured CIK.
+function managerRows(config,p){if(!config)return [];const d=p&&p.data||{},records=new Map((d.managers||[]).map(m=>[m.id,m])),reports=d.reports||[];
+ return config.managers.map(m=>{const rec=records.get(m.id)||null,same=!!rec&&rec.cik===m.candidate_cik,verified=same&&rec.state==='VERIFIED';
+  return {manager:m,record:same?rec:null,verified,reason:verified?null:m.candidate_cik===null?'CIK_NOT_CONFIGURED':same?rec.reason_code:'VERIFICATION_NOT_RUN',report:verified?reports.find(r=>r.manager_cik===rec.cik)||null:null};});}
+function filterManagerRows(rows,selected){const s=Array.isArray(selected)?selected:[];return s.length?rows.filter(r=>r.manager.styles.some(id=>s.includes(id))):rows;}
+function render13F(section,p,el,en,{view='investor',storage=null,styles:selected=[],rerender=()=>{}}={}){
  section.append(el('p',en?'Source SEC EDGAR · free · filed up to 45 days after quarter end (deadline, not a freshness guarantee)':'출처 SEC EDGAR·무료 · 분기 종료 후 최대 45일 제출 기한(최신성 보장 아님)',{class:'meta'}));
  section.append(el('p',en?'Before reading: only long positions held at quarter end are reported; no shorts, bonds or cash. Reported quantity changes, not actual trades or current holdings. Not an investment signal.':'읽기 전에: 분기 말 보유분만 담기고 공매도·채권·현금은 없습니다. 보고 수량 변화이며 실제 매매·현재 보유가 아닙니다. 투자 신호 아님.',{class:'banner','data-13f-warning':''}));
- const stars=storage?readStars(storage):[],tabs=el('div',undefined,{class:'chips screen-tabs',role:'group'});for(const[id,label]of [['investor',en?'By investor':'투자자별'],['security',en?'By security':'종목별'],['overlap',en?'Overlap with mine':'내 종목과 겹침']]){const b=el('button',label,{type:'button','data-13f-view':id,'aria-pressed':String(view===id)});b.onclick=()=>rerender({view:id});tabs.append(b);}section.append(tabs);
- const reports=p.data.reports;if(!reports.length){section.append(el('p','NOT_AVAILABLE · '+(en?'No selected investor reports connected.':'연결된 투자자 보고서가 없습니다.'),{class:'empty'}));}
+ section.append(el('p',en?LIMITS.en:LIMITS.ko,{class:'banner','data-13f-limits':''}));
+ const stars=storage?readStars(storage):[],tabs=el('div',undefined,{class:'chips screen-tabs',role:'group'});for(const[id,label]of [['investor',en?'By investor':'투자자별'],['security',en?'By security':'종목별'],['overlap',en?'Overlap with mine':'내 종목과 겹침']]){const b=el('button',label,{type:'button','data-13f-view':id,'aria-pressed':String(view===id)});b.onclick=()=>rerender({view:id,styles:selected});tabs.append(b);}section.append(tabs);
+ const reports=p.data.reports,config=managerStyles(),rows=managerRows(config,p),styleById=new Map((config?config.styles:[]).map(s=>[s.id,s])),label=s=>en?s.label_en:s.label_ko;
+ const attached=new Set(rows.filter(r=>r.report).map(r=>r.report.manager_cik)),nameOf=cik=>{const row=rows.find(r=>r.report&&r.report.manager_cik===cik);return row?row.manager.display_name:cik;};
+ if(!reports.length){section.append(el('p','NOT_AVAILABLE · '+(en?'No selected investor reports connected.':'연결된 투자자 보고서가 없습니다.'),{class:'empty'}));}
  if(view==='overlap'){section.append(el('p','NOT_AVAILABLE · '+(en?'CUSIP-to-company mapping is not approved. Tokyo Electron and Hanmi Semiconductor are not 13F securities.':'CUSIP→기업 대응이 승인되지 않았습니다. 도쿄일렉트론·한미반도체는 13F 대상이 아닙니다.'),{'data-13f-overlap':''}));return;}
- if(view==='security'){for(const[cusip,rows]of bySecurity(reports)){const article=el('article',undefined,{'data-13f-security':cusip});article.append(el('h3',cusip));for(const r of rows)article.append(el('p',r.manager_cik+' · '+r.kind+' · '+r.reported_before+' → '+r.reported_after+' '+r.unit));section.append(article);}return;}
- const ordered=[...reports].sort((a,b)=>Number(stars.includes(b.manager_cik))-Number(stars.includes(a.manager_cik)));
- for(const r of ordered){const article=el('article',undefined,{'data-13f-manager':r.manager_cik}),starred=stars.includes(r.manager_cik),star=el('button',starred?'★':'☆',{type:'button','data-investor-star':r.manager_cik,'aria-pressed':String(starred),'aria-label':(en?'Star investor ':'투자자 별표 ')+r.manager_cik});
-  star.disabled=!storage;star.onclick=()=>{try{toggleStar(storage,r.manager_cik);}catch(_){}rerender({view});};const counts={NEW:0,ADD:0,REDUCE:0,EXIT:0};for(const c of r.changes)if(Object.hasOwn(counts,c.kind))counts[c.kind]++;
-  article.append(el('h3',r.manager_cik),star,el('p',r.previous_quarter+' → '+r.current_quarter+' · '+r.state),el('p',Object.entries(counts).map(([k,v])=>k+' '+v).join(' · '),{class:'small'}));
-  for(const c of r.changes)article.append(el('p',c.cusip+' · '+c.kind+' · '+c.reported_before+' → '+c.reported_after+' '+c.unit));section.append(article);}
- section.append(el('p',en?'Investor stars are stored only on this device and are included in the device backup (Settings). The app does not recommend investors.':'투자자 ★는 이 기기에만 저장되고 기기 백업(설정)에 포함됩니다. 앱이 투자자를 추천하지 않습니다.',{class:'small'}));
+ if(view==='security'){for(const[cusip,list]of bySecurity(reports)){const article=el('article',undefined,{'data-13f-security':cusip});article.append(el('h3',cusip));for(const r of list)article.append(el('p',nameOf(r.manager_cik)+' · '+r.kind+' · '+r.reported_before+' → '+r.reported_after+' '+r.unit));section.append(article);}return;}
+ if(!config)section.append(el('p','NOT_AVAILABLE · '+(en?'Manager style config is not loaded.':'기관 유형 설정을 불러오지 못했습니다.'),{class:'empty'}));
+ else{section.append(el('p',(en?config.label_en:config.label_ko)+' · '+config.config_version,{class:'badge','data-13f-style-label':''}));
+  const filter=el('div',undefined,{class:'chips style-filter',role:'group','aria-label':en?'Filter by style (any selected style matches)':'유형으로 거르기(선택한 유형 중 하나라도 해당)','data-13f-style-filter':''}),all=el('button',en?'All':'전체',{type:'button','data-13f-style-all':'','aria-pressed':String(!selected.length)});all.onclick=()=>rerender({view,styles:[]});filter.append(all);
+  for(const s of config.styles){const on=selected.includes(s.id),b=el('button',label(s),{type:'button','data-13f-style':s.id,'aria-pressed':String(on)});b.onclick=()=>rerender({view,styles:on?selected.filter(x=>x!==s.id):[...selected,s.id]});filter.append(b);}section.append(filter);}
+ const starButton=(cik,name)=>{const starred=cik!==null&&stars.includes(cik),star=el('button',starred?'★':'☆',{type:'button','data-investor-star':cik||'','aria-pressed':String(starred),'aria-label':(en?'Star investor ':'투자자 별표 ')+name});star.disabled=!storage||cik===null;star.onclick=()=>{try{toggleStar(storage,cik);}catch(_){}rerender({view,styles:selected});};return star;};
+ const reportBody=(article,r)=>{const counts={NEW:0,ADD:0,REDUCE:0,EXIT:0};for(const c of r.changes)if(Object.hasOwn(counts,c.kind))counts[c.kind]++;
+  article.append(el('p',r.previous_quarter+' → '+r.current_quarter+' · '+r.state),el('p',Object.entries(counts).map(([k,v])=>k+' '+v).join(' · '),{class:'small'}));
+  const host=r.changes.length>30?el('details'):article;if(host!==article){host.append(el('summary',(en?'Changes ':'변화 목록 ')+r.changes.length));article.append(host);}
+  for(const c of r.changes)host.append(el('p',c.cusip+' · '+c.kind+' · '+c.reported_before+' → '+c.reported_after+' '+c.unit));};
+ const panels=[];
+ const managerCard=row=>{const m=row.manager,panelId='mgr-panel-'+m.id,article=el('article',undefined,{class:'mgr-card','data-13f-config-manager':m.id});if(row.report)article.setAttribute('data-13f-manager',row.report.manager_cik);
+  const head=el('div',undefined,{class:'mgr-head'}),wrap=el('div',undefined,{class:'mgr-style'}),panel=el('div',undefined,{id:panelId,class:'style-panel',role:'region','aria-label':(en?'Style description: ':'유형 설명: ')+m.display_name,'data-style-panel':m.id}),controls=[];panel.hidden=true;
+  const reference=m.styles.some(id=>styleById.get(id)&&styleById.get(id).reference_only);
+  for(const id of m.styles){const s=styleById.get(id);controls.push(el('button',s?label(s):id,{type:'button',class:'style-badge'+(s&&s.reference_only?' reference':''),'aria-expanded':'false','aria-controls':panelId,'data-style-badge':id}));}
+  const info=el('button','ⓘ',{type:'button',class:'style-info','aria-expanded':'false','aria-controls':panelId,'aria-label':(en?'Style description: ':'유형 설명 보기: ')+m.display_name,'data-style-info':m.id});controls.push(info);
+  const set=(open,focus)=>{panel.hidden=!open;for(const c of controls)c.setAttribute('aria-expanded',String(open));if(!open&&focus)focus.focus();};
+  for(const c of controls)c.onclick=()=>set(panel.hidden);panels.push({panel,close:()=>set(false,info)});
+  panel.append(el('p',en?config.label_en:config.label_ko,{class:'small'}),el('p',en?m.description_en:m.description_ko,{'data-style-description':m.id}));
+  if(reference)panel.append(el('p',en?'Quant/macro manager: 13F is reference only.':'퀀트·매크로 기관: 13F는 참고용입니다.',{class:'small'}));
+  wrap.append(...controls);head.append(el('h3',m.display_name),wrap,starButton(m.candidate_cik,m.display_name),panel);article.append(head);
+  if(reference)article.append(el('p',en?'Reference only':'참고용',{class:'badge partial','data-13f-reference':m.id}));
+  if(!row.verified){article.append(el('p','NOT_AVAILABLE · '+row.reason+' · '+(MANAGER_REASON_TEXT[row.reason]||['',''])[en?1:0],{class:'badge NOT_AVAILABLE','data-13f-unverified':m.id}));return article;}
+  const rec=row.record;article.append(el('p',(en?'SEC verified · ':'SEC 확인 · ')+rec.matched_name+' · CIK '+rec.cik+' · '+(en?'checked ':'확인 ')+rec.verified_at.slice(0,10)+' · '+(en?'latest 13F ':'최근 13F ')+rec.latest_13f_accession,{class:'small','data-13f-verified':m.id}));
+  if(row.report){reportBody(article,row.report);if(row.report.state==='NOT_AVAILABLE'&&rec.comparison_reasons.length)article.append(el('p','NOT_AVAILABLE · '+rec.comparison_reasons.join(', '),{class:'small','data-13f-comparison':m.id}));}
+  else article.append(el('p','NOT_AVAILABLE · '+(rec.capture_reason||(en?'No comparable report':'비교 가능한 보고서 없음')),{class:'small','data-13f-comparison':m.id}));
+  return article;};
+ const cards=filterManagerRows(rows,selected).map(row=>({cik:row.manager.candidate_cik,node:managerCard(row)}));
+ // Reports outside the verified configured managers keep their bare CIK; they carry no style and are hidden while a style filter is on.
+ if(!selected.length)for(const r of reports.filter(r=>!attached.has(r.manager_cik))){const article=el('article',undefined,{'data-13f-manager':r.manager_cik}),head=el('div',undefined,{class:'mgr-head'});head.append(el('h3',r.manager_cik),starButton(r.manager_cik,r.manager_cik));article.append(head);reportBody(article,r);cards.push({cik:r.manager_cik,node:article});}
+ cards.map((c,i)=>({c,i,s:c.cik!==null&&stars.includes(c.cik)?0:1})).sort((a,b)=>a.s-b.s||a.i-b.i).forEach(({c})=>section.append(c.node));
+ if(!cards.length)section.append(el('p','NOT_AVAILABLE · '+(en?'No manager matches the selected styles.':'선택한 유형에 해당하는 기관이 없습니다.'),{class:'empty','data-13f-filter-empty':''}));
+ const doc=section.ownerDocument,onKey=e=>{if(!section.isConnected){doc.removeEventListener('keydown',onKey);return;}if(e.key==='Escape')for(const item of panels)if(!item.panel.hidden){e.preventDefault();item.close();}};doc.addEventListener('keydown',onKey);
+ section.append(el('p',en?'Investor stars are stored only on this device and are included in the device backup (Settings). The app does not recommend investors; style labels are a general-assessment v0 classification you can edit.':'투자자 ★는 이 기기에만 저장되고 기기 백업(설정)에 포함됩니다. 앱이 투자자를 추천하지 않습니다. 유형 표시는 사용자가 수정할 수 있는 일반적 평가 기반 v0 분류입니다.',{class:'small'}));
 }
 function mount(host,bundle,options={}){const {kind,companyId,companyIds,locale}=options;
  if(!host)return;const doc=host.ownerDocument,en=locale==='en-US',el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;},section=el('section',undefined,{class:'card','data-public-screen':kind});
@@ -89,5 +140,5 @@ function mount(host,bundle,options={}){const {kind,companyId,companyIds,locale}=
  else{let storage=null;try{storage=doc.defaultView.localStorage;storage.getItem(STAR_KEY);}catch(_){storage=null;}render13F(section,p,el,en,{...options,storage,rerender:patch=>mount(host,bundle,{...options,...patch})});}
  host.replaceChildren(section);
 }
-return Object.freeze({FILES,STAR_KEY,validate,load,mount,nextFilingWindow,windowThisWeek,readStars,toggleStar,bySecurity});
+return Object.freeze({FILES,STAR_KEY,LIMITS,validate,load,mount,nextFilingWindow,windowThisWeek,readStars,toggleStar,bySecurity,managerStyles,managerRows,filterManagerRows});
 });
