@@ -88,7 +88,15 @@ def main(argv=None):
             macro_v0 = None
             if args.macro_v0:
                 from investment_system.providers.macro_v0_collection import collect_macro_v0
-                macro_v0 = lambda root: collect_macro_v0(root, environ=os.environ)
+                macro_diagnostics = []
+
+                def macro_v0(root):
+                    entries = collect_macro_v0(root, environ=os.environ, diagnostics=macro_diagnostics)
+                    # Fixed tokens only (status number, content/size class, DDP rel and the first 8 hex of the public package id).
+                    for d in macro_diagnostics:
+                        print('MACRO_V0_FETCH axis=%s stage=%s code=%s http=%s content=%s size=%s rel=%s series=%s type=%s' % tuple(
+                            (d.get(k) if d.get(k) is not None else '-') for k in ('axis', 'stage', 'code', 'http', 'content', 'size', 'rel', 'series8', 'type')))
+                    return entries
             result = collect(args.out, macro_v0=macro_v0)
             _print_diagnostics(result['diagnostics']); _print_exclusions(result['exclusions'])
             if args.macro_v0:
