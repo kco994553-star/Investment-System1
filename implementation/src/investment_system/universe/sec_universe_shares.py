@@ -1,0 +1,360 @@
+"""Price-free public SEC shares projection for the approved Universe504 codes.
+
+User decision 2026-10-11 (M3 shares option a): Actions publish, per Universe
+code, the latest SEC outstanding-share count and the filing-cover share-class
+basis. The basis comes only from the same filing's cover XBRL as parsed by
+``providers.sec_m3_adapter``: one matching class -> SINGLE_CLASS_CONFIRMED;
+several classes with an unambiguous per-class value for this listing ->
+SHARE_CLASS_BASIS (shown, never summed or corrected); anything else ->
+BASIS_UNCONFIRMED. No price, market cap, rank, selection or device data.
+Missing values stay null, never 0. Shard count/stale window are v0 defaults
+(DEFAULT_V0_UNCALIBRATED), not calibrated policy.
+"""
+from datetime import date, datetime, timedelta, timezone
+import hashlib
+import json
+import math
+from pathlib import Path
+import re
+
+FILENAME = 'sec-universe-shares.json'
+KIND = 'SEC_UNIVERSE_SHARES'
+MAX_BYTES = 2 * 1024 * 1024
+STATES = ('LIVE', 'STALE', 'NOT_AVAILABLE')
+BASES = ('SINGLE_CLASS_CONFIRMED', 'SHARE_CLASS_BASIS', 'BASIS_UNCONFIRMED')
+CONCEPTS = ('dei:EntityCommonStockSharesOutstanding', 'us-gaap:CommonStockSharesOutstanding')
+FORMS = ('10-K', '10-K/A', '10-Q', '10-Q/A', '20-F', '20-F/A', '40-F', '6-K')
+REASONS = (
+    'IDENTITY_UNCONFIRMED', 'CIK_MISMATCH', 'INVALID_INPUT', 'INVALID_TIMESTAMP', 'AVAILABLE_AFTER_AS_OF',
+    'BASIS_UNCONFIRMED', 'COVER_UNCONFIRMED', 'COVER_FACT_MISMATCH', 'COVER_NOT_AVAILABLE', 'ACCESSION_UNCONFIRMED',
+    'MULTI_CLASS_AMBIGUOUS', 'SHARE_CLASS_BASIS', 'SHARES_NOT_AVAILABLE', 'INVALID_TIME_ORDER', 'MANIFEST_MISMATCH',
+    'SOURCE_TOO_LARGE', 'MIXED_SYNTHETIC_INPUT', 'CURRENCY_SCOPE_NOT_SUPPORTED', 'CIK_UNRESOLVED', 'NOT_COLLECTED',
+    'STALE_INPUT',
+)
+TOP_REASONS = ('STALE_INPUT', 'NO_ELIGIBLE_INPUT')
+RECORD_KEYS = ('cik', 'listing_id', 'company_id', 'shares', 'measurement_date', 'accn', 'form', 'filed', 'acquired_at',
+               'concept', 'share_class_basis', 'basis_evidence', 'source_sha256', 'state', 'reason_codes')
+TOP_KEYS = ('schema_version', 'kind', 'as_of', 'config_version', 'config_status', 'freshness_basis', 'stale_after_seconds',
+            'shard_count', 'last_shard_index', 'registry_sha256', 'code_count', 'state', 'reason_codes', 'records')
+EVIDENCE_KEYS = ('cover_accn', 'class_count', 'class_members', 'listing_class_member')
+HASH_KEYS = ('companyfacts', 'submissions', 'cover')
+_HERE = Path(__file__).resolve().parent
+
+
+def _need(condition):
+    if not condition:
+        raise ValueError('SEC_UNIVERSE_SHARES_INVALID')
+
+
+def load_config():
+    cfg = json.loads((_HERE / 'sec_universe_shares_config_v0.json').read_text())
+    _need(set(cfg) == {'config_version', 'config_status', 'decision', 'shard_count', 'stale_after_days'})
+    _need(cfg['config_version'] == 'sec-universe-shares/v0' and cfg['config_status'] == 'DEFAULT_V0_UNCALIBRATED')
+    _need(type(cfg['shard_count']) is int and 1 <= cfg['shard_count'] <= 366)
+    _need(type(cfg['stale_after_days']) is int and 1 <= cfg['stale_after_days'] <= 366)
+    return cfg
+
+
+def universe_codes():
+    codes = json.loads((_HERE / 'universe_codes_v1.json').read_text())
+    _need(type(codes) is list and len(codes) == len(set(codes)) == 504)
+    return tuple(codes)
+
+
+def shard_index_for(day, shard_count):
+    """Rotation index: UTC day ordinal mod the fixed shard count."""
+    _need(type(day) is date and type(shard_count) is int and shard_count >= 1)
+    return day.toordinal() % shard_count
+
+
+def _iso(value):
+    return value.astimezone(timezone.utc).isoformat().replace('+00:00', 'Z')
+
+
+def _clock(value):
+    _need(type(value) is str and re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})', value) is not None)
+    parsed = datetime.fromisoformat(value.replace('Z', '+00:00'))
+    _need(parsed.utcoffset() is not None)
+    return parsed.astimezone(timezone.utc)
+
+
+def _day(value):
+    _need(type(value) is str and re.fullmatch(r'\d{4}-\d{2}-\d{2}', value) is not None)
+    return date.fromisoformat(value)
+
+
+def _hash(value):
+    return type(value) is str and re.fullmatch(r'[0-9a-f]{64}', value) is not None
+
+
+def _positive(value):
+    try:
+        return type(value) in (int, float) and math.isfinite(value) and value > 0
+    except OverflowError:
+        return False
+
+
+def _number(value):
+    """Integral share counts are written as JSON integers; the value itself is unchanged."""
+    return int(value) if type(value) is float and value.is_integer() and value < 2 ** 53 else value
+
+
+def _sec_symbol(code):
+    venue, symbol = code.split(':', 1)
+    return venue, symbol.replace('.', '-')
+
+
+def empty_record(*, cik=None, reasons=('NOT_COLLECTED',)):
+    return {'cik': cik, 'listing_id': None, 'company_id': None, 'shares': None, 'measurement_date': None, 'accn': None,
+            'form': None, 'filed': None, 'acquired_at': None, 'concept': None, 'share_class_basis': 'BASIS_UNCONFIRMED',
+            'basis_evidence': {'cover_accn': None, 'class_count': None, 'class_members': [], 'listing_class_member': None},
+            'source_sha256': {'companyfacts': None, 'submissions': None, 'cover': None},
+            'state': 'NOT_AVAILABLE', 'reason_codes': list(reasons)}
+
+
+def select_cover_filing(submissions_body, as_of):
+    """Latest periodic report (10-K/10-Q, amendments) at or before as_of with a primary .htm document."""
+    try:
+        sub = json.loads(submissions_body)
+        rec = sub['filings']['recent']
+        cols = [rec[k] for k in ('accessionNumber', 'form', 'filingDate', 'primaryDocument')]
+        if any(type(c) is not list for c in cols) or len({len(c) for c in cols}) != 1:
+            return None
+        best = None
+        for accn, form, filed, doc in zip(*cols):
+            if form not in ('10-K', '10-Q', '10-K/A', '10-Q/A') or type(accn) is not str or type(filed) is not str or type(doc) is not str:
+                continue
+            if not re.fullmatch(r'\d{10}-\d{2}-\d{6}', accn) or not re.fullmatch(r'\d{4}-\d{2}-\d{2}', filed) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.htm', doc):
+                continue
+            if filed > as_of.astimezone(timezone.utc).date().isoformat():
+                continue
+            if best is None or (filed, accn) > (best[1], best[0]):
+                best = (accn, filed, doc)
+        return None if best is None else {'accession': best[0], 'filed': best[1], 'primary_document': best[2]}
+    except (ValueError, KeyError, TypeError, UnicodeError, RecursionError):
+        return None
+
+
+def _filing(submissions_body, accn):
+    try:
+        rec = json.loads(submissions_body)['filings']['recent']
+        accns = rec['accessionNumber']
+        if type(accns) is list and accns.count(accn) == 1:
+            i = accns.index(accn)
+            form, filed = rec['form'][i], rec['filingDate'][i]
+            if form in FORMS and type(filed) is str and re.fullmatch(r'\d{4}-\d{2}-\d{2}', filed):
+                return form, filed
+    except (ValueError, KeyError, TypeError, IndexError, UnicodeError, RecursionError):
+        pass
+    return None
+
+
+def build_share_record(*, code, cik, companyfacts_body, submissions_body, acquired_at, as_of,
+                       cover_xml=None, cover_accession=None, cover_acquired_at=None):
+    """One Universe code from supplied SEC bytes. The adapter decides; nothing is inferred here."""
+    from ..providers.sec_m3_adapter import build_sec_m3_input
+    from .private_subset import ShareBasisReceipt, prepare_sec_shares
+    venue, symbol = _sec_symbol(code)
+    result = build_sec_m3_input(code=venue + ':' + symbol, companyfacts_body=companyfacts_body, submissions_body=submissions_body,
+                                acquired_at=acquired_at, as_of=as_of, synthetic=False, cover_xml=cover_xml,
+                                cover_accession=cover_accession, cover_acquired_at=cover_acquired_at)
+    sha = lambda b: hashlib.sha256(b).hexdigest() if type(b) is bytes else None
+    record = empty_record(cik=cik, reasons=[r for r in result.reason_codes if r in REASONS] or ['BASIS_UNCONFIRMED'])
+    if result.seed is None or result.seed.cik != cik:
+        if result.seed is not None:
+            record['reason_codes'] = ['CIK_MISMATCH']
+        return record
+    seed = result.seed
+    record.update(listing_id=seed.listing_id, company_id=seed.company_id, acquired_at=_iso(acquired_at))
+    record['source_sha256'] = {'companyfacts': sha(companyfacts_body), 'submissions': sha(submissions_body), 'cover': sha(cover_xml)}
+    cover = result.cover
+    record['basis_evidence'] = {'cover_accn': cover_accession if cover_xml is not None and type(cover_accession) is str and re.fullmatch(r'\d{10}-\d{2}-\d{6}', cover_accession) else None,
+                                'class_count': len(cover['class_members']) if cover else None,
+                                'class_members': list(cover['class_members']) if cover else [],
+                                'listing_class_member': cover['listing_class_member'] if cover else None}
+    if cover_xml is None:
+        record['reason_codes'] = ['COVER_NOT_AVAILABLE']
+    cover_at = cover_acquired_at.astimezone(timezone.utc) if isinstance(cover_acquired_at, datetime) and cover_acquired_at.utcoffset() is not None else acquired_at
+    if result.state == 'INPUT_RESEARCH':
+        shares = result.shares
+        filing = _filing(submissions_body, shares.accn)
+        if filing is None:
+            record['reason_codes'] = ['ACCESSION_UNCONFIRMED']
+            return record
+        record.update(shares=_number(shares.shares), measurement_date=shares.measurement_date.isoformat(), accn=shares.accn,
+                      form=filing[0], filed=filing[1], acquired_at=_iso(max(acquired_at, cover_at)), concept=shares.concept,
+                      share_class_basis='SINGLE_CLASS_CONFIRMED', state='LIVE', reason_codes=[])
+        return record
+    reason = result.reason_codes[0] if result.reason_codes else 'BASIS_UNCONFIRMED'
+    per_class = (cover is not None and cover['multi_class'] and cover['dimensioned'] and cover['listing_class_member'] is not None
+                 and len(cover['class_members']) >= 2
+                 and reason in ('SHARE_CLASS_BASIS', 'MULTI_CLASS_AMBIGUOUS', 'COVER_FACT_MISMATCH'))
+    if per_class:
+        # The cover's own per-class value for this listing. Displayed only; never summed or corrected.
+        filing = _filing(submissions_body, cover_accession)
+        if filing is not None and _positive(cover['value']):
+            record.update(shares=_number(cover['value']), measurement_date=cover['measurement_date'], accn=cover_accession,
+                          form=filing[0], filed=filing[1], acquired_at=_iso(max(acquired_at, cover_at)),
+                          concept=CONCEPTS[0], share_class_basis='SHARE_CLASS_BASIS', state='LIVE', reason_codes=['SHARE_CLASS_BASIS'])
+            return record
+    # BASIS_UNCONFIRMED: keep the SEC companyfacts count visible when it is determinable, never verified.
+    extraction = ShareBasisReceipt(seed.listing_id, seed.company_id, seed.security_id, 'SINGLE_CLASS_CONFIRMED',
+                                   'companyfacts-extraction-only', sha(companyfacts_body), acquired_at, 'shares',
+                                   'GOOGLEFINANCE_CURRENT', 'USD', False, 'ALIGNED')
+    shares = prepare_sec_shares(seed, result.receipt, extraction, as_of) if result.receipt is not None else None
+    record['reason_codes'] = [reason if reason in REASONS else 'BASIS_UNCONFIRMED']
+    if cover_xml is None:
+        record['reason_codes'] = ['COVER_NOT_AVAILABLE']
+    if shares is not None and shares.state == 'INPUT_RESEARCH':
+        filing = _filing(submissions_body, shares.accn)
+        if filing is not None:
+            record.update(shares=_number(shares.shares), measurement_date=shares.measurement_date.isoformat(), accn=shares.accn,
+                          form=filing[0], filed=filing[1], acquired_at=_iso(acquired_at), concept=shares.concept, state='LIVE')
+    return record
+
+
+def restate(record, as_of, stale_after):
+    """Freshness from each row's own acquisition time; values are never changed."""
+    out = json.loads(json.dumps(record))
+    reasons = [r for r in out['reason_codes'] if r != 'STALE_INPUT']
+    if out['shares'] is None:
+        out['state'] = 'NOT_AVAILABLE'
+        out['reason_codes'] = reasons or ['SHARES_NOT_AVAILABLE']
+        return out
+    fresh = as_of.astimezone(timezone.utc) - _clock(out['acquired_at']) <= stale_after
+    out['state'] = 'LIVE' if fresh else 'STALE'
+    out['reason_codes'] = reasons + ([] if fresh else ['STALE_INPUT'])
+    return out
+
+
+def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None):
+    """Previous published rows + this shard's rows. A new row without shares never erases a kept value."""
+    cfg = config or load_config()
+    stale_after = timedelta(days=cfg['stale_after_days'])
+    codes = universe_codes()
+    kept = previous['records'] if previous is not None else {}
+    records = {}
+    for code in codes:
+        old = kept.get(code) or empty_record()
+        new = updates.get(code)
+        if new is not None:
+            try:
+                _record(code, restate(new, as_of, stale_after), _clock(_iso(as_of)), stale_after)
+            except (ValueError, TypeError, KeyError, AttributeError, OverflowError):
+                new = empty_record(cik=new.get('cik') if type(new) is dict and type(new.get('cik')) is str and re.fullmatch(r'[0-9]{10}', new['cik']) else None, reasons=('INVALID_INPUT',))
+        if new is not None and not (new['shares'] is None and old['shares'] is not None):
+            old = new
+        elif new is None and code in unresolved and old['shares'] is None:
+            old = empty_record(reasons=('CIK_UNRESOLVED',))
+        records[code] = restate(old, as_of, stale_after)
+    states = [r['state'] for r in records.values()]
+    state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
+    payload = {'schema_version': 1, 'kind': KIND, 'as_of': _iso(as_of), 'config_version': cfg['config_version'],
+               'config_status': cfg['config_status'], 'freshness_basis': 'SOURCE_ACQUISITION',
+               'stale_after_seconds': int(stale_after.total_seconds()), 'shard_count': cfg['shard_count'],
+               'last_shard_index': shard_index, 'registry_sha256': registry_sha256 if registry_sha256 is not None else (previous or {}).get('registry_sha256'),
+               'code_count': len(records), 'state': state,
+               'reason_codes': [] if state == 'LIVE' else ['STALE_INPUT'] if state == 'STALE' else ['NO_ELIGIBLE_INPUT'],
+               'records': records}
+    require_universe_shares(payload)
+    return payload
+
+
+def _record(code, r, cut, ttl):
+    _need(type(r) is dict and set(r) == set(RECORD_KEYS))
+    venue, symbol = _sec_symbol(code)
+    _need(r['cik'] is None or type(r['cik']) is str and re.fullmatch(r'[0-9]{10}', r['cik']) is not None and r['cik'] != '0000000000')
+    mic = {'NASDAQ': 'XNAS', 'NYSE': 'XNYS'}.get(venue)
+    _need(r['listing_id'] is None or (mic is not None and r['cik'] is not None and r['listing_id'] == f'{mic}:{symbol}:{r["cik"]}'))
+    _need(r['company_id'] is None or type(r['company_id']) is str and re.fullmatch(r'[a-z0-9_]{1,64}', r['company_id']) is not None)
+    _need((r['listing_id'] is None) == (r['company_id'] is None))
+    _need(r['shares'] is None or _positive(r['shares']) and type(r['shares']) is not bool)
+    for key in ('measurement_date', 'filed'):
+        _need(r[key] is None or _day(r[key]) is not None)
+    _need(r['accn'] is None or type(r['accn']) is str and re.fullmatch(r'\d{10}-\d{2}-\d{6}', r['accn']) is not None)
+    _need(r['form'] is None or r['form'] in FORMS)
+    _need(r['concept'] is None or r['concept'] in CONCEPTS)
+    _need(r['acquired_at'] is None or _clock(r['acquired_at']) <= cut)
+    _need(r['share_class_basis'] in BASES and r['state'] in STATES)
+    e = r['basis_evidence']
+    _need(type(e) is dict and set(e) == set(EVIDENCE_KEYS))
+    _need(e['cover_accn'] is None or type(e['cover_accn']) is str and re.fullmatch(r'\d{10}-\d{2}-\d{6}', e['cover_accn']) is not None)
+    members = e['class_members']
+    _need(type(members) is list and len(members) <= 16 and all(type(m) is str and re.fullmatch(r'[A-Za-z][A-Za-z0-9_]{0,127}', m) for m in members))
+    _need(members == sorted(set(members)))
+    _need(e['class_count'] is None and not members or type(e['class_count']) is int and e['class_count'] == len(members))
+    _need(e['listing_class_member'] is None or e['listing_class_member'] in members)
+    h = r['source_sha256']
+    _need(type(h) is dict and set(h) == set(HASH_KEYS) and all(v is None or _hash(v) for v in h.values()))
+    reasons = r['reason_codes']
+    _need(type(reasons) is list and len(reasons) == len(set(reasons)) <= 4 and all(x in REASONS for x in reasons))
+    filing_keys = ('measurement_date', 'accn', 'form', 'filed', 'concept')
+    # Identity rows carry their own capture time and SEC hashes even when no count is published.
+    _need(r['listing_id'] is None or (r['acquired_at'] is not None and h['companyfacts'] and h['submissions']))
+    if r['shares'] is None:
+        _need(r['state'] == 'NOT_AVAILABLE' and reasons and all(r[k] is None for k in filing_keys))
+        _need(r['share_class_basis'] == 'BASIS_UNCONFIRMED')
+    else:
+        _need(all(r[k] is not None for k in ('cik', 'listing_id', 'acquired_at', *filing_keys)) and h['companyfacts'] and h['submissions'])
+        _need(_day(r['measurement_date']) <= _day(r['filed']) <= _clock(r['acquired_at']).date())
+        fresh = cut - _clock(r['acquired_at']) <= ttl
+        _need(r['state'] == ('LIVE' if fresh else 'STALE') and (('STALE_INPUT' in reasons) == (not fresh)))
+    if r['share_class_basis'] == 'SINGLE_CLASS_CONFIRMED':
+        _need(h['cover'] and e['cover_accn'] == r['accn'] and len(members) <= 1 and 'SHARE_CLASS_BASIS' not in reasons)
+    elif r['share_class_basis'] == 'SHARE_CLASS_BASIS':
+        _need(h['cover'] and e['cover_accn'] == r['accn'] and len(members) >= 2 and e['listing_class_member'] is not None)
+        _need('SHARE_CLASS_BASIS' in reasons and r['concept'] == CONCEPTS[0])
+    else:
+        _need(bool(set(reasons) - {'STALE_INPUT'}) and 'SHARE_CLASS_BASIS' not in reasons)
+    return r['state']
+
+
+def require_universe_shares(payload):
+    """Strict public validator (also used by the Pages guard). Fixed error only."""
+    try:
+        _need(type(payload) is dict and set(payload) == set(TOP_KEYS))
+        cfg = load_config()
+        _need(type(payload['schema_version']) is int and payload['schema_version'] == 1 and payload['kind'] == KIND)
+        cut = _clock(payload['as_of'])
+        _need(payload['config_version'] == cfg['config_version'] and payload['config_status'] == cfg['config_status'])
+        _need(payload['freshness_basis'] == 'SOURCE_ACQUISITION')
+        ttl = payload['stale_after_seconds']
+        _need(type(ttl) is int and 0 < ttl <= 366 * 86400)
+        _need(type(payload['shard_count']) is int and 1 <= payload['shard_count'] <= 366)
+        index = payload['last_shard_index']
+        _need(index is None or type(index) is int and 0 <= index < payload['shard_count'])
+        _need(payload['registry_sha256'] is None or _hash(payload['registry_sha256']))
+        records = payload['records']
+        codes = universe_codes()
+        _need(type(records) is dict and set(records) == set(codes) and payload['code_count'] == len(codes))
+        states = [_record(code, records[code], cut, timedelta(seconds=ttl)) for code in codes]
+        state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
+        _need(payload['state'] == state)
+        top = payload['reason_codes']
+        _need(type(top) is list and all(x in TOP_REASONS for x in top) and len(top) == len(set(top)))
+        return payload
+    except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError):
+        raise ValueError('SEC_UNIVERSE_SHARES_INVALID') from None
+
+
+def parse_json(body):
+    def pairs(items):
+        out = {}
+        for key, value in items:
+            if key in out:
+                raise ValueError('SEC_UNIVERSE_SHARES_INVALID')
+            out[key] = value
+        return out
+    def constant(_):
+        raise ValueError('SEC_UNIVERSE_SHARES_INVALID')
+    try:
+        if type(body) is not bytes or len(body) > MAX_BYTES:
+            raise ValueError
+        return json.loads(body.decode('utf-8', errors='strict'), object_pairs_hook=pairs, parse_constant=constant)
+    except (ValueError, UnicodeError, RecursionError):
+        raise ValueError('SEC_UNIVERSE_SHARES_INVALID') from None
+
+
+def encode(payload):
+    require_universe_shares(payload)
+    return json.dumps(payload, sort_keys=True, ensure_ascii=True, separators=(',', ':'), allow_nan=False).encode()

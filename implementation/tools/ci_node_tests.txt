@@ -22,3 +22,4 @@ private_subset_node_test.js
 ops_status_node_test.js
 global_language_search_test.js
 device_valuation_node_test.js
+sec_universe_shares_node_test.js
