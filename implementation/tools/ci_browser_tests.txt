@@ -35,3 +35,4 @@ web_research_guard_browser_test.js
 web_state_presentation_browser_test.js
 global_language_search_browser_test.js
 sec_universe_shares_browser_test.js
+forward_validation_browser_test.js
