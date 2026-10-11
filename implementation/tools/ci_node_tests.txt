@@ -8,6 +8,7 @@ google_sheet_auth_node_test.js
 pwa_node_test.js
 sec_reported_node_test.js
 public_screens_node_test.js
+thirteenf_managers_node_test.js
 google_sheet_setup_node_test.js
 private_history_node_test.js
 private_history_fallback_node_test.js
