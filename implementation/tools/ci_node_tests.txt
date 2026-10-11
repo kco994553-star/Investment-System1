@@ -29,3 +29,5 @@ sec_universe_shares_node_test.js
 share_class_groups_node_test.js
 forward_validation_node_test.js
 virtual_trading_runner_node_test.js
+holdings_capture_node_test.js
+worker_quote_fallback_node_test.js

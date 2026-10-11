@@ -92,14 +92,17 @@
     for (const field of LINEAGE_KEYS) if (value[field] !== catalog[field]) fail('INCOMPATIBLE');
     if (clock(value.effective_at) > clock(value.available_at) || clock(value.available_at) > nowMillis(options.now)) fail();
   }
-  function observation(value, current) {
-    if (!['MANUAL', 'API', 'GOOGLEFINANCE'].includes(value.source)) fail();
+  // WORKER_CLOSE (latest COMPLETE Worker daily close) exists only in RAM overlays (options.ramOverlay); stored records reject it.
+  function observation(value, current, ram = false) {
+    if (!['MANUAL', 'API', 'GOOGLEFINANCE', ...(ram ? ['WORKER_CLOSE'] : [])].includes(value.source)) fail();
     if (clock(value.as_of) > clock(value.available_at) || clock(value.available_at) > current) fail();
   }
   function observationKeys(value, expected, isFX = false) {
     const hasStatus = plain(value) && Object.prototype.hasOwnProperty.call(value, 'time_status');
     keys(value, hasStatus ? [...expected, 'time_status'] : expected);
-    if (value.source === 'GOOGLEFINANCE') {
+    if (value.source === 'WORKER_CLOSE') {
+      if (isFX || value.time_status !== 'SESSION_CLOSE' || !/^\d{4}-\d{2}-\d{2}T00:00:00Z$/.test(value.as_of)) fail();
+    } else if (value.source === 'GOOGLEFINANCE') {
       if (!hasStatus || !(isFX ? ['KNOWN', 'UNKNOWN', 'FX_UNKNOWN'] : ['KNOWN', 'UNKNOWN']).includes(value.time_status)) fail();
       if (value.time_status !== 'KNOWN' && value.as_of !== value.available_at) fail();
     } else if (hasStatus) fail();
@@ -115,7 +118,7 @@
       if (!plain(quote.security_reference)) fail();
       const id = canonical(quote.security_reference), instrument = index.instruments.get(id);
       if (!instrument || seenQuotes.has(id) || quote.currency !== instrument.currency) fail();
-      seenQuotes.add(id); decimal(quote.price, true); observation(quote, current);
+      seenQuotes.add(id); decimal(quote.price, true); observation(quote, current, options.ramOverlay === true);
     }
     for (const rate of market.fx) {
       observationKeys(rate, ['currency', 'rate', 'as_of', 'available_at', 'source'], true);
@@ -139,6 +142,14 @@
     return validateMarket(market, catalog, {now});
   }
   function emptyMarket(catalog, now) { return makeMarket(catalog, [], [], null, now); }
+  // RAM-only view: the stored market with some quotes replaced (e.g. WORKER_CLOSE). Never passed to storage.
+  function withRamQuotes(market, catalog, quotes, now) {
+    const current = nowMillis(now), base = market === null || market === undefined ? emptyMarket(catalog, current) : validateMarket(market, catalog, {now: current});
+    if (!Array.isArray(quotes)) fail();
+    const merged = new Map(base.quotes.map(quote => [canonical(quote.security_reference), quote]));
+    for (const quote of quotes) { if (!plain(quote) || !plain(quote.security_reference)) fail(); merged.set(canonical(quote.security_reference), clone(quote)); }
+    return validateMarket({...base, quotes: [...merged.values()]}, catalog, {now: current, ramOverlay: true});
+  }
   function validateActual(snapshot, catalog, options = {}) {
     const index = catalogIndex(catalog); keys(snapshot, ACTUAL_KEYS);
     envelope(snapshot, catalog, ACTUAL_SCHEMA, 'ACTUAL', options);
@@ -242,5 +253,5 @@
     return {snapshot: validateActual(snapshot, catalog, options), market: (validateMarket(payload.market_data, catalog, options), emptyMarket(catalog, options.now))};
   }
   return Object.freeze({canonical: safe(canonical), validateMarket: safe(validateMarket), makeMarket: safe(makeMarket),
-    emptyMarket: safe(emptyMarket), valuation: safe(valuation), exportBackup: safe(exportBackup), importBackup: safe(importBackup), staleness: safe(staleness)});
+    emptyMarket: safe(emptyMarket), withRamQuotes: safe(withRamQuotes), valuation: safe(valuation), exportBackup: safe(exportBackup), importBackup: safe(importBackup), staleness: safe(staleness)});
 });

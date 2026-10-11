@@ -1,0 +1,1438 @@
+{
+ "schema": "holdings-capture-reference/1",
+ "synthetic": true,
+ "cases": [
+  {
+   "id": "empty-sheet",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": []
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "EMPTY",
+    "as_of": null,
+    "positions": [],
+    "cash": [],
+    "review": []
+   }
+  },
+  {
+   "id": "header-only",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "EMPTY",
+    "as_of": null,
+    "positions": [],
+    "cash": [],
+    "review": []
+   }
+  },
+  {
+   "id": "header-mismatch",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "qty",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "SYNA",
+      "1",
+      "",
+      "USD"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "HEADER_MISMATCH",
+    "as_of": null,
+    "positions": [],
+    "cash": [],
+    "review": []
+   }
+  },
+  {
+   "id": "header-case-and-trailing-blank",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "AS_OF",
+      " Symbol ",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name",
+      ""
+     ],
+     [
+      "2031-02-03",
+      "SYNA",
+      "2",
+      "10.5",
+      "USD",
+      "",
+      "Synthetic A"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 2,
+      "symbol": "SYNA",
+      "market": "US",
+      "quantity": "2",
+      "currency": "USD",
+      "avg_cost": "10.5",
+      "cost_krw": null,
+      "average_cost": "10.5",
+      "average_cost_currency": "USD",
+      "cost_basis": "AVG_COST_FIELD",
+      "name": "Synthetic A"
+     }
+    ],
+    "cash": [],
+    "review": []
+   }
+  },
+  {
+   "id": "cost-krw-preferred",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "SYNB",
+      "3",
+      "9.99",
+      "USD",
+      "40000",
+      "Synthetic B"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 2,
+      "symbol": "SYNB",
+      "market": "US",
+      "quantity": "3",
+      "currency": "USD",
+      "avg_cost": "9.99",
+      "cost_krw": "40000",
+      "average_cost": "13333.333333",
+      "average_cost_currency": "KRW",
+      "cost_basis": "COST_KRW_DIV_QTY",
+      "name": "Synthetic B"
+     }
+    ],
+    "cash": [],
+    "review": []
+   }
+  },
+  {
+   "id": "avg-cost-fallback",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "SYNC",
+      "4",
+      "12.25",
+      "USD",
+      "",
+      "Synthetic C"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 2,
+      "symbol": "SYNC",
+      "market": "US",
+      "quantity": "4",
+      "currency": "USD",
+      "avg_cost": "12.25",
+      "cost_krw": null,
+      "average_cost": "12.25",
+      "average_cost_currency": "USD",
+      "cost_basis": "AVG_COST_FIELD",
+      "name": "Synthetic C"
+     }
+    ],
+    "cash": [],
+    "review": []
+   }
+  },
+  {
+   "id": "no-cost-not-zero-filled",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "SYND",
+      "5",
+      "",
+      "USD"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 2,
+      "symbol": "SYND",
+      "market": "US",
+      "quantity": "5",
+      "currency": "USD",
+      "avg_cost": null,
+      "cost_krw": null,
+      "average_cost": null,
+      "average_cost_currency": null,
+      "cost_basis": "NOT_AVAILABLE",
+      "name": null
+     }
+    ],
+    "cash": [],
+    "review": []
+   }
+  },
+  {
+   "id": "half-up-rounding",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "000111",
+      "7",
+      "",
+      "KRW",
+      "1000000"
+     ],
+     [
+      "2031-02-03",
+      "1234",
+      "3",
+      "",
+      "JPY",
+      "2"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 2,
+      "symbol": "000111",
+      "market": "KRX",
+      "quantity": "7",
+      "currency": "KRW",
+      "avg_cost": null,
+      "cost_krw": "1000000",
+      "average_cost": "142857.142857",
+      "average_cost_currency": "KRW",
+      "cost_basis": "COST_KRW_DIV_QTY",
+      "name": null
+     },
+     {
+      "row": 3,
+      "symbol": "1234",
+      "market": "TSE",
+      "quantity": "3",
+      "currency": "JPY",
+      "avg_cost": null,
+      "cost_krw": "2",
+      "average_cost": "0.666667",
+      "average_cost_currency": "KRW",
+      "cost_basis": "COST_KRW_DIV_QTY",
+      "name": null
+     }
+    ],
+    "cash": [],
+    "review": []
+   }
+  },
+  {
+   "id": "cash-rows",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "CASH_KRW",
+      "123456",
+      "",
+      "KRW",
+      "",
+      "예수금"
+     ],
+     [
+      "2031-02-03",
+      "CASH_USD",
+      "0",
+      "",
+      "USD",
+      "0"
+     ],
+     [
+      "2031-02-03",
+      "CASH_JPY",
+      "10",
+      "1",
+      "JPY"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [],
+    "cash": [
+     {
+      "row": 2,
+      "symbol": "CASH_KRW",
+      "currency": "KRW",
+      "amount": "123456",
+      "cost_krw": null,
+      "name": "예수금"
+     },
+     {
+      "row": 3,
+      "symbol": "CASH_USD",
+      "currency": "USD",
+      "amount": "0",
+      "cost_krw": "0",
+      "name": null
+     }
+    ],
+    "review": [
+     {
+      "row": 4,
+      "symbol": "CASH_JPY",
+      "reason_codes": [
+       "CASH_AVG_COST_PRESENT"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "number-format-errors",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "SYNE",
+      "1,000",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "SYNF",
+      "1",
+      "$5",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "SYNG",
+      "1",
+      "",
+      "USD",
+      "-3"
+     ],
+     [
+      "2031-02-03",
+      "SYNH",
+      "+2",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "SYNI",
+      "0",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "SYNJ",
+      "01",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "SYNK",
+      "1.5e3",
+      "",
+      "USD"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": null,
+    "positions": [],
+    "cash": [],
+    "review": [
+     {
+      "row": 2,
+      "symbol": "SYNE",
+      "reason_codes": [
+       "QUANTITY_FORMAT"
+      ]
+     },
+     {
+      "row": 3,
+      "symbol": "SYNF",
+      "reason_codes": [
+       "AVG_COST_FORMAT"
+      ]
+     },
+     {
+      "row": 4,
+      "symbol": "SYNG",
+      "reason_codes": [
+       "COST_KRW_FORMAT"
+      ]
+     },
+     {
+      "row": 5,
+      "symbol": "SYNH",
+      "reason_codes": [
+       "QUANTITY_FORMAT"
+      ]
+     },
+     {
+      "row": 6,
+      "symbol": "SYNI",
+      "reason_codes": [
+       "QUANTITY_NOT_POSITIVE"
+      ]
+     },
+     {
+      "row": 7,
+      "symbol": "SYNJ",
+      "reason_codes": [
+       "QUANTITY_FORMAT"
+      ]
+     },
+     {
+      "row": 8,
+      "symbol": "SYNK",
+      "reason_codes": [
+       "QUANTITY_FORMAT"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "column-count",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "SYNL",
+      "1",
+      "",
+      "USD",
+      "",
+      "L",
+      "extra"
+     ],
+     [
+      "2031-02-03",
+      "SYNM",
+      "1",
+      "",
+      "USD",
+      "",
+      "M",
+      "",
+      ""
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 3,
+      "symbol": "SYNM",
+      "market": "US",
+      "quantity": "1",
+      "currency": "USD",
+      "avg_cost": null,
+      "cost_krw": null,
+      "average_cost": null,
+      "average_cost_currency": null,
+      "cost_basis": "NOT_AVAILABLE",
+      "name": "M"
+     }
+    ],
+    "cash": [],
+    "review": [
+     {
+      "row": 2,
+      "symbol": null,
+      "reason_codes": [
+       "COLUMN_COUNT"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "missing-fields",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "",
+      "SYNN",
+      "1",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "",
+      "1",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "SYNO",
+      "",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "SYNP",
+      "1",
+      "",
+      ""
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": null,
+    "positions": [],
+    "cash": [],
+    "review": [
+     {
+      "row": 2,
+      "symbol": "SYNN",
+      "reason_codes": [
+       "AS_OF_MISSING"
+      ]
+     },
+     {
+      "row": 3,
+      "symbol": null,
+      "reason_codes": [
+       "SYMBOL_MISSING"
+      ]
+     },
+     {
+      "row": 4,
+      "symbol": "SYNO",
+      "reason_codes": [
+       "QUANTITY_MISSING"
+      ]
+     },
+     {
+      "row": 5,
+      "symbol": "SYNP",
+      "reason_codes": [
+       "CURRENCY_MISSING"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "symbol-and-currency-rules",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "syna",
+      "1",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "12345",
+      "1",
+      "",
+      "KRW"
+     ],
+     [
+      "2031-02-03",
+      "000222",
+      "1",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "5678",
+      "1",
+      "",
+      "KRW"
+     ],
+     [
+      "2031-02-03",
+      "SYNQ",
+      "1",
+      "",
+      "usd"
+     ],
+     [
+      "2031-02-03",
+      "BRK.B",
+      "1",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "CASH_EUR",
+      "1",
+      "",
+      "USD"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 7,
+      "symbol": "BRK.B",
+      "market": "US",
+      "quantity": "1",
+      "currency": "USD",
+      "avg_cost": null,
+      "cost_krw": null,
+      "average_cost": null,
+      "average_cost_currency": null,
+      "cost_basis": "NOT_AVAILABLE",
+      "name": null
+     }
+    ],
+    "cash": [],
+    "review": [
+     {
+      "row": 2,
+      "symbol": null,
+      "reason_codes": [
+       "SYMBOL_FORMAT"
+      ]
+     },
+     {
+      "row": 3,
+      "symbol": null,
+      "reason_codes": [
+       "SYMBOL_FORMAT"
+      ]
+     },
+     {
+      "row": 4,
+      "symbol": "000222",
+      "reason_codes": [
+       "CURRENCY_MISMATCH"
+      ]
+     },
+     {
+      "row": 5,
+      "symbol": "5678",
+      "reason_codes": [
+       "CURRENCY_MISMATCH"
+      ]
+     },
+     {
+      "row": 6,
+      "symbol": "SYNQ",
+      "reason_codes": [
+       "CURRENCY_FORMAT"
+      ]
+     },
+     {
+      "row": 8,
+      "symbol": "CASH_EUR",
+      "reason_codes": [
+       "CURRENCY_MISMATCH"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "as-of-rules",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-30",
+      "SYNR",
+      "1",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-02",
+      "SYNS",
+      "1",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "SYNT",
+      "1",
+      "",
+      "USD"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 4,
+      "symbol": "SYNT",
+      "market": "US",
+      "quantity": "1",
+      "currency": "USD",
+      "avg_cost": null,
+      "cost_krw": null,
+      "average_cost": null,
+      "average_cost_currency": null,
+      "cost_basis": "NOT_AVAILABLE",
+      "name": null
+     }
+    ],
+    "cash": [],
+    "review": [
+     {
+      "row": 2,
+      "symbol": "SYNR",
+      "reason_codes": [
+       "AS_OF_FORMAT"
+      ]
+     },
+     {
+      "row": 3,
+      "symbol": "SYNS",
+      "reason_codes": [
+       "AS_OF_MISMATCH"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "duplicate-symbol",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "SYNU",
+      "1",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "SYNU",
+      "2",
+      "",
+      "USD"
+     ],
+     [
+      "2031-02-03",
+      "SYNV",
+      "1",
+      "",
+      "USD"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 4,
+      "symbol": "SYNV",
+      "market": "US",
+      "quantity": "1",
+      "currency": "USD",
+      "avg_cost": null,
+      "cost_krw": null,
+      "average_cost": null,
+      "average_cost_currency": null,
+      "cost_basis": "NOT_AVAILABLE",
+      "name": null
+     }
+    ],
+    "cash": [],
+    "review": [
+     {
+      "row": 2,
+      "symbol": "SYNU",
+      "reason_codes": [
+       "DUPLICATE_SYMBOL"
+      ]
+     },
+     {
+      "row": 3,
+      "symbol": "SYNU",
+      "reason_codes": [
+       "DUPLICATE_SYMBOL"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "sheet-numbers-and-serial-dates",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      47882,
+      333,
+      7,
+      1.25,
+      "KRW",
+      100,
+      "serial"
+     ],
+     [
+      47882,
+      4321,
+      2,
+      "",
+      "JPY",
+      1e-06
+     ],
+     [
+      47882,
+      "SYNW",
+      0.5,
+      "",
+      "USD",
+      1e-07
+     ],
+     [
+      47882.5,
+      "SYNX",
+      1,
+      "",
+      "USD"
+     ],
+     [
+      47882,
+      4321.5,
+      1,
+      "",
+      "JPY"
+     ],
+     [
+      47882,
+      "SYNY",
+      true,
+      "",
+      "USD"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 2,
+      "symbol": "000333",
+      "market": "KRX",
+      "quantity": "7",
+      "currency": "KRW",
+      "avg_cost": "1.25",
+      "cost_krw": "100",
+      "average_cost": "14.285714",
+      "average_cost_currency": "KRW",
+      "cost_basis": "COST_KRW_DIV_QTY",
+      "name": "serial"
+     },
+     {
+      "row": 3,
+      "symbol": "4321",
+      "market": "TSE",
+      "quantity": "2",
+      "currency": "JPY",
+      "avg_cost": null,
+      "cost_krw": "0.000001",
+      "average_cost": "0.000001",
+      "average_cost_currency": "KRW",
+      "cost_basis": "COST_KRW_DIV_QTY",
+      "name": null
+     }
+    ],
+    "cash": [],
+    "review": [
+     {
+      "row": 4,
+      "symbol": "SYNW",
+      "reason_codes": [
+       "COST_KRW_FORMAT"
+      ]
+     },
+     {
+      "row": 5,
+      "symbol": "SYNX",
+      "reason_codes": [
+       "AS_OF_FORMAT"
+      ]
+     },
+     {
+      "row": 6,
+      "symbol": null,
+      "reason_codes": [
+       "SYMBOL_FORMAT"
+      ]
+     },
+     {
+      "row": 7,
+      "symbol": "SYNY",
+      "reason_codes": [
+       "QUANTITY_FORMAT"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "blank-rows-skipped",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [],
+     [
+      "",
+      null,
+      ""
+     ],
+     [
+      "2031-02-03",
+      "SYNZ",
+      "1",
+      "",
+      "USD"
+     ],
+     [],
+     [
+      null
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 4,
+      "symbol": "SYNZ",
+      "market": "US",
+      "quantity": "1",
+      "currency": "USD",
+      "avg_cost": null,
+      "cost_krw": null,
+      "average_cost": null,
+      "average_cost_currency": null,
+      "cost_basis": "NOT_AVAILABLE",
+      "name": null
+     }
+    ],
+    "cash": [],
+    "review": []
+   }
+  },
+  {
+   "id": "name-rules",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "SYAA",
+      "1",
+      "",
+      "USD",
+      "",
+      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+     ],
+     [
+      "2031-02-03",
+      "SYAB",
+      "1",
+      "",
+      "USD",
+      "",
+      "tab\there"
+     ],
+     [
+      "2031-02-03",
+      "SYAC",
+      "1",
+      "",
+      "USD",
+      "",
+      42
+     ],
+     [
+      "2031-02-03",
+      "SYAD",
+      "1",
+      "",
+      "USD",
+      "",
+      "  공백 　"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 5,
+      "symbol": "SYAD",
+      "market": "US",
+      "quantity": "1",
+      "currency": "USD",
+      "avg_cost": null,
+      "cost_krw": null,
+      "average_cost": null,
+      "average_cost_currency": null,
+      "cost_basis": "NOT_AVAILABLE",
+      "name": "공백"
+     }
+    ],
+    "cash": [],
+    "review": [
+     {
+      "row": 2,
+      "symbol": "SYAA",
+      "reason_codes": [
+       "NAME_FORMAT"
+      ]
+     },
+     {
+      "row": 3,
+      "symbol": "SYAB",
+      "reason_codes": [
+       "NAME_FORMAT"
+      ]
+     },
+     {
+      "row": 4,
+      "symbol": "SYAC",
+      "reason_codes": [
+       "NAME_FORMAT"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "cost-range",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "SYAE",
+      "0.000001",
+      "",
+      "USD",
+      "999999999999999"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": null,
+    "positions": [],
+    "cash": [],
+    "review": [
+     {
+      "row": 2,
+      "symbol": "SYAE",
+      "reason_codes": [
+       "COST_RANGE"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "mixed-target-and-outside",
+   "synthetic": true,
+   "operation": "parse",
+   "input": {
+    "values": [
+     [
+      "as_of",
+      "symbol",
+      "quantity",
+      "avg_cost",
+      "currency",
+      "cost_krw",
+      "name"
+     ],
+     [
+      "2031-02-03",
+      "ASML",
+      "2",
+      "700",
+      "USD",
+      "1900000",
+      "ASML Holding"
+     ],
+     [
+      "2031-02-03",
+      "8035",
+      "1",
+      "30000",
+      "JPY",
+      "",
+      "Tokyo Electron"
+     ],
+     [
+      "2031-02-03",
+      "042700",
+      "10",
+      "",
+      "KRW",
+      "1234567",
+      "한미반도체"
+     ],
+     [
+      "2031-02-03",
+      "KO",
+      "3",
+      "60.1",
+      "USD",
+      "",
+      "Coca-Cola"
+     ],
+     [
+      "2031-02-03",
+      "CASH_KRW",
+      "50000",
+      "",
+      "KRW"
+     ]
+    ]
+   },
+   "expected": {
+    "schema": "holdings-capture/1",
+    "state": "OK",
+    "as_of": "2031-02-03",
+    "positions": [
+     {
+      "row": 2,
+      "symbol": "ASML",
+      "market": "US",
+      "quantity": "2",
+      "currency": "USD",
+      "avg_cost": "700",
+      "cost_krw": "1900000",
+      "average_cost": "950000",
+      "average_cost_currency": "KRW",
+      "cost_basis": "COST_KRW_DIV_QTY",
+      "name": "ASML Holding"
+     },
+     {
+      "row": 3,
+      "symbol": "8035",
+      "market": "TSE",
+      "quantity": "1",
+      "currency": "JPY",
+      "avg_cost": "30000",
+      "cost_krw": null,
+      "average_cost": "30000",
+      "average_cost_currency": "JPY",
+      "cost_basis": "AVG_COST_FIELD",
+      "name": "Tokyo Electron"
+     },
+     {
+      "row": 4,
+      "symbol": "042700",
+      "market": "KRX",
+      "quantity": "10",
+      "currency": "KRW",
+      "avg_cost": null,
+      "cost_krw": "1234567",
+      "average_cost": "123456.7",
+      "average_cost_currency": "KRW",
+      "cost_basis": "COST_KRW_DIV_QTY",
+      "name": "한미반도체"
+     },
+     {
+      "row": 5,
+      "symbol": "KO",
+      "market": "US",
+      "quantity": "3",
+      "currency": "USD",
+      "avg_cost": "60.1",
+      "cost_krw": null,
+      "average_cost": "60.1",
+      "average_cost_currency": "USD",
+      "cost_basis": "AVG_COST_FIELD",
+      "name": "Coca-Cola"
+     }
+    ],
+    "cash": [
+     {
+      "row": 6,
+      "symbol": "CASH_KRW",
+      "currency": "KRW",
+      "amount": "50000",
+      "cost_krw": null,
+      "name": null
+     }
+    ],
+    "review": []
+   }
+  }
+ ]
+}
