@@ -386,6 +386,17 @@ def _require_macro_raw(block,sources,cut,ttl,states):
         states.append(row['state'])
 
 
+def qg_factor_scores(company_id,m1):
+    """The one published price-free Q·G factor path (TARGET sec-qg-factors.json and Universe504 sec-universe-qg.json).
+
+    (raw view, {factor: score_0_100 or None}, None) for a READY M1 input without unresolved current ambiguity;
+    otherwise (None, None, fixed reason). No V, no price, no renormalisation: missing factors stay None."""
+    if m1['status']!='READY':return None,None,'M1_NOT_AVAILABLE'
+    if _current_ambiguity(m1):return None,None,'UNRESOLVED_CURRENT_FACT_AMBIGUITY'
+    raw=_mapping_view(company_id,m1['raw_fundamentals'],False);obs=map_raw(raw)
+    return raw,{fid:obs[fid].score_0_100 for fid in sorted(FACTORS)},None
+
+
 def generate_screen_bundle(*,manifest,input_root,as_of,stale_after):
     try:return _generate(manifest,input_root,as_of,stale_after)
     except (OSError,ValueError,TypeError,KeyError,AttributeError,OverflowError,RecursionError):raise ValueError('PUBLIC_SCREENS_INPUT_INVALID') from None
@@ -424,10 +435,9 @@ def _generate(manifest,root,as_of,stale_after):
         if timing['groups']:
             confirmed,confirmation=earnings_confirmation(cid,sub,timing['groups'],acquired_at=acquired,as_of=as_of)
             windows[cid].update(state=state,groups=timing['groups'],confirmed_earnings_date=confirmed,earnings_confirmation=confirmation)
-        if m1['status']=='READY' and not _current_ambiguity(m1):
-            raw=_mapping_view(cid,m1['raw_fundamentals'],False);obs=map_raw(raw)
-            for fid in FACTORS:
-                score=obs[fid].score_0_100
+        raw,scores,_=qg_factor_scores(cid,m1)
+        if scores is not None:
+            for fid,score in scores.items():
                 if score is not None:qg[cid]['factors'][fid]={'score':score,'state':state};qg[cid]['state']=state
             if config is not None:
                 metrics={'revenue_cagr_3y':_growth(m1),'roic':None if raw.net_income is None or raw.invested_capital in (None,0) else raw.net_income/raw.invested_capital}
