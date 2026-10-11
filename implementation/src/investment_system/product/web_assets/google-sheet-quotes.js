@@ -159,14 +159,15 @@
       if(!body||body.properties?.title!=='Investment Cockpit Data'||!Array.isArray(body.sheets)||JSON.stringify(body).length>1048576)fail('INVALID');
       const value=await sheetRequest('?fields=spreadsheetId','POST',body);return extractSpreadsheetId(value.spreadsheetId);
     }
-    // S17 AI mailbox only: writes are limited to the ReportInbox/ReportOutbox tabs of the user's own sheet (drive.file, no new scope).
-    const REPORT_TABS=['ReportInbox','ReportOutbox'];
+    // S17 only: writes are limited to the AI mailbox tabs (ReportInbox/ReportOutbox) and the virtual ledger tabs (D-10:
+    // VirtualA/VirtualB/VirtualMine/VirtualMeta/VirtualFlags) of the user's own sheet (drive.file, no new scope).
+    const REPORT_TABS=['ReportInbox','ReportOutbox','VirtualA','VirtualB','VirtualMine','VirtualMeta','VirtualFlags'];
     async function addTabs(id,titles){
       if(extractSpreadsheetId(id)!==id||!Array.isArray(titles)||!titles.length||!titles.every(t=>REPORT_TABS.includes(t)))fail('INVALID');
       await sheetRequest('/'+encodeURIComponent(id)+':batchUpdate','POST',{requests:titles.map(title=>({addSheet:{properties:{title}}}))},'WRITE_FAILED');
     }
     async function appendRows(id,range,rows){
-      if(extractSpreadsheetId(id)!==id||typeof range!=='string'||!/^'Report(?:Inbox|Outbox)'!A1$/.test(range)||!Array.isArray(rows)||!rows.every(r=>Array.isArray(r)&&r.every(v=>typeof v==='string'&&v.length<=50000))||JSON.stringify(rows).length>262144)fail('INVALID');
+      if(extractSpreadsheetId(id)!==id||typeof range!=='string'||!/^'(?:Report(?:Inbox|Outbox)|Virtual(?:A|B|Mine|Meta|Flags))'!A1$/.test(range)||!Array.isArray(rows)||!rows.every(r=>Array.isArray(r)&&r.every(v=>typeof v==='string'&&v.length<=50000))||JSON.stringify(rows).length>262144)fail('INVALID');
       await sheetRequest('/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS','POST',{values:rows},'WRITE_FAILED');
     }
     async function sheetTitles(id){
@@ -214,6 +215,8 @@
           value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
         } else value = await response.json();
         expire(); if (!current()) fail('CANCELED');
+        // allowEmpty: a range past the last row has no "values" key (virtual ledger paging); it reads as no rows.
+        if (options.allowEmpty === true && value && typeof value === 'object' && !Array.isArray(value) && value.values === undefined && typeof value.range === 'string') return { ...value, values: [] };
         if (!value || !Array.isArray(value.values)) fail('READ_FAILED'); return value;
       } catch (caught) {
         if (caught.message === 'AUTH_REQUIRED') throw caught;

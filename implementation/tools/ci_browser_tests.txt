@@ -41,4 +41,5 @@ sec_universe_shares_browser_test.js
 forward_validation_browser_test.js
 virtual_trading_runner_browser_test.js
 pc_layout_browser_test.js
+virtual_ledger_sheets_browser_test.js
 virtual_trading_rehearsal_browser_test.js

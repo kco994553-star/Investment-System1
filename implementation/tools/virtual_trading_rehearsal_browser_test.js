@@ -93,6 +93,12 @@ async function open(browser, { now, last, width }) {
       await route.fulfill({ status: rejected ? 400 : 200, headers: { ...cors, 'cache-control': 'no-store' }, contentType: 'application/json', body: JSON.stringify(rejected ? { error: { code: 'REQUEST_INVALID' } } : history(symbol, range, last)) });
       return;
     }
+    // The ledger sheet card (VirtualLedgerSheets) reads the connected sheet's tab titles: a sheet without Virtual* tabs.
+    if (url.origin === 'https://sheets.googleapis.com') {
+      const cors = { 'access-control-allow-origin': new URL(BASE).origin, 'access-control-allow-headers': 'Authorization, Content-Type', 'access-control-allow-methods': 'GET, POST' };
+      if (request.method() === 'OPTIONS') { await route.fulfill({ status: 204, headers: cors }); return; }
+      if (request.method() === 'GET' && url.searchParams.get('fields') === 'sheets(properties(title))') { await route.fulfill({ headers: cors, contentType: 'application/json', body: JSON.stringify({ sheets: [{ properties: { title: 'Quotes' } }] }) }); return; }
+    }
     traffic.unexpected.push(url.origin);
     await route.abort();
   });
