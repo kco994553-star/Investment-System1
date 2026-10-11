@@ -256,10 +256,10 @@ const DISCLAIMER=Object.freeze({ko:'가상 · 실제 추천 아님 · 주문 기
 // Every code the engine itself can emit, by family (the runner, signals, V history and ledger sheet modules export theirs).
 const CODES=Object.freeze({
  judgement:Object.freeze(['DATA_PRICE_MISSING','DATA_FX_MISSING','DATA_SNAPSHOT_MISSING','COVERAGE_BLOCKED','USER_EXCLUDE','QG_DECLINE','COVERAGE_WORSENED','USER_HOLD','RECHECK_BASIS_NOT_AVAILABLE','RECHECK_ABNORMAL_DROP','USER_CONFIRMED_TEMPORARY','USER_CONFIRMED_STRUCTURAL','OVERWEIGHT_GAP','UNDERWEIGHT_GAP','V_IMPROVED','V_DETERIORATED','BAND_INSIDE']),
- aux:Object.freeze(['OVERWEIGHT','INCREASE_CANDIDATE','COVERAGE_PARTIAL','EARNINGS_WINDOW','TYPE_CHANGED','SECTOR_SP500_SUBSTITUTE']),
+ aux:Object.freeze(['OVERWEIGHT','INCREASE_CANDIDATE','COVERAGE_PARTIAL','EARNINGS_WINDOW','TYPE_CHANGED','SECTOR_SP500_SUBSTITUTE','V_COMPOSITION_CHANGED']),
  order:Object.freeze(['LIMIT_EXHAUSTED']),
  execution:Object.freeze(['EXEC_PRICE_MISSING','EXEC_FX_MISSING','NO_POSITION','CASH_INSUFFICIENT']),
- ledger:Object.freeze(['START_DATE_NOT_SET','INPUT_INVALID','CONFIG_INVALID','TARGET_NOT_AVAILABLE','NO_SESSION_ON_OR_AFTER_START','INITIAL_VALUE_NOT_AVAILABLE']),
+ ledger:Object.freeze(['START_DATE_NOT_SET','INPUT_INVALID','CONFIG_INVALID','TARGET_NOT_AVAILABLE','NO_SESSION_ON_OR_AFTER_START','INITIAL_VALUE_NOT_AVAILABLE','NO_SESSION_AFTER_RECORDED']),
  basis:Object.freeze(['SECTOR_BASIS_NOT_AVAILABLE','PRICE_NOT_ALIGNED','HISTORY_INSUFFICIENT','DISTRIBUTION_DEGENERATE']),
  sector:Object.freeze(['SIC_NOT_AVAILABLE','SEMIS_MEMBERSHIP_NOT_AVAILABLE','SECTOR_ETF_NOT_MAPPED']),
  hits:Object.freeze(['INSUFFICIENT_SAMPLE']),
@@ -282,6 +282,7 @@ const CODE_LABELS=Object.freeze({
  INCREASE_CANDIDATE:['보조: V 개선으로 확대 후보(위험재검토 중이라 거래 없음)','Auxiliary: add candidate on improved V (risk re-check, no virtual trade)'],
  COVERAGE_PARTIAL:['Coverage PARTIAL(일부 데이터)','Coverage PARTIAL (partial data)'],EARNINGS_WINDOW:['실적 발표 예상 기간','Expected earnings window'],TYPE_CHANGED:['유형 소속 변경','Type membership changed'],
  SECTOR_SP500_SUBSTITUTE:['업종 ETF 대신 S&P 500 기준 사용','S&P 500 used instead of the sector ETF'],
+ V_COMPOSITION_CHANGED:['V 요소 구성이 20거래일 전과 다르거나 알 수 없어 V 기울기 미사용','V factor composition differs from 20 sessions earlier or is unknown; V slope unused'],
  // engine: virtual orders and executions
  LIMIT_EXHAUSTED:['하루 한도 소진으로 일부만 배분','Daily limit reached; only part allocated'],
  EXEC_PRICE_MISSING:['체결일 종가 결측으로 가상 주문 취소','Virtual order cancelled: no close on the execution day'],
@@ -291,6 +292,7 @@ const CODE_LABELS=Object.freeze({
  START_DATE_NOT_SET:['가상매매 시작일 미정','Virtual trading start date not set'],INPUT_INVALID:['장부 입력 형식 오류','Ledger input invalid'],CONFIG_INVALID:['규칙 설정 형식 오류','Rule configuration invalid'],
  TARGET_NOT_AVAILABLE:['목표 비중 없음','No target weights'],NO_SESSION_ON_OR_AFTER_START:['시작일 이후 거래일 없음','No session on or after the start date'],
  INITIAL_VALUE_NOT_AVAILABLE:['출발 평가액 계산 불가(가격·환율 결측)','Initial value not computable (price or FX missing)'],
+ NO_SESSION_AFTER_RECORDED:['마지막 기록 거래일 이후 거래일 없음','No session after the last recorded session'],
  // engine: D-5 basis and D-22 sector mapping
  SECTOR_BASIS_NOT_AVAILABLE:['업종 기준 시세 없음','No sector basis series'],PRICE_NOT_ALIGNED:['보고일 종가가 기준 시세와 맞지 않음','Close not aligned with the basis on this day'],
  HISTORY_INSUFFICIENT:['정렬된 일봉 부족','Not enough aligned daily bars'],DISTRIBUTION_DEGENERATE:['초과수익률 분포 계산 불가(변동 0)','Excess-return distribution degenerate (zero spread)'],
@@ -302,6 +304,7 @@ const CODE_LABELS=Object.freeze({
  // runner: inputs and sources
  BEFORE_START_DATE:['가상매매 시작일 전','Before the virtual trading start date'],TARGET_CATALOG_INVALID:['공개 TARGET 카탈로그 형식 오류','Public TARGET catalog invalid'],
  SESSIONS_NOT_AVAILABLE:['S&P 500 일봉 없음 → 거래일 없음','No S&P 500 daily bars → no sessions'],SET_B_NOT_DEFINED:['세트 B 구성 없음','Set B not defined'],SET_B_INVALID:['세트 B 구성 형식 오류','Set B definition invalid'],
+ SET_NOT_DEFINED:['세트 구성 없음(정의 전 또는 종료됨)','Set not defined (not yet defined or closed)'],SET_INVALID:['세트 구성 형식 오류','Set definition invalid'],
  NO_ACTUAL:['기기 실제 보유 없음','No ACTUAL holdings on this device'],ACTUAL_INVALID:['기기 실제 보유 형식 오류','ACTUAL holdings invalid'],
  INITIAL_COST_FX_MISSING:['출발 원가 환산 환율 없음','No FX rate for the initial cost'],LEDGER_NOT_AVAILABLE:['가상 장부 없음','Virtual ledger not available'],
  NOT_REQUESTED:['요청하지 않음','Not requested'],HISTORY_UNAVAILABLE:['일봉 없음','Daily history unavailable'],HISTORY_FORMAT_INVALID:['일봉 형식 오류','Daily history format invalid'],
@@ -318,13 +321,16 @@ const CODE_LABELS=Object.freeze({
  PUBLIC_CATALOG_UNAVAILABLE:['공개 카탈로그 없음','Public catalog unavailable'],MAILBOX_FAILED:['우체통 처리 실패','Mailbox failed'],HASH_UNAVAILABLE:['해시 계산 불가','Hash unavailable'],
  // signals: V slope use
  BASIS_NOT_AVAILABLE:['V 기울기 미사용','V slope unused'],V_HISTORY_SHORT:['V 기록 부족','V history too short'],
+ V_CORE_FACTOR_MISSING:['V 핵심 요소 결측 → 그날 V는 NA(0으로 계산하지 않음)','A core V factor is missing → that day\'s V is NA (never computed as 0)'],
+ V_FACTORS_NOT_AVAILABLE:['V 요소 없음','No V factors'],REHEARSAL_ONLY:['오늘 공개 Q·G로 빈 날 채우기는 리허설 전용','Filling missing days with today\'s public Q·G is rehearsal-only'],
  // V history store
  DATE_INVALID:['날짜 형식 오류','Date invalid'],DATE_BEFORE_LAST_RECORDED:['마지막 기록일보다 이른 날짜(소급 안 함)','Before the last recorded date (no backfill)'],
  UNCHANGED:['새 값 없음(이미 기록)','Nothing new (already recorded)'],NO_VALUES:['기록할 V 없음','No V values to record'],DEVICE_STORAGE_UNAVAILABLE:['기기 저장소 사용 불가','Device storage unavailable'],
  V_STORE_INVALID:['기기 V 기록 형식 오류(그대로 둠)','Device V store invalid (left untouched)'],SESSION_NOT_AVAILABLE:['완료 거래일 없음','No completed session'],
  VALUATION_INPUTS_UNAVAILABLE:['공개 가치평가 입력 없음','Public valuation inputs unavailable'],
  // ledger sheets (D-10)
- LEDGER_REPLAY_MISMATCH:['기록된 행과 재생 결과가 다름(쓰기 중지)','Recorded rows differ from the replay (writes stopped)'],SHEET_ROWS_INVALID:['시트 행 형식 오류','Sheet rows invalid'],
+ PRICE_REVISED:['기록 이후 과거 일봉 등이 바뀌어 재생 결과가 기록과 다름(기록 유지, 기록된 상태에서 이어서 기록)','Replay differs from the recorded rows, e.g. revised daily bars (records kept, recording continues from the recorded state)'],
+ SHEET_ROWS_INVALID:['시트 행 형식 오류(쓰기 중지)','Sheet rows invalid (writes stopped)'],
  SHEET_HEADER_MISMATCH:['시트 머리글 불일치','Sheet header mismatch'],META_INVALID:['VirtualMeta 형식 오류','VirtualMeta invalid'],META_ROW_INVALID:['VirtualMeta 행 형식 오류','VirtualMeta row invalid'],
  LEDGER_UNKNOWN:['VirtualMeta에 없는 장부 ID','Ledger ID not in VirtualMeta'],INPUTS_NOT_READY:['장부 입력 준비 전','Ledger inputs not ready'],
  INPUTS_INCOMPLETE:['시세 일부 없음(다시 받은 뒤 기록)','Inputs incomplete (record after reloading quotes)'],INPUTS_CHANGED:['기록 이후 입력이 바뀜','Inputs changed since recording'],
@@ -332,8 +338,11 @@ const CODE_LABELS=Object.freeze({
  SHEET_NOT_READY:['시트 장부 준비 전','Sheet ledger not ready'],SHEET_NOT_LOADED:['시트를 아직 읽지 않음','Sheet not loaded yet'],NOT_CONNECTED:['구글 시트 미연결','Google Sheet not connected'],
  SHADOW_NOT_STARTED:['그림자 장부 출발 전','Shadow ledger not started'],SHADOW_ALREADY_STARTED:['그림자 장부가 이미 출발함','Shadow ledger already started'],
  SET_B_REDEFINED:['세트 B 재정의','Set B redefined'],REHEARSAL_NOT_RECORDED:['리허설 결과는 기록하지 않음','Rehearsal results are never recorded'],
+ SET_REDEFINED:['세트 구성 변경(새 장부)','Set redefined (new ledger)'],SET_A_CHANGED:['세트 A 구성 변경(새 버전·새 장부)','Set A changed (new version, new ledger)'],
+ SET_DELETED:['세트 삭제 → 종료(기록 보존)','Set deleted → closed (records kept)'],SET_MEMBERS_OVER_30:['구성 종목 30개 초과','More than 30 members'],
+ PURPOSE_REQUIRED:['세트 목적(한 줄) 필요','A one-line set purpose is required'],PURPOSE_INVALID:['세트 목적 형식 오류(한 줄, 120자 이하)','Set purpose invalid (one line, up to 120 characters)'],
  NUMBER_INVALID:['숫자 형식 오류','Number invalid'],VALUE_INVALID:['값 형식 오류','Value invalid'],CONFIG_NOT_CANONICAL:['규칙 설정이 공식 v1과 다름','Configuration differs from the official v1'],
- COMPANY_NOT_SUPPORTED:['TARGET 19종목이 아님','Not one of the 19 TARGET companies'],WEIGHT_INVALID:['비중 형식 오류(0~100)','Weight invalid (0 to 100)'],
+ COMPANY_NOT_SUPPORTED:['허용 목록 밖 종목(가격 Worker 허용 목록: TARGET 19종목 + ETF 15종)','Not on the price Worker allowlist (19 TARGET companies + 15 ETFs)'],WEIGHT_INVALID:['비중 형식 오류(0~100)','Weight invalid (0 to 100)'],
  WEIGHT_SUM_OVER_100:['비중 합계 100 초과','Weights sum above 100'],WEIGHTS_EMPTY:['비중 없음','No weights'],WRITE_FAILED:['시트 쓰기 실패','Sheet write failed']});
 const lang=locale=>locale==='en-US'||locale==='en'?'en':'ko';
 const byLevel=(a,b)=>LEVELS.indexOf(a)-LEVELS.indexOf(b);

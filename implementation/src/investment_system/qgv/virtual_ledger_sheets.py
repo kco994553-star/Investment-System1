@@ -1,20 +1,25 @@
-"""Virtual ledger sheet storage v1 (D-10): pure row format, replay verification and missing-session plan.
+"""Virtual ledger sheet storage v1 (D-10): pure row format, recorded-state continuation and missing-session plan.
 
 Python reference for the pure part of web_assets/virtual-ledger-sheets.js (vectors:
 tests/fixtures/virtual_ledger_sheets_v1.json). The device keeps prices in RAM and writes the virtual ledgers only to
-the user's own Google Sheet (tabs VirtualA / VirtualB / VirtualMine / VirtualMeta / VirtualFlags) on an explicit
-click. This module only defines, for the same synthetic inputs, which rows the device must write and how recorded
-rows are checked by deterministic replay. Nothing here fetches, stores or publishes prices, ledgers or holdings.
+the user's own Google Sheet (tabs VirtualA / VirtualB / VirtualC / VirtualD / VirtualMine / VirtualMeta / VirtualFlags) on
+an explicit click. This module only defines, for the same synthetic inputs, which rows the device must write and how
+recorded rows are continued. Nothing here fetches, stores or publishes prices, ledgers or holdings.
 
-Rules:
-- Ledger rows are append-only. A session counts as recorded when its rows are in the ledger tab; recorded rows must
-  equal, cell for cell, the rows the engine reproduces from the same inputs (else LEDGER_REPLAY_MISMATCH, no writes).
-- Missing sessions are the replayed sessions after the last recorded one, up to the latest session whose public Q·G
-  record exists (inputs final). A day whose inputs are missing is written with the engine's own outcome
-  (NOT_AVAILABLE valuation, BLOCK judgements, EXEC_*_MISSING cancellations); nothing is skipped or filled.
-- Every ledger has a fixed definition (VirtualMeta LEDGER_START): begin date, target weights and, for the shadow
-  ledger, the actual-holdings snapshot it started from (D-17). A changed Set B or a re-sync closes the ledger
-  (LEDGER_CLOSE) and starts a new one; recorded rows are never rewritten.
+Rules (decision 2026-10-11):
+- Ledger rows are append-only and the recorded rows are canonical. The next sessions continue from the recorded state
+  (cash, positions with KRW cost, orders decided on the last recorded session), never from a replay from the start.
+- The full replay is still compared with the recorded rows: when they differ (for example revised daily bars) the
+  ledger is marked PRICE_REVISED with the first differing session, nothing is rewritten and recording goes on.
+  Malformed rows (SHEET_ROWS_INVALID) and headers (SHEET_HEADER_MISMATCH) still block writes.
+- Missing sessions are the sessions after the last recorded one, up to the latest session whose public Q·G record
+  exists (inputs final). A day whose inputs are missing is written with the engine's own outcome (NOT_AVAILABLE
+  valuation, BLOCK judgements, EXEC_*_MISSING cancellations); nothing is skipped or filled.
+- Every ledger has a fixed definition (VirtualMeta LEDGER_START): begin date, target weights, the set's purpose and,
+  for the shadow ledger, the actual-holdings snapshot it started from (D-17). Set A is the v1.1 example (TARGET v0)
+  until the user changes it (set_a@v2, …); user sets B/C/D (1–30 allowlisted members, weights ≤ 100, purpose
+  required). A changed composition or a re-sync closes the ledger (LEDGER_CLOSE) and starts a new one; deleting a set
+  only closes it (SET_DELETED). Recorded rows are never rewritten.
 - Numbers are written as text in the ECMAScript Number-to-String form so the device and this reference agree exactly.
 """
 from __future__ import annotations
@@ -29,7 +34,7 @@ from . import virtual_trading as vt
 from . import virtual_trading_inputs as vi
 
 SCHEMA = 'virtual-ledger-sheets/1'
-TABS = {'SET_A': 'VirtualA', 'SET_B': 'VirtualB', 'SHADOW': 'VirtualMine'}
+TABS = {'SET_A': 'VirtualA', 'SET_B': 'VirtualB', 'SET_C': 'VirtualC', 'SET_D': 'VirtualD', 'SHADOW': 'VirtualMine'}
 META = 'VirtualMeta'
 FLAGS = 'VirtualFlags'
 LEDGER_HEAD = ('ledger_id', 'session_date', 'row_type', 'company', 'level', 'aux_levels', 'reason_codes', 'aux_codes',
@@ -37,13 +42,19 @@ LEDGER_HEAD = ('ledger_id', 'session_date', 'row_type', 'company', 'level', 'aux
 META_HEAD = ('recorded_at', 'ledger_id', 'kind', 'event', 'start_date', 'end_date', 'config_version', 'engine_version',
              'last_recorded_session', 'inputs_sha256', 'payload')
 FLAGS_HEAD = ('created_at', 'date', 'company', 'kind')
-HEADS = {'VirtualA': LEDGER_HEAD, 'VirtualB': LEDGER_HEAD, 'VirtualMine': LEDGER_HEAD, META: META_HEAD, FLAGS: FLAGS_HEAD}
+HEADS = {'VirtualA': LEDGER_HEAD, 'VirtualB': LEDGER_HEAD, 'VirtualC': LEDGER_HEAD, 'VirtualD': LEDGER_HEAD, 'VirtualMine': LEDGER_HEAD,
+         META: META_HEAD, FLAGS: FLAGS_HEAD}
 ROW_TYPES = ('INITIAL', 'EXECUTED', 'CANCELLED', 'JUDGEMENT', 'ORDER', 'SUMMARY')
 EVENTS = ('LEDGER_START', 'LEDGER_CLOSE', 'RECORD', 'USER_TARGET')
-KINDS = ('SET_A', 'SET_B', 'SHADOW')
-BASES = ('TARGET_V0', 'SET_B', 'USER_TARGET')
+KINDS = ('SET_A', 'SET_B', 'SET_C', 'SET_D', 'SHADOW')
+USER_SETS = ('SET_B', 'SET_C', 'SET_D')
+BASES = ('TARGET_V0', 'SET_A', 'SET_B', 'SET_C', 'SET_D', 'USER_TARGET')
+PREFIX = {'SET_A': 'set_a', 'SET_B': 'set_b-', 'SET_C': 'set_c-', 'SET_D': 'set_d-', 'SHADOW': 'shadow-'}
+MAX_MEMBERS = 30
+MAX_PURPOSE = 120
 NA = 'NOT_AVAILABLE'
-ID = re.compile(r'(?:set_a|set_b-[1-9][0-9]{0,5}|shadow-[1-9][0-9]{0,5})')
+ID = re.compile(r'(?:set_a(?:@v(?:[2-9]|[1-9][0-9]{1,5}))?|set_[bcd]-[1-9][0-9]{0,5}|shadow-[1-9][0-9]{0,5})')
+NUMBER_TEXT = re.compile(r'-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:e[+-][0-9]+)?')
 WEIGHT_TEXT = re.compile(r'(?:0|[1-9][0-9]{0,2})(?:\.[0-9]{1,4})?')
 SHA = re.compile(r'[0-9a-f]{64}')
 SERIAL_EPOCH = date(1899, 12, 30)
@@ -146,12 +157,81 @@ def day_rows(ledger_id, day, initial=None):
 
 
 def ledger_rows(ledger_id, result, ledger_input, dates):
-    """Rows for the replayed days whose date is in `dates` (INITIAL rows go with the ledger's first day)."""
+    """Rows for the engine days whose date is in `dates` (INITIAL rows go with the ledger's first day; a continuation
+    from a recorded state has no first day)."""
     wanted, out = set(dates), []
+    first = ledger_input.get('resume') is None
     for i, day in enumerate(result['days']):
         if day['date'] in wanted:
-            out.extend(day_rows(ledger_id, day, ledger_input.get('initial') if i == 0 else None))
+            out.extend(day_rows(ledger_id, day, ledger_input.get('initial') if i == 0 and first else None))
     return out
+
+
+# ---------- recorded state (decision 2026-10-11: recorded rows are canonical) ----------
+
+def _number(text, positive=False):
+    if not (isinstance(text, str) and NUMBER_TEXT.fullmatch(text)):
+        _fail('SHEET_ROWS_INVALID')
+    x = float(text)
+    if not math.isfinite(x) or (positive and not x > 0):
+        _fail('SHEET_ROWS_INVALID')
+    return x
+
+
+def recorded_state(rows):
+    """One ledger's recorded rows (sheet order) → the engine resume state after its last recorded session: cash
+    (SUMMARY cash_after), positions (INITIAL rows, then EXECUTED rows with the engine's own arithmetic), the orders
+    decided on that session (ORDER rows) and the last valued total. Malformed rows → SHEET_ROWS_INVALID."""
+    if not rows:
+        _fail('SHEET_ROWS_INVALID')
+    positions, pending, last, summary = {}, [], None, None
+    cash, total = None, None
+    for r in rows:
+        day, kind, cid = r[1], r[2], r[3]
+        if day != last:
+            if last is not None and summary != last:
+                _fail('SHEET_ROWS_INVALID')
+            last, pending = day, []
+        if summary == day:
+            _fail('SHEET_ROWS_INVALID')        # SUMMARY closes a session: nothing may follow it on the same date
+        if kind == 'INITIAL':
+            if cid in positions:
+                _fail('SHEET_ROWS_INVALID')
+            positions[cid] = {'quantity': _number(r[10], True), 'cost': _number(r[9])}
+        elif kind == 'EXECUTED':
+            side, amount, qty = r[8], _number(r[9], True), _number(r[10], True)
+            if side == 'BUY':
+                p = positions.setdefault(cid, {'quantity': 0, 'cost': 0})
+                p['quantity'] += qty
+                p['cost'] += amount
+            elif side == 'SELL':
+                p = positions.get(cid)
+                if p is None or qty > p['quantity']:
+                    _fail('SHEET_ROWS_INVALID')
+                avg = p['cost'] / p['quantity']
+                cost_out = avg * qty
+                if qty == p['quantity']:
+                    del positions[cid]
+                else:
+                    p['quantity'] -= qty
+                    p['cost'] -= cost_out
+            else:
+                _fail('SHEET_ROWS_INVALID')
+        elif kind == 'ORDER':
+            if r[8] not in ('BUY', 'SELL') or not cid:
+                _fail('SHEET_ROWS_INVALID')
+            pending.append({'company': cid, 'side': r[8], 'amount': _number(r[9], True), 'reason_codes': r[6].split(',') if r[6] else []})
+        elif kind == 'SUMMARY':
+            cash = _number(r[13])
+            if cash < 0:
+                _fail('SHEET_ROWS_INVALID')
+            if r[14] != NA:
+                total = _number(r[14])
+            summary = day
+    if summary != last:
+        _fail('SHEET_ROWS_INVALID')
+    return {'after': last, 'cash': cash, 'total_value': total, 'pending': pending,
+            'positions': {cid: positions[cid] for cid in sorted(positions)}}
 
 
 # ---------- reading tabs ----------
@@ -194,10 +274,10 @@ def recorded_dates(rows):
 
 
 def _weights(w, allowed=None):
-    if not isinstance(w, dict) or not w:
+    if not isinstance(w, dict) or not w or len(w) > MAX_MEMBERS:
         return False
     for k, v in w.items():
-        if not (k in vi.TARGETS and (allowed is None or k in allowed) and vi._num(v) and 0 <= v <= 100):
+        if not (k in vi.MEMBERS and (allowed is None or k in allowed) and vi._num(v) and 0 <= v <= 100):
             return False
     total = 0
     for k in sorted(w):
@@ -208,6 +288,12 @@ def _weights(w, allowed=None):
 def _snapshot_ok(s):
     return (isinstance(s, dict) and isinstance(s.get('effective_at'), str) and isinstance(s.get('positions'), dict)
             and all(k in vi.TARGETS and isinstance(p, dict) for k, p in s['positions'].items()))
+
+
+def purpose_ok(v):
+    """A set's one-line purpose: 1–120 characters, no line break or control character."""
+    return isinstance(v, str) and 0 < len(v.strip()) and len(v) <= MAX_PURPOSE and v == v.strip() and \
+        not any(ord(c) < 32 or ord(c) == 127 for c in v)
 
 
 def parse_meta(rows):
@@ -223,14 +309,17 @@ def parse_meta(rows):
         event, lid, kind = ev['event'], ev['ledger_id'], ev['kind']
         if ok and event == 'LEDGER_START':
             basis, weights = payload.get('target_basis'), payload.get('target_weights')
-            ok = (ID.fullmatch(lid) is not None and lid not in ledgers and kind in KINDS and lid.startswith({'SET_A': 'set_a', 'SET_B': 'set_b-', 'SHADOW': 'shadow-'}[kind])
+            purpose = payload.get('purpose')
+            ok = (ID.fullmatch(lid) is not None and lid not in ledgers and kind in KINDS and lid.startswith(PREFIX[kind])
                   and vi._day(ev['start_date']) and ev['end_date'] == '' and basis in BASES and _weights(weights)
+                  and (purpose is None or purpose_ok(purpose))
                   and (kind != 'SHADOW' or _snapshot_ok(payload.get('snapshot'))))
             if ok:
                 ledgers[lid] = {'id': lid, 'kind': kind, 'begin': ev['start_date'], 'end': None, 'target_basis': basis,
                                 'target_weights': weights, 'snapshot': payload.get('snapshot') if kind == 'SHADOW' else None,
                                 'config_version': ev['config_version'], 'engine_version': ev['engine_version'],
-                                'reason': payload.get('reason') if isinstance(payload.get('reason'), str) else None}
+                                'reason': payload.get('reason') if isinstance(payload.get('reason'), str) else None,
+                                'purpose': purpose, 'close_reason': None}
                 order.append(lid)
         elif ok and event == 'LEDGER_CLOSE':
             led = ledgers.get(lid)
@@ -238,6 +327,7 @@ def parse_meta(rows):
                   and ev['end_date'] >= led['begin'])
             if ok:
                 led['end'] = ev['end_date']
+                led['close_reason'] = payload.get('reason') if isinstance(payload.get('reason'), str) else None
         elif ok and event == 'RECORD':
             ok = lid in ledgers and ledgers[lid]['kind'] == kind and vi._day(ev['last_recorded_session']) and SHA.fullmatch(ev['inputs_sha256']) is not None
             if ok:
@@ -264,18 +354,47 @@ def active(meta, kind):
 
 
 def set_a_ledger(meta, base_input, config):
-    """The Set A ledger: its stored definition, else the implicit one (start date, TARGET v0 from the catalog)."""
-    for led in meta['ledgers']:
-        if led['id'] == 'set_a':
-            return led
+    """The current Set A ledger: the open stored version, else the implicit v1.1 example (start date, TARGET v0)."""
+    found = active(meta, 'SET_A')
+    if found is not None:
+        return found
+    if any(led['kind'] == 'SET_A' for led in meta['ledgers']):
+        return None
     return {'id': 'set_a', 'kind': 'SET_A', 'begin': config['start_date'], 'end': None, 'target_basis': 'TARGET_V0',
             'target_weights': dict(base_input['target_weights']), 'snapshot': None, 'implicit': True,
-            'config_version': config.get('config_version'), 'engine_version': config['rules_version'], 'reason': None}
+            'config_version': config.get('config_version'), 'engine_version': config['rules_version'], 'reason': None,
+            'purpose': None, 'close_reason': None}
+
+
+def all_ledgers(meta, base_input, config):
+    """Every ledger to verify/record, by kind then start order: the stored ones (closed ones included) plus the implicit Set A when none is stored."""
+    stored = list(meta['ledgers'])
+    if not any(led['kind'] == 'SET_A' for led in stored):
+        stored.insert(0, set_a_ledger(meta, base_input, config))
+    return [led for _, _, led in sorted(((KINDS.index(led['kind']), i, led) for i, led in enumerate(stored)), key=lambda x: (x[0], x[1]))]
 
 
 def next_id(meta, kind):
-    prefix = {'SET_B': 'set_b-', 'SHADOW': 'shadow-'}[kind]
-    return prefix + str(1 + sum(1 for led in meta['ledgers'] if led['kind'] == kind))
+    n = 1 + sum(1 for led in meta['ledgers'] if led['kind'] == kind)
+    if kind == 'SET_A':
+        return 'set_a' if n == 1 else 'set_a@v' + str(n)
+    return PREFIX[kind] + str(n)
+
+
+def validate_set(raw_weights, purpose, kind, allowed):
+    """A set definition from the form: weights over allowlisted members (1–30, sum ≤ 100) and, for user sets B/C/D,
+    the required one-line purpose."""
+    v = validate_weights(raw_weights, allowed)
+    if v['state'] != 'OK':
+        return {**v, 'purpose': None}
+    if len(v['weights']) > MAX_MEMBERS:
+        return {'state': 'INVALID', 'reason_codes': ['SET_MEMBERS_OVER_30'], 'weights': None, 'purpose': None}
+    text = purpose.strip() if isinstance(purpose, str) else None
+    if kind in USER_SETS and not text:
+        return {'state': 'INVALID', 'reason_codes': ['PURPOSE_REQUIRED'], 'weights': None, 'purpose': None}
+    if text and not purpose_ok(text):
+        return {'state': 'INVALID', 'reason_codes': ['PURPOSE_INVALID'], 'weights': None, 'purpose': None}
+    return {'state': 'OK', 'reason_codes': [], 'weights': v['weights'], 'purpose': text or None}
 
 
 # ---------- weights / flags input ----------
@@ -400,42 +519,62 @@ def inputs_text(ledger_input, last):
 # ---------- replay verification + missing sessions ----------
 
 def ledger_status(ledger, base_input, recorded, config, through):
-    """Verify one ledger's recorded rows by replay and list the sessions still to write (pure, deterministic)."""
+    """One ledger's recorded rows → the sessions still to write, continued from the recorded state (pure, deterministic).
+    The full replay is compared with the recorded rows only to mark PRICE_REVISED (first differing session); it never
+    blocks or rewrites. Malformed recorded rows → SHEET_ROWS_INVALID (blocks)."""
     out = {'id': ledger['id'], 'kind': ledger['kind'], 'tab': TABS[ledger['kind']], 'begin': ledger['begin'], 'end': ledger['end'],
            'target_basis': ledger['target_basis'], 'state': 'OK', 'reason_codes': [], 'recorded_sessions': 0,
-           'recorded_through': None, 'missing': [], 'first_mismatch': None, 'append_rows': [], 'replay_through': None}
+           'recorded_through': None, 'missing': [], 'price_revised': None, 'append_rows': [], 'replay_through': None}
     dates = recorded_dates(recorded)
     out['recorded_sessions'] = len(dates)
     out['recorded_through'] = dates[-1] if dates else None
     derived = derive_input(base_input, ledger)
     if derived['state'] != 'READY':
-        out.update(state='LEDGER_REPLAY_MISMATCH' if dates else NA, reason_codes=list(derived['reason_codes']))
-        if dates:
-            out['first_mismatch'] = {'session': dates[0], 'row': 0}
+        out.update(state=NA, reason_codes=list(derived['reason_codes']))
         return out, None
     inp = derived['input']
     result = vt.run_ledger(config, inp)
     replay = [d['date'] for d in result['days']] if result['state'] == 'OK' else []
     out['replay_through'] = replay[-1] if replay else None
-    if result['state'] != 'OK':
-        if dates:
-            out.update(state='LEDGER_REPLAY_MISMATCH', reason_codes=list(result['reason_codes']), first_mismatch={'session': dates[0], 'row': 0})
-        else:
+    if not dates:
+        if result['state'] != 'OK':
             out.update(state=result['state'], reason_codes=list(result['reason_codes']))
+            return out, inp
+        missing = [d for d in replay if through is not None and d <= through]
+        out['missing'] = missing
+        out['append_rows'] = ledger_rows(ledger['id'], result, inp, missing)
+        if not missing and replay:
+            out['reason_codes'] = ['WAITING_FOR_QG_RECORD']
         return out, inp
-    expected = ledger_rows(ledger['id'], result, inp, dates)
-    if replay[:len(dates)] != dates or expected != recorded:
+    try:
+        state = recorded_state(recorded)
+    except SheetError as e:
+        out.update(state=str(e), reason_codes=[str(e)])
+        return out, inp
+    codes = []
+    expected = ledger_rows(ledger['id'], result, inp, dates) if result['state'] == 'OK' else []
+    if result['state'] != 'OK' or replay[:len(dates)] != dates or expected != recorded:
         i = 0
         while i < len(recorded) and i < len(expected) and recorded[i] == expected[i]:
             i += 1
         session = recorded[i][1] if i < len(recorded) else (expected[i][1] if i < len(expected) else dates[-1])
-        out.update(state='LEDGER_REPLAY_MISMATCH', reason_codes=['LEDGER_REPLAY_MISMATCH'], first_mismatch={'session': session, 'row': i})
+        out['price_revised'] = {'session': session, 'row': i}
+        codes.append('PRICE_REVISED')
+    cont_input = dict(inp, resume=state)
+    cont = vt.run_ledger(config, cont_input)
+    if cont['state'] == 'NOT_STARTED' and cont['reason_codes'] == ['NO_SESSION_AFTER_RECORDED']:
+        out['reason_codes'] = codes
         return out, inp
-    missing = [d for d in replay[len(dates):] if through is not None and d <= through]
+    if cont['state'] != 'OK':
+        out.update(state=cont['state'], reason_codes=codes + list(cont['reason_codes']))
+        return out, inp
+    sessions = [d['date'] for d in cont['days']]
+    missing = [d for d in sessions if through is not None and d <= through]
     out['missing'] = missing
-    out['append_rows'] = ledger_rows(ledger['id'], result, inp, missing)
-    if not missing and len(replay) > len(dates):
-        out['reason_codes'] = ['WAITING_FOR_QG_RECORD']
+    out['append_rows'] = ledger_rows(ledger['id'], cont, cont_input, missing)
+    if not missing and sessions:
+        codes.append('WAITING_FOR_QG_RECORD')
+    out['reason_codes'] = codes
     return out, inp
 
 
@@ -475,7 +614,8 @@ def begin_for(now, config, previous_last=None):
 
 
 def replace_rows(meta, kind, now, config, payload, recorded_last=None, reason='INITIAL'):
-    """Meta rows for a new Set B / shadow ledger: LEDGER_CLOSE of the open one (if any) then LEDGER_START."""
+    """Meta rows for a new Set A version / user set / shadow ledger: LEDGER_CLOSE of the open one (if any) then
+    LEDGER_START."""
     old = active(meta, kind)
     begin = begin_for(now, config, recorded_last if old else None)
     new = {'id': next_id(meta, kind), 'kind': kind, 'begin': begin}
@@ -488,6 +628,29 @@ def replace_rows(meta, kind, now, config, payload, recorded_last=None, reason='I
         body['previous'] = old['id']
     rows.append(start_row(now, new, config, body))
     return rows
+
+
+def set_a_change_rows(meta, base_input, now, config, payload, recorded_last=None):
+    """Changing Set A's composition: the v1.1 example (implicit set_a, TARGET v0) is first stored as it was, then closed,
+    and the new version set_a@vN starts (its own ledger; earlier versions and their rows stay viewable)."""
+    rows, current = [], meta
+    if not any(led['kind'] == 'SET_A' for led in meta['ledgers']):
+        implicit = set_a_ledger(meta, base_input, config)
+        start = start_row(now, implicit, config, {'reason': 'INITIAL', 'target_basis': 'TARGET_V0', 'target_weights': implicit['target_weights']})
+        rows.append(start)
+        current = parse_meta([start])
+        if current['state'] != 'OK':
+            _fail('META_INVALID')
+        current = {**current, 'ledgers': list(meta['ledgers']) + current['ledgers']}
+    return rows + replace_rows(current, 'SET_A', now, config, {**payload, 'target_basis': 'SET_A'}, recorded_last, 'SET_A_CHANGED')
+
+
+def delete_rows(meta, kind, now, config, recorded_last=None):
+    """Deleting a user set only closes its open ledger ('종료', SET_DELETED); its rows and definition are kept."""
+    old = active(meta, kind)
+    if old is None:
+        _fail('SET_NOT_DEFINED')
+    return [close_row(now, old, begin_for(now, config, recorded_last), {'reason': 'SET_DELETED'})]
 
 
 def now_iso(dt=None):
