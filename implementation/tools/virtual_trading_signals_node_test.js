@@ -24,10 +24,10 @@ function runVector(v) {
   const cfg = VT.defaultConfig();
   const runCfg = v.rehearsal ? S.rehearsalConfig(v.inputs.histories, cfg) : { ...cfg, start_date: v.inputs.config.start_date };
   let assembled = R.assemble({ ...v.inputs, config: { start_date: runCfg.start_date } }), filled = [];
-  if (v.rehearsal) [assembled, filled] = S.applyRehearsalSnapshots(assembled, fixture.qg_rows);
-  const plan = S.capturePlan(assembled), [vNow, vRaw] = S.vScoresFor(plan, fixture.valuation, DV.parameters());
+  if (v.rehearsal) [assembled, filled] = S.applyRehearsalSnapshots(assembled, fixture.qg_rows, 'REHEARSAL');
+  const plan = S.capturePlan(assembled), [vNow, vRaw, vComp, vSkipped] = S.vScoresFor(plan, fixture.valuation, DV.parameters());
   const entry = assembled.ledgers.SET_A, ready = entry.state === 'READY';
-  return { runCfg, assembled, filled, plan, vNow, vRaw, entry, engine: ready ? project(VT.runLedger(runCfg, entry.input)) : null };
+  return { runCfg, assembled, filled, plan, vNow, vRaw, vComp, vSkipped, entry, engine: ready ? project(VT.runLedger(runCfg, entry.input)) : null };
 }
 
 test('fixture is marked synthetic', () => {
@@ -46,14 +46,49 @@ for (const v of fixture.vectors) {
     assert.deepEqual(ready ? Object.fromEntries(Object.entries(out.entry.input.companies).map(([c, x]) => [c, x.sector_benchmark])) : null, e.sector_keys);
     assert.deepEqual(ready ? Object.keys(out.entry.input.benchmarks).sort() : null, e.benchmark_keys);
     assert.deepEqual(out.filled, e.qg_filled);
-    assert.deepEqual(plain(S.reportSignals(out.assembled, 'SET_A', out.runCfg, v.inputs.v_store)), e.signals);
+    assert.deepEqual(plain(S.reportSignals(out.assembled, 'SET_A', out.runCfg, v.inputs.v_store, v.inputs.v_composition)), e.signals);
     assert.equal(out.plan ? out.plan.date : null, e.capture_date);
     assert.deepEqual(out.vNow, e.v_scores);
+    assert.deepEqual(out.vComp, e.v_composition);
+    assert.deepEqual(out.vSkipped, e.v_skipped);
     assert.deepEqual(Object.keys(out.vRaw).sort(), Object.keys(e.v_raw).sort());
     for (const [c, x] of Object.entries(e.v_raw)) assert.ok(Math.abs(out.vRaw[c] - x) <= 1e-9, c);
     assert.deepEqual(plain(out.engine), e.engine);
   });
 }
+
+test('V core factors (decision 2026-10-11): every weight > 0 factor is core; a missing core factor → V NA, never 0; JS = Python', () => {
+  assert.deepEqual(S.coreVFactors(), fixture.core_v_factors);
+  assert.equal(fixture.core_v_factors.length, 7);
+  for (const c of fixture.v_axis) assert.deepEqual(plain(S.vAxisDetail(c.view)), c.expected, c.name);
+  const missing = fixture.v_axis.find((c) => c.name === 'core_factor_missing');
+  assert.equal(S.vAxis(missing.view), null);
+  // The old behaviour (missing factor counted as 0) would have produced a lower number: it must not appear anywhere.
+  const full = fixture.v_axis.find((c) => c.name === 'all_factors').expected;
+  assert.equal(full.state, 'OK');
+  assert.equal(full.composition, fixture.core_v_factors.join('+'));
+  // The synthetic device rows have no peer / historical / sector / theme factor: every company is skipped with its reason.
+  for (const v of fixture.vectors) for (const r of Object.values(v.expected.v_skipped)) assert.equal(r, 'V_CORE_FACTOR_MISSING');
+});
+
+test('V slope compares only equal compositions: unknown (V history /1) → V_COMPOSITION_CHANGED, no V_IMPROVED; progress counts /2 days only', () => {
+  const v = fixture.vectors.find((x) => x.name === 'recording_v_composition_unknown'), out = runVector(v);
+  const basis = S.basisRows(out.entry.input, out.runCfg), last = VT.runLedger(out.runCfg, out.entry.input).days.at(-1).judgements;
+  assert.equal(basis.googl.v_slope, 'V_COMPOSITION_CHANGED');
+  assert.ok(!last.googl.reason_codes.includes('V_IMPROVED'));
+  assert.ok(last.googl.aux.includes('V_COMPOSITION_CHANGED'));
+  assert.equal(v.expected.signals.v_progress.state, 'NOT_RECORDED');
+  assert.deepEqual(S.vProgress(['2026-10-19', '2026-10-20', '2026-10-21'], { '2026-10-19': { msft: 1 }, '2026-10-20': { msft: 2 } }, 20, { '2026-10-20': { msft: 'a+b' } }).first, '2026-10-20');
+});
+
+test('rehearsal-only Q·G fill: recording mode never fills a missing day (REHEARSAL_ONLY guard)', () => {
+  const v = fixture.vectors.find((x) => x.name === 'rehearsal_window_qg_fill');
+  const assembled = R.assemble({ ...v.inputs, config: { start_date: '2026-11-24' } });
+  for (const mode of ['RECORDING', undefined, null, 'rehearsal']) assert.throws(() => S.applyRehearsalSnapshots(assembled, fixture.qg_rows, mode), /REHEARSAL_ONLY/);
+  const [filled, dates] = S.applyRehearsalSnapshots(assembled, fixture.qg_rows, 'REHEARSAL');
+  assert.ok(dates.length > 0 && filled !== assembled);
+  assert.equal(R.assemble({ ...v.inputs, config: { start_date: '2026-11-24' } }).ledgers.SET_A.input.snapshots['2026-11-24'], undefined, 'the runner itself never fills');
+});
 
 test('D-5 end to end: ≥273 closes + D-22 ETF → ▼ RECHECK_ABNORMAL_DROP; <273 → basis NA; missing ETF → S&P 500 labelled', () => {
   const v = fixture.vectors.find((x) => x.name === 'recording_d5_v_slope'), out = runVector(v);

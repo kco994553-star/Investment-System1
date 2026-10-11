@@ -15,6 +15,8 @@ sys.path.insert(0, str(ROOT / 'src'))
 from investment_system.qgv import virtual_trading as vt  # noqa: E402
 
 OUT = ROOT / 'tests/fixtures/virtual_trading_reference_v1.json'
+# Synthetic V factor composition key (factor ids present that day); the V slope compares only equal keys.
+COMPOSITION = 'f_one+f_two'
 
 
 class Lcg:
@@ -52,15 +54,16 @@ def base_ledger(kind='SET_A', n=300):
         'ccc': {'currency': 'JPY', 'closes': walk(days, 37, 3000, 0.018, 0.0002), 'sector_benchmark': 'XLK'},
     }
     fx = {'USD': walk(days, 41, 1350, 0.003), 'JPY': walk(days, 43, 9.1, 0.003)}
-    snaps, vs = {}, {}
+    snaps, vs, vc = {}, {}, {}
     r = Lcg(99)
     for i, d in enumerate(days):
         snaps[d] = {c: {'q': round(60 + 5 * r.next(), 2), 'g': round(55 + 5 * r.next(), 2), 'coverage': 'READY'} for c in sorted(comps)}
         vs[d] = {c: round(50 + 4 * r.next(), 2) for c in sorted(comps)}
+        vc[d] = {c: COMPOSITION for c in sorted(comps)}
     return {'id': kind.lower() + '-1', 'kind': kind, 'sessions': days,
             'target_weights': {'aaa': 40, 'bbb': 30, 'ccc': 20},
             'companies': comps, 'benchmarks': {'SP500': sp, 'SMH': walk(days, 5, 200, 0.02)},
-            'fx': fx, 'initial': {'cash': 0, 'positions': {}}, 'snapshots': snaps, 'v_scores': vs, 'flags': [], 'events': {}}
+            'fx': fx, 'initial': {'cash': 0, 'positions': {}}, 'snapshots': snaps, 'v_scores': vs, 'v_composition': vc, 'flags': [], 'events': {}}
 
 
 def cfg(start):
@@ -121,6 +124,38 @@ def scenarios():
     c['cost_bps'] = 10
     c['buy_limit'] = 300000
     out.append({'name': 'confirmed_sector_cost_small_limit', 'config': c, 'ledger': L})
+
+    # V slope only between days with the same V factor composition (decision 2026-10-11): ccc V rises by 12 but the
+    # composition changes on d[290] (and is unknown on d[295..]) → no V_IMPROVED there, V_COMPOSITION_CHANGED instead.
+    L = base_ledger('SET_B')
+    d = L['sessions']
+    for i in range(281, 300):
+        L['v_scores'][d[i]]['ccc'] = L['v_scores'][d[i - 20]]['ccc'] + 12
+    for i in range(290, 300):
+        L['v_composition'][d[i]]['ccc'] = 'f_one'
+    for i in range(295, 300):
+        del L['v_composition'][d[i]]['ccc']
+    del L['v_composition'][d[298]]
+    out.append({'name': 'v_composition_changed', 'config': cfg(d[280]), 'ledger': L})
+
+    # Continue from a recorded state (decision 2026-10-11): cash, positions (quantity, KRW cost) and the orders decided on
+    # the last recorded session; only sessions after it run, the recorded ones are not replayed.
+    L = base_ledger('SET_A')
+    d = L['sessions']
+    L['resume'] = {'after': d[290], 'cash': 1234567.5, 'total_value': 9876543.25,
+                   'positions': {'aaa': {'quantity': 12.5, 'cost': 1700000}, 'bbb': {'quantity': 40.25, 'cost': 2100000.75}},
+                   'pending': [{'company': 'bbb', 'side': 'SELL', 'amount': 150000, 'reason_codes': ['OVERWEIGHT_GAP']},
+                               {'company': 'ccc', 'side': 'BUY', 'amount': 420000, 'reason_codes': ['UNDERWEIGHT_GAP', 'LIMIT_EXHAUSTED']}]}
+    L['flags'] = [{'date': d[289], 'company': 'ccc', 'kind': 'HOLD'}]
+    out.append({'name': 'resume_from_recorded_state', 'config': cfg(d[280]), 'ledger': L})
+
+    L = base_ledger('SET_A', n=30)
+    L['resume'] = {'after': L['sessions'][-1], 'cash': 0, 'total_value': None, 'positions': {}, 'pending': []}
+    out.append({'name': 'resume_no_session_after', 'config': cfg(L['sessions'][20]), 'ledger': L})
+
+    L = base_ledger('SET_A', n=30)
+    L['resume'] = {'after': L['sessions'][25], 'cash': -1, 'total_value': None, 'positions': {}, 'pending': []}
+    out.append({'name': 'resume_invalid', 'config': cfg(L['sessions'][20]), 'ledger': L})
 
     L = base_ledger(n=5)
     out.append({'name': 'invalid_input', 'config': cfg(L['sessions'][0]), 'ledger': {**L, 'sessions': [L['sessions'][1], L['sessions'][0]]}})

@@ -153,11 +153,14 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
         assert.equal(symbols[0], 'SPY');
         for (const s of ['KRW=X', 'JPYKRW=X', 'ASML', '042700.KS', '8035.T']) assert.ok(symbols.includes(s), s);
         assert.ok(traffic.worker.every((w) => w.auth && w.get && w.range === '2y'));
-        // Tab switch reuses the RAM history: no new Worker request. Shadow without ACTUAL holdings is NOT_AVAILABLE.
+        // Tab switch reuses the RAM history: no new Worker request. Without the user's own target the shadow ledger is
+        // NOT_AVAILABLE (decision 2026-10-11: TARGET v0 is never substituted) and the '내 목표 설정' guide is shown.
         const before = traffic.worker.length;
         await page.evaluate(() => { location.hash = 'report/real'; });
         await page.locator('[data-report-inputs][data-runner-state="NOT_AVAILABLE"]').waitFor({ timeout: 30000 });
-        assert.ok((await page.locator('[data-runner-summary]').textContent()).includes('NO_ACTUAL'));
+        assert.ok((await page.locator('[data-runner-summary]').textContent()).includes('TARGET_NOT_AVAILABLE'));
+        await page.locator('[data-user-target-guide][data-user-target-state="NOT_AVAILABLE"]').waitFor({ timeout: 30000 });
+        assert.equal(await page.locator('[data-copy-set-a-target]').count(), 1);
         assert.equal(traffic.worker.length, before);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         assert.ok(await storageClean(page), 'price or ledger reached storage');

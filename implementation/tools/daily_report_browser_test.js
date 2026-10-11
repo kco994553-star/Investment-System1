@@ -10,7 +10,8 @@
    for(const s of ['STANDARD v1 · UNCALIBRATED','가상매매 규칙 v1','PROVISIONAL'])assert.ok(badges.includes(s),s);
    assert.equal(await p.locator('[data-hide-amounts]').isChecked(),true);
    assert.equal(await p.locator('[data-report-not-started]').count(),1);
-   assert.equal(await p.locator('[data-report-tabs] a').count(),3);
+   // Set A + user sets B/C/D; 비교 only with at least two defined sets (none without a connected sheet).
+   assert.deepEqual(await p.locator('[data-report-tabs] a').allTextContents(),['세트 A','세트 B','세트 C','세트 D']);
    await p.locator('[data-export-template]').click();
    await p.waitForFunction(()=>/복사|표시/.test(document.querySelector('[data-report-status]')?.textContent||''));
    let text=await p.evaluate(async()=>{try{return await navigator.clipboard.readText();}catch(_){return document.querySelector('[data-export-fallback]')?.value||'';}});

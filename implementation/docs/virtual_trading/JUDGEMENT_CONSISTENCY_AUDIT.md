@@ -21,7 +21,7 @@
 | 고정 문구 `DISCLAIMER` "가상 · 실제 추천 아님 · 주문 기능 없음" | `VirtualTrading` | S17 머리글·③·⑩, 장부 시트 카드, 템플릿 ③·⑩, S03 카드 |
 | 행 순서 `compareRows`(주 판단 우선순위 → 기업 ID) | `VirtualTrading` | S17 ③, S03 카드 |
 | 렌더러 `judgementTokens/Text/Html`, `reasonsHtml`, `codeText`, `codesText`, `disclaimerHtml`, `priorityText` | `VirtualTrading` | 같은 토큰이 화면 칩과 템플릿 문장을 만든다 |
-| 코드 목록 `CODES` | 엔진(`VirtualTrading.CODES` 9개 묶음), `VirtualTradingRunner.CODES`, `VirtualTradingSignals.CODES`, `VirtualTradingVHistory.CODES`, `VirtualLedgerSheets.CODES` | 라벨 노드 테스트 |
+| 코드 목록 `CODES` | 엔진(`VirtualTrading.CODES` 9개 묶음), `VirtualTradingRunner.CODES`, `VirtualTradingSignals.CODES`, `VirtualTradingVHistory.CODES`, `VirtualLedgerSheets.CODES`, `VirtualTradingCompare.CODES` | 라벨 노드 테스트 |
 
 Python(`qgv/virtual_trading.py`)은 순서와 기호만 갖는다. 피할 수 없는 사본이라 `tests/test_virtual_trading.py::test_level_order_and_symbols_match_the_device_vocabulary`가 JS와 같은지 확인한다(이름·색 계열·라벨 키 순서도 `LEVELS`와 같아야 함).
 
@@ -75,3 +75,21 @@ Python(`qgv/virtual_trading.py`)은 순서와 기호만 갖는다. 피할 수 �
 - `tests/test_virtual_trading.py`: Python `LEVELS`·`SYMBOLS`가 JS와 같은지.
 - `tools/pc_layout_browser_test.js`의 합성 S17 모델이 없어진 `DailyReport.LEVEL_KO` 대신 `VirtualTrading.LEVELS`를 쓰도록 고쳤다. 손으로 만든 행(`main`·`aux`만 있음)도 같은 렌더러로 그린다.
 - 기존 테스트에서 바뀐 기대값은 세 가지다. `label()` 붙여 쓰기, ⑩ 고정 문구 전체, 업종 기준 칸 라벨 덧붙임(`HISTORY_INSUFFICIENT 272/273 · 정렬된 일봉 부족`).
+
+## 6. 2026-10-11 사용자 결정 반영 (장부 복구·해석·모의 세트·Example_ 탭)
+
+규칙 값과 판단 7단계는 바꾸지 않았다. 아래 코드는 모두 `VirtualTrading.CODE_LABELS`에 한국어·영어 라벨이 있고, `judgement_labels_node_test.js`가 비교 모듈(`virtual-trading-compare.js`·`virtual_trading_compare.py`)까지 훑어 확인한다.
+
+| 묶음 | 새 코드 | 뜻 |
+| --- | --- | --- |
+| 엔진 보조 | `V_COMPOSITION_CHANGED` | V 요소 구성이 20거래일 전과 다르거나 알 수 없어 V 기울기 미사용(NA) |
+| 엔진 장부 | `NO_SESSION_AFTER_RECORDED` | 기록된 상태에서 이어갈 거래일 없음 |
+| 실행기 | `SET_NOT_DEFINED`, `SET_INVALID` (세트 C·D; 세트 B는 기존 `SET_B_*`), `TARGET_NOT_AVAILABLE`·`WEIGHT_INVALID`(그림자 장부: 내 목표 없음/형식 오류) | |
+| 신호·V 기록 | `V_CORE_FACTOR_MISSING`, `V_FACTORS_NOT_AVAILABLE`, `V_COMPOSITION_CHANGED`, `REHEARSAL_ONLY` | 핵심 V 요소 결측 → V NA(0으로 계산 안 함), 오늘 공개 Q·G 채우기는 리허설 전용 |
+| 장부 시트 | `PRICE_REVISED`, `SET_NOT_DEFINED`, `SET_MEMBERS_OVER_30`, `PURPOSE_REQUIRED`, `PURPOSE_INVALID`, `SET_A_CHANGED`, `SET_DELETED`, `SET_REDEFINED`, `NO_SESSION_AFTER_RECORDED` | 재생 값이 기록과 다름(기록 유지·이어서 기록), 세트 정의·종료 사유 |
+| 세트 비교 | `WEIGHTS_NOT_AVAILABLE`, `TYPES_NOT_AVAILABLE`, `COMPARE_NEEDS_TWO_SETS` (+ 기존 `INSUFFICIENT_SAMPLE`·`VALUATION_NOT_AVAILABLE`·`LEDGER_NOT_AVAILABLE`, ⑫⑬ 사유는 `ReportBenchmarks.CODE_LABELS`) | |
+
+- **없앤 코드:** `LEDGER_REPLAY_MISMATCH`(쓰기 정지). 기록된 행이 기준이 되면서 재생 차이는 `PRICE_REVISED` 표시로 바뀌었다. 라벨도 지웠다. 구조 오류(`SHEET_ROWS_INVALID`·`SHEET_HEADER_MISMATCH`·`META_INVALID`)는 그대로 쓰기를 막는다.
+- **바꾼 라벨:** `COMPANY_NOT_SUPPORTED`는 'TARGET 19종목이 아님' → '허용 목록 밖 종목(가격 Worker 허용 목록: TARGET 19종목 + ETF 15종)'.
+- **판단 어휘 사본 금지:** 세트 카드의 ETF 안내문도 `VirtualTrading.label('BLOCK')`으로 만든다(손으로 쓴 '■차단' 없음).
+- **enum(코드 아님):** `SET`(비교 계산용 내부 장부 키), `SET_C`·`SET_D`(장부 종류), `PHONE`(비교 화면 배치), `OPEN`·`CLOSED`·`NOT_DEFINED`(세트 상태), `VUG`·`QUAL`(티커)을 노드 테스트의 `NOT_CODES`에 적었다.

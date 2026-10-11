@@ -598,18 +598,20 @@ function paintNews(id) {
 }
 function report(id){const real=id==='real';return heading("DAILY REPORT",real?(appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'):(appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'))+'<div id="daily-report" aria-live="polite"></div><div id="virtual-ledger-sheets"></div>';}
 // S17: everything is computed in RAM on this device; export/copy and the optional mailbox run only on the user's click.
-function reportTab(id){return id==='real'?'REAL':({'mock-set_b':'SET_B','mock-compare':'COMPARE'}[id]||'SET_A');}
+function reportTab(id){return id==='real'?'REAL':({'mock-set_b':'SET_B','mock-set_c':'SET_C','mock-set_d':'SET_D','mock-compare':'COMPARE'}[id]||'SET_A');}
 // The virtual ledger runner (VirtualTradingRunner) reads prices through the existing Google session and private
 // history Worker into memory only; this holds just its abort handle and session subscription for the open report.
 let reportRun=null;
 // The last recording-mode shadow-ledger judgements of this page (투자 일일보고서), RAM only: S03 shows exactly these chips.
 let virtualShadow=null;
+// ⑬ period and currency basis chosen on S17 (this page session only; RAM, not stored).
+let benchSelection={period:'20D',basis:'KRW'};
 function disposeReport(){const r=reportRun;reportRun=null;if(r){r.controller.abort();if(r.unsubscribe)r.unsubscribe();if(r.ledgerSheets)r.ledgerSheets.dispose();}}
 async function paintReport(id){
   const host=$('#daily-report');if(!host)return;
   disposeReport();
   const R=window.DailyReport,VT=window.VirtualTrading,Runner=window.VirtualTradingRunner,locale=appSettings.display_locale,kind=id==='real'?'REAL':'MOCK',tab=reportTab(id);
-  const cfg=VT.defaultConfig(),ledgerKind=kind==='REAL'?'SHADOW':tab==='SET_B'?'SET_B':'SET_A',config=window.InvestmentAppConfig||{};
+  const cfg=VT.defaultConfig(),ledgerKind=kind==='REAL'?'SHADOW':['SET_B','SET_C','SET_D'].includes(tab)?tab:'SET_A',config=window.InvestmentAppConfig||{};
   // mode: RECORDING (기록 모드) or REHEARSAL (리허설 · 기록 없음: RAM only, never written to any ledger or sheet).
   const run={controller:new AbortController(),unsubscribe:null,busy:false,last:null,mode:'RECORDING',pending:null,ledgerSheets:null};reportRun=run;
   const Signals=window.VirtualTradingSignals,VHistory=window.VirtualTradingVHistory;
@@ -619,7 +621,9 @@ async function paintReport(id){
   let ram=null;if(kind==='REAL'){try{ram=await DeviceActual.ramView(window,await deviceCatalog());const byTicker=new Map(identityCompanies.map(r=>[r.ticker,r.company_id]));ram={...ram,rows:ram.rows.map(r=>({...r,company_id:byTicker.get(r.ticker)||r.ticker}))};}catch(_){ram=null;}}
   const qg={},names={};try{for(const r of LeaderboardScreen.rowsFor(identityCompanies,{publicScreens,engine:window.EnginePreview})){qg[r.company_id]={q:r.q,g:r.g,partial:r.partial};names[r.company_id]=r.ticker;}}catch(_){}
   const reportDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
-  let model=null,canonical='',key=null,inboxText='';
+  let model=null,canonical='',key=null,inboxText='',benchInputs=null;
+  // ⑬ selection change: recompute the RAM-only benchmark view (pure) and repaint; the canonical template keeps 20D·KRW.
+  const rebench=focus=>{if(!benchInputs||!window.ReportBenchmarks||!model)return;model={...model,bench:ReportBenchmarks.build({...benchInputs,...benchSelection})};paint();const n=focus&&host.querySelector(focus);if(n)n.focus();};
   const paint=()=>{
     if(!live()||!model)return;const hidden=R.hiddenSetting(localStorage),answer=key?R.answers(localStorage)[key]||null:null;
     const draft=host.querySelector('[data-ai-input]')?.value||'';
@@ -638,20 +642,57 @@ async function paintReport(id){
     host.querySelector('[data-mailbox-read]').onclick=()=>void mailbox('read');
     const rehearseButton=host.querySelector('[data-rehearsal-run]'),recordButton=host.querySelector('[data-recording-mode]');
     if(rehearseButton)rehearseButton.onclick=()=>void go('REHEARSAL');
+    for(const b of host.querySelectorAll('[data-bench-period]'))b.onclick=()=>{benchSelection={...benchSelection,period:b.dataset.benchPeriod};rebench('[data-bench-period="'+b.dataset.benchPeriod+'"]');};
+    const basisSelect=host.querySelector('[data-bench-basis]');if(basisSelect)basisSelect.onchange=()=>{benchSelection={...benchSelection,basis:basisSelect.value};rebench('[data-bench-basis]');};
     if(recordButton)recordButton.onclick=()=>{if(before){run.mode='RECORDING';void compose({state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']});}else void go('RECORDING');};
+  };
+  // Mock tabs: 비교 only with at least two sets (Set A + a user set B/C/D defined in the user's sheet).
+  const setDefs=async()=>{try{return run.ledgerSheets?await run.ledgerSheets.definitions():null;}catch(_){return null;}};
+  const mockTabs=defs=>[...R.MOCK_TABS,...(defs&&defs.count>=2?['COMPARE']:[])];
+  // 비교 tab (decision 2026-10-11): rule-based numeric table of every set (VirtualTradingCompare, RAM only); the returns are
+  // the ⑫⑬ ReportBenchmarks series. Phone (<1024px): 2–3 chosen sets; PC: all sets. One 【AI】 line in the export only.
+  const composeCompare=async(result,runCfg,mode)=>{
+    const C=window.VirtualTradingCompare,defs=await setDefs();if(!live()||run.mode!==mode||!C)return;
+    const kinds=['SET_A','SET_B','SET_C','SET_D'].filter(k=>k==='SET_A'||(defs&&defs[k]));
+    const entries=kinds.map(k=>{const{ledger,hits}=Runner.ledgerFor(result,k,runCfg),d=defs&&defs[k];return{id:d?d.id:k.toLowerCase(),kind:k,label:R.TABS[k]+(k==='SET_A'?(d&&!d.example?' · '+d.id:' · v1.1 예시'):''),purpose:d?d.purpose:null,ledger,hits};});
+    let types=null;try{types=C.typesFrom(publicScreens['company-types-pricefree.json']);}catch(_){types=null;}
+    const view=C.build(entries,{indices:result.indices||{},sources:result.sources||{},basis:benchSelection.basis,types});
+    const wide=!window.matchMedia||window.matchMedia('(min-width: 1024px)').matches,ids=view.sets.map(s=>s.id);
+    if(!Array.isArray(run.picked)||run.picked.some(x=>!ids.includes(x))||run.picked.length<2)run.picked=ids.slice(0,Math.min(3,Math.max(2,ids.length)));
+    const draw=()=>{if(!live())return;const hidden=R.hiddenSetting(localStorage);
+      host.innerHTML=R.tabsNav(mockTabs(defs),'COMPARE')+C.html(view,{money:v=>R.money(v,{hidden}),picked:run.picked,wide,locale})
+        +'<section class="card" data-compare-export><div class="sheet-actions"><button type="button" data-compare-copy>비교 템플릿 내보내기</button></div><p class="small">숫자 표와 한 줄 요약(【AI】) 칸만 담습니다. 금액은 숨김 설정을 따릅니다.</p><p role="status" data-compare-status></p></section>';
+      for(const box of host.querySelectorAll('[data-compare-pick]'))box.onchange=()=>{const id=box.getAttribute('data-compare-pick'),next=box.checked?[...run.picked,id]:run.picked.filter(x=>x!==id);
+        if(next.length>=2&&next.length<=3){run.picked=ids.filter(x=>next.includes(x));draw();}else box.checked=!box.checked;};
+      host.querySelector('[data-compare-copy]').onclick=async()=>{const text=C.template(view,{money:v=>R.money(v,{hidden:R.hiddenSetting(localStorage),mode:'export'}),reportDate}),say=t=>{const n=host.querySelector('[data-compare-status]');if(n)n.textContent=t;};
+        try{await navigator.clipboard.writeText(text);say('비교 템플릿을 복사했습니다.');}catch(_){const area=document.createElement('textarea');area.readOnly=true;area.value=text;area.rows=8;host.querySelector('[data-compare-export]').append(area);area.select();say('클립보드를 쓸 수 없어 아래 칸에 표시했습니다.');}};};
+    draw();
   };
   // Model from a runner result or a placeholder state. Nothing is stored: prices and ledgers stay in this closure.
   const compose=async(result,runCfg=cfg,mode='RECORDING',capture=null)=>{
+    if(tab==='COMPARE')return composeCompare(result,runCfg,mode);
     const {ledger,hits,input}=Runner.ledgerFor(result,ledgerKind,runCfg),last=ledger.state==='OK'?ledger.days[ledger.days.length-1]:null;
     // Q·G shown next to a judgement is the forward-ledger snapshot the engine used that day (else the public screen value).
     const shown={...qg};if(last&&input&&input.snapshots[last.date])for(const[c,r]of Object.entries(input.snapshots[last.date]))shown[c]={q:r.q,g:r.g};
     const runner={state:result.state==='READY'?(ledger.state==='OK'?'READY':'NOT_AVAILABLE'):result.state,reason_codes:result.state==='READY'?(ledger.state==='OK'?[]:ledger.reason_codes):result.reason_codes,sources:Runner.statusRows(result),progress:''};
     let signals=null;try{signals=Signals?{...Signals.reportSignals(result,ledgerKind,runCfg,Runner.readVStore(localStorage)),capture}:null;}catch(_){signals=null;}
-    const next=R.buildModel({kind,tab,reportDate,baseDates:last?{NYSE:last.date}:{},ledger,ram,qg:shown,names,config:cfg,runner,hits,mode,signals,rehearsal:result.rehearsal||null});
+    // ⑪⑫⑬ (ReportBenchmarks, pure, RAM): runner indices (SPY, ⑬ ETFs, KRW=X) + this tab's ledger and the comparison ledger.
+    let bench=null,shownBench=null,track=null,nextBenchInputs=null;
+    try{const RB=window.ReportBenchmarks;if(RB){
+      const days=l=>l.state==='OK'?l.days.map(d=>({date:d.date,total_value:d.total_value,deposit:d.deposit})):[];
+      const others=kind==='REAL'?['SET_A']:ledgerKind==='SET_A'?['SET_B']:['SET_A'];
+      const ledgers=[{key:ledgerKind,state:ledger.state,reason_codes:ledger.reason_codes||[],days:days(ledger)},...others.map(k=>{const l=Runner.ledgerFor(result,k,runCfg).ledger;return{key:k,state:l.state,reason_codes:l.reason_codes||[],days:days(l)};})];
+      nextBenchInputs={indices:result.indices||{},sources:result.sources||{},ledgers,start_date:runCfg.start_date};
+      bench=RB.build({...nextBenchInputs,period:'20D',basis:'KRW'});shownBench=RB.build({...nextBenchInputs,...benchSelection});
+      track=RB.trackRecord({hits,trades:ledger.state==='OK'?ledger.trades:[],ledger_input:input,ledger_reasons:ledger.reason_codes||[],start_date:runCfg.start_date,windows:cfg.hit_windows,min_samples:cfg.hit_min_samples});}}
+    catch(_){bench=shownBench=track=nextBenchInputs=null;}
+    const next=R.buildModel({kind,tab,reportDate,baseDates:last?{NYSE:last.date}:{},ledger,ram,qg:shown,names,config:cfg,runner,hits,mode,signals,rehearsal:result.rehearsal||null,bench,track});
     const nextCanonical=R.renderTemplate(next,{hidden:true,guide:false});let nextKey=null;try{nextKey=await R.hash(nextCanonical);}catch(_){nextKey=null;}
     if(!live()||run.mode!==mode)return;
     // The mailbox always writes amounts hidden with the guide; its Inbox/Outbox sha256 is the hash of exactly this text.
-    model=next;canonical=nextCanonical;key=nextKey;inboxText=R.renderTemplate(next,{hidden:true,guide:true});
+    // canonical/inbox use the default ⑬ selection (20D · KRW) so a stored AI answer stays attached to the day's data.
+    if(kind==='MOCK')next.tabs=mockTabs(await setDefs());if(!live()||run.mode!==mode)return;
+    model={...next,bench:shownBench};canonical=nextCanonical;key=nextKey;inboxText=R.renderTemplate(next,{hidden:true,guide:true});benchInputs=nextBenchInputs;
     if(kind==='REAL'&&mode==='RECORDING'&&result.state!=='LOADING')virtualShadow=last?{date:last.date,judgements:last.judgements,names:{...names}}:null;
     paint();
   };
