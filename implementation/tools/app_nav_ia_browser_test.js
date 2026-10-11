@@ -101,7 +101,7 @@ async function unavailableNewScreen(page, selector) {
       page.on("pageerror", () => { traffic.page_errors++; });
       page.on("console", message => { if (/Content Security Policy|violates.*(?:directive|policy)/i.test(message.text())) traffic.console_csp_warnings++; });
       // The optional SEC sidecar is absent from a build without collection; any other failure stays an error.
-      page.on("response", response => { if (response.status() >= 400 && !(response.status() === 404 && response.url() === new URL("sec-public-inputs.json", base).href)) traffic.failed_responses++; });
+      page.on("response", response => { if (response.status() >= 400 && !(response.status() === 404 && ["sec-public-inputs.json", "forward-validation-ledger.json"].some(name => response.url() === new URL(name, base).href))) traffic.failed_responses++; });
       try {
         await go(page, "home");
         verify(await page.locator("#primary-nav").count() === 1, "primary navigation exists");

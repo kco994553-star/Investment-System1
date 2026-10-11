@@ -104,7 +104,7 @@ function mount(host,options={}){
  state.pagehide=()=>dispose(state);view.addEventListener('pagehide',state.pagehide);
  const section=el('section',undefined,{class:'card','data-forward-validation':''});
  section.append(el('h2',x('전진 검증 기록 · 가격 미포함','Forward validation ledger · price-free')));
- const badges=el('div',undefined,{class:'chips data-badges'});badges.append(el('span',STRATEGY,{class:'badge'}),el('span',VERSION+' · '+CALIBRATION,{class:'badge'}),el('span','Holdout UNCONFIRMED · '+x('사용 금지','Do not use'),{class:'badge','data-forward-holdout':''}));
+ const badges=el('div',undefined,{class:'chips','data-forward-badges':''});badges.append(el('span',STRATEGY,{class:'badge'}),el('span',VERSION+' · '+CALIBRATION,{class:'badge'}),el('span','Holdout UNCONFIRMED · '+x('사용 금지','Do not use'),{class:'badge','data-forward-holdout':''}));
  const facts=el('dl',undefined,{class:'kv'}),summary=el('div',undefined,{'data-forward-summary':''}),prices=el('div',undefined,{'data-forward-prices':''});
  section.append(badges,facts,summary,prices);host.replaceChildren(section);
  const fact=(k,v,attr)=>{facts.append(el('dt',k),el('dd',v,attr?{[attr]:''}:{}));};

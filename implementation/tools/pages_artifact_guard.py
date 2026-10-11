@@ -33,7 +33,7 @@ from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDG
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "forward-validation.js": "d87c40c9701c57ed7cb8988d6c81407f93092d088c7234b260161e709397158f",
+    "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
     "sec-universe-shares.js": "77648df45a6c2e55b2c3be2cea2735a1d2457d8ef811646e7f2d0de674564bbb",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "8f66aae29337bbddadb8b1853254fd63cb620a062af7bb19f510bf200e870ef3",
