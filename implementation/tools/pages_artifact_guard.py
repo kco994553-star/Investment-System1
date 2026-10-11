@@ -34,18 +34,20 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "virtual-trading-runner.js": "323ebbda32722dd24d7bbf1cd4c5db6316c730ca083d88b44d2553fc34dc8372",
     "virtual-ledger-sheets.js": "9fc09749fa1a6df9c74e7ceb23cc0df9f466af0d3661653db33132bd58efcd83",
-    "virtual-trading-runner.js": "087d5836c89c5ea31989293e2fa4ceb7f6b26364c31c6dc1ca6bc59e2de0e763",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
-    "daily-report.js": "e82279c9d8a11c49ab7587baaa845e9273c208ac0019a84b6edffcbfdefa2bab",
+    "daily-report.js": "c81f1390bb93332c81a510b678d1733fd6738df4803544db17e94a73597fd75d",
     "sec-universe-shares.js": "574f94ffebfc2a8cc20bac0cd5ff7bfd7e58db3cb1864f60d4c2a14dd24b37f9",
+    "virtual-trading-v-history.js": "7e236a7243e98b22a4cdf61cfd69e745284bcf17d7a1fc8a63f0c75fdd239ba2",
+    "virtual-trading-signals.js": "d151e60c93725469732fb971271d2f49f1ee327d907d0bb894f2c16c9ebf98c0",
     "device-valuation.js": "06669cda863cd4dfa87108f54e03b75c9321989967da7ed54b03c921143cfedf",
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
-    "daily-report.js": "e82279c9d8a11c49ab7587baaa845e9273c208ac0019a84b6edffcbfdefa2bab",
+    "daily-report.js": "c81f1390bb93332c81a510b678d1733fd6738df4803544db17e94a73597fd75d",
     "virtual-trading.js": "c673a35ae5da2351343e0241d507d154ba6ceedcc1657c47fe60e24b035e6361",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
@@ -76,7 +78,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "d878aeea1f5483b908eef489dd2854da446f5bb05fb50d099bb1f887a3f70036",
+    "app.js": "6757f319c010577b2492ced480ad750a4f7ed8b258bdae3fbbba2db3cf4209e6",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "4b6bbdf71f74875199221cf534dc403be7961fd722abe2b1b12a499e2740f7f3",
@@ -86,12 +88,12 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "a037bee0ccb8fd8cad0407f7ccfa3a33f410f32fb20b5ca7fe37bf0e10eb9b4f",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "245aa55cb679fabea38f3fa9bbd4c2e5c7e1dcff1a13411a76fde95633d0f60c",
+    "index.html": "f003ea080e522b3f2b159419a494b4ba71daa73a917bbc710a11857987e5ad71",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "eab3e5bc2554a15aa2b921ce134e07fbf5e64d5ac3ee2fc8346e58bb47fa9541",
+    "style.css": "bd7dd854f11a180bce7ad156cc349b9efb6fd6712998c9c0594270f3723ec139",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024

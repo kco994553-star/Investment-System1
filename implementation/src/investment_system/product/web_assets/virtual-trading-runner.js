@@ -243,20 +243,23 @@ async function fetchHistories(view,{session,origin,symbols,spacingMs=DEFAULT_SPA
 }
 /* Everything for one report: NOT_STARTED before the start date (no request at all), else readiness, public JSON,
    device holdings and V store, Worker history (sequential, spaced), then the pure assembly. set_b and flags come from
-   the user's sheet (VirtualLedgerSheets: stored Set B definition, VirtualFlags) when it is connected. */
-async function run(view,{config={},catalog,reportDate,signal=null,onProgress=null,set_b=null,flags=null}={}){
+   the user's sheet (VirtualLedgerSheets: stored Set B definition, VirtualFlags) when it is connected.
+   rehearsal(histories, cfg) → cfg: a rehearsal run (VirtualTradingSignals.rehearse) skips the start-date gate and moves
+   only the engine start_date to its window; the caller never records its result. */
+async function run(view,{config={},catalog,reportDate,signal=null,onProgress=null,set_b=null,flags=null,rehearsal=null}={}){
  const VT=engine(),cfg=VT.defaultConfig();
  const base={schema:SCHEMA,sources:{},sector:{},ledgers:{}};
- if(!(typeof reportDate==='string'&&day(reportDate))||reportDate<cfg.start_date)return{...base,state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']};
+ if(!(typeof reportDate==='string'&&day(reportDate))||(typeof rehearsal!=='function'&&reportDate<cfg.start_date))return{...base,state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']};
  let session=null;try{session=config.googleSheetsClientId&&view.GoogleSheetQuotes?view.GoogleSheetQuotes.sessionFor(view,config.googleSheetsClientId):null;}catch(_){session=null;}
  const ready=readiness(view,config,session);if(ready!=='READY')return{...base,state:'NOT_AVAILABLE',reason_codes:[ready]};
  const forward=view.ForwardValidation?await view.ForwardValidation.load(view):{state:'NOT_AVAILABLE',reason:'LEDGER_UNREACHABLE'};
- if(forward.state!=='LOADED')return{...base,state:'NOT_AVAILABLE',reason_codes:[forward.reason]};
+ // A rehearsal still runs without a published forward ledger (before the start date); its snapshots are then filled by the caller.
+ if(forward.state!=='LOADED'&&typeof rehearsal!=='function')return{...base,state:'NOT_AVAILABLE',reason_codes:[forward.reason]};
  const classification=view.ClassificationScreens?await view.ClassificationScreens.load(view):null;
  let holdings=null;try{holdings=holdingsFromSnapshot(await view.DeviceActual.readHoldings(view,catalog),catalog);}catch(_){holdings=null;}
  const symbols=requiredSymbols({catalog,classification,holdings,set_b});
  const histories=await fetchHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});
- return assemble({config:cfg,catalog,forward_ledger:forward.ledger,classification,histories,holdings,set_b,v_store:readVStore(view.localStorage),flags:flags||[]});
+ return assemble({config:typeof rehearsal==='function'?rehearsal(histories,cfg):cfg,catalog,forward_ledger:forward.state==='LOADED'?forward.ledger:null,classification,histories,holdings,set_b,v_store:readVStore(view.localStorage),flags:flags||[]});
 }
 return Object.freeze({SCHEMA,IDS,TARGETS,SP500_SYMBOL,FX_SYMBOLS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,snapshotsFromLedger,
  vScoresFromStore,flagsFromStore,assemble,holdingsFromSnapshot,readVStore,ledgerFor,statusRows,readiness,fetchHistories,run,clearCache});
