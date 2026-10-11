@@ -42,5 +42,5 @@ test('limits: buy and sell totals per day never exceed 100만원 each', () => {
 test('module performs no I/O', () => {
   const src = fs.readFileSync(require.resolve('../src/investment_system/product/web_assets/virtual-trading.js'), 'utf8');
   for (const word of ['fetch(', 'XMLHttpRequest', 'localStorage', 'indexedDB', 'sendBeacon', 'WebSocket']) assert.ok(!src.includes(word), word);
-  assert.equal(VT.label('INCREASE_REVIEW', 'ko-KR'), '▲ 비중확대검토');
+  assert.equal(VT.label('INCREASE_REVIEW', 'ko-KR'), '▲비중확대검토');
 });
