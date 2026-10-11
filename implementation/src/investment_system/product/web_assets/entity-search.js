@@ -83,5 +83,23 @@
     function resolve(type,id) { return records.find(r=>r.entity.entity_type===type && r.entity.canonical_id===id)?.entity; }
     return Object.freeze({search,resolve});
   }
-  return Object.freeze({TYPES,normalize,tickerKey,distance,createIndex});
+  // Company search entities from price-free identities only: the TARGET device directory (ticker + catalog label) and
+  // public Universe504 codes (code + ticker; no names are published). No prices, caps or ranks are read or indexed.
+  const VENUE = /^(NYSE|NASDAQ|BATS):[A-Z0-9][A-Z0-9.\-]{0,15}$/;
+  function companyEntities(identities, universeCodes) {
+    const out = [], tickers = new Set(), ids = new Set();
+    for(const c of identities || []) {
+      if(!c || typeof c.company_id !== "string" || typeof c.ticker !== "string" || typeof c.name !== "string" || !c.name) continue;
+      tickers.add(c.ticker.replaceAll(".", "-")); ids.add(c.company_id);
+      out.push({entity_type:"COMPANY", canonical_id:c.company_id, canonical_label:c.name, ticker:c.ticker, scope:"TARGET"});
+    }
+    for(const [code, companyId] of Object.entries(universeCodes || {}).sort(([a],[b])=>cmp(a,b))) {
+      if(!VENUE.test(code)) continue;
+      const ticker = code.slice(code.indexOf(":")+1);
+      if(tickers.has(ticker.replaceAll(".", "-")) || (typeof companyId === "string" && ids.has(companyId))) continue;
+      out.push({entity_type:"COMPANY", canonical_id:code, canonical_label:code, ticker, scope:"UNIVERSE504"});
+    }
+    return out;
+  }
+  return Object.freeze({TYPES,normalize,tickerKey,distance,createIndex,companyEntities});
 });

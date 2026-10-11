@@ -1,8 +1,9 @@
 /* One price-free device backup. Only explicit user preferences and holdings are allowed.
-   /3 adds 13F investor stars (10-digit CIKs, device-only); /1 and /2 stay importable and leave stored stars unchanged. */
+   /3 adds 13F investor stars (10-digit CIKs, device-only); /1 and /2 stay importable and leave stored stars unchanged.
+   A successful restore leaves a dismissible device-only marker (time + schema, no content) so ACTUAL/settings can say what to re-check. */
 (function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./device-profiles.js'):root.DeviceProfiles);if(typeof module==='object'&&module.exports)module.exports=api;else root.DeviceBackup=api;})(typeof globalThis!=='undefined'?globalThis:this,function(Profiles){
  'use strict';
- const SCHEMA='investment-device-backup/3',LEGACY=['investment-device-backup/1','investment-device-backup/2'],PERSONAL_KEY='investment.web.v1.personal',STAR_KEY='investment.web.v1.investor-stars',MAX_STARS=50,CIK=/^\d{10}$/;
+ const SCHEMA='investment-device-backup/3',LEGACY=['investment-device-backup/1','investment-device-backup/2'],PERSONAL_KEY='investment.web.v1.personal',STAR_KEY='investment.web.v1.investor-stars',RESTORED_KEY='investment.web.v1.backup-restored',MAX_STARS=50,CIK=/^\d{10}$/;
  function fail(){throw Error('BACKUP_INVALID');}
  function object(x){return x!==null&&typeof x==='object'&&!Array.isArray(x);}
  function exact(x,ks){if(!object(x)||Object.keys(x).length!==ks.length||ks.some(k=>!Object.hasOwn(x,k)))fail();}
@@ -40,11 +41,23 @@
    view.localStorage.setItem(keys[0],JSON.stringify(next.preferences));view.AppLanguage.write(view.localStorage,next.settings);Profiles.write(view.localStorage,next.profiles);
    if(withStars)view.localStorage.setItem(STAR_KEY,JSON.stringify(next.investor_stars));
    await view.DeviceActual.restoreHoldings(view,catalog,next.portfolio);
+   try{view.localStorage.setItem(RESTORED_KEY,JSON.stringify({restored_at:new Date().toISOString(),schema:payload.schema}));}catch(_){}
   }catch(_){
    try{keys.forEach((k,i)=>before[i]===null?view.localStorage.removeItem(k):view.localStorage.setItem(k,before[i]));}catch(_){throw Error('BACKUP_ROLLBACK_FAILED');}
    throw Error('BACKUP_RESTORE_FAILED');
   }
   return next;
  }
- return Object.freeze({SCHEMA,LEGACY_SCHEMAS:Object.freeze([...LEGACY]),STAR_KEY,MAX_STARS,accepts,preferences,stars,create,parse,read,download,restore});
+ function restoredNotice(storage){try{const v=JSON.parse(storage.getItem(RESTORED_KEY)||'null');if(!object(v)||typeof v.restored_at!=='string'||!Number.isFinite(Date.parse(v.restored_at))||!accepts({schema:v.schema}))return null;return {restored_at:v.restored_at,schema:v.schema};}catch(_){return null;}}
+ function dismissRestored(storage){try{storage.removeItem(RESTORED_KEY);return true;}catch(_){return false;}}
+ // Visible, dismissible notice: data came from a backup; quotes, sheet IDs, tokens and Worker address were not in it.
+ function mountRestoredNotice(host,{locale='ko-KR',storage,onDismiss}={}){
+  if(!host)return null;const notice=restoredNotice(storage);if(!notice){host.replaceChildren();return null;}
+  const doc=host.ownerDocument,en=locale==='en-US',el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
+  const box=el('section',undefined,{class:'card banner','data-backup-restored':notice.schema,role:'status'}),button=el('button',en?'Dismiss':'확인·닫기',{type:'button','data-backup-restored-dismiss':''});
+  box.append(el('strong',en?'Restored from backup · Re-read your sheet':'백업에서 복원됨 · 시트 다시 읽기 필요'),el('p',(en?'Restored at ':'복원 시각 ')+notice.restored_at+' · '+notice.schema,{class:'small'}),
+   el('p',en?'Interests, groups, holdings, profiles, investor stars and language came from the backup. Quotes, Google sheet IDs, sign-in and the Worker address were not included: check Google sheet settings, then re-read quotes and Universe; review ACTUAL holdings.':'관심 기업·그룹·보유·프로필·투자자 ★·언어는 백업 내용입니다. 시세·Google 시트 ID·로그인·Worker 주소는 백업에 없습니다: 설정에서 Google 시트 연결을 확인하고 시세·Universe를 다시 읽은 뒤 ACTUAL 보유를 점검하세요.',{class:'small'}),button);
+  button.addEventListener('click',()=>{dismissRestored(storage);host.replaceChildren();try{onDismiss?.();}catch(_){}});host.replaceChildren(box);return box;
+ }
+ return Object.freeze({SCHEMA,RESTORED_KEY,restoredNotice,dismissRestored,mountRestoredNotice,LEGACY_SCHEMAS:Object.freeze([...LEGACY]),STAR_KEY,MAX_STARS,accepts,preferences,stars,create,parse,read,download,restore});
 });
