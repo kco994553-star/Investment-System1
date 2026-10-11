@@ -27,7 +27,7 @@ def sec(tmp_path,synthetic=False,acquired='2026-10-10T00:00:00Z'):
 
 def test_empty_input_produces_five_versioned_unavailable_files(tmp_path):
     outputs=build(tmp_path)
-    assert len(outputs)==5
+    assert len(outputs)==6
     for name,payload in outputs.items():
         assert payload['schema_version']==1 and payload['state']=='NOT_AVAILABLE' and payload['as_of']==NOW.isoformat()
         assert payload['sources']==[]
@@ -93,7 +93,7 @@ def test_cli_preserves_existing_assets_and_passes_pages_artifact_guard(tmp_path,
     source=tmp_path/'manifest.json';source.write_text(json.dumps(manifest()))
     assert mod.main(['--manifest',str(source),'--output-dir',str(site),'--as-of',NOW.isoformat(),'--stale-after-hours','48'])==0
     assert scan_artifact(site)['pages_artifact_guard']=='PASS'
-    assert 'PUBLIC_SCREENS_OK files=5' in capsys.readouterr().out
+    assert 'PUBLIC_SCREENS_OK files=6' in capsys.readouterr().out
 
 
 def test_manifest_path_escape_and_duplicate_company_fail_without_source_values(tmp_path):

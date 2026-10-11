@@ -1864,5 +1864,671 @@
   "sources": [],
   "stale_after_seconds": 86400.0,
   "state": "NOT_AVAILABLE"
+ },
+ "sec-valuation-inputs.json": {
+  "as_of": "2026-01-01T00:00:00+00:00",
+  "data": {
+   "availability_basis": "OBSERVED_CAPTURE_ONLY",
+   "companies": {
+    "amd": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "amzn": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "asml": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "avgo": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "etn": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "gev": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "googl": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "hanmi": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "hubb": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "intc": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "klac": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "lrcx": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "msft": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "nvda": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "qcom": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "rok": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "rtx": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "stry": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "tokyo_electron": {
+     "fcfe": {
+      "accn": null,
+      "components": {
+       "capital_expenditure": null,
+       "diluted_shares": null,
+       "long_term_debt_issuance": null,
+       "long_term_debt_repayment": null,
+       "net_short_term_borrowing": null,
+       "operating_cash_flow": null
+      },
+      "currency": null,
+      "fcfe_per_share": null,
+      "fiscal_period_end": null,
+      "fiscal_period_start": null,
+      "form": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "source_hashes": {},
+     "state": "NOT_AVAILABLE",
+     "v_inputs": {
+      "currency": null,
+      "eps": null,
+      "reason_codes": [
+       "SEC_INPUT_NOT_AVAILABLE"
+      ],
+      "revenue": null,
+      "revenue_prev": null,
+      "state": "NOT_AVAILABLE"
+     }
+    }
+   },
+   "fcfe_definition": "fcfe/1",
+   "method_status": "PROVISIONAL_UNCALIBRATED",
+   "share_basis": "WEIGHTED_AVERAGE_DILUTED"
+  },
+  "freshness_basis": "SOURCE_ACQUISITION",
+  "kind": "SEC_VALUATION_INPUTS",
+  "reason_codes": [
+   "NO_ELIGIBLE_INPUT"
+  ],
+  "schema_version": 1,
+  "sources": [],
+  "stale_after_seconds": 86400.0,
+  "state": "NOT_AVAILABLE"
  }
 }
