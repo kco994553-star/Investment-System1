@@ -158,7 +158,7 @@ function trackRecord({hits=null,trades=[],ledger_input=null,ledger_reasons=[],st
 
 /* ---------- labels and chart (display only) ---------- */
 const PERIOD_LABELS=Object.freeze({'1D':['1D','1D'],'5D':['5D','5D'],'20D':['20D','20D'],'60D':['60D','60D'],'120D':['120D','120D'],SINCE_START:['시작 이후','Since start']});
-const SERIES_LABELS=Object.freeze({SET_A:['세트 A','Set A'],SET_B:['세트 B','Set B'],SHADOW:['그림자 장부','Shadow ledger'],SP500:['S&P 500 (SPY)','S&P 500 (SPY)'],XLK:['XLK','XLK'],VUG:['VUG','VUG'],QUAL:['QUAL','QUAL'],XLY:['XLY','XLY'],XLP:['XLP','XLP']});
+const SERIES_LABELS=Object.freeze({SET_A:['세트 A','Set A'],SET_B:['세트 B','Set B'],SET_C:['세트 C','Set C'],SET_D:['세트 D','Set D'],SHADOW:['그림자 장부','Shadow ledger'],SP500:['S&P 500 (SPY)','S&P 500 (SPY)'],XLK:['XLK','XLK'],VUG:['VUG','VUG'],QUAL:['QUAL','QUAL'],XLY:['XLY','XLY'],XLP:['XLP','XLP']});
 const BASIS_LABELS=Object.freeze({KRW:['원화 기준: 장부 원화 그대로 · 미국 지수는 같은 날 KRW=X 종가로 원화 환산(환율 효과 포함)','KRW basis: ledgers in KRW · US indices × same-session KRW=X close (FX effect included)'],
  USD:['달러 기준: 미국 지수 현지 종가 · 장부는 같은 날 KRW=X 종가로 달러 환산','USD basis: US indices at local closes · ledgers ÷ same-session KRW=X close']});
 const VERDICT_LABELS=Object.freeze({ABOVE:['상회','Above'],BELOW:['하회','Below'],EQUAL:['같음','Equal']});
@@ -175,7 +175,7 @@ const lang=locale=>locale==='en-US'?1:0;
 function label(table,key,locale){return own(table,key)?table[key][lang(locale)]:String(key);}
 function codeLabel(code,locale){return own(CODE_LABELS,code)?CODE_LABELS[code][lang(locale)]:null;}
 // One categorical order (validated reference palette), fixed per entity so a filter never repaints a series.
-const COLORS=Object.freeze({SET_A:'#2a78d6',SET_B:'#6250d6',SHADOW:'#6250d6',SP500:'#eb6834',XLK:'#1baf7a',VUG:'#eda100',QUAL:'#e87ba4',XLY:'#008300',XLP:'#e34948'});
+const COLORS=Object.freeze({SET_A:'#2a78d6',SET_B:'#6250d6',SET_C:'#8a5a00',SET_D:'#0f7c8c',SHADOW:'#6250d6',SP500:'#eb6834',XLK:'#1baf7a',VUG:'#eda100',QUAL:'#e87ba4',XLY:'#008300',XLP:'#e34948'});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function localPaths(values,g){const out=[];let pts=[];const finish=()=>{if(pts.length){out.push(pts.length===1?pts[0]+' L'+pts[0].slice(1):pts.join(' '));pts=[];}};
  values.forEach((v,i)=>{if(v===null||!Number.isFinite(v)){finish();return;}pts.push((pts.length?'L':'M')+g.x(i).toFixed(2)+','+g.y(v).toFixed(2));});finish();return out;}

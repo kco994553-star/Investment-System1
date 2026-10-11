@@ -102,3 +102,6 @@ test('module is pure: no network, storage or console', () => {
   const src = fs.readFileSync(require.resolve('../src/investment_system/product/web_assets/report-benchmarks.js'), 'utf8');
   for (const bad of ['fetch(', 'localStorage', 'sessionStorage', 'indexedDB', 'console.', 'XMLHttpRequest', 'sendBeacon']) assert.ok(!src.includes(bad), bad);
 });
+test('user sets C and D have series labels and colours (⑬ on the Set C/D tabs)', () => {
+  for (const key of ['SET_C', 'SET_D']) { assert.ok(Array.isArray(RB.SERIES_LABELS[key]) && RB.SERIES_LABELS[key].length === 2, key); assert.match(RB.COLORS[key], /^#[0-9a-f]{6}$/, key); }
+});
