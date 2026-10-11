@@ -214,12 +214,68 @@ def test_all_borrowing_lines_unreported(tmp_path):
     assert all(f['components'][k] == ZERO for k in api().OPTIONAL_COMPONENTS)
 
 
-def test_half_reported_pair_is_not_assumed_zero(tmp_path):
+def partial(concepts, value):
+    return {'concepts': concepts, 'value': value, 'assumed_zero': False, 'reason': 'BORROWING_PAIR_PARTIAL'}
+
+
+@pytest.mark.parametrize('concept,value,expected', [('ProceedsFromShortTermDebt', 40.0, 40.0), ('RepaymentsOfShortTermDebt', 30.0, -30.0)])
+def test_half_reported_pair_missing_side_is_zero(tmp_path, concept, value, expected):
+    # User decision 2026-10-11: one side of a borrowing pair reported, the other reported nowhere -> missing side 0, BORROWING_PAIR_PARTIAL.
     latest = {k: v for k, v in FULL.items() if k != 'ProceedsFromRepaymentsOfShortTermDebt'}
-    latest['ProceedsFromShortTermDebt'] = 40.0  # RepaymentsOfShortTermDebt is not reported: the pair is incomplete
-    f = nvda(build(tmp_path, write_company(tmp_path, latest)))['fcfe']
-    assert f['state'] == 'NOT_AVAILABLE' and f['reason_codes'] == ['NET_SHORT_TERM_BORROWING_MISSING']
-    assert f['components']['net_short_term_borrowing'] is None
+    latest[concept] = value
+    payload = build(tmp_path, write_company(tmp_path, latest))
+    f = nvda(payload)['fcfe']
+    assert f['state'] == 'LIVE' and f['reason_codes'] == []
+    assert f['components']['net_short_term_borrowing'] == partial([concept], expected)
+    assert f['fcfe_per_share'] == pytest.approx((1000 - 300 + 200 - 50 + expected) / 100)
+    screens().require_public_screen('sec-valuation-inputs.json', payload)
+    js = subprocess.run(['node', '-e', "require(process.argv[1]).validate('sec-valuation-inputs.json',JSON.parse(require('fs').readFileSync(0,'utf8')))",
+                         str(ASSETS / 'device-valuation.js')], input=json.dumps(payload), text=True, capture_output=True)
+    assert js.returncode == 0, js.stderr
+
+
+def test_half_reported_pair_other_side_unusable_stays_not_available(tmp_path):
+    latest = {k: v for k, v in FULL.items() if k != 'ProceedsFromRepaymentsOfShortTermDebt'}
+    latest['ProceedsFromShortTermDebt'] = 40.0
+    m1 = {'selected_input_facts': [], 'revision_candidates': [
+        {'taxonomy': 'us-gaap', 'concept': 'RepaymentsOfShortTermDebt', 'start': '2025-01-27', 'end': '2026-01-25', 'exclusion_reasons': ['NOT_ANNUAL']}]}
+    base = nvda(build(tmp_path, write_company(tmp_path, latest)))['fcfe']
+    start, end = base['fiscal_period_start'], base['fiscal_period_end']
+    m1['revision_candidates'][0].update(start=start, end=end)
+    by = {('ProceedsFromShortTermDebt', 'USD', start, end): {'value': 40.0}}
+    alts = dict(api().COMPONENTS['us-gaap'])['net_short_term_borrowing']
+    assert api()._pair_partial(alts, by, m1['revision_candidates'], 'us-gaap', 'USD', start, end) is None
+    assert api()._pair_partial(alts, by, [], 'us-gaap', 'USD', start, end) is not None
+
+
+def test_ifrs_half_reported_current_pair_is_partial(tmp_path):
+    latest = {k: v for k, v in IFRS_FULL.items() if k != 'RepaymentsOfCurrentBorrowings'}
+    f = asml(build(tmp_path, write_ifrs(tmp_path, latest)))['fcfe']
+    assert f['state'] == 'LIVE' and f['components']['net_short_term_borrowing'] == partial(['ProceedsFromCurrentBorrowings'], 40.0)
+    assert f['fcfe_per_share'] == pytest.approx((2000 - 500 + 300 - 100 + 40) / 400)
+
+
+PARTIAL_MUTATIONS = [
+    lambda c: c['net_short_term_borrowing'].update(concepts=['ProceedsFromShortTermDebt', 'RepaymentsOfShortTermDebt']),
+    lambda c: c['net_short_term_borrowing'].update(concepts=['ProceedsFromRepaymentsOfShortTermDebt']),
+    lambda c: c['net_short_term_borrowing'].update(concepts=[]),
+    lambda c: c['net_short_term_borrowing'].update(assumed_zero=True),
+    lambda c: c['capital_expenditure'].update(reason='BORROWING_PAIR_PARTIAL'),
+    lambda c: c['long_term_debt_issuance'].update(reason='BORROWING_PAIR_PARTIAL'),
+]
+
+
+@pytest.mark.parametrize('mutate', PARTIAL_MUTATIONS)
+def test_validators_reject_malformed_pair_partial(tmp_path, mutate):
+    latest = {k: v for k, v in FULL.items() if k != 'ProceedsFromRepaymentsOfShortTermDebt'}
+    latest['ProceedsFromShortTermDebt'] = 40.0
+    payload = copy.deepcopy(build(tmp_path, write_company(tmp_path, latest)))
+    mutate(payload['data']['companies']['nvda']['fcfe']['components'])
+    with pytest.raises(ValueError, match='PUBLIC_SCREEN_INVALID'):
+        screens().require_public_screen('sec-valuation-inputs.json', payload)
+    result = subprocess.run(['node', '-e', "const a=require(process.argv[1]);try{a.validate('sec-valuation-inputs.json',JSON.parse(require('fs').readFileSync(0,'utf8')));process.exit(0)}catch(e){process.exit(e.message==='PUBLIC_SCREEN_INVALID'?3:4)}",
+                             str(ASSETS / 'device-valuation.js')], input=json.dumps(payload), text=True, capture_output=True)
+    assert result.returncode == 3
 
 
 def test_borrowing_line_reported_only_in_another_filing_is_not_assumed_zero(tmp_path):

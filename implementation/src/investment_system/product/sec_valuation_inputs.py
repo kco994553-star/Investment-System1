@@ -11,9 +11,12 @@ fcfe/1.1 (v1.1):
 - The optional borrowing lines (long-term issuance, long-term repayment, net
   short-term borrowing) may legitimately not exist. When none of a line's
   concepts is reported for the chosen period at all, the line is 0 and marked
-  assumed_zero / NOT_REPORTED_ASSUMED_ZERO. A line that is reported but not
-  usable (other currency, ambiguous revision, half of a pair) stays
-  NOT_AVAILABLE. Core lines (operating cash flow, capital expenditure, diluted
+  assumed_zero / NOT_REPORTED_ASSUMED_ZERO. When only one side of a borrowing
+  pair (proceeds - repayments) is reported and the other side is not reported
+  at all, the missing side is 0 and the line is marked BORROWING_PAIR_PARTIAL
+  (user decision 2026-10-11); concepts then lists only the reported side. A
+  line that is reported but not usable (other currency, ambiguous revision)
+  stays NOT_AVAILABLE. Core lines (operating cash flow, capital expenditure, diluted
   shares) are never zero-filled; a reported zero is a real zero.
 No price, market cap, V score or price ratio is produced here; the device
 computes those in RAM. No currency is converted.
@@ -32,6 +35,7 @@ STATES = ('LIVE', 'STALE', 'NOT_AVAILABLE')
 ANNUAL_FORMS = ('10-K', '10-K/A', '20-F', '20-F/A', '40-F')
 TAXONOMIES = ('us-gaap', 'ifrs-full')
 ASSUMED_ZERO = 'NOT_REPORTED_ASSUMED_ZERO'
+PAIR_PARTIAL = 'BORROWING_PAIR_PARTIAL'
 # taxonomy -> (component, alternatives); an alternative is usable only when every term is reported.
 COMPONENTS = {
     'us-gaap': (
@@ -203,9 +207,14 @@ def project_fcfe(m1, state):
             elif any(c.get('taxonomy') == tax and c.get('concept') in concepts and c.get('end') == end
                      and set(c.get('exclusion_reasons') or ()) & _AMBIGUOUS for c in m1.get('revision_candidates') or ()):
                 reasons.append('COMPONENT_AMBIGUOUS')
-            elif key in OPTIONAL_COMPONENTS and not any(
-                    c.get('taxonomy') == tax and c.get('concept') in concepts and c.get('start') == start and c.get('end') == end for c in retained):
+            elif key in OPTIONAL_COMPONENTS and not any(_reported(retained, tax, c, start, end) for c in concepts):
                 out['components'][key] = {'concepts': [], 'value': 0.0, 'assumed_zero': True, 'reason': ASSUMED_ZERO}
+            elif key in OPTIONAL_COMPONENTS and (partial := _pair_partial(alternatives, by, retained, tax, unit, start, end)):
+                terms, hits = partial
+                out['components'][key] = {'concepts': [c for c, _ in terms],
+                                          'value': math.fsum(sign * hit['value'] for (_, sign), hit in zip(terms, hits)),
+                                          'assumed_zero': False, 'reason': PAIR_PARTIAL}
+                used.extend(hits)
             else:
                 reasons.append(key.upper() + '_MISSING')
     comps = out['components']
@@ -232,6 +241,30 @@ def project_fcfe(m1, state):
             out.update(state=state, fcfe_per_share=value)
     out['reason_codes'] = list(dict.fromkeys(reasons))
     return out
+
+
+def _reported(retained, tax, concept, start, end):
+    return any(c.get('taxonomy') == tax and c.get('concept') == concept and c.get('start') == start and c.get('end') == end
+               for c in retained)
+
+
+def _pair_partial(alternatives, by, retained, tax, unit, start, end):
+    """First pair whose reported side is usable while the other side is reported nowhere for the period."""
+    for alt in alternatives:
+        if len(alt) < 2:
+            continue
+        present = [(term, by.get((term[0], unit, start, end))) for term in alt]
+        reported = [(term, hit) for term, hit in present if hit is not None]
+        missing = [term for term, hit in present if hit is None]
+        if reported and missing and not any(_reported(retained, tax, c, start, end) for c, _ in missing):
+            return [t for t, _ in reported], [h for _, h in reported]
+    return None
+
+
+def partial_pair_ok(taxonomy, key, concepts):
+    """A BORROWING_PAIR_PARTIAL line lists a non-empty, in-order proper subset of one adopted pair."""
+    return any(len(alt) > 1 and 0 < len(concepts) < len(alt) and [c for c in alt if c in concepts] == list(concepts)
+               for alt in ALTERNATIVES[taxonomy][key])
 
 
 def project_v_inputs(m1, state, ambiguous):
@@ -295,6 +328,8 @@ def _validate_fcfe(f, row_state):
         _need(isinstance(c['concepts'], list) and type(c['assumed_zero']) is bool and _finite(c['value']))
         if c['assumed_zero']:
             _need(key in OPTIONAL_COMPONENTS and c['concepts'] == [] and c['value'] == 0 and c['reason'] == ASSUMED_ZERO)
+        elif c['reason'] == PAIR_PARTIAL:
+            _need(key in OPTIONAL_COMPONENTS and partial_pair_ok(f['taxonomy'], key, c['concepts']))
         else:
             _need(tuple(c['concepts']) in ALTERNATIVES[f['taxonomy']][key] and c['reason'] is None)
     if f['state'] == 'NOT_AVAILABLE':

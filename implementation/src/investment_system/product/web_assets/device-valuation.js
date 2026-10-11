@@ -6,7 +6,7 @@
 'use strict';
 const FILE='sec-valuation-inputs.json',KIND='SEC_VALUATION_INPUTS',MAX=2*1024*1024,VERSIONS={V1_UNCALIBRATED_DEFAULT:'v1+dcf_v1_default',V1_1_UNCALIBRATED_DEFAULT:'v1+dcf_v1_1_default'};
 const IDS=['asml','lrcx','klac','tokyo_electron','hanmi','nvda','amd','avgo','qcom','intc','msft','googl','amzn','rtx','stry','etn','hubb','gev','rok'];
-const STATES=['LIVE','STALE','NOT_AVAILABLE'],FORMS=['10-K','10-K/A','20-F','20-F/A','40-F'],TAXONOMIES=['us-gaap','ifrs-full'],ASSUMED_ZERO='NOT_REPORTED_ASSUMED_ZERO';
+const STATES=['LIVE','STALE','NOT_AVAILABLE'],FORMS=['10-K','10-K/A','20-F','20-F/A','40-F'],TAXONOMIES=['us-gaap','ifrs-full'],ASSUMED_ZERO='NOT_REPORTED_ASSUMED_ZERO',PAIR_PARTIAL='BORROWING_PAIR_PARTIAL';
 const REASONS=['NO_ELIGIBLE_INPUT','SOURCE_NOT_AVAILABLE','SYNTHETIC_INPUT_NOT_PUBLIC','SOURCE_AFTER_AS_OF','STALE_INPUT','UPSTREAM_NOT_AVAILABLE','TYPE_ENGINE_PENDING_MERGE','CRITERIA_UNDEFINED','PUBLIC_FX_EXCLUDED','UNAPPROVED_ENGINE_INPUT_MAPPING'];
 const ALTERNATIVES={'us-gaap':{operating_cash_flow:[['NetCashProvidedByUsedInOperatingActivities'],['NetCashProvidedByUsedInOperatingActivitiesContinuingOperations']],
  capital_expenditure:[['PaymentsToAcquirePropertyPlantAndEquipment'],['PaymentsToAcquireProductiveAssets']],
@@ -44,6 +44,7 @@ function validateFcfe(f,rowState){
  keys(f.components,COMPONENTS);
  for(const k of COMPONENTS){const c=f.components[k];if(c===null)continue;need(f.taxonomy!==null);keys(c,['concepts','value','assumed_zero','reason']);need(Array.isArray(c.concepts)&&typeof c.assumed_zero==='boolean'&&number(c.value));
   if(c.assumed_zero)need(OPTIONAL.includes(k)&&c.concepts.length===0&&c.value===0&&c.reason===ASSUMED_ZERO);
+  else if(c.reason===PAIR_PARTIAL)need(OPTIONAL.includes(k)&&ALTERNATIVES[f.taxonomy][k].some(a=>a.length>1&&c.concepts.length>0&&c.concepts.length<a.length&&JSON.stringify(a.filter(x=>c.concepts.includes(x)))===JSON.stringify(c.concepts)));
   else need(c.reason===null&&ALTERNATIVES[f.taxonomy][k].some(a=>a.length===c.concepts.length&&a.every((x,i)=>x===c.concepts[i])));}
  if(f.state==='NOT_AVAILABLE'){need(f.fcfe_per_share===null&&f.reason_codes.length>0);return;}
  need(f.reason_codes.length===0&&COMPONENTS.every(k=>f.components[k]!==null)&&f.currency!==null&&f.fiscal_period_end!==null&&f.accn!==null&&f.form!==null);

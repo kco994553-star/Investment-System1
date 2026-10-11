@@ -31,3 +31,9 @@ test('value card: unreported borrowing lines are shown as assumed 0, IFRS and cu
  assert.ok(html.includes('IFRS'));assert.ok(html.includes('20-F'));assert.ok(html.includes('data-value="currency-basis"'));assert.ok(html.includes('보고 통화 EUR · 가격 통화 USD · 기준 통화 USD · 환율 변환 없음'));
  assert.ok(!/data-dcf-value|data-mos-score|data-implied-growth/.test(html));
  const en=CS.valueHtml({locale:'en-US',row,result:c.expected,params:P});assert.ok(en.includes('Not reported → assumed 0'));assert.ok(en.includes('no FX conversion'));});
+test('value card: a half-reported borrowing pair shows the reported side and BORROWING_PAIR_PARTIAL',()=>{const c=vectors.cases.find(x=>x.id==='ifrs-eur-filer-usd-price-no-fx');
+ const row={fcfe:{...c.input.row.fcfe,fiscal_period_end:'2025-12-31',form:'20-F',taxonomy:'ifrs-full',accn:'000093796626000001',components:{net_short_term_borrowing:{concepts:['ProceedsFromCurrentBorrowings'],value:40,assumed_zero:false,reason:'BORROWING_PAIR_PARTIAL'}}}};
+ const html=CS.valueHtml({locale:'ko-KR',row,result:c.expected,params:P});
+ assert.ok(html.includes('data-value="pair-partial"'));assert.ok(html.includes('미보고 쪽 → 0 가정'));assert.ok(html.includes('단기차입 순증감: ProceedsFromCurrentBorrowings (BORROWING_PAIR_PARTIAL)'));
+ assert.ok(!html.includes('data-value="assumed-zero"'));
+ const en=CS.valueHtml({locale:'en-US',row,result:c.expected,params:P});assert.ok(en.includes('Unreported side → assumed 0'));});

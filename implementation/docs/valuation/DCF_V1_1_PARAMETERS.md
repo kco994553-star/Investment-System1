@@ -58,7 +58,8 @@ FCFE/주 = FCFE ÷ 희석 가중평균 주식수
 1. 같은 기간에 다른 통화로 보고됨 → `COMPONENT_CURRENCY_MISMATCH`(NOT_AVAILABLE).
 2. 같은 종료일에 모호한 개정 후보 → `COMPONENT_AMBIGUOUS`(NOT_AVAILABLE).
 3. 그 구성요소의 어떤 개념도 그 기간(start·end)으로 **보유된 SEC 후보 어디에도**(선택·제외 모두) 없음 → `{"concepts": [], "value": 0.0, "assumed_zero": true, "reason": "NOT_REPORTED_ASSUMED_ZERO"}`.
-4. 그 밖(예: 쌍의 한쪽만 보고, 다른 공시에만 보고되어 제외) → `<구성요소>_MISSING`(NOT_AVAILABLE). 보고된 줄은 버리지 않고, 일부만 보고된 쌍을 0으로 채우지 않는다.
+4. 차입 쌍(발행 − 상환, 예: `ProceedsFromShortTermDebt` − `RepaymentsOfShortTermDebt`, IFRS `ProceedsFromCurrentBorrowings` − `RepaymentsOfCurrentBorrowings`)의 한쪽만 보고되고 다른 쪽은 그 기간 보유 후보 어디에도 없음 → 없는 쪽을 0으로 보고 `{"concepts": [보고된 개념], "value": 보고된 쪽의 부호 반영 값, "assumed_zero": false, "reason": "BORROWING_PAIR_PARTIAL"}`(사용자 결정 2026-10-11). 행은 LIVE로 남는다.
+5. 그 밖(예: 다른 공시에만 보고되어 제외, 쌍의 다른 쪽이 보고되었지만 쓸 수 없음) → `<구성요소>_MISSING`(NOT_AVAILABLE). 보고된 줄은 버리지 않는다.
 
 다른 공시(예: 10-K/A)에만 그 기간 값이 있으면 그 값이 선택되어 `MIXED_FILINGS`가 된다(0 가정 아님). 핵심 항목(영업현금흐름·설비투자·희석주식수)은 위 3에 해당해도 `<구성요소>_MISSING`이다. 보고된 0은 진짜 0이며 `assumed_zero: false`다. 공개 구성요소 형태는 `{concepts, value, assumed_zero, reason}`이다.
 
@@ -82,11 +83,11 @@ FCFE/주 = FCFE ÷ 희석 가중평균 주식수
 
 ### 고정 사유 코드
 
-FCFE: `SEC_INPUT_NOT_AVAILABLE`, `CASH_FLOW_NOT_REPORTED`, `TAXONOMY_AMBIGUOUS`, `PERIOD_AMBIGUOUS`, `CURRENCY_AMBIGUOUS`, `COMPONENT_CURRENCY_MISMATCH`, `COMPONENT_AMBIGUOUS`, `MIXED_FILINGS`, `BORROWING_SCOPE_OVERLAP`, `DILUTED_SHARES_NON_POSITIVE`, `NUMERIC_INVALID`, `<구성요소>_MISSING`. 구성요소 사유: `NOT_REPORTED_ASSUMED_ZERO`. V 입력: 기존 + `REVENUE_CAGR_3Y_MISSING`.
+FCFE: `SEC_INPUT_NOT_AVAILABLE`, `CASH_FLOW_NOT_REPORTED`, `TAXONOMY_AMBIGUOUS`, `PERIOD_AMBIGUOUS`, `CURRENCY_AMBIGUOUS`, `COMPONENT_CURRENCY_MISMATCH`, `COMPONENT_AMBIGUOUS`, `MIXED_FILINGS`, `BORROWING_SCOPE_OVERLAP`, `DILUTED_SHARES_NON_POSITIVE`, `NUMERIC_INVALID`, `<구성요소>_MISSING`. 구성요소 사유: `NOT_REPORTED_ASSUMED_ZERO`, `BORROWING_PAIR_PARTIAL`. V 입력: 기존 + `REVENUE_CAGR_3Y_MISSING`.
 
 ## 공개 파일 `sec-valuation-inputs.json` (가격 없음)
 
-`data.fcfe_definition`이 `fcfe/1.1`로 바뀌었다. 행의 `fcfe`에 `taxonomy`, 구성요소에 `assumed_zero`·`reason`, `v_inputs`에 `revenue_cagr_3y`가 추가되었다. Python 검증기 `sec_valuation_inputs.validate_data`와 JS 검증기 `DeviceValuation.validate`가 같은 규칙(0 가정은 선택 항목·빈 개념·값 0·고정 사유만, taxonomy별 개념 목록, 총차입 중복 금지, FCFE 합계 재계산)을 적용한다. 가격·시가총액·V 점수·가격 대비 비율·DCF 값은 넣지 않는다. 오프라인 빈 화면 픽스처(`tools/fixtures/empty_public_screens.json`)를 다시 만들었다.
+`data.fcfe_definition`이 `fcfe/1.1`로 바뀌었다. 행의 `fcfe`에 `taxonomy`, 구성요소에 `assumed_zero`·`reason`, `v_inputs`에 `revenue_cagr_3y`가 추가되었다. Python 검증기 `sec_valuation_inputs.validate_data`와 JS 검증기 `DeviceValuation.validate`가 같은 규칙(0 가정은 선택 항목·빈 개념·값 0·고정 사유만, `BORROWING_PAIR_PARTIAL`은 선택 항목의 2항 쌍 중 순서를 지킨 일부 개념만, taxonomy별 개념 목록, 총차입 중복 금지, FCFE 합계 재계산)을 적용한다. 가격·시가총액·V 점수·가격 대비 비율·DCF 값은 넣지 않는다. 오프라인 빈 화면 픽스처(`tools/fixtures/empty_public_screens.json`)를 다시 만들었다.
 
 ## 기기 계산 (RAM 전용) — `DeviceValuation.view` / `qgv/device_valuation.device_value_view` (v1.1 UNCALIBRATED 기본값 · 나중에 수정 가능)
 

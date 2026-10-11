@@ -36,7 +36,7 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 APPROVED_SHA256 = {
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
     "sec-universe-shares.js": "77648df45a6c2e55b2c3be2cea2735a1d2457d8ef811646e7f2d0de674564bbb",
-    "device-valuation.js": "49ac3cf36ad68df69924fa24744c3911a3b29c1bde47e3c60f7a0843ca49755f",
+    "device-valuation.js": "06669cda863cd4dfa87108f54e03b75c9321989967da7ed54b03c921143cfedf",
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
@@ -46,7 +46,7 @@ APPROVED_SHA256 = {
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
     "portfolio-screen.js": "4cb77c85b554e0461d8782930c90ace99dd1d8100cf1383c428e0f6b0198a485",
-    "company-screen.js": "de383c4e4b98820301d900dd718095bba55dc9358f906d3043aa18733ff63bec",
+    "company-screen.js": "d2717aabfda75d8a645945381dd18639bbc9c8defd4810bda3f24e35c448214d",
     "ops-status.js": "57d2ce827c9b8af4d95e0155d6a01788b95417582bf176544d55c0ba2fd1ed9d",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "051dfd83afc377d70f5fb624e2b7b98612acdb4f3b3f1aa46f8c1fcc0c692390",

@@ -138,6 +138,8 @@ function valueHtml({locale,row=null,result=null,quote=null,compact=false,params=
   :na(f?reasons(f.reason_codes):T('공개 SEC 가치 입력이 없습니다','No public SEC valuation input'),locale);
  const zero=f&&f.components?Object.keys(COMPONENT_LABEL).filter(k=>f.components[k]&&f.components[k].assumed_zero===true):[];
  const zeroRow=zero.length?'<dt>'+esc(T('미보고 항목','Unreported lines'))+'</dt><dd data-value="assumed-zero"><span class="badge">'+esc(T('미보고 → 0 가정','Not reported → assumed 0'))+'</span> <span class="small">'+esc(zero.map(k=>COMPONENT_LABEL[k][en]).join(' · ')+' (NOT_REPORTED_ASSUMED_ZERO)')+'</span></dd>':'';
+ const partial=f&&f.components?Object.keys(COMPONENT_LABEL).filter(k=>f.components[k]&&f.components[k].reason==='BORROWING_PAIR_PARTIAL'):[];
+ const partialRow=partial.length?'<dt>'+esc(T('한쪽만 보고된 차입 쌍','Half-reported borrowing pair'))+'</dt><dd data-value="pair-partial"><span class="badge">'+esc(T('미보고 쪽 → 0 가정','Unreported side → assumed 0'))+'</span> <span class="small">'+esc(partial.map(k=>COMPONENT_LABEL[k][en]+': '+f.components[k].concepts.join(', ')).join(' · ')+' (BORROWING_PAIR_PARTIAL)')+'</span></dd>':'';
  const basis=p&&typeof p.currency==='string'?p.currency:null,qc=quote&&typeof quote.currency==='string'?quote.currency:null,cc=f&&typeof f.currency==='string'?f.currency:null;
  const ccyMismatch=cc&&(basis&&cc!==basis||qc&&cc!==qc);
  const ccyRow=ccyMismatch?'<dt>'+esc(T('통화','Currency'))+'</dt><dd data-value="currency-basis">'+na('CURRENCY_BASIS_UNCONFIRMED',locale)+' <span class="small">'+esc(T('보고 통화 ','Reported currency ')+cc+(qc&&qc!==cc?T(' · 가격 통화 ',' · price currency ')+qc:'')+(basis&&basis!==cc?T(' · 기준 통화 ',' · basis currency ')+basis:'')+T(' · 환율 변환 없음',' · no FX conversion'))+'</span></dd>':'';
@@ -154,7 +156,7 @@ function valueHtml({locale,row=null,result=null,quote=null,compact=false,params=
  const m=result?result.v_factors.margin_of_safety:null;
  const mos=m&&m.state!=='NOT_AVAILABLE'?'<span class="num" data-mos-score>'+esc(num(m.score,locale))+'</span> <span class="small">'+esc(T('점수 · 보수가치 0.75×DCF 내재가치 vs 기기 가격 (승인 v1 매핑)','score · conservative value 0.75×DCF value vs device price (approved v1 mapping)'))+'</span>'
   :na(m?m.reason:'DCF_NOT_AVAILABLE',locale);
- let html=badges+paramLine+'<dl class="kv"><dt>'+esc(T('FCFE/주 (공개 SEC)','FCFE / share (public SEC)'))+'</dt><dd data-value="fcfe">'+fcfe+'</dd>'+zeroRow+ccyRow
+ let html=badges+paramLine+'<dl class="kv"><dt>'+esc(T('FCFE/주 (공개 SEC)','FCFE / share (public SEC)'))+'</dt><dd data-value="fcfe">'+fcfe+'</dd>'+zeroRow+partialRow+ccyRow
   +'<dt>'+esc(T('가격','Price'))+'</dt><dd data-value="quote">'+q+'</dd>'
   +'<dt>'+esc(T('역DCF 내재 성장률','Reverse-DCF implied growth'))+'</dt><dd data-value="reverse">'+rev+'</dd>'
   +'<dt>'+esc(T('명시기간 성장률 h','Explicit growth h'))+'</dt><dd data-value="growth">'+growth+'</dd>'
