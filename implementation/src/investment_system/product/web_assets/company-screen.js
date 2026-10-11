@@ -90,6 +90,7 @@ function summary(ctx){
   +'<section class="card" data-company-card="qgv"><h2><span class="flow-number">1</span> QGV</h2>'+qgvBody(screens,id,locale)
   +'<dl class="kv"><dt>'+esc(T('리더보드 순위','Leaderboard rank'))+'</dt><dd data-qgv="rank">'+na('',locale)+'</dd><dt>'+esc(T('재평가 신호','Re-evaluation signal'))+'</dt><dd data-qgv="reeval">'+na('',locale)+'</dd><dt>'+esc(T('다음 실적','Next earnings'))+'</dt><dd>'+nextEarnings(screens,id,locale)+'</dd></dl>'
   +'<p>'+link('#analysis/'+encodeURIComponent(id),T('기업분석 자세히 보기 →','Open company analysis →'))+'</p></section>'
+  +'<section class="card" data-company-card="value"><h2>'+esc(T('가치 (이 기기)','Value (this device)'))+'</h2><div id="company-value" data-company-value>'+valueHtml({locale,compact:true})+'</div><p>'+link('#analysis/'+encodeURIComponent(id),T('가치·시나리오 자세히 →','Value / scenarios details →'))+'</p></section>'
   +'<section class="card" data-company-card="technical"><h2><span class="flow-number">2</span> '+esc(T('기술','Technical'))+'</h2><div id="private-history-chart"></div><dl class="kv"><dt>'+esc(T('상태·국면','State / regime'))+'</dt><dd>'+na('',locale)+'</dd></dl><p>'+link('#technical',T('기술적 분석에서 이어 보기 →','Continue in technical analysis →'))+'</p></section>'
   +'<section class="card" data-company-card="macro"><h2><span class="flow-number">3</span> '+esc(T('매크로 영향','Macro impact'))+'</h2><p>'+na(T('시장 국면·업종 영향·종목 영향이 아직 검증되지 않았습니다.','Market regime, industry and company impact are not yet validated.'),locale)+'</p><p>'+link('#macro',T('매크로 보기 →','Open macro →'))+'</p></section>'
   +'<section class="card" data-company-card="news"><h2>'+esc(T('뉴스·관계','News / relations'))+'</h2><p>'+na(T('공개 뉴스·관계망 자료가 연결되지 않았습니다.','No public news or relationship data connected.'),locale)+'</p><p>'+link('#news/'+encodeURIComponent(id),T('뉴스·관계망 화면 →','News / network screen →'))+'</p></section>'
@@ -116,14 +117,53 @@ function analysis(ctx){
  const events=panel('events',T('주가·이벤트','Price / events'),'<p><a href="#company/'+encodeURIComponent(id)+'" data-chart-link>'+esc(T('요약 화면의 가격 차트 열기 →','Open the price chart on the summary →'))+'</a> · <a href="#technical">'+esc(T('기술적 분석 →','Technical analysis →'))+'</a></p><dl class="kv"><dt>E '+esc(T('실적 시기','Earnings timing'))+'</dt><dd>'+nextEarnings(screens,id,locale)+'</dd>'
   +['P '+T('제품','Product'),'L '+T('법률·규제','Legal / regulatory'),'M '+T('경영','Management'),'R '+T('재평가 신호','Re-evaluation signal'),'B·S '+T('내 거래','My trades')].map(x=>'<dt>'+esc(x)+'</dt><dd>'+na('',locale)+'</dd>').join('')+'</dl>',true);
  const factors=panel('factors',T('QGV 요소','QGV factors'),factorTable(screens,id,locale),true);
- const value=panel('value',T('가치·시나리오','Value / scenarios'),'<dl class="kv">'+naRow('DCF · '+T('역DCF','reverse DCF'),T('가격과 사용자 승인 가정 필요','Needs prices and approved assumptions'),locale)+naRow(T('안전마진','Margin of safety'),T('가격 필요','Needs prices'),locale)+naRow(T('시나리오','Scenarios'),'',locale)+'</dl>',true);
+ const value=panel('value',T('가치·시나리오','Value / scenarios'),'<div id="company-value" data-company-value>'+valueHtml({locale})+'</div>',true);
  const compare=panel('compare',T('비교·컨센서스','Compare / consensus'),'<dl class="kv">'+naRow(T('동종 비교','Peer comparison'),T('SIC→업종군 표 승인 대기','SIC group table awaits approval'),locale)+naRow(T('컨센서스','Consensus'),T('공급원 없음','No source'),locale)+'</dl>',true);
  return '<a class="parent-link" href="#company/'+encodeURIComponent(id)+'" data-analysis-back>'+esc('← '+ticker+' '+T('요약','summary'))+'</a>'+ctx.headerHtml+dataBadges(screens,locale,true)+tabs+overview+business+financials+events+factors+value+compare;
+}
+// Value view (v1+dcf_v1_default). Public FCFE is price-free; the price is this device's own quote, used in RAM only.
+const V_LABEL={fundamental_value:['핵심 가치','Fundamental value'],peer_relative_value:['동종 상대가치','Peer-relative value'],historical_valuation:['과거 밸류에이션','Historical valuation'],sector_context:['업종 맥락','Sector context'],theme_premium_discount:['테마 프리미엄·할인','Theme premium / discount'],reverse_dcf:['역DCF','Reverse DCF'],margin_of_safety:['안전마진','Margin of safety']};
+const QUOTE_SOURCE={MANUAL:['기기 수동 시세','Device manual quote'],API:['기기 API 시세','Device API quote'],GOOGLEFINANCE:['기기 Google 시트 시세','Device Google Sheet quote'],PRIVATE_HISTORY_CLOSE:['비공개 일별 이력 종가','Private daily history close']};
+function accnText(a){return typeof a==='string'&&/^\d{18}$/.test(a)?a.slice(0,10)+'-'+a.slice(10,12)+'-'+a.slice(12):'—';}
+function valueHtml({locale,row=null,result=null,quote=null,compact=false,params=g.DeviceValuation?g.DeviceValuation.parameters():null}){
+ const T=tr(locale),reasons=list=>(list||[]).join(' · '),pct=v=>typeof v==='number'&&Number.isFinite(v)?(v<0?'−':'')+num(Math.abs(v)*100,locale)+'%':'—';
+ const p=params&&typeof params==='object'?params:null,isDefault=p&&p.status==='V1_UNCALIBRATED_DEFAULT';
+ const badges='<p class="chips data-badges"><span class="badge" data-dcf-badge>'+esc(isDefault?T('v1 UNCALIBRATED 기본값','v1 UNCALIBRATED default'):T('사용자 설정 · 보정 전','Custom · uncalibrated'))+'</span><span class="badge" data-dcf-version>'+esc(result?result.version:(isDefault?'v1+dcf_v1_default':'v1+dcf_custom'))+'</span></p>';
+ const paramLine=p?'<p class="small" data-dcf-params>'+esc(T('기본값(나중에 수정 가능): 명시 ','Defaults (editable later): explicit '))+esc(String(p.explicit_years))+esc(T('년 · 할인율 ','y · discount rate '))+esc(pct(p.discount_rate))+esc(T(' · 영구성장 ',' · terminal growth '))+esc(pct(p.terminal_growth))+esc(T(' · 역DCF 탐색 ',' · reverse-DCF bracket '))+esc(pct(p.solver&&p.solver.growth_lower))+'~'+esc((p.solver&&p.solver.growth_upper>0?'+':'')+pct(p.solver&&p.solver.growth_upper))+'</p>':'<p>'+na('DCF_PARAMETERS_UNAVAILABLE',locale)+'</p>';
+ const f=row&&row.fcfe?row.fcfe:null,fcfeOk=f&&f.state!=='NOT_AVAILABLE';
+ const fcfe=fcfeOk?'<span class="num">'+esc(f.currency+' '+num(f.fcfe_per_share,locale,2))+'</span> <span class="small">'+esc(T('회계연도 종료 ','FY end ')+f.fiscal_period_end+' · '+f.form+' · accn '+accnText(f.accn))+'</span> <span class="badge '+esc(f.state)+'">'+esc(f.state)+'</span>'
+  :na(f?reasons(f.reason_codes):T('공개 SEC 가치 입력이 없습니다','No public SEC valuation input'),locale);
+ const q=quote?'<span data-value-quote-source="'+esc(quote.source||'')+'">'+esc((QUOTE_SOURCE[quote.source]||['기기 시세','Device quote'])[locale==='en-US'?1:0])+'</span> <span class="small">'+esc((quote.as_of||'—')+(quote.stale?' · STALE':'')+' · '+T('RAM 전용 · 저장·전송 안 함','RAM only · not stored or sent'))+'</span>'
+  :na(T('이 기기에 이 종목 시세가 없습니다 (NO_DEVICE_PRICE)','No device quote for this company (NO_DEVICE_PRICE)'),locale);
+ const rev=result&&result.reverse_dcf.state!=='NOT_AVAILABLE'?'<span class="num" data-implied-growth>'+esc(pct(result.reverse_dcf.implied_growth))+'</span> <span class="small">'+esc(T('현재 기기 가격이 함의하는 명시 '+(p?p.explicit_years:'—')+'년 연 FCFE 성장률','Annual FCFE growth over the explicit '+(p?p.explicit_years:'—')+' years implied by the device price'))+'</span>'
+  :na(result?reasons(result.reverse_dcf.reason_codes):'NO_DEVICE_PRICE',locale);
+ const growthNa=na('EXPLICIT_GROWTH_UNDECIDED · '+T('명시기간 성장률 미결정','explicit-period growth undecided'),locale);
+ let html=badges+paramLine+'<dl class="kv"><dt>'+esc(T('FCFE/주 (공개 SEC)','FCFE / share (public SEC)'))+'</dt><dd data-value="fcfe">'+fcfe+'</dd>'
+  +'<dt>'+esc(T('가격','Price'))+'</dt><dd data-value="quote">'+q+'</dd>'
+  +'<dt>'+esc(T('역DCF 내재 성장률','Reverse-DCF implied growth'))+'</dt><dd data-value="reverse">'+rev+'</dd>'
+  +'<dt>'+esc(T('DCF 내재가치','DCF intrinsic value'))+'</dt><dd data-value="dcf">'+growthNa+'</dd>'
+  +'<dt>'+esc(T('안전마진','Margin of safety'))+'</dt><dd data-value="mos">'+growthNa+'</dd>'
+  +(compact?'':'<dt>'+esc(T('시나리오','Scenarios'))+'</dt><dd data-value="scenarios">'+na('',locale)+'</dd>')+'</dl>';
+ if(!compact){
+  const rows=Object.keys(V_LABEL).map(k=>{const x=result?result.v_factors[k]:{score:null,state:'NOT_AVAILABLE',reason:k==='margin_of_safety'?'EXPLICIT_GROWTH_UNDECIDED':'NO_DEVICE_PRICE'},ok=x.state!=='NOT_AVAILABLE';
+   return '<tr data-v-factor="'+k+'"><td>'+esc(V_LABEL[k][locale==='en-US'?1:0])+'</td><td class="num" data-v-score>'+(ok?esc(num(x.score,locale)):'—')+'</td><td><span class="badge '+esc(ok?'LIVE':'NOT_AVAILABLE')+'">'+esc(x.state)+'</span></td><td class="small">'+esc(x.reason)+'</td></tr>';});
+  html+='<h3>'+esc(T('V 요소 (이 기기 계산 · 보정 전)','V factors (computed on this device · uncalibrated)'))+'</h3><div class="table-wrap"><table data-v-table><thead><tr><th>'+esc(T('요소','Factor'))+'</th><th>'+esc(T('점수','Score'))+'</th><th>'+esc(T('상태','State'))+'</th><th>'+esc(T('사유','Reason'))+'</th></tr></thead><tbody>'+rows.join('')+'</tbody></table></div>';
+ }
+ return html+'<p class="small" data-value-note>'+esc(T('FCFE = 영업현금흐름 − 설비투자 + 순차입, 희석주식수 기준(같은 회계연도·통화). 가격은 이 기기 RAM에서만 쓰며 저장·전송하지 않습니다. V 종합 점수는 만들지 않습니다.','FCFE = operating cash flow − capital expenditure + net borrowing, per diluted share (same fiscal year and currency). The price is used only in this device’s RAM and is never stored or sent. No overall V score is made.'))+'</p>';
+}
+async function mountValue(host,{locale,id,ticker=null,catalogPromise=null,inputsPromise=null,quote=null,compact=false,win=g}){
+ if(!host)return;const V=win.DeviceValuation;if(!V)return;const token=host.__valueToken=(host.__valueToken||0)+1;
+ let payload=null;try{payload=await inputsPromise;}catch(_){}
+ let q=quote&&typeof quote.price==='number'&&Number.isFinite(quote.price)&&quote.price>0?quote:null;
+ if(!q&&ticker&&catalogPromise){let catalog=null;try{catalog=await catalogPromise;}catch(_){}if(catalog)q=await V.deviceQuote(win,catalog,ticker);}
+ if(!host.isConnected||host.__valueToken!==token)return;
+ const row=V.row(payload,id),result=V.view({row,quote:q?{price:q.price,currency:q.currency}:null});
+ host.innerHTML=valueHtml({locale,row,result,quote:q?{source:q.source,as_of:q.as_of,stale:q.stale===true}:null,compact});
 }
 function wireTabs(rootEl){
  if(!rootEl)return;const tabs=[...rootEl.querySelectorAll('[data-analysis-tab]')];
  const select=key=>{for(const b of tabs){const on=b.dataset.analysisTab===key;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;}for(const p of rootEl.querySelectorAll('[data-analysis-panel]'))p.hidden=p.dataset.analysisPanel!==key;};
  tabs.forEach((b,i)=>{b.addEventListener('click',()=>select(b.dataset.analysisTab));b.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;e.preventDefault();const n=tabs[(i+d+tabs.length)%tabs.length];select(n.dataset.analysisTab);n.focus();});});
 }
-return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,qgAxes,classification,summary,analysis,mountHolding,wireTabs,TYPES});
+return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,qgAxes,classification,summary,analysis,mountHolding,mountValue,valueHtml,wireTabs,TYPES});
 });

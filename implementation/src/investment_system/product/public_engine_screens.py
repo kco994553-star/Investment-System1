@@ -23,10 +23,11 @@ from ..macro.government_screen import build_government_macro_screen
 from ..macro import growth_inflation_v0 as macro_v0
 from ..providers.macro_primary import parse_bls, parse_bea_nipa, parse_treasury_yields
 from ..providers.sec_13f import FilingMetadata, parse_information_table, compare_quarters
+from . import sec_valuation_inputs as _valuation
 
 FILENAMES = {'macro-screen.json':'MACRO', 'sec-13f-changes.json':'SEC_13F',
     'sec-filing-windows.json':'SEC_FILING_WINDOWS', 'sec-qg-factors.json':'SEC_QG_FACTORS',
-    'company-types-pricefree.json':'COMPANY_TYPES_PRICEFREE'}
+    'company-types-pricefree.json':'COMPANY_TYPES_PRICEFREE', _valuation.FILENAME:_valuation.KIND}
 STATES = ('LIVE','STALE','NOT_AVAILABLE')
 AGENCIES = ('SEC_COMPANYFACTS','SEC_SUBMISSIONS','SEC_13F','BLS','BEA','TREASURY','FED_H41','FED_H8','FED_H10','TREASURY_MTS')
 REASONS = ('NO_ELIGIBLE_INPUT','SOURCE_NOT_AVAILABLE','SYNTHETIC_INPUT_NOT_PUBLIC','SOURCE_AFTER_AS_OF',
@@ -120,7 +121,7 @@ def _require(name,payload):
     _need(_finite(payload['stale_after_seconds']) and payload['stale_after_seconds']>0)
     _need(isinstance(payload['reason_codes'],list) and all(r in REASONS for r in payload['reason_codes']))
     _need(isinstance(payload['sources'],list) and len(payload['sources'])<=10000)
-    allowed=('SEC_COMPANYFACTS','SEC_SUBMISSIONS') if name in ('sec-qg-factors.json','company-types-pricefree.json','sec-filing-windows.json') else ('SEC_13F',) if name=='sec-13f-changes.json' else tuple(p for p in AGENCIES if not p.startswith('SEC_'))
+    allowed=('SEC_COMPANYFACTS','SEC_SUBMISSIONS') if name in ('sec-qg-factors.json','company-types-pricefree.json','sec-filing-windows.json',_valuation.FILENAME) else ('SEC_13F',) if name=='sec-13f-changes.json' else tuple(p for p in AGENCIES if not p.startswith('SEC_'))
     sources={}
     for s in payload['sources']:
         _keys(s,('agency','sha256','acquired_at'));_need(s['agency'] in allowed);_hash(s['sha256']);_need(clock(s['acquired_at'])<=cut)
@@ -150,6 +151,8 @@ def _require(name,payload):
                 if 'metrics' in row:
                     _keys(row['metrics'],PRICEFREE_METRICS)
                     for v in row['metrics'].values():_need(v is None or (_finite(v) and abs(v)<=100))
+    elif name==_valuation.FILENAME:
+        states.extend(_valuation.validate_data(data,OFFICIAL_V11_TARGETS,lambda row,state:_source_refs(row,sources,{'companyfacts':'SEC_COMPANYFACTS','submissions':'SEC_SUBMISSIONS'},cut,payload['stale_after_seconds'],state)))
     elif name=='sec-filing-windows.json':
         _keys(data,('companies',));_need(isinstance(data['companies'],dict) and set(data['companies'])==set(OFFICIAL_V11_TARGETS))
         for row in data['companies'].values():
@@ -355,6 +358,7 @@ def _generate(manifest,root,as_of,stale_after):
     qg={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'factors':{fid:{'score':None,'state':'NOT_AVAILABLE'} for fid in sorted(FACTORS)}} for cid in OFFICIAL_V11_TARGETS}
     types={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'memberships':dict.fromkeys(PRICEFREE_TYPES),'config_version':None,'metrics':dict.fromkeys(PRICEFREE_METRICS)} for cid in OFFICIAL_V11_TARGETS}
     windows={cid:{'state':'NOT_AVAILABLE','role':'ESTIMATED_PATTERN_NOT_CONFIRMED','confirmed_earnings_date':None,'source_hashes':{},'groups':[]} for cid in OFFICIAL_V11_TARGETS}
+    valuation={cid:_valuation.empty_row() for cid in OFFICIAL_V11_TARGETS}
     sec_sources=[];type_reasons=[];seen=set()
     try:
         from ..qgv.company_types import calculate_company_types
@@ -374,6 +378,7 @@ def _generate(manifest,root,as_of,stale_after):
         refs={'companyfacts':hashlib.sha256(fb).hexdigest(),'submissions':hashlib.sha256(sb).hexdigest()}
         for rows in (qg,types,windows):rows[cid]['source_hashes']=dict(refs)
         state=_fresh(acquired,as_of,stale_after)
+        valuation[cid]=_valuation.project_row(m1,state,refs,_current_ambiguity(m1) if m1['status']=='READY' else False)
         timing=build_filing_timing_pattern(cid,sub,acquired,as_of)
         if timing['groups']:
             windows[cid].update(state=state,groups=timing['groups'])
@@ -450,6 +455,7 @@ def _generate(manifest,root,as_of,stale_after):
         'company-types-pricefree.json':_envelope('company-types-pricefree.json',as_of,stale_after,financial(types),sec_sources,[r['state'] for r in types.values()],type_reasons),
         'sec-filing-windows.json':_envelope('sec-filing-windows.json',as_of,stale_after,{'companies':windows},sec_sources,[r['state'] for r in windows.values()]),
         'macro-screen.json':_envelope('macro-screen.json',as_of,stale_after,macro,macro_sources+v0_sources,[_fresh(clock(o['available_at']),as_of,stale_after) for o in observations]+v0_states,('UNAPPROVED_ENGINE_INPUT_MAPPING','PUBLIC_FX_EXCLUDED')),
+        _valuation.FILENAME:_envelope(_valuation.FILENAME,as_of,stale_after,_valuation.data(valuation),sec_sources,[r['state'] for r in valuation.values()]),
         'sec-13f-changes.json':_envelope('sec-13f-changes.json',as_of,stale_after,{'reports':reports,'role':'REPORTED_QUANTITY_CHANGE_NOT_TRADES',**({'managers':[dict(m) for m in manifest['thirteen_f_managers']]} if 'thirteen_f_managers' in manifest else {})},report_sources,[r['state'] for r in reports]),
     }
     for name,payload in outputs.items():require_public_screen(name,payload)

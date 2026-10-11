@@ -102,7 +102,7 @@ def main(argv=None):
     except Exception:
         print('PUBLIC_SCREENS_BUILD_FAILED')
         return 1
-    print('PUBLIC_SCREENS_OK files=5')
+    print('PUBLIC_SCREENS_OK files=6')
     return 0
 
 if __name__ == '__main__':

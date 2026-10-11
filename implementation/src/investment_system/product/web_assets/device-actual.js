@@ -649,6 +649,19 @@
         themes: result.themes.map(theme => ({ theme_id: theme.theme_id, weight: theme.weight, delta: theme.delta })) };
     } catch (_) { return none('READ_FAILED'); }
   }
+  // RAM-only stored quote for one catalog ticker (S04/S05 value view). Returned to the caller only; never persisted or sent.
+  async function ramQuote(view, catalog, ticker) {
+    try {
+      const index = catalogIndex(catalog), api = view.DeviceMarket, raw = await readStored(view, [MARKET_KEY]);
+      if (!api || raw[MARKET_KEY] === MISSING_RECORD) return null;
+      const market = api.validateMarket(raw[MARKET_KEY], catalog);
+      const quote = market.quotes.find(q => { const instrument = index.instruments.get(canonical(q.security_reference)); return instrument && instrument.ticker === ticker; });
+      if (!quote) return null;
+      const price = typeof quote.price === 'number' ? quote.price : Number(quote.price);
+      if (!Number.isFinite(price) || price <= 0) return null;
+      return { price, currency: quote.currency, as_of: quote.as_of, source: quote.source, stale: api.staleness(quote.as_of) === 'STALE' };
+    } catch (_) { return null; }
+  }
   return Object.freeze({ mount, summary, settings, validate, makeSnapshot, prepareImport, valuation,
-    sheetSettings, applyMarketImport, readMarketImportHistory, readHoldings, restoreHoldings, ramView });
+    sheetSettings, applyMarketImport, readMarketImportHistory, readHoldings, restoreHoldings, ramView, ramQuote });
 });
