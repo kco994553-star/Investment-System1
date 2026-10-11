@@ -1,6 +1,6 @@
 # Macro v0 나머지 6축 정확한 series 제안 — 한 번에 승인용
 
-작성: 2026-10-11 UTC. 상태: **PROPOSED_PENDING_APPROVAL**. 이 문서는 제안만 담는다. 아래 6축은 **구현하지 않았다**. 승인 전에는 모두 `NOT_AVAILABLE`이다.
+작성: 2026-10-11 UTC. 상태: **원자료 표시만 승인 (2026-10-11), 국면 판정 보류**. 구현 내용과 첫 Actions 실행에서 확인할 항목은 [§5](#5-2026-10-11-결정-반영--원자료-표시-구현)에 있다. FX는 공개 가격 경계 때문에 값을 공개하지 않는다.
 
 ## 0. 이미 결정·구현된 2축 (참고)
 
@@ -67,3 +67,30 @@
 | 6 | FX | Fed H.10 `JRXWTFB_N.M` 명목 광의 달러지수 | 월 · NSA | 12개월 전 대비 변화율 | 공개는 별도 결정, 그 전에는 비공개 |
 
 승인 방식 예시: "1~6 모두 승인" 또는 "1·2·5만 승인, 6은 보류".
+
+## 5. 2026-10-11 결정 반영 — 원자료 표시 구현
+
+사용자 결정: "매크로 나머지 6축: 원자료 표시만 승인, 국면 판정은 보류."
+
+- 구현: `macro/raw_axes_v0.py`(파서·변환), `providers/macro_v0_collection.py`(수집), `product/public_engine_screens.py`의 `macro-screen.json` → `data.raw_axes_v0` 블록, `web_assets/public-screens.js`(검증·S09 공개 매크로 카드), `web_assets/screen-detail.js`(S09 series 안내).
+- 표시 내용: 축마다 값, 기간(비교 기준 기간), 발표값·기준값, series ID, 기관, 변환, 수집 시각, 원본 sha256, `LIVE`/`STALE`/`NOT_AVAILABLE`와 이유 코드. 표시 문구 `v0 · 원자료 표시 · 국면 판정 보류`.
+- 없는 것: 축별 상태, 임계값, 점수, Direction·Momentum·Surprise·Stress·Confidence, 국면. 블록의 국면은 항상 `NOT_AVAILABLE`(`REGIME_JUDGEMENT_DEFERRED`)이다. 기존 Growth·Inflation 엔진 블록은 바뀌지 않는다.
+- 결측: 채우지 않고 0을 넣지 않는다. 비교 기준(12개월 전·52주 전·12개월 창)이 하나라도 없으면 `BASE_PERIOD_MISSING`, H.15 월에 평일 행이 빠지면 `INCOMPLETE_PERIOD`.
+- 수집: GitHub Actions의 기존 SEC daily 단계에서 `public_screens_pipeline.py --live --macro-v0`가 함께 수집한다. 워크플로·secret 변경은 필요 없다(키 없는 경로만 사용). BLS는 `CUUR0000SA0`과 `LNS14000000`을 **한 요청**으로 받는다.
+
+| 축 | 실제 요청 (키 없음) | 선택 규칙 | 변환 | 확인 상태 |
+| --- | --- | --- | --- | --- |
+| Labor | BLS API v1 POST, `seriesid=[CUUR0000SA0, LNS14000000]` | `LNS14000000` 최신 발표월 | % ÷ 100 | 기존 파서·series ID 확인됨 |
+| Monetary Policy | ① 공식 안내 파일 `https://www.federalreserve.gov/releases/h15/data/Business_day/H15_FF_O.txt`에서 DDP 링크의 `series` 해시 1개를 읽고 ② `https://www.federalreserve.gov/datadownload/Output.aspx?rel=H15&series=<해시>&from=01/01/<전년>&filetype=csv&label=include&layout=seriescolumn` | Unique Identifier가 정확히 `H15/H15/RIFSPFF_N.B`, 단위 Percent, multiplier 1 | 완결된 최신 월(진행 중인 달 제외)의 영업일 평균 ÷ 100. `ND`(휴일)는 관측에서 제외, 평일 행이 없으면 NA | **첫 실행에서 확인**: 안내 파일이 DDP 링크를 정확히 1개 담는지, CSV가 휴일을 `ND` 행으로 주는지 |
+| Liquidity | `Output.aspx?rel=H41&series=efce2c1a8744855f2623889dffb2b39a&filetype=csv&label=include&layout=seriescolumn` | 식별자 `H41/H41/…` 중 설명에 "total assets", "less eliminations from consolidation", "wednesday level"이 모두 있는 열 정확히 1개, 날짜는 수요일 | 수요일 잔액 ÷ 364일 전 잔액 − 1 | **미확인 후보 해시**. 이 패키지에 해당 series가 없으면 `SERIES_NOT_FOUND`. 맞는 패키지 해시는 `Choose.aspx?rel=H41`에서 골라 `FED_DDP_PACKAGES`를 고친다 |
+| Credit | `Output.aspx?rel=H8&series=9a538c893f62322f942501e38030aed5&filetype=csv&label=include&layout=seriescolumn&type=package` | 식별자 `H8/H8/…` 중 설명에 "bank credit", "all commercial banks", "seasonally adjusted"가 있고 "not seasonally adjusted"가 없는 열 정확히 1개, 월 기간 | 월 수준 ÷ 12개월 전 − 1 | **미확인 후보 해시**. Liquidity와 같은 방식으로 첫 실행에서 확인 |
+| Fiscal | `https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/mts/mts_table_1?filter=record_date:gte:<2년 전>-01-01&sort=record_date&format=json&page[number]=1&page[size]=10000` | 각 월 보고서(`record_date`)에서 그 달 이름의 행 1개. 전 회계연도 같은 달 행이 함께 있으면 `parent_id` 상위 행의 "FY yyyy"가 `record_fiscal_year`와 같은 행만. 여러 페이지면 NA | 최신 12개월 연속 합계, 단위는 발표 그대로(`CURRENCY_AS_PUBLISHED`) | **첫 실행에서 확인**: 월 행의 `classification_desc` 표기와 상위 행 구조. 맞지 않으면 `SCHEMA_MISMATCH` |
+| FX | 수집하지 않음 | — | — | 공개 JSON에서 항상 `NOT_AVAILABLE`(`PUBLIC_FX_EXCLUDED`) |
+
+- Fed DDP는 "Build Your Package" 제거와 장차 종료가 예고되어 있다. 경로가 바뀌면 NA가 되며 FRED로 대체하지 않는다.
+- 허용 URL: 수집기는 위 고정 호스트·경로만 요청하고, DDP는 `rel`∈{H15,H41,H8}·32자리 16진 `series`·`filetype=csv`만, FiscalData는 `filter/sort/format/page[...]` 키만 허용한다(`macro_v0_collection._query_allowed`). 리디렉트는 거부한다.
+- 첫 실행 로그 확인: `MACRO_V0 axis=<축> state=<상태> reasons=<코드>` 줄만 출력된다(URL·값 없음). `SERIES_NOT_FOUND`/`SCHEMA_MISMATCH`가 나오면 해당 행의 확인 항목을 본다.
+
+### FX 공개는 별도 결정이 필요하다
+
+저장소 상시 규칙은 가격과 가격에서 파생한 값을 공개 저장소·Pages·로그에 두지 않는다. 명목 광의 달러지수는 환율(가격)에서 만든 지수라 이 경계와 충돌한다. 그래서 FX는 수집하지도 공개하지도 않고, 공개 JSON의 FX 행은 검증기가 `NOT_AVAILABLE`·`PUBLIC_FX_EXCLUDED`·출처 없음만 허용한다. FX 값을 공개하려면 가격 경계에 대한 명시적인 사용자 결정이 먼저 필요하다.
