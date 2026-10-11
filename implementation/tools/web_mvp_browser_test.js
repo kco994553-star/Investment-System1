@@ -5,6 +5,7 @@
 // lives on the watchlist screen. The old demo-fixture checks (a 90.79 QGV score, the Track D network page) can no longer
 // be built or served, so the equivalent checks assert the fail-closed behaviour instead.
 const { chromium } = require("playwright");
+const { routeEmptyPublicScreens } = require("./empty_public_screens.js");
 const fs = require("fs");
 const os = require("node:os");
 const path = require("node:path");
@@ -25,13 +26,14 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
   };
   // The optional SEC sidecar is absent from a build without collection; any other failure stays an error.
   const responses = (page) => page.on("response", (response) => {
-    if (response.status() >= 400 && !(response.status() === 404 && response.url() === new URL("sec-public-inputs.json", base).href)) traffic.failed_responses++;
+    if (response.status() >= 400 && !(response.status() === 404 && ["sec-public-inputs.json", "forward-validation-ledger.json"].some(name => response.url() === new URL(name, base).href))) traffic.failed_responses++;
   });
   const ctx = await browser.newContext({
     viewport: { width: 390, height: 844 },
     permissions: ["clipboard-read", "clipboard-write"],
   });
   await ctx.route("**/*", guard);
+  await routeEmptyPublicScreens(ctx);
   const page = await ctx.newPage();
   responses(page);
   const errors = [];
@@ -214,6 +216,7 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
     // Screenshots only from a fresh context: no interests, groups or other device records are present.
     const fresh = await browser.newContext({ viewport: { width: 390, height: 844 } });
     await fresh.route("**/*", guard);
+    await routeEmptyPublicScreens(fresh);
     const shot = await fresh.newPage();
     responses(shot);
     for (const name of ["home", "portfolio", "company/nvda", "news", "research"]) {

@@ -12,6 +12,11 @@ def _number(value):
     except OverflowError: return False
 
 
+def literal_phrase_counts(text, keywords):
+    """Case-insensitive literal phrase frequency with alphanumeric word boundaries; no stemming or fuzzy match."""
+    return {k: len(re.findall(r'(?<![A-Za-z0-9])' + re.escape(k) + r'(?![A-Za-z0-9])', text, re.I)) for k in keywords}
+
+
 def _themes(config):
     if not isinstance(config, dict) or config.get('schema_version') != 1 or config.get('role') != 'EXPOSURE_ONLY' or (type(config.get('maximum_display')) is not int or config['maximum_display'] != 2) or not isinstance(config.get('config_version'), str): raise ValueError('THEME_CONFIG_INVALID')
     if config.get('membership_rule') is not None: raise ValueError('MEMBERSHIP_RULE_UNAPPROVED')
@@ -56,7 +61,7 @@ def summarize_theme_exposure(*, config, etf_evidence, item1_text=None, market='U
             if row['held']: held += 1; weights[ticker] = weight
         counts = None
         if market == 'US' and item1_text is not None:
-            counts = {k: len(re.findall(r'(?<![A-Za-z0-9])' + re.escape(k) + r'(?![A-Za-z0-9])', item1_text, re.I)) for k in t['keywords']}
+            counts = literal_phrase_counts(item1_text, t['keywords'])
         # KR/JP evidence must not silently substitute for DART/EDINET coverage.
         if market != 'US': eligible = 0; weights = {}; counts = None; missing = [e['ticker'] for e in t['etfs']]; invalid_etfs = []
         member = overrides.get(t['id'])

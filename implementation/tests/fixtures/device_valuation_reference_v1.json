@@ -1,0 +1,1758 @@
+{
+ "cases": [
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": 0.008112449446343817,
+     "reason_codes": [],
+     "state": "PROVISIONAL"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 37.5,
+      "state": "CALCULATED"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 54.09857127298744,
+      "state": "CALCULATED"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "full",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 100.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": 8.25,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": -0.10747805278515443,
+     "reason_codes": [],
+     "state": "PROVISIONAL"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 62.5,
+      "state": "CALCULATED"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 92.62873868348686,
+      "state": "CALCULATED"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "full-low-price",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 60.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": 8.25,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": null,
+     "reason_codes": [
+      "NO_DEVICE_PRICE"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "MISSING_PRICE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "REVERSE_DCF_NOT_AVAILABLE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "no-device-price",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": null,
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": 8.25,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": null,
+     "reason_codes": [
+      "FCFE_NOT_AVAILABLE"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "BASIS_UNCONFIRMED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "REVERSE_DCF_NOT_AVAILABLE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "no-public-row",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 100.0
+    },
+    "row": null
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": null,
+     "reason_codes": [
+      "FCFE_NOT_AVAILABLE",
+      "NO_DEVICE_PRICE"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "MISSING_PRICE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "REVERSE_DCF_NOT_AVAILABLE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "no-row-no-price",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": null,
+    "row": null
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": null,
+     "reason_codes": [
+      "FCFE_NOT_AVAILABLE"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 37.5,
+      "state": "CALCULATED"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "REVERSE_DCF_NOT_AVAILABLE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "fcfe-not-available-eps-still-used",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 100.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": null,
+      "reason_codes": [
+       "NET_SHORT_TERM_BORROWING_MISSING"
+      ],
+      "state": "NOT_AVAILABLE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": null,
+     "reason_codes": [
+      "NON_POSITIVE_CASHFLOW"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 37.5,
+      "state": "CALCULATED"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "REVERSE_DCF_NOT_AVAILABLE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "negative-fcfe",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 100.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": -2.0,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": null,
+     "reason_codes": [
+      "ROOT_NOT_BRACKETED"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 0.0,
+      "state": "CALCULATED"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "REVERSE_DCF_NOT_AVAILABLE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "price-above-bracket-no-pe-proxy",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 5000.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": 0.5,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": null,
+     "reason_codes": [
+      "ROOT_NOT_BRACKETED"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 99.375,
+      "state": "CALCULATED"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "REVERSE_DCF_NOT_AVAILABLE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "price-below-bracket",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 1.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": 8.25,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": null,
+     "reason_codes": [
+      "CURRENCY_BASIS_UNCONFIRMED"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "BASIS_UNCONFIRMED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "REVERSE_DCF_NOT_AVAILABLE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "price-currency-mismatch",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "EUR",
+     "price": 100.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": 8.25,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": null,
+     "reason_codes": [
+      "CURRENCY_BASIS_UNCONFIRMED"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 37.5,
+      "state": "CALCULATED"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "REVERSE_DCF_NOT_AVAILABLE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "fcfe-currency-not-parameter-currency",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "EUR",
+     "price": 100.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "EUR",
+      "fcfe_per_share": 8.25,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "EUR",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": null,
+     "reason_codes": [
+      "INPUT_INVALID"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "INVALID_PRICE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "REVERSE_DCF_NOT_AVAILABLE",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "invalid-price-zero",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 0.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": 8.25,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": 0.008112449446343817,
+     "reason_codes": [],
+     "state": "PROVISIONAL"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 54.09857127298744,
+      "state": "CALCULATED"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "negative-eps",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 100.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": 8.25,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": -1.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": 0.008112449446343817,
+     "reason_codes": [],
+     "state": "PROVISIONAL"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 37.5,
+      "state": "CALCULATED"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "revenue-prev-missing",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 100.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": 8.25,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": null,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "V1_UNCALIBRATED_DEFAULT",
+    "reverse_dcf": {
+     "implied_growth": -0.04334213143738452,
+     "reason_codes": [],
+     "state": "PROVISIONAL"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 50.0,
+      "state": "CALCULATED"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 71.25009823423022,
+      "state": "CALCULATED"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_v1_default"
+   },
+   "id": "stale-row-still-computes",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.1,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "V1_UNCALIBRATED_DEFAULT",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 80.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": 8.25,
+      "reason_codes": [],
+      "state": "STALE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "dcf": {
+     "reason_codes": [
+      "EXPLICIT_GROWTH_UNDECIDED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value_per_share": null
+    },
+    "parameters_status": "CUSTOM_PREVIEW",
+    "reverse_dcf": {
+     "implied_growth": -0.02212231489829719,
+     "reason_codes": [],
+     "state": "PROVISIONAL"
+    },
+    "role": "RAM_ONLY_DEVICE",
+    "standard_status": "STANDARD v1 \u00b7 UNCALIBRATED",
+    "v_factors": {
+     "fundamental_value": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 37.5,
+      "state": "CALCULATED"
+     },
+     "historical_valuation": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "margin_of_safety": {
+      "reason": "EXPLICIT_GROWTH_UNDECIDED",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "peer_relative_value": {
+      "reason": "MISSING_INPUT",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "reverse_dcf": {
+      "reason": "APPROVED_V1_MAPPING",
+      "score": 64.17682605453444,
+      "state": "CALCULATED"
+     },
+     "sector_context": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     },
+     "theme_premium_discount": {
+      "reason": "UNDEFINED_PRICE_MAPPING",
+      "score": null,
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "version": "v1+dcf_custom"
+   },
+   "id": "custom-parameters-versioned",
+   "input": {
+    "parameters": {
+     "cashflow_basis": "FCFE_PER_SHARE",
+     "config_version": "dcf_parameters/v1-default",
+     "confirmed": true,
+     "currency": "USD",
+     "decided_at": "2026-10-11",
+     "discount_rate": 0.09,
+     "discount_rate_basis": "COST_OF_EQUITY",
+     "explicit_growth": null,
+     "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
+     "explicit_years": 5,
+     "fcfe_definition": "fcfe/1",
+     "output_version": "v1+dcf_v1_default",
+     "per_share_basis_confirmed": true,
+     "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
+     "role": "RAM_ONLY_RESEARCH",
+     "schema_version": 1,
+     "share_basis": "WEIGHTED_AVERAGE_DILUTED",
+     "solver": {
+      "growth_lower": -0.5,
+      "growth_upper": 1.0,
+      "maximum_iterations": 200,
+      "relative_price_tolerance": 1e-10
+     },
+     "status": "CUSTOM_PREVIEW",
+     "terminal_growth": 0.02,
+     "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    },
+    "quote": {
+     "currency": "USD",
+     "price": 100.0
+    },
+    "row": {
+     "fcfe": {
+      "currency": "USD",
+      "fcfe_per_share": 8.25,
+      "reason_codes": [],
+      "state": "LIVE"
+     },
+     "state": "LIVE",
+     "v_inputs": {
+      "currency": "USD",
+      "eps": 4.0,
+      "revenue": 5000.0,
+      "revenue_prev": 4900.0,
+      "state": "LIVE"
+     }
+    }
+   },
+   "operation": "device_value_view",
+   "synthetic": true
+  }
+ ],
+ "numeric_tolerance": {
+  "absolute": 1e-10,
+  "relative": 1e-10
+ },
+ "role": "REFERENCE_TEST_ONLY",
+ "schema_version": 1,
+ "synthetic": true
+}

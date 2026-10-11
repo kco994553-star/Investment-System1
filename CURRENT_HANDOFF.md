@@ -1,4 +1,4 @@
-# 현재 인수인계 — 2026-10-10 (Claude Code 메인 개발)
+# 현재 인수인계 — 2026-10-11 (Claude Code 메인 개발)
 
 메인 개발은 Claude Code가 맡는다(이전 코덱1·코덱2 역할 통합). 사용량이 떨어지면 이 파일만 보고 코덱스가 이어받을 수 있게 단위가 끝날 때마다 갱신한다. 이전 판(#155)의 상세 이력은 Git에 있다.
 
@@ -7,11 +7,13 @@
 - 작업 방식: 기능 단위 PR, 독립 작업은 서브에이전트 최대 3개가 각자 worktree·브랜치에서 병렬 진행, 진척마다 push, 병합 때마다 이 절 갱신.
 - 로컬 검증 도구(세션 scratchpad, 없으면 재작성): `pin_assets.sh`(가드 해시·files_scanned), `ci_local.sh`(필수 CI 동등 실행), `run_browser.sh`, `pytest_full.sh`(py3.12). Playwright는 1.58.2.
 - 이번 세션 추가 병합: #161 S03·S04·S05, #162 py3.13 호환+백업 `/3`(투자자 ★), #163 ROADMAP 상태+[사용자 결정 대기 목록](implementation/docs/USER_DECISIONS_PENDING.md), #164 S06·S07·S11·S13, #166 S08 지표 6카드·S09·S10 세부, #167 레거시 테스트 10종 복구+문구 현지화.
-- 열린 PR(모두 사용자 승인 대기):
-  - #156 (`ccr-fbc4f278-dnjicl`, 워크플로) CI manifest + 전체 pytest + 시간 제한 30/40분. node 21·브라우저 34종 등록, 로컬 fail=0 약 12분. 새 테스트는 이 manifest에 추가.
-  - #165 draft (`claude/type-metrics-public`, 공개 데이터 경계) 공개 유형 JSON에 revenue_cagr_3y·roic + 기기 기업별 유형 미리보기. 구현·검증 완료.
-  - #152 테마(바스켓 승인), #153 보존용(병합 안 함).
-- 다음 할 일: 결정 없이 진행 가능한 개발 항목은 소진. 사용자 결정([USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md)) 후 해당 항목 재개. 승인 시 #156 → #165 순 병합(각각 canonical 재병합·가드 재고정 필요).
+- 로컬 통합 도구 추가: `integrate.sh <worktree> <branch>`(canonical 병합 → 실제 충돌이면 중단 → 가드·테스트 목록 합집합 재고정 → 빈 화면 fixture 재생성 → 전체 pytest 깨끗할 때만 커밋·push).
+- **2026-10-11 병합(모두 필수 체크 성공):** #156 CI manifest, #165 공개 유형 metrics, #169 원자료 비공개 Release 워크플로, #171 시간대 테스트, #172 가상매매·일일보고서 문서·S17 명세·D-22 초안, #173 13F 운용사 v0 10곳, **#175 실데이터 배포 빌드에서 멈추던 빈 상태 테스트 수정**(10-10 22:24 SEC 일일·10-11 첫 수동 배포 실패 원인), #174 M3 Universe504 주식수 공개 JSON, #176 DCF v1 기본값·FCFE 공개 입력·기기 역DCF, #177 매크로 v0 Growth·Inflation, #178 SIC 업종군 v0·테마 v0·집중 경고 40%, #180 가상매매 엔진 v1(PROVISIONAL, 시작일 미정이라 기록 없음)·S17 일일보고서 2화면·금액 숨김, #181 인수인계, #183 전진검증 원장 v1(10-19 시작, 추가 전용·워크플로 연결·Pages 가드 항목 상한 96).
+- **배포:** 승인된 cockpit-pages 수동 실행 2회차 38102573223 성공(01:48 UTC, `afe55d44`). 이후 병합분(#174·#176·#177·#178·#180·#183 등)은 다음 SEC 일일 실행(22:17 UTC)에서 배포된다. 그 실행이 13F CIK 확인·Universe 샤드·매크로 v0·분류 수집을 처음 실제로 돌린다.
+- **열린 PR:**
+  - 사용자 승인 대기: #170 GSQ-020(10-11 결정 기록), #179 GSQ-018·019. 우체통 구현 #182(GSQ-019 승인 후 병합).
+- **사용자 조치 대기:** 원자료 비공개 저장소·`RAW_REPO_TOKEN` 생성([절차](implementation/docs/producer_infrastructure/RAW_PRIVATE_RELEASE_PROCEDURE.md), 451MB 원자료 만료 2026-12-26), D-22 대응표·Worker 시세 범위, DCF 명시기간 성장률 h·미보고 줄 처리, 매크로 6축 시계열 일괄 승인([제안](implementation/docs/macro_data_rights/MACRO_V0_SERIES_PROPOSAL.md)), 가상매매 시작일(D-13).
+- **다음 할 일:** 다음 SEC 일일 실행(10-11 22:17 UTC) 결과 확인(13F·Universe·매크로·분류 실데이터) → 승인 시 #170·#179·우체통 병합.
 - 알려진 제품 갭(결정 필요 아님, 후속 후보): 전체 검색이 기업을 내지 않음(GSQ-010 identity 디렉터리만), 백업 복원 후 ACTUAL 화면 알림 없음, `sec-public-inputs.json`은 SEC 수집 없는 빌드에서 404.
 
 ## 읽기 순서와 운영 경계
@@ -19,7 +21,7 @@
 1. [WORKING_RULES.md](WORKING_RULES.md): 1인용 혼합 운영 규칙.
 2. 이 파일: 실제 완료·미완료·의존·운영 상태.
 3. [ROADMAP_2026Q4.md](implementation/docs/ROADMAP_2026Q4.md): 범위·연구 및 후속 정책. 진행 상태는 이 파일이 우선한다.
-4. [DESIGN_CANVAS_SCREENS_v1.md](implementation/docs/cockpit_ia/DESIGN_CANVAS_SCREENS_v1.md): S01~S16 화면 정본.
+4. [DESIGN_CANVAS_SCREENS_v1.md](implementation/docs/cockpit_ia/DESIGN_CANVAS_SCREENS_v1.md): S01~S17 화면 정본.
 5. 26E 결정 기록: [GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md](implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md) GSQ-005~017.
 
 병합 규칙(2026-10-10 사용자 지시): PR 단위로 push하고 **실행된 필수 체크 전부 성공·실패 0이면 자체 병합**. 단 **인증·배포·Worker·워크플로·공개 데이터 경계·26E 결정 기록 변경은 사용자 승인 후 병합**. force push·ruleset·AUTONOMY_MODE 변경(READ_ONLY 유지) 금지, 새 방법론·가중치·TARGET 임의 변경과 Holdout 사용 금지, 공개 저장소·Pages·Actions 로그에 가격·가격 파생값·개인 데이터 금지, Secret 값 출력 금지, 매수·매도·주문·이체 기능 금지, 결측은 NOT_AVAILABLE(0 대체 금지).

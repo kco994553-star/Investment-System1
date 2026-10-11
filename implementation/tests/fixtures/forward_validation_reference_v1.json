@@ -1,0 +1,2764 @@
+{
+ "cases": [
+  {
+   "expected": {
+    "basis": "ADJUSTED_CLOSE_LOCAL_CURRENCY_NO_FX",
+    "benchmark": {
+     "reason": "SP500_NOT_IN_PRIVATE_HISTORY_WORKER",
+     "state": "NOT_AVAILABLE"
+    },
+    "end_date_max": "2026-10-21",
+    "end_date_min": "2026-10-21",
+    "instruments": {
+     "amd": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.00749999999999984,
+      "state": "AVAILABLE"
+     },
+     "amzn": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.007500000000000062,
+      "state": "AVAILABLE"
+     },
+     "asml": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.022499999999999964,
+      "state": "AVAILABLE"
+     },
+     "avgo": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.0050000000000000044,
+      "state": "AVAILABLE"
+     },
+     "etn": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.014999999999999902,
+      "state": "AVAILABLE"
+     },
+     "gev": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.020000000000000018,
+      "state": "AVAILABLE"
+     },
+     "googl": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.004999999999999893,
+      "state": "AVAILABLE"
+     },
+     "hanmi": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.012500000000000067,
+      "state": "AVAILABLE"
+     },
+     "hubb": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.01750000000000007,
+      "state": "AVAILABLE"
+     },
+     "intc": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.0,
+      "state": "AVAILABLE"
+     },
+     "klac": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.01749999999999996,
+      "state": "AVAILABLE"
+     },
+     "lrcx": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.020000000000000018,
+      "state": "AVAILABLE"
+     },
+     "msft": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.0024999999999999467,
+      "state": "AVAILABLE"
+     },
+     "nvda": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.009999999999999898,
+      "state": "AVAILABLE"
+     },
+     "qcom": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.0024999999999999467,
+      "state": "AVAILABLE"
+     },
+     "rok": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.022499999999999964,
+      "state": "AVAILABLE"
+     },
+     "rtx": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.010000000000000009,
+      "state": "AVAILABLE"
+     },
+     "stry": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "tokyo_electron": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.015000000000000013,
+      "state": "AVAILABLE"
+     }
+    },
+    "missing_count": 0,
+    "portfolio_return": -0.002349999999999994,
+    "reason": null,
+    "start_date": "2026-10-19",
+    "state": "AVAILABLE"
+   },
+   "id": "all_available",
+   "input": {
+    "series": {
+     "amd": [
+      {
+       "adjusted_close": 81.25,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 82.75,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 83.784375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 82.12937500000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 124.125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "amzn": [
+      {
+       "adjusted_close": 124.0,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 125.5,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 127.06875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 126.44125000000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 188.25,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "asml": [
+      {
+       "adjusted_close": 38.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 40.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 40.5,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 39.1,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 60.0,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "avgo": [
+      {
+       "adjusted_close": 88.375,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 89.875,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 90.9984375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 89.425625,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 134.8125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "etn": [
+      {
+       "adjusted_close": 145.375,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 146.875,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 148.7109375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 149.07812499999997,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 220.3125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "gev": [
+      {
+       "adjusted_close": 159.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 161.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 163.1390625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 164.3475,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 241.6875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "googl": [
+      {
+       "adjusted_close": 116.875,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 118.375,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 119.8546875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 118.96687499999999,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 177.5625,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "hanmi": [
+      {
+       "adjusted_close": 67.0,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 68.5,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 69.35625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 67.64375,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 102.75,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "hubb": [
+      {
+       "adjusted_close": 152.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 154.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 155.92499999999998,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 156.69500000000002,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 231.0,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "intc": [
+      {
+       "adjusted_close": 102.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 104.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 105.42656249999999,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 104.125,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 156.1875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "klac": [
+      {
+       "adjusted_close": 52.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 54.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 54.928124999999994,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 53.300625000000004,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 81.375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "lrcx": [
+      {
+       "adjusted_close": 45.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 47.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 47.7140625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 46.1825,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 70.6875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "msft": [
+      {
+       "adjusted_close": 109.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 111.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 112.640625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 111.52812499999999,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 166.875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "nvda": [
+      {
+       "adjusted_close": 74.125,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 75.625,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 76.5703125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 74.86875,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 113.4375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "qcom": [
+      {
+       "adjusted_close": 95.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 97.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 98.21249999999999,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 96.75750000000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 145.5,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "rok": [
+      {
+       "adjusted_close": 166.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 168.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 170.353125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 172.03562499999998,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 252.375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "rtx": [
+      {
+       "adjusted_close": 131.125,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 132.625,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 134.2828125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 133.95125,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 198.9375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "stry": [
+      {
+       "adjusted_close": 138.25,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 139.75,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 141.496875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 141.496875,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 209.625,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "tokyo_electron": [
+      {
+       "adjusted_close": 59.875,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 61.375,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 62.1421875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 60.454375,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 92.0625,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ]
+    },
+    "start_date": "2026-10-19",
+    "weights_units": {
+     "amd": 500,
+     "amzn": 600,
+     "asml": 900,
+     "avgo": 500,
+     "etn": 500,
+     "gev": 300,
+     "googl": 700,
+     "hanmi": 450,
+     "hubb": 350,
+     "intc": 300,
+     "klac": 550,
+     "lrcx": 600,
+     "msft": 700,
+     "nvda": 800,
+     "qcom": 400,
+     "rok": 200,
+     "rtx": 600,
+     "stry": 550,
+     "tokyo_electron": 500
+    }
+   },
+   "operation": "forward_return",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "basis": "ADJUSTED_CLOSE_LOCAL_CURRENCY_NO_FX",
+    "benchmark": {
+     "reason": "SP500_NOT_IN_PRIVATE_HISTORY_WORKER",
+     "state": "NOT_AVAILABLE"
+    },
+    "end_date_max": null,
+    "end_date_min": null,
+    "instruments": {
+     "amd": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.00749999999999984,
+      "state": "AVAILABLE"
+     },
+     "amzn": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.007500000000000062,
+      "state": "AVAILABLE"
+     },
+     "asml": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.022499999999999964,
+      "state": "AVAILABLE"
+     },
+     "avgo": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.0050000000000000044,
+      "state": "AVAILABLE"
+     },
+     "etn": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.014999999999999902,
+      "state": "AVAILABLE"
+     },
+     "gev": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.020000000000000018,
+      "state": "AVAILABLE"
+     },
+     "googl": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.004999999999999893,
+      "state": "AVAILABLE"
+     },
+     "hanmi": {
+      "reason": "HISTORY_NOT_LOADED",
+      "state": "NOT_AVAILABLE"
+     },
+     "hubb": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.01750000000000007,
+      "state": "AVAILABLE"
+     },
+     "intc": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.0,
+      "state": "AVAILABLE"
+     },
+     "klac": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.01749999999999996,
+      "state": "AVAILABLE"
+     },
+     "lrcx": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.020000000000000018,
+      "state": "AVAILABLE"
+     },
+     "msft": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.0024999999999999467,
+      "state": "AVAILABLE"
+     },
+     "nvda": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.009999999999999898,
+      "state": "AVAILABLE"
+     },
+     "qcom": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.0024999999999999467,
+      "state": "AVAILABLE"
+     },
+     "rok": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.022499999999999964,
+      "state": "AVAILABLE"
+     },
+     "rtx": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.010000000000000009,
+      "state": "AVAILABLE"
+     },
+     "stry": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "tokyo_electron": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.015000000000000013,
+      "state": "AVAILABLE"
+     }
+    },
+    "missing_count": 1,
+    "portfolio_return": null,
+    "reason": "INSTRUMENTS_MISSING",
+    "start_date": "2026-10-19",
+    "state": "NOT_AVAILABLE"
+   },
+   "id": "one_not_loaded_is_not_zero",
+   "input": {
+    "series": {
+     "amd": [
+      {
+       "adjusted_close": 81.25,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 82.75,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 83.784375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 82.12937500000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 124.125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "amzn": [
+      {
+       "adjusted_close": 124.0,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 125.5,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 127.06875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 126.44125000000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 188.25,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "asml": [
+      {
+       "adjusted_close": 38.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 40.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 40.5,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 39.1,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 60.0,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "avgo": [
+      {
+       "adjusted_close": 88.375,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 89.875,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 90.9984375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 89.425625,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 134.8125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "etn": [
+      {
+       "adjusted_close": 145.375,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 146.875,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 148.7109375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 149.07812499999997,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 220.3125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "gev": [
+      {
+       "adjusted_close": 159.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 161.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 163.1390625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 164.3475,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 241.6875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "googl": [
+      {
+       "adjusted_close": 116.875,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 118.375,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 119.8546875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 118.96687499999999,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 177.5625,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "hubb": [
+      {
+       "adjusted_close": 152.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 154.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 155.92499999999998,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 156.69500000000002,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 231.0,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "intc": [
+      {
+       "adjusted_close": 102.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 104.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 105.42656249999999,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 104.125,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 156.1875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "klac": [
+      {
+       "adjusted_close": 52.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 54.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 54.928124999999994,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 53.300625000000004,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 81.375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "lrcx": [
+      {
+       "adjusted_close": 45.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 47.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 47.7140625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 46.1825,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 70.6875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "msft": [
+      {
+       "adjusted_close": 109.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 111.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 112.640625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 111.52812499999999,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 166.875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "nvda": [
+      {
+       "adjusted_close": 74.125,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 75.625,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 76.5703125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 74.86875,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 113.4375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "qcom": [
+      {
+       "adjusted_close": 95.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 97.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 98.21249999999999,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 96.75750000000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 145.5,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "rok": [
+      {
+       "adjusted_close": 166.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 168.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 170.353125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 172.03562499999998,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 252.375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "rtx": [
+      {
+       "adjusted_close": 131.125,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 132.625,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 134.2828125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 133.95125,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 198.9375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "stry": [
+      {
+       "adjusted_close": 138.25,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 139.75,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 141.496875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 141.496875,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 209.625,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "tokyo_electron": [
+      {
+       "adjusted_close": 59.875,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 61.375,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 62.1421875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 60.454375,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 92.0625,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ]
+    },
+    "start_date": "2026-10-19",
+    "weights_units": {
+     "amd": 500,
+     "amzn": 600,
+     "asml": 900,
+     "avgo": 500,
+     "etn": 500,
+     "gev": 300,
+     "googl": 700,
+     "hanmi": 450,
+     "hubb": 350,
+     "intc": 300,
+     "klac": 550,
+     "lrcx": 600,
+     "msft": 700,
+     "nvda": 800,
+     "qcom": 400,
+     "rok": 200,
+     "rtx": 600,
+     "stry": 550,
+     "tokyo_electron": 500
+    }
+   },
+   "operation": "forward_return",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "basis": "ADJUSTED_CLOSE_LOCAL_CURRENCY_NO_FX",
+    "benchmark": {
+     "reason": "SP500_NOT_IN_PRIVATE_HISTORY_WORKER",
+     "state": "NOT_AVAILABLE"
+    },
+    "end_date_max": null,
+    "end_date_min": null,
+    "instruments": {
+     "amd": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.00749999999999984,
+      "state": "AVAILABLE"
+     },
+     "amzn": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.007500000000000062,
+      "state": "AVAILABLE"
+     },
+     "asml": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.022499999999999964,
+      "state": "AVAILABLE"
+     },
+     "avgo": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.0050000000000000044,
+      "state": "AVAILABLE"
+     },
+     "etn": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.014999999999999902,
+      "state": "AVAILABLE"
+     },
+     "gev": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.020000000000000018,
+      "state": "AVAILABLE"
+     },
+     "googl": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.004999999999999893,
+      "state": "AVAILABLE"
+     },
+     "hanmi": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.012500000000000067,
+      "state": "AVAILABLE"
+     },
+     "hubb": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.01750000000000007,
+      "state": "AVAILABLE"
+     },
+     "intc": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.0,
+      "state": "AVAILABLE"
+     },
+     "klac": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.01749999999999996,
+      "state": "AVAILABLE"
+     },
+     "lrcx": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.020000000000000018,
+      "state": "AVAILABLE"
+     },
+     "msft": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.0024999999999999467,
+      "state": "AVAILABLE"
+     },
+     "nvda": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.009999999999999898,
+      "state": "AVAILABLE"
+     },
+     "qcom": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": -0.0024999999999999467,
+      "state": "AVAILABLE"
+     },
+     "rok": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.022499999999999964,
+      "state": "AVAILABLE"
+     },
+     "rtx": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.010000000000000009,
+      "state": "AVAILABLE"
+     },
+     "stry": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-21",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "tokyo_electron": {
+      "reason": "RATE_LIMITED",
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "missing_count": 1,
+    "portfolio_return": null,
+    "reason": "INSTRUMENTS_MISSING",
+    "start_date": "2026-10-19",
+    "state": "NOT_AVAILABLE"
+   },
+   "id": "worker_code_kept",
+   "input": {
+    "series": {
+     "amd": [
+      {
+       "adjusted_close": 81.25,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 82.75,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 83.784375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 82.12937500000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 124.125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "amzn": [
+      {
+       "adjusted_close": 124.0,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 125.5,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 127.06875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 126.44125000000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 188.25,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "asml": [
+      {
+       "adjusted_close": 38.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 40.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 40.5,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 39.1,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 60.0,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "avgo": [
+      {
+       "adjusted_close": 88.375,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 89.875,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 90.9984375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 89.425625,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 134.8125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "etn": [
+      {
+       "adjusted_close": 145.375,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 146.875,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 148.7109375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 149.07812499999997,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 220.3125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "gev": [
+      {
+       "adjusted_close": 159.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 161.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 163.1390625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 164.3475,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 241.6875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "googl": [
+      {
+       "adjusted_close": 116.875,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 118.375,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 119.8546875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 118.96687499999999,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 177.5625,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "hanmi": [
+      {
+       "adjusted_close": 67.0,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 68.5,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 69.35625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 67.64375,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 102.75,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "hubb": [
+      {
+       "adjusted_close": 152.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 154.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 155.92499999999998,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 156.69500000000002,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 231.0,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "intc": [
+      {
+       "adjusted_close": 102.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 104.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 105.42656249999999,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 104.125,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 156.1875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "klac": [
+      {
+       "adjusted_close": 52.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 54.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 54.928124999999994,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 53.300625000000004,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 81.375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "lrcx": [
+      {
+       "adjusted_close": 45.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 47.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 47.7140625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 46.1825,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 70.6875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "msft": [
+      {
+       "adjusted_close": 109.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 111.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 112.640625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 111.52812499999999,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 166.875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "nvda": [
+      {
+       "adjusted_close": 74.125,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 75.625,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 76.5703125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 74.86875,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 113.4375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "qcom": [
+      {
+       "adjusted_close": 95.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 97.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 98.21249999999999,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 96.75750000000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 145.5,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "rok": [
+      {
+       "adjusted_close": 166.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 168.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 170.353125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 172.03562499999998,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 252.375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "rtx": [
+      {
+       "adjusted_close": 131.125,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 132.625,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 134.2828125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 133.95125,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 198.9375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "stry": [
+      {
+       "adjusted_close": 138.25,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 139.75,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 141.496875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 141.496875,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 209.625,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "tokyo_electron": "RATE_LIMITED"
+    },
+    "start_date": "2026-10-19",
+    "weights_units": {
+     "amd": 500,
+     "amzn": 600,
+     "asml": 900,
+     "avgo": 500,
+     "etn": 500,
+     "gev": 300,
+     "googl": 700,
+     "hanmi": 450,
+     "hubb": 350,
+     "intc": 300,
+     "klac": 550,
+     "lrcx": 600,
+     "msft": 700,
+     "nvda": 800,
+     "qcom": 400,
+     "rok": 200,
+     "rtx": 600,
+     "stry": 550,
+     "tokyo_electron": 500
+    }
+   },
+   "operation": "forward_return",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "basis": "ADJUSTED_CLOSE_LOCAL_CURRENCY_NO_FX",
+    "benchmark": {
+     "reason": "SP500_NOT_IN_PRIVATE_HISTORY_WORKER",
+     "state": "NOT_AVAILABLE"
+    },
+    "end_date_max": null,
+    "end_date_min": null,
+    "instruments": {
+     "base_null": {
+      "reason": "BASE_ADJUSTED_CLOSE_MISSING",
+      "state": "NOT_AVAILABLE"
+     },
+     "base_only": {
+      "reason": "NO_SESSION_AFTER_BASE",
+      "state": "NOT_AVAILABLE"
+     },
+     "before_start_only": {
+      "reason": "NO_SESSION_ON_OR_AFTER_START",
+      "state": "NOT_AVAILABLE"
+     },
+     "end_null": {
+      "reason": "END_ADJUSTED_CLOSE_MISSING",
+      "state": "NOT_AVAILABLE"
+     },
+     "holiday_gap": {
+      "base_date": "2026-10-20",
+      "end_date": "2026-10-23",
+      "reason": null,
+      "return": 0.07499999999999996,
+      "state": "AVAILABLE"
+     }
+    },
+    "missing_count": 4,
+    "portfolio_return": null,
+    "reason": "INSTRUMENTS_MISSING",
+    "start_date": "2026-10-19",
+    "state": "NOT_AVAILABLE"
+   },
+   "id": "instrument_edges",
+   "input": {
+    "series": {
+     "base_null": [
+      {
+       "adjusted_close": null,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 12.0,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      }
+     ],
+     "base_only": [
+      {
+       "adjusted_close": 10.0,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 11.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 12.0,
+       "session_date": "2026-10-20",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "before_start_only": [
+      {
+       "adjusted_close": 10.0,
+       "session_date": "2026-10-15",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 11.0,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      }
+     ],
+     "end_null": [
+      {
+       "adjusted_close": 10.0,
+       "session_date": "2026-10-19",
+       "session_status": "UNKNOWN"
+      },
+      {
+       "adjusted_close": null,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      }
+     ],
+     "holiday_gap": [
+      {
+       "adjusted_close": 20.0,
+       "session_date": "2026-10-20",
+       "session_status": "UNKNOWN"
+      },
+      {
+       "adjusted_close": 21.5,
+       "session_date": "2026-10-23",
+       "session_status": "UNKNOWN"
+      }
+     ]
+    },
+    "start_date": "2026-10-19",
+    "weights_units": {
+     "base_null": 100,
+     "base_only": 100,
+     "before_start_only": 100,
+     "end_null": 100,
+     "holiday_gap": 100
+    }
+   },
+   "operation": "forward_return",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "G": {
+     "available": 11,
+     "covered_units": 6050,
+     "weighted_mean": 40.082644628099175
+    },
+    "Q": {
+     "available": 12,
+     "covered_units": 6500,
+     "weighted_mean": 51.722115384615385
+    },
+    "companies": 19,
+    "date": "2026-10-19",
+    "reason_codes": [],
+    "state": "RECORDED"
+   },
+   "id": "qg_summary_recorded",
+   "input": {
+    "companies": {
+     "amd": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 6,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "amzn": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 6,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "asml": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 6,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "avgo": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 43.25
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 47.9375
+      },
+      "state": "LIVE"
+     },
+     "etn": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 6,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "gev": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 25.75
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 73.5625
+      },
+      "state": "LIVE"
+     },
+     "googl": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 36.25
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 58.1875
+      },
+      "state": "LIVE"
+     },
+     "hanmi": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 40.25
+      },
+      "state": "LIVE"
+     },
+     "hubb": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 27.5
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 71.0
+      },
+      "state": "LIVE"
+     },
+     "intc": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 6,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "klac": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 52.0
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 35.125
+      },
+      "state": "LIVE"
+     },
+     "lrcx": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 53.75
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 32.5625
+      },
+      "state": "LIVE"
+     },
+     "msft": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 38.0
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 55.625
+      },
+      "state": "LIVE"
+     },
+     "nvda": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 46.75
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 42.8125
+      },
+      "state": "LIVE"
+     },
+     "qcom": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 41.5
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 50.5
+      },
+      "state": "LIVE"
+     },
+     "rok": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 6,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "rtx": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 32.75
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 63.3125
+      },
+      "state": "LIVE"
+     },
+     "stry": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 31.0
+      },
+      "Q": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 6,
+       "score": 65.875
+      },
+      "state": "LIVE"
+     },
+     "tokyo_electron": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 6,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "date": "2026-10-19",
+    "reason_codes": [],
+    "state": "RECORDED",
+    "target": {
+     "weights_units": {
+      "amd": 500,
+      "amzn": 600,
+      "asml": 900,
+      "avgo": 500,
+      "etn": 500,
+      "gev": 300,
+      "googl": 700,
+      "hanmi": 450,
+      "hubb": 350,
+      "intc": 300,
+      "klac": 550,
+      "lrcx": 600,
+      "msft": 700,
+      "nvda": 800,
+      "qcom": 400,
+      "rok": 200,
+      "rtx": 600,
+      "stry": 550,
+      "tokyo_electron": 500
+     }
+    }
+   },
+   "operation": "qg_summary",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "date": "2026-10-20",
+    "reason_codes": [
+     "SEC_QG_FACTORS_MISSING"
+    ],
+    "state": "NOT_AVAILABLE"
+   },
+   "id": "qg_summary_not_available",
+   "input": {
+    "companies": null,
+    "date": "2026-10-20",
+    "reason_codes": [
+     "SEC_QG_FACTORS_MISSING"
+    ],
+    "state": "NOT_AVAILABLE",
+    "target": null
+   },
+   "operation": "qg_summary",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "G": {
+     "available": 11,
+     "covered_units": 6050,
+     "weighted_mean": 40.082644628099175
+    },
+    "Q": {
+     "available": 0,
+     "covered_units": 0,
+     "weighted_mean": null
+    },
+    "companies": 19,
+    "date": "2026-10-19",
+    "reason_codes": [],
+    "state": "RECORDED"
+   },
+   "id": "qg_summary_no_q_scores",
+   "input": {
+    "companies": {
+     "amd": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "amzn": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "asml": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "avgo": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 43.25
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "etn": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "gev": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 25.75
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "googl": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 36.25
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "hanmi": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "hubb": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 27.5
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "intc": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "klac": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 52.0
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "lrcx": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 53.75
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "msft": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 38.0
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "nvda": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 46.75
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "qcom": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 41.5
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "rok": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     "rtx": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 32.75
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "stry": {
+      "G": {
+       "coverage": "PARTIAL",
+       "missing_factor_count": 5,
+       "score": 31.0
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "LIVE"
+     },
+     "tokyo_electron": {
+      "G": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 5,
+       "score": null
+      },
+      "Q": {
+       "coverage": "BLOCKED",
+       "missing_factor_count": 7,
+       "score": null
+      },
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "date": "2026-10-19",
+    "reason_codes": [],
+    "state": "RECORDED",
+    "target": {
+     "weights_units": {
+      "amd": 500,
+      "amzn": 600,
+      "asml": 900,
+      "avgo": 500,
+      "etn": 500,
+      "gev": 300,
+      "googl": 700,
+      "hanmi": 450,
+      "hubb": 350,
+      "intc": 300,
+      "klac": 550,
+      "lrcx": 600,
+      "msft": 700,
+      "nvda": 800,
+      "qcom": 400,
+      "rok": 200,
+      "rtx": 600,
+      "stry": 550,
+      "tokyo_electron": 500
+     }
+    }
+   },
+   "operation": "qg_summary",
+   "synthetic": true
+  }
+ ],
+ "role": "REFERENCE_TEST_ONLY",
+ "synthetic": true
+}

@@ -136,6 +136,16 @@ def _validate_body(body: bytes, expected_cik: str) -> None:
             pending.extend(value)
 
 
+def _validate_object(body: bytes) -> None:
+    try:
+        payload = json.loads(body.decode("utf-8"), parse_constant=_reject_constant,
+                             object_pairs_hook=_unique_object)
+    except (UnicodeError, ValueError, RecursionError):
+        raise SecCollectionError("SEC_JSON_INVALID") from None
+    if not isinstance(payload, dict):
+        raise SecCollectionError("SEC_JSON_INVALID") from None
+
+
 class SecCollectionClient:
     """Serial, retry-bounded loader compatible with sec_m1_inputs.run_batch.
 
@@ -225,13 +235,17 @@ class SecCollectionClient:
             raise SecCollectionError("SEC_RETRY_AFTER_EXCEEDS_BUDGET") from None
         return wait
 
-    def _request(self, url: str, cik: str) -> bytes:
+    def _request(self, url: str, cik: str | None, *, expect: str = "issuer_json") -> bytes:
+        # expect: issuer_json (CIK-bound JSON), json (unbound JSON object), xml (bounded bytes only)
+        if expect not in ("issuer_json", "json", "xml") or (expect == "issuer_json") != isinstance(cik, str):
+            raise SecCollectionError("SEC_CONFIG_INVALID") from None
         _require_url(url)
         for attempt in range(MAX_ATTEMPTS):
             self._pace()
             try:
                 response = self._transport(
-                    url, headers={"User-Agent": self._user_agent, "Accept": "application/json"},
+                    url, headers={"User-Agent": self._user_agent,
+                                  "Accept": "application/xml" if expect == "xml" else "application/json"},
                     timeout=REQUEST_TIMEOUT, max_body_bytes=MAX_BODY_BYTES,
                 )
             except SecCollectionError as error:
@@ -262,7 +276,10 @@ class SecCollectionClient:
             if len(response.body) > MAX_BODY_BYTES:
                 raise SecCollectionError("SEC_RESPONSE_TOO_LARGE") from None
             if response.status == 200:
-                try: _validate_body(response.body, cik)
+                try:
+                    if expect == "issuer_json": _validate_body(response.body, cik)
+                    elif expect == "json": _validate_object(response.body)
+                    elif not response.body: raise SecCollectionError("SEC_RESPONSE_INVALID") from None
                 except SecCollectionError as error:
                     raise SecCollectionError(error.args[0], stage='parse') from None
                 return response.body

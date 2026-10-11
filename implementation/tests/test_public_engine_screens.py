@@ -27,7 +27,7 @@ def sec(tmp_path,synthetic=False,acquired='2026-10-10T00:00:00Z'):
 
 def test_empty_input_produces_five_versioned_unavailable_files(tmp_path):
     outputs=build(tmp_path)
-    assert len(outputs)==5
+    assert len(outputs)==6
     for name,payload in outputs.items():
         assert payload['schema_version']==1 and payload['state']=='NOT_AVAILABLE' and payload['as_of']==NOW.isoformat()
         assert payload['sources']==[]
@@ -93,7 +93,7 @@ def test_cli_preserves_existing_assets_and_passes_pages_artifact_guard(tmp_path,
     source=tmp_path/'manifest.json';source.write_text(json.dumps(manifest()))
     assert mod.main(['--manifest',str(source),'--output-dir',str(site),'--as-of',NOW.isoformat(),'--stale-after-hours','48'])==0
     assert scan_artifact(site)['pages_artifact_guard']=='PASS'
-    assert 'PUBLIC_SCREENS_OK files=5' in capsys.readouterr().out
+    assert 'PUBLIC_SCREENS_OK files=6' in capsys.readouterr().out
 
 
 def test_manifest_path_escape_and_duplicate_company_fail_without_source_values(tmp_path):
@@ -243,3 +243,18 @@ def test_merged_type_engine_uses_three_year_revenue_ramp_without_price(tmp_path)
     row=out['data']['companies']['nvda']
     assert row['memberships']['growth']==pytest.approx(.5)
     assert row['config_version']=='type_config/1' and row['state']=='LIVE'
+
+
+def test_pricefree_type_metrics_are_published_beside_memberships_and_legacy_rows_still_validate(tmp_path):
+    out=build(tmp_path,sec(tmp_path))['company-types-pricefree.json']
+    row=out['data']['companies']['nvda']
+    assert set(row['metrics'])=={'revenue_cagr_3y','roic'}
+    assert row['metrics']['revenue_cagr_3y']==pytest.approx(.15)
+    assert out['data']['companies']['asml']['metrics']=={'revenue_cagr_3y':None,'roic':None}
+    assert 'price' not in json.dumps(out)
+    legacy=json.loads(json.dumps(out))
+    for r in legacy['data']['companies'].values():r.pop('metrics')
+    api().require_public_screen('company-types-pricefree.json',legacy)
+    for bad in (float('nan'),1e9,'0.1'):
+        broken=json.loads(json.dumps(out));broken['data']['companies']['nvda']['metrics']['roic']=bad
+        with pytest.raises(ValueError):api().require_public_screen('company-types-pricefree.json',broken)

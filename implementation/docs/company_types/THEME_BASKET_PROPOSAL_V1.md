@@ -1,4 +1,6 @@
-# 테마 v1 바스켓·키워드 제안 — 사용자 확인 대기
+# 테마 v1 바스켓·키워드 제안 — 이력 (2026-10-11 v0 채택)
+
+> 2026-10-11 사용자 결정으로 이 제안이 [`theme_config_v0.json`](../../src/investment_system/qgv/theme_config_v0.json)(V0_UNCALIBRATED_DEFAULT)으로 채택됐다. 변경: 전력 인프라=GRID만(PAVE 제외), 소비자 브랜드 '근거 약함' 화면 표시. 소속 규칙·쏠림 경고는 [SIC_THEME_V0](SIC_THEME_V0.md). 이 문서와 `theme_config_v1.json`은 이력으로 보존한다.
 
 GSQ-017: Q/G/V 비중 영향 없이 노출·쏠림 경고용. 버전 있는 [`theme_config_v1.json`](../../src/investment_system/qgv/theme_config_v1.json)에 14개 정의·ETF·키워드·한계를 분리했다. type_config의 exposure-only 부분에 넣을 companion 설정이며 공식 유형 원본을 수정하지 않는다. `membership_rule=null`, baskets_confirmed=false: 확인 전 자동 소속도는NA다. 공식 설정과 사용자 복사본/override는 섞지 않는다.
 

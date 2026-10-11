@@ -106,6 +106,9 @@ _BEA_NUMBER = re.compile(r"[+-]?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?", re.ASCII)
 def _number(raw: object, provider: str) -> tuple[Decimal | None, str | None]:
     if provider in ("BEA", "TREASURY") and (raw is None or (type(raw) is str and raw in ("", "N/A", "NA", "(NA)", "--", "---", "...", "(D)"))):
         return None, "MISSING_SOURCE"
+    if provider == "BLS" and raw == "-":
+        # BLS publishes "-" for a month that was not collected; it is missing, never 0.
+        return None, "MISSING_SOURCE"
     pattern = _BEA_NUMBER if provider == "BEA" else _NUMBER
     if type(raw) is not str or pattern.fullmatch(raw) is None:
         return None, "INVALID_VALUE"
