@@ -73,7 +73,10 @@ def cfg(start):
 def scenarios():
     out = []
     L = base_ledger(n=30)
-    out.append({'name': 'not_started', 'config': vt.load_config(), 'ledger': L})
+    out.append({'name': 'not_started', 'config': cfg(None), 'ledger': L})
+
+    L = base_ledger(n=30)
+    out.append({'name': 'before_start_date', 'config': vt.load_config(), 'ledger': L})
 
     L = base_ledger()
     out.append({'name': 'set_a_deposit_buys', 'config': cfg(L['sessions'][280]), 'ledger': L})
@@ -100,7 +103,7 @@ def scenarios():
     L['events'] = {d[287]: {'bbb': ['EARNINGS_WINDOW']}}
     L['snapshots'][d[289]]['bbb']['coverage'] = 'PARTIAL'
     L['snapshots'][d[291]]['bbb']['coverage'] = 'BLOCKED'
-    out.append({'name': 'shadow_rules', 'config': cfg(d[start]), 'ledger': L})
+    out.append({'name': 'shadow_rules', 'config': {**cfg(d[start]), 'sector_basis': 'SP500_SUBSTITUTE_D22_PENDING'}, 'ledger': L})
 
     L = base_ledger('SHADOW', n=30)
     L['target_weights'] = None
