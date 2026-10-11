@@ -122,7 +122,7 @@
     state.results.replaceChildren();
     state.results.append(node(state,'p',data.provider+' · '+data.symbol+' · '+data.exchange+' · '+data.currency+' · '+data.timezone+' · '+data.interval+' · RAW_CLOSE · delay_status: UNKNOWN · read_at: '+data.read_at,{'data-history-meta':''}));
     state.indicators=state.view.ResearchIndicators.calculate(data.bars,{includeSma240:state.selected.has('SMA_240')});
-    const lastBar=data.bars.at(-1);emit(state,{indicators:state.indicators,symbol:data.symbol,currency:data.currency,asOf:lastBar.session_date||new Date(lastBar.timestamp*1000).toISOString().slice(0,10)});
+    const lastBar=data.bars.at(-1);emit(state,{indicators:state.indicators,symbol:data.symbol,currency:data.currency,close:lastBar.close,asOf:lastBar.session_date||new Date(lastBar.timestamp*1000).toISOString().slice(0,10)});
     const buttons=node(state,'div',undefined,{class:'chart-controls',role:'group','aria-label':words(state,'연구용 이동평균','Research moving averages')});
     for(const id of ['SMA_5','SMA_20','SMA_60','SMA_120','SMA_240','EMA_20','AVG']){
       const button=node(state,'button',id.replace('_',''),{type:'button','data-chart-overlay':id,'aria-pressed':String(state.selected.has(id))});

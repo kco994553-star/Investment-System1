@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "config_version": "virtual_trading/v1-provisional",
+  "rules_version": "virtual_trading_rules/v1",
+  "status": "PROVISIONAL_UNCALIBRATED",
+  "role": "RAM_ONLY_DEVICE",
+  "decided_at": "2026-10-11",
+  "start_date": null,
+  "base_currency": "KRW",
+  "daily_deposit": 1000000,
+  "buy_limit": 1000000,
+  "sell_limit": 1000000,
+  "execution": "NEXT_SESSION_CLOSE",
+  "cost_bps": 0,
+  "fractional_quantity": true,
+  "band_pp": 1,
+  "qg_decline_threshold": 5,
+  "min_trade": 10000,
+  "abnormal_drop": {
+    "window_sessions": 20,
+    "lookback_sessions": 252,
+    "k": 2
+  },
+  "sector_basis": "SP500_SUBSTITUTE_D22_PENDING",
+  "macro_gate": "INACTIVE_MAPPING_PENDING",
+  "v_slope": {
+    "lookback_sessions": 20,
+    "threshold": 10
+  },
+  "benchmark": "SP500",
+  "hit_windows": [5, 20, 63],
+  "hit_min_samples": 30,
+  "total_score": "TYPE_WEIGHTED_QGV_ELSE_QG",
+  "provenance": {
+    "start_date": "D-13 PENDING_USER",
+    "daily_deposit": "D-1 PROVISIONAL",
+    "buy_limit": "D-15 DECIDED_2026-10-10",
+    "sell_limit": "D-15 DECIDED_2026-10-10",
+    "execution": "D-2 PROVISIONAL",
+    "cost_bps": "D-3 PROVISIONAL",
+    "fractional_quantity": "D-4 PROVISIONAL",
+    "abnormal_drop": "D-5 PROVISIONAL",
+    "macro_gate": "D-6 PROVISIONAL",
+    "band_pp": "D-7 PROVISIONAL",
+    "qg_decline_threshold": "D-8 PROVISIONAL",
+    "min_trade": "D-9 PROVISIONAL",
+    "benchmark": "D-11 PROVISIONAL",
+    "hit_min_samples": "D-12 PROVISIONAL",
+    "total_score": "D-14 PROVISIONAL",
+    "v_slope": "D-21 PROVISIONAL",
+    "sector_basis": "D-22 PENDING_USER"
+  }
+}

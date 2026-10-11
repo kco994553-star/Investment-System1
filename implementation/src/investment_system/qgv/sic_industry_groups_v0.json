@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "config_version": "sic_industry_groups/v0",
+  "status": "V0_UNCALIBRATED_DEFAULT",
+  "decided_at": "2026-10-11",
+  "decision": "2026-10-11 사용자 결정: DESIGN_V1.md 'SIC 업종군 제안'·QUEUE_RESULTS_AND_COVERAGE.md 'SIC→업종군 매핑 초안' 표를 v0으로 채택",
+  "source": "SEC_SUBMISSIONS_SIC",
+  "sic_reference": "https://www.sec.gov/search-filings/standard-industrial-classification-sic-code-list",
+  "gics_used": false,
+  "missing_rule": "MISSING_0000_OR_UNMATCHED_IS_NOT_AVAILABLE",
+  "cyclical_defensive_rule": "CANDIDATE_LABEL_FROM_TABLE_ONLY; MEMBERSHIP_NOT_AVAILABLE",
+  "groups": [
+    {"id": "resources_mining", "name": "자원·광업", "name_en": "Resources / mining", "sic_ranges": [[1000, 1499]], "cyclical_defensive_candidate": "CYCLICAL_CANDIDATE", "review_note": "commodity별 사업 혼합 확인"},
+    {"id": "construction", "name": "건설", "name_en": "Construction", "sic_ranges": [[1500, 1799]], "cyclical_defensive_candidate": "CYCLICAL_CANDIDATE", "review_note": "산업 건설·주택 등 세부 사업 확인"},
+    {"id": "food_tobacco", "name": "식품·담배", "name_en": "Food / tobacco", "sic_ranges": [[2000, 2199]], "cyclical_defensive_candidate": "DEFENSIVE_CANDIDATE", "review_note": "2080 음료 등 세부 차이"},
+    {"id": "manufacturing_industrial_tech", "name": "제조·산업·기술", "name_en": "Manufacturing / industrial / technology", "sic_ranges": [[2200, 3999]], "cyclical_defensive_candidate": null, "review_note": "한 범위로 민감 판정 금지"},
+    {"id": "transportation", "name": "운송", "name_en": "Transportation", "sic_ranges": [[4000, 4799]], "cyclical_defensive_candidate": null, "review_note": "물류·철도·항공 등 세부 사업 확인"},
+    {"id": "telecommunications", "name": "통신", "name_en": "Telecommunications", "sic_ranges": [[4800, 4899]], "cyclical_defensive_candidate": null, "review_note": "운송과 분리, 사업 혼합 확인"},
+    {"id": "utilities", "name": "유틸리티", "name_en": "Utilities", "sic_ranges": [[4900, 4999]], "cyclical_defensive_candidate": "DEFENSIVE_CANDIDATE", "review_note": "발전사업과 전력장비 제조의 SIC 구분"},
+    {"id": "wholesale_retail", "name": "유통·소매", "name_en": "Wholesale / retail", "sic_ranges": [[5000, 5999]], "cyclical_defensive_candidate": null, "review_note": "5411 식품 소매와 경기민감 소비 구분"},
+    {"id": "finance_real_estate", "name": "금융·부동산", "name_en": "Finance / real estate", "sic_ranges": [[6000, 6799]], "cyclical_defensive_candidate": null, "review_note": "은행·보험·REIT 별도 검토; 동일 변동성 램프 금지"},
+    {"id": "services_software_health", "name": "서비스·소프트웨어·의료", "name_en": "Services / software / health", "sic_ranges": [[7000, 8999]], "cyclical_defensive_candidate": null, "review_note": "737x 소프트웨어와 8000~8099 의료 분리"}
+  ],
+  "subgroups": [
+    {"id": "beverages", "group": "food_tobacco", "name": "음료", "name_en": "Beverages", "sic_ranges": [[2080, 2089]]},
+    {"id": "computers", "group": "manufacturing_industrial_tech", "name": "컴퓨터", "name_en": "Computers", "sic_ranges": [[3570, 3579]]},
+    {"id": "semiconductors", "group": "manufacturing_industrial_tech", "name": "반도체", "name_en": "Semiconductors", "sic_ranges": [[3674, 3674]]},
+    {"id": "medical_devices", "group": "manufacturing_industrial_tech", "name": "의료기기", "name_en": "Medical devices", "sic_ranges": [[3840, 3849]]},
+    {"id": "food_retail", "group": "wholesale_retail", "name": "식품 소매", "name_en": "Food retail", "sic_ranges": [[5411, 5411]]},
+    {"id": "software", "group": "services_software_health", "name": "소프트웨어", "name_en": "Software", "sic_ranges": [[7370, 7379]]},
+    {"id": "health_services", "group": "services_software_health", "name": "의료 서비스", "name_en": "Health services", "sic_ranges": [[8000, 8099]]}
+  ]
+}

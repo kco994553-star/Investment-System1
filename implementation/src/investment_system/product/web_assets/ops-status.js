@@ -1,7 +1,7 @@
 /* Operations status from already-public, price-free metadata only. No new thresholds: STALE uses each file's own stale_after_seconds. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.OpsStatus=api;})(globalThis,function(){
 'use strict';
-const SCREENS=[['sec-qg-factors.json','Q·G'],['company-types-pricefree.json','유형'],['sec-filing-windows.json','실적 예상 시기'],['macro-screen.json','매크로'],['sec-13f-changes.json','13F']];
+const SCREENS=[['sec-qg-factors.json','Q·G'],['company-types-pricefree.json','유형'],['sec-filing-windows.json','실적 예상 시기'],['macro-screen.json','매크로'],['sec-13f-changes.json','13F'],['company-classification.json','산업·테마 v0']];
 function summarize({secReported=null,screens={},now=Date.now()}={}){
  const rows=[];
  const companies=secReported&&secReported.companies&&typeof secReported.companies==='object'?Object.values(secReported.companies):[];

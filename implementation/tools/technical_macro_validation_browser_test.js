@@ -56,6 +56,7 @@ async function seedBars(page,bars){
     assert.deepEqual(await page.locator('[data-macro-section]').evaluateAll(n=>n.map(x=>x.dataset.macroSection)),['equity-state','regime-history','signal-evidence','scenarios','transmission']);
     for(const s of await page.locator('[data-macro-section]').all()){assert.ok((await s.textContent()).includes('NOT_AVAILABLE'));}
     assert.ok((await page.locator('#macro-signal-evidence').textContent()).includes('FRED/ALFRED'));
+    {const v0=await page.locator('#macro-signal-evidence [data-macro-v0-series]').textContent();for(const s of ['v0 기본값 · UNCALIBRATED','T10101','A191RL','CUUR0000SA0'])assert.ok(v0.includes(s),s);}
     assert.ok((await page.locator('#macro-scenarios').textContent()).includes('확률 검증 전'));
     assert.equal(await page.locator('#macro-scenarios td').filter({hasText:/\d/}).filter({hasNotText:/^S[123]$/}).count(),0);
     await noOverflow(page,'macro '+width);

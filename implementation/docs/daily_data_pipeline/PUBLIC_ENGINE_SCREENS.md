@@ -39,6 +39,8 @@ SEC 항목 정확한 필드: company_id(US17 ID), companyfacts(상대파일), su
 
 Macro 공통: provider,file,acquired_at,synthetic. BLS는 series_ids 목록, BEA는 table(T10106/T10101), Treasury는 기존10년 국채 수익률 XML. 후속FED_H41/H8/H10/TREASURY_MTS는 기존 RemainingSeriesBinding 전체 binding과 source_url을 입력한다. 새 series 선택/의미를 승인하지 않으며 공급 binding을 기존 parser가 검증한다. source URL·basis·selector/free text는 공개하지 않고 binding_sha256으로 구분한다. 단위는 승인된 표기만 공개하며 미확인 문자열은 해당 observation 제외다. BEA UNIT_MULT는 POWER_OF_TEN exponent, Fed UNIT_MULT는 MULTIPLIER factor로 구별해 보존한다; 배율을 적용한 새 수치를 만들지 않는다.
 
+선택 필드 `macro_v0`(list, 최대 2개): 2026-10-11 사용자 결정에 따른 Growth·Inflation v0 입력이다. 항목은 `{axis, format, file, acquired_at, synthetic}` 또는 수집 실패를 나타내는 `{axis, reason}`이다. Growth는 `BEA_NIPA_FLAT_Q`(BEA `NipaDataQ.txt`의 `A191RL`) 또는 `BEA_API_NIPA_JSON`(T10101), Inflation은 `BLS_API_V1_JSON`(`CUUR0000SA0`)이다. 이 원문만 256MiB까지 읽는다. `macro-screen.json`의 `data.growth_inflation_v0`에는 축별 상태·값·기간·series ID·수집 시각·sha256과 `v0 · UNCALIBRATED` 표시가 들어간다. 기존 MacroEngine v0.1.1 결과는 두 축이 모두 있을 때만 있으며, 8축 국면은 항상 `NOT_AVAILABLE`이다. 이 필드가 없는 이전 공개 JSON도 계속 유효하다. 나머지 6축 제안은 [MACRO_V0_SERIES_PROPOSAL](../macro_data_rights/MACRO_V0_SERIES_PROPOSAL.md)에 있다.
+
 13F 쌍: previous/current 각각 file,metadata; 쌍 synthetic(bool). metadata는 기존 FilingMetadata 필드이며 quarter_end/filing_date는 ISO일자, acquired_at은 UTC timestamp다. 정보표 SHA는 CLI가 원문으로 재계산한다. manager 선택은 호출자가 명시한다; 기본 투자자·개인 선호를 저장하지 않는다. confidential/추가 정정/부분표/cover-binding 미확정/비연속분기는 기존 parser/compare의 NOT_AVAILABLE를 유지한다. issuer/titleClass 텍스트 대신 security_key 해시를 사용하며 옵션/수량 종류별 식별을 합치지 않는다.
 
 ## 연결·검증
