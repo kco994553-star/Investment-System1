@@ -33,13 +33,13 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "daily-report.js": "a678983e978c97c40f96d70cbf8b94d6e6e2cb22f246eca9d9c26711d5fd26fa",
     "sec-universe-shares.js": "77648df45a6c2e55b2c3be2cea2735a1d2457d8ef811646e7f2d0de674564bbb",
     "device-valuation.js": "0723d5371710da30aa1ed9b564e4ac7260047a83c182b843e57be4715d822567",
     "dcf-parameters-defaults.js": "9025559eff99d29eba26fc7ef3cf5ed86b969f4ad0b03c1f83f67ee0630c3bee",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "13a8a07e66664795d035f75e50d3c7f8d253e73be092b600a273c35925c2302d",
-    "daily-report.js": "c617c71ec21b436c1fdd2cd859c140969f051bfb9eced79c431a2377a545c47e",
     "virtual-trading.js": "d24f41ccede57016ef27a7951bdef096d2911fe5f51917453d1305605b81f8b1",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
@@ -70,7 +70,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "ea11f79db2e04855ba521da7b9cbbf84f00d671763243f433958523a8cae3924",
+    "app.js": "65e987e055d27fc5ef779dba4cf96081dd82fda54dcee7fc86307c2e012be6a2",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "4b6bbdf71f74875199221cf534dc403be7961fd722abe2b1b12a499e2740f7f3",
@@ -78,7 +78,7 @@ APPROVED_SHA256 = {
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
+    "google-sheet-quotes.js": "b81c5447b30fd60257edf8d807ce27e2099e6fd56ae0c977ef140884c8af8199",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
     "index.html": "6022c14b063200b5538cc166d91df7ba8ac26ce3de60cbaa6a71b66962b2906e",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",

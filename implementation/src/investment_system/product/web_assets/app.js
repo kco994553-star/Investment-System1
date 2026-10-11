@@ -562,7 +562,7 @@ function paintNews(id) {
   $("#news-list").innerHTML=rows.map(r=>`<li class="card"><h3>${esc(AppLanguage.fallback(r.headline_localized,appSettings.display_locale,r.headline))}</h3>${r.summary || r.summary_localized?`<p>${esc(AppLanguage.fallback(r.summary_localized,appSettings.display_locale,r.summary || ""))}</p>`:""}<p class="meta">${esc(r.available_at)} · ${esc(AppLanguage.status(r.status || t("상태 미제공"),appSettings.display_locale))} · ${esc(r.source_language || t("미제공"))}</p>${(r.issuer_ids || []).map(byIssuer).filter(Boolean).map(c=>`<div class="row"><a href="#company/${encodeURIComponent(c.company_id)}">${esc(c.ticker)}</a>${star(c.company_id)}</div>`).join("")}${evidence(r)}</li>`).join("") || '<li class="empty">'+t("이 범위에 제공된 뉴스가 없습니다.")+"</li>";
 }
 function report(id){const real=id==='real';return heading("DAILY REPORT",real?(appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'):(appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'))+'<div id="daily-report" aria-live="polite"></div>';}
-// S17: everything is computed in RAM on this device; export/copy runs only on the user's click.
+// S17: everything is computed in RAM on this device; export/copy and the optional mailbox run only on the user's click.
 function reportTab(id){return id==='real'?'REAL':({'mock-set_b':'SET_B','mock-compare':'COMPARE'}[id]||'SET_A');}
 async function paintReport(id){
   const host=$('#daily-report');if(!host)return;
@@ -580,6 +580,13 @@ async function paintReport(id){
     for(const box of host.querySelectorAll('[data-hide-amounts],[data-hide-amounts-export]'))box.onchange=()=>{if(!box.checked&&!confirm('개인 금액이 화면/복사본에 표시됩니다.')){box.checked=true;return;}R.hiddenSetting(localStorage,box.checked);paint();};
     host.querySelector('[data-export-template]').onclick=async()=>{const text=R.renderTemplate(model,{hidden:R.hiddenSetting(localStorage),guide:host.querySelector('[data-include-guide]').checked});try{await navigator.clipboard.writeText(text);say('보고서 템플릿을 복사했습니다. AI 새 대화에 붙여넣으세요.');}catch(_){const area=document.createElement('textarea');area.readOnly=true;area.value=text;area.rows=8;area.setAttribute('data-export-fallback','');host.querySelector('[data-report-export]').append(area);area.select();say('클립보드를 쓸 수 없어 아래 칸에 표시했습니다. 직접 복사하세요.');}};
     host.querySelector('[data-save-answer]').onclick=()=>{const text=host.querySelector('[data-ai-input]').value.trim();if(!text){say('붙여넣은 답변이 없습니다.');return;}if(!key){say('HASH_UNAVAILABLE');return;}if(R.saveAnswer(localStorage,key,{answer:text,saved_at:new Date().toISOString(),source:'PASTE',report_date:reportDate}))paint();else say('DEVICE_STORAGE_UNAVAILABLE');};
+    const mailbox=async(action)=>{try{const session=GoogleSheetQuotes.sessionFor(window,window.InvestmentAppConfig.googleSheetsClientId),sheet=GoogleSheetSetup.source(window);
+      if(!session.state().connected||!sheet){say('구글 로그인과 시트 연결이 필요합니다(설정 → Google 첫 설정).');return;}
+      if(action==='post'){await R.postInbox(session,sheet,{report_date:reportDate,kind,sha256:key,template:R.renderTemplate(model,{hidden:true,guide:true}),now:new Date().toISOString()});say('ReportInbox에 오늘 템플릿(금액 숨김)을 넣었습니다.');}
+      else{const found=await R.readOutbox(session,sheet,key);if(!found){say('해시가 같은 답이 아직 없습니다.');return;}R.saveAnswer(localStorage,key,{answer:found.answer,saved_at:found.created_at||new Date().toISOString(),source:'MAILBOX',model:found.model,report_date:reportDate});paint();}
+    }catch(e){say(String(e&&e.message||'MAILBOX_FAILED'));}};
+    host.querySelector('[data-mailbox-post]').onclick=()=>void mailbox('post');
+    host.querySelector('[data-mailbox-read]').onclick=()=>void mailbox('read');
   };
   paint();
 }
