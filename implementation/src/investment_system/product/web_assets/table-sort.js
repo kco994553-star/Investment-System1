@@ -66,12 +66,15 @@ function enhance(table){
   while(th.firstChild)b.appendChild(th.firstChild);th.appendChild(b);th.setAttribute('aria-sort','none');
   b.onclick=()=>{const cur=state.get(table);if(!cur)return;const next=cur.col!==i?1:cur.dir===1?-1:cur.dir===-1?0:1;apply(table,i,next);};
  });
+ // Short numbers and dates do not break mid-value on PC (they are the narrow columns once text wraps).
+ for(const r of st.original)for(const c of r.cells){const t=c.textContent.trim();if(t.length<=16&&(keyOf(t).kind==='number'||/^\d{4}-\d{2}-\d{2}$/.test(t)))c.classList.add('cell-nowrap');}
  const prev=remembered.get(st.id);if(prev&&prev.col<heads.length)apply(table,prev.col,prev.dir);
 }
 function restore(table){
  const st=state.get(table);if(!st)return;
  apply(table,-1,0);remembered.delete(st.id);
  for(const th of st.heads){const b=th.querySelector(':scope > .th-sort');if(b){while(b.firstChild)th.insertBefore(b.firstChild,b);b.remove();}th.removeAttribute('aria-sort');}
+ for(const r of st.original)for(const c of r.cells)c.classList.remove('cell-nowrap');
  table.removeAttribute('data-table-sort');state.delete(table);
 }
 function scan(doc,on){for(const t of doc.querySelectorAll(SELECTOR))on?enhance(t):restore(t);}

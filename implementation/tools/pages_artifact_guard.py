@@ -34,8 +34,8 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "table-sort.js": "3523fb124cef52a168f0c58729899c3a0dc659dfb56921310f40c40452924de6",
-    "pc-layout.css": "bbc6887af4c242644577cd316e0382d90dd1d789be136e6001e39e366b86c0a5",
+    "table-sort.js": "bd6e195298cb53b32adc8cdeaec57312e4c1807760e100b0af351f50bc4dfbf4",
+    "pc-layout.css": "a8e236e7d817d1b7f15f566df4af6f7fa381f6045273c289d9337134ed758d75",
     "virtual-trading-runner.js": "307e669fb5bb3ac2cdab005904c9babb24e253e42a89006dbbd61d73a9539042",
     "share-class-groups.js": "3726a07393a0d1e04edc990fe7bdcacb5c1bbb8760547934dd9ef28e33b9f307",
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",

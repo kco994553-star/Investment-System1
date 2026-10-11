@@ -17,6 +17,8 @@
   main .table-wrap, main .table-scroll {overflow: visible;}
   main .table-wrap table, main .table-scroll table {width: 100%; table-layout: auto;}
   main .table-wrap th, main .table-wrap td, main .table-scroll th, main .table-scroll td {white-space: normal; overflow-wrap: anywhere; vertical-align: top;}
+  main .table-wrap thead th, main .table-scroll thead th {word-break: keep-all; overflow-wrap: break-word;}
+  main td.cell-nowrap {white-space: nowrap;}
   main .table-wrap thead th, main .table-scroll thead th {position: sticky; top: 0; z-index: 2; background: var(--card); box-shadow: inset 0 -1px 0 var(--line);}
   main table th {font-weight: 650;}
   /* Sort buttons added by table-sort.js (PC only). */
