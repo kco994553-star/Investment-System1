@@ -1,4 +1,5 @@
 "use strict";
+const { routeEmptyPublicScreens } = require("./empty_public_screens.js");
 // IA behavior on the public build. Every capture requires fresh empty device storage.
 // No login, Google call, quotation, holdings or populated form is used by this test.
 const { chromium } = require("playwright");
@@ -94,6 +95,8 @@ async function unavailableNewScreen(page, selector) {
         if (url.origin !== base.origin || !url.pathname.startsWith(base.pathname)) { traffic.external++; await route.abort(); return; }
         await route.continue();
       });
+      // Empty public screens regardless of the build: deploy builds carry live data, this test checks the empty IA.
+      await routeEmptyPublicScreens(context);
       const page = await context.newPage();
       page.on("pageerror", () => { traffic.page_errors++; });
       page.on("console", message => { if (/Content Security Policy|violates.*(?:directive|policy)/i.test(message.text())) traffic.console_csp_warnings++; });
