@@ -146,7 +146,9 @@ def collect(gdelt, ir, counts):
         except (nf.NewsFetchError, ValueError) as error:
             failures.append(('IR', index, _code(error)))
             continue
-        rows = sorted((r for r in rows if r['published_at'] is not None), key=lambda r: r['published_at'], reverse=True)
+        dated = [r for r in rows if r['published_at'] is not None]
+        counts['invalid'] = counts.get('invalid', 0) + len(rows) - len(dated)
+        rows = sorted(dated, key=lambda r: r['published_at'], reverse=True)
         collected['IR'][cid] = {'acquired_at': acquired, 'rows': rows[:nf.IR_KEEP_PER_FEED]}
     for source in collected.values():
         for entry in source.values():
