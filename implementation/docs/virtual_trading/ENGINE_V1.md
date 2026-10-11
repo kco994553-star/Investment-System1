@@ -71,9 +71,19 @@
 4. **"Q·G 유지":** V 기울기를 비교하는 20세션 동안 Q·G 평균 하락폭이 D-8 임계(5점)보다 작은 경우로 정의했다.
 5. **세트 A·B의 출발:** 현금 0, 보유 없음에서 시작해 매일 입금으로 매수한다. 그림자 장부는 실제 보유 스냅샷(수량·원가)에서 시작하고, 목표 비중이 없으면 `TARGET_NOT_AVAILABLE`이다.
 
+## 기기 러너 (S17 연결)
+
+`web_assets/virtual-trading-runner.js`(Python 참조 `qgv/virtual_trading_inputs.py`, 합성 벡터 `tests/fixtures/virtual_trading_inputs_v1.json`)가 엔진 입력을 기기 RAM에서 조립한다.
+
+- 시작일 전에는 아무 요청도 하지 않고 `NOT_STARTED`. 그 뒤에는 구글 로그인 세션이 연결되어 있을 때만 기존 비공개 가격 Worker로 `2y` 일봉을 순서대로(5.2초 간격) 읽는다. SPY → 환율(`KRW=X`, `JPYKRW=X`) → 종목 → 업종 ETF 순서.
+- 세션 날짜는 SPY 완료 세션(시작일 이후). SPY가 없으면 장부를 만들지 않고 `SESSIONS_NOT_AVAILABLE`, 나머지 요청도 하지 않는다.
+- 클라이언트 허용 목록이나 Worker가 거부한 기호는 오류 코드(예: `REQUEST_INVALID`)를 화면에 보이고 입력에서 빠진다. 없는 종가·환율은 채우지 않는다(`EXEC_PRICE_MISSING`·`EXEC_FX_MISSING`).
+- Q·G는 공개 전진 검증 기록(RECORDED)에서만, V는 이 기기에 날짜별로 저장된 값(`investment.web.v1.virtual-trading-v-scores`, V만)에서만 읽는다. 지금은 V를 저장하는 생산자가 없어 V 기울기 신호는 쓰이지 않는다.
+- 세트 B는 사용자 정의 구성이 기기에 없어 `SET_B_NOT_DEFINED`. 그림자 장부는 ACTUAL 스냅샷(수량·평균단가)에서 출발하며, 그 스냅샷의 뉴욕 날짜 이후 세션만 쓴다. 원가는 첫 세션 이전 마지막 환율로 원화 환산한다.
+
 ## 아직 연결하지 않은 것
 
 - **가격 경로:** 개인 가격 Worker가 TARGET 19종목만 허용한다. 그래서 S&P 500, 업종 ETF, 세트 B 종목의 일봉을 기기에서 받을 수 없다([D-22 초안](D22_SECTOR_ETF_MAPPING_DRAFT.md)의 선택지 참고).
   - 그 전까지 엔진은 업종 기준 계산 불가로 동작한다.
   - 적중 판정(D+N)도 표본이 쌓이지 않는다.
-- **장부 저장:** 시트 탭 저장(VirtualA·VirtualB·VirtualMine·VirtualMeta·VirtualFlags)과 S17 화면 연결은 다음 단계다.
+- **장부 저장:** 시트 탭 저장(VirtualA·VirtualB·VirtualMine·VirtualMeta·VirtualFlags)은 다음 단계다(S17 화면 연결은 위 기기 러너로 완료).
