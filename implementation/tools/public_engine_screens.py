@@ -1,4 +1,4 @@
-"""CLI for five price-free screen sidecars; workflow wiring belongs to Codex1."""
+"""CLI for the price-free screen sidecars; workflow wiring belongs to Codex1."""
 import argparse
 from datetime import timedelta
 import json
@@ -31,6 +31,6 @@ def main(argv=None):
                 if temp is not None:temp.unlink(missing_ok=True)
     except Exception:
         print('PUBLIC_SCREENS_INPUT_INVALID');return 1
-    print('PUBLIC_SCREENS_OK files=5');return 0
+    print(f'PUBLIC_SCREENS_OK files={len(prepared)}');return 0
 
 if __name__=='__main__':raise SystemExit(main())
