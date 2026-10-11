@@ -38,3 +38,4 @@ daily_report_browser_test.js
 sic_theme_v0_browser_test.js
 dcf_value_browser_test.js
 sec_universe_shares_browser_test.js
+forward_validation_browser_test.js
