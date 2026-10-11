@@ -38,7 +38,7 @@ APPROVED_SHA256 = {
     "virtual-trading-compare.js": "8cf5bd3bec35ebe688d3982928ce3f6771e1ea4364966fb51a5f29cfeee0642c",
     "report-benchmarks.js": "960378c63096472de2e55c2c895dfcab5732745324380e30e82116fafd8ce604",
     "virtual-trading-runner.js": "ce55e6428f52f81ff664870fad5f0944f7b4f46f697058aa018d919d7da561db",
-    "virtual-ledger-sheets.js": "a91ee1ff32234e55ac8c5085b3b64176f1883ca905efe774c1eb3ba4a36012ab",
+    "virtual-ledger-sheets.js": "32cb4acd92f39ede177634500dbd222dabbee951aa77407436ae48ed60b08060",
     "worker-quote-fallback.js": "e72a72d1885a23c2a35706c8d4f333060b0c451d32a00e501dc63a30416b754c",
     "holdings-capture-view.js": "f2bebf39ca836868d19cef05c08b2d3aa9cbe99f2bdc62ee8509634f5891f65f",
     "holdings-capture.js": "a0fbd647c36d4714e743badbf445e2d3bf6b47c504766beaa14a93fdbf900d95",

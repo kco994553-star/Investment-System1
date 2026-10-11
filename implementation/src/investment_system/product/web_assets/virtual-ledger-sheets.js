@@ -553,7 +553,7 @@ function recordCard(ctx,state){
  else if(st&&st.state==='READY')h+='<p class="small" data-missing-sessions="0">'+esc('기록할 새 거래일 없음'+(st.through?' · Q·G 기록 기준 ~'+st.through:' · Q·G 기록 대기'))+'</p>';
  const can=connected&&sheet&&sheet.state==='READY'&&!before&&!invalid&&!incomplete.length&&missing>0&&!busy;
  h+='<div class="sheet-actions"><button type="button" data-ledger-record'+(can?'':' disabled')+'>'+esc('장부 시트에 기록'+(missing?' ('+missing+'거래일)':''))+'</button></div>';
- h+='<p class="small">기록은 이 버튼을 누를 때만, 아직 기록하지 않은 거래일만 내 시트(VirtualA~D·VirtualMine·VirtualMeta)에 덧붙입니다. 기록한 행이 기준이며 고치지 않습니다. 다음 거래일은 기록된 마지막 상태(현금·보유·주문)에서 이어서 계산합니다. 세트마다 거래일당 가상 매수 100만원·가상 매도 100만원 한도입니다. 시트에는 실제 숫자가 저장되고, 화면에는 날짜·개수·코드만 보입니다. 값이 없던 날은 엔진 결과(NOT_AVAILABLE·EXEC_*_MISSING)대로 기록하고 채우지 않습니다.</p>';
+ h+='<p class="small">기록은 이 버튼을 누를 때만, 아직 기록하지 않은 거래일만 내 시트(VirtualA~D·VirtualMine·VirtualMeta)에 덧붙입니다. 기록한 행이 기준이며 고치지 않습니다. 다음 거래일은 기록된 마지막 상태(현금·보유·주문)에서 이어서 계산합니다. 가상 매수·가상 매도 하루 한도(D-15)는 세트마다 따로 적용됩니다. 시트에는 실제 숫자가 저장되고, 화면에는 날짜·개수·코드만 보입니다. 값이 없던 날은 엔진 결과(NOT_AVAILABLE·EXEC_*_MISSING)대로 기록하고 채우지 않습니다.</p>';
  h+='<p role="status" data-ledger-status></p></section>';
  return h;
 }
