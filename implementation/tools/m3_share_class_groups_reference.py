@@ -5,7 +5,10 @@ Replays the public-shares M3 path (tools/m3_public_shares_reference.py) and adds
 `prepare_share_class_groups` -> `select_verified_universe_top_n(groups=...)`:
 economically identical listed classes of one CIK are summed (class cover shares x
 class Sheet price) and ranked once; any missing class/price/LIVE share keeps the
-whole company unranked with a reason. Synthetic values only (real CIKs are the
+whole company unranked with a reason. Unlisted cover class (decision
+2026-10-11, Alphabet Class B): the public `unlisted_classes` count is added 1:1
+to GOOGL shares at the GOOGL price; missing/ambiguous count or missing GOOGL
+price keeps the company unranked. Synthetic values only (real CIKs are the
 config keys, never data). Test-only; never a public or live-data serializer.
 `--write` regenerates tests/fixtures/m3_share_class_groups_reference_v0.json.
 """
@@ -48,7 +51,7 @@ def replay(case, config):
             continue
         shares, basis = prepare_public_shares(row.listing, records[row.code], at)
         checks.append(compare_universe_market_cap(row, shares, prepare_universe_price(row, basis, as_of=at), quality))
-    groups = prepare_share_class_groups(parsed, records, at, quality, config)
+    groups = prepare_share_class_groups(parsed, records, at, quality, config, data.get('unlisted'))
     selection = select_verified_universe_top_n(tuple(checks), SelectionConfig(data['n'], True), parsed=parsed, groups=groups)
     return {
         'groups': [{'group_id': g.group_id, 'config_version': g.config_version, 'cik': g.cik, 'row_index': g.row_index,
@@ -56,7 +59,9 @@ def replay(case, config):
                     'member_symbols': list(g.member_symbols), 'member_shares': list(g.member_shares),
                     'cover_class_count': g.cover_class_count, 'state': g.state, 'effective_cap': g.effective_cap,
                     'relative_difference': g.relative_difference, 'quality': g.quality, 'quality_label': g.quality_label,
-                    'reason_codes': list(g.reason_codes)} for g in groups],
+                    'reason_codes': list(g.reason_codes), 'unlisted_valued_at': g.unlisted_valued_at,
+                    'unlisted_basis': g.unlisted_basis, 'unlisted_class_members': list(g.unlisted_class_members),
+                    'unlisted_shares': list(g.unlisted_shares)} for g in groups],
         'selection': {'state': selection.state, 'selection_status': selection.selection_status, 'requested_n': selection.requested_n,
                       'selected_n': selection.selected_n, 'verified_count': selection.verified_count,
                       'missing_count': selection.missing_count, 'selected_listing_ids': list(selection.selected_listing_ids),
@@ -81,24 +86,44 @@ def cases():
     pair = lambda cik, a, b, sa, sb: {f'NASDAQ:{a}': record(cik=cik, symbol=a, basis='SHARE_CLASS_BASIS', shares=sa, members=AB, member=AB[0]),
                                       f'NASDAQ:{b}': record(cik=cik, symbol=b, basis='SHARE_CLASS_BASIS', shares=sb, members=AB, member=AB[1])}
     demo = {'NASDAQ:DEMO': record()}
-    # Alphabet: 5800*150 + 5400*151 = 1685400 company R; DEMO single class 1000*10.
-    alpha_rows = [['NASDAQ:GOOGL', 1690000, 150], ['NASDAQ:GOOG', 1690000, 151], ['NASDAQ:DEMO', 10000, 10]]
 
-    def case(records, rows, n=2):
-        return {'records': records, 'values': [HEADER] + rows, 'as_of': AT, 'n': n}
+    def class_b(rec, classes=(('CommonClassBMember', 300),), **k):
+        """Public `unlisted_classes` entry bound to the GOOGL row's cover (same accn, date, cover hash)."""
+        return {'cik': rec['cik'], 'valued_at': 'NASDAQ:GOOGL', 'accn': rec['accn'], 'measurement_date': rec['measurement_date'],
+                'cover_sha256': rec['source_sha256']['cover'], 'classes': [{'class_member': m, 'shares': v} for m, v in classes],
+                'state': rec['state'], 'reason_codes': ['STALE_INPUT'] if rec['state'] == 'STALE' else [], **k}
+
+    def class_b_missing(reason):
+        return {'cik': '0001652044', 'valued_at': 'NASDAQ:GOOGL', 'accn': None, 'measurement_date': None, 'cover_sha256': None,
+                'classes': [], 'state': 'NOT_AVAILABLE', 'reason_codes': [reason]}
+    # Alphabet: (5800 GOOGL + 300 Class B) * 150 + 5400 GOOG * 151 = 1730400 company R; DEMO single class 1000*10.
+    alpha_rows = [['NASDAQ:GOOGL', 1735000, 150], ['NASDAQ:GOOG', 1735000, 151], ['NASDAQ:DEMO', 10000, 10]]
+
+    def case(records, rows, n=2, unlisted=None):
+        if unlisted is None:
+            unlisted = {'alphabet': class_b(records['NASDAQ:GOOGL'])} if 'NASDAQ:GOOGL' in records else {}
+        return {'records': records, 'values': [HEADER] + rows, 'as_of': AT, 'n': n, 'unlisted': unlisted}
+    alpha = lambda: {'NASDAQ:GOOGL': googl(), 'NASDAQ:GOOG': goog(), **demo}
     out = [
-        ('alphabet_two_classes_summed_ranked_once', case({'NASDAQ:GOOGL': googl(), 'NASDAQ:GOOG': goog(), **demo}, alpha_rows)),
+        ('alphabet_class_b_valued_at_googl_price_ranked_once', case(alpha(), alpha_rows)),
+        ('class_b_count_not_available_company_not_ranked', case(alpha(), alpha_rows, unlisted={'alphabet': class_b_missing('UNLISTED_CLASS_SHARES_NOT_AVAILABLE')})),
+        ('class_b_entry_absent_no_partial_sum', case(alpha(), alpha_rows, unlisted={})),
+        ('class_b_ambiguous_company_not_ranked', case(alpha(), alpha_rows, unlisted={'alphabet': class_b_missing('UNLISTED_CLASS_AMBIGUOUS')})),
+        ('class_b_from_other_filing_mismatch', case(alpha(), alpha_rows, unlisted={'alphabet': class_b(googl(), accn='0001652044-30-000009')})),
+        ('class_b_member_is_a_listed_class_mismatch', case(alpha(), alpha_rows, unlisted={'alphabet': class_b(googl(), classes=(('CommonClassCMember', 300),))})),
+        ('class_b_zero_count_never_used', case(alpha(), alpha_rows, unlisted={'alphabet': class_b(googl(), classes=(('CommonClassBMember', 0),))})),
+        ('googl_price_missing_company_not_ranked', case(alpha(), [['NASDAQ:GOOGL', 1735000, ''], ['NASDAQ:GOOG', 1735000, 151], ['NASDAQ:DEMO', 10000, 10]])),
         ('fox_and_news_corp_summed', case({**pair('0001754301', 'FOXA', 'FOX', 300, 200), **pair('0001564708', 'NWSA', 'NWS', 400, 190)},
                                           [['NASDAQ:FOXA', 15000, 30], ['NASDAQ:FOX', 15000, 28], ['NASDAQ:NWSA', '', 25], ['NASDAQ:NWS', 9000, 26]])),
         ('group_google_mismatch_still_ranked_with_label', case({'NASDAQ:GOOGL': googl(), 'NASDAQ:GOOG': goog(), **demo},
                                                               [['NASDAQ:GOOGL', 1000000, 150], ['NASDAQ:GOOG', 1000000, 151], ['NASDAQ:DEMO', 10000, 10]])),
         ('member_price_missing_company_not_ranked', case({'NASDAQ:GOOGL': googl(), 'NASDAQ:GOOG': goog(), **demo},
-                                                        [['NASDAQ:GOOGL', 1690000, 150], ['NASDAQ:GOOG', 1690000, ''], ['NASDAQ:DEMO', 10000, 10]])),
+                                                        [['NASDAQ:GOOGL', 1735000, 150], ['NASDAQ:GOOG', 1735000, ''], ['NASDAQ:DEMO', 10000, 10]])),
         ('member_stale_company_not_ranked', case({'NASDAQ:GOOGL': googl(), 'NASDAQ:GOOG': goog(state='STALE', acquired='2030-01-20T00:00:00Z'), **demo}, alpha_rows)),
         ('member_basis_unconfirmed_company_not_ranked', case({'NASDAQ:GOOGL': googl(), 'NASDAQ:GOOG': goog(basis='BASIS_UNCONFIRMED'), **demo}, alpha_rows)),
         ('member_shares_missing_company_not_ranked', case({'NASDAQ:GOOGL': googl(), 'NASDAQ:GOOG': goog(shares=None, basis='BASIS_UNCONFIRMED', state='NOT_AVAILABLE', members=[], member=None), **demo}, alpha_rows)),
         ('member_row_absent_no_partial_sum', case({'NASDAQ:GOOGL': googl(), 'NASDAQ:GOOG': goog(), **demo}, [['NASDAQ:GOOGL', 1690000, 150], ['NASDAQ:DEMO', 10000, 10]])),
-        ('cover_class_count_differs_from_config', case({'NASDAQ:GOOGL': googl(members=AB), 'NASDAQ:GOOG': goog(members=AB, member='CommonClassBMember'), **demo}, alpha_rows)),
+        ('cover_class_count_differs_from_config', case({'NASDAQ:GOOGL': googl(members=AB), 'NASDAQ:GOOG': goog(members=AB, member='CommonClassBMember'), **demo}, alpha_rows, unlisted={})),  # two-class cover: no unlisted class to publish
         ('same_class_member_twice_mismatch', case({'NASDAQ:GOOGL': googl(), 'NASDAQ:GOOG': goog(member='CommonClassAMember'), **demo}, alpha_rows)),
         ('single_class_member_contradicts_group', case({'NASDAQ:GOOGL': googl(), 'NASDAQ:GOOG': goog(basis='SINGLE_CLASS_CONFIRMED', members=['CommonClassCMember']), **demo}, alpha_rows)),
         ('different_filing_dates_mismatch', case({'NASDAQ:GOOGL': googl(), 'NASDAQ:GOOG': {**goog(), 'measurement_date': '2030-01-09'}, **demo}, alpha_rows)),

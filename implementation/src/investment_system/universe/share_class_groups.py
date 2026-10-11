@@ -6,9 +6,17 @@ market cap and ranked once; every other SHARE_CLASS_BASIS / BASIS_UNCONFIRMED
 listing stays excluded. Groups are keyed by SEC CIK and the exact Universe504
 listing codes. Classes with a conversion ratio other than 1 (e.g. BRK.A/BRK.B)
 are never listed here. `cover_class_count` is the number of classes the
-filing cover must report; a cover class without a Universe listing (Alphabet
-Class B) is not priced and not included — the screen says so. V0_UNCALIBRATED:
-editable later; not a calibrated policy. No prices, shares or ranks here.
+filing cover must report.
+
+User decision 2026-10-11 (M3 unlisted class): a cover class without a Universe
+listing (Alphabet Class B, 1:1 convertible into Class A) is included in the
+whole-company sum, valued at the price of the listed class named in
+`unlisted.valued_at` (GOOGL), conversion ratio 1. Its share count comes from the
+same filing cover (public `sec-universe-shares.json` `unlisted_classes`); when
+that count is missing or ambiguous the whole group is NOT_AVAILABLE with a
+reason, never a partial sum. `unlisted` is null exactly when every cover class
+is listed. V0_UNCALIBRATED: editable later; not a calibrated policy. No prices,
+shares or ranks here.
 """
 import re
 
@@ -16,6 +24,10 @@ CONFIG_VERSION = 'share_class_groups/v0'
 CONFIG_STATUS = 'V0_UNCALIBRATED'
 LABEL_KO = '경제적 동일 종류 합산 · v0'
 LABEL_EN = 'Economically identical classes summed · v0'
+UNLISTED_BASIS = 'UNLISTED_CLASS_VALUED_AT_CLASS_A'
+UNLISTED_DECISION = 'USER_DECISION_2026_10_11_UNLISTED_CLASS_VALUED_AT_CLASS_A_PRICE'
+UNLISTED_LABEL_KO = '비상장 종류는 Class A 가격으로 평가 · 1:1 전환'
+UNLISTED_LABEL_EN = 'Unlisted class valued at Class A price · 1:1 convertible'
 
 SHARE_CLASS_GROUPS_V0 = {
     'config_version': CONFIG_VERSION,
@@ -23,12 +35,14 @@ SHARE_CLASS_GROUPS_V0 = {
     'decision': 'USER_DECISION_2026_10_11_SUM_ECONOMICALLY_IDENTICAL_CLASSES',
     'basis': 'SAME_PER_SHARE_ECONOMIC_RIGHTS_VOTING_MAY_DIFFER',
     'groups': [
-        # Class A (GOOGL, 1 vote) and Class C (GOOG, no vote); unlisted Class B (10 votes) is on the cover but not priced.
-        {'group_id': 'alphabet', 'cik': '0001652044', 'codes': ['NASDAQ:GOOGL', 'NASDAQ:GOOG'], 'cover_class_count': 3},
+        # Class A (GOOGL, 1 vote) and Class C (GOOG, no vote); unlisted Class B (10 votes, 1:1 convertible into
+        # Class A) is on the cover and is included at the GOOGL price.
+        {'group_id': 'alphabet', 'cik': '0001652044', 'codes': ['NASDAQ:GOOGL', 'NASDAQ:GOOG'], 'cover_class_count': 3,
+         'unlisted': {'valued_at': 'NASDAQ:GOOGL', 'conversion_ratio': 1, 'basis': UNLISTED_BASIS, 'decision': UNLISTED_DECISION}},
         # Class A (FOXA, non-voting) and Class B (FOX, voting).
-        {'group_id': 'fox', 'cik': '0001754301', 'codes': ['NASDAQ:FOXA', 'NASDAQ:FOX'], 'cover_class_count': 2},
+        {'group_id': 'fox', 'cik': '0001754301', 'codes': ['NASDAQ:FOXA', 'NASDAQ:FOX'], 'cover_class_count': 2, 'unlisted': None},
         # Class A (NWSA, non-voting) and Class B (NWS, voting).
-        {'group_id': 'news_corp', 'cik': '0001564708', 'codes': ['NASDAQ:NWSA', 'NASDAQ:NWS'], 'cover_class_count': 2},
+        {'group_id': 'news_corp', 'cik': '0001564708', 'codes': ['NASDAQ:NWSA', 'NASDAQ:NWS'], 'cover_class_count': 2, 'unlisted': None},
     ],
 }
 
@@ -45,7 +59,7 @@ def validate_share_class_groups(config, codes=None):
     need(type(config['decision']) is str and type(config['basis']) is str and type(config['groups']) is list and len(config['groups']) <= 64)
     seen_ids, seen_codes, seen_ciks = set(), set(), set()
     for group in config['groups']:
-        need(type(group) is dict and set(group) == {'group_id', 'cik', 'codes', 'cover_class_count'})
+        need(type(group) is dict and set(group) == {'group_id', 'cik', 'codes', 'cover_class_count', 'unlisted'})
         need(type(group['group_id']) is str and re.fullmatch(r'[a-z0-9_]{1,64}', group['group_id']) is not None and group['group_id'] not in seen_ids)
         need(type(group['cik']) is str and re.fullmatch(r'[0-9]{10}', group['cik']) is not None and group['cik'] != '0000000000' and group['cik'] not in seen_ciks)
         members = group['codes']
@@ -54,5 +68,19 @@ def validate_share_class_groups(config, codes=None):
         need(codes is None or all(c in codes for c in members))
         count = group['cover_class_count']
         need(type(count) is int and len(members) <= count <= 16)
+        unlisted = group['unlisted']
+        # Unlisted cover classes must be valued explicitly (1:1 at one listed class) or the group cannot exist.
+        need((unlisted is None) == (count == len(members)))
+        if unlisted is not None:
+            need(type(unlisted) is dict and set(unlisted) == {'valued_at', 'conversion_ratio', 'basis', 'decision'})
+            need(type(unlisted['valued_at']) is str and unlisted['valued_at'] in members)
+            need(type(unlisted['conversion_ratio']) is int and unlisted['conversion_ratio'] == 1)
+            need(unlisted['basis'] == UNLISTED_BASIS and unlisted['decision'] == UNLISTED_DECISION)
         seen_ids.add(group['group_id']); seen_ciks.add(group['cik']); seen_codes.update(members)
     return config
+
+
+def unlisted_groups(config=None):
+    """{group_id: group} for validated groups whose cover has unlisted classes valued at a listed class."""
+    config = validate_share_class_groups(SHARE_CLASS_GROUPS_V0 if config is None else config)
+    return {g['group_id']: g for g in config['groups'] if g['unlisted'] is not None}
