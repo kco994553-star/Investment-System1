@@ -159,7 +159,7 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
         assert.equal(traffic.errors, 0);
       } finally { await context.close(); }
     });
-    await check('virtual runner degrades when SPY/ETF/FX are rejected (current allowlist)', async () => {
+    await check('virtual runner degrades when SPY/ETF/FX are rejected by the client or Worker', async () => {
       const { context, page, traffic } = await open(browser, { now: '2026-10-31T01:00:00Z', width: 1440, workerAcceptsBenchmarks: false });
       try {
         await login(page);
