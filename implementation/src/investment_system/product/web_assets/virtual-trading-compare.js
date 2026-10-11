@@ -1,16 +1,18 @@
 /* Virtual trading set comparison (decision 2026-10-11): rule-based numeric table only, RAM only.
    Pure part mirrors qgv/virtual_trading_compare.py (vectors: tests/fixtures/virtual_trading_compare_v1.json).
-   One row per metric, one column per set (Set A and the user sets B/C/D). Standard definitions only; a metric with fewer
-   samples than its minimum is NA (never 0). No narrative fields (no strengths / weaknesses / watch items): the only
-   interpretation is the one-line summary, written by the user's AI from the exported numbers (【AI】) or, without it,
-   by the rule line. Prices, ledgers and amounts stay in memory; amounts on screen go through DailyReport.money (hidden by
-   default). Virtual · not a recommendation · no order function. */
-(function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?()=>require('./virtual-trading.js'):()=>root.VirtualTrading);if(node)module.exports=api;else root.VirtualTradingCompare=api;})(typeof globalThis==='object'?globalThis:this,function(engine){
+   One row per metric, one column per set (Set A and the user sets B/C/D). The return series are those of S17 ⑫⑬
+   (ReportBenchmarks: SPY session calendar, one currency basis — KRW by default, US index × same-session KRW=X —, the
+   engine time-weighted ledger chain, every missing close / rate / value a gap, never interpolated or carried). Standard
+   definitions only; a metric with fewer samples than its minimum is NA (never 0). No narrative fields (no strengths /
+   weaknesses / watch items): the only interpretation is the one-line summary, written by the user's AI from the exported
+   numbers (【AI】) or, without it, by the rule line. Amounts on screen go through DailyReport.money (hidden by default).
+   Virtual · not a recommendation · no order function. */
+(function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?()=>require('./virtual-trading.js'):()=>root.VirtualTrading,node?()=>require('./report-benchmarks.js'):()=>root.ReportBenchmarks);if(node)module.exports=api;else root.VirtualTradingCompare=api;})(typeof globalThis==='object'?globalThis:this,function(engine,benchmarks){
 'use strict';
-const SCHEMA='virtual-trading-compare/1',SP500='SP500',TYPES=Object.freeze(['growth','quality','cyclical','defensive']);
+const SCHEMA='virtual-trading-compare/1',TYPES=Object.freeze(['growth','quality','cyclical','defensive']);
 // Minimum samples per metric (documented in ENGINE_V1.md). Hit rate keeps the engine's own D-12 minimum (30).
-const MIN=Object.freeze({period_return:1,excess_return:1,capture_days:10,max_drawdown:20,volatility:20});
-const CODES=Object.freeze(['INSUFFICIENT_SAMPLE','VALUATION_NOT_AVAILABLE','BENCHMARK_NOT_AVAILABLE','WEIGHTS_NOT_AVAILABLE','TYPES_NOT_AVAILABLE','LEDGER_NOT_AVAILABLE','COMPARE_NEEDS_TWO_SETS']);
+const MIN=Object.freeze({capture_days:10,max_drawdown:20,volatility:20});
+const CODES=Object.freeze(['INSUFFICIENT_SAMPLE','VALUATION_NOT_AVAILABLE','WEIGHTS_NOT_AVAILABLE','TYPES_NOT_AVAILABLE','LEDGER_NOT_AVAILABLE','COMPARE_NEEDS_TWO_SETS']);
 const own=(o,k)=>o!==null&&typeof o==='object'&&Object.prototype.hasOwnProperty.call(o,k);
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const num=v=>typeof v==='number'&&Number.isFinite(v);
@@ -25,35 +27,36 @@ function compareDays(days){
    if((x.reason_codes||[]).includes('DATA_PRICE_MISSING')||(x.reason_codes||[]).includes('DATA_FX_MISSING'))priced=false;}
   return{date:d.date,total_value:num(d.total_value)?d.total_value:null,deposit:d.deposit,weights:w,priced};});
 }
-/* Daily return on consecutive valued sessions: r_t = (V_t − deposit_t) / V_{t−1} − 1 (deposit-neutral, same form as the
-   engine TWR). A day whose value or the previous day's value is NOT_AVAILABLE has no return (never 0). */
-function dailyReturns(days){
- const out=[];
- for(let i=1;i<days.length;i++){const a=days[i-1],b=days[i];if(num(a.total_value)&&a.total_value>0&&num(b.total_value))out.push({date:b.date,prev:a.date,r:(b.total_value-b.deposit)/a.total_value-1});}
- return out;
-}
-function product(xs){let g=1;for(const x of xs)g=g*(1+x);return g-1;}
+/* Daily returns from index levels (⑬ points, gaps null) on consecutive sessions of the period window: r = P_i / P_{i−1} − 1
+   when both levels exist. The base → first-session link is left out (no capital before the ledger's first day). */
+function pointReturns(points){const out=[];for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i];out.push(num(a)&&num(b)&&a>0?b/a-1:null);}return out;}
 function mean(xs){let s=0;for(const x of xs)s+=x;return s/xs.length;}
-function metrics({days=[],sp500=null,types=null,hits=null,summary=null}={}){
- const d=compareDays(days),rets=dailyReturns(d),last=d.length?d[d.length-1]:null,out={};
+/* Metrics for one set. days: engine days; indices/sources: runner result.indices / sources (SPY, ⑬ ETFs, KRW=X);
+   basis: ⑫⑬ currency basis. Period return and excess are ReportBenchmarks ⑫ SINCE_START (the set's own start). */
+function metrics({days=[],indices={},sources={},basis='KRW',types=null,hits=null,summary=null}={}){
+ const d=compareDays(days),last=d.length?d[d.length-1]:null,out={};
  out.value=last&&num(last.total_value)?ok(last.total_value,{date:last.date}):na(last?'VALUATION_NOT_AVAILABLE':'LEDGER_NOT_AVAILABLE');
- out.period_return=rets.length>=MIN.period_return?ok(product(rets.map(x=>x.r)),{samples:rets.length}):na('INSUFFICIENT_SAMPLE');
- // S&P 500 daily return on the same session pair (both closes present).
- const bench=object(sp500)?sp500:null,aligned=[];
- if(bench)for(const x of rets)if(num(bench[x.prev])&&num(bench[x.date])&&bench[x.prev]>0)aligned.push({r:x.r,b:bench[x.date]/bench[x.prev]-1});
- if(!bench)out.excess_return=na('BENCHMARK_NOT_AVAILABLE');
- else if(aligned.length<MIN.excess_return)out.excess_return=na('INSUFFICIENT_SAMPLE');
- else{const p=product(aligned.map(x=>x.r)),b=product(aligned.map(x=>x.b));out.excess_return=ok(p-b,{portfolio:p,benchmark:b,samples:aligned.length});}
+ const rb=benchmarks().build({indices,sources,ledgers:[{key:'SET',state:d.length?'OK':'NOT_AVAILABLE',reason_codes:d.length?[]:['LEDGER_NOT_AVAILABLE'],days:d.map(x=>({date:x.date,total_value:x.total_value,deposit:x.deposit}))}],period:'SINCE_START',basis});
+ const row=rb.periods.find(p=>p.period==='SINCE_START');
+ if(!d.length){out.period_return=na('LEDGER_NOT_AVAILABLE');out.excess_return=na('LEDGER_NOT_AVAILABLE');}
+ else if(!row||row.state!=='OK'){const r=row?row.reason:rb.reason;out.period_return=na(r);out.excess_return=na(r);}
+ else{
+  out.period_return=row.target.state==='OK'?ok(row.target.return,{start:row.start,end:row.end}):na(row.target.reason);
+  out.excess_return=row.excess===null?na(row.target.state!=='OK'?row.target.reason:row.sp500.reason):ok(row.excess,{portfolio:row.target.return,benchmark:row.sp500.return});
+ }
+ const dash=rb.dashboard,series=dash&&dash.state==='OK'?dash.series:[];
+ const ledger=series.find(s=>s.kind==='LEDGER'),spy=series.find(s=>s.key==='SP500');
+ const r=ledger?pointReturns(ledger.points):[],b=spy?pointReturns(spy.points):[];
+ const rets=r.filter(num),aligned=[];for(let i=0;i<r.length;i++)if(num(r[i])&&num(b[i]))aligned.push({r:r[i],b:b[i]});
  // Capture ratios (arithmetic mean form) on the S&P 500's up days and down days, ×100.
- const up=aligned.filter(x=>x.b>0),down=aligned.filter(x=>x.b<0);
- const capture=list=>!bench?na('BENCHMARK_NOT_AVAILABLE'):list.length<MIN.capture_days?na('INSUFFICIENT_SAMPLE'):ok(mean(list.map(x=>x.r))/mean(list.map(x=>x.b))*100,{samples:list.length});
- out.upside_capture=capture(up);out.downside_capture=capture(down);
- // Max drawdown on the deposit-neutral daily value index (W_0 = 1, W_t = W_{t−1}(1 + r_t)), ≤ 0.
+ const capture=list=>list.length<MIN.capture_days?na('INSUFFICIENT_SAMPLE'):ok(mean(list.map(x=>x.r))/mean(list.map(x=>x.b))*100,{samples:list.length});
+ out.upside_capture=capture(aligned.filter(x=>x.b>0));out.downside_capture=capture(aligned.filter(x=>x.b<0));
+ // Max drawdown on the ⑬ ledger index levels (time-weighted, deposit-neutral), ≤ 0; gaps are skipped, never filled.
  if(rets.length<MIN.max_drawdown)out.max_drawdown=na('INSUFFICIENT_SAMPLE');
- else{let w=1,peak=1,mdd=0;for(const x of rets){w=w*(1+x.r);if(w>peak)peak=w;const dd=w/peak-1;if(dd<mdd)mdd=dd;}out.max_drawdown=ok(mdd,{samples:rets.length});}
+ else{let peak=null,mdd=0;for(const p of ledger.points){if(!num(p))continue;if(peak===null||p>peak)peak=p;const dd=p/peak-1;if(dd<mdd)mdd=dd;}out.max_drawdown=ok(mdd,{samples:rets.length});}
  // Volatility: sample standard deviation of daily returns × √252.
  if(rets.length<MIN.volatility)out.volatility=na('INSUFFICIENT_SAMPLE');
- else{const m=mean(rets.map(x=>x.r));let v=0;for(const x of rets)v+=(x.r-m)*(x.r-m);out.volatility=ok(Math.sqrt(v/(rets.length-1))*Math.sqrt(252),{samples:rets.length});}
+ else{const m=mean(rets);let v=0;for(const x of rets)v+=(x-m)*(x-m);out.volatility=ok(Math.sqrt(v/(rets.length-1))*Math.sqrt(252),{samples:rets.length});}
  // Concentration: top-3 holding weight (% of total value) on the last session; NA when that day is not fully priced.
  const weighted=last&&num(last.total_value)&&last.priced;
  if(!weighted)out.concentration=na(last?'WEIGHTS_NOT_AVAILABLE':'LEDGER_NOT_AVAILABLE');
@@ -67,15 +70,15 @@ function metrics({days=[],sp500=null,types=null,hits=null,summary=null}={}){
   out.type_exposure=ok(e,{unclassified});}
  // Virtual trading: counts from the engine summary; D+20 hit rate from the engine's own check (D-12 minimum 30).
  const h20=Array.isArray(hits)?hits.find(h=>h.window===20):null;
- out.virtual_trades=object(summary)?ok({buy:summary.buy_count,sell:summary.sell_count},{hit20:h20?(h20.hit_rate===null?na('INSUFFICIENT_SAMPLE'):ok(h20.hit_rate,{samples:h20.samples})):na('INSUFFICIENT_SAMPLE')}):na('LEDGER_NOT_AVAILABLE');
+ out.virtual_trades=object(summary)?ok({buy:summary.buy_count,sell:summary.sell_count},{hit20:h20&&h20.hit_rate!==null?ok(h20.hit_rate,{samples:h20.samples}):na('INSUFFICIENT_SAMPLE')}):na('LEDGER_NOT_AVAILABLE');
  return out;
 }
-// Compare view from set entries [{id, kind, label, purpose, ledger, hits, input}] + public types → per-set metrics.
-function build(entries,{types=null}={}){
- const sets=(Array.isArray(entries)?entries:[]).map(e=>{const L=e.input,ready=e.ledger&&e.ledger.state==='OK';
+// Compare view from set entries [{id, kind, label, purpose, ledger, hits}] + the runner's indices/sources + public types.
+function build(entries,{indices={},sources={},basis='KRW',types=null}={}){
+ const sets=(Array.isArray(entries)?entries:[]).map(e=>{const ready=!!(e.ledger&&e.ledger.state==='OK');
   return{id:e.id,kind:e.kind,label:e.label,purpose:e.purpose||null,state:ready?'OK':'NOT_AVAILABLE',reason_codes:ready?[]:(e.ledger?e.ledger.reason_codes:['LEDGER_NOT_AVAILABLE']),
-   metrics:metrics({days:ready?e.ledger.days:[],sp500:L&&object(L.benchmarks)&&object(L.benchmarks[SP500])?L.benchmarks[SP500]:null,types,hits:e.hits,summary:ready?e.ledger.summary:null})};});
- return{schema:SCHEMA,state:sets.length>=2?'READY':'NOT_AVAILABLE',reason_codes:sets.length>=2?[]:['COMPARE_NEEDS_TWO_SETS'],sets};
+   metrics:metrics({days:ready?e.ledger.days:[],indices,sources,basis,types,hits:e.hits,summary:ready?e.ledger.summary:null})};});
+ return{schema:SCHEMA,basis,state:sets.length>=2?'READY':'NOT_AVAILABLE',reason_codes:sets.length>=2?[]:['COMPARE_NEEDS_TWO_SETS'],sets};
 }
 // Public company-types-pricefree.json → {cid: memberships} (price-free); null when not published.
 function typesFrom(payload){try{const rows=payload.data.companies,out={};for(const cid of Object.keys(rows).sort()){const r=rows[cid];if(object(r)&&object(r.memberships))out[cid]=r.memberships;}return out;}catch(_){return null;}}
@@ -90,10 +93,11 @@ const ROWS=Object.freeze([
  ['value','평가액'],['period_return','기간 수익률'],['excess_return','S&P 500 대비 초과'],['concentration','집중도(상위 3종목 비중)'],['type_exposure','유형 노출'],
  ['upside_capture','상승포착(S&P 500 상승일)'],['downside_capture','하락포착(S&P 500 하락일, 낮을수록 방어)'],['max_drawdown','최대낙폭'],['volatility','변동성(연율)'],['virtual_trades','가상매매 성과']]);
 function cell(key,m,money){
- const x=m[key];if(!x||x.state!=='OK')return'N/A'+(x&&x.reason?' ('+(engine().codeLabel(x.reason)||x.reason)+')':'');
+ const x=m[key];if(!x||x.state!=='OK')return'N/A'+(x&&x.reason?' ('+(engine().codeLabel(x.reason)||benchmarks().codeLabel(x.reason)||x.reason)+')':'');
  if(key==='value')return money(x.value);
- if(key==='period_return'||key==='max_drawdown')return pct(x.value)+' · '+x.samples+'일';
- if(key==='excess_return')return pct(x.value,2)+' · '+x.samples+'일';
+ if(key==='period_return')return pct(x.value)+' · '+x.start+'~'+x.end;
+ if(key==='max_drawdown')return pct(x.value)+' · '+x.samples+'일';
+ if(key==='excess_return')return pct(x.value,2)+' (S&P 500 '+pct(x.benchmark)+')';
  if(key==='volatility')return pct(x.value,1).replace('+','')+' · '+x.samples+'일';
  if(key==='upside_capture'||key==='downside_capture')return ratio(x.value)+' · '+x.samples+'일';
  if(key==='concentration')return pctPlain(x.value)+' · '+x.holdings+'종목';
@@ -123,7 +127,7 @@ function html(view,{money=v=>'N/A',picked=null,wide=true,locale='ko-KR'}={}){
  if(!wide)h+='<fieldset data-compare-picker><legend class="small">비교할 세트 2~3개 선택</legend>'+view.sets.map(s=>'<label class="toggle"><input type="checkbox" data-compare-pick="'+esc(s.id)+'"'+(picked&&picked.includes(s.id)?' checked':'')+'> '+esc(s.label)+'</label>').join('')+'</fieldset>';
  h+=tableHtml(view,{money,picked:wide?null:picked});
  h+='<p data-compare-summary>'+esc('한 줄 요약: 【규칙】 '+ruleLine(view))+'</p>';
- h+='<p class="small">'+esc('규칙 기반 숫자 비교입니다. 일간 수익률 = (평가액 − 당일 입금) ÷ 전날 평가액 − 1, 평가액이 있는 연속 거래일만 사용. 기간 수익률 1일 이상, 상승·하락포착 각 10일 이상, 최대낙폭·변동성 20일 이상, D+20 적중률 30건 이상이 아니면 N/A입니다. 집중도는 마지막 거래일 상위 3종목 비중, 유형 노출은 공개 유형 소속도(0~1)로 가중한 비중입니다. 해석은 한 줄 요약에만 둡니다.')+'</p></section>';
+ h+='<p class="small">'+esc('규칙 기반 숫자 비교입니다. 수익률은 ⑫⑬과 같은 계산(S&P 500 세션 기준, '+(view.basis==='USD'?'달러':'원화')+' 기준, 입금 제외 시간가중, 결측은 비우고 채우지 않음)이며 기간은 세트마다 장부 시작 이후입니다. 일간 수익률은 값이 있는 연속 거래일만 씁니다. 상승·하락포착 각 10일 이상, 최대낙폭·변동성 20일 이상, D+20 적중률 30건 이상이 아니면 N/A입니다. 집중도는 마지막 거래일 상위 3종목 비중, 유형 노출은 공개 유형 소속도(0~1)로 가중한 비중입니다. 해석은 한 줄 요약에만 둡니다.')+'</p></section>';
  return h;
 }
 // Export text: the numbers with amounts through the same money function, and one 【AI】 line only.
@@ -136,5 +140,5 @@ function template(view,{money=v=>'[숨김]',reportDate=null}={}){
  L.push('','한 줄 요약: 【AI】 (없으면 【규칙】 '+ruleLine(view)+')');
  return L.join('\n')+'\n';
 }
-return Object.freeze({SCHEMA,TYPES,MIN,CODES,ROWS,compareDays,dailyReturns,metrics,build,typesFrom,ruleLine,tableHtml,html,template});
+return Object.freeze({SCHEMA,TYPES,MIN,CODES,ROWS,compareDays,pointReturns,metrics,build,typesFrom,ruleLine,tableHtml,html,template});
 });

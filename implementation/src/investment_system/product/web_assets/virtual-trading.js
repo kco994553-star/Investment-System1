@@ -340,6 +340,8 @@ const CODE_LABELS=Object.freeze({
  SET_B_REDEFINED:['세트 B 재정의','Set B redefined'],REHEARSAL_NOT_RECORDED:['리허설 결과는 기록하지 않음','Rehearsal results are never recorded'],
  SET_REDEFINED:['세트 구성 변경(새 장부)','Set redefined (new ledger)'],SET_A_CHANGED:['세트 A 구성 변경(새 버전·새 장부)','Set A changed (new version, new ledger)'],
  SET_DELETED:['세트 삭제 → 종료(기록 보존)','Set deleted → closed (records kept)'],SET_MEMBERS_OVER_30:['구성 종목 30개 초과','More than 30 members'],
+ WEIGHTS_NOT_AVAILABLE:['보유 비중 계산 불가(마지막 거래일 가격·환율 결측)','Holding weights not available (price or FX missing on the last session)'],TYPES_NOT_AVAILABLE:['공개 유형 소속 없음','Public company types unavailable'],
+ COMPARE_NEEDS_TWO_SETS:['비교는 세트 2개 이상 필요','Comparison needs at least two sets'],
  PURPOSE_REQUIRED:['세트 목적(한 줄) 필요','A one-line set purpose is required'],PURPOSE_INVALID:['세트 목적 형식 오류(한 줄, 120자 이하)','Set purpose invalid (one line, up to 120 characters)'],
  NUMBER_INVALID:['숫자 형식 오류','Number invalid'],VALUE_INVALID:['값 형식 오류','Value invalid'],CONFIG_NOT_CANONICAL:['규칙 설정이 공식 v1과 다름','Configuration differs from the official v1'],
  COMPANY_NOT_SUPPORTED:['허용 목록 밖 종목(가격 Worker 허용 목록: TARGET 19종목 + ETF 15종)','Not on the price Worker allowlist (19 TARGET companies + 15 ETFs)'],WEIGHT_INVALID:['비중 형식 오류(0~100)','Weight invalid (0 to 100)'],

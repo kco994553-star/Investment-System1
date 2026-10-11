@@ -1,15 +1,17 @@
 """Virtual trading set comparison (decision 2026-10-11): rule-based metrics per set, pure functions.
 
-Python reference for web_assets/virtual-trading-compare.js (vectors: tests/fixtures/virtual_trading_compare_v1.json).
+Python reference for web_assets/virtual-trading-compare.js (vectors: tests/fixtures/virtual_trading_compare_v1.json,
+built by tools/virtual_trading_compare_reference.py). The return series are exactly those of S17 ⑫⑬
+(qgv/report_benchmarks.py): SPY session calendar, one currency basis (KRW by default: US index × same-session KRW=X),
+the engine time-weighted ledger chain, every missing close / rate / value a gap (never interpolated or carried).
 Standard definitions only; a metric with fewer samples than its minimum is NOT_AVAILABLE (never 0):
 
-- daily return r_t = (V_t − deposit_t) / V_{t−1} − 1 on consecutive sessions whose values are both available
-  (deposit-neutral, the engine TWR form); S&P 500 b_t = SPY_t / SPY_{t−1} − 1 on the same session pair;
-- period return Π(1 + r_t) − 1 (≥ 1 return); excess vs S&P 500 Π(1 + r_t) − Π(1 + b_t) on aligned pairs (≥ 1);
-- upside / downside capture = mean(r_t) / mean(b_t) × 100 over the S&P 500's up (b_t > 0) / down (b_t < 0) days
-  (≥ 10 days each);
-- max drawdown on the deposit-neutral daily value index W_t = Π(1 + r) (≥ 20 returns), ≤ 0;
-- volatility = sample standard deviation of r_t × √252 (≥ 20 returns);
+- period return and excess vs S&P 500: report_benchmarks ⑫ SINCE_START (from the set's own first ledger day);
+- daily return r = P_i / P_{i−1} − 1 on consecutive sessions of the ⑬ index levels when both exist (the base → first
+  session link is left out: no capital before the first ledger day); S&P 500 the same on its ⑬ levels;
+- upside / downside capture = mean(r) / mean(b) × 100 over the S&P 500's up (b > 0) / down (b < 0) days (≥ 10 days each);
+- max drawdown on the ⑬ ledger index levels (≥ 20 daily returns), ≤ 0;
+- volatility = sample standard deviation of the daily returns × √252 (≥ 20 daily returns);
 - concentration = top-3 holding weight (% of total value) on the last session (NA unless every holding is priced);
 - type exposure = Σ weight × public membership (0–1) per type (growth, quality, cyclical, defensive); holdings without
   a public membership (ETFs included) are unclassified;
@@ -20,10 +22,11 @@ from __future__ import annotations
 
 import math
 
+from . import report_benchmarks as rb
+
 SCHEMA = 'virtual-trading-compare/1'
-SP500 = 'SP500'
 TYPES = ('growth', 'quality', 'cyclical', 'defensive')
-MIN = {'period_return': 1, 'excess_return': 1, 'capture_days': 10, 'max_drawdown': 20, 'volatility': 20}
+MIN = {'capture_days': 10, 'max_drawdown': 20, 'volatility': 20}
 
 
 def _num(v):
@@ -56,19 +59,11 @@ def compare_days(days):
     return out
 
 
-def daily_returns(days):
+def point_returns(points):
     out = []
-    for a, b in zip(days, days[1:]):
-        if _num(a['total_value']) and a['total_value'] > 0 and _num(b['total_value']):
-            out.append({'date': b['date'], 'prev': a['date'], 'r': (b['total_value'] - b['deposit']) / a['total_value'] - 1})
+    for a, b in zip(points, points[1:]):
+        out.append(b / a - 1 if _num(a) and _num(b) and a > 0 else None)
     return out
-
-
-def _product(xs):
-    g = 1
-    for x in xs:
-        g = g * (1 + x)
-    return g - 1
 
 
 def _mean(xs):
@@ -78,32 +73,36 @@ def _mean(xs):
     return s / len(xs)
 
 
-def metrics(days=(), sp500=None, types=None, hits=None, summary=None):
+def metrics(days=(), indices=None, sources=None, basis='KRW', types=None, hits=None, summary=None):
     d = compare_days(days)
-    rets = daily_returns(d)
     last = d[-1] if d else None
     out = {}
     out['value'] = _ok(last['total_value'], date=last['date']) if last and _num(last['total_value']) else \
         _na('VALUATION_NOT_AVAILABLE' if last else 'LEDGER_NOT_AVAILABLE')
-    out['period_return'] = _ok(_product([x['r'] for x in rets]), samples=len(rets)) if len(rets) >= MIN['period_return'] else _na('INSUFFICIENT_SAMPLE')
-    bench = sp500 if isinstance(sp500, dict) else None
-    aligned = []
-    if bench is not None:
-        for x in rets:
-            p, c = bench.get(x['prev']), bench.get(x['date'])
-            if _num(p) and _num(c) and p > 0:
-                aligned.append({'r': x['r'], 'b': c / p - 1})
-    if bench is None:
-        out['excess_return'] = _na('BENCHMARK_NOT_AVAILABLE')
-    elif len(aligned) < MIN['excess_return']:
-        out['excess_return'] = _na('INSUFFICIENT_SAMPLE')
+    report = rb.build(indices=indices or {}, sources=sources or {}, period='SINCE_START', basis=basis,
+                      ledgers=[{'key': 'SET', 'state': 'OK' if d else 'NOT_AVAILABLE', 'reason_codes': [] if d else ['LEDGER_NOT_AVAILABLE'],
+                                'days': [{'date': x['date'], 'total_value': x['total_value'], 'deposit': x['deposit']} for x in d]}])
+    row = next((p for p in report['periods'] if p['period'] == 'SINCE_START'), None)
+    if not d:
+        out['period_return'], out['excess_return'] = _na('LEDGER_NOT_AVAILABLE'), _na('LEDGER_NOT_AVAILABLE')
+    elif row is None or row['state'] != 'OK':
+        reason = row['reason'] if row else report['reason']
+        out['period_return'], out['excess_return'] = _na(reason), _na(reason)
     else:
-        p, b = _product([x['r'] for x in aligned]), _product([x['b'] for x in aligned])
-        out['excess_return'] = _ok(p - b, portfolio=p, benchmark=b, samples=len(aligned))
+        t, s = row['target'], row['sp500']
+        out['period_return'] = _ok(t['return'], start=row['start'], end=row['end']) if t['state'] == 'OK' else _na(t['reason'])
+        out['excess_return'] = _na(t['reason'] if t['state'] != 'OK' else s['reason']) if row['excess'] is None else \
+            _ok(row['excess'], portfolio=t['return'], benchmark=s['return'])
+    dash = report['dashboard']
+    series = dash['series'] if dash and dash['state'] == 'OK' else []
+    ledger = next((x for x in series if x['kind'] == 'LEDGER'), None)
+    spy = next((x for x in series if x['key'] == 'SP500'), None)
+    r = point_returns(ledger['points']) if ledger else []
+    b = point_returns(spy['points']) if spy else []
+    rets = [x for x in r if _num(x)]
+    aligned = [{'r': r[i], 'b': b[i]} for i in range(len(r)) if _num(r[i]) and i < len(b) and _num(b[i])]
 
     def capture(rows):
-        if bench is None:
-            return _na('BENCHMARK_NOT_AVAILABLE')
         if len(rows) < MIN['capture_days']:
             return _na('INSUFFICIENT_SAMPLE')
         return _ok(_mean([x['r'] for x in rows]) / _mean([x['b'] for x in rows]) * 100, samples=len(rows))
@@ -113,22 +112,23 @@ def metrics(days=(), sp500=None, types=None, hits=None, summary=None):
     if len(rets) < MIN['max_drawdown']:
         out['max_drawdown'] = _na('INSUFFICIENT_SAMPLE')
     else:
-        w, peak, mdd = 1, 1, 0
-        for x in rets:
-            w = w * (1 + x['r'])
-            if w > peak:
-                peak = w
-            dd = w / peak - 1
+        peak, mdd = None, 0
+        for p in ledger['points']:
+            if not _num(p):
+                continue
+            if peak is None or p > peak:
+                peak = p
+            dd = p / peak - 1
             if dd < mdd:
                 mdd = dd
         out['max_drawdown'] = _ok(mdd, samples=len(rets))
     if len(rets) < MIN['volatility']:
         out['volatility'] = _na('INSUFFICIENT_SAMPLE')
     else:
-        m = _mean([x['r'] for x in rets])
+        m = _mean(rets)
         v = 0
         for x in rets:
-            v += (x['r'] - m) * (x['r'] - m)
+            v += (x - m) * (x - m)
         out['volatility'] = _ok(math.sqrt(v / (len(rets) - 1)) * math.sqrt(252), samples=len(rets))
     weighted = bool(last and _num(last['total_value']) and last['priced'])
     if not weighted:
@@ -158,7 +158,7 @@ def metrics(days=(), sp500=None, types=None, hits=None, summary=None):
         out['type_exposure'] = _ok(e, unclassified=unclassified)
     h20 = next((h for h in hits if h['window'] == 20), None) if isinstance(hits, list) else None
     if isinstance(summary, dict):
-        hit = (_na('INSUFFICIENT_SAMPLE') if h20 is None or h20['hit_rate'] is None else _ok(h20['hit_rate'], samples=h20['samples']))
+        hit = _ok(h20['hit_rate'], samples=h20['samples']) if h20 is not None and h20['hit_rate'] is not None else _na('INSUFFICIENT_SAMPLE')
         out['virtual_trades'] = _ok({'buy': summary['buy_count'], 'sell': summary['sell_count']}, hit20=hit)
     else:
         out['virtual_trades'] = _na('LEDGER_NOT_AVAILABLE')

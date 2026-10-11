@@ -13,6 +13,7 @@ const Runner = require(path.join(ASSETS, 'virtual-trading-runner.js'));
 const Signals = require(path.join(ASSETS, 'virtual-trading-signals.js'));
 const VHistory = require(path.join(ASSETS, 'virtual-trading-v-history.js'));
 const Sheets = require(path.join(ASSETS, 'virtual-ledger-sheets.js'));
+const Compare = require(path.join(ASSETS, 'virtual-trading-compare.js'));
 const R = require(path.join(ASSETS, 'daily-report.js'));
 const RB = require(path.join(ASSETS, 'report-benchmarks.js'));
 // ⑪⑫⑬ display codes are labelled in ReportBenchmarks (same [ko, en] shape); the scan accepts either table.
@@ -21,7 +22,7 @@ const labelled = (c) => VT.codeLabel(c) || RB.codeLabel(c);
 const D19 = '■차단 > ▼위험재검토 > ▼비중축소검토 > ▲비중확대검토 > ●추가검토 > ●보유맥락 > ●관찰';
 const FAMILIES = {
   ...Object.fromEntries(Object.entries(VT.CODES).map(([k, v]) => ['engine.' + k, v])),
-  runner: Runner.CODES, signals: Signals.CODES, v_history: VHistory.CODES, ledger_sheets: Sheets.CODES,
+  runner: Runner.CODES, signals: Signals.CODES, v_history: VHistory.CODES, ledger_sheets: Sheets.CODES, compare: Compare.CODES,
 };
 // Upper-case literals in the family sources that are NOT reason codes: each is an enum shown through its own wording.
 const NOT_CODES = {
@@ -29,7 +30,7 @@ const NOT_CODES = {
   tickers_and_benchmarks: ['AMD', 'AMZN', 'ASML', 'AVGO', 'ETN', 'GEV', 'GOOGL', 'HUBB', 'INTC', 'KLAC', 'LRCX', 'MSFT', 'NVDA', 'QCOM', 'ROK', 'RTX', 'SYK',
     'SPY', 'SP500', 'SMH', 'VUG', 'QUAL', 'XLB', 'XLC', 'XLE', 'XLF', 'XLI', 'XLK', 'XLP', 'XLRE', 'XLU', 'XLV', 'XLY', 'SEMIS_THEME_SMH_ELSE_XLI'],
   currencies: ['KRW', 'USD', 'JPY'],
-  ledger_and_report_kinds: ['SET_A', 'SET_B', 'SET_C', 'SET_D', 'SHADOW', 'MOCK', 'REAL', 'COMPARE', 'TARGET', 'TARGET_V0', 'USER_TARGET'],
+  ledger_and_report_kinds: ['SET', 'SET_A', 'SET_B', 'SET_C', 'SET_D', 'SHADOW', 'PHONE', 'MOCK', 'REAL', 'COMPARE', 'TARGET', 'TARGET_V0', 'USER_TARGET'],
   sides_rows_events_sources: ['BUY', 'SELL', 'INITIAL', 'EXECUTED', 'CANCELLED', 'JUDGEMENT', 'ORDER', 'SUMMARY', 'LEDGER_START', 'LEDGER_CLOSE', 'RECORD', 'RESYNC', 'MAILBOX', 'PASTE', 'NEW'],
   states: ['READY', 'PARTIAL', 'BLOCKED', 'NOT_AVAILABLE', 'NOT_STARTED', 'STARTED', 'LOADING', 'LOADED', 'ERROR', 'LIVE', 'STALE', 'ABNORMAL', 'NORMAL', 'COMPLETE',
     'IN_PROGRESS', 'UNKNOWN', 'EMPTY', 'UNAVAILABLE', 'RECORDED', 'NOT_RECORDED', 'COLLECTING', 'RECORDING', 'REHEARSAL', 'OPEN', 'CLOSED', 'NOT_DEFINED'],
@@ -68,10 +69,10 @@ test('every code in the engine, runner, signals, V history and ledger sheet code
 });
 
 test('source scan: every upper-case code literal in the JS modules, the report glue and the Python ports is labelled or a listed enum', () => {
-  const files = ['virtual-trading.js', 'virtual-trading-runner.js', 'virtual-trading-signals.js', 'virtual-trading-v-history.js', 'virtual-ledger-sheets.js', 'daily-report.js']
+  const files = ['virtual-trading.js', 'virtual-trading-runner.js', 'virtual-trading-signals.js', 'virtual-trading-v-history.js', 'virtual-ledger-sheets.js', 'virtual-trading-compare.js', 'daily-report.js']
     .map((f) => path.join(ASSETS, f))
     .concat([path.join(ASSETS, 'report-benchmarks.js')])
-    .concat(['virtual_trading.py', 'virtual_trading_inputs.py', 'virtual_trading_signals.py', 'virtual_ledger_sheets.py', 'report_benchmarks.py'].map((f) => path.join(QGV, f)));
+    .concat(['virtual_trading.py', 'virtual_trading_inputs.py', 'virtual_trading_signals.py', 'virtual_ledger_sheets.py', 'report_benchmarks.py', 'virtual_trading_compare.py'].map((f) => path.join(QGV, f)));
   const app = read(path.join(ASSETS, 'app.js'));
   const glue = app.slice(app.indexOf('async function paintReport'), app.indexOf('function showUnavailable'));
   assert.ok(glue.length > 1000, 'report glue found');
