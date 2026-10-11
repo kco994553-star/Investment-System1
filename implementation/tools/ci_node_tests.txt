@@ -21,6 +21,8 @@ private_history_contract_test.mjs
 private_subset_node_test.js
 ops_status_node_test.js
 global_language_search_test.js
+virtual_trading_node_test.js
+daily_report_node_test.js
 classification_screens_node_test.js
 device_valuation_node_test.js
 sec_universe_shares_node_test.js
