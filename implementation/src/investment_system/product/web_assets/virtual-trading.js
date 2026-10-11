@@ -5,8 +5,8 @@
 'use strict';
 const CONFIG=Object.freeze(JSON.parse('{"schema_version":1,"config_version":"virtual_trading/v1-provisional","rules_version":"virtual_trading_rules/v1","status":"PROVISIONAL_UNCALIBRATED","role":"RAM_ONLY_DEVICE","decided_at":"2026-10-11","start_date":"2026-10-19","base_currency":"KRW","daily_deposit":1000000,"buy_limit":1000000,"sell_limit":1000000,"execution":"NEXT_SESSION_CLOSE","cost_bps":0,"fractional_quantity":true,"band_pp":1,"qg_decline_threshold":5,"min_trade":10000,"abnormal_drop":{"window_sessions":20,"lookback_sessions":252,"k":2},"sector_basis":"SECTOR_ETF_CONFIRMED","macro_gate":"INACTIVE_MAPPING_PENDING","v_slope":{"lookback_sessions":20,"threshold":10},"benchmark":"SP500","hit_windows":[5,20,63],"hit_min_samples":30,"total_score":"TYPE_WEIGHTED_QGV_ELSE_QG","provenance":{"start_date":"D-13 DECIDED_2026-10-11","daily_deposit":"D-1 PROVISIONAL","buy_limit":"D-15 DECIDED_2026-10-10","sell_limit":"D-15 DECIDED_2026-10-10","execution":"D-2 PROVISIONAL","cost_bps":"D-3 PROVISIONAL","fractional_quantity":"D-4 PROVISIONAL","abnormal_drop":"D-5 PROVISIONAL","macro_gate":"D-6 PROVISIONAL","band_pp":"D-7 PROVISIONAL","qg_decline_threshold":"D-8 PROVISIONAL","min_trade":"D-9 PROVISIONAL","benchmark":"D-11 PROVISIONAL","hit_min_samples":"D-12 PROVISIONAL","total_score":"D-14 PROVISIONAL","v_slope":"D-21 PROVISIONAL","sector_basis":"D-22 DECIDED_2026-10-11 (sector_etf_map/v1)"}}'));
 const LEDGER_KINDS=['SET_A','SET_B','SHADOW'],COVERAGES=['READY','PARTIAL','BLOCKED'],FLAG_KINDS=['HOLD','EXCLUDE','CONFIRMED_TEMPORARY','CONFIRMED_STRUCTURAL','CLEAR'],EVENT_KINDS=['EARNINGS_WINDOW','TYPE_CHANGED'];
-const LEVELS=['BLOCK','RISK_RECHECK','REDUCE_REVIEW','INCREASE_REVIEW','ADDITIONAL_REVIEW','HOLDING_CONTEXT','OBSERVE'];
-const SYMBOLS={BLOCK:'■',RISK_RECHECK:'▼',REDUCE_REVIEW:'▼',INCREASE_REVIEW:'▲',ADDITIONAL_REVIEW:'●',HOLDING_CONTEXT:'●',OBSERVE:'●'};
+const LEVELS=Object.freeze(['BLOCK','RISK_RECHECK','REDUCE_REVIEW','INCREASE_REVIEW','ADDITIONAL_REVIEW','HOLDING_CONTEXT','OBSERVE']);
+const SYMBOLS=Object.freeze({BLOCK:'■',RISK_RECHECK:'▼',REDUCE_REVIEW:'▼',INCREASE_REVIEW:'▲',ADDITIONAL_REVIEW:'●',HOLDING_CONTEXT:'●',OBSERVE:'●'});
 const SP500='SP500';
 const has=(o,k)=>o!==null&&typeof o==='object'&&Object.prototype.hasOwnProperty.call(o,k);
 const get=(o,k)=>has(o,k)?o[k]:undefined;
@@ -223,9 +223,135 @@ function evaluateHits(config,ledger,trades){
  }
  return out;
 }
-const LABELS={ko:{BLOCK:'차단',RISK_RECHECK:'위험재검토',REDUCE_REVIEW:'비중축소검토',INCREASE_REVIEW:'비중확대검토',ADDITIONAL_REVIEW:'추가검토',HOLDING_CONTEXT:'보유맥락',OBSERVE:'관찰'},
- en:{BLOCK:'Blocked',RISK_RECHECK:'Risk re-check',REDUCE_REVIEW:'Review reducing weight',INCREASE_REVIEW:'Review adding weight',ADDITIONAL_REVIEW:'Further review',HOLDING_CONTEXT:'Holding context',OBSERVE:'Observe'}};
-function label(level,locale){const t=LABELS[locale==='en-US'||locale==='en'?'en':'ko'];return SYMBOLS[level]+' '+t[level];}
+/* ---------- D-19 vocabulary: the ONE source for level order, symbols, Korean/English names, chip tones, auxiliary chips,
+   reason-code labels and the fixed disclaimer on every virtual-trading surface (S17 screen and template v1, S03 virtual
+   card, ledger sheet card). Python keeps LEVELS/SYMBOLS only (tests/test_virtual_trading.py checks equality). ---------- */
+const LABELS=Object.freeze({ko:Object.freeze({BLOCK:'차단',RISK_RECHECK:'위험재검토',REDUCE_REVIEW:'비중축소검토',INCREASE_REVIEW:'비중확대검토',ADDITIONAL_REVIEW:'추가검토',HOLDING_CONTEXT:'보유맥락',OBSERVE:'관찰'}),
+ en:Object.freeze({BLOCK:'Blocked',RISK_RECHECK:'Risk re-check',REDUCE_REVIEW:'Review reducing weight',INCREASE_REVIEW:'Review adding weight',ADDITIONAL_REVIEW:'Further review',HOLDING_CONTEXT:'Holding context',OBSERVE:'Observe'})});
+// Chip colour family per level (style.css .chip.vt[data-tone]); judgement colours differ from return colours (template §7.1).
+const TONES=Object.freeze({BLOCK:'block',RISK_RECHECK:'risk',REDUCE_REVIEW:'reduce',INCREASE_REVIEW:'increase',ADDITIONAL_REVIEW:'review',HOLDING_CONTEXT:'neutral',OBSERVE:'neutral'});
+// Directional auxiliary codes shown as chips next to the main judgement (template §7.3: `▼비중`, `▲확대 후보`).
+const SIGNALS=Object.freeze({OVERWEIGHT:Object.freeze({level:'REDUCE_REVIEW',ko:'비중',en:'Weight'}),INCREASE_CANDIDATE:Object.freeze({level:'INCREASE_REVIEW',ko:'확대 후보',en:'Add candidate'})});
+const DISCLAIMER=Object.freeze({ko:'가상 · 실제 추천 아님 · 주문 기능 없음',en:'Virtual · not a recommendation · no order function'});
+// Every code the engine itself can emit, by family (the runner, signals, V history and ledger sheet modules export theirs).
+const CODES=Object.freeze({
+ judgement:Object.freeze(['DATA_PRICE_MISSING','DATA_FX_MISSING','DATA_SNAPSHOT_MISSING','COVERAGE_BLOCKED','USER_EXCLUDE','QG_DECLINE','COVERAGE_WORSENED','USER_HOLD','RECHECK_BASIS_NOT_AVAILABLE','RECHECK_ABNORMAL_DROP','USER_CONFIRMED_TEMPORARY','USER_CONFIRMED_STRUCTURAL','OVERWEIGHT_GAP','UNDERWEIGHT_GAP','V_IMPROVED','V_DETERIORATED','BAND_INSIDE']),
+ aux:Object.freeze(['OVERWEIGHT','INCREASE_CANDIDATE','COVERAGE_PARTIAL','EARNINGS_WINDOW','TYPE_CHANGED','SECTOR_SP500_SUBSTITUTE']),
+ order:Object.freeze(['LIMIT_EXHAUSTED']),
+ execution:Object.freeze(['EXEC_PRICE_MISSING','EXEC_FX_MISSING','NO_POSITION','CASH_INSUFFICIENT']),
+ ledger:Object.freeze(['START_DATE_NOT_SET','INPUT_INVALID','CONFIG_INVALID','TARGET_NOT_AVAILABLE','NO_SESSION_ON_OR_AFTER_START','INITIAL_VALUE_NOT_AVAILABLE']),
+ basis:Object.freeze(['SECTOR_BASIS_NOT_AVAILABLE','PRICE_NOT_ALIGNED','HISTORY_INSUFFICIENT','DISTRIBUTION_DEGENERATE']),
+ sector:Object.freeze(['SIC_NOT_AVAILABLE','SEMIS_MEMBERSHIP_NOT_AVAILABLE','SECTOR_ETF_NOT_MAPPED']),
+ hits:Object.freeze(['INSUFFICIENT_SAMPLE']),
+ flags:Object.freeze(['HOLD','EXCLUDE','CONFIRMED_TEMPORARY','CONFIRMED_STRUCTURAL','CLEAR'])});
+// [Korean, English] per code. A code missing here is shown verbatim (codeText), never dropped or invented.
+const CODE_LABELS=Object.freeze({
+ // engine: judgement reasons
+ DATA_PRICE_MISSING:['가격 결측','Price missing'],DATA_FX_MISSING:['환율 결측','FX rate missing'],DATA_SNAPSHOT_MISSING:['Q·G 스냅샷 없음','No Q·G snapshot'],
+ COVERAGE_BLOCKED:['데이터 Coverage BLOCKED','Data coverage BLOCKED'],USER_EXCLUDE:['사용자 제외 플래그','User exclude flag'],
+ QG_DECLINE:['Q·G 평균이 직전 스냅샷보다 임계 이상 하락','Q·G average fell by the threshold or more since the previous snapshot'],
+ COVERAGE_WORSENED:['Coverage가 READY에서 PARTIAL로 악화','Coverage worsened from READY to PARTIAL'],USER_HOLD:['사용자 보류 플래그','User hold flag'],
+ RECHECK_BASIS_NOT_AVAILABLE:['이상 하락 기준 계산 불가(1년 일봉·업종 기준 부족), V 신호 미사용','Abnormal-drop basis not computable (one year of daily bars or sector basis missing); V signal unused'],
+ RECHECK_ABNORMAL_DROP:['업종 기준 대비 개별 이상 하락(−2σ), 원인 확인 전 거래 없음','Abnormal drop against the sector basis (−2σ); no virtual trade until the cause is checked'],
+ USER_CONFIRMED_TEMPORARY:['사용자 확인: 일시적','User confirmed: temporary'],USER_CONFIRMED_STRUCTURAL:['사용자 확인: 구조적','User confirmed: structural'],
+ OVERWEIGHT_GAP:['목표 비중보다 Band 이상 초과','Above the target weight by more than the band'],UNDERWEIGHT_GAP:['목표 비중보다 Band 이상 부족','Below the target weight by more than the band'],
+ V_IMPROVED:['Q·G 유지 중 V가 20거래일 전보다 개선','V improved over 20 sessions while Q·G held'],V_DETERIORATED:['Q·G 유지 중 V가 20거래일 전보다 악화','V deteriorated over 20 sessions while Q·G held'],
+ BAND_INSIDE:['범위 안, 보유','Inside the band, held'],
+ // engine: auxiliary codes
+ OVERWEIGHT:['보조: 목표 비중보다 Band 이상 초과(위험재검토 중이라 거래 없음)','Auxiliary: above target by more than the band (risk re-check, no virtual trade)'],
+ INCREASE_CANDIDATE:['보조: V 개선으로 확대 후보(위험재검토 중이라 거래 없음)','Auxiliary: add candidate on improved V (risk re-check, no virtual trade)'],
+ COVERAGE_PARTIAL:['Coverage PARTIAL(일부 데이터)','Coverage PARTIAL (partial data)'],EARNINGS_WINDOW:['실적 발표 예상 기간','Expected earnings window'],TYPE_CHANGED:['유형 소속 변경','Type membership changed'],
+ SECTOR_SP500_SUBSTITUTE:['업종 ETF 대신 S&P 500 기준 사용','S&P 500 used instead of the sector ETF'],
+ // engine: virtual orders and executions
+ LIMIT_EXHAUSTED:['하루 한도 소진으로 일부만 배분','Daily limit reached; only part allocated'],
+ EXEC_PRICE_MISSING:['체결일 종가 결측으로 가상 주문 취소','Virtual order cancelled: no close on the execution day'],
+ EXEC_FX_MISSING:['체결일 환율 결측으로 가상 주문 취소','Virtual order cancelled: no FX rate on the execution day'],
+ NO_POSITION:['보유분 없음으로 가상 매도 취소','Virtual sale cancelled: no position'],CASH_INSUFFICIENT:['가상 현금 부족으로 가상 매수 취소','Virtual purchase cancelled: not enough virtual cash'],
+ // engine: whole-ledger stops
+ START_DATE_NOT_SET:['가상매매 시작일 미정','Virtual trading start date not set'],INPUT_INVALID:['장부 입력 형식 오류','Ledger input invalid'],CONFIG_INVALID:['규칙 설정 형식 오류','Rule configuration invalid'],
+ TARGET_NOT_AVAILABLE:['목표 비중 없음','No target weights'],NO_SESSION_ON_OR_AFTER_START:['시작일 이후 거래일 없음','No session on or after the start date'],
+ INITIAL_VALUE_NOT_AVAILABLE:['출발 평가액 계산 불가(가격·환율 결측)','Initial value not computable (price or FX missing)'],
+ // engine: D-5 basis and D-22 sector mapping
+ SECTOR_BASIS_NOT_AVAILABLE:['업종 기준 시세 없음','No sector basis series'],PRICE_NOT_ALIGNED:['보고일 종가가 기준 시세와 맞지 않음','Close not aligned with the basis on this day'],
+ HISTORY_INSUFFICIENT:['정렬된 일봉 부족','Not enough aligned daily bars'],DISTRIBUTION_DEGENERATE:['초과수익률 분포 계산 불가(변동 0)','Excess-return distribution degenerate (zero spread)'],
+ SIC_NOT_AVAILABLE:['SIC 없음 → S&P 500 기준','No SIC → S&P 500 basis'],SEMIS_MEMBERSHIP_NOT_AVAILABLE:['반도체 테마 소속 미확인 → XLI 기준','Semiconductor theme membership unknown → XLI basis'],
+ SECTOR_ETF_NOT_MAPPED:['대응 업종 ETF 없음 → S&P 500 기준','No mapped sector ETF → S&P 500 basis'],
+ INSUFFICIENT_SAMPLE:['표본 부족(30건 미만)','Insufficient sample (under 30)'],
+ // engine: user flags
+ HOLD:['보류','Hold'],EXCLUDE:['제외','Exclude'],CONFIRMED_TEMPORARY:['확인: 일시적','Confirmed: temporary'],CONFIRMED_STRUCTURAL:['확인: 구조적','Confirmed: structural'],CLEAR:['플래그 해제','Flag cleared'],
+ // runner: inputs and sources
+ BEFORE_START_DATE:['가상매매 시작일 전','Before the virtual trading start date'],TARGET_CATALOG_INVALID:['공개 TARGET 카탈로그 형식 오류','Public TARGET catalog invalid'],
+ SESSIONS_NOT_AVAILABLE:['S&P 500 일봉 없음 → 거래일 없음','No S&P 500 daily bars → no sessions'],SET_B_NOT_DEFINED:['세트 B 구성 없음','Set B not defined'],SET_B_INVALID:['세트 B 구성 형식 오류','Set B definition invalid'],
+ NO_ACTUAL:['기기 실제 보유 없음','No ACTUAL holdings on this device'],ACTUAL_INVALID:['기기 실제 보유 형식 오류','ACTUAL holdings invalid'],
+ INITIAL_COST_FX_MISSING:['출발 원가 환산 환율 없음','No FX rate for the initial cost'],LEDGER_NOT_AVAILABLE:['가상 장부 없음','Virtual ledger not available'],
+ NOT_REQUESTED:['요청하지 않음','Not requested'],HISTORY_UNAVAILABLE:['일봉 없음','Daily history unavailable'],HISTORY_FORMAT_INVALID:['일봉 형식 오류','Daily history format invalid'],
+ CURRENCY_MISMATCH:['통화 불일치','Currency mismatch'],OFF:['비공개 가격 Worker 꺼짐','Private price Worker off'],REQUEST_INVALID:['요청 형식 오류','Request invalid'],
+ ORIGIN_UNAPPROVED:['가격 Worker 주소 미승인','Price Worker origin not approved'],ORIGIN_FORBIDDEN:['가격 Worker가 이 주소를 거부','Price Worker refused this origin'],
+ AUTH_REQUIRED:['구글 로그인 필요','Google sign-in required'],AUTH_FORBIDDEN:['구글 계정 권한 없음','Google account not allowed'],AUTH_UNAVAILABLE:['로그인 확인 불가','Sign-in check unavailable'],
+ AUTH_FAILED:['로그인 실패','Sign-in failed'],CONFIG_UNAVAILABLE:['Worker 설정 없음','Worker configuration unavailable'],CANCELED:['취소됨','Cancelled'],
+ RATE_LIMITED:['요청 한도 초과','Rate limited'],RATE_LIMIT_UNAVAILABLE:['요청 한도 확인 불가','Rate limit unavailable'],READ_FAILED:['읽기 실패','Read failed'],
+ SOURCE_TOO_LARGE:['응답이 너무 큼','Response too large'],YAHOO_UNAVAILABLE:['시세 원천 응답 없음','Quote source unavailable'],INVALID:['형식 오류','Invalid'],
+ LEDGER_UNREACHABLE:['공개 전진 검증 장부를 열 수 없음','Public forward ledger unreachable'],LEDGER_INVALID:['공개 전진 검증 장부 형식 오류','Public forward ledger invalid'],
+ LEDGER_NOT_PUBLISHED:['공개 전진 검증 장부 미게시','Public forward ledger not published'],
+ // S17 report glue (app.js)
+ RUNNER_LOADING:['가상 장부 입력 불러오는 중','Loading virtual ledger inputs'],RUNNER_FAILED:['가상 장부 계산 실패','Virtual ledger run failed'],
+ PUBLIC_CATALOG_UNAVAILABLE:['공개 카탈로그 없음','Public catalog unavailable'],MAILBOX_FAILED:['우체통 처리 실패','Mailbox failed'],HASH_UNAVAILABLE:['해시 계산 불가','Hash unavailable'],
+ // signals: V slope use
+ BASIS_NOT_AVAILABLE:['V 기울기 미사용','V slope unused'],V_HISTORY_SHORT:['V 기록 부족','V history too short'],
+ // V history store
+ DATE_INVALID:['날짜 형식 오류','Date invalid'],DATE_BEFORE_LAST_RECORDED:['마지막 기록일보다 이른 날짜(소급 안 함)','Before the last recorded date (no backfill)'],
+ UNCHANGED:['새 값 없음(이미 기록)','Nothing new (already recorded)'],NO_VALUES:['기록할 V 없음','No V values to record'],DEVICE_STORAGE_UNAVAILABLE:['기기 저장소 사용 불가','Device storage unavailable'],
+ V_STORE_INVALID:['기기 V 기록 형식 오류(그대로 둠)','Device V store invalid (left untouched)'],SESSION_NOT_AVAILABLE:['완료 거래일 없음','No completed session'],
+ VALUATION_INPUTS_UNAVAILABLE:['공개 가치평가 입력 없음','Public valuation inputs unavailable'],
+ // ledger sheets (D-10)
+ LEDGER_REPLAY_MISMATCH:['기록된 행과 재생 결과가 다름(쓰기 중지)','Recorded rows differ from the replay (writes stopped)'],SHEET_ROWS_INVALID:['시트 행 형식 오류','Sheet rows invalid'],
+ SHEET_HEADER_MISMATCH:['시트 머리글 불일치','Sheet header mismatch'],META_INVALID:['VirtualMeta 형식 오류','VirtualMeta invalid'],META_ROW_INVALID:['VirtualMeta 행 형식 오류','VirtualMeta row invalid'],
+ LEDGER_UNKNOWN:['VirtualMeta에 없는 장부 ID','Ledger ID not in VirtualMeta'],INPUTS_NOT_READY:['장부 입력 준비 전','Ledger inputs not ready'],
+ INPUTS_INCOMPLETE:['시세 일부 없음(다시 받은 뒤 기록)','Inputs incomplete (record after reloading quotes)'],INPUTS_CHANGED:['기록 이후 입력이 바뀜','Inputs changed since recording'],
+ WAITING_FOR_QG_RECORD:['Q·G 기록 대기','Waiting for the Q·G record'],VALUATION_NOT_AVAILABLE:['평가액 계산 불가','Valuation not available'],
+ SHEET_NOT_READY:['시트 장부 준비 전','Sheet ledger not ready'],SHEET_NOT_LOADED:['시트를 아직 읽지 않음','Sheet not loaded yet'],NOT_CONNECTED:['구글 시트 미연결','Google Sheet not connected'],
+ SHADOW_NOT_STARTED:['그림자 장부 출발 전','Shadow ledger not started'],SHADOW_ALREADY_STARTED:['그림자 장부가 이미 출발함','Shadow ledger already started'],
+ SET_B_REDEFINED:['세트 B 재정의','Set B redefined'],REHEARSAL_NOT_RECORDED:['리허설 결과는 기록하지 않음','Rehearsal results are never recorded'],
+ NUMBER_INVALID:['숫자 형식 오류','Number invalid'],VALUE_INVALID:['값 형식 오류','Value invalid'],CONFIG_NOT_CANONICAL:['규칙 설정이 공식 v1과 다름','Configuration differs from the official v1'],
+ COMPANY_NOT_SUPPORTED:['TARGET 19종목이 아님','Not one of the 19 TARGET companies'],WEIGHT_INVALID:['비중 형식 오류(0~100)','Weight invalid (0 to 100)'],
+ WEIGHT_SUM_OVER_100:['비중 합계 100 초과','Weights sum above 100'],WEIGHTS_EMPTY:['비중 없음','No weights'],WRITE_FAILED:['시트 쓰기 실패','Sheet write failed']});
+const lang=locale=>locale==='en-US'||locale==='en'?'en':'ko';
+const byLevel=(a,b)=>LEVELS.indexOf(a)-LEVELS.indexOf(b);
+const escHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// '▲비중확대검토': symbol + name, no space (D-19 register wording).
+function label(level,locale){return LEVELS.includes(level)?SYMBOLS[level]+LABELS[lang(locale)][level]:String(level);}
+function codeLabel(code,locale){return has(CODE_LABELS,code)?CODE_LABELS[code][lang(locale)==='en'?1:0]:null;}
+// Known code → 'label (CODE)'; unknown (e.g. a Worker error passed through) → the code verbatim, deliberately.
+function codeText(code,locale){const l=codeLabel(code,locale);return l===null?String(code):l+' ('+code+')';}
+function codesText(codes,locale){return (Array.isArray(codes)?codes:[]).map(c=>codeText(c,locale)).join(', ');}
+/* One judgement → chips: exactly one main level, then the auxiliary levels in priority order (never the main again), then
+   directional auxiliary signals whose level is not already shown. The same tokens feed the screen chips and the template text. */
+function judgementTokens(j,locale){
+ if(!obj(j)||!LEVELS.includes(j.main))return[];
+ const shown=new Set([j.main]),rest=[];
+ for(const l of [...new Set(Array.isArray(j.aux_levels)?j.aux_levels:[])].filter(l=>LEVELS.includes(l)&&!shown.has(l))){shown.add(l);rest.push({kind:'aux',key:l,level:l,text:'+'+label(l,locale)});}
+ const aux=Array.isArray(j.aux)?j.aux:[];
+ for(const c of Object.keys(SIGNALS).filter(c=>aux.includes(c)&&!shown.has(SIGNALS[c].level))){const s=SIGNALS[c];rest.push({kind:'signal',key:c,level:s.level,text:'+'+SYMBOLS[s.level]+s[lang(locale)]});}
+ // Auxiliary chips by level priority (a signal whose level is already shown is skipped above, so levels never repeat).
+ rest.sort((a,b)=>byLevel(a.level,b.level));
+ return [{kind:'main',key:j.main,level:j.main,text:label(j.main,locale)},...rest];
+}
+function judgementText(j,locale){return judgementTokens(j,locale).map(t=>t.text).join(' ');}
+function judgementHtml(j,{locale='ko-KR'}={}){
+ const tokens=judgementTokens(j,locale);if(!tokens.length)return'';
+ return '<span class="vt-judgement" data-judgement data-main="'+tokens[0].level+'">'+tokens.map(t=>'<span class="chip vt '+t.kind+'" data-chip="'+t.kind+'" data-level="'+t.level+'" data-tone="'+TONES[t.level]+'"'+(t.kind==='signal'?' data-signal="'+t.key+'"':'')+'>'+escHtml(t.text)+'</span>').join('')+'</span>';
+}
+// Reason codes then auxiliary codes, each once, in engine order.
+function reasonCodes(j){return obj(j)?[...new Set([...(Array.isArray(j.reason_codes)?j.reason_codes:[]),...(Array.isArray(j.aux)?j.aux:[])])]:[];}
+function reasonsHtml(codes,{locale='ko-KR'}={}){
+ const list=Array.isArray(codes)?codes:[];if(!list.length)return'';
+ return '<span class="vt-reasons">'+list.map(c=>'<span class="vt-reason" data-reason-code="'+escHtml(c)+'"'+(has(CODE_LABELS,c)?'':' data-unlabeled')+'>'+escHtml(codeText(c,locale))+'</span>').join('<span aria-hidden="true"> · </span>')+'</span>';
+}
+function disclaimerHtml(locale){return '<span class="badge vt-disclaimer" data-vt-disclaimer>'+escHtml(DISCLAIMER[lang(locale)])+'</span>';}
+// Row order on every surface: main judgement priority, then company id ({main, company}; rows without a main go last).
+function compareRows(a,b){const r=x=>LEVELS.includes(x&&x.main)?LEVELS.indexOf(x.main):99;return r(a)-r(b)||String(a.company).localeCompare(String(b.company));}
+// '■차단 > ▼위험재검토 > …' from LEVELS.
+function priorityText(locale,sep=' > '){return LEVELS.map(l=>label(l,locale)).join(sep);}
 // D-22 (decided 2026-10-11): SIC → sector benchmark ETF, first matching row wins; mirrors qgv/sector_basis.py.
 const SECTOR_MAP=Object.freeze(JSON.parse('{"schema_version":1,"config_version":"sector_etf_map/v1","status":"DECIDED_2026-10-11","source":"docs/virtual_trading/D22_SECTOR_ETF_MAPPING_DRAFT.md rows 1-14, option A for semiconductor equipment","sp500_benchmark":"SPY","rules":[{"order":1,"etf":"SMH","sic":[[3674,3674]],"exclude":[]},{"order":2,"etf":"SEMIS_THEME_SMH_ELSE_XLI","sic":[[3559,3559],[3827,3827]],"exclude":[]},{"order":3,"etf":"XLK","sic":[[3570,3579],[3660,3679],[7370,7379]],"exclude":[3674]},{"order":4,"etf":"XLV","sic":[[2830,2836],[3840,3851],[8000,8099]],"exclude":[]},{"order":5,"etf":"XLE","sic":[[1311,1311],[1381,1389],[2900,2999]],"exclude":[]},{"order":6,"etf":"XLB","sic":[[1000,1299],[1400,1499],[2600,2699],[2800,2829],[2850,2899],[3300,3399]],"exclude":[]},{"order":7,"etf":"XLP","sic":[[2000,2199],[2840,2844],[5400,5499],[5912,5912]],"exclude":[]},{"order":8,"etf":"XLY","sic":[[3711,3711],[5200,5399],[5500,5999],[7000,7099],[7900,7999]],"exclude":[5912]},{"order":9,"etf":"XLC","sic":[[4800,4899],[7810,7849]],"exclude":[]},{"order":10,"etf":"XLU","sic":[[4900,4999]],"exclude":[]},{"order":11,"etf":"XLRE","sic":[[6500,6553],[6798,6798]],"exclude":[]},{"order":12,"etf":"XLF","sic":[[6000,6499],[6700,6797],[6799,6799]],"exclude":[]},{"order":13,"etf":"XLI","sic":[[1500,1799],[2200,2599],[2700,2799],[3000,3299],[3400,3569],[3580,3659],[3680,3839],[3852,3999],[4000,4799],[5000,5199],[8700,8799]],"exclude":[3827]}]}'));
 function sectorBenchmark(sic,semisMember=null,map=SECTOR_MAP){
@@ -241,5 +367,6 @@ function sectorBenchmark(sic,semisMember=null,map=SECTOR_MAP){
  return{etf:map.sp500_benchmark,rule:14,reason:'SECTOR_ETF_NOT_MAPPED'};
 }
 function defaultConfig(){return JSON.parse(JSON.stringify(CONFIG));}
-return Object.freeze({CONFIG,SECTOR_MAP,sectorBenchmark,LEVELS,SYMBOLS,defaultConfig,validateConfig,runLedger,evaluateHits,abnormalDrop,label});
+return Object.freeze({CONFIG,SECTOR_MAP,sectorBenchmark,LEVELS,SYMBOLS,LABELS,TONES,SIGNALS,DISCLAIMER,CODES,CODE_LABELS,defaultConfig,validateConfig,runLedger,evaluateHits,abnormalDrop,
+ label,codeLabel,codeText,codesText,judgementTokens,judgementText,judgementHtml,reasonCodes,reasonsHtml,disclaimerHtml,priorityText,compareRows});
 });

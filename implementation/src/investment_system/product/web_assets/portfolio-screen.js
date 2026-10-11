@@ -10,11 +10,26 @@ function ring(ratio,label){
  const filled=Math.max(0,Math.min(1,ratio))*100;
  return RING+esc(label)+'"><circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--line)" stroke-width="4"></circle><circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--accent)" stroke-width="4" stroke-dasharray="'+filled.toFixed(2)+' '+(100-filled).toFixed(2)+'" transform="rotate(-90 18 18)"></circle></svg>';
 }
-function shell(locale){
+function shell(locale,virtual=null){
  const T=tr(locale);
  return '<div class="chips data-badges" data-portfolio-badges>'+badges({locale,catalog:null,ram:null})+'</div>'
   +'<div id="portfolio-visuals" data-portfolio-visuals>'+visuals({locale,catalog:null,ram:null,screens:null,idByTicker:new Map()})+'</div>'
-  +'<p class="small">'+esc(T('보유 정보는 이 기기에만 저장되며 공개 저장소·Pages에 올라가지 않습니다. 매수·매도·주문 기능은 없습니다.','Holdings stay on this device and never reach the public repository or Pages. There is no buy, sell or order feature.'))+'</p>';
+  +'<div data-portfolio-virtual>'+virtualCard(locale,virtual)+'</div>'
+  +'<p class="small">'+esc(T('보유 정보는 이 기기에만 저장되며 공개 저장소·Pages에 올라가지 않습니다. 매수·매도 지시 아님 · 주문 기능 없음.','Holdings stay on this device and never reach the public repository or Pages. Not a buy/sell instruction · no order function.'))+'</p>';
+}
+/* Virtual judgements of the shadow ledger ("규칙대로 했다면") as computed on S17 (투자 일일보고서) in this page's RAM:
+   {date, judgements:{cid: engine judgement}, names:{cid: ticker}}. Same chips, order and reason labels as S17
+   (VirtualTrading.judgementHtml / reasonsHtml / compareRows) and the fixed disclaimer. Nothing here runs the rules,
+   fetches prices or stores anything; without an S17 result the card reads NOT_AVAILABLE. */
+function virtualCard(locale,virtual){
+ const VT=g.VirtualTrading,T=tr(locale);if(!VT)return '';
+ let h='<section class="card" data-portfolio-card="virtual"><h2>'+esc(T('가상 판단 · 그림자 장부','Virtual judgements · shadow ledger'))+' '+VT.disclaimerHtml(locale)+'</h2>';
+ const js=virtual&&virtual.judgements&&typeof virtual.judgements==='object'?virtual.judgements:null;
+ if(!js||!Object.keys(js).length)return h+'<p data-virtual-state="NOT_AVAILABLE">'+na(T('투자 일일보고서에서 그림자 장부를 계산하면 같은 판단이 여기에 표시됩니다.','Run the shadow ledger on the investment daily report to show the same judgements here.'),locale)+'</p><a href="#report/real">'+esc(T('투자 일일보고서 →','Investment daily report →'))+'</a></section>';
+ const names=virtual.names||{},rows=Object.keys(js).map(cid=>({company:cid,main:js[cid].main,j:js[cid]})).sort(VT.compareRows);
+ h+='<p class="small" data-virtual-date="'+esc(virtual.date||'')+'">'+esc(T('기준 완료 거래일 ','Completed session ')+(virtual.date||'NOT_AVAILABLE')+T(' · 실제 계좌 지시가 아닌 "규칙대로 했다면"의 가상 기록',' · a virtual "had the rules been followed" record, not an account instruction'))+'</p>';
+ h+='<ul class="vt-list" data-virtual-list>'+rows.map(r=>'<li data-virtual-company="'+esc(r.company)+'"><b>'+esc(names[r.company]||r.company)+'</b>'+VT.judgementHtml(r.j,{locale})+VT.reasonsHtml(VT.reasonCodes(r.j),{locale})+'</li>').join('')+'</ul>';
+ return h+'<p class="small" data-level-priority>'+esc(T('우선순위: ','Priority: ')+VT.priorityText(locale))+'</p></section>';
 }
 function badges({locale,catalog,ram}){
  const T=tr(locale);let actual,quote;
@@ -83,11 +98,12 @@ function themeTable({locale,catalog,ram,screens,idByTicker}){
  return head+'<div class="table-wrap"><table data-theme-table><thead><tr><th>'+esc(T('테마','Theme'))+'</th><th>TARGET</th><th>ACTUAL</th><th>'+esc(T('차이','Gap'))+'</th></tr></thead><tbody>'+rows+'</tbody></table></div><p class="small">TARGET '+esc(catalog.target_root_version)+(usable?'':' · ACTUAL — = NOT_AVAILABLE')+'</p>'+concentration(locale,{catalog,ram,screens,idByTicker})+'</section>';
 }
 function concentration(locale,ctx={}){const T=tr(locale),CS=g.ClassificationScreens;if(CS)return CS.concentrationBlock({locale,ram:ctx.ram,payload:ctx.screens?ctx.screens[CS.FILE]:null,catalog:ctx.catalog,idByTicker:ctx.idByTicker});return '<p data-concentration>'+esc(T('테마 쏠림 경고','Theme concentration warning'))+' '+na(T('경고 임계값이 아직 정해지지 않았습니다.','No warning threshold has been defined yet.'),locale)+'</p>';}
-function paint(host,{locale,catalog,ram,screens,idByTicker}){
+function paint(host,{locale,catalog,ram,screens,idByTicker,virtual=null}){
  if(!host)return;
- const badgeHost=host.querySelector('[data-portfolio-badges]'),visualHost=host.querySelector('[data-portfolio-visuals]');
+ const badgeHost=host.querySelector('[data-portfolio-badges]'),visualHost=host.querySelector('[data-portfolio-visuals]'),virtualHost=host.querySelector('[data-portfolio-virtual]');
  if(badgeHost)badgeHost.innerHTML=badges({locale,catalog,ram});
  if(visualHost)visualHost.innerHTML=visuals({locale,catalog,ram,screens,idByTicker:idByTicker||new Map()});
+ if(virtualHost)virtualHost.innerHTML=virtualCard(locale,virtual);
 }
-return Object.freeze({shell,paint,typeExposure});
+return Object.freeze({shell,paint,typeExposure,virtualCard});
 });
