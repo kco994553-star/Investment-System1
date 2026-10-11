@@ -43,6 +43,7 @@ virtual_trading_runner_browser_test.js
 pc_layout_browser_test.js
 virtual_ledger_sheets_browser_test.js
 virtual_trading_rehearsal_browser_test.js
+universe_fill_browser_test.js
 holdings_capture_browser_test.js
 judgement_consistency_browser_test.js
 report_benchmarks_browser_test.js
