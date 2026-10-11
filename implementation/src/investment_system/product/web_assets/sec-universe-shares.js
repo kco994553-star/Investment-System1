@@ -1,10 +1,11 @@
-/* Public price-free `sec-universe-shares.json` reader. Mirrors Python require_universe_shares; prices and ranks never enter this file. */
-(function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./private-subset.js'):root.PrivateSubset);if(typeof module==='object'&&module.exports)module.exports=api;else root.SecUniverseShares=api;})(typeof globalThis!=='undefined'?globalThis:this,function(core){
+/* Public price-free `sec-universe-shares.json` reader. Mirrors Python require_universe_shares; prices and ranks never enter this file. `unlisted_classes` (decision 2026-10-11): per share_class_groups/v0 group with an unlisted cover class, that class's count from the valued-at listing row's own cover filing, or NOT_AVAILABLE with no count. */
+(function(root,factory){const node=typeof module==='object'&&module.exports,api=factory(node?require('./private-subset.js'):root.PrivateSubset,node?require('./share-class-groups.js'):root.ShareClassGroups);if(node)module.exports=api;else root.SecUniverseShares=api;})(typeof globalThis!=='undefined'?globalThis:this,function(core,groups){
  'use strict';
  const FILENAME='sec-universe-shares.json',CONFIG_VERSION='sec-universe-shares/v0',CONFIG_STATUS='DEFAULT_V0_UNCALIBRATED',MAX=2*1024*1024;
  const STATES=['LIVE','STALE','NOT_AVAILABLE'],BASES=['SINGLE_CLASS_CONFIRMED','SHARE_CLASS_BASIS','BASIS_UNCONFIRMED'],CONCEPTS=['dei:EntityCommonStockSharesOutstanding','us-gaap:CommonStockSharesOutstanding'],FORMS=['10-K','10-K/A','10-Q','10-Q/A','20-F','20-F/A','40-F','6-K'];
  const REASONS=new Set(['IDENTITY_UNCONFIRMED','CIK_MISMATCH','INVALID_INPUT','INVALID_TIMESTAMP','AVAILABLE_AFTER_AS_OF','BASIS_UNCONFIRMED','COVER_UNCONFIRMED','COVER_FACT_MISMATCH','COVER_NOT_AVAILABLE','ACCESSION_UNCONFIRMED','MULTI_CLASS_AMBIGUOUS','SHARE_CLASS_BASIS','SHARES_NOT_AVAILABLE','INVALID_TIME_ORDER','MANIFEST_MISMATCH','SOURCE_TOO_LARGE','MIXED_SYNTHETIC_INPUT','CURRENCY_SCOPE_NOT_SUPPORTED','CIK_UNRESOLVED','NOT_COLLECTED','STALE_INPUT']);
- const TOP=['schema_version','kind','as_of','config_version','config_status','freshness_basis','stale_after_seconds','shard_count','last_shard_index','registry_sha256','code_count','state','reason_codes','records'];
+ const TOP=['schema_version','kind','as_of','config_version','config_status','freshness_basis','stale_after_seconds','shard_count','last_shard_index','registry_sha256','code_count','state','reason_codes','records','unlisted_classes'];
+ const UNLISTED_REASONS=['NOT_COLLECTED','UNLISTED_CLASS_SHARES_NOT_AVAILABLE','UNLISTED_CLASS_AMBIGUOUS','STALE_INPUT'],UNLISTED_KEYS=['cik','valued_at','accn','measurement_date','cover_sha256','classes','state','reason_codes'];
  const KEYS=['cik','listing_id','company_id','shares','measurement_date','accn','form','filed','acquired_at','concept','share_class_basis','basis_evidence','source_sha256','state','reason_codes'];
  function need(x){if(!x)throw Error('SEC_UNIVERSE_SHARES_INVALID');}
  const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x),keys=(x,k)=>plain(x)&&Object.keys(x).length===k.length&&k.every(n=>Object.hasOwn(x,n));
@@ -31,21 +32,37 @@
   else need(reasons.some(x=>x!=='STALE_INPUT')&&!reasons.includes('SHARE_CLASS_BASIS'));
   return r.state;
  }
+ /* One `unlisted_classes` entry (mirrors Python _unlisted_entry): bound to the valued-at row's cover filing, or NOT_AVAILABLE with no count. */
+ function unlisted(group,e,records){
+  need(keys(e,UNLISTED_KEYS)&&e.cik===group.cik&&e.valued_at===group.unlisted.valued_at);const reasons=e.reason_codes,classes=e.classes;
+  need(Array.isArray(reasons)&&reasons.length<=4&&new Set(reasons).size===reasons.length&&reasons.every(x=>UNLISTED_REASONS.includes(x))&&Array.isArray(classes)&&classes.length<=15);
+  if(!classes.length){need(e.state==='NOT_AVAILABLE'&&reasons.length&&!reasons.includes('STALE_INPUT')&&e.accn===null&&e.measurement_date===null&&e.cover_sha256===null);return e.state;}
+  const r=records[e.valued_at],ev=r.basis_evidence;need(r.share_class_basis==='SHARE_CLASS_BASIS'&&r.shares!==null&&r.cik===e.cik&&hash(e.cover_sha256)&&e.cover_sha256===r.source_sha256.cover&&e.accn===r.accn&&e.measurement_date===r.measurement_date);
+  need(e.state===r.state&&JSON.stringify(reasons)===JSON.stringify(r.state==='STALE'?['STALE_INPUT']:[]));
+  const names=classes.map(c=>{need(keys(c,['class_member','shares'])&&typeof c.class_member==='string'&&ev.class_members.includes(c.class_member)&&c.class_member!==ev.listing_class_member&&positive(c.shares));return c.class_member;});
+  need(JSON.stringify(names)===JSON.stringify([...new Set(names)].sort())&&names.length<ev.class_members.length);
+  /* A class listed by any group row from the same cover filing is not unlisted. */
+  const listed=group.codes.map(c=>records[c]).filter(x=>x&&x.share_class_basis==='SHARE_CLASS_BASIS'&&x.accn===e.accn).map(x=>x.basis_evidence.listing_class_member);need(!names.some(n=>listed.includes(n)));return e.state;
+ }
  function validate(p){
   try{
    need(keys(p,TOP)&&p.schema_version===1&&p.kind==='SEC_UNIVERSE_SHARES'&&p.config_version===CONFIG_VERSION&&p.config_status===CONFIG_STATUS&&p.freshness_basis==='SOURCE_ACQUISITION');const cut=clock(p.as_of),ttl=p.stale_after_seconds;
    need(Number.isInteger(ttl)&&ttl>0&&ttl<=366*86400&&Number.isInteger(p.shard_count)&&p.shard_count>=1&&p.shard_count<=366&&(p.last_shard_index===null||Number.isInteger(p.last_shard_index)&&p.last_shard_index>=0&&p.last_shard_index<p.shard_count)&&(p.registry_sha256===null||hash(p.registry_sha256)));
    const codes=plain(p.records)?Object.keys(p.records):[];need(codes.length===504&&p.code_count===504&&codes.every(c=>/^[A-Z]{2,8}:[A-Z0-9][A-Z0-9.\-]{0,15}$/.test(c)));
    const states=codes.map(c=>record(c,p.records[c],cut,ttl)),state=states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';need(p.state===state);
+   const ids=Object.keys(groups.UNLISTED);need(plain(p.unlisted_classes)&&Object.keys(p.unlisted_classes).length===ids.length&&ids.every(id=>Object.hasOwn(p.unlisted_classes,id)&&unlisted(groups.UNLISTED[id],p.unlisted_classes[id],p.records)));
    need(Array.isArray(p.reason_codes)&&new Set(p.reason_codes).size===p.reason_codes.length&&p.reason_codes.every(x=>['STALE_INPUT','NO_ELIGIBLE_INPUT'].includes(x)));return p;
   }catch(_){throw Error('SEC_UNIVERSE_SHARES_INVALID');}
  }
  /* Device-time freshness from each row's own acquired_at (mirrors Python restate). Values never change. */
  function restate(r,now,ttl){const reasons=r.reason_codes.filter(x=>x!=='STALE_INPUT');if(r.shares===null)return Object.freeze({...r,state:'NOT_AVAILABLE',reason_codes:Object.freeze(reasons.length?reasons:['SHARES_NOT_AVAILABLE'])});const fresh=Date.parse(now)-Date.parse(r.acquired_at)<=ttl*1000;return Object.freeze({...r,state:fresh?'LIVE':'STALE',reason_codes:Object.freeze(fresh?reasons:[...reasons,'STALE_INPUT'])});}
+ /* Unlisted entry freshness mirrors its restated valued-at row (mirrors Python restate_unlisted). */
+ function restateUnlisted(e,row){const deep=x=>{if(x&&typeof x==='object'){Object.values(x).forEach(deep);Object.freeze(x);}return x;},copy=JSON.parse(JSON.stringify(e));if(!copy.classes.length)return deep(copy);return deep({...copy,state:row.state,reason_codes:row.state==='STALE'?['STALE_INPUT']:[]});}
  function toInputs(payload,{now=new Date().toISOString(),synthetic=false}={}){
-  validate(payload);const identityLookup={},publicShares={};
+  validate(payload);const identityLookup={},publicShares={},unlistedClasses={};
   for(const [code,r] of Object.entries(payload.records)){const row=restate(r,now,payload.stale_after_seconds),seed=core.publicListingSeed(code,row,{synthetic});publicShares[code]=row;if(seed)identityLookup[code]=seed;}
-  return Object.freeze({identityLookup:Object.freeze(identityLookup),publicShares:Object.freeze(publicShares),as_of:payload.as_of,config_version:payload.config_version,config_status:payload.config_status,state:payload.state});
+  for(const [id,e] of Object.entries(payload.unlisted_classes))unlistedClasses[id]=restateUnlisted(e,publicShares[e.valued_at]);
+  return Object.freeze({identityLookup:Object.freeze(identityLookup),publicShares:Object.freeze(publicShares),unlistedClasses:Object.freeze(unlistedClasses),as_of:payload.as_of,config_version:payload.config_version,config_status:payload.config_status,state:payload.state});
  }
  async function loadInputs(view,{signal,now}={}){
   const response=await view.fetch(FILENAME,{cache:'no-cache',signal,headers:{Accept:'application/json'}});if(response.status===404)return null;if(!response.ok)throw Error('SEC_UNIVERSE_SHARES_UNAVAILABLE');
