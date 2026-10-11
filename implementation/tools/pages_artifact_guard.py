@@ -34,6 +34,7 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "share-class-groups.js": "3726a07393a0d1e04edc990fe7bdcacb5c1bbb8760547934dd9ef28e33b9f307",
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
     "sec-universe-shares.js": "77648df45a6c2e55b2c3be2cea2735a1d2457d8ef811646e7f2d0de674564bbb",
     "device-valuation.js": "0723d5371710da30aa1ed9b564e4ac7260047a83c182b843e57be4715d822567",
@@ -49,10 +50,10 @@ APPROVED_SHA256 = {
     "company-screen.js": "892dba7073d25015e34b2f19e82471ed4396a5ed303cee46af68845e159b3957",
     "ops-status.js": "57d2ce827c9b8af4d95e0155d6a01788b95417582bf176544d55c0ba2fd1ed9d",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
-    "private-subset-view.js": "051dfd83afc377d70f5fb624e2b7b98612acdb4f3b3f1aa46f8c1fcc0c692390",
+    "private-subset-view.js": "8c6aab1755d914886eea7d6bd98150e0325b18bfad0d008811b2b09cb312ceb5",
     "watchlist.js": "6d707c1f7beb0d4ceaf32cea18320049bbd1ba768bf91578ba6a664596f536cf",
     "sec-m3-adapter.js": "f3962d7283ae0e8731ad66ee23652d5f8c9e88f2cd4050b70b4cd1048956d6e5",
-    "private-subset.js": "59a36ede2f83e417a689897c747544e9c78cf59fd533c2713386b5c491488b3d",
+    "private-subset.js": "112944b181f249ffe4fff58854a543639fec38dce801ed675d00c365ce0649f9",
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
     "device-profiles.js": "a3c1237cc0e53e4d6ad6c330aa7fa1182d962a6925f0401185815d82a48163da",
@@ -82,7 +83,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "07c2eb0bcd596419038622b5f7e9cdb756d746c7af9c6122dd0b8e4cec6e1fb1",
+    "index.html": "2006d7be2fcc5a34023587ee02e2ecc71fdf7c9a7c85ee11eea8f371c40d7f40",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
