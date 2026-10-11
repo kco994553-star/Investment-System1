@@ -4,8 +4,8 @@
 const { chromium } = require("playwright");
 const fs = require("node:fs");
 const path = require("node:path");
-const base = new URL(process.env.MANUAL_QUOTES_URL || "http://127.0.0.1:8991/Investment-System1/#actual");
-const evidence = path.resolve(process.env.EVIDENCE_DIR || "/workspace/manual-quotes-cycle-evidence/ui");
+const base = new URL(process.env.MANUAL_QUOTES_URL || process.env.PAGES_COCKPIT_URL || "http://127.0.0.1:8991/Investment-System1/#actual");
+const evidence = path.resolve(process.env.EVIDENCE_DIR || process.env.PAGES_COCKPIT_EVIDENCE_DIR || "/tmp/manual-quotes-cycle-evidence/ui");
 const NOW = "2030-01-08T12:00:00.000Z", CURRENT = "2030-01-08T10:00:00.000Z";
 const VALUES = { USD: { quantity: "2.1973", price: "11.56723", rate: "1400.57319" }, JPY: { quantity: "3.1981", price: "13.34519", rate: "9.517321" }, KRW: { quantity: "5.2179", price: "17.25113" } };
 const KEY = "LOCAL_ONLY_KEY_CANARY_7F42", COST = "7.831729";
@@ -104,6 +104,8 @@ async function open(locale, width) {
 }
 async function exportMemory(page, root) {
   await root.locator('[data-action="export"]').click();
+  // The device backup is read asynchronously before the in-memory download is created.
+  await page.waitForFunction(() => window.__manualQuoteExports.length > 0);
   return page.evaluate(async () => { const value = window.__manualQuoteExports.shift(); return value ? await value : null; });
 }
 async function importMemory(page, root, bytes) {
@@ -150,7 +152,15 @@ async function main() {
       const label = width + "px " + locale, session = await open(locale, width);
       let { page, root, catalog } = session;
       const selected = Object.fromEntries(["USD", "JPY", "KRW"].map(currency => [currency, catalog.instruments.findIndex(row => row.currency === currency)]));
-      let backup;
+      let backup, legacyFile; // backup: the current unified device backup; legacyFile: a pre-unification device-actual-holdings/2 file with market_data
+      const enterMarket = async () => {
+        for (const currency of ["USD", "JPY", "KRW"]) {
+          const row = root.locator('[data-security-index="' + selected[currency] + '"]');
+          await row.locator('[data-field="price"]').fill(VALUES[currency].price); await row.locator('[data-field="price_as_of"]').fill(CURRENT);
+        }
+        for (const currency of ["USD", "JPY"]) { const fx = root.locator('[data-fx-currency="' + currency + '"]'); await fx.locator('[data-field="rate"]').fill(VALUES[currency].rate); await fx.locator('[data-field="fx_as_of"]').fill(CURRENT); }
+        await save(page, root);
+      };
       try {
         await check(label + ": every catalog row has manual price, visible timestamp and provenance", async () => {
           verify(await root.locator('[data-field="price"]').count() === 19, "manual prices missing");
@@ -212,10 +222,20 @@ async function main() {
           await page.reload({ waitUntil: "networkidle" }); verify(await api.locator('[data-api-status]').getAttribute('data-stored') === "yes", "key did not persist");
           verify(await api.locator('[data-api-key]').inputValue() === "", "saved key rendered after reload"); root = await returnActual(page);
         });
-        await check(label + ": schema two export stays in memory and excludes API settings", async () => {
+        await check(label + ": device backup export stays in memory and excludes prices, FX and API settings", async () => {
+          // Current contract ("Unify device backups", device_market.exportBackup): quotes, FX and imported prices are never backed up.
           backup = await exportMemory(page, root); const payload = JSON.parse(backup);
-          verify(payload.schema === "device-actual-holdings/2" && !!payload.market_data, "market backup envelope absent");
+          verify(payload.schema === "investment-device-backup/3" && payload.portfolio?.schema === "device-actual-holdings/1" && payload.portfolio.themes.some(theme => theme.holdings.length > 0), "device backup envelope absent");
+          verify(!backup.includes("market_data") && !backup.includes("price_as_of") && !backup.includes("fx_as_of"), "backup includes market data");
+          verify(!Object.values(VALUES).some(value => backup.includes(value.price) || (value.rate && backup.includes(value.rate))) && !backup.includes(CURRENT), "backup includes a price, FX rate or quote time");
           verify(!backup.includes(KEY) && !backup.includes("api-settings") && !backup.includes("api_key"), "backup includes API key");
+          // A file written before the unification still carries market_data (built here in memory only).
+          legacyFile = await page.evaluate(async () => {
+            const db = await new Promise(resolve => { const request = indexedDB.open("investment-device-actual-v1"); request.onsuccess = () => resolve(request.result); });
+            const data = await new Promise(resolve => { const result = {}, tx = db.transaction("snapshots", "readonly"); for (const key of ["actual", "market"]) { const r = tx.objectStore("snapshots").get(key); r.onsuccess = () => { result[key] = r.result; }; } tx.oncomplete = () => resolve(result); }); db.close();
+            return JSON.stringify({ ...data.actual, schema: "device-actual-holdings/2", market_data: data.market });
+          });
+          verify(JSON.parse(legacyFile).market_data?.quotes?.length > 0, "legacy schema two fixture lacks market data");
         });
         await check(label + ": delete clears holdings and market while preserving local key", async () => {
           await dialog(page, async () => { await root.locator('[data-action="delete"]').click(); await waitNotice(page, root, "removed"); });
@@ -223,9 +243,25 @@ async function main() {
           await page.reload({ waitUntil: "networkidle" }); await root.locator('[data-security-index]').last().waitFor();
           verify((await stored(page)).market === null, "deleted market returned");
         });
-        await check(label + ": in-memory restore preserves prices and FX timestamps", async () => {
-          await importMemory(page, root, backup); verify(await valuationIs(page, true), "market restore failed");
-          const data = await stored(page); verify(data.market.quotes.every(quote => quote.as_of === CURRENT) && data.market.fx.every(fx => fx.as_of === CURRENT), "quote timestamps changed on restore");
+        await check(label + ": in-memory device backup restores holdings only and never prices or FX", async () => {
+          // Restore asks for confirmation and sets no import notice: wait for the stored holdings instead.
+          await dialog(page, async () => {
+            await root.locator('[data-action="import"]').setInputFiles({ name: "local-test.json", mimeType: "application/json", buffer: Buffer.from(backup) });
+            await page.waitForFunction(async () => { const db = await new Promise(resolve => { const request = indexedDB.open("investment-device-actual-v1"); request.onsuccess = () => resolve(request.result); }); try { return await new Promise(resolve => { const r = db.transaction("snapshots", "readonly").objectStore("snapshots").get("actual"); r.onsuccess = () => resolve(r.result !== undefined && r.result !== null); }); } finally { db.close(); } });
+          });
+          const restored = await stored(page);
+          verify(restored.actual?.themes.some(theme => theme.holdings.length > 0) && restored.market === null && !!restored["api-settings"], "restore changed more than the holdings");
+          verify((await root.locator('[data-market-total]').textContent()).includes("NOT_AVAILABLE"), "restore fabricated a valuation without prices");
+          verify(await root.locator('[data-security-index="' + selected.USD + '"] [data-field="price"]').inputValue() === "", "restore filled a price");
+          // The user re-enters prices and FX; their quote times are kept exactly.
+          await enterMarket(); verify(await valuationIs(page, true), "re-entered prices did not value the restored holdings");
+          const data = await stored(page); verify(data.market.quotes.every(quote => quote.as_of === CURRENT) && data.market.fx.every(fx => fx.as_of === CURRENT), "quote timestamps changed on save");
+        });
+        await check(label + ": legacy schema two file restores holdings and drops its prices", async () => {
+          await importMemory(page, root, legacyFile);
+          const data = await stored(page); verify(!!data.actual && !!data.market && data.market.quotes.length === 0 && data.market.fx.length === 0, "legacy file restored prices or FX");
+          verify((await root.locator('[data-market-total]').textContent()).includes("NOT_AVAILABLE"), "legacy restore fabricated quotes");
+          await enterMarket(); verify(await valuationIs(page, true), "re-entered prices did not value the restored holdings");
         });
         await check(label + ": missing FX or price blocks total and all denominator values", async () => {
           await root.locator('[data-fx-currency="USD"] [data-field="rate"]').fill(""); await save(page, root);
@@ -272,7 +308,7 @@ async function main() {
           verify((await root.locator('[data-market-total]').textContent()).includes("NOT_AVAILABLE"), "legacy restore fabricated quotes");
         });
         await check(label + ": market-only concurrent update blocks stale save and deletion", async () => {
-          await importMemory(page, root, backup);
+          await importMemory(page, root, legacyFile);
           const before = await stored(page), newer = JSON.parse(JSON.stringify(before.market)); newer.version += 1;
           await putRecord(page, "market", newer);
           await root.locator('[data-action="save"]').click(); await waitNotice(page, root, "storage");
@@ -296,14 +332,14 @@ async function main() {
           const cleared = await stored(page); verify(cleared.actual === null && cleared.market === null, "explicit deletion did not clear corrupt market and actual");
         });
         await check(label + ": stale corrupt editor cannot delete another tab's restored pair", async () => {
-          await importMemory(page, root, backup); await corruptClone(page, "market", "cyclic", 1);
+          await importMemory(page, root, legacyFile); await corruptClone(page, "market", "cyclic", 1);
           await page.reload({ waitUntil: "networkidle" }); await root.locator('[data-security-index]').last().waitFor();
           verify(await root.locator('[data-actual-notice]').getAttribute('data-notice') === "corrupt", "stale editor did not observe corruption");
           const other = await session.context.newPage(); other.on("pageerror", () => { pageErrors++; });
           try {
             const recoveredRoot = await returnActual(other);
             await dialog(other, async () => { await recoveredRoot.locator('[data-action="delete"]').click(); await waitNotice(other, recoveredRoot, "removed"); });
-            await importMemory(other, recoveredRoot, backup); const recovered = await stored(other);
+            await importMemory(other, recoveredRoot, legacyFile); const recovered = await stored(other);
             await dialog(page, async () => { await root.locator('[data-action="delete"]').click(); await page.waitForFunction(() => document.querySelector('[data-action="delete"]')?.disabled === false); });
             verify(JSON.stringify(await stored(other)) === JSON.stringify(recovered), "stale corrupt editor erased restored pair");
             await waitNotice(page, root, "storage");

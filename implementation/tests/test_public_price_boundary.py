@@ -147,7 +147,8 @@ def test_affected_workflows_have_no_publication_sinks(name):
         assert "path: ${{ runner.temp }}/public-cockpit" in source
         assert "needs: build" in source
         assert source.index('pages_artifact_guard.py') < source.index('actions/upload')
-        assert source.index('private_history_browser_test.js') < source.index('actions/upload')
+        assert source.index('ci_browser_tests.txt') < source.index('actions/upload')
+        assert 'private_history_browser_test.js' in (ROOT / 'tools/ci_browser_tests.txt').read_text().split()
 
 
 

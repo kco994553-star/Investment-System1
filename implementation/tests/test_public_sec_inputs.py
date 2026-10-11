@@ -123,7 +123,8 @@ def test_daily_workflow_is_default_branch_only_and_checks_exact_public_directory
         assert forbidden not in source
     assert 'pages_artifact_guard.py' in source and 'test_public_sec_inputs.py' in source
     assert source.index('pages_artifact_guard.py') < source.index('actions/upload-pages-artifact')
-    assert source.index('private_trades_browser_test.js') < source.index('actions/upload-pages-artifact')
+    assert source.index('ci_browser_tests.txt') < source.index('actions/upload-pages-artifact')
+    assert 'private_trades_browser_test.js' in (TOOLS / 'ci_browser_tests.txt').read_text().split()
     assert 'path: ${{ runner.temp }}/public-cockpit' in source and 'needs: build' in source
 
 

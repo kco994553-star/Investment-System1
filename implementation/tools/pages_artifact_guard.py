@@ -31,6 +31,9 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "screen-detail.js": "8f66aae29337bbddadb8b1853254fd63cb620a062af7bb19f510bf200e870ef3",
+    "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
+    "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
     "portfolio-screen.js": "31e9678de0d3ddc7f71f492723660a219b0a049444efde66bdfa5cf4f964222d",
     "company-screen.js": "574678fa34b1ee05021d8f2edc3162e671482a91fcd03f1ae2b726595d8147d1",
     "ops-status.js": "f3c44924f6501b3777579ff3147868ee211c5effc7a87169fe52c0dbd5688318",
@@ -41,7 +44,7 @@ APPROVED_SHA256 = {
     "private-subset.js": "5dfa945113a84ec8fde2cb2020f71343e1cd453a5de41771165a0a8b531a6fec",
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
-    "device-profiles.js": "48582334c3af7ea976b09a07f93952dbe945540d8e0d2c5fe3f11a572d92d136",
+    "device-profiles.js": "a3c1237cc0e53e4d6ad6c330aa7fa1182d962a6925f0401185815d82a48163da",
     "public-screens.js": "be39c9dc650b797334e8c3bc30792fa16d23cddb2bfcffa96fdadf3250716b29",
     "pwa.js": "f8d5df267d323fd465821416f1825f38d4065030ec5368b7a37bfc4ed875affd",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
@@ -58,7 +61,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "a9a29476aca3dc9c6d1233ebd939aa6ed3b9c0ee63f486be9032ae9883334451",
+    "app.js": "3e262ec03fd5179e1229272fcf2ac4d8c2e6855e8b74a38cb0fc83ba59b1863c",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "24e872f2a1d56ea2556d30b05c6d0ce8549c60fe00e36b297ed3e98a721fae11",
@@ -68,12 +71,12 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "3576b2a8d2f3621c6d10d7f1876a671911dcd8de4cd7f64c3476e17b1c0c5ba5",
-    "locale.js": "ca1e04f9f38b2f53a9b881dba0bf141d9585c8ddda3e05dd79abf68dc805ebe4",
+    "index.html": "716c084f0da58bee08e641afc804272316650dcd109dc14074d11912d33e924f",
+    "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
-    "private-history.js": "54cd4ecff5691f60edc32207817559eb9ee7740f631f2742aa6666aef4acab93",
+    "private-history.js": "3128a213726be142235757f6da30f1b6136e34cb71459349fb7af20b7a25c179",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "80becec2c17bba2378f984b230e70297c110af48295ad09d84e0a4093c02888b",
+    "style.css": "962e30914f336cc9fecd75636199d27d3ab5991d9d10444bdd7c529890941f3e",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
