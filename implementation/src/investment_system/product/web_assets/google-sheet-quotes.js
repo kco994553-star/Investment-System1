@@ -159,6 +159,13 @@
       if(!body||body.properties?.title!=='Investment Cockpit Data'||!Array.isArray(body.sheets)||JSON.stringify(body).length>1048576)fail('INVALID');
       const value=await sheetRequest('?fields=spreadsheetId','POST',body);return extractSpreadsheetId(value.spreadsheetId);
     }
+    // Universe tab fill (existing header-only tab): codes + the template's GOOGLEFINANCE formulas at rows 2..n+1 (drive.file, no new scope).
+    async function fillUniverse(id,rows){
+      if(extractSpreadsheetId(id)!==id||!Array.isArray(rows)||!rows.length||rows.length>1024||!rows.every((r,i)=>Array.isArray(r)&&r.length===3&&typeof r[0]==='string'&&/^(?:(?:NASDAQ|NYSE|BATS):[A-Z][A-Z0-9.]{0,15}|KRX:\d{6}|TYO:\d{4})$/.test(r[0])
+        &&r[1]==='=IFERROR(GOOGLEFINANCE(A'+(i+2)+',"marketcap"),"")'&&r[2]==='=IFERROR(GOOGLEFINANCE(A'+(i+2)+',"price"),"")'))fail('INVALID');
+      const range="'Universe'!A2:C"+(rows.length+1);
+      await sheetRequest('/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+'?valueInputOption=USER_ENTERED','PUT',{range,majorDimension:'ROWS',values:rows},'WRITE_FAILED');
+    }
     // S17 only: writes are limited to the AI mailbox tabs (ReportInbox/ReportOutbox) and the virtual ledger tabs (D-10:
     // VirtualA/VirtualB/VirtualMine/VirtualMeta/VirtualFlags) of the user's own sheet (drive.file, no new scope).
     const REPORT_TABS=['ReportInbox','ReportOutbox','VirtualA','VirtualB','VirtualMine','VirtualMeta','VirtualFlags'];
@@ -169,6 +176,23 @@
     async function appendRows(id,range,rows){
       if(extractSpreadsheetId(id)!==id||typeof range!=='string'||!/^'(?:Report(?:Inbox|Outbox)|Virtual(?:A|B|Mine|Meta|Flags))'!A1$/.test(range)||!Array.isArray(rows)||!rows.every(r=>Array.isArray(r)&&r.every(v=>typeof v==='string'&&v.length<=50000))||JSON.stringify(rows).length>262144)fail('INVALID');
       await sheetRequest('/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS','POST',{values:rows},'WRITE_FAILED');
+    }
+    // Holdings tab (capture + personal AI): created only on the user's click, header row + plain-text cells, never overwritten.
+    const HOLDINGS_HEADER=['as_of','symbol','quantity','avg_cost','currency','cost_krw','name'];
+    async function sheetTabs(id){
+      if(extractSpreadsheetId(id)!==id)fail('INVALID');const value=await sheetRequest('/'+encodeURIComponent(id)+'?fields=sheets(properties(title,sheetId))');
+      if(!Array.isArray(value.sheets)||value.sheets.length>200)fail('READ_FAILED');
+      const tabs=value.sheets.map(s=>({title:s?.properties?.title,sheetId:s?.properties?.sheetId}));if(tabs.some(x=>typeof x.title!=='string'||x.title.length>100||!Number.isSafeInteger(x.sheetId)||x.sheetId<0))fail('READ_FAILED');return tabs;
+    }
+    async function addHoldingsTab(id){
+      const tabs=await sheetTabs(id),found=tabs.find(t=>t.title==='Holdings');if(found)return {sheetId:found.sheetId,created:false};
+      let sheetId=Math.max(1000,...tabs.map(t=>t.sheetId))+1;if(!Number.isSafeInteger(sheetId)||sheetId>2147483647)fail('WRITE_FAILED');
+      const range={sheetId,startRowIndex:0,startColumnIndex:0,endColumnIndex:7};
+      await sheetRequest('/'+encodeURIComponent(id)+':batchUpdate','POST',{requests:[
+        {addSheet:{properties:{title:'Holdings',sheetId,gridProperties:{rowCount:1025,columnCount:7,frozenRowCount:1}}}},
+        {repeatCell:{range,cell:{userEnteredFormat:{numberFormat:{type:'TEXT'}}},fields:'userEnteredFormat.numberFormat'}},
+        {updateCells:{start:{sheetId,rowIndex:0,columnIndex:0},rows:[{values:HOLDINGS_HEADER.map(v=>({userEnteredValue:{stringValue:v}}))}],fields:'userEnteredValue'}}]},'WRITE_FAILED');
+      return {sheetId,created:true};
     }
     async function sheetTitles(id){
       if(extractSpreadsheetId(id)!==id)fail('INVALID');const value=await sheetRequest('/'+encodeURIComponent(id)+'?fields=sheets(properties(title))');
@@ -256,7 +280,7 @@
       } finally { controllers.delete(abort); if(signal)signal.removeEventListener('abort',cancel); }
     }
     if (view.addEventListener) view.addEventListener('pagehide', () => { invalidate(); error='AUTH_REQUIRED'; notify(); });
-    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, fetchHistory, createSpreadsheet, sheetTitles, pickSpreadsheet, addTabs, appendRows, revision: () => epoch,
+    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, fetchHistory, createSpreadsheet, fillUniverse, sheetTitles, sheetTabs, addHoldingsTab, pickSpreadsheet, addTabs, appendRows, revision: () => epoch,
       subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); } });
   }
   function translate(state, key) { return TEXT[key][state.locale === 'en-US' ? 1 : 0]; }
@@ -331,11 +355,15 @@
       if (!current()) fail('CANCELED');
       await state.view.DeviceActual.applyMarketImport(state.view, state.catalog, result, { now, method, isCurrent: current });
       if (!current()) return;
+      // Sheet #N/A or empty TARGET quotes (e.g. TYO:8035) → latest COMPLETE Worker close, RAM only, when the Worker is connected.
+      let worker = null;
+      if (state.view.WorkerQuoteFallback) { try { worker = await state.view.WorkerQuoteFallback.afterImport(state.view, { catalog: state.catalog, result }); } catch (_) { worker = null; } if (!current()) return; }
       if (method === 'paste') state.paste.value = '';
       const failed = result.failures.map(row => row.name);
       state.summary.dataset.successCount = result.successes.length; state.summary.dataset.failureCount = result.failures.length;
       const warnings = [...new Set(result.warnings)].map(code => translate(state, code === 'DUPLICATE_CODE_NOT_AVAILABLE' ? 'duplicate' : 'unknown'));
-      state.summary.textContent = translate(state, 'success') + ' ' + result.successes.length + ' / ' + translate(state, 'failure') + ' ' + result.failures.length + (failed.length ? ' (' + failed.join(', ') + ') · NOT_AVAILABLE' : '') + (warnings.length ? ' · ' + translate(state, 'warning') + ' ' + result.warnings.length + ': ' + warnings.join(' ') : '');
+      state.summary.textContent = translate(state, 'success') + ' ' + result.successes.length + ' / ' + translate(state, 'failure') + ' ' + result.failures.length + (failed.length ? ' (' + failed.join(', ') + ') · NOT_AVAILABLE' : '') + (warnings.length ? ' · ' + translate(state, 'warning') + ' ' + result.warnings.length + ': ' + warnings.join(' ') : '')
+        + (worker && worker.tickers && worker.tickers.length ? ' · ' + state.view.WorkerQuoteFallback.label(state.locale) + ' ' + worker.filled + ' / NOT_AVAILABLE ' + worker.failed : '');
       state.notice.textContent = ''; state.notice.dataset.notice = 'imported'; await history(state);
     } catch (error) {
       if (live(state)) notice(state, error.message === 'AUTH_REQUIRED' ? 'auth' : ['CANCELED', 'CANCELLED'].includes(error.message) ? 'canceled' : error.message === 'READ_FAILED' ? 'readFailed' : ['INVALID', 'CATALOG', 'INPUT'].includes(error.message) ? 'invalid' : 'storage');
@@ -391,5 +419,5 @@
     }
     if (state.storageFailed) notice(state, 'storage'); else await history(state);
   }
-  return Object.freeze({ mount, extractSpreadsheetId, sheetsURL, createSession, sessionFor, historyOrigin });
+  return Object.freeze({ mount, extractSpreadsheetId, sheetsURL, createSession, sessionFor, historyOrigin, HISTORY_SYMBOLS: Object.freeze([...HISTORY_SYMBOLS]) });
 });

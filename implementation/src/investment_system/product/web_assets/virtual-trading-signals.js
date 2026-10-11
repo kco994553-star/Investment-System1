@@ -10,6 +10,8 @@
  if(node)module.exports=api;else root.VirtualTradingSignals=api;})(typeof globalThis==='object'?globalThis:this,function(engine,runner,valuation,preview){
 'use strict';
 const SCHEMA='virtual-trading-signals/1',REHEARSAL_WINDOW=5,SP500='SP500',LEDGER_KINDS=['SET_A','SET_B','SHADOW'];
+// Codes on basis rows: V slope use and the engine's D-5 basis reasons (labels: VirtualTrading.CODE_LABELS).
+const CODES=Object.freeze(['BASIS_NOT_AVAILABLE','V_HISTORY_SHORT','SECTOR_BASIS_NOT_AVAILABLE','PRICE_NOT_ALIGNED','HISTORY_INSUFFICIENT','DISTRIBUTION_DEGENERATE']);
 const own=(o,k)=>o!==null&&typeof o==='object'&&Object.prototype.hasOwnProperty.call(o,k);
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const num=v=>typeof v==='number'&&Number.isFinite(v);
@@ -107,5 +109,5 @@ async function rehearse(view,{qgRows=null,window=REHEARSAL_WINDOW,...opts}={}){
  const[filledResult,filled]=applyRehearsalSnapshots(result,qgRows),cfg=used||engine().defaultConfig();
  return{result:{...filledResult,mode:'REHEARSAL',rehearsal:{start_date:cfg.start_date,window:w,qg_filled:filled}},config:cfg};
 }
-return Object.freeze({SCHEMA,REHEARSAL_WINDOW,round2,rehearsalStart,rehearsalConfig,rehearsalSnapshot,applyRehearsalSnapshots,basisRows,vProgress,vAxis,capturePlan,vScoresFor,withVScores,reportSignals,rehearse});
+return Object.freeze({SCHEMA,CODES,REHEARSAL_WINDOW,round2,rehearsalStart,rehearsalConfig,rehearsalSnapshot,applyRehearsalSnapshots,basisRows,vProgress,vAxis,capturePlan,vScoresFor,withVScores,reportSignals,rehearse});
 });

@@ -32,31 +32,34 @@ from investment_system.universe.sec_universe_shares import FILENAME as UNIVERSE_
 from investment_system.universe.sec_universe_qg import FILENAME as UNIVERSE_QG_FILENAME, require_universe_qg
 from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDGER_FILENAME, require_ledger as require_forward_ledger
 from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
+from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES_FILENAME, require_universe_codes
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "virtual-trading-runner.js": "323ebbda32722dd24d7bbf1cd4c5db6316c730ca083d88b44d2553fc34dc8372",
-    "virtual-ledger-sheets.js": "9fc09749fa1a6df9c74e7ceb23cc0df9f466af0d3661653db33132bd58efcd83",
+    "virtual-trading-runner.js": "5bdf18e2273f0dc2d5e64e760e6af7ffa510092894631e1a7cd2e7e5bbeac996",
+    "virtual-ledger-sheets.js": "ae2b4b72f7307e8cad45300962b67ec0e30c44ee218f778ba4f130e0aebe55be",
+    "worker-quote-fallback.js": "e72a72d1885a23c2a35706c8d4f333060b0c451d32a00e501dc63a30416b754c",
+    "holdings-capture-view.js": "f2bebf39ca836868d19cef05c08b2d3aa9cbe99f2bdc62ee8509634f5891f65f",
+    "holdings-capture.js": "a0fbd647c36d4714e743badbf445e2d3bf6b47c504766beaa14a93fdbf900d95",
     "table-sort.js": "bd6e195298cb53b32adc8cdeaec57312e4c1807760e100b0af351f50bc4dfbf4",
     "pc-layout.css": "a8e236e7d817d1b7f15f566df4af6f7fa381f6045273c289d9337134ed758d75",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
-    "daily-report.js": "c81f1390bb93332c81a510b678d1733fd6738df4803544db17e94a73597fd75d",
+    "daily-report.js": "99d91fa2827e15eda39a79c203519a63408ed1e9410c577ed431952d57f3ffd1",
     "sec-universe-shares.js": "574f94ffebfc2a8cc20bac0cd5ff7bfd7e58db3cb1864f60d4c2a14dd24b37f9",
+    "virtual-trading-v-history.js": "b72a870fcf8b910685651591c79eed99f294204bec5714b1ea7da966554916fa",
+    "virtual-trading-signals.js": "8d308b77f3bbeb84108d518fcc9d9679d61dc67c1784de7934e9fdcdf56d452f",
     "sec-universe-qg.js": "4364791b338d04be28811efb8588806d8c653fca9e36eb75c86014758471f414",
-    "virtual-trading-v-history.js": "7e236a7243e98b22a4cdf61cfd69e745284bcf17d7a1fc8a63f0c75fdd239ba2",
-    "virtual-trading-signals.js": "d151e60c93725469732fb971271d2f49f1ee327d907d0bb894f2c16c9ebf98c0",
     "device-valuation.js": "06669cda863cd4dfa87108f54e03b75c9321989967da7ed54b03c921143cfedf",
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
-    "daily-report.js": "c81f1390bb93332c81a510b678d1733fd6738df4803544db17e94a73597fd75d",
-    "virtual-trading.js": "c673a35ae5da2351343e0241d507d154ba6ceedcc1657c47fe60e24b035e6361",
+    "virtual-trading.js": "c65986a866b670c0d8c541eb2da2b835dd9e348e650f74e96bbc4ed013a67c3c",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
-    "portfolio-screen.js": "4cb77c85b554e0461d8782930c90ace99dd1d8100cf1383c428e0f6b0198a485",
-    "company-screen.js": "d2717aabfda75d8a645945381dd18639bbc9c8defd4810bda3f24e35c448214d",
+    "portfolio-screen.js": "da95498176557e1bc16d1329f639c9b153a859e3be4f7b0bde054becda939be0",
+    "company-screen.js": "2146b6234e092faf11c3785409a526f429021bc539678743a10b147d20264678",
     "ops-status.js": "57d2ce827c9b8af4d95e0155d6a01788b95417582bf176544d55c0ba2fd1ed9d",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "be54421201547f73c0cf63427b04fc4faf3d7f077035e7825ed7a2a8ed4c45fa",
@@ -74,7 +77,7 @@ APPROVED_SHA256 = {
     "manifest.json": "b4a949507c0859ee3ec158f0a6eaa6ec9cefc5c0e7e630715336817b9c248f8c",
     "offline.html": "84dabe85364d57ca5ab49018e195871504df443a714e819fdb6a3c614be79bb5",
     "sec-reported.js": "5c9a9023999c30068493c704d36282230a8175a254e6059076a4f1d3f51fa8d3",
-    "google-sheet-setup.js": "6627c571debea9b76daef4c1123aa9076b2fa025be6cd637150ec5510f1f05aa",
+    "google-sheet-setup.js": "24d8c0bb60310c104b7d5ec08292330d62d1a32f33a61eae4e76b5489747f471",
     "private-trades.js": "86d59b4c5ef341ab47f1892fe65b483ca8256e367cfde06e1c9a0b580530fb9f",
     "technical-chart.js": "64b581fd186cdcb39f31def58412052dfa777dc2920a4f2432c1842b19c65eb8",
     "chart-indicators.js": "30cf6571f32c0496acd247099feb5f71fce0acf8870dcd78781018b872291fcc",
@@ -82,24 +85,24 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "ad19db75aae16f79c0d0753dc8445ae0c6fdf6100b89f8e2e876b0533034aa42",
+    "app.js": "d5244f83c9217a188e0108a898c6ccb0bd400b3ee19f0a118f3666e58684c1bd",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
-    "device-actual.js": "4b6bbdf71f74875199221cf534dc403be7961fd722abe2b1b12a499e2740f7f3",
-    "device-market.js": "4a4517d31dbdeb95af45f6f12b15364711faf8eafdde4723c4874014da3baddc",
+    "device-actual.js": "8dcefa502a362b680f8cefbf774209b2180b398d706469f6370d6ecb0182acd1",
+    "device-market.js": "5a115f210cbe9e7c2d75c5069bda39cbfa844fa6576438529504fc919a936bd1",
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "a037bee0ccb8fd8cad0407f7ccfa3a33f410f32fb20b5ca7fe37bf0e10eb9b4f",
+    "google-sheet-quotes.js": "c4cc030491e5221b98657c3019c3a7558e5a75e79f2cf08a6a94e028fb724791",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "5f42684a19ccfab223dc9119a309ca781ae23886faedde849f2a016928e83f65",
+    "index.html": "14235a38510766e51c40470d10e96ee90f013560b35c81d8a8e8a4ba1a677afc",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "bd7dd854f11a180bce7ad156cc349b9efb6fd6712998c9c0594270f3723ec139",
+    "style.css": "f1f7eed0853eecaa6847c8468999bc5bbe06b4c0d9a49c845c57c00366017220",
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -219,6 +222,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == UNIVERSE_SHARES_FILENAME:
             try: require_universe_shares(value)
             except ValueError: violations['universe_shares_boundary'] += 1
+        elif name == UNIVERSE_CODES_FILENAME:
+            try: require_universe_codes(value)
+            except ValueError: violations['universe_codes_boundary'] += 1
         elif name == UNIVERSE_QG_FILENAME:
             try: require_universe_qg(value)
             except ValueError: violations['universe_qg_boundary'] += 1

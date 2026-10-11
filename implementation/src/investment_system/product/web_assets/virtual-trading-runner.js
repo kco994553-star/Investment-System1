@@ -17,6 +17,11 @@ const CODE=/^[A-Z][A-Z0-9_]{0,63}$/,DAY=/^\d{4}-\d{2}-\d{2}$/,CLOCK=/^\d{4}-\d{2
 const V_KEY='investment.web.v1.virtual-trading-v-scores',HISTORY_KEY='investment.web.v1.private-history-origin';
 // Session-level failures: no further Worker request is made after one of these.
 const STOP=new Set(['AUTH_REQUIRED','AUTH_FORBIDDEN','AUTH_UNAVAILABLE','ORIGIN_FORBIDDEN','CONFIG_UNAVAILABLE','CANCELED','RATE_LIMIT_UNAVAILABLE']);
+// Every reason code this module can put on a result or source row (labels: VirtualTrading.CODE_LABELS). A Worker error code
+// outside this list is passed through and shown verbatim.
+const CODES=Object.freeze(['TARGET_CATALOG_INVALID','SESSIONS_NOT_AVAILABLE','SET_B_NOT_DEFINED','SET_B_INVALID','NO_ACTUAL','ACTUAL_INVALID','INITIAL_COST_FX_MISSING',
+ 'BEFORE_START_DATE','LEDGER_NOT_AVAILABLE','NOT_REQUESTED','HISTORY_UNAVAILABLE','HISTORY_FORMAT_INVALID','CURRENCY_MISMATCH','OFF','REQUEST_INVALID','ORIGIN_UNAPPROVED',
+ ...STOP,'RATE_LIMITED','LEDGER_UNREACHABLE','LEDGER_INVALID','LEDGER_NOT_PUBLISHED']);
 const DEFAULT_SPACING_MS=5200,RATE_RETRY_MS=15000,RATE_RETRIES=2;
 const own=(o,k)=>o!==null&&typeof o==='object'&&Object.prototype.hasOwnProperty.call(o,k);
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
@@ -256,11 +261,11 @@ async function run(view,{config={},catalog,reportDate,signal=null,onProgress=nul
  // A rehearsal still runs without a published forward ledger (before the start date); its snapshots are then filled by the caller.
  if(forward.state!=='LOADED'&&typeof rehearsal!=='function')return{...base,state:'NOT_AVAILABLE',reason_codes:[forward.reason]};
  const classification=view.ClassificationScreens?await view.ClassificationScreens.load(view):null;
- let holdings=null;try{holdings=holdingsFromSnapshot(await view.DeviceActual.readHoldings(view,catalog),catalog);}catch(_){holdings=null;}
+ let holdings=null;try{const A=view.DeviceActual;holdings=holdingsFromSnapshot(A.effectiveHoldings?(await A.effectiveHoldings(view,catalog)).snapshot:await A.readHoldings(view,catalog),catalog);}catch(_){holdings=null;}
  const symbols=requiredSymbols({catalog,classification,holdings,set_b});
  const histories=await fetchHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});
  return assemble({config:typeof rehearsal==='function'?rehearsal(histories,cfg):cfg,catalog,forward_ledger:forward.state==='LOADED'?forward.ledger:null,classification,histories,holdings,set_b,v_store:readVStore(view.localStorage),flags:flags||[]});
 }
-return Object.freeze({SCHEMA,IDS,TARGETS,SP500_SYMBOL,FX_SYMBOLS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,snapshotsFromLedger,
+return Object.freeze({SCHEMA,CODES,IDS,TARGETS,SP500_SYMBOL,FX_SYMBOLS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,snapshotsFromLedger,
  vScoresFromStore,flagsFromStore,assemble,holdingsFromSnapshot,readVStore,ledgerFor,statusRows,readiness,fetchHistories,run,clearCache});
 });
