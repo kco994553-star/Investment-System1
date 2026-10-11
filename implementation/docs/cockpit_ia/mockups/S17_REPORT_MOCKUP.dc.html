@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>투자시스템 · 일일 보고서 (휴대폰)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1E4D43}a:hover{color:#123128}
+.card{background:#FFFFFF;border:1px solid #E2E2DA;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.h2{margin:0;font-size:17px;font-weight:700;display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.h2 small{font-size:12px;font-weight:400;color:#5E6863}
+.note{font-size:12px;color:#5E6863;line-height:1.55}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th{font-weight:500;color:#5E6863;text-align:right;padding:6px 4px;border-bottom:1px solid #E2E2DA;white-space:nowrap}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl td{text-align:right;padding:7px 4px;border-bottom:1px solid #EEEFEA;white-space:nowrap}
+.tbl td.l{text-align:left}
+.up{color:#B4302A}.dn{color:#1F5FB0}.nt{color:#5E6863}
+.chip{font-size:11.5px;font-weight:500;padding:3px 8px;border-radius:6px;display:inline-block;white-space:nowrap}
+.c-rule{color:#1E4D43;background:#E3EEEA}
+.c-ai{color:#5B3A8C;background:#ECE5F6}
+.c-na{color:#4A524E;background:#EEEFEA}
+.c-warn{color:#7A4600;background:#FBEAD2}
+.c-sample{color:#8A2B2B;background:#F7E1DF}
+.kpi{background:#FFFFFF;border:1px solid #E2E2DA;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.kpi .k{font-size:12px;color:#5E6863}
+.kpi .v{font-size:21px;font-weight:700;letter-spacing:-0.3px}
+.kpi .s{font-size:12px;color:#5E6863}
+.ai{border-left:3px solid #8E6CC4;background:#F7F3FC;border-radius:0 10px 10px 0;padding:10px 12px;font-size:13px;line-height:1.6}
+.rule{border-left:3px solid #1E4D43;background:#F1F6F4;border-radius:0 10px 10px 0;padding:10px 12px;font-size:13px;line-height:1.6}
+.sec{font-size:13px;color:#1E4D43;font-weight:700}
+.bar{height:8px;border-radius:4px;background:#EEEFEA;position:relative;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+</style>
+</helmet>
+<div style="width: 390px; min-height: 6900px; box-sizing: border-box; background: #F4F4EF; font-family: 'Noto Sans KR', sans-serif; color: #17201D; display: flex; flex-direction: column; font-variant-numeric: tabular-nums">
+
+<div style="background: #FFFFFF; border-bottom: 1px solid #E2E2DA; padding: 16px 16px 0; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<div style="display: flex; align-items: center; gap: 8px"><span style="width: 24px; height: 24px; border-radius: 7px; background: #1E4D43; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">R</span><span style="font-size: 13px; color: #5E6863">오늘 · 일일 보고서</span></div>
+<span class="chip c-sample">예시 수치 · 실제 아님</span>
+</div>
+<h1 style="margin: 0; font-size: 23px; font-weight: 700; line-height: 1.3">모의투자 일일보고서</h1>
+<div class="note">같은 형식의 '투자 일일보고서'(내 실제 포트폴리오 + 그림자 장부)는 오늘 화면에서 따로 열어요.</div>
+<div style="font-size: 13px; color: #4A524E; line-height: 1.6">기준 완료 거래일 US 2026-10-09 · KR 2026-10-12<br>포트폴리오 v1.1 · QGV 점수 기준 v1 · 가상매매 규칙 v1</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<span class="chip c-warn">STANDARD v1 · UNCALIBRATED</span>
+<span class="chip c-na">유형 v1 잠정</span>
+<span class="chip c-na">비용 미반영 · 소수점 가정</span>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;background:#F4F4EF;border-radius:10px;padding:8px 12px;font-size:13px"><span>금액 숨김 <span class="nt" style="font-size:12px">· 지금은 시안이라 금액 표시</span></span><span style="width:40px;height:24px;border-radius:12px;background:#C9CCC4;position:relative;display:inline-block"><i style="position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#FFFFFF"></i></span></div>
+<nav aria-label="세트 선택" style="display: flex; gap: 2px; margin: 0 -16px; padding: 0 16px">
+<sc-for list="{{ sets }}" as="t" hint-placeholder-count="3">
+<a href="#" style="{{ t.style }}">{{ t.label }}</a>
+</sc-for>
+</nav>
+</div>
+
+<main style="display: flex; flex-direction: column; gap: 14px; padding: 16px 16px 28px">
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<div class="kpi"><span class="k">총 모의평가액</span><span class="v">1억 830만원</span><span class="s"><b class="up">+8.30%</b> 누적</span></div>
+<div class="kpi"><span class="k">마지막 거래일</span><span class="v up">+0.45%</span><span class="s">S&amp;P 500 +0.60%</span></div>
+<div class="kpi"><span class="k">가상 매수</span><span class="v">65만원</span><span class="s">매수 한도 100만원 중 65%</span><div class="bar" style="margin-top:4px"><i style="width:65%;background:#B4302A"></i></div></div>
+<div class="kpi"><span class="k">가상 매도</span><span class="v">40만원</span><span class="s">매도 한도 100만원 중 40%</span><div class="bar" style="margin-top:4px"><i style="width:40%;background:#1F5FB0"></i></div></div>
+</div>
+
+<section class="card">
+<div class="h2">오늘의 요약 <span class="chip c-ai">AI 해석</span></div>
+<div class="ai">시장은 반등했지만 세트 A는 S&amp;P 500보다 0.15%p 덜 올랐습니다. Big Tech가 오르고 AI 반도체 일부가 약했습니다. 가상매매는 목표보다 부족한 MSFT·GOOGL·ASML·SYK를 채우고, 초과했거나 점수가 내려간 INTC·QCOM·AMD를 줄였습니다.</div>
+<div class="note">숫자는 앱 계산, 문장은 붙여넣은 AI 해석입니다. AI 해석이 없으면 이 칸은 규칙 문장으로 대신 채워집니다.</div>
+</section>
+
+<section class="card">
+<div class="h2">① 전체 투자장부 <small>평가액 · 추산</small></div>
+<table class="tbl">
+<tr><th>거래일</th><th>평가액</th><th>1D</th><th>누적</th></tr>
+<sc-for list="{{ ledger }}" as="r" hint-placeholder-count="5">
+<tr><td>{{ r.d }}</td><td>{{ r.v }}</td><td style="{{ r.c1 }}">{{ r.one }}</td><td style="{{ r.c2 }}">{{ r.cum }}</td></tr>
+</sc-for>
+</table>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; font-size: 12px">
+<div style="background:#F4F4EF;border-radius:8px;padding:8px"><div class="nt">최초 원금</div><b>1억원</b></div>
+<div style="background:#F4F4EF;border-radius:8px;padding:8px"><div class="nt">실제 추가입금</div><b>0원</b></div>
+<div style="background:#F4F4EF;border-radius:8px;padding:8px"><div class="nt">신뢰도</div><b>중간</b></div>
+</div>
+</section>
+
+<section class="card">
+<div class="h2">② 포트폴리오 구성 <small>목표 → 실제</small></div>
+<sc-for list="{{ sectors }}" as="s" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; justify-content: space-between; font-size: 13px"><span>{{ s.name }}</span><span><span class="nt">{{ s.target }} →</span> <b>{{ s.actual }}</b> <span style="{{ s.gc }}">{{ s.gap }}</span></span></div>
+<div class="bar"><i style="{{ s.bar }}"></i></div>
+</div>
+</sc-for>
+<div class="rule">집중도: AI·반도체 장비 합계 <b>55.4%</b> (목표 55%). 한 업종군 55% 이상이면 '집중 주의'로 표시합니다.</div>
+</section>
+
+<section class="card">
+<div class="h2">③ 전 종목 장부 <small>19종목 · 생략 없음</small></div>
+<div style="overflow-x: auto; margin: 0 -6px">
+<table class="tbl">
+<tr><th>기업#순위</th><th>실제/목표</th><th>1D</th><th>누적</th><th>QGV</th><th style="text-align:left;padding-left:8px">판단</th></tr>
+<sc-for list="{{ holdings }}" as="h" hint-placeholder-count="19">
+<tr><td class="l"><b>{{ h.t }}</b><span class="nt" style="font-size:11px">#{{ h.rk }}</span></td><td>{{ h.w }}</td><td style="{{ h.c1 }}">{{ h.one }}</td><td style="{{ h.c2 }}">{{ h.cum }}</td><td>{{ h.q }}</td><td class="l" style="padding-left:8px"><span style="{{ h.js }}">{{ h.j }}</span><span style="{{ h.ss }}">{{ h.s }}</span></td></tr>
+</sc-for>
+</table>
+</div>
+<div class="rule">▲ 확대 4 · ▼ 위험 2 · 축소 1 · ● 보유 11 · 관찰 1 <span class="nt">(주 판단만 집계)</span></div>
+<div class="note">겹치면 우선순위가 높은 판단 하나를 주 칩으로, 나머지는 '+비중'처럼 보조 칩으로 붙입니다. 우선순위: ■차단 &gt; ▼위험재검토 &gt; ▼비중축소검토 &gt; ▲비중확대검토 &gt; ●추가검토 &gt; ●보유맥락 &gt; ●관찰. ▲는 긍정(덜 갖고 있거나 Q·G 유지 중 V가 좋아짐), ▼는 부정, ●는 중립입니다. 매수·매도 동사는 ⑩ 가상 장부 안에서만 씁니다. 순위는 마지막 종가 기준 시가총액 순위입니다.</div>
+</section>
+
+<section class="card">
+<div class="h2">④ 성과기여 <small>포트폴리오 기여 %p</small></div>
+<sc-for list="{{ contrib }}" as="c" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) 62px; align-items: center; gap: 8px; font-size: 13px">
+<b>{{ c.t }}</b>
+<div style="height: 10px; position: relative"><i style="{{ c.bar }}"></i></div>
+<span style="{{ c.cs }}">{{ c.v }}</span>
+</div>
+</sc-for>
+<div class="rule">상승 기여 1위 AMZN(+0.197%p), 하락 기여 1위 AMD(−0.102%p). Big Tech 묶음이 +0.43%p, AI·반도체 묶음이 −0.20%p였습니다.</div>
+</section>
+
+<section class="card">
+<div class="h2">⑤ QGV <small>100점 척도</small></div>
+<table class="tbl">
+<tr><th>기업</th><th>Q</th><th>G</th><th>V</th><th>총점</th><th style="text-align:left;padding-left:8px">유형</th></tr>
+<sc-for list="{{ qgv }}" as="q" hint-placeholder-count="7">
+<tr><td class="l"><b>{{ q.t }}</b></td><td>{{ q.q }}</td><td>{{ q.g }}</td><td>{{ q.v }}</td><td><b>{{ q.tot }}</b></td><td class="l" style="padding-left:8px;font-size:12px">{{ q.ty }}</td></tr>
+</sc-for>
+</table>
+<div class="note"><b>총점</b> = 유형 가중 Q·G·V (GSQ-017). 예: 성장형 Q30·G50·V20, 미분류 34·33·33, 축별 15~60 범위로 자른 뒤 다시 100으로 맞춤. V가 계산되지 않으면 총점 대신 'Q·G 점수'를 표시합니다.</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; font-size: 12px">
+<sc-for list="{{ qgvAreas }}" as="a" hint-placeholder-count="8">
+<div style="background:#F4F4EF;border-radius:8px;padding:8px;display:flex;justify-content:space-between;gap:6px"><span>{{ a.n }}</span><span style="{{ a.s }}">{{ a.v }}</span></div>
+</sc-for>
+</div>
+</section>
+
+<section class="card">
+<div class="h2">⑥ 기술적 분석 <span class="chip c-na">표시 전용</span></div>
+<table class="tbl">
+<tr><th>지표</th><th>값</th><th style="text-align:left;padding-left:8px">판정</th></tr>
+<sc-for list="{{ tech }}" as="t" hint-placeholder-count="8">
+<tr><td class="l">{{ t.n }}</td><td style="{{ t.c }}">{{ t.v }}</td><td class="l" style="padding-left:8px">{{ t.j }}</td></tr>
+</sc-for>
+</table>
+<div class="rule">세트 A 1D는 S&amp;P 500보다 −0.15%p, 5D는 −2.52%p로 단기 상대약세입니다.</div>
+<div class="note">기술 지표는 매매 규칙에 쓰지 않습니다(GSQ-015). 판정은 수치 비교 문장입니다.</div>
+</section>
+
+<section class="card">
+<div class="h2">⑦ 거시환경 <small>정부 원기관 8축</small></div>
+<table class="tbl">
+<tr><th>축</th><th>최신값</th><th>방향</th><th style="text-align:left;padding-left:8px">상태</th></tr>
+<sc-for list="{{ macro }}" as="m" hint-placeholder-count="8">
+<tr><td class="l">{{ m.n }}</td><td>{{ m.v }}</td><td>{{ m.d }}</td><td class="l" style="padding-left:8px"><span style="{{ m.ss }}">{{ m.s }}</span></td></tr>
+</sc-for>
+</table>
+<div style="display:flex;justify-content:space-between;align-items:center;background:#F4F4EF;border-radius:10px;padding:10px 12px;font-size:13px"><span>국면 판정</span><span class="chip c-na">NOT_AVAILABLE · 매핑 채택 전</span></div>
+<div class="ai"><span class="sec">AI 해석</span><br>장기금리 상승은 성장주 할인율 부담으로 이어질 수 있어 V 점수에 주목할 필요가 있습니다. 국면 판정이 비어 있어 매크로 관문은 오늘 가상매매에 쓰이지 않았습니다.</div>
+<div class="note">유가·환율은 가격이라 기기에서만 표시합니다. 소비자심리·기대물가는 원기관 소스가 정해지지 않아 넣지 않았습니다.</div>
+</section>
+
+<section class="card">
+<div class="h2">⑧ 뉴스·경쟁기업·산업 영향 <span class="chip c-ai">AI 해석</span></div>
+<sc-for list="{{ news }}" as="n" hint-placeholder-count="4">
+<div style="border-top: 1px solid #EEEFEA; padding-top: 8px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 13.5px; font-weight: 700">{{ n.title }}</div>
+<div style="display: flex; flex-wrap: wrap; gap: 4px"><span style="{{ n.ds }}">{{ n.dir }}</span><span class="chip c-na">{{ n.kind }}</span><span class="chip c-na">{{ n.rep }}</span><span class="chip c-na">{{ n.factor }}</span></div>
+<div class="note">관련 {{ n.rel }} · 출처 [링크] · 발표일 [날짜]</div>
+</div>
+</sc-for>
+<div class="note">예시용 항목입니다. 실제 보고에서는 AI가 출처 링크와 발표일을 반드시 붙이고, 검색이 안 되면 '외부 정보 확인 불가'로 비웁니다. 뉴스는 점수를 고치지 않습니다.</div>
+</section>
+
+<section class="card">
+<div class="h2">⑨ Portfolio Driver</div>
+<table class="tbl">
+<tr><th>순위</th><th style="text-align:left;padding-left:6px">Driver</th><th>노출</th><th>오늘 기여</th></tr>
+<sc-for list="{{ drivers }}" as="d" hint-placeholder-count="5">
+<tr><td>{{ d.r }}</td><td class="l" style="padding-left:6px">{{ d.n }}</td><td>{{ d.e }}</td><td style="{{ d.cs }}">{{ d.c }}</td></tr>
+</sc-for>
+</table>
+<div class="ai"><span class="sec">AI 해석 · 시나리오</span><br><b>부정</b> AI 투자수익성 우려가 실적 가이던스 하향으로 이어짐 · 무효화: 다음 분기 데이터센터 매출 유지<br><b>중립</b> 업종 내 차별화가 이어지고 Big Tech가 하단을 받침<br><b>긍정</b> 장비 수주 회복이 확인되어 장비 비중의 상대강세 회복<br><span class="nt">확률과 목표가는 쓰지 않습니다.</span></div>
+</section>
+
+<section class="card">
+<div class="h2">⑩ 행동요령 · 가상 매매장부 <span class="chip c-sample">가상 · 실제 추천 아님</span></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; font-size: 12px">
+<div style="background:#FBEEEC;border-radius:10px;padding:10px"><div class="nt">매수 합계</div><b style="font-size:17px" class="up">65만원</b><div class="nt">한도 100만원</div></div>
+<div style="background:#EAF0F8;border-radius:10px;padding:10px"><div class="nt">매도 합계</div><b style="font-size:17px" class="dn">40만원</b><div class="nt">한도 100만원</div></div>
+</div>
+<div class="sec">가상 매수</div>
+<table class="tbl">
+<tr><th>기업</th><th>금액</th><th style="text-align:left;padding-left:8px">규칙 사유</th></tr>
+<sc-for list="{{ buys }}" as="b" hint-placeholder-count="4">
+<tr><td class="l"><b>{{ b.t }}</b></td><td class="up">{{ b.a }}</td><td class="l" style="padding-left:8px;font-size:12px">{{ b.r }}</td></tr>
+</sc-for>
+</table>
+<div class="sec">가상 매도</div>
+<table class="tbl">
+<tr><th>기업</th><th>금액</th><th style="text-align:left;padding-left:8px">규칙 사유</th></tr>
+<sc-for list="{{ sells }}" as="b" hint-placeholder-count="3">
+<tr><td class="l"><b>{{ b.t }}</b></td><td class="dn">{{ b.a }}</td><td class="l" style="padding-left:8px;font-size:12px">{{ b.r }}</td></tr>
+</sc-for>
+</table>
+<div class="note">나머지 12종목은 보유(범위 안 BAND_INSIDE). Re-check 대상 없음. 사용자 보류 플래그 없음.</div>
+<div class="sec">거래 전후 장부</div>
+<table class="tbl">
+<tr><th>항목</th><th>거래 전</th><th>거래 후</th></tr>
+<sc-for list="{{ vbook }}" as="v" hint-placeholder-count="6">
+<tr><td class="l">{{ v.n }}</td><td>{{ v.a }}</td><td>{{ v.b }}</td></tr>
+</sc-for>
+</table>
+<div class="note">체결은 다음 완료 정규장 종가 가정입니다. 매도대금은 가상 현금으로 가며 다음 날 한도를 늘리지 않습니다. 이 장부는 실제 모의투자 평가액과 합산하지 않습니다.</div>
+<div class="ai"><span class="sec">AI 해설</span><br>MSFT·GOOGL 매수는 목표 대비 부족분을 채운 것이고 Q·G 관문을 통과했습니다. INTC 매도는 비중 초과와 Q·G 6점 하락이 겹친 결과입니다.<br><b>[의견]</b> QCOM은 법적 분쟁 뉴스가 반복되는 동안 사용자 보류 플래그를 검토할 만합니다.</div>
+</section>
+
+<section class="card">
+<div class="h2">⑪ QGV 누적 검증·성과</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<div class="kpi" style="padding:10px 12px"><span class="k">판정 완료 거래 (D+20)</span><span class="v" style="font-size:18px">32건</span><span class="s">적중 21 · 미적중 11</span></div>
+<div class="kpi" style="padding:10px 12px"><span class="k">적중률 (D+20)</span><span class="v" style="font-size:18px">65.6%</span><span class="s">21 ÷ 32 · 표본 30 이상</span></div>
+<div class="kpi" style="padding:10px 12px"><span class="k">누적 가상 실현손익</span><span class="v up" style="font-size:18px">+8.4만원</span><span class="s">평균단가법</span></div>
+<div class="kpi" style="padding:10px 12px"><span class="k">누적 가상 수익률</span><span class="v up" style="font-size:18px">+1.8%</span><span class="s">시간가중(TWR)</span></div>
+</div>
+<table class="tbl">
+<tr><th>평가 창</th><th>표본</th><th>적중률</th><th>벤치마크</th></tr>
+<sc-for list="{{ windows }}" as="w" hint-placeholder-count="3">
+<tr><td class="l">{{ w.n }}</td><td>{{ w.s }}</td><td>{{ w.h }}</td><td>{{ w.b }}</td></tr>
+</sc-for>
+</table>
+<div class="sec">최근 판정</div>
+<table class="tbl">
+<tr><th>판단</th><th>D+20</th><th>S&amp;P</th><th style="text-align:left;padding-left:8px">평가</th></tr>
+<sc-for list="{{ verdicts }}" as="v" hint-placeholder-count="5">
+<tr><td class="l">{{ v.n }}</td><td style="{{ v.c }}">{{ v.r }}</td><td>{{ v.b }}</td><td class="l" style="padding-left:8px"><span style="{{ v.ss }}">{{ v.s }}</span></td></tr>
+</sc-for>
+</table>
+<div class="note">매수는 종목이 벤치마크를 이기면 적중, 매도는 판 종목이 벤치마크보다 못하면 적중입니다. 표본 30건 미만인 창은 숫자 대신 '표본 부족'. 사용자 플래그가 붙은 거래는 따로 집계합니다. 과거 판정은 다시 쓰지 않습니다.</div>
+</section>
+
+<section class="card">
+<div class="h2">⑫ 기간별 성과</div>
+<table class="tbl">
+<tr><th>기간</th><th>세트 A</th><th>S&amp;P 500</th><th>초과</th><th style="text-align:left;padding-left:8px">판정</th></tr>
+<sc-for list="{{ periods }}" as="p" hint-placeholder-count="6">
+<tr><td class="l">{{ p.n }}</td><td style="{{ p.c1 }}">{{ p.a }}</td><td>{{ p.s }}</td><td style="{{ p.c2 }}">{{ p.x }}</td><td class="l" style="padding-left:8px;font-size:12px">{{ p.j }}</td></tr>
+</sc-for>
+</table>
+<div class="rule">누적으로는 S&amp;P 500을 5.94%p 앞서지만 최근 5거래일은 2.52%p 뒤졌습니다.</div>
+</section>
+
+<section class="card">
+<div class="h2">⑬ 성과·위험 대시보드</div>
+<div style="display: flex; gap: 4px; overflow-x: auto">
+<sc-for list="{{ pchips }}" as="c" hint-placeholder-count="6">
+<button type="button" style="{{ c.style }}">{{ c.label }}</button>
+</sc-for>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<div class="kpi" style="padding:10px 12px;background:#F1F6F4;border-color:#CFE0D9"><span class="k">세트 A · 1D</span><span class="v up" style="font-size:19px">+0.45%</span></div>
+<div class="kpi" style="padding:10px 12px;background:#F1F6F4;border-color:#CFE0D9"><span class="k">S&amp;P 대비</span><span class="v dn" style="font-size:19px">−0.15%p</span></div>
+</div>
+<sc-for list="{{ bench }}" as="b" hint-placeholder-count="7">
+<div style="display: grid; grid-template-columns: 92px minmax(0, 1fr) 54px; align-items: center; gap: 8px; font-size: 12.5px">
+<span>{{ b.n }}</span>
+<div class="bar"><i style="{{ b.bar }}"></i></div>
+<span style="{{ b.cs }}">{{ b.v }}</span>
+</div>
+</sc-for>
+<div class="sec" style="margin-top:4px">위험지표</div>
+<table class="tbl">
+<tr><th>지표</th><th>값</th><th style="text-align:left;padding-left:8px">상태</th></tr>
+<sc-for list="{{ risk }}" as="r" hint-placeholder-count="5">
+<tr><td class="l">{{ r.n }}</td><td>{{ r.v }}</td><td class="l" style="padding-left:8px;font-size:12px">{{ r.s }}</td></tr>
+</sc-for>
+</table>
+<div class="note">기간을 바꾸면 모든 시리즈를 같은 기준일(기간 시작 직전 종가)로 다시 계산합니다. 결측 구간은 보간하지 않습니다. 시계열은 '추세 보기'로 펼칩니다.</div>
+</section>
+
+<section class="card" style="border-color:#1E4D43">
+<div class="h2">세트 A 최종 투자판단</div>
+<table class="tbl">
+<tr><th>평가 영역</th><th style="text-align:left;padding-left:8px">판단</th></tr>
+<sc-for list="{{ final }}" as="f" hint-placeholder-count="9">
+<tr><td class="l" style="color:#5E6863">{{ f.n }}</td><td class="l" style="padding-left:8px;white-space:normal">{{ f.v }} <span style="{{ f.ss }}">{{ f.src }}</span></td></tr>
+</sc-for>
+</table>
+<div style="background:#1E4D43;color:#FFFFFF;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.6"><b>투자시스템 최종 행동</b><br>● 보유맥락 유지 · ▼ INTC·QCOM 위험재검토 · ▲ MSFT·GOOGL 비중확대검토</div>
+<div class="note">최종 행동은 7단계 판단 어휘로만 표시합니다. 주문 기능은 없습니다.</div>
+</section>
+
+<section class="card">
+<div class="h2">AI 해석 받기 <span class="chip c-ai">템플릿 v1</span></div>
+<div class="note">숫자가 모두 채워진 보고서 템플릿과 'AI 해석 지침 v1'을 함께 복사합니다. AI는 【AI】 칸만 채워 같은 형식으로 돌려줍니다.</div>
+<div style="display:flex;align-items:center;justify-content:space-between;background:#F4F4EF;border-radius:10px;padding:10px 12px;font-size:13px"><span>금액 숨김 <span class="nt" style="font-size:12px">· 기본 켜짐, 금액은 [숨김]·한도 대비 %로</span></span><span style="width:40px;height:24px;border-radius:12px;background:#1E4D43;position:relative;display:inline-block"><i style="position:absolute;right:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#FFFFFF"></i></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;background:#F4F4EF;border-radius:10px;padding:10px 12px;font-size:13px"><span>지침 포함 <span class="nt" style="font-size:12px">· 프로젝트 지침에 넣어 두었다면 끄기</span></span><span style="width:40px;height:24px;border-radius:12px;background:#1E4D43;position:relative;display:inline-block"><i style="position:absolute;right:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#FFFFFF"></i></span></div>
+<button type="button" style="height:48px;border-radius:12px;border:none;background:#1E4D43;color:#FFFFFF;font-family:inherit;font-size:15px;font-weight:700">보고서 템플릿 내보내기</button>
+<button type="button" style="height:44px;border-radius:12px;border:1px solid #DADBD3;background:#FFFFFF;color:#17201D;font-family:inherit;font-size:14px">AI 답변 붙여넣기 → 'AI 해석'에 보관</button>
+<div class="note">개인 금액이 포함될 수 있습니다. 앱은 자동으로 전송하지 않고, 사용자가 직접 복사할 때만 기기 밖으로 나갑니다.</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px; padding: 4px 4px 0; font-size: 12px; color: #4A524E; line-height: 1.65">
+<div><b>세트 A 고정 각주</b> · 포트폴리오 v1.1 · QGV 점수 기준 v1(보정 전) · 유형 v1 잠정 · 평가액 약 1억 830만원(추산) · 누적 +8.30% · 기준 종가일 US 2026-10-09 / KR 2026-10-12 · 실제 추가입금 0원 · 가상 매수 65만원·매도 40만원 · 가상매매는 실제 평가액에 미반영 · 추산값은 ≈ 표시 · 결측은 N/A</div>
+<div><b>세트 B 고정 각주</b> · (세트 B 탭에서 같은 형식으로 표시)</div>
+<div style="border-top:1px solid #DADBD3;padding-top:10px;font-size:13px;color:#17201D;display:flex;flex-direction:column;gap:2px">
+<span>보고일: 2026-10-12</span>
+<span>투자 시작일: 2026-09-01</span>
+<span>투자 경과: 42일 (시작일 포함)</span>
+<span class="nt">가상매매 시작일: [사용자 결정 D-13]</span>
+</div>
+</section>
+
+</main>
+
+<nav aria-label="주 메뉴" style="margin-top: auto; background: #FFFFFF; border-top: 1px solid #E2E2DA; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr))">
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+<a href="{{ n.href }}" style="{{ n.style }}"><span style="{{ n.bar }}"></span>{{ n.label }}</a>
+</sc-for>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":6900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var UP = 'color: #B4302A', DN = 'color: #1F5FB0', NT = 'color: #5E6863';
+    var col = function (s) { return s.charAt(0) === '+' ? UP : (s.charAt(0) === '-' || s.charAt(0) === '−' ? DN : NT); };
+    var chip = function (k) {
+      var m = { rule: 'color:#1E4D43;background:#E3EEEA', ai: 'color:#5B3A8C;background:#ECE5F6', na: 'color:#4A524E;background:#EEEFEA', warn: 'color:#7A4600;background:#FBEAD2', pos: 'color:#0F5C4E;background:#D6EEE7;border:1px solid #9CCFC1', bad: 'color:#8A2B2B;background:#F7E1DF', good: 'color:#1E4D43;background:#E3EEEA' };
+      return 'font-size:11.5px;font-weight:500;padding:3px 8px;border-radius:6px;white-space:nowrap;' + m[k];
+    };
+    var sets = ['세트 A', '세트 B', 'A/B 비교'].map(function (l, i) {
+      return { label: l, style: 'flex-shrink: 0; min-height: 44px; display: flex; align-items: center; padding: 0 12px; font-size: 14px; text-decoration: none; white-space: nowrap; ' + (i === 0 ? 'color: #1E4D43; font-weight: 700; border-bottom: 3px solid #1E4D43' : 'color: #5E6863; border-bottom: 3px solid transparent') };
+    });
+    var ledger = [['10/05', '1억1,052만', '+0.648%', '+10.52%'], ['10/06', '1억1,064만', '+0.108%', '+10.64%'], ['10/07', '1억943만', '-1.090%', '+9.43%'], ['10/08', '1억782만', '-1.470%', '+7.82%'], ['10/09', '1억830만', '+0.445%', '+8.30%']].map(function (r) {
+      return { d: r[0], v: r[1], one: r[2], cum: r[3], c1: col(r[2]), c2: col(r[3]) };
+    });
+    var sectors = [['반도체 장비', 30, 29.4], ['AI·반도체', 25, 26.0], ['Big Tech', 20, 20.6], ['기타산업', 25, 24.0]].map(function (s) {
+      var g = (s[2] - s[1]);
+      return { name: s[0], target: s[1] + '%', actual: s[2].toFixed(1) + '%', gap: (g >= 0 ? '+' : '−') + Math.abs(g).toFixed(1) + '%p', gc: 'font-size:12px;' + (Math.abs(g) >= 1 ? 'color:#7A4600' : NT), bar: 'width:' + (s[2] * 2.5) + '%;background:#1E4D43' };
+    });
+    var H = [
+      ['ASML', 31, '8.8/9', '+0.60%', '+12.4%', '74', '▲ 비중확대검토', 'pos'], ['LRCX', 88, '6.1/6', '-0.55%', '+6.1%', '70', '● 보유맥락', 'na'], ['KLAC', 79, '5.5/5.5', '-0.58%', '+8.9%', '72', '● 보유맥락', 'na'], ['TEL', 140, '5.2/5', '+2.09%', '+15.2%', '68', '● 보유맥락', 'na'], ['한미반도체', 'NA', '4.6/4.5', '0.00%', '+3.0%', 'NA', '● 관찰', 'na'],
+      ['NVDA', 1, '8.3/8', '-0.52%', '+18.6%', '76', '● 보유맥락', 'na'], ['AMD', 45, '5.4/5', '-2.03%', '+21.0%', '69', '▼ 비중축소검토', 'warn'], ['AVGO', 7, '5.1/5', '+0.39%', '+9.8%', '73', '● 보유맥락', 'na'], ['QCOM', 92, '4.2/4', '-0.29%', '-2.4%', '63', '▼ 위험재검토', 'bad'], ['INTC', 120, '3.3/3', '-2.22%', '-6.8%', '49', '▼ 위험재검토', 'bad'],
+      ['MSFT', 2, '6.6/7', '+2.38%', '+4.1%', '79', '▲ 비중확대검토', 'pos'], ['GOOGL', 3, '6.6/7', '+0.97%', '+7.7%', '78', '▲ 비중확대검토', 'pos'], ['AMZN', 5, '6.1/6', '+3.29%', '+9.3%', '75', '● 보유맥락', 'na'],
+      ['RTX', 70, '6.0/6', '+0.90%', '+5.5%', '66', '● 보유맥락', 'na'], ['SYK', 98, '5.2/5.5', '+0.13%', '+1.2%', '71', '▲ 비중확대검토', 'pos'], ['ETN', 60, '5.1/5', '+1.21%', '+10.4%', '70', '● 보유맥락', 'na'], ['HUBB', 290, '3.5/3.5', '-0.27%', '+2.2%', '67', '● 보유맥락', 'na'], ['GEV', 75, '3.1/3', '+0.54%', '+14.7%', '64', '● 보유맥락', 'na'], ['ROK', 260, '2.0/2', '-0.36%', '+0.8%', '65', '● 보유맥락', 'na']
+    ];
+    var SEC = { INTC: '▼비중', QCOM: '▼비중', AMD: '●추가검토', ASML: '●추가검토', NVDA: '' };
+    var holdings = H.map(function (h) { var s = SEC[h[0]] || ''; return { t: h[0], rk: h[1], w: h[2], one: h[3], cum: h[4], c1: col(h[3]), c2: col(h[4]), q: h[5], j: h[6], js: chip(h[7]), s: s, ss: s ? 'margin-left:4px;font-size:10.5px;color:#5E6863;border:1px solid #DADBD3;padding:1px 5px;border-radius:5px;white-space:nowrap' : 'display:none' }; });
+    var contrib = [['AMZN', 0.197], ['MSFT', 0.167], ['TEL', 0.105], ['NVDA', -0.042], ['INTC', -0.067], ['AMD', -0.102]].map(function (c) {
+      var w = Math.abs(c[1]) / 0.2 * 50;
+      return { t: c[0], v: (c[1] > 0 ? '+' : '−') + Math.abs(c[1]).toFixed(3) + '%p', cs: (c[1] > 0 ? UP : DN) + ';text-align:right', bar: 'position:absolute;top:0;bottom:0;border-radius:4px;' + (c[1] > 0 ? 'left:50%;background:#B4302A;width:' + w + '%' : 'right:50%;background:#1F5FB0;width:' + w + '%') };
+    });
+    var qgv = [['MSFT', 88, 76, 58, '76', '리더·우량'], ['NVDA', 86, 92, 41, '76', '성장·리더'], ['GOOGL', 84, 77, 66, '77', '리더·우량'], ['ASML', 85, 74, 55, '74', '리더·성장'], ['AMZN', 80, 81, 57, '75', '성장·리더'], ['QCOM', 70, 58, 64, '63', '가치·경기민감'], ['INTC', 52, 41, 'NA', 'Q·G 47', '미분류']].map(function (q) { return { t: q[0], q: q[1], g: q[2], v: q[3], tot: q[4], ty: q[5] }; });
+    var qgvAreas = [['신뢰도', '중간', 'na'], ['Key Drivers', '3~5개 표시', 'na'], ['시나리오', 'NA', 'na'], ['동종 비교', '부분', 'warn'], ['안전마진(V)', '기기 계산', 'rule'], ['역DCF(V)', 'DCF 값 결정 전', 'warn'], ['VMR', '기기 계산', 'rule'], ['Macro', 'QGV 밖 ⑦', 'na']].map(function (a) { return { n: a[0], v: a[1], s: chip(a[2]) }; });
+    var tech = [['S&P 500 1D', '+0.595%', '상승'], ['Nasdaq 1D', '+0.64%', '상승'], ['XLK 1D', '+0.51%', '상승'], ['세트 A 1D', '+0.445%', '시장 대비 열위'], ['세트 A 5D', '-1.371%', '단기 상대약세'], ['20D 변동성', '18.4%', '기기 계산'], ['ATR(14) 평균', '2.6%', '기기 계산'], ['Beta(60D)', '1.21', '시장보다 큰 변동']].map(function (t) { return { n: t[0], v: t[1], c: col(t[1]), j: t[2] }; });
+    var macro = [['성장 GDP', '연율 2.1%', '↓', '원자료', 'na'], ['물가 CPI', '전년비 3.4%', '↑', '원자료', 'na'], ['고용', '실업률 4.3%', '→', '원자료', 'na'], ['금리 10Y', '4.9%', '↑', '원자료', 'na'], ['유동성 H.4.1', '[금액]', '—', '선택자 확인 대기', 'warn'], ['신용 H.8', '[금액]', '—', '선택자 확인 대기', 'warn'], ['재정 MTS', '[금액]', '—', '선택자 확인 대기', 'warn'], ['환율 H.10', '기기 표시', '—', '공개 제외', 'na']].map(function (m) { return { n: m[0], v: m[1], d: m[2], s: m[3], ss: chip(m[4]) }; });
+    var news = [
+      { title: '[예시] AI 투자수익성 우려 재부각', dir: '부정', ds: chip('bad'), kind: '구조적 위험 후보', rep: '반복 4회', factor: 'G-향후성장', rel: 'NVDA·AMD·AVGO' },
+      { title: '[예시] 클라우드 매출 상대강세', dir: '긍정', ds: chip('good'), kind: '실적 확인 필요', rep: '반복 2회', factor: 'G-매출성장', rel: 'MSFT·GOOGL·AMZN' },
+      { title: '[예시] 장비 업체별 주가 분화', dir: '혼합', ds: chip('na'), kind: '일시적', rep: '반복 3회', factor: '가격만, 점수 영향 없음', rel: 'ASML·LRCX·KLAC·TEL' },
+      { title: '[예시] 라이선스 계약 분쟁 지속', dir: '부정', ds: chip('bad'), kind: '법적 위험', rep: '기존 추적', factor: 'Q-경쟁우위', rel: 'QCOM' }
+    ];
+    var drivers = [['1', 'AI 투자 사이클', 'NVDA·AMD·AVGO 18.8%', '-0.14%p'], ['2', '클라우드·AI 소프트웨어', 'Big Tech 19.3%', '+0.43%p'], ['3', '장비 수주(WFE·HBM)', '장비 29.4%', '+0.06%p'], ['4', '전력·그리드', 'ETN·HUBB·GEV 11.7%', '+0.07%p'], ['5', '업종 집중', 'AI·장비 55.4%', '—']].map(function (d) { return { r: d[0], n: d[1], e: d[2], c: d[3], cs: col(d[3]) }; });
+    var buys = [['MSFT', '25만원', 'UNDERWEIGHT_GAP −0.4%p · Q·G 유지'], ['GOOGL', '20만원', 'UNDERWEIGHT_GAP −0.4%p · Q·G 유지'], ['ASML', '10만원', 'UNDERWEIGHT_GAP −0.2%p'], ['SYK', '10만원', 'UNDERWEIGHT_GAP −0.3%p']].map(function (b) { return { t: b[0], a: b[1], r: b[2] }; });
+    var sells = [['INTC', '20만원', 'OVERWEIGHT_GAP +0.3%p · QG_DECLINE −6'], ['QCOM', '15만원', 'OVERWEIGHT_GAP +0.2%p'], ['AMD', '5만원', 'OVERWEIGHT_GAP +0.4%p']].map(function (b) { return { t: b[0], a: b[1], r: b[2] }; });
+    var vbook = [['가상 현금', '120만원', '195만원 (+100만 입금 −65 +40)'], ['보유 평가액', '2,880만원', '2,905만원'], ['총 가상자산', '3,000만원', '3,100만원'], ['누적 가상 입금', '2,900만원', '3,000만원'], ['당일 실현손익', '—', '+3.1만원'], ['미실현손익', '+48만원', '+45만원']].map(function (v) { return { n: v[0], a: v[1], b: v[2] }; });
+    var windows = [['D+5', '41건', '58.5%', 'S&P 500'], ['D+20', '32건', '65.6%', 'S&P 500'], ['D+63', '9건', '표본 부족', 'S&P 500']].map(function (w) { return { n: w[0], s: w[1], h: w[2], b: w[3] }; });
+    var verdicts = [['MSFT 매수 09/10', '+3.2%', '+2.0%', '적중', 'good'], ['ASML 매수 09/11', '-1.5%', '+1.8%', '미적중', 'bad'], ['INTC 매도 09/11', '-3.0%', '+1.8%', '적중', 'good'], ['QCOM 매도 09/12', '+1.0%', '+0.6%', '미적중', 'bad'], ['SYK 매수 09/12', '+2.4%', '+0.6%', '적중', 'good']].map(function (v) { return { n: v[0], r: v[1], c: col(v[1]), b: v[2], s: v[3], ss: chip(v[4]) }; });
+    var periods = [['1D', '+0.445%', '+0.595%', '-0.150%p', '시장 열위'], ['5D', '-1.371%', '+1.150%', '-2.521%p', '시장 열위'], ['20D', '+1.92%', '+2.02%', '-0.10%p', '비슷'], ['60D', 'N/A', 'N/A', '—', '데이터 부족'], ['120D', 'N/A', 'N/A', '—', '데이터 부족'], ['시작 이후', '+8.30%', '+2.36%', '+5.94%p', '누적 우위']].map(function (p) { return { n: p[0], a: p[1], s: p[2], x: p[3], j: p[4], c1: col(p[1]), c2: col(p[3]) }; });
+    var pchips = ['1D', '5D', '20D', '60D', '120D', '시작 이후'].map(function (l, i) { return { label: l, style: 'flex-shrink:0;height:32px;padding:0 12px;border-radius:999px;font-family:inherit;font-size:12.5px;' + (i === 0 ? 'border:1px solid #1E4D43;background:#E3EEEA;color:#1E4D43;font-weight:700' : 'border:1px solid #DADBD3;background:#FFFFFF;color:#4A524E') }; });
+    var bench = [['세트 A', 0.45], ['S&P 500', 0.59], ['기술 XLK', 0.51], ['성장 VUG', 0.72], ['우량 QUAL', 0.44], ['경기민감 XLY', 1.02], ['경기방어 XLP', 0.01]].map(function (b, i) {
+      return { n: b[0], v: '+' + b[1].toFixed(2) + '%', cs: UP + ';text-align:right' + (i === 0 ? ';font-weight:700' : ''), bar: 'width:' + (b[1] / 1.1 * 100) + '%;background:' + (i === 0 ? '#1E4D43' : '#B9C2BE') };
+    });
+    var risk = [['최대낙폭 MDD', '-4.1%', '시작 이후'], ['20D 변동성', '18.4%', 'S&P 500 14.2%'], ['Sharpe', 'N/A', '60D 이상 필요'], ['하락 포착률', 'N/A', '하락장 표본 필요'], ['AI·장비 집중도', '55.4%', '목표 55% · 집중 주의']].map(function (r) { return { n: r[0], v: r[1], s: r[2] }; });
+    var final = [['사업경쟁력', '핵심 기업 Q 유지, INTC 약화', 'rule'], ['성장성', 'AI·클라우드 G 상위', 'rule'], ['밸류에이션', 'V 중간, 금리 상승 부담', 'ai'], ['기술적 상태', '5D 상대약세', 'rule'], ['매크로', '국면 NA · 금리 상승', 'na'], ['포트폴리오 위험', 'AI·장비 집중 55.4%', 'rule'], ['가상매매', '매수 65만 · 매도 40만', 'rule'], ['QGV 총점 평균', '72 (보정 전)', 'rule'], ['뉴스', '반복 우려 2건', 'ai']].map(function (f) {
+      return { n: f[0], v: f[1], src: f[2] === 'ai' ? 'AI' : (f[2] === 'na' ? 'NA' : '규칙'), ss: chip(f[2] === 'ai' ? 'ai' : (f[2] === 'na' ? 'na' : 'rule')) };
+    });
+    var tabsNav = [['오늘', 'Main.dc.html'], ['QGV', 'QGVHub.dc.html'], ['기술', 'Technical.dc.html'], ['매크로', 'Macro.dc.html'], ['검증', 'Validation.dc.html']];
+    var nav = tabsNav.map(function (t, i) {
+      var on = i === 0;
+      return { label: t[0], href: t[1], style: 'height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; font-size: 13px; ' + (on ? 'color: #1E4D43; font-weight: 700' : 'color: #5E6863'), bar: 'width: 18px; height: 3px; border-radius: 2px; background: ' + (on ? '#1E4D43' : 'transparent') };
+    });
+    return { sets: sets, ledger: ledger, sectors: sectors, holdings: holdings, contrib: contrib, qgv: qgv, qgvAreas: qgvAreas, tech: tech, macro: macro, news: news, drivers: drivers, buys: buys, sells: sells, vbook: vbook, windows: windows, verdicts: verdicts, periods: periods, pchips: pchips, bench: bench, risk: risk, final: final, nav: nav };
+  }
+}
+</script>
+</body>
+</html>
