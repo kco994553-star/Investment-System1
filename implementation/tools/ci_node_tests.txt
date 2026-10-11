@@ -29,5 +29,6 @@ sec_universe_shares_node_test.js
 share_class_groups_node_test.js
 forward_validation_node_test.js
 virtual_trading_runner_node_test.js
+virtual_ledger_sheets_node_test.js
 virtual_trading_signals_node_test.js
 virtual_trading_v_history_node_test.js

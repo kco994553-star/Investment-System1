@@ -79,7 +79,26 @@
 - 세션 날짜는 SPY 완료 세션(시작일 이후). SPY가 없으면 장부를 만들지 않고 `SESSIONS_NOT_AVAILABLE`, 나머지 요청도 하지 않는다.
 - 클라이언트 허용 목록이나 Worker가 거부한 기호는 오류 코드(예: `REQUEST_INVALID`)를 화면에 보이고 입력에서 빠진다. 없는 종가·환율은 채우지 않는다(`EXEC_PRICE_MISSING`·`EXEC_FX_MISSING`).
 - Q·G는 공개 전진 검증 기록(RECORDED)에서만, V는 이 기기에 날짜별로 저장된 값(`investment.web.v1.virtual-trading-v-scores`, V만)에서만 읽는다. V는 아래 'V 기록'이 쌓는다.
-- 세트 B는 사용자 정의 구성이 기기에 없어 `SET_B_NOT_DEFINED`. 그림자 장부는 ACTUAL 스냅샷(수량·평균단가)에서 출발하며, 그 스냅샷의 뉴욕 날짜 이후 세션만 쓴다. 원가는 첫 세션 이전 마지막 환율로 원화 환산한다.
+- 세트 B는 시트(VirtualMeta)에 저장한 사용자 정의 구성을 쓰고, 없으면 `SET_B_NOT_DEFINED`. 플래그는 VirtualFlags에서 읽는다(아래 장부 시트 저장). 그림자 장부는 ACTUAL 스냅샷(수량·평균단가)에서 출발하며, 그 스냅샷의 뉴욕 날짜 이후 세션만 쓴다. 원가는 첫 세션 이전 마지막 환율로 원화 환산한다.
+
+## 장부 시트 저장 (D-10)
+
+`web_assets/virtual-ledger-sheets.js`(Python 참조 `qgv/virtual_ledger_sheets.py`, 합성 벡터 `tests/fixtures/virtual_ledger_sheets_v1.json`)가 가상 장부를 사용자 본인의 구글 시트에 저장한다. 기존 drive.file 세션만 쓰며 새 권한은 없다. 쓰기는 아래 다섯 탭에만, 버튼을 눌렀을 때만, 덧붙이기로만 한다. 머리글이 다른 탭은 `SHEET_HEADER_MISMATCH`로 거부하고 쓰지 않는다.
+
+| 탭 | 머리글(고정) |
+| --- | --- |
+| `VirtualA`·`VirtualB`·`VirtualMine` | `ledger_id, session_date, row_type, company, level, aux_levels, reason_codes, aux_codes, side, amount, quantity, price_used, fx_used, cash_after, total_value` |
+| `VirtualMeta` | `recorded_at, ledger_id, kind, event, start_date, end_date, config_version, engine_version, last_recorded_session, inputs_sha256, payload` |
+| `VirtualFlags` | `created_at, date, company, kind` (메모 없음. 사용자가 직접 입력할 수 있고, 형식이 맞지 않는 행은 세어서 무시) |
+
+- **장부 행:** 거래일마다 `INITIAL`(그림자 장부 첫날의 출발 보유: 수량·원화 원가) → `EXECUTED`(가상 체결: 금액·수량·사용 종가·환율·사유) → `CANCELLED`(EXEC_*_MISSING 등) → `JUDGEMENT`(종목별 주 판단·보조 판단·사유 코드) → `ORDER`(다음 거래일 가상 주문) → `SUMMARY`(입금·가상 현금·평가액, 평가 불가면 `NOT_AVAILABLE`). 숫자는 ECMAScript 숫자 문자열 형식으로 쓰고 Python 참조도 같은 글자를 만든다. 없는 값은 0으로 쓰지 않는다.
+- **VirtualMeta 사건:** `LEDGER_START`(장부 ID·출발일·설정/규칙 버전·payload: 목표 기준과 비중, 그림자 장부는 출발 스냅샷), `LEDGER_CLOSE`(종료일, 다음 장부), `RECORD`(마지막 기록 거래일, 그때까지 입력의 SHA-256), `USER_TARGET`(내 목표). 행은 고치지 않고 마지막 값이 유효하다.
+- **장부 ID:** `set_a`(첫 기록 때 정의, TARGET v0), `set_b-n`(세트 B 구성 저장마다 새 장부), `shadow-n`(출발 스냅샷·다시 맞추기마다 새 장부). 새 장부의 출발일은 저장 시각의 뉴욕 날짜(시작일 이후, 앞 장부의 마지막 기록 다음 날 이후)다. 앞 장부는 그날로 닫고 기록은 그대로 둔다.
+- **기록:** "장부 시트에 기록"을 누르면 시트를 다시 읽고, 기록된 행을 같은 입력의 결정적 재생 결과와 칸 단위로 비교한다. 다르면 `LEDGER_REPLAY_MISMATCH`를 보이고 쓰지 않는다. 같으면 마지막 기록 다음 거래일부터 공개 Q·G 기록이 있는 마지막 거래일까지("빠진 거래일 재생")를 덧붙인다. 그날 값이 없으면 엔진 결과(NOT_AVAILABLE·EXEC_*_MISSING)대로 쓰고 채우지 않는다. 시세 요청이 일시 오류(예: RATE_LIMITED)면 `INPUTS_INCOMPLETE`로 기다린다.
+- **기록하지 않는 경우:** 시작일(2026-10-19) 이전 거래일, 정식 설정이 아닌 실행, 리허설 결과(`mode:'REHEARSAL'` 또는 `rehearsal:true`).
+- **세트 B·내 목표:** S17 세트 B 탭에서 TARGET 19종목 중 비중(합계 100 이하)을 저장하면 러너의 `set_b`로 들어간다. 비우면 `SET_B_NOT_DEFINED`. 투자 일일보고서의 '내 목표(TARGET)'는 비공개로 VirtualMeta에만 저장되며, 있으면 그림자 장부의 목표로 TARGET v0 대신 쓴다(화면에 기준 표시). 목표는 장부 출발 때 고정되며, 바꾼 목표는 '실제 보유로 다시 맞추기' 뒤 새 장부부터 적용된다.
+- **그림자 장부(D-17):** '출발 스냅샷 만들기'가 기기 ACTUAL 보유(수량·평균단가·통화)를 저장한다. 원화 원가는 러너와 같은 규칙(장부 첫 거래일 이전 마지막 환율)으로 재생 때 계산해 첫날 `INITIAL` 행에 남는다. '실제 보유로 다시 맞추기'는 현재 장부를 닫고 오늘 보유로 새 장부를 시작한다. 스냅샷이 없으면 화면은 기기 보유 기준 미리보기이며 기록하지 않는다.
+- **화면:** 날짜·개수·사유 코드·비중만 보인다. 금액·수량은 시트(사용자 비공개 저장소)에만 있고 기기 저장소·콘솔·공개 파일에는 없다.
 
 ## D-5 기준 표시 · V 기록 · 리허설 (S17)
 
@@ -110,4 +129,3 @@
 - **가격 경로:** 개인 가격 Worker가 TARGET 19종목만 허용한다. 그래서 S&P 500, 업종 ETF, 세트 B 종목의 일봉을 기기에서 받을 수 없다([D-22 초안](D22_SECTOR_ETF_MAPPING_DRAFT.md)의 선택지 참고).
   - 그 전까지 엔진은 업종 기준 계산 불가로 동작한다.
   - 적중 판정(D+N)도 표본이 쌓이지 않는다.
-- **장부 저장:** 시트 탭 저장(VirtualA·VirtualB·VirtualMine·VirtualMeta·VirtualFlags)은 다음 단계다(S17 화면 연결은 위 기기 러너로 완료).
