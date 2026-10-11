@@ -21,7 +21,7 @@ function filings(){const at=new Date().toISOString(),now=new Date(),soon=new Dat
    assert.deepEqual(await page.locator('[data-13f-manager]').evaluateAll(n=>n.map(x=>x.dataset['13fManager'])),['0000000002','0000000001']);
    await page.reload();await page.locator('[data-investor-star="0000000002"][aria-pressed="true"]').waitFor();
    phase='VIEWS';await page.locator('[data-13f-view="security"]').click();await page.locator('[data-13f-security]').first().waitFor();assert.deepEqual(await page.locator('[data-13f-security]').evaluateAll(n=>n.map(x=>x.dataset['13fSecurity'])),['A00000000','B00000000']);
-   await page.locator('[data-13f-view="overlap"]').click();assert.ok((await page.locator('[data-13f-overlap]').textContent()).includes('NOT_AVAILABLE'));
+   await page.locator('[data-13f-view="overlap"]').click();await page.locator('[data-13f-overlap-table]').waitFor();assert.ok((await page.locator('[data-13f-overlap-row="tokyo_electron"]').textContent()).includes('NOT_AVAILABLE · NOT_13F_SECURITY'));assert.equal(await page.locator('[data-13f-overlap-row]').count(),19);
    phase='FILINGS';await page.goto(process.env.PAGES_COCKPIT_URL+'#company/nvda');await page.locator('[data-next-window]').waitFor();assert.ok((await page.locator('[data-public-screen="filings"]').textContent()).includes('확정일 아님'));
    phase='WEEK';await page.evaluate(()=>localStorage.setItem('investment.web.v1.personal',JSON.stringify({version:1,interests:['nvda','amd'],groups:[]})));await page.goto(process.env.PAGES_COCKPIT_URL+'#watchlist');await page.reload();await page.locator('[data-week-filings]').waitFor();
    assert.ok((await page.locator('[data-week-filings]').textContent()).startsWith('1 · '));
