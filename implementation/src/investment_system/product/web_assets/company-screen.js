@@ -1,6 +1,6 @@
 /* S04 company summary and S05 company analysis (design canvas). Presentation only: no new methodology,
-   weights or thresholds. Public inputs are price-free; anything that needs a price, a SIC mapping or an
-   approval stays NOT_AVAILABLE. ACTUAL is read from this device only and is never replaced by TARGET. */
+   weights or thresholds. Public inputs are price-free; anything that needs a price or an approval stays
+   NOT_AVAILABLE. Industry (SIC group v0) and strategy theme (v0) chips come from classification-screens.js. ACTUAL is read from this device only and is never replaced by TARGET. */
 (function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else root.CompanyScreen=api;})(typeof globalThis==='object'?globalThis:this,function(g){
 'use strict';
 const TYPES=['growth','quality','cyclical','defensive'];
@@ -36,9 +36,9 @@ function axisCell(axis,locale){
  return '<span class="num">'+esc(num(axis.score,locale))+'</span>'+(axis.coverage==='READY'?'':' <span class="badge partial">'+esc(T('부분 · 누락 ','Partial · missing '))+axis.missing_factor_count+'</span>');
 }
 function classification(screens,id,locale){
- const T=tr(locale),rec=record(screens,'company-types-pricefree.json',id),picked=rec&&rec.state!=='NOT_AVAILABLE'?selectTypes(rec.memberships):null;
- const items=[['industry',T('산업','Industry'),na(T('SEC SIC→업종군 표가 사용자 승인 대기입니다.','The SEC SIC to industry-group table awaits your approval.'),locale)],
-  ['theme',T('전략 테마','Strategy theme'),na(T('테마 바스켓이 사용자 승인 대기입니다.','Theme baskets await your approval.'),locale)],
+ const CS=g.ClassificationScreens,cls=CS&&screens?screens[CS.FILE]:null,T=tr(locale),rec=record(screens,'company-types-pricefree.json',id),picked=rec&&rec.state!=='NOT_AVAILABLE'?selectTypes(rec.memberships):null;
+ const items=[['industry',T('산업','Industry'),CS?CS.industryChip(cls,id,locale):na('',locale)],
+  ['theme',T('전략 테마','Strategy theme'),CS?CS.themeChip(cls,id,locale):na('',locale)],
   ['type',T('투자 유형','Investment type'),picked&&picked.length?picked.map(t=>'<span class="badge LIVE" data-type-chip="'+esc(t)+'">'+esc(typeName(t,locale))+' '+esc(num(rec.memberships[t],locale,2))+'</span>').join(' ')+' <span class="small">'+esc(T('소속도 0.3 이상','membership ≥ 0.3'))+'</span>'
    :na(rec?T('소속도 0.3 이상 유형 없음 또는 자료 없음','No type with membership ≥ 0.3, or no data'):T('공개 유형 자료가 연결되지 않았습니다.','Public type data is not connected.'),locale)]];
  return '<section class="card" data-company-card="classification"><h2>'+esc(T('분류 3축','Three classification axes'))+'</h2><ul class="axis-chips">'+items.map(([k,name,body])=>'<li data-axis="'+k+'"><b>'+esc(name)+'</b> '+body+'</li>').join('')+'</ul><p class="small">'+esc(T('산업 / 전략 테마 / 투자 유형은 서로 다른 축입니다. 서로 대신 채우지 않습니다.','Industry / strategy theme / investment type are separate axes. None substitutes for another.'))+'</p></section>';
@@ -118,7 +118,7 @@ function analysis(ctx){
   +['P '+T('제품','Product'),'L '+T('법률·규제','Legal / regulatory'),'M '+T('경영','Management'),'R '+T('재평가 신호','Re-evaluation signal'),'B·S '+T('내 거래','My trades')].map(x=>'<dt>'+esc(x)+'</dt><dd>'+na('',locale)+'</dd>').join('')+'</dl>',true);
  const factors=panel('factors',T('QGV 요소','QGV factors'),factorTable(screens,id,locale),true);
  const value=panel('value',T('가치·시나리오','Value / scenarios'),'<div id="company-value" data-company-value>'+valueHtml({locale})+'</div>',true);
- const compare=panel('compare',T('비교·컨센서스','Compare / consensus'),'<dl class="kv">'+naRow(T('동종 비교','Peer comparison'),T('SIC→업종군 표 승인 대기','SIC group table awaits approval'),locale)+naRow(T('컨센서스','Consensus'),T('공급원 없음','No source'),locale)+'</dl>',true);
+ const compare=panel('compare',T('비교·컨센서스','Compare / consensus'),'<dl class="kv">'+naRow(T('동종 비교','Peer comparison'),T('업종군 v0 연결됨 · 동종 비교 기준 미정','Industry group v0 connected · peer-comparison basis undefined'),locale)+naRow(T('컨센서스','Consensus'),T('공급원 없음','No source'),locale)+'</dl>',true);
  return '<a class="parent-link" href="#company/'+encodeURIComponent(id)+'" data-analysis-back>'+esc('← '+ticker+' '+T('요약','summary'))+'</a>'+ctx.headerHtml+dataBadges(screens,locale,true)+tabs+overview+business+financials+events+factors+value+compare;
 }
 // Value view (v1+dcf_v1_default). Public FCFE is price-free; the price is this device's own quote, used in RAM only.
