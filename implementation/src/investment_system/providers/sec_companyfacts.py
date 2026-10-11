@@ -244,6 +244,9 @@ def facts_to_raw(company_id: str, cik: str, payload: dict[str, Any], as_of: date
             ("us-gaap", "EarningsPerShareBasic", "USD/shares"),
             ("us-gaap", "EarningsPerShareBasic", "EUR/shares"),
             ("us-gaap", "EarningsPerShareDiluted", "pure"),
+            # IFRS filers (20-F): diluted EPS only; us-gaap filers never report this ifrs-full tag.
+            ("ifrs-full", "DilutedEarningsLossPerShare", "EUR/shares"),
+            ("ifrs-full", "DilutedEarningsLossPerShare", "USD/shares"),
         )
     )
     published = max(filed_dates) if filed_dates else as_of

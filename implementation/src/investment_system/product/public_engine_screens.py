@@ -267,24 +267,8 @@ def _envelope(name,as_of,stale_after,data,sources,states=(),reasons=()):
         'reason_codes':list(dict.fromkeys(reasons or (() if state=='LIVE' else ('STALE_INPUT',) if state=='STALE' else ('NO_ELIGIBLE_INPUT',)))), 'data':data}
 
 
-def _growth(m1):
-    """Conservative same-tag/unit 4 exact annual periods; no fiscal guessing."""
-    raw=m1['raw_fundamentals'];by={}
-    for row in m1['selected_input_facts']:
-        if (row['taxonomy'],row['concept']) not in (('us-gaap','Revenues'),('us-gaap','RevenueFromContractWithCustomerExcludingAssessedTax'),('ifrs-full','Revenue')) or row['unit']!=raw['reporting_currency']:continue
-        end=date.fromisoformat(row['end'])
-        try:expected=(end.replace(year=end.year-1)+timedelta(days=1)).isoformat()
-        except ValueError:continue
-        if row['start']!=expected:continue
-        by.setdefault((row['taxonomy'],row['concept'],row['unit']),{})[row['end']]=row['value']
-    values=[]
-    for periods in by.values():
-        end=max(periods);d=date.fromisoformat(end)
-        try:years=[d.replace(year=d.year-n).isoformat() for n in range(4)]
-        except ValueError:continue
-        if all(y in periods for y in years) and periods[end]==raw['revenue'] and periods[years[-1]]>0 and periods[end]>0:
-            values.append((periods[end]/periods[years[-1]])**(1/3)-1)
-    return values[0] if values and all(math.isclose(v,values[0],rel_tol=1e-12,abs_tol=1e-12) for v in values) else None
+# One function for the published revenue_cagr_3y metric and the valuation file's v_inputs copy.
+_growth=_valuation.revenue_cagr_3y
 
 
 V0_MAX_BYTES=256*1024*1024  # BEA publishes all quarterly NIPA series in one flat file.

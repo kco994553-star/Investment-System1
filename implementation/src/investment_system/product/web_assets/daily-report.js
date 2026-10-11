@@ -1,5 +1,6 @@
 /* S17 daily reports (모의투자 일일보고서 / 투자 일일보고서): report model, template v1 export, amount hiding and AI answers.
-   Everything stays on this device. Nothing here sends a report anywhere: export is a copy made by the user's click.
+   Everything stays on this device. Nothing here sends a report anywhere: export is a user copy, the optional mailbox writes
+   only to the user's own Google Sheet tabs (ReportInbox/ReportOutbox) through the existing drive.file session.
    Amount hiding is ONE function (money/quantity) used by both the screen and the export. Default: hidden. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.DailyReport=api;})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
@@ -139,6 +140,29 @@ function saveAnswer(storage,key,entry){
  const keep=Object.entries(all).sort((a,b)=>String(b[1].saved_at).localeCompare(String(a[1].saved_at))).slice(0,MAX_ANSWERS);
  try{storage.setItem(AI_KEY,JSON.stringify(Object.fromEntries(keep)));return true;}catch(_){return false;}
 }
+/* Mailbox (template §8, GSQ-019 pending): the user's own sheet, tabs ReportInbox / ReportOutbox. Default OFF.
+   Inbox row: created_at | report_date | kind | template_version | sha256 | data_sha256 | status(NEW) | template.
+     sha256      = SHA-256 of the exact template text written in this row (what the AI reads and must echo back).
+     data_sha256 = SHA-256 of the canonical data template (amounts hidden, no guide); the device's answer-storage key.
+   Outbox row: sha256 | model | created_at | answer. A result is accepted only when its sha256 equals the Inbox sha256
+   of the template this device would write for the same data. */
+const INBOX='ReportInbox',OUTBOX='ReportOutbox',INBOX_HEAD=['created_at','report_date','kind','template_version','sha256','data_sha256','status','template'],OUTBOX_HEAD=['sha256','model','created_at','answer'];
+async function ensureTabs(session,id){
+ const titles=await session.sheetTitles(id),missing=[INBOX,OUTBOX].filter(t=>!titles.includes(t));
+ if(missing.length){await session.addTabs(id,missing);for(const t of missing)await session.appendRows(id,"'"+t+"'!A1",[t===INBOX?INBOX_HEAD:OUTBOX_HEAD]);}
+ return missing;
+}
+async function postInbox(session,id,{report_date,kind,template,data_sha256,now},cryptoImpl){
+ const sha256=await hash(template,cryptoImpl);
+ await ensureTabs(session,id);
+ await session.appendRows(id,"'"+INBOX+"'!A1",[[now,report_date||'',kind,TEMPLATE_VERSION,sha256,data_sha256||'','NEW',template]]);
+ return sha256;
+}
+async function readOutbox(session,id,sha256){
+ const payload=await session.fetchValues(id,"'"+OUTBOX+"'!A1:D500",{maxBytes:1048576});const rows=Array.isArray(payload.values)?payload.values:[];
+ let found=null;for(const r of rows.slice(1))if(Array.isArray(r)&&r[0]===sha256&&typeof r[3]==='string'&&r[3])found={model:typeof r[1]==='string'?r[1]:null,created_at:typeof r[2]==='string'?r[2]:null,answer:r[3]};
+ return found;
+}
 /* ---------- S17 screen ---------- */
 function chip(level){return '<span class="chip judgement" data-level="'+level+'">'+esc(LEVEL_KO[level])+'</span>';}
 function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
@@ -172,9 +196,11 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
   +'<div class="sheet-actions"><button type="button" data-export-template>보고서 템플릿 내보내기</button></div>'
   +'<label for="ai-answer-input">AI 답변 붙여넣기 → \'AI 해석\'에 보관</label><textarea id="ai-answer-input" data-ai-input rows="6"></textarea><div class="sheet-actions"><button type="button" data-save-answer>AI 답변 보관</button></div>'
   +'<p class="small">개인 금액이 포함될 수 있습니다. 앱은 자동으로 전송하지 않고, 사용자가 직접 복사할 때만 기기 밖으로 나갑니다. 시트 ID·토큰·이메일은 어떤 설정에서도 내보내지 않습니다.</p><p role="status" data-report-status></p></section>';
+ h+='<section class="card" data-report-mailbox><h2>AI 우체통 <span class="badge">선택 · 기본 OFF</span></h2><p class="small">켜면 연결된 내 구글 시트의 ReportInbox 탭에 오늘 템플릿(금액 숨김 상태)을 쓰고, ReportOutbox 탭에서 해시가 같은 답만 가져옵니다. 종목·비중·점수는 사용자가 연결한 AI 공급자에게 전달됩니다. Worker를 쓰지 않습니다.</p>'
+  +'<div class="sheet-actions"><button type="button" data-mailbox-post>우체통에 오늘 템플릿 넣기</button><button type="button" data-mailbox-read>우체통 답 확인</button></div></section>';
  h+='<section class="card" data-report-footnote><h2>고정 각주</h2><p class="small">'+esc((TABS[m.tab]||'')+' · 포트폴리오 v1.1 · QGV 점수 기준 v1(보정 전) · 유형 v1 잠정 · 평가액 '+(s?money(s.total_value,H):NA)+' · 가상매매 실제 평가액 미반영 · 결측 N/A')+'</p><p class="small">'+esc('보고일: '+(m.report_date||NA)+' · 가상매매 시작일: '+(m.start_date||'미정 (D-13)'))+'</p></section>';
  return h;
 }
-return Object.freeze({TEMPLATE_VERSION,GUIDE_VERSION,KINDS,TABS,LEVEL_KO,REASON_KO,CHECK_LINES,GUIDE_A,HEADER_B,KIND_LINE,HIDE_KEY,AI_KEY,
- formatKrw,money,quantity,hiddenSetting,buildModel,renderTemplate,checkAnswer,hash,answers,saveAnswer,screenHtml});
+return Object.freeze({TEMPLATE_VERSION,GUIDE_VERSION,KINDS,TABS,LEVEL_KO,REASON_KO,CHECK_LINES,GUIDE_A,HEADER_B,KIND_LINE,HIDE_KEY,AI_KEY,INBOX,OUTBOX,
+ formatKrw,money,quantity,hiddenSetting,buildModel,renderTemplate,checkAnswer,hash,answers,saveAnswer,ensureTabs,postInbox,readOutbox,screenHtml});
 });

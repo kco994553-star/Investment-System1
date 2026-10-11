@@ -4287,7 +4287,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4298,6 +4299,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4321,7 +4323,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4332,6 +4335,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4355,7 +4359,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4366,6 +4371,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4389,7 +4395,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4400,6 +4407,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4423,7 +4431,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4434,6 +4443,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4457,7 +4467,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4468,6 +4479,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4491,7 +4503,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4502,6 +4515,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4525,7 +4539,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4536,6 +4551,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4559,7 +4575,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4570,6 +4587,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4593,7 +4611,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4604,6 +4623,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4627,7 +4647,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4638,6 +4659,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4661,7 +4683,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4672,6 +4695,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4695,7 +4719,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4706,6 +4731,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4729,7 +4755,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4740,6 +4767,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4763,7 +4791,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4774,6 +4803,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4797,7 +4827,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4808,6 +4839,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4831,7 +4863,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4842,6 +4875,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4865,7 +4899,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4876,6 +4911,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4899,7 +4935,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4910,12 +4947,13 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
     }
    },
-   "fcfe_definition": "fcfe/1",
+   "fcfe_definition": "fcfe/1.1",
    "method_status": "PROVISIONAL_UNCALIBRATED",
    "share_basis": "WEIGHTED_AVERAGE_DILUTED"
   },
