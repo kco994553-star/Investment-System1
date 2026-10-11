@@ -13,21 +13,24 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 FIXTURE = Path(__file__).resolve().parents[1] / 'tests/fixtures/device_valuation_reference_v1.json'
 
 
-def _row(fcfe=8.25, currency='USD', eps=4.0, revenue=5000.0, revenue_prev=4900.0, v_currency='USD', fcfe_state='LIVE'):
+def _row(fcfe=8.25, currency='USD', eps=4.0, revenue=5000.0, revenue_prev=4900.0, v_currency='USD', fcfe_state='LIVE', cagr=0.08):
     na = fcfe is None or fcfe_state == 'NOT_AVAILABLE'
     fcfe_block = {'state': 'NOT_AVAILABLE' if na else fcfe_state, 'reason_codes': ['NET_SHORT_TERM_BORROWING_MISSING'] if na else [],
                   'fcfe_per_share': None if na else fcfe, 'currency': currency}
-    present = any(v is not None for v in (eps, revenue, revenue_prev))
+    present = any(v is not None for v in (eps, revenue, revenue_prev, cagr))
     v = {'state': 'LIVE' if present else 'NOT_AVAILABLE', 'eps': eps, 'revenue': revenue, 'revenue_prev': revenue_prev,
-         'currency': v_currency if present else None}
+         'revenue_cagr_3y': cagr, 'currency': v_currency if present else None}
     return {'state': 'LIVE', 'fcfe': fcfe_block, 'v_inputs': v}
 
 
 def cases():
-    from investment_system.qgv.dcf_parameters import load_default_dcf_parameters
+    from investment_system.qgv.dcf_parameters import load_default_dcf_parameters, load_v1_dcf_parameters
     p = load_default_dcf_parameters()
     custom = copy.deepcopy(p)
     custom.update(status='CUSTOM_PREVIEW', discount_rate=0.09)
+    bad_rule = copy.deepcopy(p)
+    bad_rule.update(status='CUSTOM_PREVIEW')
+    bad_rule['explicit_growth_rule'].update(lower=0.2, upper=0.1)
     usd = lambda price: {'price': price, 'currency': 'USD'}
     spec = [
         ('full', _row(), usd(100.0), p),
@@ -46,6 +49,15 @@ def cases():
         ('revenue-prev-missing', _row(revenue_prev=None), usd(100.0), p),
         ('stale-row-still-computes', _row(fcfe_state='STALE'), usd(80.0), p),
         ('custom-parameters-versioned', _row(), usd(100.0), custom),
+        ('cagr-above-upper-clamped', _row(cagr=0.31), usd(100.0), p),
+        ('cagr-negative-clamped-to-lower', _row(cagr=-0.04), usd(100.0), p),
+        ('cagr-inside-range-unclamped', _row(cagr=0.12), usd(100.0), p),
+        ('cagr-missing-dcf-not-available', _row(cagr=None), usd(100.0), p),
+        ('cagr-missing-no-row-values', _row(eps=None, revenue=None, revenue_prev=None, cagr=None), usd(100.0), p),
+        ('zero-fcfe-dcf-value-zero', _row(fcfe=0.0), usd(100.0), p),
+        ('ifrs-eur-filer-usd-price-no-fx', _row(currency='EUR', v_currency='EUR'), usd(100.0), p),
+        ('v1-history-parameters-growth-undecided', _row(), usd(100.0), load_v1_dcf_parameters()),
+        ('invalid-growth-rule', _row(), usd(100.0), bad_rule),
     ]
     return [{'id': i, 'synthetic': True, 'operation': 'device_value_view', 'input': {'row': r, 'quote': q, 'parameters': par}} for i, r, q, par in spec]
 

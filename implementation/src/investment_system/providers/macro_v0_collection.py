@@ -1,8 +1,16 @@
-"""Collect the two macro v0 official responses (run in GitHub Actions only).
+"""Collect the macro v0 official responses (run in GitHub Actions only).
 
-Inflation: BLS public API v1 (no key), series CUUR0000SA0, three calendar years.
+Inflation + Labor: one BLS public API v1 request (no key), CUUR0000SA0 and
+           LNS14000000, three calendar years.
 Growth:    BEA NIPA quarterly flat file (no key); only when that fails and the
            optional `BEA_USERID` setting exists, the BEA API table T10101.
+Monetary Policy / Liquidity / Credit: Federal Reserve Data Download Program CSV
+           (H.15 / H.4.1 / H.8). The H.15 package is read from the official
+           pointer file H15_FF_O.txt; the H.4.1 / H.8 package hashes are
+           candidates to verify on the first Actions run (the parser selects the
+           series by its official identifier/description or fails closed).
+Fiscal:    Treasury FiscalData MTS Table 1 (no key), one page.
+FX is never collected here: the public price boundary excludes it.
 
 Importing performs no request or environment lookup. Raw bodies go only to the
 caller's private temporary directory; the public projection keeps their sha256.
@@ -14,7 +22,8 @@ from datetime import datetime, timezone
 import json
 from pathlib import Path
 from typing import Callable, Mapping
-from urllib.parse import urlencode
+import re
+from urllib.parse import parse_qsl, urlencode
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from ..macro.growth_inflation_v0 import BEA_FLAT_Q_URL, INFLATION_SERIES_CODE
@@ -25,7 +34,23 @@ USER_AGENT = "Investment-System1 macro-v0 public statistics collector"
 TIMEOUT = 60.0
 MAX_BYTES = 256 * 1024 * 1024
 BLS_MAX_BYTES = 4 * 1024 * 1024
-ALLOWED = (ENDPOINTS["BLS"], ENDPOINTS["BEA"], BEA_FLAT_Q_URL)
+FED_DDP_URL = "https://www.federalreserve.gov/datadownload/Output.aspx"
+H15_POINTER_URL = "https://www.federalreserve.gov/releases/h15/data/Business_day/H15_FF_O.txt"
+MTS_TABLE_1_URL = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/mts/mts_table_1"
+ALLOWED = (ENDPOINTS["BLS"], ENDPOINTS["BEA"], BEA_FLAT_Q_URL, FED_DDP_URL, H15_POINTER_URL, MTS_TABLE_1_URL)
+LABOR_SERIES_CODE = "LNS14000000"
+FED_MAX_BYTES = 32 * 1024 * 1024
+MTS_MAX_BYTES = 16 * 1024 * 1024
+POINTER_MAX_BYTES = 1024 * 1024
+# CANDIDATE_UNVERIFIED (2026-10-11): DDP package hashes seen on federalreserve.gov download links; the series
+# they contain is not confirmed from this environment. The first Actions run proves or refutes them: a package
+# without the target series yields SERIES_NOT_FOUND, never another series. None = not configured.
+FED_DDP_PACKAGES = {
+    "Liquidity": {"rel": "H41", "series": "efce2c1a8744855f2623889dffb2b39a", "package": False, "years": 2},
+    "Credit": {"rel": "H8", "series": "9a538c893f62322f942501e38030aed5", "package": True, "years": 2},
+}
+_DDP_KEYS = ("rel", "series", "lastobs", "from", "to", "filetype", "label", "layout", "type")
+_HASH = re.compile(r"[0-9a-f]{32}", re.ASCII)
 
 
 class MacroV0FetchError(OSError):
@@ -37,8 +62,29 @@ class _NoRedirect(HTTPRedirectHandler):
         raise MacroV0FetchError("REDIRECT_REJECTED")
 
 
+def _query_allowed(url: str, query: str | None) -> bool:
+    """Fixed hosts and paths; Fed DDP and FiscalData queries are limited to fixed keys."""
+    if url == FED_DDP_URL:
+        try:
+            params = parse_qsl(query or "", keep_blank_values=True, strict_parsing=True)
+        except ValueError:
+            return False
+        keys = [k for k, _ in params]
+        values = dict(params)
+        return (len(keys) == len(set(keys)) and set(keys) <= set(_DDP_KEYS)
+                and values.get("rel") in ("H15", "H41", "H8") and _HASH.fullmatch(values.get("series", "")) is not None
+                and values.get("filetype") == "csv" and values.get("type", "package") == "package")
+    if url == MTS_TABLE_1_URL:
+        try:
+            params = parse_qsl(query or "", keep_blank_values=True, strict_parsing=True)
+        except ValueError:
+            return False
+        return all(k in ("filter", "sort", "format", "page[number]", "page[size]") for k, _ in params)
+    return url != H15_POINTER_URL or query is None
+
+
 def default_transport(url: str, *, data: bytes | None, query: str | None, max_bytes: int) -> bytes:
-    if url not in ALLOWED:
+    if url not in ALLOWED or not _query_allowed(url, query):
         raise MacroV0FetchError("URL_NOT_ALLOWED")
     headers = {"User-Agent": USER_AGENT, "Accept": "*/*"}
     if data is not None:
@@ -63,6 +109,37 @@ def _now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def h15_package(pointer: bytes) -> dict:
+    """The single DDP package link for RIFSPFF_N.B named in the official H15_FF_O.txt pointer file."""
+    content = pointer.decode("utf-8", "replace").replace("&amp;", "&")
+    found = {}
+    for link in re.findall(r"https?://www\.federalreserve\.gov/datadownload/Output\.aspx\?[^\s\"'<>]+", content):
+        try:
+            params = dict(parse_qsl(link.split("?", 1)[1], keep_blank_values=True))
+        except ValueError:
+            continue
+        if params.get("rel") == "H15" and _HASH.fullmatch(params.get("series", "")):
+            found[params["series"]] = params.get("type") == "package"
+    if len(found) != 1:
+        raise MacroV0FetchError("POINTER_INVALID")
+    series, package = next(iter(found.items()))
+    return {"rel": "H15", "series": series, "package": package, "years": 1}
+
+
+def ddp_query(package: dict, year: int) -> str:
+    params = [("rel", package["rel"]), ("series", package["series"]), ("lastobs", ""),
+              ("from", "01/01/%04d" % (year - package["years"])), ("to", ""), ("filetype", "csv"),
+              ("label", "include"), ("layout", "seriescolumn")]
+    if package["package"]:
+        params.append(("type", "package"))
+    return urlencode(params)
+
+
+def mts_query(year: int) -> str:
+    return urlencode((("filter", "record_date:gte:%04d-01-01" % (year - 2)), ("sort", "record_date"),
+                      ("format", "json"), ("page[number]", "1"), ("page[size]", "10000")))
+
+
 def collect_macro_v0(root: Path, *, environ: Mapping[str, str], year: int | None = None,
                      transport: Callable[..., bytes] = default_transport,
                      clock: Callable[[], datetime] = _now) -> list[dict]:
@@ -71,20 +148,22 @@ def collect_macro_v0(root: Path, *, environ: Mapping[str, str], year: int | None
     year = year if type(year) is int else clock().year
     entries = []
 
-    def capture(axis, fmt, name, fetch):
+    def capture(axis, fmt, name, fetch, also=()):
         body = fetch()
         acquired = clock().astimezone(timezone.utc)
         (root / name).write_bytes(body)
-        entries.append({"axis": axis, "format": fmt, "file": name,
-                        "acquired_at": acquired.isoformat(), "synthetic": False})
+        for each in (axis, *also):
+            entries.append({"axis": each, "format": fmt, "file": name,
+                            "acquired_at": acquired.isoformat(), "synthetic": False})
 
     try:
-        payload = json.dumps({"seriesid": [INFLATION_SERIES_CODE], "startyear": str(year - 2),
+        # One batched BLS v1 request for both series (daily request limit).
+        payload = json.dumps({"seriesid": [INFLATION_SERIES_CODE, LABOR_SERIES_CODE], "startyear": str(year - 2),
                               "endyear": str(year)}, separators=(",", ":")).encode()
-        capture("Inflation", "BLS_API_V1_JSON", "macro-v0-bls-cpi.json",
-                lambda: transport(ENDPOINTS["BLS"], data=payload, query=None, max_bytes=BLS_MAX_BYTES))
+        capture("Inflation", "BLS_API_V1_JSON", "macro-v0-bls.json",
+                lambda: transport(ENDPOINTS["BLS"], data=payload, query=None, max_bytes=BLS_MAX_BYTES), also=("Labor",))
     except Exception:
-        entries.append({"axis": "Inflation", "reason": "SOURCE_NOT_AVAILABLE"})
+        entries.extend({"axis": a, "reason": "SOURCE_NOT_AVAILABLE"} for a in ("Inflation", "Labor"))
 
     try:
         capture("Growth", "BEA_NIPA_FLAT_Q", "macro-v0-bea-nipa-q.txt",
@@ -103,4 +182,28 @@ def collect_macro_v0(root: Path, *, environ: Mapping[str, str], year: int | None
                         lambda: transport(ENDPOINTS["BEA"], data=None, query=query, max_bytes=BLS_MAX_BYTES))
             except Exception:
                 entries.append({"axis": "Growth", "reason": "SOURCE_NOT_AVAILABLE"})
+
+    def fed(axis, package, name):
+        if package is None or _HASH.fullmatch(str(package.get("series"))) is None:
+            entries.append({"axis": axis, "reason": "SERIES_NOT_CONFIGURED"})
+            return
+        try:
+            capture(axis, "FED_DDP_CSV", name, lambda: transport(FED_DDP_URL, data=None, query=ddp_query(package, year),
+                                                                 max_bytes=FED_MAX_BYTES))
+        except Exception:
+            entries.append({"axis": axis, "reason": "SOURCE_NOT_AVAILABLE"})
+
+    try:
+        h15 = h15_package(transport(H15_POINTER_URL, data=None, query=None, max_bytes=POINTER_MAX_BYTES))
+    except Exception:
+        entries.append({"axis": "Monetary Policy", "reason": "SOURCE_NOT_AVAILABLE"})
+    else:
+        fed("Monetary Policy", h15, "macro-v0-fed-h15.csv")
+    fed("Liquidity", FED_DDP_PACKAGES.get("Liquidity"), "macro-v0-fed-h41.csv")
+    fed("Credit", FED_DDP_PACKAGES.get("Credit"), "macro-v0-fed-h8.csv")
+    try:
+        capture("Fiscal", "FISCALDATA_MTS_JSON", "macro-v0-mts-table-1.json",
+                lambda: transport(MTS_TABLE_1_URL, data=None, query=mts_query(year), max_bytes=MTS_MAX_BYTES))
+    except Exception:
+        entries.append({"axis": "Fiscal", "reason": "SOURCE_NOT_AVAILABLE"})
     return entries
