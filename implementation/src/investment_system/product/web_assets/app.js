@@ -561,20 +561,22 @@ function paintNews(id) {
   rows=[...rows].sort((a,b)=>priority(a)-priority(b));
   $("#news-list").innerHTML=rows.map(r=>`<li class="card"><h3>${esc(AppLanguage.fallback(r.headline_localized,appSettings.display_locale,r.headline))}</h3>${r.summary || r.summary_localized?`<p>${esc(AppLanguage.fallback(r.summary_localized,appSettings.display_locale,r.summary || ""))}</p>`:""}<p class="meta">${esc(r.available_at)} · ${esc(AppLanguage.status(r.status || t("상태 미제공"),appSettings.display_locale))} · ${esc(r.source_language || t("미제공"))}</p>${(r.issuer_ids || []).map(byIssuer).filter(Boolean).map(c=>`<div class="row"><a href="#company/${encodeURIComponent(c.company_id)}">${esc(c.ticker)}</a>${star(c.company_id)}</div>`).join("")}${evidence(r)}</li>`).join("") || '<li class="empty">'+t("이 범위에 제공된 뉴스가 없습니다.")+"</li>";
 }
-function report(id){const real=id==='real';return heading("DAILY REPORT",real?(appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'):(appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'))+'<div id="daily-report" aria-live="polite"></div>';}
+function report(id){const real=id==='real';return heading("DAILY REPORT",real?(appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'):(appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'))+'<div id="daily-report" aria-live="polite"></div><div id="virtual-ledger-sheets"></div>';}
 // S17: everything is computed in RAM on this device; export/copy and the optional mailbox run only on the user's click.
 function reportTab(id){return id==='real'?'REAL':({'mock-set_b':'SET_B','mock-compare':'COMPARE'}[id]||'SET_A');}
 // The virtual ledger runner (VirtualTradingRunner) reads prices through the existing Google session and private
 // history Worker into memory only; this holds just its abort handle and session subscription for the open report.
 let reportRun=null;
-function disposeReport(){const r=reportRun;reportRun=null;if(r){r.controller.abort();if(r.unsubscribe)r.unsubscribe();}}
+function disposeReport(){const r=reportRun;reportRun=null;if(r){r.controller.abort();if(r.unsubscribe)r.unsubscribe();if(r.ledgerSheets)r.ledgerSheets.dispose();}}
 async function paintReport(id){
   const host=$('#daily-report');if(!host)return;
   disposeReport();
   const R=window.DailyReport,VT=window.VirtualTrading,Runner=window.VirtualTradingRunner,locale=appSettings.display_locale,kind=id==='real'?'REAL':'MOCK',tab=reportTab(id);
   const cfg=VT.defaultConfig(),ledgerKind=kind==='REAL'?'SHADOW':tab==='SET_B'?'SET_B':'SET_A',config=window.InvestmentAppConfig||{};
-  const run={controller:new AbortController(),unsubscribe:null,busy:false,last:null};reportRun=run;
+  const run={controller:new AbortController(),unsubscribe:null,busy:false,last:null,ledgerSheets:null};reportRun=run;
   const live=()=>reportRun===run&&host.isConnected;
+  // D-10 ledger sheet (VirtualLedgerSheets): reads the user's own sheet when connected; writes only on its buttons.
+  try{if(window.VirtualLedgerSheets)run.ledgerSheets=VirtualLedgerSheets.mount(window,$('#virtual-ledger-sheets'),{kind,tab,reportDate:new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date()),config,catalog:deviceCatalog,refresh:()=>{if(live())void paintReport(id);}});}catch(_){run.ledgerSheets=null;}
   let ram=null;if(kind==='REAL'){try{ram=await DeviceActual.ramView(window,await deviceCatalog());const byTicker=new Map(identityCompanies.map(r=>[r.ticker,r.company_id]));ram={...ram,rows:ram.rows.map(r=>({...r,company_id:byTicker.get(r.ticker)||r.ticker}))};}catch(_){ram=null;}}
   const qg={},names={};try{for(const r of LeaderboardScreen.rowsFor(identityCompanies,{publicScreens,engine:window.EnginePreview})){qg[r.company_id]={q:r.q,g:r.g};names[r.company_id]=r.ticker;}}catch(_){}
   const reportDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
@@ -616,8 +618,9 @@ async function paintReport(id){
     try{
       let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
       const progress=(done,total)=>{const n=live()&&host.querySelector('[data-runner-progress]');if(n)n.textContent=done+'/'+total;};
-      const result=catalog?await Runner.run(window,{config,catalog,reportDate,signal:run.controller.signal,onProgress:progress}):{state:'NOT_AVAILABLE',reason_codes:['PUBLIC_CATALOG_UNAVAILABLE'],sources:{},ledgers:{}};
-      run.last=result;if(live())await compose(result);
+      const sheetOptions=run.ledgerSheets?await run.ledgerSheets.runnerOptions():{};
+      const result=catalog?await Runner.run(window,{config,catalog,reportDate,signal:run.controller.signal,onProgress:progress,...sheetOptions}):{state:'NOT_AVAILABLE',reason_codes:['PUBLIC_CATALOG_UNAVAILABLE'],sources:{},ledgers:{}};
+      run.last=result;if(live())await compose(run.ledgerSheets?run.ledgerSheets.update(result):result);
     }catch(_){if(live())await compose({state:'NOT_AVAILABLE',reason_codes:['RUNNER_FAILED']});}
     finally{run.busy=false;}
   };

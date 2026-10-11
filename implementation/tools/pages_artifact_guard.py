@@ -34,7 +34,8 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "virtual-trading-runner.js": "307e669fb5bb3ac2cdab005904c9babb24e253e42a89006dbbd61d73a9539042",
+    "virtual-ledger-sheets.js": "82f65cea85717c5c9de05bbb8b65ada8429b6d937723572ec77fd9ff89d10ed5",
+    "virtual-trading-runner.js": "087d5836c89c5ea31989293e2fa4ceb7f6b26364c31c6dc1ca6bc59e2de0e763",
     "share-class-groups.js": "3726a07393a0d1e04edc990fe7bdcacb5c1bbb8760547934dd9ef28e33b9f307",
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
     "daily-report.js": "e82279c9d8a11c49ab7587baaa845e9273c208ac0019a84b6edffcbfdefa2bab",
@@ -75,7 +76,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "4cbc089a108a798a2446b3005aaca026e0d328592c8dbf0bb60368d3f847d4fc",
+    "app.js": "d878aeea1f5483b908eef489dd2854da446f5bb05fb50d099bb1f887a3f70036",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "4b6bbdf71f74875199221cf534dc403be7961fd722abe2b1b12a499e2740f7f3",
@@ -83,9 +84,9 @@ APPROVED_SHA256 = {
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "2b98f9c1b0fe1d8d170a1bf445518e83b1bcd3880874e046e9737baf1adb58bc",
+    "google-sheet-quotes.js": "061850a3a19a2f921232a11f3c3efc99152e5df2a1d161dc36c72a37729f6761",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "88fe5fa88f8c66bd8beb52fb085605a1f27ac16de4f45ada8f765e12ef2323aa",
+    "index.html": "8a64a095306396aa36cdfbe8cf36dadef44c827508847de37c5c56e0c4ef5ec5",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",

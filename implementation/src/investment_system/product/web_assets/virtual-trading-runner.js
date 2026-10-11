@@ -242,8 +242,9 @@ async function fetchHistories(view,{session,origin,symbols,spacingMs=DEFAULT_SPA
  return out;
 }
 /* Everything for one report: NOT_STARTED before the start date (no request at all), else readiness, public JSON,
-   device holdings and V store, Worker history (sequential, spaced), then the pure assembly. */
-async function run(view,{config={},catalog,reportDate,signal=null,onProgress=null}={}){
+   device holdings and V store, Worker history (sequential, spaced), then the pure assembly. set_b and flags come from
+   the user's sheet (VirtualLedgerSheets: stored Set B definition, VirtualFlags) when it is connected. */
+async function run(view,{config={},catalog,reportDate,signal=null,onProgress=null,set_b=null,flags=null}={}){
  const VT=engine(),cfg=VT.defaultConfig();
  const base={schema:SCHEMA,sources:{},sector:{},ledgers:{}};
  if(!(typeof reportDate==='string'&&day(reportDate))||reportDate<cfg.start_date)return{...base,state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']};
@@ -253,9 +254,9 @@ async function run(view,{config={},catalog,reportDate,signal=null,onProgress=nul
  if(forward.state!=='LOADED')return{...base,state:'NOT_AVAILABLE',reason_codes:[forward.reason]};
  const classification=view.ClassificationScreens?await view.ClassificationScreens.load(view):null;
  let holdings=null;try{holdings=holdingsFromSnapshot(await view.DeviceActual.readHoldings(view,catalog),catalog);}catch(_){holdings=null;}
- const symbols=requiredSymbols({catalog,classification,holdings});
+ const symbols=requiredSymbols({catalog,classification,holdings,set_b});
  const histories=await fetchHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});
- return assemble({config:cfg,catalog,forward_ledger:forward.ledger,classification,histories,holdings,set_b:null,v_store:readVStore(view.localStorage),flags:[]});
+ return assemble({config:cfg,catalog,forward_ledger:forward.ledger,classification,histories,holdings,set_b,v_store:readVStore(view.localStorage),flags:flags||[]});
 }
 return Object.freeze({SCHEMA,IDS,TARGETS,SP500_SYMBOL,FX_SYMBOLS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,snapshotsFromLedger,
  vScoresFromStore,flagsFromStore,assemble,holdingsFromSnapshot,readVStore,ledgerFor,statusRows,readiness,fetchHistories,run,clearCache});
