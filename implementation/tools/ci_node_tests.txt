@@ -36,3 +36,4 @@ virtual_trading_v_history_node_test.js
 holdings_capture_node_test.js
 worker_quote_fallback_node_test.js
 judgement_labels_node_test.js
+sheet_example_tabs_node_test.js
