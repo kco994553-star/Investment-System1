@@ -34,7 +34,7 @@ DURATION_CONCEPTS = {
         "NetCashProvidedByUsedInOperatingActivities", "PaymentsToAcquirePropertyPlantAndEquipment",
         "EarningsPerShareDiluted", "EarningsPerShareBasic",
     )
-} | {("ifrs-full", "Revenue"), ("ifrs-full", "ProfitLoss")}
+} | {("ifrs-full", "Revenue"), ("ifrs-full", "ProfitLoss"), ("ifrs-full", "DilutedEarningsLossPerShare")}
 
 
 def _aware(value: datetime, name: str) -> datetime:

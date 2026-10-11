@@ -1,52 +1,78 @@
-"""Price-free FCFE-per-share and V inputs from retained SEC 10-K facts (fcfe/1).
+"""Price-free FCFE-per-share and V inputs from retained SEC annual facts (fcfe/1.1).
 
-User decision 2026-10-11 (V1_UNCALIBRATED_DEFAULT):
+User decisions 2026-10-11 (V1 / V1.1 UNCALIBRATED defaults):
 FCFE = operating cash flow - capital expenditure + net borrowing, on weighted
-average diluted shares, same fiscal period and currency. Net borrowing is
-long-term debt issuance + net short-term borrowing - long-term debt repayment.
+average diluted shares, same fiscal period, currency and filing. Net borrowing
+is long-term debt issuance + net short-term borrowing - long-term debt repayment.
 
-Only exact us-gaap concepts listed in COMPONENTS are read, in fallback order.
-A component that the filing does not report is NOT_AVAILABLE; it is never
-replaced by zero (a reported zero is a real zero). No price, market cap, V
-score or price ratio is produced here; the device computes those in RAM.
+fcfe/1.1 (v1.1):
+- us-gaap filers (10-K, 10-K/A, and 20-F/40-F filers that report us-gaap) and
+  ifrs-full filers (20-F, 20-F/A, 40-F) are read through exact concept lists.
+- The optional borrowing lines (long-term issuance, long-term repayment, net
+  short-term borrowing) may legitimately not exist. When none of a line's
+  concepts is reported for the chosen period at all, the line is 0 and marked
+  assumed_zero / NOT_REPORTED_ASSUMED_ZERO. A line that is reported but not
+  usable (other currency, ambiguous revision, half of a pair) stays
+  NOT_AVAILABLE. Core lines (operating cash flow, capital expenditure, diluted
+  shares) are never zero-filled; a reported zero is a real zero.
+No price, market cap, V score or price ratio is produced here; the device
+computes those in RAM. No currency is converted.
 """
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 import math
 import re
 
 FILENAME = 'sec-valuation-inputs.json'
 KIND = 'SEC_VALUATION_INPUTS'
-FCFE_DEFINITION = 'fcfe/1'
+FCFE_DEFINITION = 'fcfe/1.1'
 SHARE_BASIS = 'WEIGHTED_AVERAGE_DILUTED'
 STATES = ('LIVE', 'STALE', 'NOT_AVAILABLE')
-ANNUAL_FORMS = ('10-K', '10-K/A')
-# (component, alternatives); an alternative is usable only when every term is reported.
-COMPONENTS = (
-    ('operating_cash_flow', ((('NetCashProvidedByUsedInOperatingActivities', 1),),
-                             (('NetCashProvidedByUsedInOperatingActivitiesContinuingOperations', 1),))),
-    ('capital_expenditure', ((('PaymentsToAcquirePropertyPlantAndEquipment', 1),),
-                             (('PaymentsToAcquireProductiveAssets', 1),))),
-    ('long_term_debt_issuance', ((('ProceedsFromIssuanceOfLongTermDebt', 1),),
-                                 (('ProceedsFromIssuanceOfSeniorLongTermDebt', 1),))),
-    ('long_term_debt_repayment', ((('RepaymentsOfLongTermDebt', 1),),
-                                  (('RepaymentsOfSeniorDebt', 1),))),
-    ('net_short_term_borrowing', ((('ProceedsFromRepaymentsOfShortTermDebt', 1),),
-                                  (('ProceedsFromRepaymentsOfCommercialPaper', 1),),
-                                  (('ProceedsFromShortTermDebt', 1), ('RepaymentsOfShortTermDebt', -1)))),
-    ('diluted_shares', ((('WeightedAverageNumberOfDilutedSharesOutstanding', 1),),)),
-)
-COMPONENT_KEYS = tuple(key for key, _ in COMPONENTS)
-ALTERNATIVES = {key: tuple(tuple(c for c, _ in alt) for alt in alts) for key, alts in COMPONENTS}
-SIGNS = {key: {tuple(c for c, _ in alt): tuple(s for _, s in alt) for alt in alts} for key, alts in COMPONENTS}
+ANNUAL_FORMS = ('10-K', '10-K/A', '20-F', '20-F/A', '40-F')
+TAXONOMIES = ('us-gaap', 'ifrs-full')
+ASSUMED_ZERO = 'NOT_REPORTED_ASSUMED_ZERO'
+# taxonomy -> (component, alternatives); an alternative is usable only when every term is reported.
+COMPONENTS = {
+    'us-gaap': (
+        ('operating_cash_flow', ((('NetCashProvidedByUsedInOperatingActivities', 1),),
+                                 (('NetCashProvidedByUsedInOperatingActivitiesContinuingOperations', 1),))),
+        ('capital_expenditure', ((('PaymentsToAcquirePropertyPlantAndEquipment', 1),),
+                                 (('PaymentsToAcquireProductiveAssets', 1),))),
+        ('long_term_debt_issuance', ((('ProceedsFromIssuanceOfLongTermDebt', 1),),
+                                     (('ProceedsFromIssuanceOfSeniorLongTermDebt', 1),))),
+        ('long_term_debt_repayment', ((('RepaymentsOfLongTermDebt', 1),),
+                                      (('RepaymentsOfSeniorDebt', 1),))),
+        ('net_short_term_borrowing', ((('ProceedsFromRepaymentsOfShortTermDebt', 1),),
+                                      (('ProceedsFromRepaymentsOfCommercialPaper', 1),),
+                                      (('ProceedsFromShortTermDebt', 1), ('RepaymentsOfShortTermDebt', -1)))),
+        ('diluted_shares', ((('WeightedAverageNumberOfDilutedSharesOutstanding', 1),),)),
+    ),
+    # Capital expenditure is PP&E only; PurchaseOfIntangibleAssets is deliberately not added.
+    'ifrs-full': (
+        ('operating_cash_flow', ((('CashFlowsFromUsedInOperatingActivities', 1),),)),
+        ('capital_expenditure', ((('PurchaseOfPropertyPlantAndEquipment', 1),),)),
+        ('long_term_debt_issuance', ((('ProceedsFromNoncurrentBorrowings', 1),),
+                                     (('ProceedsFromBorrowingsClassifiedAsFinancingActivities', 1),))),
+        ('long_term_debt_repayment', ((('RepaymentsOfNoncurrentBorrowings', 1),),
+                                      (('RepaymentsOfBorrowingsClassifiedAsFinancingActivities', 1),))),
+        ('net_short_term_borrowing', ((('ProceedsFromCurrentBorrowings', 1), ('RepaymentsOfCurrentBorrowings', -1)),)),
+        ('diluted_shares', ((('AdjustedWeightedAverageShares', 1),),)),
+    ),
+}
+COMPONENT_KEYS = tuple(key for key, _ in COMPONENTS['us-gaap'])
+OPTIONAL_COMPONENTS = ('long_term_debt_issuance', 'long_term_debt_repayment', 'net_short_term_borrowing')
+ALTERNATIVES = {tax: {key: tuple(tuple(c for c, _ in alt) for alt in alts) for key, alts in rows} for tax, rows in COMPONENTS.items()}
+# Total-borrowing fallbacks already include current borrowings; a separately reported current pair would double count.
+TOTAL_BORROWING_CONCEPTS = frozenset({'ProceedsFromBorrowingsClassifiedAsFinancingActivities', 'RepaymentsOfBorrowingsClassifiedAsFinancingActivities'})
 FCFE_REASONS = frozenset({
-    'SEC_INPUT_NOT_AVAILABLE', 'US_GAAP_CASH_FLOW_NOT_REPORTED', 'PERIOD_AMBIGUOUS', 'CURRENCY_AMBIGUOUS',
-    'COMPONENT_CURRENCY_MISMATCH', 'COMPONENT_AMBIGUOUS', 'MIXED_FILINGS', 'DILUTED_SHARES_NON_POSITIVE',
+    'SEC_INPUT_NOT_AVAILABLE', 'CASH_FLOW_NOT_REPORTED', 'TAXONOMY_AMBIGUOUS', 'PERIOD_AMBIGUOUS', 'CURRENCY_AMBIGUOUS',
+    'COMPONENT_CURRENCY_MISMATCH', 'COMPONENT_AMBIGUOUS', 'MIXED_FILINGS', 'BORROWING_SCOPE_OVERLAP', 'DILUTED_SHARES_NON_POSITIVE',
     'NUMERIC_INVALID', *(key.upper() + '_MISSING' for key in COMPONENT_KEYS),
 })
-V_INPUT_KEYS = ('eps', 'revenue', 'revenue_prev')
-V_REASONS = frozenset({'SEC_INPUT_NOT_AVAILABLE', 'SEC_INPUT_AMBIGUOUS', 'EPS_MISSING', 'REVENUE_MISSING', 'REVENUE_PREV_MISSING'})
+V_INPUT_KEYS = ('eps', 'revenue', 'revenue_prev', 'revenue_cagr_3y')
+V_REASONS = frozenset({'SEC_INPUT_NOT_AVAILABLE', 'SEC_INPUT_AMBIGUOUS', *(key.upper() + '_MISSING' for key in V_INPUT_KEYS)})
+REVENUE_CONCEPTS = (('us-gaap', 'Revenues'), ('us-gaap', 'RevenueFromContractWithCustomerExcludingAssessedTax'), ('ifrs-full', 'Revenue'))
 _AMBIGUOUS = {'AMBIGUOUS_FACT_VALUES', 'AMBIGUOUS_REVISION_ORDER', 'AMBIGUOUS_FILING'}
 
 
@@ -68,20 +94,52 @@ def _day(value):
 
 
 def fcfe_total(components):
-    """The adopted sum, in a fixed order shared with the JS validator."""
+    """The adopted sum, in a fixed order shared with the JS validator (an assumed-zero line has value 0)."""
     c = {k: components[k]['value'] for k in COMPONENT_KEYS}
     return (c['operating_cash_flow'] - c['capital_expenditure'] + c['long_term_debt_issuance']
             + c['net_short_term_borrowing'] - c['long_term_debt_repayment'])
 
 
+def revenue_cagr_3y(m1):
+    """Own 3-year revenue CAGR: same tag/unit, 4 exact annual periods; no fiscal guessing.
+
+    This is the function behind the published company-types-pricefree.json metric
+    revenue_cagr_3y; sec-valuation-inputs.json repeats it in v_inputs.
+    """
+    raw = m1['raw_fundamentals']
+    by = {}
+    for row in m1['selected_input_facts']:
+        if (row['taxonomy'], row['concept']) not in REVENUE_CONCEPTS or row['unit'] != raw['reporting_currency']:
+            continue
+        end = date.fromisoformat(row['end'])
+        try:
+            expected = (end.replace(year=end.year - 1) + timedelta(days=1)).isoformat()
+        except ValueError:
+            continue
+        if row['start'] != expected:
+            continue
+        by.setdefault((row['taxonomy'], row['concept'], row['unit']), {})[row['end']] = row['value']
+    values = []
+    for periods in by.values():
+        end = max(periods)
+        d = date.fromisoformat(end)
+        try:
+            years = [d.replace(year=d.year - n).isoformat() for n in range(4)]
+        except ValueError:
+            continue
+        if all(y in periods for y in years) and periods[end] == raw['revenue'] and periods[years[-1]] > 0 and periods[end] > 0:
+            values.append((periods[end] / periods[years[-1]]) ** (1 / 3) - 1)
+    return values[0] if values and all(math.isclose(v, values[0], rel_tol=1e-12, abs_tol=1e-12) for v in values) else None
+
+
 def empty_fcfe(reason='SEC_INPUT_NOT_AVAILABLE'):
-    return {'state': 'NOT_AVAILABLE', 'reason_codes': [reason], 'fcfe_per_share': None, 'currency': None,
+    return {'state': 'NOT_AVAILABLE', 'reason_codes': [reason], 'fcfe_per_share': None, 'taxonomy': None, 'currency': None,
             'fiscal_period_start': None, 'fiscal_period_end': None, 'accn': None, 'form': None,
             'components': dict.fromkeys(COMPONENT_KEYS)}
 
 
 def empty_v_inputs(reason='SEC_INPUT_NOT_AVAILABLE'):
-    return {'state': 'NOT_AVAILABLE', 'reason_codes': [reason], 'eps': None, 'revenue': None, 'revenue_prev': None, 'currency': None}
+    return {'state': 'NOT_AVAILABLE', 'reason_codes': [reason], **dict.fromkeys(V_INPUT_KEYS), 'currency': None}
 
 
 def empty_row():
@@ -97,56 +155,77 @@ def _annual(row):
 
 
 def project_fcfe(m1, state):
-    """Latest annual fiscal period of operating cash flow; every component in that exact period."""
-    facts = [r for r in m1.get('selected_input_facts') or () if r.get('taxonomy') == 'us-gaap' and _annual(r) and _finite(r.get('value'))]
+    """Latest annual fiscal period of operating cash flow; every reported component in that exact period."""
+    eligible = [r for r in m1.get('selected_input_facts') or ()
+                if r.get('taxonomy') in TAXONOMIES and _annual(r) and _finite(r.get('value'))]
+    latest_by_tax = {}
+    for tax in TAXONOMIES:
+        ocf_concepts = {c for alt in ALTERNATIVES[tax]['operating_cash_flow'] for c in alt}
+        ends = [r['end'] for r in eligible if r['taxonomy'] == tax and r['concept'] in ocf_concepts and re.fullmatch(r'[A-Z]{3}', r['unit'])]
+        if ends:
+            latest_by_tax[tax] = max(ends)
+    if not latest_by_tax:
+        return empty_fcfe('CASH_FLOW_NOT_REPORTED')
+    end = max(latest_by_tax.values())
+    taxes = [tax for tax, e in latest_by_tax.items() if e == end]
+    if len(taxes) != 1:
+        return empty_fcfe('TAXONOMY_AMBIGUOUS')
+    tax = taxes[0]
+    facts = [r for r in eligible if r['taxonomy'] == tax]
     by = {}
     for r in facts:
         by.setdefault((r['concept'], r['unit'], r['start'], r['end']), r)
-    ocf_concepts = {c for alt in ALTERNATIVES['operating_cash_flow'] for c in alt}
-    ocf = [r for r in facts if r['concept'] in ocf_concepts and re.fullmatch(r'[A-Z]{3}', r['unit'])]
-    if not ocf:
-        return empty_fcfe('US_GAAP_CASH_FLOW_NOT_REPORTED')
-    end = max(r['end'] for r in ocf)
-    latest = [r for r in ocf if r['end'] == end]
+    ocf_concepts = {c for alt in ALTERNATIVES[tax]['operating_cash_flow'] for c in alt}
+    latest = [r for r in facts if r['concept'] in ocf_concepts and r['end'] == end and re.fullmatch(r'[A-Z]{3}', r['unit'])]
     if len({r['start'] for r in latest}) != 1:
         return empty_fcfe('PERIOD_AMBIGUOUS')
     if len({r['unit'] for r in latest}) != 1:
         return empty_fcfe('CURRENCY_AMBIGUOUS')
     start, currency = latest[0]['start'], latest[0]['unit']
     out = empty_fcfe()
-    out.update(reason_codes=[], currency=currency, fiscal_period_start=start, fiscal_period_end=end)
+    out.update(reason_codes=[], taxonomy=tax, currency=currency, fiscal_period_start=start, fiscal_period_end=end)
+    # Every retained candidate row (eligible or not) counts as "reported" for the zero-assumption test.
+    retained = [*(m1.get('revision_candidates') or ()), *(m1.get('selected_input_facts') or ())]
     used, reasons = [], []
-    for key, alternatives in COMPONENTS:
+    for key, alternatives in COMPONENTS[tax]:
         unit = 'shares' if key == 'diluted_shares' else currency
         for alt in alternatives:
             hits = [by.get((concept, unit, start, end)) for concept, _ in alt]
             if all(hits):
                 value = math.fsum(sign * hit['value'] for (_, sign), hit in zip(alt, hits))
-                out['components'][key] = {'concepts': [c for c, _ in alt], 'value': value}
+                out['components'][key] = {'concepts': [c for c, _ in alt], 'value': value, 'assumed_zero': False, 'reason': None}
                 used.extend(hits)
                 break
         else:
             concepts = {c for alt in alternatives for c, _ in alt}
             if any(r['concept'] in concepts and r['start'] == start and r['end'] == end and r['unit'] != unit for r in facts):
                 reasons.append('COMPONENT_CURRENCY_MISMATCH')
-            elif any(c.get('taxonomy') == 'us-gaap' and c.get('concept') in concepts and c.get('end') == end
+            elif any(c.get('taxonomy') == tax and c.get('concept') in concepts and c.get('end') == end
                      and set(c.get('exclusion_reasons') or ()) & _AMBIGUOUS for c in m1.get('revision_candidates') or ()):
                 reasons.append('COMPONENT_AMBIGUOUS')
+            elif key in OPTIONAL_COMPONENTS and not any(
+                    c.get('taxonomy') == tax and c.get('concept') in concepts and c.get('start') == start and c.get('end') == end for c in retained):
+                out['components'][key] = {'concepts': [], 'value': 0.0, 'assumed_zero': True, 'reason': ASSUMED_ZERO}
             else:
                 reasons.append(key.upper() + '_MISSING')
+    comps = out['components']
+    total_used = any(c is not None and TOTAL_BORROWING_CONCEPTS & set(c['concepts'])
+                     for c in (comps['long_term_debt_issuance'], comps['long_term_debt_repayment']))
+    if total_used and comps['net_short_term_borrowing'] is not None and not comps['net_short_term_borrowing']['assumed_zero']:
+        reasons.append('BORROWING_SCOPE_OVERLAP')
     accns = {r['accn'] for r in used}
     if len(accns) == 1:
         out['accn'] = next(iter(accns))
         out['form'] = used[0]['form'] if len({r['form'] for r in used}) == 1 else None
     elif used:
         reasons.append('MIXED_FILINGS')
-    shares = out['components']['diluted_shares']
+    shares = comps['diluted_shares']
     if shares is not None and shares['value'] <= 0:
         reasons.append('DILUTED_SHARES_NON_POSITIVE')
     if not reasons and out['form'] is None:
         reasons.append('MIXED_FILINGS')
     if not reasons:
-        value = fcfe_total(out['components']) / shares['value']
+        value = fcfe_total(comps) / shares['value']
         if not math.isfinite(value):
             reasons.append('NUMERIC_INVALID')
         else:
@@ -161,9 +240,13 @@ def project_v_inputs(m1, state, ambiguous):
         return empty_v_inputs()
     if ambiguous:
         return empty_v_inputs('SEC_INPUT_AMBIGUOUS')
+    cagr = revenue_cagr_3y(m1)
+    # Same publication bound as company-types-pricefree.json metrics.
+    values = {'eps': raw.get('eps'), 'revenue': raw.get('revenue'), 'revenue_prev': raw.get('revenue_prev'),
+              'revenue_cagr_3y': cagr if _finite(cagr) and abs(cagr) <= 100 else None}
     out = {'state': 'NOT_AVAILABLE', 'reason_codes': [], 'currency': None}
     for key in V_INPUT_KEYS:
-        value = raw.get(key)
+        value = values[key]
         out[key] = float(value) if _finite(value) else None
         if out[key] is None:
             out['reason_codes'].append(key.upper() + '_MISSING')
@@ -192,9 +275,10 @@ def _keys(value, expected):
 
 
 def _validate_fcfe(f, row_state):
-    _keys(f, ('state', 'reason_codes', 'fcfe_per_share', 'currency', 'fiscal_period_start', 'fiscal_period_end', 'accn', 'form', 'components'))
+    _keys(f, ('state', 'reason_codes', 'fcfe_per_share', 'taxonomy', 'currency', 'fiscal_period_start', 'fiscal_period_end', 'accn', 'form', 'components'))
     _need(f['state'] in ('NOT_AVAILABLE', row_state) and isinstance(f['reason_codes'], list) and len(set(f['reason_codes'])) == len(f['reason_codes']))
     _need(all(r in FCFE_REASONS for r in f['reason_codes']))
+    _need(f['taxonomy'] is None or f['taxonomy'] in TAXONOMIES)
     _need(f['currency'] is None or isinstance(f['currency'], str) and re.fullmatch(r'[A-Z]{3}', f['currency']) is not None)
     _need((f['fiscal_period_start'] is None) == (f['fiscal_period_end'] is None))
     if f['fiscal_period_end'] is not None:
@@ -206,25 +290,34 @@ def _validate_fcfe(f, row_state):
     for key, c in f['components'].items():
         if c is None:
             continue
-        _keys(c, ('concepts', 'value'))
-        _need(isinstance(c['concepts'], list) and tuple(c['concepts']) in ALTERNATIVES[key] and _finite(c['value']))
+        _need(f['taxonomy'] is not None)
+        _keys(c, ('concepts', 'value', 'assumed_zero', 'reason'))
+        _need(isinstance(c['concepts'], list) and type(c['assumed_zero']) is bool and _finite(c['value']))
+        if c['assumed_zero']:
+            _need(key in OPTIONAL_COMPONENTS and c['concepts'] == [] and c['value'] == 0 and c['reason'] == ASSUMED_ZERO)
+        else:
+            _need(tuple(c['concepts']) in ALTERNATIVES[f['taxonomy']][key] and c['reason'] is None)
     if f['state'] == 'NOT_AVAILABLE':
         _need(f['fcfe_per_share'] is None and f['reason_codes'])
         return
     _need(not f['reason_codes'] and all(f['components'][k] is not None for k in COMPONENT_KEYS))
     _need(f['currency'] is not None and f['fiscal_period_end'] is not None and f['accn'] is not None and f['form'] is not None)
-    shares = f['components']['diluted_shares']['value']
+    comps = f['components']
+    _need(not (any(TOTAL_BORROWING_CONCEPTS & set(comps[k]['concepts']) for k in ('long_term_debt_issuance', 'long_term_debt_repayment'))
+               and not comps['net_short_term_borrowing']['assumed_zero']))
+    shares = comps['diluted_shares']['value']
     _need(shares > 0 and _finite(f['fcfe_per_share']))
-    expected = fcfe_total(f['components']) / shares
+    expected = fcfe_total(comps) / shares
     _need(math.isclose(f['fcfe_per_share'], expected, rel_tol=1e-12, abs_tol=1e-12))
 
 
 def _validate_v(v, row_state):
-    _keys(v, ('state', 'reason_codes', 'eps', 'revenue', 'revenue_prev', 'currency'))
+    _keys(v, ('state', 'reason_codes', *V_INPUT_KEYS, 'currency'))
     _need(v['state'] in ('NOT_AVAILABLE', row_state) and isinstance(v['reason_codes'], list) and all(r in V_REASONS for r in v['reason_codes']))
     _need(len(set(v['reason_codes'])) == len(v['reason_codes']))
     for key in V_INPUT_KEYS:
         _need(v[key] is None or _finite(v[key]))
+    _need(v['revenue_cagr_3y'] is None or abs(v['revenue_cagr_3y']) <= 100)
     present = any(v[k] is not None for k in V_INPUT_KEYS)
     _need((v['state'] != 'NOT_AVAILABLE') == present)
     _need(v['currency'] is None if not present else isinstance(v['currency'], str) and re.fullmatch(r'[A-Z]{3}', v['currency']) is not None)
