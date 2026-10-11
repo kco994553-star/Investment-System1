@@ -71,7 +71,7 @@ REASONS = (
     'CORP_CODE_UNCONFIRMED', 'NO_PERIODIC_REPORT', 'NO_NEWER_INTERIM_REPORT', 'SEPARATE_STATEMENTS_FALLBACK',
     'SHARES_NOT_AVAILABLE', 'QG_INPUTS_NOT_AVAILABLE', 'RECORDS_DROPPED_INVALID', 'STALE_INPUT',
 )
-_TAG = r'(?:\[[^\]]{1,20}\]\s*)'
+_TAG = r'(?:\[[^\]]{1,20}\] *)'
 _INSTANT = re.compile(r'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\+00:00')
 
 
@@ -118,16 +118,20 @@ def _reasons(value):
     return value
 
 
+# Same rules in dart-disclosures.js: single ASCII spaces only, no control/markup/other whitespace characters.
+_TITLE_BAD = re.compile('[\x00-\x1f\x7f-\x9f<>\u00a0\u1680\u180e\u2000-\u200b\u2028\u2029\u202f\u205f\u3000\ufeff]')
+
+
 def valid_title(value):
-    return (type(value) is str and 0 < len(value) <= 200 and value == re.sub(r'\s+', ' ', value).strip()
-            and not any(ord(ch) < 32 or ch in '<>' for ch in value))
+    return (type(value) is str and 0 < len(value) <= 200 and _TITLE_BAD.search(value) is None
+            and not value.startswith(' ') and not value.endswith(' ') and '  ' not in value)
 
 
 def title_family(title):
     """Bracket tags such as [기재정정] and a trailing (YYYY.MM) period removed."""
     key = re.sub(r'^' + _TAG + '+', '', title)
-    key = re.sub(r'\s*\(\d{4}\.\d{2}\)$', '', key)
-    return re.sub(r'\s+', ' ', key).strip() or title
+    key = re.sub(r' *\([0-9]{4}\.[0-9]{2}\)$', '', key)
+    return key.strip(' ') or title
 
 
 def is_amended(title):
@@ -136,7 +140,7 @@ def is_amended(title):
 
 
 def classify(title, report_type):
-    if re.search(r'\(잠정\)\s*실적', title) and '공정공시' in title:
+    if re.search(r'\(잠정\) *실적', title) and '공정공시' in title:
         return 'RESULTS'
     return {'A': 'PERIODIC', 'B': 'MAJOR_EVENT'}.get(report_type) or (
         ('FAIR_DISCLOSURE' if '공정공시' in title else 'EXCHANGE') if report_type == 'I' else 'OTHER')

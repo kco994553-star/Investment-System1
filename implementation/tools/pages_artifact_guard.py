@@ -31,9 +31,11 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 from investment_system.universe.sec_universe_shares import FILENAME as UNIVERSE_SHARES_FILENAME, require_universe_shares
 from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDGER_FILENAME, require_ledger as require_forward_ledger
 from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
+from investment_system.product.dart_public import FILENAMES as DART_FILENAMES, require_public as require_dart_public
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "dart-disclosures.js": "207bceccba0da62dc0e2d94b4cef73b5710a8c5fb830c296d4c9ed456b3edf2f",
     "virtual-trading-runner.js": "a8ed46c6198ed161848794e6f5fac72d8de83a9c9b8aeccb87a05684764d284e",
     "virtual-ledger-sheets.js": "ae2b4b72f7307e8cad45300962b67ec0e30c44ee218f778ba4f130e0aebe55be",
     "table-sort.js": "bd6e195298cb53b32adc8cdeaec57312e4c1807760e100b0af351f50bc4dfbf4",
@@ -80,7 +82,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "d5244f83c9217a188e0108a898c6ccb0bd400b3ee19f0a118f3666e58684c1bd",
+    "app.js": "200f3ddc9bbaaf3f34e40ee793369f5a854ba1ecf77e6fa5ae238f59f1acdfcc",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "4b6bbdf71f74875199221cf534dc403be7961fd722abe2b1b12a499e2740f7f3",
@@ -90,14 +92,14 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "a037bee0ccb8fd8cad0407f7ccfa3a33f410f32fb20b5ca7fe37bf0e10eb9b4f",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "46ab9449f490c26568f3bfe0885c25c62bb62ed2032b2a58e4a8959a6cbbac5f",
+    "index.html": "3aacfa4e3033d98b494a0fc47f356e2f036810eb1b63f7e9d0bacdef0b9b1935",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "f1f7eed0853eecaa6847c8468999bc5bbe06b4c0d9a49c845c57c00366017220",
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -220,6 +222,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == FORWARD_LEDGER_FILENAME:
             try: require_forward_ledger(value)
             except ValueError: violations['forward_ledger_boundary'] += 1
+        elif name in DART_FILENAMES:
+            try: require_dart_public(name, value)
+            except ValueError: violations['dart_public_boundary'] += 1
         elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
             violations["unapproved_content"] += 1
     except (ValueError, UnicodeError, RecursionError, OverflowError):

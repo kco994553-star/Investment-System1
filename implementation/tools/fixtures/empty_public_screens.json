@@ -2477,6 +2477,253 @@
   "stale_after_seconds": 86400.0,
   "state": "NOT_AVAILABLE"
  },
+ "dart-disclosures.json": {
+  "as_of": "2026-01-01T00:00:00+00:00",
+  "channel": "DISCLOSURE",
+  "collection": {
+   "api_call_budget": 0,
+   "api_calls": 0
+  },
+  "companies": {
+   "hanmi": {
+    "acquired_at": null,
+    "corp_code": null,
+    "corp_code_basis": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE",
+    "stock_code": "042700",
+    "truncated": false
+   }
+  },
+  "events": [],
+  "freshness_basis": "SOURCE_ACQUISITION",
+  "kind": "DART_DISCLOSURES",
+  "reason_codes": [
+   "NO_ELIGIBLE_INPUT"
+  ],
+  "schema_version": 1,
+  "score_effect": "NONE",
+  "source": "DART",
+  "stale_after_seconds": 172800,
+  "state": "NOT_AVAILABLE",
+  "window_days": 90
+ },
+ "dart-financials.json": {
+  "as_of": "2026-01-01T00:00:00+00:00",
+  "availability_basis": "OBSERVED_CAPTURE_ONLY",
+  "companies": {
+   "hanmi": {
+    "acquired_at": null,
+    "annual": {
+     "basis": null,
+     "bsns_year": null,
+     "concepts": {
+      "capex": null,
+      "cash_and_equivalents": null,
+      "eps": null,
+      "eps_prev": null,
+      "equity": null,
+      "net_income": null,
+      "operating_cash_flow": null,
+      "operating_income": null,
+      "operating_income_prev": null,
+      "revenue": null,
+      "revenue_prev": null,
+      "shares": null,
+      "total_debt": null
+     },
+     "filed_at": null,
+     "fs_div": null,
+     "fs_label": null,
+     "inputs": {
+      "capex": null,
+      "cash_and_equivalents": null,
+      "eps": null,
+      "eps_prev": null,
+      "equity": null,
+      "net_income": null,
+      "operating_cash_flow": null,
+      "operating_income": null,
+      "operating_income_prev": null,
+      "revenue": null,
+      "revenue_prev": null,
+      "shares": null,
+      "total_debt": null
+     },
+     "missing": {
+      "capex": "NOT_COLLECTED",
+      "cash_and_equivalents": "NOT_COLLECTED",
+      "eps": "NOT_COLLECTED",
+      "eps_prev": "NOT_COLLECTED",
+      "equity": "NOT_COLLECTED",
+      "net_income": "NOT_COLLECTED",
+      "operating_cash_flow": "NOT_COLLECTED",
+      "operating_income": "NOT_COLLECTED",
+      "operating_income_prev": "NOT_COLLECTED",
+      "revenue": "NOT_COLLECTED",
+      "revenue_prev": "NOT_COLLECTED",
+      "shares": "NOT_COLLECTED",
+      "total_debt": "NOT_COLLECTED"
+     },
+     "period": null,
+     "rcept_no": null,
+     "reason_codes": [
+      "NOT_COLLECTED"
+     ],
+     "report_name": null,
+     "reprt_code": null,
+     "source_sha256": {
+      "shares": null,
+      "statements": null
+     },
+     "state": "NOT_AVAILABLE"
+    },
+    "corp_code": null,
+    "latest_interim": {
+     "basis": null,
+     "bsns_year": null,
+     "concepts": {
+      "capex": null,
+      "cash_and_equivalents": null,
+      "eps": null,
+      "eps_prev": null,
+      "equity": null,
+      "net_income": null,
+      "operating_cash_flow": null,
+      "operating_income": null,
+      "operating_income_prev": null,
+      "revenue": null,
+      "revenue_prev": null,
+      "shares": null,
+      "total_debt": null
+     },
+     "filed_at": null,
+     "fs_div": null,
+     "fs_label": null,
+     "inputs": {
+      "capex": null,
+      "cash_and_equivalents": null,
+      "eps": null,
+      "eps_prev": null,
+      "equity": null,
+      "net_income": null,
+      "operating_cash_flow": null,
+      "operating_income": null,
+      "operating_income_prev": null,
+      "revenue": null,
+      "revenue_prev": null,
+      "shares": null,
+      "total_debt": null
+     },
+     "missing": {
+      "capex": "NOT_COLLECTED",
+      "cash_and_equivalents": "NOT_COLLECTED",
+      "eps": "NOT_COLLECTED",
+      "eps_prev": "NOT_COLLECTED",
+      "equity": "NOT_COLLECTED",
+      "net_income": "NOT_COLLECTED",
+      "operating_cash_flow": "NOT_COLLECTED",
+      "operating_income": "NOT_COLLECTED",
+      "operating_income_prev": "NOT_COLLECTED",
+      "revenue": "NOT_COLLECTED",
+      "revenue_prev": "NOT_COLLECTED",
+      "shares": "NOT_COLLECTED",
+      "total_debt": "NOT_COLLECTED"
+     },
+     "period": null,
+     "rcept_no": null,
+     "reason_codes": [
+      "NOT_COLLECTED"
+     ],
+     "report_name": null,
+     "reprt_code": null,
+     "source_sha256": {
+      "shares": null,
+      "statements": null
+     },
+     "state": "NOT_AVAILABLE"
+    },
+    "qg": {
+     "basis": "ANNUAL_REPORT",
+     "factors": {
+      "competitive_advantage": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "eps_fcf_per_share_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "excess_growth_vs_industry": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "fcf_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "financial_health": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_durability": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "growth_efficiency": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "management_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "margin_quality": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "market_position": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "next_3_5y_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "revenue_growth": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "roic_wacc": {
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "reason_codes": [
+      "NOT_COLLECTED"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    "reason_codes": [
+     "NOT_COLLECTED"
+    ],
+    "state": "NOT_AVAILABLE",
+    "stock_code": "042700"
+   }
+  },
+  "currency": "KRW",
+  "freshness_basis": "SOURCE_ACQUISITION",
+  "kind": "DART_FINANCIALS",
+  "method_status": "PROVISIONAL_UNCALIBRATED",
+  "reason_codes": [
+   "NO_ELIGIBLE_INPUT"
+  ],
+  "role": "PRICE_FREE_REPORTED_INPUTS",
+  "schema_version": 1,
+  "source": "DART",
+  "stale_after_seconds": 172800,
+  "state": "NOT_AVAILABLE"
+ },
  "macro-screen.json": {
   "as_of": "2026-01-01T00:00:00+00:00",
   "data": {

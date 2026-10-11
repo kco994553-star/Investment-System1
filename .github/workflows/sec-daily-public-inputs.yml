@@ -66,6 +66,12 @@ jobs:
         run: |
           python implementation/tools/sec_13f_managers.py --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - name: Collect OpenDART disclosures and periodic financials for 042700 (fixed codes and call count only)
+        env:
+          DART_API_KEY: ${{ secrets.DART_API_KEY }}
+        run: |
+          python implementation/tools/dart_daily.py --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Collect Universe504 SEC shares shard (price-free public projection)
         env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}

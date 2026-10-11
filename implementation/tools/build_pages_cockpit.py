@@ -23,6 +23,8 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     emit(out)
     from public_classification_pipeline import emit as emit_classification
     emit_classification(out)
+    from dart_daily import emit as emit_dart
+    emit_dart(out)
     return result
 
 

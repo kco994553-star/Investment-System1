@@ -339,6 +339,8 @@ def list_disclosures(client, corp_code, *, stock_code, begin, end, pblntf_ty=Non
         if payload is None:
             return rows, False
         items, total_pages = payload.get('list'), payload.get('total_page')
+        if isinstance(total_pages, str) and re.fullmatch(r'[0-9]{1,5}', total_pages):
+            total_pages = int(total_pages)
         if not isinstance(items, list) or type(total_pages) is not int or not 0 <= total_pages <= 10_000 or len(items) > LIST_PAGE_COUNT:
             raise DartCollectionError('DART_LIST_INVALID')
         for item in items:
