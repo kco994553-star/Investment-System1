@@ -134,7 +134,9 @@ def test_reason_only_manifest_entries(tmp_path):
     m = {'schema_version': 1, 'sec': [], 'macro': [], 'thirteen_f': [], 'macro_v0': [{'axis': 'Growth', 'reason': 'SOURCE_KEY_NOT_CONFIGURED'}]}
     g = macro(tmp_path, m)['data']['growth_inflation_v0']['axes']['Growth']
     assert g['reason_codes'] == ['SOURCE_KEY_NOT_CONFIGURED'] and g['source_sha256'] is None
-    for bad in ({'axis': 'Growth', 'reason': 'FREE_TEXT'}, {'axis': 'Labor', 'reason': 'SOURCE_NOT_AVAILABLE'}):
+    # FX is never collected for public output; reason codes are fixed per axis family.
+    for bad in ({'axis': 'Growth', 'reason': 'FREE_TEXT'}, {'axis': 'FX', 'reason': 'SOURCE_NOT_AVAILABLE'},
+                {'axis': 'Growth', 'reason': 'SERIES_NOT_CONFIGURED'}):
         with pytest.raises(ValueError):
             macro(tmp_path, dict(m, macro_v0=[bad]))
 
@@ -204,6 +206,8 @@ class Transport:
             return cpi()
         if 'NipaDataQ' in url:
             return flat()
+        if 'federalreserve' in url or 'fiscaldata' in url:
+            raise OSError('synthetic: raw axes are covered by test_macro_raw_axes_v0')
         from tests.test_macro_primary_input import bea_payload
         p = bea_payload('T10101', '3.8'); p['BEAAPI']['Results']['Data'][0].update(SeriesCode='A191RL', TimePeriod='2026Q2')
         return json.dumps(p).encode()
@@ -216,20 +220,23 @@ def clock():
 def test_collector_uses_fixed_series_and_flat_file_without_key(tmp_path):
     t = Transport()
     entries = collect_macro_v0(tmp_path, environ={}, transport=t, clock=clock)
-    assert [(e['axis'], e['format']) for e in entries] == [('Inflation', 'BLS_API_V1_JSON'), ('Growth', 'BEA_NIPA_FLAT_Q')]
-    assert json.loads(t.calls[0][1]) == {'seriesid': ['CUUR0000SA0'], 'startyear': '2024', 'endyear': '2026'}
-    assert t.calls[1][0] == v0.BEA_FLAT_Q_URL and len(t.calls) == 2
+    assert [(e['axis'], e.get('format')) for e in entries][:3] == [('Inflation', 'BLS_API_V1_JSON'), ('Labor', 'BLS_API_V1_JSON'), ('Growth', 'BEA_NIPA_FLAT_Q')]
+    # One batched BLS v1 request serves Inflation and Labor (same captured body).
+    assert json.loads(t.calls[0][1]) == {'seriesid': ['CUUR0000SA0', 'LNS14000000'], 'startyear': '2024', 'endyear': '2026'}
+    assert entries[0]['file'] == entries[1]['file'] and sum('bls' in c[0] for c in t.calls) == 1
+    assert t.calls[1][0] == v0.BEA_FLAT_Q_URL
 
 
 def test_collector_key_fallback_and_never_exposes_key(tmp_path, capsys):
+    growth = lambda entries: [e for e in entries if e['axis'] == 'Growth']
     entries = collect_macro_v0(tmp_path, environ={}, transport=Transport(fail=('NipaDataQ',)), clock=clock)
-    assert entries[1] == {'axis': 'Growth', 'reason': 'SOURCE_KEY_NOT_CONFIGURED'}
+    assert growth(entries) == [{'axis': 'Growth', 'reason': 'SOURCE_KEY_NOT_CONFIGURED'}]
     t = Transport(fail=('NipaDataQ',))
     entries = collect_macro_v0(tmp_path, environ={'BEA_USERID': SECRET}, transport=t, clock=clock)
-    assert entries[1]['format'] == 'BEA_API_NIPA_JSON' and 'TableName=T10101' in t.calls[-1][2]
+    assert growth(entries)[0]['format'] == 'BEA_API_NIPA_JSON' and any(c[2] and 'TableName=T10101' in c[2] for c in t.calls)
     assert SECRET not in json.dumps(entries) and SECRET not in capsys.readouterr().out
     entries = collect_macro_v0(tmp_path, environ={'BEA_USERID': SECRET}, transport=Transport(fail=('NipaDataQ', 'api/data', 'bls')), clock=clock)
-    assert entries == [{'axis': 'Inflation', 'reason': 'SOURCE_NOT_AVAILABLE'}, {'axis': 'Growth', 'reason': 'SOURCE_NOT_AVAILABLE'}]
+    assert [e for e in entries if e['axis'] in ('Inflation', 'Labor', 'Growth')] == [{'axis': 'Inflation', 'reason': 'SOURCE_NOT_AVAILABLE'}, {'axis': 'Labor', 'reason': 'SOURCE_NOT_AVAILABLE'}, {'axis': 'Growth', 'reason': 'SOURCE_NOT_AVAILABLE'}]
 
 
 def test_default_transport_rejects_unlisted_urls():
