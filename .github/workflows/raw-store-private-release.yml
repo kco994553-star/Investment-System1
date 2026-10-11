@@ -1,0 +1,67 @@
+# Copy the expiring Track A raw store archive (Actions artifact 10927496280, expires 2026-12-26T08:21:15Z)
+# to a Release asset in the user's PRIVATE repository, then download it back and verify it again.
+# Manual only. Needs secret RAW_REPO_TOKEN (fine-grained PAT: only the private raw repo, Contents read/write).
+# Prints counts, sizes and sha256 only; never prints the token, blob contents or prices.
+name: raw-store-private-release
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'true = upload to the private release; false = download and verify only'
+        required: true
+        default: 'false'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: raw-store-private-release
+  cancel-in-progress: false
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      ARTIFACT_ID: '10927496280'
+      EXPECTED_SHA: '712e43bcc1fcd137e5e99ccdda2440850eda56015e02037293d8eac8db399f94'
+      RAW_REPO: kco994553-star/investment-system1-raw
+      RELEASE_TAG: raw-c21-store-36305927245
+      ASSET_NAME: c21-raw-store-36305927245.zip
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Download source artifact and verify
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/$ARTIFACT_ID/zip" -o "$RUNNER_TEMP/a.zip"
+          cp "$RUNNER_TEMP/a.zip" "$RUNNER_TEMP/archive.zip"
+          mkdir -p "$RUNNER_TEMP/restored" && unzip -q "$RUNNER_TEMP/archive.zip" -d "$RUNNER_TEMP/restored"
+          cd implementation && python tools/raw_artifact_restore_check.py --archive "$RUNNER_TEMP/archive.zip" \
+            --expected-sha "$EXPECTED_SHA" --restored "$RUNNER_TEMP/restored" --out "$RUNNER_TEMP/source_check.json"
+          python tools/raw_store_release.py require-pass --check "$RUNNER_TEMP/source_check.json"
+      - name: Upload to private release
+        if: inputs.upload == 'true'
+        env:
+          RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+        run: |
+          if [ -z "$RAW_REPO_TOKEN" ]; then echo RAW_REPO_TOKEN_MISSING; exit 1; fi
+          python implementation/tools/raw_store_release.py upload --repo "$RAW_REPO" --tag "$RELEASE_TAG" \
+            --asset "$RUNNER_TEMP/archive.zip" --name "$ASSET_NAME" --expected-sha "$EXPECTED_SHA"
+      - name: Download back from private release and verify again
+        if: inputs.upload == 'true'
+        env:
+          RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+        run: |
+          python implementation/tools/raw_store_release.py download --repo "$RAW_REPO" --tag "$RELEASE_TAG" \
+            --name "$ASSET_NAME" --out "$RUNNER_TEMP/back.zip" --expected-sha "$EXPECTED_SHA"
+          mkdir -p "$RUNNER_TEMP/back" && unzip -q "$RUNNER_TEMP/back.zip" -d "$RUNNER_TEMP/back"
+          cd implementation && python tools/raw_artifact_restore_check.py --archive "$RUNNER_TEMP/back.zip" \
+            --expected-sha "$EXPECTED_SHA" --restored "$RUNNER_TEMP/back" --out "$RUNNER_TEMP/release_check.json"
+          python tools/raw_store_release.py require-pass --check "$RUNNER_TEMP/release_check.json"
+          python tools/raw_store_release.py location --repo "$RAW_REPO" --tag "$RELEASE_TAG" --name "$ASSET_NAME" \
+            --check "$RUNNER_TEMP/release_check.json" >> "$GITHUB_STEP_SUMMARY"
