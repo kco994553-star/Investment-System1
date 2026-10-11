@@ -34,14 +34,14 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "thirteenf-quarter.js": "396a6dd6377b93303c68ebd81bf24f30bcfbf49f7cec35e41235e43823cc565f",
+    "thirteenf-quarter.js": "ed5dbdb13e98e9e44cee493d4bff2c647edd1cb7f742ae101419575a2b255e32",
     "virtual-trading-runner.js": "5bdf18e2273f0dc2d5e64e760e6af7ffa510092894631e1a7cd2e7e5bbeac996",
     "virtual-ledger-sheets.js": "ae2b4b72f7307e8cad45300962b67ec0e30c44ee218f778ba4f130e0aebe55be",
     "worker-quote-fallback.js": "e72a72d1885a23c2a35706c8d4f333060b0c451d32a00e501dc63a30416b754c",
     "holdings-capture-view.js": "f2bebf39ca836868d19cef05c08b2d3aa9cbe99f2bdc62ee8509634f5891f65f",
     "holdings-capture.js": "a0fbd647c36d4714e743badbf445e2d3bf6b47c504766beaa14a93fdbf900d95",
     "table-sort.js": "bd6e195298cb53b32adc8cdeaec57312e4c1807760e100b0af351f50bc4dfbf4",
-    "pc-layout.css": "a8e236e7d817d1b7f15f566df4af6f7fa381f6045273c289d9337134ed758d75",
+    "pc-layout.css": "d3a270238df767d49ef23ea3d53d60fca62d65dc017af19338269602190af2b4",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
     "daily-report.js": "99d91fa2827e15eda39a79c203519a63408ed1e9410c577ed431952d57f3ffd1",
@@ -67,7 +67,7 @@ APPROVED_SHA256 = {
     "private-subset.js": "8016f30888b77c3b92ce1b5e0c11e542505a04ad6865c169c9525c78ebf4bd71",
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
-    "device-profiles.js": "f9cbbb8f1b5ff01d9d652a22efd1f4f1667a6f478a506be365994bb7245b5c01",
+    "device-profiles.js": "37977fa7353e1d34d7c67d658f74bf3b66a1894f362163aa67e27e40d475e47f",
     "public-screens.js": "81f270be573fcfb8b161e2a49e01b04abe896cf7f144d5cada2af292da49a467",
     "pwa.js": "f8d5df267d323fd465821416f1825f38d4065030ec5368b7a37bfc4ed875affd",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",

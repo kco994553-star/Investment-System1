@@ -20,7 +20,7 @@ const configIds=page=>page.locator('[data-13f-config-manager]').evaluateAll(n=>n
    const berkshire=page.locator('[data-13f-config-manager="berkshire_hathaway"]');
    assert.equal(await berkshire.locator('h3').textContent(),'Berkshire Hathaway');assert.equal(await berkshire.getAttribute('data-13f-manager'),'0001067983');
    assert.equal(await page.locator('h3',{hasText:/^0001067983$/}).count(),0);
-   assert.ok((await berkshire.locator('[data-13f-verified]').textContent()).includes('SEC 확인'));assert.deepEqual(await berkshire.locator('[data-13f-kind-chips] [data-13f-kind]').allTextContents(),['신규 1','추가 0','축소 0','전량매도(보고 0) 1']);assert.ok((await berkshire.locator('[data-13f-period]').textContent()).includes('2026-03-31 → 2026-06-30'));assert.ok((await berkshire.locator('[data-13f-filed]').textContent()).includes('NOT_AVAILABLE · FILING_DATE_NOT_PUBLISHED'));
+   assert.ok((await berkshire.locator('[data-13f-verified]').textContent()).includes('SEC 확인'));assert.deepEqual(await berkshire.locator('[data-13f-kind-chips] [data-13f-kind]').allTextContents(),['신규 1','추가 0','축소 0','전량매도 1']);assert.ok((await berkshire.locator('[data-13f-period]').textContent()).includes('2026-03-31 → 2026-06-30'));assert.ok((await berkshire.locator('[data-13f-filed]').textContent()).includes('NOT_AVAILABLE · FILING_DATE_NOT_PUBLISHED'));
    phase='BADGES';for(const id of await configIds(page)){const badge=page.locator(`[data-13f-config-manager="${id}"] [data-style-badge]`).first();assert.ok(await badge.isVisible(),id);}
    assert.equal(await berkshire.locator('[data-style-badge="value"]').textContent(),'가치');
    assert.equal(await page.locator('[data-13f-config-manager="renaissance_technologies"] [data-style-badge="quant"]').textContent(),'퀀트');

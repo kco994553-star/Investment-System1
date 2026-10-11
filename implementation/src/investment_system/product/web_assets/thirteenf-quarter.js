@@ -36,7 +36,7 @@ function targetOverlap(summaries,targets){return targets.map(t=>{if(t.reason)ret
   if(row.status==='NO_REPORTED_CHANGE'){unchanged.push(s.manager_cik);continue;}for(const c of row.changes)entries.push({manager_cik:s.manager_cik,current_quarter:s.current_quarter,...c});}
  const status=entries.length?'CHANGED':unchanged.length?'NO_REPORTED_CHANGE':'NOT_AVAILABLE';return{company_id:t.company_id,cusip:t.cusip,status,reason:status==='NOT_AVAILABLE'?'NO_COMPARABLE_REPORT':null,entries,unchanged,not_available:na};});}
 // ---- Rendering (DOM only; numbers are reported share/principal quantities, never amounts) ----
-const KIND_TEXT={NEW:['신규','New'],ADD:['추가','Added'],REDUCE:['축소','Reduced'],EXIT:['전량매도(보고 0)','Exited (reported 0)']};
+const KIND_TEXT={NEW:['신규','New'],ADD:['추가','Added'],REDUCE:['축소','Reduced'],EXIT:['전량매도','Exited']};
 const REASON_TEXT={NOT_13F_SECURITY:['13F 대상 아님','Not a 13F security'],CUSIP_NOT_IN_PUBLIC_CATALOG:['공개 목록에 CUSIP 없음','CUSIP not in the public catalog'],CATALOG_NOT_AVAILABLE:['공개 목록 미연결','Public catalog not loaded'],COMPARISON_NOT_AVAILABLE:['분기 비교 불가','Quarter comparison unavailable'],NO_COMPARABLE_REPORT:['비교 가능한 보고서 없음','No comparable report'],FILING_DATE_NOT_PUBLISHED:['공개 파일에 제출일 없음','Filed date not in the public file'],UNCHANGED_POSITIONS_NOT_PUBLISHED:['공개 파일은 변화 항목만 담음','Public file lists changes only'],REPORTED_VALUES_NOT_PUBLISHED:['금액 미게시·가격 환산 안 함','Values not published; no price conversion']};
 const reasonText=(code,en)=>code+(REASON_TEXT[code]?' · '+REASON_TEXT[code][en?1:0]:'');
 const kindText=(kind,en)=>(KIND_TEXT[kind]||[kind,kind])[en?1:0];
@@ -47,11 +47,11 @@ function renderReport(article,s,{el,en,labelOf=id=>id.toUpperCase()}){
  article.append(el('p',(en?'Period ':'기준 분기 ')+s.previous_quarter+' → '+s.current_quarter+' · '+s.state,{class:'small','data-13f-period':s.current_quarter}));
  article.append(el('p',(en?'Filed date ':'제출일 ')+'NOT_AVAILABLE · '+reasonText(s.filed_date_reason,en),{class:'small','data-13f-filed':''}));
  const cells=el('dl',undefined,{class:'kv','data-13f-cells':''});
- for(const[label,value,attr]of [[en?'Holdings':'종목 수','NOT_AVAILABLE · '+reasonText(s.holdings_count_reason,en),'holdings'],[en?'Top-10 weight':'상위 10 비중','NOT_AVAILABLE · '+reasonText(s.top10_weight_reason,en),'top10'],[kindText('NEW',en),String(s.counts.NEW),'NEW'],[kindText('EXIT',en),String(s.counts.EXIT),'EXIT']])cells.append(el('dt',label),el('dd',value,{'data-13f-cell':attr}));
- article.append(cells);
+ for(const[label,value,attr]of [[en?'Holdings':'종목 수','NOT_AVAILABLE','holdings'],[en?'Top-10 weight':'상위 10 비중','NOT_AVAILABLE','top10'],[kindText('NEW',en),String(s.counts.NEW),'NEW'],[kindText('EXIT',en),String(s.counts.EXIT),'EXIT']])cells.append(el('dt',label),el('dd',value,{'data-13f-cell':attr}));
+ article.append(cells,el('p',(en?'Holdings: ':'종목 수: ')+reasonText(s.holdings_count_reason,en)+' · '+(en?'Top-10 weight: ':'상위 10 비중: ')+reasonText(s.top10_weight_reason,en),{class:'small','data-13f-cell-reasons':''}));
  const chips=el('div',undefined,{class:'chips','data-13f-kind-chips':''});for(const k of KINDS)chips.append(el('span',kindText(k,en)+' '+s.counts[k],{class:'badge','data-13f-kind':k}));article.append(chips);
  const changed=s.target.filter(r=>r.status==='CHANGED'),quiet=s.target.filter(r=>r.status==='NO_REPORTED_CHANGE'),na=s.target.filter(r=>r.status==='NOT_AVAILABLE');
- const box=el('div',undefined,{class:'subcard','data-13f-target':s.manager_cik});box.append(el('h4',en?'TARGET companies':'TARGET 종목'));
+ const box=el('div',undefined,{class:'subcard','data-13f-target':s.manager_cik});box.append(el('h4',en?'TARGET companies':'TARGET 종목'),el('p',en?'Reported quantities; “Exited” means reported 0, not a confirmed sale.':'보고 수량 기준 · 전량매도는 보고 수량 0이며 실제 매도 확정이 아닙니다.',{class:'small'}));
  if(changed.length){const rows=[];for(const r of changed)for(const c of r.changes){const tr=el('tr',undefined,{'data-13f-target-row':r.company_id,'data-13f-kind':c.kind});for(const v of [labelOf(r.company_id),kindText(c.kind,en),qty(c.reported_before)+' → '+qty(c.reported_after)+' '+c.unit,signed(c.reported_delta)])tr.append(el('td',v));rows.push(tr);}
   box.append(table(el,[en?'Company':'기업',en?'Change':'구분',en?'Reported before → after':'보고 수량 이전 → 현재',en?'Δ quantity':'수량 변화'],rows,{'data-13f-target-table':s.manager_cik}));
   if(changed.some(r=>r.multiple_buckets))box.append(el('p',en?'Several reported lines share one CUSIP (options, discretion or attribution); they are listed separately, never summed.':'같은 CUSIP에 보고 구분(옵션·재량·귀속)이 여러 개라 따로 표시하고 합산하지 않습니다.',{class:'small','data-13f-multi':''}));}
