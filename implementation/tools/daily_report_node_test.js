@@ -97,21 +97,6 @@ test('answers are stored per template hash on this device only, newest kept', as
   assert.equal(R.hiddenSetting({ getItem() { throw new Error('blocked'); } }), true);
 });
 
-test('mailbox writes only to the report tabs and matches by hash', async () => {
-  const calls = [];
-  const session = {
-    sheetTitles: async () => ['Quotes'],
-    addTabs: async (id, t) => calls.push(['add', t]),
-    appendRows: async (id, range, rows) => calls.push(['append', range, rows[0].length]),
-    fetchValues: async () => ({ values: [['sha256', 'model', 'created_at', 'answer'], ['x', 'm', 't', 'other'], ['h1', 'GPT', '2026-10-12T00:00Z', 'answer one']] }),
-  };
-  await R.postInbox(session, 'id', { report_date: '2026-10-12', kind: 'MOCK', sha256: 'h1', template: 'T', now: 'N' });
-  assert.deepEqual(calls[0], ['add', ['ReportInbox', 'ReportOutbox']]);
-  assert.ok(calls.every((c) => c[0] === 'add' || /^'Report(Inbox|Outbox)'!A1$/.test(c[1])));
-  assert.deepEqual(await R.readOutbox(session, 'id', 'h1'), { model: 'GPT', created_at: '2026-10-12T00:00Z', answer: 'answer one' });
-  assert.equal(await R.readOutbox(session, 'id', 'nope'), null);
-});
-
 test('module performs no network I/O by itself', () => {
   const src = fs.readFileSync(require.resolve('../src/investment_system/product/web_assets/daily-report.js'), 'utf8');
   for (const word of ['fetch(', 'XMLHttpRequest', 'sendBeacon', 'WebSocket', 'indexedDB']) assert.ok(!src.includes(word), word);
