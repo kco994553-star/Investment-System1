@@ -29,9 +29,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
 from investment_system.product.public_engine_screens import FILENAMES as SCREEN_FILENAMES, require_public_screen
 from investment_system.universe.sec_universe_shares import FILENAME as UNIVERSE_SHARES_FILENAME, require_universe_shares
+from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDGER_FILENAME, require_ledger as require_forward_ledger
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "forward-validation.js": "d87c40c9701c57ed7cb8988d6c81407f93092d088c7234b260161e709397158f",
     "sec-universe-shares.js": "77648df45a6c2e55b2c3be2cea2735a1d2457d8ef811646e7f2d0de674564bbb",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "8f66aae29337bbddadb8b1853254fd63cb620a062af7bb19f510bf200e870ef3",
@@ -64,7 +66,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "3e262ec03fd5179e1229272fcf2ac4d8c2e6855e8b74a38cb0fc83ba59b1863c",
+    "app.js": "e43d5b3c372803210cf2531fac3bf98b9181adecf3a4291c81b8ae742037edf7",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "24e872f2a1d56ea2556d30b05c6d0ce8549c60fe00e36b297ed3e98a721fae11",
@@ -74,14 +76,14 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "7a321c43e09dadb044856c4f05d60ffd92ea90c376c418c41a4b5c51fb2bfa1a",
+    "index.html": "9e7d57525981867e2a1775d4a04f96899076afca1a27b24396e7cc4abbb2c206",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "3128a213726be142235757f6da30f1b6136e34cb71459349fb7af20b7a25c179",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "eab3e5bc2554a15aa2b921ce134e07fbf5e64d5ac3ee2fc8346e58bb47fa9541",
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, FORWARD_LEDGER_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 64
@@ -198,6 +200,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == UNIVERSE_SHARES_FILENAME:
             try: require_universe_shares(value)
             except ValueError: violations['universe_shares_boundary'] += 1
+        elif name == FORWARD_LEDGER_FILENAME:
+            try: require_forward_ledger(value)
+            except ValueError: violations['forward_ledger_boundary'] += 1
         elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
             violations["unapproved_content"] += 1
     except (ValueError, UnicodeError, RecursionError, OverflowError):

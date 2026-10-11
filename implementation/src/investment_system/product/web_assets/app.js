@@ -525,7 +525,7 @@ function validation() {
   return heading("VALIDATION",t("검증·연구"),t("리서치와 검증 기록의 준비 상태를 확인합니다."))+
     `<div class="chips data-badges"><span class="badge">${esc(t("PIT 시점 기준 데이터만"))}</span><span class="badge">${esc(t("Holdout 기간 미정·사용 금지 · 보호 판정 UNCONFIRMED"))}</span></div>`+
     `<nav class="chips screen-tabs" aria-label="${esc(t("검증·연구"))}">${tabs.map(([id,label])=>`<a href="#validation-${id}" data-screen-tab="${id}">${esc(t(label))}</a>`).join("")}<a href="#research" data-screen-tab="research">${esc(t("리서치"))}</a></nav>`+
-    `<div class="hub-grid" data-hub="validation">${tabs.map(([id,title,status,reason])=>`<div id="validation-${id}">${hubCard(title,status,reason)}</div>`).join("")}${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}</div>`+ScreenDetail.validationHtml(appSettings.display_locale);
+    `<div class="hub-grid" data-hub="validation">${tabs.map(([id,title,status,reason])=>`<div id="validation-${id}">${hubCard(title,status,reason)}</div>`).join("")}${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}</div><div id="forward-validation-root"></div>`+ScreenDetail.validationHtml(appSettings.display_locale);
 }
 // Design canvas S01~S16: analysis flow numbers and QGV sub-categories (navigation only).
 const FLOW_STEPS=Object.freeze({qgv:[1,"QGV"],technical:[2,"기술적 분석"],macro:[3,"매크로"],validation:[4,"검증·연구"]});
@@ -570,6 +570,7 @@ function render() {
 function renderRoute() {
   window.PrivateHistory?.disposeAll();window.PrivateSubsetView?.disposeAll();
   window.GoogleSheetSetup?.disposeAll();
+  window.ForwardValidation?.disposeAll();
   notice("");syncShell();
   let [route,id]=location.hash.slice(1).split("/");route=route || "home";
   let anchor=null;
@@ -590,6 +591,7 @@ function renderRoute() {
   if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
   if(route==='company'||route==='leaderboard'||route==='analysis') SecReported.mount($('#sec-reported-panel'),secReported,{companyId:route==='leaderboard'?undefined:id,locale:appSettings.display_locale});
   if(route==='profiles') DeviceProfiles.mount($('#device-profile-editor'),{locale:appSettings.display_locale,qgFactors:()=>publicScreens['sec-qg-factors.json']});
+  if(route==='validation') ForwardValidation.mount($('#forward-validation-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig});
   if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});
   for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:undefined,locale:appSettings.display_locale});
   syncNavigation(route);
