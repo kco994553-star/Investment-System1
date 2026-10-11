@@ -8,7 +8,12 @@ const module = await import('../src/index.js');
 const { createHandler, HistoryRateLimiter } = module;
 const ORIGIN = 'https://kco994553-star.github.io';
 const NOW = Date.UTC(2026, 9, 9, 18);
-const SYMBOLS = ['ASML', 'LRCX', 'KLAC', 'NVDA', 'AMD', 'AVGO', 'QCOM', 'INTC', 'MSFT', 'GOOGL', 'AMZN', 'RTX', 'SYK', 'ETN', 'HUBB', 'GEV', 'ROK', '042700.KS', '8035.T'];
+const SYMBOLS = ['ASML', 'LRCX', 'KLAC', 'NVDA', 'AMD', 'AVGO', 'QCOM', 'INTC', 'MSFT', 'GOOGL', 'AMZN', 'RTX', 'SYK', 'ETN', 'HUBB', 'GEV', 'ROK', '042700.KS', '8035.T',
+  'SPY', 'SMH', 'XLK', 'XLV', 'XLE', 'XLB', 'XLP', 'XLY', 'XLC', 'XLU', 'XLRE', 'XLF', 'XLI', 'VUG', 'QUAL', 'KRW=X', 'JPYKRW=X'];
+const FX = (symbol) => symbol.endsWith('=X');
+const ccyOf = (symbol) => FX(symbol) || symbol.endsWith('.KS') ? 'KRW' : symbol.endsWith('.T') ? 'JPY' : 'USD';
+const tzOf = (symbol) => FX(symbol) ? 'Europe/London' : symbol.endsWith('.KS') ? 'Asia/Seoul' : symbol.endsWith('.T') ? 'Asia/Tokyo' : 'America/New_York';
+const q = (symbol) => encodeURIComponent(symbol);
 const RANGES = ['1mo', '3mo', '6mo', '1y', '2y', '5y'];
 const json = (value, status = 200, headers = {}) => new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json', ...headers } });
 const clone = (value) => structuredClone(value);
@@ -50,9 +55,9 @@ function fixture(symbol = 'ASML') {
     chart: {
       result: [{
         meta: {
-          symbol, currency: symbol.endsWith('.KS') ? 'KRW' : symbol.endsWith('.T') ? 'JPY' : 'USD',
-          exchangeName: symbol.endsWith('.KS') ? 'KSC' : symbol.endsWith('.T') ? 'JPX' : 'NMS',
-          exchangeTimezoneName: symbol.endsWith('.KS') ? 'Asia/Seoul' : symbol.endsWith('.T') ? 'Asia/Tokyo' : 'America/New_York', dataGranularity: '1d',
+          symbol, currency: ccyOf(symbol),
+          exchangeName: FX(symbol) ? 'CCY' : symbol.endsWith('.KS') ? 'KSC' : symbol.endsWith('.T') ? 'JPX' : 'NMS',
+          exchangeTimezoneName: tzOf(symbol), dataGranularity: '1d',
           currentTradingPeriod: { regular: { start: current - 7200, end: current + 3600 } },
           regularMarketPrice: 999999,
         },
@@ -118,12 +123,12 @@ test('authenticated daily history preserves raw and adjusted closes with explici
 for (const symbol of SYMBOLS) {
   test(`allows fixed symbol ${symbol} and its expected currency`, async () => {
     const s = setup();
-    const response = await s.run(s.request(`/history?symbol=${symbol}&range=1mo`));
+    const response = await s.run(s.request(`/history?symbol=${q(symbol)}&range=1mo`));
     assert.equal(response.status, 200);
     const data = await response.json();
     assert.equal(data.symbol, symbol);
-    assert.equal(data.currency, symbol.endsWith('.KS') ? 'KRW' : symbol.endsWith('.T') ? 'JPY' : 'USD');
-    assert.equal(data.timezone, symbol.endsWith('.KS') ? 'Asia/Seoul' : symbol.endsWith('.T') ? 'Asia/Tokyo' : 'America/New_York');
+    assert.equal(data.currency, ccyOf(symbol));
+    assert.equal(data.timezone, tzOf(symbol));
     assert.equal(s.calls[1].url, `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1mo`);
   });
 }
@@ -246,6 +251,8 @@ for (const path of [
   '/history?symbol=asml&range=1mo', '/history?symbol=ASML&range=1mo&url=https://evil.test',
   '/history?symbol=ASML&symbol=NVDA&range=1mo', '/history?symbol=ASML&range=1mo&range=1y',
   '/history?symbol=%41SML&range=1mo', '/history?symbol=ASML%2F..&range=1mo',
+  '/history?symbol=KRW=X&range=1mo', '/history?symbol=KRW%3dX&range=1mo', '/history?symbol=KRW%3D&range=1mo', '/history?symbol=EUR%3DX&range=1mo',
+  '/history?symbol=ASML%3D&range=1mo', '/history?symbol=%3DKRW%3DX&range=1mo',
   '/history?symbol=https://evil.test&range=1mo', '/history?symbol=ASML+&range=1mo',
   '/history?symbol=ASML&range=1mo&', '/history?symbol=ASML&range=1mo#fragment',
 ]) {

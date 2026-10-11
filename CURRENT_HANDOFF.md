@@ -9,11 +9,10 @@
 - 이번 세션 추가 병합: #161 S03·S04·S05, #162 py3.13 호환+백업 `/3`(투자자 ★), #163 ROADMAP 상태+[사용자 결정 대기 목록](implementation/docs/USER_DECISIONS_PENDING.md), #164 S06·S07·S11·S13, #166 S08 지표 6카드·S09·S10 세부, #167 레거시 테스트 10종 복구+문구 현지화.
 - 로컬 통합 도구 추가: `integrate.sh <worktree> <branch>`(canonical 병합 → 실제 충돌이면 중단 → 가드·테스트 목록 합집합 재고정 → 빈 화면 fixture 재생성 → 전체 pytest 깨끗할 때만 커밋·push).
 - **2026-10-11 병합(모두 필수 체크 성공):** #156 CI manifest, #165 공개 유형 metrics, #169 원자료 비공개 Release 워크플로, #171 시간대 테스트, #172 가상매매·일일보고서 문서·S17 명세·D-22 초안, #173 13F 운용사 v0 10곳, **#175 실데이터 배포 빌드에서 멈추던 빈 상태 테스트 수정**(10-10 22:24 SEC 일일·10-11 첫 수동 배포 실패 원인), #174 M3 Universe504 주식수 공개 JSON, #176 DCF v1 기본값·FCFE 공개 입력·기기 역DCF, #177 매크로 v0 Growth·Inflation, #178 SIC 업종군 v0·테마 v0·집중 경고 40%, #180 가상매매 엔진 v1(PROVISIONAL, 시작일 미정이라 기록 없음)·S17 일일보고서 2화면·금액 숨김, #181 인수인계, #183 전진검증 원장 v1(10-19 시작, 추가 전용·워크플로 연결·Pages 가드 항목 상한 96).
-- **배포:** 승인된 cockpit-pages 수동 실행 2회차 38102573223 성공(01:48 UTC, `afe55d44`). 이후 병합분(#174·#176·#177·#178·#180·#183 등)은 다음 SEC 일일 실행(22:17 UTC)에서 배포된다. 그 실행이 13F CIK 확인·Universe 샤드·매크로 v0·분류 수집을 처음 실제로 돌린다.
-- **열린 PR:**
-  - 사용자 승인 대기: #170 GSQ-020(10-11 결정 기록), #179 GSQ-018·019. 우체통 구현 #182(GSQ-019 승인 후 병합).
-- **사용자 조치 대기:** 원자료 비공개 저장소·`RAW_REPO_TOKEN` 생성([절차](implementation/docs/producer_infrastructure/RAW_PRIVATE_RELEASE_PROCEDURE.md), 451MB 원자료 만료 2026-12-26), D-22 대응표·Worker 시세 범위, DCF 명시기간 성장률 h·미보고 줄 처리, 매크로 6축 시계열 일괄 승인([제안](implementation/docs/macro_data_rights/MACRO_V0_SERIES_PROPOSAL.md)), 가상매매 시작일(D-13).
-- **다음 할 일:** 다음 SEC 일일 실행(10-11 22:17 UTC) 결과 확인(13F·Universe·매크로·분류 실데이터) → 승인 시 #170·#179·우체통 병합.
+- **2026-10-11 오후 병합:** #185 원자료 사본 기록(6808/6808 PASS, DURABLE_COPY_PRESENT), #187 D-22·시작일 10-19, #188 M3 경제적 동일 종류 합산 v0. **사용자 승인 병합(순서대로):** #170 GSQ-020 → #179 GSQ-018·019 → #182 AI 우체통 → #186 Worker 벤치마크 ETF 15종 → #189 DCF v1.1(IFRS·성장률 h·`BORROWING_PAIR_PARTIAL`) → #190 매크로 6축 원시 표시. 이어서 #194 가상매매 기기 실행기(Worker 일봉·환율·전진검증 Q·G → 장부, RAM 전용).
+- **배포:** Worker 수동 배포 38118316466 성공(06:31 UTC, #186 기준). 검증: 출처 없음 403 `ORIGIN_FORBIDDEN`, 승인 출처·인증 없음 403 `AUTH_FORBIDDEN`. Pages는 다음 SEC 일일 실행(22:17 UTC)에서 배포된다.
+- **열린 PR(사용자 승인 대기):** #191 Worker 환율 `KRW=X`·`JPYKRW=X`(10-19 전 병합·배포 필요, 승인 전까지 실행기는 `DATA_FX_MISSING`), #192 GSQ-021(10-11 승인·결정 기록), #193 M3 Alphabet Class B를 GOOGL 가격으로 합산(공개 `unlisted_classes` 추가). GOOG 'Capital Stock' 정확 문구 예외는 실데이터 미확인으로 보류(비공개 원자료 저장소 접근 필요).
+- **다음 할 일:** 22:50 UTC 체크인에서 SEC 일일 실행 확인(BEA_USERID·RAW_REPO_TOKEN 노출 0, 첫 실데이터 NA 항목, Fed Liquidity·Credit 경로 실패 시 응답 형태 보고) → 승인 시 #191 병합·Worker 재배포, #192·#193 병합 → 시트 장부 저장(클릭 시 쓰기)·V 기록 생산자·세트 B UI.
 - 알려진 제품 갭(결정 필요 아님, 후속 후보): 전체 검색이 기업을 내지 않음(GSQ-010 identity 디렉터리만), 백업 복원 후 ACTUAL 화면 알림 없음, `sec-public-inputs.json`은 SEC 수집 없는 빌드에서 404.
 
 ## 읽기 순서와 운영 경계

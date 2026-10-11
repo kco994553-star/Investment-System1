@@ -7,7 +7,8 @@
   'use strict';
   const FILE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
   const SCOPE = FILE_SCOPE + ' email';
-  const HISTORY_SYMBOLS = new Set(['ASML','LRCX','KLAC','NVDA','AMD','AVGO','QCOM','INTC','MSFT','GOOGL','AMZN','RTX','SYK','ETN','HUBB','GEV','ROK','042700.KS','8035.T']);
+  const HISTORY_SYMBOLS = new Set(['ASML','LRCX','KLAC','NVDA','AMD','AVGO','QCOM','INTC','MSFT','GOOGL','AMZN','RTX','SYK','ETN','HUBB','GEV','ROK','042700.KS','8035.T',
+    'SPY','SMH','XLK','XLV','XLE','XLB','XLP','XLY','XLC','XLU','XLRE','XLF','XLI','VUG','QUAL','KRW=X','JPYKRW=X']);
   const HISTORY_RANGES = new Set(['1mo','3mo','6mo','1y','2y','5y']);
   const HISTORY_ERRORS = new Set(['CONFIG_UNAVAILABLE','AUTH_FORBIDDEN','AUTH_UNAVAILABLE','REQUEST_INVALID','ORIGIN_FORBIDDEN','RATE_LIMITED','RATE_LIMIT_UNAVAILABLE','YAHOO_BLOCKED','YAHOO_UNAVAILABLE','YAHOO_TIMEOUT','YAHOO_FORMAT_CHANGED','YAHOO_TOO_LARGE','TIINGO_UNAVAILABLE','TIINGO_TIMEOUT','TIINGO_FORMAT_CHANGED','TIINGO_TOO_LARGE','KRX_UNAVAILABLE','KRX_TIMEOUT','KRX_FORMAT_CHANGED','KRX_TOO_LARGE','KRX_RANGE_UNSUPPORTED','HISTORY_UNAVAILABLE']);
   const CLIENT_SCRIPT = 'https://accounts.google.com/gsi/client';
@@ -136,7 +137,7 @@
       const previous = token; invalidate(); error = ''; notify();
       if (previous && oauth()) { try { oauth().revoke(previous, () => {}); } catch (_) { /* Memory is cleared even if revocation fails. */ } }
     }
-    async function sheetRequest(path,method='GET',body=null) {
+    async function sheetRequest(path,method='GET',body=null,failCode=null) {
       expire();if(!enabled||!token)fail('AUTH_REQUIRED');
       const attempt=epoch,abort=new view.AbortController();controllers.add(abort);
       const current=()=>enabled&&token&&epoch===attempt&&!abort.signal.aborted;
@@ -145,18 +146,28 @@
         if(!current())fail('CANCELED');
         if(response.status===401){invalidate();error='AUTH_REQUIRED';notify();fail('AUTH_REQUIRED');}
         if(response.status===403)fail('DRIVE_FILE_PERMISSION_REQUIRED');
-        if(!response.ok)fail(method==='POST'?'SHEET_CREATE_FAILED':'READ_FAILED');
+        if(!response.ok)fail(failCode||(method==='POST'?'SHEET_CREATE_FAILED':'READ_FAILED'));
         const advertised=response.headers.get('content-length');if(advertised&&/^\d+$/.test(advertised)&&Number(advertised)>65536){await response.body?.cancel();fail('SOURCE_TOO_LARGE');}
         if(!response.body)fail('READ_FAILED');const reader=response.body.getReader(),chunks=[];let length=0;
         try{while(true){const {done,value}=await reader.read();if(done)break;length+=value.byteLength;if(length>65536||!current()){await reader.cancel();fail(length>65536?'SOURCE_TOO_LARGE':'CANCELED');}chunks.push(value);}}finally{reader.releaseLock();}
         const bytes=new Uint8Array(length);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
         const value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));expire();if(!current())fail('CANCELED');return value;
-      }catch(caught){if(!current()&&caught.message!=='AUTH_REQUIRED')fail('CANCELED');if(['AUTH_REQUIRED','CANCELED','DRIVE_FILE_PERMISSION_REQUIRED','SOURCE_TOO_LARGE','READ_FAILED','SHEET_CREATE_FAILED'].includes(caught.message))throw caught;fail(method==='POST'?'SHEET_CREATE_UNCERTAIN':'READ_FAILED');}
+      }catch(caught){if(!current()&&caught.message!=='AUTH_REQUIRED')fail('CANCELED');if(['AUTH_REQUIRED','CANCELED','DRIVE_FILE_PERMISSION_REQUIRED','SOURCE_TOO_LARGE','READ_FAILED','SHEET_CREATE_FAILED','WRITE_FAILED'].includes(caught.message))throw caught;fail(failCode||(method==='POST'?'SHEET_CREATE_UNCERTAIN':'READ_FAILED'));}
       finally{controllers.delete(abort);}
     }
     async function createSpreadsheet(body){
       if(!body||body.properties?.title!=='Investment Cockpit Data'||!Array.isArray(body.sheets)||JSON.stringify(body).length>1048576)fail('INVALID');
       const value=await sheetRequest('?fields=spreadsheetId','POST',body);return extractSpreadsheetId(value.spreadsheetId);
+    }
+    // S17 AI mailbox only: writes are limited to the ReportInbox/ReportOutbox tabs of the user's own sheet (drive.file, no new scope).
+    const REPORT_TABS=['ReportInbox','ReportOutbox'];
+    async function addTabs(id,titles){
+      if(extractSpreadsheetId(id)!==id||!Array.isArray(titles)||!titles.length||!titles.every(t=>REPORT_TABS.includes(t)))fail('INVALID');
+      await sheetRequest('/'+encodeURIComponent(id)+':batchUpdate','POST',{requests:titles.map(title=>({addSheet:{properties:{title}}}))},'WRITE_FAILED');
+    }
+    async function appendRows(id,range,rows){
+      if(extractSpreadsheetId(id)!==id||typeof range!=='string'||!/^'Report(?:Inbox|Outbox)'!A1$/.test(range)||!Array.isArray(rows)||!rows.every(r=>Array.isArray(r)&&r.every(v=>typeof v==='string'&&v.length<=50000))||JSON.stringify(rows).length>262144)fail('INVALID');
+      await sheetRequest('/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS','POST',{values:rows},'WRITE_FAILED');
     }
     async function sheetTitles(id){
       if(extractSpreadsheetId(id)!==id)fail('INVALID');const value=await sheetRequest('/'+encodeURIComponent(id)+'?fields=sheets(properties(title))');
@@ -242,7 +253,7 @@
       } finally { controllers.delete(abort); if(signal)signal.removeEventListener('abort',cancel); }
     }
     if (view.addEventListener) view.addEventListener('pagehide', () => { invalidate(); error='AUTH_REQUIRED'; notify(); });
-    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, fetchHistory, createSpreadsheet, sheetTitles, pickSpreadsheet, revision: () => epoch,
+    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, fetchHistory, createSpreadsheet, sheetTitles, pickSpreadsheet, addTabs, appendRows, revision: () => epoch,
       subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); } });
   }
   function translate(state, key) { return TEXT[key][state.locale === 'en-US' ? 1 : 0]; }

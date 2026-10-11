@@ -2809,6 +2809,162 @@
    },
    "observations": [],
    "pit_status": "NOT_VERIFIED",
+   "raw_axes_v0": {
+    "axes": {
+     "Credit": {
+      "acquired_at": null,
+      "agency": "FED_H8",
+      "base_period": null,
+      "base_value": null,
+      "frequency": "M",
+      "observation_count": null,
+      "period": null,
+      "published_value": null,
+      "reason_codes": [
+       "SOURCE_NOT_COLLECTED"
+      ],
+      "release_at": null,
+      "release_basis": "NOT_VERIFIED",
+      "seasonal_adjustment": "SA",
+      "source_series_code": null,
+      "source_series_id": "FED:H8:BANK_CREDIT:ALL_COMMERCIAL_BANKS:SA:MONTHLY",
+      "source_sha256": null,
+      "state": "NOT_AVAILABLE",
+      "transform": "RATIO_TO_12_MONTHS_EARLIER_MINUS_1",
+      "value": null,
+      "value_unit": "RATIO"
+     },
+     "FX": {
+      "acquired_at": null,
+      "agency": "FED_H10",
+      "base_period": null,
+      "base_value": null,
+      "frequency": "M",
+      "observation_count": null,
+      "period": null,
+      "published_value": null,
+      "reason_codes": [
+       "PUBLIC_FX_EXCLUDED"
+      ],
+      "release_at": null,
+      "release_basis": "NOT_VERIFIED",
+      "seasonal_adjustment": "NSA",
+      "source_series_code": "JRXWTFB_N.M",
+      "source_series_id": "FED:H10:JRXWTFB_N.M",
+      "source_sha256": null,
+      "state": "NOT_AVAILABLE",
+      "transform": "RATIO_TO_12_MONTHS_EARLIER_MINUS_1",
+      "value": null,
+      "value_unit": "RATIO"
+     },
+     "Fiscal": {
+      "acquired_at": null,
+      "agency": "TREASURY_MTS",
+      "base_period": null,
+      "base_value": null,
+      "frequency": "M",
+      "observation_count": null,
+      "period": null,
+      "published_value": null,
+      "reason_codes": [
+       "SOURCE_NOT_COLLECTED"
+      ],
+      "release_at": null,
+      "release_basis": "NOT_VERIFIED",
+      "seasonal_adjustment": "NSA",
+      "source_series_code": "current_month_dfct_sur_amt",
+      "source_series_id": "TREASURY:MTS:mts_table_1:current_month_dfct_sur_amt",
+      "source_sha256": null,
+      "state": "NOT_AVAILABLE",
+      "transform": "TRAILING_12_MONTH_SUM",
+      "value": null,
+      "value_unit": "CURRENCY_AS_PUBLISHED"
+     },
+     "Labor": {
+      "acquired_at": null,
+      "agency": "BLS",
+      "base_period": null,
+      "base_value": null,
+      "frequency": "M",
+      "observation_count": null,
+      "period": null,
+      "published_value": null,
+      "reason_codes": [
+       "SOURCE_NOT_COLLECTED"
+      ],
+      "release_at": null,
+      "release_basis": "NOT_VERIFIED",
+      "seasonal_adjustment": "SA",
+      "source_series_code": "LNS14000000",
+      "source_series_id": "BLS:LNS14000000",
+      "source_sha256": null,
+      "state": "NOT_AVAILABLE",
+      "transform": "PUBLISHED_PERCENT_DIV_100",
+      "value": null,
+      "value_unit": "RATIO"
+     },
+     "Liquidity": {
+      "acquired_at": null,
+      "agency": "FED_H41",
+      "base_period": null,
+      "base_value": null,
+      "frequency": "W",
+      "observation_count": null,
+      "period": null,
+      "published_value": null,
+      "reason_codes": [
+       "SOURCE_NOT_COLLECTED"
+      ],
+      "release_at": null,
+      "release_basis": "NOT_VERIFIED",
+      "seasonal_adjustment": "NSA",
+      "source_series_code": null,
+      "source_series_id": "FED:H41:TOTAL_ASSETS_LESS_ELIMINATIONS:WEDNESDAY_LEVEL",
+      "source_sha256": null,
+      "state": "NOT_AVAILABLE",
+      "transform": "RATIO_TO_52_WEEKS_EARLIER_MINUS_1",
+      "value": null,
+      "value_unit": "RATIO"
+     },
+     "Monetary Policy": {
+      "acquired_at": null,
+      "agency": "FED_H15",
+      "base_period": null,
+      "base_value": null,
+      "frequency": "B",
+      "observation_count": null,
+      "period": null,
+      "published_value": null,
+      "reason_codes": [
+       "SOURCE_NOT_COLLECTED"
+      ],
+      "release_at": null,
+      "release_basis": "NOT_VERIFIED",
+      "seasonal_adjustment": "NSA",
+      "source_series_code": "RIFSPFF_N.B",
+      "source_series_id": "FED:H15:RIFSPFF_N.B",
+      "source_sha256": null,
+      "state": "NOT_AVAILABLE",
+      "transform": "MONTHLY_MEAN_PERCENT_DIV_100",
+      "value": null,
+      "value_unit": "RATIO"
+     }
+    },
+    "config": {
+     "calibration": "UNCALIBRATED",
+     "decided_on": "2026-10-11",
+     "id": "MACRO_V0_RAW_AXES/1",
+     "marker": "v0 \u00b7 \uc6d0\uc790\ub8cc \ud45c\uc2dc \u00b7 \uad6d\uba74 \ud310\uc815 \ubcf4\ub958",
+     "status": "RAW_DISPLAY_ONLY"
+    },
+    "regime": {
+     "reason_codes": [
+      "REGIME_JUDGEMENT_DEFERRED"
+     ],
+     "state": "NOT_AVAILABLE",
+     "value": null
+    }
+   },
    "regime": null
   },
   "freshness_basis": "SOURCE_ACQUISITION",
@@ -4131,7 +4287,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4142,6 +4299,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4165,7 +4323,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4176,6 +4335,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4199,7 +4359,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4210,6 +4371,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4233,7 +4395,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4244,6 +4407,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4267,7 +4431,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4278,6 +4443,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4301,7 +4467,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4312,6 +4479,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4335,7 +4503,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4346,6 +4515,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4369,7 +4539,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4380,6 +4551,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4403,7 +4575,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4414,6 +4587,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4437,7 +4611,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4448,6 +4623,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4471,7 +4647,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4482,6 +4659,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4505,7 +4683,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4516,6 +4695,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4539,7 +4719,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4550,6 +4731,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4573,7 +4755,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4584,6 +4767,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4607,7 +4791,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4618,6 +4803,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4641,7 +4827,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4652,6 +4839,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4675,7 +4863,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4686,6 +4875,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4709,7 +4899,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4720,6 +4911,7 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
@@ -4743,7 +4935,8 @@
       "reason_codes": [
        "SEC_INPUT_NOT_AVAILABLE"
       ],
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "taxonomy": null
      },
      "source_hashes": {},
      "state": "NOT_AVAILABLE",
@@ -4754,12 +4947,13 @@
        "SEC_INPUT_NOT_AVAILABLE"
       ],
       "revenue": null,
+      "revenue_cagr_3y": null,
       "revenue_prev": null,
       "state": "NOT_AVAILABLE"
      }
     }
    },
-   "fcfe_definition": "fcfe/1",
+   "fcfe_definition": "fcfe/1.1",
    "method_status": "PROVISIONAL_UNCALIBRATED",
    "share_basis": "WEIGHTED_AVERAGE_DILUTED"
   },
