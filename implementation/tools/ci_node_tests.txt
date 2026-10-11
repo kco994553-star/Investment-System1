@@ -26,3 +26,4 @@ daily_report_node_test.js
 classification_screens_node_test.js
 device_valuation_node_test.js
 sec_universe_shares_node_test.js
+forward_validation_node_test.js
