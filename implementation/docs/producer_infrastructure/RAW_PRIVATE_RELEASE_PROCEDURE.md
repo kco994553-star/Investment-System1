@@ -29,6 +29,18 @@
 
 로그에는 개수·크기·sha256만 남고 토큰·원자료 내용·가격은 출력하지 않는다. 기존 Actions artifact는 만료까지 그대로 둔다(삭제는 별도 결정).
 
+## 실행 결과 (2026-10-11)
+
+- 실행: Actions run 38111144765(`upload=true`), 04:18~04:20 UTC
+- 원본 artifact: sha256 `712e43bc…db399f94` 일치, verify_blobs PASS 6808/6808
+- 비공개 릴리스 `raw-c21-store-36305927245`(release_id 409407256)에 업로드
+  - zip 451,439,890 bytes
+  - `.sha256` 96 bytes
+- 릴리스에서 다시 받아 확인: sha256 일치, verify_blobs PASS 6808/6808, manifest_set_sha256 `17934234…0899e828` 동일
+- 기록: `reports/raw_persistence/storage_locations_2026-10-11.json`, `raw_dataset_manifest_2026-10-11.json`
+  - retention 판정은 **DURABLE_COPY_PRESENT**이고 만료 기한이 없음
+- 로그 점검: 전체 314줄에서 `RAW_REPO_TOKEN`과 `GITHUB_TOKEN`은 모두 `***`로 가려졌고, 토큰 형태의 문자열은 0건
+
 ## 3. 복원 방법
 
 비공개 릴리스에서 zip을 받아 sha256을 위 값과 대조 → 압축 해제 → `python implementation/tools/raw_artifact_restore_check.py --archive <zip> --expected-sha <sha> --restored <dir> --out check.json` → `blob_verification.status == PASS`, 6808/6808.
