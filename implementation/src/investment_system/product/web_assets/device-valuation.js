@@ -1,7 +1,7 @@
 /* sec-valuation-inputs.json reader (price-free, fcfe/1) and the RAM-only device value view (v1+dcf_v1_default).
    The device price is a transient argument: no result field, storage key or request carries it or anything derived from it.
    Python reference: qgv/device_valuation.py (vectors: tests/fixtures/device_valuation_reference_v1.json). */
-(function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?()=>require('./engine-preview.js'):()=>root.EnginePreview,node?()=>require('./type-config-defaults.js'):()=>root.TypeConfigDefaults);if(node)module.exports=api;else root.DeviceValuation=api;})(typeof globalThis==='object'?globalThis:this,function(engine,typeDefaults){
+(function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?()=>require('./engine-preview.js'):()=>root.EnginePreview,node?()=>require('./dcf-parameters-defaults.js'):()=>root.DcfParametersDefaults);if(node)module.exports=api;else root.DeviceValuation=api;})(typeof globalThis==='object'?globalThis:this,function(engine,dcfDefaults){
 'use strict';
 const FILE='sec-valuation-inputs.json',KIND='SEC_VALUATION_INPUTS',MAX=2*1024*1024,DEFAULT_STATUS='V1_UNCALIBRATED_DEFAULT';
 const IDS=['asml','lrcx','klac','tokyo_electron','hanmi','nvda','amd','avgo','qcom','intc','msft','googl','amzn','rtx','stry','etn','hubb','gev','rok'];
@@ -75,7 +75,7 @@ async function load(view){
  catch(_){return null;}finally{clearTimeout(timer);}
 }
 function row(payload,id){const c=payload&&payload.data&&payload.data.companies;return c&&Object.hasOwn(c,id)?c[id]:null;}
-function parameters(){const t=typeDefaults();return t&&t.dcf?t.dcf:null;}
+function parameters(){const d=dcfDefaults();return d&&typeof d==='object'?d:null;}
 const na=reason=>({score:null,state:'NOT_AVAILABLE',reason});
 // Mirror of qgv/device_valuation.device_value_view. `quote` is {price,currency} held only in RAM by the caller.
 function view({row:r=null,quote=null,parameters:p=parameters()}={}){

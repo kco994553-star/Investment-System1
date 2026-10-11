@@ -33,3 +33,4 @@ web_mvp_browser_test.js
 web_research_guard_browser_test.js
 web_state_presentation_browser_test.js
 global_language_search_browser_test.js
+dcf_value_browser_test.js

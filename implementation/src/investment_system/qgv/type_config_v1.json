@@ -194,32 +194,11 @@
     "groups": []
   },
   "dcf": {
-    "schema_version": 1,
-    "config_version": "dcf_config/1",
-    "role": "RAM_ONLY_RESEARCH",
-    "status": "V1_UNCALIBRATED_DEFAULT",
-    "decided_at": "2026-10-11",
-    "confirmed": true,
     "explicit_years": 5,
-    "discount_rate": 0.1,
-    "terminal_growth": 0.02,
-    "discount_rate_basis": "COST_OF_EQUITY",
-    "cashflow_basis": "FCFE_PER_SHARE",
-    "currency": "USD",
-    "per_share_basis_confirmed": true,
-    "share_basis": "WEIGHTED_AVERAGE_DILUTED",
-    "fcfe_definition": "fcfe/1",
-    "explicit_growth": null,
-    "explicit_growth_status": "EXPLICIT_GROWTH_UNDECIDED",
-    "solver": {
-      "growth_lower": -0.5,
-      "growth_upper": 1.0,
-      "relative_price_tolerance": 1e-10,
-      "maximum_iterations": 200
-    },
-    "output_version": "v1+dcf_v1_default",
-    "rate_source": "USER_DEFAULT_NOT_OBSERVED_CAPITAL_COST",
-    "terminal_source": "USER_DEFAULT_NOT_CASHFLOW_GROWTH_PROOF"
+    "discount_rate": null,
+    "terminal_growth": null,
+    "confirmed": false,
+    "cashflow_basis": null
   },
   "themes": {
     "role": "EXPOSURE_ONLY",

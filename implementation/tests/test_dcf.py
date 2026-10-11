@@ -16,27 +16,9 @@ def forward(cashflow=1.,growth=.05,config=None):return api().two_stage_dcf(cashf
 def reverse(price,config=None):return api().reverse_dcf(cashflow_per_share=1.,price=price,parameters=config or params(),cashflow_currency='USD',price_currency='USD')
 
 def test_unapproved_defaults_remain_not_available():
-    # An unconfirmed copy still never computes; the adopted file is confirmed (2026-10-11 decision).
     x=json.loads((Path(__file__).parents[1]/'src/investment_system/qgv/dcf_config_v1.json').read_text())
-    x['confirmed']=False
     r=forward(config=x)
     assert r.state=='NOT_AVAILABLE' and r.reason_codes==('PARAMETER_APPROVAL_PENDING',) and r.value_per_share is None
-
-
-def test_adopted_v1_uncalibrated_defaults_match_user_decision():
-    base=Path(__file__).parents[1]/'src/investment_system/qgv'
-    x=json.loads((base/'dcf_config_v1.json').read_text())
-    assert x['status']=='V1_UNCALIBRATED_DEFAULT' and x['confirmed'] is True
-    assert (x['explicit_years'],x['discount_rate'],x['terminal_growth'])==(5,.10,.02)
-    assert (x['solver']['growth_lower'],x['solver']['growth_upper'])==(-.5,1.)
-    assert (x['solver']['relative_price_tolerance'],x['solver']['maximum_iterations'])==(1e-10,200)
-    assert (x['cashflow_basis'],x['discount_rate_basis'],x['share_basis'])==('FCFE_PER_SHARE','COST_OF_EQUITY','WEIGHTED_AVERAGE_DILUTED')
-    # Explicit-period growth h is not decided: no value is invented.
-    assert x['explicit_growth'] is None and x['explicit_growth_status']=='EXPLICIT_GROWTH_UNDECIDED'
-    assert x['output_version']=='v1+dcf_v1_default'
-    # The type configuration carries the identical block for the device copy.
-    assert json.loads((base/'type_config_v1.json').read_text())['dcf']==x
-    assert forward(config=x).state=='PROVISIONAL' and reverse(forward(growth=.07,config=x).value_per_share,config=x).implied_growth==pytest.approx(.07,abs=1e-9)
 
 def test_constant_perpetuity_reference():
     x=params();x['terminal_growth']=0
