@@ -56,7 +56,7 @@ function classLabel(name,en){const [k,e]=CLASSES[name];return en?e+' ('+k+')':k+
 function mount(host,payload,{locale,companyIds=null,limit=30,emptyText}={}){
  if(!host)return;const doc=host.ownerDocument,en=locale==='en-US',T=(k,e)=>en?e:k,el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
  const section=el('section',undefined,{class:'card','data-dart-disclosures':''});section.append(el('h2',T('공시·확정 · DART','Disclosures · confirmed · DART')));
- const state=payload?payload.state:'NOT_AVAILABLE';section.append(el('p',state,{class:'badge '+state,'data-disclosure-state':state}));
+ const state=payload?payload.state:'NOT_AVAILABLE';section.append(el('p',state,{class:'badge disclosure-state','data-disclosure-state':state}));
  if(!payload){section.append(el('p',T('DART 공시 자료가 연결되지 않았습니다.','DART disclosure data is not connected.'),{class:'empty'}));host.replaceChildren(section);return;}
  const reason=Object.values(payload.companies).map(c=>c.reason_code).find(Boolean);
  if(state==='NOT_AVAILABLE'&&reason)section.append(el('p','NOT_AVAILABLE · '+reason,{class:'small','data-disclosure-reason':reason}));

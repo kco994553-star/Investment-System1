@@ -35,7 +35,7 @@ from investment_system.product.dart_public import FILENAMES as DART_FILENAMES, r
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "dart-disclosures.js": "207bceccba0da62dc0e2d94b4cef73b5710a8c5fb830c296d4c9ed456b3edf2f",
+    "dart-disclosures.js": "64571f9f6a09e5c99bac54a510aad69589dbe32847dc4aec0cf3f163e8fdb832",
     "virtual-trading-runner.js": "a8ed46c6198ed161848794e6f5fac72d8de83a9c9b8aeccb87a05684764d284e",
     "virtual-ledger-sheets.js": "ae2b4b72f7307e8cad45300962b67ec0e30c44ee218f778ba4f130e0aebe55be",
     "table-sort.js": "bd6e195298cb53b32adc8cdeaec57312e4c1807760e100b0af351f50bc4dfbf4",
