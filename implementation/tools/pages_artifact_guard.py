@@ -29,8 +29,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
 from investment_system.product.public_engine_screens import FILENAMES as SCREEN_FILENAMES, require_public_screen
 from investment_system.universe.sec_universe_shares import FILENAME as UNIVERSE_SHARES_FILENAME, require_universe_shares
+from investment_system.universe.sec_universe_qg import FILENAME as UNIVERSE_QG_FILENAME, require_universe_qg
 from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDGER_FILENAME, require_ledger as require_forward_ledger
 from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
+from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES_FILENAME, require_universe_codes
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
@@ -47,12 +49,12 @@ APPROVED_SHA256 = {
     "sec-universe-shares.js": "574f94ffebfc2a8cc20bac0cd5ff7bfd7e58db3cb1864f60d4c2a14dd24b37f9",
     "virtual-trading-v-history.js": "b72a870fcf8b910685651591c79eed99f294204bec5714b1ea7da966554916fa",
     "virtual-trading-signals.js": "8d308b77f3bbeb84108d518fcc9d9679d61dc67c1784de7934e9fdcdf56d452f",
+    "sec-universe-qg.js": "4364791b338d04be28811efb8588806d8c653fca9e36eb75c86014758471f414",
     "device-valuation.js": "06669cda863cd4dfa87108f54e03b75c9321989967da7ed54b03c921143cfedf",
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
-    "daily-report.js": "99d91fa2827e15eda39a79c203519a63408ed1e9410c577ed431952d57f3ffd1",
     "virtual-trading.js": "c65986a866b670c0d8c541eb2da2b835dd9e348e650f74e96bbc4ed013a67c3c",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "eb616b12afef84eb9f283a93f40b7dc568a940c39b9cecdf135c471a6d59c6a5",
@@ -75,7 +77,7 @@ APPROVED_SHA256 = {
     "manifest.json": "b4a949507c0859ee3ec158f0a6eaa6ec9cefc5c0e7e630715336817b9c248f8c",
     "offline.html": "84dabe85364d57ca5ab49018e195871504df443a714e819fdb6a3c614be79bb5",
     "sec-reported.js": "3e732a26d7d5f49e0c2b441a4883bc260caa2ab9c9aa6b2f8795e164008ecb94",
-    "google-sheet-setup.js": "6627c571debea9b76daef4c1123aa9076b2fa025be6cd637150ec5510f1f05aa",
+    "google-sheet-setup.js": "24d8c0bb60310c104b7d5ec08292330d62d1a32f33a61eae4e76b5489747f471",
     "private-trades.js": "86d59b4c5ef341ab47f1892fe65b483ca8256e367cfde06e1c9a0b580530fb9f",
     "technical-chart.js": "64b581fd186cdcb39f31def58412052dfa777dc2920a4f2432c1842b19c65eb8",
     "chart-indicators.js": "30cf6571f32c0496acd247099feb5f71fce0acf8870dcd78781018b872291fcc",
@@ -91,16 +93,16 @@ APPROVED_SHA256 = {
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "174e1039be5c3d3757c8938070887154fe91cda0d87b5850e1330ef491554c93",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "ea28ce88509ce3bc4135953eb1284d784a46842d1381da91e36b2389a2025b08",
+    "google-sheet-quotes.js": "c4cc030491e5221b98657c3019c3a7558e5a75e79f2cf08a6a94e028fb724791",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "f52e19461576233334eb58217c1af167ba727442c95e823270de885051381751",
+    "index.html": "14235a38510766e51c40470d10e96ee90f013560b35c81d8a8e8a4ba1a677afc",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "f1f7eed0853eecaa6847c8468999bc5bbe06b4c0d9a49c845c57c00366017220",
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -220,6 +222,12 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == UNIVERSE_SHARES_FILENAME:
             try: require_universe_shares(value)
             except ValueError: violations['universe_shares_boundary'] += 1
+        elif name == UNIVERSE_CODES_FILENAME:
+            try: require_universe_codes(value)
+            except ValueError: violations['universe_codes_boundary'] += 1
+        elif name == UNIVERSE_QG_FILENAME:
+            try: require_universe_qg(value)
+            except ValueError: violations['universe_qg_boundary'] += 1
         elif name == FORWARD_LEDGER_FILENAME:
             try: require_forward_ledger(value)
             except ValueError: violations['forward_ledger_boundary'] += 1
