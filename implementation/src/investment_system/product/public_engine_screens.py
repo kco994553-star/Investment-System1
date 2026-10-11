@@ -126,15 +126,12 @@ def _require(name,payload):
                 _need(isinstance(row['memberships'],dict) and set(row['memberships'])==set(PRICEFREE_TYPES))
                 for v in row['memberships'].values():_score(v,1)
                 _need((row['state']=='NOT_AVAILABLE')==all(v is None for v in row['memberships'].values()))
-<<<<<<< HEAD
-    elif name==_valuation.FILENAME:
-        states.extend(_valuation.validate_data(data,OFFICIAL_V11_TARGETS,lambda row,state:_source_refs(row,sources,{'companyfacts':'SEC_COMPANYFACTS','submissions':'SEC_SUBMISSIONS'},cut,payload['stale_after_seconds'],state)))
-=======
                 # Optional price-free SEC ratios behind the memberships; null stays null (never 0).
                 if 'metrics' in row:
                     _keys(row['metrics'],PRICEFREE_METRICS)
                     for v in row['metrics'].values():_need(v is None or (_finite(v) and abs(v)<=100))
->>>>>>> origin/claude/investment-system-top500-validation-alrugm
+    elif name==_valuation.FILENAME:
+        states.extend(_valuation.validate_data(data,OFFICIAL_V11_TARGETS,lambda row,state:_source_refs(row,sources,{'companyfacts':'SEC_COMPANYFACTS','submissions':'SEC_SUBMISSIONS'},cut,payload['stale_after_seconds'],state)))
     elif name=='sec-filing-windows.json':
         _keys(data,('companies',));_need(isinstance(data['companies'],dict) and set(data['companies'])==set(OFFICIAL_V11_TARGETS))
         for row in data['companies'].values():
