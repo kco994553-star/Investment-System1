@@ -573,6 +573,8 @@ async function paintReport(id){
   const reportDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
   const model=R.buildModel({kind,tab,reportDate,ledger,ram,qg,names,config:cfg});
   const canonical=R.renderTemplate(model,{hidden:true,guide:false});let key=null;try{key=await R.hash(canonical);}catch(_){key=null;}
+  // The mailbox always writes amounts hidden with the guide; its Inbox/Outbox sha256 is the hash of exactly this text.
+  const inboxText=R.renderTemplate(model,{hidden:true,guide:true});
   const paint=()=>{
     if(!host.isConnected)return;const hidden=R.hiddenSetting(localStorage),answer=key?R.answers(localStorage)[key]||null:null;
     host.innerHTML=R.screenHtml(model,{hidden,answer,check:answer?R.checkAnswer(answer.answer,canonical):null,locale});
@@ -582,8 +584,8 @@ async function paintReport(id){
     host.querySelector('[data-save-answer]').onclick=()=>{const text=host.querySelector('[data-ai-input]').value.trim();if(!text){say('붙여넣은 답변이 없습니다.');return;}if(!key){say('HASH_UNAVAILABLE');return;}if(R.saveAnswer(localStorage,key,{answer:text,saved_at:new Date().toISOString(),source:'PASTE',report_date:reportDate}))paint();else say('DEVICE_STORAGE_UNAVAILABLE');};
     const mailbox=async(action)=>{try{const session=GoogleSheetQuotes.sessionFor(window,window.InvestmentAppConfig.googleSheetsClientId),sheet=GoogleSheetSetup.source(window);
       if(!session.state().connected||!sheet){say('구글 로그인과 시트 연결이 필요합니다(설정 → Google 첫 설정).');return;}
-      if(action==='post'){await R.postInbox(session,sheet,{report_date:reportDate,kind,sha256:key,template:R.renderTemplate(model,{hidden:true,guide:true}),now:new Date().toISOString()});say('ReportInbox에 오늘 템플릿(금액 숨김)을 넣었습니다.');}
-      else{const found=await R.readOutbox(session,sheet,key);if(!found){say('해시가 같은 답이 아직 없습니다.');return;}R.saveAnswer(localStorage,key,{answer:found.answer,saved_at:found.created_at||new Date().toISOString(),source:'MAILBOX',model:found.model,report_date:reportDate});paint();}
+      if(action==='post'){await R.postInbox(session,sheet,{report_date:reportDate,kind,template:inboxText,data_sha256:key,now:new Date().toISOString()});say('ReportInbox에 오늘 템플릿(금액 숨김)을 넣었습니다.');}
+      else{const found=await R.readOutbox(session,sheet,await R.hash(inboxText));if(!found){say('해시가 같은 답이 아직 없습니다.');return;}R.saveAnswer(localStorage,key,{answer:found.answer,saved_at:found.created_at||new Date().toISOString(),source:'MAILBOX',model:found.model,report_date:reportDate});paint();}
     }catch(e){say(String(e&&e.message||'MAILBOX_FAILED'));}};
     host.querySelector('[data-mailbox-post]').onclick=()=>void mailbox('post');
     host.querySelector('[data-mailbox-read]').onclick=()=>void mailbox('read');

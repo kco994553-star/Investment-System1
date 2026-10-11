@@ -97,17 +97,25 @@ test('answers are stored per template hash on this device only, newest kept', as
   assert.equal(R.hiddenSetting({ getItem() { throw new Error('blocked'); } }), true);
 });
 
-test('mailbox writes only to the report tabs and matches by hash', async () => {
+test('mailbox writes only to the report tabs; Inbox sha256 is the hash of the written text', async () => {
+  const crypto = require('node:crypto');
   const calls = [];
   const session = {
     sheetTitles: async () => ['Quotes'],
     addTabs: async (id, t) => calls.push(['add', t]),
-    appendRows: async (id, range, rows) => calls.push(['append', range, rows[0].length]),
+    appendRows: async (id, range, rows) => calls.push(['append', range, rows[0]]),
     fetchValues: async () => ({ values: [['sha256', 'model', 'created_at', 'answer'], ['x', 'm', 't', 'other'], ['h1', 'GPT', '2026-10-12T00:00Z', 'answer one']] }),
   };
-  await R.postInbox(session, 'id', { report_date: '2026-10-12', kind: 'MOCK', sha256: 'h1', template: 'T', now: 'N' });
+  const text = 'TEMPLATE TEXT 숨김';
+  const sha = await R.postInbox(session, 'id', { report_date: '2026-10-12', kind: 'MOCK', template: text, data_sha256: 'd1', now: 'N' }, crypto.webcrypto);
   assert.deepEqual(calls[0], ['add', ['ReportInbox', 'ReportOutbox']]);
   assert.ok(calls.every((c) => c[0] === 'add' || /^'Report(Inbox|Outbox)'!A1$/.test(c[1])));
+  const row = calls[calls.length - 1][2];
+  assert.equal(row.length, 8);
+  assert.equal(row[4], crypto.createHash('sha256').update(text, 'utf8').digest('hex'));
+  assert.equal(row[4], sha);
+  assert.equal(row[5], 'd1');
+  assert.equal(row[7], text);
   assert.deepEqual(await R.readOutbox(session, 'id', 'h1'), { model: 'GPT', created_at: '2026-10-12T00:00Z', answer: 'answer one' });
   assert.equal(await R.readOutbox(session, 'id', 'nope'), null);
 });

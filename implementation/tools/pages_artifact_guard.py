@@ -35,7 +35,7 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
-    "daily-report.js": "a678983e978c97c40f96d70cbf8b94d6e6e2cb22f246eca9d9c26711d5fd26fa",
+    "daily-report.js": "72c724c8fbf77751235fe0897fed7fa8146127dd9c19b87431acf8be28cec3ad",
     "sec-universe-shares.js": "77648df45a6c2e55b2c3be2cea2735a1d2457d8ef811646e7f2d0de674564bbb",
     "device-valuation.js": "0723d5371710da30aa1ed9b564e4ac7260047a83c182b843e57be4715d822567",
     "dcf-parameters-defaults.js": "9025559eff99d29eba26fc7ef3cf5ed86b969f4ad0b03c1f83f67ee0630c3bee",
@@ -72,7 +72,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "c367b0d5c7c6ebd81dff1045af6012611c9804a75cfbeae4ff1c4aaa3951532e",
+    "app.js": "35e647be5d3bcdf3e999da84f81e8f64c22310fc2d179085833045898a2c9851",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "4b6bbdf71f74875199221cf534dc403be7961fd722abe2b1b12a499e2740f7f3",

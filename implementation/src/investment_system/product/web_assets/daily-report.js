@@ -136,17 +136,22 @@ function saveAnswer(storage,key,entry){
  try{storage.setItem(AI_KEY,JSON.stringify(Object.fromEntries(keep)));return true;}catch(_){return false;}
 }
 /* Mailbox (template §8, GSQ-019 pending): the user's own sheet, tabs ReportInbox / ReportOutbox. Default OFF.
-   Inbox row: created_at | report_date | kind | template_version | sha256 | status(NEW) | template.
-   Outbox row: sha256 | model | created_at | answer. A result is shown only when its sha256 equals this template's hash. */
-const INBOX='ReportInbox',OUTBOX='ReportOutbox',INBOX_HEAD=['created_at','report_date','kind','template_version','sha256','status','template'],OUTBOX_HEAD=['sha256','model','created_at','answer'];
+   Inbox row: created_at | report_date | kind | template_version | sha256 | data_sha256 | status(NEW) | template.
+     sha256      = SHA-256 of the exact template text written in this row (what the AI reads and must echo back).
+     data_sha256 = SHA-256 of the canonical data template (amounts hidden, no guide); the device's answer-storage key.
+   Outbox row: sha256 | model | created_at | answer. A result is accepted only when its sha256 equals the Inbox sha256
+   of the template this device would write for the same data. */
+const INBOX='ReportInbox',OUTBOX='ReportOutbox',INBOX_HEAD=['created_at','report_date','kind','template_version','sha256','data_sha256','status','template'],OUTBOX_HEAD=['sha256','model','created_at','answer'];
 async function ensureTabs(session,id){
  const titles=await session.sheetTitles(id),missing=[INBOX,OUTBOX].filter(t=>!titles.includes(t));
  if(missing.length){await session.addTabs(id,missing);for(const t of missing)await session.appendRows(id,"'"+t+"'!A1",[t===INBOX?INBOX_HEAD:OUTBOX_HEAD]);}
  return missing;
 }
-async function postInbox(session,id,{report_date,kind,sha256,template,now}){
+async function postInbox(session,id,{report_date,kind,template,data_sha256,now},cryptoImpl){
+ const sha256=await hash(template,cryptoImpl);
  await ensureTabs(session,id);
- await session.appendRows(id,"'"+INBOX+"'!A1",[[now,report_date||'',kind,TEMPLATE_VERSION,sha256,'NEW',template]]);
+ await session.appendRows(id,"'"+INBOX+"'!A1",[[now,report_date||'',kind,TEMPLATE_VERSION,sha256,data_sha256||'','NEW',template]]);
+ return sha256;
 }
 async function readOutbox(session,id,sha256){
  const payload=await session.fetchValues(id,"'"+OUTBOX+"'!A1:D500",{maxBytes:1048576});const rows=Array.isArray(payload.values)?payload.values:[];
