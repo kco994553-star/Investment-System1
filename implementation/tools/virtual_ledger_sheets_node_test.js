@@ -99,11 +99,13 @@ const result = () => assembled();
 const ID = 'synthetic_sheet_fixture_id_000000';
 const NOW = '2026-10-31T00:10:00Z';
 
-test('record: creates the five tabs with headers, writes Set A/Set B missing sessions, then nothing more (append-only)', async () => {
-  const { session, tabs, calls } = mockSheet();
+test('record: creates the missing tabs with headers, writes Set A/Set B missing sessions, then nothing more (append-only)', async () => {
+  // The user's VirtualFlags tab holds the same flag as the synthetic runner vector (googl HOLD on 2026-10-22).
+  const { session, tabs, calls } = mockSheet({ VirtualFlags: [[...S.FLAGS_HEAD], ['', '2026-10-22', 'GOOGL', 'hold']] });
   await S.saveSetB(session, ID, { nvda: '40', msft: '35.5', hanmi: '24.5' }, { now: '2026-10-21T13:00:00Z' });
   assert.deepEqual([...tabs.keys()].sort(), [...S.ALL_TABS].sort());
   for (const t of S.ALL_TABS) assert.deepEqual(tabs.get(t)[0], [...S.HEADS[t]]);
+  assert.equal(tabs.get('VirtualFlags').length, 2, 'an existing tab is not rewritten');
   const r = await S.record(session, ID, { result: result(), kind: 'MOCK', now: NOW });
   assert.deepEqual(r.ledgers, ['set_a', 'set_b-1']);
   const meta = tabs.get('VirtualMeta').slice(1);
@@ -148,6 +150,14 @@ test('record: never before the start date, never a rehearsal, never with inputs 
   const { session, calls } = mockSheet();
   await assert.rejects(S.record(session, ID, { result: result(), kind: 'MOCK', rehearsal: true }), /REHEARSAL_NOT_RECORDED/);
   await assert.rejects(S.record(session, ID, { result: { ...result(), rehearsal: true }, kind: 'MOCK' }), /REHEARSAL_NOT_RECORDED/);
+  // Rehearsal mode (vt-signals-rehearsal) marks its results mode:'REHEARSAL': never written, not for REAL either.
+  await assert.rejects(S.record(session, ID, { result: { ...result(), mode: 'REHEARSAL' }, kind: 'MOCK' }), /REHEARSAL_NOT_RECORDED/);
+  await assert.rejects(S.record(session, ID, { result: { ...result(), mode: 'REHEARSAL' }, kind: 'REAL' }), /REHEARSAL_NOT_RECORDED/);
+  // A transient history failure (rate limit) waits: it is not written as a permanent NOT_AVAILABLE.
+  const flaky = result(); flaky.sources = { ...flaky.sources, NVDA: { state: 'NOT_AVAILABLE', code: 'RATE_LIMITED', sessions: 0 } };
+  assert.deepEqual(S.inputsIncomplete(flaky), ['NVDA']);
+  assert.deepEqual(S.inputsIncomplete(result()), [], 'REQUEST_INVALID / NOT_REQUESTED are lasting states');
+  await assert.rejects(S.record(session, ID, { result: flaky, kind: 'MOCK' }), /INPUTS_INCOMPLETE/);
   // A rehearsal-style input that replays sessions before 2026-10-19 is refused even when not flagged.
   const early = result(); early.ledgers.SET_A.input = { ...early.ledgers.SET_A.input, sessions: ['2026-10-16', ...early.ledgers.SET_A.input.sessions] };
   early.ledgers.SET_A.input.companies = Object.fromEntries(Object.entries(early.ledgers.SET_A.input.companies).map(([k, c]) => [k, { ...c, closes: { ...c.closes } }]));
@@ -155,6 +165,8 @@ test('record: never before the start date, never a rehearsal, never with inputs 
   assert.ok(st.ledgers[0].missing.every((d) => d >= '2026-10-19'), 'engine replays from the start date only');
   await assert.rejects(S.record(session, ID, { result: { state: 'NOT_STARTED', reason_codes: ['BEFORE_START_DATE'], ledgers: {} }, kind: 'MOCK' }), /BEFORE_START_DATE/);
   assert.equal(calls.filter((c) => c[0] === 'append' || c[0] === 'add').length, 0);
+  // A RECORDING-mode result is written normally.
+  assert.ok((await S.record(session, ID, { result: { ...result(), mode: 'RECORDING' }, kind: 'MOCK', now: NOW })).sessions > 0);
 });
 
 test('Set B: validated, a redefinition closes the old ledger and starts the next one after its recorded sessions', async () => {

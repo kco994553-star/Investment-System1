@@ -34,7 +34,7 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "virtual-ledger-sheets.js": "82f65cea85717c5c9de05bbb8b65ada8429b6d937723572ec77fd9ff89d10ed5",
+    "virtual-ledger-sheets.js": "9fc09749fa1a6df9c74e7ceb23cc0df9f466af0d3661653db33132bd58efcd83",
     "virtual-trading-runner.js": "087d5836c89c5ea31989293e2fa4ceb7f6b26364c31c6dc1ca6bc59e2de0e763",
     "share-class-groups.js": "3726a07393a0d1e04edc990fe7bdcacb5c1bbb8760547934dd9ef28e33b9f307",
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",

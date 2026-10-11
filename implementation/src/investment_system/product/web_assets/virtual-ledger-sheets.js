@@ -258,13 +258,19 @@ function sheetState(values){
  }
  return out;
 }
+// The assembled Set A input with the flags as they are in the sheet now (VirtualFlags), for every ledger.
+function sheetBase(result,sheet){return{...result.ledgers.SET_A.input,flags:runner().flagsFromStore(sheet.flags)};}
+// Symbols whose history failed for a reason that may pass (rate limit, network, sign-in): recording waits for them so a
+// transient gap is not written as a permanent NOT_AVAILABLE. A rejected symbol (REQUEST_INVALID) is a lasting state.
+const LASTING=new Set(['REQUEST_INVALID','NOT_REQUESTED']);
+function inputsIncomplete(result){const src=result&&object(result.sources)?result.sources:{};return Object.keys(src).filter(k=>src[k].state!=='OK'&&!LASTING.has(src[k].code)).sort();}
 // All ledgers (Set A implicit until first recorded) with replay verification against the runner's assembled inputs.
 function statuses(sheet,result,config){
  if(!sheet||sheet.state!=='READY')return{state:'SHEET_NOT_READY',reason_codes:sheet?sheet.reason_codes:['SHEET_NOT_LOADED'],ledgers:[],inputs:{},through:null};
  if(!result||result.state!=='READY'||!result.ledgers||!result.ledgers.SET_A||result.ledgers.SET_A.state!=='READY')
   return{state:'INPUTS_NOT_READY',reason_codes:result&&result.reason_codes&&result.reason_codes.length?[...result.reason_codes]:['INPUTS_NOT_READY'],ledgers:[],inputs:{},through:null};
- const base=result.ledgers.SET_A.input,through=recordableThrough(base),ledgers=[setALedger(sheet.meta,base,config),...sheet.meta.ledgers.filter(l=>l.kind!=='SET_A')];
- const out={state:'READY',reason_codes:[],ledgers:[],inputs:{},through,defs:{}};
+ const base=sheetBase(result,sheet),through=recordableThrough(base),ledgers=[setALedger(sheet.meta,base,config),...sheet.meta.ledgers.filter(l=>l.kind!=='SET_A')];
+ const out={state:'READY',reason_codes:[],ledgers:[],inputs:{},through,defs:{},incomplete:inputsIncomplete(result)};
  for(const led of ledgers){const{status,input}=ledgerStatus(led,base,sheet.rows[led.id]||[],config,through);out.ledgers.push(status);out.inputs[led.id]=input;out.defs[led.id]=led;}
  return out;
 }
@@ -273,7 +279,7 @@ function statuses(sheet,result,config){
    user's TARGET as its target when one is saved. */
 function apply(result,sheet){
  if(!result||result.state!=='READY'||!sheet||sheet.state!=='READY'||!result.ledgers.SET_A||result.ledgers.SET_A.state!=='READY')return result;
- const base=result.ledgers.SET_A.input,cfg=engine().defaultConfig(),ledgers={...result.ledgers},meta=sheet.meta;
+ const base=sheetBase(result,sheet),cfg=engine().defaultConfig(),ledgers={...result.ledgers},meta=sheet.meta;
  const put=(kind,led)=>{const d=deriveInput(base,led);ledgers[kind]=d.state==='READY'?{state:'READY',reason_codes:[],input:d.input}:{state:NA,reason_codes:d.reason_codes,input:null};};
  if(meta.ledgers.some(l=>l.id==='set_a'))put('SET_A',setALedger(meta,base,cfg));
  const b=active(meta,'SET_B');if(b)put('SET_B',b);
@@ -328,6 +334,7 @@ async function record(session,id,{result,kind,now=nowIso(),rehearsal=false,crypt
  const st=statuses(sheet,result,cfg);if(st.state!=='READY')fail(st.reason_codes[0]||st.state);
  const scope=st.ledgers.filter(s=>SCOPES[kind].includes(s.kind));
  if(scope.some(s=>s.state==='LEDGER_REPLAY_MISMATCH'))fail('LEDGER_REPLAY_MISMATCH');
+ if(st.incomplete.length)fail('INPUTS_INCOMPLETE');
  const todo=scope.filter(s=>s.missing.length);
  for(const s of todo)if(s.missing.some(d=>d<VT.CONFIG.start_date))fail('BEFORE_START_DATE');
  if(!todo.length)return{sessions:0,ledgers:[]};
@@ -411,10 +418,12 @@ function recordCard(ctx,state){
  if(before)h+='<p class="badge NOT_AVAILABLE" data-ledger-before-start>'+esc('가상매매 시작일 '+engine().CONFIG.start_date+' 전 · 기록하지 않음')+'</p>';
  else if(st&&st.state==='INPUTS_NOT_READY'&&connected&&sheet&&sheet.state==='READY')h+='<p class="small" data-ledger-inputs>'+esc('장부 입력 준비 전 · 재생 확인 대기('+st.reason_codes.join(', ')+')')+'</p>';
  if(list.length)h+='<ul class="small" data-ledger-list>'+list.map(s=>ledgerLine(s,st.defs[s.id])).join('')+'</ul>';
+ const incomplete=st&&st.state==='READY'?st.incomplete:[];
+ if(incomplete.length)h+='<p class="small" data-ledger-incomplete>'+esc('INPUTS_INCOMPLETE · 시세를 다시 받은 뒤 기록합니다: '+incomplete.join(', '))+'</p>';
  if(mismatch)h+='<p class="badge NOT_AVAILABLE" data-ledger-replay-mismatch>LEDGER_REPLAY_MISMATCH · 기록된 행이 같은 입력의 재생 결과와 다릅니다. 시트에 쓰지 않습니다.</p>';
  if(missing)h+='<p data-missing-sessions>'+esc('빠진 거래일 재생: '+list.flatMap(s=>s.missing.map(d=>s.id+' '+d)).join(', '))+'</p>';
  else if(st&&st.state==='READY')h+='<p class="small" data-missing-sessions="0">'+esc('기록할 새 거래일 없음'+(st.through?' · Q·G 기록 기준 ~'+st.through:' · Q·G 기록 대기'))+'</p>';
- const can=connected&&sheet&&sheet.state==='READY'&&!before&&!mismatch&&missing>0&&!busy;
+ const can=connected&&sheet&&sheet.state==='READY'&&!before&&!mismatch&&!incomplete.length&&missing>0&&!busy;
  h+='<div class="sheet-actions"><button type="button" data-ledger-record'+(can?'':' disabled')+'>'+esc('장부 시트에 기록'+(missing?' ('+missing+'거래일)':''))+'</button></div>';
  h+='<p class="small">기록은 이 버튼을 누를 때만, 아직 기록하지 않은 거래일만 내 시트(VirtualA·VirtualB·VirtualMine·VirtualMeta)에 덧붙입니다. 기록한 행은 고치지 않습니다. 시트에는 실제 숫자가 저장되고, 화면에는 날짜·개수·코드만 보입니다. 값이 없던 날은 엔진 결과(NOT_AVAILABLE·EXEC_*_MISSING)대로 기록하고 채우지 않습니다.</p>';
  h+='<p role="status" data-ledger-status></p></section>';
@@ -440,7 +449,7 @@ let carry=null; // status text carried into the next mount after a save re-rende
 function mount(view,host,ctx){
  const VT=engine(),cfg=VT.defaultConfig(),kind=ctx.kind==='REAL'?'REAL':'MOCK',tab=ctx.tab;
  const carried=carry&&carry.key===kind+'/'+tab?carry.notes:{};carry=null;
- const state={sheet:null,st:null,result:null,notes:{...carried},busy:false,connected:false,before:typeof ctx.reportDate==='string'&&ctx.reportDate<cfg.start_date,catalog:null};
+ const state={sheet:null,st:null,result:null,notes:{...carried},drafts:{},busy:false,connected:false,before:typeof ctx.reportDate==='string'&&ctx.reportDate<cfg.start_date,catalog:null};
  let session=null,disposed=false,loading=null,unsubscribe=null,revision=0;
  try{session=ctx.config&&ctx.config.googleSheetsClientId&&view.GoogleSheetQuotes?view.GoogleSheetQuotes.sessionFor(view,ctx.config.googleSheetsClientId):null;}catch(_){session=null;}
  const sheetId=()=>{try{return view.GoogleSheetSetup?view.GoogleSheetSetup.source(view):'';}catch(_){return'';}};
@@ -465,7 +474,7 @@ function mount(view,host,ctx){
  const act=async(statusSel,fn,done)=>{
   if(state.busy)return;if(!isConnected()){say(statusSel,SHEET_KO.NOT_CONNECTED);return;}
   state.busy=true;paint();
-  try{const text=await fn();state.busy=false;await reload();say(statusSel,text);if(done){carry={key:kind+'/'+tab,notes:{[statusSel]:text}};done();}}
+  try{const text=await fn();state.busy=false;if(done){carry={key:kind+'/'+tab,notes:{[statusSel]:text}};done();return;}await reload();say(statusSel,text);}
   catch(e){state.busy=false;paint();say(statusSel,errorCode(e));}
  };
  const readForm=k=>{const out={};for(const input of host.querySelectorAll('[data-weight-form="'+k+'"] [data-weight]'))out[input.getAttribute('data-weight')]=input.value;return out;};
@@ -483,12 +492,17 @@ function mount(view,host,ctx){
   for(const[sel,text]of Object.entries(state.notes)){const n=host.querySelector(sel);if(n)n.textContent=text;}
   const rec=host.querySelector('[data-ledger-record]');
   if(rec)rec.onclick=()=>void act('[data-ledger-status]',async()=>{const r=await record(session,sheetId(),{result:state.result,kind});return r.sessions?r.sessions+'거래일을 기록했습니다('+r.ledgers.join(', ')+').':'기록할 새 거래일이 없습니다.';});
-  for(const input of host.querySelectorAll('[data-weight]'))input.oninput=()=>{const form=input.closest('[data-weight-form]'),k=form.getAttribute('data-weight-form'),v=validateWeights(readForm(k),runner().IDS),n=form.querySelector('[data-weight-sum]');
+  const sum=form=>{const k=form.getAttribute('data-weight-form'),v=validateWeights(readForm(k),runner().IDS),n=form.querySelector('[data-weight-sum]');
    if(n)n.textContent=v.state==='OK'?'합계 '+(Math.round(Object.values(v.weights).reduce((a,x)=>a+x,0)*10000)/10000)+'% · 나머지는 가상 현금':v.state===NA?'NOT_AVAILABLE · 구성 없음':v.reason_codes[0];form.setAttribute('data-weight-state',v.state);};
+  // Typed values survive repaints (sheet reload, failed save) until a save succeeds.
+  for(const form of host.querySelectorAll('[data-weight-form]')){const k=form.getAttribute('data-weight-form'),draft=state.drafts[k];
+   if(draft){for(const input of form.querySelectorAll('[data-weight]'))input.value=own(draft,input.getAttribute('data-weight'))?draft[input.getAttribute('data-weight')]:'';sum(form);}}
+  for(const input of host.querySelectorAll('[data-weight]'))input.oninput=()=>{const form=input.closest('[data-weight-form]');state.drafts[form.getAttribute('data-weight-form')]=readForm(form.getAttribute('data-weight-form'));sum(form);};
+  const saved=k=>()=>{delete state.drafts[k];ctx.refresh();};
   const saveB=host.querySelector('[data-weight-save="SET_B"]');
-  if(saveB)saveB.onclick=()=>{const w=readForm('SET_B');void act('[data-weight-status="SET_B"]',async()=>{const rows=await saveSetB(session,sheetId(),w);return'세트 B 구성을 저장했습니다('+rows[rows.length-1][1]+', 출발 '+rows[rows.length-1][4]+').';},ctx.refresh);};
+  if(saveB)saveB.onclick=()=>{const w=readForm('SET_B');void act('[data-weight-status="SET_B"]',async()=>{const rows=await saveSetB(session,sheetId(),w);return'세트 B 구성을 저장했습니다('+rows[rows.length-1][1]+', 출발 '+rows[rows.length-1][4]+').';},saved('SET_B'));};
   const saveT=host.querySelector('[data-weight-save="TARGET"]');
-  if(saveT)saveT.onclick=()=>{const w=readForm('TARGET');void act('[data-weight-status="TARGET"]',async()=>{const v=await saveTarget(session,sheetId(),w);return v.state==='OK'?'내 목표를 저장했습니다.':'내 목표를 비웠습니다(NOT_AVAILABLE).';},ctx.refresh);};
+  if(saveT)saveT.onclick=()=>{const w=readForm('TARGET');void act('[data-weight-status="TARGET"]',async()=>{const v=await saveTarget(session,sheetId(),w);return v.state==='OK'?'내 목표를 저장했습니다.':'내 목표를 비웠습니다(NOT_AVAILABLE).';},saved('TARGET'));};
   const shadow=async resync=>{
    if(resync&&view.confirm&&!view.confirm('현재 그림자 장부를 닫고 오늘 실제 보유로 새 장부를 시작합니다. 이전 기록은 그대로 보존됩니다.'))return;
    await act('[data-shadow-status]',async()=>{
@@ -513,5 +527,5 @@ function mount(view,host,ctx){
 
 return Object.freeze({SCHEMA,TABS,META,FLAGS,LEDGER_HEAD,META_HEAD,FLAGS_HEAD,HEADS,ALL_TABS,numStr,canonical,dayRows,ledgerRows,parseTab,groupLedgerRows,recordedDates,
  parseMeta,active,setALedger,nextId,validateWeights,parseFlags,recordableThrough,deriveInput,truncate,inputsText,ledgerStatus,startRow,closeRow,recordRow,targetRow,
- beginFor,replaceRows,sheetState,statuses,apply,load,ensureTabs,record,saveSetB,saveTarget,startShadow,sha256,mount});
+ beginFor,replaceRows,sheetState,statuses,apply,inputsIncomplete,load,ensureTabs,record,saveSetB,saveTarget,startShadow,sha256,mount});
 });
