@@ -74,6 +74,8 @@ function vProgressText(p){
 }
 function rehearsalLine(m){const r=m.rehearsal||{},n=Array.isArray(r.qg_filled)?r.qg_filled.length:0;
  return '리허설 · 기록 없음: 오늘 데이터로 규칙만 돌려 본 결과이며 어떤 장부·시트에도 기록하지 않음 · '+(r.start_date||NA)+'부터 최근 '+(r.window||NA)+'거래일 · 현금 0에서 매일 가상 입금'+(n?' · 기록된 Q·G가 없는 '+n+'거래일은 오늘 공개 화면 Q·G 사용':'');}
+// A row's judgement: the engine object, or {main, aux} for rows built by hand (main null → no judgement).
+const judgementOf=h=>h.judgement||(h.main?{main:h.main,aux_levels:Array.isArray(h.aux)?h.aux:[],aux:[],reason_codes:[]}:null);
 function counts(holdings){const c={};for(const h of holdings)if(h.main)c[h.main]=(c[h.main]||0)+1;return c;}
 function countsLine(holdings){const c=counts(holdings),parts=LEVELS.filter(l=>c[l]).map(l=>VT.label(l)+' '+c[l]);return parts.length?parts.join(' · ')+' (주 판단만 집계)':NA;}
 function notStarted(m){
@@ -106,7 +108,7 @@ function renderTemplate(m,{hidden=true,guide=true}={}){
  L.push('원금 '+(s?money(s.initial_value,H):NA)+' · 추가입금 '+(s?money(s.deposits,H):NA)+' · 출금 '+NA+' · 신뢰도 '+(m.started?'중간':NA),'');
  L.push('## ② 포트폴리오 구성','| 업종군(SIC) | 목표 | 실제 | 차이 |','|---|---|---|---|','| '+NA+' (SIC v0 연결 전) | '+NA+' | '+NA+' | '+NA+' |','집중도: 【규칙】 '+NA,'');
  L.push('## ③ 전 종목 장부','판단: '+VT.DISCLAIMER.ko+' · 우선순위 '+VT.priorityText('ko-KR')+' · 주 판단 1개 + 보조 칩','| 기업(티커) | 실제/목표 | 1D | 누적 | QGV(Q·G) | 판단 | 사유 코드 |','|---|---|---|---|---|---|---|');
- if(m.holdings.length)for(const h of m.holdings)L.push('| '+h.name+' | '+weight(h.actual_weight)+' / '+weight(h.target_weight)+' | '+NA+' | '+NA+' | '+(num(h.q)&&num(h.g)?score((h.q+h.g)/2):NA)+' | '+(h.judgement?VT.judgementText(h.judgement,'ko-KR'):NA)+' | '+(h.reasons.join(', ')||NA)+' |');
+ if(m.holdings.length)for(const h of m.holdings)L.push('| '+h.name+' | '+weight(h.actual_weight)+' / '+weight(h.target_weight)+' | '+NA+' | '+NA+' | '+(num(h.q)&&num(h.g)?score((h.q+h.g)/2):NA)+' | '+(judgementOf(h)?VT.judgementText(judgementOf(h),'ko-KR'):NA)+' | '+(h.reasons.join(', ')||NA)+' |');
  else L.push('| '+NA+' | '+NA+' | '+NA+' | '+NA+' | '+NA+' | '+NA+' | '+NA+' |');
  const based=m.holdings.filter(h=>h.basis);if(based.length)L.push('업종 기준(D-5): '+based.map(h=>h.name+' '+basisText(h.basis)).join(' / '));
  L.push('판단 집계: '+countsLine(m.holdings),'당일 변동요인: 【AI】 (없으면 비움)','');
@@ -220,7 +222,7 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
   +'<p class="small">숫자는 앱 계산, 문장은 붙여넣은 AI 해석입니다. AI 해석이 없으면 규칙 문장으로 대신 채웁니다.</p></section>';
  h+='<section class="card" data-report-section="3"><h2>③ 전 종목 장부 '+VT.disclaimerHtml(locale)+(rehearsal?' <span class="badge mode REHEARSAL">'+esc(modeName)+'</span>':'')+'</h2>';
  const basisCell=x=>x.basis?'<td class="small" data-basis="'+esc(x.company)+'" data-basis-benchmark="'+esc(x.basis.benchmark)+'" data-basis-state="'+esc(x.basis.state)+'" data-basis-fallback="'+(x.basis.fallback?'1':'0')+'" data-v-slope="'+esc(x.basis.v_slope)+'">'+esc(basisText(x.basis))+'</td>':'<td class="small">'+NA+'</td>';
- if(m.holdings.length){h+='<div class="table-scroll"><table><thead><tr><th>기업</th><th>실제/목표</th><th>Q·G</th><th>판단</th><th>사유</th>'+(m.started?'<th>업종 기준 · D-5</th>':'')+'</tr></thead><tbody>'+m.holdings.map(x=>'<tr><td>'+esc(x.name)+'</td><td>'+esc(weight(x.actual_weight)+' / '+weight(x.target_weight))+'</td><td>'+esc(num(x.q)&&num(x.g)?score((x.q+x.g)/2):NA)+'</td><td data-judgement-cell="'+esc(x.company)+'">'+(x.judgement?VT.judgementHtml(x.judgement,{locale}):NA)+'</td><td class="small" data-reasons-cell="'+esc(x.company)+'">'+(x.reasons.length?VT.reasonsHtml(x.reasons,{locale}):NA)+'</td>'+(m.started?basisCell(x):'')+'</tr>').join('')+'</tbody></table></div><p class="small">'+esc(countsLine(m.holdings))+'</p>'
+ if(m.holdings.length){h+='<div class="table-scroll"><table><thead><tr><th>기업</th><th>실제/목표</th><th>Q·G</th><th>판단</th><th>사유</th>'+(m.started?'<th>업종 기준 · D-5</th>':'')+'</tr></thead><tbody>'+m.holdings.map(x=>'<tr><td>'+esc(x.name)+'</td><td>'+esc(weight(x.actual_weight)+' / '+weight(x.target_weight))+'</td><td>'+esc(num(x.q)&&num(x.g)?score((x.q+x.g)/2):NA)+'</td><td data-judgement-cell="'+esc(x.company)+'">'+(judgementOf(x)?VT.judgementHtml(judgementOf(x),{locale}):NA)+'</td><td class="small" data-reasons-cell="'+esc(x.company)+'">'+(x.reasons.length?VT.reasonsHtml(x.reasons,{locale}):NA)+'</td>'+(m.started?basisCell(x):'')+'</tr>').join('')+'</tbody></table></div><p class="small">'+esc(countsLine(m.holdings))+'</p>'
   +(m.started?'<p class="small">'+esc('업종 기준: D-5 이상 하락 판정에 실제로 쓴 기준(D-22 업종 ETF, 없으면 S&P 500 대체). 정렬된 일봉 273개 미만이거나 기준이 없으면 기준 N/A이고 V 기울기도 쓰지 않습니다.')+'</p>':'');}
  else h+='<p>'+esc(NA+' · '+(m.kind==='REAL'?'기기 보유(ACTUAL) 없음 또는 시세 부족':'가상 장부 시작 전'))+'</p>';
  h+='<p class="small" data-level-priority>'+esc('우선순위: '+VT.priorityText(locale)+'. 회사마다 주 판단 1개, 나머지는 보조 칩. 가상 매수·가상 매도 표현은 ⑩ 가상 장부 안에서만 씁니다.')+'</p></section>';
