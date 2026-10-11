@@ -24,3 +24,14 @@ python implementation/tools/sec_universe_collect.py \
 ## 검증·미확인 범위
 
 합성 SEC metadata/transport로504code 경계·거래소/BRK.B alias·CIK 충돌·동일회사 중복 방지·파티션의 배타적 전체 커버·invalid schedule·요청 속도·403·부분/전부 실패·sink 오류·고정 코드 마스킹을 검증한다. 실제504code의 CIK 확인율과 회사 수, 실제 daily 성공률은 공식 metadata와 실제 취득이 공급되기 전 NOT_AVAILABLE다. SEC_USER_AGENT 미설정 실행 환경에서 실데이터 수집을 가장하지 않는다.
+
+## 공개 주식수 파일 `sec-universe-shares.json` (사용자 결정 2026-10-11, M3 주식수 (a))
+
+- 생성: `tools/sec_universe_shares.py --live --out <Pages 폴더>`(Actions, `SEC_USER_AGENT` 이름만 참조). shard = UTC 날짜 ordinal mod `shard_count`. 공식 `company_tickers_exchange.json` → 504 registry → 당일 shard의 companyfacts·submissions + 같은 filing의 cover XBRL(`<primary>_htm.xml`).
+- 병합: 실행 전 Pages의 직전 파일을 검증해 읽고(404면 새로 시작, 형식 불일치면 폐기), 이번 shard 행만 교체한다. 새 행에 주식수가 없으면 기존 값을 지우지 않는다. 각 행은 자기 `acquired_at`을 유지하고 stale 창을 넘으면 `STALE`. 직전 파일 네트워크 실패 시 아무것도 쓰지 않고 exit1.
+- 설정: `universe/sec_universe_shares_config_v0.json` — shard_count 7, stale 14일. **DEFAULT_V0_UNCALIBRATED**(v0 기본값, 보정 아님). 기기 화면은 "v0 기본값 · UNCALIBRATED"로 표시한다.
+- basis(표지 기준, `sec_m3_adapter` cover parse 재사용): 한 class·symbol 일치 → `SINGLE_CLASS_CONFIRMED`; 표지에 복수 class가 있고 이 listing의 class 값이 하나로 확정 → `SHARE_CLASS_BASIS`(표지 class 값 표시만, 합산·보정 없음, 순위 제외); 그 외 → `BASIS_UNCONFIRMED`(companyfacts 수치는 보이되 검증 안 됨). 결측은 null, 0 대체 없음.
+- 공개 필드: cik·listing_id·company_id·shares·measurement_date·accn·form·filed·acquired_at·concept·share_class_basis·basis_evidence(cover accn, class member 이름·개수)·source_sha256(companyfacts/submissions/cover)·state·reason_codes. 가격·시총·순위·선정·시트 ID 없음. 검증: Python `require_universe_shares`(Pages guard), JS `SecUniverseShares.validate`.
+- 원본: `RAW_REPO_TOKEN`이 있으면 shard 원본(tar.gz+sha256)을 비공개 `investment-system1-raw` 릴리스 `sec-universe-raw-YYYY-MM-DD-shardN`에 올린다. 없으면 `RAW_UPLOAD_NOT_CONFIGURED`. 토큰 값은 출력하지 않는다.
+- UI 전용 배포(cockpit-pages)는 `tools/sec_universe_shares.py --preserve-only --out <폴더>`로 직전 파일을 보존한다.
+- 기기: `private-subset-view.js`가 이 파일을 읽어(`sec-universe-shares.js`) `PrivateSubset.preparePublicShares`로 기존 M3 비교(N=20, 10% 포함 경계)에 넣는다. 가격·R·순위는 RAM 전용. JS==Python 대조: `tests/fixtures/m3_public_shares_reference_v1.json`.

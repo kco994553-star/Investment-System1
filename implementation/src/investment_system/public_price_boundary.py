@@ -47,6 +47,14 @@ FINANCIAL_URL_PATTERNS = {
 }
 
 
+# User decision 2026-10-11 (M3 shares (a)): Universe504 ticker/exchange binding and
+# the same filing's cover XBRL instance. Collection inputs only; never published raw.
+SEC_UNIVERSE_URL_PATTERNS = {
+    'SEC_TICKERS_EXCHANGE': r'https://www\.sec\.gov/files/company_tickers_exchange\.json',
+    'SEC_XBRL_INSTANCE': r'https://www\.sec\.gov/Archives/edgar/data/[1-9][0-9]{0,9}/[0-9]{18}/[A-Za-z0-9][A-Za-z0-9._-]{0,120}_htm\.xml',
+}
+
+
 def require_financial_source(source_kind, url):
     import re
     if source_kind not in FINANCIAL_URL_PATTERNS or not re.fullmatch(FINANCIAL_URL_PATTERNS[source_kind], url):
@@ -68,7 +76,7 @@ def require_financial_artifact(source_kind, url, artifact_id):
 
 def require_financial_url(url):
     import re
-    if not any(re.fullmatch(pattern, url) for pattern in FINANCIAL_URL_PATTERNS.values()):
+    if not any(re.fullmatch(pattern, url) for pattern in (*FINANCIAL_URL_PATTERNS.values(), *SEC_UNIVERSE_URL_PATTERNS.values())):
         block_public_route()
 
 

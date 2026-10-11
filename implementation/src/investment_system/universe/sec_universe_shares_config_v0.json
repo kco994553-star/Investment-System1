@@ -1,0 +1,7 @@
+{
+  "config_version": "sec-universe-shares/v0",
+  "config_status": "DEFAULT_V0_UNCALIBRATED",
+  "decision": "USER_DECISION_2026-10-11_M3_SHARES_A",
+  "shard_count": 7,
+  "stale_after_days": 14
+}
