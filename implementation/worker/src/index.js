@@ -3,7 +3,9 @@ const ORIGIN = 'https://kco994553-star.github.io';
 const TOKENINFO_URL = 'https://oauth2.googleapis.com/tokeninfo';
 const YAHOO_ROOT = 'https://query1.finance.yahoo.com/v8/finance/chart/';
 const US_SYMBOLS = ['ASML', 'LRCX', 'KLAC', 'NVDA', 'AMD', 'AVGO', 'QCOM', 'INTC', 'MSFT', 'GOOGL', 'AMZN', 'RTX', 'SYK', 'ETN', 'HUBB', 'GEV', 'ROK'];
-const MARKETS = new Map(US_SYMBOLS.map((symbol) => [symbol, { currency: 'USD', timezone: 'America/New_York' }]));
+// Benchmark ETFs for virtual trading (GSQ-018 D-22 price route 1): S&P 500 proxy, SIC sector ETFs and comparison series.
+const BENCHMARK_SYMBOLS = ['SPY', 'SMH', 'XLK', 'XLV', 'XLE', 'XLB', 'XLP', 'XLY', 'XLC', 'XLU', 'XLRE', 'XLF', 'XLI', 'VUG', 'QUAL'];
+const MARKETS = new Map([...US_SYMBOLS, ...BENCHMARK_SYMBOLS].map((symbol) => [symbol, { currency: 'USD', timezone: 'America/New_York' }]));
 MARKETS.set('042700.KS', { currency: 'KRW', timezone: 'Asia/Seoul' });
 MARKETS.set('8035.T', { currency: 'JPY', timezone: 'Asia/Tokyo' });
 const RANGES = new Set(['1mo', '3mo', '6mo', '1y', '2y', '5y']);
@@ -278,7 +280,7 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
   }
 
   async function fallbackHistory(symbol, range, env, yahooError) {
-    const provider = US_SYMBOLS.includes(symbol) ? 'TIINGO' : symbol === '042700.KS' ? 'KRX' : null;
+    const provider = US_SYMBOLS.includes(symbol) || BENCHMARK_SYMBOLS.includes(symbol) ? 'TIINGO' : symbol === '042700.KS' ? 'KRX' : null;
     const secret = provider && providerSecret(env, provider + '_API_KEY');
     // Existing installs remain Yahoo-only until the corresponding Secret is set.
     if (!secret || !yahooError || !(yahooError.code.startsWith('YAHOO_') || yahooError.code === 'HISTORY_UNAVAILABLE')) throw yahooError;
