@@ -221,7 +221,8 @@ const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
           const snapshot = { effective_at: '2026-10-20T01:00:00Z', themes: [{ holdings: [
             { security_reference: { scheme: 'ISIN', value: 'US67066G1040' }, quantity: '12.5', average_cost: String(cost), currency: 'USD' },
             { security_reference: { code: '042700', exchange: 'KRX', scheme: 'EXCHANGE_CODE' }, quantity: '30', average_cost: '70000', currency: 'KRW' }] }] };
-          window.DeviceActual = { ...DeviceActual, readHoldings: async () => snapshot };
+          // The runner reads holdings through effectiveHoldings (stored ACTUAL or the RAM Holdings tab, #204); stub both.
+          window.DeviceActual = { ...DeviceActual, readHoldings: async () => snapshot, effectiveHoldings: async () => ({ snapshot, source: 'ACTUAL', as_of: snapshot.effective_at }) };
         }, COST_CANARY);
         await go(page, 'report/real'); await settled(page);
         assert.equal(await page.locator('[data-shadow-ledger]').getAttribute('data-shadow-state'), 'NOT_STARTED');
