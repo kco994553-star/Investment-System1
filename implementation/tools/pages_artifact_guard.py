@@ -31,6 +31,7 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "virtual-trading.js": "d24f41ccede57016ef27a7951bdef096d2911fe5f51917453d1305605b81f8b1",
     "screen-detail.js": "8f66aae29337bbddadb8b1853254fd63cb620a062af7bb19f510bf200e870ef3",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
