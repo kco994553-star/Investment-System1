@@ -564,20 +564,26 @@ function paintNews(id) {
 function report(id){const real=id==='real';return heading("DAILY REPORT",real?(appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'):(appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'))+'<div id="daily-report" aria-live="polite"></div>';}
 // S17: everything is computed in RAM on this device; export/copy and the optional mailbox run only on the user's click.
 function reportTab(id){return id==='real'?'REAL':({'mock-set_b':'SET_B','mock-compare':'COMPARE'}[id]||'SET_A');}
+// The virtual ledger runner (VirtualTradingRunner) reads prices through the existing Google session and private
+// history Worker into memory only; this holds just its abort handle and session subscription for the open report.
+let reportRun=null;
+function disposeReport(){const r=reportRun;reportRun=null;if(r){r.controller.abort();if(r.unsubscribe)r.unsubscribe();}}
 async function paintReport(id){
   const host=$('#daily-report');if(!host)return;
-  const R=window.DailyReport,VT=window.VirtualTrading,locale=appSettings.display_locale,kind=id==='real'?'REAL':'MOCK',tab=reportTab(id);
-  const cfg=VT.defaultConfig(),ledger=VT.runLedger(cfg,{id:tab.toLowerCase(),kind:kind==='REAL'?'SHADOW':tab==='SET_B'?'SET_B':'SET_A',sessions:[],target_weights:null,companies:{}});
+  disposeReport();
+  const R=window.DailyReport,VT=window.VirtualTrading,Runner=window.VirtualTradingRunner,locale=appSettings.display_locale,kind=id==='real'?'REAL':'MOCK',tab=reportTab(id);
+  const cfg=VT.defaultConfig(),ledgerKind=kind==='REAL'?'SHADOW':tab==='SET_B'?'SET_B':'SET_A',config=window.InvestmentAppConfig||{};
+  const run={controller:new AbortController(),unsubscribe:null,busy:false,last:null};reportRun=run;
+  const live=()=>reportRun===run&&host.isConnected;
   let ram=null;if(kind==='REAL'){try{ram=await DeviceActual.ramView(window,await deviceCatalog());const byTicker=new Map(identityCompanies.map(r=>[r.ticker,r.company_id]));ram={...ram,rows:ram.rows.map(r=>({...r,company_id:byTicker.get(r.ticker)||r.ticker}))};}catch(_){ram=null;}}
   const qg={},names={};try{for(const r of LeaderboardScreen.rowsFor(identityCompanies,{publicScreens,engine:window.EnginePreview})){qg[r.company_id]={q:r.q,g:r.g};names[r.company_id]=r.ticker;}}catch(_){}
   const reportDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
-  const model=R.buildModel({kind,tab,reportDate,ledger,ram,qg,names,config:cfg});
-  const canonical=R.renderTemplate(model,{hidden:true,guide:false});let key=null;try{key=await R.hash(canonical);}catch(_){key=null;}
-  // The mailbox always writes amounts hidden with the guide; its Inbox/Outbox sha256 is the hash of exactly this text.
-  const inboxText=R.renderTemplate(model,{hidden:true,guide:true});
+  let model=null,canonical='',key=null,inboxText='';
   const paint=()=>{
-    if(!host.isConnected)return;const hidden=R.hiddenSetting(localStorage),answer=key?R.answers(localStorage)[key]||null:null;
+    if(!live()||!model)return;const hidden=R.hiddenSetting(localStorage),answer=key?R.answers(localStorage)[key]||null:null;
+    const draft=host.querySelector('[data-ai-input]')?.value||'';
     host.innerHTML=R.screenHtml(model,{hidden,answer,check:answer?R.checkAnswer(answer.answer,canonical):null,locale});
+    if(draft)host.querySelector('[data-ai-input]').value=draft;
     const status=host.querySelector('[data-report-status]'),say=text=>{if(status)status.textContent=text;};
     for(const box of host.querySelectorAll('[data-hide-amounts],[data-hide-amounts-export]'))box.onchange=()=>{if(!box.checked&&!confirm('개인 금액이 화면/복사본에 표시됩니다.')){box.checked=true;return;}R.hiddenSetting(localStorage,box.checked);paint();};
     host.querySelector('[data-export-template]').onclick=async()=>{const text=R.renderTemplate(model,{hidden:R.hiddenSetting(localStorage),guide:host.querySelector('[data-include-guide]').checked});try{await navigator.clipboard.writeText(text);say('보고서 템플릿을 복사했습니다. AI 새 대화에 붙여넣으세요.');}catch(_){const area=document.createElement('textarea');area.readOnly=true;area.value=text;area.rows=8;area.setAttribute('data-export-fallback','');host.querySelector('[data-report-export]').append(area);area.select();say('클립보드를 쓸 수 없어 아래 칸에 표시했습니다. 직접 복사하세요.');}};
@@ -590,7 +596,35 @@ async function paintReport(id){
     host.querySelector('[data-mailbox-post]').onclick=()=>void mailbox('post');
     host.querySelector('[data-mailbox-read]').onclick=()=>void mailbox('read');
   };
-  paint();
+  // Model from a runner result or a placeholder state. Nothing is stored: prices and ledgers stay in this closure.
+  const compose=async(result)=>{
+    const {ledger,hits,input}=Runner.ledgerFor(result,ledgerKind,cfg),last=ledger.state==='OK'?ledger.days[ledger.days.length-1]:null;
+    // Q·G shown next to a judgement is the forward-ledger snapshot the engine used that day (else the public screen value).
+    const shown={...qg};if(last&&input&&input.snapshots[last.date])for(const[c,r]of Object.entries(input.snapshots[last.date]))shown[c]={q:r.q,g:r.g};
+    const runner={state:result.state==='READY'?(ledger.state==='OK'?'READY':'NOT_AVAILABLE'):result.state,reason_codes:result.state==='READY'?(ledger.state==='OK'?[]:ledger.reason_codes):result.reason_codes,sources:Runner.statusRows(result),progress:''};
+    const next=R.buildModel({kind,tab,reportDate,baseDates:last?{NYSE:last.date}:{},ledger,ram,qg:shown,names,config:cfg,runner,hits});
+    const nextCanonical=R.renderTemplate(next,{hidden:true,guide:false});let nextKey=null;try{nextKey=await R.hash(nextCanonical);}catch(_){nextKey=null;}
+    if(!live())return;
+    // The mailbox always writes amounts hidden with the guide; its Inbox/Outbox sha256 is the hash of exactly this text.
+    model=next;canonical=nextCanonical;key=nextKey;inboxText=R.renderTemplate(next,{hidden:true,guide:true});paint();
+  };
+  const before=reportDate<cfg.start_date;
+  await compose(before?{state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']}:{state:'LOADING',reason_codes:['RUNNER_LOADING']});
+  if(before||!live())return;
+  const start=async()=>{
+    if(run.busy||!live())return;run.busy=true;
+    try{
+      let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
+      const progress=(done,total)=>{const n=live()&&host.querySelector('[data-runner-progress]');if(n)n.textContent=done+'/'+total;};
+      const result=catalog?await Runner.run(window,{config,catalog,reportDate,signal:run.controller.signal,onProgress:progress}):{state:'NOT_AVAILABLE',reason_codes:['PUBLIC_CATALOG_UNAVAILABLE'],sources:{},ledgers:{}};
+      run.last=result;if(live())await compose(result);
+    }catch(_){if(live())await compose({state:'NOT_AVAILABLE',reason_codes:['RUNNER_FAILED']});}
+    finally{run.busy=false;}
+  };
+  // Signing in to Google later (Settings) re-runs the runner for the open report: same session, no new scope or auth code.
+  try{if(config.googleSheetsClientId){const session=GoogleSheetQuotes.sessionFor(window,config.googleSheetsClientId);
+    run.unsubscribe=session.subscribe(()=>{if(!live()){if(reportRun===run)disposeReport();return;}if(session.state().connected&&run.last&&run.last.reason_codes.includes('AUTH_REQUIRED'))void start();});}}catch(_){}
+  await start();
 }
 function showUnavailable() {
   $("#content").innerHTML=heading("DATA UNAVAILABLE",t("데이터를 열 수 없습니다."))+"<p>"+t("연결 상태를 확인한 뒤 다시 시도하세요.")+'</p><button id="retry">'+t("다시 시도")+"</button>";
@@ -605,7 +639,7 @@ function render() {
 function renderRoute() {
   window.PrivateHistory?.disposeAll();window.PrivateSubsetView?.disposeAll();
   window.GoogleSheetSetup?.disposeAll();
-  window.ForwardValidation?.disposeAll();
+  window.ForwardValidation?.disposeAll();disposeReport();
   notice("");syncShell();
   let [route,id]=location.hash.slice(1).split("/");route=route || "home";
   let anchor=null;

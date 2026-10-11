@@ -9,7 +9,7 @@ const KINDS=Object.freeze({MOCK:{ko:'모의투자 일일보고서',en:'Paper tra
 const TABS=Object.freeze({SET_A:'세트 A',SET_B:'세트 B',COMPARE:'A/B 비교',REAL:'내 실제 포트폴리오'});
 const LEVEL_KO={BLOCK:'■차단',RISK_RECHECK:'▼위험재검토',REDUCE_REVIEW:'▼비중축소검토',INCREASE_REVIEW:'▲비중확대검토',ADDITIONAL_REVIEW:'●추가검토',HOLDING_CONTEXT:'●보유맥락',OBSERVE:'●관찰'};
 const LEVELS=Object.keys(LEVEL_KO);
-const REASON_KO={UNDERWEIGHT_GAP:'목표 비중보다 Band 이상 부족',OVERWEIGHT_GAP:'목표 비중보다 Band 이상 초과',QG_DECLINE:'Q·G 평균이 직전 스냅샷보다 임계 이상 하락',COVERAGE_BLOCKED:'데이터 Coverage BLOCKED',COVERAGE_WORSENED:'Coverage가 READY에서 PARTIAL로 악화',USER_HOLD:'사용자 보류 플래그',USER_EXCLUDE:'사용자 제외 플래그',RECHECK_ABNORMAL_DROP:'업종 기준 대비 개별 이상 하락(−2σ), 원인 확인 전 거래 없음',RECHECK_BASIS_NOT_AVAILABLE:'이상 하락 기준 계산 불가(1년 일봉·업종 기준 부족), V 신호 미사용',V_IMPROVED:'Q·G 유지 중 V가 20거래일 전보다 개선',V_DETERIORATED:'Q·G 유지 중 V가 20거래일 전보다 악화',USER_CONFIRMED_TEMPORARY:'사용자 확인: 일시적',USER_CONFIRMED_STRUCTURAL:'사용자 확인: 구조적',BAND_INSIDE:'범위 안, 보유',LIMIT_EXHAUSTED:'하루 한도 소진으로 일부만 배분',DATA_PRICE_MISSING:'가격 결측',DATA_FX_MISSING:'환율 결측',DATA_SNAPSHOT_MISSING:'Q·G 스냅샷 없음'};
+const REASON_KO={UNDERWEIGHT_GAP:'목표 비중보다 Band 이상 부족',OVERWEIGHT_GAP:'목표 비중보다 Band 이상 초과',QG_DECLINE:'Q·G 평균이 직전 스냅샷보다 임계 이상 하락',COVERAGE_BLOCKED:'데이터 Coverage BLOCKED',COVERAGE_WORSENED:'Coverage가 READY에서 PARTIAL로 악화',USER_HOLD:'사용자 보류 플래그',USER_EXCLUDE:'사용자 제외 플래그',RECHECK_ABNORMAL_DROP:'업종 기준 대비 개별 이상 하락(−2σ), 원인 확인 전 거래 없음',RECHECK_BASIS_NOT_AVAILABLE:'이상 하락 기준 계산 불가(1년 일봉·업종 기준 부족), V 신호 미사용',V_IMPROVED:'Q·G 유지 중 V가 20거래일 전보다 개선',V_DETERIORATED:'Q·G 유지 중 V가 20거래일 전보다 악화',USER_CONFIRMED_TEMPORARY:'사용자 확인: 일시적',USER_CONFIRMED_STRUCTURAL:'사용자 확인: 구조적',BAND_INSIDE:'범위 안, 보유',LIMIT_EXHAUSTED:'하루 한도 소진으로 일부만 배분',DATA_PRICE_MISSING:'가격 결측',DATA_FX_MISSING:'환율 결측',DATA_SNAPSHOT_MISSING:'Q·G 스냅샷 없음',EXEC_PRICE_MISSING:'체결일 종가 결측으로 가상 주문 취소',EXEC_FX_MISSING:'체결일 환율 결측으로 가상 주문 취소',NO_POSITION:'보유분 없음으로 가상 매도 취소',CASH_INSUFFICIENT:'가상 현금 부족으로 가상 매수 취소'};
 const CHECK_LINES=['✔ 템플릿에 없는 숫자를 만들지 않음','✔ 외부 정보마다 날짜·출처 표시(또는 확인 불가)','✔ 실제 계좌 매수·매도 권유 없음','✔ 절 순서와 표 구조 유지'];
 const GUIDE_A=['[Investment-System1 · AI 해석 지침 v1 · 템플릿 v1]','','역할','너는 Investment-System1의 해석 보조자다. 투자 자문가나 매매 결정자가 아니다.','사용자가 붙여넣는 [일일보고서 템플릿]의 숫자와 규칙 판단을 읽고, 【AI】로 표시된 칸만 채워 보고서를 완성한다.','','템플릿 규칙','1. 제목, 절 순서(요약, ①~⑬, 최종 투자판단, 각주), 표 구조, 숫자는 바꾸지 않는다. 템플릿 전체를 그대로 돌려주되 【AI】 칸만 채운다.','2. 【규칙】 문장은 지우지 않는다. 다르게 보면 그 아래에 "[의견]"으로 시작하는 줄을 덧붙인다.','3. [숨김] 금액은 추정하지 않는다. 규모는 비중·%·한도 대비 %로만 말한다.','','숫자 규칙','4. 템플릿에 없는 숫자(가격, 목표가, 확률, 점수, 수익률)를 만들지 않는다.','5. 계산이 필요하면 식을 보이고 결과에 ≈를 붙인다.','6. NOT_AVAILABLE·N/A는 "확인 불가"로 쓰고 채우지 않는다.','7. 점수는 STANDARD v1 · UNCALIBRATED(보정 전)다. 검증된 모델처럼 말하지 않는다.','','판단 어휘','8. 실제 포트폴리오에 대해 매수·매도 권유를 쓰지 않는다. 판단은 다음 7개만 쓴다:','   ■차단 / ▼위험재검토 / ▼비중축소검토 / ▲비중확대검토 / ●추가검토 / ●보유맥락 / ●관찰','9. 가상 장부(세트 A·B, 그림자 장부)의 매수·매도는 이미 규칙이 정한 가상 기록이다. 바꾸지 말고 이유만 해설한다.','','외부 정보','10. ⑧ 뉴스는 웹 검색이 가능할 때만 쓴다. 각 항목에 발표일과 출처 링크를 붙이고, 신규/반복, 구조적/일시적, 관련 종목, 영향받는 QGV 요소(예: Q-경쟁우위, G-매출성장, V-역DCF)를 표시한다. 검색할 수 없으면 "외부 정보 확인 불가"라고 쓴다.','11. 뉴스(신호)와 확정 실적·공시(증거)를 구분한다. 뉴스로 점수를 고치지 않는다.','','시나리오','12. ⑨ 시나리오는 부정·중립·긍정 각각 전제 조건, 확인 신호, 무효화 조건만 쓴다. 확률과 목표가는 쓰지 않는다.','','어조','13. 한국어, 중립적, 짧게. "반드시", "확실히", "지금 사야", "놓치면" 같은 단정·권유 표현 금지.','14. 영어 용어는 처음 한 번만 English(한국어)로 병기한다.','','마지막에 아래 점검을 한 줄씩 붙인다.',...CHECK_LINES].join('\n');
 const HEADER_B='아래 일일보고서 템플릿의 【AI】 칸을 지침대로 채워 전체를 돌려줘. 웹 검색으로 ⑧ 뉴스를 확인해.';
@@ -43,7 +43,7 @@ function hiddenSetting(storage,value){
  try{if(value!==undefined){storage.setItem(HIDE_KEY,value?'1':'0');return value;}return storage.getItem(HIDE_KEY)!=='0';}catch(_){return true;}
 }
 /* Report model from device inputs (all RAM): engine ledger result, ACTUAL weights (no amounts), public Q·G rows. */
-function buildModel({kind='MOCK',tab='SET_A',reportDate,baseDates={},ledger=null,ram=null,qg={},targets={},names={},config=null,investStart=null}={}){
+function buildModel({kind='MOCK',tab='SET_A',reportDate,baseDates={},ledger=null,ram=null,qg={},targets={},names={},config=null,investStart=null,runner=null,hits=null}={}){
  const cfg=config||{};
  const started=!!(ledger&&ledger.state==='OK'),last=started?ledger.days[ledger.days.length-1]:null;
  const holdings=[];
@@ -53,11 +53,11 @@ function buildModel({kind='MOCK',tab='SET_A',reportDate,baseDates={},ledger=null
   for(const r of ram.rows){const cid=r.company_id||r.ticker;holdings.push({company:cid,name:names[cid]||r.ticker,actual_weight:num(r.weight)?r.weight*100:null,target_weight:num(targets[cid])?targets[cid]:null,main:null,aux:[],reasons:[],q:qg[cid]?.q??null,g:qg[cid]?.g??null});}
  }
  holdings.sort((a,b)=>(a.main?LEVELS.indexOf(a.main):99)-(b.main?LEVELS.indexOf(b.main):99)||String(a.company).localeCompare(String(b.company)));
- const executed=started?last.executed:[],orders=started?last.orders:[];
+ const executed=started?last.executed:[],orders=started?last.orders:[],cancelled=started?last.cancelled:[];
  const sum=(list,side)=>list.filter(t=>t.side===side).reduce((a,t)=>a+t.amount,0);
  return {kind,tab,report_date:reportDate||null,base_dates:baseDates,started,ledger_state:ledger?ledger.state:'NOT_AVAILABLE',ledger_reasons:ledger?ledger.reason_codes:['LEDGER_NOT_AVAILABLE'],
   start_date:cfg.start_date??null,invest_start:investStart,buy_limit:cfg.buy_limit??null,sell_limit:cfg.sell_limit??null,
-  summary:started?ledger.summary:null,last,days:started?ledger.days.slice(-5):[],holdings,executed,orders,
+  summary:started?ledger.summary:null,last,days:started?ledger.days.slice(-5):[],holdings,executed,orders,cancelled,runner,hits:Array.isArray(hits)?hits:[],
   buy_total:started?sum(executed,'BUY'):null,sell_total:started?sum(executed,'SELL'):null,ram_state:ram?ram.state:'NOT_AVAILABLE'};
 }
 function counts(holdings){const c={};for(const h of holdings)if(h.main)c[h.main]=(c[h.main]||0)+1;return c;}
@@ -107,6 +107,7 @@ function renderTemplate(m,{hidden=true,guide=true}={}){
  L.push('## ⑩ 행동요령 · 가상 매매장부 (가상 · 실제 추천 아님)',ledgerName+(m.started?'':' · 시작 전'),'| 구분 | 기업 | 금액 | 규칙 사유 |','|---|---|---|---|');
  if(m.executed.length)for(const t of m.executed)L.push('| 가상 '+(t.side==='BUY'?'매수':'매도')+' | '+t.company+' | '+money(t.amount,{...H,limit:t.side==='BUY'?m.buy_limit:m.sell_limit})+' | '+t.reason_codes.join(', ')+' |');
  else L.push('| '+NA+' | '+NA+' | '+NA+' | '+(m.started?'거래 없음':m.ledger_reasons.join(', '))+' |');
+ for(const o of m.cancelled)L.push('| 가상 주문 취소 | '+o.company+' | '+money(o.amount,{...H,limit:o.side==='BUY'?m.buy_limit:m.sell_limit})+' | '+o.cancel_reason+' |');
  if(s)L.push('가상 현금 '+money(s.cash,H)+' · 총 가상자산 '+money(s.total_value,H)+' · 누적 입금 '+money(s.deposits,H)+' · 실현손익 '+money(s.realized_pnl,H)+' · 미실현손익 '+money(s.unrealized_pnl,H));
  L.push('가상매매 해설: 【AI】 · [의견]은 별도 줄','');
  L.push('## ⑪ 누적 검증·성과','| 평가 창 | 표본 | 적중률 | 벤치마크 |','|---|---|---|---|');
@@ -117,7 +118,7 @@ function renderTemplate(m,{hidden=true,guide=true}={}){
  L.push('## 최종 투자판단','| 영역 | 판단 | 출처 |','|---|---|---|','| 가상매매 | '+ruleSummary(m)+' | 규칙 v1 |','최종 행동(7단계 어휘): 【AI】 (없으면 【규칙】 '+countsLine(m.holdings)+')','');
  L.push('## 각주',target+' · 포트폴리오 v1.1 · QGV 점수 기준 v1(보정 전) · 유형 v1 잠정 · 평가액 '+(s?money(s.total_value,H):NA)+' · 기준 종가일 '+base+' · 가상매매 실제 평가액 미반영 · 추산값 ≈ · 결측 N/A',
   '보고일: '+(m.report_date||NA),'투자 시작일: '+(m.invest_start||NA),'가상매매 시작일: '+(m.start_date||'미정'),'');
- const used=[...new Set(m.holdings.flatMap(h=>h.reasons).concat(m.executed.flatMap(t=>t.reason_codes)))].filter(c=>REASON_KO[c]).sort();
+ const used=[...new Set(m.holdings.flatMap(h=>h.reasons).concat(m.executed.flatMap(t=>t.reason_codes),m.cancelled.map(o=>o.cancel_reason)))].filter(c=>REASON_KO[c]).sort();
  L.push('## 사유 코드 사전 (그날 쓰인 코드만)',...(used.length?used.map(c=>'- '+c+': '+REASON_KO[c]):['- 없음']));
  return L.join('\n')+'\n';
 }
@@ -164,6 +165,19 @@ async function readOutbox(session,id,sha256){
  return found;
 }
 /* ---------- S17 screen ---------- */
+// Runner input status: symbols, states and reason codes only (prices, FX and ledgers never reach this card).
+const RUNNER_KO={LOADING:'가상 장부 입력 불러오는 중',READY:'가상 장부 입력 준비됨',NOT_STARTED:'시작일 전 · 가격 요청 없음',NOT_AVAILABLE:'가상 장부 입력 NOT_AVAILABLE'};
+function inputsCard(r){
+ if(!r)return '';
+ const rows=Array.isArray(r.sources)?r.sources:[],bad=rows.filter(x=>x.state!=='OK');
+ let h='<section class="card" data-report-inputs data-runner-state="'+esc(r.state)+'"><h2>가상 장부 입력 <span class="badge">기기 RAM 전용</span></h2>';
+ h+='<p data-runner-summary>'+esc((RUNNER_KO[r.state]||r.state)+(r.reason_codes&&r.reason_codes.length?' · '+r.reason_codes.join(', '):''))+'</p>';
+ if(r.state==='LOADING')h+='<p class="small" data-runner-progress>'+esc(r.progress||'')+'</p>';
+ if(rows.length)h+='<p class="small">'+esc('시세 '+(rows.length-bad.length)+'/'+rows.length+' 사용 가능')+'</p>';
+ if(bad.length)h+='<ul class="small" data-runner-sources>'+bad.map(x=>'<li data-source-symbol="'+esc(x.symbol)+'" data-source-code="'+esc(x.code||'')+'">'+esc(x.symbol+' · '+x.state+(x.code&&x.code!==x.state?' · '+x.code:''))+'</li>').join('')+'</ul>';
+ h+='<p class="small">가격·환율은 구글 로그인 상태에서 비공개 가격 Worker로 이 기기 메모리에만 불러옵니다. 저장·전송하지 않습니다. 없는 값은 채우지 않고 N/A·사유 코드로 둡니다.</p></section>';
+ return h;
+}
 function chip(level){return '<span class="chip judgement" data-level="'+level+'">'+esc(LEVEL_KO[level])+'</span>';}
 function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
  const H={hidden,mode:'screen'},s=m.summary,en=locale==='en-US',kindName=KINDS[m.kind][en?'en':'ko'];
@@ -177,6 +191,7 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
   +'<div class="grid two"><div><b>가상 매수</b><p>'+esc(m.buy_total===null?NA:money(m.buy_total,H))+'</p><p class="small">'+esc('매수 한도 '+money(m.buy_limit,H)+(m.buy_total!==null&&num(m.buy_limit)?' 중 '+Math.round(m.buy_total/m.buy_limit*100)+'%':''))+'</p></div>'
   +'<div><b>가상 매도</b><p>'+esc(m.sell_total===null?NA:money(m.sell_total,H))+'</p><p class="small">'+esc('매도 한도 '+money(m.sell_limit,H)+(m.sell_total!==null&&num(m.sell_limit)?' 중 '+Math.round(m.sell_total/m.sell_limit*100)+'%':''))+'</p></div></div>'
   +(m.started?'':'<p class="badge NOT_AVAILABLE" data-report-not-started>'+esc(notStarted(m))+'</p>')+'</section>';
+ h+=inputsCard(m.runner);
  h+='<section class="card" data-report-ai-summary><h2>오늘의 요약 <span class="badge">AI 해석</span></h2>'+(answer?'<pre class="ai-answer" data-ai-answer>'+esc(answer.answer)+'</pre><p class="small">'+esc((answer.model?answer.model+' · ':'')+'보관 '+(answer.saved_at||'')+' · '+(answer.source==='MAILBOX'?'우체통':'붙여넣기'))+'</p>':'<p data-rule-summary>'+esc('【규칙】 '+ruleSummary(m))+'</p>')
   +(check?'<p class="badge '+(check.format_ok?'LIVE':'NOT_AVAILABLE')+'" data-answer-format>'+esc(check.format_ok?'형식 확인됨':'형식 확인 필요')+'</p>'+(check.foreign_numbers.length?'<p class="badge STALE" data-foreign-numbers>'+esc('템플릿에 없는 숫자 '+check.foreign_numbers.length+'개')+'</p>':''):'')
   +'<p class="small">숫자는 앱 계산, 문장은 붙여넣은 AI 해석입니다. AI 해석이 없으면 규칙 문장으로 대신 채웁니다.</p></section>';
@@ -187,6 +202,9 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
  h+='<section class="card" data-report-section="10"><h2>⑩ 행동요령 · 가상 매매장부 <span class="badge">가상 · 실제 추천 아님</span></h2>';
  if(m.executed.length)h+='<div class="table-scroll"><table><thead><tr><th>구분</th><th>기업</th><th>금액</th><th>수량</th><th>규칙 사유</th></tr></thead><tbody>'+m.executed.map(t=>'<tr><td>'+(t.side==='BUY'?'가상 매수':'가상 매도')+'</td><td>'+esc(t.company)+'</td><td>'+esc(money(t.amount,H))+'</td><td>'+esc(quantity(t.quantity,H))+'</td><td>'+esc(t.reason_codes.join(', '))+'</td></tr>').join('')+'</tbody></table></div>';
  else h+='<p>'+esc(m.started?'오늘 가상 거래 없음':'시작 전 · 거래 기록 없음')+'</p>';
+ if(m.cancelled.length){const codes=[...new Set(m.cancelled.map(o=>o.cancel_reason))].sort();
+  h+='<h3>가상 주문 취소</h3><div class="table-scroll"><table data-report-cancelled><thead><tr><th>기업</th><th>구분</th><th>금액</th><th>사유 코드</th></tr></thead><tbody>'+m.cancelled.map(o=>'<tr data-cancel-reason="'+esc(o.cancel_reason)+'"><td>'+esc(o.company)+'</td><td>'+(o.side==='BUY'?'매수':'매도')+'</td><td>'+esc(money(o.amount,H))+'</td><td>'+esc(o.cancel_reason)+'</td></tr>').join('')+'</tbody></table></div>'
+   +'<p class="small" data-cancel-legend>'+esc(codes.map(c=>c+': '+(REASON_KO[c]||c)).join(' · ')+' · 없는 값은 채우지 않습니다.')+'</p>';}
  if(s)h+='<p class="small">'+esc('가상 현금 '+money(s.cash,H)+' · 실현손익 '+money(s.realized_pnl,H)+' · 미실현손익 '+money(s.unrealized_pnl,H))+'</p>';
  h+='<p class="small">체결은 다음 완료 정규장 종가 가정입니다. 매도대금은 가상 현금으로 가며 다음 날 한도를 늘리지 않습니다. 이 장부는 실제 평가액과 합산하지 않습니다. 주문 기능은 없습니다.</p></section>';
  h+='<section class="card" data-report-section="rest"><h2>①②④⑤⑥⑦⑧⑨⑪⑫⑬</h2><p>'+esc('이 절들은 보고서 템플릿 내보내기에 같은 순서로 들어갑니다. 연결되지 않은 값은 N/A로 표시합니다.')+'</p></section>';
