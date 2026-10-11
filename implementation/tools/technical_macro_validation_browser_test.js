@@ -3,7 +3,7 @@
 const assert=require('node:assert/strict');const {chromium}=require('playwright');
 const BASE=process.env.PAGES_COCKPIT_URL,SHOTS=process.env.TECH_SHOT_DIR||process.env.PAGES_COCKPIT_EVIDENCE_DIR||'.';
 // Deterministic synthetic daily bars; OHLC are consistent (low <= open,close <= high).
-function makeBars(n){const last=Math.floor(Date.now()/1000)-86400;return Array.from({length:n},(_,i)=>{const c=100+(i*7)%19+Math.floor(i/6);return{timestamp:last-(n-1-i)*86400,open:c-1,high:c+3,low:c-3,close:c,adjusted_close:c-2,volume:1000+i,session_status:'COMPLETE'};});}
+function makeBars(n){const last=Math.floor(Date.now()/1000)-2*86400;return Array.from({length:n},(_,i)=>{const c=100+(i*7)%19+Math.floor(i/6);return{timestamp:last-(n-1-i)*86400,open:c-1,high:c+3,low:c-3,close:c,adjusted_close:c-2,volume:1000+i,session_status:'COMPLETE'};});}
 const IDS=['SMA_5','SMA_20','SMA_60','SMA_120','EMA_20','RSI_14','MACD_12_26','MACD_SIGNAL_9','MACD_HISTOGRAM_12_26_9','ATR_14','BOLL_UPPER_20_2','BOLL_MIDDLE_20','BOLL_LOWER_20_2'];
 const NO_DEFINITION=['VOLUME','RELATIVE','STRUCTURE'];
 async function open(page,hash,selector){await page.evaluate(h=>{location.hash=h;},hash);await page.locator(selector).first().waitFor();}
