@@ -34,17 +34,19 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "virtual-trading-runner.js": "307e669fb5bb3ac2cdab005904c9babb24e253e42a89006dbbd61d73a9539042",
+    "virtual-trading-runner.js": "f7c590bbcfee2aaf3a096cf07abb82183898f28c2e6011428a7a773ed6c45327",
+    "virtual-trading-v-history.js": "7e236a7243e98b22a4cdf61cfd69e745284bcf17d7a1fc8a63f0c75fdd239ba2",
+    "virtual-trading-signals.js": "d151e60c93725469732fb971271d2f49f1ee327d907d0bb894f2c16c9ebf98c0",
     "share-class-groups.js": "3726a07393a0d1e04edc990fe7bdcacb5c1bbb8760547934dd9ef28e33b9f307",
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
-    "daily-report.js": "e82279c9d8a11c49ab7587baaa845e9273c208ac0019a84b6edffcbfdefa2bab",
+    "daily-report.js": "c81f1390bb93332c81a510b678d1733fd6738df4803544db17e94a73597fd75d",
     "sec-universe-shares.js": "77648df45a6c2e55b2c3be2cea2735a1d2457d8ef811646e7f2d0de674564bbb",
     "device-valuation.js": "06669cda863cd4dfa87108f54e03b75c9321989967da7ed54b03c921143cfedf",
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
-    "daily-report.js": "e82279c9d8a11c49ab7587baaa845e9273c208ac0019a84b6edffcbfdefa2bab",
+    "daily-report.js": "c81f1390bb93332c81a510b678d1733fd6738df4803544db17e94a73597fd75d",
     "virtual-trading.js": "c673a35ae5da2351343e0241d507d154ba6ceedcc1657c47fe60e24b035e6361",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
@@ -75,7 +77,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "4cbc089a108a798a2446b3005aaca026e0d328592c8dbf0bb60368d3f847d4fc",
+    "app.js": "43e9a29b624745155d0ddfbb0f0ce3d92ad8d9ef3cddca43ea246315f6491a3f",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "4b6bbdf71f74875199221cf534dc403be7961fd722abe2b1b12a499e2740f7f3",
@@ -85,12 +87,12 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "2b98f9c1b0fe1d8d170a1bf445518e83b1bcd3880874e046e9737baf1adb58bc",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "88fe5fa88f8c66bd8beb52fb085605a1f27ac16de4f45ada8f765e12ef2323aa",
+    "index.html": "18ce7e773c8a4f67c2cdaa321eeae534da87e3fa422ee14913e4b769f055c4d7",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "eab3e5bc2554a15aa2b921ce134e07fbf5e64d5ac3ee2fc8346e58bb47fa9541",
+    "style.css": "bdfc35bd2c87210326e882ce8df5b5216ef0285f19c55315fd0684da57a23e89",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
