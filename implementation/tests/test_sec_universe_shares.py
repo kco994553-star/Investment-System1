@@ -253,7 +253,8 @@ def test_tool_collects_one_shard_merges_and_reports_raw_not_configured(tmp_path,
     assert payload['records']['BATS:CBOE']['reason_codes'] == ['CIK_UNRESOLVED']
     text = (tmp_path / m.FILENAME).read_text().lower()
     assert 'price' not in text and 'marketcap' not in text and 'rank' not in text
-    assert list(tmp_path.iterdir()) == [tmp_path / m.FILENAME]
+    # The same shard also writes the price-free Q·G file (tests/test_sec_universe_qg.py); nothing else.
+    assert sorted(p.name for p in tmp_path.iterdir()) == ['sec-universe-qg.json', m.FILENAME]
 
 
 def test_tool_keeps_previous_values_from_other_shards_and_on_total_failure(tmp_path, capsys):
