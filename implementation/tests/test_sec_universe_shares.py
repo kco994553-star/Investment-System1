@@ -15,6 +15,7 @@ import pytest
 from investment_system.providers.sec_collection import SecResponse
 from investment_system.providers.sec_universe_collection import universe_registry, daily_partition
 from investment_system.universe import sec_universe_shares as m
+from investment_system.providers import sec_m3_adapter as m3
 
 ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 10, 10, 22, 30, tzinfo=timezone.utc)
@@ -437,11 +438,33 @@ def test_unlisted_class_b_missing_or_ambiguous_is_not_available_never_zero(class
     assert merged(records, unlisted_updates=unlisted)['unlisted_classes']['alphabet'] == entry
 
 
-def test_capital_stock_title_stays_basis_unconfirmed_general_rule_not_loosened():
-    """Real-data confirmation of GOOG's cover title is pending: the general title rule is unchanged."""
-    records, unlisted = alpha_records(goog_title='Class C Capital Stock')
-    assert records['NASDAQ:GOOG']['share_class_basis'] == 'BASIS_UNCONFIRMED' and records['NASDAQ:GOOG']['reason_codes'] == ['BASIS_UNCONFIRMED']
+def test_goog_exact_capital_stock_title_is_allowed_only_for_alphabet():
+    """GSQ-021: GOOG's real cover title (10-Q 0001652044-24-000053/-000118) is allowed as that exact string only."""
+    records, unlisted = alpha_records(goog_title='Class C Capital Stock, $0.001 par value')
+    assert records['NASDAQ:GOOG']['share_class_basis'] == 'SHARE_CLASS_BASIS'
+    assert records['NASDAQ:GOOG']['reason_codes'] == records['NASDAQ:GOOGL']['reason_codes'] == ['SHARE_CLASS_BASIS']
     assert records['NASDAQ:GOOGL']['share_class_basis'] == 'SHARE_CLASS_BASIS' and unlisted['alphabet']['state'] == 'LIVE'
+    assert m3.EXACT_TITLE_EXCEPTIONS == {('0001652044', 'GOOG'): 'Class C Capital Stock, $0.001 par value'}
+
+
+@pytest.mark.parametrize('title', ['Class C Capital Stock', 'class c capital stock, $0.001 par value', 'Class C Capital Stock, $0.001 par value ',
+                                   'Class C Capital Stock, $0.01 par value'])
+def test_capital_stock_general_rule_not_loosened(title):
+    records, _ = alpha_records(goog_title=title)
+    if title.strip() == 'Class C Capital Stock, $0.001 par value':
+        assert records['NASDAQ:GOOG']['share_class_basis'] == 'SHARE_CLASS_BASIS'   # cover text is stripped before matching
+    else:
+        assert records['NASDAQ:GOOG']['share_class_basis'] == 'BASIS_UNCONFIRMED' and records['NASDAQ:GOOG']['reason_codes'] == ['BASIS_UNCONFIRMED']
+
+
+def test_capital_stock_title_is_not_allowed_for_another_issuer():
+    xml = b"""<xbrli:xbrl xmlns:xbrli="http://www.xbrl.org/2003/instance" xmlns:dei="http://xbrl.sec.gov/dei/2024">
+<xbrli:context id="c"><xbrli:entity><xbrli:identifier scheme="http://www.sec.gov/CIK">0000000123</xbrli:identifier></xbrli:entity><xbrli:period><xbrli:instant>2026-09-25</xbrli:instant></xbrli:period></xbrli:context>
+<xbrli:unit id="s"><xbrli:measure>xbrli:shares</xbrli:measure></xbrli:unit>
+<dei:Security12bTitle contextRef="c">Class C Capital Stock, $0.001 par value</dei:Security12bTitle><dei:TradingSymbol contextRef="c">GOOG</dei:TradingSymbol>
+<dei:EntityCommonStockSharesOutstanding contextRef="c" unitRef="s">100</dei:EntityCommonStockSharesOutstanding></xbrli:xbrl>"""
+    with pytest.raises(ValueError, match='BASIS_UNCONFIRMED'):
+        m3._cover(xml, '0000000123', 'GOOG', datetime(2026, 10, 1, tzinfo=timezone.utc))
 
 
 def test_unlisted_entry_follows_its_listing_row_through_merge_and_staleness():
