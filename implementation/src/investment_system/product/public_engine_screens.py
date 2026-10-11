@@ -20,6 +20,7 @@ from ..providers.sec_m1 import build_input
 from ..providers.sec_filing_timing import build_filing_timing_pattern
 from ..macro.primary_contract import AXES, DIMENSIONS, SOURCE_REGISTRY, ENDPOINTS, LEVEL_REQUIRED, SourceReceipt
 from ..macro.government_screen import build_government_macro_screen
+from ..macro import growth_inflation_v0 as macro_v0
 from ..providers.macro_primary import parse_bls, parse_bea_nipa, parse_treasury_yields
 from ..providers.sec_13f import FilingMetadata, parse_information_table, compare_quarters
 
@@ -145,7 +146,7 @@ def _require(name,payload):
                     _keys(w,('month','day_min','day_max','count'))
                     _need(all(type(v) is int for v in w.values()) and 1<=w['month']<=12 and 1<=w['day_min']<=w['day_max']<=31 and w['count']>0)
     elif name=='macro-screen.json':
-        _keys(data,('axes','dimensions','cells','observations','regime','pit_status'))
+        _keys(data,('axes','dimensions','cells','observations','regime','pit_status')+(('growth_inflation_v0',) if 'growth_inflation_v0' in data else ()))
         _need(data['axes']==list(AXES) and data['dimensions']==list(DIMENSIONS) and data['regime'] is None and data['pit_status'] in ('OBSERVED_BOUND_ONLY','NOT_VERIFIED'))
         _need(isinstance(data['cells'],list) and len(data['cells'])==48)
         _need([(c['axis'],c['dimension']) for c in data['cells']]==[(a,d) for a in AXES for d in DIMENSIONS])
@@ -179,6 +180,7 @@ def _require(name,payload):
             expected='RAW_EVIDENCE' if c['dimension']=='Level' and eligible else 'NOT_AVAILABLE'
             _need(c['state']==expected)
         _need(data['pit_status']==('OBSERVED_BOUND_ONLY' if data['observations'] else 'NOT_VERIFIED'))
+        if 'growth_inflation_v0' in data:_require_macro_v0(data['growth_inflation_v0'],sources,cut,payload['stale_after_seconds'],states)
     else:
         _keys(data,('reports','role'));_need(data['role']=='REPORTED_QUANTITY_CHANGE_NOT_TRADES' and isinstance(data['reports'],list))
         for r in data['reports']:
@@ -216,12 +218,12 @@ def parse_json(body):
     return json.loads(body,object_pairs_hook=_pairs,parse_constant=invalid)
 
 
-def _read(root,name):
+def _read(root,name,limit=32*1024*1024):
     _need(isinstance(name,str),'PUBLIC_SCREENS_INPUT_INVALID')
     p=Path(name);_need(not p.is_absolute() and '..' not in p.parts,'PUBLIC_SCREENS_INPUT_INVALID')
     root=Path(root).resolve();target=root/p
     _need(target.resolve().is_relative_to(root) and target.is_file() and not target.is_symlink(),'PUBLIC_SCREENS_INPUT_INVALID')
-    _need(target.stat().st_size<=32*1024*1024,'PUBLIC_SCREENS_INPUT_INVALID')
+    _need(target.stat().st_size<=limit,'PUBLIC_SCREENS_INPUT_INVALID')
     return target.read_bytes()
 
 
@@ -258,6 +260,66 @@ def _growth(m1):
     return values[0] if values and all(math.isclose(v,values[0],rel_tol=1e-12,abs_tol=1e-12) for v in values) else None
 
 
+V0_MAX_BYTES=256*1024*1024  # BEA publishes all quarterly NIPA series in one flat file.
+
+
+def _macro_v0(entries,root,as_of,stale_after):
+    """Growth/Inflation v0 axes (user decision 2026-10-11); raw bodies stay in the private root."""
+    _need(isinstance(entries,list) and len(entries)<=2,'PUBLIC_SCREENS_INPUT_INVALID')
+    axes={};sources=[]
+    for entry in entries:
+        _need(isinstance(entry,dict) and entry.get('axis') in macro_v0.FORMATS and entry['axis'] not in axes,'PUBLIC_SCREENS_INPUT_INVALID')
+        axis=entry['axis']
+        if 'reason' in entry:
+            _keys(entry,('axis','reason'));_need(entry['reason'] in macro_v0.REASONS,'PUBLIC_SCREENS_INPUT_INVALID')
+            axes[axis]=macro_v0.unavailable_axis(axis,entry['reason']);continue
+        _keys(entry,('axis','format','file','acquired_at','synthetic'));_need(type(entry['synthetic']) is bool and entry['format'] in macro_v0.FORMATS[axis],'PUBLIC_SCREENS_INPUT_INVALID')
+        acquired=clock(entry['acquired_at'])
+        if entry['synthetic']:axes[axis]=macro_v0.unavailable_axis(axis,'SYNTHETIC_INPUT_NOT_PUBLIC');continue
+        if acquired>as_of:axes[axis]=macro_v0.unavailable_axis(axis,'SOURCE_AFTER_AS_OF');continue
+        body=_read(root,entry['file'],V0_MAX_BYTES)
+        axes[axis]=macro_v0.build_axis(axis,entry['format'],body,acquired,_fresh(acquired,as_of,stale_after))
+        sources.append(_source(macro_v0.AXIS_META[axis]['agency'],body,acquired))
+    for axis in macro_v0.FORMATS:axes.setdefault(axis,macro_v0.unavailable_axis(axis,'SOURCE_NOT_COLLECTED'))
+    axes={axis:axes[axis] for axis in macro_v0.FORMATS}
+    return macro_v0.build_block(axes,as_of),sources,[row['state'] for row in axes.values()]
+
+
+def _dec(value):
+    _need(isinstance(value,str) and re.fullmatch(r'[+-]?\d+(?:\.\d+)?',value) is not None);d=Decimal(value);_need(d.is_finite());return d
+
+
+def _require_macro_v0(block,sources,cut,ttl,states):
+    _keys(block,('config','axes','engine','regime'));_need(block['config']==macro_v0.CONFIG)
+    _keys(block['axes'],tuple(macro_v0.FORMATS))
+    for axis,row in block['axes'].items():
+        _keys(row,macro_v0.AXIS_KEYS[axis])
+        _need(all(row[k]==v for k,v in macro_v0.AXIS_META[axis].items()) and row['release_at'] is None and row['release_basis']=='NOT_VERIFIED')
+        _need(row['state'] in STATES and isinstance(row['reason_codes'],list) and len(row['reason_codes'])<=4 and all(r in macro_v0.REASONS for r in row['reason_codes']))
+        _need((row['acquired_at'] is None)==(row['source_sha256'] is None))
+        if row['source_sha256'] is not None:
+            _hash(row['source_sha256']);acquired=clock(row['acquired_at'])
+            _need(sources.get((row['agency'],row['source_sha256']))==acquired)
+        detail=[k for k in macro_v0.AXIS_KEYS[axis] if k in ('value','period','published_percent','base_period','index_value','base_index_value')]
+        if row['state']=='NOT_AVAILABLE':
+            _need(all(row[k] is None for k in detail) and row['reason_codes'])
+        else:
+            _need(row['source_sha256'] is not None and not row['reason_codes'] and row['state']==_fresh(acquired,cut,timedelta(seconds=ttl)))
+            value=_dec(row['value'])
+            if axis=='Growth':
+                _need(isinstance(row['period'],str) and re.fullmatch(r'\d{4}Q[1-4]',row['period']) is not None)
+                _need(value==macro_v0.growth_value(_dec(row['published_percent'])))
+            else:
+                for k in ('period','base_period'):_need(isinstance(row[k],str) and re.fullmatch(r'\d{4}-(?:0[1-9]|1[0-2])',row[k]) is not None)
+                _need(row['base_period']==macro_v0.base_month(row['period']))
+                _need(value==macro_v0.yoy(_dec(row['index_value']),_dec(row['base_index_value'])))
+        states.append(row['state'])
+    engine=block['engine'];_keys(engine,('name','version','state','rule_label','reason_codes'))
+    expected=macro_v0.evaluate_engine(block['axes'],cut)
+    _need(engine==expected)
+    _need(block['regime']=={'state':'NOT_AVAILABLE','value':None,'reason_codes':['EIGHT_AXIS_MAPPING_NOT_ADOPTED']})
+
+
 def generate_screen_bundle(*,manifest,input_root,as_of,stale_after):
     try:return _generate(manifest,input_root,as_of,stale_after)
     except (OSError,ValueError,TypeError,KeyError,AttributeError,OverflowError,RecursionError):raise ValueError('PUBLIC_SCREENS_INPUT_INVALID') from None
@@ -266,7 +328,7 @@ def generate_screen_bundle(*,manifest,input_root,as_of,stale_after):
 def _generate(manifest,root,as_of,stale_after):
     _need(isinstance(as_of,datetime) and as_of.utcoffset() is not None and isinstance(stale_after,timedelta) and stale_after.total_seconds()>0,'PUBLIC_SCREENS_INPUT_INVALID')
     as_of=as_of.astimezone(timezone.utc)
-    _keys(manifest,('schema_version','sec','macro','thirteen_f'));_need(type(manifest['schema_version']) is int and manifest['schema_version']==1)
+    _keys(manifest,('schema_version','sec','macro','thirteen_f')+(('macro_v0',) if 'macro_v0' in manifest else ()));_need(type(manifest['schema_version']) is int and manifest['schema_version']==1)
     _need(all(isinstance(manifest[k],list) for k in ('sec','macro','thirteen_f')) and len(manifest['sec'])<=17 and len(manifest['macro'])<=64 and len(manifest['thirteen_f'])<=20)
     qg={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'factors':{fid:{'score':None,'state':'NOT_AVAILABLE'} for fid in sorted(FACTORS)}} for cid in OFFICIAL_V11_TARGETS}
     types={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'memberships':dict.fromkeys(PRICEFREE_TYPES),'config_version':None,'metrics':dict.fromkeys(PRICEFREE_METRICS)} for cid in OFFICIAL_V11_TARGETS}
@@ -335,7 +397,8 @@ def _generate(manifest,root,as_of,stale_after):
     for cell in cells:
         relevant=[o for o in observations if o['axis']==cell['axis']]
         if not relevant or cell['axis'] in LEVEL_REQUIRED and not set(LEVEL_REQUIRED[cell['axis']])<=set(o['source_id'] for o in relevant):cell['state']='NOT_AVAILABLE'
-    macro={'axes':list(AXES),'dimensions':list(DIMENSIONS),'cells':cells,'observations':observations,'regime':None,'pit_status':'OBSERVED_BOUND_ONLY' if observations else 'NOT_VERIFIED'}
+    v0_block,v0_sources,v0_states=_macro_v0(manifest.get('macro_v0',[]),root,as_of,stale_after)
+    macro={'axes':list(AXES),'dimensions':list(DIMENSIONS),'cells':cells,'observations':observations,'regime':None,'pit_status':'OBSERVED_BOUND_ONLY' if observations else 'NOT_VERIFIED','growth_inflation_v0':v0_block}
     reports=[];report_sources=[]
     for pair in manifest['thirteen_f']:
         _keys(pair,('previous','current','synthetic'));_need(type(pair['synthetic']) is bool)
@@ -364,7 +427,7 @@ def _generate(manifest,root,as_of,stale_after):
         'sec-qg-factors.json':_envelope('sec-qg-factors.json',as_of,stale_after,financial(qg),sec_sources,[r['state'] for r in qg.values()]),
         'company-types-pricefree.json':_envelope('company-types-pricefree.json',as_of,stale_after,financial(types),sec_sources,[r['state'] for r in types.values()],type_reasons),
         'sec-filing-windows.json':_envelope('sec-filing-windows.json',as_of,stale_after,{'companies':windows},sec_sources,[r['state'] for r in windows.values()]),
-        'macro-screen.json':_envelope('macro-screen.json',as_of,stale_after,macro,macro_sources,[_fresh(clock(o['available_at']),as_of,stale_after) for o in observations],('UNAPPROVED_ENGINE_INPUT_MAPPING','PUBLIC_FX_EXCLUDED')),
+        'macro-screen.json':_envelope('macro-screen.json',as_of,stale_after,macro,macro_sources+v0_sources,[_fresh(clock(o['available_at']),as_of,stale_after) for o in observations]+v0_states,('UNAPPROVED_ENGINE_INPUT_MAPPING','PUBLIC_FX_EXCLUDED')),
         'sec-13f-changes.json':_envelope('sec-13f-changes.json',as_of,stale_after,{'reports':reports,'role':'REPORTED_QUANTITY_CHANGE_NOT_TRADES'},report_sources,[r['state'] for r in reports]),
     }
     for name,payload in outputs.items():require_public_screen(name,payload)
