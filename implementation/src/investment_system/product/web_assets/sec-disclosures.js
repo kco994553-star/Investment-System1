@@ -57,7 +57,8 @@ async function load(view){const control=new AbortController(),timer=setTimeout((
 function timeline(payload,{companyIds=null,news=[]}={}){const rows=(payload?.events||[]).filter(e=>!companyIds||companyIds.includes(e.company_id)).map(e=>({channel:'DISCLOSURE',time:e.accepted_at,company_id:e.company_id,event:e}));
  for(const n of news)if(n&&n.channel==='NEWS'&&typeof n.time==='string'&&(!companyIds||companyIds.includes(n.company_id)))rows.push(n);return rows.sort((a,b)=>a.time<b.time?1:a.time>b.time?-1:0);}
 function itemLabel(code,en){const [e,k]=ITEMS[code];return en?code+' '+e+' ('+k+')':code+' '+k+' ('+e+')';}
-function classLabel(name,en){const [k,e]=CLASSES[name];return en?e+' ('+k+')':k+' ('+e+')';}
+// The four highlighted kinds use short labels; any other report is labelled by its first official item name (9.01 exhibits last).
+function classLabel(name,en,items=[]){const first=name==='OTHER'?items.find(c=>c!=='9.01')||items[0]:null;if(first){const [e,k]=ITEMS[first];return en?e+' ('+k+')':k+' ('+e+')';}const [k,e]=CLASSES[name];return en?e+' ('+k+')':k+' ('+e+')';}
 function mount(host,payload,{locale,companyIds=null,limit=30,emptyText}={}){
  if(!host)return;const doc=host.ownerDocument,en=locale==='en-US',T=(k,e)=>en?e:k,el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
  const section=el('section',undefined,{class:'card','data-sec-disclosures':''});section.append(el('h2',T('공시·확정 · SEC 8-K','Disclosures · confirmed · SEC 8-K')));
@@ -69,7 +70,7 @@ function mount(host,payload,{locale,companyIds=null,limit=30,emptyText}={}){
  if(!rows.length){section.append(el('p',emptyText||T('표시할 공시가 없습니다.','No disclosures to show.'),{class:'empty'}));host.replaceChildren(section);return;}
  const list=el('ol',undefined,{class:'list','data-disclosure-list':''});
  for(const row of rows){const e=row.event,li=el('li',undefined,{class:'card','data-disclosure':e.accession,'data-occurrence':e.occurrence,'data-classification':e.classification});
-  const head=el('p',undefined,{class:'chips'});head.append(el('span',CHANNELS.DISCLOSURE[en?1:0],{class:'badge LIVE','data-channel':'DISCLOSURE'}),el('span',e.occurrence==='NEW'?T('새 공시','New'):T('정정·반복','Repeat / amendment'),{class:'badge','data-occurrence-label':e.occurrence}),el('span',classLabel(e.classification,en),{class:'badge','data-classification-label':e.classification}));li.append(head);
+  const head=el('p',undefined,{class:'chips'});head.append(el('span',CHANNELS.DISCLOSURE[en?1:0],{class:'badge LIVE','data-channel':'DISCLOSURE'}),el('span',e.occurrence==='NEW'?T('새 공시','New'):T('정정·반복','Repeat / amendment'),{class:'badge','data-occurrence-label':e.occurrence}),el('span',classLabel(e.classification,en,e.items),{class:'badge','data-classification-label':e.classification}));li.append(head);
   const who=el('p');who.append(el('a',e.company_id.toUpperCase(),{href:'#company/'+encodeURIComponent(e.company_id)}),doc.createTextNode(' · '+e.form+' · '+e.accepted_at.slice(0,16).replace('T',' ')+' UTC'));li.append(who);
   const x=e.exhibit_99_1;if(x.state==='AVAILABLE'){const t=el('p');t.append(el('a',x.title,{href:x.url,target:'_blank',rel:'noopener noreferrer','data-exhibit-link':''}),doc.createTextNode(' · EX-99.1'));li.append(t);}
   else li.append(el('p','EX-99.1 · NOT_AVAILABLE · '+x.reason_code,{class:'small'}));
@@ -78,5 +79,5 @@ function mount(host,payload,{locale,companyIds=null,limit=30,emptyText}={}){
   list.append(li);}
  section.append(list);host.replaceChildren(section);
 }
-return Object.freeze({FILENAME,KIND,CIKS,ITEMS,CLASSES,CHANNELS,PRIORITY,classify,groups,indexUrl,validate,load,timeline,mount});
+return Object.freeze({FILENAME,KIND,CIKS,ITEMS,CLASSES,CHANNELS,PRIORITY,classify,classLabel,groups,indexUrl,validate,load,timeline,mount});
 });

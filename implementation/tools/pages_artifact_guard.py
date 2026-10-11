@@ -35,7 +35,7 @@ from investment_system.product.sec_disclosures import FILENAME as DISCLOSURES_FI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "sec-disclosures.js": "712c128fb17a5ffd03e64163fd04bcbafebf60fa59fa3ce0b83e139dbe193def",
+    "sec-disclosures.js": "20679c4cb2f17151121e8649074af81b643454cd3b00c6826dded1642d0494e8",
     "virtual-trading-runner.js": "323ebbda32722dd24d7bbf1cd4c5db6316c730ca083d88b44d2553fc34dc8372",
     "virtual-ledger-sheets.js": "9fc09749fa1a6df9c74e7ceb23cc0df9f466af0d3661653db33132bd58efcd83",
     "table-sort.js": "bd6e195298cb53b32adc8cdeaec57312e4c1807760e100b0af351f50bc4dfbf4",
