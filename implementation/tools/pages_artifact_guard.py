@@ -82,7 +82,7 @@ APPROVED_SHA256 = {
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "b81c5447b30fd60257edf8d807ce27e2099e6fd56ae0c977ef140884c8af8199",
+    "google-sheet-quotes.js": "2b98f9c1b0fe1d8d170a1bf445518e83b1bcd3880874e046e9737baf1adb58bc",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
     "index.html": "2006d7be2fcc5a34023587ee02e2ecc71fdf7c9a7c85ee11eea8f371c40d7f40",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
