@@ -121,35 +121,54 @@ function analysis(ctx){
  const compare=panel('compare',T('비교·컨센서스','Compare / consensus'),'<dl class="kv">'+naRow(T('동종 비교','Peer comparison'),T('업종군 v0 연결됨 · 동종 비교 기준 미정','Industry group v0 connected · peer-comparison basis undefined'),locale)+naRow(T('컨센서스','Consensus'),T('공급원 없음','No source'),locale)+'</dl>',true);
  return '<a class="parent-link" href="#company/'+encodeURIComponent(id)+'" data-analysis-back>'+esc('← '+ticker+' '+T('요약','summary'))+'</a>'+ctx.headerHtml+dataBadges(screens,locale,true)+tabs+overview+business+financials+events+factors+value+compare;
 }
-// Value view (v1+dcf_v1_default). Public FCFE is price-free; the price is this device's own quote, used in RAM only.
+// Value view (v1+dcf_v1_1_default). Public FCFE and the forward DCF are price-free; the price is this device's own quote, used in RAM only.
 const V_LABEL={fundamental_value:['핵심 가치','Fundamental value'],peer_relative_value:['동종 상대가치','Peer-relative value'],historical_valuation:['과거 밸류에이션','Historical valuation'],sector_context:['업종 맥락','Sector context'],theme_premium_discount:['테마 프리미엄·할인','Theme premium / discount'],reverse_dcf:['역DCF','Reverse DCF'],margin_of_safety:['안전마진','Margin of safety']};
 const QUOTE_SOURCE={MANUAL:['기기 수동 시세','Device manual quote'],API:['기기 API 시세','Device API quote'],GOOGLEFINANCE:['기기 Google 시트 시세','Device Google Sheet quote'],PRIVATE_HISTORY_CLOSE:['비공개 일별 이력 종가','Private daily history close']};
+const COMPONENT_LABEL={long_term_debt_issuance:['장기차입 발행','Long-term debt issuance'],long_term_debt_repayment:['장기차입 상환','Long-term debt repayment'],net_short_term_borrowing:['단기차입 순증감','Net short-term borrowing']};
+const DCF_DEFAULTS={V1_1_UNCALIBRATED_DEFAULT:['v1.1 UNCALIBRATED 기본값','v1.1 UNCALIBRATED default','v1+dcf_v1_1_default'],V1_UNCALIBRATED_DEFAULT:['v1 UNCALIBRATED 기본값','v1 UNCALIBRATED default','v1+dcf_v1_default']};
 function accnText(a){return typeof a==='string'&&/^\d{18}$/.test(a)?a.slice(0,10)+'-'+a.slice(10,12)+'-'+a.slice(12):'—';}
 function valueHtml({locale,row=null,result=null,quote=null,compact=false,params=g.DeviceValuation?g.DeviceValuation.parameters():null}){
- const T=tr(locale),reasons=list=>(list||[]).join(' · '),pct=v=>typeof v==='number'&&Number.isFinite(v)?(v<0?'−':'')+num(Math.abs(v)*100,locale)+'%':'—';
- const p=params&&typeof params==='object'?params:null,isDefault=p&&p.status==='V1_UNCALIBRATED_DEFAULT';
- const badges='<p class="chips data-badges"><span class="badge" data-dcf-badge>'+esc(isDefault?T('v1 UNCALIBRATED 기본값','v1 UNCALIBRATED default'):T('사용자 설정 · 보정 전','Custom · uncalibrated'))+'</span><span class="badge" data-dcf-version>'+esc(result?result.version:(isDefault?'v1+dcf_v1_default':'v1+dcf_custom'))+'</span></p>';
- const paramLine=p?'<p class="small" data-dcf-params>'+esc(T('기본값(나중에 수정 가능): 명시 ','Defaults (editable later): explicit '))+esc(String(p.explicit_years))+esc(T('년 · 할인율 ','y · discount rate '))+esc(pct(p.discount_rate))+esc(T(' · 영구성장 ',' · terminal growth '))+esc(pct(p.terminal_growth))+esc(T(' · 역DCF 탐색 ',' · reverse-DCF bracket '))+esc(pct(p.solver&&p.solver.growth_lower))+'~'+esc((p.solver&&p.solver.growth_upper>0?'+':'')+pct(p.solver&&p.solver.growth_upper))+'</p>':'<p>'+na('DCF_PARAMETERS_UNAVAILABLE',locale)+'</p>';
- const f=row&&row.fcfe?row.fcfe:null,fcfeOk=f&&f.state!=='NOT_AVAILABLE';
- const fcfe=fcfeOk?'<span class="num">'+esc(f.currency+' '+num(f.fcfe_per_share,locale,2))+'</span> <span class="small">'+esc(T('회계연도 종료 ','FY end ')+f.fiscal_period_end+' · '+f.form+' · accn '+accnText(f.accn))+'</span> <span class="badge '+esc(f.state)+'">'+esc(f.state)+'</span>'
+ const T=tr(locale),en=locale==='en-US'?1:0,reasons=list=>(list||[]).join(' · '),pct=v=>typeof v==='number'&&Number.isFinite(v)?(v<0?'−':'')+num(Math.abs(v)*100,locale)+'%':'—';
+ const p=params&&typeof params==='object'?params:null,preset=p&&Object.hasOwn(DCF_DEFAULTS,p.status)?DCF_DEFAULTS[p.status]:null,rule=p&&p.explicit_growth_rule&&typeof p.explicit_growth_rule==='object'?p.explicit_growth_rule:null;
+ const badges='<p class="chips data-badges"><span class="badge" data-dcf-badge>'+esc(preset?preset[en]+T(' · 나중에 수정 가능',' · editable later'):T('사용자 설정 · 보정 전','Custom · uncalibrated'))+'</span><span class="badge" data-dcf-version>'+esc(result?result.version:(preset?preset[2]:'v1+dcf_custom'))+'</span></p>';
+ const ruleText=rule?T(' · 명시기간 성장률 h = 자사 3년 매출 CAGR, ',' · explicit growth h = own 3-year revenue CAGR clamped to ')+pct(rule.lower)+'~'+pct(rule.upper)+T(' 범위로 제한 (PROVISIONAL)',' (PROVISIONAL)'):T(' · 명시기간 성장률 h 미결정',' · explicit growth h undecided');
+ const paramLine=p?'<p class="small" data-dcf-params>'+esc(T('기본값(나중에 수정 가능): 명시 ','Defaults (editable later): explicit '))+esc(String(p.explicit_years))+esc(T('년 · 할인율 ','y · discount rate '))+esc(pct(p.discount_rate))+esc(T(' · 영구성장 ',' · terminal growth '))+esc(pct(p.terminal_growth))+esc(T(' · 역DCF 탐색 ',' · reverse-DCF bracket '))+esc(pct(p.solver&&p.solver.growth_lower))+'~'+esc((p.solver&&p.solver.growth_upper>0?'+':'')+pct(p.solver&&p.solver.growth_upper))+esc(ruleText)+'</p>':'<p>'+na('DCF_PARAMETERS_UNAVAILABLE',locale)+'</p>';
+ const f=row&&row.fcfe?row.fcfe:null,fcfeOk=f&&f.state!=='NOT_AVAILABLE',gaap={'us-gaap':'US GAAP','ifrs-full':'IFRS'}[f&&f.taxonomy]||null;
+ const fcfe=fcfeOk?'<span class="num">'+esc(f.currency+' '+num(f.fcfe_per_share,locale,2))+'</span> <span class="small">'+esc(T('회계연도 종료 ','FY end ')+f.fiscal_period_end+' · '+f.form+(gaap?' · '+gaap:'')+' · accn '+accnText(f.accn))+'</span> <span class="badge '+esc(f.state)+'">'+esc(f.state)+'</span>'
   :na(f?reasons(f.reason_codes):T('공개 SEC 가치 입력이 없습니다','No public SEC valuation input'),locale);
- const q=quote?'<span data-value-quote-source="'+esc(quote.source||'')+'">'+esc((QUOTE_SOURCE[quote.source]||['기기 시세','Device quote'])[locale==='en-US'?1:0])+'</span> <span class="small">'+esc((quote.as_of||'—')+(quote.stale?' · STALE':'')+' · '+T('RAM 전용 · 저장·전송 안 함','RAM only · not stored or sent'))+'</span>'
+ const zero=f&&f.components?Object.keys(COMPONENT_LABEL).filter(k=>f.components[k]&&f.components[k].assumed_zero===true):[];
+ const zeroRow=zero.length?'<dt>'+esc(T('미보고 항목','Unreported lines'))+'</dt><dd data-value="assumed-zero"><span class="badge">'+esc(T('미보고 → 0 가정','Not reported → assumed 0'))+'</span> <span class="small">'+esc(zero.map(k=>COMPONENT_LABEL[k][en]).join(' · ')+' (NOT_REPORTED_ASSUMED_ZERO)')+'</span></dd>':'';
+ const partial=f&&f.components?Object.keys(COMPONENT_LABEL).filter(k=>f.components[k]&&f.components[k].reason==='BORROWING_PAIR_PARTIAL'):[];
+ const partialRow=partial.length?'<dt>'+esc(T('한쪽만 보고된 차입 쌍','Half-reported borrowing pair'))+'</dt><dd data-value="pair-partial"><span class="badge">'+esc(T('미보고 쪽 → 0 가정','Unreported side → assumed 0'))+'</span> <span class="small">'+esc(partial.map(k=>COMPONENT_LABEL[k][en]+': '+f.components[k].concepts.join(', ')).join(' · ')+' (BORROWING_PAIR_PARTIAL)')+'</span></dd>':'';
+ const basis=p&&typeof p.currency==='string'?p.currency:null,qc=quote&&typeof quote.currency==='string'?quote.currency:null,cc=f&&typeof f.currency==='string'?f.currency:null;
+ const ccyMismatch=cc&&(basis&&cc!==basis||qc&&cc!==qc);
+ const ccyRow=ccyMismatch?'<dt>'+esc(T('통화','Currency'))+'</dt><dd data-value="currency-basis">'+na('CURRENCY_BASIS_UNCONFIRMED',locale)+' <span class="small">'+esc(T('보고 통화 ','Reported currency ')+cc+(qc&&qc!==cc?T(' · 가격 통화 ',' · price currency ')+qc:'')+(basis&&basis!==cc?T(' · 기준 통화 ',' · basis currency ')+basis:'')+T(' · 환율 변환 없음',' · no FX conversion'))+'</span></dd>':'';
+ const q=quote?'<span data-value-quote-source="'+esc(quote.source||'')+'">'+esc((QUOTE_SOURCE[quote.source]||['기기 시세','Device quote'])[en])+'</span> <span class="small">'+esc((quote.as_of||'—')+(quote.stale?' · STALE':'')+' · '+T('RAM 전용 · 저장·전송 안 함','RAM only · not stored or sent'))+'</span>'
   :na(T('이 기기에 이 종목 시세가 없습니다 (NO_DEVICE_PRICE)','No device quote for this company (NO_DEVICE_PRICE)'),locale);
  const rev=result&&result.reverse_dcf.state!=='NOT_AVAILABLE'?'<span class="num" data-implied-growth>'+esc(pct(result.reverse_dcf.implied_growth))+'</span> <span class="small">'+esc(T('현재 기기 가격이 함의하는 명시 '+(p?p.explicit_years:'—')+'년 연 FCFE 성장률','Annual FCFE growth over the explicit '+(p?p.explicit_years:'—')+' years implied by the device price'))+'</span>'
   :na(result?reasons(result.reverse_dcf.reason_codes):'NO_DEVICE_PRICE',locale);
- const growthNa=na('EXPLICIT_GROWTH_UNDECIDED · '+T('명시기간 성장률 미결정','explicit-period growth undecided'),locale);
- let html=badges+paramLine+'<dl class="kv"><dt>'+esc(T('FCFE/주 (공개 SEC)','FCFE / share (public SEC)'))+'</dt><dd data-value="fcfe">'+fcfe+'</dd>'
+ const eg=result&&result.explicit_growth?result.explicit_growth:null;
+ const growth=eg&&eg.state!=='NOT_AVAILABLE'?'<span class="num" data-explicit-growth>'+esc(pct(eg.value))+'</span> <span class="small">'+esc(T('3년 매출 CAGR ','3-year revenue CAGR ')+pct(eg.revenue_cagr_3y)+(eg.clamped?T(' → 범위 제한 적용',' → clamped'):'')+' · PROVISIONAL')+'</span>'
+  :na(eg?reasons(eg.reason_codes):(rule?'EXPLICIT_GROWTH_NOT_AVAILABLE':'EXPLICIT_GROWTH_UNDECIDED'),locale);
+ const d=result?result.dcf:null;
+ const dcf=d&&d.state!=='NOT_AVAILABLE'?'<span class="num" data-dcf-value>'+esc((f&&f.currency?f.currency+' ':'')+num(d.value_per_share,locale,2))+'</span> <span class="small">'+esc(T('주당 · FCFE/주 기준 · 가격 미사용','per share · FCFE per share · no price used'))+'</span> <span class="badge">'+esc(d.state)+'</span>'
+  :na(d?reasons(d.reason_codes):'FCFE_NOT_AVAILABLE',locale);
+ const m=result?result.v_factors.margin_of_safety:null;
+ const mos=m&&m.state!=='NOT_AVAILABLE'?'<span class="num" data-mos-score>'+esc(num(m.score,locale))+'</span> <span class="small">'+esc(T('점수 · 보수가치 0.75×DCF 내재가치 vs 기기 가격 (승인 v1 매핑)','score · conservative value 0.75×DCF value vs device price (approved v1 mapping)'))+'</span>'
+  :na(m?m.reason:'DCF_NOT_AVAILABLE',locale);
+ let html=badges+paramLine+'<dl class="kv"><dt>'+esc(T('FCFE/주 (공개 SEC)','FCFE / share (public SEC)'))+'</dt><dd data-value="fcfe">'+fcfe+'</dd>'+zeroRow+partialRow+ccyRow
   +'<dt>'+esc(T('가격','Price'))+'</dt><dd data-value="quote">'+q+'</dd>'
   +'<dt>'+esc(T('역DCF 내재 성장률','Reverse-DCF implied growth'))+'</dt><dd data-value="reverse">'+rev+'</dd>'
-  +'<dt>'+esc(T('DCF 내재가치','DCF intrinsic value'))+'</dt><dd data-value="dcf">'+growthNa+'</dd>'
-  +'<dt>'+esc(T('안전마진','Margin of safety'))+'</dt><dd data-value="mos">'+growthNa+'</dd>'
+  +'<dt>'+esc(T('명시기간 성장률 h','Explicit growth h'))+'</dt><dd data-value="growth">'+growth+'</dd>'
+  +'<dt>'+esc(T('DCF 내재가치','DCF intrinsic value'))+'</dt><dd data-value="dcf">'+dcf+'</dd>'
+  +'<dt>'+esc(T('안전마진','Margin of safety'))+'</dt><dd data-value="mos">'+mos+'</dd>'
   +(compact?'':'<dt>'+esc(T('시나리오','Scenarios'))+'</dt><dd data-value="scenarios">'+na('',locale)+'</dd>')+'</dl>';
  if(!compact){
-  const rows=Object.keys(V_LABEL).map(k=>{const x=result?result.v_factors[k]:{score:null,state:'NOT_AVAILABLE',reason:k==='margin_of_safety'?'EXPLICIT_GROWTH_UNDECIDED':'NO_DEVICE_PRICE'},ok=x.state!=='NOT_AVAILABLE';
-   return '<tr data-v-factor="'+k+'"><td>'+esc(V_LABEL[k][locale==='en-US'?1:0])+'</td><td class="num" data-v-score>'+(ok?esc(num(x.score,locale)):'—')+'</td><td><span class="badge '+esc(ok?'LIVE':'NOT_AVAILABLE')+'">'+esc(x.state)+'</span></td><td class="small">'+esc(x.reason)+'</td></tr>';});
+  const rows=Object.keys(V_LABEL).map(k=>{const x=result?result.v_factors[k]:{score:null,state:'NOT_AVAILABLE',reason:k==='margin_of_safety'?'DCF_NOT_AVAILABLE':'NO_DEVICE_PRICE'},ok=x.state!=='NOT_AVAILABLE';
+   return '<tr data-v-factor="'+k+'"><td>'+esc(V_LABEL[k][en])+'</td><td class="num" data-v-score>'+(ok?esc(num(x.score,locale)):'—')+'</td><td><span class="badge '+esc(ok?'LIVE':'NOT_AVAILABLE')+'">'+esc(x.state)+'</span></td><td class="small">'+esc(x.reason)+'</td></tr>';});
   html+='<h3>'+esc(T('V 요소 (이 기기 계산 · 보정 전)','V factors (computed on this device · uncalibrated)'))+'</h3><div class="table-wrap"><table data-v-table><thead><tr><th>'+esc(T('요소','Factor'))+'</th><th>'+esc(T('점수','Score'))+'</th><th>'+esc(T('상태','State'))+'</th><th>'+esc(T('사유','Reason'))+'</th></tr></thead><tbody>'+rows.join('')+'</tbody></table></div>';
  }
- return html+'<p class="small" data-value-note>'+esc(T('FCFE = 영업현금흐름 − 설비투자 + 순차입, 희석주식수 기준(같은 회계연도·통화). 가격은 이 기기 RAM에서만 쓰며 저장·전송하지 않습니다. V 종합 점수는 만들지 않습니다.','FCFE = operating cash flow − capital expenditure + net borrowing, per diluted share (same fiscal year and currency). The price is used only in this device’s RAM and is never stored or sent. No overall V score is made.'))+'</p>';
+ return html+'<p class="small" data-value-note>'+esc(T('FCFE = 영업현금흐름 − 설비투자 + 순차입, 희석주식수 기준(같은 회계연도·통화·공시). 공시에 없는 차입 항목은 0으로 가정해 표시하고, 핵심 항목(영업현금흐름·설비투자·희석주식수)은 0으로 채우지 않습니다. 통화 변환은 하지 않습니다. 가격은 이 기기 RAM에서만 쓰며 저장·전송하지 않습니다. V 종합 점수는 만들지 않습니다.','FCFE = operating cash flow − capital expenditure + net borrowing, per diluted share (same fiscal year, currency and filing). Borrowing lines the filing does not report are shown as assumed 0; core lines (operating cash flow, capex, diluted shares) are never zero-filled. No currency conversion. The price is used only in this device’s RAM and is never stored or sent. No overall V score is made.'))+'</p>';
 }
 async function mountValue(host,{locale,id,ticker=null,catalogPromise=null,inputsPromise=null,quote=null,compact=false,win=g}){
  if(!host)return;const V=win.DeviceValuation;if(!V)return;const token=host.__valueToken=(host.__valueToken||0)+1;
@@ -158,7 +177,7 @@ async function mountValue(host,{locale,id,ticker=null,catalogPromise=null,inputs
  if(!q&&ticker&&catalogPromise){let catalog=null;try{catalog=await catalogPromise;}catch(_){}if(catalog)q=await V.deviceQuote(win,catalog,ticker);}
  if(!host.isConnected||host.__valueToken!==token)return;
  const row=V.row(payload,id),result=V.view({row,quote:q?{price:q.price,currency:q.currency}:null});
- host.innerHTML=valueHtml({locale,row,result,quote:q?{source:q.source,as_of:q.as_of,stale:q.stale===true}:null,compact});
+ host.innerHTML=valueHtml({locale,row,result,quote:q?{source:q.source,as_of:q.as_of,stale:q.stale===true,currency:q.currency}:null,compact});
 }
 function wireTabs(rootEl){
  if(!rootEl)return;const tabs=[...rootEl.querySelectorAll('[data-analysis-tab]')];
