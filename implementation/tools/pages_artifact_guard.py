@@ -28,25 +28,35 @@ from investment_system.product.sec_m2_candidates import require_public_candidate
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
 from investment_system.product.public_engine_screens import FILENAMES as SCREEN_FILENAMES, require_public_screen
+from investment_system.universe.sec_universe_shares import FILENAME as UNIVERSE_SHARES_FILENAME, require_universe_shares
+from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDGER_FILENAME, require_ledger as require_forward_ledger
+from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
+    "sec-universe-shares.js": "77648df45a6c2e55b2c3be2cea2735a1d2457d8ef811646e7f2d0de674564bbb",
+    "device-valuation.js": "0723d5371710da30aa1ed9b564e4ac7260047a83c182b843e57be4715d822567",
+    "dcf-parameters-defaults.js": "9025559eff99d29eba26fc7ef3cf5ed86b969f4ad0b03c1f83f67ee0630c3bee",
+    "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
-    "screen-detail.js": "8f66aae29337bbddadb8b1853254fd63cb620a062af7bb19f510bf200e870ef3",
+    "screen-detail.js": "13a8a07e66664795d035f75e50d3c7f8d253e73be092b600a273c35925c2302d",
+    "daily-report.js": "c617c71ec21b436c1fdd2cd859c140969f051bfb9eced79c431a2377a545c47e",
+    "virtual-trading.js": "d24f41ccede57016ef27a7951bdef096d2911fe5f51917453d1305605b81f8b1",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
-    "portfolio-screen.js": "31e9678de0d3ddc7f71f492723660a219b0a049444efde66bdfa5cf4f964222d",
-    "company-screen.js": "574678fa34b1ee05021d8f2edc3162e671482a91fcd03f1ae2b726595d8147d1",
-    "ops-status.js": "f3c44924f6501b3777579ff3147868ee211c5effc7a87169fe52c0dbd5688318",
+    "portfolio-screen.js": "4cb77c85b554e0461d8782930c90ace99dd1d8100cf1383c428e0f6b0198a485",
+    "company-screen.js": "892dba7073d25015e34b2f19e82471ed4396a5ed303cee46af68845e159b3957",
+    "ops-status.js": "57d2ce827c9b8af4d95e0155d6a01788b95417582bf176544d55c0ba2fd1ed9d",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
-    "private-subset-view.js": "c2478c243024437f89189cee8632d704af893e268d3b885e28d131ab0d9bb311",
+    "private-subset-view.js": "051dfd83afc377d70f5fb624e2b7b98612acdb4f3b3f1aa46f8c1fcc0c692390",
     "watchlist.js": "6d707c1f7beb0d4ceaf32cea18320049bbd1ba768bf91578ba6a664596f536cf",
     "sec-m3-adapter.js": "f3962d7283ae0e8731ad66ee23652d5f8c9e88f2cd4050b70b4cd1048956d6e5",
-    "private-subset.js": "5dfa945113a84ec8fde2cb2020f71343e1cd453a5de41771165a0a8b531a6fec",
+    "private-subset.js": "59a36ede2f83e417a689897c747544e9c78cf59fd533c2713386b5c491488b3d",
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
     "device-profiles.js": "a3c1237cc0e53e4d6ad6c330aa7fa1182d962a6925f0401185815d82a48163da",
-    "public-screens.js": "68d4cb47c8c52a3a2d694870d658b9ee6c5c78a98010f1d7bf7f66c0beacdb68",
+    "public-screens.js": "a7c372a47fb8a10a5e0080fc4d51d5b0fb87187232f1e06b43a2496589c68cf1",
     "pwa.js": "f8d5df267d323fd465821416f1825f38d4065030ec5368b7a37bfc4ed875affd",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
     "icon-512.png": "7a19587556ba133a21622288ec66a48095b933461f10475e96cf7b3a43afee88",
@@ -62,27 +72,27 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "3e262ec03fd5179e1229272fcf2ac4d8c2e6855e8b74a38cb0fc83ba59b1863c",
+    "app.js": "09255f2814a4145f77fd9c624f32ba1ea7d6fb3e5c7420f4e2ef253c748e24a7",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
-    "device-actual.js": "24e872f2a1d56ea2556d30b05c6d0ce8549c60fe00e36b297ed3e98a721fae11",
+    "device-actual.js": "4b6bbdf71f74875199221cf534dc403be7961fd722abe2b1b12a499e2740f7f3",
     "device-market.js": "4a4517d31dbdeb95af45f6f12b15364711faf8eafdde4723c4874014da3baddc",
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "0e6e237eff6aa4b3dec95550c52fcfa70e355ed4a77558b9693d4fdffb3d2b3a",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "8c86ab4fbca5226c0cd0f8d332c952df46b1eb0443319e5f84a6a26807e44e4c",
+    "index.html": "07c2eb0bcd596419038622b5f7e9cdb756d746c7af9c6122dd0b8e4cec6e1fb1",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
-    "private-history.js": "3128a213726be142235757f6da30f1b6136e34cb71459349fb7af20b7a25c179",
+    "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "eab3e5bc2554a15aa2b921ce134e07fbf5e64d5ac3ee2fc8346e58bb47fa9541",
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
-MAX_ENTRIES = 64
+MAX_ENTRIES = 96
 MAX_JSON_DEPTH = 64
 
 SENSITIVE_KEYS = frozenset({
@@ -190,9 +200,18 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
                 require_public_inputs(value)
             except ValueError:
                 violations["sec_public_boundary"] += 1
+        elif name == CLASSIFICATION_FILENAME:
+            try: require_public_classification(value)
+            except ValueError: violations['classification_boundary'] += 1
         elif name in SCREEN_FILENAMES:
             try: require_public_screen(name, value)
             except ValueError: violations['public_screen_boundary'] += 1
+        elif name == UNIVERSE_SHARES_FILENAME:
+            try: require_universe_shares(value)
+            except ValueError: violations['universe_shares_boundary'] += 1
+        elif name == FORWARD_LEDGER_FILENAME:
+            try: require_forward_ledger(value)
+            except ValueError: violations['forward_ledger_boundary'] += 1
         elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
             violations["unapproved_content"] += 1
     except (ValueError, UnicodeError, RecursionError, OverflowError):

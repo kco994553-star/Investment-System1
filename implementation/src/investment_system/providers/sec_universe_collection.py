@@ -14,6 +14,15 @@ from .sec_submissions import URL as SUBMISSIONS_URL
 
 
 _REGISTRY_TOKEN=object()
+TICKER_EXCHANGE_URL='https://www.sec.gov/files/company_tickers_exchange.json'
+COVER_INSTANCE_URL='https://www.sec.gov/Archives/edgar/data/{cik}/{accession}/{document}'
+
+
+def fetch_ticker_exchange(client):
+    """Official SEC ticker/exchange metadata through the caller's paced client."""
+    if not isinstance(client,SecCollectionClient):raise SecCollectionError('SEC_UNIVERSE_CONFIG_INVALID') from None
+    with client._lock:
+        return client._request(TICKER_EXCHANGE_URL,None,expect='json')
 
 
 @dataclass(frozen=True)
@@ -105,6 +114,17 @@ class UniverseSecClient(SecCollectionClient):
             facts=self._request(SEC_FACTS_URL.format(cik=cik),cik)
             sub=self._request(SUBMISSIONS_URL.format(cik=cik),cik)
             return facts,sub,self._utc()
+
+    def collect_cover(self,cik,accession,primary_document):
+        """Same-filing XBRL instance (inline `<primary>_htm.xml`) for the cover check."""
+        import re
+        if (type(cik) is not str or cik not in self._universe_ciks or type(accession) is not str
+                or re.fullmatch(r'[0-9]{10}-[0-9]{2}-[0-9]{6}',accession) is None or type(primary_document) is not str
+                or re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.htm',primary_document) is None):
+            raise SecCollectionError('SEC_ISSUER_NOT_ALLOWED') from None
+        url=COVER_INSTANCE_URL.format(cik=int(cik),accession=accession.replace('-',''),document=primary_document[:-4]+'_htm.xml')
+        with self._lock:
+            return self._request(url,None,expect='xml'),self._utc()
 
 
 @dataclass(frozen=True)

@@ -9,14 +9,16 @@
  // S09: sections that follow the 8x6 axis grid. Inputs and the 8-axis mapping await user decisions; FRED/ALFRED are not used.
  function macroHtml(locale){
   const x=pick(locale);
-  const wait=x('입력·대응표가 사용자 결정 대기 중이며 FRED/ALFRED는 사용하지 않습니다.','Inputs and mapping await your decision; FRED/ALFRED are not used.');
+  const wait=x('나머지 6축 입력과 8축 대응표는 사용자 결정 대기 중이며 FRED/ALFRED는 사용하지 않습니다.','Inputs for the other 6 axes and the 8-axis mapping await your decision; FRED/ALFRED are not used.');
+  // Growth/Inflation series ids are the user's 2026-10-11 v0 defaults (UNCALIBRATED, editable later); values come from macro-screen.json only.
+  const v0=`<p data-macro-v0-series><span class="badge">${x('v0 기본값 · UNCALIBRATED','v0 default · UNCALIBRATED')}</span> Growth = BEA NIPA T10101 line 1 (A191RL, ${x('발표된 전기비 연율 % ÷ 100','published q/q annualized % ÷ 100')}) · Inflation = BLS CUUR0000SA0 (CPI-U NSA, ${x('전년 동월 대비','year over year')}). ${x('기존 MacroEngine v0.1.1 임계값에만 넣으며 국면은 NOT_AVAILABLE입니다.','They feed only the existing MacroEngine v0.1.1 thresholds; the regime stays NOT_AVAILABLE.')}</p>`;
   return `<section class="card" id="macro-equity-state" data-macro-section="equity-state"><h2>${x('주식시장 상태 (참고 · 원인 축 아님)','Equity market state (reference · not a causal axis)')}</h2>
    <p>${na} ${x('변동성·상승 종목 폭·추세에 쓸 입력이 연결되지 않았습니다.','No inputs are connected for volatility, breadth or trend.')}</p>
    <dl class="kv"><dt>${x('변동성','Volatility')}</dt><dd data-na="NOT_AVAILABLE">—</dd><dt>${x('상승 종목 폭','Breadth')}</dt><dd data-na="NOT_AVAILABLE">—</dd><dt>${x('추세','Trend')}</dt><dd data-na="NOT_AVAILABLE">—</dd></dl></section>
   <section class="card" id="macro-regime-history" data-macro-section="regime-history"><h2>${x('국면 이력 (5년)','Regime history (5 years)')}</h2>
    <p>${na} ${x('금리·물가·유동성·성장 겹쳐 보기에 쓸 국면 기록이 없습니다. 합성 이력을 만들지 않습니다.','No regime record exists to overlay rates, inflation, liquidity and growth. No synthetic history is made.')}</p></section>
   <section class="card" id="macro-signal-evidence" data-macro-section="signal-evidence"><h2>${x('신호 → 근거','Signal → evidence')}</h2>
-   <p>${na} ${wait}</p>
+   ${v0}<p>${na} ${wait}</p>
    ${table([x('신호','Signal'),x('강도','Strength'),x('지표','Indicator'),x('값','Value'),x('발표일','Release date'),x('이용 가능 시점','Available at')],[[dash,dash,dash,dash,dash,dash]])}</section>
   <section class="card" id="macro-scenarios" data-macro-section="scenarios"><h2>${x('시나리오 (확률 검증 전)','Scenarios (before probability validation)')}</h2>
    <p>${na} ${x('시나리오 3개와 확률은 검증이 끝난 뒤에만 표시합니다. 숫자 확률을 임의로 채우지 않습니다.','Three scenarios and their probabilities appear only after validation. No numeric probability is filled in.')}</p>

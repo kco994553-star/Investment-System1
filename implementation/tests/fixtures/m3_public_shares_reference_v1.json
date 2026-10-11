@@ -1,0 +1,1722 @@
+{
+ "cases": [
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": 10000.0,
+      "quality": "WITHIN_TOLERANCE",
+      "quality_label": "",
+      "reason_codes": [],
+      "relative_difference": 0.05,
+      "row_index": 1,
+      "state": "VERIFIED"
+     }
+    ],
+    "seeds": {
+     "NASDAQ:DEMO": {
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000001",
+      "identity_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc",
+      "issuer_id": "sec:0000000001",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:DEMO",
+      "security_id": "sec:0000000001:DEMO",
+      "symbol": "DEMO",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 0,
+     "reason_codes": [],
+     "requested_n": 1,
+     "selected_listing_ids": [
+      "XNAS:DEMO:0000000001"
+     ],
+     "selected_n": 1,
+     "selection_status": "COMPLETE",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    },
+    "shares": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "basis": {
+       "basis_status": "SINGLE_CLASS_CONFIRMED",
+       "share_class_basis": "ALIGNED",
+       "source_evidence_ref": "sec-cover:0000000001/0000000001-30-000001",
+       "source_sha256": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f"
+      },
+      "basis_sha256": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "facts_sha256": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "shares": 1000.0,
+      "state": "INPUT_RESEARCH",
+      "submissions_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+     }
+    }
+   },
+   "id": "single_within_tolerance",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:DEMO",
+      10500,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": 10000.0,
+      "quality": "MISMATCH",
+      "quality_label": "\uac80\uc99d \ubd88\uc77c\uce58",
+      "reason_codes": [],
+      "relative_difference": 0.1,
+      "row_index": 1,
+      "state": "VERIFIED"
+     }
+    ],
+    "seeds": {
+     "NASDAQ:DEMO": {
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000001",
+      "identity_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc",
+      "issuer_id": "sec:0000000001",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:DEMO",
+      "security_id": "sec:0000000001:DEMO",
+      "symbol": "DEMO",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 0,
+     "reason_codes": [],
+     "requested_n": 1,
+     "selected_listing_ids": [
+      "XNAS:DEMO:0000000001"
+     ],
+     "selected_n": 1,
+     "selection_status": "COMPLETE",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    },
+    "shares": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "basis": {
+       "basis_status": "SINGLE_CLASS_CONFIRMED",
+       "share_class_basis": "ALIGNED",
+       "source_evidence_ref": "sec-cover:0000000001/0000000001-30-000001",
+       "source_sha256": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f"
+      },
+      "basis_sha256": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "facts_sha256": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "shares": 1000.0,
+      "state": "INPUT_RESEARCH",
+      "submissions_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+     }
+    }
+   },
+   "id": "single_inclusive_ten_percent_mismatch",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:DEMO",
+      11000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": 10000.0,
+      "quality": "GOOGLE_MCAP_MISSING",
+      "quality_label": "",
+      "reason_codes": [],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "VERIFIED"
+     }
+    ],
+    "seeds": {
+     "NASDAQ:DEMO": {
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000001",
+      "identity_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc",
+      "issuer_id": "sec:0000000001",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:DEMO",
+      "security_id": "sec:0000000001:DEMO",
+      "symbol": "DEMO",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 0,
+     "reason_codes": [],
+     "requested_n": 1,
+     "selected_listing_ids": [
+      "XNAS:DEMO:0000000001"
+     ],
+     "selected_n": 1,
+     "selection_status": "COMPLETE",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    },
+    "shares": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "basis": {
+       "basis_status": "SINGLE_CLASS_CONFIRMED",
+       "share_class_basis": "ALIGNED",
+       "source_evidence_ref": "sec-cover:0000000001/0000000001-30-000001",
+       "source_sha256": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f"
+      },
+      "basis_sha256": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "facts_sha256": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "shares": 1000.0,
+      "state": "INPUT_RESEARCH",
+      "submissions_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+     }
+    }
+   },
+   "id": "single_google_missing_keeps_r",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:DEMO",
+      "",
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": null,
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "PRICE_NOT_AVAILABLE"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE"
+     }
+    ],
+    "seeds": {
+     "NASDAQ:DEMO": {
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000001",
+      "identity_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc",
+      "issuer_id": "sec:0000000001",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:DEMO",
+      "security_id": "sec:0000000001:DEMO",
+      "symbol": "DEMO",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 1,
+     "reason_codes": [
+      "PRICE_NOT_AVAILABLE",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 1,
+     "selected_listing_ids": [],
+     "selected_n": 0,
+     "selection_status": "PARTIAL",
+     "state": "NOT_AVAILABLE",
+     "verified_count": 0
+    },
+    "shares": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "basis": {
+       "basis_status": "SINGLE_CLASS_CONFIRMED",
+       "share_class_basis": "ALIGNED",
+       "source_evidence_ref": "sec-cover:0000000001/0000000001-30-000001",
+       "source_sha256": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f"
+      },
+      "basis_sha256": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "facts_sha256": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "shares": 1000.0,
+      "state": "INPUT_RESEARCH",
+      "submissions_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+     }
+    }
+   },
+   "id": "single_price_missing",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      ""
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": null,
+      "quality": "SHARE_CLASS_BASIS",
+      "quality_label": "SHARE_CLASS_BASIS",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE"
+     }
+    ],
+    "seeds": {
+     "NASDAQ:DEMO": {
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000001",
+      "identity_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc",
+      "issuer_id": "sec:0000000001",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:DEMO",
+      "security_id": "sec:0000000001:DEMO",
+      "symbol": "DEMO",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 1,
+     "reason_codes": [
+      "SHARE_CLASS_BASIS",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 1,
+     "selected_listing_ids": [],
+     "selected_n": 0,
+     "selection_status": "PARTIAL",
+     "state": "NOT_AVAILABLE",
+     "verified_count": 0
+    },
+    "shares": {
+     "NASDAQ:DEMO": {
+      "accn": null,
+      "basis": {
+       "basis_status": "UNKNOWN",
+       "share_class_basis": "DIFFERENT",
+       "source_evidence_ref": "sec-cover:0000000001/0000000001-30-000001",
+       "source_sha256": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f"
+      },
+      "basis_sha256": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+      "concept": null,
+      "facts_sha256": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+      "measurement_date": null,
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "shares": null,
+      "state": "NOT_AVAILABLE",
+      "submissions_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+     }
+    }
+   },
+   "id": "share_class_basis_shown_not_corrected",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 2,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember"
+       ],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": "CommonClassAMember"
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": null,
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "BASIS_UNCONFIRMED"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE"
+     }
+    ],
+    "seeds": {
+     "NASDAQ:DEMO": {
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000001",
+      "identity_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc",
+      "issuer_id": "sec:0000000001",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:DEMO",
+      "security_id": "sec:0000000001:DEMO",
+      "symbol": "DEMO",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 1,
+     "reason_codes": [
+      "BASIS_UNCONFIRMED",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 1,
+     "selected_listing_ids": [],
+     "selected_n": 0,
+     "selection_status": "PARTIAL",
+     "state": "NOT_AVAILABLE",
+     "verified_count": 0
+    },
+    "shares": {
+     "NASDAQ:DEMO": {
+      "accn": null,
+      "basis": null,
+      "basis_sha256": null,
+      "concept": null,
+      "facts_sha256": null,
+      "measurement_date": null,
+      "reason_codes": [
+       "BASIS_UNCONFIRMED"
+      ],
+      "shares": null,
+      "state": "NOT_AVAILABLE",
+      "submissions_sha256": null
+     }
+    }
+   },
+   "id": "basis_unconfirmed_not_verified",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": null,
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "MULTI_CLASS_AMBIGUOUS"
+      ],
+      "share_class_basis": "BASIS_UNCONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": null,
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "STALE_INPUT"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE"
+     }
+    ],
+    "seeds": {
+     "NASDAQ:DEMO": {
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000001",
+      "identity_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc",
+      "issuer_id": "sec:0000000001",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:DEMO",
+      "security_id": "sec:0000000001:DEMO",
+      "symbol": "DEMO",
+      "synthetic": true,
+      "valid_from": "2030-01-20",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 1,
+     "reason_codes": [
+      "STALE_INPUT",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 1,
+     "selected_listing_ids": [],
+     "selected_n": 0,
+     "selection_status": "PARTIAL",
+     "state": "NOT_AVAILABLE",
+     "verified_count": 0
+    },
+    "shares": {
+     "NASDAQ:DEMO": {
+      "accn": null,
+      "basis": null,
+      "basis_sha256": null,
+      "concept": null,
+      "facts_sha256": null,
+      "measurement_date": null,
+      "reason_codes": [
+       "STALE_INPUT"
+      ],
+      "shares": null,
+      "state": "NOT_AVAILABLE",
+      "submissions_sha256": null
+     }
+    }
+   },
+   "id": "stale_row_not_verified",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-01-20T00:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "STALE_INPUT"
+      ],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "STALE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": null,
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "SHARES_NOT_AVAILABLE"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE"
+     }
+    ],
+    "seeds": {
+     "NASDAQ:DEMO": {
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000001",
+      "identity_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc",
+      "issuer_id": "sec:0000000001",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:DEMO",
+      "security_id": "sec:0000000001:DEMO",
+      "symbol": "DEMO",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 1,
+     "reason_codes": [
+      "SHARES_NOT_AVAILABLE",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 1,
+     "selected_listing_ids": [],
+     "selected_n": 0,
+     "selection_status": "PARTIAL",
+     "state": "NOT_AVAILABLE",
+     "verified_count": 0
+    },
+    "shares": {
+     "NASDAQ:DEMO": {
+      "accn": null,
+      "basis": null,
+      "basis_sha256": null,
+      "concept": null,
+      "facts_sha256": null,
+      "measurement_date": null,
+      "reason_codes": [
+       "SHARES_NOT_AVAILABLE"
+      ],
+      "shares": null,
+      "state": "NOT_AVAILABLE",
+      "submissions_sha256": null
+     }
+    }
+   },
+   "id": "missing_shares_stay_null",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": null,
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": null,
+       "class_members": [],
+       "cover_accn": null,
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": null,
+      "filed": null,
+      "form": null,
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": null,
+      "reason_codes": [
+       "SHARES_NOT_AVAILABLE"
+      ],
+      "share_class_basis": "BASIS_UNCONFIRMED",
+      "shares": null,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": null,
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [],
+    "seeds": {
+     "NASDAQ:DEMO": null
+    },
+    "selection": {
+     "missing_count": 1,
+     "reason_codes": [
+      "IDENTITY_UNCONFIRMED",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 1,
+     "selected_listing_ids": [],
+     "selected_n": 0,
+     "selection_status": "PARTIAL",
+     "state": "NOT_AVAILABLE",
+     "verified_count": 0
+    },
+    "shares": {}
+   },
+   "id": "identity_unresolved",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": null,
+      "acquired_at": null,
+      "basis_evidence": {
+       "class_count": null,
+       "class_members": [],
+       "cover_accn": null,
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": null,
+      "concept": null,
+      "filed": null,
+      "form": null,
+      "listing_id": null,
+      "measurement_date": null,
+      "reason_codes": [
+       "SHARES_NOT_AVAILABLE"
+      ],
+      "share_class_basis": "BASIS_UNCONFIRMED",
+      "shares": null,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": null,
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "NOT_AVAILABLE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": null,
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "AVAILABLE_AFTER_AS_OF"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE"
+     }
+    ],
+    "seeds": {
+     "NASDAQ:DEMO": {
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000001",
+      "identity_sha256": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc",
+      "issuer_id": "sec:0000000001",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:DEMO",
+      "security_id": "sec:0000000001:DEMO",
+      "symbol": "DEMO",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 1,
+     "reason_codes": [
+      "AVAILABLE_AFTER_AS_OF",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 1,
+     "selected_listing_ids": [],
+     "selected_n": 0,
+     "selection_status": "PARTIAL",
+     "state": "NOT_AVAILABLE",
+     "verified_count": 0
+    },
+    "shares": {
+     "NASDAQ:DEMO": {
+      "accn": null,
+      "basis": null,
+      "basis_sha256": null,
+      "concept": null,
+      "facts_sha256": null,
+      "measurement_date": null,
+      "reason_codes": [
+       "AVAILABLE_AFTER_AS_OF"
+      ],
+      "shares": null,
+      "state": "NOT_AVAILABLE",
+      "submissions_sha256": null
+     }
+    }
+   },
+   "id": "acquired_after_as_of",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T13:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": 10000.0,
+      "quality": "WITHIN_TOLERANCE",
+      "quality_label": "",
+      "reason_codes": [],
+      "relative_difference": 0.0,
+      "row_index": 1,
+      "state": "VERIFIED"
+     }
+    ],
+    "seeds": {
+     "NYSE:BRK.B": {
+      "cik": "0000000002",
+      "company_id": "sec_0000000002",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000002",
+      "identity_sha256": "c9ff2056b77bd11de1d1d81710d5692dcca5310ce53fa3446add88eef54654a3",
+      "issuer_id": "sec:0000000002",
+      "listing_id": "XNYS:BRK-B:0000000002",
+      "mic": "XNYS",
+      "provider_symbol": "NYSE:BRK.B",
+      "security_id": "sec:0000000002:BRK-B",
+      "symbol": "BRK-B",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 0,
+     "reason_codes": [],
+     "requested_n": 1,
+     "selected_listing_ids": [
+      "XNYS:BRK-B:0000000002"
+     ],
+     "selected_n": 1,
+     "selection_status": "COMPLETE",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    },
+    "shares": {
+     "NYSE:BRK.B": {
+      "accn": "0000000002-30-000001",
+      "basis": {
+       "basis_status": "SINGLE_CLASS_CONFIRMED",
+       "share_class_basis": "ALIGNED",
+       "source_evidence_ref": "sec-cover:0000000002/0000000002-30-000001",
+       "source_sha256": "aa4cca970ee6fe968a71545a49c09b2488dbe9e31060f3f811fbc5a75c8f684e"
+      },
+      "basis_sha256": "aa4cca970ee6fe968a71545a49c09b2488dbe9e31060f3f811fbc5a75c8f684e",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "facts_sha256": "c790795f0dccd3195ebd076c1c9425ae838b446881d7083c1a272cb07b784776",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "shares": 1000.0,
+      "state": "INPUT_RESEARCH",
+      "submissions_sha256": "c9ff2056b77bd11de1d1d81710d5692dcca5310ce53fa3446add88eef54654a3"
+     }
+    }
+   },
+   "id": "dot_class_alias_listing",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NYSE:BRK.B": {
+      "accn": "0000000002-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000002-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000002",
+      "company_id": "sec_0000000002",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNYS:BRK-B:0000000002",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "c790795f0dccd3195ebd076c1c9425ae838b446881d7083c1a272cb07b784776",
+       "cover": "aa4cca970ee6fe968a71545a49c09b2488dbe9e31060f3f811fbc5a75c8f684e",
+       "submissions": "c9ff2056b77bd11de1d1d81710d5692dcca5310ce53fa3446add88eef54654a3"
+      },
+      "state": "LIVE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NYSE:BRK.B",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [],
+    "seeds": {
+     "NYSE:DEMO": null
+    },
+    "selection": {
+     "missing_count": 1,
+     "reason_codes": [
+      "IDENTITY_UNCONFIRMED",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 1,
+     "selected_listing_ids": [],
+     "selected_n": 0,
+     "selection_status": "PARTIAL",
+     "state": "NOT_AVAILABLE",
+     "verified_count": 0
+    },
+    "shares": {}
+   },
+   "id": "venue_prefix_mismatch",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NYSE:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NYSE:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": 10000.0,
+      "quality": "WITHIN_TOLERANCE",
+      "quality_label": "",
+      "reason_codes": [],
+      "relative_difference": 0.0,
+      "row_index": 1,
+      "state": "VERIFIED"
+     }
+    ],
+    "seeds": {
+     "NASDAQ:NVDA": {
+      "cik": "0001045810",
+      "company_id": "nvda",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0001045810",
+      "identity_sha256": "b09efb339f9c7183f017be47b5dbb9f48a1662d002bd3939d24b34c3bfe44f78",
+      "issuer_id": "sec:0001045810",
+      "listing_id": "XNAS:NVDA:0001045810",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:NVDA",
+      "security_id": "sec:0001045810:NVDA",
+      "symbol": "NVDA",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 0,
+     "reason_codes": [],
+     "requested_n": 1,
+     "selected_listing_ids": [
+      "XNAS:NVDA:0001045810"
+     ],
+     "selected_n": 1,
+     "selection_status": "COMPLETE",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    },
+    "shares": {
+     "NASDAQ:NVDA": {
+      "accn": "0001045810-30-000001",
+      "basis": {
+       "basis_status": "SINGLE_CLASS_CONFIRMED",
+       "share_class_basis": "ALIGNED",
+       "source_evidence_ref": "sec-cover:0001045810/0001045810-30-000001",
+       "source_sha256": "9e7f21ca8afc81aed189bb395dec260086ebfdeb2e2258968f11b087b3c0a7da"
+      },
+      "basis_sha256": "9e7f21ca8afc81aed189bb395dec260086ebfdeb2e2258968f11b087b3c0a7da",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "facts_sha256": "acfb6eea4eaa81a0102cab57d5cedca3d16eb679f646ee0a61115a882d628e66",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "shares": 1000.0,
+      "state": "INPUT_RESEARCH",
+      "submissions_sha256": "b09efb339f9c7183f017be47b5dbb9f48a1662d002bd3939d24b34c3bfe44f78"
+     }
+    }
+   },
+   "id": "target_company_id_kept",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 1,
+    "records": {
+     "NASDAQ:NVDA": {
+      "accn": "0001045810-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0001045810-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0001045810",
+      "company_id": "nvda",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:NVDA:0001045810",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "acfb6eea4eaa81a0102cab57d5cedca3d16eb679f646ee0a61115a882d628e66",
+       "cover": "9e7f21ca8afc81aed189bb395dec260086ebfdeb2e2258968f11b087b3c0a7da",
+       "submissions": "b09efb339f9c7183f017be47b5dbb9f48a1662d002bd3939d24b34c3bfe44f78"
+      },
+      "state": "LIVE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:NVDA",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "rows": [
+     {
+      "effective_cap": 10000.0,
+      "quality": "WITHIN_TOLERANCE",
+      "quality_label": "",
+      "reason_codes": [],
+      "relative_difference": 0.0,
+      "row_index": 1,
+      "state": "VERIFIED"
+     },
+     {
+      "effective_cap": 10010.0,
+      "quality": "WITHIN_TOLERANCE",
+      "quality_label": "",
+      "reason_codes": [],
+      "relative_difference": 0.0,
+      "row_index": 2,
+      "state": "VERIFIED"
+     },
+     {
+      "effective_cap": 10020.0,
+      "quality": "WITHIN_TOLERANCE",
+      "quality_label": "",
+      "reason_codes": [],
+      "relative_difference": 0.0,
+      "row_index": 3,
+      "state": "VERIFIED"
+     },
+     {
+      "effective_cap": null,
+      "quality": "SHARE_CLASS_BASIS",
+      "quality_label": "SHARE_CLASS_BASIS",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "relative_difference": null,
+      "row_index": 4,
+      "state": "NOT_AVAILABLE"
+     }
+    ],
+    "seeds": {
+     "NASDAQ:S0": {
+      "cik": "0000000010",
+      "company_id": "sec_0000000010",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000010",
+      "identity_sha256": "a139c05fa939fe9c98341af215a34bb5d38c658b830e1f35ba03cc2409ec1788",
+      "issuer_id": "sec:0000000010",
+      "listing_id": "XNAS:S0:0000000010",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:S0",
+      "security_id": "sec:0000000010:S0",
+      "symbol": "S0",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     },
+     "NASDAQ:S1": {
+      "cik": "0000000011",
+      "company_id": "sec_0000000011",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000011",
+      "identity_sha256": "ac61db074781a8cd137b811bee31a805bf8bf7ac67da4969d3e0ee98af8cbeb4",
+      "issuer_id": "sec:0000000011",
+      "listing_id": "XNAS:S1:0000000011",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:S1",
+      "security_id": "sec:0000000011:S1",
+      "symbol": "S1",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     },
+     "NASDAQ:S2": {
+      "cik": "0000000012",
+      "company_id": "sec_0000000012",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000012",
+      "identity_sha256": "3ed22abfd94f4d12e3b8914176c71443891b4ee2971ed3b58309e3030e4de296",
+      "issuer_id": "sec:0000000012",
+      "listing_id": "XNAS:S2:0000000012",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:S2",
+      "security_id": "sec:0000000012:S2",
+      "symbol": "S2",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     },
+     "NASDAQ:S3": {
+      "cik": "0000000013",
+      "company_id": "sec_0000000013",
+      "currency": "USD",
+      "identity_evidence_ref": "sec-submissions:0000000013",
+      "identity_sha256": "69d67a7d505f4f84059d91d03d1a0345c8df29ae6309852638e5ca3b1906d4d3",
+      "issuer_id": "sec:0000000013",
+      "listing_id": "XNAS:S3:0000000013",
+      "mic": "XNAS",
+      "provider_symbol": "NASDAQ:S3",
+      "security_id": "sec:0000000013:S3",
+      "symbol": "S3",
+      "synthetic": true,
+      "valid_from": "2030-02-10",
+      "valid_to": null
+     }
+    },
+    "selection": {
+     "missing_count": 2,
+     "reason_codes": [
+      "SHARE_CLASS_BASIS",
+      "IDENTITY_UNCONFIRMED",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 2,
+     "selected_listing_ids": [
+      "XNAS:S2:0000000012",
+      "XNAS:S1:0000000011"
+     ],
+     "selected_n": 2,
+     "selection_status": "PARTIAL",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 3
+    },
+    "shares": {
+     "NASDAQ:S0": {
+      "accn": "0000000010-30-000001",
+      "basis": {
+       "basis_status": "SINGLE_CLASS_CONFIRMED",
+       "share_class_basis": "ALIGNED",
+       "source_evidence_ref": "sec-cover:0000000010/0000000010-30-000001",
+       "source_sha256": "f6409c8bdab521c62673d78d7f9d1ae38e64e8fdbbca571b59e938b5c272022a"
+      },
+      "basis_sha256": "f6409c8bdab521c62673d78d7f9d1ae38e64e8fdbbca571b59e938b5c272022a",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "facts_sha256": "90937c5b51d1529781b4c9ee4ec071d4062b5af5ebd1dadca1ea92630722baaa",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "shares": 1000.0,
+      "state": "INPUT_RESEARCH",
+      "submissions_sha256": "a139c05fa939fe9c98341af215a34bb5d38c658b830e1f35ba03cc2409ec1788"
+     },
+     "NASDAQ:S1": {
+      "accn": "0000000011-30-000001",
+      "basis": {
+       "basis_status": "SINGLE_CLASS_CONFIRMED",
+       "share_class_basis": "ALIGNED",
+       "source_evidence_ref": "sec-cover:0000000011/0000000011-30-000001",
+       "source_sha256": "75f23cfe0b449da50af38cff1bd177c98f05aadc2975ffa670d173df17898a0a"
+      },
+      "basis_sha256": "75f23cfe0b449da50af38cff1bd177c98f05aadc2975ffa670d173df17898a0a",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "facts_sha256": "321f1025707ef9921a0b5cc266c847c05cdefc2a392b8f747771c0b8f8760993",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "shares": 1001.0,
+      "state": "INPUT_RESEARCH",
+      "submissions_sha256": "ac61db074781a8cd137b811bee31a805bf8bf7ac67da4969d3e0ee98af8cbeb4"
+     },
+     "NASDAQ:S2": {
+      "accn": "0000000012-30-000001",
+      "basis": {
+       "basis_status": "SINGLE_CLASS_CONFIRMED",
+       "share_class_basis": "ALIGNED",
+       "source_evidence_ref": "sec-cover:0000000012/0000000012-30-000001",
+       "source_sha256": "83a7663127efbe3fb6679e0d4b529874cea6debfdfd99993ef0907e6be5a5d7e"
+      },
+      "basis_sha256": "83a7663127efbe3fb6679e0d4b529874cea6debfdfd99993ef0907e6be5a5d7e",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "facts_sha256": "8a87fb34507d4e9ef00eeaf852cf6afd1a9bff5becdd6cede293fecc51c655d9",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "shares": 1002.0,
+      "state": "INPUT_RESEARCH",
+      "submissions_sha256": "3ed22abfd94f4d12e3b8914176c71443891b4ee2971ed3b58309e3030e4de296"
+     },
+     "NASDAQ:S3": {
+      "accn": null,
+      "basis": {
+       "basis_status": "UNKNOWN",
+       "share_class_basis": "DIFFERENT",
+       "source_evidence_ref": "sec-cover:0000000013/0000000013-30-000001",
+       "source_sha256": "c1aab66df806d733ad1d36bd77b9ea757a1b6463d447a84a9fe64cac048c2571"
+      },
+      "basis_sha256": "c1aab66df806d733ad1d36bd77b9ea757a1b6463d447a84a9fe64cac048c2571",
+      "concept": null,
+      "facts_sha256": "0f5cf275e2523b400f01fe85d494d1d3d15e6b51295903787af87a569ca72903",
+      "measurement_date": null,
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "shares": null,
+      "state": "NOT_AVAILABLE",
+      "submissions_sha256": "69d67a7d505f4f84059d91d03d1a0345c8df29ae6309852638e5ca3b1906d4d3"
+     }
+    }
+   },
+   "id": "top_n_partial_with_unconfirmed_rows",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 2,
+    "records": {
+     "NASDAQ:S0": {
+      "accn": "0000000010-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000010-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000010",
+      "company_id": "sec_0000000010",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:S0:0000000010",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "90937c5b51d1529781b4c9ee4ec071d4062b5af5ebd1dadca1ea92630722baaa",
+       "cover": "f6409c8bdab521c62673d78d7f9d1ae38e64e8fdbbca571b59e938b5c272022a",
+       "submissions": "a139c05fa939fe9c98341af215a34bb5d38c658b830e1f35ba03cc2409ec1788"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:S1": {
+      "accn": "0000000011-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000011-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000011",
+      "company_id": "sec_0000000011",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:S1:0000000011",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1001,
+      "source_sha256": {
+       "companyfacts": "321f1025707ef9921a0b5cc266c847c05cdefc2a392b8f747771c0b8f8760993",
+       "cover": "75f23cfe0b449da50af38cff1bd177c98f05aadc2975ffa670d173df17898a0a",
+       "submissions": "ac61db074781a8cd137b811bee31a805bf8bf7ac67da4969d3e0ee98af8cbeb4"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:S2": {
+      "accn": "0000000012-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000012-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000012",
+      "company_id": "sec_0000000012",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:S2:0000000012",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1002,
+      "source_sha256": {
+       "companyfacts": "8a87fb34507d4e9ef00eeaf852cf6afd1a9bff5becdd6cede293fecc51c655d9",
+       "cover": "83a7663127efbe3fb6679e0d4b529874cea6debfdfd99993ef0907e6be5a5d7e",
+       "submissions": "3ed22abfd94f4d12e3b8914176c71443891b4ee2971ed3b58309e3030e4de296"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:S3": {
+      "accn": "0000000013-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 2,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember"
+       ],
+       "cover_accn": "0000000013-30-000001",
+       "listing_class_member": "CommonClassAMember"
+      },
+      "cik": "0000000013",
+      "company_id": "sec_0000000013",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:S3:0000000013",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5000,
+      "source_sha256": {
+       "companyfacts": "0f5cf275e2523b400f01fe85d494d1d3d15e6b51295903787af87a569ca72903",
+       "cover": "c1aab66df806d733ad1d36bd77b9ea757a1b6463d447a84a9fe64cac048c2571",
+       "submissions": "69d67a7d505f4f84059d91d03d1a0345c8df29ae6309852638e5ca3b1906d4d3"
+      },
+      "state": "LIVE"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:S0",
+      10000,
+      10
+     ],
+     [
+      "NASDAQ:S1",
+      10010,
+      10
+     ],
+     [
+      "NASDAQ:S2",
+      10020,
+      10
+     ],
+     [
+      "NASDAQ:S3",
+      10030,
+      10
+     ],
+     [
+      "NASDAQ:UNKNOWN",
+      1,
+      1
+     ]
+    ]
+   },
+   "synthetic": true
+  }
+ ],
+ "contract": "M3_PUBLIC_SHARES_V1",
+ "role": "REFERENCE_TEST_ONLY",
+ "synthetic": true
+}
