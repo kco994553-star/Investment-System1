@@ -189,6 +189,9 @@ def test_credit_selects_only_the_sa_all_banks_series(tmp_path):
     two = ddp([('H8/H8/A.M', H8_TARGET, 'Currency', '1'), ('H8/H8/B.M', H8_TARGET, 'Currency', '1')], [('2026-08', ['1', '1'])])
     assert axes(tmp_path, {'Credit': two})['Credit']['reason_codes'] == ['SCHEMA_MISMATCH']
     assert axes(tmp_path, {'Credit': h8(base='ND')})['Credit']['reason_codes'] == ['BASE_PERIOD_MISSING']
+    growth = ddp([('H8/H8/G.M', H8_TARGET + ', annual growth rate', 'Percent', '1'), ('H8/H8/L.M', H8_TARGET, 'Currency', '1000000000')],
+                 [('2025-08', ['5.0', '18000']), ('2026-08', ['4.0', '18900'])])
+    assert axes(tmp_path, {'Credit': growth})['Credit']['source_series_code'] == 'H8/H8/L.M'
 
 
 @pytest.mark.parametrize('body,reason', [

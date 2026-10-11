@@ -193,7 +193,10 @@ def select_ddp_column(axis: str, columns: list[dict]) -> dict:
     if axis == "Monetary Policy":
         found = [c for c in columns if c["identifier"] == H15_IDENTIFIER]
     else:
-        found = [c for c in columns if re.fullmatch(MATCHED_CODE[axis], c["identifier"]) and _description_ok(axis, c["description"])]
+        # Levels only: growth-rate / percent columns of the same aggregate are never the series.
+        found = [c for c in columns if re.fullmatch(MATCHED_CODE[axis], c["identifier"]) and _description_ok(axis, c["description"])
+                 and "percent" not in c["unit"].casefold() and "growth" not in c["description"].casefold()
+                 and "rate" not in c["description"].casefold().split()]
     if not found:
         raise AxisUnavailable("SERIES_NOT_FOUND")
     if len(found) > 1:
