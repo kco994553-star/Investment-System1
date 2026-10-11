@@ -690,3 +690,4 @@ main, .card, .grid > *, .axis-grid > *, .hub-grid > * {min-width:0;}
 .style-filter {margin: 8px 0 12px; gap: 6px;}
 .style-filter button {min-height: 40px; padding: 4px 12px; border-radius: 16px; font-size: 13px;}
 .style-filter button[aria-pressed="true"] {background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700;}
+.badge.news-signal {background:#e6ecf8;color:#22406f;box-shadow:inset 0 0 0 1px #7088b8;}
