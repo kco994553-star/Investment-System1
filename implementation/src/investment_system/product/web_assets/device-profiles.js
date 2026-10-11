@@ -31,37 +31,82 @@ function officialView(el,en,view){const box=el('div',undefined,{'data-profile-of
  const p=el('div',undefined,{'data-six-perspectives':''});p.append(el('h4',en?'Six perspectives (shown separately)':'6관점 (따로 표시)'));const list=el('dl');for(const[ko,enl]of PERSPECTIVES)list.append(el('dt',en?enl:ko),el('dd','NOT_AVAILABLE'));p.append(list,el('p',en?'Definitions await your decision; results would be one of watch / review / holding context / weight review / risk review / blocked.':'정의는 사용자 확정 대기입니다. 결과는 관찰/추가검토/보유맥락/비중재검토/위험재검토/차단 중 하나로 표시됩니다.',{class:'small'}));box.append(p);
  let drafts=0;try{drafts=read((view||globalThis).localStorage).strategies.length;}catch(_){}
  const v=el('div',undefined,{'data-version-record':''});v.append(el('h4',en?'Version record':'버전 기록'));const vl=el('ul');for(const text of [en?'v1 in use':'v1 사용 중',en?'v2 planned (not started)':'v2 예정(미착수)',(en?'My drafts: ':'내 프로필 초안: ')+drafts])vl.append(el('li',text));v.append(vl);box.append(v);return box;}
-// S13 custom company types: device copy of type_config v1 (PREVIEW). Official config is never modified.
+// S13 TARGET view of the type PREVIEW: every TARGET company, official vs custom, plus the changed config leaves.
+// Python reference: investment_system/qgv/type_preview.py (tests/fixtures/s16_s13_reference_v1.json).
+const TARGET_IDS=Object.freeze(['asml','lrcx','klac','tokyo_electron','hanmi','nvda','amd','avgo','qcom','intc','msft','googl','amzn','rtx','stry','etn','hubb','gev','rok']);
+function sameValue(a,b){if(typeof a==='number'&&typeof b==='number')return a===b;if(Array.isArray(a)&&Array.isArray(b))return a.length===b.length&&a.every((x,i)=>sameValue(x,b[i]));
+ const obj=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);if(obj(a)&&obj(b)){const ka=Object.keys(a),kb=Object.keys(b);return ka.length===kb.length&&ka.every(k=>Object.hasOwn(b,k)&&sameValue(a[k],b[k]));}return a===b;}
+function configDiff(official,custom){const out=[],obj=x=>x!==null&&typeof x==='object'&&!Array.isArray(x),get=(x,k)=>Object.hasOwn(x,k)?x[k]:null;
+ const walk=(a,b,path)=>{if(path==='status')return;
+  if(Array.isArray(a)&&Array.isArray(b)&&[...a,...b].every(x=>obj(x)&&typeof x.id==='string')){const ids=[...new Set([...a.map(x=>x.id),...b.map(x=>x.id)])];for(const id of ids)walk(a.find(x=>x.id===id)??null,b.find(x=>x.id===id)??null,path+'.'+id);return;}
+  if(obj(a)&&obj(b)){for(const k of [...new Set([...Object.keys(a),...Object.keys(b)])].sort())walk(get(a,k),get(b,k),path?path+'.'+k:k);return;}
+  if(!sameValue(a,b))out.push({path,official:a===undefined?null:structuredClone(a),mine:b===undefined?null:structuredClone(b)});};
+ walk(official,custom,'');return out;}
+function targetTypePreview(typesPayload,qgPayload,custom,engine=engineApi(),ids=TARGET_IDS){const base=typePreview(typesPayload,qgPayload,custom,engine);
+ if(base.state==='INVALID_INPUT')return{state:'INVALID_INPUT',reason:base.reason,rows:[],diff:[]};const byId=new Map(base.rows.map(r=>[r.company_id,r])),companies=typesPayload?.data?.companies;
+ const rows=ids.map(id=>{const r=byId.get(id),na=reason=>({company_id:id,state:'NOT_AVAILABLE',reason,official:null,mine:null,types_changed:null,weight_delta:null});
+  if(!r)return na(companies&&typeof companies==='object'&&!Object.hasOwn(companies,id)?'COMPANY_NOT_IN_PUBLIC_FILE':'PUBLIC_TYPE_METRICS_NOT_AVAILABLE');if(!r.official||!r.mine)return na('TYPE_ENGINE_INVALID_INPUT');
+  const delta={};for(const p of ['Q','G','V'])delta[p]=r.mine.weights[p]-r.official.weights[p];
+  return{company_id:id,state:'PREVIEW',reason:null,official:r.official,mine:r.mine,types_changed:!sameValue(r.official.selected_types,r.mine.selected_types),weight_delta:delta};});
+ const ok=rows.some(r=>r.state==='PREVIEW');return{state:ok?'PREVIEW':'NOT_AVAILABLE',reason:ok?null:'PUBLIC_TYPE_METRICS_NOT_AVAILABLE',rows,diff:configDiff(copyOfficialTypes(),custom)};}
+// S13 custom company types: device copy of type_config v1 (PREVIEW). Official config is never modified; the custom
+// copy is used only inside '내 설정 미리보기' (never by public data, the forward ledger, virtual trading or other screens).
+const CUSTOM_BADGE=['사용자 설정 · 공식 아님','User setting · not official'];
+function officialTypesView(el,en){const box=el('div',undefined,{'data-type-official':''}),official=typeDefaults();
+ box.append(el('p',(en?'Official · ':'공식 · ')+official.config_version+' · '+official.status+' · '+(en?'uncalibrated':'보정 전'),{class:'badge','data-type-official-badge':''}));
+ const rule=t=>t.rule.kind==='ramp'||t.rule.kind==='gated_ramp'?t.rule.metric+' '+t.rule.lower+'–'+t.rule.upper+(t.rule.gate_metric?' · '+t.rule.gate_metric:''):t.rule.kind==='rank'?t.rule.metric+' ≤ '+t.rule.max_rank:'NOT_AVAILABLE · '+(t.rule.reasons||[]).join(' · ');
+ const wrap=el('div',undefined,{class:'table-wrap'}),table=el('table',undefined,{'data-type-official-table':''}),thead=el('thead'),head=el('tr'),body=el('tbody');
+ for(const h of [en?'Type':'유형',en?'Rule (price-free metric)':'기준(가격 불필요 지표)','Q','G','V'])head.append(el('th',h,{scope:'col'}));thead.append(head);
+ for(const t of [...official.types,{...official.fallback,rule:{kind:'fallback'},affects_qgv:true}]){const tr=el('tr',undefined,{'data-type-official-row':t.id});
+  for(const v of [t.name+' ('+t.id+')',t.rule.kind==='fallback'?(en?'No type recognized':'인식된 유형 없음'):rule(t),...['Q','G','V'].map(p=>t.affects_qgv&&t.weights?String(t.weights[p]):'—')])tr.append(el('td',v));body.append(tr);}
+ table.append(thead,body);wrap.append(table);box.append(wrap);
+ const m=official.mixing;box.append(el('p',(en?'Mixing: ':'혼합 규칙: ')+'minimum_membership '+m.minimum_membership+' · maximum_types '+m.maximum_types+' · pillar '+m.pillar_min+'–'+m.pillar_max+' · '+m.exclusive_pairs.map(x=>x.join('/')).join(', '),{class:'small'}));
+ box.append(el('p',en?'Published company types (price-free) are on each company screen. Official values are never changed by device settings.':'기업별 공식 유형(가격 불필요)은 각 기업 화면에 있습니다. 기기 설정은 공식값을 바꾸지 않습니다.',{class:'small'}));return box;}
 function mountTypes(section,status,el,view,en){
- const engine=engineApi();let state=empty(),writable=true,draft=null,selectedId=null,checked=false;try{state=read(view.localStorage);}catch(_){writable=false;status.textContent='PROFILE_STORAGE_UNREADABLE';}
- status.textContent='OFFICIAL_PROVISIONAL · type_config/1 · '+(en?'Copy to edit':'복사해서 편집');
+ const engine=engineApi();let state=empty(),writable=true,draft=null,selectedId=null,checked=false,tab='official';try{state=read(view.localStorage);}catch(_){writable=false;}
+ status.textContent=writable?'OFFICIAL_PROVISIONAL · type_config/1 · '+(en?'Copy to edit':'복사해서 편집'):'PROFILE_STORAGE_UNREADABLE';
+ const tabs=el('div',undefined,{class:'chips screen-tabs',role:'tablist','data-type-tabs':''}),officialPanel=el('div',undefined,{role:'tabpanel','data-type-panel':'official'}),minePanel=el('div',undefined,{role:'tabpanel','data-type-panel':'mine'});
+ const tabButtons={official:el('button',en?'Official types':'공식 유형',{type:'button',role:'tab','data-type-view':'official'}),mine:el('button',en?'My settings preview':'내 설정 미리보기',{type:'button',role:'tab','data-type-view':'mine'})};
+ const show=next=>{tab=next;for(const[id,b]of Object.entries(tabButtons)){b.setAttribute('aria-selected',String(id===tab));b.setAttribute('aria-pressed',String(id===tab));}officialPanel.hidden=tab!=='official';minePanel.hidden=tab!=='mine';};
+ for(const[id,b]of Object.entries(tabButtons)){b.onclick=()=>show(id);tabs.append(b);}
  const name=el('input',undefined,{id:'type-profile-name',maxlength:'60',placeholder:en?'Name':'이름'}),label=el('label',en?'Name':'이름',{for:'type-profile-name'}),editor=el('div',undefined,{'data-type-fields':''}),errors=el('p','',{'data-type-errors':'',class:'small'}),results=el('div',undefined,{'data-type-preview':'','aria-live':'polite'}),saved=el('ul',undefined,{class:'list','data-saved-types':''});
- const copy=el('button',en?'Copy official':'공식값 복사',{type:'button',id:'type-copy'}),check=el('button',en?'Preview':'미리보기',{type:'button',id:'type-preview',disabled:''}),save=el('button',en?'Save on device':'기기 저장',{type:'button',id:'type-save',disabled:''});
+ const copy=el('button',en?'Copy official to edit':'공식값 복사해 편집',{type:'button',id:'type-copy'}),reset=el('button',en?'Start from official':'공식값으로 시작',{type:'button',id:'type-reset'}),check=el('button',en?'Preview':'미리보기',{type:'button',id:'type-preview',disabled:''}),save=el('button',en?'Save on device':'기기 저장',{type:'button',id:'type-save',disabled:''});
  const changed=()=>{checked=false;save.disabled=true;errors.textContent='';results.replaceChildren();status.textContent='PREVIEW · '+(en?'Draft changed':'초안 수정됨');};
  function numberInput(id,value,set,attrs={}){const input=el('input',undefined,{id,type:'number',step:'any',...attrs});input.value=String(value);input.oninput=()=>{set(input.value.trim()===''?NaN:Number(input.value));changed();};return input;}
  function weightsField(legend,w,prefix){const field=el('fieldset');field.append(el('legend',legend));for(const p of ['Q','G','V']){const id=prefix+'-'+p;field.append(el('label',p,{for:id}),numberInput(id,w[p],v=>{w[p]=v;},{min:'0',max:'100','data-type-weight':prefix+'-'+p}));}return field;}
- function render(){editor.replaceChildren();for(const t of draft.types){if(!t.affects_qgv){editor.append(el('p',t.name+' · '+(en?'exposure only, no Q/G/V weight':'노출 전용, Q/G/V 비중 없음'),{class:'small'}));continue;}const field=weightsField(t.name+' · Q/G/V',t.weights,'type-'+t.id);
+ function render(){editor.replaceChildren();reset.textContent=draft?(en?'Reset to official':'공식값으로 되돌리기'):(en?'Start from official':'공식값으로 시작');if(!draft){editor.append(el('p',en?'Start from the official values or open a saved setting.':'공식값으로 시작하거나 저장한 설정을 여세요.',{class:'empty'}));check.disabled=true;save.disabled=true;return;}
+  for(const t of draft.types){if(!t.affects_qgv){editor.append(el('p',t.name+' · '+(en?'exposure only, no Q/G/V weight':'노출 전용, Q/G/V 비중 없음'),{class:'small'}));continue;}const field=weightsField(t.name+' · Q/G/V',t.weights,'type-'+t.id);
    if(t.rule.kind==='ramp'||t.rule.kind==='gated_ramp')for(const k of ['lower','upper']){const id='type-'+t.id+'-'+k;field.append(el('label',t.rule.metric+' '+k,{for:id}),numberInput(id,t.rule[k],v=>{t.rule[k]=v;}));}
    else if(t.rule.kind==='unresolved')field.append(el('p','NOT_AVAILABLE · '+t.rule.reasons.join(' · '),{class:'small'}));editor.append(field);}
   editor.append(weightsField(draft.fallback.name+' · Q/G/V',draft.fallback.weights,'type-fallback'));
   const mix=el('fieldset');mix.append(el('legend',en?'Mixing':'혼합 규칙'));for(const k of ['minimum_membership','maximum_types','pillar_min','pillar_max']){const id='type-mix-'+k;mix.append(el('label',k,{for:id}),numberInput(id,draft.mixing[k],v=>{draft.mixing[k]=v;}));}editor.append(mix);check.disabled=false;save.disabled=true;}
  function renderSaved(){saved.replaceChildren();for(const p of state.types){const row=el('li',undefined,{class:'card'}),open=el('button',p.name,{type:'button','data-open-type':p.id}),remove=el('button',en?'Delete':'삭제',{type:'button','data-remove-type':p.id});
-   open.onclick=()=>{selectedId=p.id;name.value=p.name;draft=structuredClone(p.config);checked=false;render();status.textContent='PREVIEW · '+(en?'Saved configuration copied into draft':'저장 설정을 초안으로 복사했습니다.');};
+   open.onclick=()=>{selectedId=p.id;name.value=p.name;draft=structuredClone(p.config);checked=false;render();show('mine');status.textContent='PREVIEW · '+(en?'Saved configuration copied into draft':'저장 설정을 초안으로 복사했습니다.');};
    remove.onclick=()=>{if(!writable)return;try{state=write(view.localStorage,{...state,types:state.types.filter(x=>x.id!==p.id)});if(selectedId===p.id){selectedId=null;checked=false;save.disabled=true;}renderSaved();}catch(_){status.textContent='PROFILE_SAVE_FAILED';}};remove.disabled=!writable;row.append(open,remove);saved.append(row);}
   if(!state.types.length)saved.append(el('li',en?'No saved type configurations.':'저장한 유형 설정이 없습니다.',{class:'empty'}));}
- copy.onclick=()=>{draft=copyOfficialTypes();selectedId=null;checked=false;name.value=en?'My types':'내 유형';render();status.textContent='PREVIEW · '+(en?'Official type_config/1 copied':'공식 type_config/1을 복사했습니다.');};
+ const startOfficial=keepName=>{draft=copyOfficialTypes();checked=false;if(!keepName||!name.value.trim())name.value=en?'My types':'내 유형';render();results.replaceChildren();errors.textContent='';};
+ copy.onclick=()=>{selectedId=null;startOfficial(false);show('mine');status.textContent='PREVIEW · '+(en?'Official type_config/1 copied':'공식 type_config/1을 복사했습니다.');};
+ reset.onclick=()=>{const had=!!draft;startOfficial(true);status.textContent='PREVIEW · '+(had?(en?'Reset to official values (save to keep)':'공식값으로 되돌렸습니다(저장해야 유지)'):(en?'Official type_config/1 copied':'공식 type_config/1을 복사했습니다.'));};
  name.oninput=changed;
  check.onclick=()=>{const codes=engine?engine.validateTypeConfig(draft):['ENGINE_NOT_AVAILABLE'];let ok=!codes.length&&name.value.trim().length>0;try{if(ok)typeConfig(draft);}catch(_){ok=false;}
   checked=ok;save.disabled=!ok||!writable;errors.textContent=codes.length?codes.join(' · '):name.value.trim()?'':(en?'Enter a name.':'이름이 필요합니다.');
   status.textContent=ok?'PREVIEW · '+(en?'Configuration valid':'설정 유효'):'TYPE_CONFIG_INVALID';results.replaceChildren();if(!ok)return;const token=draft;
-  Promise.resolve(view.PublicScreens?view.PublicScreens.load(view):{}).then(bundle=>{if(token!==draft||!checked)return;const r=typePreview(bundle['company-types-pricefree.json'],bundle['sec-qg-factors.json'],draft,engine);renderTypePreview(r);
+  Promise.resolve(view.PublicScreens?view.PublicScreens.load(view):{}).then(bundle=>{if(token!==draft||!checked)return;const r=targetTypePreview(bundle['company-types-pricefree.json'],bundle['sec-qg-factors.json'],draft,engine);renderTypePreview(r);
    if(r.state!=='PREVIEW')status.textContent='PREVIEW · '+(en?'Configuration valid · company results NOT_AVAILABLE · price-free type metrics are not published':'설정 유효 · 기업별 결과 NOT_AVAILABLE · 가격 불필요 유형 지표 미게시');}).catch(()=>{});};
- function renderTypePreview(r){results.replaceChildren();if(r.state!=='PREVIEW')return;const pct=w=>w?['Q','G','V'].map(p=>p+' '+(Math.round(w[p]*10)/10).toFixed(1)).join(' · '):'—',types=x=>x?(x.selected_types.join(', ')||(en?'unclassified':'미분류')):'—';
-  const wrap=el('div',undefined,{class:'table-wrap'}),table=el('table'),head=el('tr'),body=el('tbody'),thead=el('thead');for(const h of [en?'Company':'기업',en?'Official types':'공식 유형',en?'My types':'내 유형',en?'Official Q/G/V weights':'공식 Q/G/V 비중',en?'My Q/G/V weights':'내 Q/G/V 비중'])head.append(el('th',h));thead.append(head);
-  for(const row of r.rows){const tr=el('tr',undefined,{'data-type-preview-row':row.company_id});for(const v of [row.company_id.toUpperCase(),types(row.official),types(row.mine),pct(row.official?.weights),pct(row.mine?.weights)])tr.append(el('td',v));body.append(tr);}
-  table.append(thead,body);wrap.append(table);results.append(el('p',en?'PREVIEW · RAM only · adjusted QGV needs V (prices): NOT_AVAILABLE':'PREVIEW · 메모리 전용 · 유형조정 QGV는 V(가격) 필요: NOT_AVAILABLE',{class:'small'}),wrap);}
+ function renderTypePreview(r){results.replaceChildren();if(r.state==='INVALID_INPUT')return;const pct=w=>w?['Q','G','V'].map(p=>p+' '+(Math.round(w[p]*10)/10).toFixed(1)).join(' · '):'—',types=x=>x?(x.selected_types.join(', ')||(en?'unclassified':'미분류')):'—';
+  const delta=row=>{if(row.state!=='PREVIEW')return 'NOT_AVAILABLE · '+row.reason;const parts=['Q','G','V'].filter(p=>Math.abs(row.weight_delta[p])>=0.05).map(p=>p+' '+(row.weight_delta[p]>0?'+':'−')+(Math.round(Math.abs(row.weight_delta[p])*10)/10).toFixed(1));return (row.types_changed?(en?'Types changed':'유형 변경')+(parts.length?' · ':''):'')+(parts.join(' · ')||(row.types_changed?'':(en?'Same':'같음')));};
+  results.append(el('p',CUSTOM_BADGE[en?1:0]+' · PREVIEW',{class:'badge partial','data-type-custom-badge':'preview'}));
+  const diff=el('div',undefined,{'data-type-diff':''});diff.append(el('h4',en?'Changed from official':'공식값에서 바꾼 항목'));if(!r.diff.length)diff.append(el('p',en?'No change from the official values.':'공식값과 같습니다.',{class:'small','data-type-diff-none':''}));
+  else{const list=el('ul',undefined,{class:'list'});for(const d of r.diff)list.append(el('li',d.path+' · '+JSON.stringify(d.official)+' → '+JSON.stringify(d.mine),{'data-type-diff-path':d.path}));diff.append(list);}results.append(diff);
+  const wrap=el('div',undefined,{class:'table-wrap'}),table=el('table',undefined,{'data-type-preview-table':''}),head=el('tr'),body=el('tbody'),thead=el('thead');for(const h of [en?'Company':'기업',en?'Official types':'공식 유형',en?'My types':'내 유형',en?'Official Q/G/V weights':'공식 Q/G/V 비중',en?'My Q/G/V weights':'내 Q/G/V 비중',en?'Change':'변화'])head.append(el('th',h,{scope:'col'}));thead.append(head);
+  for(const row of r.rows){const tr=el('tr',undefined,{'data-type-preview-row':row.company_id,'data-type-preview-state':row.state});for(const v of [row.company_id.toUpperCase(),types(row.official),types(row.mine),pct(row.official?.weights),pct(row.mine?.weights),delta(row)])tr.append(el('td',v));body.append(tr);}
+  table.append(thead,body);wrap.append(table);results.append(el('p',(en?'TARGET companies · ':'TARGET 기업 · ')+'PREVIEW · '+(en?'RAM only · adjusted QGV needs V (prices): NOT_AVAILABLE':'메모리 전용 · 유형조정 QGV는 V(가격) 필요: NOT_AVAILABLE'),{class:'small'}),wrap);}
  save.onclick=()=>{if(!checked||!writable)return;try{const id=selectedId||'type-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);state=write(view.localStorage,{...state,types:[...state.types.filter(x=>x.id!==id),{id,name:name.value.trim(),config:draft}]});selectedId=id;status.textContent='PREVIEW · '+(en?'Saved on this device':'이 기기에 저장했습니다.');renderSaved();}catch(_){status.textContent='PROFILE_SAVE_FAILED';}};
- section.append(el('p',en?'Industry, strategy theme and investment type are separate axes. Raw QGV and type-adjusted QGV are both kept.':'산업·전략 테마·투자 유형은 서로 다른 축입니다. 원 QGV와 유형조정 QGV를 함께 보존합니다.',{class:'small'}),label,name,copy,editor,check,errors,results,save,el('h3',en?'Saved type configurations':'저장한 유형 설정'),saved);renderSaved();
+ officialPanel.append(officialTypesView(el,en),copy);
+ minePanel.append(el('p',CUSTOM_BADGE[en?1:0],{class:'badge partial','data-type-custom-badge':''}),
+  el('p',en?'Stored only on this device (included in the device backup with your profiles). Never changes public data, the forward ledger, virtual trading or official screens.':'이 기기에만 저장됩니다(프로필과 함께 기기 백업에 포함). 공개 데이터·전진검증 원장·가상매매·공식 화면을 바꾸지 않습니다.',{class:'small','data-type-device-note':''}),
+  label,name,reset,editor,check,errors,results,save,el('h3',en?'Saved type configurations':'저장한 유형 설정'),saved);
+ section.append(el('p',en?'Industry, strategy theme and investment type are separate axes. Raw QGV and type-adjusted QGV are both kept.':'산업·전략 테마·투자 유형은 서로 다른 축입니다. 원 QGV와 유형조정 QGV를 함께 보존합니다.',{class:'small'}),tabs,officialPanel,minePanel);render();renderSaved();show('official');
 }
 // RAM-only PREVIEW: published price-free Q/G factors under official vs draft leaf weights. Never stored.
 function previewRanks(payload,draft,engine){
@@ -90,5 +135,5 @@ function mount(host,{locale,mode='strategy',qgFactors=()=>null,engine=globalThis
  save.onclick=()=>{if(!previewed||!writable)return;try{const id=selectedId||'device-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10),p={id,name:name.value.trim(),weights:weights(draft)},next={...state,strategies:[...state.strategies.filter(x=>x.id!==id),p]};state=write(view.localStorage,next);selectedId=id;status.textContent='PREVIEW · '+(en?'Saved on this device':'이 기기에 저장했습니다.');renderSaved();}catch(_){status.textContent='PROFILE_SAVE_FAILED';}};
  section.append(officialView(el,en,view),label,name,copy,editor,preview,results,save,el('h3',en?'Saved profiles':'저장한 프로필'),saved);renderSaved();host.replaceChildren(section);
 }
-return Object.freeze({KEY,SCHEMA,empty,copyOfficial,copyOfficialTypes,typeConfig,weights,validate,read,write,previewRanks,typePreview,mount});
+return Object.freeze({KEY,SCHEMA,TARGET_IDS,empty,copyOfficial,copyOfficialTypes,typeConfig,weights,validate,read,write,previewRanks,typePreview,targetTypePreview,configDiff,mount});
 });

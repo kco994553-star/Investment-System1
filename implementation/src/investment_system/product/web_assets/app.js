@@ -3,7 +3,7 @@ let D,
   prefs = { version: 1, interests: [], groups: [] },
   storageOK = true,
   corruptStorage = false;
-let identityCompanies=[],publicScreens={},deviceCatalogPromise;
+let identityCompanies=[],publicScreens={},publicCatalog=null,deviceCatalogPromise;
 function deviceCatalog() {
   if(!deviceCatalogPromise) deviceCatalogPromise=fetch('actual-catalog.json',{cache:'no-store'}).then(r=>{
     if(!r.ok) throw Error('PUBLIC_CATALOG_UNAVAILABLE');return r.json();
@@ -688,7 +688,7 @@ function renderRoute() {
   if(route==='profiles') DeviceProfiles.mount($('#device-profile-editor'),{locale:appSettings.display_locale,qgFactors:()=>publicScreens['sec-qg-factors.json']});
   if(route==='validation') ForwardValidation.mount($('#forward-validation-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig});
   if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});
-  for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:undefined,locale:appSettings.display_locale});
+  for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});
   syncNavigation(route);
   const flowParent=QGV_CHILDREN.includes(route)?"qgv":route==="research"?"validation":route;
   if(FLOW_STEPS[flowParent]) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${FLOW_STEPS[flowParent][0]}"><span class="flow-number">${FLOW_STEPS[flowParent][0]}</span> ${esc(t(FLOW_STEPS[flowParent][1]))}</p>`);
@@ -936,7 +936,7 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
 }).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window),PublicScreens.load(window).then(s=>typeof ClassificationScreens==="object"?ClassificationScreens.load(window).then(c=>{if(c)s[ClassificationScreens.FILE]=c;return s;}):s),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,reported,screens,identities])=>{
   try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}
-  publicScreens=screens;
+  publicScreens=screens;publicCatalog=identities||null;
   secReported=reported;
   m2Candidates=guardM2Candidates(candidates);
   // GSQ-010: legacy public producer payloads are withheld, including membership/order.
