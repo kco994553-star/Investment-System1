@@ -21,7 +21,7 @@ def test_browser_reader_agrees_with_canonical_projection_vectors(tmp_path,factor
     m=factory(tmp_path)
     for name,p in generate_screen_bundle(manifest=m,input_root=tmp_path,as_of=NOW,stale_after=timedelta(hours=24)).items():
         require_public_screen(name,p)
-        result=subprocess.run(['node','-e',"const a=require(process.argv[1]),p=JSON.parse(require('fs').readFileSync(0,'utf8'));a.validate(process.argv[2],p)",str(Path(__file__).parents[1]/'src/investment_system/product/web_assets/public-screens.js'),name],input=json.dumps(p),text=True,capture_output=True)
+        result=subprocess.run(['node','-e',"const a=require(process.argv[1]),p=JSON.parse(require('fs').readFileSync(0,'utf8'));a.validate(process.argv[2],p)",str(Path(__file__).parents[1]/'src/investment_system/product/web_assets'/('device-valuation.js' if name=='sec-valuation-inputs.json' else 'public-screens.js')),name],input=json.dumps(p),text=True,capture_output=True)
         assert result.returncode==0, 'PUBLIC_READER_PARITY_FAILED'
 
 
@@ -34,7 +34,7 @@ def test_collector_reuses_each_raw_capture_once_and_never_exports_raw(tmp_path):
             return *(json.dumps(x).encode() for x in raw(company)),datetime(2026,2,2,12,tzinfo=timezone.utc)
     result=collect(tmp_path,environ={'SEC_USER_AGENT':'synthetic setting'},client_factory=Client)
     assert len(calls)==len(set(calls))==17 and result['failed_companies']==0
-    assert len(list(tmp_path.iterdir()))==6
+    assert len(list(tmp_path.iterdir()))==7
     for path in tmp_path.iterdir():
         text=path.read_text(); assert 'never publish' not in text and '987654321' not in text and 'synthetic setting' not in text
         if path.name!='sec-public-inputs.json':require_public_screen(path.name,json.loads(text))
@@ -58,7 +58,7 @@ def test_ui_restore_validates_all_before_writing_and_404_keeps_unavailable(tmp_p
         def read(self,n):return before[self.url.rsplit('/',1)[1]][:n]
         def __enter__(self):return self
         def __exit__(self,*_):pass
-    assert preserve(tmp_path,open_response=lambda req,**_:Response(req.full_url))==5
+    assert preserve(tmp_path,open_response=lambda req,**_:Response(req.full_url))==6
     def missing(req,**_):raise urllib.error.HTTPError(req.full_url,404,'',{},None)
     assert preserve(tmp_path,open_response=missing)==0
     def invalid(req,**_):

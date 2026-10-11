@@ -10,6 +10,9 @@ function deviceCatalog() {
   }).catch(()=>{deviceCatalogPromise=null;throw Error('PUBLIC_CATALOG_UNAVAILABLE');});
   return deviceCatalogPromise;
 }
+let valuationInputsPromise=null;
+function valuationInputs(){if(!valuationInputsPromise)valuationInputsPromise=DeviceValuation.load(window);return valuationInputsPromise;}
+function paintValue(route,id,quote=null){const host=document.querySelector('#company-value');if(host)void CompanyScreen.mountValue(host,{locale:appSettings.display_locale,id,ticker:company(id)?.ticker||PrivateHistory.symbolFor(id),catalogPromise:deviceCatalog(),inputsPromise:valuationInputs(),quote,compact:route==='company'});}
 function attachDeviceActual(selector,input) {
   const host=document.querySelector(selector),locale=appSettings.display_locale;
   if(!host) return;
@@ -583,11 +586,12 @@ function renderRoute() {
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
   if(route==='analysis') CompanyScreen.wireTabs($('#content'));
+  if(route==='company'||route==='analysis') paintValue(route,id);
   if(route==='model') {attachDeviceActual('#model-actual-summary',false);paintModel();}
   if(route==='home') deviceCatalog().then(c=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent=c.target_root_version||'NOT_AVAILABLE';}).catch(()=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent='NOT_AVAILABLE';});
   if(route==='technical') {const cards=TechnicalCards.mount($('#technical-indicators'),{locale:appSettings.display_locale});
     PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>cards.update(value)});}
-  if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost});
+  if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>paintValue(route,id,value&&typeof value.close==='number'?{price:value.close,currency:value.currency,as_of:value.asOf,source:'PRIVATE_HISTORY_CLOSE'}:null)});
   if(route==='company'||route==='leaderboard'||route==='analysis') SecReported.mount($('#sec-reported-panel'),secReported,{companyId:route==='leaderboard'?undefined:id,locale:appSettings.display_locale});
   if(route==='profiles') DeviceProfiles.mount($('#device-profile-editor'),{locale:appSettings.display_locale,qgFactors:()=>publicScreens['sec-qg-factors.json']});
   if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});

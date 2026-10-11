@@ -20,6 +20,7 @@ REASON_CODES = frozenset((
     "INVALID_TIMESTAMP", "INVALID_TIME_ORDER", "AVAILABLE_AFTER_AS_OF", "BASIS_UNCONFIRMED",
     "CIK_MISMATCH", "ACCESSION_UNCONFIRMED", "SHARES_NOT_AVAILABLE", "MULTI_CLASS_AMBIGUOUS",
     "NONFINITE_MCAP", "CONFIG_CONFIRMATION_REQUIRED", "DUPLICATE_ISSUER", "VALIDATION_INCOMPLETE", "SHARE_CLASS_BASIS",
+    "STALE_INPUT",
 ))
 
 
@@ -454,6 +455,83 @@ def prepare_sec_shares(seed: ListingSeed, receipt: SecReceipt, basis: ShareBasis
         return fail(last_reason)
     except (KeyError,TypeError,AttributeError,ValueError,OverflowError):
         return fail("INVALID_INPUT")
+
+
+def public_listing_seed(code: str, record: Mapping, *, synthetic: bool = False) -> ListingSeed | None:
+    """Identity from one validated `sec-universe-shares.json` row (cik/listing/company + submissions hash)."""
+    try:
+        if type(code) is not str or not isinstance(record, Mapping) or type(synthetic) is not bool:
+            return None
+        venue, symbol = code.split(":", 1)
+        mic = {"NASDAQ": "XNAS", "NYSE": "XNYS"}.get(venue)
+        cik, listing, company = record.get("cik"), record.get("listing_id"), record.get("company_id")
+        submissions = (record.get("source_sha256") or {}).get("submissions")
+        acquired = record.get("acquired_at") or None
+        sec_symbol = symbol.replace(".", "-")
+        if (mic is None or type(cik) is not str or not re.fullmatch(r"[0-9]{10}", cik) or cik == "0000000000"
+                or listing != f"{mic}:{sec_symbol}:{cik}" or type(company) is not str or not re.fullmatch(r"[a-z0-9_]{1,64}", company)
+                or not _hash(submissions)):
+            return None
+        if acquired is None:
+            return None
+        at = datetime.fromisoformat(acquired.replace("Z", "+00:00"))
+        if not _aware(at):
+            return None
+        return ListingSeed(listing, company, "sec:" + cik, f"sec:{cik}:{sec_symbol}", sec_symbol, mic, "USD", "America/New_York",
+                           code, cik, _utc(at).date(), None, "sec-submissions:" + cik, submissions, synthetic)
+    except (ValueError, TypeError, AttributeError, OverflowError):
+        return None
+
+
+def prepare_public_shares(seed: ListingSeed, record: Mapping, as_of: datetime) -> tuple[SharesInput, ShareBasisReceipt | None]:
+    """Public-record path: SINGLE_CLASS_CONFIRMED -> input; SHARE_CLASS_BASIS shown only; else not verified."""
+    synthetic = seed.synthetic if isinstance(seed, ListingSeed) and type(seed.synthetic) is bool else True
+    def fail(reason, basis=None, hashes=None):
+        notice = reason == "SHARE_CLASS_BASIS"
+        return (SharesInput("NOT_AVAILABLE", seed.listing_id if isinstance(seed, ListingSeed) else None,
+                            seed.company_id if isinstance(seed, ListingSeed) else None, seed.security_id if isinstance(seed, ListingSeed) else None,
+                            None, None, None, None, None, basis.source_sha256 if notice else None, (reason,), synthetic,
+                            facts_sha256=hashes["companyfacts"] if notice else None, submissions_sha256=hashes["submissions"] if notice else None), basis)
+    if not isinstance(seed, ListingSeed) or not isinstance(record, Mapping):
+        return fail("INVALID_INPUT")
+    if not _aware(as_of):
+        return fail("INVALID_TIMESTAMP")
+    if (record.get("listing_id"), record.get("cik"), record.get("company_id")) != (seed.listing_id, seed.cik, seed.company_id):
+        return fail("IDENTITY_UNCONFIRMED")
+    hashes = record.get("source_sha256") if isinstance(record.get("source_sha256"), Mapping) else {}
+    value = record.get("shares")
+    if record.get("state") == "NOT_AVAILABLE" or value is None:
+        return fail("SHARES_NOT_AVAILABLE")
+    try:
+        acquired = datetime.fromisoformat(record["acquired_at"].replace("Z", "+00:00"))
+    except (KeyError, AttributeError, TypeError, ValueError):
+        return fail("INVALID_TIMESTAMP")
+    if not _aware(acquired):
+        return fail("INVALID_TIMESTAMP")
+    if _utc(acquired) > _utc(as_of):
+        return fail("AVAILABLE_AFTER_AS_OF")
+    if record.get("state") != "LIVE":
+        return fail("STALE_INPUT")
+    basis_kind = record.get("share_class_basis")
+    if basis_kind not in ("SINGLE_CLASS_CONFIRMED", "SHARE_CLASS_BASIS"):
+        return fail("BASIS_UNCONFIRMED")
+    evidence = record.get("basis_evidence") if isinstance(record.get("basis_evidence"), Mapping) else {}
+    if not all(_hash(hashes.get(k)) for k in ("companyfacts", "submissions", "cover")) or evidence.get("cover_accn") != record.get("accn"):
+        return fail("BASIS_UNCONFIRMED")
+    basis = ShareBasisReceipt(seed.listing_id, seed.company_id, seed.security_id,
+                              "SINGLE_CLASS_CONFIRMED" if basis_kind == "SINGLE_CLASS_CONFIRMED" else "UNKNOWN",
+                              f"sec-cover:{seed.cik}/{record.get('accn')}", hashes["cover"], _utc(acquired), "shares",
+                              "GOOGLEFINANCE_CURRENT", seed.currency, synthetic,
+                              "ALIGNED" if basis_kind == "SINGLE_CLASS_CONFIRMED" else "DIFFERENT")
+    if basis_kind == "SHARE_CLASS_BASIS":
+        return fail("SHARE_CLASS_BASIS", basis, hashes)
+    measured = _day(record.get("measurement_date"))
+    if (not _positive(value) or measured is None or measured > _utc(acquired).date() or not _text(record.get("accn"))
+            or record.get("concept") not in ("dei:EntityCommonStockSharesOutstanding", "us-gaap:CommonStockSharesOutstanding")):
+        return fail("SHARES_NOT_AVAILABLE")
+    return (SharesInput("INPUT_RESEARCH", seed.listing_id, seed.company_id, seed.security_id, float(value), _utc(acquired), measured,
+                        record["accn"], record["concept"], hashes["cover"], (), synthetic,
+                        facts_sha256=hashes["companyfacts"], submissions_sha256=hashes["submissions"]), basis)
 
 
 def prepare_universe_price(row: UniverseRow, basis: ShareBasisReceipt, *, as_of: datetime) -> PriceInput:
