@@ -1,0 +1,71 @@
+{
+  "schema": "theme_concentration_v0_vectors/1",
+  "note": "Shared Python (qgv.theme_membership.theme_concentration) / JS (ClassificationScreens.themeConcentration) vectors. Synthetic device weights; not real holdings.",
+  "threshold": 0.4,
+  "cases": [
+    {
+      "name": "two_warnings_sorted_by_exposure",
+      "theme_ids": ["ai", "semiconductors", "cloud_software"],
+      "rows": [{"company_id": "nvda", "weight": 0.5}, {"company_id": "amd", "weight": 0.3}, {"company_id": "msft", "weight": 0.2}],
+      "memberships": {"nvda": {"ai": true, "semiconductors": true, "cloud_software": false},
+                      "amd": {"ai": false, "semiconductors": true, "cloud_software": false},
+                      "msft": {"ai": true, "semiconductors": false, "cloud_software": true}},
+      "expected": {"themes": [{"id": "ai", "exposure": 0.7, "unknown": 0.0, "status": "WARN"},
+                              {"id": "semiconductors", "exposure": 0.8, "unknown": 0.0, "status": "WARN"},
+                              {"id": "cloud_software", "exposure": 0.2, "unknown": 0.0, "status": "OK"}],
+                   "warnings": ["semiconductors", "ai"]}
+    },
+    {
+      "name": "exactly_forty_percent_is_not_a_warning",
+      "theme_ids": ["semiconductors"],
+      "rows": [{"company_id": "nvda", "weight": 0.4}, {"company_id": "msft", "weight": 0.6}],
+      "memberships": {"nvda": {"semiconductors": true}, "msft": {"semiconductors": false}},
+      "expected": {"themes": [{"id": "semiconductors", "exposure": 0.4, "unknown": 0.0, "status": "OK"}], "warnings": []}
+    },
+    {
+      "name": "unknown_share_is_never_zero_filled",
+      "theme_ids": ["semiconductors"],
+      "rows": [{"company_id": "nvda", "weight": 0.3}, {"company_id": "amd", "weight": 0.2}, {"company_id": "msft", "weight": 0.5}],
+      "memberships": {"nvda": {"semiconductors": true}, "amd": {"semiconductors": null}, "msft": {"semiconductors": false}},
+      "expected": {"themes": [{"id": "semiconductors", "exposure": 0.3, "unknown": 0.2, "status": "INDETERMINATE"}], "warnings": []}
+    },
+    {
+      "name": "missing_record_and_unmapped_row_are_unknown",
+      "theme_ids": ["ai"],
+      "rows": [{"company_id": null, "weight": 0.25}, {"company_id": "tokyo_electron", "weight": 0.25}, {"company_id": "msft", "weight": 0.5}],
+      "memberships": {"msft": {"ai": true}},
+      "expected": {"themes": [{"id": "ai", "exposure": 0.5, "unknown": 0.5, "status": "WARN"}], "warnings": ["ai"]}
+    },
+    {
+      "name": "unusable_weights_are_skipped",
+      "theme_ids": ["ai"],
+      "rows": [{"company_id": "nvda", "weight": null}, {"company_id": "amd", "weight": 0}, {"company_id": "msft", "weight": -0.2},
+               {"company_id": "googl", "weight": "0.9"}, {"company_id": "amzn", "weight": 0.35}],
+      "memberships": {"nvda": {"ai": true}, "amd": {"ai": true}, "msft": {"ai": true}, "googl": {"ai": true}, "amzn": {"ai": true}},
+      "expected": {"themes": [{"id": "ai", "exposure": 0.35, "unknown": 0.0, "status": "OK"}], "warnings": []}
+    },
+    {
+      "name": "equal_exposure_ties_follow_config_order",
+      "theme_ids": ["robotics_automation", "ai"],
+      "rows": [{"company_id": "rok", "weight": 0.45}, {"company_id": "msft", "weight": 0.55}],
+      "memberships": {"rok": {"robotics_automation": true, "ai": true}, "msft": {"robotics_automation": false, "ai": false}},
+      "expected": {"themes": [{"id": "robotics_automation", "exposure": 0.45, "unknown": 0.0, "status": "WARN"},
+                              {"id": "ai", "exposure": 0.45, "unknown": 0.0, "status": "WARN"}],
+                   "warnings": ["robotics_automation", "ai"]}
+    },
+    {
+      "name": "no_rows",
+      "theme_ids": ["ai"],
+      "rows": [],
+      "memberships": {},
+      "expected": {"themes": [{"id": "ai", "exposure": 0.0, "unknown": 0.0, "status": "OK"}], "warnings": []}
+    }
+  ],
+  "status_cases": [
+    {"exposure": 0.41, "unknown": 0.0, "status": "WARN"},
+    {"exposure": 0.4, "unknown": 0.0, "status": "OK"},
+    {"exposure": 0.39, "unknown": 0.02, "status": "INDETERMINATE"},
+    {"exposure": 0.0, "unknown": 0.4, "status": "OK"},
+    {"exposure": 0.0, "unknown": 0.41, "status": "INDETERMINATE"}
+  ]
+}

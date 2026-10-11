@@ -52,7 +52,9 @@ Actions workflow_dispatch **38039786166**,head303ae501854b1926bd21e406279cfe228d
 
 PAVE광범위인프라·IBB/XBI의비만치료제대형제약누락·XLP/XLY업종proxy는한계로남긴다. 바스켓ticker존재HTTP200은SECregistrant/series/class 식별확인이아니다. 사용자확인없이어느바스켓도baskets_confirmed로바꾸지않았다. NPORT공개holdings우선·Item1키워드보완·상위2표시/테마없음허용·기기override구조는구현됐으나보유ETF수/비중0~1정규화·keyword결합·쏠림경고threshold는미정이다. Q/G/V영향없음.
 
-## SIC→업종군 매핑 초안 — 별도 사용자 확인 대상
+## SIC→업종군 매핑 초안 — 2026-10-11 v0 채택
+
+> 채택 후 구현: [SIC_THEME_V0](SIC_THEME_V0.md). 아래는 채택 전 기록이다.
 
 사용자 후속 승인 조건: **표 확인 전 경기민감·경기방어는 NOT_AVAILABLE 유지**. 아래는 SEC SIC 산업 설명을 넓게 묶은 초안이며 민감/방어 판정표가 아니다. GICS 자료를 쓰지 않는다. 설정의 industry.groups는 비어 있으며 현재 계산에 적용하지 않았다.
 

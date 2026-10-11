@@ -7,11 +7,15 @@
 - 작업 방식: 기능 단위 PR, 독립 작업은 서브에이전트 최대 3개가 각자 worktree·브랜치에서 병렬 진행, 진척마다 push, 병합 때마다 이 절 갱신.
 - 로컬 검증 도구(세션 scratchpad, 없으면 재작성): `pin_assets.sh`(가드 해시·files_scanned), `ci_local.sh`(필수 CI 동등 실행), `run_browser.sh`, `pytest_full.sh`(py3.12). Playwright는 1.58.2.
 - 이번 세션 추가 병합: #161 S03·S04·S05, #162 py3.13 호환+백업 `/3`(투자자 ★), #163 ROADMAP 상태+[사용자 결정 대기 목록](implementation/docs/USER_DECISIONS_PENDING.md), #164 S06·S07·S11·S13, #166 S08 지표 6카드·S09·S10 세부, #167 레거시 테스트 10종 복구+문구 현지화.
-- 열린 PR(모두 사용자 승인 대기):
-  - #156 (`ccr-fbc4f278-dnjicl`, 워크플로) CI manifest + 전체 pytest + 시간 제한 30/40분. node 21·브라우저 34종 등록, 로컬 fail=0 약 12분. 새 테스트는 이 manifest에 추가.
-  - #165 draft (`claude/type-metrics-public`, 공개 데이터 경계) 공개 유형 JSON에 revenue_cagr_3y·roic + 기기 기업별 유형 미리보기. 구현·검증 완료.
-  - #152 테마(바스켓 승인), #153 보존용(병합 안 함).
-- 다음 할 일: 결정 없이 진행 가능한 개발 항목은 소진. 사용자 결정([USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md)) 후 해당 항목 재개. 승인 시 #156 → #165 순 병합(각각 canonical 재병합·가드 재고정 필요).
+- 2026-10-11 결정 일괄 반영 중. 병합: #156(CI manifest), #165(공개 유형 metrics), #169(원자료 비공개 Release 워크플로), #171(시간대 테스트 고정), #172(가상매매·일일보고서 문서, S17, D-22 초안).
+- 열린 PR:
+  - #170 GSQ-020(10-11 결정 기록) — 사용자 승인 후 병합. GSQ-018(가상매매)·GSQ-019(AI 우체통)은 사용자 지정 번호로 별도 PR 예정.
+  - #173 13F 운용사 v0 10곳(워크플로 단계 추가), #174 M3 Universe504 주식수 공개 JSON(워크플로 2곳) — 10-11 결정 범위, CI 통과 시 병합.
+  - DCF 기본값·기기 V: 브랜치 `claude/dcf-v1-defaults-device-v`(로컬 CI 후 PR).
+  - 가상매매 엔진 v1: 브랜치 `claude/virtual-trading-engine-v1`(Python·JS·벡터 완료, S17·금액 숨김·우체통을 이어서 같은 PR로).
+  - SIC v0·테마 v0: 서브에이전트 브랜치 `claude/sic-theme-v0` 진행 중.
+- 사용자 조치 대기: 원자료 비공개 저장소·`RAW_REPO_TOKEN` 생성([절차](implementation/docs/producer_infrastructure/RAW_PRIVATE_RELEASE_PROCEDURE.md), 451MB 원자료 만료 2026-12-26), D-22 대응표·Worker 시세 범위 결정, DCF 명시기간 성장률 h.
+- 다음 할 일: #173·#174 병합 → DCF PR → SIC·테마 통합 → 매크로 v0·전진검증 원장(10-19 시작) → 가상매매 S17·금액 숨김·우체통 → GSQ-018/019 PR.
 - 알려진 제품 갭(결정 필요 아님, 후속 후보): 전체 검색이 기업을 내지 않음(GSQ-010 identity 디렉터리만), 백업 복원 후 ACTUAL 화면 알림 없음, `sec-public-inputs.json`은 SEC 수집 없는 빌드에서 404.
 
 ## 읽기 순서와 운영 경계
@@ -19,7 +23,7 @@
 1. [WORKING_RULES.md](WORKING_RULES.md): 1인용 혼합 운영 규칙.
 2. 이 파일: 실제 완료·미완료·의존·운영 상태.
 3. [ROADMAP_2026Q4.md](implementation/docs/ROADMAP_2026Q4.md): 범위·연구 및 후속 정책. 진행 상태는 이 파일이 우선한다.
-4. [DESIGN_CANVAS_SCREENS_v1.md](implementation/docs/cockpit_ia/DESIGN_CANVAS_SCREENS_v1.md): S01~S16 화면 정본.
+4. [DESIGN_CANVAS_SCREENS_v1.md](implementation/docs/cockpit_ia/DESIGN_CANVAS_SCREENS_v1.md): S01~S17 화면 정본.
 5. 26E 결정 기록: [GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md](implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md) GSQ-005~017.
 
 병합 규칙(2026-10-10 사용자 지시): PR 단위로 push하고 **실행된 필수 체크 전부 성공·실패 0이면 자체 병합**. 단 **인증·배포·Worker·워크플로·공개 데이터 경계·26E 결정 기록 변경은 사용자 승인 후 병합**. force push·ruleset·AUTONOMY_MODE 변경(READ_ONLY 유지) 금지, 새 방법론·가중치·TARGET 임의 변경과 Holdout 사용 금지, 공개 저장소·Pages·Actions 로그에 가격·가격 파생값·개인 데이터 금지, Secret 값 출력 금지, 매수·매도·주문·이체 기능 금지, 결측은 NOT_AVAILABLE(0 대체 금지).

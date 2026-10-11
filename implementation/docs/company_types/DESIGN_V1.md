@@ -20,7 +20,9 @@ GSQ-017 승인값을 설정과 pure Python으로 구현한다. [`type_config_v1.
 
 공식 QGV pilllar 원본과 type-adjusted pillar·부모 비중/점수를 함께 반환한다. 결측 기둥은 점수 전체NA이며 남은 기둥 비중으로 재계산하지 않는다. 민감 유형이 인정되면 반드시 설정 `required_metric`의 **5년 정규화 이익에 근거한 V 점수**를 별도 공급해야 한다. 입력 점수 유래 검증은 호출자의 책임이다. 승인되지 않은 이익→V 점수 변환·EPS/ADR basis를 창작하지 않는다. 가격 값·metric payload·개인 선정 목록은 RAM 범위이며 공개 출력 연결 없음.
 
-## SIC 업종군 제안 — 채택 전
+## SIC 업종군 제안 — 2026-10-11 v0 채택
+
+아래 표는 [`sic_industry_groups_v0.json`](../../src/investment_system/qgv/sic_industry_groups_v0.json)(V0_UNCALIBRATED_DEFAULT)으로 채택됐다. 경기민감/방어 소속도는 여전히 NOT_AVAILABLE이다. 상세: [SIC_THEME_V0](SIC_THEME_V0.md). 이하 원래 초안 문구는 이력으로 남긴다.
 
 SEC SIC 목록은 업종 설명이며 경기민감/방어를 제공하지 않는다. 아래 매핑은 **검토 초안**, 아직 계산에 쓰지 않는다. GICS 라이선스 자료를 사용하지 않는다. SIC가 없거나 0000/불일치면 NOT_AVAILABLE. 사업 혼합·은행/보험은 별도 검토 필요다.
 
