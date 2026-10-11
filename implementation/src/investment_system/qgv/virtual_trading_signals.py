@@ -13,8 +13,9 @@ Nothing here fetches, stores or publishes prices, FX rates, ledgers or V scores;
 - v_axis / v_scores_for / capture_plan: the device V score recorded per completed session. V = the PREVIEW V axis of
   the official v1 V weight copy (strategy_preview, missing factors not renormalized) over the device V factors
   (device_valuation.device_value_view) computed from that session's close. Rounded to 2 decimals.
-- rehearsal_start / rehearsal_config: rehearsal (not recorded) runs the engine from the first of the last N completed
-  SPY sessions (runner date rules), cash 0 + daily deposits, in RAM only.
+- rehearsal_start / rehearsal_config / apply_rehearsal_snapshots: rehearsal (not recorded) runs the engine from the
+  first of the last N completed SPY sessions (runner date rules), cash 0 + daily deposits, in RAM only; window sessions
+  without a RECORDED forward-ledger snapshot use today's public Q·G screen snapshot (rehearsal only, labelled).
 """
 from __future__ import annotations
 

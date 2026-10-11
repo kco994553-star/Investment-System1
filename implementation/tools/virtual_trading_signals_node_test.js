@@ -98,3 +98,30 @@ test('module itself stores, logs and sends nothing', () => {
   const src = fs.readFileSync(require.resolve('../src/investment_system/product/web_assets/virtual-trading-signals.js'), 'utf8');
   for (const word of ['setItem', 'localStorage', 'indexedDB', 'console.', 'sendBeacon', 'XMLHttpRequest', 'WebSocket', 'fetch(']) assert.ok(!src.includes(word), word);
 });
+
+test('S17 model: rehearsal is labelled on screen and in the export, recording mode offers 리허설 실행, basis per company', () => {
+  const DR = require('../src/investment_system/product/web_assets/daily-report.js');
+  const v = fixture.vectors.find((x) => x.name === 'rehearsal_window_qg_fill'), out = runVector(v), cfg = VT.defaultConfig();
+  const ledger = VT.runLedger(out.runCfg, out.entry.input), signals = S.reportSignals(out.assembled, 'SET_A', out.runCfg, {});
+  const rehearsal = { start_date: out.runCfg.start_date, window: 5, qg_filled: out.filled };
+  const m = DR.buildModel({ kind: 'MOCK', tab: 'SET_A', reportDate: '2026-12-01', ledger, config: cfg, mode: 'REHEARSAL', signals, rehearsal,
+    runner: { state: 'READY', reason_codes: [], sources: R.statusRows(out.assembled) } });
+  const screen = DR.screenHtml(m, { hidden: true }), text = DR.renderTemplate(m, { hidden: true, guide: false });
+  assert.ok(screen.includes('data-report-mode="REHEARSAL">리허설 · 기록 없음<'));
+  assert.ok(screen.includes('data-recording-mode') && !screen.includes('data-rehearsal-run'));
+  assert.ok(screen.includes('data-basis="msft" data-basis-benchmark="XLK" data-basis-state="ABNORMAL"'));
+  assert.ok(screen.includes('data-basis="nvda" data-basis-benchmark="SMH" data-basis-state="NOT_AVAILABLE"'));
+  assert.ok(screen.includes('S&amp;P 500 (XLY 없음 → 대체)'));
+  assert.ok(text.includes('리허설 · 기록 없음: 오늘 데이터로 규칙만 돌려 본 결과이며 어떤 장부·시트에도 기록하지 않음 · ' + out.runCfg.start_date + '부터 최근 5거래일'));
+  assert.ok(text.includes('기록된 Q·G가 없는 5거래일은 오늘 공개 화면 Q·G 사용'));
+  assert.ok(text.includes('## ⑩ 행동요령 · 가상 매매장부 (가상 · 실제 추천 아님)\n리허설 · 기록 없음 · 세트 A 가상 장부'));
+  assert.ok(text.includes('nvda SMH · 기준 N/A(HISTORY_INSUFFICIENT 272/273) · V 기울기 미사용'));
+  for (const s of [screen, text]) assert.equal((s.match(/\d[\d,]*\s*(?:원|만원|억)/g) || []).length, 0);
+  const rec = DR.buildModel({ kind: 'MOCK', tab: 'SET_A', reportDate: '2026-10-15', ledger: null, config: cfg, signals: S.reportSignals(null, 'SET_A', cfg, {}) });
+  const recScreen = DR.screenHtml(rec, { hidden: true }), recText = DR.renderTemplate(rec, { hidden: true, guide: false });
+  assert.ok(recScreen.includes('data-report-mode="RECORDING">기록 모드<') && recScreen.includes('data-rehearsal-run>리허설 실행<'));
+  assert.ok(recScreen.includes('V 기록 0/20일 · 아직 기록 없음'));
+  assert.ok(!recText.includes('리허설'), 'recording export unchanged');
+  assert.ok(DR.screenHtml(rec, { hidden: true, locale: 'en-US' }).includes('>Recording mode<'));
+  assert.ok(DR.screenHtml(m, { hidden: true, locale: 'en-US' }).includes('>Rehearsal · not recorded<'));
+});
