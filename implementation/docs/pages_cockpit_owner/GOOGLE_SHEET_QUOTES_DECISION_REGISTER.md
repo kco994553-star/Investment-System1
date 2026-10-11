@@ -407,3 +407,28 @@ GSQ-009의 KRX 대체 출처 후보와 나머지 경계는 유지한다. 과거 
 | 13F 추적 기관 v0 | Berkshire Hathaway[가치], Baupost Group[가치], Pershing Square[행동주의], Third Point[이벤트], Appaloosa[역발상], Duquesne Family Office[매크로], Coatue Management[성장·기술], Tiger Global[성장·기술], ARK Investment Management[혁신 성장], Renaissance Technologies[퀀트]. exact SEC CIK 확인(유사 이름 매칭 금지), 미확인은 NOT_AVAILABLE. 유형·설명은 버전 설정 `manager_styles_v0`(복수 유형 허용, "일반적 평가 기반 v0 분류" 표시). 화면: 유형 배지 상시, 탭(모바일)/호버(PC) 설명, 유형별 필터, 13F 한계 안내(최대 45일 지연·미국 상장 주식 매수 포지션만·퀀트/매크로는 참고용). |
 | 전진검증 | 시작일 2026-10-19(월). 대상 TARGET v0 포트폴리오, 전략 QGV 표준 v1. V(DCF)가 붙으면 별도 버전으로 기록하고 기존 기록은 바꾸지 않음. Holdout 계속 미사용. |
 | 보류 | EDINET. DART는 등록 알림 전 착수 금지 유지. |
+
+### GSQ-020 추가 — 병합 규칙 위반 기록과 사후 승인 대상 (2026-10-11 UTC)
+
+규칙(재확인): `.github/workflows`, Worker, 인증, 공개 데이터 범위, 26E를 바꾸는 PR은 필수 체크가 모두 성공해도 자체 병합하지 않고 사용자 승인을 기다린다. 아래 7개 PR은 이 규칙을 어기고 자체 병합되었다. 사용자는 내용 문제가 없어 되돌리지 않기로 했으며, 이 기록과 함께 사후 승인한다.
+
+| PR | 워크플로 변경 | 공개 데이터 변경 | 사용하는 비밀값 |
+| --- | --- | --- | --- |
+| #169 원자료 비공개 보관 | `raw-store-private-release.yml` 신설. 수동 실행(workflow_dispatch) 전용이며 입력은 `upload`. Actions artifact 10927496280을 비공개 저장소 `investment-system1-raw`의 Release `raw-c21-store-36305927245`로 복사하고 이중 검증한다. | 없음. 저장 위치는 실행 요약에만 남긴다. | `RAW_REPO_TOKEN` |
+| #173 13F 운용사 v0 | `sec-daily-public-inputs.yml`: 13F 운용사 CIK 확인 단계(`tools/sec_13f_managers.py`)를 추가하고, 오프라인 회귀 테스트에 `test_sec_13f_managers.py`를 넣었다. | `sec-13f-changes.json`에 선택 항목 `data.managers`를 추가했다(id·cik·state·reason_code·matched_name·verified_at·latest_13f_accession·capture_reason·comparison_reasons). CIK가 확인된 운용사의 보고 수량 변화를 싣는다. 새 자산 `manager-styles-v0.js`. | `SEC_USER_AGENT`(기존) |
+| #174 M3 Universe504 주식수 | `sec-daily-public-inputs.yml`: 504종목 주식수 샤드 수집 단계(`tools/sec_universe_shares.py --live`)를 추가했다. `cockpit-pages.yml`: UI 배포 때 보존하는 줄(`--preserve-only`)을 추가했다. | 새 파일 `sec-universe-shares.json`(504개 코드별 cik·listing_id·shares·측정일·accn·share_class_basis·근거·출처 해시·상태, 가격·시총·순위 없음). `public_price_boundary.py`의 SEC 조회 허용 URL에 ticker-exchange JSON과 공시 XBRL instance를 추가했다. 원자료는 비공개 Release `sec-universe-raw-YYYY-MM-DD-shardN`에 둔다. | `SEC_USER_AGENT`, `RAW_REPO_TOKEN`(없으면 업로드 생략) |
+| #176 DCF v1 기본값 | 없음. | 새 파일 `sec-valuation-inputs.json`(FCFE 구성요소·개념·accn·회계기간, V 입력용 보고값 희석 EPS·매출·전기 매출, 가격 없음). | 없음 |
+| #177 매크로 v0 | `sec-daily-public-inputs.yml`: 기존 수집 단계에 `--macro-v0`와 환경변수 `BEA_USERID`를 넣고, 회귀 테스트에 `test_macro_growth_inflation_v0.py`를 추가했다. | `macro-screen.json`에 `data.growth_inflation_v0` 블록을 추가했다(Growth BEA T10101 line1, Inflation BLS CUUR0000SA0 YoY, 출처 해시·상태). 조회 대상은 BLS API v1과 BEA 공개 flat file이며, flat file이 실패하면 BEA API로 대체한다. | `SEC_USER_AGENT`, `BEA_USERID`(선택) |
+| #178 SIC·테마 v0 | `sec-daily-public-inputs.yml`: 분류 수집 단계(`tools/public_classification_pipeline.py --live`)를 추가하고 회귀 테스트에 `test_sic_theme_v0.py`를 넣었다. | 새 파일 `company-classification.json`(SIC 업종군 v0, 테마 v0 소속·근거 종류·ETF 티커, ETF 비중·가격 없음). 조회 대상: `company_tickers_mf.json`, EDGAR 시리즈 피드, N-PORT, 10-K. | `SEC_USER_AGENT` |
+| #183 전진검증 원장 v1 | `sec-daily-public-inputs.yml`: 원장 추가 단계(`tools/forward_validation_ledger.py`)를 추가하고 회귀 테스트에 `test_forward_validation_ledger.py`를 넣었다. `cockpit-pages.yml`: 원장 보존 줄을 추가했다. | 새 파일 `forward-validation-ledger.json`(추가 전용, 가격 없음). 비공개 사본은 Release `forward-ledger-YYYY-MM-DD`에 둔다. Pages 가드 항목 상한을 64에서 96으로 올렸다. | `RAW_REPO_TOKEN`(없으면 업로드 생략) |
+
+### GSQ-020 추가 — 2차 결정 (2026-10-11 UTC, 검토 반영)
+
+| 항목 | 사용자 결정 |
+| --- | --- |
+| DCF 미보고 줄 | 원래 없을 수 있는 항목(차입 발행·상환·단기차입 순증감, 우선주, 소수지분 등)이 공시에 없으면 0으로 보고 `NOT_REPORTED_ASSUMED_ZERO`로 표시한다. 매출·영업현금흐름·설비투자·희석주식수가 없으면 NOT_AVAILABLE이다. |
+| DCF IFRS | ifrs-full 공시 기업(20-F)을 지원한다. 통화가 다르면 기존 규칙대로 `CURRENCY_BASIS_UNCONFIRMED`로 두고 환율을 만들지 않는다. |
+| DCF 명시기간 성장률 h | 각 기업의 3년 매출 CAGR을 0~15%로 제한해 쓴다(PROVISIONAL). CAGR이 없으면 순방향 DCF는 NOT_AVAILABLE이다. |
+| 매크로 나머지 6축 | 원자료 표시만 승인한다. 국면 판정은 보류한다. FX 값의 공개 게시는 공개 가격 금지 원칙과 충돌하므로 별도 결정 전까지 제외한다. |
+| 여러 주식 종류(SHARE_CLASS_BASIS) | 경제적으로 동일한 종류(GOOGL/GOOG 등)는 합산해 순위에 포함한다. 비율이 다르거나 불명확한 종류는 제외한다. |
+| 병합 규칙 | 위 결정을 구현하는 PR 가운데 공개 데이터·워크플로·Worker를 바꾸는 PR은 사용자 승인 후 병합한다. |
