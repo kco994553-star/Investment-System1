@@ -31,9 +31,11 @@ from investment_system.product.public_engine_screens import FILENAMES as SCREEN_
 from investment_system.universe.sec_universe_shares import FILENAME as UNIVERSE_SHARES_FILENAME, require_universe_shares
 from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDGER_FILENAME, require_ledger as require_forward_ledger
 from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
+from investment_system.product.sec_disclosures import FILENAME as DISCLOSURES_FILENAME, require_sec_disclosures
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "sec-disclosures.js": "712c128fb17a5ffd03e64163fd04bcbafebf60fa59fa3ce0b83e139dbe193def",
     "virtual-trading-runner.js": "323ebbda32722dd24d7bbf1cd4c5db6316c730ca083d88b44d2553fc34dc8372",
     "virtual-ledger-sheets.js": "9fc09749fa1a6df9c74e7ceb23cc0df9f466af0d3661653db33132bd58efcd83",
     "table-sort.js": "bd6e195298cb53b32adc8cdeaec57312e4c1807760e100b0af351f50bc4dfbf4",
@@ -54,7 +56,7 @@ APPROVED_SHA256 = {
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
     "portfolio-screen.js": "4cb77c85b554e0461d8782930c90ace99dd1d8100cf1383c428e0f6b0198a485",
-    "company-screen.js": "d2717aabfda75d8a645945381dd18639bbc9c8defd4810bda3f24e35c448214d",
+    "company-screen.js": "a57907d2a311f7e8179276e449c59c36842f36be20ae669a71508a96fd4a7d95",
     "ops-status.js": "57d2ce827c9b8af4d95e0155d6a01788b95417582bf176544d55c0ba2fd1ed9d",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "be54421201547f73c0cf63427b04fc4faf3d7f077035e7825ed7a2a8ed4c45fa",
@@ -64,7 +66,7 @@ APPROVED_SHA256 = {
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
     "device-profiles.js": "a3c1237cc0e53e4d6ad6c330aa7fa1182d962a6925f0401185815d82a48163da",
-    "public-screens.js": "fe8f3835923a3b787f06a06d636891a8e61fcdcdc5920b609eb9fd9cedc55800",
+    "public-screens.js": "a6f2e034d995784aa2e6c4beae2594abdd13db422ddfdbee3f7ac6ed7dca533d",
     "pwa.js": "f8d5df267d323fd465821416f1825f38d4065030ec5368b7a37bfc4ed875affd",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
     "icon-512.png": "7a19587556ba133a21622288ec66a48095b933461f10475e96cf7b3a43afee88",
@@ -80,7 +82,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "ad19db75aae16f79c0d0753dc8445ae0c6fdf6100b89f8e2e876b0533034aa42",
+    "app.js": "0a3da28e8b7af30ecb76ea5f96e7a45fe7cfe7df1719be1935e60eecd5d3a85a",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "4b6bbdf71f74875199221cf534dc403be7961fd722abe2b1b12a499e2740f7f3",
@@ -90,14 +92,14 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "a037bee0ccb8fd8cad0407f7ccfa3a33f410f32fb20b5ca7fe37bf0e10eb9b4f",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "46ab9449f490c26568f3bfe0885c25c62bb62ed2032b2a58e4a8959a6cbbac5f",
+    "index.html": "50c5c9abb0bdef58a7cad8c99cce502ee8cd67f7d4f8ba8f739f28752eef4bdf",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "bd7dd854f11a180bce7ad156cc349b9efb6fd6712998c9c0594270f3723ec139",
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, DISCLOSURES_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -220,6 +222,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == FORWARD_LEDGER_FILENAME:
             try: require_forward_ledger(value)
             except ValueError: violations['forward_ledger_boundary'] += 1
+        elif name == DISCLOSURES_FILENAME:
+            try: require_sec_disclosures(value)
+            except ValueError: violations['sec_disclosures_boundary'] += 1
         elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
             violations["unapproved_content"] += 1
     except (ValueError, UnicodeError, RecursionError, OverflowError):
