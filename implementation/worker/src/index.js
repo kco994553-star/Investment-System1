@@ -8,6 +8,9 @@ const BENCHMARK_SYMBOLS = ['SPY', 'SMH', 'XLK', 'XLV', 'XLE', 'XLB', 'XLP', 'XLY
 const MARKETS = new Map([...US_SYMBOLS, ...BENCHMARK_SYMBOLS].map((symbol) => [symbol, { currency: 'USD', timezone: 'America/New_York' }]));
 MARKETS.set('042700.KS', { currency: 'KRW', timezone: 'Asia/Seoul' });
 MARKETS.set('8035.T', { currency: 'JPY', timezone: 'Asia/Tokyo' });
+// FX for the KRW virtual ledger (USD/KRW, JPY/KRW). Device RAM only; Yahoo quotes currencies on the London-time CCY venue.
+const FX_SYMBOLS = ['KRW=X', 'JPYKRW=X'];
+for (const symbol of FX_SYMBOLS) MARKETS.set(symbol, { currency: 'KRW', timezone: 'Europe/London' });
 const RANGES = new Set(['1mo', '3mo', '6mo', '1y', '2y', '5y']);
 const MAX_BODY_BYTES = 512 * 1024;
 const MAX_BARS = 1500;
@@ -48,8 +51,8 @@ function positiveInteger(value) {
 }
 
 function validateQuery(url) {
-  // Reject alternate encodings, empty fields, duplicates, and every extra parameter.
-  if (url.hash || !/^\?(?:symbol=[A-Z0-9.]+&range=[a-z0-9]+|range=[a-z0-9]+&symbol=[A-Z0-9.]+)$/.test(url.search)) {
+  // Reject alternate encodings, empty fields, duplicates, and every extra parameter. '=' (FX symbols) only as %3D.
+  if (url.hash || !/^\?(?:symbol=(?:[A-Z0-9.]|%3D)+&range=[a-z0-9]+|range=[a-z0-9]+&symbol=(?:[A-Z0-9.]|%3D)+)$/.test(url.search)) {
     throw new Failure('REQUEST_INVALID', 400);
   }
   const symbol = url.searchParams.get('symbol');
