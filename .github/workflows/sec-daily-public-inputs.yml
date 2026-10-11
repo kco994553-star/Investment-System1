@@ -42,7 +42,7 @@ jobs:
         working-directory: implementation
         run: |
           python -m pip install pytest==9.1.1 jsonschema==4.26.0
-          python -m pytest -q --tb=no tests/test_app_nav_ia.py tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py tests/test_sec_m2_candidates.py tests/test_worker_deployment_diagnostics.py tests/test_public_sec_inputs.py tests/test_sec_reported_consumer.py tests/test_public_engine_screens.py tests/test_public_screens_pipeline.py tests/test_device_profile_defaults.py
+          python -m pytest -q --tb=no tests/test_app_nav_ia.py tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py tests/test_sec_m2_candidates.py tests/test_worker_deployment_diagnostics.py tests/test_public_sec_inputs.py tests/test_sec_reported_consumer.py tests/test_public_engine_screens.py tests/test_public_screens_pipeline.py tests/test_device_profile_defaults.py tests/test_sec_13f_managers.py tests/test_sic_theme_v0.py
       - name: Build and inspect local price-free cockpit
         run: |
           python implementation/tools/build_pages_cockpit.py --out "$RUNNER_TEMP/public-cockpit"
@@ -52,6 +52,18 @@ jobs:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
         run: |
           python implementation/tools/public_screens_pipeline.py --live --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - name: Collect SEC SIC, 10-K Item 1 and basket-ETF N-PORT evidence for industry/theme v0
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          python implementation/tools/public_classification_pipeline.py --live --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - name: Verify 13F manager CIKs and project reported quantity changes
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          python implementation/tools/sec_13f_managers.py --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
