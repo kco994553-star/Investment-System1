@@ -432,15 +432,15 @@ function paintPortfolio() {
     const locale=appSettings.display_locale,idByTicker=new Map(identityCompanies.map(r=>[r.ticker,r.company_id]));
     deviceCatalog().then(async catalog=>{
       const ram=await DeviceActual.ramView(window,catalog);
-      if(host.isConnected) PortfolioScreen.paint(host,{locale,catalog,ram,screens:publicScreens,idByTicker});
-    }).catch(()=>{if(host.isConnected) PortfolioScreen.paint(host,{locale,catalog:null,ram:{state:"NOT_AVAILABLE",reason:"READ_FAILED",stale:false,quote_as_of:null,rows:[],themes:[]},screens:publicScreens,idByTicker});});
+      if(host.isConnected) PortfolioScreen.paint(host,{locale,catalog,ram,screens:publicScreens,idByTicker,virtual:virtualShadow});
+    }).catch(()=>{if(host.isConnected) PortfolioScreen.paint(host,{locale,catalog:null,ram:{state:"NOT_AVAILABLE",reason:"READ_FAILED",stale:false,quote_as_of:null,rows:[],themes:[]},screens:publicScreens,idByTicker,virtual:virtualShadow});});
   };
   document.addEventListener("device-actual-changed",run);
   run();
 }
 function portfolio() {
   const p=D.portfolio.data;
-  return heading("PORTFOLIO",t("내 포트폴리오"))+`<div id="portfolio-screen">${PortfolioScreen.shell(appSettings.display_locale)}</div>`+`<section class="card"><h2>ACTUAL · ${appSettings.display_locale==='en-US'?'This device':'이 기기'}</h2><a href="#actual" class="button">${appSettings.display_locale==='en-US'?'Enter / manage ACTUAL holdings':'ACTUAL 입력·관리'}</a><div id="device-actual-summary" aria-live="polite"></div></section>`+block("portfolio",t("보유 현황"),`<p>${esc(p?.role || "")}</p><dl><dt>${t("수익률")}</dt><dd>${pct(p?.return)}</dd><dt>${t("평가금액")}</dt><dd>${fmt(p?.market_value)} ${esc(p?.currency || "")}</dd><dt>${t("Exposure(노출)")}</dt><dd>${esc(p?.exposure?JSON.stringify(p.exposure):t("미제공"))}</dd></dl><ul class="list">${(p?.holdings || []).map(h=>`<li class="item"><a href="#company/${encodeURIComponent(h.company_id)}"><b>${esc(h.ticker)}</b><div class="muted">${t("실제 비중")} ${Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"} · ${t("수익률")} ${pct(h.return)}</div>${Number.isFinite(h.target_weight)?`<div class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</div>`:""}</a>${star(h.company_id)}</li>`).join("")}</ul>`)+
+  return heading("PORTFOLIO",t("내 포트폴리오"))+`<div id="portfolio-screen">${PortfolioScreen.shell(appSettings.display_locale,virtualShadow)}</div>`+`<section class="card"><h2>ACTUAL · ${appSettings.display_locale==='en-US'?'This device':'이 기기'}</h2><a href="#actual" class="button">${appSettings.display_locale==='en-US'?'Enter / manage ACTUAL holdings':'ACTUAL 입력·관리'}</a><div id="device-actual-summary" aria-live="polite"></div></section>`+block("portfolio",t("보유 현황"),`<p>${esc(p?.role || "")}</p><dl><dt>${t("수익률")}</dt><dd>${pct(p?.return)}</dd><dt>${t("평가금액")}</dt><dd>${fmt(p?.market_value)} ${esc(p?.currency || "")}</dd><dt>${t("Exposure(노출)")}</dt><dd>${esc(p?.exposure?JSON.stringify(p.exposure):t("미제공"))}</dd></dl><ul class="list">${(p?.holdings || []).map(h=>`<li class="item"><a href="#company/${encodeURIComponent(h.company_id)}"><b>${esc(h.ticker)}</b><div class="muted">${t("실제 비중")} ${Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"} · ${t("수익률")} ${pct(h.return)}</div>${Number.isFinite(h.target_weight)?`<div class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</div>`:""}</a>${star(h.company_id)}</li>`).join("")}</ul>`)+
   `<div class="grid">${block("qgv",t("QGV context(QGV 맥락)"),'<a href="#companies">'+t("기업별 분석 →")+"</a>")}${block("technical",t("Technical context(기술적 분석 맥락)"),'<a href="#companies">'+t("기업별 신호 →")+"</a>")}${block("macro",t("Macro context(거시 맥락)"),`<p>${esc(D.macro.data?.regime || "")}</p>`)}</div><a href="#news">${t("중요 뉴스·관계 변화 →")}</a>`;
 }
 function leaderboard() {
@@ -570,6 +570,8 @@ function reportTab(id){return id==='real'?'REAL':({'mock-set_b':'SET_B','mock-co
 // The virtual ledger runner (VirtualTradingRunner) reads prices through the existing Google session and private
 // history Worker into memory only; this holds just its abort handle and session subscription for the open report.
 let reportRun=null;
+// The last recording-mode shadow-ledger judgements of this page (투자 일일보고서), RAM only: S03 shows exactly these chips.
+let virtualShadow=null;
 function disposeReport(){const r=reportRun;reportRun=null;if(r){r.controller.abort();if(r.unsubscribe)r.unsubscribe();if(r.ledgerSheets)r.ledgerSheets.dispose();}}
 async function paintReport(id){
   const host=$('#daily-report');if(!host)return;
@@ -617,7 +619,9 @@ async function paintReport(id){
     const nextCanonical=R.renderTemplate(next,{hidden:true,guide:false});let nextKey=null;try{nextKey=await R.hash(nextCanonical);}catch(_){nextKey=null;}
     if(!live()||run.mode!==mode)return;
     // The mailbox always writes amounts hidden with the guide; its Inbox/Outbox sha256 is the hash of exactly this text.
-    model=next;canonical=nextCanonical;key=nextKey;inboxText=R.renderTemplate(next,{hidden:true,guide:true});paint();
+    model=next;canonical=nextCanonical;key=nextKey;inboxText=R.renderTemplate(next,{hidden:true,guide:true});
+    if(kind==='REAL'&&mode==='RECORDING'&&result.state!=='LOADING')virtualShadow=last?{date:last.date,judgements:last.judgements,names:{...names}}:null;
+    paint();
   };
   const before=reportDate<cfg.start_date;
   // One runner pass in the given mode. Both modes record the device V history (V only, independent of any ledger);

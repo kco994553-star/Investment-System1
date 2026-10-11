@@ -47,6 +47,8 @@
     apiKeyIssuance: ['Alpha Vantage 공식 무료 API 키 발급 (새 탭)', 'Alpha Vantage official free API key issuance (new tab)'],
     apiGuidance: ['본인의 무료 키는 이 기기에만 저장되고 백업에서 제외됩니다. 검증 전까지 API는 꺼져 있습니다. 키 없이도 가격·환율을 수동 입력할 수 있습니다.', 'Your own free key stays on this device and is excluded from backups. API remains OFF pending validation. You can manually enter prices and FX without a key.'],
     apiPending: ['서비스 선택 대기 · API 사용 안 함. 시세 갱신과 자동 호출은 비활성 상태입니다.', 'Service selection pending · API disabled. Quote refresh and automatic calls are disabled.'], apiService: ['API 서비스', 'API service'], apiKey: ['API 키', 'API key'], apiSave: ['API 키를 이 기기에 저장', 'Save API key on this device'], apiDelete: ['기기 API 키 삭제', 'Delete device API key'], apiRefresh: ['시세 새로고침', 'Refresh quotes'],
+    holdingsSource: ['보유 출처', 'Holdings source'], sourceTab: ['Holdings 탭 (캡처 + 개인 AI) · RAM 전용', 'Holdings tab (capture + personal AI) · RAM only'], sourceDevice: ['이 기기 ACTUAL (직접 입력·JSON)', 'Device ACTUAL (manual entry / JSON)'],
+    basis: ['평균단가 근거', 'Average cost basis'], basisCost: ['cost_krw ÷ quantity (원화 매입금액 기준)', 'cost_krw ÷ quantity (KRW cost basis)'], basisAvg: ['avg_cost (증권사 표시 단가, cost_krw 없음)', 'avg_cost (broker unit cost; cost_krw empty)'],
     apiYes: ['저장된 API 키: 있음', 'Stored API key: Yes'], apiNo: ['저장된 API 키: 없음', 'Stored API key: No'], apiSaved: ['API 키를 이 기기에 저장했습니다. API 호출은 비활성 상태입니다.', 'API key saved on this device. API calls remain disabled.'], apiRemoved: ['기기 API 키를 삭제했습니다.', 'Device API key deleted.'], apiInvalid: ['API 키 형식이 유효하지 않습니다. 저장된 키는 변경하지 않았습니다.', 'The API key format is invalid. The stored key was not changed.'], apiStorage: ['API 키 저장소를 사용할 수 없습니다. 저장된 키는 변경하지 않았습니다.', 'API key storage is unavailable. The stored key was not changed.']
   };
   function fail(code) { throw new Error(code); }
@@ -284,6 +286,7 @@
   function percentage(state, value) { return value === null ? 'NOT_AVAILABLE' : new Intl.NumberFormat(state.locale, { style: 'percent', maximumFractionDigits: 2 }).format(value); }
   function points(state, value) { return value === null ? 'NOT_AVAILABLE' : new Intl.NumberFormat(state.locale, { maximumFractionDigits: 2, signDisplay: 'always' }).format(value * 100) + ' %p'; }
   function source(state, value) {
+    if (value === 'WORKER_CLOSE') return state.locale === 'en-US' ? 'Worker close · Daily bar · For information only' : 'Worker 종가 · 일봉 · 정보용';
     if (value === 'GOOGLEFINANCE') return state.locale === 'en-US'
       ? 'GOOGLEFINANCE · Up to 20 minutes delayed · For information only'
       : 'GOOGLEFINANCE · 최대 20분 지연 · 정보용';
@@ -292,6 +295,7 @@
   function timeStatus(state, value) {
     if (value === 'UNKNOWN') return state.locale === 'en-US' ? ' · Time unknown · Import time' : ' · 시각 미확인 · 불러온 시각';
     if (value === 'FX_UNKNOWN') return state.locale === 'en-US' ? ' · FX time unknown · Import time' : ' · 환율 시각 미확인 · 불러온 시각';
+    if (value === 'SESSION_CLOSE') return state.locale === 'en-US' ? ' · Session date (close)' : ' · 세션일 종가';
     return '';
   }
   function provenance(state, record) {
@@ -303,13 +307,41 @@
     // External quote arrays remain available to legacy callers; production
     // mounts use the independent device market record instead.
     if (state.externalQuotes) return valuation(state.snapshot, state.catalog, state.quotes);
-    return marketApi(state).valuation(state.snapshot, state.catalog, state.market);
+    state.effective = effectiveSnapshot(state.view, state.catalog, state.snapshot);
+    return marketApi(state).valuation(state.effective.snapshot, state.catalog, ramMarket(state.view, state.catalog, state.market), { ramOverlay: true });
+  }
+  // RAM-only market view: the stored market plus Worker closes where the sheet quote is missing (WorkerQuoteFallback).
+  function ramMarket(view, catalog, market) {
+    try { return view && view.WorkerQuoteFallback ? view.WorkerQuoteFallback.overlay(view, catalog, market) : market; } catch (_) { return market; }
+  }
+  function seoulDay(iso) { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(iso)); }
+  // Holdings tab (RAM, HoldingsCapture) vs device ACTUAL (IndexedDB): the newer as_of wins (Asia/Seoul dates:
+  // Holdings as_of vs ACTUAL effective_at); on the same date the later one (read_at vs available_at) wins.
+  function effectiveSnapshot(view, catalog, stored) {
+    const result = { snapshot: stored || null, source: stored ? 'DEVICE_ACTUAL' : null, capture: null, capture_state: null, entry: null };
+    const capture = view && view.HoldingsCapture, entry = capture ? capture.get(view) : null;
+    if (!entry) return result;
+    result.entry = entry;
+    if (entry.parsed.state !== 'OK') { result.capture_state = entry.parsed.state; return result; }
+    try {
+      const split = capture.toActual(entry.parsed, catalog); result.capture = split;
+      if (split.as_of === null) { result.capture_state = 'NO_ROWS'; return result; }
+      const built = makeSnapshot(catalog, split.rows, null, entry.read_at);
+      built.effective_at = new Date(Date.parse(split.as_of + 'T00:00:00+09:00')).toISOString(); built.available_at = entry.read_at;
+      let snapshot;
+      try { snapshot = validate(built, catalog); } catch (_) { result.capture_state = 'AS_OF_FUTURE'; return result; }
+      result.capture_state = 'OK';
+      const day = stored ? seoulDay(stored.effective_at) : '';
+      if (!stored || split.as_of > day || (split.as_of === day && Date.parse(entry.read_at) > Date.parse(stored.available_at))) { result.snapshot = snapshot; result.source = 'HOLDINGS_TAB'; }
+    } catch (_) { result.capture_state = 'INVALID'; }
+    return result;
   }
   function summaryContent(state) {
     const box = el(state, 'section', undefined, { 'data-actual-summary': '', class: 'actual-summary' });
     box.append(el(state, 'h3', t(state, 'summary')));
-    box.append(el(state, 'p', state.snapshot ? t(state, 'existing') : t(state, 'unavailable'), { 'data-actual-status': '', role: 'status' }));
-    const values = valuesFor(state);
+    const values = valuesFor(state), effective = state.externalQuotes ? { snapshot: state.snapshot, source: state.snapshot ? 'DEVICE_ACTUAL' : null, capture: null } : state.effective;
+    box.append(el(state, 'p', effective.snapshot ? t(state, 'existing') : t(state, 'unavailable'), { 'data-actual-status': '', role: 'status' }));
+    if (effective.source) box.append(el(state, 'p', t(state, 'holdingsSource') + ': ' + t(state, effective.source === 'HOLDINGS_TAB' ? 'sourceTab' : 'sourceDevice') + ' · ' + (effective.source === 'HOLDINGS_TAB' ? 'as_of ' + effective.capture.as_of : 'effective_at ' + effective.snapshot.effective_at), { 'data-holdings-source': effective.source }));
     box.append(el(state, 'p', t(state, values.reason === 'FX_NOT_AVAILABLE' ? 'fx' : values.reason === 'QUOTED' ? 'available' : values.reason === 'NO_POSITIONS' ? 'zero' : values.reason === 'CALCULATION_ERROR' ? 'calculation' : 'missing')));
     if (values.stale) box.append(el(state, 'p', t(state, 'stale'), { class: 'actual-stale', 'data-market-stale': '' }));
     box.append(el(state, 'p', t(state, 'total') + ': ' + (values.total === null ? 'NOT_AVAILABLE' : number(state, values.total) + ' ' + values.currency), { class: 'actual-total', 'data-market-total': '' }));
@@ -322,14 +354,33 @@
         const fields = [[t(state, 'quantity'), row.quantity], [t(state, 'average'), row.average_cost + ' ' + row.currency], [t(state, 'market') + ' · ' + marketCurrency, row.market_value === null ? 'NOT_AVAILABLE' : number(state, row.market_value) + ' ' + marketCurrency], [t(state, 'target'), percentage(state, row.target_units / state.catalog.total_units)], [t(state, 'weight'), percentage(state, row.weight)], [t(state, 'delta') + ' (%p)', points(state, row.delta)]];
         if (!state.externalQuotes) {
           fields.push([t(state, 'native'), row.market_value_native === null ? 'NOT_AVAILABLE' : number(state, row.market_value_native) + ' ' + row.market_currency_native]);
-          fields.push([t(state, 'provenance'), source(state, row.quote_source) + ' · ' + (row.quote_as_of || 'NOT_AVAILABLE') + timeStatus(state, row.quote_time_status) + ' · ' + row.quote_status]);
+          const fallback = !row.quote_source && state.view.WorkerQuoteFallback ? state.view.WorkerQuoteFallback.status(state.view, instrument.ticker) : null;
+          fields.push([t(state, 'provenance'), source(state, row.quote_source) + ' · ' + (row.quote_as_of || 'NOT_AVAILABLE') + timeStatus(state, row.quote_time_status) + ' · ' + row.quote_status + (fallback && fallback.state === 'NOT_AVAILABLE' ? ' · ' + source(state, 'WORKER_CLOSE') + ' NOT_AVAILABLE · ' + fallback.reason : '')]);
+          const captured = effective.source === 'HOLDINGS_TAB' ? effective.capture.in_scope.find(item => item.ticker === instrument.ticker) : null;
+          if (captured) fields.push([t(state, 'basis'), t(state, captured.cost_basis === 'COST_KRW_DIV_QTY' ? 'basisCost' : 'basisAvg')]);
           if (instrument.currency !== 'KRW') fields.push([t(state, 'fxProvenance'), source(state, row.fx_source) + ' · ' + (row.fx_as_of || 'NOT_AVAILABLE') + timeStatus(state, row.fx_time_status) + ' · ' + row.fx_status]);
         }
         const details = el(state, 'dl'); for (const [label, value] of fields) details.append(el(state, 'dt', label), el(state, 'dd', value)); card.append(details); list.append(card);
       }
       box.append(list);
     }
+    if (!state.externalQuotes && effective.entry && state.view.HoldingsCaptureView) {
+      try { box.append(state.view.HoldingsCaptureView.extras(state.host.ownerDocument, { locale: state.locale, effective, market: state.market })); } catch (_) { /* Extras are optional RAM display. */ }
+    }
     return box;
+  }
+  // Catalog tickers worth a Worker close: held without a stored quote, plus the latest sheet import's failures.
+  async function fallbackTickers(state) {
+    const index = catalogIndex(state.catalog), quoted = new Set(state.market ? state.market.quotes.map(quote => canonical(quote.security_reference)) : []), tickers = new Set();
+    const effective = effectiveSnapshot(state.view, state.catalog, state.snapshot);
+    for (const row of effective.snapshot ? effective.snapshot.themes.flatMap(theme => theme.holdings) : []) {
+      const id = canonical(row.security_reference); if (Number(row.quantity) > 0 && !quoted.has(id)) tickers.add(index.instruments.get(id).ticker);
+    }
+    try {
+      const history = await readMarketImportHistory(state.view, state.catalog), last = history[history.length - 1];
+      for (const name of last ? last.failure_names : []) { const instrument = state.catalog.instruments.find(item => item.label === name); if (instrument) tickers.add(instrument.ticker); }
+    } catch (_) { /* History is optional. */ }
+    return [...tickers].filter(Boolean);
   }
   function repaintSummary(state) {
     const old = state.root.querySelector('[data-actual-summary]'); if (old) old.replaceWith(summaryContent(state));
@@ -453,7 +504,8 @@
   async function mount(host, options) {
     const state = await initialState(host, options);
     const root = el(state, 'section', undefined, { class: 'device-actual' }); state.root = root;
-    root.append(el(state, 'h2', t(state, 'title')), el(state, 'p', t(state, 'device'), { class: 'actual-device-badge' }), el(state, 'p', t(state, 'privacy')), el(state, 'p', t(state, 'entry')), el(state, 'p', t(state, 'quote')));
+    root.append(el(state, 'h2', t(state, 'title')), el(state, 'p', t(state, 'device'), { class: 'actual-device-badge' }), el(state, 'p', t(state, 'privacy')));
+    const guideHost = el(state, 'div', undefined, { 'data-broker-guide-host': '' }); root.append(guideHost, el(state, 'p', t(state, 'entry')), el(state, 'p', t(state, 'quote')));
     const form = el(state, 'form', undefined, { class: 'actual-form' });
     state.catalog.instruments.forEach((instrument, i) => {
       const row = el(state, 'fieldset', undefined, { class: 'actual-input-row', 'data-security-index': i });
@@ -483,8 +535,15 @@
     state.importInput = el(state, 'input', undefined, { type: 'file', accept: '.json,application/json', 'data-action': 'import', 'aria-label': t(state, 'import') }); state.importInput.addEventListener('change', () => { void importFile(state, state.importInput.files[0]); }); importLabel.append(state.importInput);
     const deleteButton = el(state, 'button', t(state, 'delete'), { type: 'button', 'data-action': 'delete' }); deleteButton.addEventListener('click', () => { void remove(state); });
     actions.append(state.exportButton, importLabel, deleteButton); root.append(actions, el(state, 'p', t(state, 'backup'), { class: 'actual-backup-note' }));
-    state.notice = el(state, 'p', '', { 'data-actual-notice': '', role: 'status', 'aria-live': 'polite' }); root.append(state.notice, summaryContent(state));
+    const fallbackHost = el(state, 'div', undefined, { 'data-worker-fallback-host': '' });
+    state.notice = el(state, 'p', '', { 'data-actual-notice': '', role: 'status', 'aria-live': 'polite' }); root.append(state.notice, summaryContent(state), fallbackHost);
     host.replaceChildren(root); populate(state); setBusy(state, false); if (state.initialError) notice(state, state.initialError);
+    const config = state.view.InvestmentAppConfig || {};
+    try { if (state.view.HoldingsCaptureView) state.view.HoldingsCaptureView.mountGuide(guideHost, { catalog: state.catalog, locale: state.locale, config }); } catch (_) { /* Guide is optional. */ }
+    try { if (state.view.WorkerQuoteFallback) state.view.WorkerQuoteFallback.mountControl(fallbackHost, { catalog: state.catalog, locale: state.locale, config, tickers: () => fallbackTickers(state) }); } catch (_) { /* Optional. */ }
+    // RAM-only inputs (Holdings tab, Worker closes) change without a storage write: repaint the summary only.
+    const repaint = () => { if (!host.isConnected || hosts.get(host) !== state) { host.ownerDocument.removeEventListener('device-actual-changed', repaint); return; } if (!state.busy) repaintSummary(state); };
+    host.ownerDocument.addEventListener('device-actual-changed', repaint);
     return { state: state.snapshot ? 'ACTUAL' : 'NOT_AVAILABLE' };
   }
   async function summary(host, options) {
@@ -640,9 +699,10 @@
     try {
       const index = catalogIndex(catalog), api = view.DeviceMarket, raw = await readStored(view, [KEY, MARKET_KEY]);
       if (!api) return none('READ_FAILED');
-      if (raw[KEY] === MISSING_RECORD) return none('NO_ACTUAL');
-      const snapshot = validate(raw[KEY], catalog), market = raw[MARKET_KEY] === MISSING_RECORD ? null : api.validateMarket(raw[MARKET_KEY], catalog);
-      const result = api.valuation(snapshot, catalog, market);
+      const stored = raw[KEY] === MISSING_RECORD ? null : validate(raw[KEY], catalog), snapshot = effectiveSnapshot(view, catalog, stored).snapshot;
+      if (!snapshot) return none('NO_ACTUAL');
+      const market = raw[MARKET_KEY] === MISSING_RECORD ? null : api.validateMarket(raw[MARKET_KEY], catalog);
+      const result = api.valuation(snapshot, catalog, ramMarket(view, catalog, market), { ramOverlay: true });
       const stamps = result.rows.map(row => row.quote_as_of).filter(value => typeof value === 'string').sort();
       return { state: result.state, reason: result.reason, stale: result.stale === true, quote_as_of: stamps.length ? stamps[0] : null,
         rows: result.rows.map(row => ({ ticker: index.instruments.get(canonical(row.security_reference)).ticker, theme_id: row.theme_id, weight: row.weight, delta: row.delta })),
@@ -653,15 +713,22 @@
   async function ramQuote(view, catalog, ticker) {
     try {
       const index = catalogIndex(catalog), api = view.DeviceMarket, raw = await readStored(view, [MARKET_KEY]);
-      if (!api || raw[MARKET_KEY] === MISSING_RECORD) return null;
-      const market = api.validateMarket(raw[MARKET_KEY], catalog);
+      if (!api) return null;
+      const stored = raw[MARKET_KEY] === MISSING_RECORD ? null : api.validateMarket(raw[MARKET_KEY], catalog), market = ramMarket(view, catalog, stored);
+      if (!market) return null;
       const quote = market.quotes.find(q => { const instrument = index.instruments.get(canonical(q.security_reference)); return instrument && instrument.ticker === ticker; });
       if (!quote) return null;
       const price = typeof quote.price === 'number' ? quote.price : Number(quote.price);
       if (!Number.isFinite(price) || price <= 0) return null;
-      return { price, currency: quote.currency, as_of: quote.as_of, source: quote.source, stale: api.staleness(quote.as_of) === 'STALE' };
+      return { price, currency: quote.currency, as_of: quote.source === 'WORKER_CLOSE' ? quote.as_of.slice(0, 10) : quote.as_of, source: quote.source, stale: api.staleness(quote.as_of) === 'STALE' };
     } catch (_) { return null; }
   }
+  // Shadow-ledger / screen input: stored ACTUAL or the RAM Holdings tab, whichever is newer (see effectiveSnapshot).
+  // readHoldings stays the stored record only (backups never include Holdings tab data).
+  async function effectiveHoldings(view, catalog) {
+    const stored = await readHoldings(view, catalog), result = effectiveSnapshot(view, catalog, stored);
+    return { snapshot: result.snapshot, source: result.source, as_of: result.source === 'HOLDINGS_TAB' ? result.capture.as_of : result.snapshot ? result.snapshot.effective_at : null };
+  }
   return Object.freeze({ mount, summary, settings, validate, makeSnapshot, prepareImport, valuation,
-    sheetSettings, applyMarketImport, readMarketImportHistory, readHoldings, restoreHoldings, ramView, ramQuote });
+    sheetSettings, applyMarketImport, readMarketImportHistory, readHoldings, restoreHoldings, effectiveHoldings, ramView, ramQuote });
 });
