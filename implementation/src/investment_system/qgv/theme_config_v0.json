@@ -1,0 +1,338 @@
+{
+  "schema_version": 1,
+  "config_version": "theme_config/v0",
+  "status": "V0_UNCALIBRATED_DEFAULT",
+  "decided_at": "2026-10-11",
+  "derived_from": "theme_config/1",
+  "role": "EXPOSURE_ONLY",
+  "affects_qgv": false,
+  "membership_rule": {
+    "kind": "ETF_HELD_OR_10K_ITEM1_KEYWORD",
+    "etf_evidence": {
+      "source": "SEC_NPORT_P",
+      "filing": "LATEST_ORIGINAL_NPORT_P_PER_SERIES",
+      "series_binding": "SEC_COMPANY_TICKERS_MF_EXACT_SYMBOL",
+      "asset_category": "EC",
+      "payoff_profile": "Long",
+      "security_join": "EXACT_ISIN_OR_CUSIP",
+      "minimum_etfs_holding": 1
+    },
+    "keyword_evidence": {
+      "source": "SEC_10K",
+      "filing": "LATEST_ORIGINAL_10K",
+      "section": "ITEM_1_BUSINESS",
+      "rule": "LITERAL_PHRASE_FREQUENCY_ONLY",
+      "minimum_count": 1
+    },
+    "combination": "OR",
+    "non_member": "ALL_BASKET_ETFS_AVAILABLE_AND_NOT_HELD_AND_KEYWORD_EVIDENCE_NEGATIVE",
+    "otherwise": "NOT_AVAILABLE"
+  },
+  "concentration_warning": {
+    "single_theme_max_share": 0.4,
+    "comparison": "GREATER_THAN",
+    "scope": "DEVICE_RAM_ONLY",
+    "status": "V0_UNCALIBRATED_DEFAULT"
+  },
+  "themes": [
+    {
+      "id": "ai",
+      "name": "AI",
+      "name_en": "AI",
+      "etfs": [
+        {
+          "ticker": "AIQ",
+          "official_url": "https://www.globalxetfs.com/funds/aiq/"
+        }
+      ],
+      "keywords": [
+        "artificial intelligence",
+        "generative ai",
+        "machine learning"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "BOTZ는 로봇 바스켓에서 사용; 반도체와 중복 가능"
+    },
+    {
+      "id": "semiconductors",
+      "name": "반도체",
+      "name_en": "Semiconductors",
+      "etfs": [
+        {
+          "ticker": "SOXX",
+          "official_url": "https://www.ishares.com/us/products/239705/ishares-phlx-semiconductor-etf"
+        },
+        {
+          "ticker": "SMH",
+          "official_url": "https://www.vaneck.com/us/en/investments/semiconductor-etf-smh/"
+        }
+      ],
+      "keywords": [
+        "semiconductor",
+        "integrated circuit",
+        "wafer",
+        "chip fabrication"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "장비·설계·파운드리 혼합"
+    },
+    {
+      "id": "cloud_software",
+      "name": "클라우드·소프트웨어",
+      "name_en": "Cloud / software",
+      "etfs": [
+        {
+          "ticker": "SKYY",
+          "official_url": "https://www.ftportfolios.com/Retail/Etf/EtfSummary.aspx?Ticker=SKYY"
+        },
+        {
+          "ticker": "CLOU",
+          "official_url": "https://www.globalxetfs.com/funds/clou/"
+        }
+      ],
+      "keywords": [
+        "cloud computing",
+        "software as a service",
+        "enterprise software"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "순수 클라우드 아닌 소프트웨어 포함"
+    },
+    {
+      "id": "cybersecurity",
+      "name": "사이버보안",
+      "name_en": "Cybersecurity",
+      "etfs": [
+        {
+          "ticker": "CIBR",
+          "official_url": "https://www.ftportfolios.com/Retail/Etf/EtfSummary.aspx?Ticker=CIBR"
+        },
+        {
+          "ticker": "HACK",
+          "official_url": "https://www.amplifyetfs.com/hack/"
+        }
+      ],
+      "keywords": [
+        "cybersecurity",
+        "cyber security",
+        "endpoint security",
+        "network security"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "광범위 IT와 중복"
+    },
+    {
+      "id": "fintech_payments",
+      "name": "핀테크·결제",
+      "name_en": "Fintech / payments",
+      "etfs": [
+        {
+          "ticker": "FINX",
+          "official_url": "https://www.globalxetfs.com/funds/finx/"
+        },
+        {
+          "ticker": "IPAY",
+          "official_url": "https://www.amplifyetfs.com/ipay/"
+        }
+      ],
+      "keywords": [
+        "payment processing",
+        "digital payments",
+        "financial technology"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "핀테크와 결제업무를 구분할 수 없음"
+    },
+    {
+      "id": "ecommerce",
+      "name": "전자상거래",
+      "name_en": "E-commerce",
+      "etfs": [
+        {
+          "ticker": "IBUY",
+          "official_url": "https://www.amplifyetfs.com/ibuy/"
+        },
+        {
+          "ticker": "EBIZ",
+          "official_url": "https://www.globalxetfs.com/funds/ebiz/"
+        }
+      ],
+      "keywords": [
+        "e-commerce",
+        "ecommerce",
+        "online marketplace"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "유통·플랫폼 혼합"
+    },
+    {
+      "id": "power_infrastructure",
+      "name": "전력 인프라",
+      "name_en": "Power infrastructure",
+      "etfs": [
+        {
+          "ticker": "GRID",
+          "official_url": "https://www.ftportfolios.com/Retail/Etf/EtfSummary.aspx?Ticker=GRID"
+        }
+      ],
+      "keywords": [
+        "electric grid",
+        "power transmission",
+        "grid infrastructure",
+        "power distribution"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "GRID만 사용(2026-10-11 사용자 결정, PAVE 제외)"
+    },
+    {
+      "id": "clean_energy",
+      "name": "클린에너지",
+      "name_en": "Clean energy",
+      "etfs": [
+        {
+          "ticker": "ICLN",
+          "official_url": "https://www.ishares.com/us/products/239738/ishares-global-clean-energy-etf"
+        },
+        {
+          "ticker": "QCLN",
+          "official_url": "https://www.ftportfolios.com/Retail/Etf/EtfSummary.aspx?Ticker=QCLN"
+        }
+      ],
+      "keywords": [
+        "renewable energy",
+        "solar energy",
+        "wind power",
+        "clean energy"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "공급망·전기차 혼합, 수익성/가치 판정 아님"
+    },
+    {
+      "id": "defense_aerospace",
+      "name": "방산·우주항공",
+      "name_en": "Defense / aerospace",
+      "etfs": [
+        {
+          "ticker": "ITA",
+          "official_url": "https://www.ishares.com/us/products/239502/ishares-us-aerospace-defense-etf"
+        },
+        {
+          "ticker": "XAR",
+          "official_url": "https://www.ssga.com/us/en/individual/etfs/spdr-sp-aerospace-defense-etf-xar"
+        }
+      ],
+      "keywords": [
+        "aerospace",
+        "defense systems",
+        "defence systems",
+        "space systems"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "민항을 포함; 우주 전용 바스켓 아님"
+    },
+    {
+      "id": "biotech_obesity",
+      "name": "바이오·비만치료제",
+      "name_en": "Biotech / obesity drugs",
+      "etfs": [
+        {
+          "ticker": "IBB",
+          "official_url": "https://www.ishares.com/us/products/239699/ishares-nasdaq-biotechnology-etf"
+        },
+        {
+          "ticker": "XBI",
+          "official_url": "https://www.ssga.com/us/en/individual/etfs/spdr-sp-biotech-etf-xbi"
+        }
+      ],
+      "keywords": [
+        "biotechnology",
+        "glp-1",
+        "obesity treatment",
+        "weight management"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "비만치료제 순수 노출 아님; 대형 제약 누락 가능"
+    },
+    {
+      "id": "medical_devices",
+      "name": "의료기기",
+      "name_en": "Medical devices",
+      "etfs": [
+        {
+          "ticker": "IHI",
+          "official_url": "https://www.ishares.com/us/products/239516/ishares-us-medical-devices-etf"
+        }
+      ],
+      "keywords": [
+        "medical device",
+        "surgical instrument",
+        "diagnostic device"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "미국 의료기기 중심이며 해외 coverage 제한"
+    },
+    {
+      "id": "datacenter_reits",
+      "name": "데이터센터·리츠",
+      "name_en": "Data centers / REITs",
+      "etfs": [
+        {
+          "ticker": "DTCR",
+          "official_url": "https://www.globalxetfs.com/funds/dtcr/"
+        }
+      ],
+      "keywords": [
+        "data center",
+        "data centre",
+        "digital infrastructure",
+        "colocation"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "DTCR에는 데이터센터 외 디지털 인프라 포함"
+    },
+    {
+      "id": "robotics_automation",
+      "name": "로봇·자동화",
+      "name_en": "Robotics / automation",
+      "etfs": [
+        {
+          "ticker": "BOTZ",
+          "official_url": "https://www.globalxetfs.com/funds/botz/"
+        },
+        {
+          "ticker": "ROBO",
+          "official_url": "https://www.roboglobaletfs.com/robo"
+        }
+      ],
+      "keywords": [
+        "robotics",
+        "industrial automation",
+        "robotic automation"
+      ],
+      "evidence_strength": "STANDARD",
+      "limitations": "AI·산업장비와 중복"
+    },
+    {
+      "id": "consumer_brands",
+      "name": "소비자 브랜드",
+      "name_en": "Consumer brands",
+      "etfs": [
+        {
+          "ticker": "XLP",
+          "official_url": "https://www.ssga.com/us/en/individual/etfs/the-consumer-staples-select-sector-spdr-fund-xlp"
+        },
+        {
+          "ticker": "XLY",
+          "official_url": "https://www.ssga.com/us/en/individual/etfs/the-consumer-discretionary-select-sector-spdr-fund-xly"
+        }
+      ],
+      "keywords": [
+        "consumer brand",
+        "branded products",
+        "brand portfolio"
+      ],
+      "evidence_strength": "WEAK",
+      "limitations": "미국 소비 업종 proxy이며 브랜드 분류와 동일하지 않음 · 근거 약함(2026-10-11 사용자 결정, 화면 표시)"
+    }
+  ]
+}

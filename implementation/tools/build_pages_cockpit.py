@@ -21,6 +21,8 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
         shutil.copyfile(assets / name, out / name)
     from public_screens_pipeline import emit
     emit(out)
+    from public_classification_pipeline import emit as emit_classification
+    emit_classification(out)
     return result
 
 
