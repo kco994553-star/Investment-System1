@@ -34,6 +34,8 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "table-sort.js": "3523fb124cef52a168f0c58729899c3a0dc659dfb56921310f40c40452924de6",
+    "pc-layout.css": "bbc6887af4c242644577cd316e0382d90dd1d789be136e6001e39e366b86c0a5",
     "virtual-trading-runner.js": "307e669fb5bb3ac2cdab005904c9babb24e253e42a89006dbbd61d73a9539042",
     "share-class-groups.js": "3726a07393a0d1e04edc990fe7bdcacb5c1bbb8760547934dd9ef28e33b9f307",
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
@@ -75,7 +77,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "4cbc089a108a798a2446b3005aaca026e0d328592c8dbf0bb60368d3f847d4fc",
+    "app.js": "9df336a3d3e0692f9bc5c56e1ce58c85b516ad4efa3d8645aba9996a1a62f654",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "4b6bbdf71f74875199221cf534dc403be7961fd722abe2b1b12a499e2740f7f3",
@@ -85,7 +87,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "2b98f9c1b0fe1d8d170a1bf445518e83b1bcd3880874e046e9737baf1adb58bc",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "88fe5fa88f8c66bd8beb52fb085605a1f27ac16de4f45ada8f765e12ef2323aa",
+    "index.html": "6deeb792964d48c5848c0081d7a13ff0f0cbfbbc5cb096ea2ec7b0fbde5a8937",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",

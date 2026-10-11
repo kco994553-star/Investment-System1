@@ -1,0 +1,76 @@
+/* PC (desktop) layout. Design canvas S12 (Desktop 1440px) and S17 PC frames.
+   Phones and tablets (< 1024px) keep the existing layout; everything that changes layout lives in a >= 1024px block,
+   except the overflow guard for the S17 report tables (same behaviour as .table-wrap). Colours, data and wording are unchanged. */
+.table-scroll {overflow-x: auto;}
+.table-scroll table {width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums;}
+.table-scroll th, .table-scroll td {padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; font-size: 13px; vertical-align: top;}
+
+@media (min-width: 1024px) {
+  /* Wide screens: a wider grid for dashboards and tables, centred with side margins. */
+  main {max-width: 1320px; padding: 32px 40px 48px;}
+  .global-search, .personal-reference-footer {max-width: 1320px; padding-left: 40px; padding-right: 40px;}
+  /* Typographic measure: running text stays readable while cards and tables use the full width. */
+  main p, main h1, main .banner, main label.toggle, main summary, main pre, main .ai-answer {max-width: 42em;}
+  main .hub-card p, main td p, main th p {max-width: none;}
+
+  /* Tables: every column visible without horizontal scroll, sticky header row, cells wrap instead. */
+  main .table-wrap, main .table-scroll {overflow: visible;}
+  main .table-wrap table, main .table-scroll table {width: 100%; table-layout: auto;}
+  main .table-wrap th, main .table-wrap td, main .table-scroll th, main .table-scroll td {white-space: normal; overflow-wrap: anywhere; vertical-align: top;}
+  main .table-wrap thead th, main .table-scroll thead th {position: sticky; top: 0; z-index: 2; background: var(--card); box-shadow: inset 0 -1px 0 var(--line);}
+  main table th {font-weight: 650;}
+  /* Sort buttons added by table-sort.js (PC only). */
+  .th-sort {display: inline-flex; align-items: center; gap: 4px; width: 100%; min-height: 32px; padding: 2px 0; border: 0; border-radius: 4px; background: transparent; font: inherit; font-weight: 650; color: inherit; text-align: left; cursor: pointer;}
+  .th-sort::after {content: "↕"; font-size: 11px; color: var(--muted); opacity: 0.6;}
+  th[aria-sort="ascending"] .th-sort::after {content: "▲"; color: var(--accent); opacity: 1;}
+  th[aria-sort="descending"] .th-sort::after {content: "▼"; color: var(--accent); opacity: 1;}
+  .th-sort:hover {color: var(--accent);}
+
+  /* S12 PC home: S01 content as a multi-column dashboard. */
+  .home-dashboard {display: grid; gap: 16px; align-items: stretch; grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "judge hero" "changes macro" "attn reports" "flow flow" "basis more";}
+  .home-dashboard > *, .home-dashboard > .home-grid > * {margin: 0; min-width: 0;}
+  .home-dashboard > .home-grid {display: contents;}
+  .home-dashboard > [data-integrated-judgement] {grid-area: judge;}
+  .home-dashboard > .hero {grid-area: hero;}
+  .home-dashboard > .home-grid > :nth-child(1) {grid-area: changes;}
+  .home-dashboard > .home-grid > :nth-child(2) {grid-area: macro;}
+  .home-dashboard > .card:not([data-integrated-judgement]):not(.hero):not([data-daily-reports]):not([data-system-flow]):not([data-data-basis]) {grid-area: attn;}
+  .home-dashboard > [data-daily-reports] {grid-area: reports;}
+  .home-dashboard > [data-system-flow] {grid-area: flow;}
+  .home-dashboard > [data-data-basis] {grid-area: basis;}
+  .home-dashboard > details {grid-area: more; align-self: start; margin: 0; padding: 14px 18px; border: 1px solid var(--line); border-radius: 15px; background: var(--card);}
+  .home-dashboard > details > .grid {grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));}
+  .home-dashboard [data-system-flow] .hub-grid {grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));}
+  .home-dashboard .home-grid .card {padding: 18px;}
+  .home-dashboard .home-grid h2 {font-size: 17px;}
+  .home-dashboard .home-grid .meta {font-size: 12px;}
+
+  /* S03 all companies / directory lists: several columns instead of one long column. */
+  #company-list, #leader-company-list, #watchlist-company-list {display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); column-gap: 28px;}
+
+  /* S16 13F: manager cards side by side; notes, filters and banners keep the full width. */
+  [data-public-screen="thirteenf"] {display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); column-gap: 16px; align-items: start;}
+  [data-public-screen="thirteenf"] > * {grid-column: 1 / -1;}
+  [data-public-screen="thirteenf"] > .badge {justify-self: start;}
+  [data-public-screen="thirteenf"] > article.mgr-card {grid-column: auto; align-self: stretch; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 12px;}
+
+  /* S17 daily report: summary numbers in one row, numbered sections in two columns, full-width ledger. */
+  #daily-report {display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; align-items: start;}
+  #daily-report > * {grid-column: 1 / -1; min-width: 0;}
+  #daily-report > [data-report-section] {grid-column: auto; align-self: stretch;}
+  #daily-report > [data-report-section="3"], #daily-report > [data-report-section-wide] {grid-column: 1 / -1;}
+  #daily-report [data-report-summary] {display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px 20px; align-items: start;}
+  #daily-report [data-report-summary] > * {grid-column: 1 / -1; min-width: 0; margin: 0;}
+  #daily-report [data-report-summary] > .grid.two {display: contents;}
+  #daily-report [data-report-summary] > .big, #daily-report [data-report-summary] > .big + p, #daily-report [data-report-summary] > .grid.two > * {grid-column: auto; align-self: stretch; padding: 10px 14px; border-left: 3px solid var(--line); min-width: 0;}
+  #daily-report [data-report-summary] > .big {font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums;}
+  #daily-report [data-report-summary] > .big + p {font-size: 18px;}
+  #daily-report [data-report-summary] > .grid.two > * p {margin: 4px 0;}
+  #daily-report [data-report-summary] > [data-report-not-started] {justify-self: start; margin-top: 8px;}
+}
+@media (min-width: 1360px) {
+  /* S12 at the 1440px canvas width: three columns, the judgement card leading. */
+  .home-dashboard {grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas: "judge judge hero" "attn changes macro" "flow flow flow" "reports basis more";}
+}
