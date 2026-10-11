@@ -11,7 +11,7 @@ const plain = (v) => JSON.parse(JSON.stringify(v));
 
 test('embedded config equals the provisional JSON', () => {
   assert.deepEqual(plain(VT.CONFIG), config);
-  assert.equal(VT.CONFIG.start_date, null);
+  assert.equal(VT.CONFIG.start_date, '2026-10-19');
 });
 
 for (const v of fixture.vectors) {
@@ -24,7 +24,7 @@ for (const v of fixture.vectors) {
 
 test('no start date means no ledger records', () => {
   const v = fixture.vectors.find((x) => x.name === 'set_a_deposit_buys');
-  const r = VT.runLedger(VT.defaultConfig(), v.ledger);
+  const r = VT.runLedger({ ...VT.defaultConfig(), start_date: null }, v.ledger);
   assert.equal(r.state, 'NOT_STARTED');
   assert.deepEqual(r.trades, []);
   assert.deepEqual(r.days, []);

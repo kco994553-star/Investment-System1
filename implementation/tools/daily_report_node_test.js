@@ -65,12 +65,17 @@ test('template v1 keeps section order, AI cells, guide toggle and kind line', ()
 });
 
 test('not started: no ledger rows, rule sentence says so', () => {
-  const ledger = VT.runLedger(VT.defaultConfig(), { id: 'a', kind: 'SET_A', sessions: [], target_weights: null, companies: {} });
-  const m = R.buildModel({ kind: 'MOCK', tab: 'SET_A', reportDate: '2026-10-12', ledger, config: VT.defaultConfig() });
+  const cfg = { ...VT.defaultConfig(), start_date: null };
+  const ledger = VT.runLedger(cfg, { id: 'a', kind: 'SET_A', sessions: [], target_weights: null, companies: {} });
+  const m = R.buildModel({ kind: 'MOCK', tab: 'SET_A', reportDate: '2026-10-12', ledger, config: cfg });
   const text = R.renderTemplate(m, { hidden: true, guide: false });
   assert.ok(text.includes('가상매매 시작일 미정'));
   assert.ok(text.includes('가상매매 시작일: 미정'));
   assert.ok(R.screenHtml(m, {}).includes('data-report-not-started'));
+  const decided = R.buildModel({ kind: 'MOCK', tab: 'SET_A', reportDate: '2026-10-12', ledger: VT.runLedger(VT.defaultConfig(), { id: 'a', kind: 'SET_A', sessions: [], target_weights: null, companies: {} }), config: VT.defaultConfig() });
+  const t2 = R.renderTemplate(decided, { hidden: true, guide: false });
+  assert.ok(t2.includes('가상매매 시작일 2026-10-19 전 · 기록 없음'));
+  assert.ok(t2.includes('가상매매 시작일: 2026-10-19'));
 });
 
 test('AI answer check: foreign numbers counted, missing check lines flagged', () => {
