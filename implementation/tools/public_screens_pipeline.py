@@ -1,6 +1,7 @@
 """Connect the merged public projection to Pages; raw captures stay temporary."""
 from datetime import datetime, timedelta, timezone
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -35,13 +36,16 @@ def emit(directory, manifest=None, input_root=None, as_of=None):
             path.unlink(missing_ok=True)
     return outputs
 
-def collect(directory, *, environ=None, client_factory=None):
+def collect(directory, *, environ=None, client_factory=None, macro_v0=None):
     if client_factory is None:
         from investment_system.providers.sec_collection import SecCollectionClient
         client_factory = SecCollectionClient
     with tempfile.TemporaryDirectory(prefix='sec-private-capture-') as private:
         root = Path(private)
         manifest = {'schema_version':1,'sec':[],'macro':[],'thirteen_f':[]}
+        if macro_v0 is not None:
+            # Government macro statistics (not prices); raw bodies stay in this private directory.
+            manifest['macro_v0'] = macro_v0(root)
         class Capture:
             def __init__(self, agent):
                 self.client = client_factory(agent)
@@ -62,15 +66,32 @@ def collect(directory, *, environ=None, client_factory=None):
         emit(directory, manifest, root)
         return result
 
+def _print_macro_v0(directory):
+    # States and fixed reason codes only: no URL, setting or provider message.
+    try:
+        block = json.loads((Path(directory) / 'macro-screen.json').read_text())['data']['growth_inflation_v0']
+        for axis, row in block['axes'].items():
+            print('MACRO_V0 axis=%s state=%s reasons=%s' % (axis, row['state'], ','.join(row['reason_codes']) or '-'))
+        print('MACRO_V0 engine=%s regime=%s' % (block['engine']['state'], block['regime']['state']))
+    except Exception:
+        print('MACRO_V0 summary=NOT_AVAILABLE')
+
 def main(argv=None):
     parser = Parser(description=__doc__)
     parser.add_argument('--out', required=True, type=Path)
     parser.add_argument('--live', action='store_true')
+    parser.add_argument('--macro-v0', action='store_true', help='with --live, also collect BLS CUUR0000SA0 and BEA T10101 line 1')
     args = parser.parse_args(argv)
     try:
         if args.live:
-            result = collect(args.out)
+            macro_v0 = None
+            if args.macro_v0:
+                from investment_system.providers.macro_v0_collection import collect_macro_v0
+                macro_v0 = lambda root: collect_macro_v0(root, environ=os.environ)
+            result = collect(args.out, macro_v0=macro_v0)
             _print_diagnostics(result['diagnostics']); _print_exclusions(result['exclusions'])
+            if args.macro_v0:
+                _print_macro_v0(args.out)
             print(f"SEC_PUBLIC_BUILD_OK failed_companies={result['failed_companies']}")
         else:
             emit(args.out)
