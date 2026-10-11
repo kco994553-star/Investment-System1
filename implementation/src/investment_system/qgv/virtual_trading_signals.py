@@ -11,11 +11,15 @@ Nothing here fetches, stores or publishes prices, FX rates, ledgers or V scores;
   evaluated (engine rule: basis usable, a session 20 ledger sessions back exists, V stored on both dates).
 - v_progress: how far device V recording is from the 20-session V slope lookback.
 - v_axis / v_scores_for / capture_plan: the device V score recorded per completed session. V = the PREVIEW V axis of
-  the official v1 V weight copy (strategy_preview, missing factors not renormalized) over the device V factors
-  (device_valuation.device_value_view) computed from that session's close. Rounded to 2 decimals.
+  the official v1 V weight copy (strategy_preview) over the device V factors (device_valuation.device_value_view)
+  computed from that session's close. Rounded to 2 decimals. Decision 2026-10-11: a missing core factor makes that
+  day's V NA (V_CORE_FACTOR_MISSING); it is never computed with the missing factor counted as 0. The spec defines no
+  "core" subset, so every factor with weight > 0 in the official v1 V weights is core. Each value carries its
+  composition key (sorted ids of the factors present); the V slope compares only equal keys (V_COMPOSITION_CHANGED).
 - rehearsal_start / rehearsal_config / apply_rehearsal_snapshots: rehearsal (not recorded) runs the engine from the
   first of the last N completed SPY sessions (runner date rules), cash 0 + daily deposits, in RAM only; window sessions
-  without a RECORDED forward-ledger snapshot use today's public Q·G screen snapshot (rehearsal only, labelled).
+  without a RECORDED forward-ledger snapshot use today's public Q·G screen snapshot (rehearsal only, labelled; any
+  other mode is refused with REHEARSAL_ONLY).
 """
 from __future__ import annotations
 
@@ -26,7 +30,7 @@ from ..contracts.models import FactorObservation
 from . import virtual_trading as vt
 from . import virtual_trading_inputs as vi
 from .device_valuation import device_value_view
-from .strategy_preview import recalculate_strategy_preview
+from .strategy_preview import official_v1_weight_copy, recalculate_strategy_preview
 
 SCHEMA = 'virtual-trading-signals/1'
 REHEARSAL_WINDOW = 5
@@ -78,9 +82,16 @@ def rehearsal_snapshot(qg_rows):
     return out
 
 
-def apply_rehearsal_snapshots(assembled, qg_rows):
+class RehearsalOnlyError(ValueError):
+    pass
+
+
+def apply_rehearsal_snapshots(assembled, qg_rows, mode):
     """Rehearsal: window sessions without a RECORDED forward-ledger snapshot use today's public Q·G screen snapshot.
-    Returns (assembled with filled snapshots, sorted filled session dates)."""
+    Returns (assembled with filled snapshots, sorted filled session dates). Any mode other than REHEARSAL is refused
+    (REHEARSAL_ONLY): recording never fills a missing day."""
+    if mode != 'REHEARSAL':
+        raise RehearsalOnlyError('REHEARSAL_ONLY')
     rows = rehearsal_snapshot(qg_rows)
     if not isinstance(assembled, dict) or not rows:
         return assembled, []
@@ -108,6 +119,7 @@ def basis_rows(ledger_input, config):
     a, lb = config['abnormal_drop'], config['v_slope']['lookback_sessions']
     needed = a['lookback_sessions'] + a['window_sessions'] + 1
     v_scores = L.get('v_scores') or {}
+    v_comp = L.get('v_composition') or {}
     past = sessions[idx - lb] if idx - lb >= 0 else None
     out = {}
     for cid in sorted(L['companies']):
@@ -119,20 +131,27 @@ def basis_rows(ledger_input, config):
         aligned = 0 if bench is None else sum(1 for d in comp['closes'] if d <= day and d in bench)
         v_now = (v_scores.get(day) or {}).get(cid)
         v_past = (v_scores.get(past) or {}).get(cid) if past is not None else None
+        c_now = (v_comp.get(day) or {}).get(cid)
+        c_past = (v_comp.get(past) or {}).get(cid) if past is not None else None
         if drop['state'] == 'NOT_AVAILABLE':
             v_state = 'BASIS_NOT_AVAILABLE'
-        elif v_now is not None and v_past is not None:
+        elif v_now is None or v_past is None:
+            v_state = 'V_HISTORY_SHORT'
+        elif isinstance(c_now, str) and c_now == c_past:
             v_state = 'READY'
         else:
-            v_state = 'V_HISTORY_SHORT'
+            v_state = 'V_COMPOSITION_CHANGED'
         out[cid] = {'requested': requested, 'benchmark': used, 'fallback': requested != SP500 and used == SP500,
                     'state': drop['state'], 'reason': drop['reason'], 'aligned': aligned, 'needed': needed, 'v_slope': v_state}
     return out
 
 
-def v_progress(sessions, v_scores, lookback):
-    """Sessions elapsed since the first stored V date (SPY sessions when known, else stored dates), against lookback."""
-    dates = sorted(d for d, row in (v_scores or {}).items() if vi._day(d) and isinstance(row, dict) and row)
+def v_progress(sessions, v_scores, lookback, v_composition=None):
+    """Sessions elapsed since the first stored V date (SPY sessions when known, else stored dates), against lookback.
+    With a composition map (V history /2) only dates recorded with their factor composition count."""
+    def known(d):
+        return not isinstance(v_composition, dict) or (isinstance(v_composition.get(d), dict) and bool(v_composition[d]))
+    dates = sorted(d for d, row in (v_scores or {}).items() if vi._day(d) and isinstance(row, dict) and row and known(d))
     if not dates:
         return {'state': 'NOT_RECORDED', 'first': None, 'last': None, 'recorded': 0, 'elapsed': 0, 'needed': lookback}
     first = dates[0]
@@ -141,17 +160,32 @@ def v_progress(sessions, v_scores, lookback):
             'recorded': len(dates), 'elapsed': elapsed, 'needed': lookback}
 
 
-def v_axis(view):
-    """PREVIEW V axis (official v1 V weight copy, no renormalization) over the available device V factors."""
+def core_v_factors():
+    """Every factor with weight > 0 in the official v1 V weight copy (the spec defines no other core subset)."""
+    weights = official_v1_weight_copy()['V']
+    return sorted(k for k, w in weights.items() if _num(w) and w > 0)
+
+
+def v_axis_detail(view):
+    """V axis of the official v1 V weights, or NA when a core factor is missing (never counted as 0)."""
     factors = view.get('v_factors') if isinstance(view, dict) else None
     if not isinstance(factors, dict):
-        return None
-    observations = {k: FactorObservation(k, None, f['score'], QualityState.OK, None) for k, f in factors.items()
-                    if isinstance(f, dict) and f.get('state') != 'NOT_AVAILABLE' and _num(f.get('score'))}
-    if not observations:
-        return None
+        return {'state': 'NOT_AVAILABLE', 'score': None, 'composition': None, 'reason': 'V_FACTORS_NOT_AVAILABLE', 'missing': core_v_factors()}
+    present = {k: f['score'] for k, f in factors.items()
+               if isinstance(f, dict) and f.get('state') != 'NOT_AVAILABLE' and _num(f.get('score'))}
+    missing = [k for k in core_v_factors() if k not in present]
+    if missing:
+        return {'state': 'NOT_AVAILABLE', 'score': None, 'composition': None, 'reason': 'V_CORE_FACTOR_MISSING', 'missing': missing}
+    observations = {k: FactorObservation(k, None, v, QualityState.OK, None) for k, v in present.items()}
     score = recalculate_strategy_preview(observations).axes['V'].score
-    return score if _num(score) else None
+    if not _num(score):
+        return {'state': 'NOT_AVAILABLE', 'score': None, 'composition': None, 'reason': 'V_FACTORS_NOT_AVAILABLE', 'missing': []}
+    return {'state': 'OK', 'score': score, 'composition': '+'.join(sorted(present)), 'reason': None, 'missing': []}
+
+
+def v_axis(view):
+    d = v_axis_detail(view)
+    return d['score'] if d['state'] == 'OK' else None
 
 
 def _valuation_row(valuation, cid):
@@ -183,10 +217,11 @@ def capture_plan(assembled):
 
 
 def v_scores_for(plan, valuation, parameters):
-    """V per company on plan['date'] from that session's close (absent close or V → absent, never 0)."""
-    out, raw = {}, {}
+    """V per company on plan['date'] from that session's close (absent close or V → absent, never 0; a missing core
+    factor skips the company with its reason). Returns (V rounded, V raw, composition key, skipped reasons)."""
+    out, raw, composition, skipped = {}, {}, {}, {}
     if not plan:
-        return out, raw
+        return out, raw, composition, skipped
     day = plan['date']
     for cid, comp in plan['companies'].items():
         close = comp['closes'].get(day)
@@ -194,26 +229,31 @@ def v_scores_for(plan, valuation, parameters):
         if close is None or row is None:
             continue
         view = device_value_view(row=row, quote={'price': close, 'currency': comp['currency']}, parameters=parameters)
-        v = v_axis(view)
-        if v is not None and 0 <= v <= 100:
-            raw[cid] = v
-            out[cid] = round2(v)
-    return out, raw
+        x = v_axis_detail(view)
+        if x['state'] != 'OK':
+            skipped[cid] = x['reason']
+            continue
+        if 0 <= x['score'] <= 100:
+            raw[cid] = x['score']
+            out[cid] = round2(x['score'])
+            composition[cid] = x['composition']
+    return out, raw, composition, skipped
 
 
-def with_v_scores(assembled, store):
-    """The assembled result with every READY ledger's v_scores re-read from the (updated) device store."""
+def with_v_scores(assembled, store, composition=None):
+    """The assembled result with every READY ledger's v_scores (and V composition) re-read from the device store."""
     if not isinstance(assembled, dict):
         return assembled
     scores = vi.v_scores_from_store(store)
+    comp = vi.v_composition_from_store(composition)
     out = dict(assembled, ledgers=dict(assembled.get('ledgers') or {}))
     for kind, entry in out['ledgers'].items():
         if isinstance(entry, dict) and entry.get('state') == 'READY':
-            out['ledgers'][kind] = dict(entry, input=dict(entry['input'], v_scores=scores))
+            out['ledgers'][kind] = dict(entry, input=dict(entry['input'], v_scores=scores, v_composition=comp))
     return out
 
 
-def report_signals(assembled, kind, config, store):
+def report_signals(assembled, kind, config, store, composition=None):
     """S17 signals for one ledger tab: D-5 basis rows on the last session and V recording progress."""
     lb = config['v_slope']['lookback_sessions']
     entry = ((assembled or {}).get('ledgers') or {}).get(kind) if isinstance(assembled, dict) else None
@@ -221,5 +261,6 @@ def report_signals(assembled, kind, config, store):
         L = entry['input']
         sessions = sorted(L['benchmarks'].get(SP500) or {})
         return {'schema': SCHEMA, 'date': L['sessions'][-1] if L['sessions'] else None,
-                'basis': basis_rows(L, config), 'v_progress': v_progress(sessions, L.get('v_scores'), lb)}
-    return {'schema': SCHEMA, 'date': None, 'basis': {}, 'v_progress': v_progress([], vi.v_scores_from_store(store), lb)}
+                'basis': basis_rows(L, config), 'v_progress': v_progress(sessions, L.get('v_scores'), lb, L.get('v_composition') or {})}
+    return {'schema': SCHEMA, 'date': None, 'basis': {},
+            'v_progress': v_progress([], vi.v_scores_from_store(store), lb, vi.v_composition_from_store(composition))}

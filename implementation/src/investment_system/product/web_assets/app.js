@@ -191,8 +191,40 @@ function settingsUI() {
   <div id="ops-status"></div><section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio, profiles, investor stars and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·프로필·투자자 ★·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="private-trades-settings"></div><div id="private-universe-settings"></div><div id="device-api-settings"></div>`;
 }
 function entityRoute(e) {return e.entity_type==="COMPANY"?"#company/"+encodeURIComponent(e.canonical_id):"#entity/"+encodeURIComponent(e.entity_type+":"+e.canonical_id);}
+// Company search (TARGET directory + public Universe504 codes): identity only, no prices/caps/ranks (GSQ-010).
+let publicEntities=[],universeDirectory=null,universeDirectoryPromise=null;
+function rebuildSearchIndex() {
+  const codes={};if(universeDirectory?.state==="READY") for(const [code,r] of Object.entries(universeDirectory.records)) codes[code]=r.company_id;
+  try {searchIndex=EntitySearch.createIndex([...publicEntities,...EntitySearch.companyEntities(identityCompanies,codes)]);}
+  catch(_) {searchIndex=EntitySearch.createIndex(publicEntities);}
+}
+function ensureUniverseDirectory() {
+  if(universeDirectoryPromise || !window.SecUniverseShares) return universeDirectoryPromise;
+  universeDirectory={state:"LOADING"};
+  universeDirectoryPromise=SecUniverseShares.loadInputs(window).then(inputs=>{
+    universeDirectory=inputs?{state:"READY",as_of:inputs.as_of,records:inputs.publicShares}:{state:"NOT_AVAILABLE",reason:"SEC_UNIVERSE_SHARES_NOT_PUBLISHED"};
+  }).catch(e=>{universeDirectory={state:"NOT_AVAILABLE",reason:e?.message==="SEC_UNIVERSE_SHARES_INVALID"?"SEC_UNIVERSE_SHARES_INVALID":"SEC_UNIVERSE_SHARES_UNAVAILABLE"};}).then(()=>{
+    if(!searchIndex) return;rebuildSearchIndex();paintGlobalSearch();
+    const [route,id]=location.hash.slice(1).split("/");if(route==="company" && /%3A|:/i.test(id || "")) render();
+  });
+  return universeDirectoryPromise;
+}
+function universeCode(id) {return /^(NYSE|NASDAQ|BATS):[A-Z0-9][A-Z0-9.\-]{0,15}$/.test(id)?id:null;}
+function universeDetail(code) {
+  const en=appSettings.display_locale==='en-US',ticker=code.slice(code.indexOf(":")+1),r=universeDirectory?.state==="READY"?universeDirectory.records[code]:null;
+  const head=`<a class="small" href="#companies">${t("← 기업 목록")}</a>`+heading("UNIVERSE504",esc(ticker),esc(code));
+  if(!universeDirectory || universeDirectory.state==="LOADING") return head+`<p role="status" data-universe-company="LOADING">${en?'Loading public Universe504 identity…':'공개 Universe504 정보를 불러오는 중…'}</p>`;
+  if(!r) return head+`<section class="card" data-universe-company="NOT_AVAILABLE"><p class="empty">NOT_AVAILABLE · ${esc(universeDirectory.reason || "NOT_IN_UNIVERSE")}</p></section>`;
+  const rows=[[en?'SEC shares state':'SEC 주식수 상태',r.state+(r.reason_codes.length?' · '+r.reason_codes.join(' · '):'')],[en?'Shares outstanding (SEC cover)':'발행주식수(SEC 표지)',r.shares===null?'NOT_AVAILABLE':Number(r.shares).toLocaleString(appSettings.display_locale)],[en?'Measured':'기준일',r.measurement_date||'—'],[en?'Form':'서식',r.form||'—'],[en?'Share-class basis':'주식 종류 기준',r.share_class_basis],['CIK',r.cik||'—'],[en?'Public file as of':'공개 파일 기준',universeDirectory.as_of]];
+  return head+`<section class="card" data-universe-company="${esc(r.state)}"><div class="chips"><span class="badge">Universe504</span><span class="badge">${en?'Name not published':'이름 미공개'}</span><span class="badge">${en?'Price-free':'가격 없음'}</span></div><dl>${rows.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl><p class="small">${en?'Price, market cap, rank and QGV: NOT_AVAILABLE on public screens (GSQ-010). The M3 cap rank is shown only on S06 after reading your Universe sheet on this device (RAM only).':'가격·시가총액·순위·QGV: 공개 화면에서는 NOT_AVAILABLE (GSQ-010). M3 시총 순위는 S06에서 내 기기의 Universe 시트를 읽은 뒤 메모리에서만 표시됩니다.'}</p><a href="#leaderboard">${en?'S06 Company research →':'S06 기업 연구 →'}</a></section>`;
+}
 function entityRow(hit) {
-  const e=hit.entity,c=e.entity_type==="COMPANY"?company(e.canonical_id):null;
+  const e=hit.entity;
+  if(e.entity_type==="COMPANY" && e.scope) {
+    const universe=e.scope==="UNIVERSE504",en=appSettings.display_locale==='en-US';
+    return `<li class="item" data-entity-id="${esc(hit.canonical_entity_id)}" data-entity-scope="${esc(e.scope)}"><a href="${entityRoute(e)}"><b>${esc(e.ticker)}</b> <span class="badge">${esc(t("기업"))}</span> <span class="badge">${universe?"Universe504":"TARGET"}</span><div class="meta">${universe?esc(e.canonical_label)+" · "+(en?"name not published":"이름 미공개"):esc(e.canonical_label)} · ${en?"price-free":"가격 없음"}</div></a></li>`;
+  }
+  const c=e.entity_type==="COMPANY"?company(e.canonical_id):null;
   const held=c && D.portfolio.data?.holdings?.some(h=>h.company_id===c.company_id);
   const types={COMPANY:t("기업"),INDUSTRY:t("산업"),INVESTOR:t("투자자"),MACRO:t("거시지표")};
   return `<li class="item" data-entity-id="${esc(hit.canonical_entity_id)}"><a href="${entityRoute(e)}"><b>${esc(label(e))}</b> <span class="badge">${esc(t(types[e.entity_type] || e.entity_type))}</span><div class="meta">${esc(e.ticker || "")} · ${esc(e.canonical_label)}${e.localized_names?.["ko-KR"]?" · "+esc(e.localized_names["ko-KR"]):""}${e.industry?" · "+esc(e.industry):""}</div>${c?`<div class="meta">${held?t("Snapshot 보유")+" · ":""}${D.qgv.data?.[c.company_id]?t("QGV 제공"):t("분석 미연결")} · ${esc(D.qgv.as_of || D.universe.as_of || t("시점 미제공"))} · ${esc(D.universe.withheld && e.data_state===D.universe.withheld.claimed_state?D.universe.state:e.data_state || D.universe.state)}</div>`:""}</a></li>`;
@@ -200,6 +232,7 @@ function entityRow(hit) {
 function paintGlobalSearch() {
   const input=$("#global-search"),out=$("#global-results");
   if(!searchIndex || !input) return;
+  if(input.value.trim()) void ensureUniverseDirectory();
   const hits=searchIndex.search(input.value,{limit:12});
   out.hidden=!input.value.trim();
   out.innerHTML=hits.map(entityRow).join("") || `<li class="empty">${t("일치하는 항목이 없습니다.")}</li>`;
@@ -405,6 +438,7 @@ function m2Panel(id,companyIds) {
 
 function detail(id) {
   const c=company(id);
+  if(!c && universeCode(id)) {void ensureUniverseDirectory();return universeDetail(id);}
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
   if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,
@@ -548,9 +582,10 @@ function paintCompanies(){
  $('#company-list').innerHTML=rows.slice(0,listLimit).map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';$('#more-companies').hidden=rows.length<=listLimit;
 }
 function directoryRows(prefix){return DeviceWatchlist.filter(identityCompanies,prefs,{group:$('#'+prefix+'-group').value,onlyInterest:$('#'+prefix+'-interest').checked,sort:$('#'+prefix+'-sort').value});}
-let leaderboardView={view:'default',profileId:null};
-function paintLeaderboardScreen(rows){let profiles=[];try{profiles=DeviceProfiles.read(localStorage).strategies;}catch(_){profiles=[];}
- LeaderboardScreen.mount($('#leaderboard-screen'),rows,{publicScreens,locale:appSettings.display_locale,profiles,...leaderboardView,onView:patch=>{leaderboardView={...leaderboardView,...patch};if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen(rows);}});}
+let leaderboardView={view:'default',profileId:null},leaderboardRows=null;
+// M3 ranks come from the open Universe read (RAM only) and are repainted into S06 when that read finishes or is cleared.
+function paintLeaderboardScreen(rows){leaderboardRows=rows;let profiles=[];try{profiles=DeviceProfiles.read(localStorage).strategies;}catch(_){profiles=[];}
+ LeaderboardScreen.mount($('#leaderboard-screen'),rows,{publicScreens,locale:appSettings.display_locale,profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,...leaderboardView,onView:patch=>{leaderboardView={...leaderboardView,...patch};if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen(rows);}});}
 function paintDirectory(route){const prefix=route==='watchlist'?'watch':'leader',rows=directoryRows(prefix),list=$('#'+(route==='watchlist'?'watchlist':'leader')+'-company-list');list.innerHTML=rows.map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';if(route==='leaderboard'){const companyIds=rows.map(r=>r.company_id);paintLeaderboardScreen(rows);$('#leader-m2-panel').innerHTML=m2Panel(undefined,companyIds);SecReported.mount($('#sec-reported-panel'),secReported,{companyIds,locale:appSettings.display_locale});PublicScreens.mount($('#public-qg'),publicScreens,{kind:'qg',companyIds,locale:appSettings.display_locale});}}
 
 function paintNews(id) {
@@ -563,18 +598,20 @@ function paintNews(id) {
 }
 function report(id){const real=id==='real';return heading("DAILY REPORT",real?(appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'):(appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'))+'<div id="daily-report" aria-live="polite"></div><div id="virtual-ledger-sheets"></div>';}
 // S17: everything is computed in RAM on this device; export/copy and the optional mailbox run only on the user's click.
-function reportTab(id){return id==='real'?'REAL':({'mock-set_b':'SET_B','mock-compare':'COMPARE'}[id]||'SET_A');}
+function reportTab(id){return id==='real'?'REAL':({'mock-set_b':'SET_B','mock-set_c':'SET_C','mock-set_d':'SET_D','mock-compare':'COMPARE'}[id]||'SET_A');}
 // The virtual ledger runner (VirtualTradingRunner) reads prices through the existing Google session and private
 // history Worker into memory only; this holds just its abort handle and session subscription for the open report.
 let reportRun=null;
 // The last recording-mode shadow-ledger judgements of this page (투자 일일보고서), RAM only: S03 shows exactly these chips.
 let virtualShadow=null;
+// ⑬ period and currency basis chosen on S17 (this page session only; RAM, not stored).
+let benchSelection={period:'20D',basis:'KRW'};
 function disposeReport(){const r=reportRun;reportRun=null;if(r){r.controller.abort();if(r.unsubscribe)r.unsubscribe();if(r.ledgerSheets)r.ledgerSheets.dispose();}}
 async function paintReport(id){
   const host=$('#daily-report');if(!host)return;
   disposeReport();
   const R=window.DailyReport,VT=window.VirtualTrading,Runner=window.VirtualTradingRunner,locale=appSettings.display_locale,kind=id==='real'?'REAL':'MOCK',tab=reportTab(id);
-  const cfg=VT.defaultConfig(),ledgerKind=kind==='REAL'?'SHADOW':tab==='SET_B'?'SET_B':'SET_A',config=window.InvestmentAppConfig||{};
+  const cfg=VT.defaultConfig(),ledgerKind=kind==='REAL'?'SHADOW':['SET_B','SET_C','SET_D'].includes(tab)?tab:'SET_A',config=window.InvestmentAppConfig||{};
   // mode: RECORDING (기록 모드) or REHEARSAL (리허설 · 기록 없음: RAM only, never written to any ledger or sheet).
   const run={controller:new AbortController(),unsubscribe:null,busy:false,last:null,mode:'RECORDING',pending:null,ledgerSheets:null};reportRun=run;
   const Signals=window.VirtualTradingSignals,VHistory=window.VirtualTradingVHistory;
@@ -584,7 +621,9 @@ async function paintReport(id){
   let ram=null;if(kind==='REAL'){try{ram=await DeviceActual.ramView(window,await deviceCatalog());const byTicker=new Map(identityCompanies.map(r=>[r.ticker,r.company_id]));ram={...ram,rows:ram.rows.map(r=>({...r,company_id:byTicker.get(r.ticker)||r.ticker}))};}catch(_){ram=null;}}
   const qg={},names={};try{for(const r of LeaderboardScreen.rowsFor(identityCompanies,{publicScreens,engine:window.EnginePreview})){qg[r.company_id]={q:r.q,g:r.g,partial:r.partial};names[r.company_id]=r.ticker;}}catch(_){}
   const reportDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
-  let model=null,canonical='',key=null,inboxText='';
+  let model=null,canonical='',key=null,inboxText='',benchInputs=null;
+  // ⑬ selection change: recompute the RAM-only benchmark view (pure) and repaint; the canonical template keeps 20D·KRW.
+  const rebench=focus=>{if(!benchInputs||!window.ReportBenchmarks||!model)return;model={...model,bench:ReportBenchmarks.build({...benchInputs,...benchSelection})};paint();const n=focus&&host.querySelector(focus);if(n)n.focus();};
   const paint=()=>{
     if(!live()||!model)return;const hidden=R.hiddenSetting(localStorage),answer=key?R.answers(localStorage)[key]||null:null;
     const draft=host.querySelector('[data-ai-input]')?.value||'';
@@ -603,20 +642,57 @@ async function paintReport(id){
     host.querySelector('[data-mailbox-read]').onclick=()=>void mailbox('read');
     const rehearseButton=host.querySelector('[data-rehearsal-run]'),recordButton=host.querySelector('[data-recording-mode]');
     if(rehearseButton)rehearseButton.onclick=()=>void go('REHEARSAL');
+    for(const b of host.querySelectorAll('[data-bench-period]'))b.onclick=()=>{benchSelection={...benchSelection,period:b.dataset.benchPeriod};rebench('[data-bench-period="'+b.dataset.benchPeriod+'"]');};
+    const basisSelect=host.querySelector('[data-bench-basis]');if(basisSelect)basisSelect.onchange=()=>{benchSelection={...benchSelection,basis:basisSelect.value};rebench('[data-bench-basis]');};
     if(recordButton)recordButton.onclick=()=>{if(before){run.mode='RECORDING';void compose({state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']});}else void go('RECORDING');};
+  };
+  // Mock tabs: 비교 only with at least two sets (Set A + a user set B/C/D defined in the user's sheet).
+  const setDefs=async()=>{try{return run.ledgerSheets?await run.ledgerSheets.definitions():null;}catch(_){return null;}};
+  const mockTabs=defs=>[...R.MOCK_TABS,...(defs&&defs.count>=2?['COMPARE']:[])];
+  // 비교 tab (decision 2026-10-11): rule-based numeric table of every set (VirtualTradingCompare, RAM only); the returns are
+  // the ⑫⑬ ReportBenchmarks series. Phone (<1024px): 2–3 chosen sets; PC: all sets. One 【AI】 line in the export only.
+  const composeCompare=async(result,runCfg,mode)=>{
+    const C=window.VirtualTradingCompare,defs=await setDefs();if(!live()||run.mode!==mode||!C)return;
+    const kinds=['SET_A','SET_B','SET_C','SET_D'].filter(k=>k==='SET_A'||(defs&&defs[k]));
+    const entries=kinds.map(k=>{const{ledger,hits}=Runner.ledgerFor(result,k,runCfg),d=defs&&defs[k];return{id:d?d.id:k.toLowerCase(),kind:k,label:R.TABS[k]+(k==='SET_A'?(d&&!d.example?' · '+d.id:' · v1.1 예시'):''),purpose:d?d.purpose:null,ledger,hits};});
+    let types=null;try{types=C.typesFrom(publicScreens['company-types-pricefree.json']);}catch(_){types=null;}
+    const view=C.build(entries,{indices:result.indices||{},sources:result.sources||{},basis:benchSelection.basis,types});
+    const wide=!window.matchMedia||window.matchMedia('(min-width: 1024px)').matches,ids=view.sets.map(s=>s.id);
+    if(!Array.isArray(run.picked)||run.picked.some(x=>!ids.includes(x))||run.picked.length<2)run.picked=ids.slice(0,Math.min(3,Math.max(2,ids.length)));
+    const draw=()=>{if(!live())return;const hidden=R.hiddenSetting(localStorage);
+      host.innerHTML=R.tabsNav(mockTabs(defs),'COMPARE')+C.html(view,{money:v=>R.money(v,{hidden}),picked:run.picked,wide,locale})
+        +'<section class="card" data-compare-export><div class="sheet-actions"><button type="button" data-compare-copy>비교 템플릿 내보내기</button></div><p class="small">숫자 표와 한 줄 요약(【AI】) 칸만 담습니다. 금액은 숨김 설정을 따릅니다.</p><p role="status" data-compare-status></p></section>';
+      for(const box of host.querySelectorAll('[data-compare-pick]'))box.onchange=()=>{const id=box.getAttribute('data-compare-pick'),next=box.checked?[...run.picked,id]:run.picked.filter(x=>x!==id);
+        if(next.length>=2&&next.length<=3){run.picked=ids.filter(x=>next.includes(x));draw();}else box.checked=!box.checked;};
+      host.querySelector('[data-compare-copy]').onclick=async()=>{const text=C.template(view,{money:v=>R.money(v,{hidden:R.hiddenSetting(localStorage),mode:'export'}),reportDate}),say=t=>{const n=host.querySelector('[data-compare-status]');if(n)n.textContent=t;};
+        try{await navigator.clipboard.writeText(text);say('비교 템플릿을 복사했습니다.');}catch(_){const area=document.createElement('textarea');area.readOnly=true;area.value=text;area.rows=8;host.querySelector('[data-compare-export]').append(area);area.select();say('클립보드를 쓸 수 없어 아래 칸에 표시했습니다.');}};};
+    draw();
   };
   // Model from a runner result or a placeholder state. Nothing is stored: prices and ledgers stay in this closure.
   const compose=async(result,runCfg=cfg,mode='RECORDING',capture=null)=>{
+    if(tab==='COMPARE')return composeCompare(result,runCfg,mode);
     const {ledger,hits,input}=Runner.ledgerFor(result,ledgerKind,runCfg),last=ledger.state==='OK'?ledger.days[ledger.days.length-1]:null;
     // Q·G shown next to a judgement is the forward-ledger snapshot the engine used that day (else the public screen value).
     const shown={...qg};if(last&&input&&input.snapshots[last.date])for(const[c,r]of Object.entries(input.snapshots[last.date]))shown[c]={q:r.q,g:r.g};
     const runner={state:result.state==='READY'?(ledger.state==='OK'?'READY':'NOT_AVAILABLE'):result.state,reason_codes:result.state==='READY'?(ledger.state==='OK'?[]:ledger.reason_codes):result.reason_codes,sources:Runner.statusRows(result),progress:''};
     let signals=null;try{signals=Signals?{...Signals.reportSignals(result,ledgerKind,runCfg,Runner.readVStore(localStorage)),capture}:null;}catch(_){signals=null;}
-    const next=R.buildModel({kind,tab,reportDate,baseDates:last?{NYSE:last.date}:{},ledger,ram,qg:shown,names,config:cfg,runner,hits,mode,signals,rehearsal:result.rehearsal||null});
+    // ⑪⑫⑬ (ReportBenchmarks, pure, RAM): runner indices (SPY, ⑬ ETFs, KRW=X) + this tab's ledger and the comparison ledger.
+    let bench=null,shownBench=null,track=null,nextBenchInputs=null;
+    try{const RB=window.ReportBenchmarks;if(RB){
+      const days=l=>l.state==='OK'?l.days.map(d=>({date:d.date,total_value:d.total_value,deposit:d.deposit})):[];
+      const others=kind==='REAL'?['SET_A']:ledgerKind==='SET_A'?['SET_B']:['SET_A'];
+      const ledgers=[{key:ledgerKind,state:ledger.state,reason_codes:ledger.reason_codes||[],days:days(ledger)},...others.map(k=>{const l=Runner.ledgerFor(result,k,runCfg).ledger;return{key:k,state:l.state,reason_codes:l.reason_codes||[],days:days(l)};})];
+      nextBenchInputs={indices:result.indices||{},sources:result.sources||{},ledgers,start_date:runCfg.start_date};
+      bench=RB.build({...nextBenchInputs,period:'20D',basis:'KRW'});shownBench=RB.build({...nextBenchInputs,...benchSelection});
+      track=RB.trackRecord({hits,trades:ledger.state==='OK'?ledger.trades:[],ledger_input:input,ledger_reasons:ledger.reason_codes||[],start_date:runCfg.start_date,windows:cfg.hit_windows,min_samples:cfg.hit_min_samples});}}
+    catch(_){bench=shownBench=track=nextBenchInputs=null;}
+    const next=R.buildModel({kind,tab,reportDate,baseDates:last?{NYSE:last.date}:{},ledger,ram,qg:shown,names,config:cfg,runner,hits,mode,signals,rehearsal:result.rehearsal||null,bench,track});
     const nextCanonical=R.renderTemplate(next,{hidden:true,guide:false});let nextKey=null;try{nextKey=await R.hash(nextCanonical);}catch(_){nextKey=null;}
     if(!live()||run.mode!==mode)return;
     // The mailbox always writes amounts hidden with the guide; its Inbox/Outbox sha256 is the hash of exactly this text.
-    model=next;canonical=nextCanonical;key=nextKey;inboxText=R.renderTemplate(next,{hidden:true,guide:true});
+    // canonical/inbox use the default ⑬ selection (20D · KRW) so a stored AI answer stays attached to the day's data.
+    if(kind==='MOCK')next.tabs=mockTabs(await setDefs());if(!live()||run.mode!==mode)return;
+    model={...next,bench:shownBench};canonical=nextCanonical;key=nextKey;inboxText=R.renderTemplate(next,{hidden:true,guide:true});benchInputs=nextBenchInputs;
     if(kind==='REAL'&&mode==='RECORDING'&&result.state!=='LOADING')virtualShadow=last?{date:last.date,judgements:last.judgements,names:{...names}}:null;
     paint();
   };
@@ -672,7 +748,7 @@ function renderRoute() {
   const routes={home,qgv,analysis:()=>analysis(id),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id)};
   if(!routes[route]) route="home";
   $("#content").innerHTML=routes[route]();
-  if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests]});
+  if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
@@ -696,6 +772,10 @@ function renderRoute() {
     const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← 검증",sub=QGV_SUBCATEGORY[route];
     $("#content").insertAdjacentHTML("afterbegin",`<p class="parent-row"><a class="parent-link" href="#${parent}">${esc(t(key))}</a>${sub?`<span class="sub-category" data-sub-category>${esc(t(sub))}</span>`:""}</p>`);
   }
+  if(["settings","actual","portfolio"].includes(route) && window.DeviceBackup?.mountRestoredNotice) {
+    $("#content").insertAdjacentHTML("afterbegin",'<div id="backup-restored-notice"></div>');
+    try {DeviceBackup.mountRestoredNotice($("#backup-restored-notice"),{locale:appSettings.display_locale,storage:localStorage});} catch(_) {}
+  }
   if(Object.values(D).some(s=>s?.state==="DEMO")) $("#content").insertAdjacentHTML("afterbegin",'<div class="banner">'+t("DEMO 포함 · 합성 데이터는 투자 판단용이 아닙니다.")+"</div>");
   if(!storageOK) notice(t("개인 설정 저장을 사용할 수 없습니다. 내보내기를 이용하세요."));
   if(!settingsWritable) notice(t("설정을 읽을 수 없습니다. 저장된 원본은 보존합니다."));
@@ -704,7 +784,7 @@ function renderRoute() {
     $("#device-backup-import").onchange=async e=>{try{const f=e.target.files[0];if(!f||f.size>1000000)throw Error("BACKUP_TOO_LARGE");await restoreDeviceBackup(JSON.parse(await f.text()));}catch(_){notice("BACKUP_RESTORE_FAILED");}};
     deviceCatalog().then(catalog=>{const host=$("#google-first-setup");if(host?.isConnected)void GoogleSheetSetup.mount(host,{catalog,config:InvestmentAppConfig,locale:appSettings.display_locale});});
     DevicePWA.mount($('#device-pwa-settings'),{locale:appSettings.display_locale});
-    OpsStatus.mount($('#ops-status'),{secReported,screens:publicScreens},{locale:appSettings.display_locale});
+    OpsStatus.mount($('#ops-status'),{secReported,secStatus:SecReported.status?.()||null,screens:publicScreens},{locale:appSettings.display_locale});
     attachGoogleSheetSettings();
     PrivateHistory.mountSettings($('#private-history-settings'),{locale:appSettings.display_locale});
     PrivateTrades.mountSettings($('#private-trades-settings'),{locale:appSettings.display_locale});
@@ -944,7 +1024,7 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
   const publicSections=["universe","qgv","technical","macro","portfolio","leaderboard","news","relationships","changes"];
   const safeData={schema_version:1,companies:[]};
   for(const name of publicSections) safeData[name]={state:"NOT_AVAILABLE",as_of:null,source:null,reason:"공개 가격 경계에 따라 제공되지 않습니다. (GSQ-010)",data:null};
-  D=guardSections(safeData);searchIndex=EntitySearch.createIndex(catalog.entities.filter(e=>e.entity_type!=="COMPANY"));load();render();paintGlobalSearch();
+  D=guardSections(safeData);publicEntities=catalog.entities.filter(e=>e.entity_type!=="COMPANY");rebuildSearchIndex();load();render();paintGlobalSearch();
 }).catch(showUnavailable);
 
 async function exportDeviceBackup(){

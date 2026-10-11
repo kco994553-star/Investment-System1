@@ -13,7 +13,7 @@ import math
 from pathlib import Path
 
 CONFIG_PATH = Path(__file__).with_name('virtual_trading_v1_provisional.json')
-LEDGER_KINDS = ('SET_A', 'SET_B', 'SHADOW')
+LEDGER_KINDS = ('SET_A', 'SET_B', 'SET_C', 'SET_D', 'SHADOW')
 COVERAGES = ('READY', 'PARTIAL', 'BLOCKED')
 FLAG_KINDS = ('HOLD', 'EXCLUDE', 'CONFIRMED_TEMPORARY', 'CONFIRMED_STRUCTURAL', 'CLEAR')
 EVENT_KINDS = ('EARNINGS_WINDOW', 'TYPE_CHANGED')
@@ -111,11 +111,27 @@ def _validate_ledger(L):
             _need(isinstance(r, dict) and r.get('coverage') in COVERAGES and (r.get('q') is None or _num(r['q'])) and (r.get('g') is None or _num(r['g'])))
     vs = L.get('v_scores', {})
     _need(isinstance(vs, dict) and all(_day(d) and isinstance(r, dict) and all(v is None or _num(v) for v in r.values()) for d, r in vs.items()))
+    vc = L.get('v_composition', {})
+    _need(isinstance(vc, dict) and all(_day(d) and isinstance(r, dict) and all(v is None or isinstance(v, str) for v in r.values()) for d, r in vc.items()))
     flags = L.get('flags', [])
     _need(isinstance(flags, list) and all(isinstance(f, dict) and _day(f.get('date')) and f.get('kind') in FLAG_KINDS and isinstance(f.get('company'), str) for f in flags))
     ev = L.get('events', {})
     _need(isinstance(ev, dict) and all(_day(d) and isinstance(r, dict) and all(isinstance(x, list) and all(e in EVENT_KINDS for e in x) for x in r.values()) for d, r in ev.items()))
+    if L.get('resume') is not None:
+        _validate_resume(L['resume'], comps)
     return L
+
+
+def _validate_resume(r, comps):
+    """Recorded state to continue from (decision 2026-10-11): the recorded rows are canonical. Positions carry quantity and
+    KRW cost; pending holds the virtual orders decided on the last recorded session (executed on the next one)."""
+    _need(isinstance(r, dict) and _day(r.get('after')) and _num(r.get('cash')) and r['cash'] >= 0 and isinstance(r.get('positions'), dict)
+          and (r.get('total_value') is None or _num(r['total_value'])) and isinstance(r.get('pending'), list))
+    for cid, p in r['positions'].items():
+        _need(cid in comps and isinstance(p, dict) and _pos(p.get('quantity')) and _num(p.get('cost')))
+    for o in r['pending']:
+        _need(isinstance(o, dict) and isinstance(o.get('company'), str) and o.get('side') in ('BUY', 'SELL') and _pos(o.get('amount'))
+              and isinstance(o.get('reason_codes'), list) and all(isinstance(c, str) for c in o['reason_codes']))
 
 
 def _fx(L, ccy, day):
@@ -259,7 +275,13 @@ def _judge(L, cfg, cid, day, idx, state, total):
         v_now = L.get('v_scores', {}).get(day, {}).get(cid)
         v_past = L.get('v_scores', {}).get(past, {}).get(cid)
         qg_past = _qg(snaps.get(past, {}).get(cid))
-        if v_now is not None and v_past is not None and qg_now is not None and qg_past is not None \
+        # V slope compares only days with the same V factor composition; unknown or different → no slope (NA).
+        comp_now = L.get('v_composition', {}).get(day, {}).get(cid)
+        comp_past = L.get('v_composition', {}).get(past, {}).get(cid)
+        same = isinstance(comp_now, str) and comp_now == comp_past
+        if v_now is not None and v_past is not None and not same:
+            aux.append('V_COMPOSITION_CHANGED')
+        if same and v_now is not None and v_past is not None and qg_now is not None and qg_past is not None \
                 and qg_now - qg_past > -cfg['qg_decline_threshold']:
             if v_now - v_past >= cfg['v_slope']['threshold']:
                 v_up = True
@@ -351,7 +373,9 @@ def _value(L, state, day):
 
 
 def run_ledger(config, ledger):
-    """Replay one ledger from config.start_date. Pure and deterministic; prices stay in the arguments."""
+    """Replay one ledger from config.start_date, or continue it from a recorded state (ledger['resume']: the sessions after
+    resume.after only, starting from the recorded cash/positions and the orders decided on resume.after). Pure and
+    deterministic; prices stay in the arguments. In resume mode the summary covers the continued sessions only."""
     cfg = validate_config(config)
     base = {'ledger_id': ledger.get('id') if isinstance(ledger, dict) else None, 'config_version': cfg.get('config_version'),
             'rules_version': cfg['rules_version'], 'status': cfg.get('status'), 'role': 'RAM_ONLY_DEVICE'}
@@ -364,19 +388,31 @@ def run_ledger(config, ledger):
     if L.get('target_weights') is None:
         return {**base, 'state': 'NOT_AVAILABLE', 'reason_codes': ['TARGET_NOT_AVAILABLE'], 'days': [], 'trades': [], 'summary': None}
     start = cfg['start_date']
-    first = next((i for i, d in enumerate(L['sessions']) if d >= start), None)
+    resume = L.get('resume')
+    after = resume['after'] if resume is not None else None
+    first = next((i for i, d in enumerate(L['sessions']) if d >= start and (after is None or d > after)), None)
     if first is None:
-        return {**base, 'state': 'NOT_STARTED', 'reason_codes': ['NO_SESSION_ON_OR_AFTER_START'], 'days': [], 'trades': [], 'summary': None}
+        code = 'NO_SESSION_AFTER_RECORDED' if resume is not None else 'NO_SESSION_ON_OR_AFTER_START'
+        return {**base, 'state': 'NOT_STARTED', 'reason_codes': [code], 'days': [], 'trades': [], 'summary': None}
     init = L.get('initial', {'cash': 0, 'positions': {}})
-    state = {'cash': init['cash'], 'positions': {k: {'quantity': v['quantity'], 'cost': v['cost']} for k, v in sorted(init['positions'].items())}}
-    initial_value, _ = _value(L, state, L['sessions'][first])
-    if initial_value is None:
-        return {**base, 'state': 'NOT_AVAILABLE', 'reason_codes': ['INITIAL_VALUE_NOT_AVAILABLE'], 'days': [], 'trades': [], 'summary': None}
-    initial_value += state['cash']
-    fee_rate = cfg['cost_bps'] / 10000
+    src = resume if resume is not None else init
+    state = {'cash': src['cash'], 'positions': {k: {'quantity': v['quantity'], 'cost': v['cost']} for k, v in sorted(src['positions'].items())}}
     pending, days, trades = [], [], []
     deposits, realized, prev_total, growth = 0, 0, None, 1
-    universe = sorted(set(L['target_weights']) | set(state['positions']))
+    if resume is not None:
+        # Continue from the recorded state: no re-valuation of the recorded day, its pending orders execute next.
+        initial_value = resume['total_value']
+        prev_total = resume['total_value']
+        flags0 = L.get('flags', [])
+        pending = [{'company': o['company'], 'side': o['side'], 'amount': o['amount'], 'reason_codes': list(o['reason_codes']),
+                    'decided_on': after, 'user_flag': _active_flag(flags0, o['company'], after)} for o in resume['pending']]
+    else:
+        initial_value, _ = _value(L, state, L['sessions'][first])
+        if initial_value is None:
+            return {**base, 'state': 'NOT_AVAILABLE', 'reason_codes': ['INITIAL_VALUE_NOT_AVAILABLE'], 'days': [], 'trades': [], 'summary': None}
+        initial_value += state['cash']
+    fee_rate = cfg['cost_bps'] / 10000
+    universe = sorted(set(L['target_weights']) | set(init['positions']) | set(state['positions']))
     for idx in range(first, len(L['sessions'])):
         day = L['sessions'][idx]
         executed, cancelled = [], []
@@ -467,10 +503,10 @@ def run_ledger(config, ledger):
         for cid in sorted(state['positions']):
             cost += state['positions'][cid]['cost']
         unrealized = last['positions_value'] - cost
-    invested = initial_value + deposits
+    invested = None if initial_value is None else initial_value + deposits
     summary = {'start_date': L['sessions'][first], 'end_date': last['date'], 'initial_value': initial_value, 'deposits': deposits,
                'total_value': last['total_value'], 'cash': state['cash'],
-               'simple_return': None if last['total_value'] is None or invested <= 0 else last['total_value'] / invested - 1,
+               'simple_return': None if last['total_value'] is None or invested is None or invested <= 0 else last['total_value'] / invested - 1,
                'twr': growth - 1, 'realized_pnl': realized, 'unrealized_pnl': unrealized,
                'buy_count': sum(1 for t in trades if t['side'] == 'BUY'), 'sell_count': sum(1 for t in trades if t['side'] == 'SELL'),
                'user_flagged_count': sum(1 for t in trades if t['user_flag'] is not None),

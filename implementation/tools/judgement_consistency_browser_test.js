@@ -71,7 +71,15 @@ async function open(browser, { now, width }) {
     if (url.origin === 'https://sheets.googleapis.com') {
       const cors = { 'access-control-allow-origin': new URL(BASE).origin, 'access-control-allow-headers': 'Authorization, Content-Type', 'access-control-allow-methods': 'GET, POST' };
       if (request.method() === 'OPTIONS') { await route.fulfill({ status: 204, headers: cors }); return; }
-      if (request.method() === 'GET' && url.searchParams.get('fields') === 'sheets(properties(title))') { await route.fulfill({ headers: cors, contentType: 'application/json', body: JSON.stringify({ sheets: [{ properties: { title: 'Quotes' } }] }) }); return; }
+      if (request.method() === 'GET' && url.searchParams.get('fields') === 'sheets(properties(title))') { await route.fulfill({ headers: cors, contentType: 'application/json', body: JSON.stringify({ sheets: [{ properties: { title: 'Quotes' } }, { properties: { title: 'VirtualMeta' } }] }) }); return; }
+      // The user's own target (decision 2026-10-11: the shadow ledger never falls back to TARGET v0): one synthetic
+      // USER_TARGET row in VirtualMeta (the TARGET v0 units as %, read only).
+      if (request.method() === 'GET' && decodeURIComponent(url.pathname).includes("/values/'VirtualMeta'!A1:")) {
+        const meta = [['recorded_at', 'ledger_id', 'kind', 'event', 'start_date', 'end_date', 'config_version', 'engine_version', 'last_recorded_session', 'inputs_sha256', 'payload'],
+          ['2026-10-12T00:00:00Z', '', 'TARGET', 'USER_TARGET', '', '', '', '', '', '', JSON.stringify({ target_weights: Object.fromEntries(IDS.map((id) => [id, UNITS[id] / 100])) })]];
+        await route.fulfill({ headers: cors, contentType: 'application/json', body: JSON.stringify({ range: 'VirtualMeta', majorDimension: 'ROWS', values: meta }) }); return;
+      }
+      if (request.method() === 'GET' && decodeURIComponent(url.pathname).includes("/values/'VirtualMeta'!A")) { await route.fulfill({ headers: cors, contentType: 'application/json', body: JSON.stringify({ range: 'VirtualMeta', majorDimension: 'ROWS' }) }); return; }
     }
     traffic.unexpected.push(url.origin);
     await route.abort();
@@ -148,7 +156,7 @@ function syntheticJudgements(VT) {
     c04_risk_hold: J('RISK_RECHECK', [], ['USER_HOLD', 'RECHECK_BASIS_NOT_AVAILABLE'], ['OVERWEIGHT']),
     c05_reduce: J('REDUCE_REVIEW', ['ADDITIONAL_REVIEW'], ['OVERWEIGHT_GAP', 'V_DETERIORATED', 'USER_CONFIRMED_TEMPORARY'], ['TYPE_CHANGED']),
     c06_increase: J('INCREASE_REVIEW', ['ADDITIONAL_REVIEW'], ['UNDERWEIGHT_GAP', 'V_IMPROVED'], ['COVERAGE_PARTIAL', 'SECTOR_SP500_SUBSTITUTE']),
-    c07_additional: J('ADDITIONAL_REVIEW', [], ['BAND_INSIDE'], ['EARNINGS_WINDOW', 'TYPE_CHANGED']),
+    c07_additional: J('ADDITIONAL_REVIEW', [], ['BAND_INSIDE'], ['EARNINGS_WINDOW', 'TYPE_CHANGED', 'V_COMPOSITION_CHANGED']),
     c08_holding: J('HOLDING_CONTEXT', [], ['BAND_INSIDE']),
     c09_observe: J('OBSERVE', [], []),
     c10_unknown: J('INCREASE_REVIEW', [], ['UNDERWEIGHT_GAP', UNKNOWN]),

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Daily Universe504 SEC shares shard -> public price-free `sec-universe-shares.json`.
+"""Daily Universe504 SEC shard -> public price-free `sec-universe-shares.json` + `sec-universe-qg.json`.
 
 User decision 2026-10-11 (M3 shares option a). One shard per UTC day (day
 ordinal mod the fixed v0 shard count) is collected through the paced SEC
@@ -8,6 +8,11 @@ its last value with its own acquired_at; rows past the v0 stale window are
 STALE. Raw SEC bytes never reach Pages. If RAW_REPO_TOKEN is set they are
 uploaded as a dated private release asset; otherwise RAW_UPLOAD_NOT_CONFIGURED.
 Only fixed codes and counts are printed: no names, values, URLs or secrets.
+
+User queue 2.1: the SAME fetched companyfacts/submissions bytes also produce the
+price-free Q·G factor scores (`sec-universe-qg.json`, the TARGET sec-qg-factors path)
+in-process: no extra SEC request. That file merges with its own previous Pages copy
+by the same rules; the shares output format is unchanged.
 """
 import argparse
 from datetime import datetime, timezone
@@ -32,8 +37,10 @@ from investment_system.universe.sec_universe_shares import (
     FILENAME, MAX_BYTES, build_issuer_records, encode, load_config, merge, parse_json, require_universe_shares,
     select_cover_filing, shard_index_for, universe_codes, upgrade_legacy,
 )
+from investment_system.universe import sec_universe_qg as qg
 
 SOURCE = 'https://kco994553-star.github.io/Investment-System1/' + FILENAME
+QG_SOURCE = 'https://kco994553-star.github.io/Investment-System1/' + qg.FILENAME
 RAW_REPO = 'kco994553-star/investment-system1-raw'
 RAW_TOKEN_ENV = 'RAW_REPO_TOKEN'
 
@@ -53,32 +60,43 @@ def _utc_now():
     return datetime.now(timezone.utc)
 
 
-def fetch_previous(*, open_response=None):
-    """Live Pages copy -> validated payload, None on 404. Other failures raise.
-
-    A copy published before `unlisted_classes` existed is upgraded (NOT_COLLECTED entries, rows unchanged)."""
-    request = urllib.request.Request(SOURCE, headers={'Accept': 'application/json', 'Cache-Control': 'no-cache'})
+def _fetch_body(source, limit, open_response):
+    """Live Pages copy bytes, None on 404. Other failures raise OSError."""
+    request = urllib.request.Request(source, headers={'Accept': 'application/json', 'Cache-Control': 'no-cache'})
     fetch = open_response or urllib.request.build_opener(NoRedirect()).open
     try:
         with fetch(request, timeout=20) as response:
-            if response.status != 200 or response.geturl() != SOURCE:
+            if response.status != 200 or response.geturl() != source:
                 raise OSError('PREVIOUS_FETCH_FAILED')
-            body = response.read(MAX_BYTES + 1)
+            return response.read(limit + 1)
     except urllib.error.HTTPError as error:
         if error.code == 404:
             return None
         raise OSError('PREVIOUS_FETCH_FAILED') from None
     except (urllib.error.URLError, OSError, ValueError):
         raise OSError('PREVIOUS_FETCH_FAILED') from None
-    return require_universe_shares(upgrade_legacy(parse_json(body)))
 
 
-def write(directory, payload):
+def fetch_previous(*, open_response=None):
+    """Live Pages copy -> validated payload, None on 404. Other failures raise.
+
+    A copy published before `unlisted_classes` existed is upgraded (NOT_COLLECTED entries, rows unchanged)."""
+    body = _fetch_body(SOURCE, MAX_BYTES, open_response)
+    return None if body is None else require_universe_shares(upgrade_legacy(parse_json(body)))
+
+
+def fetch_previous_qg(*, open_response=None):
+    """Live Pages `sec-universe-qg.json` -> validated payload, None on 404 (start fresh). Invalid -> ValueError."""
+    body = _fetch_body(QG_SOURCE, qg.MAX_BYTES, open_response)
+    return None if body is None else qg.require_universe_qg(qg.parse_json(body))
+
+
+def write(directory, payload, *, name=FILENAME, encoder=encode):
     directory = Path(directory)
-    destination = directory / FILENAME
+    destination = directory / name
     if directory.is_symlink() or not directory.is_dir() or destination.is_symlink():
         raise ValueError('SEC_UNIVERSE_SHARES_OUTPUT_INVALID')
-    body = encode(payload)
+    body = encoder(payload)
     with tempfile.NamedTemporaryFile(dir=directory, prefix='.sec-universe-', delete=False) as handle:
         temporary = Path(handle.name)
         handle.write(body)
@@ -89,8 +107,14 @@ def write(directory, payload):
     return body
 
 
-def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, config=None):
-    """Collect today's shard. Returns (updates, unlisted_updates, unresolved_codes, registry_sha256, shard_index, counts)."""
+def write_qg(directory, payload):
+    return write(directory, payload, name=qg.FILENAME, encoder=qg.encode)
+
+
+def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, config=None, qg_updates=None):
+    """Collect today's shard. Returns (updates, unlisted_updates, unresolved_codes, registry_sha256, shard_index, counts).
+
+    With `qg_updates` (a dict), the same fetched bytes also fill that dict with this shard's Q·G rows (no extra request)."""
     cfg = config or load_config()
     kwargs = dict(client_kwargs or {})
     started = now()
@@ -104,6 +128,14 @@ def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, confi
     updates, unlisted_updates, manifest, covers = {}, {}, [], [0]
 
     def save(issuer, facts, submissions, acquired):
+        if qg_updates is not None:
+            # Same bytes, same issuer binding. A Q·G failure never reaches the shares path below.
+            try:
+                rows = qg.build_issuer_records(codes=issuer.codes, cik=issuer.cik, companyfacts_body=facts,
+                                               submissions_body=submissions, acquired_at=acquired)
+            except Exception:
+                rows = {code: qg.empty_record(cik=issuer.cik, reasons=('INVALID_INPUT',)) for code in issuer.codes}
+            qg_updates.update(rows)
         filing = select_cover_filing(submissions, acquired)
         cover = cover_at = None
         if filing is not None:
@@ -190,6 +222,13 @@ def _summary(payload):
             f"basis_unconfirmed={count('share_class_basis', 'BASIS_UNCONFIRMED')}")
 
 
+def _qg_summary(payload):
+    rows = payload['records'].values()
+    count = lambda value: sum(1 for r in rows if r['state'] == value)
+    scored = sum(1 for r in rows for score in r['factors'].values() if score is not None)
+    return f"live={count('LIVE')} stale={count('STALE')} not_available={count('NOT_AVAILABLE')} factor_scores={scored}"
+
+
 def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kwargs=None,
         open_previous=None, open_upload=None):
     environ = os.environ if environ is None else environ
@@ -206,6 +245,15 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     except Exception:
         print('SEC_UNIVERSE_SHARES PREVIOUS_FETCH_FAILED')
         return 1
+    # Both previous copies are read before anything is written: a network failure on either writes nothing.
+    try:
+        previous_qg = fetch_previous_qg(open_response=open_previous)
+    except ValueError:
+        print('SEC_UNIVERSE_QG PREVIOUS_DISCARDED')
+        previous_qg = None
+    except Exception:
+        print('SEC_UNIVERSE_QG PREVIOUS_FETCH_FAILED')
+        return 1
     try:
         if previous is not None:
             write(out, merge(previous, {}, as_of=now(), shard_index=previous['last_shard_index'], config=cfg))
@@ -215,6 +263,15 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     except Exception:
         print('SEC_UNIVERSE_SHARES OUTPUT_FAILED')
         return 1
+    try:
+        if previous_qg is not None:
+            write_qg(out, qg.merge(previous_qg, {}, as_of=now(), shard_index=previous_qg['last_shard_index'], config=cfg))
+            print('SEC_UNIVERSE_QG PREVIOUS_RESTORED')
+        elif preserve_only:
+            print('SEC_UNIVERSE_QG PREVIOUS_NOT_AVAILABLE')
+    except Exception:
+        print('SEC_UNIVERSE_QG OUTPUT_FAILED')
+        return 1
     if preserve_only:
         return 0
     if not live:
@@ -223,9 +280,11 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     token = environ.get(RAW_TOKEN_ENV) or None
     with tempfile.TemporaryDirectory(prefix='sec-universe-raw-') as private:
         raw_dir = Path(private) / 'raw' if token else None
+        qg_updates = {}
         try:
             updates, unlisted_updates, unresolved, registry_sha, index, counts = collect(
-                user_agent=environ.get('SEC_USER_AGENT', ''), now=now, client_kwargs=client_kwargs, raw_dir=raw_dir, config=cfg)
+                user_agent=environ.get('SEC_USER_AGENT', ''), now=now, client_kwargs=client_kwargs, raw_dir=raw_dir, config=cfg,
+                qg_updates=qg_updates)
         except SecCollectionError as error:
             code = error.args[0] if error.args and error.args[0] in {'SEC_USER_AGENT_INVALID', 'SEC_UNIVERSE_INPUT_INVALID',
                 'SEC_UNIVERSE_CONFIG_INVALID', 'SEC_CONFIG_INVALID', 'SEC_HTTP_RETRIES_EXHAUSTED', 'SEC_TRANSPORT_RETRIES_EXHAUSTED'} else 'SEC_UNIVERSE_FAILED'
@@ -246,6 +305,16 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
         print(f"SEC_UNIVERSE_SHARES shard={index}/{cfg['shard_count']} companies={counts['companies']} "
               f"collected={counts['collected']} failed={counts['failed']} covers={counts['covers']} "
               f"unresolved_codes={counts['unresolved_codes']} {_summary(payload)}")
+        try:
+            qg_payload = qg.merge(previous_qg, qg_updates, as_of=now(), shard_index=index, registry_sha256=registry_sha,
+                                  unresolved=unresolved, config=cfg)
+            write_qg(out, qg_payload)
+        except Exception:
+            print('SEC_UNIVERSE_QG OUTPUT_FAILED')
+            return 1
+        shard_rows = [qg_updates[code] for code in sorted(qg_updates)]
+        print(f"SEC_UNIVERSE_QG shard={index}/{cfg['shard_count']} codes={len(shard_rows)} "
+              f"scored_codes={sum(1 for r in shard_rows if r['state'] != 'NOT_AVAILABLE')} {_qg_summary(qg_payload)}")
         if counts['all_failed']:
             print('SEC_UNIVERSE_SHARES SHARD_ALL_FAILED previous_kept')
         if token is None:
