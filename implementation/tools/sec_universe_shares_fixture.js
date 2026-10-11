@@ -3,13 +3,13 @@ const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypt
 const CODES=JSON.parse(fs.readFileSync(path.join(__dirname,'../src/investment_system/universe/universe_codes_v1.json'),'utf8'));
 const h=x=>crypto.createHash('sha256').update(x).digest('hex'),iso=t=>new Date(t).toISOString().replace('.000Z','Z');
 function empty(reason='NOT_COLLECTED'){return{cik:null,listing_id:null,company_id:null,shares:null,measurement_date:null,accn:null,form:null,filed:null,acquired_at:null,concept:null,share_class_basis:'BASIS_UNCONFIRMED',basis_evidence:{cover_accn:null,class_count:null,class_members:[],listing_class_member:null},source_sha256:{companyfacts:null,submissions:null,cover:null},state:'NOT_AVAILABLE',reason_codes:[reason]};}
-function row(code,n,{shares=1000,basis='SINGLE_CLASS_CONFIRMED',acquired,stale=false}={}){
- const [venue,sym]=code.split(':'),cik=String(n).padStart(10,'0'),accn=cik+'-26-000001',mic=venue==='NASDAQ'?'XNAS':'XNYS',members=basis==='SHARE_CLASS_BASIS'?['CommonClassAMember','CommonClassBMember']:[];
+function row(code,n,{shares=1000,basis='SINGLE_CLASS_CONFIRMED',acquired,stale=false,members:classes=null,member=null}={}){
+ const [venue,sym]=code.split(':'),cik=String(n).padStart(10,'0'),accn=cik+'-26-000001',mic=venue==='NASDAQ'?'XNAS':'XNYS',members=basis==='SHARE_CLASS_BASIS'?(classes||['CommonClassAMember','CommonClassBMember']):[];
  const reasons=basis==='SINGLE_CLASS_CONFIRMED'?[]:basis==='SHARE_CLASS_BASIS'?['SHARE_CLASS_BASIS']:['MULTI_CLASS_AMBIGUOUS'],day=new Date(acquired).toISOString().slice(0,10);
  return{cik,listing_id:mic+':'+sym.replaceAll('.','-')+':'+cik,company_id:'sec_'+cik,shares,measurement_date:'2026-01-02',accn,form:'10-Q',filed:'2026-01-05'>day?day:'2026-01-05',acquired_at:iso(acquired),concept:'dei:EntityCommonStockSharesOutstanding',share_class_basis:basis,
-  basis_evidence:{cover_accn:basis==='BASIS_UNCONFIRMED'?null:accn,class_count:members.length,class_members:members,listing_class_member:members[0]??null},source_sha256:{companyfacts:h('facts'+cik),submissions:h('sub'+cik),cover:basis==='BASIS_UNCONFIRMED'?null:h('cover'+cik)},state:stale?'STALE':'LIVE',reason_codes:stale?[...reasons,'STALE_INPUT']:reasons};
+  basis_evidence:{cover_accn:basis==='BASIS_UNCONFIRMED'?null:accn,class_count:members.length,class_members:members,listing_class_member:member??members[0]??null},source_sha256:{companyfacts:h('facts'+cik),submissions:h('sub'+cik),cover:basis==='BASIS_UNCONFIRMED'?null:h('cover'+cik)},state:stale?'STALE':'LIVE',reason_codes:stale?[...reasons,'STALE_INPUT']:reasons};
 }
-/* rows: {code:{n,shares,basis,stale}}; `now` ms. Stale rows are acquired 20 days earlier (window 14 days). */
+/* rows: {code:{n,shares,basis,stale,members?,member?}}; `now` ms. Stale rows are acquired 20 days earlier (window 14 days). */
 function payload(rows,now=Date.now()){
  const records=Object.fromEntries(CODES.map(c=>[c,empty(c==='BATS:CBOE'?'CIK_UNRESOLVED':'NOT_COLLECTED')]));
  for(const [code,o] of Object.entries(rows)){if(!Object.hasOwn(records,code))throw Error('UNKNOWN_CODE');records[code]=row(code,o.n,{...o,acquired:o.stale?now-20*86400e3:now-3600e3});}

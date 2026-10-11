@@ -5,7 +5,7 @@
   "status": "PROVISIONAL_UNCALIBRATED",
   "role": "RAM_ONLY_DEVICE",
   "decided_at": "2026-10-11",
-  "start_date": null,
+  "start_date": "2026-10-19",
   "base_currency": "KRW",
   "daily_deposit": 1000000,
   "buy_limit": 1000000,
@@ -21,18 +21,22 @@
     "lookback_sessions": 252,
     "k": 2
   },
-  "sector_basis": "SP500_SUBSTITUTE_D22_PENDING",
+  "sector_basis": "SECTOR_ETF_CONFIRMED",
   "macro_gate": "INACTIVE_MAPPING_PENDING",
   "v_slope": {
     "lookback_sessions": 20,
     "threshold": 10
   },
   "benchmark": "SP500",
-  "hit_windows": [5, 20, 63],
+  "hit_windows": [
+    5,
+    20,
+    63
+  ],
   "hit_min_samples": 30,
   "total_score": "TYPE_WEIGHTED_QGV_ELSE_QG",
   "provenance": {
-    "start_date": "D-13 PENDING_USER",
+    "start_date": "D-13 DECIDED_2026-10-11",
     "daily_deposit": "D-1 PROVISIONAL",
     "buy_limit": "D-15 DECIDED_2026-10-10",
     "sell_limit": "D-15 DECIDED_2026-10-10",
@@ -48,6 +52,6 @@
     "hit_min_samples": "D-12 PROVISIONAL",
     "total_score": "D-14 PROVISIONAL",
     "v_slope": "D-21 PROVISIONAL",
-    "sector_basis": "D-22 PENDING_USER"
+    "sector_basis": "D-22 DECIDED_2026-10-11 (sector_etf_map/v1)"
   }
 }

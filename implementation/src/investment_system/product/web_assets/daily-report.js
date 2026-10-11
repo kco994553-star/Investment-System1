@@ -1,5 +1,6 @@
 /* S17 daily reports (모의투자 일일보고서 / 투자 일일보고서): report model, template v1 export, amount hiding and AI answers.
-   Everything stays on this device. Nothing here sends a report anywhere: export is a copy made by the user's click.
+   Everything stays on this device. Nothing here sends a report anywhere: export is a user copy, the optional mailbox writes
+   only to the user's own Google Sheet tabs (ReportInbox/ReportOutbox) through the existing drive.file session.
    Amount hiding is ONE function (money/quantity) used by both the screen and the export. Default: hidden. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.DailyReport=api;})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
@@ -61,8 +62,13 @@ function buildModel({kind='MOCK',tab='SET_A',reportDate,baseDates={},ledger=null
 }
 function counts(holdings){const c={};for(const h of holdings)if(h.main)c[h.main]=(c[h.main]||0)+1;return c;}
 function countsLine(holdings){const c=counts(holdings),parts=LEVELS.filter(l=>c[l]).map(l=>LEVEL_KO[l]+' '+c[l]);return parts.length?parts.join(' · ')+' (주 판단만 집계)':NA;}
+function notStarted(m){
+ if(!m.start_date)return '가상매매 시작일 미정 · 가상 장부 기록 없음('+m.ledger_reasons.join(', ')+')';
+ if(m.report_date&&m.report_date<m.start_date)return '가상매매 시작일 '+m.start_date+' 전 · 기록 없음';
+ return '가상매매 시작일 '+m.start_date+' · 가상 장부 계산 전('+m.ledger_reasons.join(', ')+')';
+}
 function ruleSummary(m){
- if(!m.started)return '가상매매 시작일 미정 · 가상 장부 기록 없음('+m.ledger_reasons.join(', ')+').';
+ if(!m.started)return notStarted(m)+'.';
  const b=m.executed.filter(t=>t.side==='BUY').map(t=>t.company),s=m.executed.filter(t=>t.side==='SELL').map(t=>t.company);
  return '가상 매수 '+(b.join('·')||'없음')+', 가상 매도 '+(s.join('·')||'없음')+'. '+countsLine(m.holdings);
 }
@@ -134,6 +140,29 @@ function saveAnswer(storage,key,entry){
  const keep=Object.entries(all).sort((a,b)=>String(b[1].saved_at).localeCompare(String(a[1].saved_at))).slice(0,MAX_ANSWERS);
  try{storage.setItem(AI_KEY,JSON.stringify(Object.fromEntries(keep)));return true;}catch(_){return false;}
 }
+/* Mailbox (template §8, GSQ-019 pending): the user's own sheet, tabs ReportInbox / ReportOutbox. Default OFF.
+   Inbox row: created_at | report_date | kind | template_version | sha256 | data_sha256 | status(NEW) | template.
+     sha256      = SHA-256 of the exact template text written in this row (what the AI reads and must echo back).
+     data_sha256 = SHA-256 of the canonical data template (amounts hidden, no guide); the device's answer-storage key.
+   Outbox row: sha256 | model | created_at | answer. A result is accepted only when its sha256 equals the Inbox sha256
+   of the template this device would write for the same data. */
+const INBOX='ReportInbox',OUTBOX='ReportOutbox',INBOX_HEAD=['created_at','report_date','kind','template_version','sha256','data_sha256','status','template'],OUTBOX_HEAD=['sha256','model','created_at','answer'];
+async function ensureTabs(session,id){
+ const titles=await session.sheetTitles(id),missing=[INBOX,OUTBOX].filter(t=>!titles.includes(t));
+ if(missing.length){await session.addTabs(id,missing);for(const t of missing)await session.appendRows(id,"'"+t+"'!A1",[t===INBOX?INBOX_HEAD:OUTBOX_HEAD]);}
+ return missing;
+}
+async function postInbox(session,id,{report_date,kind,template,data_sha256,now},cryptoImpl){
+ const sha256=await hash(template,cryptoImpl);
+ await ensureTabs(session,id);
+ await session.appendRows(id,"'"+INBOX+"'!A1",[[now,report_date||'',kind,TEMPLATE_VERSION,sha256,data_sha256||'','NEW',template]]);
+ return sha256;
+}
+async function readOutbox(session,id,sha256){
+ const payload=await session.fetchValues(id,"'"+OUTBOX+"'!A1:D500",{maxBytes:1048576});const rows=Array.isArray(payload.values)?payload.values:[];
+ let found=null;for(const r of rows.slice(1))if(Array.isArray(r)&&r[0]===sha256&&typeof r[3]==='string'&&r[3])found={model:typeof r[1]==='string'?r[1]:null,created_at:typeof r[2]==='string'?r[2]:null,answer:r[3]};
+ return found;
+}
 /* ---------- S17 screen ---------- */
 function chip(level){return '<span class="chip judgement" data-level="'+level+'">'+esc(LEVEL_KO[level])+'</span>';}
 function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
@@ -147,7 +176,7 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
  h+='<section class="card" data-report-summary><h2>'+esc(m.kind==='REAL'?'평가액':'총 모의평가액')+'</h2><p class="big">'+esc(s?money(s.total_value,H):NA)+'</p><p>'+esc('누적 '+(s?pct(s.simple_return):NA))+'</p>'
   +'<div class="grid two"><div><b>가상 매수</b><p>'+esc(m.buy_total===null?NA:money(m.buy_total,H))+'</p><p class="small">'+esc('매수 한도 '+money(m.buy_limit,H)+(m.buy_total!==null&&num(m.buy_limit)?' 중 '+Math.round(m.buy_total/m.buy_limit*100)+'%':''))+'</p></div>'
   +'<div><b>가상 매도</b><p>'+esc(m.sell_total===null?NA:money(m.sell_total,H))+'</p><p class="small">'+esc('매도 한도 '+money(m.sell_limit,H)+(m.sell_total!==null&&num(m.sell_limit)?' 중 '+Math.round(m.sell_total/m.sell_limit*100)+'%':''))+'</p></div></div>'
-  +(m.started?'':'<p class="badge NOT_AVAILABLE" data-report-not-started>'+esc('가상매매 시작일 미정 · 기록 없음 ('+m.ledger_reasons.join(', ')+')')+'</p>')+'</section>';
+  +(m.started?'':'<p class="badge NOT_AVAILABLE" data-report-not-started>'+esc(notStarted(m))+'</p>')+'</section>';
  h+='<section class="card" data-report-ai-summary><h2>오늘의 요약 <span class="badge">AI 해석</span></h2>'+(answer?'<pre class="ai-answer" data-ai-answer>'+esc(answer.answer)+'</pre><p class="small">'+esc((answer.model?answer.model+' · ':'')+'보관 '+(answer.saved_at||'')+' · '+(answer.source==='MAILBOX'?'우체통':'붙여넣기'))+'</p>':'<p data-rule-summary>'+esc('【규칙】 '+ruleSummary(m))+'</p>')
   +(check?'<p class="badge '+(check.format_ok?'LIVE':'NOT_AVAILABLE')+'" data-answer-format>'+esc(check.format_ok?'형식 확인됨':'형식 확인 필요')+'</p>'+(check.foreign_numbers.length?'<p class="badge STALE" data-foreign-numbers>'+esc('템플릿에 없는 숫자 '+check.foreign_numbers.length+'개')+'</p>':''):'')
   +'<p class="small">숫자는 앱 계산, 문장은 붙여넣은 AI 해석입니다. AI 해석이 없으면 규칙 문장으로 대신 채웁니다.</p></section>';
@@ -167,9 +196,11 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
   +'<div class="sheet-actions"><button type="button" data-export-template>보고서 템플릿 내보내기</button></div>'
   +'<label for="ai-answer-input">AI 답변 붙여넣기 → \'AI 해석\'에 보관</label><textarea id="ai-answer-input" data-ai-input rows="6"></textarea><div class="sheet-actions"><button type="button" data-save-answer>AI 답변 보관</button></div>'
   +'<p class="small">개인 금액이 포함될 수 있습니다. 앱은 자동으로 전송하지 않고, 사용자가 직접 복사할 때만 기기 밖으로 나갑니다. 시트 ID·토큰·이메일은 어떤 설정에서도 내보내지 않습니다.</p><p role="status" data-report-status></p></section>';
+ h+='<section class="card" data-report-mailbox><h2>AI 우체통 <span class="badge">선택 · 기본 OFF</span></h2><p class="small">켜면 연결된 내 구글 시트의 ReportInbox 탭에 오늘 템플릿(금액 숨김 상태)을 쓰고, ReportOutbox 탭에서 해시가 같은 답만 가져옵니다. 종목·비중·점수는 사용자가 연결한 AI 공급자에게 전달됩니다. Worker를 쓰지 않습니다.</p>'
+  +'<div class="sheet-actions"><button type="button" data-mailbox-post>우체통에 오늘 템플릿 넣기</button><button type="button" data-mailbox-read>우체통 답 확인</button></div></section>';
  h+='<section class="card" data-report-footnote><h2>고정 각주</h2><p class="small">'+esc((TABS[m.tab]||'')+' · 포트폴리오 v1.1 · QGV 점수 기준 v1(보정 전) · 유형 v1 잠정 · 평가액 '+(s?money(s.total_value,H):NA)+' · 가상매매 실제 평가액 미반영 · 결측 N/A')+'</p><p class="small">'+esc('보고일: '+(m.report_date||NA)+' · 가상매매 시작일: '+(m.start_date||'미정 (D-13)'))+'</p></section>';
  return h;
 }
-return Object.freeze({TEMPLATE_VERSION,GUIDE_VERSION,KINDS,TABS,LEVEL_KO,REASON_KO,CHECK_LINES,GUIDE_A,HEADER_B,KIND_LINE,HIDE_KEY,AI_KEY,
- formatKrw,money,quantity,hiddenSetting,buildModel,renderTemplate,checkAnswer,hash,answers,saveAnswer,screenHtml});
+return Object.freeze({TEMPLATE_VERSION,GUIDE_VERSION,KINDS,TABS,LEVEL_KO,REASON_KO,CHECK_LINES,GUIDE_A,HEADER_B,KIND_LINE,HIDE_KEY,AI_KEY,INBOX,OUTBOX,
+ formatKrw,money,quantity,hiddenSetting,buildModel,renderTemplate,checkAnswer,hash,answers,saveAnswer,ensureTabs,postInbox,readOutbox,screenHtml});
 });

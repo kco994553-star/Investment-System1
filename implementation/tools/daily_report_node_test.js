@@ -65,12 +65,17 @@ test('template v1 keeps section order, AI cells, guide toggle and kind line', ()
 });
 
 test('not started: no ledger rows, rule sentence says so', () => {
-  const ledger = VT.runLedger(VT.defaultConfig(), { id: 'a', kind: 'SET_A', sessions: [], target_weights: null, companies: {} });
-  const m = R.buildModel({ kind: 'MOCK', tab: 'SET_A', reportDate: '2026-10-12', ledger, config: VT.defaultConfig() });
+  const cfg = { ...VT.defaultConfig(), start_date: null };
+  const ledger = VT.runLedger(cfg, { id: 'a', kind: 'SET_A', sessions: [], target_weights: null, companies: {} });
+  const m = R.buildModel({ kind: 'MOCK', tab: 'SET_A', reportDate: '2026-10-12', ledger, config: cfg });
   const text = R.renderTemplate(m, { hidden: true, guide: false });
   assert.ok(text.includes('가상매매 시작일 미정'));
   assert.ok(text.includes('가상매매 시작일: 미정'));
   assert.ok(R.screenHtml(m, {}).includes('data-report-not-started'));
+  const decided = R.buildModel({ kind: 'MOCK', tab: 'SET_A', reportDate: '2026-10-12', ledger: VT.runLedger(VT.defaultConfig(), { id: 'a', kind: 'SET_A', sessions: [], target_weights: null, companies: {} }), config: VT.defaultConfig() });
+  const t2 = R.renderTemplate(decided, { hidden: true, guide: false });
+  assert.ok(t2.includes('가상매매 시작일 2026-10-19 전 · 기록 없음'));
+  assert.ok(t2.includes('가상매매 시작일: 2026-10-19'));
 });
 
 test('AI answer check: foreign numbers counted, missing check lines flagged', () => {
@@ -95,6 +100,29 @@ test('answers are stored per template hash on this device only, newest kept', as
   R.hiddenSetting(storage, false);
   assert.equal(R.hiddenSetting(storage), false);
   assert.equal(R.hiddenSetting({ getItem() { throw new Error('blocked'); } }), true);
+});
+
+test('mailbox writes only to the report tabs; Inbox sha256 is the hash of the written text', async () => {
+  const crypto = require('node:crypto');
+  const calls = [];
+  const session = {
+    sheetTitles: async () => ['Quotes'],
+    addTabs: async (id, t) => calls.push(['add', t]),
+    appendRows: async (id, range, rows) => calls.push(['append', range, rows[0]]),
+    fetchValues: async () => ({ values: [['sha256', 'model', 'created_at', 'answer'], ['x', 'm', 't', 'other'], ['h1', 'GPT', '2026-10-12T00:00Z', 'answer one']] }),
+  };
+  const text = 'TEMPLATE TEXT 숨김';
+  const sha = await R.postInbox(session, 'id', { report_date: '2026-10-12', kind: 'MOCK', template: text, data_sha256: 'd1', now: 'N' }, crypto.webcrypto);
+  assert.deepEqual(calls[0], ['add', ['ReportInbox', 'ReportOutbox']]);
+  assert.ok(calls.every((c) => c[0] === 'add' || /^'Report(Inbox|Outbox)'!A1$/.test(c[1])));
+  const row = calls[calls.length - 1][2];
+  assert.equal(row.length, 8);
+  assert.equal(row[4], crypto.createHash('sha256').update(text, 'utf8').digest('hex'));
+  assert.equal(row[4], sha);
+  assert.equal(row[5], 'd1');
+  assert.equal(row[7], text);
+  assert.deepEqual(await R.readOutbox(session, 'id', 'h1'), { model: 'GPT', created_at: '2026-10-12T00:00Z', answer: 'answer one' });
+  assert.equal(await R.readOutbox(session, 'id', 'nope'), null);
 });
 
 test('module performs no network I/O by itself', () => {
