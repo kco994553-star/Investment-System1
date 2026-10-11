@@ -1,4 +1,7 @@
 'use strict';const {chromium}=require('playwright'),assert=require('node:assert/strict');
+// Needs Playwright >= 1.57 (CI pins 1.58.2): older Playwright (e.g. a sandbox's preinstalled 1.56.1) does not apply
+// context.setOffline() to service-worker fetches, so the worker's navigation fetch still reaches the server, the online
+// app shell renders and this test fails with "FAIL PWA OFFLINE" although the offline shell works (environment, not app).
 const BASE=process.env.PAGES_COCKPIT_URL;
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let phase='START',pass=0,fail=0;
 try{for(const width of [390,1440]){const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'allow'}),page=await context.newPage();page.setDefaultTimeout(15000);let errors=0;page.on('pageerror',()=>errors++);await page.addInitScript(()=>{window.__pwaCsp=0;document.addEventListener('securitypolicyviolation',()=>window.__pwaCsp++);});

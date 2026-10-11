@@ -59,6 +59,16 @@ def _cik(value: Any) -> str | None:
 
 def _safe(value: Any) -> Any:
     """Keep malformed source values auditable without producing NaN JSON."""
+    # Plain JSON values (parsed SEC payloads): the same result as the generic path below,
+    # without re-walking every subtree through _to_json at each level (Universe504 shard cost).
+    if type(value) is dict:
+        return {str(k): _safe(v) for k, v in value.items()}
+    if type(value) is list:
+        return [_safe(v) for v in value]
+    if type(value) is float:
+        return value if math.isfinite(value) else None
+    if value is None or type(value) in (str, int, bool):
+        return value
     value = _to_json(value)
     if isinstance(value, dict):
         return {str(k): _safe(v) for k, v in value.items()}
@@ -86,10 +96,31 @@ def build_input(
     """
     if company_id not in US_LISTINGS:
         raise ValueError("company_id must belong to the existing US17 TARGET")
+    return _build_input(company_id, US_LISTINGS[company_id]["cik"], companyfacts, submissions,
+                        acquired_at, as_of, form_filter=form_filter)
+
+
+def build_universe_input(
+    cik: str, companyfacts: dict, submissions: dict, acquired_at: datetime, as_of: datetime,
+    *, form_filter: str = "10-K",
+) -> dict:
+    """The same M1 admission for one Universe504 issuer bound by the official SEC registry.
+
+    The caller supplies the registry-bound CIK (not a TARGET lookup); the company id is
+    ``sec_<cik>`` like the public Universe shares rows. Nothing else differs from build_input.
+    """
+    if type(cik) is not str or _cik(cik) != cik or cik == "0000000000":
+        raise ValueError("cik must be a 10-digit SEC CIK")
+    return _build_input("sec_" + cik, cik, companyfacts, submissions, acquired_at, as_of, form_filter=form_filter)
+
+
+def _build_input(
+    company_id: str, cik: str, companyfacts: dict, submissions: dict, acquired_at: datetime, as_of: datetime,
+    *, form_filter: str,
+) -> dict:
     if form_filter not in {"10-K", "10-Q"}:
         raise ValueError("form_filter must be 10-K or 10-Q")
     acquired_at, as_of = _aware(acquired_at, "acquired_at"), _aware(as_of, "as_of")
-    cik = US_LISTINGS[company_id]["cik"]
     result = {
         "contract": "SEC_M1_INPUT", "version": 1, "company_id": company_id, "cik": cik,
         "form_filter": form_filter,

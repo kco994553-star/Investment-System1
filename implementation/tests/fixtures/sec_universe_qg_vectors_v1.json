@@ -1,0 +1,769 @@
+{
+ "as_of": "2026-10-10T22:30:00Z",
+ "base": {
+  "as_of": "2026-10-10T22:30:00Z",
+  "availability_basis": "OBSERVED_CAPTURE_ONLY",
+  "code_count": 504,
+  "config_status": "DEFAULT_V0_UNCALIBRATED",
+  "config_version": "sec-universe-shares/v0",
+  "freshness_basis": "SOURCE_ACQUISITION",
+  "kind": "SEC_UNIVERSE_QG",
+  "last_shard_index": 3,
+  "method_status": "PROVISIONAL_UNCALIBRATED",
+  "reason_codes": [],
+  "records": {
+   "BATS:CBOE": {
+    "acquired_at": null,
+    "cik": null,
+    "factors": {
+     "competitive_advantage": null,
+     "eps_fcf_per_share_growth": null,
+     "excess_growth_vs_industry": null,
+     "fcf_quality": null,
+     "financial_health": null,
+     "growth_durability": null,
+     "growth_efficiency": null,
+     "management_quality": null,
+     "margin_quality": null,
+     "market_position": null,
+     "next_3_5y_growth": null,
+     "revenue_growth": null,
+     "roic_wacc": null
+    },
+    "reason_codes": [
+     "CIK_UNRESOLVED"
+    ],
+    "source_sha256": {
+     "companyfacts": null,
+     "submissions": null
+    },
+    "state": "NOT_AVAILABLE"
+   },
+   "NASDAQ:ADBE": {
+    "acquired_at": "2026-10-10T22:00:00Z",
+    "cik": "0000000001",
+    "factors": {
+     "competitive_advantage": null,
+     "eps_fcf_per_share_growth": null,
+     "excess_growth_vs_industry": null,
+     "fcf_quality": null,
+     "financial_health": 100,
+     "growth_durability": null,
+     "growth_efficiency": null,
+     "management_quality": null,
+     "margin_quality": 62.5,
+     "market_position": null,
+     "next_3_5y_growth": 80.00000000000003,
+     "revenue_growth": 80.00000000000003,
+     "roic_wacc": 0
+    },
+    "reason_codes": [],
+    "source_sha256": {
+     "companyfacts": "932fbc423bfe0886748003670a696b2d37211e9ce08f3cab9555f64e61cfb4b4",
+     "submissions": "94b16bf2acc1541084f46a99729e4b1e1dc17d8da39a1c51ac00a99e1f315175"
+    },
+    "state": "LIVE"
+   },
+   "NASDAQ:AMD": {
+    "acquired_at": "2026-10-09T22:00:00.123456Z",
+    "cik": "0000000004",
+    "factors": {
+     "competitive_advantage": null,
+     "eps_fcf_per_share_growth": null,
+     "excess_growth_vs_industry": null,
+     "fcf_quality": null,
+     "financial_health": null,
+     "growth_durability": null,
+     "growth_efficiency": null,
+     "management_quality": null,
+     "margin_quality": null,
+     "market_position": null,
+     "next_3_5y_growth": null,
+     "revenue_growth": null,
+     "roic_wacc": null
+    },
+    "reason_codes": [
+     "M1_NOT_AVAILABLE"
+    ],
+    "source_sha256": {
+     "companyfacts": "5bf1d790bb5b18b8862a813bc7c9f1131f3f1855b5a81bae913bc771d85c34e4",
+     "submissions": "41c53b47bbc774ca57044c24869d19540d3557bd253ab7b06e20bdd476ae597a"
+    },
+    "state": "NOT_AVAILABLE"
+   },
+   "NYSE:AOS": {
+    "acquired_at": "2026-10-09T22:00:00Z",
+    "cik": "0000000005",
+    "factors": {
+     "competitive_advantage": null,
+     "eps_fcf_per_share_growth": null,
+     "excess_growth_vs_industry": null,
+     "fcf_quality": null,
+     "financial_health": null,
+     "growth_durability": null,
+     "growth_efficiency": null,
+     "management_quality": null,
+     "margin_quality": null,
+     "market_position": null,
+     "next_3_5y_growth": null,
+     "revenue_growth": null,
+     "roic_wacc": null
+    },
+    "reason_codes": [
+     "UNRESOLVED_CURRENT_FACT_AMBIGUITY"
+    ],
+    "source_sha256": {
+     "companyfacts": "a2c77c49b2a280f22f82585406192e04d6142cb830ac371d7043c6754a225675",
+     "submissions": "ea5d59dfd8cee9eb063e931bf29c2051709349c8fca714197791187aef698fb3"
+    },
+    "state": "NOT_AVAILABLE"
+   },
+   "NYSE:MMM": {
+    "acquired_at": "2026-09-20T22:00:00Z",
+    "cik": "0000000003",
+    "factors": {
+     "competitive_advantage": null,
+     "eps_fcf_per_share_growth": null,
+     "excess_growth_vs_industry": null,
+     "fcf_quality": 41.25,
+     "financial_health": null,
+     "growth_durability": null,
+     "growth_efficiency": null,
+     "management_quality": null,
+     "margin_quality": null,
+     "market_position": null,
+     "next_3_5y_growth": null,
+     "revenue_growth": null,
+     "roic_wacc": null
+    },
+    "reason_codes": [
+     "STALE_INPUT"
+    ],
+    "source_sha256": {
+     "companyfacts": "b51013d9d5542e7d4973a881b37af32bc27cd1eb3bbfae10f4db648f86a307ba",
+     "submissions": "d5401fa4c69410c04c9850489c53b5ad840d3eb736f3651bb82f46d0f55c080b"
+    },
+    "state": "STALE"
+   }
+  },
+  "registry_sha256": "872491a30d60d598962de6e7b834ab76b2aa65fbab102c6ebaaae6acdc238822",
+  "schema_version": 1,
+  "shard_count": 7,
+  "stale_after_seconds": 1209600,
+  "state": "LIVE"
+ },
+ "cases": [
+  {
+   "id": "base_valid",
+   "ops": [],
+   "valid": true
+  },
+  {
+   "id": "null_shard_and_registry_valid",
+   "ops": [
+    {
+     "path": [
+      "last_shard_index"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "registry_sha256"
+     ],
+     "value": null
+    }
+   ],
+   "valid": true
+  },
+  {
+   "id": "zero_score_is_a_score_not_missing",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "factors",
+      "margin_quality"
+     ],
+     "value": 0
+    }
+   ],
+   "valid": true
+  },
+  {
+   "id": "top_price_key",
+   "ops": [
+    {
+     "path": [
+      "price"
+     ],
+     "value": 1
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "row_price_key",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "price"
+     ],
+     "value": 1
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "row_market_cap_key",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "market_cap"
+     ],
+     "value": 1
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "v_factor_added",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "factors",
+      "fundamental_value"
+     ],
+     "value": 50
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "factor_missing",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "factors",
+      "roic_wacc"
+     ],
+     "value": {
+      "$delete": true
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "score_negative",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "factors",
+      "roic_wacc"
+     ],
+     "value": -1
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "score_above_100",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "factors",
+      "roic_wacc"
+     ],
+     "value": 100.5
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "score_string",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "factors",
+      "roic_wacc"
+     ],
+     "value": "50"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "score_bool",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "factors",
+      "roic_wacc"
+     ],
+     "value": true
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "score_object_target_shape",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "factors",
+      "roic_wacc"
+     ],
+     "value": {
+      "score": 50,
+      "state": "LIVE"
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "fresh_row_marked_stale",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "state"
+     ],
+     "value": "STALE"
+    },
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "reason_codes"
+     ],
+     "value": [
+      "STALE_INPUT"
+     ]
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "stale_row_marked_live",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NYSE:MMM",
+      "state"
+     ],
+     "value": "LIVE"
+    },
+    {
+     "path": [
+      "records",
+      "NYSE:MMM",
+      "reason_codes"
+     ],
+     "value": []
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "stale_row_without_reason",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NYSE:MMM",
+      "reason_codes"
+     ],
+     "value": []
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "scored_row_extra_reason",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "reason_codes"
+     ],
+     "value": [
+      "M1_NOT_AVAILABLE"
+     ]
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "not_available_row_with_score",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:AMD",
+      "factors",
+      "roic_wacc"
+     ],
+     "value": 50
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "not_available_row_without_reason",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:AMD",
+      "reason_codes"
+     ],
+     "value": []
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "not_available_row_with_stale_reason",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:AMD",
+      "reason_codes"
+     ],
+     "value": [
+      "STALE_INPUT"
+     ]
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "unknown_reason",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:AMD",
+      "reason_codes"
+     ],
+     "value": [
+      "RANK"
+     ]
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "duplicate_reason",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:AMD",
+      "reason_codes"
+     ],
+     "value": [
+      "M1_NOT_AVAILABLE",
+      "M1_NOT_AVAILABLE"
+     ]
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "record_removed",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NYSE:AOS"
+     ],
+     "value": {
+      "$delete": true
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "acquired_after_as_of",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "acquired_at"
+     ],
+     "value": "2026-10-11T00:00:00Z"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "acquired_without_hash",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "source_sha256",
+      "submissions"
+     ],
+     "value": null
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "hash_without_acquired",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE",
+      "source_sha256",
+      "companyfacts"
+     ],
+     "value": "2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "bad_hash",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "source_sha256",
+      "companyfacts"
+     ],
+     "value": "x"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "short_cik",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "cik"
+     ],
+     "value": "1"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "zero_cik",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "cik"
+     ],
+     "value": "0000000000"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "acquired_without_cik",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:AMD",
+      "cik"
+     ],
+     "value": null
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "scored_row_without_acquired",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "acquired_at"
+     ],
+     "value": null
+    },
+    {
+     "path": [
+      "records",
+      "NASDAQ:ADBE",
+      "source_sha256"
+     ],
+     "value": {
+      "companyfacts": null,
+      "submissions": null
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "config_calibrated",
+   "ops": [
+    {
+     "path": [
+      "config_status"
+     ],
+     "value": "CALIBRATED"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "method_status_changed",
+   "ops": [
+    {
+     "path": [
+      "method_status"
+     ],
+     "value": "APPROVED"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "kind_changed",
+   "ops": [
+    {
+     "path": [
+      "kind"
+     ],
+     "value": "SEC_QG_FACTORS"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "stale_after_float",
+   "ops": [
+    {
+     "path": [
+      "stale_after_seconds"
+     ],
+     "value": 1.5
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "top_state_mismatch",
+   "ops": [
+    {
+     "path": [
+      "state"
+     ],
+     "value": "STALE"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "top_unknown_reason",
+   "ops": [
+    {
+     "path": [
+      "reason_codes"
+     ],
+     "value": [
+      "RANK"
+     ]
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "shard_index_out_of_range",
+   "ops": [
+    {
+     "path": [
+      "last_shard_index"
+     ],
+     "value": 7
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "code_count_changed",
+   "ops": [
+    {
+     "path": [
+      "code_count"
+     ],
+     "value": 503
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "bad_as_of",
+   "ops": [
+    {
+     "path": [
+      "as_of"
+     ],
+     "value": "2026-10-10"
+    }
+   ],
+   "valid": false
+  }
+ ],
+ "delete_marker": {
+  "$delete": true
+ },
+ "factors": [
+  "competitive_advantage",
+  "eps_fcf_per_share_growth",
+  "excess_growth_vs_industry",
+  "fcf_quality",
+  "financial_health",
+  "growth_durability",
+  "growth_efficiency",
+  "management_quality",
+  "margin_quality",
+  "market_position",
+  "next_3_5y_growth",
+  "revenue_growth",
+  "roic_wacc"
+ ],
+ "synthetic": true
+}
