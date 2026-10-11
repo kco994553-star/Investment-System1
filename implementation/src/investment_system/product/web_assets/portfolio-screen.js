@@ -1,6 +1,7 @@
 /* S03 portfolio (design canvas): badges, three required visualisations and the theme TARGET-vs-ACTUAL table.
    ACTUAL weights come only from this device (RAM, via DeviceActual.ramView); TARGET is never used as ACTUAL.
-   Industry composition stays NOT_AVAILABLE until the SIC mapping is approved. No concentration threshold exists yet. */
+   Industry composition uses the SIC industry group v0 and the concentration warning the theme v0 default (> 40%),
+   both from classification-screens.js (2026-10-11 user decision, uncalibrated); without it they stay NOT_AVAILABLE. */
 (function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;else root.PortfolioScreen=api;})(typeof globalThis==='object'?globalThis:this,function(g){
 'use strict';
 const C=g.CompanyScreen,{esc,na,fmtPct,fmtPp,tr,typeName}=C;
@@ -56,7 +57,8 @@ function whyNot(reason,locale){
 }
 function visuals({locale,catalog,ram,screens,idByTicker}){
  const T=tr(locale),ex=typeExposure({ram,screens,idByTicker});
- const industry='<section class="card" data-portfolio-card="industry"><h2>'+esc(T('산업 구성','Industry composition'))+'</h2><p>'+na(T('SEC SIC→업종군 표가 사용자 승인 대기라 자료 없음입니다. 전략 테마로 대신 채우지 않습니다.','The SEC SIC to industry-group table awaits your approval. Strategy themes do not fill this in.'),locale)+'</p></section>';
+ const CS=g.ClassificationScreens,cls=screens&&CS?screens[CS.FILE]:null;
+ const industry=CS?CS.industryCard({locale,ram,payload:cls,idByTicker}):'<section class="card" data-portfolio-card="industry"><h2>'+esc(T('산업 구성','Industry composition'))+'</h2><p>'+na(T('SEC SIC→업종군 표가 사용자 승인 대기라 자료 없음입니다. 전략 테마로 대신 채우지 않습니다.','The SEC SIC to industry-group table awaits your approval. Strategy themes do not fill this in.'),locale)+'</p></section>';
  let types,combos;
  if(!ex.ok){
   const reason=na(whyNot(ex.reason,locale),locale);
@@ -70,17 +72,17 @@ function visuals({locale,catalog,ram,screens,idByTicker}){
   combos='<section class="card" data-portfolio-card="combos"><h2>'+esc(T('유형 중복 조합','Type-overlap combinations'))+'</h2><p class="small">'+esc(T('정확한 조합 기준(공식 혼합 규칙) · 합계 100% · 미분류와 자료 없음은 따로 표시','Exact combinations (official mixing rule) · total 100% · unclassified and no-data shown separately'))+'</p><ul class="combo-list">'
    +ex.combos.map(([key,w])=>row(key.split('+').map(t=>typeName(t,locale)).join(' + '),w,key)).join('')+(ex.unclassified>0?row(T('미분류','Unclassified'),ex.unclassified,'unclassified'):'')+(ex.nodata>0?row(T('자료 없음','No data'),ex.nodata,'nodata'):'')+'</ul></section>';
  }
- return '<h2 class="section-title">'+esc(T('분기 필수 시각화','Required quarterly visuals'))+'</h2><div class="grid three">'+industry+types+combos+'</div>'+themeTable({locale,catalog,ram});
+ return '<h2 class="section-title">'+esc(T('분기 필수 시각화','Required quarterly visuals'))+'</h2><div class="grid three">'+industry+types+combos+'</div>'+themeTable({locale,catalog,ram,screens,idByTicker});
 }
-function themeTable({locale,catalog,ram}){
+function themeTable({locale,catalog,ram,screens,idByTicker}){
  const T=tr(locale),usable=ram&&ram.state==='AVAILABLE';
  const head='<section class="card" data-portfolio-card="themes"><h2>'+esc(T('전략 테마 목표 대비 실제','Strategy theme: TARGET vs ACTUAL'))+'</h2><p class="small">'+esc(T('산업과 다른 축입니다. ACTUAL은 이 기기의 보유·시세가 있을 때만 표시합니다.','A different axis from industry. ACTUAL appears only when this device has holdings and quotes.'))+'</p>';
- if(!catalog)return head+'<p>'+na(T('공개 카탈로그를 불러오는 중이거나 열 수 없습니다.','The public catalog is loading or could not be opened.'),locale)+'</p>'+concentration(locale)+'</section>';
+ if(!catalog)return head+'<p>'+na(T('공개 카탈로그를 불러오는 중이거나 열 수 없습니다.','The public catalog is loading or could not be opened.'),locale)+'</p>'+concentration(locale,{catalog,ram,screens,idByTicker})+'</section>';
  const rows=catalog.themes.map(th=>{const target=th.target_units/catalog.total_units,r=usable?ram.themes.find(x=>x.theme_id===th.theme_id):null,w=r&&Number.isFinite(r.weight)?r.weight:null;
   return '<tr data-theme-row="'+esc(th.theme_id)+'"><td>'+esc(locale==='en-US'?th.label_en:th.label)+'</td><td class="num">'+esc(fmtPct(target,locale))+'</td><td class="num" data-theme-actual>'+esc(fmtPct(w,locale))+'</td><td class="num" data-theme-delta>'+esc(w===null?'—':fmtPp(w-target,locale))+'</td></tr>';}).join('');
- return head+'<div class="table-wrap"><table data-theme-table><thead><tr><th>'+esc(T('테마','Theme'))+'</th><th>TARGET</th><th>ACTUAL</th><th>'+esc(T('차이','Gap'))+'</th></tr></thead><tbody>'+rows+'</tbody></table></div><p class="small">TARGET '+esc(catalog.target_root_version)+(usable?'':' · ACTUAL — = NOT_AVAILABLE')+'</p>'+concentration(locale)+'</section>';
+ return head+'<div class="table-wrap"><table data-theme-table><thead><tr><th>'+esc(T('테마','Theme'))+'</th><th>TARGET</th><th>ACTUAL</th><th>'+esc(T('차이','Gap'))+'</th></tr></thead><tbody>'+rows+'</tbody></table></div><p class="small">TARGET '+esc(catalog.target_root_version)+(usable?'':' · ACTUAL — = NOT_AVAILABLE')+'</p>'+concentration(locale,{catalog,ram,screens,idByTicker})+'</section>';
 }
-function concentration(locale){const T=tr(locale);return '<p data-concentration>'+esc(T('테마 쏠림 경고','Theme concentration warning'))+' '+na(T('경고 임계값이 아직 정해지지 않았습니다.','No warning threshold has been defined yet.'),locale)+'</p>';}
+function concentration(locale,ctx={}){const T=tr(locale),CS=g.ClassificationScreens;if(CS)return CS.concentrationBlock({locale,ram:ctx.ram,payload:ctx.screens?ctx.screens[CS.FILE]:null,catalog:ctx.catalog,idByTicker:ctx.idByTicker});return '<p data-concentration>'+esc(T('테마 쏠림 경고','Theme concentration warning'))+' '+na(T('경고 임계값이 아직 정해지지 않았습니다.','No warning threshold has been defined yet.'),locale)+'</p>';}
 function paint(host,{locale,catalog,ram,screens,idByTicker}){
  if(!host)return;
  const badgeHost=host.querySelector('[data-portfolio-badges]'),visualHost=host.querySelector('[data-portfolio-visuals]');
