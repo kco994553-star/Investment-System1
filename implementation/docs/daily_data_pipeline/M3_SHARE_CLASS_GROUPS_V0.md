@@ -56,10 +56,10 @@ Alphabet Class B는 사용자 결정(2026-10-11)에 따라 회사 전체 시총�
 
 ## 미확인 (실데이터)
 
-### GOOG 'Capital Stock' 정확 문구 예외 — 실데이터 확인 대기 (PENDING_REAL_DATA_CONFIRMATION)
+### GOOG 'Capital Stock' 정확 문구 예외 — 실데이터 확인 완료 (2026-10-11)
 
-- 결정: GOOG 표지 제목이 실데이터로 확인되면 CIK 0001652044·그 정확한 문구(대소문자 일치)만 예외로 허용한다. 일반 제목 규칙(`common stock|ordinary shares`)은 완화하지 않는다.
-- 현재 상태: **예외 미추가.** 2026-10-11 저장소 안 보관 실데이터를 찾았으나 Alphabet 표지 제목은 없었다. `data/raw/manifests/xbrl_instance__0001652044__0001652044-24-000118.json`(goog-20240930_htm.xml)·`-24-000079`·`-24-000053`은 메타데이터(URL·sha256·bytes)만 있고 원문 blob(`data/raw/blobs/`)은 보관되지 않았다. `data/raw/cover_xbrl_run_*.json`은 filing 목록·로그만, `reports/gate_evidence/`·`docs/security_map19_owner/`에는 13F/NPORT 표기("ALPHABET INC CLASS A")만 있고 Security12bTitle은 없다. 이 환경에서 sec.gov·Pages 직접 조회는 막혀 있다.
-- 그 전까지 GOOG의 제목이 "Class C Capital Stock"이면 GOOG는 `BASIS_UNCONFIRMED`이고 Alphabet은 `SHARE_CLASS_GROUP_INCOMPLETE` + `BASIS_UNCONFIRMED`로 순위 제외된다(테스트 `test_capital_stock_title_stays_basis_unconfirmed_general_rule_not_loosened`). Class B 주식수는 GOOGL 행 기준이라 이와 무관하게 공개된다.
-- 확인 방법: 비공개 원본 릴리스(`sec-universe-raw-*`)의 Alphabet cover XML에서 GOOG 문맥의 `dei:Security12bTitle` 원문을 확인한 뒤, 그 파일 경로를 근거로 정확 문구 예외를 추가한다.
+- 결정(GSQ-021): GOOG 표지 제목이 실데이터로 확인되면 CIK 0001652044와 그 정확한 문구(대소문자·공백까지 일치)만 예외로 허용한다. 일반 제목 규칙(`common stock|ordinary shares`)은 넓히지 않는다.
+- 확인 근거: 비공개 원자료 보관소 릴리스 `raw-c21-store-36305927245`에 든 Alphabet cover XBRL 원문 두 건이다(10-Q `0001652044-24-000053`, 기간 2024-03-31 / `0001652044-24-000118`, 기간 2024-09-30). 두 건 모두 GOOG 문맥의 `dei:Security12bTitle`이 `Class C Capital Stock, $0.001 par value`, GOOGL 문맥은 `Class A Common Stock, $0.001 par value`이다.
+- 적용: Python `providers/sec_m3_adapter.EXACT_TITLE_EXCEPTIONS`와 JS `sec-m3-adapter.js`에 같은 한 항목을 넣었다. 다른 문구, 다른 액면가, 대소문자 차이, 다른 CIK는 그대로 `BASIS_UNCONFIRMED`다(테스트 `test_capital_stock_general_rule_not_loosened`, `test_capital_stock_title_is_not_allowed_for_another_issuer`).
+- 결과: GOOG도 `SHARE_CLASS_BASIS`가 되어 Alphabet 그룹(GOOGL + GOOG + 비상장 Class B)이 모두 LIVE이고 가격이 있을 때 합산 순위에 들어간다.
 - 실제 공개 파일의 각 쌍 상태는 이 작업 환경에서 확인하지 못했다(NOT_AVAILABLE).
