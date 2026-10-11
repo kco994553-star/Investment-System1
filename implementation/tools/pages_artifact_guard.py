@@ -28,34 +28,22 @@ from investment_system.product.sec_m2_candidates import require_public_candidate
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
 from investment_system.product.public_engine_screens import FILENAMES as SCREEN_FILENAMES, require_public_screen
-<<<<<<< HEAD
-from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
-
-# Reviewed public output, not hashes derived from potentially changed inputs.
-APPROVED_SHA256 = {
-    "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
-=======
 from investment_system.universe.sec_universe_shares import FILENAME as UNIVERSE_SHARES_FILENAME, require_universe_shares
+from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
     "sec-universe-shares.js": "77648df45a6c2e55b2c3be2cea2735a1d2457d8ef811646e7f2d0de674564bbb",
     "device-valuation.js": "0723d5371710da30aa1ed9b564e4ac7260047a83c182b843e57be4715d822567",
     "dcf-parameters-defaults.js": "9025559eff99d29eba26fc7ef3cf5ed86b969f4ad0b03c1f83f67ee0630c3bee",
->>>>>>> origin/claude/investment-system-top500-validation-alrugm
+    "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "13a8a07e66664795d035f75e50d3c7f8d253e73be092b600a273c35925c2302d",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
-<<<<<<< HEAD
     "portfolio-screen.js": "4cb77c85b554e0461d8782930c90ace99dd1d8100cf1383c428e0f6b0198a485",
-    "company-screen.js": "4a5ec3208edf7b46957c0c689851692a2b9632f97d2aa02c4a9fee11ffb7de73",
+    "company-screen.js": "892dba7073d25015e34b2f19e82471ed4396a5ed303cee46af68845e159b3957",
     "ops-status.js": "57d2ce827c9b8af4d95e0155d6a01788b95417582bf176544d55c0ba2fd1ed9d",
-=======
-    "portfolio-screen.js": "31e9678de0d3ddc7f71f492723660a219b0a049444efde66bdfa5cf4f964222d",
-    "company-screen.js": "8ace30ccada622449de1448c88d8483beb1d49b2c387b974cf643793dec9f3c8",
-    "ops-status.js": "f3c44924f6501b3777579ff3147868ee211c5effc7a87169fe52c0dbd5688318",
->>>>>>> origin/claude/investment-system-top500-validation-alrugm
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "051dfd83afc377d70f5fb624e2b7b98612acdb4f3b3f1aa46f8c1fcc0c692390",
     "watchlist.js": "6d707c1f7beb0d4ceaf32cea18320049bbd1ba768bf91578ba6a664596f536cf",
@@ -80,11 +68,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-<<<<<<< HEAD
-    "app.js": "1c52e9cc3cfa35c9285180b5b597423c4abeb03b2a6630a5e685cd0a9499f12b",
-=======
-    "app.js": "7a03026d7cd8613cae7c1a175ec730b3bd20c8e77f49059c45de7a1a3395c07b",
->>>>>>> origin/claude/investment-system-top500-validation-alrugm
+    "app.js": "21e3c74e624dedb75c14ba10b5b10a3f92a970b4a7e605e949b86c134bcd5ae1",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "4b6bbdf71f74875199221cf534dc403be7961fd722abe2b1b12a499e2740f7f3",
@@ -94,22 +78,14 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "f50f5e35f70b2cc396f9224bd9bf8b5a2622c2a898f20641362eb52f2d9a324d",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-<<<<<<< HEAD
-    "index.html": "071b20b42fc6351907678268a6dcef9c094824125bc13c94936608dbc2ba3a44",
-=======
-    "index.html": "e111eded58314574f8fb79ad4c47e96c9570cf38fd4bb6c67792914f6a08cfcf",
->>>>>>> origin/claude/investment-system-top500-validation-alrugm
+    "index.html": "112648fbe6060f41bb281d4978f723727e94e9cbbc5d5d2754ca2f537d937ca6",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "eab3e5bc2554a15aa2b921ce134e07fbf5e64d5ac3ee2fc8346e58bb47fa9541",
 }
-<<<<<<< HEAD
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME} | set(SCREEN_FILENAMES) | {CLASSIFICATION_FILENAME}
-=======
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME} | set(SCREEN_FILENAMES)
->>>>>>> origin/claude/investment-system-top500-validation-alrugm
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, CLASSIFICATION_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 64
