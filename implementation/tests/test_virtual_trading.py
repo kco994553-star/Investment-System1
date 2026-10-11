@@ -128,6 +128,33 @@ def test_shadow_without_target_and_invalid_inputs():
         vt.run_ledger(bad, ref.base_ledger(n=5))
 
 
+def test_resume_continues_from_the_recorded_state_only():
+    """Decision 2026-10-11: continue from the recorded cash/positions/pending orders; recorded sessions are not replayed."""
+    s = scenario('resume_from_recorded_state')
+    r = vt.run_ledger(s['config'], s['ledger'])
+    after = s['ledger']['resume']['after']
+    assert r['state'] == 'OK' and all(d['date'] > after for d in r['days'])
+    first = r['days'][0]
+    assert [(t['company'], t['side'], t['decided_on']) for t in first['executed']] == [('bbb', 'SELL', after), ('ccc', 'BUY', after)]
+    assert first['executed'][1]['user_flag'] == 'HOLD'  # flag active on the decision day, as in a full replay
+    assert r['summary']['initial_value'] == s['ledger']['resume']['total_value']
+    none = scenario('resume_no_session_after')
+    assert vt.run_ledger(none['config'], none['ledger'])['reason_codes'] == ['NO_SESSION_AFTER_RECORDED']
+    bad = scenario('resume_invalid')
+    assert vt.run_ledger(bad['config'], bad['ledger'])['reason_codes'] == ['INPUT_INVALID']
+
+
+def test_v_slope_only_between_equal_compositions():
+    s = scenario('v_composition_changed')
+    r = vt.run_ledger(s['config'], s['ledger'])
+    d = s['ledger']['sessions']
+    by_day = {x['date']: x['judgements']['ccc'] for x in r['days']}
+    assert 'V_IMPROVED' in by_day[d[285]]['reason_codes']  # same composition 20 sessions apart → slope used
+    for i in range(290, 300):
+        assert 'V_IMPROVED' not in by_day[d[i]]['reason_codes'] and 'INCREASE_CANDIDATE' not in by_day[d[i]]['aux']
+        assert 'V_COMPOSITION_CHANGED' in by_day[d[i]]['aux']
+
+
 def test_hits_need_thirty_samples():
     s = scenario('set_a_deposit_buys')
     r = vt.run_ledger(s['config'], s['ledger'])

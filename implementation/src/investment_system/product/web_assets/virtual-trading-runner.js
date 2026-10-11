@@ -10,7 +10,12 @@ const SCHEMA='virtual-trading-inputs/1',RANGE='2y',FORWARD_VERSION='forward_vali
 const IDS=['asml','lrcx','klac','tokyo_electron','hanmi','nvda','amd','avgo','qcom','intc','msft','googl','amzn','rtx','stry','etn','hubb','gev','rok'];
 const TARGETS=Object.freeze({asml:'ASML',lrcx:'LRCX',klac:'KLAC',tokyo_electron:'8035.T',hanmi:'042700.KS',nvda:'NVDA',amd:'AMD',avgo:'AVGO',qcom:'QCOM',intc:'INTC',msft:'MSFT',googl:'GOOGL',amzn:'AMZN',rtx:'RTX',stry:'SYK',etn:'ETN',hubb:'HUBB',gev:'GEV',rok:'ROK'});
 const SP500_SYMBOL='SPY',FX_SYMBOLS=Object.freeze({USD:'KRW=X',JPY:'JPYKRW=X'}),CURRENCIES=['USD','KRW','JPY'],STATUSES=['COMPLETE','IN_PROGRESS','UNKNOWN'];
-const FLAG_KINDS=['HOLD','EXCLUDE','CONFIRMED_TEMPORARY','CONFIRMED_STRUCTURAL','CLEAR'],KINDS=['SET_A','SET_B','SHADOW'];
+const FLAG_KINDS=['HOLD','EXCLUDE','CONFIRMED_TEMPORARY','CONFIRMED_STRUCTURAL','CLEAR'],KINDS=['SET_A','SET_B','SET_C','SET_D','SHADOW'],USER_SETS=['SET_B','SET_C','SET_D'];
+// Set members other than the 19 TARGET companies: the ETFs on the client history allowlist (GoogleSheetQuotes.HISTORY_SYMBOLS
+// minus the FX pairs). Any wider symbol needs a Worker allowlist change first. They are priced in USD and have no public Q·G.
+const ETF_MEMBERS=Object.freeze({spy:'SPY',smh:'SMH',xlk:'XLK',xlv:'XLV',xle:'XLE',xlb:'XLB',xlp:'XLP',xly:'XLY',xlc:'XLC',xlu:'XLU',xlre:'XLRE',xlf:'XLF',xli:'XLI',vug:'VUG',qual:'QUAL'});
+const MEMBERS=Object.freeze({...TARGETS,...ETF_MEMBERS});
+const COMPOSITION=/^[a-z][a-z0-9_]{0,63}(?:\+[a-z][a-z0-9_]{0,63}){0,15}$/;
 const MAX_BARS=1500,MAX_TIMESTAMP=4102444800;
 const CODE=/^[A-Z][A-Z0-9_]{0,63}$/,DAY=/^\d{4}-\d{2}-\d{2}$/,CLOCK=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/,ZONE=/^[A-Za-z_]+(?:\/[A-Za-z0-9_+\-]+){0,2}$/;
 // Device-only per-date V store (V scores only, never prices). Read here; no producer writes it yet.
@@ -19,7 +24,7 @@ const V_KEY='investment.web.v1.virtual-trading-v-scores',HISTORY_KEY='investment
 const STOP=new Set(['AUTH_REQUIRED','AUTH_FORBIDDEN','AUTH_UNAVAILABLE','ORIGIN_FORBIDDEN','CONFIG_UNAVAILABLE','CANCELED','RATE_LIMIT_UNAVAILABLE']);
 // Every reason code this module can put on a result or source row (labels: VirtualTrading.CODE_LABELS). A Worker error code
 // outside this list is passed through and shown verbatim.
-const CODES=Object.freeze(['TARGET_CATALOG_INVALID','SESSIONS_NOT_AVAILABLE','SET_B_NOT_DEFINED','SET_B_INVALID','NO_ACTUAL','ACTUAL_INVALID','INITIAL_COST_FX_MISSING',
+const CODES=Object.freeze(['TARGET_CATALOG_INVALID','SESSIONS_NOT_AVAILABLE','SET_B_NOT_DEFINED','SET_B_INVALID','SET_NOT_DEFINED','SET_INVALID','TARGET_NOT_AVAILABLE','WEIGHT_INVALID','NO_ACTUAL','ACTUAL_INVALID','INITIAL_COST_FX_MISSING',
  'BEFORE_START_DATE','LEDGER_NOT_AVAILABLE','NOT_REQUESTED','HISTORY_UNAVAILABLE','HISTORY_FORMAT_INVALID','CURRENCY_MISMATCH','OFF','REQUEST_INVALID','ORIGIN_UNAPPROVED',
  ...STOP,'RATE_LIMITED','LEDGER_UNREACHABLE','LEDGER_INVALID','LEDGER_NOT_PUBLISHED']);
 const DEFAULT_SPACING_MS=5200,RATE_RETRY_MS=15000,RATE_RETRIES=2;
@@ -60,19 +65,24 @@ function sectorFor(classification,cid){
  return engine().sectorBenchmark(sic,semis);
 }
 const benchmarkKey=etf=>etf===SP500_SYMBOL?'SP500':etf;
-function universe(targets,holdings,setB){
- const cids=targets.map(t=>t.cid);
- for(const extra of [object(holdings)&&object(holdings.positions)?holdings.positions:{},object(setB)&&object(setB.target_weights)?setB.target_weights:{}])
-  for(const c of Object.keys(extra).filter(c=>own(TARGETS,c)&&!cids.includes(c)).sort())cids.push(c);
+const weightsOf=v=>object(v)&&object(v.target_weights)?v.target_weights:{};
+// User set definitions {SET_B, SET_C, SET_D: {target_weights}|null} (legacy: set_b alone) and any other weights whose
+// members must be priced (a stored Set A version in sets.SET_A, the user's own target).
+function setsOf(sets,setB){const out={};for(const k of USER_SETS)out[k]=object(sets)&&own(sets,k)?sets[k]:k==='SET_B'?setB:null;return out;}
+function universe(targets,holdings,setB,sets=null,userTarget=null){
+ const cids=targets.map(t=>t.cid),all=setsOf(sets,setB);
+ const lists=[object(holdings)&&object(holdings.positions)?holdings.positions:{},...USER_SETS.map(k=>weightsOf(all[k])),weightsOf(object(sets)?sets.SET_A:null),object(userTarget)?userTarget:{}];
+ for(const list of lists)for(const c of Object.keys(list).filter(c=>own(MEMBERS,c)&&!cids.includes(c)).sort())cids.push(c);
  return cids;
 }
-function requiredSymbols({catalog,classification=null,holdings=null,set_b=null}){
+function listingOf(targets){const out={};for(const t of targets)out[t.cid]=t.currency;for(const c of Object.keys(ETF_MEMBERS))out[c]='USD';return out;}
+function requiredSymbols({catalog,classification=null,holdings=null,set_b=null,sets=null,user_target=null}){
  const targets=catalogTargets(catalog);if(targets===null)return[];
- const currency={};for(const t of targets)currency[t.cid]=t.currency;
- const cids=universe(targets,holdings,set_b),used=new Set(cids.map(c=>currency[c]));
+ const currency=listingOf(targets);
+ const cids=universe(targets,holdings,set_b,sets,user_target),used=new Set(cids.map(c=>currency[c]));
  const fx=['USD','JPY'].filter(c=>used.has(c)).map(c=>FX_SYMBOLS[c]);
  const etfs=[...new Set(cids.map(c=>sectorFor(classification,c).etf))].filter(e=>e!==SP500_SYMBOL).sort();
- return [SP500_SYMBOL,...fx,...cids.map(c=>TARGETS[c]),...etfs];
+ return [...new Set([SP500_SYMBOL,...fx,...cids.map(c=>MEMBERS[c]),...etfs])];
 }
 // Worker private-history/1 payload (or {error}) → [closes, null] or [{}, code]. Missing closes stay absent.
 function seriesFromHistory(entry,symbol,currency){
@@ -117,6 +127,14 @@ function snapshotsFromLedger(forward){
  }
  return out;
 }
+// V factor composition per date and company (V history /2): the V slope compares only equal compositions.
+function vCompositionFromStore(store){
+ const out={};if(!object(store))return out;
+ for(const d of Object.keys(store).sort()){const row=store[d];if(!(day(d)&&object(row)))continue;
+  const kept={};for(const cid of Object.keys(row).sort()){const v=row[cid];if(typeof v==='string'&&COMPOSITION.test(v))kept[cid]=v;}
+  if(Object.keys(kept).length)out[d]=kept;}
+ return out;
+}
 function vScoresFromStore(store){
  const out={};if(!object(store))return out;
  for(const d of Object.keys(store).sort()){const row=store[d];if(!(day(d)&&object(row)))continue;
@@ -129,13 +147,13 @@ function rateOnOrBefore(series,d){let best=null;for(const k of Object.keys(serie
 const unavailable=codes=>({state:'NOT_AVAILABLE',reason_codes:[...codes],input:null});
 
 /* Pure assembly: same inputs → same ledger inputs as the Python reference. */
-function assemble({config,catalog,forward_ledger=null,classification=null,histories={},holdings=null,set_b=null,v_store=null,flags=null}){
+function assemble({config,catalog,forward_ledger=null,classification=null,histories={},holdings=null,set_b=null,sets=null,user_target=null,v_store=null,v_composition=null,flags=null}){
  histories=histories||{};const start=config&&config.start_date!==undefined?config.start_date:null;
  const out={schema:SCHEMA,state:'READY',reason_codes:[],sources:{},sector:{},ledgers:{}};
  const targets=catalogTargets(catalog);
  if(targets===null){out.state='NOT_AVAILABLE';out.reason_codes=['TARGET_CATALOG_INVALID'];for(const k of KINDS)out.ledgers[k]=unavailable(['TARGET_CATALOG_INVALID']);return out;}
- const listing={};for(const t of targets)listing[t.cid]=t.currency;
- const cids=universe(targets,holdings,set_b),series={},sector={};
+ const listing=listingOf(targets);
+ const cids=universe(targets,holdings,set_b,sets,user_target),series={},sector={};
  const source=(symbol,currency)=>{
   const[closes,code]=seriesFromHistory(own(histories,symbol)?histories[symbol]:null,symbol,currency);
   out.sources[symbol]={state:code===null?'OK':code==='NOT_REQUESTED'?'NOT_REQUESTED':'NOT_AVAILABLE',code,sessions:Object.keys(closes).length};
@@ -144,39 +162,48 @@ function assemble({config,catalog,forward_ledger=null,classification=null,histor
  };
  const spy=source(SP500_SYMBOL,'USD'),fx={},used=new Set(cids.map(c=>listing[c]));
  for(const ccy of ['USD','JPY'])if(used.has(ccy)){const rates=source(FX_SYMBOLS[ccy],'KRW');if(rates!==null)fx[ccy]=rates;}
- for(const cid of cids){source(TARGETS[cid],listing[cid]);sector[cid]=sectorFor(classification,cid);}
- for(const etf of [...new Set(Object.values(sector).map(s=>s.etf))].filter(e=>e!==SP500_SYMBOL).sort())source(etf,'USD');
+ for(const cid of cids){if(!own(out.sources,MEMBERS[cid]))source(MEMBERS[cid],listing[cid]);sector[cid]=sectorFor(classification,cid);}
+ for(const etf of [...new Set(Object.values(sector).map(s=>s.etf))].filter(e=>e!==SP500_SYMBOL&&!own(out.sources,e)).sort())source(etf,'USD');
  out.sector=sector;
  if(spy===null){out.state='NOT_AVAILABLE';out.reason_codes=['SESSIONS_NOT_AVAILABLE'];for(const k of KINDS)out.ledgers[k]=unavailable(['SESSIONS_NOT_AVAILABLE']);return out;}
  const sessions=Object.keys(spy).filter(d=>start!==null&&d>=start);
- const snapshots=snapshotsFromLedger(forward_ledger),vScores=vScoresFromStore(v_store),flagRows=flagsFromStore(flags);
- const ledger=(id,kind,members,weights,ledgerSessions,initial)=>{
+ const snapshots=snapshotsFromLedger(forward_ledger),vScores=vScoresFromStore(v_store),vComposition=vCompositionFromStore(v_composition),flagRows=flagsFromStore(flags);
+ // Every ledger carries every priced member (a stored set definition is then derived from any ledger input); the engine
+ // judges only its own target weights and positions.
+ const ledger=(id,kind,weights,ledgerSessions,initial)=>{
   const companies={},bench={SP500:spy};
-  for(const cid of [...members].sort()){const etf=sector[cid].etf,key=benchmarkKey(etf);
-   companies[cid]={currency:listing[cid],closes:own(series,TARGETS[cid])?series[TARGETS[cid]]:{},sector_benchmark:key};
+  for(const cid of [...cids].sort()){const etf=sector[cid].etf,key=benchmarkKey(etf);
+   companies[cid]={currency:listing[cid],closes:own(series,MEMBERS[cid])?series[MEMBERS[cid]]:{},sector_benchmark:key};
    if(key!=='SP500'&&own(series,etf))bench[key]=series[etf];}
-  return{state:'READY',reason_codes:[],input:{id,kind,sessions:ledgerSessions,target_weights:weights,companies,benchmarks:bench,fx:{...fx},initial,snapshots,v_scores:vScores,flags:flagRows,events:{}}};
+  return{state:'READY',reason_codes:[],input:{id,kind,sessions:ledgerSessions,target_weights:weights,companies,benchmarks:bench,fx:{...fx},initial,snapshots,v_scores:vScores,v_composition:vComposition,flags:flagRows,events:{}}};
  };
  const targetWeights={};for(const t of targets)targetWeights[t.cid]=t.weight;
- out.ledgers.SET_A=ledger('set_a','SET_A',Object.keys(targetWeights),targetWeights,sessions,{cash:0,positions:{}});
- const wb=object(set_b)&&own(set_b,'target_weights')?set_b.target_weights:null;
- if(wb===null||wb===undefined)out.ledgers.SET_B=unavailable(['SET_B_NOT_DEFINED']);
- else{let total=0;const ok=object(wb)&&Object.keys(wb).length>0&&Object.entries(wb).every(([c,v])=>own(TARGETS,c)&&own(listing,c)&&num(v)&&v>=0&&v<=100);
-  if(ok)for(const k of Object.keys(wb).sort())total+=wb[k];
-  out.ledgers.SET_B=ok&&total<=100+1e-9?ledger('set_b','SET_B',Object.keys(wb),{...wb},sessions,{cash:0,positions:{}}):unavailable(['SET_B_INVALID']);}
- out.ledgers.SHADOW=shadow(holdings,targetWeights,sessions,fx,ledger);
+ out.ledgers.SET_A=ledger('set_a','SET_A',targetWeights,sessions,{cash:0,positions:{}});
+ const all=setsOf(sets,set_b);
+ for(const kind of USER_SETS){
+  const w=object(all[kind])&&own(all[kind],'target_weights')?all[kind].target_weights:null,b=kind==='SET_B';
+  if(w===null||w===undefined){out.ledgers[kind]=unavailable([b?'SET_B_NOT_DEFINED':'SET_NOT_DEFINED']);continue;}
+  out.ledgers[kind]=weightsValid(w,listing)?ledger(kind.toLowerCase(),kind,{...w},sessions,{cash:0,positions:{}}):unavailable([b?'SET_B_INVALID':'SET_INVALID']);
+ }
+ // Shadow ledger target: the user's own target only (decision 2026-10-11: TARGET v0 is never substituted).
+ out.ledgers.SHADOW=user_target===null||user_target===undefined?unavailable(['TARGET_NOT_AVAILABLE'])
+  :weightsValid(user_target,listing)?shadow(holdings,{...user_target},sessions,fx,ledger,listing):unavailable(['WEIGHT_INVALID']);
  return out;
 }
-function shadow(holdings,targetWeights,sessions,fx,ledger){
+function weightsValid(w,listing){
+ let total=0;const ok=object(w)&&Object.keys(w).length>0&&Object.entries(w).every(([c,v])=>own(MEMBERS,c)&&own(listing,c)&&num(v)&&v>=0&&v<=100);
+ if(ok)for(const k of Object.keys(w).sort())total+=w[k];return ok&&total<=100+1e-9;
+}
+function shadow(holdings,targetWeights,sessions,fx,ledger,listing){
  const positions=object(holdings)&&object(holdings.positions)?holdings.positions:{},held={};
- for(const cid of Object.keys(positions).sort()){const p=positions[cid];if(own(targetWeights,cid)&&object(p)&&num(p.quantity)&&p.quantity>0)held[cid]=p;}
+ for(const cid of Object.keys(positions).sort()){const p=positions[cid];if(own(TARGETS,cid)&&own(listing,cid)&&object(p)&&num(p.quantity)&&p.quantity>0)held[cid]=p;}
  if(!Object.keys(held).length)return unavailable(['NO_ACTUAL']);
  if(Object.values(held).some(p=>!(num(p.average_cost)&&p.average_cost>=0&&CURRENCIES.includes(p.currency))))return unavailable(['ACTUAL_INVALID']);
  let begin;try{begin=easternDate(holdings.effective_at);}catch(_){return unavailable(['ACTUAL_INVALID']);}
  const mine=sessions.filter(d=>d>=begin),initial={cash:0,positions:{}};
  if(mine.length){for(const cid of Object.keys(held)){const p=held[cid],rate=p.currency==='KRW'?1:rateOnOrBefore(own(fx,p.currency)?fx[p.currency]:{},mine[0]);
   if(rate===null)return unavailable(['INITIAL_COST_FX_MISSING']);initial.positions[cid]={quantity:p.quantity,cost:p.quantity*p.average_cost*rate};}}
- return ledger('shadow-'+begin,'SHADOW',Object.keys(targetWeights),{...targetWeights},mine,initial);
+ return ledger('shadow-'+begin,'SHADOW',targetWeights,mine,initial);
 }
 
 /* Device ACTUAL snapshot (DeviceActual.readHoldings) → {effective_at, positions:{cid:{quantity, average_cost, currency}}}. */
@@ -191,7 +218,10 @@ function holdingsFromSnapshot(snapshot,catalog){
  }
  return{effective_at:snapshot.effective_at,positions:sortedObject(positions)};
 }
-function readVStore(storage){try{const raw=storage.getItem(V_KEY);if(!raw)return{};const v=JSON.parse(raw);return object(v)&&v.schema==='virtual-trading-v-scores/1'&&object(v.scores)?v.scores:{};}catch(_){return{};}}
+// V history store: schema /1 (V only, composition unknown) or /2 (V + factor composition per date and company).
+function readVStoreRaw(storage){try{const raw=storage.getItem(V_KEY);if(!raw)return null;const v=JSON.parse(raw);return object(v)&&(v.schema==='virtual-trading-v-scores/1'||v.schema==='virtual-trading-v-scores/2')&&object(v.scores)?v:null;}catch(_){return null;}}
+function readVStore(storage){const v=readVStoreRaw(storage);return v?v.scores:{};}
+function readVComposition(storage){const v=readVStoreRaw(storage);return v&&v.schema==='virtual-trading-v-scores/2'&&object(v.composition)?v.composition:{};}
 
 /* Engine run for one report tab. Not READY → a ledger-shaped NOT_STARTED/NOT_AVAILABLE result with the reasons. */
 function ledgerFor(result,kind,cfg){
@@ -251,7 +281,7 @@ async function fetchHistories(view,{session,origin,symbols,spacingMs=DEFAULT_SPA
    the user's sheet (VirtualLedgerSheets: stored Set B definition, VirtualFlags) when it is connected.
    rehearsal(histories, cfg) → cfg: a rehearsal run (VirtualTradingSignals.rehearse) skips the start-date gate and moves
    only the engine start_date to its window; the caller never records its result. */
-async function run(view,{config={},catalog,reportDate,signal=null,onProgress=null,set_b=null,flags=null,rehearsal=null}={}){
+async function run(view,{config={},catalog,reportDate,signal=null,onProgress=null,set_b=null,sets=null,user_target=null,flags=null,rehearsal=null}={}){
  const VT=engine(),cfg=VT.defaultConfig();
  const base={schema:SCHEMA,sources:{},sector:{},ledgers:{}};
  if(!(typeof reportDate==='string'&&day(reportDate))||(typeof rehearsal!=='function'&&reportDate<cfg.start_date))return{...base,state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']};
@@ -262,10 +292,10 @@ async function run(view,{config={},catalog,reportDate,signal=null,onProgress=nul
  if(forward.state!=='LOADED'&&typeof rehearsal!=='function')return{...base,state:'NOT_AVAILABLE',reason_codes:[forward.reason]};
  const classification=view.ClassificationScreens?await view.ClassificationScreens.load(view):null;
  let holdings=null;try{const A=view.DeviceActual;holdings=holdingsFromSnapshot(A.effectiveHoldings?(await A.effectiveHoldings(view,catalog)).snapshot:await A.readHoldings(view,catalog),catalog);}catch(_){holdings=null;}
- const symbols=requiredSymbols({catalog,classification,holdings,set_b});
+ const symbols=requiredSymbols({catalog,classification,holdings,set_b,sets,user_target});
  const histories=await fetchHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});
- return assemble({config:typeof rehearsal==='function'?rehearsal(histories,cfg):cfg,catalog,forward_ledger:forward.state==='LOADED'?forward.ledger:null,classification,histories,holdings,set_b,v_store:readVStore(view.localStorage),flags:flags||[]});
+ return assemble({config:typeof rehearsal==='function'?rehearsal(histories,cfg):cfg,catalog,forward_ledger:forward.state==='LOADED'?forward.ledger:null,classification,histories,holdings,set_b,sets,user_target,v_store:readVStore(view.localStorage),v_composition:readVComposition(view.localStorage),flags:flags||[]});
 }
-return Object.freeze({SCHEMA,CODES,IDS,TARGETS,SP500_SYMBOL,FX_SYMBOLS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,snapshotsFromLedger,
- vScoresFromStore,flagsFromStore,assemble,holdingsFromSnapshot,readVStore,ledgerFor,statusRows,readiness,fetchHistories,run,clearCache});
+return Object.freeze({SCHEMA,CODES,IDS,TARGETS,ETF_MEMBERS,MEMBERS,USER_SETS,KINDS,SP500_SYMBOL,FX_SYMBOLS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,snapshotsFromLedger,
+ vScoresFromStore,vCompositionFromStore,flagsFromStore,assemble,holdingsFromSnapshot,readVStore,readVComposition,ledgerFor,statusRows,readiness,fetchHistories,run,clearCache});
 });

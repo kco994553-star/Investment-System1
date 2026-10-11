@@ -32,6 +32,14 @@ TARGETS = {'asml': 'ASML', 'lrcx': 'LRCX', 'klac': 'KLAC', 'tokyo_electron': '80
            'nvda': 'NVDA', 'amd': 'AMD', 'avgo': 'AVGO', 'qcom': 'QCOM', 'intc': 'INTC', 'msft': 'MSFT',
            'googl': 'GOOGL', 'amzn': 'AMZN', 'rtx': 'RTX', 'stry': 'SYK', 'etn': 'ETN', 'hubb': 'HUBB', 'gev': 'GEV',
            'rok': 'ROK'}
+# Set members other than the 19 TARGET companies: the ETFs on the client history allowlist (GoogleSheetQuotes.HISTORY_SYMBOLS
+# minus the FX pairs). Any wider symbol needs a Worker allowlist change first. Priced in USD, no public Q·G.
+ETF_MEMBERS = {'spy': 'SPY', 'smh': 'SMH', 'xlk': 'XLK', 'xlv': 'XLV', 'xle': 'XLE', 'xlb': 'XLB', 'xlp': 'XLP', 'xly': 'XLY',
+               'xlc': 'XLC', 'xlu': 'XLU', 'xlre': 'XLRE', 'xlf': 'XLF', 'xli': 'XLI', 'vug': 'VUG', 'qual': 'QUAL'}
+MEMBERS = {**TARGETS, **ETF_MEMBERS}
+USER_SETS = ('SET_B', 'SET_C', 'SET_D')
+KINDS = ('SET_A', 'SET_B', 'SET_C', 'SET_D', 'SHADOW')
+COMPOSITION = re.compile(r'[a-z][a-z0-9_]{0,63}(?:\+[a-z][a-z0-9_]{0,63}){0,15}')
 SP500_SYMBOL = 'SPY'
 FX_SYMBOLS = {'USD': 'KRW=X', 'JPY': 'JPYKRW=X'}
 CURRENCIES = ('USD', 'KRW', 'JPY')
@@ -131,25 +139,46 @@ def _benchmark_key(etf):
     return 'SP500' if etf == SP500_SYMBOL else etf
 
 
-def _universe(targets, holdings, set_b):
+def _weights_of(v):
+    return v['target_weights'] if isinstance(v, dict) and isinstance(v.get('target_weights'), dict) else {}
+
+
+def _sets_of(sets, set_b):
+    """User set definitions {SET_B, SET_C, SET_D: {target_weights} | None}; legacy callers pass set_b alone."""
+    return {k: (sets[k] if isinstance(sets, dict) and k in sets else (set_b if k == 'SET_B' else None)) for k in USER_SETS}
+
+
+def _universe(targets, holdings, set_b, sets=None, user_target=None):
     cids = [t['cid'] for t in targets]
+    every = _sets_of(sets, set_b)
     positions = holdings.get('positions') if isinstance(holdings, dict) else None
-    weights = set_b.get('target_weights') if isinstance(set_b, dict) else None
-    for extra in (positions, weights):
-        cids += sorted(c for c in (extra if isinstance(extra, dict) else {}) if c in TARGETS and c not in cids)
+    lists = [positions if isinstance(positions, dict) else {}] + [_weights_of(every[k]) for k in USER_SETS] + \
+        [_weights_of(sets.get('SET_A') if isinstance(sets, dict) else None), user_target if isinstance(user_target, dict) else {}]
+    for extra in lists:
+        cids += sorted(c for c in extra if c in MEMBERS and c not in cids)
     return cids
 
 
-def required_symbols(*, catalog, classification=None, holdings=None, set_b=None):
-    """Symbols to request, in request order: SPY first (sessions), then FX, companies and sector ETFs."""
+def _listing(targets):
+    out = {t['cid']: t['currency'] for t in targets}
+    out.update({c: 'USD' for c in ETF_MEMBERS})
+    return out
+
+
+def required_symbols(*, catalog, classification=None, holdings=None, set_b=None, sets=None, user_target=None):
+    """Symbols to request, in request order: SPY first (sessions), then FX, members and sector ETFs (each once)."""
     targets = catalog_targets(catalog)
     if targets is None:
         return []
-    currency = {t['cid']: t['currency'] for t in targets}
-    cids = _universe(targets, holdings, set_b)
+    currency = _listing(targets)
+    cids = _universe(targets, holdings, set_b, sets, user_target)
     fx = [FX_SYMBOLS[c] for c in ('USD', 'JPY') if c in {currency[cid] for cid in cids}]
     etfs = sorted({sector_for(classification, cid)['etf'] for cid in cids} - {SP500_SYMBOL})
-    return [SP500_SYMBOL] + fx + [TARGETS[cid] for cid in cids] + etfs
+    out = []
+    for symbol in [SP500_SYMBOL] + fx + [MEMBERS[cid] for cid in cids] + etfs:
+        if symbol not in out:
+            out.append(symbol)
+    return out
 
 
 def series_from_history(entry, symbol, currency):
@@ -219,6 +248,20 @@ def snapshots_from_ledger(forward):
     return out
 
 
+def v_composition_from_store(store):
+    """V factor composition per date and company (V history /2): the V slope compares only equal compositions."""
+    out = {}
+    if not isinstance(store, dict):
+        return out
+    for d, row in sorted(store.items()):
+        if not (_day(d) and isinstance(row, dict)):
+            continue
+        kept = {cid: v for cid, v in sorted(row.items()) if isinstance(v, str) and COMPOSITION.fullmatch(v)}
+        if kept:
+            out[d] = kept
+    return out
+
+
 def v_scores_from_store(store):
     """Device V scores stored per date: only finite values within 0..100 are kept; nothing is filled."""
     out = {}
@@ -257,18 +300,20 @@ def _unavailable(codes):
 
 
 def assemble(*, config, catalog, forward_ledger=None, classification=None, histories=None, holdings=None,
-             set_b=None, v_store=None, flags=None):
-    """Same inputs → same ledger inputs for SET_A, SET_B and SHADOW (see module docstring)."""
+             set_b=None, sets=None, user_target=None, v_store=None, v_composition=None, flags=None):
+    """Same inputs → same ledger inputs for SET_A, SET_B, SET_C, SET_D and SHADOW (see module docstring). The shadow
+    ledger's target is the user's own target only (decision 2026-10-11): without it the shadow ledger is
+    TARGET_NOT_AVAILABLE; TARGET v0 is never substituted."""
     histories = histories or {}
     start = config.get('start_date')
     out = {'schema': SCHEMA, 'state': 'READY', 'reason_codes': [], 'sources': {}, 'sector': {}, 'ledgers': {}}
     targets = catalog_targets(catalog)
     if targets is None:
         out.update(state='NOT_AVAILABLE', reason_codes=['TARGET_CATALOG_INVALID'])
-        out['ledgers'] = {k: _unavailable(['TARGET_CATALOG_INVALID']) for k in ('SET_A', 'SET_B', 'SHADOW')}
+        out['ledgers'] = {k: _unavailable(['TARGET_CATALOG_INVALID']) for k in KINDS}
         return out
-    listing = {t['cid']: t['currency'] for t in targets}
-    cids = _universe(targets, holdings, set_b)
+    listing = _listing(targets)
+    cids = _universe(targets, holdings, set_b, sets, user_target)
     series, sector = {}, {}
 
     def source(symbol, currency):
@@ -287,52 +332,72 @@ def assemble(*, config, catalog, forward_ledger=None, classification=None, histo
             if rates is not None:
                 fx[ccy] = rates
     for cid in cids:
-        source(TARGETS[cid], listing[cid])
+        if MEMBERS[cid] not in out['sources']:
+            source(MEMBERS[cid], listing[cid])
         sector[cid] = sector_for(classification, cid)
     for etf in sorted({s['etf'] for s in sector.values()} - {SP500_SYMBOL}):
-        source(etf, 'USD')
+        if etf not in out['sources']:
+            source(etf, 'USD')
     out['sector'] = sector
     if spy is None:
         out.update(state='NOT_AVAILABLE', reason_codes=['SESSIONS_NOT_AVAILABLE'])
-        out['ledgers'] = {k: _unavailable(['SESSIONS_NOT_AVAILABLE']) for k in ('SET_A', 'SET_B', 'SHADOW')}
+        out['ledgers'] = {k: _unavailable(['SESSIONS_NOT_AVAILABLE']) for k in KINDS}
         return out
     sessions = [d for d in spy if start is not None and d >= start]
     snapshots = snapshots_from_ledger(forward_ledger)
     v_scores = v_scores_from_store(v_store)
+    v_comp = v_composition_from_store(v_composition)
     flag_rows = flags_from_store(flags)
 
-    def ledger(ledger_id, kind, universe, weights, ledger_sessions, initial):
+    # Every ledger carries every priced member (a stored set definition is then derived from any ledger input); the
+    # engine judges only its own target weights and positions.
+    def ledger(ledger_id, kind, weights, ledger_sessions, initial):
         companies, bench = {}, {'SP500': spy}
-        for cid in sorted(universe):
+        for cid in sorted(cids):
             key = _benchmark_key(sector[cid]['etf'])
-            companies[cid] = {'currency': listing[cid], 'closes': series.get(TARGETS[cid], {}), 'sector_benchmark': key}
+            companies[cid] = {'currency': listing[cid], 'closes': series.get(MEMBERS[cid], {}), 'sector_benchmark': key}
             if key != 'SP500' and sector[cid]['etf'] in series:
                 bench[key] = series[sector[cid]['etf']]
         return {'state': 'READY', 'reason_codes': [], 'input': {
             'id': ledger_id, 'kind': kind, 'sessions': ledger_sessions, 'target_weights': weights,
             'companies': companies, 'benchmarks': bench, 'fx': dict(fx), 'initial': initial,
-            'snapshots': snapshots, 'v_scores': v_scores, 'flags': flag_rows, 'events': {}}}
+            'snapshots': snapshots, 'v_scores': v_scores, 'v_composition': v_comp, 'flags': flag_rows, 'events': {}}}
 
     target_weights = {t['cid']: t['weight'] for t in targets}
-    out['ledgers']['SET_A'] = ledger('set_a', 'SET_A', list(target_weights), target_weights, sessions,
-                                     {'cash': 0, 'positions': {}})
-    weights_b = set_b.get('target_weights') if isinstance(set_b, dict) else None
-    if weights_b is None:
-        out['ledgers']['SET_B'] = _unavailable(['SET_B_NOT_DEFINED'])
-    elif not (isinstance(weights_b, dict) and weights_b and all(c in TARGETS and c in listing and _num(v) and 0 <= v <= 100 for c, v in weights_b.items())
-              and sum(weights_b[k] for k in sorted(weights_b)) <= 100 + 1e-9):
-        out['ledgers']['SET_B'] = _unavailable(['SET_B_INVALID'])
+    out['ledgers']['SET_A'] = ledger('set_a', 'SET_A', target_weights, sessions, {'cash': 0, 'positions': {}})
+    every = _sets_of(sets, set_b)
+    for kind in USER_SETS:
+        w = every[kind].get('target_weights') if isinstance(every[kind], dict) else None
+        legacy = kind == 'SET_B'
+        if w is None:
+            out['ledgers'][kind] = _unavailable(['SET_B_NOT_DEFINED' if legacy else 'SET_NOT_DEFINED'])
+        elif not _weights_valid(w, listing):
+            out['ledgers'][kind] = _unavailable(['SET_B_INVALID' if legacy else 'SET_INVALID'])
+        else:
+            out['ledgers'][kind] = ledger(kind.lower(), kind, dict(w), sessions, {'cash': 0, 'positions': {}})
+    if user_target is None:
+        out['ledgers']['SHADOW'] = _unavailable(['TARGET_NOT_AVAILABLE'])
+    elif not _weights_valid(user_target, listing):
+        out['ledgers']['SHADOW'] = _unavailable(['WEIGHT_INVALID'])
     else:
-        out['ledgers']['SET_B'] = ledger('set_b', 'SET_B', list(weights_b), dict(weights_b), sessions, {'cash': 0, 'positions': {}})
-    out['ledgers']['SHADOW'] = _shadow(holdings, target_weights, sessions, fx, ledger)
+        out['ledgers']['SHADOW'] = _shadow(holdings, dict(user_target), sessions, fx, ledger, listing)
     return out
 
 
-def _shadow(holdings, target_weights, sessions, fx, ledger):
+def _weights_valid(w, listing):
+    if not (isinstance(w, dict) and w and all(c in MEMBERS and c in listing and _num(v) and type(v) is not bool and 0 <= v <= 100 for c, v in w.items())):
+        return False
+    total = 0
+    for k in sorted(w):
+        total += w[k]
+    return total <= 100 + 1e-9
+
+
+def _shadow(holdings, target_weights, sessions, fx, ledger, listing):
     positions = holdings.get('positions') if isinstance(holdings, dict) else None
     positions = positions if isinstance(positions, dict) else {}
     held = {cid: p for cid, p in sorted(positions.items())
-            if cid in target_weights and isinstance(p, dict) and _num(p.get('quantity')) and p['quantity'] > 0}
+            if cid in TARGETS and cid in listing and isinstance(p, dict) and _num(p.get('quantity')) and p['quantity'] > 0}
     if not held:
         return _unavailable(['NO_ACTUAL'])
     if any(not (_num(p.get('average_cost')) and p['average_cost'] >= 0 and p.get('currency') in CURRENCIES) for p in held.values()):
@@ -349,4 +414,4 @@ def _shadow(holdings, target_weights, sessions, fx, ledger):
             if rate is None:
                 return _unavailable(['INITIAL_COST_FX_MISSING'])
             initial['positions'][cid] = {'quantity': p['quantity'], 'cost': p['quantity'] * p['average_cost'] * rate}
-    return ledger('shadow-' + begin, 'SHADOW', list(target_weights), dict(target_weights), own, initial)
+    return ledger('shadow-' + begin, 'SHADOW', target_weights, own, initial)

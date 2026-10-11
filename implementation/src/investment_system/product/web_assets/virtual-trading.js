@@ -4,7 +4,7 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.VirtualTrading=api;})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const CONFIG=Object.freeze(JSON.parse('{"schema_version":1,"config_version":"virtual_trading/v1-provisional","rules_version":"virtual_trading_rules/v1","status":"PROVISIONAL_UNCALIBRATED","role":"RAM_ONLY_DEVICE","decided_at":"2026-10-11","start_date":"2026-10-19","base_currency":"KRW","daily_deposit":1000000,"buy_limit":1000000,"sell_limit":1000000,"execution":"NEXT_SESSION_CLOSE","cost_bps":0,"fractional_quantity":true,"band_pp":1,"qg_decline_threshold":5,"min_trade":10000,"abnormal_drop":{"window_sessions":20,"lookback_sessions":252,"k":2},"sector_basis":"SECTOR_ETF_CONFIRMED","macro_gate":"INACTIVE_MAPPING_PENDING","v_slope":{"lookback_sessions":20,"threshold":10},"benchmark":"SP500","hit_windows":[5,20,63],"hit_min_samples":30,"total_score":"TYPE_WEIGHTED_QGV_ELSE_QG","provenance":{"start_date":"D-13 DECIDED_2026-10-11","daily_deposit":"D-1 PROVISIONAL","buy_limit":"D-15 DECIDED_2026-10-10","sell_limit":"D-15 DECIDED_2026-10-10","execution":"D-2 PROVISIONAL","cost_bps":"D-3 PROVISIONAL","fractional_quantity":"D-4 PROVISIONAL","abnormal_drop":"D-5 PROVISIONAL","macro_gate":"D-6 PROVISIONAL","band_pp":"D-7 PROVISIONAL","qg_decline_threshold":"D-8 PROVISIONAL","min_trade":"D-9 PROVISIONAL","benchmark":"D-11 PROVISIONAL","hit_min_samples":"D-12 PROVISIONAL","total_score":"D-14 PROVISIONAL","v_slope":"D-21 PROVISIONAL","sector_basis":"D-22 DECIDED_2026-10-11 (sector_etf_map/v1)"}}'));
-const LEDGER_KINDS=['SET_A','SET_B','SHADOW'],COVERAGES=['READY','PARTIAL','BLOCKED'],FLAG_KINDS=['HOLD','EXCLUDE','CONFIRMED_TEMPORARY','CONFIRMED_STRUCTURAL','CLEAR'],EVENT_KINDS=['EARNINGS_WINDOW','TYPE_CHANGED'];
+const LEDGER_KINDS=['SET_A','SET_B','SET_C','SET_D','SHADOW'],COVERAGES=['READY','PARTIAL','BLOCKED'],FLAG_KINDS=['HOLD','EXCLUDE','CONFIRMED_TEMPORARY','CONFIRMED_STRUCTURAL','CLEAR'],EVENT_KINDS=['EARNINGS_WINDOW','TYPE_CHANGED'];
 const LEVELS=Object.freeze(['BLOCK','RISK_RECHECK','REDUCE_REVIEW','INCREASE_REVIEW','ADDITIONAL_REVIEW','HOLDING_CONTEXT','OBSERVE']);
 const SYMBOLS=Object.freeze({BLOCK:'■',RISK_RECHECK:'▼',REDUCE_REVIEW:'▼',INCREASE_REVIEW:'▲',ADDITIONAL_REVIEW:'●',HOLDING_CONTEXT:'●',OBSERVE:'●'});
 const SP500='SP500';
@@ -43,9 +43,18 @@ function validateLedger(L){
  const snaps=has(L,'snapshots')?L.snapshots:{};need(obj(snaps));
  for(const[d,rows]of Object.entries(snaps)){need(day(d)&&obj(rows));for(const r of Object.values(rows))need(obj(r)&&COVERAGES.includes(r.coverage)&&(r.q===null||r.q===undefined||num(r.q))&&(r.g===null||r.g===undefined||num(r.g)));}
  const vs=has(L,'v_scores')?L.v_scores:{};need(obj(vs)&&Object.entries(vs).every(([d,r])=>day(d)&&obj(r)&&Object.values(r).every(v=>v===null||num(v))));
+ const vc=has(L,'v_composition')?L.v_composition:{};need(obj(vc)&&Object.entries(vc).every(([d,r])=>day(d)&&obj(r)&&Object.values(r).every(v=>v===null||typeof v==='string')));
  const flags=has(L,'flags')?L.flags:[];need(Array.isArray(flags)&&flags.every(f=>obj(f)&&day(f.date)&&FLAG_KINDS.includes(f.kind)&&typeof f.company==='string'));
  const ev=has(L,'events')?L.events:{};need(obj(ev)&&Object.entries(ev).every(([d,r])=>day(d)&&obj(r)&&Object.values(r).every(x=>Array.isArray(x)&&x.every(e=>EVENT_KINDS.includes(e)))));
+ if(has(L,'resume')&&L.resume!==null&&L.resume!==undefined)validateResume(L.resume,L.companies);
  return L;
+}
+/* Recorded state to continue from (decision 2026-10-11): the recorded rows are canonical. Positions carry quantity and KRW
+   cost; pending holds the virtual orders decided on the last recorded session (executed on the next one). */
+function validateResume(r,comps){
+ need(obj(r)&&day(r.after)&&num(r.cash)&&r.cash>=0&&obj(r.positions)&&(r.total_value===null||r.total_value===undefined||num(r.total_value))&&Array.isArray(r.pending));
+ for(const[cid,p]of Object.entries(r.positions))need(has(comps,cid)&&obj(p)&&pos(p.quantity)&&num(p.cost));
+ for(const o of r.pending)need(obj(o)&&typeof o.company==='string'&&(o.side==='BUY'||o.side==='SELL')&&pos(o.amount)&&Array.isArray(o.reason_codes)&&o.reason_codes.every(c=>typeof c==='string'));
 }
 function fxRate(L,ccy,d){if(ccy==='KRW')return 1;const s=get(L.fx||{},ccy);return s?get(s,d)??null:null;}
 function lastOnOrBefore(s,d){let best=null;for(const k of Object.keys(s))if(k<=d&&(best===null||k>best))best=k;return best;}
@@ -94,7 +103,10 @@ function judge(L,cfg,cid,d,idx,state,total){
  let vUp=false,vDown=false;const lb=cfg.v_slope.lookback_sessions;
  if(vUsable&&idx-lb>=0){
   const past=L.sessions[idx-lb],vs=L.v_scores||{},vNow=get(get(vs,d)||{},cid)??null,vPast=get(get(vs,past)||{},cid)??null,qgPast=qg(get(get(snaps,past)||{},cid)??null);
-  if(vNow!==null&&vPast!==null&&qgNow!==null&&qgPast!==null&&qgNow-qgPast>-cfg.qg_decline_threshold){
+  // V slope compares only days with the same V factor composition; unknown or different → no slope (NA).
+  const vc=L.v_composition||{},compNow=get(get(vc,d)||{},cid)??null,compPast=get(get(vc,past)||{},cid)??null,same=typeof compNow==='string'&&compNow===compPast;
+  if(vNow!==null&&vPast!==null&&!same)aux.push('V_COMPOSITION_CHANGED');
+  if(same&&vNow!==null&&vPast!==null&&qgNow!==null&&qgPast!==null&&qgNow-qgPast>-cfg.qg_decline_threshold){
    if(vNow-vPast>=cfg.v_slope.threshold)vUp=true;else if(vPast-vNow>=cfg.v_slope.threshold)vDown=true;
   }
  }
@@ -148,13 +160,21 @@ function runLedger(config,ledger){
  if(cfg.start_date===null||cfg.start_date===undefined)return stop('NOT_STARTED','START_DATE_NOT_SET');
  let L;try{L=validateLedger(ledger);}catch(e){return stop('NOT_AVAILABLE',e.message);}
  if(L.target_weights===null||L.target_weights===undefined)return stop('NOT_AVAILABLE','TARGET_NOT_AVAILABLE');
- const first=L.sessions.findIndex(x=>x>=cfg.start_date);if(first<0)return stop('NOT_STARTED','NO_SESSION_ON_OR_AFTER_START');
- const init=has(L,'initial')?L.initial:{cash:0,positions:{}};
- const state={cash:init.cash,positions:{}};for(const[k,v]of Object.entries(sortedEntries(init.positions)))state.positions[k]={quantity:v.quantity,cost:v.cost};
- let[initialValue]=valueOf(L,state,L.sessions[first]);if(initialValue===null)return stop('NOT_AVAILABLE','INITIAL_VALUE_NOT_AVAILABLE');
- initialValue+=state.cash;
- const feeRate=cfg.cost_bps/10000,days=[],trades=[];let pending=[],deposits=0,realized=0,prevTotal=null,growth=1;
- const universe=[...new Set([...Object.keys(L.target_weights),...Object.keys(state.positions)])].sort();
+ const resume=has(L,'resume')&&L.resume!==null&&L.resume!==undefined?L.resume:null,after=resume?resume.after:null;
+ const first=L.sessions.findIndex(x=>x>=cfg.start_date&&(after===null||x>after));if(first<0)return stop('NOT_STARTED',resume?'NO_SESSION_AFTER_RECORDED':'NO_SESSION_ON_OR_AFTER_START');
+ const init=has(L,'initial')?L.initial:{cash:0,positions:{}},src=resume||init;
+ const state={cash:src.cash,positions:{}};for(const[k,v]of Object.entries(sortedEntries(src.positions)))state.positions[k]={quantity:v.quantity,cost:v.cost};
+ const days=[],trades=[];let pending=[],deposits=0,realized=0,prevTotal=null,growth=1,initialValue;
+ if(resume){
+  // Continue from the recorded state: no re-valuation of the recorded day, its pending orders execute next.
+  initialValue=resume.total_value??null;prevTotal=resume.total_value??null;
+  pending=resume.pending.map(o=>({company:o.company,side:o.side,amount:o.amount,reason_codes:[...o.reason_codes],decided_on:after,user_flag:activeFlag(L.flags||[],o.company,after)}));
+ }else{
+  [initialValue]=valueOf(L,state,L.sessions[first]);if(initialValue===null)return stop('NOT_AVAILABLE','INITIAL_VALUE_NOT_AVAILABLE');
+  initialValue+=state.cash;
+ }
+ const feeRate=cfg.cost_bps/10000;
+ const universe=[...new Set([...Object.keys(L.target_weights),...Object.keys(init.positions),...Object.keys(state.positions)])].sort();
  for(let idx=first;idx<L.sessions.length;idx++){
   const d=L.sessions[idx],executed=[],cancelled=[];
   const ordered=[...pending].sort((a,b)=>{const sa=a.side==='SELL'?0:1,sb=b.side==='SELL'?0:1;return sa!==sb?sa-sb:(a.company<b.company?-1:a.company>b.company?1:0);});
@@ -200,9 +220,9 @@ function runLedger(config,ledger){
  }
  const last=days[days.length-1];let unrealized=null;
  if(last.positions_value!==null){let cost=0;for(const cid of Object.keys(state.positions).sort())cost+=state.positions[cid].cost;unrealized=last.positions_value-cost;}
- const invested=initialValue+deposits;
+ const invested=initialValue===null?null:initialValue+deposits;
  const summary={start_date:L.sessions[first],end_date:last.date,initial_value:initialValue,deposits,total_value:last.total_value,cash:state.cash,
-  simple_return:last.total_value===null||invested<=0?null:last.total_value/invested-1,twr:growth-1,realized_pnl:realized,unrealized_pnl:unrealized,
+  simple_return:last.total_value===null||invested===null||invested<=0?null:last.total_value/invested-1,twr:growth-1,realized_pnl:realized,unrealized_pnl:unrealized,
   buy_count:trades.filter(t=>t.side==='BUY').length,sell_count:trades.filter(t=>t.side==='SELL').length,
   user_flagged_count:trades.filter(t=>t.user_flag!==null&&t.user_flag!==undefined).length,pending_orders:last.orders};
  return{...base,state:'OK',reason_codes:[],days,trades,summary};
