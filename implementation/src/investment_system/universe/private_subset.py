@@ -21,6 +21,7 @@ REASON_CODES = frozenset((
     "CIK_MISMATCH", "ACCESSION_UNCONFIRMED", "SHARES_NOT_AVAILABLE", "MULTI_CLASS_AMBIGUOUS",
     "NONFINITE_MCAP", "CONFIG_CONFIRMATION_REQUIRED", "DUPLICATE_ISSUER", "VALIDATION_INCOMPLETE", "SHARE_CLASS_BASIS",
     "STALE_INPUT", "SHARE_CLASS_GROUP_INCOMPLETE", "SHARE_CLASS_GROUP_MISMATCH",
+    "UNLISTED_CLASS_SHARES_NOT_AVAILABLE", "UNLISTED_CLASS_AMBIGUOUS",
 ))
 
 
@@ -195,6 +196,11 @@ class ShareClassGroupCheck:
     reason_codes: tuple[str, ...]
     content_sha256: str = field(repr=False)
     synthetic: bool
+    # Unlisted cover class(es) valued at one listed class price, ratio 1 (decision 2026-10-11); None/() when not configured.
+    unlisted_valued_at: str | None = field(default=None, repr=False)
+    unlisted_basis: str | None = None
+    unlisted_class_members: tuple[str, ...] = field(default=(), repr=False)
+    unlisted_shares: tuple[float, ...] = field(default=(), repr=False)
 
 
 @dataclass(frozen=True)
@@ -656,13 +662,19 @@ def compare_universe_market_cap(row: UniverseRow, shares: SharesInput, price: Pr
 
 
 def prepare_share_class_groups(parsed: UniverseParseResult, records: Mapping, as_of: datetime, quality_config: QualityConfig,
-                               config: Mapping | None = None) -> tuple[ShareClassGroupCheck, ...]:
+                               config: Mapping | None = None, unlisted: Mapping | None = None) -> tuple[ShareClassGroupCheck, ...]:
     """share_class_groups/v0 (user decision 2026-10-11): company cap = sum over the issuer's configured listed classes of
     (that class's public cover shares x that class's Sheet price). All-or-nothing: every configured class needs a LIVE
     SHARE_CLASS_BASIS record from one cover filing and a Sheet price, else NOT_AVAILABLE with a reason (never a partial
-    sum, never 0). Groups absent from the Sheet are skipped. Prices and caps stay in the returned RAM objects only."""
+    sum, never 0). Groups absent from the Sheet are skipped. Prices and caps stay in the returned RAM objects only.
+
+    Unlisted cover class (decision 2026-10-11, e.g. Alphabet Class B): its public `unlisted_classes` count, from the
+    same cover filing, is added 1:1 to the `unlisted.valued_at` class shares and valued at that class's Sheet price:
+    R = (GOOGL + Class B) x GOOGL price + GOOG x GOOG price. Missing/not LIVE -> UNLISTED_CLASS_SHARES_NOT_AVAILABLE,
+    ambiguous or not bound to the group's cover -> UNLISTED_CLASS_AMBIGUOUS; the group is then NOT_AVAILABLE."""
     from .share_class_groups import LABEL_KO, SHARE_CLASS_GROUPS_V0, validate_share_class_groups
     config = validate_share_class_groups(SHARE_CLASS_GROUPS_V0 if config is None else config)
+    unlisted = {} if unlisted is None else unlisted
     if not isinstance(parsed, UniverseParseResult) or type(parsed.rows) is not tuple or not isinstance(parsed.receipt, UniverseReceipt) or not isinstance(records, Mapping):
         return ()
     incomplete, mismatch = "SHARE_CLASS_GROUP_INCOMPLETE", "SHARE_CLASS_GROUP_MISMATCH"
@@ -678,14 +690,18 @@ def prepare_share_class_groups(parsed: UniverseParseResult, records: Mapping, as
         anchor = by_code[next(c for c in codes if c in by_code)]
         present = tuple(by_code[c].row_index for c in codes if c in by_code)
 
-        def result(reasons=(), cap=None, relative=None, quality="UNCONFIRMED", shares=()):
+        spec = group["unlisted"]
+
+        def result(reasons=(), cap=None, relative=None, quality="UNCONFIRMED", shares=(), extra=((), ())):
             good = not reasons
             label = (LABEL_KO + (" · 검증 불일치" if quality == "MISMATCH" else "")) if good else ""
             return ShareClassGroupCheck(group["group_id"], config["config_version"], group["cik"], anchor.row_index, anchor.listing, codes, present,
                                         tuple(by_code[c].listing.symbol if by_code[c].listing else c for c in codes if c in by_code),
                                         shares if good else (), group["cover_class_count"], "VERIFIED" if good else "NOT_AVAILABLE",
                                         cap, anchor.google_mcap, relative, cap, quality, label, tuple(dict.fromkeys(reasons)),
-                                        parsed.receipt.content_sha256, parsed.synthetic)
+                                        parsed.receipt.content_sha256, parsed.synthetic,
+                                        spec["valued_at"] if spec else None, spec["basis"] if spec else None,
+                                        extra[0] if good else (), extra[1] if good else ())
         if len(by_code) != len(codes):
             out.append(result((incomplete,)))
             continue
@@ -731,6 +747,12 @@ def prepare_share_class_groups(parsed: UniverseParseResult, records: Mapping, as
         if len({(m[1], m[2], m[3]) for m in members}) != 1 or len({m[4] for m in members}) != len(members):
             out.append(result((mismatch, "BASIS_UNCONFIRMED")))
             continue
+        extra, added = ((), ()), 0.0
+        if spec is not None:
+            failure, extra, added = _unlisted_classes(group, members, codes, records, unlisted.get(group["group_id"]) if isinstance(unlisted, Mapping) else None)
+            if failure:
+                out.append(result(failure))
+                continue
         if not isinstance(quality_config, QualityConfig) or quality_config.confirmed is not True:
             out.append(result(("CONFIG_CONFIRMATION_REQUIRED",)))
             continue
@@ -739,26 +761,61 @@ def prepare_share_class_groups(parsed: UniverseParseResult, records: Mapping, as
             continue
         try:
             cap = 0.0
-            for m in members:  # config order; same IEEE operations as the JS port
-                cap += m[5] * m[0].sheet_price
+            for code, m in zip(codes, members):  # config order; same IEEE operations as the JS port
+                # Unlisted classes convert 1:1 into the valued-at class: (listed + unlisted shares) x that class's price.
+                cap += ((m[5] + added) if spec is not None and code == spec["valued_at"] else m[5]) * m[0].sheet_price
             if not _positive(cap):
                 out.append(result(("NONFINITE_MCAP",)))
                 continue
             shares = tuple(m[5] for m in members)
             primary = members[0][0]
             if primary.google_mcap is None:
-                out.append(result(cap=cap, shares=shares, quality="GOOGLE_MCAP_MISSING" if "GOOGLE_MCAP_MISSING" in primary.reason_codes else "GOOGLE_MCAP_INVALID"))
+                out.append(result(cap=cap, shares=shares, extra=extra, quality="GOOGLE_MCAP_MISSING" if "GOOGLE_MCAP_MISSING" in primary.reason_codes else "GOOGLE_MCAP_INVALID"))
                 continue
             ratio = abs(Fraction(str(primary.google_mcap)) - Fraction(str(cap))) / Fraction(str(cap))
             relative = float(ratio)
             if not math.isfinite(relative):
                 out.append(result(("NONFINITE_MCAP",)))
                 continue
-            out.append(result(cap=cap, relative=relative, shares=shares,
+            out.append(result(cap=cap, relative=relative, shares=shares, extra=extra,
                               quality="MISMATCH" if ratio >= Fraction(str(quality_config.relative_tolerance)) else "WITHIN_TOLERANCE"))
         except (OverflowError, ZeroDivisionError):
             out.append(result(("NONFINITE_MCAP",)))
     return tuple(out)
+
+
+def _unlisted_classes(group, members, codes, records, entry):
+    """(failure, (class members, shares), unlisted share sum) for a group with unlisted cover classes."""
+    incomplete, mismatch = ("SHARE_CLASS_GROUP_INCOMPLETE", "UNLISTED_CLASS_SHARES_NOT_AVAILABLE"), ("SHARE_CLASS_GROUP_MISMATCH", "UNLISTED_CLASS_AMBIGUOUS")
+    none = ((), ())
+    if not isinstance(entry, Mapping):
+        return incomplete, none, 0.0
+    reasons = entry.get("reason_codes")
+    if type(reasons) in (list, tuple) and "UNLISTED_CLASS_AMBIGUOUS" in reasons:
+        return mismatch, none, 0.0
+    classes = entry.get("classes")
+    if entry.get("state") != "LIVE" or type(classes) not in (list, tuple) or not classes:
+        return incomplete, none, 0.0
+    spec = group["unlisted"]
+    anchor = records.get(spec["valued_at"])
+    first = members[codes.index(spec["valued_at"])]
+    cover = anchor.get("source_sha256", {}).get("cover") if isinstance(anchor, Mapping) and isinstance(anchor.get("source_sha256"), Mapping) else None
+    if (entry.get("cik") != group["cik"] or entry.get("valued_at") != spec["valued_at"] or entry.get("accn") != first[1]
+            or entry.get("measurement_date") != first[2] or not _hash(entry.get("cover_sha256")) or entry.get("cover_sha256") != cover):
+        return mismatch, none, 0.0
+    names, values = [], []
+    for item in classes:
+        if not isinstance(item, Mapping) or type(item.get("class_member")) is not str or not _positive(item.get("shares")):
+            return incomplete, none, 0.0
+        names.append(item["class_member"]); values.append(float(item["shares"]))
+    listed = {m[4] for m in members}
+    if (len(set(names)) != len(names) or any(n in listed or n not in first[3] for n in names)
+            or len(names) + len(members) != group["cover_class_count"]):
+        return mismatch, none, 0.0
+    total = 0.0
+    for value in values:  # listed order; same IEEE operations as the JS port
+        total += value * spec["conversion_ratio"]
+    return None, (tuple(names), tuple(values)), total
 
 
 def _groups_error(groups, source_rows, sha, synthetic):
@@ -790,6 +847,9 @@ def _groups_error(groups, source_rows, sha, synthetic):
                 or g.quality not in ("WITHIN_TOLERANCE", "MISMATCH", "GOOGLE_MCAP_MISSING", "GOOGLE_MCAP_INVALID"))):
             return "INVALID_INPUT"
         if g.state == "NOT_AVAILABLE" and not g.reason_codes:
+            return "INVALID_INPUT"
+        if g.state == "VERIFIED" and g.unlisted_valued_at is not None and (
+                not g.unlisted_shares or len(g.unlisted_shares) != len(g.unlisted_class_members) or not all(_positive(v) for v in g.unlisted_shares)):
             return "INVALID_INPUT"
     return None
 

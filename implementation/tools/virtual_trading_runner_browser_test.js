@@ -40,7 +40,7 @@ function history(symbol, range) {
 
 async function open(browser, { now, width = 390, workerAcceptsBenchmarks }) {
   const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', locale: 'ko-KR' });
-  const traffic = { worker: [], unexpected: [], console: 0, errors: 0 };
+  const traffic = { worker: [], sheets: [], unexpected: [], console: 0, errors: 0 };
   await context.addInitScript(({ token, scope }) => {
     localStorage.setItem('investment.web.v1.settings', JSON.stringify({ version: 1, display_locale: 'ko-KR', source_language: 'all' }));
     localStorage.setItem('investment.web.v1.unified-sheet-source', 'synthetic_existing_sheet_fixture');
@@ -72,6 +72,13 @@ async function open(browser, { now, width = 390, workerAcceptsBenchmarks }) {
       const allowed = TARGET_SYMBOLS.includes(symbol) || workerAcceptsBenchmarks;
       await route.fulfill({ status: allowed ? 200 : 400, headers: { ...cors, 'cache-control': 'no-store' }, contentType: 'application/json', body: JSON.stringify(allowed ? history(symbol, range) : { error: { code: 'REQUEST_INVALID' } }) });
       return;
+    }
+    // The ledger sheet card (VirtualLedgerSheets) reads the connected sheet's tab titles: a sheet without Virtual* tabs.
+    if (url.origin === 'https://sheets.googleapis.com') {
+      const cors = { 'access-control-allow-origin': new URL(BASE).origin, 'access-control-allow-headers': 'Authorization, Content-Type', 'access-control-allow-methods': 'GET, POST' };
+      if (request.method() === 'OPTIONS') { await route.fulfill({ status: 204, headers: cors }); return; }
+      traffic.sheets.push(request.method() + ' ' + decodeURIComponent(url.pathname));
+      if (request.method() === 'GET' && url.searchParams.get('fields') === 'sheets(properties(title))') { await route.fulfill({ headers: cors, contentType: 'application/json', body: JSON.stringify({ sheets: [{ properties: { title: 'Quotes' } }] }) }); return; }
     }
     traffic.unexpected.push(url.origin);
     await route.abort();
@@ -154,6 +161,7 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
         assert.equal(traffic.worker.length, before);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         assert.ok(await storageClean(page), 'price or ledger reached storage');
+        assert.ok(traffic.sheets.length > 0 && traffic.sheets.every((x) => x.startsWith('GET ')), 'ledger sheet is read, never written without a click');
         assert.equal(traffic.console, 0);
         assert.deepEqual(traffic.unexpected, []);
         assert.equal(traffic.errors, 0);

@@ -40,4 +40,6 @@ dcf_value_browser_test.js
 sec_universe_shares_browser_test.js
 forward_validation_browser_test.js
 virtual_trading_runner_browser_test.js
+virtual_ledger_sheets_browser_test.js
+virtual_trading_rehearsal_browser_test.js
 holdings_capture_browser_test.js

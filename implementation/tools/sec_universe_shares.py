@@ -29,8 +29,8 @@ from investment_system.providers.sec_universe_collection import (
     UniverseSecClient, collect_partition, daily_partition, fetch_ticker_exchange, universe_registry,
 )
 from investment_system.universe.sec_universe_shares import (
-    FILENAME, MAX_BYTES, build_share_record, encode, load_config, merge, parse_json, require_universe_shares,
-    select_cover_filing, shard_index_for, universe_codes,
+    FILENAME, MAX_BYTES, build_issuer_records, encode, load_config, merge, parse_json, require_universe_shares,
+    select_cover_filing, shard_index_for, universe_codes, upgrade_legacy,
 )
 
 SOURCE = 'https://kco994553-star.github.io/Investment-System1/' + FILENAME
@@ -54,7 +54,9 @@ def _utc_now():
 
 
 def fetch_previous(*, open_response=None):
-    """Live Pages copy -> validated payload, None on 404. Other failures raise."""
+    """Live Pages copy -> validated payload, None on 404. Other failures raise.
+
+    A copy published before `unlisted_classes` existed is upgraded (NOT_COLLECTED entries, rows unchanged)."""
     request = urllib.request.Request(SOURCE, headers={'Accept': 'application/json', 'Cache-Control': 'no-cache'})
     fetch = open_response or urllib.request.build_opener(NoRedirect()).open
     try:
@@ -68,7 +70,7 @@ def fetch_previous(*, open_response=None):
         raise OSError('PREVIOUS_FETCH_FAILED') from None
     except (urllib.error.URLError, OSError, ValueError):
         raise OSError('PREVIOUS_FETCH_FAILED') from None
-    return require_universe_shares(parse_json(body))
+    return require_universe_shares(upgrade_legacy(parse_json(body)))
 
 
 def write(directory, payload):
@@ -88,7 +90,7 @@ def write(directory, payload):
 
 
 def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, config=None):
-    """Collect today's shard. Returns (updates, unresolved_codes, registry_sha256, shard_index, counts)."""
+    """Collect today's shard. Returns (updates, unlisted_updates, unresolved_codes, registry_sha256, shard_index, counts)."""
     cfg = config or load_config()
     kwargs = dict(client_kwargs or {})
     started = now()
@@ -99,7 +101,7 @@ def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, confi
     client = UniverseSecClient(user_agent, registry=registry, **kwargs)
     bound = {code for issuer in registry.issuers for code in issuer.codes}
     unresolved = set(universe_codes()) - bound
-    updates, manifest, covers = {}, [], [0]
+    updates, unlisted_updates, manifest, covers = {}, {}, [], [0]
 
     def save(issuer, facts, submissions, acquired):
         filing = select_cover_filing(submissions, acquired)
@@ -111,10 +113,11 @@ def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, confi
             except Exception:
                 cover = cover_at = None
         as_of = max(acquired, cover_at) if cover_at is not None else acquired
-        for code in issuer.codes:
-            updates[code] = build_share_record(code=code, cik=issuer.cik, companyfacts_body=facts, submissions_body=submissions,
-                                               acquired_at=acquired, as_of=as_of, cover_xml=cover,
-                                               cover_accession=filing['accession'] if filing else None, cover_acquired_at=cover_at)
+        records, unlisted = build_issuer_records(codes=issuer.codes, cik=issuer.cik, companyfacts_body=facts, submissions_body=submissions,
+                                                 acquired_at=acquired, as_of=as_of, cover_xml=cover,
+                                                 cover_accession=filing['accession'] if filing else None, cover_acquired_at=cover_at)
+        updates.update(records)
+        unlisted_updates.update(unlisted)
         if raw_dir is not None:
             folder = Path(raw_dir) / issuer.cik
             folder.mkdir(parents=True, exist_ok=True)
@@ -134,7 +137,7 @@ def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, confi
             'companies': manifest}, sort_keys=True))
     counts = {'companies': len(issuers), 'collected': result.collected, 'failed': result.failed, 'covers': covers[0],
               'failures': result.failures, 'unresolved_codes': len(unresolved), 'all_failed': result.all_failed}
-    return updates, unresolved, registry.source_sha256, index, counts
+    return updates, unlisted_updates, unresolved, registry.source_sha256, index, counts
 
 
 def _archive(raw_dir, name):
@@ -221,7 +224,7 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     with tempfile.TemporaryDirectory(prefix='sec-universe-raw-') as private:
         raw_dir = Path(private) / 'raw' if token else None
         try:
-            updates, unresolved, registry_sha, index, counts = collect(
+            updates, unlisted_updates, unresolved, registry_sha, index, counts = collect(
                 user_agent=environ.get('SEC_USER_AGENT', ''), now=now, client_kwargs=client_kwargs, raw_dir=raw_dir, config=cfg)
         except SecCollectionError as error:
             code = error.args[0] if error.args and error.args[0] in {'SEC_USER_AGENT_INVALID', 'SEC_UNIVERSE_INPUT_INVALID',
@@ -235,7 +238,7 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
             print(f'SEC_UNIVERSE_FAILURE company_index={company_index} code={code}')
         try:
             payload = merge(previous, updates, as_of=now(), shard_index=index, registry_sha256=registry_sha,
-                            unresolved=unresolved, config=cfg)
+                            unresolved=unresolved, config=cfg, unlisted_updates=unlisted_updates)
             write(out, payload)
         except Exception:
             print('SEC_UNIVERSE_SHARES OUTPUT_FAILED')

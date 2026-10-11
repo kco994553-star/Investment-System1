@@ -561,22 +561,26 @@ function paintNews(id) {
   rows=[...rows].sort((a,b)=>priority(a)-priority(b));
   $("#news-list").innerHTML=rows.map(r=>`<li class="card"><h3>${esc(AppLanguage.fallback(r.headline_localized,appSettings.display_locale,r.headline))}</h3>${r.summary || r.summary_localized?`<p>${esc(AppLanguage.fallback(r.summary_localized,appSettings.display_locale,r.summary || ""))}</p>`:""}<p class="meta">${esc(r.available_at)} · ${esc(AppLanguage.status(r.status || t("상태 미제공"),appSettings.display_locale))} · ${esc(r.source_language || t("미제공"))}</p>${(r.issuer_ids || []).map(byIssuer).filter(Boolean).map(c=>`<div class="row"><a href="#company/${encodeURIComponent(c.company_id)}">${esc(c.ticker)}</a>${star(c.company_id)}</div>`).join("")}${evidence(r)}</li>`).join("") || '<li class="empty">'+t("이 범위에 제공된 뉴스가 없습니다.")+"</li>";
 }
-function report(id){const real=id==='real';return heading("DAILY REPORT",real?(appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'):(appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'))+'<div id="daily-report" aria-live="polite"></div>';}
+function report(id){const real=id==='real';return heading("DAILY REPORT",real?(appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'):(appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'))+'<div id="daily-report" aria-live="polite"></div><div id="virtual-ledger-sheets"></div>';}
 // S17: everything is computed in RAM on this device; export/copy and the optional mailbox run only on the user's click.
 function reportTab(id){return id==='real'?'REAL':({'mock-set_b':'SET_B','mock-compare':'COMPARE'}[id]||'SET_A');}
 // The virtual ledger runner (VirtualTradingRunner) reads prices through the existing Google session and private
 // history Worker into memory only; this holds just its abort handle and session subscription for the open report.
 let reportRun=null;
-function disposeReport(){const r=reportRun;reportRun=null;if(r){r.controller.abort();if(r.unsubscribe)r.unsubscribe();}}
+function disposeReport(){const r=reportRun;reportRun=null;if(r){r.controller.abort();if(r.unsubscribe)r.unsubscribe();if(r.ledgerSheets)r.ledgerSheets.dispose();}}
 async function paintReport(id){
   const host=$('#daily-report');if(!host)return;
   disposeReport();
   const R=window.DailyReport,VT=window.VirtualTrading,Runner=window.VirtualTradingRunner,locale=appSettings.display_locale,kind=id==='real'?'REAL':'MOCK',tab=reportTab(id);
   const cfg=VT.defaultConfig(),ledgerKind=kind==='REAL'?'SHADOW':tab==='SET_B'?'SET_B':'SET_A',config=window.InvestmentAppConfig||{};
-  const run={controller:new AbortController(),unsubscribe:null,busy:false,last:null};reportRun=run;
+  // mode: RECORDING (기록 모드) or REHEARSAL (리허설 · 기록 없음: RAM only, never written to any ledger or sheet).
+  const run={controller:new AbortController(),unsubscribe:null,busy:false,last:null,mode:'RECORDING',pending:null,ledgerSheets:null};reportRun=run;
+  const Signals=window.VirtualTradingSignals,VHistory=window.VirtualTradingVHistory;
   const live=()=>reportRun===run&&host.isConnected;
+  // D-10 ledger sheet (VirtualLedgerSheets): reads the user's own sheet when connected; writes only on its buttons.
+  try{if(window.VirtualLedgerSheets)run.ledgerSheets=VirtualLedgerSheets.mount(window,$('#virtual-ledger-sheets'),{kind,tab,reportDate:new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date()),config,catalog:deviceCatalog,refresh:()=>{if(live())void paintReport(id);}});}catch(_){run.ledgerSheets=null;}
   let ram=null;if(kind==='REAL'){try{ram=await DeviceActual.ramView(window,await deviceCatalog());const byTicker=new Map(identityCompanies.map(r=>[r.ticker,r.company_id]));ram={...ram,rows:ram.rows.map(r=>({...r,company_id:byTicker.get(r.ticker)||r.ticker}))};}catch(_){ram=null;}}
-  const qg={},names={};try{for(const r of LeaderboardScreen.rowsFor(identityCompanies,{publicScreens,engine:window.EnginePreview})){qg[r.company_id]={q:r.q,g:r.g};names[r.company_id]=r.ticker;}}catch(_){}
+  const qg={},names={};try{for(const r of LeaderboardScreen.rowsFor(identityCompanies,{publicScreens,engine:window.EnginePreview})){qg[r.company_id]={q:r.q,g:r.g,partial:r.partial};names[r.company_id]=r.ticker;}}catch(_){}
   const reportDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
   let model=null,canonical='',key=null,inboxText='';
   const paint=()=>{
@@ -595,35 +599,51 @@ async function paintReport(id){
     }catch(e){say(String(e&&e.message||'MAILBOX_FAILED'));}};
     host.querySelector('[data-mailbox-post]').onclick=()=>void mailbox('post');
     host.querySelector('[data-mailbox-read]').onclick=()=>void mailbox('read');
+    const rehearseButton=host.querySelector('[data-rehearsal-run]'),recordButton=host.querySelector('[data-recording-mode]');
+    if(rehearseButton)rehearseButton.onclick=()=>void go('REHEARSAL');
+    if(recordButton)recordButton.onclick=()=>{if(before){run.mode='RECORDING';void compose({state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']});}else void go('RECORDING');};
   };
   // Model from a runner result or a placeholder state. Nothing is stored: prices and ledgers stay in this closure.
-  const compose=async(result)=>{
-    const {ledger,hits,input}=Runner.ledgerFor(result,ledgerKind,cfg),last=ledger.state==='OK'?ledger.days[ledger.days.length-1]:null;
+  const compose=async(result,runCfg=cfg,mode='RECORDING',capture=null)=>{
+    const {ledger,hits,input}=Runner.ledgerFor(result,ledgerKind,runCfg),last=ledger.state==='OK'?ledger.days[ledger.days.length-1]:null;
     // Q·G shown next to a judgement is the forward-ledger snapshot the engine used that day (else the public screen value).
     const shown={...qg};if(last&&input&&input.snapshots[last.date])for(const[c,r]of Object.entries(input.snapshots[last.date]))shown[c]={q:r.q,g:r.g};
     const runner={state:result.state==='READY'?(ledger.state==='OK'?'READY':'NOT_AVAILABLE'):result.state,reason_codes:result.state==='READY'?(ledger.state==='OK'?[]:ledger.reason_codes):result.reason_codes,sources:Runner.statusRows(result),progress:''};
-    const next=R.buildModel({kind,tab,reportDate,baseDates:last?{NYSE:last.date}:{},ledger,ram,qg:shown,names,config:cfg,runner,hits});
+    let signals=null;try{signals=Signals?{...Signals.reportSignals(result,ledgerKind,runCfg,Runner.readVStore(localStorage)),capture}:null;}catch(_){signals=null;}
+    const next=R.buildModel({kind,tab,reportDate,baseDates:last?{NYSE:last.date}:{},ledger,ram,qg:shown,names,config:cfg,runner,hits,mode,signals,rehearsal:result.rehearsal||null});
     const nextCanonical=R.renderTemplate(next,{hidden:true,guide:false});let nextKey=null;try{nextKey=await R.hash(nextCanonical);}catch(_){nextKey=null;}
-    if(!live())return;
+    if(!live()||run.mode!==mode)return;
     // The mailbox always writes amounts hidden with the guide; its Inbox/Outbox sha256 is the hash of exactly this text.
     model=next;canonical=nextCanonical;key=nextKey;inboxText=R.renderTemplate(next,{hidden:true,guide:true});paint();
   };
   const before=reportDate<cfg.start_date;
-  await compose(before?{state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']}:{state:'LOADING',reason_codes:['RUNNER_LOADING']});
-  if(before||!live())return;
-  const start=async()=>{
-    if(run.busy||!live())return;run.busy=true;
+  // One runner pass in the given mode. Both modes record the device V history (V only, independent of any ledger);
+  // a rehearsal result carries mode REHEARSAL and must never reach a ledger/sheet writer.
+  const go=async(mode)=>{
+    if(!live())return;if(run.busy){run.pending=mode;run.mode=mode;void compose({state:'LOADING',reason_codes:['RUNNER_LOADING']},cfg,mode);return;}
+    run.busy=true;run.mode=mode;if(mode==='REHEARSAL')await compose({state:'LOADING',reason_codes:['RUNNER_LOADING']},cfg,mode);
     try{
       let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
       const progress=(done,total)=>{const n=live()&&host.querySelector('[data-runner-progress]');if(n)n.textContent=done+'/'+total;};
-      const result=catalog?await Runner.run(window,{config,catalog,reportDate,signal:run.controller.signal,onProgress:progress}):{state:'NOT_AVAILABLE',reason_codes:['PUBLIC_CATALOG_UNAVAILABLE'],sources:{},ledgers:{}};
-      run.last=result;if(live())await compose(result);
-    }catch(_){if(live())await compose({state:'NOT_AVAILABLE',reason_codes:['RUNNER_FAILED']});}
-    finally{run.busy=false;}
+      const sheetOptions=run.ledgerSheets?await run.ledgerSheets.runnerOptions():{};
+      const opts={config,catalog,reportDate,signal:run.controller.signal,onProgress:progress,...sheetOptions};
+      const out=!catalog?{result:{state:'NOT_AVAILABLE',reason_codes:['PUBLIC_CATALOG_UNAVAILABLE'],sources:{},ledgers:{}},config:cfg}
+        :mode==='REHEARSAL'?await Signals.rehearse(window,{...opts,qgRows:qg}):{result:await Runner.run(window,opts),config:cfg};
+      let result=out.result,capture=null;
+      try{if(VHistory){const c=await VHistory.capture(window,result);result=c.result;capture=c.capture;}}catch(_){capture=null;}
+      // D-10: only recording-mode results reach the ledger sheet module (it also refuses REHEARSAL results itself).
+      if(mode!=='REHEARSAL'&&run.ledgerSheets)result=run.ledgerSheets.update(result);
+      run.last=result;if(live()&&run.mode===mode)await compose(result,out.config,mode,capture);
+    }catch(_){if(live()&&run.mode===mode)await compose({state:'NOT_AVAILABLE',reason_codes:['RUNNER_FAILED']},cfg,mode);}
+    finally{run.busy=false;if(run.pending&&live()){const next=run.pending;run.pending=null;void go(next);}}
   };
+  const start=()=>go('RECORDING');
   // Signing in to Google later (Settings) re-runs the runner for the open report: same session, no new scope or auth code.
   try{if(config.googleSheetsClientId){const session=GoogleSheetQuotes.sessionFor(window,config.googleSheetsClientId);
-    run.unsubscribe=session.subscribe(()=>{if(!live()){if(reportRun===run)disposeReport();return;}if(session.state().connected&&run.last&&run.last.reason_codes.includes('AUTH_REQUIRED'))void start();});}}catch(_){}
+    run.unsubscribe=session.subscribe(()=>{if(!live()){if(reportRun===run)disposeReport();return;}if(session.state().connected&&run.last&&run.last.reason_codes.includes('AUTH_REQUIRED'))void go(run.mode);});}}catch(_){}
+  // Before the start date the report stays NOT_STARTED (no request) until the user runs a rehearsal.
+  await compose(before?{state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']}:{state:'LOADING',reason_codes:['RUNNER_LOADING']});
+  if(before||!live())return;
   await start();
 }
 function showUnavailable() {
