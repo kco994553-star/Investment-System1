@@ -159,6 +159,13 @@
       if(!body||body.properties?.title!=='Investment Cockpit Data'||!Array.isArray(body.sheets)||JSON.stringify(body).length>1048576)fail('INVALID');
       const value=await sheetRequest('?fields=spreadsheetId','POST',body);return extractSpreadsheetId(value.spreadsheetId);
     }
+    // Universe tab fill (existing header-only tab): codes + the template's GOOGLEFINANCE formulas at rows 2..n+1 (drive.file, no new scope).
+    async function fillUniverse(id,rows){
+      if(extractSpreadsheetId(id)!==id||!Array.isArray(rows)||!rows.length||rows.length>1024||!rows.every((r,i)=>Array.isArray(r)&&r.length===3&&typeof r[0]==='string'&&/^(?:(?:NASDAQ|NYSE|BATS):[A-Z][A-Z0-9.]{0,15}|KRX:\d{6}|TYO:\d{4})$/.test(r[0])
+        &&r[1]==='=IFERROR(GOOGLEFINANCE(A'+(i+2)+',"marketcap"),"")'&&r[2]==='=IFERROR(GOOGLEFINANCE(A'+(i+2)+',"price"),"")'))fail('INVALID');
+      const range="'Universe'!A2:C"+(rows.length+1);
+      await sheetRequest('/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+'?valueInputOption=USER_ENTERED','PUT',{range,majorDimension:'ROWS',values:rows},'WRITE_FAILED');
+    }
     // S17 only: writes are limited to the AI mailbox tabs (ReportInbox/ReportOutbox) and the virtual ledger tabs (D-10:
     // VirtualA/VirtualB/VirtualMine/VirtualMeta/VirtualFlags) of the user's own sheet (drive.file, no new scope).
     const REPORT_TABS=['ReportInbox','ReportOutbox','VirtualA','VirtualB','VirtualMine','VirtualMeta','VirtualFlags'];
@@ -256,7 +263,7 @@
       } finally { controllers.delete(abort); if(signal)signal.removeEventListener('abort',cancel); }
     }
     if (view.addEventListener) view.addEventListener('pagehide', () => { invalidate(); error='AUTH_REQUIRED'; notify(); });
-    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, fetchHistory, createSpreadsheet, sheetTitles, pickSpreadsheet, addTabs, appendRows, revision: () => epoch,
+    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, fetchHistory, createSpreadsheet, fillUniverse, sheetTitles, pickSpreadsheet, addTabs, appendRows, revision: () => epoch,
       subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); } });
   }
   function translate(state, key) { return TEXT[key][state.locale === 'en-US' ? 1 : 0]; }
