@@ -32,6 +32,26 @@ REASONS = ('NO_ELIGIBLE_INPUT','SOURCE_NOT_AVAILABLE','SYNTHETIC_INPUT_NOT_PUBLI
     'STALE_INPUT','UPSTREAM_NOT_AVAILABLE','TYPE_ENGINE_PENDING_MERGE','CRITERIA_UNDEFINED','PUBLIC_FX_EXCLUDED','UNAPPROVED_ENGINE_INPUT_MAPPING')
 PRICEFREE_TYPES = ('growth','quality','cyclical','defensive')
 FACTORS = set(Q_WEIGHTS)|set(G_WEIGHTS)
+# Optional 13F manager CIK verification records (exact SEC name + recent 13F-HR); no personal data.
+MANAGER_KEYS = ('id','cik','state','reason_code','matched_name','verified_at','latest_13f_accession','capture_reason','comparison_reasons')
+MANAGER_REASONS = ('CIK_NOT_CONFIGURED','SUBMISSIONS_UNAVAILABLE','SUBMISSIONS_INVALID','CIK_MISMATCH','NAME_MISMATCH','NO_RECENT_13F_HR')
+CAPTURE_REASONS = ('INSUFFICIENT_13F_HISTORY','FILING_INDEX_UNAVAILABLE','INFOTABLE_NOT_IDENTIFIED','COVER_UNAVAILABLE','COVER_INVALID','INFOTABLE_UNAVAILABLE','PUBLIC_SIZE_LIMIT')
+
+
+def _managers(value,cut):
+    _need(isinstance(value,list) and len(value)<=20);ids=set();verified=set()
+    for m in value:
+        _keys(m,MANAGER_KEYS);_need(isinstance(m['id'],str) and re.fullmatch(r'[a-z][a-z0-9_]{0,47}',m['id']) is not None and m['id'] not in ids);ids.add(m['id'])
+        _need(m['cik'] is None or isinstance(m['cik'],str) and re.fullmatch(r'\d{10}',m['cik']) is not None and int(m['cik'])>0)
+        _need(isinstance(m['comparison_reasons'],list) and len(m['comparison_reasons'])<=16 and len(set(m['comparison_reasons']))==len(m['comparison_reasons']) and all(isinstance(r,str) and re.fullmatch(r'[A-Z][A-Z0-9_]{0,63}',r) is not None for r in m['comparison_reasons']))
+        if m['state']=='VERIFIED':
+            _need(m['cik'] is not None and m['cik'] not in verified and m['reason_code'] is None and isinstance(m['matched_name'],str) and 0<len(m['matched_name'])<=150 and not any(ord(ch)<32 or ch in '<>' for ch in m['matched_name']))
+            _need(clock(m['verified_at'])<=cut and isinstance(m['latest_13f_accession'],str) and re.fullmatch(r'\d{10}-\d{2}-\d{6}',m['latest_13f_accession']) is not None)
+            _need(m['capture_reason'] is None or m['capture_reason'] in CAPTURE_REASONS);verified.add(m['cik'])
+        else:
+            _need(m['state']=='NOT_AVAILABLE' and m['reason_code'] in MANAGER_REASONS and m['matched_name'] is None and m['verified_at'] is None and m['latest_13f_accession'] is None and m['capture_reason'] is None and not m['comparison_reasons'])
+            _need((m['reason_code']=='CIK_NOT_CONFIGURED')==(m['cik'] is None))
+    return verified
 
 
 def _need(condition,code='PUBLIC_SCREEN_INVALID'):
@@ -174,7 +194,9 @@ def _require(name,payload):
             _need(c['state']==expected)
         _need(data['pit_status']==('OBSERVED_BOUND_ONLY' if data['observations'] else 'NOT_VERIFIED'))
     else:
-        _keys(data,('reports','role'));_need(data['role']=='REPORTED_QUANTITY_CHANGE_NOT_TRADES' and isinstance(data['reports'],list))
+        _need(isinstance(data,dict) and set(data) in ({'reports','role'},{'reports','role','managers'}));_need(data['role']=='REPORTED_QUANTITY_CHANGE_NOT_TRADES' and isinstance(data['reports'],list))
+        # With verification records, only verified manager CIKs may carry reports.
+        if 'managers' in data:verified=_managers(data['managers'],cut);_need(all(r.get('manager_cik') in verified for r in data['reports'] if isinstance(r,dict)))
         for r in data['reports']:
             _keys(r,('manager_cik','previous_quarter','current_quarter','state','changes','source_hashes'))
             _need(isinstance(r['manager_cik'],str) and re.fullmatch(r'\d{10}',r['manager_cik']) is not None and int(r['manager_cik'])>0 and r['state'] in STATES)
@@ -260,7 +282,7 @@ def generate_screen_bundle(*,manifest,input_root,as_of,stale_after):
 def _generate(manifest,root,as_of,stale_after):
     _need(isinstance(as_of,datetime) and as_of.utcoffset() is not None and isinstance(stale_after,timedelta) and stale_after.total_seconds()>0,'PUBLIC_SCREENS_INPUT_INVALID')
     as_of=as_of.astimezone(timezone.utc)
-    _keys(manifest,('schema_version','sec','macro','thirteen_f'));_need(type(manifest['schema_version']) is int and manifest['schema_version']==1)
+    _need(isinstance(manifest,dict) and set(manifest) in ({'schema_version','sec','macro','thirteen_f'},{'schema_version','sec','macro','thirteen_f','thirteen_f_managers'}));_need(type(manifest['schema_version']) is int and manifest['schema_version']==1)
     _need(all(isinstance(manifest[k],list) for k in ('sec','macro','thirteen_f')) and len(manifest['sec'])<=17 and len(manifest['macro'])<=64 and len(manifest['thirteen_f'])<=20)
     qg={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'factors':{fid:{'score':None,'state':'NOT_AVAILABLE'} for fid in sorted(FACTORS)}} for cid in OFFICIAL_V11_TARGETS}
     types={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'memberships':dict.fromkeys(PRICEFREE_TYPES),'config_version':None} for cid in OFFICIAL_V11_TARGETS}
@@ -359,7 +381,7 @@ def _generate(manifest,root,as_of,stale_after):
         'company-types-pricefree.json':_envelope('company-types-pricefree.json',as_of,stale_after,financial(types),sec_sources,[r['state'] for r in types.values()],type_reasons),
         'sec-filing-windows.json':_envelope('sec-filing-windows.json',as_of,stale_after,{'companies':windows},sec_sources,[r['state'] for r in windows.values()]),
         'macro-screen.json':_envelope('macro-screen.json',as_of,stale_after,macro,macro_sources,[_fresh(clock(o['available_at']),as_of,stale_after) for o in observations],('UNAPPROVED_ENGINE_INPUT_MAPPING','PUBLIC_FX_EXCLUDED')),
-        'sec-13f-changes.json':_envelope('sec-13f-changes.json',as_of,stale_after,{'reports':reports,'role':'REPORTED_QUANTITY_CHANGE_NOT_TRADES'},report_sources,[r['state'] for r in reports]),
+        'sec-13f-changes.json':_envelope('sec-13f-changes.json',as_of,stale_after,{'reports':reports,'role':'REPORTED_QUANTITY_CHANGE_NOT_TRADES',**({'managers':[dict(m) for m in manifest['thirteen_f_managers']]} if 'thirteen_f_managers' in manifest else {})},report_sources,[r['state'] for r in reports]),
     }
     for name,payload in outputs.items():require_public_screen(name,payload)
     return outputs
