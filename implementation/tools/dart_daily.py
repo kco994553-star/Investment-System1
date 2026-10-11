@@ -97,12 +97,18 @@ def _report_block(client, corp_code, report, periodic_rows, *, annual):
         raise dc.DartCollectionError('DART_FINANCIALS_INVALID')
     rcept_no = receipts.pop()
     listed = [r for r in periodic_rows if r['rcept_no'] == rcept_no]
-    if len(listed) != 1 or dc.periodic_report(listed[0]['report_nm']) != (period, year, code):
+    if (len(listed) != 1 or dc.periodic_report(listed[0]['report_nm']) != (period, year, code)
+            or not dp.valid_title(dc.clean_title(listed[0]['report_nm']))):
         raise dc.DartCollectionError('DART_IDENTITY_MISMATCH')
     values, concepts, reasons = dc.extract_financials(payload, reprt_code=code)
     statements_sha = hashlib.sha256(dc.canonical_body(payload)).hexdigest()
     shares, shares_sha = None, None
-    shares_payload = client.json('stockTotqySttus.json', {'corp_code': corp_code, 'bsns_year': year, 'reprt_code': code})
+    try:
+        shares_payload = client.json('stockTotqySttus.json', {'corp_code': corp_code, 'bsns_year': year, 'reprt_code': code})
+    except dc.DartCollectionError as error:
+        if error.fatal:
+            raise
+        shares_payload = None  # Shares only: the statements stay published, shares NOT_AVAILABLE.
     if shares_payload is not None:
         shares = dc.extract_shares(shares_payload)
         shares_sha = hashlib.sha256(dc.canonical_body(shares_payload)).hexdigest()

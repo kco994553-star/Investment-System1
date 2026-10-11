@@ -464,6 +464,15 @@ def test_offline_build_emits_not_available_files_that_pass_the_guard(tmp_path):
     assert receipt['pages_artifact_guard'] == 'FAIL' and receipt['violations'].get('dart_public_boundary') == 1
 
 
+def test_shares_failure_keeps_statements_and_marks_shares_not_available(tmp_path):
+    fake = FakeOpenDart(overrides={('stockTotqySttus.json', None, '11011', None): FakeOpenDart.json({'status': '100', 'message': 'x'})})
+    rc, files, _ = run(tmp_path, fake)
+    annual = files[dp.FINANCIALS_FILENAME]['companies']['hanmi']['annual']
+    assert rc == 0 and annual['state'] == 'LIVE' and annual['inputs']['shares'] is None
+    assert 'SHARES_NOT_AVAILABLE' in annual['reason_codes'] and annual['missing']['shares'] == 'MISSING'
+    assert annual['inputs']['revenue'] == 558_734_000_000
+
+
 def test_list_pagination_is_bounded_and_marked_truncated(tmp_path):
     from tests.dart_fake_opendart import _row
 
