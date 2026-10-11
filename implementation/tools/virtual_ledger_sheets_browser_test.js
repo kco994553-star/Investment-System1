@@ -239,6 +239,74 @@ const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
         } finally { await context.close(); }
       });
     }
+    for (const width of [390, 1440]) {
+      await check('user sets C/D (ETF member, purpose, delete → 종료), Set A version, 비교 tab (' + width + ')', async () => {
+        const sheet = sheetsMock(new Map());
+        const { context, page, traffic } = await open(browser, { now: '2026-10-31T01:00:00Z', width, sheet });
+        try {
+          const define = async (kind, weights, purpose) => {
+            await go(page, 'report/mock-' + kind.toLowerCase()); await settled(page);
+            const form = page.locator('[data-weight-form="' + kind + '"]');
+            await form.locator('[data-weight]').first().waitFor();
+            for (const [cid, w] of Object.entries(weights)) await form.locator('[data-weight="' + cid + '"]').fill(w);
+            if (purpose !== null) await page.locator('[data-set-purpose="' + kind + '"]').fill(purpose);
+            await form.locator('[data-weight-save]:enabled').click();
+          };
+          await define('SET_C', { smh: '30', nvda: '20' }, 'ETF와 반도체 개별 종목 비교');
+          await page.locator('[data-weight-status="SET_C"]', { hasText: '세트 C 구성을 저장했습니다(set_c-1' }).waitFor();
+          await define('SET_D', { msft: '50' }, '단일 종목 기준선');
+          await page.locator('[data-weight-status="SET_D"]', { hasText: '세트 D 구성을 저장했습니다(set_d-1' }).waitFor();
+          // Set A: the v1.1 example until changed; a change starts set_a@v2, the example ledger is kept (closed).
+          await go(page, 'report/mock'); await settled(page);
+          assert.equal(await page.locator('[data-set-card="SET_A"]').getAttribute('data-set-example'), '1');
+          assert.ok((await page.locator('[data-set-card="SET_A"] h2').textContent()).includes('v1.1 예시'));
+          const formA = page.locator('[data-weight-form="SET_A"]');
+          for (const input of await formA.locator('[data-weight]').all()) await input.fill('');
+          await formA.locator('[data-weight="amd"]').fill('40'); await formA.locator('[data-weight="xlk"]').fill('10');
+          await formA.locator('[data-weight-save]:enabled').click();
+          await page.locator('[data-weight-status="SET_A"]', { hasText: 'set_a@v2' }).waitFor();
+          await page.locator('[data-set-card="SET_A"][data-set-example="0"]').waitFor();
+          await page.locator('[data-segment="set_a"][data-segment-state="CLOSED"]').waitFor();
+          const meta = sheet.tabs.get('VirtualMeta').slice(1).map((r) => [r[1], r[3]]);
+          assert.deepEqual(meta, [['set_c-1', 'LEDGER_START'], ['set_d-1', 'LEDGER_START'], ['set_a', 'LEDGER_START'], ['set_a', 'LEDGER_CLOSE'], ['set_a@v2', 'LEDGER_START']]);
+          for (const t of ['VirtualC', 'VirtualD']) assert.deepEqual(sheet.tabs.get(t)[0].slice(0, 2), ['ledger_id', 'session_date']);
+          // 비교: Set A v2 + C + D. PC shows every set; a phone picks 2–3 (default 3 here, never fewer than 2).
+          await go(page, 'report/mock-compare');
+          await page.locator('[data-compare][data-compare-state="READY"]').waitFor({ timeout: 40000 });
+          await page.locator('[data-compare-cell="set_c-1:value"][data-state="OK"]').waitFor({ timeout: 40000 });
+          const layout = await page.locator('[data-compare]').getAttribute('data-compare-layout');
+          assert.equal(layout, width >= 1024 ? 'PC' : 'PHONE');
+          assert.equal(await page.locator('[data-compare-set]').count(), 3);
+          if (width < 1024) {
+            await page.locator('[data-compare-pick="set_d-1"]').uncheck();
+            await page.locator('[data-compare-set]').nth(1).waitFor();
+            assert.equal(await page.locator('[data-compare-set]').count(), 2);
+            await page.locator('[data-compare-pick="set_c-1"]').click();
+            assert.equal(await page.locator('[data-compare-set]').count(), 2, 'never fewer than 2 sets');
+            assert.equal(await page.locator('[data-compare-pick="set_c-1"]').isChecked(), true);
+          } else assert.equal(await page.locator('[data-compare-pick]').count(), 0);
+          const table = await page.locator('[data-compare]').textContent();
+          assert.ok(noWonAmount(table) && !table.includes(CANARY), 'amounts hidden');
+          assert.ok(!/장점|약점|관찰항목/.test(table), 'numbers only, no narrative');
+          assert.ok(table.includes('ETF와 반도체 개별 종목 비교'));
+          for (const row of ['volatility', 'max_drawdown', 'upside_capture']) assert.equal(await page.locator('[data-compare-row="' + row + '"] [data-state="NOT_AVAILABLE"]').count(), await page.locator('[data-compare-set]').count(), row + ': NA below the minimum sample');
+          // Deleting set D only closes it: the definition and rows stay, the comparison drops it.
+          await go(page, 'report/mock-set_d'); await settled(page);
+          page.once('dialog', (d) => d.accept());
+          await page.locator('[data-set-delete="SET_D"]:enabled').click();
+          await page.locator('[data-weight-status="SET_D"]', { hasText: '종료했습니다' }).waitFor();
+          await page.locator('[data-segment="set_d-1"][data-segment-state="CLOSED"]').waitFor();
+          assert.equal(JSON.parse(sheet.tabs.get('VirtualMeta').at(-1)[10]).reason, 'SET_DELETED');
+          await go(page, 'report/mock-compare');
+          await page.locator('[data-compare][data-compare-state="READY"]').waitFor({ timeout: 40000 });
+          assert.equal(await page.locator('[data-compare-pick="set_d-1"], [data-compare-set="set_d-1"]').count(), 0);
+          assert.ok(!sheet.log.some((x) => x.includes('Example_')), 'Example_* tabs are never read or written');
+          assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'horizontal scroll');
+          assert.ok(await clean(page), 'ledger reached device storage');
+          assert.deepEqual(traffic.unexpected, []); assert.equal(traffic.errors, 0); assert.equal(traffic.console, 0);
+        } finally { await context.close(); }
+      });
+    }
     await check('TARGET → shadow snapshot → record → re-sync keeps rows (390)', async () => {
       const sheet = sheetsMock(new Map());
       const { context, page, traffic } = await open(browser, { now: '2026-10-31T01:00:00Z', sheet });
