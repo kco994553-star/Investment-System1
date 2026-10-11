@@ -46,3 +46,4 @@ virtual_trading_rehearsal_browser_test.js
 holdings_capture_browser_test.js
 judgement_consistency_browser_test.js
 sec_disclosures_browser_test.js
+news_signals_browser_test.js

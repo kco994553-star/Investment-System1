@@ -37,3 +37,4 @@ holdings_capture_node_test.js
 worker_quote_fallback_node_test.js
 judgement_labels_node_test.js
 sec_disclosures_node_test.js
+news_signals_node_test.js
