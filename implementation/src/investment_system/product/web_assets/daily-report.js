@@ -61,8 +61,13 @@ function buildModel({kind='MOCK',tab='SET_A',reportDate,baseDates={},ledger=null
 }
 function counts(holdings){const c={};for(const h of holdings)if(h.main)c[h.main]=(c[h.main]||0)+1;return c;}
 function countsLine(holdings){const c=counts(holdings),parts=LEVELS.filter(l=>c[l]).map(l=>LEVEL_KO[l]+' '+c[l]);return parts.length?parts.join(' · ')+' (주 판단만 집계)':NA;}
+function notStarted(m){
+ if(!m.start_date)return '가상매매 시작일 미정 · 가상 장부 기록 없음('+m.ledger_reasons.join(', ')+')';
+ if(m.report_date&&m.report_date<m.start_date)return '가상매매 시작일 '+m.start_date+' 전 · 기록 없음';
+ return '가상매매 시작일 '+m.start_date+' · 가상 장부 계산 전('+m.ledger_reasons.join(', ')+')';
+}
 function ruleSummary(m){
- if(!m.started)return '가상매매 시작일 미정 · 가상 장부 기록 없음('+m.ledger_reasons.join(', ')+').';
+ if(!m.started)return notStarted(m)+'.';
  const b=m.executed.filter(t=>t.side==='BUY').map(t=>t.company),s=m.executed.filter(t=>t.side==='SELL').map(t=>t.company);
  return '가상 매수 '+(b.join('·')||'없음')+', 가상 매도 '+(s.join('·')||'없음')+'. '+countsLine(m.holdings);
 }
@@ -147,7 +152,7 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
  h+='<section class="card" data-report-summary><h2>'+esc(m.kind==='REAL'?'평가액':'총 모의평가액')+'</h2><p class="big">'+esc(s?money(s.total_value,H):NA)+'</p><p>'+esc('누적 '+(s?pct(s.simple_return):NA))+'</p>'
   +'<div class="grid two"><div><b>가상 매수</b><p>'+esc(m.buy_total===null?NA:money(m.buy_total,H))+'</p><p class="small">'+esc('매수 한도 '+money(m.buy_limit,H)+(m.buy_total!==null&&num(m.buy_limit)?' 중 '+Math.round(m.buy_total/m.buy_limit*100)+'%':''))+'</p></div>'
   +'<div><b>가상 매도</b><p>'+esc(m.sell_total===null?NA:money(m.sell_total,H))+'</p><p class="small">'+esc('매도 한도 '+money(m.sell_limit,H)+(m.sell_total!==null&&num(m.sell_limit)?' 중 '+Math.round(m.sell_total/m.sell_limit*100)+'%':''))+'</p></div></div>'
-  +(m.started?'':'<p class="badge NOT_AVAILABLE" data-report-not-started>'+esc('가상매매 시작일 미정 · 기록 없음 ('+m.ledger_reasons.join(', ')+')')+'</p>')+'</section>';
+  +(m.started?'':'<p class="badge NOT_AVAILABLE" data-report-not-started>'+esc(notStarted(m))+'</p>')+'</section>';
  h+='<section class="card" data-report-ai-summary><h2>오늘의 요약 <span class="badge">AI 해석</span></h2>'+(answer?'<pre class="ai-answer" data-ai-answer>'+esc(answer.answer)+'</pre><p class="small">'+esc((answer.model?answer.model+' · ':'')+'보관 '+(answer.saved_at||'')+' · '+(answer.source==='MAILBOX'?'우체통':'붙여넣기'))+'</p>':'<p data-rule-summary>'+esc('【규칙】 '+ruleSummary(m))+'</p>')
   +(check?'<p class="badge '+(check.format_ok?'LIVE':'NOT_AVAILABLE')+'" data-answer-format>'+esc(check.format_ok?'형식 확인됨':'형식 확인 필요')+'</p>'+(check.foreign_numbers.length?'<p class="badge STALE" data-foreign-numbers>'+esc('템플릿에 없는 숫자 '+check.foreign_numbers.length+'개')+'</p>':''):'')
   +'<p class="small">숫자는 앱 계산, 문장은 붙여넣은 AI 해석입니다. AI 해석이 없으면 규칙 문장으로 대신 채웁니다.</p></section>';
