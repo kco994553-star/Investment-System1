@@ -27,6 +27,8 @@ class SecM3Input:
     receipt: SecReceipt | None = field(default=None,repr=False)
     basis: ShareBasisReceipt | None = field(default=None,repr=False)
     shares: object = field(default=None,repr=False)
+    # Cover facts used for the decision (per-class value, member names, date); no prices.
+    cover: dict | None = field(default=None,repr=False)
 
 def _aware(d):
     return isinstance(d,datetime) and d.tzinfo is not None and d.utcoffset() is not None
@@ -50,7 +52,7 @@ def _json(b):
     if type(d) is not dict:raise ValueError('INVALID_INPUT')
     return d
 
-def _cover(xml,cik,symbol,cutoff,report_period_end=None,venue=None):
+def _cover(xml,cik,symbol,cutoff,report_period_end=None,venue=None,detail=False):
     from io import BytesIO
     from datetime import date
     if type(xml) is not bytes or len(xml)>8388608 or b'\x00' in xml or re.search(br'<!\s*(DOCTYPE|ENTITY)',xml,re.I):
@@ -131,15 +133,19 @@ def _cover(xml,cik,symbol,cutoff,report_period_end=None,venue=None):
     same_day=[(ctx,v) for _,ctx,v in rows if ctx[1]==day and ctx[2]==venues]
     multi=len({ctx[0] for _,ctx,_ in rows})>1
     explicit_totals=tuple(v for ctx,v in same_day if ctx[0] is None)
+    if detail:
+        # Public evidence only: XBRL class member local names on this cover, no values.
+        classes=tuple(sorted({ctx[0][1] for _,ctx,_ in rows if ctx[0] is not None}))
+        return value,day,multi,member is not None,explicit_totals,{'class_members':classes,'listing_class_member':member[1] if member else None}
     return value,day,multi,member is not None,explicit_totals
 
 def build_sec_m3_input(*,code,companyfacts_body,submissions_body,acquired_at,as_of,synthetic=False,cover_xml=None,cover_accession=None,cover_acquired_at=None):
-    seed=receipt=basis=shares=None
+    seed=receipt=basis=shares=evidence=None
     def fail(reason):
         nonlocal basis,shares
         if basis is not None and reason!='SHARE_CLASS_BASIS':basis=replace(basis,basis_status='UNKNOWN',share_class_basis='UNKNOWN')
         if reason!='SHARE_CLASS_BASIS':shares=None
-        return SecM3Input('NOT_AVAILABLE',(reason,),code if type(code) is str else None,seed,receipt,basis,shares)
+        return SecM3Input('NOT_AVAILABLE',(reason,),code if type(code) is str else None,seed,receipt,basis,shares,evidence)
     try:
         if type(synthetic) is not bool:return fail('INVALID_INPUT')
         if not _aware(acquired_at) or not _aware(as_of):return fail('INVALID_TIMESTAMP')
@@ -169,7 +175,8 @@ def build_sec_m3_input(*,code,companyfacts_body,submissions_body,acquired_at,as_
         if type(accns) is list and accns.count(cover_accession)==1:
             index=accns.index(cover_accession);reports=recent.get('reportDate',[])
             if type(reports) is list and len(reports)==len(accns):report_period_end=reports[index]
-        expected,measurement,multi,dimensioned,explicit_totals=_cover(cover_xml,cik,symbol,min(captured,cover_at),report_period_end,venue)
+        expected,measurement,multi,dimensioned,explicit_totals,detail=_cover(cover_xml,cik,symbol,min(captured,cover_at),report_period_end,venue,True)
+        evidence={'value':expected,'measurement_date':measurement,'multi_class':multi,'dimensioned':dimensioned,**detail}
         basis=ShareBasisReceipt(listing,company,security,'SINGLE_CLASS_CONFIRMED',f'sec-cover:{cik}/{cover_accession}',sha(cover_xml),max(captured,cover_at),'shares','GOOGLEFINANCE_CURRENT','USD',synthetic,'ALIGNED')
         shares=prepare_sec_shares(seed,receipt,basis,cut)
         if shares.state!='INPUT_RESEARCH':return fail(shares.reason_codes[0])
@@ -184,7 +191,7 @@ def build_sec_m3_input(*,code,companyfacts_body,submissions_body,acquired_at,as_
             shares=prepare_sec_shares(seed,receipt,basis,cut)
             return fail('SHARE_CLASS_BASIS')
         if multi:return fail('MULTI_CLASS_AMBIGUOUS')
-        return SecM3Input('INPUT_RESEARCH',(),code,seed,receipt,basis,shares)
+        return SecM3Input('INPUT_RESEARCH',(),code,seed,receipt,basis,shares,evidence)
     except ValueError as error:
         reason=str(error)
         return fail(reason if reason in ('COVER_UNCONFIRMED','BASIS_UNCONFIRMED','INVALID_INPUT') else 'COVER_UNCONFIRMED')
