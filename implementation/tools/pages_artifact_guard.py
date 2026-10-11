@@ -34,7 +34,8 @@ from investment_system.product.public_classification import FILENAME as CLASSIFI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "virtual-trading-runner.js": "5bdf18e2273f0dc2d5e64e760e6af7ffa510092894631e1a7cd2e7e5bbeac996",
+    "report-benchmarks.js": "960378c63096472de2e55c2c895dfcab5732745324380e30e82116fafd8ce604",
+    "virtual-trading-runner.js": "fdcda29e4ba73d0470ce5658cfc9197d3e1e8ba7ae5b1ed7615ddd7ad29c602e",
     "virtual-ledger-sheets.js": "ae2b4b72f7307e8cad45300962b67ec0e30c44ee218f778ba4f130e0aebe55be",
     "worker-quote-fallback.js": "e72a72d1885a23c2a35706c8d4f333060b0c451d32a00e501dc63a30416b754c",
     "holdings-capture-view.js": "f2bebf39ca836868d19cef05c08b2d3aa9cbe99f2bdc62ee8509634f5891f65f",
@@ -43,7 +44,7 @@ APPROVED_SHA256 = {
     "pc-layout.css": "a8e236e7d817d1b7f15f566df4af6f7fa381f6045273c289d9337134ed758d75",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
-    "daily-report.js": "99d91fa2827e15eda39a79c203519a63408ed1e9410c577ed431952d57f3ffd1",
+    "daily-report.js": "8b374ea3b0a8f91cc062f57038299135ac62fdbfd98aed9e91df7baf3e24b2a4",
     "sec-universe-shares.js": "574f94ffebfc2a8cc20bac0cd5ff7bfd7e58db3cb1864f60d4c2a14dd24b37f9",
     "virtual-trading-v-history.js": "b72a870fcf8b910685651591c79eed99f294204bec5714b1ea7da966554916fa",
     "virtual-trading-signals.js": "8d308b77f3bbeb84108d518fcc9d9679d61dc67c1784de7934e9fdcdf56d452f",
@@ -52,7 +53,7 @@ APPROVED_SHA256 = {
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
-    "daily-report.js": "99d91fa2827e15eda39a79c203519a63408ed1e9410c577ed431952d57f3ffd1",
+    "daily-report.js": "8b374ea3b0a8f91cc062f57038299135ac62fdbfd98aed9e91df7baf3e24b2a4",
     "virtual-trading.js": "c65986a866b670c0d8c541eb2da2b835dd9e348e650f74e96bbc4ed013a67c3c",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "6871b25dca41877d2cdea198a1fe3b4bdfde4191976de3709f076d44e0a3d12e",
@@ -83,7 +84,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "d5244f83c9217a188e0108a898c6ccb0bd400b3ee19f0a118f3666e58684c1bd",
+    "app.js": "71536bca38e4e9f89efeb9f66df40ec9418246d9df85c021edbdc012ab3ab1d9",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "8dcefa502a362b680f8cefbf774209b2180b398d706469f6370d6ecb0182acd1",
@@ -93,12 +94,12 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "ea28ce88509ce3bc4135953eb1284d784a46842d1381da91e36b2389a2025b08",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "f52e19461576233334eb58217c1af167ba727442c95e823270de885051381751",
+    "index.html": "ffa7d91f59d953123f3381b21a9b6d62e8ac3918ed20e87d4ade460c1dea4776",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "f1f7eed0853eecaa6847c8468999bc5bbe06b4c0d9a49c845c57c00366017220",
+    "style.css": "d48a9376677319f28a6c4cc93d74a077009ba476d76c9d7e5d9b1c308362a404",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024

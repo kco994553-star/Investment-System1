@@ -41,6 +41,9 @@ NYSE_HOLIDAYS = frozenset((
     '2027-01-01', '2027-01-18', '2027-02-15', '2027-03-26', '2027-05-31', '2027-06-18', '2027-07-05', '2027-09-06',
     '2027-11-25', '2027-12-24'))
 HOLIDAYS_KNOWN_UNTIL = '2027-12-31'
+# A gap at the base session / the as-of session → the series' NOT_AVAILABLE reason.
+BASE_CODES = {'CLOSE_MISSING': 'BASE_CLOSE_MISSING', 'FX_MISSING': 'BASE_FX_MISSING'}
+LAST_CODES = {'CLOSE_MISSING': 'LAST_CLOSE_MISSING', 'FX_MISSING': 'LAST_FX_MISSING', 'VALUE_MISSING': 'LAST_VALUE_MISSING'}
 
 
 def _num(v):
@@ -93,14 +96,14 @@ def price_index(closes, fx, window, basis):
 
     base, code = level(window['base'])
     if base is None:
-        return {'state': 'NOT_AVAILABLE', 'reason': 'BASE_' + code, 'return': None, 'points': [], 'gap_codes': [], 'gaps': 0}
+        return {'state': 'NOT_AVAILABLE', 'reason': BASE_CODES[code], 'return': None, 'points': [], 'gap_codes': [], 'gaps': 0}
     points, codes = [], []
     for d in window['sessions']:
         v, c = level(d)
         points.append(None if v is None else v / base * 100)
         codes.append(c)
     last, last_code = level(window['sessions'][-1])
-    return _series(points, codes, None if last is None else last / base - 1, None if last_code is None else 'LAST_' + last_code)
+    return _series(points, codes, None if last is None else last / base - 1, None if last_code is None else LAST_CODES[last_code])
 
 
 def ledger_index(days, calendar, window, basis, fx):
@@ -153,7 +156,7 @@ def ledger_index(days, calendar, window, basis, fx):
         prev, prev_rate, deposits, code = total, rate, 0, None
         points.append(index * 100)
         codes.append(None)
-    return _series(points, codes, None if points[-1] is None else index - 1, None if code is None else 'LAST_' + code)
+    return _series(points, codes, None if points[-1] is None else index - 1, None if code is None else LAST_CODES[code])
 
 
 def _ledger_series(entry, calendar, window, basis, fx):
@@ -199,7 +202,9 @@ def build(*, indices, sources=None, ledgers=(), start_date=None, period='20D', b
            'state': 'OK', 'reason': None, 'periods': [], 'dashboard': None}
     if not calendar:
         code = (sources.get(SPY) or {}).get('code')
-        out.update(state='NOT_AVAILABLE', reason=code or 'SESSIONS_NOT_AVAILABLE')
+        # No SPY: the SPY request error, else the target ledger's own reason (e.g. BEFORE_START_DATE, AUTH_REQUIRED).
+        own = (target.get('reason_codes') or [None])[0] if target and target.get('state') != 'OK' else None
+        out.update(state='NOT_AVAILABLE', reason=code or own or 'SESSIONS_NOT_AVAILABLE')
     rows = []
     for pid in PERIOD_IDS:
         w = period_window(calendar, as_of, pid, start_date) if calendar else _na(out['reason'])

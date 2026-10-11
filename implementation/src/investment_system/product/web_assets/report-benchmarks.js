@@ -15,6 +15,8 @@ const SPY='SPY',FX_SYMBOL='KRW=X',BASES=Object.freeze(['KRW','USD']);
 const NYSE_HOLIDAYS=new Set(['2026-01-01','2026-01-19','2026-02-16','2026-04-03','2026-05-25','2026-06-19','2026-07-03','2026-09-07','2026-11-26','2026-12-25',
  '2027-01-01','2027-01-18','2027-02-15','2027-03-26','2027-05-31','2027-06-18','2027-07-05','2027-09-06','2027-11-25','2027-12-24']);
 const HOLIDAYS_KNOWN_UNTIL='2027-12-31';
+// A gap at the base session / the as-of session → the series' NOT_AVAILABLE reason.
+const BASE_CODES=Object.freeze({CLOSE_MISSING:'BASE_CLOSE_MISSING',FX_MISSING:'BASE_FX_MISSING'}),LAST_CODES=Object.freeze({CLOSE_MISSING:'LAST_CLOSE_MISSING',FX_MISSING:'LAST_FX_MISSING',VALUE_MISSING:'LAST_VALUE_MISSING'});
 const own=(o,k)=>o!==null&&typeof o==='object'&&Object.prototype.hasOwnProperty.call(o,k);
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const num=v=>typeof v==='number'&&Number.isFinite(v);
@@ -42,11 +44,11 @@ function series(points,codes,ret,lastCode){
 function priceIndex(closes,fx,window,basis){
  const level=d=>{const c=get(closes,d);if(!num(c))return[null,'CLOSE_MISSING'];
   if(basis==='KRW'){const r=get(fx,d);if(!num(r))return[null,'FX_MISSING'];return[c*r,null];}return[c,null];};
- const[base,code]=level(window.base);if(base===null)return empty('BASE_'+code);
+ const[base,code]=level(window.base);if(base===null)return empty(BASE_CODES[code]);
  const points=[],codes=[];
  for(const d of window.sessions){const[v,c]=level(d);points.push(v===null?null:v/base*100);codes.push(c);}
  const[last,lastCode]=level(window.sessions[window.sessions.length-1]);
- return series(points,codes,last===null?null:last/base-1,lastCode===null?null:'LAST_'+lastCode);
+ return series(points,codes,last===null?null:last/base-1,lastCode===null?null:LAST_CODES[lastCode]);
 }
 function ledgerIndex(days,calendar,window,basis,fx){
  const by=new Map(days.map(d=>[d.date,d])),first=days[0].date,before=calendar.filter(d=>d<first),b=window.base;
@@ -63,7 +65,7 @@ function ledgerIndex(days,calendar,window,basis,fx){
   if(prev!==null&&prev>0){let link=(total-deposits)/prev;if(basis==='USD')link=link*prevRate/rate;index=index*link;}
   prev=total;prevRate=rate;deposits=0;code=null;points.push(index*100);codes.push(null);
  }
- return series(points,codes,points[points.length-1]===null?null:index-1,code===null?null:'LAST_'+code);
+ return series(points,codes,points[points.length-1]===null?null:index-1,code===null?null:LAST_CODES[code]);
 }
 function ledgerSeries(entry,calendar,window,basis,fx){
  if(!object(entry)||entry.state!=='OK'||!Array.isArray(entry.days)||!entry.days.length){const codes=object(entry)&&Array.isArray(entry.reason_codes)?entry.reason_codes:[];return empty(codes.length?codes[0]:'LEDGER_NOT_AVAILABLE');}
@@ -86,7 +88,7 @@ function build({indices={},sources={},ledgers=[],start_date=null,period='20D',ba
  const asOf=targetDays?targetDays[targetDays.length-1].date:(calendar.length?calendar[calendar.length-1]:null);
  let startDate=start_date;if(targetDays&&targetDays[0].date)startDate=targetDays[0].date;
  const out={schema:SCHEMA,basis,period,as_of:asOf,start_date:startDate,state:'OK',reason:null,periods:[],dashboard:null};
- if(!calendar.length){const s=get(sources,SPY);out.state='NOT_AVAILABLE';out.reason=(object(s)&&s.code)||'SESSIONS_NOT_AVAILABLE';}
+ if(!calendar.length){const s=get(sources,SPY);out.state='NOT_AVAILABLE';const mine=target&&target.state!=='OK'&&Array.isArray(target.reason_codes)&&target.reason_codes.length?target.reason_codes[0]:null;out.reason=(object(s)&&s.code)||mine||'SESSIONS_NOT_AVAILABLE';}
  for(const pid of PERIOD_IDS){
   const w=calendar.length?periodWindow(calendar,asOf,pid,startDate):na(out.reason);
   if(w.state!=='OK'){out.periods.push({period:pid,state:'NOT_AVAILABLE',reason:w.reason,base:null,start:null,end:null,target:null,sp500:null,excess:null,verdict:null});continue;}
@@ -167,7 +169,7 @@ const CODE_LABELS=Object.freeze({
  LAST_CLOSE_MISSING:['마지막 세션 종가 없음','Last close missing'],LAST_FX_MISSING:['마지막 세션 환율 없음','Last FX rate missing'],LAST_VALUE_MISSING:['마지막 세션 장부 평가 없음','Last ledger value missing'],
  CLOSE_MISSING:['종가 없음','Close missing'],FX_MISSING:['환율 없음','FX rate missing'],VALUE_MISSING:['장부 평가 없음','Ledger value missing'],FX_NOT_AVAILABLE:['KRW=X 환율 시세 없음','KRW=X rates unavailable'],
  LEDGER_NOT_AVAILABLE:['장부 없음','Ledger unavailable'],NOT_REQUESTED:['요청 안 함','Not requested'],SAMPLE_BELOW_MINIMUM:['표본 부족(n<30)','Too few samples (n<30)'],
- NO_TRADES:['가상 거래 없음','No virtual trades'],WINDOW_NOT_ELAPSED:['평가 창 미경과','Window not elapsed'],PRICE_OR_BENCHMARK_MISSING:['종가·벤치마크 결측','Close or benchmark missing']});
+ NO_TRADES:['가상 거래 없음','No virtual trades'],WINDOW_NOT_ELAPSED:['평가 창 미경과','Window not elapsed'],PRICE_OR_BENCHMARK_MISSING:['종가·벤치마크 결측','Close or benchmark missing'],NO_COMPARABLE_PERIOD:['비교 가능한 기간 없음','No comparable period']});
 const CODES=Object.freeze(Object.keys(CODE_LABELS));
 const lang=locale=>locale==='en-US'?1:0;
 function label(table,key,locale){return own(table,key)?table[key][lang(locale)]:String(key);}
@@ -185,7 +187,7 @@ function chartSvg(dash,{locale='ko-KR',target=null}={}){
  const values=shown.flatMap(s=>s.points.filter(p=>p!==null)).concat([100]);
  let lo=Math.min(...values),hi=Math.max(...values);if(hi-lo<1){lo-=0.5;hi+=0.5;}
  const pad=(hi-lo)*0.06;lo-=pad;hi+=pad;
- const W=640,H=260,L=44,R=12,T=12,B=28,g={x:i=>L+i*(W-L-R)/Math.max(1,dates.length-1),y:v=>T+(hi-v)/(hi-lo)*(H-T-B)};
+ const W=640,H=280,L=58,R=12,T=14,B=34,g={x:i=>L+i*(W-L-R)/Math.max(1,dates.length-1),y:v=>T+(hi-v)/(hi-lo)*(H-T-B)};
  const paths=TC&&typeof TC.paths==='function'?TC.paths:localPaths,en=lang(locale)===1;
  let h='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" data-bench-chart aria-label="'+esc(en?'Relative index, base = 100':'상대지수, 기준 = 100')+'">';
  for(const v of [lo+pad,100,hi-pad]){const y=g.y(v).toFixed(2);h+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'" class="bench-grid'+(v===100?' bench-base':'')+'"/><text x="'+(L-4)+'" y="'+(+y+3)+'" text-anchor="end" class="chart-axis">'+esc(v.toFixed(1))+'</text>';}
@@ -198,6 +200,8 @@ function chartSvg(dash,{locale='ko-KR',target=null}={}){
   h+='<rect x="'+Math.max(0,g.x(i)-step/2).toFixed(2)+'" y="'+T+'" width="'+Math.max(2,step).toFixed(2)+'" height="'+(H-T-B)+'" fill="transparent" data-bench-hover="'+esc(d)+'"><title>'+esc(tip)+'</title></rect>';});
  return h+'</svg>';
 }
+// Legend swatch: a short line in the series colour (SVG attribute, no inline style: the page CSP has no unsafe-inline).
+function swatchSvg(key,main=false){return '<svg class="bench-swatch" width="18" height="8" viewBox="0 0 18 8" aria-hidden="true"><line x1="2" y1="4" x2="16" y2="4" stroke="'+(COLORS[key]||'#5e6863')+'" stroke-width="'+(main?3.5:2.5)+'" stroke-linecap="round"/></svg>';}
 return Object.freeze({SCHEMA,PERIODS,PERIOD_IDS,DASHBOARD,SPY,FX_SYMBOL,BASES,NYSE_HOLIDAYS,HOLIDAYS_KNOWN_UNTIL,CODES,CODE_LABELS,PERIOD_LABELS,SERIES_LABELS,BASIS_LABELS,VERDICT_LABELS,COLORS,
- periodWindow,priceIndex,ledgerIndex,build,nthSessionAfter,tradeOutcomes,trackRecord,label,codeLabel,chartSvg});
+ periodWindow,priceIndex,ledgerIndex,build,nthSessionAfter,tradeOutcomes,trackRecord,label,codeLabel,chartSvg,swatchSvg});
 });

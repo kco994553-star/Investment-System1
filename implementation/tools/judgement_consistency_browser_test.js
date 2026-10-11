@@ -275,7 +275,8 @@ async function vocabulary(page) {
           const snapshot = { effective_at: '2026-10-20T01:00:00Z', themes: [{ holdings: [
             { security_reference: { scheme: 'ISIN', value: 'US67066G1040' }, quantity: '4000', average_cost: '100', currency: 'USD' },
             { security_reference: { code: '042700', exchange: 'KRX', scheme: 'EXCHANGE_CODE' }, quantity: '30', average_cost: '70000', currency: 'KRW' }] }] };
-          window.DeviceActual = { ...DeviceActual, readHoldings: async () => snapshot };
+          // The runner reads effectiveHoldings (holdings capture v2) first: stub it together with readHoldings.
+          window.DeviceActual = { ...DeviceActual, readHoldings: async () => snapshot, effectiveHoldings: async () => ({ snapshot, source: 'DEVICE_ACTUAL', as_of: snapshot.effective_at }) };
         });
         await go(page, 'report/real');
         await page.locator('[data-report-inputs][data-runner-state="READY"]').waitFor({ timeout: 30000 });
