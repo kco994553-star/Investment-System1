@@ -7,7 +7,7 @@
       "cik": "0001652044",
       "config_version": "share_class_groups/v0",
       "cover_class_count": 3,
-      "effective_cap": 1685400.0,
+      "effective_cap": 1730400.0,
       "group_id": "alphabet",
       "member_codes": [
        "NASDAQ:GOOGL",
@@ -28,9 +28,17 @@
       "quality": "WITHIN_TOLERANCE",
       "quality_label": "\uacbd\uc81c\uc801 \ub3d9\uc77c \uc885\ub958 \ud569\uc0b0 \u00b7 v0",
       "reason_codes": [],
-      "relative_difference": 0.0027293224160436693,
+      "relative_difference": 0.0026583448913546,
       "row_index": 1,
-      "state": "VERIFIED"
+      "state": "VERIFIED",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [
+       "CommonClassBMember"
+      ],
+      "unlisted_shares": [
+       300.0
+      ],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -39,7 +47,7 @@
      "reason_codes": [],
      "requested_n": 2,
      "selected_caps": [
-      1685400.0,
+      1730400.0,
       10000.0
      ],
      "selected_listing_ids": [
@@ -52,7 +60,7 @@
      "verified_count": 2
     }
    },
-   "id": "alphabet_two_classes_summed_ranked_once",
+   "id": "alphabet_class_b_valued_at_googl_price_ranked_once",
    "input": {
     "as_of": "2030-02-10T12:00:00Z",
     "n": 2,
@@ -148,6 +156,23 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
     "values": [
      [
       "code",
@@ -156,12 +181,1467 @@
      ],
      [
       "NASDAQ:GOOGL",
-      1690000,
+      1735000,
       150
      ],
      [
       "NASDAQ:GOOG",
-      1690000,
+      1735000,
+      151
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "groups": [
+     {
+      "cik": "0001652044",
+      "config_version": "share_class_groups/v0",
+      "cover_class_count": 3,
+      "effective_cap": null,
+      "group_id": "alphabet",
+      "member_codes": [
+       "NASDAQ:GOOGL",
+       "NASDAQ:GOOG"
+      ],
+      "member_row_indexes": [
+       1,
+       2
+      ],
+      "member_shares": [],
+      "member_symbols": [
+       "GOOGL",
+       "GOOG"
+      ],
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "SHARE_CLASS_GROUP_INCOMPLETE",
+       "UNLISTED_CLASS_SHARES_NOT_AVAILABLE"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
+     }
+    ],
+    "selection": {
+     "missing": [
+      [
+       1,
+       [
+        "SHARE_CLASS_GROUP_INCOMPLETE",
+        "UNLISTED_CLASS_SHARES_NOT_AVAILABLE"
+       ]
+      ],
+      [
+       2,
+       [
+        "SHARE_CLASS_GROUP_INCOMPLETE",
+        "UNLISTED_CLASS_SHARES_NOT_AVAILABLE"
+       ]
+      ]
+     ],
+     "missing_count": 2,
+     "reason_codes": [
+      "SHARE_CLASS_GROUP_INCOMPLETE",
+      "UNLISTED_CLASS_SHARES_NOT_AVAILABLE",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 2,
+     "selected_caps": [
+      10000.0
+     ],
+     "selected_listing_ids": [
+      "XNAS:DEMO:0000000001"
+     ],
+     "selected_n": 1,
+     "selection_status": "PARTIAL",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    }
+   },
+   "id": "class_b_count_not_available_company_not_ranked",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 2,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOG": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassCMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOG:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5400,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOGL": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassAMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOGL:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5800,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     }
+    },
+    "unlisted": {
+     "alphabet": {
+      "accn": null,
+      "cik": "0001652044",
+      "classes": [],
+      "cover_sha256": null,
+      "measurement_date": null,
+      "reason_codes": [
+       "UNLISTED_CLASS_SHARES_NOT_AVAILABLE"
+      ],
+      "state": "NOT_AVAILABLE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:GOOGL",
+      1735000,
+      150
+     ],
+     [
+      "NASDAQ:GOOG",
+      1735000,
+      151
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "groups": [
+     {
+      "cik": "0001652044",
+      "config_version": "share_class_groups/v0",
+      "cover_class_count": 3,
+      "effective_cap": null,
+      "group_id": "alphabet",
+      "member_codes": [
+       "NASDAQ:GOOGL",
+       "NASDAQ:GOOG"
+      ],
+      "member_row_indexes": [
+       1,
+       2
+      ],
+      "member_shares": [],
+      "member_symbols": [
+       "GOOGL",
+       "GOOG"
+      ],
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "SHARE_CLASS_GROUP_INCOMPLETE",
+       "UNLISTED_CLASS_SHARES_NOT_AVAILABLE"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
+     }
+    ],
+    "selection": {
+     "missing": [
+      [
+       1,
+       [
+        "SHARE_CLASS_GROUP_INCOMPLETE",
+        "UNLISTED_CLASS_SHARES_NOT_AVAILABLE"
+       ]
+      ],
+      [
+       2,
+       [
+        "SHARE_CLASS_GROUP_INCOMPLETE",
+        "UNLISTED_CLASS_SHARES_NOT_AVAILABLE"
+       ]
+      ]
+     ],
+     "missing_count": 2,
+     "reason_codes": [
+      "SHARE_CLASS_GROUP_INCOMPLETE",
+      "UNLISTED_CLASS_SHARES_NOT_AVAILABLE",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 2,
+     "selected_caps": [
+      10000.0
+     ],
+     "selected_listing_ids": [
+      "XNAS:DEMO:0000000001"
+     ],
+     "selected_n": 1,
+     "selection_status": "PARTIAL",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    }
+   },
+   "id": "class_b_entry_absent_no_partial_sum",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 2,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOG": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassCMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOG:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5400,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOGL": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassAMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOGL:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5800,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     }
+    },
+    "unlisted": {},
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:GOOGL",
+      1735000,
+      150
+     ],
+     [
+      "NASDAQ:GOOG",
+      1735000,
+      151
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "groups": [
+     {
+      "cik": "0001652044",
+      "config_version": "share_class_groups/v0",
+      "cover_class_count": 3,
+      "effective_cap": null,
+      "group_id": "alphabet",
+      "member_codes": [
+       "NASDAQ:GOOGL",
+       "NASDAQ:GOOG"
+      ],
+      "member_row_indexes": [
+       1,
+       2
+      ],
+      "member_shares": [],
+      "member_symbols": [
+       "GOOGL",
+       "GOOG"
+      ],
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "SHARE_CLASS_GROUP_MISMATCH",
+       "UNLISTED_CLASS_AMBIGUOUS"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
+     }
+    ],
+    "selection": {
+     "missing": [
+      [
+       1,
+       [
+        "SHARE_CLASS_GROUP_MISMATCH",
+        "UNLISTED_CLASS_AMBIGUOUS"
+       ]
+      ],
+      [
+       2,
+       [
+        "SHARE_CLASS_GROUP_MISMATCH",
+        "UNLISTED_CLASS_AMBIGUOUS"
+       ]
+      ]
+     ],
+     "missing_count": 2,
+     "reason_codes": [
+      "SHARE_CLASS_GROUP_MISMATCH",
+      "UNLISTED_CLASS_AMBIGUOUS",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 2,
+     "selected_caps": [
+      10000.0
+     ],
+     "selected_listing_ids": [
+      "XNAS:DEMO:0000000001"
+     ],
+     "selected_n": 1,
+     "selection_status": "PARTIAL",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    }
+   },
+   "id": "class_b_ambiguous_company_not_ranked",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 2,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOG": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassCMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOG:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5400,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOGL": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassAMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOGL:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5800,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     }
+    },
+    "unlisted": {
+     "alphabet": {
+      "accn": null,
+      "cik": "0001652044",
+      "classes": [],
+      "cover_sha256": null,
+      "measurement_date": null,
+      "reason_codes": [
+       "UNLISTED_CLASS_AMBIGUOUS"
+      ],
+      "state": "NOT_AVAILABLE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:GOOGL",
+      1735000,
+      150
+     ],
+     [
+      "NASDAQ:GOOG",
+      1735000,
+      151
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "groups": [
+     {
+      "cik": "0001652044",
+      "config_version": "share_class_groups/v0",
+      "cover_class_count": 3,
+      "effective_cap": null,
+      "group_id": "alphabet",
+      "member_codes": [
+       "NASDAQ:GOOGL",
+       "NASDAQ:GOOG"
+      ],
+      "member_row_indexes": [
+       1,
+       2
+      ],
+      "member_shares": [],
+      "member_symbols": [
+       "GOOGL",
+       "GOOG"
+      ],
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "SHARE_CLASS_GROUP_MISMATCH",
+       "UNLISTED_CLASS_AMBIGUOUS"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
+     }
+    ],
+    "selection": {
+     "missing": [
+      [
+       1,
+       [
+        "SHARE_CLASS_GROUP_MISMATCH",
+        "UNLISTED_CLASS_AMBIGUOUS"
+       ]
+      ],
+      [
+       2,
+       [
+        "SHARE_CLASS_GROUP_MISMATCH",
+        "UNLISTED_CLASS_AMBIGUOUS"
+       ]
+      ]
+     ],
+     "missing_count": 2,
+     "reason_codes": [
+      "SHARE_CLASS_GROUP_MISMATCH",
+      "UNLISTED_CLASS_AMBIGUOUS",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 2,
+     "selected_caps": [
+      10000.0
+     ],
+     "selected_listing_ids": [
+      "XNAS:DEMO:0000000001"
+     ],
+     "selected_n": 1,
+     "selection_status": "PARTIAL",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    }
+   },
+   "id": "class_b_from_other_filing_mismatch",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 2,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOG": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassCMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOG:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5400,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOGL": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassAMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOGL:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5800,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     }
+    },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000009",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:GOOGL",
+      1735000,
+      150
+     ],
+     [
+      "NASDAQ:GOOG",
+      1735000,
+      151
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "groups": [
+     {
+      "cik": "0001652044",
+      "config_version": "share_class_groups/v0",
+      "cover_class_count": 3,
+      "effective_cap": null,
+      "group_id": "alphabet",
+      "member_codes": [
+       "NASDAQ:GOOGL",
+       "NASDAQ:GOOG"
+      ],
+      "member_row_indexes": [
+       1,
+       2
+      ],
+      "member_shares": [],
+      "member_symbols": [
+       "GOOGL",
+       "GOOG"
+      ],
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "SHARE_CLASS_GROUP_MISMATCH",
+       "UNLISTED_CLASS_AMBIGUOUS"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
+     }
+    ],
+    "selection": {
+     "missing": [
+      [
+       1,
+       [
+        "SHARE_CLASS_GROUP_MISMATCH",
+        "UNLISTED_CLASS_AMBIGUOUS"
+       ]
+      ],
+      [
+       2,
+       [
+        "SHARE_CLASS_GROUP_MISMATCH",
+        "UNLISTED_CLASS_AMBIGUOUS"
+       ]
+      ]
+     ],
+     "missing_count": 2,
+     "reason_codes": [
+      "SHARE_CLASS_GROUP_MISMATCH",
+      "UNLISTED_CLASS_AMBIGUOUS",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 2,
+     "selected_caps": [
+      10000.0
+     ],
+     "selected_listing_ids": [
+      "XNAS:DEMO:0000000001"
+     ],
+     "selected_n": 1,
+     "selection_status": "PARTIAL",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    }
+   },
+   "id": "class_b_member_is_a_listed_class_mismatch",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 2,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOG": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassCMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOG:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5400,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOGL": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassAMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOGL:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5800,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     }
+    },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassCMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:GOOGL",
+      1735000,
+      150
+     ],
+     [
+      "NASDAQ:GOOG",
+      1735000,
+      151
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "groups": [
+     {
+      "cik": "0001652044",
+      "config_version": "share_class_groups/v0",
+      "cover_class_count": 3,
+      "effective_cap": null,
+      "group_id": "alphabet",
+      "member_codes": [
+       "NASDAQ:GOOGL",
+       "NASDAQ:GOOG"
+      ],
+      "member_row_indexes": [
+       1,
+       2
+      ],
+      "member_shares": [],
+      "member_symbols": [
+       "GOOGL",
+       "GOOG"
+      ],
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "SHARE_CLASS_GROUP_INCOMPLETE",
+       "UNLISTED_CLASS_SHARES_NOT_AVAILABLE"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
+     }
+    ],
+    "selection": {
+     "missing": [
+      [
+       1,
+       [
+        "SHARE_CLASS_GROUP_INCOMPLETE",
+        "UNLISTED_CLASS_SHARES_NOT_AVAILABLE"
+       ]
+      ],
+      [
+       2,
+       [
+        "SHARE_CLASS_GROUP_INCOMPLETE",
+        "UNLISTED_CLASS_SHARES_NOT_AVAILABLE"
+       ]
+      ]
+     ],
+     "missing_count": 2,
+     "reason_codes": [
+      "SHARE_CLASS_GROUP_INCOMPLETE",
+      "UNLISTED_CLASS_SHARES_NOT_AVAILABLE",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 2,
+     "selected_caps": [
+      10000.0
+     ],
+     "selected_listing_ids": [
+      "XNAS:DEMO:0000000001"
+     ],
+     "selected_n": 1,
+     "selection_status": "PARTIAL",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    }
+   },
+   "id": "class_b_zero_count_never_used",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 2,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOG": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassCMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOG:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5400,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOGL": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassAMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOGL:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5800,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     }
+    },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 0
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:GOOGL",
+      1735000,
+      150
+     ],
+     [
+      "NASDAQ:GOOG",
+      1735000,
+      151
+     ],
+     [
+      "NASDAQ:DEMO",
+      10000,
+      10
+     ]
+    ]
+   },
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "groups": [
+     {
+      "cik": "0001652044",
+      "config_version": "share_class_groups/v0",
+      "cover_class_count": 3,
+      "effective_cap": null,
+      "group_id": "alphabet",
+      "member_codes": [
+       "NASDAQ:GOOGL",
+       "NASDAQ:GOOG"
+      ],
+      "member_row_indexes": [
+       1,
+       2
+      ],
+      "member_shares": [],
+      "member_symbols": [
+       "GOOGL",
+       "GOOG"
+      ],
+      "quality": "UNCONFIRMED",
+      "quality_label": "",
+      "reason_codes": [
+       "SHARE_CLASS_GROUP_INCOMPLETE",
+       "PRICE_NOT_AVAILABLE"
+      ],
+      "relative_difference": null,
+      "row_index": 1,
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
+     }
+    ],
+    "selection": {
+     "missing": [
+      [
+       1,
+       [
+        "SHARE_CLASS_GROUP_INCOMPLETE",
+        "PRICE_NOT_AVAILABLE"
+       ]
+      ],
+      [
+       2,
+       [
+        "SHARE_CLASS_GROUP_INCOMPLETE",
+        "PRICE_NOT_AVAILABLE"
+       ]
+      ]
+     ],
+     "missing_count": 2,
+     "reason_codes": [
+      "SHARE_CLASS_GROUP_INCOMPLETE",
+      "PRICE_NOT_AVAILABLE",
+      "VALIDATION_INCOMPLETE"
+     ],
+     "requested_n": 2,
+     "selected_caps": [
+      10000.0
+     ],
+     "selected_listing_ids": [
+      "XNAS:DEMO:0000000001"
+     ],
+     "selected_n": 1,
+     "selection_status": "PARTIAL",
+     "state": "PERSONAL_REFERENCE",
+     "verified_count": 1
+    }
+   },
+   "id": "googl_price_missing_company_not_ranked",
+   "input": {
+    "as_of": "2030-02-10T12:00:00Z",
+    "n": 2,
+    "records": {
+     "NASDAQ:DEMO": {
+      "accn": "0000000001-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 0,
+       "class_members": [],
+       "cover_accn": "0000000001-30-000001",
+       "listing_class_member": null
+      },
+      "cik": "0000000001",
+      "company_id": "sec_0000000001",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:DEMO:0000000001",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "share_class_basis": "SINGLE_CLASS_CONFIRMED",
+      "shares": 1000,
+      "source_sha256": {
+       "companyfacts": "de73e1b19bf7a389cd36c926f7cc8eb7725441e5cde1d30bbdfa33b19c381f80",
+       "cover": "86e6dd9f89ced341a2210105ea18bb17dbfa0e860f8c3f19608e7d3d336e9a7f",
+       "submissions": "9c41f16564c05be609cee861015ba6c400aec1fbae61fd5fd409c9e4ab46dddc"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOG": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassCMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOG:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5400,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     },
+     "NASDAQ:GOOGL": {
+      "accn": "0001652044-30-000001",
+      "acquired_at": "2030-02-10T09:00:00Z",
+      "basis_evidence": {
+       "class_count": 3,
+       "class_members": [
+        "CommonClassAMember",
+        "CommonClassBMember",
+        "CommonClassCMember"
+       ],
+       "cover_accn": "0001652044-30-000001",
+       "listing_class_member": "CommonClassAMember"
+      },
+      "cik": "0001652044",
+      "company_id": "sec_0001652044",
+      "concept": "dei:EntityCommonStockSharesOutstanding",
+      "filed": "2030-01-15",
+      "form": "10-Q",
+      "listing_id": "XNAS:GOOGL:0001652044",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [
+       "SHARE_CLASS_BASIS"
+      ],
+      "share_class_basis": "SHARE_CLASS_BASIS",
+      "shares": 5800,
+      "source_sha256": {
+       "companyfacts": "0da53050de2c4ab3095f0fa33b6de8d5601c89499b328c87df0a77bcdee2374f",
+       "cover": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+       "submissions": "ebd646553f9dcd0edac828e83982c74849aaed85c87104c92c6171dc1d5edf7d"
+      },
+      "state": "LIVE"
+     }
+    },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
+    "values": [
+     [
+      "code",
+      "marketcap",
+      "price"
+     ],
+     [
+      "NASDAQ:GOOGL",
+      1735000,
+      ""
+     ],
+     [
+      "NASDAQ:GOOG",
+      1735000,
       151
      ],
      [
@@ -203,7 +1683,11 @@
       "reason_codes": [],
       "relative_difference": 0.0273972602739726,
       "row_index": 1,
-      "state": "VERIFIED"
+      "state": "VERIFIED",
+      "unlisted_basis": null,
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": null
      },
      {
       "cik": "0001564708",
@@ -232,7 +1716,11 @@
       "reason_codes": [],
       "relative_difference": null,
       "row_index": 3,
-      "state": "VERIFIED"
+      "state": "VERIFIED",
+      "unlisted_basis": null,
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": null
      }
     ],
     "selection": {
@@ -384,6 +1872,7 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {},
     "values": [
      [
       "code",
@@ -421,7 +1910,7 @@
       "cik": "0001652044",
       "config_version": "share_class_groups/v0",
       "cover_class_count": 3,
-      "effective_cap": 1685400.0,
+      "effective_cap": 1730400.0,
       "group_id": "alphabet",
       "member_codes": [
        "NASDAQ:GOOGL",
@@ -442,9 +1931,17 @@
       "quality": "MISMATCH",
       "quality_label": "\uacbd\uc81c\uc801 \ub3d9\uc77c \uc885\ub958 \ud569\uc0b0 \u00b7 v0 \u00b7 \uac80\uc99d \ubd88\uc77c\uce58",
       "reason_codes": [],
-      "relative_difference": 0.4066690399905067,
+      "relative_difference": 0.42209893666204346,
       "row_index": 1,
-      "state": "VERIFIED"
+      "state": "VERIFIED",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [
+       "CommonClassBMember"
+      ],
+      "unlisted_shares": [
+       300.0
+      ],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -453,7 +1950,7 @@
      "reason_codes": [],
      "requested_n": 2,
      "selected_caps": [
-      1685400.0,
+      1730400.0,
       10000.0
      ],
      "selected_listing_ids": [
@@ -562,6 +2059,23 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
     "values": [
      [
       "code",
@@ -617,7 +2131,11 @@
       ],
       "relative_difference": null,
       "row_index": 1,
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -752,6 +2270,23 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
     "values": [
      [
       "code",
@@ -760,12 +2295,12 @@
      ],
      [
       "NASDAQ:GOOGL",
-      1690000,
+      1735000,
       150
      ],
      [
       "NASDAQ:GOOG",
-      1690000,
+      1735000,
       ""
      ],
      [
@@ -807,7 +2342,11 @@
       ],
       "relative_difference": null,
       "row_index": 1,
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -943,6 +2482,23 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
     "values": [
      [
       "code",
@@ -951,12 +2507,12 @@
      ],
      [
       "NASDAQ:GOOGL",
-      1690000,
+      1735000,
       150
      ],
      [
       "NASDAQ:GOOG",
-      1690000,
+      1735000,
       151
      ],
      [
@@ -998,7 +2554,11 @@
       ],
       "relative_difference": null,
       "row_index": 1,
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -1133,6 +2693,23 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
     "values": [
      [
       "code",
@@ -1141,12 +2718,12 @@
      ],
      [
       "NASDAQ:GOOGL",
-      1690000,
+      1735000,
       150
      ],
      [
       "NASDAQ:GOOG",
-      1690000,
+      1735000,
       151
      ],
      [
@@ -1188,7 +2765,11 @@
       ],
       "relative_difference": null,
       "row_index": 1,
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -1319,6 +2900,23 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
     "values": [
      [
       "code",
@@ -1327,12 +2925,12 @@
      ],
      [
       "NASDAQ:GOOGL",
-      1690000,
+      1735000,
       150
      ],
      [
       "NASDAQ:GOOG",
-      1690000,
+      1735000,
       151
      ],
      [
@@ -1371,7 +2969,11 @@
       ],
       "relative_difference": null,
       "row_index": 1,
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -1497,6 +3099,23 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
     "values": [
      [
       "code",
@@ -1547,7 +3166,11 @@
       ],
       "relative_difference": null,
       "row_index": 1,
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -1680,6 +3303,7 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {},
     "values": [
      [
       "code",
@@ -1688,12 +3312,12 @@
      ],
      [
       "NASDAQ:GOOGL",
-      1690000,
+      1735000,
       150
      ],
      [
       "NASDAQ:GOOG",
-      1690000,
+      1735000,
       151
      ],
      [
@@ -1735,7 +3359,11 @@
       ],
       "relative_difference": null,
       "row_index": 1,
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -1870,6 +3498,23 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
     "values": [
      [
       "code",
@@ -1878,12 +3523,12 @@
      ],
      [
       "NASDAQ:GOOGL",
-      1690000,
+      1735000,
       150
      ],
      [
       "NASDAQ:GOOG",
-      1690000,
+      1735000,
       151
      ],
      [
@@ -1925,7 +3570,11 @@
       ],
       "relative_difference": null,
       "row_index": 1,
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -2056,6 +3705,23 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
     "values": [
      [
       "code",
@@ -2064,12 +3730,12 @@
      ],
      [
       "NASDAQ:GOOGL",
-      1690000,
+      1735000,
       150
      ],
      [
       "NASDAQ:GOOG",
-      1690000,
+      1735000,
       151
      ],
      [
@@ -2111,7 +3777,11 @@
       ],
       "relative_difference": null,
       "row_index": 1,
-      "state": "NOT_AVAILABLE"
+      "state": "NOT_AVAILABLE",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [],
+      "unlisted_shares": [],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -2246,6 +3916,23 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
     "values": [
      [
       "code",
@@ -2254,12 +3941,12 @@
      ],
      [
       "NASDAQ:GOOGL",
-      1690000,
+      1735000,
       150
      ],
      [
       "NASDAQ:GOOG",
-      1690000,
+      1735000,
       151
      ],
      [
@@ -2364,6 +4051,7 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {},
     "values": [
      [
       "code",
@@ -2391,7 +4079,7 @@
       "cik": "0001652044",
       "config_version": "share_class_groups/v0",
       "cover_class_count": 3,
-      "effective_cap": 1685400.0,
+      "effective_cap": 1730400.0,
       "group_id": "alphabet",
       "member_codes": [
        "NASDAQ:GOOGL",
@@ -2412,9 +4100,17 @@
       "quality": "WITHIN_TOLERANCE",
       "quality_label": "\uacbd\uc81c\uc801 \ub3d9\uc77c \uc885\ub958 \ud569\uc0b0 \u00b7 v0",
       "reason_codes": [],
-      "relative_difference": 0.0027293224160436693,
+      "relative_difference": 0.0026583448913546,
       "row_index": 1,
-      "state": "VERIFIED"
+      "state": "VERIFIED",
+      "unlisted_basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+      "unlisted_class_members": [
+       "CommonClassBMember"
+      ],
+      "unlisted_shares": [
+       300.0
+      ],
+      "unlisted_valued_at": "NASDAQ:GOOGL"
      }
     ],
     "selection": {
@@ -2578,6 +4274,23 @@
       "state": "LIVE"
      }
     },
+    "unlisted": {
+     "alphabet": {
+      "accn": "0001652044-30-000001",
+      "cik": "0001652044",
+      "classes": [
+       {
+        "class_member": "CommonClassBMember",
+        "shares": 300
+       }
+      ],
+      "cover_sha256": "adef73a8be698602f544e26e7ea0c654769cf47ed729eabbc60e974961effa9a",
+      "measurement_date": "2030-01-10",
+      "reason_codes": [],
+      "state": "LIVE",
+      "valued_at": "NASDAQ:GOOGL"
+     }
+    },
     "values": [
      [
       "code",
@@ -2586,12 +4299,12 @@
      ],
      [
       "NASDAQ:GOOGL",
-      1690000,
+      1735000,
       150
      ],
      [
       "NASDAQ:GOOG",
-      1690000,
+      1735000,
       151
      ],
      [
@@ -2622,7 +4335,13 @@
      "NASDAQ:GOOG"
     ],
     "cover_class_count": 3,
-    "group_id": "alphabet"
+    "group_id": "alphabet",
+    "unlisted": {
+     "basis": "UNLISTED_CLASS_VALUED_AT_CLASS_A",
+     "conversion_ratio": 1,
+     "decision": "USER_DECISION_2026_10_11_UNLISTED_CLASS_VALUED_AT_CLASS_A_PRICE",
+     "valued_at": "NASDAQ:GOOGL"
+    }
    },
    {
     "cik": "0001754301",
@@ -2631,7 +4350,8 @@
      "NASDAQ:FOX"
     ],
     "cover_class_count": 2,
-    "group_id": "fox"
+    "group_id": "fox",
+    "unlisted": null
    },
    {
     "cik": "0001564708",
@@ -2640,7 +4360,8 @@
      "NASDAQ:NWS"
     ],
     "cover_class_count": 2,
-    "group_id": "news_corp"
+    "group_id": "news_corp",
+    "unlisted": null
    }
   ]
  },
