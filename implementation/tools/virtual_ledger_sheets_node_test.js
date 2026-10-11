@@ -220,7 +220,7 @@ test('TARGET and shadow snapshot: user target is the basis, re-sync closes the s
 test('flags from VirtualFlags reach the runner input; module has no console/storage/network use', () => {
   const src = fs.readFileSync(path.join(__dirname, '../src/investment_system/product/web_assets/virtual-ledger-sheets.js'), 'utf8');
   for (const bad of ['console.', 'localStorage', 'sessionStorage', 'indexedDB', 'fetch(', 'XMLHttpRequest', 'sendBeacon']) assert.ok(!src.includes(bad), bad);
-  assert.ok(src.includes('가상 · 실제 추천 아님 · 주문 기능 없음'));
+  assert.ok(src.includes("engine().disclaimerHtml('ko-KR')") && VT.DISCLAIMER.ko === '가상 · 실제 추천 아님 · 주문 기능 없음');
   const out = R.assemble({ ...vector.inputs, flags: S.parseFlags(fixture.flags[0].values).flags });
   assert.deepEqual(out.ledgers.SET_A.input.flags.map((f) => f.company), ['googl', 'nvda', 'tokyo_electron', 'rok']);
 });

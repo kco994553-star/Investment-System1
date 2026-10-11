@@ -8,6 +8,12 @@
 (function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?()=>require('./virtual-trading.js'):()=>root.VirtualTrading,node?()=>require('./virtual-trading-runner.js'):()=>root.VirtualTradingRunner);if(node)module.exports=api;else root.VirtualLedgerSheets=api;})(typeof globalThis==='object'?globalThis:this,function(engine,runner){
 'use strict';
 const SCHEMA='virtual-ledger-sheets/1';
+// Every state/reason code this module can show or throw (labels: VirtualTrading.CODE_LABELS).
+const CODES=Object.freeze(['LEDGER_REPLAY_MISMATCH','SHEET_ROWS_INVALID','SHEET_HEADER_MISMATCH','META_INVALID','META_ROW_INVALID','LEDGER_UNKNOWN','INPUTS_NOT_READY',
+ 'INPUTS_INCOMPLETE','INPUTS_CHANGED','WAITING_FOR_QG_RECORD','VALUATION_NOT_AVAILABLE','SHEET_NOT_READY','SHEET_NOT_LOADED','NOT_CONNECTED','SHADOW_NOT_STARTED',
+ 'SHADOW_ALREADY_STARTED','SET_B_REDEFINED','REHEARSAL_NOT_RECORDED','NUMBER_INVALID','VALUE_INVALID','CONFIG_NOT_CANONICAL','COMPANY_NOT_SUPPORTED','WEIGHT_INVALID',
+ 'WEIGHT_SUM_OVER_100','WEIGHTS_EMPTY','WRITE_FAILED','READ_FAILED','HASH_UNAVAILABLE','NO_ACTUAL','ACTUAL_INVALID','INITIAL_COST_FX_MISSING','BEFORE_START_DATE',
+ 'TARGET_NOT_AVAILABLE','REQUEST_INVALID','NOT_REQUESTED','SOURCE_TOO_LARGE','INVALID']);
 const TABS=Object.freeze({SET_A:'VirtualA',SET_B:'VirtualB',SHADOW:'VirtualMine'}),META='VirtualMeta',FLAGS='VirtualFlags';
 const LEDGER_HEAD=Object.freeze(['ledger_id','session_date','row_type','company','level','aux_levels','reason_codes','aux_codes','side','amount','quantity','price_used','fx_used','cash_after','total_value']);
 const META_HEAD=Object.freeze(['recorded_at','ledger_id','kind','event','start_date','end_date','config_version','engine_version','last_recorded_session','inputs_sha256','payload']);
@@ -402,10 +408,10 @@ function weightForm(kind,rows,current,{title,note,save,connected}){
 }
 function ledgerLine(s,def){
  const parts=[KIND_KO[s.kind]+' '+s.id,'출발 '+s.begin+(s.end?' · 종료 '+s.end:''),'목표 기준 '+(BASIS_KO[s.target_basis]||s.target_basis),
-  s.recorded_sessions?'기록 '+s.recorded_sessions+'거래일(~'+s.recorded_through+')':'기록 없음',STATE_KO[s.state]||s.state];
+  s.recorded_sessions?'기록 '+s.recorded_sessions+'거래일(~'+s.recorded_through+')':'기록 없음',STATE_KO[s.state]||engine().codeText(s.state)];
  if(s.state==='LEDGER_REPLAY_MISMATCH'&&s.first_mismatch)parts.push('첫 차이 '+s.first_mismatch.session);
- if(s.reason_codes.length&&s.state!=='LEDGER_REPLAY_MISMATCH')parts.push(s.reason_codes.join(', '));
- if(s.inputs_changed)parts.push('INPUTS_CHANGED');
+ if(s.reason_codes.length&&s.state!=='LEDGER_REPLAY_MISMATCH')parts.push(engine().codesText(s.reason_codes));
+ if(s.inputs_changed)parts.push(engine().codeText('INPUTS_CHANGED'));
  return '<li data-ledger-id="'+esc(s.id)+'" data-ledger-check="'+esc(s.state)+'" data-ledger-missing="'+s.missing.length+'">'+esc(parts.join(' · '))+(def&&def.implicit?' <span class="small">(첫 기록 때 VirtualMeta에 정의)</span>':'')+'</li>';
 }
 function recordCard(ctx,state){
@@ -413,10 +419,10 @@ function recordCard(ctx,state){
  const list=st&&st.state==='READY'?st.ledgers.filter(s=>scope.includes(s.kind)):[];
  const missing=list.reduce((a,s)=>a+s.missing.length,0),mismatch=list.some(s=>s.state==='LEDGER_REPLAY_MISMATCH');
  const sheetState=!connected?'NOT_CONNECTED':!sheet?'LOADING':sheet.state;
- let h='<section class="card" data-ledger-sheets data-sheet-state="'+esc(sheetState)+'" data-ledger-mismatch="'+(mismatch?'1':'0')+'"><h2>가상 장부 시트 기록 <span class="badge">가상 · 실제 추천 아님 · 주문 기능 없음</span></h2>';
- h+='<p data-ledger-sheet-summary>'+esc((SHEET_KO[sheetState]||sheetState)+(sheet&&sheet.state==='ERROR'?' · '+sheet.reason_codes.join(', ')+(sheet.tab?' ('+sheet.tab+')':''):''))+'</p>';
+ let h='<section class="card" data-ledger-sheets data-sheet-state="'+esc(sheetState)+'" data-ledger-mismatch="'+(mismatch?'1':'0')+'"><h2>가상 장부 시트 기록 '+engine().disclaimerHtml('ko-KR')+'</h2>';
+ h+='<p data-ledger-sheet-summary>'+esc((SHEET_KO[sheetState]||sheetState)+(sheet&&sheet.state==='ERROR'?' · '+engine().codesText(sheet.reason_codes)+(sheet.tab?' ('+sheet.tab+')':''):''))+'</p>';
  if(before)h+='<p class="badge NOT_AVAILABLE" data-ledger-before-start>'+esc('가상매매 시작일 '+engine().CONFIG.start_date+' 전 · 기록하지 않음')+'</p>';
- else if(st&&st.state==='INPUTS_NOT_READY'&&connected&&sheet&&sheet.state==='READY')h+='<p class="small" data-ledger-inputs>'+esc('장부 입력 준비 전 · 재생 확인 대기('+st.reason_codes.join(', ')+')')+'</p>';
+ else if(st&&st.state==='INPUTS_NOT_READY'&&connected&&sheet&&sheet.state==='READY')h+='<p class="small" data-ledger-inputs>'+esc('장부 입력 준비 전 · 재생 확인 대기('+engine().codesText(st.reason_codes)+')')+'</p>';
  if(list.length)h+='<ul class="small" data-ledger-list>'+list.map(s=>ledgerLine(s,st.defs[s.id])).join('')+'</ul>';
  const incomplete=st&&st.state==='READY'?st.incomplete:[];
  if(incomplete.length)h+='<p class="small" data-ledger-incomplete>'+esc('INPUTS_INCOMPLETE · 시세를 다시 받은 뒤 기록합니다: '+incomplete.join(', '))+'</p>';
@@ -475,7 +481,7 @@ function mount(view,host,ctx){
   if(state.busy)return;if(!isConnected()){say(statusSel,SHEET_KO.NOT_CONNECTED);return;}
   state.busy=true;paint();
   try{const text=await fn();state.busy=false;if(done){carry={key:kind+'/'+tab,notes:{[statusSel]:text}};done();return;}await reload();say(statusSel,text);}
-  catch(e){state.busy=false;paint();say(statusSel,errorCode(e));}
+  catch(e){state.busy=false;paint();say(statusSel,engine().codeText(errorCode(e)));}
  };
  const readForm=k=>{const out={};for(const input of host.querySelectorAll('[data-weight-form="'+k+'"] [data-weight]'))out[input.getAttribute('data-weight')]=input.value;return out;};
  function paint(){
@@ -493,7 +499,7 @@ function mount(view,host,ctx){
   const rec=host.querySelector('[data-ledger-record]');
   if(rec)rec.onclick=()=>void act('[data-ledger-status]',async()=>{const r=await record(session,sheetId(),{result:state.result,kind});return r.sessions?r.sessions+'거래일을 기록했습니다('+r.ledgers.join(', ')+').':'기록할 새 거래일이 없습니다.';});
   const sum=form=>{const k=form.getAttribute('data-weight-form'),v=validateWeights(readForm(k),runner().IDS),n=form.querySelector('[data-weight-sum]');
-   if(n)n.textContent=v.state==='OK'?'합계 '+(Math.round(Object.values(v.weights).reduce((a,x)=>a+x,0)*10000)/10000)+'% · 나머지는 가상 현금':v.state===NA?'NOT_AVAILABLE · 구성 없음':v.reason_codes[0];form.setAttribute('data-weight-state',v.state);};
+   if(n)n.textContent=v.state==='OK'?'합계 '+(Math.round(Object.values(v.weights).reduce((a,x)=>a+x,0)*10000)/10000)+'% · 나머지는 가상 현금':v.state===NA?'NOT_AVAILABLE · 구성 없음':engine().codeText(v.reason_codes[0]);form.setAttribute('data-weight-state',v.state);};
   // Typed values survive repaints (sheet reload, failed save) until a save succeeds.
   for(const form of host.querySelectorAll('[data-weight-form]')){const k=form.getAttribute('data-weight-form'),draft=state.drafts[k];
    if(draft){for(const input of form.querySelectorAll('[data-weight]'))input.value=own(draft,input.getAttribute('data-weight'))?draft[input.getAttribute('data-weight')]:'';sum(form);}}
@@ -525,7 +531,7 @@ function mount(view,host,ctx){
  });
 }
 
-return Object.freeze({SCHEMA,TABS,META,FLAGS,LEDGER_HEAD,META_HEAD,FLAGS_HEAD,HEADS,ALL_TABS,numStr,canonical,dayRows,ledgerRows,parseTab,groupLedgerRows,recordedDates,
+return Object.freeze({SCHEMA,CODES,TABS,META,FLAGS,LEDGER_HEAD,META_HEAD,FLAGS_HEAD,HEADS,ALL_TABS,numStr,canonical,dayRows,ledgerRows,parseTab,groupLedgerRows,recordedDates,
  parseMeta,active,setALedger,nextId,validateWeights,parseFlags,recordableThrough,deriveInput,truncate,inputsText,ledgerStatus,startRow,closeRow,recordRow,targetRow,
  beginFor,replaceRows,sheetState,statuses,apply,inputsIncomplete,load,ensureTabs,record,saveSetB,saveTarget,startShadow,sha256,mount});
 });

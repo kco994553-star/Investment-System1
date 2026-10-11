@@ -36,6 +36,19 @@ def test_device_copy_of_config_matches_json():
     assert json.loads(out) == vt.load_config()
 
 
+def test_level_order_and_symbols_match_the_device_vocabulary():
+    # D-19: the device module is the one source of names, tones and code labels; Python keeps only order and symbols,
+    # which must stay equal to it.
+    script = ('const V=require(process.argv[1]);process.stdout.write(JSON.stringify({levels:V.LEVELS,symbols:V.SYMBOLS,'
+              'tones:Object.keys(V.TONES),ko:Object.keys(V.LABELS.ko),en:Object.keys(V.LABELS.en)}))')
+    out = json.loads(subprocess.run(['node', '-e', script, str(ROOT / 'src/investment_system/product/web_assets/virtual-trading.js')],
+                                    capture_output=True, text=True, check=True).stdout)
+    assert tuple(out['levels']) == vt.LEVELS
+    assert out['symbols'] == vt.SYMBOLS
+    for key in ('tones', 'ko', 'en'):
+        assert tuple(out[key]) == vt.LEVELS, key
+
+
 def test_no_start_date_records_nothing():
     r = vt.run_ledger(vt.load_config() | {'start_date': None}, ref.base_ledger(n=30))
     assert r['state'] == 'NOT_STARTED' and r['trades'] == [] and r['days'] == []

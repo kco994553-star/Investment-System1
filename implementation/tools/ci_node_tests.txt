@@ -34,3 +34,6 @@ virtual_ledger_sheets_node_test.js
 virtual_trading_signals_node_test.js
 virtual_trading_v_history_node_test.js
 screens_gaps_node_test.js
+holdings_capture_node_test.js
+worker_quote_fallback_node_test.js
+judgement_labels_node_test.js
