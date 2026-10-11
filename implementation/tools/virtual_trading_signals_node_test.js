@@ -114,8 +114,8 @@ test('S17 model: rehearsal is labelled on screen and in the export, recording mo
   assert.ok(screen.includes('S&amp;P 500 (XLY 없음 → 대체)'));
   assert.ok(text.includes('리허설 · 기록 없음: 오늘 데이터로 규칙만 돌려 본 결과이며 어떤 장부·시트에도 기록하지 않음 · ' + out.runCfg.start_date + '부터 최근 5거래일'));
   assert.ok(text.includes('기록된 Q·G가 없는 5거래일은 오늘 공개 화면 Q·G 사용'));
-  assert.ok(text.includes('## ⑩ 행동요령 · 가상 매매장부 (가상 · 실제 추천 아님)\n리허설 · 기록 없음 · 세트 A 가상 장부'));
-  assert.ok(text.includes('nvda SMH · 기준 N/A(HISTORY_INSUFFICIENT 272/273) · V 기울기 미사용'));
+  assert.ok(text.includes('## ⑩ 행동요령 · 가상 매매장부 (가상 · 실제 추천 아님 · 주문 기능 없음)\n리허설 · 기록 없음 · 세트 A 가상 장부'));
+  assert.ok(text.includes('nvda SMH · 기준 N/A(HISTORY_INSUFFICIENT 272/273 · 정렬된 일봉 부족) · V 기울기 미사용'));
   for (const s of [screen, text]) assert.equal((s.match(/\d[\d,]*\s*(?:원|만원|억)/g) || []).length, 0);
   const rec = DR.buildModel({ kind: 'MOCK', tab: 'SET_A', reportDate: '2026-10-15', ledger: null, config: cfg, signals: S.reportSignals(null, 'SET_A', cfg, {}) });
   const recScreen = DR.screenHtml(rec, { hidden: true }), recText = DR.renderTemplate(rec, { hidden: true, guide: false });
