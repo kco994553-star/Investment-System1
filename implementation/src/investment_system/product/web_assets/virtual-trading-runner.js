@@ -261,7 +261,7 @@ async function run(view,{config={},catalog,reportDate,signal=null,onProgress=nul
  // A rehearsal still runs without a published forward ledger (before the start date); its snapshots are then filled by the caller.
  if(forward.state!=='LOADED'&&typeof rehearsal!=='function')return{...base,state:'NOT_AVAILABLE',reason_codes:[forward.reason]};
  const classification=view.ClassificationScreens?await view.ClassificationScreens.load(view):null;
- let holdings=null;try{holdings=holdingsFromSnapshot(await view.DeviceActual.readHoldings(view,catalog),catalog);}catch(_){holdings=null;}
+ let holdings=null;try{const A=view.DeviceActual;holdings=holdingsFromSnapshot(A.effectiveHoldings?(await A.effectiveHoldings(view,catalog)).snapshot:await A.readHoldings(view,catalog),catalog);}catch(_){holdings=null;}
  const symbols=requiredSymbols({catalog,classification,holdings,set_b});
  const histories=await fetchHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});
  return assemble({config:typeof rehearsal==='function'?rehearsal(histories,cfg):cfg,catalog,forward_ledger:forward.state==='LOADED'?forward.ledger:null,classification,histories,holdings,set_b,v_store:readVStore(view.localStorage),flags:flags||[]});
