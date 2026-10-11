@@ -1,6 +1,6 @@
 # 가상매매 엔진 v1 (PROVISIONAL) — 구현 메모
 
-상태: **PROVISIONAL_UNCALIBRATED · 시작일 미정이라 어떤 장부도 거래를 기록하지 않음.** 근거는 [가상매매 v1 제안](VIRTUAL_TRADING_V1_PROPOSAL.md), [보고서 템플릿 v1](REPORT_TEMPLATE_V1.md) §1·§7이다. 26E 기록(GSQ-018)은 별도 PR이며 사용자 승인 후 병합한다.
+상태: **PROVISIONAL_UNCALIBRATED · 시작일 2026-10-19(D-13 결정). 그 전에는 어떤 장부도 거래를 기록하지 않음.** 근거는 [가상매매 v1 제안](VIRTUAL_TRADING_V1_PROPOSAL.md), [보고서 템플릿 v1](REPORT_TEMPLATE_V1.md) §1·§7이다. 26E 기록(GSQ-018)은 별도 PR이며 사용자 승인 후 병합한다.
 
 | 파일 | 역할 |
 | --- | --- |
@@ -16,7 +16,7 @@
 
 | 키 | 값 | 결정 |
 | --- | --- | --- |
-| `start_date` | null | D-13 사용자 결정 대기. null이면 `NOT_STARTED`, 거래 기록 0건 |
+| `start_date` | 2026-10-19 | D-13 결정(2026-10-11). 그 전 날짜는 `NOT_STARTED`, 거래 기록 0건 |
 | `daily_deposit` | 1,000,000 | D-1 |
 | `buy_limit` / `sell_limit` | 각 1,000,000 | D-15 결정됨 |
 | `execution` | 다음 세션 종가 | D-2 |
@@ -28,7 +28,7 @@
 | `min_trade` | 10,000 | D-9 |
 | `benchmark` / `hit_windows` / `hit_min_samples` | S&P 500 · 5·20·63 · 30 | D-11·D-12 |
 | `v_slope` | 20세션 · 10점 | D-21 |
-| `sector_basis` | S&P 500 대체 | D-22 확인 전 |
+| `sector_basis` | `SECTOR_ETF_CONFIRMED` | D-22 결정(2026-10-11): `qgv/sector_etf_map_v1.json`(대응표 1~14, 반도체 장비는 A안). 함수 `qgv/sector_basis.py` / `VirtualTrading.sectorBenchmark`. 업종 ETF 시세는 Worker 허용 목록 PR 승인·배포 전까지 받을 수 없어 기준 계산 불가로 동작 |
 | `macro_gate` | 비활성 | D-6 (8축 매핑 채택 전) |
 
 ## 하루 처리 순서 (결정적 재생)

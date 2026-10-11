@@ -16,11 +16,11 @@ import virtual_trading_reference as ref  # noqa: E402
 
 def test_config_is_provisional_and_not_started():
     c = vt.load_config()
-    assert c['status'] == 'PROVISIONAL_UNCALIBRATED' and c['start_date'] is None
+    assert c['status'] == 'PROVISIONAL_UNCALIBRATED' and c['start_date'] == '2026-10-19'
     assert c['buy_limit'] == 1000000 and c['sell_limit'] == 1000000
     assert c['abnormal_drop'] == {'window_sessions': 20, 'lookback_sessions': 252, 'k': 2}
     assert c['v_slope'] == {'lookback_sessions': 20, 'threshold': 10}
-    assert c['sector_basis'] == 'SP500_SUBSTITUTE_D22_PENDING'
+    assert c['sector_basis'] == 'SECTOR_ETF_CONFIRMED'
     assert all(v.split()[0].startswith('D-') for v in c['provenance'].values())
 
 
@@ -37,8 +37,13 @@ def test_device_copy_of_config_matches_json():
 
 
 def test_no_start_date_records_nothing():
-    r = vt.run_ledger(vt.load_config(), ref.base_ledger(n=30))
+    r = vt.run_ledger(vt.load_config() | {'start_date': None}, ref.base_ledger(n=30))
     assert r['state'] == 'NOT_STARTED' and r['trades'] == [] and r['days'] == []
+
+
+def test_nothing_is_recorded_before_2026_10_19():
+    r = vt.run_ledger(vt.load_config(), ref.base_ledger(n=30))
+    assert r['state'] == 'NOT_STARTED' and r['reason_codes'] == ['NO_SESSION_ON_OR_AFTER_START'] and r['trades'] == []
 
 
 def scenario(name):
@@ -116,3 +121,31 @@ def test_hits_need_thirty_samples():
     h = {x['window']: x for x in vt.evaluate_hits(s['config'], s['ledger'], r['trades'])}
     assert h[63]['state'] == 'INSUFFICIENT_SAMPLE' and h[63]['hit_rate'] is None
     assert h[5]['samples'] >= 30 and h[5]['hit_rate'] == h[5]['hits'] / h[5]['samples']
+
+
+def test_d22_sector_mapping_matches_js_and_draft_rows():
+    import subprocess as sp
+    from investment_system.qgv.sector_basis import sector_benchmark
+    cases = [('3674', None), ('3559', True), ('3559', None), ('3827', False), ('3827', True), ('3571', None), ('3663', None),
+             ('7372', None), ('2834', None), ('3841', None), ('8062', None), ('1311', None), ('2911', None), ('1000', None),
+             ('2821', None), ('2844', None), ('5411', None), ('5912', None), ('3711', None), ('5961', None), ('7011', None),
+             ('4813', None), ('7812', None), ('4911', None), ('6798', None), ('6022', None), ('6799', None), ('3720', None),
+             ('3640', None), ('4011', None), ('8711', None), ('9999', None), ('0000', None), (None, None), ('12a4', None)]
+    py = [sector_benchmark(s, m) for s, m in cases]
+    script = ('const V=require(process.argv[1]);const c=JSON.parse(process.argv[2]);'
+              'process.stdout.write(JSON.stringify(c.map(([s,m])=>V.sectorBenchmark(s,m))))')
+    out = sp.run(['node', '-e', script, str(ROOT / 'src/investment_system/product/web_assets/virtual-trading.js'), json.dumps(cases)],
+                 capture_output=True, text=True, check=True).stdout
+    assert json.loads(out) == py
+    etf = {s: r['etf'] for (s, m), r in zip(cases, py) if m is None}
+    assert etf['3674'] == 'SMH' and etf['7372'] == 'XLK' and etf['5961'] == 'XLY' and etf['3720'] == 'XLI'
+    assert etf['5912'] == 'XLP' and etf['6798'] == 'XLRE' and etf['9999'] == 'SPY'
+    assert sector_benchmark('3559', True)['etf'] == 'SMH' and sector_benchmark('3559', False)['etf'] == 'XLI'
+
+
+def test_device_sector_map_copy_matches_json():
+    import subprocess as sp
+    out = sp.run(['node', '-e', 'process.stdout.write(JSON.stringify(require(process.argv[1]).SECTOR_MAP))',
+                  str(ROOT / 'src/investment_system/product/web_assets/virtual-trading.js')], capture_output=True, text=True, check=True).stdout
+    from investment_system.qgv.sector_basis import load_map
+    assert json.loads(out) == load_map()

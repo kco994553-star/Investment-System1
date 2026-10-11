@@ -1,6 +1,6 @@
 # D-22 업종 기준 ETF 대응표 — 초안 (사용자 확인 대기)
 
-작성 2026-10-11 · 상태 **DRAFT_PENDING_USER_CONFIRMATION** · 확인 전 기준은 **S&P 500**으로 대신한다.
+작성 2026-10-11 · 상태 **채택(2026-10-11 사용자 결정)**: 대응표 1~14, 반도체 장비는 선택지 A, 시세 경로 ①. 구현은 `qgv/sector_etf_map_v1.json`·`qgv/sector_basis.py`·`VirtualTrading.sectorBenchmark`. Worker 허용 목록 변경은 별도 PR이며 승인 후 배포한다.
 
 ## 쓰는 곳
 
