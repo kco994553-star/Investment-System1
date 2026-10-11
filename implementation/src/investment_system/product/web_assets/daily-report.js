@@ -6,7 +6,10 @@
 'use strict';
 const TEMPLATE_VERSION='템플릿 v1',GUIDE_VERSION='지침 v1',HIDE_KEY='investment.web.v1.report-amounts-hidden',AI_KEY='investment.web.v1.report-ai-answers',MAX_ANSWERS=30;
 const KINDS=Object.freeze({MOCK:{ko:'모의투자 일일보고서',en:'Paper trading daily report'},REAL:{ko:'투자 일일보고서',en:'Investment daily report'}});
-const TABS=Object.freeze({SET_A:'세트 A',SET_B:'세트 B',COMPARE:'A/B 비교',REAL:'내 실제 포트폴리오'});
+const TABS=Object.freeze({SET_A:'세트 A',SET_B:'세트 B',SET_C:'세트 C',SET_D:'세트 D',COMPARE:'비교',REAL:'내 실제 포트폴리오'});
+// Mock report tabs: Set A, the user sets B/C/D, and 비교 only when at least two sets exist (decision 2026-10-11).
+const MOCK_TABS=Object.freeze(['SET_A','SET_B','SET_C','SET_D']);
+function tabsNav(tabs,current){return '<nav class="chips screen-tabs" data-report-tabs>'+tabs.map(t=>'<a href="#report/mock-'+t.toLowerCase()+'"'+(t===current?' aria-current="page"':'')+'>'+esc(TABS[t])+'</a>').join('')+'</nav>';}
 // Level order, symbols, names, chips and reason-code labels: VirtualTrading (D-19 vocabulary, one source).
 const LEVELS=VT.LEVELS;
 const CHECK_LINES=['✔ 템플릿에 없는 숫자를 만들지 않음','✔ 외부 정보마다 날짜·출처 표시(또는 확인 불가)','✔ 실제 계좌 매수·매도 권유 없음','✔ 절 순서와 표 구조 유지'];
@@ -278,11 +281,11 @@ function dashboardCard(m,{locale='ko-KR'}={}){
 function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
  const H={hidden,mode:'screen'},s=m.summary,en=locale==='en-US',kindName=KINDS[m.kind][en?'en':'ko'];
  const base=Object.entries(m.base_dates||{}).map(([k,v])=>k+' '+v).join(' · ')||NA;
- const tabs=m.kind==='MOCK'?['SET_A','SET_B','COMPARE']:['REAL'];
+ const tabs=m.kind==='MOCK'?(Array.isArray(m.tabs)?m.tabs:[...MOCK_TABS]):['REAL'];
  const rehearsal=m.mode==='REHEARSAL',modeName=MODE_LABEL[m.mode][en?'en':'ko'];
  let h='<div class="chips data-badges" data-report-badges><span class="badge mode '+m.mode+'" data-report-mode="'+m.mode+'">'+esc(modeName)+'</span><span class="badge">'+esc(kindName)+'</span><span class="badge">'+esc('기준 완료 거래일 '+base)+'</span><span class="badge">포트폴리오 v1.1 · QGV 점수 기준 v1 · 가상매매 규칙 v1</span><span class="badge">STANDARD v1 · UNCALIBRATED</span><span class="badge">유형 v1 잠정</span><span class="badge">비용 미반영 · 소수점 가정</span><span class="badge PROVISIONAL">PROVISIONAL 기본값 · 나중에 수정 가능</span>'+VT.disclaimerHtml(locale)+'</div>';
  h+='<label class="toggle" data-report-hide><input type="checkbox" data-hide-amounts'+(hidden?' checked':'')+'> 금액 숨김 <span class="small">· 기본 켜짐</span></label>';
- if(tabs.length>1)h+='<nav class="chips screen-tabs" data-report-tabs>'+tabs.map(t=>'<a href="#report/mock-'+t.toLowerCase()+'"'+(t===m.tab?' aria-current="page"':'')+'>'+esc(TABS[t])+'</a>').join('')+'</nav>';
+ if(tabs.length>1)h+=tabsNav(tabs,m.tab);
  else h+='<p class="small">'+esc('그림자 장부는 실제 보유에서 출발한 "규칙대로 했다면"의 가상 기록입니다. 실제 계좌 지시가 아닙니다.')+'</p>';
  h+='<section class="card" data-report-summary><h2>'+esc(m.kind==='REAL'?'평가액':'총 모의평가액')+'</h2><p class="big">'+esc(s?money(s.total_value,H):NA)+'</p><p>'+esc('누적 '+(s?pct(s.simple_return):NA))+'</p>'
   +'<div class="grid two"><div><b>가상 매수</b><p>'+esc(m.buy_total===null?NA:money(m.buy_total,H))+'</p><p class="small">'+esc('가상 매수 한도 '+money(m.buy_limit,H)+(m.buy_total!==null&&num(m.buy_limit)?' 중 '+Math.round(m.buy_total/m.buy_limit*100)+'%':''))+'</p></div>'
@@ -325,6 +328,6 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
  h+='<section class="card" data-report-footnote><h2>고정 각주</h2><p class="small">'+esc((TABS[m.tab]||'')+' · 포트폴리오 v1.1 · QGV 점수 기준 v1(보정 전) · 유형 v1 잠정 · 평가액 '+(s?money(s.total_value,H):NA)+' · 가상매매 실제 평가액 미반영 · 결측 N/A')+'</p><p class="small">'+esc('보고일: '+(m.report_date||NA)+' · 가상매매 시작일: '+(m.start_date||'미정 (D-13)'))+'</p></section>';
  return h;
 }
-return Object.freeze({TEMPLATE_VERSION,GUIDE_VERSION,KINDS,TABS,CHECK_LINES,GUIDE_A,HEADER_B,KIND_LINE,HIDE_KEY,AI_KEY,INBOX,OUTBOX,MODE_LABEL,basisText,vProgressText,
+return Object.freeze({TEMPLATE_VERSION,GUIDE_VERSION,KINDS,TABS,MOCK_TABS,tabsNav,CHECK_LINES,GUIDE_A,HEADER_B,KIND_LINE,HIDE_KEY,AI_KEY,INBOX,OUTBOX,MODE_LABEL,basisText,vProgressText,
  formatKrw,money,quantity,hiddenSetting,buildModel,renderTemplate,checkAnswer,hash,answers,saveAnswer,ensureTabs,postInbox,readOutbox,screenHtml});
 });
