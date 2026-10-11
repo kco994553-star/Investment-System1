@@ -34,6 +34,9 @@ TARGETS = {'asml': 'ASML', 'lrcx': 'LRCX', 'klac': 'KLAC', 'tokyo_electron': '80
            'rok': 'ROK'}
 SP500_SYMBOL = 'SPY'
 FX_SYMBOLS = {'USD': 'KRW=X', 'JPY': 'JPYKRW=X'}
+# S17 ⑬ relative-index dashboard ETFs (VIRTUAL_TRADING_V1_PROPOSAL table ⑬): always requested, even when no company maps
+# to them. Their closes (with SPY and KRW=X) are passed through as `indices` for qgv/report_benchmarks.py.
+DASHBOARD_ETFS = ('XLK', 'VUG', 'QUAL', 'XLY', 'XLP')
 CURRENCIES = ('USD', 'KRW', 'JPY')
 STATUSES = ('COMPLETE', 'IN_PROGRESS', 'UNKNOWN')
 FLAG_KINDS = ('HOLD', 'EXCLUDE', 'CONFIRMED_TEMPORARY', 'CONFIRMED_STRUCTURAL', 'CLEAR')
@@ -141,7 +144,7 @@ def _universe(targets, holdings, set_b):
 
 
 def required_symbols(*, catalog, classification=None, holdings=None, set_b=None):
-    """Symbols to request, in request order: SPY first (sessions), then FX, companies and sector ETFs."""
+    """Symbols to request, in request order: SPY first (sessions), then FX, companies, sector ETFs and the remaining ⑬ ETFs."""
     targets = catalog_targets(catalog)
     if targets is None:
         return []
@@ -149,7 +152,7 @@ def required_symbols(*, catalog, classification=None, holdings=None, set_b=None)
     cids = _universe(targets, holdings, set_b)
     fx = [FX_SYMBOLS[c] for c in ('USD', 'JPY') if c in {currency[cid] for cid in cids}]
     etfs = sorted({sector_for(classification, cid)['etf'] for cid in cids} - {SP500_SYMBOL})
-    return [SP500_SYMBOL] + fx + [TARGETS[cid] for cid in cids] + etfs
+    return [SP500_SYMBOL] + fx + [TARGETS[cid] for cid in cids] + etfs + sorted(set(DASHBOARD_ETFS) - set(etfs))
 
 
 def series_from_history(entry, symbol, currency):
@@ -261,7 +264,7 @@ def assemble(*, config, catalog, forward_ledger=None, classification=None, histo
     """Same inputs → same ledger inputs for SET_A, SET_B and SHADOW (see module docstring)."""
     histories = histories or {}
     start = config.get('start_date')
-    out = {'schema': SCHEMA, 'state': 'READY', 'reason_codes': [], 'sources': {}, 'sector': {}, 'ledgers': {}}
+    out = {'schema': SCHEMA, 'state': 'READY', 'reason_codes': [], 'sources': {}, 'sector': {}, 'ledgers': {}, 'indices': {}}
     targets = catalog_targets(catalog)
     if targets is None:
         out.update(state='NOT_AVAILABLE', reason_codes=['TARGET_CATALOG_INVALID'])
@@ -289,9 +292,11 @@ def assemble(*, config, catalog, forward_ledger=None, classification=None, histo
     for cid in cids:
         source(TARGETS[cid], listing[cid])
         sector[cid] = sector_for(classification, cid)
-    for etf in sorted({s['etf'] for s in sector.values()} - {SP500_SYMBOL}):
+    etfs = sorted({s['etf'] for s in sector.values()} - {SP500_SYMBOL})
+    for etf in etfs + sorted(set(DASHBOARD_ETFS) - set(etfs)):
         source(etf, 'USD')
     out['sector'] = sector
+    out['indices'] = {sym: series[sym] for sym in (SP500_SYMBOL, *DASHBOARD_ETFS, FX_SYMBOLS['USD']) if sym in series}
     if spy is None:
         out.update(state='NOT_AVAILABLE', reason_codes=['SESSIONS_NOT_AVAILABLE'])
         out['ledgers'] = {k: _unavailable(['SESSIONS_NOT_AVAILABLE']) for k in ('SET_A', 'SET_B', 'SHADOW')}
