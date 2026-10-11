@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "config_version": "sector_etf_map/v1",
+  "status": "DECIDED_2026-10-11",
+  "source": "docs/virtual_trading/D22_SECTOR_ETF_MAPPING_DRAFT.md rows 1-14, option A for semiconductor equipment",
+  "sp500_benchmark": "SPY",
+  "rules": [
+    {"order": 1, "etf": "SMH", "sic": [[3674, 3674]], "exclude": []},
+    {"order": 2, "etf": "SEMIS_THEME_SMH_ELSE_XLI", "sic": [[3559, 3559], [3827, 3827]], "exclude": []},
+    {"order": 3, "etf": "XLK", "sic": [[3570, 3579], [3660, 3679], [7370, 7379]], "exclude": [3674]},
+    {"order": 4, "etf": "XLV", "sic": [[2830, 2836], [3840, 3851], [8000, 8099]], "exclude": []},
+    {"order": 5, "etf": "XLE", "sic": [[1311, 1311], [1381, 1389], [2900, 2999]], "exclude": []},
+    {"order": 6, "etf": "XLB", "sic": [[1000, 1299], [1400, 1499], [2600, 2699], [2800, 2829], [2850, 2899], [3300, 3399]], "exclude": []},
+    {"order": 7, "etf": "XLP", "sic": [[2000, 2199], [2840, 2844], [5400, 5499], [5912, 5912]], "exclude": []},
+    {"order": 8, "etf": "XLY", "sic": [[3711, 3711], [5200, 5399], [5500, 5999], [7000, 7099], [7900, 7999]], "exclude": [5912]},
+    {"order": 9, "etf": "XLC", "sic": [[4800, 4899], [7810, 7849]], "exclude": []},
+    {"order": 10, "etf": "XLU", "sic": [[4900, 4999]], "exclude": []},
+    {"order": 11, "etf": "XLRE", "sic": [[6500, 6553], [6798, 6798]], "exclude": []},
+    {"order": 12, "etf": "XLF", "sic": [[6000, 6499], [6700, 6797], [6799, 6799]], "exclude": []},
+    {"order": 13, "etf": "XLI", "sic": [[1500, 1799], [2200, 2599], [2700, 2799], [3000, 3299], [3400, 3569], [3580, 3659], [3680, 3839], [3852, 3999], [4000, 4799], [5000, 5199], [8700, 8799]], "exclude": [3827]}
+  ]
+}

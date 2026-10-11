@@ -20,7 +20,7 @@ REASON_CODES = frozenset((
     "INVALID_TIMESTAMP", "INVALID_TIME_ORDER", "AVAILABLE_AFTER_AS_OF", "BASIS_UNCONFIRMED",
     "CIK_MISMATCH", "ACCESSION_UNCONFIRMED", "SHARES_NOT_AVAILABLE", "MULTI_CLASS_AMBIGUOUS",
     "NONFINITE_MCAP", "CONFIG_CONFIRMATION_REQUIRED", "DUPLICATE_ISSUER", "VALIDATION_INCOMPLETE", "SHARE_CLASS_BASIS",
-    "STALE_INPUT",
+    "STALE_INPUT", "SHARE_CLASS_GROUP_INCOMPLETE", "SHARE_CLASS_GROUP_MISMATCH",
 ))
 
 
@@ -170,6 +170,31 @@ class CapCheck:
     synthetic: bool
     shares_input: SharesInput | None = field(default=None, repr=False)
     price_input: PriceInput | None = field(default=None, repr=False)
+
+
+@dataclass(frozen=True)
+class ShareClassGroupCheck:
+    """One issuer ranked once: sum over its economically identical listed classes (share_class_groups/v0)."""
+    group_id: str
+    config_version: str
+    cik: str = field(repr=False)
+    row_index: int
+    listing: ListingSeed | None = field(repr=False)
+    member_codes: tuple[str, ...] = field(repr=False)
+    member_row_indexes: tuple[int, ...]
+    member_symbols: tuple[str, ...] = field(repr=False)
+    member_shares: tuple[float, ...] = field(repr=False)
+    cover_class_count: int
+    state: Literal["VERIFIED", "NOT_AVAILABLE"]
+    recomputed_cap: float | None = field(repr=False)
+    google_mcap: float | None = field(repr=False)
+    relative_difference: float | None = field(repr=False)
+    effective_cap: float | None = field(repr=False)
+    quality: str
+    quality_label: str
+    reason_codes: tuple[str, ...]
+    content_sha256: str = field(repr=False)
+    synthetic: bool
 
 
 @dataclass(frozen=True)
@@ -630,8 +655,151 @@ def compare_universe_market_cap(row: UniverseRow, shares: SharesInput, price: Pr
         return result("NONFINITE_MCAP")
 
 
-def select_verified_universe_top_n(checks: tuple[CapCheck,...], selection_config: SelectionConfig, *, parsed: UniverseParseResult) -> UniverseSelection:
-    """Rank only validated R values; preserve missing full-input coverage."""
+def prepare_share_class_groups(parsed: UniverseParseResult, records: Mapping, as_of: datetime, quality_config: QualityConfig,
+                               config: Mapping | None = None) -> tuple[ShareClassGroupCheck, ...]:
+    """share_class_groups/v0 (user decision 2026-10-11): company cap = sum over the issuer's configured listed classes of
+    (that class's public cover shares x that class's Sheet price). All-or-nothing: every configured class needs a LIVE
+    SHARE_CLASS_BASIS record from one cover filing and a Sheet price, else NOT_AVAILABLE with a reason (never a partial
+    sum, never 0). Groups absent from the Sheet are skipped. Prices and caps stay in the returned RAM objects only."""
+    from .share_class_groups import LABEL_KO, SHARE_CLASS_GROUPS_V0, validate_share_class_groups
+    config = validate_share_class_groups(SHARE_CLASS_GROUPS_V0 if config is None else config)
+    if not isinstance(parsed, UniverseParseResult) or type(parsed.rows) is not tuple or not isinstance(parsed.receipt, UniverseReceipt) or not isinstance(records, Mapping):
+        return ()
+    incomplete, mismatch = "SHARE_CLASS_GROUP_INCOMPLETE", "SHARE_CLASS_GROUP_MISMATCH"
+    out = []
+    for group in config["groups"]:
+        codes = tuple(group["codes"])
+        by_code = {}
+        for row in parsed.rows:
+            if isinstance(row, UniverseRow) and row.code in codes and row.code not in by_code:
+                by_code[row.code] = row
+        if not by_code:
+            continue
+        anchor = by_code[next(c for c in codes if c in by_code)]
+        present = tuple(by_code[c].row_index for c in codes if c in by_code)
+
+        def result(reasons=(), cap=None, relative=None, quality="UNCONFIRMED", shares=()):
+            good = not reasons
+            label = (LABEL_KO + (" · 검증 불일치" if quality == "MISMATCH" else "")) if good else ""
+            return ShareClassGroupCheck(group["group_id"], config["config_version"], group["cik"], anchor.row_index, anchor.listing, codes, present,
+                                        tuple(by_code[c].listing.symbol if by_code[c].listing else c for c in codes if c in by_code),
+                                        shares if good else (), group["cover_class_count"], "VERIFIED" if good else "NOT_AVAILABLE",
+                                        cap, anchor.google_mcap, relative, cap, quality, label, tuple(dict.fromkeys(reasons)),
+                                        parsed.receipt.content_sha256, parsed.synthetic)
+        if len(by_code) != len(codes):
+            out.append(result((incomplete,)))
+            continue
+        failure, members = None, []
+        for code in codes:
+            row = by_code[code]
+            if not _row_valid(row):
+                failure = (incomplete, "INVALID_INPUT"); break
+            if row.listing is None:
+                failure = (incomplete, row.reason_codes[0] if row.reason_codes else "IDENTITY_UNCONFIRMED"); break
+            if row.listing.cik != group["cik"] or row.listing.issuer_id != "sec:" + group["cik"]:
+                failure = (mismatch, "CIK_MISMATCH"); break
+            record = records.get(code)
+            if not isinstance(record, Mapping):
+                failure = (incomplete, "SHARES_NOT_AVAILABLE"); break
+            shares, basis = prepare_public_shares(row.listing, record, as_of)
+            if shares.state == "INPUT_RESEARCH":  # a one-class cover contradicts the configured multi-class issuer
+                failure = (mismatch, "BASIS_UNCONFIRMED"); break
+            if shares.reason_codes != ("SHARE_CLASS_BASIS",) or not isinstance(basis, ShareBasisReceipt):
+                failure = (incomplete, shares.reason_codes[0] if shares.reason_codes else "SHARES_NOT_AVAILABLE"); break
+            value, measured = record.get("shares"), _day(record.get("measurement_date"))
+            if (not _positive(value) or measured is None or measured > _utc(basis.available_at).date() or not _text(record.get("accn"))
+                    or record.get("concept") != "dei:EntityCommonStockSharesOutstanding"):
+                failure = (incomplete, "SHARES_NOT_AVAILABLE"); break
+            evidence = record.get("basis_evidence")
+            classes = evidence.get("class_members") if isinstance(evidence, Mapping) else None
+            member = evidence.get("listing_class_member") if isinstance(evidence, Mapping) else None
+            if (type(classes) is not list or evidence.get("class_count") != group["cover_class_count"] or len(classes) != group["cover_class_count"]
+                    or len(set(classes)) != len(classes) or type(member) is not str or member not in classes):
+                failure = (mismatch, "BASIS_UNCONFIRMED"); break
+            if "INVALID_INPUT" in row.reason_codes:
+                failure = (incomplete, "INVALID_INPUT"); break
+            if _utc(row.receipt.acquired_at) > _utc(as_of):
+                failure = (incomplete, "AVAILABLE_AFTER_AS_OF"); break
+            if not _positive(row.sheet_price):
+                failure = (incomplete, "PRICE_NOT_AVAILABLE"); break
+            if row.receipt.synthetic != shares.synthetic or row.receipt.synthetic != parsed.synthetic:
+                failure = (incomplete, "MIXED_SYNTHETIC_INPUT"); break
+            members.append((row, record["accn"], record["measurement_date"], tuple(classes), member, float(value)))
+        if failure:
+            out.append(result(failure))
+            continue
+        if len({(m[1], m[2], m[3]) for m in members}) != 1 or len({m[4] for m in members}) != len(members):
+            out.append(result((mismatch, "BASIS_UNCONFIRMED")))
+            continue
+        if not isinstance(quality_config, QualityConfig) or quality_config.confirmed is not True:
+            out.append(result(("CONFIG_CONFIRMATION_REQUIRED",)))
+            continue
+        if not _positive(quality_config.relative_tolerance):
+            out.append(result(("INVALID_INPUT",)))
+            continue
+        try:
+            cap = 0.0
+            for m in members:  # config order; same IEEE operations as the JS port
+                cap += m[5] * m[0].sheet_price
+            if not _positive(cap):
+                out.append(result(("NONFINITE_MCAP",)))
+                continue
+            shares = tuple(m[5] for m in members)
+            primary = members[0][0]
+            if primary.google_mcap is None:
+                out.append(result(cap=cap, shares=shares, quality="GOOGLE_MCAP_MISSING" if "GOOGLE_MCAP_MISSING" in primary.reason_codes else "GOOGLE_MCAP_INVALID"))
+                continue
+            ratio = abs(Fraction(str(primary.google_mcap)) - Fraction(str(cap))) / Fraction(str(cap))
+            relative = float(ratio)
+            if not math.isfinite(relative):
+                out.append(result(("NONFINITE_MCAP",)))
+                continue
+            out.append(result(cap=cap, relative=relative, shares=shares,
+                              quality="MISMATCH" if ratio >= Fraction(str(quality_config.relative_tolerance)) else "WITHIN_TOLERANCE"))
+        except (OverflowError, ZeroDivisionError):
+            out.append(result(("NONFINITE_MCAP",)))
+    return tuple(out)
+
+
+def _groups_error(groups, source_rows, sha, synthetic):
+    """None when every group object is consistent with the parsed rows; else a reason code."""
+    if type(groups) is not tuple:
+        return "INVALID_INPUT"
+    seen, ids = set(), set()
+    for g in groups:
+        if (not isinstance(g, ShareClassGroupCheck) or type(g.member_row_indexes) is not tuple or not g.member_row_indexes or g.group_id in ids
+                or type(g.row_index) is not int or g.row_index not in g.member_row_indexes or not _codes(g.reason_codes)
+                or type(g.cik) is not str or re.fullmatch(r"[0-9]{10}", g.cik) is None):
+            return "INVALID_INPUT"
+        ids.add(g.group_id)
+        for index in g.member_row_indexes:
+            row = source_rows.get(index) if type(index) is int else None
+            if row is None or index in seen:
+                return "MANIFEST_MISMATCH"
+            seen.add(index)
+            if row.listing is not None and row.listing.issuer_id != "sec:" + g.cik:
+                return "MANIFEST_MISMATCH"
+        anchor = source_rows[g.row_index]
+        if g.content_sha256 != sha or g.listing != anchor.listing or g.google_mcap != anchor.google_mcap:
+            return "MANIFEST_MISMATCH"
+        if type(g.synthetic) is not bool or g.synthetic != synthetic:
+            return "MIXED_SYNTHETIC_INPUT"
+        if g.state not in ("VERIFIED", "NOT_AVAILABLE") or (g.state == "VERIFIED" and (
+                not _positive(g.effective_cap) or g.effective_cap != g.recomputed_cap or g.listing is None or g.reason_codes
+                or len(g.member_row_indexes) != len(g.member_codes) or any(source_rows[i].listing is None for i in g.member_row_indexes)
+                or g.quality not in ("WITHIN_TOLERANCE", "MISMATCH", "GOOGLE_MCAP_MISSING", "GOOGLE_MCAP_INVALID"))):
+            return "INVALID_INPUT"
+        if g.state == "NOT_AVAILABLE" and not g.reason_codes:
+            return "INVALID_INPUT"
+    return None
+
+
+def select_verified_universe_top_n(checks: tuple[CapCheck,...], selection_config: SelectionConfig, *, parsed: UniverseParseResult,
+                                   groups: tuple[ShareClassGroupCheck,...] = ()) -> UniverseSelection:
+    """Rank only validated R values; preserve missing full-input coverage.
+
+    `groups` (share_class_groups/v0) replace their member rows: a VERIFIED group is ranked once at its anchor row,
+    a NOT_AVAILABLE group lists every present member row as missing with the group's reasons."""
     requested=selection_config.n if isinstance(selection_config,SelectionConfig) and type(selection_config.n) is int else None
     count=parsed.row_count if isinstance(parsed,UniverseParseResult) and type(parsed.row_count) is int else 0
     sha=parsed.receipt.content_sha256 if isinstance(parsed,UniverseParseResult) and isinstance(parsed.receipt,UniverseReceipt) else None
@@ -660,6 +828,12 @@ def select_verified_universe_top_n(checks: tuple[CapCheck,...], selection_config
     if any("CONFIG_CONFIRMATION_REQUIRED" in c.reason_codes for c in checks):
         return fail("CONFIG_CONFIRMATION_REQUIRED")
     source_rows={r.row_index:r for r in parsed.rows}
+    error=_groups_error(groups,source_rows,sha,synthetic)
+    if error:
+        return fail(error)
+    if any("CONFIG_CONFIRMATION_REQUIRED" in g.reason_codes for g in groups):
+        return fail("CONFIG_CONFIRMATION_REQUIRED")
+    grouped={i:g for g in groups for i in g.member_row_indexes}
     indexed={}
     for check in checks:
         row=source_rows.get(check.row_index)
@@ -671,13 +845,20 @@ def select_verified_universe_top_n(checks: tuple[CapCheck,...], selection_config
     issuers={}
     for row in parsed.rows:
         if row.listing is not None:
-            issuers.setdefault(row.listing.issuer_id,[]).append(row)
-    duplicates={row.row_index for bucket in issuers.values() if len(bucket)>1 for row in bucket}
+            unit=("group",grouped[row.row_index].group_id) if row.row_index in grouped else ("row",row.row_index)
+            issuers.setdefault(row.listing.issuer_id,{}).setdefault(unit,[]).append(row)
+    duplicates={row.row_index for units in issuers.values() if len(units)>1 for bucket in units.values() for row in bucket}
     verified=[]; missing=[]; reasons=list(parsed.reason_codes)
     for row in parsed.rows:
         c=indexed.get(row.row_index)
         if row.row_index in duplicates:
             missing.append((row.row_index,("DUPLICATE_ISSUER",))); reasons.append("DUPLICATE_ISSUER")
+        elif row.row_index in grouped:
+            g=grouped[row.row_index]
+            if g.state!="VERIFIED":
+                missing.append((row.row_index,g.reason_codes)); reasons.extend(g.reason_codes)
+            elif row.row_index==g.row_index:
+                verified.append(g)
         elif c is None or c.state!="VERIFIED":
             codes=c.reason_codes if c and c.reason_codes else row.reason_codes or ("VALIDATION_INCOMPLETE",)
             missing.append((row.row_index,codes)); reasons.extend(codes)
