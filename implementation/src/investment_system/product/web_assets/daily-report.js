@@ -2,7 +2,7 @@
    Everything stays on this device. Nothing here sends a report anywhere: export is a user copy, the optional mailbox writes
    only to the user's own Google Sheet tabs (ReportInbox/ReportOutbox) through the existing drive.file session.
    Amount hiding is ONE function (money/quantity) used by both the screen and the export. Default: hidden. */
-(function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?require('./virtual-trading.js'):root.VirtualTrading);if(node)module.exports=api;else root.DailyReport=api;})(typeof globalThis==='object'?globalThis:this,function(VT){
+(function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?require('./virtual-trading.js'):root.VirtualTrading,node?require('./report-benchmarks.js'):root.ReportBenchmarks);if(node)module.exports=api;else root.DailyReport=api;})(typeof globalThis==='object'?globalThis:this,function(VT,RB){
 'use strict';
 const TEMPLATE_VERSION='템플릿 v1',GUIDE_VERSION='지침 v1',HIDE_KEY='investment.web.v1.report-amounts-hidden',AI_KEY='investment.web.v1.report-ai-answers',MAX_ANSWERS=30;
 const KINDS=Object.freeze({MOCK:{ko:'모의투자 일일보고서',en:'Paper trading daily report'},REAL:{ko:'투자 일일보고서',en:'Investment daily report'}});
@@ -42,7 +42,7 @@ function hiddenSetting(storage,value){
  try{if(value!==undefined){storage.setItem(HIDE_KEY,value?'1':'0');return value;}return storage.getItem(HIDE_KEY)!=='0';}catch(_){return true;}
 }
 /* Report model from device inputs (all RAM): engine ledger result, ACTUAL weights (no amounts), public Q·G rows. */
-function buildModel({kind='MOCK',tab='SET_A',reportDate,baseDates={},ledger=null,ram=null,qg={},targets={},names={},config=null,investStart=null,runner=null,hits=null,mode=null,signals=null,rehearsal=null}={}){
+function buildModel({kind='MOCK',tab='SET_A',reportDate,baseDates={},ledger=null,ram=null,qg={},targets={},names={},config=null,investStart=null,runner=null,hits=null,mode=null,signals=null,rehearsal=null,bench=null,track=null}={}){
  const cfg=config||{};
  const started=!!(ledger&&ledger.state==='OK'),last=started?ledger.days[ledger.days.length-1]:null;
  const holdings=[];
@@ -58,8 +58,24 @@ function buildModel({kind='MOCK',tab='SET_A',reportDate,baseDates={},ledger=null
   start_date:cfg.start_date??null,invest_start:investStart,buy_limit:cfg.buy_limit??null,sell_limit:cfg.sell_limit??null,
   summary:started?ledger.summary:null,last,days:started?ledger.days.slice(-5):[],holdings,executed,orders,cancelled,runner,hits:Array.isArray(hits)?hits:[],
   buy_total:started?sum(executed,'BUY'):null,sell_total:started?sum(executed,'SELL'):null,ram_state:ram?ram.state:'NOT_AVAILABLE',
-  mode:mode==='REHEARSAL'?'REHEARSAL':'RECORDING',signals:signals||null,rehearsal:mode==='REHEARSAL'&&rehearsal?rehearsal:null};
+  mode:mode==='REHEARSAL'?'REHEARSAL':'RECORDING',signals:signals||null,rehearsal:mode==='REHEARSAL'&&rehearsal?rehearsal:null,
+  bench:bench||null,track:track||null};
 }
+/* ⑪⑫⑬ text helpers (ReportBenchmarks model; index levels and returns are percentages, never amounts). */
+function benchCode(c,locale='ko-KR'){if(c===null||c===undefined)return NA;const l=(RB&&RB.codeLabel(c,locale))||VT.codeLabel(c,locale);return l?l+' ('+c+')':String(c);}
+const periodName=(p,locale='ko-KR')=>RB?RB.label(RB.PERIOD_LABELS,p,locale):p;
+const seriesName=(k,locale='ko-KR')=>RB?RB.label(RB.SERIES_LABELS,k,locale):k;
+const basisName=(b,locale='ko-KR')=>RB?RB.label(RB.BASIS_LABELS,b,locale):b;
+const verdictName=(v,locale='ko-KR')=>v&&RB?RB.label(RB.VERDICT_LABELS,v,locale):NA;
+function retText(x){return x&&num(x.return)?pct(x.return):NA+(x&&x.reason?'('+x.reason+')':'');}
+function excessText(x){return num(x)?pp(x*100,2):NA;}
+function minSamples(t){return t&&num(t.min_samples)?t.min_samples:30;}
+function hitText(w,t,locale='ko-KR'){
+ if(w.state==='OK')return (w.hit_rate*100).toFixed(1)+'% ('+w.hits+'/'+w.samples+')';
+ if(w.state==='INSUFFICIENT_SAMPLE')return '표본 부족(n<'+minSamples(t)+')';
+ return NA+' · '+benchCode(w.reason,locale)+(w.expected_first?' · 첫 평가 예상 '+(w.expected_estimated?'≈ ':'')+w.expected_first:'');
+}
+function seriesState(x,locale='ko-KR'){return x.state==='OK'?(x.gaps?'결측 '+x.gaps+'세션(보간 없음)':'정상'):benchCode(x.reason,locale);}
 /* Recording vs rehearsal (리허설 · 기록 없음): a rehearsal runs the rules on today's data in RAM and is never recorded. */
 const MODE_LABEL={REHEARSAL:{ko:'리허설 · 기록 없음',en:'Rehearsal · not recorded'},RECORDING:{ko:'기록 모드',en:'Recording mode'}};
 const BASIS_KO={ABNORMAL:'이상 하락',NORMAL:'정상'},vSlopeText=v=>v==='READY'?'V 기울기 사용':VT.codeLabel(v)||v;
@@ -88,6 +104,11 @@ function ruleSummary(m){
  if(!m.started)return notStarted(m)+'.';
  const b=m.executed.filter(t=>t.side==='BUY').map(t=>t.company),s=m.executed.filter(t=>t.side==='SELL').map(t=>t.company);
  return '가상 매수 '+(b.join('·')||'없음')+', 가상 매도 '+(s.join('·')||'없음')+'. '+countsLine(m.holdings);
+}
+// ⑫ rule sentence: the latest period with both returns, else NA.
+function benchRule(B){
+ if(!B)return NA;const r=[...B.periods].reverse().find(x=>x.state==='OK'&&num(x.excess));
+ return r?periodName(r.period)+' 대상 '+retText(r.target)+', S&P 500 '+retText(r.sp500)+' → '+excessText(r.excess)+' '+verdictName(r.verdict):NA+'('+(B.reason||'NO_COMPARABLE_PERIOD')+')';
 }
 /* Template v1 (REPORT_TEMPLATE_V1 §3) as markdown. Same input + same settings → same text. */
 function renderTemplate(m,{hidden=true,guide=true}={}){
@@ -130,10 +151,24 @@ function renderTemplate(m,{hidden=true,guide=true}={}){
  if(s)L.push('가상 현금 '+money(s.cash,H)+' · 총 가상자산 '+money(s.total_value,H)+' · 누적 입금 '+money(s.deposits,H)+' · 실현손익 '+money(s.realized_pnl,H)+' · 미실현손익 '+money(s.unrealized_pnl,H));
  L.push('가상매매 해설: 【AI】 · [의견]은 별도 줄','');
  L.push('## ⑪ 누적 검증·성과','| 평가 창 | 표본 | 적중률 | 벤치마크 |','|---|---|---|---|');
- const hits=m.hits||[];if(hits.length)for(const h of hits)L.push('| D+'+h.window+' | '+h.samples+' | '+(h.hit_rate===null?'표본 부족':pct(h.hit_rate,1))+' | S&P 500 |');else L.push('| '+NA+' | '+NA+' | '+NA+' | S&P 500 |');
+ const T=m.track;
+ if(T&&T.windows.length)for(const w of T.windows)L.push('| D+'+w.window+' | '+(w.samples===null?NA:w.samples)+' | '+hitText(w,T)+' | S&P 500 |');
+ else{const hits=m.hits||[];if(hits.length)for(const h of hits)L.push('| D+'+h.window+' | '+h.samples+' | '+(h.hit_rate===null?'표본 부족(n<30)':(h.hit_rate*100).toFixed(1)+'%')+' | S&P 500 |');else L.push('| '+NA+' | '+NA+' | '+NA+' | S&P 500 |');}
+ L.push('적중: 체결일 종가 대비 D+N 세션 종가 수익률을 S&P 500(SPY, 현지 통화)과 비교 · 가상 매수는 상회, 가상 매도는 하회면 적중 · 표본 '+minSamples(T)+'건 미만은 적중률 비표시 (D-11·D-12)');
+ if(T&&T.recent.length){L.push('| 최근 판정 | 수익률 | 벤치마크 | 평가 |','|---|---|---|---|');for(const r of T.recent)L.push('| '+r.date+' '+r.company+' 가상 '+(r.side==='BUY'?'매수':'매도')+' D+'+r.window+' | '+pct(r.stock_return)+' | '+pct(r.benchmark_return)+' | '+(r.hit?'적중':'미적중')+' |');}
  L.push('누적 가상 실현손익 '+(s?money(s.realized_pnl,H):NA)+' · 누적 가상 TWR '+(s?pct(s.twr):NA),'');
- L.push('## ⑫ 기간별 성과','| 기간 | 대상 | S&P 500 | 초과 | 판정 |','|---|---|---|---|---|','| '+NA+' | '+NA+' | '+NA+' | '+NA+' | '+NA+' |','해석: 【AI】 (없으면 【규칙】 '+NA+')','');
- L.push('## ⑬ 성과·위험','| 시리즈 | 수익률 |','|---|---|','| '+NA+' | '+NA+' |','| 위험지표 | 값 | 상태 |','|---|---|---|','| '+NA+' | '+NA+' | '+NA+' |','');
+ const B=m.bench;
+ L.push('## ⑫ 기간별 성과','| 기간 | 대상 | S&P 500 | 초과 | 판정 |','|---|---|---|---|---|');
+ if(B&&B.periods.length)for(const r of B.periods)L.push('| '+periodName(r.period)+(r.base?' (기준 '+r.base+' 종가)':'')+' | '+(r.state==='OK'?retText(r.target):NA+'('+r.reason+')')+' | '+(r.state==='OK'?retText(r.sp500):NA)+' | '+excessText(r.excess)+' | '+verdictName(r.verdict)+' |');
+ else L.push('| '+NA+' | '+NA+' | '+NA+' | '+NA+' | '+NA+' |');
+ if(B)L.push(basisName(B.basis)+' · 기준 완료 거래일 '+(B.as_of||NA)+' · 기간 시작 직전 종가 = 100 · 결측 보간 없음');
+ L.push('해석: 【AI】 (없으면 【규칙】 '+benchRule(B)+')','');
+ const D=B&&B.dashboard;
+ L.push('## ⑬ 성과·위험','| 시리즈 | '+(D?periodName(D.period):NA)+' 수익률 |','|---|---|');
+ if(D&&D.state==='OK')for(const x of D.series)L.push('| '+seriesName(x.key)+' | '+retText(x)+(x.state==='OK'&&x.gaps?' · 결측 '+x.gaps+'세션':'')+' |');
+ else L.push('| '+NA+' | '+(D?NA+'('+D.reason+')':NA)+' |');
+ if(D&&D.state==='OK')L.push('기준 '+D.base+' 종가 = 100 · '+(D.sessions[0]||NA)+'~'+(D.sessions[D.sessions.length-1]||NA)+' · '+(B?basisName(B.basis):NA));
+ L.push('| 위험지표 | 값 | 상태 |','|---|---|---|','| '+NA+' | '+NA+' | '+NA+' |','');
  L.push('## 최종 투자판단','| 영역 | 판단 | 출처 |','|---|---|---|','| 가상매매 | '+ruleSummary(m)+' | 규칙 v1 |','최종 행동(7단계 어휘): 【AI】 (없으면 【규칙】 '+countsLine(m.holdings)+')','');
  L.push('## 각주',target+' · 포트폴리오 v1.1 · QGV 점수 기준 v1(보정 전) · 유형 v1 잠정 · 평가액 '+(s?money(s.total_value,H):NA)+' · 기준 종가일 '+base+' · 가상매매 실제 평가액 미반영 · 추산값 ≈ · 결측 N/A',
   '보고일: '+(m.report_date||NA),'투자 시작일: '+(m.invest_start||NA),'가상매매 시작일: '+(m.start_date||'미정'),'');
@@ -197,6 +232,49 @@ function inputsCard(r){
  h+='<p class="small">가격·환율은 구글 로그인 상태에서 비공개 가격 Worker로 이 기기 메모리에만 불러옵니다. 저장·전송하지 않습니다. 없는 값은 채우지 않고 N/A·사유 코드로 둡니다.</p></section>';
  return h;
 }
+/* ⑪ Track Record card: per window samples, hit rate only from the minimum, NA reason and expected first date. */
+function trackCard(m,{hidden=true,locale='ko-KR'}={}){
+ const T=m.track,s=m.summary,H={hidden,mode:'screen'};
+ let h='<section class="card" data-report-section="11"><h2>⑪ 누적 검증·성과 <span class="badge">D+5 · D+20 · D+63</span></h2>';
+ if(T){h+='<div class="table-scroll"><table data-track-windows><thead><tr><th>평가 창</th><th>표본</th><th>적중률</th><th>벤치마크</th></tr></thead><tbody>'
+  +T.windows.map(w=>'<tr data-track-window="'+w.window+'" data-track-state="'+esc(w.state)+'"><td>D+'+w.window+'</td><td>'+esc(w.samples===null?NA:String(w.samples))+'</td><td>'+esc(hitText(w,T,locale))+'</td><td>S&amp;P 500</td></tr>').join('')+'</tbody></table></div>';
+  if(T.recent.length)h+='<h3>최근 판정 (D+'+T.recent_window+')</h3><div class="table-scroll"><table data-track-recent><thead><tr><th>체결일</th><th>기업</th><th>구분</th><th>수익률</th><th>S&amp;P 500</th><th>평가</th></tr></thead><tbody>'
+   +T.recent.map(r=>'<tr><td>'+esc(r.date)+'</td><td>'+esc(r.company)+'</td><td>'+(r.side==='BUY'?'가상 매수':'가상 매도')+'</td><td>'+esc(pct(r.stock_return))+'</td><td>'+esc(pct(r.benchmark_return))+'</td><td>'+(r.hit?'적중':'미적중')+'</td></tr>').join('')+'</tbody></table></div>';}
+ else h+='<p>'+esc(NA)+'</p>';
+ h+='<p class="small">'+esc('누적 가상 실현손익 '+(s?money(s.realized_pnl,H):NA)+' · 누적 가상 TWR '+(s?pct(s.twr):NA))+'</p>';
+ h+='<p class="small">'+esc('적중: 가상 체결일 종가 대비 D+N 세션 종가 수익률을 S&P 500(SPY, 현지 통화)과 비교(D-11). 가상 매수는 상회, 가상 매도는 하회면 적중. 표본 '+minSamples(T)+'건 미만이면 적중률을 숫자로 보이지 않습니다(D-12). 예상일 ≈는 주말·NYSE 휴장일만 뺀 추산입니다.')+'</p></section>';
+ return h;
+}
+/* ⑫ period table (current basis). */
+function periodsCard(m,{locale='ko-KR'}={}){
+ const B=m.bench;let h='<section class="card" data-report-section="12"><h2>⑫ 기간별 성과</h2>';
+ if(!B)return h+'<p>'+esc(NA)+'</p></section>';
+ h+='<p class="small" data-bench-basis-line data-basis="'+esc(B.basis)+'">'+esc(basisName(B.basis,locale)+' · 기준 완료 거래일 '+(B.as_of||NA))+'</p>';
+ if(B.state!=='OK')h+='<p class="badge NOT_AVAILABLE" data-bench-state>'+esc('NOT_AVAILABLE · '+benchCode(B.reason,locale))+'</p>';
+ const why=c=>'<br><span class="small" data-bench-reason="'+esc(c)+'">'+esc((RB&&RB.codeLabel(c,locale))||VT.codeLabel(c,locale)||c)+'</span>';
+ const cell=x=>'<td>'+esc(x.return===null?NA:pct(x.return))+(x.return===null?why(x.reason):'')+'</td>';
+ h+='<div class="table-scroll"><table data-bench-periods><thead><tr><th>기간</th><th>대상</th><th>S&amp;P 500</th><th>초과 · 판정</th></tr></thead><tbody>'
+  +B.periods.map(r=>'<tr data-bench-period-row="'+esc(r.period)+'" data-bench-row-state="'+esc(r.state)+'"><td>'+esc(periodName(r.period,locale))+(r.base?'<br><span class="small">'+esc('기준 '+r.base)+'</span>':'')+'</td>'
+   +(r.state==='OK'?cell(r.target)+cell(r.sp500):'<td>'+esc(NA)+why(r.reason)+'</td><td>'+esc(NA)+'</td>')
+   +'<td>'+esc(excessText(r.excess))+(r.verdict?'<br><span class="small">'+esc(verdictName(r.verdict,locale))+'</span>':'')+'</td></tr>').join('')+'</tbody></table></div>';
+ return h+'<p class="small">'+esc('기간 시작 직전 세션 종가 = 기준. 결측 종가·환율·장부 평가는 채우지 않고 N/A와 사유 코드로 둡니다. 대상 수익률은 가상 입금을 뺀 시간가중 수익률입니다.')+'</p></section>';
+}
+/* ⑬ relative-index dashboard: period and basis selectors, SVG lines (gaps break), legend table with returns. */
+function dashboardCard(m,{locale='ko-KR'}={}){
+ const B=m.bench,D=B&&B.dashboard;let h='<section class="card" data-report-section="13" data-report-section-wide><h2>⑬ 상대지수 · 성과 <span class="badge">기준 = 100</span></h2>';
+ if(!B)return h+'<p>'+esc(NA)+'</p></section>';
+ const ids=RB?RB.PERIOD_IDS:[];
+ h+='<div class="chips mode-toggle" data-bench-periods-select role="group" aria-label="기간">'+ids.map(p=>'<button type="button" data-bench-period="'+esc(p)+'" aria-pressed="'+(p===B.period?'true':'false')+'">'+esc(periodName(p,locale))+'</button>').join('')+'</div>';
+ h+='<label class="toggle">통화 기준 <select data-bench-basis>'+(RB?RB.BASES:[]).map(b=>'<option value="'+b+'"'+(b===B.basis?' selected':'')+'>'+(b==='KRW'?'원화(KRW)':'달러(USD)')+'</option>').join('')+'</select></label>';
+ h+='<p class="small" data-bench-basis-note>'+esc(basisName(B.basis,locale))+'</p>';
+ if(!D||D.state!=='OK')return h+'<p class="badge NOT_AVAILABLE" data-bench-dashboard-state>'+esc('NOT_AVAILABLE · '+benchCode(D?D.reason:B.reason,locale))+'</p></section>';
+ const target=D.series.length?D.series[0].key:null;
+ h+='<p class="small">'+esc('기준 '+D.base+' 종가 = 100 · '+D.sessions[0]+'~'+D.sessions[D.sessions.length-1]+' · '+D.sessions.length+'세션')+'</p>';
+ h+='<div class="bench-chart">'+(RB?RB.chartSvg(D,{locale,target}):'')+'</div>';
+ h+='<div class="table-scroll"><table data-bench-series><thead><tr><th>시리즈</th><th>'+esc(periodName(D.period,locale))+' 수익률</th><th>상태</th></tr></thead><tbody>'
+  +D.series.map(x=>'<tr data-bench-series-row="'+esc(x.key)+'" data-bench-series-state="'+esc(x.state)+'"><td>'+(RB?RB.swatchSvg(x.key,x.key===target):'')+esc(seriesName(x.key,locale)+(x.key===target?' · 대상':''))+'</td><td>'+esc(x.return===null?NA:pct(x.return))+'</td><td class="small">'+esc(seriesState(x,locale))+'</td></tr>').join('')+'</tbody></table></div>';
+ return h+'<p class="small">'+esc('S&P 500은 SPY 일봉. 결측 종가·환율은 보간하지 않고 선을 끊습니다. 지수와 수익률은 %라 금액 숨김 대상이 아닙니다. 위험지표(MDD·변동성 등)는 아직 연결 전(N/A)입니다.')+'</p></section>';
+}
 function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
  const H={hidden,mode:'screen'},s=m.summary,en=locale==='en-US',kindName=KINDS[m.kind][en?'en':'ko'];
  const base=Object.entries(m.base_dates||{}).map(([k,v])=>k+' '+v).join(' · ')||NA;
@@ -234,7 +312,8 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
    +'<p class="small" data-cancel-legend>'+esc(codes.map(c=>c+': '+(VT.codeLabel(c,locale)||c)).join(' · ')+' · 없는 값은 채우지 않습니다.')+'</p>';}
  if(s)h+='<p class="small">'+esc('가상 현금 '+money(s.cash,H)+' · 실현손익 '+money(s.realized_pnl,H)+' · 미실현손익 '+money(s.unrealized_pnl,H))+'</p>';
  h+='<p class="small">체결은 다음 완료 정규장 종가 가정입니다. 가상 매도대금은 가상 현금으로 가며 다음 날 한도를 늘리지 않습니다. 이 장부는 실제 평가액과 합산하지 않습니다. 주문 기능은 없습니다.</p></section>';
- h+='<section class="card" data-report-section="rest"><h2>①②④⑤⑥⑦⑧⑨⑪⑫⑬</h2><p>'+esc('이 절들은 보고서 템플릿 내보내기에 같은 순서로 들어갑니다. 연결되지 않은 값은 N/A로 표시합니다.')+'</p></section>';
+ h+='<section class="card" data-report-section="rest"><h2>①②④⑤⑥⑦⑧⑨</h2><p>'+esc('이 절들은 보고서 템플릿 내보내기에 같은 순서로 들어갑니다. 연결되지 않은 값은 N/A로 표시합니다.')+'</p></section>';
+ h+=trackCard(m,{hidden,locale})+periodsCard(m,{locale})+dashboardCard(m,{locale});
  h+='<section class="card" data-report-export><h2>AI 해석 받기 <span class="badge">템플릿 v1</span></h2><p>숫자가 모두 채워진 보고서 템플릿과 \'AI 해석 지침 v1\'을 함께 복사합니다. AI는 【AI】 칸만 채워 같은 형식으로 돌려줍니다.</p>'
   +'<label class="toggle"><input type="checkbox" data-hide-amounts-export'+(hidden?' checked':'')+'> 금액 숨김 <span class="small">· 기본 켜짐, 금액은 [숨김]·한도 대비 %로</span></label>'
   +'<label class="toggle"><input type="checkbox" data-include-guide checked> 지침 포함 <span class="small">· 프로젝트 지침에 넣어 두었다면 끄기</span></label>'

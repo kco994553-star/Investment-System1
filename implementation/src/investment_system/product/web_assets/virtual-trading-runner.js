@@ -9,7 +9,8 @@
 const SCHEMA='virtual-trading-inputs/1',RANGE='2y',FORWARD_VERSION='forward_validation/v1';
 const IDS=['asml','lrcx','klac','tokyo_electron','hanmi','nvda','amd','avgo','qcom','intc','msft','googl','amzn','rtx','stry','etn','hubb','gev','rok'];
 const TARGETS=Object.freeze({asml:'ASML',lrcx:'LRCX',klac:'KLAC',tokyo_electron:'8035.T',hanmi:'042700.KS',nvda:'NVDA',amd:'AMD',avgo:'AVGO',qcom:'QCOM',intc:'INTC',msft:'MSFT',googl:'GOOGL',amzn:'AMZN',rtx:'RTX',stry:'SYK',etn:'ETN',hubb:'HUBB',gev:'GEV',rok:'ROK'});
-const SP500_SYMBOL='SPY',FX_SYMBOLS=Object.freeze({USD:'KRW=X',JPY:'JPYKRW=X'}),CURRENCIES=['USD','KRW','JPY'],STATUSES=['COMPLETE','IN_PROGRESS','UNKNOWN'];
+// DASHBOARD_ETFS: S17 ⑬ relative-index ETFs, always requested; passed through (with SPY and KRW=X) as result.indices.
+const SP500_SYMBOL='SPY',FX_SYMBOLS=Object.freeze({USD:'KRW=X',JPY:'JPYKRW=X'}),DASHBOARD_ETFS=Object.freeze(['XLK','VUG','QUAL','XLY','XLP']),CURRENCIES=['USD','KRW','JPY'],STATUSES=['COMPLETE','IN_PROGRESS','UNKNOWN'];
 const FLAG_KINDS=['HOLD','EXCLUDE','CONFIRMED_TEMPORARY','CONFIRMED_STRUCTURAL','CLEAR'],KINDS=['SET_A','SET_B','SET_C','SET_D','SHADOW'],USER_SETS=['SET_B','SET_C','SET_D'];
 // Set members other than the 19 TARGET companies: the ETFs on the client history allowlist (GoogleSheetQuotes.HISTORY_SYMBOLS
 // minus the FX pairs). Any wider symbol needs a Worker allowlist change first. They are priced in USD and have no public Q·G.
@@ -82,7 +83,7 @@ function requiredSymbols({catalog,classification=null,holdings=null,set_b=null,s
  const cids=universe(targets,holdings,set_b,sets,user_target),used=new Set(cids.map(c=>currency[c]));
  const fx=['USD','JPY'].filter(c=>used.has(c)).map(c=>FX_SYMBOLS[c]);
  const etfs=[...new Set(cids.map(c=>sectorFor(classification,c).etf))].filter(e=>e!==SP500_SYMBOL).sort();
- return [...new Set([SP500_SYMBOL,...fx,...cids.map(c=>MEMBERS[c]),...etfs])];
+ return [...new Set([SP500_SYMBOL,...fx,...cids.map(c=>MEMBERS[c]),...etfs,...DASHBOARD_ETFS.filter(e=>!etfs.includes(e)).sort()])];
 }
 // Worker private-history/1 payload (or {error}) → [closes, null] or [{}, code]. Missing closes stay absent.
 function seriesFromHistory(entry,symbol,currency){
@@ -149,7 +150,7 @@ const unavailable=codes=>({state:'NOT_AVAILABLE',reason_codes:[...codes],input:n
 /* Pure assembly: same inputs → same ledger inputs as the Python reference. */
 function assemble({config,catalog,forward_ledger=null,classification=null,histories={},holdings=null,set_b=null,sets=null,user_target=null,v_store=null,v_composition=null,flags=null}){
  histories=histories||{};const start=config&&config.start_date!==undefined?config.start_date:null;
- const out={schema:SCHEMA,state:'READY',reason_codes:[],sources:{},sector:{},ledgers:{}};
+ const out={schema:SCHEMA,state:'READY',reason_codes:[],sources:{},sector:{},ledgers:{},indices:{}};
  const targets=catalogTargets(catalog);
  if(targets===null){out.state='NOT_AVAILABLE';out.reason_codes=['TARGET_CATALOG_INVALID'];for(const k of KINDS)out.ledgers[k]=unavailable(['TARGET_CATALOG_INVALID']);return out;}
  const listing=listingOf(targets);
@@ -163,8 +164,9 @@ function assemble({config,catalog,forward_ledger=null,classification=null,histor
  const spy=source(SP500_SYMBOL,'USD'),fx={},used=new Set(cids.map(c=>listing[c]));
  for(const ccy of ['USD','JPY'])if(used.has(ccy)){const rates=source(FX_SYMBOLS[ccy],'KRW');if(rates!==null)fx[ccy]=rates;}
  for(const cid of cids){if(!own(out.sources,MEMBERS[cid]))source(MEMBERS[cid],listing[cid]);sector[cid]=sectorFor(classification,cid);}
- for(const etf of [...new Set(Object.values(sector).map(s=>s.etf))].filter(e=>e!==SP500_SYMBOL&&!own(out.sources,e)).sort())source(etf,'USD');
- out.sector=sector;
+ const etfs=[...new Set(Object.values(sector).map(s=>s.etf))].filter(e=>e!==SP500_SYMBOL).sort();
+ for(const etf of [...etfs,...DASHBOARD_ETFS.filter(e=>!etfs.includes(e)).sort()])if(!own(out.sources,etf))source(etf,'USD');
+ out.sector=sector;for(const sym of [SP500_SYMBOL,...DASHBOARD_ETFS,FX_SYMBOLS.USD])if(own(series,sym))out.indices[sym]=series[sym];
  if(spy===null){out.state='NOT_AVAILABLE';out.reason_codes=['SESSIONS_NOT_AVAILABLE'];for(const k of KINDS)out.ledgers[k]=unavailable(['SESSIONS_NOT_AVAILABLE']);return out;}
  const sessions=Object.keys(spy).filter(d=>start!==null&&d>=start);
  const snapshots=snapshotsFromLedger(forward_ledger),vScores=vScoresFromStore(v_store),vComposition=vCompositionFromStore(v_composition),flagRows=flagsFromStore(flags);
@@ -296,6 +298,6 @@ async function run(view,{config={},catalog,reportDate,signal=null,onProgress=nul
  const histories=await fetchHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});
  return assemble({config:typeof rehearsal==='function'?rehearsal(histories,cfg):cfg,catalog,forward_ledger:forward.state==='LOADED'?forward.ledger:null,classification,histories,holdings,set_b,sets,user_target,v_store:readVStore(view.localStorage),v_composition:readVComposition(view.localStorage),flags:flags||[]});
 }
-return Object.freeze({SCHEMA,CODES,IDS,TARGETS,ETF_MEMBERS,MEMBERS,USER_SETS,KINDS,SP500_SYMBOL,FX_SYMBOLS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,snapshotsFromLedger,
+return Object.freeze({SCHEMA,CODES,IDS,TARGETS,ETF_MEMBERS,MEMBERS,USER_SETS,KINDS,SP500_SYMBOL,FX_SYMBOLS,DASHBOARD_ETFS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,snapshotsFromLedger,
  vScoresFromStore,vCompositionFromStore,flagsFromStore,assemble,holdingsFromSnapshot,readVStore,readVComposition,ledgerFor,statusRows,readiness,fetchHistories,run,clearCache});
 });

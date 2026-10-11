@@ -569,6 +569,8 @@ function reportTab(id){return id==='real'?'REAL':({'mock-set_b':'SET_B','mock-co
 let reportRun=null;
 // The last recording-mode shadow-ledger judgements of this page (투자 일일보고서), RAM only: S03 shows exactly these chips.
 let virtualShadow=null;
+// ⑬ period and currency basis chosen on S17 (this page session only; RAM, not stored).
+let benchSelection={period:'20D',basis:'KRW'};
 function disposeReport(){const r=reportRun;reportRun=null;if(r){r.controller.abort();if(r.unsubscribe)r.unsubscribe();if(r.ledgerSheets)r.ledgerSheets.dispose();}}
 async function paintReport(id){
   const host=$('#daily-report');if(!host)return;
@@ -584,7 +586,9 @@ async function paintReport(id){
   let ram=null;if(kind==='REAL'){try{ram=await DeviceActual.ramView(window,await deviceCatalog());const byTicker=new Map(identityCompanies.map(r=>[r.ticker,r.company_id]));ram={...ram,rows:ram.rows.map(r=>({...r,company_id:byTicker.get(r.ticker)||r.ticker}))};}catch(_){ram=null;}}
   const qg={},names={};try{for(const r of LeaderboardScreen.rowsFor(identityCompanies,{publicScreens,engine:window.EnginePreview})){qg[r.company_id]={q:r.q,g:r.g,partial:r.partial};names[r.company_id]=r.ticker;}}catch(_){}
   const reportDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
-  let model=null,canonical='',key=null,inboxText='';
+  let model=null,canonical='',key=null,inboxText='',benchInputs=null;
+  // ⑬ selection change: recompute the RAM-only benchmark view (pure) and repaint; the canonical template keeps 20D·KRW.
+  const rebench=focus=>{if(!benchInputs||!window.ReportBenchmarks||!model)return;model={...model,bench:ReportBenchmarks.build({...benchInputs,...benchSelection})};paint();const n=focus&&host.querySelector(focus);if(n)n.focus();};
   const paint=()=>{
     if(!live()||!model)return;const hidden=R.hiddenSetting(localStorage),answer=key?R.answers(localStorage)[key]||null:null;
     const draft=host.querySelector('[data-ai-input]')?.value||'';
@@ -603,6 +607,8 @@ async function paintReport(id){
     host.querySelector('[data-mailbox-read]').onclick=()=>void mailbox('read');
     const rehearseButton=host.querySelector('[data-rehearsal-run]'),recordButton=host.querySelector('[data-recording-mode]');
     if(rehearseButton)rehearseButton.onclick=()=>void go('REHEARSAL');
+    for(const b of host.querySelectorAll('[data-bench-period]'))b.onclick=()=>{benchSelection={...benchSelection,period:b.dataset.benchPeriod};rebench('[data-bench-period="'+b.dataset.benchPeriod+'"]');};
+    const basisSelect=host.querySelector('[data-bench-basis]');if(basisSelect)basisSelect.onchange=()=>{benchSelection={...benchSelection,basis:basisSelect.value};rebench('[data-bench-basis]');};
     if(recordButton)recordButton.onclick=()=>{if(before){run.mode='RECORDING';void compose({state:'NOT_STARTED',reason_codes:['BEFORE_START_DATE']});}else void go('RECORDING');};
   };
   // Model from a runner result or a placeholder state. Nothing is stored: prices and ledgers stay in this closure.
@@ -612,11 +618,22 @@ async function paintReport(id){
     const shown={...qg};if(last&&input&&input.snapshots[last.date])for(const[c,r]of Object.entries(input.snapshots[last.date]))shown[c]={q:r.q,g:r.g};
     const runner={state:result.state==='READY'?(ledger.state==='OK'?'READY':'NOT_AVAILABLE'):result.state,reason_codes:result.state==='READY'?(ledger.state==='OK'?[]:ledger.reason_codes):result.reason_codes,sources:Runner.statusRows(result),progress:''};
     let signals=null;try{signals=Signals?{...Signals.reportSignals(result,ledgerKind,runCfg,Runner.readVStore(localStorage)),capture}:null;}catch(_){signals=null;}
-    const next=R.buildModel({kind,tab,reportDate,baseDates:last?{NYSE:last.date}:{},ledger,ram,qg:shown,names,config:cfg,runner,hits,mode,signals,rehearsal:result.rehearsal||null});
+    // ⑪⑫⑬ (ReportBenchmarks, pure, RAM): runner indices (SPY, ⑬ ETFs, KRW=X) + this tab's ledger and the comparison ledger.
+    let bench=null,shownBench=null,track=null,nextBenchInputs=null;
+    try{const RB=window.ReportBenchmarks;if(RB){
+      const days=l=>l.state==='OK'?l.days.map(d=>({date:d.date,total_value:d.total_value,deposit:d.deposit})):[];
+      const others=kind==='REAL'?['SET_A']:ledgerKind==='SET_A'?['SET_B']:['SET_A'];
+      const ledgers=[{key:ledgerKind,state:ledger.state,reason_codes:ledger.reason_codes||[],days:days(ledger)},...others.map(k=>{const l=Runner.ledgerFor(result,k,runCfg).ledger;return{key:k,state:l.state,reason_codes:l.reason_codes||[],days:days(l)};})];
+      nextBenchInputs={indices:result.indices||{},sources:result.sources||{},ledgers,start_date:runCfg.start_date};
+      bench=RB.build({...nextBenchInputs,period:'20D',basis:'KRW'});shownBench=RB.build({...nextBenchInputs,...benchSelection});
+      track=RB.trackRecord({hits,trades:ledger.state==='OK'?ledger.trades:[],ledger_input:input,ledger_reasons:ledger.reason_codes||[],start_date:runCfg.start_date,windows:cfg.hit_windows,min_samples:cfg.hit_min_samples});}}
+    catch(_){bench=shownBench=track=nextBenchInputs=null;}
+    const next=R.buildModel({kind,tab,reportDate,baseDates:last?{NYSE:last.date}:{},ledger,ram,qg:shown,names,config:cfg,runner,hits,mode,signals,rehearsal:result.rehearsal||null,bench,track});
     const nextCanonical=R.renderTemplate(next,{hidden:true,guide:false});let nextKey=null;try{nextKey=await R.hash(nextCanonical);}catch(_){nextKey=null;}
     if(!live()||run.mode!==mode)return;
     // The mailbox always writes amounts hidden with the guide; its Inbox/Outbox sha256 is the hash of exactly this text.
-    model=next;canonical=nextCanonical;key=nextKey;inboxText=R.renderTemplate(next,{hidden:true,guide:true});
+    // canonical/inbox use the default ⑬ selection (20D · KRW) so a stored AI answer stays attached to the day's data.
+    model={...next,bench:shownBench};canonical=nextCanonical;key=nextKey;inboxText=R.renderTemplate(next,{hidden:true,guide:true});benchInputs=nextBenchInputs;
     if(kind==='REAL'&&mode==='RECORDING'&&result.state!=='LOADING')virtualShadow=last?{date:last.date,judgements:last.judgements,names:{...names}}:null;
     paint();
   };

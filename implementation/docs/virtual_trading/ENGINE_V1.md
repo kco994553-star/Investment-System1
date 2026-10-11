@@ -75,7 +75,7 @@
 
 `web_assets/virtual-trading-runner.js`(Python 참조 `qgv/virtual_trading_inputs.py`, 합성 벡터 `tests/fixtures/virtual_trading_inputs_v1.json`)가 엔진 입력을 기기 RAM에서 조립한다.
 
-- 시작일 전에는 아무 요청도 하지 않고 `NOT_STARTED`. 그 뒤에는 구글 로그인 세션이 연결되어 있을 때만 기존 비공개 가격 Worker로 `2y` 일봉을 순서대로(5.2초 간격) 읽는다. SPY → 환율(`KRW=X`, `JPYKRW=X`) → 종목 → 업종 ETF 순서.
+- 시작일 전에는 아무 요청도 하지 않고 `NOT_STARTED`. 그 뒤에는 구글 로그인 세션이 연결되어 있을 때만 기존 비공개 가격 Worker로 `2y` 일봉을 순서대로(5.2초 간격) 읽는다. SPY → 환율(`KRW=X`, `JPYKRW=X`) → 종목 → 업종 ETF → 보고서 ⑬ ETF(XLK·VUG·QUAL·XLY·XLP 중 아직 요청하지 않은 것) 순서. SPY·⑬ ETF·`KRW=X` 종가는 결과의 `indices`로 RAM에서만 보고서에 넘긴다.
 - 세션 날짜는 SPY 완료 세션(시작일 이후). SPY가 없으면 장부를 만들지 않고 `SESSIONS_NOT_AVAILABLE`, 나머지 요청도 하지 않는다.
 - 클라이언트 허용 목록이나 Worker가 거부한 기호는 오류 코드(예: `REQUEST_INVALID`)를 화면에 보이고 입력에서 빠진다. 없는 종가·환율은 채우지 않는다(`EXEC_PRICE_MISSING`·`EXEC_FX_MISSING`).
 - Q·G는 공개 전진 검증 기록(RECORDED)에서만, V는 이 기기에 날짜별로 저장된 값(`investment.web.v1.virtual-trading-v-scores`, V만)에서만 읽는다. V는 아래 'V 기록'이 쌓는다.
@@ -124,8 +124,21 @@
 - 리허설은 어떤 장부·시트 데이터도 쓰지 않는다. V 기록은 장부와 독립이므로 리허설에서도 추가된다.
 - 시작일 이후에도 같은 버튼으로 리허설을 볼 수 있다. '기록 모드로 돌아가기'로 되돌린다.
 
+## 보고서 ⑪ 누적 검증 · ⑫ 기간별 성과 · ⑬ 상대지수 (S17)
+
+`web_assets/report-benchmarks.js`(Python 참조 `qgv/report_benchmarks.py`, 합성 벡터 `tests/fixtures/report_benchmarks_v1.json`, 생성 `tools/report_benchmarks_reference.py`)가 계산한다. 입력은 러너의 `indices`, 엔진 장부의 날짜별 평가액·입금, 엔진 `evaluateHits`이며 모두 RAM에만 있다. 저장·전송·콘솔 출력이 없다.
+
+- **세션 달력:** SPY 완료 세션. 기준 거래일은 대상 장부의 마지막 날(없으면 마지막 SPY 세션).
+- **기간:** 1D·5D·20D·60D·120D는 기준 거래일에서 N세션, '시작 이후'는 장부 첫날부터. **기간 시작 직전 세션 종가 = 100**.
+- **결측:** 종가·환율·장부 평가가 없는 세션은 공백(선이 끊김)과 사유 코드(`CLOSE_MISSING`·`FX_MISSING`·`VALUE_MISSING`)로 둔다. 보간·이월하지 않는다. 기준일이나 마지막 세션 값이 없으면 그 시리즈 수익률은 NOT_AVAILABLE(`BASE_*`·`LAST_*`). 기간이 장부보다 길면 `PERIOD_BEFORE_LEDGER_START`.
+- **통화 기준(결정, 화면에 표시):** 기본 **원화(KRW)** — 장부는 기록된 원화 그대로, 미국 지수는 같은 세션 `KRW=X` 종가를 곱해 원화로 환산(원화 투자자가 그 ETF를 들고 있었다면 본 값, 환율 효과 포함). 선택 **달러(USD)** — 지수는 현지 종가, 장부는 같은 세션 `KRW=X`로 나눠 달러 환산. 환율은 같은 날짜만 쓴다(전날 환율로 채우지 않음). 화면 선택(기간·통화)은 이 페이지 세션 동안만 RAM에 둔다. AI 답 보관 키(정본 템플릿)는 20D·원화로 고정한다.
+- **장부 지수:** 엔진과 같은 시간가중 연결 — (평가액 − 직전 평가 이후 입금) ÷ 직전 평가액. 장부 첫날은 엔진처럼 연결 1. 공백이 없고 원화 기준이면 '시작 이후' 값이 엔진 `summary.twr`과 같다(테스트로 확인). 공백을 건너면 그 사이 입금을 모두 뺀다(엔진 twr은 하루치 입금만 뺀다: 결정 필요 항목).
+- **⑫:** 기간마다 대상·S&P 500(SPY)·초과(%p)·판정(상회/하회/같음).
+- **⑬:** 대상 장부 + 비교 장부(모의투자: 세트 A↔B, 투자 보고서: 그림자 장부 + 세트 A), S&P 500, XLK, VUG, QUAL, XLY, XLP. 기존 `TechnicalChart.paths`로 선을 그리고 공백에서 끊는다. 지수·수익률은 %라 금액 숨김 대상이 아니다. 위험지표(MDD 등)는 아직 N/A.
+- **⑪:** 엔진 `evaluateHits`(D+5·D+20·D+63 세션, S&P 500 현지 통화, D-11). 창마다 표본 수, 30건 이상일 때만 적중률(적중/표본), 그 전에는 '표본 부족(n<30)'(D-12). 표본이 0이면 사유(`BEFORE_START_DATE`·`NO_TRADES`·`WINDOW_NOT_ELAPSED`·`PRICE_OR_BENCHMARK_MISSING`)와 첫 평가 예상일. 달력 밖 날짜는 주말·NYSE 휴장일(2026–2027 목록)만 뺀 추산이며 '≈'로 표시한다. 시작일(2026-10-19) 기준 첫 예상일: D+5 2026-10-27, D+20 2026-11-17, D+63 2027-01-21. 최근 D+5 판정 5건(수익률·S&P 500·적중)도 보인다.
+
 ## 아직 연결하지 않은 것
 
 - **가격 경로:** 개인 가격 Worker가 TARGET 19종목만 허용한다. 그래서 S&P 500, 업종 ETF, 세트 B 종목의 일봉을 기기에서 받을 수 없다([D-22 초안](D22_SECTOR_ETF_MAPPING_DRAFT.md)의 선택지 참고).
   - 그 전까지 엔진은 업종 기준 계산 불가로 동작한다.
-  - 적중 판정(D+N)도 표본이 쌓이지 않는다.
+  - 적중 판정(D+N)은 ⑪에 연결됐다(위 절). 표본은 2026-10-19 이후 가상 거래가 쌓여야 생긴다.
