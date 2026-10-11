@@ -28,6 +28,8 @@ const noOverflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=i
    assert.equal(await link.getAttribute('href'),'https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260725000301');assert.equal(await link.textContent(),'연결재무제표기준영업(잠정)실적(공정공시)');
    assert.ok((await page.locator('[data-disclosure="20260725000301"]').textContent()).includes('DART · 2026-07-25 KST'));
    assert.equal(await page.locator('#news-dart-disclosures [data-score-effect]').getAttribute('data-score-effect'),'NONE');
+   assert.equal(await page.locator('#news-pane #news-dart-disclosures').count(),0);await page.locator('#show-network').click();assert.equal(await page.locator('#news-dart-disclosures').isVisible(),false);
+   await page.locator('#show-news').click();assert.equal(await page.locator('#news-dart-disclosures').isVisible(),true);
    assert.ok(await noOverflow(page),'overflow S07');await page.locator('#news-dart-disclosures').screenshot({path:path.join(SHOTS,'dart-disclosures-news-'+width+'.png')});
    phase='S07_COMPANY';await page.goto(BASE+'#news/nvda');await page.locator('#news-dart-disclosures [data-dart-disclosures]').waitFor();
    assert.equal(await page.locator('#news-dart-disclosures [data-disclosure]').count(),0);
