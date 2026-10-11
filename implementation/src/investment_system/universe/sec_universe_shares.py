@@ -7,6 +7,12 @@ basis. The basis comes only from the same filing's cover XBRL as parsed by
 several classes with an unambiguous per-class value for this listing ->
 SHARE_CLASS_BASIS (shown, never summed or corrected); anything else ->
 BASIS_UNCONFIRMED. No price, market cap, rank, selection or device data.
+
+User decision 2026-10-11 (M3 unlisted class): for each share_class_groups/v0
+group with an unlisted cover class (Alphabet Class B), `unlisted_classes`
+carries that class's count from the SAME cover filing as the valued-at listing
+record (GOOGL): same accn, measurement date and cover hash, freshness mirrored.
+Missing or ambiguous -> NOT_AVAILABLE with a reason and no count.
 Missing values stay null, never 0. Shard count/stale window are v0 defaults
 (DEFAULT_V0_UNCALIBRATED), not calibrated policy.
 """
@@ -32,10 +38,12 @@ REASONS = (
     'STALE_INPUT',
 )
 TOP_REASONS = ('STALE_INPUT', 'NO_ELIGIBLE_INPUT')
+UNLISTED_REASONS = ('NOT_COLLECTED', 'UNLISTED_CLASS_SHARES_NOT_AVAILABLE', 'UNLISTED_CLASS_AMBIGUOUS', 'STALE_INPUT')
+UNLISTED_KEYS = ('cik', 'valued_at', 'accn', 'measurement_date', 'cover_sha256', 'classes', 'state', 'reason_codes')
 RECORD_KEYS = ('cik', 'listing_id', 'company_id', 'shares', 'measurement_date', 'accn', 'form', 'filed', 'acquired_at',
                'concept', 'share_class_basis', 'basis_evidence', 'source_sha256', 'state', 'reason_codes')
 TOP_KEYS = ('schema_version', 'kind', 'as_of', 'config_version', 'config_status', 'freshness_basis', 'stale_after_seconds',
-            'shard_count', 'last_shard_index', 'registry_sha256', 'code_count', 'state', 'reason_codes', 'records')
+            'shard_count', 'last_shard_index', 'registry_sha256', 'code_count', 'state', 'reason_codes', 'records', 'unlisted_classes')
 EVIDENCE_KEYS = ('cover_accn', 'class_count', 'class_members', 'listing_class_member')
 HASH_KEYS = ('companyfacts', 'submissions', 'cover')
 _HERE = Path(__file__).resolve().parent
@@ -112,6 +120,59 @@ def empty_record(*, cik=None, reasons=('NOT_COLLECTED',)):
             'state': 'NOT_AVAILABLE', 'reason_codes': list(reasons)}
 
 
+def _unlisted_groups():
+    from .share_class_groups import unlisted_groups
+    return unlisted_groups()
+
+
+def empty_unlisted(group, reasons=('NOT_COLLECTED',)):
+    return {'cik': group['cik'], 'valued_at': group['unlisted']['valued_at'], 'accn': None, 'measurement_date': None,
+            'cover_sha256': None, 'classes': [], 'state': 'NOT_AVAILABLE', 'reason_codes': list(reasons)}
+
+
+def build_unlisted_entry(group, record, cover):
+    """Unlisted cover classes of one group from the valued-at listing's own cover parse. Nothing is inferred."""
+    entry = empty_unlisted(group, ('UNLISTED_CLASS_SHARES_NOT_AVAILABLE',))
+    if (type(record) is not dict or record.get('share_class_basis') != 'SHARE_CLASS_BASIS' or record.get('shares') is None
+            or record.get('cik') != group['cik'] or not isinstance(cover, dict)):
+        return entry
+    found = tuple(cover.get('unlisted_classes') or ())
+    if not found:
+        return entry
+    reasons = {reason for _, _, reason in found if reason is not None}
+    if reasons:
+        entry['reason_codes'] = ['UNLISTED_CLASS_AMBIGUOUS' if 'UNLISTED_CLASS_AMBIGUOUS' in reasons else 'UNLISTED_CLASS_SHARES_NOT_AVAILABLE']
+        return entry
+    if not all(_positive(value) and type(value) is not bool for _, value, _ in found):
+        return entry
+    entry.update(accn=record['accn'], measurement_date=record['measurement_date'], cover_sha256=record['source_sha256']['cover'],
+                 classes=[{'class_member': name, 'shares': _number(value)} for name, value, _ in sorted(found, key=lambda x: x[0])],
+                 state=record['state'], reason_codes=['STALE_INPUT'] if record['state'] == 'STALE' else [])
+    return entry
+
+
+def restate_unlisted(group, entry, record):
+    """Freshness mirrors the bound listing record; a count no longer bound to that record's cover is dropped."""
+    out = json.loads(json.dumps(entry))
+    if not out['classes']:
+        out['state'] = 'NOT_AVAILABLE'
+        out['reason_codes'] = [r for r in out['reason_codes'] if r != 'STALE_INPUT'] or ['UNLISTED_CLASS_SHARES_NOT_AVAILABLE']
+        return out
+    if (record['share_class_basis'] != 'SHARE_CLASS_BASIS' or record['shares'] is None or record['cik'] != out['cik']
+            or (out['accn'], out['measurement_date'], out['cover_sha256']) != (record['accn'], record['measurement_date'], record['source_sha256']['cover'])):
+        return empty_unlisted(group, ('UNLISTED_CLASS_SHARES_NOT_AVAILABLE',))
+    out['state'] = record['state']
+    out['reason_codes'] = ['STALE_INPUT'] if record['state'] == 'STALE' else []
+    return out
+
+
+def upgrade_legacy(payload):
+    """A copy published before `unlisted_classes` existed keeps its rows; each group gets NOT_COLLECTED (no count)."""
+    if type(payload) is dict and 'unlisted_classes' not in payload and set(payload) == set(TOP_KEYS) - {'unlisted_classes'}:
+        return {**payload, 'unlisted_classes': {gid: empty_unlisted(g) for gid, g in _unlisted_groups().items()}}
+    return payload
+
+
 def select_cover_filing(submissions_body, as_of):
     """Latest periodic report (10-K/10-Q, amendments) at or before as_of with a primary .htm document."""
     try:
@@ -149,9 +210,27 @@ def _filing(submissions_body, accn):
     return None
 
 
-def build_share_record(*, code, cik, companyfacts_body, submissions_body, acquired_at, as_of,
-                       cover_xml=None, cover_accession=None, cover_acquired_at=None):
+def build_share_record(**kwargs):
     """One Universe code from supplied SEC bytes. The adapter decides; nothing is inferred here."""
+    return _share_record(**kwargs)[0]
+
+
+def build_issuer_records(*, codes, cik, companyfacts_body, submissions_body, acquired_at, as_of,
+                         cover_xml=None, cover_accession=None, cover_acquired_at=None):
+    """Every Universe code of one issuer plus `unlisted_classes` entries for groups valued at one of those codes."""
+    records, covers = {}, {}
+    for code in codes:
+        records[code], covers[code] = _share_record(code=code, cik=cik, companyfacts_body=companyfacts_body, submissions_body=submissions_body,
+                                                    acquired_at=acquired_at, as_of=as_of, cover_xml=cover_xml,
+                                                    cover_accession=cover_accession, cover_acquired_at=cover_acquired_at)
+    unlisted = {gid: build_unlisted_entry(g, records[g['unlisted']['valued_at']], covers[g['unlisted']['valued_at']])
+                for gid, g in _unlisted_groups().items() if g['cik'] == cik and g['unlisted']['valued_at'] in records}
+    return records, unlisted
+
+
+def _share_record(*, code, cik, companyfacts_body, submissions_body, acquired_at, as_of,
+                  cover_xml=None, cover_accession=None, cover_acquired_at=None):
+    """(record, the adapter's cover evidence or None)."""
     from ..providers.sec_m3_adapter import build_sec_m3_input
     from .private_subset import ShareBasisReceipt, prepare_sec_shares
     venue, symbol = _sec_symbol(code)
@@ -163,7 +242,7 @@ def build_share_record(*, code, cik, companyfacts_body, submissions_body, acquir
     if result.seed is None or result.seed.cik != cik:
         if result.seed is not None:
             record['reason_codes'] = ['CIK_MISMATCH']
-        return record
+        return record, result.cover
     seed = result.seed
     record.update(listing_id=seed.listing_id, company_id=seed.company_id, acquired_at=_iso(acquired_at))
     record['source_sha256'] = {'companyfacts': sha(companyfacts_body), 'submissions': sha(submissions_body), 'cover': sha(cover_xml)}
@@ -180,11 +259,11 @@ def build_share_record(*, code, cik, companyfacts_body, submissions_body, acquir
         filing = _filing(submissions_body, shares.accn)
         if filing is None:
             record['reason_codes'] = ['ACCESSION_UNCONFIRMED']
-            return record
+            return record, result.cover
         record.update(shares=_number(shares.shares), measurement_date=shares.measurement_date.isoformat(), accn=shares.accn,
                       form=filing[0], filed=filing[1], acquired_at=_iso(max(acquired_at, cover_at)), concept=shares.concept,
                       share_class_basis='SINGLE_CLASS_CONFIRMED', state='LIVE', reason_codes=[])
-        return record
+        return record, result.cover
     reason = result.reason_codes[0] if result.reason_codes else 'BASIS_UNCONFIRMED'
     per_class = (cover is not None and cover['multi_class'] and cover['dimensioned'] and cover['listing_class_member'] is not None
                  and len(cover['class_members']) >= 2
@@ -196,7 +275,7 @@ def build_share_record(*, code, cik, companyfacts_body, submissions_body, acquir
             record.update(shares=_number(cover['value']), measurement_date=cover['measurement_date'], accn=cover_accession,
                           form=filing[0], filed=filing[1], acquired_at=_iso(max(acquired_at, cover_at)),
                           concept=CONCEPTS[0], share_class_basis='SHARE_CLASS_BASIS', state='LIVE', reason_codes=['SHARE_CLASS_BASIS'])
-            return record
+            return record, result.cover
     # BASIS_UNCONFIRMED: keep the SEC companyfacts count visible when it is determinable, never verified.
     extraction = ShareBasisReceipt(seed.listing_id, seed.company_id, seed.security_id, 'SINGLE_CLASS_CONFIRMED',
                                    'companyfacts-extraction-only', sha(companyfacts_body), acquired_at, 'shares',
@@ -210,7 +289,7 @@ def build_share_record(*, code, cik, companyfacts_body, submissions_body, acquir
         if filing is not None:
             record.update(shares=_number(shares.shares), measurement_date=shares.measurement_date.isoformat(), accn=shares.accn,
                           form=filing[0], filed=filing[1], acquired_at=_iso(acquired_at), concept=shares.concept, state='LIVE')
-    return record
+    return record, result.cover
 
 
 def restate(record, as_of, stale_after):
@@ -227,13 +306,16 @@ def restate(record, as_of, stale_after):
     return out
 
 
-def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None):
-    """Previous published rows + this shard's rows. A new row without shares never erases a kept value."""
+def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None, unlisted_updates=None):
+    """Previous published rows + this shard's rows. A new row without shares never erases a kept value.
+
+    An `unlisted_classes` entry follows its valued-at listing row: replaced together with that row (missing
+    update -> NOT_AVAILABLE), otherwise kept, and dropped to NOT_AVAILABLE when no longer bound to the row's cover."""
     cfg = config or load_config()
     stale_after = timedelta(days=cfg['stale_after_days'])
     codes = universe_codes()
     kept = previous['records'] if previous is not None else {}
-    records = {}
+    records, replaced = {}, set()
     for code in codes:
         old = kept.get(code) or empty_record()
         new = updates.get(code)
@@ -244,9 +326,24 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
                 new = empty_record(cik=new.get('cik') if type(new) is dict and type(new.get('cik')) is str and re.fullmatch(r'[0-9]{10}', new['cik']) else None, reasons=('INVALID_INPUT',))
         if new is not None and not (new['shares'] is None and old['shares'] is not None):
             old = new
+            replaced.add(code)
         elif new is None and code in unresolved and old['shares'] is None:
             old = empty_record(reasons=('CIK_UNRESOLVED',))
         records[code] = restate(old, as_of, stale_after)
+    kept_unlisted = (previous or {}).get('unlisted_classes') or {}
+    unlisted = {}
+    for gid, group in _unlisted_groups().items():
+        code = group['unlisted']['valued_at']
+        if code in replaced:
+            entry = (unlisted_updates or {}).get(gid) or empty_unlisted(group, ('UNLISTED_CLASS_SHARES_NOT_AVAILABLE',))
+        else:
+            entry = kept_unlisted.get(gid) or empty_unlisted(group)
+        try:
+            entry = restate_unlisted(group, entry, records[code])
+            _unlisted_entry(group, entry, records)
+        except (ValueError, TypeError, KeyError, AttributeError, OverflowError):
+            entry = empty_unlisted(group, ('UNLISTED_CLASS_SHARES_NOT_AVAILABLE',))
+        unlisted[gid] = entry
     states = [r['state'] for r in records.values()]
     state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
     payload = {'schema_version': 1, 'kind': KIND, 'as_of': _iso(as_of), 'config_version': cfg['config_version'],
@@ -255,7 +352,7 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
                'last_shard_index': shard_index, 'registry_sha256': registry_sha256 if registry_sha256 is not None else (previous or {}).get('registry_sha256'),
                'code_count': len(records), 'state': state,
                'reason_codes': [] if state == 'LIVE' else ['STALE_INPUT'] if state == 'STALE' else ['NO_ELIGIBLE_INPUT'],
-               'records': records}
+               'records': records, 'unlisted_classes': unlisted}
     require_universe_shares(payload)
     return payload
 
@@ -309,6 +406,39 @@ def _record(code, r, cut, ttl):
     return r['state']
 
 
+def _unlisted_entry(group, e, records):
+    """One `unlisted_classes` entry: bound to the valued-at listing row's cover filing, or NOT_AVAILABLE with no count."""
+    _need(type(e) is dict and set(e) == set(UNLISTED_KEYS))
+    _need(e['cik'] == group['cik'] and e['valued_at'] == group['unlisted']['valued_at'])
+    reasons = e['reason_codes']
+    _need(type(reasons) is list and len(reasons) == len(set(reasons)) <= 4 and all(x in UNLISTED_REASONS for x in reasons))
+    classes = e['classes']
+    _need(type(classes) is list and len(classes) <= 15)
+    if not classes:
+        _need(e['state'] == 'NOT_AVAILABLE' and reasons and 'STALE_INPUT' not in reasons)
+        _need(e['accn'] is None and e['measurement_date'] is None and e['cover_sha256'] is None)
+        return e['state']
+    r = records[e['valued_at']]
+    evidence = r['basis_evidence']
+    _need(r['share_class_basis'] == 'SHARE_CLASS_BASIS' and r['shares'] is not None and r['cik'] == e['cik'])
+    _need(_hash(e['cover_sha256']) and e['cover_sha256'] == r['source_sha256']['cover'])
+    _need(e['accn'] == r['accn'] and e['measurement_date'] == r['measurement_date'])
+    _need(e['state'] == r['state'] and reasons == (['STALE_INPUT'] if r['state'] == 'STALE' else []))
+    names = []
+    for c in classes:
+        _need(type(c) is dict and set(c) == {'class_member', 'shares'})
+        name = c['class_member']
+        _need(type(name) is str and name in evidence['class_members'] and name != evidence['listing_class_member'])
+        _need(_positive(c['shares']) and type(c['shares']) is not bool)
+        names.append(name)
+    _need(names == sorted(set(names)) and len(names) < len(evidence['class_members']))
+    # A class listed by any group row from the same cover filing is not unlisted.
+    listed = {records[c]['basis_evidence']['listing_class_member'] for c in group['codes']
+              if type(records.get(c)) is dict and records[c]['share_class_basis'] == 'SHARE_CLASS_BASIS' and records[c]['accn'] == e['accn']}
+    _need(not listed & set(names))
+    return e['state']
+
+
 def require_universe_shares(payload):
     """Strict public validator (also used by the Pages guard). Fixed error only."""
     try:
@@ -330,6 +460,11 @@ def require_universe_shares(payload):
         states = [_record(code, records[code], cut, timedelta(seconds=ttl)) for code in codes]
         state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
         _need(payload['state'] == state)
+        groups = _unlisted_groups()
+        unlisted = payload['unlisted_classes']
+        _need(type(unlisted) is dict and set(unlisted) == set(groups))
+        for gid, group in groups.items():
+            _unlisted_entry(group, unlisted[gid], records)
         top = payload['reason_codes']
         _need(type(top) is list and all(x in TOP_REASONS for x in top) and len(top) == len(set(top)))
         return payload

@@ -134,9 +134,17 @@ def _cover(xml,cik,symbol,cutoff,report_period_end=None,venue=None,detail=False)
     multi=len({ctx[0] for _,ctx,_ in rows})>1
     explicit_totals=tuple(v for ctx,v in same_day if ctx[0] is None)
     if detail:
-        # Public evidence only: XBRL class member local names on this cover, no values.
+        # Public evidence only: XBRL class member local names on this cover; share counts only for unlisted classes, no prices.
         classes=tuple(sorted({ctx[0][1] for _,ctx,_ in rows if ctx[0] is not None}))
-        return value,day,multi,member is not None,explicit_totals,{'class_members':classes,'listing_class_member':member[1] if member else None}
+        # Unlisted cover classes (no TradingSymbol in any context of that class): the same cover's per-class
+        # value on this listing's measurement day. Exactly one value -> count; none/several -> reason, never 0.
+        listed={contexts[i][0][1] for i in symbols if contexts[i][0] is not None}
+        unlisted=[]
+        for local in classes:
+            if local in listed or (member is not None and local==member[1]):continue
+            values={v for _,ctx,v in rows if ctx[0] is not None and ctx[0][1]==local and ctx[1]==day and ctx[2]==venues}
+            unlisted.append((local,next(iter(values)),None) if len(values)==1 else (local,None,'UNLISTED_CLASS_AMBIGUOUS' if values else 'UNLISTED_CLASS_SHARES_NOT_AVAILABLE'))
+        return value,day,multi,member is not None,explicit_totals,{'class_members':classes,'listing_class_member':member[1] if member else None,'unlisted_classes':tuple(unlisted)}
     return value,day,multi,member is not None,explicit_totals
 
 def build_sec_m3_input(*,code,companyfacts_body,submissions_body,acquired_at,as_of,synthetic=False,cover_xml=None,cover_accession=None,cover_acquired_at=None):
