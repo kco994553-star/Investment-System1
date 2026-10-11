@@ -10,6 +10,8 @@
  if(node)module.exports=api;else root.VirtualTradingVHistory=api;})(typeof globalThis==='object'?globalThis:this,function(runner,signals){
 'use strict';
 const KEY='investment.web.v1.virtual-trading-v-scores',SCHEMA='virtual-trading-v-scores/1',MAX_DATES=400;
+// NOT_RECORDED reasons shown on S17 (labels: VirtualTrading.CODE_LABELS).
+const CODES=Object.freeze(['DATE_INVALID','DATE_BEFORE_LAST_RECORDED','UNCHANGED','NO_VALUES','DEVICE_STORAGE_UNAVAILABLE','V_STORE_INVALID','SESSION_NOT_AVAILABLE','VALUATION_INPUTS_UNAVAILABLE']);
 const own=(o,k)=>o!==null&&typeof o==='object'&&Object.prototype.hasOwnProperty.call(o,k);
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const num=v=>typeof v==='number'&&Number.isFinite(v);
@@ -58,5 +60,5 @@ async function capture(view,result){
  let values={};try{[values]=S.vScoresFor(plan,payload,V.parameters());}catch(_){values={};}
  return finish(record(view.localStorage,plan.date,values));
 }
-return Object.freeze({KEY,SCHEMA,MAX_DATES,readStore,merge,record,capture});
+return Object.freeze({KEY,SCHEMA,CODES,MAX_DATES,readStore,merge,record,capture});
 });
