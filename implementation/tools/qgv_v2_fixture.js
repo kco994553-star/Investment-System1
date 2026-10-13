@@ -46,4 +46,21 @@ function quotes() {
   return out;
 }
 function universeValues() { return [['code', 'marketcap', 'price'], ...Object.entries(quotes()).map(([c, q]) => [c, 1000 + q.price, q.price])]; }
-module.exports = { TICKERS, codes, payload, quotes, universeValues };
+// Strictly valid `sec-qgv2.json` (the Q·G side's synthetic base vector expanded to Universe504, as in its node test), so
+// browser tests pass the real SecQgv2 validator. Universe-tab rows price every LIVE code plus NVDA (TARGET row via ticker);
+// MSFT is left without a price (V NA).
+function strictPayload() {
+  const fs = require('node:fs'), reader = require(path.join(__dirname, '../src/investment_system/product/web_assets/sec-qgv2.js'));
+  const vectors = JSON.parse(fs.readFileSync(path.join(__dirname, '../tests/fixtures/sec_qgv2_vectors_v1.json'), 'utf8'));
+  const all = JSON.parse(fs.readFileSync(path.join(__dirname, '../src/investment_system/universe/universe_codes_v1.json'), 'utf8'));
+  const p = structuredClone(vectors.base), sparse = p.records;
+  p.records = Object.fromEntries(all.map((c) => [c, sparse[c] ? sparse[c] : reader.emptyRecord()]));
+  return p;
+}
+function strictUniverseValues() {
+  const p = strictPayload(), rows = [['code', 'marketcap', 'price']];let i = 0;
+  for (const [code, r] of Object.entries(p.records)) if (r.state === 'LIVE' && code !== 'NASDAQ:MSFT') { i++;rows.push([code, 5000 + i, 15 + ((i * 17) % 80)]); }
+  rows.push(['NASDAQ:NVDA', 9000, 42]);
+  return rows;
+}
+module.exports = { TICKERS, codes, payload, quotes, universeValues, strictPayload, strictUniverseValues };

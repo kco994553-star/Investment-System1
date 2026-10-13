@@ -1,6 +1,6 @@
 'use strict';
 // QGV v2 on S06/S04/S05 at 390 and 1440, with scoring_default v1 (shipped) and v2 (scoring-default.js served flipped).
-// Synthetic only: sec-qgv2.json (assumed shape) and v1 factors by route interception, device prices from a stubbed Universe
+// Synthetic only: sec-qgv2.json (the Q·G side's strictly valid synthetic base vector) and v1 factors by route interception, device prices from a stubbed Universe
 // tab read (RAM). Public screens are the empty-state set, so the test does not depend on what the build publishes.
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), { routeEmptyPublicScreens } = require('./empty_public_screens.js'), F = require('./qgv_v2_fixture.js');
 const FACTORS = ['competitive_advantage', 'eps_fcf_per_share_growth', 'excess_growth_vs_industry', 'fcf_quality', 'financial_health', 'growth_durability', 'growth_efficiency', 'management_quality', 'margin_quality', 'market_position', 'next_3_5y_growth', 'revenue_growth', 'roic_wacc'];
@@ -18,7 +18,7 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
       const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block' });
       await routeEmptyPublicScreens(context);
       await context.route('**/sec-qg-factors.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(v1()) }));
-      await context.route('**/sec-qgv2.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(F.payload()) }));
+      await context.route('**/sec-qgv2.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(F.strictPayload()) }));
       if (mode === 'v2') await context.route('**/scoring-default.js*', async (r) => { const res = await r.fetch(), body = (await res.text()).replace("scoring_default:'v1'", "scoring_default:'v2'"); await r.fulfill({ response: res, body }); });
       const page = await context.newPage();let errors = 0;page.on('pageerror', () => errors++);
       await page.route('**/*', (r) => (new URL(r.request().url()).origin === ORIGIN ? r.fallback() : r.abort()));
@@ -30,21 +30,21 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
           await DeviceActual.sheetSettings(window, { schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: '', range: 'Quotes!A1:C22' });
           const session = { state: () => ({ enabled: true, connected: true }), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchValues() { return { values }; } };
           window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session };location.hash = 'leaderboard';
-        }, F.universeValues());
+        }, F.strictUniverseValues());
         phase = 'S06';await page.locator('[data-leaderboard-table]').waitFor();
         assert.equal(await page.locator('[data-scoring-default]').first().getAttribute('data-scoring-default'), mode);
         assert.equal(await page.locator('[data-qgv2-preset]').count(), 4);
         assert.equal(await page.locator('[data-qgv2-preset="balanced"]').getAttribute('aria-pressed'), 'true');
         await page.locator('details:has(#private-subset-root) > summary').click();
         await page.locator('[data-private-subset] [data-subset-action="read"]:enabled').click();
-        await page.locator('[data-qgv2-state="READY"]').filter({ hasText: mode === 'v2' ? '가격 20' : '비교용' }).waitFor();
-        await page.locator('[data-qgv2-state="READY"]').filter({ hasText: '가격 20' }).waitFor();
-        const nvda = page.locator('[data-leaderboard-row="nvda"]'), gev = page.locator('[data-leaderboard-row="gev"]');
+        await page.locator('[data-qgv2-state="READY"]').filter({ hasText: /가격 [1-9]\d/ }).waitFor();
+        const nvda = page.locator('[data-leaderboard-row="nvda"]'), msft = page.locator('[data-leaderboard-row="msft"]'), gev = page.locator('[data-leaderboard-row="gev"]');
         if (mode === 'v2') {
           const text = await nvda.locator('[data-leaderboard-qgv2]').textContent();
           assert.match(text, /^QGV \d+\.\d · Q \d+\.\d · G \d+\.\d · V \d+\.\d · 요인 1[0-5]\/15$/);
-          assert.match(await gev.locator('[data-leaderboard-qgv2]').textContent(), / V — /);
-          assert.ok((await page.locator('[data-leaderboard-rank]').count()) >= 15);
+          assert.match(await msft.locator('[data-leaderboard-qgv2]').textContent(), / V — · 요인 1\d\/15$/);
+          assert.equal(await gev.locator('[data-leaderboard-qgv2]').getAttribute('data-leaderboard-qgv2'), 'NOT_AVAILABLE');
+          assert.ok((await page.locator('[data-leaderboard-rank]').count()) >= 3);
           assert.match(await nvda.locator('[data-leaderboard-v1-reference]').textContent(), /v1 · 결측 재정규화 · 참고 · Q \d/);
           assert.equal(await page.locator('[data-leaderboard-qg]').count(), 0);
           assert.ok((await page.locator('[data-qgv2-flag]').filter({ hasText: '가치 함정 주의' }).count()) >= 1, 'value-trap flag shown');
@@ -52,7 +52,7 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
           await page.locator('[data-qgv2-preset="value"][aria-pressed="true"]').waitFor();
           assert.notEqual(await page.locator('[data-leaderboard-row="nvda"] [data-leaderboard-qgv2]').textContent(), before);
           await page.locator('[data-qgv2-gate]').uncheck();await page.locator('[data-qgv2-state]').filter({ hasText: '관문 끔' }).waitFor();
-          assert.equal(await page.locator('[data-qgv2-flag]').filter({ hasText: '가치 함정 주의' }).count(), 0);assert.equal(await gev.locator('[data-qgv2-flag]').filter({ hasText: 'V 없음' }).count(), 1);
+          assert.equal(await page.locator('[data-qgv2-flag]').filter({ hasText: '가치 함정 주의' }).count(), 0);assert.equal(await msft.locator('[data-qgv2-flag]').filter({ hasText: 'V 없음' }).count(), 1);assert.equal(await gev.locator('[data-qgv2-flag]').count(), 0);
         } else {
           assert.match(await nvda.locator('[data-leaderboard-qg]').textContent(), /Q \d+\.\d · G \d+\.\d · 요인 13\/13/);
           assert.match(await nvda.locator('[data-leaderboard-v2-compare]').textContent(), /v2 비교용 QGV \d+\.\d · Q .* V \d+\.\d · 요인/);
