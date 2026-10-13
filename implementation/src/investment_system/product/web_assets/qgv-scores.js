@@ -7,8 +7,8 @@
    RAM only: nothing here is stored, logged or sent, and no result carries a price, market cap or EV. Missing is null, never 0. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const dep=(file,name)=>node?()=>require('./'+file):()=>root[name];
- const api=factory(dep('engine-preview.js','EnginePreview'),dep('qgv-v2.js','QgvV2'),dep('profile-defaults.js','ProfileDefaults'),dep('scoring-default.js','ScoringDefault'),dep('sec-qgv2.js','SecQgv2'));
- if(node)module.exports=api;else root.QgvScores=api;})(typeof globalThis==='object'?globalThis:this,function(enginePreview,qgvV2,profileDefaults,scoringConfig,secQgv2){
+ const api=factory(dep('engine-preview.js','EnginePreview'),dep('qgv-v2.js','QgvV2'),dep('profile-defaults.js','ProfileDefaults'),dep('scoring-default.js','ScoringDefault'),dep('qgv2-inputs.js','Qgv2Inputs'));
+ if(node)module.exports=api;else root.QgvScores=api;})(typeof globalThis==='object'?globalThis:this,function(enginePreview,qgvV2,profileDefaults,scoringConfig,qgv2Inputs){
 'use strict';
 const MODES=['v1','v2'];
 const LABEL={v1:['점수 기준 v1 · 보정 전','Score basis v1 · uncalibrated'],v2:['점수 기준 v2 · PROVISIONAL','Score basis v2 · PROVISIONAL'],v1_renormalized:['v1 · 결측 재정규화 · 참고','v1 · missing renormalized · reference']};
@@ -16,6 +16,9 @@ const FLAG={VALUE_TRAP_CAUTION:['가치 함정 주의','Value-trap caution'],V_N
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),finite=v=>typeof v==='number'&&Number.isFinite(v);
 function scoringDefault(){let c=null;try{c=scoringConfig();}catch(_){c=null;}return c&&c.scoring_default==='v2'?'v2':'v1';}
 const key=t=>String(t||'').replaceAll('.','-').toUpperCase(),symbolOf=code=>key(String(code).slice(String(code).indexOf(':')+1));
+// Identity -> v2 record key: the TARGET row ('TARGET:<id>', fresher) when it has data, else the Universe code by ticker.
+function codeIndex(inputs){const codes=new Map();if(inputs)for(const code of Object.keys(inputs.records))if(!code.startsWith('TARGET:')&&!codes.has(symbolOf(code)))codes.set(symbolOf(code),code);
+ return c=>{const t='TARGET:'+c.company_id,r=inputs&&Object.hasOwn(inputs.records,t)?inputs.records[t]:null;if(r&&r.state!=='NOT_AVAILABLE')return t;return codes.get(key(c.ticker))||null;};}
 function record(screens,file,id){const p=screens&&screens[file];return p&&p.data&&object(p.data.companies)&&Object.hasOwn(p.data.companies,id)?p.data.companies[id]:null;}
 // v1 from the public TARGET sec-qg-factors.json row through EnginePreview.strategy, which applies the missing-factor rule
 // (user decision 2026-10-13: renormalized over computed factors, axis NA below 50% of its weight, never 0). The v1 record shown
@@ -43,13 +46,13 @@ function universeScores(v2Inputs,quotes,preset,gate,memberships){
    company types, and sec-qgv2.json under SecQgv2.FILE); quotes: {code:{price,currency}} RAM. Returns rows with v1, v1_renormalized,
    v2 and the primary/reference pick of the current setting. */
 function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=null,scoringDefault:mode}={}){
- const V2=qgvV2(),current=MODES.includes(mode)?mode:scoringDefault(),inputs=v2Inputs===undefined?(publicScreens&&secQgv2()?publicScreens[secQgv2().FILE]||null:null):v2Inputs;
+ const V2=qgvV2(),current=MODES.includes(mode)?mode:scoringDefault(),inputs=v2Inputs===undefined?(publicScreens&&qgv2Inputs()?publicScreens[qgv2Inputs().FILE]||null:null):v2Inputs;
  const chosen=preset&&Object.hasOwn(V2.PRESETS,preset)?preset:V2.DEFAULT_PRESET,gateOn=gate===null||gate===undefined?V2.GATE_DEFAULT:Boolean(gate);
- const codes=new Map();if(inputs)for(const code of Object.keys(inputs.records))if(!codes.has(symbolOf(code)))codes.set(symbolOf(code),code);
- const memberships={};for(const c of identities){const code=codes.get(key(c.ticker)),t=record(publicScreens,'company-types-pricefree.json',c.company_id);if(code&&t&&t.state!=='NOT_AVAILABLE'&&object(t.memberships))memberships[code]=t.memberships;}
+ const codeFor=codeIndex(inputs);
+ const memberships={};for(const c of identities){const code=codeFor(c),t=record(publicScreens,'company-types-pricefree.json',c.company_id);if(code&&t&&t.state!=='NOT_AVAILABLE'&&object(t.memberships))memberships[code]=t.memberships;}
  let universe=null,v2Reason=inputs?null:'SEC_QGV2_NOT_AVAILABLE';if(inputs){try{universe=universeScores(inputs,object(quotes)?quotes:{},chosen,gateOn,memberships);}catch(_){universe=null;v2Reason='V2_CALCULATION_FAILED';}}
  const rows={};let ranked=[];
- for(const c of identities){const[v1,v1r]=v1For(record(publicScreens,'sec-qg-factors.json',c.company_id)),code=codes.get(key(c.ticker))||null,v2=v2Display(universe&&code?universe[code]:null);
+ for(const c of identities){const[v1,v1r]=v1For(record(publicScreens,'sec-qg-factors.json',c.company_id)),code=codeFor(c),v2=v2Display(universe&&code?universe[code]:null);
   const row={company_id:c.company_id,ticker:c.ticker,code,v1,v1_renormalized:v1r,v2};row.primary=current==='v2'?v2:v1;row.reference=current==='v2'?v1r:v2;row.rank=null;rows[c.company_id]=row;}
  ranked=Object.values(rows).filter(r=>finite(r.primary.total)).sort((a,b)=>b.primary.total-a.primary.total||(a.ticker<b.ticker?-1:1));
  if(current==='v2')ranked.forEach((r,i)=>{r.rank=i+1;});
@@ -70,15 +73,16 @@ function judgmentRows(computed){
    this device's stored/sheet/Worker quote per shown company (DeviceValuation.deviceQuote), plus PriceStore month-end closes
    for the own-history factor. Never stored or sent. */
 async function collectQuotes(win,{identities=[],v2Inputs=null,catalog=null}={}){
- const out={};if(!v2Inputs||!object(v2Inputs.records))return out;const codes=new Map();for(const code of Object.keys(v2Inputs.records))if(!codes.has(symbolOf(code)))codes.set(symbolOf(code),code);
+ const out={};if(!v2Inputs||!object(v2Inputs.records))return out;const codeFor=codeIndex(v2Inputs),tickers={};
  let universe=null;try{universe=win.PrivateSubsetView&&typeof win.PrivateSubsetView.prices==='function'?win.PrivateSubsetView.prices():null;}catch(_){universe=null;}
- if(universe&&typeof universe.forEach==='function')universe.forEach((q,code)=>{if(Object.hasOwn(v2Inputs.records,code)&&q&&finite(q.price)&&q.price>0&&typeof q.currency==='string')out[code]={price:q.price,currency:q.currency};});
- if(catalog&&win.DeviceValuation&&typeof win.DeviceValuation.deviceQuote==='function')for(const c of identities){const code=codes.get(key(c.ticker));if(!code||Object.hasOwn(out,code))continue;
+ const bySymbol=new Map();if(universe&&typeof universe.forEach==='function')universe.forEach((q,code)=>{if(!(q&&finite(q.price)&&q.price>0&&typeof q.currency==='string'))return;bySymbol.set(symbolOf(code),{price:q.price,currency:q.currency});if(Object.hasOwn(v2Inputs.records,code))out[code]={price:q.price,currency:q.currency};});
+ const dq=catalog&&win.DeviceValuation&&typeof win.DeviceValuation.deviceQuote==='function';
+ for(const c of identities){const code=codeFor(c);if(!code)continue;tickers[code]=c.ticker;if(Object.hasOwn(out,code))continue;if(bySymbol.has(key(c.ticker))){out[code]={...bySymbol.get(key(c.ticker))};continue;}if(!dq)continue;
   let q=null;try{q=await win.DeviceValuation.deviceQuote(win,catalog,c.ticker);}catch(_){q=null;}if(q&&finite(q.price)&&q.price>0)out[code]={price:q.price,currency:q.currency};}
  // v_vs_own_history: month-end closes of the user's sheet Prices tab (PriceStore device module, RAM). Absent -> the factor is
  // NOT_AVAILABLE (PRICE_HISTORY_NOT_AVAILABLE); never filled.
  const store=win.PriceStore&&typeof win.PriceStore.monthEndCloses==='function'?win.PriceStore:null;
- if(store)for(const code of Object.keys(out)){let m=null;try{m=await store.monthEndCloses(code.slice(code.indexOf(':')+1));}catch(_){m=null;}
+ if(store)for(const code of Object.keys(out)){let m=null;try{m=await store.monthEndCloses(Object.hasOwn(tickers,code)?tickers[code]:code.slice(code.indexOf(':')+1));}catch(_){m=null;}
   const clean={};if(object(m))for(const[k,v]of Object.entries(m))if(/^\d{4}-(0[1-9]|1[0-2])$/.test(k)&&finite(v)&&v>0)clean[k]=v;if(Object.keys(clean).length)out[code]={...out[code],month_closes:clean};}
  return out;
 }

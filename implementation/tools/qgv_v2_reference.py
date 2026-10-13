@@ -63,7 +63,17 @@ def universe():
     c['NYSE:SYNE1'] = _company(26, 'synthetic_group_b', currency='EUR')          # currency basis
     c['NYSE:SYNV1'] = _company(27, 'synthetic_group_a', v=False)                  # no v_inputs
     c['NYSE:SYNR1'] = _company(28, 'synthetic_group_a', cagr=None)                # realized growth missing
+    c['TARGET:synt'] = dict(_company(29, 'synthetic_group_a', q=45.0), in_cross_section=False)  # TARGET-only row: ranked, not pooled
+    c['NYSE:SYNA1.B'] = dict(c['NYSE:SYNA1'], in_cross_section=False)            # second listing of one issuer
     return c
+
+
+def published(companies):
+    """Same universe with published Q/G axis scores (sec-qgv2 axes) instead of recomputation."""
+    out = copy.deepcopy(companies)
+    for n, (k, v) in enumerate(sorted(out.items())):
+        v['qg_axes'] = {'Q': {'score': None if n % 7 == 3 else 30.0 + (n * 13) % 60}, 'G': {'score': 40.0 + (n * 7) % 50}}
+    return out
 
 
 def market(companies, *, skip=(), history_for=('NYSE:SYNA3', 'NASDAQ:SYNB2')):
@@ -120,6 +130,7 @@ def cases():
         ('growth-default', u, full, 'growth', None),
         ('small-cross-section', u, small, 'balanced', None),
         ('no-device-prices', u, {}, 'balanced', None),
+        ('published-axes', published(u), full, 'balanced', None),
     ]
     out = []
     for cid, comps, mk, preset, gate in spec:

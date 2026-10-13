@@ -253,9 +253,11 @@ def _reference_range(company, parameters):
     return {'state': 'PROVISIONAL', 'reason': None, 'low': ends[0], 'high': ends[1]}
 
 
-def _cross(values, groups, ids, *, industry):
-    """Percentile per id over the ids whose value is not None. industry=True: within group (>= MIN_PEERS) else universe."""
-    pop = [i for i in ids if values[i] is not None]
+def _cross(values, groups, ids, pooled, *, industry):
+    """Percentile per id over the pooled ids (cross-section: one point per issuer) whose value is not None.
+    industry=True: within group (>= MIN_PEERS) else universe. A non-pooled id (TARGET-only row, second listing of
+    the same issuer) is ranked against the pool plus its own point."""
+    pop = [i for i in pooled if values[i] is not None]
     out = {}
     for i in ids:
         if values[i] is None:
@@ -267,16 +269,29 @@ def _cross(values, groups, ids, *, industry):
         if industry:
             g = groups.get(i)
             members = [j for j in pop if g is not None and groups.get(j) == g]
-            if g is not None and len(members) >= MIN_PEERS:
+            if g is not None and len(members) + (0 if i in members else 1) >= MIN_PEERS:
                 basis, peers = 'INDUSTRY', members
             else:
                 basis = 'UNIVERSE_FALLBACK'
-        out[i] = (percentile(values[i], [values[j] for j in peers]), None, basis, len(peers))
+        vals = [values[j] for j in peers] + ([] if i in peers else [values[i]])
+        out[i] = (percentile(values[i], vals), None, basis, len(vals))
+    return out
+
+
+def _published_axis(axis, scores, published):
+    """Q/G axis from the published sec-qgv2 score (the Q·G side's peer rules) with this side's coverage fields."""
+    out = axis_score(scores, axis)
+    score = published.get('score') if isinstance(published, dict) else None
+    if finite(score) and 0 <= score <= 100:
+        out.update(score=score, state='READY' if not out['missing'] else 'PARTIAL', reason=None)
+    else:
+        out.update(score=None, state='NOT_AVAILABLE', reason='AXIS_NOT_PUBLISHED')
     return out
 
 
 def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT_PRESET, gate=None):
-    """Score every company. companies: {code: {industry_group, profile, factors, v_inputs, memberships}};
+    """Score every company. companies: {code: {industry_group, profile, factors, v_inputs, memberships,
+    qg_axes?: published {Q:{score}, G:{score}}, in_cross_section?: False for TARGET-only/duplicate-issuer rows}};
     quotes: {code: {price, currency, month_closes?: {YYYY-MM: close}}} (device RAM). Returns {code: result}. Pure, deterministic."""
     if preset not in PRESETS:
         raise ValueError('PRESET_INVALID')
@@ -290,14 +305,18 @@ def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT
     for i in ids:
         f = companies[i].get('factors') if isinstance(companies[i].get('factors'), dict) else {}
         qg[i] = {k: (f.get(k) if finite(f.get(k)) and 0 <= f.get(k) <= 100 else None) for k in QG_FACTORS}
-    q_axis = {i: axis_score(qg[i], 'Q') for i in ids}
-    g_axis = {i: axis_score(qg[i], 'G') for i in ids}
-    q_pct = _cross({i: q_axis[i]['score'] for i in ids}, groups, ids, industry=True)
+    def axis_of(i, a):
+        pub = companies[i].get('qg_axes')
+        return _published_axis(a, qg[i], pub.get(a)) if isinstance(pub, dict) else axis_score(qg[i], a)
+    q_axis = {i: axis_of(i, 'Q') for i in ids}
+    g_axis = {i: axis_of(i, 'G') for i in ids}
+    pooled = [i for i in ids if companies[i].get('in_cross_section', True) is not False]
+    q_pct = _cross({i: q_axis[i]['score'] for i in ids}, groups, ids, pooled, industry=True)
     metrics = {i: _metrics(companies[i], quotes.get(i), parameters) for i in ids}
-    ey = _cross({i: metrics[i]['ebit_yield'] for i in ids}, groups, ids, industry=False)
-    fy = _cross({i: metrics[i]['fcf_yield'] for i in ids}, groups, ids, industry=False)
-    ind = _cross({i: metrics[i]['ebit_yield'] for i in ids}, groups, ids, industry=True)
-    exp = _cross({i: (None if metrics[i]['gap'] is None else -metrics[i]['gap']) for i in ids}, groups, ids, industry=False)
+    ey = _cross({i: metrics[i]['ebit_yield'] for i in ids}, groups, ids, pooled, industry=False)
+    fy = _cross({i: metrics[i]['fcf_yield'] for i in ids}, groups, ids, pooled, industry=False)
+    ind = _cross({i: metrics[i]['ebit_yield'] for i in ids}, groups, ids, pooled, industry=True)
+    exp = _cross({i: (None if metrics[i]['gap'] is None else -metrics[i]['gap']) for i in ids}, groups, ids, pooled, industry=False)
     preset_weights = PRESETS[preset]['weights']
     results = {}
     for i in ids:

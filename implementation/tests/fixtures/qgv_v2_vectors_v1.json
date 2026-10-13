@@ -675,6 +675,175 @@
       "V": 33.0
      }
     },
+    "NYSE:SYNA1.B": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 51.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 43.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 1.838235294117647,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.05277777777777778,
+      "expectation_gap": 0.15723436399770435,
+      "fcf_yield": 0.032407407407407406,
+      "implied_growth": 0.21723436399770435,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 13,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 49.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 51.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 47.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 50.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 44.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 47.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 41.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 38.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 6.25,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 3.8461538461538463,
+     "reference_range": {
+      "high": 7.576793257163099,
+      "low": 4.097636773444435,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 47.81567164179104,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
     "NYSE:SYNA2": {
      "axes": {
       "G": {
@@ -3560,6 +3729,173 @@
       "Q": 34.0,
       "V": 33.0
      }
+    },
+    "TARGET:synt": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 57.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 58.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 93.97058823529412,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.12222222222222222,
+      "expectation_gap": -0.06911725415789988,
+      "fcf_yield": 0.08454106280193237,
+      "implied_growth": -0.009117254157899879,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 13,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 57.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 61.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 65.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 59.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 62.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 56.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 53.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.75,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 86.66666666666667,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.75,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 100.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 30.76923076923077,
+     "reference_range": {
+      "high": 37.8839662858155,
+      "low": 20.488183867222176,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 70.12679411764707,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
     }
    },
    "id": "balanced-default",
@@ -3730,6 +4066,55 @@
        "q_moat_proxy": 41.5,
        "q_profitability": 38.5
       },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 57.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.399
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.4446
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.4902
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.5358
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.5814
+        }
+       ],
+       "fcf": 35.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA1.B": {
+      "factors": {
+       "g_consistency": 49.25,
+       "g_growth_efficiency": 51.25,
+       "g_per_share_growth": 53.25,
+       "g_recent_acceleration": 47.25,
+       "g_revenue_growth": 55.25,
+       "q_capital_allocation": 50.5,
+       "q_earnings_quality": 44.5,
+       "q_financial_safety": 47.5,
+       "q_moat_proxy": 41.5,
+       "q_profitability": 38.5
+      },
+      "in_cross_section": false,
       "industry_group": "synthetic_group_a",
       "memberships": null,
       "profile": "GENERAL",
@@ -4552,6 +4937,55 @@
        "revenue_cagr_3y": 0.06,
        "total_debt": 200.0
       }
+     },
+     "TARGET:synt": {
+      "factors": {
+       "g_consistency": 55.25,
+       "g_growth_efficiency": 57.25,
+       "g_per_share_growth": 59.25,
+       "g_recent_acceleration": 53.25,
+       "g_revenue_growth": 61.25,
+       "q_capital_allocation": 65.5,
+       "q_earnings_quality": 59.5,
+       "q_financial_safety": 62.5,
+       "q_moat_proxy": 56.5,
+       "q_profitability": 53.5
+      },
+      "in_cross_section": false,
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 253.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.771
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.9734
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 2.1758
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 2.3782
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.5806
+        }
+       ],
+       "fcf": 175.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
      }
     },
     "gate": null,
@@ -4584,6 +5018,10 @@
      "NYSE:SYNA1": {
       "currency": "USD",
       "price": 8.9
+     },
+     "NYSE:SYNA1.B": {
+      "currency": "USD",
+      "price": 9.8
      },
      "NYSE:SYNA2": {
       "currency": "USD",
@@ -4660,6 +5098,10 @@
      "NYSE:SYNX1": {
       "currency": "USD",
       "price": 29.6
+     },
+     "TARGET:synt": {
+      "currency": "USD",
+      "price": 19.700000000000003
      }
     }
    }
@@ -5320,6 +5762,173 @@
      "selected_types": [],
      "status": "PROVISIONAL",
      "total": 22.42343137254902,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 20.0,
+      "Q": 25.0,
+      "V": 55.0
+     }
+    },
+    "NYSE:SYNA1.B": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 51.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 43.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 1.838235294117647,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.05277777777777778,
+      "expectation_gap": 0.15723436399770435,
+      "fcf_yield": 0.032407407407407406,
+      "implied_growth": 0.21723436399770435,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 13,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 49.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 51.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 47.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 50.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 44.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 47.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 41.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 38.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 6.25,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": false,
+      "id": "qgv-v2/value/gate-off",
+      "preset": "value"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 3.8461538461538463,
+     "reference_range": {
+      "high": 7.576793257163099,
+      "low": 4.097636773444435,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 22.35602941176471,
      "total_reason": null,
      "type_reason": "TYPE_UNCONFIRMED",
      "type_weights": {
@@ -8211,6 +8820,173 @@
       "Q": 25.0,
       "V": 55.0
      }
+    },
+    "TARGET:synt": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 57.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 58.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 93.97058823529412,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.12222222222222222,
+      "expectation_gap": -0.06911725415789988,
+      "fcf_yield": 0.08454106280193237,
+      "implied_growth": -0.009117254157899879,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 13,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 57.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 61.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 65.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 59.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 62.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 56.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 53.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.75,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 86.66666666666667,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.75,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 100.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": false,
+      "id": "qgv-v2/value/gate-off",
+      "preset": "value"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 30.76923076923077,
+     "reference_range": {
+      "high": 37.8839662858155,
+      "low": 20.488183867222176,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 77.97882352941177,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 20.0,
+      "Q": 25.0,
+      "V": 55.0
+     }
     }
    },
    "id": "value-gate-off",
@@ -8381,6 +9157,55 @@
        "q_moat_proxy": 41.5,
        "q_profitability": 38.5
       },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 57.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.399
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.4446
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.4902
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.5358
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.5814
+        }
+       ],
+       "fcf": 35.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA1.B": {
+      "factors": {
+       "g_consistency": 49.25,
+       "g_growth_efficiency": 51.25,
+       "g_per_share_growth": 53.25,
+       "g_recent_acceleration": 47.25,
+       "g_revenue_growth": 55.25,
+       "q_capital_allocation": 50.5,
+       "q_earnings_quality": 44.5,
+       "q_financial_safety": 47.5,
+       "q_moat_proxy": 41.5,
+       "q_profitability": 38.5
+      },
+      "in_cross_section": false,
       "industry_group": "synthetic_group_a",
       "memberships": null,
       "profile": "GENERAL",
@@ -9203,6 +10028,55 @@
        "revenue_cagr_3y": 0.06,
        "total_debt": 200.0
       }
+     },
+     "TARGET:synt": {
+      "factors": {
+       "g_consistency": 55.25,
+       "g_growth_efficiency": 57.25,
+       "g_per_share_growth": 59.25,
+       "g_recent_acceleration": 53.25,
+       "g_revenue_growth": 61.25,
+       "q_capital_allocation": 65.5,
+       "q_earnings_quality": 59.5,
+       "q_financial_safety": 62.5,
+       "q_moat_proxy": 56.5,
+       "q_profitability": 53.5
+      },
+      "in_cross_section": false,
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 253.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.771
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.9734
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 2.1758
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 2.3782
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.5806
+        }
+       ],
+       "fcf": 175.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
      }
     },
     "gate": false,
@@ -9235,6 +10109,10 @@
      "NYSE:SYNA1": {
       "currency": "USD",
       "price": 8.9
+     },
+     "NYSE:SYNA1.B": {
+      "currency": "USD",
+      "price": 9.8
      },
      "NYSE:SYNA2": {
       "currency": "USD",
@@ -9311,6 +10189,10 @@
      "NYSE:SYNX1": {
       "currency": "USD",
       "price": 29.6
+     },
+     "TARGET:synt": {
+      "currency": "USD",
+      "price": 19.700000000000003
      }
     }
    }
@@ -9966,6 +10848,175 @@
      },
      "q_industry_basis": "INDUSTRY",
      "q_industry_percentile": 0.0,
+     "reference_range": {
+      "high": 7.576793257163099,
+      "low": 4.097636773444435,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 46.55,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 25.0,
+      "Q": 50.0,
+      "V": 25.0
+     }
+    },
+    "NYSE:SYNA1.B": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 51.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 43.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 1.838235294117647,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.05277777777777778,
+      "expectation_gap": 0.15723436399770435,
+      "fcf_yield": 0.032407407407407406,
+      "implied_growth": 0.21723436399770435,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 13,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 49.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 51.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 47.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 50.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 44.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 47.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 41.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 38.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 6.25,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/quality/gate-on",
+      "preset": "quality"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 3.8461538461538463,
      "reference_range": {
       "high": 7.576793257163099,
       "low": 4.097636773444435,
@@ -12875,6 +13926,173 @@
       "Q": 50.0,
       "V": 25.0
      }
+    },
+    "TARGET:synt": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 57.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 58.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 93.97058823529412,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.12222222222222222,
+      "expectation_gap": -0.06911725415789988,
+      "fcf_yield": 0.08454106280193237,
+      "implied_growth": -0.009117254157899879,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 13,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 57.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 61.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 65.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 59.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 62.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 56.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 53.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.75,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 86.66666666666667,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.75,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 100.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/quality/gate-on",
+      "preset": "quality"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 30.76923076923077,
+     "reference_range": {
+      "high": 37.8839662858155,
+      "low": 20.488183867222176,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 67.40514705882353,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 25.0,
+      "Q": 50.0,
+      "V": 25.0
+     }
     }
    },
    "id": "quality-gate-on",
@@ -13045,6 +14263,55 @@
        "q_moat_proxy": 41.5,
        "q_profitability": 38.5
       },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 57.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.399
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.4446
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.4902
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.5358
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.5814
+        }
+       ],
+       "fcf": 35.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA1.B": {
+      "factors": {
+       "g_consistency": 49.25,
+       "g_growth_efficiency": 51.25,
+       "g_per_share_growth": 53.25,
+       "g_recent_acceleration": 47.25,
+       "g_revenue_growth": 55.25,
+       "q_capital_allocation": 50.5,
+       "q_earnings_quality": 44.5,
+       "q_financial_safety": 47.5,
+       "q_moat_proxy": 41.5,
+       "q_profitability": 38.5
+      },
+      "in_cross_section": false,
       "industry_group": "synthetic_group_a",
       "memberships": null,
       "profile": "GENERAL",
@@ -13867,6 +15134,55 @@
        "revenue_cagr_3y": 0.06,
        "total_debt": 200.0
       }
+     },
+     "TARGET:synt": {
+      "factors": {
+       "g_consistency": 55.25,
+       "g_growth_efficiency": 57.25,
+       "g_per_share_growth": 59.25,
+       "g_recent_acceleration": 53.25,
+       "g_revenue_growth": 61.25,
+       "q_capital_allocation": 65.5,
+       "q_earnings_quality": 59.5,
+       "q_financial_safety": 62.5,
+       "q_moat_proxy": 56.5,
+       "q_profitability": 53.5
+      },
+      "in_cross_section": false,
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 253.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.771
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.9734
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 2.1758
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 2.3782
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.5806
+        }
+       ],
+       "fcf": 175.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
      }
     },
     "gate": true,
@@ -13899,6 +15215,10 @@
      "NYSE:SYNA1": {
       "currency": "USD",
       "price": 8.9
+     },
+     "NYSE:SYNA1.B": {
+      "currency": "USD",
+      "price": 9.8
      },
      "NYSE:SYNA2": {
       "currency": "USD",
@@ -13975,6 +15295,10 @@
      "NYSE:SYNX1": {
       "currency": "USD",
       "price": 29.6
+     },
+     "TARGET:synt": {
+      "currency": "USD",
+      "price": 19.700000000000003
      }
     }
    }
@@ -14630,6 +15954,175 @@
      },
      "q_industry_basis": "INDUSTRY",
      "q_industry_percentile": 0.0,
+     "reference_range": {
+      "high": 7.576793257163099,
+      "low": 4.097636773444435,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 48.86875,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 50.0,
+      "Q": 30.0,
+      "V": 20.0
+     }
+    },
+    "NYSE:SYNA1.B": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 51.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 43.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 1.838235294117647,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.05277777777777778,
+      "expectation_gap": 0.15723436399770435,
+      "fcf_yield": 0.032407407407407406,
+      "implied_growth": 0.21723436399770435,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 13,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 49.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 51.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 47.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 50.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 44.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 47.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 41.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 38.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 6.25,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/growth/gate-on",
+      "preset": "growth"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 3.8461538461538463,
      "reference_range": {
       "high": 7.576793257163099,
       "low": 4.097636773444435,
@@ -17539,6 +19032,173 @@
       "Q": 30.0,
       "V": 20.0
      }
+    },
+    "TARGET:synt": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 57.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 58.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 93.97058823529412,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.12222222222222222,
+      "expectation_gap": -0.06911725415789988,
+      "fcf_yield": 0.08454106280193237,
+      "implied_growth": -0.009117254157899879,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 13,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 57.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 61.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 65.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 59.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 62.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 56.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 53.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.75,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 86.66666666666667,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.75,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 100.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/growth/gate-on",
+      "preset": "growth"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 30.76923076923077,
+     "reference_range": {
+      "high": 37.8839662858155,
+      "low": 20.488183867222176,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 65.38911764705882,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 50.0,
+      "Q": 30.0,
+      "V": 20.0
+     }
     }
    },
    "id": "growth-default",
@@ -17709,6 +19369,55 @@
        "q_moat_proxy": 41.5,
        "q_profitability": 38.5
       },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 57.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.399
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.4446
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.4902
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.5358
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.5814
+        }
+       ],
+       "fcf": 35.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA1.B": {
+      "factors": {
+       "g_consistency": 49.25,
+       "g_growth_efficiency": 51.25,
+       "g_per_share_growth": 53.25,
+       "g_recent_acceleration": 47.25,
+       "g_revenue_growth": 55.25,
+       "q_capital_allocation": 50.5,
+       "q_earnings_quality": 44.5,
+       "q_financial_safety": 47.5,
+       "q_moat_proxy": 41.5,
+       "q_profitability": 38.5
+      },
+      "in_cross_section": false,
       "industry_group": "synthetic_group_a",
       "memberships": null,
       "profile": "GENERAL",
@@ -18531,6 +20240,55 @@
        "revenue_cagr_3y": 0.06,
        "total_debt": 200.0
       }
+     },
+     "TARGET:synt": {
+      "factors": {
+       "g_consistency": 55.25,
+       "g_growth_efficiency": 57.25,
+       "g_per_share_growth": 59.25,
+       "g_recent_acceleration": 53.25,
+       "g_revenue_growth": 61.25,
+       "q_capital_allocation": 65.5,
+       "q_earnings_quality": 59.5,
+       "q_financial_safety": 62.5,
+       "q_moat_proxy": 56.5,
+       "q_profitability": 53.5
+      },
+      "in_cross_section": false,
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 253.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.771
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.9734
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 2.1758
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 2.3782
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.5806
+        }
+       ],
+       "fcf": 175.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
      }
     },
     "gate": null,
@@ -18563,6 +20321,10 @@
      "NYSE:SYNA1": {
       "currency": "USD",
       "price": 8.9
+     },
+     "NYSE:SYNA1.B": {
+      "currency": "USD",
+      "price": 9.8
      },
      "NYSE:SYNA2": {
       "currency": "USD",
@@ -18639,6 +20401,10 @@
      "NYSE:SYNX1": {
       "currency": "USD",
       "price": 29.6
+     },
+     "TARGET:synt": {
+      "currency": "USD",
+      "price": 19.700000000000003
      }
     }
    }
@@ -18687,7 +20453,7 @@
       "fcf_yield": 0.04292929292929293,
       "implied_growth": 0.15550124624860473,
       "industry_basis": null,
-      "industry_peers": 5,
+      "industry_peers": 4,
       "realized_growth": 0.06
      },
      "factors": {
@@ -18863,7 +20629,7 @@
       "fcf_yield": 0.043478260869565216,
       "implied_growth": 0.15283414552686736,
       "industry_basis": null,
-      "industry_peers": 5,
+      "industry_peers": 4,
       "realized_growth": 0.06
      },
      "factors": {
@@ -19036,7 +20802,7 @@
       "fcf_yield": 0.04398148148148148,
       "implied_growth": 0.15042790718143806,
       "industry_basis": null,
-      "industry_peers": 5,
+      "industry_peers": 4,
       "realized_growth": 0.06
      },
      "factors": {
@@ -19209,7 +20975,7 @@
       "fcf_yield": 0.03535353535353535,
       "implied_growth": 0.19172742885712069,
       "industry_basis": null,
-      "industry_peers": 5,
+      "industry_peers": 4,
       "realized_growth": 0.06
      },
      "factors": {
@@ -19341,6 +21107,180 @@
       "V": 33.0
      }
     },
+    "NYSE:SYNA1.B": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 51.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 43.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 0,
+       "factors_total": 5,
+       "missing": [
+        "v_earnings_yield",
+        "v_fcf_yield",
+        "v_vs_industry",
+        "v_vs_own_history",
+        "v_expectation_check"
+       ],
+       "reason": "AXIS_WEIGHT_INSUFFICIENT",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 0.0
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.05277777777777778,
+      "expectation_gap": 0.15723436399770435,
+      "fcf_yield": 0.032407407407407406,
+      "implied_growth": 0.21723436399770435,
+      "industry_basis": null,
+      "industry_peers": 4,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 49.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 51.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 47.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 50.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 44.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 47.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 41.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 38.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": null,
+       "reason": "CROSS_SECTION_TOO_SMALL",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_expectation_check": {
+       "basis": null,
+       "reason": "CROSS_SECTION_TOO_SMALL",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_fcf_yield": {
+       "basis": null,
+       "reason": "CROSS_SECTION_TOO_SMALL",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_industry": {
+       "basis": null,
+       "reason": "CROSS_SECTION_TOO_SMALL",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 10,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION",
+      "V_NOT_AVAILABLE"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 3.8461538461538463,
+     "reference_range": {
+      "high": 7.576793257163099,
+      "low": 4.097636773444435,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 47.81567164179104,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
     "NYSE:SYNA2": {
      "axes": {
       "G": {
@@ -19378,13 +21318,13 @@
       }
      },
      "detail": {
-      "ebit_yield": 0.05925925925925926,
-      "expectation_gap": 0.12198580641183071,
-      "fcf_yield": 0.037037037037037035,
-      "implied_growth": 0.1819858064118307,
+      "ebit_yield": null,
+      "expectation_gap": null,
+      "fcf_yield": null,
+      "implied_growth": null,
       "industry_basis": null,
-      "industry_peers": 5,
-      "realized_growth": 0.06
+      "industry_peers": null,
+      "realized_growth": null
      },
      "factors": {
       "g_consistency": {
@@ -19449,31 +21389,31 @@
       },
       "v_earnings_yield": {
        "basis": null,
-       "reason": "CROSS_SECTION_TOO_SMALL",
+       "reason": "NO_DEVICE_PRICE",
        "score": null,
        "state": "NOT_AVAILABLE"
       },
       "v_expectation_check": {
        "basis": null,
-       "reason": "CROSS_SECTION_TOO_SMALL",
+       "reason": "NO_DEVICE_PRICE",
        "score": null,
        "state": "NOT_AVAILABLE"
       },
       "v_fcf_yield": {
        "basis": null,
-       "reason": "CROSS_SECTION_TOO_SMALL",
+       "reason": "NO_DEVICE_PRICE",
        "score": null,
        "state": "NOT_AVAILABLE"
       },
       "v_vs_industry": {
        "basis": null,
-       "reason": "CROSS_SECTION_TOO_SMALL",
+       "reason": "NO_DEVICE_PRICE",
        "score": null,
        "state": "NOT_AVAILABLE"
       },
       "v_vs_own_history": {
        "basis": null,
-       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "reason": "NO_DEVICE_PRICE",
        "score": null,
        "state": "NOT_AVAILABLE"
       }
@@ -22281,6 +24221,179 @@
      "selected_types": [],
      "status": "PROVISIONAL",
      "total": 59.67388059701492,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "TARGET:synt": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 57.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 58.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 0,
+       "factors_total": 5,
+       "missing": [
+        "v_earnings_yield",
+        "v_fcf_yield",
+        "v_vs_industry",
+        "v_vs_own_history",
+        "v_expectation_check"
+       ],
+       "reason": "AXIS_WEIGHT_INSUFFICIENT",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 0.0
+      }
+     },
+     "detail": {
+      "ebit_yield": null,
+      "expectation_gap": null,
+      "fcf_yield": null,
+      "implied_growth": null,
+      "industry_basis": null,
+      "industry_peers": null,
+      "realized_growth": null
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 57.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 61.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 65.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 59.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 62.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 56.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 53.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_expectation_check": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_fcf_yield": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_industry": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 10,
+     "factors_total": 15,
+     "flags": [
+      "V_NOT_AVAILABLE"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 30.76923076923077,
+     "reference_range": {
+      "high": 37.8839662858155,
+      "low": 20.488183867222176,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 58.382835820895515,
      "total_reason": null,
      "type_reason": "TYPE_UNCONFIRMED",
      "type_weights": {
@@ -22500,6 +24613,55 @@
        "total_debt": 200.0
       }
      },
+     "NYSE:SYNA1.B": {
+      "factors": {
+       "g_consistency": 49.25,
+       "g_growth_efficiency": 51.25,
+       "g_per_share_growth": 53.25,
+       "g_recent_acceleration": 47.25,
+       "g_revenue_growth": 55.25,
+       "q_capital_allocation": 50.5,
+       "q_earnings_quality": 44.5,
+       "q_financial_safety": 47.5,
+       "q_moat_proxy": 41.5,
+       "q_profitability": 38.5
+      },
+      "in_cross_section": false,
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 57.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.399
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.4446
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.4902
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.5358
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.5814
+        }
+       ],
+       "fcf": 35.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
      "NYSE:SYNA2": {
       "factors": {
        "g_consistency": 55.5,
@@ -23287,6 +25449,55 @@
        "revenue_cagr_3y": 0.06,
        "total_debt": 200.0
       }
+     },
+     "TARGET:synt": {
+      "factors": {
+       "g_consistency": 55.25,
+       "g_growth_efficiency": 57.25,
+       "g_per_share_growth": 59.25,
+       "g_recent_acceleration": 53.25,
+       "g_revenue_growth": 61.25,
+       "q_capital_allocation": 65.5,
+       "q_earnings_quality": 59.5,
+       "q_financial_safety": 62.5,
+       "q_moat_proxy": 56.5,
+       "q_profitability": 53.5
+      },
+      "in_cross_section": false,
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 253.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.771
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.9734
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 2.1758
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 2.3782
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.5806
+        }
+       ],
+       "fcf": 175.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
      }
     },
     "gate": null,
@@ -23320,7 +25531,7 @@
       "currency": "USD",
       "price": 8.9
      },
-     "NYSE:SYNA2": {
+     "NYSE:SYNA1.B": {
       "currency": "USD",
       "price": 9.8
      }
@@ -24002,6 +26213,180 @@
      },
      "q_industry_basis": "INDUSTRY",
      "q_industry_percentile": 0.0,
+     "reference_range": {
+      "high": 7.576793257163099,
+      "low": 4.097636773444435,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 47.81567164179104,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNA1.B": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 51.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 43.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 0,
+       "factors_total": 5,
+       "missing": [
+        "v_earnings_yield",
+        "v_fcf_yield",
+        "v_vs_industry",
+        "v_vs_own_history",
+        "v_expectation_check"
+       ],
+       "reason": "AXIS_WEIGHT_INSUFFICIENT",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 0.0
+      }
+     },
+     "detail": {
+      "ebit_yield": null,
+      "expectation_gap": null,
+      "fcf_yield": null,
+      "implied_growth": null,
+      "industry_basis": null,
+      "industry_peers": null,
+      "realized_growth": null
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 49.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 51.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 47.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 50.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 44.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 47.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 41.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 38.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_expectation_check": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_fcf_yield": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_industry": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 10,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION",
+      "V_NOT_AVAILABLE"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 3.8461538461538463,
      "reference_range": {
       "high": 7.576793257163099,
       "low": 4.097636773444435,
@@ -26980,6 +29365,179 @@
       "Q": 34.0,
       "V": 33.0
      }
+    },
+    "TARGET:synt": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 57.85,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 58.9,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 0,
+       "factors_total": 5,
+       "missing": [
+        "v_earnings_yield",
+        "v_fcf_yield",
+        "v_vs_industry",
+        "v_vs_own_history",
+        "v_expectation_check"
+       ],
+       "reason": "AXIS_WEIGHT_INSUFFICIENT",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 0.0
+      }
+     },
+     "detail": {
+      "ebit_yield": null,
+      "expectation_gap": null,
+      "fcf_yield": null,
+      "implied_growth": null,
+      "industry_basis": null,
+      "industry_peers": null,
+      "realized_growth": null
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 57.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 61.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 65.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 59.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 62.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 56.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 53.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_expectation_check": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_fcf_yield": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_industry": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 10,
+     "factors_total": 15,
+     "flags": [
+      "V_NOT_AVAILABLE"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 30.76923076923077,
+     "reference_range": {
+      "high": 37.8839662858155,
+      "low": 20.488183867222176,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 58.382835820895515,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
     }
    },
    "id": "no-device-prices",
@@ -27150,6 +29708,55 @@
        "q_moat_proxy": 41.5,
        "q_profitability": 38.5
       },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 57.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.399
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.4446
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.4902
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.5358
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.5814
+        }
+       ],
+       "fcf": 35.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA1.B": {
+      "factors": {
+       "g_consistency": 49.25,
+       "g_growth_efficiency": 51.25,
+       "g_per_share_growth": 53.25,
+       "g_recent_acceleration": 47.25,
+       "g_revenue_growth": 55.25,
+       "q_capital_allocation": 50.5,
+       "q_earnings_quality": 44.5,
+       "q_financial_safety": 47.5,
+       "q_moat_proxy": 41.5,
+       "q_profitability": 38.5
+      },
+      "in_cross_section": false,
       "industry_group": "synthetic_group_a",
       "memberships": null,
       "profile": "GENERAL",
@@ -27972,11 +30579,5353 @@
        "revenue_cagr_3y": 0.06,
        "total_debt": 200.0
       }
+     },
+     "TARGET:synt": {
+      "factors": {
+       "g_consistency": 55.25,
+       "g_growth_efficiency": 57.25,
+       "g_per_share_growth": 59.25,
+       "g_recent_acceleration": 53.25,
+       "g_revenue_growth": 61.25,
+       "q_capital_allocation": 65.5,
+       "q_earnings_quality": 59.5,
+       "q_financial_safety": 62.5,
+       "q_moat_proxy": 56.5,
+       "q_profitability": 53.5
+      },
+      "in_cross_section": false,
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 253.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.771
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.9734
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 2.1758
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 2.3782
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.5806
+        }
+       ],
+       "fcf": 175.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
      }
     },
     "gate": null,
     "preset": "balanced",
     "synthetic_market": {}
+   }
+  },
+  {
+   "expected": {
+    "NASDAQ:SYNB1": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 40.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 30.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 44.42577030812325,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.06414141414141414,
+      "expectation_gap": 0.09550124624860473,
+      "fcf_yield": 0.04292929292929293,
+      "implied_growth": 0.15550124624860473,
+      "industry_basis": "UNIVERSE_FALLBACK",
+      "industry_peers": 16,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 59.75,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 61.75,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 63.75,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 57.75,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 65.75,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 67.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 61.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 64.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 58.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 55.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 40.0,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 42.857142857142854,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 53.333333333333336,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "UNIVERSE_FALLBACK",
+       "reason": null,
+       "score": 40.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "UNIVERSE_FALLBACK",
+     "q_industry_percentile": 0.0,
+     "reference_range": {
+      "high": 18.400783624538953,
+      "low": 9.951403592650772,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [
+      "growth",
+      "quality"
+     ],
+     "status": "PROVISIONAL",
+     "total": 35.39215686274509,
+     "total_reason": null,
+     "type_reason": null,
+     "type_weights": {
+      "G": 42.307692307692314,
+      "Q": 36.15384615384616,
+      "V": 21.53846153846154
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 42.3076923076923,
+      "Q": 36.15384615384615,
+      "V": 21.538461538461533
+     }
+    },
+    "NASDAQ:SYNB2": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 47.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 43.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 60.48809523809524,
+       "state": "READY",
+       "weight_available": 1.0
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.0647342995169082,
+      "expectation_gap": 0.09283414552686736,
+      "fcf_yield": 0.043478260869565216,
+      "implied_growth": 0.15283414552686736,
+      "industry_basis": "UNIVERSE_FALLBACK",
+      "industry_peers": 16,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 59.0,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 61.0,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 63.0,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 57.0,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 65.0,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 69.0,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 63.0,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 66.0,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 60.0,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 57.0,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 53.333333333333336,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 57.142857142857146,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 66.66666666666667,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "UNIVERSE_FALLBACK",
+       "reason": null,
+       "score": 53.333333333333336,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": "OWN_HISTORY",
+       "reason": null,
+       "score": 75.0,
+       "state": "CALCULATED"
+      }
+     },
+     "factors_available": 15,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "UNIVERSE_FALLBACK",
+     "q_industry_percentile": 23.529411764705884,
+     "reference_range": {
+      "high": 19.483182661276544,
+      "low": 10.536780274571406,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 44.97014925373134,
+     "total_reason": null,
+     "type_reason": "NO_RECOGNIZED_TYPE",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NASDAQ:SYNB3": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 54.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 56.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 67.89915966386555,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.06527777777777778,
+      "expectation_gap": 0.09042790718143806,
+      "fcf_yield": 0.04398148148148148,
+      "implied_growth": 0.15042790718143806,
+      "industry_basis": "UNIVERSE_FALLBACK",
+      "industry_peers": 16,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 58.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 60.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 62.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 56.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 64.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 70.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 64.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 67.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 61.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 58.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 60.0,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 71.42857142857143,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 80.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "UNIVERSE_FALLBACK",
+       "reason": null,
+       "score": 60.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "UNIVERSE_FALLBACK",
+     "q_industry_percentile": 52.94117647058823,
+     "reference_range": {
+      "high": 20.56558169801412,
+      "low": 11.12215695649204,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 59.266722689075635,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNA1": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 61.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": "AXIS_NOT_PUBLISHED",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 1.9607843137254903,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.05757575757575758,
+      "expectation_gap": 0.1317274288571207,
+      "fcf_yield": 0.03535353535353535,
+      "implied_growth": 0.19172742885712069,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 49.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 51.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 47.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 50.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 44.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 47.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 41.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 38.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 6.666666666666667,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [
+      "GATE_NOT_EVALUATED"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": null,
+     "q_industry_percentile": null,
+     "reference_range": {
+      "high": 7.576793257163099,
+      "low": 4.097636773444435,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 31.48039215686274,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNA1.B": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 68.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 82.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 1.838235294117647,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.05277777777777778,
+      "expectation_gap": 0.15723436399770435,
+      "fcf_yield": 0.032407407407407406,
+      "implied_growth": 0.21723436399770435,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 13,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 49.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 51.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 47.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 50.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 44.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 47.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 41.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 38.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 6.25,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 83.33333333333333,
+     "reference_range": {
+      "high": 7.576793257163099,
+      "low": 4.097636773444435,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 50.92661764705882,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNA2": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 75.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 35.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 9.281894576012224,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.05925925925925926,
+      "expectation_gap": 0.12198580641183071,
+      "fcf_yield": 0.037037037037037035,
+      "implied_growth": 0.1819858064118307,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.5,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 57.5,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.5,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 53.5,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 61.5,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 55.0,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 49.0,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 52.0,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 46.0,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 43.0,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 6.666666666666667,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 7.142857142857143,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 13.333333333333334,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 9.090909090909092,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 0.0,
+     "reference_range": {
+      "high": 8.659192293900686,
+      "low": 4.68301345536507,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 54.701492537313435,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNA3": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 82.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 48.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 25.36255411255411,
+       "state": "READY",
+       "weight_available": 1.0
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.06068376068376068,
+      "expectation_gap": 0.11419333565339912,
+      "fcf_yield": 0.038461538461538464,
+      "implied_growth": 0.17419333565339912,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 61.75,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 63.75,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 65.75,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 59.75,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 67.75,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 59.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 53.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 56.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 50.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 47.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 13.333333333333334,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 14.285714285714286,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 20.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 18.181818181818183,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": "OWN_HISTORY",
+       "reason": null,
+       "score": 75.0,
+       "state": "CALCULATED"
+      }
+     },
+     "factors_available": 15,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 18.181818181818183,
+     "reference_range": {
+      "high": 9.741591330638272,
+      "low": 5.268390137285703,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 64.74626865671642,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNA4": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 89.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 61.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 23.924115100585688,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.06190476190476191,
+      "expectation_gap": 0.10781551628082525,
+      "fcf_yield": 0.03968253968253968,
+      "implied_growth": 0.16781551628082525,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 44.0,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 46.0,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 48.0,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 42.0,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 50.0,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 64.0,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 58.0,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 61.0,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 55.0,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 52.0,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 20.0,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 21.428571428571427,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 26.666666666666668,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 27.272727272727273,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 45.45454545454545,
+     "reference_range": {
+      "high": 10.823990367375856,
+      "low": 5.853766819206337,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 58.00495798319328,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNA5": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 46.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 74.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 31.24522536287242,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.06296296296296296,
+      "expectation_gap": 0.10249764509848319,
+      "fcf_yield": 0.040740740740740744,
+      "implied_growth": 0.1624976450984832,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 50.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 52.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 54.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 48.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 56.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 68.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 62.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 65.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 59.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 56.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 26.666666666666668,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 28.571428571428573,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 33.333333333333336,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 36.36363636363637,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 72.72727272727273,
+     "reference_range": {
+      "high": 11.906389404113444,
+      "low": 6.439143501126971,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 50.6509243697479,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNA6": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 53.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 87.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 38.566335625159155,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.06388888888888888,
+      "expectation_gap": 0.09799484567833133,
+      "fcf_yield": 0.041666666666666664,
+      "implied_growth": 0.15799484567833133,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 56.5,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 58.5,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 60.5,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 54.5,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 62.5,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 73.0,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 67.0,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 70.0,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 64.0,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 61.0,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 33.333333333333336,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 35.714285714285715,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 40.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 45.45454545454545,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 100.0,
+     "reference_range": {
+      "high": 12.988788440851026,
+      "low": 7.024520183047603,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 59.79689075630252,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNA7": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 60.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": "AXIS_NOT_PUBLISHED",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 49.10873440285205,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.06470588235294118,
+      "expectation_gap": 0.0941324982244987,
+      "fcf_yield": 0.042483660130718956,
+      "implied_growth": 0.1541324982244987,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 62.75,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 64.75,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 66.75,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 60.75,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 68.75,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 77.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 71.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 74.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 68.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 65.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 46.666666666666664,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 50.0,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 46.666666666666664,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 54.54545454545455,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [
+      "GATE_NOT_EVALUATED"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": null,
+     "q_industry_percentile": null,
+     "reference_range": {
+      "high": 14.071187477588614,
+      "low": 7.6098968649682375,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 54.554367201426025,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNA8": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 67.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 53.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 63.572701807995934,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.0654320987654321,
+      "expectation_gap": 0.09078266752243508,
+      "fcf_yield": 0.043209876543209874,
+      "implied_growth": 0.15078266752243508,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 45.0,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 47.0,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 49.0,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 43.0,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 51.0,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 82.0,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 76.0,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 79.0,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 73.0,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 70.0,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 66.66666666666667,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 64.28571428571429,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 60.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 63.63636363636363,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 36.36363636363637,
+     "reference_range": {
+      "high": 15.153586514326198,
+      "low": 8.19527354688887,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 61.10899159663866,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNA9": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 74.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 66.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 74.11510058568882,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.06608187134502923,
+      "expectation_gap": 0.08784944434359204,
+      "fcf_yield": 0.043859649122807015,
+      "implied_growth": 0.14784944434359204,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 51.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 49.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 57.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 86.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 80.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 83.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 77.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 74.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 73.33333333333333,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 78.57142857142857,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 73.33333333333333,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 72.72727272727273,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 63.63636363636363,
+     "reference_range": {
+      "high": 16.235985551063784,
+      "low": 8.780650228809504,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [
+      "quality"
+     ],
+     "status": "PROVISIONAL",
+     "total": 70.0287751464222,
+     "total_reason": null,
+     "type_reason": null,
+     "type_weights": {
+      "G": 25.0,
+      "Q": 50.0,
+      "V": 25.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 25.0,
+      "Q": 50.0,
+      "V": 25.0
+     }
+    },
+    "NYSE:SYNC1": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 81.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 79.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 1,
+       "factors_total": 5,
+       "missing": [
+        "v_earnings_yield",
+        "v_fcf_yield",
+        "v_vs_industry",
+        "v_vs_own_history"
+       ],
+       "reason": "AXIS_WEIGHT_INSUFFICIENT",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 0.15
+      }
+     },
+     "detail": {
+      "ebit_yield": null,
+      "expectation_gap": -0.15657508220698219,
+      "fcf_yield": null,
+      "implied_growth": -0.09657508220698219,
+      "industry_basis": null,
+      "industry_peers": null,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 53.5,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.5,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 57.5,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 51.5,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.5,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 82.0,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 76.0,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 79.0,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 73.0,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 70.0,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": null,
+       "reason": "EV_NON_POSITIVE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 100.0,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": null,
+       "reason": "EV_NON_POSITIVE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_industry": {
+       "basis": null,
+       "reason": "EV_NON_POSITIVE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 11,
+     "factors_total": 15,
+     "flags": [
+      "V_NOT_AVAILABLE"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 81.81818181818181,
+     "reference_range": {
+      "high": 30.307173028652397,
+      "low": 16.39054709377774,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 79.98507462686567,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNE1": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 88.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 32.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 0,
+       "factors_total": 5,
+       "missing": [
+        "v_earnings_yield",
+        "v_fcf_yield",
+        "v_vs_industry",
+        "v_vs_own_history",
+        "v_expectation_check"
+       ],
+       "reason": "AXIS_WEIGHT_INSUFFICIENT",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 0.0
+      }
+     },
+     "detail": {
+      "ebit_yield": null,
+      "expectation_gap": null,
+      "fcf_yield": null,
+      "implied_growth": null,
+      "industry_basis": null,
+      "industry_peers": null,
+      "realized_growth": null
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 54.5,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 56.5,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 58.5,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 52.5,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 60.5,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 79.0,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 73.0,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 76.0,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 70.0,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 67.0,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": null,
+       "reason": "CURRENCY_BASIS_UNCONFIRMED",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_expectation_check": {
+       "basis": null,
+       "reason": "CURRENCY_BASIS_UNCONFIRMED",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_fcf_yield": {
+       "basis": null,
+       "reason": "CURRENCY_BASIS_UNCONFIRMED",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_industry": {
+       "basis": null,
+       "reason": "CURRENCY_BASIS_UNCONFIRMED",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "CURRENCY_BASIS_UNCONFIRMED",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 10,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION",
+      "V_NOT_AVAILABLE"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "UNIVERSE_FALLBACK",
+     "q_industry_percentile": 5.882352941176471,
+     "reference_range": {
+      "high": null,
+      "low": null,
+      "reason": "CURRENCY_BASIS_UNCONFIRMED",
+      "state": "NOT_AVAILABLE"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 59.582089552238806,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNF1": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 45.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 45.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 0,
+       "factors_total": 5,
+       "missing": [
+        "v_earnings_yield",
+        "v_fcf_yield",
+        "v_vs_industry",
+        "v_vs_own_history",
+        "v_expectation_check"
+       ],
+       "reason": "AXIS_WEIGHT_INSUFFICIENT",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 0.0
+      }
+     },
+     "detail": {
+      "ebit_yield": null,
+      "expectation_gap": null,
+      "fcf_yield": null,
+      "implied_growth": null,
+      "industry_basis": null,
+      "industry_peers": null,
+      "realized_growth": null
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 43.0,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 45.0,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 47.0,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 41.0,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 49.0,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 86.0,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 80.0,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 83.0,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 77.0,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 74.0,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": null,
+       "reason": "FINANCIAL_PROFILE_V_NOT_DEFINED",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_expectation_check": {
+       "basis": null,
+       "reason": "FINANCIAL_PROFILE_V_NOT_DEFINED",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_fcf_yield": {
+       "basis": null,
+       "reason": "FINANCIAL_PROFILE_V_NOT_DEFINED",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_industry": {
+       "basis": null,
+       "reason": "FINANCIAL_PROFILE_V_NOT_DEFINED",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "FINANCIAL_PROFILE_V_NOT_DEFINED",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 10,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION",
+      "V_NOT_AVAILABLE"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "UNIVERSE_FALLBACK",
+     "q_industry_percentile": 29.41176470588235,
+     "reference_range": {
+      "high": null,
+      "low": null,
+      "reason": "FINANCIAL_PROFILE_V_NOT_DEFINED",
+      "state": "NOT_AVAILABLE"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 45.0,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNG1": {
+     "axes": {
+      "G": {
+       "factors_available": 3,
+       "factors_total": 5,
+       "missing": [
+        "g_revenue_growth",
+        "g_per_share_growth"
+       ],
+       "reason": null,
+       "score": 52.0,
+       "state": "PARTIAL",
+       "weight_available": 0.5
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 58.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 98.73949579831933,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.14705882352941177,
+      "expectation_gap": -0.1146162155806087,
+      "fcf_yield": 0.10130718954248366,
+      "implied_growth": -0.054616215580608696,
+      "industry_basis": "UNIVERSE_FALLBACK",
+      "industry_peers": 16,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 54.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 56.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": "SEC_FACTOR_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 52.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": "SEC_FACTOR_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 79.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 73.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 76.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 70.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 67.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 100.0,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 92.85714285714286,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 100.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "UNIVERSE_FALLBACK",
+       "reason": null,
+       "score": 100.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 12,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "UNIVERSE_FALLBACK",
+     "q_industry_percentile": 58.8235294117647,
+     "reference_range": {
+      "high": 33.55437013886515,
+      "low": 18.146677139539644,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 69.46403361344537,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNN1": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 59.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": "AXIS_NOT_PUBLISHED",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 0,
+       "factors_total": 5,
+       "missing": [
+        "v_earnings_yield",
+        "v_fcf_yield",
+        "v_vs_industry",
+        "v_vs_own_history",
+        "v_expectation_check"
+       ],
+       "reason": "AXIS_WEIGHT_INSUFFICIENT",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 0.0
+      }
+     },
+     "detail": {
+      "ebit_yield": null,
+      "expectation_gap": null,
+      "fcf_yield": null,
+      "implied_growth": null,
+      "industry_basis": null,
+      "industry_peers": null,
+      "realized_growth": null
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 57.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 51.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 66.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 60.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 63.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 57.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 54.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_expectation_check": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_fcf_yield": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_industry": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "NO_DEVICE_PRICE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 10,
+     "factors_total": 15,
+     "flags": [
+      "GATE_NOT_EVALUATED",
+      "V_NOT_AVAILABLE"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": null,
+     "q_industry_percentile": null,
+     "reference_range": {
+      "high": 29.224773991914812,
+      "low": 15.80517041185711,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": null,
+     "total_reason": "AXIS_WEIGHT_INSUFFICIENT",
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNP1": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 66.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 2,
+       "factors_total": 5,
+       "missing": [
+        "q_profitability",
+        "q_moat_proxy",
+        "q_earnings_quality"
+       ],
+       "reason": null,
+       "score": 84.0,
+       "state": "PARTIAL",
+       "weight_available": 0.35
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 87.49681690858162,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.09316239316239316,
+      "expectation_gap": -0.0022763148468220584,
+      "fcf_yield": 0.0641025641025641,
+      "implied_growth": 0.05772368515317794,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 54.0,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 56.0,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 58.0,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 52.0,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 60.0,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 76.0,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": "SEC_FACTOR_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 73.0,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": "SEC_FACTOR_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": "SEC_FACTOR_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 86.66666666666667,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 85.71428571428571,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 86.66666666666667,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 90.9090909090909,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 11,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 90.9090909090909,
+     "reference_range": {
+      "high": 32.47197110212757,
+      "low": 17.56130045761901,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 79.21394957983193,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNR1": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 73.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 37.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 3,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history",
+        "v_expectation_check"
+       ],
+       "reason": null,
+       "score": 95.23809523809523,
+       "state": "PARTIAL",
+       "weight_available": 0.7
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.09761904761904762,
+      "expectation_gap": null,
+      "fcf_yield": 0.06746031746031746,
+      "implied_growth": 0.04620550684921909,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": null
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.0,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 57.0,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.0,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 53.0,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 61.0,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 80.0,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 74.0,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 77.0,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 71.0,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 68.0,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.33333333333333,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": null,
+       "reason": "REALIZED_GROWTH_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.33333333333333,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 100.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 13,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 9.090909090909092,
+     "reference_range": {
+      "high": 36.801567249077905,
+      "low": 19.902807185301544,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 54.73134328358209,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNV1": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 80.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 50.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 0,
+       "factors_total": 5,
+       "missing": [
+        "v_earnings_yield",
+        "v_fcf_yield",
+        "v_vs_industry",
+        "v_vs_own_history",
+        "v_expectation_check"
+       ],
+       "reason": "AXIS_WEIGHT_INSUFFICIENT",
+       "score": null,
+       "state": "NOT_AVAILABLE",
+       "weight_available": 0.0
+      }
+     },
+     "detail": {
+      "ebit_yield": null,
+      "expectation_gap": null,
+      "fcf_yield": null,
+      "implied_growth": null,
+      "industry_basis": null,
+      "industry_peers": null,
+      "realized_growth": null
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 54.75,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 56.75,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 58.75,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 52.75,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 60.75,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 79.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 73.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 76.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 70.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 67.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": null,
+       "reason": "V_INPUTS_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_expectation_check": {
+       "basis": null,
+       "reason": "V_INPUTS_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_fcf_yield": {
+       "basis": null,
+       "reason": "V_INPUTS_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_industry": {
+       "basis": null,
+       "reason": "V_INPUTS_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "V_INPUTS_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 10,
+     "factors_total": 15,
+     "flags": [
+      "VALUE_TRAP_CAUTION",
+      "V_NOT_AVAILABLE"
+     ],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 27.272727272727273,
+     "reference_range": {
+      "high": null,
+      "low": null,
+      "reason": "FCF_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 64.77611940298507,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": "VALUE_TRAP_GATE",
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "NYSE:SYNX1": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 87.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 63.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 3,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history",
+        "v_expectation_check"
+       ],
+       "reason": null,
+       "score": 51.94805194805194,
+       "state": "PARTIAL",
+       "weight_available": 0.7
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.06895424836601308,
+      "expectation_gap": null,
+      "fcf_yield": -0.013071895424836602,
+      "implied_growth": null,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 12,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 53.75,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.75,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 57.75,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 51.75,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.75,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 69.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 63.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 66.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 60.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 57.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 80.0,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": null,
+       "reason": "NON_POSITIVE_CASHFLOW",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 0.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 81.81818181818181,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 13,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 54.54545454545455,
+     "reference_range": {
+      "high": null,
+      "low": null,
+      "reason": "NON_POSITIVE_CASHFLOW",
+      "state": "NOT_AVAILABLE"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 67.27285714285713,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    },
+    "TARGET:synt": {
+     "axes": {
+      "G": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 44.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "Q": {
+       "factors_available": 5,
+       "factors_total": 5,
+       "missing": [],
+       "reason": null,
+       "score": 76.0,
+       "state": "READY",
+       "weight_available": 1.0
+      },
+      "V": {
+       "factors_available": 4,
+       "factors_total": 5,
+       "missing": [
+        "v_vs_own_history"
+       ],
+       "reason": null,
+       "score": 93.97058823529412,
+       "state": "PARTIAL",
+       "weight_available": 0.85
+      }
+     },
+     "detail": {
+      "ebit_yield": 0.12222222222222222,
+      "expectation_gap": -0.06911725415789988,
+      "fcf_yield": 0.08454106280193237,
+      "implied_growth": -0.009117254157899879,
+      "industry_basis": "INDUSTRY",
+      "industry_peers": 13,
+      "realized_growth": 0.06
+     },
+     "factors": {
+      "g_consistency": {
+       "basis": null,
+       "reason": null,
+       "score": 55.25,
+       "state": "PUBLIC"
+      },
+      "g_growth_efficiency": {
+       "basis": null,
+       "reason": null,
+       "score": 57.25,
+       "state": "PUBLIC"
+      },
+      "g_per_share_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 59.25,
+       "state": "PUBLIC"
+      },
+      "g_recent_acceleration": {
+       "basis": null,
+       "reason": null,
+       "score": 53.25,
+       "state": "PUBLIC"
+      },
+      "g_revenue_growth": {
+       "basis": null,
+       "reason": null,
+       "score": 61.25,
+       "state": "PUBLIC"
+      },
+      "q_capital_allocation": {
+       "basis": null,
+       "reason": null,
+       "score": 65.5,
+       "state": "PUBLIC"
+      },
+      "q_earnings_quality": {
+       "basis": null,
+       "reason": null,
+       "score": 59.5,
+       "state": "PUBLIC"
+      },
+      "q_financial_safety": {
+       "basis": null,
+       "reason": null,
+       "score": 62.5,
+       "state": "PUBLIC"
+      },
+      "q_moat_proxy": {
+       "basis": null,
+       "reason": null,
+       "score": 56.5,
+       "state": "PUBLIC"
+      },
+      "q_profitability": {
+       "basis": null,
+       "reason": null,
+       "score": 53.5,
+       "state": "PUBLIC"
+      },
+      "v_earnings_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.75,
+       "state": "CALCULATED"
+      },
+      "v_expectation_check": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 86.66666666666667,
+       "state": "CALCULATED"
+      },
+      "v_fcf_yield": {
+       "basis": "UNIVERSE",
+       "reason": null,
+       "score": 93.75,
+       "state": "CALCULATED"
+      },
+      "v_vs_industry": {
+       "basis": "INDUSTRY",
+       "reason": null,
+       "score": 100.0,
+       "state": "CALCULATED"
+      },
+      "v_vs_own_history": {
+       "basis": null,
+       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "score": null,
+       "state": "NOT_AVAILABLE"
+      }
+     },
+     "factors_available": 14,
+     "factors_total": 15,
+     "flags": [],
+     "profile": {
+      "gate": true,
+      "id": "qgv-v2/balanced/gate-on",
+      "preset": "balanced"
+     },
+     "q_industry_basis": "INDUSTRY",
+     "q_industry_percentile": 75.0,
+     "reference_range": {
+      "high": 37.8839662858155,
+      "low": 20.488183867222176,
+      "reason": null,
+      "state": "PROVISIONAL"
+     },
+     "selected_types": [],
+     "status": "PROVISIONAL",
+     "total": 71.37029411764706,
+     "total_reason": null,
+     "type_reason": "TYPE_UNCONFIRMED",
+     "type_weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     },
+     "v_excluded": null,
+     "version": "qgv-v2",
+     "weights": {
+      "G": 33.0,
+      "Q": 34.0,
+      "V": 33.0
+     }
+    }
+   },
+   "id": "published-axes",
+   "input": {
+    "companies": {
+     "NASDAQ:SYNB1": {
+      "factors": {
+       "g_consistency": 59.75,
+       "g_growth_efficiency": 61.75,
+       "g_per_share_growth": 63.75,
+       "g_recent_acceleration": 57.75,
+       "g_revenue_growth": 65.75,
+       "q_capital_allocation": 67.5,
+       "q_earnings_quality": 61.5,
+       "q_financial_safety": 64.5,
+       "q_moat_proxy": 58.5,
+       "q_profitability": 55.5
+      },
+      "industry_group": "synthetic_group_b",
+      "memberships": {
+       "dividend": null,
+       "growth": 0.9,
+       "quality": 0.4,
+       "value": null
+      },
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 40.0
+       },
+       "Q": {
+        "score": 30.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 127.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.889
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.9906
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 1.0922
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 1.1938
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 1.2954
+        }
+       ],
+       "fcf": 85.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NASDAQ:SYNB2": {
+      "factors": {
+       "g_consistency": 59.0,
+       "g_growth_efficiency": 61.0,
+       "g_per_share_growth": 63.0,
+       "g_recent_acceleration": 57.0,
+       "g_revenue_growth": 65.0,
+       "q_capital_allocation": 69.0,
+       "q_earnings_quality": 63.0,
+       "q_financial_safety": 66.0,
+       "q_moat_proxy": 60.0,
+       "q_profitability": 57.0
+      },
+      "industry_group": "synthetic_group_b",
+      "memberships": {
+       "growth": 0.1,
+       "quality": 0.2
+      },
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 47.0
+       },
+       "Q": {
+        "score": 43.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 134.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.938
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.0452
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 1.1524
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 1.2596
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 1.3668
+        }
+       ],
+       "fcf": 90.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NASDAQ:SYNB3": {
+      "factors": {
+       "g_consistency": 58.25,
+       "g_growth_efficiency": 60.25,
+       "g_per_share_growth": 62.25,
+       "g_recent_acceleration": 56.25,
+       "g_revenue_growth": 64.25,
+       "q_capital_allocation": 70.5,
+       "q_earnings_quality": 64.5,
+       "q_financial_safety": 67.5,
+       "q_moat_proxy": 61.5,
+       "q_profitability": 58.5
+      },
+      "industry_group": "synthetic_group_b",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 54.0
+       },
+       "Q": {
+        "score": 56.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 141.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.987
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.0998
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 1.2126
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 1.3254
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 1.4382
+        }
+       ],
+       "fcf": 95.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA1": {
+      "factors": {
+       "g_consistency": 49.25,
+       "g_growth_efficiency": 51.25,
+       "g_per_share_growth": 53.25,
+       "g_recent_acceleration": 47.25,
+       "g_revenue_growth": 55.25,
+       "q_capital_allocation": 50.5,
+       "q_earnings_quality": 44.5,
+       "q_financial_safety": 47.5,
+       "q_moat_proxy": 41.5,
+       "q_profitability": 38.5
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 61.0
+       },
+       "Q": {
+        "score": null
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 57.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.399
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.4446
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.4902
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.5358
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.5814
+        }
+       ],
+       "fcf": 35.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA1.B": {
+      "factors": {
+       "g_consistency": 49.25,
+       "g_growth_efficiency": 51.25,
+       "g_per_share_growth": 53.25,
+       "g_recent_acceleration": 47.25,
+       "g_revenue_growth": 55.25,
+       "q_capital_allocation": 50.5,
+       "q_earnings_quality": 44.5,
+       "q_financial_safety": 47.5,
+       "q_moat_proxy": 41.5,
+       "q_profitability": 38.5
+      },
+      "in_cross_section": false,
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 68.0
+       },
+       "Q": {
+        "score": 82.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 57.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.399
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.4446
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.4902
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.5358
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.5814
+        }
+       ],
+       "fcf": 35.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA2": {
+      "factors": {
+       "g_consistency": 55.5,
+       "g_growth_efficiency": 57.5,
+       "g_per_share_growth": 59.5,
+       "g_recent_acceleration": 53.5,
+       "g_revenue_growth": 61.5,
+       "q_capital_allocation": 55.0,
+       "q_earnings_quality": 49.0,
+       "q_financial_safety": 52.0,
+       "q_moat_proxy": 46.0,
+       "q_profitability": 43.0
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 75.0
+       },
+       "Q": {
+        "score": 35.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 64.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.448
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.4992
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.5504
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.6016
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.6528
+        }
+       ],
+       "fcf": 40.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA3": {
+      "factors": {
+       "g_consistency": 61.75,
+       "g_growth_efficiency": 63.75,
+       "g_per_share_growth": 65.75,
+       "g_recent_acceleration": 59.75,
+       "g_revenue_growth": 67.75,
+       "q_capital_allocation": 59.5,
+       "q_earnings_quality": 53.5,
+       "q_financial_safety": 56.5,
+       "q_moat_proxy": 50.5,
+       "q_profitability": 47.5
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 82.0
+       },
+       "Q": {
+        "score": 48.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 71.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.497
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.5538
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.6106
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.6674
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.7242
+        }
+       ],
+       "fcf": 45.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA4": {
+      "factors": {
+       "g_consistency": 44.0,
+       "g_growth_efficiency": 46.0,
+       "g_per_share_growth": 48.0,
+       "g_recent_acceleration": 42.0,
+       "g_revenue_growth": 50.0,
+       "q_capital_allocation": 64.0,
+       "q_earnings_quality": 58.0,
+       "q_financial_safety": 61.0,
+       "q_moat_proxy": 55.0,
+       "q_profitability": 52.0
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 89.0
+       },
+       "Q": {
+        "score": 61.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 78.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.546
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.6084
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.6708
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.7332
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.7956
+        }
+       ],
+       "fcf": 50.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA5": {
+      "factors": {
+       "g_consistency": 50.25,
+       "g_growth_efficiency": 52.25,
+       "g_per_share_growth": 54.25,
+       "g_recent_acceleration": 48.25,
+       "g_revenue_growth": 56.25,
+       "q_capital_allocation": 68.5,
+       "q_earnings_quality": 62.5,
+       "q_financial_safety": 65.5,
+       "q_moat_proxy": 59.5,
+       "q_profitability": 56.5
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 46.0
+       },
+       "Q": {
+        "score": 74.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 85.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.595
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.663
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.731
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.799
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.867
+        }
+       ],
+       "fcf": 55.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA6": {
+      "factors": {
+       "g_consistency": 56.5,
+       "g_growth_efficiency": 58.5,
+       "g_per_share_growth": 60.5,
+       "g_recent_acceleration": 54.5,
+       "g_revenue_growth": 62.5,
+       "q_capital_allocation": 73.0,
+       "q_earnings_quality": 67.0,
+       "q_financial_safety": 70.0,
+       "q_moat_proxy": 64.0,
+       "q_profitability": 61.0
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 53.0
+       },
+       "Q": {
+        "score": 87.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 92.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.644
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.7176
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.7912
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.8648
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 0.9384
+        }
+       ],
+       "fcf": 60.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA7": {
+      "factors": {
+       "g_consistency": 62.75,
+       "g_growth_efficiency": 64.75,
+       "g_per_share_growth": 66.75,
+       "g_recent_acceleration": 60.75,
+       "g_revenue_growth": 68.75,
+       "q_capital_allocation": 77.5,
+       "q_earnings_quality": 71.5,
+       "q_financial_safety": 74.5,
+       "q_moat_proxy": 68.5,
+       "q_profitability": 65.5
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 60.0
+       },
+       "Q": {
+        "score": null
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 99.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.693
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.7722
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.8514
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.9306
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 1.0098
+        }
+       ],
+       "fcf": 65.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA8": {
+      "factors": {
+       "g_consistency": 45.0,
+       "g_growth_efficiency": 47.0,
+       "g_per_share_growth": 49.0,
+       "g_recent_acceleration": 43.0,
+       "g_revenue_growth": 51.0,
+       "q_capital_allocation": 82.0,
+       "q_earnings_quality": 76.0,
+       "q_financial_safety": 79.0,
+       "q_moat_proxy": 73.0,
+       "q_profitability": 70.0
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 67.0
+       },
+       "Q": {
+        "score": 53.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 106.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.742
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.8268
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.9116
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 0.9964
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 1.0812
+        }
+       ],
+       "fcf": 70.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNA9": {
+      "factors": {
+       "g_consistency": 51.25,
+       "g_growth_efficiency": 53.25,
+       "g_per_share_growth": 55.25,
+       "g_recent_acceleration": 49.25,
+       "g_revenue_growth": 57.25,
+       "q_capital_allocation": 86.5,
+       "q_earnings_quality": 80.5,
+       "q_financial_safety": 83.5,
+       "q_moat_proxy": 77.5,
+       "q_profitability": 74.5
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": {
+       "quality": 1.0
+      },
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 74.0
+       },
+       "Q": {
+        "score": 66.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 113.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 0.791
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 0.8814
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 0.9718
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 1.0622
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 1.1526
+        }
+       ],
+       "fcf": 75.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNC1": {
+      "factors": {
+       "g_consistency": 53.5,
+       "g_growth_efficiency": 55.5,
+       "g_per_share_growth": 57.5,
+       "g_recent_acceleration": 51.5,
+       "g_revenue_growth": 59.5,
+       "q_capital_allocation": 82.0,
+       "q_earnings_quality": 76.0,
+       "q_financial_safety": 79.0,
+       "q_moat_proxy": 73.0,
+       "q_profitability": 70.0
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 81.0
+       },
+       "Q": {
+        "score": 79.0
+       }
+      },
+      "v_inputs": {
+       "cash": 1000000.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 204.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.428
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.5912
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 1.7544
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 1.9176
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.0808
+        }
+       ],
+       "fcf": 140.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNE1": {
+      "factors": {
+       "g_consistency": 54.5,
+       "g_growth_efficiency": 56.5,
+       "g_per_share_growth": 58.5,
+       "g_recent_acceleration": 52.5,
+       "g_revenue_growth": 60.5,
+       "q_capital_allocation": 79.0,
+       "q_earnings_quality": 73.0,
+       "q_financial_safety": 76.0,
+       "q_moat_proxy": 70.0,
+       "q_profitability": 67.0
+      },
+      "industry_group": "synthetic_group_b",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 88.0
+       },
+       "Q": {
+        "score": 32.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "EUR",
+       "diluted_shares": 100.0,
+       "ebit": 232.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.624
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.8096
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 1.9952
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 2.1808
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.3664
+        }
+       ],
+       "fcf": 160.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNF1": {
+      "factors": {
+       "g_consistency": 43.0,
+       "g_growth_efficiency": 45.0,
+       "g_per_share_growth": 47.0,
+       "g_recent_acceleration": 41.0,
+       "g_revenue_growth": 49.0,
+       "q_capital_allocation": 86.0,
+       "q_earnings_quality": 80.0,
+       "q_financial_safety": 83.0,
+       "q_moat_proxy": 77.0,
+       "q_profitability": 74.0
+      },
+      "industry_group": "synthetic_group_fin",
+      "memberships": null,
+      "profile": "FINANCIAL",
+      "qg_axes": {
+       "G": {
+        "score": 45.0
+       },
+       "Q": {
+        "score": 45.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 190.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.33
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.482
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 1.634
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 1.786
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 1.938
+        }
+       ],
+       "fcf": 130.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNG1": {
+      "factors": {
+       "g_consistency": 54.25,
+       "g_growth_efficiency": 56.25,
+       "g_per_share_growth": null,
+       "g_recent_acceleration": 52.25,
+       "g_revenue_growth": null,
+       "q_capital_allocation": 79.5,
+       "q_earnings_quality": 73.5,
+       "q_financial_safety": 76.5,
+       "q_moat_proxy": 70.5,
+       "q_profitability": 67.5
+      },
+      "industry_group": "synthetic_group_b",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 52.0
+       },
+       "Q": {
+        "score": 58.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 225.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.575
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.755
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 1.935
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 2.115
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.295
+        }
+       ],
+       "fcf": 155.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNN1": {
+      "factors": {
+       "g_consistency": 53.25,
+       "g_growth_efficiency": 55.25,
+       "g_per_share_growth": 57.25,
+       "g_recent_acceleration": 51.25,
+       "g_revenue_growth": 59.25,
+       "q_capital_allocation": 66.5,
+       "q_earnings_quality": 60.5,
+       "q_financial_safety": 63.5,
+       "q_moat_proxy": 57.5,
+       "q_profitability": 54.5
+      },
+      "industry_group": null,
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 59.0
+       },
+       "Q": {
+        "score": null
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 197.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.379
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.5366
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 1.6942
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 1.8518
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.0094
+        }
+       ],
+       "fcf": 135.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNP1": {
+      "factors": {
+       "g_consistency": 54.0,
+       "g_growth_efficiency": 56.0,
+       "g_per_share_growth": 58.0,
+       "g_recent_acceleration": 52.0,
+       "g_revenue_growth": 60.0,
+       "q_capital_allocation": 76.0,
+       "q_earnings_quality": null,
+       "q_financial_safety": 73.0,
+       "q_moat_proxy": null,
+       "q_profitability": null
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 66.0
+       },
+       "Q": {
+        "score": 84.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 218.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.526
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.7004
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 1.8748
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 2.0492
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.2236
+        }
+       ],
+       "fcf": 150.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNR1": {
+      "factors": {
+       "g_consistency": 55.0,
+       "g_growth_efficiency": 57.0,
+       "g_per_share_growth": 59.0,
+       "g_recent_acceleration": 53.0,
+       "g_revenue_growth": 61.0,
+       "q_capital_allocation": 80.0,
+       "q_earnings_quality": 74.0,
+       "q_financial_safety": 77.0,
+       "q_moat_proxy": 71.0,
+       "q_profitability": 68.0
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 73.0
+       },
+       "Q": {
+        "score": 37.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 246.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.722
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.9188
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 2.1156
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 2.3124
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.5092
+        }
+       ],
+       "fcf": 170.0,
+       "revenue_cagr_3y": null,
+       "total_debt": 200.0
+      }
+     },
+     "NYSE:SYNV1": {
+      "factors": {
+       "g_consistency": 54.75,
+       "g_growth_efficiency": 56.75,
+       "g_per_share_growth": 58.75,
+       "g_recent_acceleration": 52.75,
+       "g_revenue_growth": 60.75,
+       "q_capital_allocation": 79.5,
+       "q_earnings_quality": 73.5,
+       "q_financial_safety": 76.5,
+       "q_moat_proxy": 70.5,
+       "q_profitability": 67.5
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 80.0
+       },
+       "Q": {
+        "score": 50.0
+       }
+      },
+      "v_inputs": null
+     },
+     "NYSE:SYNX1": {
+      "factors": {
+       "g_consistency": 53.75,
+       "g_growth_efficiency": 55.75,
+       "g_per_share_growth": 57.75,
+       "g_recent_acceleration": 51.75,
+       "g_revenue_growth": 59.75,
+       "q_capital_allocation": 69.5,
+       "q_earnings_quality": 63.5,
+       "q_financial_safety": 66.5,
+       "q_moat_proxy": 60.5,
+       "q_profitability": 57.5
+      },
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 87.0
+       },
+       "Q": {
+        "score": 63.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 211.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.477
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.6458
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 1.8146
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 1.9834
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.1522
+        }
+       ],
+       "fcf": -40.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     },
+     "TARGET:synt": {
+      "factors": {
+       "g_consistency": 55.25,
+       "g_growth_efficiency": 57.25,
+       "g_per_share_growth": 59.25,
+       "g_recent_acceleration": 53.25,
+       "g_revenue_growth": 61.25,
+       "q_capital_allocation": 65.5,
+       "q_earnings_quality": 59.5,
+       "q_financial_safety": 62.5,
+       "q_moat_proxy": 56.5,
+       "q_profitability": 53.5
+      },
+      "in_cross_section": false,
+      "industry_group": "synthetic_group_a",
+      "memberships": null,
+      "profile": "GENERAL",
+      "qg_axes": {
+       "G": {
+        "score": 44.0
+       },
+       "Q": {
+        "score": 76.0
+       }
+      },
+      "v_inputs": {
+       "cash": 100.0,
+       "currency": "USD",
+       "diluted_shares": 100.0,
+       "ebit": 253.0,
+       "ebit_per_share_history": [
+        {
+         "period_end": "2020-12-31",
+         "value": 1.771
+        },
+        {
+         "period_end": "2021-12-31",
+         "value": 1.9734
+        },
+        {
+         "period_end": "2022-12-31",
+         "value": 2.1758
+        },
+        {
+         "period_end": "2023-12-31",
+         "value": 2.3782
+        },
+        {
+         "period_end": "2024-12-31",
+         "value": 2.5806
+        }
+       ],
+       "fcf": 175.0,
+       "revenue_cagr_3y": 0.06,
+       "total_debt": 200.0
+      }
+     }
+    },
+    "gate": null,
+    "preset": "balanced",
+    "synthetic_market": {
+     "NASDAQ:SYNB1": {
+      "currency": "USD",
+      "price": 18.8
+     },
+     "NASDAQ:SYNB2": {
+      "currency": "USD",
+      "month_closes": {
+       "2020-11": 10.835,
+       "2020-12": 27.58,
+       "2021-11": 12.805,
+       "2021-12": null,
+       "2022-11": 14.775,
+       "2022-12": 21.67,
+       "2023-11": 16.745,
+       "2023-12": 18.715,
+       "2024-11": 18.715,
+       "2024-12": 15.76
+      },
+      "price": 19.700000000000003
+     },
+     "NASDAQ:SYNB3": {
+      "currency": "USD",
+      "price": 20.6
+     },
+     "NYSE:SYNA1": {
+      "currency": "USD",
+      "price": 8.9
+     },
+     "NYSE:SYNA1.B": {
+      "currency": "USD",
+      "price": 9.8
+     },
+     "NYSE:SYNA2": {
+      "currency": "USD",
+      "price": 9.8
+     },
+     "NYSE:SYNA3": {
+      "currency": "USD",
+      "month_closes": {
+       "2020-11": 5.885,
+       "2020-12": 14.98,
+       "2021-11": 6.955,
+       "2021-12": null,
+       "2022-11": 8.025,
+       "2022-12": 11.77,
+       "2023-11": 9.095,
+       "2023-12": 10.165,
+       "2024-11": 10.165,
+       "2024-12": 8.56
+      },
+      "price": 10.7
+     },
+     "NYSE:SYNA4": {
+      "currency": "USD",
+      "price": 11.6
+     },
+     "NYSE:SYNA5": {
+      "currency": "USD",
+      "price": 12.5
+     },
+     "NYSE:SYNA6": {
+      "currency": "USD",
+      "price": 13.4
+     },
+     "NYSE:SYNA7": {
+      "currency": "USD",
+      "price": 14.3
+     },
+     "NYSE:SYNA8": {
+      "currency": "USD",
+      "price": 15.2
+     },
+     "NYSE:SYNA9": {
+      "currency": "USD",
+      "price": 16.1
+     },
+     "NYSE:SYNC1": {
+      "currency": "USD",
+      "price": 10.7
+     },
+     "NYSE:SYNE1": {
+      "currency": "USD",
+      "price": 12.5
+     },
+     "NYSE:SYNF1": {
+      "currency": "USD",
+      "price": 13.4
+     },
+     "NYSE:SYNG1": {
+      "currency": "USD",
+      "price": 14.3
+     },
+     "NYSE:SYNP1": {
+      "currency": "USD",
+      "price": 22.4
+     },
+     "NYSE:SYNR1": {
+      "currency": "USD",
+      "price": 24.2
+     },
+     "NYSE:SYNV1": {
+      "currency": "USD",
+      "price": 27.8
+     },
+     "NYSE:SYNX1": {
+      "currency": "USD",
+      "price": 29.6
+     },
+     "TARGET:synt": {
+      "currency": "USD",
+      "price": 19.700000000000003
+     }
+    }
    }
   }
  ],

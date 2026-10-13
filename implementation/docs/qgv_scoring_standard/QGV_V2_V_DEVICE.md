@@ -9,7 +9,7 @@
 
 | 입력 | 출처 |
 |---|---|
-| Q·G 요인 10개 점수, SIC 업종군, FINANCIAL 프로필, `v_inputs_v2` | 공개 `sec-qgv2.json`(가격 없음, Q·G 쪽 Actions 산출) |
+| Q·G 요인 10개 점수와 Q·G 축 점수, SIC 업종군, FINANCIAL 프로필, `v_inputs_v2` | 공개 `sec-qgv2.json`(가격 없음, Q·G 쪽 Actions 산출, §6) |
 | 현재가 | 기기 전용: ① Universe 탭 읽기(`PrivateSubsetView.prices()`, 시트 C열 가격) ② 기기 시세(`DeviceValuation.deviceQuote` = 수동·시트 Quotes·Worker 종가) |
 | 월말 종가 | 기기 전용: 사용자 시트 Prices 탭 모듈 `PriceStore.monthEndCloses(symbol) -> {YYYY-MM: close}`(없으면 자기 과거 대비 NA) |
 
@@ -47,17 +47,14 @@
 
 `web_assets/scoring-default.js`의 `scoring_default:'v1'` 한 줄이 유일한 설정이다. **GSQ-022 승인 후 이 한 줄을 `'v2'`로 바꾸면** 모든 소비자가 따라 바뀐다: S04 QGV 카드·S05 종합/QGV 요소 탭(`company-screen.js`), S06 리더보드(`leaderboard-screen.js`), 가상매매 리허설 판단 행·일일보고서·보고서 내보내기(`app.js` → `QgvScores.judgmentRows` → `DailyReport`). v1이 기본이면 v2는 '비교용', v2가 기본이면 v1(재정규화)은 [자세히]에만 보인다. 테스트: `tools/qgv_scores_node_test.js`(설정을 뒤집어 모든 소비자 확인), `tools/qgv_v2_screens_browser_test.js`(390/1440, v1·v2).
 
-## 6. `sec-qgv2.json` 가정 형태 (Q·G 쪽 병합 전, 읽기 어댑터 `web_assets/sec-qgv2.js`만 바꾸면 됨)
+## 6. `sec-qgv2.json` 정렬 (Q·G 쪽 `claude/qgv-v2-qg`의 실제 형태)
 
-```text
-{kind: "SEC_QGV2", as_of, config_version, method_status,
- records: {"NASDAQ:XXXX": {state, sic, industry_group, profile: GENERAL|FINANCIAL,
-   factors: {q_*/g_*: 0..100 | {score} | null},
-   v_inputs_v2: {currency, ebit, ocf, capex | fcf, total_debt, cash, diluted_shares,   // 숫자 또는 {value, period_end|period_label}
-                 ebit_per_share_history: [{period_end, value}], revenue_cagr_3y}}}}
-```
+읽기는 Q·G 쪽 엄격 검증기 `web_assets/sec-qgv2.js`(SecQgv2.loadInputs)가 있으면 그것을 쓰고, 없으면 가벼운 구조 점검만 한다. 형태를 아는 곳은 `web_assets/qgv2-inputs.js`(Qgv2Inputs) 하나다.
 
-가격·시가총액·EV·순위 키가 있으면 읽지 않는다(fail closed).
+- `records`(Universe 코드) + `target`(TARGET id). TARGET 행이 자료가 있으면 그 행(더 최신)을 `TARGET:<id>`로 쓰고, 아니면 티커로 Universe 코드를 찾는다. TARGET 행·같은 CIK의 두 번째 코드는 단면 백분위에 점으로 넣지 않고 단면에 대해서만 순위를 매긴다(Q·G 쪽 '자기 점 대체'와 같은 뜻, 한 CIK 한 점).
+- Q·G 축 점수는 공개된 `axes.Q/G.score`(Q·G 쪽 동업종 규칙)를 그대로 쓰고, 산출 요인 n/전체는 요인 값에서 센다.
+- `v_inputs_v2`: `ebit`/`fcf`는 `ttm_value`가 있으면 TTM, 없으면 `fy_value`(기간 표시 유지). `total_debt`·`cash_and_equivalents`·`diluted_shares`는 `{value, period_end}`. `ebit_per_share_history`는 `{fiscal_year_end, value}`. 실현 성장은 `revenue_cagr_3y`.
+- 가격·시가총액·EV·순위 키가 있으면 읽지 않는다(fail closed).
 
 ## 7. 열린 항목
 
