@@ -12,7 +12,7 @@ const CANARY = ['13.579', '24681357', '4321.987', '600.25', '8642.13'];
 const HOLDINGS = [['as_of', 'symbol', 'quantity', 'avg_cost', 'currency', 'cost_krw', 'name'],
   [TODAY, 'ASML', '13.579', '700', 'USD', '24681357', 'ASML Holding'], [TODAY, '8035', '2', '30000', 'JPY', '', 'Tokyo Electron'],
   [TODAY, 'KO', '5', '60.5', 'USD', '', 'Coca-Cola'], [TODAY, 'SPY', '1', '', 'USD', '800000', 'SPDR S&P 500'], [TODAY, 'SYNQ', '3', '10', 'USD', '', 'Synthetic Q'],
-  [TODAY, 'NVDA', '1,000', '', 'USD'], [TODAY, 'CASH_KRW', '8642.13', '', 'KRW']];
+  [TODAY, 'NVDA', '1,000', '', 'USD'], [TODAY, 'QQQ', '2', '10', 'USD', '', 'Unapproved ETF'], [TODAY, 'CASH_KRW', '8642.13', '', 'KRW']];
 const QUOTES = [['code', 'price', 'tradetime'], ['NASDAQ:ASML', 97.531, 46000], ['TYO:8035', '', ''], ['NASDAQ:NVDA', 50, 46000], ['NASDAQ:SYNQ', 12.5, ''], ['CURRENCY:USDKRW', 1400, ''], ['CURRENCY:JPYKRW', 9.5, '']];
 function bars(close) { const day = Math.floor(Date.now() / 86400000) * 86400; return [{timestamp: day - 3 * 86400, open: 1, high: close, low: 1, close: close - 1, adjusted_close: null, volume: 1, session_status: 'COMPLETE'},
   {timestamp: day - 2 * 86400, open: 1, high: close, low: 1, close, adjusted_close: null, volume: 1, session_status: 'COMPLETE'},
@@ -26,7 +26,7 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
   const browser = await chromium.launch({headless: true, executablePath: process.env.CHROMIUM_EXECUTABLE_PATH});
   let pass = 0, fail = 0, phase = 'INIT';
   try {
-    for (const width of [390, 1440]) {
+    for (const width of [390, 1280]) {
       const context = await browser.newContext({viewport: {width, height: 900}, serviceWorkers: 'block'});
       await context.grantPermissions(['clipboard-read', 'clipboard-write'], {origin: new URL(BASE).origin});
       const page = await context.newPage(); page.setDefaultTimeout(10000);
@@ -45,7 +45,7 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
         if (request.headers().authorization !== 'Bearer ' + TOKEN || request.headers().referer || request.headers().cookie) mock.unsafe++;
         if (url.origin === ORIGIN && url.pathname === '/history') {
           const symbol = url.searchParams.get('symbol'); mock.workerCalls.push(symbol);
-          const payload = symbol === '8035.T' ? history('8035.T', 4321.987) : symbol === 'SPY' ? history('SPY', 600.25) : null;
+          const payload = symbol === '8035.T' ? history('8035.T', 4321.987) : symbol === 'SPY' ? history('SPY', 600.25) : symbol === 'KO' ? history('KO', 600.25) : null;
           if (!payload) { mock.unsafe++; return route.fulfill({status: 400, headers: cors, contentType: 'application/json', body: JSON.stringify({error: {code: 'REQUEST_INVALID'}})}); }
           return route.fulfill({headers: cors, contentType: 'application/json', body: JSON.stringify(payload)});
         }
@@ -105,7 +105,7 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
       phase = 'B_RETURN_PREVIEW';
       await page.evaluate(() => window.dispatchEvent(new Event('focus')));
       await page.locator('[data-capture-preview="OK"]').waitFor();
-      verify(await page.locator('[data-capture-positions] tbody tr').count() === 5, 'five readable positions');
+      verify(await page.locator('[data-capture-positions] tbody tr').count() === 6, 'six readable positions');
       const review = await page.locator('[data-capture-review] li').allTextContents();
       verify(review.length === 1 && review[0].includes('행 7') && review[0].includes('QUANTITY_FORMAT'), 'thousands separator row needs review with row and reason');
       verify((await page.locator('[data-capture-cash="CASH_KRW"]').count()) === 1, 'cash row');
@@ -118,11 +118,13 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
       const summaryText = await summary.textContent();
       verify(summaryText.includes('Worker 종가 · 일봉 · 정보용') && summaryText.includes('세션일 종가'), 'TEL valued with the Worker close in the actual view');
       verify(summaryText.includes('cost_krw ÷ quantity (원화 매입금액 기준)'), 'in-scope cost basis shown');
-      verify((await summary.locator('[data-outside-symbol="KO"]').textContent()).includes('NOT_AVAILABLE · QUOTE_NOT_AVAILABLE_OUT_OF_SCOPE'), 'KO outside scope without price');
+      const ko = await summary.locator('[data-outside-symbol="KO"]').textContent();
+      verify(ko.includes('Worker 종가 · 일봉 · 정보용') && ko.includes('QGV') && ko.includes('OUT_OF_SCOPE'), 'approved Universe KO has price without expanding QGV allocation');
+      verify((await summary.locator('[data-outside-symbol="QQQ"]').textContent()).includes('NOT_AVAILABLE · QUOTE_NOT_AVAILABLE_OUT_OF_SCOPE'), 'unapproved QQQ remains without price');
       const spy = await summary.locator('[data-outside-symbol="SPY"]').textContent(), synq = await summary.locator('[data-outside-symbol="SYNQ"]').textContent();
       verify(spy.includes('Worker 종가 · 일봉 · 정보용') && spy.includes('cost_krw') && spy.includes('QGV') && spy.includes('OUT_OF_SCOPE'), 'allowlisted outside symbol uses the Worker close');
       verify(synq.includes('GOOGLEFINANCE') && synq.includes('avg_cost'), 'outside symbol from the sheet Quotes row');
-      verify(!mock.workerCalls.includes('KO') && !mock.workerCalls.includes('SYNQ'), 'no Worker request outside its allowlist');
+      verify(mock.workerCalls.includes('KO') && !mock.workerCalls.includes('QQQ') && !mock.workerCalls.includes('SYNQ'), 'KO approved; QQQ never requested and SYNQ uses the existing sheet quote');
       verify((await summary.locator('[data-cash-row="CASH_KRW"]').count()) === 1, 'cash shown apart from positions');
       const eff = await page.evaluate(async () => { const c = await (await fetch('actual-catalog.json')).json(), r = await DeviceActual.effectiveHoldings(window, c); return {source: r.source, rows: r.snapshot.themes.flatMap(t => t.holdings).length}; });
       verify(eff.source === 'HOLDINGS_TAB' && eff.rows === 2, 'shadow-ledger input uses the Holdings tab');
