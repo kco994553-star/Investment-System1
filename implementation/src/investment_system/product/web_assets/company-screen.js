@@ -48,9 +48,11 @@ function dataBadges(screens,locale,withPit){
  return '<div class="chips data-badges" data-company-badges><span class="badge '+esc(state)+'" data-badge="data">'+esc(state)+'</span>'+(aged?'<span class="badge freshness STALE">STALE</span>':'')+'<span class="badge">'+esc(p?T('기준 ','As of ')+p.as_of:T('기준 시각 없음','No as-of'))+'</span><span class="badge">'+esc(T('점수 기준 v1 · 보정 전','Score basis v1 · uncalibrated'))+'</span><span class="badge NOT_AVAILABLE">'+esc(T('시세 NOT_AVAILABLE','Price NOT_AVAILABLE'))+'</span>'+(withPit?'<span class="badge" data-badge="pit">'+esc('PIT '+(p&&p.data.availability_basis?p.data.availability_basis:'NOT_AVAILABLE'))+'</span>':'')+'</div>';
 }
 function nextEarnings(screens,id,locale){
- const T=tr(locale),rec=record(screens,'sec-filing-windows.json',id),w=rec&&g.PublicScreens?g.PublicScreens.nextFilingWindow(rec):null;
+ const T=tr(locale),rec=record(screens,'sec-filing-windows.json',id),s=rec&&g.PublicScreens&&g.PublicScreens.earningsStatus?g.PublicScreens.earningsStatus(rec):null;
+ if(s&&s.status==='CONFIRMED')return '<span class="badge LIVE" data-earnings-status="CONFIRMED">'+esc(T('확인','Confirmed'))+'</span> <span data-next-earnings>'+esc(s.date)+'</span> <span class="small">'+esc(T('실적 발표 · SEC 8-K Item 2.02','Earnings release · SEC 8-K Item 2.02'))+'</span>';
+ const w=s&&s.status==='ESTIMATED'?s.window:null;
  if(!w)return na(T('공시 시기 패턴 자료 없음','No filing-timing pattern'),locale);
- return '<span data-next-earnings>'+esc(w.form+' '+w.start+'–'+w.end+' · D-'+w.days_until_start)+'</span> <span class="small">'+esc(T('예상 시기 · 확정일 아님','Estimated timing · not a confirmed date'))+'</span>';
+ return '<span class="badge" data-earnings-status="ESTIMATED">'+esc(T('추정','Estimated'))+'</span> <span data-next-earnings>'+esc(w.form+' '+w.start+'–'+w.end+' · D-'+w.days_until_start)+'</span> <span class="small">'+esc(T('예상 시기 · 확정일 아님','Estimated timing · not a confirmed date'))+'</span>';
 }
 function qgvBody(screens,id,locale){
  const T=tr(locale),rec=record(screens,'sec-qg-factors.json',id),axes=qgAxes(rec);
