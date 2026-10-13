@@ -160,6 +160,28 @@ def test_ifrs_filer_and_52_53_week_years():
     assert math.isclose(m['revenue_cagr_3y'], 0.2, rel_tol=1e-5)
 
 
+def test_debt_current_total_taxonomy_switch_and_single_concept_ttm():
+    # DebtCurrent replaces current maturities + short-term borrowings (no double count).
+    extra = [(('DebtCurrent', 'USD', 25.0, '2025-12-31'), {}), (('ShortTermBorrowings', 'USD', 15.0, '2025-12-31'), {})]
+    _, _, _, _, v = compute(simple_company(omit=('LongTermDebtCurrent',), extra=extra))
+    assert v['total_debt'] == {'value': 65.0, 'period_end': '2025-12-31'}
+    # Latest debt date is chosen on its own (a later 10-Q with debt lines but no cash line).
+    later = [(('LongTermDebtNoncurrent', 'USD', 70.0, '2026-06-30'), {'form': '10-Q', 'filed': '2026-08-01'})]
+    _, _, _, _, v = compute(simple_company(extra=later))
+    assert v['total_debt'] == {'value': 70.0, 'period_end': '2026-06-30'} and v['cash_and_equivalents']['period_end'] == '2025-12-31'
+    # A YTD fact of another revenue concept never mixes with FY0 of the first concept: TTM falls back to FY0.
+    mixed = [(('RevenueFromContractWithCustomerExcludingAssessedTax', 'USD', 80.0, '2026-06-30'),
+              {'start': '2026-01-01', 'form': '10-Q', 'filed': '2026-08-01'})]
+    _, _, _, m, _ = compute(simple_company(extra=mixed))
+    assert math.isclose(m['revenue_ttm_growth'], 0.1, rel_tol=1e-5)
+    # A filer whose latest annual data is in ifrs-full uses ifrs-full even with older us-gaap facts.
+    old = simple_company(years=range(2010, 2014))
+    for year in (2022, 2023, 2024, 2025):
+        fact(old['facts'], 'Revenue', 'EUR', 100.0 + year, f'{year}-12-31', start=f'{year}-01-01', form='20-F', taxonomy='ifrs-full')
+    _, fy_end, currency, _, v = compute(old)
+    assert (fy_end, currency, v['taxonomy']) == ('2025-12-31', 'EUR', 'ifrs-full')
+
+
 # ---------------- percentile publication ----------------
 def test_percentile_formula_ties_and_direction():
     assert vs.percentile(0, 1, 9) == 0 and vs.percentile(8, 1, 9) == 100 and vs.percentile(4, 1, 9) == 50

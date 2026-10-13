@@ -13,7 +13,8 @@ vectors `tests/fixtures/sec_qgv2_vectors_v1.json`, `tools/sec_qgv2_reference.py`
 
 All inputs come from one SEC companyfacts payload. Only facts filed on or before the acquisition date are used. Prices are never used.
 
-- **Taxonomy and currency:** `us-gaap` when it has an annual net income or revenue fact, else `ifrs-full`. Currency = the unit of
+- **Taxonomy and currency:** the taxonomy (`us-gaap` or `ifrs-full`) whose latest annual net-income/revenue fact is the most recent
+  (`us-gaap` on a tie). Currency = the unit of
   the latest annual net-income/revenue fact (USD preferred on a tie). All amounts of a company use that one currency, and nothing is converted.
 - **Annual flow:** a duration of 350–380 days from a 10-K, 10-K/A, 10-KT, 20-F or 40-F (and their amendments). FY0 = the latest
   annual end of net income, revenue, operating cash flow or EBIT. Year k = the annual fact ending within ±10 days of FY0 end minus k years,
@@ -21,7 +22,7 @@ All inputs come from one SEC companyfacts payload. Only facts filed on or before
 - **Instant (balance sheet):** the value at that year end (±10 days) from any 10-K/10-Q/20-F/40-F.
 - **YTD:** a duration of 80–300 days from a 10-Q or 10-Q/A.
 - **TTM:** FY0 + YTD(latest 10-Q of the new fiscal year) − YTD(same span one year earlier). TTM a year earlier uses FY−1 and the
-  YTD two years earlier. Without a later 10-Q, TTM = FY0.
+  YTD two years earlier. FY0 and both YTD facts must come from **one concept**. Without such a later 10-Q, TTM = FY0 (period end = FY0 end).
 - **Revisions:** for the same concept/unit/period, the latest `filed` wins. If two facts have the same `filed` date and different
   values, that period is dropped as ambiguous and never averaged.
 - **Concept lists:** for each period the first concept in the list with a usable fact wins.
@@ -40,7 +41,7 @@ All inputs come from one SEC companyfacts payload. Only facts filed on or before
 | diluted EPS / shares | EarningsPerShareDiluted, …BasicAndDiluted / WeightedAverageNumberOfDilutedSharesOutstanding, …ShareOutstandingBasicAndDiluted | DilutedEarningsLossPerShare / AdjustedWeightedAverageShares |
 | assets / equity | Assets / StockholdersEquity, …IncludingPortionAttributableToNoncontrollingInterest | Assets / EquityAttributableToOwnersOfParent, Equity |
 | cash | CashAndCashEquivalentsAtCarryingValue, CashCashEquivalentsRestrictedCash…, Cash | CashAndCashEquivalents |
-| total debt | LongTermDebt (incl. current maturities), else LongTermDebtNoncurrent or LongTermDebtAndCapitalLeaseObligations (+ the current-maturities line when reported); plus ShortTermBorrowings, else CommercialPaper. If none of these lines is reported, debt is NA. | Borrowings, else NoncurrentPortionOfNoncurrentBorrowings/NoncurrentBorrowings (+ CurrentPortionOfNoncurrentBorrowings); plus ShorttermBorrowings/CurrentBorrowings |
+| total debt | LongTermDebt (incl. current maturities), else LongTermDebtNoncurrent or LongTermDebtAndCapitalLeaseObligations (+ LongTermDebtCurrent / …CapitalLeaseObligationsCurrent when reported); plus ShortTermBorrowings, else CommercialPaper. If the noncurrent path has no current-maturities line but `DebtCurrent` is reported, debt = noncurrent + DebtCurrent (no separate short-term add, to avoid double counting). If none of these lines is reported, debt is NA. | Borrowings, else NoncurrentPortionOfNoncurrentBorrowings/NoncurrentBorrowings (+ CurrentPortionOfNoncurrentBorrowings); plus ShorttermBorrowings/CurrentBorrowings |
 
 Derived lines: tax rate = income tax ÷ pretax income, clamped to 0–50%, when pretax > 0. Otherwise the default 21% applies
 (DEFAULT_TAX_RATE, uncalibrated). NOPAT = EBIT × (1 − tax rate). Invested capital (IC) = equity + total debt − cash (must be > 0).
@@ -122,7 +123,7 @@ Row: `cik`, `acquired_at`, `source_sha256{companyfacts,submissions}`, `state` (L
 
 `v_inputs_v2` holds the price-free inputs the device needs to compute V in RAM. Amounts are exact SEC values in the row currency.
 - `ebit`, `fcf`: `{fy_value, fy_end, ttm_value, ttm_end}`. FCF = OCF − capex for the same period.
-- `total_debt`, `cash_and_equivalents`: `{value, period_end}` at the latest balance-sheet date. Debt uses the same rule as section 1.
+- `total_debt`, `cash_and_equivalents`: `{value, period_end}`, each at its own latest balance-sheet date (they can differ). Debt uses the same rule as section 1.
 - `diluted_shares`: `{value, period_end}`, the latest weighted-average diluted share count (quarter or year).
 - `ebit_per_share_history`, `fcf_per_share_history`: up to 5 fiscal years `{fiscal_year_end, value}`, oldest first. These feed the own-history multiple percentile.
 - `revenue_cagr_3y`, `eps_cagr_3y`, `fcf_per_share_cagr_3y`, `revenue_ttm_growth`: realized growth for the expectation check.

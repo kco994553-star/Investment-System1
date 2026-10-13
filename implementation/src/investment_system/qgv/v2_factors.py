@@ -70,6 +70,7 @@ CONCEPTS = {
         'debt_noncurrent': ('LongTermDebtNoncurrent', 'LongTermDebtAndCapitalLeaseObligations'),
         'debt_current_maturities': ('LongTermDebtCurrent', 'LongTermDebtAndCapitalLeaseObligationsCurrent'),
         'debt_short_term': ('ShortTermBorrowings', 'CommercialPaper'),
+        'debt_current_total': ('DebtCurrent',),
     },
     'ifrs-full': {
         'revenue': ('Revenue', 'RevenueFromContractsWithCustomers'),
@@ -94,13 +95,14 @@ CONCEPTS = {
         'debt_noncurrent': ('NoncurrentPortionOfNoncurrentBorrowings', 'NoncurrentBorrowings'),
         'debt_current_maturities': ('CurrentPortionOfNoncurrentBorrowings',),
         'debt_short_term': ('ShorttermBorrowings', 'CurrentBorrowings'),
+        'debt_current_total': ('CurrentBorrowingsAndCurrentPortionOfNoncurrentBorrowings',),
     },
 }
 FLOW_ITEMS = ('revenue', 'gross_profit', 'cost_of_revenue', 'ebit', 'pretax_income', 'income_tax', 'net_income',
               'operating_cash_flow', 'capital_expenditure', 'depreciation_amortization', 'interest_expense',
               'net_interest_income', 'eps_diluted', 'diluted_shares')
 INSTANT_ITEMS = ('total_assets', 'equity', 'cash_and_equivalents', 'debt_total_long_term', 'debt_noncurrent',
-                 'debt_current_maturities', 'debt_short_term')
+                 'debt_current_maturities', 'debt_short_term', 'debt_current_total')
 # FY0 anchor: the latest annual end of any of these defines the fiscal year sequence.
 ANCHOR_ITEMS = ('net_income', 'revenue', 'operating_cash_flow', 'ebit')
 
@@ -225,9 +227,9 @@ class _Facts:
             ends.update(end for (start, end) in table if start is not None and ANNUAL_DAYS[0] <= (end - start).days <= ANNUAL_DAYS[1])
         return ends
 
-    def annual(self, item, target):
+    def annual(self, item, target, tables=None):
         """(value, start, end) for the fiscal year ending within tolerance of `target`; first concept wins."""
-        for table in self.items[item]:
+        for table in self.items[item] if tables is None else tables:
             hits = [(abs((end - target).days), start, end, v) for (start, end), v in table.items()
                     if start is not None and ANNUAL_DAYS[0] <= (end - start).days <= ANNUAL_DAYS[1]
                     and abs((end - target).days) <= YEAR_TOLERANCE_DAYS]
@@ -237,8 +239,8 @@ class _Facts:
                 return value, start, end
         return None
 
-    def ytd(self, item, start_near, end_near):
-        for table in self.items[item]:
+    def ytd(self, item, start_near, end_near, tables=None):
+        for table in self.items[item] if tables is None else tables:
             hits = [(abs((s - start_near).days) + abs((e - end_near).days), s, e, v) for (s, e), v in table.items()
                     if s is not None and YTD_DAYS[0] <= (e - s).days <= YTD_DAYS[1]
                     and abs((s - start_near).days) <= YTD_TOLERANCE_DAYS and abs((e - end_near).days) <= YTD_TOLERANCE_DAYS]
@@ -247,9 +249,9 @@ class _Facts:
                 return hits[0][3], hits[0][1], hits[0][2]
         return None
 
-    def latest_ytd_end(self, item, fiscal_start):
+    def latest_ytd_end(self, item, fiscal_start, tables=None):
         """Latest end of a YTD fact that starts at `fiscal_start` (first concept with any such fact)."""
-        for table in self.items[item]:
+        for table in self.items[item] if tables is None else tables:
             ends = [e for (s, e) in table if s is not None and YTD_DAYS[0] <= (e - s).days <= YTD_DAYS[1]
                     and abs((s - fiscal_start).days) <= YTD_TOLERANCE_DAYS]
             if ends:
@@ -283,6 +285,7 @@ def _taxonomy_and_currency(payload, cutoff):
     facts = payload.get('facts') if isinstance(payload, dict) else None
     if not isinstance(facts, dict):
         return None, None
+    best = None
     for taxonomy in ('us-gaap', 'ifrs-full'):
         group = facts.get(taxonomy)
         if not isinstance(group, dict):
@@ -308,9 +311,11 @@ def _taxonomy_and_currency(payload, cutoff):
                         key = (end, unit == 'USD', unit)
                         if latest is None or key > latest:
                             latest = key
-        if latest is not None:
-            return taxonomy, latest[2]
-    return None, None
+        # The taxonomy with the latest annual anchor wins (a filer that moved from us-gaap to ifrs-full or back);
+        # us-gaap on an equal end date.
+        if latest is not None and (best is None or latest[0] > best[0]):
+            best = (latest[0], taxonomy, latest[2])
+    return (best[1], best[2]) if best is not None else (None, None)
 
 
 def _div(num, den, *, positive_den=True):
@@ -376,6 +381,11 @@ class _Company:
         else:
             noncurrent = inst('debt_noncurrent')
             current = inst('debt_current_maturities')
+            if current is None and noncurrent is not None:
+                # DebtCurrent already includes short-term borrowings: use it instead of adding them again.
+                combined = inst('debt_current_total')
+                if combined is not None:
+                    return noncurrent + combined
             long_term = None if noncurrent is None else noncurrent + (current if current is not None else 0.0)
         short = inst('debt_short_term')
         if long_term is None and short is None:
@@ -431,27 +441,34 @@ class _Company:
 
     # ---- TTM ----
     def ttm(self, item):
-        """(ttm_value, period_end, ttm_year_ago_value): FY0 + YTD - YTD(prior year); FY0 alone when no later 10-Q."""
+        """(ttm_value, period_end, ttm_year_ago_value): FY0 + YTD - YTD(prior year), all from ONE concept;
+        FY0 alone (period end = FY0 end) when no concept has a later 10-Q with its prior-year comparative."""
         fy0 = self.f.annual(item, self.fy0)
         if fy0 is None:
             return None
-        value0, start0, end0 = fy0
-        fiscal_start = end0 + timedelta(days=1)
-        latest = self.f.latest_ytd_end(item, fiscal_start)
-        fy1 = self.f.annual(item, _shift_years(end0, 1))
-        if latest is None or latest <= end0:
-            return value0, end0, (fy1[0] if fy1 else None)
-        cur = self.f.ytd(item, fiscal_start, latest)
-        prev = self.f.ytd(item, start0, _shift_years(latest, 1))
-        if cur is None or prev is None:
-            return None
-        ttm = value0 + cur[0] - prev[0]
-        ago = None
-        if fy1 is not None:
-            prev2 = self.f.ytd(item, fy1[1], _shift_years(latest, 2))
-            if prev2 is not None:
-                ago = fy1[0] + prev[0] - prev2[0]
-        return ttm, cur[2], ago
+        for table in self.f.items[item]:
+            one = [table]
+            hit = self.f.annual(item, self.fy0, one)
+            if hit is None:
+                continue
+            value0, start0, end0 = hit
+            fiscal_start = end0 + timedelta(days=1)
+            latest = self.f.latest_ytd_end(item, fiscal_start, one)
+            if latest is None or latest <= end0:
+                continue
+            cur = self.f.ytd(item, fiscal_start, latest, one)
+            prev = self.f.ytd(item, start0, _shift_years(latest, 1), one)
+            if cur is None or prev is None:
+                continue
+            ago = None
+            fy1 = self.f.annual(item, _shift_years(end0, 1), one)
+            if fy1 is not None:
+                prev2 = self.f.ytd(item, fy1[1], _shift_years(latest, 2), one)
+                if prev2 is not None:
+                    ago = fy1[0] + prev[0] - prev2[0]
+            return value0 + cur[0] - prev[0], cur[2], ago
+        fy1 = self.f.annual(item, _shift_years(fy0[2], 1))
+        return fy0[0], fy0[2], (fy1[0] if fy1 else None)
 
 
 def _metrics_general(c):
@@ -571,14 +588,19 @@ def _v_inputs(c, m, taxonomy, currency):
             fcf['ttm_value'], fcf['ttm_end'] = ocf['ttm_value'] - capex['ttm_value'], ocf['ttm_end']
         v['fcf'] = fcf if fcf['fy_value'] is not None or fcf['ttm_value'] is not None else None
     # Latest balance sheet: the latest cash date (any 10-K/10-Q); debt at that exact date.
+    # Latest balance sheet values, each with its own date (any 10-K/10-Q); debt on a date where its lines exist.
     cash_ends = c.f.instant_ends('cash_and_equivalents')
     if cash_ends:
         latest = max(cash_ends)
-        cash = c.f.instant('cash_and_equivalents', latest, 0)
-        v['cash_and_equivalents'] = {'value': cash, 'period_end': latest.isoformat()}
-        debt = c.debt_at(latest, 0)
+        v['cash_and_equivalents'] = {'value': c.f.instant('cash_and_equivalents', latest, 0), 'period_end': latest.isoformat()}
+    debt_ends = set()
+    for item in ('debt_total_long_term', 'debt_noncurrent', 'debt_short_term'):
+        debt_ends |= c.f.instant_ends(item)
+    for end in sorted(debt_ends, reverse=True):
+        debt = c.debt_at(end, 0)
         if debt is not None:
-            v['total_debt'] = {'value': debt, 'period_end': latest.isoformat()}
+            v['total_debt'] = {'value': debt, 'period_end': end.isoformat()}
+            break
     shares = c.f.latest_duration('diluted_shares')
     if shares is not None and shares[0] > 0:
         v['diluted_shares'] = {'value': shares[0], 'period_end': shares[1].isoformat()}
