@@ -153,11 +153,27 @@ def month_close(month_closes, period_end):
     return v if positive(v) else None
 
 
-def _metrics(company, quote, parameters):
+def normalized_ebit(v, years):
+    """PLAYBOOK_V1 §13-2 (v0 · UNCALIBRATED): latest revenue × mean operating margin of the last `years` fiscal years.
+    None unless revenue and `years` margins are all present (never filled)."""
+    if not isinstance(v, dict) or not finite(v.get('revenue')):
+        return None
+    hist = [h for h in (v.get('operating_margin_history') or []) if isinstance(h, dict) and finite(h.get('value'))]
+    hist.sort(key=lambda h: str(h.get('period_end')))
+    if len(hist) < years:
+        return None
+    acc = 0.0
+    for h in hist[-years:]:
+        acc += h['value']
+    return v['revenue'] * (acc / years)
+
+
+def _metrics(company, quote, parameters, cyclical_years=None):
     """Per-company raw V metrics (RAM): yields, own-history score, expectation gap. Reasons when not available."""
     v = company.get('v_inputs') if isinstance(company, dict) else None
     out = {'ebit_yield': None, 'fcf_yield': None, 'own_history': None, 'gap': None,
-           'implied_growth': None, 'realized_growth': None, 'reasons': {}}
+           'implied_growth': None, 'realized_growth': None, 'reasons': {},
+           'earnings_basis': 'NORMALIZED' if cyclical_years else 'REPORTED'}
     r = out['reasons']
 
     def fail(reason, keys=('ebit_yield', 'fcf_yield', 'own_history', 'gap')):
@@ -219,7 +235,14 @@ def _metrics(company, quote, parameters):
     ev = price * shares + debt - cash
     if not ev > 0:
         return fail('EV_NON_POSITIVE', ('ebit_yield', 'fcf_yield'))
-    if finite(ebit):
+    if cyclical_years:
+        # Cyclical type: EBIT-based yield on normalized earnings ('정상화 이익 기준'); no 5-year margins -> NA.
+        norm = normalized_ebit(v, cyclical_years)
+        if norm is None:
+            r['ebit_yield'] = 'NORMALIZED_EARNINGS_NOT_AVAILABLE'
+        else:
+            out['ebit_yield'] = norm / ev
+    elif finite(ebit):
         out['ebit_yield'] = ebit / ev
     else:
         r['ebit_yield'] = 'EBIT_NOT_AVAILABLE'
@@ -312,7 +335,10 @@ def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT
     g_axis = {i: axis_of(i, 'G') for i in ids}
     pooled = [i for i in ids if companies[i].get('in_cross_section', True) is not False]
     q_pct = _cross({i: q_axis[i]['score'] for i in ids}, groups, ids, pooled, industry=True)
-    metrics = {i: _metrics(companies[i], quotes.get(i), parameters) for i in ids}
+    cyclical_type = type_config['value_basis']['cyclical_type']
+    years = type_config['value_basis']['normalized_years']
+    typed = {i: type_axis_weights(companies[i].get('memberships'), type_config) for i in ids}
+    metrics = {i: _metrics(companies[i], quotes.get(i), parameters, years if cyclical_type in typed[i][2] else None) for i in ids}
     ey = _cross({i: metrics[i]['ebit_yield'] for i in ids}, groups, ids, pooled, industry=False)
     fy = _cross({i: metrics[i]['fcf_yield'] for i in ids}, groups, ids, pooled, industry=False)
     ind = _cross({i: metrics[i]['ebit_yield'] for i in ids}, groups, ids, pooled, industry=True)
@@ -336,7 +362,7 @@ def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT
                                        {'score': None, 'state': 'NOT_AVAILABLE', 'reason': m['reasons'].get('own_history'), 'basis': None})
         v_axis = axis_score({k: factors[k]['score'] for k in WEIGHTS['V']}, 'V')
         axes = {'Q': q_axis[i], 'G': g_axis[i], 'V': v_axis}
-        tw, type_reason, selected = type_axis_weights(c.get('memberships'), type_config)
+        tw, type_reason, selected = typed[i]
         weights = composite_weights(preset_weights, tw, fallback)
         flags = []
         qp = q_pct.get(i)
@@ -374,8 +400,8 @@ def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT
             'axes': axes, 'factors': factors, 'factors_available': available, 'factors_total': len(FACTORS),
             'q_industry_percentile': q_percentile, 'q_industry_basis': q_basis,
             'type_weights': tw, 'type_reason': type_reason, 'selected_types': selected, 'weights': weights,
-            'v_excluded': 'VALUE_TRAP_GATE' if trap else None, 'total': total, 'total_reason': total_reason, 'flags': flags,
-            'detail': {'ebit_yield': m['ebit_yield'], 'fcf_yield': m['fcf_yield'], 'implied_growth': m['implied_growth'],
+            'v_excluded': 'VALUE_TRAP_GATE' if trap else None, 'value_trap_gate': bool(trap), 'total': total, 'total_reason': total_reason, 'flags': flags,
+            'detail': {'earnings_basis': m['earnings_basis'], 'ebit_yield': m['ebit_yield'], 'fcf_yield': m['fcf_yield'], 'implied_growth': m['implied_growth'],
                        'realized_growth': m['realized_growth'], 'expectation_gap': m['gap'],
                        'industry_basis': factors['v_vs_industry']['basis'], 'industry_peers': ind[i][3] if i in ind else None},
             'reference_range': _reference_range(c, parameters),

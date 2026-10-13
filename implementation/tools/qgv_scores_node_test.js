@@ -11,7 +11,7 @@ for (const [name, file] of [['EnginePreview', 'engine-preview.js'], ['ProfileDef
 const QS = globalThis.QgvScores, L = require(path.join(W, 'leaderboard-screen.js')), CS = require(path.join(W, 'company-screen.js'));
 const R = require(path.join(W, 'daily-report.js')), S = require(path.join(W, 'virtual-trading-signals.js')), SQ = globalThis.Qgv2Inputs;
 const original = require(CONFIG);
-function setDefault(mode) { require.cache[CONFIG].exports = Object.freeze({ scoring_default: mode }); }
+function setDefault(mode) { require.cache[CONFIG].exports = Object.freeze({ scoring_default: mode, v2_since: mode === 'v2' ? '2026-10-19' : null }); }
 test.after(() => { require.cache[CONFIG].exports = original; });
 const IDS = [...Object.keys(F.TICKERS), 'asml'], identities = IDS.map((id) => ({ company_id: id, ticker: id === 'asml' ? 'ASML' : F.TICKERS[id].split(':')[1] }));
 const FACTORS = ['competitive_advantage', 'eps_fcf_per_share_growth', 'excess_growth_vs_industry', 'fcf_quality', 'financial_health', 'growth_durability', 'growth_efficiency', 'management_quality', 'margin_quality', 'market_position', 'next_3_5y_growth', 'revenue_growth', 'roic_wacc'];
@@ -31,7 +31,7 @@ test('the shipped setting is v1 and the accessor reads only that setting', () =>
   assert.ok(Object.isFrozen(original));
   assert.equal(QS.scoringDefault(), 'v1');
   const src = fs.readFileSync(path.join(W, 'scoring-default.js'), 'utf8');
-  assert.equal((src.match(/scoring_default:'v[12]'/g) || []).length, 1, 'one-line flip');
+  assert.equal((src.match(/\{scoring_default:'v[12]',v2_since:(null|'\d{4}-\d{2}-\d{2}')\}/g) || []).length, 1, 'one-line flip');
   for (const f of ['leaderboard-screen.js', 'company-screen.js', 'daily-report.js', 'app.js', 'virtual-trading-signals.js']) assert.ok(!fs.readFileSync(path.join(W, f), 'utf8').includes('ScoringDefault'), f + ' reads scores through QgvScores only');
 });
 
@@ -41,6 +41,12 @@ for (const mode of ['v1', 'v2']) test('flip to ' + mode + ': every consumer foll
     assert.equal(QS.scoringDefault(), mode);
     const sc = QS.compute({ identities, publicScreens: screens, quotes });
     assert.equal(sc.default, mode);assert.equal(sc.v2_state, 'READY');
+    assert.deepEqual({ basis: sc.basis.basis, label: sc.basis.label }, mode === 'v2' ? { basis: 'v2', label: '기본' } : { basis: 'v1', label: '임시 기본' });
+    // PLAYBOOK_V1 §13-11: until v2 is computed on the device, the basis is v1 labelled '임시 기본' even when the setting is v2.
+    const noV2 = QS.compute({ identities, publicScreens: { 'sec-qg-factors.json': screens['sec-qg-factors.json'] } });
+    assert.deepEqual([noV2.default, noV2.basis.label, noV2.basis.intended, noV2.rows.nvda.primary.version], ['v1', '임시 기본', mode, 'v1']);
+    assert.ok(QS.basisText(noV2, false).endsWith('· 임시 기본'));
+    assert.equal(typeof QS.judgmentRows(sc).nvda.value_trap_gate, 'boolean');
     const nvda = sc.rows.nvda;
     assert.equal(nvda.primary.version, mode);
     assert.equal(nvda.reference.version, mode === 'v2' ? 'v1_renormalized' : 'v2');

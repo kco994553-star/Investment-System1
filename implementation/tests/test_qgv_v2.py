@@ -133,5 +133,30 @@ class QgvV2Test(unittest.TestCase):
         self.assertEqual(res['NYSE:SYNX1']['reference_range']['reason'], 'NON_POSITIVE_CASHFLOW')
 
 
+class PlaybookAddendumTest(unittest.TestCase):
+    setUpClass = classmethod(QgvV2Test.setUpClass.__func__)
+    score = QgvV2Test.score
+
+    def test_cyclical_type_uses_normalized_earnings_or_na(self):
+        u = ref.universe()
+        res = self.score(u, ref.market(u))
+        y1, y2 = res['NYSE:SYNY1'], res['NYSE:SYNY2']
+        self.assertEqual((y1['detail']['earnings_basis'], y2['detail']['earnings_basis']), ('NORMALIZED', 'NORMALIZED'))
+        v = u['NYSE:SYNY1']['v_inputs']
+        self.assertAlmostEqual(m.normalized_ebit(v, 5), 900.0 * (0.10 + 0.12 + 0.14 + 0.16 + 0.18) / 5)
+        self.assertEqual(y1['factors']['v_earnings_yield']['state'], 'CALCULATED')
+        self.assertEqual(y2['factors']['v_earnings_yield']['reason'], 'NORMALIZED_EARNINGS_NOT_AVAILABLE')
+        self.assertEqual(y2['factors']['v_vs_industry']['reason'], 'NORMALIZED_EARNINGS_NOT_AVAILABLE')
+        self.assertEqual(res['NYSE:SYNA1']['detail']['earnings_basis'], 'REPORTED')
+
+    def test_value_trap_gate_boolean_is_exposed(self):
+        u = ref.universe()
+        on, off = self.score(u, ref.market(u)), self.score(u, ref.market(u), gate=False)
+        for c, r in on.items():
+            self.assertIs(r['value_trap_gate'], 'VALUE_TRAP_CAUTION' in r['flags'])
+            self.assertIs(off[c]['value_trap_gate'], False)
+        self.assertTrue(any(r['value_trap_gate'] for r in on.values()))
+
+
 if __name__ == '__main__':
     unittest.main()

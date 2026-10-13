@@ -97,21 +97,26 @@ test('storage blocked or unreadable: nothing is written and nothing is destroyed
   assert.equal(bad.getItem(H.KEY), '{not json');
 });
 
-test('capture: a V with a missing core factor is NA and never stored (never computed as 0); stored V feeds the ledger inputs', async () => {
+test('capture (PLAYBOOK_V1 §13-1): V below the condition is NA and never stored (never 0); a partial V meeting it is stored with its composition; stored V feeds the ledger inputs', async () => {
   const v = fixture.vectors.find((x) => x.name === 'rehearsal_window_qg_fill');
   const cfg = S.rehearsalConfig(v.inputs.histories, VT.defaultConfig());
   const assembled = R.assemble({ ...v.inputs, config: { start_date: cfg.start_date } });
   const storage = memory();
   const view = { localStorage: storage, DeviceValuation: { load: async () => fixture.valuation, parameters: DV.parameters } };
   const out = await H.capture(view, assembled);
-  assert.deepEqual(out.capture, { state: 'NOT_RECORDED', reason: 'V_CORE_FACTOR_MISSING', date: '2026-11-30', added: [], skipped: Object.keys(v.expected.v_skipped).sort() });
-  assert.equal(storage.writes.length, 0, 'nothing stored for an NA V');
+  assert.deepEqual(out.capture, { state: 'RECORDED', reason: null, date: '2026-11-30', added: Object.keys(v.expected.v_scores).sort(), skipped: Object.keys(v.expected.v_skipped).sort() });
+  assert.equal(storage.writes.length, 1);
+  const kept = stored(storage);
+  assert.deepEqual(kept.scores['2026-11-30'], v.expected.v_scores);assert.deepEqual(kept.composition['2026-11-30'], v.expected.v_composition);
+  assert.ok(!Object.hasOwn(kept.scores['2026-11-30'], 'amzn'), 'nothing stored for an NA V');
   // A V recorded with its composition reaches every READY ledger input (scores + composition).
+  storage.removeItem(H.KEY);storage.writes.length = 0;
   rec(storage, '2026-11-30', { msft: 61.5 });
   const fed = await H.capture(view, assembled);
-  assert.deepEqual(fed.result.ledgers.SET_A.input.v_scores, { '2026-11-30': { msft: 61.5 } });
-  assert.deepEqual(fed.result.ledgers.SET_A.input.v_composition, { '2026-11-30': { msft: K } });
-  assert.equal(storage.writes.length, 1);
+  // An existing date/company value is never overwritten (msft keeps 61.5); the other companies are appended.
+  assert.deepEqual(fed.result.ledgers.SET_A.input.v_scores, { '2026-11-30': { ...v.expected.v_scores, msft: 61.5 } });
+  assert.deepEqual(fed.result.ledgers.SET_A.input.v_composition, { '2026-11-30': { ...v.expected.v_composition, msft: K } });
+  assert.equal(storage.writes.length, 2);
   // No valuation inputs → nothing recorded; no session → nothing recorded.
   const none = await H.capture({ localStorage: memory(), DeviceValuation: { load: async () => null, parameters: DV.parameters } }, assembled);
   assert.equal(none.capture.reason, 'VALUATION_INPUTS_UNAVAILABLE');

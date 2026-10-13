@@ -14,7 +14,12 @@ const MODES=['v1','v2'];
 const LABEL={v1:['점수 기준 v1 · 보정 전','Score basis v1 · uncalibrated'],v2:['점수 기준 v2 · PROVISIONAL','Score basis v2 · PROVISIONAL'],v1_renormalized:['v1 · 결측 재정규화 · 참고','v1 · missing renormalized · reference']};
 const FLAG={VALUE_TRAP_CAUTION:['가치 함정 주의','Value-trap caution'],V_NOT_AVAILABLE:['V 없음','No V'],GATE_NOT_EVALUATED:['관문 판정 불가','Gate not evaluated']};
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),finite=v=>typeof v==='number'&&Number.isFinite(v);
-function scoringDefault(){let c=null;try{c=scoringConfig();}catch(_){c=null;}return c&&c.scoring_default==='v2'?'v2':'v1';}
+function config(){let c=null;try{c=scoringConfig();}catch(_){c=null;}return c&&typeof c==='object'?c:{};}
+function scoringDefault(){return config().scoring_default==='v2'?'v2':'v1';}
+/* PLAYBOOK_V1 §13-11: {basis, label, since}. v2 is the basis only when the setting is v2 AND v2 is computed on this device;
+   otherwise v1 is shown as '임시 기본' (temporary default). since = the configured switch date of strategy version v2. */
+function basis(intended,v2Ready){const v2=intended==='v2'&&v2Ready===true,since=config().v2_since;
+ return Object.freeze({basis:v2?'v2':'v1',label:v2?'기본':'임시 기본',label_en:v2?'default':'temporary default',since:v2&&typeof since==='string'?since:null,intended});}
 const key=t=>String(t||'').replaceAll('.','-').toUpperCase(),symbolOf=code=>key(String(code).slice(String(code).indexOf(':')+1));
 // Identity -> v2 record key: the TARGET row ('TARGET:<id>', fresher) when it has data, else the Universe code by ticker.
 function codeIndex(inputs){const codes=new Map();if(inputs)for(const code of Object.keys(inputs.records))if(!code.startsWith('TARGET:')&&!codes.has(symbolOf(code)))codes.set(symbolOf(code),code);
@@ -34,7 +39,7 @@ function v2Display(r){
  if(!r)return{version:'v2',q:null,g:null,v:null,total:null,partial:true,factors_available:0,factors_total:qgvV2().FACTORS.length,flags:['V2_INPUTS_NOT_AVAILABLE'],state:'NOT_AVAILABLE'};
  const ax=a=>r.axes[a].score;
  return{version:'v2',q:ax('Q'),g:ax('G'),v:ax('V'),total:r.total,partial:['Q','G','V'].some(a=>r.axes[a].state!=='READY'),factors_available:r.factors_available,factors_total:r.factors_total,flags:[...r.flags],state:r.total===null?'NOT_AVAILABLE':'READY',
-  axes:r.axes,factors:r.factors,weights:r.weights,profile:r.profile,q_industry_percentile:r.q_industry_percentile,v_excluded:r.v_excluded,detail:r.detail,reference_range:r.reference_range,selected_types:r.selected_types,type_reason:r.type_reason};
+  axes:r.axes,factors:r.factors,weights:r.weights,profile:r.profile,q_industry_percentile:r.q_industry_percentile,v_excluded:r.v_excluded,detail:r.detail,reference_range:r.reference_range,selected_types:r.selected_types,type_reason:r.type_reason,value_trap_gate:r.value_trap_gate===true};
 }
 let memo=null;
 function universeScores(v2Inputs,quotes,preset,gate,memberships){
@@ -46,18 +51,18 @@ function universeScores(v2Inputs,quotes,preset,gate,memberships){
    company types, and sec-qgv2.json under SecQgv2.FILE); quotes: {code:{price,currency}} RAM. Returns rows with v1, v1_renormalized,
    v2 and the primary/reference pick of the current setting. */
 function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=null,scoringDefault:mode}={}){
- const V2=qgvV2(),current=MODES.includes(mode)?mode:scoringDefault(),inputs=v2Inputs===undefined?(publicScreens&&qgv2Inputs()?publicScreens[qgv2Inputs().FILE]||null:null):v2Inputs;
+ const V2=qgvV2(),intended=MODES.includes(mode)?mode:scoringDefault(),inputs=v2Inputs===undefined?(publicScreens&&qgv2Inputs()?publicScreens[qgv2Inputs().FILE]||null:null):v2Inputs;
  const chosen=preset&&Object.hasOwn(V2.PRESETS,preset)?preset:V2.DEFAULT_PRESET,gateOn=gate===null||gate===undefined?V2.GATE_DEFAULT:Boolean(gate);
  const codeFor=codeIndex(inputs);
  const memberships={};for(const c of identities){const code=codeFor(c),t=record(publicScreens,'company-types-pricefree.json',c.company_id);if(code&&t&&t.state!=='NOT_AVAILABLE'&&object(t.memberships))memberships[code]=t.memberships;}
  let universe=null,v2Reason=inputs?null:'SEC_QGV2_NOT_AVAILABLE';if(inputs){try{universe=universeScores(inputs,object(quotes)?quotes:{},chosen,gateOn,memberships);}catch(_){universe=null;v2Reason='V2_CALCULATION_FAILED';}}
- const rows={};let ranked=[];
+ const b=basis(intended,!!universe),current=b.basis,rows={};let ranked=[];
  for(const c of identities){const[v1,v1r]=v1For(record(publicScreens,'sec-qg-factors.json',c.company_id)),code=codeFor(c),v2=v2Display(universe&&code?universe[code]:null);
   const row={company_id:c.company_id,ticker:c.ticker,code,v1,v1_renormalized:v1r,v2};row.primary=current==='v2'?v2:v1;row.reference=current==='v2'?v1r:v2;row.rank=null;rows[c.company_id]=row;}
  ranked=Object.values(rows).filter(r=>finite(r.primary.total)).sort((a,b)=>b.primary.total-a.primary.total||(a.ticker<b.ticker?-1:1));
  if(current==='v2')ranked.forEach((r,i)=>{r.rank=i+1;});
  const quoted=object(quotes)?Object.keys(quotes).length:0;
- return{default:current,label:LABEL[current],profile:{preset:chosen,gate:gateOn,id:V2.VERSION+'/'+chosen+'/gate-'+(gateOn?'on':'off'),name:V2.PRESETS[chosen]},
+ return{default:current,basis:b,label:LABEL[current],profile:{preset:chosen,gate:gateOn,id:V2.VERSION+'/'+chosen+'/gate-'+(gateOn?'on':'off'),name:V2.PRESETS[chosen]},
   v2_state:universe?'READY':'NOT_AVAILABLE',v2_reason:v2Reason,v2_as_of:inputs?inputs.as_of:null,priced_codes:quoted,rows};
 }
 /* Rows for the virtual-trading rehearsal snapshot and the daily report (+ export): {cid:{q,g,partial,...}} from the primary
@@ -65,7 +70,7 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
 function judgmentRows(computed){
  const out={};if(!computed||!object(computed.rows))return out;
  for(const[cid,r]of Object.entries(computed.rows)){const p=r.primary,ref=r.reference;
-  out[cid]={q:p.q,g:p.g,partial:p.partial,v:p.v,total:p.total,version:p.version,factors_available:p.factors_available,factors_total:p.factors_total,flags:[...p.flags],value_trap:p.flags.includes('VALUE_TRAP_CAUTION'),
+  out[cid]={q:p.q,g:p.g,partial:p.partial,v:p.v,total:p.total,version:p.version,factors_available:p.factors_available,factors_total:p.factors_total,flags:[...p.flags],value_trap:p.flags.includes('VALUE_TRAP_CAUTION'),value_trap_gate:p.value_trap_gate===true,
    compare:ref&&ref.state!=='NOT_AVAILABLE'?{version:ref.version,q:ref.q,g:ref.g,v:ref.v,total:ref.total,factors_available:ref.factors_available,factors_total:ref.factors_total}:null};}
  return out;
 }
@@ -95,6 +100,8 @@ function summaryText(d,en){
  return 'Q '+num(d.q)+' · G '+num(d.g)+(d.total!==null?' · Q·G '+num(d.total):'')+' · '+n;
 }
 function label(version,en){return(LABEL[version]||LABEL.v1)[en?1:0];}
+// Badge text of the current basis: '점수 기준 v1 · 보정 전 · 임시 기본' / '점수 기준 v2 · PROVISIONAL · 기본 · 2026-10-19부터'.
+function basisText(S,en){const b=S&&S.basis?S.basis:basis('v1',false);return label(b.basis,en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({MODES,LABEL,FLAG,scoringDefault,compute,judgmentRows,collectQuotes,summaryText,flagText,label,presets,symbolOf});
+return Object.freeze({MODES,LABEL,FLAG,scoringDefault,compute,judgmentRows,collectQuotes,summaryText,flagText,label,basis,basisText,presets,symbolOf});
 });

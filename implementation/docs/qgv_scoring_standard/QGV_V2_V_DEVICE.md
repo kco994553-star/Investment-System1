@@ -45,7 +45,7 @@
 
 ## 5. 기본 기준 설정 (`scoring_default`)
 
-`web_assets/scoring-default.js`의 `scoring_default:'v1'` 한 줄이 유일한 설정이다. **GSQ-022 승인 후 이 한 줄을 `'v2'`로 바꾸면** 모든 소비자가 따라 바뀐다: S04 QGV 카드·S05 종합/QGV 요소 탭(`company-screen.js`), S06 리더보드(`leaderboard-screen.js`), 가상매매 리허설 판단 행·일일보고서·보고서 내보내기(`app.js` → `QgvScores.judgmentRows` → `DailyReport`). v1이 기본이면 v2는 '비교용', v2가 기본이면 v1(재정규화)은 [자세히]에만 보인다. 테스트: `tools/qgv_scores_node_test.js`(설정을 뒤집어 모든 소비자 확인), `tools/qgv_v2_screens_browser_test.js`(390/1440, v1·v2).
+`web_assets/scoring-default.js`의 `scoring_default:'v1'` 한 줄이 유일한 설정이다. **GSQ-022 승인 후 이 한 줄을 `'v2'`로 바꾸고 `pages_artifact_guard.py`의 그 파일 해시만 다시 고정하면** 모든 소비자가 따라 바뀐다: S04 QGV 카드·S05 종합/QGV 요소 탭(`company-screen.js`), S06 리더보드(`leaderboard-screen.js`), 가상매매 리허설 판단 행·일일보고서·보고서 내보내기(`app.js` → `QgvScores.judgmentRows` → `DailyReport`). v1이 기본이면 v2는 '비교용', v2가 기본이면 v1(재정규화)은 [자세히]에만 보인다. 테스트: `tools/qgv_scores_node_test.js`(설정을 뒤집어 모든 소비자 확인), `tools/qgv_v2_screens_browser_test.js`(390/1440, v1·v2).
 
 ## 6. `sec-qgv2.json` 정렬 (Q·G 쪽 `claude/qgv-v2-qg`의 실제 형태)
 
@@ -58,5 +58,6 @@
 
 ## 7. 열린 항목
 
+- v1 결측 재정규화는 `strategy_preview`를 쓰는 공개 전진검증 원장(Actions, 10-19 시작)의 Q·G 기록에도 그대로 적용된다(공식 `qgv.scoring._weighted`는 그대로).
 - 기록 모드 가상매매 판단은 전진검증 원장 스냅샷(v1 Q·G)을 쓴다. v2 Q·G가 원장에 기록되기 전에는 리허설·보고서 행만 v2를 따른다. 기기 V 기울기 저장소(`virtual-trading-v-scores`)는 v1 V를 유지한다(v2 V는 저장하지 않음).
-- 금융사 V(P/B 등) 정의, 프리셋 위 유형 비중 결합식(곱 방식) 확인, 업종군 최소 동업종 수 8의 Q·G 쪽 규칙과의 일치.
+- 금융사 V(P/B 등) 정의, 프리셋 위 유형 비중 결합식(곱 방식) 확인. 동업종 최소 8·평균 순위 백분위·CIK 1점은 Q·G 쪽(`QGV_V2_QG_METHOD.md` §4)과 같다.
