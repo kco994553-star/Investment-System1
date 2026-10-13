@@ -2,6 +2,8 @@
    Pure part (assemble) mirrors qgv/virtual_trading_inputs.py (vectors: tests/fixtures/virtual_trading_inputs_v1.json).
    Thin fetch layer: daily history through the existing private history Worker session (same Google session, no new
    scope), the public price-free forward ledger and classification, the device's ACTUAL holdings and device V scores.
+   With the price store on (PriceStore, the user's own Prices_D tab) the stored daily closes are read first and only missing
+   ranges are fetched; otherwise the Worker path is unchanged.
    Prices, FX rates, ledgers and results live only in memory: nothing here stores, logs or sends them. A missing close
    or rate stays absent (the engine then reports EXEC_PRICE_MISSING / EXEC_FX_MISSING); nothing is filled. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?()=>require('./virtual-trading.js'):()=>root.VirtualTrading);if(node)module.exports=api;else root.VirtualTradingRunner=api;})(typeof globalThis==='object'?globalThis:this,function(engine){
@@ -295,7 +297,11 @@ async function run(view,{config={},catalog,reportDate,signal=null,onProgress=nul
  const classification=view.ClassificationScreens?await view.ClassificationScreens.load(view):null;
  let holdings=null;try{const A=view.DeviceActual;holdings=holdingsFromSnapshot(A.effectiveHoldings?(await A.effectiveHoldings(view,catalog)).snapshot:await A.readHoldings(view,catalog),catalog);}catch(_){holdings=null;}
  const symbols=requiredSymbols({catalog,classification,holdings,set_b,sets,user_target});
- const histories=await fetchHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});
+ // Price store (Prices_D in the user's sheet, when the user turned it on): stored daily closes first, only missing ranges
+ // through the same Worker session. null (store off, not connected or unreadable) → the Worker path exactly as before.
+ let histories=null;
+ if(view.PriceStore&&typeof view.PriceStore.runnerHistories==='function'){try{histories=await view.PriceStore.runnerHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});}catch(_){histories=null;}}
+ if(histories===null)histories=await fetchHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});
  return assemble({config:typeof rehearsal==='function'?rehearsal(histories,cfg):cfg,catalog,forward_ledger:forward.state==='LOADED'?forward.ledger:null,classification,histories,holdings,set_b,sets,user_target,v_store:readVStore(view.localStorage),v_composition:readVComposition(view.localStorage),flags:flags||[]});
 }
 return Object.freeze({SCHEMA,CODES,IDS,TARGETS,ETF_MEMBERS,MEMBERS,USER_SETS,KINDS,SP500_SYMBOL,FX_SYMBOLS,DASHBOARD_ETFS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,snapshotsFromLedger,

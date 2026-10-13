@@ -1,0 +1,2208 @@
+{
+ "chunks": [
+  {
+   "expected": [
+    [
+     [
+      "SPY",
+      "2026-10-01",
+      "101",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-02",
+      "102",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-03",
+      "103",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-04",
+      "104",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-05",
+      "105",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-06",
+      "106",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-07",
+      "107",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-08",
+      "108",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-09",
+      "109",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ]
+   ],
+   "max_bytes": 1,
+   "rows": [
+    [
+     "SPY",
+     "2026-10-01",
+     "101",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-02",
+     "102",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-03",
+     "103",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-04",
+     "104",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-05",
+     "105",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-06",
+     "106",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-07",
+     "107",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-08",
+     "108",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-09",
+     "109",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ]
+   ]
+  },
+  {
+   "expected": [
+    [
+     [
+      "SPY",
+      "2026-10-01",
+      "101",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-02",
+      "102",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-03",
+      "103",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-04",
+      "104",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-05",
+      "105",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-06",
+      "106",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-07",
+      "107",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-08",
+      "108",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-09",
+      "109",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ]
+   ],
+   "max_bytes": 120,
+   "rows": [
+    [
+     "SPY",
+     "2026-10-01",
+     "101",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-02",
+     "102",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-03",
+     "103",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-04",
+     "104",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-05",
+     "105",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-06",
+     "106",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-07",
+     "107",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-08",
+     "108",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-09",
+     "109",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ]
+   ]
+  },
+  {
+   "expected": [
+    [
+     [
+      "SPY",
+      "2026-10-01",
+      "101",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-02",
+      "102",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-03",
+      "103",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-04",
+      "104",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-05",
+      "105",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-06",
+      "106",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ],
+    [
+     [
+      "SPY",
+      "2026-10-07",
+      "107",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-08",
+      "108",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-09",
+      "109",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ]
+   ],
+   "max_bytes": 200,
+   "rows": [
+    [
+     "SPY",
+     "2026-10-01",
+     "101",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-02",
+     "102",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-03",
+     "103",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-04",
+     "104",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-05",
+     "105",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-06",
+     "106",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-07",
+     "107",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-08",
+     "108",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-09",
+     "109",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ]
+   ]
+  },
+  {
+   "expected": [
+    [
+     [
+      "SPY",
+      "2026-10-01",
+      "101",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-02",
+      "102",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-03",
+      "103",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-04",
+      "104",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-05",
+      "105",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-06",
+      "106",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-07",
+      "107",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-08",
+      "108",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ],
+     [
+      "SPY",
+      "2026-10-09",
+      "109",
+      "YAHOO",
+      "2026-10-13T00:00:00Z"
+     ]
+    ]
+   ],
+   "max_bytes": 100000,
+   "rows": [
+    [
+     "SPY",
+     "2026-10-01",
+     "101",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-02",
+     "102",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-03",
+     "103",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-04",
+     "104",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-05",
+     "105",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-06",
+     "106",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-07",
+     "107",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-08",
+     "108",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-09",
+     "109",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ]
+   ]
+  }
+ ],
+ "daily": [
+  {
+   "daily": {
+    "2026-07-31": 91.0,
+    "2026-08-28": 95.5,
+    "2026-09-30": 100.0,
+    "2026-10-02": 101.0
+   },
+   "expected": {
+    "2026-08-28": 95.5,
+    "2026-09-30": 100.0,
+    "2026-10-02": 101.0
+   },
+   "from": "2026-08-28"
+  },
+  {
+   "daily": {
+    "2026-07-31": 91.0,
+    "2026-08-28": 95.5,
+    "2026-09-30": 100.0,
+    "2026-10-02": 101.0
+   },
+   "expected": {
+    "2026-07-31": 91.0,
+    "2026-08-28": 95.5,
+    "2026-09-30": 100.0,
+    "2026-10-02": 101.0
+   },
+   "from": null
+  },
+  {
+   "daily": null,
+   "expected": {},
+   "from": "2026-01-01"
+  }
+ ],
+ "due": [
+  {
+   "day": "2026-10-13",
+   "expected": "2026-10-12",
+   "symbol": "SPY",
+   "time": "09:30"
+  },
+  {
+   "day": "2026-10-13",
+   "expected": "2026-10-13",
+   "symbol": "SPY",
+   "time": "16:00"
+  },
+  {
+   "day": "2026-10-13",
+   "expected": "2026-10-12",
+   "symbol": "SPY",
+   "time": "15:59"
+  },
+  {
+   "day": "2026-10-12",
+   "expected": "2026-10-09",
+   "symbol": "SPY",
+   "time": "08:00"
+  },
+  {
+   "day": "2026-10-11",
+   "expected": "2026-10-09",
+   "symbol": "SPY",
+   "time": "18:00"
+  },
+  {
+   "day": "2026-10-10",
+   "expected": "2026-10-09",
+   "symbol": "SPY",
+   "time": "18:00"
+  },
+  {
+   "day": "2026-10-13",
+   "expected": "2026-10-13",
+   "symbol": "042700.KS",
+   "time": "15:30"
+  },
+  {
+   "day": "2026-10-13",
+   "expected": "2026-10-12",
+   "symbol": "042700.KS",
+   "time": "15:29"
+  },
+  {
+   "day": "2026-10-13",
+   "expected": "2026-10-13",
+   "symbol": "8035.T",
+   "time": "16:00"
+  },
+  {
+   "day": "2026-10-13",
+   "expected": "2026-10-12",
+   "symbol": "KRW=X",
+   "time": "23:59"
+  },
+  {
+   "day": "2026-10-12",
+   "expected": "2026-10-09",
+   "symbol": "JPYKRW=X",
+   "time": "12:00"
+  },
+  {
+   "day": "2026-10-16",
+   "expected": "2026-10-16",
+   "symbol": "BRK-B",
+   "time": "16:05"
+  },
+  {
+   "day": "2026-13-01",
+   "expected": {
+    "error": "INVALID"
+   },
+   "symbol": "SPY",
+   "time": "10:00"
+  },
+  {
+   "day": "2026-10-13",
+   "expected": {
+    "error": "INVALID"
+   },
+   "symbol": "SPY",
+   "time": "9:30"
+  }
+ ],
+ "head": [
+  "symbol",
+  "date",
+  "close",
+  "source",
+  "fetched_at"
+ ],
+ "histories": [
+  {
+   "expected": [
+    {
+     "2026-10-07": 100.5
+    },
+    null
+   ],
+   "name": "yahoo_complete_in_progress",
+   "payload": {
+    "bars": [
+     {
+      "adjusted_close": null,
+      "close": 100.5,
+      "high": null,
+      "low": null,
+      "open": null,
+      "session_status": "COMPLETE",
+      "timestamp": 1791379800,
+      "volume": null
+     },
+     {
+      "adjusted_close": null,
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "session_status": "COMPLETE",
+      "timestamp": 1791466200,
+      "volume": null
+     },
+     {
+      "adjusted_close": null,
+      "close": 101.5,
+      "high": null,
+      "low": null,
+      "open": null,
+      "session_status": "IN_PROGRESS",
+      "timestamp": 1791552600,
+      "volume": null
+     }
+    ],
+    "basis": "RAW_CLOSE",
+    "currency": "USD",
+    "delay_status": "UNKNOWN",
+    "exchange": "SYNTHETIC",
+    "interval": "1d",
+    "provider": "Yahoo Finance(비공식)",
+    "range": "1mo",
+    "read_at": "2026-10-09T21:00:00Z",
+    "schema": "private-history/1",
+    "symbol": "SPY",
+    "timezone": "America/New_York"
+   },
+   "source": "YAHOO",
+   "symbol": "SPY"
+  },
+  {
+   "expected": [
+    {
+     "2026-10-07": 120.0
+    },
+    null
+   ],
+   "name": "unknown_before_read_day",
+   "payload": {
+    "bars": [
+     {
+      "adjusted_close": null,
+      "close": 120.0,
+      "high": null,
+      "low": null,
+      "open": null,
+      "session_status": "UNKNOWN",
+      "timestamp": 1791379800,
+      "volume": null
+     },
+     {
+      "adjusted_close": null,
+      "close": 121.0,
+      "high": null,
+      "low": null,
+      "open": null,
+      "session_status": "UNKNOWN",
+      "timestamp": 1791552600,
+      "volume": null
+     }
+    ],
+    "basis": "RAW_CLOSE",
+    "currency": "USD",
+    "delay_status": "UNKNOWN",
+    "exchange": "SYNTHETIC",
+    "interval": "1d",
+    "provider": "Yahoo Finance(비공식)",
+    "range": "1mo",
+    "read_at": "2026-10-09T21:00:00Z",
+    "schema": "private-history/1",
+    "symbol": "NVDA",
+    "timezone": "America/New_York"
+   },
+   "source": "YAHOO",
+   "symbol": "NVDA"
+  },
+  {
+   "expected": [
+    {
+     "2026-10-07": 50.25,
+     "2026-10-08": 50.5
+    },
+    null
+   ],
+   "name": "tiingo_session_labels",
+   "payload": {
+    "bars": [
+     {
+      "close": 50.25,
+      "session_date": "2026-10-07",
+      "session_status": "COMPLETE",
+      "timestamp": 1791331200
+     },
+     {
+      "close": 50.5,
+      "session_date": "2026-10-08",
+      "session_status": "UNKNOWN",
+      "timestamp": 1791417600
+     }
+    ],
+    "basis": "RAW_CLOSE",
+    "currency": "USD",
+    "delay_status": "UNKNOWN",
+    "exchange": "SYNTHETIC",
+    "interval": "1d",
+    "provider": "Tiingo EOD",
+    "range": "1mo",
+    "read_at": "2026-10-09T21:00:00Z",
+    "schema": "private-history/1",
+    "symbol": "XLK",
+    "timestamp_kind": "PROVIDER_SESSION_LABEL",
+    "timezone": "America/New_York"
+   },
+   "source": "TIINGO",
+   "symbol": "XLK"
+  },
+  {
+   "expected": [
+    {
+     "2026-10-07": 1400.5,
+     "2026-10-08": 1401.0
+    },
+    null
+   ],
+   "name": "fx_krw",
+   "payload": {
+    "bars": [
+     {
+      "adjusted_close": null,
+      "close": 1400.5,
+      "high": null,
+      "low": null,
+      "open": null,
+      "session_status": "COMPLETE",
+      "timestamp": 1791379800,
+      "volume": null
+     },
+     {
+      "adjusted_close": null,
+      "close": 1401.0,
+      "high": null,
+      "low": null,
+      "open": null,
+      "session_status": "COMPLETE",
+      "timestamp": 1791466200,
+      "volume": null
+     }
+    ],
+    "basis": "RAW_CLOSE",
+    "currency": "KRW",
+    "delay_status": "UNKNOWN",
+    "exchange": "SYNTHETIC",
+    "interval": "1d",
+    "provider": "Yahoo Finance(비공식)",
+    "range": "1mo",
+    "read_at": "2026-10-09T21:00:00Z",
+    "schema": "private-history/1",
+    "symbol": "KRW=X",
+    "timezone": "Europe/London"
+   },
+   "source": "YAHOO",
+   "symbol": "KRW=X"
+  },
+  {
+   "expected": [
+    {},
+    "CURRENCY_MISMATCH"
+   ],
+   "name": "currency_mismatch",
+   "payload": {
+    "bars": [
+     {
+      "adjusted_close": null,
+      "close": 100.5,
+      "high": null,
+      "low": null,
+      "open": null,
+      "session_status": "COMPLETE",
+      "timestamp": 1791379800,
+      "volume": null
+     }
+    ],
+    "basis": "RAW_CLOSE",
+    "currency": "KRW",
+    "delay_status": "UNKNOWN",
+    "exchange": "SYNTHETIC",
+    "interval": "1d",
+    "provider": "Yahoo Finance(비공식)",
+    "range": "1mo",
+    "read_at": "2026-10-09T21:00:00Z",
+    "schema": "private-history/1",
+    "symbol": "SPY",
+    "timezone": "America/New_York"
+   },
+   "source": "YAHOO",
+   "symbol": "SPY"
+  },
+  {
+   "expected": [
+    {},
+    "RATE_LIMITED"
+   ],
+   "name": "worker_error",
+   "payload": {
+    "error": "RATE_LIMITED"
+   },
+   "source": "UNKNOWN",
+   "symbol": "SPY"
+  },
+  {
+   "expected": [
+    {},
+    "NOT_REQUESTED"
+   ],
+   "name": "not_requested",
+   "payload": null,
+   "source": "UNKNOWN",
+   "symbol": "SPY"
+  },
+  {
+   "expected": [
+    {},
+    "HISTORY_FORMAT_INVALID"
+   ],
+   "name": "format_invalid",
+   "payload": {
+    "bars": [
+     {
+      "timestamp": "x"
+     }
+    ],
+    "basis": "RAW_CLOSE",
+    "currency": "USD",
+    "delay_status": "UNKNOWN",
+    "exchange": "SYNTHETIC",
+    "interval": "1d",
+    "provider": "Yahoo Finance(비공식)",
+    "range": "1mo",
+    "read_at": "2026-10-09T21:00:00Z",
+    "schema": "private-history/1",
+    "symbol": "SPY",
+    "timezone": "America/New_York"
+   },
+   "source": "YAHOO",
+   "symbol": "SPY"
+  },
+  {
+   "expected": [
+    {},
+    "HISTORY_UNAVAILABLE"
+   ],
+   "name": "no_final_close",
+   "payload": {
+    "bars": [
+     {
+      "adjusted_close": null,
+      "close": 101.5,
+      "high": null,
+      "low": null,
+      "open": null,
+      "session_status": "IN_PROGRESS",
+      "timestamp": 1791552600,
+      "volume": null
+     }
+    ],
+    "basis": "RAW_CLOSE",
+    "currency": "USD",
+    "delay_status": "UNKNOWN",
+    "exchange": "SYNTHETIC",
+    "interval": "1d",
+    "provider": "Yahoo Finance(비공식)",
+    "range": "1mo",
+    "read_at": "2026-10-09T21:00:00Z",
+    "schema": "private-history/1",
+    "symbol": "SPY",
+    "timezone": "America/New_York"
+   },
+   "source": "YAHOO",
+   "symbol": "SPY"
+  }
+ ],
+ "indexes": [
+  {
+   "expected": {
+    "duplicates": 1,
+    "series": {
+     "SPY": {
+      "2026-08-31": 98.0,
+      "2026-09-29": 99.5,
+      "2026-09-30": 100.0
+     },
+     "XLK": {
+      "2026-08-28": 49.5,
+      "2026-08-31": 50.0
+     }
+    }
+   },
+   "interval": "1d",
+   "name": "1d",
+   "rows": [
+    [
+     "SPY",
+     "2026-09-30",
+     100.0
+    ],
+    [
+     "SPY",
+     "2026-09-29",
+     99.5
+    ],
+    [
+     "SPY",
+     "2026-09-30",
+     100.25
+    ],
+    [
+     "XLK",
+     "2026-08-31",
+     50.0
+    ],
+    [
+     "SPY",
+     "2026-08-31",
+     98.0
+    ],
+    [
+     "XLK",
+     "2026-08-28",
+     49.5
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "duplicates": 3,
+    "series": {
+     "SPY": {
+      "2026-08": 98.0,
+      "2026-09": 100.0
+     },
+     "XLK": {
+      "2026-08": 50.0
+     }
+    }
+   },
+   "interval": "1mo",
+   "name": "1mo",
+   "rows": [
+    [
+     "SPY",
+     "2026-09-30",
+     100.0
+    ],
+    [
+     "SPY",
+     "2026-09-29",
+     99.5
+    ],
+    [
+     "SPY",
+     "2026-09-30",
+     100.25
+    ],
+    [
+     "XLK",
+     "2026-08-31",
+     50.0
+    ],
+    [
+     "SPY",
+     "2026-08-31",
+     98.0
+    ],
+    [
+     "XLK",
+     "2026-08-28",
+     49.5
+    ]
+   ]
+  }
+ ],
+ "merged": [
+  {
+   "as_of": "2026-10-13",
+   "daily": {
+    "2026-07-31": 91.0,
+    "2026-08-28": 95.5,
+    "2026-09-30": 100.0,
+    "2026-10-02": 101.0
+   },
+   "expected": {
+    "2021-10": 40.0,
+    "2026-07": 91.0,
+    "2026-08": 95.75,
+    "2026-09": 100.0
+   },
+   "monthly": {
+    "2021-10": 40.0,
+    "2026-08": 95.75
+   },
+   "name": "monthly_first_then_daily"
+  },
+  {
+   "as_of": "2026-10-13",
+   "daily": {
+    "2026-07-31": 91.0,
+    "2026-08-28": 95.5,
+    "2026-09-30": 100.0,
+    "2026-10-02": 101.0
+   },
+   "expected": {
+    "2026-07": 91.0,
+    "2026-08": 95.5,
+    "2026-09": 100.0
+   },
+   "monthly": null,
+   "name": "daily_only"
+  },
+  {
+   "as_of": "2026-10-13",
+   "daily": null,
+   "expected": {},
+   "monthly": null,
+   "name": "nothing"
+  }
+ ],
+ "month_ends": [
+  {
+   "as_of": "2026-10-13",
+   "closes": {
+    "2026-07-30": 90.0,
+    "2026-07-31": 91.0,
+    "2026-08-28": 95.5,
+    "2026-09-29": 99.0,
+    "2026-09-30": 100.0,
+    "2026-10-01": 100.5,
+    "2026-10-02": 101.0
+   },
+   "expected": {
+    "2026-07": [
+     "2026-07-31",
+     91.0
+    ],
+    "2026-08": [
+     "2026-08-28",
+     95.5
+    ],
+    "2026-09": [
+     "2026-09-30",
+     100.0
+    ]
+   },
+   "name": "mid_month"
+  },
+  {
+   "as_of": "2026-10-01",
+   "closes": {
+    "2026-07-30": 90.0,
+    "2026-07-31": 91.0,
+    "2026-08-28": 95.5,
+    "2026-09-29": 99.0,
+    "2026-09-30": 100.0,
+    "2026-10-01": 100.5,
+    "2026-10-02": 101.0
+   },
+   "expected": {
+    "2026-07": [
+     "2026-07-31",
+     91.0
+    ],
+    "2026-08": [
+     "2026-08-28",
+     95.5
+    ],
+    "2026-09": [
+     "2026-09-30",
+     100.0
+    ]
+   },
+   "name": "first_of_month"
+  },
+  {
+   "as_of": "2026-09-30",
+   "closes": {
+    "2026-07-30": 90.0,
+    "2026-07-31": 91.0,
+    "2026-08-28": 95.5,
+    "2026-09-29": 99.0,
+    "2026-09-30": 100.0,
+    "2026-10-01": 100.5,
+    "2026-10-02": 101.0
+   },
+   "expected": {
+    "2026-07": [
+     "2026-07-31",
+     91.0
+    ],
+    "2026-08": [
+     "2026-08-28",
+     95.5
+    ]
+   },
+   "name": "month_not_complete"
+  },
+  {
+   "as_of": "2026-10-13",
+   "closes": {},
+   "expected": {},
+   "name": "empty"
+  }
+ ],
+ "note": "SYNTHETIC test vectors: invented round closes for the price store logic; no market data, no holdings.",
+ "plans": [
+  {
+   "expected": {
+    "append": [
+     [
+      "2026-10-05",
+      101.5
+     ],
+     [
+      "2026-10-07",
+      102.5
+     ],
+     [
+      "2026-10-08",
+      103.0
+     ]
+    ],
+    "revised_ignored": 1
+   },
+   "fetched": {
+    "2026-10-01": 100.5,
+    "2026-10-02": 101.125,
+    "2026-10-05": 101.5,
+    "2026-10-06": 102.0,
+    "2026-10-07": 102.5,
+    "2026-10-08": 103.0
+   },
+   "interval": "1d",
+   "name": "daily_tail_gap_revised",
+   "stored": {
+    "2026-10-01": 100.5,
+    "2026-10-02": 101.0,
+    "2026-10-06": 102.0
+   }
+  },
+  {
+   "expected": {
+    "append": [
+     [
+      "2026-10-01",
+      100.5
+     ],
+     [
+      "2026-10-02",
+      101.125
+     ],
+     [
+      "2026-10-05",
+      101.5
+     ],
+     [
+      "2026-10-06",
+      102.0
+     ],
+     [
+      "2026-10-07",
+      102.5
+     ],
+     [
+      "2026-10-08",
+      103.0
+     ]
+    ],
+    "revised_ignored": 0
+   },
+   "fetched": {
+    "2026-10-01": 100.5,
+    "2026-10-02": 101.125,
+    "2026-10-05": 101.5,
+    "2026-10-06": 102.0,
+    "2026-10-07": 102.5,
+    "2026-10-08": 103.0
+   },
+   "interval": "1d",
+   "name": "daily_first",
+   "stored": {}
+  },
+  {
+   "expected": {
+    "append": [],
+    "revised_ignored": 0
+   },
+   "fetched": {
+    "2026-10-01": 100.5,
+    "2026-10-02": 101.125,
+    "2026-10-05": 101.5,
+    "2026-10-06": 102.0,
+    "2026-10-07": 102.5,
+    "2026-10-08": 103.0
+   },
+   "interval": "1d",
+   "name": "daily_nothing_new",
+   "stored": {
+    "2026-10-01": 100.5,
+    "2026-10-02": 101.125,
+    "2026-10-05": 101.5,
+    "2026-10-06": 102.0,
+    "2026-10-07": 102.5,
+    "2026-10-08": 103.0
+   }
+  },
+  {
+   "expected": {
+    "append": [
+     [
+      "2026-09-30",
+      100.0
+     ]
+    ],
+    "revised_ignored": 1
+   },
+   "fetched": {
+    "2026-07": [
+     "2026-07-31",
+     91.25
+    ],
+    "2026-08": [
+     "2026-08-28",
+     95.5
+    ],
+    "2026-09": [
+     "2026-09-30",
+     100.0
+    ]
+   },
+   "interval": "1mo",
+   "name": "monthly_new_month_revised",
+   "stored": {
+    "2026-07": 91.0,
+    "2026-08": 95.5
+   }
+  }
+ ],
+ "ranges": {
+  "daily": [
+   {
+    "due": "2026-10-12",
+    "expected": "5y",
+    "last": null,
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": null,
+    "last": "2026-10-12",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": null,
+    "last": "2026-10-13",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": "1mo",
+    "last": "2026-10-09",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": "1mo",
+    "last": "2026-09-13",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": "3mo",
+    "last": "2026-09-12",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": "3mo",
+    "last": "2026-07-14",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": "6mo",
+    "last": "2026-04-13",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": "1y",
+    "last": "2025-10-13",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": "2y",
+    "last": "2025-10-12",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": "2y",
+    "last": "2024-10-13",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": "5y",
+    "last": "2021-10-13",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-10-12",
+    "expected": "5y",
+    "last": "2019-01-02",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-03-30",
+    "expected": "3mo",
+    "last": "2026-02-27",
+    "today": "2026-03-31"
+   },
+   {
+    "due": "2026-02-27",
+    "expected": "2y",
+    "last": "2024-02-29",
+    "today": "2026-02-28"
+   }
+  ],
+  "monthly": [
+   {
+    "due": "2026-09",
+    "expected": "5y",
+    "last_month": null,
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-09",
+    "expected": null,
+    "last_month": "2026-09",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-09",
+    "expected": null,
+    "last_month": "2026-10",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-09",
+    "expected": "3mo",
+    "last_month": "2026-08",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-09",
+    "expected": "3mo",
+    "last_month": "2026-08",
+    "today": "2026-10-01"
+   },
+   {
+    "due": "2026-09",
+    "expected": "6mo",
+    "last_month": "2026-06",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-09",
+    "expected": "1y",
+    "last_month": "2025-12",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-09",
+    "expected": "5y",
+    "last_month": "2024-01",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2026-09",
+    "expected": "5y",
+    "last_month": "2021-01",
+    "today": "2026-10-13"
+   },
+   {
+    "due": "2025-12",
+    "expected": "3mo",
+    "last_month": "2025-11",
+    "today": "2026-01-05"
+   }
+  ],
+  "months_back": [
+   {
+    "expected": "2026-02-28",
+    "months": 1,
+    "today": "2026-03-31"
+   },
+   {
+    "expected": "2026-02-28",
+    "months": 3,
+    "today": "2026-05-31"
+   },
+   {
+    "expected": "2023-02-28",
+    "months": 12,
+    "today": "2024-02-29"
+   },
+   {
+    "expected": "2021-10-13",
+    "months": 60,
+    "today": "2026-10-13"
+   },
+   {
+    "expected": "2025-12-15",
+    "months": 1,
+    "today": "2026-01-15"
+   },
+   {
+    "expected": "2024-12-31",
+    "months": 24,
+    "today": "2026-12-31"
+   }
+  ]
+ },
+ "rows": [
+  {
+   "expected": [
+    [
+     "SPY",
+     "2026-10-07",
+     "102.5",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-08",
+     "0.30000000000000004",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-09",
+     "1e+21",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-12",
+     "12345678000000",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-13",
+     "98000",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ]
+   ],
+   "fetched_at": "2026-10-13T00:00:00Z",
+   "rows": [
+    [
+     "2026-10-07",
+     102.5
+    ],
+    [
+     "2026-10-08",
+     0.30000000000000004
+    ],
+    [
+     "2026-10-09",
+     1e+21
+    ],
+    [
+     "2026-10-12",
+     12345678000000.0
+    ],
+    [
+     "2026-10-13",
+     98000.0
+    ]
+   ],
+   "source": "YAHOO",
+   "symbol": "SPY"
+  }
+ ],
+ "runner": [
+  {
+   "closes": {
+    "2024-10-11": 80.0,
+    "2024-10-14": 80.5,
+    "2025-06-02": 90.0,
+    "2026-10-09": 100.0,
+    "2026-10-12": 100.5
+   },
+   "expected": {
+    "bars": [
+     {
+      "close": 80.5,
+      "session_date": "2024-10-14",
+      "session_status": "COMPLETE",
+      "timestamp": 1728907200
+     },
+     {
+      "close": 90.0,
+      "session_date": "2025-06-02",
+      "session_status": "COMPLETE",
+      "timestamp": 1748865600
+     },
+     {
+      "close": 100.0,
+      "session_date": "2026-10-09",
+      "session_status": "COMPLETE",
+      "timestamp": 1791547200
+     },
+     {
+      "close": 100.5,
+      "session_date": "2026-10-12",
+      "session_status": "COMPLETE",
+      "timestamp": 1791806400
+     }
+    ],
+    "basis": "RAW_CLOSE",
+    "currency": "USD",
+    "delay_status": "UNKNOWN",
+    "exchange": "PRICE_STORE",
+    "interval": "1d",
+    "provider": "PRICE_STORE",
+    "range": "2y",
+    "read_at": "2026-10-13T12:00:00Z",
+    "schema": "private-history/1",
+    "symbol": "SPY",
+    "timezone": "America/New_York"
+   },
+   "read_at": "2026-10-13T12:00:00Z",
+   "runner_closes": [
+    {
+     "2024-10-14": 80.5,
+     "2025-06-02": 90.0,
+     "2026-10-09": 100.0,
+     "2026-10-12": 100.5
+    },
+    null
+   ],
+   "symbol": "SPY",
+   "today": "2026-10-13"
+  },
+  {
+   "closes": {
+    "2024-10-11": 80.0,
+    "2024-10-14": 80.5,
+    "2025-06-02": 90.0,
+    "2026-10-09": 100.0,
+    "2026-10-12": 100.5
+   },
+   "expected": {
+    "bars": [
+     {
+      "close": 80.5,
+      "session_date": "2024-10-14",
+      "session_status": "COMPLETE",
+      "timestamp": 1728907200
+     },
+     {
+      "close": 90.0,
+      "session_date": "2025-06-02",
+      "session_status": "COMPLETE",
+      "timestamp": 1748865600
+     },
+     {
+      "close": 100.0,
+      "session_date": "2026-10-09",
+      "session_status": "COMPLETE",
+      "timestamp": 1791547200
+     },
+     {
+      "close": 100.5,
+      "session_date": "2026-10-12",
+      "session_status": "COMPLETE",
+      "timestamp": 1791806400
+     }
+    ],
+    "basis": "RAW_CLOSE",
+    "currency": "KRW",
+    "delay_status": "UNKNOWN",
+    "exchange": "PRICE_STORE",
+    "interval": "1d",
+    "provider": "PRICE_STORE",
+    "range": "2y",
+    "read_at": "2026-10-13T12:00:00Z",
+    "schema": "private-history/1",
+    "symbol": "KRW=X",
+    "timezone": "Europe/London"
+   },
+   "read_at": "2026-10-13T12:00:00Z",
+   "runner_closes": [
+    {
+     "2024-10-14": 80.5,
+     "2025-06-02": 90.0,
+     "2026-10-09": 100.0,
+     "2026-10-12": 100.5
+    },
+    null
+   ],
+   "symbol": "KRW=X",
+   "today": "2026-10-13"
+  },
+  {
+   "closes": {
+    "2024-10-11": 80.0,
+    "2024-10-14": 80.5,
+    "2025-06-02": 90.0,
+    "2026-10-09": 100.0,
+    "2026-10-12": 100.5
+   },
+   "expected": {
+    "bars": [
+     {
+      "close": 80.5,
+      "session_date": "2024-10-14",
+      "session_status": "COMPLETE",
+      "timestamp": 1728907200
+     },
+     {
+      "close": 90.0,
+      "session_date": "2025-06-02",
+      "session_status": "COMPLETE",
+      "timestamp": 1748865600
+     },
+     {
+      "close": 100.0,
+      "session_date": "2026-10-09",
+      "session_status": "COMPLETE",
+      "timestamp": 1791547200
+     },
+     {
+      "close": 100.5,
+      "session_date": "2026-10-12",
+      "session_status": "COMPLETE",
+      "timestamp": 1791806400
+     }
+    ],
+    "basis": "RAW_CLOSE",
+    "currency": "KRW",
+    "delay_status": "UNKNOWN",
+    "exchange": "PRICE_STORE",
+    "interval": "1d",
+    "provider": "PRICE_STORE",
+    "range": "2y",
+    "read_at": "2026-10-13T12:00:00Z",
+    "schema": "private-history/1",
+    "symbol": "042700.KS",
+    "timezone": "Asia/Seoul"
+   },
+   "read_at": "2026-10-13T12:00:00Z",
+   "runner_closes": [
+    {
+     "2024-10-14": 80.5,
+     "2025-06-02": 90.0,
+     "2026-10-09": 100.0,
+     "2026-10-12": 100.5
+    },
+    null
+   ],
+   "symbol": "042700.KS",
+   "today": "2026-10-14"
+  }
+ ],
+ "schema": "price-store-vectors/1",
+ "synthetic": true,
+ "tabs": [
+  {
+   "expected": {
+    "header": true,
+    "invalid": 9,
+    "rows": [
+     [
+      "SPY",
+      "2026-10-01",
+      100.5
+     ],
+     [
+      "SPY",
+      "2026-10-02",
+      101.25
+     ],
+     [
+      "XLK",
+      "2026-10-08",
+      150.0
+     ],
+     [
+      "KRW=X",
+      "2026-10-08",
+      1400.125
+     ],
+     [
+      "042700.KS",
+      "2026-10-08",
+      98000.0
+     ],
+     [
+      "SPY",
+      "2026-10-09",
+      102.0
+     ]
+    ]
+   },
+   "interval": "1d",
+   "name": "valid_mixed_daily",
+   "values": [
+    [
+     "symbol",
+     "date",
+     "close",
+     "source",
+     "fetched_at"
+    ],
+    [
+     "SPY",
+     "2026-10-01",
+     "100.5",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-02",
+     "101.25"
+    ],
+    [
+     "",
+     "",
+     ""
+    ],
+    [],
+    [
+     "SPY",
+     "2026-02-30",
+     "99"
+    ],
+    [
+     "spy",
+     "2026-10-03",
+     "99"
+    ],
+    [
+     "SPY",
+     "2026-10-05",
+     101.75
+    ],
+    [
+     "SPY",
+     "2026-10-06",
+     "-3"
+    ],
+    [
+     "SPY",
+     "2026-10-07",
+     "0"
+    ],
+    [
+     "SPY",
+     "2026-10-08",
+     "1e+400"
+    ],
+    [
+     "SPY",
+     "2026-10-08",
+     "1.5e2"
+    ],
+    [
+     "XLK",
+     "2026-10-08",
+     "1.5e+2"
+    ],
+    [
+     "KRW=X",
+     "2026-10-08",
+     "1400.125"
+    ],
+    [
+     "042700.KS",
+     "2026-10-08",
+     "98000"
+    ],
+    [
+     "BRK-B",
+     "2026-10-08"
+    ],
+    [
+     "SPY",
+     "1899-12-29",
+     "5"
+    ],
+    [
+     "SPY",
+     "2026-10-09",
+     "102",
+     "TIINGO",
+     "2026-10-13T00:00:00Z",
+     "extra"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "header": true,
+    "invalid": 9,
+    "rows": [
+     [
+      "SPY",
+      "2026-10-01",
+      100.5
+     ],
+     [
+      "SPY",
+      "2026-10-02",
+      101.25
+     ],
+     [
+      "XLK",
+      "2026-10-08",
+      150.0
+     ],
+     [
+      "KRW=X",
+      "2026-10-08",
+      1400.125
+     ],
+     [
+      "042700.KS",
+      "2026-10-08",
+      98000.0
+     ],
+     [
+      "SPY",
+      "2026-10-09",
+      102.0
+     ]
+    ]
+   },
+   "interval": "1mo",
+   "name": "valid_mixed_monthly",
+   "values": [
+    [
+     "symbol",
+     "date",
+     "close",
+     "source",
+     "fetched_at"
+    ],
+    [
+     "SPY",
+     "2026-10-01",
+     "100.5",
+     "YAHOO",
+     "2026-10-13T00:00:00Z"
+    ],
+    [
+     "SPY",
+     "2026-10-02",
+     "101.25"
+    ],
+    [
+     "",
+     "",
+     ""
+    ],
+    [],
+    [
+     "SPY",
+     "2026-02-30",
+     "99"
+    ],
+    [
+     "spy",
+     "2026-10-03",
+     "99"
+    ],
+    [
+     "SPY",
+     "2026-10-05",
+     101.75
+    ],
+    [
+     "SPY",
+     "2026-10-06",
+     "-3"
+    ],
+    [
+     "SPY",
+     "2026-10-07",
+     "0"
+    ],
+    [
+     "SPY",
+     "2026-10-08",
+     "1e+400"
+    ],
+    [
+     "SPY",
+     "2026-10-08",
+     "1.5e2"
+    ],
+    [
+     "XLK",
+     "2026-10-08",
+     "1.5e+2"
+    ],
+    [
+     "KRW=X",
+     "2026-10-08",
+     "1400.125"
+    ],
+    [
+     "042700.KS",
+     "2026-10-08",
+     "98000"
+    ],
+    [
+     "BRK-B",
+     "2026-10-08"
+    ],
+    [
+     "SPY",
+     "1899-12-29",
+     "5"
+    ],
+    [
+     "SPY",
+     "2026-10-09",
+     "102",
+     "TIINGO",
+     "2026-10-13T00:00:00Z",
+     "extra"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "header": false,
+    "invalid": 0,
+    "rows": []
+   },
+   "interval": "1d",
+   "name": "empty_tab",
+   "values": []
+  },
+  {
+   "expected": {
+    "header": true,
+    "invalid": 0,
+    "rows": []
+   },
+   "interval": "1mo",
+   "name": "header_only",
+   "values": [
+    [
+     "symbol",
+     "date",
+     "close",
+     "source",
+     "fetched_at"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "error": "SHEET_HEADER_MISMATCH"
+   },
+   "interval": "1d",
+   "name": "header_mismatch",
+   "values": [
+    [
+     "symbol",
+     "date",
+     "interval",
+     "close",
+     "source",
+     "fetched_at"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "error": "SHEET_HEADER_MISMATCH"
+   },
+   "interval": "1d",
+   "name": "header_renamed",
+   "values": [
+    [
+     "symbol",
+     "date",
+     "Close",
+     "source",
+     "fetched_at"
+    ],
+    [
+     "SPY",
+     "2026-10-01",
+     "1"
+    ]
+   ]
+  },
+  {
+   "expected": {
+    "error": "SHEET_HEADER_MISMATCH"
+   },
+   "interval": "1d",
+   "name": "empty_header_with_rows",
+   "values": [
+    [],
+    [
+     "SPY",
+     "2026-10-01",
+     "1"
+    ]
+   ]
+  }
+ ],
+ "tabs_by_interval": {
+  "1d": "Prices_D",
+  "1mo": "Prices_M"
+ },
+ "universe": [
+  {
+   "code": "NYSE:BRK.B",
+   "expected": "BRK-B"
+  },
+  {
+   "code": "NASDAQ:NVDA",
+   "expected": "NVDA"
+  },
+  {
+   "code": "BATS:CBOE",
+   "expected": "CBOE"
+  },
+  {
+   "code": "NYSE:BF.B",
+   "expected": "BF-B"
+  },
+  {
+   "code": "KRX:042700",
+   "expected": null
+  },
+  {
+   "code": "TYO:8035",
+   "expected": null
+  },
+  {
+   "code": "nyse:mmm",
+   "expected": null
+  },
+  {
+   "code": "NYSE:",
+   "expected": null
+  },
+  {
+   "code": 42,
+   "expected": null
+  }
+ ]
+}
