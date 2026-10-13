@@ -52,3 +52,23 @@ def test_wikidata_domain_ambiguity_stays_missing():
     assert m.domain_logos(json.dumps(body))=={'nvidia.com':'Nvidia.svg'}
     body['results']['bindings'].append({'site':{'value':'https://nvidia.com'},'logo':{'value':'http://commons.wikimedia.org/wiki/Special:FilePath/Other.svg'}})
     assert m.domain_logos(json.dumps(body))=={}
+
+
+def test_live_build_matches_reviewed_domain_downloads_png_and_publishes_local_bytes(tmp_path):
+    m=tool();(tmp_path/'universe-domains.json').write_text(json.dumps(domains_payload()))
+    calls=[]
+    def fake(url,limit):
+        calls.append(url)
+        if url.startswith('https://query.wikidata.org/'):
+            return json.dumps({'results':{'bindings':[{'site':{'value':'https://www.nvidia.com/'},'logo':{'value':'http://commons.wikimedia.org/wiki/Special:FilePath/Nvidia_logo.svg'}}]}}).encode()
+        if url.startswith('https://commons.wikimedia.org/'):
+            return json.dumps({'query':{'pages':{'1':{'title':'File:Nvidia logo.svg','imageinfo':[{'thumburl':'https://upload.wikimedia.org/nvidia.svg.png'}]}}}}).encode()
+        assert url=='https://upload.wikimedia.org/nvidia.svg.png'
+        return png(True)
+    p=m.emit(tmp_path,live=True,fetcher=fake)
+    assert len(calls)==3
+    row=next(r for r in p['rows'] if r[0]=='NASDAQ:NVDA')
+    assert base64.b64decode(row[1][len(PREFIX):])==png()
+    assert sanitize_png(base64.b64decode(row[1][len(PREFIX):]))==png()
+    assert 'WIKIDATA'==row[2]
+    assert 'nvidia' in m.wikidata_query(['nvidia.com'])

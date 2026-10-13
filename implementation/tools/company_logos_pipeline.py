@@ -11,7 +11,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from investment_system.product.company_logos import FILENAME, MAX_IMAGE_BYTES, public_payload, require_company_logos, sanitize_png
 from investment_system.universe.universe_domains import FILENAME as DOMAINS, normalize_domain, require_universe_domains
 
-QUERY = 'SELECT ?site ?logo WHERE { ?item wdt:P856 ?site; wdt:P154 ?logo. }'
+def wikidata_query(domains):
+    # Bound each query to reviewed website domains instead of downloading all
+    # Wikidata logos; host boundaries also reject misleading suffix domains.
+    pattern = '^https?://(www\\.)?(' + '|'.join(domain.replace('.', r'\.') for domain in domains) + ')([/?#]|$)'
+    return 'SELECT ?site ?logo WHERE { ?item wdt:P856 ?site; wdt:P154 ?logo. FILTER(REGEX(STR(?site), ' + json.dumps(pattern) + ', "i")) }'
+
 
 
 def fetch(url, limit):
@@ -30,7 +35,7 @@ def domain_logos(body):
         logo = row.get('logo', {}).get('value', '')
         parts = urlsplit(logo)
         if domain and parts.hostname == 'commons.wikimedia.org' and parts.path.startswith('/wiki/Special:FilePath/'):
-            name = unquote(parts.path.split('/wiki/Special:FilePath/', 1)[1])
+            name = unquote(parts.path.split('/wiki/Special:FilePath/', 1)[1]).replace('_', ' ')
             if name and '|' not in name:
                 choices.setdefault(domain, set()).add(name)
     return {domain: next(iter(names)) for domain, names in choices.items() if len(names) == 1}
@@ -49,7 +54,11 @@ def emit(out, *, live=False, fetcher=fetch):
         try:
             domains = json.loads((out / DOMAINS).read_text())
             require_universe_domains(domains)
-            logo_names = domain_logos(fetcher('https://query.wikidata.org/sparql?' + urlencode({'query': QUERY, 'format': 'json'}), 4 * 1024 * 1024))
+            logo_names = {}
+            hosts = sorted({domain for code, domain, source in domains['rows'] if domain})
+            for start in range(0, len(hosts), 50):
+                query = wikidata_query(hosts[start:start+50])
+                logo_names.update(domain_logos(fetcher('https://query.wikidata.org/sparql?' + urlencode({'query': query, 'format': 'json'}), 1024 * 1024)))
             names = {code: logo_names[domain] for code, domain, source in domains['rows'] if domain in logo_names}
             titles = sorted(set('File:' + name for name in names.values()))
             urls = {}
