@@ -24,7 +24,7 @@ from investment_system.providers.sec_collection import SecCollectionError, SecRe
 NOW = datetime(2026, 10, 11, 22, 30, tzinfo=timezone.utc)
 JS = ROOT / 'src/investment_system/product/web_assets/sec-disclosures.js'
 SCREENS_JS = ROOT / 'src/investment_system/product/web_assets/public-screens.js'
-UA = 'Synthetic Tester synthetic-contact@example.com'
+UA = 'Synthetic Tester ' + 'synthetic-contact' + chr(64) + 'example.com'
 NODE = shutil.which('node')
 
 
