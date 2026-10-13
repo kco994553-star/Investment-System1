@@ -160,7 +160,7 @@ def _require(name,payload):
         _keys(data,('companies',));_need(isinstance(data['companies'],dict) and set(data['companies'])==set(OFFICIAL_V11_TARGETS))
         for row in data['companies'].values():
             # earnings_confirmation is optional so copies published before it existed stay valid.
-            _keys(row,('state','role','confirmed_earnings_date','groups','source_hashes')+(('earnings_confirmation',) if 'earnings_confirmation' in row else ()))
+            _keys(row,('state','role','confirmed_earnings_date','groups','source_hashes')+(('earnings_confirmation',) if 'earnings_confirmation' in row else ())+ (('qgv2_ttm_periods',) if 'qgv2_ttm_periods' in row else ()))
             _need(row['state'] in STATES and row['role']=='ESTIMATED_PATTERN_NOT_CONFIRMED' and isinstance(row['groups'],list))
             states.append(row['state']);_need((row['state']=='NOT_AVAILABLE')==(not row['groups']))
             _source_refs(row,sources,{'companyfacts':'SEC_COMPANYFACTS','submissions':'SEC_SUBMISSIONS'},cut,payload['stale_after_seconds'],row['state'])
@@ -173,6 +173,10 @@ def _require(name,payload):
                     _keys(w,('month','day_min','day_max','count'))
                     _need(all(type(v) is int for v in w.values()) and 1<=w['month']<=12 and 1<=w['day_min']<=w['day_max']<=31 and w['count']>0)
             _earnings_confirmation(row,cut)
+            if 'qgv2_ttm_periods' in row:
+                periods=row['qgv2_ttm_periods'];_keys(periods,('revenue','ebit'))
+                _need(set(row['source_hashes'])=={'companyfacts','submissions'} and any(v is not None for v in periods.values()))
+                for value in periods.values():_need(value is None or _day(value)<=cut.date())
     elif name=='macro-screen.json':
         _keys(data,('axes','dimensions','cells','observations','regime','pit_status')+tuple(k for k in ('growth_inflation_v0','raw_axes_v0','macro_lights_v1') if k in data))
         _need(data['axes']==list(AXES) and data['dimensions']==list(DIMENSIONS) and data['regime'] is None and data['pit_status'] in ('OBSERVED_BOUND_ONLY','NOT_VERIFIED'))
@@ -423,6 +427,24 @@ def _require_macro_raw(block,sources,cut,ttl,states):
         states.append(row['state'])
 
 
+def qgv2_ttm_periods(companyfacts,cutoff):
+    """Date-only lineage for the same v2 TTM selection; never a score or new formula."""
+    from ..qgv import v2_factors as vf
+    try:
+        taxonomy,currency=vf._taxonomy_and_currency(companyfacts,cutoff)
+        if taxonomy is None:return None
+        facts=vf._Facts(companyfacts,taxonomy,currency,cutoff)
+        ends=set().union(*(facts.annual_ends(item) for item in vf.ANCHOR_ITEMS))
+        if not ends:return None
+        company=vf._Company(facts,max(ends))
+        periods={}
+        for item in ('revenue','ebit'):
+            hit=company.ttm(item)
+            periods[item]=hit[1].isoformat() if hit is not None else None
+        return periods if any(v is not None for v in periods.values()) else None
+    except (TypeError,ValueError,AttributeError,KeyError,OverflowError,RecursionError):return None
+
+
 def qg_factor_scores(company_id,m1):
     """The one published price-free Q·G factor path (TARGET sec-qg-factors.json and Universe504 sec-universe-qg.json).
 
@@ -468,6 +490,8 @@ def _generate(manifest,root,as_of,stale_after):
         for rows in (qg,types,windows):rows[cid]['source_hashes']=dict(refs)
         state=_fresh(acquired,as_of,stale_after)
         valuation[cid]=_valuation.project_row(m1,state,refs,_current_ambiguity(m1) if m1['status']=='READY' else False)
+        periods=qgv2_ttm_periods(facts,as_of.date())
+        if periods is not None:windows[cid]['qgv2_ttm_periods']=periods
         timing=build_filing_timing_pattern(cid,sub,acquired,as_of)
         if timing['groups']:
             confirmed,confirmation=earnings_confirmation(cid,sub,timing['groups'],acquired_at=acquired,as_of=as_of)

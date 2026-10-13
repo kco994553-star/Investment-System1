@@ -51,3 +51,30 @@ def test_6k_collection_and_public_validation_keep_only_confirmed_quarterly_metad
     assert require_sec_disclosures(payload) is payload
     event, = payload['events']
     assert event['form'] == '6-K' and event['items'] == [] and event['classification'] == 'RESULTS'
+
+
+def test_qgv_quarter_period_metadata_uses_the_shared_ttm_rules_and_cutoff():
+    from investment_system.product.public_engine_screens import qgv2_ttm_periods
+    from tests.test_sec_qgv2 import simple_company, fact
+    company = simple_company()
+    for concept, current, prior in [('Revenues', 80, 70), ('OperatingIncomeLoss', 16, 14)]:
+        fact(company['facts'], concept, 'USD', current, '2026-06-30', start='2026-01-01', form='10-Q', filed='2026-08-01')
+        fact(company['facts'], concept, 'USD', prior, '2025-06-30', start='2025-01-01', form='10-Q', filed='2026-08-01')
+    assert qgv2_ttm_periods(company, date(2026, 10, 13)) == {'revenue': '2026-06-30', 'ebit': '2026-06-30'}
+    assert qgv2_ttm_periods(company, date(2026, 7, 1)) == {'revenue': '2025-12-31', 'ebit': '2025-12-31'}
+    assert qgv2_ttm_periods({}, date(2026, 10, 13)) is None
+
+
+def test_date_only_qgv_period_sidecar_rejects_amounts_and_future_dates(tmp_path):
+    import copy
+    import pytest
+    from tests.test_public_engine_screens import build, sec, api
+    payload = build(tmp_path, sec(tmp_path))['sec-filing-windows.json']
+    row = payload['data']['companies']['nvda']
+    assert row['qgv2_ttm_periods'] == {'revenue': '2025-12-31', 'ebit': None}
+    assert api().require_public_screen('sec-filing-windows.json', payload) is payload
+    for mutation in ({'revenue': '2099-12-31', 'ebit': None}, {'revenue': '2025-12-31', 'ebit': None, 'amount': 1}):
+        invalid = copy.deepcopy(payload)
+        invalid['data']['companies']['nvda']['qgv2_ttm_periods'] = mutation
+        with pytest.raises(ValueError):
+            api().require_public_screen('sec-filing-windows.json', invalid)

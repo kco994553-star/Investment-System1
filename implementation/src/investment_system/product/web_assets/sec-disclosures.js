@@ -28,10 +28,10 @@ function classify(items){for(const[code,name]of PRIORITY)if(items.includes(code)
 function quarterlyEarningsTitle(v){return typeof v==='string'&&/\b(?:q[1-4]|quarterly|(?:first|second|third|fourth)[ -]quarter|[1-4](?:st|nd|rd|th)[ -]quarter)\b/i.test(v)&&/\b(?:results|earnings)\b/i.test(v);}
 function classifyReport(form,items){return ['6-K','6-K/A'].includes(form)?'RESULTS':classify(items);}
 function qgvEarningsStatus(filingWindow,qgvRow){
- const c=filingWindow?.earnings_confirmation,v=qgvRow?.v_inputs_v2;
+ const c=filingWindow?.earnings_confirmation,v=qgvRow?.v_inputs_v2,periods=filingWindow?.qgv2_ttm_periods,refs=filingWindow?.source_hashes,source=qgvRow?.source_sha256;
  if(!c||!filingWindow.confirmed_earnings_date||qgvRow?.state!=='LIVE'||!v)return{status:'NOT_CONFIRMED',reason:'QUARTER_QG_NOT_REFLECTED'};
  const period=c.period_end;
- if(v.revenue?.ttm_end!==period||v.ebit?.ttm_end!==period)return{status:'NOT_CONFIRMED',reason:'QUARTER_QG_NOT_REFLECTED'};
+ if(!periods||periods.revenue!==period||periods.ebit!==period||v.ebit?.ttm_end!==period||!source||!refs||!['companyfacts','submissions'].every(k=>/^[0-9a-f]{64}$/.test(refs[k]||'')&&refs[k]===source[k]))return{status:'NOT_CONFIRMED',reason:'QUARTER_QG_NOT_REFLECTED'};
  return{status:'CONFIRMED',label:'확인',period_end:period,earnings_date:filingWindow.confirmed_earnings_date};
 }
 function folder(accession){return accession.replaceAll('-','');}
