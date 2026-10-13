@@ -16,7 +16,7 @@ import build_pages_cockpit  # noqa: E402
 OUT = ROOT / 'tools/fixtures/empty_public_screens.json'
 AS_OF = '2026-01-01T00:00:00+00:00'
 # Files every build carries regardless of SEC/government collection; everything else is a public screen sidecar.
-STATIC = {'data.json', 'entities.json', 'actual-catalog.json', 'manifest.json', 'sec-m2-candidates.json', 'universe-codes.json'}
+STATIC = {'data.json', 'entities.json', 'actual-catalog.json', 'manifest.json', 'sec-m2-candidates.json', 'universe-codes.json', 'universe-domains.json'}
 
 
 def build():

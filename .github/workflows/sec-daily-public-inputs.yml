@@ -60,6 +60,12 @@ jobs:
         run: |
           python implementation/tools/public_classification_pipeline.py --live --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - name: Collect company web domains for runtime logos (SEC website, then Wikidata P856; domains only)
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          python implementation/tools/universe_domains_pipeline.py --live --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Verify 13F manager CIKs and project reported quantity changes
         env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}

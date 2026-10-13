@@ -1,4 +1,5 @@
 "use strict";
+const {displayOnlyOff}=require('./display_only_off.js');
 // Synthetic positions, prices, FX, keys and exports stay in memory. Screenshots
 // are allowed only in fresh contexts with every device record absent.
 const { chromium } = require("playwright");
@@ -75,7 +76,7 @@ async function waitNotice(page, root, notice) { await page.waitForFunction(({ no
 async function save(page, root) { await root.locator('[data-action="save"]').click(); await page.waitForFunction(() => document.querySelector('[data-action="save"]')?.disabled === false); await waitNotice(page, root, "saved"); }
 async function dialog(page, run) { const listener = prompt => prompt.accept(); page.on("dialog", listener); try { await run(); } finally { page.off("dialog", listener); } }
 async function open(locale, width) {
-  const context = await browser.newContext({ viewport: { width, height: 844 }, locale });
+  const context = await browser.newContext({ viewport: { width, height: 844 }, locale });await displayOnlyOff(context);
   await context.addInitScript(({ locale, now }) => {
     localStorage.setItem("investment.web.v1.settings", JSON.stringify({ version: 1, display_locale: locale, source_language: "all" }));
     const NativeDate = Date; window.Date = class extends NativeDate { constructor(...args) { super(...(args.length ? args : [now])); } static now() { return NativeDate.parse(now); } };

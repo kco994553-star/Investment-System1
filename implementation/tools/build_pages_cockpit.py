@@ -8,6 +8,9 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
+# Sibling pipeline tools (public_screens_pipeline, universe_domains_pipeline) also when loaded by file path.
+if str(Path(__file__).resolve().parent) not in sys.path:
+    sys.path.append(str(Path(__file__).resolve().parent))
 from investment_system.product.web_mvp import build, repository_bundle
 
 
@@ -23,6 +26,9 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     # Price-free Universe504 code list for the Google sheet Universe tab (validated by the guard).
     from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES, public_payload
     (out / UNIVERSE_CODES).write_text(json.dumps(public_payload(), ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+    # Company web domains for runtime logos (domains only; no logo file is published).
+    from universe_domains_pipeline import emit as emit_domains
+    emit_domains(out)
     from public_screens_pipeline import emit
     emit(out)
     from public_classification_pipeline import emit as emit_classification

@@ -1,0 +1,25 @@
+{
+  "schema": "universe-domains-source/1",
+  "rows": {
+    "NASDAQ:ASML": {"domain": "asml.com", "source": "manual"},
+    "NASDAQ:LRCX": {"domain": "lamresearch.com", "source": "manual"},
+    "NASDAQ:KLAC": {"domain": "kla.com", "source": "manual"},
+    "NASDAQ:NVDA": {"domain": "nvidia.com", "source": "manual"},
+    "NASDAQ:AMD": {"domain": "amd.com", "source": "manual"},
+    "NASDAQ:AVGO": {"domain": "broadcom.com", "source": "manual"},
+    "NASDAQ:QCOM": {"domain": "qualcomm.com", "source": "manual"},
+    "NASDAQ:INTC": {"domain": "intel.com", "source": "manual"},
+    "NASDAQ:MSFT": {"domain": "microsoft.com", "source": "manual"},
+    "NASDAQ:GOOGL": {"domain": "abc.xyz", "source": "manual"},
+    "NASDAQ:GOOG": {"domain": "abc.xyz", "source": "manual"},
+    "NASDAQ:AMZN": {"domain": "amazon.com", "source": "manual"},
+    "NYSE:RTX": {"domain": "rtx.com", "source": "manual"},
+    "NYSE:SYK": {"domain": "stryker.com", "source": "manual"},
+    "NYSE:ETN": {"domain": "eaton.com", "source": "manual"},
+    "NYSE:HUBB": {"domain": "hubbell.com", "source": "manual"},
+    "NYSE:GEV": {"domain": "gevernova.com", "source": "manual"},
+    "NYSE:ROK": {"domain": "rockwellautomation.com", "source": "manual"},
+    "KRX:042700": {"domain": "hanmisemi.com", "source": "manual"},
+    "TYO:8035": {"domain": "tel.com", "source": "manual"}
+  }
+}
