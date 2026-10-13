@@ -16,7 +16,7 @@
 - **#230 D 정리/가드 병합 완료**: exact head `bff1f4df`, 필수6 SUCCESS/실패0, normal merge `4976092b`(14:28:38 UTC). 저장소/Pages 이메일 패턴 차단, 정확 공개 역사만 보존. Worker #229는 이 최신 기준 동기화·필수6 재확인 후 이미 승인된 범위로 병합.
 - #227: 로컬 PNG/data 이미지 번들·직접iframe OFF 구현, 브라우저390/1280 로고2·iframe2 PASS. PNG 실제 decode/RGBA8 재인코딩 및 잘못된 raster/bitdepth/tRNS 회귀15PASS·E 재검토 중요 문제0. D 별도 worktree `d-227`, 후속 보완 commit·최신 기준 동기화·CI 준비 중. **병합 재승인 필요**, 외부 지원 조사 없음.
 - DART 키 등록 사용자 확인됨. C 보고: 최신 실행 BEA_USERID 설정 마스킹 정상; 예전 빈 전달 로그를 근거로 재등록 요청하지 않는다. Fed 원인404/빈 추출, 공식 소스확인403이며 반복 시도 금지.
-- Worker Universe504(하이픈 포함)·HYG·IEF 확대는 사용자 범위 승인, #229 `b5cab386`의 211기준6SUCCESS 확인. 현재 #230까지 최신 canonical 동기화/새HEAD6 재확인 진행. 로컬 실제504·Worker169·Python2728·Node50·Pages87 PASS. 범위는 이미 승인됨. 범위 승인은 이미 있으므로 재승인 요청하지 않는다. 배포는 별도 결정 전 기존 Worker 유지.
+- Worker Universe504(하이픈 포함)·HYG·IEF 확대는 사용자 범위 승인, #229 `b5cab386`의 211기준6SUCCESS 확인. 현재 #230까지 최신 canonical 동기화/새HEAD6 재확인 진행. 로컬 실제504·Worker169·이전전체Python2648+267sub·최신focused102+123sub·Node49·Pages87 PASS. 범위는 이미 승인됨. 범위 승인은 이미 있으므로 재승인 요청하지 않는다. 배포는 별도 결정 전 기존 Worker 유지.
 - **10/19 v2 기록 시작은 아직 확정하지 못함**. A의 V·공개입력·v1/v2 원장 준비와 신규 PR 승인 후 실제 시작일을 보고한다. 소급하지 않는다.
 
 ## 레인별 진행 (진행분은 브랜치·PR로 보존)
