@@ -13,6 +13,11 @@ User queue 2.1: the SAME fetched companyfacts/submissions bytes also produce the
 price-free Q·G factor scores (`sec-universe-qg.json`, the TARGET sec-qg-factors path)
 in-process: no extra SEC request. That file merges with its own previous Pages copy
 by the same rules; the shares output format is unchanged.
+
+QGV v2 (user decision 2026-10-13, GSQ-022 pending): the same bytes also give the v2 Q·G raw
+metrics and `v_inputs_v2` (`sec-qgv2.json`). TARGET rows staged earlier in the same output
+folder by tools/public_screens_pipeline.py --live are carried in; percentiles are recomputed at
+publication over all current LIVE/STALE Universe rows. A v2 failure never changes the other files.
 """
 import argparse
 from datetime import datetime, timezone
@@ -38,9 +43,11 @@ from investment_system.universe.sec_universe_shares import (
     select_cover_filing, shard_index_for, universe_codes, upgrade_legacy,
 )
 from investment_system.universe import sec_universe_qg as qg
+from investment_system.universe import sec_qgv2 as qgv2
 
 SOURCE = 'https://kco994553-star.github.io/Investment-System1/' + FILENAME
 QG_SOURCE = 'https://kco994553-star.github.io/Investment-System1/' + qg.FILENAME
+QGV2_SOURCE = 'https://kco994553-star.github.io/Investment-System1/' + qgv2.FILENAME
 RAW_REPO = 'kco994553-star/investment-system1-raw'
 RAW_TOKEN_ENV = 'RAW_REPO_TOKEN'
 
@@ -91,6 +98,22 @@ def fetch_previous_qg(*, open_response=None):
     return None if body is None else qg.require_universe_qg(qg.parse_json(body))
 
 
+def fetch_previous_qgv2(*, open_response=None):
+    """Live Pages `sec-qgv2.json` -> validated payload, None on 404 (start fresh). Invalid -> ValueError."""
+    body = _fetch_body(QGV2_SOURCE, qgv2.MAX_BYTES, open_response)
+    return None if body is None else qgv2.require_qgv2(qgv2.parse_json(body))
+
+
+def read_staged_target(directory):
+    """TARGET rows staged in this output folder by the TARGET daily step ({} when absent). Invalid -> ValueError."""
+    path = Path(directory) / qgv2.FILENAME
+    if path.is_symlink():
+        raise ValueError('SEC_QGV2_INVALID')
+    if not path.is_file():
+        return {}
+    return qgv2.target_updates_from(qgv2.require_qgv2(qgv2.parse_json(path.read_bytes())))
+
+
 def write(directory, payload, *, name=FILENAME, encoder=encode):
     directory = Path(directory)
     destination = directory / name
@@ -111,7 +134,11 @@ def write_qg(directory, payload):
     return write(directory, payload, name=qg.FILENAME, encoder=qg.encode)
 
 
-def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, config=None, qg_updates=None):
+def write_qgv2(directory, payload):
+    return write(directory, payload, name=qgv2.FILENAME, encoder=qgv2.encode)
+
+
+def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, config=None, qg_updates=None, qgv2_updates=None):
     """Collect today's shard. Returns (updates, unlisted_updates, unresolved_codes, registry_sha256, shard_index, counts).
 
     With `qg_updates` (a dict), the same fetched bytes also fill that dict with this shard's Q·G rows (no extra request)."""
@@ -136,6 +163,14 @@ def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, confi
             except Exception:
                 rows = {code: qg.empty_record(cik=issuer.cik, reasons=('INVALID_INPUT',)) for code in issuer.codes}
             qg_updates.update(rows)
+        if qgv2_updates is not None:
+            # QGV v2 from the same bytes; a failure is INVALID_INPUT for this issuer only.
+            try:
+                rows = qgv2.build_issuer_records(codes=issuer.codes, cik=issuer.cik, companyfacts_body=facts,
+                                                 submissions_body=submissions, acquired_at=acquired)
+            except Exception:
+                rows = {code: qgv2.empty_record(cik=issuer.cik, reasons=('INVALID_INPUT',)) for code in issuer.codes}
+            qgv2_updates.update(rows)
         filing = select_cover_filing(submissions, acquired)
         cover = cover_at = None
         if filing is not None:
@@ -254,6 +289,20 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     except Exception:
         print('SEC_UNIVERSE_QG PREVIOUS_FETCH_FAILED')
         return 1
+    # QGV v2: the TARGET rows staged in this folder are read before anything here is written.
+    try:
+        staged_target = read_staged_target(out)
+    except Exception:
+        print('SEC_QGV2 STAGED_TARGET_DISCARDED')
+        staged_target = {}
+    try:
+        previous_qgv2 = fetch_previous_qgv2(open_response=open_previous)
+    except ValueError:
+        print('SEC_QGV2 PREVIOUS_DISCARDED')
+        previous_qgv2 = None
+    except Exception:
+        print('SEC_QGV2 PREVIOUS_FETCH_FAILED')
+        return 1
     try:
         if previous is not None:
             write(out, merge(previous, {}, as_of=now(), shard_index=previous['last_shard_index'], config=cfg))
@@ -272,6 +321,16 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     except Exception:
         print('SEC_UNIVERSE_QG OUTPUT_FAILED')
         return 1
+    # A v2 failure is reported with a fixed code and never fails the other files (the last valid v2 copy stays).
+    try:
+        if previous_qgv2 is not None or staged_target:
+            write_qgv2(out, qgv2.merge(previous_qgv2, {}, as_of=now(), config=cfg, target_updates=staged_target,
+                                       shard_index=previous_qgv2['last_shard_index'] if previous_qgv2 else None))
+            print('SEC_QGV2 PREVIOUS_RESTORED' + (f' staged_target={len(staged_target)}' if staged_target else ''))
+        elif preserve_only:
+            print('SEC_QGV2 PREVIOUS_NOT_AVAILABLE')
+    except Exception:
+        print('SEC_QGV2 OUTPUT_FAILED')
     if preserve_only:
         return 0
     if not live:
@@ -280,11 +339,11 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     token = environ.get(RAW_TOKEN_ENV) or None
     with tempfile.TemporaryDirectory(prefix='sec-universe-raw-') as private:
         raw_dir = Path(private) / 'raw' if token else None
-        qg_updates = {}
+        qg_updates, qgv2_updates = {}, {}
         try:
             updates, unlisted_updates, unresolved, registry_sha, index, counts = collect(
                 user_agent=environ.get('SEC_USER_AGENT', ''), now=now, client_kwargs=client_kwargs, raw_dir=raw_dir, config=cfg,
-                qg_updates=qg_updates)
+                qg_updates=qg_updates, qgv2_updates=qgv2_updates)
         except SecCollectionError as error:
             code = error.args[0] if error.args and error.args[0] in {'SEC_USER_AGENT_INVALID', 'SEC_UNIVERSE_INPUT_INVALID',
                 'SEC_UNIVERSE_CONFIG_INVALID', 'SEC_CONFIG_INVALID', 'SEC_HTTP_RETRIES_EXHAUSTED', 'SEC_TRANSPORT_RETRIES_EXHAUSTED'} else 'SEC_UNIVERSE_FAILED'
@@ -315,6 +374,15 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
         shard_rows = [qg_updates[code] for code in sorted(qg_updates)]
         print(f"SEC_UNIVERSE_QG shard={index}/{cfg['shard_count']} codes={len(shard_rows)} "
               f"scored_codes={sum(1 for r in shard_rows if r['state'] != 'NOT_AVAILABLE')} {_qg_summary(qg_payload)}")
+        try:
+            qgv2_payload = qgv2.merge(previous_qgv2, qgv2_updates, as_of=now(), shard_index=index, registry_sha256=registry_sha,
+                                      unresolved=unresolved, config=cfg, target_updates=staged_target)
+            write_qgv2(out, qgv2_payload)
+            v2_rows = [qgv2_updates[code] for code in sorted(qgv2_updates)]
+            print(qgv2.summary_line(qgv2_payload, prefix=f"SEC_QGV2 shard={index}/{cfg['shard_count']} codes={len(v2_rows)} "
+                                    f"with_data={sum(1 for r in v2_rows if r['fiscal_year_end'] is not None)}"))
+        except Exception:
+            print('SEC_QGV2 OUTPUT_FAILED previous_kept')
         if counts['all_failed']:
             print('SEC_UNIVERSE_SHARES SHARD_ALL_FAILED previous_kept')
         if token is None:
