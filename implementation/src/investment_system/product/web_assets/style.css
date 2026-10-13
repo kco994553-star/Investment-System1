@@ -717,6 +717,8 @@ main, .card, .grid > *, .axis-grid > *, .hub-grid > * {min-width:0;}
 .co-logo {position: relative; display: inline-flex; align-items: center; justify-content: center; flex: none; overflow: hidden; border-radius: 50%; color: #fff; font-weight: 700; vertical-align: middle; margin-right: 6px; line-height: 1;}
 .co-logo::before {content: attr(data-letter);}
 .co-logo-20 {width: 20px; height: 20px; font-size: 11px;}
+/* In table cells the logo floats beside the text, so it never widens a column's minimum width. */
+td .co-logo {float: left; margin: 1px 6px 0 0;}
 .co-logo-40 {width: 40px; height: 40px; font-size: 19px; margin-right: 10px;}
 .co-logo-img {position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fff; opacity: 0;}
 .co-logo[data-logo-state="img"] {box-shadow: inset 0 0 0 1px var(--line);}
