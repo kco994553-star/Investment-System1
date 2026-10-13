@@ -4,7 +4,7 @@
 
 ## 현재 위치
 
-- canonical: `claude/investment-system-top500-validation-alrugm`, 확인 HEAD `e048963f`(#211 병합, 2026-10-13 14:07:31 UTC).
+- canonical: `claude/investment-system-top500-validation-alrugm`, 확인 HEAD `6717c896`(#229 병합, 2026-10-13 14:59:17 UTC).
 - **#222 GSQ-022/023 병합 완료**: exact head `d25161e4`, 필수 6체크 SUCCESS·실패 0에서 정상 merge. force/admin 없음. 별도 수동 배포·Worker 배포는 실행하지 않았다.
 - 기존 승인 병합 순서: **#222 → #224 → #226 → #225 → #210 → #215 → #211**. 새 레인 PR: D → A → B → C → E. 모든 병합은 D가 한 건씩 수행한다.
 - **#224 병합 완료**: exact head `39b474c3`, 필수6 SUCCESS/실패0, normal merge `84998f27`. A가 업종 하위 지표 표본<8 GENERAL 전체분포 대체 규칙과 회귀 테스트 확인. canonical merge-forward 후 head `39b474c3` push 후 CI 성공 확인하여 병합.
@@ -13,35 +13,44 @@
 - **#210 병합 완료**: exact head `8cead6ac`, 필수6 SUCCESS/실패0, normal merge `7136aa3f`(13:11:19 UTC). 당시 다음은 #215 → #211. 현재 #211까지 모두 완료.
 - **#215 병합 완료**: exact head `0b4151a5`, 필수6 SUCCESS/실패0, normal merge `7a3745d5`(13:47:22 UTC). 당시 다음은 #211, 현재 모두 완료. 모든 레인 정상 merge-forward/최신 CI 진행.
 - **#211 병합 완료**: exact head `67726de4`, 필수6 SUCCESS/실패0, normal merge `e048963f`(14:07:31 UTC). 기존 사용자 승인 7개 순서 전부 완료. DART 실 Secret 연결 성공은 다음 수집 실행 전 미확인; 코드/오프라인 계보 검증만 완료.
-- #227: 로컬 PNG/data 이미지 번들·직접iframe OFF 구현, 브라우저390/1280 로고2·iframe2 PASS. PNG 실제 decode/RGBA8 재인코딩 및 잘못된 raster/bitdepth/tRNS 회귀15PASS·E 재검토 중요 문제0. D 별도 worktree `d-227`, 후속 보완 commit·최신 기준 동기화·CI 준비 중. **병합 재승인 필요**, 외부 지원 조사 없음.
+- **#230 D 정리/가드 병합 완료**: exact head `bff1f4df`, 필수6 SUCCESS/실패0, normal merge `4976092b`(14:28:38 UTC). 저장소/Pages 이메일 패턴 차단, 정확 공개 역사만 보존. Worker #229까지 병합 완료. #236은 최종 인수인계 문서 PR로 보존한다.
+- **#227 수정본 → #237 clean 대체 PR**: canonical6717 기반 완성 소스를 신규 브랜치로 보존. 원래227의 post-session 테스트 버전은 이메일 history 검사에 걸려 예외/force 없이 [#237](https://github.com/kco994553-star/Investment-System1/pull/237)로 대체했으며 원래227은 대체 링크를 남기고 닫았으며 브랜치/이력은 그대로 유지한다. Actions 로고 PNG 번들·직접 iframe OFF 구현. PNG 실제 decode/RGBA8 재인코딩 및 잘못된 raster/bitdepth/tRNS 회귀15PASS·E 재검토 중요 문제0. 로고/iframe390·1280 각2PASS. 새HEAD `639a59bf`의 privacy/email48records 위반0·Node50·Pages91·Python93+125sub·로고/iframe/잔고6브라우저 PASS, 필수6 모두 SUCCESS·deploy SKIPPED이며 **#237 수정본 병합 재승인 필요**. KRX/TSE 지원은 확인 불가, 외부 지원 조사 없음.
 - DART 키 등록 사용자 확인됨. C 보고: 최신 실행 BEA_USERID 설정 마스킹 정상; 예전 빈 전달 로그를 근거로 재등록 요청하지 않는다. Fed 원인404/빈 추출, 공식 소스확인403이며 반복 시도 금지.
-- Worker Universe504(하이픈 포함)·HYG·IEF 확대는 사용자 범위 승인, #229 `41e02736` 최신6SUCCESS·canonical7136 동기화 완료. 로컬 실제504 및 Worker169·Python2648·Node47·Pages82 PASS. 기존 #211 우선 뒤 범위 승인대로 병합. 범위 승인은 이미 있으므로 재승인 요청하지 않는다. 배포는 별도 결정 전 기존 Worker 유지.
+- **#229 Worker 확대 병합 완료**: exact head `9cbbdeb3`, 필수6 SUCCESS·실패0, normal merge `6717c896`(14:59:17 UTC). Universe504(하이픈 포함)·HYG·IEF는 사용자 승인 범위 그대로. 최신 집중검사189+262subtests·합성504 PriceStore·Worker169·잔고 KO 허용/QQQ 차단·credential-free Wrangler dry-run PASS. 실제504 가격 수집·Worker 배포는 실행하지 않았다. 별도 배포 결정 전 기존 Pages·Worker 유지.
 - **10/19 v2 기록 시작은 아직 확정하지 못함**. A의 V·공개입력·v1/v2 원장 준비와 신규 PR 승인 후 실제 시작일을 보고한다. 소급하지 않는다.
+
+## 로컬 통합 미리보기 검증
+
+`codex/integration-review-20261013`의 frozen HEAD `de061f31`에 A#234·B#233·C#235·E#231·수정#227(현재clean대체#237) 및 canonical6717을 로컬 통합했다. 원격 push·canonical 병합·배포 없이 검증하며, 합성 입력의 결과를 실제 외부 수집 성공으로 표현하지 않는다.
+
+- 공개 산출물97·정적83·실제SHA/최신 가드 PASS. MAX_ENTRIES128은 수정227/통합 미리보기에만 적용한다.
+- B 실제 normalboot390/1280: 19종목 패널·유효 TARGET15·EUR 자료/USD 가격 거절·백업4 PASS. 가격값은 RAM에서만 계산한다.
+- C5 실제 normalboot390/1280: 같은 TTM·원자료 SHA 일치 양성 및 기간/SHA 불일치 음성 총6 PASS.
+- 실제 통합 A/C DART 원장 Python/JS 동등 계산·원파일 bytesSHA·v1 불변·NA 사례 PASS, Worker169 PASS.
+- frozen 통합 전체 Python **2917PASS+271subtests**(143.76초)·실패0, CI와 같은 Node22.23.3의 **54 manifest PASS**·실패0. 전체 브라우저 **60고유파일 PASS**(최초59PASS/1FAIL 뒤 QGV 엄격 classifier/basis 회귀를 강화하여 해당1파일을 Node22.23.3에서 v1/v2×390/1280 **4/4PASS** 재검증). runtime artifact는 de061f31과 byte 동일, 강화 test source는32e8e020이다.
 
 ## 레인별 진행 (진행분은 브랜치·PR로 보존)
 
 | 레인 | 완료 | 진행 | 대기·막힘 | 다음 |
 | --- | --- | --- | --- | --- |
-| A QGV v2 | #224 Q/G 병합, V·원장2·기기별 v2 V이력·#18 optional 투영 구현 | #234 d9107b87 발행·5SUCCESS/build진행. Python2673·Node49·Pages86·브라우저15PASS | 신규 계산/공개 PR 승인; 실제 품질224/504(3/7샤드), Q207/G222, 전체504 미완료 | 10/19 실제 기록 미확정, 승인·배포 후 준비일부터 소급 없이 |
-| B 플레이북 | #226 engine 병합; 19패널·백업4·E5·R1·W1·정보E4·채점 구현 | #233 최신 canonical 동기화·전체 CI | TARGET v1은 A 선행; 휴장일 채점 B-1은 NA | 화면 전용 필수6 성공 뒤 순서에 따라 병합 |
-| C 데이터·매크로 | #210 병합; DART6FY 공급·5경고등·운영 연결 준비 | 새 clean 브랜치 공용등록/emptyfixture/guard88 준비, 최종전체검증 뒤 PR 발행; #215→#211 통합 | Fed 소스403; 실 DART 첫 실행 미확인, A shared API 선행 | old #232 보존/병합 금지, 대체 PR 검증 후 승인 요청 |
-| D 운영 | #222·224·226·225·210 순서 병합; D4 검색/복원/404 기존6테스트 PASS | #215→#211, 이메일 guard #230, #227 PNG 보완, 공용 조정 | #227 재승인, 배포 D-DEPLOY | 정확 HEAD6체크 후 직렬 병합·인수인계 push. guard240+262subtests/E 독립84+137·우회탐침 PASS |
-| E 13F·테마·Universe | E1·E4·E5 기존 구현 검증; 6808/6808 역사검증+실 privateRelease 존재/크기/digest 확인 | #231 94d2b6cb 보강·canonical7136 동기화·필수6SUCCESS | E2 공개경계 승인 대기; 없는 W2/E4 데이터 NA/비활성 | 최신6체크 유지. Release 무만료, artifact만 2026-12-26 만료 |
+| A QGV v2 | #234 구현·회귀 완료/승인 대기, #224 Q/G 병합, V·원장2·분리된 v2 기기 V이력·#18 strict6FY·한미 optional reference 구현 | #234 d20a895c: cfg/engine 필수2script 로드로 B 화면 유무와 관계없이 같은 분류 적용. 최신 Node22 manifest51·브라우저55/55·M2 4/4·standalone/통합 QGV4+4·Worker169·Pages91/static79·가드47+125sub PASS | 새 계산/공개 PR 승인; 앞선 head 원격 build 실패의 파일명 관측을 보완, 최신d20의 필수6 SUCCESS를 독립 GitHub Connector check-runs로 확인. 조건 완화 없음. 실제 품질224/504(3/7샤드), Q207/G222 | 10/19 실제 시작 미확정. #18 213코드/210발행사·#19 3PASS/3FAIL/13NA, 준비일부터 소급 없이 |
+| B 플레이북 | #226 engine 병합; 19패널·백업4·E5·R1/W1·정보E4·채점 준비; RAM 내비게이션/통화 일치·quota 역순 rollback 수정 | #233 df19f835 필수6 SUCCESS: exactcanonical6717 반영, Node18·backup10·engine11 및 실제 normalboot390/1280 PASS | B6 초안 편집 준비·최종저장 A#234/v2입력 선행, B-1 휴장일 채점 NA | A 선행 및 마지막 canonical 동기화6 확인 뒤 화면 PR 병합 |
+| C 데이터·매크로 | #210/#215/#211 병합; DART6FY 같은 v2 API·5경고등·TTM 날짜/해시·운영 연결·한미 원장 bridge 준비 | #235 8430ef62 필수6 SUCCESS: Py2833+273sub·Node52·390/1280브라우저12·strict55records/email0 PASS | Fed 공식 소스403; 실 DART Secret 첫수집 NOT_RUN. 실제 과거 매크로 2/5만 재생, full5 NOT_RUN | 공개입력/워크플로 승인 및 A 선행. old #232는 대체 PR 링크로 닫고 이력 보존 |
+| D 운영 | 기존 승인7개 순서 및 #230·#229 병합; D4 기존6테스트 PASS·레거시9종 등록 유지·삭제0 | #236 최종 문서·안전한 CI 실패파일 진단2개·공용 핀·각 레인 canonical 동기화; 로컬 통합 preview de061f31(97파일/83정적) 가드 PASS | #237(#227 수정본) 재승인·별도 배포 D-DEPLOY. 통합2917+271sub·Node54·브라우저60고유파일·97파일 가드 PASS | guard240+262sub/E 독립84+137·우회/긴토큰 검증 PASS. 정확HEAD6 후 #236 병합 |
+| E 13F·테마·Universe | E1/E4/E5 기존 구현 검증; Frozen6808/6808+실 privateRelease 존재/크기/digest 확인 | #231 1061e605 canonical6717 동기화·필수6 SUCCESS; 변경공용47+125sub·이전270+262sub·Node49 PASS, 새6 SUCCESS | E2 공개경계 승인 전 W2 기관수 NA/13F E4 비활성 | 최신6 유지. Release 무만료·artifact만 2026-12-26 만료 |
 
-## 열린 PR 실제 상태 (2026-10-13 조회)
+## 열린 PR 실제 상태 (2026-10-13 마지막 원격 관측)
 
 필수 체크는 repository-guard / ingest-and-gate / build / validate / guard / presentation. 역사 base의 0/6은 그 당시 별도 체크의 실패를 뜻하지 않는다. 최신 체크를 다시 조회한 뒤 병합하며, 과거 PR은 자동 닫지 않는다.
 
 | PR | HEAD | 필수 체크 | 충돌 | 권장 | 이유 |
 | --- | --- | --- | --- | --- | --- |
-| #234 | `d9107b87` | 5/6 | MERGEABLE | 승인 대기 | A v2 V·공개입력·원장2 구현; 기본v2 결정은 이미 승인 |
-| #233 | `eb73c71c` | 0/6 | MERGEABLE | 6체크 후 화면 병합 | B 플레이북·백업, A 순서/입력 선행 |
-| #232 | `7bd9881f` | 0/6 | CONFLICTING | 유지·병합 금지 | new clean 브랜치 대체, 공개 역사 보존 |
-| #231 | `94d2b6cb` | 6/6 | MERGEABLE | 공개경계 승인 대기 | 필수6 SUCCESS; E 13F 원값 보강 |
-| #230 | `9b3291be` | 5/6 | MERGEABLE | 6체크 후 병합 | D 운영·이메일 guard |
-| #229 | `41e02736` | 6/6 | MERGEABLE | 승인순서 뒤 병합 | 필수6 SUCCESS; 범위 이미 승인/배포 별도 |
-| #228 | `488d1b87` | 5/6 · 실패 build | MERGEABLE | 닫기 제안 | D230 포함; 자동 닫지 않음 |
-| #227 | `d9197b8a` | 5/6 | MERGEABLE | 수정본 재승인 | PNG검증 포함2694/Node48/로고iframe4PASS; 빌드수집 |
+| #237 | `639a59bf` | 6/6 | MERGEABLE | #227 수정본 재승인 | 같은 완성소스·엄격 이메일 가드 PASS의 clean 대체 |
+| #236 | `이 PR 최종 HEAD` | 문서 갱신 뒤 재검사 | canonical6717 동기화 | 6체크 후 정리 병합 | 최종 문서·CI 실패파일 진단만; 산식/체크조건/YAML 변경 없음 |
+| #235 | `8430ef62` | 6/6 | MERGEABLE | 공개/워크플로 승인 대기 | DART6FY·macro·TTM 계보, clean235로 old232 대체 |
+| #234 | `d20a895c` | 6/6 | MERGEABLE | 계산/공개 승인 대기 | 기본v2 이미 결정됨; 새 V/원장2/공개 descriptor |
+| #233 | `df19f835` | 6/6 | MERGEABLE | 6체크/A 선행 후 화면 병합 | canonical6717와 RAM 가격/통화 fix 최종반영 |
+| #231 | `1061e605` | 6/6 | MERGEABLE | 공개 승인 대기 | SEC13F 원값, 가격 변환·개인 보유 없음 |
 | #71 | `923ba8ea` | 5/6 | CONFLICTING | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #43 | `4c5f7ff9` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #31 | `c9e0fa7e` | 1/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
@@ -59,23 +68,29 @@
 | #7 | `a013f1c1` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #4 | `ff78c4f6` | 1/6 | CONFLICTING | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 
-#152·#153은 #178 대체로 이미 닫힘(10/11 기록). 기존 레거시9종 app_nav_ia / device_actual / google_sheet_storage / manual_quotes / prompt_field_guide / web_mvp / web_research_guard / web_state_presentation / global_language_search 모두 현행 CI manifest에 등록됨. 삭제 없음; 현재 UI 검증을 수행한다.
+**#227→#237, #228→#236, #232→#235 대체 정리 완료**: 세 PR은 10/13 닫고 각 본문에 대체 링크·사유를 남겼다. 브랜치·커밋 이력 삭제 없음. #152·#153은 #178 대체로 이미 닫힘(10/11 기록). 기존 레거시9종 app_nav_ia / device_actual / google_sheet_storage / manual_quotes / prompt_field_guide / web_mvp / web_research_guard / web_state_presentation / global_language_search 모두 현행 CI manifest에 등록됨. 삭제 없음; 현재 UI 검증을 수행한다.
 
 ## 사용자 결정 대기
 
-[USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md)에 남은 결정만 기록한다. 승인된 기존 PR 순서·플레이북26건·DART 등록·Worker 확대는 다시 대기 질문하지 않는다. 신규 계산·워크플로·공개경계·외부연결·GSQ PR은 완성본 승인, #227은 수정본 재승인. 테스트/문서/화면만이면 필수6체크로 자체 병합 가능.
+[USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md)에 남은 결정만 기록한다. 승인된 기존 PR 순서·플레이북26건·DART 등록·Worker 확대는 다시 대기 질문하지 않는다. 신규 계산·워크플로·공개경계·외부연결·GSQ PR은 완성본 승인, #227은 수정본 재승인. 테스트/문서/화면만이면 필수6체크로 자체 병합 가능. CI 원격 전용 실패에는 테스트 조건을 완화하지 않고 실패 manifest명/종료코드·M2 phase/error.name만 annotation한다. shell exit/첫 실패 중단4경계 및 M2 runtime canary 미노출/exit1 회귀 PASS.
+
+## 원격 접근 상태
+
+GitHub CLI는 10/13 조회에서 HTTP401 Bad credentials로 막혔다. 값 출력·같은 인증 경로 반복 시도 없음. 독립된 기존 GitHub Connector는 정상 인증되므로 원격 조회·완성된 문서/테스트 진단 게시·정확HEAD6 확인은 그 연결로 이어간다. 새 Secret·외부 허용 범위·역사 예외는 추가하지 않는다. 원격 #236 기존8ebd4b73의6SUCCESS는 이후 로컬 변경의 CI 성공으로 간주하지 않으며, 게시된 새HEAD에서 다시 검사한다.
 
 ## 다음 할 일 5개
 
-1. #222→#224→#226→#225→#210 완료. 기존7개 완료. #230·#229 최신e048963f 동기화·필수6 재확인 후 승인 범위 병합.
-2. #230 이메일 패턴 가드: 기존 Frozen의 동일 문자열만 유지; 정확 pre-session 공개 PR root/path의 역사만 보존. 현재 tree·새 commit·추가 후 삭제는 예외 없음. force 없이 역사 유지.
-3. A 최종 계산 PR·전체회귀/부분 품질보고 보존, B/E/Worker common 대기 해제 후 자체 검증 병렬 진행.
-4. #227 PNG strict decode 후속·현대 canonical CI·검토본으로 재승인. #229 범위 승인 재요청 없이 6체크 확인, 배포 별도.
-5. 결정 B-1·A-V2·C-MACRO·E-13F·D-227·D-DEPLOY만 남김. 매 병합과 작업 완료 때 이 절과 PR 표를 갱신.
+1. #236 최종 문서·CI 진단4파일을 동일 검증 blob으로 push하고 최신6 성공 후 자체 병합. 각 레인 canonical 재동기화/최신6 확인; C manifest의 중복2node/2browser도 D가 정리.
+2. 로컬 통합2917+271sub·Node54·60고유브라우저·Worker169·97파일 가드 및 실제 RAM/TARGET/C5/DART원장 연결 PASS. 검증 이력/부분 재검증을 보존하며 실제main으로 통합 병합하거나 배포하지 않는다.
+3. A#234 새 계산/공개·C#235 수집/공개·E#231 공개·#227 clean 수정본#237 재승인 요청. 승인 순서 A→B→C→E, B 화면 PR은 선행 A와 필수6 성공 뒤 자체병합 가능.
+4. Fed403/실 DART 첫 실행/전체504와 실제 매크로full5 재생 미완료는 원인·범위를 보존하고 같은 외부 실패 재시도 금지. 10/19 실제 시작은 준비/승인/배포 확인 후 정하며 소급 금지.
+5. 남은 결정 B-1·A-V2·C-MACRO·E-13F·D-227·D-DEPLOY만 유지. Worker 범위/키 등록/v2 기본/기기 V이력 저장 승인 재요청 없음.
 
 ---
 
-# 이전 인수인계 (참고·현재 상태 아님)
+# 이전 인수인계 (과거 기록·현재 운영 기준 아님)
+
+이하 내용은 이전 세션의 과거 기록이다. 예전의 등록 대기·알림 전 호출 금지·BEA 재등록·미승인 상태를 현행 운영에 재적용하지 않는다. **DART_API_KEY는 사용자 등록 완료 확인, 실제 Secret 수집 Actions는 NOT_RUN. BEA_USERID는 최신 SET_MASKED·재등록 불필요.** 현재 승인·완료·대기 6건은 이 파일 첫 절과 USER_DECISIONS_PENDING.md만 따른다.
 
 # 현재 인수인계 — 2026-10-13 (Claude Code 메인 개발)
 
@@ -269,16 +284,16 @@
 - 로컬 Playwright는 CI와 같은 **playwright@1.58.2**를 써야 한다(1.56에서는 PWA 오프라인 테스트가 거짓 실패).
 - 공개 산출물 해시는 `implementation/tools/pages_artifact_guard.py` APPROVED_SHA256에 고정. 웹 자산을 바꾸면 해시·`files_scanned`·`test_pages_cockpit_build.py` 파일 목록을 함께 갱신한다.
 
-## 비밀값·외부 서비스 — 이름과 저장 위치만
+## 비밀값·외부 서비스 — 현행 설정 이름·상태 (2026-10-13 갱신)
 
 | 서비스 | 상태 | 필요한 이름 | 저장 위치 |
 | --- | --- | --- | --- |
 | Cloudflare Worker | 위 실제 deploy SUCCESS, 본인 가격 경로 | ALLOWED_EMAIL, GOOGLE_CLIENT_ID, TIINGO_API_KEY, KRX_API_KEY | Worker: ALLOWED_EMAIL/TIINGO_API_KEY/KRX_API_KEY Secret, GOOGLE_CLIENT_ID Text; 값 기록 금지 |
 | Worker 배포 Actions | 마지막 수동 deploy SUCCESS | CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID | GitHub Actions Secrets, 값/계정 ID 출력 금지 |
 | Google OAuth/Drive/Picker/Sheets | API/scope/리퍼러 제한 키 설정 완료 사용자 통지; 첫 설정 코드 병합 | Google OAuth client ID, Picker browser key/app ID | 공개 제한된 앱 설정은 app-config.js, OAuth token RAM, 생성/선택 시트 ID 기기 설정만·백업 제외 |
-| BEA | 공급 입력 모듈만, 실제 Macro 입력 미연결 | BEA_USERID | GitHub Actions Secret, 값 출력 금지 |
+| BEA | 최신 SEC 실행 SET_MASKED 확인·재등록 불필요. 수집 코드/매크로 v0 연결은 #235 승인 대기 | BEA_USERID | GitHub Actions Secret, 값 출력 금지 |
 | SEC EDGAR | US17 manual SUCCESS·daily 등록 | SEC_USER_AGENT | GitHub Actions Secret, 값/이메일 출력 금지 |
-| DART | 등록 완료 알림 대기 | DART_API_KEY | GitHub Actions Secret 예정, 알림 전 확인/호출 금지 |
+| DART | 사용자 키 등록 완료 확인·#211 병합. 실제 Secret 수집 첫 Actions NOT_RUN | DART_API_KEY | GitHub Actions Secret 등록 완료 사용자 확인, 값 출력 금지 |
 | EDINET | 장기 후순위·등록/착수 미승인 | Subscription-Key | 미등록/미운영으로 취급, 값 기록 금지 |
 
 원본 재무 자료는 수집 임시 경로에서 처리하고 공개 가능 결과만 Pages에 보존한다. 개인 보유·거래·관심·그룹·프로필은 기기 전용이다. 어떤 비밀값도 이 문서·PR 본문·로그에 넣지 않는다.
