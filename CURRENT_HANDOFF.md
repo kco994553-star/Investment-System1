@@ -4,7 +4,7 @@
 
 ## 현재 위치
 
-- canonical: `claude/investment-system-top500-validation-alrugm`, 확인 HEAD `6717c896`(#229 병합, 2026-10-13 14:59:17 UTC).
+- canonical: `claude/investment-system-top500-validation-alrugm`, 확인 HEAD `baad0b24`(#236 병합; 2026-10-13 최종 운영 기준).
 - **#222 GSQ-022/023 병합 완료**: exact head `d25161e4`, 필수 6체크 SUCCESS·실패 0에서 정상 merge. force/admin 없음. 별도 수동 배포·Worker 배포는 실행하지 않았다.
 - 기존 승인 병합 순서: **#222 → #224 → #226 → #225 → #210 → #215 → #211**. 새 레인 PR: D → A → B → C → E. 모든 병합은 D가 한 건씩 수행한다.
 - **#224 병합 완료**: exact head `39b474c3`, 필수6 SUCCESS/실패0, normal merge `84998f27`. A가 업종 하위 지표 표본<8 GENERAL 전체분포 대체 규칙과 회귀 테스트 확인. canonical merge-forward 후 head `39b474c3` push 후 CI 성공 확인하여 병합.
@@ -13,11 +13,27 @@
 - **#210 병합 완료**: exact head `8cead6ac`, 필수6 SUCCESS/실패0, normal merge `7136aa3f`(13:11:19 UTC). 당시 다음은 #215 → #211. 현재 #211까지 모두 완료.
 - **#215 병합 완료**: exact head `0b4151a5`, 필수6 SUCCESS/실패0, normal merge `7a3745d5`(13:47:22 UTC). 당시 다음은 #211, 현재 모두 완료. 모든 레인 정상 merge-forward/최신 CI 진행.
 - **#211 병합 완료**: exact head `67726de4`, 필수6 SUCCESS/실패0, normal merge `e048963f`(14:07:31 UTC). 기존 사용자 승인 7개 순서 전부 완료. DART 실 Secret 연결 성공은 다음 수집 실행 전 미확인; 코드/오프라인 계보 검증만 완료.
-- **#230 D 정리/가드 병합 완료**: exact head `bff1f4df`, 필수6 SUCCESS/실패0, normal merge `4976092b`(14:28:38 UTC). 저장소/Pages 이메일 패턴 차단, 정확 공개 역사만 보존. Worker #229까지 병합 완료. #236은 최종 인수인계 문서 PR로 보존한다.
-- **#227 수정본 → #237 clean 대체 PR**: canonical6717 기반 완성 소스를 신규 브랜치로 보존. 원래227의 post-session 테스트 버전은 이메일 history 검사에 걸려 예외/force 없이 [#237](https://github.com/kco994553-star/Investment-System1/pull/237)로 대체했으며 원래227은 대체 링크를 남기고 닫았으며 브랜치/이력은 그대로 유지한다. Actions 로고 PNG 번들·직접 iframe OFF 구현. PNG 실제 decode/RGBA8 재인코딩 및 잘못된 raster/bitdepth/tRNS 회귀15PASS·E 재검토 중요 문제0. 로고/iframe390·1280 각2PASS. 새HEAD `639a59bf`의 privacy/email48records 위반0·Node50·Pages91·Python93+125sub·로고/iframe/잔고6브라우저 PASS, 필수6 모두 SUCCESS·deploy SKIPPED이며 **#237 수정본 병합 재승인 필요**. KRX/TSE 지원은 확인 불가, 외부 지원 조사 없음.
+- **#230 D 정리/가드 병합 완료**: exact head `bff1f4df`, 필수6 SUCCESS/실패0, normal merge `4976092b`(14:28:38 UTC). 저장소/Pages 이메일 패턴 차단, 정확 공개 역사만 보존. Worker #229까지 병합 완료. #236 최종 인수인계·안전 CI 진단도 exactdab35f0a 필수6 SUCCESS·실패0 확인 뒤 normal merge baad0b24로 병합했다.
+- **#227 수정본 → #237 clean 대체 PR**: canonical6717 기반 완성 소스를 신규 브랜치로 보존. 원래227의 post-session 테스트 버전은 이메일 history 검사에 걸려 예외/force 없이 [#237](https://github.com/kco994553-star/Investment-System1/pull/237)로 대체했으며 원래227은 대체 링크를 남기고 닫았으며 브랜치/이력은 그대로 유지한다. Actions 로고 PNG 번들·직접 iframe OFF 구현. PNG 실제 decode/RGBA8 재인코딩 및 잘못된 raster/bitdepth/tRNS 회귀15PASS·E 재검토 중요 문제0. 로고/iframe390·1280 각2PASS. 이전HEAD `639a59bf`의 privacy/email48records 위반0·Node50·Pages91·Python93+125sub·로고/iframe/잔고6브라우저 PASS, 이전 필수6 모두 SUCCESS·deploy SKIPPED. 최신75173621의 필수6 SUCCESS·실패0 확인했고 **#237 수정본 병합 재승인 필요**. KRX/TSE 지원은 확인 불가, 외부 지원 조사 없음.
 - DART 키 등록 사용자 확인됨. C 보고: 최신 실행 BEA_USERID 설정 마스킹 정상; 예전 빈 전달 로그를 근거로 재등록 요청하지 않는다. Fed 원인404/빈 추출, 공식 소스확인403이며 반복 시도 금지.
 - **#229 Worker 확대 병합 완료**: exact head `9cbbdeb3`, 필수6 SUCCESS·실패0, normal merge `6717c896`(14:59:17 UTC). Universe504(하이픈 포함)·HYG·IEF는 사용자 승인 범위 그대로. 최신 집중검사189+262subtests·합성504 PriceStore·Worker169·잔고 KO 허용/QQQ 차단·credential-free Wrangler dry-run PASS. 실제504 가격 수집·Worker 배포는 실행하지 않았다. 별도 배포 결정 전 기존 Pages·Worker 유지.
 - **10/19 v2 기록 시작은 아직 확정하지 못함**. A의 V·공개입력·v1/v2 원장 준비와 신규 PR 승인 후 실제 시작일을 보고한다. 소급하지 않는다.
+
+## 최종 checkpoint (추가 main 병합 없음)
+
+#236 병합 결과와 후보 PR의 최신 main 동기화 상태를 이 문서 전용 checkpoint에 보존한다. 원격 `codex/lane-d-final-checkpoint-20261013` 브랜치에도 보관하며 PR을 추가하거나 main에 다시 병합하여 동기화를 반복하지 않는다. GitHub CLI401은 재시도하지 않았으며 독립 GitHub Connector로 게시·검증했다. 각 새 커밋의 부모는 기존 후보HEAD와 baad0b24이고, 검증한 로컬 tree와 정확히 같다. 기존 로컬 merge 이력은 refs/codex/pre-connector-20261013/*에 남겼다. source·워크플로 delta0, force/admin·실제배포0이다.
+
+## 최종 후보 HEAD (모두 canonicalbaad의 후손)
+
+| PR | 최종 원격·로컬 HEAD | 제품 소스 변경 | 현재 상태 |
+| --- | --- | --- | --- |
+| #234 | `e3af25011c48dda498c0a31ca059a9e84f5e4126` | 동기화 중 delta0 | 5 SUCCESS / build FAIL, 원인 확인 필요 |
+| #233 | `6a11cc992e4a9c23392a7240d4a7cf64b551f2da` | 동기화 중 delta0 | 필수6 SUCCESS · 실패0 |
+| #235 | `63989fddc4cbdf252cfaf217b115033631eb7448` | 동기화 중 delta0 | 필수6 SUCCESS · 실패0 |
+| #231 | `5ea3395e1c45e12d02ec3ad52d44ab40e92d7922` | 동기화 중 delta0 | 필수6 SUCCESS · 실패0 |
+| #237 | `751736216a64cc0a61304715ee5a73fd10cc57e9` | 동기화 중 delta0 | 필수6 SUCCESS · 실패0 |
+
+각 공개 커밋의 tree는 검증된 로컬 tree와 일치하며, 부모는 직전 후보HEAD 및 baad0b24다. 현재 로컬 ref도 원격의 정확한 Git 객체에 맞춰 clean 상태다. 마지막 열린 PR 조회는 16:38:58 UTC, 총21개(후보5개+과거16개)였다. 최신 HEAD 체크 관측은 16:54 UTC: A build FAIL, 나머지4개는 이후 exact HEAD 필수6 SUCCESS·실패0(16:59 UTC 관측)이며 이전 HEAD의 성공을 최신 성공으로 대신하지 않는다.
 
 ## 로컬 통합 미리보기 검증
 
@@ -33,24 +49,23 @@
 
 | 레인 | 완료 | 진행 | 대기·막힘 | 다음 |
 | --- | --- | --- | --- | --- |
-| A QGV v2 | #234 구현·회귀 완료/승인 대기, #224 Q/G 병합, V·원장2·분리된 v2 기기 V이력·#18 strict6FY·한미 optional reference 구현 | #234 d20a895c: cfg/engine 필수2script 로드로 B 화면 유무와 관계없이 같은 분류 적용. 최신 Node22 manifest51·브라우저55/55·M2 4/4·standalone/통합 QGV4+4·Worker169·Pages91/static79·가드47+125sub PASS | 새 계산/공개 PR 승인; 앞선 head 원격 build 실패의 파일명 관측을 보완, 최신d20의 필수6 SUCCESS를 독립 GitHub Connector check-runs로 확인. 조건 완화 없음. 실제 품질224/504(3/7샤드), Q207/G222 | 10/19 실제 시작 미확정. #18 213코드/210발행사·#19 3PASS/3FAIL/13NA, 준비일부터 소급 없이 |
-| B 플레이북 | #226 engine 병합; 19패널·백업4·E5·R1/W1·정보E4·채점 준비; RAM 내비게이션/통화 일치·quota 역순 rollback 수정 | #233 df19f835 필수6 SUCCESS: exactcanonical6717 반영, Node18·backup10·engine11 및 실제 normalboot390/1280 PASS | B6 초안 편집 준비·최종저장 A#234/v2입력 선행, B-1 휴장일 채점 NA | A 선행 및 마지막 canonical 동기화6 확인 뒤 화면 PR 병합 |
-| C 데이터·매크로 | #210/#215/#211 병합; DART6FY 같은 v2 API·5경고등·TTM 날짜/해시·운영 연결·한미 원장 bridge 준비 | #235 8430ef62 필수6 SUCCESS: Py2833+273sub·Node52·390/1280브라우저12·strict55records/email0 PASS | Fed 공식 소스403; 실 DART Secret 첫수집 NOT_RUN. 실제 과거 매크로 2/5만 재생, full5 NOT_RUN | 공개입력/워크플로 승인 및 A 선행. old #232는 대체 PR 링크로 닫고 이력 보존 |
-| D 운영 | 기존 승인7개 순서 및 #230·#229 병합; D4 기존6테스트 PASS·레거시9종 등록 유지·삭제0 | #236 최종 문서·안전한 CI 실패파일 진단2개·공용 핀·각 레인 canonical 동기화; 로컬 통합 preview de061f31(97파일/83정적) 가드 PASS | #237(#227 수정본) 재승인·별도 배포 D-DEPLOY. 통합2917+271sub·Node54·브라우저60고유파일·97파일 가드 PASS | guard240+262sub/E 독립84+137·우회/긴토큰 검증 PASS. 정확HEAD6 후 #236 병합 |
-| E 13F·테마·Universe | E1/E4/E5 기존 구현 검증; Frozen6808/6808+실 privateRelease 존재/크기/digest 확인 | #231 1061e605 canonical6717 동기화·필수6 SUCCESS; 변경공용47+125sub·이전270+262sub·Node49 PASS, 새6 SUCCESS | E2 공개경계 승인 전 W2 기관수 NA/13F E4 비활성 | 최신6 유지. Release 무만료·artifact만 2026-12-26 만료 |
+| A QGV v2 | #234 구현·회귀 완료/승인 대기, #224 Q/G 병합, V·원장2·분리된 v2 기기 V이력·#18 strict6FY·한미 optional reference 구현 | #234 e3af2501(최신main동기화): cfg/engine 필수2script 로드로 B 화면 유무와 관계없이 같은 분류 적용. 최신 Node22 manifest51·브라우저55/55·M2 4/4·standalone/통합 QGV4+4·Worker169·Pages91/static79·가드47+125sub PASS | 새 계산/공개 PR 승인; 앞선 head 원격 build 실패의 파일명 관측을 보완, 제품 source가 같은 이전d20의 필수6 SUCCESS 확인. 최신e3af는 5SUCCESS/buildFAIL(16:54 UTC 확인). annotations 접근 실패는 반복하지 않았고 독립 정상 job 로그의 고정 토큰에서 holdings_capture_browser_test.js exit1을 확인하여 A가 원격 390 PASS 뒤 1280 OAuth 접속 전 SIGN_IN 상태를 조사 중. 제품 결함/테스트 race 여부가 아직 확정되지 않아 조건 완화나 무근거 재실행을 하지 않음. 조건 완화 없음. 실제 품질224/504(3/7샤드), Q207/G222 | 10/19 실제 시작 미확정. #18 213코드/210발행사·#19 3PASS/3FAIL/13NA, 준비일부터 소급 없이 |
+| B 플레이북 | #226 engine 병합; 19패널·백업4·E5·R1/W1·정보E4·채점 준비; RAM 내비게이션/통화 일치·quota 역순 rollback 수정 | #233 6a11cc99(최신main동기화): exact canonicalbaad 반영, Node18·backup10·engine11 및 실제 normalboot390/1280 PASS | B6 초안 편집 준비·최종저장 A#234/v2입력 선행, B-1 휴장일 채점 NA | A 선행 후 화면 PR 병합; 최신baad 동기화 필수6 SUCCESS |
+| C 데이터·매크로 | #210/#215/#211 병합; DART6FY 같은 v2 API·5경고등·TTM 날짜/해시·운영 연결·한미 원장 bridge 준비 | #235 63989fdd(최신main동기화): 직전 Py2833+273sub·390/1280브라우저12 PASS; 최신 중복정리 후 Node50/browser55 고유 등록·strict55records/email0 PASS | Fed 공식 소스403; 실 DART Secret 첫수집 NOT_RUN. 실제 과거 매크로 2/5만 재생, full5 NOT_RUN | 공개입력/워크플로 승인 및 A 선행. old #232는 대체 PR 링크로 닫고 이력 보존 |
+| D 운영 | 기존 승인7개 순서 및 #230·#229 병합; D4 기존6테스트 PASS·레거시9종 등록 유지·삭제0 | #236 문서/CI진단 병합 완료·5 PR 최신canonical 동기화/FF 게시 완료; 로컬 통합 preview de061f31(97파일/83정적) 가드 PASS | #237(#227 수정본) 재승인·별도 배포 D-DEPLOY. 통합2917+271sub·Node54·브라우저60고유파일·97파일 가드 PASS | guard240+262sub/E 독립84+137·우회/긴토큰 검증 PASS. B/C/E/로고 최신6 SUCCESS; A 원격 실패 해결 후 사용자 승인 대기 |
+| E 13F·테마·Universe | E1/E4/E5 기존 구현 검증; Frozen6808/6808+실 privateRelease 존재/크기/digest 확인 | #231 5ea3395e canonicalbaad 동기화; 변경공용47+125sub·이전270+262sub·Node49 PASS, 최신5ea의 필수6 SUCCESS·실패0 확인 | E2 공개경계 승인 전 W2 기관수 NA/13F E4 비활성 | 최신6 유지. Release 무만료·artifact만 2026-12-26 만료 |
 
 ## 열린 PR 실제 상태 (2026-10-13 마지막 원격 관측)
 
-필수 체크는 repository-guard / ingest-and-gate / build / validate / guard / presentation. 역사 base의 0/6은 그 당시 별도 체크의 실패를 뜻하지 않는다. 최신 체크를 다시 조회한 뒤 병합하며, 과거 PR은 자동 닫지 않는다.
+필수 체크는 repository-guard / ingest-and-gate / build / validate / guard / presentation. 후보5개는 최신HEAD 체크다. 과거16개는 16:38:58 UTC 열림 여부를 재확인했으며 아래 CI·충돌은 초기검토 스냅샷이다. 역사 base의 0/6은 그 당시 별도 체크의 실패를 뜻하지 않는다. 과거 PR은 병합 대상이 아니며 자동 닫지 않는다.
 
 | PR | HEAD | 필수 체크 | 충돌 | 권장 | 이유 |
 | --- | --- | --- | --- | --- | --- |
-| #237 | `639a59bf` | 6/6 | MERGEABLE | #227 수정본 재승인 | 같은 완성소스·엄격 이메일 가드 PASS의 clean 대체 |
-| #236 | `이 PR 최종 HEAD` | 문서 갱신 뒤 재검사 | canonical6717 동기화 | 6체크 후 정리 병합 | 최종 문서·CI 실패파일 진단만; 산식/체크조건/YAML 변경 없음 |
-| #235 | `8430ef62` | 6/6 | MERGEABLE | 공개/워크플로 승인 대기 | DART6FY·macro·TTM 계보, clean235로 old232 대체 |
-| #234 | `d20a895c` | 6/6 | MERGEABLE | 계산/공개 승인 대기 | 기본v2 이미 결정됨; 새 V/원장2/공개 descriptor |
-| #233 | `df19f835` | 6/6 | MERGEABLE | 6체크/A 선행 후 화면 병합 | canonical6717와 RAM 가격/통화 fix 최종반영 |
-| #231 | `1061e605` | 6/6 | MERGEABLE | 공개 승인 대기 | SEC13F 원값, 가격 변환·개인 보유 없음 |
+| #237 | `75173621` | 6/6 SUCCESS | main baad 동기화 완료 | #227 수정본 재승인 | 같은 완성소스·엄격 이메일 가드 PASS의 clean 대체 |
+| #235 | `63989fdd` | 6/6 SUCCESS | main baad 동기화 완료 | 공개/워크플로 승인 대기 | DART6FY·macro·TTM 계보, clean235로 old232 대체 |
+| #234 | `e3af2501` | 5/6 · build FAIL | main baad 동기화 완료 | 계산/공개 승인 대기 | 기본v2 이미 결정됨; 새 V/원장2/공개 descriptor |
+| #233 | `6a11cc99` | 6/6 SUCCESS | main baad 동기화 완료 | 6체크/A 선행 후 화면 병합 | canonicalbaad와 RAM 가격/통화 fix 최종반영 |
+| #231 | `5ea3395e` | 6/6 SUCCESS | main baad 동기화 완료 | 공개 승인 대기 | SEC13F 원값, 가격 변환·개인 보유 없음 |
 | #71 | `923ba8ea` | 5/6 | CONFLICTING | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #43 | `4c5f7ff9` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #31 | `c9e0fa7e` | 1/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
@@ -76,13 +91,13 @@
 
 ## 원격 접근 상태
 
-GitHub CLI는 10/13 조회에서 HTTP401 Bad credentials로 막혔다. 값 출력·같은 인증 경로 반복 시도 없음. 독립된 기존 GitHub Connector는 정상 인증되므로 원격 조회·완성된 문서/테스트 진단 게시·정확HEAD6 확인은 그 연결로 이어간다. 새 Secret·외부 허용 범위·역사 예외는 추가하지 않는다. 원격 #236 기존8ebd4b73의6SUCCESS는 이후 로컬 변경의 CI 성공으로 간주하지 않으며, 게시된 새HEAD에서 다시 검사한다.
+GitHub CLI는 10/13 조회에서 HTTP401 Bad credentials로 막혔다. 값 출력·같은 인증 경로 반복 시도 없음. 독립된 기존 GitHub Connector는 정상 인증되므로 원격 조회·완성된 문서/테스트 진단 게시·정확HEAD6 확인은 그 연결로 이어간다. 새 Secret·외부 허용 범위·역사 예외는 추가하지 않는다. #236은 마지막 exact HEAD dab35f0a의 필수6 SUCCESS·실패0 확인 후 baad0b24로 정상 병합했다. 이전8ebd4b73의 결과를 새HEAD 결과로 대신하지 않았다. 후보5개는 각 새HEAD에서 다시 검사한다.
 
 ## 다음 할 일 5개
 
-1. #236 최종 문서·CI 진단4파일을 동일 검증 blob으로 push하고 최신6 성공 후 자체 병합. 각 레인 canonical 재동기화/최신6 확인; C manifest의 중복2node/2browser도 D가 정리.
+1. #236 병합/각 PR mainbaad 동기화 완료. B/C/E/#237 최신HEAD6 SUCCESS는 확정했고 A의 원격 브라우저 실패를 계속 조사한다. 결과가 바뀌면 같은 checkpoint 브랜치를 정상 FF로 갱신한다. C manifest중복2node/2browser 제거 완료(Node50/browser55unique), 테스트 삭제 없음.
 2. 로컬 통합2917+271sub·Node54·60고유브라우저·Worker169·97파일 가드 및 실제 RAM/TARGET/C5/DART원장 연결 PASS. 검증 이력/부분 재검증을 보존하며 실제main으로 통합 병합하거나 배포하지 않는다.
-3. A#234 새 계산/공개·C#235 수집/공개·E#231 공개·#227 clean 수정본#237 재승인 요청. 승인 순서 A→B→C→E, B 화면 PR은 선행 A와 필수6 성공 뒤 자체병합 가능.
+3. A#234 새 계산/공개·C#235 수집/공개·E#231 공개·#227 clean 수정본#237 재승인 대상. A CI 실패 해결은 에이전트 작업이며 새 사용자 결정 항목이 아니다. 승인 순서 A→B→C→E, B 화면 PR은 선행 A와 필수6 성공 뒤 자체병합 가능.
 4. Fed403/실 DART 첫 실행/전체504와 실제 매크로full5 재생 미완료는 원인·범위를 보존하고 같은 외부 실패 재시도 금지. 10/19 실제 시작은 준비/승인/배포 확인 후 정하며 소급 금지.
 5. 남은 결정 B-1·A-V2·C-MACRO·E-13F·D-227·D-DEPLOY만 유지. Worker 범위/키 등록/v2 기본/기기 V이력 저장 승인 재요청 없음.
 
