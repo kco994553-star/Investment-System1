@@ -44,7 +44,7 @@ function score(v){return num(v)?v.toFixed(1):NA;}
 // Score fields of one company from the QgvScores judgement rows (app.js); v1 rows keep the previous Q·G text exactly.
 function qgFields(r){return{q:r?.q??null,g:r?.g??null,v:r?.v??null,total:r?.total??null,version:r?.version==='v2'?'v2':'v1',factors:r&&num(r.factors_available)?r.factors_available+'/'+r.factors_total:null,trap:r?.value_trap===true,compare:r?.compare||null};}
 const TRAP='가치 함정 주의';
-function qgvCell(h){if(h.version!=='v2')return num(h.q)&&num(h.g)?score((h.q+h.g)/2):NA;return score(h.total)+' (v2'+(h.factors?' · 요인 '+h.factors:'')+(h.trap?' · '+TRAP:'')+')';}
+function qgvCell(h){if(h.version!=='v2')return num(h.q)&&num(h.g)?score((h.q+h.g)/2):NA;return score(h.total)+' (v2'+(h.factors?' · 산출 요인 '+h.factors:'')+(h.trap?' · '+TRAP:'')+')';}
 function scoringText(m,short){return m.scoring==='v2'?(short?'QGV 점수 기준 v2(PROVISIONAL)':'QGV 점수 기준 v2(PROVISIONAL)'):(short?'QGV 점수 기준 v1(보정 전)':'QGV 점수 기준 v1(UNCALIBRATED)');}
 function hiddenSetting(storage,value){
  try{if(value!==undefined){storage.setItem(HIDE_KEY,value?'1':'0');return value;}return storage.getItem(HIDE_KEY)!=='0';}catch(_){return true;}

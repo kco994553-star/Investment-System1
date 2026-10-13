@@ -8,7 +8,7 @@
    or rate stays absent (the engine then reports EXEC_PRICE_MISSING / EXEC_FX_MISSING); nothing is filled. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;const api=factory(node?()=>require('./virtual-trading.js'):()=>root.VirtualTrading);if(node)module.exports=api;else root.VirtualTradingRunner=api;})(typeof globalThis==='object'?globalThis:this,function(engine){
 'use strict';
-const SCHEMA='virtual-trading-inputs/1',RANGE='2y',FORWARD_VERSION='forward_validation/v1';
+const SCHEMA='virtual-trading-inputs/1',RANGE='2y',FORWARD_VERSION='forward_validation/v1',FORWARD_V2_VERSION='forward_validation/v2';
 const IDS=['asml','lrcx','klac','tokyo_electron','hanmi','nvda','amd','avgo','qcom','intc','msft','googl','amzn','rtx','stry','etn','hubb','gev','rok'];
 const TARGETS=Object.freeze({asml:'ASML',lrcx:'LRCX',klac:'KLAC',tokyo_electron:'8035.T',hanmi:'042700.KS',nvda:'NVDA',amd:'AMD',avgo:'AVGO',qcom:'QCOM',intc:'INTC',msft:'MSFT',googl:'GOOGL',amzn:'AMZN',rtx:'RTX',stry:'SYK',etn:'ETN',hubb:'HUBB',gev:'GEV',rok:'ROK'});
 // DASHBOARD_ETFS: S17 ⑬ relative-index ETFs, always requested; passed through (with SPY and KRW=X) as result.indices.
@@ -122,7 +122,7 @@ function coverage(row){
  return'READY';
 }
 function snapshotsFromLedger(forward){
- const out={};let records;try{records=forward.versions[FORWARD_VERSION];}catch(_){return out;}
+ const out={};let records;try{records=forward.versions[forward.schema_version===2?FORWARD_V2_VERSION:FORWARD_VERSION];}catch(_){return out;}
  for(const r of Array.isArray(records)?records:[]){
   if(!(object(r)&&r.state==='RECORDED'&&day(r.date)&&object(r.companies)))continue;
   const rows={};for(const cid of Object.keys(r.companies).sort()){const row=r.companies[cid];rows[cid]={q:row.Q.score,g:row.G.score,coverage:coverage(row)};}
@@ -152,7 +152,7 @@ const unavailable=codes=>({state:'NOT_AVAILABLE',reason_codes:[...codes],input:n
 /* Pure assembly: same inputs → same ledger inputs as the Python reference. */
 function assemble({config,catalog,forward_ledger=null,classification=null,histories={},holdings=null,set_b=null,sets=null,user_target=null,v_store=null,v_composition=null,flags=null}){
  histories=histories||{};const start=config&&config.start_date!==undefined?config.start_date:null;
- const out={schema:SCHEMA,state:'READY',reason_codes:[],sources:{},sector:{},ledgers:{},indices:{}};
+ const out={schema:SCHEMA,state:'READY',reason_codes:[],sources:{},sector:{},ledgers:{},indices:{},snapshot_basis:forward_ledger?.schema_version===2?'v2':'v1'};
  const targets=catalogTargets(catalog);
  if(targets===null){out.state='NOT_AVAILABLE';out.reason_codes=['TARGET_CATALOG_INVALID'];for(const k of KINDS)out.ledgers[k]=unavailable(['TARGET_CATALOG_INVALID']);return out;}
  const listing=listingOf(targets);
@@ -170,8 +170,9 @@ function assemble({config,catalog,forward_ledger=null,classification=null,histor
  for(const etf of [...etfs,...DASHBOARD_ETFS.filter(e=>!etfs.includes(e)).sort()])if(!own(out.sources,etf))source(etf,'USD');
  out.sector=sector;for(const sym of [SP500_SYMBOL,...DASHBOARD_ETFS,FX_SYMBOLS.USD])if(own(series,sym))out.indices[sym]=series[sym];
  if(spy===null){out.state='NOT_AVAILABLE';out.reason_codes=['SESSIONS_NOT_AVAILABLE'];for(const k of KINDS)out.ledgers[k]=unavailable(['SESSIONS_NOT_AVAILABLE']);return out;}
- const sessions=Object.keys(spy).filter(d=>start!==null&&d>=start);
- const snapshots=snapshotsFromLedger(forward_ledger),vScores=vScoresFromStore(v_store),vComposition=vCompositionFromStore(v_composition),flagRows=flagsFromStore(flags);
+ const v2Rows=forward_ledger?.schema_version===2?forward_ledger.versions[FORWARD_V2_VERSION]:null,readyDate=v2Rows?[...v2Rows].find(r=>r.state==='RECORDED'&&Object.values(r.companies||{}).some(c=>finite(c.Q?.score)&&finite(c.G?.score)))?.date:null;
+ const sessions=Object.keys(spy).filter(d=>start!==null&&d>=start&&(v2Rows===null||readyDate&&d>=readyDate)); // v2 starts on its first prepared day, never earlier.
+ const v2Basis=forward_ledger?.schema_version===2,snapshots=snapshotsFromLedger(forward_ledger),vScores=v2Basis?{}:vScoresFromStore(v_store),vComposition=v2Basis?{}:vCompositionFromStore(v_composition),flagRows=flagsFromStore(flags); // v1 stored V never joins a v2 Q/G snapshot.
  // Every ledger carries every priced member (a stored set definition is then derived from any ledger input); the engine
  // judges only its own target weights and positions.
  const ledger=(id,kind,weights,ledgerSessions,initial)=>{

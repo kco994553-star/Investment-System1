@@ -26,10 +26,10 @@ const universeWin = { PrivateSubsetView: { prices: () => new Map(Object.entries(
 let quotes = null;
 test.before(async () => { quotes = await QS.collectQuotes(universeWin, { identities, v2Inputs: screens[SQ.FILE] }); });
 
-test('the shipped setting is v1 and the accessor reads only that setting', () => {
-  assert.equal(original.scoring_default, 'v1');
+test('the approved shipped setting is v2 and the accessor reads only that setting', () => {
+  assert.equal(original.scoring_default, 'v2');
   assert.ok(Object.isFrozen(original));
-  assert.equal(QS.scoringDefault(), 'v1');
+  assert.equal(QS.scoringDefault(), 'v2');
   const src = fs.readFileSync(path.join(W, 'scoring-default.js'), 'utf8');
   assert.equal((src.match(/\{scoring_default:'v[12]',v2_since:(null|'\d{4}-\d{2}-\d{2}')\}/g) || []).length, 1, 'one-line flip');
   for (const f of ['leaderboard-screen.js', 'company-screen.js', 'daily-report.js', 'app.js', 'virtual-trading-signals.js']) assert.ok(!fs.readFileSync(path.join(W, f), 'utf8').includes('ScoringDefault'), f + ' reads scores through QgvScores only');
@@ -86,12 +86,12 @@ for (const mode of ['v1', 'v2']) test('flip to ' + mode + ': every consumer foll
     assert.ok(text.includes(mode === 'v2' ? 'QGV 점수 기준 v2(PROVISIONAL)' : 'QGV 점수 기준 v1(UNCALIBRATED)'));
     assert.ok(text.includes(mode === 'v2' ? 'v1 참고(결측 재정규화): NVDA' : 'v2 비교용(PROVISIONAL): NVDA'));
     const html = R.screenHtml(model, { hidden: true, locale: 'ko-KR' });
-    assert.equal(html.includes('(v2 · 요인 '), mode === 'v2');
+    assert.equal(html.includes('(v2 · 산출 요인 '), mode === 'v2');
   } finally { require.cache[CONFIG].exports = original; }
 });
 
 test('v1 judgement rows keep the previous Q·G values exactly (official v1 engine path)', () => {
-  const sc = QS.compute({ identities, publicScreens: screens, quotes });
+  const sc = QS.compute({ identities, publicScreens: screens, quotes, scoringDefault:'v1' });
   const qg = QS.judgmentRows(sc), E = globalThis.EnginePreview;
   for (const id of IDS) {
     const obs = {};
@@ -137,4 +137,37 @@ test('adapter on the real SecQgv2 validator output (Q·G side synthetic base vec
   const sc = QS.compute({ identities: ids, publicScreens: { [SQ.FILE]: inputs }, quotes: q, scoringDefault: 'v2' }), nv = sc.rows.nvda.v2;
   assert.equal(sc.rows.nvda.code, 'TARGET:nvda');assert.equal(nv.q, raw.target.nvda.axes.Q.score);assert.equal(nv.g, raw.target.nvda.axes.G.score);
   assert.ok(typeof nv.v === 'number' && typeof nv.total === 'number');assert.equal(sc.rows.msft.v2.v, null);assert.ok(sc.rows.msft.v2.flags.includes('V_NOT_AVAILABLE'));
+});
+
+
+test('approved playbook cyclical basis changes earnings basis without changing type weights', () => {
+  const oldEngine=globalThis.PlaybookEngine,oldConfig=globalThis.PlaybookConfigDefaults;
+  try {
+    globalThis.PlaybookConfigDefaults={};
+    globalThis.PlaybookEngine={sectorFor:()=>({sector:'semiconductors'}),classifyTypesV0:(_cfg,info)=>({cyclical:{member:info.sic==='3674'}})};
+    const inputs=structuredClone(screens[SQ.FILE]);inputs.records['TARGET:nvda'].sic='3674';
+    const calculated=QS.compute({identities,publicScreens:screens,v2Inputs:inputs,quotes,scoringDefault:'v2'}).rows.nvda.v2;
+    assert.equal(calculated.detail.earnings_basis,'NORMALIZED');
+    assert.equal(calculated.factors.v_earnings_yield.reason,'NORMALIZED_EARNINGS_NOT_AVAILABLE');
+    assert.deepEqual(calculated.selected_types,[]);
+  } finally {globalThis.PlaybookEngine=oldEngine;globalThis.PlaybookConfigDefaults=oldConfig;}
+});
+
+
+test('a strictly valid empty SEC v2 file keeps v1 temporary default and blocks readiness', () => {
+  const S=require(path.join(W,'sec-qgv2.js')),empty=F.strictPayload();
+  empty.records=Object.fromEntries(Object.keys(empty.records).map(code=>[code,S.emptyRecord()]));
+  empty.target=Object.fromEntries(Object.keys(empty.target).map(id=>[id,S.emptyRecord(['hanmi','tokyo_electron'].includes(id)?'NON_SEC_ISSUER':'NOT_COLLECTED')]));
+  empty.cross_section_size=0;empty.cross_section_by_profile={GENERAL:0,FINANCIAL:0};empty.state='NOT_AVAILABLE';empty.reason_codes=['NO_ELIGIBLE_INPUT'];
+  const inputs=SQ.fromInputs(S.toInputs(S.validate(empty))),computed=QS.compute({identities,publicScreens:screens,v2Inputs:inputs,scoringDefault:'v2'});
+  assert.equal(computed.v2_state,'NOT_AVAILABLE');assert.equal(computed.v2_reason,'V2_SCORES_NOT_AVAILABLE');
+  assert.equal(computed.default,'v1');assert.equal(computed.basis.label,'임시 기본');
+});
+
+test('DART reference Q/G uses the same composite but never enters the US rank pool', () => {
+  const factors=Object.fromEntries(SQ.FACTORS.map(f=>[f,70])),referenceRows={asml:{reference_only:true,factors,axes:{Q:{score:70},G:{score:70}}}};
+  const computed=QS.compute({identities,publicScreens:screens,quotes,scoringDefault:'v2',referenceRows});
+  assert.equal(computed.rows.asml.primary.q,70);assert.equal(computed.rows.asml.primary.g,70);assert.equal(computed.rows.asml.primary.v,null);
+  assert.equal(computed.rows.asml.primary.reference_only,true);assert.equal(computed.rows.asml.rank,null);
+  assert.ok(QS.summaryText(computed.rows.asml.primary,false).startsWith('참고 순위 · '));
 });

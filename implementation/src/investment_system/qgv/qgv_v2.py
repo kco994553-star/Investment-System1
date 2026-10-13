@@ -33,7 +33,7 @@ PRESETS = {
 }
 DEFAULT_PRESET = 'balanced'
 GATE_DEFAULT = True
-GATE_PERCENTILE = 30          # Q below this within-industry percentile -> V excluded ('가치 함정 주의')
+GATE_PERCENTILE = 30          # Q at or below this within-industry percentile -> V excluded ('가치 함정 주의')
 MIN_PEERS = 8                 # industry group smaller than this -> whole priced universe (same rule as the Q·G side)
 MIN_UNIVERSE = 8              # a cross-section smaller than this is NOT_AVAILABLE
 MIN_AXIS_WEIGHT = 0.5         # §2: an axis (or the total) needs >= 50% of its weight available
@@ -197,7 +197,9 @@ def _metrics(company, quote, parameters, cyclical_years=None):
     # Own history: price-per-share basis, needs no EV.
     hist = v.get('ebit_per_share_history')
     closes = quote.get('month_closes')
-    if not finite(ebit):
+    if cyclical_years:
+        r['own_history'] = 'NORMALIZED_HISTORY_NOT_AVAILABLE'
+    elif not finite(ebit):
         r['own_history'] = 'EBIT_NOT_AVAILABLE'
     elif not isinstance(closes, dict) or not closes:
         r['own_history'] = 'PRICE_HISTORY_NOT_AVAILABLE'
@@ -276,17 +278,20 @@ def _reference_range(company, parameters):
     return {'state': 'PROVISIONAL', 'reason': None, 'low': ends[0], 'high': ends[1]}
 
 
-def _cross(values, groups, ids, pooled, *, industry):
+def _cross(values, groups, ids, pooled, *, industry, issuers=None):
     """Percentile per id over the pooled ids (cross-section: one point per issuer) whose value is not None.
     industry=True: within group (>= MIN_PEERS) else universe. A non-pooled id (TARGET-only row, second listing of
     the same issuer) is ranked against the pool plus its own point."""
-    pop = [i for i in pooled if values[i] is not None]
+    population = [i for i in pooled if values[i] is not None]
+    issuers = issuers or {}
     out = {}
     for i in ids:
         if values[i] is None:
             continue
-        if len(pop) < MIN_UNIVERSE:
-            out[i] = (None, 'CROSS_SECTION_TOO_SMALL', None, len(pop))
+        issuer = issuers.get(i)
+        pop = [j for j in population if j == i or not issuer or issuers.get(j) != issuer]
+        if len(pop) + (0 if i in pop else 1) < MIN_UNIVERSE:
+            out[i] = (None, 'CROSS_SECTION_TOO_SMALL', None, len(pop) + (0 if i in pop else 1))
             continue
         basis, peers = 'UNIVERSE', pop
         if industry:
@@ -334,15 +339,16 @@ def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT
     q_axis = {i: axis_of(i, 'Q') for i in ids}
     g_axis = {i: axis_of(i, 'G') for i in ids}
     pooled = [i for i in ids if companies[i].get('in_cross_section', True) is not False]
-    q_pct = _cross({i: q_axis[i]['score'] for i in ids}, groups, ids, pooled, industry=True)
+    issuers = {i: companies[i].get('cik') for i in ids}
+    q_pct = _cross({i: q_axis[i]['score'] for i in ids}, groups, ids, pooled, industry=True, issuers=issuers)
     cyclical_type = type_config['value_basis']['cyclical_type']
     years = type_config['value_basis']['normalized_years']
     typed = {i: type_axis_weights(companies[i].get('memberships'), type_config) for i in ids}
-    metrics = {i: _metrics(companies[i], quotes.get(i), parameters, years if cyclical_type in typed[i][2] else None) for i in ids}
-    ey = _cross({i: metrics[i]['ebit_yield'] for i in ids}, groups, ids, pooled, industry=False)
-    fy = _cross({i: metrics[i]['fcf_yield'] for i in ids}, groups, ids, pooled, industry=False)
-    ind = _cross({i: metrics[i]['ebit_yield'] for i in ids}, groups, ids, pooled, industry=True)
-    exp = _cross({i: (None if metrics[i]['gap'] is None else -metrics[i]['gap']) for i in ids}, groups, ids, pooled, industry=False)
+    metrics = {i: _metrics(companies[i], quotes.get(i), parameters, years if companies[i].get('cyclical_basis') is True or cyclical_type in typed[i][2] else None) for i in ids}
+    ey = _cross({i: metrics[i]['ebit_yield'] for i in ids}, groups, ids, pooled, industry=False, issuers=issuers)
+    fy = _cross({i: metrics[i]['fcf_yield'] for i in ids}, groups, ids, pooled, industry=False, issuers=issuers)
+    ind = _cross({i: metrics[i]['ebit_yield'] for i in ids}, groups, ids, pooled, industry=True, issuers=issuers)
+    exp = _cross({i: (None if metrics[i]['gap'] is None else -metrics[i]['gap']) for i in ids}, groups, ids, pooled, industry=False, issuers=issuers)
     preset_weights = PRESETS[preset]['weights']
     results = {}
     for i in ids:
@@ -367,7 +373,7 @@ def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT
         flags = []
         qp = q_pct.get(i)
         q_percentile, q_basis = (qp[0], qp[2]) if qp else (None, None)
-        trap = gate_on and q_percentile is not None and q_percentile < GATE_PERCENTILE
+        trap = gate_on and q_percentile is not None and q_percentile <= GATE_PERCENTILE
         if trap:
             flags.append('VALUE_TRAP_CAUTION')
         if gate_on and q_percentile is None:

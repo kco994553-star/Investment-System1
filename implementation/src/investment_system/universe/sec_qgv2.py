@@ -34,7 +34,7 @@ KIND = 'SEC_QGV2'
 MAX_BYTES = 2 * 1024 * 1024
 STANDARD = 'QGV_V2'
 STANDARD_STATUS = 'PROVISIONAL_DEFAULT_UNCALIBRATED'
-DECISION_REF = 'GSQ-022_PENDING_APPROVAL'
+DECISION_REF = 'GSQ-022'
 STATES = ('LIVE', 'STALE', 'NOT_AVAILABLE')
 REASONS = ('NOT_COLLECTED', 'CIK_UNRESOLVED', 'INVALID_INPUT', 'NO_ANNUAL_SEC_FINANCIALS', 'NON_SEC_ISSUER', 'STALE_INPUT')
 TOP_REASONS = ('STALE_INPUT', 'NO_ELIGIBLE_INPUT')
@@ -56,7 +56,7 @@ TOP_KEYS = ('schema_version', 'kind', 'as_of', 'standard', 'standard_status', 'd
             'config_status', 'freshness_basis', 'stale_after_seconds', 'shard_count', 'last_shard_index', 'registry_sha256',
             'code_count', 'cross_section_size', 'cross_section_by_profile', 'state', 'reason_codes', 'records', 'target')
 METRIC_LIMIT = 1e12
-FLOW_V_KEYS = ('ebit', 'fcf')
+FLOW_V_KEYS = ('ebit', 'fcf', 'revenue')
 INSTANT_V_KEYS = ('total_debt', 'cash_and_equivalents', 'diluted_shares')
 GROWTH_V_KEYS = ('revenue_cagr_3y', 'eps_cagr_3y', 'fcf_per_share_cagr_3y', 'revenue_ttm_growth')
 _ERRORS = (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError, ZeroDivisionError)
@@ -258,15 +258,15 @@ def _metric_ok(key, value):
 
 
 def _v_inputs(v, cut_day, has_data):
-    _need(type(v) is dict and set(v) == set(vf.V_KEYS))
+    _need(type(v) is dict and set(v) in (set(vf.V_KEYS), set(vf.LEGACY_V_KEYS)))
     if not has_data:
-        _need(v == vf.empty_v_inputs())
+        _need(v == {k: x for k, x in vf.empty_v_inputs().items() if k in v})
         return
     _need(type(v['currency']) is str and re.fullmatch(r'[A-Z]{3}', v['currency']) is not None)
     _need(v['taxonomy'] in ('us-gaap', 'ifrs-full'))
     _need(_date(v['fiscal_year_end']) <= cut_day)
     for key in FLOW_V_KEYS:
-        f = v[key]
+        f = v.get(key)
         if f is None:
             continue
         _need(type(f) is dict and set(f) == set(vf.V_FLOW_KEYS))
@@ -285,8 +285,8 @@ def _v_inputs(v, cut_day, has_data):
         _need(_date(i['period_end']) <= cut_day)
         if key == 'diluted_shares':
             _need(i['value'] > 0)
-    for key in ('ebit_per_share_history', 'fcf_per_share_history'):
-        history = v[key]
+    for key in ('ebit_per_share_history', 'fcf_per_share_history', 'operating_margin_history'):
+        history = v.get(key, [])
         _need(type(history) is list and len(history) <= vf.HISTORY_YEARS)
         ends = []
         for h in history:
@@ -363,7 +363,7 @@ def require_qgv2(payload):
         _need(type(payload) is dict and set(payload) == set(TOP_KEYS))
         cfg = load_config()
         _need(type(payload['schema_version']) is int and payload['schema_version'] == 1 and payload['kind'] == KIND)
-        _need(payload['standard'] == STANDARD and payload['standard_status'] == STANDARD_STATUS and payload['decision_ref'] == DECISION_REF)
+        _need(payload['standard'] == STANDARD and payload['standard_status'] == STANDARD_STATUS and payload['decision_ref'] in (DECISION_REF, 'GSQ-022_PENDING_APPROVAL'))
         _need(payload['method'] == METHOD and json.dumps(payload['method'], sort_keys=True) == json.dumps(METHOD, sort_keys=True))
         cut = _clock(payload['as_of'])
         _need(payload['config_version'] == cfg['config_version'] and payload['config_status'] == cfg['config_status'])

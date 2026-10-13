@@ -63,9 +63,10 @@ const V2_LABEL={q_profitability:['수익성','Profitability'],q_moat_proxy:['해
 function flagsHtml(d,locale){const QS=g.QgvScores;return QS&&d?QS.flagText(d.flags,locale==='en-US').map(f=>' <span class="badge STALE" data-qgv2-flag>'+esc(f)+'</span>').join(''):'';}
 function v2Body(d,locale){
  const T=tr(locale),cell=(v,attr)=>'<dd data-qgv="'+attr+'">'+(typeof v==='number'?'<span class="num">'+esc(num(v,locale))+'</span>':na('',locale))+'</dd>';
- if(!d||d.state==='NOT_AVAILABLE'&&d.q===null&&d.g===null)return '<p data-qgv2-na>'+na((d&&d.flags||[]).join(' · ')||'SEC_QGV2_NOT_AVAILABLE',locale)+'</p>';
+ const reference=d?.reference_only?'<p class="badge partial" data-qgv2-reference>'+esc(T('참고 순위 · 미국 504종목과 같은 계산, 정식 순위 아님','Reference ranking · same calculation as US504, not an official rank'))+'</p>':'';
+ if(!d||d.state==='NOT_AVAILABLE'&&d.q===null&&d.g===null)return reference+'<p data-qgv2-na>'+na((d&&d.flags||[]).join(' · ')||'SEC_QGV2_NOT_AVAILABLE',locale)+'</p>';
  const rr=d.reference_range,range=rr&&rr.state!=='NOT_AVAILABLE'?esc(num(rr.low,locale,2)+' ~ '+num(rr.high,locale,2)):na(rr?rr.reason:'',locale);
- return '<dl class="kv"><dt>QGV v2</dt>'+cell(d.total,'total')+'<dt>Q</dt>'+cell(d.q,'Q')+'<dt>G</dt>'+cell(d.g,'G')+'<dt>V</dt>'+cell(d.v,'V')+'</dl>'
+ return reference+'<dl class="kv"><dt>QGV v2</dt>'+cell(d.total,'total')+'<dt>Q</dt>'+cell(d.q,'Q')+'<dt>G</dt>'+cell(d.g,'G')+'<dt>V</dt>'+cell(d.v,'V')+'</dl>'
   +'<p class="small" data-qgv2-summary>'+esc(T('산출 요인 ','Factors available ')+d.factors_available+'/'+d.factors_total+(d.profile?' · '+d.profile.id:''))+flagsHtml(d,locale)+'</p>'
   +(d.v_excluded?'<p class="small" data-qgv2-gate>'+esc(T('가치 함정 주의: Q가 업종 내 하위 30%라 V를 총점에서 뺐습니다.','Value-trap caution: Q is in the bottom 30% of its industry, so V is left out of the total.'))+'</p>':'')
   +'<p class="small" data-qgv2-range>'+esc(T('DCF 참고 범위 (점수 미반영 · FCF/주 · 성장률 규칙 하한~상한): ','DCF reference range (not scored · FCF/share · growth-rule lower~upper): '))+range+'</p>';

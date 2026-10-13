@@ -106,7 +106,7 @@ def test_before_start_publishes_not_started_with_zero_records(tmp_path, capsys):
     out = site(tmp_path, BEFORE)
     assert run(tool, out, BEFORE, missing) == 0
     ledger = fl.require_ledger(fl.parse_json((out / fl.FILENAME).read_bytes()))
-    assert ledger['status'] == 'NOT_STARTED' and ledger['versions'] == {fl.VERSION: [], fl.V_VERSION: []}
+    assert ledger['status'] == 'NOT_STARTED' and ledger['versions'] == {fl.VERSION: [], fl.V_VERSION: [], fl.V2_VERSION: []}
     assert ledger['version_status'][fl.V_VERSION] == {'state': 'NOT_AVAILABLE', 'v_included': True, 'reason_codes': ['V_REQUIRES_DEVICE_PRICES']}
     assert ledger['holdout'] == 'UNCONFIRMED_NOT_USED' and ledger['start_date'] == '2026-10-19'
     printed = capsys.readouterr().out

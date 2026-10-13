@@ -150,18 +150,31 @@ def run(out, *, preserve_only=False, bootstrap=False, environ=None, now=_utc_now
     except fl.CalendarNotConfigured:
         print('FORWARD_LEDGER CALENDAR_NOT_CONFIGURED')
         session = None
-    appended, record_state = False, None
+    appended, record_state, v2_record_state = False, None, None
     try:
-        ledger = previous if previous is not None else fl.new_ledger(moment)
-        rows = ledger['versions'][fl.VERSION]
+        ledger = fl.finalize(previous, moment) if previous is not None else fl.new_ledger(moment)
         if session is not None and session >= fl.START_DATE:
-            if rows and rows[-1]['date'] >= session.isoformat():
-                record_state = 'EXISTS' if rows[-1]['date'] == session.isoformat() else None
-            else:
-                record = fl.build_record(now=moment, session=session, qg_body=_read_input(out, 'sec-qg-factors.json'),
-                                         catalog_body=_read_input(out, 'actual-catalog.json'))
+            catalog_body = _read_input(out, 'actual-catalog.json')
+            for version in (fl.VERSION, fl.V2_VERSION):
+                rows = ledger['versions'][version]
+                if rows and rows[-1]['date'] >= session.isoformat():
+                    if version == fl.VERSION:
+                        record_state = 'EXISTS' if rows[-1]['date'] == session.isoformat() else None
+                    else:
+                        v2_record_state = 'EXISTS' if rows[-1]['date'] == session.isoformat() else None
+                    continue
+                if version == fl.VERSION:
+                    record = fl.build_record(now=moment, session=session, qg_body=_read_input(out, 'sec-qg-factors.json'),
+                                             catalog_body=catalog_body)
+                else:
+                    record = fl.build_v2_record(now=moment, session=session, qgv2_body=_read_input(out, 'sec-qgv2.json'),
+                                                catalog_body=catalog_body)
                 ledger = fl.append(ledger, record, moment)
-                appended, record_state = True, record['state']
+                appended = True
+                if version == fl.VERSION:
+                    record_state = record['state']
+                else:
+                    v2_record_state = record['state']
         ledger = fl.finalize(ledger, moment)
         fl.require_ledger(ledger)
         fl.require_append_only(previous, ledger)
@@ -172,7 +185,8 @@ def run(out, *, preserve_only=False, bootstrap=False, environ=None, now=_utc_now
         return 1
     rows = ledger['versions'][fl.VERSION]
     print(f"FORWARD_LEDGER status={ledger['status']} records={len(rows)} appended={int(appended)} "
-          f"record={record_state or 'NONE'} session={'NONE' if session is None else session.isoformat()}")
+          f"record={record_state or 'NONE'} session={'NONE' if session is None else session.isoformat()} "
+          f"v2_records={len(ledger['versions'][fl.V2_VERSION])} v2_record={v2_record_state or 'NONE'}")
     token = environ.get(RAW_TOKEN_ENV) or None
     if token is None:
         print('RAW_UPLOAD_NOT_CONFIGURED')

@@ -94,7 +94,7 @@ class QgvV2Test(unittest.TestCase):
         self.assertTrue(trapped)
         for c in trapped:
             r = on[c]
-            self.assertLess(r['q_industry_percentile'], 30)
+            self.assertLessEqual(r['q_industry_percentile'], 30)
             self.assertEqual(r['v_excluded'], 'VALUE_TRAP_GATE')
             w, a = r['weights'], r['axes']
             if a['V']['score'] is not None:
@@ -102,6 +102,16 @@ class QgvV2Test(unittest.TestCase):
                 self.assertNotAlmostEqual(off[c]['total'], r['total'])
             self.assertEqual(r['profile']['id'], 'qgv-v2/balanced/gate-on')
         self.assertFalse(any('VALUE_TRAP_CAUTION' in r['flags'] for r in off.values()))
+
+    def test_gate_includes_exactly_thirty_percentile(self):
+        companies = {}
+        for n in range(11):
+            companies[f'SYN:{n}'] = {'industry_group': 'same', 'profile': 'GENERAL',
+                                    'factors': {f: n * 10 for f in m.QG_FACTORS}}
+        result = self.score(companies, {})
+        self.assertEqual(result['SYN:3']['q_industry_percentile'], 30)
+        self.assertTrue(result['SYN:3']['value_trap_gate'])
+        self.assertFalse(result['SYN:4']['value_trap_gate'])
 
     def test_industry_basis_and_small_cross_section(self):
         u = ref.universe()
@@ -112,6 +122,22 @@ class QgvV2Test(unittest.TestCase):
         res = self.score(u, small)
         priced = [c for c in small if res[c]['factors']['v_earnings_yield']['reason'] == 'CROSS_SECTION_TOO_SMALL']
         self.assertEqual(len(priced), 5)
+
+    def test_target_replaces_own_issuer_price_point(self):
+        u = ref.universe()
+        for i, c in enumerate(sorted(u)):
+            u[c]['cik'] = str(i)
+        original = 'NYSE:SYNA3'
+        target = 'TARGET:replacement'
+        u[target] = copy.deepcopy(u[original])
+        u[target]['in_cross_section'] = False
+        quotes = ref.market(u)
+        quotes[target] = copy.deepcopy(quotes[original])
+        result = self.score(u, quotes)
+        for f in m.WEIGHTS['V']:
+            self.assertEqual(result[original]['factors'][f]['score'], result[target]['factors'][f]['score'])
+        self.assertEqual(result[original]['q_industry_percentile'], result[target]['q_industry_percentile'])
+        self.assertEqual(result[original]['detail']['industry_peers'], result[target]['detail']['industry_peers'])
 
     def test_type_weights_on_top_of_presets(self):
         fb = {'Q': 34.0, 'G': 33.0, 'V': 33.0}
@@ -145,9 +171,20 @@ class PlaybookAddendumTest(unittest.TestCase):
         v = u['NYSE:SYNY1']['v_inputs']
         self.assertAlmostEqual(m.normalized_ebit(v, 5), 900.0 * (0.10 + 0.12 + 0.14 + 0.16 + 0.18) / 5)
         self.assertEqual(y1['factors']['v_earnings_yield']['state'], 'CALCULATED')
+        self.assertEqual(y1['factors']['v_vs_own_history']['reason'], 'NORMALIZED_HISTORY_NOT_AVAILABLE')
         self.assertEqual(y2['factors']['v_earnings_yield']['reason'], 'NORMALIZED_EARNINGS_NOT_AVAILABLE')
         self.assertEqual(y2['factors']['v_vs_industry']['reason'], 'NORMALIZED_EARNINGS_NOT_AVAILABLE')
         self.assertEqual(res['NYSE:SYNA1']['detail']['earnings_basis'], 'REPORTED')
+
+    def test_playbook_cyclical_basis_does_not_change_gsq017_axis_weights(self):
+        u = ref.universe()
+        code = 'NYSE:SYNA3'
+        u[code]['cyclical_basis'] = True
+        u[code]['v_inputs'].update(revenue=900, operating_margin_history=[{'period_end': f'{2020+y}-12-31', 'value': 0.10} for y in range(5)])
+        result = self.score(u, ref.market(u))[code]
+        self.assertEqual(result['detail']['earnings_basis'], 'NORMALIZED')
+        self.assertEqual(result['selected_types'], [])
+        self.assertEqual(result['weights'], {'Q': 34.0, 'G': 33.0, 'V': 33.0})
 
     def test_value_trap_gate_boolean_is_exposed(self):
         u = ref.universe()

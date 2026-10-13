@@ -3905,7 +3905,7 @@
       },
       "v_vs_own_history": {
        "basis": null,
-       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
        "score": null,
        "state": "NOT_AVAILABLE"
       }
@@ -4078,7 +4078,7 @@
       },
       "v_vs_own_history": {
        "basis": null,
-       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
        "score": null,
        "state": "NOT_AVAILABLE"
       }
@@ -9540,7 +9540,7 @@
       },
       "v_vs_own_history": {
        "basis": null,
-       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
        "score": null,
        "state": "NOT_AVAILABLE"
       }
@@ -9713,7 +9713,7 @@
       },
       "v_vs_own_history": {
        "basis": null,
-       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
        "score": null,
        "state": "NOT_AVAILABLE"
       }
@@ -15190,7 +15190,7 @@
       },
       "v_vs_own_history": {
        "basis": null,
-       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
        "score": null,
        "state": "NOT_AVAILABLE"
       }
@@ -15363,7 +15363,7 @@
       },
       "v_vs_own_history": {
        "basis": null,
-       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
        "score": null,
        "state": "NOT_AVAILABLE"
       }
@@ -20842,7 +20842,7 @@
       },
       "v_vs_own_history": {
        "basis": null,
-       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
        "score": null,
        "state": "NOT_AVAILABLE"
       }
@@ -21015,7 +21015,7 @@
       },
       "v_vs_own_history": {
        "basis": null,
-       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
        "score": null,
        "state": "NOT_AVAILABLE"
       }
@@ -23338,7 +23338,7 @@
       "fcf_yield": 0.032407407407407406,
       "implied_growth": 0.21723436399770435,
       "industry_basis": null,
-      "industry_peers": 4,
+      "industry_peers": 5,
       "realized_growth": 0.06
      },
      "factors": {
@@ -37809,7 +37809,7 @@
       },
       "v_vs_own_history": {
        "basis": null,
-       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
        "score": null,
        "state": "NOT_AVAILABLE"
       }
@@ -37982,7 +37982,7 @@
       },
       "v_vs_own_history": {
        "basis": null,
-       "reason": "PRICE_HISTORY_NOT_AVAILABLE",
+       "reason": "NORMALIZED_HISTORY_NOT_AVAILABLE",
        "score": null,
        "state": "NOT_AVAILABLE"
       }

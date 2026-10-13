@@ -54,7 +54,8 @@ function metrics(company,quote,parameters,cyclicalYears=null){
  if(v.currency===null||v.currency===undefined||quote.currency!==v.currency)return fail('CURRENCY_BASIS_UNCONFIRMED');
  const shares=v.diluted_shares;if(!positive(shares))return fail('SHARES_NOT_AVAILABLE');
  const ebit=v.ebit,fcf=v.fcf,debt=v.total_debt,cash=v.cash,hist=v.ebit_per_share_history,closes=quote.month_closes;
- if(!finite(ebit))r.own_history='EBIT_NOT_AVAILABLE';
+ if(cyclicalYears)r.own_history='NORMALIZED_HISTORY_NOT_AVAILABLE';
+ else if(!finite(ebit))r.own_history='EBIT_NOT_AVAILABLE';
  else if(!object(closes)||!Object.keys(closes).length)r.own_history='PRICE_HISTORY_NOT_AVAILABLE';
  else{const past=[];for(const h of Array.isArray(hist)?hist:[]){if(!object(h)||!finite(h.value))continue;const c=monthClose(closes,h.period_end);if(c!==null)past.push(h.value/c);}
   if(past.length<MIN_HISTORY)r.own_history='HISTORY_TOO_SHORT';else{const current=ebit/shares/price;out.own_history=percentile(current,[...past,current]);}}
@@ -78,9 +79,9 @@ function referenceRange(company,parameters){
  for(const g of [rule.lower,rule.upper]){const x=E.dcf({cashflow_per_share:cf,growth_rate:g,parameters,cashflow_currency:v.currency});if(x.state==='NOT_AVAILABLE')return na(x.reason_codes[0]);ends.push(x.value_per_share);}
  return{state:'PROVISIONAL',reason:null,low:ends[0],high:ends[1]};}
 // Pool = cross-section (one point per issuer); a non-pooled id (TARGET-only row, second listing) is ranked against pool + itself.
-function cross(values,groups,ids,pooled,industry){
- const pop=pooled.filter(i=>values[i]!==null),out={};
- for(const i of ids){if(values[i]===null)continue;if(pop.length<MIN_UNIVERSE){out[i]=[null,'CROSS_SECTION_TOO_SMALL',null,pop.length];continue;}
+function cross(values,groups,ids,pooled,industry,issuers={}){
+ const population=pooled.filter(i=>values[i]!==null),out={};
+ for(const i of ids){if(values[i]===null)continue;const issuer=issuers[i],pop=population.filter(j=>j===i||!issuer||issuers[j]!==issuer),size=pop.length+(pop.includes(i)?0:1);if(size<MIN_UNIVERSE){out[i]=[null,'CROSS_SECTION_TOO_SMALL',null,size];continue;}
   let basis='UNIVERSE',peers=pop;if(industry){const g=groups[i],members=pop.filter(j=>g!==null&&g!==undefined&&groups[j]===g);if(g!==null&&g!==undefined&&members.length+(members.includes(i)?0:1)>=MIN_PEERS){basis='INDUSTRY';peers=members;}else basis='UNIVERSE_FALLBACK';}
   const vals=[...peers.map(j=>values[j]),...(peers.includes(i)?[]:[values[i]])];out[i]=[percentile(values[i],vals),null,basis,vals.length];}
  return out;}
@@ -96,10 +97,10 @@ function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dc
  const Q=object(quotes)?quotes:{},qg={},qAxis={},gAxis={},m={};
  for(const i of ids){const f=object(companies[i].factors)?companies[i].factors:{};qg[i]={};for(const k of QG_FACTORS){const v=Object.hasOwn(f,k)?f[k]:null;qg[i][k]=finite(v)&&v>=0&&v<=100?v:null;}const pub=object(companies[i].qg_axes)?companies[i].qg_axes:null;qAxis[i]=pub?publishedAxis('Q',qg[i],pub.Q):axisScore(qg[i],'Q');gAxis[i]=pub?publishedAxis('G',qg[i],pub.G):axisScore(qg[i],'G');}
  const map=fn=>{const o={};for(const i of ids)o[i]=fn(i);return o;};
- const pooled=ids.filter(i=>companies[i].in_cross_section!==false),qPct=cross(map(i=>qAxis[i].score),groups,ids,pooled,true);
+ const issuers=map(i=>companies[i].cik),pooled=ids.filter(i=>companies[i].in_cross_section!==false),qPct=cross(map(i=>qAxis[i].score),groups,ids,pooled,true,issuers);
  const cyc=typeConfig.value_basis.cyclical_type,years=typeConfig.value_basis.normalized_years,typed={};for(const i of ids)typed[i]=typeAxisWeights(companies[i].memberships,typeConfig);
- for(const i of ids)m[i]=metrics(companies[i],Object.hasOwn(Q,i)?Q[i]:null,parameters,typed[i][2].includes(cyc)?years:null);
- const ey=cross(map(i=>m[i].ebit_yield),groups,ids,pooled,false),fy=cross(map(i=>m[i].fcf_yield),groups,ids,pooled,false),ind=cross(map(i=>m[i].ebit_yield),groups,ids,pooled,true),exp=cross(map(i=>m[i].gap===null?null:-m[i].gap),groups,ids,pooled,false);
+ for(const i of ids)m[i]=metrics(companies[i],Object.hasOwn(Q,i)?Q[i]:null,parameters,companies[i].cyclical_basis===true||typed[i][2].includes(cyc)?years:null);
+ const ey=cross(map(i=>m[i].ebit_yield),groups,ids,pooled,false,issuers),fy=cross(map(i=>m[i].fcf_yield),groups,ids,pooled,false,issuers),ind=cross(map(i=>m[i].ebit_yield),groups,ids,pooled,true,issuers),exp=cross(map(i=>m[i].gap===null?null:-m[i].gap),groups,ids,pooled,false,issuers);
  const pw=PRESETS[preset].weights,results={};
  for(const i of ids){const c=companies[i],x=m[i],factors={};
   for(const k of QG_FACTORS){const s=qg[i][k];factors[k]={score:s,state:s===null?'NOT_AVAILABLE':'PUBLIC',reason:s===null?'SEC_FACTOR_NOT_AVAILABLE':null,basis:null};}
@@ -109,7 +110,7 @@ function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dc
   const oh=x.own_history;factors.v_vs_own_history=oh!==null?{score:oh,state:'CALCULATED',reason:null,basis:'OWN_HISTORY'}:{score:null,state:'NOT_AVAILABLE',reason:Object.hasOwn(x.reasons,'own_history')?x.reasons.own_history:null,basis:null};
   const vs={};for(const k of Object.keys(WEIGHTS.V))vs[k]=factors[k].score;
   const axes={Q:qAxis[i],G:gAxis[i],V:axisScore(vs,'V')},[tw,typeReason,selected]=typed[i],weights=compositeWeights(pw,tw,fallback),flags=[];
-  const qp=Object.hasOwn(qPct,i)?qPct[i]:null,qPercentile=qp?qp[0]:null,qBasis=qp?qp[2]:null,trap=gateOn&&qPercentile!==null&&qPercentile<GATE_PERCENTILE;
+  const qp=Object.hasOwn(qPct,i)?qPct[i]:null,qPercentile=qp?qp[0]:null,qBasis=qp?qp[2]:null,trap=gateOn&&qPercentile!==null&&qPercentile<=GATE_PERCENTILE;
   if(trap)flags.push('VALUE_TRAP_CAUTION');if(gateOn&&qPercentile===null)flags.push('GATE_NOT_EVALUATED');if(axes.V.score===null)flags.push('V_NOT_AVAILABLE');
   let data=0;for(const p of PILLARS)if(axes[p].score!==null)data+=weights[p];
   const included=PILLARS.filter(p=>axes[p].score!==null&&!(p==='V'&&trap));let total=null,totalReason=null;

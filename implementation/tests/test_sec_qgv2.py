@@ -504,3 +504,17 @@ def test_workflows_manifests_and_offline_fixture_are_wired():
     assert '<script src="sec-qgv2.js"></script>' in (ROOT / 'src/investment_system/product/web_assets/index.html').read_text()
     guard = (ROOT / 'tools/pages_artifact_guard.py').read_text()
     assert guard.count('\nALLOWED_NAMES') == 1 and 'QGV2_FILENAME' in guard.split('\nALLOWED_NAMES', 1)[1].split('\n', 1)[0]
+
+
+def test_normalized_earnings_inputs_are_reported_pricefree_and_legacy_readable():
+    row = next(r for r in payload()['records'].values() if r['state'] != 'NOT_AVAILABLE')
+    value = row['v_inputs_v2']
+    assert value['revenue'] is not None
+    assert len(value['operating_margin_history']) == 5
+    assert all(h['value'] is not None for h in value['operating_margin_history'])
+    prior = payload()
+    for r in [*prior['records'].values(), *prior['target'].values()]:
+        r['v_inputs_v2'].pop('revenue')
+        r['v_inputs_v2'].pop('operating_margin_history')
+    prior['decision_ref'] = 'GSQ-022_PENDING_APPROVAL'
+    q.require_qgv2(prior)

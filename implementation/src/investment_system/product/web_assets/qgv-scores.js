@@ -42,28 +42,32 @@ function v2Display(r){
   axes:r.axes,factors:r.factors,weights:r.weights,profile:r.profile,q_industry_percentile:r.q_industry_percentile,v_excluded:r.v_excluded,detail:r.detail,reference_range:r.reference_range,selected_types:r.selected_types,type_reason:r.type_reason,value_trap_gate:r.value_trap_gate===true};
 }
 let memo=null;
-function universeScores(v2Inputs,quotes,preset,gate,memberships){
- const mk=JSON.stringify([preset,gate,memberships]);if(memo&&memo.inputs===v2Inputs&&memo.quotes===quotes&&memo.key===mk)return memo.result;
- const companies={};for(const[code,r]of Object.entries(v2Inputs.records))companies[code]={industry_group:r.industry_group,profile:r.profile,factors:r.factors,v_inputs:r.v_inputs,qg_axes:r.qg_axes,in_cross_section:r.in_cross_section!==false,memberships:Object.hasOwn(memberships,code)?memberships[code]:null};
+function universeScores(v2Inputs,quotes,preset,gate,memberships,cyclicalBasis={}){
+ const mk=JSON.stringify([preset,gate,memberships,cyclicalBasis]);if(memo&&memo.inputs===v2Inputs&&memo.quotes===quotes&&memo.key===mk)return memo.result;
+ const companies={};for(const[code,r]of Object.entries(v2Inputs.records))companies[code]={cyclical_basis:cyclicalBasis[code]===true,cik:r.cik,industry_group:r.industry_group,profile:r.profile,factors:r.factors,v_inputs:r.v_inputs,qg_axes:r.qg_axes,in_cross_section:r.in_cross_section!==false,memberships:Object.hasOwn(memberships,code)?memberships[code]:null};
  const result=qgvV2().scoreUniverse(companies,quotes,{preset,gate});memo={inputs:v2Inputs,quotes,key:mk,result};return result;
 }
 /* The accessor. identities: [{company_id, ticker}] rows to show; publicScreens: the app's loaded public screens (v1 factors,
    company types, and sec-qgv2.json under SecQgv2.FILE); quotes: {code:{price,currency}} RAM. Returns rows with v1, v1_renormalized,
    v2 and the primary/reference pick of the current setting. */
-function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=null,scoringDefault:mode}={}){
+function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=null,scoringDefault:mode,referenceRows={}}={}){
  const V2=qgvV2(),intended=MODES.includes(mode)?mode:scoringDefault(),inputs=v2Inputs===undefined?(publicScreens&&qgv2Inputs()?publicScreens[qgv2Inputs().FILE]||null:null):v2Inputs;
  const chosen=preset&&Object.hasOwn(V2.PRESETS,preset)?preset:V2.DEFAULT_PRESET,gateOn=gate===null||gate===undefined?V2.GATE_DEFAULT:Boolean(gate);
  const codeFor=codeIndex(inputs);
  const memberships={};for(const c of identities){const code=codeFor(c),t=record(publicScreens,'company-types-pricefree.json',c.company_id);if(code&&t&&t.state!=='NOT_AVAILABLE'&&object(t.memberships))memberships[code]=t.memberships;}
- let universe=null,v2Reason=inputs?null:'SEC_QGV2_NOT_AVAILABLE';if(inputs){try{universe=universeScores(inputs,object(quotes)?quotes:{},chosen,gateOn,memberships);}catch(_){universe=null;v2Reason='V2_CALCULATION_FAILED';}}
- const b=basis(intended,!!universe),current=b.basis,rows={};let ranked=[];
- for(const c of identities){const[v1,v1r]=v1For(record(publicScreens,'sec-qg-factors.json',c.company_id)),code=codeFor(c),v2=v2Display(universe&&code?universe[code]:null);
+ const cyclicalBasis={};try{const engine=globalThis.PlaybookEngine,cfg=globalThis.PlaybookConfigDefaults;if(engine?.classifyTypesV0&&cfg&&inputs?.records){const symbols={};for(const c of identities){const code=codeFor(c);if(code)symbols[code]=c.ticker;}for(const[code,r]of Object.entries(inputs.records)){const symbol=symbols[code]||symbolOf(code),group=engine.sectorFor?.(cfg,symbol,null,r.sic);cyclicalBasis[code]=engine.classifyTypesV0(cfg,{sic:r.sic,sector_subgroup:group?.sector??null,revenue_volatility_5y_rank_pct:null}).cyclical?.member===true;}}}catch(_){}
+ let universe=null,v2Reason=inputs?null:'SEC_QGV2_NOT_AVAILABLE';if(inputs){try{universe=universeScores(inputs,object(quotes)?quotes:{},chosen,gateOn,memberships,cyclicalBasis);}catch(_){universe=null;v2Reason='V2_CALCULATION_FAILED';}}
+ const v2Ready=!!universe&&Object.values(universe).some(r=>finite(r.total));if(universe&&!v2Ready)v2Reason='V2_SCORES_NOT_AVAILABLE';
+ const b=basis(intended,v2Ready),current=b.basis,rows={};let ranked=[];
+ for(const c of identities){const[v1,v1r]=v1For(record(publicScreens,'sec-qg-factors.json',c.company_id)),code=codeFor(c);let v2=v2Display(universe&&code?universe[code]:null);
+  const ref=object(referenceRows)?referenceRows[c.company_id]:null;if(ref?.reference_only===true&&object(ref.factors)&&object(ref.axes)){try{const factors={},qg_axes={};for(const axis of ['Q','G']){let coverage=0;for(const[f,w]of Object.entries(V2.WEIGHTS[axis])){const s=ref.factors[f];factors[f]=finite(s)&&s>=0&&s<=100?s:null;if(factors[f]!==null)coverage+=w;}qg_axes[axis]={score:coverage>=50&&finite(ref.axes[axis]?.score)?ref.axes[axis].score:null};}
+   v2=v2Display(V2.scoreUniverse({reference:{profile:'GENERAL',industry_group:null,factors,qg_axes,v_inputs:null,memberships:null}}, {},{preset:chosen,gate:gateOn}).reference);v2.reference_only=true;v2.reference_label='참고 순위';v2.reference_label_en='Reference ranking';}catch(_){}}
   const row={company_id:c.company_id,ticker:c.ticker,code,v1,v1_renormalized:v1r,v2};row.primary=current==='v2'?v2:v1;row.reference=current==='v2'?v1r:v2;row.rank=null;rows[c.company_id]=row;}
- ranked=Object.values(rows).filter(r=>finite(r.primary.total)).sort((a,b)=>b.primary.total-a.primary.total||(a.ticker<b.ticker?-1:1));
+ ranked=Object.values(rows).filter(r=>finite(r.primary.total)&&r.primary.reference_only!==true).sort((a,b)=>b.primary.total-a.primary.total||(a.ticker<b.ticker?-1:1));
  if(current==='v2')ranked.forEach((r,i)=>{r.rank=i+1;});
  const quoted=object(quotes)?Object.keys(quotes).length:0;
  return{default:current,basis:b,label:LABEL[current],profile:{preset:chosen,gate:gateOn,id:V2.VERSION+'/'+chosen+'/gate-'+(gateOn?'on':'off'),name:V2.PRESETS[chosen]},
-  v2_state:universe?'READY':'NOT_AVAILABLE',v2_reason:v2Reason,v2_as_of:inputs?inputs.as_of:null,priced_codes:quoted,rows};
+  v2_state:v2Ready?'READY':'NOT_AVAILABLE',v2_reason:v2Reason,v2_as_of:inputs?inputs.as_of:null,priced_codes:quoted,rows};
 }
 /* Rows for the virtual-trading rehearsal snapshot and the daily report (+ export): {cid:{q,g,partial,...}} from the primary
    version. In v1 the q/g/partial values are exactly the previous ones (official v1). */
@@ -87,7 +91,7 @@ async function collectQuotes(win,{identities=[],v2Inputs=null,catalog=null}={}){
  // v_vs_own_history: month-end closes of the user's sheet Prices tab (PriceStore device module, RAM). Absent -> the factor is
  // NOT_AVAILABLE (PRICE_HISTORY_NOT_AVAILABLE); never filled.
  const store=win.PriceStore&&typeof win.PriceStore.monthEndCloses==='function'?win.PriceStore:null;
- if(store)for(const code of Object.keys(out)){let m=null;try{m=await store.monthEndCloses(Object.hasOwn(tickers,code)?tickers[code]:code.slice(code.indexOf(':')+1));}catch(_){m=null;}
+ if(store)for(const code of Object.keys(out)){let m=null;try{m=await store.monthEndCloses(symbolOf(Object.hasOwn(tickers,code)?tickers[code]:code));}catch(_){m=null;}
   const clean={};if(object(m))for(const[k,v]of Object.entries(m))if(/^\d{4}-(0[1-9]|1[0-2])$/.test(k)&&finite(v)&&v>0)clean[k]=v;if(Object.keys(clean).length)out[code]={...out[code],month_closes:clean};}
  return out;
 }
@@ -95,8 +99,8 @@ const num=(v,d=1)=>finite(v)?(Math.round(v*10**d)/10**d).toFixed(d):'—';
 function flagText(flags,en){return(flags||[]).filter(f=>Object.hasOwn(FLAG,f)).map(f=>FLAG[f][en?1:0]);}
 // One-line text of a display row: 'QGV 61.2 · Q 60.1 · G 55.0 · V 48.2 · 요인 14/15'.
 function summaryText(d,en){
- if(!d)return '—';const n=(en?'factors ':'요인 ')+d.factors_available+'/'+d.factors_total;
- if(d.version==='v2')return 'QGV '+num(d.total)+' · Q '+num(d.q)+' · G '+num(d.g)+' · V '+num(d.v)+' · '+n;
+ if(!d)return '—';const n=(en?'calculated factors ':'산출 요인 ')+d.factors_available+'/'+d.factors_total;
+ if(d.version==='v2')return (d.reference_only?(en?'Reference ranking · ':'참고 순위 · '):'')+'QGV '+num(d.total)+' · Q '+num(d.q)+' · G '+num(d.g)+' · V '+num(d.v)+' · '+n;
  return 'Q '+num(d.q)+' · G '+num(d.g)+(d.total!==null?' · Q·G '+num(d.total):'')+' · '+n;
 }
 function label(version,en){return(LABEL[version]||LABEL.v1)[en?1:0];}

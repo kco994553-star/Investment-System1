@@ -14,12 +14,12 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
 (async () => {
   const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_EXECUTABLE_PATH });let pass = 0, fail = 0, phase = 'START';
   try {
-    for (const mode of ['v1', 'v2']) for (const width of [390, 1440]) {
+    for (const mode of ['v1', 'v2']) for (const width of [390, 1280]) {
       const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block' });
       await routeEmptyPublicScreens(context);
       await context.route('**/sec-qg-factors.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(v1()) }));
       await context.route('**/sec-qgv2.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(F.strictPayload()) }));
-      if (mode === 'v2') await context.route('**/scoring-default.js*', async (r) => { const res = await r.fetch(), body = (await res.text()).replace("scoring_default:'v1'", "scoring_default:'v2'"); await r.fulfill({ response: res, body }); });
+      await context.route('**/scoring-default.js*', async (r) => { const res = await r.fetch(), body = (await res.text()).replace(/scoring_default:'v[12]'/, "scoring_default:'" + mode + "'"); await r.fulfill({ response: res, body }); });
       const page = await context.newPage();let errors = 0;page.on('pageerror', () => errors++);
       await page.route('**/*', (r) => (new URL(r.request().url()).origin === ORIGIN ? r.fallback() : r.abort()));
       try {
@@ -41,8 +41,8 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
         const nvda = page.locator('[data-leaderboard-row="nvda"]'), msft = page.locator('[data-leaderboard-row="msft"]'), gev = page.locator('[data-leaderboard-row="gev"]');
         if (mode === 'v2') {
           const text = await nvda.locator('[data-leaderboard-qgv2]').textContent();
-          assert.match(text, /^QGV \d+\.\d · Q \d+\.\d · G \d+\.\d · V \d+\.\d · 요인 1[0-5]\/15$/);
-          assert.match(await msft.locator('[data-leaderboard-qgv2]').textContent(), / V — · 요인 1\d\/15$/);
+          assert.match(text, /^QGV \d+\.\d · Q \d+\.\d · G \d+\.\d · V \d+\.\d · 산출 요인 1[0-5]\/15$/);
+          assert.match(await msft.locator('[data-leaderboard-qgv2]').textContent(), / V — · 산출 요인 1\d\/15$/);
           assert.equal(await gev.locator('[data-leaderboard-qgv2]').getAttribute('data-leaderboard-qgv2'), 'NOT_AVAILABLE');
           assert.ok((await page.locator('[data-leaderboard-rank]').count()) >= 3);
           assert.match(await nvda.locator('[data-leaderboard-v1-reference]').textContent(), /v1 · 결측 재정규화 · 참고 · Q \d/);
@@ -55,11 +55,15 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
           assert.equal(await page.locator('[data-qgv2-flag]').filter({ hasText: '가치 함정 주의' }).count(), 0);assert.equal(await msft.locator('[data-qgv2-flag]').filter({ hasText: 'V 없음' }).count(), 1);assert.equal(await gev.locator('[data-qgv2-flag]').count(), 0);
         } else {
           assert.match(await nvda.locator('[data-leaderboard-qg]').textContent(), /Q \d+\.\d · G \d+\.\d · 요인 13\/13/);
-          assert.match(await nvda.locator('[data-leaderboard-v2-compare]').textContent(), /v2 비교용 QGV \d+\.\d · Q .* V \d+\.\d · 요인/);
+          assert.match(await nvda.locator('[data-leaderboard-v2-compare]').textContent(), /v2 비교용 QGV \d+\.\d · Q .* V \d+\.\d · 산출 요인/);
           assert.equal(await page.locator('[data-leaderboard-rank]').count(), 0);
           assert.equal(await page.locator('[data-leaderboard-qgv2]').count(), 0);
         }
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no horizontal scroll S06');
+        phase = 'S13';await page.goto(BASE + '#profiles');await page.locator('[data-profile-editor]').waitFor();
+        assert.equal(await page.locator('[data-profile-v2] h3').count(),mode==='v2'?1:0);
+        if(mode==='v2'){assert.equal(await page.locator('[data-v2-official-axis]').count(),3);assert.equal(await page.locator('[data-v2-preset]').count(),4);assert.equal(await page.locator('[data-v2-performance]').getAttribute('data-v2-performance'),'NOT_AVAILABLE');}
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no horizontal scroll S13');
         phase = 'S04';await page.goto(BASE + '#company/nvda');await page.locator('[data-company-card="qgv"]').waitFor();
         assert.equal(await page.locator('[data-company-badges] [data-scoring-default]').getAttribute('data-scoring-default'), mode);
         if (mode === 'v2') {

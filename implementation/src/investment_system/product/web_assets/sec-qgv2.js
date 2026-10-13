@@ -1,7 +1,7 @@
-/* Public price-free `sec-qgv2.json` reader: QGV v2 Q·G (PROVISIONAL default, GSQ-022 pending approval). Mirrors Python universe/sec_qgv2.require_qgv2 including the full score recomputation (qgv/v2_scoring.py); JS==Python vectors: tests/fixtures/sec_qgv2_vectors_v1.json. Per Universe504 code and per TARGET id: raw SEC metrics, 10 factor percentiles (0-100 or null = NOT_AVAILABLE, never 0), Q/G axis scores with factors_available n/total and peer basis/count, and the price-free `v_inputs_v2` amounts the device needs for V. No price, market cap, V score or rank. */
+/* Public price-free `sec-qgv2.json` reader: QGV v2 Q·G (PROVISIONAL default, GSQ-022 approved 2026-10-13). Mirrors Python universe/sec_qgv2.require_qgv2 including the full score recomputation (qgv/v2_scoring.py); JS==Python vectors: tests/fixtures/sec_qgv2_vectors_v1.json. Per Universe504 code and per TARGET id: raw SEC metrics, 10 factor percentiles (0-100 or null = NOT_AVAILABLE, never 0), Q/G axis scores with factors_available n/total and peer basis/count, and the price-free `v_inputs_v2` amounts the device needs for V. No price, market cap, V score or rank. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.SecQgv2=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
  'use strict';
- const FILENAME='sec-qgv2.json',KIND='SEC_QGV2',MAX=2*1024*1024,CODE_COUNT=504,STANDARD='QGV_V2',STANDARD_STATUS='PROVISIONAL_DEFAULT_UNCALIBRATED',DECISION_REF='GSQ-022_PENDING_APPROVAL';
+ const FILENAME='sec-qgv2.json',KIND='SEC_QGV2',MAX=2*1024*1024,CODE_COUNT=504,STANDARD='QGV_V2',STANDARD_STATUS='PROVISIONAL_DEFAULT_UNCALIBRATED',DECISION_REF='GSQ-022';
  const CONFIG_VERSION='sec-universe-shares/v0',CONFIG_STATUS='DEFAULT_V0_UNCALIBRATED';
  const Q_WEIGHTS={q_profitability:25,q_moat_proxy:20,q_earnings_quality:20,q_financial_safety:20,q_capital_allocation:15};
  const G_WEIGHTS={g_revenue_growth:25,g_per_share_growth:25,g_growth_efficiency:20,g_consistency:15,g_recent_acceleration:15};
@@ -20,8 +20,9 @@
  const TOP=['schema_version','kind','as_of','standard','standard_status','decision_ref','method','config_version','config_status','freshness_basis','stale_after_seconds','shard_count','last_shard_index','registry_sha256','code_count','cross_section_size','cross_section_by_profile','state','reason_codes','records','target'];
  const ROW=['cik','acquired_at','source_sha256','state','reason_codes','sic','industry_group','profile','fiscal_year_end','currency','metrics','factors','axes','v_inputs_v2'];
  const AXIS_KEYS=['score','factors_available','available_weight','peer_basis','peer_count','submetric_fallbacks','reason_codes'];
- const V_KEYS=['currency','taxonomy','fiscal_year_end','ebit','fcf','total_debt','cash_and_equivalents','diluted_shares','ebit_per_share_history','fcf_per_share_history','revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','revenue_ttm_growth'];
- const FLOW_KEYS=['fy_value','fy_end','ttm_value','ttm_end'],FLOW_V=['ebit','fcf'],INSTANT_V=['total_debt','cash_and_equivalents','diluted_shares'],GROWTH_V=['revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','revenue_ttm_growth'];
+ const LEGACY_V_KEYS=['currency','taxonomy','fiscal_year_end','ebit','fcf','total_debt','cash_and_equivalents','diluted_shares','ebit_per_share_history','fcf_per_share_history','revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','revenue_ttm_growth'];
+ const V_KEYS=LEGACY_V_KEYS.concat(['revenue','operating_margin_history']);
+ const FLOW_KEYS=['fy_value','fy_end','ttm_value','ttm_end'],FLOW_V=['ebit','fcf','revenue'],INSTANT_V=['total_debt','cash_and_equivalents','diluted_shares'],GROWTH_V=['revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','revenue_ttm_growth'];
  const LIMIT=1e12,HISTORY_YEARS=5;
  function need(x){if(!x)throw Error('SEC_QGV2_INVALID');}
  const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x),keys=(x,k)=>plain(x)&&Object.keys(x).length===k.length&&k.every(n=>Object.hasOwn(x,n));
@@ -32,18 +33,18 @@
  const canon=x=>Array.isArray(x)?'['+x.map(canon).join(',')+']':plain(x)?'{'+Object.keys(x).sort().map(k=>JSON.stringify(k)+':'+canon(x[k])).join(',')+'}':JSON.stringify(x);
  function classify(sic){const code=Number(sic);const g=SIC_GROUPS.find(([,ranges])=>ranges.some(([lo,hi])=>lo<=code&&code<=hi));return g?g[0]:null;}
  const profileFor=sic=>typeof sic==='string'&&/^\d{4}$/.test(sic)&&Number(sic)>=6000&&Number(sic)<=6499?'FINANCIAL':'GENERAL';
- function emptyV(){return{currency:null,taxonomy:null,fiscal_year_end:null,ebit:null,fcf:null,total_debt:null,cash_and_equivalents:null,diluted_shares:null,ebit_per_share_history:[],fcf_per_share_history:[],revenue_cagr_3y:null,eps_cagr_3y:null,fcf_per_share_cagr_3y:null,revenue_ttm_growth:null};}
+ function emptyV(){return{currency:null,taxonomy:null,fiscal_year_end:null,ebit:null,fcf:null,total_debt:null,cash_and_equivalents:null,diluted_shares:null,ebit_per_share_history:[],fcf_per_share_history:[],revenue:null,operating_margin_history:[],revenue_cagr_3y:null,eps_cagr_3y:null,fcf_per_share_cagr_3y:null,revenue_ttm_growth:null};}
  function emptyAxis(reason){return{score:null,factors_available:'0/5',available_weight:0,peer_basis:null,peer_count:0,submetric_fallbacks:0,reason_codes:[reason]};}
  function emptyRecord(reason='NOT_COLLECTED'){return{cik:null,acquired_at:null,source_sha256:{companyfacts:null,submissions:null},state:'NOT_AVAILABLE',reason_codes:[reason],sic:null,industry_group:null,profile:null,fiscal_year_end:null,currency:null,metrics:{},factors:Object.fromEntries(FACTOR_IDS.map(k=>[k,null])),axes:{Q:emptyAxis('ROW_NOT_AVAILABLE'),G:emptyAxis('ROW_NOT_AVAILABLE')},v_inputs_v2:emptyV()};}
  const metricOk=(k,v)=>k==='moat_return_years'?Number.isInteger(v)&&v>=3&&v<=HISTORY_YEARS:num(v)&&Math.abs(v)<=LIMIT;
  function vInputs(v,cutDay,hasData){
-  need(keys(v,V_KEYS));if(!hasData){need(canon(v)===canon(emptyV()));return;}
+  need(keys(v,V_KEYS)||keys(v,LEGACY_V_KEYS));if(!hasData){const empty=emptyV();need(canon(v)===canon(Object.fromEntries(Object.keys(v).map(k=>[k,empty[k]]))));return;}
   need(typeof v.currency==='string'&&/^[A-Z]{3}$/.test(v.currency)&&['us-gaap','ifrs-full'].includes(v.taxonomy)&&date(v.fiscal_year_end)<=cutDay);
-  for(const k of FLOW_V){const f=v[k];if(f===null)continue;need(keys(f,FLOW_KEYS));
+  for(const k of FLOW_V){const f=v[k];if(f===null||f===undefined)continue;need(keys(f,FLOW_KEYS));
    for(const [vk,ek] of [['fy_value','fy_end'],['ttm_value','ttm_end']]){need((f[vk]===null)===(f[ek]===null));if(f[vk]!==null)need(num(f[vk])&&date(f[ek])<=cutDay);}
    need(f.fy_value!==null||f.ttm_value!==null);if(f.fy_end!==null&&f.ttm_end!==null)need(f.ttm_end>=f.fy_end);}
   for(const k of INSTANT_V){const i=v[k];if(i===null)continue;need(keys(i,['value','period_end'])&&num(i.value)&&date(i.period_end)<=cutDay);if(k==='diluted_shares')need(i.value>0);}
-  for(const k of ['ebit_per_share_history','fcf_per_share_history']){const h=v[k];need(Array.isArray(h)&&h.length<=HISTORY_YEARS);const ends=[];for(const e of h){need(keys(e,['fiscal_year_end','value'])&&num(e.value));ends.push(date(e.fiscal_year_end));need(ends[ends.length-1]<=cutDay);}for(let i=1;i<ends.length;i++)need(ends[i-1]<ends[i]);}
+  for(const k of ['ebit_per_share_history','fcf_per_share_history','operating_margin_history']){const h=v[k]||[];need(Array.isArray(h)&&h.length<=HISTORY_YEARS);const ends=[];for(const e of h){need(keys(e,['fiscal_year_end','value'])&&num(e.value));ends.push(date(e.fiscal_year_end));need(ends[ends.length-1]<=cutDay);}for(let i=1;i<ends.length;i++)need(ends[i-1]<ends[i]);}
   for(const k of GROWTH_V)need(v[k]===null||num(v[k])&&Math.abs(v[k])<=LIMIT);
  }
  /* One row (mirrors Python _row); scores are compared separately against the recomputation. */
@@ -111,7 +112,7 @@
  function scoresMatch(r,e){need(FACTOR_IDS.every(f=>sameNum(r.factors[f],e.factors[f])));for(const axis of ['Q','G']){const g=r.axes[axis],w=e.axes[axis];need(sameNum(g.score,w.score));for(const k of AXIS_KEYS)if(k!=='score')need(canon(g[k])===canon(w[k]));}}
  function validate(p){
   try{
-   need(keys(p,TOP)&&p.schema_version===1&&p.kind===KIND&&p.standard===STANDARD&&p.standard_status===STANDARD_STATUS&&p.decision_ref===DECISION_REF&&canon(p.method)===canon(METHOD));
+   need(keys(p,TOP)&&p.schema_version===1&&p.kind===KIND&&p.standard===STANDARD&&p.standard_status===STANDARD_STATUS&&[DECISION_REF,'GSQ-022_PENDING_APPROVAL'].includes(p.decision_ref)&&canon(p.method)===canon(METHOD));
    need(p.config_version===CONFIG_VERSION&&p.config_status===CONFIG_STATUS&&p.freshness_basis==='SOURCE_ACQUISITION');
    const cut=clock(p.as_of),ttl=p.stale_after_seconds;
    need(Number.isInteger(ttl)&&ttl>0&&ttl<=366*86400&&Number.isInteger(p.shard_count)&&p.shard_count>=1&&p.shard_count<=366&&(p.last_shard_index===null||Number.isInteger(p.last_shard_index)&&p.last_shard_index>=0&&p.last_shard_index<p.shard_count)&&(p.registry_sha256===null||hash(p.registry_sha256)));

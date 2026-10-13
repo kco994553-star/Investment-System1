@@ -1,6 +1,6 @@
 # QGV v2 기기 V·종합 점수 — 구현 정의 (PROVISIONAL)
 
-근거: [QGV v2 후보안](QGV_V2_CANDIDATE.md) 기본 비중 그대로(조정 없음, Holdout 미사용), GSQ-022(2026-10-13, 승인 대기). 계산 위치는 기기 RAM이다. 가격·시가총액·EV·V 점수·순위는 공개 파일·저장소·로그·커밋 fixture(합성 제외)에 남기지 않는다. 결측은 NOT_AVAILABLE이며 0으로 채우지 않는다.
+근거: [QGV v2 후보안](QGV_V2_CANDIDATE.md) 기본 비중 그대로(조정 없음, Holdout 미사용), GSQ-022(2026-10-13 사용자 승인). 계산 위치는 기기 RAM이다. 가격·시가총액·EV·V 점수·순위는 공개 파일·저장소·로그·커밋 fixture(합성 제외)에 남기지 않는다. 결측은 NOT_AVAILABLE이며 0으로 채우지 않는다.
 
 - Python 참조: `qgv/qgv_v2.py` · JS: `web_assets/qgv-v2.js` · 대조 벡터: `tests/fixtures/qgv_v2_vectors_v1.json`(`tools/qgv_v2_reference.py --write|--check`, `tools/qgv_v2_node_test.js`).
 - 점수 접근자: `web_assets/qgv-scores.js`(QgvScores) · 설정: `web_assets/scoring-default.js`.
@@ -40,12 +40,12 @@
 
 - 축 비중 = 프리셋(§5: 균형 34/33/33 기본, 우량 중심 50/25/25, 성장 친화 30/50/20, 가치 25/20/55) 위에 GSQ-017 유형 비중을 적용: `w_p ∝ 프리셋_p × 유형_p / 미분류_p`(미분류 34/33/33). 균형 프리셋이면 GSQ-017 유형 비중과 정확히 같다. 유형 소속도가 없으면 미분류(=프리셋 그대로).
 - 총점 = 사용 가능한 축의 가중 평균. 자료가 있는 축 비중 합이 50% 미만이면 NA.
-- **가치 함정 관문(기본 켬, 토글):** Q 축 점수의 업종군 안 백분위(동업종 ≥ 8, 아니면 전체; 가격 불필요) < 30이면 V를 총점에서 빼고 '가치 함정 주의'를 표시한다. 관문으로 뺀 V는 50% 판정에 영향을 주지 않는다.
+- **가치 함정 관문(기본 켬, 토글):** Q 축 점수의 업종군 안 백분위(동업종 ≥ 8, 아니면 전체; 가격 불필요) ≤ 30이면 V를 총점에서 빼고 '가치 함정 주의'를 표시한다. 관문으로 뺀 V는 50% 판정에 영향을 주지 않는다.
 - 프로필 버전 id: `qgv-v2/<preset>/gate-on|off`. 선택은 이 페이지 메모리에만 있고 저장하지 않는다.
 
 ## 5. 기본 기준 설정 (`scoring_default`)
 
-`web_assets/scoring-default.js`의 `scoring_default:'v1'` 한 줄이 유일한 설정이다. **GSQ-022 승인 후 이 한 줄을 `'v2'`로 바꾸고 `pages_artifact_guard.py`의 그 파일 해시만 다시 고정하면** 모든 소비자가 따라 바뀐다: S04 QGV 카드·S05 종합/QGV 요소 탭(`company-screen.js`), S06 리더보드(`leaderboard-screen.js`), 가상매매 리허설 판단 행·일일보고서·보고서 내보내기(`app.js` → `QgvScores.judgmentRows` → `DailyReport`). v1이 기본이면 v2는 '비교용', v2가 기본이면 v1(재정규화)은 [자세히]에만 보인다. 테스트: `tools/qgv_scores_node_test.js`(설정을 뒤집어 모든 소비자 확인), `tools/qgv_v2_screens_browser_test.js`(390/1440, v1·v2).
+`web_assets/scoring-default.js`의 `scoring_default:'v2'` 한 줄이 유일한 설정이다. **GSQ-022 승인에 따라 v2로 전환했으며, 실제 배포 준비일이 확인되기 전에는 `v2_since`를 null로 둔다.** 모든 소비자가 따라 바뀐다: S04 QGV 카드·S05 종합/QGV 요소 탭(`company-screen.js`), S06 리더보드(`leaderboard-screen.js`), 가상매매 리허설 판단 행·일일보고서·보고서 내보내기(`app.js` → `QgvScores.judgmentRows` → `DailyReport`). v1이 기본이면 v2는 '비교용', v2가 기본이면 v1(재정규화)은 [자세히]에만 보인다. 테스트: `tools/qgv_scores_node_test.js`(설정을 뒤집어 모든 소비자 확인), `tools/qgv_v2_screens_browser_test.js`(390/1280, v1·v2).
 
 ## 6. `sec-qgv2.json` 정렬 (Q·G 쪽 `claude/qgv-v2-qg`의 실제 형태)
 
@@ -71,3 +71,16 @@
 | §14-3 v2 결측 | 반영(§3). §13-1은 v1에만 적용. |
 | §14-4 관문 | 반영. 결과에 `value_trap_gate`(boolean)와 '가치 함정 주의'. 기본 켬·토글, 프로필 id에 포함. |
 | §13-11 기본 전환 | 접근자 `QgvScores.basis()` → `{basis, label, since}`. 설정이 v2여도 이 기기에서 v2가 계산되기 전에는 v1을 '임시 기본'으로 표시. 전환 한 줄: `scoring-default.js`의 `{scoring_default:'v2',v2_since:'YYYY-MM-DD'}`. 전진검증 원장의 v1·v2 동시 기록·전략 버전 v2 기록은 공개 원장(Actions) 변경이라 이 브랜치에서는 미반영. |
+
+
+## 9. 2026-10-13 후속 구현 (이 절이 이전 구현 상태보다 우선)
+
+- 공개 QGV 입력에 매출(연간/TTM)과 5년 영업이익률 이력을 추가했다. 예전 필드 형태도 허용한다. 새 공개 필드와 원장 schema 2는 승인·배포 대기다.
+- 승인된 플레이북 SIC 경기민감 후보는 V의 정상화 이익 기준에 연결한다. GSQ-017 유형 소속도·축 비중은 바꾸지 않는다.
+- V·관문 백분위에서 TARGET 및 복수 상장 행도 자기 CIK의 기존 점을 교체한다. 한 발행사가 두 번 들어가지 않는다.
+- 전진 원장은 v2 기본과 v1 비교 Q·G를 별도 배열에 같은 거래일만 기록한다. 이전 schema 1 기록은 그대로 유지한다. V는 공개 원장에 들어가지 않는다.
+- 기록 모드 실행기는 schema 2의 v2 Q·G만 사용하고, Q·G가 준비된 첫 날짜부터 시작한다. v1 저장 V를 v2와 섞지 않는다. `snapshot_basis`로 비교 기간의 버전을 확인한다.
+- S13은 v2 5요인·4프리셋·관문을 기본으로 표시하고 v1은 비교용으로 둔다. PIT 과거 성과 자료가 없어 수익률/MDD는 확인 불가다.
+- 실제 504 품질 보고 입력은 HTTP 404였다. 합성 대조 자료를 실제 종목 보고로 대신하지 않는다. [준비 상태](QGV_V2_READINESS_20261013.md)를 참조한다.
+
+경기민감 자기 과거 대비는 같은 정상화 이익 기준의 과거 주당 이익 이력이 없어 `NORMALIZED_HISTORY_NOT_AVAILABLE`로 둔다. 보고 EBIT의 과거 배수를 정상화 EBIT의 현재 배수와 섞지 않는다. 다른 일반 기업의 자기 과거 대비는 기존 3개 이상 연말월 가격 규칙을 유지한다.

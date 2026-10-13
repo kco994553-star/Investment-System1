@@ -16,14 +16,14 @@ function flow(x){if(!object(x))return[null,null];if(finite(x.ttm_value))return[x
 function history(list){const out=[];for(const h of Array.isArray(list)?list:[]){const pe=object(h)?h.fiscal_year_end:null;if(typeof pe==='string'&&DAY.test(pe)&&finite(h.value))out.push({period_end:pe,value:h.value});}return out.sort((a,b)=>a.period_end<b.period_end?-1:a.period_end>b.period_end?1:0);}
 function vInputs(v){
  if(!object(v)||typeof v.currency!=='string'||!/^[A-Z]{3}$/.test(v.currency))return[null,{}];
- const[ebit,ebitP]=flow(v.ebit),[fcf,fcfP]=flow(v.fcf),periods={};if(ebitP)periods.ebit=ebitP;if(fcfP)periods.fcf=fcfP;
+ const[ebit,ebitP]=flow(v.ebit),[fcf,fcfP]=flow(v.fcf),[revenue,revenueP]=flow(v.revenue),periods={};if(ebitP)periods.ebit=ebitP;if(fcfP)periods.fcf=fcfP;if(revenueP)periods.revenue=revenueP;
  for(const k of ['total_debt','cash_and_equivalents','diluted_shares'])if(object(v[k])&&typeof v[k].period_end==='string')periods[k]=v[k].period_end;
- return[{currency:v.currency,ebit,fcf,total_debt:value(v.total_debt),cash:value(v.cash_and_equivalents),diluted_shares:value(v.diluted_shares),ebit_per_share_history:history(v.ebit_per_share_history),revenue_cagr_3y:finite(v.revenue_cagr_3y)?v.revenue_cagr_3y:null},periods];
+ return[{currency:v.currency,ebit,fcf,revenue,operating_margin_history:history(v.operating_margin_history),total_debt:value(v.total_debt),cash:value(v.cash_and_equivalents),diluted_shares:value(v.diluted_shares),ebit_per_share_history:history(v.ebit_per_share_history),revenue_cagr_3y:finite(v.revenue_cagr_3y)?v.revenue_cagr_3y:null},periods];
 }
 function normalize(r,pooled){
  const f=object(r)&&object(r.factors)?r.factors:{},factors={};for(const k of FACTORS)factors[k]=score(Object.hasOwn(f,k)?f[k]:null);
  const has=object(r)&&r.state!=='NOT_AVAILABLE'&&r.fiscal_year_end!==null&&r.fiscal_year_end!==undefined,[v,periods]=has?vInputs(r.v_inputs_v2):[null,{}],ax=object(r)&&object(r.axes)?r.axes:{};
- return{cik:object(r)&&typeof r.cik==='string'?r.cik:null,industry_group:object(r)&&typeof r.industry_group==='string'&&GROUP.test(r.industry_group)?r.industry_group:null,profile:object(r)&&r.profile==='FINANCIAL'?'FINANCIAL':'GENERAL',
+ return{metrics:object(r)&&object(r.metrics)?Object.fromEntries(Object.entries(r.metrics).filter(([k,v])=>/^[a-z][a-z0-9_]{0,63}$/.test(k)&&finite(v))):{},sic:object(r)&&typeof r.sic==='string'&&/^\d{4}$/.test(r.sic)?r.sic:null,cik:object(r)&&typeof r.cik==='string'?r.cik:null,industry_group:object(r)&&typeof r.industry_group==='string'&&GROUP.test(r.industry_group)?r.industry_group:null,profile:object(r)&&r.profile==='FINANCIAL'?'FINANCIAL':'GENERAL',
   factors,qg_axes:{Q:{score:object(ax.Q)?score(ax.Q.score):null},G:{score:object(ax.G)?score(ax.G.score):null}},v_inputs:v,periods,state:object(r)&&['LIVE','STALE'].includes(r.state)?r.state:'NOT_AVAILABLE',in_cross_section:pooled};
 }
 /* SecQgv2.toInputs() result (or a lightly checked payload) -> {as_of, records:{key: record}, count}. */
