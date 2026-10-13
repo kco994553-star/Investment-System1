@@ -30,6 +30,7 @@ const NOT_CODES = {
   tickers_and_benchmarks: ['AMD', 'AMZN', 'ASML', 'AVGO', 'ETN', 'GEV', 'GOOGL', 'HUBB', 'INTC', 'KLAC', 'LRCX', 'MSFT', 'NVDA', 'QCOM', 'ROK', 'RTX', 'SYK',
     'SPY', 'SP500', 'SMH', 'VUG', 'QUAL', 'XLB', 'XLC', 'XLE', 'XLF', 'XLI', 'XLK', 'XLP', 'XLRE', 'XLU', 'XLV', 'XLY', 'SEMIS_THEME_SMH_ELSE_XLI'],
   currencies: ['KRW', 'USD', 'JPY'],
+  financial_bases: ['NORMALIZED', 'REPORTED'],
   ledger_and_report_kinds: ['SET', 'SET_A', 'SET_B', 'SET_C', 'SET_D', 'SHADOW', 'PHONE', 'MOCK', 'REAL', 'COMPARE', 'TARGET', 'TARGET_V0', 'USER_TARGET'],
   sides_rows_events_sources: ['BUY', 'SELL', 'INITIAL', 'EXECUTED', 'CANCELLED', 'JUDGEMENT', 'ORDER', 'SUMMARY', 'LEDGER_START', 'LEDGER_CLOSE', 'RECORD', 'RESYNC', 'MAILBOX', 'PASTE', 'NEW'],
   states: ['READY', 'PARTIAL', 'BLOCKED', 'NOT_AVAILABLE', 'NOT_STARTED', 'STARTED', 'LOADING', 'LOADED', 'ERROR', 'LIVE', 'STALE', 'ABNORMAL', 'NORMAL', 'COMPLETE',

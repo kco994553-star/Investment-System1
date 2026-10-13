@@ -119,9 +119,11 @@ METRIC_KEYS = (
     'revenue_cagr_3y', 'eps_cagr_3y', 'fcf_per_share_cagr_3y', 'book_value_per_share_cagr_3y',
     'incremental_roic_3y', 'incremental_roe_3y', 'revenue_positive_growth_share', 'revenue_growth_volatility',
     'revenue_ttm_growth', 'revenue_acceleration',
+    'revenue_growth_std_5y', 'revenue_volatility_5y_rank_pct',
 )
 # Metrics that are counts/descriptors, not ranked directly.
-DESCRIPTIVE_METRICS = frozenset({'moat_return_mean_5y', 'moat_return_std_5y', 'moat_return_years', 'revenue_ttm_growth'})
+DESCRIPTIVE_METRICS = frozenset({'moat_return_mean_5y', 'moat_return_std_5y', 'moat_return_years', 'revenue_ttm_growth',
+                               'revenue_growth_std_5y', 'revenue_volatility_5y_rank_pct'})
 
 
 def _finite(value):
@@ -536,6 +538,10 @@ def _growth_common(c, m):
     if len(growth) >= 3:
         m['revenue_positive_growth_share'] = sum(1 for g in growth if g > 0) / len(growth)
         m['revenue_growth_volatility'] = _pstdev(growth)
+    # PLAYBOOK decision #18 requires all five annual growth observations, hence six reported FY revenues.
+    # Keep the existing >=3-observation G consistency metric unchanged.
+    if len(growth) == HISTORY_YEARS:
+        m['revenue_growth_std_5y'] = _pstdev(growth)
     ttm = c.ttm('revenue')
     if ttm is not None and ttm[2] is not None and ttm[2] > 0 and ttm[0] is not None:
         m['revenue_ttm_growth'] = ttm[0] / ttm[2] - 1.0

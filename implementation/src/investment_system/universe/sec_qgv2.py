@@ -233,10 +233,16 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
 
 def publish(records, target, *, as_of, cfg, stale_after, shard_index, registry_sha256):
     scores, summary = vs.score_rows(records, target)
+    volatility = vs.volatility_rank_rows(records, target)
     for role, rows in (('universe', records), ('target', target)):
         for key, row in rows.items():
             row['factors'] = scores[(role, key)]['factors']
             row['axes'] = scores[(role, key)]['axes']
+            rank = volatility[(role, key)]
+            if rank is None:
+                row['metrics'].pop('revenue_volatility_5y_rank_pct', None)
+            else:
+                row['metrics']['revenue_volatility_5y_rank_pct'] = rank
     states = [r['state'] for r in records.values()] + [r['state'] for r in target.values()]
     state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
     return {'schema_version': 1, 'kind': KIND, 'as_of': _iso(as_of), 'standard': STANDARD, 'standard_status': STANDARD_STATUS,
@@ -254,7 +260,12 @@ def _metric_ok(key, value):
     if key == 'moat_return_years':
         return type(value) is int and 3 <= value <= vf.HISTORY_YEARS
     # JSON numbers: an integral float may arrive as an int (JS has one number type); bool is never a number.
-    return type(value) in (int, float) and math.isfinite(value) and abs(value) <= METRIC_LIMIT
+    valid = type(value) in (int, float) and math.isfinite(value) and abs(value) <= METRIC_LIMIT
+    if key == 'revenue_growth_std_5y':
+        return valid and value >= 0
+    if key == 'revenue_volatility_5y_rank_pct':
+        return valid and 0 <= value <= 100
+    return valid
 
 
 def _v_inputs(v, cut_day, has_data):
@@ -387,6 +398,12 @@ def require_qgv2(payload):
         _need(type(top) is list and all(x in TOP_REASONS for x in top) and len(top) == len(set(top)))
         _need(top == ([] if state == 'LIVE' else ['STALE_INPUT'] if state == 'STALE' else ['NO_ELIGIBLE_INPUT']))
         expected, summary = vs.score_rows(records, target)
+        volatility = vs.volatility_rank_rows(records, target)
+        for role, rows in (('universe', records), ('target', target)):
+            for key, r in rows.items():
+                rank = r['metrics'].get('revenue_volatility_5y_rank_pct')
+                want = volatility[(role, key)]
+                _need((rank is None and want is None) or rank is not None and want is not None and abs(rank - want) < 1e-9)
         _need(type(payload['cross_section_size']) is int and payload['cross_section_size'] == summary['cross_section_size'])
         _need(payload['cross_section_by_profile'] == summary['cross_section_by_profile']
               and all(type(v) is int for v in payload['cross_section_by_profile'].values()))

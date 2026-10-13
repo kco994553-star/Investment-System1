@@ -139,6 +139,32 @@ def score_rows(universe, target=None):
     return scores, summary
 
 
+def volatility_rank_rows(universe, target=None):
+    """PLAYBOOK #18 descriptor only: strict five-growth volatility rank, all eligible issuers, 0..100.
+
+    One point per Universe CIK. TARGET replaces its own issuer point; it never adds a second point.
+    Missing six-year history or fewer than MIN_PEERS points stays None. Q/G calculations are unchanged.
+    """
+    metric = 'revenue_growth_std_5y'
+    points = {}
+    for key in sorted(universe):
+        r = universe[key]
+        if r['state'] in SCORED_STATES and r['cik'] is not None:
+            points.setdefault(r['cik'], r['metrics'])
+    pool = _Pool(points)
+    out = {}
+    for role, rows in (('universe', universe), ('target', target or {})):
+        for key, r in rows.items():
+            value = r['metrics'].get(metric)
+            rank = None
+            if r['state'] in SCORED_STATES and value is not None:
+                less, equal, n = pool.rank(metric, 1, value, r['cik'])
+                if n >= MIN_PEERS:
+                    rank = percentile(less, equal, n)
+            out[(role, key)] = rank
+    return out
+
+
 def _peer_set(row, axis, pools):
     """(pool, basis, peer_count): peer_count counts the row itself once (its own issuer point is replaced)."""
     def count(pool):

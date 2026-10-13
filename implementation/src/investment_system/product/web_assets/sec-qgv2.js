@@ -1,4 +1,4 @@
-/* Public price-free `sec-qgv2.json` reader: QGV v2 Q·G (PROVISIONAL default, GSQ-022 approved 2026-10-13). Mirrors Python universe/sec_qgv2.require_qgv2 including the full score recomputation (qgv/v2_scoring.py); JS==Python vectors: tests/fixtures/sec_qgv2_vectors_v1.json. Per Universe504 code and per TARGET id: raw SEC metrics, 10 factor percentiles (0-100 or null = NOT_AVAILABLE, never 0), Q/G axis scores with factors_available n/total and peer basis/count, and the price-free `v_inputs_v2` amounts the device needs for V. No price, market cap, V score or rank. */
+/* Public price-free `sec-qgv2.json` reader: QGV v2 Q·G (PROVISIONAL default, GSQ-022 approved 2026-10-13). Mirrors Python universe/sec_qgv2.require_qgv2 including the full score recomputation (qgv/v2_scoring.py); JS==Python vectors: tests/fixtures/sec_qgv2_vectors_v1.json. Per Universe504 code and per TARGET id: raw SEC metrics, 10 factor percentiles (0-100 or null = NOT_AVAILABLE, never 0), Q/G axis scores with factors_available n/total and peer basis/count, and the price-free `v_inputs_v2` amounts the device needs for V. No price, market cap, V score or composite rank. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.SecQgv2=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
  'use strict';
  const FILENAME='sec-qgv2.json',KIND='SEC_QGV2',MAX=2*1024*1024,CODE_COUNT=504,STANDARD='QGV_V2',STANDARD_STATUS='PROVISIONAL_DEFAULT_UNCALIBRATED',DECISION_REF='GSQ-022';
@@ -7,8 +7,8 @@
  const G_WEIGHTS={g_revenue_growth:25,g_per_share_growth:25,g_growth_efficiency:20,g_consistency:15,g_recent_acceleration:15};
  const AXES={Q:Q_WEIGHTS,G:G_WEIGHTS},FACTOR_IDS=Object.freeze([...Object.keys(Q_WEIGHTS),...Object.keys(G_WEIGHTS)]),MIN_PEERS=8,AXIS_COVERAGE_MIN=50;
  const METHOD={weights:{Q:Q_WEIGHTS,G:G_WEIGHTS},min_peers:8,axis_coverage_min_percent:50,percentile:'AVERAGE_RANK_0_100',industry_groups:'sic_industry_groups/v0',financial_sic_range:[6000,6499],cross_section:'UNIVERSE504_LIVE_STALE_ONE_POINT_PER_CIK',submetric_fallback:'GROUP_VALUES_BELOW_MIN_PEERS_RANK_IN_GENERAL_UNIVERSE',earnings_surprise:'OMITTED_NO_FREE_SOURCE'};
- const METRIC_KEYS=Object.freeze(['roic','gross_profit_to_assets','accruals_to_assets','fcf_to_net_income','net_debt_to_ebitda','interest_coverage','incremental_roic_5y','roe','roa','net_interest_income_to_assets','equity_to_assets','incremental_roe_5y','moat_return_mean_5y','moat_return_std_5y','moat_return_years','moat_proxy','dilution_3y','revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','book_value_per_share_cagr_3y','incremental_roic_3y','incremental_roe_3y','revenue_positive_growth_share','revenue_growth_volatility','revenue_ttm_growth','revenue_acceleration']);
- const DESCRIPTIVE=['moat_return_mean_5y','moat_return_std_5y','moat_return_years','revenue_ttm_growth'];
+ const METRIC_KEYS=Object.freeze(['roic','gross_profit_to_assets','accruals_to_assets','fcf_to_net_income','net_debt_to_ebitda','interest_coverage','incremental_roic_5y','roe','roa','net_interest_income_to_assets','equity_to_assets','incremental_roe_5y','moat_return_mean_5y','moat_return_std_5y','moat_return_years','moat_proxy','dilution_3y','revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','book_value_per_share_cagr_3y','incremental_roic_3y','incremental_roe_3y','revenue_positive_growth_share','revenue_growth_volatility','revenue_ttm_growth','revenue_acceleration','revenue_growth_std_5y','revenue_volatility_5y_rank_pct']);
+ const DESCRIPTIVE=['moat_return_mean_5y','moat_return_std_5y','moat_return_years','revenue_ttm_growth','revenue_growth_std_5y','revenue_volatility_5y_rank_pct'];
  const COMMON_G={g_revenue_growth:[['revenue_cagr_3y',1]],g_consistency:[['revenue_positive_growth_share',1],['revenue_growth_volatility',-1]],g_recent_acceleration:[['revenue_acceleration',1]]};
  const SUBMETRICS={
   GENERAL:{q_profitability:[['roic',1],['gross_profit_to_assets',1]],q_moat_proxy:[['moat_proxy',1]],q_earnings_quality:[['accruals_to_assets',-1],['fcf_to_net_income',1]],q_financial_safety:[['net_debt_to_ebitda',-1],['interest_coverage',1]],q_capital_allocation:[['dilution_3y',-1],['incremental_roic_5y',1]],g_per_share_growth:[['eps_cagr_3y',1],['fcf_per_share_cagr_3y',1]],g_growth_efficiency:[['incremental_roic_3y',1]],...COMMON_G},
@@ -36,7 +36,7 @@
  function emptyV(){return{currency:null,taxonomy:null,fiscal_year_end:null,ebit:null,fcf:null,total_debt:null,cash_and_equivalents:null,diluted_shares:null,ebit_per_share_history:[],fcf_per_share_history:[],revenue:null,operating_margin_history:[],revenue_cagr_3y:null,eps_cagr_3y:null,fcf_per_share_cagr_3y:null,revenue_ttm_growth:null};}
  function emptyAxis(reason){return{score:null,factors_available:'0/5',available_weight:0,peer_basis:null,peer_count:0,submetric_fallbacks:0,reason_codes:[reason]};}
  function emptyRecord(reason='NOT_COLLECTED'){return{cik:null,acquired_at:null,source_sha256:{companyfacts:null,submissions:null},state:'NOT_AVAILABLE',reason_codes:[reason],sic:null,industry_group:null,profile:null,fiscal_year_end:null,currency:null,metrics:{},factors:Object.fromEntries(FACTOR_IDS.map(k=>[k,null])),axes:{Q:emptyAxis('ROW_NOT_AVAILABLE'),G:emptyAxis('ROW_NOT_AVAILABLE')},v_inputs_v2:emptyV()};}
- const metricOk=(k,v)=>k==='moat_return_years'?Number.isInteger(v)&&v>=3&&v<=HISTORY_YEARS:num(v)&&Math.abs(v)<=LIMIT;
+ const metricOk=(k,v)=>k==='moat_return_years'?Number.isInteger(v)&&v>=3&&v<=HISTORY_YEARS:num(v)&&Math.abs(v)<=LIMIT&&(k!=='revenue_growth_std_5y'||v>=0)&&(k!=='revenue_volatility_5y_rank_pct'||v>=0&&v<=100);
  function vInputs(v,cutDay,hasData){
   need(keys(v,V_KEYS)||keys(v,LEGACY_V_KEYS));if(!hasData){const empty=emptyV();need(canon(v)===canon(Object.fromEntries(Object.keys(v).map(k=>[k,empty[k]]))));return;}
   need(typeof v.currency==='string'&&/^[A-Z]{3}$/.test(v.currency)&&['us-gaap','ifrs-full'].includes(v.taxonomy)&&date(v.fiscal_year_end)<=cutDay);
@@ -55,7 +55,7 @@
   need(STATES.includes(r.state));const reasons=r.reason_codes;need(Array.isArray(reasons)&&new Set(reasons).size===reasons.length&&reasons.length<=3&&reasons.every(x=>REASONS.includes(x)));
   need(r.sic===null||typeof r.sic==='string'&&/^\d{4}$/.test(r.sic)&&r.sic!=='0000');
   if(r.sic===null)need(r.industry_group===null);else need(r.acquired_at!==null&&r.industry_group===classify(r.sic));
-  const m=r.metrics;need(plain(m)&&Object.keys(m).every(k=>METRIC_KEYS.includes(k)&&metricOk(k,m[k])));
+  const m=r.metrics;need(plain(m)&&Object.keys(m).every(k=>(METRIC_KEYS.includes(k)||DESCRIPTIVE.includes(k))&&metricOk(k,m[k])));
   const hasData=r.fiscal_year_end!==null,cutDay=new Date(cut).toISOString().slice(0,10);
   if(hasData){
    need(r.acquired_at!==null&&date(r.fiscal_year_end)<=cutDay&&r.profile===profileFor(r.sic)&&typeof r.currency==='string'&&/^[A-Z]{3}$/.test(r.currency));
@@ -85,6 +85,13 @@
   const pools={GENERAL:pool(byProfile.GENERAL),FINANCIAL:pool(byProfile.FINANCIAL)},groupPools=new Map([...groups].map(([g,m])=>[g,pool(m)]));
   const out=new Map();for(const [role,rows] of [['universe',universe],['target',target]])for(const [key,r] of Object.entries(rows))out.set(role+'\u0000'+key,scoreRow(r,pools,groupPools));
   return{scores:out,summary:{cross_section_size:points.size,cross_section_by_profile:{GENERAL:byProfile.GENERAL.size,FINANCIAL:byProfile.FINANCIAL.size}}};
+ }
+ function volatilityRanks(universe,target){
+  const metric='revenue_growth_std_5y',points=new Map(),out=new Map();
+  for(const key of Object.keys(universe).sort()){const r=universe[key];if(SCORED.includes(r.state)&&r.cik!==null&&!points.has(r.cik))points.set(r.cik,r.metrics);}
+  const p=pool(points);
+  for(const[role,rows]of [['universe',universe],['target',target]])for(const[key,r]of Object.entries(rows)){let value=null;const own=r.metrics[metric];if(SCORED.includes(r.state)&&own!==undefined){const[less,equal,n]=rank(p,metric,1,own,r.cik);if(n>=MIN_PEERS)value=percentile(less,equal,n);}out.set(role+'\u0000'+key,value);}
+  return out;
  }
  function peerSet(r,axis,pools,groupPools){
   const count=p=>p.size-(p.points.has(r.cik)?1:0)+1;
@@ -122,6 +129,7 @@
    const state=states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';need(p.state===state);
    need(canon(p.reason_codes)===canon(state==='LIVE'?[]:state==='STALE'?['STALE_INPUT']:['NO_ELIGIBLE_INPUT']));
    const {scores,summary}=scoreRows(p.records,p.target);
+   const volatility=volatilityRanks(p.records,p.target);for(const[role,rows]of [['universe',p.records],['target',p.target]])for(const[key,r]of Object.entries(rows))need(sameNum(r.metrics.revenue_volatility_5y_rank_pct??null,volatility.get(role+'\u0000'+key)));
    need(Number.isInteger(p.cross_section_size)&&p.cross_section_size===summary.cross_section_size&&keys(p.cross_section_by_profile,['GENERAL','FINANCIAL'])&&p.cross_section_by_profile.GENERAL===summary.cross_section_by_profile.GENERAL&&p.cross_section_by_profile.FINANCIAL===summary.cross_section_by_profile.FINANCIAL);
    const byCik=new Map();
    for(const c of codes){const r=p.records[c];if(r.state!=='NOT_AVAILABLE'){const text=canon(r);if(!byCik.has(r.cik))byCik.set(r.cik,text);need(byCik.get(r.cik)===text);}scoresMatch(r,scores.get('universe\u0000'+c));}

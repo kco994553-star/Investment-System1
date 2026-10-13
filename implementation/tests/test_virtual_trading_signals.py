@@ -108,7 +108,9 @@ def test_js_equality_runs_in_node():
 def test_v_store_is_not_in_device_backup_and_assets_store_no_price():
     assert 'virtual-trading-v-scores' not in (ASSETS / 'device-backup.js').read_text(encoding='utf-8')
     src = (ASSETS / 'virtual-trading-v-history.js').read_text(encoding='utf-8')
-    assert src.count('setItem(') == 1 and 'JSON.stringify({schema:SCHEMA,scores:m.scores,composition:m.composition})' in src
+    assert src.count('setItem(') == 2  # Separate, already-authorized v1/v2 private V-score stores.
+    assert 'JSON.stringify({schema:SCHEMA,scores:m.scores,composition:m.composition})' in src
+    assert 'JSON.stringify({schema:V2_SCHEMA,records})' in src
 
 
 def test_rehearsal_fill_is_refused_outside_rehearsal_mode():
