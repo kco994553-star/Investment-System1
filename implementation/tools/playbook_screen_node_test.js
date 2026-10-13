@@ -63,3 +63,8 @@ test('manual invalidation event requires provenance and never parses AI text',()
  assert.throws(()=>P.saveThesis(storage,'SYN','Synthetic thesis','Synthetic condition',{status:'OCCURRED',source:'Synthetic source',grade:'GUESS'}),/INVALIDATION_EVENT_INVALID/);
  P.saveThesis(storage,'SYN','Synthetic thesis','Synthetic condition',{status:'UNKNOWN',source:'',grade:'BELIEF'});assert.equal(P.read(storage).theses.SYN.event.status,'UNKNOWN');
 });
+test('v2 V comparison uses observed same-basis history instead of v1 or live-pool mismatch',()=>{
+ const previous=globalThis.VirtualTradingVHistory,storage=memory(),context={idByTicker:new Map([['SYN','syn']]),computed:{default:'v2',profile:{id:'SYNTHETIC-PROFILE'},rows:{syn:{primary:{q:70,g:60,v:40}}}},heldSymbols:['SYN'],storage};
+ globalThis.VirtualTradingVHistory={v2Comparison:(s,id,sessions,profile)=>{assert.equal(s,storage);assert.equal(id,'syn');assert.equal(profile,'SYNTHETIC-PROFILE');return{state:'READY',basis:'v2',current:55,previous:45,reason:null};}};assert.equal(P.factsFor('SYN',context).v_now,55);assert.equal(P.factsFor('SYN',context).v_prev20,45);
+ globalThis.VirtualTradingVHistory={v2Comparison:()=>({state:'NOT_AVAILABLE',reason:'INSUFFICIENT_OBSERVED_SESSIONS'})};assert.equal(P.factsFor('SYN',context).v_prev20,null);assert.equal(P.factsFor('SYN',context).v_now,40);if(previous===undefined)delete globalThis.VirtualTradingVHistory;else globalThis.VirtualTradingVHistory=previous;
+});

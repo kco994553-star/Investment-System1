@@ -568,7 +568,7 @@ function validation() {
 // Design canvas S01~S16: analysis flow numbers and QGV sub-categories (navigation only).
 const FLOW_STEPS=Object.freeze({qgv:[1,"QGV"],technical:[2,"기술적 분석"],macro:[3,"매크로"],validation:[4,"검증·연구"]});
 const QGV_SUBCATEGORY=Object.freeze({portfolio:"내 투자",actual:"내 투자",profiles:"내 투자",model:"내 투자",companies:"종목 찾기",company:"종목 찾기",analysis:"종목 찾기",entity:"종목 찾기",leaderboard:"종목 찾기",watchlist:"종목 찾기",types:"종목 찾기",news:"시장 정보",thirteenf:"시장 정보"});
-const QGV_CHILDREN=Object.freeze(["companies","company","analysis","leaderboard","news","portfolio","actual","entity","profiles","types","thirteenf","watchlist","model"]);
+const QGV_CHILDREN=Object.freeze(["companies","company","analysis","leaderboard","news","portfolio","actual","entity","profiles","types","thirteenf","watchlist","model","playbook"]);
 function syncNavigation(route) {
   const parent=QGV_CHILDREN.includes(route)?"qgv":route==="research"?"validation":route;
   document.querySelectorAll("[data-nav-tab]").forEach(a=>{
