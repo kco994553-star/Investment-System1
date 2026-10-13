@@ -11,7 +11,7 @@
 'use strict';
 const SCHEMA='virtual-trading-compare/1',TYPES=Object.freeze(['growth','quality','cyclical','defensive']);
 // Minimum samples per metric (documented in ENGINE_V1.md). Hit rate keeps the engine's own D-12 minimum (30).
-const MIN=Object.freeze({capture_days:10,max_drawdown:20,volatility:20});
+const MIN=Object.freeze({capture_days:20,max_drawdown:20,volatility:20});
 const CODES=Object.freeze(['INSUFFICIENT_SAMPLE','VALUATION_NOT_AVAILABLE','WEIGHTS_NOT_AVAILABLE','TYPES_NOT_AVAILABLE','LEDGER_NOT_AVAILABLE','COMPARE_NEEDS_TWO_SETS']);
 const own=(o,k)=>o!==null&&typeof o==='object'&&Object.prototype.hasOwnProperty.call(o,k);
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
@@ -127,7 +127,7 @@ function html(view,{money=v=>'N/A',picked=null,wide=true,locale='ko-KR'}={}){
  if(!wide)h+='<fieldset data-compare-picker><legend class="small">비교할 세트 2~3개 선택</legend>'+view.sets.map(s=>'<label class="toggle"><input type="checkbox" data-compare-pick="'+esc(s.id)+'"'+(picked&&picked.includes(s.id)?' checked':'')+'> '+esc(s.label)+'</label>').join('')+'</fieldset>';
  h+=tableHtml(view,{money,picked:wide?null:picked});
  h+='<p data-compare-summary>'+esc('한 줄 요약: 【규칙】 '+ruleLine(view))+'</p>';
- h+='<p class="small">'+esc('규칙 기반 숫자 비교입니다. 수익률은 ⑫⑬과 같은 계산(S&P 500 세션 기준, '+(view.basis==='USD'?'달러':'원화')+' 기준, 입금 제외 시간가중, 결측은 비우고 채우지 않음)이며 기간은 세트마다 장부 시작 이후입니다. 일간 수익률은 값이 있는 연속 거래일만 씁니다. 상승·하락포착 각 10일 이상, 최대낙폭·변동성 20일 이상, D+20 적중률 30건 이상이 아니면 N/A입니다. 집중도는 마지막 거래일 상위 3종목 비중, 유형 노출은 공개 유형 소속도(0~1)로 가중한 비중입니다. 해석은 한 줄 요약에만 둡니다.')+'</p></section>';
+ h+='<p class="small">'+esc('규칙 기반 숫자 비교입니다. 수익률은 ⑫⑬과 같은 계산(S&P 500 세션 기준, '+(view.basis==='USD'?'달러':'원화')+' 기준, 입금 제외 시간가중, 결측은 비우고 채우지 않음)이며 기간은 세트마다 장부 시작 이후입니다. 일간 수익률은 값이 있는 연속 거래일만 씁니다. 상승·하락포착 각 20일 이상, 최대낙폭·변동성 20일 이상, D+20 적중률 30건 이상이 아니면 N/A입니다. 집중도는 마지막 거래일 상위 3종목 비중, 유형 노출은 공개 유형 소속도(0~1)로 가중한 비중입니다. 해석은 한 줄 요약에만 둡니다.')+'</p></section>';
  return h;
 }
 // Export text: the numbers with amounts through the same money function, and one 【AI】 line only.
