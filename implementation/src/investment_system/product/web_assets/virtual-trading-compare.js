@@ -49,13 +49,13 @@ function metrics({days=[],indices={},sources={},basis='KRW',types=null,hits=null
  const r=ledger?pointReturns(ledger.points):[],b=spy?pointReturns(spy.points):[];
  const rets=r.filter(num),aligned=[];for(let i=0;i<r.length;i++)if(num(r[i])&&num(b[i]))aligned.push({r:r[i],b:b[i]});
  // Capture ratios (arithmetic mean form) on the S&P 500's up days and down days, ×100.
- const capture=list=>list.length<MIN.capture_days?na('INSUFFICIENT_SAMPLE'):ok(mean(list.map(x=>x.r))/mean(list.map(x=>x.b))*100,{samples:list.length});
+ const capture=list=>list.length<MIN.capture_days?{...na('INSUFFICIENT_SAMPLE'),samples:list.length}:ok(mean(list.map(x=>x.r))/mean(list.map(x=>x.b))*100,{samples:list.length});
  out.upside_capture=capture(aligned.filter(x=>x.b>0));out.downside_capture=capture(aligned.filter(x=>x.b<0));
  // Max drawdown on the ⑬ ledger index levels (time-weighted, deposit-neutral), ≤ 0; gaps are skipped, never filled.
- if(rets.length<MIN.max_drawdown)out.max_drawdown=na('INSUFFICIENT_SAMPLE');
+ if(rets.length<MIN.max_drawdown)out.max_drawdown={...na('INSUFFICIENT_SAMPLE'),samples:rets.length};
  else{let peak=null,mdd=0;for(const p of ledger.points){if(!num(p))continue;if(peak===null||p>peak)peak=p;const dd=p/peak-1;if(dd<mdd)mdd=dd;}out.max_drawdown=ok(mdd,{samples:rets.length});}
  // Volatility: sample standard deviation of daily returns × √252.
- if(rets.length<MIN.volatility)out.volatility=na('INSUFFICIENT_SAMPLE');
+ if(rets.length<MIN.volatility)out.volatility={...na('INSUFFICIENT_SAMPLE'),samples:rets.length};
  else{const m=mean(rets);let v=0;for(const x of rets)v+=(x-m)*(x-m);out.volatility=ok(Math.sqrt(v/(rets.length-1))*Math.sqrt(252),{samples:rets.length});}
  // Concentration: top-3 holding weight (% of total value) on the last session; NA when that day is not fully priced.
  const weighted=last&&num(last.total_value)&&last.priced;
@@ -93,7 +93,7 @@ const ROWS=Object.freeze([
  ['value','평가액'],['period_return','기간 수익률'],['excess_return','S&P 500 대비 초과'],['concentration','집중도(상위 3종목 비중)'],['type_exposure','유형 노출'],
  ['upside_capture','상승포착(S&P 500 상승일)'],['downside_capture','하락포착(S&P 500 하락일, 낮을수록 방어)'],['max_drawdown','최대낙폭'],['volatility','변동성(연율)'],['virtual_trades','가상매매 성과']]);
 function cell(key,m,money){
- const x=m[key];if(!x||x.state!=='OK')return'N/A'+(x&&x.reason?' ('+(engine().codeLabel(x.reason)||benchmarks().codeLabel(x.reason)||x.reason)+')':'');
+ const x=m[key];if(x?.reason==='INSUFFICIENT_SAMPLE'&&Number.isInteger(x.samples)&&['upside_capture','downside_capture','max_drawdown','volatility'].includes(key))return '표본 부족 '+x.samples+'/20';if(!x||x.state!=='OK')return'N/A'+(x&&x.reason?' ('+(engine().codeLabel(x.reason)||benchmarks().codeLabel(x.reason)||x.reason)+')':'');
  if(key==='value')return money(x.value);
  if(key==='period_return')return pct(x.value)+' · '+x.start+'~'+x.end;
  if(key==='max_drawdown')return pct(x.value)+' · '+x.samples+'일';
