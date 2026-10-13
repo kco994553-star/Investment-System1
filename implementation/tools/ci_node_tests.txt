@@ -36,6 +36,7 @@ virtual_trading_v_history_node_test.js
 screens_gaps_node_test.js
 sec_universe_qg_node_test.js
 holdings_capture_node_test.js
+playbook_node_test.js
 worker_quote_fallback_node_test.js
 judgement_labels_node_test.js
 s16_s13_reference_node_test.js
