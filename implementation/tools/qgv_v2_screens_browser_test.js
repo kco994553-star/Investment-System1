@@ -1,5 +1,5 @@
 'use strict';
-// QGV v2 on S06/S04/S05 at 390 and 1440, with scoring_default v1 (shipped) and v2 (scoring-default.js served flipped).
+// QGV v2 on S06/S04/S05 at 390 and 1280, with the default v2 and the comparison v1 (scoring-default.js served flipped).
 // Synthetic only: sec-qgv2.json (the Q·G side's strictly valid synthetic base vector) and v1 factors by route interception, device prices from a stubbed Universe
 // tab read (RAM). Public screens are the empty-state set, so the test does not depend on what the build publishes.
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), { routeEmptyPublicScreens } = require('./empty_public_screens.js'), F = require('./qgv_v2_fixture.js');
@@ -83,7 +83,17 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
           assert.equal(await panel.locator('[data-v2-factor-table] [data-v2-factor]').count(), 15);
           assert.ok(await panel.locator('[data-v2-factor-table]').isVisible());
           assert.equal(await panel.locator('details[data-qgv-detail] [data-factor-table]').count(), 1);
-          assert.match(await panel.locator('[data-v2-factor="v_vs_own_history"]').textContent(), /PRICE_HISTORY_NOT_AVAILABLE/);
+          const earnings = await page.evaluate(() => {
+            const input=publicScreens[Qgv2Inputs.FILE].records['TARGET:nvda'],engine=window.PlaybookEngine,cfg=window.PlaybookConfigDefaults;
+            const configured=Boolean(engine?.classifyTypesV0&&cfg);
+            return {sic:input.sic,configured,cyclical:configured?engine.classifyTypesV0(cfg,{sic:input.sic}).cyclical.member:null,
+              basis:qgvScores().rows.nvda.v2.detail.earnings_basis};
+          });
+          assert.equal(earnings.sic,'3674');
+          if(earnings.configured)assert.equal(earnings.cyclical,true,'approved semiconductor SIC activates the cyclical earnings basis');
+          assert.equal(earnings.basis,earnings.configured?'NORMALIZED':'REPORTED');
+          assert.match(await panel.locator('[data-v2-factor="v_vs_own_history"]').textContent(),
+            earnings.configured?/NORMALIZED_HISTORY_NOT_AVAILABLE/:/PRICE_HISTORY_NOT_AVAILABLE/);
           assert.match(await page.locator('[data-overall="v2"]').textContent(), /\d+\.\d/);
         } else {
           assert.ok(await panel.locator('[data-factor-table]').first().isVisible());
