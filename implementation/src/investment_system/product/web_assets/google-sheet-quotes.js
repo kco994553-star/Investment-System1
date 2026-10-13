@@ -436,11 +436,21 @@
     state.root.append(element(state, 'h2', translate(state, 'title')), element(state, 'p', translate(state, 'detail')));
     state.notice = element(state, 'p', '', { 'data-sheet-notice': '', role: 'status', 'aria-live': 'polite' });
     host.replaceChildren(state.root);
+    const startingSession = options.clientId ? sessionFor(view, options.clientId) : sessions.get(view)?.session;
+    const startingAuth = startingSession?.state(), startingRevision = startingSession?.revision();
+    const unchangedSession = session => {
+      if (!session || session !== startingSession || sessions.get(view)?.session !== session) return false;
+      const current = session.state();
+      return session.revision() === startingRevision && ['enabled', 'connected', 'pending'].every(key => current[key] === startingAuth[key]);
+    };
     try { state.settings = await view.DeviceActual.sheetSettings(view); }
     catch (_) { state.settings = { schema: 'device-google-sheet-settings/1', enabled: false, spreadsheet_id: '', range: DEFAULT_RANGE }; state.storageFailed = true; }
     if (!live(state)) return;
     if (options.clientId) {
-      state.session = sessionFor(view,options.clientId); state.session.setEnabled(state.settings.enabled);
+      state.session = startingSession;
+      // A delayed initial read must not replace an auth grant, sign-out or mode choice made while it was pending.
+      if (unchangedSession(state.session)) state.session.setEnabled(state.settings.enabled);
+      else state.settings.enabled = state.session.state().enabled;
       const toggle = element(state, 'label', undefined, { class: 'sheet-toggle' });
       state.enable = element(state, 'input', undefined, { type: 'checkbox', 'data-sheet-enabled': '' }); toggle.append(state.enable, element(state, 'span', translate(state, 'enable'))); state.root.append(toggle);
       state.googleControls = element(state, 'div', undefined, { 'data-sheet-google-controls': '' });
@@ -460,7 +470,7 @@
       state.fetch.addEventListener('click', () => { void importQuotes(state, 'google-sheet'); });
       state.disconnect.addEventListener('click', () => { void state.session.disconnect(); notice(state, 'removed'); });
     } else {
-      const shared = sessions.get(view); if (shared) shared.session.setEnabled(false);
+      const shared = sessions.get(view); if (shared && unchangedSession(shared.session)) shared.session.setEnabled(false);
       state.session = { revision: () => 0 }; state.settings.enabled = false;
     }
     const pasteBox = element(state, 'section', undefined, { class: 'sheet-paste-box' }); pasteBox.append(element(state, 'h3', translate(state, 'pasteTitle')), element(state, 'p', translate(state, 'pasteHelp')));
