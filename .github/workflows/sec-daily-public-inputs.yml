@@ -93,6 +93,10 @@ jobs:
         run: |
           python implementation/tools/sec_disclosures.py --live --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - name: Collect news signals for TARGET (GDELT DOC 2.0 and company IR feeds; title, link and time only, never a score input)
+        run: |
+          python implementation/tools/news_signals.py --live --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
