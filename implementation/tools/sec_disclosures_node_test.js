@@ -34,11 +34,13 @@ test('leaderboard confirms earnings only after the exact reported quarter enters
  const refs={companyfacts:'a'.repeat(64),submissions:'b'.repeat(64)},window={state:'LIVE',confirmed_earnings_date:'2026-10-01',earnings_confirmation:{period_end:'2026-09-30'},qgv2_ttm_periods:{revenue:'2026-09-30',ebit:'2026-09-30'},source_hashes:refs};
  const qgv={state:'LIVE',source_sha256:{...refs},v_inputs_v2:{ebit:{ttm_end:'2026-09-30'}}};
  const publicScreens={'sec-filing-windows.json':{data:{companies:{asml:window}}},'sec-qgv2.json':{target:{asml:qgv}}};
- assert.equal(board.rowsFor([id],{publicScreens,disclosures:api})[0].earnings_status,'CONFIRMED');
+ // This date/hash fixture is not a full scoring artifact; keep the score consumer independent.
+ const options={publicScreens,disclosures:api,scores:{rows:{}}};
+ assert.equal(board.rowsFor([id],options)[0].earnings_status,'CONFIRMED');
  qgv.v_inputs_v2.ebit.ttm_end='2026-06-30';
- assert.equal(board.rowsFor([id],{publicScreens,disclosures:api})[0].earnings_status,'NOT_CONFIRMED');
+ assert.equal(board.rowsFor([id],options)[0].earnings_status,'NOT_CONFIRMED');
  qgv.v_inputs_v2.ebit.ttm_end='2026-09-30';qgv.state='STALE';
- assert.equal(board.rowsFor([id],{publicScreens,disclosures:api})[0].earnings_status,'NOT_CONFIRMED');
+ assert.equal(board.rowsFor([id],options)[0].earnings_status,'NOT_CONFIRMED');
  assert.equal(board.rowsFor([id],{disclosures:api})[0].earnings_status,'NOT_CONFIRMED');
 });
 
