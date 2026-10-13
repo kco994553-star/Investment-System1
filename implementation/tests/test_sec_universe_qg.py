@@ -318,7 +318,7 @@ def test_tool_one_fetch_feeds_shares_and_qg_without_extra_requests(tmp_path, cap
     code = tool.run(tmp_path, live=True, environ={'SEC_USER_AGENT': UA}, now=lambda: when,
                     client_kwargs=client_kwargs(transport_for(calls), when), open_previous=pages({}))
     out = capsys.readouterr().out
-    assert code == 0 and sorted(p.name for p in tmp_path.iterdir()) == [q.FILENAME, shares.FILENAME]
+    assert code == 0 and sorted(p.name for p in tmp_path.iterdir()) == ['sec-qgv2.json', q.FILENAME, shares.FILENAME]
     shard = [i.cik for i in daily_partition(universe_registry(ticker_body()), shard_count=7, shard_index=when.date().toordinal() % 7)]
     # Exactly the shares step's requests: ticker file + companyfacts + submissions + cover per shard issuer, none repeated.
     assert len(calls) == len(set(calls)) == 1 + 3 * len(shard)
