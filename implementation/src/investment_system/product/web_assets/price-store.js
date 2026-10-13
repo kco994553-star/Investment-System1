@@ -143,17 +143,26 @@ async function readValues(session,id,tab){
  if(!header.length&&!rows.some(r=>Array.isArray(r)&&r.some(c=>c!==''&&c!==null&&c!==undefined)))return[];
  return[header,...rows];
 }
-async function load(session,id){
- const titles=(await session.sheetTitles(id)).filter(t=>!ignoredTab(t));
- const sheet={state:'READY',reason_codes:[],tab:null,tabs:{},headerless:[],daily:{},monthly:{},invalid:0,duplicates:0,rows:{[TAB_DAILY]:0,[TAB_MONTHLY]:0}};
- for(const[interval,tab]of Object.entries(TABS)){
-  sheet.tabs[tab]=titles.includes(tab);if(!sheet.tabs[tab])continue;
-  const values=await readValues(session,id,tab);let parsed;
-  try{parsed=parseTab(values,interval);}catch(e){return{...sheet,state:'ERROR',reason_codes:[errorCode(e,'SHEET_ROWS_INVALID')],tab,daily:{},monthly:{}};}
-  if(!parsed.header)sheet.headerless.push(tab);
-  const idx=indexRows(parsed.rows,interval);sheet[interval==='1d'?'daily':'monthly']=idx.series;sheet.invalid+=parsed.invalid;sheet.duplicates+=idx.duplicates;sheet.rows[tab]=parsed.rows.length;
+// Reads the wanted tabs into sheet: one tab per interval, so Prices_M (Universe504 month-ends) is read only when a
+// month-end view is needed and an app open reads Prices_D alone.
+async function readInto(session,id,sheet,intervals){
+ for(const interval of intervals){
+  const tab=TABS[interval];if(sheet.state!=='READY'||sheet.loaded[interval])continue;
+  if(sheet.tabs[tab]){
+   const values=await readValues(session,id,tab);let parsed;
+   try{parsed=parseTab(values,interval);}catch(e){Object.assign(sheet,{state:'ERROR',reason_codes:[errorCode(e,'SHEET_ROWS_INVALID')],tab,daily:{},monthly:{}});return sheet;}
+   if(!parsed.header&&!sheet.headerless.includes(tab))sheet.headerless.push(tab);
+   const idx=indexRows(parsed.rows,interval);sheet[interval==='1d'?'daily':'monthly']=idx.series;sheet.invalid+=parsed.invalid;sheet.duplicates+=idx.duplicates;sheet.rows[tab]=parsed.rows.length;
+  }
+  sheet.loaded[interval]=true;
  }
  return sheet;
+}
+async function load(session,id,intervals=['1d','1mo']){
+ const titles=(await session.sheetTitles(id)).filter(t=>!ignoredTab(t));
+ const sheet={state:'READY',reason_codes:[],tab:null,tabs:{},headerless:[],daily:{},monthly:{},invalid:0,duplicates:0,rows:{[TAB_DAILY]:0,[TAB_MONTHLY]:0},loaded:{'1d':false,'1mo':false}};
+ for(const tab of Object.values(TABS))sheet.tabs[tab]=titles.includes(tab);
+ return readInto(session,id,sheet,intervals);
 }
 // Creates a missing tab (title only) and writes the header into an empty tab. Nothing else.
 async function ensureTab(session,id,sheet,tab){
@@ -179,12 +188,15 @@ function context(view){
  const v=config.virtualTradingRequestSpacingMs,spacing=Number.isInteger(v)&&v>=0&&v<=60000?v:DEFAULT_SPACING_MS;
  return{config,session,sheetId,origin,code,fetchCode,spacing};
 }
-function ensureLoaded(view,ctx,store){
+// interval '1d' reads Prices_D; '1mo' also reads Prices_M (month-end views merge both).
+function ensureLoaded(view,ctx,store,interval='1d'){
  const key=ctx.sheetId+'#'+ctx.session.revision();
  if(store.key!==key){reset(store);store.key=key;}
- if(store.sheet)return Promise.resolve(store.sheet);if(store.loading)return store.loading;
- const loading=load(ctx.session,ctx.sheetId).then(sheet=>{if(store.loading===loading){store.sheet=sheet;store.loading=null;notify(store);}return sheet;},
-  e=>{if(store.loading===loading){store.loading=null;store.key=null;notify(store);}throw e;});
+ const want=interval==='1mo'?['1d','1mo']:['1d'],ready=s=>!!s&&(s.state!=='READY'||want.every(i=>s.loaded[i]));
+ if(ready(store.sheet))return Promise.resolve(store.sheet);
+ if(store.loading)return store.loading.then(()=>ensureLoaded(view,ctx,store,interval));
+ const loading=(store.sheet?readInto(ctx.session,ctx.sheetId,store.sheet,want):load(ctx.session,ctx.sheetId,want)).then(sheet=>{if(store.loading===loading){store.sheet=sheet;store.loading=null;notify(store);}return sheet;},
+  e=>{if(store.loading===loading){store.loading=null;if(!store.sheet)store.key=null;notify(store);}throw e;});
  store.loading=loading;notify(store);return loading;
 }
 // One Worker/sheet operation at a time per window (app-open sync, runner, company view, Universe504 button).
@@ -244,7 +256,7 @@ async function syncMany(view,symbols,interval,{kind='CORE',signal=null,onProgres
  const ctx=context(view),store=storeFor(view);if(ctx.code!=='READY')return{state:ctx.code};
  return exclusive(store,async()=>{
   const fresh=context(view);if(fresh.code!=='READY')return{state:fresh.code};
-  let sheet;try{sheet=await ensureLoaded(view,fresh,store);}catch(e){return{state:'ERROR',reason_codes:[errorCode(e,'READ_FAILED')]};}
+  let sheet;try{sheet=await ensureLoaded(view,fresh,store,interval);}catch(e){return{state:'ERROR',reason_codes:[errorCode(e,'READ_FAILED')]};}
   if(sheet.state!=='READY')return{state:'ERROR',reason_codes:sheet.reason_codes,tab:sheet.tab};
   const results={},list=[...new Set(symbols)];let stop=null,notAllowed=0,done=0;store.busy=kind;store.progress={done:0,total:list.length};notify(store);
   try{for(const symbol of list){
@@ -268,7 +280,7 @@ async function apiMonthEndCloses(symbol,options={}){
  const view=viewOf(options),ctx=context(view),store=storeFor(view);if(ctx.code!=='READY'||!okSymbol(symbol))return{};
  const now=clockOf(options);
  if(options.fetch!==false&&allowed(view,symbol))await syncMany(view,[symbol],'1mo',{kind:'API',signal:options.signal||null,now});
- let sheet;try{sheet=await ensureLoaded(view,ctx,store);}catch(_){return{};}if(sheet.state!=='READY')return{};
+ let sheet;try{sheet=await ensureLoaded(view,ctx,store,'1mo');}catch(_){return{};}if(sheet.state!=='READY')return{};
  return monthEndCloses(sheet.daily[symbol],sheet.monthly[symbol],localNow(now(),timezoneFor(symbol)).day);
 }
 // Stored daily closes {date: close} on or after fromDate; fetch (default true) appends the missing tail first.
@@ -292,8 +304,9 @@ function status(options={}){
  if(ctx.code!=='READY')return base;
  if(!sheet)return{...base,state:'LOADING'};
  if(sheet.state!=='READY')return{...base,state:'ERROR',reason_codes:[...sheet.reason_codes],tab:sheet.tab};
- return{...base,tabs:{[TAB_DAILY]:{present:sheet.tabs[TAB_DAILY],rows:sheet.rows[TAB_DAILY]},[TAB_MONTHLY]:{present:sheet.tabs[TAB_MONTHLY],rows:sheet.rows[TAB_MONTHLY]}},
-  symbols:{daily:Object.keys(sheet.daily).length,monthly:Object.keys(sheet.monthly).length},invalid_rows:sheet.invalid,duplicate_rows:sheet.duplicates};
+ const tab=(t,i)=>({present:sheet.tabs[t],read:sheet.loaded[i],rows:sheet.loaded[i]?sheet.rows[t]:null});
+ return{...base,tabs:{[TAB_DAILY]:tab(TAB_DAILY,'1d'),[TAB_MONTHLY]:tab(TAB_MONTHLY,'1mo')},
+  symbols:{daily:Object.keys(sheet.daily).length,monthly:sheet.loaded['1mo']?Object.keys(sheet.monthly).length:null},invalid_rows:sheet.invalid,duplicate_rows:sheet.duplicates};
 }
 function subscribe(listener,options={}){const store=storeFor(viewOf(options));store.listeners.add(listener);return()=>store.listeners.delete(listener);}
 
@@ -402,7 +415,8 @@ function statusLine(s,locale){
  const en=locale==='en-US';let text=tx(locale,s.state==='LOADING'||s.state==='ERROR'||s.state==='READY'||s.state==='OFF'||s.state==='AUTH_REQUIRED'||s.state==='SHEET_NOT_CONNECTED'?s.state:'ERROR');
  if(s.state==='ERROR'&&s.reason_codes.length)text+=' · '+s.reason_codes.join(', ')+(s.tab?' ('+s.tab+')':'');
  if(s.state==='READY'){const d=s.tabs[TAB_DAILY],m=s.tabs[TAB_MONTHLY];
-  text+=' · '+TAB_DAILY+' '+(d&&d.present?(d.rows+(en?' rows / ':'행 / ')+s.symbols.daily+(en?' symbols':'종목')):'—')+' · '+TAB_MONTHLY+' '+(m&&m.present?(m.rows+(en?' rows / ':'행 / ')+s.symbols.monthly+(en?' symbols':'종목')):'—');
+  const tabText=(t,n)=>!t||!t.present?'—':t.read?t.rows+(en?' rows / ':'행 / ')+n+(en?' symbols':'종목'):(en?'not read yet':'아직 읽지 않음');
+  text+=' · '+TAB_DAILY+' '+tabText(d,s.symbols.daily)+' · '+TAB_MONTHLY+' '+tabText(m,s.symbols.monthly);
   const flags=[];if(s.invalid_rows)flags.push('PRICE_ROW_INVALID '+s.invalid_rows);if(s.duplicate_rows)flags.push('PRICE_ROW_DUPLICATE '+s.duplicate_rows);if(s.revised_ignored)flags.push('PRICE_REVISED_IGNORED '+s.revised_ignored);if(flags.length)text+=' · '+flags.join(' · ');}
  if(s.fetch!=='READY'&&s.state==='READY')text+=' · Worker '+s.fetch;
  return text;
@@ -446,7 +460,7 @@ function mountCompany(host,{symbol,locale='ko-KR'}={}){
  const ctx=context(view);if(ctx.code==='OFF'){host.replaceChildren();return;}if(!okSymbol(symbol)){paint('REQUEST_INVALID');return;}if(ctx.code!=='READY'){paint(ctx.code);return;}
  paint('LOADING');
  void(async()=>{
-  if(!allowed(view,symbol)){try{await ensureLoaded(view,ctx,storeFor(view));}catch(_){}paint('WORKER_ALLOWLIST');return;}
+  if(!allowed(view,symbol)){try{await ensureLoaded(view,ctx,storeFor(view),'1mo');}catch(_){}paint('WORKER_ALLOWLIST');return;}
   const r=await syncMany(view,[symbol],'1mo',{kind:'VIEW'});const one=r.results&&r.results[symbol];
   paint(r.state!=='READY'?(r.reason_codes&&r.reason_codes[0])||r.state:one&&one.code?one.code:one&&one.write?one.write:'READY');
  })();

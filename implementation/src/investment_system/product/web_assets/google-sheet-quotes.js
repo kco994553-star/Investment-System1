@@ -182,7 +182,8 @@
     const REPORT_TABS=['ReportInbox','ReportOutbox','VirtualA','VirtualB','VirtualC','VirtualD','VirtualMine','VirtualMeta','VirtualFlags','Prices_D','Prices_M'];
     async function addTabs(id,titles){
       if(extractSpreadsheetId(id)!==id||!Array.isArray(titles)||!titles.length||!titles.every(t=>REPORT_TABS.includes(t)))fail('INVALID');
-      await sheetRequest('/'+encodeURIComponent(id)+':batchUpdate','POST',{requests:titles.map(title=>({addSheet:{properties:{title}}}))},'WRITE_FAILED');
+      // Price tabs get a 5-column grid (cells count toward the 10M-cell file limit; appends add rows as needed).
+      await sheetRequest('/'+encodeURIComponent(id)+':batchUpdate','POST',{requests:titles.map(title=>({addSheet:{properties:/^Prices_[DM]$/.test(title)?{title,gridProperties:{rowCount:1000,columnCount:5,frozenRowCount:1}}:{title}}}))},'WRITE_FAILED');
     }
     async function appendRows(id,range,rows){
       if(extractSpreadsheetId(id)!==id||typeof range!=='string'||!/^'(?:Report(?:Inbox|Outbox)|Virtual(?:A|B|C|D|Mine|Meta|Flags)|Prices_(?:D|M))'!A1$/.test(range)||!Array.isArray(rows)||!rows.every(r=>Array.isArray(r)&&r.every(v=>typeof v==='string'&&v.length<=50000))||JSON.stringify(rows).length>262144)fail('INVALID');

@@ -74,7 +74,7 @@ function workerPayload(symbol, range, readAt, closeFor) {
 }
 const synthClose = (symbol, d) => 100 + symbol.length + (Date.parse(d + 'T00:00:00Z') / DAY_MS % 17) / 4;
 function harness({ tabs = {}, worker = null, codes = ['NASDAQ:NVDA', 'NYSE:BRK.B', 'NYSE:MMM', 'NASDAQ:MSFT'] } = {}) {
-  const sheet = new Map(Object.entries(tabs)), requests = [], workerCalls = [], local = new Map();
+  const sheet = new Map(Object.entries(tabs)), requests = [], workerCalls = [], local = new Map(), added = [];
   let callbacks, readAt = '2026-10-13T21:00:00Z';
   const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
   const col = (c) => c.charCodeAt(0) - 64;
@@ -96,7 +96,7 @@ function harness({ tabs = {}, worker = null, codes = ['NASDAQ:NVDA', 'NYSE:BRK.B
       const p = decodeURIComponent(u.pathname).replace('/v4/spreadsheets/' + ID, '');
       requests.push([method, p.split('!')[0]]);
       if (method === 'GET' && p === '' && u.searchParams.get('fields') === 'sheets(properties(title))') return json({ sheets: [...sheet.keys()].map((title) => ({ properties: { title } })) });
-      if (method === 'POST' && p === ':batchUpdate') { const body = JSON.parse(options.body); for (const r of body.requests) sheet.set(r.addSheet.properties.title, []); return json({ replies: [] }); }
+      if (method === 'POST' && p === ':batchUpdate') { const body = JSON.parse(options.body); for (const r of body.requests) { added.push(r.addSheet.properties); sheet.set(r.addSheet.properties.title, []); } return json({ replies: [] }); }
       const m = /^\/values\/'([^']+)'!([A-Z])(\d+)(?::([A-Z])(\d+))?(:append)?$/.exec(p);
       if (!m) return json({ error: 'unexpected' }, 404);
       const rows = sheet.get(m[1]);
@@ -115,7 +115,7 @@ function harness({ tabs = {}, worker = null, codes = ['NASDAQ:NVDA', 'NYSE:BRK.B
   view.GoogleSheetSetup = { source: () => ID, codes: Setup.codes };
   view.PrivateHistory = { parseWorkerOrigin: History.parseWorkerOrigin };
   local.set('investment.web.v1.private-history-origin', ORIGIN);
-  return { view, session, sheet, requests, workerCalls, local, setReadAt: (v) => { readAt = v; },
+  return { view, session, sheet, requests, workerCalls, local, added, setReadAt: (v) => { readAt = v; },
     connect: async () => { await session.prepare(); session.login(); callbacks.callback({ access_token: TOKEN, expires_in: 3600, scope: SCOPE }); } };
 }
 const at = (iso) => () => Date.parse(iso);
@@ -136,6 +136,7 @@ test('turning it on creates only Prices_D / Prices_M with the fixed header; a di
   assert.equal(s.state, 'READY');
   assert.deepEqual(h.sheet.get('Prices_D'), [HEADER]);
   assert.deepEqual(h.sheet.get('Prices_M'), [HEADER]);
+  assert.deepEqual(h.added, ['Prices_D', 'Prices_M'].map((title) => ({ title, gridProperties: { rowCount: 1000, columnCount: 5, frozenRowCount: 1 } })), 'a 5-column grid keeps the cell count low');
   assert.deepEqual(h.sheet.get('Quotes'), [['code', 'price', 'tradetime']]);
   assert.ok(h.requests.every(([, p]) => !p.includes('Example_')), 'Example_* tab never touched');
   assert.equal(h.local.get(P.FLAG_KEY), '1');
@@ -271,6 +272,10 @@ test('malformed and duplicate stored rows are skipped and counted, never rewritt
   assert.deepEqual(closes, { '2026-10-09': 100.5 });
   const s = P.status({ view: h.view });
   assert.deepEqual([s.state, s.invalid_rows, s.duplicate_rows], ['READY', 2, 1]);
+  assert.deepEqual([s.tabs.Prices_M.read, s.tabs.Prices_M.rows], [false, null]);
+  assert.ok(!h.requests.some(([, p]) => p.includes("'Prices_M'")), 'a daily read leaves Prices_M unread');
+  await P.monthEndCloses('SPY', { view: h.view, fetch: false });
+  assert.ok(h.requests.some(([, p]) => p.includes("'Prices_M'")) && P.status({ view: h.view }).tabs.Prices_M.read, 'read on the first month-end use');
   assert.equal(h.requests.filter(([m]) => m === 'POST').length, 0);
   P.disable(h.view);
   assert.equal(P.status({ view: h.view }).state, 'OFF');
