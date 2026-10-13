@@ -14,6 +14,7 @@ HG-02 still requires GitHub-side branch/ruleset enforcement.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import csv
 import errno
 import hashlib
@@ -81,6 +82,31 @@ _PRIVATE_EXPORT_NAME = re.compile(
     r"|(?:device|user|personal|broker)[-_](?:actual[-_])?(?:holdings|positions|portfolio))"
     r"(?:[-_]|$)", re.IGNORECASE,
 )
+_EMAIL_PATTERN = re.compile(r"(?i)(?<![a-z0-9._%+\-])[a-z0-9._%+\-]+@[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}")
+# Already-public, pre-session history of approved PRs; current trees are never
+# exempt. These exact roots/path scopes preserve history without a force push.
+_EMAIL_LEGACY_SCOPES = {
+    "70b838699d90af4a78d9e25470a42e74fbb0514f": frozenset({"implementation/tests/test_sec_disclosures.py"}),
+    "10cc7710ba436e0a297ff31a3c4293770657e288": frozenset(),
+    "30b65fc34e9f01ec7736d7274f84d5337afade7f": frozenset({"implementation/tests/test_universe_domains_public.py"}),
+    "1bef9153596d2c21ea4541d02d1f751b6b0fae4f": frozenset({
+        "implementation/tests/test_sec_disclosures.py", "implementation/tests/test_news_signals.py",
+    }),
+}
+
+
+def email_patterns(content: bytes) -> Counter:
+    """Count contact patterns internally; never include matches in diagnostics."""
+    encoding = "utf-8-sig"
+    if content.startswith((b"\xff\xfe\x00\x00", b"\x00\x00\xfe\xff")):
+        encoding = "utf-32"
+    elif content.startswith((b"\xff\xfe", b"\xfe\xff")):
+        encoding = "utf-16"
+    decoded = content.decode(encoding, errors="ignore")
+    decoded = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), decoded)
+    return Counter(match.casefold() for match in _EMAIL_PATTERN.findall(decoded))
+
+
 _YAML_FIELD = re.compile(
     r"(?:^[ \t]*(?:-[ \t]*)?|[,{][ \t]*)['\"]?([A-Za-z_][\w .-]*)['\"]?[ \t]*:[ \t]*"
     r"((?:&[\w-]+[ \t]+)?(?:'(?:''|[^'])*'|\"(?:\\.|[^\"\\])*\"|[^,}\]\n]*))",
@@ -434,7 +460,35 @@ def device_actual_violations(base: str | None = None) -> list[str]:
     Findings intentionally omit filenames, parser details, and private values.
     """
     blobs: dict[tuple[str, str], None] = {}
+    email_scan_blobs: set[tuple[str, str]] = set()
     tracked_paths: set[str] = set()
+    # Frozen source captures contain historical public contacts. Their unchanged
+    # per-path pattern counts are grandfathered, never a filename allowlist or
+    # permission for a new contact/copy. Every newly introduced version is checked.
+    baseline_emails: dict[str, Counter] = {}
+    baseline_blobs: list[tuple[str, str]] = []
+    baseline = base or "HEAD"
+    for entry in _git_bytes(["ls-tree", "-r", "-z", baseline]).split(b"\0"):
+        if not entry:
+            continue
+        metadata, raw_path = entry.split(b"\t", 1)
+        _mode, kind, oid = metadata.split()
+        if kind == b"blob":
+            path = raw_path.decode("utf-8", "surrogateescape")
+            baseline_blobs.append((oid.decode("ascii"), path))
+    if baseline_blobs:
+        proc = subprocess.run(["git", "--no-replace-objects", "cat-file", "--batch"], cwd=REPO_ROOT,
+                              input=b"".join(oid.encode("ascii") + b"\n" for oid, _path in baseline_blobs),
+                              capture_output=True)
+        if proc.returncode:
+            raise GuardError("email-pattern baseline could not read repository blobs")
+        baseline_output = io.BytesIO(proc.stdout)
+        for _oid, path in baseline_blobs:
+            header = baseline_output.readline().split()
+            if len(header) != 3 or header[1] != b"blob":
+                raise GuardError("email-pattern baseline received an invalid repository blob")
+            baseline_emails[path] = email_patterns(baseline_output.read(int(header[2])))
+            baseline_output.read(1)
     for entry in _git_bytes(["ls-files", "--stage", "-z"]).split(b"\0"):
         if not entry:
             continue
@@ -444,6 +498,7 @@ def device_actual_violations(base: str | None = None) -> list[str]:
         tracked_paths.add(path)
         if mode != b"160000":
             blobs[(oid.decode("ascii"), path)] = None
+            email_scan_blobs.add((oid.decode("ascii"), path))
     for entry in _git_bytes(["ls-tree", "-r", "-z", "HEAD"]).split(b"\0"):
         if not entry:
             continue
@@ -452,16 +507,42 @@ def device_actual_violations(base: str | None = None) -> list[str]:
         if kind == b"blob":
             path = raw_path.decode("utf-8", "surrogateescape")
             blobs[(oid.decode("ascii"), path)] = None
+            email_scan_blobs.add((oid.decode("ascii"), path))
 
     if base is not None:
+        legacy_commits: dict[str, set[str]] = {}
+        for root, paths in _EMAIL_LEGACY_SCOPES.items():
+            available = subprocess.run(["git", "--no-replace-objects", "cat-file", "-e", root + "^{commit}"],
+                                       cwd=REPO_ROOT, capture_output=True).returncode == 0
+            if available:
+                for commit in _git_bytes(["rev-list", root, "--not", base]).decode("ascii").splitlines():
+                    legacy_commits.setdefault(commit, set()).update(paths)
         # A payload added then deleted in this range would still publish its
         # intermediate Git blob. Include every new version, including merges.
         history = iter(_git_bytes([
-            "log", "--format=", "--raw", "-z", "--no-abbrev", "--no-renames",
+            "log", "--format=%x00EMAIL_COMMIT:%H%x00", "--raw", "-z", "--no-abbrev", "--no-renames",
             "--diff-merges=separate", f"{base}..HEAD", "--",
         ]).split(b"\0"))
+        history_commit = None
+        history_records: list[tuple[str, str, str]] = []
+        legacy_blobs: set[tuple[str, str]] = set()
+        for root, paths in _EMAIL_LEGACY_SCOPES.items():
+            if subprocess.run(["git", "--no-replace-objects", "cat-file", "-e", root + "^{commit}"],
+                              cwd=REPO_ROOT, capture_output=True).returncode:
+                continue
+            for path in paths:
+                for entry in _git_bytes(["ls-tree", "-z", root, "--", path]).split(b"\0"):
+                    if entry:
+                        metadata, raw_path = entry.split(b"\t", 1)
+                        if metadata.split()[1] == b"blob":
+                            legacy_blobs.add((metadata.split()[2].decode("ascii"), raw_path.decode("utf-8", "surrogateescape")))
         for entry in history:
             entry = entry.lstrip(b"\n")
+            if entry.startswith(b"EMAIL_COMMIT:"):
+                history_commit = entry[len(b"EMAIL_COMMIT:"):].decode("ascii")
+                if not re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", history_commit):
+                    raise GuardError("email-pattern history received invalid commit metadata")
+                continue
             if not entry.startswith(b":"):
                 continue
             metadata = entry[1:].split()
@@ -474,6 +555,31 @@ def device_actual_violations(base: str | None = None) -> list[str]:
             if mode not in {b"000000", b"160000"}:
                 path = raw_path.decode("utf-8", "surrogateescape")
                 blobs[(oid.decode("ascii"), path)] = None
+                pair = (oid.decode("ascii"), path)
+                if path in legacy_commits.get(history_commit, set()):
+                    legacy_blobs.add(pair)
+                else:
+                    history_records.append((history_commit, pair[0], path))
+        parents = {}
+        for line in _git_bytes(["rev-list", "--parents", f"{base}..HEAD"]).decode("ascii").splitlines():
+            fields = line.split()
+            parents[fields[0]] = fields[1:]
+        inherited = {}
+        for commit, oid, path in history_records:
+            pair = (oid, path)
+            lineage = parents.get(commit, [])
+            # A normal merge can repeat an already-public parent blob in the
+            # diff against its other parent. Only exact scoped historical blobs
+            # inherited without changes qualify; authored copies always scan.
+            key = (commit, oid, path)
+            if key not in inherited:
+                inherited[key] = pair in legacy_blobs and len(lineage) > 1 and any(
+                    any(entry.split(b"\t", 1)[0].split()[-1].decode("ascii") == oid
+                        for entry in _git_bytes(["ls-tree", "-z", parent, "--", path]).split(b"\0") if entry)
+                    for parent in lineage
+                )
+            if not inherited[key]:
+                email_scan_blobs.add(pair)
 
     requests = b"".join(oid.encode("ascii") + b"\n" for oid, _path in blobs)
     output = io.BytesIO()
@@ -483,6 +589,7 @@ def device_actual_violations(base: str | None = None) -> list[str]:
             raise GuardError("tracked-content privacy scan could not read repository blobs")
         output = io.BytesIO(proc.stdout)
     rejected: set[str] = set()
+    email_rejected: set[str] = set()
     for _oid, path in blobs:
         header = output.readline().split()
         if len(header) != 3 or header[1] != b"blob":
@@ -491,11 +598,16 @@ def device_actual_violations(base: str | None = None) -> list[str]:
         output.read(1)
         if contains_device_actual(content, path):
             rejected.add(path)
+        if (_oid, path) in email_scan_blobs and email_patterns(content) - baseline_emails.get(path, Counter()):
+            email_rejected.add(path)
     for path in tracked_paths:
         content = _tracked_worktree_bytes(path)
         if content is not None and contains_device_actual(content, path):
             rejected.add(path)
-    return ["populated device ACTUAL holdings in tracked repository content"] * len(rejected)
+        if content is not None and email_patterns(content) - baseline_emails.get(path, Counter()):
+            email_rejected.add(path)
+    return (["populated device ACTUAL holdings in tracked repository content"] * len(rejected)
+            + ["EMAIL_PATTERN"] * len(email_rejected))
 
 
 def load_config(path: Path = CONFIG_PATH) -> dict:
@@ -910,6 +1022,7 @@ def cmd_diff(base: str) -> int:
         "records": len(records),
         "violations": violations,
         "device_actual_privacy_guard": "FAIL" if privacy_violations else "PASS",
+        "email_pattern_guard": "FAIL" if "EMAIL_PATTERN" in privacy_violations else "PASS",
         "gate_a_repository_guard": "PASS" if not violations else "FAIL",
     }, ensure_ascii=False, indent=2))
     return 1 if violations else 0

@@ -153,6 +153,60 @@ class DeviceActualPrivacyGuardTests(unittest.TestCase):
         self.write("sensitive-file.json", json.dumps(self.envelope()))
         self.assert_private_failure()
 
+    def test_new_email_in_logs_and_fixtures_fails_without_printing_contact(self):
+        contact = "synthetic-contact" + "@" + "example.invalid"
+        for path in ("build.log", "tests/fixtures/sec_contact.json"):
+            with self.subTest(path=path):
+                self.write(path, json.dumps({"contact": contact}), committed=False)
+                result, output = self.check()
+                self.assertEqual(result, 1)
+                self.assertEqual(json.loads(output)["email_pattern_guard"], "FAIL")
+                self.assertNotIn(contact, output)
+                self.assertNotIn(path, output)
+
+    def test_long_noncontact_tokens_do_not_hide_a_new_contact(self):
+        contact = "%synthetic-contact" + "@" + "example.invalid"
+        self.write("build.log", "A" * 100000 + "\n" + contact, committed=False)
+        result, output = self.check()
+        self.assertEqual(result, 1)
+        self.assertEqual(json.loads(output)["email_pattern_guard"], "FAIL")
+        self.assertNotIn(contact, output)
+
+    def test_email_added_then_removed_is_rejected_from_commit_history(self):
+        base = self.git("rev-parse", "HEAD").strip()
+        contact = "synthetic-contact" + "@" + "example.invalid"
+        self.write("build.log", contact)
+        self.write("build.log", "redacted")
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        self.assertEqual(json.loads(output)["email_pattern_guard"], "FAIL")
+        self.assertNotIn(contact, output)
+
+    def test_new_escaped_or_utf16_email_is_rejected(self):
+        contact = "synthetic-contact" + "@" + "example.invalid"
+        for content in (json.dumps({"contact": contact}).replace("@", "\\u0040").encode(),
+                        contact.encode("utf-16")):
+            with self.subTest(encoding=len(content)):
+                path = self.root / "new-fixture.dat"
+                path.write_bytes(content)
+                self.git("add", "new-fixture.dat")
+                result, output = self.check()
+                self.assertEqual(result, 1)
+                self.assertEqual(json.loads(output)["email_pattern_guard"], "FAIL")
+
+    def test_historical_email_is_not_permission_to_add_another_contact(self):
+        legacy = "historical-contact" + "@" + "example.invalid"
+        self.write("legacy.log", legacy)
+        base = self.git("rev-parse", "HEAD").strip()
+        self.write("legacy.log", legacy + "\nexisting reference")
+        result, output = self.check(base)
+        self.assertEqual(result, 0)
+        contact = "new-contact" + "@" + "example.invalid"
+        self.write("legacy.log", legacy + "\n" + contact, committed=False)
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        self.assertNotIn(contact, output)
+
     def test_private_payload_failure_redacts_other_guard_path_diagnostics(self):
         protected_path = guard.load_config()["append_only_prefixes"][0] + "sensitive-file.json"
         self.write(protected_path, "{}")
@@ -1150,3 +1204,76 @@ class AppendOnlyRepositoryStateTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class HistoricalEmailScopeTests(unittest.TestCase):
+    setUp = DeviceActualPrivacyGuardTests.setUp
+    git = DeviceActualPrivacyGuardTests.git
+    write = DeviceActualPrivacyGuardTests.write
+    check = DeviceActualPrivacyGuardTests.check
+
+    def historical_scope(self):
+        base = self.git('rev-parse', 'HEAD').strip()
+        contact = 'historical-contact' + '@' + 'example.invalid'
+        self.write('tests/legacy.py', contact)
+        legacy = self.git('rev-parse', 'HEAD').strip()
+        old = getattr(guard, '_EMAIL_LEGACY_SCOPES', {})
+        guard._EMAIL_LEGACY_SCOPES = {legacy: frozenset({'tests/legacy.py'})}
+        self.addCleanup(setattr, guard, '_EMAIL_LEGACY_SCOPES', old)
+        self.write('tests/legacy.py', 'redacted')
+        return base, contact
+
+    def test_exact_published_history_can_be_preserved_with_current_tree_clean(self):
+        base, contact = self.historical_scope()
+        result, output = self.check(base)
+        self.assertEqual(result, 0)
+        self.assertNotIn(contact, output)
+
+    def test_reusing_legacy_blob_in_new_commit_still_fails_after_scrubbing(self):
+        base, contact = self.historical_scope()
+        self.write('tests/legacy.py', contact)
+        self.write('tests/legacy.py', 'redacted again')
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        self.assertEqual(json.loads(output)['email_pattern_guard'], 'FAIL')
+        self.assertNotIn(contact, output)
+
+    def test_legacy_scope_does_not_allow_staged_or_working_contact(self):
+        base, contact = self.historical_scope()
+        self.write('tests/legacy.py', contact, committed=False)
+        self.write('tests/legacy.py', 'scrubbed working copy', tracked=False)
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        self.assertNotIn(contact, output)
+
+    def test_merging_exact_historical_parent_blob_is_not_an_authored_copy(self):
+        base = self.git('rev-parse', 'HEAD').strip()
+        self.git('checkout', '-b', 'published-legacy')
+        contact = 'historical-contact' + '@' + 'example.invalid'
+        self.write('tests/legacy.py', contact)
+        legacy = self.git('rev-parse', 'HEAD').strip()
+        old = getattr(guard, '_EMAIL_LEGACY_SCOPES', {})
+        guard._EMAIL_LEGACY_SCOPES = {legacy: frozenset({'tests/legacy.py'})}
+        self.addCleanup(setattr, guard, '_EMAIL_LEGACY_SCOPES', old)
+        self.git('checkout', '-b', 'approved-current', base)
+        self.write('safe.txt', 'current change')
+        self.git('merge', '--no-ff', '--no-edit', 'published-legacy')
+        self.write('tests/legacy.py', 'redacted')
+        result, output = self.check(base)
+        self.assertEqual(result, 0)
+        self.assertNotIn(contact, output)
+
+    def test_merge_resolution_that_authors_a_contact_is_rejected_after_removal(self):
+        base, contact = self.historical_scope()
+        safe = self.git('rev-parse', 'HEAD').strip()
+        self.git('checkout', '-b', 'other-current')
+        self.write('safe.txt', 'other change')
+        self.git('checkout', '-b', 'current-resolution', safe)
+        self.write('another.txt', 'independent current change')
+        self.git('merge', '--no-ff', '--no-commit', 'other-current')
+        self.write('tests/legacy.py', contact, committed=False)
+        self.git('commit', '-m', 'synthetic merge resolution')
+        self.write('tests/legacy.py', 'redacted')
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        self.assertEqual(json.loads(output)['email_pattern_guard'], 'FAIL')
+        self.assertNotIn(contact, output)
