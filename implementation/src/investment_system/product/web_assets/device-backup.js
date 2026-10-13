@@ -45,7 +45,9 @@
    await view.DeviceActual.restoreHoldings(view,catalog,next.portfolio);
    try{view.localStorage.setItem(RESTORED_KEY,JSON.stringify({restored_at:new Date().toISOString(),schema:payload.schema}));}catch(_){}
   }catch(_){
-   try{keys.forEach((k,i)=>before[i]===null?view.localStorage.removeItem(k):view.localStorage.setItem(k,before[i]));}catch(_){throw Error('BACKUP_ROLLBACK_FAILED');}
+   // Undo writes in reverse order: a smaller replacement may have funded a later
+   // larger value, so restoring that original first can itself exceed the quota.
+   try{keys.map((k,i)=>[k,before[i]]).reverse().forEach(([k,value])=>value===null?view.localStorage.removeItem(k):view.localStorage.setItem(k,value));}catch(_){throw Error('BACKUP_ROLLBACK_FAILED');}
    throw Error('BACKUP_RESTORE_FAILED');
   }
   return next;

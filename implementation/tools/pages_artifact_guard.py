@@ -25,6 +25,7 @@ from investment_system.public_price_boundary import require_public_bundle, requi
 
 
 from investment_system.product.sec_m2_candidates import require_public_candidates
+from investment_system.product.dart_public import FILENAMES as DART_FILENAMES, require_public as require_dart_public
 from investment_system.product.news_signals import FILENAME as NEWS_SIGNALS_FILENAME, require_news_signals
 from investment_system.product.sec_disclosures import FILENAME as DISCLOSURES_FILENAME, require_sec_disclosures
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -90,11 +91,11 @@ APPROVED_SHA256 = {
     "private-trades.js": "86d59b4c5ef341ab47f1892fe65b483ca8256e367cfde06e1c9a0b580530fb9f",
     "technical-chart.js": "64b581fd186cdcb39f31def58412052dfa777dc2920a4f2432c1842b19c65eb8",
     "chart-indicators.js": "30cf6571f32c0496acd247099feb5f71fce0acf8870dcd78781018b872291fcc",
-    "device-backup.js": "df604c1dc020836959c69506f41defb0d1f12c0d4c49ababd310c70950c0ec44",
+    "device-backup.js": "ab938511333c87255a4f9ae6102cc9508cca4c78128f7183771d87391c6e511f",
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "0837478aa3493d67ab47bb6e10fd3a01925d72648482db81cd256113c56f6763",
+    "app.js": "95ea466f3bff4a6494b4879bbc6a8b6f1826c55be24ec981f6a65cd64ac37ca4",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "c7a866e15575e65cea8144412b13e7961be3e5b08f7ab6b2bcfa019db4deb1d4",
@@ -104,7 +105,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "cbb3d16620bf84da68ca3e00040e8d757d3d6378363df8e633e53bdd4b024a07",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "d53b4c069f1a6fde8af78ad0b0386c9ceb32211a57480c582d357fb37366d80d",
+    "index.html": "89e1e508a5dd9017ad82ecc19045712ba1fa6d63ca7a24e75ab0a5fd740b73e2",
     "locale.js": "bc7a3d8fc90bd35b97050a2aac9ba4c660679e9728fc6f5eede50071fea6ab2e",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
@@ -113,9 +114,10 @@ APPROVED_SHA256 = {
     "sec-disclosures.js": "26286bc51df4edc15ed025a616378f4e524c88d0e7c9870499497167a606061a",
     "price-store.js": "c9a3f46ef81be16df707292f45034d16e387b0bde1b6d1a52654902fb523c500",
     "playbook-screen.js": "3c6b05e07269a9d73874b25ab096e8e9319a0fb6b978cf65af22bcf7b13366b8",
-    "news-signals.js": "10910c4be310791fc7854813d9de3d2057d95a64d1b205a19e8707165ee4f939"
+    "news-signals.js": "10910c4be310791fc7854813d9de3d2057d95a64d1b205a19e8707165ee4f939",
+    "dart-disclosures.js": "64571f9f6a09e5c99bac54a510aad69589dbe32847dc4aec0cf3f163e8fdb832"
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -250,6 +252,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == NEWS_SIGNALS_FILENAME:
             try: require_news_signals(value)
             except ValueError: violations['news_signals_boundary'] += 1
+        elif name in DART_FILENAMES:
+            try: require_dart_public(name, value)
+            except ValueError: violations['dart_public_boundary'] += 1
         elif name == FORWARD_LEDGER_FILENAME:
             try: require_forward_ledger(value)
             except ValueError: violations['forward_ledger_boundary'] += 1
