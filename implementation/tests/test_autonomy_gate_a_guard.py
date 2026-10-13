@@ -1196,3 +1196,43 @@ class AppendOnlyRepositoryStateTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class HistoricalEmailScopeTests(unittest.TestCase):
+    setUp = DeviceActualPrivacyGuardTests.setUp
+    git = DeviceActualPrivacyGuardTests.git
+    write = DeviceActualPrivacyGuardTests.write
+    check = DeviceActualPrivacyGuardTests.check
+
+    def historical_scope(self):
+        base = self.git('rev-parse', 'HEAD').strip()
+        contact = 'historical-contact' + '@' + 'example.invalid'
+        self.write('tests/legacy.py', contact)
+        legacy = self.git('rev-parse', 'HEAD').strip()
+        old = getattr(guard, '_EMAIL_LEGACY_SCOPES', {})
+        guard._EMAIL_LEGACY_SCOPES = {legacy: frozenset({'tests/legacy.py'})}
+        self.addCleanup(setattr, guard, '_EMAIL_LEGACY_SCOPES', old)
+        self.write('tests/legacy.py', 'redacted')
+        return base, contact
+
+    def test_exact_published_history_can_be_preserved_with_current_tree_clean(self):
+        base, contact = self.historical_scope()
+        result, output = self.check(base)
+        self.assertEqual(result, 0)
+        self.assertNotIn(contact, output)
+
+    def test_reusing_legacy_blob_in_new_commit_still_fails_after_scrubbing(self):
+        base, contact = self.historical_scope()
+        self.write('tests/legacy.py', contact)
+        self.write('tests/legacy.py', 'redacted again')
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        self.assertEqual(json.loads(output)['email_pattern_guard'], 'FAIL')
+        self.assertNotIn(contact, output)
+
+    def test_legacy_scope_does_not_allow_staged_or_working_contact(self):
+        base, contact = self.historical_scope()
+        self.write('tests/legacy.py', contact, committed=False)
+        self.write('tests/legacy.py', 'scrubbed working copy', tracked=False)
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        self.assertNotIn(contact, output)

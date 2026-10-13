@@ -83,6 +83,15 @@ _PRIVATE_EXPORT_NAME = re.compile(
     r"(?:[-_]|$)", re.IGNORECASE,
 )
 _EMAIL_PATTERN = re.compile(r"(?i)[a-z0-9][a-z0-9._%+\-]*@[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}")
+# Already-public, pre-session history of approved PRs; current trees are never
+# exempt. These exact roots/path scopes preserve history without a force push.
+_EMAIL_LEGACY_SCOPES = {
+    "70b838699d90af4a78d9e25470a42e74fbb0514f": frozenset({"implementation/tests/test_sec_disclosures.py"}),
+    "10cc7710ba436e0a297ff31a3c4293770657e288": frozenset(),
+    "1bef9153596d2c21ea4541d02d1f751b6b0fae4f": frozenset({
+        "implementation/tests/test_sec_disclosures.py", "implementation/tests/test_news_signals.py",
+    }),
+}
 
 
 def email_patterns(content: bytes) -> Counter:
@@ -450,6 +459,7 @@ def device_actual_violations(base: str | None = None) -> list[str]:
     Findings intentionally omit filenames, parser details, and private values.
     """
     blobs: dict[tuple[str, str], None] = {}
+    email_scan_blobs: set[tuple[str, str]] = set()
     tracked_paths: set[str] = set()
     # Frozen source captures contain historical public contacts. Their unchanged
     # per-path pattern counts are grandfathered, never a filename allowlist or
@@ -487,6 +497,7 @@ def device_actual_violations(base: str | None = None) -> list[str]:
         tracked_paths.add(path)
         if mode != b"160000":
             blobs[(oid.decode("ascii"), path)] = None
+            email_scan_blobs.add((oid.decode("ascii"), path))
     for entry in _git_bytes(["ls-tree", "-r", "-z", "HEAD"]).split(b"\0"):
         if not entry:
             continue
@@ -495,16 +506,30 @@ def device_actual_violations(base: str | None = None) -> list[str]:
         if kind == b"blob":
             path = raw_path.decode("utf-8", "surrogateescape")
             blobs[(oid.decode("ascii"), path)] = None
+            email_scan_blobs.add((oid.decode("ascii"), path))
 
     if base is not None:
+        legacy_commits: dict[str, set[str]] = {}
+        for root, paths in _EMAIL_LEGACY_SCOPES.items():
+            available = subprocess.run(["git", "--no-replace-objects", "cat-file", "-e", root + "^{commit}"],
+                                       cwd=REPO_ROOT, capture_output=True).returncode == 0
+            if available:
+                for commit in _git_bytes(["rev-list", root, "--not", base]).decode("ascii").splitlines():
+                    legacy_commits.setdefault(commit, set()).update(paths)
         # A payload added then deleted in this range would still publish its
         # intermediate Git blob. Include every new version, including merges.
         history = iter(_git_bytes([
-            "log", "--format=", "--raw", "-z", "--no-abbrev", "--no-renames",
+            "log", "--format=%x00EMAIL_COMMIT:%H%x00", "--raw", "-z", "--no-abbrev", "--no-renames",
             "--diff-merges=separate", f"{base}..HEAD", "--",
         ]).split(b"\0"))
+        history_commit = None
         for entry in history:
             entry = entry.lstrip(b"\n")
+            if entry.startswith(b"EMAIL_COMMIT:"):
+                history_commit = entry[len(b"EMAIL_COMMIT:"):].decode("ascii")
+                if not re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", history_commit):
+                    raise GuardError("email-pattern history received invalid commit metadata")
+                continue
             if not entry.startswith(b":"):
                 continue
             metadata = entry[1:].split()
@@ -517,6 +542,8 @@ def device_actual_violations(base: str | None = None) -> list[str]:
             if mode not in {b"000000", b"160000"}:
                 path = raw_path.decode("utf-8", "surrogateescape")
                 blobs[(oid.decode("ascii"), path)] = None
+                if path not in legacy_commits.get(history_commit, set()):
+                    email_scan_blobs.add((oid.decode("ascii"), path))
 
     requests = b"".join(oid.encode("ascii") + b"\n" for oid, _path in blobs)
     output = io.BytesIO()
@@ -535,7 +562,7 @@ def device_actual_violations(base: str | None = None) -> list[str]:
         output.read(1)
         if contains_device_actual(content, path):
             rejected.add(path)
-        if email_patterns(content) - baseline_emails.get(path, Counter()):
+        if (_oid, path) in email_scan_blobs and email_patterns(content) - baseline_emails.get(path, Counter()):
             email_rejected.add(path)
     for path in tracked_paths:
         content = _tracked_worktree_bytes(path)
