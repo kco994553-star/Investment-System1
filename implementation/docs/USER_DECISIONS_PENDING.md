@@ -72,3 +72,5 @@ PLAYBOOK_V1 본문은 보존하고 **17절 사용자 결정(2026-10-13 2차)**�
 ## 최종 운영 checkpoint
 
 #236은 exact dab35f0a의 필수6 SUCCESS·실패0 확인 후 canonical baad0b24로 병합했다. 승인된 기존7개·#230·#229·#236 병합 완료; 실제 배포0. 후보 #234·#233·#235·#231·#237은 mainbaad에 제품 소스 변경 없이 정상 동기화했다. 최신 HEAD·정확한6체크는 CURRENT_HANDOFF의 최종 후보 표에 보존한다. 현재 결정은 위6건뿐이다. 이 기록은 문서 전용 checkpoint 브랜치에 보관하며 PR/main 재병합·기준 브랜치 동기화 반복을 만들지 않는다.
+
+- 인증 초기설정 경합은 B owner source9dc6679c + D native 회귀로 수정했다(계산·권한·스코프 변경0). 사용자 결정 항목을 추가하지 않는다. 마지막 명시적 Quotes opt-in test-only1파일 수정은 source/핀/산식 불변이며, 최종5개 후보HEAD에서 18:22:25 UTC 필수6 COMPLETED/SUCCESS·실패0·대기0을 독립 확인했다. 각 PR 현재HEAD와 check-run HEAD가 일치하며 별도 deploy는 SKIPPED다. 이전 실패·재검증 이력을 보존하고 최신 결과로 구분한다.
