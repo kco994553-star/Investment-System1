@@ -80,3 +80,30 @@ def test_doc_prompts_are_kept_verbatim_in_the_doc():
 def test_javascript_engine_matches_python_vectors():
     out = subprocess.run(['node', '--test', str(ROOT / 'tools/playbook_node_test.js')], capture_output=True, text=True)
     assert out.returncode == 0, out.stdout[-4000:] + out.stderr[-2000:]
+
+
+def test_oct13_decisions_core_quarter_and_sic():
+    cfg=P.load_config()
+    assert {'W1','E4'} <= set(P.active_codes(cfg))
+    base={'symbol':'SYN','held':True,'q_now':70,'g_now':70,'q_prev':70,'g_prev':70,
+          'q_prev2':80,'g_prev2':80,'memberships':{},'macro_state':'NORMAL'}
+    r=P.evaluate(cfg,base)
+    assert r['primary']['code']=='R2'
+    assert r['qg']['r2_hits'][0]['comparison']=='TWO_QUARTERS'
+    assert P.sector_for(cfg,'SYN','XLK',3827)['sector']=='semi_equipment'
+    assert P.sector_for(cfg,'SYN','XLI',3826)['sector']=='industrial_automation'
+    assert P.sector_for(cfg,'SYN','XLK',9999)['sector']=='technology_hardware'
+    typ=P.classify_types_v0(cfg,{'sic':5912,'revenue_volatility_5y_rank_pct':.2,
+            'roic_avg_3y':.2,'operating_margin_std_5y_pp':2.9,'net_debt_to_ebitda':1})
+    assert typ['quality']['member'] is True
+    assert typ['defensive']['member'] is True
+    info=P.evaluate(cfg,{'structural_news':True,'macro_state':'NORMAL'})
+    assert info['primary']['code']=='E4' and info['choices']==[]
+
+
+def test_quality_maintenance_macro_unavailable_and_trap_inclusive():
+    cfg=P.load_config()
+    r=P.evaluate(cfg,{'held':True,'memberships':{'quality':1},'q_now':70,'q_prev':70,
+        'g_now':60,'g_prev':66,'v_now':70,'v_prev20':40,'macro_state':'CRISIS','macro_available_count':0})
+    assert r['qg']['maintained'] is False
+    assert r['macro']['state'] is None and r['macro']['label']=='매크로 확인 불가'

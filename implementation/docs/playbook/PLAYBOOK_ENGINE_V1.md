@@ -69,3 +69,22 @@
 24. 13-7 "실적 발표 후 H1 필수"는 1절 H1 "신호 없음" 조건과 충돌. 현재: Q·G 없는 종목은 실적 후 H1을 다른 코드와 함께 띄움.
 25. 기존 가상매매 엔진 이유 코드(USER_EXCLUDE, COVERAGE_WORSENED, DATA_PRICE_MISSING…)와 1절 이유 코드(USER_EXCLUDED, COVERAGE_DEGRADED, PRICE_MISSING…)가 다르다. 현재: 플레이북은 1절 코드, 가상매매 엔진은 그대로.
 26. 14-4 "Q가 업종 내 하위 30%"의 경계(30 포함 여부). 현재: V 모듈의 `value_trap_gate` 값을 그대로 받음.
+
+## 5. 2026-10-13 2차 결정 반영
+
+4절의 26개 항목은 모두 결정됨이다. §17이 우선하며 기존 원문은 보존했다. `q_prev/g_prev`는 직전 분기이고 `q_prev2/g_prev2`는 2분기 전이다. 2분기 비교가 없으면 해당 비교만 확인 불가로 두며 소급 스냅샷을 만들지 않는다. 우량 유지 조건은 Q < 3·G < 5 하락, 분류는 5년 영업이익률 표준편차 < 3%p다. `sic` 입력으로 후보 업종·하위 묶음을 정한다. `macro_available_count=0`이면 상태 입력이 있더라도 매크로 확인 불가로 처리한다.
+
+W1·E4는 핵심이며 E4 선택지는 항상 비어 있다. E4 원인은 `REASSESS_SIGNAL`, `QG_RELATIVE_DECLINE`, `QG_RELATIVE_DECLINE_UNVERIFIED`, `THIRTEENF_FULL_EXIT`, `STRUCTURAL_NEWS`로 유지한다. 이유 코드는 엔진별로 보존한다.
+
+| 가상매매 이유 코드 | 플레이북 이유 코드 | 대응 |
+|---|---|---|
+| DATA_PRICE_MISSING | PRICE_MISSING | X1 가격 결측 |
+| DATA_FX_MISSING | FX_MISSING | X1 환율 결측 |
+| DATA_SNAPSHOT_MISSING | SNAPSHOT_MISSING | X1 스냅샷 결측 |
+| USER_EXCLUDE | USER_EXCLUDED | X3 제외 |
+| COVERAGE_WORSENED | COVERAGE_DEGRADED | R4 품질 하락 |
+| USER_HOLD | USER_HOLD | R5 보류 |
+| QG_DECLINE | QG_DECLINE | R2 분기 하락 |
+| FOLLOWUP_DUE | FOLLOWUP_DUE | E5 확인일 도래 |
+
+화면·저장은 `playbook-screen.js`의 기기 저장소만 사용한다. 기록·산 이유·보류·제안 TARGET을 백업 /4에 포함하며 이전 /1~ /3은 기록 원본을 보존한다. 가격이나 수익률 시계열은 백업에 넣지 않는다. 채점은 기기 RAM에 입력된 실제 종가 자료로만 계산하며 자료 없으면 NA다. TARGET v1은 A의 v2가 준비되기 전 최종 저장을 비활성으로 둔다.

@@ -56,18 +56,20 @@
       },
     };
   }
-  function drops(s) {
-    const qp = val(s, 'q_prev'), qn = val(s, 'q_now'), gp = val(s, 'g_prev'), gn = val(s, 'g_now');
+  function drops(s, suffix = "") {
+    const qp = val(s, 'q_prev' + suffix), qn = val(s, 'q_now'), gp = val(s, 'g_prev' + suffix), gn = val(s, 'g_now');
     return {q: known(qp, qn) ? qp - qn : null, g: known(gp, gn) ? gp - gn : null,
       qg: known(qp, qn, gp, gn) ? (qp + gp) / 2 - (qn + gn) / 2 : null};
   }
-  function r2Check(tc, s, d) {
-    const hits = [], missing = [];
+  function r2Check(cfg, tc, s, d) {
+    const hits = [], missing = [], older = drops(s,"2");
     for (const cond of tc.thresholds.r2) {
       for (const metric of ['qg', 'q', 'g']) {
         if (!(metric in cond)) continue;
         if (d[metric] === null) missing.push(metric + '_change');
-        else if (d[metric] >= cond[metric]) hits.push({type: cond.type, metric, drop: d[metric], threshold: cond[metric]});
+        else if (d[metric] >= cond[metric]) hits.push({type: cond.type, metric, drop: d[metric], threshold: cond[metric], comparison:'PREVIOUS_QUARTER'});
+        const lim=cond[metric]*cfg.quarter_comparison.two_quarters_multiplier;
+        if(older[metric]!==null && older[metric]>=lim)hits.push({type:cond.type,metric,drop:older[metric],threshold:lim,comparison:'TWO_QUARTERS'});
       }
       if (cond.dividend_cut) {
         const cut = val(s, 'dividend_cut');
@@ -76,7 +78,9 @@
       }
     }
     const miss = uniqSorted(missing);
-    return {hits, missing: miss, maintained: hits.length ? false : (miss.length ? null : true)};
+    let maintained=hits.length?false:(miss.length?null:true);
+    if(tc.members.includes('quality')){const qc=cfg.quarter_comparison;maintained=hits.length?false:(!known(d.q,d.g)?null:d.q<qc.quality_maintained_q_lt&&d.g<qc.quality_maintained_g_lt);}
+    return {hits,missing:miss,maintained};
   }
   function band(cfg, target) { return Math.max(num(cfg, 'band_min_pp'), target * num(cfg, 'band_target_ratio')); }
   function special(cfg, tc, s, macro, u3ok25) {
@@ -140,8 +144,8 @@
     const levels = cfg.levels.map(l => l.id), codeCfg = Object.fromEntries(cfg.codes.map(c => [c.code, c]));
     const basis = val(s, 'basis') || 'v1';
     const tc = typeContext(cfg, val(s, 'memberships'), basis), th = tc.thresholds;
-    const held = !!val(s, 'held'), conv = val(s, 'conviction') || {}, convActive = !!conv.active, macro = val(s, 'macro_state');
-    const d = drops(s), r2 = r2Check(tc, s, d);
+    const held = !!val(s, 'held'), conv = val(s, 'conviction') || {}, convActive = !!conv.active, macro = val(s,'macro_available_count')===0?null:val(s, 'macro_state');
+    const d = drops(s), r2 = r2Check(cfg, tc, s, d);
     const vNow = val(s, 'v_now'), vPrev = val(s, 'v_prev20'), vDelta = known(vNow, vPrev) ? vNow - vPrev : null;
     const actual = val(s, 'actual_pct'), target = val(s, 'target_pct');
     const fired = new Map(), e4 = [];
@@ -273,7 +277,7 @@
       band_pp: target === null ? null : band(cfg, target),
       qg: {q_drop: d.q, g_drop: d.g, qg_drop: d.qg, maintained: r2.maintained, r2_hits: r2.hits},
       v_change_20: vDelta,
-      macro: {state: macro, split_multiplier: macro === 'WARNING' ? num(cfg, 'macro_warning_split_multiplier') : 1, u3_conditions: u3},
+      macro: {state: macro, label: macro===null?cfg.macro.unavailable_label:macro, split_multiplier: macro === 'WARNING' ? num(cfg, 'macro_warning_split_multiplier') : 1, u3_conditions: u3},
       checks,
       choices: primary ? choicesFor(primary.code) : [],
       choices_by_code: Object.fromEntries(ordered.map(c => [c, choicesFor(c)])),
@@ -392,6 +396,7 @@
     }
   }
   function classifyTypesV0(cfg, metrics) {
+    metrics=Object.assign({},metrics||{});if(known(metrics.sic))metrics.sector_group_candidate=sicCandidate(cfg,metrics.sic);
     const out = {};
     for (const rule of cfg.type_rules_v0) {
       if (rule.combine === 'TYPE_CONFIG_V1') { out[rule.type] = {member: null, missing: [], state: 'TYPE_CONFIG_V1'}; continue; }
@@ -424,9 +429,12 @@
     if (Math.abs(total - cfg.target_v1.sum_pct) > 1e-9) violations.push({rule: 'SUM_NOT_100', pct: total, limit: cfg.target_v1.sum_pct});
     return {ok: violations.length ? false : (unknown.length ? null : true), violations, unknown_sector: unknown, group_pct: sums};
   }
-  function sectorFor(cfg, symbol, etf) {
+  function sicCandidate(cfg,sic){if(sic===null||sic===undefined||!Number.isFinite(Number(sic)))return null;for(const[label,ranges]of Object.entries(cfg.sic_candidates))if(ranges.some(([lo,hi])=>Number(sic)>=lo&&Number(sic)<=hi))return label;return 'NONE';}
+  function sectorFor(cfg, symbol, etf, sic) {
     const a = cfg.assignments.find(x => x.symbol === symbol);
     if (a) return {sector: a.sector, source: a.source};
+    if(known(sic))for(const row of cfg.sic_subgroups)if(row.ranges.some(([lo,hi])=>Number(sic)>=lo&&Number(sic)<=hi))return {sector:row.sector,source:'SIC_SUBGROUP'};
+    if(etf==='XLK'||etf==='XLI')return {sector:etf==='XLK'?'technology_hardware':'general_industrial',source:'ETF_FALLBACK'};
     if (etf) {
       const rows = cfg.sector_checks.filter(r => r.etfs.includes(etf)).map(r => r.id);
       if (rows.length === 1) return {sector: rows[0], source: 'ETF_UNIQUE'};
@@ -435,5 +443,5 @@
     return {sector: null, source: 'NOT_AVAILABLE'};
   }
 
-  return Object.freeze({SCHEMA, num, band, activeCodes, typeContext, evaluate, portfolioLimits, transition, criteria, e4Level, classifyTypesV0, sectorFor});
+  return Object.freeze({SCHEMA, num, band, activeCodes, typeContext, evaluate, portfolioLimits, transition, criteria, e4Level, classifyTypesV0, sicCandidate, sectorFor});
 });
