@@ -61,3 +61,13 @@
 - v1 결측 재정규화는 `strategy_preview`를 쓰는 공개 전진검증 원장(Actions, 10-19 시작)의 Q·G 기록에도 그대로 적용된다(공식 `qgv.scoring._weighted`는 그대로).
 - 기록 모드 가상매매 판단은 전진검증 원장 스냅샷(v1 Q·G)을 쓴다. v2 Q·G가 원장에 기록되기 전에는 리허설·보고서 행만 v2를 따른다. 기기 V 기울기 저장소(`virtual-trading-v-scores`)는 v1 V를 유지한다(v2 V는 저장하지 않음).
 - 금융사 V(P/B 등) 정의, 프리셋 위 유형 비중 결합식(곱 방식) 확인. 동업종 최소 8·평균 순위 백분위·CIK 1점은 Q·G 쪽(`QGV_V2_QG_METHOD.md` §4)과 같다.
+
+## 8. PLAYBOOK_V1 §13·§14 반영 (2026-10-13, 모두 v0 · UNCALIBRATED)
+
+| 항목 | 상태 |
+|---|---|
+| §13-1 v1 V 조건 | 반영. 있는 요소의 V 비중 합 ≥ 50 **그리고** `fundamental_value`·`reverse_dcf` 중 하나 이상일 때만 v1 V(결측 제외·재정규화), 아니면 `V_CORE_FACTOR_MISSING`. 부분이면 'V(부분 · 반영 가중치 NN%)'. 설정 `V1_V_RULE`(`qgv/virtual_trading_signals.py` = `virtual-trading-signals.js`). V 기울기는 같은 구성 키끼리만 비교(그대로). |
+| §13-2 경기민감 V | v2 반영: 경기민감 유형으로 선택된 기업의 EBIT 기반 수익률(이익 수익률·업종 대비)은 최근 매출 × 5년 평균 영업이익률(`type_config.value_basis.normalized_years`)로 계산하고 '정상화 이익 기준'으로 표시, 5년 이익률이 없으면 그 요인 NA(`NORMALIZED_EARNINGS_NOT_AVAILABLE`). 현재 `sec-qgv2.json`의 `v_inputs_v2`에는 매출·영업이익률 이력이 없어 실제로는 NA이고, 공식 경기민감 소속도도 아직 미정이다. v1(`value_basis.status = SCORING_MAPPING_UNRESOLVED`)은 공개 입력에 이력이 없어 미반영. |
+| §14-3 v2 결측 | 반영(§3). §13-1은 v1에만 적용. |
+| §14-4 관문 | 반영. 결과에 `value_trap_gate`(boolean)와 '가치 함정 주의'. 기본 켬·토글, 프로필 id에 포함. |
+| §13-11 기본 전환 | 접근자 `QgvScores.basis()` → `{basis, label, since}`. 설정이 v2여도 이 기기에서 v2가 계산되기 전에는 v1을 '임시 기본'으로 표시. 전환 한 줄: `scoring-default.js`의 `{scoring_default:'v2',v2_since:'YYYY-MM-DD'}`. 전진검증 원장의 v1·v2 동시 기록·전략 버전 v2 기록은 공개 원장(Actions) 변경이라 이 브랜치에서는 미반영. |
