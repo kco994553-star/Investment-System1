@@ -90,10 +90,10 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
               basis:qgvScores().rows.nvda.v2.detail.earnings_basis};
           });
           assert.equal(earnings.sic,'3674');
-          if(earnings.configured)assert.equal(earnings.cyclical,true,'approved semiconductor SIC activates the cyclical earnings basis');
-          assert.equal(earnings.basis,earnings.configured?'NORMALIZED':'REPORTED');
-          assert.match(await panel.locator('[data-v2-factor="v_vs_own_history"]').textContent(),
-            earnings.configured?/NORMALIZED_HISTORY_NOT_AVAILABLE/:/PRICE_HISTORY_NOT_AVAILABLE/);
+          assert.equal(earnings.configured,true,'the approved classifier is loaded independently of the playbook UI');
+          assert.equal(earnings.cyclical,true,'approved semiconductor SIC activates the cyclical earnings basis');
+          assert.equal(earnings.basis,'NORMALIZED');
+          assert.match(await panel.locator('[data-v2-factor="v_vs_own_history"]').textContent(), /NORMALIZED_HISTORY_NOT_AVAILABLE/);
           assert.match(await page.locator('[data-overall="v2"]').textContent(), /\d+\.\d/);
         } else {
           assert.ok(await panel.locator('[data-factor-table]').first().isVisible());

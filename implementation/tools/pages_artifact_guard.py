@@ -105,7 +105,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "a724bfd507723681f05dbe2906b61813ec887dc98acd5fe53fb72739330ddc61",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "887e56485bfc2aaabd582d7e4693aa17a9c4bea9994254eafec2decb28a8cbb6",
+    "index.html": "0c101bd574146fbbcb72fbc0853bbc8541e0710fe4e9ee1ab9d54c01bb7353d5",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
