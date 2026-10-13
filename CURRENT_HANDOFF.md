@@ -13,18 +13,18 @@
 - **#210 병합 완료**: exact head `8cead6ac`, 필수6 SUCCESS/실패0, normal merge `7136aa3f`(13:11:19 UTC). 현재 남은 승인 순서는 #215 → #211이다.
 - #227: 로컬 PNG/data 이미지 번들·직접iframe OFF 구현, 브라우저390/1280 로고2·iframe2 PASS. PNG 실제 decode/RGBA8 재인코딩 및 잘못된 raster/bitdepth/tRNS 회귀15PASS·E 재검토 중요 문제0. D 별도 worktree `d-227`, 후속 보완 commit·최신 기준 동기화·CI 준비 중. **병합 재승인 필요**, 외부 지원 조사 없음.
 - DART 키 등록 사용자 확인됨. C 보고: 최신 실행 BEA_USERID 설정 마스킹 정상; 예전 빈 전달 로그를 근거로 재등록 요청하지 않는다. Fed 원인404/빈 추출, 공식 소스확인403이며 반복 시도 금지.
-- Worker Universe504(하이픈 포함)·HYG·IEF 확대는 사용자 범위 승인, #229 구현·로컬504 실제 표본 및 Worker169검증 완료, 최신 CI·canonical 동기화 중. 범위 승인은 이미 있으므로 재승인 요청하지 않는다. 배포는 별도 결정 전 기존 Worker 유지.
+- Worker Universe504(하이픈 포함)·HYG·IEF 확대는 사용자 범위 승인, #229 `41e02736` 최신6SUCCESS·canonical7136 동기화 완료. 로컬 실제504 및 Worker169·Python2648·Node47·Pages82 PASS. 기존 #215→#211 우선 뒤 범위 승인대로 병합. 범위 승인은 이미 있으므로 재승인 요청하지 않는다. 배포는 별도 결정 전 기존 Worker 유지.
 - **10/19 v2 기록 시작은 아직 확정하지 못함**. A의 V·공개입력·v1/v2 원장 준비와 신규 PR 승인 후 실제 시작일을 보고한다. 소급하지 않는다.
 
 ## 레인별 진행 (진행분은 브랜치·PR로 보존)
 
 | 레인 | 완료 | 진행 | 대기·막힘 | 다음 |
 | --- | --- | --- | --- | --- |
-| A QGV v2 | #224 Q/G 병합, V·원장2·기기별 v2 V이력 구현 | 신규 계산 PR·최종 가드/회귀, 승인된 #18 입력 투영 | 신규 계산/공개 PR 승인; 실제 품질224/504(3/7샤드), 전체504 미완료 | 10/19 실제 기록 미확정, 승인·배포 후 준비일부터 소급 없이 |
+| A QGV v2 | #224 Q/G 병합, V·원장2·기기별 v2 V이력·#18 optional 투영 구현 | #234 d9107b87 발행·5SUCCESS/build진행. Python2673·Node49·Pages86·브라우저15PASS | 신규 계산/공개 PR 승인; 실제 품질224/504(3/7샤드), Q207/G222, 전체504 미완료 | 10/19 실제 기록 미확정, 승인·배포 후 준비일부터 소급 없이 |
 | B 플레이북 | #226 engine 병합; 19패널·백업4·E5·R1·W1·정보E4·채점 구현 | #233 최신 canonical 동기화·전체 CI | TARGET v1은 A 선행; 휴장일 채점 B-1은 NA | 화면 전용 필수6 성공 뒤 순서에 따라 병합 |
-| C 데이터·매크로 | #210 병합; DART6FY 공급·5경고등·운영 연결 준비 | 새 clean 브랜치, #215→#211 기존 통합 및 공용등록 | Fed 소스403; 실 DART 첫 실행 미확인, A shared API 선행 | old #232 보존/병합 금지, 대체 PR 검증 후 승인 요청 |
-| D 운영 | #222·224·226·225·210 순서 병합; D4 검색/복원/404 기존6테스트 PASS | #215→#211, 이메일 guard #230, #227 PNG 보완, 공용 조정 | #227 재승인, 배포 D-DEPLOY | 정확 HEAD6체크 후 직렬 병합·인수인계 push |
-| E 13F·테마·Universe | E1·E4·E5 기존 구현 검증; 6808/6808 역사검증+실 privateRelease 존재/크기/digest 확인 | #231 13F 보강, 최신 canonical 동기화 | E2 공개경계 승인 대기; 없는 W2/E4 데이터 NA/비활성 | 최신6체크 유지. Release 무만료, artifact만 2026-12-26 만료 |
+| C 데이터·매크로 | #210 병합; DART6FY 공급·5경고등·운영 연결 준비 | 새 clean 브랜치 공용등록/emptyfixture/guard88 준비, 최종전체검증 뒤 PR 발행; #215→#211 통합 | Fed 소스403; 실 DART 첫 실행 미확인, A shared API 선행 | old #232 보존/병합 금지, 대체 PR 검증 후 승인 요청 |
+| D 운영 | #222·224·226·225·210 순서 병합; D4 검색/복원/404 기존6테스트 PASS | #215→#211, 이메일 guard #230, #227 PNG 보완, 공용 조정 | #227 재승인, 배포 D-DEPLOY | 정확 HEAD6체크 후 직렬 병합·인수인계 push. guard240+262subtests/E 독립84+137·우회탐침 PASS |
+| E 13F·테마·Universe | E1·E4·E5 기존 구현 검증; 6808/6808 역사검증+실 privateRelease 존재/크기/digest 확인 | #231 94d2b6cb 보강·canonical7136 동기화·필수6SUCCESS | E2 공개경계 승인 대기; 없는 W2/E4 데이터 NA/비활성 | 최신6체크 유지. Release 무만료, artifact만 2026-12-26 만료 |
 
 ## 열린 PR 실제 상태 (2026-10-13 조회)
 
@@ -32,16 +32,17 @@
 
 | PR | HEAD | 필수 체크 | 충돌 | 권장 | 이유 |
 | --- | --- | --- | --- | --- | --- |
-| #233 | `a8d82d3c` | 0/6 | MERGEABLE | 최신6체크 후 화면 병합 | B 플레이북 UI·백업, A 순서 선행 |
-| #232 | `7bd9881f` | 0/6 | UNKNOWN | 유지·병합 금지 | 새 clean 브랜치로 대체; 역사 commit 보존 |
-| #231 | `7c0d94c9` | 0/6 | CONFLICTING | 승인 대기 | E 13F 공개경계 보강 |
-| #230 | `c6b890a0` | 6/6 | UNKNOWN | 최신6체크 후 병합 | D 운영·이메일 guard |
-| #229 | `542f8bce` | 1/6 · 실패 ingest-and-gate,build,validate,guard,presentation | UNKNOWN | 최신6체크 후 병합 | 사용자 결정2 확대 승인됨; 배포 별도 |
-| #228 | `488d1b87` | 5/6 · 실패 build | UNKNOWN | 닫기 제안 | D #230에 포함; 자동 닫지 않음 |
-| #227 | `1b54a42d` | 6/6 | UNKNOWN | 수정본 재승인 | 외부 빌드 로고·iframe 수정, PNG 후속 검증 |
-| #215 | `1bef9153` | 6/6 | CONFLICTING | 승인순서 동기화/CI | 기존 사용자 승인됨; 현재 #215→#211 순서 |
-| #211 | `90c9e5a9` | 6/6 | UNKNOWN | 승인순서 동기화/CI | 기존 사용자 승인됨; 현재 #215→#211 순서 |
-| #71 | `923ba8ea` | 5/6 | UNKNOWN | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #234 | `d9107b87` | 5/6 | MERGEABLE | 승인 대기 | A v2 V·공개입력·원장2 구현; 기본v2 결정은 이미 승인 |
+| #233 | `eb73c71c` | 0/6 | MERGEABLE | 6체크 후 화면 병합 | B 플레이북·백업, A 순서/입력 선행 |
+| #232 | `7bd9881f` | 0/6 | CONFLICTING | 유지·병합 금지 | new clean 브랜치 대체, 공개 역사 보존 |
+| #231 | `94d2b6cb` | 6/6 | MERGEABLE | 공개경계 승인 대기 | 필수6 SUCCESS; E 13F 원값 보강 |
+| #230 | `9b3291be` | 5/6 | MERGEABLE | 6체크 후 병합 | D 운영·이메일 guard |
+| #229 | `41e02736` | 6/6 | MERGEABLE | 승인순서 뒤 병합 | 필수6 SUCCESS; 범위 이미 승인/배포 별도 |
+| #228 | `488d1b87` | 5/6 · 실패 build | MERGEABLE | 닫기 제안 | D230 포함; 자동 닫지 않음 |
+| #227 | `d9197b8a` | 5/6 | MERGEABLE | 수정본 재승인 | PNG검증 포함2694/Node48/로고iframe4PASS; 빌드수집 |
+| #215 | `0b4151a5` | 5/6 | MERGEABLE | 6체크 후 승인순서 병합 | 최신0b4151a5, focused171+123subPASS |
+| #211 | `5e5face5` | 5/6 | MERGEABLE | 215 뒤 sync/CI 병합 | 최신5e5face5, debt  lineage 원정의 검증85+123subPASS |
+| #71 | `923ba8ea` | 5/6 | CONFLICTING | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #43 | `4c5f7ff9` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #31 | `c9e0fa7e` | 1/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #29 | `d0444583` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
@@ -50,13 +51,13 @@
 | #17 | `21039a0a` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #16 | `ef65caa5` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #15 | `ce587040` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
-| #14 | `0d48d863` | 0/6 | UNKNOWN | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
-| #13 | `8bb990bd` | 0/6 | UNKNOWN | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #14 | `0d48d863` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #13 | `8bb990bd` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #12 | `61d3352d` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
-| #11 | `a2e0790d` | 0/6 | UNKNOWN | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
-| #10 | `5eec129e` | 0/6 | UNKNOWN | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #11 | `a2e0790d` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #10 | `5eec129e` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #7 | `a013f1c1` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
-| #4 | `ff78c4f6` | 1/6 | UNKNOWN | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #4 | `ff78c4f6` | 1/6 | CONFLICTING | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 
 #152·#153은 #178 대체로 이미 닫힘(10/11 기록). 기존 레거시9종 app_nav_ia / device_actual / google_sheet_storage / manual_quotes / prompt_field_guide / web_mvp / web_research_guard / web_state_presentation / global_language_search 모두 현행 CI manifest에 등록됨. 삭제 없음; 현재 UI 검증을 수행한다.
 
