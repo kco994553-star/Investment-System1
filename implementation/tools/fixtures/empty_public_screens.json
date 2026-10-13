@@ -2994,12 +2994,115 @@
   "stale_after_seconds": 86400.0,
   "state": "NOT_AVAILABLE"
  },
+ "sec-disclosures.json": {
+  "as_of": "2026-01-01T00:00:00+00:00",
+  "channel": "DISCLOSURE",
+  "companies": {
+   "amd": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "amzn": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "asml": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "avgo": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "etn": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "gev": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "googl": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "hubb": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "intc": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "klac": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "lrcx": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "msft": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "nvda": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "qcom": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "rok": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "rtx": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   },
+   "stry": {
+    "acquired_at": null,
+    "reason_code": "NOT_COLLECTED",
+    "state": "NOT_AVAILABLE"
+   }
+  },
+  "events": [],
+  "freshness_basis": "SOURCE_ACQUISITION",
+  "kind": "SEC_DISCLOSURES",
+  "reason_codes": [
+   "NO_ELIGIBLE_INPUT"
+  ],
+  "schema_version": 1,
+  "score_effect": "NONE",
+  "stale_after_seconds": 172800,
+  "state": "NOT_AVAILABLE",
+  "window_days": 90
+ },
  "sec-filing-windows.json": {
   "as_of": "2026-01-01T00:00:00+00:00",
   "data": {
    "companies": {
     "amd": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3007,6 +3110,7 @@
     },
     "amzn": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3014,6 +3118,7 @@
     },
     "asml": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3021,6 +3126,7 @@
     },
     "avgo": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3028,6 +3134,7 @@
     },
     "etn": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3035,6 +3142,7 @@
     },
     "gev": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3042,6 +3150,7 @@
     },
     "googl": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3049,6 +3158,7 @@
     },
     "hanmi": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3056,6 +3166,7 @@
     },
     "hubb": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3063,6 +3174,7 @@
     },
     "intc": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3070,6 +3182,7 @@
     },
     "klac": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3077,6 +3190,7 @@
     },
     "lrcx": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3084,6 +3198,7 @@
     },
     "msft": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3091,6 +3206,7 @@
     },
     "nvda": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3098,6 +3214,7 @@
     },
     "qcom": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3105,6 +3222,7 @@
     },
     "rok": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3112,6 +3230,7 @@
     },
     "rtx": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3119,6 +3238,7 @@
     },
     "stry": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},
@@ -3126,6 +3246,7 @@
     },
     "tokyo_electron": {
      "confirmed_earnings_date": null,
+     "earnings_confirmation": null,
      "groups": [],
      "role": "ESTIMATED_PATTERN_NOT_CONFIRMED",
      "source_hashes": {},

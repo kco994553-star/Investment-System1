@@ -186,7 +186,7 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
       const download = await downloadPromise;
       assert.equal(download.suggestedFilename(), "investment-personal.json");
       const backup = JSON.parse(fs.readFileSync(await download.path(), "utf8"));
-      assert.equal(backup.schema, "investment-device-backup/3");
+      assert.equal(backup.schema, "investment-device-backup/4");
       assert.deepEqual(backup.investor_stars, []);
       assert.deepEqual(backup.preferences.interests, ["nvda"]);
       assert.deepEqual(backup.preferences.groups.map((g) => g.name), ["AI"]);
