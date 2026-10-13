@@ -26,6 +26,7 @@ from investment_system.public_price_boundary import require_public_bundle, requi
 
 from investment_system.product.sec_m2_candidates import require_public_candidates
 from investment_system.product.news_signals import FILENAME as NEWS_SIGNALS_FILENAME, require_news_signals
+from investment_system.product.dart_public import FILENAMES as DART_FILENAMES, require_public as require_dart_public
 from investment_system.product.sec_disclosures import FILENAME as DISCLOSURES_FILENAME, require_sec_disclosures
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
@@ -94,7 +95,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "5c15777c65d0bd77fc847bed94615087943f5003efcc8df641a9b4cdc2e569f9",
+    "app.js": "2b936c8abe8e39c96d56a4e27b58a1126b0e7924502153019c29e9952821852d",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "8dcefa502a362b680f8cefbf774209b2180b398d706469f6370d6ecb0182acd1",
@@ -104,17 +105,18 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "cbb3d16620bf84da68ca3e00040e8d757d3d6378363df8e633e53bdd4b024a07",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "8354cbfe83245c997568875510bb541c58aec79bd22f19ed389d435813fe1ed6",
+    "index.html": "210704f95975d5e34cafe7953f5b4b645985cf9ec2ddd8baecabecd54f274d84",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "e30a3a1808d4a8e0bcb7af0f2056a3595132de050711d7bb4e7ba9b692e4f6c0",
     "sec-disclosures.js": "26286bc51df4edc15ed025a616378f4e524c88d0e7c9870499497167a606061a",
-    "news-signals.js": "10910c4be310791fc7854813d9de3d2057d95a64d1b205a19e8707165ee4f939",
-    "price-store.js": "c9a3f46ef81be16df707292f45034d16e387b0bde1b6d1a52654902fb523c500"
+    "price-store.js": "c9a3f46ef81be16df707292f45034d16e387b0bde1b6d1a52654902fb523c500",
+    "dart-disclosures.js": "64571f9f6a09e5c99bac54a510aad69589dbe32847dc4aec0cf3f163e8fdb832",
+    "news-signals.js": "10910c4be310791fc7854813d9de3d2057d95a64d1b205a19e8707165ee4f939"
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -132,6 +134,7 @@ SENSITIVE_KEYS = frozenset({
     "spreadsheetid", "spreadsheeturl", "accesstoken", "refreshtoken", "clientsecret",
 })
 SECRET_PATTERNS = (
+    re.compile(r"(?i)(?<![a-z0-9._%+\-])[a-z0-9._%+\-]+@[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}"),
     re.compile(r"(?<![A-Za-z0-9_])ya29\.[A-Za-z0-9._~-]+"),
     re.compile(r"https://docs\.google\.com/spreadsheets/(?:u/\d+/)?d/[A-Za-z0-9_-]{20,100}"),
     re.compile(r"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY-----"),
@@ -187,6 +190,10 @@ def _inspect_json(value: object, violations: Counter, depth: int = 0) -> None:
     elif isinstance(value, list):
         for child in value:
             _inspect_json(child, violations, depth + 1)
+    elif isinstance(value, str):
+        # JSON escapes must not hide a contact address from the raw-text scan.
+        if SECRET_PATTERNS[0].search(value):
+            violations["secret_patterns"] += 1
 
 
 def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
@@ -246,6 +253,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == DISCLOSURES_FILENAME:
             try: require_sec_disclosures(value)
             except ValueError: violations['sec_disclosures_boundary'] += 1
+        elif name in DART_FILENAMES:
+            try: require_dart_public(name, value)
+            except ValueError: violations['dart_public_boundary'] += 1
         elif name == NEWS_SIGNALS_FILENAME:
             try: require_news_signals(value)
             except ValueError: violations['news_signals_boundary'] += 1
