@@ -9,7 +9,11 @@ const { createHandler, HistoryRateLimiter } = module;
 const ORIGIN = 'https://kco994553-star.github.io';
 const NOW = Date.UTC(2026, 9, 9, 18);
 const SYMBOLS = ['ASML', 'LRCX', 'KLAC', 'NVDA', 'AMD', 'AVGO', 'QCOM', 'INTC', 'MSFT', 'GOOGL', 'AMZN', 'RTX', 'SYK', 'ETN', 'HUBB', 'GEV', 'ROK', '042700.KS', '8035.T',
-  'SPY', 'SMH', 'XLK', 'XLV', 'XLE', 'XLB', 'XLP', 'XLY', 'XLC', 'XLU', 'XLRE', 'XLF', 'XLI', 'VUG', 'QUAL', 'KRW=X', 'JPYKRW=X'];
+  'SPY', 'SMH', 'XLK', 'XLV', 'XLE', 'XLB', 'XLP', 'XLY', 'XLC', 'XLU', 'XLRE', 'XLF', 'XLI', 'VUG', 'QUAL', 'HYG', 'IEF', 'KRW=X', 'JPYKRW=X'];
+const UNIVERSE_CODES = JSON.parse(await readFile(new URL('../../src/investment_system/universe/universe_codes_v1.json', import.meta.url), 'utf8'));
+const UNIVERSE_SYMBOLS = UNIVERSE_CODES.map(code => code.split(':')[1].replaceAll('.', '-'));
+assert.equal(UNIVERSE_SYMBOLS.length, 504);
+assert.equal(new Set(UNIVERSE_SYMBOLS).size, 504);
 const FX = (symbol) => symbol.endsWith('=X');
 const ccyOf = (symbol) => FX(symbol) || symbol.endsWith('.KS') ? 'KRW' : symbol.endsWith('.T') ? 'JPY' : 'USD';
 const tzOf = (symbol) => FX(symbol) ? 'Europe/London' : symbol.endsWith('.KS') ? 'Asia/Seoul' : symbol.endsWith('.T') ? 'Asia/Tokyo' : 'America/New_York';
@@ -141,6 +145,28 @@ for (const range of RANGES) {
   });
 }
 
+test('every approved Universe504 symbol routes to authenticated daily history', async () => {
+  for (const symbol of UNIVERSE_SYMBOLS) {
+    const s = setup();
+    const response = await s.run(s.request(`/history?symbol=${q(symbol)}&range=5y`));
+    assert.equal(response.status, 200, symbol);
+    assert.equal((await response.json()).symbol, symbol);
+    assert.equal(s.calls[1].url, `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=5y`);
+  }
+});
+
+test('hyphenated share-class symbols retain strict canonical query validation', async () => {
+  for (const symbol of ['BRK-B', 'BF-B']) {
+    const s = setup();
+    assert.equal((await s.run(s.request(`/history?symbol=${symbol}&range=1mo`))).status, 200);
+  }
+  for (const symbol of ['BRK.B', 'BF.B', 'BRK%2DB', 'BRK%2dB', 'BRK--B', 'ZZZZ-NOTAPPROVED', 'QQQ']) {
+    const s = setup();
+    await expectError(await s.run(s.request(`/history?symbol=${symbol}&range=1mo`)), 400, 'REQUEST_INVALID');
+    assert.equal(s.calls.length, 0);
+  }
+});
+
 for (const [name, token] of [
   ['wrong email', { email: 'someone@example.test' }], ['wrong audience', { aud: 'other-client' }],
   ['array audience', { aud: ['mock-client-id'] }], ['missing email', { email: undefined }],
@@ -247,7 +273,7 @@ for (const [method, headers] of [['POST', 'authorization'], ['GET', 'authorizati
   });
 }
 for (const path of [
-  '/history', '/history?symbol=ASML', '/history?symbol=ASML&range=1d', '/history?symbol=AAPL&range=1mo',
+  '/history', '/history?symbol=ASML', '/history?symbol=ASML&range=1d', '/history?symbol=NOTAPPROVED&range=1mo',
   '/history?symbol=asml&range=1mo', '/history?symbol=ASML&range=1mo&url=https://evil.test',
   '/history?symbol=ASML&symbol=NVDA&range=1mo', '/history?symbol=ASML&range=1mo&range=1y',
   '/history?symbol=%41SML&range=1mo', '/history?symbol=ASML%2F..&range=1mo',
