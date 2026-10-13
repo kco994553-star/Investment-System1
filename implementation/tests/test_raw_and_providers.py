@@ -129,6 +129,7 @@ def test_live_sec_fetch_is_optional_and_not_stage2(monkeypatch):
     monkeypatch.setattr(sec_companyfacts, "urlopen", unavailable)
     assert try_fetch_companyfacts("0000000003", timeout=1.0) is None
     # Exercise the successful transport branch with independently generated facts.
+    monkeypatch.setenv("SEC_USER_AGENT", "SYNTHETIC_RUNTIME_CONTACT")
     generated = companyfacts(3, full=True)
     monkeypatch.setattr(sec_companyfacts, "urlopen", lambda *a, **k: io.BytesIO(json.dumps(generated).encode()))
     payload = try_fetch_companyfacts("0000000003", timeout=1.0)
