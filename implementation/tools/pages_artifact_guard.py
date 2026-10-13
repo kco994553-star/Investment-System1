@@ -88,11 +88,11 @@ APPROVED_SHA256 = {
     "private-trades.js": "86d59b4c5ef341ab47f1892fe65b483ca8256e367cfde06e1c9a0b580530fb9f",
     "technical-chart.js": "64b581fd186cdcb39f31def58412052dfa777dc2920a4f2432c1842b19c65eb8",
     "chart-indicators.js": "30cf6571f32c0496acd247099feb5f71fce0acf8870dcd78781018b872291fcc",
-    "device-backup.js": "4f2fb8eb2881c76deae6bdfa77233d8451a5eded86b3d8d0b16ea6c7631a33e6",
+    "device-backup.js": "df604c1dc020836959c69506f41defb0d1f12c0d4c49ababd310c70950c0ec44",
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "672603ea891a3003bae116b9e09cd87454365341ac68be8e9ab5b85ccc28d073",
+    "app.js": "8e8139971bcb09850dff93c212ebc64f2b92fba2d50a55c23ae5975d4f0297e2",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "8dcefa502a362b680f8cefbf774209b2180b398d706469f6370d6ecb0182acd1",
@@ -108,7 +108,7 @@ APPROVED_SHA256 = {
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "d48a9376677319f28a6c4cc93d74a077009ba476d76c9d7e5d9b1c308362a404",
-    "playbook-screen.js": "740fdf8474ff31f795fc69738b0624d3efffb5e9cf866e4aa6e2df36de8286e7"
+    "playbook-screen.js": "dffbc9de57475f02f686936fa246c1b787257d2add14b5fe413f483a1b7d87fe"
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
