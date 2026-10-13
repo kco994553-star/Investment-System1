@@ -493,3 +493,30 @@ def test_list_pagination_is_bounded_and_marked_truncated(tmp_path):
     assert rc == 0 and [p['page_no'] for p in untyped] == ['1', '2', '3']
     assert company['state'] == 'LIVE' and company['truncated'] and company['reason_code'] == 'DART_LIST_TRUNCATED'
     assert {'20261001000501', '20261003000501'} <= {e['rcept_no'] for e in files[dp.DISCLOSURES_FILENAME]['events']}
+
+
+def test_debt_is_short_plus_long_plus_bonds_plus_leases_without_double_counting():
+    """PLAYBOOK_V1 §13-7: 단기차입금 + 장기차입금(유동성 포함) + 사채 + 리스부채; a total account wins over its parts."""
+    from tests.dart_fake_opendart import _fs as fs
+    from investment_system.providers.dart_collection import extract_financials
+
+    def _fs(*args):
+        return dict(fs(*args), reprt_code='11011')
+    base = [_fs('ifrs-full_Revenue', 'CIS', '10')]
+    rows = base + [_fs('ifrs-full_ShorttermBorrowings', 'BS', '100'), _fs('ifrs-full_LongtermBorrowings', 'BS', '200'),
+                   _fs('ifrs-full_CurrentPortionOfLongtermBorrowings', 'BS', '50'),
+                   _fs('ifrs-full_NoncurrentPortionOfNoncurrentBondsIssued', 'BS', '70'), _fs('ifrs-full_CurrentPortionOfNoncurrentBondsIssued', 'BS', '5'),
+                   _fs('ifrs-full_LeaseLiabilities', 'BS', '40'), _fs('ifrs-full_NoncurrentLeaseLiabilities', 'BS', '30')]
+    values, concepts, reasons = extract_financials({'list': rows}, reprt_code='11011')
+    assert values['total_debt'] == 465 and 'total_debt' not in reasons
+    assert concepts['total_debt'] == ('ifrs-full_ShorttermBorrowings+ifrs-full_LongtermBorrowings+ifrs-full_CurrentPortionOfLongtermBorrowings'
+                                      '+ifrs-full_NoncurrentPortionOfNoncurrentBondsIssued+ifrs-full_CurrentPortionOfNoncurrentBondsIssued'
+                                      '+ifrs-full_LeaseLiabilities')
+    only_leases = base + [_fs('ifrs-full_CurrentLeaseLiabilities', 'BS', '12')]
+    values, concepts, _ = extract_financials({'list': only_leases}, reprt_code='11011')
+    assert values['total_debt'] == 12 and concepts['total_debt'] == 'ifrs-full_CurrentLeaseLiabilities'
+    values, concepts, reasons = extract_financials({'list': base}, reprt_code='11011')
+    assert values['total_debt'] is None and reasons['total_debt'] == 'MISSING'
+    bad = base + [_fs('ifrs-full_ShorttermBorrowings', 'BS', '100'), _fs('ifrs-full_LongtermBorrowings', 'BS', 'n/a')]
+    values, _, reasons = extract_financials({'list': bad}, reprt_code='11011')
+    assert values['total_debt'] is None and reasons['total_debt'] == 'UNPARSEABLE'

@@ -56,6 +56,8 @@
   [data-public-screen="thirteenf"] > * {grid-column: 1 / -1;}
   [data-public-screen="thirteenf"] > .badge {justify-self: start;}
   [data-public-screen="thirteenf"] > article.mgr-card {grid-column: auto; align-self: stretch; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 12px;}
+  /* A manager with a quarter comparison (TARGET table) takes the full row so the change table stays readable. */
+  [data-public-screen="thirteenf"] > article.mgr-card:has([data-13f-target-table]) {grid-column: 1 / -1;}
 
   /* S17 daily report: summary numbers in one row, numbered sections in two columns, full-width ledger. */
   #daily-report {display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; align-items: start;}

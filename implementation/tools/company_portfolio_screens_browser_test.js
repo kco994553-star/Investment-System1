@@ -73,7 +73,8 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
     assert.equal(errors,0);pass++;console.log('PASS company/portfolio screens empty '+width);
    }catch(e){fail++;console.log('FAIL company/portfolio screens empty '+width+' '+phase+' '+(e.code==='ERR_ASSERTION'?'CONTRACT '+String(e.message).split('\n')[0]:'EXECUTION '+String(e.message).split('\n')[0]));}finally{await context.close();}}
   // ---------- Phase B: synthetic public inputs + device ACTUAL ----------
-  {const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});
+  // Public files not served by this phase fall back to the empty build (a daily SEC build publishes live data).
+  {const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});await routeEmptyPublicScreens(context);
    for(const[file,body]of [['sec-qg-factors.json',qg],['company-types-pricefree.json',types],['sec-filing-windows.json',filings]])await context.route('**/'+file,r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body())}));
    const page=await context.newPage();page.setDefaultTimeout(15000);let errors=0;page.on('pageerror',()=>errors++);
    try{

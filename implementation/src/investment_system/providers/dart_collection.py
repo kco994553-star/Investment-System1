@@ -387,8 +387,17 @@ CONCEPTS = {
     'capex': (('CF',), ('ifrs-full_PurchaseOfPropertyPlantAndEquipment',)),
     'cash_and_equivalents': (('BS',), ('ifrs-full_CashAndCashEquivalents',)),
     'equity': (('BS',), ('ifrs-full_EquityAttributableToOwnersOfParent', 'ifrs-full_Equity')),
-    'total_debt': (('BS',), ('ifrs-full_LongtermBorrowings',)),
 }
+# PLAYBOOK_V1 §13-7: debt = 단기차입금 + 장기차입금 + 사채 + 리스부채 (same idea as the US debt rule: components that are
+# reported are summed, a component the statement does not report adds nothing; no component at all -> None).
+# Each component: ordered alternatives; an alternative is a set of accounts summed together (total, or current + noncurrent).
+DEBT_COMPONENTS = (
+    ('short_term_borrowings', (('ifrs-full_ShorttermBorrowings',),)),
+    ('long_term_borrowings', (('ifrs-full_LongtermBorrowings', 'ifrs-full_CurrentPortionOfLongtermBorrowings'),)),
+    ('bonds', (('ifrs-full_BondsIssued',),
+               ('ifrs-full_NoncurrentPortionOfNoncurrentBondsIssued', 'ifrs-full_CurrentPortionOfNoncurrentBondsIssued'))),
+    ('lease_liabilities', (('ifrs-full_LeaseLiabilities',), ('ifrs-full_NoncurrentLeaseLiabilities', 'ifrs-full_CurrentLeaseLiabilities'))),
+)
 WITH_PREVIOUS = ('revenue', 'operating_income', 'eps')
 FS_ROW_KEYS = ('sj_div', 'account_id', 'thstrm_amount', 'currency')
 
@@ -416,6 +425,28 @@ def _pick(rows, sj_divs, account_ids, field):
             return None, account, 'AMBIGUOUS'  # Same concept with different values: withheld.
         return values.pop(), account, None
     return None, None, 'MISSING'
+
+
+def _debt(rows):
+    """(total, '+'-joined accounts, reason). A withheld (ambiguous/unparseable) account withholds the total."""
+    total, used = None, []
+    for _, alternatives in DEBT_COMPONENTS:
+        for accounts in alternatives:
+            found = False
+            for account in accounts:
+                value, concept, reason = _pick(rows, ('BS',), (account,), 'thstrm_amount')
+                if reason == 'MISSING':
+                    continue
+                if reason:
+                    return None, None, reason
+                found = True
+                total = (total or 0.0) + value
+                used.append(concept)
+            if found:
+                break
+    if total is None:
+        return None, None, 'MISSING'
+    return total, '+'.join(used), None
 
 
 def _interim_field(sj_divs, reprt_code):
@@ -456,6 +487,9 @@ def extract_financials(payload, *, reprt_code):
             else:
                 values[prev_name], concepts[prev_name] = None, None
                 reasons[prev_name] = 'NOT_IN_INTERIM_SCOPE'
+    values['total_debt'], concepts['total_debt'], reason = _debt(rows)
+    if reason:
+        reasons['total_debt'] = reason
     return values, concepts, reasons
 
 

@@ -4,7 +4,7 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.VirtualTrading=api;})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const CONFIG=Object.freeze(JSON.parse('{"schema_version":1,"config_version":"virtual_trading/v1-provisional","rules_version":"virtual_trading_rules/v1","status":"PROVISIONAL_UNCALIBRATED","role":"RAM_ONLY_DEVICE","decided_at":"2026-10-11","start_date":"2026-10-19","base_currency":"KRW","daily_deposit":1000000,"buy_limit":1000000,"sell_limit":1000000,"execution":"NEXT_SESSION_CLOSE","cost_bps":0,"fractional_quantity":true,"band_pp":1,"qg_decline_threshold":5,"min_trade":10000,"abnormal_drop":{"window_sessions":20,"lookback_sessions":252,"k":2},"sector_basis":"SECTOR_ETF_CONFIRMED","macro_gate":"INACTIVE_MAPPING_PENDING","v_slope":{"lookback_sessions":20,"threshold":10},"benchmark":"SP500","hit_windows":[5,20,63],"hit_min_samples":30,"total_score":"TYPE_WEIGHTED_QGV_ELSE_QG","provenance":{"start_date":"D-13 DECIDED_2026-10-11","daily_deposit":"D-1 PROVISIONAL","buy_limit":"D-15 DECIDED_2026-10-10","sell_limit":"D-15 DECIDED_2026-10-10","execution":"D-2 PROVISIONAL","cost_bps":"D-3 PROVISIONAL","fractional_quantity":"D-4 PROVISIONAL","abnormal_drop":"D-5 PROVISIONAL","macro_gate":"D-6 PROVISIONAL","band_pp":"D-7 PROVISIONAL","qg_decline_threshold":"D-8 PROVISIONAL","min_trade":"D-9 PROVISIONAL","benchmark":"D-11 PROVISIONAL","hit_min_samples":"D-12 PROVISIONAL","total_score":"D-14 PROVISIONAL","v_slope":"D-21 PROVISIONAL","sector_basis":"D-22 DECIDED_2026-10-11 (sector_etf_map/v1)"}}'));
-const LEDGER_KINDS=['SET_A','SET_B','SHADOW'],COVERAGES=['READY','PARTIAL','BLOCKED'],FLAG_KINDS=['HOLD','EXCLUDE','CONFIRMED_TEMPORARY','CONFIRMED_STRUCTURAL','CLEAR'],EVENT_KINDS=['EARNINGS_WINDOW','TYPE_CHANGED'];
+const LEDGER_KINDS=['SET_A','SET_B','SET_C','SET_D','SHADOW'],COVERAGES=['READY','PARTIAL','BLOCKED'],FLAG_KINDS=['HOLD','EXCLUDE','CONFIRMED_TEMPORARY','CONFIRMED_STRUCTURAL','CLEAR'],EVENT_KINDS=['EARNINGS_WINDOW','TYPE_CHANGED'];
 const LEVELS=Object.freeze(['BLOCK','RISK_RECHECK','REDUCE_REVIEW','INCREASE_REVIEW','ADDITIONAL_REVIEW','HOLDING_CONTEXT','OBSERVE']);
 const SYMBOLS=Object.freeze({BLOCK:'■',RISK_RECHECK:'▼',REDUCE_REVIEW:'▼',INCREASE_REVIEW:'▲',ADDITIONAL_REVIEW:'●',HOLDING_CONTEXT:'●',OBSERVE:'●'});
 const SP500='SP500';
@@ -43,9 +43,18 @@ function validateLedger(L){
  const snaps=has(L,'snapshots')?L.snapshots:{};need(obj(snaps));
  for(const[d,rows]of Object.entries(snaps)){need(day(d)&&obj(rows));for(const r of Object.values(rows))need(obj(r)&&COVERAGES.includes(r.coverage)&&(r.q===null||r.q===undefined||num(r.q))&&(r.g===null||r.g===undefined||num(r.g)));}
  const vs=has(L,'v_scores')?L.v_scores:{};need(obj(vs)&&Object.entries(vs).every(([d,r])=>day(d)&&obj(r)&&Object.values(r).every(v=>v===null||num(v))));
+ const vc=has(L,'v_composition')?L.v_composition:{};need(obj(vc)&&Object.entries(vc).every(([d,r])=>day(d)&&obj(r)&&Object.values(r).every(v=>v===null||typeof v==='string')));
  const flags=has(L,'flags')?L.flags:[];need(Array.isArray(flags)&&flags.every(f=>obj(f)&&day(f.date)&&FLAG_KINDS.includes(f.kind)&&typeof f.company==='string'));
  const ev=has(L,'events')?L.events:{};need(obj(ev)&&Object.entries(ev).every(([d,r])=>day(d)&&obj(r)&&Object.values(r).every(x=>Array.isArray(x)&&x.every(e=>EVENT_KINDS.includes(e)))));
+ if(has(L,'resume')&&L.resume!==null&&L.resume!==undefined)validateResume(L.resume,L.companies);
  return L;
+}
+/* Recorded state to continue from (decision 2026-10-11): the recorded rows are canonical. Positions carry quantity and KRW
+   cost; pending holds the virtual orders decided on the last recorded session (executed on the next one). */
+function validateResume(r,comps){
+ need(obj(r)&&day(r.after)&&num(r.cash)&&r.cash>=0&&obj(r.positions)&&(r.total_value===null||r.total_value===undefined||num(r.total_value))&&Array.isArray(r.pending));
+ for(const[cid,p]of Object.entries(r.positions))need(has(comps,cid)&&obj(p)&&pos(p.quantity)&&num(p.cost));
+ for(const o of r.pending)need(obj(o)&&typeof o.company==='string'&&(o.side==='BUY'||o.side==='SELL')&&pos(o.amount)&&Array.isArray(o.reason_codes)&&o.reason_codes.every(c=>typeof c==='string'));
 }
 function fxRate(L,ccy,d){if(ccy==='KRW')return 1;const s=get(L.fx||{},ccy);return s?get(s,d)??null:null;}
 function lastOnOrBefore(s,d){let best=null;for(const k of Object.keys(s))if(k<=d&&(best===null||k>best))best=k;return best;}
@@ -94,7 +103,10 @@ function judge(L,cfg,cid,d,idx,state,total){
  let vUp=false,vDown=false;const lb=cfg.v_slope.lookback_sessions;
  if(vUsable&&idx-lb>=0){
   const past=L.sessions[idx-lb],vs=L.v_scores||{},vNow=get(get(vs,d)||{},cid)??null,vPast=get(get(vs,past)||{},cid)??null,qgPast=qg(get(get(snaps,past)||{},cid)??null);
-  if(vNow!==null&&vPast!==null&&qgNow!==null&&qgPast!==null&&qgNow-qgPast>-cfg.qg_decline_threshold){
+  // V slope compares only days with the same V factor composition; unknown or different → no slope (NA).
+  const vc=L.v_composition||{},compNow=get(get(vc,d)||{},cid)??null,compPast=get(get(vc,past)||{},cid)??null,same=typeof compNow==='string'&&compNow===compPast;
+  if(vNow!==null&&vPast!==null&&!same)aux.push('V_COMPOSITION_CHANGED');
+  if(same&&vNow!==null&&vPast!==null&&qgNow!==null&&qgPast!==null&&qgNow-qgPast>-cfg.qg_decline_threshold){
    if(vNow-vPast>=cfg.v_slope.threshold)vUp=true;else if(vPast-vNow>=cfg.v_slope.threshold)vDown=true;
   }
  }
@@ -148,13 +160,21 @@ function runLedger(config,ledger){
  if(cfg.start_date===null||cfg.start_date===undefined)return stop('NOT_STARTED','START_DATE_NOT_SET');
  let L;try{L=validateLedger(ledger);}catch(e){return stop('NOT_AVAILABLE',e.message);}
  if(L.target_weights===null||L.target_weights===undefined)return stop('NOT_AVAILABLE','TARGET_NOT_AVAILABLE');
- const first=L.sessions.findIndex(x=>x>=cfg.start_date);if(first<0)return stop('NOT_STARTED','NO_SESSION_ON_OR_AFTER_START');
- const init=has(L,'initial')?L.initial:{cash:0,positions:{}};
- const state={cash:init.cash,positions:{}};for(const[k,v]of Object.entries(sortedEntries(init.positions)))state.positions[k]={quantity:v.quantity,cost:v.cost};
- let[initialValue]=valueOf(L,state,L.sessions[first]);if(initialValue===null)return stop('NOT_AVAILABLE','INITIAL_VALUE_NOT_AVAILABLE');
- initialValue+=state.cash;
- const feeRate=cfg.cost_bps/10000,days=[],trades=[];let pending=[],deposits=0,realized=0,prevTotal=null,growth=1;
- const universe=[...new Set([...Object.keys(L.target_weights),...Object.keys(state.positions)])].sort();
+ const resume=has(L,'resume')&&L.resume!==null&&L.resume!==undefined?L.resume:null,after=resume?resume.after:null;
+ const first=L.sessions.findIndex(x=>x>=cfg.start_date&&(after===null||x>after));if(first<0)return stop('NOT_STARTED',resume?'NO_SESSION_AFTER_RECORDED':'NO_SESSION_ON_OR_AFTER_START');
+ const init=has(L,'initial')?L.initial:{cash:0,positions:{}},src=resume||init;
+ const state={cash:src.cash,positions:{}};for(const[k,v]of Object.entries(sortedEntries(src.positions)))state.positions[k]={quantity:v.quantity,cost:v.cost};
+ const days=[],trades=[];let pending=[],deposits=0,realized=0,prevTotal=null,growth=1,initialValue;
+ if(resume){
+  // Continue from the recorded state: no re-valuation of the recorded day, its pending orders execute next.
+  initialValue=resume.total_value??null;prevTotal=resume.total_value??null;
+  pending=resume.pending.map(o=>({company:o.company,side:o.side,amount:o.amount,reason_codes:[...o.reason_codes],decided_on:after,user_flag:activeFlag(L.flags||[],o.company,after)}));
+ }else{
+  [initialValue]=valueOf(L,state,L.sessions[first]);if(initialValue===null)return stop('NOT_AVAILABLE','INITIAL_VALUE_NOT_AVAILABLE');
+  initialValue+=state.cash;
+ }
+ const feeRate=cfg.cost_bps/10000;
+ const universe=[...new Set([...Object.keys(L.target_weights),...Object.keys(init.positions),...Object.keys(state.positions)])].sort();
  for(let idx=first;idx<L.sessions.length;idx++){
   const d=L.sessions[idx],executed=[],cancelled=[];
   const ordered=[...pending].sort((a,b)=>{const sa=a.side==='SELL'?0:1,sb=b.side==='SELL'?0:1;return sa!==sb?sa-sb:(a.company<b.company?-1:a.company>b.company?1:0);});
@@ -200,9 +220,9 @@ function runLedger(config,ledger){
  }
  const last=days[days.length-1];let unrealized=null;
  if(last.positions_value!==null){let cost=0;for(const cid of Object.keys(state.positions).sort())cost+=state.positions[cid].cost;unrealized=last.positions_value-cost;}
- const invested=initialValue+deposits;
+ const invested=initialValue===null?null:initialValue+deposits;
  const summary={start_date:L.sessions[first],end_date:last.date,initial_value:initialValue,deposits,total_value:last.total_value,cash:state.cash,
-  simple_return:last.total_value===null||invested<=0?null:last.total_value/invested-1,twr:growth-1,realized_pnl:realized,unrealized_pnl:unrealized,
+  simple_return:last.total_value===null||invested===null||invested<=0?null:last.total_value/invested-1,twr:growth-1,realized_pnl:realized,unrealized_pnl:unrealized,
   buy_count:trades.filter(t=>t.side==='BUY').length,sell_count:trades.filter(t=>t.side==='SELL').length,
   user_flagged_count:trades.filter(t=>t.user_flag!==null&&t.user_flag!==undefined).length,pending_orders:last.orders};
  return{...base,state:'OK',reason_codes:[],days,trades,summary};
@@ -236,10 +256,10 @@ const DISCLAIMER=Object.freeze({ko:'가상 · 실제 추천 아님 · 주문 기
 // Every code the engine itself can emit, by family (the runner, signals, V history and ledger sheet modules export theirs).
 const CODES=Object.freeze({
  judgement:Object.freeze(['DATA_PRICE_MISSING','DATA_FX_MISSING','DATA_SNAPSHOT_MISSING','COVERAGE_BLOCKED','USER_EXCLUDE','QG_DECLINE','COVERAGE_WORSENED','USER_HOLD','RECHECK_BASIS_NOT_AVAILABLE','RECHECK_ABNORMAL_DROP','USER_CONFIRMED_TEMPORARY','USER_CONFIRMED_STRUCTURAL','OVERWEIGHT_GAP','UNDERWEIGHT_GAP','V_IMPROVED','V_DETERIORATED','BAND_INSIDE']),
- aux:Object.freeze(['OVERWEIGHT','INCREASE_CANDIDATE','COVERAGE_PARTIAL','EARNINGS_WINDOW','TYPE_CHANGED','SECTOR_SP500_SUBSTITUTE']),
+ aux:Object.freeze(['OVERWEIGHT','INCREASE_CANDIDATE','COVERAGE_PARTIAL','EARNINGS_WINDOW','TYPE_CHANGED','SECTOR_SP500_SUBSTITUTE','V_COMPOSITION_CHANGED']),
  order:Object.freeze(['LIMIT_EXHAUSTED']),
  execution:Object.freeze(['EXEC_PRICE_MISSING','EXEC_FX_MISSING','NO_POSITION','CASH_INSUFFICIENT']),
- ledger:Object.freeze(['START_DATE_NOT_SET','INPUT_INVALID','CONFIG_INVALID','TARGET_NOT_AVAILABLE','NO_SESSION_ON_OR_AFTER_START','INITIAL_VALUE_NOT_AVAILABLE']),
+ ledger:Object.freeze(['START_DATE_NOT_SET','INPUT_INVALID','CONFIG_INVALID','TARGET_NOT_AVAILABLE','NO_SESSION_ON_OR_AFTER_START','INITIAL_VALUE_NOT_AVAILABLE','NO_SESSION_AFTER_RECORDED']),
  basis:Object.freeze(['SECTOR_BASIS_NOT_AVAILABLE','PRICE_NOT_ALIGNED','HISTORY_INSUFFICIENT','DISTRIBUTION_DEGENERATE']),
  sector:Object.freeze(['SIC_NOT_AVAILABLE','SEMIS_MEMBERSHIP_NOT_AVAILABLE','SECTOR_ETF_NOT_MAPPED']),
  hits:Object.freeze(['INSUFFICIENT_SAMPLE']),
@@ -262,6 +282,7 @@ const CODE_LABELS=Object.freeze({
  INCREASE_CANDIDATE:['보조: V 개선으로 확대 후보(위험재검토 중이라 거래 없음)','Auxiliary: add candidate on improved V (risk re-check, no virtual trade)'],
  COVERAGE_PARTIAL:['Coverage PARTIAL(일부 데이터)','Coverage PARTIAL (partial data)'],EARNINGS_WINDOW:['실적 발표 예상 기간','Expected earnings window'],TYPE_CHANGED:['유형 소속 변경','Type membership changed'],
  SECTOR_SP500_SUBSTITUTE:['업종 ETF 대신 S&P 500 기준 사용','S&P 500 used instead of the sector ETF'],
+ V_COMPOSITION_CHANGED:['V 요소 구성이 20거래일 전과 다르거나 알 수 없어 V 기울기 미사용','V factor composition differs from 20 sessions earlier or is unknown; V slope unused'],
  // engine: virtual orders and executions
  LIMIT_EXHAUSTED:['하루 한도 소진으로 일부만 배분','Daily limit reached; only part allocated'],
  EXEC_PRICE_MISSING:['체결일 종가 결측으로 가상 주문 취소','Virtual order cancelled: no close on the execution day'],
@@ -271,6 +292,7 @@ const CODE_LABELS=Object.freeze({
  START_DATE_NOT_SET:['가상매매 시작일 미정','Virtual trading start date not set'],INPUT_INVALID:['장부 입력 형식 오류','Ledger input invalid'],CONFIG_INVALID:['규칙 설정 형식 오류','Rule configuration invalid'],
  TARGET_NOT_AVAILABLE:['목표 비중 없음','No target weights'],NO_SESSION_ON_OR_AFTER_START:['시작일 이후 거래일 없음','No session on or after the start date'],
  INITIAL_VALUE_NOT_AVAILABLE:['출발 평가액 계산 불가(가격·환율 결측)','Initial value not computable (price or FX missing)'],
+ NO_SESSION_AFTER_RECORDED:['마지막 기록 거래일 이후 거래일 없음','No session after the last recorded session'],
  // engine: D-5 basis and D-22 sector mapping
  SECTOR_BASIS_NOT_AVAILABLE:['업종 기준 시세 없음','No sector basis series'],PRICE_NOT_ALIGNED:['보고일 종가가 기준 시세와 맞지 않음','Close not aligned with the basis on this day'],
  HISTORY_INSUFFICIENT:['정렬된 일봉 부족','Not enough aligned daily bars'],DISTRIBUTION_DEGENERATE:['초과수익률 분포 계산 불가(변동 0)','Excess-return distribution degenerate (zero spread)'],
@@ -282,6 +304,7 @@ const CODE_LABELS=Object.freeze({
  // runner: inputs and sources
  BEFORE_START_DATE:['가상매매 시작일 전','Before the virtual trading start date'],TARGET_CATALOG_INVALID:['공개 TARGET 카탈로그 형식 오류','Public TARGET catalog invalid'],
  SESSIONS_NOT_AVAILABLE:['S&P 500 일봉 없음 → 거래일 없음','No S&P 500 daily bars → no sessions'],SET_B_NOT_DEFINED:['세트 B 구성 없음','Set B not defined'],SET_B_INVALID:['세트 B 구성 형식 오류','Set B definition invalid'],
+ SET_NOT_DEFINED:['세트 구성 없음(정의 전 또는 종료됨)','Set not defined (not yet defined or closed)'],SET_INVALID:['세트 구성 형식 오류','Set definition invalid'],
  NO_ACTUAL:['기기 실제 보유 없음','No ACTUAL holdings on this device'],ACTUAL_INVALID:['기기 실제 보유 형식 오류','ACTUAL holdings invalid'],
  INITIAL_COST_FX_MISSING:['출발 원가 환산 환율 없음','No FX rate for the initial cost'],LEDGER_NOT_AVAILABLE:['가상 장부 없음','Virtual ledger not available'],
  NOT_REQUESTED:['요청하지 않음','Not requested'],HISTORY_UNAVAILABLE:['일봉 없음','Daily history unavailable'],HISTORY_FORMAT_INVALID:['일봉 형식 오류','Daily history format invalid'],
@@ -298,13 +321,16 @@ const CODE_LABELS=Object.freeze({
  PUBLIC_CATALOG_UNAVAILABLE:['공개 카탈로그 없음','Public catalog unavailable'],MAILBOX_FAILED:['우체통 처리 실패','Mailbox failed'],HASH_UNAVAILABLE:['해시 계산 불가','Hash unavailable'],
  // signals: V slope use
  BASIS_NOT_AVAILABLE:['V 기울기 미사용','V slope unused'],V_HISTORY_SHORT:['V 기록 부족','V history too short'],
+ V_CORE_FACTOR_MISSING:['V 핵심 요소 결측 → 그날 V는 NA(0으로 계산하지 않음)','A core V factor is missing → that day\'s V is NA (never computed as 0)'],
+ V_FACTORS_NOT_AVAILABLE:['V 요소 없음','No V factors'],REHEARSAL_ONLY:['오늘 공개 Q·G로 빈 날 채우기는 리허설 전용','Filling missing days with today\'s public Q·G is rehearsal-only'],
  // V history store
  DATE_INVALID:['날짜 형식 오류','Date invalid'],DATE_BEFORE_LAST_RECORDED:['마지막 기록일보다 이른 날짜(소급 안 함)','Before the last recorded date (no backfill)'],
  UNCHANGED:['새 값 없음(이미 기록)','Nothing new (already recorded)'],NO_VALUES:['기록할 V 없음','No V values to record'],DEVICE_STORAGE_UNAVAILABLE:['기기 저장소 사용 불가','Device storage unavailable'],
  V_STORE_INVALID:['기기 V 기록 형식 오류(그대로 둠)','Device V store invalid (left untouched)'],SESSION_NOT_AVAILABLE:['완료 거래일 없음','No completed session'],
  VALUATION_INPUTS_UNAVAILABLE:['공개 가치평가 입력 없음','Public valuation inputs unavailable'],
  // ledger sheets (D-10)
- LEDGER_REPLAY_MISMATCH:['기록된 행과 재생 결과가 다름(쓰기 중지)','Recorded rows differ from the replay (writes stopped)'],SHEET_ROWS_INVALID:['시트 행 형식 오류','Sheet rows invalid'],
+ PRICE_REVISED:['기록 이후 과거 일봉 등이 바뀌어 재생 결과가 기록과 다름(기록 유지, 기록된 상태에서 이어서 기록)','Replay differs from the recorded rows, e.g. revised daily bars (records kept, recording continues from the recorded state)'],
+ SHEET_ROWS_INVALID:['시트 행 형식 오류(쓰기 중지)','Sheet rows invalid (writes stopped)'],
  SHEET_HEADER_MISMATCH:['시트 머리글 불일치','Sheet header mismatch'],META_INVALID:['VirtualMeta 형식 오류','VirtualMeta invalid'],META_ROW_INVALID:['VirtualMeta 행 형식 오류','VirtualMeta row invalid'],
  LEDGER_UNKNOWN:['VirtualMeta에 없는 장부 ID','Ledger ID not in VirtualMeta'],INPUTS_NOT_READY:['장부 입력 준비 전','Ledger inputs not ready'],
  INPUTS_INCOMPLETE:['시세 일부 없음(다시 받은 뒤 기록)','Inputs incomplete (record after reloading quotes)'],INPUTS_CHANGED:['기록 이후 입력이 바뀜','Inputs changed since recording'],
@@ -312,8 +338,13 @@ const CODE_LABELS=Object.freeze({
  SHEET_NOT_READY:['시트 장부 준비 전','Sheet ledger not ready'],SHEET_NOT_LOADED:['시트를 아직 읽지 않음','Sheet not loaded yet'],NOT_CONNECTED:['구글 시트 미연결','Google Sheet not connected'],
  SHADOW_NOT_STARTED:['그림자 장부 출발 전','Shadow ledger not started'],SHADOW_ALREADY_STARTED:['그림자 장부가 이미 출발함','Shadow ledger already started'],
  SET_B_REDEFINED:['세트 B 재정의','Set B redefined'],REHEARSAL_NOT_RECORDED:['리허설 결과는 기록하지 않음','Rehearsal results are never recorded'],
+ SET_REDEFINED:['세트 구성 변경(새 장부)','Set redefined (new ledger)'],SET_A_CHANGED:['세트 A 구성 변경(새 버전·새 장부)','Set A changed (new version, new ledger)'],
+ SET_DELETED:['세트 삭제 → 종료(기록 보존)','Set deleted → closed (records kept)'],SET_MEMBERS_OVER_30:['구성 종목 30개 초과','More than 30 members'],
+ WEIGHTS_NOT_AVAILABLE:['보유 비중 계산 불가(마지막 거래일 가격·환율 결측)','Holding weights not available (price or FX missing on the last session)'],TYPES_NOT_AVAILABLE:['공개 유형 소속 없음','Public company types unavailable'],
+ COMPARE_NEEDS_TWO_SETS:['비교는 세트 2개 이상 필요','Comparison needs at least two sets'],
+ PURPOSE_REQUIRED:['세트 목적(한 줄) 필요','A one-line set purpose is required'],PURPOSE_INVALID:['세트 목적 형식 오류(한 줄, 120자 이하)','Set purpose invalid (one line, up to 120 characters)'],
  NUMBER_INVALID:['숫자 형식 오류','Number invalid'],VALUE_INVALID:['값 형식 오류','Value invalid'],CONFIG_NOT_CANONICAL:['규칙 설정이 공식 v1과 다름','Configuration differs from the official v1'],
- COMPANY_NOT_SUPPORTED:['TARGET 19종목이 아님','Not one of the 19 TARGET companies'],WEIGHT_INVALID:['비중 형식 오류(0~100)','Weight invalid (0 to 100)'],
+ COMPANY_NOT_SUPPORTED:['허용 목록 밖 종목(가격 Worker 허용 목록: TARGET 19종목 + ETF 15종)','Not on the price Worker allowlist (19 TARGET companies + 15 ETFs)'],WEIGHT_INVALID:['비중 형식 오류(0~100)','Weight invalid (0 to 100)'],
  WEIGHT_SUM_OVER_100:['비중 합계 100 초과','Weights sum above 100'],WEIGHTS_EMPTY:['비중 없음','No weights'],WRITE_FAILED:['시트 쓰기 실패','Sheet write failed']});
 const lang=locale=>locale==='en-US'||locale==='en'?'en':'ko';
 const byLevel=(a,b)=>LEVELS.indexOf(a)-LEVELS.indexOf(b);

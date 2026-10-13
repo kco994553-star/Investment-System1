@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 sys.path.insert(0, str(ROOT / 'tools'))
@@ -29,7 +31,7 @@ def assembled_for(v):
     run_cfg = vs.rehearsal_config(v['inputs']['histories'], cfg) if v['rehearsal'] else cfg
     out = vi.assemble(**(copy.deepcopy(v['inputs']) | {'config': {'start_date': run_cfg['start_date']}}))
     if v['rehearsal']:
-        out, _ = vs.apply_rehearsal_snapshots(out, data()['qg_rows'])
+        out, _ = vs.apply_rehearsal_snapshots(out, data()['qg_rows'], 'REHEARSAL')
     return out, run_cfg
 
 
@@ -77,7 +79,7 @@ def test_rehearsal_window_changes_only_start_date():
 def test_recorded_snapshots_are_kept_in_rehearsal():
     assembled = {'state': 'READY', 'ledgers': {'SET_A': {'state': 'READY', 'reason_codes': [], 'input': {
         'sessions': ['2026-10-19', '2026-10-20'], 'snapshots': {'2026-10-19': {'msft': {'q': 1, 'g': 2, 'coverage': 'READY'}}}}}}}
-    out, filled = vs.apply_rehearsal_snapshots(assembled, {'msft': {'q': 9, 'g': 9, 'partial': False}})
+    out, filled = vs.apply_rehearsal_snapshots(assembled, {'msft': {'q': 9, 'g': 9, 'partial': False}}, 'REHEARSAL')
     assert filled == ['2026-10-20']
     assert out['ledgers']['SET_A']['input']['snapshots']['2026-10-19']['msft']['q'] == 1
 
@@ -106,4 +108,32 @@ def test_js_equality_runs_in_node():
 def test_v_store_is_not_in_device_backup_and_assets_store_no_price():
     assert 'virtual-trading-v-scores' not in (ASSETS / 'device-backup.js').read_text(encoding='utf-8')
     src = (ASSETS / 'virtual-trading-v-history.js').read_text(encoding='utf-8')
-    assert src.count('setItem(') == 1 and 'JSON.stringify({schema:SCHEMA,scores:m.scores})' in src
+    assert src.count('setItem(') == 1 and 'JSON.stringify({schema:SCHEMA,scores:m.scores,composition:m.composition})' in src
+
+
+def test_rehearsal_fill_is_refused_outside_rehearsal_mode():
+    """Decision 2026-10-11: today's public Q·G may fill missing days in a rehearsal only; recording never fills."""
+    assembled = {'state': 'READY', 'ledgers': {'SET_A': {'state': 'READY', 'reason_codes': [], 'input': {
+        'sessions': ['2026-10-19', '2026-10-20'], 'snapshots': {}}}}}
+    for mode in ('RECORDING', None, 'rehearsal'):
+        with pytest.raises(vs.RehearsalOnlyError, match='REHEARSAL_ONLY'):
+            vs.apply_rehearsal_snapshots(assembled, {'msft': {'q': 9, 'g': 9, 'partial': False}}, mode)
+    assert assembled['ledgers']['SET_A']['input']['snapshots'] == {}
+
+
+def test_core_v_factor_missing_makes_v_na_never_zero():
+    cases = {c['name']: c for c in data()['v_axis']}
+    assert data()['core_v_factors'] == vs.core_v_factors() and len(vs.core_v_factors()) == 7
+    for c in cases.values():
+        assert vs.v_axis_detail(c['view']) == c['expected']
+    assert cases['core_factor_missing']['expected']['state'] == 'NOT_AVAILABLE'
+    assert vs.v_axis(cases['core_factor_missing']['view']) is None
+    assert cases['all_factors']['expected']['composition'] == '+'.join(vs.core_v_factors())
+
+
+def test_v_slope_needs_equal_composition():
+    v = vector('recording_v_composition_unknown')['expected']
+    assert v['signals']['basis']['googl']['v_slope'] == 'V_COMPOSITION_CHANGED'
+    assert 'V_IMPROVED' not in v['engine']['last']['googl']['reason_codes']
+    assert 'V_COMPOSITION_CHANGED' in v['engine']['last']['googl']['aux']
+    assert vector('recording_d5_v_slope')['expected']['signals']['basis']['googl']['v_slope'] == 'READY'

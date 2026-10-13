@@ -52,6 +52,12 @@ def _json(b):
     if type(d) is not dict:raise ValueError('INVALID_INPUT')
     return d
 
+# Exact cover-title exceptions (user decision 2026-10-11, GSQ-021): the general rule (common stock / ordinary shares) is NOT
+# loosened. Alphabet's GOOG cover title was confirmed from real retained filings (10-Q 0001652044-24-000053 and
+# 0001652044-24-000118, dei:Security12bTitle): only this exact string, only for this CIK and symbol.
+EXACT_TITLE_EXCEPTIONS={('0001652044','GOOG'):'Class C Capital Stock, $0.001 par value'}
+
+
 def _cover(xml,cik,symbol,cutoff,report_period_end=None,venue=None,detail=False):
     from io import BytesIO
     from datetime import date
@@ -124,7 +130,7 @@ def _cover(xml,cik,symbol,cutoff,report_period_end=None,venue=None,detail=False)
         allowed={'NASDAQ':{'nasdaqmember','nasdaqstockmarketllcmember','nasdaqglobalselectmarketmember','nasdaqglobalmarketmember','nasdaqcapitalmarketmember'},'NYSE':{'nysemember','newyorkstockexchangemember'}}
         if any(v[1].casefold() not in allowed.get(venue,set()) for v in venues):raise ValueError('COVER_UNCONFIRMED')
         if not labels or any(re.search(r'depositary|\bADR\b|preferred|warrant|note|unit',t,re.I) for t in labels):raise ValueError('BASIS_UNCONFIRMED')
-        if not all(re.search(r'common\s+stock|ordinary\s+shares',t,re.I) for t in labels):raise ValueError('BASIS_UNCONFIRMED')
+        if not all(re.search(r'common\s+stock|ordinary\s+shares',t,re.I) or EXACT_TITLE_EXCEPTIONS.get((cik,symbol))==t for t in labels):raise ValueError('BASIS_UNCONFIRMED')
         hits.append((member,day,venues,value))
     if not hits:raise ValueError('COVER_UNCONFIRMED')
     latest=max(r[1] for r in hits);hits=set(r for r in hits if r[1]==latest)

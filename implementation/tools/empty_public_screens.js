@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const EMPTY = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/empty_public_screens.json'), 'utf8'));
 // Live-only sidecars that offline builds do not publish at all: answer 404 like a PR build would.
-const ABSENT = ['sec-public-inputs.json', 'sec-valuation-inputs.json', 'sec-universe-shares.json', 'company-classification.json'];
+const ABSENT = ['sec-public-inputs.json', 'sec-valuation-inputs.json', 'sec-universe-shares.json', 'sec-universe-qg.json', 'company-classification.json'];
 async function routeEmptyPublicScreens(context) {
   for (const [name, body] of Object.entries(EMPTY)) {
     await context.route('**/' + name + '*', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) }));

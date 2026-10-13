@@ -1,0 +1,7767 @@
+{
+ "cases": [
+  {
+   "expected": [
+    "67066G104",
+    "N07059210",
+    "02079K305",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "id": "isin_to_cusip",
+   "input": {
+    "isins": [
+     "US67066G1040",
+     "USN070592100",
+     "US02079K3059",
+     "IE00B8KQN827",
+     "US67066G1041",
+     "us67066g1040",
+     "CA0679011084",
+     "US0000000000",
+     "XS1234567890",
+     null,
+     "US67066G104"
+    ]
+   },
+   "operation": "cusip_from_isin",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "overlap": [
+     {
+      "company_id": "asml",
+      "cusip": "N07059210",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "lrcx",
+      "cusip": "512807306",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "klac",
+      "cusip": "482480100",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "tokyo_electron",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "NOT_13F_SECURITY",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "hanmi",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "NOT_13F_SECURITY",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "nvda",
+      "cusip": "67066G104",
+      "entries": [
+       {
+        "current_quarter": "2026-06-30",
+        "kind": "ADD",
+        "manager_cik": "0000000001",
+        "reported_after": 250,
+        "reported_before": 100,
+        "reported_delta": 150,
+        "unit": "SH"
+       },
+       {
+        "current_quarter": "2026-06-30",
+        "kind": "NEW",
+        "manager_cik": "0000000002",
+        "reported_after": 5000,
+        "reported_before": 0,
+        "reported_delta": 5000,
+        "unit": "SH"
+       },
+       {
+        "current_quarter": "2026-06-30",
+        "kind": "EXIT",
+        "manager_cik": "0000000002",
+        "reported_after": 0,
+        "reported_before": 20,
+        "reported_delta": -20,
+        "unit": "SH"
+       }
+      ],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "CHANGED",
+      "unchanged": [
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "amd",
+      "cusip": "007903107",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "avgo",
+      "cusip": "11135F101",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "qcom",
+      "cusip": "747525103",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "intc",
+      "cusip": "458140100",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "msft",
+      "cusip": "594918104",
+      "entries": [
+       {
+        "current_quarter": "2026-06-30",
+        "kind": "REDUCE",
+        "manager_cik": "0000000001",
+        "reported_after": 10,
+        "reported_before": 40,
+        "reported_delta": -30,
+        "unit": "SH"
+       }
+      ],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "CHANGED",
+      "unchanged": [
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "googl",
+      "cusip": "02079K305",
+      "entries": [
+       {
+        "current_quarter": "2026-06-30",
+        "kind": "EXIT",
+        "manager_cik": "0000000002",
+        "reported_after": 0,
+        "reported_before": 9,
+        "reported_delta": -9,
+        "unit": "SH"
+       }
+      ],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "CHANGED",
+      "unchanged": [
+       "0000000001",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "amzn",
+      "cusip": "023135106",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "rtx",
+      "cusip": "75513E101",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "stry",
+      "cusip": "863667101",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "etn",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "hubb",
+      "cusip": "443510607",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "gev",
+      "cusip": "36828A101",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     },
+     {
+      "company_id": "rok",
+      "cusip": "773903109",
+      "entries": [],
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
+     }
+    ],
+    "summaries": [
+     {
+      "change_count": 4,
+      "counts": {
+       "ADD": 1,
+       "EXIT": 1,
+       "NEW": 1,
+       "REDUCE": 1
+      },
+      "current_quarter": "2026-06-30",
+      "filed_date": null,
+      "filed_date_reason": "FILING_DATE_NOT_PUBLISHED",
+      "holdings_count": null,
+      "holdings_count_reason": "UNCHANGED_POSITIONS_NOT_PUBLISHED",
+      "manager_cik": "0000000001",
+      "other": [
+       {
+        "cusip": "A00000009",
+        "kind": "NEW",
+        "reported_after": 3,
+        "reported_before": 0,
+        "reported_delta": 3,
+        "unit": "SH"
+       },
+       {
+        "cusip": "Z99999995",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 7,
+        "reported_delta": -7,
+        "unit": "SH"
+       }
+      ],
+      "previous_quarter": "2026-03-31",
+      "state": "LIVE",
+      "target": [
+       {
+        "changes": [],
+        "company_id": "asml",
+        "cusip": "N07059210",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "lrcx",
+        "cusip": "512807306",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "klac",
+        "cusip": "482480100",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "tokyo_electron",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "NOT_13F_SECURITY",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hanmi",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "NOT_13F_SECURITY",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [
+         {
+          "kind": "ADD",
+          "reported_after": 250,
+          "reported_before": 100,
+          "reported_delta": 150,
+          "unit": "SH"
+         }
+        ],
+        "company_id": "nvda",
+        "cusip": "67066G104",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "CHANGED"
+       },
+       {
+        "changes": [],
+        "company_id": "amd",
+        "cusip": "007903107",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "avgo",
+        "cusip": "11135F101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "qcom",
+        "cusip": "747525103",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "intc",
+        "cusip": "458140100",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [
+         {
+          "kind": "REDUCE",
+          "reported_after": 10,
+          "reported_before": 40,
+          "reported_delta": -30,
+          "unit": "SH"
+         }
+        ],
+        "company_id": "msft",
+        "cusip": "594918104",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "CHANGED"
+       },
+       {
+        "changes": [],
+        "company_id": "googl",
+        "cusip": "02079K305",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "amzn",
+        "cusip": "023135106",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "rtx",
+        "cusip": "75513E101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "stry",
+        "cusip": "863667101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "etn",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hubb",
+        "cusip": "443510607",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "gev",
+        "cusip": "36828A101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "rok",
+        "cusip": "773903109",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       }
+      ],
+      "top10_weight": null,
+      "top10_weight_reason": "REPORTED_VALUES_NOT_PUBLISHED"
+     },
+     {
+      "change_count": 4,
+      "counts": {
+       "ADD": 1,
+       "EXIT": 2,
+       "NEW": 1,
+       "REDUCE": 0
+      },
+      "current_quarter": "2026-06-30",
+      "filed_date": null,
+      "filed_date_reason": "FILING_DATE_NOT_PUBLISHED",
+      "holdings_count": null,
+      "holdings_count_reason": "UNCHANGED_POSITIONS_NOT_PUBLISHED",
+      "manager_cik": "0000000002",
+      "other": [
+       {
+        "cusip": "B12345671",
+        "kind": "ADD",
+        "reported_after": 2,
+        "reported_before": 1,
+        "reported_delta": 1,
+        "unit": "SH"
+       }
+      ],
+      "previous_quarter": "2026-03-31",
+      "state": "LIVE",
+      "target": [
+       {
+        "changes": [],
+        "company_id": "asml",
+        "cusip": "N07059210",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "lrcx",
+        "cusip": "512807306",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "klac",
+        "cusip": "482480100",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "tokyo_electron",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "NOT_13F_SECURITY",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hanmi",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "NOT_13F_SECURITY",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [
+         {
+          "kind": "NEW",
+          "reported_after": 5000,
+          "reported_before": 0,
+          "reported_delta": 5000,
+          "unit": "SH"
+         },
+         {
+          "kind": "EXIT",
+          "reported_after": 0,
+          "reported_before": 20,
+          "reported_delta": -20,
+          "unit": "SH"
+         }
+        ],
+        "company_id": "nvda",
+        "cusip": "67066G104",
+        "multiple_buckets": true,
+        "reason": null,
+        "status": "CHANGED"
+       },
+       {
+        "changes": [],
+        "company_id": "amd",
+        "cusip": "007903107",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "avgo",
+        "cusip": "11135F101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "qcom",
+        "cusip": "747525103",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "intc",
+        "cusip": "458140100",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "msft",
+        "cusip": "594918104",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [
+         {
+          "kind": "EXIT",
+          "reported_after": 0,
+          "reported_before": 9,
+          "reported_delta": -9,
+          "unit": "SH"
+         }
+        ],
+        "company_id": "googl",
+        "cusip": "02079K305",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "CHANGED"
+       },
+       {
+        "changes": [],
+        "company_id": "amzn",
+        "cusip": "023135106",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "rtx",
+        "cusip": "75513E101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "stry",
+        "cusip": "863667101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "etn",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hubb",
+        "cusip": "443510607",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "gev",
+        "cusip": "36828A101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "rok",
+        "cusip": "773903109",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       }
+      ],
+      "top10_weight": null,
+      "top10_weight_reason": "REPORTED_VALUES_NOT_PUBLISHED"
+     },
+     {
+      "change_count": 0,
+      "counts": {
+       "ADD": 0,
+       "EXIT": 0,
+       "NEW": 0,
+       "REDUCE": 0
+      },
+      "current_quarter": "2026-06-30",
+      "filed_date": null,
+      "filed_date_reason": "FILING_DATE_NOT_PUBLISHED",
+      "holdings_count": null,
+      "holdings_count_reason": "UNCHANGED_POSITIONS_NOT_PUBLISHED",
+      "manager_cik": "0000000003",
+      "other": [],
+      "previous_quarter": "2026-03-31",
+      "state": "NOT_AVAILABLE",
+      "target": [
+       {
+        "changes": [],
+        "company_id": "asml",
+        "cusip": "N07059210",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "lrcx",
+        "cusip": "512807306",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "klac",
+        "cusip": "482480100",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "tokyo_electron",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "NOT_13F_SECURITY",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hanmi",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "NOT_13F_SECURITY",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "nvda",
+        "cusip": "67066G104",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "amd",
+        "cusip": "007903107",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "avgo",
+        "cusip": "11135F101",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "qcom",
+        "cusip": "747525103",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "intc",
+        "cusip": "458140100",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "msft",
+        "cusip": "594918104",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "googl",
+        "cusip": "02079K305",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "amzn",
+        "cusip": "023135106",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "rtx",
+        "cusip": "75513E101",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "stry",
+        "cusip": "863667101",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "etn",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hubb",
+        "cusip": "443510607",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "gev",
+        "cusip": "36828A101",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "rok",
+        "cusip": "773903109",
+        "multiple_buckets": false,
+        "reason": "COMPARISON_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       }
+      ],
+      "top10_weight": null,
+      "top10_weight_reason": "REPORTED_VALUES_NOT_PUBLISHED"
+     },
+     {
+      "change_count": 1,
+      "counts": {
+       "ADD": 1,
+       "EXIT": 0,
+       "NEW": 0,
+       "REDUCE": 0
+      },
+      "current_quarter": "2026-06-30",
+      "filed_date": null,
+      "filed_date_reason": "FILING_DATE_NOT_PUBLISHED",
+      "holdings_count": null,
+      "holdings_count_reason": "UNCHANGED_POSITIONS_NOT_PUBLISHED",
+      "manager_cik": "0000000004",
+      "other": [
+       {
+        "cusip": "C00000000",
+        "kind": "ADD",
+        "reported_after": 8,
+        "reported_before": 4,
+        "reported_delta": 4,
+        "unit": "SH"
+       }
+      ],
+      "previous_quarter": "2026-03-31",
+      "state": "STALE",
+      "target": [
+       {
+        "changes": [],
+        "company_id": "asml",
+        "cusip": "N07059210",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "lrcx",
+        "cusip": "512807306",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "klac",
+        "cusip": "482480100",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "tokyo_electron",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "NOT_13F_SECURITY",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hanmi",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "NOT_13F_SECURITY",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "nvda",
+        "cusip": "67066G104",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "amd",
+        "cusip": "007903107",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "avgo",
+        "cusip": "11135F101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "qcom",
+        "cusip": "747525103",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "intc",
+        "cusip": "458140100",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "msft",
+        "cusip": "594918104",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "googl",
+        "cusip": "02079K305",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "amzn",
+        "cusip": "023135106",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "rtx",
+        "cusip": "75513E101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "stry",
+        "cusip": "863667101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "etn",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hubb",
+        "cusip": "443510607",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "gev",
+        "cusip": "36828A101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "rok",
+        "cusip": "773903109",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       }
+      ],
+      "top10_weight": null,
+      "top10_weight_reason": "REPORTED_VALUES_NOT_PUBLISHED"
+     }
+    ],
+    "targets": [
+     {
+      "company_id": "asml",
+      "cusip": "N07059210",
+      "label": "ASML Holding",
+      "reason": null,
+      "ticker": "ASML"
+     },
+     {
+      "company_id": "lrcx",
+      "cusip": "512807306",
+      "label": "Lam Research",
+      "reason": null,
+      "ticker": "LRCX"
+     },
+     {
+      "company_id": "klac",
+      "cusip": "482480100",
+      "label": "KLA Corporation",
+      "reason": null,
+      "ticker": "KLAC"
+     },
+     {
+      "company_id": "tokyo_electron",
+      "cusip": null,
+      "label": "Tokyo Electron",
+      "reason": "NOT_13F_SECURITY",
+      "ticker": "8035"
+     },
+     {
+      "company_id": "hanmi",
+      "cusip": null,
+      "label": "\ud55c\ubbf8\ubc18\ub3c4\uccb4",
+      "reason": "NOT_13F_SECURITY",
+      "ticker": "042700"
+     },
+     {
+      "company_id": "nvda",
+      "cusip": "67066G104",
+      "label": "NVIDIA",
+      "reason": null,
+      "ticker": "NVDA"
+     },
+     {
+      "company_id": "amd",
+      "cusip": "007903107",
+      "label": "Advanced Micro Devices",
+      "reason": null,
+      "ticker": "AMD"
+     },
+     {
+      "company_id": "avgo",
+      "cusip": "11135F101",
+      "label": "Broadcom",
+      "reason": null,
+      "ticker": "AVGO"
+     },
+     {
+      "company_id": "qcom",
+      "cusip": "747525103",
+      "label": "Qualcomm",
+      "reason": null,
+      "ticker": "QCOM"
+     },
+     {
+      "company_id": "intc",
+      "cusip": "458140100",
+      "label": "Intel",
+      "reason": null,
+      "ticker": "INTC"
+     },
+     {
+      "company_id": "msft",
+      "cusip": "594918104",
+      "label": "Microsoft",
+      "reason": null,
+      "ticker": "MSFT"
+     },
+     {
+      "company_id": "googl",
+      "cusip": "02079K305",
+      "label": "Alphabet",
+      "reason": null,
+      "ticker": "GOOGL"
+     },
+     {
+      "company_id": "amzn",
+      "cusip": "023135106",
+      "label": "Amazon",
+      "reason": null,
+      "ticker": "AMZN"
+     },
+     {
+      "company_id": "rtx",
+      "cusip": "75513E101",
+      "label": "RTX Corporation",
+      "reason": null,
+      "ticker": "RTX"
+     },
+     {
+      "company_id": "stry",
+      "cusip": "863667101",
+      "label": "Stryker",
+      "reason": null,
+      "ticker": "SYK"
+     },
+     {
+      "company_id": "etn",
+      "cusip": null,
+      "label": "Eaton",
+      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+      "ticker": "ETN"
+     },
+     {
+      "company_id": "hubb",
+      "cusip": "443510607",
+      "label": "Hubbell",
+      "reason": null,
+      "ticker": "HUBB"
+     },
+     {
+      "company_id": "gev",
+      "cusip": "36828A101",
+      "label": "GE Vernova",
+      "reason": null,
+      "ticker": "GEV"
+     },
+     {
+      "company_id": "rok",
+      "cusip": "773903109",
+      "label": "Rockwell Automation",
+      "reason": null,
+      "ticker": "ROK"
+     }
+    ]
+   },
+   "id": "pipeline_target_and_other",
+   "input": {
+    "catalog": {
+     "instruments": [
+      {
+       "label": "ASML Holding",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "USN070592100"
+       },
+       "ticker": "ASML"
+      },
+      {
+       "label": "Lam Research",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US5128073062"
+       },
+       "ticker": "LRCX"
+      },
+      {
+       "label": "KLA Corporation",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US4824801009"
+       },
+       "ticker": "KLAC"
+      },
+      {
+       "label": "Tokyo Electron",
+       "security_reference": {
+        "code": "8035",
+        "exchange": "TSE",
+        "scheme": "EXCHANGE_CODE"
+       },
+       "ticker": "8035"
+      },
+      {
+       "label": "\ud55c\ubbf8\ubc18\ub3c4\uccb4",
+       "security_reference": {
+        "code": "042700",
+        "exchange": "KRX",
+        "scheme": "EXCHANGE_CODE"
+       },
+       "ticker": "042700"
+      },
+      {
+       "label": "NVIDIA",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US67066G1040"
+       },
+       "ticker": "NVDA"
+      },
+      {
+       "label": "Advanced Micro Devices",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US0079031078"
+       },
+       "ticker": "AMD"
+      },
+      {
+       "label": "Broadcom",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US11135F1012"
+       },
+       "ticker": "AVGO"
+      },
+      {
+       "label": "Qualcomm",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US7475251036"
+       },
+       "ticker": "QCOM"
+      },
+      {
+       "label": "Intel",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US4581401001"
+       },
+       "ticker": "INTC"
+      },
+      {
+       "label": "Microsoft",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US5949181045"
+       },
+       "ticker": "MSFT"
+      },
+      {
+       "label": "Alphabet",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US02079K3059"
+       },
+       "ticker": "GOOGL"
+      },
+      {
+       "label": "Amazon",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US0231351067"
+       },
+       "ticker": "AMZN"
+      },
+      {
+       "label": "RTX Corporation",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US75513E1010"
+       },
+       "ticker": "RTX"
+      },
+      {
+       "label": "Stryker",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US8636671013"
+       },
+       "ticker": "SYK"
+      },
+      {
+       "label": "Eaton",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "IE00B8KQN827"
+       },
+       "ticker": "ETN"
+      },
+      {
+       "label": "Hubbell",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US4435106079"
+       },
+       "ticker": "HUBB"
+      },
+      {
+       "label": "GE Vernova",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US36828A1016"
+       },
+       "ticker": "GEV"
+      },
+      {
+       "label": "Rockwell Automation",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US7739031091"
+       },
+       "ticker": "ROK"
+      }
+     ]
+    },
+    "reports": [
+     {
+      "changes": [
+       {
+        "cusip": "Z99999995",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 7,
+        "reported_delta": -7,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "67066G104",
+        "kind": "ADD",
+        "reported_after": 250,
+        "reported_before": 100,
+        "reported_delta": 150,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "A00000009",
+        "kind": "NEW",
+        "reported_after": 3,
+        "reported_before": 0,
+        "reported_delta": 3,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "594918104",
+        "kind": "REDUCE",
+        "reported_after": 10,
+        "reported_before": 40,
+        "reported_delta": -30,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       }
+      ],
+      "current_quarter": "2026-06-30",
+      "manager_cik": "0000000001",
+      "previous_quarter": "2026-03-31",
+      "source_hashes": {
+       "current": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "previous": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "state": "LIVE"
+     },
+     {
+      "changes": [
+       {
+        "cusip": "67066G104",
+        "kind": "NEW",
+        "reported_after": 5000,
+        "reported_before": 0,
+        "reported_delta": 5000,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "67066G104",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 20,
+        "reported_delta": -20,
+        "security_key": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "unit": "SH"
+       },
+       {
+        "cusip": "02079K305",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 9,
+        "reported_delta": -9,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "B12345671",
+        "kind": "ADD",
+        "reported_after": 2,
+        "reported_before": 1,
+        "reported_delta": 1,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       }
+      ],
+      "current_quarter": "2026-06-30",
+      "manager_cik": "0000000002",
+      "previous_quarter": "2026-03-31",
+      "source_hashes": {
+       "current": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "previous": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "state": "LIVE"
+     },
+     {
+      "changes": [],
+      "current_quarter": "2026-06-30",
+      "manager_cik": "0000000003",
+      "previous_quarter": "2026-03-31",
+      "source_hashes": {
+       "current": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "previous": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "state": "NOT_AVAILABLE"
+     },
+     {
+      "changes": [
+       {
+        "cusip": "C00000000",
+        "kind": "ADD",
+        "reported_after": 8,
+        "reported_before": 4,
+        "reported_delta": 4,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       }
+      ],
+      "current_quarter": "2026-06-30",
+      "manager_cik": "0000000004",
+      "previous_quarter": "2026-03-31",
+      "source_hashes": {
+       "current": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "previous": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "state": "STALE"
+     }
+    ]
+   },
+   "operation": "s16_pipeline",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "overlap": [
+     {
+      "company_id": "asml",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "lrcx",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "klac",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "tokyo_electron",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "hanmi",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "nvda",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "amd",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "avgo",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "qcom",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "intc",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "msft",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "googl",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "amzn",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "rtx",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "stry",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "etn",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "hubb",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "gev",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "rok",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     }
+    ],
+    "summaries": [
+     {
+      "change_count": 4,
+      "counts": {
+       "ADD": 1,
+       "EXIT": 1,
+       "NEW": 1,
+       "REDUCE": 1
+      },
+      "current_quarter": "2026-06-30",
+      "filed_date": null,
+      "filed_date_reason": "FILING_DATE_NOT_PUBLISHED",
+      "holdings_count": null,
+      "holdings_count_reason": "UNCHANGED_POSITIONS_NOT_PUBLISHED",
+      "manager_cik": "0000000001",
+      "other": [
+       {
+        "cusip": "594918104",
+        "kind": "REDUCE",
+        "reported_after": 10,
+        "reported_before": 40,
+        "reported_delta": -30,
+        "unit": "SH"
+       },
+       {
+        "cusip": "67066G104",
+        "kind": "ADD",
+        "reported_after": 250,
+        "reported_before": 100,
+        "reported_delta": 150,
+        "unit": "SH"
+       },
+       {
+        "cusip": "A00000009",
+        "kind": "NEW",
+        "reported_after": 3,
+        "reported_before": 0,
+        "reported_delta": 3,
+        "unit": "SH"
+       },
+       {
+        "cusip": "Z99999995",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 7,
+        "reported_delta": -7,
+        "unit": "SH"
+       }
+      ],
+      "previous_quarter": "2026-03-31",
+      "state": "LIVE",
+      "target": [
+       {
+        "changes": [],
+        "company_id": "asml",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "lrcx",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "klac",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "tokyo_electron",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hanmi",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "nvda",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "amd",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "avgo",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "qcom",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "intc",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "msft",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "googl",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "amzn",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "rtx",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "stry",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "etn",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hubb",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "gev",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "rok",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       }
+      ],
+      "top10_weight": null,
+      "top10_weight_reason": "REPORTED_VALUES_NOT_PUBLISHED"
+     },
+     {
+      "change_count": 4,
+      "counts": {
+       "ADD": 1,
+       "EXIT": 2,
+       "NEW": 1,
+       "REDUCE": 0
+      },
+      "current_quarter": "2026-06-30",
+      "filed_date": null,
+      "filed_date_reason": "FILING_DATE_NOT_PUBLISHED",
+      "holdings_count": null,
+      "holdings_count_reason": "UNCHANGED_POSITIONS_NOT_PUBLISHED",
+      "manager_cik": "0000000002",
+      "other": [
+       {
+        "cusip": "02079K305",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 9,
+        "reported_delta": -9,
+        "unit": "SH"
+       },
+       {
+        "cusip": "67066G104",
+        "kind": "NEW",
+        "reported_after": 5000,
+        "reported_before": 0,
+        "reported_delta": 5000,
+        "unit": "SH"
+       },
+       {
+        "cusip": "67066G104",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 20,
+        "reported_delta": -20,
+        "unit": "SH"
+       },
+       {
+        "cusip": "B12345671",
+        "kind": "ADD",
+        "reported_after": 2,
+        "reported_before": 1,
+        "reported_delta": 1,
+        "unit": "SH"
+       }
+      ],
+      "previous_quarter": "2026-03-31",
+      "state": "LIVE",
+      "target": [
+       {
+        "changes": [],
+        "company_id": "asml",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "lrcx",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "klac",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "tokyo_electron",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hanmi",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "nvda",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "amd",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "avgo",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "qcom",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "intc",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "msft",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "googl",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "amzn",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "rtx",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "stry",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "etn",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hubb",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "gev",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "rok",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       }
+      ],
+      "top10_weight": null,
+      "top10_weight_reason": "REPORTED_VALUES_NOT_PUBLISHED"
+     }
+    ],
+    "targets": [
+     {
+      "company_id": "asml",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "ASML"
+     },
+     {
+      "company_id": "lrcx",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "LRCX"
+     },
+     {
+      "company_id": "klac",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "KLAC"
+     },
+     {
+      "company_id": "tokyo_electron",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "8035"
+     },
+     {
+      "company_id": "hanmi",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "042700"
+     },
+     {
+      "company_id": "nvda",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "NVDA"
+     },
+     {
+      "company_id": "amd",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "AMD"
+     },
+     {
+      "company_id": "avgo",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "AVGO"
+     },
+     {
+      "company_id": "qcom",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "QCOM"
+     },
+     {
+      "company_id": "intc",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "INTC"
+     },
+     {
+      "company_id": "msft",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "MSFT"
+     },
+     {
+      "company_id": "googl",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "GOOGL"
+     },
+     {
+      "company_id": "amzn",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "AMZN"
+     },
+     {
+      "company_id": "rtx",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "RTX"
+     },
+     {
+      "company_id": "stry",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "SYK"
+     },
+     {
+      "company_id": "etn",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "ETN"
+     },
+     {
+      "company_id": "hubb",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "HUBB"
+     },
+     {
+      "company_id": "gev",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "GEV"
+     },
+     {
+      "company_id": "rok",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "ROK"
+     }
+    ]
+   },
+   "id": "pipeline_catalog_missing",
+   "input": {
+    "catalog": null,
+    "reports": [
+     {
+      "changes": [
+       {
+        "cusip": "Z99999995",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 7,
+        "reported_delta": -7,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "67066G104",
+        "kind": "ADD",
+        "reported_after": 250,
+        "reported_before": 100,
+        "reported_delta": 150,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "A00000009",
+        "kind": "NEW",
+        "reported_after": 3,
+        "reported_before": 0,
+        "reported_delta": 3,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "594918104",
+        "kind": "REDUCE",
+        "reported_after": 10,
+        "reported_before": 40,
+        "reported_delta": -30,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       }
+      ],
+      "current_quarter": "2026-06-30",
+      "manager_cik": "0000000001",
+      "previous_quarter": "2026-03-31",
+      "source_hashes": {
+       "current": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "previous": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "state": "LIVE"
+     },
+     {
+      "changes": [
+       {
+        "cusip": "67066G104",
+        "kind": "NEW",
+        "reported_after": 5000,
+        "reported_before": 0,
+        "reported_delta": 5000,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "67066G104",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 20,
+        "reported_delta": -20,
+        "security_key": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "unit": "SH"
+       },
+       {
+        "cusip": "02079K305",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 9,
+        "reported_delta": -9,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "B12345671",
+        "kind": "ADD",
+        "reported_after": 2,
+        "reported_before": 1,
+        "reported_delta": 1,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       }
+      ],
+      "current_quarter": "2026-06-30",
+      "manager_cik": "0000000002",
+      "previous_quarter": "2026-03-31",
+      "source_hashes": {
+       "current": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "previous": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "state": "LIVE"
+     }
+    ]
+   },
+   "operation": "s16_pipeline",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "overlap": [
+     {
+      "company_id": "asml",
+      "cusip": "N07059210",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "lrcx",
+      "cusip": "512807306",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "klac",
+      "cusip": "482480100",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "tokyo_electron",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "NOT_13F_SECURITY",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "hanmi",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "NOT_13F_SECURITY",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "nvda",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "amd",
+      "cusip": "007903107",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "avgo",
+      "cusip": "11135F101",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "qcom",
+      "cusip": "747525103",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "intc",
+      "cusip": "458140100",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "msft",
+      "cusip": "594918104",
+      "entries": [
+       {
+        "current_quarter": "2026-06-30",
+        "kind": "REDUCE",
+        "manager_cik": "0000000001",
+        "reported_after": 10,
+        "reported_before": 40,
+        "reported_delta": -30,
+        "unit": "SH"
+       }
+      ],
+      "not_available": [],
+      "reason": null,
+      "status": "CHANGED",
+      "unchanged": []
+     },
+     {
+      "company_id": "googl",
+      "cusip": "02079K305",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "amzn",
+      "cusip": "023135106",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "rtx",
+      "cusip": "75513E101",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "stry",
+      "cusip": "863667101",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "etn",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "hubb",
+      "cusip": "443510607",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "gev",
+      "cusip": "36828A101",
+      "entries": [],
+      "not_available": [],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
+     },
+     {
+      "company_id": "rok",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     }
+    ],
+    "summaries": [
+     {
+      "change_count": 4,
+      "counts": {
+       "ADD": 1,
+       "EXIT": 1,
+       "NEW": 1,
+       "REDUCE": 1
+      },
+      "current_quarter": "2026-06-30",
+      "filed_date": null,
+      "filed_date_reason": "FILING_DATE_NOT_PUBLISHED",
+      "holdings_count": null,
+      "holdings_count_reason": "UNCHANGED_POSITIONS_NOT_PUBLISHED",
+      "manager_cik": "0000000001",
+      "other": [
+       {
+        "cusip": "67066G104",
+        "kind": "ADD",
+        "reported_after": 250,
+        "reported_before": 100,
+        "reported_delta": 150,
+        "unit": "SH"
+       },
+       {
+        "cusip": "A00000009",
+        "kind": "NEW",
+        "reported_after": 3,
+        "reported_before": 0,
+        "reported_delta": 3,
+        "unit": "SH"
+       },
+       {
+        "cusip": "Z99999995",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 7,
+        "reported_delta": -7,
+        "unit": "SH"
+       }
+      ],
+      "previous_quarter": "2026-03-31",
+      "state": "LIVE",
+      "target": [
+       {
+        "changes": [],
+        "company_id": "asml",
+        "cusip": "N07059210",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "lrcx",
+        "cusip": "512807306",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "klac",
+        "cusip": "482480100",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "tokyo_electron",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "NOT_13F_SECURITY",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hanmi",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "NOT_13F_SECURITY",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "nvda",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "amd",
+        "cusip": "007903107",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "avgo",
+        "cusip": "11135F101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "qcom",
+        "cusip": "747525103",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "intc",
+        "cusip": "458140100",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [
+         {
+          "kind": "REDUCE",
+          "reported_after": 10,
+          "reported_before": 40,
+          "reported_delta": -30,
+          "unit": "SH"
+         }
+        ],
+        "company_id": "msft",
+        "cusip": "594918104",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "CHANGED"
+       },
+       {
+        "changes": [],
+        "company_id": "googl",
+        "cusip": "02079K305",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "amzn",
+        "cusip": "023135106",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "rtx",
+        "cusip": "75513E101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "stry",
+        "cusip": "863667101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "etn",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+        "status": "NOT_AVAILABLE"
+       },
+       {
+        "changes": [],
+        "company_id": "hubb",
+        "cusip": "443510607",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "gev",
+        "cusip": "36828A101",
+        "multiple_buckets": false,
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
+       },
+       {
+        "changes": [],
+        "company_id": "rok",
+        "cusip": null,
+        "multiple_buckets": false,
+        "reason": "CATALOG_NOT_AVAILABLE",
+        "status": "NOT_AVAILABLE"
+       }
+      ],
+      "top10_weight": null,
+      "top10_weight_reason": "REPORTED_VALUES_NOT_PUBLISHED"
+     }
+    ],
+    "targets": [
+     {
+      "company_id": "asml",
+      "cusip": "N07059210",
+      "label": "ASML Holding",
+      "reason": null,
+      "ticker": "ASML"
+     },
+     {
+      "company_id": "lrcx",
+      "cusip": "512807306",
+      "label": "Lam Research",
+      "reason": null,
+      "ticker": "LRCX"
+     },
+     {
+      "company_id": "klac",
+      "cusip": "482480100",
+      "label": "KLA Corporation",
+      "reason": null,
+      "ticker": "KLAC"
+     },
+     {
+      "company_id": "tokyo_electron",
+      "cusip": null,
+      "label": "Tokyo Electron",
+      "reason": "NOT_13F_SECURITY",
+      "ticker": "8035"
+     },
+     {
+      "company_id": "hanmi",
+      "cusip": null,
+      "label": "\ud55c\ubbf8\ubc18\ub3c4\uccb4",
+      "reason": "NOT_13F_SECURITY",
+      "ticker": "042700"
+     },
+     {
+      "company_id": "nvda",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "NVDA"
+     },
+     {
+      "company_id": "amd",
+      "cusip": "007903107",
+      "label": "Advanced Micro Devices",
+      "reason": null,
+      "ticker": "AMD"
+     },
+     {
+      "company_id": "avgo",
+      "cusip": "11135F101",
+      "label": "Broadcom",
+      "reason": null,
+      "ticker": "AVGO"
+     },
+     {
+      "company_id": "qcom",
+      "cusip": "747525103",
+      "label": "Qualcomm",
+      "reason": null,
+      "ticker": "QCOM"
+     },
+     {
+      "company_id": "intc",
+      "cusip": "458140100",
+      "label": "Intel",
+      "reason": null,
+      "ticker": "INTC"
+     },
+     {
+      "company_id": "msft",
+      "cusip": "594918104",
+      "label": "Microsoft",
+      "reason": null,
+      "ticker": "MSFT"
+     },
+     {
+      "company_id": "googl",
+      "cusip": "02079K305",
+      "label": "Alphabet",
+      "reason": null,
+      "ticker": "GOOGL"
+     },
+     {
+      "company_id": "amzn",
+      "cusip": "023135106",
+      "label": "Amazon",
+      "reason": null,
+      "ticker": "AMZN"
+     },
+     {
+      "company_id": "rtx",
+      "cusip": "75513E101",
+      "label": "RTX Corporation",
+      "reason": null,
+      "ticker": "RTX"
+     },
+     {
+      "company_id": "stry",
+      "cusip": "863667101",
+      "label": "Stryker",
+      "reason": null,
+      "ticker": "SYK"
+     },
+     {
+      "company_id": "etn",
+      "cusip": null,
+      "label": "Eaton",
+      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+      "ticker": "ETN"
+     },
+     {
+      "company_id": "hubb",
+      "cusip": "443510607",
+      "label": "Hubbell",
+      "reason": null,
+      "ticker": "HUBB"
+     },
+     {
+      "company_id": "gev",
+      "cusip": "36828A101",
+      "label": "GE Vernova",
+      "reason": null,
+      "ticker": "GEV"
+     },
+     {
+      "company_id": "rok",
+      "cusip": null,
+      "label": null,
+      "reason": "CATALOG_NOT_AVAILABLE",
+      "ticker": "ROK"
+     }
+    ]
+   },
+   "id": "pipeline_duplicate_and_missing_ticker",
+   "input": {
+    "catalog": {
+     "instruments": [
+      {
+       "label": "ASML Holding",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "USN070592100"
+       },
+       "ticker": "ASML"
+      },
+      {
+       "label": "Lam Research",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US5128073062"
+       },
+       "ticker": "LRCX"
+      },
+      {
+       "label": "KLA Corporation",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US4824801009"
+       },
+       "ticker": "KLAC"
+      },
+      {
+       "label": "Tokyo Electron",
+       "security_reference": {
+        "code": "8035",
+        "exchange": "TSE",
+        "scheme": "EXCHANGE_CODE"
+       },
+       "ticker": "8035"
+      },
+      {
+       "label": "\ud55c\ubbf8\ubc18\ub3c4\uccb4",
+       "security_reference": {
+        "code": "042700",
+        "exchange": "KRX",
+        "scheme": "EXCHANGE_CODE"
+       },
+       "ticker": "042700"
+      },
+      {
+       "label": "NVIDIA",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US67066G1040"
+       },
+       "ticker": "NVDA"
+      },
+      {
+       "label": "Advanced Micro Devices",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US0079031078"
+       },
+       "ticker": "AMD"
+      },
+      {
+       "label": "Broadcom",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US11135F1012"
+       },
+       "ticker": "AVGO"
+      },
+      {
+       "label": "Qualcomm",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US7475251036"
+       },
+       "ticker": "QCOM"
+      },
+      {
+       "label": "Intel",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US4581401001"
+       },
+       "ticker": "INTC"
+      },
+      {
+       "label": "Microsoft",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US5949181045"
+       },
+       "ticker": "MSFT"
+      },
+      {
+       "label": "Alphabet",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US02079K3059"
+       },
+       "ticker": "GOOGL"
+      },
+      {
+       "label": "Amazon",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US0231351067"
+       },
+       "ticker": "AMZN"
+      },
+      {
+       "label": "RTX Corporation",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US75513E1010"
+       },
+       "ticker": "RTX"
+      },
+      {
+       "label": "Stryker",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US8636671013"
+       },
+       "ticker": "SYK"
+      },
+      {
+       "label": "Eaton",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "IE00B8KQN827"
+       },
+       "ticker": "ETN"
+      },
+      {
+       "label": "Hubbell",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US4435106079"
+       },
+       "ticker": "HUBB"
+      },
+      {
+       "label": "GE Vernova",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US36828A1016"
+       },
+       "ticker": "GEV"
+      },
+      {
+       "label": "NVIDIA",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US67066G1040"
+       },
+       "ticker": "NVDA"
+      }
+     ]
+    },
+    "reports": [
+     {
+      "changes": [
+       {
+        "cusip": "Z99999995",
+        "kind": "EXIT",
+        "reported_after": 0,
+        "reported_before": 7,
+        "reported_delta": -7,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "67066G104",
+        "kind": "ADD",
+        "reported_after": 250,
+        "reported_before": 100,
+        "reported_delta": 150,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "A00000009",
+        "kind": "NEW",
+        "reported_after": 3,
+        "reported_before": 0,
+        "reported_delta": 3,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       },
+       {
+        "cusip": "594918104",
+        "kind": "REDUCE",
+        "reported_after": 10,
+        "reported_before": 40,
+        "reported_delta": -30,
+        "security_key": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "unit": "SH"
+       }
+      ],
+      "current_quarter": "2026-06-30",
+      "manager_cik": "0000000001",
+      "previous_quarter": "2026-03-31",
+      "source_hashes": {
+       "current": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "previous": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "state": "LIVE"
+     }
+    ]
+   },
+   "operation": "s16_pipeline",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "overlap": [
+     {
+      "company_id": "asml",
+      "cusip": "N07059210",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "lrcx",
+      "cusip": "512807306",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "klac",
+      "cusip": "482480100",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "tokyo_electron",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "NOT_13F_SECURITY",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "hanmi",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "NOT_13F_SECURITY",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "nvda",
+      "cusip": "67066G104",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "amd",
+      "cusip": "007903107",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "avgo",
+      "cusip": "11135F101",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "qcom",
+      "cusip": "747525103",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "intc",
+      "cusip": "458140100",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "msft",
+      "cusip": "594918104",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "googl",
+      "cusip": "02079K305",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "amzn",
+      "cusip": "023135106",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "rtx",
+      "cusip": "75513E101",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "stry",
+      "cusip": "863667101",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "etn",
+      "cusip": null,
+      "entries": [],
+      "not_available": [],
+      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "hubb",
+      "cusip": "443510607",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "gev",
+      "cusip": "36828A101",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     },
+     {
+      "company_id": "rok",
+      "cusip": "773903109",
+      "entries": [],
+      "not_available": [],
+      "reason": "NO_COMPARABLE_REPORT",
+      "status": "NOT_AVAILABLE",
+      "unchanged": []
+     }
+    ],
+    "summaries": [],
+    "targets": [
+     {
+      "company_id": "asml",
+      "cusip": "N07059210",
+      "label": "ASML Holding",
+      "reason": null,
+      "ticker": "ASML"
+     },
+     {
+      "company_id": "lrcx",
+      "cusip": "512807306",
+      "label": "Lam Research",
+      "reason": null,
+      "ticker": "LRCX"
+     },
+     {
+      "company_id": "klac",
+      "cusip": "482480100",
+      "label": "KLA Corporation",
+      "reason": null,
+      "ticker": "KLAC"
+     },
+     {
+      "company_id": "tokyo_electron",
+      "cusip": null,
+      "label": "Tokyo Electron",
+      "reason": "NOT_13F_SECURITY",
+      "ticker": "8035"
+     },
+     {
+      "company_id": "hanmi",
+      "cusip": null,
+      "label": "\ud55c\ubbf8\ubc18\ub3c4\uccb4",
+      "reason": "NOT_13F_SECURITY",
+      "ticker": "042700"
+     },
+     {
+      "company_id": "nvda",
+      "cusip": "67066G104",
+      "label": "NVIDIA",
+      "reason": null,
+      "ticker": "NVDA"
+     },
+     {
+      "company_id": "amd",
+      "cusip": "007903107",
+      "label": "Advanced Micro Devices",
+      "reason": null,
+      "ticker": "AMD"
+     },
+     {
+      "company_id": "avgo",
+      "cusip": "11135F101",
+      "label": "Broadcom",
+      "reason": null,
+      "ticker": "AVGO"
+     },
+     {
+      "company_id": "qcom",
+      "cusip": "747525103",
+      "label": "Qualcomm",
+      "reason": null,
+      "ticker": "QCOM"
+     },
+     {
+      "company_id": "intc",
+      "cusip": "458140100",
+      "label": "Intel",
+      "reason": null,
+      "ticker": "INTC"
+     },
+     {
+      "company_id": "msft",
+      "cusip": "594918104",
+      "label": "Microsoft",
+      "reason": null,
+      "ticker": "MSFT"
+     },
+     {
+      "company_id": "googl",
+      "cusip": "02079K305",
+      "label": "Alphabet",
+      "reason": null,
+      "ticker": "GOOGL"
+     },
+     {
+      "company_id": "amzn",
+      "cusip": "023135106",
+      "label": "Amazon",
+      "reason": null,
+      "ticker": "AMZN"
+     },
+     {
+      "company_id": "rtx",
+      "cusip": "75513E101",
+      "label": "RTX Corporation",
+      "reason": null,
+      "ticker": "RTX"
+     },
+     {
+      "company_id": "stry",
+      "cusip": "863667101",
+      "label": "Stryker",
+      "reason": null,
+      "ticker": "SYK"
+     },
+     {
+      "company_id": "etn",
+      "cusip": null,
+      "label": "Eaton",
+      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+      "ticker": "ETN"
+     },
+     {
+      "company_id": "hubb",
+      "cusip": "443510607",
+      "label": "Hubbell",
+      "reason": null,
+      "ticker": "HUBB"
+     },
+     {
+      "company_id": "gev",
+      "cusip": "36828A101",
+      "label": "GE Vernova",
+      "reason": null,
+      "ticker": "GEV"
+     },
+     {
+      "company_id": "rok",
+      "cusip": "773903109",
+      "label": "Rockwell Automation",
+      "reason": null,
+      "ticker": "ROK"
+     }
+    ]
+   },
+   "id": "pipeline_no_reports",
+   "input": {
+    "catalog": {
+     "instruments": [
+      {
+       "label": "ASML Holding",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "USN070592100"
+       },
+       "ticker": "ASML"
+      },
+      {
+       "label": "Lam Research",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US5128073062"
+       },
+       "ticker": "LRCX"
+      },
+      {
+       "label": "KLA Corporation",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US4824801009"
+       },
+       "ticker": "KLAC"
+      },
+      {
+       "label": "Tokyo Electron",
+       "security_reference": {
+        "code": "8035",
+        "exchange": "TSE",
+        "scheme": "EXCHANGE_CODE"
+       },
+       "ticker": "8035"
+      },
+      {
+       "label": "\ud55c\ubbf8\ubc18\ub3c4\uccb4",
+       "security_reference": {
+        "code": "042700",
+        "exchange": "KRX",
+        "scheme": "EXCHANGE_CODE"
+       },
+       "ticker": "042700"
+      },
+      {
+       "label": "NVIDIA",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US67066G1040"
+       },
+       "ticker": "NVDA"
+      },
+      {
+       "label": "Advanced Micro Devices",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US0079031078"
+       },
+       "ticker": "AMD"
+      },
+      {
+       "label": "Broadcom",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US11135F1012"
+       },
+       "ticker": "AVGO"
+      },
+      {
+       "label": "Qualcomm",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US7475251036"
+       },
+       "ticker": "QCOM"
+      },
+      {
+       "label": "Intel",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US4581401001"
+       },
+       "ticker": "INTC"
+      },
+      {
+       "label": "Microsoft",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US5949181045"
+       },
+       "ticker": "MSFT"
+      },
+      {
+       "label": "Alphabet",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US02079K3059"
+       },
+       "ticker": "GOOGL"
+      },
+      {
+       "label": "Amazon",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US0231351067"
+       },
+       "ticker": "AMZN"
+      },
+      {
+       "label": "RTX Corporation",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US75513E1010"
+       },
+       "ticker": "RTX"
+      },
+      {
+       "label": "Stryker",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US8636671013"
+       },
+       "ticker": "SYK"
+      },
+      {
+       "label": "Eaton",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "IE00B8KQN827"
+       },
+       "ticker": "ETN"
+      },
+      {
+       "label": "Hubbell",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US4435106079"
+       },
+       "ticker": "HUBB"
+      },
+      {
+       "label": "GE Vernova",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US36828A1016"
+       },
+       "ticker": "GEV"
+      },
+      {
+       "label": "Rockwell Automation",
+       "security_reference": {
+        "scheme": "ISIN",
+        "value": "US7739031091"
+       },
+       "ticker": "ROK"
+      }
+     ]
+    },
+    "reports": []
+   },
+   "operation": "s16_pipeline",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "diff": [],
+    "reason": null,
+    "rows": [
+     {
+      "company_id": "asml",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "lrcx",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "klac",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "tokyo_electron",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "hanmi",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "nvda",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [],
+       "selected_types": [
+        "growth"
+       ],
+       "weights": {
+        "G": 50.0,
+        "Q": 30.0,
+        "V": 20.0
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [],
+       "selected_types": [
+        "growth"
+       ],
+       "weights": {
+        "G": 50.0,
+        "Q": 30.0,
+        "V": 20.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": 0.0,
+       "Q": 0.0,
+       "V": 0.0
+      }
+     },
+     {
+      "company_id": "amd",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": 0.0,
+       "Q": 0.0,
+       "V": 0.0
+      }
+     },
+     {
+      "company_id": "avgo",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "qcom",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "intc",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "msft",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": 0.0,
+       "Q": 0.0,
+       "V": 0.0
+      }
+     },
+     {
+      "company_id": "googl",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "amzn",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "rtx",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "stry",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "etn",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "hubb",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "gev",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "rok",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     }
+    ],
+    "state": "PREVIEW"
+   },
+   "id": "official_copy_unchanged",
+   "input": {
+    "custom": {
+     "calibration": "V2_PENDING",
+     "config_version": "type_config/1",
+     "dcf": {
+      "cashflow_basis": null,
+      "confirmed": false,
+      "discount_rate": null,
+      "explicit_years": 5,
+      "terminal_growth": null
+     },
+     "fallback": {
+      "id": "unclassified",
+      "name": "\ubbf8\ubd84\ub958",
+      "weights": {
+       "G": 33,
+       "Q": 34,
+       "V": 33
+      }
+     },
+     "industry": {
+      "groups": [],
+      "mapping_status": "PROPOSED_PENDING_APPROVAL",
+      "source": "SEC_SUBMISSIONS_SIC"
+     },
+     "mixing": {
+      "clamp_then_normalize": true,
+      "exclusive_pairs": [
+       [
+        "cyclical",
+        "defensive"
+       ]
+      ],
+      "maximum_types": 3,
+      "minimum_membership": 0.3,
+      "pillar_max": 60,
+      "pillar_min": 15,
+      "tie_break": "CONFIG_ORDER"
+     },
+     "schema_version": 1,
+     "status": "CUSTOM_PREVIEW",
+     "themes": {
+      "baskets": [],
+      "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+      "keywords": {},
+      "maximum_display": 2,
+      "membership_rule": null,
+      "overrides": "DEVICE_ONLY",
+      "role": "EXPOSURE_ONLY",
+      "status": "PROPOSED_PENDING_APPROVAL"
+     },
+     "types": [
+      {
+       "affects_qgv": true,
+       "id": "growth",
+       "name": "\uc131\uc7a5",
+       "rule": {
+        "kind": "ramp",
+        "lower": 0.1,
+        "metric": "revenue_cagr_3y",
+        "upper": 0.2
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 50,
+        "Q": 30,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "value",
+       "name": "\uac00\uce58",
+       "rule": {
+        "kind": "unresolved",
+        "metrics": [
+         "pe_discount_sector",
+         "pe_discount_history",
+         "ev_ebit_discount_sector",
+         "ev_ebit_discount_history"
+        ],
+        "reasons": [
+         "DISCOUNT_RAMPS",
+         "SECTOR_HISTORY_BASIS",
+         "VALUE_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 25,
+        "V": 55
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "dividend",
+       "name": "\ubc30\ub2f9",
+       "rule": {
+        "gate_metric": "dividend_paid_5_consecutive_years",
+        "kind": "gated_ramp",
+        "lower": 0.015,
+        "metric": "dividend_yield",
+        "upper": 0.03
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 15,
+        "Q": 40,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "quality",
+       "name": "\uc6b0\ub7c9",
+       "rule": {
+        "components": [
+         {
+          "kind": "ramp",
+          "lower": 0.1,
+          "metric": "roic",
+          "upper": 0.2
+         }
+        ],
+        "kind": "unresolved",
+        "reasons": [
+         "MARGIN_VOLATILITY_THRESHOLD",
+         "LOW_DEBT_THRESHOLD",
+         "QUALITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 50,
+        "V": 25
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "cyclical",
+       "name": "\uacbd\uae30\ubbfc\uac10",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 30,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "defensive",
+       "name": "\uacbd\uae30\ubc29\uc5b4",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 45,
+        "V": 35
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "leader",
+       "name": "\uc8fc\ub3c4",
+       "rule": {
+        "kind": "rank",
+        "max_rank": 3,
+        "metric": "sector_marketcap_rank"
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 35,
+        "Q": 45,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": false,
+       "id": "theme",
+       "name": "\ud14c\ub9c8",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "THEME_BASKET_APPROVAL",
+         "THEME_MEMBERSHIP_NORMALIZATION"
+        ]
+       },
+       "type_role": "EXPOSURE_ONLY"
+      }
+     ],
+     "value_basis": {
+      "cyclical_type": "cyclical",
+      "normalized_years": 5,
+      "required_metric": "cyclical_v_score",
+      "status": "SCORING_MAPPING_UNRESOLVED"
+     }
+    },
+    "qg": {
+     "data": {
+      "companies": {
+       "amd": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "market_position": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "roic_wacc": {
+          "score": 50.0,
+          "state": "STALE"
+         }
+        }
+       },
+       "msft": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "market_position": {
+          "score": 77.5,
+          "state": "LIVE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "roic_wacc": {
+          "score": 50.0,
+          "state": "LIVE"
+         }
+        }
+       },
+       "nvda": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 90.0,
+          "state": "LIVE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "market_position": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "roic_wacc": {
+          "score": 30.0,
+          "state": "LIVE"
+         }
+        }
+       }
+      }
+     }
+    },
+    "types": {
+     "data": {
+      "companies": {
+       "amd": {
+        "metrics": {
+         "revenue_cagr_3y": 0.12,
+         "roic": null
+        }
+       },
+       "asml": {
+        "metrics": {
+         "revenue_cagr_3y": null,
+         "roic": null
+        }
+       },
+       "intc": {
+        "metrics": {
+         "revenue_cagr_3y": true,
+         "roic": null
+        }
+       },
+       "msft": {
+        "metrics": {
+         "revenue_cagr_3y": 0.04,
+         "roic": 0.3
+        }
+       },
+       "nvda": {
+        "metrics": {
+         "revenue_cagr_3y": 0.31,
+         "roic": 0.42
+        }
+       },
+       "zz_not_target": {
+        "metrics": {
+         "revenue_cagr_3y": 0.5,
+         "roic": 0.1
+        }
+       }
+      }
+     }
+    }
+   },
+   "operation": "type_target_preview",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "diff": [
+     {
+      "mine": 60,
+      "official": 50,
+      "path": "types.growth.weights.G"
+     },
+     {
+      "mine": 20,
+      "official": 30,
+      "path": "types.growth.weights.Q"
+     }
+    ],
+    "reason": null,
+    "rows": [
+     {
+      "company_id": "asml",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "lrcx",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "klac",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "tokyo_electron",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "hanmi",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "nvda",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [],
+       "selected_types": [
+        "growth"
+       ],
+       "weights": {
+        "G": 60.0,
+        "Q": 20.0,
+        "V": 20.0
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [],
+       "selected_types": [
+        "growth"
+       ],
+       "weights": {
+        "G": 50.0,
+        "Q": 30.0,
+        "V": 20.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": 10.0,
+       "Q": -10.0,
+       "V": 0.0
+      }
+     },
+     {
+      "company_id": "amd",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": 0.0,
+       "Q": 0.0,
+       "V": 0.0
+      }
+     },
+     {
+      "company_id": "avgo",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "qcom",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "intc",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "msft",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": 0.0,
+       "Q": 0.0,
+       "V": 0.0
+      }
+     },
+     {
+      "company_id": "googl",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "amzn",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "rtx",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "stry",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "etn",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "hubb",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "gev",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "rok",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     }
+    ],
+    "state": "PREVIEW"
+   },
+   "id": "growth_weights_changed",
+   "input": {
+    "custom": {
+     "calibration": "V2_PENDING",
+     "config_version": "type_config/1",
+     "dcf": {
+      "cashflow_basis": null,
+      "confirmed": false,
+      "discount_rate": null,
+      "explicit_years": 5,
+      "terminal_growth": null
+     },
+     "fallback": {
+      "id": "unclassified",
+      "name": "\ubbf8\ubd84\ub958",
+      "weights": {
+       "G": 33,
+       "Q": 34,
+       "V": 33
+      }
+     },
+     "industry": {
+      "groups": [],
+      "mapping_status": "PROPOSED_PENDING_APPROVAL",
+      "source": "SEC_SUBMISSIONS_SIC"
+     },
+     "mixing": {
+      "clamp_then_normalize": true,
+      "exclusive_pairs": [
+       [
+        "cyclical",
+        "defensive"
+       ]
+      ],
+      "maximum_types": 3,
+      "minimum_membership": 0.3,
+      "pillar_max": 60,
+      "pillar_min": 15,
+      "tie_break": "CONFIG_ORDER"
+     },
+     "schema_version": 1,
+     "status": "CUSTOM_PREVIEW",
+     "themes": {
+      "baskets": [],
+      "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+      "keywords": {},
+      "maximum_display": 2,
+      "membership_rule": null,
+      "overrides": "DEVICE_ONLY",
+      "role": "EXPOSURE_ONLY",
+      "status": "PROPOSED_PENDING_APPROVAL"
+     },
+     "types": [
+      {
+       "affects_qgv": true,
+       "id": "growth",
+       "name": "\uc131\uc7a5",
+       "rule": {
+        "kind": "ramp",
+        "lower": 0.1,
+        "metric": "revenue_cagr_3y",
+        "upper": 0.2
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 60,
+        "Q": 20,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "value",
+       "name": "\uac00\uce58",
+       "rule": {
+        "kind": "unresolved",
+        "metrics": [
+         "pe_discount_sector",
+         "pe_discount_history",
+         "ev_ebit_discount_sector",
+         "ev_ebit_discount_history"
+        ],
+        "reasons": [
+         "DISCOUNT_RAMPS",
+         "SECTOR_HISTORY_BASIS",
+         "VALUE_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 25,
+        "V": 55
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "dividend",
+       "name": "\ubc30\ub2f9",
+       "rule": {
+        "gate_metric": "dividend_paid_5_consecutive_years",
+        "kind": "gated_ramp",
+        "lower": 0.015,
+        "metric": "dividend_yield",
+        "upper": 0.03
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 15,
+        "Q": 40,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "quality",
+       "name": "\uc6b0\ub7c9",
+       "rule": {
+        "components": [
+         {
+          "kind": "ramp",
+          "lower": 0.1,
+          "metric": "roic",
+          "upper": 0.2
+         }
+        ],
+        "kind": "unresolved",
+        "reasons": [
+         "MARGIN_VOLATILITY_THRESHOLD",
+         "LOW_DEBT_THRESHOLD",
+         "QUALITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 50,
+        "V": 25
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "cyclical",
+       "name": "\uacbd\uae30\ubbfc\uac10",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 30,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "defensive",
+       "name": "\uacbd\uae30\ubc29\uc5b4",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 45,
+        "V": 35
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "leader",
+       "name": "\uc8fc\ub3c4",
+       "rule": {
+        "kind": "rank",
+        "max_rank": 3,
+        "metric": "sector_marketcap_rank"
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 35,
+        "Q": 45,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": false,
+       "id": "theme",
+       "name": "\ud14c\ub9c8",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "THEME_BASKET_APPROVAL",
+         "THEME_MEMBERSHIP_NORMALIZATION"
+        ]
+       },
+       "type_role": "EXPOSURE_ONLY"
+      }
+     ],
+     "value_basis": {
+      "cyclical_type": "cyclical",
+      "normalized_years": 5,
+      "required_metric": "cyclical_v_score",
+      "status": "SCORING_MAPPING_UNRESOLVED"
+     }
+    },
+    "qg": {
+     "data": {
+      "companies": {
+       "amd": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "market_position": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "roic_wacc": {
+          "score": 50.0,
+          "state": "STALE"
+         }
+        }
+       },
+       "msft": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "market_position": {
+          "score": 77.5,
+          "state": "LIVE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "roic_wacc": {
+          "score": 50.0,
+          "state": "LIVE"
+         }
+        }
+       },
+       "nvda": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 90.0,
+          "state": "LIVE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "market_position": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "roic_wacc": {
+          "score": 30.0,
+          "state": "LIVE"
+         }
+        }
+       }
+      }
+     }
+    },
+    "types": {
+     "data": {
+      "companies": {
+       "amd": {
+        "metrics": {
+         "revenue_cagr_3y": 0.12,
+         "roic": null
+        }
+       },
+       "asml": {
+        "metrics": {
+         "revenue_cagr_3y": null,
+         "roic": null
+        }
+       },
+       "intc": {
+        "metrics": {
+         "revenue_cagr_3y": true,
+         "roic": null
+        }
+       },
+       "msft": {
+        "metrics": {
+         "revenue_cagr_3y": 0.04,
+         "roic": 0.3
+        }
+       },
+       "nvda": {
+        "metrics": {
+         "revenue_cagr_3y": 0.31,
+         "roic": 0.42
+        }
+       },
+       "zz_not_target": {
+        "metrics": {
+         "revenue_cagr_3y": 0.5,
+         "roic": 0.1
+        }
+       }
+      }
+     }
+    }
+   },
+   "operation": "type_target_preview",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "diff": [
+     {
+      "mine": 0.25,
+      "official": 0.1,
+      "path": "types.growth.rule.lower"
+     },
+     {
+      "mine": 0.35,
+      "official": 0.2,
+      "path": "types.growth.rule.upper"
+     }
+    ],
+    "reason": null,
+    "rows": [
+     {
+      "company_id": "asml",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "lrcx",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "klac",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "tokyo_electron",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "hanmi",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "nvda",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [],
+       "selected_types": [
+        "growth"
+       ],
+       "weights": {
+        "G": 50.0,
+        "Q": 30.0,
+        "V": 20.0
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [],
+       "selected_types": [
+        "growth"
+       ],
+       "weights": {
+        "G": 50.0,
+        "Q": 30.0,
+        "V": 20.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": 0.0,
+       "Q": 0.0,
+       "V": 0.0
+      }
+     },
+     {
+      "company_id": "amd",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": 0.0,
+       "Q": 0.0,
+       "V": 0.0
+      }
+     },
+     {
+      "company_id": "avgo",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "qcom",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "intc",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "msft",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": 0.0,
+       "Q": 0.0,
+       "V": 0.0
+      }
+     },
+     {
+      "company_id": "googl",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "amzn",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "rtx",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "stry",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "etn",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "hubb",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "gev",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "rok",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     }
+    ],
+    "state": "PREVIEW"
+   },
+   "id": "growth_ramp_changes_types",
+   "input": {
+    "custom": {
+     "calibration": "V2_PENDING",
+     "config_version": "type_config/1",
+     "dcf": {
+      "cashflow_basis": null,
+      "confirmed": false,
+      "discount_rate": null,
+      "explicit_years": 5,
+      "terminal_growth": null
+     },
+     "fallback": {
+      "id": "unclassified",
+      "name": "\ubbf8\ubd84\ub958",
+      "weights": {
+       "G": 33,
+       "Q": 34,
+       "V": 33
+      }
+     },
+     "industry": {
+      "groups": [],
+      "mapping_status": "PROPOSED_PENDING_APPROVAL",
+      "source": "SEC_SUBMISSIONS_SIC"
+     },
+     "mixing": {
+      "clamp_then_normalize": true,
+      "exclusive_pairs": [
+       [
+        "cyclical",
+        "defensive"
+       ]
+      ],
+      "maximum_types": 3,
+      "minimum_membership": 0.3,
+      "pillar_max": 60,
+      "pillar_min": 15,
+      "tie_break": "CONFIG_ORDER"
+     },
+     "schema_version": 1,
+     "status": "CUSTOM_PREVIEW",
+     "themes": {
+      "baskets": [],
+      "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+      "keywords": {},
+      "maximum_display": 2,
+      "membership_rule": null,
+      "overrides": "DEVICE_ONLY",
+      "role": "EXPOSURE_ONLY",
+      "status": "PROPOSED_PENDING_APPROVAL"
+     },
+     "types": [
+      {
+       "affects_qgv": true,
+       "id": "growth",
+       "name": "\uc131\uc7a5",
+       "rule": {
+        "kind": "ramp",
+        "lower": 0.25,
+        "metric": "revenue_cagr_3y",
+        "upper": 0.35
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 50,
+        "Q": 30,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "value",
+       "name": "\uac00\uce58",
+       "rule": {
+        "kind": "unresolved",
+        "metrics": [
+         "pe_discount_sector",
+         "pe_discount_history",
+         "ev_ebit_discount_sector",
+         "ev_ebit_discount_history"
+        ],
+        "reasons": [
+         "DISCOUNT_RAMPS",
+         "SECTOR_HISTORY_BASIS",
+         "VALUE_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 25,
+        "V": 55
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "dividend",
+       "name": "\ubc30\ub2f9",
+       "rule": {
+        "gate_metric": "dividend_paid_5_consecutive_years",
+        "kind": "gated_ramp",
+        "lower": 0.015,
+        "metric": "dividend_yield",
+        "upper": 0.03
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 15,
+        "Q": 40,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "quality",
+       "name": "\uc6b0\ub7c9",
+       "rule": {
+        "components": [
+         {
+          "kind": "ramp",
+          "lower": 0.1,
+          "metric": "roic",
+          "upper": 0.2
+         }
+        ],
+        "kind": "unresolved",
+        "reasons": [
+         "MARGIN_VOLATILITY_THRESHOLD",
+         "LOW_DEBT_THRESHOLD",
+         "QUALITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 50,
+        "V": 25
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "cyclical",
+       "name": "\uacbd\uae30\ubbfc\uac10",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 30,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "defensive",
+       "name": "\uacbd\uae30\ubc29\uc5b4",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 45,
+        "V": 35
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "leader",
+       "name": "\uc8fc\ub3c4",
+       "rule": {
+        "kind": "rank",
+        "max_rank": 3,
+        "metric": "sector_marketcap_rank"
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 35,
+        "Q": 45,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": false,
+       "id": "theme",
+       "name": "\ud14c\ub9c8",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "THEME_BASKET_APPROVAL",
+         "THEME_MEMBERSHIP_NORMALIZATION"
+        ]
+       },
+       "type_role": "EXPOSURE_ONLY"
+      }
+     ],
+     "value_basis": {
+      "cyclical_type": "cyclical",
+      "normalized_years": 5,
+      "required_metric": "cyclical_v_score",
+      "status": "SCORING_MAPPING_UNRESOLVED"
+     }
+    },
+    "qg": null,
+    "types": {
+     "data": {
+      "companies": {
+       "amd": {
+        "metrics": {
+         "revenue_cagr_3y": 0.12,
+         "roic": null
+        }
+       },
+       "asml": {
+        "metrics": {
+         "revenue_cagr_3y": null,
+         "roic": null
+        }
+       },
+       "intc": {
+        "metrics": {
+         "revenue_cagr_3y": true,
+         "roic": null
+        }
+       },
+       "msft": {
+        "metrics": {
+         "revenue_cagr_3y": 0.04,
+         "roic": 0.3
+        }
+       },
+       "nvda": {
+        "metrics": {
+         "revenue_cagr_3y": 0.31,
+         "roic": 0.42
+        }
+       },
+       "zz_not_target": {
+        "metrics": {
+         "revenue_cagr_3y": 0.5,
+         "roic": 0.1
+        }
+       }
+      }
+     }
+    }
+   },
+   "operation": "type_target_preview",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "diff": [
+     {
+      "mine": 30,
+      "official": 33,
+      "path": "fallback.weights.G"
+     },
+     {
+      "mine": 40,
+      "official": 34,
+      "path": "fallback.weights.Q"
+     },
+     {
+      "mine": 30,
+      "official": 33,
+      "path": "fallback.weights.V"
+     },
+     {
+      "mine": 45,
+      "official": 60,
+      "path": "mixing.pillar_max"
+     }
+    ],
+    "reason": null,
+    "rows": [
+     {
+      "company_id": "asml",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "lrcx",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "klac",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "tokyo_electron",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "hanmi",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "nvda",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [],
+       "selected_types": [
+        "growth"
+       ],
+       "weights": {
+        "G": 47.36842105263158,
+        "Q": 31.57894736842105,
+        "V": 21.05263157894737
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [],
+       "selected_types": [
+        "growth"
+       ],
+       "weights": {
+        "G": 50.0,
+        "Q": 30.0,
+        "V": 20.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": -2.6315789473684177,
+       "Q": 1.5789473684210513,
+       "V": 1.05263157894737
+      }
+     },
+     {
+      "company_id": "amd",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 30.0,
+        "Q": 40.0,
+        "V": 30.0
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": -3.0,
+       "Q": 6.0,
+       "V": -3.0
+      }
+     },
+     {
+      "company_id": "avgo",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "qcom",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "intc",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "msft",
+      "mine": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 30.0,
+        "Q": 40.0,
+        "V": 30.0
+       }
+      },
+      "official": {
+       "adjusted_score": null,
+       "reason_codes": [
+        "NO_RECOGNIZED_TYPE"
+       ],
+       "selected_types": [],
+       "weights": {
+        "G": 33.0,
+        "Q": 34.0,
+        "V": 33.0
+       }
+      },
+      "reason": null,
+      "state": "PREVIEW",
+      "types_changed": false,
+      "weight_delta": {
+       "G": -3.0,
+       "Q": 6.0,
+       "V": -3.0
+      }
+     },
+     {
+      "company_id": "googl",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "amzn",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "rtx",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "stry",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "etn",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "hubb",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "gev",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "rok",
+      "mine": null,
+      "official": null,
+      "reason": "COMPANY_NOT_IN_PUBLIC_FILE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     }
+    ],
+    "state": "PREVIEW"
+   },
+   "id": "mixing_and_fallback",
+   "input": {
+    "custom": {
+     "calibration": "V2_PENDING",
+     "config_version": "type_config/1",
+     "dcf": {
+      "cashflow_basis": null,
+      "confirmed": false,
+      "discount_rate": null,
+      "explicit_years": 5,
+      "terminal_growth": null
+     },
+     "fallback": {
+      "id": "unclassified",
+      "name": "\ubbf8\ubd84\ub958",
+      "weights": {
+       "G": 30,
+       "Q": 40,
+       "V": 30
+      }
+     },
+     "industry": {
+      "groups": [],
+      "mapping_status": "PROPOSED_PENDING_APPROVAL",
+      "source": "SEC_SUBMISSIONS_SIC"
+     },
+     "mixing": {
+      "clamp_then_normalize": true,
+      "exclusive_pairs": [
+       [
+        "cyclical",
+        "defensive"
+       ]
+      ],
+      "maximum_types": 3,
+      "minimum_membership": 0.3,
+      "pillar_max": 45,
+      "pillar_min": 15,
+      "tie_break": "CONFIG_ORDER"
+     },
+     "schema_version": 1,
+     "status": "CUSTOM_PREVIEW",
+     "themes": {
+      "baskets": [],
+      "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+      "keywords": {},
+      "maximum_display": 2,
+      "membership_rule": null,
+      "overrides": "DEVICE_ONLY",
+      "role": "EXPOSURE_ONLY",
+      "status": "PROPOSED_PENDING_APPROVAL"
+     },
+     "types": [
+      {
+       "affects_qgv": true,
+       "id": "growth",
+       "name": "\uc131\uc7a5",
+       "rule": {
+        "kind": "ramp",
+        "lower": 0.1,
+        "metric": "revenue_cagr_3y",
+        "upper": 0.2
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 50,
+        "Q": 30,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "value",
+       "name": "\uac00\uce58",
+       "rule": {
+        "kind": "unresolved",
+        "metrics": [
+         "pe_discount_sector",
+         "pe_discount_history",
+         "ev_ebit_discount_sector",
+         "ev_ebit_discount_history"
+        ],
+        "reasons": [
+         "DISCOUNT_RAMPS",
+         "SECTOR_HISTORY_BASIS",
+         "VALUE_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 25,
+        "V": 55
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "dividend",
+       "name": "\ubc30\ub2f9",
+       "rule": {
+        "gate_metric": "dividend_paid_5_consecutive_years",
+        "kind": "gated_ramp",
+        "lower": 0.015,
+        "metric": "dividend_yield",
+        "upper": 0.03
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 15,
+        "Q": 40,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "quality",
+       "name": "\uc6b0\ub7c9",
+       "rule": {
+        "components": [
+         {
+          "kind": "ramp",
+          "lower": 0.1,
+          "metric": "roic",
+          "upper": 0.2
+         }
+        ],
+        "kind": "unresolved",
+        "reasons": [
+         "MARGIN_VOLATILITY_THRESHOLD",
+         "LOW_DEBT_THRESHOLD",
+         "QUALITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 50,
+        "V": 25
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "cyclical",
+       "name": "\uacbd\uae30\ubbfc\uac10",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 30,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "defensive",
+       "name": "\uacbd\uae30\ubc29\uc5b4",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 45,
+        "V": 35
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "leader",
+       "name": "\uc8fc\ub3c4",
+       "rule": {
+        "kind": "rank",
+        "max_rank": 3,
+        "metric": "sector_marketcap_rank"
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 35,
+        "Q": 45,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": false,
+       "id": "theme",
+       "name": "\ud14c\ub9c8",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "THEME_BASKET_APPROVAL",
+         "THEME_MEMBERSHIP_NORMALIZATION"
+        ]
+       },
+       "type_role": "EXPOSURE_ONLY"
+      }
+     ],
+     "value_basis": {
+      "cyclical_type": "cyclical",
+      "normalized_years": 5,
+      "required_metric": "cyclical_v_score",
+      "status": "SCORING_MAPPING_UNRESOLVED"
+     }
+    },
+    "qg": {
+     "data": {
+      "companies": {
+       "amd": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "market_position": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "roic_wacc": {
+          "score": 50.0,
+          "state": "STALE"
+         }
+        }
+       },
+       "msft": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "market_position": {
+          "score": 77.5,
+          "state": "LIVE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "roic_wacc": {
+          "score": 50.0,
+          "state": "LIVE"
+         }
+        }
+       },
+       "nvda": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 90.0,
+          "state": "LIVE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "market_position": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "roic_wacc": {
+          "score": 30.0,
+          "state": "LIVE"
+         }
+        }
+       }
+      }
+     }
+    },
+    "types": {
+     "data": {
+      "companies": {
+       "amd": {
+        "metrics": {
+         "revenue_cagr_3y": 0.12,
+         "roic": null
+        }
+       },
+       "asml": {
+        "metrics": {
+         "revenue_cagr_3y": null,
+         "roic": null
+        }
+       },
+       "intc": {
+        "metrics": {
+         "revenue_cagr_3y": true,
+         "roic": null
+        }
+       },
+       "msft": {
+        "metrics": {
+         "revenue_cagr_3y": 0.04,
+         "roic": 0.3
+        }
+       },
+       "nvda": {
+        "metrics": {
+         "revenue_cagr_3y": 0.31,
+         "roic": 0.42
+        }
+       },
+       "zz_not_target": {
+        "metrics": {
+         "revenue_cagr_3y": 0.5,
+         "roic": 0.1
+        }
+       }
+      }
+     }
+    }
+   },
+   "operation": "type_target_preview",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "diff": [
+     {
+      "mine": 60,
+      "official": 50,
+      "path": "types.growth.weights.G"
+     },
+     {
+      "mine": 20,
+      "official": 30,
+      "path": "types.growth.weights.Q"
+     }
+    ],
+    "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+    "rows": [
+     {
+      "company_id": "asml",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "lrcx",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "klac",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "tokyo_electron",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "hanmi",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "nvda",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "amd",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "avgo",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "qcom",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "intc",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "msft",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "googl",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "amzn",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "rtx",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "stry",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "etn",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "hubb",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "gev",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     },
+     {
+      "company_id": "rok",
+      "mine": null,
+      "official": null,
+      "reason": "PUBLIC_TYPE_METRICS_NOT_AVAILABLE",
+      "state": "NOT_AVAILABLE",
+      "types_changed": null,
+      "weight_delta": null
+     }
+    ],
+    "state": "NOT_AVAILABLE"
+   },
+   "id": "no_public_types",
+   "input": {
+    "custom": {
+     "calibration": "V2_PENDING",
+     "config_version": "type_config/1",
+     "dcf": {
+      "cashflow_basis": null,
+      "confirmed": false,
+      "discount_rate": null,
+      "explicit_years": 5,
+      "terminal_growth": null
+     },
+     "fallback": {
+      "id": "unclassified",
+      "name": "\ubbf8\ubd84\ub958",
+      "weights": {
+       "G": 33,
+       "Q": 34,
+       "V": 33
+      }
+     },
+     "industry": {
+      "groups": [],
+      "mapping_status": "PROPOSED_PENDING_APPROVAL",
+      "source": "SEC_SUBMISSIONS_SIC"
+     },
+     "mixing": {
+      "clamp_then_normalize": true,
+      "exclusive_pairs": [
+       [
+        "cyclical",
+        "defensive"
+       ]
+      ],
+      "maximum_types": 3,
+      "minimum_membership": 0.3,
+      "pillar_max": 60,
+      "pillar_min": 15,
+      "tie_break": "CONFIG_ORDER"
+     },
+     "schema_version": 1,
+     "status": "CUSTOM_PREVIEW",
+     "themes": {
+      "baskets": [],
+      "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+      "keywords": {},
+      "maximum_display": 2,
+      "membership_rule": null,
+      "overrides": "DEVICE_ONLY",
+      "role": "EXPOSURE_ONLY",
+      "status": "PROPOSED_PENDING_APPROVAL"
+     },
+     "types": [
+      {
+       "affects_qgv": true,
+       "id": "growth",
+       "name": "\uc131\uc7a5",
+       "rule": {
+        "kind": "ramp",
+        "lower": 0.1,
+        "metric": "revenue_cagr_3y",
+        "upper": 0.2
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 60,
+        "Q": 20,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "value",
+       "name": "\uac00\uce58",
+       "rule": {
+        "kind": "unresolved",
+        "metrics": [
+         "pe_discount_sector",
+         "pe_discount_history",
+         "ev_ebit_discount_sector",
+         "ev_ebit_discount_history"
+        ],
+        "reasons": [
+         "DISCOUNT_RAMPS",
+         "SECTOR_HISTORY_BASIS",
+         "VALUE_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 25,
+        "V": 55
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "dividend",
+       "name": "\ubc30\ub2f9",
+       "rule": {
+        "gate_metric": "dividend_paid_5_consecutive_years",
+        "kind": "gated_ramp",
+        "lower": 0.015,
+        "metric": "dividend_yield",
+        "upper": 0.03
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 15,
+        "Q": 40,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "quality",
+       "name": "\uc6b0\ub7c9",
+       "rule": {
+        "components": [
+         {
+          "kind": "ramp",
+          "lower": 0.1,
+          "metric": "roic",
+          "upper": 0.2
+         }
+        ],
+        "kind": "unresolved",
+        "reasons": [
+         "MARGIN_VOLATILITY_THRESHOLD",
+         "LOW_DEBT_THRESHOLD",
+         "QUALITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 50,
+        "V": 25
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "cyclical",
+       "name": "\uacbd\uae30\ubbfc\uac10",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 30,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "defensive",
+       "name": "\uacbd\uae30\ubc29\uc5b4",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 45,
+        "V": 35
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "leader",
+       "name": "\uc8fc\ub3c4",
+       "rule": {
+        "kind": "rank",
+        "max_rank": 3,
+        "metric": "sector_marketcap_rank"
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 35,
+        "Q": 45,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": false,
+       "id": "theme",
+       "name": "\ud14c\ub9c8",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "THEME_BASKET_APPROVAL",
+         "THEME_MEMBERSHIP_NORMALIZATION"
+        ]
+       },
+       "type_role": "EXPOSURE_ONLY"
+      }
+     ],
+     "value_basis": {
+      "cyclical_type": "cyclical",
+      "normalized_years": 5,
+      "required_metric": "cyclical_v_score",
+      "status": "SCORING_MAPPING_UNRESOLVED"
+     }
+    },
+    "qg": {
+     "data": {
+      "companies": {
+       "amd": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "market_position": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "roic_wacc": {
+          "score": 50.0,
+          "state": "STALE"
+         }
+        }
+       },
+       "msft": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "market_position": {
+          "score": 77.5,
+          "state": "LIVE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "roic_wacc": {
+          "score": 50.0,
+          "state": "LIVE"
+         }
+        }
+       },
+       "nvda": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 90.0,
+          "state": "LIVE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "market_position": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "roic_wacc": {
+          "score": 30.0,
+          "state": "LIVE"
+         }
+        }
+       }
+      }
+     }
+    },
+    "types": null
+   },
+   "operation": "type_target_preview",
+   "synthetic": true
+  },
+  {
+   "expected": {
+    "diff": [],
+    "reason": "TYPE_CONFIG_INVALID",
+    "rows": [],
+    "state": "INVALID_INPUT"
+   },
+   "id": "invalid_custom",
+   "input": {
+    "custom": {
+     "calibration": "V2_PENDING",
+     "config_version": "type_config/1",
+     "dcf": {
+      "cashflow_basis": null,
+      "confirmed": false,
+      "discount_rate": null,
+      "explicit_years": 5,
+      "terminal_growth": null
+     },
+     "fallback": {
+      "id": "unclassified",
+      "name": "\ubbf8\ubd84\ub958",
+      "weights": {
+       "G": 33,
+       "Q": 34,
+       "V": 33
+      }
+     },
+     "industry": {
+      "groups": [],
+      "mapping_status": "PROPOSED_PENDING_APPROVAL",
+      "source": "SEC_SUBMISSIONS_SIC"
+     },
+     "mixing": {
+      "clamp_then_normalize": true,
+      "exclusive_pairs": [
+       [
+        "cyclical",
+        "defensive"
+       ]
+      ],
+      "maximum_types": 3,
+      "minimum_membership": 0.3,
+      "pillar_max": 60,
+      "pillar_min": 15,
+      "tie_break": "CONFIG_ORDER"
+     },
+     "schema_version": 1,
+     "status": "CUSTOM_PREVIEW",
+     "themes": {
+      "baskets": [],
+      "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+      "keywords": {},
+      "maximum_display": 2,
+      "membership_rule": null,
+      "overrides": "DEVICE_ONLY",
+      "role": "EXPOSURE_ONLY",
+      "status": "PROPOSED_PENDING_APPROVAL"
+     },
+     "types": [
+      {
+       "affects_qgv": true,
+       "id": "growth",
+       "name": "\uc131\uc7a5",
+       "rule": {
+        "kind": "ramp",
+        "lower": 0.1,
+        "metric": "revenue_cagr_3y",
+        "upper": 0.2
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 50,
+        "Q": 99,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "value",
+       "name": "\uac00\uce58",
+       "rule": {
+        "kind": "unresolved",
+        "metrics": [
+         "pe_discount_sector",
+         "pe_discount_history",
+         "ev_ebit_discount_sector",
+         "ev_ebit_discount_history"
+        ],
+        "reasons": [
+         "DISCOUNT_RAMPS",
+         "SECTOR_HISTORY_BASIS",
+         "VALUE_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 25,
+        "V": 55
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "dividend",
+       "name": "\ubc30\ub2f9",
+       "rule": {
+        "gate_metric": "dividend_paid_5_consecutive_years",
+        "kind": "gated_ramp",
+        "lower": 0.015,
+        "metric": "dividend_yield",
+        "upper": 0.03
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 15,
+        "Q": 40,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "quality",
+       "name": "\uc6b0\ub7c9",
+       "rule": {
+        "components": [
+         {
+          "kind": "ramp",
+          "lower": 0.1,
+          "metric": "roic",
+          "upper": 0.2
+         }
+        ],
+        "kind": "unresolved",
+        "reasons": [
+         "MARGIN_VOLATILITY_THRESHOLD",
+         "LOW_DEBT_THRESHOLD",
+         "QUALITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 50,
+        "V": 25
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "cyclical",
+       "name": "\uacbd\uae30\ubbfc\uac10",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 30,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "defensive",
+       "name": "\uacbd\uae30\ubc29\uc5b4",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 45,
+        "V": 35
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "leader",
+       "name": "\uc8fc\ub3c4",
+       "rule": {
+        "kind": "rank",
+        "max_rank": 3,
+        "metric": "sector_marketcap_rank"
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 35,
+        "Q": 45,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": false,
+       "id": "theme",
+       "name": "\ud14c\ub9c8",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "THEME_BASKET_APPROVAL",
+         "THEME_MEMBERSHIP_NORMALIZATION"
+        ]
+       },
+       "type_role": "EXPOSURE_ONLY"
+      }
+     ],
+     "value_basis": {
+      "cyclical_type": "cyclical",
+      "normalized_years": 5,
+      "required_metric": "cyclical_v_score",
+      "status": "SCORING_MAPPING_UNRESOLVED"
+     }
+    },
+    "qg": {
+     "data": {
+      "companies": {
+       "amd": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "market_position": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "STALE"
+         },
+         "roic_wacc": {
+          "score": 50.0,
+          "state": "STALE"
+         }
+        }
+       },
+       "msft": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "market_position": {
+          "score": 77.5,
+          "state": "LIVE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "roic_wacc": {
+          "score": 50.0,
+          "state": "LIVE"
+         }
+        }
+       },
+       "nvda": {
+        "factors": {
+         "competitive_advantage": {
+          "score": 90.0,
+          "state": "LIVE"
+         },
+         "eps_fcf_per_share_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "excess_growth_vs_industry": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "fcf_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "financial_health": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_durability": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "growth_efficiency": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "management_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "margin_quality": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "market_position": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "next_3_5y_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "revenue_growth": {
+          "score": 50.0,
+          "state": "LIVE"
+         },
+         "roic_wacc": {
+          "score": 30.0,
+          "state": "LIVE"
+         }
+        }
+       }
+      }
+     }
+    },
+    "types": {
+     "data": {
+      "companies": {
+       "amd": {
+        "metrics": {
+         "revenue_cagr_3y": 0.12,
+         "roic": null
+        }
+       },
+       "asml": {
+        "metrics": {
+         "revenue_cagr_3y": null,
+         "roic": null
+        }
+       },
+       "intc": {
+        "metrics": {
+         "revenue_cagr_3y": true,
+         "roic": null
+        }
+       },
+       "msft": {
+        "metrics": {
+         "revenue_cagr_3y": 0.04,
+         "roic": 0.3
+        }
+       },
+       "nvda": {
+        "metrics": {
+         "revenue_cagr_3y": 0.31,
+         "roic": 0.42
+        }
+       },
+       "zz_not_target": {
+        "metrics": {
+         "revenue_cagr_3y": 0.5,
+         "roic": 0.1
+        }
+       }
+      }
+     }
+    }
+   },
+   "operation": "type_target_preview",
+   "synthetic": true
+  },
+  {
+   "expected": [
+    {
+     "mine": true,
+     "official": null,
+     "path": "extra_flag"
+    },
+    {
+     "mine": [
+      [
+       "cyclical",
+       "defensive"
+      ],
+      [
+       "growth",
+       "value"
+      ]
+     ],
+     "official": [
+      [
+       "cyclical",
+       "defensive"
+      ]
+     ],
+     "path": "mixing.exclusive_pairs"
+    },
+    {
+     "mine": null,
+     "official": {
+      "affects_qgv": true,
+      "id": "value",
+      "name": "\uac00\uce58",
+      "rule": {
+       "kind": "unresolved",
+       "metrics": [
+        "pe_discount_sector",
+        "pe_discount_history",
+        "ev_ebit_discount_sector",
+        "ev_ebit_discount_history"
+       ],
+       "reasons": [
+        "DISCOUNT_RAMPS",
+        "SECTOR_HISTORY_BASIS",
+        "VALUE_COMBINATION"
+       ]
+      },
+      "type_role": "QGV_TYPE",
+      "weights": {
+       "G": 20,
+       "Q": 25,
+       "V": 55
+      }
+     },
+     "path": "types.value"
+    }
+   ],
+   "id": "diff_structure",
+   "input": {
+    "custom": {
+     "calibration": "V2_PENDING",
+     "config_version": "type_config/1",
+     "dcf": {
+      "cashflow_basis": null,
+      "confirmed": false,
+      "discount_rate": null,
+      "explicit_years": 5,
+      "terminal_growth": null
+     },
+     "extra_flag": true,
+     "fallback": {
+      "id": "unclassified",
+      "name": "\ubbf8\ubd84\ub958",
+      "weights": {
+       "G": 33,
+       "Q": 34,
+       "V": 33
+      }
+     },
+     "industry": {
+      "groups": [],
+      "mapping_status": "PROPOSED_PENDING_APPROVAL",
+      "source": "SEC_SUBMISSIONS_SIC"
+     },
+     "mixing": {
+      "clamp_then_normalize": true,
+      "exclusive_pairs": [
+       [
+        "cyclical",
+        "defensive"
+       ],
+       [
+        "growth",
+        "value"
+       ]
+      ],
+      "maximum_types": 3,
+      "minimum_membership": 0.3,
+      "pillar_max": 60,
+      "pillar_min": 15,
+      "tie_break": "CONFIG_ORDER"
+     },
+     "schema_version": 1,
+     "status": "CUSTOM_PREVIEW",
+     "themes": {
+      "baskets": [],
+      "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+      "keywords": {},
+      "maximum_display": 2,
+      "membership_rule": null,
+      "overrides": "DEVICE_ONLY",
+      "role": "EXPOSURE_ONLY",
+      "status": "PROPOSED_PENDING_APPROVAL"
+     },
+     "types": [
+      {
+       "affects_qgv": true,
+       "id": "growth",
+       "name": "\uc131\uc7a5",
+       "rule": {
+        "kind": "ramp",
+        "lower": 0.1,
+        "metric": "revenue_cagr_3y",
+        "upper": 0.2
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 50,
+        "Q": 30,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "dividend",
+       "name": "\ubc30\ub2f9",
+       "rule": {
+        "gate_metric": "dividend_paid_5_consecutive_years",
+        "kind": "gated_ramp",
+        "lower": 0.015,
+        "metric": "dividend_yield",
+        "upper": 0.03
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 15,
+        "Q": 40,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "quality",
+       "name": "\uc6b0\ub7c9",
+       "rule": {
+        "components": [
+         {
+          "kind": "ramp",
+          "lower": 0.1,
+          "metric": "roic",
+          "upper": 0.2
+         }
+        ],
+        "kind": "unresolved",
+        "reasons": [
+         "MARGIN_VOLATILITY_THRESHOLD",
+         "LOW_DEBT_THRESHOLD",
+         "QUALITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 50,
+        "V": 25
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "cyclical",
+       "name": "\uacbd\uae30\ubbfc\uac10",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 30,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "defensive",
+       "name": "\uacbd\uae30\ubc29\uc5b4",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 45,
+        "V": 35
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "leader",
+       "name": "\uc8fc\ub3c4",
+       "rule": {
+        "kind": "rank",
+        "max_rank": 3,
+        "metric": "sector_marketcap_rank"
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 35,
+        "Q": 45,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": false,
+       "id": "theme",
+       "name": "\ud14c\ub9c8",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "THEME_BASKET_APPROVAL",
+         "THEME_MEMBERSHIP_NORMALIZATION"
+        ]
+       },
+       "type_role": "EXPOSURE_ONLY"
+      }
+     ],
+     "value_basis": {
+      "cyclical_type": "cyclical",
+      "normalized_years": 5,
+      "required_metric": "cyclical_v_score",
+      "status": "SCORING_MAPPING_UNRESOLVED"
+     }
+    },
+    "official": {
+     "calibration": "V2_PENDING",
+     "config_version": "type_config/1",
+     "dcf": {
+      "cashflow_basis": null,
+      "confirmed": false,
+      "discount_rate": null,
+      "explicit_years": 5,
+      "terminal_growth": null
+     },
+     "fallback": {
+      "id": "unclassified",
+      "name": "\ubbf8\ubd84\ub958",
+      "weights": {
+       "G": 33,
+       "Q": 34,
+       "V": 33
+      }
+     },
+     "industry": {
+      "groups": [],
+      "mapping_status": "PROPOSED_PENDING_APPROVAL",
+      "source": "SEC_SUBMISSIONS_SIC"
+     },
+     "mixing": {
+      "clamp_then_normalize": true,
+      "exclusive_pairs": [
+       [
+        "cyclical",
+        "defensive"
+       ]
+      ],
+      "maximum_types": 3,
+      "minimum_membership": 0.3,
+      "pillar_max": 60,
+      "pillar_min": 15,
+      "tie_break": "CONFIG_ORDER"
+     },
+     "schema_version": 1,
+     "status": "CUSTOM_PREVIEW",
+     "themes": {
+      "baskets": [],
+      "fallback": "INDUSTRY_PLUS_NOT_AVAILABLE",
+      "keywords": {},
+      "maximum_display": 2,
+      "membership_rule": null,
+      "overrides": "DEVICE_ONLY",
+      "role": "EXPOSURE_ONLY",
+      "status": "PROPOSED_PENDING_APPROVAL"
+     },
+     "types": [
+      {
+       "affects_qgv": true,
+       "id": "growth",
+       "name": "\uc131\uc7a5",
+       "rule": {
+        "kind": "ramp",
+        "lower": 0.1,
+        "metric": "revenue_cagr_3y",
+        "upper": 0.2
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 50,
+        "Q": 30,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "value",
+       "name": "\uac00\uce58",
+       "rule": {
+        "kind": "unresolved",
+        "metrics": [
+         "pe_discount_sector",
+         "pe_discount_history",
+         "ev_ebit_discount_sector",
+         "ev_ebit_discount_history"
+        ],
+        "reasons": [
+         "DISCOUNT_RAMPS",
+         "SECTOR_HISTORY_BASIS",
+         "VALUE_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 25,
+        "V": 55
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "dividend",
+       "name": "\ubc30\ub2f9",
+       "rule": {
+        "gate_metric": "dividend_paid_5_consecutive_years",
+        "kind": "gated_ramp",
+        "lower": 0.015,
+        "metric": "dividend_yield",
+        "upper": 0.03
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 15,
+        "Q": 40,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "quality",
+       "name": "\uc6b0\ub7c9",
+       "rule": {
+        "components": [
+         {
+          "kind": "ramp",
+          "lower": 0.1,
+          "metric": "roic",
+          "upper": 0.2
+         }
+        ],
+        "kind": "unresolved",
+        "reasons": [
+         "MARGIN_VOLATILITY_THRESHOLD",
+         "LOW_DEBT_THRESHOLD",
+         "QUALITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 50,
+        "V": 25
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "cyclical",
+       "name": "\uacbd\uae30\ubbfc\uac10",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 25,
+        "Q": 30,
+        "V": 45
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "defensive",
+       "name": "\uacbd\uae30\ubc29\uc5b4",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "SIC_GROUP_APPROVAL",
+         "REVENUE_VOLATILITY_RAMP",
+         "INDUSTRY_VOLATILITY_COMBINATION"
+        ]
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 20,
+        "Q": 45,
+        "V": 35
+       }
+      },
+      {
+       "affects_qgv": true,
+       "id": "leader",
+       "name": "\uc8fc\ub3c4",
+       "rule": {
+        "kind": "rank",
+        "max_rank": 3,
+        "metric": "sector_marketcap_rank"
+       },
+       "type_role": "QGV_TYPE",
+       "weights": {
+        "G": 35,
+        "Q": 45,
+        "V": 20
+       }
+      },
+      {
+       "affects_qgv": false,
+       "id": "theme",
+       "name": "\ud14c\ub9c8",
+       "rule": {
+        "kind": "unresolved",
+        "reasons": [
+         "THEME_BASKET_APPROVAL",
+         "THEME_MEMBERSHIP_NORMALIZATION"
+        ]
+       },
+       "type_role": "EXPOSURE_ONLY"
+      }
+     ],
+     "value_basis": {
+      "cyclical_type": "cyclical",
+      "normalized_years": 5,
+      "required_metric": "cyclical_v_score",
+      "status": "SCORING_MAPPING_UNRESOLVED"
+     }
+    }
+   },
+   "operation": "config_diff",
+   "synthetic": true
+  }
+ ],
+ "role": "REFERENCE_TEST_ONLY",
+ "synthetic": true
+}
