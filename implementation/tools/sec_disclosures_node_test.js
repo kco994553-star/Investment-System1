@@ -1,4 +1,5 @@
 'use strict';
+// A recent acquisition timestamp alone cannot confirm that quarterly Q/G inputs were applied.
 // SEC 8-K disclosures reader: validation fails closed, one chronological list, grouping, fetch options. Synthetic data only.
 const assert=require('node:assert/strict'),test=require('node:test');
 const api=require('../src/investment_system/product/web_assets/sec-disclosures.js'),screens=require('../src/investment_system/product/web_assets/public-screens.js');
@@ -24,3 +25,19 @@ test('filing windows: a results 8-K flips the latest quarter from ESTIMATED to C
  const s=screens.earningsStatus(w.data.companies.nvda);assert.equal(s.status,'CONFIRMED');assert.equal(s.date,w.data.companies.nvda.confirmed_earnings_date);
  const before=structuredClone(w);before.data.companies.nvda.earnings_confirmation=null;before.data.companies.nvda.confirmed_earnings_date=null;assert.equal(screens.earningsStatus(screens.validate('sec-filing-windows.json',before).data.companies.nvda).status,'ESTIMATED');
  const forged=structuredClone(w);forged.data.companies.nvda.confirmed_earnings_date=forged.data.companies.nvda.earnings_confirmation.period_end;assert.throws(()=>screens.validate('sec-filing-windows.json',forged));});
+
+test('quarter QG confirmation requires both exact applied TTM endpoints',()=>{const w={confirmed_earnings_date:'2031-08-01',earnings_confirmation:{period_end:'2031-06-30'}},r={state:'LIVE',v_inputs_v2:{revenue:{ttm_end:'2031-06-30'},ebit:{ttm_end:'2031-06-30'}}};assert.equal(api.qgvEarningsStatus(w,r).status,'CONFIRMED');r.v_inputs_v2.ebit.ttm_end='2030-12-31';assert.equal(api.qgvEarningsStatus(w,r).status,'NOT_CONFIRMED');});
+
+test('leaderboard confirms earnings only after the exact reported quarter enters both QG TTM inputs',()=>{
+ const board=require('../src/investment_system/product/web_assets/leaderboard-screen.js');
+ const id={company_id:'asml',ticker:'ASML',name:'ASML'};
+ const window={state:'LIVE',confirmed_earnings_date:'2026-10-01',earnings_confirmation:{period_end:'2026-09-30'}};
+ const qgv={state:'LIVE',v_inputs_v2:{revenue:{ttm_end:'2026-09-30'},ebit:{ttm_end:'2026-09-30'}}};
+ const publicScreens={'sec-filing-windows.json':{data:{companies:{asml:window}}},'sec-qgv2.json':{target:{asml:qgv}}};
+ assert.equal(board.rowsFor([id],{publicScreens,disclosures:api})[0].earnings_status,'CONFIRMED');
+ qgv.v_inputs_v2.ebit.ttm_end='2026-06-30';
+ assert.equal(board.rowsFor([id],{publicScreens,disclosures:api})[0].earnings_status,'NOT_CONFIRMED');
+ qgv.v_inputs_v2.ebit.ttm_end='2026-09-30';qgv.state='STALE';
+ assert.equal(board.rowsFor([id],{publicScreens,disclosures:api})[0].earnings_status,'NOT_CONFIRMED');
+ assert.equal(board.rowsFor([id],{disclosures:api})[0].earnings_status,'NOT_CONFIRMED');
+});

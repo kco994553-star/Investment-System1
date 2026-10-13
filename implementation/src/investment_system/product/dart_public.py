@@ -367,9 +367,13 @@ def restate_company(company_id, company, as_of):
     return {**company, 'state': state, 'reason_codes': reasons, 'qg': compute_qg(company_id, company['annual'], state)}
 
 
-def financials_payload(*, as_of, companies):
+def financials_payload(*, as_of, companies, include_qgv2=False):
     as_of = _clock(instant(as_of))
     companies = {cid: restate_company(cid, c, as_of) for cid, c in companies.items()}
+    for company in companies.values():
+        if include_qgv2 or 'qgv2' in company:
+            from .dart_qgv2 import metric_projection
+            company['qgv2'] = metric_projection(company)
     state, reasons = _top([c['state'] for c in companies.values()])
     payload = {'schema_version': 1, 'kind': FINANCIALS_KIND, 'source': SOURCE, 'as_of': instant(as_of), 'state': state,
                'reason_codes': reasons, 'freshness_basis': 'SOURCE_ACQUISITION',
@@ -384,7 +388,7 @@ def empty_financials(as_of, reasons=('NOT_COLLECTED',)):
 
 
 def _report(block, *, annual, acquired_day):
-    _need(type(block) is dict and set(block) == set(REPORT_KEYS))
+    _need(type(block) is dict and set(block) in (set(REPORT_KEYS), set(REPORT_KEYS) | {'v2_inputs'}))
     reasons = _reasons(block['reason_codes'])
     inputs, concepts, missing = block['inputs'], block['concepts'], block['missing']
     _need(all(type(x) is dict and set(x) == set(INPUT_NAMES) for x in (inputs, concepts, missing)))
@@ -414,15 +418,29 @@ def _report(block, *, annual, acquired_day):
             _need(concept in (None, 'stockTotqySttus.distb_stock_co') and (value is None or (type(value) is int and value > 0)))
             _need((concept is None) == (value is None))
         elif name == 'total_debt':
-            from ..providers.dart_collection import DEBT_COMPONENTS
-            allowed={account for _,alternatives in DEBT_COMPONENTS for accounts in alternatives for account in accounts}
-            parts=concept.split('+') if type(concept) is str else []
-            _need(concept is None or bool(parts) and len(parts)==len(set(parts)) and all(p in allowed for p in parts))
+            _need(concept is None or type(concept) is str and all(re.fullmatch(r'(?:ifrs-full|dart)_[A-Za-z]{1,100}', p) is not None for p in concept.split('+')))
         else:
             _need(concept is None or type(concept) is str and re.fullmatch(r'(?:ifrs-full|dart)_[A-Za-z]{1,100}', concept) is not None)
         if name.endswith('_prev') and not annual:
             _need(value is None and missing[name] == 'NOT_IN_INTERIM_SCOPE')
     _need(('SHARES_NOT_AVAILABLE' in reasons) == (inputs['shares'] is None))
+    if 'v2_inputs' in block:
+        from ..providers.dart_collection import V2_INPUT_NAMES, V2_UNITS, V2_CONCEPTS, DEBT_COMPONENTS
+        v = block['v2_inputs']; _need(type(v) is dict and set(v) == {'inputs', 'concepts', 'missing', 'units'})
+        _need(v['units'] == V2_UNITS and all(type(v[k]) is dict and set(v[k]) == set(V2_INPUT_NAMES) for k in ('inputs', 'concepts', 'missing')))
+        debt_accounts = {a for _, alternatives in DEBT_COMPONENTS for group in alternatives for a in group}
+        for key in V2_INPUT_NAMES:
+            value, concept, reason = v['inputs'][key], v['concepts'][key], v['missing'][key]
+            _need(_number(value) and type(value) is not bool)
+            if value is None:
+                _need(reason in MISSING_REASONS)
+            else:
+                _need(reason is None and type(concept) is str)
+            if concept is not None:
+                allowed = debt_accounts if key == 'total_debt' else set(V2_CONCEPTS[key][1])
+                _need(type(concept) is str and all(p in allowed for p in concept.split('+')))
+            if key == 'diluted_shares':
+                _need(value is None or value > 0)
 
 
 def _qg(block, annual, company_id, state):
@@ -454,12 +472,22 @@ def _require_financials(p):
     companies = p['companies']
     _need(type(companies) is dict and set(companies) == set(COMPANIES))
     for cid, c in companies.items():
-        _need(type(c) is dict and set(c) == set(FIN_COMPANY_KEYS) and c['stock_code'] == COMPANIES[cid])
+        _need(type(c) is dict and set(FIN_COMPANY_KEYS) <= set(c) <= set(FIN_COMPANY_KEYS) | {'qgv2', 'annual_history'} and c['stock_code'] == COMPANIES[cid])
         reasons = _reasons(c['reason_codes'])
         acquired = _clock(c['acquired_at']) if c['acquired_at'] is not None else None
         acquired_day = acquired.astimezone(KST).date() if acquired is not None else None
         _report(c['annual'], annual=True, acquired_day=acquired_day)
         _report(c['latest_interim'], annual=False, acquired_day=acquired_day)
+        if 'annual_history' in c:
+            history = c['annual_history']; _need(type(history) is list and len(history) <= 6)
+            years = []
+            for report in history:
+                _report(report, annual=True, acquired_day=acquired_day)
+                _need(report['state'] == 'LIVE')
+                years.append(report['bsns_year'])
+            _need(years == sorted(set(years), reverse=True))
+            if history and c['annual']['state'] == 'LIVE':
+                _need(history[0] == c['annual'])
         live = c['annual']['state'] == 'LIVE' or c['latest_interim']['state'] == 'LIVE'
         if live:
             _need(acquired is not None and acquired <= cut and c['state'] == fresh(acquired, cut))
@@ -471,6 +499,9 @@ def _require_financials(p):
             _need(c['state'] == 'NOT_AVAILABLE' and reasons and 'STALE_INPUT' not in reasons)
             _need(acquired is None and c['corp_code'] is None)
         _qg(c['qg'], c['annual'], cid, c['state'])
+        if 'qgv2' in c:
+            from .dart_qgv2 import metric_projection
+            _need(c['qgv2'] == metric_projection(c))
     state, top = _top([c['state'] for c in companies.values()])
     _need(p['state'] == state and p['reason_codes'] == top)
     return p

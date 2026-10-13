@@ -388,6 +388,20 @@ CONCEPTS = {
     'cash_and_equivalents': (('BS',), ('ifrs-full_CashAndCashEquivalents',)),
     'equity': (('BS',), ('ifrs-full_EquityAttributableToOwnersOfParent', 'ifrs-full_Equity')),
 }
+# Exact standard account IDs for the shared v2 period adapter. No account-name matching.
+V2_CONCEPTS = {**{k: CONCEPTS[k] for k in ('revenue', 'operating_income', 'net_income', 'operating_cash_flow', 'capex', 'cash_and_equivalents', 'equity')},
+    'total_assets': (('BS',), ('ifrs-full_Assets',)),
+    'gross_profit': (INCOME_SJ, ('ifrs-full_GrossProfit',)),
+    'cost_of_revenue': (INCOME_SJ, ('ifrs-full_CostOfSales',)),
+    'pretax_income': (INCOME_SJ, ('ifrs-full_ProfitLossBeforeTax',)),
+    'income_tax': (INCOME_SJ, ('ifrs-full_IncomeTaxExpenseContinuingOperations',)),
+    'depreciation_amortization': (('CF', 'IS', 'CIS'), ('ifrs-full_AdjustmentsForDepreciationAndAmortisationExpense', 'ifrs-full_DepreciationAndAmortisationExpense')),
+    'interest_expense': (INCOME_SJ, ('ifrs-full_InterestExpense',)),
+    'eps_diluted': (INCOME_SJ, ('ifrs-full_DilutedEarningsLossPerShare',)),
+    'diluted_shares': (INCOME_SJ, ('ifrs-full_AdjustedWeightedAverageShares',)),
+}
+V2_INPUT_NAMES = tuple(V2_CONCEPTS) + ('total_debt',)
+V2_UNITS = {k: 'SHARES' if k == 'diluted_shares' else 'KRW_PER_SHARE' if k == 'eps_diluted' else 'KRW' for k in V2_INPUT_NAMES}
 # PLAYBOOK_V1 §13-7: debt = 단기차입금 + 장기차입금 + 사채 + 리스부채 (same idea as the US debt rule: components that are
 # reported are summed, a component the statement does not report adds nothing; no component at all -> None).
 # Each component: ordered alternatives; an alternative is a set of accounts summed together (total, or current + noncurrent).
@@ -502,6 +516,18 @@ def extract_shares(payload):
     if len(hits) != 1 or hits[0] is None or hits[0] <= 0 or not float(hits[0]).is_integer():
         return None
     return int(hits[0])
+
+
+def extract_v2_financials(payload, *, reprt_code):
+    """Same reported amounts and identity/currency checks, with explicit v2 standard concepts."""
+    extract_financials(payload, reprt_code=reprt_code)
+    rows = payload['list']
+    values, concepts, missing = {}, {}, {}
+    for key, (statements, accounts) in V2_CONCEPTS.items():
+        value, concept, reason = _pick(rows, statements, accounts, _interim_field(statements, reprt_code))
+        values[key], concepts[key], missing[key] = value, concept, reason
+    values['total_debt'], concepts['total_debt'], missing['total_debt'] = _debt(rows)
+    return {'inputs': values, 'concepts': concepts, 'missing': missing, 'units': dict(V2_UNITS)}
 
 
 def fetch_statements(client, corp_code, *, bsns_year, reprt_code):

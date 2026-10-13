@@ -1,0 +1,54 @@
+{
+  "id": "MACRO_LIGHTS_V1",
+  "version": "v1",
+  "status": "UNCALIBRATED",
+  "marker": "v1 · UNCALIBRATED",
+  "decided_on": "2026-10-13",
+  "source_section": "PLAYBOOK_V1 13-5",
+  "sell_decisions": false,
+  "comparison_epsilon": 1e-9,
+  "lights": {
+    "employment": {
+      "series": "BLS:LNS14000000",
+      "avg_months": 3,
+      "low_window_months": 12,
+      "low_window_includes_latest": true,
+      "gap_pp_gte": 0.5
+    },
+    "inflation": {
+      "series": "BLS:CUUR0000SA0",
+      "base_lag_months": 12,
+      "yoy_gt": 0.05
+    },
+    "curve": {
+      "series": "TREASURY:daily_treasury_yield_curve:BC_10YEAR-BC_3MONTH",
+      "spread_lt": 0,
+      "min_run_days": 20
+    },
+    "market": {
+      "symbol": "SPY",
+      "drawdown_lte": -0.2,
+      "high_window_days": 364,
+      "rv_window_returns": 20,
+      "rv_annualization_days": 252,
+      "rv_history_years": 3,
+      "rv_top_share": 0.05
+    },
+    "credit": {
+      "numerator": "HYG",
+      "denominator": "IEF",
+      "window_sessions": 20,
+      "change_lte": -0.05,
+      "estimate": true
+    }
+  },
+  "state": {
+    "warning_lit_count": 2,
+    "crisis_lit_count": 3,
+    "warning_inflation_gt": 0.05,
+    "warning_growth_lt": 0,
+    "crisis_inflation_gt": 0.08,
+    "crisis_pair": ["market", "credit"],
+    "low_confidence_available_lt": 3
+  }
+}

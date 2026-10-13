@@ -9,7 +9,7 @@ Standard definitions only; a metric with fewer samples than its minimum is NOT_A
 - period return and excess vs S&P 500: report_benchmarks ⑫ SINCE_START (from the set's own first ledger day);
 - daily return r = P_i / P_{i−1} − 1 on consecutive sessions of the ⑬ index levels when both exist (the base → first
   session link is left out: no capital before the first ledger day); S&P 500 the same on its ⑬ levels;
-- upside / downside capture = mean(r) / mean(b) × 100 over the S&P 500's up (b > 0) / down (b < 0) days (≥ 10 days each);
+- upside / downside capture = mean(r) / mean(b) × 100 over the S&P 500's up (b > 0) / down (b < 0) days (≥ 20 days each);
 - max drawdown on the ⑬ ledger index levels (≥ 20 daily returns), ≤ 0;
 - volatility = sample standard deviation of the daily returns × √252 (≥ 20 daily returns);
 - concentration = top-3 holding weight (% of total value) on the last session (NA unless every holding is priced);
@@ -26,15 +26,16 @@ from . import report_benchmarks as rb
 
 SCHEMA = 'virtual-trading-compare/1'
 TYPES = ('growth', 'quality', 'cyclical', 'defensive')
-MIN = {'capture_days': 10, 'max_drawdown': 20, 'volatility': 20}
+MIN = {'capture_days': 20, 'max_drawdown': 20, 'volatility': 20}
 
 
 def _num(v):
     return type(v) in (int, float) and math.isfinite(v)
 
 
-def _na(reason):
-    return {'state': 'NOT_AVAILABLE', 'value': None, 'reason': reason}
+def _na(reason, *, samples=None):
+    row = {'state': 'NOT_AVAILABLE', 'value': None, 'reason': reason}
+    return {**row, 'samples': samples} if samples is not None else row
 
 
 def _ok(value, **extra):
@@ -104,13 +105,13 @@ def metrics(days=(), indices=None, sources=None, basis='KRW', types=None, hits=N
 
     def capture(rows):
         if len(rows) < MIN['capture_days']:
-            return _na('INSUFFICIENT_SAMPLE')
+            return _na('INSUFFICIENT_SAMPLE', samples=len(rows))
         return _ok(_mean([x['r'] for x in rows]) / _mean([x['b'] for x in rows]) * 100, samples=len(rows))
 
     out['upside_capture'] = capture([x for x in aligned if x['b'] > 0])
     out['downside_capture'] = capture([x for x in aligned if x['b'] < 0])
     if len(rets) < MIN['max_drawdown']:
-        out['max_drawdown'] = _na('INSUFFICIENT_SAMPLE')
+        out['max_drawdown'] = _na('INSUFFICIENT_SAMPLE', samples=len(rets))
     else:
         peak, mdd = None, 0
         for p in ledger['points']:
@@ -123,7 +124,7 @@ def metrics(days=(), indices=None, sources=None, basis='KRW', types=None, hits=N
                 mdd = dd
         out['max_drawdown'] = _ok(mdd, samples=len(rets))
     if len(rets) < MIN['volatility']:
-        out['volatility'] = _na('INSUFFICIENT_SAMPLE')
+        out['volatility'] = _na('INSUFFICIENT_SAMPLE', samples=len(rets))
     else:
         m = _mean(rets)
         v = 0

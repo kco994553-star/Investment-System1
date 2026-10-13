@@ -520,22 +520,3 @@ def test_debt_is_short_plus_long_plus_bonds_plus_leases_without_double_counting(
     bad = base + [_fs('ifrs-full_ShorttermBorrowings', 'BS', '100'), _fs('ifrs-full_LongtermBorrowings', 'BS', 'n/a')]
     values, _, reasons = extract_financials({'list': bad}, reprt_code='11011')
     assert values['total_debt'] is None and reasons['total_debt'] == 'UNPARSEABLE'
-
-
-def test_public_debt_lineage_accepts_multiple_defined_components_only(tmp_path):
-    import copy
-    _, files, _ = run(tmp_path, FakeOpenDart())
-    payload = files[dp.FINANCIALS_FILENAME]
-    company = payload['companies']['hanmi']
-    annual = company['annual']
-    annual['inputs']['total_debt'] = 300
-    annual['concepts']['total_debt'] = 'ifrs-full_ShorttermBorrowings+ifrs-full_LongtermBorrowings'
-    annual['missing']['total_debt'] = None
-    company['qg'] = dp.compute_qg('hanmi', annual)
-    assert dp.require_financials(payload) is payload
-    for value in ('ifrs-full_ShorttermBorrowings+ifrs-full_Revenue',
-                  'ifrs-full_ShorttermBorrowings+ifrs-full_ShorttermBorrowings'):
-        bad = copy.deepcopy(payload)
-        bad['companies']['hanmi']['annual']['concepts']['total_debt'] = value
-        with pytest.raises(ValueError):
-            dp.require_financials(bad)
