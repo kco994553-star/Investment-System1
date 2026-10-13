@@ -25,8 +25,8 @@ const META=Object.freeze({employment:{agency:'BLS',source_series_id:'BLS:LNS1400
  inflation:{agency:'BLS',source_series_id:'BLS:CUUR0000SA0',source:'BLS CUUR0000SA0 · CPI-U all items, NSA, monthly'},
  curve:{agency:'TREASURY',source_series_id:'TREASURY:daily_treasury_yield_curve:BC_10YEAR-BC_3MONTH',source:'U.S. Treasury daily par yield curve · 10 Yr − 3 Mo'}});
 const AS_OF_KEY=Object.freeze({employment:'period',inflation:'period',curve:'date'});
-// Symbols the Worker serves today (implementation/worker/src/index.js BENCHMARK_SYMBOLS). HYG / IEF need owner approval.
-const WORKER_ALLOWED=Object.freeze(['SPY']),RANGE='5y';
+// User-approved expansion; this PR depends on the matching HYG / IEF Worker release. An old Worker fails closed.
+const WORKER_ALLOWED=Object.freeze(['SPY','HYG','IEF']),RANGE='5y';
 const num=v=>typeof v==='number'&&Number.isFinite(v);
 const MONTH=/^\d{4}-(?:0[1-9]|1[0-2])$/,DAY=/^\d{4}-\d{2}-\d{2}$/;
 function validDay(t){if(typeof t!=='string'||!DAY.test(t))return false;const ms=Date.parse(t+'T00:00:00Z');return Number.isFinite(ms)&&new Date(ms).toISOString().slice(0,10)===t;}
@@ -179,7 +179,7 @@ function merge(bundle,device=deviceRows){
  lights.market=device&&device.market?device.market:unavailable('market','DEVICE_NOT_LOADED');
  lights.credit=creditBlocked()?unavailable('credit','WORKER_ALLOWLIST_REQUIRED'):device&&device.credit?device.credit:unavailable('credit','DEVICE_NOT_LOADED');
  const result=macroState(lights,pub.cpi_yoy,pub.growth);
- current={state:result.state,lit_count:result.lit_count,available_count:result.available_count,low_confidence:result.low_confidence};
+ current={state:result.available_count===0?null:result.state,lit_count:result.lit_count,available_count:result.available_count,low_confidence:result.low_confidence};
  return{...result,lights,cpi_yoy:pub.cpi_yoy,growth:pub.growth,growth_period:pub.growth_period,as_of:pub.as_of};
 }
 function setPublic(bundle){try{return merge(bundle);}catch(_){return null;}}
@@ -235,10 +235,11 @@ function render(host,merged,{locale,status='',onLoad=null,legacy=null}={}){
  card.append(el('h2',x('매크로 상태','Macro state')),el('p',CONFIG.marker,{class:'badge','data-macro-lights-marker':''}));
  const head=el('p',undefined,{'data-macro-lights-summary':''});
  head.append(el('span',x('매크로(','Macro(')+merged.available_count+x('/5 경고등)','/5 lights)'),{'data-macro-lights-count':String(merged.available_count)}),doc.createTextNode(' · '),
-  el('span',x(STATE_LABEL[merged.state][0],STATE_LABEL[merged.state][1]),{class:merged.state==='NORMAL'?'badge':merged.state==='WARNING'?'badge partial':'badge vt-disclaimer','data-macro-lights-verdict':merged.state}),
+  el('span',merged.available_count===0?x('매크로 확인 불가','Macro unavailable'):x(STATE_LABEL[merged.state][0],STATE_LABEL[merged.state][1]),{class:merged.available_count===0?'badge NOT_AVAILABLE':merged.state==='NORMAL'?'badge':merged.state==='WARNING'?'badge partial':'badge vt-disclaimer','data-macro-lights-verdict':merged.available_count===0?'NOT_AVAILABLE':merged.state}),
   doc.createTextNode(' · '+x('켜짐 ','lit ')+merged.lit_count+x('개','')));
  if(merged.low_confidence)head.append(doc.createTextNode(' '),el('span',x('판정 신뢰도 낮음','Low confidence'),{class:'badge partial','data-macro-low-confidence':''}));
  card.append(head);
+ if(merged.available_count===0)card.append(el('p',x('매크로 자료로 인한 확대 제한 없음 · U3 확인 불가','No expansion restriction from macro data · U3 unavailable'),{class:'small','data-macro-unavailable':''}));
  const list=el('ul',undefined,{class:'list','data-macro-lights-list':''});
  for(const name of LIGHTS){const r=merged.lights[name],label=r.lit===true?x('켜짐','On'):r.lit===false?x('꺼짐','Off'):x('자료 없음','No data');
   const li=el('li',undefined,{'data-macro-light':name,'data-macro-light-state':r.lit===true?'ON':r.lit===false?'OFF':'NO_DATA'});
@@ -250,7 +251,7 @@ function render(host,merged,{locale,status='',onLoad=null,legacy=null}={}){
  const why=merged.reasons.join(', ');
  card.append(el('p',x('판정 근거: ','Basis: ')+why+(merged.growth!==null?' · '+x('성장(GDP) ','growth (GDP) ')+pct(merged.growth)+' ('+merged.growth_period+')':' · '+x('성장(GDP) 자료 없음','growth (GDP) not available')),{class:'small','data-macro-lights-reasons':why}));
  card.append(el('p',x('자료 없는 경고등은 판정에서 뺍니다. 매크로는 무엇을 얼마나 빨리 살지만 조절하며 매도 판단에는 쓰지 않습니다. 과거 재생(2000·2008·2020·2022) 검증 전 v1 · UNCALIBRATED.','Lights without data are excluded. Macro only paces buying and is never used for sell decisions. v1 · UNCALIBRATED until the 2000/2008/2020/2022 replay is validated.'),{class:'small'}));
- if(onLoad){const b=el('button',x('SPY 불러와 시장 경고등 계산 (기기 RAM)','Load SPY and compute the market light (device RAM)'),{type:'button','data-macro-lights-load':''});b.addEventListener('click',onLoad);card.append(b);}
+ if(onLoad){const b=el('button',x('SPY·HYG·IEF 불러와 경고등 계산 (기기 RAM)','Load SPY, HYG and IEF to compute lights (device RAM)'),{type:'button','data-macro-lights-load':''});b.addEventListener('click',onLoad);card.append(b);}
  card.append(el('p',status,{role:'status','data-macro-lights-status':status}));
  if(legacy){const det=el('details',undefined,{'data-macro-legacy':''});det.append(el('summary',x('자세히','Details')),el('p',x('이전 기준(v0.1.1)','Previous rule (v0.1.1)')+': '+legacy.state+(legacy.rule_label?' · '+legacy.rule_label:''),{'data-macro-legacy-state':legacy.state}));card.append(det);}
  host.replaceChildren(card);return card;

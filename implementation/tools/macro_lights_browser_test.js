@@ -41,13 +41,14 @@ async function lights(page){return page.locator('[data-macro-light]').evaluateAl
     await page.goto(BASE+'#macro');await page.locator('[data-macro-lights]').waitFor();
     assert.deepEqual(await lights(page),[['employment','NO_DATA'],['inflation','NO_DATA'],['curve','NO_DATA'],['market','NO_DATA'],['credit','NO_DATA']]);
     assert.equal(await page.locator('[data-macro-lights-count]').textContent(),'매크로(0/5 경고등)');
-    assert.equal(await page.locator('[data-macro-lights-verdict]').textContent(),'정상');
+    assert.equal(await page.locator('[data-macro-lights-verdict]').textContent(),'매크로 확인 불가');
     assert.equal(await page.locator('[data-macro-low-confidence]').textContent(),'판정 신뢰도 낮음');
-    assert.ok((await page.locator('[data-macro-light="credit"]').textContent()).includes('확인 불가 · Worker 허용 목록 필요'));
+    assert.ok((await page.locator('[data-macro-light="credit"]').textContent()).includes('기기 가격을 불러오지 않았습니다'));
     assert.equal(await page.locator('[data-macro-lights-marker]').textContent(),'v1 · UNCALIBRATED');
     assert.ok((await page.locator('[data-macro-lights]').textContent()).includes('매도 판단에는 쓰지 않습니다'));
     assert.equal(await page.locator('[data-macro-regime]').textContent(),'자료 없음');
-    assert.deepEqual(await page.evaluate(()=>MacroLights.current()),{state:'NORMAL',lit_count:0,available_count:0,low_confidence:true});
+    assert.deepEqual(await page.evaluate(()=>MacroLights.current()),{state:null,lit_count:0,available_count:0,low_confidence:true});
+    assert.ok((await page.locator('[data-macro-unavailable]').textContent()).includes('확대 제한 없음'));
     assert.equal(seen.errors,0);assert.deepEqual(seen.outside,[]);await ctx.close();pass++;}
    phase='PUBLIC '+width;
    {const {ctx,page,seen}=await context(browser,width,macroScreen());
@@ -86,7 +87,7 @@ async function lights(page){return page.locator('[data-macro-light]').evaluateAl
     assert.deepEqual(await page.evaluate(()=>window.__reads),[],'no request before the click');
     await page.locator('[data-macro-lights-load]').click();
     await page.locator('[data-macro-lights-status="READY"]').waitFor();
-    assert.deepEqual(await page.evaluate(()=>window.__reads),[['SPY','5y']],'only SPY is requested; HYG/IEF are not in the Worker allowlist');
+    assert.deepEqual(await page.evaluate(()=>window.__reads),[['SPY','5y'],['HYG','1y']],'old Worker rejects HYG; credit fails closed without retry');
     assert.deepEqual(await lights(page),[['employment','ON'],['inflation','OFF'],['curve','ON'],['market','ON'],['credit','NO_DATA']]);
     const market=await page.locator('[data-macro-light="market"]').textContent();assert.ok(/52주 고점 대비 -\d+\.\d{2}%/.test(market),market);
     assert.equal(await page.locator('[data-macro-lights-verdict]').textContent(),'위기');
@@ -95,6 +96,15 @@ async function lights(page){return page.locator('[data-macro-light]').evaluateAl
     assert.deepEqual(await page.evaluate(()=>MacroLights.current()),{state:'CRISIS',lit_count:3,available_count:4,low_confidence:false});
     assert.equal(await storage(page),before,'nothing is stored');assert.deepEqual(seen.writes,[],'nothing is sent');
     assert.ok(!(await storage(page)).includes('%'));
+    // Matching Worker release: all three requested symbols succeed; ratio computed in RAM.
+    await page.evaluate(spy=>{const session={state:()=>({enabled:true,connected:true}),revision:()=>1,setEnabled(){},subscribe:()=>()=>{},
+     async fetchHistory(origin,symbol,range){window.__reads.push([symbol,range]);return{schema:'private-history/1',provider:'Yahoo Finance(비공식)',symbol,range,currency:'USD',exchange:'PCX',timezone:'America/New_York',interval:'1d',basis:'RAW_CLOSE',delay_status:'UNKNOWN',read_at:'2026-10-10T21:00:00Z',bars:spy};}};
+     window.GoogleSheetQuotes={...GoogleSheetQuotes,sessionFor:()=>session};},bars());
+    await open(page,'home','main');await open(page,'macro','[data-macro-lights-load]');
+    await page.locator('[data-macro-lights-load]').click();await page.locator('[data-macro-lights-status="READY"]').waitFor();
+    assert.deepEqual((await page.evaluate(()=>window.__reads)).slice(-3),[['SPY','5y'],['HYG','1y'],['IEF','1y']]);
+    assert.equal((await page.evaluate(()=>MacroLights.current())).available_count,5);
+    assert.equal(await storage(page),before);assert.deepEqual(seen.writes,[]);
     await noOverflow(page,'device '+width);await page.screenshot({path:SHOTS+'/macro-lights-device-'+width+'.png',fullPage:true}).catch(()=>{});
     assert.equal(seen.errors,0);assert.deepEqual(seen.outside,[]);await ctx.close();pass++;}
   }

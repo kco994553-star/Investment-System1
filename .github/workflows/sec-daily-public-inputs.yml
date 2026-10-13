@@ -74,6 +74,10 @@ jobs:
         run: |
           python implementation/tools/sec_universe_shares.py --live --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - name: Project collected DART inputs with the same QGV v2 formulae (reference only)
+        run: |
+          python implementation/tools/project_dart_qgv2.py --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Append forward validation ledger (price-free, append-only)
         env:
           RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}

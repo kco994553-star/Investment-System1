@@ -32,7 +32,7 @@ test('missing values are never zero: a null light is excluded, not counted as of
   assert.equal(M.employmentLight([['2031-01', null]]).lit, null);
 });
 test('merge: public lights + device lights; credit stays blocked until HYG/IEF are in the Worker allowlist', () => {
-  assert.deepStrictEqual([...M.WORKER_ALLOWED], ['SPY']);
+  assert.deepStrictEqual([...M.WORKER_ALLOWED], ['SPY','HYG','IEF']);
   M.clearDevice();
   assert.equal(M.current(), null);
   const bundle = {'macro-screen.json': {as_of: '2031-05-01T00:00:00+00:00', data: {growth_inflation_v0: {axes: {Growth: {state: 'LIVE', value: '-0.01', period: '2031Q1'}}},
@@ -41,17 +41,17 @@ test('merge: public lights + device lights; credit stays blocked until HYG/IEF a
       inflation: {state: 'LIVE', lit: true, reason: 'LIT', as_of: '2031-04', source: 's', values: {period: '2031-04', base_period: '2030-04', yoy: 0.06}},
       curve: {state: 'NOT_AVAILABLE', lit: null, reason: 'SOURCE_NOT_COLLECTED', as_of: null, source: 's', values: {date: null, ten_year: null, three_month: null, spread: null, run_days: null}}}}}}};
   const m = M.merge(bundle);
-  assert.equal(m.lights.credit.reason, 'WORKER_ALLOWLIST_REQUIRED'); assert.equal(m.lights.credit.lit, null); assert.equal(m.lights.credit.estimate, true);
+  assert.equal(m.lights.credit.reason, 'DEVICE_NOT_LOADED'); assert.equal(m.lights.credit.lit, null); assert.equal(m.lights.credit.estimate, true);
   assert.equal(m.lights.market.reason, 'DEVICE_NOT_LOADED');
   assert.deepStrictEqual(m.reasons, ['LIT_COUNT_EQ_2', 'INFLATION_GT_5PCT_AND_GROWTH_LT_0', 'AVAILABLE_LT_3']);
   assert.deepStrictEqual(M.current(), {state: 'WARNING', lit_count: 2, available_count: 2, low_confidence: true});
   const withMarket = M.merge(bundle, {market: {lit: true, reason: 'LIT'}, credit: {lit: true, reason: 'LIT'}});
-  assert.equal(withMarket.state, 'CRISIS'); assert.deepStrictEqual(withMarket.reasons, ['LIT_COUNT_GE_3']);
-  assert.equal(withMarket.lights.credit.reason, 'WORKER_ALLOWLIST_REQUIRED', 'device credit is ignored while blocked');
+  assert.equal(withMarket.state, 'CRISIS'); assert.deepStrictEqual(withMarket.reasons, ['LIT_COUNT_GE_3','MARKET_AND_CREDIT_LIT']);
+  assert.equal(withMarket.lights.credit.lit, true);
   const empty = M.merge({});
-  assert.deepStrictEqual(M.current(), {state: 'NORMAL', lit_count: 0, available_count: 0, low_confidence: true});
+  assert.deepStrictEqual(M.current(), {state: null, lit_count: 0, available_count: 0, low_confidence: true});
   assert.equal(empty.lights.employment.reason, 'SOURCE_NOT_COLLECTED');
-  const copy = M.current(); copy.state = 'CRISIS'; assert.equal(M.current().state, 'NORMAL', 'current() returns a copy');
+  const copy = M.current(); copy.state = 'CRISIS'; assert.equal(M.current().state, null, 'current() returns a copy');
 });
 test('device readiness never requests prices without opt-in, approved origin and session', () => {
   assert.equal(M.readiness({}, {}, null), 'OFF');
