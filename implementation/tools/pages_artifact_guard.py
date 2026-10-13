@@ -36,6 +36,7 @@ from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
+    "qgv-v2.js": "40fc8d18aff88dcd74e420ee3d0e69643330e05f948aa08541cde49e43f0d023",
     "virtual-trading-compare.js": "8cf5bd3bec35ebe688d3982928ce3f6771e1ea4364966fb51a5f29cfeee0642c",
     "report-benchmarks.js": "7a274ba8467880791df30deb17145396111e38c2d2598f7c654a0564c00aa6e9",
     "virtual-trading-runner.js": "ce55e6428f52f81ff664870fad5f0944f7b4f46f697058aa018d919d7da561db",
@@ -98,7 +99,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "9fa1d20f59c7fed1c32d227632b68674c32f99f6f569cee09995b568be6edc53",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "3833f7d967421fea1044c9fede5f3578ef90356f35a302d7dab6500ba28c4753",
+    "index.html": "2d3bc979c11b457d17c9b18098e1255970c2376140274c07ba2b08e2feca5da7",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",

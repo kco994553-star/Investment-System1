@@ -42,3 +42,4 @@ s16_s13_reference_node_test.js
 sheet_example_tabs_node_test.js
 virtual_trading_compare_node_test.js
 report_benchmarks_node_test.js
+qgv_v2_node_test.js
