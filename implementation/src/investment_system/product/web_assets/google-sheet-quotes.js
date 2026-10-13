@@ -42,8 +42,18 @@
     const match = /^\/spreadsheets\/(?:u\/\d+\/)?d\/([A-Za-z0-9_-]{20,100})(?:\/(?:edit|view|preview|copy))?\/?$/.exec(url.pathname);
     if (!match) fail('INVALID'); return match[1];
   }
+  // Example_* tabs (e.g. Example_SetA_Trades) are the user's own worked examples: the app never reads, writes, lists or
+  // validates them, and never mistakes them for Trades/Holdings/Virtual*/Quotes/Universe (decision 2026-10-11).
+  const IGNORED_TAB = /^Example_/;
+  function isIgnoredTab(title) { return typeof title === 'string' && IGNORED_TAB.test(title); }
+  // The sheet (tab) name a values range addresses: 'Quoted name'!A1:B2, Name!A1:B2 or a bare Name.
+  function rangeSheet(range) {
+    const text = String(range).trim();
+    if (text.startsWith("'")) { let out = '', i = 1; for (; i < text.length; i++) { if (text[i] === "'") { if (text[i + 1] === "'") { out += "'"; i++; continue; } return out; } out += text[i]; } return out; }
+    const bang = text.indexOf('!'); return bang < 0 ? text : text.slice(0, bang);
+  }
   function sheetsURL(id, range) {
-    if (extractSpreadsheetId(id) !== id || typeof range !== 'string' || !range.trim() || range.length > 160 || /[\x00-\x1f\x7f]/.test(range)) fail('INVALID');
+    if (extractSpreadsheetId(id) !== id || typeof range !== 'string' || !range.trim() || range.length > 160 || /[\x00-\x1f\x7f]/.test(range) || isIgnoredTab(rangeSheet(range))) fail('INVALID');
     return 'https://sheets.googleapis.com/v4/spreadsheets/' + encodeURIComponent(id) + '/values/' + encodeURIComponent(range) + '?valueRenderOption=UNFORMATTED_VALUE&dateTimeRenderOption=SERIAL_NUMBER';
   }
   function validScope(value) {
@@ -159,26 +169,37 @@
       if(!body||body.properties?.title!=='Investment Cockpit Data'||!Array.isArray(body.sheets)||JSON.stringify(body).length>1048576)fail('INVALID');
       const value=await sheetRequest('?fields=spreadsheetId','POST',body);return extractSpreadsheetId(value.spreadsheetId);
     }
+    // Universe tab fill (existing header-only tab): codes + the template's GOOGLEFINANCE formulas at rows 2..n+1 (drive.file, no new scope).
+    async function fillUniverse(id,rows){
+      if(extractSpreadsheetId(id)!==id||!Array.isArray(rows)||!rows.length||rows.length>1024||!rows.every((r,i)=>Array.isArray(r)&&r.length===3&&typeof r[0]==='string'&&/^(?:(?:NASDAQ|NYSE|BATS):[A-Z][A-Z0-9.]{0,15}|KRX:\d{6}|TYO:\d{4})$/.test(r[0])
+        &&r[1]==='=IFERROR(GOOGLEFINANCE(A'+(i+2)+',"marketcap"),"")'&&r[2]==='=IFERROR(GOOGLEFINANCE(A'+(i+2)+',"price"),"")'))fail('INVALID');
+      const range="'Universe'!A2:C"+(rows.length+1);
+      await sheetRequest('/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+'?valueInputOption=USER_ENTERED','PUT',{range,majorDimension:'ROWS',values:rows},'WRITE_FAILED');
+    }
     // S17 only: writes are limited to the AI mailbox tabs (ReportInbox/ReportOutbox) and the virtual ledger tabs (D-10:
-    // VirtualA/VirtualB/VirtualMine/VirtualMeta/VirtualFlags) of the user's own sheet (drive.file, no new scope).
-    const REPORT_TABS=['ReportInbox','ReportOutbox','VirtualA','VirtualB','VirtualMine','VirtualMeta','VirtualFlags'];
+    // VirtualA/VirtualB/VirtualC/VirtualD/VirtualMine/VirtualMeta/VirtualFlags) of the user's own sheet (drive.file, no new
+    // scope). Example_* tabs are never on this list.
+    const REPORT_TABS=['ReportInbox','ReportOutbox','VirtualA','VirtualB','VirtualC','VirtualD','VirtualMine','VirtualMeta','VirtualFlags'];
     async function addTabs(id,titles){
       if(extractSpreadsheetId(id)!==id||!Array.isArray(titles)||!titles.length||!titles.every(t=>REPORT_TABS.includes(t)))fail('INVALID');
       await sheetRequest('/'+encodeURIComponent(id)+':batchUpdate','POST',{requests:titles.map(title=>({addSheet:{properties:{title}}}))},'WRITE_FAILED');
     }
     async function appendRows(id,range,rows){
-      if(extractSpreadsheetId(id)!==id||typeof range!=='string'||!/^'(?:Report(?:Inbox|Outbox)|Virtual(?:A|B|Mine|Meta|Flags))'!A1$/.test(range)||!Array.isArray(rows)||!rows.every(r=>Array.isArray(r)&&r.every(v=>typeof v==='string'&&v.length<=50000))||JSON.stringify(rows).length>262144)fail('INVALID');
+      if(extractSpreadsheetId(id)!==id||typeof range!=='string'||!/^'(?:Report(?:Inbox|Outbox)|Virtual(?:A|B|C|D|Mine|Meta|Flags))'!A1$/.test(range)||!Array.isArray(rows)||!rows.every(r=>Array.isArray(r)&&r.every(v=>typeof v==='string'&&v.length<=50000))||JSON.stringify(rows).length>262144)fail('INVALID');
       await sheetRequest('/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS','POST',{values:rows},'WRITE_FAILED');
     }
     // Holdings tab (capture + personal AI): created only on the user's click, header row + plain-text cells, never overwritten.
     const HOLDINGS_HEADER=['as_of','symbol','quantity','avg_cost','currency','cost_krw','name'];
-    async function sheetTabs(id){
+    async function allTabs(id){
       if(extractSpreadsheetId(id)!==id)fail('INVALID');const value=await sheetRequest('/'+encodeURIComponent(id)+'?fields=sheets(properties(title,sheetId))');
       if(!Array.isArray(value.sheets)||value.sheets.length>200)fail('READ_FAILED');
       const tabs=value.sheets.map(s=>({title:s?.properties?.title,sheetId:s?.properties?.sheetId}));if(tabs.some(x=>typeof x.title!=='string'||x.title.length>100||!Number.isSafeInteger(x.sheetId)||x.sheetId<0))fail('READ_FAILED');return tabs;
     }
+    // Title listings never include Example_* tabs.
+    async function sheetTabs(id){return (await allTabs(id)).filter(t=>!isIgnoredTab(t.title));}
     async function addHoldingsTab(id){
-      const tabs=await sheetTabs(id),found=tabs.find(t=>t.title==='Holdings');if(found)return {sheetId:found.sheetId,created:false};
+      // A new tab id must not collide with any tab, Example_* ones included (they are only hidden, never touched).
+      const tabs=await allTabs(id),found=tabs.find(t=>t.title==='Holdings');if(found)return {sheetId:found.sheetId,created:false};
       let sheetId=Math.max(1000,...tabs.map(t=>t.sheetId))+1;if(!Number.isSafeInteger(sheetId)||sheetId>2147483647)fail('WRITE_FAILED');
       const range={sheetId,startRowIndex:0,startColumnIndex:0,endColumnIndex:7};
       await sheetRequest('/'+encodeURIComponent(id)+':batchUpdate','POST',{requests:[
@@ -190,7 +211,7 @@
     async function sheetTitles(id){
       if(extractSpreadsheetId(id)!==id)fail('INVALID');const value=await sheetRequest('/'+encodeURIComponent(id)+'?fields=sheets(properties(title))');
       if(!Array.isArray(value.sheets)||value.sheets.length>200)fail('READ_FAILED');
-      const titles=value.sheets.map(s=>s?.properties?.title);if(titles.some(x=>typeof x!=='string'||x.length>100))fail('READ_FAILED');return titles;
+      const titles=value.sheets.map(s=>s?.properties?.title);if(titles.some(x=>typeof x!=='string'||x.length>100))fail('READ_FAILED');return titles.filter(t=>!isIgnoredTab(t));
     }
     function pickSpreadsheet(config){
       expire();if(!enabled||!token)fail('AUTH_REQUIRED');const api=view.google?.picker;
@@ -273,7 +294,7 @@
       } finally { controllers.delete(abort); if(signal)signal.removeEventListener('abort',cancel); }
     }
     if (view.addEventListener) view.addEventListener('pagehide', () => { invalidate(); error='AUTH_REQUIRED'; notify(); });
-    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, fetchHistory, createSpreadsheet, sheetTitles, sheetTabs, addHoldingsTab, pickSpreadsheet, addTabs, appendRows, revision: () => epoch,
+    return Object.freeze({ state, setEnabled, prepare, login, disconnect, fetchValues, fetchHistory, createSpreadsheet, fillUniverse, sheetTitles, sheetTabs, addHoldingsTab, pickSpreadsheet, addTabs, appendRows, revision: () => epoch,
       subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); } });
   }
   function translate(state, key) { return TEXT[key][state.locale === 'en-US' ? 1 : 0]; }
@@ -412,5 +433,5 @@
     }
     if (state.storageFailed) notice(state, 'storage'); else await history(state);
   }
-  return Object.freeze({ mount, extractSpreadsheetId, sheetsURL, createSession, sessionFor, historyOrigin, HISTORY_SYMBOLS: Object.freeze([...HISTORY_SYMBOLS]) });
+  return Object.freeze({ mount, extractSpreadsheetId, sheetsURL, isIgnoredTab, rangeSheet, createSession, sessionFor, historyOrigin, HISTORY_SYMBOLS: Object.freeze([...HISTORY_SYMBOLS]) });
 });

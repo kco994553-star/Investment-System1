@@ -150,6 +150,15 @@ def v_store():
             '2026-10-21': {'nvda': 'x'}, '2026-10-22': {'nvda': 61.0, 'googl': 0}}
 
 
+def v_composition():
+    # V history /2 composition keys (factor ids present that day); invalid entries are dropped, nothing is invented.
+    return {'2026-10-20': {'nvda': 'f_one+f_two', 'amd': 'Bad Key'}, 'bad-date': {'nvda': 'f_one'}, '2026-10-22': {'nvda': 'f_one+f_two', 'googl': 7}}
+
+
+def user_target():
+    return {'nvda': 30, 'hanmi': 20, 'tokyo_electron': 10, 'msft': 20}
+
+
 def flags():
     return [{'date': '2026-10-22', 'kind': 'HOLD', 'company': 'googl', 'note': 'dropped'},
             {'date': '2026-10-23', 'kind': 'SELL', 'company': 'nvda'}, {'date': 'x', 'kind': 'HOLD', 'company': 'amd'}]
@@ -159,7 +168,7 @@ def scenarios():
     days = [d for d in DAYS if d >= '2026-10-19']
     base = {'config': {'start_date': '2026-10-19'}, 'catalog': catalog(), 'forward_ledger': forward_ledger(days),
             'classification': classification(), 'histories': histories(), 'holdings': holdings(), 'set_b': None,
-            'v_store': v_store(), 'flags': flags()}
+            'sets': None, 'user_target': user_target(), 'v_store': v_store(), 'v_composition': v_composition(), 'flags': flags()}
     out = [{'name': 'full_synthetic', 'inputs': base, 'engine': ['SET_A', 'SHADOW']}]
     s = copy.deepcopy(base)
     s['histories'] = {'SPY': {'error': 'REQUEST_INVALID'}}  # the device stops requesting after SPY fails
@@ -188,6 +197,17 @@ def scenarios():
     s['set_b'] = {'target_weights': {'nvda': 80, 'msft': 35}}
     s['config'] = {'start_date': '2026-11-02'}
     out.append({'name': 'set_b_invalid_before_start', 'inputs': s, 'engine': ['SET_A']})
+    # User sets B/C/D (decision 2026-10-11): members are TARGET companies or allowlisted ETFs (SMH priced, VUG not
+    # requested here → absent closes, never filled); an unknown member makes that set invalid. No user target → the
+    # shadow ledger is TARGET_NOT_AVAILABLE (TARGET v0 is not substituted).
+    s = copy.deepcopy(base)
+    s['sets'] = {'SET_B': {'target_weights': {'nvda': 40, 'msft': 35.5, 'hanmi': 24.5}}, 'SET_C': {'target_weights': {'smh': 30, 'nvda': 20, 'vug': 10}},
+                 'SET_D': {'target_weights': {'zzz': 10}}, 'SET_A': {'target_weights': {'xli': 5, 'asml': 50}}}
+    s['user_target'] = None
+    out.append({'name': 'sets_c_d_etf_members_no_user_target', 'inputs': s, 'engine': ['SET_C']})
+    s = copy.deepcopy(base)
+    s['user_target'] = {'nvda': 70, 'amd': 40}
+    out.append({'name': 'user_target_invalid', 'inputs': s})
     return out
 
 
@@ -212,7 +232,8 @@ def build():
                 engine[kind] = project(vt.run_ledger(run_cfg, copy.deepcopy(entry['input'])))
         vectors.append({'name': sc['name'], 'inputs': inputs,
                         'required_symbols': vi.required_symbols(catalog=inputs['catalog'], classification=inputs['classification'],
-                                                                holdings=inputs['holdings'], set_b=inputs['set_b']),
+                                                                holdings=inputs['holdings'], set_b=inputs['set_b'], sets=inputs['sets'],
+                                                                user_target=inputs['user_target']),
                         'expected': expected, 'expected_engine': engine})
     return {'schema_version': 1, 'note': NOTE, 'synthetic': True, 'vectors': vectors}
 

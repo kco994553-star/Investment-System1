@@ -1,7 +1,7 @@
-'use strict';const {chromium}=require('playwright');
+'use strict';const {chromium}=require('playwright'),{routeEmptyPublicScreens}=require('./empty_public_screens.js');
 (async()=>{let pass=0,fail=0,phase='INIT';const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});
 try{for(const width of [390,1440]){
- const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),page=await context.newPage();await page.route('**/*',r=>new URL(r.request().url()).origin===new URL(process.env.PAGES_COCKPIT_URL).origin?r.continue():r.abort());await page.goto(process.env.PAGES_COCKPIT_URL+'#settings');await page.locator('[data-universe-source]').waitFor();await page.locator('[data-universe-source]').fill('u'.repeat(24));await page.locator('[data-universe-settings] button[type="submit"]').click();
+ const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});await routeEmptyPublicScreens(context);const page=await context.newPage();await page.route('**/*',r=>new URL(r.request().url()).origin===new URL(process.env.PAGES_COCKPIT_URL).origin?r.fallback():r.abort());await page.goto(process.env.PAGES_COCKPIT_URL+'#settings');await page.locator('[data-universe-source]').waitFor();await page.locator('[data-universe-source]').fill('u'.repeat(24));await page.locator('[data-universe-settings] button[type="submit"]').click();
  phase='SEED';await page.evaluate(async()=>{
   await DeviceActual.sheetSettings(window,{schema:'device-google-sheet-settings/1',enabled:true,spreadsheet_id:'',range:'Quotes!A1:C22'});
   let epoch=1,connected=true;const listeners=new Set();window.__subsetAudit={reads:0};window.__subsetLogout=()=>{connected=false;epoch++;listeners.forEach(f=>f());};

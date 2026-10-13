@@ -3,9 +3,11 @@
 // from the local build (public screens empty, synthetic price-free forward ledger), the private history Worker and the
 // Google Sheets API are in-memory SYNTHETIC mocks, anything else is aborted and counted. Checks: before 2026-10-19 the
 // Set B form saves a definition but nothing is recorded; after the start date "장부 시트에 기록" appends only the missing
-// sessions (append-only), a second click is impossible, a changed cell shows LEDGER_REPLAY_MISMATCH with no write;
-// TARGET → shadow snapshot → record → re-sync keeps the recorded rows; no amount on screen, nothing in device storage or
-// the console.
+// sessions (append-only), a second click is impossible; a changed cell (decision 2026-10-11) marks PRICE_REVISED and the
+// next sessions are written from the recorded state without rewriting anything; the user's Example_* tab is never read;
+// Set B needs a purpose and then the 비교 tab appears (phone: 2–3 sets picked); without the user's own target the shadow
+// ledger is NOT_AVAILABLE, "세트 A 목표를 내 목표로 복사" writes the target, then TARGET → shadow snapshot → record →
+// re-sync keeps the recorded rows; no amount on screen, nothing in device storage or the console.
 const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
 const { routeEmptyPublicScreens } = require('./empty_public_screens');
@@ -46,10 +48,10 @@ function sheetsMock(tabs) {
     const method = request.method(), path = decodeURIComponent(url.pathname), prefix = '/v4/spreadsheets/' + SHEET;
     if (request.headers().authorization !== 'Bearer ' + TOKEN || !path.startsWith(prefix)) { log.push('UNSAFE ' + method); return route.abort(); }
     const json = (body) => route.fulfill({ headers: cors, contentType: 'application/json', body: JSON.stringify(body) });
-    if (method === 'GET' && path === prefix && url.searchParams.get('fields') === 'sheets(properties(title))') { log.push('GET titles'); return json({ sheets: ['Quotes', 'Trades', ...tabs.keys()].map((title) => ({ properties: { title } })) }); }
+    if (method === 'GET' && path === prefix && url.searchParams.get('fields') === 'sheets(properties(title))') { log.push('GET titles'); return json({ sheets: ['Quotes', 'Trades', 'Example_SetA_Trades', 'Example_VirtualA', ...tabs.keys()].map((title) => ({ properties: { title } })) }); }
     if (method === 'POST' && path === prefix + ':batchUpdate') {
       const body = JSON.parse(request.postData());
-      for (const r of body.requests) { assert.ok(/^Virtual(A|B|Mine|Meta|Flags)$/.test(r.addSheet.properties.title)); tabs.set(r.addSheet.properties.title, []); }
+      for (const r of body.requests) { assert.ok(/^Virtual(A|B|C|D|Mine|Meta|Flags)$/.test(r.addSheet.properties.title)); tabs.set(r.addSheet.properties.title, []); }
       log.push('POST addSheet ' + body.requests.map((r) => r.addSheet.properties.title).join(',')); return json({ replies: [] });
     }
     let m = /^\/values\/'([A-Za-z]+)'!A1:append$/.exec(path.slice(prefix.length));
@@ -156,27 +158,42 @@ const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
         await page.locator('[data-weight-status="SET_B"]', { hasText: 'WEIGHT_SUM_OVER_100' }).waitFor();
         assert.deepEqual(writes(sheet), []);
         await form.locator('[data-weight="amd"]').fill('25.5');
+        await form.locator('[data-weight="smh"]').fill('4.5');
+        await form.locator('[data-weight-save]').click();
+        await page.locator('[data-weight-status="SET_B"]', { hasText: 'PURPOSE_REQUIRED' }).waitFor();
+        assert.deepEqual(writes(sheet), [], 'a set needs its one-line purpose');
+        await page.locator('[data-set-purpose="SET_B"]').fill('반도체 집중과 ETF 비교');
         await form.locator('[data-weight-save]').click();
         await page.locator('[data-weight-status="SET_B"]', { hasText: '세트 B 구성을 저장했습니다' }).waitFor();
         await page.waitForFunction(() => document.querySelector('[data-ledger-sheets]')?.dataset.sheetState === 'READY' && document.querySelector('[data-weight="nvda"]')?.value === '70' && document.querySelector('[data-weight="amd"]')?.value === '25.5');
         assert.equal(await page.locator('[data-weight-form="SET_B"]').getAttribute('data-weight-state'), 'OK');
+        assert.ok((await page.locator('[data-set-purpose-shown]').textContent()).includes('반도체 집중과 ETF 비교'));
         const meta = sheet.tabs.get('VirtualMeta');
-        assert.deepEqual(meta.slice(1).map((r) => [r[1], r[3], r[4]]), [['set_b-1', 'LEDGER_START', '2026-10-19']]);
-        for (const t of ['VirtualA', 'VirtualB', 'VirtualMine']) assert.equal(sheet.tabs.get(t).length, 1, t + ' has only its header');
+        assert.deepEqual(meta.slice(1).map((r) => [r[1], r[3], r[4], JSON.parse(r[10]).purpose]), [['set_b-1', 'LEDGER_START', '2026-10-19', '반도체 집중과 ETF 비교']]);
+        for (const t of ['VirtualA', 'VirtualB', 'VirtualC', 'VirtualD', 'VirtualMine']) assert.equal(sheet.tabs.get(t).length, 1, t + ' has only its header');
+        assert.ok(!sheet.log.some((x) => x.includes('Example_')), 'Example_* tabs are never read or written');
+        // Two sets (A + B) → the 비교 tab appears; on a phone 2–3 sets are picked, the table is numbers only.
+        await page.locator('[data-report-tabs] a', { hasText: '비교' }).waitFor();
+        await go(page, 'report/mock-compare');
+        await page.locator('[data-compare][data-compare-state="READY"][data-compare-layout="PHONE"]').waitFor();
+        assert.equal(await page.locator('[data-compare-pick]').count(), 2);
+        assert.equal(await page.locator('[data-compare-set]').count(), 2);
+        assert.equal(await page.locator('[data-compare-row="period_return"] [data-state="NOT_AVAILABLE"]').count(), 2, 'before the start date: NA, never 0');
+        assert.ok(!/장점|약점|관찰항목/.test(await page.locator('[data-compare]').textContent()));
         assert.equal(traffic.worker, 0);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         assert.deepEqual(traffic.unexpected, []); assert.equal(traffic.errors, 0); assert.equal(traffic.console, 0);
       } finally { await context.close(); }
     });
     for (const width of [390, 1440]) {
-      await check('record missing sessions, resume by replay, mismatch blocks writes (' + width + ')', async () => {
+      await check('record missing sessions, resume, changed cell → PRICE_REVISED and continue from the recorded state (' + width + ')', async () => {
         const sheet = sheetsMock(new Map());
         const { context, page, traffic } = await open(browser, { now: '2026-10-31T01:00:00Z', width, sheet });
         try {
           await go(page, 'report/mock');
           await page.locator('[data-report-inputs][data-runner-state="READY"]').waitFor({ timeout: 30000 });
           await page.locator('[data-ledger-id="set_a"][data-ledger-missing="10"]').waitFor();
-          assert.ok((await page.locator('[data-missing-sessions]').textContent()).includes('빠진 거래일 재생: set_a 2026-10-19'));
+          assert.ok((await page.locator('[data-missing-sessions]').textContent()).includes('기록할 거래일: set_a 2026-10-19'));
           assert.ok((await page.locator('[data-ledger-sheets] h2').textContent()).includes('가상 · 실제 추천 아님 · 주문 기능 없음'));
           assert.deepEqual(writes(sheet), [], 'no write before the click');
           await page.locator('[data-ledger-record]').click();
@@ -194,21 +211,99 @@ const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
           await prepare(page);
           await page.locator('[data-ledger-id="set_a"][data-ledger-check="OK"]').waitFor({ timeout: 40000 });
           assert.equal(await page.locator('[data-ledger-id="set_a"]').getAttribute('data-ledger-missing'), '0');
-          // A changed cell in the private sheet: LEDGER_REPLAY_MISMATCH, the button stays disabled, no write.
+          // A changed cell in the private sheet (e.g. bars revised after recording): PRICE_REVISED, the recorded rows stay,
+          // and the missing sessions are written from the recorded state (decision 2026-10-11).
           const k = rows.findIndex((r) => r[2] === 'SUMMARY' && r[1] === '2026-10-22'); rows[k] = [...rows[k]]; rows[k][13] = String(Number(rows[k][13]) + 1);
-          sheet.tabs.set('VirtualA', rows.filter((r, i) => i === 0 || r[1] <= '2026-10-27'));
+          const truncated = rows.filter((r, i) => i === 0 || r[1] <= '2026-10-27');
+          sheet.tabs.set('VirtualA', truncated);
           await go(page, 'report/mock-set_b'); await go(page, 'report/mock');
-          await page.locator('[data-ledger-replay-mismatch]').waitFor();
-          assert.equal(await page.locator('[data-ledger-id="set_a"]').getAttribute('data-ledger-check'), 'LEDGER_REPLAY_MISMATCH');
+          await page.locator('[data-ledger-price-revised]').waitFor({ timeout: 40000 });
+          assert.equal(await page.locator('[data-ledger-id="set_a"]').getAttribute('data-ledger-check'), 'OK');
+          assert.equal(await page.locator('[data-ledger-id="set_a"]').getAttribute('data-price-revised'), '2026-10-22');
           assert.ok((await page.locator('[data-ledger-id="set_a"]').textContent()).includes('첫 차이 2026-10-22'));
-          assert.equal(await page.locator('[data-ledger-record]').isDisabled(), true);
+          await page.locator('[data-ledger-id="set_a"][data-ledger-missing="3"]').waitFor();
           assert.equal(writes(sheet).length, count);
+          const kept = JSON.stringify(truncated), keptRows = truncated.length;
+          await page.locator('[data-ledger-record]:enabled').click();
+          await page.locator('[data-ledger-status]', { hasText: '3거래일을 기록했습니다' }).waitFor();
+          const after = sheet.tabs.get('VirtualA');
+          assert.equal(JSON.stringify(after.slice(0, keptRows)), kept, 'recorded rows are never rewritten');
+          assert.deepEqual([...new Set(after.slice(keptRows).map((r) => r[1]))], ['2026-10-28', '2026-10-29', '2026-10-30']);
+          assert.ok(!sheet.log.some((x) => x.includes('Example_')), 'Example_* tabs are never read or written');
           const text = await page.locator('#virtual-ledger-sheets').textContent();
           assert.ok(noWonAmount(text) && !text.includes(CANARY), 'amount on screen');
           assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
           assert.ok(await clean(page), 'ledger reached device storage');
           assert.deepEqual(traffic.unexpected, []); assert.equal(traffic.errors, 0); assert.equal(traffic.console, 0);
           assert.ok(!sheet.log.some((x) => x.startsWith('UNSAFE') || x.startsWith('UNEXPECTED')), sheet.log.join('|'));
+        } finally { await context.close(); }
+      });
+    }
+    for (const width of [390, 1440]) {
+      await check('user sets C/D (ETF member, purpose, delete → 종료), Set A version, 비교 tab (' + width + ')', async () => {
+        const sheet = sheetsMock(new Map());
+        const { context, page, traffic } = await open(browser, { now: '2026-10-31T01:00:00Z', width, sheet });
+        try {
+          const define = async (kind, weights, purpose) => {
+            await go(page, 'report/mock-' + kind.toLowerCase()); await settled(page);
+            const form = page.locator('[data-weight-form="' + kind + '"]');
+            await form.locator('[data-weight]').first().waitFor();
+            for (const [cid, w] of Object.entries(weights)) await form.locator('[data-weight="' + cid + '"]').fill(w);
+            if (purpose !== null) await page.locator('[data-set-purpose="' + kind + '"]').fill(purpose);
+            await form.locator('[data-weight-save]:enabled').click();
+          };
+          await define('SET_C', { smh: '30', nvda: '20' }, 'ETF와 반도체 개별 종목 비교');
+          await page.locator('[data-weight-status="SET_C"]', { hasText: '세트 C 구성을 저장했습니다(set_c-1' }).waitFor();
+          await define('SET_D', { msft: '50' }, '단일 종목 기준선');
+          await page.locator('[data-weight-status="SET_D"]', { hasText: '세트 D 구성을 저장했습니다(set_d-1' }).waitFor();
+          // Set A: the v1.1 example until changed; a change starts set_a@v2, the example ledger is kept (closed).
+          await go(page, 'report/mock'); await settled(page);
+          assert.equal(await page.locator('[data-set-card="SET_A"]').getAttribute('data-set-example'), '1');
+          assert.ok((await page.locator('[data-set-card="SET_A"] h2').textContent()).includes('v1.1 예시'));
+          const formA = page.locator('[data-weight-form="SET_A"]');
+          for (const input of await formA.locator('[data-weight]').all()) await input.fill('');
+          await formA.locator('[data-weight="amd"]').fill('40'); await formA.locator('[data-weight="xlk"]').fill('10');
+          await formA.locator('[data-weight-save]:enabled').click();
+          await page.locator('[data-weight-status="SET_A"]', { hasText: 'set_a@v2' }).waitFor();
+          await page.locator('[data-set-card="SET_A"][data-set-example="0"]').waitFor();
+          await page.locator('[data-segment="set_a"][data-segment-state="CLOSED"]').waitFor();
+          const meta = sheet.tabs.get('VirtualMeta').slice(1).map((r) => [r[1], r[3]]);
+          assert.deepEqual(meta, [['set_c-1', 'LEDGER_START'], ['set_d-1', 'LEDGER_START'], ['set_a', 'LEDGER_START'], ['set_a', 'LEDGER_CLOSE'], ['set_a@v2', 'LEDGER_START']]);
+          for (const t of ['VirtualC', 'VirtualD']) assert.deepEqual(sheet.tabs.get(t)[0].slice(0, 2), ['ledger_id', 'session_date']);
+          // 비교: Set A v2 + C + D. PC shows every set; a phone picks 2–3 (default 3 here, never fewer than 2).
+          await go(page, 'report/mock-compare');
+          await page.locator('[data-compare][data-compare-state="READY"]').waitFor({ timeout: 40000 });
+          await page.locator('[data-compare-cell="set_c-1:value"][data-state="OK"]').waitFor({ timeout: 40000 });
+          const layout = await page.locator('[data-compare]').getAttribute('data-compare-layout');
+          assert.equal(layout, width >= 1024 ? 'PC' : 'PHONE');
+          assert.equal(await page.locator('[data-compare-set]').count(), 3);
+          if (width < 1024) {
+            await page.locator('[data-compare-pick="set_d-1"]').uncheck();
+            await page.locator('[data-compare-set]').nth(1).waitFor();
+            assert.equal(await page.locator('[data-compare-set]').count(), 2);
+            await page.locator('[data-compare-pick="set_c-1"]').click();
+            assert.equal(await page.locator('[data-compare-set]').count(), 2, 'never fewer than 2 sets');
+            assert.equal(await page.locator('[data-compare-pick="set_c-1"]').isChecked(), true);
+          } else assert.equal(await page.locator('[data-compare-pick]').count(), 0);
+          const table = await page.locator('[data-compare]').textContent();
+          assert.ok(noWonAmount(table) && !table.includes(CANARY), 'amounts hidden');
+          assert.ok(!/장점|약점|관찰항목/.test(table), 'numbers only, no narrative');
+          assert.ok(table.includes('ETF와 반도체 개별 종목 비교'));
+          for (const row of ['volatility', 'max_drawdown', 'upside_capture']) assert.equal(await page.locator('[data-compare-row="' + row + '"] [data-state="NOT_AVAILABLE"]').count(), await page.locator('[data-compare-set]').count(), row + ': NA below the minimum sample');
+          // Deleting set D only closes it: the definition and rows stay, the comparison drops it.
+          await go(page, 'report/mock-set_d'); await settled(page);
+          page.once('dialog', (d) => d.accept());
+          await page.locator('[data-set-delete="SET_D"]:enabled').click();
+          await page.locator('[data-weight-status="SET_D"]', { hasText: '종료했습니다' }).waitFor();
+          await page.locator('[data-segment="set_d-1"][data-segment-state="CLOSED"]').waitFor();
+          assert.equal(JSON.parse(sheet.tabs.get('VirtualMeta').at(-1)[10]).reason, 'SET_DELETED');
+          await go(page, 'report/mock-compare');
+          await page.locator('[data-compare][data-compare-state="READY"]').waitFor({ timeout: 40000 });
+          assert.equal(await page.locator('[data-compare-pick="set_d-1"], [data-compare-set="set_d-1"]').count(), 0);
+          assert.ok(!sheet.log.some((x) => x.includes('Example_')), 'Example_* tabs are never read or written');
+          assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'horizontal scroll');
+          assert.ok(await clean(page), 'ledger reached device storage');
+          assert.deepEqual(traffic.unexpected, []); assert.equal(traffic.errors, 0); assert.equal(traffic.console, 0);
         } finally { await context.close(); }
       });
     }
@@ -221,12 +316,23 @@ const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
           const snapshot = { effective_at: '2026-10-20T01:00:00Z', themes: [{ holdings: [
             { security_reference: { scheme: 'ISIN', value: 'US67066G1040' }, quantity: '12.5', average_cost: String(cost), currency: 'USD' },
             { security_reference: { code: '042700', exchange: 'KRX', scheme: 'EXCHANGE_CODE' }, quantity: '30', average_cost: '70000', currency: 'KRW' }] }] };
-          window.DeviceActual = { ...DeviceActual, readHoldings: async () => snapshot };
+          // The runner reads holdings through effectiveHoldings (stored ACTUAL or the RAM Holdings tab, #204); stub both.
+          window.DeviceActual = { ...DeviceActual, readHoldings: async () => snapshot, effectiveHoldings: async () => ({ snapshot, source: 'ACTUAL', as_of: snapshot.effective_at }) };
         }, COST_CANARY);
         await go(page, 'report/real'); await settled(page);
         assert.equal(await page.locator('[data-shadow-ledger]').getAttribute('data-shadow-state'), 'NOT_STARTED');
-        assert.equal(await page.locator('[data-target-basis]').getAttribute('data-target-basis'), 'TARGET_V0');
+        // Decision 2026-10-11: no user target → NA with the '내 목표 설정' guide; TARGET v0 is never substituted.
+        assert.equal(await page.locator('[data-target-basis]').getAttribute('data-target-basis'), 'NOT_AVAILABLE');
+        assert.equal(await page.locator('[data-user-target-guide]').getAttribute('data-user-target-state'), 'NOT_AVAILABLE');
+        assert.equal(await page.locator('[data-shadow-create]').isDisabled(), true);
+        assert.deepEqual(writes(sheet), []);
+        await page.locator('[data-copy-set-a-target]:enabled').click();
+        await page.locator('[data-copy-status]', { hasText: '세트 A 목표(19종목)를 내 목표로 복사' }).waitFor();
+        await page.locator('[data-target-basis="USER_TARGET"]').waitFor();
+        const copied = sheet.tabs.get('VirtualMeta').find((r) => r[3] === 'USER_TARGET');
+        assert.equal(Object.keys(JSON.parse(copied[10]).target_weights).length, 19, 'Set A (v1.1 example) weights copied to the sheet');
         const form = page.locator('[data-weight-form="TARGET"]');
+        for (const input of await form.locator('[data-weight]').all()) await input.fill('');
         await form.locator('[data-weight="nvda"]').fill('30'); await form.locator('[data-weight="hanmi"]').fill('20');
         await form.locator('[data-weight-save]').click();
         await page.locator('[data-weight-status="TARGET"]', { hasText: '내 목표를 저장했습니다' }).waitFor();

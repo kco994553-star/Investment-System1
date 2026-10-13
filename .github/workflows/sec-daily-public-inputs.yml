@@ -42,7 +42,7 @@ jobs:
         working-directory: implementation
         run: |
           python -m pip install pytest==9.1.1 jsonschema==4.26.0
-          python -m pytest -q --tb=no tests/test_app_nav_ia.py tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py tests/test_sec_m2_candidates.py tests/test_worker_deployment_diagnostics.py tests/test_public_sec_inputs.py tests/test_sec_reported_consumer.py tests/test_public_engine_screens.py tests/test_public_screens_pipeline.py tests/test_device_profile_defaults.py tests/test_sec_13f_managers.py tests/test_sec_universe_shares.py tests/test_macro_growth_inflation_v0.py tests/test_forward_validation_ledger.py tests/test_sic_theme_v0.py
+          python -m pytest -q --tb=no tests/test_app_nav_ia.py tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py tests/test_sec_m2_candidates.py tests/test_worker_deployment_diagnostics.py tests/test_public_sec_inputs.py tests/test_sec_reported_consumer.py tests/test_public_engine_screens.py tests/test_public_screens_pipeline.py tests/test_device_profile_defaults.py tests/test_sec_13f_managers.py tests/test_sec_universe_shares.py tests/test_sec_universe_qg.py tests/test_macro_growth_inflation_v0.py tests/test_forward_validation_ledger.py tests/test_sic_theme_v0.py
       - name: Build and inspect local price-free cockpit
         run: |
           python implementation/tools/build_pages_cockpit.py --out "$RUNNER_TEMP/public-cockpit"
@@ -66,7 +66,8 @@ jobs:
         run: |
           python implementation/tools/sec_13f_managers.py --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
-      - name: Collect Universe504 SEC shares shard (price-free public projection)
+      # One paced fetch per shard issuer feeds both price-free files: sec-universe-shares.json and sec-universe-qg.json (TARGET Q·G path).
+      - name: Collect Universe504 SEC shard (price-free shares and Q·G factor projections)
         env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
           RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}

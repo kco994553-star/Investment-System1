@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 from pathlib import Path
 import sys
@@ -19,6 +20,9 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     assets = Path(__file__).resolve().parents[1] / 'src/investment_system/product/web_assets'
     for name in ('manifest.json', 'icon-192.png', 'icon-512.png'):
         shutil.copyfile(assets / name, out / name)
+    # Price-free Universe504 code list for the Google sheet Universe tab (validated by the guard).
+    from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES, public_payload
+    (out / UNIVERSE_CODES).write_text(json.dumps(public_payload(), ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     from public_screens_pipeline import emit
     emit(out)
     from public_classification_pipeline import emit as emit_classification

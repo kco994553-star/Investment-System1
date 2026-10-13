@@ -11,6 +11,7 @@ import sys
 import pytest
 
 from investment_system.macro import growth_inflation_v0 as v0
+from investment_system.providers import macro_v0_collection as mc
 from investment_system.product.public_engine_screens import generate_screen_bundle, require_public_screen
 from investment_system.providers.macro_v0_collection import collect_macro_v0
 
@@ -265,3 +266,31 @@ def test_pipeline_publishes_v0_projection_and_no_raw_capture(tmp_path):
     require_public_screen('macro-screen.json', payload)
     assert payload['data']['growth_inflation_v0']['axes']['Growth']['source_series_code'] == 'A191RL'
     assert SECRET not in (tmp_path / 'macro-screen.json').read_text()
+
+
+def test_fed_fetch_failures_are_logged_as_fixed_tokens_only(tmp_path):
+    class FedFail(Transport):
+        def __call__(self, url, *, data, query, max_bytes):
+            if 'federalreserve' in url:
+                if 'H15_FF_O' in url:
+                    raise mc.MacroV0FetchError('FETCH_FAILED')
+                raise mc.MacroV0FetchError('HTTP_STATUS', status=404, content='HTML')
+            return super().__call__(url, data=data, query=query, max_bytes=max_bytes)
+    diagnostics = []
+    entries = collect_macro_v0(tmp_path, environ={'BEA_USERID': SECRET}, transport=FedFail(), clock=clock, diagnostics=diagnostics)
+    assert {e['axis']: e.get('reason') for e in entries if e['axis'] in ('Liquidity', 'Credit', 'Monetary Policy')} == {
+        'Liquidity': 'SOURCE_NOT_AVAILABLE', 'Credit': 'SOURCE_NOT_AVAILABLE', 'Monetary Policy': 'SOURCE_NOT_AVAILABLE'}
+    by = {d['axis']: d for d in diagnostics}
+    assert by['Monetary Policy'] == {'axis': 'Monetary Policy', 'stage': 'H15_POINTER', 'code': 'FETCH_FAILED', 'http': None,
+                                     'content': None, 'size': None, 'rel': None, 'series8': None, 'type': None}
+    assert by['Liquidity']['stage'] == 'DDP_PACKAGE' and by['Liquidity']['code'] == 'HTTP_STATUS' and by['Liquidity']['http'] == 404
+    assert by['Liquidity']['content'] == 'HTML' and by['Liquidity']['rel'] == 'H41' and by['Liquidity']['type'] == 'series'
+    assert by['Credit']['rel'] == 'H8' and by['Credit']['type'] == 'package' and len(by['Credit']['series8']) == 8
+    text = json.dumps(diagnostics)
+    assert SECRET not in text and 'http' not in text.replace('"http"', '') and mc.FED_DDP_PACKAGES['Credit']['series'] not in text
+
+
+def test_content_and_size_classes_are_fixed_tokens():
+    assert mc._content_class('text/csv; charset=utf-8') == 'CSV' and mc._content_class('text/html') == 'HTML'
+    assert mc._content_class(None) == 'NONE' and mc._content_class('application/octet-stream') == 'OTHER'
+    assert [mc._size_class(n) for n in (0, 10, 5000, 100000, 2000000)] == ['0', '<1KB', '<64KB', '<1MB', '>=1MB']

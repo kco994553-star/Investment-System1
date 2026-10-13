@@ -37,3 +37,24 @@ python implementation/tools/sec_universe_collect.py \
 - 기기: `private-subset-view.js`가 이 파일을 읽어(`sec-universe-shares.js`) `PrivateSubset.preparePublicShares`로 기존 M3 비교(N=20, 10% 포함 경계)에 넣는다. 가격·R·순위는 RAM 전용. JS==Python 대조: `tests/fixtures/m3_public_shares_reference_v1.json`.
 - 경제적 동일 종류 합산(사용자 결정 2026-10-11): 기기 설정 `share_class_groups/v0`(V0_UNCALIBRATED)에 있는 Alphabet(GOOGL+GOOG)·Fox(FOXA+FOX)·News Corp(NWSA+NWS)만 종류별 `SHARE_CLASS_BASIS` 표지 주식수 × 종류별 시트 가격을 합산해 회사 1개로 순위에 넣는다. 모든 종류가 LIVE·가격 있음이어야 하며 아니면 사유와 함께 제외(부분 합·0 대체 없음). 그 밖의 `SHARE_CLASS_BASIS`/`BASIS_UNCONFIRMED`는 계속 제외. 상세: [M3_SHARE_CLASS_GROUPS_V0.md](M3_SHARE_CLASS_GROUPS_V0.md).
 - 비상장 표지 종류(사용자 결정 2026-10-11, Alphabet Class B): 최상위 `unlisted_classes`는 `share_class_groups/v0`에서 `unlisted`가 있는 묶음(현재 `alphabet`)마다 한 항목이다. 형식 `{"alphabet": {"cik", "valued_at": "NASDAQ:GOOGL", "accn", "measurement_date", "cover_sha256", "classes": [{"class_member": "CommonClassBMember", "shares": N}], "state", "reason_codes"}}`. 값은 GOOGL 행과 **같은 표지 XBRL**에서 TradingSymbol이 없는 class의 `dei:EntityCommonStockSharesOutstanding`(GOOGL 측정일과 같은 날, 값 1개)이며, accn·측정일·cover 해시가 GOOGL 행과 같아야 하고 state는 GOOGL 행의 LIVE/STALE을 따른다. 값이 없으면 `NOT_AVAILABLE` + `UNLISTED_CLASS_SHARES_NOT_AVAILABLE`, 같은 날 값이 둘 이상이면 `UNLISTED_CLASS_AMBIGUOUS`, 아직 수집 전이면 `NOT_COLLECTED`(classes `[]`, accn/측정일/해시 null, 0 대체 없음). GOOGL 행이 새 shard로 교체되면 항목도 함께 교체되고, 교체되지 않으면 유지된다. Python `_unlisted_entry`·JS `SecUniverseShares.validate`가 같은 규칙으로 검증한다(같은 filing의 묶음 상장 class는 비상장으로 둘 수 없음).
+
+## 공개 Q·G 요인 파일 `sec-universe-qg.json` (사용자 큐 2.1, SEC 504종목 일일 수집)
+
+- 생성: 같은 `tools/sec_universe_shares.py --live` 실행이 당일 shard에서 이미 받은 companyfacts·submissions **같은 bytes**로 만든다(추가 SEC 요청 없음, 단일 paced client 그대로). 하루 SEC 요청 = ticker 파일 1 + shard issuer(약 504/7≈72)마다 companyfacts·submissions·cover 3 ≈ 217회(재시도 별도), 0.2초 간격.
+- 방법: TARGET `sec-qg-factors.json`과 같은 경로(`public_engine_screens.qg_factor_scores`: SEC M1 admission(`providers.sec_m1.build_universe_input`, registry로 확인된 CIK) → M2 mapping view → `qgv.raw_map.map_raw`). 같은 13개 Q/G 요인, 점수 0–100 또는 null(NOT_AVAILABLE, 0 대체 없음). V·가격·가중 합산·순위 없음(가중치는 읽는 쪽이 기존 규칙대로 적용).
+- 행(코드별, 같은 issuer의 코드는 같은 행): `cik`, `acquired_at`, `source_sha256{companyfacts,submissions}`, `factors{요인: 점수|null}`, `state`, `reason_codes`. 점수 있는 요인은 행의 LIVE/STALE을 따른다. 점수가 하나도 없으면 NOT_AVAILABLE + `M1_NOT_AVAILABLE`/`UNRESOLVED_CURRENT_FACT_AMBIGUITY`/`QG_NOT_AVAILABLE`/`INVALID_INPUT`/`CIK_UNRESOLVED`/`NOT_COLLECTED`.
+- 병합: 주식수 파일과 같은 규칙. 직전 Pages 사본을 검증해 읽고(404 → 새로 시작, 형식 불일치 → 폐기), 이번 shard 행만 교체, 점수 없는 새 행은 기존 점수를 지우지 않음, 행마다 자기 `acquired_at`, `sec-universe-shares/v0` stale 창(14일, DEFAULT_V0_UNCALIBRATED) 초과 → STALE. 직전 파일(둘 중 하나라도) 네트워크 실패 → 아무것도 쓰지 않고 exit1. Q·G 계산 실패는 주식수 행에 영향 없음(해당 코드 `INVALID_INPUT`).
+- 크기: 504코드 전부 비어 있을 때 약 250KB, 13개 요인 전부 점수일 때 약 400KB(공개 파일 한도 2MiB).
+- 비용: M1 `_safe`에 일반 JSON 값 fast path(출력 동일, 테스트로 대조)를 넣어 큰 companyfacts(16MB 합성) 처리 시간이 약 29초 → 11초로 줄었다.
+- 검증: Python `require_universe_qg`(Pages guard `universe_qg_boundary`), JS `SecUniverseQg.validate`(`web_assets/sec-universe-qg.js`). JS==Python: `tests/fixtures/sec_universe_qg_vectors_v1.json`(`tools/sec_universe_qg_reference.py --write`로 재생성, `tools/sec_universe_qg_node_test.js`).
+- UI 전용 배포(cockpit-pages)의 `--preserve-only`가 두 파일을 함께 보존한다. 오프라인 빌드에는 없음(404, `empty_public_screens.js` ABSENT). 화면 표시(S06)는 다음 작업이며 지금은 `SecUniverseQg.loadInputs`(404 → null) 수준만 있다.
+- 로그: 고정 코드와 개수만(`SEC_UNIVERSE_QG shard=… codes=… scored_codes=… live=… stale=… not_available=… factor_scores=…`). 이름·값·URL·비밀값 없음.
+
+## 공개 QGV v2 Q·G 파일 `sec-qgv2.json` (사용자 결정 2026-10-13, v2 잠정 기본값 · GSQ-022 승인 대기)
+
+- 생성: TARGET 단계(`public_screens_pipeline.py --live`)가 TARGET SEC bytes로 TARGET 행을 계산해 같은 출력 폴더에 임시 저장(Universe 행은 NOT_COLLECTED)하고, 이어지는 shard 단계(`sec_universe_shares.py --live`)가 그 TARGET 행 + 직전 Pages 사본 + 당일 shard 행(이미 받은 같은 bytes, 추가 SEC 요청 없음)을 병합한 뒤 **게시 시점에 전체 LIVE/STALE 행으로 백분위를 다시 계산**한다. 워크플로 변경 없음.
+- 방법·개념 목록·기간 규칙·FINANCIAL 프로필·백분위 규칙: [QGV_V2_QG_METHOD.md](../qgv_scoring_standard/QGV_V2_QG_METHOD.md). 비중은 후보안 기본값 그대로(튜닝·Holdout 없음), v1은 변경 없음.
+- 병합: 주식수·Q·G v1 파일과 같은 규칙(행별 acquired_at, 데이터 없는 새 행은 기존 행을 지우지 않음, 14일 초과 STALE, 직전 사본 네트워크 실패 시 아무것도 쓰지 않고 exit1). v2 계산·쓰기 실패는 `SEC_QGV2 OUTPUT_FAILED previous_kept`로만 기록하고 다른 두 파일에는 영향 없음.
+- 검증: Python `require_qgv2`(Pages guard `qgv2_boundary`), JS `SecQgv2.validate`(`web_assets/sec-qgv2.js`) — 공개된 원지표로 모든 요인·축 점수·peer 수를 다시 계산해 대조. JS==Python: `tests/fixtures/sec_qgv2_vectors_v1.json`(`tools/sec_qgv2_reference.py --write`), `tools/sec_qgv2_node_test.js`.
+- UI 전용 배포의 `--preserve-only`가 함께 보존한다. 오프라인 빌드에는 없음(404, `empty_public_screens.js` ABSENT).
+- 로그: 고정 코드와 개수만(`SEC_QGV2_TARGET staged …`, `SEC_QGV2 shard=… cross_section=… q_scored=… g_scored=… target_live=…`).

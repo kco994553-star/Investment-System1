@@ -41,9 +41,13 @@
   }
   return out;
  }
- async function load(view){
+ // Last load outcome (no content): a build without SEC collection serves 404 → SEC_NOT_COLLECTED, shown as "SEC 수집 전".
+ let last={state:'NOT_LOADED',reason:null};
+ function status(){return Object.freeze({...last});}
+ async function load(view){last={state:'NOT_AVAILABLE',reason:'SEC_PUBLIC_INPUT_UNAVAILABLE'};const out=await read(view);if(out)last={state:'LIVE',reason:null};return out;}
+ async function read(view){
   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),20000);
-  try{const response=await view.fetch('sec-public-inputs.json',{cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',signal:controller.signal});if(!response.ok)return null;let text;
+  try{const response=await view.fetch('sec-public-inputs.json',{cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',signal:controller.signal});if(!response.ok){last={state:'NOT_AVAILABLE',reason:response.status===404?'SEC_NOT_COLLECTED':'SEC_PUBLIC_INPUT_UNAVAILABLE'};return null;}last={state:'NOT_AVAILABLE',reason:'SEC_PUBLIC_INPUT_INVALID'};let text;
    if(response.body&&response.body.getReader){const reader=response.body.getReader(),decoder=new TextDecoder('utf-8',{fatal:true});let size=0;const chunks=[];try{while(true){const part=await reader.read();if(part.done)break;size+=part.value.byteLength;if(size>MAX){await reader.cancel();return null;}chunks.push(decoder.decode(part.value,{stream:true}));}chunks.push(decoder.decode());text=chunks.join('');}finally{reader.releaseLock();}}
    else{text=await response.text();if(new TextEncoder().encode(text).length>MAX)return null;}
    return project(JSON.parse(text));
@@ -53,7 +57,8 @@
   if(!host)return;const en=options.locale==='en-US',doc=host.ownerDocument,el=(tag,text,attrs={})=>{const node=doc.createElement(tag);if(text!==undefined)node.textContent=text;for(const [k,v] of Object.entries(attrs))node.setAttribute(k,v);return node;};
   const card=el('section',undefined,{class:'card','data-sec-reported':''});card.append(el('h2',en?'SEC reported inputs':'SEC 공개 입력'),el('p',en?'Reported observations · No prices · No share-class corrections':'공시 원자료 · 가격 미포함 · 주식 종류 보정 없음',{class:'small'}));
   const rows=options.companyId?(data?.companies[options.companyId]?[data.companies[options.companyId]]:[]):Object.values(data?.companies||{}).filter(r=>!options.companyIds||options.companyIds.includes(r.company_id));
-  if(!rows.length)card.append(el('p',en?'NOT_AVAILABLE · SEC input is not connected.':'NOT_AVAILABLE · SEC 공개 입력이 연결되지 않았습니다.',{class:'empty','data-sec-unavailable':''}));
+  const reason=options.reason!==undefined?options.reason:(data?null:last.reason);
+  if(!rows.length)card.append(el('p',reason==='SEC_NOT_COLLECTED'?(en?'Before SEC collection · NOT_AVAILABLE':'SEC 수집 전 · NOT_AVAILABLE'):(en?'NOT_AVAILABLE · SEC input is not connected.':'NOT_AVAILABLE · SEC 공개 입력이 연결되지 않았습니다.'),{class:'empty','data-sec-unavailable':reason||''}));
   for(const row of rows){const article=el('article',undefined,{'data-sec-company':row.company_id});const link=el('a',row.company_id.toUpperCase(),{href:'#company/'+encodeURIComponent(row.company_id)});article.append(link,el('p',row.status+(row.reason_codes.length?' · '+row.reason_codes.join(' · '):'')));
    if(row.acquired_at)article.append(el('p',(en?'Acquired: ':'수집: ')+row.acquired_at,{class:'meta'}));
    if(row.share_class_basis)article.append(el('p',en?'Share-class basis unconfirmed · No summing or correction':'주식 종류 기준 미확인 · 합산·보정하지 않음',{'data-sec-basis':'UNCONFIRMED',class:'small'}));
@@ -63,5 +68,5 @@
   }
   host.replaceChildren(card);
  }
- return Object.freeze({project,load,mount});
+ return Object.freeze({project,load,status,mount});
 });

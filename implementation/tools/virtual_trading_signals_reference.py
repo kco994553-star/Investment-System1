@@ -95,6 +95,26 @@ def v_store(days):
     return out
 
 
+def v_composition(store):
+    """V history /2: every stored date carries its factor composition (all core V factors present)."""
+    key = '+'.join(vs.core_v_factors())
+    return {d: {cid: key for cid in row} for d, row in store.items()}
+
+
+V_FACTOR_IDS = ('fundamental_value', 'reverse_dcf', 'peer_relative_value', 'historical_valuation', 'margin_of_safety',
+                'sector_context', 'theme_premium_discount')
+
+
+def v_axis_cases():
+    """Synthetic device V views: all seven V factors (V computed), one core factor missing (NA, never 0), none."""
+    full = {k: {'score': 40.0 + 5 * i, 'state': 'CALCULATED', 'reason': None} for i, k in enumerate(V_FACTOR_IDS)}
+    one_missing = dict(full, sector_context={'score': None, 'state': 'NOT_AVAILABLE', 'reason': 'UNDEFINED_PRICE_MAPPING'})
+    zero_is_a_score = dict(full, theme_premium_discount={'score': 0.0, 'state': 'PASSTHROUGH', 'reason': 'SUPPLIED_SCORE'})
+    cases = [('all_factors', {'v_factors': full}), ('core_factor_missing', {'v_factors': one_missing}),
+             ('zero_score_is_present', {'v_factors': zero_is_a_score}), ('no_factors', {'v_factors': None}), ('not_a_view', None)]
+    return [{'name': n, 'view': view, 'expected': vs.v_axis_detail(view)} for n, view in cases]
+
+
 def valuation():
     """Price-free synthetic valuation rows (public sec-valuation-inputs.json shape) for four companies."""
     def row(fcfe, currency='USD', eps=4.0, revenue=5000.0, revenue_prev=4600.0, cagr=0.08):
@@ -119,8 +139,11 @@ def qg_rows():
 def scenarios():
     inputs = {'config': {'start_date': '2026-10-19'}, 'catalog': base.catalog(), 'forward_ledger': forward_ledger([d for d in DAYS if d >= '2026-10-19']),
               'classification': base.classification(), 'histories': histories(), 'holdings': None, 'set_b': None,
-              'v_store': v_store(DAYS), 'flags': []}
+              'v_store': v_store(DAYS), 'v_composition': v_composition(v_store(DAYS)), 'flags': []}
     out = [{'name': 'recording_d5_v_slope', 'inputs': inputs, 'rehearsal': False}]
+    s = copy.deepcopy(inputs)
+    s['v_composition'] = None           # V history /1 (no composition stored): composition unknown → no V slope
+    out.append({'name': 'recording_v_composition_unknown', 'inputs': s, 'rehearsal': False})
     s = copy.deepcopy(inputs)
     s['forward_ledger'] = None          # before the start date nothing is published: today's public Q·G fills the window
     s['v_store'] = {}
@@ -149,9 +172,9 @@ def build():
         assembled = vi.assemble(**(inputs | {'config': {'start_date': run_cfg['start_date']}}))
         filled = []
         if sc['rehearsal']:
-            assembled, filled = vs.apply_rehearsal_snapshots(assembled, qg_rows())
+            assembled, filled = vs.apply_rehearsal_snapshots(assembled, qg_rows(), 'REHEARSAL')
         plan = vs.capture_plan(assembled)
-        v_now, v_raw = vs.v_scores_for(plan, valuation(), params)
+        v_now, v_raw, v_comp, v_skipped = vs.v_scores_for(plan, valuation(), params)
         entry = assembled['ledgers']['SET_A']
         engine = project(vt.run_ledger(run_cfg, copy.deepcopy(entry['input']))) if entry['state'] == 'READY' else None
         vectors.append({'name': sc['name'], 'rehearsal': sc['rehearsal'], 'inputs': inputs,
@@ -162,11 +185,12 @@ def build():
                                      'sector_keys': {cid: c['sector_benchmark'] for cid, c in entry['input']['companies'].items()} if entry['state'] == 'READY' else None,
                                      'benchmark_keys': sorted(entry['input']['benchmarks']) if entry['state'] == 'READY' else None,
                                      'qg_filled': filled,
-                                     'signals': vs.report_signals(assembled, 'SET_A', run_cfg, inputs['v_store']),
+                                     'signals': vs.report_signals(assembled, 'SET_A', run_cfg, inputs['v_store'], inputs.get('v_composition')),
                                      'capture_date': plan['date'] if plan else None,
-                                     'v_scores': v_now, 'v_raw': v_raw,
+                                     'v_scores': v_now, 'v_raw': v_raw, 'v_composition': v_comp, 'v_skipped': v_skipped,
                                      'engine': engine}})
-    return {'schema_version': 1, 'note': NOTE, 'synthetic': True, 'qg_rows': qg_rows(), 'valuation': valuation(), 'vectors': vectors}
+    return {'schema_version': 1, 'note': NOTE, 'synthetic': True, 'qg_rows': qg_rows(), 'valuation': valuation(), 'vectors': vectors,
+            'core_v_factors': vs.core_v_factors(), 'v_axis': v_axis_cases()}
 
 
 def text():

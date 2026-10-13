@@ -690,3 +690,15 @@ main, .card, .grid > *, .axis-grid > *, .hub-grid > * {min-width:0;}
 .style-filter {margin: 8px 0 12px; gap: 6px;}
 .style-filter button {min-height: 40px; padding: 4px 12px; border-radius: 16px; font-size: 13px;}
 .style-filter button[aria-pressed="true"] {background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700;}
+/* S17 ⑬ relative-index chart (index levels only; gaps break the lines). */
+.bench-chart {max-width: 820px;}
+.bench-chart svg {display: block; max-width: 100%; height: auto;}
+.bench-chart .chart-axis {font-size: 18px;}
+.bench-grid {stroke: var(--line); stroke-width: 1;}
+.bench-base {stroke: var(--muted); stroke-dasharray: 4 3;}
+.bench-swatch {display: inline-block; margin-right: 6px; vertical-align: middle;}
+@media (min-width: 1024px) {.bench-chart .chart-axis {font-size: 11px;}}
+/* ⑪⑫⑬ tables fit a phone column: long reason codes wrap instead of widening the table. */
+[data-bench-periods] :is(th, td), [data-bench-series] :is(th, td) {white-space: nowrap;}
+[data-bench-periods] td .small, [data-bench-series] td.small, [data-track-windows] td {white-space: normal; overflow-wrap: anywhere;}
+[data-bench-periods] td:first-child {min-width: 5.5em;}
