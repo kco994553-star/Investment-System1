@@ -36,8 +36,8 @@ from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "playbook-config-defaults.js": "0239ab7054400f02d9fe09528ff188f3b43a23ab1154bd62ee228fa54a7d1a58",
-    "playbook-engine.js": "e8b0e14b4265a3d5e4be34e65868cf21700f55d67f4f45b644593b1ebbd2207c",
+    "playbook-config-defaults.js": "3e29e2b790143248f02a6991e8304c3b0910df4d0a576164c0ea364852d1d421",
+    "playbook-engine.js": "7156584e9a83a80fffbad5c7daf85cf1dee5831a1031939d696e43d496d6ed54",
     "virtual-trading-compare.js": "8cf5bd3bec35ebe688d3982928ce3f6771e1ea4364966fb51a5f29cfeee0642c",
     "report-benchmarks.js": "7a274ba8467880791df30deb17145396111e38c2d2598f7c654a0564c00aa6e9",
     "virtual-trading-runner.js": "ce55e6428f52f81ff664870fad5f0944f7b4f46f697058aa018d919d7da561db",
