@@ -2978,6 +2978,237 @@
   "stale_after_seconds": 86400.0,
   "state": "NOT_AVAILABLE"
  },
+ "news-signals.json": {
+  "as_of": "2026-01-01T00:00:00+00:00",
+  "attribution": {
+   "GDELT": {
+    "citation": "News signals: The GDELT Project (https://www.gdeltproject.org/), DOC 2.0 API. Titles and links only; every article belongs to its publisher.",
+    "name": "The GDELT Project",
+    "url": "https://www.gdeltproject.org/"
+   },
+   "IR": {
+    "citation": "Each company's own press-release feed. Titles and links only.",
+    "name": "Company investor-relations press-release feeds",
+    "url": null
+   }
+  },
+  "channel": "NEWS",
+  "freshness_basis": "SOURCE_ACQUISITION",
+  "items": [],
+  "kind": "NEWS_SIGNALS",
+  "matching_rule": "TITLE_NAME_OR_TICKER_V0",
+  "reason_codes": [
+   "NO_ELIGIBLE_INPUT"
+  ],
+  "schema_version": 1,
+  "score_effect": "NONE",
+  "sources": {
+   "GDELT": {
+    "amd": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "amzn": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "asml": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "avgo": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "etn": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "gev": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "googl": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "hanmi": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "hubb": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "intc": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "klac": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "lrcx": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "msft": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "nvda": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "qcom": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "rok": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "rtx": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "stry": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "tokyo_electron": {
+     "acquired_at": null,
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    }
+   },
+   "IR": {
+    "amd": {
+     "acquired_at": null,
+     "feed_status": "UNVERIFIED_URL",
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "amzn": {
+     "acquired_at": null,
+     "feed_status": "UNVERIFIED_URL",
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "asml": {
+     "acquired_at": null,
+     "feed_status": "NOT_AVAILABLE",
+     "reason_code": "NO_OFFICIAL_FEED_KNOWN",
+     "state": "NOT_AVAILABLE"
+    },
+    "avgo": {
+     "acquired_at": null,
+     "feed_status": "UNVERIFIED_URL",
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "etn": {
+     "acquired_at": null,
+     "feed_status": "NOT_AVAILABLE",
+     "reason_code": "NO_OFFICIAL_FEED_KNOWN",
+     "state": "NOT_AVAILABLE"
+    },
+    "gev": {
+     "acquired_at": null,
+     "feed_status": "NOT_AVAILABLE",
+     "reason_code": "NO_OFFICIAL_FEED_KNOWN",
+     "state": "NOT_AVAILABLE"
+    },
+    "googl": {
+     "acquired_at": null,
+     "feed_status": "NOT_AVAILABLE",
+     "reason_code": "NO_OFFICIAL_FEED_KNOWN",
+     "state": "NOT_AVAILABLE"
+    },
+    "hubb": {
+     "acquired_at": null,
+     "feed_status": "NOT_AVAILABLE",
+     "reason_code": "NO_OFFICIAL_FEED_KNOWN",
+     "state": "NOT_AVAILABLE"
+    },
+    "intc": {
+     "acquired_at": null,
+     "feed_status": "UNVERIFIED_URL",
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "klac": {
+     "acquired_at": null,
+     "feed_status": "UNVERIFIED_URL",
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "lrcx": {
+     "acquired_at": null,
+     "feed_status": "UNVERIFIED_URL",
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "msft": {
+     "acquired_at": null,
+     "feed_status": "UNVERIFIED_URL",
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "nvda": {
+     "acquired_at": null,
+     "feed_status": "UNVERIFIED_URL",
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "qcom": {
+     "acquired_at": null,
+     "feed_status": "UNVERIFIED_URL",
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    },
+    "rok": {
+     "acquired_at": null,
+     "feed_status": "NOT_AVAILABLE",
+     "reason_code": "NO_OFFICIAL_FEED_KNOWN",
+     "state": "NOT_AVAILABLE"
+    },
+    "rtx": {
+     "acquired_at": null,
+     "feed_status": "NOT_AVAILABLE",
+     "reason_code": "NO_OFFICIAL_FEED_KNOWN",
+     "state": "NOT_AVAILABLE"
+    },
+    "stry": {
+     "acquired_at": null,
+     "feed_status": "UNVERIFIED_URL",
+     "reason_code": "NOT_COLLECTED",
+     "state": "NOT_AVAILABLE"
+    }
+   }
+  },
+  "stale_after_seconds": 172800,
+  "state": "NOT_AVAILABLE",
+  "window_days": 14
+ },
  "sec-13f-changes.json": {
   "as_of": "2026-01-01T00:00:00+00:00",
   "data": {
