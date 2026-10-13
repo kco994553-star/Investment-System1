@@ -73,6 +73,12 @@ jobs:
         run: |
           python implementation/tools/sec_13f_managers.py --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - name: Collect OpenDART disclosures and periodic financials for 042700 (fixed codes and call count only)
+        env:
+          DART_API_KEY: ${{ secrets.DART_API_KEY }}
+        run: |
+          python implementation/tools/dart_daily.py --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       # One paced fetch per shard issuer feeds both price-free files: sec-universe-shares.json and sec-universe-qg.json (TARGET Q·G path).
       - name: Collect Universe504 SEC shard (price-free shares and Q·G factor projections)
         env:
