@@ -24,7 +24,7 @@ function sessionDay(d){need(d<=CALENDAR_END);const w=new Date(d+'T00:00:00Z').ge
 function axis(v,name,companyState,size=AXIS_SIZE){keys(v,['score','coverage','missing_factor_count']);need(v.score===null||finite(v.score)&&v.score>=0&&v.score<=100);need(COVERAGE.includes(v.coverage)&&(v.score===null)===(v.coverage==='BLOCKED'));const n=v.missing_factor_count;need(Number.isInteger(n)&&n>=0&&n<=size[name]&&(v.coverage!=='READY'||n===0));need(companyState!=='NOT_AVAILABLE'||v.score===null);}
 function record(r,previous,cut,version=VERSION){
  const isV2=version===V2_VERSION,sources=isV2?['sec-qgv2.json','actual-catalog.json']:SOURCES,prefix=isV2?'SEC_QGV2':'SEC_QG_FACTORS',reasons=isV2?REASONS.map(r=>r.replace('SEC_QG_FACTORS','SEC_QGV2')):REASONS;
- keys(r,['date','version','strategy','calibration','state','reason_codes','target','qg_as_of','qg_screen_state','companies','source_sha256','created_at']);
+ const rk=['date','version','strategy','calibration','state','reason_codes','target','qg_as_of','qg_screen_state','companies','source_sha256','created_at'];if(isV2&&Object.hasOwn(r,'reference_sources'))rk.push('reference_sources');keys(r,rk);
  const d=day(r.date);need(d>=START&&sessionDay(d)&&(previous===null||d>previous));
  const created=clock(r.created_at),local=eastern(created);need(created<=cut&&local.date===d&&local.minutes>=16*60);
  need(r.version===version&&r.strategy===(isV2?V2_STRATEGY:STRATEGY)&&r.calibration===CALIBRATION&&['RECORDED','NOT_AVAILABLE'].includes(r.state));
@@ -37,7 +37,9 @@ function record(r,previous,cut,version=VERSION){
   keys(r.companies,IDS);const states=[];
   for(const row of Object.values(r.companies)){keys(row,['state','Q','G']);need(STATES.includes(row.state));states.push(row.state);axis(row.Q,'Q',row.state,isV2?{Q:5,G:5}:AXIS_SIZE);axis(row.G,'G',row.state,isV2?{Q:5,G:5}:AXIS_SIZE);}
   need(r.qg_screen_state===(states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':null));
+  if(Object.hasOwn(r,'reference_sources')){keys(r.reference_sources,['hanmi']);const ref=r.reference_sources.hanmi;keys(ref,['kind','file','sha256','as_of','comparison_basis','reference_only']);need(ref.kind==='DART'&&ref.file==='dart-financials.json'&&hash(ref.sha256)&&ref.reference_only===true&&ref.comparison_basis==='US_UNIVERSE_504_GENERAL');const stamp=clock(ref.as_of);need(eastern(stamp).date===d&&stamp<=created&&['LIVE','STALE'].includes(r.companies.hanmi.state));}
  }else{
+  need(!Object.hasOwn(r,'reference_sources'));
   need(r.reason_codes.length>0&&r.companies===null&&r.qg_as_of===null&&r.qg_screen_state===null);
   need((r.reason_codes.includes('TARGET_CATALOG_MISSING')||r.reason_codes.includes('TARGET_CATALOG_INVALID'))===(r.target===null));
   need(r.reason_codes.includes(prefix+'_MISSING')===(r.source_sha256[sources[0]]===null));
@@ -126,7 +128,7 @@ function mount(host,options={}){
   const displayRows=[...rows,...(p.schema_version===2?p.versions[VERSION]:[])].sort((a,b)=>b.date.localeCompare(a.date)||(a.version===V2_VERSION?-1:1));
   for(const r of displayRows){const s=qgSummary(r),tr=el('tr',undefined,{'data-forward-day':r.date});
    if(s.state!=='RECORDED')tr.append(el('td',r.date+' · '+(r.version===V2_VERSION?x('v2 기본','v2 default'):x('v1 비교용','v1 comparison'))),el('td','NOT_AVAILABLE · '+s.reason_codes.join(', ')),el('td','—'),el('td','—'),el('td','—'),el('td','—'));
-   else tr.append(el('td',r.date+' · '+(r.version===V2_VERSION?x('v2 기본','v2 default'):x('v1 비교용','v1 comparison'))),el('td',r.qg_screen_state),el('td',s.Q.available+'/'+s.companies),el('td',num(s.Q.weighted_mean)),el('td',s.G.available+'/'+s.companies),el('td',num(s.G.weighted_mean)));
+   else tr.append(el('td',r.date+' · '+(r.version===V2_VERSION?x('v2 기본','v2 default'):x('v1 비교용','v1 comparison'))),el('td',r.qg_screen_state+(r.reference_sources?x(' · DART 참고',' · DART reference'):'')),el('td',s.Q.available+'/'+s.companies),el('td',num(s.Q.weighted_mean)),el('td',s.G.available+'/'+s.companies),el('td',num(s.G.weighted_mean)));
    body.append(tr);}
   table.append(thead,body);wrap.append(table);summary.append(wrap,el('p',x('가중평균은 점수가 있는 종목만 TARGET v0 비중으로 평균한 화면 표시값이며 저장하지 않습니다. 보정 전(UNCALIBRATED).','Weighted means average only companies with a score using TARGET v0 weights; display only, never stored. UNCALIBRATED.'),{class:'small'}));
  }

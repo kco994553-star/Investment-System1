@@ -199,13 +199,13 @@ def build_record(*, now, session, qg_body, catalog_body):
             'created_at': now.astimezone(timezone.utc).isoformat(timespec='seconds')}
 
 
-def build_v2_record(*, now, session, qgv2_body, catalog_body):
+def build_v2_record(*, now, session, qgv2_body, catalog_body, dart_body=None, reference_provider=None):
     """The same-session published QGV v2 Q/G, without V or synthetic reconstruction."""
     from ..universe.sec_qgv2 import require_qgv2, parse_json as parse_qgv2
     # Reuse the immutable TARGET check; QGV v2 has a separate source and failure tokens.
     base = build_record(now=now, session=session, qg_body=None, catalog_body=catalog_body)
     reasons = [r for r in base['reason_codes'] if r.startswith('TARGET_')]
-    companies, acquired, screen_state = None, None, None
+    companies, acquired, screen_state, reference_sources = None, None, None, {}
     if qgv2_body is None:
         reasons.append('SEC_QGV2_MISSING')
     else:
@@ -219,7 +219,10 @@ def build_v2_record(*, now, session, qgv2_body, catalog_body):
             if eastern(at).date() != session or at > now:
                 reasons.append('SEC_QGV2_NOT_SAME_SESSION')
             else:
+                reference = _dart_reference(dart_body, screen, now, session, reference_provider)
                 states = [screen['target'][cid]['state'] for cid in IDS]
+                if reference is not None:
+                    states.append(reference['state'])
                 screen_state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else None
                 if screen_state is None:
                     reasons.append('SEC_QGV2_NOT_AVAILABLE')
@@ -236,13 +239,55 @@ def build_v2_record(*, now, session, qgv2_body, catalog_body):
                             axes[axis] = {'score': score, 'coverage': 'BLOCKED' if score is None else 'READY' if n == 5 else 'PARTIAL',
                                           'missing_factor_count': 5 - n}
                         companies[cid] = {'state': row['state'], **axes}
+                    if reference is not None:
+                        companies['hanmi'] = reference['company']
+                        reference_sources['hanmi'] = reference['source']
     if reasons:
         companies = acquired = screen_state = None
-    return {**base, 'version': V2_VERSION, 'strategy': V2_STRATEGY,
+    result = {**base, 'version': V2_VERSION, 'strategy': V2_STRATEGY,
             'state': 'NOT_AVAILABLE' if reasons else 'RECORDED', 'reason_codes': reasons,
             'companies': companies, 'qg_as_of': acquired, 'qg_screen_state': screen_state,
             'source_sha256': {'sec-qgv2.json': None if qgv2_body is None else hashlib.sha256(qgv2_body).hexdigest(),
                               'actual-catalog.json': base['source_sha256']['actual-catalog.json']}}
+    if not reasons and reference_sources:
+        result['reference_sources'] = reference_sources
+    return result
+
+
+def _dart_reference(body, screen, now, session, provider):
+    """Optional strict C adapter. Missing API/file, stale-day data or invalid reference remains NA."""
+    if body is None:
+        return None
+    try:
+        if provider is None:
+            from ..product.dart_qgv2 import verified_ledger_reference
+            provider = verified_ledger_reference
+        ref = provider(parse_json(body), screen, captured_date=session)
+        if not isinstance(ref, dict) or ref.get('reference_only') is not True or ref.get('source_kind') != 'DART' or ref.get('comparison_basis') != 'US_UNIVERSE_504_GENERAL' or ref.get('state') not in ('LIVE', 'STALE'):
+            return None
+        at = _clock(ref['as_of'])
+        if eastern(at).date() != session or at > now:
+            return None
+        from ..qgv.v2_scoring import Q_WEIGHTS_V2, G_WEIGHTS_V2
+        weights = {'Q': Q_WEIGHTS_V2, 'G': G_WEIGHTS_V2}
+        axes = {}
+        for axis in ('Q', 'G'):
+            factors = [ref['factors'].get(f) for f in weights[axis]]
+            _need(all(v is None or type(v) in (float, int) and math.isfinite(v) and 0 <= v <= 100 for v in factors))
+            n = sum(v is not None for v in factors)
+            score = ref['axes'][axis]['score']
+            axes[axis] = {'score': score, 'coverage': 'BLOCKED' if score is None else 'READY' if n == 5 else 'PARTIAL', 'missing_factor_count': 5-n}
+            _axis(axes[axis], axis, ref['state'], {'Q': 5, 'G': 5})
+            available = sum(w for f, w in weights[axis].items() if ref['factors'].get(f) is not None)
+            _need((score is not None) == (available >= 50))
+            if score is not None:
+                expected = sum(ref['factors'][f] * w for f, w in weights[axis].items() if ref['factors'].get(f) is not None) / available
+                _need(abs(score - expected) < 1e-9)
+        return {'state': ref['state'], 'company': {'state': ref['state'], **axes},
+                'source': {'kind': 'DART', 'file': 'dart-financials.json', 'sha256': hashlib.sha256(body).hexdigest(),
+                           'as_of': ref['as_of'], 'comparison_basis': 'US_UNIVERSE_504_GENERAL', 'reference_only': True}}
+    except Exception:
+        return None
 
 
 def new_ledger(now):
@@ -291,7 +336,7 @@ def _record(r, previous_day, cut, version=VERSION):
     is_v2 = version == V2_VERSION
     sources = V2_SOURCES if is_v2 else SOURCES
     prefix = 'SEC_QGV2' if is_v2 else 'SEC_QG_FACTORS'
-    _keys(r, RECORD_KEYS)
+    _keys(r, RECORD_KEYS + ('reference_sources',) if is_v2 and 'reference_sources' in r else RECORD_KEYS)
     day = _day(r['date'])
     _need(day >= START_DATE and is_session_day(day) and (previous_day is None or day > previous_day))
     created = _clock(r['created_at'])
@@ -324,7 +369,16 @@ def _record(r, previous_day, cut, version=VERSION):
             for axis in ('Q', 'G'):
                 _axis(row[axis], axis, row['state'], {'Q': 5, 'G': 5} if is_v2 else None)
         _need(r['qg_screen_state'] == ('LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else None))
+        if 'reference_sources' in r:
+            _keys(r['reference_sources'], ('hanmi',))
+            ref = r['reference_sources']['hanmi']
+            _keys(ref, ('kind', 'file', 'sha256', 'as_of', 'comparison_basis', 'reference_only'))
+            _need(ref['kind'] == 'DART' and ref['file'] == 'dart-financials.json' and ref['reference_only'] is True and ref['comparison_basis'] == 'US_UNIVERSE_504_GENERAL')
+            _hash(ref['sha256'])
+            stamp = _clock(ref['as_of'])
+            _need(eastern(stamp).date() == day and stamp <= created and r['companies']['hanmi']['state'] in ('LIVE', 'STALE'))
     else:
+        _need('reference_sources' not in r)
         _need(r['reason_codes'] and r['companies'] is None and r['qg_as_of'] is None and r['qg_screen_state'] is None)
         _need(('TARGET_CATALOG_MISSING' in r['reason_codes'] or 'TARGET_CATALOG_INVALID' in r['reason_codes']) == (r['target'] is None))
         _need((prefix + '_MISSING' in r['reason_codes']) == (r['source_sha256'][sources[0]] is None))

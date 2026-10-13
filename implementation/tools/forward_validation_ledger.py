@@ -167,7 +167,7 @@ def run(out, *, preserve_only=False, bootstrap=False, environ=None, now=_utc_now
                     record = fl.build_record(now=moment, session=session, qg_body=_read_input(out, 'sec-qg-factors.json'),
                                              catalog_body=catalog_body)
                 else:
-                    record = fl.build_v2_record(now=moment, session=session, qgv2_body=_read_input(out, 'sec-qgv2.json'),
+                    record = fl.build_v2_record(now=moment, session=session, qgv2_body=_read_input(out, 'sec-qgv2.json'), dart_body=_read_input(out, 'dart-financials.json'),
                                                 catalog_body=catalog_body)
                 ledger = fl.append(ledger, record, moment)
                 appended = True
