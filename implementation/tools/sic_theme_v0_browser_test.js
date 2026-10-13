@@ -1,11 +1,12 @@
 'use strict';
 // SIC industry group v0 + theme v0 (2026-10-11 user decision) on S04/S03.
-// Phase A: published build (offline company-classification.json, all NOT_AVAILABLE).
+// Phase A: the published file is checked for shape only (a daily SEC build publishes LIVE data); the screens are then
+//          rendered against the offline (all NOT_AVAILABLE) payload served by route interception.
 // Phase B: Python-generated synthetic classification payload served by route interception, plus ACTUAL holdings
 // entered on a throw-away context; the concentration warning is computed in RAM and never stored.
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const BASE=process.env.PAGES_COCKPIT_URL;
-const fixture=JSON.parse(fs.readFileSync(path.join(__dirname,'..','tests/fixtures/company_classification_v0_payloads.json'),'utf8')).live;
+const payloads=JSON.parse(fs.readFileSync(path.join(__dirname,'..','tests/fixtures/company_classification_v0_payloads.json'),'utf8')),fixture=payloads.live,offline=payloads.offline;
 async function open(page,hash,selector){await page.goto(BASE+'#'+hash);await page.locator('main '+selector).first().waitFor();}
 const text=async(page,selector)=>(await page.locator(selector).first().textContent()).replace(/\s+/g,' ').trim();
 async function noScroll(page,label){assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no horizontal scroll '+label);}
@@ -13,7 +14,8 @@ async function noScroll(page,label){assert.ok(await page.evaluate(()=>document.d
  try{for(const width of [390,1440]){
   {const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),page=await context.newPage();page.setDefaultTimeout(15000);let errors=0;page.on('pageerror',()=>errors++);
    try{
-    phase='A-FILE';const r=await page.request.get(BASE+'company-classification.json');assert.equal(r.status(),200);const body=await r.json();assert.equal(body.state,'NOT_AVAILABLE');assert.equal(body.kind,'COMPANY_CLASSIFICATION');
+    phase='A-FILE';const r=await page.request.get(BASE+'company-classification.json');assert.equal(r.status(),200);const body=await r.json();assert.ok(['LIVE','STALE','NOT_AVAILABLE'].includes(body.state));assert.equal(body.kind,'COMPANY_CLASSIFICATION');
+    await context.route('**/company-classification.json',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(offline)}));
     phase='A-S04';await open(page,'company/nvda','[data-company-card="classification"]');
     await page.waitForFunction(()=>document.querySelector('[data-axis="industry"] [data-v0-marker]'));
     assert.ok((await text(page,'[data-axis="industry"]')).includes('NOT_AVAILABLE'));assert.ok((await text(page,'[data-axis="theme"]')).includes('NOT_AVAILABLE'));

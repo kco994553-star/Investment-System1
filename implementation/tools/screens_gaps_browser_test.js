@@ -1,7 +1,7 @@
 'use strict';
 // S06 M3 rank (RAM only), company global search incl. Universe504 codes, backup-restored notice, SEC "수집 전" state,
 // daily-run status card and home-screen install UX. Synthetic route fixtures only; nothing private is served or stored.
-const {chromium}=require('playwright'),assert=require('node:assert/strict'),fixture=require('./sec_universe_shares_fixture.js'),{fixture:secFixture}=require('./sec_reported_fixture.js');
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),fixture=require('./sec_universe_shares_fixture.js'),{routeEmptyPublicScreens}=require('./empty_public_screens.js'),{fixture:secFixture}=require('./sec_reported_fixture.js');
 const BASE=process.env.PAGES_COCKPIT_URL;
 const ABC=['CommonClassAMember','CommonClassBMember','CommonClassCMember'];
 const ROWS={'NASDAQ:ADBE':{n:1},'NASDAQ:AMD':{n:4,basis:'BASIS_UNCONFIRMED'},
@@ -10,9 +10,10 @@ const VALUES=[['code','marketcap','price'],['NASDAQ:ADBE',10500,10],['NASDAQ:AMD
 const overflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1);
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let phase='START',pass=0,fail=0;
  try{for(const width of [390,1440]){
-  const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),page=await context.newPage();page.setDefaultTimeout(15000);let errors=0,universe=true,sec=false;
+  const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});await routeEmptyPublicScreens(context);const page=await context.newPage();page.setDefaultTimeout(15000);let errors=0,universe=true,sec=false;
   page.on('pageerror',()=>errors++);page.on('dialog',d=>d.accept());
-  await page.route('**/*',r=>new URL(r.request().url()).origin===new URL(BASE).origin?r.continue():r.abort());
+  // Same-origin requests fall through to the empty public-data routes, so a daily-run build with live data behaves like a PR build.
+  await page.route('**/*',r=>new URL(r.request().url()).origin===new URL(BASE).origin?r.fallback():r.abort());
   await page.route('**/sec-universe-shares.json',r=>universe?r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture.payload(ROWS))}):r.fulfill({status:404,body:''}));
   await page.route('**/sec-public-inputs.json',r=>sec?r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(secFixture(3))}):r.fulfill({status:404,body:''}));
 

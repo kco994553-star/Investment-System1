@@ -25,41 +25,46 @@ from investment_system.public_price_boundary import require_public_bundle, requi
 
 
 from investment_system.product.sec_m2_candidates import require_public_candidates
+from investment_system.product.news_signals import FILENAME as NEWS_SIGNALS_FILENAME, require_news_signals
+from investment_system.product.sec_disclosures import FILENAME as DISCLOSURES_FILENAME, require_sec_disclosures
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
 from investment_system.product.public_engine_screens import FILENAMES as SCREEN_FILENAMES, require_public_screen
 from investment_system.universe.sec_universe_shares import FILENAME as UNIVERSE_SHARES_FILENAME, require_universe_shares
 from investment_system.universe.sec_universe_qg import FILENAME as UNIVERSE_QG_FILENAME, require_universe_qg
+from investment_system.universe.sec_qgv2 import FILENAME as QGV2_FILENAME, require_qgv2
 from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDGER_FILENAME, require_ledger as require_forward_ledger
 from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
-from investment_system.product.sec_disclosures import FILENAME as DISCLOSURES_FILENAME, require_sec_disclosures
-from investment_system.product.news_signals import FILENAME as NEWS_SIGNALS_FILENAME, require_news_signals
 from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES_FILENAME, require_universe_codes
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "virtual-trading-runner.js": "5bdf18e2273f0dc2d5e64e760e6af7ffa510092894631e1a7cd2e7e5bbeac996",
-    "virtual-ledger-sheets.js": "ae2b4b72f7307e8cad45300962b67ec0e30c44ee218f778ba4f130e0aebe55be",
+    "playbook-engine.js": "bb6e58d879048d37a1aa7579d5f937a055de84b587f6cd54986ee4a5ed55022b",
+    "playbook-config-defaults.js": "3e29e2b790143248f02a6991e8304c3b0910df4d0a576164c0ea364852d1d421",
+    "virtual-trading-compare.js": "8cf5bd3bec35ebe688d3982928ce3f6771e1ea4364966fb51a5f29cfeee0642c",
+    "report-benchmarks.js": "7a274ba8467880791df30deb17145396111e38c2d2598f7c654a0564c00aa6e9",
+    "virtual-trading-runner.js": "ce55e6428f52f81ff664870fad5f0944f7b4f46f697058aa018d919d7da561db",
+    "virtual-ledger-sheets.js": "32cb4acd92f39ede177634500dbd222dabbee951aa77407436ae48ed60b08060",
+    "thirteenf-quarter.js": "ed5dbdb13e98e9e44cee493d4bff2c647edd1cb7f742ae101419575a2b255e32",
     "worker-quote-fallback.js": "e72a72d1885a23c2a35706c8d4f333060b0c451d32a00e501dc63a30416b754c",
     "holdings-capture-view.js": "f2bebf39ca836868d19cef05c08b2d3aa9cbe99f2bdc62ee8509634f5891f65f",
     "holdings-capture.js": "a0fbd647c36d4714e743badbf445e2d3bf6b47c504766beaa14a93fdbf900d95",
-    "sec-disclosures.js": "26286bc51df4edc15ed025a616378f4e524c88d0e7c9870499497167a606061a",
-    "news-signals.js": "10910c4be310791fc7854813d9de3d2057d95a64d1b205a19e8707165ee4f939",
     "table-sort.js": "bd6e195298cb53b32adc8cdeaec57312e4c1807760e100b0af351f50bc4dfbf4",
-    "pc-layout.css": "a8e236e7d817d1b7f15f566df4af6f7fa381f6045273c289d9337134ed758d75",
+    "pc-layout.css": "d3a270238df767d49ef23ea3d53d60fca62d65dc017af19338269602190af2b4",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
     "forward-validation.js": "423dca17984f8316a468a13891710f54825a7983654267be0a871d1da6740770",
-    "daily-report.js": "99d91fa2827e15eda39a79c203519a63408ed1e9410c577ed431952d57f3ffd1",
+    "daily-report.js": "ca0adec857375cbc2919703074bdc5752f108d2e8ef7e82767854d2eaa7f6e11",
     "sec-universe-shares.js": "574f94ffebfc2a8cc20bac0cd5ff7bfd7e58db3cb1864f60d4c2a14dd24b37f9",
-    "virtual-trading-v-history.js": "b72a870fcf8b910685651591c79eed99f294204bec5714b1ea7da966554916fa",
-    "virtual-trading-signals.js": "8d308b77f3bbeb84108d518fcc9d9679d61dc67c1784de7934e9fdcdf56d452f",
+    "virtual-trading-v-history.js": "d616dc45bc769bc870020529f55275fda93490eea4ba6e54b50bd9f91cbb6f9f",
+    "virtual-trading-signals.js": "14299ae33ae57b4c2a68c90256db0426680fcd6a09900365f8e65665a0df1808",
     "sec-universe-qg.js": "4364791b338d04be28811efb8588806d8c653fca9e36eb75c86014758471f414",
+    "sec-qgv2.js": "64fc0cfaecb5bb3fa3381203b4b5f741c3b7204c2e738bc6f8154366526d4e51",
     "device-valuation.js": "06669cda863cd4dfa87108f54e03b75c9321989967da7ed54b03c921143cfedf",
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
-    "virtual-trading.js": "c65986a866b670c0d8c541eb2da2b835dd9e348e650f74e96bbc4ed013a67c3c",
+    "virtual-trading.js": "b53ba20a9216dc0b1c8429ab47381bc44090fe7ac37eb72bf22b1f4968f5421e",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "eb616b12afef84eb9f283a93f40b7dc568a940c39b9cecdf135c471a6d59c6a5",
     "portfolio-screen.js": "da95498176557e1bc16d1329f639c9b153a859e3be4f7b0bde054becda939be0",
@@ -68,12 +73,12 @@ APPROVED_SHA256 = {
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "73c477dd8512fd6dfe0431d1338cf7004c19e572c85e75a7871fba31f1aa95f0",
     "watchlist.js": "6d707c1f7beb0d4ceaf32cea18320049bbd1ba768bf91578ba6a664596f536cf",
-    "sec-m3-adapter.js": "f3962d7283ae0e8731ad66ee23652d5f8c9e88f2cd4050b70b4cd1048956d6e5",
+    "sec-m3-adapter.js": "04c835ddbf7f7c5b9e5ebd77571d8fdac70444f673b00092579f3bef4e341de6",
     "private-subset.js": "8016f30888b77c3b92ce1b5e0c11e542505a04ad6865c169c9525c78ebf4bd71",
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
-    "device-profiles.js": "a3c1237cc0e53e4d6ad6c330aa7fa1182d962a6925f0401185815d82a48163da",
-    "public-screens.js": "a6f2e034d995784aa2e6c4beae2594abdd13db422ddfdbee3f7ac6ed7dca533d",
+    "device-profiles.js": "37977fa7353e1d34d7c67d658f74bf3b66a1894f362163aa67e27e40d475e47f",
+    "public-screens.js": "ab433d149828b5aafd3bd52ecb56db3a40905a25980b4634d1ac59bdbac2100a",
     "pwa.js": "84f1225bacd8c41fd0a82b65c19d28cc02e0e739ae384614df35a9801da418b0",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
     "icon-512.png": "7a19587556ba133a21622288ec66a48095b933461f10475e96cf7b3a43afee88",
@@ -89,7 +94,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "dc0aad25d085dcd2b0bd18b8ff06064f5853403d2cb740ee5c90b09346f73de5",
+    "app.js": "1c32c513939718f20a55682a8e08ee089fd4804f0de5e2e5528854ecd04436a8",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "8dcefa502a362b680f8cefbf774209b2180b398d706469f6370d6ecb0182acd1",
@@ -97,16 +102,18 @@ APPROVED_SHA256 = {
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "174e1039be5c3d3757c8938070887154fe91cda0d87b5850e1330ef491554c93",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "c4cc030491e5221b98657c3019c3a7558e5a75e79f2cf08a6a94e028fb724791",
+    "google-sheet-quotes.js": "9fa1d20f59c7fed1c32d227632b68674c32f99f6f569cee09995b568be6edc53",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "dfd367fd64ffb0cd928448d4d8ed49e5b4a5ad5a7f29c25894d4183ae3892c6b",
+    "index.html": "4ea6d290a6eacf9d71ebc9212e78c40b92c7869a2bcf2899b72213adece498ad",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "aad9781852fb21ab3f614c069e72b0374aeb3144de77ddac08781d37d3720511",
+    "style.css": "e30a3a1808d4a8e0bcb7af0f2056a3595132de050711d7bb4e7ba9b692e4f6c0",
+    "sec-disclosures.js": "26286bc51df4edc15ed025a616378f4e524c88d0e7c9870499497167a606061a",
+    "news-signals.js": "10910c4be310791fc7854813d9de3d2057d95a64d1b205a19e8707165ee4f939"
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -232,15 +239,18 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == UNIVERSE_QG_FILENAME:
             try: require_universe_qg(value)
             except ValueError: violations['universe_qg_boundary'] += 1
-        elif name == FORWARD_LEDGER_FILENAME:
-            try: require_forward_ledger(value)
-            except ValueError: violations['forward_ledger_boundary'] += 1
+        elif name == QGV2_FILENAME:
+            try: require_qgv2(value)
+            except ValueError: violations['qgv2_boundary'] += 1
         elif name == DISCLOSURES_FILENAME:
             try: require_sec_disclosures(value)
             except ValueError: violations['sec_disclosures_boundary'] += 1
         elif name == NEWS_SIGNALS_FILENAME:
             try: require_news_signals(value)
             except ValueError: violations['news_signals_boundary'] += 1
+        elif name == FORWARD_LEDGER_FILENAME:
+            try: require_forward_ledger(value)
+            except ValueError: violations['forward_ledger_boundary'] += 1
         elif hashlib.sha256(payload).hexdigest() != APPROVED_SHA256[name]:
             violations["unapproved_content"] += 1
     except (ValueError, UnicodeError, RecursionError, OverflowError):
