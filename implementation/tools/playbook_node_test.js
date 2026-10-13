@@ -54,3 +54,11 @@ test('engine output never uses buy/sell verbs (§0-5)', () => {
   const text = JSON.stringify(CFG.codes.map(c => c.choices)) + JSON.stringify(CFG.conviction_choice);
   for (const w of ['매수', '매도', '주문']) assert.ok(!text.includes(w), w);
 });
+
+test('SIC invalid values fail unavailable and preserve ETF fallback',()=>{
+ for(const sic of ['', 'NA',true,false,3559.9,Infinity,NaN,-1,10000,' 3559']){
+  assert.equal(E.sicCandidate(CFG,sic),null);
+  assert.deepEqual(E.sectorFor(CFG,'SYN','XLK',sic),{sector:'technology_hardware',source:'ETF_FALLBACK'});
+ }
+ assert.equal(E.sicCandidate(CFG,'3559'),'CYCLICAL');
+});

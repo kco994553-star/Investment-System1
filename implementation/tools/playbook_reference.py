@@ -266,8 +266,8 @@ def cases():
     cr('E2-not-mechanical', 'E2', {})
     # --- §6-2 type rules and §7 sector lookup ---
     for case_id, metrics in [
-            ('types-quality-all-pass', {'roic_avg_3y': 0.2, 'operating_margin_range_5y_pp': 4, 'net_debt_to_ebitda': 1.0}),
-            ('types-quality-one-fails', {'roic_avg_3y': 0.2, 'operating_margin_range_5y_pp': 5, 'net_debt_to_ebitda': 1.0}),
+            ('types-quality-all-pass', {'roic_avg_3y': 0.2, 'operating_margin_std_5y_pp': 2, 'net_debt_to_ebitda': 1.0}),
+            ('types-quality-one-fails', {'roic_avg_3y': 0.2, 'operating_margin_std_5y_pp': 3, 'net_debt_to_ebitda': 1.0}),
             ('types-quality-unknown', {'roic_avg_3y': 0.2, 'net_debt_to_ebitda': 1.0}),
             ('types-value-history-only', {'pe_discount_to_own_5y_avg': 0.25}),
             ('types-cyclical-semis', {'sector_subgroup': 'semiconductors'}),

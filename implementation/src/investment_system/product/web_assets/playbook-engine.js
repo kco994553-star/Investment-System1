@@ -429,11 +429,12 @@
     if (Math.abs(total - cfg.target_v1.sum_pct) > 1e-9) violations.push({rule: 'SUM_NOT_100', pct: total, limit: cfg.target_v1.sum_pct});
     return {ok: violations.length ? false : (unknown.length ? null : true), violations, unknown_sector: unknown, group_pct: sums};
   }
-  function sicCandidate(cfg,sic){if(sic===null||sic===undefined||!Number.isFinite(Number(sic)))return null;for(const[label,ranges]of Object.entries(cfg.sic_candidates))if(ranges.some(([lo,hi])=>Number(sic)>=lo&&Number(sic)<=hi))return label;return 'NONE';}
+  function parseSic(sic){return typeof sic==='number'&&Number.isInteger(sic)&&sic>=0&&sic<=9999?sic:(typeof sic==='string'&&/^[0-9]{1,4}$/.test(sic)?Number(sic):null);}
+  function sicCandidate(cfg,sic){sic=parseSic(sic);if(sic===null)return null;for(const[label,ranges]of Object.entries(cfg.sic_candidates))if(ranges.some(([lo,hi])=>sic>=lo&&sic<=hi))return label;return 'NONE';}
   function sectorFor(cfg, symbol, etf, sic) {
     const a = cfg.assignments.find(x => x.symbol === symbol);
     if (a) return {sector: a.sector, source: a.source};
-    if(known(sic))for(const row of cfg.sic_subgroups)if(row.ranges.some(([lo,hi])=>Number(sic)>=lo&&Number(sic)<=hi))return {sector:row.sector,source:'SIC_SUBGROUP'};
+    sic=parseSic(sic);if(known(sic))for(const row of cfg.sic_subgroups)if(row.ranges.some(([lo,hi])=>Number(sic)>=lo&&Number(sic)<=hi))return {sector:row.sector,source:'SIC_SUBGROUP'};
     if(etf==='XLK'||etf==='XLI')return {sector:etf==='XLK'?'technology_hardware':'general_industrial',source:'ETF_FALLBACK'};
     if (etf) {
       const rows = cfg.sector_checks.filter(r => r.etfs.includes(etf)).map(r => r.id);
