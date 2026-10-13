@@ -352,7 +352,7 @@ def assemble(*, config, catalog, forward_ledger=None, classification=None, histo
         out['ledgers'] = {k: _unavailable(['SESSIONS_NOT_AVAILABLE']) for k in KINDS}
         return out
     v2_rows = forward_ledger['versions'].get(FORWARD_V2_VERSION, []) if isinstance(forward_ledger, dict) and forward_ledger.get('schema_version') == 2 else None
-    ready_date = next((r['date'] for r in v2_rows if r.get('state') == 'RECORDED' and any(_finite(c['Q']['score']) and _finite(c['G']['score']) for c in (r.get('companies') or {}).values())), None) if v2_rows is not None else None
+    ready_date = next((r['date'] for r in v2_rows if r.get('state') == 'RECORDED' and any(_num(c['Q']['score']) and _num(c['G']['score']) for c in (r.get('companies') or {}).values())), None) if v2_rows is not None else None
     sessions = [d for d in spy if start is not None and d >= start and (v2_rows is None or ready_date is not None and d >= ready_date)]
     snapshots = snapshots_from_ledger(forward_ledger)
     v2_basis = isinstance(forward_ledger, dict) and forward_ledger.get('schema_version') == 2

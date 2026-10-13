@@ -591,7 +591,7 @@ let leaderboardView={view:'default',profileId:null},leaderboardRows=null;
 // Scores (S04/S05/S06, report, rehearsal) come only from QgvScores (the scoring_default setting). QGV v2 profile choice and the
 // device quotes of the v2 V cross-section live in this page's memory only: never stored, logged or sent.
 let qgv2Profile={preset:null,gate:null},qgv2Quotes={},qgv2QuotesKey='';
-function qgvScores(identities=identityCompanies){return QgvScores.compute({identities,publicScreens,quotes:qgv2Quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate});}
+function qgvScores(identities=identityCompanies){return QgvScores.compute({identities,publicScreens,quotes:qgv2Quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:typeof dartReferenceRows==='function'?dartReferenceRows():{}});}
 async function refreshQgv2Quotes(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
  let q={};try{q=await QgvScores.collectQuotes(window,{identities:identityCompanies,v2Inputs:inputs,catalog});}catch(_){q={};}// Quotes accumulate for this page session (the Universe read is dropped on navigation); a Universe read/clear resets them.
  const next={...qgv2Quotes,...q},k=JSON.stringify(next);if(k===qgv2QuotesKey)return;qgv2Quotes=next;qgv2QuotesKey=k;if(after)after();}
@@ -690,7 +690,7 @@ async function paintReport(id){
     // Q·G shown next to a judgement is the forward-ledger snapshot the engine used that day (else the public screen value).
     const shown={...qg};if(last&&input&&input.snapshots[last.date])for(const[c,r]of Object.entries(input.snapshots[last.date]))shown[c]={q:r.q,g:r.g};
     const runner={state:result.state==='READY'?(ledger.state==='OK'?'READY':'NOT_AVAILABLE'):result.state,reason_codes:result.state==='READY'?(ledger.state==='OK'?[]:ledger.reason_codes):result.reason_codes,sources:Runner.statusRows(result),progress:''};
-    let signals=null;try{signals=Signals?{...Signals.reportSignals(result,ledgerKind,runCfg,Runner.readVStore(localStorage)),capture}:null;}catch(_){signals=null;}
+    let signals=null;try{const history=result.snapshot_basis==='v2'&&VHistory?.v2Values?VHistory.v2Values(localStorage,qgvScores().profile.id):{scores:Runner.readVStore(localStorage),composition:Runner.readVComposition(localStorage)};signals=Signals?{...Signals.reportSignals(result,ledgerKind,runCfg,history.scores,history.composition),capture}:null;}catch(_){signals=null;}
     // ⑪⑫⑬ (ReportBenchmarks, pure, RAM): runner indices (SPY, ⑬ ETFs, KRW=X) + this tab's ledger and the comparison ledger.
     let bench=null,shownBench=null,track=null,nextBenchInputs=null;
     try{const RB=window.ReportBenchmarks;if(RB){
@@ -724,8 +724,8 @@ async function paintReport(id){
       const opts={config,catalog,reportDate,signal:run.controller.signal,onProgress:progress,...sheetOptions};
       const out=!catalog?{result:{state:'NOT_AVAILABLE',reason_codes:['PUBLIC_CATALOG_UNAVAILABLE'],sources:{},ledgers:{}},config:cfg}
         :mode==='REHEARSAL'?await Signals.rehearse(window,{...opts,qgRows:qg}):{result:await Runner.run(window,opts),config:cfg};
-      let result=out.result,capture=null;
-      try{if(VHistory){const c=await VHistory.capture(window,result);result=c.result;capture=c.capture;}}catch(_){capture=null;}
+      let result=out.result,capture=null;if(mode==='REHEARSAL')result={...result,snapshot_basis:qgvScores().default};
+      try{if(VHistory){const c=await VHistory.capture(window,result);result=c.result;capture=c.capture;if(VHistory.captureV2){const c2=await VHistory.captureV2(window,result,{identities:identityCompanies,publicScreens,preset:qgv2Profile.preset,gate:qgv2Profile.gate});result=c2.result;capture={...capture,v2:c2.capture};}}}catch(_){capture=null;}
       // D-10: only recording-mode results reach the ledger sheet module (it also refuses REHEARSAL results itself).
       if(mode!=='REHEARSAL'&&run.ledgerSheets)result=run.ledgerSheets.update(result);
       run.last=result;if(live()&&run.mode===mode)await compose(result,out.config,mode,capture);

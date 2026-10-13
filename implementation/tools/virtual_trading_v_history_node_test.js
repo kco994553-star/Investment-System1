@@ -124,10 +124,44 @@ test('capture (PLAYBOOK_V1 §13-1): V below the condition is NA and never stored
   assert.equal(notReady.capture.reason, 'SESSION_NOT_AVAILABLE');
 });
 
-test('module writes only the V key and logs nothing', () => {
+test('module writes only the two versioned V keys and logs nothing', () => {
   const src = fs.readFileSync(require.resolve('../src/investment_system/product/web_assets/virtual-trading-v-history.js'), 'utf8');
-  assert.equal((src.match(/setItem\(/g) || []).length, 1);
+  assert.equal((src.match(/setItem\(/g) || []).length, 2);
   for (const word of ['console.', 'sendBeacon', 'XMLHttpRequest', 'WebSocket', 'fetch(', 'indexedDB', 'removeItem']) assert.ok(!src.includes(word), word);
   const backup = fs.readFileSync(require.resolve('../src/investment_system/product/web_assets/device-backup.js'), 'utf8');
   assert.ok(!backup.includes('virtual-trading-v-scores'), 'V history is not part of the device backup');
+});
+
+test('v2 score observations are separate, append-only, same-session and reject price fields', () => {
+  const s=memory(),entry={score:60,version:'v2',profile:'qgv-v2/balanced/gate-on',composition:'v_earnings_yield+v_fcf_yield',earnings_basis:'REPORTED',pool_hash:'a'.repeat(64),parameters_version:'dcf_parameters/v1.1-default',source_as_of:'2026-10-19T22:00:00Z',observed_at:'2026-10-19T22:30:00Z'};
+  assert.equal(H.recordV2(s,'2026-10-19',{msft:{...entry,price:100}}).state,'NOT_RECORDED');
+  assert.equal(H.recordV2(s,'2026-10-19',{msft:{...entry,source_as_of:'2026-10-19T22:00:00Z',observed_at:'2026-10-19T15:00:00Z'}}).state,'NOT_RECORDED','before NYSE close');
+  assert.equal(H.recordV2(s,'2026-10-19',{msft:entry}).state,'RECORDED');
+  assert.equal(s.getItem(H.KEY),null,'v1 stays untouched');
+  const first=s.getItem(H.V2_KEY);assert.equal(H.recordV2(s,'2026-10-19',{msft:{...entry,score:80}}).state,'NOT_RECORDED');assert.equal(s.getItem(H.V2_KEY),first);
+  assert.equal(H.recordV2(s,'2026-10-18',{msft:entry}).reason,'DATE_BEFORE_LAST_RECORDED');
+  assert.equal(H.recordV2(s,'2026-10-20',{msft:{...entry,observed_at:'2026-10-20T22:30:00Z'}}).state,'NOT_RECORDED','yesterday financial source is not backdated');
+  assert.deepEqual(Object.keys(H.readV2(s).records['2026-10-19'].msft).sort(),['score','version','profile','composition','earnings_basis','pool_hash','parameters_version','source_as_of','observed_at'].sort());
+});
+
+test('v2 20-session comparison needs observed endpoints with matching profile/factors/pool', () => {
+  const s=memory(),days=[];let d=new Date('2026-10-19T00:00:00Z');
+  while(days.length<21){if(d.getUTCDay()>0&&d.getUTCDay()<6)days.push(d.toISOString().slice(0,10));d.setUTCDate(d.getUTCDate()+1);}
+  for(const[ i,date]of days.entries())assert.equal(H.recordV2(s,date,{msft:{score:i,version:'v2',profile:'qgv-v2/balanced/gate-on',composition:'v_earnings_yield+v_fcf_yield',earnings_basis:'REPORTED',pool_hash:'a'.repeat(64),parameters_version:'dcf_parameters/v1.1-default',source_as_of:date+'T22:00:00Z',observed_at:date+'T22:30:00Z'}}).state,'RECORDED');
+  assert.equal(H.v2Comparison(s,'msft',days.slice(0,20)).reason,'V_HISTORY_SHORT');
+  const c=H.v2Comparison(s,'msft',days);assert.equal(c.state,'READY');assert.equal(c.current,20);assert.equal(c.previous,0);
+  const wrongProfile=H.v2Comparison(s,'msft',days,'qgv-v2/value/gate-on');assert.equal(wrongProfile.state,'NOT_AVAILABLE');assert.equal(wrongProfile.current,null);
+  const stored=JSON.parse(s.getItem(H.V2_KEY));stored.records[days[0]].msft.pool_hash='b'.repeat(64);s.setItem(H.V2_KEY,JSON.stringify(stored));assert.equal(H.v2Comparison(s,'msft',days).reason,'V_COMPOSITION_CHANGED');
+  const v=H.v2Values(s);assert.notEqual(v.composition[days[0]].msft,v.composition[days.at(-1)].msft);assert.match(v.composition[days[0]].msft,/^[a-z][a-z0-9_]*(?:\+[a-z][a-z0-9_]*)*$/);
+});
+
+test('v2 capture uses only the current completed close and never lets v1 scores into a v2 runner', async () => {
+  const s=memory(),date='2026-10-19',result={state:'READY',snapshot_basis:'v2',ledgers:{SET_A:{state:'READY',input:{benchmarks:{SP500:{[date]:100}},companies:{msft:{currency:'USD',closes:{[date]:123}}}}}}};
+  let calls=0,seen;
+  const view={localStorage:s,crypto:require('node:crypto').webcrypto,Qgv2Inputs:{FILE:'sec-qgv2.json'},DcfParametersDefaults:{config_version:'dcf_parameters/v1.1-default'},QgvScores:{symbolOf:t=>String(t).split(':').at(-1)}};
+  view.QgvScores.compute=args=>{calls++;seen=args.quotes;const v2={v:60,profile:{id:'qgv-v2/balanced/gate-on'},detail:{earnings_basis:'REPORTED'},factors:{v_earnings_yield:{score:60},v_fcf_yield:{score:60}}};return{rows:{msft:{v2}}};};
+  const options={identities:[{company_id:'msft',ticker:'MSFT'}],publicScreens:{'sec-qgv2.json':{as_of:date+'T22:00:00Z',records:{'NYSE:MSFT':{},'TARGET:msft':{}}}},now:date+'T22:30:00Z'};
+  const out=await H.captureV2(view,result,options);assert.equal(out.capture.state,'RECORDED');assert.equal(calls,1);assert.equal(seen['TARGET:msft'].price,123);
+  assert.equal(out.result.ledgers.SET_A.input.v_scores[date].msft,60);assert.equal(s.getItem(H.KEY),null);assert.ok(!/"price"|"closes"|"currency"|123/.test(s.getItem(H.V2_KEY)));
+  const old=await H.captureV2(view,result,{...options,now:'2026-10-20T22:30:00Z'});assert.equal(old.capture.state,'NOT_RECORDED');assert.equal(calls,1,'old session is never recalculated with new-day fundamentals');
 });

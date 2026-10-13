@@ -170,7 +170,7 @@ function assemble({config,catalog,forward_ledger=null,classification=null,histor
  for(const etf of [...etfs,...DASHBOARD_ETFS.filter(e=>!etfs.includes(e)).sort()])if(!own(out.sources,etf))source(etf,'USD');
  out.sector=sector;for(const sym of [SP500_SYMBOL,...DASHBOARD_ETFS,FX_SYMBOLS.USD])if(own(series,sym))out.indices[sym]=series[sym];
  if(spy===null){out.state='NOT_AVAILABLE';out.reason_codes=['SESSIONS_NOT_AVAILABLE'];for(const k of KINDS)out.ledgers[k]=unavailable(['SESSIONS_NOT_AVAILABLE']);return out;}
- const v2Rows=forward_ledger?.schema_version===2?forward_ledger.versions[FORWARD_V2_VERSION]:null,readyDate=v2Rows?[...v2Rows].find(r=>r.state==='RECORDED'&&Object.values(r.companies||{}).some(c=>finite(c.Q?.score)&&finite(c.G?.score)))?.date:null;
+ const v2Rows=forward_ledger?.schema_version===2?forward_ledger.versions[FORWARD_V2_VERSION]:null,readyDate=v2Rows?[...v2Rows].find(r=>r.state==='RECORDED'&&Object.values(r.companies||{}).some(c=>num(c.Q?.score)&&num(c.G?.score)))?.date:null;
  const sessions=Object.keys(spy).filter(d=>start!==null&&d>=start&&(v2Rows===null||readyDate&&d>=readyDate)); // v2 starts on its first prepared day, never earlier.
  const v2Basis=forward_ledger?.schema_version===2,snapshots=snapshotsFromLedger(forward_ledger),vScores=v2Basis?{}:vScoresFromStore(v_store),vComposition=v2Basis?{}:vCompositionFromStore(v_composition),flagRows=flagsFromStore(flags); // v1 stored V never joins a v2 Q/G snapshot.
  // Every ledger carries every priced member (a stored set definition is then derived from any ledger input); the engine

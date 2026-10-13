@@ -177,5 +177,5 @@ function mount(host,options={}){
    state.unsubscribe=session.subscribe(()=>{if(state.disposed||!host.isConnected){dispose(state);return;}if(!session.state().connected||session.revision()!==rev){clearPrices(state);rev=session.revision();}paintPrices();});paintPrices();}catch(_){paintPrices();}})();}
  return Object.freeze({dispose(){dispose(state);}});
 }
-return Object.freeze({FILENAME,START,STRATEGY,VERSION,V_VERSION,V2_VERSION,V2_STRATEGY,BENCHMARK,validate,load,instrumentReturn,forwardReturn,qgSummary,seriesFromHistory,rangeFor,eastern,mount,disposeAll});
+return Object.freeze({FILENAME,START,STRATEGY,VERSION,V_VERSION,V2_VERSION,V2_STRATEGY,BENCHMARK,validate,load,instrumentReturn,forwardReturn,qgSummary,seriesFromHistory,rangeFor,eastern,sessionDay,mount,disposeAll});
 });
