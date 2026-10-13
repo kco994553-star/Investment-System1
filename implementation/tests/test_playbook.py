@@ -115,3 +115,8 @@ def test_strict_sic_invalid_input_never_crashes_or_classifies():
         assert P.sic_candidate(cfg, sic) is None
         assert P.sector_for(cfg, 'SYN', 'XLK', sic) == {'sector': 'technology_hardware', 'source': 'ETF_FALLBACK'}
     assert P.sic_candidate(cfg, '3559') == 'CYCLICAL'
+
+
+def test_integral_sic_float_matches_javascript_numeric_representation():
+    assert P.sic_candidate(P.load_config(), 3559.0) == 'CYCLICAL'
+    assert P.sector_for(P.load_config(), 'SYN', 'XLK', 3827.0)['sector'] == 'semi_equipment'
