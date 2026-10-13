@@ -644,7 +644,17 @@ def _compute(companyfacts, profile, cutoff):
         ends |= facts.annual_ends(item)
     if not ends:
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
-    company = _Company(facts, max(ends))
+    return compute_reported_periods(facts, fiscal_year_end=max(ends), profile=profile, taxonomy=taxonomy, currency=currency)
+
+def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxonomy=None, currency=None):
+    """Shared Q/G definitions for source adapters, without fabricated SEC facts.
+
+    The adapter supplies reported period methods and owns source, cutoff and currency checks.
+    Missing inputs remain None. This function never assigns SEC provenance to DART facts.
+    """
+    if profile not in ('GENERAL', 'FINANCIAL') or not isinstance(fiscal_year_end, date):
+        raise ValueError('REPORTED_PERIODS_INVALID')
+    company = _Company(facts, fiscal_year_end)
     metrics = _metrics_financial(company) if profile == 'FINANCIAL' else _metrics_general(company)
     _growth_common(company, metrics)
     raw = dict(metrics)
