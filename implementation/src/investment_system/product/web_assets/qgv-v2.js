@@ -73,12 +73,16 @@ function referenceRange(company,parameters){
  const cf=v.fcf/v.diluted_shares;if(!(cf>0))return na('NON_POSITIVE_CASHFLOW');const ends=[];
  for(const g of [rule.lower,rule.upper]){const x=E.dcf({cashflow_per_share:cf,growth_rate:g,parameters,cashflow_currency:v.currency});if(x.state==='NOT_AVAILABLE')return na(x.reason_codes[0]);ends.push(x.value_per_share);}
  return{state:'PROVISIONAL',reason:null,low:ends[0],high:ends[1]};}
-function cross(values,groups,ids,industry){
- const pop=ids.filter(i=>values[i]!==null),out={};
+// Pool = cross-section (one point per issuer); a non-pooled id (TARGET-only row, second listing) is ranked against pool + itself.
+function cross(values,groups,ids,pooled,industry){
+ const pop=pooled.filter(i=>values[i]!==null),out={};
  for(const i of ids){if(values[i]===null)continue;if(pop.length<MIN_UNIVERSE){out[i]=[null,'CROSS_SECTION_TOO_SMALL',null,pop.length];continue;}
-  let basis='UNIVERSE',peers=pop;if(industry){const g=groups[i],members=pop.filter(j=>g!==null&&g!==undefined&&groups[j]===g);if(g!==null&&g!==undefined&&members.length>=MIN_PEERS){basis='INDUSTRY';peers=members;}else basis='UNIVERSE_FALLBACK';}
-  out[i]=[percentile(values[i],peers.map(j=>values[j])),null,basis,peers.length];}
+  let basis='UNIVERSE',peers=pop;if(industry){const g=groups[i],members=pop.filter(j=>g!==null&&g!==undefined&&groups[j]===g);if(g!==null&&g!==undefined&&members.length+(members.includes(i)?0:1)>=MIN_PEERS){basis='INDUSTRY';peers=members;}else basis='UNIVERSE_FALLBACK';}
+  const vals=[...peers.map(j=>values[j]),...(peers.includes(i)?[]:[values[i]])];out[i]=[percentile(values[i],vals),null,basis,vals.length];}
  return out;}
+// Q/G axis from the published sec-qgv2 score (the Q·G side's peer rules) with this side's coverage fields.
+function publishedAxis(axis,scores,pub){const out=axisScore(scores,axis),s=object(pub)?pub.score:null;
+ if(finite(s)&&s>=0&&s<=100){out.score=s;out.state=out.missing.length?'PARTIAL':'READY';out.reason=null;}else{out.score=null;out.state='NOT_AVAILABLE';out.reason='AXIS_NOT_PUBLISHED';}return out;}
 /* companies: {code: {industry_group, profile, factors, v_inputs, memberships}}; quotes: {code: {price, currency, month_closes?: {YYYY-MM: close}}} (RAM).
    Returns {code: result}. */
 function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dcfDefaults(),preset=DEFAULT_PRESET,gate=null}={}){
@@ -86,11 +90,11 @@ function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dc
  const gateOn=gate===null||gate===undefined?GATE_DEFAULT:Boolean(gate),ids=Object.keys(object(companies)?companies:{}).sort(),groups={},fallback={};
  for(const i of ids){const g=companies[i].industry_group;groups[i]=g===undefined?null:g;}for(const p of PILLARS)fallback[p]=typeConfig.fallback.weights[p];
  const Q=object(quotes)?quotes:{},qg={},qAxis={},gAxis={},m={};
- for(const i of ids){const f=object(companies[i].factors)?companies[i].factors:{};qg[i]={};for(const k of QG_FACTORS){const v=Object.hasOwn(f,k)?f[k]:null;qg[i][k]=finite(v)&&v>=0&&v<=100?v:null;}qAxis[i]=axisScore(qg[i],'Q');gAxis[i]=axisScore(qg[i],'G');}
+ for(const i of ids){const f=object(companies[i].factors)?companies[i].factors:{};qg[i]={};for(const k of QG_FACTORS){const v=Object.hasOwn(f,k)?f[k]:null;qg[i][k]=finite(v)&&v>=0&&v<=100?v:null;}const pub=object(companies[i].qg_axes)?companies[i].qg_axes:null;qAxis[i]=pub?publishedAxis('Q',qg[i],pub.Q):axisScore(qg[i],'Q');gAxis[i]=pub?publishedAxis('G',qg[i],pub.G):axisScore(qg[i],'G');}
  const map=fn=>{const o={};for(const i of ids)o[i]=fn(i);return o;};
- const qPct=cross(map(i=>qAxis[i].score),groups,ids,true);
+ const pooled=ids.filter(i=>companies[i].in_cross_section!==false),qPct=cross(map(i=>qAxis[i].score),groups,ids,pooled,true);
  for(const i of ids)m[i]=metrics(companies[i],Object.hasOwn(Q,i)?Q[i]:null,parameters);
- const ey=cross(map(i=>m[i].ebit_yield),groups,ids,false),fy=cross(map(i=>m[i].fcf_yield),groups,ids,false),ind=cross(map(i=>m[i].ebit_yield),groups,ids,true),exp=cross(map(i=>m[i].gap===null?null:-m[i].gap),groups,ids,false);
+ const ey=cross(map(i=>m[i].ebit_yield),groups,ids,pooled,false),fy=cross(map(i=>m[i].fcf_yield),groups,ids,pooled,false),ind=cross(map(i=>m[i].ebit_yield),groups,ids,pooled,true),exp=cross(map(i=>m[i].gap===null?null:-m[i].gap),groups,ids,pooled,false);
  const pw=PRESETS[preset].weights,results={};
  for(const i of ids){const c=companies[i],x=m[i],factors={};
   for(const k of QG_FACTORS){const s=qg[i][k];factors[k]={score:s,state:s===null?'NOT_AVAILABLE':'PUBLIC',reason:s===null?'SEC_FACTOR_NOT_AVAILABLE':null,basis:null};}

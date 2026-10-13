@@ -592,7 +592,7 @@ let leaderboardView={view:'default',profileId:null},leaderboardRows=null;
 // device quotes of the v2 V cross-section live in this page's memory only: never stored, logged or sent.
 let qgv2Profile={preset:null,gate:null},qgv2Quotes={},qgv2QuotesKey='';
 function qgvScores(identities=identityCompanies){return QgvScores.compute({identities,publicScreens,quotes:qgv2Quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate});}
-async function refreshQgv2Quotes(after){const inputs=window.SecQgv2?publicScreens[SecQgv2.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
+async function refreshQgv2Quotes(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
  let q={};try{q=await QgvScores.collectQuotes(window,{identities:identityCompanies,v2Inputs:inputs,catalog});}catch(_){q={};}// Quotes accumulate for this page session (the Universe read is dropped on navigation); a Universe read/clear resets them.
  const next={...qgv2Quotes,...q},k=JSON.stringify(next);if(k===qgv2QuotesKey)return;qgv2Quotes=next;qgv2QuotesKey=k;if(after)after();}
 // M3 ranks come from the open Universe read (RAM only) and are repainted into S06 when that read finishes or is cleared.
@@ -768,7 +768,7 @@ function renderRoute() {
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
   if(route==='analysis') CompanyScreen.wireTabs($('#content'));
-  if((route==='company'||route==='analysis')&&window.SecQgv2&&publicScreens[SecQgv2.FILE]) void refreshQgv2Quotes(()=>{const h=location.hash.slice(1).split('/');if(h[0]===route&&$('[data-company-card="qgv"],[data-analysis-panel="factors"]'))render();});
+  if((route==='company'||route==='analysis')&&window.Qgv2Inputs&&publicScreens[Qgv2Inputs.FILE]) void refreshQgv2Quotes(()=>{const h=location.hash.slice(1).split('/');if(h[0]===route&&$('[data-company-card="qgv"],[data-analysis-panel="factors"]'))render();});
   if(route==='company'||route==='analysis') paintValue(route,id);
   if(route==='model') {attachDeviceActual('#model-actual-summary',false);paintModel();}
   if(route==='home') deviceCatalog().then(c=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent=c.target_root_version||'NOT_AVAILABLE';}).catch(()=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent='NOT_AVAILABLE';});
@@ -1034,7 +1034,7 @@ catch(e) {settingsWritable=false;}
 syncShell();
 Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
-}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window),PublicScreens.load(window).then(s=>typeof ClassificationScreens==="object"?ClassificationScreens.load(window).then(c=>{if(c)s[ClassificationScreens.FILE]=c;return s;}):s).then(s=>typeof SecQgv2==="object"?SecQgv2.load(window).then(v=>{if(v)s[SecQgv2.FILE]=v;return s;}):s),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,reported,screens,identities])=>{
+}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window),PublicScreens.load(window).then(s=>typeof ClassificationScreens==="object"?ClassificationScreens.load(window).then(c=>{if(c)s[ClassificationScreens.FILE]=c;return s;}):s).then(s=>typeof Qgv2Inputs==="object"?Qgv2Inputs.load(window).then(v=>{if(v)s[Qgv2Inputs.FILE]=v;return s;}):s),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,reported,screens,identities])=>{
   try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}
   publicScreens=screens;publicCatalog=identities||null;
   secReported=reported;
