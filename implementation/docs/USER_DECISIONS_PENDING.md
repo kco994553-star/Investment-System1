@@ -1,131 +1,66 @@
 # 사용자 결정·조치 대기 목록
 
-기준일: 2026-10-10 UTC, canonical 확인 HEAD `ce98f752f1658a5c13eef6631f0196ebbed75acf`(#161 병합 후). 한 장 요약이며 새 결정이나 방법론을 만들지 않는다. 현재 진행 상태의 단일 진입점은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md), 범위는 [ROADMAP_2026Q4](ROADMAP_2026Q4.md)다. 두 문서와 다르면 CURRENT_HANDOFF가 우선한다.
+기준일: 2026-10-13 UTC. 최신 사용자 메시지(10/11·10/13)를 반영했다. 실제 진행은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md)가 우선한다. 키·토큰·이메일·계정·가격 값은 기록하지 않는다. 승인된 내용을 다시 승인 대기로 올리지 않는다.
 
-`권장안`은 기존 문서에 이미 적힌 권장만 옮겼다. 문서에 권장이 없으면 "문서상 권장 없음"으로 적는다. 결정 전에는 해당 값이 모두 `NOT_AVAILABLE`이며 0이나 추정값으로 대체하지 않는다.
+## 남아 있는 결정만
 
-## 1. 워크플로·배포
+| 번호 | 무엇을 | 선택지 | 권장안과 근거 | 결정 전 동작 |
+| --- | --- | --- | --- | --- |
+| D-227 | #227 수정본 병합: Actions에서 Wikidata 도메인 기준 로고를 Pages에 포함; TradingView 직접 iframe | 수정본·검증 결과 확인 후 승인 / 보류 | 사용자 10/13 지시 그대로 수정 후 승인. 실행 중 로고 외부 요청·외부 이미지 CSP 허용을 제거한다 | #227 미병합. TradingView 기본 꺼짐, KRX/TSE 지원 여부 확인 불가 |
+| E-13F | 13F 공개 보강(제출일·미변동 보유·보고 가치·발행사명·Eaton CUSIP) 신규 PR 병합 | 구체적 PR 확인 후 승인 / 보류 | SEC 공개자료이며 13F 해석에 필요한 항목. 가격·개인 보유와 섞지 않는다 | 보강 PR 승인 전 기존 공개 필드 유지; 없는 항목 NOT_AVAILABLE |
+| A-V2 | 새로운 v2 V·원장·기본점수 전환 PR의 계산식·공개 필드·시작일 변경 | 완성 PR·회귀 검증을 확인 후 승인 / 보류 | V 최우선. 10/19 준비 여부와 실제 시작일을 확인하고 소급하지 않는다 | 승인된 기존 v1 유지; v2 준비·전환 여부를 명시하며 결측 NOT_AVAILABLE |
+| C-MACRO | 신규 매크로 5경고등·수집/연결 PR 병합 | 완성 PR·재생 결과를 확인 후 승인 / 보류 | PLAYBOOK 13-5의 v0·UNCALIBRATED 구현. 재생은 공개하지 않고 사용자 보고만 한다 | 신규 연결 미병합; 없는 경고등 제외 n/5, 0/5 확대 제한 없음·U3 불가·매크로 확인 불가 |
 
-### 1-1. #156 워크플로 PR 병합 승인
+Worker Universe504(하이픈 포함)·HYG·IEF 확장 PR 작성 및 확대 범위는 **승인됨**. 구체적 PR과 검사 결과는 최종 보고에 연결한다. 새 계산·워크플로·공개 경계·외부 서비스·GSQ 결정 변경 PR은 위와 같이 완성본 검토 후 승인 대상이다. 테스트·문서·화면 전용 PR은 필수 6체크 성공·실패 0이면 사용자 지시에 따라 자체 병합한다.
 
-- 무엇을 결정하나: cockpit-pages와 SEC 일일 워크플로가 `ci_node_tests.txt`·`ci_browser_tests.txt` manifest로 테스트를 실행하고 전체 `pytest tests/` 단계를 추가하는 변경을 병합할지.
-- 선택지: 승인 후 병합 / 보류.
-- 권장안: 문서상 권장 없음. 병합 후 이번 세션 새 테스트를 manifest에 추가하는 작은 PR이 이어진다(CURRENT_HANDOFF).
-- 결정 전 상태: 새 테스트(design_responsive, design_canvas, profile_preview, thirteenf_filings, ops_status, private_subset)는 CI에 등록되지 않고 로컬 실행·통과만 확인됐다. 워크플로 변경이라 자체 병합 불가.
-- 링크: [#156](https://github.com/kco994553-star/Investment-System1/pull/156)
+## 결정됨 — 2026-10-13
 
-### 1-2. Pages 배포 시점
+- 기존 PR 병합 순서 **#222 → #224 → #226 → #225 → #210 → #215 → #211 승인**. 각 PR의 최신 HEAD에서 필수 `repository-guard`, `ingest-and-gate`, `build`, `validate`, `guard`, `presentation` 성공·실패 0을 확인한 뒤 한 건씩 병합. #227은 수정 후 별도 승인이다.
+- 레인 A~E 최대 5개 병렬, 영역·브랜치 분리, 공용 파일은 D만 변경. 새로운 레인 PR 병합 순서는 D → A → B → C → E. 기존 위 번호 순서와 별개다. force push·ruleset·AUTONOMY_MODE 변경 금지.
+- DART_API_KEY 등록 완료 사용자 확인. 부채 = 단기차입금 + 장기차입금 + 사채 + 리스부채. 042700 Q·G는 같은 계산 사용, 미국 504 분포에 대입한 v2 순위는 참고 순위. 외부 접근 실패는 원인만 보고하고 배포·미국 작업 계속.
+- 로고는 실행 중 외부 요청 금지; Actions에서 Wikidata 도메인 기반으로 받아 Pages에 포함, 없으면 이니셜. 외부 이미지 CSP 출처 추가 없음. TradingView 직접 iframe, 기본 꺼짐, 켤 때 **“종목명이 TradingView로 전달됩니다”**, 기기 설정만 저장. TSE 8035·KRX 042700은 확인 불가, 추가 조사 없음.
+- SEC 연락처는 Secret `SEC_USER_AGENT`만 사용. 신규 코드·커밋·로그·공개 산출물·테스트 fixture의 이메일 패턴 차단. Frozen 역사 캡처의 기존 문자열은 수정·재출력하지 않으며 새로운 연락처·복사·증가를 금지한다.
+- V 계산(13-1·13-2·14-4), v2 V 축을 최우선. 다음 보고에 10/19 기록 시작 여부 명시. 준비된 날부터, 소급 금지.
 
-- 무엇을 결정하나: #148 이후 병합분(프로필, 엔진 이식, ★, A2, B9, B10, C11, S03~S05)을 Pages에 언제 배포할지.
-- 선택지: (a) cockpit-pages `workflow_dispatch`로 지금 배포 / (b) 예약된 SEC 일일 실행에 맡김. SEC 일일 실행은 기본 브랜치를 매일 22:17 UTC에 빌드·배포하므로 (b)를 택해도 다음 22:17 UTC에 자동 포함된다.
-- 권장안: 문서상 권장 없음(CURRENT_HANDOFF는 두 선택지만 적음).
-- 결정 전 상태: 마지막 실제 배포는 SEC run 38042681260(#144 기준). 이후 변경은 공개 사이트에 없다. 배포는 사용자 승인 대상이며 실행하지 않았다.
-- 링크: [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md)(canonical·배포 상태)
+### 플레이북 해석 26건 모두 결정됨
 
-## 2. 공개 데이터 경계
+PLAYBOOK_V1 본문은 보존하고 **17절 사용자 결정(2026-10-13 2차)**으로 추가; JSON·엔진에 반영한다. 번호는 기존 해석 목록 번호다.
 
-### 2-1. M3 SEC 주식수 공급 경로
+| 번호 | 확정 내용 |
+| --- | --- |
+| #6 | R2 = 직전 분기 Q·G 스냅샷 대비. 2분기 전 대비 하락이 기본 임계의 1.5배 이상이어도 R2 |
+| #11 | W1 핵심 코드 포함 |
+| #13 | E4 핵심 코드, 정보 칩만(매매·판정 선택지 없음). 원인 코드 #16 방식 유지 |
+| #1 | 확신 해제는 3절: 공시 확인 시 해제, 뉴스만이면 7일 확인 동안 추가 매수 금지 |
+| #18 | 아래 SIC 경기민감·방어 후보. 그 외 업종 후보 없음. 5년 연매출 성장률 표준편차 상위 30%는 민감, 하위 30%만으로 방어 불가(방어 업종 후보 필수) |
+| #15 | 매크로 0/5 = 확대 제한 없음, U3 불가, 매크로 확인 불가 표시 |
+| #19 | 우량 = 5년 영업이익률 표준편차 < 3%p. 19종목 통과 결과 보고; max−min < 5%p 폐기 |
+| #20 | 19종목 밖 업종 하위 묶음은 아래 SIC. 그 외 XLK 기술 하드웨어, 그 외 XLI 일반 산업 |
+| #7 | 우량 Q·G 유지 = Q 하락 < 3 그리고 G 하락 < 기본 R2 임계 5 |
+| #26 | 가치 함정 경계 = 업종 내 Q 백분위 ≤ 30(30 포함) |
+| #25 | 이유 코드 각자 유지, PLAYBOOK_ENGINE_V1.md 대응표 추가 |
+| #2~#5, #8~#10, #12, #14, #16, #17, #21~#24 | 현재 해석 모두 승인 |
 
-- 무엇을 결정하나: M3 '내 기기 기준' Universe 계산에 쓸 SEC 주식수를 기기에 어떻게 전달할지.
-- 선택지: (a) Actions가 Universe 코드별 SEC 주식수·basis(가격 없음)를 공개 JSON으로 제공(공개 데이터 경계 변경 + 504 workflow 확장) / (b) Worker가 SEC를 중계(Worker 변경).
-- 권장안: (a). 근거: CURRENT_HANDOFF가 (a)를 권장으로 표기. 현재 공개 `sec-public-inputs.json`에 US17 reported_shares가 있으나 M3 어댑터는 원본 body+SHA 검증을 요구해 그대로는 쓸 수 없다.
-- 추가 조건: 주식수만으로는 부족하다. **주식 종류(share-class) basis 근거도 함께 필요**하며, basis가 UNKNOWN이면 `BASIS_UNCONFIRMED`로 처리한다. 자동 보정은 하지 않는다.
-- 결정 전 상태: SEC 주식수 입력이 연결되지 않아 M3 시가총액·순위는 `NOT_AVAILABLE · SEC_INPUTS_NOT_CONNECTED`.
-- 링크: [#122](https://github.com/kco994553-star/Investment-System1/pull/122), [SEC_M3_INPUT_ADAPTER](daily_data_pipeline/SEC_M3_INPUT_ADAPTER.md), [M3_PRIVATE_UNIVERSE_DESIGN](daily_data_pipeline/M3_PRIVATE_UNIVERSE_DESIGN.md)
+경기민감 SIC: 1000–1499, 1500–1799, 2600–2699, 2800–2829, 3300–3399, 3500–3569, 3559, 3674, 3827, 3710–3716, 4000–4799, 5200–5399, 5500–5599, 6500–6553, 7000–7099.
 
-### 2-2. 가격 불필요 유형 지표 공개
+경기방어 SIC: 2000–2199, 2830–2836, 2840–2844, 4800–4899, 4900–4999, 5400–5499, 5912, 8000–8099.
 
-- 무엇을 결정하나: `company-types-pricefree.json`에 가격이 필요 없는 지표(revenue_cagr_3y, roic) 원값을 추가해 공개할지.
-- 선택지: 승인 후 draft 브랜치를 마무리·병합 / 보류.
-- 권장안: 문서상 권장 없음.
-- 결정 전 상태: 지표 원값이 공개되지 않아 기기에서 커스텀 유형 램프로 기업별 유형 미리보기를 계산할 수 없다. 해당 값은 `NOT_AVAILABLE`.
-- 링크: draft 브랜치 `claude/type-metrics-public`(WIP, 공개 데이터 경계라 승인 필요), [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md)
+업종 하위 SIC: 3559·3827 반도체 장비 / 3674 반도체 / 3760–3769·3812 방산 / 3600–3629 전력 장비 / 3820–3829(3827 제외) 산업 자동화 / 7370–7379 소프트웨어·인터넷.
 
-### 2-3. SEC 504 확대와 비공개 다일 raw 보관 정책
+## 결정됨 — 2026-10-11 및 이미 병합된 범위
 
-- 무엇을 결정하나: US17을 넘어 Universe 504 코드를 수집하려면 며칠에 걸친 분할 수집(shard) 결과를 어디에 보관할지.
-- 선택지: 사용자 소유 비공개 저장소(로컬 디스크 또는 개인 클라우드) 등 문서에 정리된 후보 중 선택. 위치와 복원·검증 절차를 문서화해야 한다.
-- 권장안: 문서상 권장 없음.
-- 결정 전 상태: SEC 일일 워크플로 테스트가 `actions/cache`, `upload-artifact@`, `git push`, `git commit` 사용을 금지하므로 일일 워크플로 안에서 다일 raw를 보관할 수 없다. #145 분할 모듈은 워크플로에 연결되지 않았고, 실제 504 취득 결과는 `NOT_AVAILABLE`. raw JSON/manifest는 Pages·공개 artifact로 복사하지 않는다.
-- 링크: [SEC_UNIVERSE_SHARDS](daily_data_pipeline/SEC_UNIVERSE_SHARDS.md), [RAW_PERSISTENCE_OPTIONS](producer_infrastructure/RAW_PERSISTENCE_OPTIONS.md), [#145](https://github.com/kco994553-star/Investment-System1/pull/145)
+- #156 테스트 manifest 워크플로 병합; 레거시 9종 등록·복구는 #167에서 완료(미등록이라는 오래된 인수인계 문구는 역사).
+- M3 SEC 주식수 공급 (a) Actions 공개 주식수·share-class basis. 불명확하면 BASIS_UNCONFIRMED; #174·#188·#193·#209 병합.
+- 가격 불필요 기업 유형 지표 공개 #165; 13F 기관 v0 10곳 #173; SIC 초안 v0 #178.
+- 테마 14개 v0, 전력 인프라 GRID, 소비자 브랜드 근거 약함, ETF 보유 OR 10-K 키워드, 40% 초과 경고. #178 병합, #152·#153 대체되어 닫힘.
+- DCF v1·v1.1, 누락 차입 항목 0·IFRS·성장률 h 제한(PROVISIONAL): #176·#189 병합.
+- 비공개 raw 보관 #169·#185; 6808/6808 검증의 현재 보관 상태는 E6에서 재확인. 만료 2026-12-26 전에 보관 완료 여부 보고.
+- 전진검증 기준 시작 2026-10-19, 준비된 날부터 v2 기본·v1 비교, 50% 재정규화 및 next_3_5y_growth 정의, 가격 RAM+개인 시트: #183·#187 및 GSQ-022·023(#222) 승인.
+- PLAYBOOK 13-10: 비교 최소 20거래일, 세트 ETF 허용, TWR 통일, ASML 6-K 실적만, 리더보드 확인 표시. 구현 C5에서 확인.
+- EDINET 후순위 보류 유지. 착수 승인 요청을 새 대기 항목으로 만들지 않는다.
 
-## 3. 분류·밸류에이션·매크로 확인
+## 확인 사항 (사용자 결정 아님)
 
-### 3-1. SIC→업종군 매핑
-
-- **2026-10-11 결정됨: 초안 표를 v0으로 채택.** 구현은 [SIC_THEME_V0](company_types/SIC_THEME_V0.md). 남은 대기: 경기민감·방어 소속도 산식(아래 상태 유지).
-
-- 무엇을 결정하나: SEC SIC 범위를 업종군으로 묶은 초안 표를 채택할지(표 확인 후에도 경기민감·방어 산식은 자동 채택되지 않음).
-- 선택지: 초안 그대로 채택 / 수정 후 채택 / 보류.
-- 권장안: 문서상 권장 없음(초안만 제시, 확인할 점이 표에 적혀 있음).
-- 결정 전 상태: 경기민감·경기방어 판정과 업종군 분류는 `NOT_AVAILABLE`. 설정의 industry.groups는 비어 있다.
-- 링크: [QUEUE_RESULTS_AND_COVERAGE](company_types/QUEUE_RESULTS_AND_COVERAGE.md)(SIC 절). 26E 결정 기록 변경이므로 별도 승인.
-
-### 3-2. DCF 기본값
-
-- **2026-10-11 결정됨: v1 기본값 채택 후 v1.1로 보완.** 미보고 차입 항목 0 가정, IFRS(20-F/40-F) 지원, 명시기간 성장률 h = 3년 매출 CAGR을 [0, 0.15]로 제한(PROVISIONAL). 구현은 [DCF_V1_1_PARAMETERS](valuation/DCF_V1_1_PARAMETERS.md). 아래는 결정 전 기록.
-
-- 무엇을 결정하나: DCF·역DCF 금융 파라미터를 확정할지.
-- 선택지: 문서의 제안값(명시기간 5년, 할인율 10%, 영구성장률 2%, 역DCF 탐색 구간 -50%~+100%)을 채택 / 수정 / 보류. FCFE 산출 정의와 주식 종류·희석 처리도 미확정.
-- 권장안: 문서상 권장 없음. 제안값은 "사용자 결정 전 비활성"이며 관측된 자본비용이 아니라고 문서에 명시돼 있다.
-- 결정 전 상태: 금융 파라미터가 null/confirmed=false라 DCF·역DCF·V 결과는 `NOT_AVAILABLE`(`PARAMETER_APPROVAL_PENDING`).
-- 링크: [DCF_V1_PARAMETERS](valuation/DCF_V1_PARAMETERS.md), [#143](https://github.com/kco994553-star/Investment-System1/pull/143)
-
-### 3-3. 매크로 8축 대응표
-
-- 무엇을 결정하나: 8축별 공식 입력·표시 방식 초안을 채택할지. Growth는 연율 또는 전년동기비 선택, Inflation은 NSA YoY 채택 여부, 후속 4축의 exact series/필드/단위 선택 포함.
-- 선택지: 초안 채택 / 수정 / 보류.
-- 권장안: 문서상 권장 없음. 문서는 Growth(T10101 발표 연율%)와 Inflation(CUUR0000SA0 전년동월 대비)을 같은 cutoff 캡처에서 함께 엔진에 넣는 방식을 "제안"으로만 적었다.
-- 결정 전 상태: 실제 국면, Direction/Momentum/Surprise/Stress/Confidence 및 6상태는 `NOT_AVAILABLE`. 입력 파서(#128)와 공개 raw 화면(#141)만 준비됐다.
-- 링크: [EIGHT_AXIS_MAPPING_PROPOSAL](macro_data_rights/EIGHT_AXIS_MAPPING_PROPOSAL.md)
-
-### 3-4. 테마 바스켓 (#152)
-
-- **2026-10-11 결정됨: 14개 바스켓 v0 채택(전력 인프라=GRID만, 소비자 브랜드 '근거 약함' 표시), 소속 규칙 ETF 보유 OR 10-K 키워드, 단일 테마 40% 초과 쏠림 경고.** 구현은 [SIC_THEME_V0](company_types/SIC_THEME_V0.md). 아래는 결정 전 기록.
-
-- 무엇을 결정하나: 14개 테마 바스켓 제안(ETF 후보·10-K 키워드)을 승인하고, 새 공개 파일로 표시하는 것을 허용할지.
-- 선택지: 승인 / 수정 / 보류.
-- 권장안: 문서상 권장 없음. 제안은 노출·쏠림 경고용이며 Q/G/V 비중에는 영향이 없다고 문서에 적혀 있다.
-- 결정 전 상태: baskets_confirmed=false, membership_rule=null. 테마 소속은 `NOT_AVAILABLE`. 새 공개 파일은 공개 데이터 경계 변경이라 승인 필요.
-- 링크: [#152](https://github.com/kco994553-star/Investment-System1/pull/152), [THEME_BASKET_PROPOSAL_V1](company_types/THEME_BASKET_PROPOSAL_V1.md)
-
-## 4. 입력 범위·시점
-
-### 4-1. 13F 추적 기관(manager) 집합
-
-- 무엇을 결정하나: 13F를 수집·비교할 기관 목록.
-- 선택지: 사용자가 기관을 직접 지정.
-- 권장안: 문서상 권장 없음.
-- 결정 전 상태: 기본 추적 목록이 없어 투자자별·종목별 겹침 비교는 `NOT_AVAILABLE`(#159는 읽기 경고·보기 화면까지).
-- 링크: [#159](https://github.com/kco994553-star/Investment-System1/pull/159), [ROADMAP_2026Q4](ROADMAP_2026Q4.md) 할 일 13
-
-### 4-2. forward(모의투자·전진검증) 시작일
-
-- 무엇을 결정하나: 시작 시점, 대상, 전략 버전, 입력 cutoff, 결과 보관·검증 규약, QGV v2 착수 여부.
-- 선택지: 사용자가 시작일을 지정.
-- 권장안: 문서상 권장 없음. 에이전트는 기간을 선택·소급하지 않는다.
-- 결정 전 상태: 시작일 미정. 기존 Holdout은 UNCONFIRMED로 두고 사용하지 않으며 QGV v2는 보류.
-- 링크: [ROADMAP_2026Q4](ROADMAP_2026Q4.md) 할 일 16, [Holdout 확인](qgv_v2_readiness/HOLDOUT_PROTECTION_CHECK_20261010.md)
-
-## 5. 외부 서비스 등록
-
-### 5-1. DART 키 등록 알림
-
-- 무엇을 결정하나: DART_API_KEY 등록을 마친 뒤 알려 주는 것.
-- 선택지: 해당 없음(알림 한 번). 10/11 18:00 이후에 알린다. 시간 도달만으로 알림으로 보지 않는다.
-- 권장안: 해당 없음.
-- 결정 전 상태: 알림 전에는 코드 작성, 키 존재 확인, 인증·API 호출 모두 하지 않는다. DART 재무(한미반도체)는 `NOT_AVAILABLE`.
-- 링크: [DART_CONNECTION_READINESS](daily_data_pipeline/DART_CONNECTION_READINESS.md), [ROADMAP_2026Q4](ROADMAP_2026Q4.md) 할 일 8
-
-### 5-2. EDINET
-
-- 무엇을 결정하나: 현재는 후순위 보류. 나중에 착수할 때 Subscription-Key 등록 조건을 확인한다.
-- 선택지: 보류 유지 / 착수 결정(착수 시 키 등록 필요).
-- 권장안: 보류 유지(사용자의 기존 결정, ROADMAP 할 일 9).
-- 결정 전 상태: adapter 미착수. 도쿄일렉트론 공시 재무는 `NOT_AVAILABLE`.
-- 링크: [KR_JP_FILINGS_RESEARCH](fundamentals_sources/KR_JP_FILINGS_RESEARCH.md), [ROADMAP_2026Q4](ROADMAP_2026Q4.md) 할 일 9
-
-## 참고
-
-- 열린 PR #162(Python 3.13 호환 + 백업 `/3`)는 이 목록의 결정 항목이 아니다. 병합은 CURRENT_HANDOFF의 병합 규칙을 따른다.
-- 값(키, 토큰, 이메일, 시트 ID, 가격)은 이 문서에 적지 않는다. 설정 이름과 저장 위치만 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md)에 있다.
+- 최신 SEC 실행에서는 BEA_USERID가 마스킹된 설정 상태로 전달됨(C 레인 확인). 예전 빈 값 로그만 보고 재등록을 요청하지 않는다.
+- Fed H15 HTTP404, H41/H8 HTTP200 빈 추출, 공식 소스 확인 접근403: C 레인이 원인·후속 보고, 같은 외부 실패 반복 금지.
+- 전체 기업 검색·ACTUAL 백업 복원 알림·SEC 미수집404는 #208 구현이 기준. D4에서 현행 테스트로 재검증하며 새 승인을 요구하지 않는다.

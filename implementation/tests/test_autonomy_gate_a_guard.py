@@ -153,6 +153,52 @@ class DeviceActualPrivacyGuardTests(unittest.TestCase):
         self.write("sensitive-file.json", json.dumps(self.envelope()))
         self.assert_private_failure()
 
+    def test_new_email_in_logs_and_fixtures_fails_without_printing_contact(self):
+        contact = "synthetic-contact" + "@" + "example.invalid"
+        for path in ("build.log", "tests/fixtures/sec_contact.json"):
+            with self.subTest(path=path):
+                self.write(path, json.dumps({"contact": contact}), committed=False)
+                result, output = self.check()
+                self.assertEqual(result, 1)
+                self.assertEqual(json.loads(output)["email_pattern_guard"], "FAIL")
+                self.assertNotIn(contact, output)
+                self.assertNotIn(path, output)
+
+    def test_email_added_then_removed_is_rejected_from_commit_history(self):
+        base = self.git("rev-parse", "HEAD").strip()
+        contact = "synthetic-contact" + "@" + "example.invalid"
+        self.write("build.log", contact)
+        self.write("build.log", "redacted")
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        self.assertEqual(json.loads(output)["email_pattern_guard"], "FAIL")
+        self.assertNotIn(contact, output)
+
+    def test_new_escaped_or_utf16_email_is_rejected(self):
+        contact = "synthetic-contact" + "@" + "example.invalid"
+        for content in (json.dumps({"contact": contact}).replace("@", "\\u0040").encode(),
+                        contact.encode("utf-16")):
+            with self.subTest(encoding=len(content)):
+                path = self.root / "new-fixture.dat"
+                path.write_bytes(content)
+                self.git("add", "new-fixture.dat")
+                result, output = self.check()
+                self.assertEqual(result, 1)
+                self.assertEqual(json.loads(output)["email_pattern_guard"], "FAIL")
+
+    def test_historical_email_is_not_permission_to_add_another_contact(self):
+        legacy = "historical-contact" + "@" + "example.invalid"
+        self.write("legacy.log", legacy)
+        base = self.git("rev-parse", "HEAD").strip()
+        self.write("legacy.log", legacy + "\nexisting reference")
+        result, output = self.check(base)
+        self.assertEqual(result, 0)
+        contact = "new-contact" + "@" + "example.invalid"
+        self.write("legacy.log", legacy + "\n" + contact, committed=False)
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        self.assertNotIn(contact, output)
+
     def test_private_payload_failure_redacts_other_guard_path_diagnostics(self):
         protected_path = guard.load_config()["append_only_prefixes"][0] + "sensitive-file.json"
         self.write(protected_path, "{}")
