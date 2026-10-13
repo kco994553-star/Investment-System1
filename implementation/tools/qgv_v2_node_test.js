@@ -14,7 +14,7 @@ test('config equals the Python reference (default weights exactly, presets, thre
  const c=vectors.config;equal(V2.WEIGHTS,c.weights);equal(V2.PRESETS,c.presets);
  assert.equal(V2.DEFAULT_PRESET,c.default_preset);assert.equal(V2.GATE_DEFAULT,c.gate_default);assert.equal(V2.GATE_PERCENTILE,c.gate_percentile);
  assert.equal(V2.MIN_PEERS,c.min_peers);assert.equal(V2.MIN_UNIVERSE,c.min_universe);assert.equal(V2.MIN_AXIS_WEIGHT,c.min_axis_weight);
- assert.equal(V2.MIN_HISTORY,c.min_history);assert.equal(V2.CLOSE_WINDOW_DAYS,c.close_window_days);
+ assert.equal(V2.MIN_HISTORY,c.min_history);
  for(const a of ['Q','G','V'])assert.equal(Object.values(V2.WEIGHTS[a]).reduce((x,y)=>x+y,0),100);
  assert.deepEqual(Object.keys(V2.WEIGHTS.V),['v_earnings_yield','v_fcf_yield','v_vs_industry','v_vs_own_history','v_expectation_check']);
  assert.ok(Object.isFrozen(V2.WEIGHTS.V)&&Object.isFrozen(V2.PRESETS.balanced.weights));});
@@ -31,7 +31,7 @@ test('missing is NOT_AVAILABLE, never 0; results carry no price or market cap',(
  const c=vectors.cases.find(x=>x.id==='no-device-prices'),out=V2.scoreUniverse(c.input.companies,{},{typeConfig:TC,parameters:P});
  for(const r of Object.values(out)){for(const k of Object.keys(V2.WEIGHTS.V)){assert.equal(r.factors[k].score,null);assert.equal(r.factors[k].state,'NOT_AVAILABLE');}assert.equal(r.axes.V.score,null);assert.ok(r.flags.includes('V_NOT_AVAILABLE'));}
  const full=vectors.cases.find(x=>x.id==='balanced-default'),res=V2.scoreUniverse(full.input.companies,full.input.synthetic_market,{typeConfig:TC,parameters:P}),text=JSON.stringify(res);
- assert.ok(!/"price"|"market_cap"|"marketcap"|"ev"\s*:/i.test(text));
+ assert.ok(!/"price"|"market_cap"|"marketcap"|"ev"\s*:|month_closes/i.test(text));
  for(const[code,q]of Object.entries(full.input.synthetic_market))assert.ok(!text.includes(':'+q.price+','),'price echo '+code);});
 test('balanced preset reproduces the GSQ-017 type weights; the gate excludes V and flags 가치 함정 주의',()=>{
  const fb={Q:34,G:33,V:33},[tw]=V2.typeAxisWeights({growth:1},TC),w=V2.compositeWeights(V2.PRESETS.balanced.weights,tw,fb);
@@ -42,5 +42,5 @@ test('balanced preset reproduces the GSQ-017 type weights; the gate excludes V a
   if(r.total!==null&&r.axes.Q.score!==null&&r.axes.G.score!==null){const e=(r.weights.Q*r.axes.Q.score+r.weights.G*r.axes.G.score)/(r.weights.Q+r.weights.G);assert.ok(Math.abs(r.total-e)<1e-9);}}
  const off=V2.scoreUniverse(c.input.companies,c.input.synthetic_market,{typeConfig:TC,parameters:P,gate:false});for(const r of Object.values(off))assert.ok(!r.flags.includes('VALUE_TRAP_CAUTION'));
  assert.throws(()=>V2.scoreUniverse({}, {}, {preset:'tuned'}),/PRESET_INVALID/);});
-test('closeAt: last device close within 10 days on or before the period end',()=>{
- assert.equal(V2.closeAt({'2024-12-20':5,'2024-12-30':6,'2025-01-02':7},'2024-12-31'),6);assert.equal(V2.closeAt({'2024-12-01':5},'2024-12-31'),null);assert.equal(V2.closeAt(null,'2024-12-31'),null);});
+test('monthClose: month-end close of the fiscal period-end month from the device Prices tab shape',()=>{
+ assert.equal(V2.monthClose({'2024-11':5,'2024-12':6},'2024-12-31'),6);assert.equal(V2.monthClose({'2024-11':5},'2024-12-31'),null);assert.equal(V2.monthClose({'2024-12':0},'2024-12-31'),null);assert.equal(V2.monthClose(null,'2024-12-31'),null);});

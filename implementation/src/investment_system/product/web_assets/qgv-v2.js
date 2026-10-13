@@ -14,7 +14,7 @@ const WEIGHTS={Q:{q_profitability:25,q_moat_proxy:20,q_earnings_quality:20,q_fin
 const FACTORS=PILLARS.flatMap(a=>Object.keys(WEIGHTS[a])),QG_FACTORS=['Q','G'].flatMap(a=>Object.keys(WEIGHTS[a]));
 const PRESETS={balanced:{name:'균형',name_en:'Balanced',weights:{Q:34,G:33,V:33}},quality:{name:'우량 중심',name_en:'Quality first',weights:{Q:50,G:25,V:25}},
  growth:{name:'성장 친화',name_en:'Growth friendly',weights:{Q:30,G:50,V:20}},value:{name:'가치(관문 켬)',name_en:'Value (gate on)',weights:{Q:25,G:20,V:55}}};
-const DEFAULT_PRESET='balanced',GATE_DEFAULT=true,GATE_PERCENTILE=30,MIN_PEERS=8,MIN_UNIVERSE=8,MIN_AXIS_WEIGHT=0.5,MIN_HISTORY=3,CLOSE_WINDOW_DAYS=10;
+const DEFAULT_PRESET='balanced',GATE_DEFAULT=true,GATE_PERCENTILE=30,MIN_PEERS=8,MIN_UNIVERSE=8,MIN_AXIS_WEIGHT=0.5,MIN_HISTORY=3;
 const DAY=/^\d{4}-\d{2}-\d{2}$/;
 const deep=x=>{if(x&&typeof x==='object'){Object.values(x).forEach(deep);Object.freeze(x);}return x;};
 deep(WEIGHTS);deep(PRESETS);Object.freeze(FACTORS);Object.freeze(QG_FACTORS);
@@ -40,10 +40,8 @@ function typeAxisWeights(memberships,cfg){
  const out={};for(const p of PILLARS)out[p]=100*clamped[p]/total;return[out,reason,selected.map(t=>t.id)];}
 // Type weights on top of the preset: w_p ∝ preset_p × type_p / fallback_p (the balanced preset reproduces the GSQ-017 weights).
 function compositeWeights(preset,type,fallback){const raw={};for(const p of PILLARS)raw[p]=preset[p]*type[p]/fallback[p];let total=0;for(const p of PILLARS)total+=raw[p];const out={};for(const p of PILLARS)out[p]=100*raw[p]/total;return out;}
-function dayMinus(day,days){return new Date(Date.parse(day+'T00:00:00Z')-days*86400000).toISOString().slice(0,10);}
-function closeAt(closes,periodEnd){
- if(!object(closes)||typeof periodEnd!=='string'||!DAY.test(periodEnd))return null;const low=dayMinus(periodEnd,CLOSE_WINDOW_DAYS);let best=null;
- for(const d of Object.keys(closes).sort())if(DAY.test(d)&&low<=d&&d<=periodEnd&&positive(closes[d]))best=closes[d];return best;}
+// Month-end close (device Prices tab via PriceStore.monthEndCloses, {YYYY-MM: close}) of the fiscal period-end month.
+function monthClose(monthCloses,periodEnd){if(!object(monthCloses)||typeof periodEnd!=='string'||!DAY.test(periodEnd))return null;const k=periodEnd.slice(0,7),v=Object.hasOwn(monthCloses,k)?monthCloses[k]:null;return positive(v)?v:null;}
 function metrics(company,quote,parameters){
  const E=engine(),v=object(company)&&object(company.v_inputs)?company.v_inputs:null,out={ebit_yield:null,fcf_yield:null,own_history:null,gap:null,implied_growth:null,realized_growth:null,reasons:{}},r=out.reasons;
  const fail=(reason,keys=['ebit_yield','fcf_yield','own_history','gap'])=>{for(const k of keys)if(!Object.hasOwn(r,k))r[k]=reason;return out;};
@@ -52,10 +50,10 @@ function metrics(company,quote,parameters){
  const price=object(quote)?quote.price:null;if(!positive(price))return fail('NO_DEVICE_PRICE');
  if(v.currency===null||v.currency===undefined||quote.currency!==v.currency)return fail('CURRENCY_BASIS_UNCONFIRMED');
  const shares=v.diluted_shares;if(!positive(shares))return fail('SHARES_NOT_AVAILABLE');
- const ebit=v.ebit,fcf=v.fcf,debt=v.total_debt,cash=v.cash,hist=v.ebit_per_share_history,closes=quote.closes;
+ const ebit=v.ebit,fcf=v.fcf,debt=v.total_debt,cash=v.cash,hist=v.ebit_per_share_history,closes=quote.month_closes;
  if(!finite(ebit))r.own_history='EBIT_NOT_AVAILABLE';
  else if(!object(closes)||!Object.keys(closes).length)r.own_history='PRICE_HISTORY_NOT_AVAILABLE';
- else{const past=[];for(const h of Array.isArray(hist)?hist:[]){if(!object(h)||!finite(h.value))continue;const c=closeAt(closes,h.period_end);if(c!==null)past.push(h.value/c);}
+ else{const past=[];for(const h of Array.isArray(hist)?hist:[]){if(!object(h)||!finite(h.value))continue;const c=monthClose(closes,h.period_end);if(c!==null)past.push(h.value/c);}
   if(past.length<MIN_HISTORY)r.own_history='HISTORY_TOO_SHORT';else{const current=ebit/shares/price;out.own_history=percentile(current,[...past,current]);}}
  const realized=v.revenue_cagr_3y;out.realized_growth=finite(realized)?realized:null;
  if(!finite(fcf))r.gap='FCF_NOT_AVAILABLE';
@@ -81,7 +79,7 @@ function cross(values,groups,ids,industry){
   let basis='UNIVERSE',peers=pop;if(industry){const g=groups[i],members=pop.filter(j=>g!==null&&g!==undefined&&groups[j]===g);if(g!==null&&g!==undefined&&members.length>=MIN_PEERS){basis='INDUSTRY';peers=members;}else basis='UNIVERSE_FALLBACK';}
   out[i]=[percentile(values[i],peers.map(j=>values[j])),null,basis,peers.length];}
  return out;}
-/* companies: {code: {industry_group, profile, factors, v_inputs, memberships}}; quotes: {code: {price, currency, closes?}} (RAM).
+/* companies: {code: {industry_group, profile, factors, v_inputs, memberships}}; quotes: {code: {price, currency, month_closes?: {YYYY-MM: close}}} (RAM).
    Returns {code: result}. */
 function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dcfDefaults(),preset=DEFAULT_PRESET,gate=null}={}){
  if(!Object.hasOwn(PRESETS,preset))throw Error('PRESET_INVALID');
@@ -113,6 +111,6 @@ function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dc
    detail:{ebit_yield:x.ebit_yield,fcf_yield:x.fcf_yield,implied_growth:x.implied_growth,realized_growth:x.realized_growth,expectation_gap:x.gap,industry_basis:factors.v_vs_industry.basis,industry_peers:Object.hasOwn(ind,i)?ind[i][3]:null},
    reference_range:referenceRange(c,parameters)};}
  return results;}
-return Object.freeze({VERSION,STATUS,PILLARS,WEIGHTS,FACTORS,QG_FACTORS,PRESETS,DEFAULT_PRESET,GATE_DEFAULT,GATE_PERCENTILE,MIN_PEERS,MIN_UNIVERSE,MIN_AXIS_WEIGHT,MIN_HISTORY,CLOSE_WINDOW_DAYS,
- percentile,axisScore,typeAxisWeights,compositeWeights,closeAt,scoreUniverse});
+return Object.freeze({VERSION,STATUS,PILLARS,WEIGHTS,FACTORS,QG_FACTORS,PRESETS,DEFAULT_PRESET,GATE_DEFAULT,GATE_PERCENTILE,MIN_PEERS,MIN_UNIVERSE,MIN_AXIS_WEIGHT,MIN_HISTORY,
+ percentile,axisScore,typeAxisWeights,compositeWeights,monthClose,scoreUniverse});
 });

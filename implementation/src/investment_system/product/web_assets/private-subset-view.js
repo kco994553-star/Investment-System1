@@ -24,6 +24,9 @@
  }
  function rankFor(index,{company_id,ticker}={}){if(!index||index.state!=='READY')return Object.freeze({state:'NOT_AVAILABLE',rank:null,reason_codes:Object.freeze([...(index?.reason_codes||['UNIVERSE_NOT_READ'])])});return index.entries.get('id:'+company_id)||index.entries.get('sym:'+String(ticker||'').replaceAll('.','-'))||Object.freeze({state:'NOT_AVAILABLE',rank:null,reason_codes:Object.freeze(['NOT_IN_UNIVERSE'])});}
  function ranks(){let out=null;for(const state of active)if(!state.disposed&&state.ranks)out=state.ranks;return out;}
+ /* QGV v2 V (QgvScores.collectQuotes): code -> {price, currency} of the last Universe read on this device, RAM only. Sheet price
+    only (V v2 market cap = price × SEC diluted shares; the sheet marketcap column is not used). US exchange codes, USD. */
+ function prices(){let parsed=null;for(const state of active)if(!state.disposed&&state.parsed)parsed=state.parsed;if(!parsed)return null;const out=new Map();for(const r of parsed.rows)if(typeof r.code==='string'&&/^(?:NYSE|NASDAQ|BATS):/.test(r.code)&&typeof r.sheet_price==='number'&&Number.isFinite(r.sheet_price)&&r.sheet_price>0&&!out.has(r.code))out.set(r.code,Object.freeze({price:r.sheet_price,currency:'USD'}));return out;}
  function clear(state){state.revision++;state.controller?.abort();state.controller=null;state.parsed=null;state.selection=null;state.inputs=null;state.busy=false;state.results.replaceChildren();const had=Boolean(state.ranks);state.ranks=null;if(had&&!state.disposing)try{state.onRanks?.();}catch(_){}}
  function dispose(state){if(state.disposed)return;state.disposing=true;clear(state);state.disposed=true;state.unsubscribe?.();state.view.removeEventListener('pagehide',state.pagehide);state.observer?.disconnect();active.delete(state);}
  function disposeAll(){for(const state of [...active])dispose(state);}
@@ -54,5 +57,5 @@
   });
   cancel.addEventListener('click',()=>{clear(state);status.textContent='NOT_AVAILABLE';update();});state.pagehide=()=>dispose(state);view.addEventListener('pagehide',state.pagehide);if(view.MutationObserver){state.observer=new view.MutationObserver(()=>{if(!host.isConnected)dispose(state);});state.observer.observe(doc.documentElement,{childList:true,subtree:true});}update();return Object.freeze({dispose:()=>dispose(state)});
  }
- return Object.freeze({RANGE,roster,rankIndex,rankFor,ranks,mountSettings,mount,disposeAll});
+ return Object.freeze({RANGE,roster,rankIndex,rankFor,ranks,prices,mountSettings,mount,disposeAll});
 });

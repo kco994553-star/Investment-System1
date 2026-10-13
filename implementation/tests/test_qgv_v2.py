@@ -77,7 +77,7 @@ class QgvV2Test(unittest.TestCase):
             if u[code]['profile'] == 'GENERAL' and u[code]['v_inputs'] is not None:
                 self.assertEqual(r['factors']['v_earnings_yield']['reason'], 'NO_DEVICE_PRICE')
         text = json.dumps(self.score(u, mk))
-        self.assertNotRegex(text, r'"(price|market_cap|marketcap|ev|closes)"')
+        self.assertNotRegex(text, r'"(price|market_cap|marketcap|ev|month_closes)"')
 
     def test_financial_profile_v_is_not_available_with_reason(self):
         res = self.score(ref.universe(), ref.market(ref.universe()))

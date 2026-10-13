@@ -446,7 +446,7 @@ function detail(id) {
   if(!c && universeCode(id)) {void ensureUniverseDirectory();return universeDetail(id);}
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
-  if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,
+  if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,scores:qgvScores(),
     headerHtml:`<div class="row">${heading("COMPANY RESEARCH",esc(candidate?.ticker || historySymbol || c?.ticker || ""),esc(c?.name || ""))}${star(id)}</div>`,groupsHtml:companyGroups(id),candidateHtml:m2Panel(id)});
   if(!c) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id),e=searchIndex.resolve("COMPANY",id);
@@ -458,7 +458,7 @@ function analysis(id) {
   const c=company(id),candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null,historySymbol=PrivateHistory.symbolFor(id);
   if(!c && !candidate && !historySymbol) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const ticker=candidate?.ticker || historySymbol || c?.ticker || "";
-  return CompanyScreen.analysis({locale:appSettings.display_locale,id,ticker,screens:publicScreens,headerHtml:`<div class="row">${heading("COMPANY ANALYSIS",esc(ticker),esc(c?.name || ""))}${star(id)}</div>`});
+  return CompanyScreen.analysis({locale:appSettings.display_locale,id,ticker,screens:publicScreens,scores:qgvScores(),headerHtml:`<div class="row">${heading("COMPANY ANALYSIS",esc(ticker),esc(c?.name || ""))}${star(id)}</div>`});
 }
 function paintPortfolio() {
   const host=$("#portfolio-screen");
@@ -588,9 +588,17 @@ function paintCompanies(){
 }
 function directoryRows(prefix){return DeviceWatchlist.filter(identityCompanies,prefs,{group:$('#'+prefix+'-group').value,onlyInterest:$('#'+prefix+'-interest').checked,sort:$('#'+prefix+'-sort').value});}
 let leaderboardView={view:'default',profileId:null},leaderboardRows=null;
+// Scores (S04/S05/S06, report, rehearsal) come only from QgvScores (the scoring_default setting). QGV v2 profile choice and the
+// device quotes of the v2 V cross-section live in this page's memory only: never stored, logged or sent.
+let qgv2Profile={preset:null,gate:null},qgv2Quotes={},qgv2QuotesKey='';
+function qgvScores(identities=identityCompanies){return QgvScores.compute({identities,publicScreens,quotes:qgv2Quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate});}
+async function refreshQgv2Quotes(after){const inputs=window.SecQgv2?publicScreens[SecQgv2.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
+ let q={};try{q=await QgvScores.collectQuotes(window,{identities:identityCompanies,v2Inputs:inputs,catalog});}catch(_){q={};}// Quotes accumulate for this page session (the Universe read is dropped on navigation); a Universe read/clear resets them.
+ const next={...qgv2Quotes,...q},k=JSON.stringify(next);if(k===qgv2QuotesKey)return;qgv2Quotes=next;qgv2QuotesKey=k;if(after)after();}
 // M3 ranks come from the open Universe read (RAM only) and are repainted into S06 when that read finishes or is cleared.
 function paintLeaderboardScreen(rows){leaderboardRows=rows;let profiles=[];try{profiles=DeviceProfiles.read(localStorage).strategies;}catch(_){profiles=[];}
- LeaderboardScreen.mount($('#leaderboard-screen'),rows,{publicScreens,locale:appSettings.display_locale,profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,...leaderboardView,onView:patch=>{leaderboardView={...leaderboardView,...patch};if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen(rows);}});}
+ LeaderboardScreen.mount($('#leaderboard-screen'),rows,{publicScreens,locale:appSettings.display_locale,profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,...leaderboardView,scores:qgvScores(rows),onView:patch=>{if(Object.hasOwn(patch,'preset')||Object.hasOwn(patch,'gate')){qgv2Profile={...qgv2Profile,...patch};paintLeaderboardScreen(rows);return;}leaderboardView={...leaderboardView,...patch};if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen(rows);}});
+ void refreshQgv2Quotes(()=>{if(leaderboardRows===rows&&$('#leaderboard-screen'))paintLeaderboardScreen(rows);});}
 function paintDirectory(route){const prefix=route==='watchlist'?'watch':'leader',rows=directoryRows(prefix),list=$('#'+(route==='watchlist'?'watchlist':'leader')+'-company-list');list.innerHTML=rows.map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';if(route==='leaderboard'){const companyIds=rows.map(r=>r.company_id);paintLeaderboardScreen(rows);$('#leader-m2-panel').innerHTML=m2Panel(undefined,companyIds);SecReported.mount($('#sec-reported-panel'),secReported,{companyIds,locale:appSettings.display_locale});PublicScreens.mount($('#public-qg'),publicScreens,{kind:'qg',companyIds,locale:appSettings.display_locale});}}
 
 function paintNews(id) {
@@ -624,7 +632,9 @@ async function paintReport(id){
   // D-10 ledger sheet (VirtualLedgerSheets): reads the user's own sheet when connected; writes only on its buttons.
   try{if(window.VirtualLedgerSheets)run.ledgerSheets=VirtualLedgerSheets.mount(window,$('#virtual-ledger-sheets'),{kind,tab,reportDate:new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date()),config,catalog:deviceCatalog,refresh:()=>{if(live())void paintReport(id);}});}catch(_){run.ledgerSheets=null;}
   let ram=null;if(kind==='REAL'){try{ram=await DeviceActual.ramView(window,await deviceCatalog());const byTicker=new Map(identityCompanies.map(r=>[r.ticker,r.company_id]));ram={...ram,rows:ram.rows.map(r=>({...r,company_id:byTicker.get(r.ticker)||r.ticker}))};}catch(_){ram=null;}}
-  const qg={},names={};try{for(const r of LeaderboardScreen.rowsFor(identityCompanies,{publicScreens,engine:window.EnginePreview})){qg[r.company_id]={q:r.q,g:r.g,partial:r.partial};names[r.company_id]=r.ticker;}}catch(_){}
+  // Judgement/report score rows through the one accessor (QgvScores; v1 rows are exactly the previous Q·G values).
+  try{await refreshQgv2Quotes();}catch(_){}
+  const qg={},names={};try{Object.assign(qg,QgvScores.judgmentRows(qgvScores()));for(const c of identityCompanies)names[c.company_id]=c.ticker;}catch(_){}
   const reportDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
   let model=null,canonical='',key=null,inboxText='',benchInputs=null;
   // ⑬ selection change: recompute the RAM-only benchmark view (pure) and repaint; the canonical template keeps 20D·KRW.
@@ -753,11 +763,12 @@ function renderRoute() {
   const routes={home,qgv,analysis:()=>analysis(id),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id)};
   if(!routes[route]) route="home";
   $("#content").innerHTML=routes[route]();
-  if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
+  if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
   if(route==='analysis') CompanyScreen.wireTabs($('#content'));
+  if((route==='company'||route==='analysis')&&window.SecQgv2&&publicScreens[SecQgv2.FILE]) void refreshQgv2Quotes(()=>{const h=location.hash.slice(1).split('/');if(h[0]===route&&$('[data-company-card="qgv"],[data-analysis-panel="factors"]'))render();});
   if(route==='company'||route==='analysis') paintValue(route,id);
   if(route==='model') {attachDeviceActual('#model-actual-summary',false);paintModel();}
   if(route==='home') deviceCatalog().then(c=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent=c.target_root_version||'NOT_AVAILABLE';}).catch(()=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent='NOT_AVAILABLE';});
@@ -1023,7 +1034,7 @@ catch(e) {settingsWritable=false;}
 syncShell();
 Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path=>fetch(path,{cache:"no-store"}).then(r=>{
   if(!r.ok) throw Error("HTTP "+r.status);return r.json();
-}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window),PublicScreens.load(window).then(s=>typeof ClassificationScreens==="object"?ClassificationScreens.load(window).then(c=>{if(c)s[ClassificationScreens.FILE]=c;return s;}):s),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,reported,screens,identities])=>{
+}).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window),PublicScreens.load(window).then(s=>typeof ClassificationScreens==="object"?ClassificationScreens.load(window).then(c=>{if(c)s[ClassificationScreens.FILE]=c;return s;}):s).then(s=>typeof SecQgv2==="object"?SecQgv2.load(window).then(v=>{if(v)s[SecQgv2.FILE]=v;return s;}):s),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,reported,screens,identities])=>{
   try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}
   publicScreens=screens;publicCatalog=identities||null;
   secReported=reported;

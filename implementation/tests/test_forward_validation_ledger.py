@@ -129,7 +129,8 @@ def test_session_record_holds_target_weights_and_q_g_without_v(tmp_path, capsys)
     assert record['target']['root_sha256'] == catalog['target_root_sha256'] and sum(record['target']['weights_units'].values()) == 10000
     assert record['source_sha256'] == {name: sha256((out / name).read_bytes()).hexdigest() for name in fl.SOURCES}
     nvda = record['companies']['nvda']
-    assert nvda['state'] == 'LIVE' and nvda['G']['score'] is not None and nvda['G']['coverage'] == 'PARTIAL'
+    # Missing-factor rule (2026-10-13): the synthetic nvda row computes < 50% of each axis weight -> NA, never 0.
+    assert nvda['state'] == 'LIVE' and nvda['G'] == {'score': None, 'coverage': 'BLOCKED', 'missing_factor_count': 4}
     assert record['companies']['asml'] == {'state': 'NOT_AVAILABLE', 'Q': {'score': None, 'coverage': 'BLOCKED', 'missing_factor_count': 7},
                                            'G': {'score': None, 'coverage': 'BLOCKED', 'missing_factor_count': 6}}
     assert all(set(row) == {'state', 'Q', 'G'} for row in record['companies'].values())

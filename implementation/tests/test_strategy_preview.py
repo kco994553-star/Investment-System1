@@ -108,11 +108,13 @@ def test_empty_observations_report_all_missing_and_block_every_axis():
         assert preview.missing_factor_ids == tuple(result.official_weights[axis])
 
 
-def test_missing_fundamental_value_keeps_52_5_without_renormalizing():
+def test_missing_fundamental_value_is_renormalized_not_counted_as_zero():
+    # Missing-factor rule (user decision 2026-10-13): renormalize over computed factors (was 52.5 under the freeze rule).
     observations = complete_obs()
     del observations["fundamental_value"]
     result = recalculate_strategy_preview(observations)
-    assert result.axes["V"].score == 52.5
+    assert result.axes["V"].score == pytest.approx(70.0)
+    assert (result.axes["V"].factors_available, result.axes["V"].factors_total) == (6, 7)
     assert result.axes["V"].coverage == CoverageState.PARTIAL
     assert result.axes["V"].missing_factor_ids == ("fundamental_value",)
     assert result.axes["V"].missing_factor_count == 1
@@ -129,7 +131,7 @@ def test_missing_quality_and_null_scores_follow_existing_missing_rule():
             "fundamental_value", None, score, quality, None
         )
         result = recalculate_strategy_preview(observations)
-        assert result.axes["V"].score == 52.5
+        assert result.axes["V"].score == pytest.approx(70.0)
         assert result.axes["V"].coverage == CoverageState.PARTIAL
         assert result.axes["V"].missing_factor_ids == ("fundamental_value",)
 
@@ -149,11 +151,12 @@ def test_financial_roic_wacc_is_not_applicable_and_not_counted_as_missing():
     observations = complete_obs()
     del observations["roic_wacc"]
     result = recalculate_strategy_preview(observations, profile_kind=ProfileKind.FINANCIAL)
-    assert result.axes["Q"].score == 56.0
-    assert result.axes["Q"].coverage == CoverageState.PARTIAL
+    assert result.axes["Q"].score == pytest.approx(70.0)
+    assert result.axes["Q"].coverage == CoverageState.READY
     assert result.axes["Q"].missing_factor_count == 0
     assert result.axes["Q"].not_applicable_ids == ("roic_wacc",)
-    assert result.qg_preview_total == 63.0
+    assert (result.axes["Q"].factors_available, result.axes["Q"].factors_total) == (6, 6)
+    assert result.qg_preview_total == 70.0
 
 
 def test_financial_profile_skips_even_a_blocked_roic_dependency():
@@ -162,7 +165,7 @@ def test_financial_profile_skips_even_a_blocked_roic_dependency():
         "roic_wacc", None, None, QualityState.BLOCKED_DEPENDENCY, None
     )
     result = recalculate_strategy_preview(observations, profile_kind=ProfileKind.FINANCIAL)
-    assert result.axes["Q"].score == 56.0
+    assert result.axes["Q"].score == pytest.approx(70.0)
     assert result.axes["Q"].missing_factor_ids == ()
     assert result.axes["Q"].not_applicable_ids == ("roic_wacc",)
 
@@ -171,7 +174,8 @@ def test_general_corporate_roic_wacc_remains_missing():
     observations = complete_obs()
     del observations["roic_wacc"]
     result = recalculate_strategy_preview(observations)
-    assert result.axes["Q"].score == 56.0
+    assert result.axes["Q"].score == pytest.approx(70.0)
+    assert result.axes["Q"].coverage == CoverageState.PARTIAL
     assert result.axes["Q"].missing_factor_ids == ("roic_wacc",)
     assert result.axes["Q"].not_applicable_ids == ()
 
@@ -370,3 +374,15 @@ def test_inputs_and_official_maps_remain_unchanged_and_results_are_detached():
     assert result.axes["Q"].score == 10.0
     assert result.effective_weights["Q"]["competitive_advantage"] == 100.0
     assert result.official_weights == official_v1_weight_copy()
+
+
+def test_axis_below_half_weight_is_not_available_and_never_zero():
+    observations = {"competitive_advantage": FactorObservation("competitive_advantage", None, 90.0, QualityState.OK, None),
+                    "roic_wacc": FactorObservation("roic_wacc", None, 50.0, QualityState.OK, None)}
+    result = recalculate_strategy_preview(observations)
+    assert result.axes["Q"].score is None and result.axes["Q"].coverage == CoverageState.BLOCKED
+    assert (result.axes["Q"].factors_available, result.axes["Q"].factors_total) == (2, 7)
+    observations["market_position"] = FactorObservation("market_position", None, 0.0, QualityState.OK, None)
+    result = recalculate_strategy_preview(observations)
+    assert result.axes["Q"].score == pytest.approx((20 * 90 + 20 * 50 + 15 * 0) / 55)
+    assert result.axes["Q"].coverage == CoverageState.PARTIAL

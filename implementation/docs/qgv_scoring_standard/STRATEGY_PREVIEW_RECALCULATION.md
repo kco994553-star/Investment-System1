@@ -12,9 +12,9 @@
 
 ## 기존 집계 의미 보존
 
-- 기존 `qgv.scoring._weighted`를 사용한다. 결측 요소 비중을 다른 요소로 재분배하지 않는다. BLOCKED_DEPENDENCY가 있으면 축 전체 점수는 null/BLOCKED다.
+- **결측 규칙 변경(사용자 결정 2026-10-13):** 계산된 요소만 원래 비중 비율로 재정규화하고, 적용 가능한 축 비중의 50% 이상이 계산될 때만 축 점수를 낸다(미만이면 null/BLOCKED). 결측을 0으로 세지 않는다. 결과에 `factors_available`/`factors_total`(산출 요인 n/전체)을 준다. 공식 산출 경로 `qgv.scoring._weighted`(고정 규칙)는 바꾸지 않았다. BLOCKED_DEPENDENCY가 있으면 축 전체 점수는 null/BLOCKED다.
 - 실제 점수0은 사용 가능한 값이다. 결측·PIT_UNAVAILABLE·NOT_APPLICABLE은0으로 채우지 않는다. FINANCIAL의 roic_wacc는 NOT_APPLICABLE로 별도 집계하며 결측수와 구분한다.
-- V는 공식 Initial Prior의 요소 순서·산술을 보존한다. 합성10..70 참조는31.5이며 Fundamental Value25%가 누락된 나머지70점 사례는52.5/PARTIAL다.
+- V는 공식 Initial Prior의 요소 순서·산술을 보존한다. 합성10..70 참조는31.5이며 Fundamental Value25%가 누락된 나머지70점 사례는 재정규화로 70/PARTIAL이다(이전 52.5).
 - Q/G가 있으면 기존 `round((Q+G)/2,4)`를 **qg_preview_total**로만 제공한다. V를 합성하지 않는다. 결측/부분 coverage는 축별로 계속 표시한다.
 
 ## 미확정 범위
