@@ -25,6 +25,7 @@ from investment_system.public_price_boundary import require_public_bundle, requi
 
 
 from investment_system.product.sec_m2_candidates import require_public_candidates
+from investment_system.product.dart_public import FILENAMES as DART_FILENAMES, require_public as require_dart_public
 from investment_system.product.news_signals import FILENAME as NEWS_SIGNALS_FILENAME, require_news_signals
 from investment_system.product.sec_disclosures import FILENAME as DISCLOSURES_FILENAME, require_sec_disclosures
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -94,7 +95,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "eb43ddf5b039524a3102070d5a4c4bdc55ac10cccd3b6a6b59ddfb8b318b0a17",
+    "app.js": "e0c97ce892833081454464dfdaec821730643307af3c66adbd010129ad2eda6a",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "8dcefa502a362b680f8cefbf774209b2180b398d706469f6370d6ecb0182acd1",
@@ -104,7 +105,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "cbb3d16620bf84da68ca3e00040e8d757d3d6378363df8e633e53bdd4b024a07",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "db83ee82ee8ad400379fe80ca2fd7e90b99786ba58875c4b42c28fce78410e2e",
+    "index.html": "887e56485bfc2aaabd582d7e4693aa17a9c4bea9994254eafec2decb28a8cbb6",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
@@ -116,9 +117,10 @@ APPROVED_SHA256 = {
     "scoring-default.js": "b7df8e1f509d18320ace74fbeaeabc8e493ad9fac66c3592362cfd8b5fd05f6e",
     "qgv-v2.js": "6a348f70e835ff674195fca01545ddd89063edcda6b21d332dde4455b9fc750d",
     "qgv-scores.js": "1ae5042fe67814f4a3b58da8f19afb5bc19f8b3bfc303923916f472e6dedd100",
-    "news-signals.js": "10910c4be310791fc7854813d9de3d2057d95a64d1b205a19e8707165ee4f939"
+    "news-signals.js": "10910c4be310791fc7854813d9de3d2057d95a64d1b205a19e8707165ee4f939",
+    "dart-disclosures.js": "64571f9f6a09e5c99bac54a510aad69589dbe32847dc4aec0cf3f163e8fdb832"
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -253,6 +255,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == NEWS_SIGNALS_FILENAME:
             try: require_news_signals(value)
             except ValueError: violations['news_signals_boundary'] += 1
+        elif name in DART_FILENAMES:
+            try: require_dart_public(name, value)
+            except ValueError: violations['dart_public_boundary'] += 1
         elif name == FORWARD_LEDGER_FILENAME:
             try: require_forward_ledger(value)
             except ValueError: violations['forward_ledger_boundary'] += 1
