@@ -13,7 +13,8 @@ the published raw metrics):
   the whole GENERAL universe; G across the whole GENERAL universe;
 - sub-metric percentile = 100 * (less + (equal - 1) / 2) / (n - 1) over the peer values that exist
   (average rank for ties, 0..100), direction applied by negating lower-is-better values; a sub-metric
-  needs >= MIN_PEERS values (own included), else it is NOT_AVAILABLE;
+  needs >= MIN_PEERS values (own included); on an INDUSTRY_GROUP axis a sub-metric with fewer group values
+  is ranked in the whole GENERAL universe instead (counted in `submetric_fallbacks`), else it is NOT_AVAILABLE;
 - factor score = mean of its available sub-metric percentiles (fixed order); NOT_AVAILABLE if none;
 - axis score = weighted mean of available factor scores, weights renormalized over available factors;
   available weight < 50% of the axis -> axis NOT_AVAILABLE (AXIS_COVERAGE_BELOW_50). Never 0-filled.
@@ -105,7 +106,7 @@ class _Pool:
 
 def _empty_axis(reason):
     return {'score': None, 'factors_available': '0/5', 'available_weight': 0, 'peer_basis': None, 'peer_count': 0,
-            'reason_codes': [reason]}
+            'submetric_fallbacks': 0, 'reason_codes': [reason]}
 
 
 def score_rows(universe, target=None):
@@ -166,6 +167,7 @@ def _score_row(row, pools):
         if peer_count < MIN_PEERS:
             axes[axis] = dict(_empty_axis('PEERS_BELOW_MINIMUM'), peer_basis=basis, peer_count=peer_count)
             continue
+        fallbacks = 0
         for fid in weights:
             pcts = []
             for metric, direction in specs[fid]:
@@ -173,6 +175,10 @@ def _score_row(row, pools):
                 if own is None:
                     continue
                 less, equal, n = pool.rank(metric, direction, own, row['cik'])
+                if n < MIN_PEERS and basis == 'INDUSTRY_GROUP':
+                    # Too few group values for this sub-metric: rank it in the whole GENERAL universe.
+                    less, equal, n = pools[('profile', 'GENERAL')].rank(metric, direction, own, row['cik'])
+                    fallbacks += n >= MIN_PEERS
                 if n >= MIN_PEERS:
                     pcts.append(percentile(less, equal, n))
             if pcts:
@@ -180,7 +186,7 @@ def _score_row(row, pools):
         available = [fid for fid in weights if factors[fid] is not None]
         weight = sum(weights[fid] for fid in available)
         out = {'score': None, 'factors_available': f'{len(available)}/{len(weights)}', 'available_weight': weight,
-               'peer_basis': basis, 'peer_count': peer_count, 'reason_codes': []}
+               'peer_basis': basis, 'peer_count': peer_count, 'submetric_fallbacks': fallbacks, 'reason_codes': []}
         if weight * 100 < AXIS_COVERAGE_MIN * sum(weights.values()):
             out['reason_codes'] = ['AXIS_COVERAGE_BELOW_50']
         else:

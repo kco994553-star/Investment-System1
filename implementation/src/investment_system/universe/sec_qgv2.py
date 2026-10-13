@@ -46,11 +46,12 @@ METHOD = {
     'industry_groups': 'sic_industry_groups/v0',
     'financial_sic_range': list(vf.FINANCIAL_SIC_RANGE),
     'cross_section': 'UNIVERSE504_LIVE_STALE_ONE_POINT_PER_CIK',
+    'submetric_fallback': 'GROUP_VALUES_BELOW_MIN_PEERS_RANK_IN_GENERAL_UNIVERSE',
     'earnings_surprise': 'OMITTED_NO_FREE_SOURCE',
 }
 ROW_KEYS = ('cik', 'acquired_at', 'source_sha256', 'state', 'reason_codes', 'sic', 'industry_group', 'profile',
             'fiscal_year_end', 'currency', 'metrics', 'factors', 'axes', 'v_inputs_v2')
-AXIS_KEYS = ('score', 'factors_available', 'available_weight', 'peer_basis', 'peer_count', 'reason_codes')
+AXIS_KEYS = ('score', 'factors_available', 'available_weight', 'peer_basis', 'peer_count', 'submetric_fallbacks', 'reason_codes')
 TOP_KEYS = ('schema_version', 'kind', 'as_of', 'standard', 'standard_status', 'decision_ref', 'method', 'config_version',
             'config_status', 'freshness_basis', 'stale_after_seconds', 'shard_count', 'last_shard_index', 'registry_sha256',
             'code_count', 'cross_section_size', 'cross_section_by_profile', 'state', 'reason_codes', 'records', 'target')

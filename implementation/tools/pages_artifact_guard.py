@@ -54,7 +54,7 @@ APPROVED_SHA256 = {
     "virtual-trading-v-history.js": "d616dc45bc769bc870020529f55275fda93490eea4ba6e54b50bd9f91cbb6f9f",
     "virtual-trading-signals.js": "14299ae33ae57b4c2a68c90256db0426680fcd6a09900365f8e65665a0df1808",
     "sec-universe-qg.js": "4364791b338d04be28811efb8588806d8c653fca9e36eb75c86014758471f414",
-    "sec-qgv2.js": "f3fc011d9f120c147d606f2ac155fe40d39125a5015b9aaf4392235caf73b814",
+    "sec-qgv2.js": "64fc0cfaecb5bb3fa3381203b4b5f741c3b7204c2e738bc6f8154366526d4e51",
     "device-valuation.js": "06669cda863cd4dfa87108f54e03b75c9321989967da7ed54b03c921143cfedf",
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",

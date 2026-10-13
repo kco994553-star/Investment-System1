@@ -102,7 +102,8 @@ FINANCIAL rows are ranked **only among FINANCIAL rows**, for both Q and G. If th
   (`INDUSTRY_GROUP`). Otherwise they use the whole GENERAL universe (`UNIVERSE_FALLBACK`). GENERAL G factors use the whole GENERAL universe (`UNIVERSE`).
   FINANCIAL rows use `FINANCIAL_PROFILE`. `peer_count` per axis counts issuers in that set, the row itself included.
 - **Percentile:** 100 · (less + (equal − 1)/2) / (n − 1) over the peer values that exist (average rank for ties, 0–100). Lower-is-better
-  metrics are negated first. A sub-metric needs **n ≥ 8** values, else it is NA.
+  metrics are negated first. A sub-metric needs **n ≥ 8** values. On an `INDUSTRY_GROUP` axis, a sub-metric with fewer than 8 group
+  values is ranked in the whole GENERAL universe instead, and the axis counts these in `submetric_fallbacks`. Otherwise the sub-metric is NA.
 - **Axis:** weighted mean of the available factor scores, with weights renormalized over the available factors. If less than 50% of the
   axis weight is available, the axis is NA with `AXIS_COVERAGE_BELOW_50`. `factors_available` ("n/5") and `available_weight` are always
   published. Missing values are **never 0**: an absent metric key, a `null` factor or a `null` score means NOT_AVAILABLE.
@@ -119,7 +120,7 @@ financial SIC range, cross-section rule, earnings-surprise omission), `config_ve
 
 Row: `cik`, `acquired_at`, `source_sha256{companyfacts,submissions}`, `state` (LIVE/STALE/NOT_AVAILABLE), `reason_codes`, `sic`,
 `industry_group`, `profile`, `fiscal_year_end`, `currency`, `metrics` (sparse; 6 significant digits), `factors` (10 ids → 0–100 | null),
-`axes{Q,G}{score, factors_available, available_weight, peer_basis, peer_count, reason_codes}`, `v_inputs_v2`.
+`axes{Q,G}{score, factors_available, available_weight, peer_basis, peer_count, submetric_fallbacks, reason_codes}`, `v_inputs_v2`.
 
 `v_inputs_v2` holds the price-free inputs the device needs to compute V in RAM. Amounts are exact SEC values in the row currency.
 - `ebit`, `fcf`: `{fy_value, fy_end, ttm_value, ttm_end}`. FCF = OCF − capex for the same period.

@@ -225,6 +225,18 @@ def test_peer_groups_fallback_financial_isolation_and_target_replacement():
     assert scores[('universe', 'N:1')]['axes']['Q']['reason_codes'] == ['ROW_NOT_AVAILABLE']
 
 
+def test_group_submetric_with_too_few_values_is_ranked_in_the_universe():
+    # Group of 8 issuers, only 3 report gross_profit_to_assets: that sub-metric uses the GENERAL universe (10 values).
+    universe = {f'A:{n}': _row(n, group='big', roic=n / 100, **({'gross_profit_to_assets': n / 10} if n <= 3 else {})) for n in range(1, 9)}
+    universe.update({f'B:{n}': _row(n, group='other', gross_profit_to_assets=n / 10) for n in range(20, 27)})
+    scores, _ = vs.score_rows(universe)
+    a3 = scores[('universe', 'A:3')]
+    assert a3['axes']['Q']['peer_basis'] == 'INDUSTRY_GROUP' and a3['axes']['Q']['submetric_fallbacks'] == 1
+    gp = vs.percentile(2, 1, 10)  # 0.3 among {0.1..0.3} + {2.0..2.6}
+    assert a3['factors']['q_profitability'] == (vs.percentile(2, 1, 8) + gp) / 2
+    assert scores[('universe', 'A:5')]['axes']['Q']['submetric_fallbacks'] == 0  # no own value -> nothing to rank
+
+
 def test_weights_are_the_candidate_defaults_and_v1_is_unchanged():
     assert vs.Q_WEIGHTS_V2 == {'q_profitability': 25, 'q_moat_proxy': 20, 'q_earnings_quality': 20, 'q_financial_safety': 20, 'q_capital_allocation': 15}
     assert vs.G_WEIGHTS_V2 == {'g_revenue_growth': 25, 'g_per_share_growth': 25, 'g_growth_efficiency': 20, 'g_consistency': 15, 'g_recent_acceleration': 15}

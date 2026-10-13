@@ -6,7 +6,7 @@
  const Q_WEIGHTS={q_profitability:25,q_moat_proxy:20,q_earnings_quality:20,q_financial_safety:20,q_capital_allocation:15};
  const G_WEIGHTS={g_revenue_growth:25,g_per_share_growth:25,g_growth_efficiency:20,g_consistency:15,g_recent_acceleration:15};
  const AXES={Q:Q_WEIGHTS,G:G_WEIGHTS},FACTOR_IDS=Object.freeze([...Object.keys(Q_WEIGHTS),...Object.keys(G_WEIGHTS)]),MIN_PEERS=8,AXIS_COVERAGE_MIN=50;
- const METHOD={weights:{Q:Q_WEIGHTS,G:G_WEIGHTS},min_peers:8,axis_coverage_min_percent:50,percentile:'AVERAGE_RANK_0_100',industry_groups:'sic_industry_groups/v0',financial_sic_range:[6000,6499],cross_section:'UNIVERSE504_LIVE_STALE_ONE_POINT_PER_CIK',earnings_surprise:'OMITTED_NO_FREE_SOURCE'};
+ const METHOD={weights:{Q:Q_WEIGHTS,G:G_WEIGHTS},min_peers:8,axis_coverage_min_percent:50,percentile:'AVERAGE_RANK_0_100',industry_groups:'sic_industry_groups/v0',financial_sic_range:[6000,6499],cross_section:'UNIVERSE504_LIVE_STALE_ONE_POINT_PER_CIK',submetric_fallback:'GROUP_VALUES_BELOW_MIN_PEERS_RANK_IN_GENERAL_UNIVERSE',earnings_surprise:'OMITTED_NO_FREE_SOURCE'};
  const METRIC_KEYS=Object.freeze(['roic','gross_profit_to_assets','accruals_to_assets','fcf_to_net_income','net_debt_to_ebitda','interest_coverage','incremental_roic_5y','roe','roa','net_interest_income_to_assets','equity_to_assets','incremental_roe_5y','moat_return_mean_5y','moat_return_std_5y','moat_return_years','moat_proxy','dilution_3y','revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','book_value_per_share_cagr_3y','incremental_roic_3y','incremental_roe_3y','revenue_positive_growth_share','revenue_growth_volatility','revenue_ttm_growth','revenue_acceleration']);
  const DESCRIPTIVE=['moat_return_mean_5y','moat_return_std_5y','moat_return_years','revenue_ttm_growth'];
  const COMMON_G={g_revenue_growth:[['revenue_cagr_3y',1]],g_consistency:[['revenue_positive_growth_share',1],['revenue_growth_volatility',-1]],g_recent_acceleration:[['revenue_acceleration',1]]};
@@ -19,7 +19,7 @@
  const STATES=['LIVE','STALE','NOT_AVAILABLE'],SCORED=['LIVE','STALE'],REASONS=['NOT_COLLECTED','CIK_UNRESOLVED','INVALID_INPUT','NO_ANNUAL_SEC_FINANCIALS','NON_SEC_ISSUER','STALE_INPUT'],TOP_REASONS=['STALE_INPUT','NO_ELIGIBLE_INPUT'];
  const TOP=['schema_version','kind','as_of','standard','standard_status','decision_ref','method','config_version','config_status','freshness_basis','stale_after_seconds','shard_count','last_shard_index','registry_sha256','code_count','cross_section_size','cross_section_by_profile','state','reason_codes','records','target'];
  const ROW=['cik','acquired_at','source_sha256','state','reason_codes','sic','industry_group','profile','fiscal_year_end','currency','metrics','factors','axes','v_inputs_v2'];
- const AXIS_KEYS=['score','factors_available','available_weight','peer_basis','peer_count','reason_codes'];
+ const AXIS_KEYS=['score','factors_available','available_weight','peer_basis','peer_count','submetric_fallbacks','reason_codes'];
  const V_KEYS=['currency','taxonomy','fiscal_year_end','ebit','fcf','total_debt','cash_and_equivalents','diluted_shares','ebit_per_share_history','fcf_per_share_history','revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','revenue_ttm_growth'];
  const FLOW_KEYS=['fy_value','fy_end','ttm_value','ttm_end'],FLOW_V=['ebit','fcf'],INSTANT_V=['total_debt','cash_and_equivalents','diluted_shares'],GROWTH_V=['revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','revenue_ttm_growth'];
  const LIMIT=1e12,HISTORY_YEARS=5;
@@ -33,7 +33,7 @@
  function classify(sic){const code=Number(sic);const g=SIC_GROUPS.find(([,ranges])=>ranges.some(([lo,hi])=>lo<=code&&code<=hi));return g?g[0]:null;}
  const profileFor=sic=>typeof sic==='string'&&/^\d{4}$/.test(sic)&&Number(sic)>=6000&&Number(sic)<=6499?'FINANCIAL':'GENERAL';
  function emptyV(){return{currency:null,taxonomy:null,fiscal_year_end:null,ebit:null,fcf:null,total_debt:null,cash_and_equivalents:null,diluted_shares:null,ebit_per_share_history:[],fcf_per_share_history:[],revenue_cagr_3y:null,eps_cagr_3y:null,fcf_per_share_cagr_3y:null,revenue_ttm_growth:null};}
- function emptyAxis(reason){return{score:null,factors_available:'0/5',available_weight:0,peer_basis:null,peer_count:0,reason_codes:[reason]};}
+ function emptyAxis(reason){return{score:null,factors_available:'0/5',available_weight:0,peer_basis:null,peer_count:0,submetric_fallbacks:0,reason_codes:[reason]};}
  function emptyRecord(reason='NOT_COLLECTED'){return{cik:null,acquired_at:null,source_sha256:{companyfacts:null,submissions:null},state:'NOT_AVAILABLE',reason_codes:[reason],sic:null,industry_group:null,profile:null,fiscal_year_end:null,currency:null,metrics:{},factors:Object.fromEntries(FACTOR_IDS.map(k=>[k,null])),axes:{Q:emptyAxis('ROW_NOT_AVAILABLE'),G:emptyAxis('ROW_NOT_AVAILABLE')},v_inputs_v2:emptyV()};}
  const metricOk=(k,v)=>k==='moat_return_years'?Number.isInteger(v)&&v>=3&&v<=HISTORY_YEARS:num(v)&&Math.abs(v)<=LIMIT;
  function vInputs(v,cutDay,hasData){
@@ -98,9 +98,10 @@
   for(const [axis,weights] of Object.entries(AXES)){
    const [p,basis,peerCount]=peerSet(r,axis,pools,groupPools);
    if(peerCount<MIN_PEERS){axes[axis]={...emptyAxis('PEERS_BELOW_MINIMUM'),peer_basis:basis,peer_count:peerCount};continue;}
-   for(const fid of Object.keys(weights)){const pcts=[];for(const [metric,dir] of specs[fid]){const own=r.metrics[metric];if(own===undefined||own===null)continue;const [less,equal,n]=rank(p,metric,dir,own,r.cik);if(n>=MIN_PEERS)pcts.push(percentile(less,equal,n));}if(pcts.length)factors[fid]=pcts.reduce((a,b)=>a+b,0)/pcts.length;}
+   let fallbacks=0;
+   for(const fid of Object.keys(weights)){const pcts=[];for(const [metric,dir] of specs[fid]){const own=r.metrics[metric];if(own===undefined||own===null)continue;let [less,equal,n]=rank(p,metric,dir,own,r.cik);if(n<MIN_PEERS&&basis==='INDUSTRY_GROUP'){[less,equal,n]=rank(pools.GENERAL,metric,dir,own,r.cik);if(n>=MIN_PEERS)fallbacks++;}if(n>=MIN_PEERS)pcts.push(percentile(less,equal,n));}if(pcts.length)factors[fid]=pcts.reduce((a,b)=>a+b,0)/pcts.length;}
    const available=Object.keys(weights).filter(f=>factors[f]!==null),weight=available.reduce((a,f)=>a+weights[f],0),total=Object.values(weights).reduce((a,b)=>a+b,0);
-   const o={score:null,factors_available:available.length+'/'+Object.keys(weights).length,available_weight:weight,peer_basis:basis,peer_count:peerCount,reason_codes:[]};
+   const o={score:null,factors_available:available.length+'/'+Object.keys(weights).length,available_weight:weight,peer_basis:basis,peer_count:peerCount,submetric_fallbacks:fallbacks,reason_codes:[]};
    if(weight*100<AXIS_COVERAGE_MIN*total)o.reason_codes=['AXIS_COVERAGE_BELOW_50'];else o.score=available.reduce((a,f)=>a+weights[f]*factors[f],0)/weight;
    axes[axis]=o;
   }

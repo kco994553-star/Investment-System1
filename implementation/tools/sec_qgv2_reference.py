@@ -157,6 +157,7 @@ def cases():
         ('axis_score_tampered', [(R + [first, 'axes', 'Q', 'score'], 99.0)]),
         ('axis_peer_count_tampered', [(R + [first, 'axes', 'G', 'peer_count'], 3)]),
         ('axis_basis_tampered', [(R + [first, 'axes', 'Q', 'peer_basis'], 'UNIVERSE_FALLBACK')]),
+        ('axis_fallbacks_tampered', [(R + [first, 'axes', 'Q', 'submetric_fallbacks'], 2)]),
         ('factors_available_tampered', [(R + [first, 'axes', 'Q', 'factors_available'], '4/5')]),
         ('metric_tampered_changes_scores', [(R + [first, 'metrics', 'roic'], 9.5)]),
         ('metric_string', [(R + [first, 'metrics', 'roic'], '0.1')]),
