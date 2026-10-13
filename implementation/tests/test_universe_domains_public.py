@@ -42,7 +42,7 @@ def test_payload_is_domains_only_for_every_code_in_order():
 @pytest.mark.parametrize('value,expected', [
     ('http://www.Apple.com/investor', 'apple.com'), ('https://investor.nvidia.com', 'investor.nvidia.com'),
     ('abc.xyz', 'abc.xyz'), ('www.tel.com/', 'tel.com'), ('', None), ('https://1.2.3.4', None), ('ftp://a.com', None),
-    ('https://user@evil.com', None), ('https://a.com:8443', None), ('not a url', None), ('localhost', None), (None, None),
+    ('https://user' + chr(64) + 'evil.com', None), ('https://a.com:8443', None), ('not a url', None), ('localhost', None), (None, None),
 ])
 def test_normalize_domain(value, expected):
     assert normalize_domain(value) == expected

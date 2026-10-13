@@ -72,3 +72,22 @@ def test_live_build_matches_reviewed_domain_downloads_png_and_publishes_local_by
     assert sanitize_png(base64.b64decode(row[1][len(PREFIX):]))==png()
     assert 'WIKIDATA'==row[2]
     assert 'nvidia' in m.wikidata_query(['nvidia.com'])
+
+@pytest.mark.parametrize('bits,extra,raw',[(8,b'',b'\0'),(1,b'',b'\0\xff'),(8,chunk(b'tRNS',b'REVIEW_METADATA_CANARY'),b'\0\xff\0\0\xff')])
+def test_illegal_depth_bad_scanline_and_rgba_trns_are_rejected(bits,extra,raw):
+    content=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',1,1,bits,6,0,0,0))+extra+chunk(b'IDAT',zlib.compress(raw))+chunk(b'IEND',b'')
+    with pytest.raises(ValueError):sanitize_png(content)
+
+@pytest.mark.parametrize('color,bits,width,height,extra,raw,rgba',[
+    (3,1,2,1,chunk(b'PLTE',bytes([255,0,0,0,255,0]))+chunk(b'tRNS',bytes([255,128])),b'\0\x40',b'\0\xff\0\0\xff\0\xff\0\x80'),
+    (0,1,2,1,b'',b'\0\x40',b'\0\0\0\0\xff\xff\xff\xff\xff'),
+    (6,8,1,2,b'',bytes([0,10,20,30,255,2,5,5,5,0]),bytes([0,10,20,30,255,0,15,25,35,255])),
+    (2,8,1,1,chunk(b'tRNS',struct.pack('>HHH',10,20,30)),bytes([0,10,20,30]),bytes([0,10,20,30,0])),
+])
+def test_valid_palette_grayscale_filter_and_transparency_normalize_to_rgba(color,bits,width,height,extra,raw,rgba):
+    content=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,bits,color,0,0,0))+extra+chunk(b'IDAT',zlib.compress(raw))+chunk(b'IEND',b'')
+    normalized=sanitize_png(content)
+    expected=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',width,height,8,6,0,0,0))+chunk(b'IDAT',zlib.compress(rgba))+chunk(b'IEND',b'')
+    assert normalized==expected
+    assert sanitize_png(normalized)==normalized
+    assert b'tRNS' not in normalized and b'PLTE' not in normalized
