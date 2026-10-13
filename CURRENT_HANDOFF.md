@@ -48,6 +48,7 @@
     - 공개 입력에 매출·영업이익률 이력이 없어 v2 정상화 이익은 실제로 항상 NA다.
     - 금융사 V 정의 없음.
     - 자기 과거 대비 요인은 PriceStore(#225) 병합 후.
+  - 주의: v1·v2 50% 재정규화로 v1 미리보기 숫자와 대조 벡터가 바뀌었다. `strategy_preview`를 쓰는 **전진검증 원장(공개)에도 영향**이 있어 병합 전 승인 대상으로 다룬다. 점수 접근자는 `qgv-scores.js`, 읽기 어댑터는 `qgv2-inputs.js`, 결정·미결 정리는 `implementation/docs/qgv_scoring_standard/QGV_V2_V_DEVICE.md` §1~§8.
   - v2로 전환하려면 `scoring-default.js`에서 `{scoring_default:'v2', v2_since:'YYYY-MM-DD'}` 한 줄을 바꾼다(#222 승인 후).
 - **매크로 경고등 v1** — 브랜치 `claude/macro-lights-v1` @ 2512bdbf (WIP), **PR 아직 없음**
   - 완료:
