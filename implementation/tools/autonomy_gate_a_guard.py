@@ -82,12 +82,13 @@ _PRIVATE_EXPORT_NAME = re.compile(
     r"|(?:device|user|personal|broker)[-_](?:actual[-_])?(?:holdings|positions|portfolio))"
     r"(?:[-_]|$)", re.IGNORECASE,
 )
-_EMAIL_PATTERN = re.compile(r"(?i)[a-z0-9][a-z0-9._%+\-]*@[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}")
+_EMAIL_PATTERN = re.compile(r"(?i)(?<![a-z0-9._%+\-])[a-z0-9._%+\-]+@[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}")
 # Already-public, pre-session history of approved PRs; current trees are never
 # exempt. These exact roots/path scopes preserve history without a force push.
 _EMAIL_LEGACY_SCOPES = {
     "70b838699d90af4a78d9e25470a42e74fbb0514f": frozenset({"implementation/tests/test_sec_disclosures.py"}),
     "10cc7710ba436e0a297ff31a3c4293770657e288": frozenset(),
+    "30b65fc34e9f01ec7736d7274f84d5337afade7f": frozenset({"implementation/tests/test_universe_domains_public.py"}),
     "1bef9153596d2c21ea4541d02d1f751b6b0fae4f": frozenset({
         "implementation/tests/test_sec_disclosures.py", "implementation/tests/test_news_signals.py",
     }),
@@ -523,6 +524,18 @@ def device_actual_violations(base: str | None = None) -> list[str]:
             "--diff-merges=separate", f"{base}..HEAD", "--",
         ]).split(b"\0"))
         history_commit = None
+        history_records: list[tuple[str, str, str]] = []
+        legacy_blobs: set[tuple[str, str]] = set()
+        for root, paths in _EMAIL_LEGACY_SCOPES.items():
+            if subprocess.run(["git", "--no-replace-objects", "cat-file", "-e", root + "^{commit}"],
+                              cwd=REPO_ROOT, capture_output=True).returncode:
+                continue
+            for path in paths:
+                for entry in _git_bytes(["ls-tree", "-z", root, "--", path]).split(b"\0"):
+                    if entry:
+                        metadata, raw_path = entry.split(b"\t", 1)
+                        if metadata.split()[1] == b"blob":
+                            legacy_blobs.add((metadata.split()[2].decode("ascii"), raw_path.decode("utf-8", "surrogateescape")))
         for entry in history:
             entry = entry.lstrip(b"\n")
             if entry.startswith(b"EMAIL_COMMIT:"):
@@ -542,8 +555,31 @@ def device_actual_violations(base: str | None = None) -> list[str]:
             if mode not in {b"000000", b"160000"}:
                 path = raw_path.decode("utf-8", "surrogateescape")
                 blobs[(oid.decode("ascii"), path)] = None
-                if path not in legacy_commits.get(history_commit, set()):
-                    email_scan_blobs.add((oid.decode("ascii"), path))
+                pair = (oid.decode("ascii"), path)
+                if path in legacy_commits.get(history_commit, set()):
+                    legacy_blobs.add(pair)
+                else:
+                    history_records.append((history_commit, pair[0], path))
+        parents = {}
+        for line in _git_bytes(["rev-list", "--parents", f"{base}..HEAD"]).decode("ascii").splitlines():
+            fields = line.split()
+            parents[fields[0]] = fields[1:]
+        inherited = {}
+        for commit, oid, path in history_records:
+            pair = (oid, path)
+            lineage = parents.get(commit, [])
+            # A normal merge can repeat an already-public parent blob in the
+            # diff against its other parent. Only exact scoped historical blobs
+            # inherited without changes qualify; authored copies always scan.
+            key = (commit, oid, path)
+            if key not in inherited:
+                inherited[key] = pair in legacy_blobs and len(lineage) > 1 and any(
+                    any(entry.split(b"\t", 1)[0].split()[-1].decode("ascii") == oid
+                        for entry in _git_bytes(["ls-tree", "-z", parent, "--", path]).split(b"\0") if entry)
+                    for parent in lineage
+                )
+            if not inherited[key]:
+                email_scan_blobs.add(pair)
 
     requests = b"".join(oid.encode("ascii") + b"\n" for oid, _path in blobs)
     output = io.BytesIO()

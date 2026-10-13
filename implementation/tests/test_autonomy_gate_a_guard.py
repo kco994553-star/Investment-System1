@@ -164,6 +164,14 @@ class DeviceActualPrivacyGuardTests(unittest.TestCase):
                 self.assertNotIn(contact, output)
                 self.assertNotIn(path, output)
 
+    def test_long_noncontact_tokens_do_not_hide_a_new_contact(self):
+        contact = "%synthetic-contact" + "@" + "example.invalid"
+        self.write("build.log", "A" * 100000 + "\n" + contact, committed=False)
+        result, output = self.check()
+        self.assertEqual(result, 1)
+        self.assertEqual(json.loads(output)["email_pattern_guard"], "FAIL")
+        self.assertNotIn(contact, output)
+
     def test_email_added_then_removed_is_rejected_from_commit_history(self):
         base = self.git("rev-parse", "HEAD").strip()
         contact = "synthetic-contact" + "@" + "example.invalid"
@@ -1235,4 +1243,37 @@ class HistoricalEmailScopeTests(unittest.TestCase):
         self.write('tests/legacy.py', 'scrubbed working copy', tracked=False)
         result, output = self.check(base)
         self.assertEqual(result, 1)
+        self.assertNotIn(contact, output)
+
+    def test_merging_exact_historical_parent_blob_is_not_an_authored_copy(self):
+        base = self.git('rev-parse', 'HEAD').strip()
+        self.git('checkout', '-b', 'published-legacy')
+        contact = 'historical-contact' + '@' + 'example.invalid'
+        self.write('tests/legacy.py', contact)
+        legacy = self.git('rev-parse', 'HEAD').strip()
+        old = getattr(guard, '_EMAIL_LEGACY_SCOPES', {})
+        guard._EMAIL_LEGACY_SCOPES = {legacy: frozenset({'tests/legacy.py'})}
+        self.addCleanup(setattr, guard, '_EMAIL_LEGACY_SCOPES', old)
+        self.git('checkout', '-b', 'approved-current', base)
+        self.write('safe.txt', 'current change')
+        self.git('merge', '--no-ff', '--no-edit', 'published-legacy')
+        self.write('tests/legacy.py', 'redacted')
+        result, output = self.check(base)
+        self.assertEqual(result, 0)
+        self.assertNotIn(contact, output)
+
+    def test_merge_resolution_that_authors_a_contact_is_rejected_after_removal(self):
+        base, contact = self.historical_scope()
+        safe = self.git('rev-parse', 'HEAD').strip()
+        self.git('checkout', '-b', 'other-current')
+        self.write('safe.txt', 'other change')
+        self.git('checkout', '-b', 'current-resolution', safe)
+        self.write('another.txt', 'independent current change')
+        self.git('merge', '--no-ff', '--no-commit', 'other-current')
+        self.write('tests/legacy.py', contact, committed=False)
+        self.git('commit', '-m', 'synthetic merge resolution')
+        self.write('tests/legacy.py', 'redacted')
+        result, output = self.check(base)
+        self.assertEqual(result, 1)
+        self.assertEqual(json.loads(output)['email_pattern_guard'], 'FAIL')
         self.assertNotIn(contact, output)
