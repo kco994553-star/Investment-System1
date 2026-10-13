@@ -50,3 +50,4 @@ screens_gaps_browser_test.js
 universe_fill_browser_test.js
 s16_s13_screens_browser_test.js
 report_benchmarks_browser_test.js
+price_store_browser_test.js

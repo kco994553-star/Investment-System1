@@ -10,6 +10,8 @@ function deviceCatalog() {
   }).catch(()=>{deviceCatalogPromise=null;throw Error('PUBLIC_CATALOG_UNAVAILABLE');});
   return deviceCatalogPromise;
 }
+// Price store core symbols: runner symbols (TARGET, holdings, sets A–D from VirtualMeta, benchmarks/FX) and watchlist ★.
+async function priceStoreCore(){return PriceStore.coreSymbols(window,{catalog:await deviceCatalog(),interests:[...prefs.interests]});}
 let valuationInputsPromise=null;
 function valuationInputs(){if(!valuationInputsPromise)valuationInputsPromise=DeviceValuation.load(window);return valuationInputsPromise;}
 function paintValue(route,id,quote=null){const host=document.querySelector('#company-value');if(host)void CompanyScreen.mountValue(host,{locale:appSettings.display_locale,id,ticker:company(id)?.ticker||PrivateHistory.symbolFor(id),catalogPromise:deviceCatalog(),inputsPromise:valuationInputs(),quote,compact:route==='company'});}
@@ -188,7 +190,7 @@ function settingsUI() {
   <p>${t("표시 언어는 계산 결과에 영향을 주지 않습니다.")}</p>
   <label for="source-language">${t("뉴스 원문 언어")}</label><select id="source-language">${[["all",t("전체 언어")],["ko",t("한국어 원문")],["en",t("영어 원문")]].map(([v,k])=>`<option value="${v}" ${appSettings.source_language===v?"selected":""}>${t(k)}</option>`).join("")}</select>
   <p>${t("원문 언어는 뉴스 필터만 변경합니다.")}</p></section>
-  <div id="ops-status"></div><section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio, profiles, investor stars and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·프로필·투자자 ★·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="private-trades-settings"></div><div id="private-universe-settings"></div><div id="device-api-settings"></div>`;
+  <div id="ops-status"></div><section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio, profiles, investor stars and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·프로필·투자자 ★·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="price-store-settings"></div><div id="private-trades-settings"></div><div id="private-universe-settings"></div><div id="device-api-settings"></div>`;
 }
 function entityRoute(e) {return e.entity_type==="COMPANY"?"#company/"+encodeURIComponent(e.canonical_id):"#entity/"+encodeURIComponent(e.entity_type+":"+e.canonical_id);}
 // Company search (TARGET directory + public Universe504 codes): identity only, no prices/caps/ranks (GSQ-010).
@@ -762,6 +764,8 @@ function renderRoute() {
   if(route==='technical') {const cards=TechnicalCards.mount($('#technical-indicators'),{locale:appSettings.display_locale});
     PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>cards.update(value)});}
   if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>paintValue(route,id,value&&typeof value.close==='number'?{price:value.close,currency:value.currency,as_of:value.asOf,source:'PRIVATE_HISTORY_CLOSE'}:null)});
+  // Price store (user's Prices_M tab): the first open of a company stores its 5-year month-ends once (counts shown only).
+  if(route==='company' && window.PriceStore) {const symbol=PrivateHistory.symbolFor(id)||PriceStore.universeSymbol(id);if(symbol){const host=document.createElement('div');host.id='company-price-store';const anchor=$('#private-history-chart');if(anchor)anchor.after(host);else $('#content').append(host);PriceStore.mountCompany(host,{symbol,locale:appSettings.display_locale});}}
   if(route==='company'||route==='leaderboard'||route==='analysis') SecReported.mount($('#sec-reported-panel'),secReported,{companyId:route==='leaderboard'?undefined:id,locale:appSettings.display_locale});
   if(route==='report') void paintReport(id);
   if(route==='profiles') DeviceProfiles.mount($('#device-profile-editor'),{locale:appSettings.display_locale,qgFactors:()=>publicScreens['sec-qg-factors.json']});
@@ -790,6 +794,7 @@ function renderRoute() {
     OpsStatus.mount($('#ops-status'),{secReported,secStatus:SecReported.status?.()||null,screens:publicScreens},{locale:appSettings.display_locale});
     attachGoogleSheetSettings();
     PrivateHistory.mountSettings($('#private-history-settings'),{locale:appSettings.display_locale});
+    if(window.PriceStore) PriceStore.mountSettings($('#price-store-settings'),{locale:appSettings.display_locale,coreSymbols:priceStoreCore});
     PrivateTrades.mountSettings($('#private-trades-settings'),{locale:appSettings.display_locale});
     PrivateSubsetView.mountSettings($('#private-universe-settings'),{locale:appSettings.display_locale});
     attachDeviceApiSettings();
@@ -1029,6 +1034,8 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
   const safeData={schema_version:1,companies:[]};
   for(const name of publicSections) safeData[name]={state:"NOT_AVAILABLE",as_of:null,source:null,reason:"공개 가격 경계에 따라 제공되지 않습니다. (GSQ-010)",data:null};
   D=guardSections(safeData);publicEntities=catalog.entities.filter(e=>e.entity_type!=="COMPANY");rebuildSearchIndex();load();render();paintGlobalSearch();
+  // App open: with the price store on and Google connected, append the core symbols' daily bars after the last stored date.
+  try{if(window.PriceStore) PriceStore.autoSync(window,{coreSymbols:priceStoreCore});}catch(_){}
 }).catch(showUnavailable);
 
 async function exportDeviceBackup(){
