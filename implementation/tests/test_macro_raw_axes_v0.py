@@ -294,9 +294,10 @@ def test_browser_reader_parity_for_raw_block(tmp_path):
     del old['data']['raw_axes_v0']
     require_public_screen('macro-screen.json', old)
     assert node_validate(old) == 0
-    # Without the block, a LIVE envelope has no live evidence left.
+    # Without the block (and the macro lights v1 block that reads the same BLS body), a LIVE envelope has no live evidence left.
     orphan = deepcopy(good)
     del orphan['data']['raw_axes_v0']
+    del orphan['data']['macro_lights_v1']
     assert node_validate(orphan) != 0
     for change in tamper_cases():
         bad = deepcopy(good)

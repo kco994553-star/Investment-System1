@@ -2807,6 +2807,71 @@
      "value": null
     }
    },
+   "macro_lights_v1": {
+    "config": {
+     "decided_on": "2026-10-13",
+     "id": "MACRO_LIGHTS_V1",
+     "marker": "v1 \u00b7 UNCALIBRATED",
+     "source_section": "PLAYBOOK_V1 13-5",
+     "status": "UNCALIBRATED",
+     "version": "v1"
+    },
+    "device_lights": [
+     "market",
+     "credit"
+    ],
+    "lights": {
+     "curve": {
+      "agency": "TREASURY",
+      "as_of": null,
+      "inputs": [],
+      "lit": null,
+      "reason": "SOURCE_NOT_COLLECTED",
+      "source": "U.S. Treasury daily par yield curve \u00b7 10 Yr \u2212 3 Mo",
+      "source_series_id": "TREASURY:daily_treasury_yield_curve:BC_10YEAR-BC_3MONTH",
+      "state": "NOT_AVAILABLE",
+      "values": {
+       "date": null,
+       "run_days": null,
+       "spread": null,
+       "ten_year": null,
+       "three_month": null
+      }
+     },
+     "employment": {
+      "agency": "BLS",
+      "as_of": null,
+      "inputs": [],
+      "lit": null,
+      "reason": "SOURCE_NOT_COLLECTED",
+      "source": "BLS LNS14000000 \u00b7 unemployment rate, SA, monthly",
+      "source_series_id": "BLS:LNS14000000",
+      "state": "NOT_AVAILABLE",
+      "values": {
+       "avg3": null,
+       "gap": null,
+       "low12": null,
+       "low12_count": null,
+       "period": null
+      }
+     },
+     "inflation": {
+      "agency": "BLS",
+      "as_of": null,
+      "inputs": [],
+      "lit": null,
+      "reason": "SOURCE_NOT_COLLECTED",
+      "source": "BLS CUUR0000SA0 \u00b7 CPI-U all items, NSA, monthly",
+      "source_series_id": "BLS:CUUR0000SA0",
+      "state": "NOT_AVAILABLE",
+      "values": {
+       "base_period": null,
+       "period": null,
+       "yoy": null
+      }
+     }
+    }
+   },
    "observations": [],
    "pit_status": "NOT_VERIFIED",
    "raw_axes_v0": {
