@@ -97,7 +97,8 @@ async function emptyDevice(page) {
       });
       context.on("response", response => {
         // The optional SEC sidecar is absent from a build without collection. Other failures remain errors.
-        const missingSec = response.status() === 404 && response.url() === new URL("sec-public-inputs.json", base).href;
+        // Offline builds omit optional collected SEC inputs; readers return NA and temporary v1. Required resource failures still fail.
+        const missingSec = response.status() === 404 && ["sec-public-inputs.json", "sec-qgv2.json"].some(name => response.url() === new URL(name, base).href);
         if (response.status() >= 400 && !missingSec) responseProblems += 1;
       });
       await page.goto(new URL("#settings", base).href);
