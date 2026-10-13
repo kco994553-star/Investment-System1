@@ -490,7 +490,7 @@ def _generate(manifest,root,as_of,stale_after):
         for rows in (qg,types,windows):rows[cid]['source_hashes']=dict(refs)
         state=_fresh(acquired,as_of,stale_after)
         valuation[cid]=_valuation.project_row(m1,state,refs,_current_ambiguity(m1) if m1['status']=='READY' else False)
-        periods=qgv2_ttm_periods(facts,as_of.date())
+        periods=qgv2_ttm_periods(facts,acquired.astimezone(timezone.utc).date())
         if periods is not None:windows[cid]['qgv2_ttm_periods']=periods
         timing=build_filing_timing_pattern(cid,sub,acquired,as_of)
         if timing['groups']:
