@@ -26,9 +26,11 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     # Price-free Universe504 code list for the Google sheet Universe tab (validated by the guard).
     from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES, public_payload
     (out / UNIVERSE_CODES).write_text(json.dumps(public_payload(), ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
-    # Company web domains for runtime logos (domains only; no logo file is published).
+    # Company domains and local PNG logo bundle; the browser never contacts logo providers.
     from universe_domains_pipeline import emit as emit_domains
     emit_domains(out)
+    from company_logos_pipeline import emit as emit_logos
+    emit_logos(out)
     from public_screens_pipeline import emit
     emit(out)
     from public_classification_pipeline import emit as emit_classification

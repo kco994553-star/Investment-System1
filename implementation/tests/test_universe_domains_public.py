@@ -170,7 +170,7 @@ def test_previous_copy_fetch_rejects_invalid_or_redirected_copies():
         tool.fetch_previous(open_response=lambda r, timeout: Response(good, url='https://example.com/x'))
 
 
-def test_build_publishes_domains_and_no_logo_file_and_the_guard_checks_it():
+def test_build_publishes_domains_and_local_logo_bundle_and_the_guard_checks_it():
     build = load('build_pages_cockpit', ROOT / 'tools/build_pages_cockpit.py')
     guard = load('pages_artifact_guard', ROOT / 'tools/pages_artifact_guard.py')
     with tempfile.TemporaryDirectory() as folder:
@@ -178,7 +178,7 @@ def test_build_publishes_domains_and_no_logo_file_and_the_guard_checks_it():
         build.build_public_cockpit(site)
         assert json.loads((site / FILENAME).read_text(encoding='utf-8')) == public_payload()
         assert guard.scan_artifact(site)['pages_artifact_guard'] == 'PASS'
-        # Logos are fetched at runtime only: the only images shipped are the app's own two icons.
+        # Logo PNGs are local data images in company-logos.json, never runtime external images.
         images = sorted(p.name for p in site.iterdir() if p.suffix.lower() in {'.png', '.ico', '.svg', '.jpg', '.jpeg', '.webp', '.gif'})
         assert images == ['icon-192.png', 'icon-512.png']
         payload = json.loads((site / FILENAME).read_text())

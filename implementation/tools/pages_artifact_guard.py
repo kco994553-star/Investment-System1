@@ -34,11 +34,12 @@ from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDG
 from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
 from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES_FILENAME, require_universe_codes
 from investment_system.universe.universe_domains import FILENAME as UNIVERSE_DOMAINS_FILENAME, require_universe_domains
+from investment_system.product.company_logos import FILENAME as COMPANY_LOGOS_FILENAME, require_company_logos
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "tradingview-widgets.js": "e7b6b828b577c74d4b297911e92d762c3fb4615f35dbb14af42dcf983e320adc",
-    "company-logos.js": "80bfc90f091ab67297dd2ea13b12a3799f245239555fa6d027ac1762351c492b",
+    "tradingview-widgets.js": "e78e43406d480bb743b5c23aacb99435c3470c0e709ac1e3fcc2cec805366efc",
+    "company-logos.js": "63aceb4033f17bba403f62b6c4887a8a9c5dd64b8a6f8180b063ab704ce38581",
     "virtual-trading-compare.js": "8cf5bd3bec35ebe688d3982928ce3f6771e1ea4364966fb51a5f29cfeee0642c",
     "report-benchmarks.js": "7a274ba8467880791df30deb17145396111e38c2d2598f7c654a0564c00aa6e9",
     "virtual-trading-runner.js": "ce55e6428f52f81ff664870fad5f0944f7b4f46f697058aa018d919d7da561db",
@@ -101,14 +102,14 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "9fa1d20f59c7fed1c32d227632b68674c32f99f6f569cee09995b568be6edc53",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "cd6e93b11b2a6816cbc302fe046685169ce6644844a0e5d67db20bc2d55864a8",
+    "index.html": "47fc9a88be00d1798f002e42085e1ba9f2521cee22db951644ab1a7fe62a3c05",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "46d17bdbc23b78b4d68511137a9c9bfd007c13934540db97533b1d5c978d87d8",
+    "style.css": "46d17bdbc23b78b4d68511137a9c9bfd007c13934540db97533b1d5c978d87d8"
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, UNIVERSE_DOMAINS_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -231,6 +232,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == UNIVERSE_CODES_FILENAME:
             try: require_universe_codes(value)
             except ValueError: violations['universe_codes_boundary'] += 1
+        elif name == COMPANY_LOGOS_FILENAME:
+            try: require_company_logos(value)
+            except ValueError: violations['company_logos_boundary'] += 1
         elif name == UNIVERSE_DOMAINS_FILENAME:
             try: require_universe_domains(value)
             except ValueError: violations['universe_domains_boundary'] += 1
