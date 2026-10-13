@@ -219,16 +219,17 @@
       const range="'Universe'!A2:C"+(rows.length+1);
       await sheetRequest('/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+'?valueInputOption=USER_ENTERED','PUT',{range,majorDimension:'ROWS',values:rows},'WRITE_FAILED');
     }
-    // S17 only: writes are limited to the AI mailbox tabs (ReportInbox/ReportOutbox) and the virtual ledger tabs (D-10:
-    // VirtualA/VirtualB/VirtualC/VirtualD/VirtualMine/VirtualMeta/VirtualFlags) of the user's own sheet (drive.file, no new
-    // scope). Example_* tabs are never on this list.
-    const REPORT_TABS=['ReportInbox','ReportOutbox','VirtualA','VirtualB','VirtualC','VirtualD','VirtualMine','VirtualMeta','VirtualFlags'];
+    // S17 only: writes are limited to the AI mailbox tabs (ReportInbox/ReportOutbox), the virtual ledger tabs (D-10:
+    // VirtualA/VirtualB/VirtualC/VirtualD/VirtualMine/VirtualMeta/VirtualFlags) and the price store tabs (Prices_D/Prices_M,
+    // append-only) of the user's own sheet (drive.file, no new scope). Example_* tabs are never on this list.
+    const REPORT_TABS=['ReportInbox','ReportOutbox','VirtualA','VirtualB','VirtualC','VirtualD','VirtualMine','VirtualMeta','VirtualFlags','Prices_D','Prices_M'];
     async function addTabs(id,titles){
       if(extractSpreadsheetId(id)!==id||!Array.isArray(titles)||!titles.length||!titles.every(t=>REPORT_TABS.includes(t)))fail('INVALID');
-      await sheetRequest('/'+encodeURIComponent(id)+':batchUpdate','POST',{requests:titles.map(title=>({addSheet:{properties:{title}}}))},'WRITE_FAILED');
+      // Price tabs get a 5-column grid (cells count toward the 10M-cell file limit; appends add rows as needed).
+      await sheetRequest('/'+encodeURIComponent(id)+':batchUpdate','POST',{requests:titles.map(title=>({addSheet:{properties:/^Prices_[DM]$/.test(title)?{title,gridProperties:{rowCount:1000,columnCount:5,frozenRowCount:1}}:{title}}}))},'WRITE_FAILED');
     }
     async function appendRows(id,range,rows){
-      if(extractSpreadsheetId(id)!==id||typeof range!=='string'||!/^'(?:Report(?:Inbox|Outbox)|Virtual(?:A|B|C|D|Mine|Meta|Flags))'!A1$/.test(range)||!Array.isArray(rows)||!rows.every(r=>Array.isArray(r)&&r.every(v=>typeof v==='string'&&v.length<=50000))||JSON.stringify(rows).length>262144)fail('INVALID');
+      if(extractSpreadsheetId(id)!==id||typeof range!=='string'||!/^'(?:Report(?:Inbox|Outbox)|Virtual(?:A|B|C|D|Mine|Meta|Flags)|Prices_(?:D|M))'!A1$/.test(range)||!Array.isArray(rows)||!rows.every(r=>Array.isArray(r)&&r.every(v=>typeof v==='string'&&v.length<=50000))||JSON.stringify(rows).length>262144)fail('INVALID');
       await sheetRequest('/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS','POST',{values:rows},'WRITE_FAILED');
     }
     // Holdings tab (capture + personal AI): created only on the user's click, header row + plain-text cells, never overwritten.
