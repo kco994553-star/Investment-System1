@@ -92,7 +92,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "313fd4e1b2c349c7aae9b930dc766c3f23a1b2c0b97052a9f8e9d39621ed4ea8",
+    "app.js": "b8eb2d08da177b1598d76e12a1c3dd529a2cf3c5afaefa51fe042d210e15baa9",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "8dcefa502a362b680f8cefbf774209b2180b398d706469f6370d6ecb0182acd1",
@@ -109,7 +109,7 @@ APPROVED_SHA256 = {
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "d48a9376677319f28a6c4cc93d74a077009ba476d76c9d7e5d9b1c308362a404",
     "news-signals.js": "61336bb91a39407c60573ca6b2bfbbd06b7c36d4910927ac04e0a29fc4a16868",
-    "dart-disclosures.js": "337dc0ef17eb404342e9cc6ebdcd2af373d2edbb3b05df60839204d1e7c0f1d1",
+    "dart-disclosures.js": "16b5132a6869226b667e56d4686d5bcb304f78a73b13fd21c8b947d920220a4b",
     "macro-lights.js": "b597eb5b592e59045e5d42be38eef185b362b8da6b1f3718ab1ebafaf53cd7fa",
     "sec-disclosures.js": "a4bb25399c28114d08d6e0b051054b6068436750f6b319607789b2486ab9f8fe"
 }
