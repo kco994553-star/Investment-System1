@@ -76,7 +76,7 @@ function qgv2Reference(financials,universe,engine=globalThis.SecQgv2){
  const company=financials?.companies?.hanmi,block=company?.qgv2;
  if(!block||!engine||typeof engine.scoreRows!=='function'||!universe)return null;
  need(block.reference_only===true&&block.comparison_label==='참고 순위'&&block.comparison_basis==='US_UNIVERSE_504_GENERAL'&&block.industry_basis==='NOT_ASSIGNED'&&block.currency==='KRW');
- need(plain(block.metrics)&&Object.keys(block.metrics).every(k=>engine.METRIC_KEYS.includes(k)&&(block.metrics[k]===null||typeof block.metrics[k]==='number'&&Number.isFinite(block.metrics[k]))));
+ need(keys(block.metrics,engine.METRIC_KEYS)&&Object.keys(block.metrics).every(k=>engine.METRIC_KEYS.includes(k)&&(block.metrics[k]===null||typeof block.metrics[k]==='number'&&Number.isFinite(block.metrics[k]))));
  const row={cik:null,state:company.state,profile:'GENERAL',industry_group:null,metrics:block.metrics};
  const pooled=Object.fromEntries(Object.entries(universe).filter(([,r])=>r.in_cross_section!==false));
  const result=engine.scoreRows(pooled,{hanmi:row});
