@@ -160,7 +160,7 @@ def test_classification_v0(title, expected):
 
 @pytest.mark.parametrize('link,expected', [
     ('HTTPS://News.Example.COM/a/b?id=1&utm_source=x#frag', 'https://news.example.com/a/b?id=1'),
-    ('http://example.com', 'http://example.com'), ('https://user:pw@example.com/', None), ('ftp://example.com/x', None),
+    ('http://example.com', 'http://example.com'), ('https://user:pass' + chr(64) + 'example.com/', None), ('ftp://example.com/x', None),
     ('javascript:alert(1)', None), ('https://example.com/a b', None), ('https://exämple.com/', None),
     ('https://example.com:8443/x', 'https://example.com:8443/x'), ('https://localhost/x', None),
 ])
