@@ -321,7 +321,7 @@ async function main() {
           // Current contract: the export is the unified price-free device backup (investment-device-backup/4,
           // since "Unify device backups"; /3 adds 13F investor stars); holdings travel in its portfolio member and
           // quotes, FX and API settings are never exported.
-          requireCheck(JSON.stringify(Object.keys(payload).sort()) === JSON.stringify(["investor_stars", "portfolio", "preferences", "profiles", "schema", "settings"]) &&
+          requireCheck(JSON.stringify(Object.keys(payload).sort()) === JSON.stringify(["investor_stars", "playbook", "portfolio", "preferences", "profiles", "schema", "settings"]) &&
             payload.schema === "investment-device-backup/4", "export is not the unified device backup envelope");
           const portfolio = payload.portfolio;
           requireCheck(JSON.stringify(canonical(portfolio)) === JSON.stringify(canonical(original)), "export differs from the saved holdings envelope");
