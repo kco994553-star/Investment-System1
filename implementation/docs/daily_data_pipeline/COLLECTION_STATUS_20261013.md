@@ -27,14 +27,16 @@
 
 현재 수정치와 가정한 발표 지연(월 자료 다음 달 15일, 분기 종료 후 약 30일)을 사용한 비교다. 실제 당시 발표 빈티지·정확한 발표 시각을 재현한 PIT 검증이나 성과 검증이 아니다. 상태는 `v1 · UNCALIBRATED`를 유지한다.
 
-자료 출처: BLS Public Data API v2 (`https://api.bls.gov/publicAPI/v2/timeseries/data/`, 시리즈 `LNS14000000`, POST, 조회 2026-10-13); CPI-U NSA 미러 `https://raw.githubusercontent.com/datasets/cpi-us/master/data/cpiai.csv`의 `Index`; 실질 GDP 증감률 미러 `https://raw.githubusercontent.com/datasets/gdp-us/master/data/quarter.csv`의 `change-chained`. GDP는 이번에 읽은 미러가 2024년까지만 포함한다. 원문과 변환 입력은 `/tmp/c-private-replay`에 두었으며 저장소·Pages에 포함하지 않았다.
+자료 출처: BLS Public Data API v2 (`https://api.bls.gov/publicAPI/v2/timeseries/data/`, 시리즈 `LNS14000000`, POST, 조회 2026-10-13); CPI-U NSA 미러 `https://raw.githubusercontent.com/datasets/cpi-us/master/data/cpiai.csv`의 `Index`; 실질 GDP 미러 `https://raw.githubusercontent.com/datasets/gdp-us/master/data/quarter.csv`. 이 미러의 `change-chained`는 해당 행에서 **다음 분기**로의 증감률이었다. 기존 날짜에 그대로 붙이면 한 분기 앞선 값을 쓰므로 다음 실제 분기 행의 날짜로 정규화했다. 311개 전이의 `level-chained` 비율 연율화와 비교해 반올림 차이 이내임을 확인했다. 첫 분기는 이전 자료가 없어 NA이다. GDP는 이번에 읽은 미러가 2024년까지만 포함한다. 원문과 변환 입력은 `/tmp/c-private-replay`에 두었으며 저장소·Pages에 포함하지 않았다.
 
 | 구간 | 자료 있는 경고등 | 켜짐 0/1/2개 주 수 | 정상/경고/위기 주 수 | 경고 첫 주 | 위기 첫 주 |
 |---|---|---|---|---|---|
 | 2000–2002 | 2/5 | 91/65/0 | 156/0/0 | 없음 | 없음 |
 | 2007-07–2009-06 | 2/5 | 32/59/13 | 91/13/0 | 2008-07-18 | 없음 |
 | 2020 | 2/5 | 19/33/0 | 52/0/0 | 없음 | 없음 |
-| 2022 | 2/5 | 0/52/0 | 11/10/31 | 2022-02-04 | 2022-04-15 |
+| 2022 | 2/5 | 0/52/0 | 21/0/31 | 없음 | 2022-04-15 |
+
+GDP 날짜 정규화 전의 2022년 경고 10주는 미러 열 배치 오류였으며 위 표에서 정정했다. 다른 세 구간의 집계는 같았다. 규칙·임계값은 바꾸지 않았다. 재생 입력은 `gdp-normalized.csv`이며 원문 날짜에 다음 분기 값을 붙인 이전 파일을 사용하지 않는다.
 
 2020-05-15 평가에서 실제 2020-04 실업률이 사용되고 고용 경고등은 켜졌다. 사용 경고등 2개 중 고용 한 개만 켜진 상태는 문서의 0–1개 정상 규칙에 따라 NORMAL이다. 이 결과를 COVID 위기를 정상적으로 검증했다고 해석할 수 없다. CPI 하나로 위기가 되는 2022 결과도 원문 규칙 그대로다. 가격 파생 재생 값은 이 문서·공개 로그에 넣지 않는다.
 
