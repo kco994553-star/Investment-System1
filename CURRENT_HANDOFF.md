@@ -4,16 +4,17 @@
 
 ## 현재 위치
 
-- canonical: `claude/investment-system-top500-validation-alrugm`, 확인 HEAD `7136aa3f`(#210 병합, 2026-10-13 13:11:19 UTC).
+- canonical: `claude/investment-system-top500-validation-alrugm`, 확인 HEAD `7a3745d5`(#215 병합, 2026-10-13 13:47:22 UTC).
 - **#222 GSQ-022/023 병합 완료**: exact head `d25161e4`, 필수 6체크 SUCCESS·실패 0에서 정상 merge. force/admin 없음. 별도 수동 배포·Worker 배포는 실행하지 않았다.
 - 기존 승인 병합 순서: **#222 → #224 → #226 → #225 → #210 → #215 → #211**. 새 레인 PR: D → A → B → C → E. 모든 병합은 D가 한 건씩 수행한다.
 - **#224 병합 완료**: exact head `39b474c3`, 필수6 SUCCESS/실패0, normal merge `84998f27`. A가 업종 하위 지표 표본<8 GENERAL 전체분포 대체 규칙과 회귀 테스트 확인. canonical merge-forward 후 head `39b474c3` push 후 CI 성공 확인하여 병합.
 - **#226 병합 완료**: exact head `66e59f9b`, 필수6 SUCCESS/실패0, normal merge `8382b1b5`. B의 10/13 승인 해석 commit `80cb2fdc`를 normal cherry-pick, 가드 해시 갱신하여 head `66e59f9b` push. Python playbook·Pages guard 50PASS, JS225PASS.  #224 기준 동기화·CI 성공 후 병합. Integral SIC 숫자표현 일치 followup은 B 화면 브랜치에 포함.
 - **#225 병합 완료**: exact head `1b1cf960`, 필수6 SUCCESS/실패0, normal merge `c08faa15`(12:40:49 UTC). Prices_D/M 코드 승인 범위; Worker 배포는 별도.
-- **#210 병합 완료**: exact head `8cead6ac`, 필수6 SUCCESS/실패0, normal merge `7136aa3f`(13:11:19 UTC). 현재 남은 승인 순서는 #215 → #211이다.
+- **#210 병합 완료**: exact head `8cead6ac`, 필수6 SUCCESS/실패0, normal merge `7136aa3f`(13:11:19 UTC). 당시 다음은 #215 → #211. 현재 #215까지 완료하여 #211만 남음.
+- **#215 병합 완료**: exact head `0b4151a5`, 필수6 SUCCESS/실패0, normal merge `7a3745d5`(13:47:22 UTC). 기존 승인 순서에서 #211만 남음. 모든 레인 정상 merge-forward/최신 CI 진행.
 - #227: 로컬 PNG/data 이미지 번들·직접iframe OFF 구현, 브라우저390/1280 로고2·iframe2 PASS. PNG 실제 decode/RGBA8 재인코딩 및 잘못된 raster/bitdepth/tRNS 회귀15PASS·E 재검토 중요 문제0. D 별도 worktree `d-227`, 후속 보완 commit·최신 기준 동기화·CI 준비 중. **병합 재승인 필요**, 외부 지원 조사 없음.
 - DART 키 등록 사용자 확인됨. C 보고: 최신 실행 BEA_USERID 설정 마스킹 정상; 예전 빈 전달 로그를 근거로 재등록 요청하지 않는다. Fed 원인404/빈 추출, 공식 소스확인403이며 반복 시도 금지.
-- Worker Universe504(하이픈 포함)·HYG·IEF 확대는 사용자 범위 승인, #229 `41e02736` 최신6SUCCESS·canonical7136 동기화 완료. 로컬 실제504 및 Worker169·Python2648·Node47·Pages82 PASS. 기존 #215→#211 우선 뒤 범위 승인대로 병합. 범위 승인은 이미 있으므로 재승인 요청하지 않는다. 배포는 별도 결정 전 기존 Worker 유지.
+- Worker Universe504(하이픈 포함)·HYG·IEF 확대는 사용자 범위 승인, #229 `41e02736` 최신6SUCCESS·canonical7136 동기화 완료. 로컬 실제504 및 Worker169·Python2648·Node47·Pages82 PASS. 기존 #211 우선 뒤 범위 승인대로 병합. 범위 승인은 이미 있으므로 재승인 요청하지 않는다. 배포는 별도 결정 전 기존 Worker 유지.
 - **10/19 v2 기록 시작은 아직 확정하지 못함**. A의 V·공개입력·v1/v2 원장 준비와 신규 PR 승인 후 실제 시작일을 보고한다. 소급하지 않는다.
 
 ## 레인별 진행 (진행분은 브랜치·PR로 보존)
@@ -40,7 +41,6 @@
 | #229 | `41e02736` | 6/6 | MERGEABLE | 승인순서 뒤 병합 | 필수6 SUCCESS; 범위 이미 승인/배포 별도 |
 | #228 | `488d1b87` | 5/6 · 실패 build | MERGEABLE | 닫기 제안 | D230 포함; 자동 닫지 않음 |
 | #227 | `d9197b8a` | 5/6 | MERGEABLE | 수정본 재승인 | PNG검증 포함2694/Node48/로고iframe4PASS; 빌드수집 |
-| #215 | `0b4151a5` | 5/6 | MERGEABLE | 6체크 후 승인순서 병합 | 최신0b4151a5, focused171+123subPASS |
 | #211 | `5e5face5` | 5/6 | MERGEABLE | 215 뒤 sync/CI 병합 | 최신5e5face5, debt  lineage 원정의 검증85+123subPASS |
 | #71 | `923ba8ea` | 5/6 | CONFLICTING | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
 | #43 | `4c5f7ff9` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
@@ -67,7 +67,7 @@
 
 ## 다음 할 일 5개
 
-1. #222→#224→#226→#225→#210 완료. #215 최신7136 동기화·필수6 후 병합, 이어 #211 동기화·동일 검사.
+1. #222→#224→#226→#225→#210 완료. #215 완료, #211 최신7a3745 동기화·필수6 재확인 후 병합.
 2. #230 이메일 패턴 가드: 기존 Frozen의 동일 문자열만 유지; 정확 pre-session 공개 PR root/path의 역사만 보존. 현재 tree·새 commit·추가 후 삭제는 예외 없음. force 없이 역사 유지.
 3. A 최종 계산 PR·전체회귀/부분 품질보고 보존, B/E/Worker common 대기 해제 후 자체 검증 병렬 진행.
 4. #227 PNG strict decode 후속·현대 canonical CI·검토본으로 재승인. #229 범위 승인 재요청 없이 6체크 확인, 배포 별도.
