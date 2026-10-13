@@ -89,17 +89,29 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
         }
         mock.unsafe++; return route.abort();
       });
-      phase = 'SIGN_IN';
+      phase = 'SIGN_IN_GOTO';
       await page.goto(BASE + '#settings'); const setup = page.locator('[data-google-first-setup]');
+      phase = 'SIGN_IN_INITIAL_READ';
       await page.waitForFunction(() => window.__settingsReadPaused());
       verify(await page.evaluate(() => window.__settingsReadEnabled() === false), 'initial native settings are disabled');
       verify(await page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state().ready), 'the synthetic OAuth SDK is ready before the user signs in');
+      phase = 'SIGN_IN_CLICK';
       await setup.locator('[data-setup-action="login"]').click();
+      phase = 'SIGN_IN_CONNECTED';
       await page.waitForFunction(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state().connected);
       verify(await page.evaluate(() => window.__grantRequests === 1), 'the user signs in with exactly one grant request');
+      phase = 'SIGN_IN_HYDRATION';
       await page.evaluate(() => window.__releaseSettingsRead());
       await page.locator('[data-sheet-google-controls]').waitFor({state: 'attached'});
       verify(await page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state().connected), 'delayed initial settings keep the newer successful sign-in');
+      // Authorization is shared; explicitly opt into this Quotes panel before checking its controls.
+      // Other consumers may have mounted an OFF Quotes panel before the grant completed.
+      await page.locator('[data-sheet-enabled]').check();
+      verify(await page.locator('[data-sheet-enabled]').isChecked(), 'the user explicitly enables the Quotes input panel');
+      verify(await page.evaluate(() => {
+        const state = GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state();
+        return state.enabled && state.connected && window.__grantRequests === 1;
+      }), 'enabling the Quotes panel preserves the existing grant without another popup');
       verify(await page.locator('[data-sheet-google-controls]').isVisible(), 'connected sheet controls remain visible after delayed hydration');
       await page.evaluate(async id => { await DeviceActual.sheetSettings(window, {schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: id, range: "'Quotes'!A1:C1025"}); }, ID);
       await page.goto(BASE + '#home'); await page.goto(BASE + '#settings');
@@ -250,7 +262,7 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
       verify(await page.evaluate(() => HoldingsCapture.get(window) === null && !WorkerQuoteFallback.has(window)), 'RAM holdings and closes cleared on sign-out');
       pass++; console.log('PASS holdings capture, Worker close fallback and outside-scope holdings ' + width); await context.close();
     }
-  } catch (error) { fail++; console.log('FAIL holdings capture browser ' + phase + (error && error.safe ? ' · ' + error.safe : '')); }
+  } catch (error) { fail++; const kind = ['Error', 'TimeoutError', 'AssertionError'].includes(error && error.name) ? error.name : 'TEST_ERROR'; console.log('FAIL holdings capture browser ' + phase + ' · ' + kind + (error && error.safe ? ' · ' + error.safe : '')); }
   finally { await browser.close(); }
   console.log('COUNTS pass=' + pass + ' fail=' + fail); if (fail) process.exitCode = 1;
 })();
