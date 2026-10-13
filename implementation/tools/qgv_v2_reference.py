@@ -32,12 +32,13 @@ def _company(n, group, *, profile='GENERAL', q=60.0, g=50.0, missing=(), ebit=No
     return {'industry_group': group, 'profile': profile, 'factors': factors, 'v_inputs': vin, 'memberships': memberships}
 
 
-def _closes(base):
-    """Synthetic month-end-ish closes around each fiscal year end 2020..2024."""
+def _month_closes(base):
+    """Synthetic month-end closes {YYYY-MM: close} (device Prices tab shape) around each fiscal year end 2020..2024."""
     out = {}
     for y in range(5):
-        out[f'{2020 + y}-12-30'] = round(base * (0.6 + 0.1 * y), 4)
-        out[f'{2020 + y}-12-15'] = round(base * (0.55 + 0.1 * y), 4)
+        out[f'{2020 + y}-12'] = round(base * (1.4 - 0.15 * y), 4)
+        out[f'{2020 + y}-11'] = round(base * (0.55 + 0.1 * y), 4)
+    out['2021-12'] = None  # a missing month stays missing (never 0)
     return out
 
 
@@ -74,7 +75,7 @@ def market(companies, *, skip=(), history_for=('NYSE:SYNA3', 'NASDAQ:SYNB2')):
         price = 8.0 + idx * 0.9
         out[k] = {'price': price, 'currency': 'USD'}
         if k in history_for:
-            out[k]['closes'] = _closes(price)
+            out[k]['month_closes'] = _month_closes(price)
     out.pop('NYSE:SYNQ0', None)
     return out
 
@@ -132,7 +133,7 @@ def payload():
     return {'schema_version': 1, 'kind': 'QGV_V2_REFERENCE_VECTORS', 'synthetic': True, 'version': m.VERSION, 'status': m.STATUS,
             'config': {'weights': m.WEIGHTS, 'presets': m.PRESETS, 'default_preset': m.DEFAULT_PRESET, 'gate_default': m.GATE_DEFAULT,
                        'gate_percentile': m.GATE_PERCENTILE, 'min_peers': m.MIN_PEERS, 'min_universe': m.MIN_UNIVERSE,
-                       'min_axis_weight': m.MIN_AXIS_WEIGHT, 'min_history': m.MIN_HISTORY, 'close_window_days': m.CLOSE_WINDOW_DAYS},
+                       'min_axis_weight': m.MIN_AXIS_WEIGHT, 'min_history': m.MIN_HISTORY},
             'units': unit_cases(), 'cases': cases()}
 
 

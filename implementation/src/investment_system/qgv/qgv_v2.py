@@ -9,7 +9,6 @@ so that the JS port adds in the same order.
 """
 from __future__ import annotations
 
-from datetime import date, timedelta
 import math
 import re
 
@@ -38,8 +37,7 @@ GATE_PERCENTILE = 30          # Q below this within-industry percentile -> V exc
 MIN_PEERS = 8                 # industry group smaller than this -> whole priced universe (same rule as the Q·G side)
 MIN_UNIVERSE = 8              # a cross-section smaller than this is NOT_AVAILABLE
 MIN_AXIS_WEIGHT = 0.5         # §2: an axis (or the total) needs >= 50% of its weight available
-MIN_HISTORY = 3               # own-history factor needs >= 3 past yields
-CLOSE_WINDOW_DAYS = 10        # a period-end price is the last device close within 10 days on/before period end
+MIN_HISTORY = 3               # own-history factor needs >= 3 past yields (month-end price of each fiscal period-end month)
 PROFILES = ('GENERAL', 'FINANCIAL')
 _DAY = re.compile(r'\d{4}-\d{2}-\d{2}')
 
@@ -147,20 +145,12 @@ def composite_weights(preset_weights, type_weights, fallback):
     return {p: 100.0 * raw[p] / total for p in PILLARS}
 
 
-def _day_minus(day, days):
-    return (date.fromisoformat(day) - timedelta(days=days)).isoformat()
-
-
-def _close_at(closes, period_end):
-    """Last device close on or before period_end and within CLOSE_WINDOW_DAYS; None otherwise."""
-    if not isinstance(closes, dict) or not isinstance(period_end, str) or not _DAY.fullmatch(period_end):
+def month_close(month_closes, period_end):
+    """Month-end close (device Prices tab, {YYYY-MM: close}) of the fiscal period-end month; None otherwise."""
+    if not isinstance(month_closes, dict) or not isinstance(period_end, str) or not _DAY.fullmatch(period_end):
         return None
-    low = _day_minus(period_end, CLOSE_WINDOW_DAYS)
-    best = None
-    for d in sorted(closes):
-        if isinstance(d, str) and _DAY.fullmatch(d) and low <= d <= period_end and positive(closes[d]):
-            best = closes[d]
-    return best
+    v = month_closes.get(period_end[:7])
+    return v if positive(v) else None
 
 
 def _metrics(company, quote, parameters):
@@ -190,7 +180,7 @@ def _metrics(company, quote, parameters):
     debt, cash = v.get('total_debt'), v.get('cash')
     # Own history: price-per-share basis, needs no EV.
     hist = v.get('ebit_per_share_history')
-    closes = quote.get('closes')
+    closes = quote.get('month_closes')
     if not finite(ebit):
         r['own_history'] = 'EBIT_NOT_AVAILABLE'
     elif not isinstance(closes, dict) or not closes:
@@ -200,7 +190,7 @@ def _metrics(company, quote, parameters):
         for h in hist if isinstance(hist, list) else []:
             if not isinstance(h, dict) or not finite(h.get('value')):
                 continue
-            c = _close_at(closes, h.get('period_end'))
+            c = month_close(closes, h.get('period_end'))
             if c is not None:
                 past.append(h['value'] / c)
         if len(past) < MIN_HISTORY:
@@ -287,7 +277,7 @@ def _cross(values, groups, ids, *, industry):
 
 def score_universe(companies, quotes, *, type_config, parameters, preset=DEFAULT_PRESET, gate=None):
     """Score every company. companies: {code: {industry_group, profile, factors, v_inputs, memberships}};
-    quotes: {code: {price, currency, closes?}} (device RAM). Returns {code: result}. Pure, deterministic."""
+    quotes: {code: {price, currency, month_closes?: {YYYY-MM: close}}} (device RAM). Returns {code: result}. Pure, deterministic."""
     if preset not in PRESETS:
         raise ValueError('PRESET_INVALID')
     gate_on = GATE_DEFAULT if gate is None else bool(gate)

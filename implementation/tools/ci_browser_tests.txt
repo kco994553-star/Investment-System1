@@ -49,3 +49,4 @@ holdings_capture_browser_test.js
 judgement_consistency_browser_test.js
 s16_s13_screens_browser_test.js
 report_benchmarks_browser_test.js
+qgv_v2_screens_browser_test.js
