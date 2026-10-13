@@ -382,7 +382,7 @@ async function enable(view){
 // Turns the store off on this device only (the sheet and its rows stay as they are) and drops the RAM index.
 function disable(view){try{view.localStorage.removeItem(FLAG_KEY);}catch(_){}reset(storeFor(view));}
 // Universe504 month-ends (user's click): first run backfills 5 years, then only new complete months. Only symbols on the
-// Worker allowlist are requested; the rest are counted as WORKER_ALLOWLIST (Worker change needed, see the PR report).
+// approved Worker allowlist are requested; unknown symbols are counted as WORKER_ALLOWLIST.
 async function universeSymbols(view){
  const config=object(view.InvestmentAppConfig)?view.InvestmentAppConfig:{};if(config.universeCodeCatalogURL!=='universe-codes.json')fail('UNIVERSE_CODES_NOT_AVAILABLE');
  const response=await view.fetch('universe-codes.json',{credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',redirect:'error'});if(!response.ok)fail('UNIVERSE_CODES_NOT_AVAILABLE');
@@ -409,7 +409,7 @@ const T={
  enable:['가격 탭 사용 시작','Use price tabs'],disable:['이 기기에서 끄기','Turn off on this device'],core:['핵심 종목 일봉 지금 갱신','Update core daily bars now'],universe:['Universe504 월말 종가 채우기 (첫 실행 5년)','Fill Universe504 month-ends (first run: 5 years)'],
  OFF:['OFF · 이 기기에서 가격 탭을 쓰지 않습니다.','OFF · Price tabs are not used on this device.'],AUTH_REQUIRED:['구글 로그인이 필요합니다.','Google sign-in is required.'],SHEET_NOT_CONNECTED:['연결된 시트가 없습니다(설정 → Google 첫 설정).','No sheet is connected (Settings → Google first setup).'],
  LOADING:['내 시트의 가격 탭을 읽는 중','Reading the price tabs of your sheet'],READY:['가격 탭 읽음','Price tabs read'],ERROR:['가격 탭을 쓸 수 없습니다','Price tabs cannot be used'],
- worker:['Universe504 종목은 비공개 가격 Worker 허용 목록(현재 TARGET 19 + ETF 15 + 환율)에 있는 종목만 요청합니다. 나머지는 WORKER_ALLOWLIST로 세며, Worker 허용 목록 변경(별도 승인)이 먼저 필요합니다.','Universe504 symbols are requested only when the private price Worker allows them (now TARGET 19 + 15 ETFs + FX). The rest count as WORKER_ALLOWLIST until a Worker allowlist change (separate approval).']};
+ worker:['승인된 비공개 가격 Worker 허용 범위는 Universe504 · TARGET 19 · ETF 17(HYG·IEF 포함) · 환율입니다. 등록되지 않은 종목은 WORKER_ALLOWLIST로 세며, Worker 연결에 실패하면 확인 불가로 표시합니다.','The approved private price Worker scope is Universe504, TARGET 19, 17 ETFs (including HYG/IEF), and FX. Unlisted symbols count as WORKER_ALLOWLIST; a failed Worker connection is shown as unavailable.']};
 const tx=(locale,k)=>T[k][locale==='en-US'?1:0];
 function statusLine(s,locale){
  const en=locale==='en-US';let text=tx(locale,s.state==='LOADING'||s.state==='ERROR'||s.state==='READY'||s.state==='OFF'||s.state==='AUTH_REQUIRED'||s.state==='SHEET_NOT_CONNECTED'?s.state:'ERROR');

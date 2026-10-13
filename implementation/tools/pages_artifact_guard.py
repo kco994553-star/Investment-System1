@@ -103,7 +103,7 @@ APPROVED_SHA256 = {
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "174e1039be5c3d3757c8938070887154fe91cda0d87b5850e1330ef491554c93",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "cbb3d16620bf84da68ca3e00040e8d757d3d6378363df8e633e53bdd4b024a07",
+    "google-sheet-quotes.js": "a724bfd507723681f05dbe2906b61813ec887dc98acd5fe53fb72739330ddc61",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
     "index.html": "c7c60b7f9cad8b67369fa45e4688c1d6338612a8532a8b3585dbda7e9786d94b",
     "locale.js": "24a748c8ce637b0ddc55ab551359ea7bf527908aa7a8b2b6cb55edf982bea686",
@@ -112,7 +112,7 @@ APPROVED_SHA256 = {
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "e30a3a1808d4a8e0bcb7af0f2056a3595132de050711d7bb4e7ba9b692e4f6c0",
     "sec-disclosures.js": "7af4fd52b2e83ac348bb7b7b3e80e7130f6e4c32a8f29fd55d14c22e2a5f2714",
-    "price-store.js": "c9a3f46ef81be16df707292f45034d16e387b0bde1b6d1a52654902fb523c500",
+    "price-store.js": "52b723d9e7dfc189252a870c57f5a044373427d3a9009bb9a119c322ebb8c4de",
     "dart-disclosures.js": "093d131ffccbb30284cabd796a3b190a4d2fdd049e1f6648c078321c33101713",
     "news-signals.js": "61336bb91a39407c60573ca6b2bfbbd06b7c36d4910927ac04e0a29fc4a16868",
     "macro-lights.js": "b597eb5b592e59045e5d42be38eef185b362b8da6b1f3718ab1ebafaf53cd7fa"

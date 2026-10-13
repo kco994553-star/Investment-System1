@@ -194,9 +194,20 @@ test('history fixes the exact Worker query and omits cookies, cache and redirect
   assert.ok(options.credentials === 'omit' && options.cache === 'no-store' && options.redirect === 'error' && options.referrerPolicy === 'no-referrer', 'cookies, caching, redirects and referrers are disabled');
   assert.ok(options.signal instanceof AbortSignal && !JSON.stringify(r.active.state()).includes(r.token), 'the request can be canceled without exposing credentials');
 });
-test('history rejects symbols and ranges outside the narrow chart contract without a request', async () => {
+test('history accepts the complete trusted Universe504 and credit ETFs through the private session', async () => {
+  const codes = JSON.parse(fs.readFileSync(require('node:path').join(__dirname, '../src/investment_system/universe/universe_codes_v1.json'), 'utf8'));
+  const symbols = codes.map(code => code.split(':')[1].replaceAll('.', '-'));
+  const r = await connectedRuntime(); historyResponse(r);
+  for (const symbol of [...symbols, 'HYG', 'IEF']) {
+    assert.equal(await r.active.fetchHistory(WORKER_ORIGIN, symbol, '5y', {approvedOrigin: WORKER_ORIGIN}), HISTORY_PAYLOAD);
+    assert.equal(new URL(r.calls.request.url).searchParams.get('symbol'), symbol);
+    assert.equal(r.calls.request.options.cache, 'no-store');
+  }
+  assert.equal(r.calls.fetch, 506);
+});
+test('history rejects symbols and ranges outside the approved contract without a request', async () => {
   const r = await connectedRuntime();
-  for (const [symbol, range] of [['AAPL', '1y'], ['NVDA?secret', '1y'], [' NVDA', '1y'], ['NVDA', 'max'], ['NVDA', '1y&interval=1m'], ['', '1y'], ['NVDA', '']]) {
+  for (const [symbol, range] of [['NOTAPPROVED', '1y'], ['BRK.B', '1y'], ['BRK%2DB', '1y'], ['QQQ', '1y'], ['NVDA?secret', '1y'], [' NVDA', '1y'], ['NVDA', 'max'], ['NVDA', '1y&interval=1m'], ['', '1y'], ['NVDA', '']]) {
     await assert.rejects(r.active.fetchHistory(WORKER_ORIGIN, symbol, range, { approvedOrigin: WORKER_ORIGIN }), { message: 'REQUEST_INVALID' });
   }
   assert.ok(r.calls.fetch === 0, 'invalid chart inputs make no request');
