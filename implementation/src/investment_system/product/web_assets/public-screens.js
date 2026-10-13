@@ -29,6 +29,15 @@ function object(v){return v!==null&&typeof v==='object'&&!Array.isArray(v);}
 function keys(v,ks){need(object(v)&&Object.keys(v).length===ks.length&&ks.every(k=>Object.hasOwn(v,k)));}
 function clock(v){need(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/.test(v));const n=Date.parse(v);need(Number.isFinite(n));return n;}
 function day(v){need(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&new Date(v+'T00:00:00Z').toISOString().slice(0,10)===v);return v;}
+function thirteenFDetails(d,r,cut){
+ if(d===null){need(r.state==='NOT_AVAILABLE');return;}
+ keys(d,['scope','previous','current']);need(r.state!=='NOT_AVAILABLE'&&d.scope==='SEC_REPORTED_LONG_SH_NONOPTION');
+ for(const side of ['previous','current']){const snap=d[side];keys(snap,['filing_date','reported_holdings']);need(day(snap.filing_date)>=r[side+'_quarter']&&snap.filing_date<=new Date(cut).toISOString().slice(0,10)&&Array.isArray(snap.reported_holdings)&&snap.reported_holdings.length<=30000);const seen=new Set();
+  for(const h of snap.reported_holdings){keys(h,['cusip','security_key','issuer_names','reported_quantity','reported_value','reported_value_basis']);need(typeof h.cusip==='string'&&/^[0-9A-Z*@#]{9}$/.test(h.cusip)&&hash(h.security_key)&&!seen.has(h.security_key));seen.add(h.security_key);
+   need(Number.isSafeInteger(h.reported_quantity)&&h.reported_quantity>0&&Number.isSafeInteger(h.reported_value)&&h.reported_value>=0&&['USD_DOLLARS','USD_THOUSANDS'].includes(h.reported_value_basis));
+   need(Array.isArray(h.issuer_names)&&h.issuer_names.length>0&&h.issuer_names.length<=100&&new Set(h.issuer_names).size===h.issuer_names.length&&h.issuer_names.every(n=>typeof n==='string'&&n.length>0&&n.length<=150&&/^[A-Za-z0-9 !\\#$(),.:;`='\-{}|/&]+$/.test(n)));}
+ }
+}
 function aggregate(states){return states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';}
 function score(v,max=100){need(v===null||number(v)&&v>=0&&v<=max);}
 // Optional 13F manager verification records: exact SEC name + recent 13F-HR, else NOT_AVAILABLE with a fixed reason.
@@ -108,7 +117,8 @@ function validate(name,p){
  }else{
   need(object(d)&&Object.hasOwn(d,'reports')&&Object.hasOwn(d,'role')&&(Object.keys(d).length===2||Object.keys(d).length===3&&Object.hasOwn(d,'managers')));need(d.role==='REPORTED_QUANTITY_CHANGE_NOT_TRADES'&&Array.isArray(d.reports)&&d.reports.length<=20);
   const verified=Object.hasOwn(d,'managers')?managerRecords(d.managers,cut):null;
-  for(const r of d.reports){keys(r,['manager_cik','previous_quarter','current_quarter','state','changes','source_hashes']);need((verified===null||verified.has(r.manager_cik))&&typeof r.manager_cik==='string'&&/^\d{10}$/.test(r.manager_cik)&&Number(r.manager_cik)>0&&day(r.previous_quarter)<day(r.current_quarter)&&r.current_quarter<=p.as_of.slice(0,10)&&STATES.includes(r.state)&&Array.isArray(r.changes)&&(r.state!=='NOT_AVAILABLE'||!r.changes.length));states.push(r.state);refs(r,{previous:'SEC_13F',current:'SEC_13F'});
+  for(const r of d.reports){keys(r,['manager_cik','previous_quarter','current_quarter','state','changes','source_hashes',...(Object.hasOwn(r,'details')?['details']:[])]);need((verified===null||verified.has(r.manager_cik))&&typeof r.manager_cik==='string'&&/^\d{10}$/.test(r.manager_cik)&&Number(r.manager_cik)>0&&day(r.previous_quarter)<day(r.current_quarter)&&r.current_quarter<=p.as_of.slice(0,10)&&STATES.includes(r.state)&&Array.isArray(r.changes)&&(r.state!=='NOT_AVAILABLE'||!r.changes.length));states.push(r.state);refs(r,{previous:'SEC_13F',current:'SEC_13F'});
+   if(Object.hasOwn(r,'details'))thirteenFDetails(r.details,r,cut);
    for(const c of r.changes){keys(c,['cusip','security_key','unit','kind','reported_before','reported_after','reported_delta']);need(typeof c.cusip==='string'&&/^[0-9A-Z*@#]{9}$/.test(c.cusip)&&hash(c.security_key)&&['SH','PRN'].includes(c.unit)&&[c.reported_before,c.reported_after,c.reported_delta].every(Number.isSafeInteger)&&c.reported_before>=0&&c.reported_after>=0&&c.reported_delta===c.reported_after-c.reported_before);const a=c.reported_before,b=c.reported_after;need(c.kind===(a===0&&b>0?'NEW':b===0&&a>0?'EXIT':b>a&&a>0?'ADD':a>b&&b>0?'REDUCE':null));}
   }
  }

@@ -12,7 +12,7 @@ function payload(){const at=new Date().toISOString(),change=(cusip,a,b,kind)=>({
 const noScroll=page=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1);
 const configIds=page=>page.locator('[data-13f-config-manager]').evaluateAll(n=>n.map(x=>x.dataset['13fConfigManager']));
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let phase='START',pass=0,fail=0;
- try{for(const width of [390,1440]){const mobile=width===390,context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block',hasTouch:mobile,isMobile:mobile});
+ try{for(const width of [390,1280]){const mobile=width===390,context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block',hasTouch:mobile,isMobile:mobile});
   await context.route('**/sec-13f-changes.json',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(payload())}));
   const page=await context.newPage();let errors=0;page.on('pageerror',()=>errors++);
   try{phase='LOAD';await page.goto(process.env.PAGES_COCKPIT_URL+'#thirteenf');await page.waitForLoadState('networkidle');await page.locator('[data-13f-config-manager]').first().waitFor();

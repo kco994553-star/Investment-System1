@@ -295,12 +295,18 @@
      },
      {
       "company_id": "etn",
-      "cusip": null,
+      "cusip": "G29183103",
       "entries": [],
-      "not_available": [],
-      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
-      "status": "NOT_AVAILABLE",
-      "unchanged": []
+      "not_available": [
+       "0000000003"
+      ],
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001",
+       "0000000002",
+       "0000000004"
+      ]
      },
      {
       "company_id": "hubb",
@@ -523,10 +529,10 @@
        {
         "changes": [],
         "company_id": "etn",
-        "cusip": null,
+        "cusip": "G29183103",
         "multiple_buckets": false,
-        "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
-        "status": "NOT_AVAILABLE"
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
        },
        {
         "changes": [],
@@ -729,10 +735,10 @@
        {
         "changes": [],
         "company_id": "etn",
-        "cusip": null,
+        "cusip": "G29183103",
         "multiple_buckets": false,
-        "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
-        "status": "NOT_AVAILABLE"
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
        },
        {
         "changes": [],
@@ -903,9 +909,9 @@
        {
         "changes": [],
         "company_id": "etn",
-        "cusip": null,
+        "cusip": "G29183103",
         "multiple_buckets": false,
-        "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+        "reason": "COMPARISON_NOT_AVAILABLE",
         "status": "NOT_AVAILABLE"
        },
        {
@@ -1086,10 +1092,10 @@
        {
         "changes": [],
         "company_id": "etn",
-        "cusip": null,
+        "cusip": "G29183103",
         "multiple_buckets": false,
-        "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
-        "status": "NOT_AVAILABLE"
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
        },
        {
         "changes": [],
@@ -1228,9 +1234,9 @@
      },
      {
       "company_id": "etn",
-      "cusip": null,
+      "cusip": "G29183103",
       "label": "Eaton",
-      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+      "reason": null,
       "ticker": "ETN"
      },
      {
@@ -2554,12 +2560,14 @@
      },
      {
       "company_id": "etn",
-      "cusip": null,
+      "cusip": "G29183103",
       "entries": [],
       "not_available": [],
-      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
-      "status": "NOT_AVAILABLE",
-      "unchanged": []
+      "reason": null,
+      "status": "NO_REPORTED_CHANGE",
+      "unchanged": [
+       "0000000001"
+      ]
      },
      {
       "company_id": "hubb",
@@ -2768,10 +2776,10 @@
        {
         "changes": [],
         "company_id": "etn",
-        "cusip": null,
+        "cusip": "G29183103",
         "multiple_buckets": false,
-        "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
-        "status": "NOT_AVAILABLE"
+        "reason": null,
+        "status": "NO_REPORTED_CHANGE"
        },
        {
         "changes": [],
@@ -2910,9 +2918,9 @@
      },
      {
       "company_id": "etn",
-      "cusip": null,
+      "cusip": "G29183103",
       "label": "Eaton",
-      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+      "reason": null,
       "ticker": "ETN"
      },
      {
@@ -3292,10 +3300,10 @@
      },
      {
       "company_id": "etn",
-      "cusip": null,
+      "cusip": "G29183103",
       "entries": [],
       "not_available": [],
-      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+      "reason": "NO_COMPARABLE_REPORT",
       "status": "NOT_AVAILABLE",
       "unchanged": []
      },
@@ -3436,9 +3444,9 @@
      },
      {
       "company_id": "etn",
-      "cusip": null,
+      "cusip": "G29183103",
       "label": "Eaton",
-      "reason": "CUSIP_NOT_IN_PUBLIC_CATALOG",
+      "reason": null,
       "ticker": "ETN"
      },
      {

@@ -3,7 +3,9 @@
 
 Runs after public_screens_pipeline.py. Raw SEC bytes stay in a temporary private
 directory; the published file is the existing reported-quantity projection plus
-per-manager verification records (no personal data, no values, no trades).
+per-manager verification records and complete SEC-reported long-share snapshots.
+The disclosed aggregate report value retains SEC units; no unit price or trade is inferred.
+Public-boundary approval is required before this proposal is merged.
 Only the secret slot name SEC_USER_AGENT is read; its value is never printed.
 """
 from datetime import datetime, timedelta, timezone
@@ -56,13 +58,13 @@ def build(out_dir, *, config, fetch, now=_utc_now):
             by_id[capture['id']]['comparison_reasons'] = comparison_reasons(capture['previous'], capture['current'], as_of=as_of)
         while True:
             manifest = {'schema_version': 1, 'sec': [], 'macro': [], 'thirteen_f': list(pairs.values()),
-                        'thirteen_f_managers': records}
+                        'thirteen_f_managers': records, 'thirteen_f_details': True}
             payload = generate_screen_bundle(manifest=manifest, input_root=root, as_of=as_of, stale_after=ACQUISITION_TTL)[NAME]
             body = _serialize(payload)
             if len(body) <= SIZE_BUDGET or not pairs:
                 break
             # Withhold the largest report explicitly instead of truncating its changes.
-            sizes = {cik: len(r['changes']) for cik, r in ((r['manager_cik'], r) for r in payload['data']['reports'])}
+            sizes = {r['manager_cik']: len(_serialize(r)) for r in payload['data']['reports']}
             drop = max(pairs, key=lambda mid: sizes.get(by_id[mid]['cik'], 0))
             del pairs[drop]
             by_id[drop].update(capture_reason='PUBLIC_SIZE_LIMIT', comparison_reasons=[])
