@@ -188,7 +188,7 @@ function settingsUI() {
   <p>${t("표시 언어는 계산 결과에 영향을 주지 않습니다.")}</p>
   <label for="source-language">${t("뉴스 원문 언어")}</label><select id="source-language">${[["all",t("전체 언어")],["ko",t("한국어 원문")],["en",t("영어 원문")]].map(([v,k])=>`<option value="${v}" ${appSettings.source_language===v?"selected":""}>${t(k)}</option>`).join("")}</select>
   <p>${t("원문 언어는 뉴스 필터만 변경합니다.")}</p></section>
-  <div id="ops-status"></div><section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio, profiles, investor stars and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·프로필·투자자 ★·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="private-trades-settings"></div><div id="private-universe-settings"></div><div id="device-api-settings"></div>`;
+  <div id="ops-status"></div><section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio, profiles, investor stars, playbook records and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·프로필·투자자 ★·플레이북 기록·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="private-trades-settings"></div><div id="private-universe-settings"></div><div id="device-api-settings"></div>`;
 }
 function entityRoute(e) {return e.entity_type==="COMPANY"?"#company/"+encodeURIComponent(e.canonical_id):"#entity/"+encodeURIComponent(e.entity_type+":"+e.canonical_id);}
 // Company search (TARGET directory + public Universe504 codes): identity only, no prices/caps/ranks (GSQ-010).
@@ -628,6 +628,7 @@ async function paintReport(id){
     if(!live()||!model)return;const hidden=R.hiddenSetting(localStorage),answer=key?R.answers(localStorage)[key]||null:null;
     const draft=host.querySelector('[data-ai-input]')?.value||'';
     host.innerHTML=R.screenHtml(model,{hidden,answer,check:answer?R.checkAnswer(answer.answer,canonical):null,locale});
+    if(window.PlaybookScreen){const panel=document.createElement("div");host.append(panel);const byTicker=new Map(identityCompanies.map(r=>[r.ticker,r.company_id]));host.querySelectorAll("[data-judgement-cell]").forEach(cell=>{const cid=cell.dataset.judgementCell,button=document.createElement("button");button.type="button";button.textContent="플레이북 열기";button.onclick=async()=>{const catalog=await deviceCatalog(),symbol=names[cid]||cid;const computed=await PlaybookScreen.prepareScores(window,{catalog,screens:publicScreens,idByTicker:byTicker});if(panel.isConnected)PlaybookScreen.openPanel(panel,{symbol,situation:PlaybookScreen.factsFor(symbol,{catalog,screens:publicScreens,idByTicker:byTicker,ram,computed})});};cell.append(button);});}
     if(draft)host.querySelector('[data-ai-input]').value=draft;
     const status=host.querySelector('[data-report-status]'),say=text=>{if(status)status.textContent=text;};
     for(const box of host.querySelectorAll('[data-hide-amounts],[data-hide-amounts-export]'))box.onchange=()=>{if(!box.checked&&!confirm('개인 금액이 화면/복사본에 표시됩니다.')){box.checked=true;return;}R.hiddenSetting(localStorage,box.checked);paint();};
@@ -672,6 +673,7 @@ async function paintReport(id){
   const compose=async(result,runCfg=cfg,mode='RECORDING',capture=null)=>{
     if(tab==='COMPARE')return composeCompare(result,runCfg,mode);
     const {ledger,hits,input}=Runner.ledgerFor(result,ledgerKind,runCfg),last=ledger.state==='OK'?ledger.days[ledger.days.length-1]:null;
+    window.PlaybookScreen?.ingestRunner(result,names);
     // Q·G shown next to a judgement is the forward-ledger snapshot the engine used that day (else the public screen value).
     const shown={...qg};if(last&&input&&input.snapshots[last.date])for(const[c,r]of Object.entries(input.snapshots[last.date]))shown[c]={q:r.q,g:r.g};
     const runner={state:result.state==='READY'?(ledger.state==='OK'?'READY':'NOT_AVAILABLE'):result.state,reason_codes:result.state==='READY'?(ledger.state==='OK'?[]:ledger.reason_codes):result.reason_codes,sources:Runner.statusRows(result),progress:''};
@@ -745,10 +747,12 @@ function renderRoute() {
   let anchor=null;
   for(const screen of ["validation","technical"]) if(route.startsWith(screen+"-")) {anchor=route;route=screen;}
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,qgv,analysis:()=>analysis(id),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id)};
+  const routes={home,qgv,analysis:()=>analysis(id),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
   if(!routes[route]) route="home";
   $("#content").innerHTML=routes[route]();
   if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
+  if(['playbook','portfolio','company'].includes(route)&&window.PlaybookScreen){const place=route==='playbook'?$('#playbook-screen'):document.createElement('div');if(route!=='playbook')$('#content').append(place);void PlaybookScreen.mount(place,{catalogPromise:deviceCatalog(),screens:publicScreens,idByTicker:new Map(identityCompanies.map(r=>[r.ticker,r.company_id])),publicCatalog,universeCodesPromise:fetch('universe-codes.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>p?.schema==='universe-codes/1'&&Array.isArray(p.codes)?p.codes:[]).catch(()=>[]),full:route==='playbook'}).catch(()=>{if(place.isConnected)place.textContent='플레이북 확인 불가 · 기기 기록을 읽을 수 없습니다.';});}
+  if(route==='home'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
@@ -1033,7 +1037,7 @@ async function exportDeviceBackup(){
 }
 async function restoreDeviceBackup(payload){
   const catalog=await deviceCatalog();DeviceBackup.parse(payload,catalog,DeviceMarket,AppLanguage);
-  if(!confirm(appSettings.display_locale==='en-US'?'Replace device interests, groups, portfolio, profiles, investor stars and language settings?':'기기 관심 기업·그룹·포트폴리오·프로필·투자자 ★·언어 설정을 백업으로 바꿀까요?'))return;
+  if(!confirm(appSettings.display_locale==='en-US'?'Replace device interests, groups, portfolio, profiles, investor stars and language settings?':'기기 관심 기업·그룹·포트폴리오·프로필·투자자 ★·플레이북 기록·언어 설정을 백업으로 바꿀까요?'))return;
   await DeviceBackup.restore(window,catalog,payload);load();const read=AppLanguage.read(localStorage);appSettings=read.value;settingsWritable=read.writable;render();
 }
 document.addEventListener('device-backup-restored',()=>{load();appSettings=AppLanguage.read(localStorage).value;render();});

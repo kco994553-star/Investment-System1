@@ -1,9 +1,9 @@
-/* One price-free device backup. Only explicit user preferences and holdings are allowed.
-   /3 adds 13F investor stars (10-digit CIKs, device-only); /1 and /2 stay importable and leave stored stars unchanged.
+/* One price-free device backup. Explicit user preferences, holdings and playbook records only. Prices and price series are excluded.
+   /4 adds device playbook records; /1–/3 stay importable and preserve current playbook records. /3 adds investor stars.
    A successful restore leaves a dismissible device-only marker (time + schema, no content) so ACTUAL/settings can say what to re-check. */
-(function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./device-profiles.js'):root.DeviceProfiles);if(typeof module==='object'&&module.exports)module.exports=api;else root.DeviceBackup=api;})(typeof globalThis!=='undefined'?globalThis:this,function(Profiles){
+(function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./device-profiles.js'):root.DeviceProfiles,typeof module==='object'&&module.exports?require('./playbook-screen.js'):root.PlaybookScreen);if(typeof module==='object'&&module.exports)module.exports=api;else root.DeviceBackup=api;})(typeof globalThis!=='undefined'?globalThis:this,function(Profiles,Playbook){
  'use strict';
- const SCHEMA='investment-device-backup/3',LEGACY=['investment-device-backup/1','investment-device-backup/2'],PERSONAL_KEY='investment.web.v1.personal',STAR_KEY='investment.web.v1.investor-stars',RESTORED_KEY='investment.web.v1.backup-restored',MAX_STARS=50,CIK=/^\d{10}$/;
+ const SCHEMA='investment-device-backup/4',LEGACY=['investment-device-backup/1','investment-device-backup/2','investment-device-backup/3'],PERSONAL_KEY='investment.web.v1.personal',STAR_KEY='investment.web.v1.investor-stars',RESTORED_KEY='investment.web.v1.backup-restored',MAX_STARS=50,CIK=/^\d{10}$/;
  function fail(){throw Error('BACKUP_INVALID');}
  function object(x){return x!==null&&typeof x==='object'&&!Array.isArray(x);}
  function exact(x,ks){if(!object(x)||Object.keys(x).length!==ks.length||ks.some(k=>!Object.hasOwn(x,k)))fail();}
@@ -17,29 +17,30 @@
  function stars(x){if(!Array.isArray(x)||x.length>MAX_STARS||x.some(c=>typeof c!=='string'||!CIK.test(c))||new Set(x).size!==x.length)fail();return [...x];}
  function storedStars(storage){let v=[];try{v=JSON.parse(storage.getItem(STAR_KEY)||'[]');}catch(_){v=[];}return Array.isArray(v)?[...new Set(v.filter(c=>typeof c==='string'&&CIK.test(c)))].slice(0,MAX_STARS):[];}
  function accepts(payload){return object(payload)&&(payload.schema===SCHEMA||LEGACY.includes(payload.schema));}
- function create(prefs,settings,portfolio,catalog,market,language,profiles=Profiles.empty(),investorStars=[]){
+ function create(prefs,settings,portfolio,catalog,market,language,profiles=Profiles.empty(),investorStars=[],playbook=Playbook.empty()){
   const personal=preferences({version:prefs.version,interests:prefs.interests,groups:prefs.groups.map(g=>({id:g.id,name:g.name,members:g.members}))});
-  return {schema:SCHEMA,profiles:Profiles.validate(profiles),preferences:personal,settings:language.settings(settings),portfolio:portfolio===null?null:market.validateActual?market.validateActual(portfolio,catalog):market.importBackup(portfolio,catalog).snapshot,investor_stars:stars(investorStars)};
+  return {schema:SCHEMA,profiles:Profiles.validate(profiles),preferences:personal,settings:language.settings(settings),portfolio:portfolio===null?null:market.validateActual?market.validateActual(portfolio,catalog):market.importBackup(portfolio,catalog).snapshot,investor_stars:stars(investorStars),playbook:Playbook.validate(playbook)};
  }
  function parse(payload,catalog,market,language){
-  if(!accepts(payload))fail();const v1=payload.schema===LEGACY[0],v3=payload.schema===SCHEMA;
-  exact(payload,['schema','preferences','settings','portfolio',...(v1?[]:['profiles']),...(v3?['investor_stars']:[])]);
+  if(!accepts(payload))fail();const v1=payload.schema===LEGACY[0],v4=payload.schema===SCHEMA,v3=v4||payload.schema===LEGACY[2];
+  exact(payload,['schema','preferences','settings','portfolio',...(v1?[]:['profiles']),...(v3?['investor_stars']:[]),...(v4?['playbook']:[])]);
   exact(payload.settings,['version','display_locale','source_language']);
-  return create(preferences(payload.preferences),payload.settings,payload.portfolio,catalog,market,language,v1?Profiles.empty():Profiles.validate(payload.profiles),v3?stars(payload.investor_stars):[]);
+  return create(preferences(payload.preferences),payload.settings,payload.portfolio,catalog,market,language,v1?Profiles.empty():Profiles.validate(payload.profiles),v3?stars(payload.investor_stars):[],v4?Playbook.validate(payload.playbook):Playbook.empty());
  }
  async function read(view,catalog){
   const raw=view.localStorage.getItem(PERSONAL_KEY),p=raw?JSON.parse(raw):{version:1,interests:[],groups:[]};
   const settings=view.AppLanguage.read(view.localStorage);if(!settings.writable)throw Error('BACKUP_SETTINGS_UNREADABLE');
-  return create(p,settings.value,await view.DeviceActual.readHoldings(view,catalog),catalog,view.DeviceMarket,view.AppLanguage,Profiles.read(view.localStorage),storedStars(view.localStorage));
+  return create(p,settings.value,await view.DeviceActual.readHoldings(view,catalog),catalog,view.DeviceMarket,view.AppLanguage,Profiles.read(view.localStorage),storedStars(view.localStorage),Playbook.read(view.localStorage));
  }
  function download(view,payload,name='investment-personal.json'){
   const url=view.URL.createObjectURL(new view.Blob([JSON.stringify(payload,null,2)],{type:'application/json'})),a=view.document.createElement('a');a.href=url;a.download=name;a.click();view.setTimeout(()=>view.URL.revokeObjectURL(url),1000);
  }
  async function restore(view,catalog,payload){
-  const next=parse(payload,catalog,view.DeviceMarket,view.AppLanguage),withStars=payload.schema===SCHEMA,keys=[PERSONAL_KEY,view.AppLanguage.KEY,Profiles.KEY,...(withStars?[STAR_KEY]:[])],before=keys.map(k=>view.localStorage.getItem(k));
+  const next=parse(payload,catalog,view.DeviceMarket,view.AppLanguage),withPlaybook=payload.schema===SCHEMA,withStars=withPlaybook||payload.schema===LEGACY[2],keys=[PERSONAL_KEY,view.AppLanguage.KEY,Profiles.KEY,...(withStars?[STAR_KEY]:[]),...(withPlaybook?[Playbook.KEY]:[])],before=keys.map(k=>view.localStorage.getItem(k));
   try{
    view.localStorage.setItem(keys[0],JSON.stringify(next.preferences));view.AppLanguage.write(view.localStorage,next.settings);Profiles.write(view.localStorage,next.profiles);
    if(withStars)view.localStorage.setItem(STAR_KEY,JSON.stringify(next.investor_stars));
+   if(withPlaybook)Playbook.write(view.localStorage,next.playbook);
    await view.DeviceActual.restoreHoldings(view,catalog,next.portfolio);
    try{view.localStorage.setItem(RESTORED_KEY,JSON.stringify({restored_at:new Date().toISOString(),schema:payload.schema}));}catch(_){}
   }catch(_){
