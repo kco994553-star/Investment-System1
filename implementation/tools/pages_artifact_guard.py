@@ -135,6 +135,7 @@ SENSITIVE_KEYS = frozenset({
     "spreadsheetid", "spreadsheeturl", "accesstoken", "refreshtoken", "clientsecret",
 })
 SECRET_PATTERNS = (
+    re.compile(r"(?i)(?<![a-z0-9._%+\-])[a-z0-9._%+\-]+@[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}"),
     re.compile(r"(?<![A-Za-z0-9_])ya29\.[A-Za-z0-9._~-]+"),
     re.compile(r"https://docs\.google\.com/spreadsheets/(?:u/\d+/)?d/[A-Za-z0-9_-]{20,100}"),
     re.compile(r"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY-----"),
@@ -190,6 +191,10 @@ def _inspect_json(value: object, violations: Counter, depth: int = 0) -> None:
     elif isinstance(value, list):
         for child in value:
             _inspect_json(child, violations, depth + 1)
+    elif isinstance(value, str):
+        # JSON escapes must not hide a contact address from the raw-text scan.
+        if SECRET_PATTERNS[0].search(value):
+            violations["secret_patterns"] += 1
 
 
 def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
