@@ -3,7 +3,7 @@
    A successful restore leaves a dismissible device-only marker (time + schema, no content) so ACTUAL/settings can say what to re-check. */
 (function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./device-profiles.js'):root.DeviceProfiles,typeof module==='object'&&module.exports?require('./playbook-screen.js'):root.PlaybookScreen);if(typeof module==='object'&&module.exports)module.exports=api;else root.DeviceBackup=api;})(typeof globalThis!=='undefined'?globalThis:this,function(Profiles,Playbook){
  'use strict';
- const SCHEMA='investment-device-backup/4',LEGACY=['investment-device-backup/1','investment-device-backup/2','investment-device-backup/3'],PERSONAL_KEY='investment.web.v1.personal',STAR_KEY='investment.web.v1.investor-stars',RESTORED_KEY='investment.web.v1.backup-restored',MAX_STARS=50,CIK=/^\d{10}$/;
+ const SCHEMA='investment-device-backup/4',LEGACY=['investment-device-backup/1','investment-device-backup/2','investment-device-backup/3'],PERSONAL_KEY='investment.web.v1.personal',STAR_KEY='investment.web.v1.investor-stars',RESTORED_KEY='investment.web.v1.backup-restored',MAX_BYTES=16*1024*1024,MAX_STARS=50,CIK=/^\d{10}$/;
  function fail(){throw Error('BACKUP_INVALID');}
  function object(x){return x!==null&&typeof x==='object'&&!Array.isArray(x);}
  function exact(x,ks){if(!object(x)||Object.keys(x).length!==ks.length||ks.some(k=>!Object.hasOwn(x,k)))fail();}
@@ -16,10 +16,11 @@
  }
  function stars(x){if(!Array.isArray(x)||x.length>MAX_STARS||x.some(c=>typeof c!=='string'||!CIK.test(c))||new Set(x).size!==x.length)fail();return [...x];}
  function storedStars(storage){let v=[];try{v=JSON.parse(storage.getItem(STAR_KEY)||'[]');}catch(_){v=[];}return Array.isArray(v)?[...new Set(v.filter(c=>typeof c==='string'&&CIK.test(c)))].slice(0,MAX_STARS):[];}
+ function validateSize(payload){if(new TextEncoder().encode(JSON.stringify(payload,null,2)).length>MAX_BYTES)throw Error('BACKUP_TOO_LARGE');return payload;}
  function accepts(payload){return object(payload)&&(payload.schema===SCHEMA||LEGACY.includes(payload.schema));}
  function create(prefs,settings,portfolio,catalog,market,language,profiles=Profiles.empty(),investorStars=[],playbook=Playbook.empty()){
   const personal=preferences({version:prefs.version,interests:prefs.interests,groups:prefs.groups.map(g=>({id:g.id,name:g.name,members:g.members}))});
-  return {schema:SCHEMA,profiles:Profiles.validate(profiles),preferences:personal,settings:language.settings(settings),portfolio:portfolio===null?null:market.validateActual?market.validateActual(portfolio,catalog):market.importBackup(portfolio,catalog).snapshot,investor_stars:stars(investorStars),playbook:Playbook.validate(playbook)};
+  return validateSize({schema:SCHEMA,profiles:Profiles.validate(profiles),preferences:personal,settings:language.settings(settings),portfolio:portfolio===null?null:market.validateActual?market.validateActual(portfolio,catalog):market.importBackup(portfolio,catalog).snapshot,investor_stars:stars(investorStars),playbook:Playbook.validate(playbook)});
  }
  function parse(payload,catalog,market,language){
   if(!accepts(payload))fail();const v1=payload.schema===LEGACY[0],v4=payload.schema===SCHEMA,v3=v4||payload.schema===LEGACY[2];
@@ -33,7 +34,7 @@
   return create(p,settings.value,await view.DeviceActual.readHoldings(view,catalog),catalog,view.DeviceMarket,view.AppLanguage,Profiles.read(view.localStorage),storedStars(view.localStorage),Playbook.read(view.localStorage));
  }
  function download(view,payload,name='investment-personal.json'){
-  const url=view.URL.createObjectURL(new view.Blob([JSON.stringify(payload,null,2)],{type:'application/json'})),a=view.document.createElement('a');a.href=url;a.download=name;a.click();view.setTimeout(()=>view.URL.revokeObjectURL(url),1000);
+  validateSize(payload);const url=view.URL.createObjectURL(new view.Blob([JSON.stringify(payload,null,2)],{type:'application/json'})),a=view.document.createElement('a');a.href=url;a.download=name;a.click();view.setTimeout(()=>view.URL.revokeObjectURL(url),1000);
  }
  async function restore(view,catalog,payload){
   const next=parse(payload,catalog,view.DeviceMarket,view.AppLanguage),withPlaybook=payload.schema===SCHEMA,withStars=withPlaybook||payload.schema===LEGACY[2],keys=[PERSONAL_KEY,view.AppLanguage.KEY,Profiles.KEY,...(withStars?[STAR_KEY]:[]),...(withPlaybook?[Playbook.KEY]:[])],before=keys.map(k=>view.localStorage.getItem(k));
@@ -60,5 +61,5 @@
    el('p',en?'Interests, groups, holdings, profiles, investor stars and language came from the backup. Quotes, Google sheet IDs, sign-in and the Worker address were not included: check Google sheet settings, then re-read quotes and Universe; review ACTUAL holdings.':'관심 기업·그룹·보유·프로필·투자자 ★·언어는 백업 내용입니다. 시세·Google 시트 ID·로그인·Worker 주소는 백업에 없습니다: 설정에서 Google 시트 연결을 확인하고 시세·Universe를 다시 읽은 뒤 ACTUAL 보유를 점검하세요.',{class:'small'}),button);
   button.addEventListener('click',()=>{dismissRestored(storage);host.replaceChildren();try{onDismiss?.();}catch(_){}});host.replaceChildren(box);return box;
  }
- return Object.freeze({SCHEMA,RESTORED_KEY,restoredNotice,dismissRestored,mountRestoredNotice,LEGACY_SCHEMAS:Object.freeze([...LEGACY]),STAR_KEY,MAX_STARS,accepts,preferences,stars,create,parse,read,download,restore});
+ return Object.freeze({MAX_BYTES,validateSize,SCHEMA,RESTORED_KEY,restoredNotice,dismissRestored,mountRestoredNotice,LEGACY_SCHEMAS:Object.freeze([...LEGACY]),STAR_KEY,MAX_STARS,accepts,preferences,stars,create,parse,read,download,restore});
 });

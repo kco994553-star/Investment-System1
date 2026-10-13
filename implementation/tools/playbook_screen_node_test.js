@@ -36,3 +36,19 @@ test('TARGET candidates use v2 industry ranks and comparison includes exits and 
  const compared=P.targetComparison({rows:[{symbol:'SYN2',pct:10,sector:'industrial'}],cash_pct:90,transition_quarters:2},{total_units:10000,instruments:[{ticker:'SYN1',target_units:1000}]},ranked);
  assert.equal(compared.changes[0].change,'제외');assert.deepEqual(compared.changes[0].steps,[5,2.5]);assert.equal(compared.changes[1].change,'편입');assert.equal(compared.trade_amount,null);assert.equal(compared.tax,null);
 });
+test('backup TARGET rejects malformed drafts and HTML attribute payloads',()=>{
+ for(const draft of [{rows:42},{rows:[{}]},{rows:[],cash_pct:'0" autofocus onfocus="alert(1)',transition_plan:'x',transition_quarters:2,first_apply:'2027-02'}]){
+  assert.throws(()=>P.validate({...P.empty(),target_draft:draft}),/PLAYBOOK_INVALID|TARGET_/);
+ }
+});
+test('UTF-8 backups beyond old 1MB limit roundtrip, oversize rejected without truncation',()=>{
+ const B=require('../src/investment_system/product/web_assets/device-backup.js'),L=require('../src/investment_system/product/web_assets/locale.js'),M=require('../src/investment_system/product/web_assets/device-market.js'),D=require('../src/investment_system/product/web_assets/device-profiles.js');
+ const record=i=>({id:'SYN'+i,date:'2026-10-13',symbol:'SYN',primary_code:'E4',secondary_codes:[],type:'default',sector:null,thresholds:{},checks:[],ai_summary:'합성'.repeat(6000),verdict:'',action:{kind:'NONE'},next_check_date:null,memo:''});
+ const playbook={...P.empty(),records:Array.from({length:100},(_,i)=>record(i))},backup=B.create({version:1,interests:[],groups:[]},L.settings(),null,null,M,L,D.empty(),[],playbook);
+ const bytes=new TextEncoder().encode(JSON.stringify(backup)).length;assert.ok(bytes>1000000&&bytes<B.MAX_BYTES);assert.deepEqual(B.parse(JSON.parse(JSON.stringify(backup)),null,M,L).playbook,playbook);
+ const oversize={...playbook,records:Array.from({length:500},(_,i)=>record(i))};assert.throws(()=>B.create({version:1,interests:[],groups:[]},L.settings(),null,null,M,L,D.empty(),[],oversize),/BACKUP_TOO_LARGE/);assert.equal(oversize.records.length,500);assert.throws(()=>B.validateSize({s:'x'.repeat(B.MAX_BYTES-10)}),/BACKUP_TOO_LARGE/);
+});
+test('malformed imported TARGET is rejected before any storage is changed',async()=>{
+ const B=require('../src/investment_system/product/web_assets/device-backup.js'),L=require('../src/investment_system/product/web_assets/locale.js'),M=require('../src/investment_system/product/web_assets/device-market.js');const storage=memory();P.saveThesis(storage,'SYN','Synthetic reason','Synthetic invalidation');const before=storage.getItem(P.KEY),backup=B.create({version:1,interests:[],groups:[]},L.settings(),null,null,M,L);backup.playbook.target_draft={rows:[],cash_pct:'0" autofocus onfocus="alert(1)',transition_plan:'Synthetic',transition_quarters:2,first_apply:'2027-02'};
+ let holdingsWrites=0;await assert.rejects(B.restore({localStorage:storage,AppLanguage:L,DeviceMarket:M,DeviceActual:{restoreHoldings:async()=>holdingsWrites++}},null,backup));assert.equal(storage.getItem(P.KEY),before);assert.equal(holdingsWrites,0);
+});

@@ -785,7 +785,7 @@ function renderRoute() {
   if(!settingsWritable) notice(t("설정을 읽을 수 없습니다. 저장된 원본은 보존합니다."));
   if(route==="settings") {
     $("#device-backup-export").onclick=()=>void exportDeviceBackup();
-    $("#device-backup-import").onchange=async e=>{try{const f=e.target.files[0];if(!f||f.size>1000000)throw Error("BACKUP_TOO_LARGE");await restoreDeviceBackup(JSON.parse(await f.text()));}catch(_){notice("BACKUP_RESTORE_FAILED");}};
+    $("#device-backup-import").onchange=async e=>{try{const f=e.target.files[0];if(!f||f.size>DeviceBackup.MAX_BYTES)throw Error("BACKUP_TOO_LARGE");await restoreDeviceBackup(JSON.parse(await f.text()));}catch(e){notice(e.message==='BACKUP_TOO_LARGE'?'백업 파일이 16MiB 상한을 초과합니다.':'BACKUP_RESTORE_FAILED');}};
     deviceCatalog().then(catalog=>{const host=$("#google-first-setup");if(host?.isConnected)void GoogleSheetSetup.mount(host,{catalog,config:InvestmentAppConfig,locale:appSettings.display_locale});});
     DevicePWA.mount($('#device-pwa-settings'),{locale:appSettings.display_locale});
     OpsStatus.mount($('#ops-status'),{secReported,secStatus:SecReported.status?.()||null,screens:publicScreens},{locale:appSettings.display_locale});
@@ -832,7 +832,7 @@ function wireGroups() {
   $("#import").onchange = async (e) => {
     try {
       const f = e.target.files[0];
-      if (!f || f.size > 1000000) throw Error(t("1MB 이하 JSON을 선택하세요."));
+      if (!f || f.size > DeviceBackup.MAX_BYTES) throw Error(t("16MiB 이하 JSON을 선택하세요."));
       const payload = JSON.parse(await f.text());
       if (DeviceBackup.accepts(payload)) { await restoreDeviceBackup(payload); return; }
       const p = validatePrefs(payload);
@@ -1033,7 +1033,7 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
 
 async function exportDeviceBackup(){
   try{const catalog=await deviceCatalog();DeviceBackup.download(window,await DeviceBackup.read(window,catalog));}
-  catch(_){notice('BACKUP_EXPORT_FAILED');}
+  catch(e){notice(e.message==='BACKUP_TOO_LARGE'?'백업 파일이 16MiB 상한을 초과합니다. 기록을 임의로 줄이지 않습니다.':'BACKUP_EXPORT_FAILED');}
 }
 async function restoreDeviceBackup(payload){
   const catalog=await deviceCatalog();DeviceBackup.parse(payload,catalog,DeviceMarket,AppLanguage);
