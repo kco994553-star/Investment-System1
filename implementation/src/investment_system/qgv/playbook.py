@@ -12,6 +12,7 @@ Mirrors web_assets/playbook-engine.js; tests/fixtures/playbook_reference_v1.json
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 CONFIG_PATH = Path(__file__).with_name('playbook_v1.json')
@@ -642,10 +643,19 @@ def portfolio_limits(cfg, rows, cash_pct=None):
     return {'ok': ok, 'violations': violations, 'unknown_sector': unknown, 'group_pct': sums}
 
 
+def _sic(sic):
+    if isinstance(sic, bool):
+        return None
+    if isinstance(sic, int) and 0 <= sic <= 9999:
+        return sic
+    if isinstance(sic, str) and re.fullmatch(r"[0-9]{1,4}", sic):
+        return int(sic)
+    return None
+
+
 def sic_candidate(cfg, sic):
-    try:
-        sic = int(sic)
-    except (TypeError, ValueError):
+    sic = _sic(sic)
+    if sic is None:
         return None
     for label, ranges in cfg['sic_candidates'].items():
         if any(lo <= sic <= hi for lo, hi in ranges):
@@ -658,9 +668,10 @@ def sector_for(cfg, symbol, etf=None, sic=None):
     for a in cfg['assignments']:
         if a['symbol'] == symbol:
             return {'sector': a['sector'], 'source': a['source']}
+    sic = _sic(sic)
     if sic is not None:
         for row in cfg['sic_subgroups']:
-            if any(lo <= int(sic) <= hi for lo, hi in row['ranges']):
+            if any(lo <= sic <= hi for lo, hi in row['ranges']):
                 return {'sector': row['sector'], 'source': 'SIC_SUBGROUP'}
     if etf in ('XLK', 'XLI'):
         return {'sector': 'technology_hardware' if etf == 'XLK' else 'general_industrial', 'source': 'ETF_FALLBACK'}

@@ -107,3 +107,11 @@ def test_quality_maintenance_macro_unavailable_and_trap_inclusive():
         'g_now':60,'g_prev':66,'v_now':70,'v_prev20':40,'macro_state':'CRISIS','macro_available_count':0})
     assert r['qg']['maintained'] is False
     assert r['macro']['state'] is None and r['macro']['label']=='매크로 확인 불가'
+
+
+def test_strict_sic_invalid_input_never_crashes_or_classifies():
+    cfg = P.load_config()
+    for sic in ('', 'NA', True, False, 3559.9, float('inf'), float('nan'), -1, 10000, ' 3559'):
+        assert P.sic_candidate(cfg, sic) is None
+        assert P.sector_for(cfg, 'SYN', 'XLK', sic) == {'sector': 'technology_hardware', 'source': 'ETF_FALLBACK'}
+    assert P.sic_candidate(cfg, '3559') == 'CYCLICAL'
