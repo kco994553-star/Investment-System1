@@ -25,8 +25,8 @@ from investment_system.public_price_boundary import require_public_bundle, requi
 
 
 from investment_system.product.sec_m2_candidates import require_public_candidates
-from investment_system.product.news_signals import FILENAME as NEWS_SIGNALS_FILENAME, require_news_signals
 from investment_system.product.dart_public import FILENAMES as DART_FILENAMES, require_public as require_dart_public
+from investment_system.product.news_signals import FILENAME as NEWS_SIGNALS_FILENAME, require_news_signals
 from investment_system.product.sec_disclosures import FILENAME as DISCLOSURES_FILENAME, require_sec_disclosures
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
@@ -42,7 +42,7 @@ from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES
 APPROVED_SHA256 = {
     "playbook-engine.js": "bb6e58d879048d37a1aa7579d5f937a055de84b587f6cd54986ee4a5ed55022b",
     "playbook-config-defaults.js": "3e29e2b790143248f02a6991e8304c3b0910df4d0a576164c0ea364852d1d421",
-    "virtual-trading-compare.js": "8cf5bd3bec35ebe688d3982928ce3f6771e1ea4364966fb51a5f29cfeee0642c",
+    "virtual-trading-compare.js": "700054fd105b979b505c09ec0dad862b0ce435c0179d2ddbe9f85b5b9c23c3f7",
     "report-benchmarks.js": "7a274ba8467880791df30deb17145396111e38c2d2598f7c654a0564c00aa6e9",
     "virtual-trading-runner.js": "0ae8fe1eb2387c05860da965efb363b03bdb69048ae433486acd39c41b58322d",
     "virtual-ledger-sheets.js": "32cb4acd92f39ede177634500dbd222dabbee951aa77407436ae48ed60b08060",
@@ -67,7 +67,7 @@ APPROVED_SHA256 = {
     "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
     "virtual-trading.js": "b53ba20a9216dc0b1c8429ab47381bc44090fe7ac37eb72bf22b1f4968f5421e",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
-    "leaderboard-screen.js": "eb616b12afef84eb9f283a93f40b7dc568a940c39b9cecdf135c471a6d59c6a5",
+    "leaderboard-screen.js": "70e44a8d2a48df00a5ad93a4c88aae938b9af8ff3e4d935b792175d78bc436f0",
     "portfolio-screen.js": "da95498176557e1bc16d1329f639c9b153a859e3be4f7b0bde054becda939be0",
     "company-screen.js": "88df4864812a3631372aea7e370defbf3303bcab7c646da4c521c4398f62cb72",
     "ops-status.js": "a39fa422d604f543cc43401e326e0255363eb81149c9e5e34e2caaf67d5be97c",
@@ -79,7 +79,7 @@ APPROVED_SHA256 = {
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
     "device-profiles.js": "37977fa7353e1d34d7c67d658f74bf3b66a1894f362163aa67e27e40d475e47f",
-    "public-screens.js": "ab433d149828b5aafd3bd52ecb56db3a40905a25980b4634d1ac59bdbac2100a",
+    "public-screens.js": "12dc6716d6961ca8f3ca3ca56ace5324efcab959233ff0386e1e5f2902a9a091",
     "pwa.js": "84f1225bacd8c41fd0a82b65c19d28cc02e0e739ae384614df35a9801da418b0",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
     "icon-512.png": "7a19587556ba133a21622288ec66a48095b933461f10475e96cf7b3a43afee88",
@@ -95,7 +95,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "2b936c8abe8e39c96d56a4e27b58a1126b0e7924502153019c29e9952821852d",
+    "app.js": "ef8d2ba642f2fb71aef8f616df54ca5bfd48d8814400360e0e5b720c2b47a252",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "8dcefa502a362b680f8cefbf774209b2180b398d706469f6370d6ecb0182acd1",
@@ -105,16 +105,17 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "cbb3d16620bf84da68ca3e00040e8d757d3d6378363df8e633e53bdd4b024a07",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "210704f95975d5e34cafe7953f5b4b645985cf9ec2ddd8baecabecd54f274d84",
-    "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
+    "index.html": "3e6306c0f6dd96c37facbe4e22a4b62ebfd3509e618356d1d874e990ec152cd7",
+    "locale.js": "24a748c8ce637b0ddc55ab551359ea7bf527908aa7a8b2b6cb55edf982bea686",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "e30a3a1808d4a8e0bcb7af0f2056a3595132de050711d7bb4e7ba9b692e4f6c0",
-    "sec-disclosures.js": "26286bc51df4edc15ed025a616378f4e524c88d0e7c9870499497167a606061a",
+    "style.css": "d48a9376677319f28a6c4cc93d74a077009ba476d76c9d7e5d9b1c308362a404",
+    "sec-disclosures.js": "7af4fd52b2e83ac348bb7b7b3e80e7130f6e4c32a8f29fd55d14c22e2a5f2714",
     "price-store.js": "c9a3f46ef81be16df707292f45034d16e387b0bde1b6d1a52654902fb523c500",
-    "dart-disclosures.js": "64571f9f6a09e5c99bac54a510aad69589dbe32847dc4aec0cf3f163e8fdb832",
-    "news-signals.js": "10910c4be310791fc7854813d9de3d2057d95a64d1b205a19e8707165ee4f939"
+    "dart-disclosures.js": "093d131ffccbb30284cabd796a3b190a4d2fdd049e1f6648c078321c33101713",
+    "news-signals.js": "61336bb91a39407c60573ca6b2bfbbd06b7c36d4910927ac04e0a29fc4a16868",
+    "macro-lights.js": "b597eb5b592e59045e5d42be38eef185b362b8da6b1f3718ab1ebafaf53cd7fa"
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
