@@ -25,6 +25,7 @@ from investment_system.public_price_boundary import require_public_bundle, requi
 
 
 from investment_system.product.sec_m2_candidates import require_public_candidates
+from investment_system.product.news_signals import FILENAME as NEWS_SIGNALS_FILENAME, require_news_signals
 from investment_system.product.sec_disclosures import FILENAME as DISCLOSURES_FILENAME, require_sec_disclosures
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
@@ -93,7 +94,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "671c43f136d6e8814d5ecf02dc6ba1f70eee32f0dd4abca593a7a29fcdfbe351",
+    "app.js": "0837478aa3493d67ab47bb6e10fd3a01925d72648482db81cd256113c56f6763",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "c7a866e15575e65cea8144412b13e7961be3e5b08f7ab6b2bcfa019db4deb1d4",
@@ -103,17 +104,18 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "cbb3d16620bf84da68ca3e00040e8d757d3d6378363df8e633e53bdd4b024a07",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "15056120bcb2f4dc71a9367ea839d418aeca1e3c6c1a805aff21771f876e396c",
+    "index.html": "d53b4c069f1a6fde8af78ad0b0386c9ceb32211a57480c582d357fb37366d80d",
     "locale.js": "bc7a3d8fc90bd35b97050a2aac9ba4c660679e9728fc6f5eede50071fea6ab2e",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "d48a9376677319f28a6c4cc93d74a077009ba476d76c9d7e5d9b1c308362a404",
-    "sec-disclosures.js": "20679c4cb2f17151121e8649074af81b643454cd3b00c6826dded1642d0494e8",
+    "style.css": "e30a3a1808d4a8e0bcb7af0f2056a3595132de050711d7bb4e7ba9b692e4f6c0",
+    "sec-disclosures.js": "26286bc51df4edc15ed025a616378f4e524c88d0e7c9870499497167a606061a",
     "price-store.js": "c9a3f46ef81be16df707292f45034d16e387b0bde1b6d1a52654902fb523c500",
-    "playbook-screen.js": "9638fef3413c3edd7ae77fcddc9feee82adf3009555c5264ff620815325a3f23"
+    "playbook-screen.js": "cd9b028e9f681a7bbd46c2ac93bca38f8dc068a1bc97f213f32c910a5ad11c3e",
+    "news-signals.js": "10910c4be310791fc7854813d9de3d2057d95a64d1b205a19e8707165ee4f939"
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -245,6 +247,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == DISCLOSURES_FILENAME:
             try: require_sec_disclosures(value)
             except ValueError: violations['sec_disclosures_boundary'] += 1
+        elif name == NEWS_SIGNALS_FILENAME:
+            try: require_news_signals(value)
+            except ValueError: violations['news_signals_boundary'] += 1
         elif name == FORWARD_LEDGER_FILENAME:
             try: require_forward_ledger(value)
             except ValueError: violations['forward_ledger_boundary'] += 1

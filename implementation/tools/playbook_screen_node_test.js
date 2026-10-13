@@ -24,6 +24,10 @@ test('informational E4 records stay outside judgment scoring',()=>{
  const original=JSON.stringify(info),onlyInfo=P.scoringHtml([info],{});assert.equal(JSON.stringify(info),original);assert.equal(P.due({records:[info]},'2026-10-20').length,1);assert.match(onlyInfo,/정보 기록 1건 · 채점 제외/);assert.equal((onlyInfo.match(/<tr><td>/g)||[]).length,0);assert.equal(onlyInfo.includes('시스템 판정대로'),false);
  const mixed=P.scoringHtml([info,decision],{});assert.equal((mixed.match(/<tr><td>/g)||[]).length,3);assert.match(mixed,/시스템 판정대로/);
 });
+test('one daily E4 candidate preserves both news and verified 13F cause codes',()=>{
+ const storage=memory();P.recordOccurrences(storage,'2026-10-13','SYN',[{code:'E4',reasons:['NEWS_STRUCTURAL_EVENT']}]);P.recordOccurrences(storage,'2026-10-13','SYN',[{code:'E4',reasons:['THIRTEENF_REPORTED_FULL_EXITS_3_PLUS','NEWS_STRUCTURAL_EVENT']}]);
+ const saved=P.read(storage);assert.equal(P.countCandidates(saved).E4,1);assert.deepEqual(saved.occurrences[0].reasons,['NEWS_STRUCTURAL_EVENT','THIRTEENF_REPORTED_FULL_EXITS_3_PLUS']);
+});
 test('quarter comparison uses calendar quarters, no fabricated snapshots',()=>{
  const snapshots={'2026-04-30':{syn:{q:80,g:81}},'2026-07-03':{syn:{q:76,g:79}},'2026-08-31':{syn:{q:75,g:78}},'2026-10-13':{syn:{q:70,g:73}}};
  assert.deepEqual(P.quarterComparisons(snapshots,'syn','2026-10-13'),{q_prev:75,g_prev:78,q_prev2:80,g_prev2:81});
