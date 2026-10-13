@@ -83,18 +83,19 @@ def type_context(cfg, memberships, basis='v1'):
     }
 
 
-def _drops(s):
-    q = s.get('q_prev') - s.get('q_now') if _known(s.get('q_prev'), s.get('q_now')) else None
-    g = s.get('g_prev') - s.get('g_now') if _known(s.get('g_prev'), s.get('g_now')) else None
+def _drops(s, suffix=""):
+    q = s.get('q_prev' + suffix) - s.get('q_now') if _known(s.get('q_prev' + suffix), s.get('q_now')) else None
+    g = s.get('g_prev' + suffix) - s.get('g_now') if _known(s.get('g_prev' + suffix), s.get('g_now')) else None
     qg = None
-    if _known(s.get('q_prev'), s.get('q_now'), s.get('g_prev'), s.get('g_now')):
-        qg = (s['q_prev'] + s['g_prev']) / 2 - (s['q_now'] + s['g_now']) / 2
+    if _known(s.get('q_prev' + suffix), s.get('q_now'), s.get('g_prev' + suffix), s.get('g_now')):
+        qg = (s['q_prev' + suffix] + s['g_prev' + suffix]) / 2 - (s['q_now'] + s['g_now']) / 2
     return {'q': q, 'g': g, 'qg': qg}
 
 
-def _r2(tc, s, drops):
+def _r2(cfg, tc, s, drops):
     """Any member type's R2 condition fires R2 (§6-3); 'Q·G 유지' = none fires and all were checkable."""
     hits, missing = [], []
+    older = _drops(s, '2')
     for cond in tc['thresholds']['r2']:
         for metric in ('qg', 'q', 'g'):
             if metric in cond:
@@ -102,7 +103,11 @@ def _r2(tc, s, drops):
                 if d is None:
                     missing.append(metric + '_change')
                 elif d >= cond[metric]:
-                    hits.append({'type': cond['type'], 'metric': metric, 'drop': d, 'threshold': cond[metric]})
+                    hits.append({'type': cond['type'], 'metric': metric, 'drop': d, 'threshold': cond[metric], 'comparison': 'PREVIOUS_QUARTER'})
+                older_drop = older[metric]
+                lim = cond[metric] * cfg['quarter_comparison']['two_quarters_multiplier']
+                if older_drop is not None and older_drop >= lim:
+                    hits.append({'type': cond['type'], 'metric': metric, 'drop': older_drop, 'threshold': lim, 'comparison': 'TWO_QUARTERS'})
         if cond.get('dividend_cut'):
             cut = s.get('dividend_cut')
             if cut is None:
@@ -111,6 +116,9 @@ def _r2(tc, s, drops):
                 hits.append({'type': cond['type'], 'metric': 'dividend_cut', 'drop': None, 'threshold': None})
     missing = sorted(set(missing))
     maintained = False if hits else (None if missing else True)
+    if 'quality' in tc['members']:
+        qc = cfg['quarter_comparison']
+        maintained = False if hits else (None if not _known(drops['q'], drops['g']) else drops['q'] < qc['quality_maintained_q_lt'] and drops['g'] < qc['quality_maintained_g_lt'])
     return hits, missing, maintained
 
 
@@ -229,9 +237,9 @@ def evaluate(cfg, s, mode='CORE_V0'):
     held = bool(s.get('held'))
     conv = s.get('conviction') or {}
     conv_active = bool(conv.get('active'))
-    macro = s.get('macro_state')
+    macro = None if s.get('macro_available_count') == 0 else s.get('macro_state')
     drops = _drops(s)
-    r2_hits, r2_missing, maintained = _r2(tc, s, drops)
+    r2_hits, r2_missing, maintained = _r2(cfg, tc, s, drops)
     v_delta = s['v_now'] - s['v_prev20'] if _known(s.get('v_now'), s.get('v_prev20')) else None
     actual, target = s.get('actual_pct'), s.get('target_pct')
     fired, unknown, e4 = {}, [], []
@@ -416,7 +424,7 @@ def evaluate(cfg, s, mode='CORE_V0'):
         'band_pp': None if target is None else band(cfg, target),
         'qg': {'q_drop': drops['q'], 'g_drop': drops['g'], 'qg_drop': drops['qg'], 'maintained': maintained, 'r2_hits': r2_hits},
         'v_change_20': v_delta,
-        'macro': {'state': macro, 'split_multiplier': multiplier, 'u3_conditions': u3},
+        'macro': {'state': macro, 'label': cfg['macro']['unavailable_label'] if macro is None else macro, 'split_multiplier': multiplier, 'u3_conditions': u3},
         'checks': checks,
         'choices': choices_for(primary['code']) if primary else [],
         'choices_by_code': {c: choices_for(c) for c in ordered},
@@ -584,6 +592,9 @@ def _compare(op, value, limit):
 
 def classify_types_v0(cfg, metrics):
     """§6-2 rules → {type: {'member': True/False/None, 'missing': [...]}} (None = 확인 불가)."""
+    metrics = dict(metrics or {})
+    if metrics.get('sic') is not None:
+        metrics['sector_group_candidate'] = sic_candidate(cfg, metrics['sic'])
     out = {}
     for rule in cfg['type_rules_v0']:
         if rule['combine'] == 'TYPE_CONFIG_V1':
@@ -631,11 +642,28 @@ def portfolio_limits(cfg, rows, cash_pct=None):
     return {'ok': ok, 'violations': violations, 'unknown_sector': unknown, 'group_pct': sums}
 
 
-def sector_for(cfg, symbol, etf=None):
+def sic_candidate(cfg, sic):
+    try:
+        sic = int(sic)
+    except (TypeError, ValueError):
+        return None
+    for label, ranges in cfg['sic_candidates'].items():
+        if any(lo <= sic <= hi for lo, hi in ranges):
+            return label
+    return 'NONE'
+
+
+def sector_for(cfg, symbol, etf=None, sic=None):
     """§7: the 19 symbols use the §7-2 table; others map by ETF only when exactly one §7-1 row uses it."""
     for a in cfg['assignments']:
         if a['symbol'] == symbol:
             return {'sector': a['sector'], 'source': a['source']}
+    if sic is not None:
+        for row in cfg['sic_subgroups']:
+            if any(lo <= int(sic) <= hi for lo, hi in row['ranges']):
+                return {'sector': row['sector'], 'source': 'SIC_SUBGROUP'}
+    if etf in ('XLK', 'XLI'):
+        return {'sector': 'technology_hardware' if etf == 'XLK' else 'general_industrial', 'source': 'ETF_FALLBACK'}
     if etf:
         rows = [r['id'] for r in cfg['sector_checks'] if etf in r['etfs']]
         if len(rows) == 1:

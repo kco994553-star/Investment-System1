@@ -4,7 +4,7 @@
  "doc": "docs/playbook/PLAYBOOK_V1.md",
  "status": "v0",
  "calibration": "UNCALIBRATED",
- "decided": "2026-10-13 사용자 결정",
+ "decided": "2026-10-13 사용자 결정 2차",
  "decision_states": {
   "UNCALIBRATED": "v0 기준값, 보정 전",
   "DOC_V1": "PLAYBOOK_V1.md 문구·구조 그대로"
@@ -807,7 +807,7 @@
     "REASSESS_SIGNAL"
    ],
    "scope": "ALL",
-   "implementation": "CANDIDATE",
+   "implementation": "CORE_V0",
    "checks": [
     {
      "text": "R2와 같은 질문(매매 없음)",
@@ -816,22 +816,10 @@
      ]
     }
    ],
-   "choices": [
-    {
-     "id": "E4_NORMAL",
-     "label": "펀더멘털 변화 없음 → 정상 복귀",
-     "action": "MAINTAIN",
-     "source": "3"
-    },
-    {
-     "id": "E4_CHANGED",
-     "label": "변화 있음 → R2",
-     "action": "NONE",
-     "source": "3"
-    }
-   ],
+   "choices": [],
    "prompt_section": "10-2",
-   "version": "v0"
+   "version": "v0",
+   "information_only": true
   },
   {
    "decision": "DOC_V1",
@@ -963,7 +951,7 @@
     "WATCH"
    ],
    "scope": "NOT_HELD",
-   "implementation": "UNLISTED",
+   "implementation": "CORE_V0",
    "checks": [
     {
      "text": "관심 이유 한 줄",
@@ -1657,9 +1645,9 @@
      "value": 0.15
     },
     {
-     "metric": "operating_margin_range_5y_pp",
+     "metric": "operating_margin_std_5y_pp",
      "op": "<",
-     "value": 5
+     "value": 3
     },
     {
      "metric": "net_debt_to_ebitda",
@@ -1667,7 +1655,7 @@
      "value": 1.5
     }
    ],
-   "text": "3년 평균 ROIC ≥ 15% 그리고 5년 영업이익률 변동 < 5%p 그리고 순부채/EBITDA < 1.5배",
+   "text": "3년 평균 ROIC ≥ 15% 그리고 5년 영업이익률 표준편차 < 3%p 그리고 순부채/EBITDA < 1.5배",
    "version": "v0",
    "decision": "UNCALIBRATED"
   },
@@ -2497,7 +2485,8 @@
     "U3_INCREASE"
    ],
    "warning": "VALUE_TRAP_GATE",
-   "replaces": "special_rules.value_trap"
+   "replaces": "special_rules.value_trap",
+   "q_bottom_inclusive": true
   },
   "version": "v0"
  },
@@ -2680,7 +2669,8 @@
    "version": "v0",
    "decision": "UNCALIBRATED"
   },
-  "decision": "UNCALIBRATED"
+  "decision": "UNCALIBRATED",
+  "unavailable_label": "매크로 확인 불가"
  },
  "rebalancing": {
   "section": "13-4",
@@ -2860,14 +2850,15 @@
    "E3",
    "E5",
    "H1",
-   "U3"
+   "U3",
+   "W1",
+   "E4"
   ],
   "candidates": [
    "T1",
    "T3",
    "U1",
    "E2",
-   "E4",
    "H2",
    "W2"
   ],
@@ -3382,5 +3373,208 @@
    "version": "v0",
    "decision": "UNCALIBRATED"
   }
+ },
+ "quarter_comparison": {
+  "previous": "PREVIOUS_QUARTER",
+  "two_quarters_multiplier": 1.5,
+  "quality_maintained_q_lt": 3,
+  "quality_maintained_g_lt": 5
+ },
+ "sic_candidates": {
+  "CYCLICAL": [
+   [
+    1000,
+    1499
+   ],
+   [
+    1500,
+    1799
+   ],
+   [
+    2600,
+    2699
+   ],
+   [
+    2800,
+    2829
+   ],
+   [
+    3300,
+    3399
+   ],
+   [
+    3500,
+    3569
+   ],
+   [
+    3559,
+    3559
+   ],
+   [
+    3674,
+    3674
+   ],
+   [
+    3827,
+    3827
+   ],
+   [
+    3710,
+    3716
+   ],
+   [
+    4000,
+    4799
+   ],
+   [
+    5200,
+    5399
+   ],
+   [
+    5500,
+    5599
+   ],
+   [
+    6500,
+    6553
+   ],
+   [
+    7000,
+    7099
+   ]
+  ],
+  "DEFENSIVE": [
+   [
+    2000,
+    2199
+   ],
+   [
+    2830,
+    2836
+   ],
+   [
+    2840,
+    2844
+   ],
+   [
+    4800,
+    4899
+   ],
+   [
+    4900,
+    4999
+   ],
+   [
+    5400,
+    5499
+   ],
+   [
+    5912,
+    5912
+   ],
+   [
+    8000,
+    8099
+   ]
+  ]
+ },
+ "sic_subgroups": [
+  {
+   "sector": "semi_equipment",
+   "ranges": [
+    [
+     3559,
+     3559
+    ],
+    [
+     3827,
+     3827
+    ]
+   ]
+  },
+  {
+   "sector": "semiconductors",
+   "ranges": [
+    [
+     3674,
+     3674
+    ]
+   ]
+  },
+  {
+   "sector": "defense",
+   "ranges": [
+    [
+     3760,
+     3769
+    ],
+    [
+     3812,
+     3812
+    ]
+   ]
+  },
+  {
+   "sector": "power_equipment",
+   "ranges": [
+    [
+     3600,
+     3629
+    ]
+   ]
+  },
+  {
+   "sector": "industrial_automation",
+   "ranges": [
+    [
+     3820,
+     3826
+    ],
+    [
+     3828,
+     3829
+    ]
+   ]
+  },
+  {
+   "sector": "software_internet",
+   "ranges": [
+    [
+     7370,
+     7379
+    ]
+   ]
+  }
+ ],
+ "user_decisions_20261013_2": {
+  "approved": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26
+  ],
+  "section": "17"
  }
 }
