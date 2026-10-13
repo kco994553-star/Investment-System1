@@ -40,7 +40,7 @@ APPROVED_SHA256 = {
     "report-benchmarks.js": "7a274ba8467880791df30deb17145396111e38c2d2598f7c654a0564c00aa6e9",
     "virtual-trading-runner.js": "ce55e6428f52f81ff664870fad5f0944f7b4f46f697058aa018d919d7da561db",
     "virtual-ledger-sheets.js": "32cb4acd92f39ede177634500dbd222dabbee951aa77407436ae48ed60b08060",
-    "thirteenf-quarter.js": "ed5dbdb13e98e9e44cee493d4bff2c647edd1cb7f742ae101419575a2b255e32",
+    "thirteenf-quarter.js": "0f95d210026f41c14c18ceb833a7df32cfa0e35604643b37cb0c5c1bc3c50b49",
     "worker-quote-fallback.js": "e72a72d1885a23c2a35706c8d4f333060b0c451d32a00e501dc63a30416b754c",
     "holdings-capture-view.js": "f2bebf39ca836868d19cef05c08b2d3aa9cbe99f2bdc62ee8509634f5891f65f",
     "holdings-capture.js": "a0fbd647c36d4714e743badbf445e2d3bf6b47c504766beaa14a93fdbf900d95",
@@ -72,7 +72,7 @@ APPROVED_SHA256 = {
     "engine-preview.js": "054c74ea4c854408b182ecd36813a0b6a973db349718f22479a151303f08237c",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
     "device-profiles.js": "37977fa7353e1d34d7c67d658f74bf3b66a1894f362163aa67e27e40d475e47f",
-    "public-screens.js": "81f270be573fcfb8b161e2a49e01b04abe896cf7f144d5cada2af292da49a467",
+    "public-screens.js": "8835506875681507376dcc655031d988a09c86ebd5246989a4f180b2c7ea3d72",
     "pwa.js": "84f1225bacd8c41fd0a82b65c19d28cc02e0e739ae384614df35a9801da418b0",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
     "icon-512.png": "7a19587556ba133a21622288ec66a48095b933461f10475e96cf7b3a43afee88",
@@ -103,7 +103,7 @@ APPROVED_SHA256 = {
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "d48a9376677319f28a6c4cc93d74a077009ba476d76c9d7e5d9b1c308362a404",
+    "style.css": "d48a9376677319f28a6c4cc93d74a077009ba476d76c9d7e5d9b1c308362a404"
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
