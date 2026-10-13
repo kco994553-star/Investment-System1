@@ -4,6 +4,7 @@ from datetime import date
 from investment_system.providers import sec_8k_disclosures as sec
 from investment_system.product import news_signals as news
 from tests.test_sec_disclosures import NOW, acc, index_html, submissions
+import json
 
 
 def test_asml_6k_requires_quarterly_earnings_index_evidence():
@@ -29,3 +30,24 @@ def test_ordinary_legal_news_is_not_a_structural_candidate():
     assert candidates[0] == {'company_id': 'asml', 'code': 'E4', 'reason_code': 'NEWS_STRUCTURAL_EVENT',
                             'event_kind': 'EXPORT_RESTRICTION', 'evidence_grade': 'SIGNAL', 'score_effect': 'NONE',
                             'info_only': True, 'group_id': 'a', 'link': rows[0]['link'], 'published_at': rows[0]['published_at']}
+
+
+def test_6k_collection_and_public_validation_keep_only_confirmed_quarterly_metadata():
+    from sec_disclosures import collect
+    from investment_system.product.sec_disclosures import merge, require_sec_disclosures
+    from investment_system.markets.us import US_LISTINGS
+    good, unknown = acc(201, cik='0000937966'), acc(202, cik='0000937966')
+    class Client:
+        def submissions(self, company):
+            rows = [('6-K', accession, '2026-10-01', '2026-09-30', '2026-10-01T13:00:00Z', '') for accession in [good, unknown]] if company == 'asml' else []
+            return json.dumps(submissions(company, rows)).encode(), NOW
+        def filing_index(self, company, accession):
+            title = 'Q3 2026 financial results' if accession == good else 'Press release'
+            return index_html(company, accession, [(title, 'release.htm', 'EX-99.1')])
+    collected, exhibits, counts = collect(Client(), None, now=lambda: NOW)
+    assert len(collected['asml']['rows']) == 1
+    assert counts['index_fetched'] == 2 and counts['failures'][0][1] == 'ASML_6K_EARNINGS_UNCONFIRMED'
+    payload = merge(None, collected, exhibits=exhibits, as_of=NOW)
+    assert require_sec_disclosures(payload) is payload
+    event, = payload['events']
+    assert event['form'] == '6-K' and event['items'] == [] and event['classification'] == 'RESULTS'
