@@ -1,4 +1,5 @@
 'use strict';
+const {displayOnlyOff}=require('./display_only_off.js');
 // S04/S05 value view (v1+dcf_v1_1_default) with a route-intercepted synthetic sec-valuation-inputs.json and a
 // synthetic device quote entered on a throw-away browser context. Price stays in RAM: nothing price-derived is stored or sent.
 const {chromium}=require('playwright'),assert=require('node:assert/strict');
@@ -25,7 +26,7 @@ async function open(page,hash,selector){await page.goto(BASE+'#'+hash);await pag
 async function valueTab(page,id){await open(page,'analysis/'+id,'[data-analysis-tab]');await page.locator('[data-analysis-tab="value"]').click();await page.locator('[data-analysis-panel="value"] [data-value="fcfe"]').waitFor();}
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let pass=0,fail=0,phase='START';
  try{for(const width of [390,1440]){
-  const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});
+  const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});await displayOnlyOff(context);
   await context.route('**/sec-valuation-inputs.json',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(payload())}));
   const page=await context.newPage();page.setDefaultTimeout(15000);let errors=0;page.on('pageerror',()=>errors++);
   const requests=[];page.on('request',r=>requests.push({url:r.url(),method:r.method(),body:r.postData()}));

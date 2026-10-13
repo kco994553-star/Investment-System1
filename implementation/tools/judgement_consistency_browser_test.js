@@ -1,4 +1,5 @@
 'use strict';
+const {displayOnlyOff}=require('./display_only_off.js');
 // D-19 judgement consistency on S03 (portfolio) and S17 (daily reports) at 390 and 1440 (JUDGEMENT_CONSISTENCY_AUDIT.md).
 // A. End to end (390): the app's own runner path on synthetic, intercepted inputs (same harness as the runner test) computes
 //    the shadow ledger on 투자 일일보고서; S03 then shows exactly the same main + auxiliary chips per company as S17 and as
@@ -43,7 +44,7 @@ function history(symbol, range) {
 }
 
 async function open(browser, { now, width }) {
-  const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', locale: 'ko-KR', permissions: ['clipboard-read', 'clipboard-write'] });
+  const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', locale: 'ko-KR', permissions: ['clipboard-read', 'clipboard-write'] });await displayOnlyOff(context);
   const traffic = { unexpected: [], errors: 0 };
   await context.addInitScript(({ token, scope }) => {
     localStorage.setItem('investment.web.v1.settings', JSON.stringify({ version: 1, display_locale: 'ko-KR', source_language: 'all' }));

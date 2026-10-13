@@ -1,4 +1,5 @@
 'use strict';
+const {displayOnlyOff}=require('./display_only_off.js');
 // S17 ⑪ Track Record, ⑫ period returns and ⑬ relative-index dashboard on the built site, at 390 and 1440.
 // Every request is intercepted: same-origin files from the local build (public screens empty, synthetic forward ledger),
 // the private history Worker is a synthetic 2y mock (VUG rejected, one XLK bar missing), anything else is aborted and
@@ -47,7 +48,7 @@ function history(symbol, range, last) {
 }
 
 async function open(browser, { now, last, width }) {
-  const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', locale: 'ko-KR', permissions: ['clipboard-read', 'clipboard-write'] });
+  const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', locale: 'ko-KR', permissions: ['clipboard-read', 'clipboard-write'] });await displayOnlyOff(context);
   const traffic = { worker: [], unexpected: [], writes: 0, console: 0, errors: 0 };
   await context.addInitScript(({ token, scope }) => {
     localStorage.setItem('investment.web.v1.settings', JSON.stringify({ version: 1, display_locale: 'ko-KR', source_language: 'all' }));
