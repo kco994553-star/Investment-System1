@@ -34,10 +34,10 @@ def test_collector_reuses_each_raw_capture_once_and_never_exports_raw(tmp_path):
             return *(json.dumps(x).encode() for x in raw(company)),datetime(2026,2,2,12,tzinfo=timezone.utc)
     result=collect(tmp_path,environ={'SEC_USER_AGENT':'synthetic setting'},client_factory=Client)
     assert len(calls)==len(set(calls))==17 and result['failed_companies']==0
-    assert len(list(tmp_path.iterdir()))==7
+    assert len(list(tmp_path.iterdir()))==8  # six screens + sec-public-inputs.json + staged sec-qgv2.json
     for path in tmp_path.iterdir():
         text=path.read_text(); assert 'never publish' not in text and '987654321' not in text and 'synthetic setting' not in text
-        if path.name!='sec-public-inputs.json':require_public_screen(path.name,json.loads(text))
+        if path.name not in ('sec-public-inputs.json','sec-qgv2.json'):require_public_screen(path.name,json.loads(text))
 
 
 def test_failed_collection_preserves_previous_sidecars(tmp_path):
