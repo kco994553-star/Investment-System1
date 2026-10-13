@@ -10,6 +10,7 @@
 // real schema-1 bundles, so they are run through the app's own render-time presentation (guardSections() + render())
 // assigned to the page model in browser memory only: never served, never persisted, nothing built.
 "use strict";
+const {displayOnlyOff}=require('./display_only_off.js');
 const { chromium } = require("playwright");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
@@ -89,7 +90,7 @@ async function main() {
 
   // One context per page; the persisted display-locale setting is written before any page script runs.
   async function openPage(locale, { clock = manifest.browser_clock, width = 390, timezoneId = null } = {}) {
-    const context = await browser.newContext({ viewport: { width, height: 844 }, ...(timezoneId ? { timezoneId } : {}) });
+    const context = await browser.newContext({ viewport: { width, height: 844 }, ...(timezoneId ? { timezoneId } : {}) });await displayOnlyOff(context);
     await context.addInitScript(([key, value]) => { try { localStorage.setItem(key, value); } catch (e) { /* storage blocked */ } },
       [SETTINGS_KEY, JSON.stringify({ version: 1, display_locale: locale, source_language: "all" })]);
     await context.route("**/*", async (route) => {
