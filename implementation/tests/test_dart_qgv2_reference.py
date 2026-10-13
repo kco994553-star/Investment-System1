@@ -52,3 +52,16 @@ def test_optional_v2_projection_preserves_original_backup_schema_and_checks_exac
     company['qgv2']['metrics']['fcf_to_net_income'] = 123.0
     with pytest.raises(dart_public.DartPublicError):
         dart_public.require_financials(payload)
+
+
+def test_workflow_projection_reports_na_and_missing_input_tokens_without_scores(tmp_path, capsys):
+    from tests.test_dart_collection import run
+    from tests.dart_fake_opendart import FakeOpenDart, FAKE_KEY
+    from project_dart_qgv2 import project
+    _, _, out = run(tmp_path, FakeOpenDart())
+    capsys.readouterr()
+    assert project(out) == 0
+    printed = capsys.readouterr().out
+    assert 'Q_state=NOT_AVAILABLE' in printed and 'G_state=NOT_AVAILABLE' in printed
+    assert 'DART_V2_3Y_HISTORY_NOT_COLLECTED' in printed
+    assert FAKE_KEY not in printed and 'score=' not in printed

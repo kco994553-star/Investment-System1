@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 
 def project(directory):
     from investment_system.product import dart_public as dart
-    from investment_system.product.dart_qgv2 import metric_projection
+    from investment_system.product.dart_qgv2 import metric_projection, reference_score
     path = Path(directory) / dart.FINANCIALS_FILENAME
     if not path.is_file():
         print('DART_QGV2_REFERENCE NOT_AVAILABLE code=DART_NOT_COLLECTED')
@@ -31,7 +31,23 @@ def project(directory):
         print('DART_QGV2_REFERENCE NOT_AVAILABLE code=PROJECTION_FAILED')
         return 0
     state = payload['companies']['hanmi']['state']
-    print('DART_QGV2_REFERENCE state=' + state + ' comparison=REFERENCE_ONLY')
+    universe = {}
+    try:
+        from investment_system.universe import sec_qgv2
+        source = Path(directory) / sec_qgv2.FILENAME
+        if source.is_file():
+            universe = sec_qgv2.require_qgv2(sec_qgv2.parse_json(source.read_bytes()))['records']
+    except Exception:
+        pass
+    result = reference_score(payload['companies']['hanmi'], universe)
+    fields = ['DART_QGV2_REFERENCE', 'state=' + state, 'comparison=REFERENCE_ONLY']
+    for axis in ('Q', 'G'):
+        row = result['axes'][axis]
+        fields.extend([axis + '_state=' + ('NOT_AVAILABLE' if row['score'] is None else 'AVAILABLE'),
+                       axis + '_factors=' + row['factors_available'], axis + '_weight=' + str(row['available_weight']),
+                       axis + '_reasons=' + (','.join(row['reason_codes']) or '-')])
+    fields.append('input_reasons=' + ','.join(payload['companies']['hanmi']['qgv2']['reason_codes']))
+    print(' '.join(fields))
     return 0
 
 

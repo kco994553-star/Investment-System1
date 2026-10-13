@@ -77,4 +77,6 @@ def metric_projection(company):
     state = company.get('state') if company.get('state') in ('LIVE', 'STALE') else 'NOT_AVAILABLE'
     return {'state': state, 'reference_only': True, 'comparison_label': '참고 순위',
             'comparison_basis': 'US_UNIVERSE_504_GENERAL', 'industry_basis': 'NOT_ASSIGNED',
-            'currency': 'KRW', 'metrics': annual_metrics(company.get('annual', {}))}
+            'currency': 'KRW', 'reason_codes': ['DART_V2_ASSETS_NOT_COLLECTED', 'DART_V2_INTEREST_NOT_COLLECTED',
+                'DART_V2_3Y_HISTORY_NOT_COLLECTED', 'DART_V2_5Y_HISTORY_NOT_COLLECTED'],
+            'metrics': annual_metrics(company.get('annual', {}))}
