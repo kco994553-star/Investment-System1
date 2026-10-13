@@ -64,4 +64,10 @@ const must=(v,label)=>{if(!v){const e=Error(label);e.safeReason=label;throw e;}}
  }finally{await browser.close();}
  fs.writeFileSync(out+'/checks.json',JSON.stringify({checks},null,2));
  console.log(JSON.stringify({checks}));
-})().catch(e=>{fs.writeFileSync(out+'/failure.txt',String(e.stack));console.error('M2_BROWSER_CHECK_FAILED '+phase+' '+(e.safeReason || e.name));process.exitCode=1;});
+})().catch(e=>{
+ const name=['Error','AssertionError','TimeoutError','TypeError','ReferenceError','RangeError','SyntaxError'].includes(e?.name)?e.name:'Error';
+ const diagnostic='M2_BROWSER_CHECK_FAILED '+phase+' '+name;
+ console.error('::error file=implementation/tools/sec_m2_candidates_browser_test.js,title=M2_BROWSER_CHECK_FAILED::'+diagnostic);
+ try{fs.writeFileSync(out+'/failure.txt',diagnostic+'\n');}catch{}
+ process.exitCode=1;
+});

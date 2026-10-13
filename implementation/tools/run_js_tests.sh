@@ -8,8 +8,13 @@ while IFS= read -r line || [ -n "$line" ]; do
   [ -z "$name" ] && continue
   case "$name" in */*|..*) echo "INVALID_TEST_NAME $name"; exit 1;; esac
   echo "RUN $name"
-  node "implementation/tools/$name"
-  count=$((count+1))
+  if node "implementation/tools/$name"; then
+    count=$((count+1))
+  else
+    status=$?
+    printf '::error file=implementation/tools/%s,title=CI_TEST_FAILED::CI_TEST_FAILED %s exit=%s\n' "$name" "$name" "$status"
+    exit "$status"
+  fi
 done < "$manifest"
 [ "$count" -gt 0 ] || { echo "EMPTY_TEST_MANIFEST"; exit 1; }
 echo "MANIFEST_OK tests=$count"
