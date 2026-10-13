@@ -4,12 +4,12 @@
 
 ## 현재 위치
 
-- canonical: `claude/investment-system-top500-validation-alrugm`, 확인 HEAD `84998f27`(#224 병합, 2026-10-13 12:05:07 UTC).
+- canonical: `claude/investment-system-top500-validation-alrugm`, 확인 HEAD `8382b1b5`(#226 병합, 2026-10-13 12:19:47 UTC).
 - **#222 GSQ-022/023 병합 완료**: exact head `d25161e4`, 필수 6체크 SUCCESS·실패 0에서 정상 merge. force/admin 없음. 별도 수동 배포·Worker 배포는 실행하지 않았다.
 - 기존 승인 병합 순서: **#222 → #224 → #226 → #225 → #210 → #215 → #211**. 새 레인 PR: D → A → B → C → E. 모든 병합은 D가 한 건씩 수행한다.
 - **#224 병합 완료**: exact head `39b474c3`, 필수6 SUCCESS/실패0, normal merge `84998f27`. A가 업종 하위 지표 표본<8 GENERAL 전체분포 대체 규칙과 회귀 테스트 확인. canonical merge-forward 후 head `39b474c3` push 후 CI 성공 확인하여 병합.
-- #226: B의 10/13 승인 해석 commit `80cb2fdc`를 normal cherry-pick, 가드 해시 갱신하여 head `14d978c5` push. Python playbook·Pages guard 50PASS, JS225PASS. #224 후 기준 다시 동기화하여 CI 재확인.
-- #227: D 별도 worktree `d-227`, 로고 로컬 번들·직접 iframe·기본OFF 수정 중. **병합 재승인 필요**, 외부 지원 조사 없음.
+- **#226 병합 완료**: exact head `66e59f9b`, 필수6 SUCCESS/실패0, normal merge `8382b1b5`. B의 10/13 승인 해석 commit `80cb2fdc`를 normal cherry-pick, 가드 해시 갱신하여 head `66e59f9b` push. Python playbook·Pages guard 50PASS, JS225PASS.  #224 기준 동기화·CI 성공 후 병합. Integral SIC 숫자표현 일치 followup은 B 화면 브랜치에 포함.
+- #227: 로컬 PNG/data 이미지 번들·직접iframe OFF 구현, 전체Python2600 및 브라우저390/1280 로고2·iframe2 PASS. D 별도 worktree `d-227`, 최신 기준 동기화·CI 준비 중. **병합 재승인 필요**, 외부 지원 조사 없음.
 - DART 키 등록 사용자 확인됨. C 보고: 최신 실행 BEA_USERID 설정 마스킹 정상; 예전 빈 전달 로그를 근거로 재등록 요청하지 않는다. Fed 원인404/빈 추출, 공식 소스확인403이며 반복 시도 금지.
 - Worker Universe504(하이픈 포함)·HYG·IEF 확대는 사용자 범위 승인, root 브랜치 구현·검증 중. 실제 신규 PR은 최종 보고에 연결한다.
 - **10/19 v2 기록 시작은 아직 확정하지 못함**. A의 V·공개입력·v1/v2 원장 준비와 신규 PR 승인 후 실제 시작일을 보고한다. 소급하지 않는다.
@@ -35,7 +35,6 @@
 | #231 | `5732d337` | 확인 중 | MERGEABLE | 승인 대기 | E 13F 공개 보강 |
 | #228 | `488d1b87` | 5/6 | MERGEABLE | 닫기 제안 | 내용 D 인수인계에 포함, 사용자 승인 전 닫지 않음 |
 | #227 | `30b65fc3` | 5/6 · 실패 build | MERGEABLE | 유지 | 로고·iframe 수정 후 재승인 |
-| #226 | `14d978c5` | 5/6 | MERGEABLE | 유지 → 승인 순서 병합 | 사용자 승인됨; 기준 동기화·최신 6체크 필요 |
 | #225 | `d4a44e47` | 6/6 | MERGEABLE | 유지 → 승인 순서 병합 | 사용자 승인됨; 기준 동기화·최신 6체크 필요 |
 | #215 | `1bef9153` | 6/6 | CONFLICTING | 유지 → 승인 순서 병합 | 사용자 승인됨; 기준 동기화·최신 6체크 필요 |
 | #211 | `10cc7710` | 6/6 | MERGEABLE | 유지 → 승인 순서 병합 | 사용자 승인됨; 기준 동기화·최신 6체크 필요 |
@@ -66,7 +65,7 @@
 ## 다음 할 일 5개
 
 1. #224 병합 완료; A exclusive 진행분을 최신 canonical 위로 동기화.
-2. #226 기준 동기화·최신6체크 후 병합, #225 테스트 등록·동기화 후 그 다음.
+2. #226 병합 완료; #225 테스트는 이미 CI 등록됨. 최신 기준 동기화·필수6 성공 후 다음 병합.
 3. #210·#215 충돌/과거 build실패 수정, #211은 C 결과 반영 후 승인순서 진행.
 4. D #227 사용자 지정 로고/iframe 수정·브라우저390/1280 후 재승인 요청.
 5. 매 병합과 레인 작업 완료 때 진행표·결정대기·canonical·배포 상태를 갱신해 push/PR 보존.
@@ -99,7 +98,6 @@
 | PR | 브랜치 | 내용 | 상태 |
 |---|---|---|---|
 | #222 | claude/gsq-022-qgv-v2-default | GSQ-022(v2 기본·v1·v2 재정규화 50%·next_3_5y_growth 정의) / GSQ-023(가격 저장: RAM + 개인 시트) — 26E | 승인 필요 |
-| #226 | claude/playbook-v1-engine | PLAYBOOK_V1.md 원문 저장, `qgv/playbook_v1.json`(v0 · UNCALIBRATED), 판정 엔진 Python·JS, 벡터 220개, 19종목 유형 분류표(PR 본문), 모순 26개(`docs/playbook/PLAYBOOK_ENGINE_V1.md` 4절) | 승인 필요 |
 | #225 | claude/prices-tab-store | 개인 시트 `Prices_D`·`Prices_M` 증분 저장, 크기·속도 보고(약 40만 셀, 4%) | 승인 필요(GSQ-023) |
 | #227 | claude/tradingview-widgets | TradingView 위젯 + 기업 로고 + `universe-domains.json`, CSP 확장 | 승인 필요(CSP). TSE 8035 = 표시 안 됨(제3자 근거), KRX 042700 = 미확인 |
 | #210 → #215 → #211 | 8-K / GDELT·IR / DART | 공시·뉴스·DART | 승인 필요. 병합은 이 순서로 |
