@@ -56,3 +56,10 @@ test('zero quantities are closed while positive holdings with missing quotes rem
  const catalog={instruments:[{ticker:'SYN0',security_reference:{scheme:'SYNTHETIC',value:'zero'}},{ticker:'SYN1',security_reference:{scheme:'SYNTHETIC',value:'positive'}}]},snapshot={themes:[{holdings:[{security_reference:{value:'zero',scheme:'SYNTHETIC'},quantity:'0'},{security_reference:{scheme:'SYNTHETIC',value:'positive'},quantity:'1'}]}]};assert.deepEqual(P.positiveHeldSymbols(snapshot,catalog),['SYN1']);
  const idByTicker=new Map([['SYN0','syn0'],['SYN1','syn1']]),ram={state:'NOT_AVAILABLE',rows:[{ticker:'SYN0',weight:null},{ticker:'SYN1',weight:null}]},context={catalog,idByTicker,ram,heldSymbols:['SYN1']};assert.equal(P.factsFor('SYN0',context).held,false);assert.equal(P.factsFor('SYN1',context).held,true);
 });
+test('manual invalidation event requires provenance and never parses AI text',()=>{
+ const storage=memory();P.saveThesis(storage,'SYN','Synthetic thesis','Synthetic condition');
+ assert.throws(()=>P.saveThesis(storage,'SYN','Synthetic thesis','Synthetic condition',{status:'OCCURRED',source:'',grade:'SIGNAL'}),/INVALIDATION_SOURCE_REQUIRED/);
+ P.saveThesis(storage,'SYN','Synthetic thesis','Synthetic condition',{status:'OCCURRED',source:'Synthetic filing link',grade:'EVIDENCE'});assert.equal(P.read(storage).theses.SYN.event.status,'OCCURRED');
+ assert.throws(()=>P.saveThesis(storage,'SYN','Synthetic thesis','Synthetic condition',{status:'OCCURRED',source:'Synthetic source',grade:'GUESS'}),/INVALIDATION_EVENT_INVALID/);
+ P.saveThesis(storage,'SYN','Synthetic thesis','Synthetic condition',{status:'UNKNOWN',source:'',grade:'BELIEF'});assert.equal(P.read(storage).theses.SYN.event.status,'UNKNOWN');
+});
