@@ -95,7 +95,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "95ea466f3bff4a6494b4879bbc6a8b6f1826c55be24ec981f6a65cd64ac37ca4",
+    "app.js": "538182d0860d29372cae47a3e1bcea848171e4e7dd84afe330ef085bb6c43cb0",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "c7a866e15575e65cea8144412b13e7961be3e5b08f7ab6b2bcfa019db4deb1d4",
@@ -113,7 +113,7 @@ APPROVED_SHA256 = {
     "style.css": "e30a3a1808d4a8e0bcb7af0f2056a3595132de050711d7bb4e7ba9b692e4f6c0",
     "sec-disclosures.js": "26286bc51df4edc15ed025a616378f4e524c88d0e7c9870499497167a606061a",
     "price-store.js": "c9a3f46ef81be16df707292f45034d16e387b0bde1b6d1a52654902fb523c500",
-    "playbook-screen.js": "3c6b05e07269a9d73874b25ab096e8e9319a0fb6b978cf65af22bcf7b13366b8",
+    "playbook-screen.js": "02d26d500425c68c03b0811039c0ec475a728331e7ec283530eedab87aa20545",
     "news-signals.js": "10910c4be310791fc7854813d9de3d2057d95a64d1b205a19e8707165ee4f939",
     "dart-disclosures.js": "64571f9f6a09e5c99bac54a510aad69589dbe32847dc4aec0cf3f163e8fdb832"
 }
