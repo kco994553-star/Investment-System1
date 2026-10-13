@@ -26,6 +26,7 @@ function normalize(r,pooled){
  return{metrics:object(r)&&object(r.metrics)?Object.fromEntries(Object.entries(r.metrics).filter(([k,v])=>/^[a-z][a-z0-9_]{0,63}$/.test(k)&&finite(v))):{},sic:object(r)&&typeof r.sic==='string'&&/^\d{4}$/.test(r.sic)?r.sic:null,cik:object(r)&&typeof r.cik==='string'?r.cik:null,industry_group:object(r)&&typeof r.industry_group==='string'&&GROUP.test(r.industry_group)?r.industry_group:null,profile:object(r)&&r.profile==='FINANCIAL'?'FINANCIAL':'GENERAL',
   factors,qg_axes:{Q:{score:object(ax.Q)?score(ax.Q.score):null},G:{score:object(ax.G)?score(ax.G.score):null}},v_inputs:v,periods,state:object(r)&&['LIVE','STALE'].includes(r.state)?r.state:'NOT_AVAILABLE',in_cross_section:pooled};
 }
+const frozenCopy=x=>{const copy=JSON.parse(JSON.stringify(x));function freeze(v){if(object(v)||Array.isArray(v)){Object.values(v).forEach(freeze);Object.freeze(v);}return v;}return freeze(copy);};
 /* SecQgv2.toInputs() result (or a lightly checked payload) -> {as_of, records:{key: record}, count}. */
 function fromInputs(inputs){
  if(!object(inputs)||!object(inputs.records))throw Error('SEC_QGV2_INVALID');
@@ -33,7 +34,9 @@ function fromInputs(inputs){
  for(const code of Object.keys(inputs.records).sort()){if(!CODE.test(code))throw Error('SEC_QGV2_INVALID');const r=inputs.records[code],live=object(r)&&['LIVE','STALE'].includes(r.state),cik=object(r)?r.cik:null;
   const pooled=live&&!(cik&&seen.has(cik));if(live&&cik)seen.add(cik);records[code]=normalize(r,pooled);}
  for(const[id,r]of Object.entries(object(inputs.target)?inputs.target:{})){if(!ID.test(id))throw Error('SEC_QGV2_INVALID');records['TARGET:'+id]=normalize(r,false);}
- return Object.freeze({as_of:typeof inputs.as_of==='string'?inputs.as_of:null,records:Object.freeze(records),count:Object.keys(records).length});
+ // Keep the source TARGET rows in RAM for exact-period disclosure confirmation. The strict reader supplies these rows;
+ // normalization must not discard their price-free source dates or replace them with an inferred confirmation.
+ return Object.freeze({as_of:typeof inputs.as_of==='string'?inputs.as_of:null,target:frozenCopy(object(inputs.target)?inputs.target:{}),records:Object.freeze(records),count:Object.keys(records).length});
 }
 // Light structural check used only when the strict SecQgv2 reader is absent; price-like keys fail closed.
 function light(p){

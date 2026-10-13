@@ -113,7 +113,7 @@ APPROVED_SHA256 = {
     "style.css": "e30a3a1808d4a8e0bcb7af0f2056a3595132de050711d7bb4e7ba9b692e4f6c0",
     "sec-disclosures.js": "26286bc51df4edc15ed025a616378f4e524c88d0e7c9870499497167a606061a",
     "price-store.js": "c9a3f46ef81be16df707292f45034d16e387b0bde1b6d1a52654902fb523c500",
-    "qgv2-inputs.js": "e167e4eb8153c4850a7acc0f5399122bd76a8d94f8f10e49361b9272e3aa26ca",
+    "qgv2-inputs.js": "f1e7eb8b54168861495a0d3ac8de30739b004b300ff61ccc9f4de1db5aa0943d",
     "scoring-default.js": "b7df8e1f509d18320ace74fbeaeabc8e493ad9fac66c3592362cfd8b5fd05f6e",
     "qgv-v2.js": "6a348f70e835ff674195fca01545ddd89063edcda6b21d332dde4455b9fc750d",
     "qgv-scores.js": "1ae5042fe67814f4a3b58da8f19afb5bc19f8b3bfc303923916f472e6dedd100",
