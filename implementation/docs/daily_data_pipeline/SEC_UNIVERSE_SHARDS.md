@@ -49,3 +49,12 @@ python implementation/tools/sec_universe_collect.py \
 - 검증: Python `require_universe_qg`(Pages guard `universe_qg_boundary`), JS `SecUniverseQg.validate`(`web_assets/sec-universe-qg.js`). JS==Python: `tests/fixtures/sec_universe_qg_vectors_v1.json`(`tools/sec_universe_qg_reference.py --write`로 재생성, `tools/sec_universe_qg_node_test.js`).
 - UI 전용 배포(cockpit-pages)의 `--preserve-only`가 두 파일을 함께 보존한다. 오프라인 빌드에는 없음(404, `empty_public_screens.js` ABSENT). 화면 표시(S06)는 다음 작업이며 지금은 `SecUniverseQg.loadInputs`(404 → null) 수준만 있다.
 - 로그: 고정 코드와 개수만(`SEC_UNIVERSE_QG shard=… codes=… scored_codes=… live=… stale=… not_available=… factor_scores=…`). 이름·값·URL·비밀값 없음.
+
+## 공개 QGV v2 Q·G 파일 `sec-qgv2.json` (사용자 결정 2026-10-13, v2 잠정 기본값 · GSQ-022 승인 대기)
+
+- 생성: TARGET 단계(`public_screens_pipeline.py --live`)가 TARGET SEC bytes로 TARGET 행을 계산해 같은 출력 폴더에 임시 저장(Universe 행은 NOT_COLLECTED)하고, 이어지는 shard 단계(`sec_universe_shares.py --live`)가 그 TARGET 행 + 직전 Pages 사본 + 당일 shard 행(이미 받은 같은 bytes, 추가 SEC 요청 없음)을 병합한 뒤 **게시 시점에 전체 LIVE/STALE 행으로 백분위를 다시 계산**한다. 워크플로 변경 없음.
+- 방법·개념 목록·기간 규칙·FINANCIAL 프로필·백분위 규칙: [QGV_V2_QG_METHOD.md](../qgv_scoring_standard/QGV_V2_QG_METHOD.md). 비중은 후보안 기본값 그대로(튜닝·Holdout 없음), v1은 변경 없음.
+- 병합: 주식수·Q·G v1 파일과 같은 규칙(행별 acquired_at, 데이터 없는 새 행은 기존 행을 지우지 않음, 14일 초과 STALE, 직전 사본 네트워크 실패 시 아무것도 쓰지 않고 exit1). v2 계산·쓰기 실패는 `SEC_QGV2 OUTPUT_FAILED previous_kept`로만 기록하고 다른 두 파일에는 영향 없음.
+- 검증: Python `require_qgv2`(Pages guard `qgv2_boundary`), JS `SecQgv2.validate`(`web_assets/sec-qgv2.js`) — 공개된 원지표로 모든 요인·축 점수·peer 수를 다시 계산해 대조. JS==Python: `tests/fixtures/sec_qgv2_vectors_v1.json`(`tools/sec_qgv2_reference.py --write`), `tools/sec_qgv2_node_test.js`.
+- UI 전용 배포의 `--preserve-only`가 함께 보존한다. 오프라인 빌드에는 없음(404, `empty_public_screens.js` ABSENT).
+- 로그: 고정 코드와 개수만(`SEC_QGV2_TARGET staged …`, `SEC_QGV2 shard=… cross_section=… q_scored=… g_scored=… target_live=…`).

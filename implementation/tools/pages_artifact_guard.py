@@ -30,6 +30,7 @@ from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_in
 from investment_system.product.public_engine_screens import FILENAMES as SCREEN_FILENAMES, require_public_screen
 from investment_system.universe.sec_universe_shares import FILENAME as UNIVERSE_SHARES_FILENAME, require_universe_shares
 from investment_system.universe.sec_universe_qg import FILENAME as UNIVERSE_QG_FILENAME, require_universe_qg
+from investment_system.universe.sec_qgv2 import FILENAME as QGV2_FILENAME, require_qgv2
 from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDGER_FILENAME, require_ledger as require_forward_ledger
 from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
 from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES_FILENAME, require_universe_codes
@@ -53,6 +54,7 @@ APPROVED_SHA256 = {
     "virtual-trading-v-history.js": "d616dc45bc769bc870020529f55275fda93490eea4ba6e54b50bd9f91cbb6f9f",
     "virtual-trading-signals.js": "14299ae33ae57b4c2a68c90256db0426680fcd6a09900365f8e65665a0df1808",
     "sec-universe-qg.js": "4364791b338d04be28811efb8588806d8c653fca9e36eb75c86014758471f414",
+    "sec-qgv2.js": "64fc0cfaecb5bb3fa3381203b4b5f741c3b7204c2e738bc6f8154366526d4e51",
     "device-valuation.js": "06669cda863cd4dfa87108f54e03b75c9321989967da7ed54b03c921143cfedf",
     "dcf-parameters-defaults.js": "3f9498ef6177b9dcd3c4fa80077c8480750be93668f57bd5ed5ed3b5509a8473",
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
@@ -98,14 +100,14 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "9fa1d20f59c7fed1c32d227632b68674c32f99f6f569cee09995b568be6edc53",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "3833f7d967421fea1044c9fede5f3578ef90356f35a302d7dab6500ba28c4753",
+    "index.html": "aa882cbb520f056e4d11ce974814cb45e9ceb3fe5a27d26438975d811a236d11",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "d48a9376677319f28a6c4cc93d74a077009ba476d76c9d7e5d9b1c308362a404",
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -236,6 +238,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == UNIVERSE_QG_FILENAME:
             try: require_universe_qg(value)
             except ValueError: violations['universe_qg_boundary'] += 1
+        elif name == QGV2_FILENAME:
+            try: require_qgv2(value)
+            except ValueError: violations['qgv2_boundary'] += 1
         elif name == FORWARD_LEDGER_FILENAME:
             try: require_forward_ledger(value)
             except ValueError: violations['forward_ledger_boundary'] += 1
