@@ -64,6 +64,11 @@ def universe():
     c['NYSE:SYNV1'] = _company(27, 'synthetic_group_a', v=False)                  # no v_inputs
     c['NYSE:SYNR1'] = _company(28, 'synthetic_group_a', cagr=None)                # realized growth missing
     c['TARGET:synt'] = dict(_company(29, 'synthetic_group_a', q=45.0), in_cross_section=False)  # TARGET-only row: ranked, not pooled
+    # Cyclical type (PLAYBOOK_V1 §13-2): EBIT-based yield on revenue × 5-year mean operating margin; < 5 margins -> NA.
+    c['NYSE:SYNY1'] = _company(30, 'synthetic_group_a', memberships={'cyclical': 0.9})
+    c['NYSE:SYNY1']['v_inputs'].update(revenue=900.0, operating_margin_history=[{'period_end': f'{2020 + y}-12-31', 'value': 0.08 + 0.02 * y} for y in range(6)])
+    c['NYSE:SYNY2'] = _company(31, 'synthetic_group_a', memberships={'cyclical': 0.9})
+    c['NYSE:SYNY2']['v_inputs'].update(revenue=900.0, operating_margin_history=[{'period_end': f'{2022 + y}-12-31', 'value': 0.1} for y in range(3)])
     c['NYSE:SYNA1.B'] = dict(c['NYSE:SYNA1'], in_cross_section=False)            # second listing of one issuer
     return c
 

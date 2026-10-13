@@ -126,8 +126,11 @@ def test_core_v_factor_missing_makes_v_na_never_zero():
     assert data()['core_v_factors'] == vs.core_v_factors() and len(vs.core_v_factors()) == 7
     for c in cases.values():
         assert vs.v_axis_detail(c['view']) == c['expected']
-    assert cases['core_factor_missing']['expected']['state'] == 'NOT_AVAILABLE'
-    assert vs.v_axis(cases['core_factor_missing']['view']) is None
+    # PLAYBOOK_V1 §13-1: >= 50 V weight present and an anchor factor -> renormalized partial V; otherwise NA.
+    assert cases['core_factor_missing']['expected']['state'] == 'OK' and cases['core_factor_missing']['expected']['weight_percent'] == 90
+    assert vs.v_axis(cases['anchors_missing']['view']) is None and vs.v_axis(cases['below_half_weight']['view']) is None
+    assert cases['anchors_missing']['expected']['reason'] == 'V_CORE_FACTOR_MISSING'
+    assert vs.V1_V_RULE['min_weight_percent'] == 50.0 and vs.V1_V_RULE['anchor_any'] == ('fundamental_value', 'reverse_dcf')
     assert cases['all_factors']['expected']['composition'] == '+'.join(vs.core_v_factors())
 
 

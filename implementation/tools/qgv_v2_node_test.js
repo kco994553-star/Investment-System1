@@ -32,7 +32,9 @@ test('missing is NOT_AVAILABLE, never 0; results carry no price or market cap',(
  for(const r of Object.values(out)){for(const k of Object.keys(V2.WEIGHTS.V)){assert.equal(r.factors[k].score,null);assert.equal(r.factors[k].state,'NOT_AVAILABLE');}assert.equal(r.axes.V.score,null);assert.ok(r.flags.includes('V_NOT_AVAILABLE'));}
  const full=vectors.cases.find(x=>x.id==='balanced-default'),res=V2.scoreUniverse(full.input.companies,full.input.synthetic_market,{typeConfig:TC,parameters:P}),text=JSON.stringify(res);
  assert.ok(!/"price"|"market_cap"|"marketcap"|"ev"\s*:|month_closes/i.test(text));
- for(const[code,q]of Object.entries(full.input.synthetic_market))assert.ok(!text.includes(':'+q.price+','),'price echo '+code);});
+ // No market cap or EV value is carried: none of price × shares or EV appears as a number.
+ const nums=new Set();JSON.parse(text,(k,v)=>{if(typeof v==='number')nums.add(v);return v;});
+ for(const[code,q]of Object.entries(full.input.synthetic_market)){const v=full.input.companies[code].v_inputs;if(!v)continue;const mc=q.price*v.diluted_shares;assert.ok(!nums.has(mc)&&!nums.has(mc+v.total_debt-v.cash),'market cap / EV echo '+code);}});
 test('balanced preset reproduces the GSQ-017 type weights; the gate excludes V and flags 가치 함정 주의',()=>{
  const fb={Q:34,G:33,V:33},[tw]=V2.typeAxisWeights({growth:1},TC),w=V2.compositeWeights(V2.PRESETS.balanced.weights,tw,fb);
  for(const p of ['Q','G','V'])assert.ok(Math.abs(w[p]-tw[p])<1e-9);
