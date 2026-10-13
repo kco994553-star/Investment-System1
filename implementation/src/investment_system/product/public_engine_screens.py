@@ -18,6 +18,7 @@ from ..qgv.raw_map import map_raw
 from ..qgv.sec_m2 import _mapping_view, _current_ambiguity
 from ..providers.sec_m1 import build_input
 from ..providers.sec_filing_timing import build_filing_timing_pattern
+from ..providers.sec_8k_disclosures import CONFIRM_MAX_DAYS, CONFIRMATION_BASIS, earnings_confirmation, latest_period_end
 from ..macro.primary_contract import AXES, DIMENSIONS, SOURCE_REGISTRY, ENDPOINTS, LEVEL_REQUIRED, SourceReceipt
 from ..macro.government_screen import build_government_macro_screen
 from ..macro import growth_inflation_v0 as macro_v0
@@ -158,8 +159,9 @@ def _require(name,payload):
     elif name=='sec-filing-windows.json':
         _keys(data,('companies',));_need(isinstance(data['companies'],dict) and set(data['companies'])==set(OFFICIAL_V11_TARGETS))
         for row in data['companies'].values():
-            _keys(row,('state','role','confirmed_earnings_date','groups','source_hashes'))
-            _need(row['state'] in STATES and row['role']=='ESTIMATED_PATTERN_NOT_CONFIRMED' and row['confirmed_earnings_date'] is None and isinstance(row['groups'],list))
+            # earnings_confirmation is optional so copies published before it existed stay valid.
+            _keys(row,('state','role','confirmed_earnings_date','groups','source_hashes')+(('earnings_confirmation',) if 'earnings_confirmation' in row else ()))
+            _need(row['state'] in STATES and row['role']=='ESTIMATED_PATTERN_NOT_CONFIRMED' and isinstance(row['groups'],list))
             states.append(row['state']);_need((row['state']=='NOT_AVAILABLE')==(not row['groups']))
             _source_refs(row,sources,{'companyfacts':'SEC_COMPANYFACTS','submissions':'SEC_SUBMISSIONS'},cut,payload['stale_after_seconds'],row['state'])
             for group in row['groups']:
@@ -170,6 +172,7 @@ def _require(name,payload):
                 for w in group['observed_filing_windows']:
                     _keys(w,('month','day_min','day_max','count'))
                     _need(all(type(v) is int for v in w.values()) and 1<=w['month']<=12 and 1<=w['day_min']<=w['day_max']<=31 and w['count']>0)
+            _earnings_confirmation(row,cut)
     elif name=='macro-screen.json':
         _keys(data,('axes','dimensions','cells','observations','regime','pit_status')+tuple(k for k in ('growth_inflation_v0','raw_axes_v0') if k in data))
         _need(data['axes']==list(AXES) and data['dimensions']==list(DIMENSIONS) and data['regime'] is None and data['pit_status'] in ('OBSERVED_BOUND_ONLY','NOT_VERIFIED'))
@@ -228,6 +231,17 @@ def _require(name,payload):
                 _need(c['kind']==expected)
     _need(payload['state']==_aggregate(states))
     return payload
+
+
+def _earnings_confirmation(row,cut):
+    # Estimated window -> confirmed date only from an 8-K Item 2.02 released after the latest estimated period end.
+    conf=row.get('earnings_confirmation')
+    if conf is None:_need(row['confirmed_earnings_date'] is None);return
+    _keys(conf,('basis','period_end','accession','accepted_at'))
+    _need(row['state']!='NOT_AVAILABLE' and conf['basis']==CONFIRMATION_BASIS and isinstance(conf['accession'],str) and re.fullmatch(r'\d{10}-\d{2}-\d{6}',conf['accession']) is not None)
+    accepted=clock(conf['accepted_at']);period=_day(conf['period_end']);released=_day(row['confirmed_earnings_date'])
+    _need(accepted<=cut and latest_period_end(row['groups'],cut.date())==period and period<released<=min(period+timedelta(days=CONFIRM_MAX_DAYS),cut.date()))
+    _need((accepted.date()-released).days in (0,1))
 
 
 def require_public_screen(name,payload):
@@ -397,7 +411,7 @@ def _generate(manifest,root,as_of,stale_after):
     _need(all(isinstance(manifest[k],list) for k in ('sec','macro','thirteen_f')) and len(manifest['sec'])<=17 and len(manifest['macro'])<=64 and len(manifest['thirteen_f'])<=20)
     qg={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'factors':{fid:{'score':None,'state':'NOT_AVAILABLE'} for fid in sorted(FACTORS)}} for cid in OFFICIAL_V11_TARGETS}
     types={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'memberships':dict.fromkeys(PRICEFREE_TYPES),'config_version':None,'metrics':dict.fromkeys(PRICEFREE_METRICS)} for cid in OFFICIAL_V11_TARGETS}
-    windows={cid:{'state':'NOT_AVAILABLE','role':'ESTIMATED_PATTERN_NOT_CONFIRMED','confirmed_earnings_date':None,'source_hashes':{},'groups':[]} for cid in OFFICIAL_V11_TARGETS}
+    windows={cid:{'state':'NOT_AVAILABLE','role':'ESTIMATED_PATTERN_NOT_CONFIRMED','confirmed_earnings_date':None,'earnings_confirmation':None,'source_hashes':{},'groups':[]} for cid in OFFICIAL_V11_TARGETS}
     valuation={cid:_valuation.empty_row() for cid in OFFICIAL_V11_TARGETS}
     sec_sources=[];type_reasons=[];seen=set()
     try:
@@ -421,7 +435,8 @@ def _generate(manifest,root,as_of,stale_after):
         valuation[cid]=_valuation.project_row(m1,state,refs,_current_ambiguity(m1) if m1['status']=='READY' else False)
         timing=build_filing_timing_pattern(cid,sub,acquired,as_of)
         if timing['groups']:
-            windows[cid].update(state=state,groups=timing['groups'])
+            confirmed,confirmation=earnings_confirmation(cid,sub,timing['groups'],acquired_at=acquired,as_of=as_of)
+            windows[cid].update(state=state,groups=timing['groups'],confirmed_earnings_date=confirmed,earnings_confirmation=confirmation)
         raw,scores,_=qg_factor_scores(cid,m1)
         if scores is not None:
             for fid,score in scores.items():
