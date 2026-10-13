@@ -68,3 +68,6 @@ test('v2 V comparison uses observed same-basis history instead of v1 or live-poo
  globalThis.VirtualTradingVHistory={v2Comparison:(s,id,sessions,profile)=>{assert.equal(s,storage);assert.equal(id,'syn');assert.equal(profile,'SYNTHETIC-PROFILE');return{state:'READY',basis:'v2',current:55,previous:45,reason:null};}};assert.equal(P.factsFor('SYN',context).v_now,55);assert.equal(P.factsFor('SYN',context).v_prev20,45);
  globalThis.VirtualTradingVHistory={v2Comparison:()=>({state:'NOT_AVAILABLE',reason:'INSUFFICIENT_OBSERVED_SESSIONS'})};assert.equal(P.factsFor('SYN',context).v_prev20,null);assert.equal(P.factsFor('SYN',context).v_now,40);if(previous===undefined)delete globalThis.VirtualTradingVHistory;else globalThis.VirtualTradingVHistory=previous;
 });
+test('device interests become W1 watch facts independently of holding quantity',()=>{
+ const context={idByTicker:new Map([['SYN','syn']]),heldSymbols:[],interests:['syn']};assert.equal(P.factsFor('SYN',context).watched,true);assert.equal(P.factsFor('SYN',context).held,false);assert.equal(P.factsFor('OTHER',context).watched,false);
+});

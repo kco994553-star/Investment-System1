@@ -41,7 +41,7 @@ APPROVED_SHA256 = {
     "playbook-engine.js": "bb6e58d879048d37a1aa7579d5f937a055de84b587f6cd54986ee4a5ed55022b",
     "virtual-trading-compare.js": "8cf5bd3bec35ebe688d3982928ce3f6771e1ea4364966fb51a5f29cfeee0642c",
     "report-benchmarks.js": "7a274ba8467880791df30deb17145396111e38c2d2598f7c654a0564c00aa6e9",
-    "virtual-trading-runner.js": "ce55e6428f52f81ff664870fad5f0944f7b4f46f697058aa018d919d7da561db",
+    "virtual-trading-runner.js": "0ae8fe1eb2387c05860da965efb363b03bdb69048ae433486acd39c41b58322d",
     "virtual-ledger-sheets.js": "32cb4acd92f39ede177634500dbd222dabbee951aa77407436ae48ed60b08060",
     "thirteenf-quarter.js": "ed5dbdb13e98e9e44cee493d4bff2c647edd1cb7f742ae101419575a2b255e32",
     "worker-quote-fallback.js": "e72a72d1885a23c2a35706c8d4f333060b0c451d32a00e501dc63a30416b754c",
@@ -92,7 +92,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "48b6ca545957af298cb00138e277316d0f6829c3c9932523fa5184e5f1ec916d",
+    "app.js": "08c2410f18c7fba252cfbe94a155643354b4ac5c2dd1f2d1257cf335b998564a",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "c7a866e15575e65cea8144412b13e7961be3e5b08f7ab6b2bcfa019db4deb1d4",
@@ -100,15 +100,16 @@ APPROVED_SHA256 = {
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "174e1039be5c3d3757c8938070887154fe91cda0d87b5850e1330ef491554c93",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
-    "google-sheet-quotes.js": "9fa1d20f59c7fed1c32d227632b68674c32f99f6f569cee09995b568be6edc53",
+    "google-sheet-quotes.js": "cbb3d16620bf84da68ca3e00040e8d757d3d6378363df8e633e53bdd4b024a07",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "600dec5f1af8943197c5a7d046b22328433445ddb3224f93875c268675e60ca3",
+    "index.html": "ceb1316839064a09bdc3c3f54bf316ed222cbb782fddaa7a64010270251d764b",
     "locale.js": "bc7a3d8fc90bd35b97050a2aac9ba4c660679e9728fc6f5eede50071fea6ab2e",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
     "style.css": "d48a9376677319f28a6c4cc93d74a077009ba476d76c9d7e5d9b1c308362a404",
-    "playbook-screen.js": "65d9a010c720a4313ed52e14330f774a3d15d40a830b2586bb1ba18bda39311f"
+    "price-store.js": "c9a3f46ef81be16df707292f45034d16e387b0bde1b6d1a52654902fb523c500",
+    "playbook-screen.js": "39c6ac1210256038281741d217cc5d50917e7ff224f086a73e4f82d658744714"
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
