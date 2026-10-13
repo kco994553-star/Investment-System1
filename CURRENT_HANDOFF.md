@@ -1,4 +1,180 @@
-# 현재 인수인계 — 2026-10-11 (Claude Code 메인 개발)
+# 현재 인수인계 — Codex 2026-10-13
+
+최신 사용자 결정은 [WORKING_RULES.md](WORKING_RULES.md)와 이 절에 적용한다. 아래 이전 인수인계는 역사이며 현재 열린 PR·결정·배포 상태를 대체하지 않는다.
+
+## 현재 위치
+
+- canonical: `claude/investment-system-top500-validation-alrugm`, 확인 HEAD `e048963f`(#211 병합, 2026-10-13 14:07:31 UTC).
+- **#222 GSQ-022/023 병합 완료**: exact head `d25161e4`, 필수 6체크 SUCCESS·실패 0에서 정상 merge. force/admin 없음. 별도 수동 배포·Worker 배포는 실행하지 않았다.
+- 기존 승인 병합 순서: **#222 → #224 → #226 → #225 → #210 → #215 → #211**. 새 레인 PR: D → A → B → C → E. 모든 병합은 D가 한 건씩 수행한다.
+- **#224 병합 완료**: exact head `39b474c3`, 필수6 SUCCESS/실패0, normal merge `84998f27`. A가 업종 하위 지표 표본<8 GENERAL 전체분포 대체 규칙과 회귀 테스트 확인. canonical merge-forward 후 head `39b474c3` push 후 CI 성공 확인하여 병합.
+- **#226 병합 완료**: exact head `66e59f9b`, 필수6 SUCCESS/실패0, normal merge `8382b1b5`. B의 10/13 승인 해석 commit `80cb2fdc`를 normal cherry-pick, 가드 해시 갱신하여 head `66e59f9b` push. Python playbook·Pages guard 50PASS, JS225PASS.  #224 기준 동기화·CI 성공 후 병합. Integral SIC 숫자표현 일치 followup은 B 화면 브랜치에 포함.
+- **#225 병합 완료**: exact head `1b1cf960`, 필수6 SUCCESS/실패0, normal merge `c08faa15`(12:40:49 UTC). Prices_D/M 코드 승인 범위; Worker 배포는 별도.
+- **#210 병합 완료**: exact head `8cead6ac`, 필수6 SUCCESS/실패0, normal merge `7136aa3f`(13:11:19 UTC). 당시 다음은 #215 → #211. 현재 #211까지 모두 완료.
+- **#215 병합 완료**: exact head `0b4151a5`, 필수6 SUCCESS/실패0, normal merge `7a3745d5`(13:47:22 UTC). 당시 다음은 #211, 현재 모두 완료. 모든 레인 정상 merge-forward/최신 CI 진행.
+- **#211 병합 완료**: exact head `67726de4`, 필수6 SUCCESS/실패0, normal merge `e048963f`(14:07:31 UTC). 기존 사용자 승인 7개 순서 전부 완료. DART 실 Secret 연결 성공은 다음 수집 실행 전 미확인; 코드/오프라인 계보 검증만 완료.
+- #227: 로컬 PNG/data 이미지 번들·직접iframe OFF 구현, 브라우저390/1280 로고2·iframe2 PASS. PNG 실제 decode/RGBA8 재인코딩 및 잘못된 raster/bitdepth/tRNS 회귀15PASS·E 재검토 중요 문제0. D 별도 worktree `d-227`, 후속 보완 commit·최신 기준 동기화·CI 준비 중. **병합 재승인 필요**, 외부 지원 조사 없음.
+- DART 키 등록 사용자 확인됨. C 보고: 최신 실행 BEA_USERID 설정 마스킹 정상; 예전 빈 전달 로그를 근거로 재등록 요청하지 않는다. Fed 원인404/빈 추출, 공식 소스확인403이며 반복 시도 금지.
+- Worker Universe504(하이픈 포함)·HYG·IEF 확대는 사용자 범위 승인, #229 `41e02736` 최신6SUCCESS·canonical7136 동기화 완료. 로컬 실제504 및 Worker169·Python2648·Node47·Pages82 PASS. 기존 #211 우선 뒤 범위 승인대로 병합. 범위 승인은 이미 있으므로 재승인 요청하지 않는다. 배포는 별도 결정 전 기존 Worker 유지.
+- **10/19 v2 기록 시작은 아직 확정하지 못함**. A의 V·공개입력·v1/v2 원장 준비와 신규 PR 승인 후 실제 시작일을 보고한다. 소급하지 않는다.
+
+## 레인별 진행 (진행분은 브랜치·PR로 보존)
+
+| 레인 | 완료 | 진행 | 대기·막힘 | 다음 |
+| --- | --- | --- | --- | --- |
+| A QGV v2 | #224 Q/G 병합, V·원장2·기기별 v2 V이력·#18 optional 투영 구현 | #234 d9107b87 발행·5SUCCESS/build진행. Python2673·Node49·Pages86·브라우저15PASS | 신규 계산/공개 PR 승인; 실제 품질224/504(3/7샤드), Q207/G222, 전체504 미완료 | 10/19 실제 기록 미확정, 승인·배포 후 준비일부터 소급 없이 |
+| B 플레이북 | #226 engine 병합; 19패널·백업4·E5·R1·W1·정보E4·채점 구현 | #233 최신 canonical 동기화·전체 CI | TARGET v1은 A 선행; 휴장일 채점 B-1은 NA | 화면 전용 필수6 성공 뒤 순서에 따라 병합 |
+| C 데이터·매크로 | #210 병합; DART6FY 공급·5경고등·운영 연결 준비 | 새 clean 브랜치 공용등록/emptyfixture/guard88 준비, 최종전체검증 뒤 PR 발행; #215→#211 통합 | Fed 소스403; 실 DART 첫 실행 미확인, A shared API 선행 | old #232 보존/병합 금지, 대체 PR 검증 후 승인 요청 |
+| D 운영 | #222·224·226·225·210 순서 병합; D4 검색/복원/404 기존6테스트 PASS | #215→#211, 이메일 guard #230, #227 PNG 보완, 공용 조정 | #227 재승인, 배포 D-DEPLOY | 정확 HEAD6체크 후 직렬 병합·인수인계 push. guard240+262subtests/E 독립84+137·우회탐침 PASS |
+| E 13F·테마·Universe | E1·E4·E5 기존 구현 검증; 6808/6808 역사검증+실 privateRelease 존재/크기/digest 확인 | #231 94d2b6cb 보강·canonical7136 동기화·필수6SUCCESS | E2 공개경계 승인 대기; 없는 W2/E4 데이터 NA/비활성 | 최신6체크 유지. Release 무만료, artifact만 2026-12-26 만료 |
+
+## 열린 PR 실제 상태 (2026-10-13 조회)
+
+필수 체크는 repository-guard / ingest-and-gate / build / validate / guard / presentation. 역사 base의 0/6은 그 당시 별도 체크의 실패를 뜻하지 않는다. 최신 체크를 다시 조회한 뒤 병합하며, 과거 PR은 자동 닫지 않는다.
+
+| PR | HEAD | 필수 체크 | 충돌 | 권장 | 이유 |
+| --- | --- | --- | --- | --- | --- |
+| #234 | `d9107b87` | 5/6 | MERGEABLE | 승인 대기 | A v2 V·공개입력·원장2 구현; 기본v2 결정은 이미 승인 |
+| #233 | `eb73c71c` | 0/6 | MERGEABLE | 6체크 후 화면 병합 | B 플레이북·백업, A 순서/입력 선행 |
+| #232 | `7bd9881f` | 0/6 | CONFLICTING | 유지·병합 금지 | new clean 브랜치 대체, 공개 역사 보존 |
+| #231 | `94d2b6cb` | 6/6 | MERGEABLE | 공개경계 승인 대기 | 필수6 SUCCESS; E 13F 원값 보강 |
+| #230 | `9b3291be` | 5/6 | MERGEABLE | 6체크 후 병합 | D 운영·이메일 guard |
+| #229 | `41e02736` | 6/6 | MERGEABLE | 승인순서 뒤 병합 | 필수6 SUCCESS; 범위 이미 승인/배포 별도 |
+| #228 | `488d1b87` | 5/6 · 실패 build | MERGEABLE | 닫기 제안 | D230 포함; 자동 닫지 않음 |
+| #227 | `d9197b8a` | 5/6 | MERGEABLE | 수정본 재승인 | PNG검증 포함2694/Node48/로고iframe4PASS; 빌드수집 |
+| #71 | `923ba8ea` | 5/6 | CONFLICTING | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #43 | `4c5f7ff9` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #31 | `c9e0fa7e` | 1/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #29 | `d0444583` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #19 | `c3dbf8a0` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #18 | `2c088cea` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #17 | `21039a0a` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #16 | `ef65caa5` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #15 | `ce587040` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #14 | `0d48d863` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #13 | `8bb990bd` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #12 | `61d3352d` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #11 | `a2e0790d` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #10 | `5eec129e` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #7 | `a013f1c1` | 0/6 | MERGEABLE | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+| #4 | `ff78c4f6` | 1/6 | CONFLICTING | 유지 | 과거 별도 base; 자동 병합·닫기 권한 없음 |
+
+#152·#153은 #178 대체로 이미 닫힘(10/11 기록). 기존 레거시9종 app_nav_ia / device_actual / google_sheet_storage / manual_quotes / prompt_field_guide / web_mvp / web_research_guard / web_state_presentation / global_language_search 모두 현행 CI manifest에 등록됨. 삭제 없음; 현재 UI 검증을 수행한다.
+
+## 사용자 결정 대기
+
+[USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md)에 남은 결정만 기록한다. 승인된 기존 PR 순서·플레이북26건·DART 등록·Worker 확대는 다시 대기 질문하지 않는다. 신규 계산·워크플로·공개경계·외부연결·GSQ PR은 완성본 승인, #227은 수정본 재승인. 테스트/문서/화면만이면 필수6체크로 자체 병합 가능.
+
+## 다음 할 일 5개
+
+1. #222→#224→#226→#225→#210 완료. 기존7개 완료. #230·#229 최신e048963f 동기화·필수6 재확인 후 승인 범위 병합.
+2. #230 이메일 패턴 가드: 기존 Frozen의 동일 문자열만 유지; 정확 pre-session 공개 PR root/path의 역사만 보존. 현재 tree·새 commit·추가 후 삭제는 예외 없음. force 없이 역사 유지.
+3. A 최종 계산 PR·전체회귀/부분 품질보고 보존, B/E/Worker common 대기 해제 후 자체 검증 병렬 진행.
+4. #227 PNG strict decode 후속·현대 canonical CI·검토본으로 재승인. #229 범위 승인 재요청 없이 6체크 확인, 배포 별도.
+5. 결정 B-1·A-V2·C-MACRO·E-13F·D-227·D-DEPLOY만 남김. 매 병합과 작업 완료 때 이 절과 PR 표를 갱신.
+
+---
+
+# 이전 인수인계 (참고·현재 상태 아님)
+
+# 현재 인수인계 — 2026-10-13 (Claude Code 메인 개발)
+
+## 현재 위치 (2026-10-13 세션 종료 시점, 여기서 이어받기)
+
+이 세션은 사용자 지시로 여기서 종료했다. 아래 PR은 모두 **열려 있고 병합되지 않았다**. 끝나지 않은 에이전트 작업은 각 브랜치에 `WIP:` 커밋으로 push했다. push되지 않았으면 그 브랜치에는 진행분이 없다.
+
+### 최신 지시 (우선순위, 2026-10-13)
+1. **기초 데이터**
+   - V 계산 조건(PLAYBOOK 13-1)
+   - QGV v2 계산(13-11·14). v2를 기본으로, v1은 비교용으로 함께 기록한다. 준비된 날부터 전환하고 소급 계산하지 않는다. 가능하면 10-19 전.
+   - DART 연결(#211 마무리, 13-7). 키·권한·형식 문제로 막히면 원인만 보고하고 미국 작업을 계속한다. 같은 문제로 반복 시도하지 않는다.
+2. 매크로 경고등 5개 + U3(13-5).
+3. 나머지 플레이북: 11절, 0-1절 핵심 v0, 15·16절.
+- 문서 기준·문구는 바꾸지 않는다. 모순·빈 곳은 목록으로 보고한다.
+- 숫자는 설정 파일에 넣고 v0 · UNCALIBRATED로 표시한다.
+- 병합은 사용자 승인 후. 보고는 한국어 5줄 요약 + 사용자가 결정할 것만 번호로.
+- 10-17에 10-19 시작 방식을 판단해 보고한다(아래 2가지 중 하나).
+  - v2가 10-18까지 준비되면 → 10-19에 v2로 가상거래 시작.
+  - 준비되지 않으면 → 10-19부터 원장에 v1·v2를 함께 기록하고, 가상거래는 v2 준비일에 시작.
+
+### 열린 PR (승인 대기, 권장 병합 순서)
+| PR | 브랜치 | 내용 | 상태 |
+|---|---|---|---|
+| #222 | claude/gsq-022-qgv-v2-default | GSQ-022(v2 기본·v1·v2 재정규화 50%·next_3_5y_growth 정의) / GSQ-023(가격 저장: RAM + 개인 시트) — 26E | 승인 필요 |
+| #225 | claude/prices-tab-store | 개인 시트 `Prices_D`·`Prices_M` 증분 저장, 크기·속도 보고(약 40만 셀, 4%) | 승인 필요(GSQ-023) |
+| #227 | claude/tradingview-widgets | TradingView 위젯 + 기업 로고 + `universe-domains.json`, CSP 확장 | 승인 필요(CSP). TSE 8035 = 표시 안 됨(제3자 근거), KRX 042700 = 미확인 |
+| #210 → #215 → #211 | 8-K / GDELT·IR / DART | 공시·뉴스·DART | 승인 필요. 병합은 이 순서로 |
+
+- **#211 (DART):** 10-13에 기준 브랜치를 합쳤다(head 10cc7710).
+  - 부채 정의를 단기 + 장기(유동성 포함) + 사채 + 리스로 바꿨다.
+  - pytest·노드·브라우저 51/51 통과.
+  - 컨테이너에서 opendart에 접속할 수 없어 실데이터는 병합 후 첫 실행에서 확인한다.
+  - 한국 종목 '참고 순위'(미국 504 분포 대입)는 #224 병합 후 붙인다.
+
+### 진행 중이던 작업 (이어서 할 일)
+- **V(기기) + 종합 점수 + v1·v2 재정규화 + `scoring_default`** — 브랜치 `claude/qgv-v2-v-device` @ 8a2429b2 (마지막 커밋은 WIP), **PR 아직 없음**
+  - 완료:
+    - v2 V 요인 5개, 축·종합·프리셋, `value_trap_gate`
+    - v1·v2 50% 재정규화, 13-1 v1 V 조건, v2 경기민감 정상화 이익
+    - 점수 접근자 하나로 통합, '임시 기본' 표시
+  - 테스트(58243267 기준): pytest 2606, node 46, guard PASS(81), 브라우저 51개 중 `virtual_trading_rehearsal_browser_test` 1개 실패.
+    - 실패 원인: 13-1 조건이 바뀌어 V가 기록되는데, 테스트는 아직 예전 기대값 `V_CORE_FACTOR_MISSING`을 쓴다.
+  - **다음:**
+    - 그 테스트 기대값을 13-1에 맞게 고치고 PR을 연다(#224 다음 순서).
+    - v1 경기민감 정상화 이익 반영.
+    - 공개 입력에 매출·영업이익률 이력이 없어 v2 정상화 이익은 실제로 항상 NA다.
+    - 금융사 V 정의 없음.
+    - 자기 과거 대비 요인은 PriceStore(#225) 병합 후.
+  - v2로 전환하려면 `scoring-default.js`에서 `{scoring_default:'v2', v2_since:'YYYY-MM-DD'}` 한 줄을 바꾼다(#222 승인 후).
+- **매크로 경고등 v1** — 브랜치 `claude/macro-lights-v1` @ 2512bdbf (WIP), **PR 아직 없음**
+  - 완료:
+    - Python·JS 순수 함수, 벡터 59개 JS==Python
+    - 재무부 일일 금리 곡선 수집기
+    - 공개 경고등(고용·물가·곡선), 기기 SPY 시장 경고등(RAM만)
+    - 매크로 화면 카드, `MacroLights.current()`, 재생 도구
+  - 테스트: pytest 2668, node 44, guard PASS(77), 브라우저는 pwa(로컬 Playwright 1.56)를 빼고 모두 통과.
+  - **다음:**
+    - 저장소 가드 diff 실행.
+    - PR 열기. 본문 초안은 `implementation/docs/handoff/MACRO_LIGHTS_V1_PR_BODY_DRAFT.md`.
+    - 신용 경고등은 Worker에 HYG·IEF를 추가해야 하고, 이건 별도 승인이 필요하다.
+  - 재생 요약(가격 파생값이라 공개 금지, 사용자에게만 보고됨): 평온한 시기에도 시장+신용이 동시에 켜져 위기로 잘못 판정된 사례가 있다(2015-10, 2016-01·02, 2018-12, 2025-04). 기준 점검이 필요하다.
+- **플레이북 핵심 v0 화면·기록** — 브랜치 `claude/playbook-v1-screens`
+  - **진행분 없음.** #226 끝 커밋(7cd7ff87)과 같다. 다시 시작해야 한다.
+  - 범위: 산 이유·무효화 조건(모든 보유 종목 필수), 판단 칩 → 플레이북 패널, AI 프롬프트(10절 원문), 기록·백업·E5, TARGET v1 작성 화면, 16절 한도.
+  - 출발점:
+    - 판단 칩은 `virtual-trading.js`의 `judgementHtml`을 `portfolio-screen.js`와 `daily-report.js`가 쓴다.
+    - 백업 형식은 `device-backup.js`의 `investment-device-backup/3`이다. 기록을 넣으려면 `/4`로 올리고 `/1`~`/3` 가져오기를 유지한다.
+
+### 아직 시작하지 않은 작업
+- S13 전략 프로필 v2(QGV_V2_CANDIDATE §3~§6, 과거 성과는 수익률·MDD를 함께 표시, PIT만, Holdout 제외).
+- 화면 보완 5-1~5-4: S06 '내 시총 순위(기기 계산)'·빈 상태, 요인 상세 한국어, 내부 값 라벨, S10 연구 프롬프트.
+- Worker 허용 목록 확장 PR(승인 필요): 504종목(`-` 허용, Prices 월말용)과 HYG·IEF(신용 경고등).
+- Fed DDP 패키지 ID·H15 경로 수정(예전 값이라 404·빈 HTML), BEA 수집 방식 로그 추가.
+- 전진검증 원장에 v1·v2 동시 기록(공개 데이터, 승인 필요).
+
+### 사용자 결정 대기 (10-13 보고 기준)
+1. 승인 병합: #222 → #224 → #226 / #225 / #227 / #210 → #215 → #211.
+2. Worker 허용 목록 확장 PR을 만들지(504종목, HYG·IEF).
+3. 플레이북 빈 곳 6가지:
+   - R2 Q·G 하락의 비교 기간
+   - W1을 핵심으로 둘지
+   - v2 상대적 하락 → E4(후보 코드)를 화면에 보일지
+   - 무효화 시 확신 해제 시점(8절 대 3절)
+   - 6-2 경기민감·경기방어 후보 업종군
+   - 매크로 자료 0/5일 때 확대를 막을지
+4. #227:
+   - TradingView 스크립트 방식과 iframe 방식 중 무엇을 쓸지
+   - 로고·위젯 기본값을 켜짐으로 둘지(화면 종목이 제3자에 전달됨)
+5. #224·#211 본문의 개별 질문.
+
+### 주의 사항
+- **이메일 노출 시도:** 10-13에 SEC 접속 확인 중 요청 헤더(User-Agent)에 사용자 이메일을 넣은 일이 2번 있었다(메인 1, 에이전트 1). 둘 다 프록시가 연결 전에 막아 외부로 나가지 않았다. 컨테이너에서는 sec.gov·github.io·wikidata·opendart·tradingview가 모두 막혀 있다.
+- **Pages 가드:** `files_scanned`·`ALLOWED_NAMES` 한 줄·해시 고정은 PR마다 바뀐다. 병합 순서에 따라 재고정이 필요하다.
+- **브라우저 테스트 로컬 실행:** `build_pages_cockpit.py --out <dir>` → `http.server` → `PAGES_COCKPIT_URL`과 `PRIVATE_HISTORY_URL` 지정 → 각 테스트를 node로 실행.
+
+---
+
+## 이전 판 — 2026-10-11
 
 메인 개발은 Claude Code가 맡는다(이전 코덱1·코덱2 역할 통합). 사용량이 떨어지면 이 파일만 보고 코덱스가 이어받을 수 있게 단위가 끝날 때마다 갱신한다. 이전 판(#155)의 상세 이력은 Git에 있다.
 
