@@ -155,13 +155,18 @@ def test_set_definitions_members_purpose_and_versions():
     assert [r[3] for r in deleted] == ['LEDGER_CLOSE'] and json.loads(deleted[0][10]) == {'reason': 'SET_DELETED'}
 
 
-def test_member_allowlist_matches_the_client_history_allowlist():
-    """Set members are exactly the client HISTORY_SYMBOLS minus the FX pairs (no wider symbol without a Worker change)."""
+def test_history_allowlist_extends_universe_without_expanding_virtual_set_members():
+    """Universe504 price history is approved separately from virtual set allocation."""
     script = "const Q=require(process.argv[1]);process.stdout.write(JSON.stringify(Q.HISTORY_SYMBOLS))"
     js = json.loads(subprocess.run(['node', '-e', script, str(ROOT / 'src/investment_system/product/web_assets/google-sheet-quotes.js')],
                                    capture_output=True, text=True, check=True).stdout)
     from investment_system.qgv import virtual_trading_inputs as vi
-    assert sorted(s for s in js if not s.endswith('=X')) == sorted(vi.MEMBERS.values())
+    from investment_system.universe.universe_codes import source_codes
+    universe = {code.split(':', 1)[1].replace('.', '-') for code in source_codes()}
+    expected = universe | set(vi.MEMBERS.values()) | {'HYG', 'IEF', 'KRW=X', 'JPYKRW=X'}
+    assert set(js) == expected
+    assert set(vi.MEMBERS.values()) <= set(js)
+    assert 'BRK-B' in js and 'BRK-B' not in vi.MEMBERS.values()
 
 
 def vt_members():

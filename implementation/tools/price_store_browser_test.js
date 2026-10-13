@@ -8,6 +8,8 @@
 // header is never written; no close reaches localStorage, sessionStorage or the console. Also measures the read/parse time
 // of a synthetic full-size store (504 × 60 month-ends + 40 × 1260 daily bars).
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { chromium } = require('playwright');
 const { routeEmptyPublicScreens } = require('./empty_public_screens');
 const BASE = process.env.PAGES_COCKPIT_URL || 'http://127.0.0.1:8990/';
@@ -22,6 +24,7 @@ const V = 'forward_validation/v1', VV = 'forward_validation/v1+dcf_v1_default', 
 const IDS = ['asml', 'lrcx', 'klac', 'tokyo_electron', 'hanmi', 'nvda', 'amd', 'avgo', 'qcom', 'intc', 'msft', 'googl', 'amzn', 'rtx', 'stry', 'etn', 'hubb', 'gev', 'rok'];
 const UNITS = { asml: 900, lrcx: 600, klac: 550, tokyo_electron: 500, hanmi: 450, nvda: 800, amd: 500, avgo: 500, qcom: 400, intc: 300, msft: 700, googl: 700, amzn: 600, rtx: 600, stry: 550, etn: 500, hubb: 350, gev: 300, rok: 200 };
 const DAY = 86400000;
+const UNIVERSE = JSON.parse(fs.readFileSync(path.join(__dirname, '../src/investment_system/universe/universe_codes_v1.json'), 'utf8')).map(code => code.split(':')[1].replace(/\./g, '-'));
 
 function weekdays(from, to) { const out = []; for (let t = Date.parse(from + 'T00:00:00Z'); t <= Date.parse(to + 'T00:00:00Z'); t += DAY) { const d = new Date(t); if (d.getUTCDay() % 6) out.push(d.toISOString().slice(0, 10)); } return out; }
 const SESSIONS = weekdays('2026-10-19', '2026-10-30');
@@ -123,7 +126,7 @@ async function waitFor(page, selector, timeout = 30000) {
 }
 // Waits until the last sync line names the run; on timeout the error carries the store status (codes and counts only).
 async function waitSync(page, kind) {
-  try { await page.waitForFunction((k) => (document.querySelector('[data-price-store-last]')?.textContent || '').includes(k), kind, { timeout: 60000 }); }
+  try { await page.waitForFunction((k) => (document.querySelector('[data-price-store-last]')?.textContent || '').includes(k), kind, { timeout: kind === 'UNIVERSE504' ? 180000 : 60000 }); }
   catch (e) { const s = await page.evaluate(() => { const x = PriceStore.status(); return JSON.stringify({ state: x.state, fetch: x.fetch, reason_codes: x.reason_codes, busy: x.busy, progress: x.progress, last: x.last_sync, hash: location.hash }); }); throw new Error('SYNC_TIMEOUT ' + kind + ' ' + s); }
 }
 
@@ -174,19 +177,32 @@ async function waitSync(page, kind) {
         await waitFor(page, '[data-price-store-company="READY"]');
         assert.ok(+(await company.getAttribute('data-month-ends')) >= 59);
         await page.evaluate(() => { location.hash = 'company/NYSE:MMM'; });
-        await waitFor(page, '[data-price-store-company="WORKER_ALLOWLIST"]');
-        assert.equal(traffic.worker.length, 0, 'company screens: stored rows only, MMM outside the Worker allowlist');
+        await waitFor(page, '[data-price-store-company="READY"]');
+        assert.deepEqual(traffic.worker.map(({ symbol, range }) => [symbol, range]), [['MMM', '5y']], 'newly approved MMM is fetched once');
+        assert.ok(+(await page.locator('[data-price-store-company]').getAttribute('data-month-ends')) >= 59);
+        const stored = new Set([...sheet.tabs.get('Prices_D').slice(1), ...sheet.tabs.get('Prices_M').slice(1)].map(row => row[0]));
+        const missing = UNIVERSE.filter(symbol => !stored.has(symbol));
+        const beforeUniverse = traffic.worker.length;
         await page.evaluate(() => { location.hash = 'settings'; });
         await page.locator('[data-price-store-action="universe"]:not([disabled])').click();
         await waitSync(page, 'UNIVERSE504');
         const line = await lastLine(page);
-        const notAllowed = Number(/WORKER_ALLOWLIST (\d+)/.exec(line)[1]);
-        assert.ok(notAllowed > 450 && notAllowed < 504, line);
-        assert.equal(traffic.worker.length, 0, 'allowlisted Universe504 symbols reuse their stored daily rows');
+        const notAllowed = await page.evaluate(() => PriceStore.status().last_sync.not_allowed);
+        assert.equal(notAllowed, 0, line);
+        assert.ok(!line.includes('WORKER_ALLOWLIST'), line);
+        const fetched = traffic.worker.slice(beforeUniverse);
+        assert.deepEqual(fetched.map(request => request.symbol).sort(), missing.sort(), 'each missing Universe symbol is fetched once; existing daily and monthly rows are reused');
+        assert.ok(fetched.every(request => request.range === '5y' && request.auth));
+        const monthlySymbols = new Set(sheet.tabs.get('Prices_M').slice(1).map(row => row[0]));
+        for (const symbol of ['AAPL', 'BRK-B', 'BF-B', 'MMM']) assert.ok(monthlySymbols.has(symbol), symbol);
+        const afterUniverse = traffic.worker.length;
+        await page.locator('[data-price-store-action="universe"]:not([disabled])').click();
+        await page.waitForFunction(() => PriceStore.status().busy === null);
+        assert.equal(traffic.worker.length, afterUniverse, 'a repeat requests no stored month-end series');
         await page.evaluate(() => { location.hash = 'report/mock'; });
         await waitFor(page, '[data-report-inputs][data-runner-state="READY"]', 60000);
         assert.equal(await page.locator('[data-report-section="3"] tbody tr').count(), 19);
-        assert.equal(traffic.worker.length, 0, 'the runner read the store and needed no Worker request');
+        assert.equal(traffic.worker.length, afterUniverse, 'the runner read the store and needed no new Worker request');
         assert.equal(sheet.tabs.get('Prices_D').length, rows);
         assert.ok(await storageClean(page), 'a close reached device storage');
         assert.equal(traffic.console, 0); assert.deepEqual(traffic.unexpected, []); assert.equal(traffic.errors, 0);
