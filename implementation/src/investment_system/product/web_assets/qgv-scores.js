@@ -39,7 +39,7 @@ function v2Display(r){
 let memo=null;
 function universeScores(v2Inputs,quotes,preset,gate,memberships){
  const mk=JSON.stringify([preset,gate,memberships]);if(memo&&memo.inputs===v2Inputs&&memo.quotes===quotes&&memo.key===mk)return memo.result;
- const companies={};for(const[code,r]of Object.entries(v2Inputs.records))companies[code]={industry_group:r.industry_group,profile:r.profile,factors:r.factors,v_inputs:r.v_inputs,memberships:Object.hasOwn(memberships,code)?memberships[code]:null};
+ const companies={};for(const[code,r]of Object.entries(v2Inputs.records))companies[code]={industry_group:r.industry_group,profile:r.profile,factors:r.factors,v_inputs:r.v_inputs,qg_axes:r.qg_axes,in_cross_section:r.in_cross_section!==false,memberships:Object.hasOwn(memberships,code)?memberships[code]:null};
  const result=qgvV2().scoreUniverse(companies,quotes,{preset,gate});memo={inputs:v2Inputs,quotes,key:mk,result};return result;
 }
 /* The accessor. identities: [{company_id, ticker}] rows to show; publicScreens: the app's loaded public screens (v1 factors,

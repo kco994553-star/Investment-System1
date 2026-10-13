@@ -39,7 +39,7 @@ from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES
 APPROVED_SHA256 = {
     "qgv2-inputs.js": "bccea137b64a646018cfb1d589ce6cfc0e71b2302d2e85b42ae42ef3e15bda82",
     "scoring-default.js": "98534084edabaea4a7a574a5bd0f9bf9ff486bd0f80e55c14a7366c761a7cb25",
-    "qgv-scores.js": "28da8779bdb615c7fdb26faa74239e261f87b0ebb353911030ed75e33ff22a11",
+    "qgv-scores.js": "3df750f7508b20539a194ebf80462607de432f5a36a1eaec189ef66b1a556337",
     "qgv-v2.js": "ca64487658c11a3af99c71d66fcbc7904bcba5d320473b667da74805873d6c3e",
     "virtual-trading-compare.js": "8cf5bd3bec35ebe688d3982928ce3f6771e1ea4364966fb51a5f29cfeee0642c",
     "report-benchmarks.js": "7a274ba8467880791df30deb17145396111e38c2d2598f7c654a0564c00aa6e9",
@@ -66,7 +66,7 @@ APPROVED_SHA256 = {
     "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
     "virtual-trading.js": "b53ba20a9216dc0b1c8429ab47381bc44090fe7ac37eb72bf22b1f4968f5421e",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
-    "leaderboard-screen.js": "fbcb9e4435c6ecd136572f3c501e64530438b504ddcb6c955cb204137bb3c197",
+    "leaderboard-screen.js": "a3e21d40654c1721718b81e0ed228cc2a13c21e33e5ba688393720e724f09eb5",
     "portfolio-screen.js": "da95498176557e1bc16d1329f639c9b153a859e3be4f7b0bde054becda939be0",
     "company-screen.js": "3d1346f27e34d1de3f4b29487352c331227d3e90114148ef80cca357486f41ce",
     "ops-status.js": "a39fa422d604f543cc43401e326e0255363eb81149c9e5e34e2caaf67d5be97c",
