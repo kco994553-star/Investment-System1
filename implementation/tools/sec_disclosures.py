@@ -107,14 +107,15 @@ def collect(client, previous, *, now=_utc_now):
     """Returns (collected, exhibits, counts). Per-company failures are counted with fixed codes."""
     started = now()
     since = (started - timedelta(days=WINDOW_DAYS)).date()
-    collected, failures, exhibits = {}, [], {}
+    collected, failures, exhibits, foreign_checked = {}, [], {}, 0
     counts = {'excluded': 0, 'conflicts': 0, 'unknown_items': 0}
     for index, cid in enumerate(sorted(US_LISTINGS), start=1):
         try:
             body, acquired = client.submissions(cid)
             submissions = json.loads(body)
             rows, row_counts = current_reports(cid, submissions, acquired_at=acquired, since=since)
-            for candidate in foreign_earnings_candidates(cid, submissions, acquired_at=acquired, since=since)[:MAX_INDEX_FETCHES]:
+            for candidate in foreign_earnings_candidates(cid, submissions, acquired_at=acquired, since=since)[:MAX_INDEX_FETCHES - foreign_checked]:
+                foreign_checked += 1
                 try:
                     found = quarterly_earnings_exhibit(cid, candidate['accession'], client.filing_index(cid, candidate['accession']))
                 except SecCollectionError:
@@ -135,13 +136,13 @@ def collect(client, previous, *, now=_utc_now):
         for key in counts:
             counts[key] += row_counts[key]
     due = [(cid, accession) for cid, accession in pending_exhibits(previous, collected) if accession not in exhibits]
-    for cid, accession in due[:MAX_INDEX_FETCHES]:
+    for cid, accession in due[:MAX_INDEX_FETCHES - foreign_checked]:
         try:
             exhibits[accession] = exhibit_99_1(cid, accession, client.filing_index(cid, accession))
         except SecCollectionError:
             exhibits[accession] = 'INDEX_UNAVAILABLE'
     counts.update(companies=len(US_LISTINGS), collected=len(collected), failed=len(failures), failures=failures,
-                  index_due=len(due), index_fetched=min(len(due), MAX_INDEX_FETCHES),
+                  index_due=len(due) + foreign_checked, index_fetched=foreign_checked + min(len(due), MAX_INDEX_FETCHES - foreign_checked),
                   exhibits_found=sum(isinstance(x, dict) for x in exhibits.values()))
     return collected, exhibits, counts
 

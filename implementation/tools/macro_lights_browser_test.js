@@ -105,6 +105,14 @@ async function lights(page){return page.locator('[data-macro-light]').evaluateAl
     assert.deepEqual((await page.evaluate(()=>window.__reads)).slice(-3),[['SPY','5y'],['HYG','1y'],['IEF','1y']]);
     assert.equal((await page.evaluate(()=>MacroLights.current())).available_count,5);
     assert.equal(await storage(page),before);assert.deepEqual(seen.writes,[]);
+    await page.evaluate(spy=>{const session={state:()=>({enabled:true,connected:true}),revision:()=>1,setEnabled(){},subscribe:()=>()=>{},
+     async fetchHistory(origin,symbol,range){window.__reads.push([symbol,range]);if(symbol==='SPY')throw Error('HISTORY_UNAVAILABLE');return{schema:'private-history/1',provider:'Yahoo Finance(비공식)',symbol,range,currency:'USD',exchange:'PCX',timezone:'America/New_York',interval:'1d',basis:'RAW_CLOSE',delay_status:'UNKNOWN',read_at:'2026-10-10T21:00:00Z',bars:spy};}};
+     window.GoogleSheetQuotes={...GoogleSheetQuotes,sessionFor:()=>session};},bars());
+    await open(page,'home','main');await open(page,'macro','[data-macro-lights-load]');
+    await page.locator('[data-macro-lights-load]').click();await page.locator('[data-macro-lights-status="READY"]').waitFor();
+    assert.equal((await page.evaluate(()=>MacroLights.current())).available_count,4,'SPY failure excludes only market and preserves available credit');
+    assert.equal(await page.locator('[data-macro-light="market"]').getAttribute('data-macro-light-state'),'NO_DATA');
+    assert.equal(await page.locator('[data-macro-light="credit"]').getAttribute('data-macro-light-state'),'OFF');
     await noOverflow(page,'device '+width);await page.screenshot({path:SHOTS+'/macro-lights-device-'+width+'.png',fullPage:true}).catch(()=>{});
     assert.equal(seen.errors,0);assert.deepEqual(seen.outside,[]);await ctx.close();pass++;}
   }

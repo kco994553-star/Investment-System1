@@ -203,9 +203,9 @@ function closesFrom(view,payload,symbol){
 async function loadDevice(view,config){
  const session=sessionFor(view,config),ready=readiness(view,config,session);if(ready!=='READY')return{code:ready};
  const revision=session.revision();
- try{const payload=await session.fetchHistory(config.privateHistoryWorkerOrigin,CONFIG.lights.market.symbol,RANGE,{approvedOrigin:config.privateHistoryWorkerOrigin});
+ try{let payload,market;try{payload=await session.fetchHistory(config.privateHistoryWorkerOrigin,CONFIG.lights.market.symbol,RANGE,{approvedOrigin:config.privateHistoryWorkerOrigin});market=marketLight(closesFrom(view,payload,CONFIG.lights.market.symbol));}catch(_){market=unavailable('market','NO_DATA');}
   if(session.revision()!==revision)return{code:'CANCELED'};
-  const rows={market:marketLight(closesFrom(view,payload,CONFIG.lights.market.symbol)),credit:null};
+  const rows={market,credit:null};
   // HYG / IEF are requested only once both are in the Worker allowlist (owner approval); until then no request is made.
   if(!creditBlocked()){const c=CONFIG.lights.credit,read=async s=>closesFrom(view,await session.fetchHistory(config.privateHistoryWorkerOrigin,s,'1y',{approvedOrigin:config.privateHistoryWorkerOrigin}),s);
    try{rows.credit=creditLight(await read(c.numerator),await read(c.denominator));}catch(_){rows.credit=unavailable('credit','NO_DATA');}
