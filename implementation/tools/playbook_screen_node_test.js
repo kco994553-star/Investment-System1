@@ -76,6 +76,21 @@ test('v2 V comparison uses observed same-basis history instead of v1 or live-poo
 test('device interests become W1 watch facts independently of holding quantity',()=>{
  const context={idByTicker:new Map([['SYN','syn']]),heldSymbols:[],interests:['syn']};assert.equal(P.factsFor('SYN',context).watched,true);assert.equal(P.factsFor('SYN',context).held,false);assert.equal(P.factsFor('OTHER',context).watched,false);
 });
+test('approved SIC and strict 5-year revenue volatility classify playbook types without NA passes',()=>{
+ const types=(sic,rank,existing={quality:1,defensive:1},extra={})=>P.playbookTypeFacts({sic,metrics:{revenue_volatility_5y_rank_pct:rank,...extra}},existing,null,null);
+ assert.equal(types('3674',null).memberships.cyclical,1);
+ assert.equal(types('7372',90).memberships.cyclical,1);
+ assert.equal(types('2834',20).memberships.defensive,1);
+ assert.equal(types('7372',20).memberships.defensive,0);
+ assert.equal(types(null,null).memberships.quality,null);assert.equal(types(null,null).memberships.defensive,null);
+ assert.equal(types(null,null).memberships.cyclical,null);
+ for(const invalid of [NaN,Infinity,-1,101,'20',false])assert.equal(types(null,invalid).metrics.revenue_volatility_5y_rank_pct,null);
+ const unchanged={growth:.9,quality:1,defensive:1};const result=types('2834',20,unchanged);assert.equal(result.memberships.growth,.9);assert.deepEqual(unchanged,{growth:.9,quality:1,defensive:1});
+ assert.equal(result.metrics.revenue_volatility_5y_rank_pct,.2);assert.equal(result.memberships.quality,null);
+ assert.equal(types('7372',50,{}, {roic:.99}).memberships.quality,null);
+ const context={idByTicker:new Map([['SYN','syn']]),screens:{'sec-qgv2.json':{records:{'NYSE:SYN':{sic:'2834',metrics:{revenue_volatility_5y_rank_pct:20}}}}}};
+ assert.equal(P.factsFor('SYN',context).memberships.defensive,1);assert.equal(P.factsFor('SYN',context).memberships.quality,null);
+});
 test('v2 facts use their own QG snapshot and ephemeral per-symbol price availability',async()=>{
  const primary={q:70,g:60,v:null,axes:{Q:{state:'READY'},G:{state:'READY'},V:{state:'NOT_AVAILABLE'}}},idByTicker=new Map([['SYN','syn']]),context={idByTicker,computed:{default:'v2',rows:{syn:{primary}},playbook_price_symbols:['SYN']},ram:{state:'NOT_AVAILABLE',rows:[]}};
  const ready=P.factsFor('SYN',context);assert.equal(ready.data.snapshot_missing,false);assert.equal(ready.data.price_missing,false);assert.equal(ready.coverage,'READY');
