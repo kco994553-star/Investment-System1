@@ -206,23 +206,47 @@ test('month-ends: first open of a viewed symbol stores 5 years once; then no req
     assert.equal(rows.find((r) => r[1].startsWith('2026-09'))[1], '2026-09-30');
     assert.deepEqual(await P.monthEndCloses('NVDA', { view: h.view, now }), m);
     assert.equal(h.workerCalls.length, 1);
-    assert.deepEqual(await P.monthEndCloses('BRK-B', { view: h.view, now }), {});
-    assert.equal(h.workerCalls.length, 1, 'BRK-B is outside the Worker allowlist: no request');
+    const brk = await P.monthEndCloses('BRK-B', { view: h.view, now });
+    assert.equal(Object.keys(brk).at(-1), '2026-09');
+    assert.deepEqual(h.workerCalls.at(-1), ['BRK-B', '5y']);
+    assert.deepEqual(await P.monthEndCloses('QQQ', { view: h.view, now }), {});
+    assert.equal(h.workerCalls.length, 2, 'QQQ is outside the approved allowlist: no request');
   }
 });
 
 test('Universe504 button: allowlisted symbols get month-ends, the rest count as WORKER_ALLOWLIST; core symbols reuse daily rows', async () => {
-  const h = harness(); await h.connect(); await P.enable(h.view);
+  const h = harness({ codes: ['NASDAQ:NVDA', 'NYSE:BRK.B', 'NYSE:MMM', 'NASDAQ:MSFT', 'NASDAQ:QQQ'] }); await h.connect(); await P.enable(h.view);
   await P.syncMany(h.view, ['MSFT'], '1d', { now: at('2026-10-13T21:00:00Z') });
   h.workerCalls.length = 0;
   const r = await P.syncUniverse(h.view, { now: at('2026-10-13T21:00:00Z') });
   assert.equal(r.state, 'READY');
-  assert.equal(r.universe, 4);
-  assert.equal(r.not_allowed, 2);
-  assert.deepEqual(h.workerCalls, [['NVDA', '5y']], 'MSFT month-ends come from its stored daily rows; BRK-B and MMM are not requested');
+  assert.equal(r.universe, 5);
+  assert.equal(r.not_allowed, 1);
+  assert.deepEqual(h.workerCalls, [['NVDA', '5y'], ['BRK-B', '5y'], ['MMM', '5y']], 'MSFT reuses stored daily rows; only the unapproved QQQ is skipped');
   const again = await P.syncUniverse(h.view, { now: at('2026-10-14T21:00:00Z') });
   assert.equal(again.fetched, 0);
-  assert.equal(h.workerCalls.length, 1);
+  assert.equal(h.workerCalls.length, 3);
+});
+
+test('the actual 504-symbol catalog stores every approved month-end series, including both hyphenated share classes', async () => {
+  const codes = JSON.parse(fs.readFileSync(path.join(__dirname, '../src/investment_system/universe/universe_codes_v1.json'), 'utf8'));
+  const h = harness({ codes }); await h.connect(); await P.enable(h.view);
+  const now = at('2026-10-13T21:00:00Z');
+  const result = await P.syncUniverse(h.view, { now });
+  assert.equal(result.state, 'READY');
+  assert.equal(result.universe, 504);
+  assert.equal(result.not_allowed, 0);
+  assert.deepEqual(result.failed, {});
+  const requested = h.workerCalls.map(([symbol, range]) => { assert.equal(range, '5y'); return symbol; });
+  const expected = codes.map(code => code.split(':')[1].replace(/\./g, '-'));
+  assert.deepEqual(requested, expected);
+  for (const symbol of ['AAPL', 'BRK-B', 'BF-B', 'MMM']) assert.ok(requested.includes(symbol), symbol);
+  const rows = h.sheet.get('Prices_M').slice(1);
+  assert.deepEqual([...new Set(rows.map(row => row[0]))].sort(), [...expected].sort());
+  assert.ok(rows.every(row => /^\d{4}-\d{2}-\d{2}$/.test(row[1]) && row[1] < '2026-10-01'));
+  const repeat = await P.syncUniverse(h.view, { now });
+  assert.equal(repeat.fetched, 0);
+  assert.equal(h.workerCalls.length, 504);
 });
 
 test('runner integration: stored + missing ranges give exactly the closes of the runner\'s own Worker path', async () => {

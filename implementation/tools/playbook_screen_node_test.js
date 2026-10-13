@@ -118,6 +118,7 @@ test('navigation keeps shared RAM quotes and selected v2 basis, fresh device rea
  const context={idByTicker:new Map([['SYN','syn']]),universeCodes:['NYSE:SYN'],screens:{'sec-qgv2.json':{records:{'NYSE:SYN':{currency:'USD'}}}},scoreOptions:()=>({quotes:cache,preset:'value',gate:false,referenceRows})};
  const first=await P.prepareScores({},context);assert.deepEqual(first.playbook_price_symbols,['SYN']);assert.equal(seen.quotes['NYSE:SYN'].price,123.456789);assert.equal(seen.preset,'value');assert.equal(seen.gate,false);assert.equal(seen.referenceRows,referenceRows);assert.equal(JSON.stringify(first).includes('123.456789'),false);
  fresh={'NYSE:SYN':{price:88.7654321,currency:'USD'}};await P.prepareScores({},context);assert.equal(seen.quotes['NYSE:SYN'].price,88.7654321);assert.equal(cache['NYSE:SYN'].price,123.456789);
+ fresh={'NYSE:SYN':{price:88.7654321,currency:'USD'}};context.screens['sec-qgv2.json'].records['NYSE:SYN']={v_inputs:{currency:'EUR'}};assert.deepEqual((await P.prepareScores({},context)).playbook_price_symbols,[]);context.screens['sec-qgv2.json'].records['NYSE:SYN']={v_inputs:{currency:'USD'}};assert.deepEqual((await P.prepareScores({},context)).playbook_price_symbols,['SYN']);
  fresh={};context.scoreOptions=()=>({quotes:{},preset:'balanced',gate:true});const cleared=await P.prepareScores({},context);assert.deepEqual(cleared.playbook_price_symbols,[]);assert.deepEqual(seen.quotes,{});
  }finally{if(previous===undefined)delete globalThis.QgvScores;else globalThis.QgvScores=previous;}
 });
