@@ -104,7 +104,13 @@ function recordV2(storage,date,observations){
  try{storage.setItem(V2_KEY,JSON.stringify({schema:V2_SCHEMA,records}));}catch(_){return keep('DEVICE_STORAGE_UNAVAILABLE');}
  return{state:'RECORDED',reason:null,date,added:added.sort()};
 }
-function v2Signature(r){return['qgv_v2',r.profile.replace(/[^a-z0-9_]/gi,'_'),r.earnings_basis.toLowerCase(),...r.composition.split('+'),'pool_'+r.pool_hash.slice(0,48),r.parameters_version.replace(/[^a-z0-9_]/gi,'_')].sort().join('+');}
+function v2Signature(r){
+ // Preserve every provenance byte. Chunked ASCII hex keeps the existing engine key grammar without
+ // collapsing punctuation/case in versions or truncating the full cohort hash.
+ const identity=JSON.stringify([r.version,r.profile,r.composition,r.earnings_basis,r.pool_hash,r.parameters_version]);
+ const hex=[...identity].map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(''),parts=['qgv_v2'];
+ for(let i=0;i<hex.length;i+=56)parts.push('v2id_'+(i/56)+'_'+hex.slice(i,i+56));return parts.join('+');
+}
 function v2Values(storage,profile=null){const r=readV2(storage),scores={},composition={};if(r.state!=='OK')return{scores,composition};for(const[d,row]of Object.entries(r.records)){scores[d]={};composition[d]={};for(const[cid,o]of Object.entries(row)){if(profile&&o.profile!==profile)continue;scores[d][cid]=o.score;composition[d][cid]=v2Signature(o);}}return{scores,composition};}
 function v2Comparison(storage,cid,sessions,profile=null){
  const r=readV2(storage),days=[...new Set((sessions||[]).filter(day))].sort(),date=days.at(-1),now=date?r.records[date]?.[cid]:null;

@@ -165,3 +165,16 @@ test('v2 capture uses only the current completed close and never lets v1 scores 
   assert.equal(out.result.ledgers.SET_A.input.v_scores[date].msft,60);assert.equal(s.getItem(H.KEY),null);assert.ok(!/"price"|"closes"|"currency"|123/.test(s.getItem(H.V2_KEY)));
   const old=await H.captureV2(view,result,{...options,now:'2026-10-20T22:30:00Z'});assert.equal(old.capture.state,'NOT_RECORDED');assert.equal(calls,1,'old session is never recalculated with new-day fundamentals');
 });
+
+test('v2 provenance equality is lossless in both comparisons and engine composition keys', () => {
+  const days=[];let d=new Date('2026-10-19T00:00:00Z');while(days.length<21){if(d.getUTCDay()>0&&d.getUTCDay()<6)days.push(d.toISOString().slice(0,10));d.setUTCDate(d.getUTCDate()+1);}
+  const base={score:50,version:'v2',profile:'qgv-v2/balanced/gate-on',composition:'v_earnings_yield+v_fcf_yield',earnings_basis:'REPORTED',pool_hash:'a'.repeat(64),parameters_version:'dcf/example-1'};
+  for(const changed of [{parameters_version:'dcf/example_1'},{pool_hash:'a'.repeat(48)+'b'.repeat(16)}]){
+    const s=memory();for(const[date,fields]of [[days[0],base],[days.at(-1),{...base,...changed}]])assert.equal(H.recordV2(s,date,{msft:{...fields,source_as_of:date+'T22:00:00Z',observed_at:date+'T22:30:00Z'}}).state,'RECORDED');
+    assert.equal(H.readV2(s).state,'OK');assert.equal(H.v2Comparison(s,'msft',days).reason,'V_COMPOSITION_CHANGED');
+    const v=H.v2Values(s);assert.notEqual(v.composition[days[0]].msft,v.composition[days.at(-1)].msft);
+    const kept=require('../src/investment_system/product/web_assets/virtual-trading-runner.js').vCompositionFromStore(v.composition);assert.deepEqual(kept,v.composition);
+  }
+  const s=memory(),date=days[0],max={...base,profile:'qgv-v2/balanced/gate-off',composition:Object.keys(require('../src/investment_system/product/web_assets/qgv-v2.js').WEIGHTS.V).sort().join('+'),parameters_version:'P'.repeat(63),source_as_of:date+'T22:00:00Z',observed_at:date+'T22:30:00Z'};
+  assert.equal(H.recordV2(s,date,{msft:max}).state,'RECORDED');const v=H.v2Values(s);assert.deepEqual(require('../src/investment_system/product/web_assets/virtual-trading-runner.js').vCompositionFromStore(v.composition),v.composition);
+});

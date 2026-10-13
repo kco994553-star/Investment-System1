@@ -55,7 +55,7 @@ APPROVED_SHA256 = {
     "forward-validation.js": "5bfc05766c230bc742a03bfad3732f531e5300f09791e4ccf96d1faa411c7883",
     "daily-report.js": "0ca830eed6356ecf6cb4fde204cee76167317d9a4e8efd9d759cbb281c3c9df7",
     "sec-universe-shares.js": "574f94ffebfc2a8cc20bac0cd5ff7bfd7e58db3cb1864f60d4c2a14dd24b37f9",
-    "virtual-trading-v-history.js": "bbe76bd5a20c80c93f2dc9f2a1fc065c02cdd40aeabd7d3a153e326c176cf271",
+    "virtual-trading-v-history.js": "944124763c2682dff373f9ec86e8b938ee2400f3084b5e3d62d8b44c8bd8099f",
     "virtual-trading-signals.js": "b8d73d216d9697bea31f15f0061831f81a144b518b5aa5cc54ba4620dafbe6ef",
     "sec-universe-qg.js": "4364791b338d04be28811efb8588806d8c653fca9e36eb75c86014758471f414",
     "sec-qgv2.js": "1a6da919149666a2f1bb6fb3587033f834957be143bfca65a259bf2bcf479714",
