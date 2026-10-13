@@ -6,7 +6,8 @@ and lines stay missing. KRW amounts are never compared with USD amounts: only
 the v2 dimensionless metrics enter the US distribution, and the Korean issuer never
 becomes a point in that distribution. No SIC code is guessed for a Korean issuer.
 """
-from datetime import date
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 
 
 class _AnnualLines:
@@ -85,6 +86,41 @@ def reference_score(company, universe):
     return {'comparison_label': '참고 순위', 'comparison_basis': 'US_UNIVERSE_504_GENERAL',
             'reference_only': True, 'industry_basis': 'NOT_ASSIGNED',
             'cross_section_size': summary['cross_section_size'], **scores[('target', 'hanmi')]}
+
+
+def verified_ledger_reference(dart_financials, sec_qgv2_payload, *, captured_date: date):
+    """Return a verified v2-only reference for the captured NY session, or None.
+
+    This adapter performs no I/O and never substitutes the legacy DART score.
+    The ledger caller owns capture-clock checks and hashes the original artifact
+    bytes. Both public validators must pass before the existing shared formulae
+    are applied to the US issuer pool; Korean inputs remain reference-only.
+    """
+    from .dart_public import require_financials
+    from ..universe.sec_qgv2 import require_qgv2
+    if type(captured_date) is not date:
+        return None
+    try:
+        financials = require_financials(dart_financials)
+        peers = require_qgv2(sec_qgv2_payload)
+        ny = ZoneInfo('America/New_York')
+        for payload in (financials, peers):
+            clock = datetime.fromisoformat(payload['as_of'].replace('Z', '+00:00'))
+            if clock.astimezone(ny).date() != captured_date:
+                return None
+        company = financials['companies']['hanmi']
+        if (company['state'] != 'LIVE' or company['annual']['state'] != 'LIVE'
+                or peers['state'] != 'LIVE' or 'qgv2' not in company):
+            return None
+        scored = reference_score(company, peers['records'])
+        if not any(axis['score'] is not None and axis['available_weight'] >= 50
+                   for axis in scored['axes'].values()):
+            return None
+        return {'state': 'LIVE', 'as_of': financials['as_of'], 'source_kind': 'DART',
+                'reference_only': True, 'comparison_basis': 'US_UNIVERSE_504_GENERAL',
+                'axes': scored['axes'], 'factors': scored['factors']}
+    except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError):
+        return None
 
 
 def metric_projection(company):

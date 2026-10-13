@@ -10,6 +10,8 @@ from investment_system.product import dart_public as public
 from investment_system.product.dart_qgv2 import reference_score
 import dart_daily
 
+import pytest
+
 
 class SixAnnualDart(FakeOpenDart):
     def __call__(self, url, *, timeout, max_bytes):
@@ -106,3 +108,79 @@ def test_finance_costs_are_not_assumed_to_be_interest_expense():
     inputs = provider.extract_v2_financials(payload, reprt_code='11011')
     assert inputs['inputs']['interest_expense'] is None
     assert inputs['missing']['interest_expense'] == 'MISSING'
+
+
+@pytest.fixture
+def ledger_inputs(tmp_path):
+    """Captured after UTC midnight, while it is still the prior NY session day."""
+    from tests.test_sec_qgv2 import REF
+    from investment_system.universe import sec_qgv2
+    clock = datetime(2026, 10, 14, 1, 30, tzinfo=timezone.utc)
+    assert dart_daily.run(tmp_path, environ={'DART_API_KEY': FAKE_KEY}, transport=SixAnnualDart(), now=clock,
+                          max_calls=30, open_previous=no_previous, include_qgv2=True, collect_history=True) == 0
+    financials = public.require_financials(public.parse_json((tmp_path/public.FINANCIALS_FILENAME).read_bytes()))
+    peers = sec_qgv2.merge(REF.base(), {}, as_of=clock, shard_index=3)
+    return financials, peers
+
+
+def test_verified_ledger_reference_uses_same_axes_and_ny_capture_day(ledger_inputs):
+    from datetime import date
+    from investment_system.product.dart_qgv2 import verified_ledger_reference
+    financials, peers = ledger_inputs
+    before = copy.deepcopy(ledger_inputs)
+    result = verified_ledger_reference(financials, peers, captured_date=date(2026, 10, 13))
+    expected = reference_score(financials['companies']['hanmi'], peers['records'])
+    assert result == {'state': 'LIVE', 'as_of': financials['as_of'], 'source_kind': 'DART',
+                      'reference_only': True, 'comparison_basis': 'US_UNIVERSE_504_GENERAL',
+                      'axes': expected['axes'], 'factors': expected['factors']}
+    assert all(result['axes'][axis]['available_weight'] == 100 for axis in ('Q', 'G'))
+    assert ledger_inputs == before  # The Korean issuer never changes the US cross-section.
+    assert verified_ledger_reference(financials, peers, captured_date=date(2026, 10, 14)) is None
+    assert verified_ledger_reference(financials, peers, captured_date=NOW) is None
+
+
+def test_verified_ledger_reference_rejects_tampered_artifacts_and_absent_projection(ledger_inputs):
+    from datetime import date
+    from investment_system.product.dart_qgv2 import verified_ledger_reference
+    financials, peers = ledger_inputs
+    captured = date(2026, 10, 13)
+    bad = copy.deepcopy(financials)
+    bad['companies']['hanmi']['qgv2']['metrics']['roic'] = 123
+    assert verified_ledger_reference(bad, peers, captured_date=captured) is None
+    bad_peers = copy.deepcopy(peers)
+    live = next(r for r in bad_peers['records'].values() if r['state'] == 'LIVE')
+    live['axes']['Q']['score'] = 123
+    assert verified_ledger_reference(financials, bad_peers, captured_date=captured) is None
+    legacy = copy.deepcopy(financials)
+    del legacy['companies']['hanmi']['qgv2']
+    assert public.require_financials(legacy) is legacy
+    assert verified_ledger_reference(legacy, peers, captured_date=captured) is None
+    assert verified_ledger_reference(None, peers, captured_date=captured) is None
+
+
+def test_verified_ledger_reference_keeps_insufficient_annual_inputs_unavailable(ledger_inputs):
+    from datetime import date
+    from investment_system.product.dart_qgv2 import verified_ledger_reference
+    original, peers = ledger_inputs
+    clock = datetime(2026, 10, 14, 1, 30, tzinfo=timezone.utc)
+    company = copy.deepcopy(original['companies']['hanmi'])
+    del company['annual_history']
+    del company['annual']['v2_inputs']
+    financials = public.financials_payload(as_of=clock, companies={'hanmi': company}, include_qgv2=True)
+    assert 'qgv2' in financials['companies']['hanmi']
+    assert verified_ledger_reference(financials, peers, captured_date=date(2026, 10, 13)) is None
+
+
+def test_verified_ledger_reference_rejects_valid_stale_or_other_session_inputs(ledger_inputs):
+    from datetime import date, timedelta
+    from investment_system.product.dart_qgv2 import verified_ledger_reference
+    from investment_system.universe import sec_qgv2
+    financials, peers = ledger_inputs
+    clock = datetime(2026, 10, 14, 1, 30, tzinfo=timezone.utc)
+    company = copy.deepcopy(financials['companies']['hanmi'])
+    company['acquired_at'] = public.instant(clock-public.STALE_AFTER-timedelta(seconds=1))
+    stale = public.financials_payload(as_of=clock, companies={'hanmi': company}, include_qgv2=True)
+    assert stale['companies']['hanmi']['state'] == 'STALE'
+    assert verified_ledger_reference(stale, peers, captured_date=date(2026, 10, 13)) is None
+    later_peers = sec_qgv2.merge(peers, {}, as_of=datetime(2026, 10, 14, 20, tzinfo=timezone.utc), shard_index=3)
+    assert verified_ledger_reference(financials, later_peers, captured_date=date(2026, 10, 13)) is None
