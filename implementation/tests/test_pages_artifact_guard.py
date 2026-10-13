@@ -140,6 +140,24 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.write_json(lambda data: data.update({"unknown_future_field": None}))
         self.assert_rejected("unapproved_content")
 
+    def test_public_contacts_and_json_escaped_contacts_are_redacted_and_rejected(self):
+        contact = "synthetic-contact" + "@" + "example.invalid"
+        path = self.site / "data.json"
+        original = path.read_bytes()
+        for escaped in (False, True):
+            with self.subTest(escaped=escaped):
+                data = json.loads(original)
+                data["contact"] = contact
+                content = json.dumps(data)
+                if escaped:
+                    content = content.replace("@", "\\u0040")
+                path.write_text(content)
+                receipt = self.scan()
+                self.assertEqual(receipt["pages_artifact_guard"], "FAIL")
+                self.assertTrue(receipt["violations"].get("secret_patterns"))
+                self.assertNotIn(contact, json.dumps(receipt))
+        path.write_bytes(original)
+
     def test_existing_json_fields_deletions_and_array_order_are_pinned(self):
         mutations = (
             ("data.json", lambda data: data["companies"].append({"name": "SYNTHETIC_RENAMED_ONLY"})),

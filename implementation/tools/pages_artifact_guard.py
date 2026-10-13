@@ -53,7 +53,7 @@ APPROVED_SHA256 = {
     "table-sort.js": "bd6e195298cb53b32adc8cdeaec57312e4c1807760e100b0af351f50bc4dfbf4",
     "pc-layout.css": "d3a270238df767d49ef23ea3d53d60fca62d65dc017af19338269602190af2b4",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
-    "forward-validation.js": "5bfc05766c230bc742a03bfad3732f531e5300f09791e4ccf96d1faa411c7883",
+    "forward-validation.js": "44438a9fe5609dd3e590a7f02cd4af84ab5c2f6d40b2d7202a68b0008a695d36",
     "daily-report.js": "0ca830eed6356ecf6cb4fde204cee76167317d9a4e8efd9d759cbb281c3c9df7",
     "sec-universe-shares.js": "574f94ffebfc2a8cc20bac0cd5ff7bfd7e58db3cb1864f60d4c2a14dd24b37f9",
     "virtual-trading-v-history.js": "944124763c2682dff373f9ec86e8b938ee2400f3084b5e3d62d8b44c8bd8099f",
@@ -138,6 +138,7 @@ SENSITIVE_KEYS = frozenset({
     "spreadsheetid", "spreadsheeturl", "accesstoken", "refreshtoken", "clientsecret",
 })
 SECRET_PATTERNS = (
+    re.compile(r"(?i)(?<![a-z0-9._%+\-])[a-z0-9._%+\-]+@[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}"),
     re.compile(r"(?<![A-Za-z0-9_])ya29\.[A-Za-z0-9._~-]+"),
     re.compile(r"https://docs\.google\.com/spreadsheets/(?:u/\d+/)?d/[A-Za-z0-9_-]{20,100}"),
     re.compile(r"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY-----"),
@@ -193,6 +194,10 @@ def _inspect_json(value: object, violations: Counter, depth: int = 0) -> None:
     elif isinstance(value, list):
         for child in value:
             _inspect_json(child, violations, depth + 1)
+    elif isinstance(value, str):
+        # JSON escapes must not hide a contact address from the raw-text scan.
+        if SECRET_PATTERNS[0].search(value):
+            violations["secret_patterns"] += 1
 
 
 def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
