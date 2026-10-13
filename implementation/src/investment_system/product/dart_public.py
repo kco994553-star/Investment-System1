@@ -413,6 +413,11 @@ def _report(block, *, annual, acquired_day):
         if name == 'shares':
             _need(concept in (None, 'stockTotqySttus.distb_stock_co') and (value is None or (type(value) is int and value > 0)))
             _need((concept is None) == (value is None))
+        elif name == 'total_debt':
+            from ..providers.dart_collection import DEBT_COMPONENTS
+            allowed={account for _,alternatives in DEBT_COMPONENTS for accounts in alternatives for account in accounts}
+            parts=concept.split('+') if type(concept) is str else []
+            _need(concept is None or bool(parts) and len(parts)==len(set(parts)) and all(p in allowed for p in parts))
         else:
             _need(concept is None or type(concept) is str and re.fullmatch(r'(?:ifrs-full|dart)_[A-Za-z]{1,100}', concept) is not None)
         if name.endswith('_prev') and not annual:
