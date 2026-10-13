@@ -25,6 +25,7 @@ from investment_system.public_price_boundary import require_public_bundle, requi
 
 
 from investment_system.product.sec_m2_candidates import require_public_candidates
+from investment_system.universe.sec_qgv2 import FILENAME as QGV2_FILENAME, require_qgv2
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
 from investment_system.product.public_engine_screens import FILENAMES as SCREEN_FILENAMES, require_public_screen
@@ -102,14 +103,15 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "9fa1d20f59c7fed1c32d227632b68674c32f99f6f569cee09995b568be6edc53",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "47fc9a88be00d1798f002e42085e1ba9f2521cee22db951644ab1a7fe62a3c05",
+    "index.html": "ae0b4f56aa5c60b98e564aa943ab1e297dc9e30879b36a7fd772dd7f42287ab0",
     "locale.js": "1adc2d48f9a2ccd7a07bed2897db5166a9b6f78aa892da03e4500ccdce55b122",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "46d17bdbc23b78b4d68511137a9c9bfd007c13934540db97533b1d5c978d87d8"
+    "style.css": "46d17bdbc23b78b4d68511137a9c9bfd007c13934540db97533b1d5c978d87d8",
+    "sec-qgv2.js": "64fc0cfaecb5bb3fa3381203b4b5f741c3b7204c2e738bc6f8154366526d4e51"
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME} | set(SCREEN_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME} | set(SCREEN_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 MAX_ENTRIES = 96
@@ -232,6 +234,9 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == UNIVERSE_CODES_FILENAME:
             try: require_universe_codes(value)
             except ValueError: violations['universe_codes_boundary'] += 1
+        elif name == QGV2_FILENAME:
+            try: require_qgv2(value)
+            except ValueError: violations['qgv2_boundary'] += 1
         elif name == COMPANY_LOGOS_FILENAME:
             try: require_company_logos(value)
             except ValueError: violations['company_logos_boundary'] += 1
