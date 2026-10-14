@@ -289,8 +289,16 @@ def _envelope(name,as_of,stale_after,data,sources,states=(),reasons=()):
         'reason_codes':list(dict.fromkeys(reasons or (() if state=='LIVE' else ('STALE_INPUT',) if state=='STALE' else ('NO_ELIGIBLE_INPUT',)))), 'data':data}
 
 
-# One function for the published revenue_cagr_3y metric and the valuation file's v_inputs copy.
-_growth=_valuation.revenue_cagr_3y
+def _type_growth(companyfacts,cutoff):
+    """revenue_cagr_3y for the growth type ramp: the QGV v2 period rule (v2_factors; also in sec-qgv2.json metrics).
+
+    Annual = 350..380-day duration in an annual form, year k = the annual fact within 10 days of FY0 end minus k years,
+    so 52/53-week fiscal years (NVDA, AMD, AVGO, QCOM, INTC, LRCX) and a revenue tag switch are covered. The old
+    exact-calendar rule (sec_valuation_inputs.revenue_cagr_3y, still the DCF h input) left those companies None, so
+    every membership was null. Missing stays None, never 0."""
+    from ..qgv import v2_factors as vf
+    value=vf.compute(companyfacts,sic=None,cutoff=cutoff)[3].get('revenue_cagr_3y')
+    return value if _finite(value) else None
 
 
 V0_MAX_BYTES=256*1024*1024  # BEA publishes all quarterly NIPA series in one flat file.
@@ -502,11 +510,13 @@ def _generate(manifest,root,as_of,stale_after):
         if scores is not None:
             for fid,score in scores.items():
                 if score is not None:qg[cid]['factors'][fid]={'score':score,'state':state};qg[cid]['state']=state
-            if config is not None:
-                metrics={'revenue_cagr_3y':_growth(m1),'roic':None if raw.net_income is None or raw.invested_capital in (None,0) else raw.net_income/raw.invested_capital}
-                calc=calculate_company_types(metrics=metrics,original_qgv={'Q':None,'G':None,'V':None},config=config)
-                members={t:calc['memberships'][t]['membership'] for t in PRICEFREE_TYPES}
-                types[cid].update(config_version=calc['config_version'],memberships=members,metrics={k:metrics[k] if _finite(metrics[k]) and abs(metrics[k])<=100 else None for k in PRICEFREE_METRICS},state=state if any(v is not None for v in members.values()) else 'NOT_AVAILABLE')
+        # Types do not depend on the v1 Q·G path: growth reads the SEC companyfacts directly (QGV v2 period rule).
+        if config is not None:
+            roic=None if raw is None or raw.net_income is None or raw.invested_capital in (None,0) else raw.net_income/raw.invested_capital
+            metrics={'revenue_cagr_3y':_type_growth(facts,acquired.astimezone(timezone.utc).date()),'roic':roic}
+            calc=calculate_company_types(metrics=metrics,original_qgv={'Q':None,'G':None,'V':None},config=config)
+            members={t:calc['memberships'][t]['membership'] for t in PRICEFREE_TYPES}
+            types[cid].update(config_version=calc['config_version'],memberships=members,metrics={k:metrics[k] if _finite(metrics[k]) and abs(metrics[k])<=100 else None for k in PRICEFREE_METRICS},state=state if any(v is not None for v in members.values()) else 'NOT_AVAILABLE')
     primary=[];remaining=[];macro_sources=[];bindings={}
     for entry in manifest['macro']:
         _need(isinstance(entry,dict) and set(entry)<=set(('provider','file','acquired_at','synthetic','series_ids','table','binding','source_url')) and set(('provider','file','acquired_at','synthetic'))<=set(entry))
