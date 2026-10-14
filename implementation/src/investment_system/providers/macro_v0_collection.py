@@ -10,6 +10,8 @@ Monetary Policy / Liquidity / Credit: Federal Reserve Data Download Program CSV
            candidates to verify on the first Actions run (the parser selects the
            series by its official identifier/description or fails closed).
 Fiscal:    Treasury FiscalData MTS Table 1 (no key), one page.
+Curve:     Treasury daily par yield curve XML (no key), current and previous calendar year
+           (macro lights v1, PLAYBOOK_V1 13-5: BC_3MONTH and BC_10YEAR only); `collect_treasury_curve`.
 FX is never collected here: the public price boundary excludes it.
 
 Importing performs no request or environment lookup. Raw bodies go only to the
@@ -29,6 +31,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from ..macro.growth_inflation_v0 import BEA_FLAT_Q_URL, INFLATION_SERIES_CODE
 from ..macro.primary_contract import ENDPOINTS
+from ..macro.macro_lights_public import CURVE_FORMAT
 
 BEA_KEY_SLOT = "BEA_USERID"
 USER_AGENT = "Investment-System1 macro-v0 public statistics collector"
@@ -38,7 +41,9 @@ BLS_MAX_BYTES = 4 * 1024 * 1024
 FED_DDP_URL = "https://www.federalreserve.gov/datadownload/Output.aspx"
 H15_POINTER_URL = "https://www.federalreserve.gov/releases/h15/data/Business_day/H15_FF_O.txt"
 MTS_TABLE_1_URL = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/mts/mts_table_1"
-ALLOWED = (ENDPOINTS["BLS"], ENDPOINTS["BEA"], BEA_FLAT_Q_URL, FED_DDP_URL, H15_POINTER_URL, MTS_TABLE_1_URL)
+TREASURY_CURVE_URL = ENDPOINTS["TREASURY"]
+ALLOWED = (ENDPOINTS["BLS"], ENDPOINTS["BEA"], BEA_FLAT_Q_URL, FED_DDP_URL, H15_POINTER_URL, MTS_TABLE_1_URL, TREASURY_CURVE_URL)
+CURVE_MAX_BYTES = 8 * 1024 * 1024
 LABOR_SERIES_CODE = "LNS14000000"
 FED_MAX_BYTES = 32 * 1024 * 1024
 MTS_MAX_BYTES = 16 * 1024 * 1024
@@ -109,6 +114,13 @@ def _query_allowed(url: str, query: str | None) -> bool:
         except ValueError:
             return False
         return all(k in ("filter", "sort", "format", "page[number]", "page[size]") for k, _ in params)
+    if url == TREASURY_CURVE_URL:
+        try:
+            params = parse_qsl(query or "", keep_blank_values=True, strict_parsing=True)
+        except ValueError:
+            return False
+        return (len(params) == 2 and params[0] == ("data", "daily_treasury_yield_curve")
+                and params[1][0] == "field_tdr_date_value" and re.fullmatch(r"\d{4}", params[1][1]) is not None)
     return url != H15_POINTER_URL or query is None
 
 
@@ -256,4 +268,30 @@ def collect_macro_v0(root: Path, *, environ: Mapping[str, str], year: int | None
                 lambda: transport(MTS_TABLE_1_URL, data=None, query=mts_query(year), max_bytes=MTS_MAX_BYTES))
     except Exception:
         entries.append({"axis": "Fiscal", "reason": "SOURCE_NOT_AVAILABLE"})
+    return entries
+
+
+def treasury_curve_query(year: int) -> str:
+    return urlencode((("data", "daily_treasury_yield_curve"), ("field_tdr_date_value", "%04d" % year)))
+
+
+def collect_treasury_curve(root: Path, *, year: int | None = None, transport: Callable[..., bytes] = default_transport,
+                           clock: Callable[[], datetime] = _now, diagnostics: list | None = None) -> list[dict]:
+    """Return `manifest['macro_curve_v1']` entries: the previous and the current calendar year of the Treasury daily
+    par yield curve (a 20-day run can cross New Year). Failures become reason-only entries; diagnostics get fixed tokens."""
+    root = Path(root)
+    year = year if type(year) is int else clock().year
+    entries = []
+    for each in (year - 1, year):
+        name = "macro-v1-treasury-curve-%04d.xml" % each
+        try:
+            body = transport(TREASURY_CURVE_URL, data=None, query=treasury_curve_query(each), max_bytes=CURVE_MAX_BYTES)
+        except Exception as error:
+            entries.append({"reason": "SOURCE_NOT_AVAILABLE"})
+            if diagnostics is not None:
+                diagnostics.append(_diagnostic("Curve", "TREASURY_XML_%s" % ("CURRENT" if each == year else "PREVIOUS"), error))
+            continue
+        acquired = clock().astimezone(timezone.utc)
+        (root / name).write_bytes(body)
+        entries.append({"format": CURVE_FORMAT, "file": name, "acquired_at": acquired.isoformat(), "synthetic": False})
     return entries

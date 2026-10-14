@@ -23,6 +23,7 @@ from ..macro.primary_contract import AXES, DIMENSIONS, SOURCE_REGISTRY, ENDPOINT
 from ..macro.government_screen import build_government_macro_screen
 from ..macro import growth_inflation_v0 as macro_v0
 from ..macro import raw_axes_v0 as macro_raw
+from ..macro import macro_lights_public as macro_lights
 from ..providers.macro_primary import parse_bls, parse_bea_nipa, parse_treasury_yields
 from ..providers.sec_13f import FilingMetadata, parse_information_table, compare_quarters
 from . import sec_valuation_inputs as _valuation
@@ -160,7 +161,7 @@ def _require(name,payload):
         _keys(data,('companies',));_need(isinstance(data['companies'],dict) and set(data['companies'])==set(OFFICIAL_V11_TARGETS))
         for row in data['companies'].values():
             # earnings_confirmation is optional so copies published before it existed stay valid.
-            _keys(row,('state','role','confirmed_earnings_date','groups','source_hashes')+(('earnings_confirmation',) if 'earnings_confirmation' in row else ()))
+            _keys(row,('state','role','confirmed_earnings_date','groups','source_hashes')+(('earnings_confirmation',) if 'earnings_confirmation' in row else ())+ (('qgv2_ttm_periods',) if 'qgv2_ttm_periods' in row else ()))
             _need(row['state'] in STATES and row['role']=='ESTIMATED_PATTERN_NOT_CONFIRMED' and isinstance(row['groups'],list))
             states.append(row['state']);_need((row['state']=='NOT_AVAILABLE')==(not row['groups']))
             _source_refs(row,sources,{'companyfacts':'SEC_COMPANYFACTS','submissions':'SEC_SUBMISSIONS'},cut,payload['stale_after_seconds'],row['state'])
@@ -173,8 +174,12 @@ def _require(name,payload):
                     _keys(w,('month','day_min','day_max','count'))
                     _need(all(type(v) is int for v in w.values()) and 1<=w['month']<=12 and 1<=w['day_min']<=w['day_max']<=31 and w['count']>0)
             _earnings_confirmation(row,cut)
+            if 'qgv2_ttm_periods' in row:
+                periods=row['qgv2_ttm_periods'];_keys(periods,('revenue','ebit'))
+                _need(set(row['source_hashes'])=={'companyfacts','submissions'} and any(v is not None for v in periods.values()))
+                for value in periods.values():_need(value is None or _day(value)<=cut.date())
     elif name=='macro-screen.json':
-        _keys(data,('axes','dimensions','cells','observations','regime','pit_status')+tuple(k for k in ('growth_inflation_v0','raw_axes_v0') if k in data))
+        _keys(data,('axes','dimensions','cells','observations','regime','pit_status')+tuple(k for k in ('growth_inflation_v0','raw_axes_v0','macro_lights_v1') if k in data))
         _need(data['axes']==list(AXES) and data['dimensions']==list(DIMENSIONS) and data['regime'] is None and data['pit_status'] in ('OBSERVED_BOUND_ONLY','NOT_VERIFIED'))
         _need(isinstance(data['cells'],list) and len(data['cells'])==48)
         _need([(c['axis'],c['dimension']) for c in data['cells']]==[(a,d) for a in AXES for d in DIMENSIONS])
@@ -210,6 +215,7 @@ def _require(name,payload):
         _need(data['pit_status']==('OBSERVED_BOUND_ONLY' if data['observations'] else 'NOT_VERIFIED'))
         if 'growth_inflation_v0' in data:_require_macro_v0(data['growth_inflation_v0'],sources,cut,payload['stale_after_seconds'],states)
         if 'raw_axes_v0' in data:_require_macro_raw(data['raw_axes_v0'],sources,cut,payload['stale_after_seconds'],states)
+        if 'macro_lights_v1' in data:macro_lights.require_block(data['macro_lights_v1'],sources,cut,payload['stale_after_seconds'],states,clock)
     else:
         _need(isinstance(data,dict) and set(data) in ({'reports','role'},{'reports','role','managers'}));_need(data['role']=='REPORTED_QUANTITY_CHANGE_NOT_TRADES' and isinstance(data['reports'],list))
         # With verification records, only verified manager CIKs may carry reports.
@@ -314,6 +320,41 @@ def _macro_v0(entries,root,as_of,stale_after):
     return macro_v0.build_block(growth,as_of),raw,sources,[row['state'] for row in growth.values()]+[row['state'] for row in raw['axes'].values()]
 
 
+def _macro_lights(manifest,root,as_of,stale_after):
+    """Macro lights v1 public part (employment, inflation, curve): the batched BLS body already captured for macro v0 and
+    the Treasury daily par yield curve XML. Market and credit are device-only and never computed here."""
+    bls=None;bls_reason='SOURCE_NOT_COLLECTED'
+    for entry in manifest.get('macro_v0',[]):
+        if not isinstance(entry,dict) or entry.get('axis') not in ('Inflation','Labor'):continue
+        if 'reason' in entry:bls_reason=entry['reason'] if entry['reason'] in macro_lights.MISSING_REASONS else 'SOURCE_NOT_AVAILABLE';continue
+        if entry.get('format')!='BLS_API_V1_JSON':continue
+        acquired=clock(entry['acquired_at'])
+        if entry['synthetic']:bls_reason='SYNTHETIC_INPUT_NOT_PUBLIC';continue
+        if acquired>as_of:bls_reason='SOURCE_AFTER_AS_OF';continue
+        bls=(_read(root,entry['file'],V0_MAX_BYTES),acquired);break
+    curves=[];curve_reason='SOURCE_NOT_COLLECTED';entries=manifest.get('macro_curve_v1',[])
+    _need(isinstance(entries,list) and len(entries)<=macro_lights.MAX_CURVE_BODIES,'PUBLIC_SCREENS_INPUT_INVALID')
+    failed=False
+    for entry in entries:
+        _need(isinstance(entry,dict),'PUBLIC_SCREENS_INPUT_INVALID')
+        if 'reason' in entry:
+            _keys(entry,('reason',));_need(entry['reason'] in macro_lights.MISSING_REASONS,'PUBLIC_SCREENS_INPUT_INVALID');curve_reason=entry['reason'];failed=True;continue
+        _keys(entry,('format','file','acquired_at','synthetic'));_need(entry['format']==macro_lights.CURVE_FORMAT and type(entry['synthetic']) is bool,'PUBLIC_SCREENS_INPUT_INVALID')
+        acquired=clock(entry['acquired_at'])
+        if entry['synthetic']:curve_reason='SYNTHETIC_INPUT_NOT_PUBLIC';failed=True;continue
+        if acquired>as_of:curve_reason='SOURCE_AFTER_AS_OF';failed=True;continue
+        curves.append((_read(root,entry['file'],V0_MAX_BYTES),acquired))
+    # Both years are required: a failed year would silently shorten the run of inverted days.
+    if failed:curves=[]
+    block=macro_lights.build_block(bls=bls,bls_reason=bls_reason,curves=curves,curve_reason=curve_reason,as_of=as_of,stale_after=stale_after)
+    sources=[]
+    if bls is not None:sources.append(_source('BLS',*bls))
+    for body,acquired in curves:
+        source=_source('TREASURY',body,acquired)
+        if source not in sources:sources.append(source)
+    return block,sources,[row['state'] for row in block['lights'].values()]
+
+
 def _dec(value):
     _need(isinstance(value,str) and re.fullmatch(r'[+-]?\d+(?:\.\d+)?',value) is not None);d=Decimal(value);_need(d.is_finite());return d
 
@@ -388,6 +429,24 @@ def _require_macro_raw(block,sources,cut,ttl,states):
         states.append(row['state'])
 
 
+def qgv2_ttm_periods(companyfacts,cutoff):
+    """Date-only lineage for the same v2 TTM selection; never a score or new formula."""
+    from ..qgv import v2_factors as vf
+    try:
+        taxonomy,currency=vf._taxonomy_and_currency(companyfacts,cutoff)
+        if taxonomy is None:return None
+        facts=vf._Facts(companyfacts,taxonomy,currency,cutoff)
+        ends=set().union(*(facts.annual_ends(item) for item in vf.ANCHOR_ITEMS))
+        if not ends:return None
+        company=vf._Company(facts,max(ends))
+        periods={}
+        for item in ('revenue','ebit'):
+            hit=company.ttm(item)
+            periods[item]=hit[1].isoformat() if hit is not None else None
+        return periods if any(v is not None for v in periods.values()) else None
+    except (TypeError,ValueError,AttributeError,KeyError,OverflowError,RecursionError):return None
+
+
 def qg_factor_scores(company_id,m1):
     """The one published price-free Q·G factor path (TARGET sec-qg-factors.json and Universe504 sec-universe-qg.json).
 
@@ -407,7 +466,7 @@ def generate_screen_bundle(*,manifest,input_root,as_of,stale_after):
 def _generate(manifest,root,as_of,stale_after):
     _need(isinstance(as_of,datetime) and as_of.utcoffset() is not None and isinstance(stale_after,timedelta) and stale_after.total_seconds()>0,'PUBLIC_SCREENS_INPUT_INVALID')
     as_of=as_of.astimezone(timezone.utc)
-    _need(isinstance(manifest,dict) and {'schema_version','sec','macro','thirteen_f'}<=set(manifest) and set(manifest)-{'schema_version','sec','macro','thirteen_f'}<={'macro_v0','thirteen_f_managers','thirteen_f_details'});_need(type(manifest['schema_version']) is int and manifest['schema_version']==1)
+    _need(isinstance(manifest,dict) and {'schema_version','sec','macro','thirteen_f'}<=set(manifest) and set(manifest)-{'schema_version','sec','macro','thirteen_f'}<={'macro_v0','macro_curve_v1','thirteen_f_managers','thirteen_f_details'});_need(type(manifest['schema_version']) is int and manifest['schema_version']==1)
     _need(all(isinstance(manifest[k],list) for k in ('sec','macro','thirteen_f')) and len(manifest['sec'])<=17 and len(manifest['macro'])<=64 and len(manifest['thirteen_f'])<=20)
     qg={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'factors':{fid:{'score':None,'state':'NOT_AVAILABLE'} for fid in sorted(FACTORS)}} for cid in OFFICIAL_V11_TARGETS}
     types={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'memberships':dict.fromkeys(PRICEFREE_TYPES),'config_version':None,'metrics':dict.fromkeys(PRICEFREE_METRICS)} for cid in OFFICIAL_V11_TARGETS}
@@ -433,6 +492,8 @@ def _generate(manifest,root,as_of,stale_after):
         for rows in (qg,types,windows):rows[cid]['source_hashes']=dict(refs)
         state=_fresh(acquired,as_of,stale_after)
         valuation[cid]=_valuation.project_row(m1,state,refs,_current_ambiguity(m1) if m1['status']=='READY' else False)
+        periods=qgv2_ttm_periods(facts,acquired.astimezone(timezone.utc).date())
+        if periods is not None:windows[cid]['qgv2_ttm_periods']=periods
         timing=build_filing_timing_pattern(cid,sub,acquired,as_of)
         if timing['groups']:
             confirmed,confirmation=earnings_confirmation(cid,sub,timing['groups'],acquired_at=acquired,as_of=as_of)
@@ -479,7 +540,9 @@ def _generate(manifest,root,as_of,stale_after):
         relevant=[o for o in observations if o['axis']==cell['axis']]
         if not relevant or cell['axis'] in LEVEL_REQUIRED and not set(LEVEL_REQUIRED[cell['axis']])<=set(o['source_id'] for o in relevant):cell['state']='NOT_AVAILABLE'
     v0_block,raw_block,v0_sources,v0_states=_macro_v0(manifest.get('macro_v0',[]),root,as_of,stale_after)
-    macro={'axes':list(AXES),'dimensions':list(DIMENSIONS),'cells':cells,'observations':observations,'regime':None,'pit_status':'OBSERVED_BOUND_ONLY' if observations else 'NOT_VERIFIED','growth_inflation_v0':v0_block,'raw_axes_v0':raw_block}
+    lights_block,lights_sources,lights_states=_macro_lights(manifest,root,as_of,stale_after)
+    v0_sources=v0_sources+[s for s in lights_sources if s not in v0_sources and s not in macro_sources]
+    macro={'axes':list(AXES),'dimensions':list(DIMENSIONS),'cells':cells,'observations':observations,'regime':None,'pit_status':'OBSERVED_BOUND_ONLY' if observations else 'NOT_VERIFIED','growth_inflation_v0':v0_block,'raw_axes_v0':raw_block,'macro_lights_v1':lights_block}
     _need(type(manifest.get('thirteen_f_details',False)) is bool)
     reports=[];report_sources=[]
     for pair in manifest['thirteen_f']:
@@ -509,7 +572,7 @@ def _generate(manifest,root,as_of,stale_after):
         'sec-qg-factors.json':_envelope('sec-qg-factors.json',as_of,stale_after,financial(qg),sec_sources,[r['state'] for r in qg.values()]),
         'company-types-pricefree.json':_envelope('company-types-pricefree.json',as_of,stale_after,financial(types),sec_sources,[r['state'] for r in types.values()],type_reasons),
         'sec-filing-windows.json':_envelope('sec-filing-windows.json',as_of,stale_after,{'companies':windows},sec_sources,[r['state'] for r in windows.values()]),
-        'macro-screen.json':_envelope('macro-screen.json',as_of,stale_after,macro,macro_sources+v0_sources,[_fresh(clock(o['available_at']),as_of,stale_after) for o in observations]+v0_states,('UNAPPROVED_ENGINE_INPUT_MAPPING','PUBLIC_FX_EXCLUDED')),
+        'macro-screen.json':_envelope('macro-screen.json',as_of,stale_after,macro,macro_sources+v0_sources,[_fresh(clock(o['available_at']),as_of,stale_after) for o in observations]+v0_states+lights_states,('UNAPPROVED_ENGINE_INPUT_MAPPING','PUBLIC_FX_EXCLUDED')),
         _valuation.FILENAME:_envelope(_valuation.FILENAME,as_of,stale_after,_valuation.data(valuation),sec_sources,[r['state'] for r in valuation.values()]),
         'sec-13f-changes.json':_envelope('sec-13f-changes.json',as_of,stale_after,{'reports':reports,'role':'REPORTED_QUANTITY_CHANGE_NOT_TRADES',**({'managers':[dict(m) for m in manifest['thirteen_f_managers']]} if 'thirteen_f_managers' in manifest else {})},report_sources,[r['state'] for r in reports]),
     }

@@ -18,7 +18,7 @@ test('fixture is synthetic and minimums are the documented ones', () => {
   assert.equal(fixture.synthetic, true);
   assert.ok(fixture.note.startsWith('SYNTHETIC'));
   assert.deepEqual(plain(C.MIN), fixture.min);
-  assert.deepEqual(plain(C.MIN), { capture_days: 10, max_drawdown: 20, volatility: 20 });
+  assert.deepEqual(plain(C.MIN), { capture_days: 20, max_drawdown: 20, volatility: 20 });
 });
 
 for (const v of fixture.vectors) {

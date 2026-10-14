@@ -16,8 +16,8 @@ import json
 import re
 
 from ..markets.us import US_LISTINGS
-from ..providers.sec_8k_disclosures import (ARCHIVE_URL, CLASSIFICATIONS, FORMS, ITEMS, TITLE_MAX, classify,
-                                            index_url)
+from ..providers.sec_8k_disclosures import (ARCHIVE_URL, CLASSIFICATIONS, FORMS, ITEMS, TITLE_MAX, classify_report, quarterly_earnings_title,
+              index_url)
 
 FILENAME = 'sec-disclosures.json'
 KIND = 'SEC_DISCLOSURES'
@@ -78,14 +78,14 @@ def assign_groups(events):
     """
     originals = {}
     for e in events:
-        if e['form'] == '8-K' and e['event_date'] is not None:
-            originals.setdefault((e['company_id'], e['event_date']), []).append(e)
+        if e['form'] in ('8-K', '6-K') and e['event_date'] is not None:
+            originals.setdefault((e['company_id'], e['event_date'], e['form']), []).append(e)
     for e in events:
         own = e['company_id'] + ':' + e['accession']
-        if e['form'] == '8-K':
+        if e['form'] in ('8-K', '6-K'):
             e['group_id'], e['occurrence'] = own, 'NEW'
             continue
-        matches = [o for o in originals.get((e['company_id'], e['event_date']), []) if o['accepted_at'] <= e['accepted_at']] \
+        matches = [o for o in originals.get((e['company_id'], e['event_date'], e['form'].removesuffix('/A')), []) if o['accepted_at'] <= e['accepted_at']] \
             if e['event_date'] is not None else []
         e['group_id'] = matches[0]['company_id'] + ':' + matches[0]['accession'] if len(matches) == 1 else own
         e['occurrence'] = 'REPEAT'
@@ -146,7 +146,7 @@ def merge(previous, collected, *, as_of, exhibits=None):
                     exhibit = {'state': 'NOT_AVAILABLE', 'reason_code': 'NOT_COLLECTED'}
                 rows.append({'company_id': cid, 'accession': row['accession'], 'form': row['form'],
                              'filing_date': row['filing_date'], 'event_date': row['event_date'], 'accepted_at': accepted,
-                             'items': list(row['items']), 'classification': classify(row['items']),
+                             'items': list(row['items']), 'classification': classify_report(row['form'], row['items']),
                              'link': index_url(cid, row['accession']), 'group_id': None, 'occurrence': None,
                              'first_seen_at': old['first_seen_at'] if old is not None else instant(as_of),
                              'exhibit_99_1': exhibit})
@@ -229,11 +229,14 @@ def _require(p):
         items = e['items']
         _need(isinstance(items, list) and len(items) <= len(ITEMS) and all(isinstance(i, str) and i in ITEMS for i in items)
               and items == sorted(set(items)))
-        _need(e['classification'] in CLASSIFICATIONS and e['classification'] == classify(items))
+        _need(e['classification'] in CLASSIFICATIONS and e['classification'] == classify_report(e['form'], items))
         _need(e['link'] == index_url(e['company_id'], e['accession']))
         seen_at = _clock(e['first_seen_at'])
         _need(accepted <= seen_at <= cut)
         _exhibit(e)
+        if e['form'] in ('6-K', '6-K/A'):
+            _need(e['company_id'] == 'asml' and items == [] and e['exhibit_99_1']['state'] == 'AVAILABLE'
+                  and quarterly_earnings_title(e['exhibit_99_1']['title']))
     _need(events == _order(events))
     expected = assign_groups([dict(e) for e in events])
     _need(all(a['group_id'] == b['group_id'] and a['occurrence'] == b['occurrence'] for a, b in zip(events, expected)))
