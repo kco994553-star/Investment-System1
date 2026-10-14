@@ -2683,10 +2683,12 @@
    {
     "rule": "CRISIS: inflation > 8%",
     "period": "2022",
-    "crisis_days": 31,
-    "source": "private replay report (not published)",
+    "crisis_weeks": 31,
+    "crisis_weekdays": 152,
+    "evaluation": "weekly (Friday) replay = 31 weeks; daily = 152 weekdays (2022-04-15~2022-11-14)",
+    "source": "MACRO_REPLAY_20261014.md (#251; public macro series only)",
     "status": "RECORDED_FOR_REVIEW",
-    "text": "\"물가 > 8% = 위기\" 규칙이 2022년에 31일 위기를 냈다. 재생 완료 후 규칙 재검토 안을 제시하고 변경은 사용자 결정."
+    "text": "\"물가 > 8% = 위기\" 규칙이 2022년에 위기를 냈다: 주 단위(금요일) 31주, 일 단위 152평일(2022-04-15~11-14). 이전 기록의 \"31일\"은 31주였다. 재생 완료 후 규칙 재검토 안을 제시하고 변경은 사용자 결정."
    }
   ]
  },
