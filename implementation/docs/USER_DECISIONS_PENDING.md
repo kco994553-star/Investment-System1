@@ -1,19 +1,25 @@
 # 사용자 결정·조치 대기 목록
 
-기준일: 2026-10-13 UTC. 최신 사용자 메시지(10/11·10/13)를 반영했다. 실제 진행은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md)가 우선한다. 키·토큰·이메일·계정·가격 값은 기록하지 않는다. 승인된 내용을 다시 승인 대기로 올리지 않는다.
+기준일: 2026-10-14 UTC. 최신 사용자 메시지(10/11·10/13)를 반영했다. 실제 진행은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md)가 우선한다. 키·토큰·이메일·계정·가격 값은 기록하지 않는다. 승인된 내용을 다시 승인 대기로 올리지 않는다.
 
 ## 남아 있는 결정만
 
 | 번호 | 무엇을 | 선택지 | 권장안과 근거 | 결정 전 동작 |
 | --- | --- | --- | --- | --- |
-| D-DEPLOY | 승인된 PR의 Pages 배포와 #229 Worker 재배포(기존 Secret·헤더 경로) | 해당 PR 병합·필수6체크 후 배포 / 보류 | 검증·승인된 코드의 배포. 새 키나 허용 범위 결정은 추가하지 않음 | 별도 배포 승인 전 기존 Pages·Worker 유지; 수동 dispatch·Worker deploy 실행 안 함 |
-| B-1 | 휴장일에 저장한 판정의 D+20·D+63·1년 채점 기준 가격일 | 직전 완료 거래일 / 다음 완료 거래일 / 해당 기록 채점 제외 | 직전 완료 거래일: 판정 시점에 확정된 가격을 사용하는 PIT 기준 | 해당 날짜가 SPY 세션이 아니면 BASE_SESSION_UNAVAILABLE · NA, 임의 이동 없음 |
-| D-227 | [#237](https://github.com/kco994553-star/Investment-System1/pull/237) #227 clean 수정본 병합: Actions에서 Wikidata 도메인 기준 로고를 Pages에 포함; TradingView 직접 iframe | 수정본·검증 결과 확인 후 승인 / 보류 | 사용자 10/13 지시 그대로 수정 후 승인. 실행 중 로고 외부 요청·외부 이미지 CSP 허용을 제거한다 | 원래227 닫음·source/history 보존, clean237 미병합. TradingView 기본 꺼짐, KRX/TSE 지원 여부 확인 불가 |
-| E-13F | [#231](https://github.com/kco994553-star/Investment-System1/pull/231) 13F 공개 보강(제출일·미변동 보유·보고 가치·발행사명·Eaton CUSIP) 병합 | 구체적 PR 확인 후 승인 / 보류 | SEC 공개자료이며 13F 해석에 필요한 항목. 가격·개인 보유와 섞지 않는다 | 보강 PR 승인 전 기존 공개 필드 유지; 없는 항목 NOT_AVAILABLE |
-| A-V2 | [#234](https://github.com/kco994553-star/Investment-System1/pull/234) 새로운 v2 V·원장2·공개 입력 구현(기본v2 결정은 승인됨) | 완성 PR·회귀 검증을 확인 후 승인 / 보류 | V 최우선. 10/19 준비 여부와 실제 시작일을 확인하고 소급하지 않는다 | v2 기본·v1 비교 결정은 승인됨. 아직 코드/입력이 준비되지 않은 배포는 기존 v1 유지; 신규 V·원장 코드만 승인 대기, 결측 NOT_AVAILABLE |
-| C-MACRO | [#235](https://github.com/kco994553-star/Investment-System1/pull/235) 매크로 5경고등·DART optional입력·TTM 날짜 lineage·수집/연결 병합 | 완성 PR·재생 결과를 확인 후 승인 / 보류 | PLAYBOOK 13-5의 v0·UNCALIBRATED 구현. 재생은 공개하지 않고 사용자 보고만 한다 | 신규 연결 미병합; 없는 경고등 제외 n/5, 0/5 확대 제한 없음·U3 불가·매크로 확인 불가 |
+| Q-238 | [#238](https://github.com/kco994553-star/Investment-System1/pull/238) v2 매출 태그 `RegulatedAndUnregulatedOperatingRevenue` 추가 | 승인 / 보류 | 승인: 겹치는 연도에서 `Revenues`와 값이 같고(비율 1.0000) G +2(DTE·XEL)만 바뀜 | 기존 태그만 사용, 두 회사 G 축 50% 미달 NA |
+| Q-EBIT | 영업이익 미보고 23곳(REIT·E&P·주택건설·미디어 등) Q 보완 | EBIT = 세전이익 + 이자비용 대체 / NA 유지 | NA 유지(현재): 방법 변경이라 근거 검토 후 결정. 대체하면 Q +12 | Q 축 NA, 후보 편향은 보고서에 명시 |
+| M-239 | [#239](https://github.com/kco994553-star/Investment-System1/pull/239) 매크로 게이트 비활성(참고 표시) | 승인 / 보류 | 승인: 10/14 지시 C 그대로. 재생 완료 후 게이트 재가동은 별도 결정 | 엔진은 아직 매크로로 확대 제한·U3 판정 가능(현재 실데이터 경고등 0/5라 실제 제한 없음) |
+| M-RULE | "물가 > 8% = 위기" 규칙(2022년 위기 31일) 재검토 | 재생 완료 후 제시하는 안 중 선택 | 재생(2000·2008·2020·2022) 완료 후 안을 낸다 | 참고 표시만 |
+| W-SPLIT | 일일 워크플로 분리(collect / verify / deploy) | 승인 / 보류 | 승인: 화면 검증 실패가 수집·원장·샤드를 잃게 만드는 구조를 끊음(10/10~13 4회 실패) | 검증 실패 시 그날 샤드·배포 손실 |
+| MSG | [QGV v2 채택과 TARGET v1 재구성]·[화면 정리] 지시 원문 | 다시 보내기 | 이 세션에 두 지시가 도착하지 않았다 | 보완 지시(10/14)에 적힌 범위만 진행 |
 
-Worker Universe504(하이픈 포함)·HYG·IEF 확장 PR 작성 및 확대 범위는 **승인됨**. [#229](https://github.com/kco994553-star/Investment-System1/pull/229)는 exact head 9cbbdeb3 필수6 성공 후 canonical6717로 병합 완료. 범위 승인 재요청 없음; 실제 배포는 D-DEPLOY로 별도 결정한다. 새 계산·워크플로·공개 경계·외부 서비스·GSQ 결정 변경 PR은 위와 같이 완성본 검토 후 승인 대상이다. 테스트·문서·화면 전용 PR은 필수 6체크 성공·실패 0이면 사용자 지시에 따라 자체 병합한다.
+## 결정됨 — 2026-10-14
+
+- 병합 #234 → #233 → #235 → #231 → #237 완료(각 최신 HEAD 필수 6체크 성공). D-227·E-13F·A-V2·C-MACRO 해소.
+- D-DEPLOY: Pages·Worker 1회 배포 완료(10/14 12:06 UTC).
+- B-1: 휴장일 판정의 채점 기준 가격 = 직전 완료 거래일.
+- 매크로는 재생 완료까지 참고 표시만(지시 C, #239). 과거 PR은 historical로 닫음(지시 D).
+- TARGET v1 후보는 커버리지 보고 전까지 초안만, "커버리지 편향 가능 (Q n/504, G n/504)" 표시.
 
 ## 결정됨 — 2026-10-13
 
