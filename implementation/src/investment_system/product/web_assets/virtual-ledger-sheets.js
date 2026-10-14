@@ -607,7 +607,7 @@ let carry=null; // status text carried into the next mount after a save re-rende
    {runnerOptions(), definitions(), update(result) → result for the report, dispose()}. */
 function mount(view,host,ctx){
  const VT=engine(),cfg=VT.defaultConfig(),kind=ctx.kind==='REAL'?'REAL':'MOCK',tab=ctx.tab;
- const carried=carry&&carry.key===kind+'/'+tab?carry.notes:{};carry=null;
+ const carried=carry&&carry.key===kind+'/'+tab?carry.notes:{};if(carry&&carry.key!==kind+'/'+tab)carry=null; // kept for repeated remounts of the same tab; cleared by the next action
  const state={sheet:null,st:null,result:null,notes:{...carried},drafts:{},busy:false,connected:false,before:typeof ctx.reportDate==='string'&&ctx.reportDate<cfg.start_date,catalog:null};
  let session=null,disposed=false,loading=null,unsubscribe=null,revision=0;
  try{session=ctx.config&&ctx.config.googleSheetsClientId&&view.GoogleSheetQuotes?view.GoogleSheetQuotes.sessionFor(view,ctx.config.googleSheetsClientId):null;}catch(_){session=null;}
@@ -631,7 +631,7 @@ function mount(view,host,ctx){
  const say=(sel,text)=>{state.notes[sel]=text;const n=live()&&host.querySelector(sel);if(n)n.textContent=text;};
  const errorCode=e=>e&&typeof e.message==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/.test(e.message)?e.message:'WRITE_FAILED';
  const act=async(statusSel,fn,done)=>{
-  if(state.busy)return;if(!isConnected()){say(statusSel,SHEET_KO.NOT_CONNECTED);return;}
+  if(state.busy)return;carry=null;if(!isConnected()){say(statusSel,SHEET_KO.NOT_CONNECTED);return;}
   state.busy=true;paint();
   try{const text=await fn();state.busy=false;if(done){carry={key:kind+'/'+tab,notes:{[statusSel]:text}};done();return;}await reload();say(statusSel,text);}
   catch(e){state.busy=false;paint();say(statusSel,engine().codeText(errorCode(e)));}
