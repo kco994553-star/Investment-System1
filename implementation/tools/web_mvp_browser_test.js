@@ -99,7 +99,12 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
       // No producer score is invented: the original QGV view is unavailable, never a number.
       assert.ok(text.includes("NOT_AVAILABLE"));
       assert.ok(!text.includes("90.79"));
-      assert.equal(await page.locator('main [data-screen-company="nvda"] dd').evaluateAll((nodes) => nodes.length > 0 && nodes.every((node) => node.textContent.trim() === "NOT_AVAILABLE")), true);
+      // The raw Q·G / type cards moved to Settings > 원자료 보기(개발자용) for the last viewed company (owner decision 2026-10-14).
+      assert.equal(await page.locator('main [data-screen-company]').count(), 0);
+      await route("settings");
+      await page.locator('[data-raw-data] > summary').click();
+      assert.equal(await page.locator('main [data-raw-data] [data-screen-company="nvda"] dd').evaluateAll((nodes) => nodes.length > 0 && nodes.every((node) => node.textContent.trim() === "NOT_AVAILABLE")), true);
+      await route("company/nvda");
     });
     await check("interest persistence and group membership", async () => {
       await page.locator('[data-star="nvda"]').click();
