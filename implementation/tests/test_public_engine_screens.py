@@ -258,3 +258,54 @@ def test_pricefree_type_metrics_are_published_beside_memberships_and_legacy_rows
     for bad in (float('nan'),1e9,'0.1'):
         broken=json.loads(json.dumps(out));broken['data']['companies']['nvda']['metrics']['roic']=bad
         with pytest.raises(ValueError):api().require_public_screen('company-types-pricefree.json',broken)
+
+
+def _sec_fiscal(tmp_path,periods,indexed=None):
+    """Synthetic NVDA-shaped companyfacts: one 10-K per period; `indexed` limits submissions.recent (big filers)."""
+    cik='0001045810';rows=[];forms=[]
+    for i,(start,end,value) in enumerate(periods):
+        filed=f'{int(end[:4])}-{"03" if end[5:7]<"03" else "12"}-15';accn=f'{cik}-{int(filed[2:4]):02d}-{i+1:06d}'
+        rows.append({'start':start,'end':end,'val':value,'accn':accn,'form':'10-K','filed':filed,'fp':'FY','fy':int(end[:4])})
+        forms.append((accn,filed,end))
+    # Each later 10-K repeats the two prior years as comparatives (as SEC companyfacts does).
+    for j,(accn,filed,_) in enumerate(forms):
+        for start,end,value in periods[max(0,j-2):j]:rows.append({'start':start,'end':end,'val':value,'accn':accn,'form':'10-K','filed':filed,'fp':'FY','fy':int(filed[:4])})
+    kept=forms if indexed is None else forms[-indexed:]
+    facts={'cik':1045810,'facts':{'us-gaap':{'Revenues':{'units':{'USD':rows}}}}}
+    subs={'cik':1045810,'filings':{'recent':{'form':['10-K']*len(kept),'accessionNumber':[r[0] for r in kept],'filingDate':[r[1] for r in kept],'reportDate':[r[2] for r in kept],'acceptanceDateTime':[r[1]+'T12:00:00Z' for r in kept]}}}
+    (tmp_path/'facts.json').write_text(json.dumps(facts));(tmp_path/'submissions.json').write_text(json.dumps(subs))
+    m=manifest();m['sec']=[{'company_id':'nvda','companyfacts':'facts.json','submissions':'submissions.json','acquired_at':'2026-10-10T00:00:00Z','synthetic':False}];return m
+
+
+# Owner bug 2026-10-14: NVDA and others showed every price-free type NOT_AVAILABLE. NVDA's fiscal year is 52/53 weeks
+# (ends the last Sunday of January), which the exact-calendar CAGR rule rejected, so growth (the one type with a rule)
+# was null and so every membership was null.
+FIFTY_TWO_WEEK=[('2021-02-01','2022-01-30',100.0),('2022-01-31','2023-01-29',115.0),('2023-01-30','2024-01-28',132.25),('2024-01-29','2025-01-26',152.0875)]
+
+
+def test_growth_type_is_computed_for_52_53_week_fiscal_years(tmp_path):
+    if importlib.util.find_spec('investment_system.qgv.company_types') is None:
+        pytest.skip('type engine awaiting PR135 approval')
+    out=build(tmp_path,_sec_fiscal(tmp_path,FIFTY_TWO_WEEK))
+    row=out['company-types-pricefree.json']['data']['companies']['nvda']
+    assert row['metrics']['revenue_cagr_3y']==pytest.approx(.15,rel=1e-5)
+    assert row['memberships']['growth']==pytest.approx(.5,rel=1e-4) and row['state']=='LIVE' and row['config_version']=='type_config/1'
+    # Unresolved rules stay null: never 0-filled.
+    assert row['memberships']['quality'] is None and row['memberships']['cyclical'] is None and row['memberships']['defensive'] is None
+    assert out['company-types-pricefree.json']['state']=='LIVE'
+    api().require_public_screen('company-types-pricefree.json',out['company-types-pricefree.json'])
+
+
+def test_growth_type_does_not_need_older_filings_in_the_submissions_index(tmp_path):
+    if importlib.util.find_spec('investment_system.qgv.company_types') is None:
+        pytest.skip('type engine awaiting PR135 approval')
+    years=[(f'{y}-01-01',f'{y}-12-31',v) for y,v in zip(range(2021,2025),(100.0,120.0,144.0,172.8))]
+    # Large filers: submissions.recent no longer lists the 10-K that first reported year-3.
+    row=build(tmp_path,_sec_fiscal(tmp_path,years,indexed=2))['company-types-pricefree.json']['data']['companies']['nvda']
+    assert row['metrics']['revenue_cagr_3y']==pytest.approx(.2,rel=1e-5) and row['memberships']['growth']==pytest.approx(1.0)
+
+
+def test_growth_type_stays_null_without_four_annual_revenues(tmp_path):
+    out=build(tmp_path,_sec_fiscal(tmp_path,FIFTY_TWO_WEEK[1:]))['company-types-pricefree.json']
+    row=out['data']['companies']['nvda']
+    assert row['metrics']['revenue_cagr_3y'] is None and all(v is None for v in row['memberships'].values()) and row['state']=='NOT_AVAILABLE'
