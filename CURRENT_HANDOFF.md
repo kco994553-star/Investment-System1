@@ -39,7 +39,7 @@
 - 일일 실행 시간(22:17~23:15 UTC)에는 cockpit-pages 수동 배포를 하지 않는다. 그날 원장이 빠진 사본으로 덮일 수 있다.
 - v1+v2 원장은 2MB 한도에 2027-10 전후 도달한다(W-F3).
 
-10/19 준비([READINESS_20261019.md](implementation/docs/forward_validation/READINESS_20261019.md), #253): 코드 결함 없음, 다섯 항목 모두 조건부.
+10/19 준비([READINESS_20261019.md](implementation/docs/forward_validation/READINESS_20261019.md), #255): 코드 결함 없음, 다섯 항목 모두 조건부.
 - v2·v1 원장: 10/19 22:17 UTC 실행에서 원장 앞 필수 단계 7개 성공 + 배포. schema 2 원장 코드는 아직 실제 Actions에서 돈 적이 없어 10/14~10/16 중 한 번은 배포까지 성공해야 한다.
 - 세트 A: 10/19 v2 행 기록 후 기기에서 사용자가 기록.
 - 기기 V 기록: 한국 10/20 약 08:00~12:59 창 안에서만(놓치면 소급 없음).
