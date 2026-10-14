@@ -69,7 +69,8 @@ test('selection and weights: core 5 × 8% + general 10 × 6% = 100, core needs f
  const few=universe(Array.from({length:20},(_,i)=>({symbol:'F'+String(i).padStart(2,'0'),total:80-i,sic:SICS[i%SICS.length],ig:'g'+(i%6),fa:i<3?15:10})));
  const s2=B.currentSelection({...B.emptyState(),draft:B.buildDraft({...few,existing:[],date:'2026-10-14'})});assert.equal(s2.core_count,3);assert.equal(s2.rows.length,15);assert.equal(s2.cash_pct,4);assert.equal(s2.limits.ok,true);
  // Set B: equal weight 100/15 with the same spread and caps.
- const seg=B.setBSegment(B.universeRows({...u,existing:[]}).filter(r=>!B.exclusions(r).length),'2026-10-14');assert.equal(seg.rows.length,15);assert.ok(seg.rows.every(r=>Math.abs(r.pct-100/15)<1e-3));assert.equal(seg.limits_ok,true);
+ const seg=B.setBSegment(B.universeRows({...u,existing:[]}).filter(r=>!B.exclusions(r).length),'2026-10-14');assert.equal(seg.rows.length,15);assert.ok(seg.rows.every(r=>Math.abs(r.pct-100/15)<1e-3));assert.equal(seg.limits_ok,true);assert.equal(seg.ready,true);
+ assert.equal(B.setBSegment(B.universeRows({...u,existing:[]}).filter(r=>!B.exclusions(r).length).slice(0,20),'2026-10-14').ready,false);
 });
 
 test('templates: 3 reasons and 3 numerically checkable invalidations from the strongest factors, deterministic',()=>{

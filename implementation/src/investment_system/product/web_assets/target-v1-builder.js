@@ -223,7 +223,11 @@ function transitionRows({v0={},v1={},actual=null,total=null,round:k=1,cfg=CFG}){
 
 /* ---------- C: virtual sets B and C (rule index; no backfill) ---------- */
 function setBDue(state,date,cfg=CFG){const last=state?.set_b?.length?state.set_b[state.set_b.length-1].date:null;if(!last)return true;const day=lastRebalanceOnOrBefore(date,cfg);return!!day&&last<day&&day<=date;}
-function setBSegment(eligibleRows,date,cfg=CFG,pcfg=PCFG){const sel=select(eligibleRows,{mode:'EQUAL',cfg,pcfg});return{date,rows:sel.rows.map(r=>({symbol:r.symbol,pct:r.pct,subgroup:r.subgroup})),cash_pct:sel.cash_pct,limits_ok:sel.limits.ok===true};}
+// Set B segment (equal weight, same spread and caps). ready: enough eligible names (V priced on this device) and a full,
+// limit-passing selection; the screen starts / re-selects set B only when ready (no partial start, no backfill).
+function setBSegment(eligibleRows,date,cfg=CFG,pcfg=PCFG){const sel=select(eligibleRows,{mode:'EQUAL',cfg,pcfg}),limitsOk=sel.limits.ok===true;
+ return{date,rows:sel.rows.map(r=>({symbol:r.symbol,pct:r.pct,subgroup:r.subgroup})),cash_pct:sel.cash_pct,limits_ok:limitsOk,
+  ready:eligibleRows.length>=cfg.virtual_sets.B.start_min_eligible&&sel.rows.length===cfg.virtual_sets.B.count&&limitsOk};}
 /* Rule index: base session close = 100; units from the segment's target weights; reset to the target weights on every rebalance
    day and every new segment (first session on/after the date). A missing close is a gap (that session NA); a reset or the last
    session without every close → NOT_AVAILABLE. Nothing is interpolated or carried. closes: {symbol: {date: close}} (RAM). */

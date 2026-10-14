@@ -133,7 +133,7 @@
   "virtual_sets": {
     "version": "v0", "decision": "OWNER_RULE",
     "A": {"ko": "세트 A · TARGET v0", "source": "CATALOG_TARGET_V0"},
-    "B": {"ko": "세트 B · v2 상위 15 균등", "source": "RULE_V2_TOP", "count": 15, "equal_weight": true, "reselect": "EVERY_REBALANCE_DAY"},
+    "B": {"ko": "세트 B · v2 상위 15 균등", "source": "RULE_V2_TOP", "count": 15, "equal_weight": true, "reselect": "EVERY_REBALANCE_DAY", "start_min_eligible": 30, "start_rule": "통과 종목이 start_min_eligible 이상이고 15종목이 16절 한도를 통과한 날 시작"},
     "C": {"ko": "세트 C · TARGET v1", "source": "TARGET_V1_CONFIRMED", "reselect": "NEVER", "rebalance_to_target": "EVERY_REBALANCE_DAY"},
     "backfill": false,
     "start": "DAY_READY",
