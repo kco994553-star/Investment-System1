@@ -704,7 +704,7 @@
       const market = raw[MARKET_KEY] === MISSING_RECORD ? null : api.validateMarket(raw[MARKET_KEY], catalog);
       const result = api.valuation(snapshot, catalog, ramMarket(view, catalog, market), { ramOverlay: true });
       const stamps = result.rows.map(row => row.quote_as_of).filter(value => typeof value === 'string').sort();
-      return { state: result.state, reason: result.reason, stale: result.stale === true, quote_as_of: stamps.length ? stamps[0] : null,
+      return { state: result.state, reason: result.reason, stale: result.stale === true, quote_as_of: stamps.length ? stamps[0] : null, total: result.state === 'AVAILABLE' ? result.total : null,
         rows: result.rows.map(row => ({ ticker: index.instruments.get(canonical(row.security_reference)).ticker, theme_id: row.theme_id, weight: row.weight, delta: row.delta })),
         themes: result.themes.map(theme => ({ theme_id: theme.theme_id, weight: theme.weight, delta: theme.delta })) };
     } catch (_) { return none('READ_FAILED'); }

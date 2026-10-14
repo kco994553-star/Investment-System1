@@ -98,7 +98,7 @@ function select(pool,{exclude=[],mode='TARGET',cfg=CFG,pcfg=PCFG}={}){
  for(const r of [...pool].sort(byTotal)){
   if(rows.length>=count)break;if(skip.has(key(r.symbol)))continue;
   if((per[r.subgroup]||0)>=max){skipped.push({symbol:r.symbol,reason:'SUBGROUP_MAX'});continue;}
-  let grade,pct;if(mode==='EQUAL'){grade='EQUAL';pct=round(100/count,4);}else if(core<S.core.count&&coreEligible(r,cfg)){grade=S.core.id;pct=S.core.pct;}else{grade=S.general.id;pct=S.general.pct;}
+  let grade,pct;if(mode==='EQUAL'){grade='EQUAL';pct=100/count;}else if(core<S.core.count&&coreEligible(r,cfg)){grade=S.core.id;pct=S.core.pct;}else{grade=S.general.id;pct=S.general.pct;}
   const g=groupOf(r.subgroup,pcfg);if((groups[g]||0)+pct>L.sector_group_max_pct+1e-9){skipped.push({symbol:r.symbol,reason:'SECTOR_GROUP_MAX'});continue;}
   if(pct>L.single_max_pct){skipped.push({symbol:r.symbol,reason:'SINGLE_MAX'});continue;}
   if(grade===S.core.id)core++;per[r.subgroup]=(per[r.subgroup]||0)+1;groups[g]=(groups[g]||0)+pct;rows.push({...r,grade,pct});
@@ -179,7 +179,8 @@ function answer(state,{symbol,answer:kind,reason='',date},cfg=CFG){
  const spec=cfg.cards.answers.find(a=>a.id===kind),why=typeof reason==='string'?reason.trim():'';
  if(spec.reason_required&&!why)fail('DISAGREE_REASON_REQUIRED');if(!text(why,spec.reason_max||200))fail('REASON_INVALID');
  const sel=currentSelection(state,cfg);if(!sel.rows.some(r=>key(r.symbol)===key(symbol)))fail('TARGET_V1_NOT_SELECTED');
- return{...state,answers:[...state.answers,{symbol,answer:kind,reason:kind==='UNKNOWN'?(why||spec.memo):why,date}]};
+ // Latest answer per name only (the full history is in the playbook judgement records).
+ return{...state,answers:[...state.answers.filter(a=>key(a.symbol)!==key(symbol)),{symbol,answer:kind,reason:kind==='UNKNOWN'?(why||spec.memo):why,date}]};
 }
 // One judgement record per card response for the playbook store (scored later like every record, rejected names included).
 function judgementRecord({row,answer:kind,reason='',date,id},cfg=CFG){
