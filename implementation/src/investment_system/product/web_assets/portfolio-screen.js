@@ -12,7 +12,7 @@ function ring(ratio,label){
 }
 function shell(locale,virtual=null){
  const T=tr(locale);
- return '<div class="chips data-badges" data-portfolio-badges>'+badges({locale,catalog:null,ram:null})+'</div>'
+ return '<section class="card" data-target-v0-facts><h2>TARGET v0 · 출발점·비교 기준</h2><p>반도체 묶음 55% · 업종 묶음 상한(40%) 초과</p><a href="#playbook">TARGET v1 작성 →</a></section><div class="chips data-badges" data-portfolio-badges>'+badges({locale,catalog:null,ram:null})+'</div>'
   +'<div id="portfolio-visuals" data-portfolio-visuals>'+visuals({locale,catalog:null,ram:null,screens:null,idByTicker:new Map()})+'</div>'
   +'<div data-portfolio-virtual>'+virtualCard(locale,virtual)+'</div>'
   +'<p class="small">'+esc(T('보유 정보는 이 기기에만 저장되며 공개 저장소·Pages에 올라가지 않습니다. 매수·매도 지시 아님 · 주문 기능 없음.','Holdings stay on this device and never reach the public repository or Pages. Not a buy/sell instruction · no order function.'))+'</p>';
