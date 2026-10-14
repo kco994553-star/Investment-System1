@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / 'tools'
 sys.path.insert(0, str(TOOLS))
 PAGES = 'https://kco994553-star.github.io/Investment-System1/'
-UA = 'Synthetic Rehearsal rehearsal@example.com'
+UA = 'synthetic rehearsal setting'
 DART_KEY_ENV = 'DART_API_KEY'
 UTC = timezone.utc
 
@@ -343,7 +343,7 @@ def test_public_output_and_logs_hold_no_price_or_personal_value(chain):
     from tests.dart_fake_opendart import FAKE_KEY
     _, runs = chain
     # 987654321 / StockPrice: a synthetic price planted in every fake companyfacts body; it must never come out.
-    canaries = (UA, 'rehearsal@example.com', FAKE_KEY, '987654321', 'StockPrice')
+    canaries = (UA, FAKE_KEY, '987654321', 'StockPrice')
     for day, (out, log) in runs.items():
         assert [status for _, status in log['guard']] == ['PASS'] * 6
         for path in out.iterdir():
