@@ -2670,7 +2670,25 @@
    "decision": "UNCALIBRATED"
   },
   "decision": "UNCALIBRATED",
-  "unavailable_label": "매크로 확인 불가"
+  "unavailable_label": "매크로 확인 불가",
+  "gate_active": false,
+  "gate_status": {
+   "state": "REFERENCE_ONLY",
+   "reason": "REPLAY_PENDING",
+   "decided": "2026-10-14 사용자 지시 C",
+   "text": "5개 경고등 과거 재생(2000·2008·2020·2022)이 끝날 때까지 매크로는 참고 표시만 한다. 확대 차단·U3 조건에 쓰지 않는다.",
+   "reenable": "재생 완료 후 사용자 결정"
+  },
+  "replay_findings": [
+   {
+    "rule": "CRISIS: inflation > 8%",
+    "period": "2022",
+    "crisis_days": 31,
+    "source": "private replay report (not published)",
+    "status": "RECORDED_FOR_REVIEW",
+    "text": "\"물가 > 8% = 위기\" 규칙이 2022년에 31일 위기를 냈다. 재생 완료 후 규칙 재검토 안을 제시하고 변경은 사용자 결정."
+   }
+  ]
  },
  "rebalancing": {
   "section": "13-4",

@@ -128,7 +128,7 @@ def band(cfg, target):
     return max(num(cfg, 'band_min_pp'), target * num(cfg, 'band_target_ratio'))
 
 
-def _special(cfg, tc, s, macro, u3_ok_2_5):
+def _special(cfg, tc, s, macro, u3_ok_2_5, macro_gate=True):
     """§6-4 rules (§14-4 gate replaces the value-trap rule on v2) and §13-5 macro effects.
     Returns (disabled [(target, reason)], warnings, extra questions, unknown)."""
     disabled, warnings, questions, unknown = [], [], [], []
@@ -177,7 +177,9 @@ def _special(cfg, tc, s, macro, u3_ok_2_5):
     if s.get('sector') in cfg['financial_exception']['sectors']:
         disabled += [(e, cfg['financial_exception']['reason']) for e in cfg['financial_exception']['disable']]
     effects = cfg['macro']['effects']
-    if macro is None:
+    if not macro_gate:
+        pass  # 2026-10-14 C: macro is reference-only until the replay is done (no expansion block, no U3)
+    elif macro is None:
         unknown.append({'rule': 'macro_state', 'missing': ['macro_state']})
     elif macro == 'WARNING' and 'cyclical' in members:
         disabled += [(e, 'MACRO_WARNING_CYCLICAL') for e in effects['WARNING']['disable_cyclical']]
@@ -238,7 +240,9 @@ def evaluate(cfg, s, mode='CORE_V0'):
     held = bool(s.get('held'))
     conv = s.get('conviction') or {}
     conv_active = bool(conv.get('active'))
-    macro = None if s.get('macro_available_count') == 0 else s.get('macro_state')
+    shown = None if s.get('macro_available_count') == 0 else s.get('macro_state')
+    gate = cfg['macro'].get('gate_active', True)
+    macro = shown if gate else None
     drops = _drops(s)
     r2_hits, r2_missing, maintained = _r2(cfg, tc, s, drops)
     v_delta = s['v_now'] - s['v_prev20'] if _known(s.get('v_now'), s.get('v_prev20')) else None
@@ -308,7 +312,7 @@ def evaluate(cfg, s, mode='CORE_V0'):
             if actual < target - b:
                 fire('U2', ['UNDERWEIGHT_GAP'])
     u3 = _u3(cfg, tc, s, r3_cond is True, r3_cond is not None, v_delta, macro)
-    if held:
+    if held and gate:
         ok = _all(u3.values())
         if ok:
             fire('U3', ['MACRO_DISCOUNT'])
@@ -387,7 +391,7 @@ def evaluate(cfg, s, mode='CORE_V0'):
         if vp is None or exp is None:
             disabled += [('U1_INCREASE', 'CORE_UNVERIFIABLE'), ('W2_ENTER', 'CORE_UNVERIFIABLE')]
     u3_ok_2_5 = _all(v for k, v in u3.items() if k != 'macro_state') is True
-    sp_disabled, warnings, questions, sp_unknown = _special(cfg, tc, s, macro, u3_ok_2_5)
+    sp_disabled, warnings, questions, sp_unknown = _special(cfg, tc, s, macro, u3_ok_2_5, gate)
     disabled += sp_disabled
 
     keep = cfg['conviction_choice']
@@ -425,7 +429,7 @@ def evaluate(cfg, s, mode='CORE_V0'):
         'band_pp': None if target is None else band(cfg, target),
         'qg': {'q_drop': drops['q'], 'g_drop': drops['g'], 'qg_drop': drops['qg'], 'maintained': maintained, 'r2_hits': r2_hits},
         'v_change_20': v_delta,
-        'macro': {'state': macro, 'label': cfg['macro']['unavailable_label'] if macro is None else macro, 'split_multiplier': multiplier, 'u3_conditions': u3},
+        'macro': {'state': shown, 'gate': 'ACTIVE' if gate else cfg['macro']['gate_status']['state'], 'label': cfg['macro']['unavailable_label'] if shown is None else shown, 'split_multiplier': multiplier, 'u3_conditions': u3},
         'checks': checks,
         'choices': choices_for(primary['code']) if primary else [],
         'choices_by_code': {c: choices_for(c) for c in ordered},
@@ -440,7 +444,7 @@ def transition(cfg, frm, choice, ctx=None):
     """§4 (+§3, §13-3, §13-5) row for (code, choice) with every reference resolved for the symbol's context."""
     ctx = ctx or {}
     tc = type_context(cfg, ctx.get('memberships'), ctx.get('basis') or 'v1')
-    macro = ctx.get('macro_state')
+    macro = ctx.get('macro_state') if cfg['macro'].get('gate_active', True) else None
     row = next((r for r in cfg['transitions'] if r['from'] == frm and r['choice'] == choice), None)
     if row is None:
         return {'from': frm, 'choice': choice, 'state': 'NO_TRANSITION'}
