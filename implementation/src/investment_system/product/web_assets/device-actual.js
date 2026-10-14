@@ -349,7 +349,7 @@
       const list = el(state, 'div', undefined, { class: 'actual-value-list' });
       for (const row of values.rows) {
         const instrument = state.catalog.instruments.find(candidate => canonical(candidate.security_reference) === canonical(row.security_reference));
-        const card = el(state, 'div', undefined, { class: 'actual-value-row' }); card.append(el(state, 'strong', instrument.label + (instrument.ticker ? ' · ' + instrument.ticker : '')));
+        const card = el(state, 'div', undefined, { class: 'actual-value-row' }); if (instrument.ticker && state.view.CompanyLogos) card.append(state.view.CompanyLogos.node(state.host.ownerDocument, instrument.ticker, 20)); card.append(el(state, 'strong', instrument.label + (instrument.ticker ? ' · ' + instrument.ticker : '')));
         const marketCurrency = state.externalQuotes ? row.currency : values.currency;
         const fields = [[t(state, 'quantity'), row.quantity], [t(state, 'average'), row.average_cost + ' ' + row.currency], [t(state, 'market') + ' · ' + marketCurrency, row.market_value === null ? 'NOT_AVAILABLE' : number(state, row.market_value) + ' ' + marketCurrency], [t(state, 'target'), percentage(state, row.target_units / state.catalog.total_units)], [t(state, 'weight'), percentage(state, row.weight)], [t(state, 'delta') + ' (%p)', points(state, row.delta)]];
         if (!state.externalQuotes) {

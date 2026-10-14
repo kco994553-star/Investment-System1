@@ -1,4 +1,5 @@
 'use strict';
+const {displayOnlyOff}=require('./display_only_off.js');
 // S17 virtual ledger runner on the built site. Every request is intercepted: same-origin files are served by the local
 // build (public screens empty, synthetic price-free forward ledger), the private history Worker is a synthetic mock and
 // anything else is aborted and counted. Checks: NOT_STARTED before 2026-10-19 with no Worker request; after the start
@@ -39,7 +40,7 @@ function history(symbol, range) {
 }
 
 async function open(browser, { now, width = 390, workerAcceptsBenchmarks }) {
-  const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', locale: 'ko-KR' });
+  const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', locale: 'ko-KR' });await displayOnlyOff(context);
   const traffic = { worker: [], sheets: [], unexpected: [], console: 0, errors: 0 };
   await context.addInitScript(({ token, scope }) => {
     localStorage.setItem('investment.web.v1.settings', JSON.stringify({ version: 1, display_locale: 'ko-KR', source_language: 'all' }));

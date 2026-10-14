@@ -28,25 +28,29 @@ from investment_system.product.sec_m2_candidates import require_public_candidate
 from investment_system.product.dart_public import FILENAMES as DART_FILENAMES, require_public as require_dart_public
 from investment_system.product.news_signals import FILENAME as NEWS_SIGNALS_FILENAME, require_news_signals
 from investment_system.product.sec_disclosures import FILENAME as DISCLOSURES_FILENAME, require_sec_disclosures
+from investment_system.universe.sec_qgv2 import FILENAME as QGV2_FILENAME, require_qgv2
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from public_sec_inputs import FILENAME as SEC_PUBLIC_FILENAME, require_public_inputs
 from investment_system.product.public_engine_screens import FILENAMES as SCREEN_FILENAMES, require_public_screen
 from investment_system.universe.sec_universe_shares import FILENAME as UNIVERSE_SHARES_FILENAME, require_universe_shares
 from investment_system.universe.sec_universe_qg import FILENAME as UNIVERSE_QG_FILENAME, require_universe_qg
-from investment_system.universe.sec_qgv2 import FILENAME as QGV2_FILENAME, require_qgv2
 from investment_system.validation.forward_ledger import FILENAME as FORWARD_LEDGER_FILENAME, require_ledger as require_forward_ledger
 from investment_system.product.public_classification import FILENAME as CLASSIFICATION_FILENAME, require_public_classification
 from investment_system.universe.universe_codes import FILENAME as UNIVERSE_CODES_FILENAME, require_universe_codes
+from investment_system.universe.universe_domains import FILENAME as UNIVERSE_DOMAINS_FILENAME, require_universe_domains
+from investment_system.product.company_logos import FILENAME as COMPANY_LOGOS_FILENAME, require_company_logos
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
     "playbook-engine.js": "bb6e58d879048d37a1aa7579d5f937a055de84b587f6cd54986ee4a5ed55022b",
     "playbook-config-defaults.js": "cfed0ce27b9c2e81909084f2a7cce19f7e0f1a0796a18bcfe8773272ecf53cc7",
     "virtual-trading-compare.js": "700054fd105b979b505c09ec0dad862b0ce435c0179d2ddbe9f85b5b9c23c3f7",
+    "tradingview-widgets.js": "e78e43406d480bb743b5c23aacb99435c3470c0e709ac1e3fcc2cec805366efc",
+    "company-logos.js": "63aceb4033f17bba403f62b6c4887a8a9c5dd64b8a6f8180b063ab704ce38581",
     "report-benchmarks.js": "7a274ba8467880791df30deb17145396111e38c2d2598f7c654a0564c00aa6e9",
     "virtual-trading-runner.js": "b3e8e42baecafcb866c584764d96fadf0d9c6f1535c6e24eaf7ceed7cb14e256",
     "virtual-ledger-sheets.js": "4b672d1ced013a51cfdc73d7368402633d517ce1797257afb4c46959ec80b617",
-    "thirteenf-quarter.js": "ed5dbdb13e98e9e44cee493d4bff2c647edd1cb7f742ae101419575a2b255e32",
+    "thirteenf-quarter.js": "0f95d210026f41c14c18ceb833a7df32cfa0e35604643b37cb0c5c1bc3c50b49",
     "worker-quote-fallback.js": "e72a72d1885a23c2a35706c8d4f333060b0c451d32a00e501dc63a30416b754c",
     "holdings-capture-view.js": "f2bebf39ca836868d19cef05c08b2d3aa9cbe99f2bdc62ee8509634f5891f65f",
     "holdings-capture.js": "a0fbd647c36d4714e743badbf445e2d3bf6b47c504766beaa14a93fdbf900d95",
@@ -54,7 +58,7 @@ APPROVED_SHA256 = {
     "pc-layout.css": "d3a270238df767d49ef23ea3d53d60fca62d65dc017af19338269602190af2b4",
     "share-class-groups.js": "088bbfaec559937753533572330a6be3c2f9280910f9f6cf62b53f39119c0997",
     "forward-validation.js": "44438a9fe5609dd3e590a7f02cd4af84ab5c2f6d40b2d7202a68b0008a695d36",
-    "daily-report.js": "0ca830eed6356ecf6cb4fde204cee76167317d9a4e8efd9d759cbb281c3c9df7",
+    "daily-report.js": "dc71d99c9db6b6693dfa228c0582f5f516094a4d2ea14f78f73dd3ee87a8e67b",
     "sec-universe-shares.js": "574f94ffebfc2a8cc20bac0cd5ff7bfd7e58db3cb1864f60d4c2a14dd24b37f9",
     "virtual-trading-v-history.js": "944124763c2682dff373f9ec86e8b938ee2400f3084b5e3d62d8b44c8bd8099f",
     "virtual-trading-signals.js": "b8d73d216d9697bea31f15f0061831f81a144b518b5aa5cc54ba4620dafbe6ef",
@@ -67,9 +71,9 @@ APPROVED_SHA256 = {
     "screen-detail.js": "fdb5bb47c1a9b59ce1840640bc1a7f4bff69914a4d2985acc31dc0518d21af9c",
     "virtual-trading.js": "41a834f13d86ed2bd6a046cf63788992350294714ee9b9ee159ae50de8e20206",
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
-    "leaderboard-screen.js": "09388db0afe5a7d7913adde1de6a8255d980394eeae1b00e6448aade8ad27de1",
+    "leaderboard-screen.js": "fe8c5fb5927c604ace26094e5ab4df801a57b1f23ace32b018a623f18e78b577",
     "portfolio-screen.js": "b3488b83540dbdb06377f011984a8bdb27959bc627d8f9836235c2322493b038",
-    "company-screen.js": "77d5fa4bccdcbc52640fc8caea3997a28738e73257ebd15a126251c05a2804c7",
+    "company-screen.js": "df9446044569885d830860cbc8d7e80e1eebec08df2a70e68f1208b7f7b0aa19",
     "ops-status.js": "a39fa422d604f543cc43401e326e0255363eb81149c9e5e34e2caaf67d5be97c",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "3dc17be753a18037c8e0bcec6fd57ce2c37584fdbb64a608db05e96e7124823b",
@@ -79,7 +83,7 @@ APPROVED_SHA256 = {
     "engine-preview.js": "4aac27a64e569b7d6b15335384581e7f33fb51163a1bffc4a541270fc075dfa0",
     "profile-defaults.js": "4481bff54856e506f52342beb9e3747eb1dd167639b40a0d7af99290d32af3cc",
     "device-profiles.js": "2bf44974da9721e6f97ab5c6fc044e50b35a12bee15b129d385c13f4e7934154",
-    "public-screens.js": "12dc6716d6961ca8f3ca3ca56ace5324efcab959233ff0386e1e5f2902a9a091",
+    "public-screens.js": "ad86eace5369424b639478d37140072a805a27df6e7d4277213318d2c7ac6355",
     "pwa.js": "84f1225bacd8c41fd0a82b65c19d28cc02e0e739ae384614df35a9801da418b0",
     "service-worker.js": "130c082cfd1fd50d68441a05daa9cf41450ea6822f2576dd949adb19561d81d8",
     "icon-512.png": "7a19587556ba133a21622288ec66a48095b933461f10475e96cf7b3a43afee88",
@@ -95,37 +99,39 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "3095b17dd7b5ff4750a355180c2f64e045dfbe904a08bd56d89c1179cf7ada83",
+    "app.js": "d99d6544ee23d52dd010ac134a67691542649564ec4672016319a6ed8a86a7f8",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
-    "device-actual.js": "c7a866e15575e65cea8144412b13e7961be3e5b08f7ab6b2bcfa019db4deb1d4",
+    "device-actual.js": "fef15d147292698e2d5b79b3aa75842ceb569ef2aa7a42f8dad9f4e5903ed904",
     "device-market.js": "5a115f210cbe9e7c2d75c5069bda39cbfa844fa6576438529504fc919a936bd1",
     "entities.json": "8a452006b4821bb0c1fed05de17a2a81da7457fe546f6d9161a1d8b4bda16ac2",
     "entity-search.js": "174e1039be5c3d3757c8938070887154fe91cda0d87b5850e1330ef491554c93",
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "59c8bab257051b7b5b4982ba4bedfa998a2e14c63852caef643aee6072f249b2",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "44699d6df9d4a47e118d8b3a34b11a1d63ef4913cd1d894fc9661dc93bf78f67",
+    "index.html": "1c80bf49ce20326e91a21b5b335142b9990ac74b0d187a61f6fcacd7e6922d83",
     "locale.js": "a4205e134135dcdb9fa173491d4eb773555884a240810039bc3ccc1a8f89e340",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
     "research.html": "ec9f6b90a4dd490959c244e6716a948c7cfae2fe5f060c56c19e6d5c1469763e",
-    "style.css": "e30a3a1808d4a8e0bcb7af0f2056a3595132de050711d7bb4e7ba9b692e4f6c0",
+    "style.css": "c016e83d0250bd899ca25d55336a4d4a639a7a1c75d4e03b805c6f175fdd9889",
     "sec-disclosures.js": "7af4fd52b2e83ac348bb7b7b3e80e7130f6e4c32a8f29fd55d14c22e2a5f2714",
+    "sec-qgv2.js": "1a6da919149666a2f1bb6fb3587033f834957be143bfca65a259bf2bcf479714",
     "price-store.js": "52b723d9e7dfc189252a870c57f5a044373427d3a9009bb9a119c322ebb8c4de",
     "qgv2-inputs.js": "f1e7eb8b54168861495a0d3ac8de30739b004b300ff61ccc9f4de1db5aa0943d",
     "scoring-default.js": "b7df8e1f509d18320ace74fbeaeabc8e493ad9fac66c3592362cfd8b5fd05f6e",
     "qgv-v2.js": "6a348f70e835ff674195fca01545ddd89063edcda6b21d332dde4455b9fc750d",
     "qgv-scores.js": "1ae5042fe67814f4a3b58da8f19afb5bc19f8b3bfc303923916f472e6dedd100",
-    "playbook-screen.js": "24d21f2f6754b2923bdfecc834c0587091a3daac63d7e88466a1fdb0e4ea4090",
+    "playbook-screen.js": "6f240ac379bc5d1761715d774b30dd61e2159c306c396f9f335c47a5d4269148",
     "news-signals.js": "61336bb91a39407c60573ca6b2bfbbd06b7c36d4910927ac04e0a29fc4a16868",
     "dart-disclosures.js": "093d131ffccbb30284cabd796a3b190a4d2fdd049e1f6648c078321c33101713",
     "macro-lights.js": "b597eb5b592e59045e5d42be38eef185b362b8da6b1f3718ab1ebafaf53cd7fa",
+    "sec-disclosures.js": "7af4fd52b2e83ac348bb7b7b3e80e7130f6e4c32a8f29fd55d14c22e2a5f2714",
 }
-ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, QGV2_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
+ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
-MAX_ENTRIES = 96
+MAX_ENTRIES = 128
 MAX_JSON_DEPTH = 64
 
 SENSITIVE_KEYS = frozenset({
@@ -250,12 +256,18 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         elif name == UNIVERSE_CODES_FILENAME:
             try: require_universe_codes(value)
             except ValueError: violations['universe_codes_boundary'] += 1
-        elif name == UNIVERSE_QG_FILENAME:
-            try: require_universe_qg(value)
-            except ValueError: violations['universe_qg_boundary'] += 1
         elif name == QGV2_FILENAME:
             try: require_qgv2(value)
             except ValueError: violations['qgv2_boundary'] += 1
+        elif name == COMPANY_LOGOS_FILENAME:
+            try: require_company_logos(value)
+            except ValueError: violations['company_logos_boundary'] += 1
+        elif name == UNIVERSE_DOMAINS_FILENAME:
+            try: require_universe_domains(value)
+            except ValueError: violations['universe_domains_boundary'] += 1
+        elif name == UNIVERSE_QG_FILENAME:
+            try: require_universe_qg(value)
+            except ValueError: violations['universe_qg_boundary'] += 1
         elif name == DISCLOSURES_FILENAME:
             try: require_sec_disclosures(value)
             except ValueError: violations['sec_disclosures_boundary'] += 1

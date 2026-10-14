@@ -18,7 +18,7 @@ function types(){const at=new Date().toISOString(),a=H('a'),b=H('b'),companies={
 const noScroll=page=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1);
 const texts=(page,sel)=>page.locator(sel).evaluateAll(n=>n.map(r=>[...r.cells].map(c=>c.textContent)));
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let phase='START',pass=0,fail=0;
- try{for(const width of [390,1440]){const pc=width>=1024,context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});
+ try{for(const width of [390,1280]){const pc=width>=1024,context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});
   await context.route('**/sec-13f-changes.json*',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(thirteenF())}));
   await context.route('**/company-types-pricefree.json*',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(types())}));
   const page=await context.newPage();let errors=0;page.on('pageerror',()=>errors++);
@@ -34,7 +34,7 @@ const texts=(page,sel)=>page.locator(sel).evaluateAll(n=>n.map(r=>[...r.cells].m
    const add=rows.find(r=>r[1]==='추가');assert.equal(add[2],'1,000 → 2,500 SH');assert.equal(add[3],'+1,500');assert.equal(rows.find(r=>r[0]==='MSFT')[3],'−40');
    assert.ok(await b.locator('[data-13f-multi]').isVisible());
    assert.ok((await b.locator('[data-13f-target-na="NOT_13F_SECURITY"]').textContent()).includes('도쿄일렉트론')||(await b.locator('[data-13f-target-na="NOT_13F_SECURITY"]').textContent()).includes('Tokyo Electron'));
-   assert.ok((await b.locator('[data-13f-target-na="CUSIP_NOT_IN_PUBLIC_CATALOG"]').textContent()).includes('ETN'));
+   assert.ok((await b.locator('[data-13f-target-quiet]').textContent()).includes('ETN'));
    assert.ok((await b.locator('[data-13f-target-quiet]').textContent()).includes('ASML'));
    phase='S16_OTHER';await b.locator('[data-13f-other] summary').click();assert.deepEqual((await texts(page,'[data-13f-other-table="0001067983"] tbody tr')).map(r=>r[0]),['A00000009','Z99999995']);
    assert.ok((await b.locator('[data-13f-other]').textContent()).includes('ISSUER_NAME_NOT_PUBLISHED'));

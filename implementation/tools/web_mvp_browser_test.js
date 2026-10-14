@@ -1,3 +1,4 @@
+const {displayOnlyOff}=require('./display_only_off.js');
 // Integration tests for the mobile UI on the public Pages build (PAGES_COCKPIT_URL). No personal account data.
 //
 // Current contract (GSQ-010 public price boundary + IA update): the public build ships no producer rows (no QGV scores,
@@ -31,7 +32,7 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
   const ctx = await browser.newContext({
     viewport: { width: 390, height: 844 },
     permissions: ["clipboard-read", "clipboard-write"],
-  });
+  });await displayOnlyOff(ctx);
   await ctx.route("**/*", guard);
   await routeEmptyPublicScreens(ctx);
   const page = await ctx.newPage();
@@ -214,7 +215,7 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
       assert.deepEqual(traffic, { external: 0, unsafe: 0, failed_responses: 0 });
     });
     // Screenshots only from a fresh context: no interests, groups or other device records are present.
-    const fresh = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const fresh = await browser.newContext({ viewport: { width: 390, height: 844 } });await displayOnlyOff(fresh);
     await fresh.route("**/*", guard);
     await routeEmptyPublicScreens(fresh);
     const shot = await fresh.newPage();

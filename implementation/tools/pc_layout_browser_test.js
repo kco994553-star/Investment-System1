@@ -1,4 +1,5 @@
 'use strict';
+const {displayOnlyOff}=require('./display_only_off.js');
 // PC layout (>= 1024px) at 390 / 768 / 1024 / 1440: S12 home dashboard, S17 report grid, S03/S06/S16/S10 tables
 // (all columns without horizontal scroll, sticky header, keyboard-accessible stable sorting with NOT_AVAILABLE last) and
 // the unchanged phone layout below 1024px. Two data sets: the empty public screens and a synthetic LIVE set served by
@@ -46,7 +47,7 @@ async function tableFacts(page){return page.evaluate(()=>[...document.querySelec
 const col=(page,sel,i)=>page.locator(sel+' tbody tr').evaluateAll((rows,i)=>rows.map(r=>r.cells[i].textContent.trim()),i);
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let phase='START',pass=0,fail=0;const matrix=[];
  if(SHOTS)fs.mkdirSync(SHOTS,{recursive:true});
- try{for(const dataset of ['EMPTY','LIVE'])for(const width of WIDTHS){const pc=width>=1024,context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});
+ try{for(const dataset of ['EMPTY','LIVE'])for(const width of WIDTHS){const pc=width>=1024,context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});await displayOnlyOff(context);
   await routeEmptyPublicScreens(context);
   if(dataset==='LIVE'){await context.route('**/sec-qg-factors.json*',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(qg())}));
    await context.route('**/sec-13f-changes.json*',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(thirteenF())}));

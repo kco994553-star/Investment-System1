@@ -1,4 +1,5 @@
 'use strict';
+const {displayOnlyOff}=require('./display_only_off.js');
 // S17 ledger sheet storage (D-10) on the built site at 390 and 1440. Every request is intercepted: same-origin files come
 // from the local build (public screens empty, synthetic price-free forward ledger), the private history Worker and the
 // Google Sheets API are in-memory SYNTHETIC mocks, anything else is aborted and counted. Checks: before 2026-10-19 the
@@ -70,7 +71,7 @@ function sheetsMock(tabs) {
 }
 
 async function open(browser, { now, width = 390, sheet }) {
-  const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', locale: 'ko-KR' });
+  const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', locale: 'ko-KR' });await displayOnlyOff(context);
   const traffic = { worker: 0, unexpected: [], console: 0, errors: 0 };
   await context.addInitScript(({ token, scope, sheetId }) => {
     localStorage.setItem('investment.web.v1.settings', JSON.stringify({ version: 1, display_locale: 'ko-KR', source_language: 'all' }));

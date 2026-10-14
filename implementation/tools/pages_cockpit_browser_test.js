@@ -1,4 +1,5 @@
 "use strict";
+const {displayOnlyOff}=require('./display_only_off.js');
 // Screenshots always use fresh empty ACTUAL storage. Holdings are never captured.
 const { chromium } = require("playwright");
 const fs = require("node:fs");
@@ -84,7 +85,7 @@ async function emptyDevice(page) {
   const browser = await chromium.launch(launch);
   try {
     for (const width of [390, 1280]) for (const locale of ["ko-KR", "en-US"]) {
-      const context = await browser.newContext({ viewport: { width, height: 844 } });
+      const context = await browser.newContext({ viewport: { width, height: 844 } });await displayOnlyOff(context);
       const page = await context.newPage();
       const label = String(width) + "px " + locale;
       page.on("pageerror", () => { pageErrors += 1; });
