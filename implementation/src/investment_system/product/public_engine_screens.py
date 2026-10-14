@@ -27,6 +27,7 @@ from ..macro import macro_lights_public as macro_lights
 from ..providers.macro_primary import parse_bls, parse_bea_nipa, parse_treasury_yields
 from ..providers.sec_13f import FilingMetadata, parse_information_table, compare_quarters
 from . import sec_valuation_inputs as _valuation
+from . import thirteenf_details as _thirteenf
 
 FILENAMES = {'macro-screen.json':'MACRO', 'sec-13f-changes.json':'SEC_13F',
     'sec-filing-windows.json':'SEC_FILING_WINDOWS', 'sec-qg-factors.json':'SEC_QG_FACTORS',
@@ -220,11 +221,12 @@ def _require(name,payload):
         # With verification records, only verified manager CIKs may carry reports.
         if 'managers' in data:verified=_managers(data['managers'],cut);_need(all(r.get('manager_cik') in verified for r in data['reports'] if isinstance(r,dict)))
         for r in data['reports']:
-            _keys(r,('manager_cik','previous_quarter','current_quarter','state','changes','source_hashes'))
+            _keys(r,('manager_cik','previous_quarter','current_quarter','state','changes','source_hashes',*(['details'] if 'details' in r else [])))
             _need(isinstance(r['manager_cik'],str) and re.fullmatch(r'\d{10}',r['manager_cik']) is not None and int(r['manager_cik'])>0 and r['state'] in STATES)
             old,new=_day(r['previous_quarter']),_day(r['current_quarter']);_need(old<new and new<=cut.date())
             states.append(r['state']);_source_refs(r,sources,{'previous':'SEC_13F','current':'SEC_13F'},cut,payload['stale_after_seconds'],r['state'])
             _need(isinstance(r['changes'],list) and (r['state']!='NOT_AVAILABLE' or not r['changes']))
+            if 'details' in r:_thirteenf.require_details(r['details'],r,cut)
             for c in r['changes']:
                 _keys(c,('cusip','security_key','unit','kind','reported_before','reported_after','reported_delta'))
                 _need(isinstance(c['cusip'],str) and re.fullmatch(r'[0-9A-Z*@#]{9}',c['cusip']) is not None);_hash(c['security_key'])
@@ -464,7 +466,7 @@ def generate_screen_bundle(*,manifest,input_root,as_of,stale_after):
 def _generate(manifest,root,as_of,stale_after):
     _need(isinstance(as_of,datetime) and as_of.utcoffset() is not None and isinstance(stale_after,timedelta) and stale_after.total_seconds()>0,'PUBLIC_SCREENS_INPUT_INVALID')
     as_of=as_of.astimezone(timezone.utc)
-    _need(isinstance(manifest,dict) and {'schema_version','sec','macro','thirteen_f'}<=set(manifest) and set(manifest)-{'schema_version','sec','macro','thirteen_f'}<={'macro_v0','macro_curve_v1','thirteen_f_managers'});_need(type(manifest['schema_version']) is int and manifest['schema_version']==1)
+    _need(isinstance(manifest,dict) and {'schema_version','sec','macro','thirteen_f'}<=set(manifest) and set(manifest)-{'schema_version','sec','macro','thirteen_f'}<={'macro_v0','macro_curve_v1','thirteen_f_managers','thirteen_f_details'});_need(type(manifest['schema_version']) is int and manifest['schema_version']==1)
     _need(all(isinstance(manifest[k],list) for k in ('sec','macro','thirteen_f')) and len(manifest['sec'])<=17 and len(manifest['macro'])<=64 and len(manifest['thirteen_f'])<=20)
     qg={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'factors':{fid:{'score':None,'state':'NOT_AVAILABLE'} for fid in sorted(FACTORS)}} for cid in OFFICIAL_V11_TARGETS}
     types={cid:{'state':'NOT_AVAILABLE','source_hashes':{},'memberships':dict.fromkeys(PRICEFREE_TYPES),'config_version':None,'metrics':dict.fromkeys(PRICEFREE_METRICS)} for cid in OFFICIAL_V11_TARGETS}
@@ -541,6 +543,7 @@ def _generate(manifest,root,as_of,stale_after):
     lights_block,lights_sources,lights_states=_macro_lights(manifest,root,as_of,stale_after)
     v0_sources=v0_sources+[s for s in lights_sources if s not in v0_sources and s not in macro_sources]
     macro={'axes':list(AXES),'dimensions':list(DIMENSIONS),'cells':cells,'observations':observations,'regime':None,'pit_status':'OBSERVED_BOUND_ONLY' if observations else 'NOT_VERIFIED','growth_inflation_v0':v0_block,'raw_axes_v0':raw_block,'macro_lights_v1':lights_block}
+    _need(type(manifest.get('thirteen_f_details',False)) is bool)
     reports=[];report_sources=[]
     for pair in manifest['thirteen_f']:
         _keys(pair,('previous','current','synthetic'));_need(type(pair['synthetic']) is bool)
@@ -563,7 +566,7 @@ def _generate(manifest,root,as_of,stale_after):
                 from dataclasses import asdict
                 identity=json.dumps(asdict(c.key),sort_keys=True,separators=(',',':')).encode()
                 changes.append({'cusip':c.key.cusip,'security_key':hashlib.sha256(identity).hexdigest(),'unit':c.key.quantity_type,'kind':c.kind,'reported_before':c.previous_quantity,'reported_after':c.current_quantity,'reported_delta':c.delta_quantity})
-        reports.append({'manager_cik':pair['current']['metadata']['manager_cik'].zfill(10),'previous_quarter':pair['previous']['metadata']['quarter_end'],'current_quarter':pair['current']['metadata']['quarter_end'],'state':state,'changes':changes,'source_hashes':refs})
+        reports.append({'manager_cik':pair['current']['metadata']['manager_cik'].zfill(10),'previous_quarter':pair['previous']['metadata']['quarter_end'],'current_quarter':pair['current']['metadata']['quarter_end'],'state':state,'changes':changes,'source_hashes':refs,**({'details':_thirteenf.project_details(prev,current) if comparison.status=='AVAILABLE' else None} if manifest.get('thirteen_f_details') else {})})
     financial=lambda companies:{'companies':companies,'method_status':'PROVISIONAL_UNCALIBRATED','availability_basis':'OBSERVED_CAPTURE_ONLY'}
     outputs={
         'sec-qg-factors.json':_envelope('sec-qg-factors.json',as_of,stale_after,financial(qg),sec_sources,[r['state'] for r in qg.values()]),

@@ -43,9 +43,9 @@ def test_cusips_derived_from_public_isins_match_the_reviewed_identity_map():
         t = targets[cid]
         if t['cusip'] is not None:
             assert t['cusip'] == cusip, cid
-    # Only TEL/Hanmi (not 13F securities) and Eaton (Irish ISIN; CUSIP not in the public catalog) stay unmapped.
+    # TEL/Hanmi are not 13F securities. Eaton uses the reviewed SEC N-PORT CUSIP mapping.
     assert {cid: t['reason'] for cid, t in targets.items() if t['cusip'] is None} == {
-        'tokyo_electron': 'NOT_13F_SECURITY', 'hanmi': 'NOT_13F_SECURITY', 'etn': 'CUSIP_NOT_IN_PUBLIC_CATALOG'}
+        'tokyo_electron': 'NOT_13F_SECURITY', 'hanmi': 'NOT_13F_SECURITY'}
 
 
 def test_missing_report_fields_stay_not_available_and_changes_are_not_summed():

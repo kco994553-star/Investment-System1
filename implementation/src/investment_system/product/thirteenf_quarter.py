@@ -1,8 +1,8 @@
 """Python reference for the device S16 13F quarter view (web_assets/thirteenf-quarter.js).
 
 Pure functions over the already-public sec-13f-changes.json reports and actual-catalog.json. Reported
-quantity changes only: no values, prices or trades. TARGET CUSIPs come only from the catalog's US ISINs
-(ISO 6166 embeds the CUSIP); anything else stays NOT_AVAILABLE with a fixed reason. Never a producer.
+quantities and original-unit aggregate values; never unit prices or trades. US ISINs embed CUSIPs.
+Eaton uses the reviewed SEC N-PORT identifier; other unmapped identifiers stay NOT_AVAILABLE. Never a producer.
 """
 from __future__ import annotations
 
@@ -15,6 +15,10 @@ TARGET = (('asml', 'ASML'), ('lrcx', 'LRCX'), ('klac', 'KLAC'), ('tokyo_electron
 KINDS = ('NEW', 'ADD', 'REDUCE', 'EXIT')
 GAPS = {'filed_date': 'FILING_DATE_NOT_PUBLISHED', 'holdings_count': 'UNCHANGED_POSITIONS_NOT_PUBLISHED',
         'top10_weight': 'REPORTED_VALUES_NOT_PUBLISHED', 'issuer_name': 'ISSUER_NAME_NOT_PUBLISHED'}
+# Current-only reviewed SEC N-PORT identity, never inferred from an Irish ISIN.
+EATON_EVIDENCE = {'isin': 'IE00B8KQN827', 'cusip': 'G29183103',
+                  'source_url': 'https://www.sec.gov/Archives/edgar/data/1100663/000175272425034052/primary_doc.xml',
+                  'source_sha256': '1c9162bf36195494f709f310502e389edeb8a08e8c645d7cbdd34d57a0a11639'}
 
 
 def _char_value(ch):
@@ -73,6 +77,8 @@ def target_securities(catalog):
             out.append({'company_id': cid, 'ticker': ticker, 'label': label, 'cusip': None, 'reason': 'NOT_13F_SECURITY'})
             continue
         cusip = cusip_from_isin(ref.get('value')) if ref.get('scheme') == 'ISIN' else None
+        if cid == 'etn' and ref.get('scheme') == 'ISIN' and ref.get('value') == EATON_EVIDENCE['isin']:
+            cusip = EATON_EVIDENCE['cusip']
         out.append({'company_id': cid, 'ticker': ticker, 'label': label, 'cusip': cusip,
                     'reason': None if cusip else 'CUSIP_NOT_IN_PUBLIC_CATALOG'})
     return out
@@ -104,11 +110,57 @@ def summarize_report(report, targets):
             target.append({'company_id': t['company_id'], 'cusip': t['cusip'], 'status': 'CHANGED' if rows else 'NO_REPORTED_CHANGE',
                            'reason': None, 'changes': [_quantity(c) for c in rows], 'multiple_buckets': len(rows) > 1})
     other = [{'cusip': c['cusip'], **_quantity(c)} for c in sorted((c for c in changes if c['cusip'] not in mapped), key=lambda c: c['cusip'])]
-    return {'manager_cik': report['manager_cik'], 'previous_quarter': report['previous_quarter'], 'current_quarter': report['current_quarter'],
+    out = {'manager_cik': report['manager_cik'], 'previous_quarter': report['previous_quarter'], 'current_quarter': report['current_quarter'],
             'state': report['state'], 'filed_date': None, 'filed_date_reason': GAPS['filed_date'],
             'holdings_count': None, 'holdings_count_reason': GAPS['holdings_count'],
             'top10_weight': None, 'top10_weight_reason': GAPS['top10_weight'],
             'counts': counts, 'change_count': len(changes), 'target': target, 'other': other}
+    details = report.get('details')
+    if details and comparable:
+        out.update(details=details, filed_date=details['current']['filing_date'], filed_date_reason=None,
+                   holdings_count=len({h['cusip'] for h in details['current']['reported_holdings']}), holdings_count_reason=None,
+                   top10_weight_reason='DERIVED_VALUE_WEIGHTS_NOT_PUBLISHED')
+    return out
+
+
+def playbook_evidence(payload, catalog, config):
+    """W2 references and informational E4 candidates from complete same-quarter reports.
+
+    No report/legacy changes-only files cannot establish held counts or full exits.
+    One manager counts once; any remaining long SH bucket prevents a full exit.
+    """
+    data = (payload or {}).get('data', {})
+    verified = {m['cik'] for m in data.get('managers', []) if m['state'] == 'VERIFIED'}
+    managers = {m['candidate_cik']: m for m in config['managers']}
+    reports = [r for r in data.get('reports', []) if r['manager_cik'] in verified and r['manager_cik'] in managers
+               and r['state'] == 'LIVE' and r.get('details')]
+    latest = max((r['current_quarter'] for r in reports), default=None)
+    reports = [r for r in reports if r['current_quarter'] == latest]
+    from collections import Counter
+    counts = Counter(r['manager_cik'] for r in reports)
+    reports = [r for r in reports if counts[r['manager_cik']] == 1]
+    out = {}
+    for target in target_securities(catalog):
+        held, exited, styles = set(), set(), set()
+        for r in reports if target['cusip'] else []:
+            before = [h for h in r['details']['previous']['reported_holdings'] if h['cusip'] == target['cusip']]
+            after = [h for h in r['details']['current']['reported_holdings'] if h['cusip'] == target['cusip']]
+            if after:
+                held.add(r['manager_cik'])
+                styles.update(managers.get(r['manager_cik'], {}).get('styles', []))
+            exits = {c['security_key']: c for c in r['changes'] if c['kind'] == 'EXIT' and c['unit'] == 'SH'}
+            if before and not after and all(h['security_key'] in exits and exits[h['security_key']]['reported_before'] == h['reported_quantity'] and exits[h['security_key']]['cusip'] == target['cusip'] for h in before):
+                exited.add(r['manager_cik'])
+        available = bool(reports and target['cusip'])
+        out[target['company_id']] = {'quarter': latest if available else None,
+            'tracked_holding_count': len(held) if available else None, 'tracked_holding_types': sorted(styles),
+            'observed_managers': len({r['manager_cik'] for r in reports}) if available else 0,
+            'tracked_managers': len(config['managers']), 'full_exit_count': len(exited) if available else None,
+            'structural_event': len(exited) >= 3 if available else False,
+            'reason_code': 'THIRTEENF_REPORTED_FULL_EXITS_3_PLUS' if len(exited) >= 3 and available else
+                           target['reason'] or ('THIRTEENF_COMPLETE_REPORTS_NOT_AVAILABLE' if not available else None),
+            'informational_only': True}
+    return out
 
 
 def target_overlap(summaries, targets):
