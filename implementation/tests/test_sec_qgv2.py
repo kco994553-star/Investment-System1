@@ -209,6 +209,102 @@ def test_utility_revenue_concept_fills_years_without_revenues_and_never_override
     assert math.isclose(v['revenue']['fy_value'], 146.41, rel_tol=1e-9) and math.isclose(m['revenue_cagr_3y'], 0.1, rel_tol=1e-5)
 
 
+# ---------------- fallback lines (QGV_V2_QG_METHOD.md section 1) ----------------
+def _annual_lines(shares_of_revenue, years=range(2019, 2026)):
+    """[(concept, share of that year's revenue)] -> fact() args for every year (same span as simple_company)."""
+    out = []
+    for year in years:
+        rev = 146.41 / 1.1 ** (2025 - year)
+        out += [((concept, 'USD', share * rev, f'{year}-12-31'), {'start': f'{year}-01-01'}) for concept, share in shares_of_revenue]
+    return out
+
+
+BASE_ND_EBITDA = (50 - 30) / (0.25 * 146.41)  # simple_company: D&A 5% of revenue, EBIT 20%
+
+
+def test_da_from_depreciation_plus_intangible_amortization_only_when_no_double_count():
+    close = lambda a, b: a is not None and math.isclose(a, b, rel_tol=1e-5)
+    dda = 'DepreciationDepletionAndAmortization'
+    # (a) No total D&A concept: Depreciation + AmortizationOfIntangibleAssets of the same year (EME).
+    gap = simple_company(omit=(dda,), extra=_annual_lines((('Depreciation', 0.02), ('AmortizationOfIntangibleAssets', 0.03))))
+    assert close(compute(gap)[3]['net_debt_to_ebitda'], BASE_ND_EBITDA)
+    # One component alone is not a D&A total: NA, the missing one is never 0-filled.
+    only_dep = simple_company(omit=(dda,), extra=_annual_lines((('Depreciation', 0.05),)))
+    assert compute(only_dep)[3]['net_debt_to_ebitda'] is None
+    # A negative component is not used.
+    negative = simple_company(omit=(dda,), extra=_annual_lines((('Depreciation', 0.06), ('AmortizationOfIntangibleAssets', -0.01))))
+    assert compute(negative)[3]['net_debt_to_ebitda'] is None
+    # (b) The total equals Depreciation and the intangible amortization is larger than the total, so the total cannot
+    # contain it (FIX: DepreciationAndAmortization 62.4 = Depreciation 62.379, amortization 79.6): use the sum.
+    fix = simple_company(omit=(dda,), extra=_annual_lines((('DepreciationAndAmortization', 0.0200), ('Depreciation', 0.019995),
+                                                           ('AmortizationOfIntangibleAssets', 0.030005))))
+    assert close(compute(fix)[3]['net_debt_to_ebitda'], BASE_ND_EBITDA)
+    # The total equals Depreciation but the amortization is smaller than the total: it may already be inside the
+    # total (BBY), so the total is kept and nothing is added (no double count).
+    small = simple_company(extra=_annual_lines((('Depreciation', 0.05), ('AmortizationOfIntangibleAssets', 0.01))))
+    assert close(compute(small)[3]['net_debt_to_ebitda'], BASE_ND_EBITDA)
+    # A total that already is the sum (or any total not equal to Depreciation) is kept as reported.
+    total_is_sum = simple_company(extra=_annual_lines((('Depreciation', 0.02), ('AmortizationOfIntangibleAssets', 0.03))))
+    assert close(compute(total_is_sum)[3]['net_debt_to_ebitda'], BASE_ND_EBITDA)
+    partial_total = simple_company(extra=_annual_lines((('Depreciation', 0.01), ('AmortizationOfIntangibleAssets', 0.08))))
+    assert close(compute(partial_total)[3]['net_debt_to_ebitda'], BASE_ND_EBITDA)
+    # Components of different fiscal spans are not added.
+    shifted = simple_company(omit=(dda,), extra=_annual_lines((('Depreciation', 0.02),))
+                             + [(('AmortizationOfIntangibleAssets', 'USD', 4.0, '2025-12-31'), {'start': '2024-12-25'})])
+    assert compute(shifted)[3]['net_debt_to_ebitda'] is None
+
+
+def test_pretax_income_from_domestic_plus_foreign_only_when_the_total_is_missing():
+    pretax = 'IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest'
+    ic = 100 + 50 - 30
+    reported = 0.2 * 146.41 * 0.75 / ic  # 25% = tax / pretax
+    default = 0.2 * 146.41 * (1 - vf.DEFAULT_TAX_RATE) / ic
+    split = (('IncomeLossFromContinuingOperationsBeforeIncomeTaxesDomestic', 0.15),
+             ('IncomeLossFromContinuingOperationsBeforeIncomeTaxesForeign', 0.05))
+    m = compute(simple_company(omit=(pretax,), extra=_annual_lines(split)))[3]
+    assert math.isclose(m['roic'], reported, rel_tol=1e-5)  # DECK: domestic + foreign = pretax total
+    # Only the domestic part: no total, default rate (the foreign part is never assumed to be 0).
+    m = compute(simple_company(omit=(pretax,), extra=_annual_lines(split[:1])))[3]
+    assert math.isclose(m['roic'], default, rel_tol=1e-5)
+    # A reported total always wins over the split.
+    m = compute(simple_company(extra=_annual_lines((split[0][:1] + (0.5,), split[1]))))[3]
+    assert math.isclose(m['roic'], reported, rel_tol=1e-5)
+
+
+def test_capex_fallback_lines_fill_only_an_unambiguous_single_line():
+    ppe, close = 'PaymentsToAcquirePropertyPlantAndEquipment', lambda a, b: a is not None and math.isclose(a, b, rel_tol=1e-5)
+    fcf_ni = (0.18 - 0.03) / 0.15
+    for concept in ('PaymentsToAcquireOtherProductiveAssets', 'PaymentsToAcquireMachineryAndEquipment',
+                    'PaymentsForCapitalImprovements', 'PaymentsToAcquireOtherPropertyPlantAndEquipment'):
+        _, _, _, m, v = compute(simple_company(omit=(ppe,), extra=_annual_lines(((concept, 0.03),))))
+        assert close(m['fcf_to_net_income'], fcf_ni) and close(m['fcf_per_share_cagr_3y'], 0.1), concept
+        assert close(v['fcf']['fy_value'], 0.15 * 146.41) and v['fcf']['fy_end'] == '2025-12-31'
+    # RL: ProductiveAssets up to FY-1, MachineryAndEquipment only in the FY0 10-K. Each year resolves.
+    rl = simple_company(omit=(ppe,), extra=_annual_lines((('PaymentsToAcquireProductiveAssets', 0.03),), years=range(2019, 2025))
+                        + _annual_lines((('PaymentsToAcquireMachineryAndEquipment', 0.03),), years=(2025,)))
+    m = compute(rl)[3]
+    assert close(m['fcf_to_net_income'], fcf_ni) and close(m['fcf_per_share_cagr_3y'], 0.1)
+    # Two fallback lines in one year (LNT: utility + "other"), or one beside a partial capex line (EOG: oil and gas
+    # property): each is a part of capex, so capex stays NA.
+    for lines in ((('PaymentsToAcquireOtherProductiveAssets', 0.01), ('PaymentsToAcquireOtherPropertyPlantAndEquipment', 0.02)),
+                  (('PaymentsToAcquireOtherPropertyPlantAndEquipment', 0.01), ('PaymentsToAcquireOilAndGasPropertyAndEquipment', 0.02))):
+        _, _, _, m, v = compute(simple_company(omit=(ppe,), extra=_annual_lines(lines)))
+        assert m['fcf_to_net_income'] is None and v['fcf'] is None
+    # The priority list wins over every fallback line; capitalized software is not a capex line (owner decision).
+    m = compute(simple_company(extra=_annual_lines((('PaymentsToAcquireOtherProductiveAssets', 0.10),))))[3]
+    assert close(m['fcf_to_net_income'], fcf_ni)
+    _, _, _, m, v = compute(simple_company(omit=(ppe,), extra=_annual_lines((('PaymentsToAcquireSoftware', 0.03),))))
+    assert m['fcf_to_net_income'] is None and v['fcf'] is None
+    # TTM of a fallback line comes from that one concept (FY0 + YTD - prior YTD), like any other concept.
+    ytd = [(('PaymentsToAcquireOtherProductiveAssets', 'USD', value, f'{year}-06-30'), {'start': f'{year}-01-01', 'form': '10-Q', 'filed': f'{year}-08-01'})
+           for year, value in ((2026, 3.0), (2025, 2.0))]
+    ytd += [(('NetCashProvidedByUsedInOperatingActivities', 'USD', value, f'{year}-06-30'), {'start': f'{year}-01-01', 'form': '10-Q', 'filed': f'{year}-08-01'})
+            for year, value in ((2026, 15.0), (2025, 12.0))]
+    v = compute(simple_company(omit=(ppe,), extra=_annual_lines((('PaymentsToAcquireOtherProductiveAssets', 0.03),)) + ytd))[4]
+    assert v['fcf']['ttm_end'] == '2026-06-30'
+    assert math.isclose(v['fcf']['ttm_value'], (0.18 * 146.41 + 15 - 12) - (0.03 * 146.41 + 3 - 2), rel_tol=1e-9)
+
+
 # ---------------- percentile publication ----------------
 def test_percentile_formula_ties_and_direction():
     assert vs.percentile(0, 1, 9) == 0 and vs.percentile(8, 1, 9) == 100 and vs.percentile(4, 1, 9) == 50
