@@ -110,6 +110,8 @@ function select(pool,{exclude=[],mode='TARGET',cfg=CFG,pcfg=PCFG}={}){
 function limits(rows,cash,pcfg=PCFG){return E.portfolioLimits(pcfg,rows.map(r=>({symbol:r.symbol,sector:r.subgroup,pct:r.pct})),cash);}
 
 /* ---------- Step 5: reasons and invalidation conditions ---------- */
+// Korean subject particle for a metric label (이 after a final consonant, else 가); a trailing '(…)' is ignored.
+function josa(label){const t=String(label).replace(/\([^)]*\)\s*$/,'').trim(),c=t.charCodeAt(t.length-1);if(c>=0xac00&&c<=0xd7a3)return(c-0xac00)%28?'이':'가';return/[LMNR]$/i.test(t)?'이':'가';}
 const fmt=(v,unit)=>unit==='pct'?(v*100).toFixed(1)+'%':unit==='x'?v.toFixed(2)+'배':v.toFixed(1);
 function threshold(m,current){
  if(m.rule==='RELATIVE')return current>0?current*m.factor:null;
@@ -127,7 +129,7 @@ function templates(row,cfg=CFG,pcfg=PCFG){
    if(m.direction==='lower'&&m.rule==='FIXED'&&current>=m.value)continue;let x=threshold(m,current);if(x===null||!finite(x))continue;if(m.metric==='SCORE')x=Math.max(0,x);
    const op=m.direction==='higher'?'LT':'GT';
    reasons.push(f.ko+' 점수 '+score.toFixed(1)+' · '+m.label+' '+fmt(current,m.unit));
-   invalidations.push({text:m.label+'이(가) '+fmt(x,m.unit)+(op==='LT'?' 아래로 내려가면':' 이상이 되면')+' (현재 '+fmt(current,m.unit)+')',factor:f.factor,metric:m.metric,op:op==='LT'?'LT':'GTE',threshold:round(x,6),current:round(current,6),unit:m.unit,rule:m.rule});
+   invalidations.push({text:m.label+josa(m.label)+' '+fmt(x,m.unit)+(op==='LT'?' 아래로 내려가면':' 이상이 되면')+' (현재 '+fmt(current,m.unit)+')',factor:f.factor,metric:m.metric,op:op==='LT'?'LT':'GTE',threshold:round(x,6),current:round(current,6),unit:m.unit,rule:m.rule});
    break;}}
  for(const fb of T.fallback){if(reasons.length>=T.count)break;
   if(fb.id==='TOTAL_RANK'&&finite(row.total)&&finite(row.rank)){const lim=cfg.candidates.count;reasons.push(fb.reason.replace('{total}',row.total.toFixed(1)).replace('{rank}',row.rank));invalidations.push({text:fb.invalidation.replace('{limit}',lim).replace('{rank}',row.rank),factor:null,metric:'v2_rank',op:'GT',threshold:lim,current:row.rank,unit:'rank',rule:'FIXED'});}
