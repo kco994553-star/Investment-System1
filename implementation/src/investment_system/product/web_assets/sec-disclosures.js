@@ -25,12 +25,21 @@ function instant(v){need(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d
 function day(v){need(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&new Date(v+'T00:00:00Z').toISOString().slice(0,10)===v);return Date.parse(v+'T00:00:00Z');}
 const utcDay=t=>new Date(t).toISOString().slice(0,10),fresh=(at,cut)=>cut-at>STALE_AFTER*1000?'STALE':'LIVE';
 function classify(items){for(const[code,name]of PRIORITY)if(items.includes(code))return name;return 'OTHER';}
+function quarterlyEarningsTitle(v){return typeof v==='string'&&/\b(?:q[1-4]|quarterly|(?:first|second|third|fourth)[ -]quarter|[1-4](?:st|nd|rd|th)[ -]quarter)\b/i.test(v)&&/\b(?:results|earnings)\b/i.test(v);}
+function classifyReport(form,items){return ['6-K','6-K/A'].includes(form)?'RESULTS':classify(items);}
+function qgvEarningsStatus(filingWindow,qgvRow){
+ const c=filingWindow?.earnings_confirmation,v=qgvRow?.v_inputs_v2,periods=filingWindow?.qgv2_ttm_periods,refs=filingWindow?.source_hashes,source=qgvRow?.source_sha256;
+ if(!c||!filingWindow.confirmed_earnings_date||qgvRow?.state!=='LIVE'||!v)return{status:'NOT_CONFIRMED',reason:'QUARTER_QG_NOT_REFLECTED'};
+ const period=c.period_end;
+ if(!periods||periods.revenue!==period||periods.ebit!==period||v.ebit?.ttm_end!==period||!source||!refs||!['companyfacts','submissions'].every(k=>/^[0-9a-f]{64}$/.test(refs[k]||'')&&refs[k]===source[k]))return{status:'NOT_CONFIRMED',reason:'QUARTER_QG_NOT_REFLECTED'};
+ return{status:'CONFIRMED',label:'확인',period_end:period,earnings_date:filingWindow.confirmed_earnings_date};
+}
 function folder(accession){return accession.replaceAll('-','');}
 function indexUrl(company,accession){return 'https://www.sec.gov/Archives/edgar/data/'+Number(CIKS[company])+'/'+folder(accession)+'/'+accession+'-index.htm';}
 function archivePrefix(company,accession){return 'https://www.sec.gov/Archives/edgar/data/'+Number(CIKS[company])+'/'+folder(accession)+'/';}
 // Mirrors Python assign_groups: an 8-K starts its own group (NEW); an 8-K/A joins the single same-company, same-event-date original accepted no later (REPEAT).
-function groups(events){const originals=new Map();for(const e of events)if(e.form==='8-K'&&e.event_date!==null){const k=e.company_id+'|'+e.event_date;if(!originals.has(k))originals.set(k,[]);originals.get(k).push(e);}
- return events.map(e=>{const own=e.company_id+':'+e.accession;if(e.form==='8-K')return{group_id:own,occurrence:'NEW'};const m=e.event_date===null?[]:(originals.get(e.company_id+'|'+e.event_date)||[]).filter(o=>o.accepted_at<=e.accepted_at);return{group_id:m.length===1?m[0].company_id+':'+m[0].accession:own,occurrence:'REPEAT'};});}
+function groups(events){const originals=new Map();for(const e of events)if(['8-K','6-K'].includes(e.form)&&e.event_date!==null){const k=e.company_id+'|'+e.event_date+'|'+e.form;if(!originals.has(k))originals.set(k,[]);originals.get(k).push(e);}
+ return events.map(e=>{const own=e.company_id+':'+e.accession;if(['8-K','6-K'].includes(e.form))return{group_id:own,occurrence:'NEW'};const m=e.event_date===null?[]:(originals.get(e.company_id+'|'+e.event_date+'|'+e.form.replace('/A',''))||[]).filter(o=>o.accepted_at<=e.accepted_at);return{group_id:m.length===1?m[0].company_id+':'+m[0].accession:own,occurrence:'REPEAT'};});}
 function title(v){return typeof v==='string'&&[...v].length>0&&[...v].length<=TITLE_MAX&&!/[\u0000-\u001f<>]/.test(v)&&!v.startsWith(' ')&&!v.endsWith(' ')&&!v.includes('  ');}
 function exhibit(e){const x=e.exhibit_99_1;need(plain(x));
  if(x.state==='AVAILABLE'){need(keys(x,['state','title','url','released_at'])&&x.released_at===e.accepted_at&&title(x.title));const prefix=archivePrefix(e.company_id,e.accession);need(typeof x.url==='string'&&x.url.startsWith(prefix)&&/^[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.(?:htm|html|txt|pdf|xml|jpg|gif)$/i.test(x.url.slice(prefix.length)));}
@@ -42,10 +51,10 @@ function validate(p){
   for(const id of ids){const c=p.companies[id];need(keys(c,['state','acquired_at','reason_code']));if(c.acquired_at===null)need(c.state==='NOT_AVAILABLE'&&c.reason_code==='NOT_COLLECTED');else{const at=instant(c.acquired_at);need(at<=cut&&c.reason_code===null&&c.state===fresh(at,cut));acquired[id]=at;}states.push(c.state);}
   const state=states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';need(p.state===state&&JSON.stringify(p.reason_codes)===JSON.stringify(state==='LIVE'?[]:state==='STALE'?['STALE_INPUT']:['NO_ELIGIBLE_INPUT']));
   const events=p.events;need(Array.isArray(events)&&events.length<=MAX_EVENTS);const cutoff=utcDay(cut-WINDOW_DAYS*86400000),today=utcDay(cut),seen=new Set();
-  for(const e of events){need(keys(e,EVENT)&&Object.hasOwn(acquired,e.company_id)&&typeof e.accession==='string'&&/^\d{10}-\d{2}-\d{6}$/.test(e.accession)&&!seen.has(e.accession)&&['8-K','8-K/A'].includes(e.form));seen.add(e.accession);
+  for(const e of events){need(keys(e,EVENT)&&Object.hasOwn(acquired,e.company_id)&&typeof e.accession==='string'&&/^\d{10}-\d{2}-\d{6}$/.test(e.accession)&&!seen.has(e.accession)&&['8-K','8-K/A','6-K','6-K/A'].includes(e.form));seen.add(e.accession);
    const filed=day(e.filing_date),accepted=instant(e.accepted_at),gap=(filed-Date.parse(utcDay(accepted)+'T00:00:00Z'))/86400000;need(cutoff<=e.filing_date&&e.filing_date<=today&&accepted<=acquired[e.company_id]&&gap>=-1&&gap<=5);
    need(e.event_date===null||day(e.event_date)<=filed);const it=e.items;need(Array.isArray(it)&&it.length<=Object.keys(ITEMS).length&&it.every(i=>typeof i==='string'&&Object.hasOwn(ITEMS,i))&&JSON.stringify(it)===JSON.stringify([...new Set(it)].sort()));
-   need(e.classification===classify(it)&&e.link===indexUrl(e.company_id,e.accession));const seenAt=instant(e.first_seen_at);need(accepted<=seenAt&&seenAt<=cut);exhibit(e);}
+   need(e.classification===classifyReport(e.form,it)&&e.link===indexUrl(e.company_id,e.accession));const seenAt=instant(e.first_seen_at);need(accepted<=seenAt&&seenAt<=cut);exhibit(e);if(['6-K','6-K/A'].includes(e.form))need(e.company_id==='asml'&&it.length===0&&e.exhibit_99_1.state==='AVAILABLE'&&quarterlyEarningsTitle(e.exhibit_99_1.title));}
   for(let i=1;i<events.length;i++){const a=events[i-1],b=events[i];need(a.accepted_at>b.accepted_at||a.accepted_at===b.accepted_at&&a.accession>b.accession);}
   const expected=groups(events);need(events.every((e,i)=>e.group_id===expected[i].group_id&&e.occurrence===expected[i].occurrence));return p;
  }catch(_){throw Error('SEC_DISCLOSURES_INVALID');}
@@ -66,7 +75,7 @@ function renderRow(doc,e,en){const T=(k,x)=>en?x:k,el=(tag,text,attrs={})=>{cons
   const who=el('p');who.append(el('a',e.company_id.toUpperCase(),{href:'#company/'+encodeURIComponent(e.company_id)}),doc.createTextNode(' · '+e.form+' · '+e.accepted_at.slice(0,16).replace('T',' ')+' UTC'));li.append(who);
   const x=e.exhibit_99_1;if(x.state==='AVAILABLE'){const t=el('p');t.append(el('a',x.title,{href:x.url,target:'_blank',rel:'noopener noreferrer','data-exhibit-link':''}),doc.createTextNode(' · EX-99.1'));li.append(t);}
   else li.append(el('p','EX-99.1 · NOT_AVAILABLE · '+x.reason_code,{class:'small'}));
-  li.append(el('p',e.items.map(c=>itemLabel(c,en)).join(' / ')||T('항목 미제공','Items not provided'),{class:'small','data-items':e.items.join(',')}));
+  li.append(el('p',e.items.map(c=>itemLabel(c,en)).join(' / ')||(['6-K','6-K/A'].includes(e.form)?T('분기 실적 6-K · 공시 첨부 제목 확인','Quarterly earnings 6-K · filing exhibit title verified'):T('항목 미제공','Items not provided')),{class:'small','data-items':e.items.join(',')}));
   li.append(el('a',T('SEC 원문 목록 보기 ↗','Open SEC filing index ↗'),{href:e.link,target:'_blank',rel:'noopener noreferrer','data-filing-link':''}));
  return li;}
 function mount(host,payload,{locale,companyIds=null,limit=30,emptyText}={}){
@@ -82,5 +91,5 @@ function mount(host,payload,{locale,companyIds=null,limit=30,emptyText}={}){
  for(const row of rows)list.append(renderRow(doc,row.event,en));
  section.append(list);host.replaceChildren(section);
 }
-return Object.freeze({FILENAME,KIND,CIKS,ITEMS,CLASSES,CHANNELS,PRIORITY,classify,classLabel,groups,indexUrl,validate,load,timeline,renderRow,mount});
+return Object.freeze({FILENAME,KIND,CIKS,ITEMS,CLASSES,CHANNELS,PRIORITY,classify,classLabel,qgvEarningsStatus,groups,indexUrl,validate,load,timeline,renderRow,mount});
 });

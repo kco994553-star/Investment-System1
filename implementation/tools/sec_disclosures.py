@@ -26,7 +26,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from investment_system.markets.us import US_LISTINGS
 from investment_system.product.sec_disclosures import (FILENAME, MAX_BYTES, WINDOW_DAYS, encode, merge, parse_json,
                                                        pending_exhibits, require_sec_disclosures)
-from investment_system.providers.sec_8k_disclosures import SecDisclosureClient, current_reports, exhibit_99_1
+from investment_system.providers.sec_8k_disclosures import (SecDisclosureClient, current_reports, exhibit_99_1,
+    foreign_earnings_candidates, quarterly_earnings_exhibit)
 from investment_system.providers.sec_collection import SEC_USER_AGENT_SLOT, SecCollectionError
 
 SOURCE = 'https://kco994553-star.github.io/Investment-System1/' + FILENAME
@@ -106,12 +107,25 @@ def collect(client, previous, *, now=_utc_now):
     """Returns (collected, exhibits, counts). Per-company failures are counted with fixed codes."""
     started = now()
     since = (started - timedelta(days=WINDOW_DAYS)).date()
-    collected, failures = {}, []
+    collected, failures, exhibits, foreign_checked = {}, [], {}, 0
     counts = {'excluded': 0, 'conflicts': 0, 'unknown_items': 0}
     for index, cid in enumerate(sorted(US_LISTINGS), start=1):
         try:
             body, acquired = client.submissions(cid)
-            rows, row_counts = current_reports(cid, json.loads(body), acquired_at=acquired, since=since)
+            submissions = json.loads(body)
+            rows, row_counts = current_reports(cid, submissions, acquired_at=acquired, since=since)
+            for candidate in foreign_earnings_candidates(cid, submissions, acquired_at=acquired, since=since)[:MAX_INDEX_FETCHES - foreign_checked]:
+                foreign_checked += 1
+                try:
+                    found = quarterly_earnings_exhibit(cid, candidate['accession'], client.filing_index(cid, candidate['accession']))
+                except SecCollectionError:
+                    failures.append((index, 'ASML_6K_INDEX_UNAVAILABLE'))
+                    continue
+                if isinstance(found, dict):
+                    rows.append(candidate)
+                    exhibits[candidate['accession']] = found
+                else:
+                    failures.append((index, 'ASML_6K_EARNINGS_UNCONFIRMED'))
         except SecCollectionError as error:
             failures.append((index, _code(error)))
             continue
@@ -121,15 +135,14 @@ def collect(client, previous, *, now=_utc_now):
         collected[cid] = {'acquired_at': acquired, 'rows': rows}
         for key in counts:
             counts[key] += row_counts[key]
-    exhibits = {}
-    due = pending_exhibits(previous, collected)
-    for cid, accession in due[:MAX_INDEX_FETCHES]:
+    due = [(cid, accession) for cid, accession in pending_exhibits(previous, collected) if accession not in exhibits]
+    for cid, accession in due[:MAX_INDEX_FETCHES - foreign_checked]:
         try:
             exhibits[accession] = exhibit_99_1(cid, accession, client.filing_index(cid, accession))
         except SecCollectionError:
             exhibits[accession] = 'INDEX_UNAVAILABLE'
     counts.update(companies=len(US_LISTINGS), collected=len(collected), failed=len(failures), failures=failures,
-                  index_due=len(due), index_fetched=min(len(due), MAX_INDEX_FETCHES),
+                  index_due=len(due) + foreign_checked, index_fetched=foreign_checked + min(len(due), MAX_INDEX_FETCHES - foreign_checked),
                   exhibits_found=sum(isinstance(x, dict) for x in exhibits.values()))
     return collected, exhibits, counts
 

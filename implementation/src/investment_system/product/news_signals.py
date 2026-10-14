@@ -52,6 +52,34 @@ RELATED_8K_WINDOW = timedelta(hours=24)
 RELATED_8K_MIN_SHARED = 2
 RELATED_8K_MIN_PERCENT = 50
 
+# PLAYBOOK 7-1/13-9: title matches are candidates (SIGNAL), never confirmed deterioration.
+# Broad LEGAL/MA classifications alone do not create E4. Repeated stories count once.
+STRUCTURAL_RULES = {
+    'EXPORT_RESTRICTION': (('asml', 'lrcx', 'klac', 'tokyo_electron', 'hanmi', 'nvda', 'amd', 'avgo', 'qcom', 'intc'),
+                           r'\bexport (?:controls?|curbs?|ban|restrictions?)\b'),
+    'CUSTOMER_OWN_CHIP': (('nvda', 'amd', 'avgo', 'qcom', 'intc'), r'\b(?:in[ -]house|own|custom) chips?\b'),
+    'ANTITRUST_REGULATION': (('msft', 'googl'), r'\bantitrust (?:ruling|regulation|remedy|order)\b'),
+    'DEFENSE_PROGRAM_CANCELLED': (('rtx',), r'\b(?:program(?:me)? (?:cancelled|canceled|cancellation)|cancel(?:s|led|ed)? (?:major )?(?:defen[sc]e )?program)\b'),
+    'DEVICE_RECALL_OR_APPROVAL_FAILURE': (('stry',), r'\b(?:recall|approval (?:denied|rejected)|fails? (?:to win )?approval)\b'),
+    'AUTOMATION_PLATFORM_LOSS': (('rok',), r'\b(?:loses? (?:key )?platform|platform (?:loss|replaced))\b'),
+    'POWER_EQUIPMENT_CUSTOMER_LOSS': (('etn', 'hubb', 'gev'), r'\b(?:loses? (?:a )?(?:key|major) customer|(?:key|major) customer (?:loss|leaves))\b'),
+}
+
+
+def structural_candidates(items):
+    result, seen = [], set()
+    for item in items:
+        if item.get('occurrence') != 'NEW' or item.get('group_id') in seen:
+            continue
+        for kind, (companies, pattern) in STRUCTURAL_RULES.items():
+            if item.get('company_id') in companies and re.search(pattern, item.get('title', ''), re.I):
+                result.append({'company_id': item['company_id'], 'code': 'E4', 'reason_code': 'NEWS_STRUCTURAL_EVENT',
+                               'event_kind': kind, 'evidence_grade': 'SIGNAL', 'score_effect': 'NONE', 'info_only': True,
+                               'group_id': item['group_id'], 'link': item['link'], 'published_at': item['published_at']})
+                seen.add(item['group_id'])
+                break
+    return result
+
 GDELT_COMPANIES = tuple(sorted(set(US_LISTINGS) | {'tokyo_electron', 'hanmi'}))
 IR_COMPANIES = tuple(sorted(US_LISTINGS))
 

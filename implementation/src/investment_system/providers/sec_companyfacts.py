@@ -8,6 +8,7 @@ not Stage 2 PASS and not ORIGINAL artifact recovery.
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -20,7 +21,6 @@ from ..pit.resolver import is_available
 
 
 SEC_FACTS_URL = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
-USER_AGENT = "InvestmentSystem1Research contact@example.invalid"
 
 
 def _parse_iso(value: str) -> datetime:
@@ -302,7 +302,10 @@ def load_facts_file(path: Path) -> dict[str, Any]:
 def try_fetch_companyfacts(cik: str, timeout: float = 8.0) -> dict[str, Any] | None:
     padded = cik.zfill(10)
     url = SEC_FACTS_URL.format(cik=padded)
-    req = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
+    agent = os.environ.get("SEC_USER_AGENT", "").strip()
+    if not agent or any(ord(c) < 32 or ord(c) == 127 for c in agent):
+        return None
+    req = Request(url, headers={"User-Agent": agent, "Accept": "application/json"})
     try:
         with urlopen(req, timeout=timeout) as resp:
             return json.loads(resp.read().decode("utf-8"))

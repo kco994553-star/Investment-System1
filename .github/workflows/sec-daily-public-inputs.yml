@@ -67,10 +67,11 @@ jobs:
           python implementation/tools/sec_13f_managers.py --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Collect OpenDART disclosures and periodic financials for 042700 (fixed codes and call count only)
+        continue-on-error: true
         env:
           DART_API_KEY: ${{ secrets.DART_API_KEY }}
         run: |
-          python implementation/tools/dart_daily.py --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/dart_daily.py --out "$RUNNER_TEMP/public-cockpit" --qgv2-history
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       # One paced fetch per shard issuer feeds both price-free files: sec-universe-shares.json and sec-universe-qg.json (TARGET Q·G path).
       - name: Collect Universe504 SEC shard (price-free shares and Q·G factor projections)
@@ -80,6 +81,10 @@ jobs:
         run: |
           python implementation/tools/sec_universe_shares.py --live --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      - name: Project collected DART inputs with the same QGV v2 formulae (reference only)
+        run: |
+          python implementation/tools/project_dart_qgv2.py --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Append forward validation ledger (price-free, append-only)
         env:
           RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
@@ -87,12 +92,14 @@ jobs:
           python implementation/tools/forward_validation_ledger.py --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Collect SEC 8-K current reports for TARGET (title, link, time and item metadata only)
+        continue-on-error: true
         env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
         run: |
           python implementation/tools/sec_disclosures.py --live --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Collect news signals for TARGET (GDELT DOC 2.0 and company IR feeds; title, link and time only, never a score input)
+        continue-on-error: true
         run: |
           python implementation/tools/news_signals.py --live --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"

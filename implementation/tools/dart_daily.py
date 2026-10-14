@@ -32,6 +32,7 @@ from investment_system.providers import dart_collection as dc
 
 PAGES_BASE = 'https://kco994553-star.github.io/Investment-System1/'
 ANNUAL_LOOKBACK_DAYS = 500
+ANNUAL_HISTORY_YEARS = 6
 _ORDER = {'Q1': 1, 'HALF': 2, 'Q3': 3, 'ANNUAL': 4}
 
 
@@ -89,13 +90,18 @@ def _guard(call, failures):
         return None, error.code
 
 
-def _report_block(client, corp_code, report, periodic_rows, *, annual):
+def _report_block(client, corp_code, report, periodic_rows, *, annual, v2=False):
     period, year, code = report['period'], report['bsns_year'], report['reprt_code']
     payload, fs_div = dc.fetch_statements(client, corp_code, bsns_year=year, reprt_code=code)
+    if any(row.get('bsns_year') != year or row.get('corp_code') != corp_code or row.get('reprt_code') != code
+           for row in payload.get('list', []) if isinstance(row, dict)):
+        raise dc.DartCollectionError('DART_IDENTITY_MISMATCH')
     receipts = {r.get('rcept_no') for r in payload.get('list', []) if isinstance(r, dict)}
     if len(receipts) != 1:
         raise dc.DartCollectionError('DART_FINANCIALS_INVALID')
     rcept_no = receipts.pop()
+    if rcept_no != report['rcept_no']:
+        raise dc.DartCollectionError('DART_IDENTITY_MISMATCH')
     listed = [r for r in periodic_rows if r['rcept_no'] == rcept_no]
     if (len(listed) != 1 or dc.periodic_report(listed[0]['report_nm']) != (period, year, code)
             or not dp.valid_title(dc.clean_title(listed[0]['report_nm']))):
@@ -117,7 +123,7 @@ def _report_block(client, corp_code, report, periodic_rows, *, annual):
         reasons['shares'] = 'MISSING'
     row = listed[0]
     block_reasons = (['SEPARATE_STATEMENTS_FALLBACK'] if fs_div == 'OFS' else []) + (['SHARES_NOT_AVAILABLE'] if shares is None else [])
-    return {'state': 'LIVE', 'reason_codes': block_reasons, 'rcept_no': rcept_no, 'report_name': dc.clean_title(row['report_nm']),
+    result = {'state': 'LIVE', 'reason_codes': block_reasons, 'rcept_no': rcept_no, 'report_name': dc.clean_title(row['report_nm']),
             'bsns_year': year, 'reprt_code': code, 'period': period, 'fs_div': fs_div,
             'fs_label': 'CONSOLIDATED' if fs_div == 'CFS' else 'SEPARATE_FALLBACK',
             'filed_at': f"{row['rcept_dt'][:4]}-{row['rcept_dt'][4:6]}-{row['rcept_dt'][6:]}",
@@ -126,6 +132,9 @@ def _report_block(client, corp_code, report, periodic_rows, *, annual):
             'concepts': {n: concepts.get(n) if values.get(n) is not None or reasons.get(n) in ('AMBIGUOUS', 'UNPARSEABLE') else None for n in dp.INPUT_NAMES},
             'missing': {n: None if values.get(n) is not None else reasons.get(n, 'MISSING') for n in dp.INPUT_NAMES},
             'source_sha256': {'statements': statements_sha, 'shares': shares_sha}}
+    if v2:
+        result['v2_inputs'] = dc.extract_v2_financials(payload, reprt_code=code)
+    return result
 
 
 def _latest_reports(periodic_rows):
@@ -144,7 +153,7 @@ def _latest_reports(periodic_rows):
     return (found[annual] if annual else None), (found[interim] if interim else None)
 
 
-def collect(client, *, now, previous_events=()):
+def collect(client, *, now, previous_events=(), collect_history=False):
     """Collected parts: ({cid: disclosure company}, [events], {cid: financial company}, failure codes).
 
     Never raises DartCollectionError. A company/part that fails is NOT_AVAILABLE with its fixed code, and
@@ -172,7 +181,7 @@ def collect(client, *, now, previous_events=()):
             def lists():
                 rows, truncated = [], False
                 periodic, cut = dc.list_disclosures(client, corp_code, stock_code=stock_code, pblntf_ty='A',
-                                                    begin=end - timedelta(days=ANNUAL_LOOKBACK_DAYS), end=end)
+                                                    begin=end - timedelta(days=ANNUAL_LOOKBACK_DAYS + (366*(ANNUAL_HISTORY_YEARS-1) if collect_history else 0)), end=end)
                 truncated |= cut
                 rows += [{**r, 'report_type': 'A'} for r in periodic]
                 for kind in ('B', 'I', None):
@@ -198,8 +207,24 @@ def collect(client, *, now, previous_events=()):
                 if report is None:
                     company[key] = dp.empty_report(['NO_PERIODIC_REPORT' if is_annual else 'NO_NEWER_INTERIM_REPORT'])
                     continue
-                block, code = _guard(lambda: _report_block(client, corp_code, report, periodic_rows, annual=is_annual), failures)
+                block, code = _guard(lambda: _report_block(client, corp_code, report, periodic_rows, annual=is_annual, v2=collect_history), failures)
                 company[key] = block if block is not None else dp.empty_report([code])
+            if collect_history:
+                company['annual_history'] = [company['annual']] if company['annual']['state'] == 'LIVE' else []
+                candidates = {}
+                for row in periodic_rows:
+                    parsed = dc.periodic_report(row['report_nm'])
+                    if parsed is None or parsed[0] != 'ANNUAL':
+                        continue
+                    _, year, code = parsed
+                    if company['annual']['state'] != 'LIVE' or annual_report is None or not int(annual_report['bsns_year'])-ANNUAL_HISTORY_YEARS < int(year) < int(annual_report['bsns_year']):
+                        continue
+                    if year not in candidates or (row['rcept_dt'], row['rcept_no']) > (candidates[year]['rcept_dt'], candidates[year]['rcept_no']):
+                        candidates[year] = {'period': 'ANNUAL', 'bsns_year': year, 'reprt_code': code, **row}
+                for year in sorted(candidates, reverse=True):
+                    block, code = _guard(lambda: _report_block(client, corp_code, candidates[year], periodic_rows, annual=True, v2=True), failures)
+                    if block is not None:
+                        company['annual_history'].append(block)
         except _Stop as stop:
             stopped = stop.code
             if disclosures[cid]['state'] != 'LIVE':
@@ -253,7 +278,7 @@ def fetch_previous(name, *, open_response=None):
     return body, dp.require_public(name, dp.parse_json(body))
 
 
-def run(out, *, environ=None, transport=None, now=None, max_calls=dc.DEFAULT_MAX_CALLS, open_previous=None):
+def run(out, *, environ=None, transport=None, now=None, max_calls=dc.DEFAULT_MAX_CALLS, open_previous=None, include_qgv2=False, collect_history=False):
     environ = os.environ if environ is None else environ
     now = (now or dc.utc_now()).replace(microsecond=0)
     key = environ.get(dc.DART_API_KEY_SLOT) or ''
@@ -282,14 +307,14 @@ def run(out, *, environ=None, transport=None, now=None, max_calls=dc.DEFAULT_MAX
             events = []
         else:
             disclosures, events, financials, failures = collect(
-                client, now=now, previous_events=(previous[dp.DISCLOSURES_FILENAME] or {}).get('events', ()))
+                client, now=now, previous_events=(previous[dp.DISCLOSURES_FILENAME] or {}).get('events', ()), collect_history=collect_history)
         disclosures, events, financials = carry_forward(disclosures, events, financials, previous[dp.DISCLOSURES_FILENAME],
                                                         previous[dp.FINANCIALS_FILENAME])
         cutoff = (now.astimezone(dp.KST).date() - timedelta(days=dp.WINDOW_DAYS)).isoformat()
         events = [e for e in events if e['filing_date'] >= cutoff]
         disclosure_payload = dp.disclosures_payload(as_of=now, companies=disclosures, events=events,
                                                     api_calls=budget.used, api_call_budget=budget.limit)
-        financial_payload = dp.financials_payload(as_of=now, companies=financials)
+        financial_payload = dp.financials_payload(as_of=now, companies=financials, include_qgv2=include_qgv2)
         bodies = {dp.DISCLOSURES_FILENAME: dp.encode(dp.DISCLOSURES_FILENAME, disclosure_payload),
                   dp.FINANCIALS_FILENAME: dp.encode(dp.FINANCIALS_FILENAME, financial_payload)}
         if key and any(key.encode() in body for body in bodies.values()):
@@ -338,6 +363,8 @@ def main(argv=None, *, environ=None, transport=None, now=None, open_response=Non
     parser.add_argument('--out', required=True, type=Path)
     parser.add_argument('--preserve-only', action='store_true')
     parser.add_argument('--max-calls', type=int, default=dc.DEFAULT_MAX_CALLS)
+    parser.add_argument('--qgv2', action='store_true', help='Publish v2 raw ratios labelled reference only')
+    parser.add_argument('--qgv2-history', action='store_true', help='Collect six exact annual reports and standard v2 account lines')
     args = parser.parse_args(argv)
     if not 1 <= args.max_calls <= dc.HARD_MAX_CALLS:
         print('DART_DAILY ARGUMENTS_INVALID')
@@ -349,7 +376,8 @@ def main(argv=None, *, environ=None, transport=None, now=None, open_response=Non
             print('DART_PREVIOUS_RESTORE_FAILED')
             return 1
         return 0
-    return run(args.out, environ=environ, transport=transport, now=now, max_calls=args.max_calls, open_previous=open_response)
+    return run(args.out, environ=environ, transport=transport, now=now, max_calls=args.max_calls, open_previous=open_response,
+               include_qgv2=args.qgv2 or args.qgv2_history, collect_history=args.qgv2_history)
 
 
 if __name__ == '__main__':
