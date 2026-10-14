@@ -70,7 +70,7 @@ function sheetsMock(tabs) {
   return { tabs, log, handle };
 }
 
-async function open(browser, { now, width = 390, sheet }) {
+async function open(browser, { now, width = 390, sheet, dartGate = null }) {
   const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block', locale: 'ko-KR' });await displayOnlyOff(context);
   const traffic = { worker: 0, unexpected: [], console: 0, errors: 0 };
   await context.addInitScript(({ token, scope, sheetId }) => {
@@ -82,6 +82,7 @@ async function open(browser, { now, width = 390, sheet }) {
   await routeEmptyPublicScreens(context);
   await context.route('**/*', async (route) => {
     const request = route.request(), url = new URL(request.url());
+    if (dartGate && url.pathname.endsWith('/dart-financials.json')) await dartGate.promise; // late public score input, released by the test
     if (url.origin === new URL(BASE).origin) {
       if (url.pathname.endsWith('/app-config.js')) { await route.fulfill({ contentType: 'application/javascript', body: 'window.InvestmentAppConfig=Object.freeze(' + JSON.stringify({ googleSheetsClientId: 'synthetic-public.apps.googleusercontent.com', privateHistoryEnabled: true, privateHistoryWorkerOrigin: WORKER, virtualTradingRequestSpacingMs: 0 }) + ');' }); return; }
       if (url.pathname.endsWith('/forward-validation-ledger.json')) {
@@ -243,19 +244,32 @@ const writes = (sheet) => sheet.log.filter((x) => x.startsWith('POST'));
     for (const width of [390, 1440]) {
       await check('user sets C/D (ETF member, purpose, delete → 종료), Set A version, 비교 tab (' + width + ')', async () => {
         const sheet = sheetsMock(new Map());
-        const { context, page, traffic } = await open(browser, { now: '2026-10-31T01:00:00Z', width, sheet });
+        let release;const dartGate = { promise: new Promise((r) => { release = r; }) };
+        const { context, page, traffic } = await open(browser, { now: '2026-10-31T01:00:00Z', width, sheet, dartGate });
         try {
-          const define = async (kind, weights, purpose) => {
+          const define = async (kind, weights, purpose, beforeSave = null) => {
             await go(page, 'report/mock-' + kind.toLowerCase()); await settled(page);
             const form = page.locator('[data-weight-form="' + kind + '"]');
             await form.locator('[data-weight]').first().waitFor();
             for (const [cid, w] of Object.entries(weights)) await form.locator('[data-weight="' + cid + '"]').fill(w);
             if (purpose !== null) await page.locator('[data-set-purpose="' + kind + '"]').fill(purpose);
+            if (beforeSave) await beforeSave(form);
             await form.locator('[data-weight-save]:enabled').click();
           };
           await define('SET_C', { smh: '30', nvda: '20' }, 'ETF와 반도체 개별 종목 비교');
           await page.locator('[data-weight-status="SET_C"]', { hasText: '세트 C 구성을 저장했습니다(set_c-1' }).waitFor();
-          await define('SET_D', { msft: '50' }, '단일 종목 기준선');
+          // A late public score input (DART reference row) arrives while the user is typing: the ledger form keeps its input.
+          await define('SET_D', { msft: '50' }, '단일 종목 기준선', async (form) => {
+            release();await page.waitForFunction(() => Boolean(publicScreens['dart-financials.json']));
+            assert.equal(await form.locator('[data-weight="msft"]').inputValue(), '50');
+            assert.equal(await page.locator('[data-set-purpose="SET_D"]').inputValue(), '단일 종목 기준선');
+            // A repaint while typing (sheet load, catalog, report result) keeps the focused field and caret: typing continues.
+            await page.evaluate(() => { const n = document.querySelector('[data-set-purpose="SET_D"]'); n.dataset.before = '1'; n.focus(); n.setSelectionRange(n.value.length, n.value.length);
+              reportRun.ledgerSheets.update({ state: 'NOT_AVAILABLE', reason_codes: ['RUNNER_FAILED'], sources: {}, ledgers: {} }); });
+            await page.waitForFunction(() => { const n = document.querySelector('[data-set-purpose="SET_D"]'); return Boolean(n) && !n.dataset.before && document.activeElement === n; });
+            await page.keyboard.type(' 1');
+            assert.equal(await page.locator('[data-set-purpose="SET_D"]').inputValue(), '단일 종목 기준선 1');
+          });
           await page.locator('[data-weight-status="SET_D"]', { hasText: '세트 D 구성을 저장했습니다(set_d-1' }).waitFor();
           // Set A: the v1.1 example until changed; a change starts set_a@v2, the example ledger is kept (closed).
           await go(page, 'report/mock'); await settled(page);
