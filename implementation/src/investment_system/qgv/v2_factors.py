@@ -43,7 +43,10 @@ CONCEPTS = {
     'us-gaap': {
         'revenue': ('Revenues', 'RevenueFromContractWithCustomerExcludingAssessedTax',
                     'RevenueFromContractWithCustomerIncludingAssessedTax', 'SalesRevenueNet', 'SalesRevenueGoodsNet',
-                    'RevenuesNetOfInterestExpense'),
+                    'RevenuesNetOfInterestExpense',
+                    # Utilities' total operating revenues (regulated + unregulated). Same amount the issuer tagged as
+                    # `Revenues` in years where both were reported; last in the list, so it never overrides them.
+                    'RegulatedAndUnregulatedOperatingRevenue'),
         'gross_profit': ('GrossProfit',),
         'cost_of_revenue': ('CostOfRevenue', 'CostOfGoodsAndServicesSold', 'CostOfGoodsSold'),
         'ebit': ('OperatingIncomeLoss',),

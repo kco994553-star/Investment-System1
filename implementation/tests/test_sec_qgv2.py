@@ -182,6 +182,33 @@ def test_debt_current_total_taxonomy_switch_and_single_concept_ttm():
     assert (fy_end, currency, v['taxonomy']) == ('2025-12-31', 'EUR', 'ifrs-full')
 
 
+def test_utility_revenue_concept_fills_years_without_revenues_and_never_overrides_them():
+    # Utility: `Revenues` up to 2021 (2021 also under the regulated+unregulated concept, same amount), the
+    # regulated+unregulated total only from 2022. Every FY revenue resolves; the 3y CAGR is the +10%/yr path.
+    payload = simple_company(omit=('Revenues',))
+    for year in range(2019, 2026):
+        rev = 146.41 / 1.1 ** (2025 - year)
+        if year <= 2021:
+            fact(payload['facts'], 'Revenues', 'USD', rev, f'{year}-12-31', start=f'{year}-01-01')
+        if year >= 2021:
+            fact(payload['facts'], 'RegulatedAndUnregulatedOperatingRevenue', 'USD', rev, f'{year}-12-31', start=f'{year}-01-01')
+    _, fy_end, _, m, v = compute(payload, sic='4931')
+    assert fy_end == '2025-12-31'
+    assert math.isclose(m['revenue_cagr_3y'], 0.1, rel_tol=1e-5)
+    assert m['revenue_positive_growth_share'] == 1.0 and m['revenue_growth_std_5y'] is not None
+    assert math.isclose(v['revenue']['fy_value'], 146.41, rel_tol=1e-9)
+    # Without the utility concept the same issuer has no FY0 revenue: NOT_AVAILABLE, never 0.
+    only_old = simple_company(omit=('Revenues',))
+    for year in range(2019, 2022):
+        fact(only_old['facts'], 'Revenues', 'USD', 146.41 / 1.1 ** (2025 - year), f'{year}-12-31', start=f'{year}-01-01')
+    _, _, _, m, v = compute(only_old, sic='4931')
+    assert m['revenue_cagr_3y'] is None and v['revenue'] is None
+    # Lowest priority: an issuer reporting `Revenues` keeps it even if it also tags a different regulated total.
+    both = simple_company(extra=[(('RegulatedAndUnregulatedOperatingRevenue', 'USD', 999.0, '2025-12-31'), {'start': '2025-01-01'})])
+    _, _, _, m, v = compute(both)
+    assert math.isclose(v['revenue']['fy_value'], 146.41, rel_tol=1e-9) and math.isclose(m['revenue_cagr_3y'], 0.1, rel_tol=1e-5)
+
+
 # ---------------- percentile publication ----------------
 def test_percentile_formula_ties_and_direction():
     assert vs.percentile(0, 1, 9) == 0 and vs.percentile(8, 1, 9) == 100 and vs.percentile(4, 1, 9) == 50

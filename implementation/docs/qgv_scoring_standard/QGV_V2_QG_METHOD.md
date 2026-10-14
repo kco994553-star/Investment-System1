@@ -29,7 +29,7 @@ All inputs come from one SEC companyfacts payload. Only facts filed on or before
 
 | Line | us-gaap (priority order) | ifrs-full |
 |---|---|---|
-| revenue | Revenues, RevenueFromContractWithCustomerExcludingAssessedTax, …IncludingAssessedTax, SalesRevenueNet, SalesRevenueGoodsNet, RevenuesNetOfInterestExpense | Revenue, RevenueFromContractsWithCustomers |
+| revenue | Revenues, RevenueFromContractWithCustomerExcludingAssessedTax, …IncludingAssessedTax, SalesRevenueNet, SalesRevenueGoodsNet, RevenuesNetOfInterestExpense, RegulatedAndUnregulatedOperatingRevenue (utilities, last) | Revenue, RevenueFromContractsWithCustomers |
 | gross profit | GrossProfit, else revenue − (CostOfRevenue, CostOfGoodsAndServicesSold, CostOfGoodsSold) | GrossProfit / CostOfSales |
 | EBIT | OperatingIncomeLoss | ProfitLossFromOperatingActivities |
 | pretax / tax | IncomeLossFromContinuingOperationsBeforeIncomeTaxes…(2 concepts) / IncomeTaxExpenseBenefit | ProfitLossBeforeTax / IncomeTaxExpenseContinuingOperations |
