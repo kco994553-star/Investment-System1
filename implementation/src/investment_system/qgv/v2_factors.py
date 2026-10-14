@@ -119,9 +119,11 @@ METRIC_KEYS = (
     'revenue_cagr_3y', 'eps_cagr_3y', 'fcf_per_share_cagr_3y', 'book_value_per_share_cagr_3y',
     'incremental_roic_3y', 'incremental_roe_3y', 'revenue_positive_growth_share', 'revenue_growth_volatility',
     'revenue_ttm_growth', 'revenue_acceleration',
+    'revenue_growth_std_5y', 'revenue_volatility_5y_rank_pct',
 )
 # Metrics that are counts/descriptors, not ranked directly.
-DESCRIPTIVE_METRICS = frozenset({'moat_return_mean_5y', 'moat_return_std_5y', 'moat_return_years', 'revenue_ttm_growth'})
+DESCRIPTIVE_METRICS = frozenset({'moat_return_mean_5y', 'moat_return_std_5y', 'moat_return_years', 'revenue_ttm_growth',
+                               'revenue_growth_std_5y', 'revenue_volatility_5y_rank_pct'})
 
 
 def _finite(value):
@@ -536,6 +538,10 @@ def _growth_common(c, m):
     if len(growth) >= 3:
         m['revenue_positive_growth_share'] = sum(1 for g in growth if g > 0) / len(growth)
         m['revenue_growth_volatility'] = _pstdev(growth)
+    # PLAYBOOK decision #18 requires all five annual growth observations, hence six reported FY revenues.
+    # Keep the existing >=3-observation G consistency metric unchanged.
+    if len(growth) == HISTORY_YEARS:
+        m['revenue_growth_std_5y'] = _pstdev(growth)
     ttm = c.ttm('revenue')
     if ttm is not None and ttm[2] is not None and ttm[2] > 0 and ttm[0] is not None:
         m['revenue_ttm_growth'] = ttm[0] / ttm[2] - 1.0
@@ -545,14 +551,15 @@ def _growth_common(c, m):
 
 V_FLOW_KEYS = ('fy_value', 'fy_end', 'ttm_value', 'ttm_end')
 V_INSTANT_KEYS = ('value', 'period_end')
-V_KEYS = ('currency', 'taxonomy', 'fiscal_year_end', 'ebit', 'fcf', 'total_debt', 'cash_and_equivalents', 'diluted_shares', 'ebit_per_share_history', 'fcf_per_share_history',
+LEGACY_V_KEYS = ('currency', 'taxonomy', 'fiscal_year_end', 'ebit', 'fcf', 'total_debt', 'cash_and_equivalents', 'diluted_shares', 'ebit_per_share_history', 'fcf_per_share_history',
           'revenue_cagr_3y', 'eps_cagr_3y', 'fcf_per_share_cagr_3y', 'revenue_ttm_growth')
 
+V_KEYS = LEGACY_V_KEYS + ('revenue', 'operating_margin_history')
 
 def empty_v_inputs():
     return {'currency': None, 'taxonomy': None, 'fiscal_year_end': None,
             'ebit': None, 'fcf': None, 'total_debt': None, 'cash_and_equivalents': None, 'diluted_shares': None,
-            'ebit_per_share_history': [], 'fcf_per_share_history': [],
+            'ebit_per_share_history': [], 'fcf_per_share_history': [], 'revenue': None, 'operating_margin_history': [],
             'revenue_cagr_3y': None, 'eps_cagr_3y': None, 'fcf_per_share_cagr_3y': None, 'revenue_ttm_growth': None}
 
 
@@ -613,6 +620,15 @@ def _v_inputs(c, m, taxonomy, currency):
                 history.append({'fiscal_year_end': hit[2].isoformat(), 'value': _round(per_share)})
         ends = [h['fiscal_year_end'] for h in history]
         v[key] = history if len(set(ends)) == len(ends) else []
+    v['revenue'] = _flow(c, fy('revenue'), ttm('revenue'))
+    # Price-free annual operating margins. Missing years are absent, never zero-filled.
+    margins = []
+    for k in range(4, -1, -1):
+        revenue, ebit = c.a('revenue', k), c.a('ebit', k)
+        hit = c.f.annual('revenue', c.end(k))
+        if revenue is not None and revenue > 0 and ebit is not None and hit is not None:
+            margins.append({'fiscal_year_end': hit[2].isoformat(), 'value': _round(ebit / revenue)})
+    v['operating_margin_history'] = margins
     # Realized growth for the device expectation check (same definitions as the G metrics).
     for key in ('revenue_cagr_3y', 'eps_cagr_3y', 'revenue_ttm_growth'):
         v[key] = _round(m.get(key))
@@ -644,7 +660,19 @@ def _compute(companyfacts, profile, cutoff):
         ends |= facts.annual_ends(item)
     if not ends:
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
-    company = _Company(facts, max(ends))
+    return compute_reported_periods(facts, fiscal_year_end=max(ends), profile=profile, taxonomy=taxonomy, currency=currency)
+
+def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxonomy=None, currency=None):
+    """Shared Q/G definitions for source adapters, without fabricated SEC facts.
+
+    `facts` supplies annual(item,date), instant(item,date,tolerance), annual/instant_ends,
+    latest_duration and .items (reported duration observations). The adapter owns filing
+    cutoff/currency/period checks. Missing inputs remain None. Source metadata is supplied
+    separately by its caller; this API never assigns a SEC source to a DART observation.
+    """
+    if profile not in ('GENERAL', 'FINANCIAL') or not isinstance(fiscal_year_end, date):
+        raise ValueError('REPORTED_PERIODS_INVALID')
+    company = _Company(facts, fiscal_year_end)
     metrics = _metrics_financial(company) if profile == 'FINANCIAL' else _metrics_general(company)
     _growth_common(company, metrics)
     raw = dict(metrics)

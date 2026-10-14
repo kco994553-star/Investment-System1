@@ -34,8 +34,31 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
       page.on('pageerror', () => errors++); page.on('console', message => { if (CANARY.some(c => message.text().includes(c))) leaked++; });
       await page.addInitScript(({id, origin, token}) => {
         localStorage.setItem('investment.web.v1.unified-sheet-source', id); localStorage.setItem('investment.web.v1.private-history-origin', origin);
+        // Pause only the settings response at the Quotes mount boundary; storage itself stays real.
+        // This makes the initial read finish after a newer user action without sleeps or network timing.
+        const settingsGate = {armed: true, release: null, enabled: null}; let actualApi;
+        window.__armSettingsRead = () => { settingsGate.armed = true; settingsGate.release = null; settingsGate.enabled = null; };
+        window.__settingsReadPaused = () => !!settingsGate.release;
+        window.__settingsReadEnabled = () => settingsGate.enabled;
+        window.__releaseSettingsRead = () => { const release = settingsGate.release; settingsGate.release = null; if (release) release(); };
+        Object.defineProperty(window, 'DeviceActual', {configurable: true, get: () => actualApi, set(api) {
+          actualApi = {...api, sheetSettings(...args) {
+            const read = api.sheetSettings(...args);
+            if (args.length !== 1 || !settingsGate.armed || !new Error().stack.includes('google-sheet-quotes.js')) return read;
+            settingsGate.armed = false;
+            return read.then(value => new Promise(resolve => {
+              settingsGate.enabled = value.enabled; settingsGate.release = () => resolve(value);
+            }));
+          }};
+        }});
+        window.__pendingGrants = []; window.__holdGrant = false; window.__grantRequests = 0;
+        window.__finishGrant = () => { for (const complete of window.__pendingGrants.splice(0)) complete(); };
         window.__opened = []; window.open = (url) => { window.__opened.push(String(url)); return null; };
-        window.google = {accounts: {oauth2: {initTokenClient(config) { return {requestAccessToken() { config.callback({access_token: token, expires_in: 3600, scope: 'https://www.googleapis.com/auth/drive.file email'}); }}; }, revoke(_, done) { done({}); }}}};
+        window.google = {accounts: {oauth2: {initTokenClient(config) { return {requestAccessToken() {
+          window.__grantRequests++;
+          const complete = () => config.callback({access_token: token, expires_in: 3600, scope: 'https://www.googleapis.com/auth/drive.file email'});
+          if (window.__holdGrant) window.__pendingGrants.push(complete); else complete();
+        }}; }, revoke(_, done) { done({}); }}}};
       }, {id: ID, origin: ORIGIN, token: TOKEN});
       await page.route('**/*', async route => {
         const request = route.request(), url = new URL(request.url());
@@ -66,11 +89,30 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
         }
         mock.unsafe++; return route.abort();
       });
-      phase = 'SIGN_IN';
+      phase = 'SIGN_IN_GOTO';
       await page.goto(BASE + '#settings'); const setup = page.locator('[data-google-first-setup]');
+      phase = 'SIGN_IN_INITIAL_READ';
+      await page.waitForFunction(() => window.__settingsReadPaused());
+      verify(await page.evaluate(() => window.__settingsReadEnabled() === false), 'initial native settings are disabled');
+      verify(await page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state().ready), 'the synthetic OAuth SDK is ready before the user signs in');
+      phase = 'SIGN_IN_CLICK';
       await setup.locator('[data-setup-action="login"]').click();
-      if (await setup.locator('[data-setup-action="login"]').isVisible()) await setup.locator('[data-setup-action="login"]').click();
+      phase = 'SIGN_IN_CONNECTED';
       await page.waitForFunction(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state().connected);
+      verify(await page.evaluate(() => window.__grantRequests === 1), 'the user signs in with exactly one grant request');
+      phase = 'SIGN_IN_HYDRATION';
+      await page.evaluate(() => window.__releaseSettingsRead());
+      await page.locator('[data-sheet-google-controls]').waitFor({state: 'attached'});
+      verify(await page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state().connected), 'delayed initial settings keep the newer successful sign-in');
+      // Authorization is shared; explicitly opt into this Quotes panel before checking its controls.
+      // Other consumers may have mounted an OFF Quotes panel before the grant completed.
+      await page.locator('[data-sheet-enabled]').check();
+      verify(await page.locator('[data-sheet-enabled]').isChecked(), 'the user explicitly enables the Quotes input panel');
+      verify(await page.evaluate(() => {
+        const state = GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state();
+        return state.enabled && state.connected && window.__grantRequests === 1;
+      }), 'enabling the Quotes panel preserves the existing grant without another popup');
+      verify(await page.locator('[data-sheet-google-controls]').isVisible(), 'connected sheet controls remain visible after delayed hydration');
       await page.evaluate(async id => { await DeviceActual.sheetSettings(window, {schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: id, range: "'Quotes'!A1:C1025"}); }, ID);
       await page.goto(BASE + '#home'); await page.goto(BASE + '#settings');
 
@@ -154,12 +196,73 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
       verify(mock.unsafe === 0 && leaked === 0 && errors === 0, 'no unsafe request, console leak or page error');
       verify(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'no horizontal page scroll');
 
+      // Remount with an old native settings snapshot. OFF/sign-out/pending OAuth must win.
+      async function pausedMount(enabled, withClient = true) {
+        await page.evaluate(async ({value, withClient}) => {
+          const saved = await DeviceActual.sheetSettings(window);
+          await DeviceActual.sheetSettings(window, {...saved, enabled: value});
+          window.__armSettingsRead();
+          const host = document.createElement('div'); host.dataset.captureRaceHost = '';
+          document.body.append(host); window.__captureRaceHost = host;
+          const catalog = await (await fetch('actual-catalog.json')).json();
+          window.__captureRaceMount = GoogleSheetQuotes.mount(host, {catalog, locale: 'ko-KR', ...(withClient ? {clientId: InvestmentAppConfig.googleSheetsClientId} : {})});
+        }, {value: enabled, withClient});
+        await page.waitForFunction(() => window.__settingsReadPaused());
+        verify(await page.evaluate(value => window.__settingsReadEnabled() === value, enabled), 'native delayed snapshot matches the stored enabled mode');
+      }
+      async function finishMount() {
+        await page.evaluate(async () => { window.__releaseSettingsRead(); await window.__captureRaceMount; });
+      }
+      phase = 'DELAYED_SETTINGS_OFF';
+      await pausedMount(true);
+      await page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).setEnabled(false));
+      await finishMount();
+      verify(await page.evaluate(() => {
+        const state = GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state();
+        return !state.enabled && !state.connected && !window.__captureRaceHost.querySelector('[data-sheet-enabled]').checked;
+      }), 'explicit OFF stays off after the old enabled settings return');
+      await page.evaluate(() => window.__captureRaceHost.remove());
+
+      phase = 'DELAYED_SETTINGS_SIGN_OUT';
+      await page.evaluate(() => { const session = GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId); session.setEnabled(true); session.login(); });
+      await pausedMount(false);
+      await page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).disconnect());
+      await finishMount();
+      verify(await page.evaluate(() => {
+        const state = GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state();
+        return state.enabled && !state.connected && window.__captureRaceHost.querySelector('[data-sheet-enabled]').checked;
+      }), 'sign-out clears the grant and keeps the newer enabled mode after the old disabled settings return');
+      await page.evaluate(() => window.__captureRaceHost.remove());
+
+      phase = 'DELAYED_SETTINGS_PENDING_GRANT';
+      await pausedMount(false);
+      await page.evaluate(() => {
+        window.__holdGrant = true;
+        const session = GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId); session.setEnabled(true); session.login();
+      });
+      verify(await page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state().pending), 'OAuth grant is pending before the old read completes');
+      await finishMount();
+      verify(await page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state().pending), 'delayed settings keep the newer pending OAuth request');
+      await page.evaluate(() => { window.__holdGrant = false; window.__finishGrant(); });
+      verify(await page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state().connected), 'the preserved pending grant completes normally');
+      await page.evaluate(() => window.__captureRaceHost.remove());
+
+      phase = 'DELAYED_PASTE_ONLY_MOUNT';
+      await pausedMount(false, false);
+      await page.evaluate(async () => {
+        const session = GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId);
+        await session.disconnect(); session.setEnabled(true); session.login();
+      });
+      await finishMount();
+      verify(await page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).state().connected), 'a stale paste-only mount does not disconnect a newer grant');
+      await page.evaluate(() => window.__captureRaceHost.remove());
+
       phase = 'SIGN_OUT';
       await page.evaluate(() => GoogleSheetQuotes.sessionFor(window, InvestmentAppConfig.googleSheetsClientId).disconnect());
       verify(await page.evaluate(() => HoldingsCapture.get(window) === null && !WorkerQuoteFallback.has(window)), 'RAM holdings and closes cleared on sign-out');
       pass++; console.log('PASS holdings capture, Worker close fallback and outside-scope holdings ' + width); await context.close();
     }
-  } catch (error) { fail++; console.log('FAIL holdings capture browser ' + phase + (error && error.safe ? ' · ' + error.safe : '')); }
+  } catch (error) { fail++; const kind = ['Error', 'TimeoutError', 'AssertionError'].includes(error && error.name) ? error.name : 'TEST_ERROR'; console.log('FAIL holdings capture browser ' + phase + ' · ' + kind + (error && error.safe ? ' · ' + error.safe : '')); }
   finally { await browser.close(); }
   console.log('COUNTS pass=' + pass + ' fail=' + fail); if (fail) process.exitCode = 1;
 })();

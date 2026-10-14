@@ -504,3 +504,49 @@ def test_workflows_manifests_and_offline_fixture_are_wired():
     assert '<script src="sec-qgv2.js"></script>' in (ROOT / 'src/investment_system/product/web_assets/index.html').read_text()
     guard = (ROOT / 'tools/pages_artifact_guard.py').read_text()
     assert guard.count('\nALLOWED_NAMES') == 1 and 'QGV2_FILENAME' in guard.split('\nALLOWED_NAMES', 1)[1].split('\n', 1)[0]
+
+
+def test_normalized_earnings_inputs_are_reported_pricefree_and_legacy_readable():
+    row = next(r for r in payload()['records'].values() if r['state'] != 'NOT_AVAILABLE')
+    value = row['v_inputs_v2']
+    assert value['revenue'] is not None
+    assert len(value['operating_margin_history']) == 5
+    assert all(h['value'] is not None for h in value['operating_margin_history'])
+    prior = payload()
+    for r in [*prior['records'].values(), *prior['target'].values()]:
+        r['v_inputs_v2'].pop('revenue')
+        r['v_inputs_v2'].pop('operating_margin_history')
+    prior['decision_ref'] = 'GSQ-022_PENDING_APPROVAL'
+    q.require_qgv2(prior)
+
+
+def test_playbook_volatility_requires_all_six_revenues_and_leaves_g_consistency_unchanged():
+    full = compute(simple_company(years=range(2020, 2026)))[3]
+    assert full['revenue_growth_std_5y'] is not None
+    assert full['revenue_growth_std_5y'] < 1e-12
+    short = compute(simple_company(years=range(2022, 2026)))[3]
+    assert short['revenue_growth_volatility'] is not None  # Existing >=3-growth G rule.
+    assert short['revenue_growth_std_5y'] is None          # New descriptor never uses the short history.
+
+
+def test_playbook_volatility_rank_deduplicates_issuers_and_replaces_target_point():
+    rows = {str(n): _row(n + 1, revenue_growth_std_5y=float(n)) for n in range(8)}
+    rows['duplicate'] = dict(rows['0'])
+    target = {'newer': _row(1, revenue_growth_std_5y=100.0), 'missing': _row(10)}
+    ranked = vs.volatility_rank_rows(rows, target)
+    assert ranked[('universe', '0')] == ranked[('universe', 'duplicate')] == 0
+    assert ranked[('universe', '7')] == 100
+    assert ranked[('target', 'newer')] == 100
+    assert ranked[('target', 'missing')] is None
+    assert all(v is None for v in vs.volatility_rank_rows({k: rows[k] for k in list(rows)[:7]}).values())
+
+
+def test_published_volatility_is_a_descriptor_not_a_new_qg_factor():
+    p = payload()
+    assert any('revenue_growth_std_5y' in r['metrics'] for r in p['records'].values())
+    original = {c: (r['factors'], r['axes']) for c, r in p['records'].items()}
+    for r in [*p['records'].values(), *p['target'].values()]:
+        r['metrics'].pop('revenue_growth_std_5y', None)
+        r['metrics'].pop('revenue_volatility_5y_rank_pct', None)
+    q.require_qgv2(p)  # Optional legacy shape remains valid, and Q/G factor bytes did not change.
+    assert original == {c: (r['factors'], r['axes']) for c, r in p['records'].items()}
