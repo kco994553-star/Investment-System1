@@ -24,13 +24,14 @@ function typePreview(typesPayload,qgPayload,custom,engine=engineApi()){
   out.push({company_id:id,official:run(official),mine:run(mine)});}
  out.sort((a,b)=>a.company_id<b.company_id?-1:1);return{state:out.length?'PREVIEW':'NOT_AVAILABLE',reason:out.length?null:'PUBLIC_TYPE_METRICS_NOT_AVAILABLE',rows:out};
 }
-// S13 official view: leaf weights with maturity tags, six separate perspectives, version record. Display only.
+// S13 official view: six separate perspectives and the version record. Display only. QGV v2 is the only score on screens
+// (owner decision 2026-10-14): the v1 official leaf-weight bars and the 'v1 비교용' record are no longer shown; the v2 default
+// weights are in activeV2View.
 const PERSPECTIVES=[['기업분석','Company analysis'],['기술','Technical'],['매크로','Macro'],['포트폴리오 적합','Portfolio fit'],['위험','Risk'],['계좌 상황','Account context']];
-function officialView(el,en,view){const isV2=view?.QgvScores?.scoringDefault()==='v2';const box=el('div',undefined,{'data-profile-official':''});box.append(el('h3',isV2?(en?'Comparison · v1 OFFICIAL · uncalibrated':'비교용 · v1 OFFICIAL · 보정 전'):(en?'Official (v1 OFFICIAL · uncalibrated)':'기본(공식) · v1 OFFICIAL · 보정 전')));
- for(const axis of ['Q','G','V']){const field=el('div',undefined,{class:'weight-bars','data-official-axis':axis}),tag=axis==='V'?(en?'Provisional':'잠정'):(en?'Official':'공식');field.append(el('h4',axis+' · '+tag));for(const[f,w]of Object.entries(defaults.weights[axis])){const row=el('div',undefined,{class:'weight-bar'}),bar=el('span','',{class:'bar','aria-hidden':'true'});bar.style.width=Math.max(0,Math.min(100,w))+'%';row.append(el('span',f+' '+w,{class:'small'}),bar);field.append(row);}box.append(field);}
+function officialView(el,en,view){const box=el('div',undefined,{'data-profile-official':''});
  const p=el('div',undefined,{'data-six-perspectives':''});p.append(el('h4',en?'Six perspectives (shown separately)':'6관점 (따로 표시)'));const list=el('dl');for(const[ko,enl]of PERSPECTIVES)list.append(el('dt',en?enl:ko),el('dd','NOT_AVAILABLE'));p.append(list,el('p',en?'Definitions await your decision; results would be one of watch / review / holding context / weight review / risk review / blocked.':'정의는 사용자 확정 대기입니다. 결과는 관찰/추가검토/보유맥락/비중재검토/위험재검토/차단 중 하나로 표시됩니다.',{class:'small'}));box.append(p);
  let drafts=0;try{drafts=read((view||globalThis).localStorage).strategies.length;}catch(_){}
- const v=el('div',undefined,{'data-version-record':''});v.append(el('h4',en?'Version record':'버전 기록'));const vl=el('ul');for(const text of [isV2?(en?'v1 comparison':'v1 비교용'):(en?'v1 in use':'v1 사용 중'),isV2?(en?'v2 default · PROVISIONAL':'v2 기본 · PROVISIONAL'):(en?'v2 comparison':'v2 비교용'),(en?'My drafts: ':'내 프로필 초안: ')+drafts])vl.append(el('li',text));v.append(vl);box.append(v);return box;}
+ const v=el('div',undefined,{'data-version-record':''});v.append(el('h4',en?'Version record':'버전 기록'));const vl=el('ul');for(const text of [en?'v2 default · PROVISIONAL':'v2 기본 · PROVISIONAL',(en?'My drafts: ':'내 프로필 초안: ')+drafts])vl.append(el('li',text));v.append(vl);box.append(v);return box;}
 // The active v2 profile is a device RAM preview. v1 drafts remain compatible comparison configurations.
 function activeV2View(el,en,view){
  const api=view.QgvV2,scores=view.QgvScores,box=el('div',undefined,{'data-profile-v2':''});
