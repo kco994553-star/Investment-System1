@@ -616,6 +616,11 @@ let qgv2Profile={preset:null,gate:null},qgv2Quotes={},qgv2QuotesKey='';
 // tab, the value panel, the loaded private history table and the playbook panel.
 const SCORE_SECTIONS=['[data-company-badges]','[data-company-card="qgv"]','[data-analysis-panel="summary"]','[data-analysis-panel="factors"]'];
 function repaintScores(build){const fresh=document.createElement('div');fresh.innerHTML=build();for(const sel of SCORE_SECTIONS){const live=$('#content '+sel),next=fresh.querySelector(sel);if(live&&next)live.innerHTML=next.innerHTML;}}
+// Late score inputs (the DART reference row) repaint only the score views of the open screen. A full render() here
+// discarded typed weights, open tabs and in-flight save messages on whatever screen was open (e.g. the ledger sheet).
+function refreshScoreViews(){const[route,raw]=location.hash.slice(1).split('/');let id='';try{id=decodeURIComponent(raw||'');}catch(_){id='';}
+ if(route==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);
+ else if(route==='company'&&id)repaintScores(()=>detail(id));else if(route==='analysis'&&id)repaintScores(()=>analysis(id));}
 function qgvScores(identities=identityCompanies){return QgvScores.compute({identities,publicScreens,quotes:qgv2Quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:typeof dartReferenceRows==='function'?dartReferenceRows():{}});}
 async function refreshQgv2Quotes(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
  let q={};try{q=await QgvScores.collectQuotes(window,{identities:identityCompanies,v2Inputs:inputs,catalog});}catch(_){q={};}// Quotes accumulate for this page session (the Universe read is dropped on navigation); a Universe read/clear resets them.
@@ -1085,7 +1090,7 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
 }).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window),PublicScreens.load(window).then(s=>typeof ClassificationScreens==="object"?ClassificationScreens.load(window).then(c=>{if(c)s[ClassificationScreens.FILE]=c;return s;}):s).then(s=>typeof Qgv2Inputs==="object"?Qgv2Inputs.load(window).then(v=>{if(v)s[Qgv2Inputs.FILE]=v;return s;}):s),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,reported,screens,identities])=>{
   try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}
   publicScreens=screens;publicCatalog=identities||null;
-  if(window.DartDisclosures?.loadFinancials)void DartDisclosures.loadFinancials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)render();}});
+  if(window.DartDisclosures?.loadFinancials)void DartDisclosures.loadFinancials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)refreshScoreViews();}});
   // Macro lights v1: public lights only until the device loads SPY on the macro screen (RAM, read by MacroLights.current()).
   try{MacroLights.setPublic(publicScreens);}catch(_){}
   secReported=reported;
