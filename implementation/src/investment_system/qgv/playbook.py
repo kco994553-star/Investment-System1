@@ -646,8 +646,8 @@ def portfolio_limits(cfg, rows, cash_pct=None):
 def _sic(sic):
     if isinstance(sic, bool):
         return None
-    if isinstance(sic, int) and 0 <= sic <= 9999:
-        return sic
+    if isinstance(sic, (int, float)) and 0 <= sic <= 9999 and int(sic) == sic:
+        return int(sic)
     if isinstance(sic, str) and re.fullmatch(r"[0-9]{1,4}", sic):
         return int(sic)
     return None

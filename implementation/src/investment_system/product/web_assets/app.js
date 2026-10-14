@@ -190,7 +190,7 @@ function settingsUI() {
   <p>${t("표시 언어는 계산 결과에 영향을 주지 않습니다.")}</p>
   <label for="source-language">${t("뉴스 원문 언어")}</label><select id="source-language">${[["all",t("전체 언어")],["ko",t("한국어 원문")],["en",t("영어 원문")]].map(([v,k])=>`<option value="${v}" ${appSettings.source_language===v?"selected":""}>${t(k)}</option>`).join("")}</select>
   <p>${t("원문 언어는 뉴스 필터만 변경합니다.")}</p></section>
-  <div id="ops-status"></div><section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio, profiles, investor stars and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·프로필·투자자 ★·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="price-store-settings"></div><div id="private-trades-settings"></div><div id="private-universe-settings"></div><div id="device-api-settings"></div>`;
+  <div id="ops-status"></div><section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio, profiles, investor stars, playbook records and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·프로필·투자자 ★·플레이북 기록·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="price-store-settings"></div><div id="private-trades-settings"></div><div id="private-universe-settings"></div><div id="device-api-settings"></div>`;
 }
 function entityRoute(e) {return e.entity_type==="COMPANY"?"#company/"+encodeURIComponent(e.canonical_id):"#entity/"+encodeURIComponent(e.entity_type+":"+e.canonical_id);}
 // Company search (TARGET directory + public Universe504 codes): identity only, no prices/caps/ranks (GSQ-010).
@@ -579,7 +579,7 @@ function validation() {
 // Design canvas S01~S16: analysis flow numbers and QGV sub-categories (navigation only).
 const FLOW_STEPS=Object.freeze({qgv:[1,"QGV"],technical:[2,"기술적 분석"],macro:[3,"매크로"],validation:[4,"검증·연구"]});
 const QGV_SUBCATEGORY=Object.freeze({portfolio:"내 투자",actual:"내 투자",profiles:"내 투자",model:"내 투자",companies:"종목 찾기",company:"종목 찾기",analysis:"종목 찾기",entity:"종목 찾기",leaderboard:"종목 찾기",watchlist:"종목 찾기",types:"종목 찾기",news:"시장 정보",thirteenf:"시장 정보"});
-const QGV_CHILDREN=Object.freeze(["companies","company","analysis","leaderboard","news","portfolio","actual","entity","profiles","types","thirteenf","watchlist","model"]);
+const QGV_CHILDREN=Object.freeze(["companies","company","analysis","leaderboard","news","portfolio","actual","entity","profiles","types","thirteenf","watchlist","model","playbook"]);
 function syncNavigation(route) {
   const parent=QGV_CHILDREN.includes(route)?"qgv":route==="research"?"validation":route;
   document.querySelectorAll("[data-nav-tab]").forEach(a=>{
@@ -649,6 +649,7 @@ async function paintReport(id){
     if(!live()||!model)return;const hidden=R.hiddenSetting(localStorage),answer=key?R.answers(localStorage)[key]||null:null;
     const draft=host.querySelector('[data-ai-input]')?.value||'';
     host.innerHTML=R.screenHtml(model,{hidden,answer,check:answer?R.checkAnswer(answer.answer,canonical):null,locale});
+    if(window.PlaybookScreen){const panel=document.createElement("div");host.append(panel);const byTicker=new Map(identityCompanies.map(r=>[r.ticker,r.company_id]));host.querySelectorAll("[data-judgement-cell]").forEach(cell=>{const cid=cell.dataset.judgementCell,button=document.createElement("button");button.type="button";button.textContent="플레이북 열기";button.onclick=async()=>{const catalog=await deviceCatalog(),symbol=names[cid]||cid;const computed=await PlaybookScreen.prepareScores(window,{catalog,screens:publicScreens,idByTicker:byTicker,scoreOptions:playbookScoreOptions}),heldSymbols=await PlaybookScreen.heldSymbolsFor(window,catalog);if(panel.isConnected)PlaybookScreen.openPanel(panel,{symbol,situation:PlaybookScreen.factsFor(symbol,{catalog,screens:publicScreens,idByTicker:byTicker,ram,computed,heldSymbols,interests:[...prefs.interests]})});};cell.append(button);});}
     if(draft)host.querySelector('[data-ai-input]').value=draft;
     const status=host.querySelector('[data-report-status]'),say=text=>{if(status)status.textContent=text;};
     for(const box of host.querySelectorAll('[data-hide-amounts],[data-hide-amounts-export]'))box.onchange=()=>{if(!box.checked&&!confirm('개인 금액이 화면/복사본에 표시됩니다.')){box.checked=true;return;}R.hiddenSetting(localStorage,box.checked);paint();};
@@ -693,6 +694,7 @@ async function paintReport(id){
   const compose=async(result,runCfg=cfg,mode='RECORDING',capture=null)=>{
     if(tab==='COMPARE')return composeCompare(result,runCfg,mode);
     const {ledger,hits,input}=Runner.ledgerFor(result,ledgerKind,runCfg),last=ledger.state==='OK'?ledger.days[ledger.days.length-1]:null;
+    window.PlaybookScreen?.ingestRunner(result,names);
     // Q·G shown next to a judgement is the forward-ledger snapshot the engine used that day (else the public screen value).
     const shown={...qg};if(last&&input&&input.snapshots[last.date])for(const[c,r]of Object.entries(input.snapshots[last.date]))shown[c]={q:r.q,g:r.g};
     const runner={state:result.state==='READY'?(ledger.state==='OK'?'READY':'NOT_AVAILABLE'):result.state,reason_codes:result.state==='READY'?(ledger.state==='OK'?[]:ledger.reason_codes):result.reason_codes,sources:Runner.statusRows(result),progress:''};
@@ -766,10 +768,12 @@ function renderRoute() {
   let anchor=null;
   for(const screen of ["validation","technical"]) if(route.startsWith(screen+"-")) {anchor=route;route=screen;}
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,qgv,analysis:()=>analysis(id),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id)};
+  const routes={home,qgv,analysis:()=>analysis(id),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
   if(!routes[route]) route="home";
   $("#content").innerHTML=routes[route]();
   if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
+  if(['playbook','portfolio','company'].includes(route)&&window.PlaybookScreen){const place=route==='playbook'?$('#playbook-screen'):document.createElement('div');if(route!=='playbook')$('#content').append(place);void PlaybookScreen.mount(place,{catalogPromise:deviceCatalog(),scoreOptions:playbookScoreOptions,screens:publicScreens,idByTicker:new Map(identityCompanies.map(r=>[r.ticker,r.company_id])),publicCatalog,interests:[...prefs.interests],universeCodesPromise:fetch('universe-codes.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>p?.schema==='universe-codes/1'&&Array.isArray(p.codes)?p.codes:[]).catch(()=>[]),full:route==='playbook'}).catch(()=>{if(place.isConnected)place.textContent='플레이북 확인 불가 · 기기 기록을 읽을 수 없습니다.';});}
+  if(route==='home'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
@@ -805,7 +809,7 @@ function renderRoute() {
   if(!settingsWritable) notice(t("설정을 읽을 수 없습니다. 저장된 원본은 보존합니다."));
   if(route==="settings") {
     $("#device-backup-export").onclick=()=>void exportDeviceBackup();
-    $("#device-backup-import").onchange=async e=>{try{const f=e.target.files[0];if(!f||f.size>1000000)throw Error("BACKUP_TOO_LARGE");await restoreDeviceBackup(JSON.parse(await f.text()));}catch(_){notice("BACKUP_RESTORE_FAILED");}};
+    $("#device-backup-import").onchange=async e=>{try{const f=e.target.files[0];if(!f||f.size>DeviceBackup.MAX_BYTES)throw Error("BACKUP_TOO_LARGE");await restoreDeviceBackup(JSON.parse(await f.text()));}catch(e){notice(e.message==='BACKUP_TOO_LARGE'?'백업 파일이 16MiB 상한을 초과합니다.':'BACKUP_RESTORE_FAILED');}};
     deviceCatalog().then(catalog=>{const host=$("#google-first-setup");if(host?.isConnected)void GoogleSheetSetup.mount(host,{catalog,config:InvestmentAppConfig,locale:appSettings.display_locale});});
     DevicePWA.mount($('#device-pwa-settings'),{locale:appSettings.display_locale});
     OpsStatus.mount($('#ops-status'),{secReported,secStatus:SecReported.status?.()||null,screens:publicScreens},{locale:appSettings.display_locale});
@@ -855,7 +859,7 @@ function wireGroups() {
   $("#import").onchange = async (e) => {
     try {
       const f = e.target.files[0];
-      if (!f || f.size > 1000000) throw Error(t("1MB 이하 JSON을 선택하세요."));
+      if (!f || f.size > DeviceBackup.MAX_BYTES) throw Error(t("16MiB 이하 JSON을 선택하세요."));
       const payload = JSON.parse(await f.text());
       if (DeviceBackup.accepts(payload)) { await restoreDeviceBackup(payload); return; }
       const p = validatePrefs(payload);
@@ -1058,14 +1062,17 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
 
 async function exportDeviceBackup(){
   try{const catalog=await deviceCatalog();DeviceBackup.download(window,await DeviceBackup.read(window,catalog));}
-  catch(_){notice('BACKUP_EXPORT_FAILED');}
+  catch(e){notice(e.message==='BACKUP_TOO_LARGE'?'백업 파일이 16MiB 상한을 초과합니다. 기록을 임의로 줄이지 않습니다.':'BACKUP_EXPORT_FAILED');}
 }
 async function restoreDeviceBackup(payload){
   const catalog=await deviceCatalog();DeviceBackup.parse(payload,catalog,DeviceMarket,AppLanguage);
-  if(!confirm(appSettings.display_locale==='en-US'?'Replace device interests, groups, portfolio, profiles, investor stars and language settings?':'기기 관심 기업·그룹·포트폴리오·프로필·투자자 ★·언어 설정을 백업으로 바꿀까요?'))return;
+  if(!confirm(appSettings.display_locale==='en-US'?'Replace device interests, groups, portfolio, profiles, investor stars and language settings?':'기기 관심 기업·그룹·포트폴리오·프로필·투자자 ★·플레이북 기록·언어 설정을 백업으로 바꿀까요?'))return;
   await DeviceBackup.restore(window,catalog,payload);load();const read=AppLanguage.read(localStorage);appSettings=read.value;settingsWritable=read.writable;render();
 }
 document.addEventListener('device-backup-restored',()=>{load();appSettings=AppLanguage.read(localStorage).value;render();});
+
+// Reuse the app's current v2 profile and device Universe quotes in page memory after navigation.
+function playbookScoreOptions(){return{quotes:typeof qgv2Quotes==='object'?qgv2Quotes:{},preset:typeof qgv2Profile==='object'?qgv2Profile.preset:null,gate:typeof qgv2Profile==='object'?qgv2Profile.gate:null,referenceRows:typeof dartReferenceRows==='function'?dartReferenceRows():{}};}
 
 async function deviceAverageCost(symbol){
   const catalog=await deviceCatalog(),snapshot=await DeviceActual.readHoldings(window,catalog);

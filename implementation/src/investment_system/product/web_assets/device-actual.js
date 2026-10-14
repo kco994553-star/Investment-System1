@@ -34,7 +34,7 @@
     version: ['기기의 저장 버전을 갱신할 수 없습니다. 저장된 보유 정보는 그대로입니다.', 'Cannot advance the device revision. Saved holdings are unchanged.'],
     storage: ['이 기기에 저장할 수 없습니다. 저장 완료가 아닙니다. 기존 보유 정보는 변경하지 않았습니다.', 'Cannot save on this device. Saving did not complete. Existing holdings were not changed.'],
     corrupt: ['저장된 보유 정보를 읽을 수 없습니다. 원본을 보존했습니다. 삭제 후 다시 입력할 수 있습니다.', 'Saved holdings cannot be read. The original is preserved. You can delete it and enter holdings again.'],
-    tooLarge: ['128 KB 이하 JSON 파일을 선택하세요.', 'Select a JSON file of 128 KB or less.'],
+    tooLarge: ['16MiB 이하 JSON 파일을 선택하세요.', 'Select a JSON file of 16MiB or less.'],
     total: ['총 시장 평가액', 'Total market value'], market: ['시장 평가액', 'Market value'], weight: ['ACTUAL 비중', 'ACTUAL weight'], delta: ['TARGET 대비 차이', 'Delta from TARGET'],
     missing: ['시장가격 미제공 · NOT_AVAILABLE', 'Market prices missing · NOT_AVAILABLE'], fx: ['환율 계약 미제공 · NOT_AVAILABLE', 'FX contract missing · NOT_AVAILABLE'],
     zero: ['양수 보유가 없음 · NOT_AVAILABLE', 'No positive holdings · NOT_AVAILABLE'], calculation: ['계산 범위 초과 · NOT_AVAILABLE', 'Calculation out of range · NOT_AVAILABLE'], available: ['제공된 시장가격 기준', 'Based on supplied market prices'],
@@ -442,9 +442,9 @@
     if (!file || state.busy || state.storageProblem) return;
     setBusy(state, true);
     try {
-      if (file.size > MAX_FILE_BYTES) { notice(state, 'tooLarge'); return; }
+      if (file.size > (state.view.DeviceBackup?.MAX_BYTES || MAX_FILE_BYTES)) { notice(state, 'tooLarge'); return; }
       const text = await file.text();
-      if (new state.view.TextEncoder().encode(text).byteLength > MAX_FILE_BYTES) { notice(state, 'tooLarge'); return; }
+      if (new state.view.TextEncoder().encode(text).byteLength > (state.view.DeviceBackup?.MAX_BYTES || MAX_FILE_BYTES)) { notice(state, 'tooLarge'); return; }
       const payload = JSON.parse(text);
       if (state.view.DeviceBackup?.accepts ? state.view.DeviceBackup.accepts(payload) : payload.schema === state.view.DeviceBackup?.SCHEMA) {
         if (!state.view.confirm(t(state, 'overwrite'))) return;

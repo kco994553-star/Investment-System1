@@ -29,7 +29,7 @@ const {chromium}=require('playwright');
   if(valid){pass++;console.log('PASS backup restore browser '+width);}else{fail++;console.log('FAIL backup restore browser '+width);}
   const stars=await page.evaluate(async()=>{
    const catalog=await (await fetch('actual-catalog.json')).json(),K=PublicScreens.STAR_KEY,mine=['0000000011','0000000022'],other=JSON.stringify(['0000000099']);
-   if(DeviceBackup.STAR_KEY!==K||DeviceBackup.SCHEMA!=='investment-device-backup/3')return 'schema';
+   if(DeviceBackup.STAR_KEY!==K||DeviceBackup.SCHEMA!=='investment-device-backup/4')return 'schema';
    const marker='SYNTHETIC-PRIVATE-MARKER',planted=['investment.web.v1.unified-sheet-source','investment.web.v1.universe-source','investment.web.v1.trades-source','investment.web.v1.private-history-origin','investment.web.v1.sheet-create-pending'];
    localStorage.setItem(K,JSON.stringify(mine));planted.forEach(k=>localStorage.setItem(k,JSON.stringify({spreadsheetId:marker,token:marker,workerOrigin:marker})));
    const backup=await DeviceBackup.read(window,catalog),text=JSON.stringify(backup);planted.forEach(k=>localStorage.removeItem(k));
@@ -37,7 +37,7 @@ const {chromium}=require('playwright');
    localStorage.setItem(K,other);await DeviceBackup.restore(window,catalog,JSON.parse(text));
    if(JSON.stringify(PublicScreens.readStars(localStorage))!==JSON.stringify(mine))return 'restore3';
    for(const schema of ['investment-device-backup/2','investment-device-backup/1']){
-    const old={...backup,schema};delete old.investor_stars;if(schema.endsWith('/1'))delete old.profiles;
+    const old={...backup,schema};delete old.investor_stars;delete old.playbook;if(schema.endsWith('/1'))delete old.profiles;
     localStorage.setItem(K,other);await DeviceBackup.restore(window,catalog,old);if(localStorage.getItem(K)!==other)return 'legacy'+schema;
     localStorage.removeItem(K);await DeviceBackup.restore(window,catalog,old);if(localStorage.getItem(K)!==null)return 'legacy-absent'+schema;
    }
@@ -55,7 +55,7 @@ const {chromium}=require('playwright');
   const exported=await page.evaluate(async()=>{localStorage.setItem('investment.web.v1.investor-stars',JSON.stringify(['0000000033']));return DeviceBackup.read(window,await (await fetch('actual-catalog.json')).json());});
   await page.evaluate(k=>localStorage.setItem(k,JSON.stringify(['0000000044'])),K);await file(exported,'v3.json');
   await page.waitForFunction(k=>localStorage.getItem(k)===JSON.stringify(['0000000033']),K,{timeout:8000});
-  const v2={...exported,schema:'investment-device-backup/2',preferences:{version:1,interests:['legacy-interest'],groups:[]}};delete v2.investor_stars;
+  const v2={...exported,schema:'investment-device-backup/2',preferences:{version:1,interests:['legacy-interest'],groups:[]}};delete v2.investor_stars;delete v2.playbook;
   await page.locator('#device-backup-import').waitFor();await file(v2,'v2.json');
   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('investment.web.v1.personal')||'{}').interests?.[0]==='legacy-interest',undefined,{timeout:8000});
   const ui=await page.evaluate(k=>localStorage.getItem(k),K)===JSON.stringify(['0000000033'])&&await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth);
