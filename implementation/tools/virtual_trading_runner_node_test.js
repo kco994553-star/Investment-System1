@@ -137,3 +137,25 @@ test('module writes nothing: no storage writes, no logging, no network other tha
   const src = fs.readFileSync(require.resolve('../src/investment_system/product/web_assets/virtual-trading-runner.js'), 'utf8');
   for (const word of ['setItem', 'indexedDB', 'console.', 'sendBeacon', 'XMLHttpRequest', 'WebSocket', 'fetch(']) assert.ok(!src.includes(word), word);
 });
+
+test('v2 forward snapshots start on the prepared day, never join v1 scores or stored V', () => {
+  const inputs=structuredClone(fixture.vectors.find(x=>x.name==='full_synthetic').inputs);
+  inputs.forward_ledger.schema_version=2;
+  inputs.forward_ledger.versions['forward_validation/v2']=[];
+  let result=R.assemble(inputs);
+  assert.equal(result.snapshot_basis,'v2');
+  assert.deepEqual(result.ledgers.SET_A.input.sessions,[]);
+  assert.deepEqual(result.ledgers.SET_A.input.snapshots,{});
+  assert.deepEqual(result.ledgers.SET_A.input.v_scores,{});
+  const record=structuredClone(inputs.forward_ledger.versions['forward_validation/v1'].find(r=>r.date==='2026-10-22'));
+  record.version='forward_validation/v2';
+  for(const row of Object.values(record.companies)){row.Q.score=90;row.G.score=80;}
+  const unprepared=structuredClone(record);unprepared.date='2026-10-20';for(const row of Object.values(unprepared.companies)){row.Q.score=null;row.G.score=null;}
+  inputs.forward_ledger.versions['forward_validation/v2']=[unprepared,record];
+  result=R.assemble(inputs);
+  assert.equal(result.ledgers.SET_A.input.sessions[0],'2026-10-22');
+  assert.deepEqual(Object.keys(result.ledgers.SET_A.input.snapshots),['2026-10-20','2026-10-22']);
+  assert.equal(result.ledgers.SET_A.input.snapshots['2026-10-22'].nvda.q,90);
+  assert.deepEqual(result.ledgers.SET_A.input.v_scores,{});
+  assert.deepEqual(result.ledgers.SET_A.input.v_composition,{});
+});

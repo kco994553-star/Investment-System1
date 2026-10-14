@@ -170,6 +170,20 @@ def scenarios():
             'classification': classification(), 'histories': histories(), 'holdings': holdings(), 'set_b': None,
             'sets': None, 'user_target': user_target(), 'v_store': v_store(), 'v_composition': v_composition(), 'flags': flags()}
     out = [{'name': 'full_synthetic', 'inputs': base, 'engine': ['SET_A', 'SHADOW']}]
+    v2 = copy.deepcopy(base)
+    v2['forward_ledger']['schema_version'] = 2
+    v2['forward_ledger']['versions']['forward_validation/v2'] = []
+    out.append({'name': 'v2_not_prepared_no_backfill', 'inputs': copy.deepcopy(v2), 'engine': ['SET_A']})
+    old = copy.deepcopy(base['forward_ledger']['versions']['forward_validation/v1'][0])
+    old['version'] = 'forward_validation/v2'
+    for row in old['companies'].values():
+        row['Q']['score'] = row['G']['score'] = None
+    ready = copy.deepcopy(old)
+    ready['date'] = '2026-10-22'
+    ready['companies']['nvda']['Q']['score'] = 90
+    ready['companies']['nvda']['G']['score'] = 80
+    v2['forward_ledger']['versions']['forward_validation/v2'] = [old, ready]
+    out.append({'name': 'v2_delayed_until_finite_qg', 'inputs': v2, 'engine': ['SET_A']})
     s = copy.deepcopy(base)
     s['histories'] = {'SPY': {'error': 'REQUEST_INVALID'}}  # the device stops requesting after SPY fails
     out.append({'name': 'spy_rejected', 'inputs': s})

@@ -266,6 +266,10 @@ const CODES=Object.freeze({
  flags:Object.freeze(['HOLD','EXCLUDE','CONFIRMED_TEMPORARY','CONFIRMED_STRUCTURAL','CLEAR'])});
 // [Korean, English] per code. A code missing here is shown verbatim (codeText), never dropped or invented.
 const CODE_LABELS=Object.freeze({
+ NO_VALID_V2_OBSERVATIONS:['유효한 v2 V 관측 없음','No valid v2 V observations'],
+ V2_FORWARD_V_HISTORY_NOT_AVAILABLE:['v2 전진 V 이력 없음','v2 forward V history unavailable'],
+ V2_INPUTS_NOT_AVAILABLE:['v2 입력 확인 불가','v2 inputs unavailable'],
+ V2_SAME_SESSION_INPUTS_REQUIRED:['같은 거래일 기준 입력 필요','Same-session inputs required'],
  // engine: judgement reasons
  DATA_PRICE_MISSING:['가격 결측','Price missing'],DATA_FX_MISSING:['환율 결측','FX rate missing'],DATA_SNAPSHOT_MISSING:['Q·G 스냅샷 없음','No Q·G snapshot'],
  COVERAGE_BLOCKED:['데이터 Coverage BLOCKED','Data coverage BLOCKED'],USER_EXCLUDE:['사용자 제외 플래그','User exclude flag'],

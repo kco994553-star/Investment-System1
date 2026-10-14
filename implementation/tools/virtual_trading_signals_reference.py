@@ -110,7 +110,14 @@ def v_axis_cases():
     full = {k: {'score': 40.0 + 5 * i, 'state': 'CALCULATED', 'reason': None} for i, k in enumerate(V_FACTOR_IDS)}
     one_missing = dict(full, sector_context={'score': None, 'state': 'NOT_AVAILABLE', 'reason': 'UNDEFINED_PRICE_MAPPING'})
     zero_is_a_score = dict(full, theme_premium_discount={'score': 0.0, 'state': 'PASSTHROUGH', 'reason': 'SUPPLIED_SCORE'})
+    na = {'score': None, 'state': 'NOT_AVAILABLE', 'reason': 'UNDEFINED_PRICE_MAPPING'}
+    # PLAYBOOK_V1 §13-1: >= 50 weight and an anchor (fundamental_value | reverse_dcf) present, else NA.
+    no_anchor = dict(full, fundamental_value=na, reverse_dcf=na)
+    thin = {k: (f if k in ('reverse_dcf', 'margin_of_safety', 'theme_premium_discount') else na) for k, f in full.items()}
+    device_typical = dict(full, historical_valuation=na, sector_context=na, theme_premium_discount=na)
     cases = [('all_factors', {'v_factors': full}), ('core_factor_missing', {'v_factors': one_missing}),
+             ('anchors_missing', {'v_factors': no_anchor}), ('below_half_weight', {'v_factors': thin}),
+             ('device_typical_partial', {'v_factors': device_typical}),
              ('zero_score_is_present', {'v_factors': zero_is_a_score}), ('no_factors', {'v_factors': None}), ('not_a_view', None)]
     return [{'name': n, 'view': view, 'expected': vs.v_axis_detail(view)} for n, view in cases]
 

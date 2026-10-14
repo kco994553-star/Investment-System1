@@ -54,3 +54,4 @@ s16_s13_screens_browser_test.js
 report_benchmarks_browser_test.js
 price_store_browser_test.js
 macro_lights_browser_test.js
+qgv_v2_screens_browser_test.js

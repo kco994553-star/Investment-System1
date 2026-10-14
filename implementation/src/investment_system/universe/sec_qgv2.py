@@ -34,7 +34,7 @@ KIND = 'SEC_QGV2'
 MAX_BYTES = 2 * 1024 * 1024
 STANDARD = 'QGV_V2'
 STANDARD_STATUS = 'PROVISIONAL_DEFAULT_UNCALIBRATED'
-DECISION_REF = 'GSQ-022_PENDING_APPROVAL'
+DECISION_REF = 'GSQ-022'
 STATES = ('LIVE', 'STALE', 'NOT_AVAILABLE')
 REASONS = ('NOT_COLLECTED', 'CIK_UNRESOLVED', 'INVALID_INPUT', 'NO_ANNUAL_SEC_FINANCIALS', 'NON_SEC_ISSUER', 'STALE_INPUT')
 TOP_REASONS = ('STALE_INPUT', 'NO_ELIGIBLE_INPUT')
@@ -56,7 +56,7 @@ TOP_KEYS = ('schema_version', 'kind', 'as_of', 'standard', 'standard_status', 'd
             'config_status', 'freshness_basis', 'stale_after_seconds', 'shard_count', 'last_shard_index', 'registry_sha256',
             'code_count', 'cross_section_size', 'cross_section_by_profile', 'state', 'reason_codes', 'records', 'target')
 METRIC_LIMIT = 1e12
-FLOW_V_KEYS = ('ebit', 'fcf')
+FLOW_V_KEYS = ('ebit', 'fcf', 'revenue')
 INSTANT_V_KEYS = ('total_debt', 'cash_and_equivalents', 'diluted_shares')
 GROWTH_V_KEYS = ('revenue_cagr_3y', 'eps_cagr_3y', 'fcf_per_share_cagr_3y', 'revenue_ttm_growth')
 _ERRORS = (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError, ZeroDivisionError)
@@ -233,10 +233,16 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
 
 def publish(records, target, *, as_of, cfg, stale_after, shard_index, registry_sha256):
     scores, summary = vs.score_rows(records, target)
+    volatility = vs.volatility_rank_rows(records, target)
     for role, rows in (('universe', records), ('target', target)):
         for key, row in rows.items():
             row['factors'] = scores[(role, key)]['factors']
             row['axes'] = scores[(role, key)]['axes']
+            rank = volatility[(role, key)]
+            if rank is None:
+                row['metrics'].pop('revenue_volatility_5y_rank_pct', None)
+            else:
+                row['metrics']['revenue_volatility_5y_rank_pct'] = rank
     states = [r['state'] for r in records.values()] + [r['state'] for r in target.values()]
     state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
     return {'schema_version': 1, 'kind': KIND, 'as_of': _iso(as_of), 'standard': STANDARD, 'standard_status': STANDARD_STATUS,
@@ -254,19 +260,24 @@ def _metric_ok(key, value):
     if key == 'moat_return_years':
         return type(value) is int and 3 <= value <= vf.HISTORY_YEARS
     # JSON numbers: an integral float may arrive as an int (JS has one number type); bool is never a number.
-    return type(value) in (int, float) and math.isfinite(value) and abs(value) <= METRIC_LIMIT
+    valid = type(value) in (int, float) and math.isfinite(value) and abs(value) <= METRIC_LIMIT
+    if key == 'revenue_growth_std_5y':
+        return valid and value >= 0
+    if key == 'revenue_volatility_5y_rank_pct':
+        return valid and 0 <= value <= 100
+    return valid
 
 
 def _v_inputs(v, cut_day, has_data):
-    _need(type(v) is dict and set(v) == set(vf.V_KEYS))
+    _need(type(v) is dict and set(v) in (set(vf.V_KEYS), set(vf.LEGACY_V_KEYS)))
     if not has_data:
-        _need(v == vf.empty_v_inputs())
+        _need(v == {k: x for k, x in vf.empty_v_inputs().items() if k in v})
         return
     _need(type(v['currency']) is str and re.fullmatch(r'[A-Z]{3}', v['currency']) is not None)
     _need(v['taxonomy'] in ('us-gaap', 'ifrs-full'))
     _need(_date(v['fiscal_year_end']) <= cut_day)
     for key in FLOW_V_KEYS:
-        f = v[key]
+        f = v.get(key)
         if f is None:
             continue
         _need(type(f) is dict and set(f) == set(vf.V_FLOW_KEYS))
@@ -285,8 +296,8 @@ def _v_inputs(v, cut_day, has_data):
         _need(_date(i['period_end']) <= cut_day)
         if key == 'diluted_shares':
             _need(i['value'] > 0)
-    for key in ('ebit_per_share_history', 'fcf_per_share_history'):
-        history = v[key]
+    for key in ('ebit_per_share_history', 'fcf_per_share_history', 'operating_margin_history'):
+        history = v.get(key, [])
         _need(type(history) is list and len(history) <= vf.HISTORY_YEARS)
         ends = []
         for h in history:
@@ -363,7 +374,7 @@ def require_qgv2(payload):
         _need(type(payload) is dict and set(payload) == set(TOP_KEYS))
         cfg = load_config()
         _need(type(payload['schema_version']) is int and payload['schema_version'] == 1 and payload['kind'] == KIND)
-        _need(payload['standard'] == STANDARD and payload['standard_status'] == STANDARD_STATUS and payload['decision_ref'] == DECISION_REF)
+        _need(payload['standard'] == STANDARD and payload['standard_status'] == STANDARD_STATUS and payload['decision_ref'] in (DECISION_REF, 'GSQ-022_PENDING_APPROVAL'))
         _need(payload['method'] == METHOD and json.dumps(payload['method'], sort_keys=True) == json.dumps(METHOD, sort_keys=True))
         cut = _clock(payload['as_of'])
         _need(payload['config_version'] == cfg['config_version'] and payload['config_status'] == cfg['config_status'])
@@ -387,6 +398,12 @@ def require_qgv2(payload):
         _need(type(top) is list and all(x in TOP_REASONS for x in top) and len(top) == len(set(top)))
         _need(top == ([] if state == 'LIVE' else ['STALE_INPUT'] if state == 'STALE' else ['NO_ELIGIBLE_INPUT']))
         expected, summary = vs.score_rows(records, target)
+        volatility = vs.volatility_rank_rows(records, target)
+        for role, rows in (('universe', records), ('target', target)):
+            for key, r in rows.items():
+                rank = r['metrics'].get('revenue_volatility_5y_rank_pct')
+                want = volatility[(role, key)]
+                _need((rank is None and want is None) or rank is not None and want is not None and abs(rank - want) < 1e-9)
         _need(type(payload['cross_section_size']) is int and payload['cross_section_size'] == summary['cross_section_size'])
         _need(payload['cross_section_by_profile'] == summary['cross_section_by_profile']
               and all(type(v) is int for v in payload['cross_section_by_profile'].values()))
