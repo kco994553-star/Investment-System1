@@ -44,7 +44,7 @@ All inputs come from one SEC companyfacts payload. Only facts filed on or before
 | total debt | LongTermDebt (incl. current maturities), else LongTermDebtNoncurrent or LongTermDebtAndCapitalLeaseObligations (+ LongTermDebtCurrent / …CapitalLeaseObligationsCurrent when reported); plus ShortTermBorrowings, else CommercialPaper. If the noncurrent path has no current-maturities line but `DebtCurrent` is reported, debt = noncurrent + DebtCurrent (no separate short-term add, to avoid double counting). If none of these lines is reported, debt is NA. | Borrowings, else NoncurrentPortionOfNoncurrentBorrowings/NoncurrentBorrowings (+ CurrentPortionOfNoncurrentBorrowings); plus ShorttermBorrowings/CurrentBorrowings |
 
 **Fallback lines (us-gaap only; added 2026-10-14 after the 10-K number check
-`QGV_V2_NUMBER_CHECK_20261014.md`, PR #246, §7 items 2, 3, 5).** They apply per fiscal year, read the
+[QGV_V2_NUMBER_CHECK_20261014.md](QGV_V2_NUMBER_CHECK_20261014.md) §7 items 2, 3, 5).** They apply per fiscal year, read the
 same annual facts as above (PIT, revision and ±10-day rules), and need every component they name: a missing component is never
 taken as 0, so the line stays NA. ifrs-full has no fallback lines. Code: `_Company.annual_hit` in `qgv/v2_factors.py`.
 
