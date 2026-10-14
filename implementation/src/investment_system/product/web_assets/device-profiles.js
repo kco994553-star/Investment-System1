@@ -26,11 +26,24 @@ function typePreview(typesPayload,qgPayload,custom,engine=engineApi()){
 }
 // S13 official view: leaf weights with maturity tags, six separate perspectives, version record. Display only.
 const PERSPECTIVES=[['기업분석','Company analysis'],['기술','Technical'],['매크로','Macro'],['포트폴리오 적합','Portfolio fit'],['위험','Risk'],['계좌 상황','Account context']];
-function officialView(el,en,view){const box=el('div',undefined,{'data-profile-official':''});box.append(el('h3',en?'Official (v1 OFFICIAL · uncalibrated)':'기본(공식) · v1 OFFICIAL · 보정 전'));
+function officialView(el,en,view){const isV2=view?.QgvScores?.scoringDefault()==='v2';const box=el('div',undefined,{'data-profile-official':''});box.append(el('h3',isV2?(en?'Comparison · v1 OFFICIAL · uncalibrated':'비교용 · v1 OFFICIAL · 보정 전'):(en?'Official (v1 OFFICIAL · uncalibrated)':'기본(공식) · v1 OFFICIAL · 보정 전')));
  for(const axis of ['Q','G','V']){const field=el('div',undefined,{class:'weight-bars','data-official-axis':axis}),tag=axis==='V'?(en?'Provisional':'잠정'):(en?'Official':'공식');field.append(el('h4',axis+' · '+tag));for(const[f,w]of Object.entries(defaults.weights[axis])){const row=el('div',undefined,{class:'weight-bar'}),bar=el('span','',{class:'bar','aria-hidden':'true'});bar.style.width=Math.max(0,Math.min(100,w))+'%';row.append(el('span',f+' '+w,{class:'small'}),bar);field.append(row);}box.append(field);}
  const p=el('div',undefined,{'data-six-perspectives':''});p.append(el('h4',en?'Six perspectives (shown separately)':'6관점 (따로 표시)'));const list=el('dl');for(const[ko,enl]of PERSPECTIVES)list.append(el('dt',en?enl:ko),el('dd','NOT_AVAILABLE'));p.append(list,el('p',en?'Definitions await your decision; results would be one of watch / review / holding context / weight review / risk review / blocked.':'정의는 사용자 확정 대기입니다. 결과는 관찰/추가검토/보유맥락/비중재검토/위험재검토/차단 중 하나로 표시됩니다.',{class:'small'}));box.append(p);
  let drafts=0;try{drafts=read((view||globalThis).localStorage).strategies.length;}catch(_){}
- const v=el('div',undefined,{'data-version-record':''});v.append(el('h4',en?'Version record':'버전 기록'));const vl=el('ul');for(const text of [en?'v1 in use':'v1 사용 중',en?'v2 planned (not started)':'v2 예정(미착수)',(en?'My drafts: ':'내 프로필 초안: ')+drafts])vl.append(el('li',text));v.append(vl);box.append(v);return box;}
+ const v=el('div',undefined,{'data-version-record':''});v.append(el('h4',en?'Version record':'버전 기록'));const vl=el('ul');for(const text of [isV2?(en?'v1 comparison':'v1 비교용'):(en?'v1 in use':'v1 사용 중'),isV2?(en?'v2 default · PROVISIONAL':'v2 기본 · PROVISIONAL'):(en?'v2 comparison':'v2 비교용'),(en?'My drafts: ':'내 프로필 초안: ')+drafts])vl.append(el('li',text));v.append(vl);box.append(v);return box;}
+// The active v2 profile is a device RAM preview. v1 drafts remain compatible comparison configurations.
+function activeV2View(el,en,view){
+ const api=view.QgvV2,scores=view.QgvScores,box=el('div',undefined,{'data-profile-v2':''});
+ if(!api||!scores||scores.scoringDefault()!=='v2')return box;
+ box.append(el('h3',en?'Default · QGV v2 · PROVISIONAL · UNCALIBRATED':'기본 · QGV v2 · PROVISIONAL · UNCALIBRATED'),
+  el('p',en?'Missing factors stay unavailable. An axis needs at least 50% of its weight. Prices and V stay in RAM.':'결측 요인은 확인 불가입니다. 축 비중 50% 이상일 때만 점수를 냅니다. 가격과 V는 기기 메모리에만 둡니다.',{class:'small'}));
+ const labels={q_profitability:['수익성','Profitability'],q_moat_proxy:['해자 대리','Moat proxy'],q_earnings_quality:['이익의 질','Earnings quality'],q_financial_safety:['재무 안전','Financial safety'],q_capital_allocation:['자본 배분','Capital allocation'],g_revenue_growth:['매출 성장','Revenue growth'],g_per_share_growth:['주당 성장','Per-share growth'],g_growth_efficiency:['성장 효율','Growth efficiency'],g_consistency:['성장 일관성','Growth consistency'],g_recent_acceleration:['최근 가속','Recent acceleration'],v_earnings_yield:['이익 수익률','Earnings yield'],v_fcf_yield:['FCF 수익률','FCF yield'],v_vs_industry:['업종 대비','Industry comparison'],v_vs_own_history:['자기 과거 대비','Own history'],v_expectation_check:['기대 점검','Expectation check']};
+ for(const axis of ['Q','G','V']){const field=el('div',undefined,{'data-v2-official-axis':axis});field.append(el('h4',axis));for(const[f,w]of Object.entries(api.WEIGHTS[axis]))field.append(el('p',labels[f][en?1:0]+' '+w+'%',{class:'small'}));box.append(field);}
+ const presets=el('ul');for(const[id,p]of Object.entries(api.PRESETS))presets.append(el('li',(en?p.name_en:p.name)+' · '+['Q','G','V'].map(a=>a+' '+p.weights[a]).join(' / '),{'data-v2-preset':id}));box.append(presets,
+  el('p',en?'Value-trap gate ON: industry Q percentile ≤ 30 excludes V from the total.':'가치 함정 관문 기본 켬: 업종 내 Q 백분위 30 이하이면 V를 총점에서 제외합니다.',{class:'small'}),
+  el('p',en?'Historical return / MDD: NOT_AVAILABLE · PIT history is not prepared. Holdout unused.':'과거 수익률 / 최대낙폭: 확인 불가 · PIT 이력이 준비되지 않았습니다. Holdout 사용 없음.',{class:'small','data-v2-performance':'NOT_AVAILABLE'}));
+ return box;
+}
 // S13 TARGET view of the type PREVIEW: every TARGET company, official vs custom, plus the changed config leaves.
 // Python reference: investment_system/qgv/type_preview.py (tests/fixtures/s16_s13_reference_v1.json).
 const TARGET_IDS=Object.freeze(['asml','lrcx','klac','tokyo_electron','hanmi','nvda','amd','avgo','qcom','intc','msft','googl','amzn','rtx','stry','etn','hubb','gev','rok']);
@@ -133,7 +146,7 @@ function mount(host,{locale,mode='strategy',qgFactors=()=>null,engine=globalThis
  name.oninput=()=>{previewed=false;save.disabled=true;};
  preview.onclick=()=>{try{weights(draft);need(name.value.trim().length>0);previewed=true;save.disabled=!writable;const result=previewRanks(qgFactors(),draft,engine);status.textContent='PREVIEW · Q/G/V '+(en?'each sum 100':'각 합 100')+' · '+(result.state==='PREVIEW'?(en?'Q/G preview recalculated':'Q/G 미리보기 재계산'):(en?'Calculated results':'계산 결과')+' NOT_AVAILABLE · '+result.reason);renderPreview(result);}catch(_){previewed=false;save.disabled=true;status.textContent='PROFILE_INVALID · '+(en?'Each axis must total 100; enter a name.':'각 축 비중 합이 100이어야 하며 이름이 필요합니다.');}};
  save.onclick=()=>{if(!previewed||!writable)return;try{const id=selectedId||'device-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10),p={id,name:name.value.trim(),weights:weights(draft)},next={...state,strategies:[...state.strategies.filter(x=>x.id!==id),p]};state=write(view.localStorage,next);selectedId=id;status.textContent='PREVIEW · '+(en?'Saved on this device':'이 기기에 저장했습니다.');renderSaved();}catch(_){status.textContent='PROFILE_SAVE_FAILED';}};
- section.append(officialView(el,en,view),label,name,copy,editor,preview,results,save,el('h3',en?'Saved profiles':'저장한 프로필'),saved);renderSaved();host.replaceChildren(section);
+ section.append(activeV2View(el,en,view),officialView(el,en,view),label,name,copy,editor,preview,results,save,el('h3',en?'Saved profiles':'저장한 프로필'),saved);renderSaved();host.replaceChildren(section);
 }
 return Object.freeze({KEY,SCHEMA,TARGET_IDS,empty,copyOfficial,copyOfficialTypes,typeConfig,weights,validate,read,write,previewRanks,typePreview,targetTypePreview,configDiff,mount});
 });

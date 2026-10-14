@@ -74,16 +74,23 @@ function vProgress(sessions,vScores,lookback,vComposition=null){
    v1 V weight copy is core. A missing core factor makes that day's V NA (V_CORE_FACTOR_MISSING): V is never computed with a
    missing factor counted as 0. The composition key is the sorted ids of the factors present ('a+b+…'). */
 function coreVFactors(){const r=preview().strategy({observations:{}}),w=r&&r.official_weights&&r.official_weights.V||{};return Object.keys(w).filter(k=>num(w[k])&&w[k]>0).sort();}
-function vAxisDetail(view){
+// PLAYBOOK_V1 §13-1 (2026-10-13, v0 · UNCALIBRATED; mirrors qgv/virtual_trading_signals.V1_V_RULE): v1 V needs >= 50 of the
+// 100 V weight present and an anchor factor; missing factors are excluded and the rest renormalized, else V_CORE_FACTOR_MISSING.
+const V1_V_RULE=Object.freeze({version:'v1_v_condition/v0',status:'V0_UNCALIBRATED',min_weight_percent:50,anchor_any:Object.freeze(['fundamental_value','reverse_dcf'])});
+function vAxisDetail(view,rule=V1_V_RULE){
  const factors=object(view)&&object(view.v_factors)?view.v_factors:null;
- if(!factors)return{state:'NOT_AVAILABLE',score:null,composition:null,reason:'V_FACTORS_NOT_AVAILABLE',missing:coreVFactors()};
- const observations={};for(const[k,f]of Object.entries(factors))if(object(f)&&f.state!=='NOT_AVAILABLE'&&num(f.score))observations[k]={score:f.score,quality:'OK'};
- const missing=coreVFactors().filter(k=>!own(observations,k));
- if(missing.length)return{state:'NOT_AVAILABLE',score:null,composition:null,reason:'V_CORE_FACTOR_MISSING',missing};
+ if(!factors)return{state:'NOT_AVAILABLE',score:null,composition:null,reason:'V_FACTORS_NOT_AVAILABLE',missing:coreVFactors(),weight_percent:0,partial:false};
+ const W=preview().strategy({observations:{}}).official_weights.V,observations={};
+ for(const[k,f]of Object.entries(factors))if(own(W,k)&&object(f)&&f.state!=='NOT_AVAILABLE'&&num(f.score))observations[k]={score:f.score,quality:'OK'};
+ const missing=coreVFactors().filter(k=>!own(observations,k));let weight=0;for(const k of Object.keys(W))if(own(observations,k))weight+=W[k];
+ const out={missing,weight_percent:weight,partial:missing.length>0};
+ if(weight<rule.min_weight_percent||!rule.anchor_any.some(k=>own(observations,k)))return{state:'NOT_AVAILABLE',score:null,composition:null,reason:'V_CORE_FACTOR_MISSING',...out};
  const r=preview().strategy({observations}),s=r&&r.axes&&r.axes.V?r.axes.V.score:null;
- if(!num(s))return{state:'NOT_AVAILABLE',score:null,composition:null,reason:'V_FACTORS_NOT_AVAILABLE',missing:[]};
- return{state:'OK',score:s,composition:Object.keys(observations).sort().join('+'),reason:null,missing:[]};
+ if(!num(s))return{state:'NOT_AVAILABLE',score:null,composition:null,reason:'V_FACTORS_NOT_AVAILABLE',...out};
+ return{state:'OK',score:s,composition:Object.keys(observations).sort().join('+'),reason:null,...out};
 }
+// 'V(부분 · 반영 가중치 NN%)' for a partial v1 V; plain 'V' when every factor is present.
+function vLabel(d,locale='ko-KR'){if(!object(d)||d.state!=='OK'||!d.partial)return 'V';const n=Math.round(d.weight_percent);return locale==='en-US'?'V (partial · weight used '+n+'%)':'V(부분 · 반영 가중치 '+n+'%)';}
 function vAxis(view){const d=vAxisDetail(view);return d.state==='OK'?d.score:null;}
 function valuationRow(payload,cid){try{const r=payload.data.companies;return object(r)&&own(r,cid)?r[cid]:null;}catch(_){return null;}}
 // Latest completed SPY session and the companies (closes, currency) of every READY ledger, or null.
@@ -125,5 +132,5 @@ async function rehearse(view,{qgRows=null,window=REHEARSAL_WINDOW,...opts}={}){
  const[filledResult,filled]=applyRehearsalSnapshots(result,qgRows,'REHEARSAL'),cfg=used||engine().defaultConfig();
  return{result:{...filledResult,mode:'REHEARSAL',rehearsal:{start_date:cfg.start_date,window:w,qg_filled:filled}},config:cfg};
 }
-return Object.freeze({SCHEMA,CODES,REHEARSAL_WINDOW,round2,rehearsalStart,rehearsalConfig,rehearsalSnapshot,applyRehearsalSnapshots,basisRows,vProgress,coreVFactors,vAxisDetail,vAxis,capturePlan,vScoresFor,withVScores,reportSignals,rehearse});
+return Object.freeze({SCHEMA,CODES,REHEARSAL_WINDOW,round2,rehearsalStart,rehearsalConfig,rehearsalSnapshot,applyRehearsalSnapshots,basisRows,vProgress,coreVFactors,V1_V_RULE,vAxisDetail,vLabel,vAxis,capturePlan,vScoresFor,withVScores,reportSignals,rehearse});
 });

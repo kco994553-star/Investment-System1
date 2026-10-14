@@ -57,12 +57,15 @@ for (const v of fixture.vectors) {
   });
 }
 
-test('V core factors (decision 2026-10-11): every weight > 0 factor is core; a missing core factor → V NA, never 0; JS = Python', () => {
+test('v1 V condition (PLAYBOOK_V1 §13-1): >= 50 weight + an anchor factor, renormalized; else V_CORE_FACTOR_MISSING, never 0; JS = Python', () => {
   assert.deepEqual(S.coreVFactors(), fixture.core_v_factors);
   assert.equal(fixture.core_v_factors.length, 7);
   for (const c of fixture.v_axis) assert.deepEqual(plain(S.vAxisDetail(c.view)), c.expected, c.name);
   const missing = fixture.v_axis.find((c) => c.name === 'core_factor_missing');
-  assert.equal(S.vAxis(missing.view), null);
+  assert.equal(S.vAxis(missing.view), missing.expected.score);assert.equal(missing.expected.weight_percent, 90);
+  assert.equal(S.vLabel(S.vAxisDetail(missing.view)), 'V(부분 · 반영 가중치 90%)');assert.equal(S.vLabel(S.vAxisDetail(fixture.v_axis.find((c) => c.name === 'all_factors').view)), 'V');
+  for (const name of ['anchors_missing', 'below_half_weight']) assert.equal(S.vAxis(fixture.v_axis.find((c) => c.name === name).view), null, name);
+  assert.deepEqual({ ...S.V1_V_RULE, anchor_any: [...S.V1_V_RULE.anchor_any] }, { version: 'v1_v_condition/v0', status: 'V0_UNCALIBRATED', min_weight_percent: 50, anchor_any: ['fundamental_value', 'reverse_dcf'] });
   // The old behaviour (missing factor counted as 0) would have produced a lower number: it must not appear anywhere.
   const full = fixture.v_axis.find((c) => c.name === 'all_factors').expected;
   assert.equal(full.state, 'OK');

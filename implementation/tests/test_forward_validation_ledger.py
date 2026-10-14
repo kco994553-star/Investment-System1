@@ -106,7 +106,7 @@ def test_before_start_publishes_not_started_with_zero_records(tmp_path, capsys):
     out = site(tmp_path, BEFORE)
     assert run(tool, out, BEFORE, missing) == 0
     ledger = fl.require_ledger(fl.parse_json((out / fl.FILENAME).read_bytes()))
-    assert ledger['status'] == 'NOT_STARTED' and ledger['versions'] == {fl.VERSION: [], fl.V_VERSION: []}
+    assert ledger['status'] == 'NOT_STARTED' and ledger['versions'] == {fl.VERSION: [], fl.V_VERSION: [], fl.V2_VERSION: []}
     assert ledger['version_status'][fl.V_VERSION] == {'state': 'NOT_AVAILABLE', 'v_included': True, 'reason_codes': ['V_REQUIRES_DEVICE_PRICES']}
     assert ledger['holdout'] == 'UNCONFIRMED_NOT_USED' and ledger['start_date'] == '2026-10-19'
     printed = capsys.readouterr().out
@@ -129,7 +129,8 @@ def test_session_record_holds_target_weights_and_q_g_without_v(tmp_path, capsys)
     assert record['target']['root_sha256'] == catalog['target_root_sha256'] and sum(record['target']['weights_units'].values()) == 10000
     assert record['source_sha256'] == {name: sha256((out / name).read_bytes()).hexdigest() for name in fl.SOURCES}
     nvda = record['companies']['nvda']
-    assert nvda['state'] == 'LIVE' and nvda['G']['score'] is not None and nvda['G']['coverage'] == 'PARTIAL'
+    # Missing-factor rule (2026-10-13): the synthetic nvda row computes < 50% of each axis weight -> NA, never 0.
+    assert nvda['state'] == 'LIVE' and nvda['G'] == {'score': None, 'coverage': 'BLOCKED', 'missing_factor_count': 4}
     assert record['companies']['asml'] == {'state': 'NOT_AVAILABLE', 'Q': {'score': None, 'coverage': 'BLOCKED', 'missing_factor_count': 7},
                                            'G': {'score': None, 'coverage': 'BLOCKED', 'missing_factor_count': 6}}
     assert all(set(row) == {'state', 'Q', 'G'} for row in record['companies'].values())
