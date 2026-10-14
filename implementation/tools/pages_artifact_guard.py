@@ -99,7 +99,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "473603bc2a39367cd4828971ef87895ada5bded5abb902f9de8d7edaac48176e",
+    "app.js": "4c626af3ebc84a771333c9c42be56e64bdce50d0f1050e30c31817e033f2a647",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "fef15d147292698e2d5b79b3aa75842ceb569ef2aa7a42f8dad9f4e5903ed904",

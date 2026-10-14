@@ -97,6 +97,14 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
           assert.equal(earnings.basis,'NORMALIZED');
           assert.match(await panel.locator('[data-v2-factor="v_vs_own_history"]').textContent(), /NORMALIZED_HISTORY_NOT_AVAILABLE/);
           assert.match(await page.locator('[data-overall="v2"]').textContent(), /\d+\.\d/);
+          // A device-quote refresh repaints only the score sections: the open tab and the other panels stay as they are.
+          const kept = await page.evaluate(() => {
+            const value=document.querySelector('[data-analysis-panel="value"]');value.dataset.keep='1';repaintScores(()=>analysis('nvda'));
+            return {value:value.isConnected&&document.querySelector('[data-analysis-panel="value"]')===value,
+              tab:document.querySelector('[data-analysis-tab="factors"]').getAttribute('aria-selected'),hidden:document.querySelector('[data-analysis-panel="factors"]').hidden};
+          });
+          assert.deepEqual(kept, {value:true,tab:'true',hidden:false});
+          assert.equal(await panel.locator('[data-v2-factor-table] [data-v2-factor]').count(), 15);
         }
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no horizontal scroll S05');
         phase = 'BOUNDARY';const keysAfter = await page.evaluate(() => Object.keys(localStorage).sort());
