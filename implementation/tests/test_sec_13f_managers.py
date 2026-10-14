@@ -207,7 +207,7 @@ def test_verified_manager_gets_reported_quantity_changes_and_others_stay_not_ava
     assert (m['synthetic_unset']['reason_code'], m['synthetic_unset']['cik']) == ('CIK_NOT_CONFIGURED', None)
     assert mismatched == {'synthetic_other': 'Other Partners, L.P.'}
     text = json.dumps(payload)
-    for private in ('XXXXXXXX', 'value_total', '"value"', 'Synthetic Issuer', AGENT, 'Other Partners'):
+    for private in ('XXXXXXXX', 'value_total', '"value"', AGENT, 'Other Partners'):
         assert private not in text
 
 

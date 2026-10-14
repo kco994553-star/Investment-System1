@@ -37,10 +37,12 @@ def test_python_reproduces_vectors_and_js_equals_python():
 
 
 def test_minimum_samples_give_na_never_zero_and_returns_reuse_report_benchmarks():
+    assert vc.MIN == {'capture_days': 20, 'max_drawdown': 20, 'volatility': 20}
     d = {v['name']: v for v in data()['vectors']}
     short = d['short_set_below_minimums']['expected']
     for k in ('volatility', 'max_drawdown', 'upside_capture', 'downside_capture'):
-        assert short[k] == {'state': 'NOT_AVAILABLE', 'value': None, 'reason': 'INSUFFICIENT_SAMPLE'}, k
+        assert short[k]['state'] == 'NOT_AVAILABLE' and short[k]['value'] is None and short[k]['reason'] == 'INSUFFICIENT_SAMPLE', k
+        assert 0 <= short[k]['samples'] < 20
     v = d['gaps_in_spy_and_fx']
     days = [{'date': x['date'], 'total_value': x['total_value'], 'deposit': x['deposit']} for x in vc.compare_days(v['days'])]
     row = next(p for p in rb.build(indices=v['indices'], ledgers=[{'key': 'X', 'state': 'OK', 'reason_codes': [], 'days': days}], period='SINCE_START')['periods']

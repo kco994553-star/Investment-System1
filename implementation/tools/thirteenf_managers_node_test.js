@@ -20,3 +20,18 @@ test('JS validator accepts the Python 13F step output and binds names only to ve
  const legacy=structuredClone(generated);delete legacy.data.managers;assert.equal(api.validate('sec-13f-changes.json',legacy).state,'LIVE');});
 test('limitation text covers delay, US-listed long positions and quant/macro reference in both languages',()=>{for(const t of ['분기 종료 후 최대 45일','미국 상장 주식(13F 대상 증권)','매수 포지션만','퀀트·매크로 기관','참고용'])assert.ok(api.LIMITS.ko.includes(t),t);
  for(const t of ['45 days after quarter end','long positions in US-listed equities (13F securities)','Quant and macro managers are reference only'])assert.ok(api.LIMITS.en.includes(t),t);});
+test('13F complete snapshots and informational E4 match Python, no missing-data exits',()=>{
+ const Q=require('../src/investment_system/product/web_assets/thirteenf-quarter.js');
+ const code="import json;from tests.test_thirteenf_enrichment import evidence_payload;from investment_system.product import thirteenf_quarter as q;from investment_system.product.device_actual_catalog import public_actual_catalog;p,c=evidence_payload();cat=public_actual_catalog();print(json.dumps(dict(payload=p,config=c,catalog=cat,expected=q.playbook_evidence(p,cat,c))))";
+ const result=spawnSync('python3',['-c',code],{cwd:root,env:{...process.env,PYTHONPATH:path.join(root,'src')+path.delimiter+root},encoding:'utf8'});assert.equal(result.status,0,result.stderr);
+ const data=JSON.parse(result.stdout);assert.deepEqual(Q.playbookEvidence(data.payload,data.catalog,data.config),data.expected);
+ assert.equal(data.expected.nvda.full_exit_count,3);assert.equal(data.expected.nvda.structural_event,true);
+ const mutations=[p=>p.data.reports[2].state='STALE',p=>p.data.reports[2].current_quarter='2026-03-31',p=>p.data.managers[2].state='NOT_AVAILABLE',p=>delete p.data.reports[2].details,p=>p.data.reports[2].changes=[],p=>p.data.reports[2].changes[0].cusip='594918104',p=>{p.data.reports[2].manager_cik='0000000011';p.data.managers[2].cik='0000000011';},p=>p.data.reports[2].details.current.reported_holdings=structuredClone(p.data.reports[2].details.previous.reported_holdings),p=>p.data.reports[2].manager_cik=p.data.reports[1].manager_cik];
+ for(const mutate of mutations){const p=structuredClone(data.payload);mutate(p);assert.equal(Q.playbookEvidence(p,data.catalog,data.config).nvda.structural_event,false);}
+ const p=structuredClone(data.payload);p.data.reports.forEach(r=>delete r.details);assert.equal(Q.playbookEvidence(p,data.catalog,data.config).nvda.tracked_holding_count,null);
+});
+test('13F details reject arbitrary prices and units in both public consumers',()=>{
+ const p=structuredClone(generated),report=p.data.reports[0],hold=report.details.current.reported_holdings[0];
+ assert.equal(hold.reported_value,2000);assert.equal(hold.reported_value_basis,'USD_DOLLARS');
+ for(const mutate of [r=>r.details.scope='PRIVATE',r=>r.details.current.filing_date='2026-03-30',r=>r.details.current.reported_holdings[0].price=1,r=>r.details.current.reported_holdings[0].reported_value_basis='CURRENT_USD',r=>r.details.current.reported_holdings[0].issuer_names=['invalid'+'@'+'host.test']]){const other=structuredClone(p);mutate(other.data.reports[0]);assert.throws(()=>api.validate('sec-13f-changes.json',other));}
+});

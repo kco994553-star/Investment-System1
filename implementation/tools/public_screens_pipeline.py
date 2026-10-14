@@ -72,7 +72,7 @@ def stage_qgv2_target(directory, manifest, root, *, now=None):
         return None
 
 
-def collect(directory, *, environ=None, client_factory=None, macro_v0=None):
+def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macro_curve=None):
     if client_factory is None:
         from investment_system.providers.sec_collection import SecCollectionClient
         client_factory = SecCollectionClient
@@ -82,6 +82,9 @@ def collect(directory, *, environ=None, client_factory=None, macro_v0=None):
         if macro_v0 is not None:
             # Government macro statistics (not prices); raw bodies stay in this private directory.
             manifest['macro_v0'] = macro_v0(root)
+        if macro_curve is not None:
+            # Treasury daily par yield curve (government statistics, macro lights v1); raw XML stays private here.
+            manifest['macro_curve_v1'] = macro_curve(root)
         class Capture:
             def __init__(self, agent):
                 self.client = client_factory(agent)
@@ -113,18 +116,25 @@ def _print_macro_v0(directory):
         print('MACRO_V0 engine=%s regime=%s raw_regime=%s' % (block['engine']['state'], block['regime']['state'], raw['regime']['state']))
     except Exception:
         print('MACRO_V0 summary=NOT_AVAILABLE')
+    # Public lights only (employment, inflation, curve): state, on/off and fixed reason codes; no values.
+    try:
+        lights = json.loads((Path(directory) / 'macro-screen.json').read_text())['data']['macro_lights_v1']['lights']
+        for name, row in lights.items():
+            print('MACRO_V1_LIGHT light=%s state=%s lit=%s reason=%s' % (name, row['state'], {True: 'ON', False: 'OFF', None: 'NO_DATA'}[row['lit']], row['reason']))
+    except Exception:
+        print('MACRO_V1_LIGHT summary=NOT_AVAILABLE')
 
 def main(argv=None):
     parser = Parser(description=__doc__)
     parser.add_argument('--out', required=True, type=Path)
     parser.add_argument('--live', action='store_true')
-    parser.add_argument('--macro-v0', action='store_true', help='with --live, also collect the macro v0 official series (BLS CUUR0000SA0+LNS14000000, BEA T10101 line 1, Fed H.15/H.4.1/H.8 DDP CSV, Treasury MTS Table 1)')
+    parser.add_argument('--macro-v0', action='store_true', help='with --live, also collect the macro v0 official series (BLS CUUR0000SA0+LNS14000000, BEA T10101 line 1, Fed H.15/H.4.1/H.8 DDP CSV, Treasury MTS Table 1) and the Treasury daily par yield curve XML for the macro lights v1')
     args = parser.parse_args(argv)
     try:
         if args.live:
-            macro_v0 = None
+            macro_v0 = macro_curve = None
             if args.macro_v0:
-                from investment_system.providers.macro_v0_collection import collect_macro_v0
+                from investment_system.providers.macro_v0_collection import collect_macro_v0, collect_treasury_curve
                 macro_diagnostics = []
 
                 def macro_v0(root):
@@ -134,7 +144,15 @@ def main(argv=None):
                         print('MACRO_V0_FETCH axis=%s stage=%s code=%s http=%s content=%s size=%s rel=%s series=%s type=%s' % tuple(
                             (d.get(k) if d.get(k) is not None else '-') for k in ('axis', 'stage', 'code', 'http', 'content', 'size', 'rel', 'series8', 'type')))
                     return entries
-            result = collect(args.out, macro_v0=macro_v0)
+
+                def macro_curve(root):
+                    curve_diagnostics = []
+                    entries = collect_treasury_curve(root, diagnostics=curve_diagnostics)
+                    for d in curve_diagnostics:
+                        print('MACRO_V1_CURVE_FETCH stage=%s code=%s http=%s content=%s size=%s' % tuple(
+                            (d.get(k) if d.get(k) is not None else '-') for k in ('stage', 'code', 'http', 'content', 'size')))
+                    return entries
+            result = collect(args.out, macro_v0=macro_v0, macro_curve=macro_curve)
             _print_diagnostics(result['diagnostics']); _print_exclusions(result['exclusions'])
             if args.macro_v0:
                 _print_macro_v0(args.out)

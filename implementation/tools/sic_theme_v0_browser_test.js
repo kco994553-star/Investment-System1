@@ -11,7 +11,7 @@ async function open(page,hash,selector){await page.goto(BASE+'#'+hash);await pag
 const text=async(page,selector)=>(await page.locator(selector).first().textContent()).replace(/\s+/g,' ').trim();
 async function noScroll(page,label){assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no horizontal scroll '+label);}
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let phase='START',pass=0,fail=0;
- try{for(const width of [390,1440]){
+ try{for(const width of [390,1280]){
   {const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),page=await context.newPage();page.setDefaultTimeout(15000);let errors=0;page.on('pageerror',()=>errors++);
    try{
     phase='A-FILE';const r=await page.request.get(BASE+'company-classification.json');assert.equal(r.status(),200);const body=await r.json();assert.ok(['LIVE','STALE','NOT_AVAILABLE'].includes(body.state));assert.equal(body.kind,'COMPANY_CLASSIFICATION');

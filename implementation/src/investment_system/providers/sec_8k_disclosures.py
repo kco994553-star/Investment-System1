@@ -25,7 +25,7 @@ from .sec_collection import (MAX_ATTEMPTS, REQUEST_TIMEOUT, RETRY_STATUSES, SecC
                              SecCollectionError, SecResponse, _RejectRedirects)
 from .sec_submissions import URL as SUBMISSIONS_URL
 
-FORMS = ('8-K', '8-K/A')
+FORMS = ('8-K', '8-K/A', '6-K', '6-K/A')
 # Official Form 8-K item captions (SEC Form 8-K, General Instructions B / Items), English and Korean.
 ITEMS = {
     '1.01': ('Entry into a Material Definitive Agreement', '중요한 확정 계약 체결'),
@@ -93,6 +93,19 @@ def classify(items):
         if code in items:
             return name
     return 'OTHER'
+
+
+def classify_report(form, items):
+    return 'RESULTS' if form in ('6-K', '6-K/A') else classify(items)
+
+
+def quarterly_earnings_title(title):
+    """Explicit quarterly earnings metadata only; a generic press release stays unconfirmed."""
+    if not isinstance(title, str):
+        return False
+    quarter = re.search(r'\b(?:q[1-4]|quarterly|(?:first|second|third|fourth)[ -]quarter|[1-4](?:st|nd|rd|th)[ -]quarter)\b', title, re.I)
+    earnings = re.search(r'\b(?:results|earnings)\b', title, re.I)
+    return bool(quarter and earnings)
 
 
 def parse_items(value):
@@ -207,7 +220,7 @@ def _accepted(value):
     return moment.astimezone(timezone.utc) if moment.utcoffset() is not None else None
 
 
-def current_reports(company_id, submissions, *, acquired_at, since):
+def current_reports(company_id, submissions, *, acquired_at, since, _foreign_candidates=False):
     """Recent 8-K/8-K/A rows filed on/after `since` (date) and accepted by `acquired_at`.
 
     Returns (rows, counts). Rows: accession, form, filing_date, event_date, accepted_at (UTC), items.
@@ -226,7 +239,8 @@ def current_reports(company_id, submissions, *, acquired_at, since):
         raise ValueError('SEC_8K_SUBMISSIONS_INVALID')
     seen, conflicts = {}, set()
     for index in range(size):
-        if recent['form'][index] not in FORMS:
+        allowed = ('6-K', '6-K/A') if _foreign_candidates and company_id == 'asml' else ('8-K', '8-K/A')
+        if recent['form'][index] not in allowed:
             continue
         accession = recent['accessionNumber'][index]
         filed, accepted = _day(recent['filingDate'][index]), _accepted(recent['acceptanceDateTime'][index])
@@ -251,6 +265,13 @@ def current_reports(company_id, submissions, *, acquired_at, since):
         del seen[accession]
     counts['conflicts'] = len(conflicts)
     return list(seen.values()), counts
+
+
+def foreign_earnings_candidates(company_id, submissions, *, acquired_at, since):
+    if company_id != 'asml':
+        return []
+    rows, _ = current_reports(company_id, submissions, acquired_at=acquired_at, since=since, _foreign_candidates=True)
+    return [dict(row, items=[]) for row in rows]
 
 
 class _IndexTable(HTMLParser):
@@ -328,6 +349,13 @@ def exhibit_99_1(company_id, accession, body):
             return 'EXHIBIT_TITLE_INVALID'
         return {'title': title, 'url': ARCHIVE_URL.format(cik=cik, folder=_folder(accession), name=name)}
     return 'NO_EXHIBIT_99_1'
+
+
+def quarterly_earnings_exhibit(company_id, accession, body):
+    found = exhibit_99_1(company_id, accession, body)
+    if company_id != 'asml' or not isinstance(found, dict) or not quarterly_earnings_title(found['title']):
+        return 'QUARTERLY_EARNINGS_UNCONFIRMED'
+    return found
 
 
 # Earnings date: estimated (filing pattern) -> confirmed (8-K Item 2.02), queue 2.2 a.

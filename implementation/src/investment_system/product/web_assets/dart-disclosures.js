@@ -72,5 +72,22 @@ function mount(host,payload,{locale,companyIds=null,limit=30,emptyText}={}){
   list.append(li);}
  section.append(list);host.replaceChildren(section);
 }
-return Object.freeze({FILENAME,KIND,SOURCE,CLASSES,CHANNELS,REASONS,classify,classLabel,family,amended,validTitle,groups,link,validate,load,timeline,mount});
+function qgv2Reference(financials,universe,engine=globalThis.SecQgv2){
+ const company=financials?.companies?.hanmi,block=company?.qgv2;
+ if(!block||!engine||typeof engine.scoreRows!=='function'||!universe)return null;
+ need(block.reference_only===true&&block.comparison_label==='참고 순위'&&block.comparison_basis==='US_UNIVERSE_504_GENERAL'&&block.industry_basis==='NOT_ASSIGNED'&&block.currency==='KRW');
+ need(keys(block.metrics,engine.METRIC_KEYS)&&Object.keys(block.metrics).every(k=>engine.METRIC_KEYS.includes(k)&&(block.metrics[k]===null||typeof block.metrics[k]==='number'&&Number.isFinite(block.metrics[k]))));
+ const row={cik:null,state:company.state,profile:'GENERAL',industry_group:null,metrics:block.metrics};
+ const pooled=Object.fromEntries(Object.entries(universe).filter(([,r])=>r.in_cross_section!==false));
+ const result=engine.scoreRows(pooled,{hanmi:row});
+ return{...result.scores.get('target\u0000hanmi'),comparison_label:'참고 순위',reference_only:true,cross_section_size:result.summary.cross_section_size};
+}
+async function loadFinancials(view){const control=new AbortController(),timer=setTimeout(()=>control.abort(),20000);
+ try{const response=await view.fetch('dart-financials.json',{cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',signal:control.signal});if(!response.ok)return null;
+  const text=await response.text();need(new TextEncoder().encode(text).length<=MAX);const payload=JSON.parse(text);
+  need(payload.schema_version===1&&payload.kind==='DART_FINANCIALS'&&payload.source==='DART'&&payload.currency==='KRW'&&payload.method_status==='PROVISIONAL_UNCALIBRATED'&&plain(payload.companies)&&Object.keys(payload.companies).length===1);
+  const c=payload.companies.hanmi;need(plain(c)&&c.stock_code==='042700'&&['LIVE','STALE','NOT_AVAILABLE'].includes(c.state));instant(payload.as_of);
+  return payload;
+ }catch(_){return null;}finally{clearTimeout(timer);}}
+return Object.freeze({FILENAME,KIND,SOURCE,CLASSES,CHANNELS,REASONS,classify,classLabel,family,amended,validTitle,groups,link,validate,load,timeline,mount,qgv2Reference,loadFinancials});
 });

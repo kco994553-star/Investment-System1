@@ -8,12 +8,12 @@ Not Full PIT Historical.
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime, timezone
 from typing import Any
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
-USER_AGENT = "InvestmentSystem1Research contact@example.invalid"
 URL = "https://data.sec.gov/submissions/CIK{cik}.json"
 FORMS = {"10-K", "10-K/A", "10-Q", "10-Q/A", "20-F", "20-F/A", "40-F", "40-F/A"}
 ANNUAL = {"10-K", "10-K/A", "20-F", "20-F/A", "40-F", "40-F/A"}
@@ -55,7 +55,10 @@ def latest_annual(payload: dict[str, Any], as_of: datetime) -> dict[str, Any] | 
 
 def fetch_submissions(cik: str, timeout: float = 12.0) -> dict[str, Any] | None:
     url = URL.format(cik=str(cik).zfill(10))
-    req = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
+    agent = os.environ.get("SEC_USER_AGENT", "").strip()
+    if not agent or any(ord(c) < 32 or ord(c) == 127 for c in agent):
+        return None
+    req = Request(url, headers={"User-Agent": agent, "Accept": "application/json"})
     try:
         with urlopen(req, timeout=timeout) as resp:
             return json.loads(resp.read().decode("utf-8"))
