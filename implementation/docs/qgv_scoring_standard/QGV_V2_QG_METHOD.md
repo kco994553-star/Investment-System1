@@ -1,6 +1,6 @@
 # QGV v2 Q·G — SEC metric definitions, percentile rules and public file `sec-qgv2.json`
 
-Status: **PROVISIONAL default · UNCALIBRATED** (user decision 2026-10-13; decision record **GSQ-022 pending approval**).
+Status: **PROVISIONAL default · UNCALIBRATED** (user decision 2026-10-13; decision record **GSQ-022 approved 2026-10-13**).
 Spec: [QGV_V2_CANDIDATE.md](QGV_V2_CANDIDATE.md). v1 ([QGV_SCORING_STANDARD_v1.md](QGV_SCORING_STANDARD_v1.md),
 `qgv/factors.py`, `qgv/raw_map.py`) is unchanged and keeps running beside v2.
 Weights are the candidate defaults exactly. They were not tuned on past returns, and no Holdout data was used.
@@ -112,7 +112,7 @@ FINANCIAL rows are ranked **only among FINANCIAL rows**, for both Q and G. If th
 ## 5. Public file `sec-qgv2.json`
 
 Top level: `schema_version 1`, `kind SEC_QGV2`, `as_of`, `standard QGV_V2`, `standard_status PROVISIONAL_DEFAULT_UNCALIBRATED`,
-`decision_ref GSQ-022_PENDING_APPROVAL`, `method` (weights, min_peers 8, axis_coverage_min_percent 50, percentile rule, SIC config,
+`decision_ref GSQ-022`, `method` (weights, min_peers 8, axis_coverage_min_percent 50, percentile rule, SIC config,
 financial SIC range, cross-section rule, earnings-surprise omission), `config_version/config_status` (shared `sec-universe-shares/v0`,
 14-day stale window, 7 shards), `freshness_basis`, `stale_after_seconds`, `shard_count`, `last_shard_index`, `registry_sha256`,
 `code_count 504`, `cross_section_size`, `cross_section_by_profile`, `state`, `reason_codes`, `records` (504 Universe codes) and
@@ -154,3 +154,12 @@ and every peer count from the published metrics, and reject any mismatch, price/
 - The debt definition excludes operating leases. Debt-free issuers with no debt concept get NA ROIC and net-debt/EBITDA rather than 0.
 - No earnings-surprise sub-metric. Add one only if a free source is approved.
 - The first week after launch has a partial cross-section (about 72 issuers per day). Peer bases fall back to the universe until each group reaches 8.
+
+
+## 8. 2026-10-13 approved normalized-earnings inputs
+
+`v_inputs_v2.revenue` uses the same FY/TTM flow structure and SEC period rules as EBIT.
+`operating_margin_history` contains at most five ascending annual fiscal-period ends and reported EBIT/revenue ratios,
+with missing years omitted and no zero replacement. The older input shape remains readable. These are price-free
+fields for the approved cyclical definition (latest revenue × five-year mean operating margin); the device leaves
+normalized EBIT unavailable unless all five years exist. Public-field publication is pending this PR's approval.

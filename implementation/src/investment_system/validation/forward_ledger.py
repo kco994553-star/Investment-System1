@@ -34,7 +34,10 @@ START_DATE = date(2026, 10, 19)
 STRATEGY = 'QGV_STANDARD_V1'
 VERSION = 'forward_validation/v1'
 V_VERSION = 'forward_validation/v1+dcf_v1_default'
-VERSIONS = (VERSION, V_VERSION)
+V2_VERSION = 'forward_validation/v2'
+V2_STRATEGY = 'QGV_STANDARD_V2'
+LEGACY_VERSIONS = (VERSION, V_VERSION)
+VERSIONS = LEGACY_VERSIONS + (V2_VERSION,)
 CALIBRATION = 'UNCALIBRATED'
 HOLDOUT = 'UNCONFIRMED_NOT_USED'
 TARGET_ID, TARGET_VERSION = 'TARGET', 'v0'
@@ -48,6 +51,8 @@ REASONS = ('SEC_QG_FACTORS_MISSING', 'SEC_QG_FACTORS_INVALID', 'SEC_QG_FACTORS_N
            'SEC_QG_FACTORS_NOT_AVAILABLE', 'TARGET_CATALOG_MISSING', 'TARGET_CATALOG_INVALID')
 V_REASON = 'V_REQUIRES_DEVICE_PRICES'
 SOURCES = ('sec-qg-factors.json', 'actual-catalog.json')
+V2_SOURCES = ('sec-qgv2.json', 'actual-catalog.json')
+V2_REASONS = tuple(x.replace('SEC_QG_FACTORS', 'SEC_QGV2') for x in REASONS)
 IDS = tuple(OFFICIAL_V11_TARGETS)
 UNITS = {cid: round(weight * TOTAL_UNITS) for cid, weight in OFFICIAL_V11_TARGETS.items()}
 AXIS_SIZE = {'Q': len(Q_WEIGHTS), 'G': len(G_WEIGHTS)}
@@ -194,21 +199,116 @@ def build_record(*, now, session, qg_body, catalog_body):
             'created_at': now.astimezone(timezone.utc).isoformat(timespec='seconds')}
 
 
+def build_v2_record(*, now, session, qgv2_body, catalog_body, dart_body=None, reference_provider=None):
+    """The same-session published QGV v2 Q/G, without V or synthetic reconstruction."""
+    from ..universe.sec_qgv2 import require_qgv2, parse_json as parse_qgv2
+    # Reuse the immutable TARGET check; QGV v2 has a separate source and failure tokens.
+    base = build_record(now=now, session=session, qg_body=None, catalog_body=catalog_body)
+    reasons = [r for r in base['reason_codes'] if r.startswith('TARGET_')]
+    companies, acquired, screen_state, reference_sources = None, None, None, {}
+    if qgv2_body is None:
+        reasons.append('SEC_QGV2_MISSING')
+    else:
+        try:
+            screen = require_qgv2(parse_qgv2(qgv2_body))
+        except Exception:
+            screen = None
+            reasons.append('SEC_QGV2_INVALID')
+        if screen is not None:
+            at = _clock(screen['as_of'])
+            if eastern(at).date() != session or at > now:
+                reasons.append('SEC_QGV2_NOT_SAME_SESSION')
+            else:
+                reference = _dart_reference(dart_body, screen, now, session, reference_provider)
+                states = [screen['target'][cid]['state'] for cid in IDS]
+                if reference is not None:
+                    states.append(reference['state'])
+                screen_state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else None
+                if screen_state is None:
+                    reasons.append('SEC_QGV2_NOT_AVAILABLE')
+                else:
+                    acquired = screen['as_of']
+                    companies = {}
+                    for cid in IDS:
+                        row = screen['target'][cid]
+                        axes = {}
+                        for axis in ('Q', 'G'):
+                            a = row['axes'][axis]
+                            n = int(a['factors_available'].split('/')[0])
+                            score = a['score']
+                            axes[axis] = {'score': score, 'coverage': 'BLOCKED' if score is None else 'READY' if n == 5 else 'PARTIAL',
+                                          'missing_factor_count': 5 - n}
+                        companies[cid] = {'state': row['state'], **axes}
+                    if reference is not None:
+                        companies['hanmi'] = reference['company']
+                        reference_sources['hanmi'] = reference['source']
+    if reasons:
+        companies = acquired = screen_state = None
+    result = {**base, 'version': V2_VERSION, 'strategy': V2_STRATEGY,
+            'state': 'NOT_AVAILABLE' if reasons else 'RECORDED', 'reason_codes': reasons,
+            'companies': companies, 'qg_as_of': acquired, 'qg_screen_state': screen_state,
+            'source_sha256': {'sec-qgv2.json': None if qgv2_body is None else hashlib.sha256(qgv2_body).hexdigest(),
+                              'actual-catalog.json': base['source_sha256']['actual-catalog.json']}}
+    if not reasons and reference_sources:
+        result['reference_sources'] = reference_sources
+    return result
+
+
+def _dart_reference(body, screen, now, session, provider):
+    """Optional strict C adapter. Missing API/file, stale-day data or invalid reference remains NA."""
+    if body is None:
+        return None
+    try:
+        if provider is None:
+            from ..product.dart_qgv2 import verified_ledger_reference
+            provider = verified_ledger_reference
+        ref = provider(parse_json(body), screen, captured_date=session)
+        if not isinstance(ref, dict) or ref.get('reference_only') is not True or ref.get('source_kind') != 'DART' or ref.get('comparison_basis') != 'US_UNIVERSE_504_GENERAL' or ref.get('state') not in ('LIVE', 'STALE'):
+            return None
+        at = _clock(ref['as_of'])
+        if eastern(at).date() != session or at > now:
+            return None
+        from ..qgv.v2_scoring import Q_WEIGHTS_V2, G_WEIGHTS_V2
+        weights = {'Q': Q_WEIGHTS_V2, 'G': G_WEIGHTS_V2}
+        axes = {}
+        for axis in ('Q', 'G'):
+            factors = [ref['factors'].get(f) for f in weights[axis]]
+            _need(all(v is None or type(v) in (float, int) and math.isfinite(v) and 0 <= v <= 100 for v in factors))
+            n = sum(v is not None for v in factors)
+            score = ref['axes'][axis]['score']
+            axes[axis] = {'score': score, 'coverage': 'BLOCKED' if score is None else 'READY' if n == 5 else 'PARTIAL', 'missing_factor_count': 5-n}
+            _axis(axes[axis], axis, ref['state'], {'Q': 5, 'G': 5})
+            available = sum(w for f, w in weights[axis].items() if ref['factors'].get(f) is not None)
+            _need((score is not None) == (available >= 50))
+            if score is not None:
+                expected = sum(ref['factors'][f] * w for f, w in weights[axis].items() if ref['factors'].get(f) is not None) / available
+                _need(abs(score - expected) < 1e-9)
+        return {'state': ref['state'], 'company': {'state': ref['state'], **axes},
+                'source': {'kind': 'DART', 'file': 'dart-financials.json', 'sha256': hashlib.sha256(body).hexdigest(),
+                           'as_of': ref['as_of'], 'comparison_basis': 'US_UNIVERSE_504_GENERAL', 'reference_only': True}}
+    except Exception:
+        return None
+
+
 def new_ledger(now):
-    return finalize({'schema_version': 1, 'kind': KIND, 'start_date': START_DATE.isoformat(), 'status': 'NOT_STARTED',
-                     'as_of': None, 'strategy': STRATEGY, 'calibration': CALIBRATION, 'holdout': HOLDOUT,
+    return finalize({'schema_version': 2, 'kind': KIND, 'start_date': START_DATE.isoformat(), 'status': 'NOT_STARTED',
+                     'as_of': None, 'strategy': V2_STRATEGY, 'calibration': CALIBRATION, 'holdout': HOLDOUT,
                      'price_free': True, 'target': {'portfolio_id': TARGET_ID, 'version': TARGET_VERSION},
-                     'versions': {VERSION: [], V_VERSION: []}, 'version_status': {}}, now)
+                     'versions': {VERSION: [], V_VERSION: [], V2_VERSION: []}, 'version_status': {}}, now)
 
 
 def finalize(ledger, now):
     ledger = dict(ledger)
+    ledger['schema_version'], ledger['strategy'] = 2, V2_STRATEGY
+    ledger['versions'] = dict(ledger['versions'])
+    ledger['versions'].setdefault(V2_VERSION, [])
     ledger['as_of'] = now.astimezone(timezone.utc).isoformat(timespec='seconds')
     status = 'ACTIVE' if eastern(now).date() >= START_DATE or ledger['versions'][VERSION] else 'NOT_STARTED'
     ledger['status'] = status
     ledger['version_status'] = {
         VERSION: {'state': status, 'v_included': False, 'reason_codes': []},
         V_VERSION: {'state': 'NOT_AVAILABLE', 'v_included': True, 'reason_codes': [V_REASON]},
+        V2_VERSION: {'state': status, 'v_included': False, 'reason_codes': []},
     }
     return ledger
 
@@ -216,31 +316,35 @@ def finalize(ledger, now):
 def append(previous, record, now):
     """Previous records unchanged, one new later-dated record appended. Never rewrites or reorders."""
     ledger = json.loads(encode(previous))
-    rows = ledger['versions'][VERSION]
+    rows = ledger['versions'].setdefault(record['version'], [])
+    _need(record['version'] in (VERSION, V2_VERSION))
     _need(not rows or rows[-1]['date'] < record['date'])
     rows.append(record)
     return finalize(ledger, now)
 
 
-def _axis(value, axis, company_state):
+def _axis(value, axis, company_state, axis_size=None):
     _keys(value, ('score', 'coverage', 'missing_factor_count'))
     _need(value['score'] is None or _finite(value['score']) and 0 <= value['score'] <= 100)
     _need(value['coverage'] in COVERAGE and (value['score'] is None) == (value['coverage'] == 'BLOCKED'))
     n = value['missing_factor_count']
-    _need(type(n) is int and 0 <= n <= AXIS_SIZE[axis] and (value['coverage'] != 'READY' or n == 0))
+    _need(type(n) is int and 0 <= n <= (axis_size or AXIS_SIZE)[axis] and (value['coverage'] != 'READY' or n == 0))
     _need(company_state != 'NOT_AVAILABLE' or value['score'] is None)
 
 
-def _record(r, previous_day, cut):
-    _keys(r, RECORD_KEYS)
+def _record(r, previous_day, cut, version=VERSION):
+    is_v2 = version == V2_VERSION
+    sources = V2_SOURCES if is_v2 else SOURCES
+    prefix = 'SEC_QGV2' if is_v2 else 'SEC_QG_FACTORS'
+    _keys(r, RECORD_KEYS + ('reference_sources',) if is_v2 and 'reference_sources' in r else RECORD_KEYS)
     day = _day(r['date'])
     _need(day >= START_DATE and is_session_day(day) and (previous_day is None or day > previous_day))
     created = _clock(r['created_at'])
     _need(created <= cut and eastern(created).date() == day and eastern(created).time() >= CLOSE)
-    _need(r['version'] == VERSION and r['strategy'] == STRATEGY and r['calibration'] == CALIBRATION)
+    _need(r['version'] == version and r['strategy'] == (V2_STRATEGY if is_v2 else STRATEGY) and r['calibration'] == CALIBRATION)
     _need(r['state'] in RECORD_STATES and isinstance(r['reason_codes'], list))
-    _need(all(c in REASONS for c in r['reason_codes']) and len(set(r['reason_codes'])) == len(r['reason_codes']))
-    _keys(r['source_sha256'], SOURCES)
+    _need(all(c in (V2_REASONS if is_v2 else REASONS) for c in r['reason_codes']) and len(set(r['reason_codes'])) == len(r['reason_codes']))
+    _keys(r['source_sha256'], sources)
     for value in r['source_sha256'].values():
         _hash(value, nullable=True)
     if r['target'] is not None:
@@ -263,36 +367,54 @@ def _record(r, previous_day, cut):
             _need(row['state'] in STATES)
             states.append(row['state'])
             for axis in ('Q', 'G'):
-                _axis(row[axis], axis, row['state'])
+                _axis(row[axis], axis, row['state'], {'Q': 5, 'G': 5} if is_v2 else None)
         _need(r['qg_screen_state'] == ('LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else None))
+        if 'reference_sources' in r:
+            _keys(r['reference_sources'], ('hanmi',))
+            ref = r['reference_sources']['hanmi']
+            _keys(ref, ('kind', 'file', 'sha256', 'as_of', 'comparison_basis', 'reference_only'))
+            _need(ref['kind'] == 'DART' and ref['file'] == 'dart-financials.json' and ref['reference_only'] is True and ref['comparison_basis'] == 'US_UNIVERSE_504_GENERAL')
+            _hash(ref['sha256'])
+            stamp = _clock(ref['as_of'])
+            _need(eastern(stamp).date() == day and stamp <= created and r['companies']['hanmi']['state'] in ('LIVE', 'STALE'))
     else:
+        _need('reference_sources' not in r)
         _need(r['reason_codes'] and r['companies'] is None and r['qg_as_of'] is None and r['qg_screen_state'] is None)
         _need(('TARGET_CATALOG_MISSING' in r['reason_codes'] or 'TARGET_CATALOG_INVALID' in r['reason_codes']) == (r['target'] is None))
-        _need(('SEC_QG_FACTORS_MISSING' in r['reason_codes']) == (r['source_sha256']['sec-qg-factors.json'] is None))
+        _need((prefix + '_MISSING' in r['reason_codes']) == (r['source_sha256'][sources[0]] is None))
         _need(('TARGET_CATALOG_MISSING' in r['reason_codes']) == (r['source_sha256']['actual-catalog.json'] is None))
     return day
 
 
 def _require(p):
     _keys(p, TOP_KEYS)
-    _need(type(p['schema_version']) is int and p['schema_version'] == 1 and p['kind'] == KIND)
-    _need(p['start_date'] == START_DATE.isoformat() and p['strategy'] == STRATEGY and p['calibration'] == CALIBRATION)
+    _need(type(p['schema_version']) is int and p['schema_version'] in (1, 2) and p['kind'] == KIND)
+    _need(p['start_date'] == START_DATE.isoformat() and p['strategy'] == (STRATEGY if p['schema_version'] == 1 else V2_STRATEGY) and p['calibration'] == CALIBRATION)
     _need(p['holdout'] == HOLDOUT and p['price_free'] is True and p['target'] == {'portfolio_id': TARGET_ID, 'version': TARGET_VERSION})
     cut = _clock(p['as_of'])
-    _keys(p['versions'], VERSIONS)
+    versions = LEGACY_VERSIONS if p['schema_version'] == 1 else VERSIONS
+    _keys(p['versions'], versions)
     rows = p['versions'][VERSION]
     _need(isinstance(rows, list) and len(rows) <= 5000)
     # The V-bearing version is append-only too and has no producer yet: it stays empty.
     _need(p['versions'][V_VERSION] == [])
     previous = None
-    for r in rows:
-        previous = _record(r, previous, cut)
+    for version in (v for v in versions if v != V_VERSION):
+        values = p['versions'][version]
+        _need(isinstance(values, list) and len(values) <= 5000)
+        previous = None
+        for r in values:
+            previous = _record(r, previous, cut, version)
     status = 'ACTIVE' if eastern(cut).date() >= START_DATE or rows else 'NOT_STARTED'
     _need(p['status'] == status and (status == 'ACTIVE' or not rows))
-    _need(p['version_status'] == {
+    expected = {
         VERSION: {'state': status, 'v_included': False, 'reason_codes': []},
         V_VERSION: {'state': 'NOT_AVAILABLE', 'v_included': True, 'reason_codes': [V_REASON]},
-    })
+        V2_VERSION: {'state': status, 'v_included': False, 'reason_codes': []},
+    }
+    if p['schema_version'] == 1:
+        expected.pop(V2_VERSION)
+    _need(p['version_status'] == expected)
     _need(previous is None or previous <= eastern(cut).date())
     return p
 
@@ -317,7 +439,7 @@ def require_append_only(previous, current):
     try:
         _need(previous['start_date'] == current['start_date'])
         for version in VERSIONS:
-            old, new = previous['versions'][version], current['versions'][version]
+            old, new = previous['versions'].get(version, []), current['versions'].get(version, [])
             _need(len(new) >= len(old))
             _need(all(canonical(a) == canonical(b) for a, b in zip(old, new)))
     except (ValueError, TypeError, KeyError):

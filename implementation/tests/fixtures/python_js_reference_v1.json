@@ -935,6 +935,8 @@
             "coverage": "READY",
             "missing_factor_ids": [],
             "not_applicable_ids": [],
+            "factors_available": 7,
+            "factors_total": 7,
             "missing_factor_count": 0
           },
           "G": {
@@ -942,6 +944,8 @@
             "coverage": "READY",
             "missing_factor_ids": [],
             "not_applicable_ids": [],
+            "factors_available": 6,
+            "factors_total": 6,
             "missing_factor_count": 0
           },
           "V": {
@@ -949,6 +953,8 @@
             "coverage": "READY",
             "missing_factor_ids": [],
             "not_applicable_ids": [],
+            "factors_available": 7,
+            "factors_total": 7,
             "missing_factor_count": 0
           }
         },
@@ -1104,6 +1110,8 @@
             "coverage": "READY",
             "missing_factor_ids": [],
             "not_applicable_ids": [],
+            "factors_available": 7,
+            "factors_total": 7,
             "missing_factor_count": 0
           },
           "G": {
@@ -1111,15 +1119,19 @@
             "coverage": "READY",
             "missing_factor_ids": [],
             "not_applicable_ids": [],
+            "factors_available": 6,
+            "factors_total": 6,
             "missing_factor_count": 0
           },
           "V": {
-            "score": 29.0,
+            "score": 38.666666666666664,
             "coverage": "PARTIAL",
             "missing_factor_ids": [
               "fundamental_value"
             ],
             "not_applicable_ids": [],
+            "factors_available": 6,
+            "factors_total": 7,
             "missing_factor_count": 1
           }
         },
@@ -1387,6 +1399,8 @@
             "coverage": "READY",
             "missing_factor_ids": [],
             "not_applicable_ids": [],
+            "factors_available": 7,
+            "factors_total": 7,
             "missing_factor_count": 0
           },
           "G": {
@@ -1394,6 +1408,8 @@
             "coverage": "READY",
             "missing_factor_ids": [],
             "not_applicable_ids": [],
+            "factors_available": 6,
+            "factors_total": 6,
             "missing_factor_count": 0
           },
           "V": {
@@ -1401,6 +1417,8 @@
             "coverage": "READY",
             "missing_factor_ids": [],
             "not_applicable_ids": [],
+            "factors_available": 7,
+            "factors_total": 7,
             "missing_factor_count": 0
           }
         },

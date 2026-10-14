@@ -49,6 +49,7 @@ CURRENCIES = ('USD', 'KRW', 'JPY')
 STATUSES = ('COMPLETE', 'IN_PROGRESS', 'UNKNOWN')
 FLAG_KINDS = ('HOLD', 'EXCLUDE', 'CONFIRMED_TEMPORARY', 'CONFIRMED_STRUCTURAL', 'CLEAR')
 FORWARD_VERSION = 'forward_validation/v1'
+FORWARD_V2_VERSION = 'forward_validation/v2'
 MAX_BARS = 1500
 MAX_TIMESTAMP = 4102444800  # 2100-01-01T00:00:00Z
 CODE = re.compile(r'[A-Z][A-Z0-9_]{0,63}')
@@ -241,7 +242,7 @@ def snapshots_from_ledger(forward):
     """Q·G per NYSE session date from RECORDED records of the public forward ledger (no V, no prices)."""
     out = {}
     try:
-        records = forward['versions'][FORWARD_VERSION]
+        records = forward['versions'][FORWARD_V2_VERSION if forward.get('schema_version') == 2 else FORWARD_VERSION]
     except (TypeError, KeyError):
         return out
     for r in records if isinstance(records, list) else []:
@@ -310,7 +311,8 @@ def assemble(*, config, catalog, forward_ledger=None, classification=None, histo
     TARGET_NOT_AVAILABLE; TARGET v0 is never substituted."""
     histories = histories or {}
     start = config.get('start_date')
-    out = {'schema': SCHEMA, 'state': 'READY', 'reason_codes': [], 'sources': {}, 'sector': {}, 'ledgers': {}, 'indices': {}}
+    out = {'schema': SCHEMA, 'state': 'READY', 'reason_codes': [], 'sources': {}, 'sector': {}, 'ledgers': {}, 'indices': {},
+           'snapshot_basis': 'v2' if isinstance(forward_ledger, dict) and forward_ledger.get('schema_version') == 2 else 'v1'}
     targets = catalog_targets(catalog)
     if targets is None:
         out.update(state='NOT_AVAILABLE', reason_codes=['TARGET_CATALOG_INVALID'])
@@ -349,10 +351,13 @@ def assemble(*, config, catalog, forward_ledger=None, classification=None, histo
         out.update(state='NOT_AVAILABLE', reason_codes=['SESSIONS_NOT_AVAILABLE'])
         out['ledgers'] = {k: _unavailable(['SESSIONS_NOT_AVAILABLE']) for k in KINDS}
         return out
-    sessions = [d for d in spy if start is not None and d >= start]
+    v2_rows = forward_ledger['versions'].get(FORWARD_V2_VERSION, []) if isinstance(forward_ledger, dict) and forward_ledger.get('schema_version') == 2 else None
+    ready_date = next((r['date'] for r in v2_rows if r.get('state') == 'RECORDED' and any(_num(c['Q']['score']) and _num(c['G']['score']) for c in (r.get('companies') or {}).values())), None) if v2_rows is not None else None
+    sessions = [d for d in spy if start is not None and d >= start and (v2_rows is None or ready_date is not None and d >= ready_date)]
     snapshots = snapshots_from_ledger(forward_ledger)
-    v_scores = v_scores_from_store(v_store)
-    v_comp = v_composition_from_store(v_composition)
+    v2_basis = isinstance(forward_ledger, dict) and forward_ledger.get('schema_version') == 2
+    v_scores = {} if v2_basis else v_scores_from_store(v_store)
+    v_comp = {} if v2_basis else v_composition_from_store(v_composition)
     flag_rows = flags_from_store(flags)
 
     # Every ledger carries every priced member (a stored set definition is then derived from any ledger input); the

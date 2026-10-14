@@ -3,7 +3,7 @@
    history Worker, kept in memory, and never stored or sent; computed returns are never stored or sent. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.ForwardValidation=api;})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
-const FILENAME='forward-validation-ledger.json',KIND='FORWARD_VALIDATION_LEDGER',START='2026-10-19',STRATEGY='QGV_STANDARD_V1',VERSION='forward_validation/v1',V_VERSION='forward_validation/v1+dcf_v1_default',CALIBRATION='UNCALIBRATED',HOLDOUT='UNCONFIRMED_NOT_USED',V_REASON='V_REQUIRES_DEVICE_PRICES';
+const FILENAME='forward-validation-ledger.json',KIND='FORWARD_VALIDATION_LEDGER',START='2026-10-19',STRATEGY='QGV_STANDARD_V1',VERSION='forward_validation/v1',V_VERSION='forward_validation/v1+dcf_v1_default',CALIBRATION='UNCALIBRATED',HOLDOUT='UNCONFIRMED_NOT_USED',V_REASON='V_REQUIRES_DEVICE_PRICES',V2_VERSION='forward_validation/v2',V2_STRATEGY='QGV_STANDARD_V2';
 const IDS=['asml','lrcx','klac','tokyo_electron','hanmi','nvda','amd','avgo','qcom','intc','msft','googl','amzn','rtx','stry','etn','hubb','gev','rok'];
 const UNITS={asml:900,lrcx:600,klac:550,tokyo_electron:500,hanmi:450,nvda:800,amd:500,avgo:500,qcom:400,intc:300,msft:700,googl:700,amzn:600,rtx:600,stry:550,etn:500,hubb:350,gev:300,rok:200};
 const TOTAL=10000,AXIS_SIZE={Q:7,G:6},STATES=['LIVE','STALE','NOT_AVAILABLE'],COVERAGE=['READY','PARTIAL','BLOCKED'];
@@ -21,41 +21,44 @@ function day(v){need(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&new Dat
 const ET=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
 function eastern(ms){const p=Object.fromEntries(ET.formatToParts(ms).map(x=>[x.type,x.value]));return{date:p.year+'-'+p.month+'-'+p.day,minutes:Number(p.hour)*60+Number(p.minute)};}
 function sessionDay(d){need(d<=CALENDAR_END);const w=new Date(d+'T00:00:00Z').getUTCDay();return w>0&&w<6&&!HOLIDAYS.has(d);}
-function axis(v,name,companyState){keys(v,['score','coverage','missing_factor_count']);need(v.score===null||finite(v.score)&&v.score>=0&&v.score<=100);need(COVERAGE.includes(v.coverage)&&(v.score===null)===(v.coverage==='BLOCKED'));const n=v.missing_factor_count;need(Number.isInteger(n)&&n>=0&&n<=AXIS_SIZE[name]&&(v.coverage!=='READY'||n===0));need(companyState!=='NOT_AVAILABLE'||v.score===null);}
-function record(r,previous,cut){
- keys(r,['date','version','strategy','calibration','state','reason_codes','target','qg_as_of','qg_screen_state','companies','source_sha256','created_at']);
+function axis(v,name,companyState,size=AXIS_SIZE){keys(v,['score','coverage','missing_factor_count']);need(v.score===null||finite(v.score)&&v.score>=0&&v.score<=100);need(COVERAGE.includes(v.coverage)&&(v.score===null)===(v.coverage==='BLOCKED'));const n=v.missing_factor_count;need(Number.isInteger(n)&&n>=0&&n<=size[name]&&(v.coverage!=='READY'||n===0));need(companyState!=='NOT_AVAILABLE'||v.score===null);}
+function record(r,previous,cut,version=VERSION){
+ const isV2=version===V2_VERSION,sources=isV2?['sec-qgv2.json','actual-catalog.json']:SOURCES,prefix=isV2?'SEC_QGV2':'SEC_QG_FACTORS',reasons=isV2?REASONS.map(r=>r.replace('SEC_QG_FACTORS','SEC_QGV2')):REASONS;
+ const rk=['date','version','strategy','calibration','state','reason_codes','target','qg_as_of','qg_screen_state','companies','source_sha256','created_at'];if(isV2&&Object.hasOwn(r,'reference_sources'))rk.push('reference_sources');keys(r,rk);
  const d=day(r.date);need(d>=START&&sessionDay(d)&&(previous===null||d>previous));
  const created=clock(r.created_at),local=eastern(created);need(created<=cut&&local.date===d&&local.minutes>=16*60);
- need(r.version===VERSION&&r.strategy===STRATEGY&&r.calibration===CALIBRATION&&['RECORDED','NOT_AVAILABLE'].includes(r.state));
- need(Array.isArray(r.reason_codes)&&r.reason_codes.every(c=>REASONS.includes(c))&&new Set(r.reason_codes).size===r.reason_codes.length);
- keys(r.source_sha256,SOURCES);for(const v of Object.values(r.source_sha256))need(v===null||hash(v));
+ need(r.version===version&&r.strategy===(isV2?V2_STRATEGY:STRATEGY)&&r.calibration===CALIBRATION&&['RECORDED','NOT_AVAILABLE'].includes(r.state));
+ need(Array.isArray(r.reason_codes)&&r.reason_codes.every(c=>reasons.includes(c))&&new Set(r.reason_codes).size===r.reason_codes.length);
+ keys(r.source_sha256,sources);for(const v of Object.values(r.source_sha256))need(v===null||hash(v));
  if(r.target!==null){keys(r.target,['portfolio_id','version','root_sha256','total_units','weights_units']);need(r.target.portfolio_id==='TARGET'&&r.target.version==='v0'&&hash(r.target.root_sha256)&&r.target.total_units===TOTAL);keys(r.target.weights_units,IDS);need(IDS.every(c=>r.target.weights_units[c]===UNITS[c])&&r.source_sha256['actual-catalog.json']!==null);}
  if(r.state==='RECORDED'){
   need(r.reason_codes.length===0&&r.target!==null&&Object.values(r.source_sha256).every(v=>v!==null));
   const at=clock(r.qg_as_of);need(eastern(at).date===d&&at<=created&&['LIVE','STALE'].includes(r.qg_screen_state));
   keys(r.companies,IDS);const states=[];
-  for(const row of Object.values(r.companies)){keys(row,['state','Q','G']);need(STATES.includes(row.state));states.push(row.state);axis(row.Q,'Q',row.state);axis(row.G,'G',row.state);}
+  for(const row of Object.values(r.companies)){keys(row,['state','Q','G']);need(STATES.includes(row.state));states.push(row.state);axis(row.Q,'Q',row.state,isV2?{Q:5,G:5}:AXIS_SIZE);axis(row.G,'G',row.state,isV2?{Q:5,G:5}:AXIS_SIZE);}
   need(r.qg_screen_state===(states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':null));
+  if(Object.hasOwn(r,'reference_sources')){keys(r.reference_sources,['hanmi']);const ref=r.reference_sources.hanmi;keys(ref,['kind','file','sha256','as_of','comparison_basis','reference_only']);need(ref.kind==='DART'&&ref.file==='dart-financials.json'&&hash(ref.sha256)&&ref.reference_only===true&&ref.comparison_basis==='US_UNIVERSE_504_GENERAL');const stamp=clock(ref.as_of);need(eastern(stamp).date===d&&stamp<=created&&['LIVE','STALE'].includes(r.companies.hanmi.state));}
  }else{
+  need(!Object.hasOwn(r,'reference_sources'));
   need(r.reason_codes.length>0&&r.companies===null&&r.qg_as_of===null&&r.qg_screen_state===null);
   need((r.reason_codes.includes('TARGET_CATALOG_MISSING')||r.reason_codes.includes('TARGET_CATALOG_INVALID'))===(r.target===null));
-  need(r.reason_codes.includes('SEC_QG_FACTORS_MISSING')===(r.source_sha256['sec-qg-factors.json']===null));
+  need(r.reason_codes.includes(prefix+'_MISSING')===(r.source_sha256[sources[0]]===null));
   need(r.reason_codes.includes('TARGET_CATALOG_MISSING')===(r.source_sha256['actual-catalog.json']===null));
  }
  return d;}
 function validate(p){
  keys(p,['schema_version','kind','start_date','status','as_of','strategy','calibration','holdout','price_free','target','versions','version_status']);
- need(p.schema_version===1&&p.kind===KIND&&p.start_date===START&&p.strategy===STRATEGY&&p.calibration===CALIBRATION&&p.holdout===HOLDOUT&&p.price_free===true);
+ need([1,2].includes(p.schema_version)&&p.kind===KIND&&p.start_date===START&&p.strategy===(p.schema_version===2?V2_STRATEGY:STRATEGY)&&p.calibration===CALIBRATION&&p.holdout===HOLDOUT&&p.price_free===true);
  keys(p.target,['portfolio_id','version']);need(p.target.portfolio_id==='TARGET'&&p.target.version==='v0');
- const cut=clock(p.as_of);keys(p.versions,[VERSION,V_VERSION]);const rows=p.versions[VERSION];
+ const cut=clock(p.as_of),versions=p.schema_version===2?[VERSION,V_VERSION,V2_VERSION]:[VERSION,V_VERSION];keys(p.versions,versions);const rows=p.versions[VERSION];
  need(Array.isArray(rows)&&rows.length<=5000&&Array.isArray(p.versions[V_VERSION])&&p.versions[V_VERSION].length===0);
- let previous=null;for(const r of rows)previous=record(r,previous,cut);
+ let previous=null;for(const version of versions.filter(v=>v!==V_VERSION)){need(Array.isArray(p.versions[version])&&p.versions[version].length<=5000);previous=null;for(const r of p.versions[version])previous=record(r,previous,cut,version);}
  const today=eastern(cut).date,status=today>=START||rows.length?'ACTIVE':'NOT_STARTED';need(p.status===status);
- keys(p.version_status,[VERSION,V_VERSION]);const a=p.version_status[VERSION],b=p.version_status[V_VERSION];
+ keys(p.version_status,versions);const a=p.version_status[VERSION],b=p.version_status[V_VERSION];
  keys(a,['state','v_included','reason_codes']);keys(b,['state','v_included','reason_codes']);
  need(a.state===status&&a.v_included===false&&Array.isArray(a.reason_codes)&&a.reason_codes.length===0);
  need(b.state==='NOT_AVAILABLE'&&b.v_included===true&&Array.isArray(b.reason_codes)&&b.reason_codes.length===1&&b.reason_codes[0]===V_REASON);
- need(previous===null||previous<=today);
+ if(p.schema_version===2){const c=p.version_status[V2_VERSION];keys(c,['state','v_included','reason_codes']);need(c.state===status&&c.v_included===false&&Array.isArray(c.reason_codes)&&c.reason_codes.length===0);}need(previous===null||previous<=today);
  return p;}
 async function load(view){
  const control=new view.AbortController(),timer=setTimeout(()=>control.abort(),20000);
@@ -112,9 +115,9 @@ function mount(host,options={}){
  function paintLedger(res){
   facts.replaceChildren();summary.replaceChildren();
   if(res.state!=='LOADED'){fact(x('상태','Status'),'NOT_AVAILABLE · '+res.reason,'data-forward-status');fact(x('시작일','Start date'),START,'data-forward-start');fact(x('기록 수','Records'),'0','data-forward-count');fact(x('전략 · 버전','Strategy · version'),STRATEGY+' · '+VERSION);return;}
-  const p=res.ledger,rows=p.versions[VERSION];
+  const p=res.ledger,primary=p.schema_version===2?V2_VERSION:VERSION,rows=p.versions[primary];
   fact(x('상태','Status'),p.status,'data-forward-status');fact(x('시작일','Start date'),p.start_date,'data-forward-start');fact(x('기록 수','Records'),String(rows.length),'data-forward-count');
-  fact(x('전략 · 버전','Strategy · version'),p.strategy+' · '+VERSION+' · '+p.calibration,'data-forward-strategy');
+  fact(x('전략 · 버전','Strategy · version'),p.strategy+' · '+primary+' · '+p.calibration,'data-forward-strategy');
   fact(x('V 포함 버전','V-bearing version'),V_VERSION+' · NOT_AVAILABLE · '+V_REASON+' · '+x('기록 0건','0 records'),'data-forward-v-version');
   fact(x('대상 포트폴리오','Target portfolio'),'TARGET v0 · 19');fact(x('기준 시각','As of'),p.as_of);
   summary.append(el('h3',x('일별 Q·G 요약 (V 없음)','Daily Q·G summary (no V)')));
@@ -122,9 +125,10 @@ function mount(host,options={}){
   const wrap=el('div',undefined,{class:'table-wrap'}),table=el('table',undefined,{'data-forward-days':''}),head=el('tr');
   for(const h of [x('날짜','Date'),x('상태','State'),x('Q 가용','Q available'),x('Q 가중평균','Q weighted mean'),x('G 가용','G available'),x('G 가중평균','G weighted mean')])head.append(el('th',h,{scope:'col'}));
   const thead=el('thead');thead.append(head);const body=el('tbody');
-  for(const r of [...rows].reverse()){const s=qgSummary(r),tr=el('tr',undefined,{'data-forward-day':r.date});
-   if(s.state!=='RECORDED')tr.append(el('td',r.date),el('td','NOT_AVAILABLE · '+s.reason_codes.join(', ')),el('td','—'),el('td','—'),el('td','—'),el('td','—'));
-   else tr.append(el('td',r.date),el('td',r.qg_screen_state),el('td',s.Q.available+'/'+s.companies),el('td',num(s.Q.weighted_mean)),el('td',s.G.available+'/'+s.companies),el('td',num(s.G.weighted_mean)));
+  const displayRows=[...rows,...(p.schema_version===2?p.versions[VERSION]:[])].sort((a,b)=>b.date.localeCompare(a.date)||(a.version===V2_VERSION?-1:1));
+  for(const r of displayRows){const s=qgSummary(r),tr=el('tr',undefined,{'data-forward-day':r.date});
+   if(s.state!=='RECORDED')tr.append(el('td',r.date+' · '+(r.version===V2_VERSION?x('v2 기본','v2 default'):x('v1 비교용','v1 comparison'))),el('td','NOT_AVAILABLE · '+s.reason_codes.join(', ')),el('td','—'),el('td','—'),el('td','—'),el('td','—'));
+   else tr.append(el('td',r.date+' · '+(r.version===V2_VERSION?x('v2 기본','v2 default'):x('v1 비교용','v1 comparison'))),el('td',r.qg_screen_state+(r.reference_sources?x(' · DART 참고',' · DART reference'):'')),el('td',s.Q.available+'/'+s.companies),el('td',num(s.Q.weighted_mean)),el('td',s.G.available+'/'+s.companies),el('td',num(s.G.weighted_mean)));
    body.append(tr);}
   table.append(thead,body);wrap.append(table);summary.append(wrap,el('p',x('가중평균은 점수가 있는 종목만 TARGET v0 비중으로 평균한 화면 표시값이며 저장하지 않습니다. 보정 전(UNCALIBRATED).','Weighted means average only companies with a score using TARGET v0 weights; display only, never stored. UNCALIBRATED.'),{class:'small'}));
  }
@@ -175,5 +179,5 @@ function mount(host,options={}){
    state.unsubscribe=session.subscribe(()=>{if(state.disposed||!host.isConnected){dispose(state);return;}if(!session.state().connected||session.revision()!==rev){clearPrices(state);rev=session.revision();}paintPrices();});paintPrices();}catch(_){paintPrices();}})();}
  return Object.freeze({dispose(){dispose(state);}});
 }
-return Object.freeze({FILENAME,START,STRATEGY,VERSION,V_VERSION,BENCHMARK,validate,load,instrumentReturn,forwardReturn,qgSummary,seriesFromHistory,rangeFor,eastern,mount,disposeAll});
+return Object.freeze({FILENAME,START,STRATEGY,VERSION,V_VERSION,V2_VERSION,V2_STRATEGY,BENCHMARK,validate,load,instrumentReturn,forwardReturn,qgSummary,seriesFromHistory,rangeFor,eastern,sessionDay,mount,disposeAll});
 });

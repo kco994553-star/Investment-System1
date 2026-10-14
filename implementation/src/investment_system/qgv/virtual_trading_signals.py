@@ -12,9 +12,9 @@ Nothing here fetches, stores or publishes prices, FX rates, ledgers or V scores;
 - v_progress: how far device V recording is from the 20-session V slope lookback.
 - v_axis / v_scores_for / capture_plan: the device V score recorded per completed session. V = the PREVIEW V axis of
   the official v1 V weight copy (strategy_preview) over the device V factors (device_valuation.device_value_view)
-  computed from that session's close. Rounded to 2 decimals. Decision 2026-10-11: a missing core factor makes that
-  day's V NA (V_CORE_FACTOR_MISSING); it is never computed with the missing factor counted as 0. The spec defines no
-  "core" subset, so every factor with weight > 0 in the official v1 V weights is core. Each value carries its
+  computed from that session's close. Rounded to 2 decimals. PLAYBOOK_V1 §13-1 (2026-10-13, replaces the 2026-10-11
+  all-factors rule): V needs >= 50 of the V weight present and fundamental_value or reverse_dcf present (V1_V_RULE);
+  missing factors are renormalized, else NA (V_CORE_FACTOR_MISSING); never computed with a missing factor as 0. Each value carries its
   composition key (sorted ids of the factors present); the V slope compares only equal keys (V_COMPOSITION_CHANGED).
 - rehearsal_start / rehearsal_config / apply_rehearsal_snapshots: rehearsal (not recorded) runs the engine from the
   first of the last N completed SPY sessions (runner date rules), cash 0 + daily deposits, in RAM only; window sessions
@@ -166,22 +166,35 @@ def core_v_factors():
     return sorted(k for k, w in weights.items() if _num(w) and w > 0)
 
 
-def v_axis_detail(view):
-    """V axis of the official v1 V weights, or NA when a core factor is missing (never counted as 0)."""
+# PLAYBOOK_V1 §13-1 (2026-10-13, v0 · UNCALIBRATED): v1 V is computed only when the present factors carry >= 50 of the
+# 100 V weight AND at least one anchor factor is present; missing factors are excluded and the rest renormalized.
+V1_V_RULE = {'version': 'v1_v_condition/v0', 'status': 'V0_UNCALIBRATED', 'min_weight_percent': 50.0,
+             'anchor_any': ('fundamental_value', 'reverse_dcf')}
+
+
+def v_axis_detail(view, rule=None):
+    """v1 V axis (renormalized official v1 V weights) under V1_V_RULE; otherwise NA V_CORE_FACTOR_MISSING (never 0)."""
+    rule = V1_V_RULE if rule is None else rule
     factors = view.get('v_factors') if isinstance(view, dict) else None
     if not isinstance(factors, dict):
-        return {'state': 'NOT_AVAILABLE', 'score': None, 'composition': None, 'reason': 'V_FACTORS_NOT_AVAILABLE', 'missing': core_v_factors()}
+        return {'state': 'NOT_AVAILABLE', 'score': None, 'composition': None, 'reason': 'V_FACTORS_NOT_AVAILABLE',
+                'missing': core_v_factors(), 'weight_percent': 0.0, 'partial': False}
+    weights = official_v1_weight_copy()['V']
     present = {k: f['score'] for k, f in factors.items()
-               if isinstance(f, dict) and f.get('state') != 'NOT_AVAILABLE' and _num(f.get('score'))}
+               if k in weights and isinstance(f, dict) and f.get('state') != 'NOT_AVAILABLE' and _num(f.get('score'))}
     missing = [k for k in core_v_factors() if k not in present]
-    if missing:
-        return {'state': 'NOT_AVAILABLE', 'score': None, 'composition': None, 'reason': 'V_CORE_FACTOR_MISSING', 'missing': missing}
+    weight = 0.0
+    for k in weights:
+        if k in present:
+            weight += weights[k]
+    out = {'missing': missing, 'weight_percent': weight, 'partial': bool(missing)}
+    if weight < rule['min_weight_percent'] or not any(k in present for k in rule['anchor_any']):
+        return {'state': 'NOT_AVAILABLE', 'score': None, 'composition': None, 'reason': 'V_CORE_FACTOR_MISSING', **out}
     observations = {k: FactorObservation(k, None, v, QualityState.OK, None) for k, v in present.items()}
     score = recalculate_strategy_preview(observations).axes['V'].score
     if not _num(score):
-        return {'state': 'NOT_AVAILABLE', 'score': None, 'composition': None, 'reason': 'V_FACTORS_NOT_AVAILABLE', 'missing': []}
-    return {'state': 'OK', 'score': score, 'composition': '+'.join(sorted(present)), 'reason': None, 'missing': []}
-
+        return {'state': 'NOT_AVAILABLE', 'score': None, 'composition': None, 'reason': 'V_FACTORS_NOT_AVAILABLE', **out}
+    return {'state': 'OK', 'score': score, 'composition': '+'.join(sorted(present)), 'reason': None, **out}
 
 def v_axis(view):
     d = v_axis_detail(view)
