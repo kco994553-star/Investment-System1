@@ -1,5 +1,6 @@
 /* Google/OAuth endpoints are always mocked. Credentials, values and exports stay in memory. */
 'use strict';
+const {displayOnlyOff}=require('./display_only_off.js');
 const { chromium } = require('playwright');
 const fs = require('node:fs'), path = require('node:path');
 const base = new URL(process.env.GOOGLE_SHEET_QUOTES_URL || process.env.GOOGLE_SHEET_URL || process.env.PAGES_COCKPIT_URL || 'http://127.0.0.1:8990/Investment-System1/#settings');
@@ -26,7 +27,7 @@ async function waitImport(page, successes, failures) {
   await page.waitForFunction(({successes,failures})=>{ const n=document.querySelector('[data-sheet-summary]');return n?.dataset.successCount===String(successes)&&n?.dataset.failureCount===String(failures); },{successes,failures});
 }
 async function open(locale,width,missingClient=false) {
-  const context=await browser.newContext({viewport:{width,height:844},locale});
+  const context=await browser.newContext({viewport:{width,height:844},locale});await displayOnlyOff(context);
   const mode={status:200,partial:false,unknown:false,delayed:false,pending:null,reads:0,scripts:0,styles:0,styleStatus:200,delayCSS:false,pendingCSS:null,styleStarted:null,loadOrder:[]};
   await context.addInitScript(({locale})=>{
     localStorage.setItem('investment.web.v1.unified-sheet-source','synthetic_existing_sheet_fixture');

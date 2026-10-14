@@ -1,3 +1,4 @@
+const {displayOnlyOff}=require('./display_only_off.js');
 // Presentation/navigation E2E on the public Pages build (PAGES_COCKPIT_URL). Public build and in-memory test vectors only.
 //
 // Current contract (GSQ-010 public price boundary): the public build ships no producer company rows and app.js never
@@ -26,7 +27,7 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
   const responses=page=>page.on("response",response=>{
     if(response.status()>=400&&!(response.status()===404&&["sec-public-inputs.json","sec-universe-shares.json","sec-qgv2.json"].some(name=>response.url()===new URL(name,base).href))) traffic.failed_responses++;
   });
-  const context=await browser.newContext({viewport:{width:390,height:844}});
+  const context=await browser.newContext({viewport:{width:390,height:844}});await displayOnlyOff(context);
   await context.route("**/*",guard);
   const page=await context.newPage(), errors=[],checks=[];
   page.on("pageerror",e=>errors.push(e.message));
@@ -176,7 +177,7 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
       }
     });
     await check("storage failure preserves settings source",async()=>{
-      const broken=await browser.newContext();
+      const broken=await browser.newContext();await displayOnlyOff(broken);
       await broken.route("**/*",guard);
       await broken.addInitScript(()=>localStorage.setItem("investment.web.v1.settings","{broken"));
       const p=await broken.newPage();responses(p);await p.goto(new URL("#settings",base).href);

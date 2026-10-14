@@ -1,4 +1,5 @@
 "use strict";
+const {displayOnlyOff}=require('./display_only_off.js');
 const { routeEmptyPublicScreens } = require("./empty_public_screens.js");
 // IA behavior on the public build. Every capture requires fresh empty device storage.
 // No login, Google call, quotation, holdings or populated form is used by this test.
@@ -83,7 +84,7 @@ async function unavailableNewScreen(page, selector) {
     browser = await chromium.launch({ headless: true, ...(process.env.WEB_TEST_CHROMIUM_PATH ? { executablePath: process.env.WEB_TEST_CHROMIUM_PATH } : {}) });
     for (const width of [390, 1280]) for (const locale of ["ko-KR", "en-US"]) {
       current = width + "px " + locale;
-      const context = await browser.newContext({ viewport: { width, height: 844 } });
+      const context = await browser.newContext({ viewport: { width, height: 844 } });await displayOnlyOff(context);
       await context.exposeBinding("__reportIaCspViolation", () => { traffic.csp_violations++; });
       await context.addInitScript(locale => {
         localStorage.setItem("investment.web.v1.settings", JSON.stringify({ version: 1, display_locale: locale, source_language: "all" }));

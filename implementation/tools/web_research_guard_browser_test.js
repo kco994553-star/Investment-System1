@@ -8,6 +8,7 @@
 // (2) runs them through the app's own render-time guard, guardSections(), assigned to the page model in browser memory
 // only (never served, never persisted), asserting the original G3 behaviour route by route.
 "use strict";
+const {displayOnlyOff}=require('./display_only_off.js');
 const { chromium } = require("playwright");
 const { routeEmptyPublicScreens } = require("./empty_public_screens.js");
 const assert = require("node:assert/strict");
@@ -59,7 +60,7 @@ async function main() {
   async function check(name, fn) { await fn(); checks.push(name); console.log("PASS " + name); }
 
   async function openPage(served = null) {
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });await displayOnlyOff(context);
     await context.route("**/*", async (route) => {
       const request = route.request(), url = new URL(request.url());
       if (request.method() !== "GET" || request.postData()) { traffic.unsafe++; await route.abort(); return; }

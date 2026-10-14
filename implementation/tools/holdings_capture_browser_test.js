@@ -1,6 +1,7 @@
 /* Capture + personal AI Holdings tab, sheet #N/A → Worker close, and outside-scope holdings. Google Sheets and the Worker are mocked;
    every holding, price and FX value is synthetic and stays in memory. Logs carry check names only. */
 'use strict';
+const {displayOnlyOff}=require('./display_only_off.js');
 const {chromium} = require('playwright');
 const BASE = process.env.PAGES_COCKPIT_URL || 'http://127.0.0.1:8990/';
 const ID = ['synthetic', 'capture', 'sheet', 'fixture'].join('_'), TOKEN = ['synthetic', 'capture', 'ram'].join('-');
@@ -27,7 +28,7 @@ function verify(value, label) { if (!value) { const error = new Error(label); er
   let pass = 0, fail = 0, phase = 'INIT';
   try {
     for (const width of [390, 1280]) {
-      const context = await browser.newContext({viewport: {width, height: 900}, serviceWorkers: 'block'});
+      const context = await browser.newContext({viewport: {width, height: 900}, serviceWorkers: 'block'});await displayOnlyOff(context);
       await context.grantPermissions(['clipboard-read', 'clipboard-write'], {origin: new URL(BASE).origin});
       const page = await context.newPage(); page.setDefaultTimeout(10000);
       const mock = {headerBroken: false, posts: [], workerCalls: [], unsafe: 0, holdingsReads: 0}; let errors = 0, leaked = 0;

@@ -1,5 +1,6 @@
 /* Public site, synthetic memory-only fixtures. Every external request is intercepted. */
 'use strict';
+const {displayOnlyOff}=require('./display_only_off.js');
 const { chromium } = require('playwright');
 const base = new URL(process.env.PRIVATE_HISTORY_URL || 'http://127.0.0.1:8990/Investment-System1/');
 const ORIGIN = 'https://private-investment-history.kco994553.workers.dev';
@@ -113,7 +114,7 @@ async function exportsPrivacy(page) {
   } finally { await page.evaluate(() => { window.__historyRestoreExport(); delete window.__historyRestoreExport; delete window.__historyExportAudit; }); }
 }
 async function open({ enabled = false, deployedConfig = false, approvedOrigin = ORIGIN, locale = 'en-US', width = 1280, storageUnavailable = false } = {}) {
-  const context = await browser.newContext({ viewport: { width, height: 844 }, locale, serviceWorkers: 'block' });
+  const context = await browser.newContext({ viewport: { width, height: 844 }, locale, serviceWorkers: 'block' });await displayOnlyOff(context);
   const mode = { reads: 0, googleReads: 0, styles: 0, scripts: 0, revokes: 0, status: 200, code: '', malformed: false, delayed: false, pending: null };
   await context.addInitScript(({ locale, origin, storageUnavailable }) => {
     if(!storageUnavailable)localStorage.setItem('investment.web.v1.unified-sheet-source','synthetic_existing_sheet_fixture');
