@@ -43,6 +43,11 @@ function pct(v,d=2){return num(v)?(v>0?'+':v<0?'−':'')+Math.abs(v*100).toFixed
 function pp(v,d=1){return num(v)?(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(d)+'%p':NA;}
 function weight(v){return num(v)?v.toFixed(1)+'%':NA;}
 function score(v){return num(v)?v.toFixed(1):NA;}
+// Score fields of one company from the QgvScores judgement rows (app.js); v1 rows keep the previous Q·G text exactly.
+function qgFields(r){return{q:r?.q??null,g:r?.g??null,v:r?.v??null,total:r?.total??null,version:r?.version==='v2'?'v2':'v1',factors:r&&num(r.factors_available)?r.factors_available+'/'+r.factors_total:null,trap:r?.value_trap===true,compare:r?.compare||null};}
+const TRAP='가치 함정 주의';
+function qgvCell(h){if(h.version!=='v2')return num(h.q)&&num(h.g)?score((h.q+h.g)/2):NA;return score(h.total)+' (v2'+(h.factors?' · 산출 요인 '+h.factors:'')+(h.trap?' · '+TRAP:'')+')';}
+function scoringText(m,short){return m.scoring==='v2'?(short?'QGV 점수 기준 v2(PROVISIONAL)':'QGV 점수 기준 v2(PROVISIONAL)'):(short?'QGV 점수 기준 v1(보정 전)':'QGV 점수 기준 v1(UNCALIBRATED)');}
 function hiddenSetting(storage,value){
  try{if(value!==undefined){storage.setItem(HIDE_KEY,value?'1':'0');return value;}return storage.getItem(HIDE_KEY)!=='0';}catch(_){return true;}
 }
@@ -52,14 +57,15 @@ function buildModel({kind='MOCK',tab='SET_A',reportDate,baseDates={},ledger=null
  const started=!!(ledger&&ledger.state==='OK'),last=started?ledger.days[ledger.days.length-1]:null;
  const holdings=[];
  if(started){
-  for(const[cid,j]of Object.entries(last.judgements))holdings.push({company:cid,name:names[cid]||cid,actual_weight:j.actual_weight,target_weight:j.target_weight,main:j.main,aux:j.aux_levels,judgement:{main:j.main,aux_levels:j.aux_levels,aux:j.aux,reason_codes:j.reason_codes},reasons:VT.reasonCodes(j),q:qg[cid]?.q??null,g:qg[cid]?.g??null,basis:signals&&signals.basis&&signals.basis[cid]||null});
+  for(const[cid,j]of Object.entries(last.judgements))holdings.push({company:cid,name:names[cid]||cid,actual_weight:j.actual_weight,target_weight:j.target_weight,main:j.main,aux:j.aux_levels,judgement:{main:j.main,aux_levels:j.aux_levels,aux:j.aux,reason_codes:j.reason_codes},reasons:VT.reasonCodes(j),...qgFields(qg[cid]),basis:signals&&signals.basis&&signals.basis[cid]||null});
  }else if(kind==='REAL'&&ram&&Array.isArray(ram.rows)){
-  for(const r of ram.rows){const cid=r.company_id||r.ticker;holdings.push({company:cid,name:names[cid]||r.ticker,actual_weight:num(r.weight)?r.weight*100:null,target_weight:num(targets[cid])?targets[cid]:null,main:null,aux:[],judgement:null,reasons:[],q:qg[cid]?.q??null,g:qg[cid]?.g??null});}
+  for(const r of ram.rows){const cid=r.company_id||r.ticker;holdings.push({company:cid,name:names[cid]||r.ticker,actual_weight:num(r.weight)?r.weight*100:null,target_weight:num(targets[cid])?targets[cid]:null,main:null,aux:[],judgement:null,reasons:[],...qgFields(qg[cid])});}
  }
  holdings.sort(VT.compareRows);
  const executed=started?last.executed:[],orders=started?last.orders:[],cancelled=started?last.cancelled:[];
  const sum=(list,side)=>list.filter(t=>t.side===side).reduce((a,t)=>a+t.amount,0);
- return {kind,tab,report_date:reportDate||null,base_dates:baseDates,started,ledger_state:ledger?ledger.state:'NOT_AVAILABLE',ledger_reasons:ledger?ledger.reason_codes:['LEDGER_NOT_AVAILABLE'],
+ const scoring=Object.values(qg||{}).some(r=>r&&r.version==='v2')?'v2':'v1';
+ return {kind,tab,scoring,report_date:reportDate||null,base_dates:baseDates,started,ledger_state:ledger?ledger.state:'NOT_AVAILABLE',ledger_reasons:ledger?ledger.reason_codes:['LEDGER_NOT_AVAILABLE'],
   start_date:cfg.start_date??null,invest_start:investStart,buy_limit:cfg.buy_limit??null,sell_limit:cfg.sell_limit??null,
   summary:started?ledger.summary:null,last,days:started?ledger.days.slice(-5):[],holdings,executed,orders,cancelled,runner,hits:Array.isArray(hits)?hits:[],
   buy_total:started?sum(executed,'BUY'):null,sell_total:started?sum(executed,'SELL'):null,ram_state:ram?ram.state:'NOT_AVAILABLE',
@@ -122,7 +128,7 @@ function renderTemplate(m,{hidden=true,guide=true}={}){
  if(guide)L.push(GUIDE_A,'');else L.push(HEADER_B,'');
  L.push(KIND_LINE[m.kind],'','[일일보고서 템플릿]');
  L.push('# '+target+' '+kindName,TEMPLATE_VERSION+' · '+GUIDE_VERSION+' · 보고일 '+(m.report_date||NA)+' · 기준 완료 거래일 '+base,
-  '포트폴리오 v1.1 · QGV 점수 기준 v1(UNCALIBRATED) · 유형 v1 잠정 · 가상매매 규칙 v1(PROVISIONAL)','금액 표시: '+(hidden?'숨김':'표시'),'');
+  '포트폴리오 v1.1 · '+scoringText(m,false)+' · 유형 v1 잠정 · 가상매매 규칙 v1(PROVISIONAL)','금액 표시: '+(hidden?'숨김':'표시'),'');
  if(m.mode==='REHEARSAL')L.push(rehearsalLine(m),'');
  const s=m.summary;
  L.push('## 요약','| 평가액 | 마지막 거래일 | 가상 매수 | 가상 매도 |','|---|---|---|---|',
@@ -134,15 +140,18 @@ function renderTemplate(m,{hidden=true,guide=true}={}){
  L.push('원금 '+(s?money(s.initial_value,H):NA)+' · 추가입금 '+(s?money(s.deposits,H):NA)+' · 출금 '+NA+' · 신뢰도 '+(m.started?'중간':NA),'');
  L.push('## ② 포트폴리오 구성','| 업종군(SIC) | 목표 | 실제 | 차이 |','|---|---|---|---|','| '+NA+' (SIC v0 연결 전) | '+NA+' | '+NA+' | '+NA+' |','집중도: 【규칙】 '+NA,'');
  L.push('## ③ 전 종목 장부','판단: '+VT.DISCLAIMER.ko+' · 우선순위 '+VT.priorityText('ko-KR')+' · 주 판단 1개 + 보조 칩','| 기업(티커) | 실제/목표 | 1D | 누적 | QGV(Q·G) | 판단 | 사유 코드 |','|---|---|---|---|---|---|---|');
- if(m.holdings.length)for(const h of m.holdings)L.push('| '+h.name+' | '+weight(h.actual_weight)+' / '+weight(h.target_weight)+' | '+NA+' | '+NA+' | '+(num(h.q)&&num(h.g)?score((h.q+h.g)/2):NA)+' | '+(judgementOf(h)?VT.judgementText(judgementOf(h),'ko-KR'):NA)+' | '+(h.reasons.join(', ')||NA)+' |');
+ if(m.holdings.length)for(const h of m.holdings)L.push('| '+h.name+' | '+weight(h.actual_weight)+' / '+weight(h.target_weight)+' | '+NA+' | '+NA+' | '+qgvCell(h)+' | '+(judgementOf(h)?VT.judgementText(judgementOf(h),'ko-KR'):NA)+' | '+(h.reasons.join(', ')||NA)+' |');
  else L.push('| '+NA+' | '+NA+' | '+NA+' | '+NA+' | '+NA+' | '+NA+' | '+NA+' |');
  const based=m.holdings.filter(h=>h.basis);if(based.length)L.push('업종 기준(D-5): '+based.map(h=>h.name+' '+basisText(h.basis)).join(' / '));
  L.push('판단 집계: '+countsLine(m.holdings),'당일 변동요인: 【AI】 (없으면 비움)','');
  L.push('## ④ 성과기여','| 종목 | 기여 %p |','|---|---|','| '+NA+' | '+NA+' |','성과의 주요 원인: 【AI】','');
  L.push('## ⑤ QGV','| 기업 | Q | G | V | 총점(유형 가중) | 유형 |','|---|---|---|---|---|---|');
  const withQg=m.holdings.filter(h=>num(h.q)||num(h.g));
- if(withQg.length)for(const h of withQg)L.push('| '+h.name+' | '+score(h.q)+' | '+score(h.g)+' | '+NA+' | '+NA+' (V 없음 → Q·G 점수 '+(num(h.q)&&num(h.g)?score((h.q+h.g)/2):NA)+') | '+NA+' |');
+ if(withQg.length)for(const h of withQg)L.push(h.version==='v2'?'| '+h.name+' | '+score(h.q)+' | '+score(h.g)+' | '+score(h.v)+' | '+qgvCell(h)+' | '+NA+' |'
+  :'| '+h.name+' | '+score(h.q)+' | '+score(h.g)+' | '+NA+' | '+NA+' (V 없음 → Q·G 점수 '+(num(h.q)&&num(h.g)?score((h.q+h.g)/2):NA)+') | '+NA+' |');
  else L.push('| '+NA+' | '+NA+' | '+NA+' | '+NA+' | '+NA+' | '+NA+' |');
+ const cmp=m.holdings.filter(h=>h.compare&&num(h.compare.total));
+ if(cmp.length)L.push((m.scoring==='v2'?'v1 참고(결측 재정규화): ':'v2 비교용(PROVISIONAL): ')+cmp.map(h=>h.name+' '+score(h.compare.total)).join(' / '));
  L.push('가격 변화와 Q·G 변화 구분: 【AI】','');
  L.push('## ⑥ 기술적 분석 (표시 전용, GSQ-015)','| 지표 | 값 | 판정 |','|---|---|---|','| '+NA+' | '+NA+' | '+NA+' |','기술적 결론: 【AI】 (없으면 【규칙】 '+NA+')','');
  L.push('## ⑦ 거시환경','| 축 | 최신값 | 방향 | 상태 |','|---|---|---|---|','| '+NA+' | '+NA+' | '+NA+' | '+NA+' |','국면 판정 NOT_AVAILABLE · 매핑 채택 전','Macro 판정: 【AI】','');
@@ -175,7 +184,7 @@ function renderTemplate(m,{hidden=true,guide=true}={}){
  if(D&&D.state==='OK')L.push('기준 '+D.base+' 종가 = 100 · '+(D.sessions[0]||NA)+'~'+(D.sessions[D.sessions.length-1]||NA)+' · '+(B?basisName(B.basis):NA));
  L.push('| 위험지표 | 값 | 상태 |','|---|---|---|','| '+NA+' | '+NA+' | '+NA+' |','');
  L.push('## 최종 투자판단','| 영역 | 판단 | 출처 |','|---|---|---|','| 가상매매 | '+ruleSummary(m)+' | 규칙 v1 |','최종 행동(7단계 어휘): 【AI】 (없으면 【규칙】 '+countsLine(m.holdings)+')','');
- L.push('## 각주',target+' · 포트폴리오 v1.1 · QGV 점수 기준 v1(보정 전) · 유형 v1 잠정 · 평가액 '+(s?money(s.total_value,H):NA)+' · 기준 종가일 '+base+' · 가상매매 실제 평가액 미반영 · 추산값 ≈ · 결측 N/A',
+ L.push('## 각주',target+' · 포트폴리오 v1.1 · '+scoringText(m,true)+' · 유형 v1 잠정 · 평가액 '+(s?money(s.total_value,H):NA)+' · 기준 종가일 '+base+' · 가상매매 실제 평가액 미반영 · 추산값 ≈ · 결측 N/A',
   '보고일: '+(m.report_date||NA),'투자 시작일: '+(m.invest_start||NA),'가상매매 시작일: '+(m.start_date||'미정'),'');
  const used=[...new Set(m.holdings.flatMap(h=>h.reasons).concat(m.executed.flatMap(t=>t.reason_codes),m.cancelled.map(o=>o.cancel_reason),m.started?[]:m.ledger_reasons))].sort();
  L.push('## 사유 코드 사전 (그날 쓰인 코드만)',...(used.length?used.map(c=>'- '+c+': '+(VT.codeLabel(c,'ko-KR')||'라벨 없음 · 코드 그대로')):['- 없음']));
@@ -298,14 +307,14 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
   +(rehearsal?'<p data-rehearsal-note>'+esc(rehearsalLine(m))+'</p><div class="sheet-actions"><button type="button" data-recording-mode>'+esc(en?'Back to recording mode':'기록 모드로 돌아가기')+'</button></div>'
    :'<p class="small">'+esc(before?'가상매매 시작일 전입니다. 리허설은 오늘 데이터로 규칙만 돌려 보고, 어떤 장부·시트에도 기록하지 않습니다.':'시작일 이후 규칙 결과입니다. 리허설로 최근 거래일을 기록 없이 다시 볼 수 있습니다.')+'</p><div class="sheet-actions"><button type="button" data-rehearsal-run>'+esc(en?'Run rehearsal':'리허설 실행')+'</button></div>')
   +(vp?'<p class="small" data-v-progress data-v-state="'+esc(sig.v_progress.state)+'">'+esc(vp+' · V 기울기(D-21)는 첫 기록 뒤 20거래일부터 · 이 기기에만 V 점수 저장(가격 없음)')+'</p>':'')
-  +(cap?'<p class="small" data-v-capture="'+esc(cap.state)+'">'+esc(cap.state==='RECORDED'?'오늘 V 기록: '+cap.date+' · '+cap.added.length+'개 기업':'오늘 V 기록 없음 · '+(cap.reason?VT.codeText(cap.reason):NA))+'</p>':'')+'</section>';
+  +(cap?'<p class="small" data-v-capture="'+esc(cap.state)+'">'+esc(cap.state==='RECORDED'?'오늘 V 기록: '+cap.date+' · '+cap.added.length+'개 기업':'오늘 V 기록 없음 · '+(cap.reason?VT.codeText(cap.reason):NA))+'</p>':'')+(cap&&cap.v2?'<p class="small" data-v2-capture="'+esc(cap.v2.state)+'">'+esc(cap.v2.state==='RECORDED'?'오늘 v2 V 기록: '+cap.v2.date+' · '+cap.v2.added.length+'개 기업':'v2 V 기록 없음 · 오늘 완료된 미국 거래일과 같은 공시 입력·V 요인을 확인합니다.')+'</p>':'')+'</section>';
  h+=inputsCard(m.runner);
  h+='<section class="card" data-report-ai-summary><h2>오늘의 요약 <span class="badge">AI 해석</span></h2>'+(answer?'<pre class="ai-answer" data-ai-answer>'+esc(answer.answer)+'</pre><p class="small">'+esc((answer.model?answer.model+' · ':'')+'보관 '+(answer.saved_at||'')+' · '+(answer.source==='MAILBOX'?'우체통':'붙여넣기'))+'</p>':'<p data-rule-summary>'+esc('【규칙】 '+ruleSummary(m))+'</p>')
   +(check?'<p class="badge '+(check.format_ok?'LIVE':'NOT_AVAILABLE')+'" data-answer-format>'+esc(check.format_ok?'형식 확인됨':'형식 확인 필요')+'</p>'+(check.foreign_numbers.length?'<p class="badge STALE" data-foreign-numbers>'+esc('템플릿에 없는 숫자 '+check.foreign_numbers.length+'개')+'</p>':''):'')
   +'<p class="small">숫자는 앱 계산, 문장은 붙여넣은 AI 해석입니다. AI 해석이 없으면 규칙 문장으로 대신 채웁니다.</p></section>';
  h+='<section class="card" data-report-section="3"><h2>③ 전 종목 장부 '+VT.disclaimerHtml(locale)+(rehearsal?' <span class="badge mode REHEARSAL">'+esc(modeName)+'</span>':'')+'</h2>';
  const basisCell=x=>x.basis?'<td class="small" data-basis="'+esc(x.company)+'" data-basis-benchmark="'+esc(x.basis.benchmark)+'" data-basis-state="'+esc(x.basis.state)+'" data-basis-fallback="'+(x.basis.fallback?'1':'0')+'" data-v-slope="'+esc(x.basis.v_slope)+'">'+esc(basisText(x.basis))+'</td>':'<td class="small">'+NA+'</td>';
- if(m.holdings.length){h+='<div class="table-scroll"><table><thead><tr><th>기업</th><th>실제/목표</th><th>Q·G</th><th>판단</th><th>사유</th>'+(m.started?'<th>업종 기준 · D-5</th>':'')+'</tr></thead><tbody>'+m.holdings.map(x=>'<tr><td>'+logo(x.company)+esc(x.name)+'</td><td>'+esc(weight(x.actual_weight)+' / '+weight(x.target_weight))+'</td><td>'+esc(num(x.q)&&num(x.g)?score((x.q+x.g)/2):NA)+'</td><td data-judgement-cell="'+esc(x.company)+'">'+(judgementOf(x)?VT.judgementHtml(judgementOf(x),{locale}):NA)+'</td><td class="small" data-reasons-cell="'+esc(x.company)+'">'+(x.reasons.length?VT.reasonsHtml(x.reasons,{locale}):NA)+'</td>'+(m.started?basisCell(x):'')+'</tr>').join('')+'</tbody></table></div><p class="small">'+esc(countsLine(m.holdings))+'</p>'
+ if(m.holdings.length){h+='<div class="table-scroll"><table><thead><tr><th>기업</th><th>실제/목표</th><th>Q·G</th><th>판단</th><th>사유</th>'+(m.started?'<th>업종 기준 · D-5</th>':'')+'</tr></thead><tbody>'+m.holdings.map(x=>'<tr><td>'+logo(x.company)+esc(x.name)+'</td><td>'+esc(weight(x.actual_weight)+' / '+weight(x.target_weight))+'</td><td>'+esc(qgvCell(x))+'</td><td data-judgement-cell="'+esc(x.company)+'">'+(judgementOf(x)?VT.judgementHtml(judgementOf(x),{locale}):NA)+'</td><td class="small" data-reasons-cell="'+esc(x.company)+'">'+(x.reasons.length?VT.reasonsHtml(x.reasons,{locale}):NA)+'</td>'+(m.started?basisCell(x):'')+'</tr>').join('')+'</tbody></table></div><p class="small">'+esc(countsLine(m.holdings))+'</p>'
   +(m.started?'<p class="small">'+esc('업종 기준: D-5 이상 하락 판정에 실제로 쓴 기준(D-22 업종 ETF, 없으면 S&P 500 대체). 정렬된 일봉 273개 미만이거나 기준이 없으면 기준 N/A이고 V 기울기도 쓰지 않습니다.')+'</p>':'');}
  else h+='<p>'+esc(NA+' · '+(m.kind==='REAL'?'기기 보유(ACTUAL) 없음 또는 시세 부족':'가상 장부 시작 전'))+'</p>';
  h+='<p class="small" data-level-priority>'+esc('우선순위: '+VT.priorityText(locale)+'. 회사마다 주 판단 1개, 나머지는 보조 칩. 가상 매수·가상 매도 표현은 ⑩ 가상 장부 안에서만 씁니다.')+'</p></section>';
@@ -327,7 +336,7 @@ function screenHtml(m,{hidden=true,answer=null,check=null,locale='ko-KR'}={}){
   +'<p class="small">개인 금액이 포함될 수 있습니다. 앱은 자동으로 전송하지 않고, 사용자가 직접 복사할 때만 기기 밖으로 나갑니다. 시트 ID·토큰·이메일은 어떤 설정에서도 내보내지 않습니다.</p><p role="status" data-report-status></p></section>';
  h+='<section class="card" data-report-mailbox><h2>AI 우체통 <span class="badge">선택 · 기본 OFF</span></h2><p class="small">켜면 연결된 내 구글 시트의 ReportInbox 탭에 오늘 템플릿(금액 숨김 상태)을 쓰고, ReportOutbox 탭에서 해시가 같은 답만 가져옵니다. 종목·비중·점수는 사용자가 연결한 AI 공급자에게 전달됩니다. Worker를 쓰지 않습니다.</p>'
   +'<div class="sheet-actions"><button type="button" data-mailbox-post>우체통에 오늘 템플릿 넣기</button><button type="button" data-mailbox-read>우체통 답 확인</button></div></section>';
- h+='<section class="card" data-report-footnote><h2>고정 각주</h2><p class="small">'+esc((TABS[m.tab]||'')+' · 포트폴리오 v1.1 · QGV 점수 기준 v1(보정 전) · 유형 v1 잠정 · 평가액 '+(s?money(s.total_value,H):NA)+' · 가상매매 실제 평가액 미반영 · 결측 N/A')+'</p><p class="small">'+esc('보고일: '+(m.report_date||NA)+' · 가상매매 시작일: '+(m.start_date||'미정 (D-13)'))+'</p></section>';
+ h+='<section class="card" data-report-footnote><h2>고정 각주</h2><p class="small">'+esc((TABS[m.tab]||'')+' · 포트폴리오 v1.1 · '+scoringText(m,true)+' · 유형 v1 잠정 · 평가액 '+(s?money(s.total_value,H):NA)+' · 가상매매 실제 평가액 미반영 · 결측 N/A')+'</p><p class="small">'+esc('보고일: '+(m.report_date||NA)+' · 가상매매 시작일: '+(m.start_date||'미정 (D-13)'))+'</p></section>';
  return h;
 }
 return Object.freeze({TEMPLATE_VERSION,GUIDE_VERSION,KINDS,TABS,MOCK_TABS,tabsNav,CHECK_LINES,GUIDE_A,HEADER_B,KIND_LINE,HIDE_KEY,AI_KEY,INBOX,OUTBOX,MODE_LABEL,basisText,vProgressText,

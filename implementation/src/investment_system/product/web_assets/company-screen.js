@@ -43,9 +43,9 @@ function classification(screens,id,locale){
    :na(rec?T('소속도 0.3 이상 유형 없음 또는 자료 없음','No type with membership ≥ 0.3, or no data'):T('공개 유형 자료가 연결되지 않았습니다.','Public type data is not connected.'),locale)]];
  return '<section class="card" data-company-card="classification"><h2>'+esc(T('분류 3축','Three classification axes'))+'</h2><ul class="axis-chips">'+items.map(([k,name,body])=>'<li data-axis="'+k+'"><b>'+esc(name)+'</b> '+body+'</li>').join('')+'</ul><p class="small">'+esc(T('산업 / 전략 테마 / 투자 유형은 서로 다른 축입니다. 서로 대신 채우지 않습니다.','Industry / strategy theme / investment type are separate axes. None substitutes for another.'))+'</p></section>';
 }
-function dataBadges(screens,locale,withPit){
+function dataBadges(screens,locale,withPit,sr=null){
  const T=tr(locale),p=screens?.['sec-qg-factors.json'],state=p?p.state:'NOT_AVAILABLE',aged=p&&state!=='NOT_AVAILABLE'&&Date.now()-Date.parse(p.as_of)>p.stale_after_seconds*1000;
- return '<div class="chips data-badges" data-company-badges><span class="badge '+esc(state)+'" data-badge="data">'+esc(state)+'</span>'+(aged?'<span class="badge freshness STALE">STALE</span>':'')+'<span class="badge">'+esc(p?T('기준 ','As of ')+p.as_of:T('기준 시각 없음','No as-of'))+'</span><span class="badge">'+esc(T('점수 기준 v1 · 보정 전','Score basis v1 · uncalibrated'))+'</span><span class="badge NOT_AVAILABLE">'+esc(T('시세 NOT_AVAILABLE','Price NOT_AVAILABLE'))+'</span>'+(withPit?'<span class="badge" data-badge="pit">'+esc('PIT '+(p&&p.data.availability_basis?p.data.availability_basis:'NOT_AVAILABLE'))+'</span>':'')+'</div>';
+ return '<div class="chips data-badges" data-company-badges><span class="badge '+esc(state)+'" data-badge="data">'+esc(state)+'</span>'+(aged?'<span class="badge freshness STALE">STALE</span>':'')+'<span class="badge">'+esc(p?T('기준 ','As of ')+p.as_of:T('기준 시각 없음','No as-of'))+'</span><span class="badge" data-scoring-default="'+esc(sr?sr.S.default:'v1')+'">'+esc(sr&&g.QgvScores?g.QgvScores.basisText(sr.S,locale==='en-US'):T('점수 기준 v1 · 보정 전','Score basis v1 · uncalibrated'))+'</span><span class="badge NOT_AVAILABLE">'+esc(T('시세 NOT_AVAILABLE','Price NOT_AVAILABLE'))+'</span>'+(withPit?'<span class="badge" data-badge="pit">'+esc('PIT '+(p&&p.data.availability_basis?p.data.availability_basis:'NOT_AVAILABLE'))+'</span>':'')+'</div>';
 }
 function nextEarnings(screens,id,locale){
  const T=tr(locale),rec=record(screens,'sec-filing-windows.json',id),s=rec&&g.PublicScreens&&g.PublicScreens.earningsStatus?g.PublicScreens.earningsStatus(rec):null;
@@ -54,7 +54,30 @@ function nextEarnings(screens,id,locale){
  if(!w)return na(T('공시 시기 패턴 자료 없음','No filing-timing pattern'),locale);
  return '<span class="badge" data-earnings-status="ESTIMATED">'+esc(T('추정','Estimated'))+'</span> <span data-next-earnings>'+esc(w.form+' '+w.start+'–'+w.end+' · D-'+w.days_until_start)+'</span> <span class="small">'+esc(T('예상 시기 · 확정일 아님','Estimated timing · not a confirmed date'))+'</span>';
 }
-function qgvBody(screens,id,locale){
+// Scores only through QgvScores (the scoring_default setting): ctx.scores from the app, else computed here (no device quotes).
+function scoreRow(ctx){const QS=g.QgvScores;if(!QS||!ctx)return null;let S=ctx.scores||null;try{if(!S)S=QS.compute({identities:[{company_id:ctx.id,ticker:ctx.ticker||''}],publicScreens:ctx.screens||{}});}catch(_){return null;}
+ const row=S&&S.rows?S.rows[ctx.id]:null;return row?{S,row}:null;}
+const V2_LABEL={q_profitability:['수익성','Profitability'],q_moat_proxy:['해자 대리','Moat proxy'],q_earnings_quality:['이익의 질','Earnings quality'],q_financial_safety:['재무 안전','Financial safety'],q_capital_allocation:['자본 배분(경영진 대리)','Capital allocation'],
+ g_revenue_growth:['매출 성장','Revenue growth'],g_per_share_growth:['주당 이익·FCF 성장','Per-share earnings / FCF growth'],g_growth_efficiency:['성장 효율','Growth efficiency'],g_consistency:['성장 일관성','Growth consistency'],g_recent_acceleration:['최근 가속','Recent acceleration'],
+ v_earnings_yield:['이익 수익률 (EBIT/EV)','Earnings yield (EBIT/EV)'],v_fcf_yield:['FCF 수익률 (FCF/EV)','FCF yield (FCF/EV)'],v_vs_industry:['업종 대비 (EV/EBIT 업종 백분위)','Vs industry (EV/EBIT industry percentile)'],v_vs_own_history:['자기 과거 대비 (5년)','Vs own history (5y)'],v_expectation_check:['기대 점검 (역DCF − 실현 성장)','Expectation check (reverse DCF − realized growth)']};
+function flagsHtml(d,locale){const QS=g.QgvScores;return QS&&d?QS.flagText(d.flags,locale==='en-US').map(f=>' <span class="badge STALE" data-qgv2-flag>'+esc(f)+'</span>').join(''):'';}
+function v2Body(d,locale){
+ const T=tr(locale),cell=(v,attr)=>'<dd data-qgv="'+attr+'">'+(typeof v==='number'?'<span class="num">'+esc(num(v,locale))+'</span>':na('',locale))+'</dd>';
+ const reference=d?.reference_only?'<p class="badge partial" data-qgv2-reference>'+esc(T('참고 순위 · 미국 504종목과 같은 계산, 정식 순위 아님','Reference ranking · same calculation as US504, not an official rank'))+'</p>':'';
+ if(!d||d.state==='NOT_AVAILABLE'&&d.q===null&&d.g===null)return reference+'<p data-qgv2-na>'+na((d&&d.flags||[]).join(' · ')||'SEC_QGV2_NOT_AVAILABLE',locale)+'</p>';
+ const rr=d.reference_range,range=rr&&rr.state!=='NOT_AVAILABLE'?esc(num(rr.low,locale,2)+' ~ '+num(rr.high,locale,2)):na(rr?rr.reason:'',locale);
+ return reference+'<dl class="kv"><dt>QGV v2</dt>'+cell(d.total,'total')+'<dt>Q</dt>'+cell(d.q,'Q')+'<dt>G</dt>'+cell(d.g,'G')+'<dt>V</dt>'+cell(d.v,'V')+'</dl>'
+  +'<p class="small" data-qgv2-summary>'+esc(T('산출 요인 ','Factors available ')+d.factors_available+'/'+d.factors_total+(d.profile?' · '+d.profile.id:''))+flagsHtml(d,locale)+'</p>'
+  +(d.v_excluded?'<p class="small" data-qgv2-gate>'+esc(T('가치 함정 주의: Q가 업종 내 하위 30%라 V를 총점에서 뺐습니다.','Value-trap caution: Q is in the bottom 30% of its industry, so V is left out of the total.'))+'</p>':'')
+  +'<p class="small" data-qgv2-range>'+esc(T('DCF 참고 범위 (점수 미반영 · FCF/주 · 성장률 규칙 하한~상한): ','DCF reference range (not scored · FCF/share · growth-rule lower~upper): '))+range+'</p>';
+}
+function qgvBody(screens,id,locale,sr=null){
+ const QS=g.QgvScores,T=tr(locale);
+ if(sr&&sr.S.default==='v2'){const ref=sr.row.reference;return v2Body(sr.row.primary,locale)+'<details data-qgv-detail><summary>'+esc(T('자세히','Details'))+'</summary><p class="small" data-qgv-v1-reference>'+esc(QS.label('v1_renormalized',locale==='en-US')+' · '+QS.summaryText(ref,locale==='en-US'))+'</p></details>';}
+ const cmp=sr&&sr.row.reference&&sr.row.reference.state!=='NOT_AVAILABLE'?'<p class="small" data-qgv-v2-compare>'+esc(T('v2 비교용 · ','v2 for comparison · ')+QS.summaryText(sr.row.reference,locale==='en-US'))+flagsHtml(sr.row.reference,locale)+'</p>':'';
+ return qgvBodyV1(screens,id,locale)+cmp;
+}
+function qgvBodyV1(screens,id,locale){
  const T=tr(locale),rec=record(screens,'sec-qg-factors.json',id),axes=qgAxes(rec);
  return '<dl class="kv"><dt>Q</dt><dd data-qgv="Q">'+(axes?axisCell(axes.Q,locale):na('',locale))+'</dd><dt>G</dt><dd data-qgv="G">'+(axes?axisCell(axes.G,locale):na('',locale))+'</dd>'
   +'<dt>V</dt><dd data-qgv="V">'+na(T('가격 필요 · 공개 파일에 가격 없음','Needs prices · public files carry none'),locale)+'</dd></dl>'
@@ -84,13 +107,14 @@ async function mountHolding(host,{locale,ticker,catalogPromise,actual=g.DeviceAc
 }
 function summary(ctx){
  const{locale,id,screens}=ctx,T=tr(locale),link=(href,text)=>'<a href="'+href+'">'+esc(text)+'</a>';
- return ctx.headerHtml+dataBadges(screens,locale,false)
+ const sr=scoreRow(ctx);
+ return ctx.headerHtml+dataBadges(screens,locale,false,sr)
   +'<p class="small" data-price-na>'+esc(T('현재가·일간 등락','Price and daily move'))+' '+na(T('공개 파일에 가격 없음','Public files carry no prices'),locale)+'</p>'
   +classification(screens,id,locale)
   +'<section class="card" id="company-holding" data-company-card="holding">'+holdingPlaceholder(locale)+'</section>'
   +'<div id="company-groups">'+ctx.groupsHtml+'</div>'
-  +'<section class="card" data-company-card="qgv"><h2><span class="flow-number">1</span> QGV</h2>'+qgvBody(screens,id,locale)
-  +'<dl class="kv"><dt>'+esc(T('리더보드 순위','Leaderboard rank'))+'</dt><dd data-qgv="rank">'+na('',locale)+'</dd><dt>'+esc(T('재평가 신호','Re-evaluation signal'))+'</dt><dd data-qgv="reeval">'+na('',locale)+'</dd><dt>'+esc(T('다음 실적','Next earnings'))+'</dt><dd>'+nextEarnings(screens,id,locale)+'</dd></dl>'
+  +'<section class="card" data-company-card="qgv"><h2><span class="flow-number">1</span> QGV</h2>'+qgvBody(screens,id,locale,sr)
+  +'<dl class="kv"><dt>'+esc(T('리더보드 순위','Leaderboard rank'))+'</dt><dd data-qgv="rank">'+(sr&&sr.row.rank!==null?'<span class="num">'+esc(String(sr.row.rank))+'</span> <span class="small">'+esc(T('이 기기 표시 순서 · 공식 순위 아님','Order on this device · not an official rank'))+'</span>':na('',locale))+'</dd><dt>'+esc(T('재평가 신호','Re-evaluation signal'))+'</dt><dd data-qgv="reeval">'+na('',locale)+'</dd><dt>'+esc(T('다음 실적','Next earnings'))+'</dt><dd>'+nextEarnings(screens,id,locale)+'</dd></dl>'
   +'<p>'+link('#analysis/'+encodeURIComponent(id),T('기업분석 자세히 보기 →','Open company analysis →'))+'</p></section>'
   +'<section class="card" data-company-card="value"><h2>'+esc(T('가치 (이 기기)','Value (this device)'))+'</h2><div id="company-value" data-company-value>'+valueHtml({locale,compact:true})+'</div><p>'+link('#analysis/'+encodeURIComponent(id),T('가치·시나리오 자세히 →','Value / scenarios details →'))+'</p></section>'
   +'<section class="card" data-company-card="technical"><h2><span class="flow-number">2</span> '+esc(T('기술','Technical'))+'</h2><div id="private-history-chart"></div><div id="tradingview-mini" data-company-tradingview></div><dl class="kv"><dt>'+esc(T('상태·국면','State / regime'))+'</dt><dd>'+na('',locale)+'</dd></dl><p>'+link('#technical',T('기술적 분석에서 이어 보기 →','Continue in technical analysis →'))+'</p></section>'
@@ -99,7 +123,21 @@ function summary(ctx){
   +'<section class="card" data-company-card="vmr"><h2>'+esc(T('가격 맥락 (VMR)','Price context (VMR)'))+'</h2><p>'+na(T('정상 범위 대비 위치는 가격이 필요합니다.','Position vs normal range needs prices.'),locale)+'</p></section>'
   +'<h2 class="section-title">'+esc(T('근거 자료','Source data'))+'</h2><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div>'+(ctx.candidateHtml||'');
 }
-function factorTable(screens,id,locale){
+function v2FactorTable(d,locale){
+ const T=tr(locale),en=locale==='en-US'?1:0,W=g.QgvV2?g.QgvV2.WEIGHTS:null;if(!W)return '<p>'+na('',locale)+'</p>';
+ const rows=['Q','G','V'].flatMap(axis=>Object.keys(W[axis]).map(f=>{const x=d&&d.factors?d.factors[f]:null,ok=x&&x.score!==null;
+  return '<tr data-v2-factor="'+f+'"><td>'+axis+'</td><td>'+esc(V2_LABEL[f][en])+'</td><td class="num">'+esc(num(W[axis][f],locale,0))+'%</td><td class="num" data-factor-score>'+(ok?esc(num(x.score,locale)):'—')+'</td><td><span class="badge '+(ok?'LIVE':'NOT_AVAILABLE')+'">'+esc(ok?(x.basis||x.state):'NOT_AVAILABLE')+'</span></td><td class="small">'+esc(ok?'':(x&&x.reason)||'')+'</td></tr>';}));
+ const dt=d&&d.detail?d.detail:null,pct=v=>typeof v==='number'&&Number.isFinite(v)?num(v*100,locale)+'%':'—';
+ const det=dt?'<p class="small" data-v2-detail>'+esc(T('이 기기 계산(메모리 전용): 이익 수익률 ','On this device (RAM only): earnings yield ')+pct(dt.ebit_yield)+' · '+T('FCF 수익률 ','FCF yield ')+pct(dt.fcf_yield)+' · '+T('역DCF 내재 성장률 ','reverse-DCF implied growth ')+pct(dt.implied_growth)+' · '+T('실현 매출 성장(3년) ','realized revenue growth (3y) ')+pct(dt.realized_growth)+' · '+(dt.earnings_basis==='NORMALIZED'?T('정상화 이익 기준 · ','normalized earnings basis · '):'')+T('업종 기준 ','industry basis ')+(dt.industry_basis||'—')+(dt.industry_peers?' ('+dt.industry_peers+')':''))+'</p>':'';
+ return '<div class="table-wrap"><table data-v2-factor-table><thead><tr><th>'+esc(T('축','Axis'))+'</th><th>'+esc(T('요인 (v2)','Factor (v2)'))+'</th><th>'+esc(T('기본 비중','Default weight'))+'</th><th>'+esc(T('점수','Score'))+'</th><th>'+esc(T('상태','State'))+'</th><th>'+esc(T('사유','Reason'))+'</th></tr></thead><tbody>'+rows.join('')+'</tbody></table></div>'
+  +'<p class="small">'+esc(T('산출 요인 ','Factors available ')+(d?d.factors_available+'/'+d.factors_total:'0/15')+T(' · 점수는 504종목(가격 있는 행) 안 백분위, 업종 대비는 SIC 업종군 안 백분위(8개 미만이면 전체) · 결측은 0으로 채우지 않음 · QGV v2 PROVISIONAL',' · scores are percentiles within the priced Universe504 rows; vs-industry within the SIC group (whole universe below 8 peers) · missing is never 0 · QGV v2 PROVISIONAL'))+'</p>'+det;
+}
+function factorTable(screens,id,locale,sr=null){
+ const T=tr(locale);
+ if(sr&&sr.S.default==='v2')return v2FactorTable(sr.row.primary,locale)+'<details data-qgv-detail><summary>'+esc(T('자세히 · v1 참고','Details · v1 reference'))+'</summary>'+factorTableV1(screens,id,locale)+'<p class="small" data-qgv-v1-reference>'+esc(g.QgvScores.label('v1_renormalized',locale==='en-US')+' · '+g.QgvScores.summaryText(sr.row.reference,locale==='en-US'))+'</p></details>';
+ return factorTableV1(screens,id,locale)+(sr&&sr.row.v2&&sr.row.v2.state!=='NOT_AVAILABLE'?'<details data-v2-compare><summary>'+esc(T('v2 비교용 요인','v2 factors for comparison'))+'</summary>'+v2FactorTable(sr.row.v2,locale)+'</details>':'');
+}
+function factorTableV1(screens,id,locale){
  const T=tr(locale),rec=record(screens,'sec-qg-factors.json',id),W=g.ProfileDefaults&&g.ProfileDefaults.weights;
  if(!W)return '<p>'+na('',locale)+'</p>';
  const rows=['Q','G'].flatMap(axis=>Object.keys(W[axis]).map(f=>{const v=rec&&rec.factors?rec.factors[f]:null,ok=v&&v.score!==null&&v.state!=='NOT_AVAILABLE';
@@ -110,24 +148,27 @@ function factorTable(screens,id,locale){
 function panel(key,title,body,hidden){return '<section class="card analysis-panel" role="tabpanel" id="analysis-panel-'+key+'" aria-labelledby="analysis-tab-'+key+'" data-analysis-panel="'+key+'"'+(hidden?' hidden':'')+'><h2>'+esc(title)+'</h2>'+body+'</section>';}
 function naRow(label,reason,locale,attr){return '<dt>'+esc(label)+'</dt><dd'+(attr?' data-na="'+attr+'"':'')+'>'+na(reason,locale)+'</dd>';}
 function analysis(ctx){
- const{locale,id,screens,ticker}=ctx,T=tr(locale),rec=record(screens,'sec-qg-factors.json',id),axes=qgAxes(rec);
+ const{locale,id,screens,ticker}=ctx,T=tr(locale),rec=record(screens,'sec-qg-factors.json',id),axes=qgAxes(rec),sr=scoreRow(ctx),v2=sr&&sr.S.default==='v2'?sr.row.primary:null;
  const tabs='<div class="chips screen-tabs analysis-tabs" role="tablist" aria-label="'+esc(T('기업분석 탭','Analysis tabs'))+'">'+TABS.map(([k,ko,en],i)=>'<button type="button" role="tab" id="analysis-tab-'+k+'" data-analysis-tab="'+k+'" aria-controls="analysis-panel-'+k+'" aria-selected="'+(i===0)+'" tabindex="'+(i===0?0:-1)+'">'+esc(T(ko,en))+'</button>').join('')+'</div>';
- const overview=panel('summary',T('종합','Overview'),'<dl class="kv">'+naRow(T('종합 매력도','Overall attractiveness'),T('V가 가격 필요로 없어 종합하지 않습니다.','V needs prices, so no overall score is made.'),locale,'overall')
-  +'<dt>'+esc(T('신뢰도','Confidence'))+'</dt><dd data-confidence>'+na('',locale)+'</dd></dl><p class="small" data-confidence-note>'+esc(T('신뢰도: 확률 아님. 데이터 충분도와 근거 일관성을 뜻합니다.','Confidence: not a probability. It means data sufficiency and evidence consistency.'))+(axes?' '+esc(T('현재 공개 요소 ','Public factors now: '))+axes.available+'/'+axes.total+'.':'')+'</p>'+qgvBody(screens,id,locale),false);
+ const overview=panel('summary',T('종합','Overview'),'<dl class="kv">'+(v2&&v2.total!==null?'<dt>'+esc(T('종합 매력도','Overall attractiveness'))+'</dt><dd data-overall="v2"><span class="num">'+esc(num(v2.total,locale))+'</span> <span class="small">QGV v2 PROVISIONAL · '+esc(v2.profile?v2.profile.id:'')+'</span>'+flagsHtml(v2,locale)+'</dd>':naRow(T('종합 매력도','Overall attractiveness'),T('V가 가격 필요로 없어 종합하지 않습니다.','V needs prices, so no overall score is made.'),locale,'overall'))
+  +'<dt>'+esc(T('신뢰도','Confidence'))+'</dt><dd data-confidence>'+na('',locale)+'</dd></dl><p class="small" data-confidence-note>'+esc(T('신뢰도: 확률 아님. 데이터 충분도와 근거 일관성을 뜻합니다.','Confidence: not a probability. It means data sufficiency and evidence consistency.'))+(axes?' '+esc(T('현재 공개 요소 ','Public factors now: '))+axes.available+'/'+axes.total+'.':'')+'</p>'+qgvBody(screens,id,locale,sr),false);
  const business=panel('business',T('사업·경쟁','Business / competition'),'<dl class="kv">'+naRow(T('사업 설명','Business description'),T('연간 보고서 출처 연결 전','Annual-report source not connected'),locale)+naRow(T('경쟁우위·열위','Strengths / weaknesses'),'',locale)+naRow(T('시장 지위','Market position'),T('요소 점수는 QGV 요소 탭','Factor score is in the QGV factors tab'),locale)+naRow(T('시장 점유율','Market share'),T('출처·추정 여부 표시 전 자료 없음','No sourced, estimate-flagged data'),locale)+naRow(T('매출 구성','Revenue mix'),'',locale)+'</dl>'+classification(screens,id,locale).replace('class="card"','class="subcard"'),true);
  const financials=panel('financials',T('재무','Financials'),'<div id="sec-reported-panel"></div><dl class="kv">'+naRow(T('재무 추이 (L03)','Financial trend (L03)'),T('공개 SEC 보고 패널만 연결됨','Only the public SEC reported panel is connected'),locale)+naRow(T('주주환원 (L06)','Shareholder returns (L06)'),'',locale)+'</dl>',true);
  const events=panel('events',T('주가·이벤트','Price / events'),'<p><a href="#company/'+encodeURIComponent(id)+'" data-chart-link>'+esc(T('요약 화면의 가격 차트 열기 →','Open the price chart on the summary →'))+'</a> · <a href="#technical">'+esc(T('기술적 분석 →','Technical analysis →'))+'</a></p><dl class="kv"><dt>E '+esc(T('실적 시기','Earnings timing'))+'</dt><dd>'+nextEarnings(screens,id,locale)+'</dd>'
   +['P '+T('제품','Product'),'L '+T('법률·규제','Legal / regulatory'),'M '+T('경영','Management'),'R '+T('재평가 신호','Re-evaluation signal'),'B·S '+T('내 거래','My trades')].map(x=>'<dt>'+esc(x)+'</dt><dd>'+na('',locale)+'</dd>').join('')+'</dl>',true);
- const factors=panel('factors',T('QGV 요소','QGV factors'),factorTable(screens,id,locale),true);
+ const factors=panel('factors',T('QGV 요소','QGV factors'),factorTable(screens,id,locale,sr),true);
  const value=panel('value',T('가치·시나리오','Value / scenarios'),'<div id="company-value" data-company-value>'+valueHtml({locale})+'</div>',true);
  const compare=panel('compare',T('비교·컨센서스','Compare / consensus'),'<dl class="kv">'+naRow(T('동종 비교','Peer comparison'),T('업종군 v0 연결됨 · 동종 비교 기준 미정','Industry group v0 connected · peer-comparison basis undefined'),locale)+naRow(T('컨센서스','Consensus'),T('공급원 없음','No source'),locale)+'</dl>',true);
- return '<a class="parent-link" href="#company/'+encodeURIComponent(id)+'" data-analysis-back>'+esc('← '+ticker+' '+T('요약','summary'))+'</a>'+ctx.headerHtml+dataBadges(screens,locale,true)+tabs+overview+business+financials+events+factors+value+compare;
+ return '<a class="parent-link" href="#company/'+encodeURIComponent(id)+'" data-analysis-back>'+esc('← '+ticker+' '+T('요약','summary'))+'</a>'+ctx.headerHtml+dataBadges(screens,locale,true,sr)+tabs+overview+business+financials+events+factors+value+compare;
 }
 // Value view (v1+dcf_v1_1_default). Public FCFE and the forward DCF are price-free; the price is this device's own quote, used in RAM only.
 const V_LABEL={fundamental_value:['핵심 가치','Fundamental value'],peer_relative_value:['동종 상대가치','Peer-relative value'],historical_valuation:['과거 밸류에이션','Historical valuation'],sector_context:['업종 맥락','Sector context'],theme_premium_discount:['테마 프리미엄·할인','Theme premium / discount'],reverse_dcf:['역DCF','Reverse DCF'],margin_of_safety:['안전마진','Margin of safety']};
 const QUOTE_SOURCE={MANUAL:['기기 수동 시세','Device manual quote'],API:['기기 API 시세','Device API quote'],GOOGLEFINANCE:['기기 Google 시트 시세','Device Google Sheet quote'],PRIVATE_HISTORY_CLOSE:['비공개 일별 이력 종가','Private daily history close'],WORKER_CLOSE:['Worker 종가 · 일봉 · 정보용','Worker close · Daily bar · For information only']};
 const COMPONENT_LABEL={long_term_debt_issuance:['장기차입 발행','Long-term debt issuance'],long_term_debt_repayment:['장기차입 상환','Long-term debt repayment'],net_short_term_borrowing:['단기차입 순증감','Net short-term borrowing']};
 const DCF_DEFAULTS={V1_1_UNCALIBRATED_DEFAULT:['v1.1 UNCALIBRATED 기본값','v1.1 UNCALIBRATED default','v1+dcf_v1_1_default'],V1_UNCALIBRATED_DEFAULT:['v1 UNCALIBRATED 기본값','v1 UNCALIBRATED default','v1+dcf_v1_default']};
+// v1 V axis of this device (PLAYBOOK_V1 §13-1 via VirtualTradingSignals.vAxisDetail): 'V(부분 · 반영 가중치 NN%)' when partial.
+function v1AxisRow(result,locale){const S=g.VirtualTradingSignals,T=tr(locale);if(!S||!result)return '';let d=null;try{d=S.vAxisDetail({v_factors:result.v_factors});}catch(_){return '';}
+ return '<dt data-v1-axis-label>'+esc(S.vLabel(d,locale)+' · v1')+'</dt><dd data-value="v1-axis">'+(d.state==='OK'?'<span class="num">'+esc(num(d.score,locale))+'</span>':na(d.reason,locale))+' <span class="small">'+esc(T('반영 가중치 ','Weight used ')+Math.round(d.weight_percent)+'%')+'</span></dd>';}
 function accnText(a){return typeof a==='string'&&/^\d{18}$/.test(a)?a.slice(0,10)+'-'+a.slice(10,12)+'-'+a.slice(12):'—';}
 function valueHtml({locale,row=null,result=null,quote=null,quoteReason=null,compact=false,params=g.DeviceValuation?g.DeviceValuation.parameters():null}){
  const T=tr(locale),en=locale==='en-US'?1:0,reasons=list=>(list||[]).join(' · '),pct=v=>typeof v==='number'&&Number.isFinite(v)?(v<0?'−':'')+num(Math.abs(v)*100,locale)+'%':'—';
@@ -163,7 +204,7 @@ function valueHtml({locale,row=null,result=null,quote=null,quoteReason=null,comp
   +'<dt>'+esc(T('역DCF 내재 성장률','Reverse-DCF implied growth'))+'</dt><dd data-value="reverse">'+rev+'</dd>'
   +'<dt>'+esc(T('명시기간 성장률 h','Explicit growth h'))+'</dt><dd data-value="growth">'+growth+'</dd>'
   +'<dt>'+esc(T('DCF 내재가치','DCF intrinsic value'))+'</dt><dd data-value="dcf">'+dcf+'</dd>'
-  +'<dt>'+esc(T('안전마진','Margin of safety'))+'</dt><dd data-value="mos">'+mos+'</dd>'
+  +'<dt>'+esc(T('안전마진','Margin of safety'))+'</dt><dd data-value="mos">'+mos+'</dd>'+v1AxisRow(result,locale)
   +(compact?'':'<dt>'+esc(T('시나리오','Scenarios'))+'</dt><dd data-value="scenarios">'+na('',locale)+'</dd>')+'</dl>';
  if(!compact){
   const rows=Object.keys(V_LABEL).map(k=>{const x=result?result.v_factors[k]:{score:null,state:'NOT_AVAILABLE',reason:k==='margin_of_safety'?'DCF_NOT_AVAILABLE':'NO_DEVICE_PRICE'},ok=x.state!=='NOT_AVAILABLE';
@@ -187,5 +228,5 @@ function wireTabs(rootEl){
  const select=key=>{for(const b of tabs){const on=b.dataset.analysisTab===key;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;}for(const p of rootEl.querySelectorAll('[data-analysis-panel]'))p.hidden=p.dataset.analysisPanel!==key;};
  tabs.forEach((b,i)=>{b.addEventListener('click',()=>select(b.dataset.analysisTab));b.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;e.preventDefault();const n=tabs[(i+d+tabs.length)%tabs.length];select(n.dataset.analysisTab);n.focus();});});
 }
-return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,qgAxes,classification,summary,analysis,mountHolding,mountValue,valueHtml,wireTabs,TYPES});
+return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,qgAxes,scoreRow,qgvBody,factorTable,classification,summary,analysis,mountHolding,mountValue,valueHtml,wireTabs,TYPES});
 });

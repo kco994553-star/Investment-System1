@@ -171,9 +171,9 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
           assert.equal(await page.locator('[data-basis="asml"]').getAttribute('data-basis-benchmark'), 'SP500');
           assert.ok((await page.locator('[data-basis="asml"]').textContent()).includes('S&P 500 (XLI 없음 → 대체)'));
           assert.equal(await page.locator('[data-source-symbol="XLI"][data-source-code="REQUEST_INVALID"]').count(), 1);
-          // Decision 2026-10-11: the device V factors lack core factors (peer / historical / sector / theme) → V is NA, never 0.
-          assert.equal(await page.locator('[data-v-capture="NOT_RECORDED"]').count(), 1);
-          assert.ok((await page.locator('[data-v-capture]').textContent()).includes('V_CORE_FACTOR_MISSING'));
+          // Decision 2026-10-13 §13-1: an eligible anchor plus >=50% computed weight can record partial V; prices stay in RAM.
+          assert.equal(await page.locator('[data-v-capture="RECORDED"]').count(), 1);
+          assert.ok((await page.locator('[data-v-capture]').textContent()).includes('오늘 V 기록: 2026-10-14 · 1개 기업'));
           assert.ok(noWonAmount(await page.locator('#daily-report').textContent()), 'won amount visible while hidden');
           await page.locator('[data-export-template]').click();
           await page.waitForFunction(() => /복사|표시/.test(document.querySelector('[data-report-status]')?.textContent || ''));
@@ -182,7 +182,7 @@ const noWonAmount = (text) => (text.match(/\d[\d,]*\s*(?:원|만원|억)/g) || [
           assert.ok(text.includes('업종 기준(D-5): '));
           const store = await storageOnlyV(page);
           assert.ok(store.clean, 'price, ledger or judgement reached storage');
-          assert.ok(store.vOk && !store.raw, 'no V number is stored when a core V factor is missing');
+          assert.ok(store.vOk && store.raw, 'approved partial V is stored without prices or ledger');
           assert.ok(traffic.worker.every((w) => w.auth && w.range === '2y'));
           assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'horizontal scroll ' + await page.evaluate(() => [...document.querySelectorAll('body *')].filter((n) => n.getBoundingClientRect().right > innerWidth + 1).slice(0, 6).map((n) => n.tagName + '.' + n.className + ':' + (n.textContent || '').slice(0, 40)).join(' | ')));
           await page.locator('[data-recording-mode]').click();
