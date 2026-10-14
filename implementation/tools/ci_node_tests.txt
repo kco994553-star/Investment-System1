@@ -49,5 +49,6 @@ report_benchmarks_node_test.js
 price_store_node_test.js
 sec_qgv2_node_test.js
 macro_lights_node_test.js
+playbook_screen_node_test.js
 qgv_v2_node_test.js
 qgv_scores_node_test.js
