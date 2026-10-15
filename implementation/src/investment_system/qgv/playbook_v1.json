@@ -2581,6 +2581,12 @@
      {
       "inflation_gt": 5,
       "growth_lt": 0
+     },
+     {
+      "inflation_gt": 8,
+      "other_lit_max": 0,
+      "rule": "M-RULE C",
+      "decided": "2026-10-15 사용자 결정 (PLAYBOOK_V1.md §18)"
      }
     ]
    },
@@ -2596,7 +2602,10 @@
       ]
      },
      {
-      "inflation_gt": 8
+      "inflation_gt": 8,
+      "other_lit_min": 1,
+      "rule": "M-RULE C",
+      "decided": "2026-10-15 사용자 결정 (PLAYBOOK_V1.md §18)"
      }
     ]
    }
@@ -2677,7 +2686,26 @@
    "reason": "REPLAY_PENDING",
    "decided": "2026-10-14 사용자 지시 C",
    "text": "5개 경고등 과거 재생(2000·2008·2020·2022)이 끝날 때까지 매크로는 참고 표시만 한다. 확대 차단·U3 조건에 쓰지 않는다.",
-   "reenable": "재생 완료 후 사용자 결정"
+   "reenable": "기기 비공개 재생(시장·신용 포함) 완료 + 기기에서 경고등 4/5 이상 → 결과 보고 → 사용자 승인 후 재가동 (M-GATE B, 자동 재가동 없음)",
+   "reenable_rule": {
+    "id": "M-GATE B",
+    "decided": "2026-10-15 사용자 결정 (PLAYBOOK_V1.md §18)",
+    "replay": "DEVICE_PRIVATE",
+    "replay_lights_required": [
+     "market",
+     "credit"
+    ],
+    "replay_sources": {
+     "market": "SPY",
+     "credit": "HYG/IEF"
+    },
+    "min_available_lights": 4,
+    "total_lights": 5,
+    "requires_report": true,
+    "requires_owner_approval": true,
+    "automatic": false,
+    "text": "시장(SPY)·신용(HYG/IEF) 경고등을 포함한 과거 재생을 사용자 기기에서 비공개로 끝내고, 기기에서 경고등 5개 중 4개 이상을 쓸 수 있을 때 재가동을 검토한다. 재가동 자체는 결과 보고 후 사용자 승인으로만 한다. 조건을 채워도 자동으로 켜지지 않는다. 가격과 가격에서 나온 값은 기기 RAM에만 두고 저장소·Pages·Actions 로그에 넣지 않는다."
+   }
   },
   "replay_findings": [
    {
@@ -2688,7 +2716,20 @@
     "evaluation": "weekly (Friday) replay = 31 weeks; daily = 152 weekdays (2022-04-15~2022-11-14)",
     "source": "MACRO_REPLAY_20261014.md (#251; public macro series only)",
     "status": "RECORDED_FOR_REVIEW",
-    "text": "\"물가 > 8% = 위기\" 규칙이 2022년에 위기를 냈다: 주 단위(금요일) 31주, 일 단위 152평일(2022-04-15~11-14). 이전 기록의 \"31일\"은 31주였다. 재생 완료 후 규칙 재검토 안을 제시하고 변경은 사용자 결정."
+    "text": "\"물가 > 8% = 위기\" 규칙이 2022년에 위기를 냈다: 주 단위(금요일) 31주, 일 단위 152평일(2022-04-15~11-14). 이전 기록의 \"31일\"은 31주였다. 재생 완료 후 규칙 재검토 안을 제시하고 변경은 사용자 결정.",
+    "resolved_by": "M-RULE C (2026-10-15)"
+   },
+   {
+    "rule": "CRISIS: inflation > 8% only with another light lit (M-RULE C); alone = WARNING",
+    "period": "2022",
+    "crisis_weeks": 0,
+    "crisis_weekdays": 0,
+    "warning_weeks": 37,
+    "warning_weekdays": 181,
+    "evaluation": "same public-series replay as above, re-run with the M-RULE C code: weekdays N/W/C 79/181/0, weeks 15/37/0; 2000, 2008, 2020 and control periods unchanged",
+    "source": "MACRO_REPLAY_20261014.md §11 (public macro series only; market/credit not replayed)",
+    "status": "RECORDED",
+    "text": "M-RULE C 적용 후 2022년 재생: 위기 0평일, 경고 181평일(주 단위 위기 0주·경고 37주). 다른 구간은 변화 없음. 시장·신용 경고등은 아직 재생하지 않았다(M-GATE B 조건)."
    }
   ]
  },

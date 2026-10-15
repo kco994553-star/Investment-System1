@@ -22,9 +22,31 @@ test('embedded CONFIG equals macro_lights_v1.json (v1 · UNCALIBRATED, sell deci
 test('vectors cover every light reason and state reason', () => {
   const text = JSON.stringify(vectors.cases.map(c => JSON.parse(c.expected_json)));
   for (const code of ['LIT', 'NOT_LIT', 'NO_DATA', 'INVALID_INPUT', 'CONFLICTING_DUPLICATE', 'WINDOW_INCOMPLETE', 'INSUFFICIENT_HISTORY', 'BASE_MONTH_MISSING',
-    'VALUE_MISSING', 'LIT_COUNT_GE_3', 'MARKET_AND_CREDIT_LIT', 'INFLATION_GT_8PCT', 'LIT_COUNT_EQ_2', 'INFLATION_GT_5PCT_AND_GROWTH_LT_0', 'LIT_COUNT_LE_1',
+    'VALUE_MISSING', 'LIT_COUNT_GE_3', 'MARKET_AND_CREDIT_LIT', 'INFLATION_GT_8PCT_WITH_OTHER_LIT', 'LIT_COUNT_EQ_2', 'INFLATION_GT_8PCT_ALONE', 'INFLATION_GT_5PCT_AND_GROWTH_LT_0', 'LIT_COUNT_LE_1',
     'AVAILABLE_LT_3']) assert.ok(text.includes('"' + code + '"'), code);
   for (const state of ['NORMAL', 'WARNING', 'CRISIS']) assert.ok(text.includes('"state":"' + state + '"'), state);
+});
+test('M-RULE C (2026-10-15): CPI > 8% alone is WARNING, with another light lit it is CRISIS; other rules unchanged', () => {
+  assert.equal(M.CONFIG.state.crisis_inflation_other_lit_min, 1);
+  assert.deepStrictEqual(M.CONFIG.revisions.map(r => [r.id, r.decided_on, r.source_section]), [['M-RULE-C', '2026-10-15', 'PLAYBOOK_V1 18']]);
+  const L = o => Object.assign({employment: false, inflation: false, curve: false, market: false, credit: false}, o);
+  let s = M.macroState(L({inflation: true}), 0.09, 0.03);
+  assert.deepStrictEqual([s.state, s.reasons], ['WARNING', ['INFLATION_GT_8PCT_ALONE']]);
+  for (const other of ['employment', 'curve', 'market', 'credit']) {
+    s = M.macroState(L({inflation: true, [other]: true}), 0.09, 0.03);
+    assert.deepStrictEqual([s.state, s.reasons], ['CRISIS', ['INFLATION_GT_8PCT_WITH_OTHER_LIT']], other);
+  }
+  s = M.macroState({inflation: true, employment: null, curve: null, market: null, credit: null}, 0.09, 0.03);
+  assert.deepStrictEqual([s.state, s.reasons], ['WARNING', ['INFLATION_GT_8PCT_ALONE', 'AVAILABLE_LT_3']], 'unavailable lights are not "other lit"');
+  s = M.macroState(L({inflation: true}), 0.09, -0.01);
+  assert.deepStrictEqual([s.state, s.reasons], ['WARNING', ['INFLATION_GT_8PCT_ALONE', 'INFLATION_GT_5PCT_AND_GROWTH_LT_0']]);
+  s = M.macroState(L({inflation: true, employment: true}), 0.08, 0.03);
+  assert.deepStrictEqual([s.state, s.reasons], ['WARNING', ['LIT_COUNT_EQ_2']], 'exactly 8% is not > 8%');
+  assert.deepStrictEqual(M.macroState(L({market: true, credit: true}), 0.02, 0.02).reasons, ['MARKET_AND_CREDIT_LIT']);
+  assert.deepStrictEqual(M.macroState(L({employment: true, curve: true, market: true}), 0.02, 0.02).reasons, ['LIT_COUNT_GE_3']);
+  assert.deepStrictEqual(M.macroState(L({employment: true, curve: true}), 0.02, 0.02).reasons, ['LIT_COUNT_EQ_2']);
+  assert.deepStrictEqual(M.macroState(L({inflation: true}), 0.06, -0.01).reasons, ['INFLATION_GT_5PCT_AND_GROWTH_LT_0']);
+  assert.equal(M.macroState(L({inflation: true}), 0.06, 0.01).state, 'NORMAL');
 });
 test('missing values are never zero: a null light is excluded, not counted as off', () => {
   const s = M.macroState({employment: null, inflation: null, curve: false}, null, null);

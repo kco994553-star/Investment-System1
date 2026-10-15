@@ -6,6 +6,15 @@
   "decided_on": "2026-10-13",
   "source_section": "PLAYBOOK_V1 13-5",
   "sell_decisions": false,
+  "revisions": [
+    {
+      "id": "M-RULE-C",
+      "decided_on": "2026-10-15",
+      "source_section": "PLAYBOOK_V1 18",
+      "changes": ["state.crisis_inflation_other_lit_min"],
+      "text": "물가 > 8%는 물가 외 다른 경고등이 1개 이상 함께 켜졌을 때만 위기, 단독이면 경고"
+    }
+  ],
   "comparison_epsilon": 1e-9,
   "lights": {
     "employment": {
@@ -48,6 +57,7 @@
     "warning_inflation_gt": 0.05,
     "warning_growth_lt": 0,
     "crisis_inflation_gt": 0.08,
+    "crisis_inflation_other_lit_min": 1,
     "crisis_pair": ["market", "credit"],
     "low_confidence_available_lt": 3
   }

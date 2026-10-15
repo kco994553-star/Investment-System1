@@ -108,6 +108,60 @@ def test_config_is_v1_uncalibrated_and_never_for_selling():
     assert raw['lights']['market']['rv_top_share'] == 0.05 and raw['lights']['market']['rv_history_years'] == 3
     assert raw['lights']['credit']['change_lte'] == -0.05 and raw['lights']['credit']['window_sessions'] == 20 and raw['lights']['credit']['estimate'] is True
     assert raw['state']['crisis_inflation_gt'] == 0.08 and raw['state']['low_confidence_available_lt'] == 3
+    assert raw['state']['crisis_inflation_other_lit_min'] == 1
+    assert [(r['id'], r['decided_on'], r['source_section']) for r in raw['revisions']] == [('M-RULE-C', '2026-10-15', 'PLAYBOOK_V1 18')]
+
+
+def _lights(**on):
+    return {name: on.get(name, False) for name in ml.LIGHTS}
+
+
+def test_m_rule_c_inflation_over_8_alone_is_warning():
+    s = ml.macro_state(_lights(inflation=True), 0.09, 0.03)
+    assert (s['state'], s['reasons'], s['lit_count']) == ('WARNING', ['INFLATION_GT_8PCT_ALONE'], 1)
+    s = ml.macro_state(_lights(inflation=True), 0.12, -0.01)
+    assert (s['state'], s['reasons']) == ('WARNING', ['INFLATION_GT_8PCT_ALONE', 'INFLATION_GT_5PCT_AND_GROWTH_LT_0'])
+    # Unavailable lights are not "other lit": still a warning (with low confidence).
+    s = ml.macro_state({'inflation': True}, 0.09, 0.03)
+    assert (s['state'], s['reasons']) == ('WARNING', ['INFLATION_GT_8PCT_ALONE', 'AVAILABLE_LT_3'])
+
+
+@pytest.mark.parametrize('other', ['employment', 'curve', 'market', 'credit'])
+def test_m_rule_c_inflation_over_8_with_another_light_is_crisis(other):
+    s = ml.macro_state(_lights(inflation=True, **{other: True}), 0.09, 0.03)
+    assert (s['state'], s['reasons'], s['lit_count']) == ('CRISIS', ['INFLATION_GT_8PCT_WITH_OTHER_LIT'], 2)
+    s = ml.macro_state(_lights(inflation=True, **{other: True}), 0.08, 0.03)  # exactly 8 % is not > 8 %
+    assert (s['state'], s['reasons']) == ('WARNING', ['LIT_COUNT_EQ_2'])
+
+
+def test_m_rule_c_leaves_other_state_rules_unchanged():
+    cases = [(_lights(), 0.02, 0.02, 'NORMAL', ['LIT_COUNT_LE_1']),
+             (_lights(employment=True), 0.02, 0.02, 'NORMAL', ['LIT_COUNT_LE_1']),
+             (_lights(employment=True, curve=True), 0.02, 0.02, 'WARNING', ['LIT_COUNT_EQ_2']),
+             (_lights(employment=True, curve=True, market=True), 0.02, 0.02, 'CRISIS', ['LIT_COUNT_GE_3']),
+             (_lights(market=True, credit=True), 0.02, 0.02, 'CRISIS', ['MARKET_AND_CREDIT_LIT']),
+             (_lights(inflation=True), 0.06, -0.01, 'WARNING', ['INFLATION_GT_5PCT_AND_GROWTH_LT_0']),
+             (_lights(inflation=True), 0.06, 0.01, 'NORMAL', ['LIT_COUNT_LE_1']),
+             (_lights(employment=True, inflation=True, curve=True), 0.09, 0.03, 'CRISIS', ['LIT_COUNT_GE_3', 'INFLATION_GT_8PCT_WITH_OTHER_LIT'])]
+    for lights, cpi, growth, state, reasons in cases:
+        s = ml.macro_state(lights, cpi, growth)
+        assert (s['state'], s['reasons']) == (state, reasons), (lights, cpi, growth)
+
+
+def test_m_rule_c_replay_tool_2022_shape_is_warning_not_crisis(tmp_path, capsys):
+    """Synthetic 2022-like path (CPI YoY ~ 9 %, other public lights off): the repo replay tool now reports warning, no crisis."""
+    import macro_lights_replay as replay
+    months = ['%04d-%02d-01' % (y, m) for y in range(2027, 2031) for m in range(1, 13)]
+    (tmp_path / 'u.csv').write_text('DATE,UNRATE\n' + ''.join('%s,4.0\n' % d for d in months))
+    (tmp_path / 'c.csv').write_text('DATE,CPI\n' + ''.join('%s,%.4f\n' % (d, 100 * 1.09 ** (i / 12)) for i, d in enumerate(months)))
+    (tmp_path / 'g.csv').write_text('DATE,G\n' + ''.join('%s,1.0\n' % d for d in months[::3]))
+    (tmp_path / 't.csv').write_text('DATE,T10Y3M\n' + ''.join('%s,0.5\n' % d for d in weekdays('2028-01-03', '2030-12-31')))
+    data = {k: replay.read_series([str(tmp_path / f)]) for k, f in (('unrate', 'u.csv'), ('cpi', 'c.csv'), ('gdp', 'g.csv'), ('curve', 't.csv'))}
+    data.update(spy={}, hyg={}, ief={})
+    states = {replay.evaluate(date.fromisoformat(d), data)[1]['state'] for d in weekdays('2029-03-01', '2029-12-31')}
+    assert states == {'WARNING'}
+    lights, state, cpi, _ = replay.evaluate(date(2029, 6, 1), data)
+    assert cpi > 0.08 and lights['inflation']['lit'] is True and state['reasons'] == ['INFLATION_GT_8PCT_ALONE']
 
 
 def test_vectors_are_current_python_reference():
