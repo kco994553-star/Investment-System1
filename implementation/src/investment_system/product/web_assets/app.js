@@ -4,6 +4,8 @@ let D,
   storageOK = true,
   corruptStorage = false;
 let identityCompanies=[],publicScreens={},publicCatalog=null,deviceCatalogPromise;
+// Settings > 원자료 보기(개발자용): the company whose raw public cards are shown (the last company viewed; RAM only).
+let rawDataCompany=null;
 function deviceCatalog() {
   if(!deviceCatalogPromise) deviceCatalogPromise=fetch('actual-catalog.json',{cache:'no-store'}).then(r=>{
     if(!r.ok) throw Error('PUBLIC_CATALOG_UNAVAILABLE');return r.json();
@@ -190,8 +192,20 @@ function settingsUI() {
   <p>${t("표시 언어는 계산 결과에 영향을 주지 않습니다.")}</p>
   <label for="source-language">${t("뉴스 원문 언어")}</label><select id="source-language">${[["all",t("전체 언어")],["ko",t("한국어 원문")],["en",t("영어 원문")]].map(([v,k])=>`<option value="${v}" ${appSettings.source_language===v?"selected":""}>${t(k)}</option>`).join("")}</select>
   <p>${t("원문 언어는 뉴스 필터만 변경합니다.")}</p></section>
-  <div id="ops-status"></div><section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio, profiles, investor stars, playbook records and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·프로필·투자자 ★·플레이북 기록·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="price-store-settings"></div><div id="private-trades-settings"></div><div id="private-universe-settings"></div><div id="device-api-settings"></div><section class="card" id="company-logo-settings"></section><section class="card" id="tradingview-settings"></section>`;
+  <div id="ops-status"></div><section class="card" id="device-pwa-settings"></section><section class="card"><h2>${t("금융 용어")}</h2>${["free_cash_flow","drawdown","operating_margin"].map(k=>`<p>${term(k)}</p>`).join("")}</section><section class="card"><h2>${appSettings.display_locale==='en-US'?'Device backup':'기기 백업·불러오기'}</h2><p>${appSettings.display_locale==='en-US'?'Interests, groups, portfolio, profiles, investor stars, playbook records and language settings. Quotes, tokens, sheet IDs and Worker address are excluded.':'관심 기업·그룹·포트폴리오·프로필·투자자 ★·플레이북 기록·언어 설정을 함께 보관합니다. 시세·토큰·시트 ID·Worker 주소는 제외합니다.'}</p><button id="device-backup-export">${t("내보내기")}</button><label>${t("가져오기")} <input id="device-backup-import" type="file" accept="application/json"></label></section><div id="google-sheet-settings"></div><div id="private-history-settings"></div><div id="price-store-settings"></div><div id="private-trades-settings"></div><div id="private-universe-settings"></div><div id="device-api-settings"></div><section class="card" id="company-logo-settings"></section><section class="card" id="tradingview-settings"></section>`+rawDataUI();
 }
+/* Settings > 원자료 보기(개발자용), collapsed by default (owner decision 2026-10-14). User screens show results only; the raw
+   public cards that used to sit at the bottom of the company screen live here: SEC Q·G leaf scores (sec-qg-factors.json),
+   price-free company types (company-types-pricefree.json) and estimated filing windows (sec-filing-windows.json), per company.
+   The company defaults to the last company viewed (RAM) and can be changed with the selector. */
+function rawDataIds(){const ids=new Set();for(const f of ['sec-qg-factors.json','company-types-pricefree.json','sec-filing-windows.json']){const c=publicScreens[f]?.data?.companies;if(c&&typeof c==='object')for(const id of Object.keys(c))ids.add(id);}
+  if(!ids.size)for(const c of identityCompanies)ids.add(c.company_id);return [...ids];}
+function rawDataCompanyId(){const ids=rawDataIds();return ids.includes(rawDataCompany)?rawDataCompany:(ids[0]||null);}
+function rawDataUI(){
+  const en=appSettings.display_locale==='en-US',ids=rawDataIds(),chosen=rawDataCompanyId(),name=id=>{const c=company(id);return c&&c.ticker?c.ticker:String(id).toUpperCase();};
+  return `<details class="card" id="raw-data-viewer" data-raw-data><summary>${en?'Raw data (developer)':'원자료 보기(개발자용)'}</summary><p class="small">${en?'Raw public inputs for checking only: SEC Q·G leaf scores, price-free company types and estimated filing windows. Screens show results only.':'확인용 원자료입니다: SEC Q·G 개별 점수, 가격 불필요 유형, 실적 예상 시기. 사용자 화면에는 결과만 보여 줍니다.'}</p><label for="raw-data-company">${en?'Company':'기업'}</label> <select id="raw-data-company" data-raw-company>${ids.map(id=>`<option value="${esc(id)}"${id===chosen?' selected':''}>${esc(name(id))}</option>`).join('')}</select><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div></details>`;
+}
+function mountRawData(){const id=rawDataCompanyId();for(const kind of ['qg','types','filings'])PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:id||undefined,locale:appSettings.display_locale});}
 function entityRoute(e) {return e.entity_type==="COMPANY"?"#company/"+encodeURIComponent(e.canonical_id):"#entity/"+encodeURIComponent(e.entity_type+":"+e.canonical_id);}
 // Company search (TARGET directory + public Universe504 codes): identity only, no prices/caps/ranks (GSQ-010).
 let publicEntities=[],universeDirectory=null,universeDirectoryPromise=null;
@@ -368,7 +382,7 @@ function home() {
   <section class="card" data-daily-reports><h2>${appSettings.display_locale==='en-US'?'Daily reports':'일일보고서'}</h2><div class="chips"><a href="#report/mock" data-report-link="mock">${appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'} →</a><a href="#report/real" data-report-link="real">${appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'} →</a></div><p class="small">${appSettings.display_locale==='en-US'?'Virtual records only · no orders':'가상 기록 · 주문 기능 없음'}</p></section>
   <details><summary>${t("분석 · 뉴스 · 관계 변화 더보기")}</summary><div class="grid">${block("qgv",t("QGV 변화"),"<p>"+t("변화량은 upstream changes가 제공할 때만 표시합니다.")+"</p>")}${block("technical",t("Technical 변화"),"<p>"+t("최근 신호는 기업 상세에서 확인하세요.")+"</p>")}${block("news",t("관심기업 뉴스"),'<a href="#news">'+t("뉴스 열기 →")+"</a>")}${block("relationships",t("Relationship changes(관계 변화)"),'<a href="#news">'+t("관계망 열기 →")+"</a>")}</div></details>`+
   `<section class="card" data-system-flow><h2>${t("시스템")}</h2><div class="hub-grid">${[["1","QGV","#qgv","qgv"],["2",t("기술적 분석"),"#technical","technical"],["3",t("매크로"),"#macro","macro"],["4",t("검증·연구"),"#validation",null]].map(([n,label,href,name])=>`<a class="card hub-card" href="${href}"><h3><span class="flow-number">${n}</span> ${esc(label)}</h3><span class="badge ${name?esc(D[name].state):"NOT_AVAILABLE"}">${name?esc(D[name].state):"NOT_AVAILABLE"}</span></a>`).join("")}</div></section>
-  <section class="card" data-data-basis><h2>${t("데이터 기준")}</h2><dl><dt>${t("목표 비중 버전")}</dt><dd id="home-target-version">—</dd><dt>${t("QGV 기준 버전")}</dt><dd>${esc(t("v1 · 보정 전"))}</dd><dt>${t("시세·환율")}</dt><dd>${esc(t("이 기기에서만 입력·계산"))}</dd><dt>${t("보유 정보")}</dt><dd>${esc(t("이 기기에만 저장"))}</dd></dl><a href="#settings">${t("데이터 운영 상태 →")}</a></section></div>`;
+  <section class="card" data-data-basis><h2>${t("데이터 기준")}</h2><dl><dt>${t("목표 비중 버전")}</dt><dd id="home-target-version">—</dd><dt>${t("QGV 기준 버전")}</dt><dd>${esc(t("v2 · PROVISIONAL"))}</dd><dt>${t("시세·환율")}</dt><dd>${esc(t("이 기기에서만 입력·계산"))}</dd><dt>${t("보유 정보")}</dt><dd>${esc(t("이 기기에만 저장"))}</dd></dl><a href="#settings">${t("데이터 운영 상태 →")}</a></section></div>`;
 }
 function directoryFilters(prefix,watch=false) {
  return `<div class="chips"><label><input type="checkbox" id="${prefix}-interest" ${watch?"checked disabled":""}>${t("관심기업만")}</label><select id="${prefix}-group" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("")}</select><select id="${prefix}-sort" aria-label="${t("정렬")}"><option value="${watch?"added":"ticker"}">${watch?t("추가한 순"):t("티커 순")}</option><option value="name">${t("기업명 순")}</option><option value="favorites">${t("관심기업 우선")}</option></select></div>`;
@@ -523,7 +537,7 @@ function qgv() {
       ["검증 연결","부분","검증 허브에서 준비 상태를 확인합니다. 성과 기록은 미연결입니다.","#validation"]]]
   ];
   return heading("QGV",t("QGV 허브"),t("기존 화면과 각 기능의 준비 상태를 확인합니다."))+
-    `<div class="chips data-badges"><span class="badge">${esc(t("점수 기준 v1 · 보정 전"))}</span><span class="badge">${esc(t("미국 상위 500 · 목표 범위"))}</span></div>`+
+    `<div class="chips data-badges"><span class="badge">${esc(t("점수 기준 v2 · PROVISIONAL"))}</span><span class="badge">${esc(t("미국 상위 500 · 목표 범위"))}</span></div>`+
     `<div data-hub="qgv">${groups.map(([id,title,cards])=>`<section class="hub-group" id="qgv-${id}"><h2 tabindex="-1">${esc(t(title))}</h2><div class="hub-grid">${cards.map(args=>hubCard(...args)).join("")}</div></section>`).join("")}</div>`+
     `<p class="hub-legend" data-hub-legend>${["사용 가능","부분","준비 중","설계만"].map(x=>`<span class="badge" data-feature-status="${x}">${esc(t(x))}</span>`).join(" ")}</p>`;
 }
@@ -598,6 +612,15 @@ let leaderboardView={view:'default',profileId:null},leaderboardRows=null;
 // Scores (S04/S05/S06, report, rehearsal) come only from QgvScores (the scoring_default setting). QGV v2 profile choice and the
 // device quotes of the v2 V cross-section live in this page's memory only: never stored, logged or sent.
 let qgv2Profile={preset:null,gate:null},qgv2Quotes={},qgv2QuotesKey='';
+// New device quotes change only the score sections. Repaint those in place: a full render() would reset the open analysis
+// tab, the value panel, the loaded private history table and the playbook panel.
+const SCORE_SECTIONS=['[data-company-badges]','[data-company-card="qgv"]','[data-analysis-panel="summary"]','[data-analysis-panel="factors"]'];
+function repaintScores(build){const fresh=document.createElement('div');fresh.innerHTML=build();for(const sel of SCORE_SECTIONS){const live=$('#content '+sel),next=fresh.querySelector(sel);if(live&&next)live.innerHTML=next.innerHTML;}}
+// Late score inputs (the DART reference row) repaint only the score views of the open screen. A full render() here
+// discarded typed weights, open tabs and in-flight save messages on whatever screen was open (e.g. the ledger sheet).
+function refreshScoreViews(){const[route,raw]=location.hash.slice(1).split('/');let id='';try{id=decodeURIComponent(raw||'');}catch(_){id='';}
+ if(route==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);
+ else if(route==='company'&&id)repaintScores(()=>detail(id));else if(route==='analysis'&&id)repaintScores(()=>analysis(id));}
 function qgvScores(identities=identityCompanies){return QgvScores.compute({identities,publicScreens,quotes:qgv2Quotes,preset:qgv2Profile.preset,gate:qgv2Profile.gate,referenceRows:typeof dartReferenceRows==='function'?dartReferenceRows():{}});}
 async function refreshQgv2Quotes(after){const inputs=window.Qgv2Inputs?publicScreens[Qgv2Inputs.FILE]:null;if(!inputs)return;let catalog=null;try{catalog=await deviceCatalog();}catch(_){catalog=null;}
  let q={};try{q=await QgvScores.collectQuotes(window,{identities:identityCompanies,v2Inputs:inputs,catalog});}catch(_){q={};}// Quotes accumulate for this page session (the Universe read is dropped on navigation); a Universe read/clear resets them.
@@ -771,6 +794,7 @@ function renderRoute() {
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
   const routes={home,qgv,analysis:()=>analysis(id),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
   if(!routes[route]) route="home";
+  if((route==='company'||route==='analysis')&&id) rawDataCompany=id;
   $("#content").innerHTML=routes[route]();
   if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
   if(['playbook','portfolio','company'].includes(route)&&window.PlaybookScreen){const place=route==='playbook'?$('#playbook-screen'):document.createElement('div');if(route!=='playbook')$('#content').append(place);void PlaybookScreen.mount(place,{catalogPromise:deviceCatalog(),scoreOptions:playbookScoreOptions,screens:publicScreens,idByTicker:new Map(identityCompanies.map(r=>[r.ticker,r.company_id])),publicCatalog,interests:[...prefs.interests],universeCodesPromise:fetch('universe-codes.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>p?.schema==='universe-codes/1'&&Array.isArray(p.codes)?p.codes:[]).catch(()=>[]),full:route==='playbook'}).catch(()=>{if(place.isConnected)place.textContent='플레이북 확인 불가 · 기기 기록을 읽을 수 없습니다.';});}
@@ -779,7 +803,7 @@ function renderRoute() {
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
   if(route==='analysis') CompanyScreen.wireTabs($('#content'));
-  if((route==='company'||route==='analysis')&&window.Qgv2Inputs&&publicScreens[Qgv2Inputs.FILE]) void refreshQgv2Quotes(()=>{const h=location.hash.slice(1).split('/');if(h[0]===route&&$('[data-company-card="qgv"],[data-analysis-panel="factors"]'))render();});
+  if((route==='company'||route==='analysis')&&window.Qgv2Inputs&&publicScreens[Qgv2Inputs.FILE]) void refreshQgv2Quotes(()=>{const h=location.hash.slice(1).split('/');if(h[0]===route&&$('[data-company-card="qgv"],[data-analysis-panel="factors"]'))repaintScores(routes[route]);});
   if(route==='company'||route==='analysis') paintValue(route,id);
   if(route==='model') {attachDeviceActual('#model-actual-summary',false);paintModel();}
   if(route==='home') deviceCatalog().then(c=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent=c.target_root_version||'NOT_AVAILABLE';}).catch(()=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent='NOT_AVAILABLE';});
@@ -799,7 +823,7 @@ function renderRoute() {
   if(route==='validation') ForwardValidation.mount($('#forward-validation-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig});
   if(route==='types') DeviceProfiles.mount($('#device-type-editor'),{locale:appSettings.display_locale,mode:'types'});
   if(route==='macro') MacroLights.mount($('#macro-lights-root'),{bundle:publicScreens,locale:appSettings.display_locale,config:window.InvestmentAppConfig});
-  for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});
+  for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});
   syncNavigation(route);
   const flowParent=QGV_CHILDREN.includes(route)?"qgv":route==="research"?"validation":route;
   if(FLOW_STEPS[flowParent]) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${FLOW_STEPS[flowParent][0]}"><span class="flow-number">${FLOW_STEPS[flowParent][0]}</span> ${esc(t(FLOW_STEPS[flowParent][1]))}</p>`);
@@ -828,6 +852,7 @@ function renderRoute() {
     attachDeviceApiSettings();
     CompanyLogos.mountSettings($('#company-logo-settings'),{locale:appSettings.display_locale});
     TradingViewWidgets.mountSettings($('#tradingview-settings'),{locale:appSettings.display_locale});
+    const rawSelect=$("#raw-data-company");if(rawSelect)rawSelect.onchange=e=>{rawDataCompany=e.target.value;mountRawData();};
     $("#display-locale").onchange=e=>updateSettings({display_locale:e.target.value});
     $("#source-language").onchange=e=>updateSettings({source_language:e.target.value});
   }
@@ -1065,7 +1090,7 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
 }).catch(error=>{if(path==="sec-m2-candidates.json")return null;throw error;}))),SecReported.load(window),PublicScreens.load(window).then(s=>typeof ClassificationScreens==="object"?ClassificationScreens.load(window).then(c=>{if(c)s[ClassificationScreens.FILE]=c;return s;}):s).then(s=>typeof Qgv2Inputs==="object"?Qgv2Inputs.load(window).then(v=>{if(v)s[Qgv2Inputs.FILE]=v;return s;}):s),deviceCatalog().catch(()=>null)]).then(([data,catalog,candidates,reported,screens,identities])=>{
   try{if(identities){DeviceMarket.emptyMarket(identities);identityCompanies=DeviceWatchlist.identities(identities);}}catch(_){identityCompanies=[];}
   publicScreens=screens;publicCatalog=identities||null;
-  if(window.DartDisclosures?.loadFinancials)void DartDisclosures.loadFinancials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)render();}});
+  if(window.DartDisclosures?.loadFinancials)void DartDisclosures.loadFinancials(window).then(financials=>{if(financials){publicScreens['dart-financials.json']=financials;if(window.QgvScores)refreshScoreViews();}});
   // Macro lights v1: public lights only until the device loads SPY on the macro screen (RAM, read by MacroLights.current()).
   try{MacroLights.setPublic(publicScreens);}catch(_){}
   secReported=reported;

@@ -4,6 +4,9 @@ const {routeEmptyPublicScreens}=require('./empty_public_screens.js');
 // Phase A: empty device and empty public screens (served from the offline-build fixture, also on live deploy builds) (everything missing must read NOT_AVAILABLE, never 0).
 // Phase B: synthetic, schema-valid sec-qg-factors / company-types-pricefree / sec-filing-windows served by route
 // interception only, plus ACTUAL holdings entered on a throw-away browser context (RAM-only exposure maths).
+// Owner decisions 2026-10-14: QGV v2 is the only score (no v1 Q·G on S04/S05; without sec-qgv2.json the v2 NOT_AVAILABLE reason
+// shows), the raw public cards (Q·G leaf scores, price-free types, filing windows) moved to Settings > 원자료 보기(개발자용)
+// (collapsed, last viewed company), and S04 carries one line '다음 실적 MM/DD경 (확정 아님) · D-n'.
 const {chromium}=require('playwright'),assert=require('node:assert/strict');
 const BASE=process.env.PAGES_COCKPIT_URL;
 const IDS=['asml','lrcx','klac','tokyo_electron','hanmi','nvda','amd','avgo','qcom','intc','msft','googl','amzn','rtx','stry','etn','hubb','gev','rok'];
@@ -43,8 +46,18 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
     assert.equal(await page.locator('[data-company-card="technical"] #private-history-chart').count(),1);
     assert.equal(await page.locator('[data-company-card="technical"] a[href="#technical"]').count(),1);
     for(const card of ['macro','news','vmr'])assert.ok((await text(page,'[data-company-card="'+card+'"]')).includes('NOT_AVAILABLE'),card);
-    for(const mount of ['#sec-reported-panel','#public-qg','#public-types','#public-filings'])assert.equal(await page.locator('main '+mount).count(),1,mount);
+    assert.equal(await page.locator('main #sec-reported-panel').count(),1,'#sec-reported-panel');
+    // Raw public cards are no longer on S04; they live in Settings > 원자료 보기(개발자용).
+    for(const mount of ['#public-qg','#public-types','#public-filings'])assert.equal(await page.locator('main '+mount).count(),0,mount+' moved');
+    assert.equal(await page.locator('main [data-raw-data-link] a[href="#settings"]').count(),1);
+    assert.equal(await text(page,'[data-next-earnings-line]'),'다음 실적 확인 불가');assert.equal(await page.locator('[data-next-earnings-line]').count(),1);
+    assert.ok((await text(page,'[data-qgv2-na]')).startsWith('QGV v2 산출 불가'),'v2 NOT_AVAILABLE reason, never v1');
     await noScroll(page,'S04 empty');
+    phase='S11-RAW-EMPTY';await open(page,'settings','[data-raw-data]');
+    assert.equal(await page.locator('[data-raw-data]').getAttribute('open'),null,'collapsed by default');
+    for(const mount of ['#public-qg','#public-types','#public-filings'])assert.equal(await page.locator('main [data-raw-data] '+mount).count(),1,mount);
+    assert.equal(await page.locator('[data-raw-company]').inputValue(),'nvda','last viewed company');
+    await page.locator('[data-raw-data] > summary').click();assert.ok(await page.locator('[data-raw-data] [data-public-screen="qg"]').isVisible());
     phase='S05-EMPTY';await open(page,'analysis/nvda','[data-analysis-tab]');
     assert.equal(await text(page,'main h1'),'NVDA');assert.equal(await text(page,'[data-analysis-back]'),'← NVDA 요약');assert.equal(await page.locator('[data-analysis-back]').getAttribute('href'),'#company/nvda');
     assert.equal(await page.locator('[data-analysis-tab]').count(),7);
@@ -52,7 +65,7 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
     assert.equal(await text(page,'.sub-category'),'종목 찾기');assert.equal(await page.locator('#primary-nav [data-nav-tab][aria-current="page"]').getAttribute('data-nav-tab'),'qgv');
     assert.ok((await text(page,'[data-confidence-note]')).includes('확률 아님'));assert.ok((await text(page,'[data-na="overall"]')).includes('NOT_AVAILABLE'));
     for(const key of ['business','financials','events','factors','value','compare']){await page.locator('[data-analysis-tab="'+key+'"]').click();assert.equal(await page.locator('[data-analysis-panel="'+key+'"]').isVisible(),true,key);assert.equal(await page.locator('[data-analysis-panel]:visible').count(),1,'one panel '+key);}
-    await page.locator('[data-analysis-tab="factors"]').click();assert.equal(await page.locator('[data-factor]').count(),13);
+    await page.locator('[data-analysis-tab="factors"]').click();assert.equal(await page.locator('[data-v2-factor]').count(),15);assert.equal(await page.locator('[data-factor]').count(),0,'no v1 factor table');
     assert.deepEqual(await page.locator('[data-factor-score]').evaluateAll(n=>[...new Set(n.map(x=>x.textContent))]),['—']);
     await page.locator('[data-analysis-tab="financials"]').click();assert.equal(await page.locator('[data-analysis-panel="financials"] #sec-reported-panel').count(),1);
     await page.locator('[data-analysis-tab="value"]').click();assert.ok((await text(page,'[data-analysis-panel="value"]')).includes('NOT_AVAILABLE'));
@@ -78,16 +91,25 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
    for(const[file,body]of [['sec-qg-factors.json',qg],['company-types-pricefree.json',types],['sec-filing-windows.json',filings]])await context.route('**/'+file,r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body())}));
    const page=await context.newPage();page.setDefaultTimeout(15000);let errors=0;page.on('pageerror',()=>errors++);
    try{
-    phase='S04-DATA';await open(page,'company/nvda','[data-qgv="Q"]');
-    await page.waitForFunction(()=>/\d/.test(document.querySelector('[data-qgv="Q"]').textContent));
-    assert.equal((await text(page,'[data-qgv="Q"]')).replace(/\s+/g,' '),'54.0');assert.equal(await text(page,'[data-qgv="G"]'),'50.0');
-    assert.ok((await text(page,'[data-qgv="V"]')).includes('NOT_AVAILABLE'));
+    phase='S04-DATA';await open(page,'company/nvda','[data-qgv="Q"]');await page.locator('[data-type-chip]').first().waitFor();
+    // v1 Q·G (54.0 / 50.0 from sec-qg-factors.json) is no longer shown; without sec-qgv2.json the v2 NOT_AVAILABLE reason is.
+    for(const key of ['Q','G','V'])assert.ok((await text(page,'[data-qgv="'+key+'"]')).includes('NOT_AVAILABLE'),key);
+    assert.ok(!(await text(page,'[data-company-card="qgv"]')).includes('54.0'));assert.equal(await text(page,'[data-qgv2-na]'),'QGV v2 산출 불가 · 이 기업의 v2 입력 없음');
     assert.deepEqual(await page.locator('[data-type-chip]').allTextContents(),['성장 0.80','우량 0.35']);
-    assert.ok((await text(page,'[data-next-earnings]')).startsWith('10-Q '));assert.ok((await text(page,'[data-company-card="qgv"]')).includes('확정일 아님'));
+    assert.match(await text(page,'[data-next-earnings-line]'),/^다음 실적 \d\d\/\d\d경 \(확정 아님\) · D-3$/);assert.equal(await page.locator('[data-next-earnings-line]').count(),1);
     await open(page,'company/amd','[data-qgv="Q"]');assert.ok((await text(page,'[data-qgv="Q"]')).includes('NOT_AVAILABLE'));assert.ok((await text(page,'[data-axis="type"]')).includes('NOT_AVAILABLE'));
     phase='S05-DATA';await open(page,'analysis/nvda','[data-analysis-tab]');await page.locator('[data-analysis-tab="factors"]').click();
-    assert.equal(await text(page,'[data-factor="competitive_advantage"] [data-factor-score]'),'90.0');assert.equal(await text(page,'[data-factor="roic_wacc"] [data-factor-score]'),'30.0');
-    assert.ok((await text(page,'[data-factor="roic_wacc"]')).includes('LIVE'));
+    assert.equal(await page.locator('[data-factor]').count(),0,'v1 leaf factors are raw data now');
+    // The SEC Q·G leaf scores, types and filing window of the last viewed company are in Settings > 원자료 보기(개발자용).
+    phase='S11-RAW-DATA';await open(page,'settings','[data-raw-data]');await page.locator('[data-raw-data] > summary').click();
+    const rawQg=page.locator('[data-raw-data] [data-public-screen="qg"] [data-screen-company="nvda"]');await rawQg.waitFor();
+    const leaf=async f=>(await rawQg.locator('dt').filter({hasText:new RegExp('^'+f+'$')}).locator('xpath=following-sibling::dd[1]').textContent()).trim();
+    assert.equal(await leaf('competitive_advantage'),'90');assert.equal(await leaf('roic_wacc'),'30');
+    assert.equal(await page.locator('[data-raw-data] [data-public-screen="qg"] [data-public-state]').getAttribute('data-public-state'),'LIVE');
+    assert.ok((await text(page,'[data-raw-data] [data-public-screen="types"] [data-screen-company="nvda"]')).includes('0.8'));
+    assert.ok((await text(page,'[data-raw-data] [data-public-screen="filings"]')).includes('확정일 아님'));await page.locator('[data-raw-data] [data-next-window]').waitFor();
+    await page.locator('[data-raw-company]').selectOption('hanmi');await page.locator('[data-raw-data] [data-public-screen="types"] [data-screen-company="hanmi"]').waitFor();
+    assert.equal(await page.locator('[data-raw-data] [data-screen-company="nvda"]').count(),0,'one company at a time');
     phase='ACTUAL-ENTRY';await open(page,'actual','[data-security-index="4"]');
     const fill=async(index,quantity,average,price)=>{const row=page.locator('[data-security-index="'+index+'"]');await row.locator('[data-field="quantity"]').fill(quantity);await row.locator('[data-field="average_cost"]').fill(average);await row.locator('[data-field="price"]').fill(price);};
     await fill(4,'10','1000','3000');await fill(5,'1','100','100');await page.locator('[data-fx-currency="USD"] [data-field="rate"]').fill('1000');
