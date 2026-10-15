@@ -263,7 +263,7 @@ def _metric_ok(key, value):
         return type(value) is int and 1 <= value <= vf.HISTORY_YEARS + 1
     # JSON numbers: an integral float may arrive as an int (JS has one number type); bool is never a number.
     valid = type(value) in (int, float) and math.isfinite(value) and abs(value) <= METRIC_LIMIT
-    if key == 'revenue_growth_std_5y':
+    if key in ('revenue_growth_std_5y', 'operating_margin_std_5y_pp'):
         return valid and value >= 0
     if key == 'revenue_volatility_5y_rank_pct':
         return valid and 0 <= value <= 100

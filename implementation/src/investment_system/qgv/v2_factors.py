@@ -222,7 +222,12 @@ SHARE_JUMP_LIMIT = 3.0
 # whose key set is METRIC_KEYS exactly), with the profiles allowed to carry each (validators: universe/sec_qgv2.py, sec-qgv2.js).
 # ebit_estimated_years: number of fiscal years FY0..FY-5 whose EBIT is the substitute pretax + interest (rule EBIT); present
 # only when >= 1, so its absence means every EBIT used is the reported operating income (or EBIT is not available).
-EXTRA_METRIC_PROFILES = {'ebit_estimated_years': ('GENERAL',)}
+# roic_avg_3y, operating_margin_std_5y_pp (owner decision Q-APPQ 2026-10-15): the PLAYBOOK §6-2 / §17 #19 quality inputs
+# (3-year average ROIC >= 15%, 5-year operating-margin population std < 3 percentage points), price-free.
+EXTRA_METRIC_PROFILES = {'ebit_estimated_years': ('GENERAL',), 'roic_avg_3y': ('GENERAL',),
+                         'operating_margin_std_5y_pp': ('GENERAL', 'FINANCIAL')}
+QUALITY_ROIC_YEARS = 3
+QUALITY_MARGIN_YEARS = 5
 EXTRA_METRIC_KEYS = tuple(EXTRA_METRIC_PROFILES)
 INTEGER_METRICS = frozenset({'moat_return_years', 'ebit_estimated_years'})
 # Metrics that are counts/descriptors, not ranked directly.
@@ -1048,6 +1053,20 @@ def _extra_metrics(c, m):
     m.update(dict.fromkeys(EXTRA_METRIC_KEYS))
     estimated = sum(1 for k in range(HISTORY_YEARS + 1) if c.ebit_estimated(k))
     m['ebit_estimated_years'] = estimated if estimated and c.profile in EXTRA_METRIC_PROFILES['ebit_estimated_years'] else None
+    # roic_avg_3y = mean of ROIC FY0, FY-1, FY-2 (all three needed; same ROIC as `roic`, GENERAL only).
+    roic = [c.roic(k) for k in range(QUALITY_ROIC_YEARS)]
+    if c.profile in EXTRA_METRIC_PROFILES['roic_avg_3y'] and None not in roic:
+        m['roic_avg_3y'] = _mean(roic)
+    # operating_margin_std_5y_pp = population std of EBIT / revenue over FY0..FY-4, in percentage points (all five needed,
+    # revenue > 0; the margins of v_inputs_v2.operating_margin_history before rounding).
+    margins = []
+    for k in range(QUALITY_MARGIN_YEARS):
+        revenue, ebit = c.a('revenue', k), c.a('ebit', k)
+        if revenue is None or revenue <= 0 or ebit is None:
+            break
+        margins.append(ebit / revenue)
+    if len(margins) == QUALITY_MARGIN_YEARS:
+        m['operating_margin_std_5y_pp'] = 100.0 * _pstdev(margins)
 
 
 V_FLOW_KEYS = ('fy_value', 'fy_end', 'ttm_value', 'ttm_end')

@@ -602,6 +602,45 @@ def test_split_after_fy0_blocks_per_share_history_until_the_basis_is_established
     assert len(compute(payload)[4]['ebit_per_share_history']) == 5
 
 
+def test_quality_inputs_roic_avg_3y_and_operating_margin_std_are_published_pricefree():
+    """Owner decision Q-APPQ 2026-10-15: public fields for the PLAYBOOK §17 #19 quality judgement."""
+    close = lambda a, b: a is not None and math.isclose(a, b, rel_tol=1e-5, abs_tol=1e-12)
+    roic = lambda year: 0.2 * 146.41 / 1.1 ** (2025 - year) * 0.75 / 120
+    m = compute(simple_company())[3]
+    assert close(m['roic_avg_3y'], (roic(2025) + roic(2024) + roic(2023)) / 3)
+    assert m['operating_margin_std_5y_pp'] == 0.0  # a constant 20% margin: a real zero spread, not a fill
+    # Population std of FY0..FY-4 EBIT/revenue, in percentage points.
+    margins = {2021: 0.25, 2022: 0.20, 2023: 0.18, 2024: 0.22, 2025: 0.20}
+    varied = simple_company(omit=('OperatingIncomeLoss',), extra=[(('OperatingIncomeLoss', 'USD', share * 146.41 / 1.1 ** (2025 - year),
+                                                                    f'{year}-12-31'), {'start': f'{year}-01-01'})
+                                                                  for year, share in margins.items()])
+    mu = sum(margins.values()) / 5
+    assert close(compute(varied)[3]['operating_margin_std_5y_pp'], 100 * math.sqrt(sum((x - mu) ** 2 for x in margins.values()) / 5))
+    # All years are needed: two ROIC years or four margins give NA, never a partial value.
+    assert compute(simple_company(years=range(2024, 2026)))[3]['roic_avg_3y'] is None  # only two fiscal years
+    m = compute(simple_company(years=range(2022, 2026)))[3]
+    assert m['roic_avg_3y'] is not None and m['operating_margin_std_5y_pp'] is None
+    # FINANCIAL rows: no ROIC (so no 3-year average); the margin spread is published when operating income exists.
+    m = compute(simple_company(), sic='6021')[3]
+    assert m['roic_avg_3y'] is None and m['operating_margin_std_5y_pp'] == 0.0
+    # Published in the SEC row (sparse, rounded like every metric) and accepted by the strict validator.
+    facts, subs = REF.synthetic_sec('0000001000')
+    row = q_build(facts, subs)
+    assert {'roic_avg_3y', 'operating_margin_std_5y_pp'} <= set(row['metrics'])
+    updates = REF.synthetic_universe_updates()
+    updates[REF._codes()[0]] = row
+    q.merge(None, updates, as_of=NOW, shard_index=0)
+    # The app's quality rule reads exactly these keys: 3 conditions pass / one fails / one missing -> NA.
+    from investment_system.qgv import playbook as pb
+    cfg = pb.load_config()
+    facts = lambda **kw: {'sic': 3674, 'net_debt_to_ebitda': 1.0, 'roic_avg_3y': 0.2, 'operating_margin_std_5y_pp': 2.0, **kw}
+    assert pb.classify_types_v0(cfg, facts())['quality']['member'] is True
+    assert pb.classify_types_v0(cfg, facts(operating_margin_std_5y_pp=3.0))['quality']['member'] is False
+    missing = facts()
+    missing.pop('roic_avg_3y')
+    assert pb.classify_types_v0(cfg, missing)['quality']['member'] is None
+
+
 # ---------------- percentile publication ----------------
 def test_percentile_formula_ties_and_direction():
     assert vs.percentile(0, 1, 9) == 0 and vs.percentile(8, 1, 9) == 100 and vs.percentile(4, 1, 9) == 50

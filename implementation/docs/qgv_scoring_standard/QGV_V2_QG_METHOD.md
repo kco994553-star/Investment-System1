@@ -153,6 +153,18 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
   confirms) both histories are empty (NA) until the next 10-K. The FY0-basis Q/G ratios are unaffected by that case. Never a
   guessed ratio, never 0. Tests: `test_per_share_histories_are_split_adjusted_only_when_sec_facts_establish_the_ratio`,
   `test_split_after_fy0_blocks_per_share_history_until_the_basis_is_established`.
+- **APPQ public quality inputs (Q-APPQ = add public fields).** Each row's `metrics` carries two price-free descriptors for the
+  PLAYBOOK §6-2 / §17 #19 quality rule (3-year average ROIC ≥ 15% and 5-year operating-margin std < 3%p and net debt/EBITDA
+  < 1.5): `roic_avg_3y` = mean of `roic` FY0, FY−1, FY−2 (all three needed; GENERAL only, since FINANCIAL has no ROIC) and
+  `operating_margin_std_5y_pp` = population std of EBIT/revenue over FY0..FY−4 × 100 (all five needed, revenue > 0; GENERAL and
+  FINANCIAL). Both follow every rule above (EBIT substitute, debt-free, RSG), are never ranked, never 0-filled (a constant
+  margin is a real 0.0 spread) and are absent when not computable. The app's quality judgement reads them
+  (`playbook-screen.js` `playbookTypeFacts`: `metrics.roic_avg_3y`, `metrics.operating_margin_std_5y_pp`,
+  `metrics.net_debt_to_ebitda`), so it is no longer always NA. Tests:
+  `test_quality_inputs_roic_avg_3y_and_operating_margin_std_are_published_pricefree`, `tools/playbook_screen_node_test.js`
+  ("quality (#19) reads the published sec-qgv2 fields").
+- **NDSN (Q-NDSN = keep).** No change: a D&A total equal to the intangible amortization only stays as reported (F2 does not
+  replace it).
 
 Derived lines: tax rate = income tax ÷ pretax income, clamped to 0–50%, when pretax > 0. Otherwise the default 21% applies
 (DEFAULT_TAX_RATE, uncalibrated). NOPAT = EBIT × (1 − tax rate). Invested capital (IC) = equity + total debt − cash (must be > 0).
@@ -233,7 +245,8 @@ Row: `cik`, `acquired_at`, `source_sha256{companyfacts,submissions}`, `state` (L
 `industry_group`, `profile`, `fiscal_year_end`, `currency`, `metrics` (sparse; 6 significant digits), `factors` (10 ids → 0–100 | null),
 `axes{Q,G}{score, factors_available, available_weight, peer_basis, peer_count, submetric_fallbacks, reason_codes}`, `v_inputs_v2`.
 SEC-only descriptors in `metrics` (never ranked; `v2_factors.EXTRA_METRIC_PROFILES`, not in the DART reference key set):
-`ebit_estimated_years` (GENERAL, integer 1–6, rule EBIT).
+`ebit_estimated_years` (GENERAL, integer 1–6, rule EBIT), `roic_avg_3y` (GENERAL, finite) and `operating_margin_std_5y_pp`
+(GENERAL and FINANCIAL, ≥ 0), rule APPQ. Both validators accept them only for those profiles and range-check them.
 
 `v_inputs_v2` holds the price-free inputs the device needs to compute V in RAM. Amounts are exact SEC values in the row currency.
 - `ebit`, `fcf`: `{fy_value, fy_end, ttm_value, ttm_end}`. FCF = OCF − capex for the same period.
