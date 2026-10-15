@@ -16,15 +16,24 @@
     "rule": "result.passed가 true이고 result.companies가 companies_required 이상이며 result.calc_version이 확정 순간 다시 읽은 sec-qgv2.json의 calc_version과 같을 때만 확정"
   },
   "finalize_check": {
-    "version": "v0", "decision": "USER_DECISION_2026-10-15",
-    "decided": "2026-10-15 사용자 보충 결정 「확정 순간 최신 공개 파일로 calc_version·신선도·Q·G 커버리지 재검사, 초안 때 통과 상태 재사용 금지」",
+    "version": "v0", "decision": "USER_DECISION_2026-10-15_EVENING",
+    "decided": "2026-10-15 사용자 보충 결정 「확정 순간 최신 공개 파일로 calc_version·신선도·Q·G 커버리지 재검사, 초안 때 통과 상태 재사용 금지」 + 2026-10-15 저녁 결정 「T-FRESH = 7일(행 수집 시각 기준) · 정상 NA와 계산 버전 혼재 구분 · 초안↔확정 연결」",
     "source_file": "sec-qgv2.json",
     "reread": "AT_FINALIZE",
     "calc_version_required": true,
     "legacy_without_calc_version": "FAIL",
-    "freshness_max_days": 14,
+    "freshness_max_days": 7,
+    "freshness_basis": "ROW_ACQUIRED_AT",
+    "file_as_of_counts_for_freshness": false,
+    "stale_action_ko": "504 전체 샤드 수동 실행(workflow_dispatch all_shards=true)을 한 번 돌린 뒤 다시 확인하세요",
+    "na_row_rule": "값이 없는 행은 NA 사유(reason_codes)가 있고 calc_version이 없거나 파일과 같으면 정상 NA로 보고 확정을 막지 않는다(순위·후보에서는 빠지고 504 분모에는 남는다). 값이 있는 행의 calc_version이 없거나 파일과 다르면 CALC_VERSION_MIXED",
     "coverage_min_ratio_from": "coverage.ready_min_ratio",
-    "rule": "확정 버튼을 누를 때 sec-qgv2.json을 다시 읽어 (a) 파일 calc_version이 있고 미국 Universe 행 calc_version이 모두 같고 (b) as_of가 확정일 기준 freshness_max_days 이내이며 (c) Q·G 점수가 있는 행 수가 각각 universe_size × ready_min_ratio 이상이어야 한다"
+    "draft_basis": ["calc_version", "as_of", "shard_count", "shards"],
+    "draft_basis_compare": ["calc_version", "shard_count", "shards"],
+    "on_basis_change": "REGENERATE_DRAFT",
+    "answers_on_regenerate": "CARRY_SAME_SYMBOLS",
+    "financial_safety_recheck": "SELECTED_AT_FINALIZE",
+    "rule": "확정 버튼을 누를 때 sec-qgv2.json을 다시 읽어 (a) 파일 calc_version이 있고 값이 있는 행의 calc_version이 모두 같으며 (b) 값이 있는 모든 행의 수집 시각(acquired_at)이 확정일 기준 freshness_max_days 이내이고(파일 as_of는 신선도로 쓰지 않음) (c) Q·G 점수가 있는 행 수가 각각 universe_size × ready_min_ratio 이상이고 (d) 초안의 입력 기준(calc_version·샤드별 최신 수집 시각)이 같고 (e) 선정 종목의 재무 안전이 최신 자료로 통과여야 한다. 입력 기준이 다르면 초안을 다시 만들고 같은 종목의 카드 응답만 유지한다"
   },
   "schedule": {
     "version": "v0", "decision": "USER_DECISION_2026-10-15",

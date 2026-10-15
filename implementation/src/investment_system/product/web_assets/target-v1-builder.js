@@ -11,7 +11,11 @@
    2026-10-15 owner supplement: financial safety NA excludes a name from the candidates; a name shortfall (< 15) is shown and blocks
    finalize (no relaxing, no re-adding); finalize re-checks the LATEST sec-qgv2.json at that moment (calc_version, as_of freshness,
    Q·G coverage ≥ 90%) and needs a passed 10-company number check for the SAME calc_version; until TARGET v1 is finalized (target:
-   2nd week of 2026-11) a rebalance round shows risk-code checks only, never a per-name list. Every number comes from TargetV1ConfigDefaults (qgv/target_v1_builder_v0.json,
+   2nd week of 2026-11) a rebalance round shows risk-code checks only, never a per-name list.
+   2026-10-15 evening: freshness is each valued row's SEC acquisition time (acquired_at, 7 days), never the file as_of; a normal NA
+   row (no value, NA reason) never blocks, a valued row of another calculation is CALC_VERSION_MIXED; the draft records its input
+   basis (calc_version, as_of, per-shard newest acquired_at) and a changed basis at finalize regenerates the draft (answers kept
+   for the same symbols only); the selected names' financial safety is re-checked against the latest file. Every number comes from TargetV1ConfigDefaults (qgv/target_v1_builder_v0.json,
    v0 · UNCALIBRATED) or PlaybookConfigDefaults. Missing is null / NA, never 0. No order function; no buy or sell wording. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const api=factory(node?require('./playbook-engine.js'):root.PlaybookEngine,node?require('./playbook-config-defaults.js'):root.PlaybookConfigDefaults,
@@ -151,13 +155,14 @@ function invalidated(cond,current){if(!finite(current)||!finite(cond?.threshold)
 function poolRow(r,cfg=CFG,pcfg=PCFG){const t=templates(r,cfg,pcfg);return{symbol:r.symbol,code:r.code,subgroup:r.subgroup,sector:r.sector,industry:r.industry,types:r.types.slice(0,4),
  q:round(r.q),g:round(r.g),v:round(r.v),total:round(r.total,4),q_pct:round(r.q_pct),rank:r.rank,industry_rank:r.industry_rank,industry_size:r.industry_size,factors_n:r.factors_n,factors_total:r.factors_total,
  in19:r.in19,safety:r.safety.state,reasons:t.reasons,invalidations:t.invalidations};}
-function buildDraft({computed,inputs,universeCodes,existing,date,cfg=CFG,pcfg=PCFG}){
+// basis: inputBasis() of the published file the draft was built from (null when it could not be read → regenerated at finalize).
+function buildDraft({computed,inputs,universeCodes,existing,date,basis=null,cfg=CFG,pcfg=PCFG}){
  if(!validDay(date))fail('DATE_INVALID');if(computed?.v2_state!=='READY')fail('QGV2_NOT_READY');
  const all=universeRows({computed,inputs,universeCodes,existing,cfg,pcfg}),eligible=[],excluded={},excludedRows=[];
  for(const r of all){const why=exclusions(r,cfg);if(why.length){for(const w of why)excluded[w]=(excluded[w]||0)+1;excludedRows.push({symbol:r.symbol,total:round(r.total,4),reasons:why,safety:r.safety.state});}else eligible.push(r);}
  const pool=eligible.sort(byTotal).slice(0,cfg.candidates.pool_size).map(r=>poolRow(r,cfg,pcfg));
  excludedRows.sort((a,b)=>(b.total??-1)-(a.total??-1)||(a.symbol<b.symbol?-1:1));
- return{created:date,config_version:cfg.config_version,profile_id:computed.profile?.id||null,v2_as_of:computed.v2_as_of||null,coverage:coverage(inputs,cfg),
+ return{created:date,basis:object(basis)?{...basis}:null,config_version:cfg.config_version,profile_id:computed.profile?.id||null,v2_as_of:computed.v2_as_of||null,coverage:coverage(inputs,cfg),
   universe_rows:all.length,eligible_count:eligible.length,excluded_counts:excluded,excluded:excludedRows.slice(0,cfg.candidates.excluded_shown),pool};
 }
 // Step 3: the 30-candidate table rows.
@@ -177,6 +182,7 @@ function validateState(input){
  if(v.price_symbols.length>CFG.scoring_prices.max_symbols||new Set(v.price_symbols).size!==v.price_symbols.length||v.price_symbols.some(s=>typeof s!=='string'||!PRICE_SYMBOL.test(s)))fail('TARGET_V1_STATE_INVALID');
  for(const a of v.answers)if(!object(a)||!SYMBOL.test(a.symbol)||!ANSWERS.includes(a.answer)||!validDay(a.date)||!text(a.reason,200)||(a.answer==='DISAGREE'&&!a.reason.trim()))fail('TARGET_V1_STATE_INVALID');
  if(v.draft&&(!validDay(v.draft.created)||!Array.isArray(v.draft.pool)||v.draft.pool.some(r=>!object(r)||!SYMBOL.test(r.symbol)||!finite(r.total))))fail('TARGET_V1_STATE_INVALID');
+ if(v.draft&&v.draft.basis!==undefined&&v.draft.basis!==null&&(!object(v.draft.basis)||!(v.draft.basis.shards===undefined||text(v.draft.basis.shards,12000))))fail('TARGET_V1_STATE_INVALID');
  for(const x of v.versions)if(!object(x)||!validDay(x.date)||!Array.isArray(x.rows)||x.rows.some(r=>!SYMBOL.test(r?.symbol)||!finite(r.pct)))fail('TARGET_V1_STATE_INVALID');
  for(const s of v.rule_b)if(!object(s)||!validDay(s.date)||!Array.isArray(s.rows)||s.rows.some(r=>!SYMBOL.test(r?.symbol)||!finite(r.pct)))fail('TARGET_V1_STATE_INVALID');
  if(v.rule_c&&(!validDay(v.rule_c.start)||!text(v.rule_c.version,20)))fail('TARGET_V1_STATE_INVALID');
@@ -212,21 +218,47 @@ function judgementRecord({row,answer:kind,reason='',date,id},cfg=CFG){
 const CALC_VERSION=/^[A-Za-z0-9][A-Za-z0-9._:+\-]{0,63}$/;
 function axisScore(r,a){const ax=object(r?.axes)?r.axes:object(r?.qg_axes)?r.qg_axes:{},v=ax[a]?.score;return finite(v)&&v>=0&&v<=100?v:null;}
 /* The LATEST published sec-qgv2.json payload (re-read by the caller at finalize; never the draft-time inputs) → {ok, reasons}.
-   (a) file calc_version present and every US Universe record carrying the same calc_version (absent = legacy → fail);
-   (b) as_of within finalize_check.freshness_max_days of the finalize date; (c) Q and G scored rows each ≥ universe_size ×
-   coverage.ready_min_ratio. TARGET:<id> rows are not counted. */
+   (a) file calc_version present (else CALC_VERSION_MISSING); a row WITH a value (Q or G score, or LIVE / STALE) must carry the
+   file calc_version, and a row without a value is a normal NA when it has an NA reason and no calc_version or the file's one —
+   anything else is CALC_VERSION_MIXED; (b) every valued row's acquired_at within finalize_check.freshness_max_days of the finalize
+   date (the file as_of never counts: a regenerated file is not fresher data) → ROW_DATA_STALE; (c) Q and G scored rows each ≥
+   universe_size × coverage.ready_min_ratio (NA rows stay in the denominator). TARGET:<id> rows are not counted. */
 function publishedCheck(payload,{date,cfg=CFG}={}){
- const F=cfg.finalize_check,size=cfg.coverage.universe_size,min=cfg.coverage.ready_min_ratio,base={calc_version:null,as_of:null,age_days:null,q:0,g:0,size,rows:0};
+ const F=cfg.finalize_check,size=cfg.coverage.universe_size,min=cfg.coverage.ready_min_ratio,base={calc_version:null,as_of:null,q:0,g:0,size,rows:0,na_rows:0,mixed_rows:0,stale_rows:0,oldest_acquired:null};
  if(!object(payload)||!object(payload.records))return{...base,ok:false,reasons:['SEC_QGV2_NOT_AVAILABLE']};
- const calc=typeof payload.calc_version==='string'&&CALC_VERSION.test(payload.calc_version)?payload.calc_version:null,reasons=[];let q=0,g=0,rows=0,missing=0,mixed=0;
+ const calc=typeof payload.calc_version==='string'&&CALC_VERSION.test(payload.calc_version)?payload.calc_version:null,reasons=[];
+ const end=validDay(date)?Date.parse(date+'T23:59:59Z'):NaN,limit=end-F.freshness_max_days*86400000;let q=0,g=0,rows=0,na=0,mixed=0,stale=0,oldest=null;
  for(const[code,r]of Object.entries(payload.records)){if(code.startsWith('TARGET:'))continue;rows++;const rv=object(r)&&typeof r.calc_version==='string'?r.calc_version:null;
-  if(rv===null)missing++;else if(rv!==calc)mixed++;if(axisScore(r,'Q')!==null)q++;if(axisScore(r,'G')!==null)g++;}
- if(F.calc_version_required&&(calc===null||missing>0))reasons.push('CALC_VERSION_MISSING');else if(mixed>0)reasons.push('CALC_VERSION_MIXED');
- const asOf=typeof payload.as_of==='string'?Date.parse(payload.as_of):NaN,end=validDay(date)?Date.parse(date+'T23:59:59Z'):NaN,age=Number.isFinite(asOf)&&Number.isFinite(end)?(end-asOf)/86400000:null;
- if(age===null)reasons.push('AS_OF_INVALID');else if(age>F.freshness_max_days)reasons.push('DATA_STALE');
+  const qs=axisScore(r,'Q'),gs=axisScore(r,'G'),valued=qs!==null||gs!==null||['LIVE','STALE'].includes(r?.state);if(qs!==null)q++;if(gs!==null)g++;
+  if(valued){if(rv===null||rv!==calc)mixed++;const t=typeof r.acquired_at==='string'?Date.parse(r.acquired_at):NaN;if(!Number.isFinite(t)||!(t>=limit))stale++;if(Number.isFinite(t)&&(oldest===null||t<Date.parse(oldest)))oldest=r.acquired_at;}
+  else{const reason=Array.isArray(r?.reason_codes)&&r.reason_codes.length>0;if(reason&&(rv===null||rv===calc))na++;else mixed++;}}
+ if(F.calc_version_required&&calc===null)reasons.push('CALC_VERSION_MISSING');else if(mixed>0)reasons.push('CALC_VERSION_MIXED');
+ if(!Number.isFinite(end))reasons.push('DATE_INVALID');else if(stale>0)reasons.push('ROW_DATA_STALE');
  if(q/size<min)reasons.push('Q_COVERAGE_LOW');if(g/size<min)reasons.push('G_COVERAGE_LOW');
- return{ok:reasons.length===0,reasons,calc_version:calc,as_of:typeof payload.as_of==='string'?payload.as_of:null,age_days:age===null?null:round(age,2),q,g,size,rows};
+ return{ok:reasons.length===0,reasons,calc_version:calc,as_of:typeof payload.as_of==='string'?payload.as_of:null,q,g,size,rows,na_rows:na,mixed_rows:mixed,stale_rows:stale,oldest_acquired:oldest};
 }
+/* Input basis of a published payload: calc_version, file as_of and the newest acquired_at per shard (shard = sha256(cik) mod
+   shard_count, the daily partition rule of tools/published_coverage.py). Async (Web Crypto digest); counts and times only. */
+async function sha256Hex(text){const d=await globalThis.crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function inputBasis(payload,{digest=sha256Hex}={}){
+ if(!object(payload)||!object(payload.records))return null;
+ const count=Number.isInteger(payload.shard_count)&&payload.shard_count>=1&&payload.shard_count<=366?payload.shard_count:null,newest={};
+ if(count)for(const[code,r]of Object.entries(payload.records)){if(code.startsWith('TARGET:')||!object(r)||typeof r.cik!=='string'||!r.cik||typeof r.acquired_at!=='string')continue;const t=Date.parse(r.acquired_at);if(!Number.isFinite(t))continue;
+  const shard=Number(BigInt('0x'+await digest(r.cik))%BigInt(count));if(!newest[shard]||t>Date.parse(newest[shard]))newest[shard]=r.acquired_at;}
+ return{calc_version:typeof payload.calc_version==='string'&&CALC_VERSION.test(payload.calc_version)?payload.calc_version:null,as_of:typeof payload.as_of==='string'?payload.as_of:null,shard_count:count,
+  shards:Object.keys(newest).map(Number).sort((a,b)=>a-b).map(k=>k+'='+newest[k]).join('|')};
+}
+// The draft's input basis differs from the latest file's (calc_version, shard count or any shard's newest acquisition).
+function basisChanged(draftBasis,latest){if(!object(draftBasis)||!object(latest))return true;return draftBasis.calc_version!==latest.calc_version||draftBasis.shard_count!==latest.shard_count||draftBasis.shards!==latest.shards;}
+/* A new draft from the current scores and the latest basis. Card answers carry over only for symbols in the new candidate pool;
+   names newly selected need a fresh card answer (pending). */
+function regenerateDraft(state,{computed,inputs,universeCodes,existing,date,basis,cfg=CFG,pcfg=PCFG}){
+ const draft=buildDraft({computed,inputs,universeCodes,existing,date,basis,cfg,pcfg}),names=new Set(draft.pool.map(r=>key(r.symbol)));
+ const answers=(state?.answers||[]).filter(a=>names.has(key(a.symbol))),next={...state,draft,answers},sel=currentSelection(next,cfg,pcfg),kept=new Set(answers.map(a=>key(a.symbol)));
+ return{state:next,carried:sel.rows.filter(r=>kept.has(key(r.symbol))).map(r=>r.symbol),fresh:sel.pending,dropped:(state?.answers||[]).filter(a=>!names.has(key(a.symbol))).map(a=>a.symbol)};
+}
+// Financial safety of the selected names re-checked against the latest file's metrics (anything but PASS fails, NA included).
+function safetyRecheck(rows,payload,cfg=CFG){const out=[];for(const r of rows||[]){const rec=object(payload?.records)?payload.records[r.code]:null;if(safety(object(rec)?rec.metrics:null,cfg).state!=='PASS')out.push(r.symbol);}return out;}
 // The 10-company number check counts only for the calc_version it was run against (config number_check.result).
 function numberCheck(calcVersion,cfg=CFG){
  const N=cfg.number_check,r=object(N.result)?N.result:{},out={calc_version:r.calc_version??null,passed:r.passed===true,date:r.date??null,companies:finite(r.companies)?r.companies:0};
@@ -234,21 +266,25 @@ function numberCheck(calcVersion,cfg=CFG){
  if(!calcVersion||out.calc_version!==calcVersion)return{...out,ok:false,reason:'NUMBER_CHECK_CALC_VERSION_MISMATCH'};
  return{...out,ok:true,reason:null};
 }
-// Every reason that blocks finalize now, in order (cards → name shortfall → §16 → latest public file → number check).
-function finalizeBlockers(state,{date,published,cfg=CFG,pcfg=PCFG}={}){
+// Every reason that blocks finalize now, in order (cards → name shortfall → §16 → latest public file → draft basis → financial
+// safety re-check → number check). basis: inputBasis(published), computed by the caller at the same moment.
+function finalizeBlockers(state,{date,published,basis=null,cfg=CFG,pcfg=PCFG}={}){
  if(!validDay(date))return{blockers:['DATE_INVALID'],check:null,number:null,sel:null};if(!state?.draft)return{blockers:['TARGET_V1_DRAFT_REQUIRED'],check:null,number:null,sel:null};
  const sel=currentSelection(state,cfg,pcfg),out=[];if(!sel.complete)out.push('TARGET_V1_CARDS_PENDING');if(sel.shortfall>0)out.push('TARGET_V1_SHORTFALL');if(sel.limits.ok!==true)out.push('TARGET_LIMITS_BLOCKED');
- const check=publishedCheck(published,{date,cfg});out.push(...check.reasons);const number=numberCheck(check.calc_version,cfg);if(!number.ok)out.push(number.reason);
- return{blockers:out,check,number,sel};
+ const check=publishedCheck(published,{date,cfg});out.push(...check.reasons);
+ const basis_changed=object(published)&&object(published.records)?basisChanged(state.draft.basis,basis):false;if(basis_changed)out.push('DRAFT_BASIS_CHANGED');
+ const safety_failed=object(published)&&object(published.records)?safetyRecheck(sel.rows,published,cfg):[];if(safety_failed.length)out.push('FINANCIAL_SAFETY_RECHECK_FAILED');
+ const number=numberCheck(check.calc_version,cfg);if(!number.ok)out.push(number.reason);
+ return{blockers:out,check,number,sel,basis_changed,safety_failed};
 }
 /* Step 7: TARGET v1 as a new device TARGET version once nothing blocks (finalizeBlockers, run here against `published`, the
    sec-qgv2.json payload the caller re-read at this moment). The version keeps the calc_version, the file as_of and the number
    check it was confirmed with. R-C starts on that date (no backfill). The thrown error carries every blocker. */
-function finalize(state,{date,published=null,cfg=CFG,pcfg=PCFG}={}){
- const r=finalizeBlockers(state,{date,published,cfg,pcfg});if(r.blockers.length){const e=Error(r.blockers[0]);e.blockers=r.blockers;e.check=r.check;e.number=r.number;throw e;}
+function finalize(state,{date,published=null,basis=null,cfg=CFG,pcfg=PCFG}={}){
+ const r=finalizeBlockers(state,{date,published,basis,cfg,pcfg});if(r.blockers.length){const e=Error(r.blockers[0]);e.blockers=r.blockers;e.check=r.check;e.number=r.number;throw e;}
  const sel=r.sel,n=state.versions.length+1,version=n===1?'v1':'v1.'+(n-1),answers=latestAnswers(state);
  const rows=sel.rows.map(x=>({symbol:x.symbol,grade:x.grade,pct:x.pct,subgroup:x.subgroup,confirmed:answers.get(key(x.symbol))?.answer==='AGREE'}));
- return{...state,versions:[...state.versions,{version,date,draft_created:state.draft.created,config_version:cfg.config_version,calc_version:r.check.calc_version,sec_qgv2_as_of:r.check.as_of,
+ return{...state,versions:[...state.versions,{version,date,draft_created:state.draft.created,config_version:cfg.config_version,calc_version:r.check.calc_version,sec_qgv2_as_of:r.check.as_of,input_shards:basis.shards,
   number_check:{calc_version:r.number.calc_version,passed:true,date:r.number.date,companies:r.number.companies},rows,cash_pct:sel.cash_pct}],rule_c:{start:date,version}};
 }
 function latestVersion(state){return state?.versions?.length?state.versions[state.versions.length-1]:null;}
@@ -359,7 +395,7 @@ function scoringSeries(need,closes,cfg=CFG){
  const ok=x=>object(x)&&Object.keys(x).length>0;if(!ok(sp)||!ok(stock)||!ok(sector))return null;
  return{sessions:Object.keys(sp).filter(validDay).sort(),stock:{...stock},sector:{...sector},sp500:{...sp},sector_symbol:need.sector_symbol};
 }
-return Object.freeze({SCHEMA,ANSWERS,COMPARE_KEYS,publishedCheck,numberCheck,finalizeBlockers,scheduleState,roundMode,riskCodes,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
+return Object.freeze({SCHEMA,ANSWERS,COMPARE_KEYS,publishedCheck,inputBasis,basisChanged,regenerateDraft,safetyRecheck,numberCheck,finalizeBlockers,scheduleState,roundMode,riskCodes,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
  emptyState,validateState,latestAnswers,currentSelection,answer,judgementRecord,finalize,latestVersion,rebalanceDay,rebalanceDays,lastRebalanceOnOrBefore,
  nextRebalanceOnOrAfter,rounds,transitionRows,ruleBDue,ruleBSegment,ruleIndex,compareSets,reviewRule,coreEligible,priceSymbolOf,sectorEtfOf,scoringNeeds,addPriceSymbols,scoringSeries});
 });

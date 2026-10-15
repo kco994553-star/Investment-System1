@@ -24,7 +24,7 @@ def test_every_section_is_v0_with_a_decision_state():
     sections = [k for k, v in cfg.items() if isinstance(v, dict)]
     assert sections
     for key in sections:
-        assert cfg[key]['version'] == 'v0' and cfg[key]['decision'] in ('UNCALIBRATED', 'OWNER_RULE', 'USER_DECISION_2026-10-15'), key
+        assert cfg[key]['version'] == 'v0' and cfg[key]['decision'] in ('UNCALIBRATED', 'OWNER_RULE', 'USER_DECISION_2026-10-15', 'USER_DECISION_2026-10-15_EVENING'), key
 
 
 def test_owner_numbers_and_number_check_gate():
@@ -65,8 +65,13 @@ def test_follow_up_decisions_2026_10_15():
 def test_owner_supplement_2026_10_15():
     cfg = _config()
     fc = cfg['finalize_check']
-    assert fc['decision'] == 'USER_DECISION_2026-10-15' and fc['reread'] == 'AT_FINALIZE' and fc['calc_version_required'] is True
-    assert fc['legacy_without_calc_version'] == 'FAIL' and fc['freshness_max_days'] == 14 and fc['source_file'] == 'sec-qgv2.json'
+    assert fc['decision'] == 'USER_DECISION_2026-10-15_EVENING' and fc['reread'] == 'AT_FINALIZE' and fc['calc_version_required'] is True
+    assert fc['legacy_without_calc_version'] == 'FAIL' and fc['source_file'] == 'sec-qgv2.json'
+    # 2026-10-15 evening: T-FRESH = 7 days per row acquisition time, never the file as_of; draft basis link.
+    assert (fc['freshness_max_days'], fc['freshness_basis'], fc['file_as_of_counts_for_freshness']) == (7, 'ROW_ACQUIRED_AT', False)
+    assert 'all_shards=true' in fc['stale_action_ko'] and 'CALC_VERSION_MIXED' in fc['na_row_rule']
+    assert fc['draft_basis_compare'] == ['calc_version', 'shard_count', 'shards'] and fc['on_basis_change'] == 'REGENERATE_DRAFT'
+    assert (fc['answers_on_regenerate'], fc['financial_safety_recheck']) == ('CARRY_SAME_SYMBOLS', 'SELECTED_AT_FINALIZE')
     assert cfg['number_check']['decision'] == 'USER_DECISION_2026-10-15'
     fs = cfg['filters']['financial_safety']
     assert (fs['missing_for_exclusion'], fs['missing_reason']) == ('EXCLUDED', 'FINANCIAL_SAFETY_NOT_AVAILABLE')
