@@ -14,9 +14,15 @@ ledger is read from the live Pages copy and carried byte-identically:
 With RAW_REPO_TOKEN set, the day's ledger is copied to the private repository's
 release `forward-ledger-YYYY-MM-DD`; otherwise RAW_UPLOAD_NOT_CONFIGURED. Only
 fixed codes and counts are printed: no values, URLs or secrets.
+
+W-F2 (user decision 2026-10-15): with FORWARD_LEDGER_PREVIOUS_SOURCE=RAW_FIRST and RAW_REPO_TOKEN set (the daily
+workflow only), the newest dated private copy is read first. It is taken instead of the Pages copy only when it passes
+the same validator, its sha256 asset matches, its last session is on or after the Pages copy's last session and it
+carries every Pages record byte-identically; otherwise the Pages copy is used. A day whose deploy was withheld is
+therefore carried into the next public ledger instead of being lost. Pages errors keep failing closed as before.
 """
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import os
@@ -36,6 +42,12 @@ SOURCE = 'https://kco994553-star.github.io/Investment-System1/' + fl.FILENAME
 RAW_REPO = 'kco994553-star/investment-system1-raw'
 RAW_TOKEN_ENV = 'RAW_REPO_TOKEN'
 INPUT_LIMIT = 4 * 1024 * 1024
+PREVIOUS_SOURCE_ENV = 'FORWARD_LEDGER_PREVIOUS_SOURCE'
+RAW_FIRST = 'RAW_FIRST'
+RAW_TAG_PREFIX = 'forward-ledger-'
+# Session days probed for a dated private copy, newest first (about two calendar weeks). Older copies fall back to Pages.
+RAW_LOOKBACK_SESSIONS = 10
+RAW_READ_TIMEOUT = 30
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -69,6 +81,113 @@ def fetch_previous(*, open_response=None):
     except (urllib.error.URLError, OSError, ValueError):
         raise OSError('PREVIOUS_FETCH_FAILED') from None
     return fl.require_ledger(fl.parse_json(body)), body
+
+
+class _ShortTimeoutOpener:
+    """Opener for the private release reads: no redirect following (the token is never forwarded), short timeout."""
+
+    def __init__(self):
+        self._opener = urllib.request.build_opener(raw_store_release._NoRedirect)
+
+    def open(self, request, timeout=None):
+        return self._opener.open(request, timeout=RAW_READ_TIMEOUT)
+
+
+def _raw_read_call(method, url, **kwargs):
+    return raw_store_release.http(method, url, opener=_ShortTimeoutOpener(), **kwargs)
+
+
+def _raw_tags(moment):
+    """Dated private release tags to probe, newest first: NYSE session days from today back, never before the start."""
+    day, tags = fl.eastern(moment).date(), []
+    while day >= fl.START_DATE and len(tags) < RAW_LOOKBACK_SESSIONS:
+        if fl.is_session_day(day):
+            tags.append(RAW_TAG_PREFIX + day.isoformat())
+        day -= timedelta(days=1)
+    return tags
+
+
+def _raw_asset(release, name, call):
+    asset = next((a for a in release.get('assets', []) if isinstance(a, dict) and a.get('name') == name), None)
+    asset_id = asset.get('id') if asset is not None else None
+    if type(asset_id) is not int or asset_id <= 0:
+        raise ValueError('RAW_ASSET_MISSING')
+    status, headers, body = call('GET', f'{raw_store_release.API}/repos/{RAW_REPO}/releases/assets/{asset_id}',
+                                 headers={'Accept': 'application/octet-stream'})
+    if status in (301, 302, 303, 307, 308):
+        location = (headers or {}).get('Location') or (headers or {}).get('location')
+        if not location or urllib.parse.urlparse(location).scheme != 'https':
+            raise ValueError('RAW_ASSET_REDIRECT_INVALID')
+        # The signed download location gets no Authorization header.
+        status, _, body = call('GET', location, headers={'Accept': 'application/octet-stream'}, auth=False)
+    if status != 200 or not isinstance(body, (bytes, bytearray)) or len(body) > fl.MAX_BYTES:
+        raise ValueError('RAW_ASSET_UNREADABLE')
+    return bytes(body)
+
+
+def fetch_previous_raw(moment, *, call=None):
+    """Newest valid dated private copy -> ((payload, bytes), code) or (None, code). Fixed codes only.
+
+    A missing tag (404) moves to the previous session day; an invalid copy (validator, sha256 asset) too. Any other
+    lookup failure stops the search: the caller then falls back to the Pages copy."""
+    call = call or _raw_read_call
+    try:
+        tags = _raw_tags(moment)
+    except fl.CalendarNotConfigured:
+        return None, 'CALENDAR_NOT_CONFIGURED'
+    code = 'NONE'
+    for tag in tags:
+        try:
+            status, _, body = call('GET', f'{raw_store_release.API}/repos/{RAW_REPO}/releases/tags/{urllib.parse.quote(tag)}')
+        except Exception:
+            return None, 'FETCH_FAILED'
+        if status == 404:
+            continue
+        if status != 200:
+            return None, 'HTTP_' + str(status) if type(status) is int else 'FETCH_FAILED'
+        try:
+            release = json.loads(body)
+            ledger_body = _raw_asset(release, fl.FILENAME, call)
+            digest = _raw_asset(release, fl.FILENAME + '.sha256', call)
+            if digest != f'{hashlib.sha256(ledger_body).hexdigest()}  {fl.FILENAME}\n'.encode('ascii'):
+                raise ValueError('RAW_SHA256_MISMATCH')
+            payload = fl.require_ledger(fl.parse_json(ledger_body))
+        except Exception:
+            code = 'INVALID'
+            continue
+        return (payload, ledger_body), 'FOUND'
+    return None, code
+
+
+def last_session(ledger):
+    """Latest record date over the recorded versions (v1 and v2), or None when there is no record."""
+    dates = [ledger['versions'][v][-1]['date'] for v in (fl.VERSION, fl.V2_VERSION) if ledger['versions'].get(v)]
+    return max(dates) if dates else None
+
+
+def choose_previous(pages, raw):
+    """W-F2 precedence -> (chosen (payload, bytes) or None, source, code).
+
+    The private copy wins only when its last session is on/after the Pages copy's last session and every Pages record
+    is carried byte-identically at its front (it never rewrites or drops a published row). Otherwise Pages."""
+    if raw is None:
+        return pages, 'PAGES' if pages is not None else 'NONE', None
+    if pages is None:
+        return raw, 'RAW', 'FOUND'
+    if (last_session(raw[0]) or '') < (last_session(pages[0]) or ''):
+        return pages, 'PAGES', 'OLDER'
+    try:
+        fl.require_append_only(pages[0], raw[0])
+    except ValueError:
+        return pages, 'PAGES', 'DIVERGED'
+    return raw, 'RAW', 'FOUND'
+
+
+def _recovered(chosen, pages):
+    if chosen is None:
+        return 0
+    old = len(pages[0]['versions'].get(fl.VERSION, [])) if pages is not None else 0
+    return len(chosen[0]['versions'][fl.VERSION]) - old
 
 
 def _read_input(directory, name):
@@ -118,7 +237,8 @@ def upload_ledger(body, *, tag, call=None):
         return 'RAW_UPLOAD_FAILED'
 
 
-def run(out, *, preserve_only=False, bootstrap=False, environ=None, now=_utc_now, open_previous=None, upload_call=None):
+def run(out, *, preserve_only=False, bootstrap=False, environ=None, now=_utc_now, open_previous=None, upload_call=None,
+        raw_call=None):
     environ = os.environ if environ is None else environ
     try:
         fetched = fetch_previous(open_response=open_previous)
@@ -128,6 +248,15 @@ def run(out, *, preserve_only=False, bootstrap=False, environ=None, now=_utc_now
     except Exception:
         print('FORWARD_LEDGER PREVIOUS_FETCH_FAILED nothing_written')
         return 1
+    if environ.get(PREVIOUS_SOURCE_ENV) == RAW_FIRST:
+        if environ.get(RAW_TOKEN_ENV):
+            raw, raw_code = fetch_previous_raw(now(), call=raw_call)
+        else:
+            raw, raw_code = None, 'NOT_CONFIGURED'
+        chosen, source, choice_code = choose_previous(fetched, raw)
+        print(f'FORWARD_LEDGER_PREVIOUS source={source} raw={choice_code or raw_code} '
+              f'recovered_records={max(0, _recovered(chosen, fetched)) if source == "RAW" else 0}')
+        fetched = chosen
     previous, previous_body = fetched if fetched is not None else (None, None)
     if preserve_only:
         if previous is None:
