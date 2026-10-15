@@ -2,8 +2,8 @@
 // TARGET v1 builder screen (owner decision 2026-10-14) at 390 and 1280: empty public screens → builder disabled (NA, no 0-fill);
 // a synthetic device draft → 30-candidate table, 15 cards, 동의 / 반대(reason required, automatic replacement, limits re-check) /
 // 모름(미확인), judgement records in the playbook store, final save blocked by number_check_passed, then (config override) TARGET v1
-// saved + set C start, the rebalance-week view (1/3 per round, amounts hidden), the A/B/C/S&P 500 comparison and the round-3
-// review suggestion. Every request is intercepted: public screens are the empty fixtures, the Worker is stubbed, anything else
+// saved + R-C start, the rebalance-week view (1/3 per round, amounts hidden), the A / R-B / R-C (규칙 지수) / S&P 500 comparison,
+// the round-3 review suggestion and the T-PRICE flow (TV1 names outside the 19 → confirm → the user's sheet → scored, else NA). Every request is intercepted: public screens are the empty fixtures, the Worker is stubbed, anything else
 // is aborted and counted. No horizontal page scroll; no buy/sell verbs on the builder.
 const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
@@ -21,7 +21,7 @@ function seed({date}){
   computed.rows['c'+i]={ticker:symbol,code,v2:{total:90-i*0.5,q:70,g:65,v:55,axes:{Q:ax(70),G:ax(65),V:ax(55)},factors:Object.fromEntries(Object.entries(F).map(([k,v])=>[k,{score:v}])),factors_available:i%7===0?11:15,factors_total:15,q_industry_percentile:60,value_trap_gate:i===44,selected_types:['quality']}};
   inputs.records[code]={cik:'C'+i,sic:i===3?'3674':SICS[i%SICS.length],industry_group:'grp'+(i%SICS.length),metrics:M,qg_axes:{Q:{score:70},G:{score:65}}};}
  const draft=B.buildDraft({computed,inputs,universeCodes:codes,existing:['NVDA'],date});
- const state={...B.emptyState(),draft,set_b:[{date,rows:draft.pool.slice(0,15).map(r=>({symbol:r.symbol,pct:100/15,subgroup:r.subgroup})),cash_pct:0,limits_ok:true}]};
+ const state={...B.emptyState(),draft,rule_b:[{date,rows:draft.pool.slice(0,15).map(r=>({symbol:r.symbol,pct:100/15,subgroup:r.subgroup})),cash_pct:0,limits_ok:true}]};
  S.writeState(window.PlaybookScreen,localStorage,state);return draft.pool.length;
 }
 (async()=>{
@@ -56,8 +56,9 @@ function seed({date}){
   await page.goto(BASE+'#home');await page.goto(BASE+'#playbook');await page.locator('[data-tv1-confirm]').waitFor();assert.match(await page.locator('[data-playbook-scoring]').textContent(),/TARGET v1 반대/);
   phase=width+' finalize';await page.evaluate(async c=>{const catalog=await(await fetch('actual-catalog.json')).json(),rows=catalog.instruments.map((r,i)=>({ticker:r.ticker,weight:r.target_units/catalog.total_units+(i%2?0.001:-0.001)}));
    await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,config:{...TargetV1ConfigDefaults,number_check_passed:true},catalog,storage:localStorage,date:'2026-10-14',ram:{state:'AVAILABLE',total:100000000,rows}});},null);
-  await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>/TARGET v1 저장 · 세트 C 2026-10-14 시작/.test(document.querySelector('[data-tv1-status]').textContent));
-  assert.match(await page.locator('[data-tv1-set-c]').textContent(),/시작 2026-10-14 · v1/);assert.match(await page.locator('[data-tv1-version]').textContent(),/v1 · 2026-10-14/);
+  await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>/TARGET v1 저장 · R-C\(규칙 지수\) 2026-10-14 시작/.test(document.querySelector('[data-tv1-status]').textContent));
+  assert.match(await page.locator('[data-tv1-rule-c]').textContent(),/^R-C · TARGET v1 \(규칙 지수\) · 시작 2026-10-14 · v1/);
+  assert.match(await page.locator('[data-tv1-rule-b]').textContent(),/^R-B · v2 상위 15 균등 \(규칙 지수\) · 시작 2026-10-14/);assert.match(await page.locator('[data-tv1-sets]').textContent(),/사용자 세트 B\/C\/D\(VirtualMeta\)와 이름이 겹치지 않게/);assert.match(await page.locator('[data-tv1-version]').textContent(),/v1 · 2026-10-14/);
   phase=width+' rebalance';const reb=page.locator('[data-tv1-rebalance]');assert.match(await reb.locator('h2').textContent(),/1회차 2026-11-16 주/);
   assert.ok(await reb.locator('tbody tr').count()>=15);const first=await reb.locator('tbody tr').first().locator('td').allTextContents();assert.equal(first.length,6);assert.match(first[3],/^[+−]?\d+\.\d\d%p$/);assert.equal(first[5],'●●●만원');
   const nvda=await reb.locator('[data-tv1-rebalance-row=NVDA] td').allTextContents();assert.match(nvda[1],/%$/);
@@ -65,18 +66,46 @@ function seed({date}){
   phase=width+' compare';await page.evaluate(async()=>{const catalog=await(await fetch('actual-catalog.json')).json();
    // Synthetic closes (RAM, in the page): S&P 500 and the other A names up, B and C names down.
    const provider=async(symbols,from)=>{const out={},days=[];for(let d=new Date(from+'T00:00:00Z');d<=new Date('2027-04-01T00:00:00Z');d.setUTCDate(d.getUTCDate()+1))if(d.getUTCDay()%6)days.push(d.toISOString().slice(0,10));
-    const st=TargetV1Screen.readState(PlaybookScreen,localStorage),down=new Set([...(st.versions.at(-1)?.rows||[]).map(r=>r.symbol),...st.set_b.flatMap(x=>x.rows.map(r=>r.symbol))]);
+    const st=TargetV1Screen.readState(PlaybookScreen,localStorage),down=new Set([...(st.versions.at(-1)?.rows||[]).map(r=>r.symbol),...st.rule_b.flatMap(x=>x.rows.map(r=>r.symbol))]);
     for(const sym of symbols){const slope=sym==='SPY'?0.001:down.has(sym)?-0.001:0.002;out[sym]=Object.fromEntries(days.map((d,i)=>[d,100*(1+slope*i)]));}return out;};
    await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,catalog,storage:localStorage,date:'2027-04-01',closesProvider:provider});});
   await page.locator('[data-tv1-load-compare]').click();await page.waitForFunction(()=>document.querySelectorAll('[data-tv1-compare-row] td')[1]?.textContent!=='NA');
   const cmp=await page.locator('[data-tv1-compare-row]').evaluateAll(n=>n.map(x=>x.querySelectorAll('td')[1].textContent));assert.equal(cmp.length,4);assert.ok(cmp.every(v=>/^[+−]\d/.test(v)),cmp.join(','));
-  assert.match(await page.locator('[data-tv1-review]').textContent(),/^제안 · 세트 B와 세트 C가 모두 세트 A와 S&P 500보다 낮습니다/);
+  assert.match(await page.locator('[data-tv1-review]').textContent(),/^제안 · R-B와 R-C\(규칙 지수\)가 모두 세트 A와 S&P 500보다 낮습니다/);
+  assert.deepEqual(await page.locator('[data-tv1-compare-row]').evaluateAll(n=>n.map(x=>x.dataset.tv1CompareRow)),['A','R-B','R-C','SP500']);
+  assert.match(await page.locator('[data-tv1-compare-row="R-B"] td').first().textContent(),/^R-B · .*\(규칙 지수\)$/);assert.match(await page.locator('[data-tv1-compare-row="R-C"] td').first().textContent(),/^R-C · TARGET v1 \(규칙 지수\)$/);
+  phase=width+' prices';
+  // TV1 names outside the 19 are NA before; the add button asks first (cancel → nothing written), then the stubbed sheet sync runs
+  // and the scoring table reads the RAM series. The page never reaches Google here (stubs; anything else is aborted and counted).
+  const naBefore=await page.locator('[data-playbook-scoring] tbody tr').evaluateAll(n=>n.filter(x=>/TARGET v1/.test(x.textContent)&&!/^NVDA/.test(x.textContent)&&/NA · DEVICE_HISTORY_UNAVAILABLE/.test(x.textContent)).length);assert.ok(naBefore>=45,String(naBefore));
+  await page.evaluate(async()=>{const catalog=await(await fetch('actual-catalog.json')).json();window.__tv1={confirms:[],syncs:[],accept:false};
+   const days=[];for(let d=new Date('2026-09-01T00:00:00Z');d<=new Date('2027-04-01T00:00:00Z');d.setUTCDate(d.getUTCDate()+1))if(d.getUTCDay()%6)days.push(d.toISOString().slice(0,10));
+   const provider=async symbols=>{const out={};for(const s of symbols)if(window.__tv1.syncs.flat().includes(s))out[s]=Object.fromEntries(days.map((d,i)=>[d,s==='SPY'?100+i*0.1:s==='SYN00'?NaN:50+i*0.2]).filter(([,v])=>Number.isFinite(v)));return out;};
+   await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,catalog,storage:localStorage,date:'2027-04-01',
+    priceStoreStatus:()=>({state:'READY',fetch:'READY'}),confirm:t=>{window.__tv1.confirms.push(t);return window.__tv1.accept;},
+    priceSync:async symbols=>{window.__tv1.syncs.push(symbols);return{state:'READY',kind:'TV1',symbols:symbols.length,fetched:symbols.length-1,appended_rows:symbols.length*3,current:0,write_failed:0,failed:{WORKER_ALLOWLIST:1},not_allowed:1,results:{SYN01:{code:'WORKER_ALLOWLIST',fetched:false,appended:0}}};},
+    scoringClosesProvider:provider});});
+  const pending=await page.locator('[data-tv1-prices-pending]').textContent();assert.match(pending,/^가격 경로 없음 \d+종목 · SYN/);assert.ok(!/NVDA/.test(pending),'NVDA is one of the 19');
+  await page.locator('[data-tv1-add-prices]').click();await page.waitForFunction(()=>/취소 · 시트를 바꾸지 않았습니다/.test(document.querySelector('[data-tv1-prices-status]').textContent));
+  let probe=await page.evaluate(()=>({confirms:window.__tv1.confirms.length,syncs:window.__tv1.syncs.length,added:TargetV1Screen.priceSymbols(PlaybookScreen,localStorage).length,text:window.__tv1.confirms[0]}));
+  assert.deepEqual([probe.confirms,probe.syncs,probe.added],[1,0,0]);assert.match(probe.text,/내 비공개 구글 시트의 Prices_D 탭에 덧붙입니다:\nSYN\d\d · /);assert.match(probe.text,/ · SPY( · |\n)/);
+  await page.evaluate(()=>{window.__tv1.accept=true;});await page.locator('[data-tv1-add-prices]').click();
+  await page.waitForFunction(()=>/채점 시계열 \d+종목\(RAM\)/.test(document.querySelector('[data-tv1-prices-status]').textContent));
+  probe=await page.evaluate(()=>({syncs:window.__tv1.syncs,added:TargetV1Screen.priceSymbols(PlaybookScreen,localStorage),status:document.querySelector('[data-tv1-prices-status]').textContent,tracked:document.querySelector('[data-tv1-prices-tracked]').textContent,disabled:document.querySelector('[data-tv1-add-prices]').disabled}));
+  assert.equal(probe.syncs.length,1);assert.deepEqual(probe.syncs[0].filter(x=>x!=='SYN01'),probe.added);assert.ok(probe.syncs[0].includes('SYN01')&&!probe.added.includes('SYN01'),'not-allowlisted names are not tracked');assert.ok(probe.added.includes('SPY')&&!probe.added.includes('NVDA'));
+  assert.equal(probe.disabled,false);assert.match(await page.locator('[data-tv1-prices-pending]').textContent(),/^가격 경로 없음 1종목 · SYN01$/);
+  assert.match(probe.status,/^내 시트 추가 · 종목 \d+ · 요청 \d+ · 덧붙인 행 \d+ · WORKER_ALLOWLIST 1 · 채점 시계열 \d+종목\(RAM\)$/);assert.match(probe.tracked,/^내 시트에서 읽는 종목 \d+ · SYN/);
+  const scored=await page.locator('[data-playbook-scoring] tbody tr').evaluateAll(n=>n.map(x=>[...x.querySelectorAll('td')].map(t=>t.textContent)));
+  const syn=scored.filter(r=>/^SYN(?!0[01])\d\d \d{4}-\d\d-\d\d · TARGET v1/.test(r[0])&&r[1]==='D+20');assert.ok(syn.length>=10,String(syn.length));assert.ok(syn.every(r=>/^\+\d+\.\d\d%$/.test(r[2])),JSON.stringify(syn[0]));
+  // SYN00 has no closes in the sheet and SYN01 is outside the Worker allowlist → still NA (never 0).
+  const syn00=scored.filter(r=>/^SYN0[01] /.test(r[0]));assert.ok(syn00.length>0&&syn00.every(r=>/^NA · /.test(r[2])&&r[3]==='NA'&&r[4]==='NA'),JSON.stringify(syn00[0]));
+  assert.ok(!(await page.evaluate(()=>JSON.stringify(localStorage))).match(/"close"|50\.2|100\.1/),'no price in device storage');
   phase=width+' layout';const text=await page.locator('[data-target-v1-builder]').textContent();assert.ok(!/매수|매도|사세요|파세요|\bbuy\b|\bsell\b/i.test(text),'buy/sell wording');
   await page.locator('[data-tv1-raw] summary').click();assert.match(await page.locator('[data-tv1-raw]').textContent(),/무효화 지표/);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'horizontal overflow');
   await page.screenshot({path:(process.env.TV1_SHOT_DIR||'/tmp')+'/target-v1-builder-'+width+'.png',fullPage:true});
   assert.deepEqual(errors,[]);assert.deepEqual(unexpected,[]);
-  console.log('PASS TARGET v1 builder empty NA, cards agree/disagree(replace)/unknown, records, number-check gate, finalize, rebalance week, compare and review rule '+width);
+  console.log('PASS TARGET v1 builder empty NA, cards agree/disagree(replace)/unknown, records, number-check gate, finalize, rebalance week, compare, review rule and TV1 sheet prices '+width);
   await context.close();}}
  catch(e){console.log('FAIL '+phase+' '+e.message);process.exitCode=1;}finally{await browser.close();}
 })();

@@ -4,8 +4,10 @@
    Pipeline: candidate filters (axis coverage, value-trap gate, financial safety) → sector spread (≤ 4 per sub-group) → 30-candidate
    table → final 15 (core 5 × 8% + general 10 × 6%) under PLAYBOOK §16 limits → 3 reasons and 3 numerically checkable invalidation
    conditions per name from template rules → user cards (동의 / 반대 / 모름; 반대 replaces the name with the next-ranked one and the
-   limits are checked again) → TARGET v1 version (blocked until number_check_passed) → virtual sets B / C (rule index, no backfill),
-   3-round transition plan and the fixed review rule. Every number comes from TargetV1ConfigDefaults (qgv/target_v1_builder_v0.json,
+   limits are checked again) → TARGET v1 version (blocked until number_check_passed) → rule sets R-B / R-C (규칙 지수, no backfill;
+   named R-B·R-C by the 2026-10-15 owner decision T-SET so they never clash with the sheet ledger's user sets B/C/D), 3-round transition
+   plan and the fixed review rule. T-PRICE (2026-10-15): TV1 judgement names outside the 19 get a price path through the user's own
+   sheet (Prices_D) only after the user's confirmed click; the pure helpers here only list the symbols and shape the RAM series. Every number comes from TargetV1ConfigDefaults (qgv/target_v1_builder_v0.json,
    v0 · UNCALIBRATED) or PlaybookConfigDefaults. Missing is null / NA, never 0. No order function; no buy or sell wording. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const api=factory(node?require('./playbook-engine.js'):root.PlaybookEngine,node?require('./playbook-config-defaults.js'):root.PlaybookConfigDefaults,
@@ -157,15 +159,22 @@ function buildDraft({computed,inputs,universeCodes,existing,date,cfg=CFG,pcfg=PC
 function candidates(draft,cfg=CFG){return spread(draft?.pool||[],cfg.sector_spread.max_per_subgroup,cfg.candidates.count);}
 
 /* ---------- device state (inside the playbook store under target_v1; backed up with it) ---------- */
-function emptyState(){return{schema:SCHEMA,draft:null,answers:[],versions:[],set_b:[],set_c:null};}
-function validateState(v){
- if(!object(v)||v.schema!==SCHEMA||!Array.isArray(v.answers)||!Array.isArray(v.versions)||!Array.isArray(v.set_b)||!(v.draft===null||object(v.draft))||!(v.set_c===null||object(v.set_c)))fail('TARGET_V1_STATE_INVALID');
- const keys=Object.keys(v).sort().join(',');if(keys!=='answers,draft,schema,set_b,set_c,versions')fail('TARGET_V1_STATE_INVALID');
+// rule_b / rule_c: the R-B / R-C rule-index definitions (storage keys stay identifier-safe for the playbook store).
+// price_symbols: Worker symbols the user added to the own sheet's Prices_D for TV1 scoring (symbols only, never a price).
+function emptyState(){return{schema:SCHEMA,draft:null,answers:[],versions:[],rule_b:[],rule_c:null,price_symbols:[]};}
+const STATE_KEYS='answers,draft,price_symbols,rule_b,rule_c,schema,versions',LEGACY_KEYS='answers,draft,schema,set_b,set_c,versions',PRICE_SYMBOL=/^[A-Z0-9][A-Z0-9.=\-]{0,15}$/;
+// Returns the state in the current layout. The first #248 layout (set_b / set_c, no price_symbols) is read as R-B / R-C.
+function validateState(input){
+ if(!object(input)||input.schema!==SCHEMA)fail('TARGET_V1_STATE_INVALID');
+ const keys=Object.keys(input).sort().join(',');let v;
+ if(keys===STATE_KEYS)v=input;else if(keys===LEGACY_KEYS){const{set_b,set_c,...rest}=input;v={...rest,rule_b:set_b,rule_c:set_c,price_symbols:[]};}else fail('TARGET_V1_STATE_INVALID');
+ if(!Array.isArray(v.answers)||!Array.isArray(v.versions)||!Array.isArray(v.rule_b)||!(v.draft===null||object(v.draft))||!(v.rule_c===null||object(v.rule_c))||!Array.isArray(v.price_symbols))fail('TARGET_V1_STATE_INVALID');
+ if(v.price_symbols.length>CFG.scoring_prices.max_symbols||new Set(v.price_symbols).size!==v.price_symbols.length||v.price_symbols.some(s=>typeof s!=='string'||!PRICE_SYMBOL.test(s)))fail('TARGET_V1_STATE_INVALID');
  for(const a of v.answers)if(!object(a)||!SYMBOL.test(a.symbol)||!ANSWERS.includes(a.answer)||!validDay(a.date)||!text(a.reason,200)||(a.answer==='DISAGREE'&&!a.reason.trim()))fail('TARGET_V1_STATE_INVALID');
  if(v.draft&&(!validDay(v.draft.created)||!Array.isArray(v.draft.pool)||v.draft.pool.some(r=>!object(r)||!SYMBOL.test(r.symbol)||!finite(r.total))))fail('TARGET_V1_STATE_INVALID');
  for(const x of v.versions)if(!object(x)||!validDay(x.date)||!Array.isArray(x.rows)||x.rows.some(r=>!SYMBOL.test(r?.symbol)||!finite(r.pct)))fail('TARGET_V1_STATE_INVALID');
- for(const s of v.set_b)if(!object(s)||!validDay(s.date)||!Array.isArray(s.rows)||s.rows.some(r=>!SYMBOL.test(r?.symbol)||!finite(r.pct)))fail('TARGET_V1_STATE_INVALID');
- if(v.set_c&&(!validDay(v.set_c.start)||!text(v.set_c.version,20)))fail('TARGET_V1_STATE_INVALID');
+ for(const s of v.rule_b)if(!object(s)||!validDay(s.date)||!Array.isArray(s.rows)||s.rows.some(r=>!SYMBOL.test(r?.symbol)||!finite(r.pct)))fail('TARGET_V1_STATE_INVALID');
+ if(v.rule_c&&(!validDay(v.rule_c.start)||!text(v.rule_c.version,20)))fail('TARGET_V1_STATE_INVALID');
  return v;
 }
 function latestAnswers(state){const out=new Map();for(const a of state?.answers||[])out.set(key(a.symbol),a);return out;}
@@ -193,19 +202,20 @@ function judgementRecord({row,answer:kind,reason='',date,id},cfg=CFG){
   ai_summary:'',verdict:spec.verdict,action:{kind:spec.action},next_check_date:null,memo:kind==='UNKNOWN'?(reason||spec.memo):reason};
 }
 /* Step 7: TARGET v1 as a new device TARGET version once every card is answered, the §16 limits pass and the owner's number check
-   (config number_check_passed) is set. Set C starts on that date (no backfill). */
+   (config number_check_passed) is set. R-C starts on that date (no backfill). */
 function finalize(state,{date,cfg=CFG,pcfg=PCFG}={}){
  if(!validDay(date))fail('DATE_INVALID');if(!state?.draft)fail('TARGET_V1_DRAFT_REQUIRED');
  const sel=currentSelection(state,cfg,pcfg);if(!sel.complete)fail('TARGET_V1_CARDS_PENDING');if(sel.limits.ok!==true)fail('TARGET_LIMITS_BLOCKED');
  if(cfg.number_check_passed!==true)fail('NUMBER_CHECK_NOT_PASSED');
  const n=state.versions.length+1,version=n===1?'v1':'v1.'+(n-1),answers=latestAnswers(state);
  const rows=sel.rows.map(r=>({symbol:r.symbol,grade:r.grade,pct:r.pct,subgroup:r.subgroup,confirmed:answers.get(key(r.symbol))?.answer==='AGREE'}));
- return{...state,versions:[...state.versions,{version,date,draft_created:state.draft.created,config_version:cfg.config_version,rows,cash_pct:sel.cash_pct}],set_c:{start:date,version}};
+ return{...state,versions:[...state.versions,{version,date,draft_created:state.draft.created,config_version:cfg.config_version,rows,cash_pct:sel.cash_pct}],rule_c:{start:date,version}};
 }
 function latestVersion(state){return state?.versions?.length?state.versions[state.versions.length-1]:null;}
 
 /* ---------- rebalance calendar (PLAYBOOK 13-4) ---------- */
-// 셋째 주 = the Monday among days 15–21 of the month.
+// 셋째 주 = the Monday among days 15–21 of the month (T-REBAL, 2026-10-15). A holiday Monday stays the calendar day here; the rule
+// index applies it on the next session (config rebalance.holiday_rule NEXT_SESSION).
 function rebalanceDay(year,month){for(let d=15;d<=21;d++){const t=new Date(Date.UTC(year,month-1,d));if(t.getUTCDay()===1)return t.toISOString().slice(0,10);}return null;}
 function rebalanceDays(from,to,cfg=CFG){const out=[];const y0=Number(from.slice(0,4)),y1=Number(to.slice(0,4));for(let y=y0;y<=y1;y++)for(const m of cfg.rebalance.months){const d=rebalanceDay(y,m);if(d>=from&&d<=to)out.push(d);}return out;}
 function lastRebalanceOnOrBefore(date,cfg=CFG){const y=Number(date.slice(0,4));const days=rebalanceDays((y-1)+'-01-01',date,cfg);return days.length?days[days.length-1]:null;}
@@ -221,15 +231,15 @@ function transitionRows({v0={},v1={},actual=null,total=null,round:k=1,cfg=CFG}){
   return{symbol:s,v0_pct:from,final_pct:to,current_pct:cur,step_pp:round(step,4),round_target_pct:round(from+step*k,4),amount:finite(total)&&total>0?step/100*total:null};});
 }
 
-/* ---------- C: virtual sets B and C (rule index; no backfill) ---------- */
-function setBDue(state,date,cfg=CFG){const last=state?.set_b?.length?state.set_b[state.set_b.length-1].date:null;if(!last)return true;const day=lastRebalanceOnOrBefore(date,cfg);return!!day&&last<day&&day<=date;}
-// Set B segment (equal weight, same spread and caps). ready: enough eligible names (V priced on this device) and a full,
-// limit-passing selection; the screen starts / re-selects set B only when ready (no partial start, no backfill).
-function setBSegment(eligibleRows,date,cfg=CFG,pcfg=PCFG){const sel=select(eligibleRows,{mode:'EQUAL',cfg,pcfg}),limitsOk=sel.limits.ok===true;
+/* ---------- C: rule sets R-B and R-C (규칙 지수; no backfill) ---------- */
+function ruleBDue(state,date,cfg=CFG){const last=state?.rule_b?.length?state.rule_b[state.rule_b.length-1].date:null;if(!last)return true;const day=lastRebalanceOnOrBefore(date,cfg);return!!day&&last<day&&day<=date;}
+// R-B segment (equal weight, same spread and caps). ready: enough eligible names (V priced on this device) and a full,
+// limit-passing selection; the screen starts / re-selects R-B only when ready (no partial start, no backfill).
+function ruleBSegment(eligibleRows,date,cfg=CFG,pcfg=PCFG){const sel=select(eligibleRows,{mode:'EQUAL',cfg,pcfg}),limitsOk=sel.limits.ok===true,R=cfg.virtual_sets['R-B'];
  return{date,rows:sel.rows.map(r=>({symbol:r.symbol,pct:r.pct,subgroup:r.subgroup})),cash_pct:sel.cash_pct,limits_ok:limitsOk,
-  ready:eligibleRows.length>=cfg.virtual_sets.B.start_min_eligible&&sel.rows.length===cfg.virtual_sets.B.count&&limitsOk};}
+  ready:eligibleRows.length>=R.start_min_eligible&&sel.rows.length===R.count&&limitsOk};}
 /* Rule index: base session close = 100; units from the segment's target weights; reset to the target weights on every rebalance
-   day and every new segment (first session on/after the date). A missing close is a gap (that session NA); a reset or the last
+   day and every new segment (first session on/after the date, so a holiday Monday resets on the next session). A missing close is a gap (that session NA); a reset or the last
    session without every close → NOT_AVAILABLE. Nothing is interpolated or carried. closes: {symbol: {date: close}} (RAM). */
 function ruleIndex({segments,closes,calendar,start,asOf,resetDays=[]}){
  const na=(reason,date=null)=>({state:'NOT_AVAILABLE',reason,date,value:null,return:null});
@@ -250,32 +260,59 @@ function ruleIndex({segments,closes,calendar,start,asOf,resetDays=[]}){
  if(last.value===null)return na('LAST_CLOSE_MISSING',last.date);
  return{state:'OK',reason:null,base_date:sessions[0],date:last.date,value:last.value,return:last.value/100-1};
 }
-/* A, B, C and S&P 500 over the common window [max(C start, B first), asOf] (local price returns, PLAYBOOK 13-4 reset days). */
+/* A, R-B, R-C and S&P 500 over the common window [max(R-C start, R-B first), asOf] (local price returns, PLAYBOOK 13-4 reset days). */
+const COMPARE_KEYS=Object.freeze(['A','R-B','R-C','SP500']);
 function compareSets({state,v0Weights={},closes={},asOf,cfg=CFG}){
- const benchmark=cfg.virtual_sets.benchmark.symbol,calendar=Object.keys(closes?.[benchmark]||{}).sort(),out={window_start:null,as_of:asOf,A:null,B:null,C:null,SP500:null};
+ const benchmark=cfg.virtual_sets.benchmark.symbol,calendar=Object.keys(closes?.[benchmark]||{}).sort(),out={window_start:null,as_of:asOf,A:null,'R-B':null,'R-C':null,SP500:null};
  const na=reason=>({state:'NOT_AVAILABLE',reason,value:null,return:null});
- const c=state?.set_c,version=c?state.versions.find(v=>v.version===c.version):null,firstB=state?.set_b?.length?state.set_b[0].date:null;
- if(!c||!version){for(const k of ['A','B','C','SP500'])out[k]=na('SET_C_NOT_STARTED');return out;}
+ const c=state?.rule_c,version=c?state.versions.find(v=>v.version===c.version):null,firstB=state?.rule_b?.length?state.rule_b[0].date:null;
+ if(!c||!version){for(const k of COMPARE_KEYS)out[k]=na('R_C_NOT_STARTED');return out;}
  const start=firstB&&firstB>c.start?firstB:c.start;out.window_start=start;
- if(!validDay(asOf)||asOf<start){for(const k of ['A','B','C','SP500'])out[k]=na('WINDOW_NOT_STARTED');return out;}
+ if(!validDay(asOf)||asOf<start){for(const k of COMPARE_KEYS)out[k]=na('WINDOW_NOT_STARTED');return out;}
  const resetDays=rebalanceDays(start,asOf,cfg),aRows=Object.entries(v0Weights).filter(([,p])=>finite(p)&&p>0).map(([symbol,pct])=>({symbol,pct}));
- const bSegs=(state.set_b||[]).filter(s=>s.date<=asOf),bStart=bSegs.filter(s=>s.date<=start).pop();
+ const bSegs=(state.rule_b||[]).filter(s=>s.date<=asOf),bStart=bSegs.filter(s=>s.date<=start).pop();
  out.A=aRows.length?ruleIndex({segments:[{date:start,rows:aRows}],closes,calendar,start,asOf,resetDays}):na('TARGET_V0_NOT_AVAILABLE');
- out.B=bStart?ruleIndex({segments:[{...bStart,date:start},...bSegs.filter(s=>s.date>start)],closes,calendar,start,asOf,resetDays}):na('SET_B_NOT_STARTED');
- out.C=ruleIndex({segments:[{date:start,rows:version.rows.map(r=>({symbol:r.symbol,pct:r.pct}))}],closes,calendar,start,asOf,resetDays});
+ out['R-B']=bStart?ruleIndex({segments:[{...bStart,date:start},...bSegs.filter(s=>s.date>start)],closes,calendar,start,asOf,resetDays}):na('R_B_NOT_STARTED');
+ out['R-C']=ruleIndex({segments:[{date:start,rows:version.rows.map(r=>({symbol:r.symbol,pct:r.pct}))}],closes,calendar,start,asOf,resetDays});
  out.SP500=ruleIndex({segments:[{date:start,rows:[{symbol:benchmark,pct:100}]}],closes,calendar,start,asOf});
  return out;
 }
-/* E: before the round-3 rebalance (from the round-2 day), if B and C are each below BOTH A and the S&P 500 → a suggestion to hold
+/* E: before the round-3 rebalance (from the round-2 day), if R-B and R-C are each below BOTH A and the S&P 500 → a suggestion to hold
    round 3. Suggestion only; any NA → NOT_AVAILABLE (never a suggestion from missing data). */
 function reviewRule({compare,date,cfg=CFG}){
  const R=cfg.review_rule,list=rounds(cfg),before=list.find(r=>r.round===R.before_round),from=list.find(r=>r.round===R.active_from_round);
  if(!validDay(date)||!before||!from||date<from.date||date>=before.date)return{state:'NOT_DUE',suggest:false,round:R.before_round,from:from?.date||null,until:before?.date||null};
- const v=k=>compare?.[k]?.state==='OK'?compare[k].return:null,a=v('A'),b=v('B'),c=v('C'),s=v('SP500');
+ const v=k=>compare?.[k]?.state==='OK'?compare[k].return:null,a=v('A'),b=v('R-B'),c=v('R-C'),s=v('SP500');
  if([a,b,c,s].includes(null))return{state:'NOT_AVAILABLE',suggest:false,round:R.before_round,reason:'RETURN_NOT_AVAILABLE'};
  const suggest=b<a&&b<s&&c<a&&c<s;return{state:'EVALUATED',suggest,round:R.before_round,text:suggest?R.text:null};
 }
-return Object.freeze({SCHEMA,ANSWERS,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
+/* ---------- T-PRICE (2026-10-15): price path for TV1 judgement names (pure; prices only in RAM arguments) ---------- */
+// Worker / Prices_D symbol of a Universe ticker ('BRK.B' → 'BRK-B'); null when it cannot be one.
+function priceSymbolOf(symbol){const s=key(symbol);return PRICE_SYMBOL.test(s)?s:null;}
+// Sector ETF of a TV1 name: the D-22 SIC → ETF map (VirtualTrading.sectorBenchmark; semis theme without membership → XLI),
+// else the S&P 500 benchmark (then the sector excess equals the S&P 500 excess, as in the runner).
+function sectorEtfOf(sic,cfg=CFG){let etf=null;try{const VT=virtualTrading();etf=VT&&sic!==null&&sic!==undefined?VT.sectorBenchmark(String(sic)).etf:null;}catch(_){etf=null;}return etf&&PRICE_SYMBOL.test(etf)?etf:cfg.scoring_prices.benchmark;}
+/* TV1 records whose name has no device price path: not one of the 19 (runner series) and not yet added. → [{symbol, price_symbol,
+   sector_symbol}] in record order, one per name. sicOf(symbol) → SIC or null (public file). */
+function scoringNeeds(records,{have=[],added=[],sicOf=()=>null,cfg=CFG}={}){
+ const code=cfg.scoring_prices.record_primary_code,known=new Set([...have,...added].map(key)),out=[],seen=new Set();
+ for(const r of Array.isArray(records)?records:[]){if(r?.primary_code!==code||!r.verdict)continue;const ps=priceSymbolOf(r.symbol);if(!ps||known.has(key(r.symbol))||known.has(ps)||seen.has(ps))continue;seen.add(ps);
+  out.push({symbol:r.symbol,price_symbol:ps,sector_symbol:sectorEtfOf(sicOf(r.symbol),cfg)});}
+ return out;
+}
+// The symbols one confirmed click adds (names, their sector ETFs, the S&P 500 benchmark), merged into state.price_symbols.
+function addPriceSymbols(state,needs,cfg=CFG){
+ const list=[...(state?.price_symbols||[])];for(const n of needs||[])for(const s of [n.price_symbol,n.sector_symbol,cfg.scoring_prices.benchmark])if(s&&PRICE_SYMBOL.test(s)&&!list.includes(s))list.push(s);
+ if(list.length>cfg.scoring_prices.max_symbols)fail('PRICE_SYMBOLS_MAX');return{...state,price_symbols:list};
+}
+/* Scoring series for PlaybookScreen.scoreRecord from daily closes read into RAM ({symbol: {date: close}}): sessions are the S&P 500
+   benchmark's dates. A name or benchmark without closes → null (the record stays NA; nothing is filled with 0). */
+function scoringSeries(need,closes,cfg=CFG){
+ const b=cfg.scoring_prices.benchmark,sp=closes?.[b],stock=closes?.[need?.price_symbol],sector=closes?.[need?.sector_symbol];
+ const ok=x=>object(x)&&Object.keys(x).length>0;if(!ok(sp)||!ok(stock)||!ok(sector))return null;
+ return{sessions:Object.keys(sp).filter(validDay).sort(),stock:{...stock},sector:{...sector},sp500:{...sp},sector_symbol:need.sector_symbol};
+}
+return Object.freeze({SCHEMA,ANSWERS,COMPARE_KEYS,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
  emptyState,validateState,latestAnswers,currentSelection,answer,judgementRecord,finalize,latestVersion,rebalanceDay,rebalanceDays,lastRebalanceOnOrBefore,
- nextRebalanceOnOrAfter,rounds,transitionRows,setBDue,setBSegment,ruleIndex,compareSets,reviewRule,coreEligible});
+ nextRebalanceOnOrAfter,rounds,transitionRows,ruleBDue,ruleBSegment,ruleIndex,compareSets,reviewRule,coreEligible,priceSymbolOf,sectorEtfOf,scoringNeeds,addPriceSymbols,scoringSeries});
 });

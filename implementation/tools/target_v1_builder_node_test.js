@@ -1,6 +1,7 @@
 'use strict';
 // TARGET v1 builder (owner decision 2026-10-14): filters, sector cap, selection and weights, template generation, replacement on
-// 반대, the §16 limits re-check, finalize gate (number check), virtual set index and the fixed review rule. Synthetic data only.
+// 반대, the §16 limits re-check, finalize gate (number check), rule sets R-B / R-C (규칙 지수, 2026-10-15 T-SET), the holiday rule
+// (T-REBAL), the TV1 scoring price path (T-PRICE) and the fixed review rule. Synthetic data only.
 const test=require('node:test'),assert=require('node:assert/strict');
 const W='../src/investment_system/product/web_assets/';
 const B=require(W+'target-v1-builder.js'),CFG=require(W+'target-v1-config-defaults.js'),PCFG=require(W+'playbook-config-defaults.js'),P=require(W+'playbook-screen.js');
@@ -68,9 +69,9 @@ test('selection and weights: core 5 × 8% + general 10 × 6% = 100, core needs f
  // Fewer qualifying core names → the shortfall stays cash (never filled), limits still checked against 100%.
  const few=universe(Array.from({length:20},(_,i)=>({symbol:'F'+String(i).padStart(2,'0'),total:80-i,sic:SICS[i%SICS.length],ig:'g'+(i%6),fa:i<3?15:10})));
  const s2=B.currentSelection({...B.emptyState(),draft:B.buildDraft({...few,existing:[],date:'2026-10-14'})});assert.equal(s2.core_count,3);assert.equal(s2.rows.length,15);assert.equal(s2.cash_pct,4);assert.equal(s2.limits.ok,true);
- // Set B: equal weight 100/15 with the same spread and caps.
- const seg=B.setBSegment(B.universeRows({...u,existing:[]}).filter(r=>!B.exclusions(r).length),'2026-10-14');assert.equal(seg.rows.length,15);assert.ok(seg.rows.every(r=>Math.abs(r.pct-100/15)<1e-3));assert.equal(seg.limits_ok,true);assert.equal(seg.ready,true);
- assert.equal(B.setBSegment(B.universeRows({...u,existing:[]}).filter(r=>!B.exclusions(r).length).slice(0,20),'2026-10-14').ready,false);
+ // R-B: equal weight 100/15 with the same spread and caps.
+ const seg=B.ruleBSegment(B.universeRows({...u,existing:[]}).filter(r=>!B.exclusions(r).length),'2026-10-14');assert.equal(seg.rows.length,15);assert.ok(seg.rows.every(r=>Math.abs(r.pct-100/15)<1e-3));assert.equal(seg.limits_ok,true);assert.equal(seg.ready,true);
+ assert.equal(B.ruleBSegment(B.universeRows({...u,existing:[]}).filter(r=>!B.exclusions(r).length).slice(0,20),'2026-10-14').ready,false);
 });
 
 test('templates: 3 reasons and 3 numerically checkable invalidations from the strongest factors, deterministic',()=>{
@@ -112,24 +113,24 @@ test('반대 replaces the name with the next-ranked one, re-checks limits; 모�
  const again=B.answer(state,{symbol:after.rows[1].symbol,answer:'AGREE',date:'2026-10-15'});assert.equal(again.answers.filter(a=>a.symbol===after.rows[1].symbol).length,1);
 });
 
-test('finalize: every card answered, limits pass, blocked until number_check_passed; set C starts that day',()=>{
+test('finalize: every card answered, limits pass, blocked until number_check_passed; R-C starts that day',()=>{
  assert.equal(CFG.number_check_passed,false);assert.equal(CFG.status,'v0');assert.equal(CFG.calibration,'UNCALIBRATED');
  const u=wide(40),draft=B.buildDraft({...u,existing:[],date:'2026-10-14'});let state={...B.emptyState(),draft};
  assert.throws(()=>B.finalize(state,{date:'2026-10-14'}),/TARGET_V1_CARDS_PENDING/);
  for(const r of B.currentSelection(state).rows)state=B.answer(state,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});
  assert.equal(B.currentSelection(state).complete,true);assert.throws(()=>B.finalize(state,{date:'2026-10-14'}),/NUMBER_CHECK_NOT_PASSED/);
  const open={...CFG,number_check_passed:true},done=B.finalize(state,{date:'2026-10-15',cfg:open});
- assert.equal(done.versions.length,1);assert.equal(done.versions[0].version,'v1');assert.deepEqual(done.set_c,{start:'2026-10-15',version:'v1'});
+ assert.equal(done.versions.length,1);assert.equal(done.versions[0].version,'v1');assert.deepEqual(done.rule_c,{start:'2026-10-15',version:'v1'});
  let sum=done.versions[0].cash_pct;for(const r of done.versions[0].rows)sum+=r.pct;assert.equal(sum,100);assert.ok(done.versions[0].rows.every(r=>r.confirmed));
  assert.equal(B.finalize(done,{date:'2026-11-16',cfg:open}).versions[1].version,'v1.1');B.validateState(done);
 });
 
-test('rebalance calendar, transition rows (1/3 per round) and set B re-selection days',()=>{
+test('rebalance calendar, transition rows (1/3 per round) and R-B re-selection days',()=>{
  assert.deepEqual(B.rounds().map(r=>r.date),['2026-11-16','2027-02-15','2027-05-17']);
  assert.equal(B.lastRebalanceOnOrBefore('2026-12-01'),'2026-11-16');assert.equal(B.nextRebalanceOnOrAfter('2026-11-17'),'2027-02-15');
- const state={...B.emptyState(),set_b:[{date:'2026-10-14',rows:[{symbol:'A',pct:50}]}]};
- assert.equal(B.setBDue(B.emptyState(),'2026-10-14'),true);assert.equal(B.setBDue(state,'2026-11-15'),false);assert.equal(B.setBDue(state,'2026-11-16'),true);
- assert.equal(B.setBDue({...state,set_b:[...state.set_b,{date:'2026-11-18',rows:[]}]},'2026-12-01'),false);
+ const state={...B.emptyState(),rule_b:[{date:'2026-10-14',rows:[{symbol:'A',pct:50}]}]};
+ assert.equal(B.ruleBDue(B.emptyState(),'2026-10-14'),true);assert.equal(B.ruleBDue(state,'2026-11-15'),false);assert.equal(B.ruleBDue(state,'2026-11-16'),true);
+ assert.equal(B.ruleBDue({...state,rule_b:[...state.rule_b,{date:'2026-11-18',rows:[]}]},'2026-12-01'),false);
  const rows=B.transitionRows({v0:{OLD:9,BOTH:6},v1:{NEW:8,BOTH:9},actual:{BOTH:5.5},total:1000000,round:2});
  const by=Object.fromEntries(rows.map(r=>[r.symbol,r]));assert.equal(by.NEW.step_pp,2.6667);assert.equal(by.NEW.round_target_pct,5.3333);assert.equal(by.OLD.step_pp,-3);assert.equal(by.OLD.round_target_pct,3);
  assert.equal(by.BOTH.current_pct,5.5);assert.equal(by.OLD.current_pct,null);assert.equal(Math.round(by.BOTH.amount),10000);
@@ -143,21 +144,100 @@ test('rule index (no fill) and the round-3 review rule (suggestion only, NA neve
  delete closes.BBB['2026-10-20'];const gap=B.ruleIndex({segments:[{date:'2026-10-15',rows:[{symbol:'AAA',pct:50},{symbol:'BBB',pct:50}]}],closes,calendar:Object.keys(closes.SPY),start:'2026-10-15',asOf:'2026-10-20'});
  assert.deepEqual([gap.state,gap.reason,gap.return],['NOT_AVAILABLE','LAST_CLOSE_MISSING',null]);
  const ok=(r)=>({state:'OK',return:r});
- assert.equal(B.reviewRule({compare:{A:ok(0.05),B:ok(0.01),C:ok(0.02),SP500:ok(0.04)},date:'2027-04-01'}).suggest,true);
- assert.equal(B.reviewRule({compare:{A:ok(0.05),B:ok(0.01),C:ok(0.045),SP500:ok(0.04)},date:'2027-04-01'}).suggest,false);
- assert.equal(B.reviewRule({compare:{A:ok(0.05),B:ok(0.06),C:ok(0.02),SP500:ok(0.04)},date:'2027-04-01'}).suggest,false);
- const na=B.reviewRule({compare:{A:ok(0.05),B:{state:'NOT_AVAILABLE',return:null},C:ok(0.02),SP500:ok(0.04)},date:'2027-04-01'});assert.deepEqual([na.state,na.suggest],['NOT_AVAILABLE',false]);
- assert.equal(B.reviewRule({compare:{A:ok(0.05),B:ok(0.01),C:ok(0.02),SP500:ok(0.04)},date:'2027-01-10'}).state,'NOT_DUE');
- assert.equal(B.reviewRule({compare:{A:ok(0.05),B:ok(0.01),C:ok(0.02),SP500:ok(0.04)},date:'2027-05-17'}).state,'NOT_DUE');
- // compareSets: no set C → NA everywhere; with C, A/B/C/SPY over the common window.
- assert.equal(B.compareSets({state:B.emptyState(),closes,asOf:'2026-10-20'}).C.reason,'SET_C_NOT_STARTED');
- closes.BBB['2026-10-20']=20;const st={...B.emptyState(),versions:[{version:'v1',date:'2026-10-15',rows:[{symbol:'AAA',pct:100}],cash_pct:0}],set_c:{start:'2026-10-15',version:'v1'},set_b:[{date:'2026-10-15',rows:[{symbol:'BBB',pct:100}]}]};
- const cmp=B.compareSets({state:st,v0Weights:{AAA:50,BBB:50},closes,asOf:'2026-10-20'});assert.deepEqual(['A','B','C','SP500'].map(k=>cmp[k].state),['OK','OK','OK','OK']);
- assert.ok(Math.abs(cmp.C.return-0.3)<1e-12);assert.equal(cmp.B.return,0);assert.ok(Math.abs(cmp.SP500.return-0.03)<1e-12);
+ assert.equal(B.reviewRule({compare:{A:ok(0.05),'R-B':ok(0.01),'R-C':ok(0.02),SP500:ok(0.04)},date:'2027-04-01'}).suggest,true);
+ assert.equal(B.reviewRule({compare:{A:ok(0.05),'R-B':ok(0.01),'R-C':ok(0.045),SP500:ok(0.04)},date:'2027-04-01'}).suggest,false);
+ assert.equal(B.reviewRule({compare:{A:ok(0.05),'R-B':ok(0.06),'R-C':ok(0.02),SP500:ok(0.04)},date:'2027-04-01'}).suggest,false);
+ const na=B.reviewRule({compare:{A:ok(0.05),'R-B':{state:'NOT_AVAILABLE',return:null},'R-C':ok(0.02),SP500:ok(0.04)},date:'2027-04-01'});assert.deepEqual([na.state,na.suggest],['NOT_AVAILABLE',false]);
+ assert.equal(B.reviewRule({compare:{A:ok(0.05),'R-B':ok(0.01),'R-C':ok(0.02),SP500:ok(0.04)},date:'2027-01-10'}).state,'NOT_DUE');
+ assert.equal(B.reviewRule({compare:{A:ok(0.05),'R-B':ok(0.01),'R-C':ok(0.02),SP500:ok(0.04)},date:'2027-05-17'}).state,'NOT_DUE');
+ // compareSets: no R-C → NA everywhere; with R-C, A/R-B/R-C/SPY over the common window (keys are the R-B / R-C ids).
+ assert.deepEqual(B.COMPARE_KEYS,['A','R-B','R-C','SP500']);assert.equal(B.compareSets({state:B.emptyState(),closes,asOf:'2026-10-20'})['R-C'].reason,'R_C_NOT_STARTED');
+ closes.BBB['2026-10-20']=20;const st={...B.emptyState(),versions:[{version:'v1',date:'2026-10-15',rows:[{symbol:'AAA',pct:100}],cash_pct:0}],rule_c:{start:'2026-10-15',version:'v1'},rule_b:[{date:'2026-10-15',rows:[{symbol:'BBB',pct:100}]}]};
+ const cmp=B.compareSets({state:st,v0Weights:{AAA:50,BBB:50},closes,asOf:'2026-10-20'});assert.deepEqual(B.COMPARE_KEYS.map(k=>cmp[k].state),['OK','OK','OK','OK']);
+ assert.equal(Object.hasOwn(cmp,'B')||Object.hasOwn(cmp,'C'),false);
+ assert.ok(Math.abs(cmp['R-C'].return-0.3)<1e-12);assert.equal(cmp['R-B'].return,0);assert.ok(Math.abs(cmp.SP500.return-0.03)<1e-12);
+ assert.equal(B.compareSets({state:{...st,rule_b:[]},v0Weights:{AAA:50},closes,asOf:'2026-10-20'})['R-B'].reason,'R_B_NOT_STARTED');
 });
 
 test('config: every section carries v0 and a decision state; JS copy loads',()=>{
- for(const k of ['number_check','score_basis','coverage','filters','sector_spread','candidates','selection','templates','cards','rebalance','transition','virtual_sets','review_rule'])assert.ok(CFG[k].version==='v0'&&['UNCALIBRATED','OWNER_RULE'].includes(CFG[k].decision),k);
+ for(const k of ['number_check','score_basis','coverage','filters','sector_spread','candidates','selection','templates','cards','rebalance','transition','virtual_sets','review_rule'])assert.ok(CFG[k].version==='v0'&&['UNCALIBRATED','OWNER_RULE','USER_DECISION_2026-10-15'].includes(CFG[k].decision),k);
  assert.equal(CFG.selection.core.count*CFG.selection.core.pct+CFG.selection.general.count*CFG.selection.general.pct,CFG.selection.sum_pct);
  assert.equal(PCFG.portfolio_limits.single_max_pct,10);assert.equal(PCFG.portfolio_limits.sector_group_max_pct,40);
+});
+
+test('2026-10-15 decisions: T-COV 0.9 Q and G, T-REBAL decided, R-B / R-C ids with 규칙 지수, sheet sets B/C/D untouched',()=>{
+ for(const k of ['coverage','rebalance','scoring_prices'])assert.equal(CFG[k].decision,'USER_DECISION_2026-10-15',k);
+ assert.equal(CFG.coverage.ready_min_ratio,0.9);assert.match(CFG.coverage.decided,/^2026-10-15 .*T-COV/);assert.match(CFG.rebalance.decided,/^2026-10-15 .*T-REBAL/);
+ // 0.9 on both axes: 454/504 ≥ 0.9 is ready; 453/504 on either axis keeps the draft label.
+ const recs=(q,g)=>({records:Object.fromEntries(Array.from({length:504},(_,i)=>['NYSE:F'+i,{qg_axes:{Q:{score:i<q?50:null},G:{score:i<g?50:null}}}]))});
+ assert.equal(B.coverage(recs(454,454)).ready,true);assert.equal(B.coverage(recs(453,504)).ready,false);assert.equal(B.coverage(recs(504,453)).ready,false);
+ assert.match(B.coverage(recs(453,504)).label,/^초안 · 커버리지 편향 가능 \(Q 453\/504, G 504\/504\)$/);
+ assert.deepEqual(CFG.virtual_sets.rule_ids,['R-B','R-C']);for(const id of ['R-B','R-C']){assert.equal(CFG.virtual_sets[id].id,id);assert.equal(CFG.virtual_sets[id].source_ko,'규칙 지수');assert.ok(CFG.virtual_sets[id].ko.startsWith(id+' · '));}
+ assert.equal(Object.hasOwn(CFG.virtual_sets,'B')||Object.hasOwn(CFG.virtual_sets,'C'),false);assert.equal(CFG.virtual_sets.A.ko,'세트 A · TARGET v0');
+ assert.equal(CFG.review_rule.condition,'R_B_AND_R_C_BELOW_A_AND_SP500');assert.match(CFG.review_rule.text,/^R-B와 R-C\(규칙 지수\)가/);
+ // The sheet ledger's user sets keep their names.
+ const L=require(W+'virtual-ledger-sheets.js');assert.deepEqual(L.USER_SETS,['SET_B','SET_C','SET_D']);assert.deepEqual([L.TABS.SET_B,L.TABS.SET_C,L.TABS.SET_D],['VirtualB','VirtualC','VirtualD']);
+});
+
+test('T-REBAL: Monday of days 15–21; a holiday Monday resets the rule index on the next session',()=>{
+ assert.equal(CFG.rebalance.holiday_rule,'NEXT_SESSION');assert.deepEqual(CFG.rebalance.months,[2,5,8,11]);
+ for(const[y,m,d]of [[2026,11,'2026-11-16'],[2027,2,'2027-02-15'],[2027,5,'2027-05-17'],[2027,8,'2027-08-16'],[2027,11,'2027-11-15'],[2028,2,'2028-02-21']]){assert.equal(B.rebalanceDay(y,m),d);assert.equal(new Date(d+'T00:00:00Z').getUTCDay(),1);}
+ // 2027-02-15 is a US market holiday: the calendar skips it, so the reset uses the 2027-02-16 close (never a carried value).
+ const cal=['2027-02-11','2027-02-12','2027-02-16','2027-02-17'],closes={SPY:{},UP:{},FLAT:{}};cal.forEach((d,i)=>{closes.SPY[d]=100;closes.UP[d]=[10,10,20,20][i];closes.FLAT[d]=10;});
+ const seg=[{date:'2027-02-11',rows:[{symbol:'UP',pct:50},{symbol:'FLAT',pct:50}]}];
+ const idx=B.ruleIndex({segments:seg,closes,calendar:cal,start:'2027-02-11',asOf:'2027-02-17',resetDays:B.rebalanceDays('2027-02-11','2027-02-17')});
+ assert.deepEqual(B.rebalanceDays('2027-02-11','2027-02-17'),['2027-02-15']);assert.equal(idx.state,'OK');assert.ok(Math.abs(idx.return-0.5)<1e-12);
+ // Without the reset the same path also gives +50% here; a reset-day close missing → NA (no fill).
+ delete closes.FLAT['2027-02-16'];const gap=B.ruleIndex({segments:seg,closes,calendar:cal,start:'2027-02-11',asOf:'2027-02-17',resetDays:['2027-02-15']});
+ assert.deepEqual([gap.state,gap.reason,gap.date],['NOT_AVAILABLE','REBALANCE_CLOSE_MISSING','2027-02-16']);
+ // R-B is re-selected once the calendar Monday has passed (holiday or not).
+ const st={...B.emptyState(),rule_b:[{date:'2026-11-16',rows:[]}]};assert.equal(B.ruleBDue(st,'2027-02-14'),false);assert.equal(B.ruleBDue(st,'2027-02-15'),true);assert.equal(B.ruleBDue(st,'2027-02-16'),true);
+});
+
+test('state: R-B / R-C keys, legacy #248 layout read as R-B / R-C, price_symbols are symbols only',()=>{
+ const e=B.emptyState();assert.deepEqual(Object.keys(e).sort(),['answers','draft','price_symbols','rule_b','rule_c','schema','versions']);
+ const legacy={schema:B.SCHEMA,draft:null,answers:[],versions:[{version:'v1',date:'2026-10-15',rows:[{symbol:'AAA',pct:100}],cash_pct:0}],set_b:[{date:'2026-10-14',rows:[{symbol:'BBB',pct:100}]}],set_c:{start:'2026-10-15',version:'v1'}};
+ const v=B.validateState(legacy);assert.deepEqual(v.rule_b,legacy.set_b);assert.deepEqual(v.rule_c,legacy.set_c);assert.deepEqual(v.price_symbols,[]);assert.equal(Object.hasOwn(v,'set_b'),false);
+ // A playbook store holding the legacy layout still reads (older device records stay valid).
+ const s=memory(),pb=P.empty();pb.target_v1=legacy;s.setItem(P.KEY,JSON.stringify(pb));assert.equal(P.read(s).target_v1.schema,B.SCHEMA);
+ assert.throws(()=>B.validateState({...e,set_b:[]}),/TARGET_V1_STATE_INVALID/);assert.throws(()=>B.validateState({...e,price_symbols:['abc']}),/TARGET_V1_STATE_INVALID/);
+ assert.throws(()=>B.validateState({...e,price_symbols:['AAA','AAA']}),/TARGET_V1_STATE_INVALID/);assert.throws(()=>B.validateState({...e,price_symbols:[12.5]}),/TARGET_V1_STATE_INVALID/);
+ assert.throws(()=>B.validateState({...e,price_symbols:Array.from({length:CFG.scoring_prices.max_symbols+1},(_,i)=>'S'+i)}),/TARGET_V1_STATE_INVALID/);
+ const ok={...e,price_symbols:['BRK-B','XLF','SPY']};assert.deepEqual(B.validateState(ok),ok);const pb2=P.empty();pb2.target_v1=ok;P.write(s,pb2);assert.deepEqual(P.read(s).target_v1.price_symbols,['BRK-B','XLF','SPY']);
+});
+
+test('T-PRICE: TV1 names outside the 19 get a sheet price path; scoring reads it like the runner series, missing stays NA',()=>{
+ const rec=(symbol,verdict='TV1_DISAGREE',date='2026-10-15',code='TV1')=>({id:symbol+date+verdict,date,symbol,primary_code:code,secondary_codes:[],type:'CANDIDATE',sector:null,thresholds:{},checks:[],ai_summary:'',verdict,action:{kind:'TARGET_V1_EXCLUDE'},next_check_date:null,memo:'x'});
+ const records=[rec('NVDA','TV1_AGREE'),rec('BRK.B'),rec('ABBV'),rec('ABBV','TV1_UNKNOWN'),rec('KO','','2026-10-15'),rec('MMM','CONVICTION_KEEP','2026-10-15','H1')];
+ const sics={'BRK.B':'6331',ABBV:'2834'};
+ const needs=B.scoringNeeds(records,{have:['NVDA','ASML'],sicOf:s=>sics[s]??null});
+ assert.deepEqual(needs.map(n=>[n.symbol,n.price_symbol]),[['BRK.B','BRK-B'],['ABBV','ABBV']]);
+ assert.equal(needs[1].sector_symbol,'XLV');assert.ok(/^[A-Z]{2,4}$/.test(needs[0].sector_symbol));
+ assert.equal(B.sectorEtfOf(null),'SPY');
+ // Added names are no longer pending; the add merges names, their sector ETFs and SPY (symbols only, deduped, bounded).
+ const st=B.addPriceSymbols(B.emptyState(),needs);assert.deepEqual(st.price_symbols,['BRK-B',needs[0].sector_symbol,'SPY','ABBV','XLV'].filter((x,i,a)=>a.indexOf(x)===i));B.validateState(st);
+ assert.deepEqual(B.scoringNeeds(records,{have:['NVDA'],added:st.price_symbols,sicOf:s=>sics[s]??null}),[]);
+ assert.throws(()=>B.addPriceSymbols({...st,price_symbols:Array.from({length:CFG.scoring_prices.max_symbols},(_,i)=>'S'+i)},needs),/PRICE_SYMBOLS_MAX/);
+ // Series from RAM closes: sessions = SPY dates; any of name / sector / SPY absent → null (record stays NA).
+ const days=[];for(let d=new Date('2026-10-01T00:00:00Z');days.length<40;d.setUTCDate(d.getUTCDate()+1))if(d.getUTCDay()%6)days.push(d.toISOString().slice(0,10));
+ const series=(f)=>Object.fromEntries(days.map((d,i)=>[d,f(i)]));
+ const closes={SPY:series(i=>100+i),XLV:series(()=>50),ABBV:series(i=>200+2*i)};
+ assert.equal(B.scoringSeries(needs[1],{SPY:closes.SPY,ABBV:closes.ABBV}),null);assert.equal(B.scoringSeries(needs[1],{XLV:closes.XLV,ABBV:closes.ABBV}),null);assert.equal(B.scoringSeries(needs[1],{SPY:closes.SPY,XLV:closes.XLV}),null);
+ const data=B.scoringSeries(needs[1],closes);assert.deepEqual(data.sessions,days);assert.equal(data.sector_symbol,'XLV');
+ const r=rec('ABBV'),score=P.scoreRecord(r,data,20);assert.equal(score.state,'OK');assert.equal(score.base_date,'2026-10-15');
+ const base=days.indexOf('2026-10-15');assert.ok(Math.abs(score.stock-((200+2*(base+20))/(200+2*base)-1))<1e-12);assert.equal(score.sector,0);
+ // A missing close on the window end → NA (never 0).
+ const holed={...closes,ABBV:{...closes.ABBV}};delete holed.ABBV[days[base+20]];const na=P.scoreRecord(r,B.scoringSeries(needs[1],holed),20);
+ assert.deepEqual([na.state,na.reason],['NOT_AVAILABLE','PRICE_OR_BENCHMARK_MISSING']);assert.equal(P.scoreRecord(r,undefined,20).reason,'DEVICE_HISTORY_UNAVAILABLE');
+ // PlaybookScreen keeps the added series in RAM; the runner's own series for the same symbol wins; the table shows NA, never 0.
+ P.addScoringSeries({ABBV:data,'bad symbol':data,XLV:{sessions:'x'}});const merged=P.scoringSeries({NVDA:{sessions:[]}});assert.ok(merged.ABBV&&merged.NVDA);assert.equal(Object.hasOwn(merged,'XLV'),false);assert.equal(Object.hasOwn(merged,'bad symbol'),false);
+ assert.equal(P.scoringSeries({ABBV:{sessions:[]}}).ABBV.sessions.length,0);
+ const html=P.scoringHtml([r,rec('BRK.B')],P.scoringSeries({}));assert.match(html,/ABBV 2026-10-15 · TARGET v1 반대/);assert.match(html,/BRK\.B 2026-10-15 · TARGET v1 반대<\/td><td>D\+20<\/td><td>NA · DEVICE_HISTORY_UNAVAILABLE/);assert.ok([...html.matchAll(/<tr><td>BRK\.B[^]*?<\/tr>/g)].every(m=>!/\d%/.test(m[0])&&(m[0].match(/>NA</g)||[]).length===2));
+});
+
+test('T-PRICE screen helpers: confirm text names the sheet and the symbols; no write without the confirm',async()=>{
+ const S=require(W+'target-v1-screen.js');const text=S.confirmText([{symbol:'ABBV',price_symbol:'ABBV',sector_symbol:'XLV'}],CFG);
+ assert.match(text,/내 비공개 구글 시트의 Prices_D 탭에 덧붙입니다:\nABBV · XLV · SPY/);assert.match(text,/공개 파일·로그·저장소에는 남지 않습니다/);assert.match(text,/0으로 채우지 않음/);assert.match(text,/추가할까요\?$/);
+ assert.ok(!/매수|매도|\bbuy\b|\bsell\b|order/i.test(text));
+ const s=memory();assert.deepEqual(S.priceSymbols(P,s),[]);const pb=P.empty();pb.target_v1={...B.emptyState(),price_symbols:['ABBV','XLV','SPY']};P.write(s,pb);assert.deepEqual(S.priceSymbols(P,s),['ABBV','XLV','SPY']);
 });

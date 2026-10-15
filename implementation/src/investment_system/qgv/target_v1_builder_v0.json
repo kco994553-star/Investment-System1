@@ -4,6 +4,7 @@
   "status": "v0",
   "calibration": "UNCALIBRATED",
   "decided": "2026-10-14 사용자 결정 「QGV v2 채택과 TARGET v1 재구성」",
+  "decided_followups": "2026-10-15 사용자 결정 「T-248 승인. T-COV = Q·G 각 90%. T-SET = R-B·R-C. T-PRICE = 시세 시트 추가. T-REBAL 승인.」",
   "doc": "docs/playbook/PLAYBOOK_V1.md 15·16절 + 2026-10-14 사용자 결정",
   "number_check_passed": false,
   "number_check": {
@@ -17,7 +18,8 @@
     "universe": "US_UNIVERSE_504", "dedupe_issuer": true, "exclude_reference_only": true
   },
   "coverage": {
-    "version": "v0", "decision": "UNCALIBRATED",
+    "version": "v0", "decision": "USER_DECISION_2026-10-15",
+    "decided": "2026-10-15 사용자 결정 「T-COV = Q·G 각 90%」",
     "universe_size": 504, "ready_min_ratio": 0.9,
     "draft_label": "초안 · 커버리지 편향 가능",
     "rule": "공개 sec-qgv2.json의 미국 Universe 행 중 Q·G 축 점수가 있는 수 ÷ universe_size가 둘 다 ready_min_ratio 이상이면 표시를 뗀다"
@@ -114,10 +116,13 @@
     "record_primary_code": "TV1"
   },
   "rebalance": {
-    "version": "v0", "decision": "UNCALIBRATED",
+    "version": "v0", "decision": "USER_DECISION_2026-10-15",
+    "decided": "2026-10-15 사용자 결정 「T-REBAL 승인」",
     "months": [2, 5, 8, 11],
     "day_rule": "MONDAY_OF_DAYS_15_TO_21",
-    "day_rule_ko": "2·5·8·11월 셋째 주 = 15~21일 중 월요일 (PLAYBOOK 13-4)"
+    "day_rule_ko": "2·5·8·11월 셋째 주 = 15~21일 중 월요일 (PLAYBOOK 13-4)",
+    "holiday_rule": "NEXT_SESSION",
+    "holiday_rule_ko": "그 월요일이 휴장이면 지수 계산(재설정·재선정 반영)은 다음 거래일 종가로 합니다"
   },
   "transition": {
     "version": "v0", "decision": "OWNER_RULE",
@@ -132,9 +137,12 @@
   },
   "virtual_sets": {
     "version": "v0", "decision": "OWNER_RULE",
+    "naming_decided": "2026-10-15 사용자 결정 「T-SET = R-B·R-C」",
+    "naming_note_ko": "규칙 지수 세트는 R-B·R-C로 부릅니다. 시트 장부의 사용자 세트 B/C/D(VirtualMeta)와 이름이 겹치지 않게 하기 위함이며, 시트 세트 이름은 바꾸지 않습니다.",
+    "rule_ids": ["R-B", "R-C"],
     "A": {"ko": "세트 A · TARGET v0", "source": "CATALOG_TARGET_V0"},
-    "B": {"ko": "세트 B · v2 상위 15 균등", "source": "RULE_V2_TOP", "count": 15, "equal_weight": true, "reselect": "EVERY_REBALANCE_DAY", "start_min_eligible": 30, "start_rule": "통과 종목이 start_min_eligible 이상이고 15종목이 16절 한도를 통과한 날 시작"},
-    "C": {"ko": "세트 C · TARGET v1", "source": "TARGET_V1_CONFIRMED", "reselect": "NEVER", "rebalance_to_target": "EVERY_REBALANCE_DAY"},
+    "R-B": {"id": "R-B", "ko": "R-B · v2 상위 15 균등", "source_ko": "규칙 지수", "source": "RULE_V2_TOP", "count": 15, "equal_weight": true, "reselect": "EVERY_REBALANCE_DAY", "start_min_eligible": 30, "start_rule": "통과 종목이 start_min_eligible 이상이고 15종목이 16절 한도를 통과한 날 시작"},
+    "R-C": {"id": "R-C", "ko": "R-C · TARGET v1", "source_ko": "규칙 지수", "source": "TARGET_V1_CONFIRMED", "reselect": "NEVER", "rebalance_to_target": "EVERY_REBALANCE_DAY"},
     "backfill": false,
     "start": "DAY_READY",
     "index_rule": "기준일 종가 = 100, 목표 비중으로 단위 계산, 리밸런싱일(또는 재선정일)에 목표 비중으로 재설정, 결측 종가는 공백(채우지 않음)",
@@ -147,9 +155,19 @@
     "id": "HOLD_ROUND_3_SUGGESTION",
     "before_round": 3,
     "active_from_round": 2,
-    "condition": "B_AND_C_BELOW_A_AND_SP500",
-    "window_start": "SET_C_START",
+    "condition": "R_B_AND_R_C_BELOW_A_AND_SP500",
+    "window_start": "R_C_START",
     "suggestion_only": true,
-    "text": "세트 B와 세트 C가 모두 세트 A와 S&P 500보다 낮습니다. 3회차 이동을 보류하는 것을 검토해 보세요(제안일 뿐입니다)."
+    "text": "R-B와 R-C(규칙 지수)가 모두 세트 A와 S&P 500보다 낮습니다. 3회차 이동을 보류하는 것을 검토해 보세요(제안일 뿐입니다)."
+  },
+  "scoring_prices": {
+    "version": "v0", "decision": "USER_DECISION_2026-10-15",
+    "decided": "2026-10-15 사용자 결정 「T-PRICE = 시세 시트 추가」",
+    "record_primary_code": "TV1",
+    "tab": "Prices_D",
+    "benchmark": "SPY",
+    "max_symbols": 60,
+    "write": "USER_BUTTON_WITH_CONFIRM",
+    "rule": "TV1 판정 기록 종목 중 기기 가격 경로(가상매매 엔진 19종목 시계열)가 없는 종목은 사용자가 버튼을 누르고 확인하면 내 구글 시트 Prices_D 탭에 일봉 종가를 덧붙이고, 이후 앱을 열 때 다른 핵심 종목처럼 갱신합니다. 채점은 그 시트 종가를 이 기기 RAM으로 읽어 계산하고, 종가가 없으면 NA(0으로 채우지 않음)입니다."
   }
 }
