@@ -176,6 +176,8 @@ WORKFLOW = ROOT.parent / '.github/workflows/sec-daily-public-inputs.yml'
 LEDGER_INPUT_TOOLS = ('build_pages_cockpit', 'public_screens_pipeline', 'dart_daily', 'sec_universe_shares', 'project_dart_qgv2')
 UNRELATED_TOOLS = ('public_classification_pipeline', 'universe_domains_pipeline', 'company_logos_pipeline', 'sec_13f_managers',
                    'sec_disclosures', 'news_signals')
+# Counts-only report of the final artifact (owner instruction 2026-10-15): last before the upload, never a gate.
+REPORT_TOOLS = ('published_coverage',)
 RAW_SETTING = 'synthetic private release setting'
 
 
@@ -255,6 +257,7 @@ def _daily_run(work, site, day, *, deploy, universe_fails, fail_tools, raw):
         'project_dart_qgv2': lambda env: project.project(out),
         'forward_validation_ledger': append,
         **{tool: unrelated for tool in UNRELATED_TOOLS},
+        'published_coverage': lambda env: load_tool('published_coverage').main(['--artifact-dir', str(out)]),
     }
     for step in collect_steps():
         if step['upload']:
@@ -500,8 +503,9 @@ def test_collect_job_runs_ledger_inputs_and_ledger_before_unrelated_required_ste
     # Exactly the steps whose files the ledger reads (actual-catalog, sec-qg-factors, sec-qgv2, dart-financials) precede it.
     assert order[:ledger] == list(LEDGER_INPUT_TOOLS)
     after = [t for s in steps[ledger + 1:] for t in s['tools']]
-    assert after == list(UNRELATED_TOOLS) and order[-1] == 'UPLOAD'
+    assert after == list(UNRELATED_TOOLS) + list(REPORT_TOOLS) and order[-1] == 'UPLOAD'
     by_tool = {s['tools'][0]: s for s in steps if s['tools']}
+    assert by_tool['published_coverage']['continue'] and not by_tool['published_coverage']['env']
     # Semantics kept: the ledger step is unconditional and required; unrelated steps keep their own required/optional state.
     assert not by_tool['forward_validation_ledger']['continue'] and not by_tool['forward_validation_ledger']['if']
     assert [t for t in ('public_classification_pipeline', 'universe_domains_pipeline', 'sec_13f_managers')
