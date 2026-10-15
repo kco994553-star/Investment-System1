@@ -13,8 +13,10 @@ Lights (each returns {lit: True/False/None, reason, ...value fields}; None = no 
   market      SPY daily close (device only): latest ÷ highest close of the last 52 weeks − 1 ≤ −20 %, OR the 20-session
               realized volatility is in the top 5 % of its last-3-year distribution.
   credit      HYG ÷ IEF daily close ratio (device only, estimate): change over 20 joint sessions ≤ −5 %.
-State: CRISIS (≥ 3 lit, or market + credit, or CPI YoY > 8 %), else WARNING (2 lit, or CPI YoY > 5 % and growth < 0),
-else NORMAL. Fewer than 3 available lights → low confidence. Macro never drives sell decisions.
+State: CRISIS (≥ 3 lit, or market + credit, or CPI YoY > 8 % with at least one light other than inflation also lit),
+else WARNING (2 lit, or CPI YoY > 8 % with no other light lit, or CPI YoY > 5 % and growth < 0), else NORMAL.
+(The CPI > 8 % split is decision M-RULE C of 2026-10-15, PLAYBOOK_V1 18, recorded as a HYPOTHESIS under validation;
+config: revisions, state.crisis_inflation_other_lit_min.) Fewer than 3 available lights → low confidence. Macro never drives sell decisions.
 
 Arithmetic uses only + − × ÷ and sqrt in a fixed order so that the JS mirror returns bit-identical numbers.
 Missing values are never filled and nothing defaults to 0.
@@ -44,8 +46,8 @@ REASONS = ("LIT", "NOT_LIT", "NO_DATA", "INVALID_INPUT", "CONFLICTING_DUPLICATE"
            "SOURCE_NOT_COLLECTED", "SOURCE_NOT_AVAILABLE", "SCHEMA_MISMATCH", "SYNTHETIC_INPUT_NOT_PUBLIC",
            "SOURCE_AFTER_AS_OF", "DEVICE_NOT_LOADED")
 STATES = ("NORMAL", "WARNING", "CRISIS")
-STATE_REASONS = ("LIT_COUNT_GE_3", "MARKET_AND_CREDIT_LIT", "INFLATION_GT_8PCT", "LIT_COUNT_EQ_2",
-                 "INFLATION_GT_5PCT_AND_GROWTH_LT_0", "LIT_COUNT_LE_1", "AVAILABLE_LT_3")
+STATE_REASONS = ("LIT_COUNT_GE_3", "MARKET_AND_CREDIT_LIT", "INFLATION_GT_8PCT_WITH_OTHER_LIT", "LIT_COUNT_EQ_2",
+                 "INFLATION_GT_8PCT_ALONE", "INFLATION_GT_5PCT_AND_GROWTH_LT_0", "LIT_COUNT_LE_1", "AVAILABLE_LT_3")
 _MONTH = re.compile(r"\d{4}-(?:0[1-9]|1[0-2])", re.ASCII)
 _DAY = re.compile(r"\d{4}-\d{2}-\d{2}", re.ASCII)
 
@@ -307,6 +309,7 @@ def macro_state(lights, cpi_yoy=None, growth=None, config=CONFIG) -> dict:
     lit = {name: _lit(lights.get(name)) for name in LIGHTS}
     available = [name for name in LIGHTS if lit[name] is not None]
     count = sum(1 for name in available if lit[name])
+    others = sum(1 for name in available if name != "inflation" and lit[name])
     cpi = cpi_yoy if _num(cpi_yoy) else None
     grow = growth if _num(growth) else None
     crisis = []
@@ -314,11 +317,15 @@ def macro_state(lights, cpi_yoy=None, growth=None, config=CONFIG) -> dict:
         crisis.append("LIT_COUNT_GE_3")
     if all(lit[name] is True for name in cfg["crisis_pair"]):
         crisis.append("MARKET_AND_CREDIT_LIT")
-    if cpi is not None and cpi > cfg["crisis_inflation_gt"] + eps:
-        crisis.append("INFLATION_GT_8PCT")
+    hot = cpi is not None and cpi > cfg["crisis_inflation_gt"] + eps
+    # M-RULE C (2026-10-15, hypothesis under validation): CPI > 8 % is a crisis only together with another light; alone a warning.
+    if hot and others >= cfg["crisis_inflation_other_lit_min"]:
+        crisis.append("INFLATION_GT_8PCT_WITH_OTHER_LIT")
     warning = []
     if count == cfg["warning_lit_count"]:
         warning.append("LIT_COUNT_EQ_2")
+    if hot and others < cfg["crisis_inflation_other_lit_min"]:
+        warning.append("INFLATION_GT_8PCT_ALONE")
     if cpi is not None and grow is not None and cpi > cfg["warning_inflation_gt"] + eps and grow < cfg["warning_growth_lt"] - eps:
         warning.append("INFLATION_GT_5PCT_AND_GROWTH_LT_0")
     state, reasons = ("CRISIS", crisis) if crisis else ("WARNING", warning) if warning else ("NORMAL", ["LIT_COUNT_LE_1"])

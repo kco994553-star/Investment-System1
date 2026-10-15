@@ -6,13 +6,14 @@
    Macro only paces what to buy and how fast; it is never used for sell decisions. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.MacroLights=api;})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
-const CONFIG=Object.freeze({id:'MACRO_LIGHTS_V1',version:'v1',status:'UNCALIBRATED',marker:'v1 · UNCALIBRATED',decided_on:'2026-10-13',source_section:'PLAYBOOK_V1 13-5',sell_decisions:false,comparison_epsilon:1e-9,
+const CONFIG=Object.freeze({id:'MACRO_LIGHTS_V1',version:'v1',status:'UNCALIBRATED',marker:'v1 · UNCALIBRATED',decided_on:'2026-10-13',source_section:'PLAYBOOK_V1 13-5',sell_decisions:false,
+ revisions:[{id:'M-RULE-C',decided_on:'2026-10-15',source_section:'PLAYBOOK_V1 18',status:'HYPOTHESIS',validation:'MACRO_REPLAY_20261014.md 12',changes:['state.crisis_inflation_other_lit_min'],text:'가설(검증 중): 물가 > 8%는 물가 외 다른 경고등이 1개 이상 함께 켜졌을 때만 위기, 단독이면 경고. 규칙을 고르는 데 쓴 구간(2000·2008·2020·2022)만으로 정했고, 추가 과거 재생과 앞으로의 전진 검증으로 확인 중이다'}],comparison_epsilon:1e-9,
  lights:{employment:{series:'BLS:LNS14000000',avg_months:3,low_window_months:12,low_window_includes_latest:true,gap_pp_gte:0.5},
   inflation:{series:'BLS:CUUR0000SA0',base_lag_months:12,yoy_gt:0.05},
   curve:{series:'TREASURY:daily_treasury_yield_curve:BC_10YEAR-BC_3MONTH',spread_lt:0,min_run_days:20},
   market:{symbol:'SPY',drawdown_lte:-0.2,high_window_days:364,rv_window_returns:20,rv_annualization_days:252,rv_history_years:3,rv_top_share:0.05},
   credit:{numerator:'HYG',denominator:'IEF',window_sessions:20,change_lte:-0.05,estimate:true}},
- state:{warning_lit_count:2,crisis_lit_count:3,warning_inflation_gt:0.05,warning_growth_lt:0,crisis_inflation_gt:0.08,crisis_pair:['market','credit'],low_confidence_available_lt:3}});
+ state:{warning_lit_count:2,crisis_lit_count:3,warning_inflation_gt:0.05,warning_growth_lt:0,crisis_inflation_gt:0.08,crisis_inflation_other_lit_min:1,crisis_pair:['market','credit'],low_confidence_available_lt:3}});
 const LIGHTS=Object.freeze(['employment','inflation','curve','market','credit']),PUBLIC_LIGHTS=Object.freeze(['employment','inflation','curve']),DEVICE_LIGHTS=Object.freeze(['market','credit']);
 const FIELDS=Object.freeze({employment:['lit','reason','period','avg3','low12','low12_count','gap'],inflation:['lit','reason','period','base_period','yoy'],
  curve:['lit','reason','date','ten_year','three_month','spread','run_days'],
@@ -127,12 +128,15 @@ function litOf(v){if(v!==null&&typeof v==='object'&&!Array.isArray(v))v=v.lit;re
 function macroState(lights,cpiYoy=null,growth=null,config=CONFIG){
  const cfg=config.state,eps=config.comparison_epsilon,src=lights!==null&&typeof lights==='object'&&!Array.isArray(lights)?lights:{};
  const lit={};for(const n of LIGHTS)lit[n]=litOf(Object.prototype.hasOwnProperty.call(src,n)?src[n]:null);
- const available=LIGHTS.filter(n=>lit[n]!==null),count=available.filter(n=>lit[n]).length;
+ const available=LIGHTS.filter(n=>lit[n]!==null),count=available.filter(n=>lit[n]).length,others=available.filter(n=>n!=='inflation'&&lit[n]).length;
  const cpi=num(cpiYoy)?cpiYoy:null,grow=num(growth)?growth:null,crisis=[],warning=[];
  if(count>=cfg.crisis_lit_count)crisis.push('LIT_COUNT_GE_3');
  if(cfg.crisis_pair.every(n=>lit[n]===true))crisis.push('MARKET_AND_CREDIT_LIT');
- if(cpi!==null&&cpi>cfg.crisis_inflation_gt+eps)crisis.push('INFLATION_GT_8PCT');
+ // M-RULE C (2026-10-15, hypothesis under validation): CPI > 8% is a crisis only together with another light; alone a warning.
+ const hot=cpi!==null&&cpi>cfg.crisis_inflation_gt+eps;
+ if(hot&&others>=cfg.crisis_inflation_other_lit_min)crisis.push('INFLATION_GT_8PCT_WITH_OTHER_LIT');
  if(count===cfg.warning_lit_count)warning.push('LIT_COUNT_EQ_2');
+ if(hot&&others<cfg.crisis_inflation_other_lit_min)warning.push('INFLATION_GT_8PCT_ALONE');
  if(cpi!==null&&grow!==null&&cpi>cfg.warning_inflation_gt+eps&&grow<cfg.warning_growth_lt-eps)warning.push('INFLATION_GT_5PCT_AND_GROWTH_LT_0');
  const [state,reasons]=crisis.length?['CRISIS',crisis]:warning.length?['WARNING',warning]:['NORMAL',['LIT_COUNT_LE_1']];
  const low=available.length<cfg.low_confidence_available_lt;
