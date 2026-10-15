@@ -208,6 +208,16 @@ METRIC_KEYS = (
     'revenue_ttm_growth', 'revenue_acceleration',
     'revenue_growth_std_5y', 'revenue_volatility_5y_rank_pct',
 )
+# Stock-split adjustment of per-share histories (rule SPLIT, owner decision Q-SPLIT 2026-10-15; _Company.share_factor).
+# Split-ratio facts that confirm a share-count restatement (us-gaap, unit 'pure'; 2 = 2-for-1, a reverse split may be tagged
+# as 0.2 or 5: the direction always comes from the restated share counts themselves).
+SPLIT_RATIO_CONCEPTS = ('StockholdersEquityNoteStockSplitConversionRatio1', 'StockholdersEquityNoteStockSplitConversionRatio')
+# Two filings reporting the same share-count period: values within this relative distance are one basis (ordinary revision).
+SHARE_REVISION_TOLERANCE = 0.05
+# Otherwise the restatement ratio must match a reported split ratio (or its reciprocal) within this relative tolerance.
+SPLIT_MATCH_TOLERANCE = 0.03
+# An adjusted share count more than this factor away from FY0's is an unexplained discontinuity (e.g. a unit error): NA.
+SHARE_JUMP_LIMIT = 3.0
 # Price-free descriptors published only in the SEC file `sec-qgv2.json` (never ranked, never in the DART reference block,
 # whose key set is METRIC_KEYS exactly), with the profiles allowed to carry each (validators: universe/sec_qgv2.py, sec-qgv2.js).
 # ebit_estimated_years: number of fiscal years FY0..FY-5 whose EBIT is the substitute pretax + interest (rule EBIT); present
@@ -267,7 +277,7 @@ class _Facts:
         self.taxonomy, self.currency, self.cutoff = taxonomy, currency, cutoff
         facts = payload.get('facts') if isinstance(payload.get('facts'), dict) else {}
         facts = facts.get(taxonomy) if isinstance(facts.get(taxonomy), dict) else {}
-        self.items, self.concepts = {}, {}
+        self.items, self.concepts, self.sources = {}, {}, {}
         cik = payload.get('cik')
         cik = str(cik).zfill(10) if type(cik) in (int, str) and str(cik).isdigit() else None
         exceptions = ISSUER_CONCEPT_EXCEPTIONS.get(cik, {}) if taxonomy == 'us-gaap' else {}
@@ -276,7 +286,53 @@ class _Facts:
             concepts = exceptions.get(item, concepts)
             unit = self._unit(item)
             self.concepts[item] = tuple(concepts)
-            self.items[item] = [self._table(facts.get(concept), unit, item in INSTANT_ITEMS) for concept in concepts]
+            tables = [self._table(facts.get(concept), unit, item in INSTANT_ITEMS) for concept in concepts]
+            self.items[item] = [table for table, _ in tables]
+            self.sources[item] = [source for _, source in tables]
+        self._share_filings(facts)
+        self._split_ratios(payload)
+
+    def _share_filings(self, facts):
+        """{filing: {(concept index, start, end): diluted shares}} for every annual-form annual span and 10-Q YTD/quarter
+        span (filed <= cutoff, > 0); a filing = (accession, filed date). A period reported twice in one filing with two
+        values is dropped. Used only to detect restatements (splits) between filings."""
+        self.share_filings = {}
+        dropped = set()
+        for n, concept in enumerate(self.concepts.get('diluted_shares', ())):
+            node = facts.get(concept)
+            rows = node.get('units', {}).get('shares') if isinstance(node, dict) and isinstance(node.get('units'), dict) else None
+            for row in rows if isinstance(rows, list) else ():
+                if not isinstance(row, dict):
+                    continue
+                form, filed, value = row.get('form'), _day(row.get('filed')), row.get('val')
+                start, end = _day(row.get('start')), _day(row.get('end'))
+                if None in (start, end, filed) or filed > self.cutoff or not _finite(value) or value <= 0:
+                    continue
+                days = (end - start).days
+                if not (ANNUAL_DAYS[0] <= days <= ANNUAL_DAYS[1] and form in ANNUAL_FORMS
+                        or YTD_DAYS[0] <= days <= YTD_DAYS[1] and form in QUARTER_FORMS):
+                    continue
+                filing, key = (row.get('accn') if isinstance(row.get('accn'), str) else None, filed), (n, start, end)
+                values = self.share_filings.setdefault(filing, {})
+                if key in values and values[key] != value:
+                    dropped.add((filing, key))
+                values.setdefault(key, value)
+        for filing, key in dropped:
+            self.share_filings[filing].pop(key, None)
+
+    def _split_ratios(self, payload):
+        """[(filed, ratio)] of the us-gaap stock-split ratio facts filed <= cutoff (any taxonomy of the row)."""
+        facts = payload.get('facts') if isinstance(payload.get('facts'), dict) else {}
+        group = facts.get('us-gaap') if isinstance(facts.get('us-gaap'), dict) else {}
+        self.split_ratios = []
+        for concept in SPLIT_RATIO_CONCEPTS:
+            node = group.get(concept)
+            units = node.get('units') if isinstance(node, dict) and isinstance(node.get('units'), dict) else {}
+            for rows in units.values():
+                for row in rows if isinstance(rows, list) else ():
+                    filed, value = _day(row.get('filed')) if isinstance(row, dict) else None, row.get('val') if isinstance(row, dict) else None
+                    if filed is not None and filed <= self.cutoff and _finite(value) and value > 0 and abs(value - 1.0) > SHARE_REVISION_TOLERANCE:
+                        self.split_ratios.append((filed, float(value)))
 
     def _unit(self, item):
         if item == 'diluted_shares':
@@ -286,12 +342,13 @@ class _Facts:
         return self.currency
 
     def _table(self, concept, unit, instant):
-        """{(start|None, end): value} with latest-filed wins and same-filed conflicts dropped."""
+        """({(start|None, end): value}, {key: filing}) with latest-filed wins and same-filed conflicts dropped;
+        filing = (accession, filed date) of the kept value."""
         if not isinstance(concept, dict) or not isinstance(concept.get('units'), dict):
-            return {}
+            return {}, {}
         rows = concept['units'].get(unit)
         if not isinstance(rows, list):
-            return {}
+            return {}, {}
         best, dropped = {}, set()
         for row in rows:
             if not isinstance(row, dict):
@@ -315,12 +372,14 @@ class _Facts:
                     continue
                 key = (start, end)
             previous = best.get(key)
+            accn = row.get('accn') if isinstance(row.get('accn'), str) else None
             if previous is None or filed > previous[0]:
-                best[key] = (filed, value)
+                best[key] = (filed, value, accn)
                 dropped.discard(key)
             elif filed == previous[0] and value != previous[1]:
                 dropped.add(key)
-        return {key: v for key, (_, v) in best.items() if key not in dropped}
+        kept = {key: entry for key, entry in best.items() if key not in dropped}
+        return {key: v for key, (_, v, _) in kept.items()}, {key: (accn, filed) for key, (filed, _, accn) in kept.items()}
 
     # ---- lookups ----
     def annual_ends(self, item):
@@ -339,6 +398,25 @@ class _Facts:
                 hits.sort()
                 _, start, end, value = hits[0]
                 return value, start, end
+        return None
+
+    def annual_filing(self, item, target):
+        """The filing (accession, filed) of the value annual(item, target) returns; None when there is none."""
+        for table, source in zip(self.items[item], self.sources[item]):
+            hits = [(abs((end - target).days), start, end) for (start, end) in table
+                    if start is not None and ANNUAL_DAYS[0] <= (end - start).days <= ANNUAL_DAYS[1]
+                    and abs((end - target).days) <= YEAR_TOLERANCE_DAYS]
+            if hits:
+                hits.sort()
+                return source.get(hits[0][1:])
+        return None
+
+    def latest_duration_filing(self, item):
+        """The filing of the value latest_duration(item) returns."""
+        for table, source in zip(self.items[item], self.sources[item]):
+            if table:
+                key = max(table, key=lambda k: (k[1], -(k[1] - k[0]).days))
+                return source.get(key)
         return None
 
     def ytd(self, item, start_near, end_near, tables=None):
@@ -709,8 +787,125 @@ class _Company:
         ocf, capex = self.a('operating_cash_flow', k), self.a('capital_expenditure', k)
         return None if ocf is None or capex is None else ocf - capex
 
+    # ---- stock-split adjustment (rule SPLIT, owner decision Q-SPLIT 2026-10-15) ----
+    def _basis(self):
+        """The filing whose share basis all per-share values are restated to: that of the FY0 diluted share count (else of
+        FY0 diluted EPS)."""
+        if 'basis' not in self._cache:
+            self._cache['basis'] = self.f.annual_filing('diluted_shares', self.fy0) or self.f.annual_filing('eps_diluted', self.fy0)
+        return self._cache['basis']
+
+    def _edge(self, a, b):
+        """Factor turning a share count of filing a's basis into filing b's, from the periods both report: 1 for an ordinary
+        revision (within SHARE_REVISION_TOLERANCE), a reported split ratio (or reciprocal) the restatement matches, 'X' for an
+        unconfirmed restatement, None when they share no period."""
+        va, vb = self.f.share_filings.get(a, {}), self.f.share_filings.get(b, {})
+        ratios = [vb[key] / va[key] for key in va.keys() & vb.keys()]
+        if not ratios:
+            return None
+        if all(abs(r - 1.0) <= SHARE_REVISION_TOLERANCE for r in ratios):
+            return 1.0
+        candidates = sorted({c for _, s in self.f.split_ratios for c in (s, 1.0 / s)})
+        for c in candidates:
+            if all(abs(r / c - 1.0) <= SPLIT_MATCH_TOLERANCE for r in ratios):
+                return c
+        return 'X'
+
+    def share_factor(self, filing, target=None):
+        """Multiply a share count reported in `filing` by this factor to restate it to `target`'s basis (default: the FY0
+        basis); divide a per-share value by it. 1.0 outside SEC payloads. None when the basis cannot be established:
+        - filings are linked through periods both report (a confirmed split or an ordinary revision on every link);
+        - linked only through an unconfirmed restatement (no matching split-ratio fact, e.g. a 1,000x unit change): None;
+        - not linked at all: 1.0 unless a split-ratio fact was filed between the two filings (then None)."""
+        if not self.sec:
+            return 1.0
+        target = self._basis() if target is None else target
+        if filing is None or target is None or filing == target:
+            return 1.0
+        key = ('share_factor', filing, target)
+        if key in self._cache:
+            return self._cache[key]
+        nodes, index = self.f.share_filings, self._period_index()
+        result, seen, frontier = None, {filing: 1.0}, [filing]
+        while frontier and result is None:  # breadth-first over confirmed links
+            nxt = []
+            for node in frontier:
+                for other in sorted({o for period in nodes.get(node, {}) for o in index[period]} - {node}, key=str):
+                    edge = self._edge(node, other)
+                    if edge is None or edge == 'X' or other in seen:
+                        continue
+                    seen[other] = seen[node] * edge
+                    if other == target:
+                        result = seen[other]
+                        break
+                    nxt.append(other)
+                if result is not None:
+                    break
+            frontier = nxt
+        if result is None:
+            reachable = self._linked(filing, index)
+            if target in reachable:
+                result = None  # only through an unconfirmed restatement
+            else:
+                low, high = sorted((filing[1], target[1]))
+                result = None if any(low < filed <= high for filed, _ in self.f.split_ratios) else 1.0
+        self._cache[key] = result
+        return result
+
+    def _period_index(self):
+        if 'period_index' not in self._cache:
+            index = {}
+            for node, values in self.f.share_filings.items():
+                for period in values:
+                    index.setdefault(period, set()).add(node)
+            self._cache['period_index'] = index
+        return self._cache['period_index']
+
+    def _linked(self, filing, index):
+        nodes, seen, stack = self.f.share_filings, {filing}, [filing]
+        while stack:
+            node = stack.pop()
+            for period in nodes.get(node, {}):
+                for other in index[period] - seen:
+                    seen.add(other)
+                    stack.append(other)
+        return seen
+
+    def _raw_shares(self, k):
+        return self.a('diluted_shares', k)
+
+    def shares(self, k):
+        """Diluted share count of year k on the FY0 basis (split-adjusted); None when the basis cannot be established or
+        the adjusted count is more than SHARE_JUMP_LIMIT away from FY0's (unexplained discontinuity)."""
+        key = ('shares', k)
+        if key not in self._cache:
+            raw = self._raw_shares(k)
+            out = raw
+            if raw is not None and self.sec:
+                factor = self.share_factor(self.f.annual_filing('diluted_shares', self.end(k)))
+                out = None if factor is None else raw * factor
+                if out is not None and k > 0 and self._jump(out):
+                    out = None
+            self._cache[key] = out
+        return self._cache[key]
+
+    def _jump(self, adjusted):
+        base = self.shares(0)
+        return base is not None and base > 0 and not 1.0 / SHARE_JUMP_LIMIT <= adjusted / base <= SHARE_JUMP_LIMIT
+
+    def eps(self, k):
+        """Diluted EPS of year k on the FY0 share basis; None when its filing's basis cannot be established or year k's
+        share count is an unexplained discontinuity."""
+        raw = self.a('eps_diluted', k)
+        if raw is None or not self.sec:
+            return raw
+        factor = self.share_factor(self.f.annual_filing('eps_diluted', self.end(k)))
+        if factor is None or k > 0 and self._raw_shares(k) is not None and self.shares(k) is None:
+            return None
+        return raw / factor
+
     def per_share(self, value, k):
-        return _div(value, self.a('diluted_shares', k))
+        return _div(value, self.shares(k))
 
     # ---- TTM ----
     def ttm(self, item):
@@ -826,8 +1021,8 @@ def _moat(m, returns):
 
 def _growth_common(c, m):
     m['revenue_cagr_3y'] = _cagr(c.a('revenue', 0), c.a('revenue', 3), 3)
-    m['eps_cagr_3y'] = _cagr(c.a('eps_diluted', 0), c.a('eps_diluted', 3), 3)
-    shares0, shares3 = c.a('diluted_shares', 0), c.a('diluted_shares', 3)
+    m['eps_cagr_3y'] = _cagr(c.eps(0), c.eps(3), 3)
+    shares0, shares3 = c.shares(0), c.shares(3)
     m['dilution_3y'] = _cagr(shares0, shares3, 3)
     growth = []
     for k in range(HISTORY_YEARS):
@@ -923,11 +1118,18 @@ def _v_inputs(c, m, taxonomy, currency):
     shares = c.f.latest_duration('diluted_shares')
     if shares is not None and shares[0] > 0:
         v['diluted_shares'] = {'value': shares[0], 'period_end': shares[1].isoformat()}
+    # Per-share histories are on the basis of the latest share count (v['diluted_shares']), which the device pairs with the
+    # current price: FY0 basis x the FY0 -> latest factor. Unknown factor (a split filed after FY0 that no shared period
+    # confirms) -> both histories NA.
+    latest = c.share_factor(c._basis(), c.f.latest_duration_filing('diluted_shares')) if c.sec else 1.0
     for key, value_of in (('ebit_per_share_history', lambda k: c.a('ebit', k)), ('fcf_per_share_history', c.fcf)):
+        if latest is None:
+            v[key] = []
+            continue
         history = []
         for k in range(HISTORY_YEARS - 1, -1, -1):
             hit = c.f.annual('diluted_shares', c.end(k))
-            per_share = c.per_share(value_of(k), k)
+            per_share = _div(c.per_share(value_of(k), k), latest)
             if per_share is not None and hit is not None:
                 history.append({'fiscal_year_end': hit[2].isoformat(), 'value': _round(per_share)})
         ends = [h['fiscal_year_end'] for h in history]

@@ -528,6 +528,80 @@ def q_build(facts, subs, cik='0000001000'):
     return q.build_row(cik=cik, companyfacts_body=facts, submissions_body=subs, acquired_at=NOW - timedelta(hours=1))
 
 
+def _split_company(*, factor=10.0, ratio_fact=10.0, split_filed='2026-02-15', comparatives=2, unit_error_fy=None, cik=1):
+    """Each 10-K (FY y, filed y+1-02-15) reports diluted shares/EPS for y and `comparatives` earlier years. A split by
+    `factor` (shares x factor) becomes effective before the filing dated `split_filed`: filings from then on report the
+    post-split basis (100 shares every year), earlier ones the pre-split basis (100 / factor). `ratio_fact` is the
+    StockholdersEquityNoteStockSplitConversionRatio1 value filed with it (None: not tagged)."""
+    payload = simple_company(omit=('EarningsPerShareDiluted', 'WeightedAverageNumberOfDilutedSharesOutstanding'))
+    payload['cik'] = cik
+    for fy in range(2019, 2026):
+        filed, accn = f'{fy + 1}-02-15', f'0000000001-{fy + 1 - 2000:02d}-000100'
+        shares = 100.0 if filed >= split_filed else 100.0 / factor
+        for year in range(max(2019, fy - comparatives), fy + 1):
+            ni = 0.15 * 146.41 / 1.1 ** (2025 - year)
+            reported = shares * (1000.0 if fy == unit_error_fy else 1.0)
+            kw = dict(start=f'{year}-01-01', filed=filed, accn=accn)
+            fact(payload['facts'], 'WeightedAverageNumberOfDilutedSharesOutstanding', 'shares', reported, f'{year}-12-31', **kw)
+            fact(payload['facts'], 'EarningsPerShareDiluted', 'USD/shares', ni / shares, f'{year}-12-31', **kw)
+    if ratio_fact is not None:
+        fact(payload['facts'], 'StockholdersEquityNoteStockSplitConversionRatio1', 'pure', ratio_fact, '2025-11-20',
+             filed=split_filed, accn='0000000001-26-000100')
+    return payload
+
+
+def test_per_share_histories_are_split_adjusted_only_when_sec_facts_establish_the_ratio():
+    """Owner decision Q-SPLIT 2026-10-15. KLAC/NFLX-type: FY-3 comes from a pre-split 10-K (the latest 10-K restates only
+    FY0..FY-2). The restatement ratio of the periods both 10-Ks report, confirmed by the split-ratio fact, adjusts it."""
+    close = lambda a, b: a is not None and math.isclose(a, b, rel_tol=1e-5, abs_tol=1e-9)
+    _, _, _, m, v = compute(_split_company())
+    assert close(m['dilution_3y'], 0.0) and close(m['eps_cagr_3y'], 0.1) and close(m['fcf_per_share_cagr_3y'], 0.1)
+    assert [h['fiscal_year_end'] for h in v['ebit_per_share_history']] == [f'{y}-12-31' for y in range(2021, 2026)]
+    for h in v['ebit_per_share_history']:
+        assert close(h['value'], 0.2 * 146.41 / 1.1 ** (2025 - int(h['fiscal_year_end'][:4])) / 100)
+    assert close(v['eps_cagr_3y'], 0.1) and close(v['fcf_per_share_cagr_3y'], 0.1)
+    # Reverse split (AMCR-type 1-for-5), tagged either as 0.2 or as 5: the direction comes from the restated counts.
+    for tagged in (0.2, 5.0):
+        m = compute(_split_company(factor=0.2, ratio_fact=tagged))[3]
+        assert close(m['dilution_3y'], 0.0) and close(m['eps_cagr_3y'], 0.1), tagged
+    # No split-ratio fact confirms the 10x restatement: the ratio is not established, so FY-3 per-share values are NA
+    # (never guessed); FY0..FY-2 (restated in the latest 10-K) stay.
+    _, _, _, m, v = compute(_split_company(ratio_fact=None))
+    assert m['dilution_3y'] is None and m['eps_cagr_3y'] is None and m['fcf_per_share_cagr_3y'] is None
+    assert [h['fiscal_year_end'] for h in v['ebit_per_share_history']] == ['2023-12-31', '2024-12-31', '2025-12-31']
+    # A restatement that matches no reported ratio (WRB-type 1,000x unit change next to a real 3-for-2 split fact): NA.
+    m = compute(_split_company(factor=1000.0, ratio_fact=1.5))[3]
+    assert m['dilution_3y'] is None and m['eps_cagr_3y'] is None
+    # Filings that share no period: a split-ratio fact filed between them means the basis is unknown -> NA ...
+    m = compute(_split_company(comparatives=0))[3]
+    assert m['dilution_3y'] is None and m['eps_cagr_3y'] is None
+    # ... without one, nothing suggests a split and values are used as reported (simple_company: one year per 10-K).
+    assert compute(simple_company())[3]['dilution_3y'] == 0.0
+    # An unexplained discontinuity (a 1,000x share count in one older filing, no shared period, no split fact): NA.
+    m = compute(_split_company(factor=1.0, ratio_fact=None, comparatives=0, unit_error_fy=2022))[3]
+    assert m['dilution_3y'] is None and m['eps_cagr_3y'] is None and m['fcf_per_share_cagr_3y'] is None
+    # Ordinary revisions (within 5%) are one basis: no adjustment, values as reported.
+    m = compute(_split_company(factor=1.03, ratio_fact=None))[3]
+    assert close(m['dilution_3y'], (1.0 / (1.0 / 1.03)) ** (1 / 3) - 1)
+
+
+def test_split_after_fy0_blocks_per_share_history_until_the_basis_is_established():
+    """The device pairs the per-share histories with the latest share count. A split filed in a 10-Q after FY0 that no
+    shared period links to the FY0 10-K leaves the histories NA; the FY0-basis Q/G metrics are unaffected."""
+    payload = simple_company()
+    q = dict(start='2026-04-01', form='10-Q', filed='2026-08-01', accn='0000000001-26-000200')
+    fact(payload['facts'], 'WeightedAverageNumberOfDilutedSharesOutstanding', 'shares', 100.0, '2026-06-30', **q)
+    fact(payload['facts'], 'StockholdersEquityNoteStockSplitConversionRatio1', 'pure', 10.0, '2026-06-30',
+         form='10-Q', filed='2026-08-01', accn='0000000001-26-000200')
+    _, _, _, m, v = compute(payload)
+    assert v['diluted_shares'] == {'value': 100.0, 'period_end': '2026-06-30'}
+    assert v['ebit_per_share_history'] == [] and v['fcf_per_share_history'] == []
+    assert m['dilution_3y'] == 0.0 and math.isclose(m['eps_cagr_3y'], 0.1, rel_tol=1e-5)
+    # Without the split fact the latest 10-Q count is taken as the same basis (as before).
+    payload['facts']['us-gaap'].pop('StockholdersEquityNoteStockSplitConversionRatio1')
+    assert len(compute(payload)[4]['ebit_per_share_history']) == 5
+
+
 # ---------------- percentile publication ----------------
 def test_percentile_formula_ties_and_direction():
     assert vs.percentile(0, 1, 9) == 0 and vs.percentile(8, 1, 9) == 100 and vs.percentile(4, 1, 9) == 50

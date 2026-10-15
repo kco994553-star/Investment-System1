@@ -133,6 +133,26 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
   TTM lineage (`public_engine_screens.qgv2_ttm_periods`) uses the same rule and profile. Tests:
   `test_ebit_substitute_is_pretax_plus_interest_and_is_flagged_as_an_estimate`, `tools/qgv_scores_node_test.js`
   ("EBIT substitute rows … carry the EBIT_ESTIMATED flag").
+- **SPLIT stock-split adjustment (Q-SPLIT = add adjustment).** The latest 10-K restates FY0..FY−2 to the post-split basis, but
+  FY−3 and older come from earlier filings and may be pre-split (KLAC, NFLX, ORLY, NOW, IBKR, FAST, TPL, AMCR reverse; WRB unit
+  change). Every per-share input is restated to one basis, using SEC facts only (`_Company.share_factor`):
+  1. **Basis** = the filing (accession + filed date) of the FY0 diluted share count (else of FY0 diluted EPS).
+  2. **Filings are linked** when both report the diluted share count of the same period (same concept, same span; 10-K annual
+     spans, 10-Q year-to-date/quarter spans). The link ratio is later ÷ earlier value. Within ±5% it is an ordinary revision
+     (factor 1). Otherwise it must match a reported split ratio (`StockholdersEquityNoteStockSplitConversionRatio1` or
+     `…Ratio`, unit pure, filed ≤ cutoff), or its reciprocal, within ±3%; the factor is then that exact ratio (a reverse split
+     tagged 0.2 or 5 both work: the direction comes from the restated counts). A link matching no ratio fact is unconfirmed.
+  3. A year's share count is multiplied, and its diluted EPS divided, by the product of the confirmed links from its filing to
+     the basis. If the basis is reachable only through an unconfirmed link (WRB-type 1,000× change), the factor is **not
+     established → NA**. If the filings share no period at all, the factor is 1 unless a split-ratio fact was filed between
+     them (then NA).
+  4. **Discontinuity guard:** an adjusted share count more than 3× (or less than ⅓) of FY0's is NA, and so is that year's EPS.
+  Applies to `dilution_3y`, `eps_cagr_3y`, `fcf_per_share_cagr_3y`, `book_value_per_share_cagr_3y` and both per-share
+  histories. The histories are on the basis of the latest share count (`v_inputs_v2.diluted_shares`, possibly a 10-Q after FY0),
+  i.e. FY0 basis × the FY0→latest factor; when that factor is not established (a split filed after FY0 that no shared period
+  confirms) both histories are empty (NA) until the next 10-K. The FY0-basis Q/G ratios are unaffected by that case. Never a
+  guessed ratio, never 0. Tests: `test_per_share_histories_are_split_adjusted_only_when_sec_facts_establish_the_ratio`,
+  `test_split_after_fy0_blocks_per_share_history_until_the_basis_is_established`.
 
 Derived lines: tax rate = income tax ÷ pretax income, clamped to 0–50%, when pretax > 0. Otherwise the default 21% applies
 (DEFAULT_TAX_RATE, uncalibrated). NOPAT = EBIT × (1 − tax rate). Invested capital (IC) = equity + total debt − cash (must be > 0).
@@ -246,8 +266,8 @@ and every peer count from the published metrics, and reject any mismatch, price/
 - FINANCIAL uses SIC 6000–6499. Whether REITs (6798) or payment networks (7389) should move needs a decision.
 - The debt definition excludes operating leases. Debt-free issuers follow rule NODEBT (section 1); its concept list is a fixed v0 list.
 - No earnings-surprise sub-metric. Add one only if a free source is approved.
-- Fallback lines F1–F3 (section 1), still open: a D&A total equal to the intangible amortization only (NDSN, not covered by F2);
-  stock-split discontinuities in per-share history (KLAC).
+- Fallback lines F1–F3 (section 1): a D&A total equal to the intangible amortization only (NDSN, not covered by F2) is kept as
+  reported (owner decision Q-NDSN 2026-10-15: no change).
 - The first week after launch has a partial cross-section (about 72 issuers per day). Peer bases fall back to the universe until each group reaches 8.
 
 
