@@ -376,6 +376,37 @@ def test_reit_capital_improvements_are_never_the_capex_fallback():
     assert close(compute(simple_company(extra=improvements), sic='6798')[3]['fcf_to_net_income'], (0.18 - 0.03) / 0.15)
 
 
+def test_rsg_issuer_exception_uses_income_statement_revenue_only_for_the_listed_cik():
+    """Owner decision Q-RSG 2026-10-15: CIK-keyed exception, not a blanket rule (REITs keep `Revenues`)."""
+    close = lambda a, b: a is not None and math.isclose(a, b, rel_tol=1e-5)
+    rfc = 'RevenueFromContractWithCustomerExcludingAssessedTax'
+
+    def gross_company(cik, years=range(2019, 2026)):
+        # `Revenues` is the gross segment total (+15% in FY0 only, so its CAGR differs); the income statement grows 10%/yr.
+        payload = simple_company(omit=('Revenues', 'GrossProfit'), extra=_annual_lines((('CostOfRevenue', 0.6),)))
+        payload['cik'] = cik
+        for year in range(2019, 2026):
+            rev = 146.41 / 1.1 ** (2025 - year)
+            fact(payload['facts'], 'Revenues', 'USD', rev * (1.15 if year == 2025 else 1.0), f'{year}-12-31', start=f'{year}-01-01')
+            if year in years:
+                fact(payload['facts'], rfc, 'USD', rev, f'{year}-12-31', start=f'{year}-01-01')
+        return payload
+
+    _, _, _, m, v = compute(gross_company(1060391), sic='4953')
+    assert close(m['revenue_cagr_3y'], 0.1) and close(v['revenue']['fy_value'], 146.41)
+    assert close(m['gross_profit_to_assets'], 0.4 * 146.41 / 200)  # revenue - cost from the income-statement revenue
+    assert close(v['operating_margin_history'][-1]['value'], 0.2)
+    # The same CIK as a zero-padded string is recognized.
+    assert close(compute(gross_company('0001060391'), sic='4953')[3]['revenue_cagr_3y'], 0.1)
+    # Any other issuer keeps the priority list (`Revenues` first): the exception is not a blanket rule.
+    _, _, _, m, v = compute(gross_company(1060392), sic='4953')
+    assert close(v['revenue']['fy_value'], 146.41 * 1.15) and close(m['revenue_cagr_3y'], (1.15 * 1.1 ** 3) ** (1 / 3) - 1)
+    # For the listed issuer a year without the listed concept is NA, never filled from the gross `Revenues`.
+    _, _, _, m, v = compute(gross_company(1060391, years=(2023, 2024, 2025)), sic='4953')
+    assert m['revenue_cagr_3y'] is None and close(v['revenue']['fy_value'], 146.41)
+    assert vf.ISSUER_CONCEPT_EXCEPTIONS == {'0001060391': {'revenue': (rfc,)}}
+
+
 # ---------------- percentile publication ----------------
 def test_percentile_formula_ties_and_direction():
     assert vs.percentile(0, 1, 9) == 0 and vs.percentile(8, 1, 9) == 100 and vs.percentile(4, 1, 9) == 50

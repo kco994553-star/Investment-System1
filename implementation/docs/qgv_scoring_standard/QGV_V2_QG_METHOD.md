@@ -88,6 +88,14 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
   capex is NA (MAA tags real-estate development as `PaymentsToAcquireInProcessResearchAndDevelopment`, so capital improvements
   alone were a partial capex: FCF 717.9 instead of about 446). Other issuers keep F3 as before (GLW, SNA, IT); a REIT's
   reported PP&E capex and its other single fallback lines are unchanged. Test: `test_reit_capital_improvements_are_never_the_capex_fallback`.
+- **RSG issuer exception (Q-RSG = issuer exception).** `ISSUER_CONCEPT_EXCEPTIONS` in `v2_factors.py` is an explicit,
+  CIK-keyed list (us-gaap only). For a listed issuer the named line reads **only** the listed concepts, so its years never mix
+  two revenue bases; a year without them is NA. One entry: RSG (CIK 0001060391) revenue =
+  `RevenueFromContractWithCustomerExcludingAssessedTax` (income statement 16,591), because its `Revenues` is the segment-note
+  total before intercompany eliminations (19,027). Gross profit (revenue − cost) and operating margin follow. This is not a
+  blanket "income-statement revenue first" rule: for most of the 19 issuers whose `Revenues` exceeds `RevenueFromContract…`
+  by more than 5% (REITs such as AMT, CCI, ESS, UDR) `Revenues` is the right total. A new entry needs an owner decision.
+  Test: `test_rsg_issuer_exception_uses_income_statement_revenue_only_for_the_listed_cik`.
 
 Derived lines: tax rate = income tax ÷ pretax income, clamped to 0–50%, when pretax > 0. Otherwise the default 21% applies
 (DEFAULT_TAX_RATE, uncalibrated). NOPAT = EBIT × (1 − tax rate). Invested capital (IC) = equity + total debt − cash (must be > 0).
@@ -199,8 +207,7 @@ and every peer count from the published metrics, and reject any mismatch, price/
 - FINANCIAL uses SIC 6000–6499. Whether REITs (6798) or payment networks (7389) should move needs a decision.
 - The debt definition excludes operating leases. Debt-free issuers with no debt concept get NA ROIC and net-debt/EBITDA rather than 0.
 - No earnings-surprise sub-metric. Add one only if a free source is approved.
-- Fallback lines F1–F3 (section 1), still open: a `Revenues` total that is gross of
-  intersegment eliminations (RSG); a D&A total equal to the intangible amortization only (NDSN, not covered by F2);
+- Fallback lines F1–F3 (section 1), still open: a D&A total equal to the intangible amortization only (NDSN, not covered by F2);
   stock-split discontinuities in per-share history (KLAC).
 - The first week after launch has a partial cross-section (about 72 issuers per day). Peer bases fall back to the universe until each group reaches 8.
 

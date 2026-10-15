@@ -129,6 +129,14 @@ CONCEPTS = {
         'capital_expenditure_software_total': (), 'capital_expenditure_software_parts': (),
     },
 }
+# Issuer exceptions (owner decision Q-RSG 2026-10-15): explicit, CIK-keyed, us-gaap only, never a blanket rule (a blanket
+# "income-statement revenue first" breaks REITs, whose `Revenues` is the right total). For a listed issuer the item reads ONLY
+# the listed concepts, so years never mix the two bases; a year without them is NA.
+ISSUER_CONCEPT_EXCEPTIONS = {
+    # RSG (Republic Services): `Revenues` is the segment-note total before intercompany eliminations (FY2025 19,027 vs the
+    # income statement's 16,591); the income statement is RevenueFromContractWithCustomerExcludingAssessedTax.
+    '0001060391': {'revenue': ('RevenueFromContractWithCustomerExcludingAssessedTax',)},
+}
 COMPONENT_ITEMS = ('pretax_income_domestic', 'pretax_income_foreign', 'depreciation', 'amortization_of_intangibles',
                    'capital_expenditure_fallback', 'capital_expenditure_partial_lines',
                    'capital_expenditure_software_total', 'capital_expenditure_software_parts')
@@ -220,7 +228,12 @@ class _Facts:
         facts = payload.get('facts') if isinstance(payload.get('facts'), dict) else {}
         facts = facts.get(taxonomy) if isinstance(facts.get(taxonomy), dict) else {}
         self.items, self.concepts = {}, {}
+        cik = payload.get('cik')
+        cik = str(cik).zfill(10) if type(cik) in (int, str) and str(cik).isdigit() else None
+        exceptions = ISSUER_CONCEPT_EXCEPTIONS.get(cik, {}) if taxonomy == 'us-gaap' else {}
+        self.issuer_exceptions = tuple(sorted(exceptions))
         for item, concepts in CONCEPTS[taxonomy].items():
+            concepts = exceptions.get(item, concepts)
             unit = self._unit(item)
             self.concepts[item] = tuple(concepts)
             self.items[item] = [self._table(facts.get(concept), unit, item in INSTANT_ITEMS) for concept in concepts]
