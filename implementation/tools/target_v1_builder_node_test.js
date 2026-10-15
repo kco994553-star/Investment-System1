@@ -21,7 +21,7 @@ function universe(list){
 const SICS=['7372','3674','3559','3612','3812','3823','2834','5812','4911','1311','2080','6798'];
 function wide(n=40,extra=[]){const list=[];for(let i=0;i<n;i++)list.push({symbol:'S'+String(i).padStart(2,'0'),total:90-i*0.5,sic:SICS[i%SICS.length],ig:'grp'+(i%SICS.length)});return universe([...list,...extra]);}
 
-test('filters: axis coverage, value-trap gate and financial safety (known thresholds only)',()=>{
+test('filters: axis coverage, value-trap gate, financial safety fail and financial safety NA (excluded, 2026-10-15)',()=>{
  assert.equal(B.safety({net_debt_to_ebitda:3,interest_coverage:10}).state,'FAIL');
  assert.equal(B.safety({net_debt_to_ebitda:2.9,interest_coverage:2.99}).state,'FAIL');
  assert.equal(B.safety({net_debt_to_ebitda:2.9,interest_coverage:3}).state,'PASS');
@@ -29,10 +29,14 @@ test('filters: axis coverage, value-trap gate and financial safety (known thresh
  const u=universe([{symbol:'OK',total:80},{symbol:'AXIS',total:79,q:null},{symbol:'THIN',total:78,qw:0.4},{symbol:'TRAP',total:77,trap:true},{symbol:'DEBT',total:76,metrics:{net_debt_to_ebitda:3.5}},
   {symbol:'COVER',total:75,metrics:{interest_coverage:2}},{symbol:'MISS',total:74,metrics:{net_debt_to_ebitda:null,interest_coverage:null}},{symbol:'NOV',total:73,v:null}]);
  const rows=B.universeRows({...u,existing:['OK']}),why=Object.fromEntries(rows.map(r=>[r.symbol,B.exclusions(r)]));
- assert.deepEqual(why,{OK:[],AXIS:['AXIS_COVERAGE_LOW'],THIN:['AXIS_COVERAGE_LOW'],TRAP:['VALUE_TRAP_GATE'],DEBT:['FINANCIAL_SAFETY_FAIL'],COVER:['FINANCIAL_SAFETY_FAIL'],MISS:[],NOV:['AXIS_COVERAGE_LOW']});
+ assert.deepEqual(why,{OK:[],AXIS:['AXIS_COVERAGE_LOW'],THIN:['AXIS_COVERAGE_LOW'],TRAP:['VALUE_TRAP_GATE'],DEBT:['FINANCIAL_SAFETY_FAIL'],COVER:['FINANCIAL_SAFETY_FAIL'],MISS:['FINANCIAL_SAFETY_NOT_AVAILABLE'],NOV:['AXIS_COVERAGE_LOW']});
  assert.equal(rows.find(r=>r.symbol==='MISS').safety.state,'UNKNOWN');assert.equal(rows.find(r=>r.symbol==='OK').in19,true);
  const draft=B.buildDraft({...u,existing:[],date:'2026-10-14'});
- assert.deepEqual(draft.pool.map(r=>r.symbol),['OK','MISS']);assert.deepEqual(draft.excluded_counts,{AXIS_COVERAGE_LOW:3,VALUE_TRAP_GATE:1,FINANCIAL_SAFETY_FAIL:2});
+ assert.deepEqual(draft.pool.map(r=>r.symbol),['OK']);assert.deepEqual(draft.excluded_counts,{AXIS_COVERAGE_LOW:3,VALUE_TRAP_GATE:1,FINANCIAL_SAFETY_FAIL:2,FINANCIAL_SAFETY_NOT_AVAILABLE:1});
+ assert.deepEqual(draft.excluded.find(r=>r.symbol==='MISS'),{symbol:'MISS',total:74,reasons:['FINANCIAL_SAFETY_NOT_AVAILABLE'],safety:'UNKNOWN'});
+ // One value missing is NA too (excluded); when the data appears the next build re-evaluates it (nothing is frozen per name).
+ const half=universe([{symbol:'HALF',total:80,metrics:{interest_coverage:null}}]);assert.deepEqual(B.exclusions(B.universeRows({...half,existing:[]})[0]),['FINANCIAL_SAFETY_NOT_AVAILABLE']);
+ const later=universe([{symbol:'HALF',total:80}]);assert.deepEqual(B.exclusions(B.universeRows({...later,existing:[]})[0]),[]);
  assert.throws(()=>B.buildDraft({...u,computed:{...u.computed,v2_state:'NOT_AVAILABLE'},existing:[],date:'2026-10-14'}),/QGV2_NOT_READY/);
 });
 
@@ -63,8 +67,8 @@ test('selection and weights: core 5 × 8% + general 10 × 6% = 100, core needs f
  assert.equal(sel.rows.length,15);assert.equal(sel.core_count,5);assert.equal(sel.cash_pct,0);
  const core=sel.rows.filter(r=>r.grade==='CORE'),general=sel.rows.filter(r=>r.grade==='GENERAL');assert.equal(core.length,5);assert.equal(general.length,10);
  assert.ok(core.every(r=>r.pct===8)&&general.every(r=>r.pct===6));let sum=0;for(const r of sel.rows)sum+=r.pct;assert.equal(sum,100);
- // 11/15 factors (< 80%) and an unknown net debt/EBITDA cannot be core; they stay as general names.
- assert.equal(sel.rows.find(r=>r.symbol==='TOPLOW').grade,'GENERAL');assert.equal(sel.rows.find(r=>r.symbol==='TOPMISS').grade,'GENERAL');
+ // 11/15 factors (< 80%) cannot be core (stays general); an unknown net debt/EBITDA is not a candidate at all (2026-10-15).
+ assert.equal(sel.rows.find(r=>r.symbol==='TOPLOW').grade,'GENERAL');assert.equal(sel.rows.some(r=>r.symbol==='TOPMISS'),false);assert.equal(draft.pool.some(r=>r.symbol==='TOPMISS'),false);assert.equal(sel.shortfall,0);
  assert.deepEqual(sel.rows.map(r=>r.symbol),[...sel.rows].sort((a,b)=>b.total-a.total).map(r=>r.symbol));assert.equal(sel.limits.ok,true);
  // Fewer qualifying core names → the shortfall stays cash (never filled), limits still checked against 100%.
  const few=universe(Array.from({length:20},(_,i)=>({symbol:'F'+String(i).padStart(2,'0'),total:80-i,sic:SICS[i%SICS.length],ig:'g'+(i%6),fa:i<3?15:10})));
@@ -83,7 +87,7 @@ test('templates: 3 reasons and 3 numerically checkable invalidations from the st
  assert.deepEqual(B.buildDraft({...u,existing:[],date:'2026-10-14'}).pool[0],row);
  assert.equal(B.invalidated(row.invalidations[0],0.18),false);assert.equal(B.invalidated(row.invalidations[0],0.17),true);assert.equal(B.invalidated(row.invalidations[0],null),null);
  // Missing metrics are skipped (never 0); the fallback templates fill the rest.
- const bare=universe([{symbol:'BARE',total:80,metrics:{roic:null,gross_profit_to_assets:null,moat_return_mean_5y:null,fcf_to_net_income:null,revenue_cagr_3y:null,eps_cagr_3y:null,incremental_roic_3y:null,revenue_positive_growth_share:null,revenue_ttm_growth:null,interest_coverage:null,net_debt_to_ebitda:null},factors:{q_profitability:90}}]);
+ const bare=universe([{symbol:'BARE',total:80,metrics:{roic:null,gross_profit_to_assets:null,moat_return_mean_5y:null,fcf_to_net_income:null,revenue_cagr_3y:null,eps_cagr_3y:null,incremental_roic_3y:null,revenue_positive_growth_share:null,revenue_ttm_growth:null,interest_coverage:12,net_debt_to_ebitda:1},factors:{q_profitability:90}}]);
  const r2=B.buildDraft({...bare,existing:[],date:'2026-10-14'}).pool[0];assert.deepEqual(r2.invalidations.map(c=>c.metric),['v2_rank','q_industry_percentile','g_axis']);
  assert.match(r2.invalidations[0].text,/30위 밖/);assert.equal(r2.invalidations[1].threshold,30);assert.equal(r2.invalidations[2].threshold,45);
  // Lower-is-better FIXED rule only when the current value is inside the threshold.
@@ -113,16 +117,66 @@ test('반대 replaces the name with the next-ranked one, re-checks limits; 모�
  const again=B.answer(state,{symbol:after.rows[1].symbol,answer:'AGREE',date:'2026-10-15'});assert.equal(again.answers.filter(a=>a.symbol===after.rows[1].symbol).length,1);
 });
 
-test('finalize: every card answered, limits pass, blocked until number_check_passed; R-C starts that day',()=>{
- assert.equal(CFG.number_check_passed,false);assert.equal(CFG.status,'v0');assert.equal(CFG.calibration,'UNCALIBRATED');
+// A published sec-qgv2.json payload (raw shape: records[code].axes.Q/G.score) with n of 504 Q and G scores.
+function published({calc='calc-2026-10-15',records=calc,asOf='2026-10-14T21:00:00Z',q=504,g=504}={}){
+ const out={kind:'SEC_QGV2',as_of:asOf,records:{},target:{x:{axes:{Q:{score:1}}}}};if(calc!==null)out.calc_version=calc;
+ for(let i=0;i<504;i++){const r={axes:{Q:{score:i<q?50:null},G:{score:i<g?50:null}}};if(records!==null)r.calc_version=records;out.records['NYSE:P'+i]=r;}return out;}
+const passed=(calc='calc-2026-10-15',extra={})=>({...CFG,number_check:{...CFG.number_check,result:{calc_version:calc,passed:true,date:'2026-10-15',companies:10,...extra}}});
+test('finalize: cards, name shortfall, limits, LATEST published file (calc_version, freshness, Q·G 90%), number check of the same calc_version',()=>{
+ assert.equal(Object.hasOwn(CFG,'number_check_passed'),false);assert.deepEqual(CFG.number_check.result,{calc_version:null,passed:false,date:null,companies:0});assert.equal(CFG.number_check.companies_required,10);
+ assert.equal(CFG.status,'v0');assert.equal(CFG.calibration,'UNCALIBRATED');
  const u=wide(40),draft=B.buildDraft({...u,existing:[],date:'2026-10-14'});let state={...B.emptyState(),draft};
- assert.throws(()=>B.finalize(state,{date:'2026-10-14'}),/TARGET_V1_CARDS_PENDING/);
+ assert.throws(()=>B.finalize(state,{date:'2026-10-14',published:published(),cfg:passed()}),/TARGET_V1_CARDS_PENDING/);
  for(const r of B.currentSelection(state).rows)state=B.answer(state,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});
- assert.equal(B.currentSelection(state).complete,true);assert.throws(()=>B.finalize(state,{date:'2026-10-14'}),/NUMBER_CHECK_NOT_PASSED/);
- const open={...CFG,number_check_passed:true},done=B.finalize(state,{date:'2026-10-15',cfg:open});
+ assert.equal(B.currentSelection(state).complete,true);
+ // Nothing re-read → blocked; the draft-time coverage pass is never reused.
+ assert.throws(()=>B.finalize(state,{date:'2026-10-15',cfg:passed()}),/SEC_QGV2_NOT_AVAILABLE/);
+ // (a) calc_version: legacy file (none), legacy records, mixed records.
+ const err=f=>{try{f();}catch(e){return e.blockers;}return null;};
+ assert.deepEqual(err(()=>B.finalize(state,{date:'2026-10-15',published:published({calc:null,records:null}),cfg:passed()})),['CALC_VERSION_MISSING','NUMBER_CHECK_CALC_VERSION_MISMATCH']);
+ assert.deepEqual(err(()=>B.finalize(state,{date:'2026-10-15',published:published({records:null}),cfg:passed()})),['CALC_VERSION_MISSING']);
+ assert.deepEqual(err(()=>B.finalize(state,{date:'2026-10-15',published:published({records:'calc-old'}),cfg:passed()})),['CALC_VERSION_MIXED']);
+ // (b) freshness: 14 days from the finalize date.
+ assert.deepEqual(err(()=>B.finalize(state,{date:'2026-10-29',published:published(),cfg:passed()})),['DATA_STALE']);assert.equal(B.publishedCheck(published(),{date:'2026-10-27'}).ok,true);assert.deepEqual(B.publishedCheck(published(),{date:'2026-10-28'}).reasons,['DATA_STALE']);
+ assert.deepEqual(err(()=>B.finalize(state,{date:'2026-10-15',published:published({asOf:'soon'}),cfg:passed()})),['AS_OF_INVALID']);
+ // (c) Q and G each ≥ 90% of 504 (454); TARGET rows are not counted.
+ assert.deepEqual(err(()=>B.finalize(state,{date:'2026-10-15',published:published({q:453}),cfg:passed()})),['Q_COVERAGE_LOW']);
+ assert.deepEqual(err(()=>B.finalize(state,{date:'2026-10-15',published:published({g:453}),cfg:passed()})),['G_COVERAGE_LOW']);
+ const chk=B.publishedCheck(published({q:454,g:454}),{date:'2026-10-15'});assert.deepEqual([chk.ok,chk.q,chk.g,chk.rows,chk.calc_version],[true,454,454,504,'calc-2026-10-15']);
+ // Number check: default not passed; passed for another calc_version → mismatch; fewer than 10 companies → not passed.
+ assert.deepEqual(err(()=>B.finalize(state,{date:'2026-10-15',published:published()})),['NUMBER_CHECK_NOT_PASSED']);
+ assert.deepEqual(err(()=>B.finalize(state,{date:'2026-10-15',published:published(),cfg:passed('calc-old')})),['NUMBER_CHECK_CALC_VERSION_MISMATCH']);
+ assert.deepEqual(err(()=>B.finalize(state,{date:'2026-10-15',published:published(),cfg:passed('calc-2026-10-15',{companies:9})})),['NUMBER_CHECK_NOT_PASSED']);
+ const done=B.finalize(state,{date:'2026-10-15',published:published(),cfg:passed()});
  assert.equal(done.versions.length,1);assert.equal(done.versions[0].version,'v1');assert.deepEqual(done.rule_c,{start:'2026-10-15',version:'v1'});
+ assert.equal(done.versions[0].calc_version,'calc-2026-10-15');assert.equal(done.versions[0].sec_qgv2_as_of,'2026-10-14T21:00:00Z');assert.deepEqual(done.versions[0].number_check,{calc_version:'calc-2026-10-15',passed:true,date:'2026-10-15',companies:10});
  let sum=done.versions[0].cash_pct;for(const r of done.versions[0].rows)sum+=r.pct;assert.equal(sum,100);assert.ok(done.versions[0].rows.every(r=>r.confirmed));
- assert.equal(B.finalize(done,{date:'2026-11-16',cfg:open}).versions[1].version,'v1.1');B.validateState(done);
+ // A later file with a new calc_version needs a new number check before the next version.
+ assert.deepEqual(err(()=>B.finalize(done,{date:'2026-11-16',published:published({calc:'calc-2026-11-16',asOf:'2026-11-15T00:00:00Z'}),cfg:passed()})),['NUMBER_CHECK_CALC_VERSION_MISMATCH']);
+ assert.equal(B.finalize(done,{date:'2026-11-16',published:published({calc:'calc-2026-11-16',asOf:'2026-11-15T00:00:00Z'}),cfg:passed('calc-2026-11-16')}).versions[1].version,'v1.1');B.validateState(done);
+ // The stored version rides in the playbook store.
+ const s=memory(),pb=P.empty();pb.target_v1=done;P.write(s,pb);assert.equal(P.read(s).target_v1.versions[0].number_check.calc_version,'calc-2026-10-15');
+});
+
+test('name shortfall (< 15 eligible): shown with reasons, nothing relaxed or re-added, finalize blocked',()=>{
+ const few=universe(Array.from({length:12},(_,i)=>({symbol:'N'+String(i).padStart(2,'0'),total:80-i,sic:SICS[i%SICS.length],ig:'g'+(i%6)})).concat([{symbol:'NA1',total:99,metrics:{net_debt_to_ebitda:null}},{symbol:'BAD',total:98,metrics:{interest_coverage:1}}]));
+ const draft=B.buildDraft({...few,existing:[],date:'2026-10-14'});let state={...B.emptyState(),draft};
+ let sel=B.currentSelection(state);assert.equal(sel.rows.length,12);assert.equal(sel.shortfall,3);assert.ok(!sel.rows.some(r=>['NA1','BAD'].includes(r.symbol)));
+ assert.deepEqual(sel.shortfall_reasons,{FINANCIAL_SAFETY_NOT_AVAILABLE:1,FINANCIAL_SAFETY_FAIL:1});
+ state=B.answer(state,{symbol:'N00',answer:'DISAGREE',reason:'합성',date:'2026-10-14'});sel=B.currentSelection(state);assert.equal(sel.rows.length,11);assert.equal(sel.shortfall,4);assert.equal(sel.shortfall_reasons.USER_DISAGREE,1);
+ for(const r of sel.rows)state=B.answer(state,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});assert.equal(B.currentSelection(state).complete,true);
+ let e=null;try{B.finalize(state,{date:'2026-10-15',published:published(),cfg:passed()});}catch(x){e=x;}assert.equal(e.message,'TARGET_V1_SHORTFALL');assert.deepEqual(e.blockers,['TARGET_V1_SHORTFALL']);
+});
+
+test('schedule: finalize target 2nd week of 2026-11; unfinalized or late → that round is risk-code checks only (no list)',()=>{
+ assert.deepEqual(CFG.schedule.finalize_window,['2026-11-09','2026-11-15']);assert.equal(CFG.schedule.deadline,'2026-11-15');assert.equal(CFG.schedule.unfinalized_round_mode,'RISK_CODE_CHECK_ONLY');
+ const [r1,r2]=B.rounds();assert.ok(CFG.schedule.deadline<r1.date);
+ const none=B.emptyState();assert.equal(B.roundMode(none,r1),'RISK_CODE_CHECK_ONLY');assert.equal(B.roundMode(none,r2),'RISK_CODE_CHECK_ONLY');
+ assert.deepEqual(B.scheduleState(none,'2026-11-12'),{finalized:false,finalized_on:null,window:['2026-11-09','2026-11-15'],deadline:'2026-11-15',postponed:false,late:false});
+ assert.equal(B.scheduleState(none,'2026-11-16').postponed,true);
+ const onTime={...none,versions:[{version:'v1',date:'2026-11-12',rows:[],cash_pct:100}]};assert.equal(B.roundMode(onTime,r1),'LIST');assert.equal(B.scheduleState(onTime,'2026-11-20').late,false);
+ const late={...none,versions:[{version:'v1',date:'2026-12-01',rows:[],cash_pct:100}]};assert.equal(B.roundMode(late,r1),'RISK_CODE_CHECK_ONLY');assert.equal(B.roundMode(late,r2),'LIST');assert.equal(B.scheduleState(late,'2026-12-02').late,true);
+ assert.deepEqual(B.riskCodes().map(c=>c.code),['X1','X2','X3','R1','R2','R3','R4','R5']);assert.ok(B.riskCodes().every(c=>c.text&&!/매수|매도/.test(c.text)));
 });
 
 test('rebalance calendar, transition rows (1/3 per round) and R-B re-selection days',()=>{
@@ -161,6 +215,7 @@ test('rule index (no fill) and the round-3 review rule (suggestion only, NA neve
 
 test('config: every section carries v0 and a decision state; JS copy loads',()=>{
  for(const k of ['number_check','score_basis','coverage','filters','sector_spread','candidates','selection','templates','cards','rebalance','transition','virtual_sets','review_rule'])assert.ok(CFG[k].version==='v0'&&['UNCALIBRATED','OWNER_RULE','USER_DECISION_2026-10-15'].includes(CFG[k].decision),k);
+ for(const k of ['finalize_check','schedule'])assert.equal(CFG[k].decision,'USER_DECISION_2026-10-15',k);assert.equal(CFG.filters.financial_safety.missing_for_exclusion,'EXCLUDED');
  assert.equal(CFG.selection.core.count*CFG.selection.core.pct+CFG.selection.general.count*CFG.selection.general.pct,CFG.selection.sum_pct);
  assert.equal(PCFG.portfolio_limits.single_max_pct,10);assert.equal(PCFG.portfolio_limits.sector_group_max_pct,40);
 });

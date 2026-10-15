@@ -29,7 +29,9 @@ def test_every_section_is_v0_with_a_decision_state():
 
 def test_owner_numbers_and_number_check_gate():
     cfg = _config()
-    assert cfg['number_check_passed'] is False
+    assert 'number_check_passed' not in cfg
+    assert cfg['number_check']['result'] == {'calc_version': None, 'passed': False, 'date': None, 'companies': 0}
+    assert cfg['number_check']['companies_required'] == 10
     sel = cfg['selection']
     assert (sel['count'], sel['core']['count'], sel['core']['pct'], sel['general']['count'], sel['general']['pct']) == (15, 5, 8, 10, 6)
     assert sel['core']['count'] * sel['core']['pct'] + sel['general']['count'] * sel['general']['pct'] == sel['sum_pct'] == 100
@@ -58,3 +60,18 @@ def test_follow_up_decisions_2026_10_15():
     assert cfg['review_rule']['condition'] == 'R_B_AND_R_C_BELOW_A_AND_SP500'
     sp = cfg['scoring_prices']
     assert (sp['tab'], sp['benchmark'], sp['write'], sp['record_primary_code']) == ('Prices_D', 'SPY', 'USER_BUTTON_WITH_CONFIRM', 'TV1')
+
+
+def test_owner_supplement_2026_10_15():
+    cfg = _config()
+    fc = cfg['finalize_check']
+    assert fc['decision'] == 'USER_DECISION_2026-10-15' and fc['reread'] == 'AT_FINALIZE' and fc['calc_version_required'] is True
+    assert fc['legacy_without_calc_version'] == 'FAIL' and fc['freshness_max_days'] == 14 and fc['source_file'] == 'sec-qgv2.json'
+    assert cfg['number_check']['decision'] == 'USER_DECISION_2026-10-15'
+    fs = cfg['filters']['financial_safety']
+    assert (fs['missing_for_exclusion'], fs['missing_reason']) == ('EXCLUDED', 'FINANCIAL_SAFETY_NOT_AVAILABLE')
+    assert cfg['selection']['name_shortfall'] == 'BLOCK_FINALIZE'
+    sch = cfg['schedule']
+    assert sch['finalize_window'] == ['2026-11-09', '2026-11-15'] and sch['deadline'] == '2026-11-15'
+    assert (sch['if_missed'], sch['unfinalized_round_mode']) == ('POSTPONE', 'RISK_CODE_CHECK_ONLY')
+    assert sch['deadline'] < cfg['transition']['rounds'][0]['month'] + '-16'

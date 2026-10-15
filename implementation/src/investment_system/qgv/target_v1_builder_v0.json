@@ -6,11 +6,36 @@
   "decided": "2026-10-14 사용자 결정 「QGV v2 채택과 TARGET v1 재구성」",
   "decided_followups": "2026-10-15 사용자 결정 「T-248 승인. T-COV = Q·G 각 90%. T-SET = R-B·R-C. T-PRICE = 시세 시트 추가. T-REBAL 승인.」",
   "doc": "docs/playbook/PLAYBOOK_V1.md 15·16절 + 2026-10-14 사용자 결정",
-  "number_check_passed": false,
   "number_check": {
-    "version": "v0", "decision": "OWNER_RULE",
+    "version": "v0", "decision": "USER_DECISION_2026-10-15",
+    "decided": "2026-10-15 사용자 보충 결정 「숫자 재검증은 그 검증을 한 calc_version과 함께 저장, 같은 calc_version일 때만 확정」",
     "message": "숫자 검증(10-K 대조) 통과 전에는 TARGET v1을 확정 저장할 수 없습니다. 카드 응답은 기록됩니다.",
-    "flag": "number_check_passed"
+    "mismatch_message": "숫자 검증은 다른 calc_version 파일로 했습니다. 지금 공개 파일의 calc_version으로 10개 기업 숫자 검증을 다시 통과해야 확정할 수 있습니다.",
+    "companies_required": 10,
+    "result": {"calc_version": null, "passed": false, "date": null, "companies": 0},
+    "rule": "result.passed가 true이고 result.companies가 companies_required 이상이며 result.calc_version이 확정 순간 다시 읽은 sec-qgv2.json의 calc_version과 같을 때만 확정"
+  },
+  "finalize_check": {
+    "version": "v0", "decision": "USER_DECISION_2026-10-15",
+    "decided": "2026-10-15 사용자 보충 결정 「확정 순간 최신 공개 파일로 calc_version·신선도·Q·G 커버리지 재검사, 초안 때 통과 상태 재사용 금지」",
+    "source_file": "sec-qgv2.json",
+    "reread": "AT_FINALIZE",
+    "calc_version_required": true,
+    "legacy_without_calc_version": "FAIL",
+    "freshness_max_days": 14,
+    "coverage_min_ratio_from": "coverage.ready_min_ratio",
+    "rule": "확정 버튼을 누를 때 sec-qgv2.json을 다시 읽어 (a) 파일 calc_version이 있고 미국 Universe 행 calc_version이 모두 같고 (b) as_of가 확정일 기준 freshness_max_days 이내이며 (c) Q·G 점수가 있는 행 수가 각각 universe_size × ready_min_ratio 이상이어야 한다"
+  },
+  "schedule": {
+    "version": "v0", "decision": "USER_DECISION_2026-10-15",
+    "decided": "2026-10-15 사용자 보충 결정 「TARGET v1 확정 목표 2026년 11월 둘째 주 · 미충족이면 연기 · 11월 회차는 위험 코드 점검만」",
+    "finalize_target_ko": "2026년 11월 둘째 주(11-09 ~ 11-15)",
+    "finalize_window": ["2026-11-09", "2026-11-15"],
+    "deadline": "2026-11-15",
+    "if_missed": "POSTPONE",
+    "unfinalized_round_mode": "RISK_CODE_CHECK_ONLY",
+    "risk_levels": ["BLOCK", "RISK_RECHECK"],
+    "rule": "TARGET v1이 확정되지 않았거나 회차일이 확정일보다 앞서면 그 회차는 종목별 목록·금액 없이 위험 코드 점검만 표시한다"
   },
   "score_basis": {
     "version": "v0", "decision": "OWNER_RULE",
@@ -31,7 +56,9 @@
     "financial_safety": {
       "net_debt_to_ebitda_fail_at_or_above": 3,
       "interest_coverage_fail_below": 3,
-      "missing_for_exclusion": "NOT_EXCLUDED",
+      "missing_for_exclusion": "EXCLUDED",
+      "missing_reason": "FINANCIAL_SAFETY_NOT_AVAILABLE",
+      "missing_decided": "2026-10-15 사용자 보충 결정 「재무 안전 NA → 핵심·일반 모두 후보에서 제외, 자료가 생기면 다음 리밸런싱에 재평가」",
       "missing_for_core": "NOT_PASSED"
     }
   },
@@ -53,6 +80,8 @@
     "general": {"id": "GENERAL", "ko": "일반", "count": 10, "pct": 6},
     "sum_pct": 100,
     "shortfall": "CASH",
+    "name_shortfall": "BLOCK_FINALIZE",
+    "name_shortfall_ko": "통과 종목이 15개에 못 미치면 조건을 완화하거나 제외 종목을 되살리지 않고 부족 수와 사유를 보여 주며 확정을 막습니다",
     "group_cap_on_skip": "SKIP_TO_NEXT"
   },
   "templates": {

@@ -4,10 +4,14 @@
    Pipeline: candidate filters (axis coverage, value-trap gate, financial safety) → sector spread (≤ 4 per sub-group) → 30-candidate
    table → final 15 (core 5 × 8% + general 10 × 6%) under PLAYBOOK §16 limits → 3 reasons and 3 numerically checkable invalidation
    conditions per name from template rules → user cards (동의 / 반대 / 모름; 반대 replaces the name with the next-ranked one and the
-   limits are checked again) → TARGET v1 version (blocked until number_check_passed) → rule sets R-B / R-C (규칙 지수, no backfill;
+   limits are checked again) → TARGET v1 version (blocked until the number check of the current calc_version passed) → rule sets R-B / R-C (규칙 지수, no backfill;
    named R-B·R-C by the 2026-10-15 owner decision T-SET so they never clash with the sheet ledger's user sets B/C/D), 3-round transition
    plan and the fixed review rule. T-PRICE (2026-10-15): TV1 judgement names outside the 19 get a price path through the user's own
-   sheet (Prices_D) only after the user's confirmed click; the pure helpers here only list the symbols and shape the RAM series. Every number comes from TargetV1ConfigDefaults (qgv/target_v1_builder_v0.json,
+   sheet (Prices_D) only after the user's confirmed click; the pure helpers here only list the symbols and shape the RAM series.
+   2026-10-15 owner supplement: financial safety NA excludes a name from the candidates; a name shortfall (< 15) is shown and blocks
+   finalize (no relaxing, no re-adding); finalize re-checks the LATEST sec-qgv2.json at that moment (calc_version, as_of freshness,
+   Q·G coverage ≥ 90%) and needs a passed 10-company number check for the SAME calc_version; until TARGET v1 is finalized (target:
+   2nd week of 2026-11) a rebalance round shows risk-code checks only, never a per-name list. Every number comes from TargetV1ConfigDefaults (qgv/target_v1_builder_v0.json,
    v0 · UNCALIBRATED) or PlaybookConfigDefaults. Missing is null / NA, never 0. No order function; no buy or sell wording. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const api=factory(node?require('./playbook-engine.js'):root.PlaybookEngine,node?require('./playbook-config-defaults.js'):root.PlaybookConfigDefaults,
@@ -46,8 +50,8 @@ function subgroupOf(symbol,sic,industry,cfg=CFG,pcfg=PCFG){
 function groupOf(subgroup,pcfg=PCFG){for(const g of pcfg.portfolio_limits.combined_groups)if(g.sectors.includes(subgroup))return g.id;return subgroup;}
 
 /* ---------- financial safety ---------- */
-// FAIL: a known net debt/EBITDA ≥ 3 or a known interest coverage < 3 (exclusion uses known values only).
-// PASS: both known and inside the thresholds (core needs PASS; a missing value is 'not passed').
+// FAIL: a known net debt/EBITDA ≥ 3 or a known interest coverage < 3. PASS: both known and inside the thresholds.
+// UNKNOWN (a value missing, nothing failing): excluded from the candidates (2026-10-15 supplement; re-evaluated on the next build).
 function safety(metrics,cfg=CFG){
  const fs=cfg.filters.financial_safety,nd=finite(metrics?.net_debt_to_ebitda)?metrics.net_debt_to_ebitda:null,ic=finite(metrics?.interest_coverage)?metrics.interest_coverage:null;
  const failed=(nd!==null&&nd>=fs.net_debt_to_ebitda_fail_at_or_above)||(ic!==null&&ic<fs.interest_coverage_fail_below);
@@ -84,6 +88,7 @@ function exclusions(row,cfg=CFG){
  if(cfg.filters.axes.some(a=>!row.axes_ok[a]))out.push('AXIS_COVERAGE_LOW');
  if(cfg.filters.exclude_value_trap_gate&&row.value_trap)out.push('VALUE_TRAP_GATE');
  if(row.safety.state==='FAIL')out.push('FINANCIAL_SAFETY_FAIL');
+ else if(row.safety.state==='UNKNOWN'&&cfg.filters.financial_safety.missing_for_exclusion==='EXCLUDED')out.push(cfg.filters.financial_safety.missing_reason);
  return out;
 }
 // Step 2a: rank by total with at most max names per sub-group.
@@ -183,7 +188,9 @@ function latestAnswers(state){const out=new Map();for(const a of state?.answers|
 function currentSelection(state,cfg=CFG,pcfg=PCFG){
  const answers=latestAnswers(state),rejected=[...answers.values()].filter(a=>a.answer==='DISAGREE').map(a=>a.symbol);
  const sel=select(state?.draft?.pool||[],{exclude:rejected,cfg,pcfg}),pending=sel.rows.filter(r=>!answers.has(key(r.symbol))).map(r=>r.symbol);
- return{...sel,rejected,pending,answers:Object.fromEntries([...answers.entries()].map(([k,a])=>[k,a])),complete:sel.rows.length>0&&pending.length===0};
+ // Name shortfall: fewer than selection.count names pass — shown with its reasons and finalize stays blocked (nothing relaxed).
+ const shortfall=Math.max(0,cfg.selection.count-sel.rows.length),why={};if(shortfall){for(const x of sel.skipped)why[x.reason]=(why[x.reason]||0)+1;if(rejected.length)why.USER_DISAGREE=rejected.length;for(const[k,v]of Object.entries(state?.draft?.excluded_counts||{}))why[k]=(why[k]||0)+v;}
+ return{...sel,rejected,pending,shortfall,shortfall_reasons:why,answers:Object.fromEntries([...answers.entries()].map(([k,a])=>[k,a])),complete:sel.rows.length>0&&pending.length===0};
 }
 function answer(state,{symbol,answer:kind,reason='',date},cfg=CFG){
  if(!state?.draft)fail('TARGET_V1_DRAFT_REQUIRED');if(!ANSWERS.includes(kind))fail('TARGET_V1_ANSWER_INVALID');if(!validDay(date))fail('DATE_INVALID');
@@ -201,15 +208,48 @@ function judgementRecord({row,answer:kind,reason='',date,id},cfg=CFG){
   checks:[...row.reasons.map(t=>({code:'REASON',text:t})),...row.invalidations.map(c=>({code:'INVALIDATION',text:c.text,metric:c.metric,op:c.op,threshold:c.threshold}))],
   ai_summary:'',verdict:spec.verdict,action:{kind:spec.action},next_check_date:null,memo:kind==='UNKNOWN'?(reason||spec.memo):reason};
 }
-/* Step 7: TARGET v1 as a new device TARGET version once every card is answered, the §16 limits pass and the owner's number check
-   (config number_check_passed) is set. R-C starts on that date (no backfill). */
-function finalize(state,{date,cfg=CFG,pcfg=PCFG}={}){
- if(!validDay(date))fail('DATE_INVALID');if(!state?.draft)fail('TARGET_V1_DRAFT_REQUIRED');
- const sel=currentSelection(state,cfg,pcfg);if(!sel.complete)fail('TARGET_V1_CARDS_PENDING');if(sel.limits.ok!==true)fail('TARGET_LIMITS_BLOCKED');
- if(cfg.number_check_passed!==true)fail('NUMBER_CHECK_NOT_PASSED');
- const n=state.versions.length+1,version=n===1?'v1':'v1.'+(n-1),answers=latestAnswers(state);
- const rows=sel.rows.map(r=>({symbol:r.symbol,grade:r.grade,pct:r.pct,subgroup:r.subgroup,confirmed:answers.get(key(r.symbol))?.answer==='AGREE'}));
- return{...state,versions:[...state.versions,{version,date,draft_created:state.draft.created,config_version:cfg.config_version,rows,cash_pct:sel.cash_pct}],rule_c:{start:date,version}};
+/* ---------- finalize gate (2026-10-15 supplement): re-checked at the moment finalize runs ---------- */
+const CALC_VERSION=/^[A-Za-z0-9][A-Za-z0-9._:+\-]{0,63}$/;
+function axisScore(r,a){const ax=object(r?.axes)?r.axes:object(r?.qg_axes)?r.qg_axes:{},v=ax[a]?.score;return finite(v)&&v>=0&&v<=100?v:null;}
+/* The LATEST published sec-qgv2.json payload (re-read by the caller at finalize; never the draft-time inputs) → {ok, reasons}.
+   (a) file calc_version present and every US Universe record carrying the same calc_version (absent = legacy → fail);
+   (b) as_of within finalize_check.freshness_max_days of the finalize date; (c) Q and G scored rows each ≥ universe_size ×
+   coverage.ready_min_ratio. TARGET:<id> rows are not counted. */
+function publishedCheck(payload,{date,cfg=CFG}={}){
+ const F=cfg.finalize_check,size=cfg.coverage.universe_size,min=cfg.coverage.ready_min_ratio,base={calc_version:null,as_of:null,age_days:null,q:0,g:0,size,rows:0};
+ if(!object(payload)||!object(payload.records))return{...base,ok:false,reasons:['SEC_QGV2_NOT_AVAILABLE']};
+ const calc=typeof payload.calc_version==='string'&&CALC_VERSION.test(payload.calc_version)?payload.calc_version:null,reasons=[];let q=0,g=0,rows=0,missing=0,mixed=0;
+ for(const[code,r]of Object.entries(payload.records)){if(code.startsWith('TARGET:'))continue;rows++;const rv=object(r)&&typeof r.calc_version==='string'?r.calc_version:null;
+  if(rv===null)missing++;else if(rv!==calc)mixed++;if(axisScore(r,'Q')!==null)q++;if(axisScore(r,'G')!==null)g++;}
+ if(F.calc_version_required&&(calc===null||missing>0))reasons.push('CALC_VERSION_MISSING');else if(mixed>0)reasons.push('CALC_VERSION_MIXED');
+ const asOf=typeof payload.as_of==='string'?Date.parse(payload.as_of):NaN,end=validDay(date)?Date.parse(date+'T23:59:59Z'):NaN,age=Number.isFinite(asOf)&&Number.isFinite(end)?(end-asOf)/86400000:null;
+ if(age===null)reasons.push('AS_OF_INVALID');else if(age>F.freshness_max_days)reasons.push('DATA_STALE');
+ if(q/size<min)reasons.push('Q_COVERAGE_LOW');if(g/size<min)reasons.push('G_COVERAGE_LOW');
+ return{ok:reasons.length===0,reasons,calc_version:calc,as_of:typeof payload.as_of==='string'?payload.as_of:null,age_days:age===null?null:round(age,2),q,g,size,rows};
+}
+// The 10-company number check counts only for the calc_version it was run against (config number_check.result).
+function numberCheck(calcVersion,cfg=CFG){
+ const N=cfg.number_check,r=object(N.result)?N.result:{},out={calc_version:r.calc_version??null,passed:r.passed===true,date:r.date??null,companies:finite(r.companies)?r.companies:0};
+ if(!out.passed||out.companies<N.companies_required)return{...out,ok:false,reason:'NUMBER_CHECK_NOT_PASSED'};
+ if(!calcVersion||out.calc_version!==calcVersion)return{...out,ok:false,reason:'NUMBER_CHECK_CALC_VERSION_MISMATCH'};
+ return{...out,ok:true,reason:null};
+}
+// Every reason that blocks finalize now, in order (cards → name shortfall → §16 → latest public file → number check).
+function finalizeBlockers(state,{date,published,cfg=CFG,pcfg=PCFG}={}){
+ if(!validDay(date))return{blockers:['DATE_INVALID'],check:null,number:null,sel:null};if(!state?.draft)return{blockers:['TARGET_V1_DRAFT_REQUIRED'],check:null,number:null,sel:null};
+ const sel=currentSelection(state,cfg,pcfg),out=[];if(!sel.complete)out.push('TARGET_V1_CARDS_PENDING');if(sel.shortfall>0)out.push('TARGET_V1_SHORTFALL');if(sel.limits.ok!==true)out.push('TARGET_LIMITS_BLOCKED');
+ const check=publishedCheck(published,{date,cfg});out.push(...check.reasons);const number=numberCheck(check.calc_version,cfg);if(!number.ok)out.push(number.reason);
+ return{blockers:out,check,number,sel};
+}
+/* Step 7: TARGET v1 as a new device TARGET version once nothing blocks (finalizeBlockers, run here against `published`, the
+   sec-qgv2.json payload the caller re-read at this moment). The version keeps the calc_version, the file as_of and the number
+   check it was confirmed with. R-C starts on that date (no backfill). The thrown error carries every blocker. */
+function finalize(state,{date,published=null,cfg=CFG,pcfg=PCFG}={}){
+ const r=finalizeBlockers(state,{date,published,cfg,pcfg});if(r.blockers.length){const e=Error(r.blockers[0]);e.blockers=r.blockers;e.check=r.check;e.number=r.number;throw e;}
+ const sel=r.sel,n=state.versions.length+1,version=n===1?'v1':'v1.'+(n-1),answers=latestAnswers(state);
+ const rows=sel.rows.map(x=>({symbol:x.symbol,grade:x.grade,pct:x.pct,subgroup:x.subgroup,confirmed:answers.get(key(x.symbol))?.answer==='AGREE'}));
+ return{...state,versions:[...state.versions,{version,date,draft_created:state.draft.created,config_version:cfg.config_version,calc_version:r.check.calc_version,sec_qgv2_as_of:r.check.as_of,
+  number_check:{calc_version:r.number.calc_version,passed:true,date:r.number.date,companies:r.number.companies},rows,cash_pct:sel.cash_pct}],rule_c:{start:date,version}};
 }
 function latestVersion(state){return state?.versions?.length?state.versions[state.versions.length-1]:null;}
 
@@ -221,6 +261,13 @@ function rebalanceDays(from,to,cfg=CFG){const out=[];const y0=Number(from.slice(
 function lastRebalanceOnOrBefore(date,cfg=CFG){const y=Number(date.slice(0,4));const days=rebalanceDays((y-1)+'-01-01',date,cfg);return days.length?days[days.length-1]:null;}
 function nextRebalanceOnOrAfter(date,cfg=CFG){const y=Number(date.slice(0,4));return rebalanceDays(date,(y+1)+'-12-31',cfg)[0]||null;}
 function rounds(cfg=CFG){return cfg.transition.rounds.map(r=>({round:r.round,month:r.month,date:rebalanceDay(Number(r.month.slice(0,4)),Number(r.month.slice(5,7)))}));}
+
+/* ---------- schedule (2026-10-15 supplement): finalize target = 2nd week of 2026-11 ---------- */
+// Not finalized by the deadline → postponed. A round lists names only when TARGET v1 was finalized on or before that round day;
+// otherwise the round shows the risk-code checks only (BLOCK / RISK_RECHECK codes of the playbook config), no list, no amount.
+function scheduleState(state,date,cfg=CFG){const S=cfg.schedule,v=latestVersion(state);return{finalized:!!v,finalized_on:v?.date||null,window:[...S.finalize_window],deadline:S.deadline,postponed:!v&&validDay(date)&&date>S.deadline,late:!!v&&v.date>S.deadline};}
+function roundMode(state,round,cfg=CFG){const v=latestVersion(state);return v&&round&&validDay(round.date)&&v.date<=round.date?'LIST':cfg.schedule.unfinalized_round_mode;}
+function riskCodes(cfg=CFG,pcfg=PCFG){return pcfg.codes.filter(c=>cfg.schedule.risk_levels.includes(c.level)).map(c=>({code:c.code,level:c.level,text:c.entry_text}));}
 
 /* ---------- Step 8 / D: transition plan (RAM) ---------- */
 /* v0: {symbol: pct} (TARGET v0), v1: {symbol: pct} (TARGET v1), actual: {symbol: pct} | null (RAM), total: RAM total value | null.
@@ -312,7 +359,7 @@ function scoringSeries(need,closes,cfg=CFG){
  const ok=x=>object(x)&&Object.keys(x).length>0;if(!ok(sp)||!ok(stock)||!ok(sector))return null;
  return{sessions:Object.keys(sp).filter(validDay).sort(),stock:{...stock},sector:{...sector},sp500:{...sp},sector_symbol:need.sector_symbol};
 }
-return Object.freeze({SCHEMA,ANSWERS,COMPARE_KEYS,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
+return Object.freeze({SCHEMA,ANSWERS,COMPARE_KEYS,publishedCheck,numberCheck,finalizeBlockers,scheduleState,roundMode,riskCodes,coverage,subgroupOf,groupOf,safety,universeRows,exclusions,spread,select,limits,templates,invalidated,buildDraft,candidates,
  emptyState,validateState,latestAnswers,currentSelection,answer,judgementRecord,finalize,latestVersion,rebalanceDay,rebalanceDays,lastRebalanceOnOrBefore,
  nextRebalanceOnOrAfter,rounds,transitionRows,ruleBDue,ruleBSegment,ruleIndex,compareSets,reviewRule,coreEligible,priceSymbolOf,sectorEtfOf,scoringNeeds,addPriceSymbols,scoringSeries});
 });
