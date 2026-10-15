@@ -121,9 +121,11 @@ def test_revision_cutoff_and_ambiguity_rules():
 
 def test_missing_or_meaningless_inputs_are_none_never_zero():
     _, _, _, m, v = compute(simple_company(omit=('InterestExpense', 'DepreciationDepletionAndAmortization', 'LongTermDebtNoncurrent',
-                                                  'LongTermDebtCurrent', 'GrossProfit')))
+                                                  'LongTermDebtCurrent', 'GrossProfit'),
+                                            extra=[(('ConvertibleNotesPayable', 'USD', 50.0, f'{y}-12-31'), {}) for y in range(2019, 2026)]))
     assert m['interest_coverage'] is None and m['net_debt_to_ebitda'] is None and m['gross_profit_to_assets'] is None
-    assert m['roic'] is None  # invested capital needs a reported debt line
+    # Invested capital needs a usable debt line: debt reported only outside the debt lines is NA, never 0 (rule NODEBT).
+    assert m['roic'] is None
     assert v['total_debt'] is None
     # Negative earnings: FCF/NI and EPS CAGR are not meaningful.
     loss = simple_company()
@@ -405,6 +407,71 @@ def test_rsg_issuer_exception_uses_income_statement_revenue_only_for_the_listed_
     _, _, _, m, v = compute(gross_company(1060391, years=(2023, 2024, 2025)), sic='4953')
     assert m['revenue_cagr_3y'] is None and close(v['revenue']['fy_value'], 146.41)
     assert vf.ISSUER_CONCEPT_EXCEPTIONS == {'0001060391': {'revenue': (rfc,)}}
+
+
+def _instants(concept, value, years=range(2019, 2026)):
+    return [((concept, 'USD', value, f'{year}-12-31'), {}) for year in years]
+
+
+def test_debt_is_zero_only_without_any_debt_concept_and_without_interest_expense():
+    """Owner decision Q-NODEBT 2026-10-15: conditional zero debt; finance-lease-only issuers carry the lease liability."""
+    close = lambda a, b: a is not None and math.isclose(a, b, rel_tol=1e-5)
+    debt_lines = ('LongTermDebtNoncurrent', 'LongTermDebtCurrent')
+    nopat, ebitda = 0.2 * 146.41 * 0.75, 0.25 * 146.41
+    # EME/INCY/DECK: no debt concept at all and no interest expense -> debt 0 (ROIC, net debt/EBITDA, debt input at FY0).
+    _, _, _, m, v = compute(simple_company(omit=debt_lines + ('InterestExpense',)))
+    assert close(m['roic'], nopat / (100 - 30)) and close(m['net_debt_to_ebitda'], -30 / ebitda)
+    assert v['total_debt'] == {'value': 0.0, 'period_end': '2025-12-31'} and m['interest_coverage'] is None
+    # An interest expense reported as exactly 0 is the same as unreported.
+    zero_interest = simple_company(omit=debt_lines + ('InterestExpense',), extra=_annual_lines((('InterestExpense', 0.0),)))
+    assert close(compute(zero_interest)[3]['roic'], nopat / (100 - 30))
+    # ORCL/F/GM-type: no debt line in companyfacts but interest expense is reported -> debt is somewhere else: NA, never 0.
+    _, _, _, m, v = compute(simple_company(omit=debt_lines))
+    assert m['roic'] is None and m['net_debt_to_ebitda'] is None and v['total_debt'] is None
+    for concept in ('InterestExpenseNonoperating', 'InterestExpenseDebt', 'InterestExpenseOther'):
+        other = simple_company(omit=debt_lines + ('InterestExpense',), extra=_annual_lines(((concept, 0.01),)))
+        assert compute(other)[3]['roic'] is None, concept
+    # DXCM-type: debt reported under another concept (convertible notes) -> NA even without interest expense.
+    for concept in ('ConvertibleDebtNoncurrent', 'SeniorNotes', 'LongTermLineOfCredit', 'DebtInstrumentCarryingAmount',
+                    'NotesPayable', 'LongTermDebtCurrent'):
+        other = simple_company(omit=debt_lines + ('InterestExpense',), extra=_instants(concept, 25.0))
+        assert compute(other)[3]['roic'] is None and compute(other)[4]['total_debt'] is None, concept
+    # A debt-evidence concept reported as 0 is a reported zero, not a debt.
+    assert close(compute(simple_company(omit=debt_lines + ('InterestExpense',), extra=_instants('LineOfCredit', 0.0)))[3]['roic'],
+                 nopat / (100 - 30))
+    # Finance-lease liabilities only: debt = the lease liability (total, else noncurrent + current).
+    lease = simple_company(omit=debt_lines + ('InterestExpense',), extra=_instants('FinanceLeaseLiability', 12.0))
+    assert close(compute(lease)[3]['roic'], nopat / (100 + 12 - 30)) and compute(lease)[4]['total_debt']['value'] == 12.0
+    parts = simple_company(omit=debt_lines + ('InterestExpense',),
+                           extra=_instants('FinanceLeaseLiabilityNoncurrent', 9.0) + _instants('FinanceLeaseLiabilityCurrent', 3.0))
+    assert close(compute(parts)[3]['roic'], nopat / (100 + 12 - 30))
+    only_noncurrent = simple_company(omit=debt_lines + ('InterestExpense',), extra=_instants('FinanceLeaseLiabilityNoncurrent', 9.0))
+    assert compute(only_noncurrent)[3]['roic'] is None  # the current part is never assumed 0
+    # ... interest equal to the lease interest is the lease's; a larger interest expense means other debt: NA.
+    lease_interest = _annual_lines((('FinanceLeaseInterestExpense', 0.004),))
+    explained = simple_company(omit=debt_lines + ('InterestExpense',), extra=_instants('FinanceLeaseLiability', 12.0)
+                               + _annual_lines((('InterestExpense', 0.004),)) + lease_interest)
+    assert close(compute(explained)[3]['roic'], nopat / (100 + 12 - 30))
+    unexplained = simple_company(omit=debt_lines + ('InterestExpense',), extra=_instants('FinanceLeaseLiability', 12.0)
+                                 + _annual_lines((('InterestExpense', 0.02),)) + lease_interest)
+    assert compute(unexplained)[3]['roic'] is None
+    # MNST: a debt line at FY-1 that is gone at FY0 (repaid). FY0 debt is 0 and the latest debt input is the FY0 zero,
+    # not the FY-1 amount.
+    repaid = simple_company(omit=debt_lines + ('InterestExpense',), extra=_instants('LongTermDebt', 374.0, years=(2024,)))
+    _, _, _, m, v = compute(repaid)
+    assert v['total_debt'] == {'value': 0.0, 'period_end': '2025-12-31'}
+    assert close(m['roic'], nopat / ((100 - 30) + (100 + 374 - 30)) * 2)  # average of FY0 (0 debt) and FY-1 (374) capital
+    # Issuers with debt lines keep the previous behavior exactly.
+    assert compute(simple_company())[4]['total_debt'] == {'value': 50.0, 'period_end': '2025-12-31'}
+    # ifrs-full payloads are unchanged (no debt line -> NA).
+    facts = {}
+    for year in (2023, 2024, 2025):
+        for concept, value in (('Revenue', 100.0), ('ProfitLossFromOperatingActivities', 20.0), ('ProfitLoss', 15.0)):
+            fact(facts, concept, 'EUR', value, f'{year}-12-31', start=f'{year}-01-01', form='20-F', taxonomy='ifrs-full')
+        for concept, value in (('EquityAttributableToOwnersOfParent', 100.0), ('CashAndCashEquivalents', 30.0)):
+            fact(facts, concept, 'EUR', value, f'{year}-12-31', form='20-F', taxonomy='ifrs-full')
+    _, _, _, m, v = compute({'cik': 1, 'facts': facts})
+    assert m['roic'] is None and v['total_debt'] is None
 
 
 # ---------------- percentile publication ----------------

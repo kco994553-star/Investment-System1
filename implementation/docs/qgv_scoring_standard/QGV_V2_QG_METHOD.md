@@ -41,7 +41,7 @@ All inputs come from one SEC companyfacts payload. Only facts filed on or before
 | diluted EPS / shares | EarningsPerShareDiluted, …BasicAndDiluted / WeightedAverageNumberOfDilutedSharesOutstanding, …ShareOutstandingBasicAndDiluted | DilutedEarningsLossPerShare / AdjustedWeightedAverageShares |
 | assets / equity | Assets / StockholdersEquity, …IncludingPortionAttributableToNoncontrollingInterest | Assets / EquityAttributableToOwnersOfParent, Equity |
 | cash | CashAndCashEquivalentsAtCarryingValue, CashCashEquivalentsRestrictedCash…, Cash | CashAndCashEquivalents |
-| total debt | LongTermDebt (incl. current maturities), else LongTermDebtNoncurrent or LongTermDebtAndCapitalLeaseObligations (+ LongTermDebtCurrent / …CapitalLeaseObligationsCurrent when reported); plus ShortTermBorrowings, else CommercialPaper. If the noncurrent path has no current-maturities line but `DebtCurrent` is reported, debt = noncurrent + DebtCurrent (no separate short-term add, to avoid double counting). If none of these lines is reported, debt is NA. | Borrowings, else NoncurrentPortionOfNoncurrentBorrowings/NoncurrentBorrowings (+ CurrentPortionOfNoncurrentBorrowings); plus ShorttermBorrowings/CurrentBorrowings |
+| total debt | LongTermDebt (incl. current maturities), else LongTermDebtNoncurrent or LongTermDebtAndCapitalLeaseObligations (+ LongTermDebtCurrent / …CapitalLeaseObligationsCurrent when reported); plus ShortTermBorrowings, else CommercialPaper. If the noncurrent path has no current-maturities line but `DebtCurrent` is reported, debt = noncurrent + DebtCurrent (no separate short-term add, to avoid double counting). If none of these lines is reported, debt is NA unless rule **NODEBT** applies. | Borrowings, else NoncurrentPortionOfNoncurrentBorrowings/NoncurrentBorrowings (+ CurrentPortionOfNoncurrentBorrowings); plus ShorttermBorrowings/CurrentBorrowings |
 
 **Fallback lines (us-gaap only; added 2026-10-14 after the 10-K number check
 [QGV_V2_NUMBER_CHECK_20261014.md](QGV_V2_NUMBER_CHECK_20261014.md) §7 items 2, 3, 5).** They apply per fiscal year, read the
@@ -96,6 +96,28 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
   blanket "income-statement revenue first" rule: for most of the 19 issuers whose `Revenues` exceeds `RevenueFromContract…`
   by more than 5% (REITs such as AMT, CCI, ESS, UDR) `Revenues` is the right total. A new entry needs an owner decision.
   Test: `test_rsg_issuer_exception_uses_income_statement_revenue_only_for_the_listed_cik`.
+- **NODEBT debt-free issuers (Q-NODEBT = conditional).** Applies at a fiscal-year-end balance sheet (FY0..FY−5, and for
+  `v_inputs_v2.total_debt` at FY0) only when none of the debt lines above gives a value. us-gaap only. Debt is **0** when all hold:
+  (a) a balance sheet exists at that date (total assets or equity); (b) no debt line and no other borrowing concept has a
+  non-zero value at that date — `ConvertibleDebt(…Noncurrent/Current)`, `ConvertibleNotesPayable(…Current)`,
+  `ConvertibleLongTermNotesPayable`, `ConvertibleSubordinatedDebt(…Noncurrent)`, `SeniorNotes(…Current/Noncurrent)`,
+  `SeniorLongTermNotes`, `SeniorSubordinatedNotes`, `SubordinatedDebt`, `SubordinatedLongTermDebt`, `NotesPayable(…Current)`,
+  `LongTermNotesPayable(…Current)`, `NotesAndLoansPayable(…Current)`, `LoansPayable(…Current)`, `LongTermLoansPayable`,
+  `ShortTermBankLoansAndNotesPayable`, `BankOverdrafts`, `LineOfCredit`, `LongTermLineOfCredit(…Noncurrent)`,
+  `LinesOfCreditCurrent`, `SecuredDebt(…Current)`, `SecuredLongTermDebt`, `UnsecuredDebt(…Current)`, `UnsecuredLongTermDebt`,
+  `OtherLongTermDebt(…Noncurrent/Current)`, `OtherShortTermBorrowings`, `OtherBorrowings`, `DebtInstrumentCarryingAmount`,
+  `DebtInstrumentFaceAmount`, `LongTermDebtFairValue`, `DebtLongtermAndShorttermCombinedAmount`, `DebtAndCapitalLeaseObligations`,
+  `LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities` (a reported 0 is a reported zero, not a debt); (c) every
+  interest-expense concept of that fiscal year (`InterestExpense`, `…Nonoperating`, `…Debt`, `InterestAndDebtExpense`, `…Other`,
+  `…Borrowings`, `…LongTermDebt`, `…ShortTermBorrowings`, `…DebtExcludingAmortization`, `…RelatedParty`) is 0 or unreported.
+  **Finance-lease liabilities only:** when (a) and (b) hold and `FinanceLeaseLiability` (or `CapitalLeaseObligations`) is
+  reported, debt = that lease liability; without a total, `…Noncurrent` + `…Current` (both needed; one part alone is NA).
+  Interest expense is then allowed only up to `FinanceLeaseInterestExpense` of the year (0.5% tolerance): it is the lease's
+  interest. Operating-lease liabilities stay outside debt, as before. Everything else keeps the previous rule (NA when the
+  components are missing): an issuer that reports debt under another concept (DXCM-type convertible notes) or under its own
+  extension tags, which companyfacts does not carry, with interest expense (ORCL, F, GM) is never treated as debt-free.
+  MNST-type: a debt line reported at FY−1 but gone at FY0 gives FY0 debt 0 and `total_debt` at FY0, not the stale FY−1 amount.
+  Test: `test_debt_is_zero_only_without_any_debt_concept_and_without_interest_expense`.
 
 Derived lines: tax rate = income tax ÷ pretax income, clamped to 0–50%, when pretax > 0. Otherwise the default 21% applies
 (DEFAULT_TAX_RATE, uncalibrated). NOPAT = EBIT × (1 − tax rate). Invested capital (IC) = equity + total debt − cash (must be > 0).
@@ -205,7 +227,7 @@ and every peer count from the published metrics, and reject any mismatch, price/
 
 - N = 8 minimum peers, the 21% fallback tax rate and the moat formula μ·max(0, 1 − σ/μ) are uncalibrated defaults.
 - FINANCIAL uses SIC 6000–6499. Whether REITs (6798) or payment networks (7389) should move needs a decision.
-- The debt definition excludes operating leases. Debt-free issuers with no debt concept get NA ROIC and net-debt/EBITDA rather than 0.
+- The debt definition excludes operating leases. Debt-free issuers follow rule NODEBT (section 1); its concept list is a fixed v0 list.
 - No earnings-surprise sub-metric. Add one only if a free source is approved.
 - Fallback lines F1–F3 (section 1), still open: a D&A total equal to the intangible amortization only (NDSN, not covered by F2);
   stock-split discontinuities in per-share history (KLAC).

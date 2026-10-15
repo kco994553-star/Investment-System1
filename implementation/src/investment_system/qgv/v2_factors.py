@@ -98,6 +98,32 @@ CONCEPTS = {
         # span, never on its own and never to PaymentsToAcquireProductiveAssets (_Company._capex_with_software).
         'capital_expenditure_software_total': ('PaymentsForSoftware',),
         'capital_expenditure_software_parts': ('PaymentsToAcquireSoftware', 'PaymentsToDevelopSoftware'),
+        # Debt-free rule (owner decision Q-NODEBT 2026-10-15; _Company.debt_rule). Instants: borrowing concepts outside the
+        # debt lines above (DXCM-type convertible notes, notes payable, credit lines, ...). Any non-zero one at the
+        # balance-sheet date means the issuer reports debt that the debt lines do not capture, so debt stays NA.
+        'debt_evidence': ('ConvertibleDebt', 'ConvertibleDebtNoncurrent', 'ConvertibleDebtCurrent', 'ConvertibleNotesPayable',
+                          'ConvertibleNotesPayableCurrent', 'ConvertibleLongTermNotesPayable', 'ConvertibleSubordinatedDebt',
+                          'ConvertibleSubordinatedDebtNoncurrent', 'SeniorNotes', 'SeniorNotesCurrent', 'SeniorNotesNoncurrent',
+                          'SeniorLongTermNotes', 'SeniorSubordinatedNotes', 'SubordinatedDebt', 'SubordinatedLongTermDebt',
+                          'NotesPayable', 'NotesPayableCurrent', 'LongTermNotesPayable', 'LongTermNotesPayableCurrent',
+                          'NotesAndLoansPayable', 'NotesAndLoansPayableCurrent', 'LoansPayable', 'LoansPayableCurrent',
+                          'LongTermLoansPayable', 'ShortTermBankLoansAndNotesPayable', 'BankOverdrafts', 'LineOfCredit',
+                          'LongTermLineOfCredit', 'LongTermLineOfCreditNoncurrent', 'LinesOfCreditCurrent', 'SecuredDebt',
+                          'SecuredDebtCurrent', 'SecuredLongTermDebt', 'UnsecuredDebt', 'UnsecuredDebtCurrent',
+                          'UnsecuredLongTermDebt', 'OtherLongTermDebt', 'OtherLongTermDebtNoncurrent', 'OtherLongTermDebtCurrent',
+                          'OtherShortTermBorrowings', 'OtherBorrowings', 'DebtInstrumentCarryingAmount', 'DebtInstrumentFaceAmount',
+                          'LongTermDebtFairValue', 'DebtLongtermAndShorttermCombinedAmount', 'DebtAndCapitalLeaseObligations',
+                          'LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities'),
+        # Finance-lease liabilities (operating leases stay outside debt, as before): total, else noncurrent + current.
+        'finance_lease_total': ('FinanceLeaseLiability', 'CapitalLeaseObligations'),
+        'finance_lease_noncurrent': ('FinanceLeaseLiabilityNoncurrent', 'CapitalLeaseObligationsNoncurrent'),
+        'finance_lease_current': ('FinanceLeaseLiabilityCurrent', 'CapitalLeaseObligationsCurrent'),
+        # Flows: every interest-expense concept (any non-zero one blocks the zero-debt rule) and the finance-lease interest.
+        'interest_expense_evidence': ('InterestExpense', 'InterestExpenseNonoperating', 'InterestExpenseDebt',
+                                      'InterestAndDebtExpense', 'InterestExpenseOther', 'InterestExpenseBorrowings',
+                                      'InterestExpenseLongTermDebt', 'InterestExpenseShortTermBorrowings',
+                                      'InterestExpenseDebtExcludingAmortization', 'InterestExpenseRelatedParty'),
+        'finance_lease_interest': ('FinanceLeaseInterestExpense',),
     },
     'ifrs-full': {
         'revenue': ('Revenue', 'RevenueFromContractsWithCustomers'),
@@ -127,6 +153,8 @@ CONCEPTS = {
         'pretax_income_domestic': (), 'pretax_income_foreign': (), 'depreciation': (), 'amortization_of_intangibles': (),
         'capital_expenditure_fallback': (), 'capital_expenditure_partial_lines': (),
         'capital_expenditure_software_total': (), 'capital_expenditure_software_parts': (),
+        'debt_evidence': (), 'finance_lease_total': (), 'finance_lease_noncurrent': (), 'finance_lease_current': (),
+        'interest_expense_evidence': (), 'finance_lease_interest': (),
     },
 }
 # Issuer exceptions (owner decision Q-RSG 2026-10-15): explicit, CIK-keyed, us-gaap only, never a blanket rule (a blanket
@@ -139,7 +167,8 @@ ISSUER_CONCEPT_EXCEPTIONS = {
 }
 COMPONENT_ITEMS = ('pretax_income_domestic', 'pretax_income_foreign', 'depreciation', 'amortization_of_intangibles',
                    'capital_expenditure_fallback', 'capital_expenditure_partial_lines',
-                   'capital_expenditure_software_total', 'capital_expenditure_software_parts')
+                   'capital_expenditure_software_total', 'capital_expenditure_software_parts',
+                   'interest_expense_evidence', 'finance_lease_interest')
 # REITs (SIC 6798): PaymentsForCapitalImprovements is improvement spending on existing properties, a part of capex next to
 # development and acquisitions (MAA tags development elsewhere). Owner decision Q-MAA 2026-10-15: for a REIT this line is never
 # the F3 fallback and, like the partial lines, its presence leaves F3 capex NA.
@@ -156,7 +185,11 @@ FLOW_ITEMS = ('revenue', 'gross_profit', 'cost_of_revenue', 'ebit', 'pretax_inco
 # D&A total that "holds only depreciation": equal to `Depreciation` within this relative tolerance (FIX: 62.4 vs 62.379).
 DA_DEPRECIATION_ONLY_TOLERANCE = 0.005
 INSTANT_ITEMS = ('total_assets', 'equity', 'cash_and_equivalents', 'debt_total_long_term', 'debt_noncurrent',
-                 'debt_current_maturities', 'debt_short_term', 'debt_current_total')
+                 'debt_current_maturities', 'debt_short_term', 'debt_current_total',
+                 'debt_evidence', 'finance_lease_total', 'finance_lease_noncurrent', 'finance_lease_current')
+DEBT_ITEMS = ('debt_total_long_term', 'debt_noncurrent', 'debt_current_maturities', 'debt_short_term', 'debt_current_total')
+# Lease case of the debt-free rule: interest expense is explained by the finance lease when it is at most the lease interest.
+LEASE_INTEREST_TOLERANCE = 0.005
 # FY0 anchor: the latest annual end of any of these defines the fiscal year sequence.
 ANCHOR_ITEMS = ('net_income', 'revenue', 'operating_cash_flow', 'ebit')
 
@@ -568,8 +601,48 @@ class _Company:
     def debt(self, k):
         key = ('debt', k)
         if key not in self._cache:
-            self._cache[key] = self.debt_at(self.end(k))
+            debt = self.debt_at(self.end(k))
+            self._cache[key] = debt if debt is not None else self.debt_rule(self.end(k))
         return self._cache[key]
+
+    def _any_instant(self, item, target, tolerance=YEAR_TOLERANCE_DAYS):
+        """Values of every concept of `item` reported at `target` (the per-concept nearest end)."""
+        out = []
+        for table in self.f.items.get(item) or ():
+            hits = sorted((abs((end - target).days), v) for (_, end), v in table.items() if abs((end - target).days) <= tolerance)
+            if hits:
+                out.append(hits[0][1])
+        return out
+
+    def debt_rule(self, target):
+        """Debt at a fiscal-year-end balance sheet that reports none of the debt lines (QGV_V2_QG_METHOD.md section 1, rule
+        NODEBT; owner decision Q-NODEBT 2026-10-15). us-gaap SEC payloads only; None (NA) unless every condition holds:
+        - a balance sheet exists at `target` (total assets or equity reported);
+        - no debt line and no debt-evidence concept (convertible/senior notes, notes/loans payable, credit lines, ...) has a
+          non-zero value at `target` (a reported 0 is a reported zero, not a debt);
+        - without finance-lease liabilities: every interest-expense concept of the fiscal year is 0 or unreported -> debt 0;
+        - with finance-lease liabilities only: debt = the lease liability (total, else noncurrent + current, both needed),
+          and every non-zero interest expense of the year is at most FinanceLeaseInterestExpense (the interest is the lease's).
+        An issuer with debt under other concepts (DXCM) or under extension tags with interest expense (ORCL, F, GM) stays NA."""
+        if not self.sec or self.f.taxonomy != 'us-gaap':
+            return None
+        if self.f.instant('total_assets', target) is None and self.f.instant('equity', target) is None:
+            return None
+        if any(v != 0 for item in DEBT_ITEMS + ('debt_evidence',) for v in self._any_instant(item, target)):
+            return None
+        interest = [hit[0] for hit, _, _ in self._component_named('interest_expense_evidence', target) if hit[0] != 0]
+        lease_total = self.f.instant('finance_lease_total', target)
+        lease_parts = (self.f.instant('finance_lease_noncurrent', target), self.f.instant('finance_lease_current', target))
+        if lease_total is None and all(v is None or v == 0 for v in lease_parts):
+            return 0.0 if not interest else None
+        lease = lease_total if lease_total is not None else (None if None in lease_parts else lease_parts[0] + lease_parts[1])
+        if lease is None or lease < 0:
+            return None
+        if interest:
+            lease_interest = self._single('finance_lease_interest', target)
+            if lease_interest is None or any(v < 0 or v > lease_interest[0] * (1.0 + LEASE_INTEREST_TOLERANCE) for v in interest):
+                return None
+        return float(lease)
 
     def tax_rate(self, k):
         pretax, tax = self.a('pretax_income', k), self.a('income_tax', k)
@@ -798,6 +871,12 @@ def _v_inputs(c, m, taxonomy, currency):
         if debt is not None:
             v['total_debt'] = {'value': debt, 'period_end': end.isoformat()}
             break
+    # Debt-free rule at the FY0 balance sheet when no debt line gives a value on or after FY0 end (MNST: a FY-1 debt line
+    # repaid in FY0 is not carried forward as the latest debt).
+    if v['total_debt'] is None or v['total_debt']['period_end'] < c.fy0.isoformat():
+        rule = c.debt_rule(c.fy0) if c.debt_at(c.fy0) is None else None
+        if rule is not None:
+            v['total_debt'] = {'value': rule, 'period_end': c.fy0.isoformat()}
     shares = c.f.latest_duration('diluted_shares')
     if shares is not None and shares[0] > 0:
         v['diluted_shares'] = {'value': shares[0], 'period_end': shares[1].isoformat()}
