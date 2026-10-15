@@ -83,6 +83,11 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
   not added. Software alone (no physical capex line) is not capex: NA. TTM capex = TTM of the physical line + TTM of each
   software line, only when all of them end on the same date; otherwise TTM capex is NA and FY is kept (MA: FCF −4.2%).
   Test: `test_capex_includes_capitalized_software_without_double_count`.
+- **MAA REIT capital improvements (Q-MAA = exclude for SIC 6798).** For an issuer with SEC SIC **6798** (REIT),
+  `PaymentsForCapitalImprovements` is never the F3 fallback line and counts as a partial capex line: when it is reported, F3
+  capex is NA (MAA tags real-estate development as `PaymentsToAcquireInProcessResearchAndDevelopment`, so capital improvements
+  alone were a partial capex: FCF 717.9 instead of about 446). Other issuers keep F3 as before (GLW, SNA, IT); a REIT's
+  reported PP&E capex and its other single fallback lines are unchanged. Test: `test_reit_capital_improvements_are_never_the_capex_fallback`.
 
 Derived lines: tax rate = income tax ÷ pretax income, clamped to 0–50%, when pretax > 0. Otherwise the default 21% applies
 (DEFAULT_TAX_RATE, uncalibrated). NOPAT = EBIT × (1 − tax rate). Invested capital (IC) = equity + total debt − cash (must be > 0).
@@ -196,8 +201,7 @@ and every peer count from the published metrics, and reject any mismatch, price/
 - No earnings-surprise sub-metric. Add one only if a free source is approved.
 - Fallback lines F1–F3 (section 1), still open: a `Revenues` total that is gross of
   intersegment eliminations (RSG); a D&A total equal to the intangible amortization only (NDSN, not covered by F2);
-  MAA tags real-estate development as `PaymentsToAcquireInProcessResearchAndDevelopment`, so F3 takes its capital
-  improvements alone (partial capex); stock-split discontinuities in per-share history (KLAC).
+  stock-split discontinuities in per-share history (KLAC).
 - The first week after launch has a partial cross-section (about 72 issuers per day). Peer bases fall back to the universe until each group reaches 8.
 
 

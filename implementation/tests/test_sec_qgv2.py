@@ -357,6 +357,25 @@ def test_capex_includes_capitalized_software_without_double_count():
     assert v['fcf']['ttm_value'] is None and close(v['fcf']['fy_value'], 0.14 * 146.41)
 
 
+def test_reit_capital_improvements_are_never_the_capex_fallback():
+    """Owner decision Q-MAA 2026-10-15: for SIC 6798 PaymentsForCapitalImprovements is a partial capex line (MAA)."""
+    ppe, close = 'PaymentsToAcquirePropertyPlantAndEquipment', lambda a, b: a is not None and math.isclose(a, b, rel_tol=1e-5)
+    improvements = _annual_lines((('PaymentsForCapitalImprovements', 0.03),))
+    # Non-REIT (GLW, SNA, IT): the one fallback line is total capex, as before.
+    _, _, _, m, v = compute(simple_company(omit=(ppe,), extra=improvements), sic='3357')
+    assert close(m['fcf_to_net_income'], (0.18 - 0.03) / 0.15) and v['fcf'] is not None
+    # REIT (MAA): capital improvements are only a part of capex, so F3 capex and FCF stay NA (never a partial FCF).
+    _, _, _, m, v = compute(simple_company(omit=(ppe,), extra=improvements), sic='6798')
+    assert m['fcf_to_net_income'] is None and m['fcf_per_share_cagr_3y'] is None and v['fcf'] is None
+    # ... also when another fallback line is reported beside them: the improvements still mark F3 as partial.
+    both = improvements + _annual_lines((('PaymentsToAcquireOtherProductiveAssets', 0.02),))
+    assert compute(simple_company(omit=(ppe,), extra=both), sic='6798')[4]['fcf'] is None
+    # A REIT's other single fallback line, and a REIT's reported PP&E capex, are unchanged.
+    other = _annual_lines((('PaymentsToAcquireOtherProductiveAssets', 0.03),))
+    assert close(compute(simple_company(omit=(ppe,), extra=other), sic='6798')[3]['fcf_to_net_income'], (0.18 - 0.03) / 0.15)
+    assert close(compute(simple_company(extra=improvements), sic='6798')[3]['fcf_to_net_income'], (0.18 - 0.03) / 0.15)
+
+
 # ---------------- percentile publication ----------------
 def test_percentile_formula_ties_and_direction():
     assert vs.percentile(0, 1, 9) == 0 and vs.percentile(8, 1, 9) == 100 and vs.percentile(4, 1, 9) == 50

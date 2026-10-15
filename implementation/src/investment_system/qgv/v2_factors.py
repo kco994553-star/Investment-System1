@@ -132,6 +132,11 @@ CONCEPTS = {
 COMPONENT_ITEMS = ('pretax_income_domestic', 'pretax_income_foreign', 'depreciation', 'amortization_of_intangibles',
                    'capital_expenditure_fallback', 'capital_expenditure_partial_lines',
                    'capital_expenditure_software_total', 'capital_expenditure_software_parts')
+# REITs (SIC 6798): PaymentsForCapitalImprovements is improvement spending on existing properties, a part of capex next to
+# development and acquisitions (MAA tags development elsewhere). Owner decision Q-MAA 2026-10-15: for a REIT this line is never
+# the F3 fallback and, like the partial lines, its presence leaves F3 capex NA.
+REIT_SIC = '6798'
+REIT_PARTIAL_CAPEX_FALLBACK = frozenset({'PaymentsForCapitalImprovements'})
 # Capex totals whose us-gaap definition already includes software (and other intangibles): software is never added to them.
 CAPEX_INCLUDES_SOFTWARE = frozenset({'PaymentsToAcquireProductiveAssets'})
 # Double-count guard: when PaymentsToAcquireProductiveAssets is also reported for the span, software is added only if that
@@ -395,8 +400,8 @@ def _avg_pair(a, b):
 
 
 class _Company:
-    def __init__(self, facts, fy0_end):
-        self.f, self.fy0 = facts, fy0_end
+    def __init__(self, facts, fy0_end, *, sic=None):
+        self.f, self.fy0, self.sic = facts, fy0_end, sic
         self._cache = {}
         # The SEC-only rules (software capex, ...) read component tables of a companyfacts payload; other period
         # adapters (DART) keep the shared definitions only.
@@ -444,7 +449,11 @@ class _Company:
 
     def _capex_fallback_named(self, target):
         hits = self._component_named('capital_expenditure_fallback', target)
-        if len(hits) != 1 or self._component('capital_expenditure_partial_lines', target):
+        partial = bool(self._component('capital_expenditure_partial_lines', target))
+        if self.sic == REIT_SIC:  # Q-MAA: a REIT's capital improvements are a partial capex line
+            partial = partial or any(name in REIT_PARTIAL_CAPEX_FALLBACK for _, _, name in hits)
+            hits = [h for h in hits if h[2] not in REIT_PARTIAL_CAPEX_FALLBACK]
+        if len(hits) != 1 or partial:
             return None
         return hits[0]
 
@@ -811,12 +820,12 @@ def compute(companyfacts, *, sic, cutoff):
     Missing or unusable inputs give None metrics (never 0). Raises nothing for bad content."""
     profile = profile_for_sic(sic)
     try:
-        return _compute(companyfacts, profile, cutoff)
+        return _compute(companyfacts, profile, cutoff, sic)
     except (TypeError, ValueError, AttributeError, KeyError, OverflowError, RecursionError, ZeroDivisionError):
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
 
 
-def _compute(companyfacts, profile, cutoff):
+def _compute(companyfacts, profile, cutoff, sic=None):
     if not isinstance(companyfacts, dict) or not isinstance(cutoff, date):
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
     taxonomy, currency = _taxonomy_and_currency(companyfacts, cutoff)
@@ -828,9 +837,10 @@ def _compute(companyfacts, profile, cutoff):
         ends |= facts.annual_ends(item)
     if not ends:
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
-    return compute_reported_periods(facts, fiscal_year_end=max(ends), profile=profile, taxonomy=taxonomy, currency=currency)
+    return compute_reported_periods(facts, fiscal_year_end=max(ends), profile=profile, taxonomy=taxonomy, currency=currency,
+                                    sic=sic)
 
-def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxonomy=None, currency=None):
+def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxonomy=None, currency=None, sic=None):
     """Shared Q/G definitions for source adapters, without fabricated SEC facts.
 
     `facts` supplies annual(item,date), instant(item,date,tolerance), annual/instant_ends,
@@ -840,7 +850,7 @@ def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxon
     """
     if profile not in ('GENERAL', 'FINANCIAL') or not isinstance(fiscal_year_end, date):
         raise ValueError('REPORTED_PERIODS_INVALID')
-    company = _Company(facts, fiscal_year_end)
+    company = _Company(facts, fiscal_year_end, sic=sic)
     metrics = _metrics_financial(company) if profile == 'FINANCIAL' else _metrics_general(company)
     _growth_common(company, metrics)
     raw = dict(metrics)
