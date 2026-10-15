@@ -110,7 +110,7 @@ test('approved SIC and strict 5-year revenue volatility classify playbook types 
  assert.equal(P.factsFor('SYN',context).memberships.defensive,1);assert.equal(P.factsFor('SYN',context).memberships.quality,null);
 });
 test('quality (#19) reads the published sec-qgv2 fields roic_avg_3y and operating_margin_std_5y_pp',()=>{
- const reader=require('../src/investment_system/product/web_assets/sec-qgv2.js');assert.deepEqual(Object.keys(reader.EXTRA_METRICS).filter(k=>k!=='ebit_estimated_years'),['roic_avg_3y','operating_margin_std_5y_pp']);
+ const reader=require('../src/investment_system/product/web_assets/sec-qgv2.js');assert.deepEqual(Object.keys(reader.EXTRA_METRICS).filter(k=>!k.startsWith('ebit_')),['roic_avg_3y','operating_margin_std_5y_pp']);
  const row=metrics=>({idByTicker:new Map([['SYN','syn']]),screens:{'sec-qgv2.json':{records:{'NYSE:SYN':{sic:'3674',metrics}}}}});
  const pass={roic_avg_3y:0.2,operating_margin_std_5y_pp:2.0,net_debt_to_ebitda:1.0};
  let f=P.factsFor('SYN',row(pass));assert.equal(f.memberships.quality,1);assert.equal(f.type_classification.quality.member,true);

@@ -280,6 +280,9 @@ def _metric_ok(key, value):
         return type(value) is int and 3 <= value <= vf.HISTORY_YEARS
     if key == 'ebit_estimated_years':  # FY0..FY-5 substitute-EBIT count, published only when >= 1
         return type(value) is int and 1 <= value <= vf.HISTORY_YEARS + 1
+    if key == 'ebit_estimated_fiscal_years':  # which fiscal years (calendar year of the FY end), ascending, unique
+        return (type(value) is list and 1 <= len(value) <= vf.HISTORY_YEARS + 1
+                and all(type(y) is int and 1900 <= y <= 2100 for y in value) and all(a < b for a, b in zip(value, value[1:])))
     # JSON numbers: an integral float may arrive as an int (JS has one number type); bool is never a number.
     valid = type(value) in (int, float) and math.isfinite(value) and abs(value) <= METRIC_LIMIT
     if key in ('revenue_growth_std_5y', 'operating_margin_std_5y_pp'):
@@ -357,6 +360,11 @@ def _row(r, cut, ttl, sic_cfg, *, target_id=None, is_versioned=True):
     _need(type(metrics) is dict and set(metrics) <= set(vf.METRIC_KEYS) | set(vf.EXTRA_METRIC_KEYS)
           and all(_metric_ok(k, v) for k, v in metrics.items()))
     has_data = r['fiscal_year_end'] is not None
+    # The substituted-EBIT count and its fiscal years travel together; the years never pass the row's fiscal year.
+    _need(('ebit_estimated_years' in metrics) == ('ebit_estimated_fiscal_years' in metrics))
+    if 'ebit_estimated_years' in metrics:
+        _need(has_data and len(metrics['ebit_estimated_fiscal_years']) == metrics['ebit_estimated_years']
+              and metrics['ebit_estimated_fiscal_years'][-1] <= int(r['fiscal_year_end'][:4]))
     if has_data:
         _need(r['acquired_at'] is not None and _date(r['fiscal_year_end']) <= cut.date())
         _need(r['profile'] == vf.profile_for_sic(r['sic']))

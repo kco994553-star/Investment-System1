@@ -82,6 +82,10 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
   span and that total is smaller than PP&E + software (0.5% tolerance), the software is taken to be inside the PP&E line and is
   not added. Software alone (no physical capex line) is not capex: NA. TTM capex = TTM of the physical line + TTM of each
   software line, only when all of them end on the same date; otherwise TTM capex is NA and FY is kept (MA: FCF −4.2%).
+  **Known limitation (owner decision Q-0415-MISC, 2026-10-15):** the double-count guard can only be confirmed when the issuer
+  also reports a `PaymentsToAcquireProductiveAssets` total for the span. Without that total, nothing in companyfacts shows
+  whether an issuer's PP&E line already contains software, so the rule relies on the us-gaap element definitions (physical vs
+  intangible) and cannot fully rule out a double count.
   Test: `test_capex_includes_capitalized_software_without_double_count`.
 - **MAA REIT capital improvements (Q-MAA = exclude for SIC 6798).** For an issuer with SEC SIC **6798** (REIT),
   `PaymentsForCapitalImprovements` is never the F3 fallback line and counts as a partial capex line: when it is reported, F3
@@ -113,7 +117,10 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
   **Finance-lease liabilities only:** when (a) and (b) hold and `FinanceLeaseLiability` (or `CapitalLeaseObligations`) is
   reported, debt = that lease liability; without a total, `…Noncurrent` + `…Current` (both needed; one part alone is NA).
   Interest expense is then allowed only up to `FinanceLeaseInterestExpense` of the year (0.5% tolerance): it is the lease's
-  interest. Operating-lease liabilities stay outside debt, as before. Everything else keeps the previous rule (NA when the
+  interest. **결정(Q-0415-MISC, 2026-10-15): 운용리스는 부채에서 제외한다** (operating-lease liabilities are not debt; only
+  finance-lease liabilities can stand in for debt here). **Decision Q-NODEBT-INT (2026-10-15): no materiality threshold.** Any
+  non-zero interest expense not explained by the finance-lease interest keeps debt NA (EME 12.0M, INCY 2.4M and DECK 2.5M stay
+  NA in the c21 recompute). Everything else keeps the previous rule (NA when the
   components are missing): an issuer that reports debt under another concept (DXCM-type convertible notes) or under its own
   extension tags, which companyfacts does not carry, with interest expense (ORCL, F, GM) is never treated as debt-free.
   MNST-type: a debt line reported at FY−1 but gone at FY0 gives FY0 debt 0 and `total_debt` at FY0, not the stale FY−1 amount.
@@ -127,9 +134,15 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
   built from EBIT (NOPAT, ROIC, moat, incremental ROIC, interest coverage, net debt/EBITDA, `v_inputs_v2.ebit`,
   `ebit_per_share_history`, `operating_margin_history`) uses it. **Estimate flag:** the row publishes
   `metrics.ebit_estimated_years` = the number of fiscal years FY0..FY−5 whose EBIT is the substitute (integer 1–6, only when ≥ 1;
-  absent means no substitute). The app (`qgv-scores.js`) turns it into the flag `EBIT_ESTIMATED`, shown as
-  **"추정(대체 계산)"** ("Estimate (substitute calculation)") next to the v2 scores wherever they are displayed (company screen
-  summary and overview through `flagText`, judgement rows and the daily report through the flags list). The TARGET filing-window
+  absent means no substitute) and `metrics.ebit_estimated_fiscal_years` = **which** years: the calendar year of each substituted
+  fiscal-year end, ascending, unique, same length as the count and never after the row's fiscal year (FY ending 2026-03-31 →
+  2026). Both validators check the pair. The app (`qgv-scores.js`) turns it into the flag `EBIT_ESTIMATED`, shown as
+  **"추정(대체 계산): FY2023·FY2024"** ("Estimate (substitute calculation): FY2023, FY2024") next to the v2 scores on the
+  company screen (summary and overview, `flagsHtml`) and the leaderboard (both pass the display row to `flagText`); judgement
+  rows and the daily report carry the flag code. The flag covers every EBIT-derived value of the row, because ROIC, moat,
+  incremental ROIC, margins and EV/EBIT all mix the listed years. **Decision Q-EBIT-SCOPE (2026-10-15): keep this scope.**
+  Each year uses the issuer's reported operating income first; only years without it are substituted and listed; FINANCIAL
+  issuers are excluded. The TARGET filing-window
   TTM lineage (`public_engine_screens.qgv2_ttm_periods`) uses the same rule and profile. Tests:
   `test_ebit_substitute_is_pretax_plus_interest_and_is_flagged_as_an_estimate`, `tools/qgv_scores_node_test.js`
   ("EBIT substitute rows … carry the EBIT_ESTIMATED flag").
@@ -147,6 +160,9 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
      established → NA**. If the filings share no period at all, the factor is 1 unless a split-ratio fact was filed between
      them (then NA).
   4. **Discontinuity guard:** an adjusted share count more than 3× (or less than ⅓) of FY0's is NA, and so is that year's EPS.
+     **Decision Q-SPLIT-GUARD (2026-10-15): kept as a conservative protection rule, not a validated threshold.** The factor 3 was
+     not calibrated; it can also make genuine spin-off, merger or IPO share changes NA for older years (c21 recompute: CEG, EXE,
+     WBD, COIN, CVNA, HOOD, DASH).
   Applies to `dilution_3y`, `eps_cagr_3y`, `fcf_per_share_cagr_3y`, `book_value_per_share_cagr_3y` and both per-share
   histories. The histories are on the basis of the latest share count (`v_inputs_v2.diluted_shares`, possibly a 10-Q after FY0),
   i.e. FY0 basis × the FY0→latest factor; when that factor is not established (a split filed after FY0 that no shared period
@@ -245,7 +261,7 @@ Row (plus `calc_version`, see below): `cik`, `acquired_at`, `source_sha256{compa
 `industry_group`, `profile`, `fiscal_year_end`, `currency`, `metrics` (sparse; 6 significant digits), `factors` (10 ids → 0–100 | null),
 `axes{Q,G}{score, factors_available, available_weight, peer_basis, peer_count, submetric_fallbacks, reason_codes}`, `v_inputs_v2`.
 SEC-only descriptors in `metrics` (never ranked; `v2_factors.EXTRA_METRIC_PROFILES`, not in the DART reference key set):
-`ebit_estimated_years` (GENERAL, integer 1–6, rule EBIT), `roic_avg_3y` (GENERAL, finite) and `operating_margin_std_5y_pp`
+`ebit_estimated_years` (GENERAL, integer 1–6) and `ebit_estimated_fiscal_years` (GENERAL, ascending integer years, same length), rule EBIT, `roic_avg_3y` (GENERAL, finite) and `operating_margin_std_5y_pp`
 (GENERAL and FINANCIAL, ≥ 0), rule APPQ. Both validators accept them only for those profiles and range-check them.
 
 **Calculation-rule version `calc_version` (owner supplement 2026-10-15).** `v2_factors.CALC_VERSION` (now
@@ -264,6 +280,14 @@ shard publish after a version bump keeps the other six shards' rows (merge never
 population until their shard is collected again, so for up to 7 days the cross-section holds only re-collected issuers (axes
 `PEERS_BELOW_MINIMUM` until each peer set reaches 8). Tests: `test_calc_version_rows_of_another_version_never_share_a_percentile`,
 vectors `calc_version_*` (`sec_qgv2_node_test.js`), `qgv_scores_node_test.js` ("calc_version: …").
+
+**Rows without source data (normal NA).** A row whose source data is missing keeps its own reason code (`NOT_COLLECTED`,
+`CIK_UNRESOLVED`, `NO_ANNUAL_SEC_FINANCIALS`, `INVALID_INPUT`, TARGET `NON_SEC_ISSUER`), `calc_version` `null`, empty metrics
+and axes `ROW_NOT_AVAILABLE`. It is outside every ranking population but stays one of the 504 codes (`code_count`). It is never
+`CALC_VERSION_MISMATCH`: that reason is only for rows **with values** computed under another (or no) version; a row without
+data cannot carry a `calc_version` (both validators). On the device such a row shows `total_reason` `SOURCE_NOT_AVAILABLE` with
+its source reasons ("QGV v2 산출 불가 · 원자료 없음 (CIK 미해결)"). Tests:
+`test_normal_na_rows_keep_an_explicit_source_reason_and_are_never_calc_version_mismatch`, `qgv_scores_node_test.js` ("normal-NA rows …").
 
 `v_inputs_v2` holds the price-free inputs the device needs to compute V in RAM. Amounts are exact SEC values in the row currency.
 - `ebit`, `fcf`: `{fy_value, fy_end, ttm_value, ttm_end}`. FCF = OCF − capex for the same period.
@@ -294,7 +318,8 @@ and every peer count from the published metrics, and reject any mismatch, price/
 
 - N = 8 minimum peers, the 21% fallback tax rate and the moat formula μ·max(0, 1 − σ/μ) are uncalibrated defaults.
 - FINANCIAL uses SIC 6000–6499. Whether REITs (6798) or payment networks (7389) should move needs a decision.
-- The debt definition excludes operating leases. Debt-free issuers follow rule NODEBT (section 1); its concept list is a fixed v0 list.
+- The debt definition excludes operating leases (decision: 운용리스는 부채에서 제외한다). Debt-free issuers follow rule NODEBT
+  (section 1; no materiality threshold); its concept list is a fixed v0 list.
 - No earnings-surprise sub-metric. Add one only if a free source is approved.
 - Fallback lines F1–F3 (section 1): a D&A total equal to the intangible amortization only (NDSN, not covered by F2) is kept as
   reported (owner decision Q-NDSN 2026-10-15: no change).

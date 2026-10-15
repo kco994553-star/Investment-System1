@@ -27,7 +27,11 @@ function versionMismatch(r,fileVersion){return typeof fileVersion==='string'&&ob
 function normalize(r,pooled){
  const f=object(r)&&object(r.factors)?r.factors:{},factors={};for(const k of FACTORS)factors[k]=score(Object.hasOwn(f,k)?f[k]:null);
  const has=object(r)&&r.state!=='NOT_AVAILABLE'&&r.fiscal_year_end!==null&&r.fiscal_year_end!==undefined,[v,periods]=has?vInputs(r.v_inputs_v2):[null,{}],ax=object(r)&&object(r.axes)?r.axes:{};
- return{metrics:object(r)&&object(r.metrics)?Object.fromEntries(Object.entries(r.metrics).filter(([k,v])=>/^[a-z][a-z0-9_]{0,63}$/.test(k)&&finite(v))):{},sic:object(r)&&typeof r.sic==='string'&&/^\d{4}$/.test(r.sic)?r.sic:null,cik:object(r)&&typeof r.cik==='string'?r.cik:null,industry_group:object(r)&&typeof r.industry_group==='string'&&GROUP.test(r.industry_group)?r.industry_group:null,profile:object(r)&&r.profile==='FINANCIAL'?'FINANCIAL':'GENERAL',
+ const years=object(r)&&object(r.metrics)&&Array.isArray(r.metrics.ebit_estimated_fiscal_years)&&r.metrics.ebit_estimated_fiscal_years.every(y=>Number.isInteger(y)&&y>=1900&&y<=2100)?{ebit_estimated_fiscal_years:[...r.metrics.ebit_estimated_fiscal_years]}:{};
+ // Rows without data keep their published source reason codes (NOT_COLLECTED, CIK_UNRESOLVED, NO_ANNUAL_SEC_FINANCIALS, ...):
+ // they are outside every ranking population but stay in the 504-code denominator with an explicit NA reason.
+ const naReasons=object(r)&&!has&&Array.isArray(r.reason_codes)?r.reason_codes.filter(x=>typeof x==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/.test(x)):[];
+ return{na_reasons:naReasons,metrics:object(r)&&object(r.metrics)?{...Object.fromEntries(Object.entries(r.metrics).filter(([k,v])=>/^[a-z][a-z0-9_]{0,63}$/.test(k)&&finite(v))),...years}:{},sic:object(r)&&typeof r.sic==='string'&&/^\d{4}$/.test(r.sic)?r.sic:null,cik:object(r)&&typeof r.cik==='string'?r.cik:null,industry_group:object(r)&&typeof r.industry_group==='string'&&GROUP.test(r.industry_group)?r.industry_group:null,profile:object(r)&&r.profile==='FINANCIAL'?'FINANCIAL':'GENERAL',
   factors,qg_axes:{Q:{score:object(ax.Q)?score(ax.Q.score):null},G:{score:object(ax.G)?score(ax.G.score):null}},v_inputs:v,periods,state:object(r)&&['LIVE','STALE'].includes(r.state)?r.state:'NOT_AVAILABLE',in_cross_section:pooled};
 }
 const frozenCopy=x=>{const copy=JSON.parse(JSON.stringify(x));function freeze(v){if(object(v)||Array.isArray(v)){Object.values(v).forEach(freeze);Object.freeze(v);}return v;}return freeze(copy);};

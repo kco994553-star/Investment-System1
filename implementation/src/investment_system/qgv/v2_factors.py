@@ -231,12 +231,15 @@ SHARE_JUMP_LIMIT = 3.0
 # only when >= 1, so its absence means every EBIT used is the reported operating income (or EBIT is not available).
 # roic_avg_3y, operating_margin_std_5y_pp (owner decision Q-APPQ 2026-10-15): the PLAYBOOK §6-2 / §17 #19 quality inputs
 # (3-year average ROIC >= 15%, 5-year operating-margin population std < 3 percentage points), price-free.
-EXTRA_METRIC_PROFILES = {'ebit_estimated_years': ('GENERAL',), 'roic_avg_3y': ('GENERAL',),
+# ebit_estimated_fiscal_years (owner decision Q-EBIT-SCOPE 2026-10-15): WHICH fiscal years those are, as the calendar year
+# of each substituted fiscal-year end (ascending, unique; FY ending 2026-03-31 -> 2026). Same presence and length as the count.
+EXTRA_METRIC_PROFILES = {'ebit_estimated_years': ('GENERAL',), 'ebit_estimated_fiscal_years': ('GENERAL',), 'roic_avg_3y': ('GENERAL',),
                          'operating_margin_std_5y_pp': ('GENERAL', 'FINANCIAL')}
 QUALITY_ROIC_YEARS = 3
 QUALITY_MARGIN_YEARS = 5
 EXTRA_METRIC_KEYS = tuple(EXTRA_METRIC_PROFILES)
 INTEGER_METRICS = frozenset({'moat_return_years', 'ebit_estimated_years'})
+LIST_METRICS = frozenset({'ebit_estimated_fiscal_years'})
 # Metrics that are counts/descriptors, not ranked directly.
 DESCRIPTIVE_METRICS = frozenset({'moat_return_mean_5y', 'moat_return_std_5y', 'moat_return_years', 'revenue_ttm_growth',
                                'revenue_growth_std_5y', 'revenue_volatility_5y_rank_pct'})
@@ -1058,8 +1061,9 @@ def _growth_common(c, m):
 def _extra_metrics(c, m):
     """SEC-only descriptors (EXTRA_METRIC_KEYS); a profile outside a key's EXTRA_METRIC_PROFILES leaves it None."""
     m.update(dict.fromkeys(EXTRA_METRIC_KEYS))
-    estimated = sum(1 for k in range(HISTORY_YEARS + 1) if c.ebit_estimated(k))
-    m['ebit_estimated_years'] = estimated if estimated and c.profile in EXTRA_METRIC_PROFILES['ebit_estimated_years'] else None
+    years = sorted({c.annual_hit('ebit', c.end(k))[2].year for k in range(HISTORY_YEARS + 1) if c.ebit_estimated(k)})
+    if years and c.profile in EXTRA_METRIC_PROFILES['ebit_estimated_years']:
+        m['ebit_estimated_years'], m['ebit_estimated_fiscal_years'] = len(years), years
     # roic_avg_3y = mean of ROIC FY0, FY-1, FY-2 (all three needed; same ROIC as `roic`, GENERAL only).
     roic = [c.roic(k) for k in range(QUALITY_ROIC_YEARS)]
     if c.profile in EXTRA_METRIC_PROFILES['roic_avg_3y'] and None not in roic:
@@ -1222,7 +1226,7 @@ def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxon
     if extra_metrics:
         _extra_metrics(company, metrics)
     raw = dict(metrics)
-    metrics = {k: (_round(v) if k not in INTEGER_METRICS else v) for k, v in metrics.items()}
+    metrics = {k: (_round(v) if k not in INTEGER_METRICS | LIST_METRICS else v) for k, v in metrics.items()}
     for key in INTEGER_METRICS:
         if metrics.get(key) is not None:
             metrics[key] = int(metrics[key])

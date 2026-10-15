@@ -486,15 +486,18 @@ def test_ebit_substitute_is_pretax_plus_interest_and_is_flagged_as_an_estimate()
     assert close(m['roic'], ebit(2025) * 0.75 / ic) and close(m['interest_coverage'], ebit(2025) / 2.0)
     assert close(m['net_debt_to_ebitda'], (50 - 30) / (ebit(2025) + 0.05 * 146.41))
     assert m['moat_return_years'] == 5 and m['ebit_estimated_years'] == 6  # FY0..FY-5 all substituted
+    assert m['ebit_estimated_fiscal_years'] == [2020, 2021, 2022, 2023, 2024, 2025]  # which years (owner Q-EBIT-SCOPE)
     assert close(v['ebit']['fy_value'], ebit(2025)) and v['ebit']['ttm_end'] == '2025-12-31' and close(v['ebit']['ttm_value'], ebit(2025))
     assert close(v['operating_margin_history'][-1]['value'], ebit(2025) / 146.41) and len(v['operating_margin_history']) == 5
     # ROK-type: operating income only for the last three years; the older years are substituted (and counted).
     recent = simple_company(omit=('OperatingIncomeLoss',), extra=_annual_lines((('OperatingIncomeLoss', 0.2),), years=(2023, 2024, 2025)))
     _, _, _, m, v = compute(recent)
     assert close(m['roic'], 0.2 * 146.41 * 0.75 / ic) and m['ebit_estimated_years'] == 3
+    assert m['ebit_estimated_fiscal_years'] == [2020, 2021, 2022]  # the reported years 2023-2025 are not estimates
     assert close(v['ebit']['fy_value'], 0.2 * 146.41)
     # A reported operating income always wins: no estimate count is published.
     assert compute(simple_company())[3]['ebit_estimated_years'] is None
+    assert compute(simple_company())[3]['ebit_estimated_fiscal_years'] is None
     # Both parts are needed: without an interest expense EBIT stays NA (never pretax + 0), and nothing is flagged.
     _, _, _, m, v = compute(simple_company(omit=('OperatingIncomeLoss', 'InterestExpense')))
     assert m['roic'] is None and m['interest_coverage'] is None and m['ebit_estimated_years'] is None and v['ebit'] is None
@@ -516,6 +519,7 @@ def test_ebit_substitute_is_pretax_plus_interest_and_is_flagged_as_an_estimate()
     facts, subs = REF.synthetic_sec('0000001000', omit=('OperatingIncomeLoss',))
     row = q_build(facts, subs)
     assert row['metrics']['ebit_estimated_years'] == 6 and type(row['metrics']['ebit_estimated_years']) is int
+    assert row['metrics']['ebit_estimated_fiscal_years'] == [2020, 2021, 2022, 2023, 2024, 2025]
     updates = REF.synthetic_universe_updates()
     updates[REF._codes()[0]] = row
     q.merge(None, updates, as_of=NOW, shard_index=0)  # require_qgv2 inside
@@ -734,6 +738,48 @@ def test_calc_version_rows_of_another_version_never_share_a_percentile():
         bad['calc_version'] = value
         with pytest.raises(ValueError, match='SEC_QGV2_INVALID'):
             q.require_qgv2(bad)
+
+
+def test_normal_na_rows_keep_an_explicit_source_reason_and_are_never_calc_version_mismatch():
+    """Owner decision 2026-10-15 evening: a row that is NA because its source data is missing carries its own reason, is outside
+    every ranking population but stays in the 504-code denominator; only rows WITH values of another version are
+    CALC_VERSION_MISMATCH."""
+    codes = shares.universe_codes()
+    p = payload()
+    na = {code: r for code, r in p['records'].items() if r['state'] == 'NOT_AVAILABLE'}
+    assert len(p['records']) == p['code_count'] == len(codes) == 504 and len(na) > 400
+    assert {'NOT_COLLECTED', 'CIK_UNRESOLVED'} <= {x for r in na.values() for x in r['reason_codes']}
+    for r in na.values():
+        assert r['reason_codes'] and r['calc_version'] is None and r['metrics'] == {}
+        assert all(r['axes'][ax]['reason_codes'] == ['ROW_NOT_AVAILABLE'] for ax in ('Q', 'G'))
+    assert p['cross_section_size'] == len({r['cik'] for r in p['records'].values() if r['state'] != 'NOT_AVAILABLE'})
+    # Other NA kinds from build_row: no annual financials, invalid bytes.
+    no_fin = q.build_row(cik='0000001000', companyfacts_body=json.dumps({'cik': 1000, 'facts': {}}).encode(),
+                         submissions_body=json.dumps({'cik': 1000, 'sic': '3674'}).encode(), acquired_at=NOW - timedelta(hours=1))
+    bad = q.build_row(cik='0000001000', companyfacts_body=b'{', submissions_body=b'{}', acquired_at=NOW - timedelta(hours=1))
+    assert no_fin['reason_codes'] == ['NO_ANNUAL_SEC_FINANCIALS'] and bad['reason_codes'] == ['INVALID_INPUT']
+    assert no_fin['calc_version'] is None and bad['calc_version'] is None
+    # Scored under a version: NA rows are ROW_NOT_AVAILABLE, never CALC_VERSION_MISMATCH, also when kept from a legacy copy.
+    rows = {'X:1': {**_row(1, revenue_cagr_3y=0.1), 'calc_version': vf.CALC_VERSION},
+            'X:2': {**_row(2, state='NOT_AVAILABLE'), 'profile': None, 'calc_version': None},
+            'X:3': {'cik': None, 'state': 'NOT_AVAILABLE', 'profile': None, 'industry_group': None, 'metrics': {}}}
+    scores, summary = vs.score_rows(rows, calc_version=vf.CALC_VERSION)
+    assert summary['cross_section_size'] == 1
+    for key in ('X:2', 'X:3'):
+        assert all(scores[('universe', key)]['axes'][ax]['reason_codes'] == ['ROW_NOT_AVAILABLE'] for ax in ('Q', 'G'))
+    legacy = json.loads(json.dumps(p))
+    legacy.pop('calc_version')
+    for r in [*legacy['records'].values(), *legacy['target'].values()]:
+        r.pop('calc_version')
+    merged = q.merge(legacy, {}, as_of=NOW, shard_index=4)
+    reasons = [r['axes']['Q']['reason_codes'] for r in merged['records'].values() if r['state'] == 'NOT_AVAILABLE']
+    assert reasons and all(x == ['ROW_NOT_AVAILABLE'] for x in reasons)
+    assert all(r['axes']['Q']['reason_codes'] == ['CALC_VERSION_MISMATCH'] for r in merged['records'].values() if r['state'] != 'NOT_AVAILABLE')
+    # A NA row can never claim a calc_version (it has no computed values).
+    tampered = json.loads(json.dumps(p))
+    tampered['records'][next(iter(na))]['calc_version'] = vf.CALC_VERSION
+    with pytest.raises(ValueError, match='SEC_QGV2_INVALID'):
+        q.require_qgv2(tampered)
 
 
 # ---------------- percentile publication ----------------

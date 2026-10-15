@@ -166,13 +166,17 @@ test('EBIT substitute rows (metrics.ebit_estimated_years) carry the EBIT_ESTIMAT
   assert.ok(id, 'a v2 row to mark');
   for (const r of Object.values(base.rows)) assert.ok(!r.v2.flags.includes('EBIT_ESTIMATED'), 'no flag without the published count');
   const p = F.payload(), code = base.rows[id].code, row = code.startsWith('TARGET:') ? p.target[code.slice(7)] : p.records[code];
-  row.metrics = { ...(row.metrics || {}), ebit_estimated_years: 2 };
+  row.metrics = { ...(row.metrics || {}), ebit_estimated_years: 2, ebit_estimated_fiscal_years: [2023, 2024] };
   const marked = QS.compute({ identities, publicScreens: { ...screens, [SQ.FILE]: SQ.fromInputs(SQ.light(p)) }, quotes, scoringDefault: 'v2' });
   assert.ok(marked.rows[id].v2.flags.includes('EBIT_ESTIMATED'));
   assert.ok(marked.rows[id].primary.flags.includes('EBIT_ESTIMATED'), 'the primary (v2 default) display carries it');
   assert.equal(Object.values(marked.rows).filter((r) => r.v2.flags.includes('EBIT_ESTIMATED')).length, 1);
   assert.deepEqual(QS.flagText(marked.rows[id].v2.flags.filter((f) => f === 'EBIT_ESTIMATED'), false), ['추정(대체 계산)']);
   assert.deepEqual(QS.flagText(['EBIT_ESTIMATED'], true), ['Estimate (substitute calculation)']);
+  // The flag names the substituted fiscal years when the display row is given (company screen, leaderboard).
+  assert.deepEqual(marked.rows[id].v2.ebit_estimated_fiscal_years, [2023, 2024]);
+  assert.deepEqual(QS.flagText(['EBIT_ESTIMATED'], false, marked.rows[id].v2), ['추정(대체 계산): FY2023·FY2024']);
+  assert.deepEqual(QS.flagText(['EBIT_ESTIMATED'], true, marked.rows[id].v2), ['Estimate (substitute calculation): FY2023, FY2024']);
   assert.ok(QS.judgmentRows(marked)[id].flags.includes('EBIT_ESTIMATED'));
   // A zero or missing count is not a flag (the file publishes the count only when >= 1).
   row.metrics.ebit_estimated_years = 0;
@@ -206,6 +210,26 @@ test('calc_version: a row of another calculation-rule version is NA (CALC_VERSIO
   assert.equal(versioned((p) => { delete pick(p).calc_version; }).records[oddCode].calc_version_mismatch, true);
   const legacy = SQ.fromInputs(SQ.light(F.payload()));
   assert.equal(legacy.calc_version, null);assert.ok(Object.values(legacy.records).every((r) => r.calc_version_mismatch !== true));
+});
+
+test('normal-NA rows (source data missing) keep an explicit reason, stay in the 504 denominator, never CALC_VERSION_MISMATCH', () => {
+  const S = require(path.join(W, 'sec-qgv2.js')), strict = F.strictPayload();
+  assert.equal(strict.calc_version, 'qgv2-calc/2026-10-15.1');
+  const inputs = SQ.fromInputs(S.toInputs(S.validate(strict), { now: '2026-10-14T00:00:00Z' }));
+  const codes = Object.keys(inputs.records).filter((k) => !k.startsWith('TARGET:'));
+  assert.equal(codes.length, 504, 'every Universe code stays in the denominator');
+  const na = codes.filter((k) => inputs.records[k].state === 'NOT_AVAILABLE');
+  assert.ok(na.length > 400);
+  for (const k of na) {
+    const r = inputs.records[k];
+    assert.notEqual(r.calc_version_mismatch, true, k);assert.equal(r.in_cross_section, false, k);
+    assert.ok(r.na_reasons.length >= 1 && r.na_reasons.every((x) => ['NOT_COLLECTED', 'CIK_UNRESOLVED', 'NO_ANNUAL_SEC_FINANCIALS', 'INVALID_INPUT', 'NON_SEC_ISSUER'].includes(x)), k);
+  }
+  const naCode = na.find((k) => inputs.records[k].na_reasons.includes('CIK_UNRESOLVED')) || na[0], ticker = naCode.slice(naCode.indexOf(':') + 1);
+  const out = QS.compute({ identities: [{ company_id: 'na_row', ticker }], publicScreens: { [SQ.FILE]: inputs }, scoringDefault: 'v2' }), d = out.rows.na_row.v2;
+  assert.equal(out.rows.na_row.code, naCode);assert.equal(d.total, null);assert.equal(d.total_reason, 'SOURCE_NOT_AVAILABLE');
+  assert.ok(!d.flags.includes('CALC_VERSION_MISMATCH'));assert.deepEqual(d.source_reason_codes, [...inputs.records[naCode].na_reasons]);
+  assert.match(QS.naText(d, false), /원자료 없음/);assert.match(QS.naText(d, true), /source data missing/);
 });
 
 test('a strictly valid empty SEC v2 file keeps the v2 basis NOT_AVAILABLE (no v1 temporary default) and blocks readiness', () => {
