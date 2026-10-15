@@ -67,8 +67,22 @@ taken as 0, so the line stays NA. ifrs-full has no fallback lines. Code: `_Compa
   `PaymentsToAcquireTimberlands`, `PaymentsToAcquireFurnitureAndFixtures`, `PaymentsForProceedsFromProductiveAssets` (net of
   disposals). Two or more such lines mean each is a part of capex (LNT utility + other, EOG, HST, REITs), so capex stays NA.
   TTM still uses one concept: the fallback concept's own 10-Q YTD facts (RL tags its 10-Qs with another concept, so its TTM FCF
-  stays NA while FY FCF resolves). Capitalized software (`PaymentsToAcquireSoftware`, `PaymentsForSoftware`,
-  `PaymentsToDevelopSoftware`) is **not** capex here; whether to include it is an open owner decision (MA −4.2% FCF).
+  stays NA while FY FCF resolves). Capitalized software is added by rule **SW** below.
+
+**Rules from the owner decisions of 2026-10-15** (Q-247 approved; code in `qgv/v2_factors.py`, tests in
+`tests/test_sec_qgv2.py`). Like F1–F3 they apply per fiscal year, read only SEC facts filed on or before the cutoff, and never
+take a missing component as 0. They apply to SEC companyfacts only; the DART adapter (`product/dart_qgv2.py`) is unchanged.
+
+- **SW capitalized software in capex (Q-SW = include).** Capex = the physical capex line of the year (the priority list, else
+  F3) + capitalized software of **the same span**: `PaymentsForSoftware` alone when reported (it is the total), else
+  `PaymentsToAcquireSoftware` + `PaymentsToDevelopSoftware` (each one that is reported, each ≥ 0). No double count:
+  (a) nothing is added to `PaymentsToAcquireProductiveAssets`, whose us-gaap definition already includes software and other
+  intangibles; (b) by definition `PaymentsToAcquirePropertyPlantAndEquipment` is physical assets and the software elements are
+  intangible assets, so they are separate lines; but when the issuer also reports `PaymentsToAcquireProductiveAssets` for the
+  span and that total is smaller than PP&E + software (0.5% tolerance), the software is taken to be inside the PP&E line and is
+  not added. Software alone (no physical capex line) is not capex: NA. TTM capex = TTM of the physical line + TTM of each
+  software line, only when all of them end on the same date; otherwise TTM capex is NA and FY is kept (MA: FCF −4.2%).
+  Test: `test_capex_includes_capitalized_software_without_double_count`.
 
 Derived lines: tax rate = income tax ÷ pretax income, clamped to 0–50%, when pretax > 0. Otherwise the default 21% applies
 (DEFAULT_TAX_RATE, uncalibrated). NOPAT = EBIT × (1 − tax rate). Invested capital (IC) = equity + total debt − cash (must be > 0).
@@ -180,7 +194,7 @@ and every peer count from the published metrics, and reject any mismatch, price/
 - FINANCIAL uses SIC 6000–6499. Whether REITs (6798) or payment networks (7389) should move needs a decision.
 - The debt definition excludes operating leases. Debt-free issuers with no debt concept get NA ROIC and net-debt/EBITDA rather than 0.
 - No earnings-surprise sub-metric. Add one only if a free source is approved.
-- Fallback lines F1–F3 (section 1), still open: capitalized software in capex (MA); a `Revenues` total that is gross of
+- Fallback lines F1–F3 (section 1), still open: a `Revenues` total that is gross of
   intersegment eliminations (RSG); a D&A total equal to the intangible amortization only (NDSN, not covered by F2);
   MAA tags real-estate development as `PaymentsToAcquireInProcessResearchAndDevelopment`, so F3 takes its capital
   improvements alone (partial capex); stock-split discontinuities in per-share history (KLAC).

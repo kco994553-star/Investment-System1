@@ -290,7 +290,8 @@ def test_capex_fallback_lines_fill_only_an_unambiguous_single_line():
                   (('PaymentsToAcquireOtherPropertyPlantAndEquipment', 0.01), ('PaymentsToAcquireOilAndGasPropertyAndEquipment', 0.02))):
         _, _, _, m, v = compute(simple_company(omit=(ppe,), extra=_annual_lines(lines)))
         assert m['fcf_to_net_income'] is None and v['fcf'] is None
-    # The priority list wins over every fallback line; capitalized software is not a capex line (owner decision).
+    # The priority list wins over every fallback line; capitalized software alone is not capex (rule SW adds it only to a
+    # physical capex line).
     m = compute(simple_company(extra=_annual_lines((('PaymentsToAcquireOtherProductiveAssets', 0.10),))))[3]
     assert close(m['fcf_to_net_income'], fcf_ni)
     _, _, _, m, v = compute(simple_company(omit=(ppe,), extra=_annual_lines((('PaymentsToAcquireSoftware', 0.03),))))
@@ -303,6 +304,57 @@ def test_capex_fallback_lines_fill_only_an_unambiguous_single_line():
     v = compute(simple_company(omit=(ppe,), extra=_annual_lines((('PaymentsToAcquireOtherProductiveAssets', 0.03),)) + ytd))[4]
     assert v['fcf']['ttm_end'] == '2026-06-30'
     assert math.isclose(v['fcf']['ttm_value'], (0.18 * 146.41 + 15 - 12) - (0.03 * 146.41 + 3 - 2), rel_tol=1e-9)
+
+
+def _ytd(concept, values, start_month='01'):
+    """10-Q half-year YTD facts {year: value} (filed after the half year)."""
+    return [((concept, 'USD', value, f'{year}-06-30'), {'start': f'{year}-{start_month}-01', 'form': '10-Q', 'filed': f'{year}-08-01'})
+            for year, value in values.items()]
+
+
+def test_capex_includes_capitalized_software_without_double_count():
+    """Rule SW (owner decision Q-SW 2026-10-15): capitalized software is part of capex, added once to a physical line."""
+    ppe, close = 'PaymentsToAcquirePropertyPlantAndEquipment', lambda a, b: a is not None and math.isclose(a, b, rel_tol=1e-5)
+    fcf = lambda capex_share: (0.18 - capex_share) / 0.15
+    # MA: PP&E 3% + PaymentsToAcquireSoftware 1% -> capex 4% every year (FCF, FCF/NI, FY FCF input).
+    _, _, _, m, v = compute(simple_company(extra=_annual_lines((('PaymentsToAcquireSoftware', 0.01),))))
+    assert close(m['fcf_to_net_income'], fcf(0.04)) and close(m['fcf_per_share_cagr_3y'], 0.1)
+    assert close(v['fcf']['fy_value'], 0.14 * 146.41) and close(v['fcf']['ttm_value'], 0.14 * 146.41)
+    # Both parts are added (purchased + developed software).
+    m = compute(simple_company(extra=_annual_lines((('PaymentsToAcquireSoftware', 0.01), ('PaymentsToDevelopSoftware', 0.005)))))[3]
+    assert close(m['fcf_to_net_income'], fcf(0.045))
+    # PaymentsForSoftware is the total of the parts: used alone, the parts are not added a second time.
+    m = compute(simple_company(extra=_annual_lines((('PaymentsForSoftware', 0.015), ('PaymentsToAcquireSoftware', 0.01),
+                                                     ('PaymentsToDevelopSoftware', 0.005)))))[3]
+    assert close(m['fcf_to_net_income'], fcf(0.045))
+    # PaymentsToAcquireProductiveAssets already includes software by definition: nothing is added to it.
+    m = compute(simple_company(omit=(ppe,), extra=_annual_lines((('PaymentsToAcquireProductiveAssets', 0.03),
+                                                                  ('PaymentsToAcquireSoftware', 0.01)))))[3]
+    assert close(m['fcf_to_net_income'], fcf(0.03))
+    # A reported productive-assets total equal to PP&E means the software sits inside the PP&E line: not added.
+    m = compute(simple_company(extra=_annual_lines((('PaymentsToAcquireProductiveAssets', 0.03), ('PaymentsToAcquireSoftware', 0.01)))))[3]
+    assert close(m['fcf_to_net_income'], fcf(0.03))
+    # A productive-assets total that equals PP&E + software confirms separate lines: added.
+    m = compute(simple_company(extra=_annual_lines((('PaymentsToAcquireProductiveAssets', 0.04), ('PaymentsToAcquireSoftware', 0.01)))))[3]
+    assert close(m['fcf_to_net_income'], fcf(0.04))
+    # Added to the one F3 fallback line as well (INCY-type filer with software).
+    m = compute(simple_company(omit=(ppe,), extra=_annual_lines((('PaymentsToAcquireOtherProductiveAssets', 0.03),
+                                                                  ('PaymentsToAcquireSoftware', 0.01)))))[3]
+    assert close(m['fcf_to_net_income'], fcf(0.04))
+    # A software line of another span, or a negative one, is not added.
+    shifted = simple_company(extra=[(('PaymentsToAcquireSoftware', 'USD', 1.0, '2025-12-31'), {'start': '2025-01-05'})])
+    assert close(compute(shifted)[3]['fcf_to_net_income'], fcf(0.03))
+    negative = simple_company(extra=_annual_lines((('PaymentsToAcquireSoftware', -0.01),)))
+    assert close(compute(negative)[3]['fcf_to_net_income'], fcf(0.03))
+    # TTM: PP&E TTM + software TTM when both end on the same 10-Q date.
+    q = (_ytd(ppe, {2026: 3.0, 2025: 2.0}) + _ytd('PaymentsToAcquireSoftware', {2026: 1.5, 2025: 1.0})
+         + _ytd('NetCashProvidedByUsedInOperatingActivities', {2026: 15.0, 2025: 12.0}))
+    v = compute(simple_company(extra=_annual_lines((('PaymentsToAcquireSoftware', 0.01),)) + q))[4]
+    ocf_ttm, capex_ttm = 0.18 * 146.41 + 15 - 12, 0.03 * 146.41 + 3 - 2 + 0.01 * 146.41 + 1.5 - 1.0
+    assert v['fcf']['ttm_end'] == '2026-06-30' and math.isclose(v['fcf']['ttm_value'], ocf_ttm - capex_ttm, rel_tol=1e-9)
+    # Software without 10-Q facts while PP&E has them: the spans differ, so TTM capex (and TTM FCF) is NA; FY stays.
+    v = compute(simple_company(extra=_annual_lines((('PaymentsToAcquireSoftware', 0.01),)) + q[:2] + q[4:]))[4]
+    assert v['fcf']['ttm_value'] is None and close(v['fcf']['fy_value'], 0.14 * 146.41)
 
 
 # ---------------- percentile publication ----------------

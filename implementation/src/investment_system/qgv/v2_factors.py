@@ -82,9 +82,9 @@ CONCEPTS = {
         'depreciation': ('Depreciation',),
         'amortization_of_intangibles': ('AmortizationOfIntangibleAssets',),
         # Total capex reported under a narrower element name (INCY: OtherProductiveAssets; RL FY2026: MachineryAndEquipment;
-        # GLW/SNA/IT: CapitalImprovements; LLY/WEC/ADP: OtherPropertyPlantAndEquipment). Capitalized software is NOT here
-        # (owner decision pending). Used only when exactly one of them is reported for the year and no line of
-        # 'capital_expenditure_partial_lines' is: two or more lines mean each is a partial capex line, so capex stays None.
+        # GLW/SNA/IT: CapitalImprovements; LLY/WEC/ADP: OtherPropertyPlantAndEquipment). Used only when exactly one of them is
+        # reported for the year and no line of 'capital_expenditure_partial_lines' is: two or more lines mean each is a
+        # partial capex line, so capex stays None.
         'capital_expenditure_fallback': ('PaymentsToAcquireOtherProductiveAssets', 'PaymentsToAcquireMachineryAndEquipment',
                                          'PaymentsForCapitalImprovements', 'PaymentsToAcquireOtherPropertyPlantAndEquipment'),
         'capital_expenditure_partial_lines': ('PaymentsToAcquireOilAndGasProperty', 'PaymentsToAcquireOilAndGasPropertyAndEquipment',
@@ -94,6 +94,10 @@ CONCEPTS = {
                                               'PaymentsForTenantImprovements', 'PaymentsForConstructionInProcess',
                                               'PaymentsToAcquireTimberlands', 'PaymentsToAcquireBuildings', 'PaymentsToAcquireLand',
                                               'PaymentsToAcquireFurnitureAndFixtures', 'PaymentsForProceedsFromProductiveAssets'),
+        # Capitalized software (owner decision Q-SW 2026-10-15: included in capex). Added to a physical capex line of the same
+        # span, never on its own and never to PaymentsToAcquireProductiveAssets (_Company._capex_with_software).
+        'capital_expenditure_software_total': ('PaymentsForSoftware',),
+        'capital_expenditure_software_parts': ('PaymentsToAcquireSoftware', 'PaymentsToDevelopSoftware'),
     },
     'ifrs-full': {
         'revenue': ('Revenue', 'RevenueFromContractsWithCustomers'),
@@ -122,10 +126,17 @@ CONCEPTS = {
         # No ifrs-full component fallbacks (us-gaap only).
         'pretax_income_domestic': (), 'pretax_income_foreign': (), 'depreciation': (), 'amortization_of_intangibles': (),
         'capital_expenditure_fallback': (), 'capital_expenditure_partial_lines': (),
+        'capital_expenditure_software_total': (), 'capital_expenditure_software_parts': (),
     },
 }
 COMPONENT_ITEMS = ('pretax_income_domestic', 'pretax_income_foreign', 'depreciation', 'amortization_of_intangibles',
-                   'capital_expenditure_fallback', 'capital_expenditure_partial_lines')
+                   'capital_expenditure_fallback', 'capital_expenditure_partial_lines',
+                   'capital_expenditure_software_total', 'capital_expenditure_software_parts')
+# Capex totals whose us-gaap definition already includes software (and other intangibles): software is never added to them.
+CAPEX_INCLUDES_SOFTWARE = frozenset({'PaymentsToAcquireProductiveAssets'})
+# Double-count guard: when PaymentsToAcquireProductiveAssets is also reported for the span, software is added only if that
+# total is at least physical capex + software (within this relative tolerance), i.e. the total confirms they are separate.
+CAPEX_SOFTWARE_TOLERANCE = 0.005
 FLOW_ITEMS = ('revenue', 'gross_profit', 'cost_of_revenue', 'ebit', 'pretax_income', 'income_tax', 'net_income',
               'operating_cash_flow', 'capital_expenditure', 'depreciation_amortization', 'interest_expense',
               'net_interest_income', 'eps_diluted', 'diluted_shares') + COMPONENT_ITEMS
@@ -203,9 +214,10 @@ class _Facts:
         self.taxonomy, self.currency, self.cutoff = taxonomy, currency, cutoff
         facts = payload.get('facts') if isinstance(payload.get('facts'), dict) else {}
         facts = facts.get(taxonomy) if isinstance(facts.get(taxonomy), dict) else {}
-        self.items = {}
+        self.items, self.concepts = {}, {}
         for item, concepts in CONCEPTS[taxonomy].items():
             unit = self._unit(item)
+            self.concepts[item] = tuple(concepts)
             self.items[item] = [self._table(facts.get(concept), unit, item in INSTANT_ITEMS) for concept in concepts]
 
     def _unit(self, item):
@@ -386,6 +398,9 @@ class _Company:
     def __init__(self, facts, fy0_end):
         self.f, self.fy0 = facts, fy0_end
         self._cache = {}
+        # The SEC-only rules (software capex, ...) read component tables of a companyfacts payload; other period
+        # adapters (DART) keep the shared definitions only.
+        self.sec = isinstance(facts, _Facts)
 
     def end(self, k):
         return _shift_years(self.fy0, k)
@@ -400,11 +415,16 @@ class _Company:
     # ---- fallback lines (QGV_V2_QG_METHOD.md section 1). Each needs every component it names: never 0-filled. ----
     def _component(self, item, target):
         """Per-concept hits of a component item for one fiscal year: [(hit, table)]. Adapters without the item: []."""
+        return [(hit, table) for hit, table, _ in self._component_named(item, target)]
+
+    def _component_named(self, item, target):
+        """[(hit, table, concept name)] in list order (concept name None for adapters without names)."""
         out = []
-        for table in self.f.items.get(item) or ():
+        names = getattr(self.f, 'concepts', {}).get(item, ())
+        for n, table in enumerate(self.f.items.get(item) or ()):
             hit = self.f.annual(item, target, [table])
             if hit is not None:
-                out.append((hit, table))
+                out.append((hit, table, names[n] if n < len(names) else None))
         return out
 
     def _single(self, item, target):
@@ -419,10 +439,49 @@ class _Company:
 
     def capex_fallback(self, target):
         """(hit, table) of the one fallback capex line reported for the year; None when none or ambiguous."""
-        hits = self._component('capital_expenditure_fallback', target)
+        found = self._capex_fallback_named(target)
+        return found[:2] if found else None
+
+    def _capex_fallback_named(self, target):
+        hits = self._component_named('capital_expenditure_fallback', target)
         if len(hits) != 1 or self._component('capital_expenditure_partial_lines', target):
             return None
         return hits[0]
+
+    def _capex_base(self, target):
+        """(hit, table, concept) of the physical capex line: the priority list first (first concept wins), then F3."""
+        hits = self._component_named('capital_expenditure', target)
+        if hits:
+            return hits[0]
+        return self._capex_fallback_named(target)
+
+    def _software(self, span):
+        """[(hit, table, concept)] of the capitalized-software lines of exactly `span` (start, end), each >= 0:
+        PaymentsForSoftware alone when reported (a total of the parts), else every reported part. [] when none."""
+        pick = lambda item: [h for h in self._component_named(item, span[1]) if h[0][1:] == span and h[0][0] >= 0]
+        total = pick('capital_expenditure_software_total')
+        return total[:1] if total else pick('capital_expenditure_software_parts')
+
+    def _capex_with_software(self, target):
+        """(hit, software lines) for one fiscal year (QGV_V2_QG_METHOD.md section 1, rule SW). Software is added only to a
+        physical capex line of the same span, never to PaymentsToAcquireProductiveAssets (its definition includes software),
+        and not when a reported PaymentsToAcquireProductiveAssets total of the span is smaller than PP&E + software (the
+        software would then already be inside the PP&E line). Software alone is not capex."""
+        base = self._capex_base(target)
+        if base is None:
+            return None, []
+        hit, _, concept = base
+        if concept in CAPEX_INCLUDES_SOFTWARE:
+            return hit, []
+        software = self._software(hit[1:])
+        if not software:
+            return hit, []
+        added = math.fsum(h[0][0] for h in software)
+        for total_hit, _, name in self._component_named('capital_expenditure', target):
+            if name in CAPEX_INCLUDES_SOFTWARE and total_hit[1:] == hit[1:]:
+                if total_hit[0] < (hit[0] + added) * (1.0 - CAPEX_SOFTWARE_TOLERANCE):
+                    return hit, []
+        return (hit[0] + added, hit[1], hit[2]), software
 
     def _depreciation_amortization(self, total, target):
         """Depreciation + AmortizationOfIntangibleAssets (same period, both >= 0) replaces the total D&A line when
@@ -443,6 +502,8 @@ class _Company:
 
     def annual_hit(self, item, target):
         """(value, start, end) for one fiscal year: the item's concept list first, then its documented fallback."""
+        if item == 'capital_expenditure' and self.sec:
+            return self._capex_with_software(target)[0]
         hit = self.f.annual(item, target)
         if item == 'depreciation_amortization':
             return self._depreciation_amortization(hit, target)
@@ -532,7 +593,17 @@ class _Company:
     # ---- TTM ----
     def ttm(self, item):
         """(ttm_value, period_end, ttm_year_ago_value): FY0 + YTD - YTD(prior year), all from ONE concept;
-        FY0 alone (period end = FY0 end) when no concept has a later 10-Q with its prior-year comparative."""
+        FY0 alone (period end = FY0 end) when no concept has a later 10-Q with its prior-year comparative.
+        Capex with capitalized software (SEC): TTM of the physical line + TTM of each software line, only when every one
+        ends on the same date (else None: FY and TTM never mix spans); the year-ago TTM is then not derived."""
+        software = self._capex_with_software(self.fy0)[1] if item == 'capital_expenditure' and self.sec else []
+        if software:
+            base = self._capex_base(self.fy0)
+            out = self._ttm_one(item, base[0], [base[1]], single=True)
+            parts = [out] + [self._ttm_one(item, h, [table], single=True) for h, table, _ in software]
+            if any(p[1] != out[1] for p in parts):
+                return None
+            return math.fsum(p[0] for p in parts), out[1], None
         fy0, tables = self.f.annual(item, self.fy0), self.f.items[item]
         if fy0 is None and item == 'capital_expenditure':
             found = self.capex_fallback(self.fy0)  # the one fallback line, still a single concept for FY0 and YTD
@@ -540,6 +611,11 @@ class _Company:
                 fy0, tables = found[0], [found[1]]
         if fy0 is None:
             return None
+        return self._ttm_one(item, fy0, tables)
+
+    def _ttm_one(self, item, fy0, tables, single=False):
+        """TTM over `tables` (first table with FY0 + later 10-Q YTD + prior-year YTD), else FY0 alone. `single`: the
+        year-ago value also comes from `tables` only (a component line), not from the item's full rule."""
         for table in tables:
             one = [table]
             hit = self.f.annual(item, self.fy0, one)
@@ -561,7 +637,7 @@ class _Company:
                 if prev2 is not None:
                     ago = fy1[0] + prev[0] - prev2[0]
             return value0 + cur[0] - prev[0], cur[2], ago
-        fy1 = self.annual_hit(item, _shift_years(fy0[2], 1))
+        fy1 = self.f.annual(item, _shift_years(fy0[2], 1), tables) if single else self.annual_hit(item, _shift_years(fy0[2], 1))
         return fy0[0], fy0[2], (fy1[0] if fy1 else None)
 
 
