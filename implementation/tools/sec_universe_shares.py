@@ -18,6 +18,13 @@ QGV v2 (user decision 2026-10-13, GSQ-022 pending): the same bytes also give the
 metrics and `v_inputs_v2` (`sec-qgv2.json`). TARGET rows staged earlier in the same output
 folder by tools/public_screens_pipeline.py --live are carried in; percentiles are recomputed at
 publication over all current LIVE/STALE Universe rows. A v2 failure never changes the other files.
+
+`--all-shards` (one-off, owner instruction 2026-10-15): every shard 0..shard_count-1 in one run with one registry
+fetch and the same serial paced client, so all 504 codes are recalculated under the current rules and published at
+once. Each shard prints its own counts line and uploads its own private raw release; a shard that fails entirely keeps
+its previous rows. In the Q·G and QGV v2 files every collected code is replaced by this run's row (a row without data
+is NOT_AVAILABLE with its reason, never an older rule's value or 0); shares keep the daily merge rule. The daily
+default (one shard per UTC day) is unchanged.
 """
 import argparse
 from datetime import datetime, timezone
@@ -138,18 +145,32 @@ def write_qgv2(directory, payload):
     return write(directory, payload, name=qgv2.FILENAME, encoder=qgv2.encode)
 
 
-def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, config=None, qg_updates=None, qgv2_updates=None):
-    """Collect today's shard. Returns (updates, unlisted_updates, unresolved_codes, registry_sha256, shard_index, counts).
-
-    With `qg_updates` (a dict), the same fetched bytes also fill that dict with this shard's Q·G rows (no extra request)."""
-    cfg = config or load_config()
+def open_registry(*, user_agent, client_kwargs=None):
+    """SEC ticker/exchange registry (one paced request) and the paced Universe client bound to it."""
     kwargs = dict(client_kwargs or {})
-    started = now()
-    index = shard_index_for(started.astimezone(timezone.utc).date(), cfg['shard_count'])
     base = SecCollectionClient(user_agent, **kwargs)
     registry = universe_registry(fetch_ticker_exchange(base))
+    return registry, UniverseSecClient(user_agent, registry=registry, **kwargs)
+
+
+def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, config=None, qg_updates=None, qgv2_updates=None,
+            shard_index=None, registry=None, client=None):
+    """Collect one shard. Returns (updates, unlisted_updates, unresolved_codes, registry_sha256, shard_index, counts).
+
+    The shard is today's (UTC date ordinal mod shard_count) unless `shard_index` names one explicitly. `registry` and
+    `client` (from open_registry) let one run collect several shards with one registry fetch and one paced client.
+    With `qg_updates` (a dict), the same fetched bytes also fill that dict with this shard's Q·G rows (no extra request)."""
+    cfg = config or load_config()
+    started = now()
+    if shard_index is None:
+        index = shard_index_for(started.astimezone(timezone.utc).date(), cfg['shard_count'])
+    elif type(shard_index) is int and 0 <= shard_index < cfg['shard_count']:
+        index = shard_index
+    else:
+        raise SecCollectionError('SEC_UNIVERSE_CONFIG_INVALID')
+    if registry is None or client is None:
+        registry, client = open_registry(user_agent=user_agent, client_kwargs=client_kwargs)
     issuers = daily_partition(registry, shard_count=cfg['shard_count'], shard_index=index)
-    client = UniverseSecClient(user_agent, registry=registry, **kwargs)
     bound = {code for issuer in registry.issuers for code in issuer.codes}
     unresolved = set(universe_codes()) - bound
     updates, unlisted_updates, manifest, covers = {}, {}, [], [0]
@@ -265,7 +286,7 @@ def _qg_summary(payload):
 
 
 def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kwargs=None,
-        open_previous=None, open_upload=None):
+        open_previous=None, open_upload=None, all_shards=False):
     environ = os.environ if environ is None else environ
     try:
         cfg = load_config()
@@ -337,6 +358,10 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
         print('SEC_UNIVERSE_SHARES LIVE_OPT_IN_REQUIRED')
         return 1
     token = environ.get(RAW_TOKEN_ENV) or None
+    if all_shards:
+        return _run_all_shards(out, cfg=cfg, environ=environ, now=now, client_kwargs=client_kwargs, token=token,
+                               open_upload=open_upload, previous=previous, previous_qg=previous_qg,
+                               previous_qgv2=previous_qgv2, staged_target=staged_target)
     with tempfile.TemporaryDirectory(prefix='sec-universe-raw-') as private:
         raw_dir = Path(private) / 'raw' if token else None
         qg_updates, qgv2_updates = {}, {}
@@ -395,12 +420,130 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     return 0
 
 
+def _refresh_base(previous, codes, empty):
+    """All-shards publication: rows of codes collected in this run are replaced, not kept.
+
+    The daily merge keeps an older row with data when today's row has none. A one-off all-shards run publishes the
+    current calculation rules for every collected code, so the previous row of each collected code is cleared first and
+    a row without data is published as NOT_AVAILABLE with its own reason (never 0, never an older rule's value).
+    Codes of failed issuers or failed shards are not in `codes` and keep their previous rows."""
+    if previous is None or not codes:
+        return previous
+    base = json.loads(json.dumps(previous))
+    for code in codes:
+        if code in base['records']:
+            base['records'][code] = empty()
+    return base
+
+
+def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload, previous, previous_qg, previous_qgv2,
+                    staged_target):
+    """One-off: every shard 0..shard_count-1 in one run, one registry fetch, one paced client (serial requests)."""
+    count = cfg['shard_count']
+    try:
+        registry, client = open_registry(user_agent=environ.get('SEC_USER_AGENT', ''), client_kwargs=client_kwargs)
+    except SecCollectionError as error:
+        code = error.args[0] if error.args and error.args[0] in {'SEC_USER_AGENT_INVALID', 'SEC_UNIVERSE_INPUT_INVALID',
+            'SEC_UNIVERSE_CONFIG_INVALID', 'SEC_CONFIG_INVALID', 'SEC_HTTP_RETRIES_EXHAUSTED', 'SEC_TRANSPORT_RETRIES_EXHAUSTED'} else 'SEC_UNIVERSE_FAILED'
+        print('SEC_UNIVERSE_SHARES COLLECTION_NOT_RUN mode=all_shards code=' + code + (' previous_kept' if previous is not None else ''))
+        return 0 if previous is not None else 1
+    except Exception:
+        print('SEC_UNIVERSE_SHARES COLLECTION_NOT_RUN mode=all_shards code=SEC_UNIVERSE_FAILED' + (' previous_kept' if previous is not None else ''))
+        return 0 if previous is not None else 1
+    updates, unlisted_updates, qg_updates, qgv2_updates = {}, {}, {}, {}
+    registry_sha = registry.source_sha256
+    unresolved = set(universe_codes()) - {code for issuer in registry.issuers for code in issuer.codes}
+    ok_shards, failed_shards, totals = [], [], {'companies': 0, 'collected': 0, 'failed': 0, 'covers': 0}
+    day = now().astimezone(timezone.utc).date().isoformat()
+    for index in range(count):
+        s_updates, s_unlisted, s_qg, s_qgv2 = {}, {}, {}, {}
+        with tempfile.TemporaryDirectory(prefix='sec-universe-raw-') as private:
+            raw_dir = Path(private) / 'raw' if token else None
+            try:
+                s_updates, s_unlisted, _, _, _, counts = collect(
+                    user_agent=environ.get('SEC_USER_AGENT', ''), now=now, raw_dir=raw_dir, config=cfg,
+                    qg_updates=s_qg, qgv2_updates=s_qgv2, shard_index=index, registry=registry, client=client)
+            except Exception:
+                failed_shards.append(index)
+                print(f'SEC_UNIVERSE_SHARD shard={index}/{count} status=SHARD_FAILED code=SEC_UNIVERSE_FAILED previous_kept')
+                continue
+            for company_index, code in counts['failures']:
+                print(f'SEC_UNIVERSE_FAILURE shard={index} company_index={company_index} code={code}')
+            for key in totals:
+                totals[key] += counts[key]
+            if counts['all_failed']:
+                # Nothing of this shard is merged: every code of the shard keeps its previous published row.
+                failed_shards.append(index)
+                status = 'SHARD_ALL_FAILED previous_kept'
+            else:
+                ok_shards.append(index)
+                updates.update(s_updates)
+                unlisted_updates.update(s_unlisted)
+                qg_updates.update(s_qg)
+                qgv2_updates.update(s_qgv2)
+                status = 'OK'
+            v2_rows = list(s_qgv2.values())
+            print(f"SEC_UNIVERSE_SHARD shard={index}/{count} companies={counts['companies']} collected={counts['collected']} "
+                  f"failed={counts['failed']} covers={counts['covers']} share_codes={len(s_updates)} "
+                  f"shares_with_value={sum(1 for r in s_updates.values() if r['shares'] is not None)} qg_codes={len(s_qg)} "
+                  f"qg_scored_codes={sum(1 for r in s_qg.values() if r['state'] != 'NOT_AVAILABLE')} qgv2_codes={len(v2_rows)} "
+                  f"qgv2_with_data={sum(1 for r in v2_rows if r['fiscal_year_end'] is not None)} status={status}")
+            if token is None:
+                print(f'RAW_UPLOAD_NOT_CONFIGURED shard={index}')
+            elif counts['collected']:
+                tag = f'sec-universe-raw-{day}-all-shard{index}'
+                print(f'shard={index} ' + upload_raw(raw_dir, tag=tag, token=token, open_response=open_upload))
+            else:
+                print(f'RAW_UPLOAD_SKIPPED shard={index} no_collected_companies')
+    last = max(ok_shards) if ok_shards else (previous or {}).get('last_shard_index')
+    scope = (f"shard=all/{count} shards_ok={len(ok_shards)} shards_failed={len(failed_shards)}"
+             + (' failed_shards=' + ','.join(str(i) for i in failed_shards) if failed_shards else ''))
+    try:
+        payload = merge(previous, updates, as_of=now(), shard_index=last, registry_sha256=registry_sha,
+                        unresolved=unresolved, config=cfg, unlisted_updates=unlisted_updates)
+        write(out, payload)
+    except Exception:
+        print('SEC_UNIVERSE_SHARES OUTPUT_FAILED')
+        return 1
+    print(f"SEC_UNIVERSE_SHARES {scope} companies={totals['companies']} collected={totals['collected']} "
+          f"failed={totals['failed']} covers={totals['covers']} unresolved_codes={len(unresolved)} {_summary(payload)}")
+    try:
+        last_qg = max(ok_shards) if ok_shards else (previous_qg or {}).get('last_shard_index')
+        qg_payload = qg.merge(_refresh_base(previous_qg, qg_updates, lambda: qg.empty_record()), qg_updates, as_of=now(),
+                              shard_index=last_qg, registry_sha256=registry_sha, unresolved=unresolved, config=cfg)
+        write_qg(out, qg_payload)
+    except Exception:
+        print('SEC_UNIVERSE_QG OUTPUT_FAILED')
+        return 1
+    rows = list(qg_updates.values())
+    print(f"SEC_UNIVERSE_QG {scope} codes={len(rows)} scored_codes={sum(1 for r in rows if r['state'] != 'NOT_AVAILABLE')} "
+          f"{_qg_summary(qg_payload)}")
+    try:
+        last_v2 = max(ok_shards) if ok_shards else (previous_qgv2 or {}).get('last_shard_index')
+        qgv2_payload = qgv2.merge(_refresh_base(previous_qgv2, qgv2_updates, lambda: qgv2.empty_record()), qgv2_updates,
+                                  as_of=now(), shard_index=last_v2, registry_sha256=registry_sha, unresolved=unresolved,
+                                  config=cfg, target_updates=staged_target)
+        write_qgv2(out, qgv2_payload)
+        v2_rows = list(qgv2_updates.values())
+        print(qgv2.summary_line(qgv2_payload, prefix=f"SEC_QGV2 {scope} codes={len(v2_rows)} "
+                                f"with_data={sum(1 for r in v2_rows if r['fiscal_year_end'] is not None)}"))
+    except Exception:
+        print('SEC_QGV2 OUTPUT_FAILED previous_kept')
+    if failed_shards:
+        print('SEC_UNIVERSE_SHARES ALL_SHARDS_PARTIAL failed_shards=' + ','.join(str(i) for i in failed_shards) + ' previous_kept')
+    return 0
+
+
 def main(argv=None):
     parser = SafeParser(description=__doc__)
     parser.add_argument('--out', required=True, type=Path)
     parser.add_argument('--live', action='store_true')
     parser.add_argument('--preserve-only', action='store_true')
+    parser.add_argument('--all-shards', action='store_true',
+                        help='one-off: collect every shard 0..shard_count-1 in this run (default: today\'s shard only)')
     args = parser.parse_args(argv)
+    if args.all_shards:
+        return run(args.out, live=args.live, preserve_only=args.preserve_only, all_shards=True)
     return run(args.out, live=args.live, preserve_only=args.preserve_only)
 
 
