@@ -4,6 +4,7 @@ from hashlib import sha256
 import importlib.util
 import json
 import math
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -641,6 +642,100 @@ def test_quality_inputs_roic_avg_3y_and_operating_margin_std_are_published_price
     assert pb.classify_types_v0(cfg, missing)['quality']['member'] is None
 
 
+def test_nodebt_issuers_reporting_debt_under_other_tags_are_never_zero_debt():
+    """Owner supplement 2026-10-15 (Q-NODEBT): DXCM/ORCL/F/GM-type patterns. Debt is the reported amount or NA, never 0."""
+    debt_lines = ('LongTermDebtNoncurrent', 'LongTermDebtCurrent')
+    base = dict(omit=debt_lines + ('InterestExpense',))
+    # Only one standard debt line: that line is the debt (never replaced by the debt-free rule).
+    for concept, amount in (('LongTermDebtNoncurrent', 40.0), ('CommercialPaper', 15.0), ('LongTermDebt', 55.0)):
+        _, _, _, m, v = compute(simple_company(**base, extra=_instants(concept, amount)))
+        assert v['total_debt'] == {'value': amount, 'period_end': '2025-12-31'}, concept
+        assert m['net_debt_to_ebitda'] is not None and m['net_debt_to_ebitda'] > -30 / (0.25 * 146.41), concept
+    # Debt only under other borrowing concepts (convertible notes, debt instrument amounts): NA, not 0, with or without
+    # interest expense.
+    for concept in ('ConvertibleNotesPayable', 'ConvertibleDebtNoncurrent', 'DebtInstrumentCarryingAmount', 'SeniorLongTermNotes'):
+        for interest in ([], _annual_lines((('InterestExpense', 0.01),))):
+            _, _, _, m, v = compute(simple_company(**base, extra=_instants(concept, 30.0) + interest))
+            assert v['total_debt'] is None and m['roic'] is None and m['net_debt_to_ebitda'] is None, concept
+    # Debt under the issuer's own extension tags (invisible in companyfacts) shows up as interest expense: NA, not 0.
+    for concept in ('InterestExpense', 'InterestExpenseNonoperating', 'InterestAndDebtExpense', 'InterestExpenseDebt'):
+        _, _, _, m, v = compute(simple_company(**base, extra=_annual_lines(((concept, 0.02),))))
+        assert v['total_debt'] is None and m['roic'] is None, concept
+    # No zero anywhere in the published debt input for these patterns (a 0.0 would only come from the debt-free rule).
+    _, _, _, _, v = compute(simple_company(**base, extra=_instants('ConvertibleNotesPayable', 30.0)))
+    assert v['total_debt'] is None
+
+
+def test_split_adjustment_never_adjusts_already_restated_values_twice():
+    """Owner supplement 2026-10-15 (Q-SPLIT): a split-ratio fact alone never rescales values that the filings already report
+    on the post-split basis."""
+    close = lambda a, b: a is not None and math.isclose(a, b, rel_tol=1e-5, abs_tol=1e-9)
+    # Split effective before every filing that supplies FY0..FY-5 values: all of them are already post-split. The ratio fact
+    # (10) is reported, but every link ratio is 1, so nothing is multiplied by 10.
+    _, _, _, m, v = compute(_split_company(split_filed='2022-02-15'))
+    assert close(m['dilution_3y'], 0.0) and close(m['eps_cagr_3y'], 0.1) and close(m['fcf_per_share_cagr_3y'], 0.1)
+    for h in v['ebit_per_share_history']:
+        assert close(h['value'], 0.2 * 146.41 / 1.1 ** (2025 - int(h['fiscal_year_end'][:4])) / 100)
+    # Issuer restated its whole history (every filing reports the same counts, factor 1) while a split-ratio fact is filed
+    # between the FY-3 filing and the basis: the shared periods prove one basis, so no second adjustment.
+    _, _, _, m, v = compute(_split_company(factor=1.0, ratio_fact=10.0))
+    assert close(m['dilution_3y'], 0.0) and close(m['eps_cagr_3y'], 0.1)
+    assert [round(h['value'], 6) for h in v['ebit_per_share_history']] == [
+        round(0.2 * 146.41 / 1.1 ** (2025 - y) / 100, 6) for y in range(2021, 2026)]
+    # The adjusted case for contrast: pre-split FY-3 is multiplied exactly once (10x, not 100x).
+    _, _, _, m, _ = compute(_split_company())
+    assert close(m['dilution_3y'], 0.0)
+
+
+def test_calc_version_rows_of_another_version_never_share_a_percentile():
+    """Owner supplement 2026-10-15: calc_version on every row and file; a mismatched (or legacy) row is not ranked with the
+    current rows (CALC_VERSION_MISMATCH) and an unversioned legacy file stays readable as one population."""
+    assert re.fullmatch(vf.CALC_VERSION_PATTERN, vf.CALC_VERSION)
+    facts, subs = REF.synthetic_sec('0000001000')
+    row = q_build(facts, subs)
+    assert row['calc_version'] == vf.CALC_VERSION and q.empty_record()['calc_version'] is None
+    # Scoring: 10 current rows + 10 rows of an older version. The older ones are outside the cross-section and NA.
+    rows = {f'X:{n}': {**_row(n, revenue_cagr_3y=float(n), revenue_growth_volatility=1.0, revenue_positive_growth_share=1.0,
+                              revenue_acceleration=0.0, eps_cagr_3y=float(n)),
+                       'calc_version': vf.CALC_VERSION if n <= 10 else 'qgv2-calc/2026-10-14.1'} for n in range(1, 21)}
+    scores, summary = vs.score_rows(rows, calc_version=vf.CALC_VERSION)
+    assert summary['cross_section_size'] == 10
+    old = scores[('universe', 'X:15')]
+    assert old['axes']['G']['reason_codes'] == ['CALC_VERSION_MISMATCH'] and old['axes']['G']['score'] is None
+    assert all(v is None for v in old['factors'].values())
+    current_only = {k: r for k, r in rows.items() if r['calc_version'] == vf.CALC_VERSION}
+    assert scores[('universe', 'X:3')] == vs.score_rows(current_only, calc_version=vf.CALC_VERSION)[0][('universe', 'X:3')]
+    # Legacy (unversioned) scoring = one population, exactly the previous behavior.
+    assert vs.score_rows(rows)[1]['cross_section_size'] == 20
+    # Files: the published file declares the version; an unversioned legacy file (no calc_version anywhere) still validates.
+    p = payload()
+    assert p['calc_version'] == vf.CALC_VERSION and all('calc_version' in r for r in p['records'].values())
+    legacy = json.loads(json.dumps(p))
+    legacy.pop('calc_version')
+    for r in [*legacy['records'].values(), *legacy['target'].values()]:
+        r.pop('calc_version')
+    q.require_qgv2(legacy)
+    # Merging today's shard into a legacy previous copy: the kept legacy rows stay (data never erased) but are outside the
+    # ranking population; today's current-version rows are ranked only among themselves.
+    code = REF._codes()[0]
+    merged = q.merge(legacy, {code: json.loads(json.dumps(p['records'][code]))}, as_of=NOW, shard_index=4)
+    assert merged['calc_version'] == vf.CALC_VERSION and merged['cross_section_size'] == 1
+    kept = merged['records'][REF._codes()[1]]
+    legacy_metrics = {k: x for k, x in legacy['records'][REF._codes()[1]]['metrics'].items() if k != 'revenue_volatility_5y_rank_pct'}
+    assert kept['calc_version'] is None and kept['state'] == 'LIVE' and kept['metrics'] == legacy_metrics
+    assert kept['axes']['Q']['reason_codes'] == ['CALC_VERSION_MISMATCH'] and 'revenue_volatility_5y_rank_pct' not in kept['metrics']
+    assert merged['records'][code]['axes']['Q']['reason_codes'] == ['PEERS_BELOW_MINIMUM']
+    # A mixed file whose mismatched row still carries ranked scores is rejected (versions are never mixed).
+    bad = json.loads(json.dumps(p))
+    bad['records'][REF._codes()[1]]['calc_version'] = 'qgv2-calc/2026-10-14.1'
+    with pytest.raises(ValueError, match='SEC_QGV2_INVALID'):
+        q.require_qgv2(bad)
+    for value in ('qgv2-calc/latest', 7, ''):
+        bad['calc_version'] = value
+        with pytest.raises(ValueError, match='SEC_QGV2_INVALID'):
+            q.require_qgv2(bad)
+
+
 # ---------------- percentile publication ----------------
 def test_percentile_formula_ties_and_direction():
     assert vs.percentile(0, 1, 9) == 0 and vs.percentile(8, 1, 9) == 100 and vs.percentile(4, 1, 9) == 50
@@ -797,7 +892,8 @@ def test_vectors_fixture_is_regenerated_from_the_python_validator():
     fixture = json.loads((ROOT / 'tests/fixtures/sec_qgv2_vectors_v1.json').read_text())
     assert fixture == json.loads(json.dumps(REF.build()))
     assert fixture['synthetic'] is True and len(fixture['cases']) >= 40
-    assert [c['id'] for c in fixture['cases'] if c['valid']] == ['base_valid', 'null_shard_and_registry_valid', 'ebit_estimated_years_valid']
+    assert [c['id'] for c in fixture['cases'] if c['valid']] == ['base_valid', 'null_shard_and_registry_valid', 'ebit_estimated_years_valid',
+                                                                            'calc_version_legacy_file_valid', 'calc_version_mixed_population_valid']
 
 
 @pytest.mark.skipif(shutil.which('node') is None, reason='Node runtime required')

@@ -23,6 +23,13 @@ from datetime import date, timedelta
 import math
 import re
 
+# Calculation-rule version of the Q·G raw metrics (owner supplement 2026-10-15). Bump it whenever a factor rule here changes
+# (concept lists, fallback lines, period rules, metric definitions). Every sec-qgv2.json row with data carries the version it
+# was computed with and the file declares the current one; rows of another version are never ranked in the same percentile
+# population (v2_scoring.score_rows, sec-qgv2.js, qgv2-inputs.js -> CALC_VERSION_MISMATCH). Format: qgv2-calc/<date>.<n>.
+# 2026-10-15.1 = rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ on top of F1-F3 (QGV_V2_QG_METHOD.md section 1).
+CALC_VERSION = 'qgv2-calc/2026-10-15.1'
+CALC_VERSION_PATTERN = r'qgv2-calc/[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]{1,4}'
 ANNUAL_FORMS = frozenset({'10-K', '10-K/A', '10-KT', '10-KT/A', '20-F', '20-F/A', '40-F', '40-F/A'})
 QUARTER_FORMS = frozenset({'10-Q', '10-Q/A'})
 INSTANT_FORMS = ANNUAL_FORMS | QUARTER_FORMS

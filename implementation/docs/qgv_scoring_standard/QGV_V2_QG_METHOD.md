@@ -234,19 +234,36 @@ FINANCIAL rows are ranked **only among FINANCIAL rows**, for both Q and G. If th
 
 ## 5. Public file `sec-qgv2.json`
 
-Top level: `schema_version 1`, `kind SEC_QGV2`, `as_of`, `standard QGV_V2`, `standard_status PROVISIONAL_DEFAULT_UNCALIBRATED`,
+Top level: `schema_version 1`, `calc_version`, `kind SEC_QGV2`, `as_of`, `standard QGV_V2`, `standard_status PROVISIONAL_DEFAULT_UNCALIBRATED`,
 `decision_ref GSQ-022`, `method` (weights, min_peers 8, axis_coverage_min_percent 50, percentile rule, SIC config,
 financial SIC range, cross-section rule, earnings-surprise omission), `config_version/config_status` (shared `sec-universe-shares/v0`,
 14-day stale window, 7 shards), `freshness_basis`, `stale_after_seconds`, `shard_count`, `last_shard_index`, `registry_sha256`,
 `code_count 504`, `cross_section_size`, `cross_section_by_profile`, `state`, `reason_codes`, `records` (504 Universe codes) and
 `target` (19 TARGET ids; `hanmi` and `tokyo_electron` are `NON_SEC_ISSUER`).
 
-Row: `cik`, `acquired_at`, `source_sha256{companyfacts,submissions}`, `state` (LIVE/STALE/NOT_AVAILABLE), `reason_codes`, `sic`,
+Row (plus `calc_version`, see below): `cik`, `acquired_at`, `source_sha256{companyfacts,submissions}`, `state` (LIVE/STALE/NOT_AVAILABLE), `reason_codes`, `sic`,
 `industry_group`, `profile`, `fiscal_year_end`, `currency`, `metrics` (sparse; 6 significant digits), `factors` (10 ids → 0–100 | null),
 `axes{Q,G}{score, factors_available, available_weight, peer_basis, peer_count, submetric_fallbacks, reason_codes}`, `v_inputs_v2`.
 SEC-only descriptors in `metrics` (never ranked; `v2_factors.EXTRA_METRIC_PROFILES`, not in the DART reference key set):
 `ebit_estimated_years` (GENERAL, integer 1–6, rule EBIT), `roic_avg_3y` (GENERAL, finite) and `operating_margin_std_5y_pp`
 (GENERAL and FINANCIAL, ≥ 0), rule APPQ. Both validators accept them only for those profiles and range-check them.
+
+**Calculation-rule version `calc_version` (owner supplement 2026-10-15).** `v2_factors.CALC_VERSION` (now
+`qgv2-calc/2026-10-15.1` = F1–F3 + rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ; format `qgv2-calc/<date>.<n>`) is bumped
+whenever a factor rule in section 1–3 changes. The file declares it at the top level (`calc_version`) and every row with data
+carries the version it was computed with (`calc_version`; `null` for rows without data and for legacy rows). **Versions are
+never mixed in one percentile:** the publisher (`v2_scoring.score_rows` / `volatility_rank_rows` with `calc_version`), both
+validators (Python `require_qgv2`, JS `SecQgv2.validate`, which recompute with the same rule) and the device
+(`qgv2-inputs.js` → `qgv-scores.js`) rank only rows whose version equals the file's. A row of another version, or a row
+without one in a versioned file (a legacy row kept from an older copy), keeps its values but gets NA factors and axes with
+reason `CALC_VERSION_MISMATCH`, no playbook volatility rank, and on the device it leaves the cross-section and every V/total
+percentile population and is shown as NA with the flag "계산 규칙 버전이 달라 순위에서 제외" ("Excluded from ranking: different
+calculation-rule version"). A file written before this field (no `calc_version` anywhere) still loads and validates as one
+legacy population, scored exactly as before. The DART reference ranks only against the file's version. **Transition:** the first
+shard publish after a version bump keeps the other six shards' rows (merge never erases data) but they are outside the
+population until their shard is collected again, so for up to 7 days the cross-section holds only re-collected issuers (axes
+`PEERS_BELOW_MINIMUM` until each peer set reaches 8). Tests: `test_calc_version_rows_of_another_version_never_share_a_percentile`,
+vectors `calc_version_*` (`sec_qgv2_node_test.js`), `qgv_scores_node_test.js` ("calc_version: …").
 
 `v_inputs_v2` holds the price-free inputs the device needs to compute V in RAM. Amounts are exact SEC values in the row currency.
 - `ebit`, `fcf`: `{fy_value, fy_end, ttm_value, ttm_end}`. FCF = OCF − capex for the same period.

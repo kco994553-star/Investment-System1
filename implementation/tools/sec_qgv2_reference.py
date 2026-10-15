@@ -141,9 +141,50 @@ def _codes():
     return [c for c, *_ in universe_spec()]
 
 
+def _diff_ops(old, new, path=()):
+    """Leaf-level ops turning `old` into `new` (dicts compared key by key; anything else replaced whole)."""
+    if isinstance(old, dict) and isinstance(new, dict):
+        ops = []
+        for key in sorted(set(old) | set(new)):
+            if key not in new:
+                ops.append((list(path) + [key], DELETE))
+            elif key not in old:
+                ops.append((list(path) + [key], new[key]))
+            else:
+                ops += _diff_ops(old[key], new[key], path + (key,))
+        return ops
+    return [] if old == new else [(list(path), new)]
+
+
+OLD_CALC_VERSION = 'qgv2-calc/2026-10-14.1'
+
+
+def mixed_version_ops():
+    """Ops from the base file to a valid file where two Universe rows and one TARGET row are of another calc_version (one
+    legacy, one older): the publisher keeps them out of the ranking population (CALC_VERSION_MISMATCH) and re-ranks the rest."""
+    from investment_system.universe import sec_qgv2 as q
+    from investment_system.universe.sec_universe_shares import load_config
+    from datetime import timedelta
+    before = expand(sparse(base()))
+    after = json.loads(json.dumps(before))
+    c = _codes()
+    after['records'][c[2]]['calc_version'] = None
+    after['records'][c[5]]['calc_version'] = OLD_CALC_VERSION
+    after['target']['amd']['calc_version'] = None
+    cfg = load_config()
+    repub = q.publish(after['records'], after['target'], as_of=AS_OF, cfg=cfg, stale_after=timedelta(seconds=after['stale_after_seconds']),
+                      shard_index=after['last_shard_index'], registry_sha256=after['registry_sha256'])
+    return _diff_ops(before, json.loads(json.dumps(repub)))
+
+
 def cases():
     from investment_system.universe.sec_universe_shares import universe_codes
+    from investment_system.universe.sec_qgv2 import target_ids
     c = _codes()
+    mixed = mixed_version_ops()
+    legacy = [(['calc_version'], DELETE)] + [(['records', code, 'calc_version'], DELETE) for code in universe_codes()]
+    legacy += [(['target', cid, 'calc_version'], DELETE) for cid in target_ids()]
+    stale_scores = [op for op in mixed if op[0][:2] != ['records', c[5]] or op[0][2] not in ('factors', 'axes')]
     R, T = ['records'], ['target']
     first, second, fin, empty = c[0], c[1], c[21], universe_codes()[30]
     return [
@@ -203,6 +244,13 @@ def cases():
         ('top_state_mismatch', [(['state'], 'STALE')]),
         ('code_count_changed', [(['code_count'], 503)]),
         ('kind_changed', [(['kind'], 'SEC_UNIVERSE_QG')]),
+        ('calc_version_legacy_file_valid', legacy),
+        ('calc_version_mixed_population_valid', mixed),
+        ('calc_version_mismatch_row_still_ranked', stale_scores),
+        ('calc_version_row_key_missing', [(R + [first, 'calc_version'], DELETE)]),
+        ('calc_version_top_malformed', [(['calc_version'], 'v2')]),
+        ('calc_version_row_malformed', [(R + [first, 'calc_version'], 'qgv2-calc/latest')]),
+        ('calc_version_on_row_without_data', [(R + [empty, 'calc_version'], OLD_CALC_VERSION)]),
     ]
 
 
@@ -253,7 +301,7 @@ def build():
     constants = {'target_ciks': {cid: q.target_cik(cid) for cid in q.target_ids()},
                  'sic_groups': [[g['id'], g['sic_ranges']] for g in load_sic_config()['groups']],
                  'metric_keys': list(vf.METRIC_KEYS), 'factor_ids': list(vs.FACTOR_IDS), 'method': q.METHOD,
-                 'extra_metrics': {k: list(v) for k, v in vf.EXTRA_METRIC_PROFILES.items()},
+                 'extra_metrics': {k: list(v) for k, v in vf.EXTRA_METRIC_PROFILES.items()}, 'calc_version': vf.CALC_VERSION,
                  'submetrics': {p: {f: [list(x) for x in specs] for f, specs in by.items()} for p, by in vs.SUBMETRICS.items()}}
     return {'synthetic': True, 'delete_marker': DELETE, 'constants': constants, 'base': payload, 'cases': out_cases}
 

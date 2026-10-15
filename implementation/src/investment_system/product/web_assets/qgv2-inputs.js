@@ -20,6 +20,10 @@ function vInputs(v){
  for(const k of ['total_debt','cash_and_equivalents','diluted_shares'])if(object(v[k])&&typeof v[k].period_end==='string')periods[k]=v[k].period_end;
  return[{currency:v.currency,ebit,fcf,revenue,operating_margin_history:history(v.operating_margin_history),total_debt:value(v.total_debt),cash:value(v.cash_and_equivalents),diluted_shares:value(v.diluted_shares),ebit_per_share_history:history(v.ebit_per_share_history),revenue_cagr_3y:finite(v.revenue_cagr_3y)?v.revenue_cagr_3y:null},periods];
 }
+/* calc_version (QGV_V2_QG_METHOD.md 5): a row whose calculation-rule version differs from the file's declared version (or a row
+   without one in a versioned file) is NOT ranked with the others: it leaves the cross-section and every device percentile
+   population, and the accessor shows it as NA with reason CALC_VERSION_MISMATCH. An unversioned (legacy) file is one population. */
+function versionMismatch(r,fileVersion){return typeof fileVersion==='string'&&object(r)&&r.state!=='NOT_AVAILABLE'&&r.fiscal_year_end!==null&&r.fiscal_year_end!==undefined&&r.calc_version!==fileVersion;}
 function normalize(r,pooled){
  const f=object(r)&&object(r.factors)?r.factors:{},factors={};for(const k of FACTORS)factors[k]=score(Object.hasOwn(f,k)?f[k]:null);
  const has=object(r)&&r.state!=='NOT_AVAILABLE'&&r.fiscal_year_end!==null&&r.fiscal_year_end!==undefined,[v,periods]=has?vInputs(r.v_inputs_v2):[null,{}],ax=object(r)&&object(r.axes)?r.axes:{};
@@ -30,13 +34,14 @@ const frozenCopy=x=>{const copy=JSON.parse(JSON.stringify(x));function freeze(v)
 /* SecQgv2.toInputs() result (or a lightly checked payload) -> {as_of, records:{key: record}, count}. */
 function fromInputs(inputs){
  if(!object(inputs)||!object(inputs.records))throw Error('SEC_QGV2_INVALID');
- const records={},seen=new Set();
+ const records={},seen=new Set(),version=typeof inputs.calc_version==='string'?inputs.calc_version:null;
+ const mark=(rec,r)=>{if(!versionMismatch(r,version))return rec;return{...rec,factors:Object.fromEntries(FACTORS.map(k=>[k,null])),qg_axes:{Q:{score:null},G:{score:null}},v_inputs:null,in_cross_section:false,calc_version_mismatch:true};};
  for(const code of Object.keys(inputs.records).sort()){if(!CODE.test(code))throw Error('SEC_QGV2_INVALID');const r=inputs.records[code],live=object(r)&&['LIVE','STALE'].includes(r.state),cik=object(r)?r.cik:null;
-  const pooled=live&&!(cik&&seen.has(cik));if(live&&cik)seen.add(cik);records[code]=normalize(r,pooled);}
- for(const[id,r]of Object.entries(object(inputs.target)?inputs.target:{})){if(!ID.test(id))throw Error('SEC_QGV2_INVALID');records['TARGET:'+id]=normalize(r,false);}
+  const mismatch=versionMismatch(r,version),pooled=live&&!mismatch&&!(cik&&seen.has(cik));if(live&&!mismatch&&cik)seen.add(cik);records[code]=mark(normalize(r,pooled),r);}
+ for(const[id,r]of Object.entries(object(inputs.target)?inputs.target:{})){if(!ID.test(id))throw Error('SEC_QGV2_INVALID');records['TARGET:'+id]=mark(normalize(r,false),r);}
  // Keep the source TARGET rows in RAM for exact-period disclosure confirmation. The strict reader supplies these rows;
  // normalization must not discard their price-free source dates or replace them with an inferred confirmation.
- return Object.freeze({as_of:typeof inputs.as_of==='string'?inputs.as_of:null,target:frozenCopy(object(inputs.target)?inputs.target:{}),records:Object.freeze(records),count:Object.keys(records).length});
+ return Object.freeze({as_of:typeof inputs.as_of==='string'?inputs.as_of:null,calc_version:version,target:frozenCopy(object(inputs.target)?inputs.target:{}),records:Object.freeze(records),count:Object.keys(records).length});
 }
 // Light structural check used only when the strict SecQgv2 reader is absent; price-like keys fail closed.
 function light(p){

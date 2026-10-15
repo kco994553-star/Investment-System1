@@ -19,8 +19,13 @@
  const SIC_GROUPS=[['resources_mining',[[1000,1499]]],['construction',[[1500,1799]]],['food_tobacco',[[2000,2199]]],['manufacturing_industrial_tech',[[2200,3999]]],['transportation',[[4000,4799]]],['telecommunications',[[4800,4899]]],['utilities',[[4900,4999]]],['wholesale_retail',[[5000,5999]]],['finance_real_estate',[[6000,6799]]],['services_software_health',[[7000,8999]]]];
  const TARGET_CIKS={asml:'0000937966',lrcx:'0000707549',klac:'0000319201',tokyo_electron:null,hanmi:null,nvda:'0001045810',amd:'0000002488',avgo:'0001730168',qcom:'0000804328',intc:'0000050863',msft:'0000789019',googl:'0001652044',amzn:'0001018724',rtx:'0000101829',stry:'0000310764',etn:'0001551182',hubb:'0000048898',gev:'0001996810',rok:'0001024478'};
  const STATES=['LIVE','STALE','NOT_AVAILABLE'],SCORED=['LIVE','STALE'],REASONS=['NOT_COLLECTED','CIK_UNRESOLVED','INVALID_INPUT','NO_ANNUAL_SEC_FINANCIALS','NON_SEC_ISSUER','STALE_INPUT'],TOP_REASONS=['STALE_INPUT','NO_ELIGIBLE_INPUT'];
- const TOP=['schema_version','kind','as_of','standard','standard_status','decision_ref','method','config_version','config_status','freshness_basis','stale_after_seconds','shard_count','last_shard_index','registry_sha256','code_count','cross_section_size','cross_section_by_profile','state','reason_codes','records','target'];
- const ROW=['cik','acquired_at','source_sha256','state','reason_codes','sic','industry_group','profile','fiscal_year_end','currency','metrics','factors','axes','v_inputs_v2'];
+ /* calc_version (owner supplement 2026-10-15; Python v2_factors.CALC_VERSION): a versioned file declares the current calculation-rule
+    version and every row carries the version it was computed with (null: no data or a legacy row). Rows of another version are never
+    in the same percentile population (axes CALC_VERSION_MISMATCH). Files written before it (no calc_version anywhere) load as one
+    legacy population. */
+ const CALC_VERSION_RE=/^qgv2-calc\/\d{4}-\d{2}-\d{2}\.\d{1,4}$/;
+ const LEGACY_TOP=['schema_version','kind','as_of','standard','standard_status','decision_ref','method','config_version','config_status','freshness_basis','stale_after_seconds','shard_count','last_shard_index','registry_sha256','code_count','cross_section_size','cross_section_by_profile','state','reason_codes','records','target'],TOP=LEGACY_TOP.concat(['calc_version']);
+ const LEGACY_ROW=['cik','acquired_at','source_sha256','state','reason_codes','sic','industry_group','profile','fiscal_year_end','currency','metrics','factors','axes','v_inputs_v2'],ROW=LEGACY_ROW.concat(['calc_version']);
  const AXIS_KEYS=['score','factors_available','available_weight','peer_basis','peer_count','submetric_fallbacks','reason_codes'];
  const LEGACY_V_KEYS=['currency','taxonomy','fiscal_year_end','ebit','fcf','total_debt','cash_and_equivalents','diluted_shares','ebit_per_share_history','fcf_per_share_history','revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','revenue_ttm_growth'];
  const V_KEYS=LEGACY_V_KEYS.concat(['revenue','operating_margin_history']);
@@ -37,7 +42,7 @@
  const profileFor=sic=>typeof sic==='string'&&/^\d{4}$/.test(sic)&&Number(sic)>=6000&&Number(sic)<=6499?'FINANCIAL':'GENERAL';
  function emptyV(){return{currency:null,taxonomy:null,fiscal_year_end:null,ebit:null,fcf:null,total_debt:null,cash_and_equivalents:null,diluted_shares:null,ebit_per_share_history:[],fcf_per_share_history:[],revenue:null,operating_margin_history:[],revenue_cagr_3y:null,eps_cagr_3y:null,fcf_per_share_cagr_3y:null,revenue_ttm_growth:null};}
  function emptyAxis(reason){return{score:null,factors_available:'0/5',available_weight:0,peer_basis:null,peer_count:0,submetric_fallbacks:0,reason_codes:[reason]};}
- function emptyRecord(reason='NOT_COLLECTED'){return{cik:null,acquired_at:null,source_sha256:{companyfacts:null,submissions:null},state:'NOT_AVAILABLE',reason_codes:[reason],sic:null,industry_group:null,profile:null,fiscal_year_end:null,currency:null,metrics:{},factors:Object.fromEntries(FACTOR_IDS.map(k=>[k,null])),axes:{Q:emptyAxis('ROW_NOT_AVAILABLE'),G:emptyAxis('ROW_NOT_AVAILABLE')},v_inputs_v2:emptyV()};}
+ function emptyRecord(reason='NOT_COLLECTED'){return{cik:null,acquired_at:null,source_sha256:{companyfacts:null,submissions:null},state:'NOT_AVAILABLE',reason_codes:[reason],sic:null,industry_group:null,profile:null,fiscal_year_end:null,currency:null,metrics:{},factors:Object.fromEntries(FACTOR_IDS.map(k=>[k,null])),axes:{Q:emptyAxis('ROW_NOT_AVAILABLE'),G:emptyAxis('ROW_NOT_AVAILABLE')},v_inputs_v2:emptyV(),calc_version:null};}
  const metricOk=(k,v)=>k==='moat_return_years'?Number.isInteger(v)&&v>=3&&v<=HISTORY_YEARS:k==='ebit_estimated_years'?Number.isInteger(v)&&v>=1&&v<=HISTORY_YEARS+1:num(v)&&Math.abs(v)<=LIMIT&&(k!=='revenue_growth_std_5y'||v>=0)&&(k!=='operating_margin_std_5y_pp'||v>=0)&&(k!=='revenue_volatility_5y_rank_pct'||v>=0&&v<=100);
  function vInputs(v,cutDay,hasData){
   need(keys(v,V_KEYS)||keys(v,LEGACY_V_KEYS));if(!hasData){const empty=emptyV();need(canon(v)===canon(Object.fromEntries(Object.keys(v).map(k=>[k,empty[k]]))));return;}
@@ -50,8 +55,8 @@
   for(const k of GROWTH_V)need(v[k]===null||num(v[k])&&Math.abs(v[k])<=LIMIT);
  }
  /* One row (mirrors Python _row); scores are compared separately against the recomputation. */
- function row(r,cut,ttl,targetId){
-  need(keys(r,ROW)&&(r.cik===null||cikOk(r.cik)));if(targetId!==undefined&&r.cik!==null)need(r.cik===TARGET_CIKS[targetId]);
+ function row(r,cut,ttl,targetId,versioned=true){
+  need(keys(r,versioned?ROW:LEGACY_ROW)&&(r.cik===null||cikOk(r.cik)));if(versioned)need(r.calc_version===null||typeof r.calc_version==='string'&&CALC_VERSION_RE.test(r.calc_version)&&r.fiscal_year_end!==null);if(targetId!==undefined&&r.cik!==null)need(r.cik===TARGET_CIKS[targetId]);
   const h=r.source_sha256;need(keys(h,['companyfacts','submissions'])&&Object.values(h).every(v=>v===null||hash(v)));
   if(r.acquired_at===null)need(h.companyfacts===null&&h.submissions===null);else need(clock(r.acquired_at)<=cut&&r.cik!==null&&h.companyfacts&&h.submissions);
   need(STATES.includes(r.state));const reasons=r.reason_codes;need(Array.isArray(reasons)&&new Set(reasons).size===reasons.length&&reasons.length<=3&&reasons.every(x=>REASONS.includes(x)));
@@ -80,19 +85,21 @@
   for(const [cik,m] of p.points){if(cik===excludeCik)continue;const v=m[metric];if(v===undefined||v===null)continue;const y=dir*v;n++;if(y<x)less++;else if(y===x)equal++;}
   return [less,equal+1,n+1];
  }
- function scoreRows(universe,target){
-  const points=new Map();for(const key of Object.keys(universe).sort()){const r=universe[key];if(SCORED.includes(r.state)&&r.cik!==null&&!points.has(r.cik))points.set(r.cik,r);}
+ /* calcVersion (string) = a versioned file: only rows of that version are ranked; undefined/null = one legacy population. */
+ const sameVersion=(r,v)=>v===undefined||v===null||r.calc_version===v;
+ function scoreRows(universe,target,calcVersion){
+  const points=new Map();for(const key of Object.keys(universe).sort()){const r=universe[key];if(SCORED.includes(r.state)&&r.cik!==null&&!points.has(r.cik)&&sameVersion(r,calcVersion))points.set(r.cik,r);}
   const byProfile={GENERAL:new Map(),FINANCIAL:new Map()},groups=new Map();
   for(const [cik,r] of points){byProfile[r.profile].set(cik,r.metrics);if(r.profile==='GENERAL'&&r.industry_group!==null){if(!groups.has(r.industry_group))groups.set(r.industry_group,new Map());groups.get(r.industry_group).set(cik,r.metrics);}}
   const pools={GENERAL:pool(byProfile.GENERAL),FINANCIAL:pool(byProfile.FINANCIAL)},groupPools=new Map([...groups].map(([g,m])=>[g,pool(m)]));
-  const out=new Map();for(const [role,rows] of [['universe',universe],['target',target]])for(const [key,r] of Object.entries(rows))out.set(role+'\u0000'+key,scoreRow(r,pools,groupPools));
+  const out=new Map();for(const [role,rows] of [['universe',universe],['target',target]])for(const [key,r] of Object.entries(rows))out.set(role+'\u0000'+key,SCORED.includes(r.state)&&r.profile!==null&&!sameVersion(r,calcVersion)?{factors:Object.fromEntries(FACTOR_IDS.map(k=>[k,null])),axes:{Q:emptyAxis('CALC_VERSION_MISMATCH'),G:emptyAxis('CALC_VERSION_MISMATCH')}}:scoreRow(r,pools,groupPools));
   return{scores:out,summary:{cross_section_size:points.size,cross_section_by_profile:{GENERAL:byProfile.GENERAL.size,FINANCIAL:byProfile.FINANCIAL.size}}};
  }
- function volatilityRanks(universe,target){
+ function volatilityRanks(universe,target,calcVersion){
   const metric='revenue_growth_std_5y',points=new Map(),out=new Map();
-  for(const key of Object.keys(universe).sort()){const r=universe[key];if(SCORED.includes(r.state)&&r.cik!==null&&!points.has(r.cik))points.set(r.cik,r.metrics);}
+  for(const key of Object.keys(universe).sort()){const r=universe[key];if(SCORED.includes(r.state)&&r.cik!==null&&!points.has(r.cik)&&sameVersion(r,calcVersion))points.set(r.cik,r.metrics);}
   const p=pool(points);
-  for(const[role,rows]of [['universe',universe],['target',target]])for(const[key,r]of Object.entries(rows)){let value=null;const own=r.metrics[metric];if(SCORED.includes(r.state)&&own!==undefined){const[less,equal,n]=rank(p,metric,1,own,r.cik);if(n>=MIN_PEERS)value=percentile(less,equal,n);}out.set(role+'\u0000'+key,value);}
+  for(const[role,rows]of [['universe',universe],['target',target]])for(const[key,r]of Object.entries(rows)){let value=null;const own=r.metrics[metric];if(SCORED.includes(r.state)&&own!==undefined&&sameVersion(r,calcVersion)){const[less,equal,n]=rank(p,metric,1,own,r.cik);if(n>=MIN_PEERS)value=percentile(less,equal,n);}out.set(role+'\u0000'+key,value);}
   return out;
  }
  function peerSet(r,axis,pools,groupPools){
@@ -121,17 +128,17 @@
  function scoresMatch(r,e){need(FACTOR_IDS.every(f=>sameNum(r.factors[f],e.factors[f])));for(const axis of ['Q','G']){const g=r.axes[axis],w=e.axes[axis];need(sameNum(g.score,w.score));for(const k of AXIS_KEYS)if(k!=='score')need(canon(g[k])===canon(w[k]));}}
  function validate(p){
   try{
-   need(keys(p,TOP)&&p.schema_version===1&&p.kind===KIND&&p.standard===STANDARD&&p.standard_status===STANDARD_STATUS&&[DECISION_REF,'GSQ-022_PENDING_APPROVAL'].includes(p.decision_ref)&&canon(p.method)===canon(METHOD));
+   const versioned=plain(p)&&Object.hasOwn(p,'calc_version');need((versioned?keys(p,TOP)&&typeof p.calc_version==='string'&&CALC_VERSION_RE.test(p.calc_version):keys(p,LEGACY_TOP))&&p.schema_version===1&&p.kind===KIND&&p.standard===STANDARD&&p.standard_status===STANDARD_STATUS&&[DECISION_REF,'GSQ-022_PENDING_APPROVAL'].includes(p.decision_ref)&&canon(p.method)===canon(METHOD));
    need(p.config_version===CONFIG_VERSION&&p.config_status===CONFIG_STATUS&&p.freshness_basis==='SOURCE_ACQUISITION');
    const cut=clock(p.as_of),ttl=p.stale_after_seconds;
    need(Number.isInteger(ttl)&&ttl>0&&ttl<=366*86400&&Number.isInteger(p.shard_count)&&p.shard_count>=1&&p.shard_count<=366&&(p.last_shard_index===null||Number.isInteger(p.last_shard_index)&&p.last_shard_index>=0&&p.last_shard_index<p.shard_count)&&(p.registry_sha256===null||hash(p.registry_sha256)));
    const codes=plain(p.records)?Object.keys(p.records):[];need(codes.length===CODE_COUNT&&p.code_count===CODE_COUNT&&codes.every(c=>/^[A-Z]{2,8}:[A-Z0-9][A-Z0-9.\-]{0,15}$/.test(c)));
    const ids=Object.keys(TARGET_CIKS);need(keys(p.target,ids));
-   const states=[...codes.map(c=>row(p.records[c],cut,ttl)),...ids.map(i=>row(p.target[i],cut,ttl,i))];
+   const states=[...codes.map(c=>row(p.records[c],cut,ttl,undefined,versioned)),...ids.map(i=>row(p.target[i],cut,ttl,i,versioned))];
    const state=states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';need(p.state===state);
    need(canon(p.reason_codes)===canon(state==='LIVE'?[]:state==='STALE'?['STALE_INPUT']:['NO_ELIGIBLE_INPUT']));
-   const {scores,summary}=scoreRows(p.records,p.target);
-   const volatility=volatilityRanks(p.records,p.target);for(const[role,rows]of [['universe',p.records],['target',p.target]])for(const[key,r]of Object.entries(rows))need(sameNum(r.metrics.revenue_volatility_5y_rank_pct??null,volatility.get(role+'\u0000'+key)));
+   const version=versioned?p.calc_version:null,{scores,summary}=scoreRows(p.records,p.target,version);
+   const volatility=volatilityRanks(p.records,p.target,version);for(const[role,rows]of [['universe',p.records],['target',p.target]])for(const[key,r]of Object.entries(rows))need(sameNum(r.metrics.revenue_volatility_5y_rank_pct??null,volatility.get(role+'\u0000'+key)));
    need(Number.isInteger(p.cross_section_size)&&p.cross_section_size===summary.cross_section_size&&keys(p.cross_section_by_profile,['GENERAL','FINANCIAL'])&&p.cross_section_by_profile.GENERAL===summary.cross_section_by_profile.GENERAL&&p.cross_section_by_profile.FINANCIAL===summary.cross_section_by_profile.FINANCIAL);
    const byCik=new Map();
    for(const c of codes){const r=p.records[c];if(r.state!=='NOT_AVAILABLE'){const text=canon(r);if(!byCik.has(r.cik))byCik.set(r.cik,text);need(byCik.get(r.cik)===text);}scoresMatch(r,scores.get('universe\u0000'+c));}
@@ -147,7 +154,7 @@
   for(const [code,r] of Object.entries(payload.records))records[code]=restate(r,now,payload.stale_after_seconds);
   for(const [id,r] of Object.entries(payload.target))target[id]=restate(r,now,payload.stale_after_seconds);
   const all=[...Object.values(records),...Object.values(target)];
-  return Object.freeze({records:Object.freeze(records),target:Object.freeze(target),as_of:payload.as_of,standard:payload.standard,standard_status:payload.standard_status,decision_ref:payload.decision_ref,method:deep(JSON.parse(JSON.stringify(payload.method))),cross_section_size:payload.cross_section_size,cross_section_by_profile:Object.freeze({...payload.cross_section_by_profile}),state:all.some(r=>r.state==='LIVE')?'LIVE':all.some(r=>r.state==='STALE')?'STALE':'NOT_AVAILABLE'});
+  return Object.freeze({records:Object.freeze(records),target:Object.freeze(target),as_of:payload.as_of,standard:payload.standard,standard_status:payload.standard_status,decision_ref:payload.decision_ref,calc_version:typeof payload.calc_version==='string'?payload.calc_version:null,method:deep(JSON.parse(JSON.stringify(payload.method))),cross_section_size:payload.cross_section_size,cross_section_by_profile:Object.freeze({...payload.cross_section_by_profile}),state:all.some(r=>r.state==='LIVE')?'LIVE':all.some(r=>r.state==='STALE')?'STALE':'NOT_AVAILABLE'});
  }
  /* 404 -> null (not published yet), invalid -> fail closed. No storage writes. */
  async function loadInputs(view,{signal,now}={}){

@@ -177,6 +177,34 @@ test('EBIT substitute rows (metrics.ebit_estimated_years) carry the EBIT_ESTIMAT
   assert.ok(!zero.rows[id].v2.flags.includes('EBIT_ESTIMATED'));
 });
 
+test('calc_version: a row of another calculation-rule version is NA (CALC_VERSION_MISMATCH) and never in the device ranking population', () => {
+  const V = 'qgv2-calc/2026-10-15.1', OLD = 'qgv2-calc/2026-10-14.1';
+  const versioned = (mutate) => { const p = F.payload(); p.calc_version = V; for (const r of [...Object.values(p.records), ...Object.values(p.target || {})]) if (r && r.fiscal_year_end) r.calc_version = V; mutate(p); return SQ.fromInputs(SQ.light(p)); };
+  const run = (inputs) => QS.compute({ identities, publicScreens: { ...screens, [SQ.FILE]: inputs }, quotes, scoringDefault: 'v2' });
+  const base = run(SQ.fromInputs(SQ.light(F.payload()))), same = run(versioned(() => {}));
+  const ids = identities.map((c) => c.company_id).filter((cid) => base.rows[cid].code && base.rows[cid].v2.state !== 'NOT_AVAILABLE');
+  assert.ok(ids.length >= 2, 'two v2 rows');
+  for (const cid of ids) assert.equal(same.rows[cid].v2.total, base.rows[cid].v2.total, 'one version everywhere = the unversioned result');
+  // Displayed row of another version: NA, no rank, flag text.
+  const [odd] = ids, oddCode = base.rows[odd].code, pick = (p) => (oddCode.startsWith('TARGET:') ? p.target[oddCode.slice(7)] : p.records[oddCode]);
+  const shown = versioned((p) => { pick(p).calc_version = OLD; });
+  assert.equal(shown.calc_version, V);assert.equal(shown.records[oddCode].calc_version_mismatch, true);assert.equal(shown.records[oddCode].in_cross_section, false);
+  const out = run(shown), row = out.rows[odd].v2;
+  assert.equal(row.state, 'NOT_AVAILABLE');assert.equal(row.total, null);assert.equal(row.q, null);assert.equal(row.reason, 'CALC_VERSION_MISMATCH');
+  assert.deepEqual(QS.flagText(row.flags, false), ['계산 규칙 버전이 달라 순위에서 제외']);
+  assert.ok(QS.flagText(row.flags, true)[0].includes('calculation-rule version'));assert.equal(out.rows[odd].rank, null);
+  // A pooled Universe point of another version leaves the population: every other row ranks exactly as if it were absent.
+  const pooled = Object.keys(F.payload().records).find((code) => same.rows && SQ.fromInputs(SQ.light(F.payload())).records[code].in_cross_section && !ids.some((cid) => base.rows[cid].code === code));
+  assert.ok(pooled, 'a pooled Universe row not shown directly');
+  const mixed = run(versioned((p) => { p.records[pooled].calc_version = OLD; })), removed = run(versioned((p) => { delete p.records[pooled]; }));
+  let changed = 0;for (const cid of ids) { assert.equal(mixed.rows[cid].v2.total, removed.rows[cid].v2.total, cid); if (mixed.rows[cid].v2.total !== same.rows[cid].v2.total) changed++; }
+  assert.ok(changed > 0, 'the excluded point really changes the population');
+  // A row without calc_version inside a versioned file is a legacy row: also excluded. A wholly unversioned file is one population.
+  assert.equal(versioned((p) => { delete pick(p).calc_version; }).records[oddCode].calc_version_mismatch, true);
+  const legacy = SQ.fromInputs(SQ.light(F.payload()));
+  assert.equal(legacy.calc_version, null);assert.ok(Object.values(legacy.records).every((r) => r.calc_version_mismatch !== true));
+});
+
 test('a strictly valid empty SEC v2 file keeps v1 temporary default and blocks readiness', () => {
   const S=require(path.join(W,'sec-qgv2.js')),empty=F.strictPayload();
   empty.records=Object.fromEntries(Object.keys(empty.records).map(code=>[code,S.emptyRecord()]));

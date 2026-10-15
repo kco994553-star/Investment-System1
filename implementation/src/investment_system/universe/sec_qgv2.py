@@ -49,12 +49,17 @@ METHOD = {
     'submetric_fallback': 'GROUP_VALUES_BELOW_MIN_PEERS_RANK_IN_GENERAL_UNIVERSE',
     'earnings_surprise': 'OMITTED_NO_FREE_SOURCE',
 }
-ROW_KEYS = ('cik', 'acquired_at', 'source_sha256', 'state', 'reason_codes', 'sic', 'industry_group', 'profile',
-            'fiscal_year_end', 'currency', 'metrics', 'factors', 'axes', 'v_inputs_v2')
+# `calc_version` (owner supplement 2026-10-15): the v2_factors.CALC_VERSION a row was computed with (None: no data, or a legacy
+# row carried from an unversioned copy). A file written by this code declares the current version at the top level; files
+# written before it (no top-level or row `calc_version`) stay readable as one legacy population (LEGACY_* key sets).
+LEGACY_ROW_KEYS = ('cik', 'acquired_at', 'source_sha256', 'state', 'reason_codes', 'sic', 'industry_group', 'profile',
+                   'fiscal_year_end', 'currency', 'metrics', 'factors', 'axes', 'v_inputs_v2')
+ROW_KEYS = LEGACY_ROW_KEYS + ('calc_version',)
 AXIS_KEYS = ('score', 'factors_available', 'available_weight', 'peer_basis', 'peer_count', 'submetric_fallbacks', 'reason_codes')
-TOP_KEYS = ('schema_version', 'kind', 'as_of', 'standard', 'standard_status', 'decision_ref', 'method', 'config_version',
-            'config_status', 'freshness_basis', 'stale_after_seconds', 'shard_count', 'last_shard_index', 'registry_sha256',
-            'code_count', 'cross_section_size', 'cross_section_by_profile', 'state', 'reason_codes', 'records', 'target')
+LEGACY_TOP_KEYS = ('schema_version', 'kind', 'as_of', 'standard', 'standard_status', 'decision_ref', 'method', 'config_version',
+                   'config_status', 'freshness_basis', 'stale_after_seconds', 'shard_count', 'last_shard_index', 'registry_sha256',
+                   'code_count', 'cross_section_size', 'cross_section_by_profile', 'state', 'reason_codes', 'records', 'target')
+TOP_KEYS = LEGACY_TOP_KEYS + ('calc_version',)
 METRIC_LIMIT = 1e12
 FLOW_V_KEYS = ('ebit', 'fcf', 'revenue')
 INSTANT_V_KEYS = ('total_debt', 'cash_and_equivalents', 'diluted_shares')
@@ -104,7 +109,19 @@ def empty_record(*, cik=None, reasons=('NOT_COLLECTED',)):
             'state': 'NOT_AVAILABLE', 'reason_codes': list(reasons), 'sic': None, 'industry_group': None, 'profile': None,
             'fiscal_year_end': None, 'currency': None, 'metrics': {},
             'factors': dict.fromkeys(vs.FACTOR_IDS), 'axes': {axis: vs._empty_axis('ROW_NOT_AVAILABLE') for axis in vs.AXES},
-            'v_inputs_v2': vf.empty_v_inputs()}
+            'v_inputs_v2': vf.empty_v_inputs(), 'calc_version': None}
+
+
+def versioned(record):
+    """A row in the versioned shape: a legacy row (no `calc_version` key) gets None, i.e. it is never ranked together
+    with rows of the current version."""
+    out = json.loads(json.dumps(record))
+    out.setdefault('calc_version', None)
+    return out
+
+
+def _calc_version_ok(value):
+    return type(value) is str and re.fullmatch(vf.CALC_VERSION_PATTERN, value) is not None
 
 
 def _has_data(record):
@@ -144,7 +161,7 @@ def build_row(*, cik, companyfacts_body, submissions_body, acquired_at, sic_conf
     # Sparse: an absent metric key is NOT_AVAILABLE (never 0).
     record.update(profile=profile, fiscal_year_end=fy_end, currency=currency,
                   metrics={k: v for k, v in metrics.items() if v is not None}, v_inputs_v2=v_inputs,
-                  state='LIVE', reason_codes=[])
+                  state='LIVE', reason_codes=[], calc_version=vf.CALC_VERSION)
     return record
 
 
@@ -210,7 +227,7 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
     kept = previous['records'] if previous is not None else {}
     records = {}
     for code in universe_codes():
-        old = kept.get(code) or empty_record()
+        old = versioned(kept[code]) if code in kept else empty_record()
         new = updates.get(code)
         chosen = _pick(old, new, as_of, stale_after, cut, sic_cfg)
         if new is None and code in unresolved and not _has_data(chosen):
@@ -222,7 +239,7 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
         if target_cik(company_id) is None:
             target[company_id] = _target_empty(company_id)
             continue
-        old = kept_target.get(company_id) or _target_empty(company_id)
+        old = versioned(kept_target[company_id]) if company_id in kept_target else _target_empty(company_id)
         chosen = _pick(old, (target_updates or {}).get(company_id), as_of, stale_after, cut, sic_cfg, target_id=company_id)
         target[company_id] = restate(chosen, as_of, stale_after)
     payload = publish(records, target, as_of=as_of, cfg=cfg, stale_after=stale_after, shard_index=shard_index,
@@ -232,8 +249,10 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
 
 
 def publish(records, target, *, as_of, cfg, stale_after, shard_index, registry_sha256):
-    scores, summary = vs.score_rows(records, target)
-    volatility = vs.volatility_rank_rows(records, target)
+    """Rows of another calc_version (kept from an older copy) stay in the file but outside the ranking population
+    (axes CALC_VERSION_MISMATCH) until their shard is collected again under the current rules."""
+    scores, summary = vs.score_rows(records, target, calc_version=vf.CALC_VERSION)
+    volatility = vs.volatility_rank_rows(records, target, calc_version=vf.CALC_VERSION)
     for role, rows in (('universe', records), ('target', target)):
         for key, row in rows.items():
             row['factors'] = scores[(role, key)]['factors']
@@ -252,7 +271,7 @@ def publish(records, target, *, as_of, cfg, stale_after, shard_index, registry_s
             'last_shard_index': shard_index, 'registry_sha256': registry_sha256, 'code_count': len(records),
             'cross_section_size': summary['cross_section_size'], 'cross_section_by_profile': summary['cross_section_by_profile'],
             'state': state, 'reason_codes': [] if state == 'LIVE' else ['STALE_INPUT'] if state == 'STALE' else ['NO_ELIGIBLE_INPUT'],
-            'records': records, 'target': target}
+            'records': records, 'target': target, 'calc_version': vf.CALC_VERSION}
 
 
 # ---------------- strict validator ----------------
@@ -311,8 +330,11 @@ def _v_inputs(v, cut_day, has_data):
         _need(v[key] is None or type(v[key]) in (int, float) and math.isfinite(v[key]) and abs(v[key]) <= METRIC_LIMIT)
 
 
-def _row(r, cut, ttl, sic_cfg, *, target_id=None):
-    _need(type(r) is dict and set(r) == set(ROW_KEYS))
+def _row(r, cut, ttl, sic_cfg, *, target_id=None, is_versioned=True):
+    _need(type(r) is dict and set(r) == set(ROW_KEYS if is_versioned else LEGACY_ROW_KEYS))
+    if is_versioned:
+        _need(r['calc_version'] is None or _calc_version_ok(r['calc_version']))
+        _need(r['calc_version'] is None or r['fiscal_year_end'] is not None)
     _need(r['cik'] is None or _cik_ok(r['cik']))
     if target_id is not None and r['cik'] is not None:
         _need(r['cik'] == target_cik(target_id))
@@ -375,7 +397,10 @@ def _scores_match(row, expected):
 def require_qgv2(payload):
     """Strict public validator (also the Pages guard). Recomputes every score from the published metrics."""
     try:
-        _need(type(payload) is dict and set(payload) == set(TOP_KEYS))
+        _need(type(payload) is dict and set(payload) in (set(TOP_KEYS), set(LEGACY_TOP_KEYS)))
+        version = payload.get('calc_version')
+        is_versioned = 'calc_version' in payload
+        _need(not is_versioned or _calc_version_ok(version))
         cfg = load_config()
         _need(type(payload['schema_version']) is int and payload['schema_version'] == 1 and payload['kind'] == KIND)
         _need(payload['standard'] == STANDARD and payload['standard_status'] == STANDARD_STATUS and payload['decision_ref'] in (DECISION_REF, 'GSQ-022_PENDING_APPROVAL'))
@@ -394,15 +419,15 @@ def require_qgv2(payload):
         _need(type(records) is dict and set(records) == set(codes) and type(payload['code_count']) is int and payload['code_count'] == len(codes))
         _need(type(target) is dict and set(target) == set(ids))
         sic_cfg, window = _sic_config(), timedelta(seconds=ttl)
-        states = [_row(records[code], cut, window, sic_cfg) for code in codes]
-        states += [_row(target[cid], cut, window, sic_cfg, target_id=cid) for cid in ids]
+        states = [_row(records[code], cut, window, sic_cfg, is_versioned=is_versioned) for code in codes]
+        states += [_row(target[cid], cut, window, sic_cfg, target_id=cid, is_versioned=is_versioned) for cid in ids]
         state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
         _need(payload['state'] == state)
         top = payload['reason_codes']
         _need(type(top) is list and all(x in TOP_REASONS for x in top) and len(top) == len(set(top)))
         _need(top == ([] if state == 'LIVE' else ['STALE_INPUT'] if state == 'STALE' else ['NO_ELIGIBLE_INPUT']))
-        expected, summary = vs.score_rows(records, target)
-        volatility = vs.volatility_rank_rows(records, target)
+        expected, summary = vs.score_rows(records, target, calc_version=version)
+        volatility = vs.volatility_rank_rows(records, target, calc_version=version)
         for role, rows in (('universe', records), ('target', target)):
             for key, r in rows.items():
                 rank = r['metrics'].get('revenue_volatility_5y_rank_pct')
@@ -453,7 +478,7 @@ def encode(payload):
 
 def target_updates_from(payload):
     """TARGET rows with data from a staged/previous payload (used to carry the TARGET stage into the shard publish)."""
-    return {cid: row for cid, row in payload['target'].items() if _has_data(row)}
+    return {cid: versioned(row) for cid, row in payload['target'].items() if _has_data(row)}
 
 
 def summary_line(payload, *, prefix):
