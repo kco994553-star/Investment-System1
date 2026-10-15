@@ -2,6 +2,7 @@
 'use strict';
 const {displayOnlyOff}=require('./display_only_off.js');
 const { chromium } = require('playwright');
+const { routeEmptyPublicScreens } = require('./empty_public_screens.js');
 const base = new URL(process.env.PRIVATE_HISTORY_URL || 'http://127.0.0.1:8990/Investment-System1/');
 const ORIGIN = 'https://private-investment-history.kco994553.workers.dev';
 const OTHER_ORIGIN = 'https://another-history.example-account.workers.dev';
@@ -134,6 +135,9 @@ async function open({ enabled = false, deployedConfig = false, approvedOrigin = 
       Storage.prototype.setItem = function (key, value) { if (key === 'investment.web.v1.private-history-origin') throw Error('STORAGE'); return originalSet.call(this, key, value); };
     }
   }, { locale, origin: ORIGIN, storageUnavailable });
+  // Public screens as an offline (PR) build serves them. Deploy builds carry live sec-qgv2.json; with it the company page
+  // also starts the QGV v2 quote refresh, which can re-render the page while history is shown (tracked separately).
+  await routeEmptyPublicScreens(context);
   await context.route('**/*', async route => {
     const request = route.request(), url = new URL(request.url());
     try {
@@ -143,7 +147,7 @@ async function open({ enabled = false, deployedConfig = false, approvedOrigin = 
           await route.fulfill({ contentType: 'application/javascript', body: 'window.InvestmentAppConfig=Object.freeze(' + JSON.stringify({ googleSheetsClientId: 'synthetic-public.apps.googleusercontent.com', privateHistoryEnabled: enabled, privateHistoryWorkerOrigin: approvedOrigin }) + ');' });
           return;
         }
-        await route.continue(); return;
+        await route.fallback(); return;
       }
       if (url.href === 'https://accounts.google.com/gsi/style') {
         verify(request.method() === 'GET' && !request.postData() && !request.headers().referer);

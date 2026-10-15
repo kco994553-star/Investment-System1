@@ -1,9 +1,15 @@
 'use strict';
 // S07 news / S15 watchlist DART (042700) disclosure list at 390 and 1440: '공시·확정', source DART, classification, link attributes,
 // company filter and the offline NOT_AVAILABLE state. Synthetic Python-generated vectors by route interception; no request leaves the origin.
+// The build under test may be offline (PR) or carry the daily run's live DART files (deploy), so every contract phase routes its own
+// payload: OFFLINE serves the offline build's file (tools/fixtures/empty_public_screens.json), S07.. the synthetic live vector.
+// SERVED checks the file the build actually serves against its own content, whichever shape it has.
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const {EMPTY}=require('./empty_public_screens.js');
 const vectors=JSON.parse(fs.readFileSync(path.join(__dirname,'../tests/fixtures/dart_public_vectors_v1.json'),'utf8'));
-const live=vectors.cases.find(c=>c.name==='live').payload;
+const live=vectors.cases.find(c=>c.name==='live').payload,offline=EMPTY['dart-disclosures.json'];
+assert.equal(offline.state,'NOT_AVAILABLE');assert.equal(offline.companies.hanmi.reason_code,'NOT_COLLECTED');assert.deepEqual(offline.events,[]);
+const serve=body=>r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body)});
 const BASE=process.env.PAGES_COCKPIT_URL,SHOTS=process.env.PAGES_COCKPIT_EVIDENCE_DIR||'.';
 const noOverflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1);
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let phase='START',pass=0,fail=0;
@@ -11,11 +17,17 @@ const noOverflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=i
   await context.route('**/*',r=>{const u=new URL(r.request().url());if(u.origin===new URL(BASE).origin)return r.continue();outside.push(u.hostname);return r.abort();});
   const page=await context.newPage();let errors=0;page.on('pageerror',()=>errors++);
   try{
-   phase='OFFLINE';await page.goto(BASE+'#news');await page.locator('#news-dart-disclosures [data-dart-disclosures]').waitFor();
+   phase='SERVED';const served=await page.request.get(BASE+'dart-disclosures.json');assert.ok(served.ok(),'served file');const own=await served.json();
+   await page.goto(BASE+'#news');await page.locator('#news-dart-disclosures [data-dart-disclosures]').waitFor();
+   assert.equal(await page.locator('#news-dart-disclosures [data-disclosure-state]').textContent(),own.state);
+   assert.equal((await page.locator('#news-dart-disclosures').textContent()).includes('DART 공시 자료가 연결되지 않았습니다.'),false);
+   assert.deepEqual(await page.locator('#news-dart-disclosures [data-disclosure]').evaluateAll(n=>n.map(x=>x.dataset.disclosure)),own.state==='NOT_AVAILABLE'?[]:own.events.slice(0,30).map(e=>e.rcept_no));
+   phase='OFFLINE';await context.route('**/dart-disclosures.json*',serve(offline));
+   await page.reload();await page.locator('#news-dart-disclosures [data-dart-disclosures]').waitFor();
    assert.equal(await page.locator('#news-dart-disclosures [data-disclosure-state]').textContent(),'NOT_AVAILABLE');
    assert.equal(await page.locator('#news-dart-disclosures [data-disclosure-reason]').getAttribute('data-disclosure-reason'),'NOT_COLLECTED');
    assert.equal(await page.locator('#news-dart-disclosures [data-disclosure]').count(),0);
-   phase='S07';await context.route('**/dart-disclosures.json*',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(live)}));
+   phase='S07';await context.unroute('**/dart-disclosures.json*');await context.route('**/dart-disclosures.json*',serve(live));
    await page.reload();await page.locator('#news-dart-disclosures [data-disclosure]').first().waitFor();
    const items=page.locator('#news-dart-disclosures [data-disclosure]');assert.equal(await items.count(),live.events.length);
    assert.deepEqual(await items.evaluateAll(n=>n.map(x=>x.dataset.disclosure)),live.events.map(e=>e.rcept_no));
@@ -39,7 +51,7 @@ const noOverflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=i
    phase='S15_OTHER';await page.evaluate(()=>localStorage.setItem('investment.web.v1.personal',JSON.stringify({version:1,interests:['nvda'],groups:[]})));await page.reload();
    await page.locator('#watch-dart-disclosures [data-dart-disclosures]').waitFor();assert.equal(await page.locator('#watch-dart-disclosures [data-disclosure]').count(),0);
    assert.equal(await page.locator('#watch-dart-disclosures .empty').textContent(),'관심 기업의 DART 공시가 없습니다.');
-   phase='INVALID';await context.unroute('**/dart-disclosures.json*');await context.route('**/dart-disclosures.json*',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({...live,price:1})}));
+   phase='INVALID';await context.unroute('**/dart-disclosures.json*');await context.route('**/dart-disclosures.json*',serve({...live,price:1}));
    await page.goto(BASE+'#news');await page.reload();await page.locator('#news-dart-disclosures [data-dart-disclosures]').waitFor();
    assert.equal(await page.locator('#news-dart-disclosures [data-disclosure]').count(),0);assert.ok((await page.locator('#news-dart-disclosures').textContent()).includes('DART 공시 자료가 연결되지 않았습니다.'));
    assert.equal(errors,0);assert.deepEqual(outside,[]);pass++;console.log('PASS dart disclosures S07/S15 '+width);

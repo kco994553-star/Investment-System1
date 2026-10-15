@@ -18,6 +18,12 @@ test('actual sessions scoring never fabricates prices and rejects unconfirmed re
  const closes=Object.fromEntries(sessions.map((d,i)=>[d,100+i]));const data={sessions,stock:closes,sector:closes,sp500:closes,sector_symbol:'XLK'};
  const scored=P.scoreRecord(r,data,20);assert.equal(scored.state,'OK');assert.equal(scored.sector_excess,0);assert.equal(scored.sp500_excess,0);
  assert.equal(P.scoreRecord(r,data,63).reason,'WINDOW_PENDING');
+ assert.equal(scored.base_date,'2026-10-13');assert.equal(scored.base_rule,'SAME_SESSION');
+ // B-1: saved on a non-session day → previous completed session is the base; before the first session → NA.
+ const gap=sessions.filter(d=>d!=='2026-10-17'&&d!=='2026-10-18'),gapData={...data,sessions:gap};
+ const holiday=P.scoreRecord({...r,date:'2026-10-18'},gapData,1);assert.equal(holiday.state,'OK');assert.equal(holiday.base_date,'2026-10-16');assert.equal(holiday.base_rule,'PREVIOUS_COMPLETED_SESSION');assert.equal(holiday.date,'2026-10-19');
+ assert.equal(holiday.stock,closes['2026-10-19']/closes['2026-10-16']-1);
+ assert.equal(P.scoreRecord({...r,date:'2026-10-12'},gapData,1).reason,'BASE_SESSION_UNAVAILABLE');
 });
 test('informational E4 records stay outside judgment scoring',()=>{
  const info={symbol:'SYN',date:'2026-10-13',primary_code:'E4',verdict:'',next_check_date:'2026-10-20'},decision={...info,primary_code:'R2',verdict:'R2_ONE_OFF'};

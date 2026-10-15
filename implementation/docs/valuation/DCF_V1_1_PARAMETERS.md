@@ -36,7 +36,7 @@ h = min(upper, max(lower, revenue_cagr_3y))      # lower=0, upper=0.15
 
 ### CAGR 출처 선택
 
-CAGR은 `company-types-pricefree.json`의 공개 지표 `revenue_cagr_3y`와 **같은 함수**(`sec_valuation_inputs.revenue_cagr_3y`; `public_engine_screens._growth`는 이 함수의 별칭)로 계산해 `sec-valuation-inputs.json`의 `v_inputs.revenue_cagr_3y`에 함께 싣는다. 같은 가드(|값|≤100)를 쓰므로 두 파일의 값은 같다(테스트로 확인). 이렇게 한 이유: 기기는 파일 하나로 FCFE와 h를 같은 출처 해시·같은 신선도로 받고, 유형 엔진(type_config) 가져오기 실패와 무관하게 h가 계산된다. 계산 규칙: 같은 태그·단위(보고 통화)의 정확한 연간 기간 4개(최근 매출이 `facts_to_raw` 매출과 일치, 첫 해·최근 해 매출 > 0)에서 `(최근/3년 전)^(1/3) − 1`. 회계연도 추정 없음. 없으면 null + `REVENUE_CAGR_3Y_MISSING`.
+CAGR은 `sec_valuation_inputs.revenue_cagr_3y`로 계산해 `sec-valuation-inputs.json`의 `v_inputs.revenue_cagr_3y`에 싣는다. (2026-10-14 변경: `company-types-pricefree.json`의 유형 지표 `revenue_cagr_3y`는 이제 QGV v2 기간 규칙으로 계산한다 — `docs/daily_data_pipeline/PUBLIC_ENGINE_SCREENS.md`. 정확한 달력 연간 기간이 있는 기업은 두 값이 유효숫자 6자리까지 같다(테스트로 확인). 52/53주 회계연도 기업은 이 h 입력이 여전히 null이며, DCF h 규칙 변경은 별도 결정 사항이다.) 이렇게 한 이유: 기기는 파일 하나로 FCFE와 h를 같은 출처 해시·같은 신선도로 받고, 유형 엔진(type_config) 가져오기 실패와 무관하게 h가 계산된다. 계산 규칙: 같은 태그·단위(보고 통화)의 정확한 연간 기간 4개(최근 매출이 `facts_to_raw` 매출과 일치, 첫 해·최근 해 매출 > 0)에서 `(최근/3년 전)^(1/3) − 1`. 회계연도 추정 없음. 없으면 null + `REVENUE_CAGR_3Y_MISSING`.
 
 ## FCFE 정의 fcfe/1.1 — `product/sec_valuation_inputs.py` (v1.1 UNCALIBRATED 기본값 · 나중에 수정 가능)
 

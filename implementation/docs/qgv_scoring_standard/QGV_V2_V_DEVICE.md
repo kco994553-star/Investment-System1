@@ -45,7 +45,7 @@
 
 ## 5. 기본 기준 설정 (`scoring_default`)
 
-`web_assets/scoring-default.js`의 `scoring_default:'v2'` 한 줄이 유일한 설정이다. **GSQ-022 승인에 따라 v2로 전환했으며, 실제 배포 준비일이 확인되기 전에는 `v2_since`를 null로 둔다.** 모든 소비자가 따라 바뀐다: S04 QGV 카드·S05 종합/QGV 요소 탭(`company-screen.js`), S06 리더보드(`leaderboard-screen.js`), 가상매매 리허설 판단 행·일일보고서·보고서 내보내기(`app.js` → `QgvScores.judgmentRows` → `DailyReport`). v1이 기본이면 v2는 '비교용', v2가 기본이면 v1(재정규화)은 [자세히]에만 보인다. 테스트: `tools/qgv_scores_node_test.js`(설정을 뒤집어 모든 소비자 확인), `tools/qgv_v2_screens_browser_test.js`(390/1280, v1·v2).
+`web_assets/scoring-default.js`의 `scoring_default:'v2'` 한 줄이 유일한 설정이다. **GSQ-022 승인에 따라 v2로 전환했으며, 실제 배포 준비일이 확인되기 전에는 `v2_since`를 null로 둔다.** 모든 소비자가 따라 바뀐다: S04 QGV 카드·S05 종합/QGV 요소 탭(`company-screen.js`), S06 리더보드(`leaderboard-screen.js`), 가상매매 리허설 판단 행·일일보고서·보고서 내보내기(`app.js` → `QgvScores.judgmentRows` → `DailyReport`). **2026-10-14 소유자 결정: 화면 점수는 QGV v2 하나뿐이다.** '임시 기본', 'v1 비교용', '[자세히] v1 참고'를 리더보드·기업 화면(S04/S05)·S13·일일보고서·내보내기에서 뺐다. 설정 값이 'v1'이어도 화면은 v2를 보이고(`QgvScores.scoringDefault()`는 항상 'v2'), 표시 행에는 v1 필드가 없다(`reference`는 항상 null, 판단 행의 `compare`도 null). v2를 계산할 수 없는 기업은 v2 NOT_AVAILABLE과 이유(`QgvScores.naText`: '산출 요인 n/전체', 'Q 축 비중 50% 미만' 등)를 보이며 v1로 대신하지 않는다. v1은 전진검증 원장 비교 기록(`tools/forward_validation_ledger.py`, 원장 화면 `forward-validation.js`)에만 남는다. 테스트: `tools/qgv_scores_node_test.js`(설정 'v1'·'v2' 모두 v2만 표시), `tools/qgv_v2_screens_browser_test.js`(390/1280).
 
 ## 6. `sec-qgv2.json` 정렬 (Q·G 쪽 `claude/qgv-v2-qg`의 실제 형태)
 
@@ -70,7 +70,7 @@
 | §13-2 경기민감 V | v2 반영: 경기민감 유형으로 선택된 기업의 EBIT 기반 수익률(이익 수익률·업종 대비)은 최근 매출 × 5년 평균 영업이익률(`type_config.value_basis.normalized_years`)로 계산하고 '정상화 이익 기준'으로 표시, 5년 이익률이 없으면 그 요인 NA(`NORMALIZED_EARNINGS_NOT_AVAILABLE`). 현재 `sec-qgv2.json`의 `v_inputs_v2`에는 매출·영업이익률 이력이 없어 실제로는 NA이고, 공식 경기민감 소속도도 아직 미정이다. v1(`value_basis.status = SCORING_MAPPING_UNRESOLVED`)은 공개 입력에 이력이 없어 미반영. |
 | §14-3 v2 결측 | 반영(§3). §13-1은 v1에만 적용. |
 | §14-4 관문 | 반영. 결과에 `value_trap_gate`(boolean)와 '가치 함정 주의'. 기본 켬·토글, 프로필 id에 포함. |
-| §13-11 기본 전환 | 접근자 `QgvScores.basis()` → `{basis, label, since}`. 설정이 v2여도 이 기기에서 v2가 계산되기 전에는 v1을 '임시 기본'으로 표시. 전환 한 줄: `scoring-default.js`의 `{scoring_default:'v2',v2_since:'YYYY-MM-DD'}`. 전진검증 원장의 v1·v2 동시 기록·전략 버전 v2 기록은 공개 원장(Actions) 변경이라 이 브랜치에서는 미반영. |
+| §13-11 기본 전환 | 접근자 `QgvScores.basis()` → `{basis, label, since}`. 2026-10-14부터 basis는 항상 v2 '기본'이고, 이 기기에서 v2가 계산되기 전에는 v1 '임시 기본' 대신 v2 NOT_AVAILABLE과 이유를 표시. 전환 한 줄: `scoring-default.js`의 `{scoring_default:'v2',v2_since:'YYYY-MM-DD'}`. 전진검증 원장의 v1·v2 동시 기록·전략 버전 v2 기록은 공개 원장(Actions) 변경이라 이 브랜치에서는 미반영. |
 
 
 ## 9. 2026-10-13 후속 구현 (이 절이 이전 구현 상태보다 우선)

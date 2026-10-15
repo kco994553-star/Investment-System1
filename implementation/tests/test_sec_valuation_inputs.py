@@ -340,7 +340,8 @@ def test_revenue_cagr_3y_matches_the_published_type_metric(tmp_path):
     bundle = screens().generate_screen_bundle(manifest=write_company(tmp_path, FULL, revenue_years=4), input_root=tmp_path, as_of=NOW, stale_after=timedelta(days=2))
     v = nvda(bundle['sec-valuation-inputs.json'])['v_inputs']
     assert v['revenue_cagr_3y'] == pytest.approx(2 ** (1 / 3) - 1, rel=1e-12) and v['reason_codes'] == []
-    assert bundle['company-types-pricefree.json']['data']['companies']['nvda']['metrics']['revenue_cagr_3y'] == v['revenue_cagr_3y']
+    # Exact calendar years: the type metric (QGV v2 period rule, 6 significant digits as in sec-qgv2.json) agrees.
+    assert bundle['company-types-pricefree.json']['data']['companies']['nvda']['metrics']['revenue_cagr_3y'] == pytest.approx(v['revenue_cagr_3y'], rel=1e-5)
 
 
 def test_ifrs_20f_filer(tmp_path):
