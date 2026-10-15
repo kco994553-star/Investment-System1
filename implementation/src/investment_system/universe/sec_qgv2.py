@@ -259,6 +259,8 @@ def publish(records, target, *, as_of, cfg, stale_after, shard_index, registry_s
 def _metric_ok(key, value):
     if key == 'moat_return_years':
         return type(value) is int and 3 <= value <= vf.HISTORY_YEARS
+    if key == 'ebit_estimated_years':  # FY0..FY-5 substitute-EBIT count, published only when >= 1
+        return type(value) is int and 1 <= value <= vf.HISTORY_YEARS + 1
     # JSON numbers: an integral float may arrive as an int (JS has one number type); bool is never a number.
     valid = type(value) in (int, float) and math.isfinite(value) and abs(value) <= METRIC_LIMIT
     if key == 'revenue_growth_std_5y':
@@ -330,13 +332,15 @@ def _row(r, cut, ttl, sic_cfg, *, target_id=None):
     else:
         _need(r['acquired_at'] is not None and r['industry_group'] == classify_sic(r['sic'], sic_cfg)['group'])
     metrics = r['metrics']
-    _need(type(metrics) is dict and set(metrics) <= set(vf.METRIC_KEYS) and all(_metric_ok(k, v) for k, v in metrics.items()))
+    _need(type(metrics) is dict and set(metrics) <= set(vf.METRIC_KEYS) | set(vf.EXTRA_METRIC_KEYS)
+          and all(_metric_ok(k, v) for k, v in metrics.items()))
     has_data = r['fiscal_year_end'] is not None
     if has_data:
         _need(r['acquired_at'] is not None and _date(r['fiscal_year_end']) <= cut.date())
         _need(r['profile'] == vf.profile_for_sic(r['sic']))
         _need(type(r['currency']) is str and re.fullmatch(r'[A-Z]{3}', r['currency']) is not None)
         allowed = {m for specs in vs.SUBMETRICS[r['profile']].values() for m, _ in specs} | vf.DESCRIPTIVE_METRICS | {'dilution_3y'}
+        allowed |= {k for k, profiles in vf.EXTRA_METRIC_PROFILES.items() if r['profile'] in profiles}
         _need(set(metrics) <= allowed)
         fresh = cut - _clock(r['acquired_at']) <= ttl
         _need(r['state'] == ('LIVE' if fresh else 'STALE') and reasons == ([] if fresh else ['STALE_INPUT']))

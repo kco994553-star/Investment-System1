@@ -208,6 +208,13 @@ METRIC_KEYS = (
     'revenue_ttm_growth', 'revenue_acceleration',
     'revenue_growth_std_5y', 'revenue_volatility_5y_rank_pct',
 )
+# Price-free descriptors published only in the SEC file `sec-qgv2.json` (never ranked, never in the DART reference block,
+# whose key set is METRIC_KEYS exactly), with the profiles allowed to carry each (validators: universe/sec_qgv2.py, sec-qgv2.js).
+# ebit_estimated_years: number of fiscal years FY0..FY-5 whose EBIT is the substitute pretax + interest (rule EBIT); present
+# only when >= 1, so its absence means every EBIT used is the reported operating income (or EBIT is not available).
+EXTRA_METRIC_PROFILES = {'ebit_estimated_years': ('GENERAL',)}
+EXTRA_METRIC_KEYS = tuple(EXTRA_METRIC_PROFILES)
+INTEGER_METRICS = frozenset({'moat_return_years', 'ebit_estimated_years'})
 # Metrics that are counts/descriptors, not ranked directly.
 DESCRIPTIVE_METRICS = frozenset({'moat_return_mean_5y', 'moat_return_std_5y', 'moat_return_years', 'revenue_ttm_growth',
                                'revenue_growth_std_5y', 'revenue_volatility_5y_rank_pct'})
@@ -446,8 +453,8 @@ def _avg_pair(a, b):
 
 
 class _Company:
-    def __init__(self, facts, fy0_end, *, sic=None):
-        self.f, self.fy0, self.sic = facts, fy0_end, sic
+    def __init__(self, facts, fy0_end, *, sic=None, profile='GENERAL'):
+        self.f, self.fy0, self.sic, self.profile = facts, fy0_end, sic, profile
         self._cache = {}
         # The SEC-only rules (software capex, ...) read component tables of a companyfacts payload; other period
         # adapters (DART) keep the shared definitions only.
@@ -555,6 +562,24 @@ class _Company:
             return combined
         return total
 
+    # ---- EBIT substitute (rule EBIT, owner decision Q-EBIT 2026-10-15) ----
+    def ebit_substitute_on(self):
+        """SEC GENERAL issuers only: for a bank or insurer the interest expense is an operating cost, so pretax + interest is
+        not an operating result; the DART adapter always reports operating income."""
+        return self.sec and self.profile == 'GENERAL'
+
+    def _ebit_substitute(self, target):
+        """EBIT = pretax income (incl. F1) + interest expense of the same span (>= 0) when no operating income is reported
+        for the year. Both are needed: a missing interest expense is never taken as 0."""
+        pretax, interest = self.annual_hit('pretax_income', target), self.f.annual('interest_expense', target)
+        if pretax is None or interest is None or pretax[1:] != interest[1:] or interest[0] < 0:
+            return None
+        return pretax[0] + interest[0], pretax[1], pretax[2]
+
+    def ebit_estimated(self, k):
+        """True when year k's EBIT is the substitute (no reported operating income, substitute available)."""
+        return self.ebit_substitute_on() and self.f.annual('ebit', self.end(k)) is None and self.a('ebit', k) is not None
+
     def annual_hit(self, item, target):
         """(value, start, end) for one fiscal year: the item's concept list first, then its documented fallback."""
         if item == 'capital_expenditure' and self.sec:
@@ -566,6 +591,8 @@ class _Company:
             return hit
         if item == 'pretax_income':
             return self._pair_sum('pretax_income_domestic', 'pretax_income_foreign', target)
+        if item == 'ebit' and self.ebit_substitute_on():
+            return self._ebit_substitute(target)
         if item == 'capital_expenditure':
             found = self.capex_fallback(target)
             return found[0] if found else None
@@ -699,6 +726,15 @@ class _Company:
             if any(p[1] != out[1] for p in parts):
                 return None
             return math.fsum(p[0] for p in parts), out[1], None
+        if item == 'ebit' and self.f.annual(item, self.fy0) is None and self.ebit_substitute_on():
+            # Substitute TTM = TTM pretax + TTM interest, only when both end on the same date (never mixed spans).
+            if self._ebit_substitute(self.fy0) is None:
+                return None
+            pretax, interest = self.ttm('pretax_income'), self.ttm('interest_expense')
+            if pretax is None or interest is None or pretax[1] != interest[1]:
+                return None
+            ago = None if pretax[2] is None or interest[2] is None else pretax[2] + interest[2]
+            return pretax[0] + interest[0], pretax[1], ago
         fy0, tables = self.f.annual(item, self.fy0), self.f.items[item]
         if fy0 is None and item == 'capital_expenditure':
             found = self.capex_fallback(self.fy0)  # the one fallback line, still a single concept for FY0 and YTD
@@ -812,6 +848,13 @@ def _growth_common(c, m):
             m['revenue_acceleration'] = m['revenue_ttm_growth'] - m['revenue_cagr_3y']
 
 
+def _extra_metrics(c, m):
+    """SEC-only descriptors (EXTRA_METRIC_KEYS); a profile outside a key's EXTRA_METRIC_PROFILES leaves it None."""
+    m.update(dict.fromkeys(EXTRA_METRIC_KEYS))
+    estimated = sum(1 for k in range(HISTORY_YEARS + 1) if c.ebit_estimated(k))
+    m['ebit_estimated_years'] = estimated if estimated and c.profile in EXTRA_METRIC_PROFILES['ebit_estimated_years'] else None
+
+
 V_FLOW_KEYS = ('fy_value', 'fy_end', 'ttm_value', 'ttm_end')
 V_INSTANT_KEYS = ('value', 'period_end')
 LEGACY_V_KEYS = ('currency', 'taxonomy', 'fiscal_year_end', 'ebit', 'fcf', 'total_debt', 'cash_and_equivalents', 'diluted_shares', 'ebit_per_share_history', 'fcf_per_share_history',
@@ -918,6 +961,7 @@ def compute(companyfacts, *, sic, cutoff):
 
 
 def _compute(companyfacts, profile, cutoff, sic=None):
+    """SEC companyfacts path: the shared metrics plus the SEC-only descriptors EXTRA_METRIC_KEYS."""
     if not isinstance(companyfacts, dict) or not isinstance(cutoff, date):
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
     taxonomy, currency = _taxonomy_and_currency(companyfacts, cutoff)
@@ -930,24 +974,29 @@ def _compute(companyfacts, profile, cutoff, sic=None):
     if not ends:
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
     return compute_reported_periods(facts, fiscal_year_end=max(ends), profile=profile, taxonomy=taxonomy, currency=currency,
-                                    sic=sic)
+                                    sic=sic, extra_metrics=True)
 
-def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxonomy=None, currency=None, sic=None):
+def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxonomy=None, currency=None, sic=None,
+                             extra_metrics=False):
     """Shared Q/G definitions for source adapters, without fabricated SEC facts.
 
     `facts` supplies annual(item,date), instant(item,date,tolerance), annual/instant_ends,
     latest_duration and .items (reported duration observations). The adapter owns filing
     cutoff/currency/period checks. Missing inputs remain None. Source metadata is supplied
     separately by its caller; this API never assigns a SEC source to a DART observation.
+    `extra_metrics` adds EXTRA_METRIC_KEYS (SEC file only); the default key set is METRIC_KEYS exactly.
     """
     if profile not in ('GENERAL', 'FINANCIAL') or not isinstance(fiscal_year_end, date):
         raise ValueError('REPORTED_PERIODS_INVALID')
-    company = _Company(facts, fiscal_year_end, sic=sic)
+    company = _Company(facts, fiscal_year_end, sic=sic, profile=profile)
     metrics = _metrics_financial(company) if profile == 'FINANCIAL' else _metrics_general(company)
     _growth_common(company, metrics)
+    if extra_metrics:
+        _extra_metrics(company, metrics)
     raw = dict(metrics)
-    metrics = {k: (_round(v) if k != 'moat_return_years' else v) for k, v in metrics.items()}
-    if metrics['moat_return_years'] is not None:
-        metrics['moat_return_years'] = int(metrics['moat_return_years'])
+    metrics = {k: (_round(v) if k not in INTEGER_METRICS else v) for k, v in metrics.items()}
+    for key in INTEGER_METRICS:
+        if metrics.get(key) is not None:
+            metrics[key] = int(metrics[key])
     v_inputs = _v_inputs(company, raw, taxonomy, currency)
     return profile, company.fy0.isoformat(), currency, metrics, v_inputs

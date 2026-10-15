@@ -31,7 +31,7 @@ All inputs come from one SEC companyfacts payload. Only facts filed on or before
 |---|---|---|
 | revenue | Revenues, RevenueFromContractWithCustomerExcludingAssessedTax, …IncludingAssessedTax, SalesRevenueNet, SalesRevenueGoodsNet, RevenuesNetOfInterestExpense, RegulatedAndUnregulatedOperatingRevenue (utilities, last) | Revenue, RevenueFromContractsWithCustomers |
 | gross profit | GrossProfit, else revenue − (CostOfRevenue, CostOfGoodsAndServicesSold, CostOfGoodsSold) | GrossProfit / CostOfSales |
-| EBIT | OperatingIncomeLoss | ProfitLossFromOperatingActivities |
+| EBIT | OperatingIncomeLoss, else rule **EBIT** (GENERAL) | ProfitLossFromOperatingActivities, else rule **EBIT** (GENERAL) |
 | pretax / tax | IncomeLossFromContinuingOperationsBeforeIncomeTaxes…(2 concepts), else fallback **F1** / IncomeTaxExpenseBenefit | ProfitLossBeforeTax / IncomeTaxExpenseContinuingOperations |
 | net income | NetIncomeLoss, ProfitLoss | ProfitLossAttributableToOwnersOfParent, ProfitLoss |
 | OCF / capex | NetCashProvidedByUsedInOperatingActivities(…ContinuingOperations) / PaymentsToAcquirePropertyPlantAndEquipment, PaymentsToAcquireProductiveAssets, else fallback **F3** | CashFlowsFromUsedInOperatingActivities / PurchaseOfPropertyPlantAndEquipment(…ClassifiedAsInvestingActivities) |
@@ -118,6 +118,21 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
   extension tags, which companyfacts does not carry, with interest expense (ORCL, F, GM) is never treated as debt-free.
   MNST-type: a debt line reported at FY−1 but gone at FY0 gives FY0 debt 0 and `total_debt` at FY0, not the stale FY−1 amount.
   Test: `test_debt_is_zero_only_without_any_debt_concept_and_without_interest_expense`.
+- **EBIT substitute (Q-EBIT = substitute approved).** For a fiscal year without reported operating income (`OperatingIncomeLoss`
+  / `ProfitLossFromOperatingActivities`), EBIT = pretax income (incl. F1) + interest expense (the interest-expense line above),
+  both for the same span and interest ≥ 0; a missing part leaves EBIT NA (never pretax + 0). A reported operating income always
+  wins, so a filer with operating income for only some years mixes the two per year (ROK-type). TTM = TTM pretax + TTM interest
+  when both end on the same date, else TTM EBIT is NA and FY stays. SEC **GENERAL** profile only: for banks and insurers
+  (FINANCIAL) interest expense is an operating cost, so no substitute (the DART adapter always has operating income). Every value
+  built from EBIT (NOPAT, ROIC, moat, incremental ROIC, interest coverage, net debt/EBITDA, `v_inputs_v2.ebit`,
+  `ebit_per_share_history`, `operating_margin_history`) uses it. **Estimate flag:** the row publishes
+  `metrics.ebit_estimated_years` = the number of fiscal years FY0..FY−5 whose EBIT is the substitute (integer 1–6, only when ≥ 1;
+  absent means no substitute). The app (`qgv-scores.js`) turns it into the flag `EBIT_ESTIMATED`, shown as
+  **"추정(대체 계산)"** ("Estimate (substitute calculation)") next to the v2 scores wherever they are displayed (company screen
+  summary and overview through `flagText`, judgement rows and the daily report through the flags list). The TARGET filing-window
+  TTM lineage (`public_engine_screens.qgv2_ttm_periods`) uses the same rule and profile. Tests:
+  `test_ebit_substitute_is_pretax_plus_interest_and_is_flagged_as_an_estimate`, `tools/qgv_scores_node_test.js`
+  ("EBIT substitute rows … carry the EBIT_ESTIMATED flag").
 
 Derived lines: tax rate = income tax ÷ pretax income, clamped to 0–50%, when pretax > 0. Otherwise the default 21% applies
 (DEFAULT_TAX_RATE, uncalibrated). NOPAT = EBIT × (1 − tax rate). Invested capital (IC) = equity + total debt − cash (must be > 0).
@@ -197,6 +212,8 @@ financial SIC range, cross-section rule, earnings-surprise omission), `config_ve
 Row: `cik`, `acquired_at`, `source_sha256{companyfacts,submissions}`, `state` (LIVE/STALE/NOT_AVAILABLE), `reason_codes`, `sic`,
 `industry_group`, `profile`, `fiscal_year_end`, `currency`, `metrics` (sparse; 6 significant digits), `factors` (10 ids → 0–100 | null),
 `axes{Q,G}{score, factors_available, available_weight, peer_basis, peer_count, submetric_fallbacks, reason_codes}`, `v_inputs_v2`.
+SEC-only descriptors in `metrics` (never ranked; `v2_factors.EXTRA_METRIC_PROFILES`, not in the DART reference key set):
+`ebit_estimated_years` (GENERAL, integer 1–6, rule EBIT).
 
 `v_inputs_v2` holds the price-free inputs the device needs to compute V in RAM. Amounts are exact SEC values in the row currency.
 - `ebit`, `fcf`: `{fy_value, fy_end, ttm_value, ttm_end}`. FCF = OCF − capex for the same period.

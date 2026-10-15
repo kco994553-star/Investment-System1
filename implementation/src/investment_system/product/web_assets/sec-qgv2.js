@@ -9,6 +9,8 @@
  const METHOD={weights:{Q:Q_WEIGHTS,G:G_WEIGHTS},min_peers:8,axis_coverage_min_percent:50,percentile:'AVERAGE_RANK_0_100',industry_groups:'sic_industry_groups/v0',financial_sic_range:[6000,6499],cross_section:'UNIVERSE504_LIVE_STALE_ONE_POINT_PER_CIK',submetric_fallback:'GROUP_VALUES_BELOW_MIN_PEERS_RANK_IN_GENERAL_UNIVERSE',earnings_surprise:'OMITTED_NO_FREE_SOURCE'};
  const METRIC_KEYS=Object.freeze(['roic','gross_profit_to_assets','accruals_to_assets','fcf_to_net_income','net_debt_to_ebitda','interest_coverage','incremental_roic_5y','roe','roa','net_interest_income_to_assets','equity_to_assets','incremental_roe_5y','moat_return_mean_5y','moat_return_std_5y','moat_return_years','moat_proxy','dilution_3y','revenue_cagr_3y','eps_cagr_3y','fcf_per_share_cagr_3y','book_value_per_share_cagr_3y','incremental_roic_3y','incremental_roe_3y','revenue_positive_growth_share','revenue_growth_volatility','revenue_ttm_growth','revenue_acceleration','revenue_growth_std_5y','revenue_volatility_5y_rank_pct']);
  const DESCRIPTIVE=['moat_return_mean_5y','moat_return_std_5y','moat_return_years','revenue_ttm_growth','revenue_growth_std_5y','revenue_volatility_5y_rank_pct'];
+ /* SEC-file-only descriptors (Python v2_factors.EXTRA_METRIC_PROFILES): key -> profiles allowed to carry it. Never ranked. */
+ const EXTRA_METRICS={ebit_estimated_years:['GENERAL']};
  const COMMON_G={g_revenue_growth:[['revenue_cagr_3y',1]],g_consistency:[['revenue_positive_growth_share',1],['revenue_growth_volatility',-1]],g_recent_acceleration:[['revenue_acceleration',1]]};
  const SUBMETRICS={
   GENERAL:{q_profitability:[['roic',1],['gross_profit_to_assets',1]],q_moat_proxy:[['moat_proxy',1]],q_earnings_quality:[['accruals_to_assets',-1],['fcf_to_net_income',1]],q_financial_safety:[['net_debt_to_ebitda',-1],['interest_coverage',1]],q_capital_allocation:[['dilution_3y',-1],['incremental_roic_5y',1]],g_per_share_growth:[['eps_cagr_3y',1],['fcf_per_share_cagr_3y',1]],g_growth_efficiency:[['incremental_roic_3y',1]],...COMMON_G},
@@ -36,7 +38,7 @@
  function emptyV(){return{currency:null,taxonomy:null,fiscal_year_end:null,ebit:null,fcf:null,total_debt:null,cash_and_equivalents:null,diluted_shares:null,ebit_per_share_history:[],fcf_per_share_history:[],revenue:null,operating_margin_history:[],revenue_cagr_3y:null,eps_cagr_3y:null,fcf_per_share_cagr_3y:null,revenue_ttm_growth:null};}
  function emptyAxis(reason){return{score:null,factors_available:'0/5',available_weight:0,peer_basis:null,peer_count:0,submetric_fallbacks:0,reason_codes:[reason]};}
  function emptyRecord(reason='NOT_COLLECTED'){return{cik:null,acquired_at:null,source_sha256:{companyfacts:null,submissions:null},state:'NOT_AVAILABLE',reason_codes:[reason],sic:null,industry_group:null,profile:null,fiscal_year_end:null,currency:null,metrics:{},factors:Object.fromEntries(FACTOR_IDS.map(k=>[k,null])),axes:{Q:emptyAxis('ROW_NOT_AVAILABLE'),G:emptyAxis('ROW_NOT_AVAILABLE')},v_inputs_v2:emptyV()};}
- const metricOk=(k,v)=>k==='moat_return_years'?Number.isInteger(v)&&v>=3&&v<=HISTORY_YEARS:num(v)&&Math.abs(v)<=LIMIT&&(k!=='revenue_growth_std_5y'||v>=0)&&(k!=='revenue_volatility_5y_rank_pct'||v>=0&&v<=100);
+ const metricOk=(k,v)=>k==='moat_return_years'?Number.isInteger(v)&&v>=3&&v<=HISTORY_YEARS:k==='ebit_estimated_years'?Number.isInteger(v)&&v>=1&&v<=HISTORY_YEARS+1:num(v)&&Math.abs(v)<=LIMIT&&(k!=='revenue_growth_std_5y'||v>=0)&&(k!=='revenue_volatility_5y_rank_pct'||v>=0&&v<=100);
  function vInputs(v,cutDay,hasData){
   need(keys(v,V_KEYS)||keys(v,LEGACY_V_KEYS));if(!hasData){const empty=emptyV();need(canon(v)===canon(Object.fromEntries(Object.keys(v).map(k=>[k,empty[k]]))));return;}
   need(typeof v.currency==='string'&&/^[A-Z]{3}$/.test(v.currency)&&['us-gaap','ifrs-full'].includes(v.taxonomy)&&date(v.fiscal_year_end)<=cutDay);
@@ -55,11 +57,11 @@
   need(STATES.includes(r.state));const reasons=r.reason_codes;need(Array.isArray(reasons)&&new Set(reasons).size===reasons.length&&reasons.length<=3&&reasons.every(x=>REASONS.includes(x)));
   need(r.sic===null||typeof r.sic==='string'&&/^\d{4}$/.test(r.sic)&&r.sic!=='0000');
   if(r.sic===null)need(r.industry_group===null);else need(r.acquired_at!==null&&r.industry_group===classify(r.sic));
-  const m=r.metrics;need(plain(m)&&Object.keys(m).every(k=>(METRIC_KEYS.includes(k)||DESCRIPTIVE.includes(k))&&metricOk(k,m[k])));
+  const m=r.metrics;need(plain(m)&&Object.keys(m).every(k=>(METRIC_KEYS.includes(k)||DESCRIPTIVE.includes(k)||Object.hasOwn(EXTRA_METRICS,k))&&metricOk(k,m[k])));
   const hasData=r.fiscal_year_end!==null,cutDay=new Date(cut).toISOString().slice(0,10);
   if(hasData){
    need(r.acquired_at!==null&&date(r.fiscal_year_end)<=cutDay&&r.profile===profileFor(r.sic)&&typeof r.currency==='string'&&/^[A-Z]{3}$/.test(r.currency));
-   const allowed=new Set([...Object.values(SUBMETRICS[r.profile]).flat().map(([k])=>k),...DESCRIPTIVE,'dilution_3y']);need(Object.keys(m).every(k=>allowed.has(k)));
+   const allowed=new Set([...Object.values(SUBMETRICS[r.profile]).flat().map(([k])=>k),...DESCRIPTIVE,'dilution_3y',...Object.keys(EXTRA_METRICS).filter(k=>EXTRA_METRICS[k].includes(r.profile))]);need(Object.keys(m).every(k=>allowed.has(k)));
    const fresh=cut-clock(r.acquired_at)<=ttl*1000;need(r.state===(fresh?'LIVE':'STALE')&&canon(reasons)===canon(fresh?[]:['STALE_INPUT']));
    need(plain(r.v_inputs_v2)&&r.v_inputs_v2.currency===r.currency&&r.v_inputs_v2.fiscal_year_end===r.fiscal_year_end);
   }else{
@@ -153,5 +155,5 @@
   const text=await response.text();if(new TextEncoder().encode(text).length>MAX)throw Error('SEC_QGV2_INVALID');let payload;try{payload=JSON.parse(text);}catch(_){throw Error('SEC_QGV2_INVALID');}
   return toInputs(payload,{now:now||new Date().toISOString()});
  }
- return Object.freeze({FILENAME,FACTOR_IDS,METRIC_KEYS,Q_WEIGHTS:Object.freeze({...Q_WEIGHTS}),G_WEIGHTS:Object.freeze({...G_WEIGHTS}),SIC_GROUPS,TARGET_CIKS:Object.freeze({...TARGET_CIKS}),STANDARD_STATUS,validate,emptyRecord,restate,toInputs,loadInputs,scoreRows});
+ return Object.freeze({FILENAME,FACTOR_IDS,METRIC_KEYS,EXTRA_METRICS:Object.freeze(Object.fromEntries(Object.entries(EXTRA_METRICS).map(([k,v])=>[k,Object.freeze([...v])]))),Q_WEIGHTS:Object.freeze({...Q_WEIGHTS}),G_WEIGHTS:Object.freeze({...G_WEIGHTS}),SIC_GROUPS,TARGET_CIKS:Object.freeze({...TARGET_CIKS}),STANDARD_STATUS,validate,emptyRecord,restate,toInputs,loadInputs,scoreRows});
 });

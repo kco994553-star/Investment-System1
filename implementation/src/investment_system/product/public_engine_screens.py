@@ -429,8 +429,9 @@ def _require_macro_raw(block,sources,cut,ttl,states):
         states.append(row['state'])
 
 
-def qgv2_ttm_periods(companyfacts,cutoff):
-    """Date-only lineage for the same v2 TTM selection; never a score or new formula."""
+def qgv2_ttm_periods(companyfacts,cutoff,sic=None):
+    """Date-only lineage for the same v2 TTM selection; never a score or new formula. `sic` selects the profile exactly as
+    the published sec-qgv2.json row does (the EBIT substitute applies to GENERAL issuers only)."""
     from ..qgv import v2_factors as vf
     try:
         taxonomy,currency=vf._taxonomy_and_currency(companyfacts,cutoff)
@@ -438,7 +439,7 @@ def qgv2_ttm_periods(companyfacts,cutoff):
         facts=vf._Facts(companyfacts,taxonomy,currency,cutoff)
         ends=set().union(*(facts.annual_ends(item) for item in vf.ANCHOR_ITEMS))
         if not ends:return None
-        company=vf._Company(facts,max(ends))
+        company=vf._Company(facts,max(ends),sic=sic,profile=vf.profile_for_sic(sic))
         periods={}
         for item in ('revenue','ebit'):
             hit=company.ttm(item)
@@ -492,7 +493,7 @@ def _generate(manifest,root,as_of,stale_after):
         for rows in (qg,types,windows):rows[cid]['source_hashes']=dict(refs)
         state=_fresh(acquired,as_of,stale_after)
         valuation[cid]=_valuation.project_row(m1,state,refs,_current_ambiguity(m1) if m1['status']=='READY' else False)
-        periods=qgv2_ttm_periods(facts,acquired.astimezone(timezone.utc).date())
+        periods=qgv2_ttm_periods(facts,acquired.astimezone(timezone.utc).date(),sub.get('sic'))
         if periods is not None:windows[cid]['qgv2_ttm_periods']=periods
         timing=build_filing_timing_pattern(cid,sub,acquired,as_of)
         if timing['groups']:

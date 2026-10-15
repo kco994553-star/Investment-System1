@@ -12,7 +12,11 @@
 'use strict';
 const MODES=['v1','v2'];
 const LABEL={v1:['점수 기준 v1 · 보정 전','Score basis v1 · uncalibrated'],v2:['점수 기준 v2 · PROVISIONAL','Score basis v2 · PROVISIONAL'],v1_renormalized:['v1 · 결측 재정규화 · 참고','v1 · missing renormalized · reference']};
-const FLAG={VALUE_TRAP_CAUTION:['가치 함정 주의','Value-trap caution'],V_NOT_AVAILABLE:['V 없음','No V'],GATE_NOT_EVALUATED:['관문 판정 불가','Gate not evaluated']};
+const FLAG={VALUE_TRAP_CAUTION:['가치 함정 주의','Value-trap caution'],V_NOT_AVAILABLE:['V 없음','No V'],GATE_NOT_EVALUATED:['관문 판정 불가','Gate not evaluated'],EBIT_ESTIMATED:['추정(대체 계산)','Estimate (substitute calculation)']};
+/* EBIT_ESTIMATED: the published sec-qgv2.json row says (metrics.ebit_estimated_years >= 1) that at least one EBIT it used is the
+   substitute pretax income + interest expense (no reported operating income; QGV_V2_QG_METHOD.md rule EBIT). Every EBIT-derived
+   v2 value of that row (ROIC, moat, interest coverage, net debt/EBITDA, EV/EBIT, operating margins) carries the flag. */
+function ebitEstimated(record){const n=record&&object(record.metrics)?record.metrics.ebit_estimated_years:null;return finite(n)&&n>=1;}
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),finite=v=>typeof v==='number'&&Number.isFinite(v);
 function config(){let c=null;try{c=scoringConfig();}catch(_){c=null;}return c&&typeof c==='object'?c:{};}
 function scoringDefault(){return config().scoring_default==='v2'?'v2':'v1';}
@@ -59,7 +63,7 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
  let universe=null,v2Reason=inputs?null:'SEC_QGV2_NOT_AVAILABLE';if(inputs){try{universe=universeScores(inputs,object(quotes)?quotes:{},chosen,gateOn,memberships,cyclicalBasis);}catch(_){universe=null;v2Reason='V2_CALCULATION_FAILED';}}
  const v2Ready=!!universe&&Object.values(universe).some(r=>finite(r.total));if(universe&&!v2Ready)v2Reason='V2_SCORES_NOT_AVAILABLE';
  const b=basis(intended,v2Ready),current=b.basis,rows={};let ranked=[];
- for(const c of identities){const[v1,v1r]=v1For(record(publicScreens,'sec-qg-factors.json',c.company_id)),code=codeFor(c);let v2=v2Display(universe&&code?universe[code]:null);
+ for(const c of identities){const[v1,v1r]=v1For(record(publicScreens,'sec-qg-factors.json',c.company_id)),code=codeFor(c);let v2=v2Display(universe&&code?universe[code]:null);if(universe&&code&&universe[code]&&ebitEstimated(inputs.records[code]))v2.flags.push('EBIT_ESTIMATED');
   const ref=object(referenceRows)?referenceRows[c.company_id]:null;if(ref?.reference_only===true&&object(ref.factors)&&object(ref.axes)){try{const factors={},qg_axes={};for(const axis of ['Q','G']){let coverage=0;for(const[f,w]of Object.entries(V2.WEIGHTS[axis])){const s=ref.factors[f];factors[f]=finite(s)&&s>=0&&s<=100?s:null;if(factors[f]!==null)coverage+=w;}qg_axes[axis]={score:coverage>=50&&finite(ref.axes[axis]?.score)?ref.axes[axis].score:null};}
    v2=v2Display(V2.scoreUniverse({reference:{profile:'GENERAL',industry_group:null,factors,qg_axes,v_inputs:null,memberships:null}}, {},{preset:chosen,gate:gateOn}).reference);v2.reference_only=true;v2.reference_label='참고 순위';v2.reference_label_en='Reference ranking';}catch(_){}}
   const row={company_id:c.company_id,ticker:c.ticker,code,v1,v1_renormalized:v1r,v2};row.primary=current==='v2'?v2:v1;row.reference=current==='v2'?v1r:v2;row.rank=null;rows[c.company_id]=row;}

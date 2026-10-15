@@ -474,6 +474,60 @@ def test_debt_is_zero_only_without_any_debt_concept_and_without_interest_expense
     assert m['roic'] is None and v['total_debt'] is None
 
 
+def test_ebit_substitute_is_pretax_plus_interest_and_is_flagged_as_an_estimate():
+    """Owner decision Q-EBIT 2026-10-15: without operating income, EBIT = pretax income + interest expense, marked as an
+    estimate (metrics.ebit_estimated_years; the app shows "추정(대체 계산)")."""
+    close = lambda a, b: a is not None and math.isclose(a, b, rel_tol=1e-5)
+    ebit = lambda year: 0.2 * 146.41 / 1.1 ** (2025 - year) + 2.0  # pretax (= reported EBIT here) + interest 2.0
+    ic = 100 + 50 - 30
+    # KLAC/ETN-type: OperatingIncomeLoss never reported.
+    _, _, _, m, v = compute(simple_company(omit=('OperatingIncomeLoss',)))
+    assert close(m['roic'], ebit(2025) * 0.75 / ic) and close(m['interest_coverage'], ebit(2025) / 2.0)
+    assert close(m['net_debt_to_ebitda'], (50 - 30) / (ebit(2025) + 0.05 * 146.41))
+    assert m['moat_return_years'] == 5 and m['ebit_estimated_years'] == 6  # FY0..FY-5 all substituted
+    assert close(v['ebit']['fy_value'], ebit(2025)) and v['ebit']['ttm_end'] == '2025-12-31' and close(v['ebit']['ttm_value'], ebit(2025))
+    assert close(v['operating_margin_history'][-1]['value'], ebit(2025) / 146.41) and len(v['operating_margin_history']) == 5
+    # ROK-type: operating income only for the last three years; the older years are substituted (and counted).
+    recent = simple_company(omit=('OperatingIncomeLoss',), extra=_annual_lines((('OperatingIncomeLoss', 0.2),), years=(2023, 2024, 2025)))
+    _, _, _, m, v = compute(recent)
+    assert close(m['roic'], 0.2 * 146.41 * 0.75 / ic) and m['ebit_estimated_years'] == 3
+    assert close(v['ebit']['fy_value'], 0.2 * 146.41)
+    # A reported operating income always wins: no estimate count is published.
+    assert compute(simple_company())[3]['ebit_estimated_years'] is None
+    # Both parts are needed: without an interest expense EBIT stays NA (never pretax + 0), and nothing is flagged.
+    _, _, _, m, v = compute(simple_company(omit=('OperatingIncomeLoss', 'InterestExpense')))
+    assert m['roic'] is None and m['interest_coverage'] is None and m['ebit_estimated_years'] is None and v['ebit'] is None
+    # Parts of different spans are not added.
+    shifted = simple_company(omit=('OperatingIncomeLoss', 'InterestExpense'),
+                             extra=[(('InterestExpense', 'USD', 2.0, '2025-12-31'), {'start': '2025-01-05'})])
+    assert compute(shifted)[4]['ebit'] is None
+    # FINANCIAL issuers: interest expense is an operating cost of a bank, so no substitute (and no flag).
+    _, _, _, m, v = compute(simple_company(omit=('OperatingIncomeLoss',)), sic='6021')
+    assert m['ebit_estimated_years'] is None and v['ebit'] is None and v['operating_margin_history'] == []
+    # TTM = TTM pretax + TTM interest when both end on the same 10-Q date; otherwise TTM EBIT is NA and FY stays.
+    pretax = 'IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest'
+    ytd = _ytd(pretax, {2026: 20.0, 2025: 15.0}) + _ytd('InterestExpense', {2026: 1.2, 2025: 1.0})
+    v = compute(simple_company(omit=('OperatingIncomeLoss',), extra=ytd))[4]
+    assert v['ebit']['ttm_end'] == '2026-06-30' and math.isclose(v['ebit']['ttm_value'], ebit(2025) + 20 - 15 + 1.2 - 1.0, rel_tol=1e-9)
+    v = compute(simple_company(omit=('OperatingIncomeLoss',), extra=ytd[:2]))[4]
+    assert v['ebit']['ttm_value'] is None and close(v['ebit']['fy_value'], ebit(2025))
+    # Published through the SEC row and accepted by the strict validator; the DART key set stays METRIC_KEYS exactly.
+    facts, subs = REF.synthetic_sec('0000001000', omit=('OperatingIncomeLoss',))
+    row = q_build(facts, subs)
+    assert row['metrics']['ebit_estimated_years'] == 6 and type(row['metrics']['ebit_estimated_years']) is int
+    updates = REF.synthetic_universe_updates()
+    updates[REF._codes()[0]] = row
+    q.merge(None, updates, as_of=NOW, shard_index=0)  # require_qgv2 inside
+    payload = json.loads(facts)
+    tax, currency = vf._taxonomy_and_currency(payload, CUTOFF)
+    plain = vf.compute_reported_periods(vf._Facts(payload, tax, currency, CUTOFF), fiscal_year_end=date(2025, 12, 31))[3]
+    assert set(plain) == set(vf.METRIC_KEYS)
+
+
+def q_build(facts, subs, cik='0000001000'):
+    return q.build_row(cik=cik, companyfacts_body=facts, submissions_body=subs, acquired_at=NOW - timedelta(hours=1))
+
+
 # ---------------- percentile publication ----------------
 def test_percentile_formula_ties_and_direction():
     assert vs.percentile(0, 1, 9) == 0 and vs.percentile(8, 1, 9) == 100 and vs.percentile(4, 1, 9) == 50
@@ -630,7 +684,7 @@ def test_vectors_fixture_is_regenerated_from_the_python_validator():
     fixture = json.loads((ROOT / 'tests/fixtures/sec_qgv2_vectors_v1.json').read_text())
     assert fixture == json.loads(json.dumps(REF.build()))
     assert fixture['synthetic'] is True and len(fixture['cases']) >= 40
-    assert [c['id'] for c in fixture['cases'] if c['valid']] == ['base_valid', 'null_shard_and_registry_valid']
+    assert [c['id'] for c in fixture['cases'] if c['valid']] == ['base_valid', 'null_shard_and_registry_valid', 'ebit_estimated_years_valid']
 
 
 @pytest.mark.skipif(shutil.which('node') is None, reason='Node runtime required')

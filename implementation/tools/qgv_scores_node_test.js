@@ -157,6 +157,26 @@ test('approved playbook cyclical basis changes earnings basis without changing t
 });
 
 
+test('EBIT substitute rows (metrics.ebit_estimated_years) carry the EBIT_ESTIMATED flag "추정(대체 계산)"', () => {
+  const base = QS.compute({ identities, publicScreens: screens, quotes, scoringDefault: 'v2' });
+  const id = identities.map((c) => c.company_id).find((cid) => base.rows[cid].code && base.rows[cid].v2.state !== 'NOT_AVAILABLE');
+  assert.ok(id, 'a v2 row to mark');
+  for (const r of Object.values(base.rows)) assert.ok(!r.v2.flags.includes('EBIT_ESTIMATED'), 'no flag without the published count');
+  const p = F.payload(), code = base.rows[id].code, row = code.startsWith('TARGET:') ? p.target[code.slice(7)] : p.records[code];
+  row.metrics = { ...(row.metrics || {}), ebit_estimated_years: 2 };
+  const marked = QS.compute({ identities, publicScreens: { ...screens, [SQ.FILE]: SQ.fromInputs(SQ.light(p)) }, quotes, scoringDefault: 'v2' });
+  assert.ok(marked.rows[id].v2.flags.includes('EBIT_ESTIMATED'));
+  assert.ok(marked.rows[id].primary.flags.includes('EBIT_ESTIMATED'), 'the primary (v2 default) display carries it');
+  assert.equal(Object.values(marked.rows).filter((r) => r.v2.flags.includes('EBIT_ESTIMATED')).length, 1);
+  assert.deepEqual(QS.flagText(marked.rows[id].v2.flags.filter((f) => f === 'EBIT_ESTIMATED'), false), ['추정(대체 계산)']);
+  assert.deepEqual(QS.flagText(['EBIT_ESTIMATED'], true), ['Estimate (substitute calculation)']);
+  assert.ok(QS.judgmentRows(marked)[id].flags.includes('EBIT_ESTIMATED'));
+  // A zero or missing count is not a flag (the file publishes the count only when >= 1).
+  row.metrics.ebit_estimated_years = 0;
+  const zero = QS.compute({ identities, publicScreens: { ...screens, [SQ.FILE]: SQ.fromInputs(SQ.light(p)) }, quotes, scoringDefault: 'v2' });
+  assert.ok(!zero.rows[id].v2.flags.includes('EBIT_ESTIMATED'));
+});
+
 test('a strictly valid empty SEC v2 file keeps v1 temporary default and blocks readiness', () => {
   const S=require(path.join(W,'sec-qgv2.js')),empty=F.strictPayload();
   empty.records=Object.fromEntries(Object.keys(empty.records).map(code=>[code,S.emptyRecord()]));

@@ -168,6 +168,11 @@ def cases():
         ('metric_outside_profile', [(R + [first, 'metrics', 'roe'], 0.1)]),
         ('metric_unknown_key', [(R + [first, 'metrics', 'v_score'], 0.1)]),
         ('moat_years_too_small', [(R + [first, 'metrics', 'moat_return_years'], 2)]),
+        ('ebit_estimated_years_valid', [(R + [first, 'metrics', 'ebit_estimated_years'], 2)]),
+        ('ebit_estimated_years_zero', [(R + [first, 'metrics', 'ebit_estimated_years'], 0)]),
+        ('ebit_estimated_years_too_many', [(R + [first, 'metrics', 'ebit_estimated_years'], 7)]),
+        ('ebit_estimated_years_not_integer', [(R + [first, 'metrics', 'ebit_estimated_years'], 1.5)]),
+        ('ebit_estimated_years_on_financial', [(R + [fin, 'metrics', 'ebit_estimated_years'], 1)]),
         ('profile_mismatch', [(R + [fin, 'profile'], 'GENERAL')]),
         ('group_mismatch', [(R + [first, 'industry_group'], 'utilities')]),
         ('cross_section_size_tampered', [(['cross_section_size'], 99)]),
@@ -244,6 +249,7 @@ def build():
     constants = {'target_ciks': {cid: q.target_cik(cid) for cid in q.target_ids()},
                  'sic_groups': [[g['id'], g['sic_ranges']] for g in load_sic_config()['groups']],
                  'metric_keys': list(vf.METRIC_KEYS), 'factor_ids': list(vs.FACTOR_IDS), 'method': q.METHOD,
+                 'extra_metrics': {k: list(v) for k, v in vf.EXTRA_METRIC_PROFILES.items()},
                  'submetrics': {p: {f: [list(x) for x in specs] for f, specs in by.items()} for p, by in vs.SUBMETRICS.items()}}
     return {'synthetic': True, 'delete_marker': DELETE, 'constants': constants, 'base': payload, 'cases': out_cases}
 
