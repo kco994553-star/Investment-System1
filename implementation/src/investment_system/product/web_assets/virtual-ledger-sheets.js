@@ -649,6 +649,12 @@ function mount(view,host,ctx){
    h+=weightForm('TARGET',[...rows,...all.filter(r=>r.etf)],meta?meta.user_target:null,{title:'내 목표(TARGET) · 비공개',note:'내 실제 포트폴리오의 목표 비중(%)입니다. 내 시트 VirtualMeta에만 저장되며 그림자 장부의 목표로 씁니다. 없으면 그림자 장부는 NOT_AVAILABLE입니다(TARGET v0로 대신하지 않음). 공식 TARGET v0는 바뀌지 않습니다.',save:'내 목표 저장',connected:state.connected&&!!meta&&!state.busy});
    h+=shadowCard(state);
   }
+  // A repaint (sheet load, catalog, report result) while the user is typing keeps the focused field and caret: the typed
+  // value comes back from drafts below, the focus from here (otherwise the next keystrokes land nowhere).
+  const doc=host.ownerDocument,active=doc&&doc.activeElement&&host.contains(doc.activeElement)?doc.activeElement:null,activeForm=active&&active.closest('[data-weight-form]');
+  const focusSel=!active||!activeForm?null:active.hasAttribute('data-set-purpose')?'[data-set-purpose="'+active.getAttribute('data-set-purpose')+'"]'
+   :active.hasAttribute('data-weight')?'[data-weight-form="'+activeForm.getAttribute('data-weight-form')+'"] [data-weight="'+active.getAttribute('data-weight')+'"]':null;
+  const caret=focusSel?[active.selectionStart,active.selectionEnd]:null;
   host.innerHTML=h;
   for(const[sel,text]of Object.entries(state.notes)){const n=host.querySelector(sel);if(n)n.textContent=text;}
   const rec=host.querySelector('[data-ledger-record]');
@@ -659,6 +665,7 @@ function mount(view,host,ctx){
   for(const form of host.querySelectorAll('[data-weight-form]')){const k=form.getAttribute('data-weight-form'),draft=state.drafts[k];
    if(draft){for(const input of form.querySelectorAll('[data-weight]'))input.value=own(draft.weights,input.getAttribute('data-weight'))?draft.weights[input.getAttribute('data-weight')]:'';const p=form.querySelector('[data-set-purpose]');if(p&&typeof draft.purpose==='string')p.value=draft.purpose;sum(form);}}
   for(const input of host.querySelectorAll('[data-weight],[data-set-purpose]'))input.oninput=()=>{const form=input.closest('[data-weight-form]'),k=form.getAttribute('data-weight-form');state.drafts[k]={weights:readForm(k),purpose:readPurpose(k)};sum(form);};
+  if(focusSel){const n=host.querySelector(focusSel);if(n&&!n.disabled){n.focus();try{if(caret[0]!==null)n.setSelectionRange(caret[0],caret[1]);}catch(_){}}}
   const saved=k=>()=>{delete state.drafts[k];ctx.refresh();};
   for(const btn of host.querySelectorAll('[data-weight-save]')){const k=btn.getAttribute('data-weight-save');
    btn.onclick=()=>{const w=readForm(k),purpose=readPurpose(k),sel='[data-weight-status="'+k+'"]';
