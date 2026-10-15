@@ -48,7 +48,7 @@
 
 ## 결정 대기
 
-남은 결정은 매크로 게이트 재가동(M-REENABLE)뿐이다. 10/15 사용자 결정 일괄은 [USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md)와 PLAYBOOK_V1.md 18절에 기록했다.
+남은 결정은 매크로 게이트 재가동(M-REENABLE)뿐이다(10/15 저녁 결정까지 반영). 10/15 사용자 결정 일괄은 [USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md)와 PLAYBOOK_V1.md 18절에 기록했다.
 
 ## 다음 할 일 5개
 
@@ -57,3 +57,5 @@
 3. 그다음 #248을 병합하고 후속 수정(R-B·R-C 이름, 시세 시트 추가)을 반영한다. 숫자 대조(10종목)를 다시 해서 통과하면 `number_check_passed`를 켠다.
 4. 매크로: #239를 병합하고 M-RULE C를 반영한다. 게이트 재가동은 기기 재생 결과를 보고한 뒤 사용자 승인을 받는다.
 5. 10/19 첫 기록(목표: 그날 관측을 정직하게 기록 시작)과 10/20 확인(2-3)을 한다. 다음 보고의 핵심 3가지: 게시 기준 Q·G 각 454개 이상 여부, 수정 후 10종목 재대조 결과, 배포 실패 다음 날 원장 연속성 테스트 결과.
+
+보고 규칙(10/15 밤): 시각은 UTC와 KST를 함께 적는다. `PUBLISHED_COVERAGE`는 같은 실행의 deploy 성공을 확인했을 때만 "실제 게시 커버리지"로 보고하고, 그렇지 않으면 "생성 산출물 기준"으로 적는다.
