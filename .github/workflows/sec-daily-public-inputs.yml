@@ -3,6 +3,12 @@ on:
   schedule:
     - cron: '17 22 * * *'
   workflow_dispatch:
+    inputs:
+      all_shards:
+        description: '1회성: 504종목 전체 샤드를 한 번에 수집(새 계산 규칙 게시용)'
+        type: boolean
+        required: false
+        default: false
 permissions:
   contents: read
 jobs:
@@ -33,7 +39,9 @@ jobs:
     needs: dependency
     if: needs.dependency.outputs.ready == 'true' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # Scheduled runs keep 40 minutes. A one-off all-shards dispatch collects all 7 shards serially at the same SEC
+    # pacing (about 5.5 minutes per shard measured on 2026-10-14, so about 40 minutes for the shard step alone).
+    timeout-minutes: ${{ github.event_name == 'workflow_dispatch' && inputs.all_shards && 120 || 40 }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -65,12 +73,15 @@ jobs:
           python implementation/tools/dart_daily.py --out "$RUNNER_TEMP/public-cockpit" --qgv2-history
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       # One paced fetch per shard issuer feeds both price-free files: sec-universe-shares.json and sec-universe-qg.json (TARGET Q·G path).
+      # A manual dispatch with all_shards=true collects every shard in this one step (one-off publication under the
+      # current calculation rules); scheduled runs pass no flag and collect today's shard only.
       - name: Collect Universe504 SEC shard (price-free shares and Q·G factor projections)
         env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
           RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}
+          ALL_SHARDS_FLAG: ${{ github.event_name == 'workflow_dispatch' && inputs.all_shards && '--all-shards' || '' }}
         run: |
-          python implementation/tools/sec_universe_shares.py --live --out "$RUNNER_TEMP/public-cockpit"
+          python implementation/tools/sec_universe_shares.py --live --out "$RUNNER_TEMP/public-cockpit" $ALL_SHARDS_FLAG
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Project collected DART inputs with the same QGV v2 formulae (reference only)
         run: |
@@ -118,6 +129,11 @@ jobs:
         run: |
           python implementation/tools/news_signals.py --live --out "$RUNNER_TEMP/public-cockpit"
           python implementation/tools/pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
+      # Last step before the upload so the line sits at the end of the job log (the log API returns the last 5000
+      # lines). Counts, dates and version of the FINAL artifact's sec-qgv2.json only; reporting never withholds upload.
+      - name: Report published Q·G coverage of the final artifact (counts only)
+        continue-on-error: true
+        run: python implementation/tools/published_coverage.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Upload checked public SEC Pages artifact
         if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
