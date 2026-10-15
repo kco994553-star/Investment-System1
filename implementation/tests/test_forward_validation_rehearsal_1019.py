@@ -6,8 +6,13 @@ own tool entry points with the fake SEC/DART transports already used in tests; t
 in-memory site that each simulated deploy replaces, so each day reads the previous day's ledger through the same
 `fetch_previous` path. No network, credential, price, holding or personal value is used.
 
+The collect job's steps are read from the workflow file and run in its order (a failed required step ends the job and
+withholds deploy). Steps that do not feed the ledger (classification, domains/logos, 13F, 8-K, news) are offline no-ops
+that can be made to fail. The private release is a synthetic in-memory store (W-F2, user decision 2026-10-15).
+
 Checks: rows are appended (v2 default + v1 comparison) only on a completed session on its own date; nothing is
-backfilled; NA is never filled with 0; public output carries no price or personal value; the chain is deterministic.
+backfilled; NA is never filled with 0; public output carries no price or personal value; the chain is deterministic;
+an unrelated step's failure keeps the day's row (W-F1) and a withheld day comes back from the private copy (W-F2).
 """
 from datetime import datetime, timedelta, timezone
 import contextlib
@@ -15,6 +20,7 @@ import hashlib
 import io
 import importlib.util
 import json
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -24,6 +30,7 @@ import urllib.error
 import pytest
 
 from investment_system.validation import forward_ledger as fl
+from tests.test_forward_validation_ledger import RawStore
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / 'tools'
@@ -164,55 +171,116 @@ def seeded_site(published_at):
                  fl.FILENAME: schema_one_ledger(clock('2026-10-13', 9, 50))})
 
 
-# ---- one simulated daily run (same step order as sec-daily-public-inputs.yml) ----
-def daily_run(work, site, day, *, deploy=True, universe_fails=False):
+# ---- the collect job of sec-daily-public-inputs.yml, read as plain text (CI has no YAML parser) ----
+WORKFLOW = ROOT.parent / '.github/workflows/sec-daily-public-inputs.yml'
+LEDGER_INPUT_TOOLS = ('build_pages_cockpit', 'public_screens_pipeline', 'dart_daily', 'sec_universe_shares', 'project_dart_qgv2')
+UNRELATED_TOOLS = ('public_classification_pipeline', 'universe_domains_pipeline', 'company_logos_pipeline', 'sec_13f_managers',
+                   'sec_disclosures', 'news_signals')
+RAW_SETTING = 'synthetic private release setting'
+
+
+def collect_steps():
+    """Steps of the collect job in file order: name, tools run, guard, continue-on-error, `if:` and env (name -> value)."""
+    job = WORKFLOW.read_text().split('\n  collect:\n', 1)[1].split('\n  verify:\n', 1)[0]
+    steps = []
+    for chunk in job.split('\n      - ')[1:]:
+        lines = chunk.splitlines()
+        name = lines[0].split('name: ', 1)[1] if lines[0].startswith('name: ') else lines[0]
+        tools = [t for t in re.findall(r'python implementation/tools/([a-z0-9_]+)\.py', chunk) if t != 'pages_artifact_guard']
+        env = dict(re.findall(r'^          ([A-Z_]+): (.+)$', chunk, re.M))
+        steps.append({'name': name, 'tools': tools, 'guard': 'pages_artifact_guard.py --artifact-dir' in chunk, 'env': env,
+                      'continue': '        continue-on-error: true' in lines, 'if': any(l.startswith('        if:') for l in lines),
+                      'upload': 'actions/upload-pages-artifact@' in chunk})
+    return steps
+
+
+class StepFailed(RuntimeError):
+    pass
+
+
+# ---- one simulated daily run: the collect job's steps in workflow order; deploy only after the whole job and verify ----
+def daily_run(work, site, day, *, deploy=True, universe_fails=False, fail_tools=(), raw=None):
     buffer = io.StringIO()
     with contextlib.redirect_stdout(buffer), pytest.MonkeyPatch.context() as mp:
         # Wall-clock reads (the TARGET step's time stamp and 'not in the future' checks) see the simulated run time.
         import public_sec_inputs
         SimulatedClock.moment = clock(day, 22, 20)
         mp.setattr(public_sec_inputs, 'datetime', SimulatedClock)
-        out, log = _daily_run(work, site, day, deploy=deploy, universe_fails=universe_fails)
+        out, log = _daily_run(work, site, day, deploy=deploy, universe_fails=universe_fails, fail_tools=fail_tools, raw=raw)
     log['printed'] = buffer.getvalue()
     return out, log
 
 
-def _daily_run(work, site, day, *, deploy, universe_fails):
+def _daily_run(work, site, day, *, deploy, universe_fails, fail_tools, raw):
     from tests.dart_fake_opendart import FAKE_KEY
     from tests.test_dart_qgv2_history import SixAnnualDart
     build, guard = load_tool('build_pages_cockpit'), load_tool('pages_artifact_guard')
     pipeline, shares = load_tool('public_screens_pipeline'), load_tool('sec_universe_shares')
     dart, project, ledger = load_tool('dart_daily'), load_tool('project_dart_qgv2'), load_tool('forward_validation_ledger')
     out = work / day
-    log = {'previous_ledger': site.files.get(fl.FILENAME), 'guard': []}
+    log = {'previous_ledger': site.files.get(fl.FILENAME), 'guard': [], 'ran': [], 'failed_step': None, 'uploaded': False,
+           'ledger_exit': None}
 
-    def check(step):
-        receipt = guard.scan_artifact(out)
-        log['guard'].append((step, receipt['pages_artifact_guard']))
-        assert receipt['pages_artifact_guard'] == 'PASS', (step, receipt.get('violations'))
+    def screens(env):
+        acquired = SimulatedClock.fromtimestamp(clock(day, 22, 19).timestamp(), UTC)
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr(pipeline, 'datetime', SimulatedClock)
+            result = pipeline.collect(out, environ={'SEC_USER_AGENT': UA}, client_factory=target_client(acquired))
+        return 0 if result['failed_companies'] == 0 else 1
 
-    build.build_public_cockpit(out)
-    check('build')
-    acquired = SimulatedClock.fromtimestamp(clock(day, 22, 19).timestamp(), UTC)
-    with pytest.MonkeyPatch.context() as mp:
-        mp.setattr(pipeline, 'datetime', SimulatedClock)
-        result = pipeline.collect(out, environ={'SEC_USER_AGENT': UA}, client_factory=target_client(acquired))
-    assert result['failed_companies'] == 0
-    check('screens')
-    assert dart.run(out, environ={DART_KEY_ENV: FAKE_KEY}, transport=SixAnnualDart(), now=clock(day, 22, 24), max_calls=30,
-                    open_previous=site, include_qgv2=True, collect_history=True) == 0
-    check('dart')
-    when = clock(day, 22, 28)
-    assert shares.run(out, live=True, environ={'SEC_USER_AGENT': UA}, now=lambda: when,
-                      client_kwargs=universe_kwargs(when, fail=universe_fails), open_previous=site) == 0
-    check('universe')
-    assert project.project(out) == 0
-    check('project')
-    log['ledger_exit'] = ledger.run(out, environ={}, now=lambda: clock(day, 22, 45), open_previous=site)
-    if log['ledger_exit'] == 0:
-        check('ledger')
-        if deploy:
-            site.deploy(out)
+    def universe(env):
+        when = clock(day, 22, 28)
+        return shares.run(out, live=True, environ={'SEC_USER_AGENT': UA}, now=lambda: when,
+                          client_kwargs=universe_kwargs(when, fail=universe_fails), open_previous=site)
+
+    def append(env):
+        # The step's literal settings come from the workflow; secrets are synthetic and present only with a raw store.
+        environ = {k: v for k, v in env.items() if not v.startswith('${{')}
+        if raw is not None and 'RAW_REPO_TOKEN' in env:
+            environ['RAW_REPO_TOKEN'] = RAW_SETTING
+        log['ledger_exit'] = ledger.run(out, environ=environ, now=lambda: clock(day, 22, 45), open_previous=site,
+                                        raw_call=raw, upload_call=raw)
+        return log['ledger_exit']
+
+    def unrelated(env):
+        return 0  # offline: the placeholders from the build stay; only their failure matters here
+
+    actions = {
+        'build_pages_cockpit': lambda env: (build.build_public_cockpit(out), 0)[1],
+        'public_screens_pipeline': screens,
+        'dart_daily': lambda env: dart.run(out, environ={DART_KEY_ENV: FAKE_KEY}, transport=SixAnnualDart(),
+                                           now=clock(day, 22, 24), max_calls=30, open_previous=site, include_qgv2=True,
+                                           collect_history=True),
+        'sec_universe_shares': universe,
+        'project_dart_qgv2': lambda env: project.project(out),
+        'forward_validation_ledger': append,
+        **{tool: unrelated for tool in UNRELATED_TOOLS},
+    }
+    for step in collect_steps():
+        if step['upload']:
+            log['uploaded'] = True
+            continue
+        if not step['tools']:
+            continue  # checkout, setup and the offline test gate
+        try:
+            for tool in step['tools']:
+                if tool in fail_tools:
+                    raise StepFailed(tool)
+                if actions[tool](step['env']) != 0:
+                    raise StepFailed(tool)
+            if step['guard']:
+                receipt = guard.scan_artifact(out)
+                log['guard'].append((step['tools'][0], receipt['pages_artifact_guard']))
+                assert receipt['pages_artifact_guard'] == 'PASS', (step['name'], receipt.get('violations'))
+            log['ran'].append(step['tools'][0])
+        except StepFailed:
+            if step['continue']:
+                continue
+            log['failed_step'] = step['tools'][0]
+            break  # a failed required step ends the job: no Pages artifact, so verify and deploy do not run
+    log['deployed'] = bool(log['uploaded'] and deploy)
+    if log['deployed']:
+        site.deploy(out)
     return out, log
 
 
@@ -223,12 +291,12 @@ def ledger_of(folder):
 DAYS = ('2026-10-16', '2026-10-17', '2026-10-19', '2026-10-20')
 
 
-def rehearse(work, plan=None):
+def rehearse(work, plan=None, raw=None):
     work.mkdir(parents=True)
     site = seeded_site(clock('2026-10-15', 22, 40))
     runs = {}
     for day, options in (plan or [(d, {}) for d in DAYS]):
-        runs[day] = daily_run(work, site, day, **options)
+        runs[day] = daily_run(work, site, day, raw=raw, **options)
     return site, runs
 
 
@@ -245,6 +313,8 @@ def rows(folder, version):
 def test_each_run_reads_the_previously_deployed_ledger_and_pre_start_runs_record_nothing(chain):
     site, runs = chain
     assert all(log['ledger_exit'] == 0 for _, log in runs.values())
+    every = [t for step in collect_steps() for t in step['tools'][:1]]
+    assert all(log['ran'] == every and log['failed_step'] is None and log['deployed'] for _, log in runs.values())
     previous = schema_one_ledger(clock('2026-10-13', 9, 50))
     for day in DAYS:
         out, log = runs[day]
@@ -345,7 +415,7 @@ def test_public_output_and_logs_hold_no_price_or_personal_value(chain):
     # 987654321 / StockPrice: a synthetic price planted in every fake companyfacts body; it must never come out.
     canaries = (UA, FAKE_KEY, '987654321', 'StockPrice')
     for day, (out, log) in runs.items():
-        assert [status for _, status in log['guard']] == ['PASS'] * 6
+        assert [status for _, status in log['guard']] == ['PASS'] * sum(step['guard'] for step in collect_steps())
         for path in out.iterdir():
             if path.is_file():
                 text = path.read_bytes().decode('utf-8', errors='replace')
@@ -404,12 +474,14 @@ def test_first_run_on_the_session_day_upgrades_schema_one_and_a_withheld_deploy_
     _, runs = rehearse(tmp_path / 'c', plan=[
         # No successful run between 10/13 and 10/19: 10/19 reads the schema-1 copy itself. Every Universe SEC request
         # is refused; the staged TARGET rows and the previously published peers still give v2 Q/G. Then the day's
-        # verify fails (PR #240 split): collect and ledger finish, the deploy is withheld.
+        # verify fails (PR #240 split): collect and ledger finish, the deploy is withheld. No private copy is configured
+        # (no RAW_REPO_TOKEN), so the W-F2 read falls back to Pages.
         ('2026-10-19', {'universe_fails': True, 'deploy': False}),
         ('2026-10-20', {}),
     ])
     mon, tue = runs['2026-10-19'][0], runs['2026-10-20'][0]
     printed = runs['2026-10-19'][1]['printed']
+    assert 'FORWARD_LEDGER_PREVIOUS source=PAGES raw=NOT_CONFIGURED' in runs['2026-10-20'][1]['printed']
     assert runs['2026-10-19'][1]['previous_ledger'] == seed
     assert 'SEC_UNIVERSE_SHARES COLLECTION_NOT_RUN' in printed and 'previous_kept' in printed
     assert ledger_of(mon)['schema_version'] == 2
@@ -418,3 +490,108 @@ def test_first_run_on_the_session_day_upgrades_schema_one_and_a_withheld_deploy_
     assert runs['2026-10-20'][1]['previous_ledger'] == seed
     for version in (fl.VERSION, fl.V2_VERSION):
         assert [r['date'] for r in rows(tue, version)] == ['2026-10-20']
+
+
+# ---- 8. W-F1: the ledger and its inputs run before the required steps that do not feed it ----
+def test_collect_job_runs_ledger_inputs_and_ledger_before_unrelated_required_steps():
+    steps = [s for s in collect_steps() if s['tools'] or s['upload']]
+    order = [s['tools'][0] if s['tools'] else 'UPLOAD' for s in steps]
+    ledger = order.index('forward_validation_ledger')
+    # Exactly the steps whose files the ledger reads (actual-catalog, sec-qg-factors, sec-qgv2, dart-financials) precede it.
+    assert order[:ledger] == list(LEDGER_INPUT_TOOLS)
+    after = [t for s in steps[ledger + 1:] for t in s['tools']]
+    assert after == list(UNRELATED_TOOLS) and order[-1] == 'UPLOAD'
+    by_tool = {s['tools'][0]: s for s in steps if s['tools']}
+    # Semantics kept: the ledger step is unconditional and required; unrelated steps keep their own required/optional state.
+    assert not by_tool['forward_validation_ledger']['continue'] and not by_tool['forward_validation_ledger']['if']
+    assert [t for t in ('public_classification_pipeline', 'universe_domains_pipeline', 'sec_13f_managers')
+            if by_tool[t]['continue']] == []
+    assert by_tool['sec_disclosures']['continue'] and by_tool['news_signals']['continue'] and by_tool['dart_daily']['continue']
+    # The private-release setting and its selector live only where they are used; no other step gets them.
+    assert by_tool['forward_validation_ledger']['env'] == {'RAW_REPO_TOKEN': '${{ secrets.RAW_REPO_TOKEN }}',
+                                                           'FORWARD_LEDGER_PREVIOUS_SOURCE': 'RAW_FIRST'}
+    holders = sorted(t for t, s in by_tool.items() if 'RAW_REPO_TOKEN' in s['env'])
+    assert holders == ['forward_validation_ledger', 'sec_universe_shares']
+    assert all('FORWARD_LEDGER_PREVIOUS_SOURCE' not in s['env'] for t, s in by_tool.items() if t != 'forward_validation_ledger')
+    assert all(not s['env'] for t, s in by_tool.items() if t in ('project_dart_qgv2', 'build_pages_cockpit'))
+    job = WORKFLOW.read_text().split('\n  collect:\n', 1)[1].split('\n  verify:\n', 1)[0]
+    assert 'set -x' not in job and 'echo $' not in job and 'echo "$' not in job
+
+
+@pytest.mark.parametrize('tool', ['public_classification_pipeline', 'universe_domains_pipeline', 'company_logos_pipeline',
+                                  'sec_13f_managers'])
+def test_an_unrelated_required_step_failure_keeps_the_days_row_and_its_private_copy(tmp_path, tool):
+    raw = RawStore()
+    _, runs = rehearse(tmp_path / tool, plan=[('2026-10-19', {'fail_tools': (tool,)})], raw=raw)
+    out, log = runs['2026-10-19']
+    assert log['failed_step'] in (tool, 'universe_domains_pipeline') and not log['uploaded'] and not log['deployed']
+    assert log['ran'][:len(LEDGER_INPUT_TOOLS) + 1] == [*LEDGER_INPUT_TOOLS, 'forward_validation_ledger']
+    assert log['ledger_exit'] == 0
+    for version in (fl.VERSION, fl.V2_VERSION):
+        assert [(r['date'], r['state']) for r in rows(out, version)] == [('2026-10-19', 'RECORDED')]
+    assert raw.body('forward-ledger-2026-10-19') == (out / fl.FILENAME).read_bytes()
+    assert 'RAW_UPLOADED tag=forward-ledger-2026-10-19' in log['printed']
+
+
+# ---- 9. W-F2: a withheld day comes back from the private copy the next day ----
+@pytest.fixture(scope='module')
+def recovered(tmp_path_factory):
+    raw = RawStore()
+    site, runs = rehearse(tmp_path_factory.mktemp('recovered') / 'r', plan=[
+        ('2026-10-16', {}),
+        ('2026-10-19', {'fail_tools': ('sec_13f_managers',)}),  # 13F fails after the ledger: no artifact, no deploy
+        ('2026-10-20', {}),
+    ], raw=raw)
+    return site, runs, raw
+
+
+def test_a_withheld_day_is_recovered_from_the_private_copy_the_next_day(recovered):
+    site, runs, raw = recovered
+    mon, mon_log = runs['2026-10-19']
+    tue, tue_log = runs['2026-10-20']
+    pre_start = (runs['2026-10-16'][0] / fl.FILENAME).read_bytes()
+    assert not mon_log['deployed'] and tue_log['previous_ledger'] == pre_start  # Pages still serves the 10/16 copy
+    assert 'FORWARD_LEDGER_PREVIOUS source=RAW raw=FOUND recovered_records=1' in tue_log['printed']
+    for version in (fl.VERSION, fl.V2_VERSION):
+        assert [r['date'] for r in rows(tue, version)] == ['2026-10-19', '2026-10-20']
+        assert fl.canonical(rows(tue, version)[0]) == fl.canonical(rows(mon, version)[0])  # carried byte-identically
+    assert tue_log['deployed'] and site.files[fl.FILENAME] == (tue / fl.FILENAME).read_bytes()
+    # Each dated private copy is exactly that day's public-format ledger: nothing beyond what Pages carries next.
+    assert raw.body('forward-ledger-2026-10-19') == (mon / fl.FILENAME).read_bytes()
+    assert raw.body('forward-ledger-2026-10-20') == (tue / fl.FILENAME).read_bytes()
+    assert 'forward-ledger-2026-10-16' not in raw.releases  # nothing recorded or copied before the start
+    assert 'FORWARD_LEDGER_PREVIOUS source=PAGES raw=NONE' in runs['2026-10-16'][1]['printed']
+
+
+def test_without_a_reachable_private_copy_the_pages_copy_is_used_and_the_gap_stays(tmp_path):
+    down = RawStore(status=503)
+    _, runs = rehearse(tmp_path / 'down', plan=[
+        ('2026-10-19', {'fail_tools': ('public_classification_pipeline',)}),
+        ('2026-10-20', {}),
+    ], raw=down)
+    tue, log = runs['2026-10-20']
+    assert 'FORWARD_LEDGER_PREVIOUS source=PAGES raw=HTTP_503 recovered_records=0' in log['printed']
+    assert log['previous_ledger'] == schema_one_ledger(clock('2026-10-13', 9, 50)) and log['deployed']
+    for version in (fl.VERSION, fl.V2_VERSION):
+        assert [r['date'] for r in rows(tue, version)] == ['2026-10-20']
+
+
+def test_the_private_read_leaks_no_setting_price_or_raw_location(recovered):
+    from tests.dart_fake_opendart import FAKE_KEY
+    _, runs, raw = recovered
+    canaries = (RAW_SETTING, UA, FAKE_KEY, '987654321', 'StockPrice', RawStore.SIGNED, 'investment-system1-raw')
+    for day, (out, log) in runs.items():
+        assert not any(c in log['printed'] for c in canaries), day
+        for path in out.iterdir():
+            if path.is_file():
+                text = path.read_bytes().decode('utf-8', errors='replace')
+                assert not any(c in text for c in canaries), (day, path.name)
+        keys = {k.lower() for k in _keys(ledger_of(out))}
+        assert {k for k in keys if any(w in k for w in ('price', 'close', 'return', 'holding', 'quantity'))} == {'price_free'}
+    # The setting is never part of a request line; the signed location is read without it.
+    assert all(RAW_SETTING not in url for _, url, _ in raw.calls)
+    assert all(not url.startswith('https://api.github.com') for _, url, auth in raw.calls if not auth)
+    for line in runs['2026-10-20'][1]['printed'].splitlines():
+        if line.startswith('FORWARD_LEDGER_PREVIOUS'):
+            assert re.fullmatch(r'FORWARD_LEDGER_PREVIOUS source=[A-Z]+ raw=[A-Z_0-9]+ recovered_records=\d+', line)
+
