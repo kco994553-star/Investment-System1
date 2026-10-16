@@ -38,12 +38,16 @@ TAX_RATE_BOUNDS = (0.0, 0.5)
 FINANCIAL_SIC_RANGE = (6000, 6499)
 PROFILES = ('GENERAL', 'FINANCIAL')
 
-# Concept priority lists. For each period the first concept with a usable fact wins.
+# Concept priority lists. For each period the first concept with a usable fact wins. Pretax income, D&A and capex then
+# have documented us-gaap fallback lines (component items at the end of the list; _Company.annual_hit).
 CONCEPTS = {
     'us-gaap': {
         'revenue': ('Revenues', 'RevenueFromContractWithCustomerExcludingAssessedTax',
                     'RevenueFromContractWithCustomerIncludingAssessedTax', 'SalesRevenueNet', 'SalesRevenueGoodsNet',
-                    'RevenuesNetOfInterestExpense'),
+                    'RevenuesNetOfInterestExpense',
+                    # Utilities' total operating revenues (regulated + unregulated). Same amount the issuer tagged as
+                    # `Revenues` in years where both were reported; last in the list, so it never overrides them.
+                    'RegulatedAndUnregulatedOperatingRevenue'),
         'gross_profit': ('GrossProfit',),
         'cost_of_revenue': ('CostOfRevenue', 'CostOfGoodsAndServicesSold', 'CostOfGoodsSold'),
         'ebit': ('OperatingIncomeLoss',),
@@ -71,6 +75,25 @@ CONCEPTS = {
         'debt_current_maturities': ('LongTermDebtCurrent', 'LongTermDebtAndCapitalLeaseObligationsCurrent'),
         'debt_short_term': ('ShortTermBorrowings', 'CommercialPaper'),
         'debt_current_total': ('DebtCurrent',),
+        # Component lines, read only by _Company.annual_hit when the item above has no usable value for a fiscal year
+        # (QGV_V2_QG_METHOD.md section 1, "Fallback lines"). Never a source of their own metric.
+        'pretax_income_domestic': ('IncomeLossFromContinuingOperationsBeforeIncomeTaxesDomestic',),
+        'pretax_income_foreign': ('IncomeLossFromContinuingOperationsBeforeIncomeTaxesForeign',),
+        'depreciation': ('Depreciation',),
+        'amortization_of_intangibles': ('AmortizationOfIntangibleAssets',),
+        # Total capex reported under a narrower element name (INCY: OtherProductiveAssets; RL FY2026: MachineryAndEquipment;
+        # GLW/SNA/IT: CapitalImprovements; LLY/WEC/ADP: OtherPropertyPlantAndEquipment). Capitalized software is NOT here
+        # (owner decision pending). Used only when exactly one of them is reported for the year and no line of
+        # 'capital_expenditure_partial_lines' is: two or more lines mean each is a partial capex line, so capex stays None.
+        'capital_expenditure_fallback': ('PaymentsToAcquireOtherProductiveAssets', 'PaymentsToAcquireMachineryAndEquipment',
+                                         'PaymentsForCapitalImprovements', 'PaymentsToAcquireOtherPropertyPlantAndEquipment'),
+        'capital_expenditure_partial_lines': ('PaymentsToAcquireOilAndGasProperty', 'PaymentsToAcquireOilAndGasPropertyAndEquipment',
+                                              'PaymentsToExploreAndDevelopOilAndGasProperties', 'PaymentsToAcquireRealEstate',
+                                              'PaymentsToAcquireCommercialRealEstate', 'PaymentsToAcquireResidentialRealEstate',
+                                              'PaymentsToAcquireOtherRealEstate', 'PaymentsToDevelopRealEstateAssets',
+                                              'PaymentsForTenantImprovements', 'PaymentsForConstructionInProcess',
+                                              'PaymentsToAcquireTimberlands', 'PaymentsToAcquireBuildings', 'PaymentsToAcquireLand',
+                                              'PaymentsToAcquireFurnitureAndFixtures', 'PaymentsForProceedsFromProductiveAssets'),
     },
     'ifrs-full': {
         'revenue': ('Revenue', 'RevenueFromContractsWithCustomers'),
@@ -96,11 +119,18 @@ CONCEPTS = {
         'debt_current_maturities': ('CurrentPortionOfNoncurrentBorrowings',),
         'debt_short_term': ('ShorttermBorrowings', 'CurrentBorrowings'),
         'debt_current_total': ('CurrentBorrowingsAndCurrentPortionOfNoncurrentBorrowings',),
+        # No ifrs-full component fallbacks (us-gaap only).
+        'pretax_income_domestic': (), 'pretax_income_foreign': (), 'depreciation': (), 'amortization_of_intangibles': (),
+        'capital_expenditure_fallback': (), 'capital_expenditure_partial_lines': (),
     },
 }
+COMPONENT_ITEMS = ('pretax_income_domestic', 'pretax_income_foreign', 'depreciation', 'amortization_of_intangibles',
+                   'capital_expenditure_fallback', 'capital_expenditure_partial_lines')
 FLOW_ITEMS = ('revenue', 'gross_profit', 'cost_of_revenue', 'ebit', 'pretax_income', 'income_tax', 'net_income',
               'operating_cash_flow', 'capital_expenditure', 'depreciation_amortization', 'interest_expense',
-              'net_interest_income', 'eps_diluted', 'diluted_shares')
+              'net_interest_income', 'eps_diluted', 'diluted_shares') + COMPONENT_ITEMS
+# D&A total that "holds only depreciation": equal to `Depreciation` within this relative tolerance (FIX: 62.4 vs 62.379).
+DA_DEPRECIATION_ONLY_TOLERANCE = 0.005
 INSTANT_ITEMS = ('total_assets', 'equity', 'cash_and_equivalents', 'debt_total_long_term', 'debt_noncurrent',
                  'debt_current_maturities', 'debt_short_term', 'debt_current_total')
 # FY0 anchor: the latest annual end of any of these defines the fiscal year sequence.
@@ -363,9 +393,67 @@ class _Company:
     def a(self, item, k):
         key = ('a', item, k)
         if key not in self._cache:
-            hit = self.f.annual(item, self.end(k))
+            hit = self.annual_hit(item, self.end(k))
             self._cache[key] = hit[0] if hit else None
         return self._cache[key]
+
+    # ---- fallback lines (QGV_V2_QG_METHOD.md section 1). Each needs every component it names: never 0-filled. ----
+    def _component(self, item, target):
+        """Per-concept hits of a component item for one fiscal year: [(hit, table)]. Adapters without the item: []."""
+        out = []
+        for table in self.f.items.get(item) or ():
+            hit = self.f.annual(item, target, [table])
+            if hit is not None:
+                out.append((hit, table))
+        return out
+
+    def _single(self, item, target):
+        hits = self._component(item, target)
+        return hits[0][0] if hits else None
+
+    def _pair_sum(self, first, second, target):
+        a, b = self._single(first, target), self._single(second, target)
+        if a is None or b is None or a[1:] != b[1:]:
+            return None
+        return a[0] + b[0], a[1], a[2]
+
+    def capex_fallback(self, target):
+        """(hit, table) of the one fallback capex line reported for the year; None when none or ambiguous."""
+        hits = self._component('capital_expenditure_fallback', target)
+        if len(hits) != 1 or self._component('capital_expenditure_partial_lines', target):
+            return None
+        return hits[0]
+
+    def _depreciation_amortization(self, total, target):
+        """Depreciation + AmortizationOfIntangibleAssets (same period, both >= 0) replaces the total D&A line when
+        (a) no total D&A concept is reported for the year, or (b) the total equals Depreciation within
+        DA_DEPRECIATION_ONLY_TOLERANCE and the intangible amortization is larger than the total, so the total cannot
+        contain it (FIX). Otherwise the total is kept: a total that may already include the amortization is never
+        added to again (no double count)."""
+        dep, amo = self._single('depreciation', target), self._single('amortization_of_intangibles', target)
+        if dep is None or amo is None or dep[1:] != amo[1:] or dep[0] < 0 or amo[0] < 0:
+            return total
+        combined = (dep[0] + amo[0], dep[1], dep[2])
+        if total is None:
+            return combined
+        if (total[1:] == dep[1:] and abs(total[0] - dep[0]) <= DA_DEPRECIATION_ONLY_TOLERANCE * abs(dep[0])
+                and amo[0] > total[0]):
+            return combined
+        return total
+
+    def annual_hit(self, item, target):
+        """(value, start, end) for one fiscal year: the item's concept list first, then its documented fallback."""
+        hit = self.f.annual(item, target)
+        if item == 'depreciation_amortization':
+            return self._depreciation_amortization(hit, target)
+        if hit is not None:
+            return hit
+        if item == 'pretax_income':
+            return self._pair_sum('pretax_income_domestic', 'pretax_income_foreign', target)
+        if item == 'capital_expenditure':
+            found = self.capex_fallback(target)
+            return found[0] if found else None
+        return None
 
     def i(self, item, k):
         key = ('i', item, k)
@@ -445,10 +533,14 @@ class _Company:
     def ttm(self, item):
         """(ttm_value, period_end, ttm_year_ago_value): FY0 + YTD - YTD(prior year), all from ONE concept;
         FY0 alone (period end = FY0 end) when no concept has a later 10-Q with its prior-year comparative."""
-        fy0 = self.f.annual(item, self.fy0)
+        fy0, tables = self.f.annual(item, self.fy0), self.f.items[item]
+        if fy0 is None and item == 'capital_expenditure':
+            found = self.capex_fallback(self.fy0)  # the one fallback line, still a single concept for FY0 and YTD
+            if found is not None:
+                fy0, tables = found[0], [found[1]]
         if fy0 is None:
             return None
-        for table in self.f.items[item]:
+        for table in tables:
             one = [table]
             hit = self.f.annual(item, self.fy0, one)
             if hit is None:
@@ -469,7 +561,7 @@ class _Company:
                 if prev2 is not None:
                     ago = fy1[0] + prev[0] - prev2[0]
             return value0 + cur[0] - prev[0], cur[2], ago
-        fy1 = self.f.annual(item, _shift_years(fy0[2], 1))
+        fy1 = self.annual_hit(item, _shift_years(fy0[2], 1))
         return fy0[0], fy0[2], (fy1[0] if fy1 else None)
 
 
@@ -576,7 +668,7 @@ def _v_inputs(c, m, taxonomy, currency):
     v.update(currency=currency, taxonomy=taxonomy, fiscal_year_end=c.fy0.isoformat())
 
     def fy(item):
-        hit = c.f.annual(item, c.fy0)
+        hit = c.annual_hit(item, c.fy0)
         return (hit[0], hit[2].isoformat()) if hit else (None, None)
 
     def ttm(item):

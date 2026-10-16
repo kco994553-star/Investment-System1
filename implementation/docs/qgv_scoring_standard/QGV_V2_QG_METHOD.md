@@ -29,19 +29,46 @@ All inputs come from one SEC companyfacts payload. Only facts filed on or before
 
 | Line | us-gaap (priority order) | ifrs-full |
 |---|---|---|
-| revenue | Revenues, RevenueFromContractWithCustomerExcludingAssessedTax, …IncludingAssessedTax, SalesRevenueNet, SalesRevenueGoodsNet, RevenuesNetOfInterestExpense | Revenue, RevenueFromContractsWithCustomers |
+| revenue | Revenues, RevenueFromContractWithCustomerExcludingAssessedTax, …IncludingAssessedTax, SalesRevenueNet, SalesRevenueGoodsNet, RevenuesNetOfInterestExpense, RegulatedAndUnregulatedOperatingRevenue (utilities, last) | Revenue, RevenueFromContractsWithCustomers |
 | gross profit | GrossProfit, else revenue − (CostOfRevenue, CostOfGoodsAndServicesSold, CostOfGoodsSold) | GrossProfit / CostOfSales |
 | EBIT | OperatingIncomeLoss | ProfitLossFromOperatingActivities |
-| pretax / tax | IncomeLossFromContinuingOperationsBeforeIncomeTaxes…(2 concepts) / IncomeTaxExpenseBenefit | ProfitLossBeforeTax / IncomeTaxExpenseContinuingOperations |
+| pretax / tax | IncomeLossFromContinuingOperationsBeforeIncomeTaxes…(2 concepts), else fallback **F1** / IncomeTaxExpenseBenefit | ProfitLossBeforeTax / IncomeTaxExpenseContinuingOperations |
 | net income | NetIncomeLoss, ProfitLoss | ProfitLossAttributableToOwnersOfParent, ProfitLoss |
-| OCF / capex | NetCashProvidedByUsedInOperatingActivities(…ContinuingOperations) / PaymentsToAcquirePropertyPlantAndEquipment, PaymentsToAcquireProductiveAssets | CashFlowsFromUsedInOperatingActivities / PurchaseOfPropertyPlantAndEquipment(…ClassifiedAsInvestingActivities) |
-| D&A | DepreciationDepletionAndAmortization, DepreciationAmortizationAndAccretionNet, DepreciationAndAmortization | DepreciationAndAmortisationExpense, AdjustmentsFor… |
+| OCF / capex | NetCashProvidedByUsedInOperatingActivities(…ContinuingOperations) / PaymentsToAcquirePropertyPlantAndEquipment, PaymentsToAcquireProductiveAssets, else fallback **F3** | CashFlowsFromUsedInOperatingActivities / PurchaseOfPropertyPlantAndEquipment(…ClassifiedAsInvestingActivities) |
+| D&A | DepreciationDepletionAndAmortization, DepreciationAmortizationAndAccretionNet, DepreciationAndAmortization, then rule **F2** | DepreciationAndAmortisationExpense, AdjustmentsFor… |
 | interest expense | InterestExpense, InterestExpenseNonoperating, InterestExpenseDebt, InterestAndDebtExpense | FinanceCosts, InterestExpense |
 | net interest income | InterestIncomeExpenseNet | InterestIncomeExpenseNet, NetInterestIncomeExpense |
 | diluted EPS / shares | EarningsPerShareDiluted, …BasicAndDiluted / WeightedAverageNumberOfDilutedSharesOutstanding, …ShareOutstandingBasicAndDiluted | DilutedEarningsLossPerShare / AdjustedWeightedAverageShares |
 | assets / equity | Assets / StockholdersEquity, …IncludingPortionAttributableToNoncontrollingInterest | Assets / EquityAttributableToOwnersOfParent, Equity |
 | cash | CashAndCashEquivalentsAtCarryingValue, CashCashEquivalentsRestrictedCash…, Cash | CashAndCashEquivalents |
 | total debt | LongTermDebt (incl. current maturities), else LongTermDebtNoncurrent or LongTermDebtAndCapitalLeaseObligations (+ LongTermDebtCurrent / …CapitalLeaseObligationsCurrent when reported); plus ShortTermBorrowings, else CommercialPaper. If the noncurrent path has no current-maturities line but `DebtCurrent` is reported, debt = noncurrent + DebtCurrent (no separate short-term add, to avoid double counting). If none of these lines is reported, debt is NA. | Borrowings, else NoncurrentPortionOfNoncurrentBorrowings/NoncurrentBorrowings (+ CurrentPortionOfNoncurrentBorrowings); plus ShorttermBorrowings/CurrentBorrowings |
+
+**Fallback lines (us-gaap only; added 2026-10-14 after the 10-K number check
+[QGV_V2_NUMBER_CHECK_20261014.md](QGV_V2_NUMBER_CHECK_20261014.md) §7 items 2, 3, 5).** They apply per fiscal year, read the
+same annual facts as above (PIT, revision and ±10-day rules), and need every component they name: a missing component is never
+taken as 0, so the line stays NA. ifrs-full has no fallback lines. Code: `_Company.annual_hit` in `qgv/v2_factors.py`.
+
+- **F1 pretax income (DECK):** when neither pretax concept is reported for the year, pretax =
+  `IncomeLossFromContinuingOperationsBeforeIncomeTaxesDomestic` + `…Foreign`, both for the same span. A domestic-only filer
+  keeps NA (default 21% tax rate). A reported total always wins.
+- **F2 D&A = `Depreciation` + `AmortizationOfIntangibleAssets`** (same span, both ≥ 0) in exactly two cases:
+  (a) no D&A concept of the list is reported for the year (EME: 67.4 + 119.1); or
+  (b) the D&A concept the list selected equals `Depreciation` within 0.5% **and** the intangible amortization is larger than
+  that total, so the total cannot contain it (FIX: `DepreciationAndAmortization` 62.4 = `Depreciation` 62.379, amortization
+  79.6 → D&A 142.0). Otherwise the selected total is kept: when the amortization is smaller than a total equal to `Depreciation`
+  (BBY 831 vs 14), the total may already include it, so nothing is added (no double count). One component alone is not D&A.
+- **F3 capex fallback:** when neither capex concept is reported for the year, one of `PaymentsToAcquireOtherProductiveAssets`
+  (INCY), `PaymentsToAcquireMachineryAndEquipment` (RL FY2026), `PaymentsForCapitalImprovements` (GLW, SNA, IT),
+  `PaymentsToAcquireOtherPropertyPlantAndEquipment` (LLY, WEC, ADP) — **only if exactly one of these four is reported for the
+  year and none of the partial capex lines is**: oil-and-gas property (`PaymentsToAcquireOilAndGasProperty`,
+  `…OilAndGasPropertyAndEquipment`, `PaymentsToExploreAndDevelopOilAndGasProperties`), real estate (`PaymentsToAcquireRealEstate`,
+  `…CommercialRealEstate`, `…ResidentialRealEstate`, `…OtherRealEstate`, `PaymentsToDevelopRealEstateAssets`,
+  `PaymentsForTenantImprovements`, `PaymentsToAcquireBuildings`, `PaymentsToAcquireLand`), `PaymentsForConstructionInProcess`,
+  `PaymentsToAcquireTimberlands`, `PaymentsToAcquireFurnitureAndFixtures`, `PaymentsForProceedsFromProductiveAssets` (net of
+  disposals). Two or more such lines mean each is a part of capex (LNT utility + other, EOG, HST, REITs), so capex stays NA.
+  TTM still uses one concept: the fallback concept's own 10-Q YTD facts (RL tags its 10-Qs with another concept, so its TTM FCF
+  stays NA while FY FCF resolves). Capitalized software (`PaymentsToAcquireSoftware`, `PaymentsForSoftware`,
+  `PaymentsToDevelopSoftware`) is **not** capex here; whether to include it is an open owner decision (MA −4.2% FCF).
 
 Derived lines: tax rate = income tax ÷ pretax income, clamped to 0–50%, when pretax > 0. Otherwise the default 21% applies
 (DEFAULT_TAX_RATE, uncalibrated). NOPAT = EBIT × (1 − tax rate). Invested capital (IC) = equity + total debt − cash (must be > 0).
@@ -153,6 +180,10 @@ and every peer count from the published metrics, and reject any mismatch, price/
 - FINANCIAL uses SIC 6000–6499. Whether REITs (6798) or payment networks (7389) should move needs a decision.
 - The debt definition excludes operating leases. Debt-free issuers with no debt concept get NA ROIC and net-debt/EBITDA rather than 0.
 - No earnings-surprise sub-metric. Add one only if a free source is approved.
+- Fallback lines F1–F3 (section 1), still open: capitalized software in capex (MA); a `Revenues` total that is gross of
+  intersegment eliminations (RSG); a D&A total equal to the intangible amortization only (NDSN, not covered by F2);
+  MAA tags real-estate development as `PaymentsToAcquireInProcessResearchAndDevelopment`, so F3 takes its capital
+  improvements alone (partial capex); stock-split discontinuities in per-share history (KLAC).
 - The first week after launch has a partial cross-section (about 72 issuers per day). Peer bases fall back to the universe until each group reaches 8.
 
 
