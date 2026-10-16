@@ -28,9 +28,14 @@ const noOverflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=i
    await page.locator('#watch-disclosures [data-disclosure]').first().waitFor();assert.deepEqual(await page.locator('#watch-disclosures [data-disclosure]').evaluateAll(n=>n.map(x=>x.dataset.occurrence)),['REPEAT','NEW']);
    assert.match(await page.locator('[data-week-filings]').textContent(),/^\d+ · 추정 \d+ · 확인 \d+ · /);assert.ok(await noOverflow(page),'overflow S15');
    await page.locator('#watch-disclosures').screenshot({path:path.join(SHOTS,'sec-disclosures-watchlist-'+width+'.png')});
-   phase='COMPANY';await page.goto(BASE+'#company/nvda');await page.locator('[data-earnings-status="CONFIRMED"]').first().waitFor();
+   // S04 keeps one next-earnings line; the confirmed-status badge is on S05 (E row) and the raw filing card in Settings >
+   // 원자료 보기(개발자용) (owner decision 2026-10-14).
+   phase='COMPANY';await page.goto(BASE+'#company/nvda');await page.locator('[data-next-earnings-line]').waitFor();assert.equal(await page.locator('[data-next-earnings-line]').count(),1);
+   assert.match(await page.locator('[data-next-earnings-line]').textContent(),/^다음 실적 (\d\d\/\d\d경 \(확정 아님\) · D-\d+|확인 불가)$/);assert.ok(await noOverflow(page),'overflow company');
+   await page.goto(BASE+'#analysis/nvda');await page.locator('[data-analysis-tab="events"]').click();await page.locator('[data-earnings-status="CONFIRMED"]').first().waitFor();
    assert.equal(await page.locator('[data-earnings-status="CONFIRMED"]').first().textContent(),'확인');assert.equal(await page.locator('[data-earnings-status="ESTIMATED"]').count(),0);
-   assert.ok(await page.locator('[data-earnings-confirmed]').count()>0);assert.ok(await noOverflow(page),'overflow company');
+   await page.goto(BASE+'#settings');await page.locator('[data-raw-data] > summary').click();await page.locator('[data-raw-data] [data-earnings-confirmed]').first().waitFor();
+   assert.ok(await page.locator('[data-raw-data] [data-earnings-confirmed]').count()>0);
    assert.equal(errors,0);assert.deepEqual(outside,[]);pass++;console.log('PASS sec disclosures S07/S15/company '+width);
   }catch(e){fail++;console.log('FAIL sec disclosures '+width+' '+phase+' '+(e.code==='ERR_ASSERTION'?'CONTRACT':'EXECUTION'));if(process.env.DEBUG_TEST)console.log(e);}finally{await context.close();}}}
  finally{await browser.close();}console.log('COUNTS pass='+pass+' fail='+fail);process.exitCode=fail?1:0;})();

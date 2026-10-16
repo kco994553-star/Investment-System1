@@ -2,7 +2,9 @@
 import copy
 import importlib.util
 import json
+import re
 from pathlib import Path
+import subprocess
 import sys
 
 import pytest
@@ -123,9 +125,74 @@ def test_daily_workflow_is_default_branch_only_and_checks_exact_public_directory
         assert forbidden not in source
     assert 'pages_artifact_guard.py' in source and 'test_public_sec_inputs.py' in source
     assert source.index('pages_artifact_guard.py') < source.index('actions/upload-pages-artifact')
-    assert source.index('ci_browser_tests.txt') < source.index('actions/upload-pages-artifact')
+    # Browser checks gate the deploy job (see the job-structure test below), not the collect job's artifact upload.
+    assert source.index('actions/upload-pages-artifact') < source.index('ci_browser_tests.txt') < source.index('actions/deploy-pages')
     assert 'private_trades_browser_test.js' in (TOOLS / 'ci_browser_tests.txt').read_text().split()
-    assert 'path: ${{ runner.temp }}/public-cockpit' in source and 'needs: build' in source
+    assert 'path: ${{ runner.temp }}/public-cockpit' in source and 'needs: collect' in source
+
+
+def _daily_jobs(source):
+    """Top-level job blocks of the daily workflow by name (plain text; CI has no YAML parser installed)."""
+    body = source.split('\njobs:\n', 1)[1]
+    jobs, name = {}, None
+    for line in body.splitlines():
+        match = re.match(r'^  ([a-z_]+):$', line)
+        if match:
+            name = match.group(1)
+            jobs[name] = []
+        elif name is not None:
+            jobs[name].append(line)
+    return {k: '\n'.join(v) for k, v in jobs.items()}
+
+
+def test_daily_workflow_separates_collection_from_verification_and_deploy():
+    source = (TOOLS.parents[1] / '.github/workflows/sec-daily-public-inputs.yml').read_text()
+    jobs = _daily_jobs(source)
+    assert list(jobs) == ['dependency', 'collect', 'verify', 'deploy']
+    collect, verify, deploy = jobs['collect'], jobs['verify'], jobs['deploy']
+    # Collection, public JSON and the ledger never wait for screen verification.
+    assert '    needs: dependency' in collect.splitlines() and 'verify' not in collect
+    for tool in ['public_screens_pipeline.py --live', 'public_classification_pipeline.py --live', 'universe_domains_pipeline.py --live',
+                 'company_logos_pipeline.py --live', 'sec_13f_managers.py', 'dart_daily.py', 'sec_universe_shares.py --live',
+                 'project_dart_qgv2.py', 'forward_validation_ledger.py', 'sec_disclosures.py --live', 'news_signals.py --live']:
+        step = 'python implementation/tools/' + tool
+        assert source.count(step) == 1 and step in collect, tool
+    assert source.count('actions/upload-pages-artifact@') == 1 and 'actions/upload-pages-artifact@' in collect
+    assert collect.index('forward_validation_ledger.py') < collect.index('actions/upload-pages-artifact')
+    assert 'RAW_REPO_TOKEN: ${{ secrets.RAW_REPO_TOKEN }}' in collect[collect.index('Append forward validation ledger'):]
+    assert 'ci_browser_tests.txt' not in collect and 'ci_node_tests.txt' not in collect and 'permissions:' not in collect
+    # Verification checks exactly the uploaded artifact, holds no secret and no extra permission.
+    assert '    needs: collect' in verify.splitlines() and 'secrets.' not in verify and 'permissions:' not in verify
+    assert 'name: github-pages' in verify and 'pages_artifact_guard.py --artifact-dir "$RUNNER_TEMP/public-cockpit"' in verify
+    for manifest in ['ci_node_tests.txt', 'ci_browser_tests.txt', 'sec_m2_candidates_browser_test.js']:
+        assert f'bash "$VERIFY" {manifest} ' in verify, manifest
+    assert 'VERIFY=implementation/tools/daily_verify_step.sh' in verify
+    # Deploy publishes only after verification succeeded; it alone holds Pages permissions.
+    assert '    needs: [collect, verify]' in deploy.splitlines() and "needs.verify.result == 'success'" in deploy
+    assert 'pages: write' in deploy and 'id-token: write' in deploy and source.count('pages: write') == 1
+    assert 'actions/deploy-pages@' in deploy and 'actions/deploy-pages@' not in collect + verify
+
+
+def test_daily_verify_step_records_one_fixed_token(tmp_path):
+    script = TOOLS / 'daily_verify_step.sh'
+    passing = subprocess.run(['bash', str(script), 'label', 'true'], capture_output=True, text=True)
+    assert passing.returncode == 0 and 'DAILY_VERIFY_FAILED' not in passing.stdout
+    failing = subprocess.run(['bash', str(script), 'worker-tests', 'bash', '-c', 'echo secret-value-123; exit 3'],
+                             capture_output=True, text=True)
+    assert failing.returncode == 3
+    assert 'DAILY_VERIFY_FAILED test=worker-tests exit=3\n' in failing.stdout
+    assert failing.stdout.count('DAILY_VERIFY_FAILED test=') == 2  # log line + ::error annotation
+    # A manifest run names its failing entry, as run_js_tests.sh reports it.
+    root = tmp_path / 'repo'
+    (root / 'implementation/tools').mkdir(parents=True)
+    (root / 'implementation/tools/run_js_tests.sh').write_bytes((TOOLS / 'run_js_tests.sh').read_bytes())
+    (root / 'implementation/tools/ok_test.js').write_text('process.exitCode=0;')
+    (root / 'implementation/tools/bad_test.js').write_text('console.log("value 42");process.exitCode=1;')
+    (root / 'manifest.txt').write_text('ok_test.js\nbad_test.js\n')
+    result = subprocess.run(['bash', str(script), 'manifest.txt', 'bash', 'implementation/tools/run_js_tests.sh', 'manifest.txt'],
+                            cwd=root, capture_output=True, text=True)
+    assert result.returncode == 1
+    assert result.stdout.splitlines()[-2] == 'DAILY_VERIFY_FAILED test=bad_test.js exit=1'
 
 
 def test_missing_secret_stops_before_factory_or_requests(tmp_path):
