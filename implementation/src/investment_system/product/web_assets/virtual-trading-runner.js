@@ -121,8 +121,16 @@ function coverage(row){
  if(row.state==='STALE'||axes.includes('PARTIAL'))return'PARTIAL';
  return'READY';
 }
+/* v2 evaluation records (owner instruction 2026-10-16; forward-validation.js segments): only the current evaluation segment
+   (the calc_version of the latest RECORDED row) is run, never chained with an earlier segment. Inside it, PREPARATORY rows
+   ("준비 관측·주 평가 대상 아님") stay out; a row written before the observation basis existed is its own LEGACY segment. */
+function evaluationRecords(rows){
+ let key,out=[];for(const r of Array.isArray(rows)?rows:[]){if(!(object(r)&&r.state==='RECORDED'))continue;
+  const b=object(r.basis)?r.basis:null,k=b?'segment:'+String(b.segment):'legacy';if(k!==key){key=k;out=[];}
+  if(b===null||object(b.evaluation)&&b.evaluation.eligible===true)out.push(r);} // eligible === PRIMARY (validated)
+ return out;}
 function snapshotsFromLedger(forward){
- const out={};let records;try{records=forward.versions[forward.schema_version===2?FORWARD_V2_VERSION:FORWARD_VERSION];}catch(_){return out;}
+ const out={};let records;try{records=forward.schema_version===2?evaluationRecords(forward.versions[FORWARD_V2_VERSION]):forward.versions[FORWARD_VERSION];}catch(_){return out;}
  for(const r of Array.isArray(records)?records:[]){
   if(!(object(r)&&r.state==='RECORDED'&&day(r.date)&&object(r.companies)))continue;
   const rows={};for(const cid of Object.keys(r.companies).sort()){const row=r.companies[cid];rows[cid]={q:row.Q.score,g:row.G.score,coverage:coverage(row)};}
@@ -170,7 +178,7 @@ function assemble({config,catalog,forward_ledger=null,classification=null,histor
  for(const etf of [...etfs,...DASHBOARD_ETFS.filter(e=>!etfs.includes(e)).sort()])if(!own(out.sources,etf))source(etf,'USD');
  out.sector=sector;for(const sym of [SP500_SYMBOL,...DASHBOARD_ETFS,FX_SYMBOLS.USD])if(own(series,sym))out.indices[sym]=series[sym];
  if(spy===null){out.state='NOT_AVAILABLE';out.reason_codes=['SESSIONS_NOT_AVAILABLE'];for(const k of KINDS)out.ledgers[k]=unavailable(['SESSIONS_NOT_AVAILABLE']);return out;}
- const v2Rows=forward_ledger?.schema_version===2?forward_ledger.versions[FORWARD_V2_VERSION]:null,readyDate=v2Rows?[...v2Rows].find(r=>r.state==='RECORDED'&&Object.values(r.companies||{}).some(c=>num(c.Q?.score)&&num(c.G?.score)))?.date:null;
+ const v2Rows=forward_ledger?.schema_version===2?evaluationRecords(forward_ledger.versions[FORWARD_V2_VERSION]):null,readyDate=v2Rows?[...v2Rows].find(r=>r.state==='RECORDED'&&Object.values(r.companies||{}).some(c=>num(c.Q?.score)&&num(c.G?.score)))?.date:null;
  const sessions=Object.keys(spy).filter(d=>start!==null&&d>=start&&(v2Rows===null||readyDate&&d>=readyDate)); // v2 starts on its first prepared day, never earlier.
  const v2Basis=forward_ledger?.schema_version===2,snapshots=snapshotsFromLedger(forward_ledger),vScores=v2Basis?{}:vScoresFromStore(v_store),vComposition=v2Basis?{}:vCompositionFromStore(v_composition),flagRows=flagsFromStore(flags); // v1 stored V never joins a v2 Q/G snapshot.
  // Every ledger carries every priced member (a stored set definition is then derived from any ledger input); the engine
@@ -305,6 +313,6 @@ async function run(view,{config={},catalog,reportDate,signal=null,onProgress=nul
  if(histories===null)histories=await fetchHistories(view,{session,origin:config.privateHistoryWorkerOrigin,symbols,spacingMs:spacing(config),signal,onProgress});
  return assemble({config:typeof rehearsal==='function'?rehearsal(histories,cfg):cfg,catalog,forward_ledger:forward.state==='LOADED'?forward.ledger:null,classification,histories,holdings,set_b,sets,user_target,v_store:readVStore(view.localStorage),v_composition:readVComposition(view.localStorage),flags:flags||[]});
 }
-return Object.freeze({SCHEMA,CODES,IDS,TARGETS,ETF_MEMBERS,MEMBERS,USER_SETS,KINDS,SP500_SYMBOL,FX_SYMBOLS,DASHBOARD_ETFS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,snapshotsFromLedger,
+return Object.freeze({SCHEMA,CODES,IDS,TARGETS,ETF_MEMBERS,MEMBERS,USER_SETS,KINDS,SP500_SYMBOL,FX_SYMBOLS,DASHBOARD_ETFS,V_KEY,RANGE,catalogTargets,sectorFor,requiredSymbols,seriesFromHistory,coverage,evaluationRecords,snapshotsFromLedger,
  vScoresFromStore,vCompositionFromStore,flagsFromStore,assemble,holdingsFromSnapshot,readVStore,readVComposition,ledgerFor,statusRows,readiness,fetchHistories,run,clearCache});
 });

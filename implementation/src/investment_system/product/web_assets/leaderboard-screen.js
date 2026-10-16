@@ -42,7 +42,7 @@ function mount(host,identities,{publicScreens={},locale,view='default',profiles=
   else company.append(el('span',' · '+(ready?'M3 — · '+r.m3.reason_codes.join(' / '):'—'),{class:'small','data-leaderboard-m3':'NOT_AVAILABLE','data-reason':r.m3.reason_codes.join(' ')}));
   const qgv=el('td','—'),sc=view!=='profile'?r.score:null;
   if(sc){const p=sc.primary;const has=p.state!=='NOT_AVAILABLE'||p.q!==null||p.g!==null;qgv.textContent='';if(has)qgv.append(el('span',qgvScores().summaryText(p,en),{class:'small','data-leaderboard-qgv2':''}));else qgv.append(el('span',qgvScores().naText(p,en),{class:'small','data-leaderboard-qgv2':'NOT_AVAILABLE'}));
-   if(has)for(const f of qgvScores().flagText(p.flags,en))qgv.append(el('span',' '+f,{class:'badge STALE','data-qgv2-flag':''}));}
+   if(has)for(const f of qgvScores().flagText(p.flags,en,p))qgv.append(el('span',' '+f,{class:'badge STALE','data-qgv2-flag':''}));}
   else if(view==='profile'&&(r.q!==null||r.g!==null))qgv.append(el('span',' Q '+show(r.q)+' · G '+show(r.g)+(r.partial?(en?' (partial)':' (부분)'):'')+(r.factors?(en?' · factors ':' · 요인 ')+r.factors:'')+(weights?' · PREVIEW':''),{class:'small','data-leaderboard-qg':''}));
   tr.append(el('td',sc&&sc.rank!==null?String(sc.rank):'—',sc&&sc.rank!==null?{'data-leaderboard-rank':String(sc.rank)}:{}),company,qgv,el('td','—'),el('td','—'),el('td','—'),el('td','—'),el('td','—'),el('td',r.earnings_status==='CONFIRMED'?(en?'Confirmed':'확인'):(r.next_window?r.next_window+(en?' (est.)':' (예상)'):'—'),{'data-earnings-qg-confirmation':r.earnings_status}),el('td','—'));body.append(tr);}
  if(!rows.length){const tr=el('tr');tr.append(el('td',en?'No matching companies.':'일치하는 기업이 없습니다.',{colspan:String(COLUMNS.length)}));body.append(tr);}
