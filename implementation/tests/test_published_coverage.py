@@ -95,6 +95,7 @@ def test_calc_version_is_shown_only_when_present_and_plain():
     payload = REF.base()
     assert TOOL.coverage_line(payload).endswith(' calc_version=NONE')
     assert TOOL.coverage_line(dict(payload, calc_version='qgv2-2026-10-15')).endswith(' calc_version=qgv2-2026-10-15')
+    assert TOOL.coverage_line(dict(payload, calc_version='qgv2-calc/2026-10-15.1')).endswith(' calc_version=qgv2-calc/2026-10-15.1')
     assert TOOL.coverage_line(dict(payload, calc_version='bad value with spaces')).endswith(' calc_version=NONE')
     assert TOOL.coverage_line(dict(payload, calc_version=3)).endswith(' calc_version=NONE')
 
