@@ -31,15 +31,16 @@ def project(directory):
         print('DART_QGV2_REFERENCE NOT_AVAILABLE code=PROJECTION_FAILED')
         return 0
     state = payload['companies']['hanmi']['state']
-    universe = {}
+    universe, calc_version = {}, None
     try:
         from investment_system.universe import sec_qgv2
         source = Path(directory) / sec_qgv2.FILENAME
         if source.is_file():
-            universe = sec_qgv2.require_qgv2(sec_qgv2.parse_json(source.read_bytes()))['records']
+            peers = sec_qgv2.require_qgv2(sec_qgv2.parse_json(source.read_bytes()))
+            universe, calc_version = peers['records'], peers.get('calc_version')
     except Exception:
         pass
-    result = reference_score(payload['companies']['hanmi'], universe)
+    result = reference_score(payload['companies']['hanmi'], universe, calc_version)
     fields = ['DART_QGV2_REFERENCE', 'state=' + state, 'comparison=REFERENCE_ONLY']
     for axis in ('Q', 'G'):
         row = result['axes'][axis]
