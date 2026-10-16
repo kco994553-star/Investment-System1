@@ -11,7 +11,8 @@ Rules (ENGINE_V1.md, VIRTUAL_TRADING_V1_PROPOSAL.md):
 - Bar dates are the listing's local session date (bar.session_date, else the timestamp in the payload timezone),
   the same rule as private-history.js / forward-validation.js.
 - Sessions are the SPY (S&P 500 proxy) session dates on or after start_date. No SPY → no ledger (NOT_AVAILABLE).
-- Q·G snapshots come only from the public forward ledger's RECORDED records. V scores come only from values stored
+- Q·G snapshots come only from the public forward ledger's RECORDED records (v2: the current evaluation segment's
+  PRIMARY records; PREPARATORY records and earlier segments are never chained in). V scores come only from values stored
   on the device per date; nothing is invented.
 - A symbol the client or Worker rejected keeps its error code and is absent from the input (NOT_AVAILABLE).
 """
@@ -238,12 +239,34 @@ def coverage(row):
     return 'READY'
 
 
+def evaluation_records(rows):
+    """v2 evaluation records (owner instruction 2026-10-16; JS evaluationRecords): only the current evaluation segment (the
+    calc_version of the latest RECORDED row) is run, never chained with an earlier segment. Inside it PREPARATORY rows
+    ("준비 관측·주 평가 대상 아님") stay out; a row written before the observation basis existed is its own LEGACY segment."""
+    key, out = None, []
+    for r in rows if isinstance(rows, list) else []:
+        if not (isinstance(r, dict) and r.get('state') == 'RECORDED'):
+            continue
+        basis = r.get('basis') if isinstance(r.get('basis'), dict) else None
+        k = 'segment:' + str(basis.get('segment')) if basis is not None else 'legacy'
+        if k != key:
+            key, out = k, []
+        evaluation = basis.get('evaluation') if basis is not None else None
+        if basis is None or isinstance(evaluation, dict) and evaluation.get('eligible') is True:  # eligible == PRIMARY (validated)
+            out.append(r)
+    return out
+
+
 def snapshots_from_ledger(forward):
-    """Q·G per NYSE session date from RECORDED records of the public forward ledger (no V, no prices)."""
+    """Q·G per NYSE session date from RECORDED records of the public forward ledger (no V, no prices); for a v2 ledger,
+    the current evaluation segment's primary records only (evaluation_records)."""
     out = {}
     try:
-        records = forward['versions'][FORWARD_V2_VERSION if forward.get('schema_version') == 2 else FORWARD_VERSION]
-    except (TypeError, KeyError):
+        if forward.get('schema_version') == 2:
+            records = evaluation_records(forward['versions'][FORWARD_V2_VERSION])
+        else:
+            records = forward['versions'][FORWARD_VERSION]
+    except (TypeError, KeyError, AttributeError):
         return out
     for r in records if isinstance(records, list) else []:
         if not (isinstance(r, dict) and r.get('state') == 'RECORDED' and _day(r.get('date')) and isinstance(r.get('companies'), dict)):
@@ -351,7 +374,7 @@ def assemble(*, config, catalog, forward_ledger=None, classification=None, histo
         out.update(state='NOT_AVAILABLE', reason_codes=['SESSIONS_NOT_AVAILABLE'])
         out['ledgers'] = {k: _unavailable(['SESSIONS_NOT_AVAILABLE']) for k in KINDS}
         return out
-    v2_rows = forward_ledger['versions'].get(FORWARD_V2_VERSION, []) if isinstance(forward_ledger, dict) and forward_ledger.get('schema_version') == 2 else None
+    v2_rows = evaluation_records(forward_ledger['versions'].get(FORWARD_V2_VERSION, [])) if isinstance(forward_ledger, dict) and forward_ledger.get('schema_version') == 2 else None
     ready_date = next((r['date'] for r in v2_rows if r.get('state') == 'RECORDED' and any(_num(c['Q']['score']) and _num(c['G']['score']) for c in (r.get('companies') or {}).values())), None) if v2_rows is not None else None
     sessions = [d for d in spy if start is not None and d >= start and (v2_rows is None or ready_date is not None and d >= ready_date)]
     snapshots = snapshots_from_ledger(forward_ledger)
