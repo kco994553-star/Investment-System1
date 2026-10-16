@@ -32,7 +32,7 @@ FACTOR_IDS = tuple(Q_WEIGHTS_V2) + tuple(G_WEIGHTS_V2)
 MIN_PEERS = 8
 AXIS_COVERAGE_MIN = 50
 PEER_BASES = ('INDUSTRY_GROUP', 'UNIVERSE_FALLBACK', 'UNIVERSE', 'FINANCIAL_PROFILE')
-AXIS_REASONS = ('ROW_NOT_AVAILABLE', 'PEERS_BELOW_MINIMUM', 'AXIS_COVERAGE_BELOW_50')
+AXIS_REASONS = ('ROW_NOT_AVAILABLE', 'PEERS_BELOW_MINIMUM', 'AXIS_COVERAGE_BELOW_50', 'CALC_VERSION_MISMATCH')
 SCORED_STATES = ('LIVE', 'STALE')
 
 # (metric, direction): +1 higher is better, -1 lower is better.
@@ -109,8 +109,17 @@ def _empty_axis(reason):
             'submetric_fallbacks': 0, 'reason_codes': [reason]}
 
 
-def score_rows(universe, target=None):
+def _same_version(row, calc_version):
+    """A row joins the ranking population of a versioned file only with that file's calc_version (a row without one is a
+    legacy row). calc_version None = an unversioned (legacy) file: every row is in one legacy population."""
+    return calc_version is None or row.get('calc_version') == calc_version
+
+
+def score_rows(universe, target=None, calc_version=None):
     """Score Universe rows and TARGET rows (inputs are not modified).
+
+    With `calc_version`, only rows of that calculation-rule version form the cross-section; a scored-state row of another
+    (or no) version gets NA factors and axes with reason CALC_VERSION_MISMATCH (versions are never mixed in a percentile).
 
     `universe` / `target`: {key: row} with row keys cik, state, profile, industry_group, metrics.
     Returns (scores, summary) where scores[(role, key)] = {'factors': {...}, 'axes': {...}} and summary
@@ -120,7 +129,8 @@ def score_rows(universe, target=None):
     points = {}
     for key in sorted(universe):
         row = universe[key]
-        if row['state'] in SCORED_STATES and row['cik'] is not None and row['cik'] not in points:
+        if (row['state'] in SCORED_STATES and row['cik'] is not None and row['cik'] not in points
+                and _same_version(row, calc_version)):
             points[row['cik']] = row
     by_profile = {p: {cik: r['metrics'] for cik, r in points.items() if r['profile'] == p} for p in ('GENERAL', 'FINANCIAL')}
     pools = {('profile', p): _Pool(m) for p, m in by_profile.items()}
@@ -133,13 +143,17 @@ def score_rows(universe, target=None):
     scores = {}
     for role, rows in (('universe', universe), ('target', target)):
         for key, row in rows.items():
+            if row['state'] in SCORED_STATES and row['profile'] is not None and not _same_version(row, calc_version):
+                scores[(role, key)] = {'factors': dict.fromkeys(FACTOR_IDS),
+                                       'axes': {axis: _empty_axis('CALC_VERSION_MISMATCH') for axis in AXES}}
+                continue
             scores[(role, key)] = _score_row(row, pools)
     summary = {'cross_section_size': len(points),
                'cross_section_by_profile': {p: len(m) for p, m in by_profile.items()}}
     return scores, summary
 
 
-def volatility_rank_rows(universe, target=None):
+def volatility_rank_rows(universe, target=None, calc_version=None):
     """PLAYBOOK #18 descriptor only: strict five-growth volatility rank, all eligible issuers, 0..100.
 
     One point per Universe CIK. TARGET replaces its own issuer point; it never adds a second point.
@@ -149,7 +163,7 @@ def volatility_rank_rows(universe, target=None):
     points = {}
     for key in sorted(universe):
         r = universe[key]
-        if r['state'] in SCORED_STATES and r['cik'] is not None:
+        if r['state'] in SCORED_STATES and r['cik'] is not None and _same_version(r, calc_version):
             points.setdefault(r['cik'], r['metrics'])
     pool = _Pool(points)
     out = {}
@@ -157,7 +171,7 @@ def volatility_rank_rows(universe, target=None):
         for key, r in rows.items():
             value = r['metrics'].get(metric)
             rank = None
-            if r['state'] in SCORED_STATES and value is not None:
+            if r['state'] in SCORED_STATES and value is not None and _same_version(r, calc_version):
                 less, equal, n = pool.rank(metric, 1, value, r['cik'])
                 if n >= MIN_PEERS:
                     rank = percentile(less, equal, n)

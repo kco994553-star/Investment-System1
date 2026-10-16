@@ -77,12 +77,15 @@ def annual_metrics(annual, history=()):
                                            currency='KRW', taxonomy='DART')[3]
 
 
-def reference_score(company, universe):
+def reference_score(company, universe, calc_version=None):
+    """`calc_version`: the sec-qgv2.json file's declared version; only Universe rows of that version are the reference
+    population (the DART metrics are computed by the current shared definitions). None = legacy file, one population."""
     from ..qgv.v2_scoring import score_rows
     state = company.get('state') if company.get('state') in ('LIVE', 'STALE') else 'NOT_AVAILABLE'
     row = {'cik': None, 'state': state, 'profile': 'GENERAL', 'industry_group': None,
            'metrics': annual_metrics(company.get('annual', {}), company.get('annual_history', ()))}
-    scores, summary = score_rows(universe, {'hanmi': row})
+    row['calc_version'] = calc_version
+    scores, summary = score_rows(universe, {'hanmi': row}, calc_version=calc_version)
     return {'comparison_label': '참고 순위', 'comparison_basis': 'US_UNIVERSE_504_GENERAL',
             'reference_only': True, 'industry_basis': 'NOT_ASSIGNED',
             'cross_section_size': summary['cross_section_size'], **scores[('target', 'hanmi')]}
@@ -112,7 +115,7 @@ def verified_ledger_reference(dart_financials, sec_qgv2_payload, *, captured_dat
         if (company['state'] != 'LIVE' or company['annual']['state'] != 'LIVE'
                 or peers['state'] != 'LIVE' or 'qgv2' not in company):
             return None
-        scored = reference_score(company, peers['records'])
+        scored = reference_score(company, peers['records'], peers.get('calc_version'))
         if not any(axis['score'] is not None and axis['available_weight'] >= 50
                    for axis in scored['axes'].values()):
             return None

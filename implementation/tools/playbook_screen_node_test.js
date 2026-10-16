@@ -109,6 +109,16 @@ test('approved SIC and strict 5-year revenue volatility classify playbook types 
  const context={idByTicker:new Map([['SYN','syn']]),screens:{'sec-qgv2.json':{records:{'NYSE:SYN':{sic:'2834',metrics:{revenue_volatility_5y_rank_pct:20}}}}}};
  assert.equal(P.factsFor('SYN',context).memberships.defensive,1);assert.equal(P.factsFor('SYN',context).memberships.quality,null);
 });
+test('quality (#19) reads the published sec-qgv2 fields roic_avg_3y and operating_margin_std_5y_pp',()=>{
+ const reader=require('../src/investment_system/product/web_assets/sec-qgv2.js');assert.deepEqual(Object.keys(reader.EXTRA_METRICS).filter(k=>!k.startsWith('ebit_')),['roic_avg_3y','operating_margin_std_5y_pp']);
+ const row=metrics=>({idByTicker:new Map([['SYN','syn']]),screens:{'sec-qgv2.json':{records:{'NYSE:SYN':{sic:'3674',metrics}}}}});
+ const pass={roic_avg_3y:0.2,operating_margin_std_5y_pp:2.0,net_debt_to_ebitda:1.0};
+ let f=P.factsFor('SYN',row(pass));assert.equal(f.memberships.quality,1);assert.equal(f.type_classification.quality.member,true);
+ assert.equal(P.factsFor('SYN',row({...pass,operating_margin_std_5y_pp:3.0})).memberships.quality,0);
+ assert.equal(P.factsFor('SYN',row({...pass,roic_avg_3y:0.149})).memberships.quality,0);
+ const{roic_avg_3y,...noRoic}=pass;assert.equal(P.factsFor('SYN',row(noRoic)).memberships.quality,null);
+ const{operating_margin_std_5y_pp,...noStd}=pass;assert.equal(P.factsFor('SYN',row(noStd)).memberships.quality,null);
+});
 test('v2 facts use their own QG snapshot and ephemeral per-symbol price availability',async()=>{
  const primary={q:70,g:60,v:null,axes:{Q:{state:'READY'},G:{state:'READY'},V:{state:'NOT_AVAILABLE'}}},idByTicker=new Map([['SYN','syn']]),context={idByTicker,computed:{default:'v2',rows:{syn:{primary}},playbook_price_symbols:['SYN']},ram:{state:'NOT_AVAILABLE',rows:[]}};
  const ready=P.factsFor('SYN',context);assert.equal(ready.data.snapshot_missing,false);assert.equal(ready.data.price_missing,false);assert.equal(ready.coverage,'READY');
