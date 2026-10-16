@@ -22,6 +22,7 @@ import json
 import math
 from pathlib import Path
 import re
+from zoneinfo import ZoneInfo
 
 FILENAME = 'sec-universe-shares.json'
 KIND = 'SEC_UNIVERSE_SHARES'
@@ -69,8 +70,22 @@ def universe_codes():
     return tuple(codes)
 
 
+# The daily shard belongs to the run's New York calendar day (the US trading day the run observes), not its UTC day.
+NEW_YORK = ZoneInfo('America/New_York')
+
+
+def shard_day(moment):
+    """Calendar day whose shard a run started at `moment` (timezone-aware) collects: its New York date.
+
+    For every start from 04:00 UTC (EDT) / 05:00 UTC (EST) to 23:59 UTC this is the UTC date, so the scheduled 22:17 UTC
+    run keeps its shard. A late or fallback run started after 00:00 UTC still belongs to the previous New York day:
+    it collects that day's shard instead of skipping it and taking the next day's shard twice (owner, 2026-10-17)."""
+    _need(isinstance(moment, datetime) and moment.utcoffset() is not None)
+    return moment.astimezone(NEW_YORK).date()
+
+
 def shard_index_for(day, shard_count):
-    """Rotation index: UTC day ordinal mod the fixed shard count."""
+    """Rotation index: day ordinal mod the fixed shard count. The daily run passes `shard_day(start)`."""
     _need(type(day) is date and type(shard_count) is int and shard_count >= 1)
     return day.toordinal() % shard_count
 

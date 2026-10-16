@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """Daily Universe504 SEC shard -> public price-free `sec-universe-shares.json` + `sec-universe-qg.json`.
 
-User decision 2026-10-11 (M3 shares option a). One shard per UTC day (day
-ordinal mod the fixed v0 shard count) is collected through the paced SEC
+User decision 2026-10-11 (M3 shares option a). One shard per New York calendar day
+(day ordinal mod the fixed v0 shard count) is collected through the paced SEC
 client and merged into the previously published Pages copy, so every code keeps
 its last value with its own acquired_at; rows past the v0 stale window are
 STALE. Raw SEC bytes never reach Pages. If RAW_REPO_TOKEN is set they are
 uploaded as a dated private release asset; otherwise RAW_UPLOAD_NOT_CONFIGURED.
 Only fixed codes and counts are printed: no names, values, URLs or secrets.
+
+Shard day (owner instruction 2026-10-17, fallback runs): the New York date is the UTC date for any start from
+04:00 UTC (EDT) / 05:00 UTC (EST) to 24:00 UTC, so the scheduled 22:17 UTC run keeps its shard and raw tag date; a late
+or fallback run started after 00:00 UTC keeps the intended day's shard instead of taking the next day's shard twice.
 
 User queue 2.1: the SAME fetched companyfacts/submissions bytes also produce the
 price-free Q·G factor scores (`sec-universe-qg.json`, the TARGET sec-qg-factors path)
@@ -24,9 +28,10 @@ fetch and the same serial paced client, so all 504 codes are recalculated under 
 once. Each shard prints its own counts line and uploads its own private raw release; a shard that fails entirely keeps
 its previous rows. In the Q·G and QGV v2 files every collected code is replaced by this run's row (a row without data
 is NOT_AVAILABLE with its reason, never an older rule's value or 0); shares keep the daily merge rule. The daily
-default (one shard per UTC day) is unchanged. Because a run with failed shards still exits 0, the run ends with one
-`SEC_UNIVERSE_SHARD_REPORT` line per shard and one `SEC_UNIVERSE_ALL_SHARDS` total line: issuers collected/failed and
-the published LIVE/STALE rows still taken from the previous file (shares, Q·G and QGV v2 separately; counts only).
+default (one shard per New York calendar day) is unchanged. Because a run with failed shards still exits 0, the run ends
+with one `SEC_UNIVERSE_SHARD_REPORT` line per shard and one `SEC_UNIVERSE_ALL_SHARDS` total line: issuers
+collected/failed and the published LIVE/STALE rows still taken from the previous file (shares, Q·G and QGV v2
+separately; counts only).
 """
 import argparse
 from datetime import datetime, timezone
@@ -49,7 +54,7 @@ from investment_system.providers.sec_universe_collection import (
 )
 from investment_system.universe.sec_universe_shares import (
     FILENAME, MAX_BYTES, build_issuer_records, encode, load_config, merge, parse_json, require_universe_shares,
-    select_cover_filing, shard_index_for, universe_codes, upgrade_legacy,
+    select_cover_filing, shard_day, shard_index_for, universe_codes, upgrade_legacy,
 )
 from investment_system.universe import sec_universe_qg as qg
 from investment_system.universe import sec_qgv2 as qgv2
@@ -159,13 +164,13 @@ def collect(*, user_agent, now=_utc_now, client_kwargs=None, raw_dir=None, confi
             shard_index=None, registry=None, client=None):
     """Collect one shard. Returns (updates, unlisted_updates, unresolved_codes, registry_sha256, shard_index, counts).
 
-    The shard is today's (UTC date ordinal mod shard_count) unless `shard_index` names one explicitly. `registry` and
-    `client` (from open_registry) let one run collect several shards with one registry fetch and one paced client.
+    The shard is today's (New York date ordinal mod shard_count, see `shard_day`) unless `shard_index` names one
+    explicitly. `registry` and `client` (from open_registry) let one run collect several shards with one registry fetch and one paced client.
     With `qg_updates` (a dict), the same fetched bytes also fill that dict with this shard's Q·G rows (no extra request)."""
     cfg = config or load_config()
     started = now()
     if shard_index is None:
-        index = shard_index_for(started.astimezone(timezone.utc).date(), cfg['shard_count'])
+        index = shard_index_for(shard_day(started), cfg['shard_count'])
     elif type(shard_index) is int and 0 <= shard_index < cfg['shard_count']:
         index = shard_index
     else:
@@ -415,7 +420,7 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
         if token is None:
             print('RAW_UPLOAD_NOT_CONFIGURED')
         elif counts['collected']:
-            tag = f"sec-universe-raw-{now().astimezone(timezone.utc).date().isoformat()}-shard{index}"
+            tag = f"sec-universe-raw-{shard_day(now()).isoformat()}-shard{index}"
             print(upload_raw(raw_dir, tag=tag, token=token, open_response=open_upload))
         else:
             print('RAW_UPLOAD_SKIPPED no_collected_companies')
@@ -479,7 +484,7 @@ def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload
     partitions = {index: daily_partition(registry, shard_count=count, shard_index=index) for index in range(count)}
     shard_codes = {index: {code for issuer in issuers for code in issuer.codes} for index, issuers in partitions.items()}
     shard_report = {}
-    day = now().astimezone(timezone.utc).date().isoformat()
+    day = shard_day(now()).isoformat()
     for index in range(count):
         s_updates, s_unlisted, s_qg, s_qgv2 = {}, {}, {}, {}
         with tempfile.TemporaryDirectory(prefix='sec-universe-raw-') as private:
