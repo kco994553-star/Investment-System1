@@ -36,7 +36,11 @@ h = min(upper, max(lower, revenue_cagr_3y))      # lower=0, upper=0.15
 
 ### CAGR 출처 선택
 
-CAGR은 `sec_valuation_inputs.revenue_cagr_3y`로 계산해 `sec-valuation-inputs.json`의 `v_inputs.revenue_cagr_3y`에 싣는다. (2026-10-14 변경: `company-types-pricefree.json`의 유형 지표 `revenue_cagr_3y`는 이제 QGV v2 기간 규칙으로 계산한다 — `docs/daily_data_pipeline/PUBLIC_ENGINE_SCREENS.md`. 정확한 달력 연간 기간이 있는 기업은 두 값이 유효숫자 6자리까지 같다(테스트로 확인). 52/53주 회계연도 기업은 이 h 입력이 여전히 null이며, DCF h 규칙 변경은 별도 결정 사항이다.) 이렇게 한 이유: 기기는 파일 하나로 FCFE와 h를 같은 출처 해시·같은 신선도로 받고, 유형 엔진(type_config) 가져오기 실패와 무관하게 h가 계산된다. 계산 규칙: 같은 태그·단위(보고 통화)의 정확한 연간 기간 4개(최근 매출이 `facts_to_raw` 매출과 일치, 첫 해·최근 해 매출 > 0)에서 `(최근/3년 전)^(1/3) − 1`. 회계연도 추정 없음. 없으면 null + `REVENUE_CAGR_3Y_MISSING`.
+CAGR은 `sec_valuation_inputs.revenue_cagr_3y(companyfacts, cutoff)`로 계산해 `sec-valuation-inputs.json`의 `v_inputs.revenue_cagr_3y`에 싣는다. 이렇게 한 이유: 기기는 파일 하나로 FCFE와 h를 같은 출처 해시·같은 신선도로 받고, 유형 엔진(type_config) 가져오기 실패와 무관하게 h가 계산된다.
+
+계산 규칙(2026-10-15 사용자 결정 V-DCFH: "v2 기간 규칙으로 통일"): QGV v2 기간 규칙(`qgv/v2_factors`)과 같은 함수·같은 값이다. 연간 = 연간 서식(10-K·20-F·40-F와 정정본)의 350~380일 기간, FY0 = 최신 연간 종료일, k년 전 = FY0 종료일 − k년 ±10일인 연간 값, 같은 기간은 늦게 제출된 값, 기간마다 매출 개념 목록의 첫 사용 가능 개념. `(FY0 매출 / FY−3 매출)^(1/3) − 1`, 두 매출이 모두 > 0일 때만. 공개 값은 유효숫자 6자리이며 `company-types-pricefree.json`·`sec-qgv2.json`의 `metrics.revenue_cagr_3y`와 같은 값이다(빌드에서 한 번 계산해 두 파일에 같이 싣는다). 없으면 null + `REVENUE_CAGR_3Y_MISSING`이고 0으로 채우지 않는다. v_inputs 전체는 기존처럼 M1 READY·현재 모호성 없음일 때만 싣는다.
+
+이전 규칙(2026-10-11~10-14): 같은 태그·단위의 정확한 달력 연간 기간 4개(시작 = 종료 − 1년 + 1일, 종료일이 정확히 n년 간격, 최근 매출이 `facts_to_raw` 매출과 일치). 52/53주 회계연도(NVDA·AMD·AVGO·QCOM·INTC·LRCX 등)는 이 조건을 만족할 수 없어 h가 항상 `EXPLICIT_GROWTH_NOT_AVAILABLE`이었다. 같은 결함이 유형 소속도 NOT_AVAILABLE 버그의 원인이었고 #249에서 유형 지표만 먼저 v2 규칙으로 바꿨다. 달력 연도 기업은 값이 그대로다(유효숫자 6자리 반올림만 다름).
 
 ## FCFE 정의 fcfe/1.1 — `product/sec_valuation_inputs.py` (v1.1 UNCALIBRATED 기본값 · 나중에 수정 가능)
 
@@ -103,7 +107,7 @@ FCFE: `SEC_INPUT_NOT_AVAILABLE`, `CASH_FLOW_NOT_REPORTED`, `TAXONOMY_AMBIGUOUS`,
 
 ## 그대로 NOT_AVAILABLE인 것
 
-- CAGR이 없는 기업(연간 매출 4개 연속 기간 없음 등)의 h·순방향 DCF·DCF 안전마진.
+- CAGR이 없는 기업(FY0 또는 FY−3 연간 매출 없음, 둘 중 하나가 0 이하 등)의 h·순방향 DCF·DCF 안전마진.
 - 보고 통화가 USD가 아닌 기업(예: EUR IFRS 공시자)의 순방향·역DCF와 가격 기반 V 요소(환율 없음).
 - 핵심 항목 결측, 일부만 보고된 차입 쌍, 다른 통화·모호·다른 공시의 차입 줄, 총차입 대체와 단기 쌍의 중복.
 - 동종·과거 밸류에이션·업종·테마 V 요소, 시나리오, 종합 V 점수.
@@ -111,4 +115,4 @@ FCFE: `SEC_INPUT_NOT_AVAILABLE`, `CASH_FLOW_NOT_REPORTED`, `TAXONOMY_AMBIGUOUS`,
 
 ## 검증
 
-합성 입력만 사용: `tests/test_sec_valuation_inputs.py`(us-gaap 0 가정·IFRS 20-F/40-F·무형자산 제외·총차입 중복·CAGR 동일성), `tests/test_dcf_parameters.py`(v1.1 값·v1 이력·h 규칙·JS 동일), `tests/test_device_valuation.py`, `tools/device_valuation_node_test.js`, `tools/dcf_value_browser_test.js`. 참조 벡터 `tests/fixtures/device_valuation_reference_v1.json`을 `tools/device_valuation_reference.py --write`로 다시 만들었다(25개, h 범위 제한·CAGR 없음·EUR·v1 이력·규칙 오류·FCFE 0 포함). 실제 종목·가격·Holdout은 사용하지 않는다.
+합성 입력만 사용: `tests/test_sec_valuation_inputs.py`(us-gaap 0 가정·IFRS 20-F/40-F·무형자산 제외·총차입 중복·CAGR 동일성·52/53주 회계연도 h·매출 연도 결측 NA), `tests/test_dcf_parameters.py`(v1.1 값·v1 이력·h 규칙·JS 동일), `tests/test_device_valuation.py`, `tools/device_valuation_node_test.js`, `tools/dcf_value_browser_test.js`. 참조 벡터 `tests/fixtures/device_valuation_reference_v1.json`을 `tools/device_valuation_reference.py --write`로 다시 만들었다(25개, h 범위 제한·CAGR 없음·EUR·v1 이력·규칙 오류·FCFE 0 포함). 실제 종목·가격·Holdout은 사용하지 않는다.

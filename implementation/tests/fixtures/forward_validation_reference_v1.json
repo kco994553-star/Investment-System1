@@ -2757,6 +2757,858 @@
    },
    "operation": "qg_summary",
    "synthetic": true
+  },
+  {
+   "expected": {
+    "basis": "ADJUSTED_CLOSE_LOCAL_CURRENCY_NO_FX",
+    "benchmark": {
+     "reason": "SP500_NOT_IN_PRIVATE_HISTORY_WORKER",
+     "state": "NOT_AVAILABLE"
+    },
+    "end_bound": "2026-10-20",
+    "end_date_max": "2026-10-20",
+    "end_date_min": "2026-10-20",
+    "instruments": {
+     "amd": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "amzn": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "asml": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "avgo": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "etn": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "gev": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "googl": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "hanmi": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "hubb": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "intc": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "klac": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "lrcx": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "msft": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "nvda": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "qcom": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "rok": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "rtx": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "stry": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     },
+     "tokyo_electron": {
+      "base_date": "2026-10-19",
+      "end_date": "2026-10-20",
+      "reason": null,
+      "return": 0.012499999999999956,
+      "state": "AVAILABLE"
+     }
+    },
+    "missing_count": 0,
+    "portfolio_return": 0.012499999999999954,
+    "reason": null,
+    "start_date": "2026-10-19",
+    "state": "AVAILABLE"
+   },
+   "id": "closed_segment_end_bound",
+   "input": {
+    "end_date": "2026-10-20",
+    "series": {
+     "amd": [
+      {
+       "adjusted_close": 81.25,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 82.75,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 83.784375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 82.12937500000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 124.125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "amzn": [
+      {
+       "adjusted_close": 124.0,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 125.5,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 127.06875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 126.44125000000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 188.25,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "asml": [
+      {
+       "adjusted_close": 38.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 40.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 40.5,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 39.1,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 60.0,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "avgo": [
+      {
+       "adjusted_close": 88.375,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 89.875,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 90.9984375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 89.425625,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 134.8125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "etn": [
+      {
+       "adjusted_close": 145.375,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 146.875,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 148.7109375,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 149.07812499999997,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 220.3125,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "gev": [
+      {
+       "adjusted_close": 159.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 161.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 163.1390625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 164.3475,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 241.6875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "googl": [
+      {
+       "adjusted_close": 116.875,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 118.375,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 119.8546875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 118.96687499999999,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 177.5625,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "hanmi": [
+      {
+       "adjusted_close": 67.0,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 68.5,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 69.35625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 67.64375,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 102.75,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "hubb": [
+      {
+       "adjusted_close": 152.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 154.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 155.92499999999998,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 156.69500000000002,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 231.0,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "intc": [
+      {
+       "adjusted_close": 102.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 104.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 105.42656249999999,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 104.125,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 156.1875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "klac": [
+      {
+       "adjusted_close": 52.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 54.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 54.928124999999994,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 53.300625000000004,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 81.375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "lrcx": [
+      {
+       "adjusted_close": 45.625,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 47.125,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 47.7140625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 46.1825,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 70.6875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "msft": [
+      {
+       "adjusted_close": 109.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 111.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 112.640625,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 111.52812499999999,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 166.875,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "nvda": [
+      {
+       "adjusted_close": 74.125,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 75.625,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 76.5703125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 74.86875,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 113.4375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "qcom": [
+      {
+       "adjusted_close": 95.5,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 97.0,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 98.21249999999999,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 96.75750000000001,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 145.5,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "rok": [
+      {
+       "adjusted_close": 166.75,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 168.25,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 170.353125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 172.03562499999998,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 252.375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "rtx": [
+      {
+       "adjusted_close": 131.125,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 132.625,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 134.2828125,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 133.95125,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 198.9375,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "stry": [
+      {
+       "adjusted_close": 138.25,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 139.75,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 141.496875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 141.496875,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 209.625,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ],
+     "tokyo_electron": [
+      {
+       "adjusted_close": 59.875,
+       "session_date": "2026-10-16",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 61.375,
+       "session_date": "2026-10-19",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 62.1421875,
+       "session_date": "2026-10-20",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 60.454375,
+       "session_date": "2026-10-21",
+       "session_status": "COMPLETE"
+      },
+      {
+       "adjusted_close": 92.0625,
+       "session_date": "2026-10-22",
+       "session_status": "IN_PROGRESS"
+      }
+     ]
+    },
+    "start_date": "2026-10-19",
+    "weights_units": {
+     "amd": 500,
+     "amzn": 600,
+     "asml": 900,
+     "avgo": 500,
+     "etn": 500,
+     "gev": 300,
+     "googl": 700,
+     "hanmi": 450,
+     "hubb": 350,
+     "intc": 300,
+     "klac": 550,
+     "lrcx": 600,
+     "msft": 700,
+     "nvda": 800,
+     "qcom": 400,
+     "rok": 200,
+     "rtx": 600,
+     "stry": 550,
+     "tokyo_electron": 500
+    }
+   },
+   "operation": "forward_return",
+   "synthetic": true
+  },
+  {
+   "expected": [
+    {
+     "eligible_dates": [
+      "2026-10-19"
+     ],
+     "first_date": "2026-10-19",
+     "last_date": "2026-10-19",
+     "preparatory_dates": [],
+     "segment": "LEGACY"
+    },
+    {
+     "eligible_dates": [],
+     "first_date": "2026-10-20",
+     "last_date": "2026-10-20",
+     "preparatory_dates": [
+      "2026-10-20"
+     ],
+     "segment": "NONE"
+    },
+    {
+     "eligible_dates": [
+      "2026-10-21",
+      "2026-10-26"
+     ],
+     "first_date": "2026-10-21",
+     "last_date": "2026-10-26",
+     "preparatory_dates": [
+      "2026-10-23"
+     ],
+     "segment": "qgv2-calc/2026-10-15.1"
+    },
+    {
+     "eligible_dates": [
+      "2026-10-27"
+     ],
+     "first_date": "2026-10-27",
+     "last_date": "2026-10-28",
+     "preparatory_dates": [
+      "2026-10-28"
+     ],
+     "segment": "qgv2-calc/2026-11-02.1"
+    }
+   ],
+   "id": "evaluation_segments",
+   "input": [
+    {
+     "date": "2026-10-19",
+     "reason_codes": [],
+     "state": "RECORDED"
+    },
+    {
+     "basis": {
+      "evaluation": {
+       "eligible": false,
+       "reasons": [
+        "Q_BELOW_454",
+        "CALC_VERSION_MISSING"
+       ],
+       "status": "PREPARATORY"
+      },
+      "segment": "NONE"
+     },
+     "date": "2026-10-20",
+     "reason_codes": [],
+     "state": "RECORDED"
+    },
+    {
+     "basis": {
+      "evaluation": {
+       "eligible": true,
+       "reasons": [],
+       "status": "PRIMARY"
+      },
+      "segment": "qgv2-calc/2026-10-15.1"
+     },
+     "date": "2026-10-21",
+     "reason_codes": [],
+     "state": "RECORDED"
+    },
+    {
+     "basis": {
+      "evaluation": {
+       "eligible": false,
+       "reasons": [
+        "RECORD_NOT_AVAILABLE"
+       ],
+       "status": "PREPARATORY"
+      },
+      "segment": null
+     },
+     "date": "2026-10-22",
+     "reason_codes": [
+      "SEC_QGV2_MISSING"
+     ],
+     "state": "NOT_AVAILABLE"
+    },
+    {
+     "basis": {
+      "evaluation": {
+       "eligible": false,
+       "reasons": [
+        "ROW_DATA_STALE"
+       ],
+       "status": "PREPARATORY"
+      },
+      "segment": "qgv2-calc/2026-10-15.1"
+     },
+     "date": "2026-10-23",
+     "reason_codes": [],
+     "state": "RECORDED"
+    },
+    {
+     "basis": {
+      "evaluation": {
+       "eligible": true,
+       "reasons": [],
+       "status": "PRIMARY"
+      },
+      "segment": "qgv2-calc/2026-10-15.1"
+     },
+     "date": "2026-10-26",
+     "reason_codes": [],
+     "state": "RECORDED"
+    },
+    {
+     "basis": {
+      "evaluation": {
+       "eligible": true,
+       "reasons": [],
+       "status": "PRIMARY"
+      },
+      "segment": "qgv2-calc/2026-11-02.1"
+     },
+     "date": "2026-10-27",
+     "reason_codes": [],
+     "state": "RECORDED"
+    },
+    {
+     "basis": {
+      "evaluation": {
+       "eligible": false,
+       "reasons": [
+        "CALC_VERSION_MIXED"
+       ],
+       "status": "PREPARATORY"
+      },
+      "segment": "qgv2-calc/2026-11-02.1"
+     },
+     "date": "2026-10-28",
+     "reason_codes": [],
+     "state": "RECORDED"
+    }
+   ],
+   "operation": "evaluation_segments",
+   "synthetic": true
   }
  ],
  "role": "REFERENCE_TEST_ONLY",

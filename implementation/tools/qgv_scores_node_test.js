@@ -160,6 +160,78 @@ test('approved playbook cyclical basis changes earnings basis without changing t
 });
 
 
+test('EBIT substitute rows (metrics.ebit_estimated_years) carry the EBIT_ESTIMATED flag "추정(대체 계산)"', () => {
+  const base = QS.compute({ identities, publicScreens: screens, quotes, scoringDefault: 'v2' });
+  const id = identities.map((c) => c.company_id).find((cid) => base.rows[cid].code && base.rows[cid].v2.state !== 'NOT_AVAILABLE');
+  assert.ok(id, 'a v2 row to mark');
+  for (const r of Object.values(base.rows)) assert.ok(!r.v2.flags.includes('EBIT_ESTIMATED'), 'no flag without the published count');
+  const p = F.payload(), code = base.rows[id].code, row = code.startsWith('TARGET:') ? p.target[code.slice(7)] : p.records[code];
+  row.metrics = { ...(row.metrics || {}), ebit_estimated_years: 2, ebit_estimated_fiscal_years: [2023, 2024] };
+  const marked = QS.compute({ identities, publicScreens: { ...screens, [SQ.FILE]: SQ.fromInputs(SQ.light(p)) }, quotes, scoringDefault: 'v2' });
+  assert.ok(marked.rows[id].v2.flags.includes('EBIT_ESTIMATED'));
+  assert.ok(marked.rows[id].primary.flags.includes('EBIT_ESTIMATED'), 'the primary (v2 default) display carries it');
+  assert.equal(Object.values(marked.rows).filter((r) => r.v2.flags.includes('EBIT_ESTIMATED')).length, 1);
+  assert.deepEqual(QS.flagText(marked.rows[id].v2.flags.filter((f) => f === 'EBIT_ESTIMATED'), false), ['추정(대체 계산)']);
+  assert.deepEqual(QS.flagText(['EBIT_ESTIMATED'], true), ['Estimate (substitute calculation)']);
+  // The flag names the substituted fiscal years when the display row is given (company screen, leaderboard).
+  assert.deepEqual(marked.rows[id].v2.ebit_estimated_fiscal_years, [2023, 2024]);
+  assert.deepEqual(QS.flagText(['EBIT_ESTIMATED'], false, marked.rows[id].v2), ['추정(대체 계산): FY2023·FY2024']);
+  assert.deepEqual(QS.flagText(['EBIT_ESTIMATED'], true, marked.rows[id].v2), ['Estimate (substitute calculation): FY2023, FY2024']);
+  assert.ok(QS.judgmentRows(marked)[id].flags.includes('EBIT_ESTIMATED'));
+  // A zero or missing count is not a flag (the file publishes the count only when >= 1).
+  row.metrics.ebit_estimated_years = 0;
+  const zero = QS.compute({ identities, publicScreens: { ...screens, [SQ.FILE]: SQ.fromInputs(SQ.light(p)) }, quotes, scoringDefault: 'v2' });
+  assert.ok(!zero.rows[id].v2.flags.includes('EBIT_ESTIMATED'));
+});
+
+test('calc_version: a row of another calculation-rule version is NA (CALC_VERSION_MISMATCH) and never in the device ranking population', () => {
+  const V = 'qgv2-calc/2026-10-15.1', OLD = 'qgv2-calc/2026-10-14.1';
+  const versioned = (mutate) => { const p = F.payload(); p.calc_version = V; for (const r of [...Object.values(p.records), ...Object.values(p.target || {})]) if (r && r.fiscal_year_end) r.calc_version = V; mutate(p); return SQ.fromInputs(SQ.light(p)); };
+  const run = (inputs) => QS.compute({ identities, publicScreens: { ...screens, [SQ.FILE]: inputs }, quotes, scoringDefault: 'v2' });
+  const base = run(SQ.fromInputs(SQ.light(F.payload()))), same = run(versioned(() => {}));
+  const ids = identities.map((c) => c.company_id).filter((cid) => base.rows[cid].code && base.rows[cid].v2.state !== 'NOT_AVAILABLE');
+  assert.ok(ids.length >= 2, 'two v2 rows');
+  for (const cid of ids) assert.equal(same.rows[cid].v2.total, base.rows[cid].v2.total, 'one version everywhere = the unversioned result');
+  // Displayed row of another version: NA, no rank, flag text.
+  const [odd] = ids, oddCode = base.rows[odd].code, pick = (p) => (oddCode.startsWith('TARGET:') ? p.target[oddCode.slice(7)] : p.records[oddCode]);
+  const shown = versioned((p) => { pick(p).calc_version = OLD; });
+  assert.equal(shown.calc_version, V);assert.equal(shown.records[oddCode].calc_version_mismatch, true);assert.equal(shown.records[oddCode].in_cross_section, false);
+  const out = run(shown), row = out.rows[odd].v2;
+  assert.equal(row.state, 'NOT_AVAILABLE');assert.equal(row.total, null);assert.equal(row.q, null);assert.equal(row.reason, 'CALC_VERSION_MISMATCH');
+  assert.deepEqual(QS.flagText(row.flags, false), ['계산 규칙 버전이 달라 순위에서 제외']);
+  assert.ok(QS.flagText(row.flags, true)[0].includes('calculation-rule version'));assert.equal(out.rows[odd].rank, null);
+  // A pooled Universe point of another version leaves the population: every other row ranks exactly as if it were absent.
+  const pooled = Object.keys(F.payload().records).find((code) => same.rows && SQ.fromInputs(SQ.light(F.payload())).records[code].in_cross_section && !ids.some((cid) => base.rows[cid].code === code));
+  assert.ok(pooled, 'a pooled Universe row not shown directly');
+  const mixed = run(versioned((p) => { p.records[pooled].calc_version = OLD; })), removed = run(versioned((p) => { delete p.records[pooled]; }));
+  let changed = 0;for (const cid of ids) { assert.equal(mixed.rows[cid].v2.total, removed.rows[cid].v2.total, cid); if (mixed.rows[cid].v2.total !== same.rows[cid].v2.total) changed++; }
+  assert.ok(changed > 0, 'the excluded point really changes the population');
+  // A row without calc_version inside a versioned file is a legacy row: also excluded. A wholly unversioned file is one population.
+  assert.equal(versioned((p) => { delete pick(p).calc_version; }).records[oddCode].calc_version_mismatch, true);
+  const legacy = SQ.fromInputs(SQ.light(F.payload()));
+  assert.equal(legacy.calc_version, null);assert.ok(Object.values(legacy.records).every((r) => r.calc_version_mismatch !== true));
+});
+
+test('normal-NA rows (source data missing) keep an explicit reason, stay in the 504 denominator, never CALC_VERSION_MISMATCH', () => {
+  const S = require(path.join(W, 'sec-qgv2.js')), strict = F.strictPayload();
+  assert.equal(strict.calc_version, 'qgv2-calc/2026-10-15.1');
+  const inputs = SQ.fromInputs(S.toInputs(S.validate(strict), { now: '2026-10-14T00:00:00Z' }));
+  const codes = Object.keys(inputs.records).filter((k) => !k.startsWith('TARGET:'));
+  assert.equal(codes.length, 504, 'every Universe code stays in the denominator');
+  const na = codes.filter((k) => inputs.records[k].state === 'NOT_AVAILABLE');
+  assert.ok(na.length > 400);
+  for (const k of na) {
+    const r = inputs.records[k];
+    assert.notEqual(r.calc_version_mismatch, true, k);assert.equal(r.in_cross_section, false, k);
+    assert.ok(r.na_reasons.length >= 1 && r.na_reasons.every((x) => ['NOT_COLLECTED', 'CIK_UNRESOLVED', 'NO_ANNUAL_SEC_FINANCIALS', 'INVALID_INPUT', 'NON_SEC_ISSUER'].includes(x)), k);
+  }
+  const naCode = na.find((k) => inputs.records[k].na_reasons.includes('CIK_UNRESOLVED')) || na[0], ticker = naCode.slice(naCode.indexOf(':') + 1);
+  const out = QS.compute({ identities: [{ company_id: 'na_row', ticker }], publicScreens: { [SQ.FILE]: inputs }, scoringDefault: 'v2' }), d = out.rows.na_row.v2;
+  assert.equal(out.rows.na_row.code, naCode);assert.equal(d.total, null);assert.equal(d.total_reason, 'SOURCE_NOT_AVAILABLE');
+  assert.ok(!d.flags.includes('CALC_VERSION_MISMATCH'));assert.deepEqual(d.source_reason_codes, [...inputs.records[naCode].na_reasons]);
+  assert.match(QS.naText(d, false), /원자료 없음/);assert.match(QS.naText(d, true), /source data missing/);
+});
+
 test('a strictly valid empty SEC v2 file keeps the v2 basis NOT_AVAILABLE (no v1 temporary default) and blocks readiness', () => {
   const S=require(path.join(W,'sec-qgv2.js')),empty=F.strictPayload();
   empty.records=Object.fromEntries(Object.keys(empty.records).map(code=>[code,S.emptyRecord()]));

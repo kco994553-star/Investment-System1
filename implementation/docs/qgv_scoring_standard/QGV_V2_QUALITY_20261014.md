@@ -6,6 +6,7 @@
 - 계산: production 코드 `sec_qgv2.build_issuer_records` → `sec_qgv2.merge`(`v2_factors`, `v2_scoring`)와 `v2_quality_report.report`를 그대로 호출했습니다. 산식·가중치·임계는 바꾸지 않았습니다.
 - 행 없음 5: CIK 미해결 3(FDXF, FLEX, Q), 연간 재무 없음 2(XOM 신규 CIK, HONA).
 - 공개 `sec-qgv2.json`은 아직 샤드 0~2(224 코드)만 담고 있습니다. 이 보고의 수치는 공개 화면 수치와 다릅니다.
+  - (2026-10-15 주) 이 문장은 10/14 오전 기준이다. 10/14 22:37 실행에서 샤드 3이 추가되어 게시 파일에는 샤드 0~3이 반영됐다. 게시 기준 Q·G 수는 `PUBLISHED_COVERAGE` 로그로 따로 보고한다. 이 보고서의 수치는 오프라인 계산값이다.
 - 미병합 PR #238(유틸리티 매출 태그 `RegulatedAndUnregulatedOperatingRevenue`)은 기준 브랜치에 없습니다. 본문은 **#238 미포함** 기준이며, 달라지는 값만 따로 적었습니다.
 
 ## 1. (7-1) v2 Q·G 분포
