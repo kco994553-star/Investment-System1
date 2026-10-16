@@ -11,7 +11,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from investment_system.validation import forward_device_reference as ref  # noqa: E402
-from investment_system.validation.forward_ledger import IDS, UNITS  # noqa: E402
+from investment_system.validation.forward_ledger import IDS, UNITS, evaluation_segments  # noqa: E402
 
 OUT = ROOT / 'tests/fixtures/forward_validation_reference_v1.json'
 START = '2026-10-19'
@@ -61,7 +61,26 @@ def cases():
     empty = {**record, 'companies': {cid: {**row, 'Q': {'score': None, 'coverage': 'BLOCKED', 'missing_factor_count': 7}}
                                      for cid, row in record['companies'].items()}}
     out.append(('qg_summary_no_q_scores', 'qg_summary', empty))
+    # A closed evaluation segment: bars after its last primary record are not used.
+    out.append(('closed_segment_end_bound', 'forward_return', {'start_date': START, 'end_date': '2026-10-20',
+                'weights_units': weights, 'series': full}))
+    out.append(('evaluation_segments', 'evaluation_segments', segment_rows()))
     return out
+
+
+def segment_rows():
+    """Synthetic v2 rows: legacy (no basis), NA, PRIMARY/PREPARATORY of version A, then version B (a new segment)."""
+    def row(day, status=None, segment=None, reasons=(), state='RECORDED'):
+        out = {'date': day, 'state': state, 'reason_codes': [] if state == 'RECORDED' else ['SEC_QGV2_MISSING']}
+        if status is not None:
+            out['basis'] = {'segment': segment, 'evaluation': {'eligible': status == 'PRIMARY', 'status': status,
+                                                               'reasons': list(reasons)}}
+        return out
+    a, b = 'qgv2-calc/2026-10-15.1', 'qgv2-calc/2026-11-02.1'
+    return [row('2026-10-19'), row('2026-10-20', 'PREPARATORY', 'NONE', ('Q_BELOW_454', 'CALC_VERSION_MISSING')),
+            row('2026-10-21', 'PRIMARY', a), row('2026-10-22', 'PREPARATORY', None, ('RECORD_NOT_AVAILABLE',), 'NOT_AVAILABLE'),
+            row('2026-10-23', 'PREPARATORY', a, ('ROW_DATA_STALE',)), row('2026-10-26', 'PRIMARY', a),
+            row('2026-10-27', 'PRIMARY', b), row('2026-10-28', 'PREPARATORY', b, ('CALC_VERSION_MIXED',))]
 
 
 def replay(case):
@@ -71,6 +90,8 @@ def replay(case):
         return ref.forward_return(**case['input'])
     if case['operation'] == 'qg_summary':
         return ref.qg_summary(case['input'])
+    if case['operation'] == 'evaluation_segments':
+        return evaluation_segments(case['input'])
     raise ValueError('UNKNOWN_OPERATION')
 
 

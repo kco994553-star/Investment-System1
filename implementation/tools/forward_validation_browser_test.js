@@ -10,6 +10,17 @@ function recorded(){const companies={};IDS.forEach((id,i)=>{const live=i%4!==0;c
  return{date:'2026-10-19',version:V,strategy:'QGV_STANDARD_V1',calibration:'UNCALIBRATED',state:'RECORDED',reason_codes:[],target:{portfolio_id:'TARGET',version:'v0',root_sha256:H,total_units:10000,weights_units:{...UNITS}},qg_as_of:'2026-10-19T22:10:00+00:00',qg_screen_state:'LIVE',companies,source_sha256:{'sec-qg-factors.json':H,'actual-catalog.json':H},created_at:'2026-10-19T22:30:00+00:00'};}
 function missingDay(){return{date:'2026-10-20',version:V,strategy:'QGV_STANDARD_V1',calibration:'UNCALIBRATED',state:'NOT_AVAILABLE',reason_codes:['SEC_QG_FACTORS_MISSING'],target:{portfolio_id:'TARGET',version:'v0',root_sha256:H,total_units:10000,weights_units:{...UNITS}},qg_as_of:null,qg_screen_state:null,companies:null,source_sha256:{'sec-qg-factors.json':null,'actual-catalog.json':H},created_at:'2026-10-20T22:30:00+00:00'};}
 function ledger(){return{schema_version:1,kind:'FORWARD_VALIDATION_LEDGER',start_date:'2026-10-19',status:'ACTIVE',as_of:'2026-10-20T22:31:00+00:00',strategy:'QGV_STANDARD_V1',calibration:'UNCALIBRATED',holdout:'UNCONFIRMED_NOT_USED',price_free:true,target:{portfolio_id:'TARGET',version:'v0'},versions:{[V]:[recorded(),missingDay()],[VV]:[]},version_status:{[V]:{state:'ACTIVE',v_included:false,reason_codes:[]},[VV]:{state:'NOT_AVAILABLE',v_included:true,reason_codes:['V_REQUIRES_DEVICE_PRICES']}}};}
+// Schema-2 ledger with observation bases (owner instruction 2026-10-16): 10/19 PREPARATORY (unversioned input, low
+// coverage), 10/20-10/21 PRIMARY under calc version A: two segments, shown separately and never chained.
+const V2='forward_validation/v2',CALC_A='qgv2-calc/2026-10-15.1';
+function v2Row(date,basis){const companies={};IDS.forEach((id,i)=>{companies[id]=i%4?{state:'LIVE',Q:{score:40+i,coverage:'PARTIAL',missing_factor_count:1},G:{score:60-i,coverage:'PARTIAL',missing_factor_count:2}}:{state:'NOT_AVAILABLE',Q:{score:null,coverage:'BLOCKED',missing_factor_count:5},G:{score:null,coverage:'BLOCKED',missing_factor_count:5}};});
+ return{date,version:V2,strategy:'QGV_STANDARD_V2',calibration:'UNCALIBRATED',state:'RECORDED',reason_codes:[],target:{portfolio_id:'TARGET',version:'v0',root_sha256:H,total_units:10000,weights_units:{...UNITS}},qg_as_of:date+'T22:10:00+00:00',qg_screen_state:'LIVE',companies,source_sha256:{'sec-qgv2.json':H,'actual-catalog.json':H},created_at:date+'T22:30:00+00:00',basis};}
+function ledgerV2(){
+ const prep={calc_version:null,q_scored:300,g_scored:290,population:{n:310,id:'0123456789abcdef'},acquired:['2026-10-14','2026-10-19'],evaluation:{eligible:false,status:'PREPARATORY',reasons:['Q_BELOW_454','G_BELOW_454','CALC_VERSION_MISSING']},segment:'NONE'};
+ const primary=d=>({calc_version:CALC_A,q_scored:470,g_scored:466,population:{n:480,id:'fedcba9876543210'},acquired:['2026-10-14',d],evaluation:{eligible:true,status:'PRIMARY',reasons:[]},segment:CALC_A});
+ const p=ledger();p.schema_version=2;p.strategy='QGV_STANDARD_V2';p.as_of='2026-10-21T22:31:00+00:00';p.versions[V]=[recorded()];
+ p.versions[V2]=[v2Row('2026-10-19',prep),v2Row('2026-10-20',primary('2026-10-20')),v2Row('2026-10-21',primary('2026-10-21'))];
+ p.version_status[V2]={state:'ACTIVE',v_included:false,reason_codes:[]};return p;}
 async function open(page,hash,selector){await page.evaluate(h=>{location.hash=h;},hash);await page.locator(selector).first().waitFor();}
 async function noOverflow(page,label){assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal scroll '+label);}
 async function storageKeys(page){return page.evaluate(()=>Object.keys(localStorage).concat(Object.keys(sessionStorage)).sort());}
@@ -77,6 +88,25 @@ async function seedSession(page){
     await page.locator('[data-forward-action="clear"]').click();assert.equal(await page.locator('[data-forward-portfolio]').getAttribute('data-forward-portfolio'),'NOT_AVAILABLE');
     await open(page,'home','.hero');assert.equal(await page.locator('[data-forward-validation]').count(),0);
     assert.equal(errors,0);await context.close();pass++;}
+   phase='BASIS '+width;
+   {const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),page=await context.newPage();let errors=0;page.on('pageerror',()=>errors++);
+    await page.route('**/*',r=>new URL(r.request().url()).origin===new URL(BASE).origin?r.continue():r.abort());
+    await page.route('**/forward-validation-ledger.json',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(ledgerV2())}));
+    await page.goto(BASE+'#settings');await page.locator('#device-backup-export').waitFor();
+    await seedSession(page);await open(page,'validation','[data-forward-segments]');
+    const prep=await page.locator('[data-forward-day="2026-10-19"][data-forward-evaluation="PREPARATORY"]').textContent();
+    assert.ok(prep.includes('준비 관측·주 평가 대상 아님')&&prep.includes('Q_BELOW_454, G_BELOW_454, CALC_VERSION_MISSING'),prep);
+    assert.ok((await page.locator('[data-forward-day="2026-10-20"][data-forward-evaluation="PRIMARY"]').textContent()).includes('Q 470 · G 466'));
+    assert.equal(await page.locator('[data-forward-day="2026-10-19"][data-forward-evaluation="COMPARISON"]').count(),1);
+    assert.deepEqual(await page.locator('[data-forward-segment]').evaluateAll(n=>n.map(x=>x.dataset.forwardSegment)),['NONE',CALC_A]);
+    await page.locator('[data-forward-action="load"]:enabled').waitFor();await page.locator('[data-forward-action="load"]').click();
+    await page.locator('[data-forward-price-status][data-code="READY"]').filter({hasText:'RATE_LIMITED'}).waitFor();
+    await page.locator('[data-forward-action="load"]').click();await page.locator('[data-forward-portfolio="AVAILABLE"]').waitFor();
+    // The current segment starts on its first PRIMARY record (10/20), never on the preparatory 10/19.
+    assert.ok((await page.locator('[data-forward-portfolio]').textContent()).includes('2026-10-20 → 2026-10-21'));
+    assert.ok((await page.locator('[data-forward-segment-return="NONE"]').textContent()).includes('주 평가 기록 없음'));
+    assert.ok(/2026-10-20 → 현재 · -?\d+\.\d{2}%/.test(await page.locator(`[data-forward-segment-return="${CALC_A}"]`).textContent()));
+    await noOverflow(page,'basis '+width);assert.equal(errors,0);await context.close();pass++;}
   }
   console.log('forward_validation_browser_test PASS '+pass);
  }catch(e){console.log('forward_validation_browser_test FAIL '+phase);if(process.env.DEBUG_TEST)console.log(e);process.exitCode=1;}

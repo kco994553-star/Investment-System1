@@ -452,21 +452,46 @@ def test_the_whole_chain_is_byte_deterministic(chain, tmp_path):
         assert first[day][1]['printed'] == second[day][1]['printed']
 
 
-# ---- 6. the device side reads the v2 rows (Set A starts on the first prepared v2 day) ----
+# ---- 6. observation basis on 10/19 (owner instruction 2026-10-16) and the device side ----
+def test_first_session_v2_row_records_its_observation_basis(chain):
+    from investment_system.universe import sec_qgv2 as q
+    _, runs = chain
+    for day in ('2026-10-19', '2026-10-20'):
+        out = runs[day][0]
+        used = q.require_qgv2(q.parse_json((out / q.FILENAME).read_bytes()))
+        [v2] = [r for r in rows(out, fl.V2_VERSION) if r['date'] == day]
+        basis = v2['basis']
+        # The basis of the file this run actually read; the input pointer stays in source_sha256 (not repeated).
+        assert basis == fl.observation_basis(used, datetime.fromisoformat(day).date())
+        assert v2['source_sha256']['sec-qgv2.json'] == hashlib.sha256((out / q.FILENAME).read_bytes()).hexdigest()
+        assert basis['population']['n'] == used['cross_section_size'] and basis['acquired'][0] <= basis['acquired'][1]
+        # The synthetic Universe is small: recorded as 준비 관측 (not a primary evaluation target), with its reasons.
+        assert basis['evaluation']['status'] == 'PREPARATORY' and basis['evaluation']['eligible'] is False
+        assert basis['evaluation']['reasons'][:2] == ['Q_BELOW_454', 'G_BELOW_454']
+        assert ('CALC_VERSION_MISSING' in basis['evaluation']['reasons']) == (used.get('calc_version') is None)
+        assert 'basis' not in rows(out, fl.VERSION)[-1]  # the v1 comparison row is unchanged
+    # The 10/19 row (basis included) is carried byte-identically into 10/20.
+    assert fl.canonical(rows(runs['2026-10-20'][0], fl.V2_VERSION)[0]) == fl.canonical(rows(runs['2026-10-19'][0], fl.V2_VERSION)[0])
+
+
 @pytest.mark.skipif(shutil.which('node') is None, reason='Node runtime required')
 def test_device_reader_and_runner_take_the_rehearsed_ledger(chain):
     _, runs = chain
     body = (runs['2026-10-20'][0] / fl.FILENAME).read_text()
     assets = ROOT / 'src/investment_system/product/web_assets'
-    # Ready day: the runner's rule (virtual-trading-runner.js assemble): first v2 RECORDED row with a numeric Q and G.
+    # Ready day: the runner's rule (virtual-trading-runner.js assemble): first PRIMARY v2 row of the current evaluation
+    # segment with a numeric Q and G. The rehearsal rows are PREPARATORY: kept and shown, but not run.
     script = ("const f=require(process.argv[1]),r=require(process.argv[2]);const p=JSON.parse(require('fs').readFileSync(0,'utf8'));"
               "f.validate(p);const s=r.snapshotsFromLedger(p),v2=p.versions['forward_validation/v2'];"
-              "const ready=v2.find(x=>x.state==='RECORDED'&&Object.values(x.companies||{}).some(c=>typeof c.Q.score==='number'&&typeof c.G.score==='number'));"
-              "console.log(JSON.stringify({dates:Object.keys(s),ready:ready?ready.date:null,basis:p.schema_version}));")
+              "const ready=r.evaluationRecords(v2).find(x=>Object.values(x.companies||{}).some(c=>typeof c.Q.score==='number'&&typeof c.G.score==='number'));"
+              "console.log(JSON.stringify({dates:Object.keys(s),ready:ready?ready.date:null,basis:p.schema_version,"
+              "labels:v2.map(x=>f.rowEvaluation(x).status),segments:f.segments(v2).map(x=>[x.segment,x.preparatory_dates])}));")
     done = subprocess.run(['node', '-e', script, str(assets / 'forward-validation.js'), str(assets / 'virtual-trading-runner.js')],
                           input=body, text=True, capture_output=True)
     assert done.returncode == 0, done.stderr[-400:]
-    assert json.loads(done.stdout) == {'dates': ['2026-10-19', '2026-10-20'], 'ready': '2026-10-19', 'basis': 2}
+    segment = rows(runs['2026-10-20'][0], fl.V2_VERSION)[0]['basis']['segment']
+    assert json.loads(done.stdout) == {'dates': [], 'ready': None, 'basis': 2, 'labels': ['PREPARATORY', 'PREPARATORY'],
+                                       'segments': [[segment, ['2026-10-19', '2026-10-20']]]}
 
 
 

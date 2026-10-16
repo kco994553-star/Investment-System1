@@ -72,6 +72,22 @@ TOP_KEYS = ('schema_version', 'kind', 'start_date', 'status', 'as_of', 'strategy
             'price_free', 'target', 'versions', 'version_status')
 RECORD_KEYS = ('date', 'version', 'strategy', 'calibration', 'state', 'reason_codes', 'target', 'qg_as_of',
                'qg_screen_state', 'companies', 'source_sha256', 'created_at')
+# Observation basis of a v2 record (owner instruction 2026-10-16): the calculation basis of the input actually used, and
+# whether the record was a primary evaluation target when it was observed. The input file's sha256 and as_of are already
+# in `source_sha256` / `qg_as_of` and are not repeated. Thresholds are the owner decisions of 2026-10-15:
+# T-COV = Q and G each >= 90 % of the 504-row Universe (ceil(0.9 * 504) = 454); T-FRESH = 7 days, from each row's own
+# acquisition time (never the file as_of). Records written before this rule carry no basis and are never rewritten.
+UNIVERSE_SIZE = 504
+PRIMARY_MIN_SCORED = 454
+FRESH_DAYS = 7
+BASIS_KEYS = ('calc_version', 'q_scored', 'g_scored', 'population', 'acquired', 'evaluation', 'segment')
+PRIMARY, PREPARATORY = 'PRIMARY', 'PREPARATORY'
+EVALUATION_REASONS = ('RECORD_NOT_AVAILABLE', 'Q_BELOW_454', 'G_BELOW_454', 'CALC_VERSION_MISSING', 'CALC_VERSION_MIXED',
+                      'ROW_DATA_STALE', 'POPULATION_MISMATCH', 'BASIS_NOT_COMPUTED')
+NO_CALC_VERSION_SEGMENT = 'NONE'
+# Evaluation segment of a RECORDED row written before the observation basis existed (kept as it was observed).
+LEGACY_SEGMENT = 'LEGACY'
+_CALC_VERSION = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:/+-]{0,63}')
 
 
 class CalendarNotConfigured(ValueError):
@@ -158,6 +174,64 @@ def company_axes(row):
     return out
 
 
+def not_available_basis():
+    return {'calc_version': None, 'q_scored': None, 'g_scored': None, 'population': None, 'acquired': None,
+            'evaluation': {'eligible': False, 'status': PREPARATORY, 'reasons': ['RECORD_NOT_AVAILABLE']}, 'segment': None}
+
+
+def unknown_basis():
+    """Fail-safe for a RECORDED row whose basis could not be computed: the day's row is kept (never lost to the basis),
+    as PREPARATORY in its own NONE segment."""
+    return {'calc_version': None, 'q_scored': None, 'g_scored': None, 'population': None, 'acquired': None,
+            'evaluation': {'eligible': False, 'status': PREPARATORY, 'reasons': ['BASIS_NOT_COMPUTED']},
+            'segment': NO_CALC_VERSION_SEGMENT}
+
+
+def observation_basis(screen, session):
+    """Compact basis of a validated `sec-qgv2.json` payload actually used for `session` (counts and dates only).
+
+    - q_scored / g_scored: Universe rows (504) with a Q / G score in that file.
+    - population: the ranking cross-section actually used (one point per CIK over LIVE/STALE Universe rows of the
+      file's calc_version; every LIVE/STALE row for an unversioned file): its size and the first 16 hex of sha256 over
+      the sorted CIKs joined by newlines. The list itself is not stored.
+    - acquired: UTC dates of the oldest and newest acquisition among the rows actually used (Universe and TARGET rows
+      with data of the file's calc_version), or None.
+    - evaluation: PRIMARY only when Q >= 454, G >= 454, the file declares a calc_version, every row with data carries
+      that same calc_version (a normal NA row has no data and never blocks) and the oldest used row was acquired at
+      most 7 days before the session date. Otherwise PREPARATORY with the reasons, in EVALUATION_REASONS order.
+    - segment: the calc_version (or NONE); a change of calc_version starts a new evaluation segment.
+    """
+    version = screen.get('calc_version')
+    version = version if type(version) is str else None
+    universe, target = list(screen['records'].values()), list(screen['target'].values())
+    q_scored = sum(1 for r in universe if r['axes']['Q']['score'] is not None)
+    g_scored = sum(1 for r in universe if r['axes']['G']['score'] is not None)
+    same = lambda r: version is None or r.get('calc_version') == version
+    valued = [r for r in universe + target if r['state'] in ('LIVE', 'STALE')]
+    used = [r for r in valued if same(r)]
+    ciks = sorted({r['cik'] for r in universe if r['state'] in ('LIVE', 'STALE') and r['cik'] is not None and same(r)})
+    days = sorted(_clock(r['acquired_at']).date() for r in used)
+    found = set()
+    if q_scored < PRIMARY_MIN_SCORED:
+        found.add('Q_BELOW_454')
+    if g_scored < PRIMARY_MIN_SCORED:
+        found.add('G_BELOW_454')
+    if version is None:
+        found.add('CALC_VERSION_MISSING')
+    elif len(used) != len(valued):
+        found.add('CALC_VERSION_MIXED')
+    if not days or (session - days[0]).days > FRESH_DAYS:
+        found.add('ROW_DATA_STALE')
+    if len(ciks) != screen['cross_section_size']:
+        found.add('POPULATION_MISMATCH')
+    reasons = [x for x in EVALUATION_REASONS if x in found]
+    return {'calc_version': version, 'q_scored': q_scored, 'g_scored': g_scored,
+            'population': {'n': len(ciks), 'id': hashlib.sha256('\n'.join(ciks).encode('ascii')).hexdigest()[:16]},
+            'acquired': [days[0].isoformat(), days[-1].isoformat()] if days else None,
+            'evaluation': {'eligible': not reasons, 'status': PREPARATORY if reasons else PRIMARY, 'reasons': reasons},
+            'segment': version if version is not None else NO_CALC_VERSION_SEGMENT}
+
+
 def build_record(*, now, session, qg_body, catalog_body):
     """One immutable record for `session`. Missing or invalid inputs give NOT_AVAILABLE with reasons."""
     from ..product.public_engine_screens import parse_json as parse_screen, require_public_screen
@@ -205,7 +279,7 @@ def build_v2_record(*, now, session, qgv2_body, catalog_body, dart_body=None, re
     # Reuse the immutable TARGET check; QGV v2 has a separate source and failure tokens.
     base = build_record(now=now, session=session, qg_body=None, catalog_body=catalog_body)
     reasons = [r for r in base['reason_codes'] if r.startswith('TARGET_')]
-    companies, acquired, screen_state, reference_sources = None, None, None, {}
+    companies, acquired, screen_state, reference_sources, basis = None, None, None, {}, None
     if qgv2_body is None:
         reasons.append('SEC_QGV2_MISSING')
     else:
@@ -227,6 +301,10 @@ def build_v2_record(*, now, session, qgv2_body, catalog_body, dart_body=None, re
                 if screen_state is None:
                     reasons.append('SEC_QGV2_NOT_AVAILABLE')
                 else:
+                    try:
+                        basis = observation_basis(screen, session)
+                    except Exception:  # never lose the day's row to its basis (validated input: not expected)
+                        basis = unknown_basis()
                     acquired = screen['as_of']
                     companies = {}
                     for cid in IDS:
@@ -243,12 +321,13 @@ def build_v2_record(*, now, session, qgv2_body, catalog_body, dart_body=None, re
                         companies['hanmi'] = reference['company']
                         reference_sources['hanmi'] = reference['source']
     if reasons:
-        companies = acquired = screen_state = None
+        companies = acquired = screen_state = basis = None
     result = {**base, 'version': V2_VERSION, 'strategy': V2_STRATEGY,
             'state': 'NOT_AVAILABLE' if reasons else 'RECORDED', 'reason_codes': reasons,
             'companies': companies, 'qg_as_of': acquired, 'qg_screen_state': screen_state,
             'source_sha256': {'sec-qgv2.json': None if qgv2_body is None else hashlib.sha256(qgv2_body).hexdigest(),
-                              'actual-catalog.json': base['source_sha256']['actual-catalog.json']}}
+                              'actual-catalog.json': base['source_sha256']['actual-catalog.json']},
+            'basis': basis if basis is not None else not_available_basis()}
     if not reasons and reference_sources:
         result['reference_sources'] = reference_sources
     return result
@@ -332,11 +411,47 @@ def _axis(value, axis, company_state, axis_size=None):
     _need(company_state != 'NOT_AVAILABLE' or value['score'] is None)
 
 
+def _basis(b, r, day, created):
+    _keys(b, BASIS_KEYS)
+    e = b['evaluation']
+    _keys(e, ('eligible', 'status', 'reasons'))
+    reasons = e['reasons']
+    _need(isinstance(reasons, list) and all(isinstance(x, str) for x in reasons))
+    _need(reasons == [x for x in EVALUATION_REASONS if x in reasons])  # known codes, unique, fixed order
+    _need(e['status'] in (PRIMARY, PREPARATORY) and type(e['eligible']) is bool)
+    _need(e['eligible'] == (e['status'] == PRIMARY) == (reasons == []))
+    if r['state'] != 'RECORDED':
+        _need(canonical(b) == canonical(not_available_basis()))
+        return
+    if 'BASIS_NOT_COMPUTED' in reasons:
+        _need(canonical(b) == canonical(unknown_basis()))
+        return
+    _need('RECORD_NOT_AVAILABLE' not in reasons)
+    version = b['calc_version']
+    _need(version is None or isinstance(version, str) and _CALC_VERSION.fullmatch(version) is not None)
+    _need(b['segment'] == (NO_CALC_VERSION_SEGMENT if version is None else version))
+    for key, code in (('q_scored', 'Q_BELOW_454'), ('g_scored', 'G_BELOW_454')):
+        n = b[key]
+        _need(type(n) is int and 0 <= n <= UNIVERSE_SIZE and (code in reasons) == (n < PRIMARY_MIN_SCORED))
+    _need(('CALC_VERSION_MISSING' in reasons) == (version is None))
+    _need(version is not None or 'CALC_VERSION_MIXED' not in reasons)
+    population = b['population']
+    _keys(population, ('n', 'id'))
+    _need(type(population['n']) is int and 0 <= population['n'] <= UNIVERSE_SIZE)
+    _need(isinstance(population['id'], str) and re.fullmatch('[0-9a-f]{16}', population['id']) is not None)
+    acquired = b['acquired']
+    if acquired is not None:
+        _need(isinstance(acquired, list) and len(acquired) == 2)
+        _need(_day(acquired[0]) <= _day(acquired[1]) <= created.date())
+    stale = acquired is None or (day - date.fromisoformat(acquired[0])).days > FRESH_DAYS
+    _need(('ROW_DATA_STALE' in reasons) == stale)
+
+
 def _record(r, previous_day, cut, version=VERSION):
     is_v2 = version == V2_VERSION
     sources = V2_SOURCES if is_v2 else SOURCES
     prefix = 'SEC_QGV2' if is_v2 else 'SEC_QG_FACTORS'
-    _keys(r, RECORD_KEYS + ('reference_sources',) if is_v2 and 'reference_sources' in r else RECORD_KEYS)
+    _keys(r, RECORD_KEYS + tuple(k for k in ('reference_sources', 'basis') if is_v2 and k in r))
     day = _day(r['date'])
     _need(day >= START_DATE and is_session_day(day) and (previous_day is None or day > previous_day))
     created = _clock(r['created_at'])
@@ -347,6 +462,8 @@ def _record(r, previous_day, cut, version=VERSION):
     _keys(r['source_sha256'], sources)
     for value in r['source_sha256'].values():
         _hash(value, nullable=True)
+    if 'basis' in r:
+        _basis(r['basis'], r, day, created)
     if r['target'] is not None:
         _keys(r['target'], ('portfolio_id', 'version', 'root_sha256', 'total_units', 'weights_units'))
         _need(r['target']['portfolio_id'] == TARGET_ID and r['target']['version'] == TARGET_VERSION)
@@ -402,9 +519,12 @@ def _require(p):
     for version in (v for v in versions if v != V_VERSION):
         values = p['versions'][version]
         _need(isinstance(values, list) and len(values) <= 5000)
-        previous = None
+        previous, with_basis = None, False
         for r in values:
             previous = _record(r, previous, cut, version)
+            # Rows written before the basis existed stay valid as written; once a row carries one, every later row must.
+            _need(not with_basis or 'basis' in r)
+            with_basis = with_basis or 'basis' in r
     status = 'ACTIVE' if eastern(cut).date() >= START_DATE or rows else 'NOT_STARTED'
     _need(p['status'] == status and (status == 'ACTIVE' or not rows))
     expected = {
@@ -426,6 +546,36 @@ def require_ledger(payload):
         raise ValueError('FORWARD_LEDGER_INVALID') from None
     except (ValueError, TypeError, KeyError, AttributeError, OverflowError, RecursionError):
         raise ValueError('FORWARD_LEDGER_INVALID') from None
+
+
+def row_evaluation(r):
+    """How a v2 row counts in evaluation: PRIMARY or PREPARATORY (준비 관측·주 평가 대상 아님) from its own basis; LEGACY
+    for a RECORDED row written before the basis existed (kept as observed, in its own segment); NOT_AVAILABLE otherwise."""
+    if r['state'] != 'RECORDED':
+        return {'status': 'NOT_AVAILABLE', 'segment': None, 'reasons': list(r['reason_codes'])}
+    b = r.get('basis')
+    if b is None:
+        return {'status': 'LEGACY', 'segment': LEGACY_SEGMENT, 'reasons': []}
+    return {'status': b['evaluation']['status'], 'segment': b['segment'], 'reasons': list(b['evaluation']['reasons'])}
+
+
+def evaluation_segments(rows):
+    """Evaluation segments of one version's rows (JS: forward-validation.js `segments`). A run of RECORDED rows with the
+    same segment (calc_version) is one segment; a change starts a new one and segments are never chained. PREPARATORY
+    rows stay in their segment but outside the primary evaluation (`eligible_dates` holds PRIMARY and LEGACY rows only).
+    NOT_AVAILABLE rows belong to no segment and do not split one."""
+    out = []
+    for r in rows:
+        ev = row_evaluation(r)
+        if ev['status'] == 'NOT_AVAILABLE':
+            continue
+        if not out or out[-1]['segment'] != ev['segment']:
+            out.append({'segment': ev['segment'], 'first_date': r['date'], 'last_date': r['date'], 'eligible_dates': [],
+                        'preparatory_dates': []})
+        segment = out[-1]
+        segment['last_date'] = r['date']
+        segment['preparatory_dates' if ev['status'] == PREPARATORY else 'eligible_dates'].append(r['date'])
+    return out
 
 
 def canonical(value):
