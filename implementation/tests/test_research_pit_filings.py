@@ -2,9 +2,12 @@
 
 Each test names the bug it catches. Expected values are written by hand (dates, growth ratios), never produced by the
 function under test. Plan cases: S1 future filing, S2 same-day filing, S3 amendment, S4 missing filed (BACKTEST_RESEARCH_PLAN §10).
+Close-time cases (owner instruction 2026-10-17 item 5): the 2025-11-28 13:00 early close, holidays, daylight saving and an
+UNVERIFIED close that fails closed. The early-close table is not checked against real data here.
 """
 import ast
-from datetime import date, datetime, timedelta
+from collections import Counter
+from datetime import date, datetime, time, timedelta, timezone
 import itertools
 import math
 from pathlib import Path
@@ -91,6 +94,136 @@ def test_calendar_fails_closed_outside_its_range_and_on_holidays():
     with pytest.raises(ValueError):
         pf.signal_decision_time(date(2016, 2, 15))
     assert pf.signal_decision_time(date(2016, 2, 16)) == at(2016, 2, 16)
+
+
+# ---------------- session close: early closes, holidays, daylight saving ----------------
+UTC = timezone.utc
+
+
+def utc(y, m, d, hh, mm=0):
+    return datetime(y, m, d, hh, mm, tzinfo=UTC)
+
+
+def test_early_close_table_matches_the_standing_nyse_rules():
+    # Catches: a typo or a missing / extra date in the hand-written 13:00 table (e.g. July 2 instead of July 3, a Friday
+    # Christmas Eve listed although it is the holiday). The rule below is written here, independently of the table.
+    expected = set()
+    for year in range(2009, 2029):
+        thanksgiving = date(year, 11, 1) + timedelta(days=(3 - date(year, 11, 1).weekday()) % 7 + 21)
+        expected.add(thanksgiving + timedelta(days=1))
+        expected |= {d for d in (date(year, 7, 3), date(year, 12, 24)) if d.weekday() <= 3}
+    assert pf.NYSE_EARLY_CLOSES == expected
+    per_year = Counter(d.year for d in pf.NYSE_EARLY_CLOSES)
+    assert per_year == {2009: 2, 2010: 1, 2011: 1, 2012: 3, 2013: 3, 2014: 3, 2015: 2, 2016: 1, 2017: 2, 2018: 3, 2019: 3,
+                        2020: 2, 2021: 1, 2022: 1, 2023: 2, 2024: 3, 2025: 3, 2026: 2, 2027: 1, 2028: 2}
+    assert {d.year for d in pf.NYSE_EARLY_CLOSES_HISTORICAL} == set(range(2009, 2026))
+    assert {d.year for d in pf.NYSE_EARLY_CLOSES_SCHEDULED} == {2026, 2027, 2028}
+    assert all(pf.is_session(d) for d in pf.NYSE_EARLY_CLOSES | pf.EARLY_CLOSE_UNVERIFIED)
+    assert not pf.NYSE_EARLY_CLOSES & pf.EARLY_CLOSE_UNVERIFIED
+
+
+def test_2025_11_28_closes_at_13_00_new_york():
+    # Catches: the old uniform 16:00 on the day after Thanksgiving.
+    close = pf.session_close(date(2025, 11, 28))
+    assert (close.kind, close.new_york_close, close.daylight_saving, close.schedule_based) == (pf.EARLY_CLOSE, time(13, 0),
+                                                                                                False, False)
+    assert close.close_at == utc(2025, 11, 28, 18) == at(2025, 11, 28, 13)
+    assert pf.signal_decision_time(date(2025, 11, 28)) == utc(2025, 11, 28, 18)
+    assert pf.signal_decision_time(date(2025, 11, 28)).tzinfo is UTC
+
+
+def test_filing_after_the_early_close_waits_for_the_next_session_close():
+    # Catches: a filing accepted at 13:30 on 2025-11-28 entering that day's close decision (true with a 16:00 close).
+    p = payload((REV, [annual(2024, 110.0, '2025-02-25', 'K24'),
+                       row(30.0, '2025-09-30', '2025-11-28', 'LATE', start='2025-07-01', form='10-Q'),
+                       row(29.0, '2025-06-30', '2025-11-28', 'EARLY', start='2025-04-01', form='10-Q')]))
+    acceptance = {'LATE': '2025-11-28 13:30:00.0', 'EARLY': '2025-11-28 12:59:00.0'}   # FSDS: New York wall clock
+    late, early = ('Revenues', '2025-07-01', '2025-09-30'), ('Revenues', '2025-04-01', '2025-06-30')
+    close = pf.signal_decision_time(date(2025, 11, 28))
+    seen = values(pf.pit_filter_companyfacts(p, close, acceptance=acceptance))
+    assert early in seen and late not in seen                                 # 12:59 in, 13:30 out
+    assert late in values(pf.pit_filter_companyfacts(p, at(2025, 11, 28, 16), acceptance=acceptance))   # the old 16:00 leak
+    assert pf.next_session(date(2025, 11, 28)) == date(2025, 12, 1)
+    nxt = values(pf.pit_filter_companyfacts(p, pf.signal_decision_time(date(2025, 12, 1)), acceptance=acceptance))
+    assert (nxt[late], nxt[early]) == (30.0, 29.0)
+    assert early not in values(pf.pit_filter_companyfacts(p, close))          # date only: next session open, as before
+
+
+def test_holidays_weekends_and_unscheduled_closures_have_no_decision_time():
+    # Catches: a decision time on a closed day (e.g. 16:00 on Thanksgiving) or an unexplained failure.
+    for day, reason in ((date(2025, 11, 27), pf.HOLIDAY), (date(2025, 11, 29), pf.WEEKEND),
+                        (date(2012, 10, 29), pf.UNSCHEDULED_CLOSURE), (date(2025, 1, 9), pf.UNSCHEDULED_CLOSURE),
+                        (date(2027, 12, 24), pf.HOLIDAY)):
+        close = pf.session_close(day)
+        assert (close.kind, close.close_at, close.new_york_close, close.reason) == (reason, None, None, reason)
+        with pytest.raises(pf.NoDecisionTime) as caught:
+            pf.signal_decision_time(day)
+        assert caught.value.reason == reason and isinstance(caught.value, ValueError)
+    with pytest.raises(pf.CalendarNotConfigured):
+        pf.session_close(date(2029, 1, 2))
+
+
+@pytest.mark.parametrize('day,hour_utc,dst', [
+    ('2025-07-01', 20, True),    # summer: 16:00 EDT
+    ('2025-12-01', 21, False),   # winter: 16:00 EST
+    ('2025-03-07', 21, False),   # Friday before daylight saving starts (Sunday 2025-03-09)
+    ('2025-03-10', 20, True),    # Monday after
+    ('2025-10-31', 20, True),    # Friday before daylight saving ends (Sunday 2025-11-02)
+    ('2025-11-03', 21, False),   # Monday after
+    ('2009-03-06', 21, False), ('2009-03-09', 20, True),   # 2009 transition week (second Sunday of March)
+])
+def test_regular_close_follows_new_york_daylight_saving(day, hour_utc, dst):
+    # Catches: a fixed UTC offset (wrong by one hour for part of every year) or an off-by-one transition week.
+    close = pf.session_close(date.fromisoformat(day))
+    expected = utc(*map(int, day.split('-')), hour_utc)
+    assert (close.kind, close.close_at, close.daylight_saving) == (pf.REGULAR_CLOSE, expected, dst)
+
+
+@pytest.mark.parametrize('day,hour_utc,kind', [
+    ('2025-07-03', 17, pf.EARLY_CLOSE),     # day before Independence Day, 13:00 EDT
+    ('2025-07-02', 20, pf.REGULAR_CLOSE),
+    ('2025-12-24', 18, pf.EARLY_CLOSE),     # Christmas Eve, 13:00 EST
+    ('2025-12-23', 21, pf.REGULAR_CLOSE),
+    ('2013-07-03', 17, pf.EARLY_CLOSE),     # first Wednesday July 3 early close
+    ('2020-07-02', 20, pf.REGULAR_CLOSE),   # July 3 is the holiday; no early close the day before
+    ('2014-12-26', 21, pf.REGULAR_CLOSE),   # Friday after a Thursday Christmas: full day
+    ('2028-07-03', 17, pf.EARLY_CLOSE),     # announced schedule
+])
+def test_july_and_christmas_early_closes(day, hour_utc, kind):
+    # Catches: early closes only on the day after Thanksgiving, or 13:00 spread to the neighbouring days.
+    close = pf.session_close(date.fromisoformat(day))
+    assert (close.kind, close.close_at) == (kind, utc(*map(int, day.split('-')), hour_utc))
+    assert close.schedule_based is (close.day.year >= 2026)
+
+
+def test_unverified_close_time_fails_closed():
+    # Catches: an unconfirmed early close silently taken as 13:00 or 16:00.
+    day = date(2025, 12, 26)
+    assert day in pf.EARLY_CLOSE_UNVERIFIED and pf.is_session(day)   # a session: filings still become public at its open
+    close = pf.session_close(day)
+    assert (close.kind, close.close_at, close.reason) == (pf.CLOSE_TIME_UNVERIFIED, None, pf.CLOSE_TIME_UNVERIFIED)
+    with pytest.raises(pf.NoDecisionTime) as caught:
+        pf.signal_decision_time(day)
+    assert caught.value.reason == pf.CLOSE_TIME_UNVERIFIED
+    assert pf.public_time('2025-12-24').at == at(2025, 12, 26, 9, 30)
+
+
+def test_every_close_in_the_calendar_is_new_york_16_00_or_13_00_through_zoneinfo():
+    # Catches: a fixed offset, a close on the wrong New York date, a non-UTC return value, or a day with no classification.
+    kinds, day = Counter(), pf.CALENDAR_START
+    while day <= pf.CALENDAR_END:
+        close = pf.session_close(day)
+        kinds[close.kind] += 1
+        if close.close_at is not None:
+            local = close.close_at.astimezone(ET)
+            assert close.close_at.tzinfo is UTC and local.date() == day
+            assert local.time() == (time(13, 0) if day in pf.NYSE_EARLY_CLOSES else time(16, 0)) == close.new_york_close
+            assert close.close_at.hour == local.hour + (4 if close.daylight_saving else 5)
+        day += timedelta(days=1)
+    assert (kinds[pf.EARLY_CLOSE], kinds[pf.CLOSE_TIME_UNVERIFIED], kinds[pf.UNSCHEDULED_CLOSURE]) == (41, 1, 4)
+    assert sum(kinds.values()) == (pf.CALENDAR_END - pf.CALENDAR_START).days + 1
+    source = (SRC / 'research' / 'pit_filings.py').read_text(encoding='utf-8')
+    assert all(fixed not in source for fixed in ('hours=', '-05:00', '-04:00', 'UTC-5', 'UTC-4'))
 
 
 # ---------------- public time of one filing ----------------

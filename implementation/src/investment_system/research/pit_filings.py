@@ -16,6 +16,14 @@ A fact is public at decision time t when its public time <= t AND its filing dat
 condition the operating `filed <= cutoff` filter of v2_factors.compute (cutoff = t's New York date) never removes a kept fact.
 With date-only facts and t = close of session S (BT-11 A), "public at t" is exactly "filed <= S - 1 calendar day".
 
+Decision time t (BT-11 A) = the actual close of S, returned in UTC: 16:00 New York, 13:00 on an NYSE early-close day (table
+NYSE_EARLY_CLOSES 2009-2028: day after Thanksgiving, Christmas Eve and July 3 on Monday-Thursday). Daylight saving comes from
+zoneinfo, never a fixed offset (16:00 = 20:00 UTC in summer, 21:00 UTC in winter). Weekends, holidays and unscheduled closures
+have no decision time (NoDecisionTime with the reason); so does a session whose closing hour is not confirmed
+(EARLY_CLOSE_UNVERIFIED), instead of an assumed 13:00 or 16:00. A filing accepted after a 13:00 close is not public at that
+close; it first counts at the next session's close. The table is checked only against the standing rules and a secondary
+open-source calendar: unverified against real data, and 2026-2028 is the NYSE-announced schedule.
+
 Each companyfacts row is one filing's report of one period. An amendment (10-K/A) or a later comparative (a prior year
 restated inside a later 10-K) is its own row with its own accession and filing date, so it becomes visible only at its own
 public time while the original row stays the visible value before that. The companyfacts `frame` tag is hindsight: SEC
@@ -43,7 +51,7 @@ from __future__ import annotations
 
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta, timezone
 import math
 import re
 from zoneinfo import ZoneInfo
@@ -54,6 +62,8 @@ from ..validation import forward_ledger
 ET = ZoneInfo('America/New_York')
 SESSION_OPEN = time(9, 30)
 SESSION_CLOSE = time(16, 0)
+EARLY_CLOSE_TIME = time(13, 0)
+UTC = timezone.utc
 
 # ---------------- NYSE session calendar (research range) ----------------
 CALENDAR_START = date(2009, 1, 1)
@@ -143,11 +153,93 @@ def session_open(day):
     return datetime.combine(day, SESSION_OPEN, ET)
 
 
+# ---------------- session close: regular, early close, no close ----------------
+# NYSE early closes at 13:00 New York (equities), listed date by date. Source kind: the NYSE published holiday and early-close
+# calendar of each year, as known to the author; nyse.com is not reachable from this container, so they were not re-read
+# here. Cross-check 2026-10-17: the same 41 dates follow from the XNYS rules of the open-source exchange_calendars package
+# (secondary source). Pattern in this range: the day after Thanksgiving; Christmas Eve on Monday-Thursday (a Friday Christmas
+# Eve is the observed Christmas holiday); July 3 on Monday-Thursday (a Friday July 3 is the observed Independence Day, and
+# July 2 is then a full day). Not checked against real price or trade data.
+# Comments: T+1 = day after Thanksgiving, XE = Christmas Eve, J3 = July 3; in brackets, why a candidate day is not listed.
+NYSE_EARLY_CLOSES_HISTORICAL = frozenset(date.fromisoformat(d) for d in (
+    '2009-11-27', '2009-12-24',                  # T+1, XE Thu        [J3 Fri = observed holiday]
+    '2010-11-26',                                # T+1                [J3 Sat; XE Fri = observed holiday]
+    '2011-11-25',                                # T+1                [J3 Sun; XE Sat]
+    '2012-07-03', '2012-11-23', '2012-12-24',    # J3 Tue, T+1, XE Mon
+    '2013-07-03', '2013-11-29', '2013-12-24',    # J3 Wed, T+1, XE Tue
+    '2014-07-03', '2014-11-28', '2014-12-24',    # J3 Thu, T+1, XE Wed
+    '2015-11-27', '2015-12-24',                  # T+1, XE Thu        [J3 Fri = observed holiday]
+    '2016-11-25',                                # T+1                [J3 Sun; XE Sat]
+    '2017-07-03', '2017-11-24',                  # J3 Mon, T+1        [XE Sun]
+    '2018-07-03', '2018-11-23', '2018-12-24',    # J3 Tue, T+1, XE Mon
+    '2019-07-03', '2019-11-29', '2019-12-24',    # J3 Wed, T+1, XE Tue
+    '2020-11-27', '2020-12-24',                  # T+1, XE Thu        [J3 Fri = observed holiday]
+    '2021-11-26',                                # T+1                [J3 Sat; XE Fri = observed holiday]
+    '2022-11-25',                                # T+1                [J3 Sun; XE Sat]
+    '2023-07-03', '2023-11-24',                  # J3 Mon, T+1        [XE Sun]
+    '2024-07-03', '2024-11-29', '2024-12-24',    # J3 Wed, T+1, XE Tue
+    '2025-07-03', '2025-11-28', '2025-12-24',    # J3 Thu, T+1, XE Wed
+))
+# 2026-2028: the NYSE-announced schedule (subject to change by the exchange), like forward_ledger.NYSE_HOLIDAYS.
+NYSE_EARLY_CLOSES_SCHEDULED = frozenset(date.fromisoformat(d) for d in (
+    '2026-11-27', '2026-12-24',                  # T+1, XE Thu        [J3 Fri = observed holiday]
+    '2027-11-26',                                # T+1                [J3 Sat; XE Fri = observed holiday]
+    '2028-07-03', '2028-11-24',                  # J3 Mon, T+1        [XE Sun]
+))
+NYSE_EARLY_CLOSES = NYSE_EARLY_CLOSES_HISTORICAL | NYSE_EARLY_CLOSES_SCHEDULED
+# Sessions whose closing hour is not confirmed by the sources above: no decision time (fail closed), never an assumed 13:00
+# or 16:00. 2025-12-26 is a Friday after a Thursday Christmas: the secondary source lists 13:00 closes on such days in 1997
+# and 2003, full days in 2008 and 2014, and leaves 2025 to be checked.
+EARLY_CLOSE_UNVERIFIED = frozenset({date(2025, 12, 26)})
+
+REGULAR_CLOSE, EARLY_CLOSE = 'REGULAR_CLOSE', 'EARLY_CLOSE'
+WEEKEND, HOLIDAY, UNSCHEDULED_CLOSURE = 'WEEKEND', 'HOLIDAY', 'UNSCHEDULED_CLOSURE'
+CLOSE_TIME_UNVERIFIED = 'CLOSE_TIME_UNVERIFIED'
+
+
+class NoDecisionTime(ValueError):
+    """No BT-11 A decision instant on that day. `reason`: WEEKEND, HOLIDAY, UNSCHEDULED_CLOSURE or CLOSE_TIME_UNVERIFIED."""
+
+    def __init__(self, reason):
+        super().__init__(reason)
+        self.reason = reason
+
+
+@dataclass(frozen=True)
+class SessionClose:
+    day: date
+    kind: str                        # REGULAR_CLOSE, EARLY_CLOSE, or the no-close reason
+    close_at: datetime | None        # the close in UTC; None when there is no usable close
+    new_york_close: time | None      # 16:00 or 13:00 New York wall clock
+    daylight_saving: bool | None     # New York on daylight saving time at the close (zoneinfo)
+    schedule_based: bool             # 2026-2028: NYSE-announced schedule, subject to change
+    reason: str | None = None        # set when close_at is None
+
+
+def session_close(day):
+    """The close of NYSE day `day`, told apart as regular close, early close, weekend, holiday, unscheduled closure or
+    unverified close time. The instant comes from the New York wall clock through zoneinfo (no fixed offset), in UTC.
+    Fails closed outside CALENDAR_START..CALENDAR_END (CalendarNotConfigured)."""
+    trading = is_session(day)
+    scheduled = day.year >= PUBLISHED_FIRST_YEAR
+    if not trading or day in EARLY_CLOSE_UNVERIFIED:
+        reason = (CLOSE_TIME_UNVERIFIED if trading else WEEKEND if day.weekday() >= 5
+                  else UNSCHEDULED_CLOSURE if day in SPECIAL_CLOSURES else HOLIDAY)
+        return SessionClose(day, reason, None, None, None, scheduled, reason)
+    early = day in NYSE_EARLY_CLOSES
+    wall = datetime.combine(day, EARLY_CLOSE_TIME if early else SESSION_CLOSE, ET)
+    return SessionClose(day, EARLY_CLOSE if early else REGULAR_CLOSE, wall.astimezone(UTC), wall.time(),
+                        bool(wall.dst()), scheduled)
+
+
 def signal_decision_time(day):
-    """BT-11 A decision instant: the close of the signal session S (scores use only what was public then)."""
-    if not is_session(day):
-        raise ValueError('NOT_A_SESSION')
-    return datetime.combine(day, SESSION_CLOSE, ET)
+    """BT-11 A decision instant: the actual close of the signal session S, in UTC (16:00 New York, 13:00 on an early-close
+    day). Scores use only what was public then. Raises NoDecisionTime(reason) when S has no usable close (weekend, holiday,
+    unscheduled closure, unverified close time) and CalendarNotConfigured outside the calendar range."""
+    close = session_close(day)
+    if close.close_at is None:
+        raise NoDecisionTime(close.reason)
+    return close.close_at
 
 
 # ---------------- public time of one filing ----------------
