@@ -12,7 +12,7 @@ Row rule (each file against the live copy of the same file, each section separat
 
 - sec-universe-shares.json `records` and sec-universe-qg.json `records`: keyed by Universe code;
 - sec-qgv2.json `records` (Universe code) and `target` (TARGET company id): two separate sections;
-- sec-public-inputs.json `companies`: a list keyed by `company_id` (a NOT_AVAILABLE row carries no `acquired_at`).
+- sec-public-inputs.json `companies`: a list keyed by `company_id` (records below).
 
 A live row with a collection record (`acquired_at` set) must be in the artifact with an `acquired_at` equal to or later
 than the live one. Row missing -> MISSING, artifact `acquired_at` null or unreadable -> LOST_RECORD, earlier -> OLDER:
@@ -22,12 +22,44 @@ the current calculation rules, not a retreat. Live rows without a collection rec
 that has one where the live row has none is counted as new_record). Markers are acquisition times only, never a file's
 `as_of`: the preserve-only path of the manual build re-stamps the Universe files' `as_of` to its own build time.
 
+sec-public-inputs.json (owner decision 2026-10-17, schema /4; a /3 live copy is compared the same way, its NOT_AVAILABLE
+rows have no record). The artifact file is read through its strict validator (`require_public_inputs`); an artifact that
+fails it has no rows (PAGES_FRESHNESS_ARTIFACT_INVALID line, every live record MISSING). A row's record is:
+- OBSERVED at `acquired_at`: a LIVE row or a /4 NOT_AVAILABLE row (policy NA of a successful collection, which the
+  validator only accepts with sources, a normalize-stage policy code and an acquired_at no later than the run);
+- WITHDRAWN at `detected_at`, naming `withdrawn_acquired_at`: an identity conflict that stops an observation;
+- none: a /3 NOT_AVAILABLE row or a /4 COLLECTION_FAILED row (`checked_at` is a failure time, never a marker).
+Rules for a live row with a record (on top of MISSING / LOST_RECORD / OLDER by marker):
+- an artifact WITHDRAWN row must name exactly the live observation: `withdrawn_acquired_at` equal to the live row's
+  `acquired_at` (live OBSERVED) or to the live withdrawal's `withdrawn_acquired_at` (live WITHDRAWN), else
+  WITHDRAWAL_MISMATCH (OLDER when it names an earlier observation), and be detected no earlier than the live marker.
+  Against a live OBSERVED row it passes as WITHDRAWN. Setting a status alone therefore never passes: the withdrawal must
+  carry the live acquired_at, an identity reason code and a valid detection time, all checked here or by the validator;
+- a row kept from the previous copy (`preserved_previous` set) must be the live row itself: same record and the same
+  observation content (everything but `preserved_previous`), else PRESERVED_MISMATCH: a kept row is never newer than the
+  live one (no timestamp refresh without a collection) and never another observation;
+- a row whose record equals the live one must have the same observation content, else CHANGED (values replaced
+  without a newer collection);
+- a newer OBSERVED row passes over a live WITHDRAWN row only when collected at or after the detection (NEWER), so an
+  artifact built before the withdrawal can never bring the stopped value back (OLDER).
+
+sec-qgv2.json `target` (the same TARGET NA schema extended to that section, owner instruction 2026-10-17 item 3): a
+withdrawal row (`detected_at`, `withdrawn_acquired_at`; identity conflict, no values) is a WITHDRAWN record and the
+WITHDRAWN rules above apply (exact name of the live observation, else WITHDRAWAL_MISMATCH / OLDER; a newer observation
+passes only when collected at or after the detection). An artifact with a withdrawal row is only trusted when its strict
+validator (`require_qgv2`) accepts the file; otherwise it has no rows (PAGES_FRESHNESS_ARTIFACT_INVALID). The kept-row
+and CHANGED rules stay sec-public-inputs.json only (sec-qgv2.json rows are restated and re-scored at every publication).
+The `records` section is unchanged: a Universe identity conflict without a collection record is LOST_RECORD (pending
+owner decision UNI-WITHDRAWN).
+
 Producers (owner decision 2026-10-17, option a): a company/code whose collection or identification failed keeps its
 verified previous row unchanged (same acquired_at, sources and calc_version) when the same issuer is confirmed, so such a
 failure arrives here as EQUAL, never as LOST_RECORD: tools/public_sec_inputs.py (transient fetch failures) and the
 Universe merges (`previous_decision`: unresolved symbol, identity unconfirmed, builder failure). Identity conflicts and
-TARGET normalize results are never preserved: a live row with a collection record then has none in the artifact and
-the deploy is refused here (fail closed).
+TARGET normalize results are never preserved. In sec-public-inputs.json /4 a TARGET normalize result is a NOT_AVAILABLE
+row with this run's acquired_at (NEWER, passes) and an identity conflict is a WITHDRAWN row (passes as WITHDRAWN when
+it names the live observation); a collection failure without a kept row (HTTP 404, unknown failure, live copy not read)
+is a COLLECTION_FAILED row without a record: LOST_RECORD, refused (fail closed).
 
 forward-validation-ledger.json: every record of every append-only list in `versions` (v1, v1+dcf, v2 and any list a
 later schema adds) must be in the artifact at the same position with identical canonical JSON; the artifact may only
@@ -70,7 +102,11 @@ from sec_universe_shares import _fetch_body  # the daily tools' live Pages reade
 fl = ledger_tool.fl
 MAX_DETAIL = 20
 ROW_KINDS = ('newer', 'equal', 'older', 'missing', 'lost_record')
-ROW_REGRESSIONS = ('OLDER', 'MISSING', 'LOST_RECORD')
+ROW_REGRESSIONS = ('OLDER', 'MISSING', 'LOST_RECORD', 'WITHDRAWAL_MISMATCH', 'PRESERVED_MISMATCH', 'CHANGED')
+# sec-public-inputs.json only (schema /4): counted after new_record on its line.
+INPUTS_KINDS = ('withdrawn', 'withdrawal_mismatch', 'preserved_mismatch', 'changed')
+# sec-qgv2.json `target` (TARGET withdrawal rows): counted after new_record on its line.
+TARGET_KINDS = ('withdrawn', 'withdrawal_mismatch')
 MARKER_REFUSING = ('OLDER', 'MISSING')
 _PRINTABLE_KEY = re.compile(r'[A-Za-z0-9][A-Za-z0-9:._-]{0,39}')
 _PRINTABLE_VERSION = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:/+-]{0,63}')
@@ -199,25 +235,80 @@ def _latest(rows):
     return max(stamps) if stamps else None
 
 
+def _acquired_record(row):
+    stamp = _instant(row.get('acquired_at'))
+    return None if stamp is None else ('OBSERVED', stamp, None)
+
+
+def _inputs_record(row):
+    """sec-public-inputs.json: ('OBSERVED', acquired_at, None) | ('WITHDRAWN', detected_at, withdrawn_acquired_at) | None."""
+    if row.get('status') == 'WITHDRAWN':
+        detected = _instant(row.get('detected_at'))
+        return None if detected is None else ('WITHDRAWN', detected, _instant(row.get('withdrawn_acquired_at')))
+    return _acquired_record(row)
+
+
+def _target_record(row):
+    """sec-qgv2.json `target`: ('WITHDRAWN', detected_at, withdrawn_acquired_at) for a withdrawal row, else as acquired."""
+    if 'detected_at' in row:
+        detected = _instant(row.get('detected_at'))
+        return None if detected is None else ('WITHDRAWN', detected, _instant(row.get('withdrawn_acquired_at')))
+    return _acquired_record(row)
+
+
+def _observation(row):
+    """A row without its run marker, as canonical text (a kept row equals the live row it was kept from)."""
+    return json.dumps({k: v for k, v in row.items() if k != 'preserved_previous'}, sort_keys=True, ensure_ascii=True)
+
+
+def _row_kind(theirs_row, theirs, row, ours, inputs, withdrawals=False):
+    if row is None:
+        return 'MISSING'
+    if ours is None:
+        return 'LOST_RECORD'
+    if ours[1] < theirs[1]:
+        return 'OLDER'
+    if not (inputs or withdrawals):
+        return 'EQUAL' if ours[1] == theirs[1] else 'NEWER'
+    if ours[0] == 'WITHDRAWN':
+        named = theirs[1] if theirs[0] == 'OBSERVED' else theirs[2]
+        if ours[2] != named:
+            return 'OLDER' if ours[2] is not None and named is not None and ours[2] < named else 'WITHDRAWAL_MISMATCH'
+    if not inputs:   # sec-qgv2.json `target`: records only (rows are restated and re-scored at every publication)
+        if ours == theirs:
+            return 'EQUAL'
+        return 'WITHDRAWN' if ours[0] == 'WITHDRAWN' and theirs[0] == 'OBSERVED' else 'NEWER'
+    kept = type(row.get('preserved_previous')) is dict
+    if ours == theirs and _observation(row) == _observation(theirs_row):
+        return 'EQUAL'
+    if kept:
+        return 'PRESERVED_MISMATCH'
+    if ours == theirs:
+        return 'CHANGED'
+    return 'WITHDRAWN' if ours[0] == 'WITHDRAWN' and theirs[0] == 'OBSERVED' else 'NEWER'
+
+
 def compare_rows(name, section, live, local):
     """One section, row by row. `live` is the validated live payload or None (404)."""
+    inputs = name == target_tool.FILENAME
+    withdrawals = name == universe_tool.qgv2.FILENAME and section == 'target'
+    record = _inputs_record if inputs else _target_record if withdrawals else _acquired_record
     mine = _rows(local, section)
-    counts = dict.fromkeys(('compared',) + ROW_KINDS + ('new_record',), 0)
+    counts = dict.fromkeys(('compared',) + ROW_KINDS + ('new_record',) + (INPUTS_KINDS if inputs else TARGET_KINDS if withdrawals else ()), 0)
     regressions = []
     theirs_rows = _rows(live, section) if live is not None else {}
     for key in sorted(set(theirs_rows) | set(mine)):
-        theirs = _instant(theirs_rows[key].get('acquired_at')) if key in theirs_rows else None
+        theirs = record(theirs_rows[key]) if key in theirs_rows else None
         row = mine.get(key)
-        ours = _instant(row.get('acquired_at')) if row is not None else None
+        ours = record(row) if row is not None else None
         if theirs is None:
             counts['new_record'] += int(ours is not None)
             continue
         counts['compared'] += 1
-        kind = ('MISSING' if row is None else 'LOST_RECORD' if ours is None else 'OLDER' if ours < theirs
-                else 'EQUAL' if ours == theirs else 'NEWER')
+        kind = _row_kind(theirs_rows[key], theirs, row, ours, inputs, withdrawals)
         counts[kind.lower()] += 1
         if kind in ROW_REGRESSIONS:
-            regressions.append((key, kind, ours, theirs))
+            regressions.append((key, kind, ours[1] if ours else None, theirs[1]))
     verdict = 'NO_LIVE' if live is None else 'REFUSED' if regressions else 'PASS'
     return {'file': name, 'section': section, 'verdict': verdict, 'counts': counts, 'regressions': regressions,
             'artifact_latest': _latest(mine), 'live_latest': _latest(theirs_rows)}
@@ -305,12 +396,27 @@ def compare(artifact_dir, *, open_response=None, environ=None):
         raise ValueError('PAGES_FRESHNESS ARTIFACT_INVALID')
     nonce = _run_nonce(environ)
     reads = [(entry, _live(*entry[:4], nonce, open_response)) for entry in ROW_FILES + (LEDGER_FILE,)]
-    out = {'rows': [], 'ledger_markers': [], 'ledger_lists': [], 'live_invalid': []}
+    out = {'rows': [], 'ledger_markers': [], 'ledger_lists': [], 'live_invalid': [], 'artifact_invalid': []}
     for (name, _, limit, *rest), (state, live) in reads:
         if state == 'LIVE_INVALID':
             out['live_invalid'].append(name)
             continue
         local = _artifact(artifact_dir, name, limit)
+        if name == target_tool.FILENAME and local is not None:
+            # The /4 records (WITHDRAWN, kept rows, NA with acquired_at) are only trusted in a file its validator accepts.
+            try:
+                target_tool.require_public_inputs(local)
+            except Exception:
+                out['artifact_invalid'].append(name)
+                local = None
+        if name == universe_tool.qgv2.FILENAME and local is not None \
+                and any('detected_at' in row for row in _rows(local, 'target').values()):
+            # A TARGET withdrawal record is only trusted in a file its validator accepts.
+            try:
+                universe_tool.qgv2.require_qgv2(local)
+            except Exception:
+                out['artifact_invalid'].append(name)
+                local = None
         if name == fl.FILENAME:
             out['ledger_markers'], out['ledger_lists'] = compare_ledger(live, local)
             continue
@@ -352,6 +458,8 @@ def run(artifact_dir, *, open_response=None, environ=None):
     verdicts = []
     for name in result['live_invalid']:
         print(f'PAGES_FRESHNESS_LIVE_INVALID file={name} deploy=REFUSED')
+    for name in result.get('artifact_invalid', []):
+        print(f'PAGES_FRESHNESS_ARTIFACT_INVALID file={name} rows=NONE')
     for r in result['rows']:
         counts = ' '.join(f'{k}={v}' for k, v in r['counts'].items())
         print(f"PAGES_FRESHNESS file={r['file']} section={r['section']} verdict={r['verdict']} {counts} "

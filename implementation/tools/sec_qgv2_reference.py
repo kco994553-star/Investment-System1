@@ -187,6 +187,8 @@ def cases():
     stale_scores = [op for op in mixed if op[0][:2] != ['records', c[5]] or op[0][2] not in ('factors', 'axes')]
     R, T = ['records'], ['target']
     first, second, fin, empty = c[0], c[1], c[21], universe_codes()[30]
+    from investment_system.universe import sec_qgv2 as q
+    withdrawn = dict(q.withdrawn_target('nvda', '2026-10-13T22:10:00Z'), withdrawn_acquired_at='2026-10-12T22:30:00Z')
     return [
         ('base_valid', []),
         ('null_shard_and_registry_valid', [(['last_shard_index'], None), (['registry_sha256'], None)]),
@@ -266,6 +268,22 @@ def cases():
         ('calc_version_top_malformed', [(['calc_version'], 'v2')]),
         ('calc_version_row_malformed', [(R + [first, 'calc_version'], 'qgv2-calc/latest')]),
         ('calc_version_on_row_without_data', [(R + [empty, 'calc_version'], OLD_CALC_VERSION)]),
+        # TARGET withdrawal (identity conflict, sec-public-inputs.json WITHDRAWN): TARGET section only, no values.
+        ('target_withdrawn_valid', [(T + ['nvda'], withdrawn)]),
+        ('target_withdrawn_without_observation_valid', [(T + ['asml'], dict(withdrawn, cik=q.target_cik('asml'),
+                                                                            withdrawn_acquired_at=None))]),
+        ('target_withdrawn_with_values', [(T + ['nvda', 'detected_at'], withdrawn['detected_at']),
+                                          (T + ['nvda', 'withdrawn_acquired_at'], None)]),
+        ('target_withdrawn_reason_without_keys', [(T + ['asml', 'reason_codes'], [q.WITHDRAWN_REASON])]),
+        ('target_withdrawn_with_acquired_at', [(T + ['nvda'], dict(withdrawn, acquired_at=withdrawn['withdrawn_acquired_at']))]),
+        ('target_withdrawn_other_reason', [(T + ['nvda'], dict(withdrawn, reason_codes=['NOT_COLLECTED']))]),
+        ('target_withdrawn_cik_mismatch', [(T + ['nvda'], dict(withdrawn, cik=q.target_cik('msft')))]),
+        ('target_withdrawn_without_cik', [(T + ['nvda'], dict(withdrawn, cik=None))]),
+        ('target_withdrawn_non_sec_issuer', [(T + ['hanmi'], dict(withdrawn, cik=None))]),
+        ('target_withdrawn_detected_after_as_of', [(T + ['nvda'], dict(withdrawn, detected_at='2026-10-14T00:00:00Z'))]),
+        ('target_withdrawn_names_a_later_observation', [(T + ['nvda'], dict(withdrawn, withdrawn_acquired_at='2026-10-13T22:20:00Z'))]),
+        ('target_withdrawn_detected_at_missing', [(T + ['nvda'], {k: v for k, v in withdrawn.items() if k != 'detected_at'})]),
+        ('records_withdrawn_not_allowed', [(R + [empty], dict(withdrawn, cik=None))]),
     ]
 
 
