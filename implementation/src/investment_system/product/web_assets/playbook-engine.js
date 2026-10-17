@@ -83,7 +83,7 @@
     return {hits,missing:miss,maintained};
   }
   function band(cfg, target) { return Math.max(num(cfg, 'band_min_pp'), target * num(cfg, 'band_target_ratio')); }
-  function special(cfg, tc, s, macro, u3ok25) {
+  function special(cfg, tc, s, macro, u3ok25, gate) {
     const disabled = [], warnings = [], questions = [], unknown = [];
     const rules = Object.fromEntries(cfg.special_rules.map(r => [r.id, r]));
     const add = (list, reason) => list.forEach(e => disabled.push([e, reason]));
@@ -111,7 +111,8 @@
     else if (theme > limit) { warnings.push('THEME_CONCENTRATION'); add(rules.theme_concentration.effect.disable, 'THEME_CONCENTRATION'); }
     if (cfg.financial_exception.sectors.includes(val(s, 'sector'))) add(cfg.financial_exception.disable, cfg.financial_exception.reason);
     const effects = cfg.macro.effects;
-    if (macro === null) unknown.push({rule: 'macro_state', missing: ['macro_state']});
+    if (gate === false) { /* 2026-10-14 C: macro is reference-only until the replay is done (no expansion block, no U3) */ }
+    else if (macro === null) unknown.push({rule: 'macro_state', missing: ['macro_state']});
     else if (macro === 'WARNING' && tc.members.includes('cyclical')) add(effects.WARNING.disable_cyclical, 'MACRO_WARNING_CYCLICAL');
     else if (macro === 'CRISIS') effects.CRISIS.disable.forEach(e => { if (!(e === 'W2_ENTER' && u3ok25)) disabled.push([e, 'MACRO_CRISIS']); });
     return {disabled, warnings, questions, unknown};
@@ -144,7 +145,7 @@
     const levels = cfg.levels.map(l => l.id), codeCfg = Object.fromEntries(cfg.codes.map(c => [c.code, c]));
     const basis = val(s, 'basis') || 'v1';
     const tc = typeContext(cfg, val(s, 'memberships'), basis), th = tc.thresholds;
-    const held = !!val(s, 'held'), conv = val(s, 'conviction') || {}, convActive = !!conv.active, macro = val(s,'macro_available_count')===0?null:val(s, 'macro_state');
+    const held = !!val(s, 'held'), conv = val(s, 'conviction') || {}, convActive = !!conv.active, shown = val(s,'macro_available_count')===0?null:val(s, 'macro_state'), gate = cfg.macro.gate_active !== false, macro = gate ? shown : null;
     const d = drops(s), r2 = r2Check(cfg, tc, s, d);
     const vNow = val(s, 'v_now'), vPrev = val(s, 'v_prev20'), vDelta = known(vNow, vPrev) ? vNow - vPrev : null;
     const actual = val(s, 'actual_pct'), target = val(s, 'target_pct');
@@ -196,7 +197,7 @@
     }
     const u3 = u3Conditions(cfg, tc, s, r3Cond === true, r3Cond !== null, vDelta, macro);
     if (held) {
-      const ok = all3(Object.values(u3));
+      const ok = gate ? all3(Object.values(u3)) : false;
       if (ok === true) fire('U3', ['MACRO_DISCOUNT']);
       else if (ok === null) miss('U3', Object.entries(u3).filter(([, v]) => v === null).map(([k]) => k));
     }
@@ -250,7 +251,7 @@
       if (vp === null || exp === null) disabled.push(['U1_INCREASE', 'CORE_UNVERIFIABLE'], ['W2_ENTER', 'CORE_UNVERIFIABLE']);
     }
     const u3ok25 = all3(Object.entries(u3).filter(([k]) => k !== 'macro_state').map(([, v]) => v)) === true;
-    const sp = special(cfg, tc, s, macro, u3ok25);
+    const sp = special(cfg, tc, s, macro, u3ok25, gate);
     disabled = disabled.concat(sp.disabled);
 
     const keep = cfg.conviction_choice;
@@ -277,7 +278,7 @@
       band_pp: target === null ? null : band(cfg, target),
       qg: {q_drop: d.q, g_drop: d.g, qg_drop: d.qg, maintained: r2.maintained, r2_hits: r2.hits},
       v_change_20: vDelta,
-      macro: {state: macro, label: macro===null?cfg.macro.unavailable_label:macro, split_multiplier: macro === 'WARNING' ? num(cfg, 'macro_warning_split_multiplier') : 1, u3_conditions: u3},
+      macro: {state: shown, gate: gate ? 'ACTIVE' : cfg.macro.gate_status.state, label: shown===null?cfg.macro.unavailable_label:shown, split_multiplier: macro === 'WARNING' ? num(cfg, 'macro_warning_split_multiplier') : 1, u3_conditions: u3},
       checks,
       choices: primary ? choicesFor(primary.code) : [],
       choices_by_code: Object.fromEntries(ordered.map(c => [c, choicesFor(c)])),
@@ -289,7 +290,7 @@
   }
 
   function transition(cfg, from, choice, ctx) {
-    const c = ctx || {}, tc = typeContext(cfg, c.memberships || null, c.basis || 'v1'), macro = c.macro_state === undefined ? null : c.macro_state;
+    const c = ctx || {}, tc = typeContext(cfg, c.memberships || null, c.basis || 'v1'), macro = c.macro_state === undefined || cfg.macro.gate_active === false ? null : c.macro_state;
     const row = cfg.transitions.find(r => r.from === from && r.choice === choice);
     if (!row) return {from, choice, state: 'NO_TRANSITION'};
     const action = {};
