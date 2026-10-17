@@ -7,9 +7,7 @@
   try{await p.goto(process.env.PAGES_COCKPIT_URL+'#home');await p.locator('[data-report-link="mock"]').click();
    await p.locator('[data-report-badges]').waitFor();
    const badges=await p.locator('[data-report-badges]').textContent();
-   for(const s of ['STANDARD v1 · 보정 전','가상매매 규칙 v1','잠정','유형 설정 1판'])assert.ok(badges.includes(s),s);
-   // DESIGN_CLEANUP_BACKLOG S17: the version badges fold behind one chip (closed by default).
-   assert.equal(await p.locator('[data-report-versions]').getAttribute('open'),null);assert.ok(!badges.includes('유형 v1 잠정'));
+   for(const s of ['STANDARD v1 · UNCALIBRATED','가상매매 규칙 v1','PROVISIONAL'])assert.ok(badges.includes(s),s);
    assert.equal(await p.locator('[data-hide-amounts]').isChecked(),true);
    assert.equal(await p.locator('[data-report-not-started]').count(),1);
    // Set A + user sets B/C/D; 비교 only with at least two defined sets (none without a connected sheet).

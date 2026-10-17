@@ -727,21 +727,3 @@ td .co-logo {float: left; margin: 1px 6px 0 0;}
 .co-logo-c0 {background: #1e4d43;} .co-logo-c1 {background: #7a4600;} .co-logo-c2 {background: #8a2b2b;} .co-logo-c3 {background: #4a2a78;}
 .co-logo-c4 {background: #1b4f72;} .co-logo-c5 {background: #5b2c6f;} .co-logo-c6 {background: #0e6655;} .co-logo-c7 {background: #6e2c00;}
 .co-logo-c8 {background: #2c3e50;} .co-logo-c9 {background: #7b241c;} .co-logo-c10 {background: #1a5276;} .co-logo-c11 {background: #145a32;}
-/* Design cleanup 2026-10-17 (DESIGN_CLEANUP_BACKLOG_20261014): one-line QGV v2 NOT_AVAILABLE, next-earnings chip line. */
-.qgv-na-line {margin: 4px 0 10px; padding: 8px 10px; border-radius: 8px; background: #f1f1ec; color: var(--muted); font-size: 13px; overflow-wrap: anywhere;}
-.qgv-na-line .badge {margin-right: 4px;}
-.next-earnings {display: inline-block; margin: 6px 0 10px; padding: 4px 10px; border-radius: 999px; background: #e9efe9; color: var(--accent); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;}
-.next-earnings.open {background: #fbead2; color: var(--warn);}
-.next-earnings[data-next-earnings-line="NOT_AVAILABLE"] {background: #f1f1ec; color: var(--muted); font-weight: 400;}
-/* S06: QGV total with the factor count beneath; a v2 NOT_AVAILABLE row opens to its reason. */
-[data-leaderboard-table] .big-num {font-weight: 700; font-variant-numeric: tabular-nums;}
-[data-leaderboard-table] [data-leaderboard-factors] {display: block; color: var(--muted); white-space: nowrap;}
-.na-why {display: inline; border: 0; margin: 0; padding: 0;}
-.na-why > summary {display: inline; cursor: pointer; color: var(--muted); font-size: 12px; text-decoration: underline dotted;}
-.na-why[open] > span {display: block; max-width: 22em; white-space: normal;}
-/* S17: version badges fold behind one '규칙·버전' chip. */
-.badge-versions {display: inline-flex; align-self: flex-start; border: 0; margin: 0; padding: 0;}
-.badge-versions > summary {display: inline-block; cursor: pointer; list-style: none;}
-.badge-versions > summary::-webkit-details-marker {display: none;}
-.badge-versions[open] {display: flex; flex-wrap: wrap; gap: 6px; flex-basis: 100%;}
-.data-badges {align-items: flex-start;}

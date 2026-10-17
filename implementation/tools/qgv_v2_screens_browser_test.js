@@ -41,14 +41,9 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
         await page.locator('[data-qgv2-state="READY"]').filter({ hasText: /가격 [1-9]\d/ }).waitFor();
         const nvda = page.locator('[data-leaderboard-row="nvda"]'), msft = page.locator('[data-leaderboard-row="msft"]'), gev = page.locator('[data-leaderboard-row="gev"]');
         {
-          // DESIGN_CLEANUP_BACKLOG S06: QGV, Q, G, V are separate columns; the one-line summary rides in data-summary.
-          const text = await nvda.locator('[data-leaderboard-qgv2]').getAttribute('data-summary');
+          const text = await nvda.locator('[data-leaderboard-qgv2]').textContent();
           assert.match(text, /^QGV \d+\.\d · Q \d+\.\d · G \d+\.\d · V \d+\.\d · 산출 요인 1[0-5]\/15$/);
-          assert.match(await nvda.locator('[data-leaderboard-total]').textContent(), /^\d+\.\d$/);
-          for (const axis of ['Q', 'G', 'V']) assert.match(await nvda.locator('[data-leaderboard-axis="' + axis + '"]').textContent(), /^\d+\.\d$/, axis);
-          assert.match(await nvda.locator('[data-leaderboard-factors]').textContent(), /^요인 1[0-5]\/15$/);
-          assert.match(await msft.locator('[data-leaderboard-qgv2]').getAttribute('data-summary'), / V — · 산출 요인 1\d\/15$/);
-          assert.equal(await msft.locator('[data-leaderboard-axis="V"]').textContent(), '—');
+          assert.match(await msft.locator('[data-leaderboard-qgv2]').textContent(), / V — · 산출 요인 1\d\/15$/);
           assert.equal(await gev.locator('[data-leaderboard-qgv2]').getAttribute('data-leaderboard-qgv2'), 'NOT_AVAILABLE');
           assert.ok((await page.locator('[data-leaderboard-rank]').count()) >= 3);
           // No v1 anywhere on S06: no [자세히] v1 reference, no v1 Q·G, no v2-for-comparison line, no '임시 기본'.
@@ -59,13 +54,11 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
           assert.ok((await page.locator('[data-qgv2-flag]').filter({ hasText: '가치 함정 주의' }).count()) >= 1, 'value-trap flag shown');
           const before = text;await page.locator('[data-qgv2-preset="value"]').click();
           await page.locator('[data-qgv2-preset="value"][aria-pressed="true"]').waitFor();
-          assert.notEqual(await page.locator('[data-leaderboard-row="nvda"] [data-leaderboard-qgv2]').getAttribute('data-summary'), before);
+          assert.notEqual(await page.locator('[data-leaderboard-row="nvda"] [data-leaderboard-qgv2]').textContent(), before);
           await page.locator('[data-qgv2-gate]').uncheck();await page.locator('[data-qgv2-state]').filter({ hasText: '관문 끔' }).waitFor();
           assert.equal(await page.locator('[data-qgv2-flag]').filter({ hasText: '가치 함정 주의' }).count(), 0);assert.equal(await msft.locator('[data-qgv2-flag]').filter({ hasText: 'V 없음' }).count(), 1);assert.equal(await gev.locator('[data-qgv2-flag]').count(), 0);
           // v2 NOT_AVAILABLE rows say why (never a v1 fallback).
-          assert.match(await gev.locator('[data-leaderboard-na-reason]').textContent(), /^QGV v2 산출 불가 · /);
-          assert.equal(await gev.locator('[data-leaderboard-qgv2] > details > summary').textContent(), '산출 불가');
-          assert.equal(await gev.locator('[data-leaderboard-qgv2] > details').getAttribute('open'), null, 'reason folded by default');
+          assert.match(await gev.locator('[data-leaderboard-qgv2]').textContent(), /^QGV v2 산출 불가 · /);
         }
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no horizontal scroll S06');
         phase = 'S13';await page.goto(BASE + '#profiles');await page.locator('[data-profile-editor]').waitFor();
@@ -78,10 +71,7 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
         {
           await page.locator('[data-company-card="qgv"] [data-qgv="total"] .num').waitFor();
           assert.match(await page.locator('[data-company-card="qgv"] [data-qgv="V"]').textContent(), /\d/);
-          // The profile reads as words ('가치 · 관문 끔'); the id stays in data-profile-id.
-          assert.match(await page.locator('[data-qgv2-summary]').textContent(), /산출 요인 1[0-5]\/15 · 가치 · 관문 끔/);
-          assert.equal(await page.locator('[data-qgv2-summary]').getAttribute('data-profile-id'), 'qgv-v2/value/gate-off');
-          assert.ok(!/qgv-v2\//.test(await page.locator('main').textContent()), 'no profile id on screen');
+          assert.match(await page.locator('[data-qgv2-summary]').textContent(), /산출 요인 1[0-5]\/15 · qgv-v2\/value\/gate-off/);
           assert.match(await page.locator('[data-qgv2-range]').textContent(), /DCF 참고 범위/);
           // No [자세히] v1 reference and no v2-for-comparison line on S04.
           assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv-detail]').count(), 0);assert.equal(await page.locator('[data-qgv-v2-compare], [data-qgv-v1-reference]').count(), 0);
@@ -105,9 +95,7 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
           assert.equal(earnings.configured,true,'the approved classifier is loaded independently of the playbook UI');
           assert.equal(earnings.cyclical,true,'approved semiconductor SIC activates the cyclical earnings basis');
           assert.equal(earnings.basis,'NORMALIZED');
-          assert.equal(await panel.locator('[data-v2-factor="v_vs_own_history"] [data-reason-codes]').getAttribute('data-reason-codes'), 'NORMALIZED_HISTORY_NOT_AVAILABLE');
-          assert.match(await panel.locator('[data-v2-factor="v_vs_own_history"]').textContent(), /경기민감 기업이라 과거 비교 보류/);
-          assert.ok(!/[A-Z]{3,}_[A-Z_]{3,}/.test((await panel.locator('[data-v2-factor-table]').textContent()).replaceAll('NOT_AVAILABLE', '')), 'no reason codes on screen');
+          assert.match(await panel.locator('[data-v2-factor="v_vs_own_history"]').textContent(), /NORMALIZED_HISTORY_NOT_AVAILABLE/);
           assert.match(await page.locator('[data-overall="v2"]').textContent(), /\d+\.\d/);
           // A device-quote refresh repaints only the score sections: the open tab and the other panels stay as they are.
           const kept = await page.evaluate(() => {

@@ -34,7 +34,7 @@ const noOverflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=i
    // S04 keeps one next-earnings line; the confirmed-status badge is on S05 (E row) and the raw filing card in Settings >
    // 원자료 보기(개발자용) (owner decision 2026-10-14).
    phase='COMPANY';await page.goto(BASE+'#company/nvda');await page.locator('[data-next-earnings-line]').waitFor();assert.equal(await page.locator('[data-next-earnings-line]').count(),1);
-   assert.match(await page.locator('[data-next-earnings-line]').textContent(),/^다음 실적 (\d\d\/\d\d경 \(확정 아님\) · (D-\d+|제출 구간 진행 중)|확인 불가)$/);assert.ok(await noOverflow(page),'overflow company');
+   assert.match(await page.locator('[data-next-earnings-line]').textContent(),/^다음 실적 (\d\d\/\d\d경 \(확정 아님\) · D-\d+|확인 불가)$/);assert.ok(await noOverflow(page),'overflow company');
    await page.goto(BASE+'#analysis/nvda');await page.locator('[data-analysis-tab="events"]').click();await page.locator('[data-earnings-status="CONFIRMED"]').first().waitFor();
    assert.equal(await page.locator('[data-earnings-status="CONFIRMED"]').first().textContent(),'확인');assert.equal(await page.locator('[data-earnings-status="ESTIMATED"]').count(),0);
    await page.goto(BASE+'#settings');await page.locator('[data-raw-data] > summary').click();await page.locator('[data-raw-data] [data-earnings-confirmed]').first().waitFor();

@@ -20,7 +20,7 @@ const overflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=inn
   phase='SEC_NOT_COLLECTED';await page.goto(BASE+'#leaderboard');await page.locator('[data-sec-unavailable="SEC_NOT_COLLECTED"]').waitFor();
   assert.equal(await page.locator('[data-sec-unavailable]').textContent(),'SEC 수집 전 · NOT_AVAILABLE');
   assert.equal(await page.locator('[data-leaderboard-m3-basis]').getAttribute('data-leaderboard-m3-basis'),'NOT_AVAILABLE');
-  assert.ok((await page.locator('[data-leaderboard-m3-basis]').textContent()).startsWith('M3 · 내 기기 기준 · v0 · 자료 없음 · Universe 시트 읽기 전'));
+  assert.ok((await page.locator('[data-leaderboard-m3-basis]').textContent()).startsWith('M3 · 내 기기 기준 · v0 · NOT_AVAILABLE'));
   assert.equal(await page.locator('[data-leaderboard-m3-rank]').count(),0);
 
   phase='M3_RANK';await page.goto(BASE+'#settings');await page.locator('[data-universe-source]').fill('u'.repeat(24));await page.locator('[data-universe-settings] button[type="submit"]').click();

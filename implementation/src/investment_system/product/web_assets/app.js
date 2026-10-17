@@ -202,7 +202,7 @@ function rawDataIds(){const ids=new Set();for(const f of ['sec-qg-factors.json',
   if(!ids.size)for(const c of identityCompanies)ids.add(c.company_id);return [...ids];}
 function rawDataCompanyId(){const ids=rawDataIds();return ids.includes(rawDataCompany)?rawDataCompany:(ids[0]||null);}
 function rawDataUI(){
-  const en=appSettings.display_locale==='en-US',ids=rawDataIds(),chosen=rawDataCompanyId(),name=id=>{const c=company(id);return c&&c.ticker?c.ticker+(c.name&&c.name!==c.ticker?' · '+c.name:''):String(id).includes('_')?String(id).split('_').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '):String(id).toUpperCase();};
+  const en=appSettings.display_locale==='en-US',ids=rawDataIds(),chosen=rawDataCompanyId(),name=id=>{const c=company(id);return c&&c.ticker?c.ticker:String(id).toUpperCase();};
   return `<details class="card" id="raw-data-viewer" data-raw-data><summary>${en?'Raw data (developer)':'원자료 보기(개발자용)'}</summary><p class="small">${en?'Raw public inputs for checking only: SEC Q·G leaf scores, price-free company types and estimated filing windows. Screens show results only.':'확인용 원자료입니다: SEC Q·G 개별 점수, 가격 불필요 유형, 실적 예상 시기. 사용자 화면에는 결과만 보여 줍니다.'}</p><label for="raw-data-company">${en?'Company':'기업'}</label> <select id="raw-data-company" data-raw-company>${ids.map(id=>`<option value="${esc(id)}"${id===chosen?' selected':''}>${esc(name(id))}</option>`).join('')}</select><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div></details>`;
 }
 function mountRawData(){const id=rawDataCompanyId();for(const kind of ['qg','types','filings'])PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:id||undefined,locale:appSettings.display_locale});}
@@ -382,7 +382,7 @@ function home() {
   <section class="card" data-daily-reports><h2>${appSettings.display_locale==='en-US'?'Daily reports':'일일보고서'}</h2><div class="chips"><a href="#report/mock" data-report-link="mock">${appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'} →</a><a href="#report/real" data-report-link="real">${appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'} →</a></div><p class="small">${appSettings.display_locale==='en-US'?'Virtual records only · no orders':'가상 기록 · 주문 기능 없음'}</p></section>
   <details><summary>${t("분석 · 뉴스 · 관계 변화 더보기")}</summary><div class="grid">${block("qgv",t("QGV 변화"),"<p>"+t("변화량은 upstream changes가 제공할 때만 표시합니다.")+"</p>")}${block("technical",t("Technical 변화"),"<p>"+t("최근 신호는 기업 상세에서 확인하세요.")+"</p>")}${block("news",t("관심기업 뉴스"),'<a href="#news">'+t("뉴스 열기 →")+"</a>")}${block("relationships",t("Relationship changes(관계 변화)"),'<a href="#news">'+t("관계망 열기 →")+"</a>")}</div></details>`+
   `<section class="card" data-system-flow><h2>${t("시스템")}</h2><div class="hub-grid">${[["1","QGV","#qgv","qgv"],["2",t("기술적 분석"),"#technical","technical"],["3",t("매크로"),"#macro","macro"],["4",t("검증·연구"),"#validation",null]].map(([n,label,href,name])=>`<a class="card hub-card" href="${href}"><h3><span class="flow-number">${n}</span> ${esc(label)}</h3><span class="badge ${name?esc(D[name].state):"NOT_AVAILABLE"}">${name?esc(D[name].state):"NOT_AVAILABLE"}</span></a>`).join("")}</div></section>
-  <section class="card" data-data-basis><h2>${t("데이터 기준")}</h2><dl><dt>${t("목표 비중 버전")}</dt><dd id="home-target-version">—</dd><dt>${t("QGV 기준 버전")}</dt><dd data-qgv-basis-since="${esc(QgvScores.basis("v2",false).since||"")}">${esc((since=>appSettings.display_locale==="en-US"?"v2 · provisional · "+(since?"since "+since:"switch date not recorded"):"v2 · 잠정 · "+(since?since+"부터":"전환일 미기록"))(QgvScores.basis("v2",false).since))}</dd><dt>${t("시세·환율")}</dt><dd>${esc(t("이 기기에서만 입력·계산"))}</dd><dt>${t("보유 정보")}</dt><dd>${esc(t("이 기기에만 저장"))}</dd></dl><a href="#settings">${t("데이터 운영 상태 →")}</a></section></div>`;
+  <section class="card" data-data-basis><h2>${t("데이터 기준")}</h2><dl><dt>${t("목표 비중 버전")}</dt><dd id="home-target-version">—</dd><dt>${t("QGV 기준 버전")}</dt><dd>${esc(t("v2 · PROVISIONAL"))}</dd><dt>${t("시세·환율")}</dt><dd>${esc(t("이 기기에서만 입력·계산"))}</dd><dt>${t("보유 정보")}</dt><dd>${esc(t("이 기기에만 저장"))}</dd></dl><a href="#settings">${t("데이터 운영 상태 →")}</a></section></div>`;
 }
 function directoryFilters(prefix,watch=false) {
  return `<div class="chips"><label><input type="checkbox" id="${prefix}-interest" ${watch?"checked disabled":""}>${t("관심기업만")}</label><select id="${prefix}-group" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("")}</select><select id="${prefix}-sort" aria-label="${t("정렬")}"><option value="${watch?"added":"ticker"}">${watch?t("추가한 순"):t("티커 순")}</option><option value="name">${t("기업명 순")}</option><option value="favorites">${t("관심기업 우선")}</option></select></div>`;
@@ -521,20 +521,20 @@ function hubCard(title,status,description,href) {
 function qgv() {
   const groups=[
     ["investments","내 투자",[
-      ["포트폴리오","부분","이 기기 보유로 목표 대비 실제와 테마·산업·유형 구성을 봅니다.","#portfolio"],
-      ["전략 프로필·가중치","부분","QGV v2 기본 프로필을 봅니다. 내 프로필 편집은 미리보기입니다.","#profiles"],
+      ["포트폴리오","부분","기기 보유 요약을 확인합니다. 운영 포트폴리오 Snapshot은 미연결입니다.","#portfolio"],
+      ["전략 프로필·가중치","부분","공식 가중치 복사·초안·PREVIEW·기기 저장","#profiles"],
       ["모델 포트폴리오","부분","MODEL·TARGET·ACTUAL을 따로 표시합니다. MODEL은 실데이터 QGV 연결 전 NOT_AVAILABLE입니다.","#model"],
       ["계좌 연결","사용 가능","이 기기에 보유와 수동 시세를 입력·관리합니다.","#actual"]]],
     ["companies","종목 찾기",[
-      ["리더보드","부분","공개 QGV v2 점수로 순위를 봅니다. V와 총점은 이 기기의 가격이 있어야 계산됩니다.","#leaderboard"],
+      ["리더보드","부분","순위 화면은 열 수 있습니다. 운영 순위 데이터는 미연결입니다.","#leaderboard"],
       ["관심 기업","사용 가능","관심 기업과 여러 그룹을 기기에 저장합니다.","#watchlist"],
-      ["기업 검색","부분","TARGET 19개와 미국 504종목을 이름·티커로 찾습니다.","#companies"],
+      ["기업 검색","부분","과거 기업 목록을 탐색합니다. 운영 기업 분석은 미연결입니다.","#companies"],
       ["기업 유형 커스텀","부분","공식 설정 복사·PREVIEW·기기 저장","#types"]]],
     ["market","시장 정보",[
       ["뉴스·관계망","부분","뉴스·관계망 화면은 열 수 있습니다. 운영 데이터는 미연결입니다.","#news"],
       ["투자자 13F","부분","공개 보고 수량 변화를 확인합니다.","#thirteenf"]]],
     ["performance","성과",[
-      ["검증 연결","부분","전진검증 원장과 가상매매 기록을 봅니다. 성과 판정은 기록이 쌓인 뒤입니다.","#validation"]]]
+      ["검증 연결","부분","검증 허브에서 준비 상태를 확인합니다. 성과 기록은 미연결입니다.","#validation"]]]
   ];
   return heading("QGV",t("QGV 허브"),t("기존 화면과 각 기능의 준비 상태를 확인합니다."))+
     `<div class="chips data-badges"><span class="badge">${esc(t("점수 기준 v2 · PROVISIONAL"))}</span><span class="badge">${esc(t("미국 상위 500 · 목표 범위"))}</span></div>`+

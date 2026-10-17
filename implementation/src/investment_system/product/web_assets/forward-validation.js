@@ -173,8 +173,6 @@ function mount(host,options={}){
    const ev=evaluationLabel(r);tr.setAttribute('data-forward-evaluation',ev.code);tr.append(el('td',ev.text));
    body.append(tr);}
   table.append(thead,body);wrap.append(table);summary.append(wrap);
-  // DESIGN_CLEANUP_BACKLOG S10: the ledger is the one intended place v1 remains; say why next to its rows.
-  if(displayRows.some(r=>r.version!==V2_VERSION))summary.append(el('p',x('v1 비교용 행: 원장은 v2와 함께 v1 점수도 기록합니다. 화면 점수는 v2만 쓰고, v1은 비교를 위해 이 원장에만 남습니다(2026-10-14 결정).','v1 comparison rows: the ledger records v1 next to v2. Screens use v2 only; v1 stays in this ledger for comparison (decision 2026-10-14).'),{class:'small','data-forward-v1-note':''}));
   if(p.schema_version===2&&rows.some(r=>Object.hasOwn(r,'basis'))){
    // Evaluation segments (calc_version): each shown on its own, never chained into one series.
    const segWrap=el('div',undefined,{class:'table-wrap'}),segTable=el('table',undefined,{'data-forward-segments':''}),segHead=el('tr');
