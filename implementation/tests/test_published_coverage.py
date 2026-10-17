@@ -51,7 +51,7 @@ def test_line_counts_the_published_scores_and_nothing_else(tmp_path, capsys):
     # no codes, tickers, CIKs, scores or prices in the line
     for code, cik, _, _ in REF.universe_spec():
         assert cik not in line and code.split(':')[1] + ' ' not in line + ' ' and code not in line
-    # No values may leak: only the version label itself (e.g. qgv2-calc/2026-10-15.1) may contain a dot-number.
+    # No values may leak: only the version label itself (e.g. qgv2-calc/2026-10-17.1) may contain a dot-number.
     assert 'price' not in line.lower() and not re.search(r'\d+\.\d', line.replace('22:30:00Z', '').replace(' calc_version=' + payload['calc_version'], ''))
 
 
@@ -98,7 +98,7 @@ def test_calc_version_is_shown_only_when_present_and_plain():
     assert TOOL.coverage_line(payload).endswith(' calc_version=' + payload['calc_version'])
     assert TOOL.coverage_line({k: v for k, v in payload.items() if k != 'calc_version'}).endswith(' calc_version=NONE')
     assert TOOL.coverage_line(dict(payload, calc_version='qgv2-2026-10-15')).endswith(' calc_version=qgv2-2026-10-15')
-    assert TOOL.coverage_line(dict(payload, calc_version='qgv2-calc/2026-10-15.1')).endswith(' calc_version=qgv2-calc/2026-10-15.1')
+    assert TOOL.coverage_line(dict(payload, calc_version='qgv2-calc/2026-10-17.1')).endswith(' calc_version=qgv2-calc/2026-10-17.1')
     assert TOOL.coverage_line(dict(payload, calc_version='bad value with spaces')).endswith(' calc_version=NONE')
     assert TOOL.coverage_line(dict(payload, calc_version=3)).endswith(' calc_version=NONE')
 
