@@ -38,6 +38,22 @@ function typeAxisWeights(memberships,cfg){
  else{let mass=0;for(const t of selected)mass+=m(t.id);weights={};for(const p of PILLARS){let acc=0;for(const t of selected)acc+=t.weights[p]*m(t.id);weights[p]=acc/mass;}reason=null;}
  const clamped={};for(const p of PILLARS)clamped[p]=Math.min(mix.pillar_max,Math.max(mix.pillar_min,weights[p]));let total=0;for(const p of PILLARS)total+=clamped[p];
  const out={};for(const p of PILLARS)out[p]=100*clamped[p]/total;return[out,reason,selected.map(t=>t.id)];}
+/* TYPE-SCOPE (owner instruction 2026-10-17): the SAME approved type rule for every scored row, from that row's own published
+   price-free metrics (sec-qgv2.json `metrics`), TARGET or not. Only a type_config `ramp` rule on an allowed price-free metric is
+   evaluated (type_config/1: growth = revenue_cagr_3y 0.10 -> 0.20, the company_types._membership ramp). Unresolved rules
+   (value, quality, cyclical, defensive), price-dependent rules (dividend: dividend_yield; leader: sector_marketcap_rank) and
+   any other metric stay null (NOT_AVAILABLE), never 0. Python reference: qgv_v2.pricefree_memberships. */
+const PRICEFREE_TYPE_METRICS=Object.freeze(['revenue_cagr_3y']);
+/* Type-application scope id (owner decision 2026-10-17 item 4), recorded in the device score basis (QgvScores basis/profile
+   .type_scope) next to calc_version, which it does not replace. It names: which rows get memberships (every scored row), from
+   which input (that row's own sec-qgv2.json metrics) and which rules (type_config/1 ramps on PRICEFREE_TYPE_METRICS). Any change
+   to one of the three gets a new id. Python: qgv_v2.TYPE_SCOPE. */
+const TYPE_SCOPE='qgv2-type-scope/2026-10-17.1';
+function pricefreeMemberships(metrics,cfg=typeDefaults()){
+ const out={};for(const t of cfg.types){if(!t.affects_qgv)continue;const r=t.rule;let v=null;
+  if(object(r)&&r.kind==='ramp'&&PRICEFREE_TYPE_METRICS.includes(r.metric)&&object(metrics)&&Object.hasOwn(metrics,r.metric)&&finite(metrics[r.metric]))v=Math.min(1,Math.max(0,(metrics[r.metric]-r.lower)/(r.upper-r.lower)));
+  out[t.id]=v;}
+ return out;}
 // Type weights on top of the preset: w_p ∝ preset_p × type_p / fallback_p (the balanced preset reproduces the GSQ-017 weights).
 function compositeWeights(preset,type,fallback){const raw={};for(const p of PILLARS)raw[p]=preset[p]*type[p]/fallback[p];let total=0;for(const p of PILLARS)total+=raw[p];const out={};for(const p of PILLARS)out[p]=100*raw[p]/total;return out;}
 // Month-end close (device Prices tab via PriceStore.monthEndCloses, {YYYY-MM: close}) of the fiscal period-end month.
@@ -122,5 +138,5 @@ function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dc
    reference_range:referenceRange(c,parameters)};}
  return results;}
 return Object.freeze({VERSION,STATUS,PILLARS,WEIGHTS,FACTORS,QG_FACTORS,PRESETS,DEFAULT_PRESET,GATE_DEFAULT,GATE_PERCENTILE,MIN_PEERS,MIN_UNIVERSE,MIN_AXIS_WEIGHT,MIN_HISTORY,
- percentile,axisScore,typeAxisWeights,compositeWeights,monthClose,normalizedEbit,scoreUniverse});
+ PRICEFREE_TYPE_METRICS,TYPE_SCOPE,percentile,axisScore,typeAxisWeights,pricefreeMemberships,compositeWeights,monthClose,normalizedEbit,scoreUniverse});
 });
