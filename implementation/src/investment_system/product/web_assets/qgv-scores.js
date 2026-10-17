@@ -8,8 +8,8 @@
    RAM only: nothing here is stored, logged or sent, and no result carries a price, market cap or EV. Missing is null, never 0. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const dep=(file,name)=>node?()=>require('./'+file):()=>root[name];
- const api=factory(dep('qgv-v2.js','QgvV2'),dep('scoring-default.js','ScoringDefault'),dep('qgv2-inputs.js','Qgv2Inputs'));
- if(node)module.exports=api;else root.QgvScores=api;})(typeof globalThis==='object'?globalThis:this,function(qgvV2,scoringConfig,qgv2Inputs){
+ const api=factory(dep('qgv-v2.js','QgvV2'),dep('scoring-default.js','ScoringDefault'),dep('qgv2-inputs.js','Qgv2Inputs'),dep('sec-qgv2.js','SecQgv2'));
+ if(node)module.exports=api;else root.QgvScores=api;})(typeof globalThis==='object'?globalThis:this,function(qgvV2,scoringConfig,qgv2Inputs,secQgv2){
 'use strict';
 const MODES=['v2'];
 const LABEL={v2:['점수 기준 v2 · PROVISIONAL','Score basis v2 · PROVISIONAL']};
@@ -66,6 +66,88 @@ function universeScores(v2Inputs,quotes,preset,gate,cyclicalBasis={}){
  const companies={};for(const[code,r]of Object.entries(v2Inputs.records))if(r.calc_version_mismatch!==true)companies[code]={cyclical_basis:cyclicalBasis[code]===true,cik:r.cik,industry_group:r.industry_group,profile:r.profile,factors:r.factors,v_inputs:r.v_inputs,qg_axes:r.qg_axes,in_cross_section:r.in_cross_section!==false,memberships:rowMemberships(r)};
  const result=qgvV2().scoreUniverse(companies,quotes,{preset,gate});memo={inputs:v2Inputs,quotes,key:mk,result};return result;
 }
+/* FE-MISSING-2 (owner instruction 2026-10-17): why a company's QGV is partial or missing, read only from fields the public
+   contract already carries (sec-qgv2.json row state/acquired_at/fiscal_year_end/profile/metrics, the published Q/G axis coverage,
+   the engine's factor reasons and v_inputs). Display only: nothing here feeds a score, total, rank or candidate, and nothing is
+   estimated. Weights are QgvV2.WEIGHTS (the engine's own), sub-metric lists SecQgv2.SUBMETRICS (the reader's own). Missing is
+   null, never 0. No per-row field exists for 'refresh failed' (Universe) or 'unit under review', so neither is shown. */
+const DATA_STATE={FORMAT_NEWER:['형식 업데이트 필요','Data format update needed'],IDENTITY_STOPPED:['식별 충돌로 사용 중지','Stopped: identity conflict'],CALC_VERSION:['계산 규칙 버전 다름','Different calculation-rule version'],
+ SOURCE_MISSING:['자료 미확보','Data not collected'],STALE:['오래된 자료','Stale data'],PRICE_NEEDED:['가격 입력 필요','Price input needed'],PARTIAL:['일부 자료 부족','Some data missing'],NOT_APPLICABLE:['해당 없음','Not applicable']};
+const AXIS_STATUS={READY:['정상','Complete'],PARTIAL:['부분 산출','Partial'],NOT_AVAILABLE:['미산출','Not calculated'],NOT_APPLICABLE:['해당 없음','Not applicable'],STOPPED:['사용 중지','Stopped']};
+const REASON={
+ NOT_APPLICABLE_PROFILE:['해당 없음: 금융업 기준에는 이 요인의 하위 지표가 정의되어 있지 않습니다','Not applicable: no sub-metric is defined for this factor under the financial profile'],
+ SEC_ITEMS_MISSING:['자료 미확보: SEC 공시에서 이 요인의 하위 지표를 계산할 항목을 찾지 못했습니다','Not collected: the SEC filings lack the items for this factor’s sub-metrics'],
+ PEERS_TOO_FEW:['비교 대상 부족: 하위 지표는 있으나 같은 기준으로 비교할 기업이 8곳 미만입니다','Too few peers: the sub-metric exists but fewer than 8 companies can be compared'],
+ SEC_FACTOR_NOT_AVAILABLE:['자료 부족: 이 요인을 계산할 SEC 자료가 부족합니다','Missing: not enough SEC data for this factor'],
+ PEERS_BELOW_MINIMUM:['비교 대상 부족: 이 축의 비교 기업이 8곳 미만이라 축 전체를 계산하지 않았습니다','Too few peers: fewer than 8 comparable companies for this axis'],
+ AXIS_COVERAGE_BELOW_50:['원래 가중치 기준 충족률이 50% 미만이라 이 축을 계산하지 않았습니다','Below 50% of the original weight, so the axis is not calculated'],
+ ROW_NOT_AVAILABLE:['자료 미확보: 이 기업의 SEC 재무 자료가 없습니다','Not collected: no SEC financials for this company'],
+ SOURCE_NOT_AVAILABLE:['자료 미확보: 이 기업의 공개 입력이 없습니다','Not collected: no public input for this company'],
+ CALC_VERSION_MISMATCH:['계산 규칙 버전이 달라 이 기기 계산에서 뺐습니다','Left out: different calculation-rule version'],
+ IDENTITY_CONFLICT_WITHDRAWN:['식별 충돌로 사용 중지된 행이라 쓰지 않습니다','Stopped: identity conflict'],
+ PRICE_IDENTITY_CONFLICT:['가격 식별 충돌로 가격·V를 쓰지 않습니다','Stopped: price identity conflict'],
+ FINANCIAL_PROFILE_V_NOT_DEFINED:['해당 없음: 금융업은 EV·FCF 기반 가치 요인을 정의하지 않습니다','Not applicable: EV/FCF value factors are not defined for financials'],
+ NO_DEVICE_PRICE:['가격 입력 필요: 이 기기에 이 종목 가격이 없습니다','Price needed: no price for this company on this device'],
+ PRICE_HISTORY_NOT_AVAILABLE:['가격 입력 필요: 이 기기 가격 탭에 월말 종가가 없습니다','Price needed: no month-end closes in this device’s Prices tab'],
+ V_INPUTS_NOT_AVAILABLE:['자료 미확보: 가치 계산용 SEC 입력이 없습니다','Not collected: no SEC value inputs'],
+ CURRENCY_BASIS_UNCONFIRMED:['통화 확인 필요: 보고 통화와 가격 통화가 다르거나 확인되지 않았습니다(환율 변환 없음)','Currency unconfirmed: reported and price currency differ (no FX conversion)'],
+ SHARES_NOT_AVAILABLE:['자료 미확보: 희석 주식수가 없습니다','Not collected: no diluted share count'],
+ DEBT_CASH_NOT_AVAILABLE:['자료 미확보: 부채 또는 현금 항목이 없습니다','Not collected: debt or cash is missing'],
+ EV_NON_POSITIVE:['계산 불가: 기업가치(EV)가 0 이하입니다','Cannot calculate: enterprise value is not positive'],
+ EBIT_NOT_AVAILABLE:['자료 미확보: EBIT가 없습니다','Not collected: no EBIT'],
+ FCF_NOT_AVAILABLE:['자료 미확보: FCF가 없습니다','Not collected: no FCF'],
+ REALIZED_GROWTH_NOT_AVAILABLE:['자료 미확보: 실현 매출 성장(3년)이 없습니다','Not collected: no realized 3-year revenue growth'],
+ HISTORY_TOO_SHORT:['일부 자료 부족: 연도별 EBIT/주와 그 달 월말 종가가 함께 있는 해가 3개 미만입니다','Some data missing: fewer than 3 years with both EBIT/share and that month’s close'],
+ NORMALIZED_HISTORY_NOT_AVAILABLE:['해당 없음: 정규화 이익 기준의 자기 과거 비교는 아직 정의되지 않았습니다','Not applicable: own-history comparison on normalized earnings is not defined yet'],
+ NORMALIZED_EARNINGS_NOT_AVAILABLE:['일부 자료 부족: 정규화 이익(최근 매출 × 평균 영업이익률)에 필요한 연도가 부족합니다','Some data missing: not enough years for normalized earnings'],
+ CROSS_SECTION_TOO_SMALL:['비교 대상 부족: 같은 값을 가진 비교 기업이 8곳 미만입니다','Too few peers: fewer than 8 comparable companies']};
+// Missing-factor reason -> data state of the row ('PARTIAL' when not listed).
+const CATEGORY={NOT_APPLICABLE_PROFILE:'NOT_APPLICABLE',FINANCIAL_PROFILE_V_NOT_DEFINED:'NOT_APPLICABLE',NORMALIZED_HISTORY_NOT_AVAILABLE:'NOT_APPLICABLE',NO_DEVICE_PRICE:'PRICE_NEEDED',PRICE_HISTORY_NOT_AVAILABLE:'PRICE_NEEDED',
+ PRICE_IDENTITY_CONFLICT:'IDENTITY_STOPPED',IDENTITY_CONFLICT_WITHDRAWN:'IDENTITY_STOPPED',CALC_VERSION_MISMATCH:'CALC_VERSION',ROW_NOT_AVAILABLE:'SOURCE_MISSING',SOURCE_NOT_AVAILABLE:'SOURCE_MISSING'};
+// Price-free V inputs a V factor needs (v_inputs of sec-qgv2.json), checked so that 'price needed' does not hide a missing input.
+const V_INPUT={ebit:['EBIT','EBIT'],fcf:['FCF','FCF'],total_debt:['총부채','Total debt'],cash:['현금','Cash'],diluted_shares:['희석 주식수','Diluted shares'],ebit_per_share_history:['연도별 EBIT/주(3년 이상)','EBIT/share history (3+ years)'],revenue_cagr_3y:['3년 매출 성장','3-year revenue growth']};
+function reasonText(code,en){return code&&Object.hasOwn(REASON,code)?REASON[code][en?1:0]:(en?'Not calculated':'계산 불가')+(code?' ('+code+')':'');}
+function subMetrics(profile,factor){try{const t=secQgv2()?.SUBMETRICS;return t&&object(t[profile])&&Array.isArray(t[profile][factor])?t[profile][factor]:null;}catch(_){return null;}}
+function qgReason(factor,rec,ctx,pub){
+ if(ctx.withdrawn)return 'IDENTITY_CONFLICT_WITHDRAWN';if(ctx.mismatch)return 'CALC_VERSION_MISMATCH';if(!rec||rec.state==='NOT_AVAILABLE'||!ctx.profile)return 'SOURCE_NOT_AVAILABLE';
+ const codes=pub&&Array.isArray(pub.reason_codes)?pub.reason_codes:[];for(const c of ['ROW_NOT_AVAILABLE','CALC_VERSION_MISMATCH','PEERS_BELOW_MINIMUM'])if(codes.includes(c))return c;
+ const sub=subMetrics(ctx.profile,factor);if(!sub)return 'SEC_FACTOR_NOT_AVAILABLE';if(!sub.length)return 'NOT_APPLICABLE_PROFILE';
+ return sub.some(m=>object(rec.metrics)&&finite(rec.metrics[m]))?'PEERS_TOO_FEW':'SEC_ITEMS_MISSING';}
+function axisCoverage(axis,d,rec,ctx){
+ const W=qgvV2().WEIGHTS[axis],pub=axis!=='V'&&rec&&object(rec.qg_axes)&&object(rec.qg_axes[axis])?rec.qg_axes[axis]:null,score=axis==='Q'?d.q:axis==='G'?d.g:d.v;
+ const factors=Object.entries(W).map(([id,weight])=>{const x=d.factors&&object(d.factors[id])?d.factors[id]:null,s=x&&finite(x.score)?x.score:null;let reason=null;
+  if(s===null){if(axis==='V'){reason=ctx.withdrawn?'IDENTITY_CONFLICT_WITHDRAWN':ctx.blocked?'PRICE_IDENTITY_CONFLICT':ctx.mismatch?'CALC_VERSION_MISMATCH':!rec||rec.state==='NOT_AVAILABLE'?'SOURCE_NOT_AVAILABLE':x&&x.reason?x.reason:'V_INPUTS_NOT_AVAILABLE';}else reason=qgReason(id,rec,ctx,pub);}
+  return{id,weight,score:s,reason,raw:x&&x.reason?x.reason:null,category:s===null?(CATEGORY[reason]||'PARTIAL'):'OK',basis:x&&x.basis?x.basis:null,metrics:axis!=='V'&&ctx.profile?[...(subMetrics(ctx.profile,id)||[])]:[]};});
+ let total=0,used=0,n=0,na=0;for(const f of factors){total+=f.weight;if(f.score!==null){used+=f.weight;n++;}else if(f.category==='NOT_APPLICABLE')na++;}
+ // Renormalized share inside the axis (the engine's Σ(w·s)/Σ(w available)), only when the axis itself has a score.
+ for(const f of factors)f.share=score!==null&&f.score!==null&&used>0?100*f.weight/used:null;
+ const lacking=factors.some(f=>f.score===null&&f.category!=='NOT_APPLICABLE');
+ const status=ctx.withdrawn||axis==='V'&&ctx.blocked?'STOPPED':axis==='V'&&ctx.profile==='FINANCIAL'?'NOT_APPLICABLE':score===null?'NOT_AVAILABLE':lacking?'PARTIAL':'READY';
+ const codes=pub&&Array.isArray(pub.reason_codes)?[...pub.reason_codes]:[];let reason=null;
+ if(status==='STOPPED')reason=ctx.withdrawn?'IDENTITY_CONFLICT_WITHDRAWN':'PRICE_IDENTITY_CONFLICT';else if(status==='NOT_APPLICABLE')reason='FINANCIAL_PROFILE_V_NOT_DEFINED';
+ else if(status==='NOT_AVAILABLE'){const first=factors.find(f=>f.score===null);reason=ctx.mismatch?'CALC_VERSION_MISMATCH':codes.find(c=>['ROW_NOT_AVAILABLE','PEERS_BELOW_MINIMUM','CALC_VERSION_MISMATCH'].includes(c))||(!rec||rec.state==='NOT_AVAILABLE'?'SOURCE_NOT_AVAILABLE':n&&used/total<qgvV2().MIN_AXIS_WEIGHT?'AXIS_COVERAGE_BELOW_50':factors.every(f=>f.reason===first.reason)?first.reason:'AXIS_COVERAGE_BELOW_50');}
+ const inTotal=finite(d.total)&&score!==null&&!(axis==='V'&&d.v_excluded),use=inTotal?'INCLUDED':!finite(d.total)?'TOTAL_NOT_AVAILABLE':score===null?'AXIS_NOT_AVAILABLE':'VALUE_TRAP_GATE';
+ return{axis,status,score,weight_available:total?used/total:null,factors_available:n,factors_total:factors.length,not_applicable:na,reason,use,factors,
+  published:pub?{factors_available:pub.factors_available??null,available_weight:pub.available_weight??null,peer_basis:pub.peer_basis??null,peer_count:pub.peer_count??null,submetric_fallbacks:pub.submetric_fallbacks??null,reason_codes:codes}:null};}
+/* Display coverage of one v2 display row d and its source record rec (null when no record). Returns null for a reference-only
+   row (no published record behind it). */
+function coverageFor(d,rec,{blocked=false}={}){
+ if(!d||d.reference_only)return null;const withdrawn=!!rec&&rec.identity_withdrawn===true,mismatch=!!rec&&rec.calc_version_mismatch===true,profile=rec&&['GENERAL','FINANCIAL'].includes(rec.published_profile)?rec.published_profile:null;
+ const ctx={withdrawn,mismatch,blocked,profile},axes={};for(const a of ['Q','G','V'])axes[a]=axisCoverage(a,d,rec,ctx);
+ const v=rec&&object(rec.v_inputs)?rec.v_inputs:null,missing=[];
+ if(rec&&!withdrawn&&rec.state!=='NOT_AVAILABLE'&&profile!=='FINANCIAL'){if(!v)missing.push('v_inputs');else for(const k of Object.keys(V_INPUT)){const x=v[k];if(k==='ebit_per_share_history'?!(Array.isArray(x)&&x.length>=qgvV2().MIN_HISTORY):!finite(x))missing.push(k);}}
+ const all=Object.values(axes).flatMap(a=>a.factors),has=c=>all.some(f=>f.category===c),states=[];
+ if(d.total_reason==='DATA_FORMAT_NEWER')states.push('FORMAT_NEWER');if(withdrawn||blocked)states.push('IDENTITY_STOPPED');if(mismatch)states.push('CALC_VERSION');
+ if(!withdrawn&&(!rec||rec.state==='NOT_AVAILABLE'))states.push('SOURCE_MISSING');if(rec&&rec.state==='STALE')states.push('STALE');
+ if(!withdrawn&&!blocked&&has('PRICE_NEEDED'))states.push('PRICE_NEEDED');if(rec&&rec.state!=='NOT_AVAILABLE'&&!withdrawn&&(has('PARTIAL')||missing.length))states.push('PARTIAL');if(has('NOT_APPLICABLE'))states.push('NOT_APPLICABLE');
+ return{axes,states,v_inputs_missing:missing,v_periods:rec&&object(rec.periods)?{...rec.periods}:{},
+  source:{state:rec?rec.state:'NOT_AVAILABLE',acquired_at:rec&&typeof rec.acquired_at==='string'?rec.acquired_at:null,fiscal_year_end:rec&&typeof rec.fiscal_year_end==='string'?rec.fiscal_year_end:null,profile,reason_codes:rec&&Array.isArray(rec.na_reasons)?[...rec.na_reasons]:[]}};}
+/* S06 exploration group of one computed row: RANKED (QGV total and a device rank), PARTIAL_AXES (some axis score but no rank:
+   never put into the ranked order) or CHECK_DATA (no axis score). */
+function exploreGroup(row){if(!row||!row.primary)return 'CHECK_DATA';if(row.rank!==null&&row.rank!==undefined)return 'RANKED';const p=row.primary;return [p.q,p.g,p.v].some(finite)?'PARTIAL_AXES':'CHECK_DATA';}
+function stateText(code,en){return Object.hasOwn(DATA_STATE,code)?DATA_STATE[code][en?1:0]:code;}
+function axisStatusText(code,en){return Object.hasOwn(AXIS_STATUS,code)?AXIS_STATUS[code][en?1:0]:code;}
+function vInputText(key,en){return Object.hasOwn(V_INPUT,key)?V_INPUT[key][en?1:0]:(en?'value inputs':'가치 입력 전체');}
 /* The accessor. identities: [{company_id, ticker}] rows to show; publicScreens: the app's loaded public screens (sec-qgv2.json
    under SecQgv2.FILE; type memberships come from its rows, company-types-pricefree.json is display-only); quotes:
    {code:{price,currency}} RAM. Returns rows with v2 (= primary). reference is always null: there is no comparison score on screens. */
@@ -88,6 +170,7 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
   if(newer){v2.total_reason='DATA_FORMAT_NEWER';}
   const ref=object(referenceRows)?referenceRows[c.company_id]:null;if(ref?.reference_only===true&&object(ref.factors)&&object(ref.axes)){try{const factors={},qg_axes={};for(const axis of ['Q','G']){let coverage=0;for(const[f,w]of Object.entries(V2.WEIGHTS[axis])){const s=ref.factors[f];factors[f]=finite(s)&&s>=0&&s<=100?s:null;if(factors[f]!==null)coverage+=w;}qg_axes[axis]={score:coverage>=50&&finite(ref.axes[axis]?.score)?ref.axes[axis].score:null};}
    v2=v2Display(V2.scoreUniverse({reference:{profile:'GENERAL',industry_group:null,factors,qg_axes,v_inputs:null,memberships:null}}, {},{preset:chosen,gate:gateOn}).reference);v2.reference_only=true;v2.reference_label='참고 순위';v2.reference_label_en='Reference ranking';}catch(_){}}
+  if(inputs&&!newer){try{v2.coverage=coverageFor(v2,src,{blocked:blocked.has(code)});}catch(_){v2.coverage=null;}}else if(newer)v2.coverage={axes:null,states:['FORMAT_NEWER'],v_inputs_missing:[],v_periods:{},source:null};
   const row={company_id:c.company_id,ticker:c.ticker,code,v2,primary:v2,reference:null,rank:null};rows[c.company_id]=row;}
  ranked=Object.values(rows).filter(r=>finite(r.primary.total)&&r.primary.reference_only!==true).sort((a,b)=>b.primary.total-a.primary.total||(a.ticker<b.ticker?-1:1));
  ranked.forEach((r,i)=>{r.rank=i+1;});
@@ -140,9 +223,15 @@ function naText(d,en){
  if(d&&d.total_reason==='SOURCE_NOT_AVAILABLE')return head+' · '+(en?'source data missing':'원자료 없음')+((d.source_reason_codes||[]).length?' ('+d.source_reason_codes.map(r=>SOURCE_REASON[r]?SOURCE_REASON[r][en?1:0]:r).join(', ')+')':'');
  if(d&&(d.flags||[]).includes('CALC_VERSION_MISMATCH'))return head+' · '+FLAG.CALC_VERSION_MISMATCH[en?1:0];
  if(!d||(d.flags||[]).includes('V2_INPUTS_NOT_AVAILABLE'))return head+' · '+(en?'no v2 input for this company':'이 기업의 v2 입력 없음');
- const parts=[head,(en?'calculated factors ':'산출 요인 ')+d.factors_available+'/'+d.factors_total];
- for(const a of ['Q','G','V']){const x=d.axes&&d.axes[a];if(x&&x.reason==='AXIS_WEIGHT_INSUFFICIENT')parts.push(a+(en?' axis below 50% of its weight':' 축 비중 50% 미만'));}
- if(d.total_reason==='AXIS_WEIGHT_INSUFFICIENT'&&parts.length===2)parts.push(en?'available axes below 50% of the weight':'산출 축 비중 50% 미만');
+ const parts=[head,(en?'calculated factors ':'산출 요인 ')+d.factors_available+'/'+d.factors_total];let below=false;
+ // Q/G come from the published file: its axis reason (coverage below 50%, too few peers) is used when the axis is not published.
+ for(const a of ['Q','G','V']){const x=d.axes&&d.axes[a],c=d.coverage&&d.coverage.axes?d.coverage.axes[a]:null,pub=c&&c.published?c.published.reason_codes:[];if(!x)continue;
+  if(a==='V'&&c&&x.score===null&&c.status==='STOPPED')continue;
+  if(a==='V'&&c&&x.score===null&&c.status==='NOT_APPLICABLE'){parts.push(en?'V not applicable (financial)':'V 해당 없음(금융업)');continue;}
+  if(a==='V'&&c&&x.score===null&&c.factors.every(f=>f.category==='PRICE_NEEDED')){parts.push(en?'V needs a price input':'V 가격 입력 필요');continue;}
+  if(x.reason==='AXIS_WEIGHT_INSUFFICIENT'||x.reason==='AXIS_NOT_PUBLISHED'&&pub.includes('AXIS_COVERAGE_BELOW_50')){below=true;parts.push(a+(en?' axis below 50% of its weight':' 축 비중 50% 미만'));}
+  else if(x.reason==='AXIS_NOT_PUBLISHED'&&pub.includes('PEERS_BELOW_MINIMUM'))parts.push(a+(en?' axis: fewer than 8 peers':' 축 비교 기업 8곳 미만'));}
+ if(d.total_reason==='AXIS_WEIGHT_INSUFFICIENT'&&!below)parts.push(en?'available axes below 50% of the weight':'산출 축 비중 50% 미만');
  return parts.join(' · ');
 }
 function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
@@ -150,5 +239,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({MODES,LABEL,FLAG,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
+return Object.freeze({MODES,LABEL,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
 });

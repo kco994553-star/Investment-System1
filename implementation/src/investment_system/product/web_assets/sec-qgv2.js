@@ -179,5 +179,8 @@
   const text=await response.text();if(new TextEncoder().encode(text).length>MAX)throw Error('SEC_QGV2_INVALID');let payload;try{payload=JSON.parse(text);}catch(_){throw Error('SEC_QGV2_INVALID');}
   return toInputs(payload,{now:now||new Date().toISOString()});
  }
- return Object.freeze({FILENAME,WITHDRAWN_REASON,SCHEMA_VERSIONS,ERR_NEWER,FACTOR_IDS,METRIC_KEYS,EXTRA_METRICS:Object.freeze(Object.fromEntries(Object.entries(EXTRA_METRICS).map(([k,v])=>[k,Object.freeze([...v])]))),Q_WEIGHTS:Object.freeze({...Q_WEIGHTS}),G_WEIGHTS:Object.freeze({...G_WEIGHTS}),SIC_GROUPS,TARGET_CIKS:Object.freeze({...TARGET_CIKS}),STANDARD_STATUS,validate,emptyRecord,restate,toInputs,loadInputs,scoreRows});
+ /* SUBMETRICS (read-only copy): which published metrics feed each Q/G factor per profile. Screens use it only to say why a factor
+    is missing (no SEC item vs. too few peers) and that a factor with no sub-metric for a profile (FINANCIAL q_earnings_quality) is
+    not applicable; validation and scoring above keep using the original table. */
+ return Object.freeze({SUBMETRICS:deep(JSON.parse(JSON.stringify(SUBMETRICS))),FILENAME,WITHDRAWN_REASON,SCHEMA_VERSIONS,ERR_NEWER,FACTOR_IDS,METRIC_KEYS,EXTRA_METRICS:Object.freeze(Object.fromEntries(Object.entries(EXTRA_METRICS).map(([k,v])=>[k,Object.freeze([...v])]))),Q_WEIGHTS:Object.freeze({...Q_WEIGHTS}),G_WEIGHTS:Object.freeze({...G_WEIGHTS}),SIC_GROUPS,TARGET_CIKS:Object.freeze({...TARGET_CIKS}),STANDARD_STATUS,validate,emptyRecord,restate,toInputs,loadInputs,scoreRows});
 });

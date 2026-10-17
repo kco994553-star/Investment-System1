@@ -1,7 +1,7 @@
 /* QGV v2 device inputs from the public price-free `sec-qgv2.json` (Q·G side: universe/sec_qgv2.py, reader web_assets/sec-qgv2.js
    = SecQgv2). This adapter is the ONLY place that knows that file's shape: it turns a SecQgv2.toInputs() result (or, when the
    strict reader is not on the page, a lightly checked payload) into the records QgvV2.scoreUniverse takes:
-   {cik, industry_group, profile, factors:{q_*,g_*}, qg_axes:{Q:{score},G:{score}} (published axes), v_inputs:{currency, ebit, fcf,
+   {cik, industry_group, profile, factors:{q_*,g_*}, qg_axes:{Q:{score,...coverage},G:{score,...coverage}} (published axes), v_inputs:{currency, ebit, fcf,
    total_debt, cash, diluted_shares, ebit_per_share_history:[{period_end,value}], revenue_cagr_3y}, periods, in_cross_section}.
    EBIT/FCF use the TTM value when published, else the fiscal-year value. Universe rows are keyed by code (one cross-section
    point per CIK); TARGET rows by 'TARGET:<id>' (scored against the cross-section, not added to it). Nothing here is stored. */
@@ -24,6 +24,19 @@ function vInputs(v){
    without one in a versioned file) is NOT ranked with the others: it leaves the cross-section and every device percentile
    population, and the accessor shows it as NA with reason CALC_VERSION_MISMATCH. An unversioned (legacy) file is one population. */
 function versionMismatch(r,fileVersion){return typeof fileVersion==='string'&&object(r)&&r.state!=='NOT_AVAILABLE'&&r.fiscal_year_end!==null&&r.fiscal_year_end!==undefined&&r.calc_version!==fileVersion;}
+/* Published Q/G axis coverage, kept for display only (owner instruction 2026-10-17, FE-MISSING-2): factors_available 'n/5',
+   available_weight (sum of the original weights of the factors present, 0..100), peer_basis/peer_count, submetric_fallbacks and
+   the axis reason codes (AXIS_COVERAGE_BELOW_50, PEERS_BELOW_MINIMUM, ROW_NOT_AVAILABLE, CALC_VERSION_MISMATCH). QgvV2 reads only
+   `score` (publishedAxis), so scores, totals and ranks are the same with or without these fields. */
+const CODE_RE=/^[A-Z][A-Z0-9_]{0,63}$/,CLOCK=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/;
+function axisMeta(a){
+ if(!object(a))return{score:null};const out={score:score(a.score)};
+ if(typeof a.factors_available==='string'&&/^\d\/\d$/.test(a.factors_available))out.factors_available=a.factors_available;
+ if(finite(a.available_weight)&&a.available_weight>=0&&a.available_weight<=100)out.available_weight=a.available_weight;
+ if(typeof a.peer_basis==='string'&&/^[A-Z][A-Z_]{0,31}$/.test(a.peer_basis))out.peer_basis=a.peer_basis;
+ for(const k of ['peer_count','submetric_fallbacks'])if(Number.isInteger(a[k])&&a[k]>=0)out[k]=a[k];
+ if(Array.isArray(a.reason_codes))out.reason_codes=a.reason_codes.filter(x=>typeof x==='string'&&CODE_RE.test(x));
+ return out;}
 function normalize(r,pooled){
  const f=object(r)&&object(r.factors)?r.factors:{},factors={};for(const k of FACTORS)factors[k]=score(Object.hasOwn(f,k)?f[k]:null);
  const has=object(r)&&r.state!=='NOT_AVAILABLE'&&r.fiscal_year_end!==null&&r.fiscal_year_end!==undefined,[v,periods]=has?vInputs(r.v_inputs_v2):[null,{}],ax=object(r)&&object(r.axes)?r.axes:{};
@@ -32,7 +45,10 @@ function normalize(r,pooled){
  // they are outside every ranking population but stay in the 504-code denominator with an explicit NA reason.
  const naReasons=object(r)&&!has&&Array.isArray(r.reason_codes)?r.reason_codes.filter(x=>typeof x==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/.test(x)):[];
  return{na_reasons:naReasons,metrics:object(r)&&object(r.metrics)?{...Object.fromEntries(Object.entries(r.metrics).filter(([k,v])=>/^[a-z][a-z0-9_]{0,63}$/.test(k)&&finite(v))),...years}:{},sic:object(r)&&typeof r.sic==='string'&&/^\d{4}$/.test(r.sic)?r.sic:null,cik:object(r)&&typeof r.cik==='string'?r.cik:null,industry_group:object(r)&&typeof r.industry_group==='string'&&GROUP.test(r.industry_group)?r.industry_group:null,profile:object(r)&&r.profile==='FINANCIAL'?'FINANCIAL':'GENERAL',
-  factors,qg_axes:{Q:{score:object(ax.Q)?score(ax.Q.score):null},G:{score:object(ax.G)?score(ax.G.score):null}},v_inputs:v,periods,state:object(r)&&['LIVE','STALE'].includes(r.state)?r.state:'NOT_AVAILABLE',in_cross_section:pooled};
+  factors,qg_axes:{Q:axisMeta(ax.Q),G:axisMeta(ax.G)},v_inputs:v,periods,state:object(r)&&['LIVE','STALE'].includes(r.state)?r.state:'NOT_AVAILABLE',in_cross_section:pooled,
+  // Display-only source facts (never used in a score): when the row was collected, its fiscal period and its published profile.
+  acquired_at:has&&typeof r.acquired_at==='string'&&CLOCK.test(r.acquired_at)?r.acquired_at:null,fiscal_year_end:has&&typeof r.fiscal_year_end==='string'&&DAY.test(r.fiscal_year_end)?r.fiscal_year_end:null,
+  published_profile:has&&['GENERAL','FINANCIAL'].includes(r.profile)?r.profile:null};
 }
 /* Identity-conflict withdrawal (owner instruction 2026-10-17 item 3; sec-qgv2.json TARGET withdrawal rows, Python
    sec_qgv2.WITHDRAWN_REASON): a withdrawn TARGET issuer is used nowhere on this device. Its TARGET record and every Universe
@@ -43,7 +59,7 @@ function normalize(r,pooled){
    and nothing is read from an earlier copy or another row. */
 const WITHDRAWN_REASON='IDENTITY_CONFLICT_WITHDRAWN';
 const withdrawn=r=>object(r)&&(Object.hasOwn(r,'detected_at')||Array.isArray(r.reason_codes)&&r.reason_codes.includes(WITHDRAWN_REASON));
-function stopped(rec){return{...rec,state:'WITHDRAWN',na_reasons:[WITHDRAWN_REASON],metrics:{},sic:null,industry_group:null,factors:Object.fromEntries(FACTORS.map(k=>[k,null])),qg_axes:{Q:{score:null},G:{score:null}},v_inputs:null,periods:{},in_cross_section:false,identity_withdrawn:true};}
+function stopped(rec){return{...rec,state:'WITHDRAWN',na_reasons:[WITHDRAWN_REASON],metrics:{},sic:null,industry_group:null,acquired_at:null,fiscal_year_end:null,published_profile:null,factors:Object.fromEntries(FACTORS.map(k=>[k,null])),qg_axes:{Q:{score:null},G:{score:null}},v_inputs:null,periods:{},in_cross_section:false,identity_withdrawn:true};}
 const frozenCopy=x=>{const copy=JSON.parse(JSON.stringify(x));function freeze(v){if(object(v)||Array.isArray(v)){Object.values(v).forEach(freeze);Object.freeze(v);}return v;}return freeze(copy);};
 /* SecQgv2.toInputs() result (or a lightly checked payload) -> {as_of, records:{key: record}, count}. */
 function fromInputs(inputs){

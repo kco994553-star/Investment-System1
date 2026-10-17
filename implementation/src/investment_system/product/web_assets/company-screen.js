@@ -90,6 +90,53 @@ function v2Body(d,locale){
   +(d.v_excluded?'<p class="small" data-qgv2-gate>'+esc(T('가치 함정 주의: Q가 업종 내 하위 30%라 V를 총점에서 뺐습니다.','Value-trap caution: Q is in the bottom 30% of its industry, so V is left out of the total.'))+'</p>':'')
   +'<p class="small" data-qgv2-range>'+esc(T('DCF 참고 범위 (점수 미반영 · FCF/주 · 성장률 규칙 하한~상한): ','DCF reference range (not scored · FCF/share · growth-rule lower~upper): '))+range+'</p>';
 }
+/* FE-MISSING-2 (owner instruction 2026-10-17): per axis, whether it was calculated (정상 / 부분 산출 / 미산출 / 해당 없음 /
+   사용 중지), its fill rate against the ORIGINAL weights ('충족률 80% · 4/5 요인'), each missing factor with a sentence (raw code
+   under 근거), the weights before and after the engine's renormalization (QgvV2.WEIGHTS through QgvScores.coverageFor), whether
+   it counts in the total and whether the company is used for the device rank / candidates. Data states and source facts
+   (fiscal period, SEC companyfacts, acquired_at, used now or not) come from the published row. Nothing is estimated and an NA
+   factor never shows 0. compact (S04): one line per axis, the factor list folded; S05 shows the per-factor table instead. */
+const dayOf=x=>typeof x==='string'?x.slice(0,10):null;
+function clockText(x){return typeof x==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(x)?x.slice(0,10)+' '+x.slice(11,16)+' UTC':'—';}
+function pctText(ratio,locale,digits=0){return typeof ratio==='number'&&Number.isFinite(ratio)?num(ratio*100,locale,digits)+'%':'—';}
+const AXIS_BADGE={READY:'LIVE',PARTIAL:'partial',NOT_AVAILABLE:'NOT_AVAILABLE',NOT_APPLICABLE:'NOT_AVAILABLE',STOPPED:'NOT_AVAILABLE'};
+function factorShare(f,axis,locale){const T=tr(locale);return T('원래 ','original ')+num(f.weight,locale,0)+'% → '+(f.share!==null?T('재배분 ','renormalized ')+num(f.share,locale,1)+'%':axis.score===null?T('재배분 안 함','not renormalized'):T('제외','left out'));}
+function evidence(body,locale){return '<details class="evidence" data-evidence><summary>'+esc(tr(locale)('근거','Evidence'))+'</summary><p class="small">'+body+'</p></details>';}
+function factorEvidence(f,locale){const T=tr(locale),parts=[];if(f.raw)parts.push(T('계산 코드 ','Engine code ')+'<code>'+esc(f.raw)+'</code>');if(f.reason&&f.reason!==f.raw)parts.push(T('화면 분류 ','Screen class ')+'<code>'+esc(f.reason)+'</code>');
+ if(f.metrics&&f.metrics.length)parts.push(T('하위 지표 ','Sub-metrics ')+f.metrics.map(m=>'<code>'+esc(m)+'</code>').join(', '));if(f.basis)parts.push(T('비교 기준 ','Basis ')+esc(f.basis));return parts.join(' · ')||'—';}
+function useText(a,locale){const T=tr(locale);return {INCLUDED:T('종합 점수에 반영','Counted in the total'),TOTAL_NOT_AVAILABLE:T('종합 점수 미산출','No total score'),AXIS_NOT_AVAILABLE:T('이 축은 종합 점수에 반영 안 됨','Not counted in the total'),VALUE_TRAP_GATE:T('가치 함정 관문으로 종합 점수에서 제외','Left out of the total by the value-trap gate')}[a.use]||'—';}
+function axisCoverageHtml(a,cv,locale,compact){
+ const T=tr(locale),en=locale==='en-US',QS=g.QgvScores,V2L=f=>V2_LABEL[f.id]?V2_LABEL[f.id][en?1:0]:f.id;
+ const fill=a.status==='NOT_APPLICABLE'||a.status==='STOPPED'?'':T('충족률 ','Fill ')+pctText(a.weight_available,locale)+' · '+a.factors_available+'/'+a.factors_total+T(' 요인',' factors')+(a.not_applicable&&a.status!=='NOT_APPLICABLE'?T(' (해당 없음 ',' (not applicable ')+a.not_applicable+T('개 제외)',' excluded)'):'');
+ const head='<div class="axis-head"><b>'+esc(a.axis)+'</b> <span class="badge '+AXIS_BADGE[a.status]+'" data-axis-status-label>'+esc(QS.axisStatusText(a.status,en))+'</span>'+(a.score!==null?' <span class="num">'+esc(num(a.score,locale))+'</span>':'')+(fill?' <span class="small" data-axis-fill>'+esc(fill)+'</span>':'')+'</div>';
+ const why=a.reason?'<p class="small" data-axis-reason>'+esc(QS.reasonText(a.reason,en))+'</p>':'';
+ const use='<p class="small" data-axis-use>'+esc(useText(a,locale))+'</p>';
+ const missing=a.factors.filter(f=>f.score===null);
+ let list='';if(compact){
+  list='<ul class="factor-coverage">'+a.factors.map(f=>'<li data-factor-coverage="'+esc(f.id)+'" data-factor-state="'+esc(f.category)+'"><span><b>'+esc(V2L(f))+'</b> <span class="small">'+esc(factorShare(f,a,locale))+'</span></span>'
+   // A factor missing for the axis' own reason (e.g. no device price) names only its state; the sentence is on the axis line.
+   +(f.score===null?' <span class="badge '+(f.category==='NOT_APPLICABLE'?'NOT_AVAILABLE':'partial')+'">'+esc(QS.stateText(f.category,en))+'</span>'+(a.reason&&f.reason===a.reason?'':'<span class="small" data-factor-reason>'+esc(QS.reasonText(f.reason,en))+'</span>'+evidence(factorEvidence(f,locale),locale)):' <span class="small">'+esc(T('점수 ','score ')+num(f.score,locale))+'</span>')+'</li>').join('')+'</ul>';}
+ const pub=a.published,pubText=pub?esc(T('공개 파일 축 정보: ','Published axis: ')+'factors_available '+(pub.factors_available??'—')+' · available_weight '+(pub.available_weight??'—')+' · '+T('비교 기준 ','peer basis ')+(pub.peer_basis??'—')+(Number.isInteger(pub.peer_count)?' ('+pub.peer_count+T('곳)',')'):'')+' · '+T('대체 순위 ','sub-metric fallbacks ')+(pub.submetric_fallbacks??'—')+' · reason_codes '+(pub.reason_codes.length?pub.reason_codes.join(', '):'—')):'';
+ let vline='';if(a.axis==='V'&&a.status!=='NOT_APPLICABLE'&&a.status!=='STOPPED'&&cv.source&&cv.source.state!=='NOT_AVAILABLE'){const miss=cv.v_inputs_missing,per=Object.entries(cv.v_periods||{}).map(([k,v])=>k+' '+v).join(' · ');
+  vline='<p class="small" data-v-inputs="'+(miss.length?'MISSING':'OK')+'">'+esc(miss.length?T('가격 외 V 입력 중 없는 항목: ','Price-free V inputs missing: ')+miss.map(k=>QS.vInputText(k,en)).join(' · '):T('가격 외 V 입력(SEC)은 모두 있습니다. 가격이 들어오면 계산합니다.','All price-free V inputs (SEC) are present; V is calculated once a price is available.'))+'</p>'+(per?evidence(esc(T('V 입력 기준기간: ','V input periods: ')+per),locale):'');}
+ const renorm=a.score!==null&&missing.some(f=>f.category!=='NOT_APPLICABLE'||a.not_applicable)?'<p class="small" data-axis-renorm>'+esc(T('재배분: 있는 요인의 원래 가중치 비율대로 나눠 계산합니다 (Σ가중치×점수 ÷ Σ있는 요인 가중치). 빠진 요인을 0으로 채우지 않습니다.','Renormalized: present factors keep their original weight ratio (Σ weight×score ÷ Σ present weights). Missing factors are not filled with 0.'))+'</p>':'';
+ const body=list+renorm+vline+(pubText?evidence(pubText,locale):'');
+ return '<li data-axis-coverage="'+a.axis+'" data-axis-status="'+a.status+'">'+head+why+use+(compact&&body?'<details data-keep-open="axis-'+a.axis+'"><summary>'+esc(missing.length?T('빠진 요인·가중치 재배분','Missing factors and weights'):T('요인·가중치','Factors and weights'))+'</summary>'+body+'</details>':body)+'</li>';
+}
+/* Data-state chips + per-axis coverage + device-use and source lines of one score row (sr from scoreRow). */
+function coverageHtml(sr,locale,{compact=true}={}){
+ const T=tr(locale),en=locale==='en-US',QS=g.QgvScores,d=sr?sr.row.primary:null,cv=d&&d.coverage?d.coverage:null;
+ if(!QS||!QS.coverageFor||!cv)return '';
+ const src=cv.source,stale=src&&src.state==='STALE';
+ const chips=cv.states.map(st=>'<span class="badge '+(st==='NOT_APPLICABLE'?'NOT_AVAILABLE':st==='STALE'?'freshness STALE':'partial')+'" data-data-state="'+esc(st)+'">'+esc(QS.stateText(st,en)+(st==='STALE'&&src?T(' · 마지막 유효 값 기준 FY ',' · last valid value FY ')+(src.fiscal_year_end||'—')+T(' · 수집 ',' · collected ')+(dayOf(src.acquired_at)||'—'):'')+(st==='SOURCE_MISSING'&&src&&src.reason_codes.length?' · '+src.reason_codes.join(', '):''))+'</span>').join('');
+ const states='<p class="chips" data-data-states>'+(chips||'<span class="badge LIVE" data-data-state="OK">'+esc(T('자료 정상','Data complete'))+'</span>')+'</p>';
+ const axes=cv.axes?'<ul class="axis-coverage">'+['Q','G','V'].map(a=>axisCoverageHtml(cv.axes[a],cv,locale,compact)).join('')+'</ul>':'';
+ const rank=sr.row.rank,usable='<p class="small" data-qgv-usable="'+(rank!==null?'RANKED':'EXCLUDED')+'">'+esc(T('기기 순위·후보: ','Device rank / candidates: ')+(rank!==null?T('사용 (이 기기 순위 ','used (device rank ')+rank+')':d.reference_only?T('참고 순위 · 정식 순위·후보 아님','reference ranking · not an official rank or candidate'):T('제외 · ','excluded · ')+(d.total_reason==='PRICE_IDENTITY_CONFLICT'?QS.FLAG.PRICE_IDENTITY_CONFLICT[en?1:0]:T('QGV 종합 점수가 없어 순위·후보에 넣지 않습니다','no QGV total, so no rank or candidate place'))))+'</p>';
+ const used=!src?T('미반영','Not used'):src.state==='LIVE'?T('반영','Used'):src.state==='STALE'?T('반영 · 오래된 자료(마지막 유효 값)','Used · stale (last valid value)'):src.state==='WITHDRAWN'?T('미반영 · 식별 충돌로 사용 중지','Not used · stopped: identity conflict'):T('미반영 · 자료 없음','Not used · no data');
+ const mismatch=cv.states.includes('CALC_VERSION')?T('미반영 · 계산 규칙 버전 다름','Not used · different calculation-rule version'):null;
+ const source=src?'<dl class="kv" data-qgv-source="'+esc(src.state)+'"><dt>'+esc(T('기준기간','Fiscal period'))+'</dt><dd data-source-period>'+esc(src.fiscal_year_end?'FY '+src.fiscal_year_end:'—')+'</dd><dt>'+esc(T('출처','Source'))+'</dt><dd>'+esc(T('SEC companyfacts (공개 sec-qgv2.json)','SEC companyfacts (public sec-qgv2.json)'))+'</dd><dt>'+esc(T('수집 시각','Collected at'))+'</dt><dd data-source-acquired>'+esc(clockText(src.acquired_at))+'</dd><dt>'+esc(T('현재 계산 반영','Used in the current calculation'))+'</dt><dd data-source-used>'+esc(mismatch||used)+(stale?' <span class="badge freshness STALE">STALE</span>':'')+'</dd></dl>':'';
+ return '<div class="qgv-coverage" data-qgv-coverage><h3>'+esc(T('산출 상태','Calculation status'))+'</h3>'+states+axes+usable+source+'</div>';
+}
 // QGV v2 only (owner decision 2026-10-14). Without the accessor the v2 NOT_AVAILABLE state is shown, never v1.
 function qgvBody(screens,id,locale,sr=null){return v2Body(sr?sr.row.primary:null,locale);}
 function holdingPlaceholder(locale){
@@ -123,7 +170,7 @@ function summary(ctx){
   +'<section class="card" id="company-holding" data-company-card="holding">'+holdingPlaceholder(locale)+'</section>'
   +'<div id="company-groups">'+ctx.groupsHtml+'</div>'
   +'<section class="card" data-company-card="qgv"><h2><span class="flow-number">1</span> QGV</h2>'+qgvBody(screens,id,locale,sr)
-  +'<dl class="kv"><dt>'+esc(T('리더보드 순위','Leaderboard rank'))+'</dt><dd data-qgv="rank">'+(sr&&sr.row.rank!==null?'<span class="num">'+esc(String(sr.row.rank))+'</span> <span class="small">'+esc(T('이 기기 표시 순서 · 공식 순위 아님','Order on this device · not an official rank'))+'</span>':na('',locale))+'</dd><dt>'+esc(T('재평가 신호','Re-evaluation signal'))+'</dt><dd data-qgv="reeval">'+na('',locale)+'</dd></dl>'
+  +'<dl class="kv"><dt>'+esc(T('리더보드 순위','Leaderboard rank'))+'</dt><dd data-qgv="rank">'+(sr&&sr.row.rank!==null?'<span class="num">'+esc(String(sr.row.rank))+'</span> <span class="small">'+esc(T('이 기기 표시 순서 · 공식 순위 아님','Order on this device · not an official rank'))+'</span>':na('',locale))+'</dd><dt>'+esc(T('재평가 신호','Re-evaluation signal'))+'</dt><dd data-qgv="reeval">'+na('',locale)+'</dd></dl>'+coverageHtml(sr,locale,{compact:true})
   +'<p>'+link('#analysis/'+cid+'/factors',T('QGV 요소 자세히 보기 →','Open QGV factors →'),' data-analysis-link="factors"')+'</p></section>'
   +'<section class="card" data-company-card="value"><h2>'+esc(T('가치 (이 기기)','Value (this device)'))+'</h2><div id="company-value" data-company-value>'+valueHtml({locale,compact:true})+'</div><p>'+link('#analysis/'+cid+'/value',T('가치·시나리오 자세히 →','Value / scenarios details →'),' data-analysis-link="value"')+'</p></section>'
   +'<section class="card" data-company-card="technical"><h2><span class="flow-number">2</span> '+esc(T('기술','Technical'))+'</h2><div id="private-history-chart"></div><div id="tradingview-mini" data-company-tradingview></div><dl class="kv"><dt>'+esc(T('상태·국면','State / regime'))+'</dt><dd>'+na('',locale)+'</dd></dl><p>'+link('#technical/'+cid,T('기술적 분석에서 이어 보기 →','Continue in technical analysis →'))+'</p></section>'
@@ -135,14 +182,17 @@ function summary(ctx){
 function v2FactorTable(d,locale){
  const T=tr(locale),en=locale==='en-US'?1:0,W=g.QgvV2?g.QgvV2.WEIGHTS:null;if(!W)return '<p>'+na('',locale)+'</p>';
  const rows=['Q','G','V'].flatMap(axis=>Object.keys(W[axis]).map(f=>{const x=d&&d.factors?d.factors[f]:null,ok=x&&x.score!==null;
-  return '<tr data-v2-factor="'+f+'"><td>'+axis+'</td><td>'+esc(V2_LABEL[f][en])+'</td><td class="num">'+esc(num(W[axis][f],locale,0))+'%</td><td class="num" data-factor-score>'+(ok?esc(num(x.score,locale)):'—')+'</td><td><span class="badge '+(ok?'LIVE':'NOT_AVAILABLE')+'">'+esc(ok?(x.basis||x.state):'NOT_AVAILABLE')+'</span></td><td class="small">'+esc(ok?'':(x&&x.reason)||'')+'</td></tr>';}));
+  // FE-MISSING-2: weight after the engine's renormalization, the missing-data class and a sentence (raw code under 근거).
+  const c=d&&d.coverage&&d.coverage.axes?d.coverage.axes[axis].factors.find(y=>y.id===f):null,QS=g.QgvScores;
+  const state=ok?(x.basis||x.state):c?QS.stateText(c.category,en===1):'NOT_AVAILABLE',why=ok?'':c?esc(QS.reasonText(c.reason,en===1))+evidence(factorEvidence(c,locale),locale):esc((x&&x.reason)||'');
+  return '<tr data-v2-factor="'+f+'"'+(c&&!ok?' data-factor-state="'+esc(c.category)+'"':'')+'><td>'+axis+'</td><td>'+esc(V2_LABEL[f][en])+'</td><td class="num">'+esc(num(W[axis][f],locale,0))+'%</td><td class="num" data-factor-share>'+(c&&c.share!==null?esc(num(c.share,locale,1))+'%':'—')+'</td><td class="num" data-factor-score>'+(ok?esc(num(x.score,locale)):'—')+'</td><td><span class="badge '+(ok?'LIVE':c&&c.category==='NOT_APPLICABLE'?'NOT_AVAILABLE':c?'partial':'NOT_AVAILABLE')+'">'+esc(state)+'</span></td><td class="small">'+why+'</td></tr>';}));
  const dt=d&&d.detail?d.detail:null,pct=v=>typeof v==='number'&&Number.isFinite(v)?num(v*100,locale)+'%':'—';
  const det=dt?'<p class="small" data-v2-detail>'+esc(T('이 기기 계산(메모리 전용): 이익 수익률 ','On this device (RAM only): earnings yield ')+pct(dt.ebit_yield)+' · '+T('FCF 수익률 ','FCF yield ')+pct(dt.fcf_yield)+' · '+T('역DCF 내재 성장률 ','reverse-DCF implied growth ')+pct(dt.implied_growth)+' · '+T('실현 매출 성장(3년) ','realized revenue growth (3y) ')+pct(dt.realized_growth)+' · '+(dt.earnings_basis==='NORMALIZED'?T('정상화 이익 기준 · ','normalized earnings basis · '):'')+T('업종 기준 ','industry basis ')+(dt.industry_basis||'—')+(dt.industry_peers?' ('+dt.industry_peers+')':''))+'</p>':'';
- return '<div class="table-wrap"><table data-v2-factor-table><thead><tr><th scope="col">'+esc(T('축','Axis'))+'</th><th scope="col">'+esc(T('요인 (v2)','Factor (v2)'))+'</th><th scope="col">'+esc(T('기본 비중','Default weight'))+'</th><th scope="col">'+esc(T('점수','Score'))+'</th><th scope="col">'+esc(T('상태','State'))+'</th><th scope="col">'+esc(T('사유','Reason'))+'</th></tr></thead><tbody>'+rows.join('')+'</tbody></table></div>'
+ return '<div class="table-wrap"><table data-v2-factor-table><thead><tr><th scope="col">'+esc(T('축','Axis'))+'</th><th scope="col">'+esc(T('요인 (v2)','Factor (v2)'))+'</th><th scope="col">'+esc(T('기본 비중','Default weight'))+'</th><th scope="col">'+esc(T('재배분 후','Renormalized'))+'</th><th scope="col">'+esc(T('점수','Score'))+'</th><th scope="col">'+esc(T('상태','State'))+'</th><th scope="col">'+esc(T('사유','Reason'))+'</th></tr></thead><tbody>'+rows.join('')+'</tbody></table></div>'
   +'<p class="small">'+esc(T('산출 요인 ','Factors available ')+(d?d.factors_available+'/'+d.factors_total:'0/15')+T(' · 점수는 504종목(가격 있는 행) 안 백분위, 업종 대비는 SIC 업종군 안 백분위(8개 미만이면 전체) · 결측은 0으로 채우지 않음 · QGV v2 PROVISIONAL',' · scores are percentiles within the priced Universe504 rows; vs-industry within the SIC group (whole universe below 8 peers) · missing is never 0 · QGV v2 PROVISIONAL'))+'</p>'+det;
 }
 // QGV v2 factors only (owner decision 2026-10-14). The raw v1 SEC Q·G leaf scores are in Settings > 원자료 보기(개발자용).
-function factorTable(screens,id,locale,sr=null){return v2FactorTable(sr?sr.row.primary:null,locale);}
+function factorTable(screens,id,locale,sr=null){return coverageHtml(sr,locale,{compact:false})+v2FactorTable(sr?sr.row.primary:null,locale);}
 function panel(key,title,body,hidden){return '<section class="card analysis-panel" role="tabpanel" id="analysis-panel-'+key+'" aria-labelledby="analysis-tab-'+key+'" data-analysis-panel="'+key+'"'+(hidden?' hidden':'')+'><h2>'+esc(title)+'</h2>'+body+'</section>';}
 function naRow(label,reason,locale,attr){return '<dt>'+esc(label)+'</dt><dd'+(attr?' data-na="'+attr+'"':'')+'>'+na(reason,locale)+'</dd>';}
 const TAB_KEYS=TABS.map(t=>t[0]);
@@ -229,5 +279,5 @@ function wireTabs(rootEl,{onSelect=null}={}){
  const select=key=>{for(const b of tabs){const on=b.dataset.analysisTab===key;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;}for(const p of rootEl.querySelectorAll('[data-analysis-panel]'))p.hidden=p.dataset.analysisPanel!==key;if(onSelect)onSelect(key);};
  tabs.forEach((b,i)=>{b.addEventListener('click',()=>select(b.dataset.analysisTab));b.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:e.key==='Home'?-i:e.key==='End'?tabs.length-1-i:0;if(!d&&e.key!=='Home')return;e.preventDefault();const n=tabs[(i+d+tabs.length)%tabs.length];select(n.dataset.analysisTab);n.focus();});});
 }
-return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,scoreRow,qgvBody,factorTable,classification,nextEarningsLine,summary,analysis,mountHolding,mountValue,valueHtml,wireTabs,tabKey,priceBadge,TYPES,TAB_KEYS});
+return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,scoreRow,qgvBody,coverageHtml,factorTable,classification,nextEarningsLine,summary,analysis,mountHolding,mountValue,valueHtml,wireTabs,tabKey,priceBadge,TYPES,TAB_KEYS});
 });
