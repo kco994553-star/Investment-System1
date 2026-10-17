@@ -40,6 +40,20 @@ test('filters: axis coverage, value-trap gate, financial safety fail and financi
  assert.throws(()=>B.buildDraft({...u,computed:{...u.computed,v2_state:'NOT_AVAILABLE'},existing:[],date:'2026-10-14'}),/QGV2_NOT_READY/);
 });
 
+test('normal NA row (no value, NA reason): no rank, not a candidate, Q·G denominator stays 504 (2026-10-15 evening)',()=>{
+ const u=universe([{symbol:'A1',total:80},{symbol:'NA0',total:null,q:null,v:null},{symbol:'A2',total:70}]);
+ const v2=Object.values(u.computed.rows).find(r=>r.ticker==='NA0').v2;v2.g=null;v2.axes.G={score:null,weight_available:0,state:'NOT_AVAILABLE'};
+ const rec=u.inputs.records['NASDAQ:NA0'];rec.qg_axes={Q:{score:null},G:{score:null}};rec.reason_codes=['NOT_COLLECTED'];rec.metrics={};
+ const rows=B.universeRows({...u,existing:[]}),na=rows.find(r=>r.symbol==='NA0');
+ assert.deepEqual([na.total,na.rank,na.industry_rank],[null,null,null]);
+ assert.deepEqual(rows.filter(r=>r!==na).map(r=>[r.symbol,r.rank]),[['A1',1],['A2',2]],'the NA row takes no rank');
+ assert.ok(B.exclusions(na).includes('TOTAL_NOT_AVAILABLE'));
+ const draft=B.buildDraft({...u,existing:[],date:'2026-10-14'});
+ assert.deepEqual(draft.pool.map(r=>r.symbol),['A1','A2']);assert.deepEqual(B.candidates(draft).map(r=>r.symbol),['A1','A2']);
+ assert.equal(draft.excluded_counts.TOTAL_NOT_AVAILABLE,1);
+ assert.deepEqual([draft.coverage.q,draft.coverage.g,draft.coverage.size],[2,2,504],'NA stays in the 504 denominator');
+});
+
 test('one point per issuer, industry rank and coverage label from the public file',()=>{
  const u=universe([{symbol:'GOOGL',total:70,cik:'X',ig:'a'},{symbol:'GOOG',total:71,cik:'X',ig:'a'},{symbol:'B1',total:60,ig:'a'},{symbol:'B2',total:65,ig:'b'}]);
  const rows=B.universeRows({...u,existing:[]});assert.deepEqual(rows.map(r=>r.symbol).sort(),['B1','B2','GOOG']);
