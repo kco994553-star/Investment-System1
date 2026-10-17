@@ -74,7 +74,9 @@ async function valueTab(page,id){await open(page,'analysis/'+id,'[data-analysis-
    const after=requests.slice(before);assert.ok(after.every(r=>r.method==='GET'&&!r.body&&new URL(r.url).origin===new URL(BASE).origin),'only same-origin GETs after a device price exists');
    assert.ok(after.every(r=>!/implied|growth|score|price/i.test(new URL(r.url).search)),'no derived values in URLs');
    const stored=await page.evaluate(async()=>{const out=[JSON.stringify({...localStorage}),JSON.stringify({...sessionStorage})];for(const info of await indexedDB.databases()){const db=await new Promise((ok,no)=>{const q=indexedDB.open(info.name);q.onsuccess=()=>ok(q.result);q.onerror=no;});for(const name of db.objectStoreNames){const all=await new Promise(ok=>{const q=db.transaction(name).objectStore(name).getAll();q.onsuccess=()=>ok(q.result);});out.push(JSON.stringify(all));}db.close();}return out.join('\n');});
-   assert.equal(/implied|reverse_dcf|fundamental_value|margin_of_safety|explicit_growth|135\.02|52\.1|0\.0081|v1\+dcf/.test(stored),false,'nothing price-derived in device storage');
+   // Stored records carry ISO times (effective_at, available_at, as_of); a time at hh:mm:52.1xx would read as the score 52.1, so
+   // times are masked before the value check (a wall-clock false positive, not a leak).
+   assert.equal(/implied|reverse_dcf|fundamental_value|margin_of_safety|explicit_growth|135\.02|52\.1|0\.0081|v1\+dcf/.test(stored.replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})/g,'<time>')),false,'nothing price-derived in device storage');
    assert.equal(errors,0);pass++;console.log('PASS dcf value view '+width);
   }catch(e){fail++;console.log('FAIL dcf value view '+width+' '+phase+' '+String(e.message).split('\n')[0]);}finally{await context.close();}
  }}finally{await browser.close();}

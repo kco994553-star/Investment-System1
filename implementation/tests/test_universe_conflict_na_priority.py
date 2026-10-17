@@ -3,8 +3,9 @@ sec-qgv2.json):
 
 1. A ticker claimed by several CIKs is an identity conflict with no row this run: the kept row is withdrawn also when it
    has values (before, `previous_decision` returned None for a missing row and the merges re-selected the kept values).
-   The code is published CIK_UNRESOLVED without acquired_at (detecting a conflict is not a collection), so the
-   pre-deploy freshness guard refuses the deploy as LOST_RECORD (fail closed).
+   Owner decision UNI-WITHDRAWN (a): a kept row with a collection record is published as a withdrawal row (no values,
+   no acquired_at, `detected_at` + `withdrawn_acquired_at` / `withdrawn_cik` naming it), which the pre-deploy freshness
+   guard passes as WITHDRAWN (before: CIK_UNRESOLVED and LOST_RECORD). Without a kept record the code is CIK_UNRESOLVED.
 2. A successful collection whose result is NOT_AVAILABLE or INVALID_INPUT is published, also by the DAILY merge, never
    replaced by an older value (before, the M3 option-a daily rule kept the older value); a transient failure (fetch
    failure, the cover filing fetch failing after the bytes arrived) or an identification failure still keeps the
@@ -121,8 +122,9 @@ def published(tmp_path_factory):
 def test_a_ticker_claimed_by_several_ciks_withdraws_a_kept_row_with_values(tmp_path, capsys, published, all_shards):
     """Day 1: X's ticker is also claimed by another CIK in SEC's ticker file, so X has no row this run. Before, the
     kept LIVE values stayed in all three files (decision None, kept by the 'no new row' branches and `_pick`). Now they
-    are withdrawn: CIK_UNRESOLVED, no CIK, no acquired_at. The live rows carry a collection record and the artifact
-    rows none, so the guard refuses the deploy (LOST_RECORD, fail closed) for exactly this code in each file."""
+    are withdrawn: no CIK, acquired_at, sources or values; reason IDENTITY_CONFLICT_WITHDRAWN, `detected_at` (this run)
+    and `withdrawn_acquired_at` / `withdrawn_cik` naming each file's live row. The guard passes it as WITHDRAWN (before:
+    LOST_RECORD, the whole deploy refused every day the conflict lasted)."""
     day0, x, y = published
     code_x = AS.CODE[x]
     capsys.readouterr()
@@ -131,17 +133,17 @@ def test_a_ticker_claimed_by_several_ciks_withdraws_a_kept_row_with_values(tmp_p
     counts = P.collection_counts(capsys.readouterr().out)
     for name in UNIVERSE:
         row = rows(day1, name)[code_x]
-        assert (row['state'], row['reason_codes'], row['cik'], row['acquired_at']) == ('NOT_AVAILABLE', ['CIK_UNRESOLVED'], None, None)
+        assert (row['state'], row['reason_codes'], row['cik'], row['acquired_at']) == ('NOT_AVAILABLE', [us.WITHDRAWN_REASON], None, None)
+        assert (row['detected_at'], row['withdrawn_acquired_at'], row['withdrawn_cik']) == (stamp(day(1)), stamp(day(0)), x)
         assert not has_values(name, row) and all(v is None for v in row['source_sha256'].values())
         assert rows(day1, name)[AS.CODE[y]]['acquired_at'] == stamp(day(1))         # Y collected normally
     assert rows(day1, qgv2.FILENAME)[code_x]['metrics'] == {} and rows(day1, qgv2.FILENAME)[code_x]['calc_version'] is None
     assert counts['identity_not_preserved'] == '1' and counts['preserved_unconfirmed'] == '0'
     code, out = guard_against(day1, day0, capsys)
-    assert code == 1 and 'PAGES_FRESHNESS_REFUSED ' in out and ' rows_regressed=3 ' in out
+    assert code == 0 and 'PAGES_FRESHNESS_PASS ' in out and ' rows_regressed=0 ' in out
     for name in UNIVERSE:
-        assert (f'PAGES_FRESHNESS_REGRESSION file={name} section=records code={code_x} kind=LOST_RECORD '
-                f'artifact=NONE live={stamp(day(0))}\n') in out
-        assert section_line(out, name, 'records')['lost_record'] == '1'
+        line = section_line(out, name, 'records')
+        assert (line['withdrawn'], line['lost_record'], line['withdrawal_mismatch']) == ('1', '0', '0')
 
 
 def test_withdrawal_needs_no_kept_record_and_never_invents_one():
