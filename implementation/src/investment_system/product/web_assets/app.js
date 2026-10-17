@@ -13,7 +13,8 @@ function deviceCatalog() {
   return deviceCatalogPromise;
 }
 // Price store core symbols: runner symbols (TARGET, holdings, sets A–D from VirtualMeta, benchmarks/FX) and watchlist ★.
-async function priceStoreCore(){return PriceStore.coreSymbols(window,{catalog:await deviceCatalog(),interests:[...prefs.interests]});}
+// Core symbols + the TV1 scoring symbols the user added to the own sheet with a confirmed click (T-PRICE 2026-10-15; symbols only).
+async function priceStoreCore(){const core=await PriceStore.coreSymbols(window,{catalog:await deviceCatalog(),interests:[...prefs.interests]});let added=[];try{added=window.TargetV1Screen?TargetV1Screen.priceSymbols(window.PlaybookScreen,localStorage):[];}catch(_){added=[];}return [...new Set([...core,...added])];}
 let valuationInputsPromise=null;
 function valuationInputs(){if(!valuationInputsPromise)valuationInputsPromise=DeviceValuation.load(window);return valuationInputsPromise;}
 // The S04/S05 price badge shows the same device quote state as the value card (no extra request); RAM only, never the price.
