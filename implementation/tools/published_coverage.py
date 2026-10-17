@@ -31,7 +31,7 @@ from investment_system.universe.sec_universe_shares import _clock
 
 PREFIX = 'PUBLISHED_COVERAGE basis=PUBLISHED_FILE file=' + qgv2.FILENAME
 FRESH_WINDOW = timedelta(days=7)
-_VERSION = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:+/-]{0,63}')  # e.g. qgv2-calc/2026-10-15.1 (the v2_factors CALC_VERSION form)
+_VERSION = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:+/-]{0,63}')  # e.g. qgv2-calc/2026-10-17.1 (the v2_factors CALC_VERSION form)
 
 
 def _day(value):

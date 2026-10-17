@@ -19,6 +19,10 @@
  const SIC_GROUPS=[['resources_mining',[[1000,1499]]],['construction',[[1500,1799]]],['food_tobacco',[[2000,2199]]],['manufacturing_industrial_tech',[[2200,3999]]],['transportation',[[4000,4799]]],['telecommunications',[[4800,4899]]],['utilities',[[4900,4999]]],['wholesale_retail',[[5000,5999]]],['finance_real_estate',[[6000,6799]]],['services_software_health',[[7000,8999]]]];
  const TARGET_CIKS={asml:'0000937966',lrcx:'0000707549',klac:'0000319201',tokyo_electron:null,hanmi:null,nvda:'0001045810',amd:'0000002488',avgo:'0001730168',qcom:'0000804328',intc:'0000050863',msft:'0000789019',googl:'0001652044',amzn:'0001018724',rtx:'0000101829',stry:'0000310764',etn:'0001551182',hubb:'0000048898',gev:'0001996810',rok:'0001024478'};
  const STATES=['LIVE','STALE','NOT_AVAILABLE'],SCORED=['LIVE','STALE'],REASONS=['NOT_COLLECTED','CIK_UNRESOLVED','INVALID_INPUT','NO_ANNUAL_SEC_FINANCIALS','NON_SEC_ISSUER','STALE_INPUT'],TOP_REASONS=['STALE_INPUT','NO_ELIGIBLE_INPUT'];
+ /* TARGET section only (Python sec_qgv2.WITHDRAWN_REASON / WITHDRAWAL_KEYS): a TARGET issuer withdrawn for an identity conflict
+    (sec-public-inputs.json WITHDRAWN). No values or scores; detected_at is when the conflict was seen (never an acquired_at);
+    withdrawn_acquired_at names the row whose use it stops. Readers never use the stopped row. */
+ const WITHDRAWN_REASON='IDENTITY_CONFLICT_WITHDRAWN',WITHDRAWAL_KEYS=['detected_at','withdrawn_acquired_at'];
  /* calc_version (owner supplement 2026-10-15; Python v2_factors.CALC_VERSION): a versioned file declares the current calculation-rule
     version and every row carries the version it was computed with (null: no data or a legacy row). Rows of another version are never
     in the same percentile population (axes CALC_VERSION_MISMATCH). Files written before it (no calc_version anywhere) load as one
@@ -57,10 +61,13 @@
  }
  /* One row (mirrors Python _row); scores are compared separately against the recomputation. */
  function row(r,cut,ttl,targetId,versioned=true){
-  need(keys(r,versioned?ROW:LEGACY_ROW)&&(r.cik===null||cikOk(r.cik)));if(versioned)need(r.calc_version===null||typeof r.calc_version==='string'&&CALC_VERSION_RE.test(r.calc_version)&&r.fiscal_year_end!==null);if(targetId!==undefined&&r.cik!==null)need(r.cik===TARGET_CIKS[targetId]);
+  const withdrawal=targetId!==undefined&&versioned&&keys(r,ROW.concat(WITHDRAWAL_KEYS));
+  need((keys(r,versioned?ROW:LEGACY_ROW)||withdrawal)&&(r.cik===null||cikOk(r.cik)));
+  if(withdrawal){need(TARGET_CIKS[targetId]!==null&&TARGET_CIKS[targetId]!==undefined&&r.cik===TARGET_CIKS[targetId]&&r.acquired_at===null&&canon(r.reason_codes)===canon([WITHDRAWN_REASON])&&r.fiscal_year_end===null&&r.calc_version===null);
+   const detected=clock(r.detected_at);need(detected<=cut&&(r.withdrawn_acquired_at===null||clock(r.withdrawn_acquired_at)<=detected));}if(versioned)need(r.calc_version===null||typeof r.calc_version==='string'&&CALC_VERSION_RE.test(r.calc_version)&&r.fiscal_year_end!==null);if(targetId!==undefined&&r.cik!==null)need(r.cik===TARGET_CIKS[targetId]);
   const h=r.source_sha256;need(keys(h,['companyfacts','submissions'])&&Object.values(h).every(v=>v===null||hash(v)));
   if(r.acquired_at===null)need(h.companyfacts===null&&h.submissions===null);else need(clock(r.acquired_at)<=cut&&r.cik!==null&&h.companyfacts&&h.submissions);
-  need(STATES.includes(r.state));const reasons=r.reason_codes;need(Array.isArray(reasons)&&new Set(reasons).size===reasons.length&&reasons.length<=3&&reasons.every(x=>REASONS.includes(x)));
+  need(STATES.includes(r.state));const reasons=r.reason_codes;need(Array.isArray(reasons)&&new Set(reasons).size===reasons.length&&reasons.length<=3&&reasons.every(x=>REASONS.includes(x)||withdrawal&&x===WITHDRAWN_REASON));
   need(r.sic===null||typeof r.sic==='string'&&/^\d{4}$/.test(r.sic)&&r.sic!=='0000');
   if(r.sic===null)need(r.industry_group===null);else need(r.acquired_at!==null&&r.industry_group===classify(r.sic));
   const m=r.metrics;need(plain(m)&&Object.keys(m).every(k=>(METRIC_KEYS.includes(k)||DESCRIPTIVE.includes(k)||Object.hasOwn(EXTRA_METRICS,k))&&metricOk(k,m[k])));
@@ -164,5 +171,5 @@
   const text=await response.text();if(new TextEncoder().encode(text).length>MAX)throw Error('SEC_QGV2_INVALID');let payload;try{payload=JSON.parse(text);}catch(_){throw Error('SEC_QGV2_INVALID');}
   return toInputs(payload,{now:now||new Date().toISOString()});
  }
- return Object.freeze({FILENAME,FACTOR_IDS,METRIC_KEYS,EXTRA_METRICS:Object.freeze(Object.fromEntries(Object.entries(EXTRA_METRICS).map(([k,v])=>[k,Object.freeze([...v])]))),Q_WEIGHTS:Object.freeze({...Q_WEIGHTS}),G_WEIGHTS:Object.freeze({...G_WEIGHTS}),SIC_GROUPS,TARGET_CIKS:Object.freeze({...TARGET_CIKS}),STANDARD_STATUS,validate,emptyRecord,restate,toInputs,loadInputs,scoreRows});
+ return Object.freeze({FILENAME,WITHDRAWN_REASON,FACTOR_IDS,METRIC_KEYS,EXTRA_METRICS:Object.freeze(Object.fromEntries(Object.entries(EXTRA_METRICS).map(([k,v])=>[k,Object.freeze([...v])]))),Q_WEIGHTS:Object.freeze({...Q_WEIGHTS}),G_WEIGHTS:Object.freeze({...G_WEIGHTS}),SIC_GROUPS,TARGET_CIKS:Object.freeze({...TARGET_CIKS}),STANDARD_STATUS,validate,emptyRecord,restate,toInputs,loadInputs,scoreRows});
 });

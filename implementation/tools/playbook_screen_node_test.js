@@ -138,3 +138,23 @@ test('navigation keeps shared RAM quotes and selected v2 basis, fresh device rea
  fresh={};context.scoreOptions=()=>({quotes:{},preset:'balanced',gate:true});const cleared=await P.prepareScores({},context);assert.deepEqual(cleared.playbook_price_symbols,[]);assert.deepEqual(seen.quotes,{});
  }finally{if(previous===undefined)delete globalThis.QgvScores;else globalThis.QgvScores=previous;}
 });
+test('macro reference-only (M-239): the screen shows CRISIS but no U3 and no macro expansion block; a gate-on copy still applies both',()=>{
+ const E=require('../src/investment_system/product/web_assets/playbook-engine.js'),CFG=require('../src/investment_system/product/web_assets/playbook-config-defaults.js');
+ const fixture=JSON.parse(require('node:fs').readFileSync(require('node:path').join(__dirname,'../tests/fixtures/playbook_reference_v1.json'),'utf8'));
+ assert.equal(CFG.macro.gate_active,false);assert.equal(CFG.macro.gate_status.state,'REFERENCE_ONLY');assert.equal(CFG.macro.gate_status.reason,'REPLAY_PENDING');
+ const situation={...fixture.cases.find(c=>c.id==='U3-crisis-all-five').input.situation,symbol:'SYN',macro_state:'CRISIS',macro_available_count:5};
+ const codes=j=>[j.primary,...j.secondary].filter(Boolean).map(c=>c.code),macroBlocks=j=>JSON.stringify([j.disabled,j.choices_by_code]).match(/MACRO_[A-Z_]+/g)||[];
+ const off=E.evaluate(CFG,situation); // default mode, as openPanel() calls it
+ assert.equal(off.macro.state,'CRISIS');assert.equal(off.macro.label,'CRISIS');assert.equal(off.macro.gate,'REFERENCE_ONLY');assert.equal(off.macro.split_multiplier,1);
+ assert.ok(!codes(off).includes('U3'));assert.deepEqual(macroBlocks(off),[]);
+ const html=P.panelHtml({symbol:'SYN',situation,judgement:off,stored:P.empty(),code:off.primary?.code||'H1'});
+ assert.match(html,/CRISIS · 매크로 참고 표시/);assert.ok(!html.includes('data-playbook-code="U3"'));
+ const warning=E.evaluate(CFG,{...situation,macro_state:'WARNING',memberships:{...situation.memberships,cyclical:1}});
+ assert.equal(warning.macro.state,'WARNING');assert.deepEqual(macroBlocks(warning),[]);assert.equal(warning.macro.split_multiplier,1);
+ const on=E.evaluate({...CFG,macro:{...CFG.macro,gate_active:true}},situation);
+ assert.ok(codes(on).includes('U3'));assert.ok(macroBlocks(on).includes('MACRO_CRISIS'));assert.ok(macroBlocks(on).includes('MACRO_BLOCK'));assert.equal(on.macro.gate,'ACTIVE');
+ assert.ok(!P.panelHtml({symbol:'SYN',situation,judgement:on,stored:P.empty(),code:on.primary.code}).includes('매크로 참고 표시'));
+ // Other safety rules are not part of the macro gate and still apply with it off.
+ assert.ok(JSON.stringify(E.evaluate(CFG,{...situation,theme_weight_pct:45}).disabled).includes('THEME_CONCENTRATION'));
+ assert.ok(JSON.stringify(E.evaluate(CFG,{...situation,sector:'financials'}).disabled).includes(CFG.financial_exception.reason));
+});
