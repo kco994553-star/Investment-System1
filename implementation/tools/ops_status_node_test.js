@@ -22,14 +22,26 @@ test('schema /4: new collections, kept previous rows, failures and withdrawals a
  const old=Sec.project(require('./sec_reported_fixture.js').fixture(3));assert.deepEqual([api.collection({secReported:old}).state,api.collection({secReported:old}).reason_codes],['NOT_AVAILABLE',['OLDER_SCHEMA']]);
  assert.equal(api.collection({}).reason_codes[0],'NOT_CONNECTED');
 });
-test('scheduled deploy streak is reported apart from completeness and only while its last scheduled day is current',()=>{
+test('scheduled deploy streak: an estimate from the published copy, counted from 2026-10-19, current only while its last scheduled day is',()=>{
  const Sec=require('../src/investment_system/product/web_assets/sec-reported.js'),{fixture}=require('./sec_reported_fixture.js');
- const p=fixture(4),secReported=Sec.project(p);
- assert.deepEqual(api.deployStreak({secReported,now:Date.parse('2026-01-03T15:00:00Z')}),{target:7,count:3,since:'2025-12-31',last_run_day:'2026-01-02',state:'COUNTING',reason_codes:[]});
- assert.equal(api.deployStreak({secReported,now:Date.parse('2026-01-04T06:00:00Z')}).state,'BROKEN');   // New York 01:00 on 01-04: no deploy for 01-03
- assert.equal(api.deployStreak({secReported,now:Date.parse('2026-01-04T04:00:00Z')}).state,'COUNTING'); // still 01-03 in New York
- p.collection.scheduled_streak={count:7,since:'2025-12-27',last_run_day:'2026-01-02'};assert.equal(api.deployStreak({secReported:Sec.project(p),now:Date.parse('2026-01-02T13:00:00Z')}).state,'MET');
- p.collection.scheduled_streak={count:null,since:null,last_run_day:'2026-01-02'};assert.deepEqual(api.deployStreak({secReported:Sec.project(p)}).reason_codes,['PREVIOUS_COPY_UNREAD']);
- p.collection.trigger='MANUAL';p.collection.scheduled_streak={count:null,since:null,last_run_day:null};assert.equal(api.deployStreak({secReported:Sec.project(p)}).state,'NOT_AVAILABLE');
- assert.equal(api.deployStreak({secReported:Sec.project(fixture(3))}).state,'NOT_AVAILABLE');
+ const realNow=Date.now;Date.now=()=>Date.parse('2026-11-01T00:00:00Z');   // the reader refuses future times
+ try{
+  const at=(day,trigger,streak)=>{const p=fixture(4);p.collection={...p.collection,checked_at:day+'T22:20:00Z',run_day:day,trigger,scheduled_streak:{start_day:'2026-10-19',...streak}};return Sec.project(p);};
+  const pre=at('2026-10-18','SCHEDULED',{count:0,since:null,last_run_day:'2026-10-18'});
+  assert.deepEqual(api.deployStreak({secReported:pre,now:Date.parse('2026-10-18T23:00:00Z')}),{target:7,start_day:'2026-10-19',count:0,since:null,last_run_day:'2026-10-18',state:'NOT_STARTED',reason_codes:['BEFORE_START_DAY']});
+  assert.deepEqual(api.deployStreak({secReported:pre,now:Date.parse('2026-10-19T20:00:00Z')}).reason_codes,['START_DAY_RUN_PENDING']);   // 10/19 New York, run not deployed yet
+  assert.equal(api.deployStreak({secReported:pre,now:Date.parse('2026-10-20T13:00:00Z')}).state,'BROKEN');   // the 10/19 run never reached Pages
+  const three=at('2026-10-21','SCHEDULED',{count:3,since:'2026-10-19',last_run_day:'2026-10-21'});
+  assert.deepEqual(api.deployStreak({secReported:three,now:Date.parse('2026-10-22T15:00:00Z')}),{target:7,start_day:'2026-10-19',count:3,since:'2026-10-19',last_run_day:'2026-10-21',state:'COUNTING',reason_codes:[]});
+  assert.equal(api.deployStreak({secReported:three,now:Date.parse('2026-10-23T06:00:00Z')}).state,'BROKEN');   // New York 02:00 on 10-23: no deploy for 10-22
+  assert.equal(api.deployStreak({secReported:three,now:Date.parse('2026-10-23T03:00:00Z')}).state,'COUNTING'); // still 10-22 in New York
+  assert.equal(api.deployStreak({secReported:at('2026-10-25','SCHEDULED',{count:7,since:'2026-10-19',last_run_day:'2026-10-25'}),now:Date.parse('2026-10-25T23:00:00Z')}).state,'MET');
+  const unknown=at('2026-10-21','SCHEDULED',{count:null,since:null,last_run_day:'2026-10-21'});
+  assert.deepEqual([api.deployStreak({secReported:unknown,now:Date.parse('2026-10-21T23:00:00Z')}).state,api.deployStreak({secReported:unknown,now:Date.parse('2026-10-21T23:00:00Z')}).count],['UNKNOWN',null]);
+  assert.equal(api.deployStreak({secReported:unknown,now:Date.parse('2026-10-24T23:00:00Z')}).state,'BROKEN');   // unknown count, but a day was missed since
+  // A manual run carries the live streak: it neither counts nor resets.
+  assert.deepEqual(api.deployStreak({secReported:at('2026-10-22','MANUAL',{count:3,since:'2026-10-19',last_run_day:'2026-10-21'}),now:Date.parse('2026-10-22T23:00:00Z')}).count,3);
+  assert.equal(api.deployStreak({secReported:at('2026-10-22','MANUAL',{count:null,since:null,last_run_day:null}),now:Date.parse('2026-10-22T23:00:00Z')}).state,'UNKNOWN');
+  assert.equal(api.deployStreak({secReported:Sec.project(fixture(3))}).state,'NOT_AVAILABLE');
+ }finally{Date.now=realNow;}
 });

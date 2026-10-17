@@ -279,7 +279,11 @@ V4_FIELDS = {
     'WITHDRAWN': _V4_COMMON | _V4_FAILURE | {'detected_at', 'withdrawn_acquired_at'},
 }
 COLLECTION_FIELDS = {'checked_at', 'run_day', 'trigger', 'previous', 'stale_after_seconds', 'scheduled_streak'}
-STREAK_FIELDS = {'count', 'since', 'last_run_day'}
+STREAK_FIELDS = {'start_day', 'count', 'since', 'last_run_day'}
+# Owner decision (queue 2026-10-17 §9, instruction 2026-10-17 item 2): the chart start condition counts consecutive
+# scheduled runs from the one that observes the 2026-10-19 US trading day (cron 22:17 UTC on 2026-10-19, New York run day
+# 2026-10-19 = forward_ledger.START_DATE). Earlier runs count 0 and are never `since`.
+STREAK_START_DAY = '2026-10-19'
 
 
 def _http_status(value):
@@ -301,17 +305,27 @@ def _require_collection(collection):
     if collection['trigger'] not in ('SCHEDULED', 'MANUAL', 'OTHER'): invalid()
     if collection['previous'] not in PREVIOUS_STATES: invalid()
     if type(collection['stale_after_seconds']) is not int or collection['stale_after_seconds'] != STALE_AFTER_SECONDS: invalid()
-    streak = collection['scheduled_streak']
-    if not isinstance(streak, dict) or set(streak) != STREAK_FIELDS: invalid()
-    last = None if streak['last_run_day'] is None else date.fromisoformat(day(streak['last_run_day']))
-    if last is not None and last.isoformat() > collection['run_day']: invalid()
-    if collection['trigger'] == 'SCHEDULED' and streak['last_run_day'] != collection['run_day']: invalid()
-    if streak['count'] is None:
-        if streak['since'] is not None: invalid()
-    else:
-        if type(streak['count']) is not int or not 1 <= streak['count'] <= 100000 or last is None: invalid()
-        if (last - date.fromisoformat(day(streak['since']))).days + 1 != streak['count']: invalid()
+    _require_streak(collection['scheduled_streak'], collection['trigger'], collection['run_day'])
     return checked
+
+
+def _require_streak(streak, trigger, run_day):
+    """See scheduled_streak(). count null = unknown; 0 = no scheduled deploy counted (before the start day, or none
+    since it); n >= 1 = n consecutive New York run days from `since` (>= start_day) to `last_run_day`."""
+    if not isinstance(streak, dict) or set(streak) != STREAK_FIELDS or streak['start_day'] != STREAK_START_DAY: invalid()
+    last = None if streak['last_run_day'] is None else day(streak['last_run_day'])
+    if last is not None and last > run_day: invalid()
+    if trigger == 'SCHEDULED':
+        if last != run_day: invalid()
+        if (streak['count'] == 0) != (run_day < STREAK_START_DAY): invalid()   # before the start: 0; from it: never 0
+    count = streak['count']
+    if count is None or count == 0:
+        if type(count) not in (type(None), int) or streak['since'] is not None: invalid()
+        if count == 0 and last is not None and last >= STREAK_START_DAY: invalid()
+        return
+    if type(count) is not int or not 1 <= count <= 100000 or last is None: invalid()
+    since = day(streak['since'])
+    if since < STREAK_START_DAY or (date.fromisoformat(last) - date.fromisoformat(since)).days + 1 != count: invalid()
 
 
 def _require_v4_row(row, index, run_checked):
@@ -519,30 +533,52 @@ def _iso(moment):
     return moment.astimezone(timezone.utc).isoformat()
 
 
-def scheduled_streak(previous, previous_state, trigger, run_day):
-    """Consecutive New York run days whose SCHEDULED run reached Pages, as this file will show once deployed.
+def _live_streak(previous):
+    """The scheduled_streak of a validated /4 previous copy, or None (/3 and older copies carry none)."""
+    if type(previous) is not dict or previous.get('schema') != SCHEMA:
+        return None
+    streak = previous.get('collection', {}).get('scheduled_streak')
+    return dict(streak) if isinstance(streak, dict) and set(streak) == STREAK_FIELDS else None
 
-    Self-certifying: a file is public only when its deploy succeeded, so a scheduled run that reads, as the live copy, the
-    file of the scheduled run of the previous day continues that run's count; any other live copy (gap, failed deploy,
-    /3 copy) starts again at 1. A manual run (fallback or one-off) never counts and carries the live count unchanged;
-    the manual cockpit-pages deploy re-publishes the live bytes and changes nothing. Unknown when the live copy could
-    not be read."""
-    live = previous.get('collection', {}).get('scheduled_streak') if type(previous) is dict and previous.get('schema') == SCHEMA else None
+
+def scheduled_streak(previous, previous_state, trigger, run_day):
+    """Consecutive New York run days, from STREAK_START_DAY, whose SCHEDULED run reached Pages, as this file will show
+    once deployed (an estimate from the published copy; actual deploy success is read from the Actions runs).
+
+    Self-certifying: a file is public only when its deploy succeeded, so a scheduled run that reads, as the live copy,
+    the file of the scheduled run of the previous New York day continues that run's count. Rules (run day D, New York
+    date of this run's collection; weekend runs count like weekdays, queue §9):
+    - D before STREAK_START_DAY: 0, never `since` (runs before the start are not counted);
+    - D == STREAK_START_DAY, or no live copy yet (404): 1 from D;
+    - live copy of the same run day D (a re-run of that day): carried unchanged, never counted twice;
+    - live copy whose last scheduled run day is before D - 1 (that day's run did not deploy: failed, refused or
+      missing): a missed day, 1 again from D;
+    - live copy of D - 1: its count + 1 (0 there means before the start or none since: 1 from D);
+    - live copy unreadable, without a streak record (/3) or with an unknown count: unknown (null), never guessed; a
+      later missed day still starts a known count again.
+    A manual run (fallback or one-off) neither counts nor resets: it carries the live streak unchanged (0 on a first
+    publication, unknown when the live copy was not read); the manual cockpit-pages deploy re-publishes the live bytes."""
+    live = _live_streak(previous) if previous_state == 'LOADED' else None
     if live is not None and live['last_run_day'] is not None and live['last_run_day'] > run_day:
-        live = None                                   # a live copy from a later run day (clock skew): no history
+        live = None                                   # a live copy from a later run day (clock skew): history unknown
+    base = {'start_day': STREAK_START_DAY, 'count': None, 'since': None, 'last_run_day': None}
     if trigger != 'SCHEDULED':
-        return dict(live) if previous_state == 'LOADED' and live is not None else dict.fromkeys(STREAK_FIELDS)
-    today = date.fromisoformat(run_day)
-    if previous_state not in ('LOADED', 'NO_LIVE'):
-        return {'count': None, 'since': None, 'last_run_day': run_day}
-    if live is not None and live['last_run_day'] is not None:
-        last = date.fromisoformat(live['last_run_day'])
-        if last == today and live['count'] is not None:
-            return dict(live)
-        if (today - last).days == 1:
-            since = live['since'] or live['last_run_day']
-            return {'count': (today - date.fromisoformat(since)).days + 1, 'since': since, 'last_run_day': run_day}
-    return {'count': 1, 'since': run_day, 'last_run_day': run_day}
+        return live if live is not None else dict(base, count=0) if previous_state == 'NO_LIVE' else base
+    this = lambda count, since: dict(base, count=count, since=since, last_run_day=run_day)
+    if run_day < STREAK_START_DAY:
+        return this(0, None)
+    if run_day == STREAK_START_DAY or previous_state == 'NO_LIVE':
+        return this(1, run_day)
+    if live is None:
+        return this(None, None)
+    last, count = live['last_run_day'], live['count']
+    if last == run_day:
+        return live
+    if last is not None and (date.fromisoformat(run_day) - date.fromisoformat(last)).days > 1:
+        return this(1, run_day)
+    if count is None:
+        return this(None, None)
+    return this(count + 1, live['since']) if count >= 1 else this(1, run_day)
 
 
 def collection_block(checked, *, trigger='OTHER', previous_state='NOT_REQUESTED', previous=None):

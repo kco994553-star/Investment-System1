@@ -10,8 +10,9 @@
    assert.deepEqual(await p.locator('[data-sec-collection-row]').evaluateAll(n=>n.map(x=>x.dataset.secCollectionRow+':'+x.dataset.run)),['amd:PRESERVED','asml:WITHDRAWN','avgo:FAILED']);
    const kept=await p.locator('[data-sec-collection-row="amd"]').textContent();assert.ok(kept.startsWith('AMD · 이전 관측 유지 · 수집 2026-01-01T12:00:00Z · ')&&kept.endsWith(' · STALE · SEC_HTTP_503'));
    assert.ok((await p.locator('[data-sec-collection-row="asml"]').textContent()).includes('식별 충돌 · 이전 관측 사용 중지 · 감지 2026-01-02T12:03:00Z'));
-   const streak=p.locator('[data-deploy-streak]');assert.equal(await streak.getAttribute('data-deploy-streak'),'BROKEN');   // fixture's last scheduled day is long past
-   assert.ok((await streak.textContent()).includes('정기 실행 연속 배포 성공: 0회 / 7회')&&(await streak.textContent()).includes('수집 완전성과 별도'));
+   // The fixture's scheduled run (2026-01-02) is before the 2026-10-19 start day: 0, not started before it, broken after it.
+   const streak=p.locator('[data-deploy-streak]');assert.ok(['NOT_STARTED','BROKEN'].includes(await streak.getAttribute('data-deploy-streak')));
+   const streakText=await streak.textContent();assert.ok(streakText.includes('정기 실행 연속 배포 성공(게시본 기준 추정): 0회 / 7회')&&streakText.includes('2026-10-19 실행부터 집계')&&streakText.includes('수집 완전성과 별도')&&streakText.includes('실제 배포 성공은 보고 때 Actions 기록으로 확인합니다'));
    assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
    await p.goto(process.env.PAGES_COCKPIT_URL+'#home');await p.locator('[data-data-basis] a[href="#settings"]').waitFor();
    assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));assert.equal(errors,0);pass++;console.log('PASS ops status '+width);}

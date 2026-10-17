@@ -35,31 +35,34 @@ function collection({secReported=null,now=Date.now()}={}){
  const rows=companies.filter(c=>c.run!=='COLLECTED').map(c=>{const at=Date.parse(c.acquired_at),age=Number.isFinite(at)?Math.max(0,(now-at)/3600000):null;
   return{company_id:c.company_id,run:c.run,status:c.status,acquired_at:c.acquired_at,elapsed_hours:age===null?null:Math.round(age*10)/10,stale:age===null?null:age*3600000>staleMs,checked_at:c.preserved?c.preserved.checked_at:c.checked_at,detected_at:c.detected_at,withdrawn_acquired_at:c.withdrawn_acquired_at,reason_codes:[...(c.preserved?c.preserved.reason_codes:c.reason_codes)]};});
  return{state:counts.collected===counts.companies?'COMPLETE':'INCOMPLETE',checked_at:info.checked_at,trigger:info.trigger,previous:info.previous,counts,rows,reason_codes:[]};}
-/* Consecutive scheduled daily runs that reached Pages (owner queue §9: 7 in a row; manual fallbacks never count). The
-   count is published by the run itself and is only public when that run deployed; it is current while its last
-   scheduled run day is today or yesterday in New York, otherwise a later scheduled run did not deploy (estimate). */
+/* Consecutive scheduled daily runs that reached Pages (owner queue §9 and instruction 2026-10-17 item 2: 7 in a row, counted
+   from the run observing the 2026-10-19 US trading day; weekend runs count; manual fallbacks never count). An ESTIMATE from
+   the published copy: the count is written by the run itself and is public only when that run deployed; it is current while
+   its last scheduled run day is today or yesterday in New York, otherwise a later scheduled run did not deploy. Actual deploy
+   success is confirmed from the Actions runs in the report, never from this screen. */
 const STREAK_TARGET=7;
 function nyDay(ms){try{return new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(ms));}catch(_){return new Date(ms).toISOString().slice(0,10);}}
 function deployStreak({secReported=null,now=Date.now()}={}){
- const s=secReported&&secReported.collection&&secReported.collection.scheduled_streak,base={target:STREAK_TARGET,count:null,since:null,last_run_day:null};
+ const s=secReported&&secReported.collection&&secReported.collection.scheduled_streak,base={target:STREAK_TARGET,start_day:null,count:null,since:null,last_run_day:null};
  if(!s)return{...base,state:'NOT_AVAILABLE',reason_codes:['NO_PUBLIC_STREAK']};
- if(s.last_run_day===null)return{...base,state:'NOT_AVAILABLE',reason_codes:['NO_SCHEDULED_RUN']};
- if(s.count===null)return{...base,last_run_day:s.last_run_day,state:'UNKNOWN',reason_codes:['PREVIOUS_COPY_UNREAD']};
- const current=s.last_run_day===nyDay(now)||s.last_run_day===nyDay(now-86400000);
- if(!current)return{...base,count:0,since:null,last_run_day:s.last_run_day,state:'BROKEN',reason_codes:['NO_SCHEDULED_DEPLOY_SINCE']};
- return{...base,count:s.count,since:s.since,last_run_day:s.last_run_day,state:s.count>=STREAK_TARGET?'MET':'COUNTING',reason_codes:[]};}
+ const known={...base,start_day:s.start_day,last_run_day:s.last_run_day},today=nyDay(now),current=s.last_run_day===today||s.last_run_day===nyDay(now-86400000);
+ if(today<s.start_day)return{...known,count:0,state:'NOT_STARTED',reason_codes:['BEFORE_START_DAY']};
+ if(s.count===null)return s.last_run_day===null||current?{...known,state:'UNKNOWN',reason_codes:['COUNT_UNKNOWN']}:{...known,count:0,state:'BROKEN',reason_codes:['NO_SCHEDULED_DEPLOY_SINCE']};
+ if(s.count===0)return today===s.start_day?{...known,count:0,state:'NOT_STARTED',reason_codes:['START_DAY_RUN_PENDING']}:{...known,count:0,state:'BROKEN',reason_codes:['NO_SCHEDULED_DEPLOY_SINCE']};
+ if(!current)return{...known,count:0,state:'BROKEN',reason_codes:['NO_SCHEDULED_DEPLOY_SINCE']};
+ return{...known,count:s.count,since:s.since,state:s.count>=STREAK_TARGET?'MET':'COUNTING',reason_codes:[]};}
 const DAILY_LABEL={SUCCESS:['성공(추정)','Success (est.)'],PARTIAL:['부분(추정)','Partial (est.)'],FAILED:['실패(추정)','Failed (est.)'],NOT_AVAILABLE:['NOT_AVAILABLE','NOT_AVAILABLE']};
 function elapsedText(hours,en){if(hours===null)return '—';if(hours<1)return en?'under 1 h ago':'1시간 이내';if(hours<48)return en?Math.floor(hours)+' h ago':Math.floor(hours)+'시간 전';const d=Math.floor(hours/24);return en?d+' days ago':d+'일 전';}
 function mountDaily(card,input,en,el){const d=dailyRun(input),box=el('div',undefined,{'data-daily-run':d.state});
  box.append(el('p',undefined,{'data-daily-run-summary':''}));box.firstChild.append(el('strong',(en?'Latest daily collection: ':'최근 일일 수집: ')+DAILY_LABEL[d.state][en?1:0]+' · '+(d.latest_at||(d.reason_codes.includes('SEC_NOT_COLLECTED')?(en?'before SEC collection':'SEC 수집 전'):'—'))+(d.elapsed_hours===null?'':' · '+elapsedText(d.elapsed_hours,en))));box.append(
   el('p',(en?'Estimated from public file timestamps; the app never calls GitHub. Files from that run: ':'공개 파일 시각으로 추정하며 앱은 GitHub에 묻지 않습니다. 해당 실행의 파일: ')+d.files_in_run+'/'+d.files_total+(d.state!=='SUCCESS'&&d.reason_codes.length?' · '+d.reason_codes.join(' · '):''),{class:'small'}));card.append(box);return d;}
-const STREAK_LABEL={MET:['달성(추정)','Met (est.)'],COUNTING:['집계 중(추정)','Counting (est.)'],BROKEN:['중단(추정)','Broken (est.)'],UNKNOWN:['확인 불가','Unknown'],NOT_AVAILABLE:['NOT_AVAILABLE','NOT_AVAILABLE']};
+const STREAK_LABEL={MET:['달성(추정)','Met (est.)'],COUNTING:['집계 중(추정)','Counting (est.)'],BROKEN:['중단(추정)','Broken (est.)'],NOT_STARTED:['집계 시작 전','Not started'],UNKNOWN:['확인 불가','Unknown'],NOT_AVAILABLE:['NOT_AVAILABLE','NOT_AVAILABLE']};
 const TRIGGER_LABEL={SCHEDULED:['정기','scheduled'],MANUAL:['수동','manual'],OTHER:['기타','other']};
 const PREVIOUS_LABEL={LOADED:['이전 사본 읽음','previous copy read'],NO_LIVE:['첫 게시','first publication'],UNAVAILABLE:['이전 사본 읽기 실패(유지 불가)','previous copy unreadable (nothing kept)'],NOT_REQUESTED:['이전 사본 미요청','previous copy not requested']};
 function mountStreak(card,input,en,el){const d=deployStreak(input),box=el('div',undefined,{'data-deploy-streak':d.state}),i=en?1:0;
- box.append(el('p',undefined,{}));box.firstChild.append(el('strong',(en?'Scheduled runs deployed in a row: ':'정기 실행 연속 배포 성공: ')+(d.count===null?'—':d.count+(en?' / ':'회 / ')+d.target+(en?'':'회'))+' · '+STREAK_LABEL[d.state][i]));
- const parts=[];if(d.since)parts.push(d.since+(en?' onward':'부터'));if(d.last_run_day)parts.push((en?'last scheduled deploy ':'마지막 정기 배포 ')+d.last_run_day+(en?' (New York date)':'(뉴욕 날짜)'));
- parts.push(en?'manual fallbacks are not counted; separate from collection completeness':'수동 대체 실행은 세지 않으며 수집 완전성과 별도입니다');if(d.reason_codes.length)parts.push(d.reason_codes.join(' · '));
+ box.append(el('p',undefined,{}));box.firstChild.append(el('strong',(en?'Scheduled runs deployed in a row (estimate from the published copy): ':'정기 실행 연속 배포 성공(게시본 기준 추정): ')+(d.count===null?'—':d.count+(en?' / ':'회 / ')+d.target+(en?'':'회'))+' · '+STREAK_LABEL[d.state][i]));
+ const parts=[];if(d.start_day)parts.push(en?'counted from the '+d.start_day+' run':d.start_day+' 실행부터 집계');if(d.since)parts.push(d.since+(en?' onward':'부터'));if(d.last_run_day)parts.push((en?'last scheduled deploy ':'마지막 정기 배포 ')+d.last_run_day+(en?' (New York date)':'(뉴욕 날짜)'));
+ parts.push(en?'manual fallbacks are not counted; separate from collection completeness':'수동 대체 실행은 세지 않으며 수집 완전성과 별도입니다');parts.push(en?'actual deploy success is confirmed from Actions in the report':'실제 배포 성공은 보고 때 Actions 기록으로 확인합니다');if(d.reason_codes.length)parts.push(d.reason_codes.join(' · '));
  box.append(el('p',parts.join(' · '),{class:'small'}));card.append(box);return d;}
 function mountCollection(card,input,en,el){const c=collection(input),box=el('div',undefined,{'data-sec-collection':c.state}),i=en?1:0;
  if(!c.counts){box.append(el('p',(en?'TARGET SEC collection completeness: ':'TARGET SEC 수집 완전성: ')+'NOT_AVAILABLE · '+c.reason_codes.join(' · '),{class:'small'}));card.append(box);return c;}

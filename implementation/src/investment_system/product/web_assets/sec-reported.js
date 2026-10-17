@@ -1,7 +1,7 @@
 /* Price-free SEC observations: validate inputs, display fixed notices only. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.SecReported=api;})(typeof globalThis==='object'?globalThis:this,function(){
  'use strict';
- const MAX=2*1024*1024;
+ const MAX=2*1024*1024,STREAK_START_DAY='2026-10-19';
  const CIKS={amd:'0000002488',amzn:'0001018724',asml:'0000937966',avgo:'0001730168',etn:'0001551182',gev:'0001996810',googl:'0001652044',hubb:'0000048898',intc:'0000050863',klac:'0000319201',lrcx:'0000707549',msft:'0000789019',nvda:'0001045810',qcom:'0000804328',rok:'0001024478',rtx:'0000101829',stry:'0000310764'};
  const EXCLUDED=new Set(['FORM_NOT_ALLOWED','UNIT_MISMATCH','DATE_INVALID','DATE_AFTER_ACQUISITION','VALUE_INVALID','FACT_SCHEMA_INVALID','ACCESSION_INVALID','PERIOD_METADATA_INVALID','CLASS_SPLIT','FACT_CONFLICT','UNKNOWN_DIMENSION','FILING_DATE_INVALID','FILING_TIMESTAMP_INVALID','FILING_ACCESSION_INVALID','FILING_REPORT_DATE_INVALID','FILING_AFTER_ACQUISITION','FILING_SCHEMA_INVALID']);
  const FIXED=new Set(["SEC_ACQUISITION_TIMESTAMP_INVALID", "SEC_CIK_MISMATCH", "SEC_CLOCK_INVALID", "SEC_COLLECTION_FAILED", "SEC_CONFIG_INVALID", "SEC_FACT_ACCESSION_INVALID", "SEC_FACT_AFTER_ACQUISITION", "SEC_FACT_DATE_INVALID", "SEC_FACT_FORM_UNSUPPORTED", "SEC_FACT_PERIOD_METADATA_INVALID", "SEC_FILING_ACCESSION_INVALID", "SEC_FILING_AFTER_ACQUISITION", "SEC_FILING_DATE_INVALID", "SEC_FILING_REPORT_DATE_INVALID", "SEC_FILING_TIMESTAMP_INVALID", "SEC_HTTP_RETRIES_EXHAUSTED", "SEC_ISSUER_NOT_ALLOWED", "SEC_JSON_INVALID", "SEC_MODULE_NOT_MERGED", "SEC_NO_ELIGIBLE_SHARE_FACTS", "SEC_PUBLIC_INPUT_INVALID", "SEC_REDIRECT_REJECTED", "SEC_RESPONSE_INVALID", "SEC_RESPONSE_TOO_LARGE", "SEC_RESPONSE_URL_MISMATCH", "SEC_RETRY_AFTER_EXCEEDS_BUDGET", "SEC_SHARE_CONCEPT_MISSING", "SEC_SHARE_SCHEMA_INVALID", "SEC_SHARE_UNIT_MISMATCH", "SEC_SHARE_VALUE_INVALID", "SEC_SLEEP_FAILED", "SEC_SOURCE_METADATA_INVALID", "SEC_SUBMISSIONS_SCHEMA_INVALID", "SEC_TRANSPORT_FAILED", "SEC_TRANSPORT_RETRIES_EXHAUSTED", "SEC_URL_NOT_ALLOWED", "SEC_USER_AGENT_INVALID", "SEC_USER_AGENT_MISSING"]);
@@ -36,9 +36,13 @@
  function failure(row,index){need(row.company_index===index+1&&['fetch','parse','normalize'].includes(row.failure_stage));need(Array.isArray(row.reason_codes)&&row.reason_codes.length===1&&fixed(row.reason_codes[0]));need(row.http_status===null||(Number.isInteger(row.http_status)&&row.http_status>=400&&row.http_status<=599));return row.reason_codes[0];}
  function collection(value){keys(value,['checked_at','run_day','trigger','previous','stale_after_seconds','scheduled_streak']);const checked=clock(value.checked_at);day(value.run_day);
   need(['SCHEDULED','MANUAL','OTHER'].includes(value.trigger)&&['LOADED','NO_LIVE','UNAVAILABLE','NOT_REQUESTED'].includes(value.previous)&&Number.isInteger(value.stale_after_seconds)&&value.stale_after_seconds>0);
-  const s=value.scheduled_streak;keys(s,['count','since','last_run_day']);if(s.last_run_day!==null)need(day(s.last_run_day)<=value.run_day);if(value.trigger==='SCHEDULED')need(s.last_run_day===value.run_day);
-  if(s.count===null)need(s.since===null);else{need(Number.isInteger(s.count)&&s.count>=1&&s.count<=100000&&s.last_run_day!==null);need((Date.parse(s.last_run_day)-Date.parse(day(s.since)))/86400000+1===s.count);}
-  return {checked,out:{checked_at:value.checked_at,run_day:value.run_day,trigger:value.trigger,previous:value.previous,stale_after_seconds:value.stale_after_seconds,scheduled_streak:{count:s.count,since:s.since,last_run_day:s.last_run_day}}};}
+  /* scheduled_streak (Python public_sec_inputs.scheduled_streak): counted from the fixed start day (the run observing the
+     2026-10-19 US trading day); 0 before it, null = unknown, n = n consecutive New York run days since..last_run_day. */
+  const s=value.scheduled_streak;keys(s,['start_day','count','since','last_run_day']);need(s.start_day===STREAK_START_DAY);if(s.last_run_day!==null)need(day(s.last_run_day)<=value.run_day);
+  if(value.trigger==='SCHEDULED')need(s.last_run_day===value.run_day&&(s.count===0)===(value.run_day<STREAK_START_DAY));
+  if(s.count===null||s.count===0){need(s.since===null);if(s.count===0)need(s.last_run_day===null||s.last_run_day<STREAK_START_DAY);}
+  else{need(Number.isInteger(s.count)&&s.count>=1&&s.count<=100000&&s.last_run_day!==null&&day(s.since)>=STREAK_START_DAY);need((Date.parse(s.last_run_day)-Date.parse(s.since))/86400000+1===s.count);}
+  return {checked,out:{checked_at:value.checked_at,run_day:value.run_day,trigger:value.trigger,previous:value.previous,stale_after_seconds:value.stale_after_seconds,scheduled_streak:{start_day:s.start_day,count:s.count,since:s.since,last_run_day:s.last_run_day}}};}
  function project(payload){
   need(object(payload));need(['public-sec-reported-inputs/1','public-sec-reported-inputs/2','public-sec-reported-inputs/3','public-sec-reported-inputs/4'].includes(payload.schema));const version=Number(payload.schema.slice(-1));
   keys(payload,['schema','scope','companies',...(version===4?['collection']:[])]);need(payload.scope==='US_TARGET17_REPORTED_SEC_ONLY');
@@ -103,5 +107,5 @@
   }
   host.replaceChildren(card);
  }
- return Object.freeze({project,load,status,mount});
+ return Object.freeze({STREAK_START_DAY,project,load,status,mount});
 });

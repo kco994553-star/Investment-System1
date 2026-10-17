@@ -12,6 +12,7 @@ import copy
 from datetime import datetime, timedelta, timezone
 import json
 import shutil
+import sys
 
 import pytest
 
@@ -317,7 +318,8 @@ def test_v3_live_copy_to_v4_artifact(tmp_path, capsys):
     assert after[B]['status'] == 'WITHDRAWN' and after[B]['withdrawn_acquired_at'] == day_(0).isoformat()
     assert after[C]['status'] == 'NOT_AVAILABLE' and after[C]['acquired_at'] == day_(1).isoformat()
     assert after[D]['status'] == 'LIVE'                   # live /3 NA row had no record: a new record, nothing lost
-    assert payload(artifact)['collection']['scheduled_streak'] == {'count': 1, 'since': '2026-09-02', 'last_run_day': '2026-09-02'}
+    assert payload(artifact)['collection']['scheduled_streak'] == {'start_day': '2026-10-19', 'count': 0, 'since': None,
+                                                                    'last_run_day': '2026-09-02'}   # before the start day
     code, out = guard(artifact, site, capsys)
     line = inputs_line(out)
     assert code == 0 and (line['compared'], line['equal'], line['withdrawn'], line['newer'], line['new_record']) == (
@@ -346,30 +348,97 @@ def test_manual_preserve_path_republishes_v3_and_v4_live_bytes_unchanged(tmp_pat
 # ---------------------------------------------------------------------------------------------------------------
 # 6. Collection block: run context and the self-certifying scheduled deploy streak (counts only).
 # ---------------------------------------------------------------------------------------------------------------
-def test_scheduled_streak_counts_consecutive_deployed_scheduled_runs_only(tmp_path):
+def streak_start(monkeypatch, value):
+    """Move the fixed start day (the reader refuses future times, so the producer runs on synthetic past days)."""
+    for module in {INPUTS, sys.modules['public_sec_inputs']}:
+        monkeypatch.setattr(module, 'STREAK_START_DAY', value)
+
+
+def streak(folder):
+    return payload(folder)['collection']['scheduled_streak']
+
+
+def test_streak_start_day_is_the_first_ledger_observation_day():
+    """Owner decisions (queue §9, 2026-10-17 item 2): counted from the scheduled run observing the 2026-10-19 US trading
+    day: cron 22:17 UTC on 2026-10-19 = New York 18:17 the same day, after the close."""
+    from investment_system.validation import forward_ledger as fl
+    run = datetime(2026, 10, 19, 22, 17, tzinfo=UTC)
+    assert INPUTS.STREAK_START_DAY == fl.START_DATE.isoformat() == run.astimezone(INPUTS.NEW_YORK).date().isoformat()
+    assert fl.completed_session(run) == fl.START_DATE
+
+
+@pytest.mark.parametrize('previous, state, trigger, day, expected', [
+    # before the start day: 0, never `since`, whatever the live copy says
+    (None, 'NO_LIVE', 'SCHEDULED', '2026-10-18', (0, None, '2026-10-18')),
+    ('live:5:2026-10-13:2026-10-17', 'LOADED', 'SCHEDULED', '2026-10-18', (0, None, '2026-10-18')),
+    (None, 'UNAVAILABLE', 'SCHEDULED', '2026-10-18', (0, None, '2026-10-18')),
+    # the start day: 1 (nothing before it counts), also when the live copy could not be read
+    ('live:0:-:2026-10-18', 'LOADED', 'SCHEDULED', '2026-10-19', (1, '2026-10-19', '2026-10-19')),
+    (None, 'UNAVAILABLE', 'SCHEDULED', '2026-10-19', (1, '2026-10-19', '2026-10-19')),
+    # continuing, same-day re-run, missed day, unknown
+    ('live:1:2026-10-19:2026-10-19', 'LOADED', 'SCHEDULED', '2026-10-20', (2, '2026-10-19', '2026-10-20')),
+    ('live:2:2026-10-19:2026-10-20', 'LOADED', 'SCHEDULED', '2026-10-20', (2, '2026-10-19', '2026-10-20')),
+    ('live:2:2026-10-19:2026-10-20', 'LOADED', 'SCHEDULED', '2026-10-22', (1, '2026-10-22', '2026-10-22')),
+    (None, 'UNAVAILABLE', 'SCHEDULED', '2026-10-21', (None, None, '2026-10-21')),
+    ('live:-:-:2026-10-20', 'LOADED', 'SCHEDULED', '2026-10-21', (None, None, '2026-10-21')),
+    ('live:-:-:2026-10-19', 'LOADED', 'SCHEDULED', '2026-10-21', (1, '2026-10-21', '2026-10-21')),   # a known missed day
+    ('v3', 'LOADED', 'SCHEDULED', '2026-10-21', (None, None, '2026-10-21')),                         # /3 copy: no record
+    (None, 'NO_LIVE', 'SCHEDULED', '2026-10-21', (1, '2026-10-21', '2026-10-21')),
+    # manual runs neither count nor reset
+    ('live:2:2026-10-19:2026-10-20', 'LOADED', 'MANUAL', '2026-10-21', (2, '2026-10-19', '2026-10-20')),
+    (None, 'NO_LIVE', 'MANUAL', '2026-10-21', (0, None, None)),
+    (None, 'UNAVAILABLE', 'MANUAL', '2026-10-21', (None, None, None)),
+])
+def test_scheduled_streak_rule(previous, state, trigger, day, expected):
+    if previous == 'v3':
+        live = {'schema': 'public-sec-reported-inputs/3', 'companies': []}
+    elif previous is None:
+        live = None
+    else:
+        _, count, since, last = previous.split(':')
+        live = {'schema': INPUTS.SCHEMA, 'collection': {'scheduled_streak': {
+            'start_day': INPUTS.STREAK_START_DAY, 'count': None if count == '-' else int(count),
+            'since': None if since == '-' else since, 'last_run_day': last}}}
+    out = INPUTS.scheduled_streak(live, state, trigger, day)
+    assert (out['start_day'], out['count'], out['since'], out['last_run_day']) == ('2026-10-19',) + expected
+    INPUTS._require_streak(out, trigger, day)
+
+
+def test_scheduled_streak_through_the_producer_and_deploys(tmp_path, monkeypatch):
+    """Real producer and live readers; the start day moved to the synthetic day 2026-09-02 (day 1)."""
+    streak_start(monkeypatch, '2026-09-02')
     site = Site()
-    first_day(tmp_path, site)
-    assert payload(tmp_path / 'day0-artifact')['collection']['scheduled_streak'] == {
-        'count': 1, 'since': '2026-09-01', 'last_run_day': '2026-09-01'}
+    first_day(tmp_path, site)                                                   # 09-01: before the start
+    assert streak(tmp_path / 'day0-artifact') == {'start_day': '2026-09-02', 'count': 0, 'since': None, 'last_run_day': '2026-09-01'}
     day1, _, _ = run_day(tmp_path, 'day1', site, day_(1))
+    assert streak(day1)['count'] == 1 and streak(day1)['since'] == '2026-09-02'
     site.deploy(day1)
-    # A manual run the same day (fallback or one-off) carries the count; it never adds to it.
+    # A manual run the same day (fallback or one-off) carries the count; it neither adds to it nor resets it.
     manual, _, _ = run_day(tmp_path, 'manual1', site, day_(1) + timedelta(hours=3), environ=MANUAL)
-    assert payload(manual)['collection']['trigger'] == 'MANUAL'
-    assert payload(manual)['collection']['scheduled_streak'] == {'count': 2, 'since': '2026-09-01', 'last_run_day': '2026-09-02'}
+    assert payload(manual)['collection']['trigger'] == 'MANUAL' and streak(manual) == streak(day1)
     site.deploy(manual)
+    # A scheduled re-run of the same New York run day is not counted twice.
+    rerun, _, _ = run_day(tmp_path, 'rerun1', site, day_(1) + timedelta(hours=1))
+    assert streak(rerun) == streak(day1)
+    site.deploy(rerun)
     day2, _, _ = run_day(tmp_path, 'day2', site, day_(2))
-    assert payload(day2)['collection']['scheduled_streak'] == {'count': 3, 'since': '2026-09-01', 'last_run_day': '2026-09-03'}
+    assert streak(day2) == {'start_day': '2026-09-02', 'count': 2, 'since': '2026-09-02', 'last_run_day': '2026-09-03'}
     site.deploy(day2)
-    # Day 3's artifact is never deployed (refused or failed): day 4 reads day 2's copy and starts again.
+    # Day 3's artifact is never deployed (refused or failed): day 4 reads day 2's copy, a missed day, 1 again.
     day3, _, _ = run_day(tmp_path, 'day3', site, day_(3))
-    assert payload(day3)['collection']['scheduled_streak']['count'] == 4
+    assert streak(day3)['count'] == 3
     day4, _, _ = run_day(tmp_path, 'day4', site, day_(4))
-    assert payload(day4)['collection']['scheduled_streak'] == {'count': 1, 'since': '2026-09-05', 'last_run_day': '2026-09-05'}
-    # Live copy unreadable: unknown, never guessed.
+    assert streak(day4) == {'start_day': '2026-09-02', 'count': 1, 'since': '2026-09-05', 'last_run_day': '2026-09-05'}
+    # Live copy unreadable: unknown, never guessed; it stays unknown while the chain continues, a missed day ends it.
     blind, _, _ = run_day(tmp_path, 'blind', site, day_(4), read_live=False)
-    assert payload(blind)['collection']['scheduled_streak'] == {'count': None, 'since': None, 'last_run_day': '2026-09-05'}
+    assert streak(blind) == {'start_day': '2026-09-02', 'count': None, 'since': None, 'last_run_day': '2026-09-05'}
     assert payload(blind)['collection']['previous'] == 'UNAVAILABLE'
+    site.deploy(blind)
+    day5, _, _ = run_day(tmp_path, 'day5', site, day_(5))
+    assert streak(day5)['count'] is None and streak(day5)['last_run_day'] == '2026-09-06'
+    site.deploy(day5)
+    day7, _, _ = run_day(tmp_path, 'day7', site, day_(7))
+    assert streak(day7) == {'start_day': '2026-09-02', 'count': 1, 'since': '2026-09-08', 'last_run_day': '2026-09-08'}
 
 
 def test_collection_block_is_validated(tmp_path):
@@ -378,9 +447,13 @@ def test_collection_block_is_validated(tmp_path):
     good = payload(artifact)
     assert good['collection'] == {'checked_at': (day_(0) + DELAY).isoformat(), 'run_day': '2026-09-01',
                                   'trigger': 'SCHEDULED', 'previous': 'NO_LIVE', 'stale_after_seconds': 86400,
-                                  'scheduled_streak': {'count': 1, 'since': '2026-09-01', 'last_run_day': '2026-09-01'}}
+                                  'scheduled_streak': {'start_day': '2026-10-19', 'count': 0, 'since': None,
+                                                       'last_run_day': '2026-09-01'}}
     for mutate in (lambda c: c.update(run_day='2026-09-02'), lambda c: c.update(trigger='CRON'),
                    lambda c: c.update(stale_after_seconds=3600), lambda c: c['scheduled_streak'].update(count=5),
+                   lambda c: c['scheduled_streak'].update(count=1, since='2026-09-01'),        # before the start day
+                   lambda c: c['scheduled_streak'].update(start_day='2026-09-01'),
+                   lambda c: c['scheduled_streak'].update(since='2026-09-01'),
                    lambda c: c['scheduled_streak'].update(last_run_day='2026-08-31'),
                    lambda c: c.update(checked_at=(day_(0) - timedelta(minutes=1)).isoformat()),
                    lambda c: c.update(price=1)):

@@ -118,7 +118,8 @@ def test_a_target_partial_fetch_failure_keeps_the_previous_row_and_its_acquired_
     assert out == ('SEC_PRESERVED company_index=1 code=SEC_HTTP_503 previous=LIVE\n'
                    'SEC_PRESERVED company_index=2 code=SEC_TRANSPORT_RETRIES_EXHAUSTED previous=LIVE\n'
                    'SEC_PUBLIC_COLLECTION companies=17 collected=15 failed=2 preserved_previous=2 not_available=0 '
-                   'previous=LOADED policy_na=0 withdrawn=0 collection_failed=0 scheduled_streak=NONE\n')
+                   # an OTHER-trigger run carries the live streak: 0 since the first publication (no scheduled run)
+                   'previous=LOADED policy_na=0 withdrawn=0 collection_failed=0 scheduled_streak=0\n')
     code, out = guard(artifact, site, capsys)
     line = section_line(out, INPUTS_FILE, 'companies')
     assert code == 0 and (line['verdict'], line['compared'], line['equal'], line['newer']) == ('PASS', '17', '2', '15')
