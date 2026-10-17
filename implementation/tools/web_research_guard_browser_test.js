@@ -145,7 +145,7 @@ async function main() {
         }
       });
       await check(`${locale}: each research-marked section is withheld where it is shown`, async () => {
-        const expect = { home: ["changes", "news", "qgv", "technical"], portfolio: ["qgv", "technical"], technical: ["technical"],
+        const expect = { brief: ["changes", "news", "qgv", "technical"], portfolio: ["qgv", "technical"], technical: ["technical"],
           leaderboard: ["leaderboard"], news: ["news"], ["company/" + manifest.company]: ["news", "qgv", "technical"] };
         for (const [hash, names] of Object.entries(expect)) {
           await page.view(hash, bundle);
