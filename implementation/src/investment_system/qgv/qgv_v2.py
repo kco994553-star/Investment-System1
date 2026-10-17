@@ -136,6 +136,32 @@ def type_axis_weights(memberships, type_config):
     return {p: 100.0 * clamped[p] / total for p in PILLARS}, reason, [t['id'] for t in selected]
 
 
+# TYPE-SCOPE (owner instruction 2026-10-17): approved type rules evaluated on the device from published price-free metrics.
+PRICEFREE_TYPE_METRICS = ('revenue_cagr_3y',)
+# Type-application scope id (owner decision 2026-10-17 item 4), recorded in the device score basis next to calc_version (which
+# stays unchanged): every scored row, from its own published metrics, with the type_config/1 ramps on PRICEFREE_TYPE_METRICS.
+# A change to the rows, the input or the evaluated rules gets a new id. JS: QgvV2.TYPE_SCOPE.
+TYPE_SCOPE = 'qgv2-type-scope/2026-10-17.1'
+
+
+def pricefree_memberships(metrics, type_config):
+    """The same approved type rule for every scored row (TARGET or not), from that row's own published metrics.
+
+    Only a `ramp` rule on a PRICEFREE_TYPE_METRICS metric is evaluated (type_config/1: growth, revenue_cagr_3y 0.10 -> 0.20),
+    with exactly company_types._membership's ramp. Unresolved rules, price-dependent rules (dividend_yield,
+    sector_marketcap_rank) and other metrics stay None (NOT_AVAILABLE), never 0. JS: QgvV2.pricefreeMemberships."""
+    out = {}
+    for t in type_config['types']:
+        if not t['affects_qgv']:
+            continue
+        rule, value = t['rule'], None
+        if isinstance(rule, dict) and rule.get('kind') == 'ramp' and rule.get('metric') in PRICEFREE_TYPE_METRICS \
+                and isinstance(metrics, dict) and finite(metrics.get(rule['metric'])):
+            value = min(1.0, max(0.0, (metrics[rule['metric']] - rule['lower']) / (rule['upper'] - rule['lower'])))
+        out[t['id']] = value
+    return out
+
+
 def composite_weights(preset_weights, type_weights, fallback):
     """Type weights applied on top of the preset: w_p ∝ preset_p × type_p / fallback_p (balanced preset -> type weights)."""
     raw = {p: preset_weights[p] * type_weights[p] / fallback[p] for p in PILLARS}
