@@ -10,6 +10,9 @@ const noOverflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=i
   await context.route('**/*',r=>{const u=new URL(r.request().url());if(u.origin===new URL(BASE).origin)return r.continue();outside.push(u.hostname);return r.abort();});
   await context.route('**/sec-disclosures.json*',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture.payload())}));
   await context.route('**/sec-filing-windows.json*',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture.filingWindows())}));
+  // The S07/S15 list merges news signals (newest first, 30 rows). The daily run's real news-signals.json can push the
+  // synthetic 8-K rows out of that window, so this SEC test serves no news file (news has its own browser test).
+  await context.route('**/news-signals.json*',r=>r.fulfill({status:404,contentType:'text/plain',body:''}));
   const page=await context.newPage();let errors=0;page.on('pageerror',()=>errors++);
   try{
    phase='S07';await page.goto(BASE+'#news');await page.locator('#news-disclosures [data-disclosure]').first().waitFor();
