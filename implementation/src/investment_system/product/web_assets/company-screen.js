@@ -64,7 +64,7 @@ function scoreRow(ctx){const QS=g.QgvScores;if(!QS||!ctx)return null;let S=ctx.s
 const V2_LABEL={q_profitability:['수익성','Profitability'],q_moat_proxy:['해자 대리','Moat proxy'],q_earnings_quality:['이익의 질','Earnings quality'],q_financial_safety:['재무 안전','Financial safety'],q_capital_allocation:['자본 배분(경영진 대리)','Capital allocation'],
  g_revenue_growth:['매출 성장','Revenue growth'],g_per_share_growth:['주당 이익·FCF 성장','Per-share earnings / FCF growth'],g_growth_efficiency:['성장 효율','Growth efficiency'],g_consistency:['성장 일관성','Growth consistency'],g_recent_acceleration:['최근 가속','Recent acceleration'],
  v_earnings_yield:['이익 수익률 (EBIT/EV)','Earnings yield (EBIT/EV)'],v_fcf_yield:['FCF 수익률 (FCF/EV)','FCF yield (FCF/EV)'],v_vs_industry:['업종 대비 (EV/EBIT 업종 백분위)','Vs industry (EV/EBIT industry percentile)'],v_vs_own_history:['자기 과거 대비 (5년)','Vs own history (5y)'],v_expectation_check:['기대 점검 (역DCF − 실현 성장)','Expectation check (reverse DCF − realized growth)']};
-function flagsHtml(d,locale){const QS=g.QgvScores;return QS&&d?QS.flagText(d.flags,locale==='en-US').map(f=>' <span class="badge STALE" data-qgv2-flag>'+esc(f)+'</span>').join(''):'';}
+function flagsHtml(d,locale){const QS=g.QgvScores;return QS&&d?QS.flagText(d.flags,locale==='en-US',d).map(f=>' <span class="badge STALE" data-qgv2-flag>'+esc(f)+'</span>').join(''):'';}
 function v2Body(d,locale){
  const T=tr(locale),cell=(v,attr)=>'<dd data-qgv="'+attr+'">'+(typeof v==='number'?'<span class="num">'+esc(num(v,locale))+'</span>':na('',locale))+'</dd>';
  const reference=d?.reference_only?'<p class="badge partial" data-qgv2-reference>'+esc(T('참고 순위 · 미국 504종목과 같은 계산, 정식 순위 아님','Reference ranking · same calculation as US504, not an official rank'))+'</p>':'';

@@ -24,7 +24,9 @@ fetch and the same serial paced client, so all 504 codes are recalculated under 
 once. Each shard prints its own counts line and uploads its own private raw release; a shard that fails entirely keeps
 its previous rows. In the Q·G and QGV v2 files every collected code is replaced by this run's row (a row without data
 is NOT_AVAILABLE with its reason, never an older rule's value or 0); shares keep the daily merge rule. The daily
-default (one shard per UTC day) is unchanged.
+default (one shard per UTC day) is unchanged. Because a run with failed shards still exits 0, the run ends with one
+`SEC_UNIVERSE_SHARD_REPORT` line per shard and one `SEC_UNIVERSE_ALL_SHARDS` total line: issuers collected/failed and
+the published LIVE/STALE rows still taken from the previous file (shares, Q·G and QGV v2 separately; counts only).
 """
 import argparse
 from datetime import datetime, timezone
@@ -436,6 +438,26 @@ def _refresh_base(previous, codes, empty):
     return base
 
 
+def _kept_previous(payload, updates, codes):
+    """Rows of `codes` whose published value (LIVE/STALE) is the previous file's row, not this run's. None if no file."""
+    if payload is None:
+        return None
+    kept = 0
+    for code in codes:
+        row = payload['records'][code]
+        if row['state'] == 'NOT_AVAILABLE':
+            continue
+        new = updates.get(code)
+        if new is not None and row['acquired_at'] == new.get('acquired_at'):
+            continue
+        kept += 1
+    return kept
+
+
+def _count(value):
+    return 'NA' if value is None else str(value)
+
+
 def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload, previous, previous_qg, previous_qgv2,
                     staged_target):
     """One-off: every shard 0..shard_count-1 in one run, one registry fetch, one paced client (serial requests)."""
@@ -454,6 +476,9 @@ def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload
     registry_sha = registry.source_sha256
     unresolved = set(universe_codes()) - {code for issuer in registry.issuers for code in issuer.codes}
     ok_shards, failed_shards, totals = [], [], {'companies': 0, 'collected': 0, 'failed': 0, 'covers': 0}
+    partitions = {index: daily_partition(registry, shard_count=count, shard_index=index) for index in range(count)}
+    shard_codes = {index: {code for issuer in issuers for code in issuer.codes} for index, issuers in partitions.items()}
+    shard_report = {}
     day = now().astimezone(timezone.utc).date().isoformat()
     for index in range(count):
         s_updates, s_unlisted, s_qg, s_qgv2 = {}, {}, {}, {}
@@ -465,6 +490,7 @@ def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload
                     qg_updates=s_qg, qgv2_updates=s_qgv2, shard_index=index, registry=registry, client=client)
             except Exception:
                 failed_shards.append(index)
+                shard_report[index] = ('SHARD_FAILED', 0, len(partitions[index]))
                 print(f'SEC_UNIVERSE_SHARD shard={index}/{count} status=SHARD_FAILED code=SEC_UNIVERSE_FAILED previous_kept')
                 continue
             for company_index, code in counts['failures']:
@@ -482,6 +508,7 @@ def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload
                 qg_updates.update(s_qg)
                 qgv2_updates.update(s_qgv2)
                 status = 'OK'
+            shard_report[index] = (status.split()[0], counts['collected'], counts['failed'])
             v2_rows = list(s_qgv2.values())
             print(f"SEC_UNIVERSE_SHARD shard={index}/{count} companies={counts['companies']} collected={counts['collected']} "
                   f"failed={counts['failed']} covers={counts['covers']} share_codes={len(s_updates)} "
@@ -518,6 +545,7 @@ def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload
     rows = list(qg_updates.values())
     print(f"SEC_UNIVERSE_QG {scope} codes={len(rows)} scored_codes={sum(1 for r in rows if r['state'] != 'NOT_AVAILABLE')} "
           f"{_qg_summary(qg_payload)}")
+    qgv2_payload = None
     try:
         last_v2 = max(ok_shards) if ok_shards else (previous_qgv2 or {}).get('last_shard_index')
         qgv2_payload = qgv2.merge(_refresh_base(previous_qgv2, qgv2_updates, lambda: qgv2.empty_record()), qgv2_updates,
@@ -528,7 +556,23 @@ def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload
         print(qgv2.summary_line(qgv2_payload, prefix=f"SEC_QGV2 {scope} codes={len(v2_rows)} "
                                 f"with_data={sum(1 for r in v2_rows if r['fiscal_year_end'] is not None)}"))
     except Exception:
+        qgv2_payload = None
         print('SEC_QGV2 OUTPUT_FAILED previous_kept')
+    # A run can end with exit 0 while some shards failed: per shard and in total, how many issuers were collected and how
+    # many published rows (LIVE/STALE) still come from the previous file instead of this run (owner, 2026-10-15 evening).
+    files = (('shares', payload, updates), ('qg', qg_payload, qg_updates), ('qgv2', qgv2_payload, qgv2_updates))
+    for index in range(count):
+        status, collected, failed = shard_report[index]
+        kept = [_kept_previous(p, u, shard_codes[index]) for _, p, u in files]
+        print(f"SEC_UNIVERSE_SHARD_REPORT shard={index}/{count} status={status} issuers={len(partitions[index])} "
+              f"issuers_collected={collected} issuers_failed={failed} "
+              + ' '.join(f'kept_previous_{name}={_count(k)}' for (name, _, _), k in zip(files, kept)))
+    kept = [_kept_previous(p, u, universe_codes()) for _, p, u in files]
+    print(f"SEC_UNIVERSE_ALL_SHARDS shards_ok={len(ok_shards)} shards_failed={len(failed_shards)} "
+          f"issuers={sum(len(i) for i in partitions.values())} issuers_collected={sum(r[1] for r in shard_report.values())} "
+          f"issuers_failed={sum(r[2] for r in shard_report.values())} "
+          f"kept_previous_rows={sum(k for k in kept if k is not None)} "
+          + ' '.join(f'kept_previous_{name}={_count(k)}' for (name, _, _), k in zip(files, kept)))
     if failed_shards:
         print('SEC_UNIVERSE_SHARES ALL_SHARDS_PARTIAL failed_shards=' + ','.join(str(i) for i in failed_shards) + ' previous_kept')
     return 0

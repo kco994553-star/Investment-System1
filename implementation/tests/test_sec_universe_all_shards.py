@@ -232,6 +232,68 @@ def test_a_failing_shard_keeps_its_previous_rows_and_the_others_are_written(tmp_
     assert_no_identifiers(out)
 
 
+def tokens(line):
+    return dict(part.split('=', 1) for part in line.split()[1:])
+
+
+def reports(out):
+    lines = [l for l in out.splitlines() if l.startswith('SEC_UNIVERSE_SHARD_REPORT ')]
+    assert [tokens(l)['shard'] for l in lines] == [f'{i}/7' for i in range(7)]
+    total = [l for l in out.splitlines() if l.startswith('SEC_UNIVERSE_ALL_SHARDS ')]
+    assert len(total) == 1
+    return [tokens(l) for l in lines], tokens(total[0])
+
+
+def test_report_counts_issuers_and_rows_kept_from_the_previous_file_per_shard_and_in_total(tmp_path, capsys, monkeypatch):
+    """Owner 2026-10-15 evening: a run with failed shards still exits 0, so the kept-previous rows are reported."""
+    tool = load_tool('sec_universe_shares')
+    first = tmp_path / 'first'
+    assert run(tool, first, Sec(), when=WHEN - timedelta(days=1), all_shards=True) == 0
+    per_shard, total = reports(capsys.readouterr().out)   # no previous file: nothing can be kept
+    assert total == {'shards_ok': '7', 'shards_failed': '0', 'issuers': str(len(SPEC)), 'issuers_collected': str(len(SPEC)),
+                     'issuers_failed': '0', 'kept_previous_rows': '0', 'kept_previous_shares': '0', 'kept_previous_qg': '0',
+                     'kept_previous_qgv2': '0'}
+    before = files(first)
+    bad = shard_of(SPEC[0][1])
+    bad_ciks = {cik for _, cik, _, _ in SPEC if shard_of(cik) == bad}
+    extra = next(cik for _, cik, _, _ in SPEC if shard_of(cik) != bad)   # one failed issuer inside a shard that succeeds
+    kept_ciks = bad_ciks | {extra}
+    second = tmp_path / 'second'
+    assert run(tool, second, Sec(fail=kept_ciks), previous=first, all_shards=True) == 0
+    out = capsys.readouterr().out
+    per_shard, total = reports(out)
+    kept_of = lambda f, ciks: sum(1 for c in ciks if before[f]['records'][CODE[c]]['state'] != 'NOT_AVAILABLE')
+    for i, line in enumerate(per_shard):
+        members = {cik for _, cik, _, _ in SPEC if shard_of(cik) == i}
+        failed = members & kept_ciks
+        assert line['status'] == ('SHARD_ALL_FAILED' if i == bad else 'OK') and line['issuers'] == str(len(members))
+        assert (line['issuers_collected'], line['issuers_failed']) == (str(len(members - failed)), str(len(failed)))
+        assert [line['kept_previous_' + n] for n in ('shares', 'qg', 'qgv2')] == [str(kept_of(f, failed)) for f in range(3)]
+    expected = [kept_of(f, kept_ciks) for f in range(3)]
+    assert expected[2] == len(kept_ciks) and total['kept_previous_rows'] == str(sum(expected))
+    assert total == {'shards_ok': '6', 'shards_failed': '1', 'issuers': str(len(SPEC)), 'issuers_collected': str(len(SPEC) - len(kept_ciks)),
+                     'issuers_failed': str(len(kept_ciks)), 'kept_previous_rows': str(sum(expected)),
+                     'kept_previous_shares': str(expected[0]), 'kept_previous_qg': str(expected[1]), 'kept_previous_qgv2': str(expected[2])}
+    assert_no_identifiers(out)
+    # a shard whose collection raises: every issuer of it counts as failed and its rows as kept
+    real = tool.collect
+    monkeypatch.setattr(tool, 'collect', lambda **kw: (_ for _ in ()).throw(RuntimeError('x')) if kw.get('shard_index') == bad else real(**kw))
+    assert run(tool, tmp_path / 'third', Sec(), previous=first, all_shards=True) == 0
+    per_shard, total = reports(capsys.readouterr().out)
+    assert per_shard[bad]['status'] == 'SHARD_FAILED' and per_shard[bad]['issuers_failed'] == str(len(bad_ciks))
+    assert per_shard[bad]['kept_previous_qgv2'] == total['kept_previous_qgv2'] == str(len(bad_ciks))
+    # a v2 output failure is reported as NA for that file, never as 0
+    monkeypatch.setattr(tool, 'collect', real)
+    def boom(*_, **__):
+        raise RuntimeError('synthetic')
+    monkeypatch.setattr(tool.qgv2, 'merge', boom)
+    assert run(tool, tmp_path / 'fourth', Sec(), all_shards=True) == 0
+    out = capsys.readouterr().out
+    per_shard, total = reports(out)
+    assert 'SEC_QGV2 OUTPUT_FAILED previous_kept' in out and total['kept_previous_qgv2'] == 'NA'
+    assert all(line['kept_previous_qgv2'] == 'NA' for line in per_shard)
+
+
 def test_codes_without_data_are_not_available_with_reasons_never_zero_or_an_older_row(tmp_path, capsys):
     tool = load_tool('sec_universe_shares')
     first = tmp_path / 'first'

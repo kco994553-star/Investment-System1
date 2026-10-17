@@ -23,9 +23,11 @@ computes those in RAM. No currency is converted.
 """
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date
 import math
 import re
+
+from ..qgv import v2_factors as _v2_factors
 
 FILENAME = 'sec-valuation-inputs.json'
 KIND = 'SEC_VALUATION_INPUTS'
@@ -76,7 +78,6 @@ FCFE_REASONS = frozenset({
 })
 V_INPUT_KEYS = ('eps', 'revenue', 'revenue_prev', 'revenue_cagr_3y')
 V_REASONS = frozenset({'SEC_INPUT_NOT_AVAILABLE', 'SEC_INPUT_AMBIGUOUS', *(key.upper() + '_MISSING' for key in V_INPUT_KEYS)})
-REVENUE_CONCEPTS = (('us-gaap', 'Revenues'), ('us-gaap', 'RevenueFromContractWithCustomerExcludingAssessedTax'), ('ifrs-full', 'Revenue'))
 _AMBIGUOUS = {'AMBIGUOUS_FACT_VALUES', 'AMBIGUOUS_REVISION_ORDER', 'AMBIGUOUS_FILING'}
 
 
@@ -104,36 +105,18 @@ def fcfe_total(components):
             + c['net_short_term_borrowing'] - c['long_term_debt_repayment'])
 
 
-def revenue_cagr_3y(m1):
-    """Own 3-year revenue CAGR: same tag/unit, 4 exact annual periods; no fiscal guessing.
+def revenue_cagr_3y(companyfacts, cutoff):
+    """Own 3-year revenue CAGR (DCF h input) = the QGV v2 period rule (user decision V-DCFH, 2026-10-15).
 
-    This is the function behind the published company-types-pricefree.json metric
-    revenue_cagr_3y; sec-valuation-inputs.json repeats it in v_inputs.
+    One rule with company-types-pricefree.json metrics.revenue_cagr_3y and sec-qgv2.json metrics.revenue_cagr_3y
+    (qgv/v2_factors, same 6 significant digits): annual = 350..380-day duration in an annual form, year k = the
+    annual fact whose end is within 10 days of FY0 end minus k years, latest filed wins, first concept with a
+    usable fact wins per year; CAGR only when FY0 and FY-3 revenue are both > 0.
+    The former rule (same tag, 4 exact calendar periods: start = end - 1 year + 1 day, years = end - n years)
+    left 52/53-week fiscal years with no CAGR, so their DCF h was NOT_AVAILABLE. Missing stays None, never 0.
     """
-    raw = m1['raw_fundamentals']
-    by = {}
-    for row in m1['selected_input_facts']:
-        if (row['taxonomy'], row['concept']) not in REVENUE_CONCEPTS or row['unit'] != raw['reporting_currency']:
-            continue
-        end = date.fromisoformat(row['end'])
-        try:
-            expected = (end.replace(year=end.year - 1) + timedelta(days=1)).isoformat()
-        except ValueError:
-            continue
-        if row['start'] != expected:
-            continue
-        by.setdefault((row['taxonomy'], row['concept'], row['unit']), {})[row['end']] = row['value']
-    values = []
-    for periods in by.values():
-        end = max(periods)
-        d = date.fromisoformat(end)
-        try:
-            years = [d.replace(year=d.year - n).isoformat() for n in range(4)]
-        except ValueError:
-            continue
-        if all(y in periods for y in years) and periods[end] == raw['revenue'] and periods[years[-1]] > 0 and periods[end] > 0:
-            values.append((periods[end] / periods[years[-1]]) ** (1 / 3) - 1)
-    return values[0] if values and all(math.isclose(v, values[0], rel_tol=1e-12, abs_tol=1e-12) for v in values) else None
+    value = _v2_factors.compute(companyfacts, sic=None, cutoff=cutoff)[3].get('revenue_cagr_3y')
+    return value if _finite(value) else None
 
 
 def empty_fcfe(reason='SEC_INPUT_NOT_AVAILABLE'):
@@ -267,13 +250,13 @@ def partial_pair_ok(taxonomy, key, concepts):
                for alt in ALTERNATIVES[taxonomy][key])
 
 
-def project_v_inputs(m1, state, ambiguous):
+def project_v_inputs(m1, state, ambiguous, cagr=None):
+    """`cagr` = revenue_cagr_3y(companyfacts, cutoff) computed once by the caller (shared with the type metric)."""
     raw = m1.get('raw_fundamentals') if m1.get('status') == 'READY' else None
     if raw is None:
         return empty_v_inputs()
     if ambiguous:
         return empty_v_inputs('SEC_INPUT_AMBIGUOUS')
-    cagr = revenue_cagr_3y(m1)
     # Same publication bound as company-types-pricefree.json metrics.
     values = {'eps': raw.get('eps'), 'revenue': raw.get('revenue'), 'revenue_prev': raw.get('revenue_prev'),
               'revenue_cagr_3y': cagr if _finite(cagr) and abs(cagr) <= 100 else None}
@@ -290,9 +273,9 @@ def project_v_inputs(m1, state, ambiguous):
     return out
 
 
-def project_row(m1, state, refs, ambiguous):
+def project_row(m1, state, refs, ambiguous, cagr=None):
     fcfe = project_fcfe(m1, state)
-    v = project_v_inputs(m1, state, ambiguous)
+    v = project_v_inputs(m1, state, ambiguous, cagr)
     states = (fcfe['state'], v['state'])
     return {'state': 'NOT_AVAILABLE' if states == ('NOT_AVAILABLE',) * 2 else state,
             'source_hashes': dict(refs), 'fcfe': fcfe, 'v_inputs': v}
