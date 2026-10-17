@@ -21,7 +21,7 @@ async function noScroll(page,label){assert.ok(await page.evaluate(()=>document.d
     assert.ok((await text(page,'[data-axis="industry"]')).includes('NOT_AVAILABLE'));assert.ok((await text(page,'[data-axis="theme"]')).includes('NOT_AVAILABLE'));
     assert.ok((await text(page,'[data-axis="industry"] [data-v0-marker]')).includes('v0 기본값 · 보정 전 · 나중에 수정 가능'));
     phase='A-S03';await open(page,'portfolio','[data-concentration]');assert.ok((await text(page,'[data-concentration]')).includes('NOT_AVAILABLE'));
-    assert.equal(await page.locator('[data-concentration-warning]').count(),0);assert.ok((await text(page,'[data-concentration] [data-v0-marker]')).includes('UNCALIBRATED'));
+    assert.equal(await page.locator('[data-concentration-warning]').count(),0);assert.ok((await text(page,'[data-concentration] [data-v0-marker]')).includes('보정 전'));
     assert.equal(errors,0);pass++;console.log('PASS sic/theme v0 published build '+width);
    }catch(e){fail++;console.log('FAIL sic/theme v0 published build '+width+' '+phase+' '+String(e.message).split('\n')[0]);}finally{await context.close();}}
   {const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});

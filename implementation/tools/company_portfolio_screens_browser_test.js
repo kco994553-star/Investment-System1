@@ -72,7 +72,7 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
     assert.deepEqual(await page.locator('[data-analysis-tab]').allTextContents(),['종합','사업·경쟁','재무','주가·이벤트','QGV 요소','가치·시나리오','비교·컨센서스']);
     assert.equal(await text(page,'.sub-category'),'종목 찾기');assert.equal(await page.locator('#primary-nav [data-nav-tab][aria-current="page"]').getAttribute('data-nav-tab'),'qgv');
     assert.ok((await text(page,'[data-confidence-note]')).includes('확률 아님'));assert.ok((await text(page,'[data-na="overall"]')).includes('NOT_AVAILABLE'));
-    assert.equal(await text(page,'[data-confidence]'),'정의 대기');assert.equal(await page.locator('[data-company-badges] [data-badge="pit"]').getAttribute('data-pit'),'NOT_AVAILABLE');
+    assert.equal(await text(page,'[data-confidence]'),'정의 대기');assert.ok((await text(page,'[data-company-badges] [data-badge="pit"]')).startsWith('시점 · '),'PIT basis in words');assert.ok(!(await text(page,'[data-company-badges]')).includes('OBSERVED_CAPTURE_ONLY'));
     for(const key of ['business','financials','events','factors','value','compare']){await page.locator('[data-analysis-tab="'+key+'"]').click();assert.equal(await page.locator('[data-analysis-panel="'+key+'"]').isVisible(),true,key);assert.equal(await page.locator('[data-analysis-panel]:visible').count(),1,'one panel '+key);}
     await page.locator('[data-analysis-tab="factors"]').click();assert.equal(await page.locator('[data-v2-factor]').count(),15);assert.equal(await page.locator('[data-factor]').count(),0,'no v1 factor table');
     assert.deepEqual(await page.locator('[data-factor-score]').evaluateAll(n=>[...new Set(n.map(x=>x.textContent))]),['—']);
@@ -100,7 +100,7 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
    for(const[file,body]of [['sec-qg-factors.json',qg],['company-types-pricefree.json',types],['sec-filing-windows.json',filings]])await context.route('**/'+file,r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body())}));
    const page=await context.newPage();page.setDefaultTimeout(15000);let errors=0;page.on('pageerror',()=>errors++);
    try{
-    phase='S04-DATA';await open(page,'company/nvda','[data-qgv="Q"]');await page.locator('[data-type-chip]').first().waitFor();
+    phase='S04-DATA';await open(page,'company/nvda','[data-qgv="total"]');await page.locator('[data-type-chip]').first().waitFor();
     // v1 Q·G (54.0 / 50.0 from sec-qg-factors.json) is no longer shown; without sec-qgv2.json the v2 NOT_AVAILABLE reason is.
     for(const key of ['Q','G','V'])assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="'+key+'"]').count(),0,key);
     assert.ok(!(await text(page,'[data-company-card="qgv"]')).includes('54.0'));
