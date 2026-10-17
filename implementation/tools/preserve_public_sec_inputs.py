@@ -1,4 +1,8 @@
-"""Preserve an already public, validated SEC sidecar across UI-only Pages deploys."""
+"""Preserve an already public, validated SEC sidecar across UI-only Pages deploys.
+
+The live copy is validated with the current reader (schemas /1-/4; the daily producer writes /4 since the owner decision
+of 2026-10-17) and its bytes are re-published unchanged: a /3 copy stays /3 until the next daily collection, so the
+freshness guard compares it as EQUAL and no run marker, acquired_at or withdrawal is ever rewritten here."""
 from __future__ import annotations
 
 import json
@@ -46,8 +50,9 @@ def _payload(body):
 
 
 def fetch_previous(*, open_response=None):
-    """The validated live `sec-public-inputs.json` payload for the daily collection (owner decision 2026-10-17: a company
-    whose collection failed transiently keeps its row from it), None on 404. Any other failure raises ValueError."""
+    """The validated live `sec-public-inputs.json` payload (/3 or /4) for the daily collection (owner decisions 2026-10-17:
+    a company whose collection failed transiently keeps its row from it; an identity conflict names the acquired_at it
+    withdraws; the scheduled deploy streak continues from it), None on 404. Any other failure raises ValueError."""
     try:
         body = _live_body(open_response)
     except Exception:

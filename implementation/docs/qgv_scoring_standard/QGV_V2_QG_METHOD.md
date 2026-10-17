@@ -290,6 +290,22 @@ data cannot carry a `calc_version` (both validators). On the device such a row s
 its source reasons ("QGV v2 산출 불가 · 원자료 없음 (CIK 미해결)"). Tests:
 `test_normal_na_rows_keep_an_explicit_source_reason_and_are_never_calc_version_mismatch`, `qgv_scores_node_test.js` ("normal-NA rows …").
 
+**TARGET identity withdrawal (owner instruction 2026-10-17 item 3, TARGET NA schema /4 extended to the `target` section).** When
+the daily TARGET collection hits an identity conflict (`sec-public-inputs.json` row `WITHDRAWN`: `SEC_CIK_MISMATCH` /
+`SEC_ISSUER_NOT_ALLOWED`), the TARGET step stages a withdrawal row and the shard merge publishes it instead of the kept row:
+reason `IDENTITY_CONFLICT_WITHDRAWN`, the issuer's TARGET CIK, no `acquired_at`, values or scores, and two extra keys only on
+this row: `detected_at` (when the conflict was seen; never an acquisition time) and `withdrawn_acquired_at` (the `acquired_at`
+of the row whose use it stops; `null` without one). The previous row is never carried or used again. Both validators accept
+the two keys only on such a TARGET row. The pre-deploy freshness guard passes it only when `withdrawn_acquired_at` names the
+live observation exactly (else `WITHDRAWAL_MISMATCH` / `OLDER`); a newer collection after the detection replaces it. No
+calculation rule changes (`calc_version` unchanged). On the device (`qgv2-inputs.js`) the withdrawn issuer is used nowhere:
+its TARGET record and every Universe code with the same CIK (other share classes) get state `WITHDRAWN`, no factors, axes,
+V inputs or metrics, leave every ranking population and candidate list, and show "QGV v2 산출 불가 · 원자료 없음 (식별 충돌로
+사용 중지)"; the TARGET row is never replaced by the Universe code of the same ticker. Published Q·G percentiles of other
+issuers still count the same-CIK Universe rows as peers (a Universe-section change, outside this rule). Tests:
+`test_target_withdrawal_e2e.py`, vectors `target_withdrawn_*` (`sec_qgv2_node_test.js`), `qgv_scores_node_test.js`
+("identity-conflict withdrawal: …").
+
 `v_inputs_v2` holds the price-free inputs the device needs to compute V in RAM. Amounts are exact SEC values in the row currency.
 - `ebit`, `fcf`: `{fy_value, fy_end, ttm_value, ttm_end}`. FCF = OCF − capex for the same period.
 - `total_debt`, `cash_and_equivalents`: `{value, period_end}`, each at its own latest balance-sheet date (they can differ). Debt uses the same rule as section 1.

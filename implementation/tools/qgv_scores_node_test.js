@@ -250,3 +250,45 @@ test('DART reference Q/G uses the same composite but never enters the US rank po
   assert.equal(computed.rows.asml.primary.reference_only,true);assert.equal(computed.rows.asml.rank,null);
   assert.ok(QS.summaryText(computed.rows.asml.primary,false).startsWith('참고 순위 · '));
 });
+
+// Owner instruction 2026-10-17 item 3: a TARGET issuer withdrawn for an identity conflict (sec-qgv2.json TARGET withdrawal
+// row) is scored and selected nowhere: not via its TARGET row, not via a Universe code of the same CIK (other share class),
+// not via the Universe code of its ticker, and nothing from an earlier value. The stop is in the loader (Qgv2Inputs).
+test('identity-conflict withdrawal: no score or candidate via the TARGET row, same-CIK codes or the ticker fallback', () => {
+  const P = require(path.join(W, 'playbook-screen.js'));
+  const p = F.payload(), empty = { state: 'NOT_AVAILABLE', acquired_at: null, fiscal_year_end: null, metrics: {}, factors: {}, axes: {}, v_inputs_v2: {} };
+  const withdrawal = (cik) => ({ ...empty, cik, reason_codes: [SQ.WITHDRAWN_REASON], detected_at: '2026-10-13T12:00:00Z', withdrawn_acquired_at: '2026-10-12T00:00:00Z' });
+  const before = QS.compute({ identities, publicScreens: screens, quotes, scoringDefault: 'v2' });
+  assert.ok(Number.isFinite(before.rows.googl.primary.total) && Number.isFinite(before.rows.nvda.primary.total));
+  p.target.googl = withdrawal(p.records['NASDAQ:GOOGL'].cik);   // GOOGL and GOOG carry this CIK
+  p.target.nvda = withdrawal('0000099999');                       // a CIK no Universe code carries: the ticker fallback must not apply
+  const inputs = SQ.fromInputs(SQ.light(p));
+  for (const key of ['TARGET:googl', 'NASDAQ:GOOGL', 'NASDAQ:GOOG', 'TARGET:nvda']) {
+    const r = inputs.records[key];
+    assert.deepEqual([r.state, r.identity_withdrawn, r.in_cross_section, r.v_inputs, r.qg_axes.Q.score, r.qg_axes.G.score, r.na_reasons, r.metrics],
+      ['WITHDRAWN', true, false, null, null, null, ['IDENTITY_CONFLICT_WITHDRAWN'], {}], key);
+    assert.ok(Object.values(r.factors).every((v) => v === null), key);
+  }
+  assert.equal(inputs.records['NASDAQ:NVDA'].state, 'LIVE');     // another issuer's own Universe row is not the withdrawn one
+  const computed = QS.compute({ identities, publicScreens: { ...screens, [SQ.FILE]: inputs }, quotes, scoringDefault: 'v2' });
+  for (const id of ['googl', 'nvda']) {
+    const row = computed.rows[id];
+    assert.equal(row.code, 'TARGET:' + id);                      // never the Universe code of the same ticker
+    assert.deepEqual([row.primary.total, row.primary.q, row.primary.g, row.primary.v, row.rank], [null, null, null, null, null]);
+    assert.equal(row.primary.total_reason, 'SOURCE_NOT_AVAILABLE');
+    assert.deepEqual(row.primary.source_reason_codes, ['IDENTITY_CONFLICT_WITHDRAWN']);
+    assert.ok(QS.naText(row.primary, false).includes('식별 충돌로 사용 중지'));
+  }
+  assert.ok(Number.isFinite(computed.rows.msft.primary.total) && computed.rows.msft.rank !== null);   // others unchanged
+  // Universe listings of the same issuer (other share class) as shown on Universe screens: no score either.
+  const uni = QS.compute({ identities: [{ company_id: 'NASDAQ:GOOG', ticker: 'GOOG' }, { company_id: 'NASDAQ:GOOGL', ticker: 'GOOGL' }], publicScreens: { [SQ.FILE]: inputs }, quotes, scoringDefault: 'v2' });
+  assert.ok(Object.values(uni.rows).every((r) => r.primary.total === null && r.rank === null));
+  // Candidate selection (TARGET v1 writer ranking): never ranked, no industry, no Q/G.
+  const ranked = P.candidateRanking(computed, { [SQ.FILE]: inputs }, ['NASDAQ:GOOGL', 'NASDAQ:GOOG', 'NASDAQ:NVDA', 'NASDAQ:MSFT']);
+  const by = Object.fromEntries(ranked.map((r) => [r.code, r]));
+  for (const code of ['NASDAQ:GOOGL', 'NASDAQ:GOOG']) assert.deepEqual([by[code].total, by[code].rank, by[code].industry, by[code].qg_available], [null, null, null, false], code);
+  assert.equal(by['NASDAQ:NVDA'].total, null);                   // the TARGET company NVDA (identity row) has no score
+  assert.ok(by['NASDAQ:MSFT'].rank !== null);
+  // The device V population and the hanmi reference pool exclude the stopped rows.
+  assert.ok(['TARGET:googl', 'NASDAQ:GOOGL', 'NASDAQ:GOOG'].every((k) => inputs.records[k].in_cross_section === false));
+});
