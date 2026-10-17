@@ -1,0 +1,286 @@
+{
+ "schema_version": 1,
+ "kind": "TYPE_PRICEFREE_MEMBERSHIP_VECTORS",
+ "doc": "TYPE-SCOPE (owner instruction 2026-10-17): the same approved type_config/1 rule for every scored row from its published price-free metrics. Synthetic metric values only. Python qgv_v2.pricefree_memberships/type_axis_weights and JS QgvV2.pricefreeMemberships/typeAxisWeights must reproduce every case (tests/test_type_scope.py, tools/type_scope_node_test.js).",
+ "config_version": "type_config/1",
+ "cases": [
+  {
+   "name": "below ramp: membership 0, NO_RECOGNIZED_TYPE",
+   "metrics": {
+    "revenue_cagr_3y": 0.05
+   },
+   "memberships": {
+    "growth": 0.0,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [],
+   "type_reason": "NO_RECOGNIZED_TYPE",
+   "type_weights": {
+    "Q": 34.0,
+    "G": 33.0,
+    "V": 33.0
+   }
+  },
+  {
+   "name": "ramp lower bound",
+   "metrics": {
+    "revenue_cagr_3y": 0.1
+   },
+   "memberships": {
+    "growth": 0.0,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [],
+   "type_reason": "NO_RECOGNIZED_TYPE",
+   "type_weights": {
+    "Q": 34.0,
+    "G": 33.0,
+    "V": 33.0
+   }
+  },
+  {
+   "name": "membership about 0.2 (< minimum 0.3)",
+   "metrics": {
+    "revenue_cagr_3y": 0.12
+   },
+   "memberships": {
+    "growth": 0.1999999999999999,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [],
+   "type_reason": "NO_RECOGNIZED_TYPE",
+   "type_weights": {
+    "Q": 34.0,
+    "G": 33.0,
+    "V": 33.0
+   }
+  },
+  {
+   "name": "membership at the 0.3 minimum (float boundary)",
+   "metrics": {
+    "revenue_cagr_3y": 0.13
+   },
+   "memberships": {
+    "growth": 0.3,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [
+    "growth"
+   ],
+   "type_reason": null,
+   "type_weights": {
+    "Q": 30.0,
+    "G": 50.0,
+    "V": 20.0
+   }
+  },
+  {
+   "name": "membership 0.5",
+   "metrics": {
+    "revenue_cagr_3y": 0.15
+   },
+   "memberships": {
+    "growth": 0.4999999999999999,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [
+    "growth"
+   ],
+   "type_reason": null,
+   "type_weights": {
+    "Q": 30.0,
+    "G": 50.0,
+    "V": 20.0
+   }
+  },
+  {
+   "name": "above ramp: membership 1",
+   "metrics": {
+    "revenue_cagr_3y": 0.25
+   },
+   "memberships": {
+    "growth": 1.0,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [
+    "growth"
+   ],
+   "type_reason": null,
+   "type_weights": {
+    "Q": 30.0,
+    "G": 50.0,
+    "V": 20.0
+   }
+  },
+  {
+   "name": "CAGR above 100%: membership 1",
+   "metrics": {
+    "revenue_cagr_3y": 1.00045
+   },
+   "memberships": {
+    "growth": 1.0,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [
+    "growth"
+   ],
+   "type_reason": null,
+   "type_weights": {
+    "Q": 30.0,
+    "G": 50.0,
+    "V": 20.0
+   }
+  },
+  {
+   "name": "negative CAGR: membership 0",
+   "metrics": {
+    "revenue_cagr_3y": -0.0571289
+   },
+   "memberships": {
+    "growth": 0.0,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [],
+   "type_reason": "NO_RECOGNIZED_TYPE",
+   "type_weights": {
+    "Q": 34.0,
+    "G": 33.0,
+    "V": 33.0
+   }
+  },
+  {
+   "name": "metric absent: every type null, TYPE_UNCONFIRMED",
+   "metrics": {},
+   "memberships": {
+    "growth": null,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [],
+   "type_reason": "TYPE_UNCONFIRMED",
+   "type_weights": {
+    "Q": 34.0,
+    "G": 33.0,
+    "V": 33.0
+   }
+  },
+  {
+   "name": "metric null: null, never 0",
+   "metrics": {
+    "revenue_cagr_3y": null
+   },
+   "memberships": {
+    "growth": null,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [],
+   "type_reason": "TYPE_UNCONFIRMED",
+   "type_weights": {
+    "Q": 34.0,
+    "G": 33.0,
+    "V": 33.0
+   }
+  },
+  {
+   "name": "price-dependent and unresolved inputs are never evaluated",
+   "metrics": {
+    "dividend_yield": 0.05,
+    "dividend_paid_5_consecutive_years": true,
+    "sector_marketcap_rank": 1,
+    "roic": 0.3
+   },
+   "memberships": {
+    "growth": null,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [],
+   "type_reason": "TYPE_UNCONFIRMED",
+   "type_weights": {
+    "Q": 34.0,
+    "G": 33.0,
+    "V": 33.0
+   }
+  },
+  {
+   "name": "growth only, other inputs ignored",
+   "metrics": {
+    "revenue_cagr_3y": 0.18,
+    "roic": 0.25,
+    "dividend_yield": 0.04,
+    "sector_marketcap_rank": 2
+   },
+   "memberships": {
+    "growth": 0.7999999999999998,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [
+    "growth"
+   ],
+   "type_reason": null,
+   "type_weights": {
+    "Q": 29.999999999999996,
+    "G": 50.0,
+    "V": 20.0
+   }
+  }
+ ]
+}
