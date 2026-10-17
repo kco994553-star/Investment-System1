@@ -16,7 +16,10 @@ function deviceCatalog() {
 async function priceStoreCore(){return PriceStore.coreSymbols(window,{catalog:await deviceCatalog(),interests:[...prefs.interests]});}
 let valuationInputsPromise=null;
 function valuationInputs(){if(!valuationInputsPromise)valuationInputsPromise=DeviceValuation.load(window);return valuationInputsPromise;}
-function paintValue(route,id,quote=null){const host=document.querySelector('#company-value');if(host)void CompanyScreen.mountValue(host,{locale:appSettings.display_locale,id,ticker:company(id)?.ticker||PrivateHistory.symbolFor(id),catalogPromise:deviceCatalog(),inputsPromise:valuationInputs(),quote,compact:route==='company'});}
+// The S04/S05 price badge shows the same device quote state as the value card (no extra request); RAM only, never the price.
+let companyQuote={id:null,quote:null};
+function paintValue(route,id,quote=null){const host=document.querySelector('#company-value');if(host)void CompanyScreen.mountValue(host,{locale:appSettings.display_locale,id,ticker:company(id)?.ticker||PrivateHistory.symbolFor(id),catalogPromise:deviceCatalog(),inputsPromise:valuationInputs(),quote,compact:route==='company',
+  onQuote:q=>{companyQuote={id,quote:q};const badge=$('#content [data-badge="price"]');if(badge)badge.outerHTML=CompanyScreen.priceBadge(q,appSettings.display_locale);}});}
 function attachDeviceActual(selector,input) {
   const host=document.querySelector(selector),locale=appSettings.display_locale;
   if(!host) return;
@@ -384,8 +387,12 @@ function home() {
   `<section class="card" data-system-flow><h2>${t("시스템")}</h2><div class="hub-grid">${[["1","QGV","#qgv","qgv"],["2",t("기술적 분석"),"#technical","technical"],["3",t("매크로"),"#macro","macro"],["4",t("검증·연구"),"#validation",null]].map(([n,label,href,name])=>`<a class="card hub-card" href="${href}"><h3><span class="flow-number">${n}</span> ${esc(label)}</h3><span class="badge ${name?esc(D[name].state):"NOT_AVAILABLE"}">${name?esc(D[name].state):"NOT_AVAILABLE"}</span></a>`).join("")}</div></section>
   <section class="card" data-data-basis><h2>${t("데이터 기준")}</h2><dl><dt>${t("목표 비중 버전")}</dt><dd id="home-target-version">—</dd><dt>${t("QGV 기준 버전")}</dt><dd>${esc(t("v2 · PROVISIONAL"))}</dd><dt>${t("시세·환율")}</dt><dd>${esc(t("이 기기에서만 입력·계산"))}</dd><dt>${t("보유 정보")}</dt><dd>${esc(t("이 기기에만 저장"))}</dd></dl><a href="#settings">${t("데이터 운영 상태 →")}</a></section></div>`;
 }
+// S06 ('leader') starts from the remembered view state of this tab (leaderboardView) and adds a text search and the
+// 'QGV v2 순' sort (design canvas S06: 정렬 QGV 높은 순, the default). S15 ('watch') is unchanged.
 function directoryFilters(prefix,watch=false) {
- return `<div class="chips"><label><input type="checkbox" id="${prefix}-interest" ${watch?"checked disabled":""}>${t("관심기업만")}</label><select id="${prefix}-group" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}">${esc(g.name)}</option>`).join("")}</select><select id="${prefix}-sort" aria-label="${t("정렬")}"><option value="${watch?"added":"ticker"}">${watch?t("추가한 순"):t("티커 순")}</option><option value="name">${t("기업명 순")}</option><option value="favorites">${t("관심기업 우선")}</option></select></div>`;
+ const v=prefix==='leader'?leaderboardView:null,en=appSettings.display_locale==='en-US',pick=(a,b)=>a===b?" selected":"";
+ const sorts=(v?[["qgv",en?"QGV v2 (high first)":"QGV v2 순"]]:[]).concat([[watch?"added":"ticker",watch?t("추가한 순"):t("티커 순")],["name",t("기업명 순")],["favorites",t("관심기업 우선")]]);
+ return `<div class="chips">${v?`<input type="search" id="leader-query" aria-label="${en?"Search companies":"기업 검색"}" placeholder="${en?"Ticker or name":"티커 또는 기업명"}" value="${esc(v.query)}">`:""}<label><input type="checkbox" id="${prefix}-interest" ${watch?"checked disabled":v?.interest?"checked":""}>${t("관심기업만")}</label><select id="${prefix}-group" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}"${pick(v?.group,g.id)}>${esc(g.name)}</option>`).join("")}</select><select id="${prefix}-sort" aria-label="${t("정렬")}">${sorts.map(([k,l])=>`<option value="${k}"${pick(v?.sort,k)}>${esc(l)}</option>`).join("")}</select></div>`;
 }
 function companyGroups(id){return `<p class="small">${t("관심·그룹은 이 기기에만 저장됩니다.")}</p>${prefs.groups.length?prefs.groups.map(g=>`<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id)?"checked":""} ${prefs.interests.includes(id)?"":"disabled"}>${esc(g.name)}</label>`).join(""):`<a href="#watchlist">${t("그룹 관리 →")}</a>`}`;}
 function weekFilings(){const p=publicScreens["sec-filing-windows.json"],rows=p?.data?.companies;if(!rows)return "NOT_AVAILABLE";const known=prefs.interests.filter(id=>rows[id]&&rows[id].state!=="NOT_AVAILABLE");if(!known.length)return "NOT_AVAILABLE";const en=appSettings.display_locale==="en-US",week=Date.now()-7*86400000,status=known.map(id=>PublicScreens.earningsStatus(rows[id])).filter(Boolean),estimated=status.filter(s=>s.status==="ESTIMATED"&&s.window.days_until_start<=6).length,confirmed=status.filter(s=>s.status==="CONFIRMED"&&Date.parse(s.date+"T00:00:00Z")>=week).length;return (estimated+confirmed)+" · "+esc(en?"estimated "+estimated+" · confirmed "+confirmed:"추정 "+estimated+" · 확인 "+confirmed)+" · "+esc(t("예상 시기 · 확정일 아님"));}
@@ -466,7 +473,7 @@ function detail(id) {
   if(!c && universeCode(id)) {void ensureUniverseDirectory();return universeDetail(id);}
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
-  if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,scores:qgvScores(),
+  if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,scores:qgvScores(),quote:companyQuote.id===id?companyQuote.quote:null,
     headerHtml:`<div class="row">${heading("COMPANY RESEARCH",CompanyLogos.html(candidate?.ticker || historySymbol || c?.ticker || id,40)+esc(candidate?.ticker || historySymbol || c?.ticker || ""),esc(c?.name || ""))}${star(id)}</div>`,groupsHtml:companyGroups(id),candidateHtml:m2Panel(id)});
   if(!c) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id),e=searchIndex.resolve("COMPANY",id);
@@ -474,11 +481,11 @@ function detail(id) {
   block("macro",t("Macro exposure / context(거시 노출)"),`<p>${esc(D.macro.data?.regime || "")}</p><p>${t("기업 노출:")} ${esc(D.macro.data?.exposures?.[id] || t("미제공"))}</p>`)+
   `<section class="card"><h2>${t("Portfolio status(보유 상태)")}</h2>${state(D.portfolio)}<p>${h?t("Snapshot에 포함 · 비중")+" "+(Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"):D.portfolio.data?t("제공된 Snapshot에 없음"):t("실제 보유 상태 미제공")}</p>${h && Number.isFinite(h.target_weight)?`<p class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</p>`:""}${h?evidence(h):""}</section><section class="card"><h2>${t("News / Relationships(뉴스·관계)")}</h2>${state(D.news)}<a href="#news/${encodeURIComponent(id)}">${t("이 기업의 뉴스·관계망 확인 →")}</a></section>${evidence(c)}`;
 }
-function analysis(id) {
+function analysis(id,tab=null) {
   const c=company(id),candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null,historySymbol=PrivateHistory.symbolFor(id);
   if(!c && !candidate && !historySymbol) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const ticker=candidate?.ticker || historySymbol || c?.ticker || "";
-  return CompanyScreen.analysis({locale:appSettings.display_locale,id,ticker,screens:publicScreens,scores:qgvScores(),headerHtml:`<div class="row">${heading("COMPANY ANALYSIS",CompanyLogos.html(ticker||id,40)+esc(ticker),esc(c?.name || ""))}${star(id)}</div>`});
+  return CompanyScreen.analysis({locale:appSettings.display_locale,id,ticker,tab,quote:companyQuote.id===id?companyQuote.quote:null,screens:publicScreens,scores:qgvScores(),headerHtml:`<div class="row">${heading("COMPANY ANALYSIS",CompanyLogos.html(ticker||id,40)+esc(ticker),esc(c?.name || ""))}${star(id)}</div>`});
 }
 function paintPortfolio() {
   const host=$("#portfolio-screen");
@@ -502,7 +509,7 @@ function portfolio() {
 function leaderboard() {
   const l=D.leaderboard.data;
   return heading("LEADERBOARD",appSettings.display_locale==='en-US'?"Company research":"기업 연구")+
-  `<details><summary>${appSettings.display_locale==='en-US'?'My device':'내 기기 기준'}</summary><div id="private-subset-root"></div></details>`+directoryFilters('leader')+'<div id="leaderboard-screen"></div><p class="small">고정 대상 기업의 이름·코드 · 가격·공식 순위 미포함</p><ul class="list" id="leader-company-list"></ul><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="leader-m2-panel">'+m2Panel()+'</div>'+block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
+  `<details><summary>${appSettings.display_locale==='en-US'?'My device':'내 기기 기준'}</summary><div id="private-subset-root"></div></details>`+directoryFilters('leader')+'<p class="small leader-summary" id="leader-summary" data-leaderboard-summary role="status"></p><div id="leaderboard-screen"></div><p class="small">고정 대상 기업의 이름·코드 · 가격·공식 순위 미포함</p><ul class="list" id="leader-company-list"></ul><div id="sec-reported-panel"></div><div id="public-qg"></div><div id="leader-m2-panel">'+m2Panel()+'</div>'+block("leaderboard",t("제공된 Leaderboard"),`<ul class="list">${(l?.rows || []).map(r=>`<li class="card"><a href="#company/${encodeURIComponent(r.company_id)}"><b>#${esc(r.rank)} ${esc(r.ticker)}</b></a>${star(r.company_id)}<dl>${[[t("시총 순위"),r.market_cap_rank],["QGV",r.total_score],[t("Daily move(전일 등락)"),r.daily_move],[t("Consensus(컨센서스)"),r.consensus],[t("Scenario(시나리오)"),r.scenario],[t("Reevaluation(재평가 기준)"),r.reevaluation_trigger]].map(([k,v])=>`<dt>${t(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>${evidence(r)}</li>`).join("")}</ul>`);
 }
 function news(id) {
   const c=company(id);
@@ -603,12 +610,45 @@ function syncNavigation(route) {
   });
 }
 let listLimit=30;
+// Route history of this page (for the S04 back link and S06 scroll restore).
+let currentRoute=null,previousRoute=null,currentHash='';
+const LIST_ORIGIN=Object.freeze({leaderboard:['← 리더보드','← Leaderboard'],companies:['← 기업 탐색','← Companies'],watchlist:['← 관심 기업','← Watchlist']}),LIST_ORIGIN_HASH=/^#(leaderboard|leaderboard\/interest|companies|watchlist)$/;
 function paintCompanies(){
  const rows=DeviceWatchlist.filter(identityCompanies,prefs,{query:$('#search').value,group:$('#group-filter').value,onlyInterest:$('#only-interest').checked,sort:$('#company-sort').value});
  $('#company-list').innerHTML=rows.slice(0,listLimit).map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';$('#more-companies').hidden=rows.length<=listLimit;
 }
-function directoryRows(prefix){return DeviceWatchlist.filter(identityCompanies,prefs,{group:$('#'+prefix+'-group').value,onlyInterest:$('#'+prefix+'-interest').checked,sort:$('#'+prefix+'-sort').value});}
-let leaderboardView={view:'default',profileId:null},leaderboardRows=null;
+function directoryRows(prefix){return DeviceWatchlist.filter(identityCompanies,prefs,{query:prefix==='leader'?$('#leader-query')?.value||'':'',group:$('#'+prefix+'-group').value,onlyInterest:$('#'+prefix+'-interest').checked,sort:$('#'+prefix+'-sort').value});}
+/* S06 view state of this tab: view/profile, filters (interest, group, text), sort and scroll, plus where S04/S05 was opened
+   from (origin, for its back link). RAM first, mirrored to sessionStorage as a per-tab convenience (try/catch: RAM only when
+   storage is unavailable). No score, rank, price or v2 profile is stored: the v2 preset/gate stay in page memory (qgv2Profile). */
+const S06_KEY='investment.web.v1.s06-view',LEADER_SORTS=['qgv','ticker','name','favorites'];
+let leaderboardView={view:'default',profileId:null,interest:false,group:'',sort:'qgv',query:'',scrollY:0,anchor:null,offset:0},leaderboardRows=null,companyOrigin=null;
+// Last value written (or the defaults): nothing is written until the state differs from it, so screens never touched
+// leave sessionStorage empty.
+let leaderSaved=JSON.stringify({...leaderboardView,origin:null});
+function readLeaderView(){try{const raw=sessionStorage.getItem(S06_KEY),v=JSON.parse(raw||'null');if(!v||typeof v!=='object')return;leaderSaved=raw;
+  leaderboardView={view:['default','profile','device'].includes(v.view)?v.view:'default',profileId:typeof v.profileId==='string'?v.profileId:null,interest:v.interest===true,group:typeof v.group==='string'?v.group:'',sort:LEADER_SORTS.includes(v.sort)?v.sort:'qgv',query:typeof v.query==='string'?v.query.slice(0,60):'',scrollY:Number.isFinite(v.scrollY)&&v.scrollY>0?Math.round(v.scrollY):0,anchor:typeof v.anchor==='string'&&v.anchor.length<=64?v.anchor:null,offset:Number.isFinite(v.offset)?Math.round(v.offset):0};
+  const o=v.origin;companyOrigin=o&&typeof o.id==='string'&&typeof o.hash==='string'&&/^#(leaderboard|leaderboard\/interest|companies|watchlist)$/.test(o.hash)?{id:o.id,hash:o.hash}:null;}catch(_){}}
+function saveLeaderView(){const json=JSON.stringify({...leaderboardView,origin:companyOrigin});if(json===leaderSaved)return;leaderSaved=json;try{sessionStorage.setItem(S06_KEY,json);}catch(_){}}
+function syncLeaderView(){const q=$('#leader-query'),g=$('#leader-group');leaderboardView={...leaderboardView,interest:$('#leader-interest').checked,group:g?g.value:'',sort:LEADER_SORTS.includes($('#leader-sort').value)?$('#leader-sort').value:'qgv',query:q?q.value:''};saveLeaderView();}
+/* Scroll position of S06: the first table row in view and its distance from the viewport top (falls back to scrollY when no row
+   is in view). Restoring by row keeps the same rows in view even when content above it (e.g. the 'My device' panel) changed. */
+function leaderAnchor(){for(const r of document.querySelectorAll('#leaderboard-screen [data-leaderboard-row]')){const b=r.getBoundingClientRect();if(b.bottom>0&&b.top<window.innerHeight)return{anchor:r.dataset.leaderboardRow,offset:Math.round(b.top)};}return{anchor:null,offset:0};}
+function restoreLeaderScroll(){const v=leaderboardView,row=v.anchor?document.querySelector('#leaderboard-screen [data-leaderboard-row="'+CSS.escape(v.anchor)+'"]'):null;
+  window.scrollTo(0,row?Math.max(0,Math.round(row.getBoundingClientRect().top+window.scrollY-v.offset)):v.scrollY||0);}
+// Restore now and once more after the next two frames (PC table headers gain their sort buttons one frame later); the saved
+// position is not overwritten in between.
+let leaderRestoring=false;
+function restoreLeaderView(){leaderRestoring=true;restoreLeaderScroll();requestAnimationFrame(()=>requestAnimationFrame(()=>{if(currentRoute==='leaderboard')restoreLeaderScroll();leaderRestoring=false;}));}
+// 'QGV v2 순': the v2 rank over all 19 identities (QgvScores); filters only hide rows. No rank (NOT_AVAILABLE) goes last, by ticker.
+function rankOrder(rows,S){if(leaderboardView.sort!=='qgv')return rows;const rank=id=>{const r=S?.rows?.[id]?.rank;return Number.isInteger(r)?r:null;};
+  return [...rows].sort((a,b)=>{const x=rank(a.company_id),y=rank(b.company_id);return (x===null)-(y===null)||(x!==null&&y!==null?x-y:0)||a.ticker.localeCompare(b.ticker);});}
+function paintLeaderSummary(S,shown){const host=$('#leader-summary');if(!host)return;const en=appSettings.display_locale==='en-US',v=leaderboardView,group=prefs.groups.find(g=>g.id===v.group);
+  const sort={qgv:en?'QGV v2 (high first)':'QGV v2 순',ticker:t('티커 순'),name:t('기업명 순'),favorites:t('관심기업 우선')}[v.sort],filters=[v.interest?t('관심기업만'):null,group?(en?'group ':'그룹 ')+group.name:null,v.query.trim()?(en?'search “':'검색 “')+v.query.trim()+'”':null].filter(Boolean);
+  const view={default:en?'Default':'기본',profile:en?'My profile (v1 preview, not the official v2 score)':'내 프로필(v1 미리보기 · 공식 v2 점수 아님)',device:en?'My device (M3)':'내 기기 기준(M3)'}[v.view];
+  const p=S&&S.profile?(en?S.profile.name.name_en:S.profile.name.name)+' · '+(en?'gate ':'관문 ')+(S.profile.gate?(en?'on':'켬'):(en?'off':'끔')):'—';
+  const text=(en?'Sort: ':'정렬: ')+sort+' · '+(en?'Filter: ':'필터: ')+(filters.join(' · ')||(en?'none':'없음'))+' · '+(en?'View: ':'보기: ')+view+' · '+(en?'Profile: ':'프로필: ')+p+' · '+(en?shown+' of '+identityCompanies.length+' shown':identityCompanies.length+'개 중 '+shown+'개 표시');
+  if(host.textContent!==text)host.textContent=text;}
 // Scores (S04/S05/S06, report, rehearsal) come only from QgvScores (the scoring_default setting). QGV v2 profile choice and the
 // device quotes of the v2 V cross-section live in this page's memory only: never stored, logged or sent.
 let qgv2Profile={preset:null,gate:null},qgv2Quotes={},qgv2QuotesKey='';
@@ -626,10 +666,18 @@ async function refreshQgv2Quotes(after){const inputs=window.Qgv2Inputs?publicScr
  let q={};try{q=await QgvScores.collectQuotes(window,{identities:identityCompanies,v2Inputs:inputs,catalog});}catch(_){q={};}// Quotes accumulate for this page session (the Universe read is dropped on navigation); a Universe read/clear resets them.
  const next={...qgv2Quotes,...q},k=JSON.stringify(next);if(k===qgv2QuotesKey)return;qgv2Quotes=next;qgv2QuotesKey=k;if(after)after();}
 // M3 ranks come from the open Universe read (RAM only) and are repainted into S06 when that read finishes or is cleared.
+// Ranks and totals are computed over ALL identities (the same population as S04), then only the filtered rows are shown.
+// A repaint keeps keyboard focus on the same control (preset, gate, view, profile, detail button) instead of dropping it.
+function focusKey(n){if(!n||!n.dataset)return null;for(const k of ['qgv2Preset','leaderboardView','leaderboardProfile','qgv2Gate'])if(Object.hasOwn(n.dataset,k))return '[data-'+k.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+(n.dataset[k]?'="'+CSS.escape(n.dataset[k])+'"':'')+']';
+  return n.getAttribute('aria-controls')?'[aria-controls="'+CSS.escape(n.getAttribute('aria-controls'))+'"]':null;}
 function paintLeaderboardScreen(rows){leaderboardRows=rows;let profiles=[];try{profiles=DeviceProfiles.read(localStorage).strategies;}catch(_){profiles=[];}
- LeaderboardScreen.mount($('#leaderboard-screen'),rows,{publicScreens,locale:appSettings.display_locale,profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,...leaderboardView,scores:qgvScores(rows),onView:patch=>{if(Object.hasOwn(patch,'preset')||Object.hasOwn(patch,'gate')){qgv2Profile={...qgv2Profile,...patch};paintLeaderboardScreen(rows);return;}leaderboardView={...leaderboardView,...patch};if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen(rows);}});
+ const host=$('#leaderboard-screen'),S=qgvScores(),shown=rankOrder(rows,S),active=host&&host.contains(document.activeElement)?focusKey(document.activeElement):null;
+ LeaderboardScreen.mount(host,shown,{publicScreens,locale:appSettings.display_locale,profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,view:leaderboardView.view,profileId:leaderboardView.profileId,scores:S,onView:patch=>{if(Object.hasOwn(patch,'preset')||Object.hasOwn(patch,'gate')){qgv2Profile={...qgv2Profile,...patch};paintLeaderboardScreen(rows);return;}leaderboardView={...leaderboardView,...patch};saveLeaderView();if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen(rows);}});
+ if(active){const n=host&&host.querySelector(active);if(n)n.focus({preventScroll:true});}
+ paintLeaderSummary(S,shown.length);
  void refreshQgv2Quotes(()=>{if(leaderboardRows===rows&&$('#leaderboard-screen'))paintLeaderboardScreen(rows);});}
-function paintDirectory(route){const prefix=route==='watchlist'?'watch':'leader',rows=directoryRows(prefix),list=$('#'+(route==='watchlist'?'watchlist':'leader')+'-company-list');list.innerHTML=rows.map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';if(route==='leaderboard'){const companyIds=rows.map(r=>r.company_id);paintLeaderboardScreen(rows);$('#leader-m2-panel').innerHTML=m2Panel(undefined,companyIds);SecReported.mount($('#sec-reported-panel'),secReported,{companyIds,locale:appSettings.display_locale});PublicScreens.mount($('#public-qg'),publicScreens,{kind:'qg',companyIds,locale:appSettings.display_locale});}}
+function paintDirectory(route){const prefix=route==='watchlist'?'watch':'leader';if(route==='leaderboard')syncLeaderView();
+ const rows=route==='leaderboard'?rankOrder(directoryRows(prefix),qgvScores()):directoryRows(prefix),list=$('#'+(route==='watchlist'?'watchlist':'leader')+'-company-list');list.innerHTML=rows.map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';if(route==='leaderboard'){const companyIds=rows.map(r=>r.company_id);paintLeaderboardScreen(rows);$('#leader-m2-panel').innerHTML=m2Panel(undefined,companyIds);SecReported.mount($('#sec-reported-panel'),secReported,{companyIds,locale:appSettings.display_locale});PublicScreens.mount($('#public-qg'),publicScreens,{kind:'qg',companyIds,locale:appSettings.display_locale});}}
 
 function paintNews(id) {
   const c=company(id),scope=$("#news-scope").value,held=D.portfolio.data?.holdings?.map(h=>h.company_id) || [];
@@ -788,13 +836,23 @@ function renderRoute() {
   window.GoogleSheetSetup?.disposeAll();
   window.ForwardValidation?.disposeAll();disposeReport();
   notice("");syncShell();
-  let [route,id]=location.hash.slice(1).split("/");route=route || "home";
+  let [route,id,sub]=location.hash.slice(1).split("/");route=route || "home";
   let anchor=null;
   for(const screen of ["validation","technical"]) if(route.startsWith(screen+"-")) {anchor=route;route=screen;}
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,qgv,analysis:()=>analysis(id),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
+  const routes={home,qgv,analysis:()=>analysis(id,sub||null),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
   if(!routes[route]) route="home";
   if((route==='company'||route==='analysis')&&id) rawDataCompany=id;
+  previousRoute=currentRoute;const previousHash=currentHash;currentRoute=route;currentHash=location.hash;
+  // S04/S05 back link: remember the list it was opened from; keep it while moving between this company's screens.
+  if(route==='company'||route==='analysis'){
+    if(LIST_ORIGIN[previousRoute]) companyOrigin={id,hash:LIST_ORIGIN_HASH.test(previousHash)?previousHash:'#'+previousRoute};
+    else if(!(companyOrigin && companyOrigin.id===id && (previousRoute===null || ['company','analysis','technical','news'].includes(previousRoute)))) companyOrigin=null;
+    saveLeaderView();
+  }
+  // Coming back to S06 from S04/S05 (back link or browser back) restores its scroll; filters and sort always come from leaderboardView.
+  const restoreLeader=route==='leaderboard' && ['company','analysis'].includes(previousRoute);
+  if(route==='leaderboard' && id==='interest') leaderboardView={...leaderboardView,interest:true};
   $("#content").innerHTML=routes[route]();
   if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
   if(['playbook','portfolio','company'].includes(route)&&window.PlaybookScreen){const place=route==='playbook'?$('#playbook-screen'):document.createElement('div');if(route!=='playbook')$('#content').append(place);void PlaybookScreen.mount(place,{catalogPromise:deviceCatalog(),scoreOptions:playbookScoreOptions,screens:publicScreens,idByTicker:new Map(identityCompanies.map(r=>[r.ticker,r.company_id])),publicCatalog,interests:[...prefs.interests],universeCodesPromise:fetch('universe-codes.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>p?.schema==='universe-codes/1'&&Array.isArray(p.codes)?p.codes:[]).catch(()=>[]),full:route==='playbook'}).catch(()=>{if(place.isConnected)place.textContent='플레이북 확인 불가 · 기기 기록을 읽을 수 없습니다.';});}
@@ -802,7 +860,8 @@ function renderRoute() {
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
-  if(route==='analysis') CompanyScreen.wireTabs($('#content'));
+  // Tab choice is mirrored into the hash ('#analysis/<id>/<tab>') with replaceState: no new history entry, back leaves S05.
+  if(route==='analysis') CompanyScreen.wireTabs($('#content'),{onSelect:key=>{try{history.replaceState(history.state,'','#analysis/'+encodeURIComponent(id)+(key==='summary'?'':'/'+key));currentHash=location.hash;}catch(_){}}});
   if((route==='company'||route==='analysis')&&window.Qgv2Inputs&&publicScreens[Qgv2Inputs.FILE]) void refreshQgv2Quotes(()=>{const h=location.hash.slice(1).split('/');if(h[0]===route&&$('[data-company-card="qgv"],[data-analysis-panel="factors"]'))repaintScores(routes[route]);});
   if(route==='company'||route==='analysis') paintValue(route,id);
   if(route==='model') {attachDeviceActual('#model-actual-summary',false);paintModel();}
@@ -829,7 +888,8 @@ function renderRoute() {
   if(FLOW_STEPS[flowParent]) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${FLOW_STEPS[flowParent][0]}"><span class="flow-number">${FLOW_STEPS[flowParent][0]}</span> ${esc(t(FLOW_STEPS[flowParent][1]))}</p>`);
   if(QGV_CHILDREN.includes(route) || route==="research") {
     const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← 검증",sub=QGV_SUBCATEGORY[route];
-    $("#content").insertAdjacentHTML("afterbegin",`<p class="parent-row"><a class="parent-link" href="#${parent}">${esc(t(key))}</a>${sub?`<span class="sub-category" data-sub-category>${esc(t(sub))}</span>`:""}</p>`);
+    const origin=(route==='company'||route==='analysis') && companyOrigin && companyOrigin.id===id?companyOrigin:null,back=origin?LIST_ORIGIN[origin.hash.slice(1).split('/')[0]]:null;
+    $("#content").insertAdjacentHTML("afterbegin",`<p class="parent-row"><a class="parent-link" href="#${parent}">${esc(t(key))}</a>${back?`<a class="parent-link" href="${esc(origin.hash)}" data-origin-link="${esc(origin.hash.slice(1))}">${esc(back[appSettings.display_locale==='en-US'?1:0])}</a>`:""}${sub?`<span class="sub-category" data-sub-category>${esc(t(sub))}</span>`:""}</p>`);
   }
   if(["settings","actual","portfolio"].includes(route) && window.DeviceBackup?.mountRestoredNotice) {
     $("#content").insertAdjacentHTML("afterbegin",'<div id="backup-restored-notice"></div>');
@@ -861,7 +921,7 @@ function renderRoute() {
     $("#search").oninput=$("#only-interest").onchange=$("#group-filter").onchange=$("#company-sort").onchange=()=>{listLimit=30;paintCompanies();};
     $("#more-companies").onclick=()=>{listLimit+=30;paintCompanies();};wireGroups();
   }
-  if(route==='watchlist'||route==='leaderboard'){const prefix=route==='watchlist'?'watch':'leader';if(route==='leaderboard'&&id==='interest')$('#leader-interest').checked=true;for(const key of ['interest','group','sort'])$('#'+prefix+'-'+key).onchange=()=>paintDirectory(route);paintDirectory(route);if(route==='watchlist'){wireGroups();paintDisclosures($('#watch-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No disclosures or news for your interest companies.':'관심 기업의 공시·뉴스가 없습니다.');paintDartDisclosures($('#watch-dart-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No DART disclosures for your interest companies.':'관심 기업의 DART 공시가 없습니다.');}}
+  if(route==='watchlist'||route==='leaderboard'){const prefix=route==='watchlist'?'watch':'leader';if(route==='leaderboard'&&id==='interest')$('#leader-interest').checked=true;for(const key of ['interest','group','sort'])$('#'+prefix+'-'+key).onchange=()=>paintDirectory(route);if(route==='leaderboard')$('#leader-query').oninput=()=>paintDirectory(route);paintDirectory(route);if(route==='watchlist'){wireGroups();paintDisclosures($('#watch-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No disclosures or news for your interest companies.':'관심 기업의 공시·뉴스가 없습니다.');paintDartDisclosures($('#watch-dart-disclosures'),prefs.interests,appSettings.display_locale==='en-US'?'No DART disclosures for your interest companies.':'관심 기업의 DART 공시가 없습니다.');}}
   if(route==="news") {
     for(const name of ["news","network"]) $("#show-"+name).onclick=()=>{
       $("#news-pane").hidden=name!=="news";$("#network-pane").hidden=name!=="network";$("#news-disclosures").hidden=name!=="news";$("#news-dart-disclosures").hidden=name!=="news";
@@ -873,7 +933,8 @@ function renderRoute() {
     {const c=company(id);paintDartDisclosures($("#news-dart-disclosures"),c?[c.company_id]:null);}
   }
   for(const f of document.querySelectorAll("iframe")) f.onload=()=>f.contentWindow.postMessage({type:"display_locale",locale:appSettings.display_locale},location.origin);
-  window.scrollTo(0,0);
+  if(restoreLeader) restoreLeaderView();
+  else window.scrollTo(0,0);
   if(anchor) document.getElementById(anchor)?.scrollIntoView({block:"start"});
   if(route==="qgv" && ["investments","companies","market","performance"].includes(id)) {
     const group=$("#qgv-"+id),title=group.querySelector("h2");
@@ -928,7 +989,10 @@ document.addEventListener("click", (e) => {
       x.textContent = prefs.interests.includes(x.dataset.star) ? "★" : "☆";
       x.setAttribute("aria-pressed", prefs.interests.includes(x.dataset.star));
     });
+    const listId=b.closest('[id]')?.id||null;
     const route=location.hash.slice(1).split('/')[0];if(route==='companies'){paintCompanies();}if(route==='leaderboard'||route==='watchlist')paintDirectory(route);const groups=$('#groups');if(groups){const holder=document.createElement('div');holder.innerHTML=groupsUI();groups.innerHTML=holder.querySelector('#groups').innerHTML;}const ownGroups=$('#company-groups');if(ownGroups)ownGroups.innerHTML=companyGroups(id);
+    // The list was re-rendered: keep keyboard focus on the same star (or the page title when the row was filtered out).
+    if(!b.isConnected){const scope=listId&&document.getElementById(listId),next=(scope||document).querySelector('[data-star="'+CSS.escape(id)+'"]');if(next)next.focus({preventScroll:true});else focusHeading();}
   }
   if (b.dataset.rename) {
     const g = prefs.groups.find((g) => g.id === b.dataset.rename),
@@ -1059,7 +1123,17 @@ window.addEventListener("message", (e) => {
     location.origin,
   );
 });
+// Route change: move focus to the new page title (h1, tabindex=-1) without scrolling, unless the screen already focused
+// something inside it (e.g. a QGV hub group). Keeps S06 scroll restoration intact.
+function focusHeading(){const h=$('#content h1');if(!h)return;if(!h.hasAttribute('tabindex'))h.setAttribute('tabindex','-1');h.focus({preventScroll:true});}
 window.addEventListener("hashchange", () => D && render());
+window.addEventListener("hashchange", () => {if(!D)return;const a=document.activeElement;if(!a||a===document.body||!$('#content').contains(a))focusHeading();});
+// S06 scroll position is kept while S06 is the open screen (RAM + sessionStorage, debounced).
+// Crossing the phone width redraws the S06 table (narrow: rank, company, QGV + details button; wide: all shown columns).
+try{const mq=window.matchMedia(window.LeaderboardScreen?.NARROW||'(max-width: 749.98px)');if(mq.addEventListener)mq.addEventListener('change',()=>{if(currentRoute==='leaderboard'&&leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);});}catch(_){}
+let leaderScrollTimer=0,leaderScrollFrame=0;
+window.addEventListener("scroll",()=>{if(currentRoute!=='leaderboard'||leaderRestoring||leaderScrollFrame)return;leaderScrollFrame=requestAnimationFrame(()=>{leaderScrollFrame=0;if(currentRoute!=='leaderboard'||leaderRestoring)return;
+  leaderboardView={...leaderboardView,scrollY:Math.max(0,Math.round(window.scrollY)),...leaderAnchor()};clearTimeout(leaderScrollTimer);leaderScrollTimer=setTimeout(saveLeaderView,200);});},{passive:true});
 $("#global-search").oninput=paintGlobalSearch;
 $("#global-search").onkeydown=e=>{
   const links=[...document.querySelectorAll("#global-results a")];
@@ -1100,7 +1174,7 @@ Promise.all([...(["data.json","entities.json","sec-m2-candidates.json"].map(path
   const publicSections=["universe","qgv","technical","macro","portfolio","leaderboard","news","relationships","changes"];
   const safeData={schema_version:1,companies:[]};
   for(const name of publicSections) safeData[name]={state:"NOT_AVAILABLE",as_of:null,source:null,reason:"공개 가격 경계에 따라 제공되지 않습니다. (GSQ-010)",data:null};
-  D=guardSections(safeData);publicEntities=catalog.entities.filter(e=>e.entity_type!=="COMPANY");rebuildSearchIndex();load();render();paintGlobalSearch();
+  D=guardSections(safeData);publicEntities=catalog.entities.filter(e=>e.entity_type!=="COMPANY");rebuildSearchIndex();load();readLeaderView();render();paintGlobalSearch();
   // App open: with the price store on and Google connected, append the core symbols' daily bars after the last stored date.
   try{if(window.PriceStore) PriceStore.autoSync(window,{coreSymbols:priceStoreCore});}catch(_){}
 }).catch(showUnavailable);
