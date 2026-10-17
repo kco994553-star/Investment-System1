@@ -118,6 +118,74 @@ async function flow(page, width) {
   await page.locator('[data-technical-symbol]').waitFor();assert.equal(await page.locator('[data-technical-symbol]').inputValue(), 'nvda');
   phase = 'FLOW_DONE';
 }
+/* FE-MISSING-2: S06 exploration filter + S04/S05 calculation status on the missing-data fixture (F.missingPayload: TARGET amd Q 2/5
+   below 50% and G 4/5 partial; TARGET msft STALE; NASDAQ:GOOGL/AMZN FINANCIAL). Q·G-only rows are listed without a rank, NA is
+   never 0, the filter survives S04 and back. */
+async function noWideScroll(page, what) { assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no horizontal scroll ' + what); }
+async function missingFlow(page) {
+  const E = '[data-leaderboard-explore]';
+  phase = 'M_FILTER';await page.locator(E).waitFor();assert.equal(await page.locator(E + ' button').count(), 4);
+  assert.equal(await page.locator(E + ' [data-leaderboard-explore-option="all"]').getAttribute('aria-pressed'), 'true');
+  const counts = await page.locator(E + ' button').evaluateAll((b) => Object.fromEntries(b.map((x) => [x.dataset.leaderboardExploreOption, Number(x.textContent.match(/(\d+)$/)[1])])));
+  assert.equal(counts.ranked + counts.partial + counts.check, counts.all);assert.equal(counts.all, 19);
+  // Value preset: FINANCIAL rows have only Q·G (25+20 < 50% of the preset weight) -> no total, no rank, listed under '일부 축만 가능'.
+  await page.locator('[data-qgv2-preset="value"]').click();await page.locator('[data-qgv2-preset="value"][aria-pressed="true"]').waitFor();
+  // In 'all' the ranked rows come first in rank order and no unranked row is mixed into them.
+  const order = await page.locator('[data-leaderboard-table] tbody tr').evaluateAll((rows) => rows.map((r) => r.cells[0].textContent));
+  const firstNa = order.indexOf('—');assert.ok(firstNa > 0 && order.slice(firstNa).every((x) => x === '—'), JSON.stringify(order));
+  await page.locator(E + ' [data-leaderboard-explore-option="partial"]').click();await page.locator(E + '[data-leaderboard-explore="partial"]').waitFor();
+  assert.equal(await page.locator(E + ' [data-leaderboard-explore-option="partial"]').getAttribute('aria-pressed'), 'true');
+  const ids = await rowIds(page);assert.ok(ids.includes('googl') && ids.includes('amzn') && !ids.includes('nvda') && !ids.includes('gev'), JSON.stringify(ids));
+  assert.equal(await page.locator('[data-leaderboard-rank]').count(), 0, 'no rank in the partial view');
+  for (const id of ids) { const label = page.locator('[data-leaderboard-row="' + id + '"] [data-leaderboard-unranked="PARTIAL_AXES"]');assert.ok(await label.isVisible(), id);assert.match(await label.textContent(), /QGV 종합 순위 밖 · Q \d+\.\d · G \d+\.\d/); }
+  assert.match(await page.locator('[data-leaderboard-explore-note="partial"]').textContent(), /QGV 종합 순서에 넣지 않으며 순위가 없습니다/);
+  const summary = await page.locator('[data-leaderboard-summary]').textContent();assert.match(summary, /필터: 일부 축만 가능 · 보기: 기본/);assert.match(summary, new RegExp('19개 중 ' + ids.length + '개 표시'));
+  assert.equal(await page.locator('[data-leaderboard-table] [data-leaderboard-total="0.0"]').count(), 0);await noWideScroll(page, 'S06 partial');
+  // S04 FINANCIAL (GOOGL): earnings quality and V are '해당 없음', separate from missing data; Q fill against the original weights.
+  phase = 'M_S04_FIN';await page.locator('[data-leaderboard-row="googl"] a').first().click();await page.locator('[data-qgv-coverage]').waitFor();
+  const q = page.locator('[data-qgv-coverage] [data-axis-coverage="Q"]');assert.equal(await q.getAttribute('data-axis-status'), 'READY');
+  assert.match(await q.locator('[data-axis-fill]').textContent(), /^충족률 80% · 4\/5 요인 \(해당 없음 1개 제외\)$/);
+  await q.locator('summary').first().click();const eq = q.locator('[data-factor-coverage="q_earnings_quality"]');assert.equal(await eq.getAttribute('data-factor-state'), 'NOT_APPLICABLE');
+  assert.ok(await eq.isVisible());assert.match(await eq.textContent(), /해당 없음: 금융업 기준에는/);
+  const v = page.locator('[data-qgv-coverage] [data-axis-coverage="V"]');assert.equal(await v.getAttribute('data-axis-status'), 'NOT_APPLICABLE');assert.match(await v.textContent(), /해당 없음: 금융업은 EV·FCF/);
+  assert.equal(await page.locator('[data-data-state="NOT_APPLICABLE"]').count(), 1);assert.equal(await page.locator('[data-data-state="SOURCE_MISSING"], [data-data-state="PARTIAL"]').count(), 0);
+  assert.equal(await page.locator('[data-qgv-usable]').getAttribute('data-qgv-usable'), 'EXCLUDED');assert.match(await page.locator('[data-source-period]').textContent(), /^FY \d{4}-\d{2}-\d{2}$/);
+  await noWideScroll(page, 'S04 financial');
+  phase = 'M_BACK';await page.locator('[data-origin-link="leaderboard"]').click();await page.locator('[data-leaderboard-table]').waitFor();
+  assert.equal(await page.locator(E + ' [data-leaderboard-explore-option="partial"]').getAttribute('aria-pressed'), 'true', 'filter restored');assert.deepEqual(await rowIds(page), ids);
+  assert.equal(await page.locator('[data-leaderboard-summary]').textContent(), summary);
+  phase = 'M_HISTORY';await page.locator('[data-leaderboard-row="amzn"] a').first().click();await page.locator('[data-qgv-coverage]').waitFor();await page.goBack();await page.locator('[data-leaderboard-table]').waitFor();
+  assert.equal(await page.locator(E + ' [data-leaderboard-explore-option="partial"]').getAttribute('aria-pressed'), 'true', 'filter restored by browser back');assert.deepEqual(await rowIds(page), ids);
+  // '자료 확인 필요': rows without any axis score, labelled.
+  await page.locator(E + ' [data-leaderboard-explore-option="check"]').click();await page.locator(E + '[data-leaderboard-explore="check"]').waitFor();
+  const check = await rowIds(page);assert.ok(check.includes('gev') && !check.includes('googl'));assert.equal(await page.locator('[data-leaderboard-row="gev"] [data-leaderboard-unranked="CHECK_DATA"]').textContent(), '자료 확인 필요');
+  await page.locator(E + ' [data-leaderboard-explore-option="all"]').click();await page.locator(E + '[data-leaderboard-explore="all"]').waitFor();
+  // S04 partial axis (AMD TARGET row): Q 2/5 = 45% -> 미산출 with the published reason, G 4/5 = 85% -> 부분 산출 with renormalized weights.
+  phase = 'M_S04_PARTIAL';await page.goto(BASE + '#company/amd');await page.locator('[data-qgv-coverage]').waitFor();
+  const qa = page.locator('[data-qgv-coverage] [data-axis-coverage="Q"]'), ga = page.locator('[data-qgv-coverage] [data-axis-coverage="G"]');
+  assert.equal(await qa.getAttribute('data-axis-status'), 'NOT_AVAILABLE');assert.equal(await qa.locator('[data-axis-fill]').textContent(), '충족률 45% · 2/5 요인');
+  assert.match(await qa.locator('[data-axis-reason]').textContent(), /원래 가중치 기준 충족률이 50% 미만/);
+  assert.equal(await ga.getAttribute('data-axis-status'), 'PARTIAL');assert.equal(await ga.locator('[data-axis-fill]').textContent(), '충족률 85% · 4/5 요인');
+  await ga.locator('summary').first().click();const acc = ga.locator('[data-factor-coverage="g_recent_acceleration"]');assert.equal(await acc.getAttribute('data-factor-state'), 'PARTIAL');
+  assert.match(await acc.textContent(), /원래 15% → 제외/);assert.match(await acc.locator('[data-factor-reason]').textContent(), /^자료 미확보: SEC 공시에서/);
+  await acc.locator('[data-evidence] summary').click();assert.match(await acc.locator('[data-evidence]').textContent(), /SEC_FACTOR_NOT_AVAILABLE.*revenue_acceleration/);
+  assert.match(await ga.locator('[data-factor-coverage="g_revenue_growth"]').textContent(), /원래 25% → 재배분 29\.4%/);
+  assert.equal(await page.locator('[data-data-state="PARTIAL"]').count(), 1);
+  for (const li of await page.locator('[data-qgv-coverage] [data-factor-coverage]').all()) if ((await li.getAttribute('data-factor-state')) !== 'OK') assert.ok(!/점수 0/.test(await li.textContent()), 'NA is never 0');
+  await noWideScroll(page, 'S04 partial');
+  // S05 factors tab: renormalized column, the NA rows show — and a sentence (raw code under 근거).
+  phase = 'M_S05';await page.goto(BASE + '#analysis/amd/factors');const panel = page.locator('[data-analysis-panel="factors"]');await panel.locator('[data-v2-factor-table]').waitFor();
+  const row = panel.locator('[data-v2-factor="g_recent_acceleration"]');assert.equal(await row.getAttribute('data-factor-state'), 'PARTIAL');assert.equal(await row.locator('[data-factor-score]').textContent(), '—');
+  assert.equal(await row.locator('[data-factor-share]').textContent(), '—');assert.match(await panel.locator('[data-v2-factor="g_revenue_growth"] [data-factor-share]').textContent(), /^29\.4%$/);
+  assert.equal(await panel.locator('[data-qgv-coverage] [data-axis-coverage]').count(), 3);
+  for (const cell of await panel.locator('[data-v2-factor][data-factor-state] [data-factor-score]').all()) assert.equal(await cell.textContent(), '—');
+  await noWideScroll(page, 'S05');
+  // STALE (MSFT TARGET row collected 2026-09-20): the chip names the last valid value's fiscal period and the collection day.
+  phase = 'M_STALE';await page.goto(BASE + '#company/msft');await page.locator('[data-qgv-coverage]').waitFor();
+  assert.match(await page.locator('[data-data-state="STALE"]').textContent(), /^오래된 자료 · 마지막 유효 값 기준 FY 2025-12-31 · 수집 2026-09-20$/);
+  assert.equal(await page.locator('[data-source-acquired]').textContent(), '2026-09-20 00:00 UTC');assert.match(await page.locator('[data-source-used]').textContent(), /반영 · 오래된 자료/);
+  phase = 'M_DONE';
+}
 (async () => {
   const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_EXECUTABLE_PATH });let pass = 0, fail = 0;
   try {
@@ -287,6 +355,29 @@ async function flow(page, width) {
         assert.equal(await page.locator('#leader-query').inputValue(), '');assert.deepEqual(await rowIds(page), ids2);assert.ok(await h1Focused(page));await withdrawnS06(page);
         assert.deepEqual(external, [], 'no request to another origin');assert.equal(errors, 0);pass++;console.log('PASS QGV v2 withdrawn flow ' + width);
       } catch (e) { fail++;console.log('FAIL QGV v2 withdrawn flow ' + width + ' ' + phase + ' ' + (e.code === 'ERR_ASSERTION' ? 'CONTRACT ' + e.message.split('\n').slice(0, 6).join(' | ') + ' @' + (e.stack.match(/browser_test.js:(\d+)/) || [])[1] : 'EXECUTION ' + String(e.message).split('\n')[0])); } finally { await context.close(); }
+    }
+    // FE-MISSING-2 missing-data flow (S06 filter -> S04/S05 status -> back) at 390 and 1280.
+    for (const width of [390, 1280]) {
+      const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block' });
+      await routeEmptyPublicScreens(context);
+      await context.route('**/sec-qg-factors.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(v1()) }));
+      await context.route('**/sec-qgv2.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(F.missingPayload()) }));
+      const page = await context.newPage();let errors = 0;page.on('pageerror', () => errors++);const external = [];
+      page.on('request', (r) => { if (!/^(data|blob):/.test(r.url()) && new URL(r.url()).origin !== ORIGIN) external.push(r.url()); });
+      await page.route('**/*', (r) => (new URL(r.request().url()).origin === ORIGIN ? r.fallback() : r.abort()));
+      try {
+        phase = 'M_SETUP';await page.goto(BASE + '#settings');await page.locator('[data-universe-source]').waitFor();
+        await page.locator('[data-universe-source]').fill('u'.repeat(24));await page.locator('[data-universe-settings] button[type="submit"]').click();
+        await page.evaluate(async (values) => {
+          await DeviceActual.sheetSettings(window, { schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: '', range: 'Quotes!A1:C22' });
+          const session = { state: () => ({ enabled: true, connected: true }), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchValues() { return { values }; } };
+          window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session };location.hash = 'leaderboard';
+        }, F.strictUniverseValues());
+        await page.locator('[data-leaderboard-table]').waitFor();await page.locator('details:has(#private-subset-root) > summary').click();
+        await page.locator('[data-private-subset] [data-subset-action="read"]:enabled').click();await page.locator('[data-qgv2-state="READY"]').filter({ hasText: /가격 [1-9]\d/ }).waitFor();
+        await missingFlow(page);
+        assert.deepEqual(external, [], 'no request to another origin');assert.equal(errors, 0);pass++;console.log('PASS QGV v2 missing-data flow ' + width);
+      } catch (e) { fail++;console.log('FAIL QGV v2 missing-data flow ' + width + ' ' + phase + ' ' + (e.code === 'ERR_ASSERTION' ? 'CONTRACT ' + e.message.split('\n').slice(0, 6).join(' | ') + ' @' + (e.stack.match(/browser_test.js:(\d+)/) || [])[1] : 'EXECUTION ' + String(e.message).split('\n')[0])); } finally { await context.close(); }
     }
   } finally { await browser.close(); }
   console.log('COUNTS pass=' + pass + ' fail=' + fail);process.exitCode = fail ? 1 : 0;

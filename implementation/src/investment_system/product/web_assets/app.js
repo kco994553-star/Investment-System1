@@ -626,12 +626,14 @@ function directoryRows(prefix){return DeviceWatchlist.filter(identityCompanies,p
    from (origin, for its back link). RAM first, mirrored to sessionStorage as a per-tab convenience (try/catch: RAM only when
    storage is unavailable). No score, rank, price or v2 profile is stored: the v2 preset/gate stay in page memory (qgv2Profile). */
 const S06_KEY='investment.web.v1.s06-view',LEADER_SORTS=['qgv','ticker','name','favorites'];
-let leaderboardView={view:'default',profileId:null,interest:false,group:'',sort:'qgv',query:'',scrollY:0,anchor:null,offset:0},leaderboardRows=null,companyOrigin=null;
+let leaderboardView={view:'default',profileId:null,interest:false,group:'',sort:'qgv',query:'',explore:'all',scrollY:0,anchor:null,offset:0},leaderboardRows=null,companyOrigin=null;
+// S06 exploration filter (FE-MISSING-2): all / QGV available / some axes only / check data (LeaderboardScreen.EXPLORE).
+const LEADER_EXPLORE=['all','ranked','partial','check'];
 // Last value written (or the defaults): nothing is written until the state differs from it, so screens never touched
 // leave sessionStorage empty.
 let leaderSaved=JSON.stringify({...leaderboardView,origin:null});
 function readLeaderView(){try{const raw=sessionStorage.getItem(S06_KEY),v=JSON.parse(raw||'null');if(!v||typeof v!=='object')return;leaderSaved=raw;
-  leaderboardView={view:['default','profile','device'].includes(v.view)?v.view:'default',profileId:typeof v.profileId==='string'?v.profileId:null,interest:v.interest===true,group:typeof v.group==='string'?v.group:'',sort:LEADER_SORTS.includes(v.sort)?v.sort:'qgv',query:typeof v.query==='string'?v.query.slice(0,60):'',scrollY:Number.isFinite(v.scrollY)&&v.scrollY>0?Math.round(v.scrollY):0,anchor:typeof v.anchor==='string'&&v.anchor.length<=64?v.anchor:null,offset:Number.isFinite(v.offset)?Math.round(v.offset):0};
+  leaderboardView={view:['default','profile','device'].includes(v.view)?v.view:'default',profileId:typeof v.profileId==='string'?v.profileId:null,interest:v.interest===true,group:typeof v.group==='string'?v.group:'',sort:LEADER_SORTS.includes(v.sort)?v.sort:'qgv',query:typeof v.query==='string'?v.query.slice(0,60):'',explore:LEADER_EXPLORE.includes(v.explore)?v.explore:'all',scrollY:Number.isFinite(v.scrollY)&&v.scrollY>0?Math.round(v.scrollY):0,anchor:typeof v.anchor==='string'&&v.anchor.length<=64?v.anchor:null,offset:Number.isFinite(v.offset)?Math.round(v.offset):0};
   const o=v.origin;companyOrigin=o&&typeof o.id==='string'&&typeof o.hash==='string'&&/^#(leaderboard|leaderboard\/interest|companies|watchlist)$/.test(o.hash)?{id:o.id,hash:o.hash}:null;}catch(_){}}
 function saveLeaderView(){const json=JSON.stringify({...leaderboardView,origin:companyOrigin});if(json===leaderSaved)return;leaderSaved=json;try{sessionStorage.setItem(S06_KEY,json);}catch(_){}}
 function syncLeaderView(){const q=$('#leader-query'),g=$('#leader-group');leaderboardView={...leaderboardView,interest:$('#leader-interest').checked,group:g?g.value:'',sort:LEADER_SORTS.includes($('#leader-sort').value)?$('#leader-sort').value:'qgv',query:q?q.value:''};saveLeaderView();}
@@ -648,7 +650,7 @@ function restoreLeaderView(){leaderRestoring=true;restoreLeaderScroll();requestA
 function rankOrder(rows,S){if(leaderboardView.sort!=='qgv')return rows;const rank=id=>{const r=S?.rows?.[id]?.rank;return Number.isInteger(r)?r:null;};
   return [...rows].sort((a,b)=>{const x=rank(a.company_id),y=rank(b.company_id);return (x===null)-(y===null)||(x!==null&&y!==null?x-y:0)||a.ticker.localeCompare(b.ticker);});}
 function paintLeaderSummary(S,shown){const host=$('#leader-summary');if(!host)return;const en=appSettings.display_locale==='en-US',v=leaderboardView,group=prefs.groups.find(g=>g.id===v.group);
-  const sort={qgv:en?'QGV v2 (high first)':'QGV v2 순',ticker:t('티커 순'),name:t('기업명 순'),favorites:t('관심기업 우선')}[v.sort],filters=[v.interest?t('관심기업만'):null,group?(en?'group ':'그룹 ')+group.name:null,v.query.trim()?(en?'search “':'검색 “')+v.query.trim()+'”':null].filter(Boolean);
+  const sort={qgv:en?'QGV v2 (high first)':'QGV v2 순',ticker:t('티커 순'),name:t('기업명 순'),favorites:t('관심기업 우선')}[v.sort],filters=[v.interest?t('관심기업만'):null,group?(en?'group ':'그룹 ')+group.name:null,v.query.trim()?(en?'search “':'검색 “')+v.query.trim()+'”':null,v.explore!=='all'&&v.view!=='profile'?(LeaderboardScreen.EXPLORE.find(e=>e[0]===v.explore)||[])[en?2:1]:null].filter(Boolean);
   const view={default:en?'Default':'기본',profile:en?'My profile (v1 preview, not the official v2 score)':'내 프로필(v1 미리보기 · 공식 v2 점수 아님)',device:en?'My device (M3)':'내 기기 기준(M3)'}[v.view];
   const p=S&&S.profile?(en?S.profile.name.name_en:S.profile.name.name)+' · '+(en?'gate ':'관문 ')+(S.profile.gate?(en?'on':'켬'):(en?'off':'끔')):'—';
   const text=(en?'Sort: ':'정렬: ')+sort+' · '+(en?'Filter: ':'필터: ')+(filters.join(' · ')||(en?'none':'없음'))+' · '+(en?'View: ':'보기: ')+view+' · '+(en?'Profile: ':'프로필: ')+p+' · '+(en?shown+' of '+identityCompanies.length+' shown':identityCompanies.length+'개 중 '+shown+'개 표시');
@@ -659,7 +661,9 @@ let qgv2Profile={preset:null,gate:null},qgv2Quotes={},qgv2QuotesKey='';
 // New device quotes change only the score sections. Repaint those in place: a full render() would reset the open analysis
 // tab, the value panel, the loaded private history table and the playbook panel.
 const SCORE_SECTIONS=['[data-company-badges]','[data-company-card="qgv"]','[data-analysis-panel="summary"]','[data-analysis-panel="factors"]'];
-function repaintScores(build){const fresh=document.createElement('div');fresh.innerHTML=build();for(const sel of SCORE_SECTIONS){const live=$('#content '+sel),next=fresh.querySelector(sel);if(live&&next)live.innerHTML=next.innerHTML;}}
+// Coverage sections the user opened (details[data-keep-open]) stay open across the repaint.
+function repaintScores(build){const fresh=document.createElement('div');fresh.innerHTML=build();for(const sel of SCORE_SECTIONS){const live=$('#content '+sel),next=fresh.querySelector(sel);if(!live||!next)continue;
+ const open=new Set([...live.querySelectorAll('details[data-keep-open][open]')].map(d=>d.dataset.keepOpen));for(const d of next.querySelectorAll('details[data-keep-open]'))if(open.has(d.dataset.keepOpen))d.open=true;live.innerHTML=next.innerHTML;}}
 // Late score inputs (the DART reference row) repaint only the score views of the open screen. A full render() here
 // discarded typed weights, open tabs and in-flight save messages on whatever screen was open (e.g. the ledger sheet).
 function refreshScoreViews(){const[route,raw]=location.hash.slice(1).split('/');let id='';try{id=decodeURIComponent(raw||'');}catch(_){id='';}
@@ -672,13 +676,13 @@ async function refreshQgv2Quotes(after){const inputs=window.Qgv2Inputs?publicScr
 // M3 ranks come from the open Universe read (RAM only) and are repainted into S06 when that read finishes or is cleared.
 // Ranks and totals are computed over ALL identities (the same population as S04), then only the filtered rows are shown.
 // A repaint keeps keyboard focus on the same control (preset, gate, view, profile, detail button) instead of dropping it.
-function focusKey(n){if(!n||!n.dataset)return null;for(const k of ['qgv2Preset','leaderboardView','leaderboardProfile','qgv2Gate'])if(Object.hasOwn(n.dataset,k))return '[data-'+k.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+(n.dataset[k]?'="'+CSS.escape(n.dataset[k])+'"':'')+']';
+function focusKey(n){if(!n||!n.dataset)return null;for(const k of ['qgv2Preset','leaderboardView','leaderboardProfile','qgv2Gate','leaderboardExploreOption'])if(Object.hasOwn(n.dataset,k))return '[data-'+k.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+(n.dataset[k]?'="'+CSS.escape(n.dataset[k])+'"':'')+']';
   return n.getAttribute('aria-controls')?'[aria-controls="'+CSS.escape(n.getAttribute('aria-controls'))+'"]':null;}
 function paintLeaderboardScreen(rows){leaderboardRows=rows;let profiles=[];try{profiles=DeviceProfiles.read(localStorage).strategies;}catch(_){profiles=[];}
  const host=$('#leaderboard-screen'),S=qgvScores(),shown=rankOrder(rows,S),active=host&&host.contains(document.activeElement)?focusKey(document.activeElement):null;
- LeaderboardScreen.mount(host,shown,{publicScreens,locale:appSettings.display_locale,profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,view:leaderboardView.view,profileId:leaderboardView.profileId,scores:S,onView:patch=>{if(Object.hasOwn(patch,'preset')||Object.hasOwn(patch,'gate')){qgv2Profile={...qgv2Profile,...patch};paintLeaderboardScreen(rows);return;}leaderboardView={...leaderboardView,...patch};saveLeaderView();if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen(rows);}});
+ const mounted=LeaderboardScreen.mount(host,shown,{publicScreens,locale:appSettings.display_locale,profiles,deviceRanks:window.PrivateSubsetView?.ranks?.()||null,view:leaderboardView.view,profileId:leaderboardView.profileId,scores:S,explore:leaderboardView.explore,onView:patch=>{if(Object.hasOwn(patch,'preset')||Object.hasOwn(patch,'gate')){qgv2Profile={...qgv2Profile,...patch};paintLeaderboardScreen(rows);return;}leaderboardView={...leaderboardView,...patch};saveLeaderView();if(leaderboardView.view==='device'){const d=$('#private-subset-root')?.closest('details');if(d)d.open=true;}paintLeaderboardScreen(rows);}});
  if(active){const n=host&&host.querySelector(active);if(n)n.focus({preventScroll:true});}
- paintLeaderSummary(S,shown.length);
+ paintLeaderSummary(S,mounted&&Number.isInteger(mounted.shown)?mounted.shown:shown.length);
  void refreshQgv2Quotes(()=>{if(leaderboardRows===rows&&$('#leaderboard-screen'))paintLeaderboardScreen(rows);});}
 function paintDirectory(route){const prefix=route==='watchlist'?'watch':'leader';if(route==='leaderboard')syncLeaderView();
  const rows=route==='leaderboard'?rankOrder(directoryRows(prefix),qgvScores()):directoryRows(prefix),list=$('#'+(route==='watchlist'?'watchlist':'leader')+'-company-list');list.innerHTML=rows.map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';if(route==='leaderboard'){const companyIds=rows.map(r=>r.company_id);paintLeaderboardScreen(rows);$('#leader-m2-panel').innerHTML=m2Panel(undefined,companyIds);SecReported.mount($('#sec-reported-panel'),secReported,{companyIds,locale:appSettings.display_locale});PublicScreens.mount($('#public-qg'),publicScreens,{kind:'qg',companyIds,locale:appSettings.display_locale});}}

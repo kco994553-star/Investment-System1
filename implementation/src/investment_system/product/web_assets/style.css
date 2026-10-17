@@ -736,3 +736,25 @@ td .co-logo {float: left; margin: 1px 6px 0 0;}
 [data-leaderboard-table] [data-leaderboard-total] {font-size: 14px;}
 h1[tabindex="-1"]:focus {outline: none;}
 h1[tabindex="-1"]:focus-visible {outline: 2px solid var(--accent); outline-offset: 2px;}
+/* FE-MISSING-2 (S04 QGV card, S05 factors tab, S06): calculation status per axis, missing-factor reasons, data-state chips and
+   the S06 exploration filter. Every state is named in words; colour is never the only signal. */
+.qgv-coverage {margin-top: 12px; padding-top: 4px; border-top: 1px solid var(--line);}
+.qgv-coverage h3 {font-size: 14px; margin: 8px 0;}
+.axis-coverage {list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 8px;}
+.axis-coverage > li {padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; min-width: 0; overflow-wrap: anywhere;}
+.axis-coverage > li[data-axis-status="PARTIAL"] {border-left: 4px solid #c9853a;}
+.axis-coverage > li[data-axis-status="NOT_AVAILABLE"], .axis-coverage > li[data-axis-status="STOPPED"] {border-left: 4px solid #8f9993;}
+.axis-coverage p {margin: 4px 0;}
+.axis-head {display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px;}
+.factor-coverage {list-style: none; margin: 4px 0; padding: 0;}
+.factor-coverage > li {display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; padding: 6px 0; border-bottom: 1px solid var(--line); min-width: 0;}
+.factor-coverage > li > span {min-width: 0;}
+.factor-coverage [data-factor-reason] {flex-basis: 100%;}
+details.evidence {border-top: 0; padding-top: 0; margin-top: 2px; flex-basis: 100%;}
+details.evidence > summary {font-size: 12px; font-weight: 600; color: var(--accent); display: flex; align-items: center;}
+details.evidence code {overflow-wrap: anywhere;}
+.explore-filter {margin: 8px 0;}
+.explore-filter button {min-height: 44px; padding: 6px 12px; border-radius: 16px; font-size: 13px;}
+.explore-filter button[aria-pressed="true"] {background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700;}
+.badge.check-data {background: #edf0ed; color: #5e6863; box-shadow: inset 0 0 0 1px #8f9993;}
+[data-leaderboard-table] [data-leaderboard-unranked] {display: block; width: fit-content; max-width: 16em; white-space: normal; margin-top: 4px;}
