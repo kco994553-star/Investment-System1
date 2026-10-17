@@ -61,13 +61,16 @@ function universeRows({computed,inputs,universeCodes=[],existing=[],cfg=CFG,pcfg
  const records=object(inputs?.records)?inputs.records:{},have=new Set(existing.map(key)),seen=new Map(),out=[];
  for(const code of universeCodes){const m=typeof code==='string'?UNIVERSE.exec(code):null;if(!m)continue;const symbol=m[1],row=byTicker.get(key(symbol));
   const rec=(row&&row.code&&records[row.code])||records[code]||null,v2=row?.v2||null;if(!v2||v2.reference_only===true)continue;
+  // Identity-conflict stop (Qgv2Inputs identity_withdrawn, #285/#289): the Universe code's own record or the record the score used.
+  // A stopped row keeps no total (so it never takes a rank) and never borrows the score of another row with the same ticker.
+  const withdrawn=records[code]?.identity_withdrawn===true||rec?.identity_withdrawn===true;
   const metrics=object(rec?.metrics)?rec.metrics:{},sic=rec?.sic??null,industry=rec?.industry_group??null,sg=subgroupOf(symbol,sic,industry,cfg,pcfg);
   const axisOk=a=>{const x=v2.axes?.[a];return!!x&&finite(x.score)&&finite(x.weight_available)&&x.weight_available>=cfg.filters.axis_min_weight;};
   const factorScores={};for(const[f,x]of Object.entries(object(v2.factors)?v2.factors:{}))if(finite(x?.score))factorScores[f]=x.score;
-  const r={symbol,code,cik:rec?.cik??null,total:finite(v2.total)?v2.total:null,q:finite(v2.q)?v2.q:null,g:finite(v2.g)?v2.g:null,v:finite(v2.v)?v2.v:null,
+  const r={symbol,code,cik:rec?.cik??null,total:!withdrawn&&finite(v2.total)?v2.total:null,q:finite(v2.q)?v2.q:null,g:finite(v2.g)?v2.g:null,v:finite(v2.v)?v2.v:null,
    q_pct:finite(v2.q_industry_percentile)?v2.q_industry_percentile:null,factors_n:v2.factors_available??0,factors_total:v2.factors_total??15,
    axes_ok:Object.fromEntries(cfg.filters.axes.map(a=>[a,axisOk(a)])),value_trap:v2.value_trap_gate===true,types:Array.isArray(v2.selected_types)?[...v2.selected_types]:[],
-   subgroup:sg.subgroup,sector:sg.sector,subgroup_source:sg.source,industry,sic,safety:safety(metrics,cfg),metrics,factor_scores:factorScores,in19:have.has(key(symbol)),rank:null,industry_rank:null,industry_size:null};
+   subgroup:sg.subgroup,sector:sg.sector,subgroup_source:sg.source,industry,sic,safety:safety(metrics,cfg),metrics,factor_scores:factorScores,in19:have.has(key(symbol)),withdrawn,rank:null,industry_rank:null,industry_size:null};
   // One point per issuer (second share class of the same CIK): keep the higher total, then the first code.
   if(cfg.score_basis.dedupe_issuer&&r.cik){const prior=seen.get(r.cik);if(prior){if((r.total??-1)>(prior.total??-1)){out[out.indexOf(prior)]=r;seen.set(r.cik,r);}continue;}seen.set(r.cik,r);}
   out.push(r);}
@@ -76,8 +79,10 @@ function universeRows({computed,inputs,universeCodes=[],existing=[],cfg=CFG,pcfg
  for(const r of scored)if(r.industry)sizes[r.industry]=(sizes[r.industry]||0)+1;for(const r of scored)if(r.industry)r.industry_size=sizes[r.industry];
  return out;
 }
-// Step 1: exclusion reasons (empty = eligible).
+// Step 1: exclusion reasons (empty = eligible). A row stopped for an identity conflict (Qgv2Inputs identity_withdrawn: a withdrawn
+// TARGET issuer's same-CIK codes or a withdrawn Universe code) is used nowhere and carries only that reason.
 function exclusions(row,cfg=CFG){
+ if(row.withdrawn===true)return['IDENTITY_CONFLICT_WITHDRAWN'];
  const out=[];if(!finite(row.total))out.push('TOTAL_NOT_AVAILABLE');
  if(cfg.filters.axes.some(a=>!row.axes_ok[a]))out.push('AXIS_COVERAGE_LOW');
  if(cfg.filters.exclude_value_trap_gate&&row.value_trap)out.push('VALUE_TRAP_GATE');

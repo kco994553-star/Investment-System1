@@ -11,7 +11,7 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const finite=v=>typeof v==='number'&&Number.isFinite(v),n1=v=>finite(v)?v.toFixed(1):'NA',pctText=v=>finite(v)?v.toFixed(2).replace(/\.?0+$/,'')+'%':'NA';
 const pp=v=>finite(v)?(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(2)+'%p':'NA',ret=v=>finite(v)?(v>0?'+':v<0?'−':'')+Math.abs(v*100).toFixed(2)+'%':'NA';
 const GRADE={CORE:'핵심',GENERAL:'일반',EQUAL:'균등'},SAFETY={PASS:'통과',FAIL:'불통과',UNKNOWN:'확인 불가'};
-const EXCLUDE={TOTAL_NOT_AVAILABLE:'총점 없음',AXIS_COVERAGE_LOW:'축 산출 50% 미만',VALUE_TRAP_GATE:'가치 함정 관문',FINANCIAL_SAFETY_FAIL:'재무 안전 불통과'};
+const EXCLUDE={TOTAL_NOT_AVAILABLE:'총점 없음',AXIS_COVERAGE_LOW:'축 산출 50% 미만',VALUE_TRAP_GATE:'가치 함정 관문',FINANCIAL_SAFETY_FAIL:'재무 안전 불통과',IDENTITY_CONFLICT_WITHDRAWN:'신원 충돌로 사용 중지'};
 const ERRORS={NUMBER_CHECK_NOT_PASSED:null,TARGET_V1_CARDS_PENDING:'모든 카드에 응답해야 확정할 수 있습니다.',TARGET_LIMITS_BLOCKED:'16절 한도를 넘어 확정할 수 없습니다.',DISAGREE_REASON_REQUIRED:'반대 이유를 한 줄로 적어 주세요.',
  QGV2_NOT_READY:'QGV v2 점수가 이 기기에서 아직 계산되지 않았습니다.',TARGET_V1_DRAFT_REQUIRED:'먼저 초안을 만드세요.',REASON_INVALID:'이유는 줄바꿈 없이 200자 이내로 적어 주세요.',TARGET_V1_NOT_SELECTED:'현재 선정에 없는 종목입니다.'};
 const today=()=>new Date().toISOString().slice(0,10),key=t=>String(t||'').replaceAll('.','-').toUpperCase();
