@@ -1,0 +1,10 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const M=require('./model.js');
+test('0 remains a valid score; missing never becomes zero',()=>{assert.equal(M.number(0),'0.0');assert.equal(M.number(null),'—');assert.equal(M.number(NaN),'—');});
+test('a different calc version cannot supply a displayed score',()=>{assert.equal(M.readAxis({calc_version:'old',acquired_at:'2026-10-16T00:00:00Z',axes:{Q:{score:80}}},'Q','new','2026-10-17T00:00:00Z'),null);});
+test('old acquired_at is rejected even when a file is freshly generated',()=>{assert.equal(M.readAxis({calc_version:'v',acquired_at:'2026-10-01T00:00:00Z',axes:{Q:{score:80}}},'Q','v','2026-10-17T00:00:00Z'),null);});
+test('matching, fresh input passes through without recomputation',()=>{assert.equal(M.readAxis({calc_version:'v',acquired_at:'2026-10-16T00:00:00Z',axes:{Q:{score:0}}},'Q','v','2026-10-17T00:00:00Z'),0);});
+test('Korean names and tickers search the same company',()=>{const rows=[{ticker:'NVDA',name:'NVIDIA',alias:'엔비디아',q:0},{ticker:'MSFT',name:'Microsoft',alias:'마이크로소프트',q:90}];assert.equal(M.filter(rows,{query:'엔비디아'})[0].ticker,'NVDA');assert.equal(M.filter(rows,{query:'msft'})[0].ticker,'MSFT');});
+test('missing values sort after real zero values',()=>{const rows=[{ticker:'A',q:null},{ticker:'B',q:0},{ticker:'C',q:90}];assert.deepEqual(M.filter(rows,{sort:'q'}).map(r=>r.ticker),['C','B','A']);});
+test('unknown input is escaped and links reject active schemes',()=>{assert.equal(M.escape('<img onerror="x">'),'&lt;img onerror=&quot;x&quot;&gt;');assert.equal(M.safeUrl('javascript:alert(1)'),null);assert.equal(M.safeUrl('https://www.sec.gov/a'),'https://www.sec.gov/a');});
