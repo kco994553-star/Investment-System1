@@ -2670,7 +2670,27 @@
    "decision": "UNCALIBRATED"
   },
   "decision": "UNCALIBRATED",
-  "unavailable_label": "매크로 확인 불가"
+  "unavailable_label": "매크로 확인 불가",
+  "gate_active": false,
+  "gate_status": {
+   "state": "REFERENCE_ONLY",
+   "reason": "REPLAY_PENDING",
+   "decided": "2026-10-14 사용자 지시 C",
+   "text": "5개 경고등 과거 재생(2000·2008·2020·2022)이 끝날 때까지 매크로는 참고 표시만 한다. 확대 차단·U3 조건에 쓰지 않는다.",
+   "reenable": "재생 완료 후 사용자 결정"
+  },
+  "replay_findings": [
+   {
+    "rule": "CRISIS: inflation > 8%",
+    "period": "2022",
+    "crisis_weeks": 31,
+    "crisis_weekdays": 152,
+    "evaluation": "weekly (Friday) replay = 31 weeks; daily = 152 weekdays (2022-04-15~2022-11-14)",
+    "source": "MACRO_REPLAY_20261014.md (#251; public macro series only)",
+    "status": "RECORDED_FOR_REVIEW",
+    "text": "\"물가 > 8% = 위기\" 규칙이 2022년에 위기를 냈다: 주 단위(금요일) 31주, 일 단위 152평일(2022-04-15~11-14). 이전 기록의 \"31일\"은 31주였다. 재생 완료 후 규칙 재검토 안을 제시하고 변경은 사용자 결정."
+   }
+  ]
  },
  "rebalancing": {
   "section": "13-4",

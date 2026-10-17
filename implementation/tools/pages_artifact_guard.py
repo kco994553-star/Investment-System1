@@ -42,8 +42,8 @@ from investment_system.product.company_logos import FILENAME as COMPANY_LOGOS_FI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "playbook-engine.js": "bb6e58d879048d37a1aa7579d5f937a055de84b587f6cd54986ee4a5ed55022b",
-    "playbook-config-defaults.js": "cfed0ce27b9c2e81909084f2a7cce19f7e0f1a0796a18bcfe8773272ecf53cc7",
+    "playbook-engine.js": "b708a1772b4cd8e1af731cffdacbfab478d03c9c4e1e5fd663537babd64ee7d8",
+    "playbook-config-defaults.js": "6a911d814782bcfb0aab098e9a05d0a5be494edc0026e08c8a0d124e3f2b00c2",
     "virtual-trading-compare.js": "700054fd105b979b505c09ec0dad862b0ce435c0179d2ddbe9f85b5b9c23c3f7",
     "tradingview-widgets.js": "e78e43406d480bb743b5c23aacb99435c3470c0e709ac1e3fcc2cec805366efc",
     "company-logos.js": "63aceb4033f17bba403f62b6c4887a8a9c5dd64b8a6f8180b063ab704ce38581",
@@ -122,10 +122,10 @@ APPROVED_SHA256 = {
     "scoring-default.js": "02eae2182de717bf0620e9616fe2aabd78c7ec8484c60d65f4231262df868beb",
     "qgv-v2.js": "6a348f70e835ff674195fca01545ddd89063edcda6b21d332dde4455b9fc750d",
     "qgv-scores.js": "dbc41f5bd484e35c97be0b1e228433a2d6a95e3cbaa38d9b991d448fbbe39950",
-    "playbook-screen.js": "6f240ac379bc5d1761715d774b30dd61e2159c306c396f9f335c47a5d4269148",
+    "playbook-screen.js": "e53f9520669514a7ec8ac6eedb734219e33a6278d709ae47a56797e822ce771b",
     "news-signals.js": "61336bb91a39407c60573ca6b2bfbbd06b7c36d4910927ac04e0a29fc4a16868",
     "dart-disclosures.js": "093d131ffccbb30284cabd796a3b190a4d2fdd049e1f6648c078321c33101713",
-    "macro-lights.js": "b597eb5b592e59045e5d42be38eef185b362b8da6b1f3718ab1ebafaf53cd7fa",
+    "macro-lights.js": "d64e3d4c68fb8c0ffdbfe16ad3220af2648bda4d331edd387ca337d52c42d741",
     "sec-disclosures.js": "7af4fd52b2e83ac348bb7b7b3e80e7130f6e4c32a8f29fd55d14c22e2a5f2714",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
