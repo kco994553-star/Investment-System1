@@ -60,6 +60,9 @@ async function lights(page){return page.locator('[data-macro-light]').evaluateAl
     assert.deepEqual(await page.locator('[data-macro-light-label]').allTextContents(),['켜짐','꺼짐','켜짐','자료 없음','자료 없음']);
     assert.equal(await page.locator('[data-macro-lights-count]').textContent(),'매크로(3/5 경고등)');
     assert.equal(await page.locator('[data-macro-lights-verdict]').textContent(),'경고');assert.equal(await page.locator('[data-macro-low-confidence]').count(),0);
+    // M-239: while the playbook macro gate is off the state is shown as reference only (no expansion block, no U3).
+    assert.equal(await page.evaluate(()=>PlaybookConfigDefaults.macro.gate_active),false);
+    assert.equal(await page.locator('[data-macro-reference-only]').textContent(),'참고 표시 · 과거 재생 완료 전에는 확대 차단·U3에 쓰지 않음');
     const emp=await page.locator('[data-macro-light="employment"]').textContent();for(const s of ['4.60%','4.0%','0.60%p','2025-12','BLS LNS14000000'])assert.ok(emp.includes(s),s);
     const cur=await page.locator('[data-macro-light="curve"]').textContent();for(const s of ['25거래일','2025-12-31','U.S. Treasury'])assert.ok(cur.includes(s),s);
     assert.ok((await page.locator('[data-macro-light="market"]').textContent()).includes('기기 가격 계산 · RAM만'));

@@ -238,6 +238,7 @@ function render(host,merged,{locale,status='',onLoad=null,legacy=null}={}){
   el('span',merged.available_count===0?x('매크로 확인 불가','Macro unavailable'):x(STATE_LABEL[merged.state][0],STATE_LABEL[merged.state][1]),{class:merged.available_count===0?'badge NOT_AVAILABLE':merged.state==='NORMAL'?'badge':merged.state==='WARNING'?'badge partial':'badge vt-disclaimer','data-macro-lights-verdict':merged.available_count===0?'NOT_AVAILABLE':merged.state}),
   doc.createTextNode(' · '+x('켜짐 ','lit ')+merged.lit_count+x('개','')));
  if(merged.low_confidence)head.append(doc.createTextNode(' '),el('span',x('판정 신뢰도 낮음','Low confidence'),{class:'badge partial','data-macro-low-confidence':''}));
+ if(globalThis.PlaybookConfigDefaults?.macro?.gate_active===false)head.append(doc.createTextNode(' '),el('span',x('참고 표시 · 과거 재생 완료 전에는 확대 차단·U3에 쓰지 않음','Reference only · not used to block expansion or for U3 until the replay is done'),{class:'badge','data-macro-reference-only':''}));
  card.append(head);
  if(merged.available_count===0)card.append(el('p',x('매크로 자료로 인한 확대 제한 없음 · U3 확인 불가','No expansion restriction from macro data · U3 unavailable'),{class:'small','data-macro-unavailable':''}));
  const list=el('ul',undefined,{class:'list','data-macro-lights-list':''});
