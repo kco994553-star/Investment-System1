@@ -756,4 +756,5 @@ details.evidence code {overflow-wrap: anywhere;}
 .explore-filter {margin: 8px 0;}
 .explore-filter button {min-height: 44px; padding: 6px 12px; border-radius: 16px; font-size: 13px;}
 .explore-filter button[aria-pressed="true"] {background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700;}
+.badge.check-data {background: #edf0ed; color: #5e6863; box-shadow: inset 0 0 0 1px #8f9993;}
 [data-leaderboard-table] [data-leaderboard-unranked] {display: block; width: fit-content; max-width: 16em; white-space: normal; margin-top: 4px;}
