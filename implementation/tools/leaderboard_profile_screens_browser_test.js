@@ -9,10 +9,12 @@ function qg(){const at=new Date().toISOString(),a='a'.repeat(64),b='b'.repeat(64
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let phase='START',pass=0,fail=0;
  try{for(const width of [390,1440]){const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});await context.route('**/sec-qg-factors.json',r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(qg())}));const page=await context.newPage();let errors=0;page.on('pageerror',()=>errors++);
   try{phase='S06';await page.goto(process.env.PAGES_COCKPIT_URL+'#leaderboard');await page.locator('[data-leaderboard-table]').waitFor();
-   assert.equal(await page.locator('[data-leaderboard-table] thead th').count(),10);assert.equal(await page.locator('[data-leaderboard-row]').count(),19);
+   assert.equal(await page.locator('[data-leaderboard-table] thead th').count(),7);assert.equal(await page.locator('[data-leaderboard-row]').count(),19);
    // QGV v2 is the only score (owner decision 2026-10-14): the v1 Q·G (Q 58.0 from sec-qg-factors.json) is not shown; each row
    // shows v2 or the v2 NOT_AVAILABLE reason (LIVE builds may publish sec-qgv2.json).
-   const nvda=await page.locator('[data-leaderboard-row="nvda"] td').allTextContents();assert.ok(!nvda[2].includes('Q 58.0'));assert.match(nvda[2],/^(QGV |QGV v2 산출 불가 · )/);assert.equal(await page.locator('[data-leaderboard-row="amd"] [data-leaderboard-qg]').count(),0);
+   const nvda=await page.locator('[data-leaderboard-row="nvda"] td').allTextContents();assert.ok(!nvda[2].includes('Q 58.0'));assert.ok(['READY','PARTIAL','NOT_AVAILABLE'].includes(await page.locator('[data-leaderboard-row="nvda"] td').nth(2).getAttribute('data-leaderboard-qgv2')));
+   // Columns with no connected input are hidden (DESIGN_CLEANUP_BACKLOG S06).
+   assert.deepEqual(await page.locator('[data-leaderboard-table] thead th').allTextContents(),['순위','기업·시총 순위','QGV','Q','G','V','실적']);assert.equal(await page.locator('[data-leaderboard-row="amd"] [data-leaderboard-qg]').count(),0);
    assert.equal(await page.locator('[data-leaderboard-qg]').count(),0);assert.ok(!/임시 기본|v1 비교용|v1 참고|점수 기준 v1/.test(await page.locator('[data-leaderboard-screen]').textContent()));
    assert.equal(await page.locator('[data-reeval-stages] li').count(),4);
    phase='PROFILE_VIEW';await page.evaluate(()=>{const w=JSON.parse(JSON.stringify(window.ProfileDefaults.weights));w.Q.competitive_advantage=40;w.Q.roic_wacc=0;localStorage.setItem('investment.web.v1.profile-drafts',JSON.stringify({schema:'device-profile-drafts/1',strategies:[{id:'p-1',name:'Mine',weights:w}],types:[]}));});

@@ -23,6 +23,8 @@ function payload(){const at=new Date().toISOString(),companies={};
   data:{companies,method_status:'PROVISIONAL_UNCALIBRATED',availability_basis:'OBSERVED_CAPTURE_ONLY',fcfe_definition:'fcfe/1.1',share_basis:'WEIGHTED_AVERAGE_DILUTED'}};}
 const text=async(page,selector)=>(await page.locator(selector).first().textContent()).replace(/\s+/g,' ').trim();
 async function open(page,hash,selector){await page.goto(BASE+'#'+hash);await page.locator('main '+selector).first().waitFor();}
+// Screens show reasons in words; the codes ride in data-reason-codes (DESIGN_CLEANUP_BACKLOG S04/S05).
+const codes=async(page,sel)=>(await page.locator(sel+' [data-reason-codes]').evaluateAll(n=>n.map(x=>x.dataset.reasonCodes).join(' ')));
 async function valueTab(page,id){await open(page,'analysis/'+id,'[data-analysis-tab]');await page.locator('[data-analysis-tab="value"]').click();await page.locator('[data-analysis-panel="value"] [data-value="fcfe"]').waitFor();}
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let pass=0,fail=0,phase='START';
  try{for(const width of [390,1440]){
@@ -37,23 +39,26 @@ async function valueTab(page,id){await open(page,'analysis/'+id,'[data-analysis-
    assert.deepEqual(bad,[],'browser DeviceValuation.view matches every Python vector');
    phase='S05-NO-PRICE';await valueTab(page,'nvda');
    await page.waitForFunction(()=>document.querySelector('[data-value="fcfe"]').textContent.includes('8.25'));
-   assert.ok((await text(page,'[data-dcf-badge]')).includes('v1.1 UNCALIBRATED 기본값 · 나중에 수정 가능'));assert.equal(await text(page,'[data-dcf-version]'),'v1+dcf_v1_1_default');
-   assert.ok((await text(page,'[data-dcf-params]')).includes('명시 5년 · 할인율 10.0% · 영구성장 2.0% · 역DCF 탐색 −50.0%~+100.0% · 명시기간 성장률 h = 자사 3년 매출 CAGR, 0.0%~15.0% 범위로 제한 (PROVISIONAL)'));
-   assert.ok((await text(page,'[data-value="fcfe"]')).includes('0001045810-26-000001'));
-   for(const k of ['quote','reverse'])assert.ok((await text(page,'[data-value="'+k+'"]')).includes('NO_DEVICE_PRICE'),k);
+   assert.ok((await text(page,'[data-dcf-badge]')).includes('DCF 기본값 v1.1 · 보정 전 · 나중에 수정 가능'));assert.equal(await page.locator('[data-dcf-badge]').first().getAttribute('data-dcf-version'),'v1+dcf_v1_1_default');
+   assert.ok(!(await text(page,'[data-analysis-panel="value"]')).includes('v1+dcf'),'no version string on screen');
+   assert.ok((await text(page,'[data-dcf-params]')).includes('명시 5년 · 할인율 10.0% · 영구성장 2.0% · 역DCF 탐색 −50.0%~+100.0% · 명시기간 성장률 h = 자사 3년 매출 CAGR, 0.0%~15.0% 범위로 제한 (잠정)'));
+   assert.equal(await page.locator('[data-value="fcfe"] [data-accn]').getAttribute('data-accn'),'0001045810-26-000001');assert.ok(!(await text(page,'[data-value="fcfe"]')).includes('accn'),'no accn on screen');
+   for(const k of ['quote','reverse']){assert.ok((await codes(page,'[data-value="'+k+'"]')).includes('NO_DEVICE_PRICE'),k);assert.ok((await text(page,'[data-value="'+k+'"]')).includes('시세'),k);assert.ok(!(await text(page,'[data-value="'+k+'"]')).includes('NO_DEVICE_PRICE'),k);}
    // The forward DCF value is price-free (public FCFE and h); the margin of safety needs the device price.
    assert.equal(await text(page,'[data-explicit-growth]'),'8.0%');assert.equal(await text(page,'[data-dcf-value]'),'USD 135.02');
-   assert.ok((await text(page,'[data-value="mos"]')).includes('MISSING_PRICE'));assert.equal(await page.locator('[data-value="assumed-zero"]').count(),0);
+   assert.ok((await codes(page,'[data-value="mos"]')).includes('MISSING_PRICE'));assert.ok((await text(page,'[data-value="mos"]')).includes('시세 없음'));assert.equal(await page.locator('[data-value="assumed-zero"]').count(),0);
    assert.equal(await page.locator('[data-v-factor]').count(),7);assert.deepEqual([...new Set(await page.locator('[data-v-score]').allTextContents())],['—']);
    phase='S05-IFRS';await valueTab(page,'asml');await page.waitForFunction(()=>document.querySelector('[data-value="fcfe"]').textContent.includes('4.25'));
    assert.ok((await text(page,'[data-value="fcfe"]')).includes('20-F · IFRS'));
    assert.ok((await text(page,'[data-value="assumed-zero"]')).includes('미보고 → 0 가정 장기차입 상환 · 단기차입 순증감'));
    assert.ok((await text(page,'[data-value="currency-basis"]')).includes('보고 통화 EUR · 기준 통화 USD · 환율 변환 없음'));
-   assert.equal(await text(page,'[data-explicit-growth]'),'10.0%');assert.ok((await text(page,'[data-value="dcf"]')).includes('CURRENCY_BASIS_UNCONFIRMED'));
-   phase='S05-FCFE-NA';await valueTab(page,'amd');await page.waitForFunction(()=>document.querySelector('[data-value="fcfe"]').textContent.includes('NET_SHORT_TERM_BORROWING_MISSING'));
+   assert.equal(await text(page,'[data-explicit-growth]'),'10.0%');assert.ok((await codes(page,'[data-value="dcf"]')).includes('CURRENCY_BASIS_UNCONFIRMED'));assert.ok((await text(page,'[data-value="dcf"]')).includes('통화 기준 미확인'));
+   phase='S05-FCFE-NA';await valueTab(page,'amd');await page.waitForFunction(()=>document.querySelector('[data-value="fcfe"] [data-reason-codes]')?.dataset.reasonCodes.includes('NET_SHORT_TERM_BORROWING_MISSING'));
+   assert.ok((await text(page,'[data-value="fcfe"]')).includes('단기차입 순증감 없음'));
    assert.ok(!(await text(page,'[data-value="fcfe"]')).includes('0.00'));
-   assert.ok((await text(page,'[data-value="growth"]')).includes('EXPLICIT_GROWTH_NOT_AVAILABLE'));
-   assert.ok((await text(page,'[data-value="dcf"]')).includes('FCFE_NOT_AVAILABLE'));assert.ok((await text(page,'[data-value="mos"]')).includes('DCF_NOT_AVAILABLE'));
+   assert.ok((await codes(page,'[data-value="growth"]')).includes('EXPLICIT_GROWTH_NOT_AVAILABLE'));
+   assert.ok((await codes(page,'[data-value="dcf"]')).includes('FCFE_NOT_AVAILABLE'));assert.ok((await codes(page,'[data-value="mos"]')).includes('DCF_NOT_AVAILABLE'));
+   assert.ok(!/[A-Z]{3,}_[A-Z_]{3,}/.test((await text(page,'[data-analysis-panel="value"] dl')).replaceAll('NOT_AVAILABLE','')),'no reason codes on screen');
    phase='DEVICE-QUOTE';await open(page,'actual','[data-security-index="5"]');
    const row=page.locator('[data-security-index="5"]');await row.locator('[data-field="quantity"]').fill('1');await row.locator('[data-field="average_cost"]').fill('90');await row.locator('[data-field="price"]').fill('100');
    await page.locator('[data-fx-currency="USD"] [data-field="rate"]').fill('1000');await page.locator('[data-action="save"]').click();await page.locator('[data-market-total]').filter({hasText:'100'}).waitFor();
@@ -64,11 +69,11 @@ async function valueTab(page,id){await open(page,'analysis/'+id,'[data-analysis-
    // Approved raw_map DCF branches: central (135.02/100−1)/0.4 and margin of safety (0.75×135.02/100−1)/0.3.
    assert.equal(await text(page,'[data-v-factor="fundamental_value"] [data-v-score]'),'93.8');assert.equal(await text(page,'[data-v-factor="reverse_dcf"] [data-v-score]'),'54.1');
    assert.equal(await text(page,'[data-v-factor="margin_of_safety"] [data-v-score]'),'52.1');assert.equal(await text(page,'[data-mos-score]'),'52.1');
-   for(const k of ['peer_relative_value','historical_valuation','sector_context','theme_premium_discount'])assert.ok((await text(page,'[data-v-factor="'+k+'"]')).includes('NOT_AVAILABLE'),k);
+   for(const k of ['peer_relative_value','historical_valuation','sector_context','theme_premium_discount'])assert.equal(await page.locator('[data-v-factor="'+k+'"] [data-state]').getAttribute('data-state'),'NOT_AVAILABLE',k);
    assert.equal(await text(page,'[data-dcf-value]'),'USD 135.02');
    phase='S04-PRICE';await open(page,'company/nvda','[data-company-card="value"]');await page.waitForFunction(()=>document.querySelector('[data-company-card="value"] [data-implied-growth]'));
    assert.equal(await text(page,'[data-company-card="value"] [data-implied-growth]'),'0.8%');assert.equal(await page.locator('[data-company-card="value"] [data-v-table]').count(),0);
-   assert.ok((await text(page,'[data-company-card="value"] [data-dcf-badge]')).includes('v1.1 UNCALIBRATED'));assert.equal(await text(page,'[data-company-card="value"] [data-mos-score]'),'52.1');
+   assert.ok((await text(page,'[data-company-card="value"] [data-dcf-badge]')).includes('DCF 기본값 v1.1'));assert.equal(await text(page,'[data-company-card="value"] [data-mos-score]'),'52.1');
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no horizontal scroll');
    phase='NO-LEAK';
    const after=requests.slice(before);assert.ok(after.every(r=>r.method==='GET'&&!r.body&&new URL(r.url).origin===new URL(BASE).origin),'only same-origin GETs after a device price exists');

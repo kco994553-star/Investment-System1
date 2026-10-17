@@ -113,9 +113,28 @@ function naText(d,en){
  if(d.total_reason==='AXIS_WEIGHT_INSUFFICIENT'&&parts.length===2)parts.push(en?'available axes below 50% of the weight':'산출 축 비중 50% 미만');
  return parts.join(' · ');
 }
+/* Screen words for v2 codes (owner rule 2026-10-14: screens show results; codes stay in data-* attributes and in
+   Settings > 원자료 보기(개발자용)). Unknown codes read '자료 부족', never the code itself. */
+const REASON={SEC_FACTOR_NOT_AVAILABLE:['SEC 재무로 계산할 수 없음','Not computable from SEC financials'],NO_DEVICE_PRICE:['이 기기에 시세 없음','No price on this device'],
+ PRICE_HISTORY_NOT_AVAILABLE:['월말 가격 이력 없음','No month-end price history'],HISTORY_TOO_SHORT:['비교할 과거 기간이 짧음','History too short'],
+ NORMALIZED_HISTORY_NOT_AVAILABLE:['경기민감 기업이라 과거 비교 보류','Cyclical: own-history comparison withheld'],NORMALIZED_EARNINGS_NOT_AVAILABLE:['정상화 이익을 계산할 자료 부족','Not enough data for normalized earnings'],
+ EBIT_NOT_AVAILABLE:['영업이익 자료 없음','No operating income'],FCF_NOT_AVAILABLE:['잉여현금흐름 자료 없음','No free cash flow'],SHARES_NOT_AVAILABLE:['주식 수 자료 없음','No share count'],
+ DEBT_CASH_NOT_AVAILABLE:['부채·현금 자료 없음','No debt / cash data'],EV_NON_POSITIVE:['기업가치가 0 이하','Enterprise value not positive'],NON_POSITIVE_CASHFLOW:['현금흐름이 0 이하','Cash flow not positive'],
+ CROSS_SECTION_TOO_SMALL:['비교할 종목 수 부족','Too few companies to compare'],REALIZED_GROWTH_NOT_AVAILABLE:['실현 성장률 자료 없음','No realized growth'],
+ FINANCIAL_PROFILE_V_NOT_DEFINED:['금융업 가치 계산 방식 미정','Financials: value method not defined'],V_INPUTS_NOT_AVAILABLE:['가치 입력 자료 없음','No value inputs'],
+ CURRENCY_BASIS_UNCONFIRMED:['시세와 재무 통화가 달라 계산 보류','Price and filing currencies differ'],EXPLICIT_GROWTH_UNDECIDED:['성장률 규칙 미정','Growth rule undecided'],
+ AXIS_NOT_PUBLISHED:['공개 축 점수 없음','Axis score not published'],AXIS_WEIGHT_INSUFFICIENT:['산출 요인 비중 50% 미만','Available weight below 50%']};
+function reasonText(code,en){return code&&Object.hasOwn(REASON,code)?REASON[code][en?1:0]:(en?'Not enough data':'자료 부족');}
+const BASIS={INDUSTRY:['업종 안 비교','Within industry'],UNIVERSE:['전체 비교','Whole universe'],UNIVERSE_FALLBACK:['전체 비교 (업종 표본 부족)','Whole universe (industry too small)'],OWN_HISTORY:['자기 과거 비교','Own history']};
+// A v2 factor's state in words: where the score came from, or '산출 불가'.
+function factorStateText(x,en){if(!x||x.score===null||x.score===undefined)return en?'Not available':'산출 불가';
+ if(x.basis&&Object.hasOwn(BASIS,x.basis))return BASIS[x.basis][en?1:0];return x.state==='PUBLIC'?(en?'Published':'공개 점수'):(en?'This device':'이 기기 계산');}
+// '균형 · 관문 켬' for {preset, gate}; the preset's own parenthesis (e.g. '가치(관문 켬)') is dropped so the gate is said once.
+function profileText(profile,en){if(!profile)return '';const p=qgvV2().PRESETS[profile.preset],name=p?String(en?p.name_en:p.name).replace(/\s*\(.*\)$/,''):String(profile.preset||'');
+ return name+' · '+(profile.gate?(en?'gate on':'관문 켬'):(en?'gate off':'관문 끔'));}
 function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // Badge text of the basis: '점수 기준 v2 · PROVISIONAL · 기본' (+ ' · 2026-10-19부터' when the switch date is configured).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({MODES,LABEL,FLAG,scoringDefault,compute,judgmentRows,collectQuotes,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
+return Object.freeze({MODES,LABEL,FLAG,scoringDefault,compute,judgmentRows,collectQuotes,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf,reasonText,factorStateText,profileText});
 });

@@ -28,12 +28,12 @@ test('validator accepts the Python-generated payloads and rejects the same mutat
 
 test('S04 chips: group, SIC, evidence kinds, weak-evidence flag and v0 marker; NOT_AVAILABLE otherwise',()=>{
  const p=fixtures.live;
- const nvdaIndustry=api.industryChip(p,'nvda','ko-KR');assert.match(nvdaIndustry,/data-industry-chip="manufacturing_industrial_tech"/);assert.match(nvdaIndustry,/반도체/);assert.match(nvdaIndustry,/SIC 3674/);assert.match(nvdaIndustry,/v0 기본값 · UNCALIBRATED · 나중에 수정 가능/);
+ const nvdaIndustry=api.industryChip(p,'nvda','ko-KR');assert.match(nvdaIndustry,/data-industry-chip="manufacturing_industrial_tech"/);assert.match(nvdaIndustry,/반도체/);assert.match(nvdaIndustry,/SIC 3674/);assert.match(nvdaIndustry,/v0 기본값 · 보정 전 · 나중에 수정 가능/);
  assert.match(api.industryChip(p,'gev','ko-KR'),/NOT_AVAILABLE[\s\S]*SIC 없음/);assert.match(api.industryChip(p,'hanmi','en-US'),/Not an SEC registrant/);
  const nvdaTheme=api.themeChip(p,'nvda','ko-KR');assert.match(nvdaTheme,/data-theme-chip="semiconductors"/);assert.match(nvdaTheme,/ETF SOXX·SMH \+ 10-K 키워드/);assert.doesNotMatch(nvdaTheme,/data-theme-chip="cybersecurity"/);
  const msft=api.themeChip(p,'msft','ko-KR');assert.match(msft,/data-weak-evidence="consumer_brands"/);assert.match(msft,/근거 약함/);
  assert.match(api.themeChip(p,'amd','ko-KR'),/NOT_AVAILABLE/);assert.match(api.themeChip(fixtures.offline,'nvda','ko-KR'),/NOT_AVAILABLE/);assert.match(api.themeChip(null,'nvda','ko-KR'),/NOT_AVAILABLE/);
- const en=api.themeChip(p,'nvda','en-US')+api.industryChip(p,'nvda','en-US');assert.doesNotMatch(en,/[가-힣]/);assert.match(en,/v0 default · UNCALIBRATED · editable later/);
+ const en=api.themeChip(p,'nvda','en-US')+api.industryChip(p,'nvda','en-US');assert.doesNotMatch(en,/[가-힣]/);assert.match(en,/v0 default · uncalibrated · editable later/);
 });
 
 test('S03 industry composition and concentration warning run on RAM weights only',()=>{
