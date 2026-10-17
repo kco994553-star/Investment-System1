@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'" />
+    <!-- Public JSON files are read from this base (relative to this page). The Pages cockpit serves them one level up. -->
+    <meta name="data-base" content="../" />
+    <meta name="theme-color" content="#1e4d43" />
+    <title>투자 시스템</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#content">본문으로</a>
+    <div class="shell">
+      <nav class="bottom-nav" id="primary-nav" aria-label="주요 화면">
+        <a href="#/" data-tab="today"><span class="flow" aria-hidden="true">•</span>오늘</a>
+        <a href="#/qgv" data-tab="qgv"><span class="flow" aria-hidden="true">1</span>QGV</a>
+        <a href="#/technical" data-tab="technical"><span class="flow" aria-hidden="true">2</span>기술</a>
+        <a href="#/macro" data-tab="macro"><span class="flow" aria-hidden="true">3</span>매크로</a>
+        <a href="#/validation" data-tab="validation"><span class="flow" aria-hidden="true">4</span>검증</a>
+        <p class="nav-note">읽기 전용 · 공개 자료만 · 개인 보유는 이 화면에 없음</p>
+      </nav>
+      <header class="topbar">
+        <a class="brand" href="#/"><span class="brand-mark">i.</span>INVESTMENT SYSTEM</a>
+        <span class="spacer"></span>
+        <a class="settings-link" href="#/settings" data-tab="settings">설정</a>
+      </header>
+      <p class="notice-line">개인 참고용입니다. 투자 권유나 자문이 아니며 주문 기능이 없습니다.</p>
+      <main id="content" tabindex="-1">
+        <p class="state-screen" role="status">공개 자료를 불러오는 중…</p>
+      </main>
+    </div>
+    <!-- The cockpit's own readers and engines (same files the cockpit loads, in its order): no second implementation. -->
+    <script src="../profile-defaults.js"></script>
+    <script src="../type-config-defaults.js"></script>
+    <script src="../engine-preview.js"></script>
+    <script src="../dcf-parameters-defaults.js"></script>
+    <script src="../playbook-config-defaults.js"></script>
+    <script src="../playbook-engine.js"></script>
+    <script src="../qgv-v2.js"></script>
+    <script src="../scoring-default.js"></script>
+    <script src="../qgv2-inputs.js"></script>
+    <script src="../qgv-scores.js"></script>
+    <script src="../sec-qgv2.js"></script>
+    <script src="../macro-lights.js"></script>
+    <script src="../public-screens.js"></script>
+    <script src="../classification-screens.js"></script>
+    <script src="../sec-disclosures.js"></script>
+    <script src="../news-signals.js"></script>
+    <script src="../dart-disclosures.js"></script>
+    <script src="../forward-validation.js"></script>
+    <script src="../watchlist.js"></script>
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
