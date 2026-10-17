@@ -173,6 +173,8 @@ def seeded_site(published_at):
 
 # ---- the collect job of sec-daily-public-inputs.yml, read as plain text (CI has no YAML parser) ----
 WORKFLOW = ROOT.parent / '.github/workflows/sec-daily-public-inputs.yml'
+# Run label first (owner instruction 2026-10-17): one RUN_CONTEXT line, never a gate and never a ledger input.
+CONTEXT_TOOLS = ('daily_run_context',)
 LEDGER_INPUT_TOOLS = ('build_pages_cockpit', 'public_screens_pipeline', 'dart_daily', 'sec_universe_shares', 'project_dart_qgv2')
 UNRELATED_TOOLS = ('public_classification_pipeline', 'universe_domains_pipeline', 'company_logos_pipeline', 'sec_13f_managers',
                    'sec_disclosures', 'news_signals')
@@ -248,6 +250,8 @@ def _daily_run(work, site, day, *, deploy, universe_fails, fail_tools, raw):
         return 0  # offline: the placeholders from the build stay; only their failure matters here
 
     actions = {
+        'daily_run_context': lambda env: load_tool('daily_run_context').run(
+            environ={'GITHUB_EVENT_NAME': 'schedule', 'RUN_MODE': 'daily'}, now=lambda: clock(day, 22, 18)),
         'build_pages_cockpit': lambda env: (build.build_public_cockpit(out), 0)[1],
         'public_screens_pipeline': screens,
         'dart_daily': lambda env: dart.run(out, environ={DART_KEY_ENV: FAKE_KEY}, transport=SixAnnualDart(),
@@ -525,8 +529,9 @@ def test_collect_job_runs_ledger_inputs_and_ledger_before_unrelated_required_ste
     steps = [s for s in collect_steps() if s['tools'] or s['upload']]
     order = [s['tools'][0] if s['tools'] else 'UPLOAD' for s in steps]
     ledger = order.index('forward_validation_ledger')
-    # Exactly the steps whose files the ledger reads (actual-catalog, sec-qg-factors, sec-qgv2, dart-financials) precede it.
-    assert order[:ledger] == list(LEDGER_INPUT_TOOLS)
+    # After the run label, exactly the steps whose files the ledger reads (actual-catalog, sec-qg-factors, sec-qgv2,
+    # dart-financials) precede it.
+    assert order[:ledger] == list(CONTEXT_TOOLS + LEDGER_INPUT_TOOLS)
     after = [t for s in steps[ledger + 1:] for t in s['tools']]
     assert after == list(UNRELATED_TOOLS) + list(REPORT_TOOLS) and order[-1] == 'UPLOAD'
     by_tool = {s['tools'][0]: s for s in steps if s['tools']}
@@ -554,7 +559,7 @@ def test_an_unrelated_required_step_failure_keeps_the_days_row_and_its_private_c
     _, runs = rehearse(tmp_path / tool, plan=[('2026-10-19', {'fail_tools': (tool,)})], raw=raw)
     out, log = runs['2026-10-19']
     assert log['failed_step'] in (tool, 'universe_domains_pipeline') and not log['uploaded'] and not log['deployed']
-    assert log['ran'][:len(LEDGER_INPUT_TOOLS) + 1] == [*LEDGER_INPUT_TOOLS, 'forward_validation_ledger']
+    assert log['ran'][:len(CONTEXT_TOOLS + LEDGER_INPUT_TOOLS) + 1] == [*CONTEXT_TOOLS, *LEDGER_INPUT_TOOLS, 'forward_validation_ledger']
     assert log['ledger_exit'] == 0
     for version in (fl.VERSION, fl.V2_VERSION):
         assert [(r['date'], r['state']) for r in rows(out, version)] == [('2026-10-19', 'RECORDED')]
