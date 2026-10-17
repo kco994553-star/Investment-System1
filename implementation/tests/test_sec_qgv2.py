@@ -836,6 +836,132 @@ def test_v_inputs_diluted_shares_newest_allowed_concept_by_period_end_else_na():
     assert d['reasons']['v_fcf_yield'] != 'SHARES_NOT_AVAILABLE'
 
 
+COVER = 'EntityCommonStockSharesOutstanding'
+K_ACCN, Q_ACCN = '0000000001-26-000001', '0000000001-26-000200'  # simple_company's 10-K accession; a 2026 Q2 10-Q
+
+
+def _cover(value, accn=K_ACCN, end='2026-02-10', form='10-K', filed='2026-02-15'):
+    """dei cover share count (EntityCommonStockSharesOutstanding) reported in filing `accn`."""
+    return ((COVER, 'shares', value, end), {'form': form, 'filed': filed, 'accn': accn, 'taxonomy': 'dei'})
+
+
+def _q2(concept, value, start='2026-04-01', accn=Q_ACCN):
+    return ((concept, 'shares', value, '2026-06-30'), {'start': start, 'form': '10-Q', 'filed': '2026-08-01', 'accn': accn})
+
+
+def test_v_inputs_diluted_shares_scale_unconfirmed_is_na_never_rescaled():
+    """V-SHARES-SCALE (owner decision 2026-10-17 on the MCD/WAT unit errors, calc_version 2026-10-17.1, no bump):
+    v_inputs_v2.diluted_shares is NA with reason SHARES_SCALE_UNCONFIRMED when its ratio to the dei cover share count of the
+    SAME filing is outside SHARES_SCALE_BAND (0.1..10); the per-share histories are NA when their FY0-basis count is. Never
+    multiplied/divided by 1,000 or 1,000,000, never replaced by the cover, basic or balance-sheet count. Normal counts, counts
+    without a same-filing cover (no reference) and every Q·G metric are unchanged."""
+    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-17.1'
+    assert vf.SHARES_SCALE_BAND == (0.1, 10.0) and vf.SHARES_SCALE_UNCONFIRMED == 'SHARES_SCALE_UNCONFIRMED'
+    base_v, base_m = compute(simple_company())[4], compute(simple_company())[3]
+    assert len(base_v['ebit_per_share_history']) == 5
+
+    def run(extra):
+        diag = {}
+        _, fy0, _, m, v = vf.compute(simple_company(extra=extra), sic='3674', cutoff=CUTOFF, diagnostics=diag)
+        assert fy0 == '2025-12-31'
+        return m, v, diag
+
+    # (a) Normal: FY0 10-K count 10 vs its cover 10.3; a 10-Q count 10.2 vs its cover 10.25 -> kept, histories unchanged.
+    m, v, diag = run([_cover(10.3)])
+    assert v['diluted_shares'] == base_v['diluted_shares'] and v == base_v and m == base_m
+    assert diag['diluted_shares']['status'] == 'IN_BAND' and diag['per_share_histories']['status'] == 'IN_BAND'
+    m, v, diag = run([_cover(10.3), _q2(DILUTED, 10.2), _cover(10.25, Q_ACCN, '2026-07-25', '10-Q', '2026-08-01')])
+    assert v['diluted_shares'] == {'value': 10.2, 'period_end': '2026-06-30'} and m == base_m
+    assert v['ebit_per_share_history'] == base_v['ebit_per_share_history'] and diag['diluted_shares']['accn'] == Q_ACCN
+    # Band edges are inclusive (ratio exactly 10 and 0.1 kept); just outside -> NA.
+    for value, kept in ((100.0, True), (1.0, True), (100.5, False), (0.99, False)):
+        _, v, diag = run([_q2(DILUTED, value), _cover(10.0, Q_ACCN, '2026-07-25', '10-Q', '2026-08-01')])
+        assert (v['diluted_shares'] == {'value': value, 'period_end': '2026-06-30'}) is kept, value
+        assert diag['diluted_shares']['status'] == ('IN_BAND' if kept else 'SHARES_SCALE_UNCONFIRMED'), value
+
+    # (b) MCD-like: every filing tags the counts in millions (10.0 for 10,000,000; the 10-Q 9.9 for 9,900,000). The cover of
+    #     the same filing says 10,000,000 / 9,950,000 -> diluted_shares NA, per-share histories NA (their FY0 basis is the
+    #     same mis-scaled count); Q·G metrics unchanged (they only use ratios of counts of one basis).
+    mcd = [_cover(10_000_000.0), _q2(DILUTED, 9.9), _cover(9_950_000.0, Q_ACCN, '2026-06-30', '10-Q', '2026-08-01')]
+    m, v, diag = run(mcd)
+    assert v['diluted_shares'] is None and v['ebit_per_share_history'] == [] and v['fcf_per_share_history'] == []
+    assert m == compute(simple_company(extra=[_q2(DILUTED, 9.9)]))[3] == base_m
+    d = diag['diluted_shares']
+    assert d['status'] == 'SHARES_SCALE_UNCONFIRMED' and d['value'] == 9.9 and d['reference'] == 9_950_000.0
+    assert d['accn'] == Q_ACCN and d['concept'] == DILUTED and d['period_end'] == '2026-06-30'
+    assert d['reference_concept'] == 'dei:EntityCommonStockSharesOutstanding' and math.isclose(d['ratio'], 9.9 / 9_950_000.0)
+    assert diag['per_share_histories']['status'] == 'SHARES_SCALE_UNCONFIRMED' and diag['per_share_histories']['value'] == 10.0
+    # Without a newer 10-Q: the FY0 10-K count itself is checked against the 10-K cover.
+    _, v, diag = run([_cover(10_000_000.0)])
+    assert v['diluted_shares'] is None and v['ebit_per_share_history'] == [] and diag['diluted_shares']['accn'] == K_ACCN
+
+    # (c) WAT-like: the 10-Ks are correct (10 vs cover 10.1); one 2026 10-Q tags the count 1,000x (10,200 vs its cover 10.25).
+    #     The basic count of the same table is wrong the same way and the balance-sheet count is right: neither is used.
+    wat = [_cover(10.1), _q2(DILUTED, 10_200.0), _q2(DILUTED, 10_150.0, start='2026-01-01'),
+           _q2('WeightedAverageNumberOfSharesOutstandingBasic', 10_150.0),
+           (('CommonStockSharesOutstanding', 'shares', 10.2, '2026-06-30'), {'form': '10-Q', 'filed': '2026-08-01', 'accn': Q_ACCN}),
+           _cover(10.25, Q_ACCN, '2026-08-07', '10-Q', '2026-08-01')]
+    m, v, diag = run(wat)
+    assert v['diluted_shares'] is None and diag['diluted_shares']['status'] == 'SHARES_SCALE_UNCONFIRMED'
+    assert math.isclose(diag['diluted_shares']['ratio'], 10_200.0 / 10.25)
+    # Histories keep the correctly scaled FY0 10-K basis (IN_BAND against the 10-Q cover); Q·G unchanged.
+    assert v['ebit_per_share_history'] == base_v['ebit_per_share_history'] and v['fcf_per_share_history'] == base_v['fcf_per_share_history']
+    assert diag['per_share_histories']['status'] == 'IN_BAND' and m == base_m
+    assert {k: x for k, x in v.items() if k != 'diluted_shares'} == {k: x for k, x in base_v.items() if k != 'diluted_shares'}
+
+    # (d) BKNG-like: 25-for-1 split after FY0 with no split-ratio fact. The 10-Q count (250) matches its cover (251): kept; the
+    #     FY0-basis histories (10 shares) are 1/25 of it -> NA, so the device never compares pre-split per-share history
+    #     with the post-split count.
+    m, v, diag = run([_cover(10.0), _q2(DILUTED, 250.0), _cover(251.0, Q_ACCN, '2026-07-27', '10-Q', '2026-08-01')])
+    assert v['diluted_shares'] == {'value': 250.0, 'period_end': '2026-06-30'} and m == base_m
+    assert v['ebit_per_share_history'] == [] and v['fcf_per_share_history'] == []
+    assert diag['per_share_histories']['status'] == 'SHARES_SCALE_UNCONFIRMED' and math.isclose(diag['per_share_histories']['ratio'], 10.0 / 251.0)
+
+    # (e) No reference -> never blocked for it: no same-filing cover (class-dimensioned covers are not in companyfacts; a cover
+    #     of ANOTHER filing is not a reference), or several distinct values in the filing (ambiguous).
+    for extra in ([_q2(DILUTED, 10_200.0)], [_q2(DILUTED, 10_200.0), _cover(10.25)],
+                  [_q2(DILUTED, 10_200.0), _cover(6.0, Q_ACCN, '2026-07-25', '10-Q', '2026-08-01'),
+                   _cover(4.0, Q_ACCN, '2026-07-25', '10-Q', '2026-08-01')]):
+        _, v, diag = run(extra)
+        assert v['diluted_shares'] == {'value': 10_200.0, 'period_end': '2026-06-30'} and diag['diluted_shares']['status'] == 'NO_REFERENCE'
+    # A stale count (V-STALE-SHARES) is not checked; a cover filed after the cutoff is not a reference.
+    _, v, diag = run([_q2(DILUTED, 9.9), ((COVER, 'shares', 9_950_000.0, '2026-06-30'), {'form': '10-Q', 'filed': '2026-10-20', 'accn': Q_ACCN, 'taxonomy': 'dei'})])
+    assert v['diluted_shares'] == {'value': 9.9, 'period_end': '2026-06-30'} and diag['diluted_shares']['status'] == 'NO_REFERENCE'
+
+    # (f) Through the published SEC row (strict validators, unchanged row shape): MCD-like -> null count, LIVE row, Q·G as before.
+    facts_b, subs = REF.synthetic_sec('0000001000')
+    payload = json.loads(facts_b)
+    latest = vf._Facts(payload, 'us-gaap', 'USD', CUTOFF).latest_duration_any_concept('diluted_shares')
+    payload['facts']['dei'] = {COVER: {'units': {'shares': [{'end': latest[1].isoformat(), 'val': latest[0] * 1_000_000, 'accn': latest[2][0],
+                                                             'form': '10-Q', 'filed': latest[2][1].isoformat(), 'fy': 2026, 'fp': 'Q2'}]}}}
+    row, control = q_build(json.dumps(payload).encode(), subs), q_build(facts_b, subs)
+    assert row['calc_version'] == vf.CALC_VERSION and row['state'] == 'LIVE' and row['reason_codes'] == []
+    assert row['v_inputs_v2']['diluted_shares'] is None and control['v_inputs_v2']['diluted_shares'] is not None
+    assert row['v_inputs_v2']['ebit_per_share_history'] == [] and row['metrics'] == control['metrics']
+    updates = REF.synthetic_universe_updates()
+    updates[REF._codes()[0]] = row
+    published = q.merge(None, updates, as_of=NOW, shard_index=0)
+    assert published['records'][REF._codes()[0]]['v_inputs_v2']['diluted_shares'] is None
+    if shutil.which('node') is None:
+        return
+    # (g) Device (qgv2-inputs.js -> qgv-v2.js, unchanged): the blocked count is not replaced by any other share value (a
+    #     cover/basic count injected next to it is ignored): every per-share and EV-based V is NA with SHARES_NOT_AVAILABLE.
+    closes = {f'{y}-12': 100.0 for y in range(2015, 2026)}
+    for v in (row['v_inputs_v2'], dict(row['v_inputs_v2'], shares_outstanding={'value': latest[0], 'period_end': '2026-06-30'}),
+              run(wat)[1]):
+        d = _device_v(v, closes)
+        assert d['diluted_shares'] is None and d['ebit_yield'] is None and d['fcf_yield'] is None and d['implied_growth'] is None
+        assert d['reasons'] == {k: 'SHARES_NOT_AVAILABLE' for k in ('v_earnings_yield', 'v_fcf_yield', 'v_vs_industry',
+                                                                    'v_vs_own_history', 'v_expectation_check')}
+        assert set(d['v_scores'].values()) == {None} and d['v_axis'] is None
+        assert d['reference_range'] == {'state': 'NOT_AVAILABLE', 'reason': 'FCF_NOT_AVAILABLE', 'low': None, 'high': None}
+    # Normal count: device V computed as before. BKNG-like: yields computed, own-history NA (no history), never mixed bases.
+    d = _device_v(run([_cover(10.3)])[1], closes)
+    assert d['diluted_shares'] == 10.0 and d['fcf_yield'] is not None and d['reasons']['v_vs_own_history'] != 'SHARES_NOT_AVAILABLE'
+    d = _device_v(run([_cover(10.0), _q2(DILUTED, 250.0), _cover(251.0, Q_ACCN, '2026-07-27', '10-Q', '2026-08-01')])[1], closes)
+    assert d['diluted_shares'] == 250.0 and d['fcf_yield'] is not None and d['reasons']['v_vs_own_history'] == 'HISTORY_TOO_SHORT'
+
+
 def test_split_adjustment_never_adjusts_already_restated_values_twice():
     """Owner supplement 2026-10-15 (Q-SPLIT): a split-ratio fact alone never rescales values that the filings already report
     on the post-split basis."""

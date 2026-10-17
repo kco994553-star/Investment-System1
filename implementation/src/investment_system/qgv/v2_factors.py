@@ -31,6 +31,9 @@ import re
 # 2026-10-17.1 = v_inputs_v2 only: total_debt / cash_and_equivalents dated before the FY0 balance sheet are NA (V-STALE-BS);
 #                diluted_shares is the latest-ending fact over all allowed diluted-share concepts and NA when its period end is
 #                before FY0 end minus YEAR_TOLERANCE_DAYS (V-STALE-SHARES, owner decision 2026-10-17, same version);
+#                diluted_shares is NA (SHARES_SCALE_UNCONFIRMED) when it is outside SHARES_SCALE_BAND of the dei cover share
+#                count of the SAME filing, and the per-share histories are NA when their FY0 basis count is (V-SHARES-SCALE,
+#                owner decision 2026-10-17 on the MCD/WAT unit errors, same version; never rescaled, never another concept);
 #                Q·G metrics, factors and axes are unchanged from 2026-10-15.1.
 CALC_VERSION = 'qgv2-calc/2026-10-17.1'
 CALC_VERSION_PATTERN = r'qgv2-calc/[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]{1,4}'
@@ -229,6 +232,21 @@ SHARE_REVISION_TOLERANCE = 0.05
 SPLIT_MATCH_TOLERANCE = 0.03
 # An adjusted share count more than this factor away from FY0's is an unexplained discontinuity (e.g. a unit error): NA.
 SHARE_JUMP_LIMIT = 3.0
+# Scale check of v_inputs_v2.diluted_shares (rule V-SHARES-SCALE, owner decision 2026-10-17, calc_version 2026-10-17.1). The
+# reference is the dei cover share count (EntityCommonStockSharesOutstanding) reported in the SAME filing as the count: a
+# separately tagged point-in-time count, so a scale slip in the EPS table (MCD: 711.1 tagged without the millions scale; WAT 2026
+# 10-Qs: 98,204,000,000, 1,000x) does not repeat in it, while the basic weighted count of the same table does. A count whose
+# ratio to it is outside the band is NA with reason SHARES_SCALE_UNCONFIRMED: never multiplied or divided by 1,000 / 1,000,000,
+# never replaced by the cover or another concept. 10/17 raw (442 issuers with a current count and one same-filing cover value):
+# every correctly tagged count is within 0.83..1.16 of it, and the FY0-basis counts of the per-share histories within 0.58..1.20
+# (the low end: mergers closed after FY0, OMC/FITB/HBAN/WAT/DVN); the errors are 1,000,000x (MCD), 1,000x (WAT) and 1/23 (BKNG
+# histories: 25-for-1 split after FY0 without a split-ratio fact). The band is one order of magnitude each way (UNCALIBRATED):
+# far outside every observed normal difference and far inside the smallest unit error. No same-filing cover value, or several
+# distinct ones (class-dimensioned covers are not in companyfacts), means no reference: the count is kept unchecked (status
+# NO_REFERENCE), never blocked for it.
+SHARES_SCALE_BAND = (0.1, 10.0)
+SHARES_SCALE_UNCONFIRMED = 'SHARES_SCALE_UNCONFIRMED'
+COVER_SHARES_CONCEPT = ('dei', 'EntityCommonStockSharesOutstanding')
 # Price-free descriptors published only in the SEC file `sec-qgv2.json` (never ranked, never in the DART reference block,
 # whose key set is METRIC_KEYS exactly), with the profiles allowed to carry each (validators: universe/sec_qgv2.py, sec-qgv2.js).
 # ebit_estimated_years: number of fiscal years FY0..FY-5 whose EBIT is the substitute pretax + interest (rule EBIT); present
@@ -310,6 +328,7 @@ class _Facts:
             self.sources[item] = [source for _, source in tables]
         self._share_filings(facts)
         self._split_ratios(payload)
+        self._cover_counts(payload)
 
     def _share_filings(self, facts):
         """{filing: {(concept index, start, end): diluted shares}} for every annual-form annual span and 10-Q YTD/quarter
@@ -352,6 +371,27 @@ class _Facts:
                     filed, value = _day(row.get('filed')) if isinstance(row, dict) else None, row.get('val') if isinstance(row, dict) else None
                     if filed is not None and filed <= self.cutoff and _finite(value) and value > 0 and abs(value - 1.0) > SHARE_REVISION_TOLERANCE:
                         self.split_ratios.append((filed, float(value)))
+
+    def _cover_counts(self, payload):
+        """{accession: {values}} of the dei cover share counts (COVER_SHARES_CONCEPT, unit 'shares', > 0, filed <= cutoff), any
+        taxonomy of the row. Read only by the V-SHARES-SCALE check (_shares_scale)."""
+        facts = payload.get('facts') if isinstance(payload.get('facts'), dict) else {}
+        group = facts.get(COVER_SHARES_CONCEPT[0]) if isinstance(facts.get(COVER_SHARES_CONCEPT[0]), dict) else {}
+        node = group.get(COVER_SHARES_CONCEPT[1])
+        rows = node.get('units', {}).get('shares') if isinstance(node, dict) and isinstance(node.get('units'), dict) else None
+        self.cover_counts = {}
+        for row in rows if isinstance(rows, list) else ():
+            if not isinstance(row, dict) or not isinstance(row.get('accn'), str):
+                continue
+            filed, value = _day(row.get('filed')), row.get('val')
+            if filed is not None and filed <= self.cutoff and _finite(value) and value > 0:
+                self.cover_counts.setdefault(row['accn'], set()).add(float(value))
+
+    def cover_count(self, filing):
+        """The one cover share count reported in `filing` (accession, filed); None when it reports none or several distinct
+        values (ambiguous: no reference)."""
+        values = self.cover_counts.get(filing[0]) if filing is not None else None
+        return next(iter(values)) if values is not None and len(values) == 1 else None
 
     def _unit(self, item):
         if item == 'diluted_shares':
@@ -480,7 +520,7 @@ class _Facts:
         return None
 
     def latest_duration_any_concept(self, item):
-        """(value, end, filing) of the latest-ending positive annual or quarterly-span fact over ALL allowed concepts of
+        """(value, end, filing, concept) of the latest-ending positive annual or quarterly-span fact over ALL allowed concepts of
         `item` (V-STALE-SHARES, calc_version 2026-10-17.1): the latest period end wins; at the same end the earlier-listed
         concept; within one concept the shortest span (as latest_duration). Only facts the tables kept (filed <= cutoff,
         annual spans from annual forms, YTD/quarter spans from 10-Q forms). Read only for v_inputs_v2.diluted_shares;
@@ -492,7 +532,7 @@ class _Facts:
                     continue
                 rank = (end, -n, -(end - start).days)
                 if best is None or rank > best[0]:
-                    best = (rank, value, end, source.get((start, end)))
+                    best = (rank, value, end, source.get((start, end)), self.concepts[item][n])
         return None if best is None else best[1:]
 
 
@@ -1124,7 +1164,20 @@ def _flow(c, item_value_fy, ttm):
     return out if out['fy_value'] is not None or out['ttm_value'] is not None else None
 
 
-def _v_inputs(c, m, taxonomy, currency):
+def _shares_scale(value, reference):
+    """V-SHARES-SCALE status of a share count against its reference cover count: NO_REFERENCE, IN_BAND or
+    SHARES_SCALE_UNCONFIRMED (ratio outside SHARES_SCALE_BAND)."""
+    if reference is None or not _finite(value) or value <= 0:
+        return {'status': 'NO_REFERENCE', 'reference': reference, 'reference_concept': None, 'ratio': None}
+    ratio = value / reference
+    status = 'IN_BAND' if SHARES_SCALE_BAND[0] <= ratio <= SHARES_SCALE_BAND[1] else SHARES_SCALE_UNCONFIRMED
+    return {'status': status, 'reference': reference, 'reference_concept': ':'.join(COVER_SHARES_CONCEPT), 'ratio': ratio}
+
+
+def _v_inputs(c, m, taxonomy, currency, diagnostics=None):
+    """`diagnostics` (optional dict) receives the V-SHARES-SCALE checks: {'diluted_shares': {...}, 'per_share_histories':
+    {...}} with status, reference, ratio, value and filing (not published; audit and tests)."""
+    diagnostics = {} if diagnostics is None else diagnostics
     v = empty_v_inputs()
     v.update(currency=currency, taxonomy=taxonomy, fiscal_year_end=c.fy0.isoformat())
 
@@ -1183,15 +1236,37 @@ def _v_inputs(c, m, taxonomy, currency):
         shares = c.f.latest_duration_any_concept('diluted_shares')
     else:  # other period adapters (DART): their single annual series
         shares = c.f.latest_duration('diluted_shares')
-        shares = None if shares is None else (shares[0], shares[1], None)
-    shares_filing = None
+        shares = None if shares is None else (shares[0], shares[1], None, None)
+    shares_filing, reference = None, None
     if shares is not None and shares[0] > 0 and shares[1].isoformat() >= oldest:
-        v['diluted_shares'] = {'value': shares[0], 'period_end': shares[1].isoformat()}
-        shares_filing = shares[2]
+        # V-SHARES-SCALE (owner decision 2026-10-17, calc_version 2026-10-17.1): a count outside SHARES_SCALE_BAND of the cover
+        # share count of its own filing is NA (SHARES_SCALE_UNCONFIRMED; MCD 711.1 vs 707,641,531, WAT 98,204,000,000 vs
+        # 98,248,111), never rescaled and never replaced. The device then shows the per-share and EV-based V as NA with
+        # SHARES_NOT_AVAILABLE, exactly as for a stale count. No same-filing cover value -> kept unchecked (NO_REFERENCE).
+        reference = c.f.cover_count(shares[2]) if c.sec else None
+        check = _shares_scale(shares[0], reference)
+        diagnostics['diluted_shares'] = dict(check, value=shares[0], period_end=shares[1].isoformat(), concept=shares[3],
+                                             accn=shares[2][0] if shares[2] else None)
+        if check['status'] != SHARES_SCALE_UNCONFIRMED:
+            v['diluted_shares'] = {'value': shares[0], 'period_end': shares[1].isoformat()}
+            shares_filing = shares[2]
     # Per-share histories are on the basis of the latest share count (v['diluted_shares']), which the device pairs with the
     # current price: FY0 basis x the FY0 -> latest factor (the filing of that count; none -> the FY0 basis). Unknown factor
     # (a split filed after FY0 that no shared period confirms) -> both histories NA.
     latest = c.share_factor(c._basis(), shares_filing) if c.sec else 1.0
+    # V-SHARES-SCALE for the histories: they divide by the FY0-basis counts, so they are NA (SHARES_SCALE_UNCONFIRMED) when the
+    # FY0 count, restated to the filing of the latest count, is outside the band of that filing's cover count (MCD: every
+    # filing since the FY2023 10-K tags the counts in millions). WAT keeps them: its FY0 10-K count is correctly scaled and,
+    # with the 2026 10-Q count NA, the histories stay on the FY0 basis. The Q·G metrics only use ratios of counts of one basis
+    # (dilution, EPS/FCF/BVPS per-share CAGRs, SHARE_JUMP_LIMIT guard) and are unchanged.
+    if reference is not None and latest is not None:
+        base, factor = c.shares(0), c.share_factor(c._basis(), shares[2])
+        if base is not None and factor is not None:
+            check = _shares_scale(base * factor, reference)
+            diagnostics['per_share_histories'] = dict(check, value=base * factor, fiscal_year_end=c.fy0.isoformat(),
+                                                      accn=shares[2][0] if shares[2] else None)
+            if check['status'] == SHARES_SCALE_UNCONFIRMED:
+                latest = None
     for key, value_of in (('ebit_per_share_history', lambda k: c.a('ebit', k)), ('fcf_per_share_history', c.fcf)):
         if latest is None:
             v[key] = []
@@ -1220,19 +1295,20 @@ def _v_inputs(c, m, taxonomy, currency):
     return v
 
 
-def compute(companyfacts, *, sic, cutoff):
+def compute(companyfacts, *, sic, cutoff, diagnostics=None):
     """(profile, fiscal_year_end, currency, metrics, v_inputs_v2) for one issuer; metrics rounded for publication.
 
     `companyfacts` is the parsed SEC JSON; `cutoff` is a date (facts filed later are ignored).
-    Missing or unusable inputs give None metrics (never 0). Raises nothing for bad content."""
+    Missing or unusable inputs give None metrics (never 0). Raises nothing for bad content.
+    `diagnostics` (optional dict): filled with the v_inputs_v2 checks (V-SHARES-SCALE reason codes); never published."""
     profile = profile_for_sic(sic)
     try:
-        return _compute(companyfacts, profile, cutoff, sic)
+        return _compute(companyfacts, profile, cutoff, sic, diagnostics)
     except (TypeError, ValueError, AttributeError, KeyError, OverflowError, RecursionError, ZeroDivisionError):
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
 
 
-def _compute(companyfacts, profile, cutoff, sic=None):
+def _compute(companyfacts, profile, cutoff, sic=None, diagnostics=None):
     """SEC companyfacts path: the shared metrics plus the SEC-only descriptors EXTRA_METRIC_KEYS."""
     if not isinstance(companyfacts, dict) or not isinstance(cutoff, date):
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
@@ -1246,10 +1322,10 @@ def _compute(companyfacts, profile, cutoff, sic=None):
     if not ends:
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
     return compute_reported_periods(facts, fiscal_year_end=max(ends), profile=profile, taxonomy=taxonomy, currency=currency,
-                                    sic=sic, extra_metrics=True)
+                                    sic=sic, extra_metrics=True, diagnostics=diagnostics)
 
 def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxonomy=None, currency=None, sic=None,
-                             extra_metrics=False):
+                             extra_metrics=False, diagnostics=None):
     """Shared Q/G definitions for source adapters, without fabricated SEC facts.
 
     `facts` supplies annual(item,date), instant(item,date,tolerance), annual/instant_ends,
@@ -1270,5 +1346,5 @@ def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxon
     for key in INTEGER_METRICS:
         if metrics.get(key) is not None:
             metrics[key] = int(metrics[key])
-    v_inputs = _v_inputs(company, raw, taxonomy, currency)
+    v_inputs = _v_inputs(company, raw, taxonomy, currency, diagnostics)
     return profile, company.fy0.isoformat(), currency, metrics, v_inputs

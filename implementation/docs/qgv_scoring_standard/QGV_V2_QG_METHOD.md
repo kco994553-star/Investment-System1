@@ -265,8 +265,8 @@ SEC-only descriptors in `metrics` (never ranked; `v2_factors.EXTRA_METRIC_PROFIL
 (GENERAL and FINANCIAL, ≥ 0), rule APPQ. Both validators accept them only for those profiles and range-check them.
 
 **Calculation-rule version `calc_version` (owner supplement 2026-10-15).** `v2_factors.CALC_VERSION` (now
-`qgv2-calc/2026-10-17.1` = `2026-10-15.1` (F1–F3 + rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ) + V-STALE-BS and
-V-STALE-SHARES on `v_inputs_v2` only, Q·G unchanged; format `qgv2-calc/<date>.<n>`) is bumped whenever a factor rule in section 1–3 or a published
+`qgv2-calc/2026-10-17.1` = `2026-10-15.1` (F1–F3 + rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ) + V-STALE-BS,
+V-STALE-SHARES and V-SHARES-SCALE on `v_inputs_v2` only, Q·G unchanged; format `qgv2-calc/<date>.<n>`) is bumped whenever a factor rule in section 1–3 or a published
 `v_inputs_v2` rule changes. The file declares it at the top level (`calc_version`) and every row with data
 carries the version it was computed with (`calc_version`; `null` for rows without data and for legacy rows). **Versions are
 never mixed in one percentile:** the publisher (`v2_scoring.score_rows` / `volatility_rank_rows` with `calc_version`), both
@@ -314,7 +314,38 @@ its source reasons ("QGV v2 산출 불가 · 원자료 없음 (CIK 미해결)").
   count became NA (BKR 2021-06-30, REG 2020-12-31, TTWO 2024-03-31, HSY 2015-10-04, LYB 2019-03-31, SJM 2023-01-31, ERIE
   2021-06-30; no allowed concept has a current value); no issuer switched concept; Q·G metrics, factors and axes and the
   per-share histories are identical. Test: `test_v_inputs_diluted_shares_newest_allowed_concept_by_period_end_else_na`.
-- `ebit_per_share_history`, `fcf_per_share_history`: up to 5 fiscal years `{fiscal_year_end, value}`, oldest first. These feed the own-history multiple percentile.
+  **V-SHARES-SCALE (calc_version `2026-10-17.1`, owner decision 2026-10-17 on the MCD/WAT unit errors, same version):** a
+  current count is checked against the dei cover share count (`EntityCommonStockSharesOutstanding`) reported in the **same
+  filing** (same accession, filed by the cutoff). Ratio count / cover outside `SHARES_SCALE_BAND` = 0.1..10 (inclusive) →
+  `diluted_shares` is `null` with reason `SHARES_SCALE_UNCONFIRMED`. The count is never multiplied or divided by 1,000 /
+  1,000,000 and never replaced by the cover, the basic weighted count or the balance-sheet count. The per-share histories
+  are `[]` (same reason) when their FY0-basis count, restated to the filing of the latest count (rule SPLIT factor), is
+  outside the band of that filing's cover. No same-filing cover value, or several distinct ones (class-dimensioned covers are
+  not in companyfacts) → no reference: the count is kept unchecked, never blocked for it. A stale count (V-STALE-SHARES) is
+  not checked. Why the cover and not the basic count: the scale slip sits in the EPS table, so the basic count of the same
+  table repeats it (MCD 709.1, WAT 98,204,000,000), while the cover is tagged separately. Band (UNCALIBRATED): 10/17 raw, 442
+  issuers with a current count and one same-filing cover: every correctly tagged count within 0.83–1.16 of it, the FY0-basis
+  counts of the histories within 0.58–1.20 (low end: mergers closed after FY0 — OMC, FITB, HBAN, WAT, DVN); the errors are
+  10⁶× (MCD), 10³× (WAT) and 1/23 (BKNG histories). One order of magnitude each way is far outside every normal difference and
+  far inside the smallest unit error. The reason code is not a published field (the `v_inputs_v2` key set is pinned by the
+  hash-pinned JS validator); `v2_factors.compute(..., diagnostics={})` returns it with value, filing, concept, cover and ratio.
+  The device (unchanged; it reads only `v_inputs_v2.diluted_shares`) shows the per-share and EV-based V as NA with
+  `SHARES_NOT_AVAILABLE` and the DCF reference range NA; with histories `[]` the own-history V is `HISTORY_TOO_SHORT`.
+  Evidence (10/17 raw; sec.gov HTML not reachable from the build environment, so the XBRL instance of the same filing and
+  companyfacts are the evidence): **MCD** 10-Q 0000063908-26-000073, `WeightedAverageNumberOfDilutedSharesOutstanding`
+  2026-04-01..2026-06-30 = 711.1 shares, `decimals="1"` (the displayed "711.1" in millions tagged without scale) vs cover
+  707,641,531 (`decimals="INF"`) and net income 2,362,000,000 / diluted EPS 3.32 = 711.4 million; every MCD filing since the
+  FY2023 10-K (11 filings) tags the weighted counts in millions, earlier ones in shares. **WAT** 10-Q 0001193125-26-344691,
+  2026-04-05..2026-07-04 = 98,204,000,000 shares, `decimals="-6"` vs cover 98,248,111, balance-sheet
+  `CommonStockSharesOutstanding` 98,225,000 (`decimals="-3"`) and −136,000,000 / −1.39 = 97.8 million; the 2026 Q1 and Q2
+  10-Qs tag the counts (and the restated 2025 comparatives) 1,000× too high, the 10-Ks are correct. Both are filer XBRL
+  scale errors; the selected concept, period and filing are right, so no selection fix applies and the count is NA.
+  10/17 raw: `diluted_shares` → NA for MCD and WAT only; per-share histories → `[]` for MCD and BKNG (25-for-1 split after
+  FY0, no split-ratio fact: the FY0-basis histories were 1/23 of the published post-split count); 43 issuers without a
+  same-filing cover are unchecked (41 of them have net income / diluted EPS of the same period: ratios 0.23–1.09, IBKR lowest
+  with its class-A-only EPS; ABNB and CVNA have no such pair). Q·G metrics,
+  factors and axes are identical. Test: `test_v_inputs_diluted_shares_scale_unconfirmed_is_na_never_rescaled`.
+- `ebit_per_share_history`, `fcf_per_share_history`: up to 5 fiscal years `{fiscal_year_end, value}`, oldest first. These feed the own-history multiple percentile. `[]` when their FY0-basis count fails V-SHARES-SCALE.
 - `revenue_cagr_3y`, `eps_cagr_3y`, `fcf_per_share_cagr_3y`, `revenue_ttm_growth`: realized growth for the expectation check.
 - Also: `currency`, `taxonomy`, `fiscal_year_end`.
 
