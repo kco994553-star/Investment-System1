@@ -1,8 +1,12 @@
 {
  "schema_version": 1,
  "kind": "TYPE_PRICEFREE_MEMBERSHIP_VECTORS",
- "doc": "TYPE-SCOPE (owner instruction 2026-10-17): the same approved type_config/1 rule for every scored row from its published price-free metrics. Synthetic metric values only. Python qgv_v2.pricefree_memberships/type_axis_weights and JS QgvV2.pricefreeMemberships/typeAxisWeights must reproduce every case (tests/test_type_scope.py, tools/type_scope_node_test.js).",
+ "doc": "TYPE-SCOPE (owner instruction 2026-10-17): the same approved type_config/1 rule for every scored row from its published price-free metrics. Synthetic metric values only. Python qgv_v2.pricefree_memberships/type_axis_weights and JS QgvV2.pricefreeMemberships/typeAxisWeights must reproduce every case (tests/test_type_scope.py, tools/type_scope_node_test.js). type_scope / pricefree_type_metrics: the scope id (qgv_v2.TYPE_SCOPE = QgvV2.TYPE_SCOPE) and the metric list it was issued for; changing the metric list or config_version without a new type_scope fails the tests.",
  "config_version": "type_config/1",
+ "type_scope": "qgv2-type-scope/2026-10-17.1",
+ "pricefree_type_metrics": [
+  "revenue_cagr_3y"
+ ],
  "cases": [
   {
    "name": "below ramp: membership 0, NO_RECOGNIZED_TYPE",
@@ -101,6 +105,30 @@
    },
    "memberships": {
     "growth": 0.4999999999999999,
+    "value": null,
+    "dividend": null,
+    "quality": null,
+    "cyclical": null,
+    "defensive": null,
+    "leader": null
+   },
+   "selected_types": [
+    "growth"
+   ],
+   "type_reason": null,
+   "type_weights": {
+    "Q": 30.0,
+    "G": 50.0,
+    "V": 20.0
+   }
+  },
+  {
+   "name": "ramp upper bound: membership 1",
+   "metrics": {
+    "revenue_cagr_3y": 0.2
+   },
+   "memberships": {
+    "growth": 1.0,
     "value": null,
     "dividend": null,
     "quality": null,

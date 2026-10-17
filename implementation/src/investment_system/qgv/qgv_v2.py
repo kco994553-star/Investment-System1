@@ -138,6 +138,10 @@ def type_axis_weights(memberships, type_config):
 
 # TYPE-SCOPE (owner instruction 2026-10-17): approved type rules evaluated on the device from published price-free metrics.
 PRICEFREE_TYPE_METRICS = ('revenue_cagr_3y',)
+# Type-application scope id (owner decision 2026-10-17 item 4), recorded in the device score basis next to calc_version (which
+# stays unchanged): every scored row, from its own published metrics, with the type_config/1 ramps on PRICEFREE_TYPE_METRICS.
+# A change to the rows, the input or the evaluated rules gets a new id. JS: QgvV2.TYPE_SCOPE.
+TYPE_SCOPE = 'qgv2-type-scope/2026-10-17.1'
 
 
 def pricefree_memberships(metrics, type_config):

@@ -6,6 +6,7 @@ rule the TARGET-only public file `company-types-pricefree.json` applies (company
 type_config/1), and that no unresolved or price-dependent type is evaluated. Synthetic metric values only.
 """
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -76,3 +77,25 @@ def test_target_status_is_not_an_input():
     a = v.pricefree_memberships({'revenue_cagr_3y': 0.25}, CONFIG)
     b = v.pricefree_memberships({'revenue_cagr_3y': 0.25}, CONFIG)
     assert a == b and v.type_axis_weights(a, CONFIG) == v.type_axis_weights(b, CONFIG)
+
+
+def test_type_scope_id_is_one_constant_tied_to_the_evaluated_rules():
+    """Owner decision 2026-10-17 item 4: the device score basis records a type-application scope id; calc_version is kept.
+
+    The id was issued for this metric list and this type_config: changing either (or which rows get memberships) needs a new
+    id, so these vectors fail until type_scope is bumped together with them."""
+    assert v.TYPE_SCOPE == VECTORS['type_scope']
+    assert re.fullmatch(r'qgv2-type-scope/\d{4}-\d{2}-\d{2}\.\d+', v.TYPE_SCOPE)
+    assert list(v.PRICEFREE_TYPE_METRICS) == VECTORS['pricefree_type_metrics']
+    assert CONFIG['config_version'] == VECTORS['config_version']
+    js = (ROOT / 'src/investment_system/product/web_assets/qgv-v2.js').read_text()
+    assert re.findall(r"const TYPE_SCOPE='([^']+)'", js) == [v.TYPE_SCOPE]
+    assert re.findall(r"const PRICEFREE_TYPE_METRICS=Object\.freeze\(\[([^\]]*)\]\)", js) == ["'revenue_cagr_3y'"]
+    from investment_system.qgv.v2_factors import CALC_VERSION
+    assert not CALC_VERSION.startswith('qgv2-type-scope/'), 'the scope id is separate from the raw-metric calc_version'
+
+
+@pytest.mark.parametrize('cagr, growth', [(0.1, 0.0), (0.2, 1.0), (None, None)])
+def test_ramp_edges_and_na(cagr, growth):
+    """0.10 -> 0, 0.20 -> 1 (the ramp ends), NA stays None, never 0."""
+    assert v.pricefree_memberships({'revenue_cagr_3y': cagr}, CONFIG)['growth'] == growth

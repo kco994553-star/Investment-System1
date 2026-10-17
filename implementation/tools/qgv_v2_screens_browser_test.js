@@ -34,6 +34,8 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
         }, F.strictUniverseValues());
         phase = 'S06';await page.locator('[data-leaderboard-table]').waitFor();
         assert.equal(await page.locator('[data-scoring-default]').first().getAttribute('data-scoring-default'), 'v2');
+        // TYPE-SCOPE (owner decision 2026-10-17 item 4): the basis badge names the type-application scope id the scores use.
+        assert.match(await page.locator('[data-scoring-default]').first().textContent(), /유형 범위 qgv2-type-scope\/\d{4}-\d{2}-\d{2}\.\d+$/);
         assert.equal(await page.locator('[data-qgv2-preset]').count(), 4);
         assert.equal(await page.locator('[data-qgv2-preset="balanced"]').getAttribute('aria-pressed'), 'true');
         await page.locator('details:has(#private-subset-root) > summary').click();
@@ -68,6 +70,7 @@ const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no horizontal scroll S13');
         phase = 'S04';await page.goto(BASE + '#company/nvda');await page.locator('[data-company-card="qgv"]').waitFor();
         assert.equal(await page.locator('[data-company-badges] [data-scoring-default]').getAttribute('data-scoring-default'), 'v2');
+        assert.ok((await page.locator('[data-company-badges] [data-scoring-default]').textContent()).includes(' · 유형 범위 qgv2-type-scope/'), 'S04/S05 basis badge records the type scope');
         {
           await page.locator('[data-company-card="qgv"] [data-qgv="total"] .num').waitFor();
           assert.match(await page.locator('[data-company-card="qgv"] [data-qgv="V"]').textContent(), /\d/);

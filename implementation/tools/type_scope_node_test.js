@@ -77,3 +77,80 @@ test('price-dependent or unresolved type inputs in a row never produce a type (n
   const { twin } = twins({ dividend_yield: 0.05, sector_marketcap_rank: 1, roic: 0.4 });
   assert.deepEqual(twin.v2.selected_types, []);assert.equal(twin.v2.type_reason, 'TYPE_UNCONFIRMED');
 });
+
+// ---- Owner decision 2026-10-17 item 4: scope id in the device score basis; playbook growth on the same input and rule ----
+test('the type-application scope id is one constant, recorded in the device score basis; calc_version and profile id unchanged', () => {
+  assert.equal(V2.TYPE_SCOPE, VECTORS.type_scope);assert.match(V2.TYPE_SCOPE, /^qgv2-type-scope\/\d{4}-\d{2}-\d{2}\.\d+$/);
+  assert.deepEqual([...V2.PRICEFREE_TYPE_METRICS], VECTORS.pricefree_type_metrics, 'a new metric list needs a new type_scope');
+  const { nvda } = twins({ revenue_cagr_3y: 0.25 });assert.ok(nvda);
+  const records = {};for (let i = 1; i <= 12; i++) records['NYSE:SYN' + i] = row(i, { revenue_cagr_3y: 0.15 });
+  const inputs = SQ.fromInputs(SQ.light({ kind: 'SEC_QGV2', as_of: '2026-10-17T00:00:00Z', calc_version: 'qgv2-calc/2026-10-17.1', records: Object.fromEntries(Object.entries(records).map(([k, r]) => [k, { ...r, calc_version: 'qgv2-calc/2026-10-17.1' }])) }));
+  const out = QS.compute({ identities: [{ company_id: 'syn1', ticker: 'SYN1' }], publicScreens: { [SQ.FILE]: inputs } });
+  assert.equal(out.basis.type_scope, V2.TYPE_SCOPE);assert.equal(out.profile.type_scope, V2.TYPE_SCOPE);assert.ok(Object.isFrozen(out.basis));
+  assert.equal(out.profile.id, 'qgv-v2/balanced/gate-on', 'profile id (V history key) is unchanged');
+  assert.equal(inputs.calc_version, 'qgv2-calc/2026-10-17.1', 'the raw-metric calc_version is read as published, not replaced');
+  assert.ok(QS.basisText(out, false).endsWith(' · 유형 범위 ' + V2.TYPE_SCOPE));assert.ok(QS.basisText(out, true).endsWith(' · type scope ' + V2.TYPE_SCOPE));
+  assert.equal(QS.basis('v2', true).type_scope, V2.TYPE_SCOPE);
+});
+
+// playbook-screen.js loads its engine and config itself (node); no PlaybookEngine global, so the accessor's cyclical V basis stays as above.
+const P = require(path.join(W, 'playbook-screen.js'));
+const IDS = new Map([['NVDA', 'nvda'], ['TWIN', 'twin']]);
+function universe(nvdaMetrics, { targetMetrics = nvdaMetrics, targetRow = true, calc = null, mismatch = false } = {}) {
+  const stamp = (r) => (calc ? { ...r, calc_version: calc } : r), records = {};for (let i = 1; i <= 12; i++) records['NYSE:SYN' + i] = stamp(row(i, { revenue_cagr_3y: 0.05 }));
+  records['NASDAQ:NVDA'] = stamp({ ...row(20, nvdaMetrics), cik: '0001045810' });records['NASDAQ:TWIN'] = stamp({ ...row(20, nvdaMetrics), cik: '0009999999' });
+  const target = targetRow ? { nvda: { ...stamp({ ...row(20, targetMetrics), cik: '0001045810' }), ...(mismatch ? { calc_version: 'qgv2-calc/2026-01-01.1' } : {}) } } : {};
+  return SQ.fromInputs(SQ.light({ kind: 'SEC_QGV2', as_of: '2026-10-17T00:00:00Z', ...(calc ? { calc_version: calc } : {}), records, target }));
+}
+const growthOf = (symbol, screens) => P.factsFor(symbol, { idByTicker: IDS, screens, heldSymbols: [], interests: [] }).memberships.growth;
+const scoreOf = (symbol, screens) => QS.typeMemberships({ identity: { company_id: IDS.get(symbol), ticker: symbol }, publicScreens: screens });
+
+for (const c of VECTORS.cases.filter((x) => Object.keys(x.metrics).every((k) => k === 'revenue_cagr_3y')))
+  test('playbook growth = score-side membership for the same input — ' + c.name, () => {
+    const screens = { [SQ.FILE]: universe(c.metrics) };
+    const out = QS.compute({ identities: [{ company_id: 'nvda', ticker: 'NVDA' }, { company_id: 'twin', ticker: 'TWIN' }], publicScreens: screens });
+    for (const symbol of ['NVDA', 'TWIN']) {
+      const score = scoreOf(symbol, screens), playbook = growthOf(symbol, screens), want = c.memberships.growth;
+      assert.equal(score.code, out.rows[IDS.get(symbol)].code, 'the record the score uses');assert.equal(score.type_scope, V2.TYPE_SCOPE);
+      assert.equal(score.memberships.growth, want, symbol + ' score side');assert.equal(playbook, want, symbol + ' playbook');
+      if (want === null) assert.notEqual(playbook, 0, 'NA stays NA, never 0');
+      assert.equal(out.rows[IDS.get(symbol)].v2.selected_types.includes('growth'), want !== null && want >= 0.3, 'the score selects growth from the same membership');
+    }
+  });
+
+test('playbook growth reads the record the score uses (TARGET row when it has data), not another row or the TARGET-only file', () => {
+  // The TARGET row (fresher) and the Universe row differ: the score and the playbook both use the TARGET row for NVDA.
+  const screens = { [SQ.FILE]: universe({ revenue_cagr_3y: 0.11 }, { targetMetrics: { revenue_cagr_3y: 0.2 } }), 'company-types-pricefree.json': { data: { companies: { nvda: LIVE(0) } } } };
+  assert.equal(scoreOf('NVDA', screens).code, 'TARGET:nvda');assert.equal(scoreOf('NVDA', screens).memberships.growth, 1);
+  assert.equal(growthOf('NVDA', screens), 1, 'a contradicting company-types-pricefree.json row is not read');
+  const universeOnly = { [SQ.FILE]: universe({ revenue_cagr_3y: 0.15 }, { targetRow: false }) };
+  assert.equal(scoreOf('NVDA', universeOnly).code, 'NASDAQ:NVDA');assert.ok(Math.abs(growthOf('NVDA', universeOnly) - 0.5) < 1e-12);
+  // A non-TARGET company gets growth from the same rule (before: NA, the TARGET-only file had no row for it).
+  assert.ok(Math.abs(growthOf('TWIN', universeOnly) - 0.5) < 1e-12);
+  // No v2 record for the symbol, or no QgvScores on the page: NA (null), never 0.
+  assert.equal(growthOf('NONE', universeOnly), null);
+  const saved = globalThis.QgvScores;try { delete globalThis.QgvScores;assert.equal(growthOf('TWIN', universeOnly), null); } finally { globalThis.QgvScores = saved; }
+});
+
+test('a row of another calc_version: no score and no playbook growth (NA, never 0)', () => {
+  const screens = { [SQ.FILE]: universe({ revenue_cagr_3y: 0.25 }, { calc: 'qgv2-calc/2026-10-17.1', mismatch: true }) };
+  assert.equal(screens[SQ.FILE].records['TARGET:nvda'].calc_version_mismatch, true);
+  const out = QS.compute({ identities: [{ company_id: 'nvda', ticker: 'NVDA' }], publicScreens: screens });
+  assert.equal(out.rows.nvda.code, 'TARGET:nvda');assert.equal(out.rows.nvda.v2.total, null);
+  assert.equal(scoreOf('NVDA', screens), null);assert.equal(growthOf('NVDA', screens), null);
+  assert.equal(growthOf('TWIN', screens), 1, 'same-version rows are unaffected');
+});
+
+test('the other playbook type rules (quality / cyclical / defensive v0) are unchanged by the growth link', () => {
+  for (const sic of ['3674', '2834', '7372']) for (const cagr of [0.05, 0.25]) {
+    const base = row(20, { revenue_cagr_3y: cagr, revenue_volatility_5y_rank_pct: 20, roic_avg_3y: 0.2, operating_margin_std_5y_pp: 2, net_debt_to_ebitda: 1 });
+    const records = { 'NASDAQ:TWIN': { ...base, sic } };for (let i = 1; i <= 12; i++) records['NYSE:SYN' + i] = row(i, { revenue_cagr_3y: 0.05 });
+    const screens = { [SQ.FILE]: SQ.fromInputs(SQ.light({ kind: 'SEC_QGV2', as_of: '2026-10-17T00:00:00Z', records, target: {} })) };
+    const facts = P.factsFor('TWIN', { idByTicker: IDS, screens, heldSymbols: [], interests: [] });
+    const v0 = P.playbookTypeFacts(SQ.normalize(screens[SQ.FILE].records['NASDAQ:TWIN'], false), {}, null, facts.sector);
+    for (const t of ['quality', 'cyclical', 'defensive']) assert.equal(facts.memberships[t], v0.memberships[t], sic + ' ' + t);
+    assert.deepEqual(facts.type_classification, v0.classification);
+    assert.equal(facts.memberships.growth, cagr >= 0.2 ? 1 : 0);
+    for (const t of ['value', 'dividend', 'leader']) assert.equal(facts.memberships[t] ?? null, null, t + ' is never evaluated');
+  }
+});
