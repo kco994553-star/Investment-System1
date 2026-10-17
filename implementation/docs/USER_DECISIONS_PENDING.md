@@ -15,7 +15,17 @@
 | TYPE-SCOPE | 기업 유형 비중이 TARGET v0 목록 기준으로만 계산되는지(`public_engine_screens.py`) — TARGET v1 후보 선정에서 기준이 달라질 수 있음 | 방향은 사용자 지시(2026-10-17)로 정함: "같은 자격의 기업에는 같은 승인된 유형 판정 규칙". 미정 유형 규칙은 새로 만들지 않는다. 남은 결정: 수정안의 버전 관리(새 calc_version 여부)와 게시 형식 | 가격 없는 실제 적용 범위 집계·동일 입력 비교·수정안 준비 진행 중(운영 브랜치 `claude/type-scope-ops`). 실제 점수·상위 30 변화는 기기 가격으로 확인. **TARGET v1 확정 전 처리** | 현행(차이 가능, 표시 없음) |
 | BACKTEST | 백테스트 연구 결정 후보 BT-1~17(기간·모집단·공통 후보군·비용·현금·TA-1·체결·동점 등)과 M1 근사 MD-1~12 | 각 문서의 선택지 | [BACKTEST_RESEARCH_PLAN](backtest/BACKTEST_RESEARCH_PLAN.md) §2, [BACKTEST_MACRO_M1_MAPPING](backtest/BACKTEST_MACRO_M1_MAPPING.md) 참고. 운영 차단 아님. **#283 문서 병합은 BT·MD 권장안 승인이 아니다** | 문서·합성 검증·어댑터 설계만 |
 | NEWS-CAP | S07·S15 공시+뉴스 30행 목록에서 확정 공시(8-K)가 뉴스에 밀리는 문제 | 공시 최소 보장(예: 8-K 별도 상한) / 현행 | 공시 최소 보장 권장: 확정 공시가 뉴스 양에 따라 사라지면 안 된다. 화면 정책이라 결정 후 화면 PR | 현행(최신순 30행) |
-| UNI-WITHDRAWN | Universe 3개 공개 파일(shares·Q·G·QGV v2)에서 다중 CIK 충돌로 이전 값을 철회할 때의 표현. 지금은 `CIK_UNRESOLVED`(CIK·acquired_at 없음)로 게시되고, 그 종목에 수집 기록이 있었으면 배포 직전 검사가 LOST_RECORD로 그날 배포 전체를 거부한다(fail closed) | (a) TARGET /4(#285)와 같은 방식: 사유 `IDENTITY_CONFLICT_WITHDRAWN`, `detected_at`(감지 시각, 수집 시각 아님), `withdrawn_acquired_at`(철회하는 기록의 수집 시각). 검사는 이 값이 게시본과 정확히 같을 때만 통과 / (b) 현행(거부 유지) | (a) 권장: 충돌이 이어지는 동안 일일 배포가 매일 막히고, 화면에는 철회해야 할 이전 값이 계속 남는다. 3개 Python 모듈·3개 JS 검증기·두 가드·고정 해시를 바꾸는 공개 형식 변경이라 별도 PR. 2026-10-17 자료에서 충돌 코드는 0개라 지금 막히는 배포는 없다 | 현행(충돌 시 배포 거부) |
+| WITHDRAWN-PEER | TARGET 식별 충돌로 철회된 발행사의 Universe 행이 기기에서는 사용 중지되지만, 공개 파일에서 다른 기업 Q·G 백분위 계산의 동료로는 아직 들어간다 | (a) 공개 단면 계산에서도 제외(Universe 구역 변경, 별도 PR) / (b) 현행 | (a) 권장: 철회된 관측이 다른 기업 점수에도 영향을 주지 않게 한다. 지금은 철회 0건이라 급하지 않다 | 현행 |
+| UNI-TARGET | Universe 코드 철회 시 같은 CIK의 TARGET 행도 멈출지 | (a) 멈추지 않음(구현): TARGET은 고정 CIK로 따로 수집하고 Universe 코드의 관측만 멈춘다 / (b) 멈춤(#285의 반대 방향) | (a) 권장: 충돌은 등록부에서 티커를 누가 갖느냐의 문제이지 TARGET 발행사 식별 문제가 아니다. 후보 목록의 Universe→TARGET 점수 차용은 이미 막았다 | (a) |
+
+## 결정됨 — 2026-10-17 (UNI-WITHDRAWN = (a) · SEC 요청 연락처)
+
+1. **UNI-WITHDRAWN (a) 승인.** 목적은 식별 충돌로 사용을 중지한 관측을 실제 게시본과 소비자에 전달하는 것이다. 연속 배포 성공을 위해 검사를 완화하는 변경이 아니다.
+   - Universe 3개 파일 철회 행: 사유 `IDENTITY_CONFLICT_WITHDRAWN`, `detected_at`(감지 시각), `withdrawn_acquired_at`·`withdrawn_cik`(그 파일·그 행의 실제 게시 관측). TARGET 시각을 복사하지 않는다. 이전 수집 기록이 없으면 가짜 시각 없이 `CIK_UNRESOLVED`.
+   - 철회 행은 값·순위·후보·신규 수집·Q·G·V 커버리지에 넣지 않는다. 감지 시각으로 `acquired_at`·최신성을 갱신하지 않는다. 모집단 분모는 그대로다.
+   - 오래된 산출물 재배포·이전 관측 보존·TARGET↔Universe 대체로 값이 되살아나지 않는다. 식별을 확인한 새 수집으로만 복구한다. 다른 발행사 이력을 잇지 않는다.
+   - #285 철회 규칙을 같이 쓴다. 필수 6체크는 수정된 최신 HEAD 기준.
+2. **SEC 요청 연락처.** `www.sec.gov`는 연락처 없는 자동 요청을 거부한다. 사용자가 지정한 연락처를 연구용 SEC 요청 User-Agent에만 쓴다. 저장소·문서·로그·커밋에 기록하지 않는다.
 
 ## 결정됨 — 2026-10-17 (#278 후속: 다중 CIK 충돌 철회 · 성공 수집 NA 우선)
 
@@ -28,7 +38,7 @@
    - 옵션 a의 보존은 수집 기록이 없을 때만 남는다: 일시 수집 실패, 식별 실패, 빌더 실패, 엄격 검사 거부, 표지 파일 수집 실패로 주식 수가 없는 shares 행. 이때는 #278 결정대로 같은 CIK의 검증된 이전 행을 그대로 둔다.
 2. **다중 CIK 충돌**: 한 티커를 여러 CIK가 주장해 이번 실행 행이 없으면, 이전 행은 값이 있어도 철회하고 `CIK_UNRESOLVED`(CIK·acquired_at 없음)로 게시한다.
    - 충돌 감지 시각은 수집 시각이 아니므로 acquired_at을 만들지 않는다.
-   - 배포 직전 검사는 이를 LOST_RECORD로 거부한다(fail closed). 공개 표현은 위 UNI-WITHDRAWN 결정 대기.
+   - (2026-10-17 UNI-WITHDRAWN 결정 전까지) 배포 직전 검사는 이를 LOST_RECORD로 거부했다. 아래 UNI-WITHDRAWN 결정으로 대체.
 3. **2026-10-17 자료 영향**: 0행.
    - 미해결 코드 1개는 `BATS:CBOE`(거래소 이름이 SEC 파일에서 `CBOE`라 연결 안 됨, 주장 CIK 0개)라 충돌이 아니다.
    - `NYSE:XOM`(CIK 2115436, ExxonMobil Holdings)·`NASDAQ:HONA`(CIK 2089271)는 단일 CIK의 수집 실패(샤드 2·3 각 1건)로, #278 보존 규칙 대상이다.
