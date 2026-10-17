@@ -292,3 +292,62 @@ test('identity-conflict withdrawal: no score or candidate via the TARGET row, sa
   // The device V population and the hanmi reference pool exclude the stopped rows.
   assert.ok(['TARGET:googl', 'NASDAQ:GOOGL', 'NASDAQ:GOOG'].every((k) => inputs.records[k].in_cross_section === false));
 });
+
+/* FE-MISSING-2 (owner instruction 2026-10-17): the reader now keeps the published Q/G axis coverage and the row's acquired_at /
+   fiscal_year_end / profile for the screens. Scores, totals, ranks, flags and reasons must be byte-identical to the same inputs
+   without those fields (the shape before this change), for every preset and gate, with and without device prices. */
+test('published coverage fields are display only: scores, totals and ranks are byte-identical without them', () => {
+  const SecQgv2 = require(path.join(W, 'sec-qgv2.js'));
+  for (const payload of [F.strictPayload(), F.missingPayload()]) {
+    const full = SQ.fromInputs(SecQgv2.toInputs(payload, { now: '2026-10-14T00:00:00Z' }));
+    const before = { ...full, records: Object.fromEntries(Object.entries(full.records).map(([k, r]) => { const { acquired_at, fiscal_year_end, published_profile, ...rest } = r;
+      return [k, { ...rest, qg_axes: { Q: { score: r.qg_axes.Q.score }, G: { score: r.qg_axes.G.score } } }]; })) };
+    assert.ok(Object.values(full.records).some((r) => typeof r.qg_axes.Q.factors_available === 'string' && r.acquired_at), 'the new fields are present');
+    const ids = Object.keys(full.records).filter((k) => !k.startsWith('TARGET:')).map((c) => ({ company_id: c.toLowerCase(), ticker: c.slice(c.indexOf(':') + 1) }))
+      .concat(['amd', 'msft', 'nvda'].map((id) => ({ company_id: 't_' + id, ticker: id.toUpperCase() })));
+    const priced = {};let i = 0;for (const [c, r] of Object.entries(full.records)) if (r.state === 'LIVE' && i++ % 3) priced[c] = { price: 10 + (i * 7) % 90, currency: 'USD' };
+    const pick = (S) => JSON.stringify(Object.entries(S.rows).map(([id, r]) => { const p = r.primary;
+      return [id, r.rank, r.code, p.q, p.g, p.v, p.total, p.total_reason, p.flags, p.factors_available, p.partial, p.state, p.axes, p.factors, p.weights, p.detail, p.value_trap_gate]; }));
+    for (const quotes of [{}, priced]) for (const preset of Object.keys(globalThis.QgvV2.PRESETS)) for (const gate of [true, false]) {
+      const a = pick(QS.compute({ identities: ids, v2Inputs: before, quotes, preset, gate })), b = pick(QS.compute({ identities: ids, v2Inputs: full, quotes, preset, gate }));
+      assert.equal(b, a, preset + ' gate ' + gate + ' quotes ' + Object.keys(quotes).length);
+    }
+  }
+});
+
+test('coverage: partial / below-50% axis, FINANCIAL not-applicable, STALE source, exploration groups; NA never 0', () => {
+  const SecQgv2 = require(path.join(W, 'sec-qgv2.js')), inputs = SQ.fromInputs(SecQgv2.toInputs(F.missingPayload(), { now: '2026-10-17T00:00:00Z' }));
+  const ids = [['amd', 'AMD'], ['msft', 'MSFT'], ['nvda', 'NVDA'], ['googl', 'GOOGL'], ['gev', 'GEV']].map(([company_id, ticker]) => ({ company_id, ticker }));
+  const quotes = { 'TARGET:amd': { price: 40, currency: 'USD' }, 'TARGET:nvda': { price: 50, currency: 'USD' } };
+  for (const [c, r] of Object.entries(inputs.records)) if (!c.startsWith('TARGET:') && r.state === 'LIVE' && c !== 'NASDAQ:MSFT') quotes[c] = { price: 20 + c.length, currency: 'USD' };
+  const S = QS.compute({ identities: ids, v2Inputs: inputs, quotes }), cov = (id) => S.rows[id].primary.coverage;
+  // AMD: Q 2/5 = 45% of the original weight -> not calculated (published AXIS_COVERAGE_BELOW_50), G 4/5 = 85% partial, renormalized.
+  const amd = cov('amd');assert.equal(amd.axes.Q.status, 'NOT_AVAILABLE');assert.equal(amd.axes.Q.reason, 'AXIS_COVERAGE_BELOW_50');
+  assert.equal(amd.axes.Q.factors_available, 2);assert.ok(Math.abs(amd.axes.Q.weight_available - 0.45) < 1e-12);assert.deepEqual(amd.axes.Q.published.reason_codes, ['AXIS_COVERAGE_BELOW_50']);
+  assert.equal(amd.axes.G.status, 'PARTIAL');assert.ok(Math.abs(amd.axes.G.weight_available - 0.85) < 1e-12);
+  const shares = Object.fromEntries(amd.axes.G.factors.map((f) => [f.id, f.share]));assert.equal(shares.g_recent_acceleration, null);
+  assert.ok(Math.abs(shares.g_revenue_growth - 100 * 25 / 85) < 1e-12);assert.ok(Math.abs(Object.values(shares).filter((x) => x !== null).reduce((a, b) => a + b, 0) - 100) < 1e-9);
+  // The renormalized shares reproduce the published axis score (the engine's Σ(w·s)/Σ(w available)).
+  assert.ok(Math.abs(amd.axes.G.factors.filter((f) => f.score !== null).reduce((a, f) => a + f.share * f.score / 100, 0) - S.rows.amd.primary.g) < 1e-9);
+  assert.equal(amd.axes.G.factors.find((f) => f.id === 'g_recent_acceleration').reason, 'SEC_ITEMS_MISSING');
+  assert.ok(amd.states.includes('PARTIAL'));assert.match(QS.naText({ ...S.rows.amd.primary, total: null, total_reason: 'AXIS_WEIGHT_INSUFFICIENT' }, false), /Q 축 비중 50% 미만/);
+  // GOOGL (FINANCIAL profile row): earnings quality and V are 해당 없음, not missing data; Q is complete at 80% (4/5, 1 not applicable).
+  const go = cov('googl');assert.equal(go.source.profile, 'FINANCIAL');assert.equal(go.axes.Q.status, 'READY');assert.equal(go.axes.Q.not_applicable, 1);
+  assert.equal(go.axes.Q.factors.find((f) => f.id === 'q_earnings_quality').category, 'NOT_APPLICABLE');assert.equal(go.axes.V.status, 'NOT_APPLICABLE');
+  assert.ok(go.states.includes('NOT_APPLICABLE') && !go.states.includes('PARTIAL') && !go.states.includes('PRICE_NEEDED'));
+  // MSFT TARGET: STALE source with its basis dates; NVDA: LIVE, no price -> nothing; GEV: no data.
+  assert.deepEqual([cov('msft').source.state, cov('msft').source.acquired_at, cov('msft').source.fiscal_year_end], ['STALE', '2026-09-20T00:00:00Z', '2025-12-31']);assert.ok(cov('msft').states.includes('STALE'));
+  assert.deepEqual(cov('gev').states, ['SOURCE_MISSING']);
+  // Exploration groups: ranked rows have a rank; Q·G-only rows (value preset, FINANCIAL: Q+G < 50%) never get one.
+  const value = QS.compute({ identities: ids, v2Inputs: inputs, quotes, preset: 'value' });
+  assert.equal(QS.exploreGroup(value.rows.googl), 'PARTIAL_AXES');assert.equal(value.rows.googl.rank, null);assert.equal(QS.exploreGroup(value.rows.gev), 'CHECK_DATA');
+  assert.equal(QS.exploreGroup(S.rows.nvda), 'RANKED');
+  // Price needed: no device price -> V says so instead of '50% 미만', and the price-free V inputs are checked separately.
+  const bare = QS.compute({ identities: ids, v2Inputs: inputs, quotes: {}, preset: 'value' });assert.ok(bare.rows.nvda.primary.coverage.states.includes('PRICE_NEEDED'));
+  assert.match(QS.naText(bare.rows.nvda.primary, false), /V 가격 입력 필요/);assert.deepEqual(bare.rows.nvda.primary.coverage.v_inputs_missing, []);
+  // Rendered S04/S05 coverage: no NA factor shows a 0 score.
+  for (const id of ['amd', 'googl', 'gev', 'msft']) {
+    const html = CS.coverageHtml({ S, row: S.rows[id] }, 'ko-KR', { compact: true });assert.ok(html.includes('data-qgv-coverage'));
+    for (const li of html.split('<li data-factor-coverage=').slice(1)) if (/data-factor-state="(?!OK)/.test(li)) assert.ok(!/점수 0/.test(li), id);
+  }
+});
