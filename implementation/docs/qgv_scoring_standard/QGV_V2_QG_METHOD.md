@@ -265,8 +265,9 @@ SEC-only descriptors in `metrics` (never ranked; `v2_factors.EXTRA_METRIC_PROFIL
 (GENERAL and FINANCIAL, ≥ 0), rule APPQ. Both validators accept them only for those profiles and range-check them.
 
 **Calculation-rule version `calc_version` (owner supplement 2026-10-15).** `v2_factors.CALC_VERSION` (now
-`qgv2-calc/2026-10-15.1` = F1–F3 + rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ; format `qgv2-calc/<date>.<n>`) is bumped
-whenever a factor rule in section 1–3 changes. The file declares it at the top level (`calc_version`) and every row with data
+`qgv2-calc/2026-10-17.1` = `2026-10-15.1` (F1–F3 + rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ) + V-STALE-BS on
+`v_inputs_v2` only, Q·G unchanged; format `qgv2-calc/<date>.<n>`) is bumped whenever a factor rule in section 1–3 or a published
+`v_inputs_v2` rule changes. The file declares it at the top level (`calc_version`) and every row with data
 carries the version it was computed with (`calc_version`; `null` for rows without data and for legacy rows). **Versions are
 never mixed in one percentile:** the publisher (`v2_scoring.score_rows` / `volatility_rank_rows` with `calc_version`), both
 validators (Python `require_qgv2`, JS `SecQgv2.validate`, which recompute with the same rule) and the device
@@ -292,6 +293,12 @@ its source reasons ("QGV v2 산출 불가 · 원자료 없음 (CIK 미해결)").
 `v_inputs_v2` holds the price-free inputs the device needs to compute V in RAM. Amounts are exact SEC values in the row currency.
 - `ebit`, `fcf`: `{fy_value, fy_end, ttm_value, ttm_end}`. FCF = OCF − capex for the same period.
 - `total_debt`, `cash_and_equivalents`: `{value, period_end}`, each at its own latest balance-sheet date (they can differ). Debt uses the same rule as section 1.
+  **V-STALE-BS (calc_version `2026-10-17.1`, 2026-10-17 number check):** a debt or cash value dated before the FY0 balance sheet
+  (FY0 end − 10 days, the instant tolerance) is `null` (NA), never the last value reported years earlier. Debt is 0 only from an
+  FY0 line or the NODEBT rule; when NODEBT is NA (Q-NODEBT-INT) `total_debt` is NA. The device then shows `ebit_yield` and
+  `fcf_yield` as NA with reason `DEBT_CASH_NOT_AVAILABLE` (missing never becomes 0). 10/17 raw: 23 issuers' debt (13 GENERAL:
+  DXCM, INCY, PANW, SMCI, VRSN, VRTX, DE, DECK, DLR, EME, EXR, F, ORCL; 10 FINANCIAL, where V is not defined) and 1 issuer's cash
+  (PCAR) became NA; Q·G metrics, factors and axes are identical. Test: `test_v_inputs_stale_balance_sheet_values_are_na`.
 - `diluted_shares`: `{value, period_end}`, the latest weighted-average diluted share count (quarter or year).
 - `ebit_per_share_history`, `fcf_per_share_history`: up to 5 fiscal years `{fiscal_year_end, value}`, oldest first. These feed the own-history multiple percentile.
 - `revenue_cagr_3y`, `eps_cagr_3y`, `fcf_per_share_cagr_3y`, `revenue_ttm_growth`: realized growth for the expectation check.

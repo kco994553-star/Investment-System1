@@ -670,6 +670,71 @@ def test_nodebt_issuers_reporting_debt_under_other_tags_are_never_zero_debt():
     assert v['total_debt'] is None
 
 
+def _device_v(v):
+    """Device V for one v_inputs_v2 (qgv2-inputs.js normalize -> qgv-v2.js scoreUniverse, synthetic price 10 USD)."""
+    script = ("const W=process.argv[1],I=require(W+'/qgv2-inputs.js'),V2=require(W+'/qgv-v2.js');"
+              "const TC=require(W+'/type-config-defaults.js'),P=require(W+'/dcf-parameters-defaults.js'),v=JSON.parse(process.argv[2]);"
+              "const row={cik:'0000001000',state:'LIVE',fiscal_year_end:v.fiscal_year_end,profile:'GENERAL',industry_group:'g',sic:'3674',"
+              "currency:'USD',metrics:{},factors:{},axes:{},v_inputs_v2:v},rec=I.normalize(row,true);"
+              "const o=V2.scoreUniverse({'X:A':rec},{'X:A':{price:10,currency:'USD',month_closes:{}}},{typeConfig:TC,parameters:P})['X:A'];"
+              "process.stdout.write(JSON.stringify({total_debt:rec.v_inputs.total_debt,cash:rec.v_inputs.cash,fcf_yield:o.detail.fcf_yield,"
+              "ebit_yield:o.detail.ebit_yield,fcf_reason:o.factors.v_fcf_yield.reason,ebit_reason:o.factors.v_earnings_yield.reason}));")
+    out = subprocess.run(['node', '-e', script, str(ROOT / 'src/investment_system/product/web_assets'), json.dumps(v)],
+                         text=True, capture_output=True, timeout=60, check=True)
+    return json.loads(out.stdout)
+
+
+def test_v_inputs_stale_balance_sheet_values_are_na():
+    """V-STALE-BS (2026-10-17 number check, calc_version 2026-10-17.1): total_debt / cash_and_equivalents dated before the FY0
+    balance sheet are NA, never the last value reported years earlier; Q-NODEBT-INT issuers get no debt and so no EV, and the
+    device FCF / EBIT yield is NA with reason DEBT_CASH_NOT_AVAILABLE (missing never becomes 0)."""
+    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-17.1' and re.fullmatch(vf.CALC_VERSION_PATTERN, vf.CALC_VERSION)
+    debt_lines = ('LongTermDebtNoncurrent', 'LongTermDebtCurrent')
+    # INCY/EME/DECK-type: the only debt fact is years before FY0 and the NODEBT rule is NA (interest expense reported):
+    # total_debt NA (was 19,094 from 2018 / 5.3 from 2023 / 0 from 2021), Q metrics as before (they use FY0 debt only).
+    for year, amount in ((2018, 19094.0), (2023, 5.3), (2021, 0.0)):
+        _, _, _, m, v = compute(simple_company(omit=debt_lines, extra=_instants('LongTermDebt', amount, years=(year,))))
+        assert v['total_debt'] is None and m['net_debt_to_ebitda'] is None and m['roic'] is None, year
+        assert v['cash_and_equivalents'] == {'value': 30.0, 'period_end': '2025-12-31'}
+    # The same through the published SEC row (strict row shape, current calc_version).
+    facts, subs = REF.synthetic_sec('0000001000', omit=('LongTermDebtNoncurrent',))
+    payload = json.loads(facts)
+    payload['facts']['us-gaap']['LongTermDebt'] = {'units': {'USD': [{'end': '2018-12-31', 'val': 19094.0, 'accn': '0000001000-19-000010',
+                                                                       'form': '10-K', 'filed': '2019-02-15', 'fy': 2018, 'fp': 'FY'}]}}
+    row = q_build(json.dumps(payload).encode(), subs)
+    assert row['calc_version'] == vf.CALC_VERSION and row['fiscal_year_end'] == '2025-12-31'
+    assert row['v_inputs_v2']['total_debt'] is None and row['v_inputs_v2']['cash_and_equivalents'] is not None
+    # FY0 debt: unchanged (FY0 line; a later 10-Q date is the latest balance sheet, as before).
+    assert compute(simple_company())[4]['total_debt'] == {'value': 50.0, 'period_end': '2025-12-31'}
+    later = simple_company(extra=[(('LongTermDebtNoncurrent', 'USD', 45.0, '2026-06-30'), {'form': '10-Q', 'filed': '2026-08-01'})])
+    assert compute(later)[4]['total_debt'] == {'value': 45.0, 'period_end': '2026-06-30'}
+    # A balance sheet dated within the FY0 instant tolerance (52/53-week years) is the FY0 balance sheet: kept.
+    near = simple_company(omit=debt_lines, extra=[(('LongTermDebt', 'USD', 44.0, '2025-12-27'), {})])
+    assert compute(near)[4]['total_debt'] == {'value': 44.0, 'period_end': '2025-12-27'}
+    # MNST-type (approved NODEBT zero): a debt line at FY-1 only and no interest expense -> 0 at FY0 is allowed.
+    repaid = simple_company(omit=debt_lines + ('InterestExpense',), extra=_instants('LongTermDebt', 374.0, years=(2024,)))
+    assert compute(repaid)[4]['total_debt'] == {'value': 0.0, 'period_end': '2025-12-31'}
+    # PCAR-type cash: the latest cash fact is years before FY0 -> cash NA (never the stale value, never 0); FY0 cash kept.
+    stale_cash = simple_company(omit=('CashAndCashEquivalentsAtCarryingValue',),
+                                extra=_instants('CashAndCashEquivalentsAtCarryingValue', 30.0, years=(2019,)))
+    _, _, _, _, v = compute(stale_cash)
+    assert v['cash_and_equivalents'] is None and v['total_debt'] == {'value': 50.0, 'period_end': '2025-12-31'}
+    assert compute(simple_company())[4]['cash_and_equivalents'] == {'value': 30.0, 'period_end': '2025-12-31'}
+    if shutil.which('node') is None:
+        return
+    # Device: no EV -> FCF yield (and EBIT yield) NA with reason DEBT_CASH_NOT_AVAILABLE; never a zero-filled debt or cash.
+    stale = compute(simple_company(omit=debt_lines, extra=_instants('LongTermDebt', 19094.0, years=(2018,))))[4]
+    for v in (stale, compute(stale_cash)[4]):
+        d = _device_v(v)
+        assert d['fcf_yield'] is None and d['ebit_yield'] is None
+        assert d['fcf_reason'] == d['ebit_reason'] == 'DEBT_CASH_NOT_AVAILABLE'
+    assert _device_v(stale)['total_debt'] is None and _device_v(compute(stale_cash)[4])['cash'] is None
+    d = _device_v(compute(simple_company())[4])  # FY0 debt: EV = 10 x 10 + 50 - 30 = 120
+    assert math.isclose(d['fcf_yield'], (0.18 - 0.03) * 146.41 / 120, rel_tol=1e-6)
+    d = _device_v(compute(repaid)[4])  # zero debt: EV = 100 - 30 = 70
+    assert d['total_debt'] == 0 and math.isclose(d['fcf_yield'], (0.18 - 0.03) * 146.41 / 70, rel_tol=1e-6)
+
+
 def test_split_adjustment_never_adjusts_already_restated_values_twice():
     """Owner supplement 2026-10-15 (Q-SPLIT): a split-ratio fact alone never rescales values that the filings already report
     on the post-split basis."""

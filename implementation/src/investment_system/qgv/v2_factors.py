@@ -28,7 +28,9 @@ import re
 # was computed with and the file declares the current one; rows of another version are never ranked in the same percentile
 # population (v2_scoring.score_rows, sec-qgv2.js, qgv2-inputs.js -> CALC_VERSION_MISMATCH). Format: qgv2-calc/<date>.<n>.
 # 2026-10-15.1 = rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ on top of F1-F3 (QGV_V2_QG_METHOD.md section 1).
-CALC_VERSION = 'qgv2-calc/2026-10-15.1'
+# 2026-10-17.1 = v_inputs_v2 only: total_debt / cash_and_equivalents dated before the FY0 balance sheet are NA (V-STALE-BS);
+#                Q·G metrics, factors and axes are unchanged from 2026-10-15.1.
+CALC_VERSION = 'qgv2-calc/2026-10-17.1'
 CALC_VERSION_PATTERN = r'qgv2-calc/[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]{1,4}'
 ANNUAL_FORMS = frozenset({'10-K', '10-K/A', '10-KT', '10-KT/A', '20-F', '20-F/A', '40-F', '40-F/A'})
 QUARTER_FORMS = frozenset({'10-Q', '10-Q/A'})
@@ -1086,6 +1088,8 @@ LEGACY_V_KEYS = ('currency', 'taxonomy', 'fiscal_year_end', 'ebit', 'fcf', 'tota
           'revenue_cagr_3y', 'eps_cagr_3y', 'fcf_per_share_cagr_3y', 'revenue_ttm_growth')
 
 V_KEYS = LEGACY_V_KEYS + ('revenue', 'operating_margin_history')
+# EV balance-sheet inputs that must be on or after the FY0 balance sheet (V-STALE-BS, calc_version 2026-10-17.1).
+STALE_BALANCE_SHEET_V_KEYS = ('total_debt', 'cash_and_equivalents')
 
 def empty_v_inputs():
     return {'currency': None, 'taxonomy': None, 'fiscal_year_end': None,
@@ -1125,7 +1129,6 @@ def _v_inputs(c, m, taxonomy, currency):
         if ocf['ttm_value'] is not None and capex['ttm_value'] is not None and ocf['ttm_end'] == capex['ttm_end']:
             fcf['ttm_value'], fcf['ttm_end'] = ocf['ttm_value'] - capex['ttm_value'], ocf['ttm_end']
         v['fcf'] = fcf if fcf['fy_value'] is not None or fcf['ttm_value'] is not None else None
-    # Latest balance sheet: the latest cash date (any 10-K/10-Q); debt at that exact date.
     # Latest balance sheet values, each with its own date (any 10-K/10-Q); debt on a date where its lines exist.
     cash_ends = c.f.instant_ends('cash_and_equivalents')
     if cash_ends:
@@ -1145,6 +1148,14 @@ def _v_inputs(c, m, taxonomy, currency):
         rule = c.debt_rule(c.fy0) if c.debt_at(c.fy0) is None else None
         if rule is not None:
             v['total_debt'] = {'value': rule, 'period_end': c.fy0.isoformat()}
+    # V-STALE-BS (2026-10-17 number check; Q-NODEBT-INT): a debt or cash value dated before the FY0 balance sheet (FY0 end minus
+    # the usual instant tolerance) is NA, never the last value reported years earlier (INCY 2018, EME 2023, DECK 2021, PCAR cash
+    # 2019). Debt is 0 only when an FY0 line or the approved NODEBT rule says so. The device then shows ebit_yield/fcf_yield
+    # as NA with reason DEBT_CASH_NOT_AVAILABLE (qgv-v2.js metrics); missing is never 0.
+    oldest = (c.fy0 - timedelta(days=YEAR_TOLERANCE_DAYS)).isoformat()
+    for key in STALE_BALANCE_SHEET_V_KEYS:
+        if v[key] is not None and v[key]['period_end'] < oldest:
+            v[key] = None
     shares = c.f.latest_duration('diluted_shares')
     if shares is not None and shares[0] > 0:
         v['diluted_shares'] = {'value': shares[0], 'period_end': shares[1].isoformat()}
