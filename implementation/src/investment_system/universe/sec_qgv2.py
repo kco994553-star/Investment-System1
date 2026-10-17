@@ -27,7 +27,7 @@ import re
 
 from ..qgv import v2_factors as vf
 from ..qgv import v2_scoring as vs
-from .sec_universe_shares import _clock, _hash, _iso, load_config, universe_codes
+from .sec_universe_shares import IDENTITY_CONFLICT, PRESERVE, _clock, _hash, _iso, load_config, note, previous_decision, universe_codes
 
 FILENAME = 'sec-qgv2.json'
 KIND = 'SEC_QGV2'
@@ -200,14 +200,20 @@ def restate(record, as_of, stale_after):
     return out
 
 
-def _pick(old, new, as_of, stale_after, cut, sic_cfg, *, target_id=None):
-    """A valid new row replaces the kept one unless it has no data and the kept one has."""
+def _checked(new, as_of, stale_after, cut, sic_cfg, *, target_id=None):
+    """A new row as published, or INVALID_INPUT (without a collection record) when the strict row check rejects it."""
     if new is not None:
         try:
             _row(restate(new, as_of, stale_after), cut, stale_after, sic_cfg, target_id=target_id)
         except _ERRORS:
             cik = new.get('cik') if type(new) is dict else None
             new = empty_record(cik=cik if _cik_ok(cik) else None, reasons=('INVALID_INPUT',))
+    return new
+
+
+def _pick(old, new, as_of, stale_after, cut, sic_cfg, *, target_id=None):
+    """A valid new row replaces the kept one unless it has no data and the kept one has."""
+    new = _checked(new, as_of, stale_after, cut, sic_cfg, target_id=target_id)
     if new is not None and not (not _has_data(new) and _has_data(old)):
         return new
     return old
@@ -218,8 +224,12 @@ def _target_empty(company_id):
     return empty_record(cik=None, reasons=('NON_SEC_ISSUER',)) if cik is None else empty_record(cik=None)
 
 
-def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None, target_updates=None):
-    """Previous published rows + this run's Universe/TARGET rows, then publication-time scoring."""
+def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None, target_updates=None,
+          conflicts=(), stats=None):
+    """Previous published rows + this run's Universe/TARGET rows, then publication-time scoring.
+
+    Universe rows also follow `previous_decision` (a row without its own collection record is no new observation): a
+    kept row of another calc_version stays outside the ranking population (CALC_VERSION_MISMATCH) as before."""
     cfg = config or load_config()
     sic_cfg = _sic_config()
     stale_after = timedelta(days=cfg['stale_after_days'])
@@ -228,9 +238,17 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
     records = {}
     for code in universe_codes():
         old = versioned(kept[code]) if code in kept else empty_record()
-        new = updates.get(code)
-        chosen = _pick(old, new, as_of, stale_after, cut, sic_cfg)
-        if new is None and code in unresolved and not _has_data(chosen):
+        new = _checked(updates.get(code), as_of, stale_after, cut, sic_cfg)
+        decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflicts,
+                                     new_observation=lambda r: r['acquired_at'] is not None)
+        note(stats, decision, code, old)
+        if decision == PRESERVE:
+            chosen = old
+        elif decision == IDENTITY_CONFLICT:
+            chosen = new
+        else:
+            chosen = _pick(old, new, as_of, stale_after, cut, sic_cfg)
+        if new is None and code in unresolved and not _has_data(chosen) and decision != PRESERVE:
             chosen = empty_record(reasons=('CIK_UNRESOLVED',))
         records[code] = restate(chosen, as_of, stale_after)
     kept_target = (previous or {}).get('target') or {}
