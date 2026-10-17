@@ -11,8 +11,10 @@ LIVE/STALE state, so the factor map stores only the score. No V, no price, no ra
 
 Rows are keyed by Universe code (an issuer's codes carry the same row) and merged
 into the previously published copy like `sec-universe-shares.json`: each row keeps
-its own acquired_at, a new row without scores never erases a kept one, and rows past
-the shared v0 stale window (sec-universe-shares/v0, DEFAULT_V0_UNCALIBRATED) are STALE.
+its own acquired_at, a new row of this run's collection replaces the kept one also
+without scores (its NOT_AVAILABLE reason is published, owner rule 2026-10-17), a row
+without its own collection record never erases a kept score, and rows past the
+shared v0 stale window (sec-universe-shares/v0, DEFAULT_V0_UNCALIBRATED) are STALE.
 """
 from datetime import timedelta, timezone
 import hashlib
@@ -20,7 +22,8 @@ import json
 import math
 import re
 
-from .sec_universe_shares import IDENTITY_CONFLICT, PRESERVE, _clock, _hash, _iso, load_config, note, previous_decision, universe_codes
+from .sec_universe_shares import (IDENTITY_CONFLICT, PRESERVE, _clock, _hash, _iso, load_config, note, previous_decision, replaces,
+                                   universe_codes)
 
 FILENAME = 'sec-universe-qg.json'
 KIND = 'SEC_UNIVERSE_QG'
@@ -118,8 +121,8 @@ def restate(record, as_of, stale_after):
 
 
 def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None, conflicts=(), stats=None):
-    """Previous published rows + this shard's rows (same rules as the Universe shares merge, including
-    `previous_decision`: a row without its own collection record is no new observation)."""
+    """Previous published rows + this shard's rows (same rules as the Universe shares merge: `previous_decision`, then
+    `replaces`; a row with its own collection record, acquired_at set, is a new observation)."""
     cfg = config or load_config()
     stale_after = timedelta(days=cfg['stale_after_days'])
     cut = _clock(_iso(as_of))
@@ -135,12 +138,15 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
                 cik = new.get('cik') if type(new) is dict else None
                 new = empty_record(cik=cik if type(cik) is str and re.fullmatch(r'[0-9]{10}', cik) and cik != '0000000000' else None,
                                    reasons=('INVALID_INPUT',))
-        decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflicts,
-                                     new_observation=lambda r: r['acquired_at'] is not None)
+        observed = lambda r: r['acquired_at'] is not None
+        decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflicts, new_observation=observed)
         note(stats, decision, code, old)
         if decision == PRESERVE:
             pass
-        elif new is not None and (decision == IDENTITY_CONFLICT or not (not _scored(new) and _scored(old))):
+        elif decision == IDENTITY_CONFLICT and new is None:
+            # Withdrawn over an identity conflict (a ticker claimed by several CIKs): unresolved, no acquired_at.
+            old = empty_record(reasons=('CIK_UNRESOLVED',))
+        elif decision == IDENTITY_CONFLICT or replaces(new, old, observed=observed, has_value=_scored):
             old = new
         elif new is None and code in unresolved and not _scored(old):
             old = empty_record(reasons=('CIK_UNRESOLVED',))
