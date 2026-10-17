@@ -1,5 +1,5 @@
 """Synthetic-only checks for sec-valuation-inputs.json (fcfe/1.1, price-free): us-gaap, ifrs-full, assumed-zero lines."""
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 import copy
 import importlib
 import json
@@ -79,7 +79,23 @@ def comp(concepts, value):
 ZERO = {'concepts': [], 'value': 0.0, 'assumed_zero': True, 'reason': 'NOT_REPORTED_ASSUMED_ZERO'}
 
 
-def write_company(tmp_path, latest, *, previous=None, units=None, amendment=None, synthetic=False, acquired='2026-10-10T00:00:00Z', revenue_years=2):
+def calendar_period(year):
+    """(start, end, filed) of fiscal year `year` for a calendar-year filer."""
+    return f'{year}-01-01', f'{year}-12-31', f'{year + 1}-02-01'
+
+
+# A 52/53-week retailer-style fiscal year ending on the last Sunday near January 31 (FY2025 is a 53-week year).
+FISCAL_5253 = {2022: ('2022-01-31', '2023-01-29'), 2023: ('2023-01-30', '2024-01-28'),
+               2024: ('2024-01-29', '2025-01-26'), 2025: ('2025-01-27', '2026-02-01')}
+
+
+def period_5253(year):
+    start, end = FISCAL_5253[year]
+    return start, end, (date.fromisoformat(end) + timedelta(days=45)).isoformat()
+
+
+def write_company(tmp_path, latest, *, previous=None, units=None, amendment=None, synthetic=False, acquired='2026-10-10T00:00:00Z', revenue_years=2,
+                  period=calendar_period, revenue_scales=(0.5, 0.64, 0.8, 1.0)):
     """Two annual 10-K filings (FY2024, FY2025) plus an optional later 10-K/A for given concepts."""
     units = units or {}
     filings, facts = [], {}
@@ -90,20 +106,22 @@ def write_company(tmp_path, latest, *, previous=None, units=None, amendment=None
 
     years = {2024: previous if previous is not None else {k: v * 0.9 for k, v in latest.items()}, 2025: latest}
     for year, values in years.items():
-        accn, filed = f'{CIK}-{year + 1 - 2000:02d}-000001', f'{year + 1}-02-01'
+        start, end, filed = period(year)
+        accn = f'{CIK}-{year + 1 - 2000:02d}-000001'
         filings.append((accn, filed, '10-K'))
         for concept, value in values.items():
             unit = units.get(concept, 'shares' if concept.startswith('WeightedAverage') else 'USD')
-            add(concept, unit, f'{year}-01-01', f'{year}-12-31', value, accn, '10-K', filed)
+            add(concept, unit, start, end, value, accn, '10-K', filed)
             if year == 2025:  # comparative prior-year rows reported again in the latest filing
                 pass
     for concept, value in {'Revenues': 5000.0, 'EarningsPerShareDiluted': 4.0}.items():
-        for year, scale in ((2022, 0.5), (2023, 0.64), (2024, 0.8), (2025, 1.0))[4 - revenue_years:]:
-            accn, filed = f'{CIK}-{year + 1 - 2000:02d}-000001', f'{year + 1}-02-01'
+        for year, scale in tuple(zip((2022, 2023, 2024, 2025), revenue_scales))[4 - revenue_years:]:
+            start, end, filed = period(year)
+            accn = f'{CIK}-{year + 1 - 2000:02d}-000001'
             if (accn, filed, '10-K') not in filings:
                 filings.append((accn, filed, '10-K'))
             unit = 'USD/shares' if concept.startswith('Earnings') else 'USD'
-            add(concept, unit, f'{year}-01-01', f'{year}-12-31', value * scale, accn, '10-K', filed)
+            add(concept, unit, start, end, value * scale, accn, '10-K', filed)
     if amendment:
         accn, filed = f'{CIK}-26-000009', '2026-03-01'
         filings.append((accn, filed, '10-K/A'))
@@ -111,7 +129,7 @@ def write_company(tmp_path, latest, *, previous=None, units=None, amendment=None
             add(concept, 'USD', '2025-01-01', '2025-12-31', value, accn, '10-K/A', filed)
     payload = {'cik': int(CIK), 'facts': {'us-gaap': facts, 'dei': {'StockPrice': {'units': {'USD': [{'val': 99999}]}}}}, 'private_value': 'TEST_ONLY_CANARY'}
     subs = {'cik': int(CIK), 'filings': {'recent': {'form': [f[2] for f in filings], 'accessionNumber': [f[0] for f in filings],
-                                                     'filingDate': [f[1] for f in filings], 'reportDate': ['2025-12-31'] * len(filings),
+                                                     'filingDate': [f[1] for f in filings], 'reportDate': [period(2025)[1]] * len(filings),
                                                      'acceptanceDateTime': [f[1] + 'T12:00:00Z' for f in filings]}}}
     (tmp_path / 'facts.json').write_text(json.dumps(payload))
     (tmp_path / 'submissions.json').write_text(json.dumps(subs))
@@ -339,9 +357,67 @@ def test_no_cash_flow(tmp_path):
 def test_revenue_cagr_3y_matches_the_published_type_metric(tmp_path):
     bundle = screens().generate_screen_bundle(manifest=write_company(tmp_path, FULL, revenue_years=4), input_root=tmp_path, as_of=NOW, stale_after=timedelta(days=2))
     v = nvda(bundle['sec-valuation-inputs.json'])['v_inputs']
-    assert v['revenue_cagr_3y'] == pytest.approx(2 ** (1 / 3) - 1, rel=1e-12) and v['reason_codes'] == []
-    # Exact calendar years: the type metric (QGV v2 period rule, 6 significant digits as in sec-qgv2.json) agrees.
-    assert bundle['company-types-pricefree.json']['data']['companies']['nvda']['metrics']['revenue_cagr_3y'] == pytest.approx(v['revenue_cagr_3y'], rel=1e-5)
+    # Calendar-year filer: the same CAGR as the former exact-calendar rule, at the published 6 significant digits.
+    assert v['revenue_cagr_3y'] == pytest.approx(2 ** (1 / 3) - 1, rel=1e-6) and v['reason_codes'] == []
+    # One rule (QGV v2 period rule, V-DCFH 2026-10-15): the DCF h input IS the published type metric.
+    assert bundle['company-types-pricefree.json']['data']['companies']['nvda']['metrics']['revenue_cagr_3y'] == v['revenue_cagr_3y']
+
+
+def _dcf_h(row):
+    from investment_system.qgv.dcf_parameters import load_default_dcf_parameters
+    from investment_system.qgv.device_valuation import device_value_view
+    return device_value_view(row=row, quote=None, parameters=load_default_dcf_parameters())['explicit_growth']
+
+
+def _js_explicit_growth(cagr):
+    script = ("const a=require(process.argv[1]),p=require(process.argv[2]);"
+              "process.stdout.write(JSON.stringify(a.explicitGrowth(p,JSON.parse(process.argv[3]))))")
+    out = subprocess.run(['node', '-e', script, str(ASSETS / 'device-valuation.js'), str(ASSETS / 'dcf-parameters-defaults.js'), json.dumps(cagr)],
+                         capture_output=True, text=True, check=True).stdout
+    return json.loads(out)
+
+
+def test_52_53_week_fiscal_year_gets_dcf_h(tmp_path):
+    """V-DCFH: a 52/53-week filer (fiscal year ends on a Sunday near Jan 31, one 53-week year) now has h."""
+    # Cause: the former rule required start == end - 1 year + 1 day and ends exactly n calendar years apart.
+    for start, end in FISCAL_5253.values():
+        e = date.fromisoformat(end)
+        assert start != (e.replace(year=e.year - 1) + timedelta(days=1)).isoformat()
+    bundle = screens().generate_screen_bundle(manifest=write_company(tmp_path, FULL, revenue_years=4, period=period_5253,
+                                                                     revenue_scales=(0.8, 0.86, 0.93, 1.0)),
+                                              input_root=tmp_path, as_of=NOW, stale_after=timedelta(days=2))
+    out = bundle['sec-valuation-inputs.json']
+    row = nvda(out)
+    v = row['v_inputs']
+    assert row['fcfe']['state'] == 'LIVE' and row['fcfe']['fiscal_period_end'] == '2026-02-01'
+    assert v['state'] == 'LIVE' and v['reason_codes'] == []
+    assert v['revenue_cagr_3y'] == pytest.approx(1.25 ** (1 / 3) - 1, rel=1e-6)
+    assert bundle['company-types-pricefree.json']['data']['companies']['nvda']['metrics']['revenue_cagr_3y'] == v['revenue_cagr_3y']
+    screens().require_public_screen('sec-valuation-inputs.json', out)
+    h = _dcf_h(row)
+    assert h['state'] == 'PROVISIONAL' and h['value'] == v['revenue_cagr_3y'] and h['clamped'] is False and h['reason_codes'] == []
+    assert _js_explicit_growth(v['revenue_cagr_3y']) == [h['value'], None]
+
+
+@pytest.mark.parametrize('revenue_years, scales', [(3, (0.8, 0.86, 0.93, 1.0)), (4, (-0.5, 0.86, 0.93, 1.0)), (4, (0.0, 0.86, 0.93, 1.0))])
+def test_52_53_week_missing_or_non_positive_base_year_stays_not_available(tmp_path, revenue_years, scales):
+    """No FY-3 revenue (or FY-3 revenue <= 0): CAGR null and h NOT_AVAILABLE, never 0."""
+    row = nvda(build(tmp_path, write_company(tmp_path, FULL, revenue_years=revenue_years, period=period_5253, revenue_scales=scales)))
+    v = row['v_inputs']
+    assert v['revenue_cagr_3y'] is None and v['reason_codes'] == ['REVENUE_CAGR_3Y_MISSING'] and v['revenue'] == 5000.0
+    h = _dcf_h(row)
+    assert (h['state'], h['value'], h['reason_codes']) == ('NOT_AVAILABLE', None, ['EXPLICIT_GROWTH_NOT_AVAILABLE'])
+    assert _js_explicit_growth(None) == [None, 'EXPLICIT_GROWTH_NOT_AVAILABLE']
+
+
+def test_calendar_year_dcf_h_unchanged(tmp_path):
+    """Calendar-year filers keep their h (the former exact-calendar value, 6 significant digits)."""
+    row = nvda(build(tmp_path, write_company(tmp_path, FULL, revenue_years=4, revenue_scales=(0.8, 0.86, 0.93, 1.0))))
+    h = _dcf_h(row)
+    assert h['state'] == 'PROVISIONAL' and h['value'] == pytest.approx(1.25 ** (1 / 3) - 1, rel=1e-6)
+    assert _js_explicit_growth(row['v_inputs']['revenue_cagr_3y']) == [h['value'], None]
+    # Two revenue years only: still null, never 0.
+    assert _dcf_h(nvda(build(tmp_path, write_company(tmp_path, FULL))))['reason_codes'] == ['EXPLICIT_GROWTH_NOT_AVAILABLE']
 
 
 def test_ifrs_20f_filer(tmp_path):

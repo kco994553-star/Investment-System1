@@ -71,7 +71,7 @@ V(DCF)는 가격이 필요하므로 Actions에서 계산하지 않습니다. V�
 - 시장별 마지막 거래일이 다를 수 있습니다(화면에 종료일 표시).
 - 거래일 실행이 빠지면 그 날짜는 빈칸으로 남습니다(소급 없음).
 - 같은 날 Pages 배포 직후(캐시 약 10분 이내) 수동 재실행하면 오래된 Pages 사본을 읽어 그날 기록이 다른 내용으로 다시 만들어질 수 있습니다. 같은 날 재실행은 피하고, 필요하면 비공개 보관본과 대조합니다.
-- 파일 크기: v1·v2를 함께 기록하므로 거래일당 약 8.2KB씩 늘어납니다(v1 약 4KB + v2 약 4KB, 합성 리허설 측정, [READINESS_20261019.md](READINESS_20261019.md) §4 F3). 생성기 한도 2MB(`MAX_BYTES`)에는 약 250거래일 뒤인 2027년 10월 전후에 닿으므로, 2027-09 이전에 분할 방식을 결정해야 합니다. 한도를 넘으면 생성기는 아무것도 쓰지 않고 실패하며, 그날 일일 작업도 멈춥니다.
+- 파일 크기: v1·v2를 함께 기록하므로 거래일당 약 8.5KB씩 늘어납니다(v1 약 3.8KB + v2 약 4.7KB, v2의 관측 기준 약 0.27KB 포함 — 10절, 합성 리허설 측정, [READINESS_20261019.md](READINESS_20261019.md) §4 F3). 생성기 한도 2MB(`MAX_BYTES`)에는 약 246거래일 뒤인 2027년 10월 전후에 닿으므로, 2027-09 이전에 분할 방식을 결정해야 합니다. 한도를 넘으면 생성기는 아무것도 쓰지 않고 실패하며, 그날 일일 작업도 멈춥니다.
 - 모든 기준(가중치·범위·휴장일 처리)은 v1 UNCALIBRATED입니다.
 
 ## 8. 워크플로 연결 (저장소 소유자 적용)
@@ -97,4 +97,65 @@ V(DCF)는 가격이 필요하므로 Actions에서 계산하지 않습니다. V�
 
 - `tests/test_forward_validation_ledger.py`: 달력, 시작 전/후, 불변성, NOT_AVAILABLE 기록, 실패 시 미기록, 404 처리, 보존, 비공개 업로드, 검증기, Pages 가드, 기준 벡터, JS 검증기 일치.
 - `tools/forward_validation_node_test.js`: 합성 벡터 Python=JS 정확히 일치, 읽기·검증, 저장/전송 없음.
-- `tools/forward_validation_browser_test.js`: S10 표시(390/1440), 분당 제한 후 남은 종목만 다시 읽기, 저장·전송 없음.
+- `tools/forward_validation_browser_test.js`: S10 표시(390/1440), 분당 제한 후 남은 종목만 다시 읽기, 저장·전송 없음, 준비 관측 표시와 구간별 수익률.
+- `tests/test_forward_validation_v2.py`: 관측 기준(주 평가·준비 관측 사유, 경계값 454·7일), 기존 행 보존, Python=JS 검증기 일치, 구간 분리.
+- `tests/test_forward_validation_rehearsal_1019.py`: 10/19 기록의 관측 기준(합성 Universe라 준비 관측), 10/20에 그대로 이어짐.
+
+## 10. 관측 기준·평가 대상·평가 구간 (소유자 지시 2026-10-16)
+
+v2 기록(`forward_validation/v2`)마다 `basis`를 남깁니다. 원장이 그날 실제로 읽은 `sec-qgv2.json`의 계산 기준입니다. 이미 있는 항목은 다시 적지 않습니다. 입력 파일 sha256은 `source_sha256["sec-qgv2.json"]`, 파일 시각은 `qg_as_of`에 이미 있습니다.
+
+| 항목 | 내용 |
+|---|---|
+| `calc_version` | 입력 파일의 계산 규칙 버전. 없으면 null |
+| `q_scored`, `g_scored` | 입력 파일에서 Q·G 점수가 있는 행 수(분모 504) |
+| `population` | 실제 순위 계산 모집단. `n`(CIK 수)과 `id`(정렬한 CIK 목록 sha256의 앞 16자리). 목록 자체는 적지 않습니다 |
+| `acquired` | 실제 사용한 행의 수집일 범위 [가장 오래된 날, 가장 최근 날] (UTC 날짜) |
+| `evaluation` | 관측 당시 평가 대상 여부: `eligible`, `status`(`PRIMARY`/`PREPARATORY`), `reasons` |
+| `segment` | 평가 구간. `calc_version` 값, 없으면 `NONE` |
+
+**주 평가(`PRIMARY`) 조건.** 모두 충족해야 합니다. 기준은 2026-10-15 결정을 그대로 씁니다.
+- Q·G 각 454개 이상(T-COV: 504의 90%).
+- 계산 버전 일관성: 파일에 `calc_version`이 있고, 값이 있는 모든 행이 같은 버전입니다. 원자료가 없어 정상적으로 NA인 행은 막지 않습니다.
+- 최신성(T-FRESH 7일): 실제 사용한 행 중 가장 오래된 수집일이 세션 날짜로부터 7일 이내입니다. 파일 `as_of`는 보지 않습니다.
+
+하나라도 못 미치면 `PREPARATORY`("준비 관측·주 평가 대상 아님")로 기록하고 사유를 남깁니다.
+
+| 사유 코드 | 뜻 |
+|---|---|
+| `Q_BELOW_454`, `G_BELOW_454` | Q 또는 G 산출 수가 454 미만 |
+| `CALC_VERSION_MISSING` | 입력 파일에 calc_version이 없음 |
+| `CALC_VERSION_MIXED` | 값이 있는 행 중 다른(옛) calc_version 행이 있음 |
+| `ROW_DATA_STALE` | 수집 후 7일을 넘은 행이 있음(또는 사용한 행이 없음) |
+| `POPULATION_MISMATCH` | 다시 센 모집단 수가 파일의 `cross_section_size`와 다름 |
+| `RECORD_NOT_AVAILABLE` | 그날 기록이 NOT_AVAILABLE(입력 없음·무효) |
+| `BASIS_NOT_COMPUTED` | 기준 계산이 예상 밖으로 실패. 그날 기록은 잃지 않고 준비 관측(`NONE` 구간)으로 남김 |
+
+**평가 구간**
+- calc_version이 바뀌면 그 날부터 새 구간입니다. 이전 구간은 그대로 보존합니다.
+- 서로 다른 구간의 성과를 하나로 잇지 않습니다. 화면은 구간별로 따로 보여 줍니다.
+- 나중에 정한 최종 calc_version으로 과거 기록을 한꺼번에 빼지 않습니다. 각 기록은 관측 당시 판정을 따릅니다.
+- `PREPARATORY` 기록은 보존하고 화면에 사유와 함께 표시합니다. 주 평가 계산에는 쓰지 않습니다.
+- NOT_AVAILABLE 기록은 구간을 나누지 않습니다.
+
+**기존 기록**
+- 이 규칙 이전에 쓴 행(`basis` 없음)은 바꾸지 않습니다. 검증기는 그대로 통과시킵니다. `require_append_only`는 바이트 단위 동일을 계속 확인합니다.
+- 그런 행은 "관측 기준 미기록(이전 기록)"으로 표시하고 별도 구간(`LEGACY`)으로 둡니다.
+- 한 번 `basis`가 있는 v2 행이 나오면, 그 뒤의 v2 행은 모두 `basis`가 있어야 합니다. 빠지면 검증 실패입니다. 시작일을 미리 고정하지 않아도 되고, 이후 기록에서 기준이 빠지는 것은 막습니다.
+- v1 비교 기록에는 `basis`를 넣지 않습니다. v1 입력(`sec-qg-factors.json`)에는 504종목 모집단과 calc_version이 없습니다. v1 행은 "비교용 · 평가 대상 아님"으로 표시합니다.
+
+**검증기 일치**
+- Python `require_ledger`와 기기 JS `validate`는 같은 규칙으로 `basis`를 검사합니다.
+- 사유 코드는 정해진 순서이고 중복이 없습니다. `status`·`eligible`·사유가 서로 맞아야 합니다.
+- Q·G 수와 454 사유, calc_version과 `CALC_VERSION_MISSING`·`segment`, `acquired`와 `ROW_DATA_STALE`이 서로 맞는지 다시 확인합니다.
+- 구간 계산(`evaluation_segments` / JS `segments`)은 합성 기준 벡터(`forward_validation_reference_v1.json`)로 같은 결과인지 확인합니다.
+
+**기기 계산**
+- S10 화면: 일별 표에 '평가 구분' 열, 그 아래 '평가 구간' 표(구간, 기간, 주 평가 기록 수, 준비 관측 수).
+- TARGET v0 수익률: 구간마다 따로 계산합니다. 시작은 그 구간의 첫 주 평가 기록, 끝은 마지막 주 평가 기록입니다. 현재 구간은 끝이 열려 있습니다. 현재 구간에 주 평가 기록이 없으면 NOT_AVAILABLE입니다.
+- 가상 운용(`virtual-trading-runner.js`, Python `virtual_trading_inputs.py`): 현재 구간의 주 평가 기록만 씁니다. 준비 관측 기록과 이전 구간은 잇지 않습니다. 시작일은 현재 구간에서 Q·G 숫자가 있는 첫 주 평가 기록입니다.
+- 배포 성공 여부는 원장에 넣지 않습니다. 같은 날짜의 실행 보고(`PUBLISHED_COVERAGE` 줄 등)와 연결합니다.
+
+**크기**
+- 합성 리허설 기준 거래일당 8,237바이트 → 8,515바이트(+278바이트, 약 3.4%). `basis` 하나는 약 270바이트입니다.
+- 2MB 한도까지 약 254거래일 → 약 246거래일(약 8거래일 감소). 분할 방식 결정 시점(2027-09 이전)은 그대로입니다.

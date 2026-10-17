@@ -7,7 +7,8 @@ implementations identical (same order of operations, same IEEE doubles).
 
 Forward return rules (v1, UNCALIBRATED):
 - per instrument, a bar is usable unless its session_status is IN_PROGRESS;
-- base = first usable bar on or after the start date, end = last usable bar;
+- base = first usable bar on or after the start date, end = last usable bar (on or before `end_date` when a
+  closed evaluation segment gives one: segments are computed separately, never chained);
 - return = end.adjusted_close / base.adjusted_close - 1 in the instrument's own
   currency (FX is not applied: no FX source exists);
 - a missing series, base, end or adjusted_close gives NOT_AVAILABLE, never 0;
@@ -27,12 +28,12 @@ def _positive(value):
     return type(value) in (int, float) and math.isfinite(value) and value > 0
 
 
-def instrument_return(series, start_date):
+def instrument_return(series, start_date, end_date=None):
     if series is None:
         return {'state': 'NOT_AVAILABLE', 'reason': 'HISTORY_NOT_LOADED'}
     if isinstance(series, str):
         return {'state': 'NOT_AVAILABLE', 'reason': series}
-    usable = [bar for bar in series if bar['session_status'] != 'IN_PROGRESS']
+    usable = [bar for bar in series if bar['session_status'] != 'IN_PROGRESS' and (end_date is None or bar['session_date'] <= end_date)]
     after = [bar for bar in usable if bar['session_date'] >= start_date]
     if not after:
         return {'state': 'NOT_AVAILABLE', 'reason': 'NO_SESSION_ON_OR_AFTER_START'}
@@ -47,11 +48,14 @@ def instrument_return(series, start_date):
             'return': end['adjusted_close'] / base['adjusted_close'] - 1}
 
 
-def forward_return(*, start_date, weights_units, series):
-    instruments = {cid: instrument_return(series.get(cid), start_date) for cid in sorted(weights_units)}
+def forward_return(*, start_date, weights_units, series, end_date=None):
+    """`end_date` (optional) bounds a closed evaluation segment: bars after its last primary record are not used."""
+    instruments = {cid: instrument_return(series.get(cid), start_date, end_date) for cid in sorted(weights_units)}
     missing = [cid for cid, r in instruments.items() if r['state'] != 'AVAILABLE']
     out = {'basis': BASIS, 'start_date': start_date, 'instruments': instruments, 'benchmark': dict(BENCHMARK),
            'missing_count': len(missing)}
+    if end_date is not None:
+        out['end_bound'] = end_date
     if missing:
         return {**out, 'state': 'NOT_AVAILABLE', 'reason': 'INSTRUMENTS_MISSING', 'portfolio_return': None,
                 'end_date_min': None, 'end_date_max': None}

@@ -13,7 +13,11 @@
 'use strict';
 const MODES=['v2'];
 const LABEL={v2:['점수 기준 v2 · PROVISIONAL','Score basis v2 · PROVISIONAL']};
-const FLAG={VALUE_TRAP_CAUTION:['가치 함정 주의','Value-trap caution'],V_NOT_AVAILABLE:['V 없음','No V'],GATE_NOT_EVALUATED:['관문 판정 불가','Gate not evaluated']};
+const FLAG={VALUE_TRAP_CAUTION:['가치 함정 주의','Value-trap caution'],V_NOT_AVAILABLE:['V 없음','No V'],GATE_NOT_EVALUATED:['관문 판정 불가','Gate not evaluated'],EBIT_ESTIMATED:['추정(대체 계산)','Estimate (substitute calculation)'],CALC_VERSION_MISMATCH:['계산 규칙 버전이 달라 순위에서 제외','Excluded from ranking: different calculation-rule version']};
+/* EBIT_ESTIMATED: the published sec-qgv2.json row says (metrics.ebit_estimated_years >= 1) that at least one EBIT it used is the
+   substitute pretax income + interest expense (no reported operating income; QGV_V2_QG_METHOD.md rule EBIT). Every EBIT-derived
+   v2 value of that row (ROIC, moat, interest coverage, net debt/EBITDA, EV/EBIT, operating margins) carries the flag. */
+function ebitEstimated(record){const n=record&&object(record.metrics)?record.metrics.ebit_estimated_years:null;return finite(n)&&n>=1;}
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),finite=v=>typeof v==='number'&&Number.isFinite(v);
 function config(){let c=null;try{c=scoringConfig();}catch(_){c=null;}return c&&typeof c==='object'?c:{};}
 // v2 is the only display score (owner decision 2026-10-14); any other stored value no longer reaches a screen.
@@ -36,7 +40,8 @@ function v2Display(r){
 let memo=null;
 function universeScores(v2Inputs,quotes,preset,gate,memberships,cyclicalBasis={}){
  const mk=JSON.stringify([preset,gate,memberships,cyclicalBasis]);if(memo&&memo.inputs===v2Inputs&&memo.quotes===quotes&&memo.key===mk)return memo.result;
- const companies={};for(const[code,r]of Object.entries(v2Inputs.records))companies[code]={cyclical_basis:cyclicalBasis[code]===true,cik:r.cik,industry_group:r.industry_group,profile:r.profile,factors:r.factors,v_inputs:r.v_inputs,qg_axes:r.qg_axes,in_cross_section:r.in_cross_section!==false,memberships:Object.hasOwn(memberships,code)?memberships[code]:null};
+ // A row of another calculation-rule version never joins this device's ranking population (QGV_V2_QG_METHOD.md 5, calc_version).
+ const companies={};for(const[code,r]of Object.entries(v2Inputs.records))if(r.calc_version_mismatch!==true)companies[code]={cyclical_basis:cyclicalBasis[code]===true,cik:r.cik,industry_group:r.industry_group,profile:r.profile,factors:r.factors,v_inputs:r.v_inputs,qg_axes:r.qg_axes,in_cross_section:r.in_cross_section!==false,memberships:Object.hasOwn(memberships,code)?memberships[code]:null};
  const result=qgvV2().scoreUniverse(companies,quotes,{preset,gate});memo={inputs:v2Inputs,quotes,key:mk,result};return result;
 }
 /* The accessor. identities: [{company_id, ticker}] rows to show; publicScreens: the app's loaded public screens (company types
@@ -51,7 +56,8 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
  let universe=null,v2Reason=inputs?null:'SEC_QGV2_NOT_AVAILABLE';if(inputs){try{universe=universeScores(inputs,object(quotes)?quotes:{},chosen,gateOn,memberships,cyclicalBasis);}catch(_){universe=null;v2Reason='V2_CALCULATION_FAILED';}}
  const v2Ready=!!universe&&Object.values(universe).some(r=>finite(r.total));if(universe&&!v2Ready)v2Reason='V2_SCORES_NOT_AVAILABLE';
  const b=basis(intended,v2Ready),current=b.basis,rows={};let ranked=[];
- for(const c of identities){const code=codeFor(c);let v2=v2Display(universe&&code?universe[code]:null);
+ for(const c of identities){const code=codeFor(c);let v2=v2Display(universe&&code?universe[code]:null);if(universe&&code&&inputs.records[code]?.calc_version_mismatch===true){v2.flags=['CALC_VERSION_MISMATCH'];v2.reason='CALC_VERSION_MISMATCH';}if(universe&&code&&universe[code]&&ebitEstimated(inputs.records[code])){v2.flags.push('EBIT_ESTIMATED');const ys=inputs.records[code].metrics.ebit_estimated_fiscal_years;if(Array.isArray(ys))v2.ebit_estimated_fiscal_years=[...ys];}
+  const src=inputs&&code&&Object.hasOwn(inputs.records,code)?inputs.records[code]:null;if(src&&src.state==='NOT_AVAILABLE'&&src.calc_version_mismatch!==true&&v2.total===null){v2.total_reason='SOURCE_NOT_AVAILABLE';v2.source_reason_codes=[...(src.na_reasons||[])];}
   const ref=object(referenceRows)?referenceRows[c.company_id]:null;if(ref?.reference_only===true&&object(ref.factors)&&object(ref.axes)){try{const factors={},qg_axes={};for(const axis of ['Q','G']){let coverage=0;for(const[f,w]of Object.entries(V2.WEIGHTS[axis])){const s=ref.factors[f];factors[f]=finite(s)&&s>=0&&s<=100?s:null;if(factors[f]!==null)coverage+=w;}qg_axes[axis]={score:coverage>=50&&finite(ref.axes[axis]?.score)?ref.axes[axis].score:null};}
    v2=v2Display(V2.scoreUniverse({reference:{profile:'GENERAL',industry_group:null,factors,qg_axes,v_inputs:null,memberships:null}}, {},{preset:chosen,gate:gateOn}).reference);v2.reference_only=true;v2.reference_label='참고 순위';v2.reference_label_en='Reference ranking';}catch(_){}}
   const row={company_id:c.company_id,ticker:c.ticker,code,v2,primary:v2,reference:null,rank:null};rows[c.company_id]=row;}
@@ -87,15 +93,20 @@ async function collectQuotes(win,{identities=[],v2Inputs=null,catalog=null}={}){
  return out;
 }
 const num=(v,d=1)=>finite(v)?(Math.round(v*10**d)/10**d).toFixed(d):'—';
-function flagText(flags,en){return(flags||[]).filter(f=>Object.hasOwn(FLAG,f)).map(f=>FLAG[f][en?1:0]);}
+/* `row` (optional display row): EBIT_ESTIMATED names the substituted fiscal years, e.g. '추정(대체 계산): FY2023·FY2024'. */
+function flagText(flags,en,row){const years=row&&Array.isArray(row.ebit_estimated_fiscal_years)?row.ebit_estimated_fiscal_years.filter(y=>Number.isInteger(y)):[];
+ return(flags||[]).filter(f=>Object.hasOwn(FLAG,f)).map(f=>FLAG[f][en?1:0]+(f==='EBIT_ESTIMATED'&&years.length?': '+years.map(y=>'FY'+y).join(en?', ':'·'):''));}
 // One-line text of a display row: 'QGV 61.2 · Q 60.1 · G 55.0 · V 48.2 · 산출 요인 14/15'.
 function summaryText(d,en){
  if(!d)return '—';const n=(en?'calculated factors ':'산출 요인 ')+d.factors_available+'/'+d.factors_total;
  return (d.reference_only?(en?'Reference ranking · ':'참고 순위 · '):'')+'QGV '+num(d.total)+' · Q '+num(d.q)+' · G '+num(d.g)+' · V '+num(d.v)+' · '+n;
 }
 /* Why v2 is NOT_AVAILABLE for a row: 'QGV v2 산출 불가 · 산출 요인 6/15 · Q 축 비중 50% 미만'. Never a v1 fallback. */
+const SOURCE_REASON={NOT_COLLECTED:['아직 수집 안 됨','not collected yet'],CIK_UNRESOLVED:['CIK 미해결','CIK unresolved'],NO_ANNUAL_SEC_FINANCIALS:['연간 SEC 재무 없음','no annual SEC financials'],INVALID_INPUT:['원자료 형식 오류','invalid source data'],NON_SEC_ISSUER:['SEC 공시 대상 아님','not an SEC filer']};
 function naText(d,en){
  const head=en?'QGV v2 not available':'QGV v2 산출 불가';
+ if(d&&d.total_reason==='SOURCE_NOT_AVAILABLE')return head+' · '+(en?'source data missing':'원자료 없음')+((d.source_reason_codes||[]).length?' ('+d.source_reason_codes.map(r=>SOURCE_REASON[r]?SOURCE_REASON[r][en?1:0]:r).join(', ')+')':'');
+ if(d&&(d.flags||[]).includes('CALC_VERSION_MISMATCH'))return head+' · '+FLAG.CALC_VERSION_MISMATCH[en?1:0];
  if(!d||(d.flags||[]).includes('V2_INPUTS_NOT_AVAILABLE'))return head+' · '+(en?'no v2 input for this company':'이 기업의 v2 입력 없음');
  const parts=[head,(en?'calculated factors ':'산출 요인 ')+d.factors_available+'/'+d.factors_total];
  for(const a of ['Q','G','V']){const x=d.axes&&d.axes[a];if(x&&x.reason==='AXIS_WEIGHT_INSUFFICIENT')parts.push(a+(en?' axis below 50% of its weight':' 축 비중 50% 미만'));}

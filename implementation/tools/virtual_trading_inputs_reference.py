@@ -184,6 +184,23 @@ def scenarios():
     ready['companies']['nvda']['G']['score'] = 80
     v2['forward_ledger']['versions']['forward_validation/v2'] = [old, ready]
     out.append({'name': 'v2_delayed_until_finite_qg', 'inputs': v2, 'engine': ['SET_A']})
+    # Observation basis (owner instruction 2026-10-16): only the current evaluation segment's PRIMARY rows are run.
+    # Segment A (PRIMARY 10/19, 10/20) is kept in the ledger but never chained with segment B; inside B the PREPARATORY
+    # 10/22 row stays out (10/21 is NOT_AVAILABLE), so B starts on 10/23. Only `segment` and `evaluation.status`
+    # matter to the runner.
+    seg = copy.deepcopy(base)
+    seg['forward_ledger']['schema_version'] = 2
+    rows = []
+    for i, row in enumerate(copy.deepcopy(base['forward_ledger']['versions']['forward_validation/v1'])):
+        row['version'] = 'forward_validation/v2'
+        if row['state'] == 'RECORDED':
+            status = 'PREPARATORY' if row['date'] == '2026-10-22' else 'PRIMARY'
+            row['basis'] = {'segment': 'qgv2-calc/2026-10-15.1' if row['date'] <= '2026-10-20' else 'qgv2-calc/2026-10-22.1',
+                            'evaluation': {'status': status, 'eligible': status == 'PRIMARY',
+                                           'reasons': ['ROW_DATA_STALE'] if status == 'PREPARATORY' else []}}
+        rows.append(row)
+    seg['forward_ledger']['versions']['forward_validation/v2'] = rows
+    out.append({'name': 'v2_current_segment_primary_only', 'inputs': seg, 'engine': ['SET_A']})
     s = copy.deepcopy(base)
     s['histories'] = {'SPY': {'error': 'REQUEST_INVALID'}}  # the device stops requesting after SPY fails
     out.append({'name': 'spy_rejected', 'inputs': s})
