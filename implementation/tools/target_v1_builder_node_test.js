@@ -206,10 +206,66 @@ test('input basis: shard = sha256(cik) mod shard_count (same rule as tools/publi
   'NYSE:D':{cik:null,acquired_at:null,reason_codes:['CIK_UNRESOLVED']},'TARGET:x':{cik:'0000000001',acquired_at:'2026-10-14T00:00:00Z'}}};
  const shard=c=>Number(BigInt('0x'+crypto.createHash('sha256').update(c).digest('hex'))%7n),b=await B.inputBasis(pub);
  const want=[[shard('0000320193'),'2026-10-14T00:00:00Z'],[shard('0000789019'),'2026-10-13T00:00:00Z']].sort((x,y)=>x[0]-y[0]).map(([k,v])=>k+'='+v).join('|');
- assert.deepEqual(b,{calc_version:'c1',as_of:'2026-10-14T00:00:00Z',shard_count:7,shards:want});assert.equal(await B.inputBasis(null),null);
+ assert.deepEqual(b,{calc_version:'c1',as_of:'2026-10-14T00:00:00Z',shard_count:7,shards:want,type_scope:require(W+'qgv-v2.js').TYPE_SCOPE,withdrawn:''});assert.equal(await B.inputBasis(null),null);
  // A regenerated file (new as_of only) keeps the basis; a new acquisition changes it.
  assert.equal(B.basisChanged(b,await B.inputBasis({...pub,as_of:'2026-10-20T00:00:00Z'})),false);
  assert.equal(B.basisChanged(b,await B.inputBasis({...pub,records:{...pub.records,'NYSE:B':{cik:'0000789019',acquired_at:'2026-10-15T00:00:00Z'}}})),true);
+});
+
+// Owner decision 2026-10-17 item 4 (TYPE-SCOPE #284): the device type-application scope id is part of the input basis.
+test('type_scope in the input basis: a scope change alone regenerates the draft; card answers carry over for the same symbols only',async()=>{
+ const V2=require(W+'qgv-v2.js'),u=wide(40),pub=published({u}),basis=await B.inputBasis(pub);
+ assert.equal(basis.type_scope,V2.TYPE_SCOPE);assert.match(basis.type_scope,/^qgv2-type-scope\/\d{4}-\d{2}-\d{2}\.\d+$/);
+ assert.equal((await B.inputBasis({...pub,type_scope:'from-the-file'})).type_scope,V2.TYPE_SCOPE,'the scope is the device code, never read from the file');
+ const old='qgv2-type-scope/2026-01-01.1',oldBasis=await B.inputBasis(pub,{typeScope:old});
+ assert.deepEqual({...oldBasis,type_scope:V2.TYPE_SCOPE},basis,'same file, calc_version and acquisitions: only the scope differs');
+ assert.equal(B.basisChanged(oldBasis,basis),true);assert.equal(B.basisChanged(basis,await B.inputBasis(pub)),false);
+ const{type_scope:_,...legacy}=basis;assert.equal(B.basisChanged(legacy,basis),true,'a draft basis from before the scope id counts as changed');
+ assert.equal(B.basisChanged({...basis,type_scope:null},basis),true);
+ assert.throws(()=>B.validateState({...B.emptyState(),draft:B.buildDraft({...u,existing:[],date:'2026-10-14',basis:{...basis,type_scope:{bad:1}}})}),/TARGET_V1_STATE_INVALID/);
+ // All cards answered (one 반대) on a draft built under the old scope → finalize blocked by DRAFT_BASIS_CHANGED only.
+ let state={...B.emptyState(),draft:B.buildDraft({...u,existing:[],date:'2026-10-14',basis:oldBasis})};B.validateState(state);
+ const no=B.currentSelection(state).rows[0].symbol;state=B.answer(state,{symbol:no,answer:'DISAGREE',reason:'합성',date:'2026-10-14'});
+ for(const r of B.currentSelection(state).rows)state=B.answer(state,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});assert.equal(B.currentSelection(state).complete,true);
+ assert.deepEqual(await tryFinalize(state,{pub}),['DRAFT_BASIS_CHANGED']);
+ // Scores under the new scope: a new top name enters and a former name leaves the Universe.
+ const gone=B.currentSelection(state).rows[2].symbol,u2=wide(40,[{symbol:'NEWTOP',total:99}]);u2.universeCodes=u2.universeCodes.filter(c=>c!=='NASDAQ:'+gone);
+ const pub2=published({u:u2}),basis2=await B.inputBasis(pub2),re=B.regenerateDraft(state,{...u2,existing:[],date:'2026-10-15',basis:basis2});
+ assert.equal(re.state.draft.basis.type_scope,V2.TYPE_SCOPE);assert.equal(B.basisChanged(re.state.draft.basis,basis2),false);
+ assert.ok(re.dropped.includes(gone));assert.ok(!re.state.answers.some(a=>a.symbol===gone),'an answer for a name outside the new pool is not carried');
+ assert.ok(re.fresh.includes('NEWTOP'));assert.ok(!re.state.answers.some(a=>a.symbol==='NEWTOP'),'a new name needs a fresh card');
+ const after=B.currentSelection(re.state);assert.ok(!after.rows.some(r=>r.symbol===no),'반대 carries over for the same symbol');
+ assert.ok(re.carried.every(s=>state.answers.some(a=>a.symbol===s)));assert.equal(re.carried.length+re.fresh.length,after.rows.length);
+ let next=re.state;assert.deepEqual(await tryFinalize(next,{date:'2026-10-15',pub:pub2}),['TARGET_V1_CARDS_PENDING']);
+ for(const s of after.pending)next=B.answer(next,{symbol:s,answer:'AGREE',date:'2026-10-15'});
+ const done=await tryFinalize(next,{date:'2026-10-15',pub:pub2});assert.equal(done.versions.length,1,JSON.stringify(done));assert.equal(done.versions[0].type_scope,V2.TYPE_SCOPE);B.validateState(done);
+});
+
+// #285 / #289 (owner instruction 2026-10-17 item 3): an identity-conflict withdrawal row in the latest file is part of the input
+// basis. It has no acquired_at, so the shard times can stay the same; the withdrawal list alone makes the draft basis changed,
+// finalize is blocked until the draft is regenerated, and the regenerated draft drops the stopped issuer.
+test('withdrawal in the input basis: a new TARGET or Universe withdrawal blocks finalize until the draft is regenerated without it',async()=>{
+ const u=wide(40),pub=published({u}),basis=await B.inputBasis(pub);assert.equal(basis.withdrawn,'');
+ let state={...B.emptyState(),draft:B.buildDraft({...u,existing:[],date:'2026-10-14',basis})};
+ for(const r of B.currentSelection(state).rows)state=B.answer(state,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});
+ const victim=B.currentSelection(state).rows[0],cik=u.inputs.records[victim.code].cik,when={detected_at:'2026-10-14T22:00:00Z',withdrawn_acquired_at:'2026-10-13T20:00:00Z'};
+ // TARGET withdrawal (same CIK as a selected Universe code): the raw Universe row keeps its values, so only the basis catches it.
+ const pubT=published({u});pubT.target.w={cik,state:'NOT_AVAILABLE',reason_codes:['IDENTITY_CONFLICT_WITHDRAWN'],acquired_at:null,...when};
+ const bT=await B.inputBasis(pubT);assert.equal(bT.shards,basis.shards,'shard times unchanged');assert.equal(bT.withdrawn,'TARGET:w');
+ assert.equal(B.basisChanged(state.draft.basis,bT),true);assert.deepEqual(await tryFinalize(state,{pub:pubT}),['DRAFT_BASIS_CHANGED']);
+ // Universe withdrawal row (records section: empty row, no cik, the withdrawal reason).
+ const pubU=published({u,patch:{[victim.code]:r=>{NA_ROW(r);r.reason_codes=['IDENTITY_CONFLICT_WITHDRAWN'];delete r.cik;Object.assign(r,when,{withdrawn_cik:cik});}}});
+ assert.equal((await B.inputBasis(pubU)).withdrawn,victim.code);assert.ok((await tryFinalize(state,{pub:pubU})).includes('DRAFT_BASIS_CHANGED'));
+ // A draft basis from before the withdrawal list existed counts as changed.
+ const{withdrawn:_,...legacy}=basis;assert.equal(B.basisChanged(legacy,basis),true);
+ // Regenerate from the device scores (Qgv2Inputs marks the stopped code identity_withdrawn): the issuer leaves the pool.
+ const u2=wide(40);u2.inputs.records[victim.code]={...u2.inputs.records[victim.code],identity_withdrawn:true};
+ const re=B.regenerateDraft(state,{...u2,existing:[],date:'2026-10-15',basis:bT});assert.ok(re.dropped.includes(victim.symbol));
+ assert.ok(!re.state.draft.pool.some(r=>r.code===victim.code));assert.equal(re.state.draft.excluded_counts.IDENTITY_CONFLICT_WITHDRAWN,1);
+ assert.equal(B.basisChanged(re.state.draft.basis,bT),false);B.validateState(re.state);
+ let next=re.state;for(const s of B.currentSelection(next).pending)next=B.answer(next,{symbol:s,answer:'AGREE',date:'2026-10-15'});
+ const done=await tryFinalize(next,{pub:pubT});assert.equal(done.versions.length,1,JSON.stringify(done));assert.ok(!done.versions[0].rows.some(r=>r.symbol===victim.symbol));
+ assert.throws(()=>B.validateState({...state,draft:{...state.draft,basis:{...basis,withdrawn:{bad:1}}}}),/TARGET_V1_STATE_INVALID/);
 });
 
 test('draft regeneration: answers carry over only for the same symbols; new names need a fresh card',()=>{

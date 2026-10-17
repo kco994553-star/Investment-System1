@@ -42,8 +42,8 @@ from investment_system.product.company_logos import FILENAME as COMPANY_LOGOS_FI
 
 # Reviewed public output, not hashes derived from potentially changed inputs.
 APPROVED_SHA256 = {
-    "target-v1-screen.js": "82a2953a91b5449967c0a4e8f0a6f8ca5f88040aeae7f305efacdd1f19b08ee7",
-    "target-v1-builder.js": "f1438a207dc1df5d25887023dbf5ee294c37ae6f1c26a6529f0a7beed24ed885",
+    "target-v1-screen.js": "77ab87aa613e33c90c0a4458dfa7b26fd67601c8fd1ed47ccc0c079712d9e298",
+    "target-v1-builder.js": "a3b2263256353ef1cd2be6652b8e3cfccc760f3a741cb987780711add7264950",
     "target-v1-config-defaults.js": "a8b126e7b8200f236d4e0c52a728ce14476aa6cad6f45e1b23f97dbb0ebc8787",
     "playbook-engine.js": "b708a1772b4cd8e1af731cffdacbfab478d03c9c4e1e5fd663537babd64ee7d8",
     "playbook-config-defaults.js": "6a911d814782bcfb0aab098e9a05d0a5be494edc0026e08c8a0d124e3f2b00c2",

@@ -19,8 +19,8 @@
    v0 · UNCALIBRATED) or PlaybookConfigDefaults. Missing is null / NA, never 0. No order function; no buy or sell wording. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const api=factory(node?require('./playbook-engine.js'):root.PlaybookEngine,node?require('./playbook-config-defaults.js'):root.PlaybookConfigDefaults,
-  node?require('./target-v1-config-defaults.js'):root.TargetV1ConfigDefaults,node?()=>require('./virtual-trading.js'):()=>root.VirtualTrading);
- if(node)module.exports=api;else root.TargetV1Builder=api;})(typeof globalThis==='object'?globalThis:this,function(E,PCFG,CFG,virtualTrading){
+  node?require('./target-v1-config-defaults.js'):root.TargetV1ConfigDefaults,node?()=>require('./virtual-trading.js'):()=>root.VirtualTrading,node?()=>require('./qgv-v2.js'):()=>root.QgvV2);
+ if(node)module.exports=api;else root.TargetV1Builder=api;})(typeof globalThis==='object'?globalThis:this,function(E,PCFG,CFG,virtualTrading,qgvV2){
 'use strict';
 const SCHEMA='target-v1-builder/1',DAY=/^\d{4}-\d{2}-\d{2}$/,SYMBOL=/^[A-Za-z0-9][A-Za-z0-9.\-=]{0,31}$/,UNIVERSE=/^(?:NYSE|NASDAQ|BATS):([A-Z0-9][A-Z0-9.\-]{0,15})$/;
 const ANSWERS=['AGREE','DISAGREE','UNKNOWN'];
@@ -187,7 +187,7 @@ function validateState(input){
  if(v.price_symbols.length>CFG.scoring_prices.max_symbols||new Set(v.price_symbols).size!==v.price_symbols.length||v.price_symbols.some(s=>typeof s!=='string'||!PRICE_SYMBOL.test(s)))fail('TARGET_V1_STATE_INVALID');
  for(const a of v.answers)if(!object(a)||!SYMBOL.test(a.symbol)||!ANSWERS.includes(a.answer)||!validDay(a.date)||!text(a.reason,200)||(a.answer==='DISAGREE'&&!a.reason.trim()))fail('TARGET_V1_STATE_INVALID');
  if(v.draft&&(!validDay(v.draft.created)||!Array.isArray(v.draft.pool)||v.draft.pool.some(r=>!object(r)||!SYMBOL.test(r.symbol)||!finite(r.total))))fail('TARGET_V1_STATE_INVALID');
- if(v.draft&&v.draft.basis!==undefined&&v.draft.basis!==null&&(!object(v.draft.basis)||!(v.draft.basis.shards===undefined||text(v.draft.basis.shards,12000))))fail('TARGET_V1_STATE_INVALID');
+ if(v.draft&&v.draft.basis!==undefined&&v.draft.basis!==null&&(!object(v.draft.basis)||!(v.draft.basis.shards===undefined||text(v.draft.basis.shards,12000))||!(v.draft.basis.type_scope===undefined||v.draft.basis.type_scope===null||text(v.draft.basis.type_scope,100))||!(v.draft.basis.withdrawn===undefined||text(v.draft.basis.withdrawn,12000))))fail('TARGET_V1_STATE_INVALID');
  for(const x of v.versions)if(!object(x)||!validDay(x.date)||!Array.isArray(x.rows)||x.rows.some(r=>!SYMBOL.test(r?.symbol)||!finite(r.pct)))fail('TARGET_V1_STATE_INVALID');
  for(const s of v.rule_b)if(!object(s)||!validDay(s.date)||!Array.isArray(s.rows)||s.rows.some(r=>!SYMBOL.test(r?.symbol)||!finite(r.pct)))fail('TARGET_V1_STATE_INVALID');
  if(v.rule_c&&(!validDay(v.rule_c.start)||!text(v.rule_c.version,20)))fail('TARGET_V1_STATE_INVALID');
@@ -243,18 +243,29 @@ function publishedCheck(payload,{date,cfg=CFG}={}){
  return{ok:reasons.length===0,reasons,calc_version:calc,as_of:typeof payload.as_of==='string'?payload.as_of:null,q,g,size,rows,na_rows:na,mixed_rows:mixed,stale_rows:stale,oldest_acquired:oldest};
 }
 /* Input basis of a published payload: calc_version, file as_of and the newest acquired_at per shard (shard = sha256(cik) mod
-   shard_count, the daily partition rule of tools/published_coverage.py). Async (Web Crypto digest); counts and times only. */
+   shard_count, the daily partition rule of tools/published_coverage.py). Async (Web Crypto digest); counts and times only.
+   type_scope (owner decision 2026-10-17 item 4): the device type-application scope the scores use (QgvV2.TYPE_SCOPE, = QgvScores
+   basis.type_scope); calc_version stays the raw-metric version. null when QgvV2 is not on the page.
+   withdrawn (owner instruction 2026-10-17 item 3, #285 / #289): the identity-conflict withdrawal rows of the file, as sorted
+   'records' codes and 'TARGET:<id>' ids ('' when none). A withdrawal row has no acquired_at, so it can leave the shard times
+   unchanged; listing it here makes a new withdrawal a basis change, and the regenerated draft drops the stopped rows. */
+const WITHDRAWN_REASON='IDENTITY_CONFLICT_WITHDRAWN';
+const isWithdrawal=r=>object(r)&&(Object.hasOwn(r,'detected_at')||Array.isArray(r.reason_codes)&&r.reason_codes.includes(WITHDRAWN_REASON));
+function withdrawnList(payload){const out=[];for(const[code,r]of Object.entries(payload.records))if(isWithdrawal(r))out.push(code);
+ for(const[id,r]of Object.entries(object(payload.target)?payload.target:{}))if(isWithdrawal(r))out.push('TARGET:'+id);return [...new Set(out)].sort().join('|');}
+function deviceTypeScope(){try{const v=qgvV2()?.TYPE_SCOPE;return typeof v==='string'?v:null;}catch(_){return null;}}
 async function sha256Hex(text){const d=await globalThis.crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join('');}
-async function inputBasis(payload,{digest=sha256Hex}={}){
+async function inputBasis(payload,{digest=sha256Hex,typeScope=deviceTypeScope()}={}){
  if(!object(payload)||!object(payload.records))return null;
  const count=Number.isInteger(payload.shard_count)&&payload.shard_count>=1&&payload.shard_count<=366?payload.shard_count:null,newest={};
  if(count)for(const[code,r]of Object.entries(payload.records)){if(code.startsWith('TARGET:')||!object(r)||typeof r.cik!=='string'||!r.cik||typeof r.acquired_at!=='string')continue;const t=Date.parse(r.acquired_at);if(!Number.isFinite(t))continue;
   const shard=Number(BigInt('0x'+await digest(r.cik))%BigInt(count));if(!newest[shard]||t>Date.parse(newest[shard]))newest[shard]=r.acquired_at;}
  return{calc_version:typeof payload.calc_version==='string'&&CALC_VERSION.test(payload.calc_version)?payload.calc_version:null,as_of:typeof payload.as_of==='string'?payload.as_of:null,shard_count:count,
-  shards:Object.keys(newest).map(Number).sort((a,b)=>a-b).map(k=>k+'='+newest[k]).join('|')};
+  shards:Object.keys(newest).map(Number).sort((a,b)=>a-b).map(k=>k+'='+newest[k]).join('|'),type_scope:typeof typeScope==='string'?typeScope:null,withdrawn:withdrawnList(payload)};
 }
-// The draft's input basis differs from the latest file's (calc_version, shard count or any shard's newest acquisition).
-function basisChanged(draftBasis,latest){if(!object(draftBasis)||!object(latest))return true;return draftBasis.calc_version!==latest.calc_version||draftBasis.shard_count!==latest.shard_count||draftBasis.shards!==latest.shards;}
+// The draft's input basis differs from the latest (calc_version, type_scope, withdrawal rows, shard count or any shard's newest
+// acquisition). A draft basis without type_scope or withdrawn (built before those ids existed) counts as changed.
+function basisChanged(draftBasis,latest){if(!object(draftBasis)||!object(latest))return true;return draftBasis.calc_version!==latest.calc_version||draftBasis.type_scope!==latest.type_scope||draftBasis.withdrawn!==latest.withdrawn||draftBasis.shard_count!==latest.shard_count||draftBasis.shards!==latest.shards;}
 /* A new draft from the current scores and the latest basis. Card answers carry over only for symbols in the new candidate pool;
    names newly selected need a fresh card answer (pending). */
 function regenerateDraft(state,{computed,inputs,universeCodes,existing,date,basis,cfg=CFG,pcfg=PCFG}){
@@ -289,7 +300,7 @@ function finalize(state,{date,published=null,basis=null,cfg=CFG,pcfg=PCFG}={}){
  const r=finalizeBlockers(state,{date,published,basis,cfg,pcfg});if(r.blockers.length){const e=Error(r.blockers[0]);e.blockers=r.blockers;e.check=r.check;e.number=r.number;throw e;}
  const sel=r.sel,n=state.versions.length+1,version=n===1?'v1':'v1.'+(n-1),answers=latestAnswers(state);
  const rows=sel.rows.map(x=>({symbol:x.symbol,grade:x.grade,pct:x.pct,subgroup:x.subgroup,confirmed:answers.get(key(x.symbol))?.answer==='AGREE'}));
- return{...state,versions:[...state.versions,{version,date,draft_created:state.draft.created,config_version:cfg.config_version,calc_version:r.check.calc_version,sec_qgv2_as_of:r.check.as_of,input_shards:basis.shards,
+ return{...state,versions:[...state.versions,{version,date,draft_created:state.draft.created,config_version:cfg.config_version,calc_version:r.check.calc_version,type_scope:basis.type_scope??null,sec_qgv2_as_of:r.check.as_of,input_shards:basis.shards,
   number_check:{calc_version:r.number.calc_version,passed:true,date:r.number.date,companies:r.number.companies},rows,cash_pct:sel.cash_pct}],rule_c:{start:date,version}};
 }
 function latestVersion(state){return state?.versions?.length?state.versions[state.versions.length-1]:null;}
