@@ -197,22 +197,24 @@ def test_target_withdrawal_and_policy_na_from_generation_through_the_guard_to_th
     assert code == 1 and f'file={qgv2.FILENAME} section=target code=googl kind=OLDER ' in out
 
 
-def test_universe_conflict_code_is_withdrawn_in_generation_and_still_refused_at_deploy(tmp_path, capsys):
-    """(d) Universe conflict code (multi-CIK claim, universe branch rule): generation publishes CIK_UNRESOLVED without CIK
-    or acquired_at, the deploy check refuses it as LOST_RECORD (pending owner decision UNI-WITHDRAWN: no public withdrawal
-    representation for Universe rows yet), so the live copy, and the device, keep the earlier row until that decision."""
+def test_universe_conflict_code_is_withdrawn_in_generation_and_passes_the_deploy_check(tmp_path, capsys):
+    """(d) Universe conflict code (multi-CIK claim): generation publishes a withdrawal row naming the live observation
+    (owner decision UNI-WITHDRAWN (a), 2026-10-17; before: CIK_UNRESOLVED, refused as LOST_RECORD), the deploy check
+    passes it as WITHDRAWN, and the other code of the same issuer keeps its own row."""
     live = live_qgv2()
     site = Site({qgv2.FILENAME: qgv2.encode(live)})
     code_ = 'NASDAQ:GOOG'
     mine = qgv2.merge(live, {}, as_of=T1, shard_index=3, conflicts={code_})
     row = mine['records'][code_]
-    assert (row['state'], row['reason_codes'], row['cik'], row['acquired_at']) == ('NOT_AVAILABLE', ['CIK_UNRESOLVED'], None, None)
+    assert (row['state'], row['reason_codes'], row['cik'], row['acquired_at']) == ('NOT_AVAILABLE', [qgv2.WITHDRAWN_REASON], None, None)
+    assert (row['withdrawn_acquired_at'], row['withdrawn_cik']) == (live['records'][code_]['acquired_at'], live['records'][code_]['cik'])
     assert mine['records']['NASDAQ:GOOGL']['state'] == 'LIVE'      # the other code of the issuer is its own row
     folder = tmp_path / 'a'
     folder.mkdir()
     (folder / qgv2.FILENAME).write_bytes(qgv2.encode(mine))
     code, out = guard(folder, site, capsys)
-    assert code == 1 and f'file={qgv2.FILENAME} section=records code={code_} kind=LOST_RECORD ' in out
+    line = section_line(out, qgv2.FILENAME, 'records')
+    assert code == 0 and (line['withdrawn'], line['lost_record']) == ('1', '0')
 
 
 def test_merge_rules_of_a_target_withdrawal():

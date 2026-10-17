@@ -52,7 +52,7 @@ function fromInputs(inputs){
  const mark=(rec,r)=>{if(!versionMismatch(r,version))return rec;return{...rec,factors:Object.fromEntries(FACTORS.map(k=>[k,null])),qg_axes:{Q:{score:null},G:{score:null}},v_inputs:null,in_cross_section:false,calc_version_mismatch:true};};
  const targets=object(inputs.target)?inputs.target:{},withdrawnCiks=new Set(Object.values(targets).filter(withdrawn).map(r=>r.cik).filter(c=>typeof c==='string'));
  for(const code of Object.keys(inputs.records).sort()){if(!CODE.test(code))throw Error('SEC_QGV2_INVALID');const r=inputs.records[code],cik=object(r)?r.cik:null,stop=withdrawn(r)||typeof cik==='string'&&withdrawnCiks.has(cik),live=!stop&&object(r)&&['LIVE','STALE'].includes(r.state);
-  const mismatch=versionMismatch(r,version),pooled=live&&!mismatch&&!(cik&&seen.has(cik));if(live&&!mismatch&&cik)seen.add(cik);records[code]=stop?stopped(normalize(r,false)):mark(normalize(r,pooled),r);}
+  const mismatch=versionMismatch(r,version),pooled=live&&!mismatch&&!(cik&&seen.has(cik));if(live&&!mismatch&&cik)seen.add(cik);records[code]=stop?{...stopped(normalize(r,false)),universe_withdrawal:withdrawn(r)}:mark(normalize(r,pooled),r);}
  for(const[id,r]of Object.entries(targets)){if(!ID.test(id))throw Error('SEC_QGV2_INVALID');records['TARGET:'+id]=withdrawn(r)?stopped(normalize(r,false)):mark(normalize(r,false),r);}
  // Keep the source TARGET rows in RAM for exact-period disclosure confirmation. The strict reader supplies these rows;
  // normalization must not discard their price-free source dates or replace them with an inferred confirmation.
@@ -63,12 +63,18 @@ function light(p){
  const bad=/"(price|prices|market_?cap|marketcap|ev|enterprise_value|v_score|rank)"\s*:/i;
  if(!object(p)||p.kind!==KIND||!object(p.records)||bad.test(JSON.stringify(p)))throw Error('SEC_QGV2_INVALID');return p;
 }
+/* Why the last load returned null (owner instruction 2026-10-17, #289 item 3): 'SCHEMA_NEWER' when the file is a newer data format
+   than this page reads (SecQgv2.ERR_NEWER; the screens ask for a reload instead of showing nothing), 'UNAVAILABLE' otherwise,
+   null after a successful load. Nothing earlier is kept: a rejected file leaves no scores in RAM. */
+let lastReason=null;
+const NEWER=/_SCHEMA_NEWER$/;
 async function load(view,{signal}={}){
+ lastReason=null;
  try{
-  if(view.SecQgv2&&typeof view.SecQgv2.loadInputs==='function'){const x=await view.SecQgv2.loadInputs(view,{signal});return x?fromInputs(x):null;}
-  const r=await view.fetch(FILE,{cache:'no-cache',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',signal,headers:{Accept:'application/json'}});if(!r.ok)return null;
-  const text=await r.text();if(new TextEncoder().encode(text).length>MAX)return null;return fromInputs(light(JSON.parse(text)));
- }catch(_){return null;}
+  if(view.SecQgv2&&typeof view.SecQgv2.loadInputs==='function'){const x=await view.SecQgv2.loadInputs(view,{signal});if(!x)lastReason='UNAVAILABLE';return x?fromInputs(x):null;}
+  const r=await view.fetch(FILE,{cache:'no-cache',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',signal,headers:{Accept:'application/json'}});if(!r.ok){lastReason='UNAVAILABLE';return null;}
+  const text=await r.text();if(new TextEncoder().encode(text).length>MAX){lastReason='UNAVAILABLE';return null;}const p=JSON.parse(text);if(object(p)&&p.kind===KIND&&Number.isInteger(p.schema_version)&&p.schema_version>2)throw Error('SEC_QGV2_SCHEMA_NEWER');return fromInputs(light(p));
+ }catch(e){lastReason=NEWER.test(String(e&&e.message))?'SCHEMA_NEWER':'UNAVAILABLE';return null;}
 }
-return Object.freeze({FILE,KIND,FACTORS,WITHDRAWN_REASON,normalize,fromInputs,light,load});
+return Object.freeze({FILE,KIND,FACTORS,WITHDRAWN_REASON,normalize,fromInputs,light,load,lastReason:()=>lastReason});
 });

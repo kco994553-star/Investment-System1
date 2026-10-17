@@ -147,7 +147,7 @@
    }
   },
   "registry_sha256": "872491a30d60d598962de6e7b834ab76b2aa65fbab102c6ebaaae6acdc238822",
-  "schema_version": 1,
+  "schema_version": 2,
   "shard_count": 7,
   "stale_after_seconds": 1209600,
   "state": "LIVE"
@@ -742,6 +742,676 @@
       "as_of"
      ],
      "value": "2026-10-10"
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_valid",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z",
+      "withdrawn_cik": "0000000009"
+     }
+    }
+   ],
+   "valid": true
+  },
+  {
+   "id": "withdrawn_with_score",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z",
+      "withdrawn_cik": "0000000009"
+     }
+    },
+    {
+     "path": [
+      "records",
+      "BATS:CBOE",
+      "factors",
+      "roic_wacc"
+     ],
+     "value": 50
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_with_cik",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": "0000000009",
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z",
+      "withdrawn_cik": "0000000009"
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_with_acquired_at",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": "2026-10-09T22:00:00Z",
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": "252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111",
+       "submissions": "043a718774c572bd8a25adbeb1bfcd5c0256ae11cecf9f9c3f925d0e52beaf89"
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z",
+      "withdrawn_cik": "0000000009"
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_reason_without_keys",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE",
+      "reason_codes"
+     ],
+     "value": [
+      "IDENTITY_CONFLICT_WITHDRAWN"
+     ]
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_keys_other_reason",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "CIK_UNRESOLVED"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z",
+      "withdrawn_cik": "0000000009"
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_extra_reason",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN",
+       "CIK_UNRESOLVED"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z",
+      "withdrawn_cik": "0000000009"
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_without_named_observation",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": null,
+      "withdrawn_cik": "0000000009"
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_names_a_later_observation",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-10T22:20:00Z",
+      "withdrawn_cik": "0000000009"
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_detected_after_as_of",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-11T00:00:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z",
+      "withdrawn_cik": "0000000009"
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_without_issuer",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z",
+      "withdrawn_cik": null
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_issuer_key_missing",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z"
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_state_live",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "LIVE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z",
+      "withdrawn_cik": "0000000009"
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "withdrawn_unknown_key",
+   "ops": [
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z",
+      "withdrawn_cik": "0000000009",
+      "withdrawn_values": {
+       "roic_wacc": 50
+      }
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "schema_v1_valid",
+   "ops": [
+    {
+     "path": [
+      "schema_version"
+     ],
+     "value": 1
+    }
+   ],
+   "valid": true
+  },
+  {
+   "id": "withdrawn_in_schema_v1_file",
+   "ops": [
+    {
+     "path": [
+      "schema_version"
+     ],
+     "value": 1
+    },
+    {
+     "path": [
+      "records",
+      "BATS:CBOE"
+     ],
+     "value": {
+      "acquired_at": null,
+      "cik": null,
+      "detected_at": "2026-10-10T22:10:00Z",
+      "factors": {
+       "competitive_advantage": null,
+       "eps_fcf_per_share_growth": null,
+       "excess_growth_vs_industry": null,
+       "fcf_quality": null,
+       "financial_health": null,
+       "growth_durability": null,
+       "growth_efficiency": null,
+       "management_quality": null,
+       "margin_quality": null,
+       "market_position": null,
+       "next_3_5y_growth": null,
+       "revenue_growth": null,
+       "roic_wacc": null
+      },
+      "reason_codes": [
+       "IDENTITY_CONFLICT_WITHDRAWN"
+      ],
+      "source_sha256": {
+       "companyfacts": null,
+       "submissions": null
+      },
+      "state": "NOT_AVAILABLE",
+      "withdrawn_acquired_at": "2026-10-09T22:00:00Z",
+      "withdrawn_cik": "0000000009"
+     }
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "schema_v3",
+   "ops": [
+    {
+     "path": [
+      "schema_version"
+     ],
+     "value": 3
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "schema_v0",
+   "ops": [
+    {
+     "path": [
+      "schema_version"
+     ],
+     "value": 0
+    }
+   ],
+   "valid": false
+  },
+  {
+   "id": "schema_bool",
+   "ops": [
+    {
+     "path": [
+      "schema_version"
+     ],
+     "value": true
     }
    ],
    "valid": false
