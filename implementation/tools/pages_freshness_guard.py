@@ -43,6 +43,15 @@ Rules for a live row with a record (on top of MISSING / LOST_RECORD / OLDER by m
 - a newer OBSERVED row passes over a live WITHDRAWN row only when collected at or after the detection (NEWER), so an
   artifact built before the withdrawal can never bring the stopped value back (OLDER).
 
+sec-qgv2.json `target` (the same TARGET NA schema extended to that section, owner instruction 2026-10-17 item 3): a
+withdrawal row (`detected_at`, `withdrawn_acquired_at`; identity conflict, no values) is a WITHDRAWN record and the
+WITHDRAWN rules above apply (exact name of the live observation, else WITHDRAWAL_MISMATCH / OLDER; a newer observation
+passes only when collected at or after the detection). An artifact with a withdrawal row is only trusted when its strict
+validator (`require_qgv2`) accepts the file; otherwise it has no rows (PAGES_FRESHNESS_ARTIFACT_INVALID). The kept-row
+and CHANGED rules stay sec-public-inputs.json only (sec-qgv2.json rows are restated and re-scored at every publication).
+The `records` section is unchanged: a Universe identity conflict without a collection record is LOST_RECORD (pending
+owner decision UNI-WITHDRAWN).
+
 Producers (owner decision 2026-10-17, option a): a company/code whose collection or identification failed keeps its
 verified previous row unchanged (same acquired_at, sources and calc_version) when the same issuer is confirmed, so such a
 failure arrives here as EQUAL, never as LOST_RECORD: tools/public_sec_inputs.py (transient fetch failures) and the
@@ -96,6 +105,8 @@ ROW_KINDS = ('newer', 'equal', 'older', 'missing', 'lost_record')
 ROW_REGRESSIONS = ('OLDER', 'MISSING', 'LOST_RECORD', 'WITHDRAWAL_MISMATCH', 'PRESERVED_MISMATCH', 'CHANGED')
 # sec-public-inputs.json only (schema /4): counted after new_record on its line.
 INPUTS_KINDS = ('withdrawn', 'withdrawal_mismatch', 'preserved_mismatch', 'changed')
+# sec-qgv2.json `target` (TARGET withdrawal rows): counted after new_record on its line.
+TARGET_KINDS = ('withdrawn', 'withdrawal_mismatch')
 MARKER_REFUSING = ('OLDER', 'MISSING')
 _PRINTABLE_KEY = re.compile(r'[A-Za-z0-9][A-Za-z0-9:._-]{0,39}')
 _PRINTABLE_VERSION = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:/+-]{0,63}')
@@ -237,24 +248,36 @@ def _inputs_record(row):
     return _acquired_record(row)
 
 
+def _target_record(row):
+    """sec-qgv2.json `target`: ('WITHDRAWN', detected_at, withdrawn_acquired_at) for a withdrawal row, else as acquired."""
+    if 'detected_at' in row:
+        detected = _instant(row.get('detected_at'))
+        return None if detected is None else ('WITHDRAWN', detected, _instant(row.get('withdrawn_acquired_at')))
+    return _acquired_record(row)
+
+
 def _observation(row):
     """A row without its run marker, as canonical text (a kept row equals the live row it was kept from)."""
     return json.dumps({k: v for k, v in row.items() if k != 'preserved_previous'}, sort_keys=True, ensure_ascii=True)
 
 
-def _row_kind(theirs_row, theirs, row, ours, inputs):
+def _row_kind(theirs_row, theirs, row, ours, inputs, withdrawals=False):
     if row is None:
         return 'MISSING'
     if ours is None:
         return 'LOST_RECORD'
     if ours[1] < theirs[1]:
         return 'OLDER'
-    if not inputs:
+    if not (inputs or withdrawals):
         return 'EQUAL' if ours[1] == theirs[1] else 'NEWER'
     if ours[0] == 'WITHDRAWN':
         named = theirs[1] if theirs[0] == 'OBSERVED' else theirs[2]
         if ours[2] != named:
             return 'OLDER' if ours[2] is not None and named is not None and ours[2] < named else 'WITHDRAWAL_MISMATCH'
+    if not inputs:   # sec-qgv2.json `target`: records only (rows are restated and re-scored at every publication)
+        if ours == theirs:
+            return 'EQUAL'
+        return 'WITHDRAWN' if ours[0] == 'WITHDRAWN' and theirs[0] == 'OBSERVED' else 'NEWER'
     kept = type(row.get('preserved_previous')) is dict
     if ours == theirs and _observation(row) == _observation(theirs_row):
         return 'EQUAL'
@@ -268,9 +291,10 @@ def _row_kind(theirs_row, theirs, row, ours, inputs):
 def compare_rows(name, section, live, local):
     """One section, row by row. `live` is the validated live payload or None (404)."""
     inputs = name == target_tool.FILENAME
-    record = _inputs_record if inputs else _acquired_record
+    withdrawals = name == universe_tool.qgv2.FILENAME and section == 'target'
+    record = _inputs_record if inputs else _target_record if withdrawals else _acquired_record
     mine = _rows(local, section)
-    counts = dict.fromkeys(('compared',) + ROW_KINDS + ('new_record',) + (INPUTS_KINDS if inputs else ()), 0)
+    counts = dict.fromkeys(('compared',) + ROW_KINDS + ('new_record',) + (INPUTS_KINDS if inputs else TARGET_KINDS if withdrawals else ()), 0)
     regressions = []
     theirs_rows = _rows(live, section) if live is not None else {}
     for key in sorted(set(theirs_rows) | set(mine)):
@@ -281,7 +305,7 @@ def compare_rows(name, section, live, local):
             counts['new_record'] += int(ours is not None)
             continue
         counts['compared'] += 1
-        kind = _row_kind(theirs_rows[key], theirs, row, ours, inputs)
+        kind = _row_kind(theirs_rows[key], theirs, row, ours, inputs, withdrawals)
         counts[kind.lower()] += 1
         if kind in ROW_REGRESSIONS:
             regressions.append((key, kind, ours[1] if ours else None, theirs[1]))
@@ -382,6 +406,14 @@ def compare(artifact_dir, *, open_response=None, environ=None):
             # The /4 records (WITHDRAWN, kept rows, NA with acquired_at) are only trusted in a file its validator accepts.
             try:
                 target_tool.require_public_inputs(local)
+            except Exception:
+                out['artifact_invalid'].append(name)
+                local = None
+        if name == universe_tool.qgv2.FILENAME and local is not None \
+                and any('detected_at' in row for row in _rows(local, 'target').values()):
+            # A TARGET withdrawal record is only trusted in a file its validator accepts.
+            try:
+                universe_tool.qgv2.require_qgv2(local)
             except Exception:
                 out['artifact_invalid'].append(name)
                 local = None

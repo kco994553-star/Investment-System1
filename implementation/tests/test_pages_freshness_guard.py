@@ -356,7 +356,8 @@ def test_a_row_older_than_live_is_refused_although_the_file_maximum_is_unchanged
     assert file_maximum(mine, section) == file_maximum(live, section) == T17
     code, out = guard(write(tmp_path / 'artifact', {name: mine}), served({name: live}), capsys)
     n = compared_rows(kind)
-    extra = ' withdrawn=0 withdrawal_mismatch=0 preserved_mismatch=0 changed=0' if kind == 'inputs' else ''
+    extra = (' withdrawn=0 withdrawal_mismatch=0 preserved_mismatch=0 changed=0' if kind == 'inputs'
+             else ' withdrawn=0 withdrawal_mismatch=0' if kind == 'qgv2-target' else '')
     assert code == 1
     assert (f'PAGES_FRESHNESS file={name} section={section} verdict=REFUSED compared={n} newer=0 equal={n - 1} older=1 '
             f'missing=0 lost_record=0 new_record=0{extra} artifact_latest=2026-10-17T00:00:00Z '

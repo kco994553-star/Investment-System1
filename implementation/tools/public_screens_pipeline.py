@@ -9,7 +9,7 @@ import tempfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from investment_system.product.public_engine_screens import generate_screen_bundle
 from investment_system.universe import sec_qgv2 as qgv2
-from public_sec_inputs import collect_public_inputs, CollectionFailure, Parser, STALE_AFTER_SECONDS, _print_collection, _print_diagnostics, _print_exclusions, parse
+from public_sec_inputs import collect_public_inputs, CollectionFailure, Parser, STALE_AFTER_SECONDS, _print_collection, _print_diagnostics, _print_exclusions, parse, require_public_inputs
 import preserve_public_sec_inputs
 
 # Daily acquisition cadence, not a model or calibration threshold (published in sec-public-inputs.json /4 as the file's
@@ -39,14 +39,42 @@ def emit(directory, manifest=None, input_root=None, as_of=None):
             path.unlink(missing_ok=True)
     return outputs
 
-def stage_qgv2_target(directory, manifest, root, *, now=None):
+def _write_staged(directory, rows, now):
+    payload = qgv2.merge(None, {}, as_of=now or datetime.now(timezone.utc), shard_index=None, target_updates=rows)
+    body = qgv2.encode(payload)
+    with tempfile.NamedTemporaryFile(dir=directory, prefix='.sec-qgv2-', delete=False) as handle:
+        temporary = Path(handle.name)
+        handle.write(body)
+    try:
+        temporary.replace(Path(directory) / qgv2.FILENAME)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return payload
+
+
+def withdrawn_companies(directory):
+    """{company_id: detected_at} of the WITHDRAWN rows (identity conflicts, new or kept) of the sec-public-inputs.json /4
+    this run wrote, read back through its strict validator ({} when absent, older or invalid)."""
+    try:
+        payload = json.loads((Path(directory) / 'sec-public-inputs.json').read_bytes())
+        require_public_inputs(payload)
+    except Exception:
+        return {}
+    return {row['company_id']: row['detected_at'] for row in payload['companies'] if row.get('status') == 'WITHDRAWN'}
+
+
+def stage_qgv2_target(directory, manifest, root, *, now=None, withdrawn=None):
     """QGV v2 Q·G for the TARGET US SEC issuers from this run's SEC bytes, staged as `sec-qgv2.json`.
 
     Universe rows stay NOT_COLLECTED here; the Universe shard step (tools/sec_universe_shares.py) later merges these
-    TARGET rows with the published Universe rows and recomputes every percentile. A failure prints a fixed code only
-    and never changes the six screen files."""
+    TARGET rows with the published Universe rows and recomputes every percentile. `withdrawn` ({company_id: detected_at},
+    sec-public-inputs.json WITHDRAWN rows) are staged as withdrawal rows: the shard merge then withdraws the kept TARGET
+    row of that issuer (never carried, never a fallback). When the rows from bytes cannot be staged, the withdrawals
+    alone still are. A failure prints a fixed code only and never changes the six screen files."""
+    directory = Path(directory)
+    withdrawals = {}
     try:
-        directory = Path(directory)
+        withdrawals = {cid: qgv2.withdrawn_target(cid, at) for cid, at in sorted((withdrawn or {}).items())}
         destination = directory / qgv2.FILENAME
         if directory.is_symlink() or not directory.is_dir() or destination.is_symlink():
             raise ValueError('SEC_QGV2_OUTPUT_INVALID')
@@ -57,21 +85,22 @@ def stage_qgv2_target(directory, manifest, root, *, now=None):
             entries.append((entry['company_id'], (Path(root) / entry['companyfacts']).read_bytes(),
                             (Path(root) / entry['submissions']).read_bytes(), datetime.fromisoformat(entry['acquired_at'])))
         rows = qgv2.build_target_rows(entries)
-        payload = qgv2.merge(None, {}, as_of=now or datetime.now(timezone.utc), shard_index=None, target_updates=rows)
-        body = qgv2.encode(payload)
-        with tempfile.NamedTemporaryFile(dir=directory, prefix='.sec-qgv2-', delete=False) as handle:
-            temporary = Path(handle.name)
-            handle.write(body)
-        try:
-            temporary.replace(destination)
-        finally:
-            temporary.unlink(missing_ok=True)
+        rows.update(withdrawals)
+        payload = _write_staged(directory, rows, now)
         staged = [r for r in payload['target'].values() if r['state'] != 'NOT_AVAILABLE']
-        print(f'SEC_QGV2_TARGET staged companies={len(entries)} with_data={len(staged)}')
+        print(f'SEC_QGV2_TARGET staged companies={len(entries)} with_data={len(staged)} withdrawn={len(withdrawals)}')
         return payload
     except Exception:
-        print('SEC_QGV2_TARGET STAGE_FAILED')
-        return None
+        pass
+    try:
+        if withdrawals and not directory.is_symlink() and directory.is_dir() and not (directory / qgv2.FILENAME).is_symlink():
+            payload = _write_staged(directory, withdrawals, now)
+            print(f'SEC_QGV2_TARGET STAGE_FAILED withdrawn_only={len(withdrawals)}')
+            return payload
+    except Exception:
+        pass
+    print('SEC_QGV2_TARGET STAGE_FAILED')
+    return None
 
 
 def load_previous_inputs(*, open_response=None):
@@ -118,7 +147,7 @@ def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macr
         result = collect_public_inputs(Path(directory) / 'sec-public-inputs.json', environ=environ, client_factory=Capture,
                                        previous=previous, previous_state=previous_state, now=now)
         emit(directory, manifest, root)
-        stage_qgv2_target(directory, manifest, root)
+        stage_qgv2_target(directory, manifest, root, withdrawn=withdrawn_companies(directory))
         return result
 
 def _print_macro_v0(directory):
