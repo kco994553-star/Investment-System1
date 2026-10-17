@@ -104,7 +104,7 @@ async function open(browser, { now, last, width }) {
   page.on('pageerror', (e) => { traffic.errors++; console.log('pageerror ' + String(e.message).slice(0, 200)); });
   page.on('console', (m) => { if (m.text().includes(CANARY) || m.text().includes(TOKEN) || /\b1\d\d\.\d{4,}/.test(m.text())) traffic.console++; });
   await page.clock.install({ time: new Date(now) });
-  await page.goto(BASE + '#home');
+  await page.goto(BASE + '#brief');
   await page.locator('[data-report-link="mock"]').waitFor();
   return { context, page, traffic };
 }

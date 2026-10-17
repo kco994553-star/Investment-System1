@@ -4,7 +4,7 @@
 (async()=>{const b=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let pass=0,fail=0;
  try{for(const width of [390,1440]){const c=await b.newContext({viewport:{width,height:900},serviceWorkers:'block',permissions:['clipboard-read','clipboard-write']}),p=await c.newPage();let errors=0;const posts=[];
   p.on('pageerror',e=>{errors++;console.log(String(e));});p.on('request',r=>{if(r.method()!=='GET'||/ReportInbox|%5B%EC%9D%BC%EC%9D%BC|일일보고서 템플릿/.test(r.url()))posts.push(r.url());});
-  try{await p.goto(process.env.PAGES_COCKPIT_URL+'#home');await p.locator('[data-report-link="mock"]').click();
+  try{await p.goto(process.env.PAGES_COCKPIT_URL+'#brief');await p.locator('[data-report-link="mock"]').click();
    await p.locator('[data-report-badges]').waitFor();
    const badges=await p.locator('[data-report-badges]').textContent();
    for(const s of ['STANDARD v1 · UNCALIBRATED','가상매매 규칙 v1','PROVISIONAL'])assert.ok(badges.includes(s),s);

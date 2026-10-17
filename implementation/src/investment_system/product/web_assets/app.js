@@ -209,12 +209,12 @@ function rawDataUI(){
   return `<details class="card" id="raw-data-viewer" data-raw-data><summary>${en?'Raw data (developer)':'원자료 보기(개발자용)'}</summary><p class="small">${en?'Raw public inputs for checking only: SEC Q·G leaf scores, price-free company types and estimated filing windows. Screens show results only.':'확인용 원자료입니다: SEC Q·G 개별 점수, 가격 불필요 유형, 실적 예상 시기. 사용자 화면에는 결과만 보여 줍니다.'}</p><label for="raw-data-company">${en?'Company':'기업'}</label> <select id="raw-data-company" data-raw-company>${ids.map(id=>`<option value="${esc(id)}"${id===chosen?' selected':''}>${esc(name(id))}</option>`).join('')}</select><div id="public-qg"></div><div id="public-types"></div><div id="public-filings"></div></details>`;
 }
 function mountRawData(){const id=rawDataCompanyId();for(const kind of ['qg','types','filings'])PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:id||undefined,locale:appSettings.display_locale});}
-function entityRoute(e) {return e.entity_type==="COMPANY"?"#company/"+encodeURIComponent(e.canonical_id):"#entity/"+encodeURIComponent(e.entity_type+":"+e.canonical_id);}
 // Company search (TARGET directory + public Universe504 codes): identity only, no prices/caps/ranks (GSQ-010).
 let publicEntities=[],universeDirectory=null,universeDirectoryPromise=null;
 function rebuildSearchIndex() {
   const codes={};if(universeDirectory?.state==="READY") for(const [code,r] of Object.entries(universeDirectory.records)) codes[code]=r.company_id;
-  try {searchIndex=EntitySearch.createIndex([...publicEntities,...EntitySearch.companyEntities(identityCompanies,codes)]);}
+  const ko=window.SearchUI?.KO_NAMES||{},named=e=>Object.hasOwn(ko,e.canonical_id)?{...e,localized_names:{"ko-KR":ko[e.canonical_id]}}:e;
+  try {searchIndex=EntitySearch.createIndex([...publicEntities,...EntitySearch.companyEntities(identityCompanies,codes).map(named)]);}
   catch(_) {searchIndex=EntitySearch.createIndex(publicEntities);}
 }
 function ensureUniverseDirectory() {
@@ -241,25 +241,12 @@ function universeDetail(code) {
   const rows=[[en?'SEC shares state':'SEC 주식수 상태',r.state+(r.reason_codes.length?' · '+r.reason_codes.map(reason).join(' · '):'')],[en?'Shares outstanding (SEC cover)':'발행주식수(SEC 표지)',r.shares===null?'NOT_AVAILABLE':Number(r.shares).toLocaleString(appSettings.display_locale)],[en?'Measured':'기준일',r.measurement_date||'—'],[en?'Form':'서식',r.form||'—'],[en?'Share-class basis':'주식 종류 기준',r.share_class_basis],['CIK',r.cik||'—'],[en?'Public file as of':'공개 파일 기준',universeDirectory.as_of]];
   return head+`<section class="card" data-universe-company="${esc(r.state)}"><div class="chips"><span class="badge">Universe504</span><span class="badge">${en?'Name not published':'이름 미공개'}</span><span class="badge">${en?'Price-free':'가격 없음'}</span></div><dl>${rows.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl><p class="small">${en?'Price, market cap, rank and QGV: NOT_AVAILABLE on public screens (GSQ-010). The M3 cap rank is shown only on S06 after reading your Universe sheet on this device (RAM only).':'가격·시가총액·순위·QGV: 공개 화면에서는 NOT_AVAILABLE (GSQ-010). M3 시총 순위는 S06에서 내 기기의 Universe 시트를 읽은 뒤 메모리에서만 표시됩니다.'}</p><a href="#leaderboard">${en?'S06 Company research →':'S06 기업 연구 →'}</a></section>`;
 }
-function entityRow(hit) {
-  const e=hit.entity;
-  if(e.entity_type==="COMPANY" && e.scope) {
-    const universe=e.scope==="UNIVERSE504",en=appSettings.display_locale==='en-US';
-    return `<li class="item" data-entity-id="${esc(hit.canonical_entity_id)}" data-entity-scope="${esc(e.scope)}"><a href="${entityRoute(e)}">${CompanyLogos.html(e.ticker,20)}<b>${esc(e.ticker)}</b> <span class="badge">${esc(t("기업"))}</span> <span class="badge">${universe?"Universe504":"TARGET"}</span><div class="meta">${universe?esc(e.canonical_label)+" · "+(en?"name not published":"이름 미공개"):esc(e.canonical_label)} · ${en?"price-free":"가격 없음"}</div></a></li>`;
-  }
-  const c=e.entity_type==="COMPANY"?company(e.canonical_id):null;
-  const held=c && D.portfolio.data?.holdings?.some(h=>h.company_id===c.company_id);
-  const types={COMPANY:t("기업"),INDUSTRY:t("산업"),INVESTOR:t("투자자"),MACRO:t("거시지표")};
-  return `<li class="item" data-entity-id="${esc(hit.canonical_entity_id)}"><a href="${entityRoute(e)}">${e.entity_type==="COMPANY"?CompanyLogos.html(e.ticker||e.canonical_id,20):""}<b>${esc(label(e))}</b> <span class="badge">${esc(t(types[e.entity_type] || e.entity_type))}</span><div class="meta">${esc(e.ticker || "")} · ${esc(e.canonical_label)}${e.localized_names?.["ko-KR"]?" · "+esc(e.localized_names["ko-KR"]):""}${e.industry?" · "+esc(e.industry):""}</div>${c?`<div class="meta">${held?t("Snapshot 보유")+" · ":""}${D.qgv.data?.[c.company_id]?t("QGV 제공"):t("분석 미연결")} · ${esc(D.qgv.as_of || D.universe.as_of || t("시점 미제공"))} · ${esc(D.universe.withheld && e.data_state===D.universe.withheld.claimed_state?D.universe.state:e.data_state || D.universe.state)}</div>`:""}</a></li>`;
-}
+// The search box itself (combobox, rows, keys, recent searches) lives in home-screen.js (SearchUI); app.js owns the index.
 function paintGlobalSearch() {
-  const input=$("#global-search"),out=$("#global-results");
-  if(!searchIndex || !input) return;
-  if(input.value.trim()) void ensureUniverseDirectory();
-  const hits=searchIndex.search(input.value,{limit:12});
-  out.hidden=!input.value.trim();
-  out.innerHTML=hits.map(entityRow).join("") || `<li class="empty">${t("일치하는 항목이 없습니다.")}</li>`;
+  if(!searchIndex) return;
   window.investmentSearch=(query,options)=>searchIndex.search(query,options);
+  if($("#global-search")?.value.trim()) void ensureUniverseDirectory();
+  window.SearchUI?.refresh({universe:universeDirectory?.state||null});
 }
 function entityDetail(key) {
   const cut=key.indexOf(":"),type=key.slice(0,cut),id=key.slice(cut+1),e=searchIndex.resolve(type,id);
@@ -379,7 +366,9 @@ function summaryFor(name,id) {
   const s=D[name],v=s.data?.[id];
   return `<section class="card"><h2>${name==="qgv"?"QGV":t("Technical(기술적 분석)")}</h2>${state(s)}${v?`<dl>${(name==="qgv"?["Q_score","G_score","V_score","total_score","confidence","coverage_state"]:["regime","execution_zone","invalidation"]).map(k=>`<dt>${esc(term(k))}</dt><dd>${typeof v[k]==="number"?fmt(v[k]):esc(AppLanguage.fallback(v.presentation?.[k],appSettings.display_locale,AppLanguage.status(v[k] ?? t("미제공"),appSettings.display_locale)))}</dd>`).join("")}</dl>${evidence(v)}`:'<p class="empty">'+t("이 기업의 Snapshot 미제공")+"</p>"}</section>`;
 }
-function home() {
+// Home is the search start (home-screen.js). The previous home dashboard cards live on #brief, unchanged.
+function home() {return HomeScreen.html({locale:appSettings.display_locale});}
+function brief() {
   const held=D.portfolio.data?.holdings || [];
   return heading("YOUR DAILY BRIEF",t("오늘의 투자 화면"),t("중요한 변화부터 확인하고, 근거까지 따라가세요."))+
   `<div id="tv-ticker-tape"></div><div class="home-dashboard" data-home-dashboard><section class="card" data-integrated-judgement><h2>${t("통합 판단")}</h2><p class="small">${esc(t("규칙 잠정 버전"))}</p><dl>${[["QGV","qgv"],[t("기술"),"technical"],[t("매크로"),"macro"]].map(([label,name])=>`<dt>${esc(label)}</dt><dd><span class="badge ${esc(D[name].state)}">${esc(D[name].state)}</span></dd>`).join("")}</dl><p data-judgement-result>${esc(t(["qgv","technical","macro"].every(n=>D[n].data!==null)?"세 시스템 결과를 나란히 확인하세요.":"자료가 부족해 통합 판단을 만들지 않습니다."))}</p><p class="small">${esc(t("매수·매도 지시 아님, 주문 기능 없음"))}</p></section>`+
@@ -606,13 +595,8 @@ function validation() {
 const FLOW_STEPS=Object.freeze({qgv:[1,"QGV"],technical:[2,"기술적 분석"],macro:[3,"매크로"],validation:[4,"검증·연구"]});
 const QGV_SUBCATEGORY=Object.freeze({portfolio:"내 투자",actual:"내 투자",profiles:"내 투자",model:"내 투자",companies:"종목 찾기",company:"종목 찾기",analysis:"종목 찾기",entity:"종목 찾기",leaderboard:"종목 찾기",watchlist:"종목 찾기",types:"종목 찾기",news:"시장 정보",thirteenf:"시장 정보"});
 const QGV_CHILDREN=Object.freeze(["companies","company","analysis","leaderboard","news","portfolio","actual","entity","profiles","types","thirteenf","watchlist","model","playbook"]);
-function syncNavigation(route) {
-  const parent=QGV_CHILDREN.includes(route)?"qgv":route==="research"?"validation":route;
-  document.querySelectorAll("[data-nav-tab]").forEach(a=>{
-    if(a.dataset.navTab===parent) a.setAttribute("aria-current","page");
-    else a.removeAttribute("aria-current");
-  });
-}
+// Main menu / bottom navigation (app-shell.js): one current destination per route, none in settings.
+function syncNavigation(route) {window.AppShell?.sync(route,appSettings.display_locale);}
 let listLimit=30;
 // Route history of this page (for the S04 back link and S06 scroll restore).
 let currentRoute=null,previousRoute=null,currentHash='';
@@ -832,6 +816,7 @@ async function paintReport(id){
 function showUnavailable() {
   $("#content").innerHTML=heading("DATA UNAVAILABLE",t("데이터를 열 수 없습니다."))+"<p>"+t("연결 상태를 확인한 뒤 다시 시도하세요.")+'</p><button id="retry">'+t("다시 시도")+"</button>";
   $("#retry").onclick=()=>location.reload();
+  window.SearchUI?.setUnavailable();
 }
 function render() {
   // A render error (e.g. after a hashchange) shows the existing DATA UNAVAILABLE fallback instead of escaping
@@ -848,8 +833,9 @@ function renderRoute() {
   let anchor=null;
   for(const screen of ["validation","technical"]) if(route.startsWith(screen+"-")) {anchor=route;route=screen;}
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,qgv,analysis:()=>analysis(id,sub||null),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
+  const routes={home,brief,qgv,analysis:()=>analysis(id,sub||null),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
   if(!routes[route]) route="home";
+  HomeScreen.park(route);
   if((route==='company'||route==='analysis')&&id) rawDataCompany=id;
   previousRoute=currentRoute;const previousHash=currentHash;currentRoute=route;currentHash=location.hash;
   // S04/S05 back link: remember the list it was opened from; keep it while moving between this company's screens.
@@ -864,7 +850,7 @@ function renderRoute() {
   $("#content").innerHTML=routes[route]();
   if(route==='leaderboard') void PrivateSubsetView.mount($('#private-subset-root'),{locale:appSettings.display_locale,config:window.InvestmentAppConfig,interests:()=>[...prefs.interests],onRanks:()=>{qgv2Quotes={};qgv2QuotesKey='';if(leaderboardRows&&$('#leaderboard-screen'))paintLeaderboardScreen(leaderboardRows);}});
   if(['playbook','portfolio','company'].includes(route)&&window.PlaybookScreen){const place=route==='playbook'?$('#playbook-screen'):document.createElement('div');if(route!=='playbook')$('#content').append(place);void PlaybookScreen.mount(place,{catalogPromise:deviceCatalog(),scoreOptions:playbookScoreOptions,screens:publicScreens,idByTicker:new Map(identityCompanies.map(r=>[r.ticker,r.company_id])),publicCatalog,interests:[...prefs.interests],universeCodesPromise:fetch('universe-codes.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>p?.schema==='universe-codes/1'&&Array.isArray(p.codes)?p.codes:[]).catch(()=>[]),full:route==='playbook'}).catch(()=>{if(place.isConnected)place.textContent='플레이북 확인 불가 · 기기 기록을 읽을 수 없습니다.';});}
-  if(route==='home'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
+  if(route==='brief'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
@@ -873,13 +859,13 @@ function renderRoute() {
   if((route==='company'||route==='analysis')&&window.Qgv2Inputs&&publicScreens[Qgv2Inputs.FILE]) void refreshQgv2Quotes(()=>{const h=location.hash.slice(1).split('/');if(h[0]===route&&$('[data-company-card="qgv"],[data-analysis-panel="factors"]'))repaintScores(routes[route]);});
   if(route==='company'||route==='analysis') paintValue(route,id);
   if(route==='model') {attachDeviceActual('#model-actual-summary',false);paintModel();}
-  if(route==='home') deviceCatalog().then(c=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent=c.target_root_version||'NOT_AVAILABLE';}).catch(()=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent='NOT_AVAILABLE';});
+  if(route==='brief') deviceCatalog().then(c=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent=c.target_root_version||'NOT_AVAILABLE';}).catch(()=>{const n=$('#home-target-version');if(n?.isConnected)n.textContent='NOT_AVAILABLE';});
   if(route==='technical') {const cards=TechnicalCards.mount($('#technical-indicators'),{locale:appSettings.display_locale});
     PrivateHistory.mountTechnical($('#technical-price-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>cards.update(value)});
     // Display-only TradingView chart: follows the symbol picker; nothing is read back from it.
     const tvSymbol=$('#technical-price-chart [data-technical-symbol]'),tvChart=()=>TradingViewWidgets.mountAdvanced($('#technical-tv-chart'),{companyId:tvSymbol?tvSymbol.value:id,locale:appSettings.display_locale});
     if(tvSymbol) tvSymbol.addEventListener('change',tvChart);tvChart();}
-  if(route==='home') TradingViewWidgets.mountTickerTape($('#tv-ticker-tape'),{locale:appSettings.display_locale});
+  if(route==='brief') TradingViewWidgets.mountTickerTape($('#tv-ticker-tape'),{locale:appSettings.display_locale});
   if(route==='company' && $('#tradingview-mini')) TradingViewWidgets.mountMini($('#tradingview-mini'),{companyId:id,locale:appSettings.display_locale});
   if(route==='company' && $('#private-history-chart')) void PrivateHistory.mount($('#private-history-chart'),{companyId:id,locale:appSettings.display_locale,config:window.InvestmentAppConfig,getAverage:deviceAverageCost,onData:value=>paintValue(route,id,value&&typeof value.close==='number'?{price:value.close,currency:value.currency,as_of:value.asOf,source:'PRIVATE_HISTORY_CLOSE'}:null)});
   // Price store (user's Prices_M tab): the first open of a company stores its 5-year month-ends once (counts shown only).
@@ -948,6 +934,8 @@ function renderRoute() {
     const group=$("#qgv-"+id),title=group.querySelector("h2");
     group.scrollIntoView({block:"start"});title.focus({preventScroll:true});
   }
+  AppShell.afterRender(route);
+  HomeScreen.afterRender(route,{locale:appSettings.display_locale,id,resolve:(type,key)=>searchIndex.resolve(type,key),interests:[...prefs.interests],company});
 }
 function wireGroups() {
   $("#new-group").onsubmit = (e) => {
@@ -1142,20 +1130,6 @@ try{const mq=window.matchMedia(window.LeaderboardScreen?.NARROW||'(max-width: 74
 let leaderScrollTimer=0,leaderScrollFrame=0;
 window.addEventListener("scroll",()=>{if(currentRoute!=='leaderboard'||leaderRestoring||leaderScrollFrame)return;leaderScrollFrame=requestAnimationFrame(()=>{leaderScrollFrame=0;if(currentRoute!=='leaderboard'||leaderRestoring)return;
   leaderboardView={...leaderboardView,scrollY:Math.max(0,Math.round(window.scrollY)),...leaderAnchor()};clearTimeout(leaderScrollTimer);leaderScrollTimer=setTimeout(saveLeaderView,200);});},{passive:true});
-$("#global-search").oninput=paintGlobalSearch;
-$("#global-search").onkeydown=e=>{
-  const links=[...document.querySelectorAll("#global-results a")];
-  if(e.key==="ArrowDown" && links.length) {e.preventDefault();links[0].focus();}
-  if(e.key==="Escape") {$("#global-search").value="";paintGlobalSearch();}
-};
-$("#global-results").onkeydown=e=>{
-  const links=[...document.querySelectorAll("#global-results a")],i=links.indexOf(document.activeElement);
-  if(e.key==="ArrowDown" || e.key==="ArrowUp") {e.preventDefault();(links[i+(e.key==="ArrowDown"?1:-1)] || $("#global-search")).focus();}
-  if(e.key==="Escape") {$("#global-search").value="";paintGlobalSearch();$("#global-search").focus();}
-};
-document.addEventListener("click",e=>{
-  if(e.target.closest("#global-results a")) {$("#global-search").value="";paintGlobalSearch();}
-});
 try {const saved=AppLanguage.read(localStorage);appSettings=saved.value;settingsWritable=saved.writable;}
 catch(e) {settingsWritable=false;}
 syncShell();

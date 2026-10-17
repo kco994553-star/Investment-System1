@@ -6,7 +6,7 @@ try{for(const width of [390,1280]){
  const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});await routeEmptyPublicScreens(context);let external=0,frames=0,scripts=0,errors=0;
  await context.route('**/*',route=>{const request=route.request(),url=new URL(request.url());if(url.origin===new URL(BASE).origin)return route.fallback();
   if(request.resourceType()==='script')scripts++;if(url.origin==='https://www.tradingview-widget.com'){frames++;return route.fulfill({status:200,contentType:'text/html',body:'<html><body>display-only stub<script>parent.postMessage({price:123456789},"*")</script></body></html>'});}external++;return route.abort();});
- const page=await context.newPage();page.on('pageerror',()=>errors++);await page.goto(BASE+'#home');await page.locator('[data-tv-disabled]').waitFor();assert.equal(frames,0);assert.equal(external,0);
+ const page=await context.newPage();page.on('pageerror',()=>errors++);await page.goto(BASE+'#brief');await page.locator('[data-tv-disabled]').waitFor();assert.equal(frames,0);assert.equal(external,0);
  assert.ok((await page.locator('[data-tv-toggle="on"]').textContent()).includes('종목명이 TradingView로 전달됩니다'));
  await page.locator('[data-tv-toggle="on"]').click();await page.locator('[data-tv-widget="ticker"] iframe').waitFor();await page.waitForFunction(()=>document.querySelector('[data-tv-widget="ticker"] iframe').contentDocument===null);
  assert.equal(await page.locator('script[src*="s3.tradingview.com"]').count(),0);assert.equal(scripts,0);
