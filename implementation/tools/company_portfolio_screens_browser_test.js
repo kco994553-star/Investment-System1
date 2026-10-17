@@ -42,9 +42,9 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
     assert.ok((await text(page,'[data-holding="actual"]')).includes('NOT_AVAILABLE'));assert.equal(await text(page,'[data-holding="delta"]'),'—');
     assert.equal(await page.locator('#company-holding a[href="#actual"]').count(),1);
     for(const key of ['V','rank','reeval'])assert.ok((await text(page,'[data-qgv="'+key+'"]')).includes('NOT_AVAILABLE'),key);
-    assert.equal(await page.locator('[data-company-card="qgv"] a[href="#analysis/nvda"]').count(),1);
+    assert.equal(await page.locator('[data-company-card="qgv"] a[href="#analysis/nvda/factors"]').count(),1);
     assert.equal(await page.locator('[data-company-card="technical"] #private-history-chart').count(),1);
-    assert.equal(await page.locator('[data-company-card="technical"] a[href="#technical"]').count(),1);
+    assert.equal(await page.locator('[data-company-card="technical"] a[href="#technical/nvda"]').count(),1);
     for(const card of ['macro','news','vmr'])assert.ok((await text(page,'[data-company-card="'+card+'"]')).includes('NOT_AVAILABLE'),card);
     assert.equal(await page.locator('main #sec-reported-panel').count(),1,'#sec-reported-panel');
     // Raw public cards are no longer on S04; they live in Settings > 원자료 보기(개발자용).
