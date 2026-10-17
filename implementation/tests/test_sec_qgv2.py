@@ -1240,7 +1240,8 @@ def test_vectors_fixture_is_regenerated_from_the_python_validator():
     assert [c['id'] for c in fixture['cases'] if c['valid']] == ['base_valid', 'null_shard_and_registry_valid', 'ebit_estimated_years_valid',
                                                                             'calc_version_legacy_file_valid', 'calc_version_mixed_population_valid',
                                                                             'target_withdrawn_valid', 'target_withdrawn_without_observation_valid',
-                                                                            'universe_withdrawn_valid']
+                                                                            'universe_withdrawn_valid', 'schema_v1_valid',
+                                                                            'target_withdrawn_in_schema_v1_file_valid']
 
 
 @pytest.mark.skipif(shutil.which('node') is None, reason='Node runtime required')

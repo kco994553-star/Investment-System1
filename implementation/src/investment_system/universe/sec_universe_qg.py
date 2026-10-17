@@ -25,9 +25,9 @@ import json
 import math
 import re
 
-from .sec_universe_shares import (IDENTITY_CONFLICT, PRESERVE, WITHDRAWAL_KEYS, WITHDRAWN_REASON, _clock, _hash, _iso, is_withdrawal,
-                                   load_config, note, previous_decision, replaces, require_withdrawal, universe_codes, withdrawal,
-                                   withdrawal_stays)
+from .sec_universe_shares import (IDENTITY_CONFLICT, PRESERVE, SCHEMA_VERSION, WITHDRAWAL_KEYS, WITHDRAWN_REASON, _clock, _hash, _iso, is_withdrawal,
+                                   load_config, note, note_withdrawal, previous_decision, replaces, require_withdrawal, schema_version_of,
+                                   universe_codes, withdrawal, withdrawal_stays)
 
 FILENAME = 'sec-universe-qg.json'
 KIND = 'SEC_UNIVERSE_QG'
@@ -146,6 +146,7 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
                 new = empty_record(reasons=('INVALID_INPUT',))
         observed = lambda r: r['acquired_at'] is not None
         if withdrawal_stays(old, new, code=code, conflicts=conflicts, observed=observed):
+            note_withdrawal(stats, old, old, code)
             records[code] = restate(old, as_of, stale_after)
             continue
         decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflicts, new_observation=observed)
@@ -155,7 +156,9 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
         elif decision == IDENTITY_CONFLICT and (new is None or not observed(new)):
             # Identity conflict without this run's collection: this file's kept observation is withdrawn (UNI-WITHDRAWN);
             # without one, unresolved (no row this run) or this run's NA row, never an invented time.
-            old = withdrawal(old, empty_record, detected_at=as_of) or (new if new is not None else empty_record(reasons=('CIK_UNRESOLVED',)))
+            chosen = withdrawal(old, empty_record, detected_at=as_of) or (new if new is not None else empty_record(reasons=('CIK_UNRESOLVED',)))
+            note_withdrawal(stats, old, chosen, code)
+            old = chosen
         elif decision == IDENTITY_CONFLICT or replaces(new, old, observed=observed, has_value=_scored):
             old = new
         elif new is None and code in unresolved and not _scored(old):
@@ -163,7 +166,7 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
         records[code] = restate(old, as_of, stale_after)
     states = [r['state'] for r in records.values()]
     state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
-    payload = {'schema_version': 1, 'kind': KIND, 'as_of': _iso(as_of), 'config_version': cfg['config_version'],
+    payload = {'schema_version': SCHEMA_VERSION, 'kind': KIND, 'as_of': _iso(as_of), 'config_version': cfg['config_version'],
                'config_status': cfg['config_status'], 'method_status': METHOD_STATUS, 'availability_basis': AVAILABILITY_BASIS,
                'freshness_basis': 'SOURCE_ACQUISITION', 'stale_after_seconds': int(stale_after.total_seconds()),
                'shard_count': cfg['shard_count'], 'last_shard_index': shard_index,
@@ -175,9 +178,10 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
     return payload
 
 
-def _record(r, cut, ttl):
+def _record(r, cut, ttl, *, withdrawals=True):
     withdrawn = is_withdrawal(r)
     if withdrawn:   # identity-conflict withdrawal (sec_universe_shares.WITHDRAWAL_KEYS): only on such a row
+        _need(withdrawals)   # only in a schema-version-2 file
         require_withdrawal(r, cut, empty_record)
     _need(type(r) is dict and set(r) == set(RECORD_KEYS) | (set(WITHDRAWAL_KEYS) if withdrawn else set()))
     _need(r['cik'] is None or type(r['cik']) is str and re.fullmatch(r'[0-9]{10}', r['cik']) is not None and r['cik'] != '0000000000')
@@ -211,7 +215,8 @@ def require_universe_qg(payload):
     try:
         _need(type(payload) is dict and set(payload) == set(TOP_KEYS))
         cfg = load_config()
-        _need(type(payload['schema_version']) is int and payload['schema_version'] == 1 and payload['kind'] == KIND)
+        version = schema_version_of(payload)
+        _need(payload['kind'] == KIND)
         cut = _clock(payload['as_of'])
         _need(payload['config_version'] == cfg['config_version'] and payload['config_status'] == cfg['config_status'])
         _need(payload['method_status'] == METHOD_STATUS and payload['availability_basis'] == AVAILABILITY_BASIS)
@@ -225,7 +230,7 @@ def require_universe_qg(payload):
         records = payload['records']
         codes = universe_codes()
         _need(type(records) is dict and set(records) == set(codes) and type(payload['code_count']) is int and payload['code_count'] == len(codes))
-        states = [_record(records[code], cut, timedelta(seconds=ttl)) for code in codes]
+        states = [_record(records[code], cut, timedelta(seconds=ttl), withdrawals=version >= 2) for code in codes]
         state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
         _need(payload['state'] == state)
         top = payload['reason_codes']

@@ -9,6 +9,9 @@
  /* Identity-conflict withdrawal (UNI-WITHDRAWN (a) 2026-10-17; Python sec_universe_shares.require_withdrawal): the empty row with
     reason IDENTITY_CONFLICT_WITHDRAWN only plus detected_at / withdrawn_acquired_at / withdrawn_cik naming this file's stopped row. */
  const WITHDRAWN_REASON='IDENTITY_CONFLICT_WITHDRAWN',WITHDRAWAL_KEYS=['detected_at','withdrawn_acquired_at','withdrawn_cik'];
+ /* schema_version (Python sec_universe_shares.SCHEMA_VERSIONS): 1 and 2 are read; withdrawal rows only in 2. A version above 2 is a newer
+    data format than this page knows: ERR_NEWER (the page asks for a reload), never shown as data. */
+ const SCHEMA_VERSIONS=[1,2],ERR_NEWER='SEC_UNIVERSE_QG_SCHEMA_NEWER';
  function need(x){if(!x)throw Error('SEC_UNIVERSE_QG_INVALID');}
  const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x),keys=(x,k)=>plain(x)&&Object.keys(x).length===k.length&&k.every(n=>Object.hasOwn(x,n));
  const hash=x=>typeof x==='string'&&/^[0-9a-f]{64}$/.test(x),score=x=>typeof x==='number'&&Number.isFinite(x)&&x>=0&&x<=100;
@@ -19,8 +22,8 @@
  const cikOk=x=>typeof x==='string'&&/^\d{10}$/.test(x)&&x!=='0000000000',withdrawal=r=>plain(r)&&Object.hasOwn(r,'detected_at');
  function withdrawn(r,cut){need(keys(r,KEYS.concat(WITHDRAWAL_KEYS))&&canon(Object.fromEntries(Object.entries(r).filter(([k])=>!WITHDRAWAL_KEYS.includes(k))))===canon(emptyRecord(WITHDRAWN_REASON)));const detected=clock(r.detected_at);need(detected<=cut&&clock(r.withdrawn_acquired_at)<=detected&&cikOk(r.withdrawn_cik));}
  /* One row (mirrors Python _record). A scored factor shares the row's LIVE/STALE state; a row without any score is NOT_AVAILABLE with a fixed reason. */
- function record(r,cut,ttl){
-  const w=withdrawal(r);if(w)withdrawn(r,cut);need(keys(r,w?KEYS.concat(WITHDRAWAL_KEYS):KEYS));need(r.cik===null||typeof r.cik==='string'&&/^\d{10}$/.test(r.cik)&&r.cik!=='0000000000');
+ function record(r,cut,ttl,allowWithdrawal=true){
+  const w=withdrawal(r);if(w){need(allowWithdrawal);withdrawn(r,cut);}need(keys(r,w?KEYS.concat(WITHDRAWAL_KEYS):KEYS));need(r.cik===null||typeof r.cik==='string'&&/^\d{10}$/.test(r.cik)&&r.cik!=='0000000000');
   const h=r.source_sha256;need(keys(h,['companyfacts','submissions'])&&Object.values(h).every(v=>v===null||hash(v)));
   if(r.acquired_at===null)need(h.companyfacts===null&&h.submissions===null);else need(clock(r.acquired_at)<=cut&&r.cik!==null&&h.companyfacts&&h.submissions);
   need(STATES.includes(r.state));const reasons=r.reason_codes;
@@ -31,12 +34,13 @@
   return r.state;
  }
  function validate(p){
+  if(plain(p)&&p.kind===KIND&&Number.isInteger(p.schema_version)&&p.schema_version>SCHEMA_VERSIONS[SCHEMA_VERSIONS.length-1])throw Error(ERR_NEWER);
   try{
-   need(keys(p,TOP)&&p.schema_version===1&&p.kind===KIND&&p.config_version===CONFIG_VERSION&&p.config_status===CONFIG_STATUS&&p.method_status===METHOD_STATUS&&p.availability_basis===AVAILABILITY_BASIS&&p.freshness_basis==='SOURCE_ACQUISITION');
+   need(keys(p,TOP)&&SCHEMA_VERSIONS.includes(p.schema_version)&&p.kind===KIND&&p.config_version===CONFIG_VERSION&&p.config_status===CONFIG_STATUS&&p.method_status===METHOD_STATUS&&p.availability_basis===AVAILABILITY_BASIS&&p.freshness_basis==='SOURCE_ACQUISITION');
    const cut=clock(p.as_of),ttl=p.stale_after_seconds;
    need(Number.isInteger(ttl)&&ttl>0&&ttl<=366*86400&&Number.isInteger(p.shard_count)&&p.shard_count>=1&&p.shard_count<=366&&(p.last_shard_index===null||Number.isInteger(p.last_shard_index)&&p.last_shard_index>=0&&p.last_shard_index<p.shard_count)&&(p.registry_sha256===null||hash(p.registry_sha256)));
    const codes=plain(p.records)?Object.keys(p.records):[];need(codes.length===CODE_COUNT&&p.code_count===CODE_COUNT&&codes.every(c=>/^[A-Z]{2,8}:[A-Z0-9][A-Z0-9.\-]{0,15}$/.test(c)));
-   const states=codes.map(c=>record(p.records[c],cut,ttl)),state=states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';need(p.state===state);
+   const states=codes.map(c=>record(p.records[c],cut,ttl,p.schema_version>=2)),state=states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';need(p.state===state);
    need(Array.isArray(p.reason_codes)&&new Set(p.reason_codes).size===p.reason_codes.length&&p.reason_codes.every(x=>TOP_REASONS.includes(x)));return p;
   }catch(_){throw Error('SEC_UNIVERSE_QG_INVALID');}
  }
@@ -57,5 +61,5 @@
   const text=await response.text();if(new TextEncoder().encode(text).length>MAX)throw Error('SEC_UNIVERSE_QG_INVALID');let payload;try{payload=JSON.parse(text);}catch(_){throw Error('SEC_UNIVERSE_QG_INVALID');}
   return toInputs(payload,{now:now||new Date().toISOString()});
  }
- return Object.freeze({FILENAME,FACTORS,CONFIG_STATUS,WITHDRAWN_REASON,validate,emptyRecord,restate,targetRow,toInputs,loadInputs});
+ return Object.freeze({FILENAME,FACTORS,CONFIG_STATUS,WITHDRAWN_REASON,SCHEMA_VERSIONS,ERR_NEWER,validate,emptyRecord,restate,targetRow,toInputs,loadInputs});
 });

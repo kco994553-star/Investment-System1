@@ -59,6 +59,8 @@ else WITHDRAWAL_MISMATCH; and `detected_at` no earlier than the live marker (els
 the same withdrawal (EQUAL) or a newer withdrawal of the same observation, or a row collected at or after the detection
 (NEWER): an artifact carrying the pre-withdrawal row is OLDER, one without a record is LOST_RECORD. An artifact file with a
 withdrawal row is only trusted when its strict validator accepts it (otherwise PAGES_FRESHNESS_ARTIFACT_INVALID, no rows).
+These files move to schema_version 2 with the withdrawal (#289); the validators read 1 and 2 (withdrawals only in 2), so a
+version-1 live copy is compared with a version-2 artifact row by row under the same rules.
 
 Producers (owner decision 2026-10-17, option a): a company/code whose collection or identification failed keeps its
 verified previous row unchanged (same acquired_at, sources and calc_version) when the same issuer is confirmed, so such a

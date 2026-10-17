@@ -67,6 +67,23 @@ optional start/fy/fp/frame의 JSON null은 필드 미제공으로 투영한다. 
 - 배포 직전 신선도 검사(`tools/pages_freshness_guard.py`)는 이 파일을 strict validator로 읽는다. 정책상 NA·새 수집은 acquired_at이 같거나 늦으면 통과, WITHDRAWN은 라이브 관측의 acquired_at을 정확히 가리키고 그 뒤에 감지됐을 때만 통과한다. 유지 행이 라이브 행과 다르거나(PRESERVED_MISMATCH), 같은 시각에 값만 바뀌거나(CHANGED), 행 손실·이전 시각은 거부한다. 라이브가 /3이어도 같은 규칙으로 비교한다(/3 NOT_AVAILABLE은 기록 없음).
 - 웹(`sec-reported.js`·`ops-status.js`)은 /1~/4를 읽는다. WITHDRAWN·COLLECTION_FAILED 행은 acquired_at을 보이지 않으며 값으로 쓰지 않는다.
 
+## Universe 식별 충돌 철회 (사용자 결정 UNI-WITHDRAWN (a)·#289, 2026-10-17)
+
+대상: `sec-universe-shares.json`, `sec-universe-qg.json`, `sec-qgv2.json`의 `records`. 세 파일은 `schema_version` 2로 바뀐다.
+
+- **구분**: 단순 조회 실패·기호 미해석·식별 미확인(같은 CIK)은 #278 보존이고, 수집 성공의 자료 없음은 #287 새 NA다. 둘 다 철회가 아니다. 식별 충돌만 철회한다: 한 티커를 여러 CIK가 주장, SEC 응답이 다른 CIK(`SEC_CIK_MISMATCH`·`SEC_ISSUER_NOT_ALLOWED`), 다른 CIK가 자기 수집 기록 없이 나타남.
+- **대상 식별**: 그 파일·그 코드의 라이브 행이 관측 하나를 정확히 가리킬 때만 철회한다(발행사 CIK, 자기 `acquired_at`, SEC 원자료 해시 두 개). 아니면 기존대로 `CIK_UNRESOLVED`(또는 이번 실행의 NA 행)이며, 다른 행은 철회하지 않고 시각을 만들지 않는다.
+- **철회 행**: NOT_AVAILABLE, 사유 `IDENTITY_CONFLICT_WITHDRAWN` 하나, CIK·`acquired_at`·해시·값 없음. `detected_at`(감지 시각), `withdrawn_acquired_at`·`withdrawn_cik`(그 파일 라이브 행의 수집 시각·CIK). 파일마다 자기 행을 가리킨다.
+- **감지 시각의 뜻이 TARGET과 다르다.**
+  - TARGET(`sec-public-inputs.json` WITHDRAWN, `sec-qgv2.json` `target`): 다시 감지하면 `detected_at`을 그 감지 시각으로 갱신한다(같은 관측을 가리킴).
+  - Universe: 처음 감지한 시각을 유지한다. 충돌이 이어지는 동안 행은 그대로다.
+  - 마지막 재확인은 행에 넣지 않고 실행 로그 `SEC_UNIVERSE_WITHDRAWALS <scope> new_shares=… kept_shares=… new_qg=… kept_qg=… new_qgv2=… kept_qgv2=…`(이번 실행 신규 철회·유지된 철회 코드 수)로만 남긴다.
+  - 감지·재확인 시각으로 `acquired_at`이나 최신성을 바꾸지 않는다.
+- **복구**: 이번 실행의 수집 기록, 감지 이후 수집, 이번 실행 충돌 증거 없음이 모두 맞을 때만 새 행이 철회를 대체한다. 새 보유자는 자기 행으로 시작한다.
+- **스키마 전환 1→2**: 철회 행이 사유 코드와 행 키를 계약에 더하므로(각 검증기는 사유 목록과 행 키 집합을 고정한다) 세 파일을 2로 올린다. 생성기는 2를 쓴다. 검증기·이전 사본 읽기·`--preserve-only` 수동 배포·신선도 검사는 1과 2를 읽고, 철회 행은 2에서만 유효하다. 1만 아는 구버전 화면은 2 파일 전체를 거부한다(안전 차단이며 하위 호환이 아니다). 새 화면은 아는 것보다 높은 버전이면 "자료 형식이 새 버전입니다. 새로고침하세요"를 보인다.
+- **UNI-TARGET(조건부 독립)**: TARGET 고정 CIK 재무 관측은 유지한다. 철회 코드가 TARGET에 점수를 빌려주지 않는다. TARGET의 기기 가격은 티커 심볼로 읽으므로(Universe 시트 행, `DeviceValuation.deviceQuote`, PriceStore), 그 심볼이 철회된 Universe 코드의 심볼이면 가격·V·종합 점수·후보를 막고 "가격 식별 충돌로 가격·V·종합 점수 사용 중지"를 보인다. 다른 심볼의 TARGET은 그대로다.
+- 검증: `tests/test_universe_withdrawal_e2e.py`.
+
 ## 실제 조사 상태
 
 Actions run38036368523(head78180443)의 고정 로그에서 normalize 실패3개(index4 AVGO,8 HUBB,12 MSFT)·BUILD_OK를 확인했다. ASML은 실패하지 않았다. 기존20-F는 이미 허용했고, 누락 개념만으로는 기존 코드가 실패하지 않았다. 따라서 IFRS 누락을 이번 세 회사의 확정 원인으로 보고하지 않는다.

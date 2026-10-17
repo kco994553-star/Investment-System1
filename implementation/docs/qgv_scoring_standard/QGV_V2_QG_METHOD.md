@@ -321,10 +321,19 @@ Withdrawal rows are not new collections, not LIVE/STALE, outside the cross-secti
 (`withdrawn=` on the daily summary lines and the published coverage line), and stay in the 504-code denominator. Validators
 (Python and JS, vectors `universe_withdrawn_*` / `withdrawn_*`) accept the keys only on such a row; the freshness guard passes it
 only when it names the live row exactly (`withdrawn_acquired_at`, `withdrawn_cik`, detection not before it), else
-`WITHDRAWAL_MISMATCH` / `OLDER`, and refuses an artifact that brings the stopped row back (`OLDER`). No schema-version or
-calculation change (`calc_version` unchanged). On the device the row is stopped like a TARGET withdrawal (`Qgv2Inputs`
+`WITHDRAWAL_MISMATCH` / `OLDER`, and refuses an artifact that brings the stopped row back (`OLDER`). The three files move to
+`schema_version` 2 (the row contract gains a reason code and keys; readers accept 1 and 2, withdrawals only in 2; a reader of 1
+only rejects a version-2 file as a whole, a safety block, not backward compatibility). No calculation change (`calc_version`
+unchanged). Detection time differs from TARGET: a TARGET withdrawal takes the latest detection, a Universe withdrawal keeps the
+first one; re-checks are counted in the run log line `SEC_UNIVERSE_WITHDRAWALS` only. Plain fetch failures, unresolved symbols,
+identification failures of the same CIK and collections without data are never withdrawals (#278 / #287 rules); a file whose
+live row does not identify one observation exactly (CIK, acquired_at, both source hashes) withdraws nothing. Contract details:
+`docs/daily_data_pipeline/SEC_COLLECTION_DIAGNOSTICS.md`. On the device the row is stopped like a TARGET withdrawal (`Qgv2Inputs`
 `identity_withdrawn`, "식별 충돌로 사용 중지"): no score, rank or candidate place, no M3 identity or market cap from the shares row,
-and the candidate list never scores the code with another row of the same ticker. Tests: `test_universe_withdrawal_e2e.py`.
+and the candidate list never scores the code with another row of the same ticker. UNI-TARGET: a TARGET row (fixed CIK) keeps its
+Q·G, but when its device price symbol (ticker) is the symbol of a withdrawn Universe code no price is read and its V, total, rank
+and candidate place are NOT_AVAILABLE (`PRICE_IDENTITY_CONFLICT`); a TARGET of another symbol is unchanged. Tests:
+`test_universe_withdrawal_e2e.py`.
 
 `v_inputs_v2` holds the price-free inputs the device needs to compute V in RAM. Amounts are exact SEC values in the row currency.
 - `ebit`, `fcf`: `{fy_value, fy_end, ttm_value, ttm_end}`. FCF = OCF − capex for the same period.

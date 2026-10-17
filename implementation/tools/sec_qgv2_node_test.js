@@ -7,7 +7,7 @@ let pass=0,fail=0;async function test(name,f){try{await f();pass++;console.log('
 /* Same expansion/mutation as tools/sec_qgv2_reference.py expand()/apply(). */
 function expand(base){const p=structuredClone(base),sparse=p.records;p.records=Object.fromEntries(CODES.map(c=>[c,sparse[c]?sparse[c]:reader.emptyRecord()]));return p;}
 function apply(p,ops){for(const {path:keys,value} of ops){let t=p;for(const k of keys.slice(0,-1))t=t[k];const last=keys[keys.length-1];if(JSON.stringify(value)===JSON.stringify(vectors.delete_marker))delete t[last];else t[last]=structuredClone(value);}return p;}
-const verdict=p=>{try{reader.validate(p);return true;}catch(e){assert.equal(e.message,'SEC_QGV2_INVALID');return false;}};
+const verdict=p=>{try{reader.validate(p);return true;}catch(e){assert.ok(['SEC_QGV2_INVALID','SEC_QGV2_SCHEMA_NEWER'].includes(e.message));if(e.message.endsWith('_SCHEMA_NEWER'))assert.ok(p.schema_version>2);return false;}};
 const valid=()=>expand(vectors.base);
 (async()=>{
  await test('Python validator verdicts replay identically in JS ('+vectors.cases.length+' vectors)',async()=>{assert.equal(vectors.synthetic,true);assert.ok(vectors.cases.length>=40);assert.equal(CODES.length,504);for(const c of vectors.cases)assert.equal(verdict(apply(valid(),c.ops)),c.valid,c.id);});

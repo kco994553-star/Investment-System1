@@ -45,7 +45,7 @@ def base():
         'NYSE:AOS': _row(5, '2026-10-09T22:00:00Z', reasons=['UNRESOLVED_CURRENT_FACT_AMBIGUITY']),
         'BATS:CBOE': empty_record(reasons=('CIK_UNRESOLVED',)),
     }
-    return {'schema_version': 1, 'kind': 'SEC_UNIVERSE_QG', 'as_of': AS_OF, 'config_version': 'sec-universe-shares/v0',
+    return {'schema_version': 2, 'kind': 'SEC_UNIVERSE_QG', 'as_of': AS_OF, 'config_version': 'sec-universe-shares/v0',
             'config_status': 'DEFAULT_V0_UNCALIBRATED', 'method_status': 'PROVISIONAL_UNCALIBRATED',
             'availability_basis': 'OBSERVED_CAPTURE_ONLY', 'freshness_basis': 'SOURCE_ACQUISITION', 'stale_after_seconds': 14 * 86400,
             'shard_count': 7, 'last_shard_index': 3, 'registry_sha256': _h('registry'), 'code_count': 504, 'state': 'LIVE',
@@ -121,6 +121,12 @@ def withdrawal_cases():
         ('withdrawn_issuer_key_missing', [(at, {k: v for k, v in w.items() if k != 'withdrawn_cik'})]),
         ('withdrawn_state_live', [(at, dict(w, state='LIVE'))]),
         ('withdrawn_unknown_key', [(at, dict(w, withdrawn_values={'roic_wacc': 50}))]),
+        # schema transition (#289): version 1 files stay readable without withdrawal rows; other versions are refused.
+        ('schema_v1_valid', [(['schema_version'], 1)]),
+        ('withdrawn_in_schema_v1_file', [(['schema_version'], 1), (at, w)]),
+        ('schema_v3', [(['schema_version'], 3)]),
+        ('schema_v0', [(['schema_version'], 0)]),
+        ('schema_bool', [(['schema_version'], True)]),
     ]
 
 

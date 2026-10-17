@@ -264,7 +264,9 @@ def test_without_a_previous_collection_the_conflict_is_plain_cik_unresolved_with
 def test_merge_rules_at_the_file_level():
     """The shared helpers: a withdrawal needs a kept collection record, keeps its first detection, and only a collection
     at or after the detection without conflict evidence replaces it."""
-    kept = dict(us.empty_record(cik='0000000007', reasons=('COVER_NOT_AVAILABLE',)), acquired_at=stamp(day(0)))
+    unhashed = dict(us.empty_record(cik='0000000007', reasons=('COVER_NOT_AVAILABLE',)), acquired_at=stamp(day(0)))
+    assert us.withdrawal(unhashed, us.empty_record, detected_at=day(1)) is None      # observation not exactly identified
+    kept = dict(unhashed, source_sha256={'companyfacts': 'a' * 64, 'submissions': 'b' * 64, 'cover': None})
     w = us.withdrawal(kept, us.empty_record, detected_at=day(1))
     assert (w['detected_at'], w['withdrawn_acquired_at'], w['withdrawn_cik'], w['cik']) == (stamp(day(1)), stamp(day(0)), '0000000007', None)
     assert us.withdrawal(w, us.empty_record, detected_at=day(5)) is w                  # first detection kept
@@ -307,18 +309,25 @@ def test_device_uses_no_withdrawn_value_anywhere(history, tmp_path):
     assert json.loads(result.stdout) == {'seed': False, 'state': 'NOT_AVAILABLE', 'shares': None, 'reasons': [REASON]}
 
 
+def target_live():
+    """Live sec-qgv2.json with TARGET googl and msft collected (fixed TARGET CIKs) and the Universe codes NASDAQ:GOOGL /
+    NASDAQ:GOOG of googl's issuer (#285 fixture)."""
+    entries = [(cid, *(json.dumps(x).encode() for x in W.bodies(cid)), W.T0) for cid in ('googl', 'msft')]
+    return qgv2.merge(W.live_qgv2(), {}, as_of=W.T0 + timedelta(minutes=10), shard_index=3,
+                      target_updates=qgv2.build_target_rows(entries))
+
+
 @pytest.mark.skipif(not NODE, reason='Node runtime required')
 def test_device_never_substitutes_between_target_and_a_withdrawn_universe_code(tmp_path, capsys):
     """NASDAQ:GOOGL (Universe) is withdrawn for a multi-CIK claim; TARGET googl is TARGET's own observation (fixed CIK).
-    - TARGET googl with data: its own score stays; the Universe code GOOGL gets no candidate score from it.
+    - The Universe code GOOGL gets no candidate score from the TARGET row of the same ticker.
     - TARGET googl NOT_AVAILABLE: the ticker fallback lands on the withdrawn GOOGL row -> no score, reason shown.
-    GOOG (same issuer, other code) keeps its own row."""
-    base = W.live_qgv2()
-    entries = [(cid, *(json.dumps(x).encode() for x in W.bodies(cid)), W.T0) for cid in ('googl', 'msft')]
-    live = qgv2.merge(base, {}, as_of=W.T0 + timedelta(minutes=10), shard_index=3, target_updates=qgv2.build_target_rows(entries))
+    GOOG (same issuer, other code) keeps its own row. (TARGET googl's price link: test_uni_target_* below.)"""
+    live = target_live()
     site = Site({qgv2.FILENAME: qgv2.encode(live)})
     withdrawn = qgv2.merge(live, {}, as_of=W.T1, shard_index=3, conflicts={'NASDAQ:GOOGL'})
     assert withdrawn['records']['NASDAQ:GOOGL']['withdrawn_acquired_at'] == live['records']['NASDAQ:GOOGL']['acquired_at']
+    assert withdrawn['target']['googl'] == live['target']['googl']                  # TARGET financials are not withdrawn
     folder = tmp_path / 'artifact'
     folder.mkdir()
     (folder / qgv2.FILENAME).write_bytes(qgv2.encode(withdrawn))
@@ -327,8 +336,8 @@ def test_device_never_substitutes_between_target_and_a_withdrawn_universe_code(t
     ids = [{'company_id': 'googl', 'ticker': 'GOOGL'}, {'company_id': 'goog', 'ticker': 'GOOG'}]
     seen = W.device(tmp_path, withdrawn, identities=ids, quotes=W.QUOTES, records=('NASDAQ:GOOGL', 'NASDAQ:GOOG', 'TARGET:googl'),
                     codes=('NASDAQ:GOOGL', 'NASDAQ:GOOG'))
-    assert seen['rows']['googl']['code'] == 'TARGET:googl' and seen['rows']['googl']['total'] is not None   # TARGET's own row
     assert seen['records']['NASDAQ:GOOGL']['state'] == 'WITHDRAWN' and seen['records']['NASDAQ:GOOG']['state'] == 'LIVE'
+    assert seen['records']['TARGET:googl']['state'] == 'LIVE' and seen['records']['TARGET:googl']['q'] is not None
     ranked = {r['code']: r for r in seen['ranked']}
     assert (ranked['NASDAQ:GOOGL']['total'], ranked['NASDAQ:GOOGL']['rank']) == (None, None)     # no TARGET score borrowed
     assert ranked['NASDAQ:GOOG']['total'] is not None and seen['rows']['goog']['code'] == 'NASDAQ:GOOG'
@@ -342,6 +351,75 @@ def test_device_never_substitutes_between_target_and_a_withdrawn_universe_code(t
     row = seen['rows']['googl']
     assert row['code'] == 'NASDAQ:GOOGL' and (row['q'], row['g'], row['total'], row['rank']) == (None,) * 4
     assert row['source_reason_codes'] == [REASON]
+
+
+UNI_TARGET = r"""
+const path=require('node:path'),fs=require('node:fs'),W=process.argv[2],input=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
+for(const [name,file] of [['EnginePreview','engine-preview.js'],['ProfileDefaults','profile-defaults.js'],['TypeConfigDefaults','type-config-defaults.js'],['DcfParametersDefaults','dcf-parameters-defaults.js'],['SecQgv2','sec-qgv2.js'],['QgvV2','qgv-v2.js'],['Qgv2Inputs','qgv2-inputs.js'],['QgvScores','qgv-scores.js']])globalThis[name]=require(path.join(W,file));
+const P=require(path.join(W,'playbook-screen.js')),SQ=globalThis.Qgv2Inputs,QS=globalThis.QgvScores;
+(async()=>{
+ const inputs=SQ.fromInputs(globalThis.SecQgv2.toInputs(input.payload,{now:input.now}));
+ // The device price paths by ticker: the Universe sheet tab (PrivateSubsetView.prices) and DeviceValuation.deviceQuote.
+ const sheet=new Map(input.sheet.map(([code,price])=>[code,{price,currency:'USD'}]));
+ const win={PrivateSubsetView:{prices:()=>sheet},DeviceValuation:{deviceQuote:async(_w,_c,ticker)=>({price:77,currency:'USD',ticker})}};
+ const quotes=await QS.collectQuotes(win,{identities:input.identities,v2Inputs:inputs,catalog:{}});
+ const computed=QS.compute({identities:input.identities,publicScreens:{[SQ.FILE]:inputs},quotes:{...input.quotes,...quotes}});
+ const rows={};for(const [id,r] of Object.entries(computed.rows)){const p=r.primary;rows[id]={code:r.code,q:p.q,g:p.g,v:p.v,total:p.total,rank:r.rank,total_reason:p.total_reason||null,flags:p.flags,text:QS.naText(p,false)};}
+ const ranked=P.candidateRanking(computed,{[SQ.FILE]:inputs},input.codes).map(r=>({code:r.code,total:r.total,rank:r.rank}));
+ process.stdout.write(JSON.stringify({quoted:Object.keys(quotes).sort(),rows,ranked}));
+})();
+"""
+
+
+def uni_target(tmp_path, payload, conflict_label, *, quotes=None):
+    script, data = tmp_path / f'uni-{conflict_label}.js', tmp_path / f'uni-{conflict_label}.json'
+    script.write_text(UNI_TARGET)
+    data.write_text(json.dumps({'payload': payload, 'now': (W.T1 + timedelta(hours=1)).isoformat().replace('+00:00', 'Z'),
+                                'identities': [{'company_id': 'googl', 'ticker': 'GOOGL'}, {'company_id': 'msft', 'ticker': 'MSFT'}],
+                                'quotes': quotes or {c: q for c, q in W.QUOTES.items() if not c.startswith('TARGET:')},
+                                'sheet': [['NASDAQ:GOOGL', 101.0], ['NASDAQ:GOOG', 100.0], ['NASDAQ:MSFT', 300.0]],
+                                'codes': ['NASDAQ:GOOGL', 'NASDAQ:GOOG']}))
+    result = subprocess.run(['node', str(script), str(WEB), str(data)], text=True, capture_output=True, timeout=120)
+    assert result.returncode == 0, result.stderr[-2000:]
+    return json.loads(result.stdout)
+
+
+@pytest.mark.skipif(not NODE, reason='Node runtime required')
+def test_uni_target_price_link_affected_target_loses_price_v_total_and_candidate_place(tmp_path):
+    """UNI-TARGET (owner decision 2026-10-17, #289 item 4). TARGET googl's device price is read by its ticker GOOGL (the
+    Universe sheet row NASDAQ:GOOGL, deviceQuote('GOOGL')). With NASDAQ:GOOGL withdrawn, that price link is in conflict: no
+    price, no V, no total, no rank or candidate place, reason shown; googl's own Q·G (fixed-CIK TARGET observation) stay.
+    TARGET msft (ticker MSFT, no withdrawn code) is independent and unchanged."""
+    live = target_live()
+    before = uni_target(tmp_path, live, 'none')
+    assert 'TARGET:googl' in before['quoted'] and before['rows']['googl']['total'] is not None
+    withdrawn = qgv2.merge(live, {}, as_of=W.T1, shard_index=3, conflicts={'NASDAQ:GOOGL'})
+    seen = uni_target(tmp_path, withdrawn, 'googl')
+    googl, msft = seen['rows']['googl'], seen['rows']['msft']
+    assert 'TARGET:googl' not in seen['quoted'] and 'NASDAQ:GOOGL' not in seen['quoted']           # no price read at all
+    assert googl['code'] == 'TARGET:googl' and googl['q'] is not None and googl['g'] is not None   # financials kept
+    assert (googl['v'], googl['total'], googl['rank'], googl['total_reason']) == (None, None, None, 'PRICE_IDENTITY_CONFLICT')
+    assert 'PRICE_IDENTITY_CONFLICT' in googl['flags'] and googl['text'] == 'QGV v2 산출 불가 · 가격 식별 충돌로 가격·V·종합 점수 사용 중지'
+    same = lambda r: {k: v for k, v in r.items() if k != 'rank'}          # its rank moves up: googl left the ranking
+    assert same(msft) == same(before['rows']['msft']) and msft['total'] is not None and 'TARGET:msft' in seen['quoted']
+    # Even a quote handed in from elsewhere is not used for the affected TARGET.
+    forced = uni_target(tmp_path, withdrawn, 'forced', quotes=W.QUOTES)
+    assert forced['rows']['googl']['v'] is None and forced['rows']['googl']['total'] is None
+    ranked = {r['code']: r for r in seen['ranked']}
+    assert ranked['NASDAQ:GOOGL']['total'] is None and ranked['NASDAQ:GOOGL']['rank'] is None
+
+
+@pytest.mark.skipif(not NODE, reason='Node runtime required')
+def test_uni_target_conflict_on_another_code_of_the_issuer_leaves_the_target_independent(tmp_path):
+    """NASDAQ:GOOG (Class C, same issuer) is withdrawn; TARGET googl's price symbol is GOOGL, so its price link is
+    independent: price, V and total stay. Only the GOOG code itself is stopped."""
+    live = target_live()
+    before = uni_target(tmp_path, live, 'none2')
+    seen = uni_target(tmp_path, qgv2.merge(live, {}, as_of=W.T1, shard_index=3, conflicts={'NASDAQ:GOOG'}), 'goog')
+    assert 'TARGET:googl' in seen['quoted'] and 'NASDAQ:GOOG' not in seen['quoted']
+    assert seen['rows']['googl']['total'] is not None and 'PRICE_IDENTITY_CONFLICT' not in seen['rows']['googl']['flags']
+    assert seen['rows']['googl']['q'] == before['rows']['googl']['q']
+    assert {r['code']: r for r in seen['ranked']}['NASDAQ:GOOG']['total'] is None
 
 
 @pytest.mark.skipif(not NODE, reason='Node runtime required')
@@ -375,13 +453,15 @@ def test_shares_js_validator_reaches_the_python_verdict_on_withdrawal_rows(histo
         'state_live': [(code_x, 'state', 'LIVE')],
         'reason_on_another_row': [(other, 'reason_codes', [REASON])],
         'keys_on_another_row': [(other, 'detected_at', stamp(day(2)))],
+        'withdrawal_in_schema_v1': [(None, 'schema_version', 1)],
+        'schema_v3': [(None, 'schema_version', 3)],
     }
     script = ("const a=require(process.argv[1]),p=JSON.parse(require('fs').readFileSync(0,'utf8'));"
               "try{a.validate(p);console.log('OK')}catch(e){console.log('REJECT')}")
     for label, ops in mutations.items():
         data = json.loads(json.dumps(good))
         for code, key, value in ops:
-            data['records'][code][key] = value
+            (data if code is None else data['records'][code])[key] = value
         try:
             us.require_universe_shares(data)
             expected = 'OK'
@@ -391,3 +471,210 @@ def test_shares_js_validator_reaches_the_python_verdict_on_withdrawal_rows(histo
         got = subprocess.run(['node', '-e', script, str(WEB / 'sec-universe-shares.js')], input=json.dumps(data), text=True,
                              capture_output=True, timeout=60).stdout.strip()
         assert got == expected, label
+
+
+# ---------------- 7. #289 item 1: plain failures are never withdrawals; only an exactly identified row is withdrawn ----------------
+def no_withdrawal(folder):
+    return not any(us.is_withdrawal(r) for name in UNIVERSE for r in rows(folder, name).values())
+
+
+@pytest.mark.parametrize('case', ['fetch_failure', 'unresolved_symbol', 'identity_unconfirmed_same_cik', 'no_data'])
+def test_plain_failures_keep_or_replace_rows_and_never_withdraw(history, tmp_path, capsys, case):
+    """A plain fetch failure, an unresolved symbol and a ticker no longer listed by the same issuer (identity unconfirmed,
+    same CIK) keep the verified live row unchanged (#278); a collection without data publishes its own NA row (#287).
+    None of them is an identity conflict: no withdrawal row anywhere, nothing refused at deploy."""
+    x, code_x, day1 = history['x'], history['code'], history['day1']
+    sec = {'fetch_failure': T.Sec(rich={x}, fail={x}), 'unresolved_symbol': T.Sec(rich={x}, hidden={x}),
+           'identity_unconfirmed_same_cik': P.Sec(unticked={x}), 'no_data': T.Sec(empty={x})}[case]
+    out = T.run(tmp_path, case, sec, 8, previous=day1)
+    assert no_withdrawal(out)
+    for name in UNIVERSE:
+        row, live = rows(out, name)[code_x], rows(day1, name)[code_x]
+        if case in ('fetch_failure', 'unresolved_symbol') or case == 'identity_unconfirmed_same_cik' and name == us.FILENAME:
+            assert row == live, (case, name)                                     # kept unchanged
+        else:
+            assert row['acquired_at'] == stamp(day(8)) and row['cik'] == x       # this run's own observation
+    if case == 'no_data':
+        assert all(rows(out, n)[code_x]['state'] == 'NOT_AVAILABLE' for n in UNIVERSE)
+    code, text = guard_against(out, day1, capsys)
+    assert code == 0 and all(section_line(text, n, 'records')['withdrawn'] == '0' for n in UNIVERSE)
+
+
+def _without_record(folder, name, code):
+    """`folder` with the `name` row of `code` replaced by a row without collection record (a valid file)."""
+    module = {uqg.FILENAME: uqg, us.FILENAME: us}[name]
+    data = payload(folder, name)
+    data['records'][code] = module.empty_record()
+    states = [r['state'] for r in data['records'].values()]
+    data['state'] = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
+    data['reason_codes'] = [] if data['state'] == 'LIVE' else ['STALE_INPUT'] if data['state'] == 'STALE' else ['NO_ELIGIBLE_INPUT']
+    {uqg.FILENAME: uqg.require_universe_qg, us.FILENAME: us.require_universe_shares}[name](data)
+    (Path(folder) / name).write_text(json.dumps(data))
+
+
+def test_a_conflict_withdraws_only_the_exactly_identified_row_of_each_file(history, tmp_path):
+    """The live Q·G row of X has no collection record (NOT_COLLECTED) while shares and QGV v2 have one. On the conflict
+    the shares and QGV v2 rows are withdrawn (naming their own rows); the Q·G row has nothing to name: plain
+    CIK_UNRESOLVED without keys or times. No other code's row in any file differs from the same run without the conflict."""
+    x, code_x, claim = history['x'], history['code'], history['claim']
+    live = copy(history['day1'], tmp_path / 'live')
+    _without_record(live, uqg.FILENAME, code_x)
+    out = T.run(tmp_path, 'conflict', T.Sec(rich={x}, claims=claim), 2, previous=live)
+    control = T.run(tmp_path, 'control', T.Sec(rich={x}), 2, previous=live)
+    assert us.is_withdrawal(rows(out, us.FILENAME)[code_x]) and us.is_withdrawal(rows(out, qgv2.FILENAME)[code_x])
+    qg_row = rows(out, uqg.FILENAME)[code_x]
+    assert qg_row == uqg.empty_record(reasons=('CIK_UNRESOLVED',)) and not set(us.WITHDRAWAL_KEYS) & set(qg_row)
+    for name in (us.FILENAME, uqg.FILENAME):
+        others = lambda f: {c: r for c, r in rows(f, name).items() if c != code_x}
+        assert others(out) == others(control), name
+    v2_out, v2_control = payload(out, qgv2.FILENAME)['records'], payload(control, qgv2.FILENAME)['records']
+    for c in v2_out:   # QGV v2 scores are re-ranked over the cross-section; the observations (inputs) are unchanged
+        if c != code_x:
+            strip = lambda r: {k: v for k, v in r.items() if k not in ('factors', 'axes', 'metrics')}
+            assert strip(v2_out[c]) == strip(v2_control[c]) and us.is_withdrawal(v2_out[c]) is False
+
+
+def test_the_run_log_counts_new_and_persisting_withdrawals_without_touching_rows(history, tmp_path, capsys):
+    x, day2, claim = history['x'], history['day2'], history['claim']
+    capsys.readouterr()
+    out = T.run(tmp_path, 'recheck', T.Sec(rich={x}, claims=claim), 3, previous=day2)
+    printed = capsys.readouterr().out
+    line = next(l for l in printed.splitlines() if l.startswith('SEC_UNIVERSE_WITHDRAWALS '))
+    assert line.endswith(' new_shares=0 kept_shares=1 new_qg=0 kept_qg=1 new_qgv2=0 kept_qgv2=1')
+    assert all(rows(out, n)[history['code']] == rows(day2, n)[history['code']] for n in UNIVERSE)   # detected_at kept
+    capsys.readouterr()
+    T.run(tmp_path, 'first', T.Sec(rich={x}, claims=claim), 2, previous=history['day1'])
+    first = next(l for l in capsys.readouterr().out.splitlines() if l.startswith('SEC_UNIVERSE_WITHDRAWALS '))
+    assert first.endswith(' new_shares=1 kept_shares=0 new_qg=1 kept_qg=0 new_qgv2=1 kept_qgv2=0')
+
+
+# ---------------- 8. #289 item 3: schema transition 1 -> 2 ----------------
+VALIDATE = {us.FILENAME: us.require_universe_shares, uqg.FILENAME: uqg.require_universe_qg, qgv2.FILENAME: qgv2.require_qgv2}
+
+
+def as_version_1(folder, to):
+    out = copy(folder, to)
+    for name in UNIVERSE:
+        data = payload(out, name)
+        data['schema_version'] = 1
+        VALIDATE[name](data)
+        (out / name).write_text(json.dumps(data))
+    return out
+
+
+def test_schema_transition_new_files_are_version_2_and_version_1_live_copies_are_read(history, tmp_path, capsys):
+    """Producers write schema_version 2. A version-1 live copy (no withdrawal rows) is read by the daily run, the
+    preserve-only path and the guard; the withdrawal is only valid in a version-2 file."""
+    x, claim = history['x'], history['claim']
+    assert all(payload(history['day2'], n)['schema_version'] == 2 for n in UNIVERSE)
+    old_live = as_version_1(history['day1'], tmp_path / 'v1-live')
+    out = T.run(tmp_path, 'v2', T.Sec(rich={x}, claims=claim), 2, previous=old_live)
+    assert all(payload(out, n)['schema_version'] == 2 for n in UNIVERSE)
+    assert all(rows(out, n)[history['code']] == rows(history['day2'], n)[history['code']] for n in UNIVERSE)
+    code, text = guard_against(out, old_live, capsys)                    # old live vs new artifact
+    assert code == 0 and all(section_line(text, n, 'records')['withdrawn'] == '1' for n in UNIVERSE)
+    site = Site()
+    site.deploy(old_live)
+    manual = tmp_path / 'manual'
+    manual.mkdir()
+    assert SHARD.run(manual, live=False, preserve_only=True, now=lambda: day(2), open_previous=site) == 0
+    for n in UNIVERSE:
+        assert payload(manual, n)['schema_version'] == 2 and rows(manual, n) == rows(old_live, n) or n == qgv2.FILENAME
+    code, _ = guard(manual, site, capsys)
+    assert code == 0
+    for n in UNIVERSE:                                                   # a withdrawal in a version-1 file is refused
+        data = payload(out, n)
+        data['schema_version'] = 1
+        with pytest.raises(ValueError):
+            VALIDATE[n](data)
+
+
+SCREENS = r"""
+const path=require('node:path'),fs=require('node:fs'),W=process.argv[2],F=process.argv[3],out={};
+const view=dir=>({fetch:async n=>({status:200,ok:true,text:async()=>fs.readFileSync(path.join(F,dir,n),'utf8')})});
+(async()=>{
+ const S=require(path.join(W,'sec-universe-shares.js')),Q=require(path.join(W,'sec-universe-qg.js')),V=require(path.join(W,'sec-qgv2.js'));
+ globalThis.SecQgv2=V;for(const [name,file] of [['EnginePreview','engine-preview.js'],['ProfileDefaults','profile-defaults.js'],['TypeConfigDefaults','type-config-defaults.js'],['DcfParametersDefaults','dcf-parameters-defaults.js'],['QgvV2','qgv-v2.js'],['Qgv2Inputs','qgv2-inputs.js']])globalThis[name]=require(path.join(W,file));
+ const I=globalThis.Qgv2Inputs,QS=fs.existsSync(path.join(W,'qgv-scores.js'))?require(path.join(W,'qgv-scores.js')):null;
+ for(const dir of fs.readdirSync(F).sort()){const r={};
+  for(const [n,m] of [['shares',S],['qg',Q],['qgv2',V]]){try{await m.loadInputs(view(dir),{now:'2026-10-23T00:00:00Z'});r[n]='OK';}catch(e){r[n]=e.message;}}
+  const inputs=await I.load({...view(dir),SecQgv2:V});r.qgv2_inputs=inputs?'LOADED':'NULL';r.reason=typeof I.lastReason==='function'?I.lastReason():'OLD';
+  if(QS){const c=QS.compute({identities:[{company_id:'x',ticker:'MMM'}],publicScreens:inputs?{[I.FILE]:inputs}:{}});const p=c.rows.x.primary;r.total=p.total;r.reason_code=c.v2_reason;r.text=QS.naText(p,false);r.scored=Object.values(c.rows).filter(x=>x.primary.total!==null).length;}
+  out[dir]=r;}
+ process.stdout.write(JSON.stringify(out));
+})();
+"""
+
+
+def screens(tmp_path, web, folders):
+    """The given screen modules (`web`) reading each folder's three files the way the app does."""
+    root = tmp_path / ('files-' + Path(web).name)
+    root.mkdir()
+    for label, folder in folders.items():
+        copy(folder, root / label)
+    script = tmp_path / 'screens.js'
+    script.write_text(SCREENS)
+    result = subprocess.run(['node', str(script), str(web), str(root)], text=True, capture_output=True, timeout=180)
+    assert result.returncode == 0, result.stderr[-2000:]
+    return json.loads(result.stdout)
+
+
+def newer(folder, to):
+    out = copy(folder, to)
+    for name in UNIVERSE:
+        data = payload(out, name)
+        data['schema_version'] = 3
+        (out / name).write_text(json.dumps(data))
+    return out
+
+
+@pytest.mark.skipif(not NODE, reason='Node runtime required')
+def test_new_screens_read_old_and_new_files_and_ask_for_a_reload_on_a_newer_format(history, tmp_path):
+    seen = screens(tmp_path, WEB, {'a-old-v1': as_version_1(history['day1'], tmp_path / 'v1'), 'b-new-v2': history['day2'],
+                                   'c-newer-v3': newer(history['day2'], tmp_path / 'v3')})
+    assert seen['a-old-v1'] | {} == dict(seen['a-old-v1'], shares='OK', qg='OK', qgv2='OK', qgv2_inputs='LOADED', reason=None)
+    assert seen['b-new-v2']['qgv2'] == 'OK' and seen['b-new-v2']['shares'] == 'OK' and seen['b-new-v2']['qgv2_inputs'] == 'LOADED'
+    assert seen['b-new-v2']['total'] is None                                   # MMM is X: withdrawn, no score
+    # The same page (same modules in RAM) scored the version-1 file first; after the newer file is rejected no score of the
+    # earlier load stays (no cache: data files are fetched with no-cache, the service worker caches the offline shell only).
+    assert seen['a-old-v1']['scored'] == 1
+    v3 = seen['c-newer-v3']
+    assert (v3['shares'], v3['qg'], v3['qgv2']) == ('SEC_UNIVERSE_SHARES_SCHEMA_NEWER', 'SEC_UNIVERSE_QG_SCHEMA_NEWER', 'SEC_QGV2_SCHEMA_NEWER')
+    assert (v3['qgv2_inputs'], v3['reason'], v3['reason_code'], v3['total'], v3['scored']) == ('NULL', 'SCHEMA_NEWER', 'SEC_QGV2_SCHEMA_NEWER', None, 0)
+    assert v3['text'] == 'QGV v2 산출 불가 · 자료 형식이 새 버전입니다. 새로고침하세요'
+
+
+OLD_WEB_COMMIT = '8d3c9800'   # canonical with #285, before this change: the "old screen"
+
+
+@pytest.mark.skipif(not NODE, reason='Node runtime required')
+def test_old_screens_block_new_files_as_a_whole_and_show_no_value(history, tmp_path):
+    """Old screen + new file (a SAFETY block, not backward compatibility): the readers of the canonical commit before
+    this change reject every version-2 file as a whole; the QGV v2 inputs are null, so no score (old or new) is shown.
+    They still read version-1 files."""
+    root = Path(__file__).resolve().parents[2]
+    old = tmp_path / 'old-web'
+    old.mkdir()
+    for name in ('sec-universe-shares.js', 'sec-universe-qg.js', 'sec-qgv2.js', 'qgv2-inputs.js', 'qgv-v2.js', 'private-subset.js',
+                 'share-class-groups.js', 'engine-preview.js', 'profile-defaults.js', 'type-config-defaults.js', 'dcf-parameters-defaults.js'):
+        result = subprocess.run(['git', '-C', str(root), 'show', f'{OLD_WEB_COMMIT}:implementation/src/investment_system/product/web_assets/{name}'],
+                                capture_output=True, timeout=60)
+        if result.returncode != 0:
+            pytest.skip('old screen sources not in this checkout')
+        (old / name).write_bytes(result.stdout)
+    seen = screens(tmp_path, old, {'a-old-v1': as_version_1(history['day1'], tmp_path / 'v1'), 'b-new-v2': history['day1']})
+    assert seen['a-old-v1'] == {'shares': 'OK', 'qg': 'OK', 'qgv2': 'OK', 'qgv2_inputs': 'LOADED', 'reason': 'OLD'}
+    assert seen['b-new-v2'] == {'shares': 'SEC_UNIVERSE_SHARES_INVALID', 'qg': 'SEC_UNIVERSE_QG_INVALID', 'qgv2': 'SEC_QGV2_INVALID',
+                                'qgv2_inputs': 'NULL', 'reason': 'OLD'}
+
+
+def test_no_stored_copy_of_data_or_scores_can_outlive_a_rejected_file():
+    """#289 item 3(d): the service worker caches the offline shell only (no data file or script), and no screen module
+    writes scores or public data to browser storage, so a rejected file cannot leave an older score on screen."""
+    sw = (WEB / 'service-worker.js').read_text()
+    names = re.search(r"const NAMES=\[([^\]]*)\]", sw).group(1)
+    assert 'sec-' not in names and '.js' not in names.replace('.json', '') and names.count('.json') == 1     # manifest.json only
+    for asset in ('qgv-scores.js', 'qgv2-inputs.js', 'sec-qgv2.js', 'sec-universe-shares.js', 'sec-universe-qg.js', 'playbook-screen.js',
+                  'leaderboard-screen.js', 'company-screen.js'):
+        text = (WEB / asset).read_text()
+        assert 'localStorage.setItem' not in text and 'indexedDB' not in text and 'caches.' not in text, asset

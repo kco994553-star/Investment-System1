@@ -294,6 +294,7 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
             new = empty_record(reasons=('INVALID_INPUT',))
         observed = lambda r: r['acquired_at'] is not None
         if _us.withdrawal_stays(old, new, code=code, conflicts=conflicts, observed=observed):
+            _us.note_withdrawal(stats, old, old, code)
             records[code] = restate(old, as_of, stale_after)
             continue
         decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflicts, new_observation=observed)
@@ -305,6 +306,7 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
             # without one, unresolved (no row this run) or this run's NA row, never an invented time.
             chosen = _us.withdrawal(old, empty_record, detected_at=as_of) or (
                 new if new is not None else empty_record(reasons=('CIK_UNRESOLVED',)))
+            _us.note_withdrawal(stats, old, chosen, code)
         elif decision == IDENTITY_CONFLICT:
             chosen = new
         else:
@@ -347,7 +349,7 @@ def publish(records, target, *, as_of, cfg, stale_after, shard_index, registry_s
                 row['metrics']['revenue_volatility_5y_rank_pct'] = rank
     states = [r['state'] for r in records.values()] + [r['state'] for r in target.values()]
     state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
-    return {'schema_version': 1, 'kind': KIND, 'as_of': _iso(as_of), 'standard': STANDARD, 'standard_status': STANDARD_STATUS,
+    return {'schema_version': _us.SCHEMA_VERSION, 'kind': KIND, 'as_of': _iso(as_of), 'standard': STANDARD, 'standard_status': STANDARD_STATUS,
             'decision_ref': DECISION_REF, 'method': json.loads(json.dumps(METHOD)), 'config_version': cfg['config_version'],
             'config_status': cfg['config_status'], 'freshness_basis': 'SOURCE_ACQUISITION',
             'stale_after_seconds': int(stale_after.total_seconds()), 'shard_count': cfg['shard_count'],
@@ -416,14 +418,14 @@ def _v_inputs(v, cut_day, has_data):
         _need(v[key] is None or type(v[key]) in (int, float) and math.isfinite(v[key]) and abs(v[key]) <= METRIC_LIMIT)
 
 
-def _row(r, cut, ttl, sic_cfg, *, target_id=None, is_versioned=True):
+def _row(r, cut, ttl, sic_cfg, *, target_id=None, is_versioned=True, universe_withdrawals=True):
     keys = set(ROW_KEYS if is_versioned else LEGACY_ROW_KEYS)
     withdrawal = target_id is not None and is_versioned and type(r) is dict and set(r) == keys | set(WITHDRAWAL_KEYS)
     universe_withdrawal = target_id is None and is_withdrawal(r)
     if universe_withdrawal:
         # A Universe withdrawal (UNIVERSE_WITHDRAWAL_KEYS, versioned files only): the empty row with the reason, naming one
         # earlier collection of the code.
-        _need(is_versioned)
+        _need(is_versioned and universe_withdrawals)   # a schema-version-2 file only
         _us.require_withdrawal(r, cut, empty_record)
     _need(type(r) is dict and (set(r) == keys or withdrawal or universe_withdrawal))
     if withdrawal:
@@ -508,7 +510,8 @@ def require_qgv2(payload):
         is_versioned = 'calc_version' in payload
         _need(not is_versioned or _calc_version_ok(version))
         cfg = load_config()
-        _need(type(payload['schema_version']) is int and payload['schema_version'] == 1 and payload['kind'] == KIND)
+        schema = _us.schema_version_of(payload)   # 1 or 2; a Universe withdrawal row needs 2 (TARGET withdrawals: both)
+        _need(payload['kind'] == KIND)
         _need(payload['standard'] == STANDARD and payload['standard_status'] == STANDARD_STATUS and payload['decision_ref'] in (DECISION_REF, 'GSQ-022_PENDING_APPROVAL'))
         _need(payload['method'] == METHOD and json.dumps(payload['method'], sort_keys=True) == json.dumps(METHOD, sort_keys=True))
         cut = _clock(payload['as_of'])
@@ -525,7 +528,8 @@ def require_qgv2(payload):
         _need(type(records) is dict and set(records) == set(codes) and type(payload['code_count']) is int and payload['code_count'] == len(codes))
         _need(type(target) is dict and set(target) == set(ids))
         sic_cfg, window = _sic_config(), timedelta(seconds=ttl)
-        states = [_row(records[code], cut, window, sic_cfg, is_versioned=is_versioned) for code in codes]
+        states = [_row(records[code], cut, window, sic_cfg, is_versioned=is_versioned, universe_withdrawals=schema >= 2)
+                  for code in codes]
         states += [_row(target[cid], cut, window, sic_cfg, target_id=cid, is_versioned=is_versioned) for cid in ids]
         state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
         _need(payload['state'] == state)

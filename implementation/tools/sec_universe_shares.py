@@ -460,6 +460,7 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
                               failed=counts['failed'], unresolved=unresolved, attempted=counts['codes'],
                               files=(('shares', payload, updates), ('qg', qg_payload, qg_updates),
                                      ('qgv2', qgv2_payload, qgv2_updates)), stats=stats))
+        print(withdrawal_line(f"shard={index}/{cfg['shard_count']}", stats))
         if counts['all_failed']:
             print('SEC_UNIVERSE_SHARES SHARD_ALL_FAILED previous_kept')
         if token is None:
@@ -523,6 +524,15 @@ def collection_line(scope, *, issuers, collected, failed, unresolved, attempted,
             f"unresolved_codes={len(unresolved)} "
             + ' '.join(f'preserved_previous_{name}={_count(preserved_previous(p, u, codes))}' for name, p, u in files)
             + f" preserved_unconfirmed={union('preserved')} identity_not_preserved={union('identity_not_preserved')}")
+
+
+def withdrawal_line(scope, stats):
+    """UNI-WITHDRAWN run log (owner decision 2026-10-17, #289 item 2): per file, codes withdrawn this run and live
+    withdrawals that persist (re-checked by this run). The rows keep their first detected_at; nothing here is published."""
+    count = lambda name, key: len(stats.get(name, {}).get(key, ()))
+    return (f'SEC_UNIVERSE_WITHDRAWALS {scope} '
+            + ' '.join(f'new_{name}={count(name, "withdrawn_new")} kept_{name}={count(name, "withdrawal_kept")}'
+                       for name in ('shares', 'qg', 'qgv2')))
 
 
 def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload, previous, previous_qg, previous_qgv2,
@@ -650,6 +660,7 @@ def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload
     print(collection_line(f'shard=all/{count}', issuers=sum(len(i) for i in partitions.values()),
                           collected=totals['collected'], failed=totals['failed'], unresolved=unresolved,
                           attempted=set().union(*shard_codes.values()), files=files, stats=stats))
+    print(withdrawal_line(f'shard=all/{count}', stats))
     if failed_shards:
         print('SEC_UNIVERSE_SHARES ALL_SHARDS_PARTIAL failed_shards=' + ','.join(str(i) for i in failed_shards) + ' previous_kept')
     return 0

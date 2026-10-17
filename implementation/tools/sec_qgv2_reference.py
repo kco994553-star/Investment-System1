@@ -301,6 +301,10 @@ def cases():
         ('universe_withdrawn_zero_issuer', [(R + [empty], dict(uw, withdrawn_cik='0000000000'))]),
         ('universe_withdrawn_issuer_key_missing', [(R + [empty], {k: v for k, v in uw.items() if k != 'withdrawn_cik'})]),
         ('universe_withdrawn_state_live', [(R + [empty], uw), (R + [empty, 'state'], 'LIVE')]),
+        ('schema_v1_valid', [(['schema_version'], 1)]),
+        ('universe_withdrawn_in_schema_v1_file', [(['schema_version'], 1), (R + [empty], uw)]),
+        ('target_withdrawn_in_schema_v1_file_valid', [(['schema_version'], 1), (T + ['nvda'], withdrawn)]),
+        ('schema_v3', [(['schema_version'], 3)]),
         ('universe_withdrawn_in_legacy_file', legacy + [(R + [empty], {k: v for k, v in uw.items() if k != 'calc_version'})]),
     ]
 

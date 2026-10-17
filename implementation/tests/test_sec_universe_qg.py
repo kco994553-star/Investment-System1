@@ -192,7 +192,7 @@ def test_vectors_fixture_is_regenerated_from_the_python_validator():
     assert fixture == json.loads(json.dumps(reference.build()))
     assert fixture['synthetic'] is True and len(fixture['cases']) >= 40
     assert [c['id'] for c in fixture['cases'] if c['valid']] == ['base_valid', 'null_shard_and_registry_valid', 'zero_score_is_a_score_not_missing',
-                                                                           'withdrawn_valid']
+                                                                           'withdrawn_valid', 'schema_v1_valid']
 
 
 @pytest.mark.skipif(shutil.which('node') is None, reason='Node runtime required')
