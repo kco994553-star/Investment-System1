@@ -9,7 +9,8 @@ import tempfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from investment_system.product.public_engine_screens import generate_screen_bundle
 from investment_system.universe import sec_qgv2 as qgv2
-from public_sec_inputs import collect_public_inputs, CollectionFailure, Parser, _print_diagnostics, _print_exclusions, parse
+from public_sec_inputs import collect_public_inputs, CollectionFailure, Parser, _print_collection, _print_diagnostics, _print_exclusions, parse
+import preserve_public_sec_inputs
 
 # Daily acquisition cadence, not a model or calibration threshold.
 ACQUISITION_TTL = timedelta(hours=24)
@@ -72,7 +73,17 @@ def stage_qgv2_target(directory, manifest, root, *, now=None):
         return None
 
 
-def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macro_curve=None):
+def load_previous_inputs(*, open_response=None):
+    """(validated live sec-public-inputs.json payload or None, LOADED | NO_LIVE | UNAVAILABLE). A failed read only turns
+    preservation off for this run (the pre-deploy freshness guard still compares with the live copy)."""
+    try:
+        payload = preserve_public_sec_inputs.fetch_previous(open_response=open_response)
+    except Exception:
+        return None, 'UNAVAILABLE'
+    return payload, 'LOADED' if payload is not None else 'NO_LIVE'
+
+
+def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macro_curve=None, previous=None):
     if client_factory is None:
         from investment_system.providers.sec_collection import SecCollectionClient
         client_factory = SecCollectionClient
@@ -101,7 +112,8 @@ def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macr
                 manifest['sec'].append(dict(company_id=company, **paths,
                     acquired_at=acquired.astimezone(timezone.utc).isoformat(), synthetic=False))
                 return facts, submissions, acquired
-        result = collect_public_inputs(Path(directory) / 'sec-public-inputs.json', environ=environ, client_factory=Capture)
+        result = collect_public_inputs(Path(directory) / 'sec-public-inputs.json', environ=environ, client_factory=Capture,
+                                       previous=previous)
         emit(directory, manifest, root)
         stage_qgv2_target(directory, manifest, root)
         return result
@@ -152,8 +164,10 @@ def main(argv=None):
                         print('MACRO_V1_CURVE_FETCH stage=%s code=%s http=%s content=%s size=%s' % tuple(
                             (d.get(k) if d.get(k) is not None else '-') for k in ('stage', 'code', 'http', 'content', 'size')))
                     return entries
-            result = collect(args.out, macro_v0=macro_v0, macro_curve=macro_curve)
+            previous, previous_state = load_previous_inputs()
+            result = collect(args.out, macro_v0=macro_v0, macro_curve=macro_curve, previous=previous)
             _print_diagnostics(result['diagnostics']); _print_exclusions(result['exclusions'])
+            _print_collection(result, previous_state)
             if args.macro_v0:
                 _print_macro_v0(args.out)
             print(f"SEC_PUBLIC_BUILD_OK failed_companies={result['failed_companies']}")

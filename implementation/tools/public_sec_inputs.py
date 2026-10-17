@@ -108,6 +108,46 @@ FIXED_COLLECTION_CODES = frozenset({
 }) | NORMALIZATION_CODES
 
 
+# Owner decision 2026-10-17 (option a): a company whose collection failed transiently keeps its previous verified row.
+# Preservable: transport/HTTP/response failures of the fetch (rate limits, 5xx, retries, timeouts, size, redirect) and an
+# undecodable SEC body (`SEC_JSON_INVALID` from the SEC client, raised before the body's CIK is read). Never preserved:
+# identity conflicts (`SEC_CIK_MISMATCH`, `SEC_ISSUER_NOT_ALLOWED`), an absent SEC resource (HTTP 404/410), an unknown
+# failure (`SEC_COLLECTION_FAILED`) and every normalize-stage result (a policy NA or a confirmed invalid input of a
+# successful collection).
+TRANSIENT_FETCH_CODES = frozenset({
+    'SEC_TRANSPORT_FAILED', 'SEC_TRANSPORT_RETRIES_EXHAUSTED', 'SEC_HTTP_RETRIES_EXHAUSTED',
+    'SEC_RETRY_AFTER_EXCEEDS_BUDGET', 'SEC_RESPONSE_INVALID', 'SEC_RESPONSE_URL_MISMATCH', 'SEC_REDIRECT_REJECTED',
+    'SEC_RESPONSE_TOO_LARGE', 'SEC_CLOCK_INVALID', 'SEC_SLEEP_FAILED', 'SEC_USER_AGENT_INVALID', 'SEC_URL_NOT_ALLOWED',
+    'SEC_CONFIG_INVALID',
+})
+IDENTITY_CODES = frozenset({'SEC_CIK_MISMATCH', 'SEC_ISSUER_NOT_ALLOWED'})
+
+
+def preservable_failure(diagnostic, error):
+    """True for a collection failure (not an identity conflict, not a result of a successful collection)."""
+    code, stage = diagnostic['code'], diagnostic['stage']
+    if code in IDENTITY_CODES or not isinstance(error, SecCollectionError):
+        return False
+    if stage == 'fetch':
+        return code in TRANSIENT_FETCH_CODES or (re.fullmatch(r'SEC_HTTP_[45][0-9]{2}', code) is not None
+                                                 and code not in ('SEC_HTTP_404', 'SEC_HTTP_410'))
+    return stage == 'parse' and code == 'SEC_JSON_INVALID'
+
+
+def previous_rows(previous):
+    """{company_id: row} of the LIVE rows of a validated previous copy in the current schema (unchanged rows only)."""
+    if type(previous) is not dict or previous.get('schema') != 'public-sec-reported-inputs/3':
+        return {}
+    out = {}
+    for row in previous.get('companies', []):
+        if type(row) is not dict or row.get('status') != 'LIVE' or type(row.get('acquired_at')) is not str:
+            continue
+        company = row.get('company_id')
+        if company in US_LISTINGS and row.get('cik') == US_LISTINGS[company]['cik']:
+            out[company] = row
+    return out
+
+
 def fixed_code(value):
     return type(value) is str and (value in FIXED_COLLECTION_CODES or re.fullmatch(r'SEC_HTTP_[45][0-9]{2}', value) is not None)
 
@@ -353,8 +393,12 @@ def _diagnostic(error, index, stage):
     return {'company_index': index, 'stage': phase, 'code': code, 'http_status': status}
 
 
-def collect_public_inputs(output, *, environ=None, client_factory=None):
+def collect_public_inputs(output, *, environ=None, client_factory=None, previous=None):
+    """Collect the 17 TARGET US issuers. `previous`: the validated live Pages copy (or None). A company whose collection
+    failed transiently keeps that copy's LIVE row of the same company_id and CIK unchanged (acquired_at, sources and
+    values); otherwise, and for identity conflicts or normalize results, it is NOT_AVAILABLE with its fixed reason."""
     settings = os.environ if environ is None else environ
+    kept_rows = previous_rows(previous)
     if not isinstance(settings.get('SEC_USER_AGENT'), str) or not settings['SEC_USER_AGENT'].strip():
         raise CollectionFailure('SEC_USER_AGENT_MISSING', [{'company_index': 0, 'stage': 'fetch', 'code': 'SEC_USER_AGENT_MISSING', 'http_status': None}])
     if client_factory is None:
@@ -366,7 +410,7 @@ def collect_public_inputs(output, *, environ=None, client_factory=None):
     except Exception as error:
         diagnostic = _diagnostic(error, 0, 'fetch')
         raise CollectionFailure(diagnostic['code'], [diagnostic]) from None
-    rows = []; diagnostics = []
+    rows = []; diagnostics = []; preserved = []
     for index, company in enumerate(sorted(US_LISTINGS), 1):
         stage = 'fetch'; cik = US_LISTINGS[company]['cik']
         try:
@@ -381,14 +425,21 @@ def collect_public_inputs(output, *, environ=None, client_factory=None):
             diagnostic = _diagnostic(error, index, stage)
             if stage == 'parse' and diagnostic['code'] == 'SEC_COLLECTION_FAILED': diagnostic['code'] = 'SEC_JSON_INVALID'
             diagnostics.append(diagnostic)
+            kept = kept_rows.get(company)
+            if kept is not None and kept['cik'] == cik and preservable_failure(diagnostic, error):
+                rows.append(json.loads(json.dumps(kept)))
+                preserved.append({'company_index': index, 'code': diagnostic['code']})
+                continue
             rows.append({'company_id': company, 'cik': cik, 'status': 'NOT_AVAILABLE',
                 'reason_codes': [diagnostic['code']], 'failure_stage': diagnostic['stage'],
                 'company_index': index, 'http_status': diagnostic['http_status'],
                 'excluded_fact_counts': error.excluded_fact_counts if isinstance(error, SecNormalizationError) else {},
                 'share_class_basis': 'UNCONFIRMED',
                 'share_class_notice': error.share_class_notice if isinstance(error, SecNormalizationError) else None})
+    kept_index = {p['company_index'] for p in preserved}
+    # A preserved row's exclusions belong to its earlier collection, not to this run.
     exclusions = [{'company_index': i, 'code': code, 'count': count}
-        for i, row in enumerate(rows, 1) for code, count in sorted(row['excluded_fact_counts'].items())]
+        for i, row in enumerate(rows, 1) if i not in kept_index for code, count in sorted(row['excluded_fact_counts'].items())]
     if len(diagnostics) == len(US_LISTINGS):
         codes = {d['code'] for d in diagnostics}
         raise CollectionFailure(next(iter(codes)) if len(codes) == 1 else 'SEC_COLLECTION_FAILED', diagnostics, exclusions=exclusions) from None
@@ -406,7 +457,8 @@ def collect_public_inputs(output, *, environ=None, client_factory=None):
     finally:
         if temporary is not None: temporary.unlink(missing_ok=True)
     return {'failed_companies': len(diagnostics), 'diagnostics': diagnostics,
-        'exclusions': exclusions}
+        'exclusions': exclusions, 'preserved': preserved, 'companies': len(US_LISTINGS),
+        'collected_companies': len(US_LISTINGS) - len(diagnostics)}
 
 
 def _print_exclusions(exclusions):
@@ -417,6 +469,21 @@ def _print_exclusions(exclusions):
 def _print_diagnostics(diagnostics):
     for row in diagnostics:
         print('SEC_FAILURE company_index={company_index} stage={stage} code={code} http_status={http_status}'.format(**row))
+
+
+PREVIOUS_STATES = ('LOADED', 'NO_LIVE', 'UNAVAILABLE', 'NOT_REQUESTED')
+
+
+def _print_collection(result, previous_state='NOT_REQUESTED'):
+    """Owner decision 2026-10-17: new collections, failures and rows kept from the previous copy, counted separately
+    (a preserved company is a failed collection, never today's success). Counts and fixed codes only."""
+    preserved = result.get('preserved', [])
+    for row in preserved:
+        print('SEC_PRESERVED company_index={company_index} code={code} previous=LIVE'.format(**row))
+    state = previous_state if previous_state in PREVIOUS_STATES else 'UNAVAILABLE'
+    print(f"SEC_PUBLIC_COLLECTION companies={result['companies']} collected={result['collected_companies']} "
+          f"failed={result['failed_companies']} preserved_previous={len(preserved)} "
+          f"not_available={result['failed_companies'] - len(preserved)} previous={state}")
 
 
 class Parser(argparse.ArgumentParser):
@@ -439,6 +506,7 @@ def main(argv=None):
         return 1
     _print_diagnostics(result['diagnostics'])
     _print_exclusions(result.get('exclusions', []))
+    _print_collection(result)
     print(f"SEC_PUBLIC_BUILD_OK failed_companies={result['failed_companies']}"); return 0
 
 
