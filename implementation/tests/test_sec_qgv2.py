@@ -670,17 +670,22 @@ def test_nodebt_issuers_reporting_debt_under_other_tags_are_never_zero_debt():
     assert v['total_debt'] is None
 
 
-def _device_v(v):
-    """Device V for one v_inputs_v2 (qgv2-inputs.js normalize -> qgv-v2.js scoreUniverse, synthetic price 10 USD)."""
+def _device_v(v, closes=None):
+    """Device V for one v_inputs_v2 (qgv2-inputs.js normalize -> qgv-v2.js scoreUniverse, synthetic price 10 USD;
+    `closes` = device month-end closes {YYYY-MM: close}, default none)."""
     script = ("const W=process.argv[1],I=require(W+'/qgv2-inputs.js'),V2=require(W+'/qgv-v2.js');"
               "const TC=require(W+'/type-config-defaults.js'),P=require(W+'/dcf-parameters-defaults.js'),v=JSON.parse(process.argv[2]);"
               "const row={cik:'0000001000',state:'LIVE',fiscal_year_end:v.fiscal_year_end,profile:'GENERAL',industry_group:'g',sic:'3674',"
               "currency:'USD',metrics:{},factors:{},axes:{},v_inputs_v2:v},rec=I.normalize(row,true);"
-              "const o=V2.scoreUniverse({'X:A':rec},{'X:A':{price:10,currency:'USD',month_closes:{}}},{typeConfig:TC,parameters:P})['X:A'];"
-              "process.stdout.write(JSON.stringify({total_debt:rec.v_inputs.total_debt,cash:rec.v_inputs.cash,fcf_yield:o.detail.fcf_yield,"
-              "ebit_yield:o.detail.ebit_yield,fcf_reason:o.factors.v_fcf_yield.reason,ebit_reason:o.factors.v_earnings_yield.reason}));")
-    out = subprocess.run(['node', '-e', script, str(ROOT / 'src/investment_system/product/web_assets'), json.dumps(v)],
-                         text=True, capture_output=True, timeout=60, check=True)
+              "const o=V2.scoreUniverse({'X:A':rec},{'X:A':{price:10,currency:'USD',month_closes:JSON.parse(process.argv[3])}},{typeConfig:TC,parameters:P})['X:A'];"
+              "process.stdout.write(JSON.stringify({total_debt:rec.v_inputs.total_debt,cash:rec.v_inputs.cash,diluted_shares:rec.v_inputs.diluted_shares,"
+              "fcf_yield:o.detail.fcf_yield,ebit_yield:o.detail.ebit_yield,implied_growth:o.detail.implied_growth,"
+              "reasons:Object.fromEntries(Object.entries(o.factors).filter(([k])=>k.startsWith('v_')).map(([k,f])=>[k,f.reason])),"
+              "v_scores:Object.fromEntries(Object.entries(o.factors).filter(([k])=>k.startsWith('v_')).map(([k,f])=>[k,f.score])),"
+              "v_axis:o.axes.V.score,reference_range:o.reference_range,"
+              "fcf_reason:o.factors.v_fcf_yield.reason,ebit_reason:o.factors.v_earnings_yield.reason}));")
+    out = subprocess.run(['node', '-e', script, str(ROOT / 'src/investment_system/product/web_assets'), json.dumps(v),
+                          json.dumps(closes or {})], text=True, capture_output=True, timeout=60, check=True)
     return json.loads(out.stdout)
 
 
@@ -733,6 +738,102 @@ def test_v_inputs_stale_balance_sheet_values_are_na():
     assert math.isclose(d['fcf_yield'], (0.18 - 0.03) * 146.41 / 120, rel_tol=1e-6)
     d = _device_v(compute(repaid)[4])  # zero debt: EV = 100 - 30 = 70
     assert d['total_debt'] == 0 and math.isclose(d['fcf_yield'], (0.18 - 0.03) * 146.41 / 70, rel_tol=1e-6)
+
+
+DILUTED = 'WeightedAverageNumberOfDilutedSharesOutstanding'
+BASIC_AND_DILUTED = 'WeightedAverageNumberOfShareOutstandingBasicAndDiluted'
+
+
+def _shares(concept, value, start, end, form='10-Q', filed=None):
+    return ((concept, 'shares', value, end), {'start': start, 'form': form, 'filed': filed or ('2026-08-01' if end >= '2026' else None)})
+
+
+def _other_share_counts():
+    """Fresh share counts under concepts that are NOT allowed for diluted shares (never a substitute)."""
+    return [(('WeightedAverageNumberOfSharesOutstandingBasic', 'shares', 9.0, '2026-06-30'), {'start': '2026-04-01', 'form': '10-Q', 'filed': '2026-08-01'}),
+            (('CommonStockSharesOutstanding', 'shares', 9.5, '2026-06-30'), {'form': '10-Q', 'filed': '2026-08-01'}),
+            (('EntityCommonStockSharesOutstanding', 'shares', 9.6, '2026-07-25'), {'form': '10-Q', 'filed': '2026-08-01', 'taxonomy': 'dei'})]
+
+
+def test_v_inputs_diluted_shares_newest_allowed_concept_by_period_end_else_na():
+    """V-STALE-SHARES (owner decision 2026-10-17, calc_version 2026-10-17.1): v_inputs_v2.diluted_shares is the latest-ending
+    positive fact over ALL allowed diluted-share concepts (latest_duration read only the first concept with any fact: BKR 2021,
+    REG 2020, TTWO 2024, HSY 2015, LYB 2019, SJM 2023, ERIE 2021), judged by its period END against FY0 end minus the
+    YEAR_TOLERANCE_DAYS of V-STALE-BS, only from facts filed by the cutoff; else NA. Never basic shares / shares outstanding.
+    The shared selection functions and the Q·G metrics are unchanged."""
+    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-17.1'
+    assert vf.CONCEPTS['us-gaap']['diluted_shares'] == (DILUTED, BASIC_AND_DILUTED)
+    q = dict(form='10-Q', filed='2026-08-01')
+    # (a) First allowed concept stale (2021 quarter only), the second allowed concept fresh (FY0 annual + 2026 Q2):
+    #     the newest period end of the allowed concepts is used (quarter span, as latest_duration within a concept).
+    stale_first = [_shares(DILUTED, 806.0, '2021-04-01', '2021-06-30', filed='2021-07-23')]
+    fresh_second = [_shares(BASIC_AND_DILUTED, 10.0, '2025-01-01', '2025-12-31', form='10-K', filed='2026-02-15'),
+                    _shares(BASIC_AND_DILUTED, 10.4, '2026-01-01', '2026-06-30', **q),
+                    _shares(BASIC_AND_DILUTED, 10.5, '2026-04-01', '2026-06-30', **q)]
+    payload = simple_company(omit=(DILUTED,), extra=stale_first + fresh_second + _other_share_counts())
+    facts = vf._Facts(payload, 'us-gaap', 'USD', CUTOFF)
+    assert facts.latest_duration('diluted_shares') == (806.0, date(2021, 6, 30))  # shared first-concept rule: unchanged
+    v = compute(payload)[4]
+    assert v['diluted_shares'] == {'value': 10.5, 'period_end': '2026-06-30'}
+    # ... and only facts filed by the cutoff (as_of): the same 2026 Q2 value filed after the cutoff is not available.
+    late = [_shares(BASIC_AND_DILUTED, 10.5, '2026-04-01', '2026-06-30', form='10-Q', filed='2026-08-01')]
+    early_cut = date(2026, 7, 31)
+    assert compute(simple_company(omit=(DILUTED,), extra=stale_first + late), cutoff=early_cut)[4]['diluted_shares'] is None
+    assert compute(simple_company(omit=(DILUTED,), extra=stale_first + late))[4]['diluted_shares'] == {'value': 10.5, 'period_end': '2026-06-30'}
+    # (b) All allowed concepts stale (BKR/TTWO-type: 2021 and 2017; HSY-type: one concept, 2015) -> NA, never another
+    #     concept (basic, shares outstanding, dei cover count are fresh here), never 0; Q·G metrics are unchanged by it.
+    for extra in (stale_first + [_shares(BASIC_AND_DILUTED, 100.0, '2017-04-01', '2017-06-30', filed='2017-07-28')],
+                  [_shares(DILUTED, 220.0, '2015-07-06', '2015-10-04', filed='2015-10-30')]):
+        payload = simple_company(omit=(DILUTED,), extra=extra + _other_share_counts())
+        _, fy0, _, m, v = compute(payload)
+        assert fy0 == '2025-12-31' and v['diluted_shares'] is None, extra
+        assert m == compute(simple_company(omit=(DILUTED,), extra=_other_share_counts()))[3]
+    # Period end, not the filing date: a fresh filing (2026) restating an old period (2019) is still stale.
+    restated = [_shares(DILUTED, 9.0, '2019-01-01', '2019-12-31', form='10-K', filed='2026-02-15')]
+    assert compute(simple_company(omit=(DILUTED,), extra=restated))[4]['diluted_shares'] is None
+    # The FY0 tolerance of V-STALE-BS: an end within YEAR_TOLERANCE_DAYS before FY0 end (52/53-week year) is FY0's count;
+    # one day further is stale.
+    assert vf.YEAR_TOLERANCE_DAYS == 10
+    for end, expected in (('2025-12-21', {'value': 9.0, 'period_end': '2025-12-21'}), ('2025-12-20', None)):
+        near = [_shares(DILUTED, 9.0, '2025-09-21', end, filed='2026-01-30')]
+        assert compute(simple_company(omit=(DILUTED,), extra=near))[4]['diluted_shares'] == expected, end
+    # (c) A valid fresh value is kept unchanged: FY0 annual of the first concept; a later 10-Q quarter of it; at the same
+    #     period end the first concept wins over the second (no change for issuers whose first concept is current).
+    assert compute(simple_company())[4]['diluted_shares'] == {'value': 10.0, 'period_end': '2025-12-31'}
+    later = [_shares(DILUTED, 10.2, '2026-04-01', '2026-06-30', **q), _shares(BASIC_AND_DILUTED, 99.0, '2026-04-01', '2026-06-30', **q),
+             _shares(BASIC_AND_DILUTED, 98.0, '2025-01-01', '2025-12-31', form='10-K', filed='2026-02-15')]
+    v = compute(simple_company(extra=later + _other_share_counts()))[4]
+    assert v['diluted_shares'] == {'value': 10.2, 'period_end': '2026-06-30'}
+    assert len(v['ebit_per_share_history']) == 5 and len(v['fcf_per_share_history']) == 5
+    assert v['ebit_per_share_history'] == compute(simple_company())[4]['ebit_per_share_history']
+    # Through the published SEC row (strict row shape): stale diluted shares -> null in v_inputs_v2.
+    facts_b, subs = REF.synthetic_sec('0000001000')
+    payload = json.loads(facts_b)
+    payload['facts']['us-gaap'][DILUTED] = {'units': {'shares': [{'start': '2015-07-06', 'end': '2015-10-04', 'val': 220.0, 'accn': '0000001000-15-000030',
+                                                                  'form': '10-Q', 'filed': '2015-10-30', 'fy': 2015, 'fp': 'Q3'}]}}
+    for concept, row in (('WeightedAverageNumberOfSharesOutstandingBasic', {'start': '2026-04-01'}), ('CommonStockSharesOutstanding', {})):
+        payload['facts']['us-gaap'][concept] = {'units': {'shares': [dict(row, end='2026-06-30', val=101.0, accn='0000001000-26-000020', form='10-Q', filed='2026-08-01')]}}
+    row = q_build(json.dumps(payload).encode(), subs)
+    assert row['calc_version'] == vf.CALC_VERSION and row['fiscal_year_end'] == '2025-12-31' and row['state'] == 'LIVE'
+    assert row['v_inputs_v2']['diluted_shares'] is None and row['v_inputs_v2']['total_debt'] is not None
+    if shutil.which('node') is None:
+        return
+    # (d) Device (qgv2-inputs.js -> qgv-v2.js): no share count -> every per-share and EV-based V metric NA with the existing
+    #     reason SHARES_NOT_AVAILABLE (EBIT/FCF yield, industry, own history, expectation check), DCF reference range NA;
+    #     the device reads only v_inputs_v2.diluted_shares, so no other share value (cover count, basic) can stand in.
+    closes = {f'{y}-12': 100.0 for y in range(2015, 2026)}
+    v = dict(row['v_inputs_v2'], shares_outstanding={'value': 101.0, 'period_end': '2026-06-30'})
+    for d in (_device_v(row['v_inputs_v2'], closes), _device_v(v, closes)):
+        assert d['diluted_shares'] is None and d['ebit_yield'] is None and d['fcf_yield'] is None and d['implied_growth'] is None
+        assert d['reasons'] == {k: 'SHARES_NOT_AVAILABLE' for k in ('v_earnings_yield', 'v_fcf_yield', 'v_vs_industry',
+                                                                    'v_vs_own_history', 'v_expectation_check')}
+        assert set(d['v_scores'].values()) == {None} and d['v_axis'] is None
+        assert d['reference_range'] == {'state': 'NOT_AVAILABLE', 'reason': 'FCF_NOT_AVAILABLE', 'low': None, 'high': None}
+    # The fresh row of the same issuer keeps its device V (control).
+    fresh = q_build(*REF.synthetic_sec('0000001000'))
+    d = _device_v(fresh['v_inputs_v2'], closes)
+    assert d['diluted_shares'] == fresh['v_inputs_v2']['diluted_shares']['value'] and d['fcf_yield'] is not None
+    assert d['reasons']['v_fcf_yield'] != 'SHARES_NOT_AVAILABLE'
 
 
 def test_split_adjustment_never_adjusts_already_restated_values_twice():

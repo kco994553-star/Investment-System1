@@ -164,7 +164,7 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
      not calibrated; it can also make genuine spin-off, merger or IPO share changes NA for older years (c21 recompute: CEG, EXE,
      WBD, COIN, CVNA, HOOD, DASH).
   Applies to `dilution_3y`, `eps_cagr_3y`, `fcf_per_share_cagr_3y`, `book_value_per_share_cagr_3y` and both per-share
-  histories. The histories are on the basis of the latest share count (`v_inputs_v2.diluted_shares`, possibly a 10-Q after FY0),
+  histories. The histories are on the basis of the latest share count (`v_inputs_v2.diluted_shares`, possibly a 10-Q after FY0; FY0 basis when it is NA),
   i.e. FY0 basis × the FY0→latest factor; when that factor is not established (a split filed after FY0 that no shared period
   confirms) both histories are empty (NA) until the next 10-K. The FY0-basis Q/G ratios are unaffected by that case. Never a
   guessed ratio, never 0. Tests: `test_per_share_histories_are_split_adjusted_only_when_sec_facts_establish_the_ratio`,
@@ -265,8 +265,8 @@ SEC-only descriptors in `metrics` (never ranked; `v2_factors.EXTRA_METRIC_PROFIL
 (GENERAL and FINANCIAL, ≥ 0), rule APPQ. Both validators accept them only for those profiles and range-check them.
 
 **Calculation-rule version `calc_version` (owner supplement 2026-10-15).** `v2_factors.CALC_VERSION` (now
-`qgv2-calc/2026-10-17.1` = `2026-10-15.1` (F1–F3 + rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ) + V-STALE-BS on
-`v_inputs_v2` only, Q·G unchanged; format `qgv2-calc/<date>.<n>`) is bumped whenever a factor rule in section 1–3 or a published
+`qgv2-calc/2026-10-17.1` = `2026-10-15.1` (F1–F3 + rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ) + V-STALE-BS and
+V-STALE-SHARES on `v_inputs_v2` only, Q·G unchanged; format `qgv2-calc/<date>.<n>`) is bumped whenever a factor rule in section 1–3 or a published
 `v_inputs_v2` rule changes. The file declares it at the top level (`calc_version`) and every row with data
 carries the version it was computed with (`calc_version`; `null` for rows without data and for legacy rows). **Versions are
 never mixed in one percentile:** the publisher (`v2_scoring.score_rows` / `volatility_rank_rows` with `calc_version`), both
@@ -300,6 +300,20 @@ its source reasons ("QGV v2 산출 불가 · 원자료 없음 (CIK 미해결)").
   DXCM, INCY, PANW, SMCI, VRSN, VRTX, DE, DECK, DLR, EME, EXR, F, ORCL; 10 FINANCIAL, where V is not defined) and 1 issuer's cash
   (PCAR) became NA; Q·G metrics, factors and axes are identical. Test: `test_v_inputs_stale_balance_sheet_values_are_na`.
 - `diluted_shares`: `{value, period_end}`, the latest weighted-average diluted share count (quarter or year).
+  **V-STALE-SHARES (calc_version `2026-10-17.1`, owner decision 2026-10-17, same version as V-STALE-BS):** the count is the
+  latest-ending positive fact over **all** allowed diluted-share concepts (us-gaap `WeightedAverageNumberOfDilutedSharesOutstanding`,
+  `WeightedAverageNumberOfShareOutstandingBasicAndDiluted`; ifrs-full `AdjustedWeightedAverageShares`), annual spans from annual
+  forms and YTD/quarter spans from 10-Q forms, filed by the cutoff (at the same period end the earlier-listed concept, then the
+  shortest span). Before, the first concept with any fact was read, so its last value could be years old while another allowed
+  concept was current. Freshness is the count's **period end**, not its filing date: an end before FY0 end − 10 days (the
+  V-STALE-BS tolerance) is `null` (NA). Basic shares, shares outstanding (cover or balance sheet) and any other concept are never
+  substituted. The per-share histories use the filing of the published count (none → FY0 basis). The device (`qgv2-inputs.js` →
+  `qgv-v2.js`, unchanged; it reads no other share value) then shows `ebit_yield`, `fcf_yield`, industry, own-history and
+  expectation-check V as NA with reason `SHARES_NOT_AVAILABLE` and the DCF reference range NA. Shared selection
+  (`_Facts.latest_duration`) is unchanged; the new `_Facts.latest_duration_any_concept` is read only here. 10/17 raw: 7 issuers'
+  count became NA (BKR 2021-06-30, REG 2020-12-31, TTWO 2024-03-31, HSY 2015-10-04, LYB 2019-03-31, SJM 2023-01-31, ERIE
+  2021-06-30; no allowed concept has a current value); no issuer switched concept; Q·G metrics, factors and axes and the
+  per-share histories are identical. Test: `test_v_inputs_diluted_shares_newest_allowed_concept_by_period_end_else_na`.
 - `ebit_per_share_history`, `fcf_per_share_history`: up to 5 fiscal years `{fiscal_year_end, value}`, oldest first. These feed the own-history multiple percentile.
 - `revenue_cagr_3y`, `eps_cagr_3y`, `fcf_per_share_cagr_3y`, `revenue_ttm_growth`: realized growth for the expectation check.
 - Also: `currency`, `taxonomy`, `fiscal_year_end`.

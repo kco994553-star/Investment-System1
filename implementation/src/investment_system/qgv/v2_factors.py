@@ -29,6 +29,8 @@ import re
 # population (v2_scoring.score_rows, sec-qgv2.js, qgv2-inputs.js -> CALC_VERSION_MISMATCH). Format: qgv2-calc/<date>.<n>.
 # 2026-10-15.1 = rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ on top of F1-F3 (QGV_V2_QG_METHOD.md section 1).
 # 2026-10-17.1 = v_inputs_v2 only: total_debt / cash_and_equivalents dated before the FY0 balance sheet are NA (V-STALE-BS);
+#                diluted_shares is the latest-ending fact over all allowed diluted-share concepts and NA when its period end is
+#                before FY0 end minus YEAR_TOLERANCE_DAYS (V-STALE-SHARES, owner decision 2026-10-17, same version);
 #                Q·G metrics, factors and axes are unchanged from 2026-10-15.1.
 CALC_VERSION = 'qgv2-calc/2026-10-17.1'
 CALC_VERSION_PATTERN = r'qgv2-calc/[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]{1,4}'
@@ -476,6 +478,22 @@ class _Facts:
                 (start, end), value = max(table.items(), key=lambda kv: (kv[0][1], -(kv[0][1] - kv[0][0]).days))
                 return value, end
         return None
+
+    def latest_duration_any_concept(self, item):
+        """(value, end, filing) of the latest-ending positive annual or quarterly-span fact over ALL allowed concepts of
+        `item` (V-STALE-SHARES, calc_version 2026-10-17.1): the latest period end wins; at the same end the earlier-listed
+        concept; within one concept the shortest span (as latest_duration). Only facts the tables kept (filed <= cutoff,
+        annual spans from annual forms, YTD/quarter spans from 10-Q forms). Read only for v_inputs_v2.diluted_shares;
+        latest_duration keeps its first-concept rule."""
+        best = None
+        for n, (table, source) in enumerate(zip(self.items[item], self.sources[item])):
+            for (start, end), value in table.items():
+                if start is None or not _finite(value) or value <= 0:
+                    continue
+                rank = (end, -n, -(end - start).days)
+                if best is None or rank > best[0]:
+                    best = (rank, value, end, source.get((start, end)))
+        return None if best is None else best[1:]
 
 
 def _taxonomy_and_currency(payload, cutoff):
@@ -1156,13 +1174,24 @@ def _v_inputs(c, m, taxonomy, currency):
     for key in STALE_BALANCE_SHEET_V_KEYS:
         if v[key] is not None and v[key]['period_end'] < oldest:
             v[key] = None
-    shares = c.f.latest_duration('diluted_shares')
-    if shares is not None and shares[0] > 0:
+    # V-STALE-SHARES (owner decision 2026-10-17, calc_version 2026-10-17.1): the diluted share count is the latest-ending
+    # positive fact over ALL allowed diluted-share concepts (not the first concept's last value: BKR 2021, REG 2020, TTWO 2024,
+    # HSY 2015, LYB 2019, SJM 2023, ERIE 2021), judged by its period END: an end before FY0 end minus the same tolerance as
+    # V-STALE-BS is NA. Never basic shares, shares outstanding or another concept. The device then shows the per-share and
+    # EV-based V metrics as NA with reason SHARES_NOT_AVAILABLE (qgv-v2.js metrics); missing is never filled.
+    if c.sec:
+        shares = c.f.latest_duration_any_concept('diluted_shares')
+    else:  # other period adapters (DART): their single annual series
+        shares = c.f.latest_duration('diluted_shares')
+        shares = None if shares is None else (shares[0], shares[1], None)
+    shares_filing = None
+    if shares is not None and shares[0] > 0 and shares[1].isoformat() >= oldest:
         v['diluted_shares'] = {'value': shares[0], 'period_end': shares[1].isoformat()}
+        shares_filing = shares[2]
     # Per-share histories are on the basis of the latest share count (v['diluted_shares']), which the device pairs with the
-    # current price: FY0 basis x the FY0 -> latest factor. Unknown factor (a split filed after FY0 that no shared period
-    # confirms) -> both histories NA.
-    latest = c.share_factor(c._basis(), c.f.latest_duration_filing('diluted_shares')) if c.sec else 1.0
+    # current price: FY0 basis x the FY0 -> latest factor (the filing of that count; none -> the FY0 basis). Unknown factor
+    # (a split filed after FY0 that no shared period confirms) -> both histories NA.
+    latest = c.share_factor(c._basis(), shares_filing) if c.sec else 1.0
     for key, value_of in (('ebit_per_share_history', lambda k: c.a('ebit', k)), ('fcf_per_share_history', c.fcf)):
         if latest is None:
             v[key] = []
