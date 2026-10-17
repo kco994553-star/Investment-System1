@@ -7,10 +7,11 @@ candidate defaults exactly (no tuning, no Holdout). v1 files/methodology are unc
 Producers (no extra SEC request anywhere):
 - the daily Universe shard (tools/sec_universe_shares.py) computes rows from the SAME companyfacts and
   submissions bytes it already fetched; rows merge into the previous Pages copy like
-  sec-universe-shares.json (own acquired_at, a new row without data never erases a kept one, STALE after
-  the shared v0 window);
+  sec-universe-shares.json (own acquired_at; a new row of this run's collection replaces the kept one also
+  without data, a row without its own collection record never erases kept data; STALE after the shared v0 window);
 - the TARGET daily pipeline (tools/public_screens_pipeline.py --live) stages TARGET rows from its own SEC
-  bytes into the same file; the shard step then carries them into the published copy.
+  bytes into the same file; the shard step then carries every staged row with a collection record (also a
+  NOT_AVAILABLE one) into the published copy by the same rule.
 Scores are recomputed at every publication over all current LIVE/STALE Universe rows (qgv.v2_scoring),
 so the published factor/axis scores are reproducible from the published raw metrics; the strict
 validators (Python here, JS web_assets/sec-qgv2.js) recompute and compare them.
@@ -27,7 +28,8 @@ import re
 
 from ..qgv import v2_factors as vf
 from ..qgv import v2_scoring as vs
-from .sec_universe_shares import IDENTITY_CONFLICT, PRESERVE, _clock, _hash, _iso, load_config, note, previous_decision, universe_codes
+from .sec_universe_shares import (IDENTITY_CONFLICT, PRESERVE, _clock, _hash, _iso, load_config, note, previous_decision, replaces,
+                                   universe_codes)
 
 FILENAME = 'sec-qgv2.json'
 KIND = 'SEC_QGV2'
@@ -212,11 +214,11 @@ def _checked(new, as_of, stale_after, cut, sic_cfg, *, target_id=None):
 
 
 def _pick(old, new, as_of, stale_after, cut, sic_cfg, *, target_id=None):
-    """A valid new row replaces the kept one unless it has no data and the kept one has."""
+    """A valid new row replaces the kept one (`replaces`): a row of this run's collection (acquired_at set) also
+    without data, its NOT_AVAILABLE reason published; a row without its own collection record (failed builder, a row
+    the strict check rejects) only when the kept one has no data either."""
     new = _checked(new, as_of, stale_after, cut, sic_cfg, target_id=target_id)
-    if new is not None and not (not _has_data(new) and _has_data(old)):
-        return new
-    return old
+    return new if replaces(new, old, observed=lambda r: r['acquired_at'] is not None, has_value=_has_data) else old
 
 
 def _target_empty(company_id):
@@ -245,7 +247,8 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
         if decision == PRESERVE:
             chosen = old
         elif decision == IDENTITY_CONFLICT:
-            chosen = new
+            # No row this run (a ticker claimed by several CIKs): withdrawn, unresolved without acquired_at.
+            chosen = new if new is not None else empty_record(reasons=('CIK_UNRESOLVED',))
         else:
             chosen = _pick(old, new, as_of, stale_after, cut, sic_cfg)
         if new is None and code in unresolved and not _has_data(chosen) and decision != PRESERVE:
@@ -503,8 +506,10 @@ def encode(payload):
 
 
 def target_updates_from(payload):
-    """TARGET rows with data from a staged/previous payload (used to carry the TARGET stage into the shard publish)."""
-    return {cid: versioned(row) for cid, row in payload['target'].items() if _has_data(row)}
+    """TARGET rows of a collection from a staged/previous payload (used to carry the TARGET stage into the shard
+    publish): every row with its own acquired_at, also a NOT_AVAILABLE one (a successful collection's NA is published,
+    owner rule 2026-10-17). A company the stage did not collect (no acquired_at) is not carried: its kept row stays."""
+    return {cid: versioned(row) for cid, row in payload['target'].items() if row['acquired_at'] is not None}
 
 
 def summary_line(payload, *, prefix):
