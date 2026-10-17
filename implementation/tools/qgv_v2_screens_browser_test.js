@@ -13,6 +13,26 @@ function v1() {
   return { schema_version: 1, kind: 'SEC_QG_FACTORS', as_of: at, state: 'LIVE', sources: [{ agency: 'SEC_COMPANYFACTS', sha256: a, acquired_at: at }, { agency: 'SEC_SUBMISSIONS', sha256: b, acquired_at: at }], reason_codes: [], freshness_basis: 'SOURCE_ACQUISITION', stale_after_seconds: 86400, data: { companies, method_status: 'PROVISIONAL_UNCALIBRATED', availability_basis: 'OBSERVED_CAPTURE_ONLY' } };
 }
 const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin;
+/* UNI-WITHDRAWN fixture: the strict payload with TARGET amd withdrawn for an identity conflict (its TARGET row and the same-CIK
+   Universe code stop) and the Universe code NASDAQ:MSFT withdrawn (its symbol is the MSFT TARGET's price symbol). */
+function withdrawnPayload() {
+  const SQ = require('../src/investment_system/product/web_assets/sec-qgv2.js'), p = F.strictPayload();
+  p.target.amd = { ...SQ.emptyRecord(SQ.WITHDRAWN_REASON), cik: p.target.amd.cik, detected_at: '2026-10-13T12:00:00Z', withdrawn_acquired_at: '2026-10-12T00:00:00Z' };
+  p.records['NASDAQ:MSFT'] = { ...SQ.emptyRecord(SQ.WITHDRAWN_REASON), detected_at: '2026-10-13T12:00:00Z', withdrawn_acquired_at: '2026-10-12T00:00:00Z', withdrawn_cik: '0000789019' };
+  SQ.validate(p);return p;
+}
+// S06 with the withdrawn fixture: AMD and MSFT have no total and no rank; ranks of the others stay contiguous from 1.
+async function withdrawnS06(page) {
+  for (const id of ['amd', 'msft']) {
+    const row = page.locator('[data-leaderboard-row="' + id + '"]');if (!(await row.count())) continue;
+    assert.equal(await row.locator('[data-leaderboard-total]').getAttribute('data-leaderboard-total'), 'NOT_AVAILABLE', id);assert.equal(await row.locator('[data-leaderboard-rank]').count(), 0, id);
+  }
+  const amd = page.locator('[data-leaderboard-row="amd"] [data-leaderboard-qgv2]');if (await amd.count()) assert.match(await amd.textContent(), /식별 충돌로 사용 중지/);
+  const msft = page.locator('[data-leaderboard-row="msft"]');if (await msft.count()) assert.equal(await msft.locator('[data-qgv2-flag]').filter({ hasText: '가격 식별 충돌' }).count(), 1);
+  const ranks = (await page.locator('[data-leaderboard-rank]').evaluateAll((n) => n.map((x) => Number(x.dataset.leaderboardRank)))).sort((a, b) => a - b);
+  const all = await page.evaluate(() => Object.values(qgvScores().rows).filter((r) => r.rank !== null).map((r) => r.company_id));
+  assert.ok(!all.includes('amd') && !all.includes('msft') && all.length >= 1);assert.ok(ranks.every((r) => r >= 1 && r <= all.length));
+}
 const h1Focused = (page) => page.evaluate(() => document.activeElement?.tagName === 'H1' && document.querySelector('#content h1') === document.activeElement);
 const rowIds = (page) => page.locator('[data-leaderboard-row]').evaluateAll((rows) => rows.map((r) => r.dataset.leaderboardRow));
 /* S06 -> S04 -> S06 flow (first frontend flow): ranks over all identities, 'QGV v2 순' default, filter/sort/scroll restored by the
@@ -210,6 +230,63 @@ async function flow(page, width) {
         assert.deepEqual(external, [], 'no request to another origin');
         assert.equal(errors, 0);pass++;console.log('PASS QGV v2 screens ' + mode + ' ' + width);
       } catch (e) { fail++;console.log('FAIL QGV v2 screens ' + mode + ' ' + width + ' ' + phase + ' ' + (e.code === 'ERR_ASSERTION' ? 'CONTRACT ' + e.message.split('\n').slice(0, 6).join(' | ') + ' @' + (e.stack.match(/browser_test.js:(\d+)/) || [])[1] : 'EXECUTION ' + String(e.message).split('\n')[0])); } finally { await context.close(); }
+    }
+    // UNI-WITHDRAWN (#289) on the S06 -> S04 flow: a withdrawn TARGET (AMD) and a withdrawn Universe code (NASDAQ:MSFT, which puts
+    // the MSFT TARGET price identity in conflict) get no score, total or rank on S06/S04 and no candidate place, while the S06
+    // filter/sort/scroll round trip still works around them.
+    for (const width of [390, 1280]) {
+      const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block' });
+      await routeEmptyPublicScreens(context);
+      await context.route('**/sec-qg-factors.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(v1()) }));
+      await context.route('**/sec-qgv2.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(withdrawnPayload()) }));
+      const page = await context.newPage();let errors = 0;page.on('pageerror', () => errors++);const external = [];
+      page.on('request', (r) => { if (!/^(data|blob):/.test(r.url()) && new URL(r.url()).origin !== ORIGIN) external.push(r.url()); });
+      await page.route('**/*', (r) => (new URL(r.request().url()).origin === ORIGIN ? r.fallback() : r.abort()));
+      try {
+        phase = 'W_SETUP';await page.goto(BASE + '#settings');await page.locator('[data-universe-source]').waitFor();
+        await page.locator('[data-universe-source]').fill('u'.repeat(24));await page.locator('[data-universe-settings] button[type="submit"]').click();
+        await page.evaluate(async (values) => {
+          await DeviceActual.sheetSettings(window, { schema: 'device-google-sheet-settings/1', enabled: true, spreadsheet_id: '', range: 'Quotes!A1:C22' });
+          const session = { state: () => ({ enabled: true, connected: true }), revision: () => 1, setEnabled() {}, subscribe: () => () => {}, async fetchValues() { return { values }; } };
+          window.GoogleSheetQuotes = { ...GoogleSheetQuotes, sessionFor: () => session };location.hash = 'leaderboard';
+        }, [...F.strictUniverseValues(), ['NASDAQ:MSFT', 7000, 33], ['NASDAQ:AMD', 7100, 34]]);
+        await page.locator('[data-leaderboard-table]').waitFor();await page.locator('details:has(#private-subset-root) > summary').click();
+        await page.locator('[data-private-subset] [data-subset-action="read"]:enabled').click();await page.locator('[data-qgv2-state="READY"]').filter({ hasText: /가격 [1-9]\d/ }).waitFor();
+        phase = 'W_S06';await withdrawnS06(page);
+        // Scores, ranks and the candidate ranking (playbook TARGET writer) all leave the stopped rows out.
+        const state = await page.evaluate(() => { const S = qgvScores(), c = PlaybookScreen.candidateRanking(S, publicScreens, ['NASDAQ:AMD', 'NASDAQ:MSFT', 'NASDAQ:NVDA']), by = Object.fromEntries(c.map((r) => [r.code, r]));
+          return { amd: [S.rows.amd.primary.total, S.rows.amd.primary.q, S.rows.amd.rank], msft: [S.rows.msft.primary.total, S.rows.msft.primary.v, S.rows.msft.rank, typeof S.rows.msft.primary.q], nvdaRank: S.rows.nvda.rank,
+            cand: ['NASDAQ:AMD', 'NASDAQ:MSFT'].map((k) => [by[k]?.total ?? null, by[k]?.rank ?? null]) }; });
+        assert.deepEqual(state.amd, [null, null, null]);assert.deepEqual(state.msft, [null, null, null, 'number']);assert.ok(Number.isInteger(state.nvdaRank));
+        assert.deepEqual(state.cand, [[null, null], [null, null]]);
+        // Filter/sort/scroll round trip with the stopped rows on screen.
+        phase = 'W_STATE';await page.locator('#leader-sort').selectOption('ticker');await page.locator('#leader-query').fill('a');
+        const ids = await rowIds(page);assert.ok(ids.includes('amd') && ids.includes('nvda') && ids.length < 19);
+        await page.evaluate(() => { const r = document.querySelector('[data-leaderboard-row="amd"]').getBoundingClientRect();window.scrollTo(0, Math.max(1, r.top + scrollY - innerHeight / 2)); });
+        await page.waitForTimeout(300);
+        await page.evaluate(() => document.addEventListener('click', (e) => { const row = e.target.closest && e.target.closest('[data-leaderboard-row]'); if (row) { window.__leaveId = row.dataset.leaderboardRow;window.__leaveTop = row.getBoundingClientRect().top; } }, true));
+        const back = async (how) => {
+          await page.locator('[data-leaderboard-table]').waitFor();const [id, top] = await page.evaluate(() => [window.__leaveId, window.__leaveTop]);
+          await page.waitForFunction(([i, v]) => scrollY > 0 && Math.abs(document.querySelector('[data-leaderboard-row="' + i + '"]').getBoundingClientRect().top - v) <= 2, [id, top], { timeout: 5000 });
+          assert.equal(await page.locator('#leader-sort').inputValue(), 'ticker', how);assert.equal(await page.locator('#leader-query').inputValue(), 'a', how);assert.deepEqual(await rowIds(page), ids, how);
+          assert.ok(await h1Focused(page), how + ' focus h1');await withdrawnS06(page);
+        };
+        phase = 'W_S04_AMD';await page.locator('[data-leaderboard-row="amd"] a').first().click();await page.locator('[data-company-card="qgv"]').waitFor();
+        assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="total"] .num').count(), 0);assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="rank"] .num').count(), 0);
+        assert.match(await page.locator('[data-company-card="qgv"] [data-qgv2-na]').textContent(), /식별 충돌로 사용 중지/);
+        await page.locator('[data-origin-link="leaderboard"]').click();phase = 'W_BACKLINK';await back('back link');
+        phase = 'W_S04_MSFT';await page.locator('#leader-query').fill('');await page.locator('[data-leaderboard-row="msft"]').waitFor();const ids2 = await rowIds(page);assert.equal(ids2.length, 19);
+        await page.evaluate(() => { const r = document.querySelector('[data-leaderboard-row="msft"]').getBoundingClientRect();window.scrollTo(0, Math.max(1, r.top + scrollY - innerHeight / 2)); });await page.waitForTimeout(300);
+        await page.locator('[data-leaderboard-row="msft"] a').first().click();await page.locator('[data-company-card="qgv"]').waitFor();
+        assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="total"] .num').count(), 0);assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="V"] .num').count(), 0);
+        assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="rank"] .num').count(), 0);assert.match(await page.locator('[data-company-card="qgv"] [data-qgv="Q"]').textContent(), /\d/);
+        assert.match(await page.locator('[data-company-card="qgv"]').textContent(), /가격 식별 충돌로 가격·V·종합 점수 사용 중지/);
+        phase = 'W_HISTORY';await page.goBack();await page.locator('[data-leaderboard-table]').waitFor();
+        const [id, top] = await page.evaluate(() => [window.__leaveId, window.__leaveTop]);assert.equal(id, 'msft');
+        await page.waitForFunction(([i, v]) => scrollY > 0 && Math.abs(document.querySelector('[data-leaderboard-row="' + i + '"]').getBoundingClientRect().top - v) <= 2, [id, top], { timeout: 5000 });
+        assert.equal(await page.locator('#leader-query').inputValue(), '');assert.deepEqual(await rowIds(page), ids2);assert.ok(await h1Focused(page));await withdrawnS06(page);
+        assert.deepEqual(external, [], 'no request to another origin');assert.equal(errors, 0);pass++;console.log('PASS QGV v2 withdrawn flow ' + width);
+      } catch (e) { fail++;console.log('FAIL QGV v2 withdrawn flow ' + width + ' ' + phase + ' ' + (e.code === 'ERR_ASSERTION' ? 'CONTRACT ' + e.message.split('\n').slice(0, 6).join(' | ') + ' @' + (e.stack.match(/browser_test.js:(\d+)/) || [])[1] : 'EXECUTION ' + String(e.message).split('\n')[0])); } finally { await context.close(); }
     }
   } finally { await browser.close(); }
   console.log('COUNTS pass=' + pass + ' fail=' + fail);process.exitCode = fail ? 1 : 0;

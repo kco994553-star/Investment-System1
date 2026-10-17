@@ -245,6 +245,7 @@ sic_source           : FSDS sub.sic (as-filed, adsh 결합, S 전 공개분). �
 axis_coverage_min    : 50%   total_coverage_min: 50%
 min_peers            : 8     min_universe: 8
 timing               : 신호 = 직전 완료 거래일 종가, 공시 = filed < 신호일, 체결 = 리밸런싱일 시가 (BT-11)
+close_time           : S 종가 = 뉴욕 16:00, NYSE 조기 폐장일 13:00(명시 표). 휴장·미확인 조기 폐장일은 판단 시각 없음. 서머타임은 zoneinfo. 실데이터 미검증
 holding              : N 동일 금액 비중, 분기 사이 순위 거래 없음, 빈 자리 현금
 selection_unit       : CIK당 1회, 보유 종류 = 사전 등록 규칙 (BT-17)
 tie_break            : 총점 내림차순 → CIK → 고정 상장 id (BT-16)

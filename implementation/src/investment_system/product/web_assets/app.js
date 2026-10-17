@@ -222,7 +222,7 @@ function ensureUniverseDirectory() {
   universeDirectory={state:"LOADING"};
   universeDirectoryPromise=SecUniverseShares.loadInputs(window).then(inputs=>{
     universeDirectory=inputs?{state:"READY",as_of:inputs.as_of,records:inputs.publicShares}:{state:"NOT_AVAILABLE",reason:"SEC_UNIVERSE_SHARES_NOT_PUBLISHED"};
-  }).catch(e=>{universeDirectory={state:"NOT_AVAILABLE",reason:e?.message==="SEC_UNIVERSE_SHARES_INVALID"?"SEC_UNIVERSE_SHARES_INVALID":"SEC_UNIVERSE_SHARES_UNAVAILABLE"};}).then(()=>{
+  }).catch(e=>{universeDirectory={state:"NOT_AVAILABLE",reason:["SEC_UNIVERSE_SHARES_INVALID","SEC_UNIVERSE_SHARES_SCHEMA_NEWER"].includes(e?.message)?e.message:"SEC_UNIVERSE_SHARES_UNAVAILABLE"};}).then(()=>{
     if(!searchIndex) return;rebuildSearchIndex();paintGlobalSearch();
     const [route,id]=location.hash.slice(1).split("/");if(route==="company" && /%3A|:/i.test(id || "")) render();
   });
@@ -233,8 +233,12 @@ function universeDetail(code) {
   const en=appSettings.display_locale==='en-US',ticker=code.slice(code.indexOf(":")+1),r=universeDirectory?.state==="READY"?universeDirectory.records[code]:null;
   const head=`<a class="small" href="#companies">${t("← 기업 목록")}</a>`+heading("UNIVERSE504",CompanyLogos.html(code,40)+esc(ticker),esc(code));
   if(!universeDirectory || universeDirectory.state==="LOADING") return head+`<p role="status" data-universe-company="LOADING">${en?'Loading public Universe504 identity…':'공개 Universe504 정보를 불러오는 중…'}</p>`;
-  if(!r) return head+`<section class="card" data-universe-company="NOT_AVAILABLE"><p class="empty">NOT_AVAILABLE · ${esc(universeDirectory.reason || "NOT_IN_UNIVERSE")}</p></section>`;
-  const rows=[[en?'SEC shares state':'SEC 주식수 상태',r.state+(r.reason_codes.length?' · '+r.reason_codes.join(' · '):'')],[en?'Shares outstanding (SEC cover)':'발행주식수(SEC 표지)',r.shares===null?'NOT_AVAILABLE':Number(r.shares).toLocaleString(appSettings.display_locale)],[en?'Measured':'기준일',r.measurement_date||'—'],[en?'Form':'서식',r.form||'—'],[en?'Share-class basis':'주식 종류 기준',r.share_class_basis],['CIK',r.cik||'—'],[en?'Public file as of':'공개 파일 기준',universeDirectory.as_of]];
+  // A newer data format than this page reads (#289 item 3): ask for a reload instead of showing nothing.
+  const why=universeDirectory.reason==="SEC_UNIVERSE_SHARES_SCHEMA_NEWER"?(en?'The data format is newer. Reload the page':'자료 형식이 새 버전입니다. 새로고침하세요'):universeDirectory.reason;
+  if(!r) return head+`<section class="card" data-universe-company="NOT_AVAILABLE"><p class="empty">NOT_AVAILABLE · ${esc(why || "NOT_IN_UNIVERSE")}</p></section>`;
+  // IDENTITY_CONFLICT_WITHDRAWN (UNI-WITHDRAWN, 2026-10-17): the code's earlier observation is stopped; no count is shown or used.
+  const reason=x=>x==='IDENTITY_CONFLICT_WITHDRAWN'?(en?'withdrawn: identity conflict':'식별 충돌로 사용 중지'):x;
+  const rows=[[en?'SEC shares state':'SEC 주식수 상태',r.state+(r.reason_codes.length?' · '+r.reason_codes.map(reason).join(' · '):'')],[en?'Shares outstanding (SEC cover)':'발행주식수(SEC 표지)',r.shares===null?'NOT_AVAILABLE':Number(r.shares).toLocaleString(appSettings.display_locale)],[en?'Measured':'기준일',r.measurement_date||'—'],[en?'Form':'서식',r.form||'—'],[en?'Share-class basis':'주식 종류 기준',r.share_class_basis],['CIK',r.cik||'—'],[en?'Public file as of':'공개 파일 기준',universeDirectory.as_of]];
   return head+`<section class="card" data-universe-company="${esc(r.state)}"><div class="chips"><span class="badge">Universe504</span><span class="badge">${en?'Name not published':'이름 미공개'}</span><span class="badge">${en?'Price-free':'가격 없음'}</span></div><dl>${rows.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl><p class="small">${en?'Price, market cap, rank and QGV: NOT_AVAILABLE on public screens (GSQ-010). The M3 cap rank is shown only on S06 after reading your Universe sheet on this device (RAM only).':'가격·시가총액·순위·QGV: 공개 화면에서는 NOT_AVAILABLE (GSQ-010). M3 시총 순위는 S06에서 내 기기의 Universe 시트를 읽은 뒤 메모리에서만 표시됩니다.'}</p><a href="#leaderboard">${en?'S06 Company research →':'S06 기업 연구 →'}</a></section>`;
 }
 function entityRow(hit) {
