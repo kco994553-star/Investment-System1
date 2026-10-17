@@ -142,7 +142,7 @@
 | 항목 | 값 | 위치·메모 |
 |---|---|---|
 | 코드 커밋 | `5d11a03a0d9ddae95078ac1b22262af12a61d2fe` | canonical, #278 병합. 실행 시 다시 고정한다. |
-| calc_version | `qgv2-calc/2026-10-17.1` | `src/qgv/v2_factors.py:38`. 10/16 정기 실행 게시본은 `2026-10-15.1`(CURRENT_HANDOFF). 차이는 V 입력뿐이다(V-STALE-BS·V-STALE-SHARES·V-SHARES-SCALE, `v2_factors.py:30-37`). Q·G 지표·요인·축은 같다. |
+| calc_version | `qgv2-calc/2026-10-17.1` | `src/qgv/v2_factors.py:38`. 10/17 504 일괄 실행 run 38996553263(배포 03:35 UTC)으로 `2026-10-17.1`이 게시됐다. 그 전 게시본(10/16 정기 실행)은 `2026-10-15.1`이었다. 두 버전의 차이는 V 입력뿐이다(V-STALE-BS·V-STALE-SHARES·V-SHARES-SCALE, `v2_factors.py:30-37`). Q·G 지표·요인·축은 같다. |
 | 점수 버전 | `qgv-v2`, 프로필 `qgv-v2/balanced/gate-on` | `src/qgv/qgv_v2.py:17, 405` |
 | 유형 설정 | `type_config/1`(OFFICIAL_PROVISIONAL, V2_PENDING) | `src/qgv/type_config_v1.json`, 기기 사본 `web/type-config-defaults.js` |
 | 업종군 | `sic_industry_groups/v0`(10개 묶음) | `src/qgv/sic_industry_groups_v0.json`, `src/qgv/sic_industry.py` |
@@ -210,7 +210,7 @@ tie_break            : CIK (BT-16)
 - **B는 A와 거의 같아진다.** BT-4 권장안이면 A의 최종 비중이 모든 행에서 34/33/33이다. B(각 1/3)와 Q 0.67%p만 다르다.
 - **D는 V가 없거나 관문에 걸린 행에서 A와 총점이 같다.** 차이는 V가 총점에 들어간 행에서만 생긴다.
 - **업종은 10개 큰 묶음이다.** "업종 내" 백분위와 관문이 넓은 묶음 안에서 계산된다.
-- **calc_version.** 지금 코드는 `2026-10-17.1`, 마지막 게시 확인본은 `2026-10-15.1`이다. 차이는 V 입력뿐이다.
+- **calc_version.** 지금 코드와 게시본 모두 `2026-10-17.1`이다(10/17 504 일괄 실행 run 38996553263, 배포 03:35 UTC). 직전 게시본 `2026-10-15.1`과의 차이는 V 입력뿐이다.
 
 ---
 
