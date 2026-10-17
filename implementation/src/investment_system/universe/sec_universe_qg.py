@@ -15,6 +15,9 @@ its own acquired_at, a new row of this run's collection replaces the kept one al
 without scores (its NOT_AVAILABLE reason is published, owner rule 2026-10-17), a row
 without its own collection record never erases a kept score, and rows past the
 shared v0 stale window (sec-universe-shares/v0, DEFAULT_V0_UNCALIBRATED) are STALE.
+An identity conflict without this run's collection withdraws a kept row with a collection record (owner decision
+UNI-WITHDRAWN (a), `sec_universe_shares.withdrawal`: IDENTITY_CONFLICT_WITHDRAWN, detected_at, withdrawn_acquired_at,
+withdrawn_cik naming this file's row, no scores).
 """
 from datetime import timedelta, timezone
 import hashlib
@@ -22,8 +25,9 @@ import json
 import math
 import re
 
-from .sec_universe_shares import (IDENTITY_CONFLICT, PRESERVE, _clock, _hash, _iso, load_config, note, previous_decision, replaces,
-                                   universe_codes)
+from .sec_universe_shares import (IDENTITY_CONFLICT, PRESERVE, WITHDRAWAL_KEYS, WITHDRAWN_REASON, _clock, _hash, _iso, is_withdrawal,
+                                   load_config, note, previous_decision, replaces, require_withdrawal, universe_codes, withdrawal,
+                                   withdrawal_stays)
 
 FILENAME = 'sec-universe-qg.json'
 KIND = 'SEC_UNIVERSE_QG'
@@ -138,14 +142,20 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
                 cik = new.get('cik') if type(new) is dict else None
                 new = empty_record(cik=cik if type(cik) is str and re.fullmatch(r'[0-9]{10}', cik) and cik != '0000000000' else None,
                                    reasons=('INVALID_INPUT',))
+            if is_withdrawal(new):   # only a merge writes a withdrawal; a collected row never is one
+                new = empty_record(reasons=('INVALID_INPUT',))
         observed = lambda r: r['acquired_at'] is not None
+        if withdrawal_stays(old, new, code=code, conflicts=conflicts, observed=observed):
+            records[code] = restate(old, as_of, stale_after)
+            continue
         decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflicts, new_observation=observed)
         note(stats, decision, code, old)
         if decision == PRESERVE:
             pass
-        elif decision == IDENTITY_CONFLICT and new is None:
-            # Withdrawn over an identity conflict (a ticker claimed by several CIKs): unresolved, no acquired_at.
-            old = empty_record(reasons=('CIK_UNRESOLVED',))
+        elif decision == IDENTITY_CONFLICT and (new is None or not observed(new)):
+            # Identity conflict without this run's collection: this file's kept observation is withdrawn (UNI-WITHDRAWN);
+            # without one, unresolved (no row this run) or this run's NA row, never an invented time.
+            old = withdrawal(old, empty_record, detected_at=as_of) or (new if new is not None else empty_record(reasons=('CIK_UNRESOLVED',)))
         elif decision == IDENTITY_CONFLICT or replaces(new, old, observed=observed, has_value=_scored):
             old = new
         elif new is None and code in unresolved and not _scored(old):
@@ -166,7 +176,10 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
 
 
 def _record(r, cut, ttl):
-    _need(type(r) is dict and set(r) == set(RECORD_KEYS))
+    withdrawn = is_withdrawal(r)
+    if withdrawn:   # identity-conflict withdrawal (sec_universe_shares.WITHDRAWAL_KEYS): only on such a row
+        require_withdrawal(r, cut, empty_record)
+    _need(type(r) is dict and set(r) == set(RECORD_KEYS) | (set(WITHDRAWAL_KEYS) if withdrawn else set()))
     _need(r['cik'] is None or type(r['cik']) is str and re.fullmatch(r'[0-9]{10}', r['cik']) is not None and r['cik'] != '0000000000')
     h = r['source_sha256']
     _need(type(h) is dict and set(h) == set(HASH_KEYS) and all(v is None or _hash(v) for v in h.values()))
@@ -177,7 +190,8 @@ def _record(r, cut, ttl):
         _need(_clock(r['acquired_at']) <= cut and r['cik'] is not None and h['companyfacts'] and h['submissions'])
     _need(r['state'] in STATES)
     reasons = r['reason_codes']
-    _need(type(reasons) is list and len(reasons) == len(set(reasons)) <= 4 and all(x in REASONS for x in reasons))
+    _need(type(reasons) is list and len(reasons) == len(set(reasons)) <= 4
+          and all(x in REASONS or withdrawn and x == WITHDRAWN_REASON for x in reasons))
     factors = r['factors']
     _need(type(factors) is dict and set(factors) == set(FACTORS))
     # A factor is its 0-100 score or null (NOT_AVAILABLE); a scored factor shares the row state.

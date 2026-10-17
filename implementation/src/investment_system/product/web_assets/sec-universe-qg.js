@@ -6,19 +6,25 @@
  const STATES=['LIVE','STALE','NOT_AVAILABLE'],REASONS=['NOT_COLLECTED','CIK_UNRESOLVED','INVALID_INPUT','M1_NOT_AVAILABLE','UNRESOLVED_CURRENT_FACT_AMBIGUITY','QG_NOT_AVAILABLE','STALE_INPUT'],TOP_REASONS=['STALE_INPUT','NO_ELIGIBLE_INPUT'];
  const TOP=['schema_version','kind','as_of','config_version','config_status','method_status','availability_basis','freshness_basis','stale_after_seconds','shard_count','last_shard_index','registry_sha256','code_count','state','reason_codes','records'];
  const KEYS=['cik','acquired_at','source_sha256','factors','state','reason_codes'];
+ /* Identity-conflict withdrawal (UNI-WITHDRAWN (a) 2026-10-17; Python sec_universe_shares.require_withdrawal): the empty row with
+    reason IDENTITY_CONFLICT_WITHDRAWN only plus detected_at / withdrawn_acquired_at / withdrawn_cik naming this file's stopped row. */
+ const WITHDRAWN_REASON='IDENTITY_CONFLICT_WITHDRAWN',WITHDRAWAL_KEYS=['detected_at','withdrawn_acquired_at','withdrawn_cik'];
  function need(x){if(!x)throw Error('SEC_UNIVERSE_QG_INVALID');}
  const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x),keys=(x,k)=>plain(x)&&Object.keys(x).length===k.length&&k.every(n=>Object.hasOwn(x,n));
  const hash=x=>typeof x==='string'&&/^[0-9a-f]{64}$/.test(x),score=x=>typeof x==='number'&&Number.isFinite(x)&&x>=0&&x<=100;
  const day=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x)&&new Date(x+'T00:00:00Z').toISOString().slice(0,10)===x;
  function clock(x){need(typeof x==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/.test(x)&&day(x.slice(0,10)));const t=Date.parse(x);need(Number.isFinite(t));return t;}
  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ const canon=x=>Array.isArray(x)?'['+x.map(canon).join(',')+']':plain(x)?'{'+Object.keys(x).sort().map(k=>JSON.stringify(k)+':'+canon(x[k])).join(',')+'}':JSON.stringify(x);
+ const cikOk=x=>typeof x==='string'&&/^\d{10}$/.test(x)&&x!=='0000000000',withdrawal=r=>plain(r)&&Object.hasOwn(r,'detected_at');
+ function withdrawn(r,cut){need(keys(r,KEYS.concat(WITHDRAWAL_KEYS))&&canon(Object.fromEntries(Object.entries(r).filter(([k])=>!WITHDRAWAL_KEYS.includes(k))))===canon(emptyRecord(WITHDRAWN_REASON)));const detected=clock(r.detected_at);need(detected<=cut&&clock(r.withdrawn_acquired_at)<=detected&&cikOk(r.withdrawn_cik));}
  /* One row (mirrors Python _record). A scored factor shares the row's LIVE/STALE state; a row without any score is NOT_AVAILABLE with a fixed reason. */
  function record(r,cut,ttl){
-  need(keys(r,KEYS));need(r.cik===null||typeof r.cik==='string'&&/^\d{10}$/.test(r.cik)&&r.cik!=='0000000000');
+  const w=withdrawal(r);if(w)withdrawn(r,cut);need(keys(r,w?KEYS.concat(WITHDRAWAL_KEYS):KEYS));need(r.cik===null||typeof r.cik==='string'&&/^\d{10}$/.test(r.cik)&&r.cik!=='0000000000');
   const h=r.source_sha256;need(keys(h,['companyfacts','submissions'])&&Object.values(h).every(v=>v===null||hash(v)));
   if(r.acquired_at===null)need(h.companyfacts===null&&h.submissions===null);else need(clock(r.acquired_at)<=cut&&r.cik!==null&&h.companyfacts&&h.submissions);
   need(STATES.includes(r.state));const reasons=r.reason_codes;
-  need(Array.isArray(reasons)&&reasons.length<=4&&new Set(reasons).size===reasons.length&&reasons.every(x=>REASONS.includes(x)));
+  need(Array.isArray(reasons)&&reasons.length<=4&&new Set(reasons).size===reasons.length&&reasons.every(x=>REASONS.includes(x)||w&&x===WITHDRAWN_REASON));
   const f=r.factors;need(keys(f,FACTORS)&&FACTORS.every(k=>f[k]===null||score(f[k])));
   if(!FACTORS.some(k=>f[k]!==null))need(r.state==='NOT_AVAILABLE'&&reasons.length&&!reasons.includes('STALE_INPUT'));
   else{need(r.acquired_at!==null);const fresh=cut-clock(r.acquired_at)<=ttl*1000;need(r.state===(fresh?'LIVE':'STALE')&&same(reasons,fresh?[]:['STALE_INPUT']));}
@@ -51,5 +57,5 @@
   const text=await response.text();if(new TextEncoder().encode(text).length>MAX)throw Error('SEC_UNIVERSE_QG_INVALID');let payload;try{payload=JSON.parse(text);}catch(_){throw Error('SEC_UNIVERSE_QG_INVALID');}
   return toInputs(payload,{now:now||new Date().toISOString()});
  }
- return Object.freeze({FILENAME,FACTORS,CONFIG_STATUS,validate,emptyRecord,restate,targetRow,toInputs,loadInputs});
+ return Object.freeze({FILENAME,FACTORS,CONFIG_STATUS,WITHDRAWN_REASON,validate,emptyRecord,restate,targetRow,toInputs,loadInputs});
 });

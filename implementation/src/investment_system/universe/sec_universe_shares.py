@@ -347,9 +347,10 @@ def previous_decision(old, new, *, code, unresolved=(), conflicts=(), new_observ
       freshness/STALE/ranking rules judge it as before.
     - IDENTITY_CONFLICT: another CIK for the code, or explicit conflict evidence this run (`conflicts`: a ticker claimed
       by several CIKs, an issuer whose SEC response named another CIK). This run's row replaces the kept one, also over
-      a kept value: another issuer's earlier values are never carried. With no row this run (a ticker claimed by
-      several CIKs is unresolved, so nothing was collected) the kept row is withdrawn: the merges publish the code as
-      CIK_UNRESOLVED without CIK and acquired_at (the time a conflict is detected is not a collection time).
+      a kept value: another issuer's earlier values are never carried. Without this run's collection (no row: a ticker
+      claimed by several CIKs is unresolved; or a row without its own collection record) the kept row is withdrawn: a
+      kept collection record becomes a withdrawal row naming it (`withdrawal`, owner decision UNI-WITHDRAWN (a)), else the
+      code is CIK_UNRESOLVED / this run's NA row without acquired_at (a detection time is not a collection time).
     A new observation (successful collection, also a policy NA or an invalid input) never meets PRESERVE."""
     if new is None:
         if code in conflicts:
@@ -373,6 +374,62 @@ def replaces(new, old, *, observed, has_value):
     return new is not None and (observed(new) or not (not has_value(new) and has_value(old)))
 
 
+# ---- identity-conflict withdrawal (owner decision UNI-WITHDRAWN (a), 2026-10-17; TARGET /4 and sec-qgv2.json `target` rule) ----
+# An IDENTITY_CONFLICT without a collection of this run (a ticker claimed by several CIKs, an SEC response naming another
+# CIK, another CIK without its own collection record) stops the use of the code's published observation in each Universe
+# file. When that file's kept row has a collection record, the code is published as a withdrawal row: NOT_AVAILABLE, reason
+# IDENTITY_CONFLICT_WITHDRAWN only, no CIK, acquired_at, sources or values, plus three keys found on no other row:
+# `detected_at` (the publishing merge's time when the conflict was first seen: never an acquisition time, never a freshness
+# marker), `withdrawn_acquired_at` and `withdrawn_cik` (the acquired_at and CIK of THAT file's kept row: each file names
+# its own observation, nothing is copied from TARGET or another file). Without a kept collection record nothing is
+# invented: the code is CIK_UNRESOLVED (no row this run) or this run's NA row, as before.
+# The withdrawal stays unchanged (first detection, same named observation) through later runs while the conflict lasts,
+# through transient/identification failures, unresolved symbols and preserve-only rebuilds. Only a new collection of this
+# run with confirmed identity (the code's own collection record, acquired_at at or after the detection, no conflict this
+# run) replaces it; that row is the new issuer's own observation, never joined to the withdrawn issuer's history.
+WITHDRAWN_REASON = 'IDENTITY_CONFLICT_WITHDRAWN'
+WITHDRAWAL_KEYS = ('detected_at', 'withdrawn_acquired_at', 'withdrawn_cik')
+
+
+def is_withdrawal(row):
+    """A Universe withdrawal row (WITHDRAWAL_KEYS)."""
+    return type(row) is dict and 'detected_at' in row
+
+
+def withdrawal(old, empty, *, detected_at):
+    """The row an IDENTITY_CONFLICT without this run's collection publishes for one code of one file, or None.
+
+    `old`: that file's kept row; `empty`: the file's `empty_record`. A kept withdrawal is returned unchanged; a kept row
+    with a collection record (its own acquired_at and CIK) is named by a new withdrawal; anything else -> None (the
+    caller publishes its plain NA row: no detection or acquisition time is invented)."""
+    if is_withdrawal(old):
+        return old
+    if type(old.get('acquired_at')) is str and type(old.get('cik')) is str:
+        return dict(empty(reasons=(WITHDRAWN_REASON,)), detected_at=_iso(detected_at), withdrawn_acquired_at=old['acquired_at'],
+                    withdrawn_cik=old['cik'])
+    return None
+
+
+def withdrawal_stays(old, new, *, code, conflicts, observed):
+    """True when the kept row is a withdrawal and this run's row is not a confirmed new collection of the code
+    (`observed`, acquired_at at or after the detection, the code without conflict evidence this run)."""
+    if not is_withdrawal(old):
+        return False
+    return not (new is not None and not is_withdrawal(new) and code not in conflicts and observed(new)
+                and _clock(new['acquired_at']) >= _clock(old['detected_at']))
+
+
+def require_withdrawal(r, cut, empty):
+    """Strict check of a withdrawal row's own keys: exactly the file's empty row with the withdrawal reason, a detection
+    no later than the file, naming one earlier collection (acquired_at and CIK) of the code."""
+    _need(type(r) is dict and set(r) - set(WITHDRAWAL_KEYS) == set(empty()) and set(WITHDRAWAL_KEYS) <= set(r))
+    _need({k: v for k, v in r.items() if k not in WITHDRAWAL_KEYS} == empty(reasons=(WITHDRAWN_REASON,)))
+    detected = _clock(r['detected_at'])
+    _need(detected <= cut and _clock(r['withdrawn_acquired_at']) <= detected)
+    cik = r['withdrawn_cik']
+    _need(type(cik) is str and re.fullmatch(r'[0-9]{10}', cik) is not None and cik != '0000000000')
+
+
 def note(stats, decision, code, old):
     """Codes of this merge kept by PRESERVE / of another identity not carried (a kept collection record replaced)."""
     if stats is None:
@@ -387,6 +444,7 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
           conflicts=(), stats=None, transient=()):
     """Previous published rows + this shard's rows. A new row of this run's collection (identity confirmed: listing_id
     set) replaces the kept one also without shares (`replaces`); a row without that record never erases a kept value.
+    Identity conflicts withdraw a kept collection record (`withdrawal`); a kept withdrawal stays (`withdrawal_stays`).
     `previous_decision` keeps a verified row across a collection/identification failure and never carries a row
     across an identity conflict (`conflicts`: codes with conflict evidence this run; `stats`: see `note`).
     `transient`: codes whose collection hit a transient failure after the SEC bytes arrived (the cover filing fetch
@@ -407,16 +465,22 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
                 _record(code, restate(new, as_of, stale_after), _clock(_iso(as_of)), stale_after)
             except (ValueError, TypeError, KeyError, AttributeError, OverflowError):
                 new = empty_record(cik=new.get('cik') if type(new) is dict and type(new.get('cik')) is str and re.fullmatch(r'[0-9]{10}', new['cik']) else None, reasons=('INVALID_INPUT',))
+            if is_withdrawal(new):   # only a merge writes a withdrawal; a collected row never is one
+                new = empty_record(reasons=('INVALID_INPUT',))
         # A row naming a CIK other than the one fetched is identity conflict evidence of this run.
         conflict = set(conflicts) | ({code} if new is not None and 'CIK_MISMATCH' in new['reason_codes'] else set())
         observed = lambda r: r['listing_id'] is not None and not (code in transient and r['shares'] is None)
+        if withdrawal_stays(old, new, code=code, conflicts=conflict, observed=observed):
+            records[code] = restate(old, as_of, stale_after)
+            continue
         decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflict, new_observation=observed)
         note(stats, decision, code, old)
         if decision == PRESERVE:
             pass
-        elif decision == IDENTITY_CONFLICT and new is None:
-            # Withdrawn over an identity conflict (a ticker claimed by several CIKs): unresolved, no acquired_at.
-            old = empty_record(reasons=('CIK_UNRESOLVED',))
+        elif decision == IDENTITY_CONFLICT and (new is None or not observed(new)):
+            # Identity conflict without this run's collection: the kept observation is withdrawn (UNI-WITHDRAWN); without
+            # one, unresolved (no row this run) or this run's NA row, never an invented time.
+            old = withdrawal(old, empty_record, detected_at=as_of) or (new if new is not None else empty_record(reasons=('CIK_UNRESOLVED',)))
             replaced.add(code)
         elif decision == IDENTITY_CONFLICT or replaces(new, old, observed=observed, has_value=lambda r: r['shares'] is not None):
             old = new
@@ -452,7 +516,10 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
 
 
 def _record(code, r, cut, ttl):
-    _need(type(r) is dict and set(r) == set(RECORD_KEYS))
+    withdrawn = is_withdrawal(r)
+    if withdrawn:
+        require_withdrawal(r, cut, empty_record)
+    _need(type(r) is dict and set(r) == set(RECORD_KEYS) | (set(WITHDRAWAL_KEYS) if withdrawn else set()))
     venue, symbol = _sec_symbol(code)
     _need(r['cik'] is None or type(r['cik']) is str and re.fullmatch(r'[0-9]{10}', r['cik']) is not None and r['cik'] != '0000000000')
     mic = {'NASDAQ': 'XNAS', 'NYSE': 'XNYS'}.get(venue)
@@ -478,7 +545,8 @@ def _record(code, r, cut, ttl):
     h = r['source_sha256']
     _need(type(h) is dict and set(h) == set(HASH_KEYS) and all(v is None or _hash(v) for v in h.values()))
     reasons = r['reason_codes']
-    _need(type(reasons) is list and len(reasons) == len(set(reasons)) <= 4 and all(x in REASONS for x in reasons))
+    _need(type(reasons) is list and len(reasons) == len(set(reasons)) <= 4
+          and all(x in REASONS or withdrawn and x == WITHDRAWN_REASON for x in reasons))
     filing_keys = ('measurement_date', 'accn', 'form', 'filed', 'concept')
     # Identity rows carry their own capture time and SEC hashes even when no count is published.
     _need(r['listing_id'] is None or (r['acquired_at'] is not None and h['companyfacts'] and h['submissions']))

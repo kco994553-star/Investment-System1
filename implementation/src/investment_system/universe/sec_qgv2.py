@@ -16,6 +16,9 @@ Scores are recomputed at every publication over all current LIVE/STALE Universe 
 so the published factor/axis scores are reproducible from the published raw metrics; the strict
 validators (Python here, JS web_assets/sec-qgv2.js) recompute and compare them.
 
+Universe identity conflicts without this run's collection withdraw a kept row with a collection record (owner decision
+UNI-WITHDRAWN (a): `sec_universe_shares.withdrawal`, UNIVERSE_WITHDRAWAL_KEYS), like the TARGET withdrawal below.
+
 Never: prices, price-derived values, market caps, ranks or 0-filled missing values.
 """
 from __future__ import annotations
@@ -28,6 +31,7 @@ import re
 
 from ..qgv import v2_factors as vf
 from ..qgv import v2_scoring as vs
+from . import sec_universe_shares as _us
 from .sec_universe_shares import (IDENTITY_CONFLICT, PRESERVE, _clock, _hash, _iso, load_config, note, previous_decision, replaces,
                                    universe_codes)
 
@@ -45,8 +49,11 @@ TOP_REASONS = ('STALE_INPUT', 'NO_ELIGIBLE_INPUT')
 # SEC_ISSUER_NOT_ALLOWED) publishes a withdrawal row: no values and no scores, reason IDENTITY_CONFLICT_WITHDRAWN, the
 # issuer's TARGET CIK, `detected_at` (when the conflict was seen, never an acquired_at) and `withdrawn_acquired_at` (the
 # acquired_at of the row whose use it stops, null without one). The previous row is never carried; readers never use it.
-WITHDRAWN_REASON = 'IDENTITY_CONFLICT_WITHDRAWN'
+WITHDRAWN_REASON = _us.WITHDRAWN_REASON
 WITHDRAWAL_KEYS = ('detected_at', 'withdrawn_acquired_at')
+# `records` section (owner decision UNI-WITHDRAWN (a), 2026-10-17): the Universe withdrawal of sec_universe_shares
+# (`withdrawal`): no CIK, `withdrawn_cik` naming the issuer of the stopped row, `withdrawn_acquired_at` always set.
+UNIVERSE_WITHDRAWAL_KEYS = _us.WITHDRAWAL_KEYS
 METHOD = {
     'weights': {'Q': dict(vs.Q_WEIGHTS_V2), 'G': dict(vs.G_WEIGHTS_V2)},
     'min_peers': vs.MIN_PEERS,
@@ -196,7 +203,7 @@ def build_target_rows(entries, *, sic_config=None):
 
 
 def is_withdrawal(record):
-    """A TARGET withdrawal row (see WITHDRAWAL_KEYS)."""
+    """A withdrawal row: TARGET (WITHDRAWAL_KEYS) or Universe (UNIVERSE_WITHDRAWAL_KEYS)."""
     return type(record) is dict and 'detected_at' in record
 
 
@@ -271,7 +278,9 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
     """Previous published rows + this run's Universe/TARGET rows, then publication-time scoring.
 
     Universe rows also follow `previous_decision` (a row without its own collection record is no new observation): a
-    kept row of another calc_version stays outside the ranking population (CALC_VERSION_MISMATCH) as before."""
+    kept row of another calc_version stays outside the ranking population (CALC_VERSION_MISMATCH) as before. An identity
+    conflict without this run's collection withdraws the kept row (`sec_universe_shares.withdrawal`); a kept withdrawal
+    stays until a confirmed new collection (`withdrawal_stays`)."""
     cfg = config or load_config()
     sic_cfg = _sic_config()
     stale_after = timedelta(days=cfg['stale_after_days'])
@@ -281,17 +290,26 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
     for code in universe_codes():
         old = versioned(kept[code]) if code in kept else empty_record()
         new = _checked(updates.get(code), as_of, stale_after, cut, sic_cfg)
-        decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflicts,
-                                     new_observation=lambda r: r['acquired_at'] is not None)
+        if is_withdrawal(new):   # only a merge writes a withdrawal; a collected row never is one
+            new = empty_record(reasons=('INVALID_INPUT',))
+        observed = lambda r: r['acquired_at'] is not None
+        if _us.withdrawal_stays(old, new, code=code, conflicts=conflicts, observed=observed):
+            records[code] = restate(old, as_of, stale_after)
+            continue
+        decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflicts, new_observation=observed)
         note(stats, decision, code, old)
         if decision == PRESERVE:
             chosen = old
+        elif decision == IDENTITY_CONFLICT and (new is None or not observed(new)):
+            # Identity conflict without this run's collection: this file's kept observation is withdrawn (UNI-WITHDRAWN);
+            # without one, unresolved (no row this run) or this run's NA row, never an invented time.
+            chosen = _us.withdrawal(old, empty_record, detected_at=as_of) or (
+                new if new is not None else empty_record(reasons=('CIK_UNRESOLVED',)))
         elif decision == IDENTITY_CONFLICT:
-            # No row this run (a ticker claimed by several CIKs): withdrawn, unresolved without acquired_at.
-            chosen = new if new is not None else empty_record(reasons=('CIK_UNRESOLVED',))
+            chosen = new
         else:
             chosen = _pick(old, new, as_of, stale_after, cut, sic_cfg)
-        if new is None and code in unresolved and not _has_data(chosen) and decision != PRESERVE:
+        if new is None and code in unresolved and not _has_data(chosen) and decision != PRESERVE and not is_withdrawal(chosen):
             chosen = empty_record(reasons=('CIK_UNRESOLVED',))
         records[code] = restate(chosen, as_of, stale_after)
     kept_target = (previous or {}).get('target') or {}
@@ -401,7 +419,13 @@ def _v_inputs(v, cut_day, has_data):
 def _row(r, cut, ttl, sic_cfg, *, target_id=None, is_versioned=True):
     keys = set(ROW_KEYS if is_versioned else LEGACY_ROW_KEYS)
     withdrawal = target_id is not None and is_versioned and type(r) is dict and set(r) == keys | set(WITHDRAWAL_KEYS)
-    _need(type(r) is dict and (set(r) == keys or withdrawal))
+    universe_withdrawal = target_id is None and is_withdrawal(r)
+    if universe_withdrawal:
+        # A Universe withdrawal (UNIVERSE_WITHDRAWAL_KEYS, versioned files only): the empty row with the reason, naming one
+        # earlier collection of the code.
+        _need(is_versioned)
+        _us.require_withdrawal(r, cut, empty_record)
+    _need(type(r) is dict and (set(r) == keys or withdrawal or universe_withdrawal))
     if withdrawal:
         # A TARGET withdrawal (WITHDRAWAL_KEYS): the issuer's TARGET CIK, no collection record, no values.
         _need(target_cik(target_id) is not None and r['cik'] == target_cik(target_id) and r['acquired_at'] is None)
@@ -423,7 +447,7 @@ def _row(r, cut, ttl, sic_cfg, *, target_id=None, is_versioned=True):
     _need(r['state'] in STATES)
     reasons = r['reason_codes']
     _need(type(reasons) is list and len(reasons) == len(set(reasons)) <= 3
-          and all(x in REASONS or withdrawal and x == WITHDRAWN_REASON for x in reasons))
+          and all(x in REASONS or (withdrawal or universe_withdrawal) and x == WITHDRAWN_REASON for x in reasons))
     from ..qgv.sic_industry import classify_sic
     _need(r['sic'] is None or type(r['sic']) is str and re.fullmatch(r'[0-9]{4}', r['sic']) is not None and r['sic'] != '0000')
     if r['sic'] is None:
@@ -576,6 +600,6 @@ def summary_line(payload, *, prefix):
     t_q = sum(1 for r in target if r['axes']['Q']['score'] is not None)
     t_g = sum(1 for r in target if r['axes']['G']['score'] is not None)
     return (f"{prefix} live={count('LIVE')} stale={count('STALE')} not_available={count('NOT_AVAILABLE')} "
-            f"cross_section={payload['cross_section_size']} q_scored={q_scored} g_scored={g_scored} "
+            f"withdrawn={sum(1 for r in rows if is_withdrawal(r))} cross_section={payload['cross_section_size']} q_scored={q_scored} g_scored={g_scored} "
             f"target_live={t_live} target_q_scored={t_q} target_g_scored={t_g} "
             f"target_withdrawn={sum(1 for r in target if is_withdrawal(r))}")

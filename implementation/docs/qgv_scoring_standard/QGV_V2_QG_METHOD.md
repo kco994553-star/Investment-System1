@@ -306,6 +306,26 @@ issuers still count the same-CIK Universe rows as peers (a Universe-section chan
 `test_target_withdrawal_e2e.py`, vectors `target_withdrawn_*` (`sec_qgv2_node_test.js`), `qgv_scores_node_test.js`
 ("identity-conflict withdrawal: …").
 
+**Universe identity withdrawal (owner decision UNI-WITHDRAWN (a), 2026-10-17; `records` of this file, `sec-universe-shares.json`
+and `sec-universe-qg.json`).** When a Universe code meets an identity conflict without a collection of this run (a ticker claimed by
+several CIKs, an SEC response naming another CIK, another CIK without its own collection record) and a file's kept row of the code
+has a collection record, that file publishes a withdrawal row instead: state NOT_AVAILABLE, reason `IDENTITY_CONFLICT_WITHDRAWN`
+only, no CIK, `acquired_at`, sources, metrics or scores, plus three keys found on no other row: `detected_at` (the publishing run's
+time when the conflict was first seen; never an acquisition or freshness time), `withdrawn_acquired_at` and `withdrawn_cik` (the
+`acquired_at` and CIK of THAT file's kept row; each file names its own observation, nothing is copied from TARGET or another file).
+Without a kept collection record the code stays `CIK_UNRESOLVED` (or this run's NA row) and no time is made up. The withdrawal is
+kept unchanged (first detection, same named row) while the conflict lasts and through fetch failures, unresolved symbols,
+identification failures and preserve-only rebuilds; only a new collection of the code with confirmed identity, collected at or
+after the detection, replaces it (a new holder of the ticker starts from its own row, never the withdrawn issuer's history).
+Withdrawal rows are not new collections, not LIVE/STALE, outside the cross-section, every percentile and the Q·G coverage counts
+(`withdrawn=` on the daily summary lines and the published coverage line), and stay in the 504-code denominator. Validators
+(Python and JS, vectors `universe_withdrawn_*` / `withdrawn_*`) accept the keys only on such a row; the freshness guard passes it
+only when it names the live row exactly (`withdrawn_acquired_at`, `withdrawn_cik`, detection not before it), else
+`WITHDRAWAL_MISMATCH` / `OLDER`, and refuses an artifact that brings the stopped row back (`OLDER`). No schema-version or
+calculation change (`calc_version` unchanged). On the device the row is stopped like a TARGET withdrawal (`Qgv2Inputs`
+`identity_withdrawn`, "식별 충돌로 사용 중지"): no score, rank or candidate place, no M3 identity or market cap from the shares row,
+and the candidate list never scores the code with another row of the same ticker. Tests: `test_universe_withdrawal_e2e.py`.
+
 `v_inputs_v2` holds the price-free inputs the device needs to compute V in RAM. Amounts are exact SEC values in the row currency.
 - `ebit`, `fcf`: `{fy_value, fy_end, ttm_value, ttm_end}`. FCF = OCF − capex for the same period.
 - `total_debt`, `cash_and_equivalents`: `{value, period_end}`, each at its own latest balance-sheet date (they can differ). Debt uses the same rule as section 1.

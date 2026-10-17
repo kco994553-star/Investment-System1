@@ -39,7 +39,10 @@ and QGV v2 separately; counts only).
 # failure, a row the strict check rejects, a shares row without a count after the cover fetch failed), keeps its
 # verified previous row of the same CIK unchanged. Identity conflicts (another CIK for the code, a ticker claimed by
 # several CIKs, an SEC response naming another CIK) never keep an earlier row: a ticker claimed by several CIKs has no
-# row this run and is published CIK_UNRESOLVED without acquired_at. Owner rule 2026-10-17 (later): a row of a successful
+# row this run. Owner decision UNI-WITHDRAWN (a) 2026-10-17: such a code whose kept row in a file has a collection record
+# is published there as a withdrawal row (IDENTITY_CONFLICT_WITHDRAWN, detected_at, withdrawn_acquired_at, withdrawn_cik,
+# no values), kept unchanged until a confirmed new collection; without a kept record it is CIK_UNRESOLVED without
+# acquired_at (nothing invented). Each summary line counts withdrawn rows. Owner rule 2026-10-17 (later): a row of a successful
 # collection replaces the kept row also when it is NOT_AVAILABLE or INVALID_INPUT (daily and --all-shards alike).
 # `SEC_UNIVERSE_COLLECTION` counts new collections, failures and published rows of an earlier run.
 import argparse
@@ -62,8 +65,8 @@ from investment_system.providers.sec_universe_collection import (
     UniverseSecClient, collect_partition, daily_partition, fetch_ticker_exchange, universe_registry,
 )
 from investment_system.universe.sec_universe_shares import (
-    FILENAME, MAX_BYTES, build_issuer_records, empty_record, encode, load_config, merge, parse_json, require_universe_shares,
-    select_cover_filing, shard_day, shard_index_for, universe_codes, upgrade_legacy,
+    FILENAME, MAX_BYTES, build_issuer_records, empty_record, encode, is_withdrawal, load_config, merge, parse_json,
+    require_universe_shares, select_cover_filing, shard_day, shard_index_for, universe_codes, upgrade_legacy,
 )
 from investment_system.universe import sec_universe_qg as qg
 from investment_system.universe import sec_qgv2 as qgv2
@@ -313,7 +316,7 @@ def _summary(payload):
     rows = payload['records'].values()
     count = lambda key, value: sum(1 for r in rows if r[key] == value)
     return (f"live={count('state', 'LIVE')} stale={count('state', 'STALE')} not_available={count('state', 'NOT_AVAILABLE')} "
-            f"single_class={count('share_class_basis', 'SINGLE_CLASS_CONFIRMED')} share_class_basis={count('share_class_basis', 'SHARE_CLASS_BASIS')} "
+            f"withdrawn={sum(1 for r in rows if is_withdrawal(r))} single_class={count('share_class_basis', 'SINGLE_CLASS_CONFIRMED')} share_class_basis={count('share_class_basis', 'SHARE_CLASS_BASIS')} "
             f"basis_unconfirmed={count('share_class_basis', 'BASIS_UNCONFIRMED')}")
 
 
@@ -321,7 +324,8 @@ def _qg_summary(payload):
     rows = payload['records'].values()
     count = lambda value: sum(1 for r in rows if r['state'] == value)
     scored = sum(1 for r in rows for score in r['factors'].values() if score is not None)
-    return f"live={count('LIVE')} stale={count('STALE')} not_available={count('NOT_AVAILABLE')} factor_scores={scored}"
+    return (f"live={count('LIVE')} stale={count('STALE')} not_available={count('NOT_AVAILABLE')} "
+            f"withdrawn={sum(1 for r in rows if is_withdrawal(r))} factor_scores={scored}")
 
 
 def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kwargs=None,

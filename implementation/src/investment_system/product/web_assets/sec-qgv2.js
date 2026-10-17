@@ -23,6 +23,9 @@
     (sec-public-inputs.json WITHDRAWN). No values or scores; detected_at is when the conflict was seen (never an acquired_at);
     withdrawn_acquired_at names the row whose use it stops. Readers never use the stopped row. */
  const WITHDRAWN_REASON='IDENTITY_CONFLICT_WITHDRAWN',WITHDRAWAL_KEYS=['detected_at','withdrawn_acquired_at'];
+ /* `records` section (UNI-WITHDRAWN (a) 2026-10-17; Python sec_universe_shares.require_withdrawal): a Universe withdrawal is the
+    empty row with that reason only, no CIK, plus detected_at / withdrawn_acquired_at / withdrawn_cik naming this file's stopped row. */
+ const UNIVERSE_WITHDRAWAL_KEYS=['detected_at','withdrawn_acquired_at','withdrawn_cik'];
  /* calc_version (owner supplement 2026-10-15; Python v2_factors.CALC_VERSION): a versioned file declares the current calculation-rule
     version and every row carries the version it was computed with (null: no data or a legacy row). Rows of another version are never
     in the same percentile population (axes CALC_VERSION_MISMATCH). Files written before it (no calc_version anywhere) load as one
@@ -61,13 +64,14 @@
  }
  /* One row (mirrors Python _row); scores are compared separately against the recomputation. */
  function row(r,cut,ttl,targetId,versioned=true){
-  const withdrawal=targetId!==undefined&&versioned&&keys(r,ROW.concat(WITHDRAWAL_KEYS));
-  need((keys(r,versioned?ROW:LEGACY_ROW)||withdrawal)&&(r.cik===null||cikOk(r.cik)));
+  const withdrawal=targetId!==undefined&&versioned&&keys(r,ROW.concat(WITHDRAWAL_KEYS)),uw=targetId===undefined&&plain(r)&&Object.hasOwn(r,'detected_at');
+  if(uw){need(versioned&&keys(r,ROW.concat(UNIVERSE_WITHDRAWAL_KEYS))&&canon(Object.fromEntries(Object.entries(r).filter(([k])=>!UNIVERSE_WITHDRAWAL_KEYS.includes(k))))===canon(emptyRecord(WITHDRAWN_REASON)));const at=clock(r.detected_at);need(at<=cut&&clock(r.withdrawn_acquired_at)<=at&&cikOk(r.withdrawn_cik));}
+  need((keys(r,versioned?ROW:LEGACY_ROW)||withdrawal||uw)&&(r.cik===null||cikOk(r.cik)));
   if(withdrawal){need(TARGET_CIKS[targetId]!==null&&TARGET_CIKS[targetId]!==undefined&&r.cik===TARGET_CIKS[targetId]&&r.acquired_at===null&&canon(r.reason_codes)===canon([WITHDRAWN_REASON])&&r.fiscal_year_end===null&&r.calc_version===null);
    const detected=clock(r.detected_at);need(detected<=cut&&(r.withdrawn_acquired_at===null||clock(r.withdrawn_acquired_at)<=detected));}if(versioned)need(r.calc_version===null||typeof r.calc_version==='string'&&CALC_VERSION_RE.test(r.calc_version)&&r.fiscal_year_end!==null);if(targetId!==undefined&&r.cik!==null)need(r.cik===TARGET_CIKS[targetId]);
   const h=r.source_sha256;need(keys(h,['companyfacts','submissions'])&&Object.values(h).every(v=>v===null||hash(v)));
   if(r.acquired_at===null)need(h.companyfacts===null&&h.submissions===null);else need(clock(r.acquired_at)<=cut&&r.cik!==null&&h.companyfacts&&h.submissions);
-  need(STATES.includes(r.state));const reasons=r.reason_codes;need(Array.isArray(reasons)&&new Set(reasons).size===reasons.length&&reasons.length<=3&&reasons.every(x=>REASONS.includes(x)||withdrawal&&x===WITHDRAWN_REASON));
+  need(STATES.includes(r.state));const reasons=r.reason_codes;need(Array.isArray(reasons)&&new Set(reasons).size===reasons.length&&reasons.length<=3&&reasons.every(x=>REASONS.includes(x)||(withdrawal||uw)&&x===WITHDRAWN_REASON));
   need(r.sic===null||typeof r.sic==='string'&&/^\d{4}$/.test(r.sic)&&r.sic!=='0000');
   if(r.sic===null)need(r.industry_group===null);else need(r.acquired_at!==null&&r.industry_group===classify(r.sic));
   const m=r.metrics;need(plain(m)&&Object.keys(m).every(k=>(METRIC_KEYS.includes(k)||DESCRIPTIVE.includes(k)||Object.hasOwn(EXTRA_METRICS,k))&&metricOk(k,m[k])));

@@ -166,8 +166,8 @@ def test_guard_refuses_that_manual_artifact_and_passes_the_newer_daily_one(tmp_p
     for name in UNIVERSE:   # BRK.B kept as published, ADBE and MMM collected for the first time
         assert section_line(out, name, 'records') == {
             'file': name, 'section': 'records', 'verdict': 'PASS', 'compared': '1', 'newer': '0', 'equal': '1', 'older': '0',
-            'missing': '0', 'lost_record': '0', 'new_record': '2', 'artifact_latest': '2026-10-13T22:30:00Z',
-            'live_latest': '2026-10-11T22:30:00Z'}
+            'missing': '0', 'lost_record': '0', 'new_record': '2', 'withdrawn': '0', 'withdrawal_mismatch': '0',
+            'artifact_latest': '2026-10-13T22:30:00Z', 'live_latest': '2026-10-11T22:30:00Z'}
     assert f'PAGES_FRESHNESS file={fl.FILENAME} marker=as_of verdict=NEWER ' in out
     assert out.endswith('PAGES_FRESHNESS_PASS checks=10 refused=0 no_live=2 live_invalid=0 rows_compared=3 rows_regressed=0 '
                         'records_compared=0 records_regressed=0\n')   # 404 inputs, no session yet
@@ -357,7 +357,7 @@ def test_a_row_older_than_live_is_refused_although_the_file_maximum_is_unchanged
     code, out = guard(write(tmp_path / 'artifact', {name: mine}), served({name: live}), capsys)
     n = compared_rows(kind)
     extra = (' withdrawn=0 withdrawal_mismatch=0 preserved_mismatch=0 changed=0' if kind == 'inputs'
-             else ' withdrawn=0 withdrawal_mismatch=0' if kind == 'qgv2-target' else '')
+             else ' withdrawn=0 withdrawal_mismatch=0')   # sec-qgv2.json target and every Universe records section
     assert code == 1
     assert (f'PAGES_FRESHNESS file={name} section={section} verdict=REFUSED compared={n} newer=0 equal={n - 1} older=1 '
             f'missing=0 lost_record=0 new_record=0{extra} artifact_latest=2026-10-17T00:00:00Z '

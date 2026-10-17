@@ -49,14 +49,23 @@ WITHDRAWN rules above apply (exact name of the live observation, else WITHDRAWAL
 passes only when collected at or after the detection). An artifact with a withdrawal row is only trusted when its strict
 validator (`require_qgv2`) accepts the file; otherwise it has no rows (PAGES_FRESHNESS_ARTIFACT_INVALID). The kept-row
 and CHANGED rules stay sec-public-inputs.json only (sec-qgv2.json rows are restated and re-scored at every publication).
-The `records` section is unchanged: a Universe identity conflict without a collection record is LOST_RECORD (pending
-owner decision UNI-WITHDRAWN).
+
+Universe `records` sections of sec-universe-shares.json, sec-universe-qg.json and sec-qgv2.json (owner decision
+UNI-WITHDRAWN (a), 2026-10-17, the same rule): a withdrawal row (`detected_at`, `withdrawn_acquired_at`, `withdrawn_cik`;
+identity conflict, no values) is a WITHDRAWN record. Against a live row it must name that file's live observation exactly:
+`withdrawn_acquired_at` equal to the live `acquired_at` (or to the live withdrawal's `withdrawn_acquired_at`), else
+WITHDRAWAL_MISMATCH / OLDER; `withdrawn_cik` equal to the live row's `cik` (or to the live withdrawal's `withdrawn_cik`),
+else WITHDRAWAL_MISMATCH; and `detected_at` no earlier than the live marker (else OLDER). A live withdrawal passes only
+the same withdrawal (EQUAL) or a newer withdrawal of the same observation, or a row collected at or after the detection
+(NEWER): an artifact carrying the pre-withdrawal row is OLDER, one without a record is LOST_RECORD. An artifact file with a
+withdrawal row is only trusted when its strict validator accepts it (otherwise PAGES_FRESHNESS_ARTIFACT_INVALID, no rows).
 
 Producers (owner decision 2026-10-17, option a): a company/code whose collection or identification failed keeps its
 verified previous row unchanged (same acquired_at, sources and calc_version) when the same issuer is confirmed, so such a
 failure arrives here as EQUAL, never as LOST_RECORD: tools/public_sec_inputs.py (transient fetch failures) and the
 Universe merges (`previous_decision`: unresolved symbol, identity unconfirmed, builder failure). Identity conflicts and
-TARGET normalize results are never preserved. In sec-public-inputs.json /4 a TARGET normalize result is a NOT_AVAILABLE
+TARGET normalize results are never preserved; a Universe identity conflict whose kept row has a collection record is a
+withdrawal row naming it (passes as WITHDRAWN), one without a kept record has nothing to compare. In sec-public-inputs.json /4 a TARGET normalize result is a NOT_AVAILABLE
 row with this run's acquired_at (NEWER, passes) and an identity conflict is a WITHDRAWN row (passes as WITHDRAWN when
 it names the live observation); a collection failure without a kept row (HTTP 404, unknown failure, live copy not read)
 is a COLLECTION_FAILED row without a record: LOST_RECORD, refused (fail closed).
@@ -105,7 +114,8 @@ ROW_KINDS = ('newer', 'equal', 'older', 'missing', 'lost_record')
 ROW_REGRESSIONS = ('OLDER', 'MISSING', 'LOST_RECORD', 'WITHDRAWAL_MISMATCH', 'PRESERVED_MISMATCH', 'CHANGED')
 # sec-public-inputs.json only (schema /4): counted after new_record on its line.
 INPUTS_KINDS = ('withdrawn', 'withdrawal_mismatch', 'preserved_mismatch', 'changed')
-# sec-qgv2.json `target` (TARGET withdrawal rows): counted after new_record on its line.
+# sec-qgv2.json `target` (TARGET withdrawal rows) and the three Universe `records` sections (Universe withdrawal rows):
+# counted after new_record on their lines.
 TARGET_KINDS = ('withdrawn', 'withdrawal_mismatch')
 MARKER_REFUSING = ('OLDER', 'MISSING')
 _PRINTABLE_KEY = re.compile(r'[A-Za-z0-9][A-Za-z0-9:._-]{0,39}')
@@ -172,6 +182,13 @@ ROW_FILES = (
     (target_tool.FILENAME, target_tool.SOURCE, target_tool.MAX_BYTES, _valid_inputs, ('companies',)),
 )
 LEDGER_FILE = (fl.FILENAME, ledger_tool.SOURCE, fl.MAX_BYTES, _valid_ledger)
+# Files whose withdrawal rows are WITHDRAWN records, with the strict validator that must accept an artifact carrying one:
+# sec-qgv2.json `target` (TARGET) and the Universe `records` sections of the three Universe files.
+WITHDRAWAL_FILES = {
+    universe_tool.FILENAME: lambda payload: universe_tool.require_universe_shares(payload),
+    universe_tool.qg.FILENAME: lambda payload: universe_tool.qg.require_universe_qg(payload),
+    universe_tool.qgv2.FILENAME: lambda payload: universe_tool.qgv2.require_qgv2(payload),
+}
 
 
 class LiveUnreachable(Exception):
@@ -249,7 +266,8 @@ def _inputs_record(row):
 
 
 def _target_record(row):
-    """sec-qgv2.json `target`: ('WITHDRAWN', detected_at, withdrawn_acquired_at) for a withdrawal row, else as acquired."""
+    """sec-qgv2.json `target` and the Universe `records` sections: ('WITHDRAWN', detected_at, withdrawn_acquired_at) for a
+    withdrawal row, else as acquired."""
     if 'detected_at' in row:
         detected = _instant(row.get('detected_at'))
         return None if detected is None else ('WITHDRAWN', detected, _instant(row.get('withdrawn_acquired_at')))
@@ -274,6 +292,11 @@ def _row_kind(theirs_row, theirs, row, ours, inputs, withdrawals=False):
         named = theirs[1] if theirs[0] == 'OBSERVED' else theirs[2]
         if ours[2] != named:
             return 'OLDER' if ours[2] is not None and named is not None and ours[2] < named else 'WITHDRAWAL_MISMATCH'
+        if 'withdrawn_cik' in row:
+            # Universe withdrawal: the stopped observation's issuer, the live row's CIK (or the live withdrawal's).
+            issuer = theirs_row.get('cik') if theirs[0] == 'OBSERVED' else theirs_row.get('withdrawn_cik')
+            if type(issuer) is not str or row.get('withdrawn_cik') != issuer:
+                return 'WITHDRAWAL_MISMATCH'
     if not inputs:   # sec-qgv2.json `target`: records only (rows are restated and re-scored at every publication)
         if ours == theirs:
             return 'EQUAL'
@@ -291,7 +314,7 @@ def _row_kind(theirs_row, theirs, row, ours, inputs, withdrawals=False):
 def compare_rows(name, section, live, local):
     """One section, row by row. `live` is the validated live payload or None (404)."""
     inputs = name == target_tool.FILENAME
-    withdrawals = name == universe_tool.qgv2.FILENAME and section == 'target'
+    withdrawals = name in WITHDRAWAL_FILES and section in ('records', 'target')
     record = _inputs_record if inputs else _target_record if withdrawals else _acquired_record
     mine = _rows(local, section)
     counts = dict.fromkeys(('compared',) + ROW_KINDS + ('new_record',) + (INPUTS_KINDS if inputs else TARGET_KINDS if withdrawals else ()), 0)
@@ -409,11 +432,11 @@ def compare(artifact_dir, *, open_response=None, environ=None):
             except Exception:
                 out['artifact_invalid'].append(name)
                 local = None
-        if name == universe_tool.qgv2.FILENAME and local is not None \
-                and any('detected_at' in row for row in _rows(local, 'target').values()):
-            # A TARGET withdrawal record is only trusted in a file its validator accepts.
+        if name in WITHDRAWAL_FILES and local is not None \
+                and any('detected_at' in row for section in ('records', 'target') for row in _rows(local, section).values()):
+            # A withdrawal record (TARGET or Universe) is only trusted in a file its validator accepts.
             try:
-                universe_tool.qgv2.require_qgv2(local)
+                WITHDRAWAL_FILES[name](local)
             except Exception:
                 out['artifact_invalid'].append(name)
                 local = None
