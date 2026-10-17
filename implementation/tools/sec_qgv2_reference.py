@@ -187,6 +187,10 @@ def cases():
     stale_scores = [op for op in mixed if op[0][:2] != ['records', c[5]] or op[0][2] not in ('factors', 'axes')]
     R, T = ['records'], ['target']
     first, second, fin, empty = c[0], c[1], c[21], universe_codes()[30]
+    from investment_system.universe import sec_qgv2 as q
+    withdrawn = dict(q.withdrawn_target('nvda', '2026-10-13T22:10:00Z'), withdrawn_acquired_at='2026-10-12T22:30:00Z')
+    uw = dict(q.empty_record(reasons=(q.WITHDRAWN_REASON,)), detected_at='2026-10-13T22:10:00Z',
+              withdrawn_acquired_at='2026-10-12T22:30:00Z', withdrawn_cik='0000000999')
     return [
         ('base_valid', []),
         ('null_shard_and_registry_valid', [(['last_shard_index'], None), (['registry_sha256'], None)]),
@@ -266,6 +270,42 @@ def cases():
         ('calc_version_top_malformed', [(['calc_version'], 'v2')]),
         ('calc_version_row_malformed', [(R + [first, 'calc_version'], 'qgv2-calc/latest')]),
         ('calc_version_on_row_without_data', [(R + [empty, 'calc_version'], OLD_CALC_VERSION)]),
+        # TARGET withdrawal (identity conflict, sec-public-inputs.json WITHDRAWN): TARGET section only, no values.
+        ('target_withdrawn_valid', [(T + ['nvda'], withdrawn)]),
+        ('target_withdrawn_without_observation_valid', [(T + ['asml'], dict(withdrawn, cik=q.target_cik('asml'),
+                                                                            withdrawn_acquired_at=None))]),
+        ('target_withdrawn_with_values', [(T + ['nvda', 'detected_at'], withdrawn['detected_at']),
+                                          (T + ['nvda', 'withdrawn_acquired_at'], None)]),
+        ('target_withdrawn_reason_without_keys', [(T + ['asml', 'reason_codes'], [q.WITHDRAWN_REASON])]),
+        ('target_withdrawn_with_acquired_at', [(T + ['nvda'], dict(withdrawn, acquired_at=withdrawn['withdrawn_acquired_at']))]),
+        ('target_withdrawn_other_reason', [(T + ['nvda'], dict(withdrawn, reason_codes=['NOT_COLLECTED']))]),
+        ('target_withdrawn_cik_mismatch', [(T + ['nvda'], dict(withdrawn, cik=q.target_cik('msft')))]),
+        ('target_withdrawn_without_cik', [(T + ['nvda'], dict(withdrawn, cik=None))]),
+        ('target_withdrawn_non_sec_issuer', [(T + ['hanmi'], dict(withdrawn, cik=None))]),
+        ('target_withdrawn_detected_after_as_of', [(T + ['nvda'], dict(withdrawn, detected_at='2026-10-14T00:00:00Z'))]),
+        ('target_withdrawn_names_a_later_observation', [(T + ['nvda'], dict(withdrawn, withdrawn_acquired_at='2026-10-13T22:20:00Z'))]),
+        ('target_withdrawn_detected_at_missing', [(T + ['nvda'], {k: v for k, v in withdrawn.items() if k != 'detected_at'})]),
+        ('records_withdrawn_not_allowed', [(R + [empty], dict(withdrawn, cik=None))]),
+        # Universe withdrawal (UNI-WITHDRAWN (a), records section): the empty row with the reason and the three keys only.
+        ('universe_withdrawn_valid', [(R + [empty], uw)]),
+        ('universe_withdrawn_with_cik', [(R + [empty], dict(uw, cik='0000000999'))]),
+        ('universe_withdrawn_with_acquired_at', [(R + [empty, 'acquired_at'], uw['withdrawn_acquired_at'])]),
+        ('universe_withdrawn_with_metric', [(R + [empty, 'metrics'], {'roic': 0.1})]),
+        ('universe_withdrawn_other_reason', [(R + [empty], dict(uw, reason_codes=['CIK_UNRESOLVED']))]),
+        ('universe_withdrawn_extra_reason', [(R + [empty], dict(uw, reason_codes=[q.WITHDRAWN_REASON, 'CIK_UNRESOLVED']))]),
+        ('universe_withdrawn_reason_without_keys', [(R + [empty, 'reason_codes'], [q.WITHDRAWN_REASON])]),
+        ('universe_withdrawn_without_named_observation', [(R + [empty], dict(uw, withdrawn_acquired_at=None))]),
+        ('universe_withdrawn_names_a_later_observation', [(R + [empty], dict(uw, withdrawn_acquired_at='2026-10-13T22:20:00Z'))]),
+        ('universe_withdrawn_detected_after_as_of', [(R + [empty], dict(uw, detected_at='2026-10-14T00:00:00Z'))]),
+        ('universe_withdrawn_without_issuer', [(R + [empty], dict(uw, withdrawn_cik=None))]),
+        ('universe_withdrawn_zero_issuer', [(R + [empty], dict(uw, withdrawn_cik='0000000000'))]),
+        ('universe_withdrawn_issuer_key_missing', [(R + [empty], {k: v for k, v in uw.items() if k != 'withdrawn_cik'})]),
+        ('universe_withdrawn_state_live', [(R + [empty], uw), (R + [empty, 'state'], 'LIVE')]),
+        ('schema_v1_valid', [(['schema_version'], 1)]),
+        ('universe_withdrawn_in_schema_v1_file', [(['schema_version'], 1), (R + [empty], uw)]),
+        ('target_withdrawn_in_schema_v1_file_valid', [(['schema_version'], 1), (T + ['nvda'], withdrawn)]),
+        ('schema_v3', [(['schema_version'], 3)]),
+        ('universe_withdrawn_in_legacy_file', legacy + [(R + [empty], {k: v for k, v in uw.items() if k != 'calc_version'})]),
     ]
 
 

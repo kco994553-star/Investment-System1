@@ -153,9 +153,15 @@ def test_merge_covers_504_codes_keeps_rows_with_own_time_and_ages_them():
     assert p['config_status'] == 'DEFAULT_V0_UNCALIBRATED' and p['method_status'] == 'PROVISIONAL_UNCALIBRATED'
     assert p['stale_after_seconds'] == 14 * 86400 and p['shard_count'] == 7
     later = NOW + timedelta(days=3)
+    # Owner rule 2026-10-17: a successful collection without scores is published (its reason and its own acquired_at),
+    # never replaced by the kept scores; a row without its own collection record (tool fallback) never erases them.
     unavailable = row(revenues=(), when=later)
-    kept = merged({'NASDAQ:NVDA': unavailable}, previous=p, as_of=later)
-    assert kept['records']['NASDAQ:NVDA'] == p['records']['NASDAQ:NVDA']  # a row without scores never erases a kept one
+    replaced = merged({'NASDAQ:NVDA': unavailable}, previous=p, as_of=later)
+    assert replaced['records']['NASDAQ:NVDA'] == unavailable and unavailable['reason_codes'] == ['M1_NOT_AVAILABLE']
+    assert unavailable['acquired_at'] == '2026-10-13T22:30:00Z'
+    failed = q.empty_record(cik='0001045810', reasons=('INVALID_INPUT',))
+    kept = merged({'NASDAQ:NVDA': failed}, previous=p, as_of=later)
+    assert kept['records']['NASDAQ:NVDA'] == p['records']['NASDAQ:NVDA']
     stale = merged(previous=kept, as_of=NOW + timedelta(days=15))
     nvda = stale['records']['NASDAQ:NVDA']
     assert nvda['state'] == 'STALE' and nvda['reason_codes'] == ['STALE_INPUT'] and nvda['factors'] == p['records']['NASDAQ:NVDA']['factors']
@@ -185,7 +191,8 @@ def test_vectors_fixture_is_regenerated_from_the_python_validator():
     fixture = json.loads((ROOT / 'tests/fixtures/sec_universe_qg_vectors_v1.json').read_text())
     assert fixture == json.loads(json.dumps(reference.build()))
     assert fixture['synthetic'] is True and len(fixture['cases']) >= 40
-    assert [c['id'] for c in fixture['cases'] if c['valid']] == ['base_valid', 'null_shard_and_registry_valid', 'zero_score_is_a_score_not_missing']
+    assert [c['id'] for c in fixture['cases'] if c['valid']] == ['base_valid', 'null_shard_and_registry_valid', 'zero_score_is_a_score_not_missing',
+                                                                           'withdrawn_valid', 'schema_v1_valid']
 
 
 @pytest.mark.skipif(shutil.which('node') is None, reason='Node runtime required')

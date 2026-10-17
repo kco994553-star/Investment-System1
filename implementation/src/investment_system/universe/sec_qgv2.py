@@ -7,13 +7,17 @@ candidate defaults exactly (no tuning, no Holdout). v1 files/methodology are unc
 Producers (no extra SEC request anywhere):
 - the daily Universe shard (tools/sec_universe_shares.py) computes rows from the SAME companyfacts and
   submissions bytes it already fetched; rows merge into the previous Pages copy like
-  sec-universe-shares.json (own acquired_at, a new row without data never erases a kept one, STALE after
-  the shared v0 window);
+  sec-universe-shares.json (own acquired_at; a new row of this run's collection replaces the kept one also
+  without data, a row without its own collection record never erases kept data; STALE after the shared v0 window);
 - the TARGET daily pipeline (tools/public_screens_pipeline.py --live) stages TARGET rows from its own SEC
-  bytes into the same file; the shard step then carries them into the published copy.
+  bytes into the same file; the shard step then carries every staged row with a collection record (also a
+  NOT_AVAILABLE one) into the published copy by the same rule.
 Scores are recomputed at every publication over all current LIVE/STALE Universe rows (qgv.v2_scoring),
 so the published factor/axis scores are reproducible from the published raw metrics; the strict
 validators (Python here, JS web_assets/sec-qgv2.js) recompute and compare them.
+
+Universe identity conflicts without this run's collection withdraw a kept row with a collection record (owner decision
+UNI-WITHDRAWN (a): `sec_universe_shares.withdrawal`, UNIVERSE_WITHDRAWAL_KEYS), like the TARGET withdrawal below.
 
 Never: prices, price-derived values, market caps, ranks or 0-filled missing values.
 """
@@ -27,7 +31,9 @@ import re
 
 from ..qgv import v2_factors as vf
 from ..qgv import v2_scoring as vs
-from .sec_universe_shares import _clock, _hash, _iso, load_config, universe_codes
+from . import sec_universe_shares as _us
+from .sec_universe_shares import (IDENTITY_CONFLICT, PRESERVE, _clock, _hash, _iso, load_config, note, previous_decision, replaces,
+                                   universe_codes)
 
 FILENAME = 'sec-qgv2.json'
 KIND = 'SEC_QGV2'
@@ -38,6 +44,16 @@ DECISION_REF = 'GSQ-022'
 STATES = ('LIVE', 'STALE', 'NOT_AVAILABLE')
 REASONS = ('NOT_COLLECTED', 'CIK_UNRESOLVED', 'INVALID_INPUT', 'NO_ANNUAL_SEC_FINANCIALS', 'NON_SEC_ISSUER', 'STALE_INPUT')
 TOP_REASONS = ('STALE_INPUT', 'NO_ELIGIBLE_INPUT')
+# TARGET section only (owner decision 2026-10-17, TARGET NA schema /4 extended to sec-qgv2.json `target`): a TARGET issuer
+# whose daily TARGET collection hit an identity conflict (sec-public-inputs.json WITHDRAWN: SEC_CIK_MISMATCH /
+# SEC_ISSUER_NOT_ALLOWED) publishes a withdrawal row: no values and no scores, reason IDENTITY_CONFLICT_WITHDRAWN, the
+# issuer's TARGET CIK, `detected_at` (when the conflict was seen, never an acquired_at) and `withdrawn_acquired_at` (the
+# acquired_at of the row whose use it stops, null without one). The previous row is never carried; readers never use it.
+WITHDRAWN_REASON = _us.WITHDRAWN_REASON
+WITHDRAWAL_KEYS = ('detected_at', 'withdrawn_acquired_at')
+# `records` section (owner decision UNI-WITHDRAWN (a), 2026-10-17): the Universe withdrawal of sec_universe_shares
+# (`withdrawal`): no CIK, `withdrawn_cik` naming the issuer of the stopped row, `withdrawn_acquired_at` always set.
+UNIVERSE_WITHDRAWAL_KEYS = _us.WITHDRAWAL_KEYS
 METHOD = {
     'weights': {'Q': dict(vs.Q_WEIGHTS_V2), 'G': dict(vs.G_WEIGHTS_V2)},
     'min_peers': vs.MIN_PEERS,
@@ -186,6 +202,39 @@ def build_target_rows(entries, *, sic_config=None):
     return rows
 
 
+def is_withdrawal(record):
+    """A withdrawal row: TARGET (WITHDRAWAL_KEYS) or Universe (UNIVERSE_WITHDRAWAL_KEYS)."""
+    return type(record) is dict and 'detected_at' in record
+
+
+def withdrawn_target(company_id, detected_at):
+    """The staged withdrawal of one TARGET issuer (from sec-public-inputs.json WITHDRAWN): `merge` names the observation
+    it stops from the previous copy (the staged file has none)."""
+    cik = target_cik(company_id)
+    _need(company_id in target_ids() and cik is not None)
+    return dict(empty_record(cik=cik, reasons=(WITHDRAWN_REASON,)), detected_at=_iso(_clock(detected_at)),
+                withdrawn_acquired_at=None)
+
+
+def _withdraw(old, update):
+    """A staged withdrawal applied to the kept TARGET row: never its values. It names the kept row's acquired_at, or the
+    observation an earlier withdrawal already stopped; a detection no later than the kept withdrawal leaves that one
+    unchanged. A kept row collected after the detection is a newer observation than the conflict and stays (the
+    freshness guard's rule; the daily producers never create this case)."""
+    detected = _clock(update['detected_at'])
+    if is_withdrawal(old):
+        if detected <= _clock(old['detected_at']):
+            return old
+        named = old['withdrawn_acquired_at']
+    elif old['acquired_at'] is not None:
+        if _clock(old['acquired_at']) > detected:
+            return old
+        named = old['acquired_at']
+    else:
+        named = None
+    return dict(update, withdrawn_acquired_at=named)
+
+
 def restate(record, as_of, stale_after):
     """Freshness from the row's own acquisition time; values never change (scores are recomputed by publish)."""
     out = json.loads(json.dumps(record))
@@ -200,17 +249,23 @@ def restate(record, as_of, stale_after):
     return out
 
 
-def _pick(old, new, as_of, stale_after, cut, sic_cfg, *, target_id=None):
-    """A valid new row replaces the kept one unless it has no data and the kept one has."""
+def _checked(new, as_of, stale_after, cut, sic_cfg, *, target_id=None):
+    """A new row as published, or INVALID_INPUT (without a collection record) when the strict row check rejects it."""
     if new is not None:
         try:
             _row(restate(new, as_of, stale_after), cut, stale_after, sic_cfg, target_id=target_id)
         except _ERRORS:
             cik = new.get('cik') if type(new) is dict else None
             new = empty_record(cik=cik if _cik_ok(cik) else None, reasons=('INVALID_INPUT',))
-    if new is not None and not (not _has_data(new) and _has_data(old)):
-        return new
-    return old
+    return new
+
+
+def _pick(old, new, as_of, stale_after, cut, sic_cfg, *, target_id=None):
+    """A valid new row replaces the kept one (`replaces`): a row of this run's collection (acquired_at set) also
+    without data, its NOT_AVAILABLE reason published; a row without its own collection record (failed builder, a row
+    the strict check rejects) only when the kept one has no data either."""
+    new = _checked(new, as_of, stale_after, cut, sic_cfg, target_id=target_id)
+    return new if replaces(new, old, observed=lambda r: r['acquired_at'] is not None, has_value=_has_data) else old
 
 
 def _target_empty(company_id):
@@ -218,8 +273,14 @@ def _target_empty(company_id):
     return empty_record(cik=None, reasons=('NON_SEC_ISSUER',)) if cik is None else empty_record(cik=None)
 
 
-def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None, target_updates=None):
-    """Previous published rows + this run's Universe/TARGET rows, then publication-time scoring."""
+def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None, target_updates=None,
+          conflicts=(), stats=None):
+    """Previous published rows + this run's Universe/TARGET rows, then publication-time scoring.
+
+    Universe rows also follow `previous_decision` (a row without its own collection record is no new observation): a
+    kept row of another calc_version stays outside the ranking population (CALC_VERSION_MISMATCH) as before. An identity
+    conflict without this run's collection withdraws the kept row (`sec_universe_shares.withdrawal`); a kept withdrawal
+    stays until a confirmed new collection (`withdrawal_stays`)."""
     cfg = config or load_config()
     sic_cfg = _sic_config()
     stale_after = timedelta(days=cfg['stale_after_days'])
@@ -228,9 +289,29 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
     records = {}
     for code in universe_codes():
         old = versioned(kept[code]) if code in kept else empty_record()
-        new = updates.get(code)
-        chosen = _pick(old, new, as_of, stale_after, cut, sic_cfg)
-        if new is None and code in unresolved and not _has_data(chosen):
+        new = _checked(updates.get(code), as_of, stale_after, cut, sic_cfg)
+        if is_withdrawal(new):   # only a merge writes a withdrawal; a collected row never is one
+            new = empty_record(reasons=('INVALID_INPUT',))
+        observed = lambda r: r['acquired_at'] is not None
+        if _us.withdrawal_stays(old, new, code=code, conflicts=conflicts, observed=observed):
+            _us.note_withdrawal(stats, old, old, code)
+            records[code] = restate(old, as_of, stale_after)
+            continue
+        decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflicts, new_observation=observed)
+        note(stats, decision, code, old)
+        if decision == PRESERVE:
+            chosen = old
+        elif decision == IDENTITY_CONFLICT and (new is None or not observed(new)):
+            # Identity conflict without this run's collection: this file's kept observation is withdrawn (UNI-WITHDRAWN);
+            # without one, unresolved (no row this run) or this run's NA row, never an invented time.
+            chosen = _us.withdrawal(old, empty_record, detected_at=as_of) or (
+                new if new is not None else empty_record(reasons=('CIK_UNRESOLVED',)))
+            _us.note_withdrawal(stats, old, chosen, code)
+        elif decision == IDENTITY_CONFLICT:
+            chosen = new
+        else:
+            chosen = _pick(old, new, as_of, stale_after, cut, sic_cfg)
+        if new is None and code in unresolved and not _has_data(chosen) and decision != PRESERVE and not is_withdrawal(chosen):
             chosen = empty_record(reasons=('CIK_UNRESOLVED',))
         records[code] = restate(chosen, as_of, stale_after)
     kept_target = (previous or {}).get('target') or {}
@@ -240,7 +321,11 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
             target[company_id] = _target_empty(company_id)
             continue
         old = versioned(kept_target[company_id]) if company_id in kept_target else _target_empty(company_id)
-        chosen = _pick(old, (target_updates or {}).get(company_id), as_of, stale_after, cut, sic_cfg, target_id=company_id)
+        update = (target_updates or {}).get(company_id)
+        if is_withdrawal(update):
+            chosen = _withdraw(old, update)
+        else:
+            chosen = _pick(old, update, as_of, stale_after, cut, sic_cfg, target_id=company_id)
         target[company_id] = restate(chosen, as_of, stale_after)
     payload = publish(records, target, as_of=as_of, cfg=cfg, stale_after=stale_after, shard_index=shard_index,
                       registry_sha256=registry_sha256 if registry_sha256 is not None else (previous or {}).get('registry_sha256'))
@@ -264,7 +349,7 @@ def publish(records, target, *, as_of, cfg, stale_after, shard_index, registry_s
                 row['metrics']['revenue_volatility_5y_rank_pct'] = rank
     states = [r['state'] for r in records.values()] + [r['state'] for r in target.values()]
     state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
-    return {'schema_version': 1, 'kind': KIND, 'as_of': _iso(as_of), 'standard': STANDARD, 'standard_status': STANDARD_STATUS,
+    return {'schema_version': _us.SCHEMA_VERSION, 'kind': KIND, 'as_of': _iso(as_of), 'standard': STANDARD, 'standard_status': STANDARD_STATUS,
             'decision_ref': DECISION_REF, 'method': json.loads(json.dumps(METHOD)), 'config_version': cfg['config_version'],
             'config_status': cfg['config_status'], 'freshness_basis': 'SOURCE_ACQUISITION',
             'stale_after_seconds': int(stale_after.total_seconds()), 'shard_count': cfg['shard_count'],
@@ -333,8 +418,22 @@ def _v_inputs(v, cut_day, has_data):
         _need(v[key] is None or type(v[key]) in (int, float) and math.isfinite(v[key]) and abs(v[key]) <= METRIC_LIMIT)
 
 
-def _row(r, cut, ttl, sic_cfg, *, target_id=None, is_versioned=True):
-    _need(type(r) is dict and set(r) == set(ROW_KEYS if is_versioned else LEGACY_ROW_KEYS))
+def _row(r, cut, ttl, sic_cfg, *, target_id=None, is_versioned=True, universe_withdrawals=True):
+    keys = set(ROW_KEYS if is_versioned else LEGACY_ROW_KEYS)
+    withdrawal = target_id is not None and is_versioned and type(r) is dict and set(r) == keys | set(WITHDRAWAL_KEYS)
+    universe_withdrawal = target_id is None and is_withdrawal(r)
+    if universe_withdrawal:
+        # A Universe withdrawal (UNIVERSE_WITHDRAWAL_KEYS, versioned files only): the empty row with the reason, naming one
+        # earlier collection of the code.
+        _need(is_versioned and universe_withdrawals)   # a schema-version-2 file only
+        _us.require_withdrawal(r, cut, empty_record)
+    _need(type(r) is dict and (set(r) == keys or withdrawal or universe_withdrawal))
+    if withdrawal:
+        # A TARGET withdrawal (WITHDRAWAL_KEYS): the issuer's TARGET CIK, no collection record, no values.
+        _need(target_cik(target_id) is not None and r['cik'] == target_cik(target_id) and r['acquired_at'] is None)
+        _need(r['reason_codes'] == [WITHDRAWN_REASON] and r['fiscal_year_end'] is None and r['calc_version'] is None)
+        detected = _clock(r['detected_at'])
+        _need(detected <= cut and (r['withdrawn_acquired_at'] is None or _clock(r['withdrawn_acquired_at']) <= detected))
     if is_versioned:
         _need(r['calc_version'] is None or _calc_version_ok(r['calc_version']))
         _need(r['calc_version'] is None or r['fiscal_year_end'] is not None)
@@ -349,7 +448,8 @@ def _row(r, cut, ttl, sic_cfg, *, target_id=None, is_versioned=True):
         _need(_clock(r['acquired_at']) <= cut and r['cik'] is not None and h['companyfacts'] and h['submissions'])
     _need(r['state'] in STATES)
     reasons = r['reason_codes']
-    _need(type(reasons) is list and len(reasons) == len(set(reasons)) <= 3 and all(x in REASONS for x in reasons))
+    _need(type(reasons) is list and len(reasons) == len(set(reasons)) <= 3
+          and all(x in REASONS or (withdrawal or universe_withdrawal) and x == WITHDRAWN_REASON for x in reasons))
     from ..qgv.sic_industry import classify_sic
     _need(r['sic'] is None or type(r['sic']) is str and re.fullmatch(r'[0-9]{4}', r['sic']) is not None and r['sic'] != '0000')
     if r['sic'] is None:
@@ -410,7 +510,8 @@ def require_qgv2(payload):
         is_versioned = 'calc_version' in payload
         _need(not is_versioned or _calc_version_ok(version))
         cfg = load_config()
-        _need(type(payload['schema_version']) is int and payload['schema_version'] == 1 and payload['kind'] == KIND)
+        schema = _us.schema_version_of(payload)   # 1 or 2; a Universe withdrawal row needs 2 (TARGET withdrawals: both)
+        _need(payload['kind'] == KIND)
         _need(payload['standard'] == STANDARD and payload['standard_status'] == STANDARD_STATUS and payload['decision_ref'] in (DECISION_REF, 'GSQ-022_PENDING_APPROVAL'))
         _need(payload['method'] == METHOD and json.dumps(payload['method'], sort_keys=True) == json.dumps(METHOD, sort_keys=True))
         cut = _clock(payload['as_of'])
@@ -427,7 +528,8 @@ def require_qgv2(payload):
         _need(type(records) is dict and set(records) == set(codes) and type(payload['code_count']) is int and payload['code_count'] == len(codes))
         _need(type(target) is dict and set(target) == set(ids))
         sic_cfg, window = _sic_config(), timedelta(seconds=ttl)
-        states = [_row(records[code], cut, window, sic_cfg, is_versioned=is_versioned) for code in codes]
+        states = [_row(records[code], cut, window, sic_cfg, is_versioned=is_versioned, universe_withdrawals=schema >= 2)
+                  for code in codes]
         states += [_row(target[cid], cut, window, sic_cfg, target_id=cid, is_versioned=is_versioned) for cid in ids]
         state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
         _need(payload['state'] == state)
@@ -485,8 +587,11 @@ def encode(payload):
 
 
 def target_updates_from(payload):
-    """TARGET rows with data from a staged/previous payload (used to carry the TARGET stage into the shard publish)."""
-    return {cid: versioned(row) for cid, row in payload['target'].items() if _has_data(row)}
+    """TARGET rows of a collection from a staged/previous payload (used to carry the TARGET stage into the shard
+    publish): every row with its own acquired_at, also a NOT_AVAILABLE one (a successful collection's NA is published,
+    owner rule 2026-10-17), and every withdrawal (identity conflict: the kept row is withdrawn, never carried). A company
+    the stage did not collect (no acquired_at, no withdrawal) is not carried: its kept row stays."""
+    return {cid: versioned(row) for cid, row in payload['target'].items() if row['acquired_at'] is not None or is_withdrawal(row)}
 
 
 def summary_line(payload, *, prefix):
@@ -499,5 +604,6 @@ def summary_line(payload, *, prefix):
     t_q = sum(1 for r in target if r['axes']['Q']['score'] is not None)
     t_g = sum(1 for r in target if r['axes']['G']['score'] is not None)
     return (f"{prefix} live={count('LIVE')} stale={count('STALE')} not_available={count('NOT_AVAILABLE')} "
-            f"cross_section={payload['cross_section_size']} q_scored={q_scored} g_scored={g_scored} "
-            f"target_live={t_live} target_q_scored={t_q} target_g_scored={t_g}")
+            f"withdrawn={sum(1 for r in rows if is_withdrawal(r))} cross_section={payload['cross_section_size']} q_scored={q_scored} g_scored={g_scored} "
+            f"target_live={t_live} target_q_scored={t_q} target_g_scored={t_g} "
+            f"target_withdrawn={sum(1 for r in target if is_withdrawal(r))}")

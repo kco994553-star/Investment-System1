@@ -222,8 +222,11 @@ def test_partial_failure_keeps_other_companies_and_records_only_fixed_diagnostic
             return *(json.dumps(x).encode() for x in raw(company)),datetime(2026,2,2,12,tzinfo=timezone.utc)
     p=tmp_path/'out.json';result=collect_public_inputs(p,environ={'SEC_USER_AGENT':'synthetic setting'},client_factory=Client)
     payload=json.loads(p.read_text());require_public_inputs(payload)
-    assert payload['schema']=='public-sec-reported-inputs/3' and result['failed_companies']==1
-    assert payload['companies'][0]['status']=='NOT_AVAILABLE'
+    assert payload['schema']=='public-sec-reported-inputs/4' and result['failed_companies']==1
+    # Schema /4: a failed collection without a kept row is COLLECTION_FAILED with the time the failure was seen (checked_at),
+    # never an acquired_at.
+    failed=payload['companies'][0]
+    assert failed['status']=='COLLECTION_FAILED' and 'acquired_at' not in failed and failed['checked_at']
     assert result['diagnostics']==[{'company_index':1,'stage':'fetch','code':'SEC_HTTP_403','http_status':403}]
     assert len(payload['companies'])==17 and all(x['status']=='LIVE' for x in payload['companies'][1:])
 
@@ -372,7 +375,7 @@ def test_bad_fact_rows_excluded_and_valid_company_retained(tmp_path):
     row=next(r for r in payload['companies'] if r['company_id']=='asml')
     assert result['failed_companies']==0 and row['status']=='LIVE' and len(row['reported_shares'])==1
     assert row['excluded_fact_counts']=={'FORM_NOT_ALLOWED':1,'DATE_INVALID':1,'VALUE_INVALID':1}
-    assert payload['schema']=='public-sec-reported-inputs/3'
+    assert payload['schema']=='public-sec-reported-inputs/4'
 
 
 @pytest.mark.parametrize('form',['10-KT','10-QT','10-KT/A','10-QT/A'])
@@ -412,6 +415,8 @@ def test_all_bad_facts_company_na_counts_preserved_and_no_zero(tmp_path):
     row=next(r for r in payload['companies'] if r['company_id']=='asml')
     assert result['failed_companies']==1 and row['status']=='NOT_AVAILABLE' and 'reported_shares' not in row
     assert row['reason_codes']==['SEC_NO_ELIGIBLE_SHARE_FACTS'] and row['excluded_fact_counts']=={'FORM_NOT_ALLOWED':1}
+    # A policy NA of a successful collection keeps that collection's real time and source hashes (schema /4).
+    assert row['acquired_at']=='2026-02-02T12:00:00+00:00' and set(row['sources'])=={'companyfacts','submissions'}
 
 
 def test_exclusion_diagnostic_can_only_print_fixed_codes_counts_and_company_ordinal(tmp_path,capsys,monkeypatch):
@@ -466,12 +471,14 @@ def test_v3_guard_rejects_counts_or_unproven_basis_and_conflicting_facts(tmp_pat
 
 def test_legacy_v1_and_v2_remain_accepted_independently_of_new_producer(tmp_path):
     _,payload=collected_variant(tmp_path,lambda f,s:None)
-    for version in (1,2):
-        old=copy.deepcopy(payload);old['schema']=f'public-sec-reported-inputs/{version}'
+    for version in (1,2,3):
+        old=copy.deepcopy(payload);old['schema']=f'public-sec-reported-inputs/{version}';old.pop('collection')
         for row in old['companies']:
-            row.pop('excluded_fact_counts');row.pop('share_class_basis');row.pop('share_class_notice')
+            row.pop('preserved_previous')
+            if version<3:row.pop('excluded_fact_counts');row.pop('share_class_basis');row.pop('share_class_notice')
             if version==1:row.pop('status')
         require_public_inputs(old)
+        with pytest.raises(ValueError,match='SEC_PUBLIC_INPUT_INVALID'):require_public_inputs(dict(old,collection=payload['collection']))
 
 
 def test_invalid_class_dimensioned_fact_does_not_create_class_basis_notice(tmp_path):

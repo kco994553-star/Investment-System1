@@ -45,7 +45,7 @@ def base():
         'NYSE:AOS': _row(5, '2026-10-09T22:00:00Z', reasons=['UNRESOLVED_CURRENT_FACT_AMBIGUITY']),
         'BATS:CBOE': empty_record(reasons=('CIK_UNRESOLVED',)),
     }
-    return {'schema_version': 1, 'kind': 'SEC_UNIVERSE_QG', 'as_of': AS_OF, 'config_version': 'sec-universe-shares/v0',
+    return {'schema_version': 2, 'kind': 'SEC_UNIVERSE_QG', 'as_of': AS_OF, 'config_version': 'sec-universe-shares/v0',
             'config_status': 'DEFAULT_V0_UNCALIBRATED', 'method_status': 'PROVISIONAL_UNCALIBRATED',
             'availability_basis': 'OBSERVED_CAPTURE_ONLY', 'freshness_basis': 'SOURCE_ACQUISITION', 'stale_after_seconds': 14 * 86400,
             'shard_count': 7, 'last_shard_index': 3, 'registry_sha256': _h('registry'), 'code_count': 504, 'state': 'LIVE',
@@ -98,6 +98,38 @@ CASES = [
 ]
 
 
+def withdrawal_cases():
+    """Universe withdrawal rows (owner decision UNI-WITHDRAWN (a), 2026-10-17): accepted only as the empty row with the
+    reason IDENTITY_CONFLICT_WITHDRAWN and the three keys naming one earlier collection."""
+    from investment_system.universe.sec_universe_qg import WITHDRAWN_REASON, empty_record
+    w = dict(empty_record(reasons=(WITHDRAWN_REASON,)), detected_at='2026-10-10T22:10:00Z',
+             withdrawn_acquired_at='2026-10-09T22:00:00Z', withdrawn_cik='0000000009')
+    at = R + ['BATS:CBOE']
+    return [
+        ('withdrawn_valid', [(at, w)]),
+        ('withdrawn_with_score', [(at, w), (at + ['factors', 'roic_wacc'], 50)]),
+        ('withdrawn_with_cik', [(at, dict(w, cik='0000000009'))]),
+        ('withdrawn_with_acquired_at', [(at, dict(w, acquired_at='2026-10-09T22:00:00Z',
+                                                  source_sha256={'companyfacts': _h('f'), 'submissions': _h('s')}))]),
+        ('withdrawn_reason_without_keys', [(at + ['reason_codes'], [WITHDRAWN_REASON])]),
+        ('withdrawn_keys_other_reason', [(at, dict(w, reason_codes=['CIK_UNRESOLVED']))]),
+        ('withdrawn_extra_reason', [(at, dict(w, reason_codes=[WITHDRAWN_REASON, 'CIK_UNRESOLVED']))]),
+        ('withdrawn_without_named_observation', [(at, dict(w, withdrawn_acquired_at=None))]),
+        ('withdrawn_names_a_later_observation', [(at, dict(w, withdrawn_acquired_at='2026-10-10T22:20:00Z'))]),
+        ('withdrawn_detected_after_as_of', [(at, dict(w, detected_at='2026-10-11T00:00:00Z'))]),
+        ('withdrawn_without_issuer', [(at, dict(w, withdrawn_cik=None))]),
+        ('withdrawn_issuer_key_missing', [(at, {k: v for k, v in w.items() if k != 'withdrawn_cik'})]),
+        ('withdrawn_state_live', [(at, dict(w, state='LIVE'))]),
+        ('withdrawn_unknown_key', [(at, dict(w, withdrawn_values={'roic_wacc': 50}))]),
+        # schema transition (#289): version 1 files stay readable without withdrawal rows; other versions are refused.
+        ('schema_v1_valid', [(['schema_version'], 1)]),
+        ('withdrawn_in_schema_v1_file', [(['schema_version'], 1), (at, w)]),
+        ('schema_v3', [(['schema_version'], 3)]),
+        ('schema_v0', [(['schema_version'], 0)]),
+        ('schema_bool', [(['schema_version'], True)]),
+    ]
+
+
 def expand(payload):
     """Sparse base -> full 504-code payload (missing codes are NOT_COLLECTED empty rows)."""
     from investment_system.universe.sec_universe_qg import empty_record, universe_codes
@@ -131,7 +163,7 @@ def build():
     from investment_system.universe.sec_universe_qg import FACTORS
     sparse = base()
     cases = [{'id': cid, 'ops': [{'path': path, 'value': value} for path, value in ops],
-              'valid': verdict(apply(expand(sparse), ops))} for cid, ops in CASES]
+              'valid': verdict(apply(expand(sparse), ops))} for cid, ops in CASES + withdrawal_cases()]
     return {'synthetic': True, 'as_of': AS_OF, 'factors': list(FACTORS), 'delete_marker': DELETE, 'base': sparse, 'cases': cases}
 
 

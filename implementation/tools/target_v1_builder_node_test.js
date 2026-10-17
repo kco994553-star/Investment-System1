@@ -364,3 +364,41 @@ test('T-PRICE screen helpers: confirm text names the sheet and the symbols; no w
  assert.ok(!/매수|매도|\bbuy\b|\bsell\b|order/i.test(text));
  const s=memory();assert.deepEqual(S.priceSymbols(P,s),[]);const pb=P.empty();pb.target_v1={...B.emptyState(),price_symbols:['ABBV','XLV','SPY']};P.write(s,pb);assert.deepEqual(S.priceSymbols(P,s),['ABBV','XLV','SPY']);
 });
+
+// #285 (owner instruction 2026-10-17 item 3): a TARGET issuer withdrawn for an identity conflict is used nowhere. Through the real
+// loader (Qgv2Inputs) and accessor (QgvScores), its same-CIK Universe codes never reach the candidate pool and carry only the
+// withdrawal reason; other issuers are unchanged. Synthetic data only (tools/qgv_v2_fixture.js).
+test('identity-conflict withdrawal: same-CIK Universe codes are excluded from the TARGET v1 pool with the withdrawal reason',async()=>{
+ const path=require('node:path'),D=path.join(__dirname,W),F=require('./qgv_v2_fixture.js');
+ for(const[name,file]of[['ProfileDefaults','profile-defaults.js'],['TypeConfigDefaults','type-config-defaults.js'],['QgvV2','qgv-v2.js'],['Qgv2Inputs','qgv2-inputs.js'],['QgvScores','qgv-scores.js']])globalThis[name]=globalThis[name]||require(path.join(D,file));
+ const SQ=globalThis.Qgv2Inputs,QS=globalThis.QgvScores,p=F.payload(),codes=Object.keys(p.records).filter(c=>!c.startsWith('TARGET:')).sort();
+ const identities=codes.map(c=>({company_id:c,ticker:c.split(':')[1]})),empty={state:'NOT_AVAILABLE',acquired_at:null,fiscal_year_end:null,metrics:{},factors:{},axes:{},v_inputs_v2:{}};
+ const cik=p.records['NASDAQ:GOOGL'].cik,same=codes.filter(c=>p.records[c].cik===cik);assert.ok(same.length>=1);
+ p.target.googl={...empty,cik,reason_codes:[SQ.WITHDRAWN_REASON],detected_at:'2026-10-13T12:00:00Z',withdrawn_acquired_at:'2026-10-12T00:00:00Z'};
+ const inputs=SQ.fromInputs(SQ.light(p)),quotes=await QS.collectQuotes({PrivateSubsetView:{prices:()=>new Map(Object.entries(F.quotes()))}},{identities,v2Inputs:inputs});
+ const computed=QS.compute({identities,publicScreens:{[SQ.FILE]:inputs},v2Inputs:inputs,quotes});assert.equal(computed.v2_state,'READY');
+ const rows=B.universeRows({computed,inputs,universeCodes:codes,existing:[]});
+ const hit=rows.filter(x=>x.cik===cik);assert.equal(hit.length,1);   // one point per issuer (share classes deduped)
+ for(const r of hit){assert.equal(r.withdrawn,true);assert.equal(r.total,null);assert.deepEqual(B.exclusions(r),['IDENTITY_CONFLICT_WITHDRAWN']);}
+ const draft=B.buildDraft({computed,inputs,universeCodes:codes,existing:[],date:'2026-10-17'}),pooled=new Set(draft.pool.map(r=>r.code));
+ assert.ok(same.every(c=>!pooled.has(c)));assert.ok(draft.excluded_counts.IDENTITY_CONFLICT_WITHDRAWN>=1);
+ assert.ok(rows.filter(r=>r.cik!==cik).every(r=>r.withdrawn===false));assert.equal(draft.excluded_counts.IDENTITY_CONFLICT_WITHDRAWN,1);   // the pool may be empty here: the fixture has no safety metrics (NA excluded)
+});
+
+// #289 (UNI-WITHDRAWN): a Universe code withdrawn for an identity conflict is stopped even when a live TARGET row of the same
+// ticker exists; the builder row of that code never borrows the TARGET row's score and carries only the withdrawal reason.
+test('identity-conflict withdrawal: a withdrawn Universe code never borrows a same-ticker TARGET score',async()=>{
+ const path=require('node:path'),D=path.join(__dirname,W),F=require('./qgv_v2_fixture.js');
+ for(const[name,file]of[['ProfileDefaults','profile-defaults.js'],['TypeConfigDefaults','type-config-defaults.js'],['QgvV2','qgv-v2.js'],['Qgv2Inputs','qgv2-inputs.js'],['QgvScores','qgv-scores.js']])globalThis[name]=globalThis[name]||require(path.join(D,file));
+ const SQ=globalThis.Qgv2Inputs,QS=globalThis.QgvScores,p=F.payload(),codes=Object.keys(p.records).filter(c=>!c.startsWith('TARGET:')).sort();
+ assert.ok(codes.includes('NASDAQ:NVDA')&&p.target.nvda);
+ p.records['NASDAQ:NVDA']={state:'NOT_AVAILABLE',acquired_at:null,fiscal_year_end:null,metrics:{},factors:{},axes:{},v_inputs_v2:{},cik:p.records['NASDAQ:NVDA'].cik,reason_codes:[SQ.WITHDRAWN_REASON],detected_at:'2026-10-13T12:00:00Z',withdrawn_acquired_at:'2026-10-12T00:00:00Z'};
+ const ids=new Map([['NVDA','nvda']]),identities=codes.map(c=>{const t=c.split(':')[1];return{company_id:ids.get(t)||c,ticker:t};});
+ const inputs=SQ.fromInputs(SQ.light(p));assert.equal(inputs.records['NASDAQ:NVDA'].identity_withdrawn,true);
+ const quotes=await QS.collectQuotes({PrivateSubsetView:{prices:()=>new Map(Object.entries(F.quotes()))}},{identities,v2Inputs:inputs});
+ const computed=QS.compute({identities,publicScreens:{[SQ.FILE]:inputs},v2Inputs:inputs,quotes});
+ const rows=B.universeRows({computed,inputs,universeCodes:codes,existing:[]}),nv=rows.find(r=>r.code==='NASDAQ:NVDA');
+ assert.ok(nv);assert.deepEqual([nv.withdrawn,nv.total,nv.rank],[true,null,null]);assert.deepEqual(B.exclusions(nv),['IDENTITY_CONFLICT_WITHDRAWN']);
+ const draft=B.buildDraft({computed,inputs,universeCodes:codes,existing:[],date:'2026-10-17'});
+ assert.ok(!draft.pool.some(r=>r.symbol==='NVDA'));assert.equal(draft.excluded_counts.IDENTITY_CONFLICT_WITHDRAWN,1);
+});

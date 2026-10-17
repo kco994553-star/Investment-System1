@@ -11,8 +11,13 @@ LIVE/STALE state, so the factor map stores only the score. No V, no price, no ra
 
 Rows are keyed by Universe code (an issuer's codes carry the same row) and merged
 into the previously published copy like `sec-universe-shares.json`: each row keeps
-its own acquired_at, a new row without scores never erases a kept one, and rows past
-the shared v0 stale window (sec-universe-shares/v0, DEFAULT_V0_UNCALIBRATED) are STALE.
+its own acquired_at, a new row of this run's collection replaces the kept one also
+without scores (its NOT_AVAILABLE reason is published, owner rule 2026-10-17), a row
+without its own collection record never erases a kept score, and rows past the
+shared v0 stale window (sec-universe-shares/v0, DEFAULT_V0_UNCALIBRATED) are STALE.
+An identity conflict without this run's collection withdraws a kept row with a collection record (owner decision
+UNI-WITHDRAWN (a), `sec_universe_shares.withdrawal`: IDENTITY_CONFLICT_WITHDRAWN, detected_at, withdrawn_acquired_at,
+withdrawn_cik naming this file's row, no scores).
 """
 from datetime import timedelta, timezone
 import hashlib
@@ -20,7 +25,9 @@ import json
 import math
 import re
 
-from .sec_universe_shares import _clock, _hash, _iso, load_config, universe_codes
+from .sec_universe_shares import (IDENTITY_CONFLICT, PRESERVE, SCHEMA_VERSION, WITHDRAWAL_KEYS, WITHDRAWN_REASON, _clock, _hash, _iso, is_withdrawal,
+                                   load_config, note, note_withdrawal, previous_decision, replaces, require_withdrawal, schema_version_of,
+                                   universe_codes, withdrawal, withdrawal_stays)
 
 FILENAME = 'sec-universe-qg.json'
 KIND = 'SEC_UNIVERSE_QG'
@@ -117,8 +124,9 @@ def restate(record, as_of, stale_after):
     return out
 
 
-def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None):
-    """Previous published rows + this shard's rows (same rules as the Universe shares merge)."""
+def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None, conflicts=(), stats=None):
+    """Previous published rows + this shard's rows (same rules as the Universe shares merge: `previous_decision`, then
+    `replaces`; a row with its own collection record, acquired_at set, is a new observation)."""
     cfg = config or load_config()
     stale_after = timedelta(days=cfg['stale_after_days'])
     cut = _clock(_iso(as_of))
@@ -134,14 +142,31 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
                 cik = new.get('cik') if type(new) is dict else None
                 new = empty_record(cik=cik if type(cik) is str and re.fullmatch(r'[0-9]{10}', cik) and cik != '0000000000' else None,
                                    reasons=('INVALID_INPUT',))
-        if new is not None and not (not _scored(new) and _scored(old)):
+            if is_withdrawal(new):   # only a merge writes a withdrawal; a collected row never is one
+                new = empty_record(reasons=('INVALID_INPUT',))
+        observed = lambda r: r['acquired_at'] is not None
+        if withdrawal_stays(old, new, code=code, conflicts=conflicts, observed=observed):
+            note_withdrawal(stats, old, old, code)
+            records[code] = restate(old, as_of, stale_after)
+            continue
+        decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflicts, new_observation=observed)
+        note(stats, decision, code, old)
+        if decision == PRESERVE:
+            pass
+        elif decision == IDENTITY_CONFLICT and (new is None or not observed(new)):
+            # Identity conflict without this run's collection: this file's kept observation is withdrawn (UNI-WITHDRAWN);
+            # without one, unresolved (no row this run) or this run's NA row, never an invented time.
+            chosen = withdrawal(old, empty_record, detected_at=as_of) or (new if new is not None else empty_record(reasons=('CIK_UNRESOLVED',)))
+            note_withdrawal(stats, old, chosen, code)
+            old = chosen
+        elif decision == IDENTITY_CONFLICT or replaces(new, old, observed=observed, has_value=_scored):
             old = new
         elif new is None and code in unresolved and not _scored(old):
             old = empty_record(reasons=('CIK_UNRESOLVED',))
         records[code] = restate(old, as_of, stale_after)
     states = [r['state'] for r in records.values()]
     state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
-    payload = {'schema_version': 1, 'kind': KIND, 'as_of': _iso(as_of), 'config_version': cfg['config_version'],
+    payload = {'schema_version': SCHEMA_VERSION, 'kind': KIND, 'as_of': _iso(as_of), 'config_version': cfg['config_version'],
                'config_status': cfg['config_status'], 'method_status': METHOD_STATUS, 'availability_basis': AVAILABILITY_BASIS,
                'freshness_basis': 'SOURCE_ACQUISITION', 'stale_after_seconds': int(stale_after.total_seconds()),
                'shard_count': cfg['shard_count'], 'last_shard_index': shard_index,
@@ -153,8 +178,12 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
     return payload
 
 
-def _record(r, cut, ttl):
-    _need(type(r) is dict and set(r) == set(RECORD_KEYS))
+def _record(r, cut, ttl, *, withdrawals=True):
+    withdrawn = is_withdrawal(r)
+    if withdrawn:   # identity-conflict withdrawal (sec_universe_shares.WITHDRAWAL_KEYS): only on such a row
+        _need(withdrawals)   # only in a schema-version-2 file
+        require_withdrawal(r, cut, empty_record)
+    _need(type(r) is dict and set(r) == set(RECORD_KEYS) | (set(WITHDRAWAL_KEYS) if withdrawn else set()))
     _need(r['cik'] is None or type(r['cik']) is str and re.fullmatch(r'[0-9]{10}', r['cik']) is not None and r['cik'] != '0000000000')
     h = r['source_sha256']
     _need(type(h) is dict and set(h) == set(HASH_KEYS) and all(v is None or _hash(v) for v in h.values()))
@@ -165,7 +194,8 @@ def _record(r, cut, ttl):
         _need(_clock(r['acquired_at']) <= cut and r['cik'] is not None and h['companyfacts'] and h['submissions'])
     _need(r['state'] in STATES)
     reasons = r['reason_codes']
-    _need(type(reasons) is list and len(reasons) == len(set(reasons)) <= 4 and all(x in REASONS for x in reasons))
+    _need(type(reasons) is list and len(reasons) == len(set(reasons)) <= 4
+          and all(x in REASONS or withdrawn and x == WITHDRAWN_REASON for x in reasons))
     factors = r['factors']
     _need(type(factors) is dict and set(factors) == set(FACTORS))
     # A factor is its 0-100 score or null (NOT_AVAILABLE); a scored factor shares the row state.
@@ -185,7 +215,8 @@ def require_universe_qg(payload):
     try:
         _need(type(payload) is dict and set(payload) == set(TOP_KEYS))
         cfg = load_config()
-        _need(type(payload['schema_version']) is int and payload['schema_version'] == 1 and payload['kind'] == KIND)
+        version = schema_version_of(payload)
+        _need(payload['kind'] == KIND)
         cut = _clock(payload['as_of'])
         _need(payload['config_version'] == cfg['config_version'] and payload['config_status'] == cfg['config_status'])
         _need(payload['method_status'] == METHOD_STATUS and payload['availability_basis'] == AVAILABILITY_BASIS)
@@ -199,7 +230,7 @@ def require_universe_qg(payload):
         records = payload['records']
         codes = universe_codes()
         _need(type(records) is dict and set(records) == set(codes) and type(payload['code_count']) is int and payload['code_count'] == len(codes))
-        states = [_record(records[code], cut, timedelta(seconds=ttl)) for code in codes]
+        states = [_record(records[code], cut, timedelta(seconds=ttl), withdrawals=version >= 2) for code in codes]
         state = 'LIVE' if 'LIVE' in states else 'STALE' if 'STALE' in states else 'NOT_AVAILABLE'
         _need(payload['state'] == state)
         top = payload['reason_codes']

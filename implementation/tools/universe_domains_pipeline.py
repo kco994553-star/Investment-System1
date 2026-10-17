@@ -95,12 +95,12 @@ def sec_websites(user_agent, *, now=None, client_kwargs=None):
     from investment_system.providers.sec_collection import SecCollectionClient
     from investment_system.providers.sec_classification_collection import ClassificationSecClient, URLS
     from investment_system.providers.sec_universe_collection import daily_partition, fetch_ticker_exchange, universe_registry
-    from investment_system.universe.sec_universe_shares import load_config, shard_index_for
+    from investment_system.universe.sec_universe_shares import load_config, shard_day, shard_index_for
     kwargs = dict(client_kwargs or {})
     registry = universe_registry(fetch_ticker_exchange(SecCollectionClient(user_agent, **kwargs)))
     started = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     shard_count = load_config()['shard_count']
-    issuers = daily_partition(registry, shard_count=shard_count, shard_index=shard_index_for(started.date(), shard_count))
+    issuers = daily_partition(registry, shard_count=shard_count, shard_index=shard_index_for(shard_day(started), shard_count))
     client = ClassificationSecClient(user_agent, **kwargs)
     found, checked = {}, set()
     for issuer in issuers:

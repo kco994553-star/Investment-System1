@@ -13,16 +13,17 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_public_versions_and_partial_rows_match_python_schema():
     producer = runpy.run_path(str(ROOT / 'tools/public_sec_inputs.py'))
     script = """
-const {fixture,unavailable}=require('./tools/sec_reported_fixture.js');
+const {fixture,unavailable,mixed}=require('./tools/sec_reported_fixture.js');
 const api=require('./src/investment_system/product/web_assets/sec-reported.js');
-const vectors=[1,2,3].map(fixture);
-for(const version of [2,3]){const p=fixture(version);p.companies[0]=unavailable(p.companies[0],1,version);vectors.push(p);}
+const vectors=[1,2,3,4].map(fixture);
+for(const version of [2,3,4]){const p=fixture(version);p.companies[0]=unavailable(p.companies[0],1,version);vectors.push(p);}
 const p=fixture(3);p.companies[0].excluded_fact_counts={CLASS_SPLIT:2,VALUE_INVALID:3};p.companies[0].share_class_notice='SHARE_CLASS_BASIS';vectors.push(p);
+vectors.push(mixed());
 process.stdout.write(JSON.stringify(vectors.map(input=>({input,display:api.project(input)}))));
 """
     result = subprocess.run(['node', '-e', script], cwd=ROOT, capture_output=True, check=True, text=True)
     vectors = json.loads(result.stdout)
-    assert len(vectors) == 6
+    assert len(vectors) == 9
     for vector in vectors:
         payload = producer['require_public_inputs'](vector['input'])
         display = vector['display']
@@ -36,3 +37,9 @@ process.stdout.write(JSON.stringify(vectors.map(input=>({input,display:api.proje
             assert shown['reason_codes'] == row.get('reason_codes', [])
             assert 'reported_shares' not in shown
             assert 'sources' not in shown
+            # Schema /4: only a successful collection (LIVE or policy NA) is shown with an acquired_at; a withdrawal or a
+            # failure never is, and a kept row is marked as kept (owner decision 2026-10-17).
+            assert shown['acquired_at'] == (row.get('acquired_at') if row.get('status', 'LIVE') in ('LIVE', 'NOT_AVAILABLE') else None)
+            assert shown['detected_at'] == row.get('detected_at') and shown['checked_at'] == row.get('checked_at')
+            assert (shown['preserved'] is not None) == (row.get('preserved_previous') is not None)
+        assert display['collection'] == payload.get('collection')

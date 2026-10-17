@@ -18,7 +18,7 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const finite=v=>typeof v==='number'&&Number.isFinite(v),n1=v=>finite(v)?v.toFixed(1):'NA',pctText=v=>finite(v)?v.toFixed(2).replace(/\.?0+$/,'')+'%':'NA';
 const pp=v=>finite(v)?(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(2)+'%p':'NA',ret=v=>finite(v)?(v>0?'+':v<0?'−':'')+Math.abs(v*100).toFixed(2)+'%':'NA';
 const GRADE={CORE:'핵심',GENERAL:'일반',EQUAL:'균등'},SAFETY={PASS:'통과',FAIL:'불통과',UNKNOWN:'확인 불가'};
-const EXCLUDE={TOTAL_NOT_AVAILABLE:'총점 없음',AXIS_COVERAGE_LOW:'축 산출 50% 미만',VALUE_TRAP_GATE:'가치 함정 관문',FINANCIAL_SAFETY_FAIL:'재무 안전 불통과',FINANCIAL_SAFETY_NOT_AVAILABLE:'재무 안전 자료 없음(NA)',SUBGROUP_MAX:'업종 하위 묶음 4개 상한',SECTOR_GROUP_MAX:'업종 묶음 40% 상한',SINGLE_MAX:'단일 10% 상한',USER_DISAGREE:'사용자 반대'};
+const EXCLUDE={TOTAL_NOT_AVAILABLE:'총점 없음',AXIS_COVERAGE_LOW:'축 산출 50% 미만',VALUE_TRAP_GATE:'가치 함정 관문',FINANCIAL_SAFETY_FAIL:'재무 안전 불통과',FINANCIAL_SAFETY_NOT_AVAILABLE:'재무 안전 자료 없음(NA)',SUBGROUP_MAX:'업종 하위 묶음 4개 상한',SECTOR_GROUP_MAX:'업종 묶음 40% 상한',SINGLE_MAX:'단일 10% 상한',USER_DISAGREE:'사용자 반대',IDENTITY_CONFLICT_WITHDRAWN:'신원 충돌로 사용 중지'};
 // Finalize blockers (finalizeBlockers / finalize error .blockers) as one line each.
 const BLOCKERS={TARGET_V1_CARDS_PENDING:'카드 응답 대기',TARGET_V1_SHORTFALL:'통과 종목 부족(조건 완화 없음)',TARGET_LIMITS_BLOCKED:'16절 한도 위반',SEC_QGV2_NOT_AVAILABLE:'최신 공개 sec-qgv2.json을 읽지 못함',
  CALC_VERSION_MISSING:'calc_version 없음(이전 형식 파일)',CALC_VERSION_MIXED:'행마다 calc_version이 다름',ROW_DATA_STALE:'값이 있는 행의 SEC 수집 시각이 7일을 넘음(파일 as_of는 신선도로 보지 않음)',DRAFT_BASIS_CHANGED:'초안 이후 입력 기준(calc_version·샤드별 수집 시각)이 바뀜 · 초안 재생성 필요',FINANCIAL_SAFETY_RECHECK_FAILED:'선정 종목 재무 안전 재검사(최신 자료) 불통과',

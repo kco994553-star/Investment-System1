@@ -670,6 +670,298 @@ def test_nodebt_issuers_reporting_debt_under_other_tags_are_never_zero_debt():
     assert v['total_debt'] is None
 
 
+def _device_v(v, closes=None):
+    """Device V for one v_inputs_v2 (qgv2-inputs.js normalize -> qgv-v2.js scoreUniverse, synthetic price 10 USD;
+    `closes` = device month-end closes {YYYY-MM: close}, default none)."""
+    script = ("const W=process.argv[1],I=require(W+'/qgv2-inputs.js'),V2=require(W+'/qgv-v2.js');"
+              "const TC=require(W+'/type-config-defaults.js'),P=require(W+'/dcf-parameters-defaults.js'),v=JSON.parse(process.argv[2]);"
+              "const row={cik:'0000001000',state:'LIVE',fiscal_year_end:v.fiscal_year_end,profile:'GENERAL',industry_group:'g',sic:'3674',"
+              "currency:'USD',metrics:{},factors:{},axes:{},v_inputs_v2:v},rec=I.normalize(row,true);"
+              "const o=V2.scoreUniverse({'X:A':rec},{'X:A':{price:10,currency:'USD',month_closes:JSON.parse(process.argv[3])}},{typeConfig:TC,parameters:P})['X:A'];"
+              "process.stdout.write(JSON.stringify({total_debt:rec.v_inputs.total_debt,cash:rec.v_inputs.cash,diluted_shares:rec.v_inputs.diluted_shares,"
+              "fcf_yield:o.detail.fcf_yield,ebit_yield:o.detail.ebit_yield,implied_growth:o.detail.implied_growth,"
+              "reasons:Object.fromEntries(Object.entries(o.factors).filter(([k])=>k.startsWith('v_')).map(([k,f])=>[k,f.reason])),"
+              "v_scores:Object.fromEntries(Object.entries(o.factors).filter(([k])=>k.startsWith('v_')).map(([k,f])=>[k,f.score])),"
+              "v_axis:o.axes.V.score,reference_range:o.reference_range,"
+              "fcf_reason:o.factors.v_fcf_yield.reason,ebit_reason:o.factors.v_earnings_yield.reason}));")
+    out = subprocess.run(['node', '-e', script, str(ROOT / 'src/investment_system/product/web_assets'), json.dumps(v),
+                          json.dumps(closes or {})], text=True, capture_output=True, timeout=60, check=True)
+    return json.loads(out.stdout)
+
+
+def test_v_inputs_stale_balance_sheet_values_are_na():
+    """V-STALE-BS (2026-10-17 number check, calc_version 2026-10-17.1): total_debt / cash_and_equivalents dated before the FY0
+    balance sheet are NA, never the last value reported years earlier; Q-NODEBT-INT issuers get no debt and so no EV, and the
+    device FCF / EBIT yield is NA with reason DEBT_CASH_NOT_AVAILABLE (missing never becomes 0)."""
+    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-17.1' and re.fullmatch(vf.CALC_VERSION_PATTERN, vf.CALC_VERSION)
+    debt_lines = ('LongTermDebtNoncurrent', 'LongTermDebtCurrent')
+    # INCY/EME/DECK-type: the only debt fact is years before FY0 and the NODEBT rule is NA (interest expense reported):
+    # total_debt NA (was 19,094 from 2018 / 5.3 from 2023 / 0 from 2021), Q metrics as before (they use FY0 debt only).
+    for year, amount in ((2018, 19094.0), (2023, 5.3), (2021, 0.0)):
+        _, _, _, m, v = compute(simple_company(omit=debt_lines, extra=_instants('LongTermDebt', amount, years=(year,))))
+        assert v['total_debt'] is None and m['net_debt_to_ebitda'] is None and m['roic'] is None, year
+        assert v['cash_and_equivalents'] == {'value': 30.0, 'period_end': '2025-12-31'}
+    # The same through the published SEC row (strict row shape, current calc_version).
+    facts, subs = REF.synthetic_sec('0000001000', omit=('LongTermDebtNoncurrent',))
+    payload = json.loads(facts)
+    payload['facts']['us-gaap']['LongTermDebt'] = {'units': {'USD': [{'end': '2018-12-31', 'val': 19094.0, 'accn': '0000001000-19-000010',
+                                                                       'form': '10-K', 'filed': '2019-02-15', 'fy': 2018, 'fp': 'FY'}]}}
+    row = q_build(json.dumps(payload).encode(), subs)
+    assert row['calc_version'] == vf.CALC_VERSION and row['fiscal_year_end'] == '2025-12-31'
+    assert row['v_inputs_v2']['total_debt'] is None and row['v_inputs_v2']['cash_and_equivalents'] is not None
+    # FY0 debt: unchanged (FY0 line; a later 10-Q date is the latest balance sheet, as before).
+    assert compute(simple_company())[4]['total_debt'] == {'value': 50.0, 'period_end': '2025-12-31'}
+    later = simple_company(extra=[(('LongTermDebtNoncurrent', 'USD', 45.0, '2026-06-30'), {'form': '10-Q', 'filed': '2026-08-01'})])
+    assert compute(later)[4]['total_debt'] == {'value': 45.0, 'period_end': '2026-06-30'}
+    # A balance sheet dated within the FY0 instant tolerance (52/53-week years) is the FY0 balance sheet: kept.
+    near = simple_company(omit=debt_lines, extra=[(('LongTermDebt', 'USD', 44.0, '2025-12-27'), {})])
+    assert compute(near)[4]['total_debt'] == {'value': 44.0, 'period_end': '2025-12-27'}
+    # MNST-type (approved NODEBT zero): a debt line at FY-1 only and no interest expense -> 0 at FY0 is allowed.
+    repaid = simple_company(omit=debt_lines + ('InterestExpense',), extra=_instants('LongTermDebt', 374.0, years=(2024,)))
+    assert compute(repaid)[4]['total_debt'] == {'value': 0.0, 'period_end': '2025-12-31'}
+    # PCAR-type cash: the latest cash fact is years before FY0 -> cash NA (never the stale value, never 0); FY0 cash kept.
+    stale_cash = simple_company(omit=('CashAndCashEquivalentsAtCarryingValue',),
+                                extra=_instants('CashAndCashEquivalentsAtCarryingValue', 30.0, years=(2019,)))
+    _, _, _, _, v = compute(stale_cash)
+    assert v['cash_and_equivalents'] is None and v['total_debt'] == {'value': 50.0, 'period_end': '2025-12-31'}
+    assert compute(simple_company())[4]['cash_and_equivalents'] == {'value': 30.0, 'period_end': '2025-12-31'}
+    if shutil.which('node') is None:
+        return
+    # Device: no EV -> FCF yield (and EBIT yield) NA with reason DEBT_CASH_NOT_AVAILABLE; never a zero-filled debt or cash.
+    stale = compute(simple_company(omit=debt_lines, extra=_instants('LongTermDebt', 19094.0, years=(2018,))))[4]
+    for v in (stale, compute(stale_cash)[4]):
+        d = _device_v(v)
+        assert d['fcf_yield'] is None and d['ebit_yield'] is None
+        assert d['fcf_reason'] == d['ebit_reason'] == 'DEBT_CASH_NOT_AVAILABLE'
+    assert _device_v(stale)['total_debt'] is None and _device_v(compute(stale_cash)[4])['cash'] is None
+    d = _device_v(compute(simple_company())[4])  # FY0 debt: EV = 10 x 10 + 50 - 30 = 120
+    assert math.isclose(d['fcf_yield'], (0.18 - 0.03) * 146.41 / 120, rel_tol=1e-6)
+    d = _device_v(compute(repaid)[4])  # zero debt: EV = 100 - 30 = 70
+    assert d['total_debt'] == 0 and math.isclose(d['fcf_yield'], (0.18 - 0.03) * 146.41 / 70, rel_tol=1e-6)
+
+
+DILUTED = 'WeightedAverageNumberOfDilutedSharesOutstanding'
+BASIC_AND_DILUTED = 'WeightedAverageNumberOfShareOutstandingBasicAndDiluted'
+
+
+def _shares(concept, value, start, end, form='10-Q', filed=None):
+    return ((concept, 'shares', value, end), {'start': start, 'form': form, 'filed': filed or ('2026-08-01' if end >= '2026' else None)})
+
+
+def _other_share_counts():
+    """Fresh share counts under concepts that are NOT allowed for diluted shares (never a substitute)."""
+    return [(('WeightedAverageNumberOfSharesOutstandingBasic', 'shares', 9.0, '2026-06-30'), {'start': '2026-04-01', 'form': '10-Q', 'filed': '2026-08-01'}),
+            (('CommonStockSharesOutstanding', 'shares', 9.5, '2026-06-30'), {'form': '10-Q', 'filed': '2026-08-01'}),
+            (('EntityCommonStockSharesOutstanding', 'shares', 9.6, '2026-07-25'), {'form': '10-Q', 'filed': '2026-08-01', 'taxonomy': 'dei'})]
+
+
+def test_v_inputs_diluted_shares_newest_allowed_concept_by_period_end_else_na():
+    """V-STALE-SHARES (owner decision 2026-10-17, calc_version 2026-10-17.1): v_inputs_v2.diluted_shares is the latest-ending
+    positive fact over ALL allowed diluted-share concepts (latest_duration read only the first concept with any fact: BKR 2021,
+    REG 2020, TTWO 2024, HSY 2015, LYB 2019, SJM 2023, ERIE 2021), judged by its period END against FY0 end minus the
+    YEAR_TOLERANCE_DAYS of V-STALE-BS, only from facts filed by the cutoff; else NA. Never basic shares / shares outstanding.
+    The shared selection functions and the Q·G metrics are unchanged."""
+    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-17.1'
+    assert vf.CONCEPTS['us-gaap']['diluted_shares'] == (DILUTED, BASIC_AND_DILUTED)
+    q = dict(form='10-Q', filed='2026-08-01')
+    # (a) First allowed concept stale (2021 quarter only), the second allowed concept fresh (FY0 annual + 2026 Q2):
+    #     the newest period end of the allowed concepts is used (quarter span, as latest_duration within a concept).
+    stale_first = [_shares(DILUTED, 806.0, '2021-04-01', '2021-06-30', filed='2021-07-23')]
+    fresh_second = [_shares(BASIC_AND_DILUTED, 10.0, '2025-01-01', '2025-12-31', form='10-K', filed='2026-02-15'),
+                    _shares(BASIC_AND_DILUTED, 10.4, '2026-01-01', '2026-06-30', **q),
+                    _shares(BASIC_AND_DILUTED, 10.5, '2026-04-01', '2026-06-30', **q)]
+    payload = simple_company(omit=(DILUTED,), extra=stale_first + fresh_second + _other_share_counts())
+    facts = vf._Facts(payload, 'us-gaap', 'USD', CUTOFF)
+    assert facts.latest_duration('diluted_shares') == (806.0, date(2021, 6, 30))  # shared first-concept rule: unchanged
+    v = compute(payload)[4]
+    assert v['diluted_shares'] == {'value': 10.5, 'period_end': '2026-06-30'}
+    # ... and only facts filed by the cutoff (as_of): the same 2026 Q2 value filed after the cutoff is not available.
+    late = [_shares(BASIC_AND_DILUTED, 10.5, '2026-04-01', '2026-06-30', form='10-Q', filed='2026-08-01')]
+    early_cut = date(2026, 7, 31)
+    assert compute(simple_company(omit=(DILUTED,), extra=stale_first + late), cutoff=early_cut)[4]['diluted_shares'] is None
+    assert compute(simple_company(omit=(DILUTED,), extra=stale_first + late))[4]['diluted_shares'] == {'value': 10.5, 'period_end': '2026-06-30'}
+    # (b) All allowed concepts stale (BKR/TTWO-type: 2021 and 2017; HSY-type: one concept, 2015) -> NA, never another
+    #     concept (basic, shares outstanding, dei cover count are fresh here), never 0; Q·G metrics are unchanged by it.
+    for extra in (stale_first + [_shares(BASIC_AND_DILUTED, 100.0, '2017-04-01', '2017-06-30', filed='2017-07-28')],
+                  [_shares(DILUTED, 220.0, '2015-07-06', '2015-10-04', filed='2015-10-30')]):
+        payload = simple_company(omit=(DILUTED,), extra=extra + _other_share_counts())
+        _, fy0, _, m, v = compute(payload)
+        assert fy0 == '2025-12-31' and v['diluted_shares'] is None, extra
+        assert m == compute(simple_company(omit=(DILUTED,), extra=_other_share_counts()))[3]
+    # Period end, not the filing date: a fresh filing (2026) restating an old period (2019) is still stale.
+    restated = [_shares(DILUTED, 9.0, '2019-01-01', '2019-12-31', form='10-K', filed='2026-02-15')]
+    assert compute(simple_company(omit=(DILUTED,), extra=restated))[4]['diluted_shares'] is None
+    # The FY0 tolerance of V-STALE-BS: an end within YEAR_TOLERANCE_DAYS before FY0 end (52/53-week year) is FY0's count;
+    # one day further is stale.
+    assert vf.YEAR_TOLERANCE_DAYS == 10
+    for end, expected in (('2025-12-21', {'value': 9.0, 'period_end': '2025-12-21'}), ('2025-12-20', None)):
+        near = [_shares(DILUTED, 9.0, '2025-09-21', end, filed='2026-01-30')]
+        assert compute(simple_company(omit=(DILUTED,), extra=near))[4]['diluted_shares'] == expected, end
+    # (c) A valid fresh value is kept unchanged: FY0 annual of the first concept; a later 10-Q quarter of it; at the same
+    #     period end the first concept wins over the second (no change for issuers whose first concept is current).
+    assert compute(simple_company())[4]['diluted_shares'] == {'value': 10.0, 'period_end': '2025-12-31'}
+    later = [_shares(DILUTED, 10.2, '2026-04-01', '2026-06-30', **q), _shares(BASIC_AND_DILUTED, 99.0, '2026-04-01', '2026-06-30', **q),
+             _shares(BASIC_AND_DILUTED, 98.0, '2025-01-01', '2025-12-31', form='10-K', filed='2026-02-15')]
+    v = compute(simple_company(extra=later + _other_share_counts()))[4]
+    assert v['diluted_shares'] == {'value': 10.2, 'period_end': '2026-06-30'}
+    assert len(v['ebit_per_share_history']) == 5 and len(v['fcf_per_share_history']) == 5
+    assert v['ebit_per_share_history'] == compute(simple_company())[4]['ebit_per_share_history']
+    # Through the published SEC row (strict row shape): stale diluted shares -> null in v_inputs_v2.
+    facts_b, subs = REF.synthetic_sec('0000001000')
+    payload = json.loads(facts_b)
+    payload['facts']['us-gaap'][DILUTED] = {'units': {'shares': [{'start': '2015-07-06', 'end': '2015-10-04', 'val': 220.0, 'accn': '0000001000-15-000030',
+                                                                  'form': '10-Q', 'filed': '2015-10-30', 'fy': 2015, 'fp': 'Q3'}]}}
+    for concept, row in (('WeightedAverageNumberOfSharesOutstandingBasic', {'start': '2026-04-01'}), ('CommonStockSharesOutstanding', {})):
+        payload['facts']['us-gaap'][concept] = {'units': {'shares': [dict(row, end='2026-06-30', val=101.0, accn='0000001000-26-000020', form='10-Q', filed='2026-08-01')]}}
+    row = q_build(json.dumps(payload).encode(), subs)
+    assert row['calc_version'] == vf.CALC_VERSION and row['fiscal_year_end'] == '2025-12-31' and row['state'] == 'LIVE'
+    assert row['v_inputs_v2']['diluted_shares'] is None and row['v_inputs_v2']['total_debt'] is not None
+    if shutil.which('node') is None:
+        return
+    # (d) Device (qgv2-inputs.js -> qgv-v2.js): no share count -> every per-share and EV-based V metric NA with the existing
+    #     reason SHARES_NOT_AVAILABLE (EBIT/FCF yield, industry, own history, expectation check), DCF reference range NA;
+    #     the device reads only v_inputs_v2.diluted_shares, so no other share value (cover count, basic) can stand in.
+    closes = {f'{y}-12': 100.0 for y in range(2015, 2026)}
+    v = dict(row['v_inputs_v2'], shares_outstanding={'value': 101.0, 'period_end': '2026-06-30'})
+    for d in (_device_v(row['v_inputs_v2'], closes), _device_v(v, closes)):
+        assert d['diluted_shares'] is None and d['ebit_yield'] is None and d['fcf_yield'] is None and d['implied_growth'] is None
+        assert d['reasons'] == {k: 'SHARES_NOT_AVAILABLE' for k in ('v_earnings_yield', 'v_fcf_yield', 'v_vs_industry',
+                                                                    'v_vs_own_history', 'v_expectation_check')}
+        assert set(d['v_scores'].values()) == {None} and d['v_axis'] is None
+        assert d['reference_range'] == {'state': 'NOT_AVAILABLE', 'reason': 'FCF_NOT_AVAILABLE', 'low': None, 'high': None}
+    # The fresh row of the same issuer keeps its device V (control).
+    fresh = q_build(*REF.synthetic_sec('0000001000'))
+    d = _device_v(fresh['v_inputs_v2'], closes)
+    assert d['diluted_shares'] == fresh['v_inputs_v2']['diluted_shares']['value'] and d['fcf_yield'] is not None
+    assert d['reasons']['v_fcf_yield'] != 'SHARES_NOT_AVAILABLE'
+
+
+COVER = 'EntityCommonStockSharesOutstanding'
+K_ACCN, Q_ACCN = '0000000001-26-000001', '0000000001-26-000200'  # simple_company's 10-K accession; a 2026 Q2 10-Q
+
+
+def _cover(value, accn=K_ACCN, end='2026-02-10', form='10-K', filed='2026-02-15'):
+    """dei cover share count (EntityCommonStockSharesOutstanding) reported in filing `accn`."""
+    return ((COVER, 'shares', value, end), {'form': form, 'filed': filed, 'accn': accn, 'taxonomy': 'dei'})
+
+
+def _q2(concept, value, start='2026-04-01', accn=Q_ACCN):
+    return ((concept, 'shares', value, '2026-06-30'), {'start': start, 'form': '10-Q', 'filed': '2026-08-01', 'accn': accn})
+
+
+def test_v_inputs_diluted_shares_scale_unconfirmed_is_na_never_rescaled():
+    """V-SHARES-SCALE (owner decision 2026-10-17 on the MCD/WAT unit errors, calc_version 2026-10-17.1, no bump):
+    v_inputs_v2.diluted_shares is NA with reason SHARES_SCALE_UNCONFIRMED when its ratio to the dei cover share count of the
+    SAME filing is outside SHARES_SCALE_BAND (0.1..10); the per-share histories are NA when their FY0-basis count is. Never
+    multiplied/divided by 1,000 or 1,000,000, never replaced by the cover, basic or balance-sheet count. Normal counts, counts
+    without a same-filing cover (no reference) and every Q·G metric are unchanged."""
+    assert vf.CALC_VERSION == 'qgv2-calc/2026-10-17.1'
+    assert vf.SHARES_SCALE_BAND == (0.1, 10.0) and vf.SHARES_SCALE_UNCONFIRMED == 'SHARES_SCALE_UNCONFIRMED'
+    base_v, base_m = compute(simple_company())[4], compute(simple_company())[3]
+    assert len(base_v['ebit_per_share_history']) == 5
+
+    def run(extra):
+        diag = {}
+        _, fy0, _, m, v = vf.compute(simple_company(extra=extra), sic='3674', cutoff=CUTOFF, diagnostics=diag)
+        assert fy0 == '2025-12-31'
+        return m, v, diag
+
+    # (a) Normal: FY0 10-K count 10 vs its cover 10.3; a 10-Q count 10.2 vs its cover 10.25 -> kept, histories unchanged.
+    m, v, diag = run([_cover(10.3)])
+    assert v['diluted_shares'] == base_v['diluted_shares'] and v == base_v and m == base_m
+    assert diag['diluted_shares']['status'] == 'IN_BAND' and diag['per_share_histories']['status'] == 'IN_BAND'
+    m, v, diag = run([_cover(10.3), _q2(DILUTED, 10.2), _cover(10.25, Q_ACCN, '2026-07-25', '10-Q', '2026-08-01')])
+    assert v['diluted_shares'] == {'value': 10.2, 'period_end': '2026-06-30'} and m == base_m
+    assert v['ebit_per_share_history'] == base_v['ebit_per_share_history'] and diag['diluted_shares']['accn'] == Q_ACCN
+    # Band edges are inclusive (ratio exactly 10 and 0.1 kept); just outside -> NA.
+    for value, kept in ((100.0, True), (1.0, True), (100.5, False), (0.99, False)):
+        _, v, diag = run([_q2(DILUTED, value), _cover(10.0, Q_ACCN, '2026-07-25', '10-Q', '2026-08-01')])
+        assert (v['diluted_shares'] == {'value': value, 'period_end': '2026-06-30'}) is kept, value
+        assert diag['diluted_shares']['status'] == ('IN_BAND' if kept else 'SHARES_SCALE_UNCONFIRMED'), value
+
+    # (b) MCD-like: every filing tags the counts in millions (10.0 for 10,000,000; the 10-Q 9.9 for 9,900,000). The cover of
+    #     the same filing says 10,000,000 / 9,950,000 -> diluted_shares NA, per-share histories NA (their FY0 basis is the
+    #     same mis-scaled count); Q·G metrics unchanged (they only use ratios of counts of one basis).
+    mcd = [_cover(10_000_000.0), _q2(DILUTED, 9.9), _cover(9_950_000.0, Q_ACCN, '2026-06-30', '10-Q', '2026-08-01')]
+    m, v, diag = run(mcd)
+    assert v['diluted_shares'] is None and v['ebit_per_share_history'] == [] and v['fcf_per_share_history'] == []
+    assert m == compute(simple_company(extra=[_q2(DILUTED, 9.9)]))[3] == base_m
+    d = diag['diluted_shares']
+    assert d['status'] == 'SHARES_SCALE_UNCONFIRMED' and d['value'] == 9.9 and d['reference'] == 9_950_000.0
+    assert d['accn'] == Q_ACCN and d['concept'] == DILUTED and d['period_end'] == '2026-06-30'
+    assert d['reference_concept'] == 'dei:EntityCommonStockSharesOutstanding' and math.isclose(d['ratio'], 9.9 / 9_950_000.0)
+    assert diag['per_share_histories']['status'] == 'SHARES_SCALE_UNCONFIRMED' and diag['per_share_histories']['value'] == 10.0
+    # Without a newer 10-Q: the FY0 10-K count itself is checked against the 10-K cover.
+    _, v, diag = run([_cover(10_000_000.0)])
+    assert v['diluted_shares'] is None and v['ebit_per_share_history'] == [] and diag['diluted_shares']['accn'] == K_ACCN
+
+    # (c) WAT-like: the 10-Ks are correct (10 vs cover 10.1); one 2026 10-Q tags the count 1,000x (10,200 vs its cover 10.25).
+    #     The basic count of the same table is wrong the same way and the balance-sheet count is right: neither is used.
+    wat = [_cover(10.1), _q2(DILUTED, 10_200.0), _q2(DILUTED, 10_150.0, start='2026-01-01'),
+           _q2('WeightedAverageNumberOfSharesOutstandingBasic', 10_150.0),
+           (('CommonStockSharesOutstanding', 'shares', 10.2, '2026-06-30'), {'form': '10-Q', 'filed': '2026-08-01', 'accn': Q_ACCN}),
+           _cover(10.25, Q_ACCN, '2026-08-07', '10-Q', '2026-08-01')]
+    m, v, diag = run(wat)
+    assert v['diluted_shares'] is None and diag['diluted_shares']['status'] == 'SHARES_SCALE_UNCONFIRMED'
+    assert math.isclose(diag['diluted_shares']['ratio'], 10_200.0 / 10.25)
+    # Histories keep the correctly scaled FY0 10-K basis (IN_BAND against the 10-Q cover); Q·G unchanged.
+    assert v['ebit_per_share_history'] == base_v['ebit_per_share_history'] and v['fcf_per_share_history'] == base_v['fcf_per_share_history']
+    assert diag['per_share_histories']['status'] == 'IN_BAND' and m == base_m
+    assert {k: x for k, x in v.items() if k != 'diluted_shares'} == {k: x for k, x in base_v.items() if k != 'diluted_shares'}
+
+    # (d) BKNG-like: 25-for-1 split after FY0 with no split-ratio fact. The 10-Q count (250) matches its cover (251): kept; the
+    #     FY0-basis histories (10 shares) are 1/25 of it -> NA, so the device never compares pre-split per-share history
+    #     with the post-split count.
+    m, v, diag = run([_cover(10.0), _q2(DILUTED, 250.0), _cover(251.0, Q_ACCN, '2026-07-27', '10-Q', '2026-08-01')])
+    assert v['diluted_shares'] == {'value': 250.0, 'period_end': '2026-06-30'} and m == base_m
+    assert v['ebit_per_share_history'] == [] and v['fcf_per_share_history'] == []
+    assert diag['per_share_histories']['status'] == 'SHARES_SCALE_UNCONFIRMED' and math.isclose(diag['per_share_histories']['ratio'], 10.0 / 251.0)
+
+    # (e) No reference -> never blocked for it: no same-filing cover (class-dimensioned covers are not in companyfacts; a cover
+    #     of ANOTHER filing is not a reference), or several distinct values in the filing (ambiguous).
+    for extra in ([_q2(DILUTED, 10_200.0)], [_q2(DILUTED, 10_200.0), _cover(10.25)],
+                  [_q2(DILUTED, 10_200.0), _cover(6.0, Q_ACCN, '2026-07-25', '10-Q', '2026-08-01'),
+                   _cover(4.0, Q_ACCN, '2026-07-25', '10-Q', '2026-08-01')]):
+        _, v, diag = run(extra)
+        assert v['diluted_shares'] == {'value': 10_200.0, 'period_end': '2026-06-30'} and diag['diluted_shares']['status'] == 'NO_REFERENCE'
+    # A stale count (V-STALE-SHARES) is not checked; a cover filed after the cutoff is not a reference.
+    _, v, diag = run([_q2(DILUTED, 9.9), ((COVER, 'shares', 9_950_000.0, '2026-06-30'), {'form': '10-Q', 'filed': '2026-10-20', 'accn': Q_ACCN, 'taxonomy': 'dei'})])
+    assert v['diluted_shares'] == {'value': 9.9, 'period_end': '2026-06-30'} and diag['diluted_shares']['status'] == 'NO_REFERENCE'
+
+    # (f) Through the published SEC row (strict validators, unchanged row shape): MCD-like -> null count, LIVE row, Q·G as before.
+    facts_b, subs = REF.synthetic_sec('0000001000')
+    payload = json.loads(facts_b)
+    latest = vf._Facts(payload, 'us-gaap', 'USD', CUTOFF).latest_duration_any_concept('diluted_shares')
+    payload['facts']['dei'] = {COVER: {'units': {'shares': [{'end': latest[1].isoformat(), 'val': latest[0] * 1_000_000, 'accn': latest[2][0],
+                                                             'form': '10-Q', 'filed': latest[2][1].isoformat(), 'fy': 2026, 'fp': 'Q2'}]}}}
+    row, control = q_build(json.dumps(payload).encode(), subs), q_build(facts_b, subs)
+    assert row['calc_version'] == vf.CALC_VERSION and row['state'] == 'LIVE' and row['reason_codes'] == []
+    assert row['v_inputs_v2']['diluted_shares'] is None and control['v_inputs_v2']['diluted_shares'] is not None
+    assert row['v_inputs_v2']['ebit_per_share_history'] == [] and row['metrics'] == control['metrics']
+    updates = REF.synthetic_universe_updates()
+    updates[REF._codes()[0]] = row
+    published = q.merge(None, updates, as_of=NOW, shard_index=0)
+    assert published['records'][REF._codes()[0]]['v_inputs_v2']['diluted_shares'] is None
+    if shutil.which('node') is None:
+        return
+    # (g) Device (qgv2-inputs.js -> qgv-v2.js, unchanged): the blocked count is not replaced by any other share value (a
+    #     cover/basic count injected next to it is ignored): every per-share and EV-based V is NA with SHARES_NOT_AVAILABLE.
+    closes = {f'{y}-12': 100.0 for y in range(2015, 2026)}
+    for v in (row['v_inputs_v2'], dict(row['v_inputs_v2'], shares_outstanding={'value': latest[0], 'period_end': '2026-06-30'}),
+              run(wat)[1]):
+        d = _device_v(v, closes)
+        assert d['diluted_shares'] is None and d['ebit_yield'] is None and d['fcf_yield'] is None and d['implied_growth'] is None
+        assert d['reasons'] == {k: 'SHARES_NOT_AVAILABLE' for k in ('v_earnings_yield', 'v_fcf_yield', 'v_vs_industry',
+                                                                    'v_vs_own_history', 'v_expectation_check')}
+        assert set(d['v_scores'].values()) == {None} and d['v_axis'] is None
+        assert d['reference_range'] == {'state': 'NOT_AVAILABLE', 'reason': 'FCF_NOT_AVAILABLE', 'low': None, 'high': None}
+    # Normal count: device V computed as before. BKNG-like: yields computed, own-history NA (no history), never mixed bases.
+    d = _device_v(run([_cover(10.3)])[1], closes)
+    assert d['diluted_shares'] == 10.0 and d['fcf_yield'] is not None and d['reasons']['v_vs_own_history'] != 'SHARES_NOT_AVAILABLE'
+    d = _device_v(run([_cover(10.0), _q2(DILUTED, 250.0), _cover(251.0, Q_ACCN, '2026-07-27', '10-Q', '2026-08-01')])[1], closes)
+    assert d['diluted_shares'] == 250.0 and d['fcf_yield'] is not None and d['reasons']['v_vs_own_history'] == 'HISTORY_TOO_SHORT'
+
+
 def test_split_adjustment_never_adjusts_already_restated_values_twice():
     """Owner supplement 2026-10-15 (Q-SPLIT): a split-ratio fact alone never rescales values that the filings already report
     on the post-split basis."""
@@ -884,7 +1176,14 @@ def test_merge_carries_rows_never_erases_and_ages_them():
     nodata = q.build_row(cik=p['records'][code]['cik'], companyfacts_body=b'{"cik":1000,"facts":{}}',
                          submissions_body=b'{"cik":1000,"sic":"3674"}', acquired_at=later)
     assert nodata['reason_codes'] == ['NO_ANNUAL_SEC_FINANCIALS'] and nodata['sic'] == '3674'
-    kept = q.merge(p, {code: nodata}, as_of=later, shard_index=4)
+    # Owner rule 2026-10-17: a successful collection without data is published with its reason and own acquired_at
+    # (it leaves the cross-section); only a row without its own collection record keeps the kept data.
+    replaced = q.merge(p, {code: nodata}, as_of=later, shard_index=4)
+    row = replaced['records'][code]
+    assert (row['state'], row['reason_codes'], row['metrics'], row['calc_version']) == ('NOT_AVAILABLE', ['NO_ANNUAL_SEC_FINANCIALS'], {}, None)
+    assert row['acquired_at'] == nodata['acquired_at'] and replaced['cross_section_size'] == p['cross_section_size'] - 1
+    failed = q.empty_record(cik=p['records'][code]['cik'], reasons=('INVALID_INPUT',))
+    kept = q.merge(p, {code: failed}, as_of=later, shard_index=4)
     assert kept['records'][code]['metrics'] == p['records'][code]['metrics'] and kept['records'][code]['acquired_at'] == p['records'][code]['acquired_at']
     stale = q.merge(kept, {}, as_of=NOW + timedelta(days=15), shard_index=5)
     row = stale['records'][code]
@@ -939,7 +1238,10 @@ def test_vectors_fixture_is_regenerated_from_the_python_validator():
     assert fixture == json.loads(json.dumps(REF.build()))
     assert fixture['synthetic'] is True and len(fixture['cases']) >= 40
     assert [c['id'] for c in fixture['cases'] if c['valid']] == ['base_valid', 'null_shard_and_registry_valid', 'ebit_estimated_years_valid',
-                                                                            'calc_version_legacy_file_valid', 'calc_version_mixed_population_valid']
+                                                                            'calc_version_legacy_file_valid', 'calc_version_mixed_population_valid',
+                                                                            'target_withdrawn_valid', 'target_withdrawn_without_observation_valid',
+                                                                            'universe_withdrawn_valid', 'schema_v1_valid',
+                                                                            'target_withdrawn_in_schema_v1_file_valid']
 
 
 @pytest.mark.skipif(shutil.which('node') is None, reason='Node runtime required')

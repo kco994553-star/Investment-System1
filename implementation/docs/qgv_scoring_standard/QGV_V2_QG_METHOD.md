@@ -164,7 +164,7 @@ take a missing component as 0. They apply to SEC companyfacts only; the DART ada
      not calibrated; it can also make genuine spin-off, merger or IPO share changes NA for older years (c21 recompute: CEG, EXE,
      WBD, COIN, CVNA, HOOD, DASH).
   Applies to `dilution_3y`, `eps_cagr_3y`, `fcf_per_share_cagr_3y`, `book_value_per_share_cagr_3y` and both per-share
-  histories. The histories are on the basis of the latest share count (`v_inputs_v2.diluted_shares`, possibly a 10-Q after FY0),
+  histories. The histories are on the basis of the latest share count (`v_inputs_v2.diluted_shares`, possibly a 10-Q after FY0; FY0 basis when it is NA),
   i.e. FY0 basis × the FY0→latest factor; when that factor is not established (a split filed after FY0 that no shared period
   confirms) both histories are empty (NA) until the next 10-K. The FY0-basis Q/G ratios are unaffected by that case. Never a
   guessed ratio, never 0. Tests: `test_per_share_histories_are_split_adjusted_only_when_sec_facts_establish_the_ratio`,
@@ -265,8 +265,9 @@ SEC-only descriptors in `metrics` (never ranked; `v2_factors.EXTRA_METRIC_PROFIL
 (GENERAL and FINANCIAL, ≥ 0), rule APPQ. Both validators accept them only for those profiles and range-check them.
 
 **Calculation-rule version `calc_version` (owner supplement 2026-10-15).** `v2_factors.CALC_VERSION` (now
-`qgv2-calc/2026-10-15.1` = F1–F3 + rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ; format `qgv2-calc/<date>.<n>`) is bumped
-whenever a factor rule in section 1–3 changes. The file declares it at the top level (`calc_version`) and every row with data
+`qgv2-calc/2026-10-17.1` = `2026-10-15.1` (F1–F3 + rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ) + V-STALE-BS,
+V-STALE-SHARES and V-SHARES-SCALE on `v_inputs_v2` only, Q·G unchanged; format `qgv2-calc/<date>.<n>`) is bumped whenever a factor rule in section 1–3 or a published
+`v_inputs_v2` rule changes. The file declares it at the top level (`calc_version`) and every row with data
 carries the version it was computed with (`calc_version`; `null` for rows without data and for legacy rows). **Versions are
 never mixed in one percentile:** the publisher (`v2_scoring.score_rows` / `volatility_rank_rows` with `calc_version`), both
 validators (Python `require_qgv2`, JS `SecQgv2.validate`, which recompute with the same rule) and the device
@@ -289,11 +290,107 @@ data cannot carry a `calc_version` (both validators). On the device such a row s
 its source reasons ("QGV v2 산출 불가 · 원자료 없음 (CIK 미해결)"). Tests:
 `test_normal_na_rows_keep_an_explicit_source_reason_and_are_never_calc_version_mismatch`, `qgv_scores_node_test.js` ("normal-NA rows …").
 
+**TARGET identity withdrawal (owner instruction 2026-10-17 item 3, TARGET NA schema /4 extended to the `target` section).** When
+the daily TARGET collection hits an identity conflict (`sec-public-inputs.json` row `WITHDRAWN`: `SEC_CIK_MISMATCH` /
+`SEC_ISSUER_NOT_ALLOWED`), the TARGET step stages a withdrawal row and the shard merge publishes it instead of the kept row:
+reason `IDENTITY_CONFLICT_WITHDRAWN`, the issuer's TARGET CIK, no `acquired_at`, values or scores, and two extra keys only on
+this row: `detected_at` (when the conflict was seen; never an acquisition time) and `withdrawn_acquired_at` (the `acquired_at`
+of the row whose use it stops; `null` without one). The previous row is never carried or used again. Both validators accept
+the two keys only on such a TARGET row. The pre-deploy freshness guard passes it only when `withdrawn_acquired_at` names the
+live observation exactly (else `WITHDRAWAL_MISMATCH` / `OLDER`); a newer collection after the detection replaces it. No
+calculation rule changes (`calc_version` unchanged). On the device (`qgv2-inputs.js`) the withdrawn issuer is used nowhere:
+its TARGET record and every Universe code with the same CIK (other share classes) get state `WITHDRAWN`, no factors, axes,
+V inputs or metrics, leave every ranking population and candidate list, and show "QGV v2 산출 불가 · 원자료 없음 (식별 충돌로
+사용 중지)"; the TARGET row is never replaced by the Universe code of the same ticker. Published Q·G percentiles of other
+issuers still count the same-CIK Universe rows as peers (a Universe-section change, outside this rule). Tests:
+`test_target_withdrawal_e2e.py`, vectors `target_withdrawn_*` (`sec_qgv2_node_test.js`), `qgv_scores_node_test.js`
+("identity-conflict withdrawal: …").
+
+**Universe identity withdrawal (owner decision UNI-WITHDRAWN (a), 2026-10-17; `records` of this file, `sec-universe-shares.json`
+and `sec-universe-qg.json`).** When a Universe code meets an identity conflict without a collection of this run (a ticker claimed by
+several CIKs, an SEC response naming another CIK, another CIK without its own collection record) and a file's kept row of the code
+has a collection record, that file publishes a withdrawal row instead: state NOT_AVAILABLE, reason `IDENTITY_CONFLICT_WITHDRAWN`
+only, no CIK, `acquired_at`, sources, metrics or scores, plus three keys found on no other row: `detected_at` (the publishing run's
+time when the conflict was first seen; never an acquisition or freshness time), `withdrawn_acquired_at` and `withdrawn_cik` (the
+`acquired_at` and CIK of THAT file's kept row; each file names its own observation, nothing is copied from TARGET or another file).
+Without a kept collection record the code stays `CIK_UNRESOLVED` (or this run's NA row) and no time is made up. The withdrawal is
+kept unchanged (first detection, same named row) while the conflict lasts and through fetch failures, unresolved symbols,
+identification failures and preserve-only rebuilds; only a new collection of the code with confirmed identity, collected at or
+after the detection, replaces it (a new holder of the ticker starts from its own row, never the withdrawn issuer's history).
+Withdrawal rows are not new collections, not LIVE/STALE, outside the cross-section, every percentile and the Q·G coverage counts
+(`withdrawn=` on the daily summary lines and the published coverage line), and stay in the 504-code denominator. Validators
+(Python and JS, vectors `universe_withdrawn_*` / `withdrawn_*`) accept the keys only on such a row; the freshness guard passes it
+only when it names the live row exactly (`withdrawn_acquired_at`, `withdrawn_cik`, detection not before it), else
+`WITHDRAWAL_MISMATCH` / `OLDER`, and refuses an artifact that brings the stopped row back (`OLDER`). The three files move to
+`schema_version` 2 (the row contract gains a reason code and keys; readers accept 1 and 2, withdrawals only in 2; a reader of 1
+only rejects a version-2 file as a whole, a safety block, not backward compatibility). No calculation change (`calc_version`
+unchanged). Detection time differs from TARGET: a TARGET withdrawal takes the latest detection, a Universe withdrawal keeps the
+first one; re-checks are counted in the run log line `SEC_UNIVERSE_WITHDRAWALS` only. Plain fetch failures, unresolved symbols,
+identification failures of the same CIK and collections without data are never withdrawals (#278 / #287 rules); a file whose
+live row does not identify one observation exactly (CIK, acquired_at, both source hashes) withdraws nothing. Contract details:
+`docs/daily_data_pipeline/SEC_COLLECTION_DIAGNOSTICS.md`. On the device the row is stopped like a TARGET withdrawal (`Qgv2Inputs`
+`identity_withdrawn`, "식별 충돌로 사용 중지"): no score, rank or candidate place, no M3 identity or market cap from the shares row,
+and the candidate list never scores the code with another row of the same ticker. UNI-TARGET: a TARGET row (fixed CIK) keeps its
+Q·G, but when its device price symbol (ticker) is the symbol of a withdrawn Universe code no price is read and its V, total, rank
+and candidate place are NOT_AVAILABLE (`PRICE_IDENTITY_CONFLICT`); a TARGET of another symbol is unchanged. Tests:
+`test_universe_withdrawal_e2e.py`.
+
 `v_inputs_v2` holds the price-free inputs the device needs to compute V in RAM. Amounts are exact SEC values in the row currency.
 - `ebit`, `fcf`: `{fy_value, fy_end, ttm_value, ttm_end}`. FCF = OCF − capex for the same period.
 - `total_debt`, `cash_and_equivalents`: `{value, period_end}`, each at its own latest balance-sheet date (they can differ). Debt uses the same rule as section 1.
+  **V-STALE-BS (calc_version `2026-10-17.1`, 2026-10-17 number check):** a debt or cash value dated before the FY0 balance sheet
+  (FY0 end − 10 days, the instant tolerance) is `null` (NA), never the last value reported years earlier. Debt is 0 only from an
+  FY0 line or the NODEBT rule; when NODEBT is NA (Q-NODEBT-INT) `total_debt` is NA. The device then shows `ebit_yield` and
+  `fcf_yield` as NA with reason `DEBT_CASH_NOT_AVAILABLE` (missing never becomes 0). 10/17 raw: 23 issuers' debt (13 GENERAL:
+  DXCM, INCY, PANW, SMCI, VRSN, VRTX, DE, DECK, DLR, EME, EXR, F, ORCL; 10 FINANCIAL, where V is not defined) and 1 issuer's cash
+  (PCAR) became NA; Q·G metrics, factors and axes are identical. Test: `test_v_inputs_stale_balance_sheet_values_are_na`.
 - `diluted_shares`: `{value, period_end}`, the latest weighted-average diluted share count (quarter or year).
-- `ebit_per_share_history`, `fcf_per_share_history`: up to 5 fiscal years `{fiscal_year_end, value}`, oldest first. These feed the own-history multiple percentile.
+  **V-STALE-SHARES (calc_version `2026-10-17.1`, owner decision 2026-10-17, same version as V-STALE-BS):** the count is the
+  latest-ending positive fact over **all** allowed diluted-share concepts (us-gaap `WeightedAverageNumberOfDilutedSharesOutstanding`,
+  `WeightedAverageNumberOfShareOutstandingBasicAndDiluted`; ifrs-full `AdjustedWeightedAverageShares`), annual spans from annual
+  forms and YTD/quarter spans from 10-Q forms, filed by the cutoff (at the same period end the earlier-listed concept, then the
+  shortest span). Before, the first concept with any fact was read, so its last value could be years old while another allowed
+  concept was current. Freshness is the count's **period end**, not its filing date: an end before FY0 end − 10 days (the
+  V-STALE-BS tolerance) is `null` (NA). Basic shares, shares outstanding (cover or balance sheet) and any other concept are never
+  substituted. The per-share histories use the filing of the published count (none → FY0 basis). The device (`qgv2-inputs.js` →
+  `qgv-v2.js`, unchanged; it reads no other share value) then shows `ebit_yield`, `fcf_yield`, industry, own-history and
+  expectation-check V as NA with reason `SHARES_NOT_AVAILABLE` and the DCF reference range NA. Shared selection
+  (`_Facts.latest_duration`) is unchanged; the new `_Facts.latest_duration_any_concept` is read only here. 10/17 raw: 7 issuers'
+  count became NA (BKR 2021-06-30, REG 2020-12-31, TTWO 2024-03-31, HSY 2015-10-04, LYB 2019-03-31, SJM 2023-01-31, ERIE
+  2021-06-30; no allowed concept has a current value); no issuer switched concept; Q·G metrics, factors and axes and the
+  per-share histories are identical. Test: `test_v_inputs_diluted_shares_newest_allowed_concept_by_period_end_else_na`.
+  **V-SHARES-SCALE (calc_version `2026-10-17.1`, owner decision 2026-10-17 on the MCD/WAT unit errors, same version):** a
+  current count is checked against the dei cover share count (`EntityCommonStockSharesOutstanding`) reported in the **same
+  filing** (same accession, filed by the cutoff). Ratio count / cover outside `SHARES_SCALE_BAND` = 0.1..10 (inclusive) →
+  `diluted_shares` is `null` with reason `SHARES_SCALE_UNCONFIRMED`. The count is never multiplied or divided by 1,000 /
+  1,000,000 and never replaced by the cover, the basic weighted count or the balance-sheet count. The per-share histories
+  are `[]` (same reason) when their FY0-basis count, restated to the filing of the latest count (rule SPLIT factor), is
+  outside the band of that filing's cover. No same-filing cover value, or several distinct ones (class-dimensioned covers are
+  not in companyfacts) → no reference: the count is kept unchecked, never blocked for it. A stale count (V-STALE-SHARES) is
+  not checked. Why the cover and not the basic count: the scale slip sits in the EPS table, so the basic count of the same
+  table repeats it (MCD 709.1, WAT 98,204,000,000), while the cover is tagged separately. Band (UNCALIBRATED): 10/17 raw, 442
+  issuers with a current count and one same-filing cover: every correctly tagged count within 0.83–1.16 of it, the FY0-basis
+  counts of the histories within 0.58–1.20 (low end: mergers closed after FY0 — OMC, FITB, HBAN, WAT, DVN); the errors are
+  10⁶× (MCD), 10³× (WAT) and 1/23 (BKNG histories). One order of magnitude each way is far outside every normal difference and
+  far inside the smallest unit error. The reason code is not a published field (the `v_inputs_v2` key set is pinned by the
+  hash-pinned JS validator); `v2_factors.compute(..., diagnostics={})` returns it with value, filing, concept, cover and ratio.
+  The device (unchanged; it reads only `v_inputs_v2.diluted_shares`) shows the per-share and EV-based V as NA with
+  `SHARES_NOT_AVAILABLE` and the DCF reference range NA; with histories `[]` the own-history V is `HISTORY_TOO_SHORT`.
+  Evidence (10/17 raw; sec.gov HTML not reachable from the build environment, so the XBRL instance of the same filing and
+  companyfacts are the evidence): **MCD** 10-Q 0000063908-26-000073, `WeightedAverageNumberOfDilutedSharesOutstanding`
+  2026-04-01..2026-06-30 = 711.1 shares, `decimals="1"` (the displayed "711.1" in millions tagged without scale) vs cover
+  707,641,531 (`decimals="INF"`) and net income 2,362,000,000 / diluted EPS 3.32 = 711.4 million; every MCD filing since the
+  FY2023 10-K (11 filings) tags the weighted counts in millions, earlier ones in shares. **WAT** 10-Q 0001193125-26-344691,
+  2026-04-05..2026-07-04 = 98,204,000,000 shares, `decimals="-6"` vs cover 98,248,111, balance-sheet
+  `CommonStockSharesOutstanding` 98,225,000 (`decimals="-3"`) and −136,000,000 / −1.39 = 97.8 million; the 2026 Q1 and Q2
+  10-Qs tag the counts (and the restated 2025 comparatives) 1,000× too high, the 10-Ks are correct. Both are filer XBRL
+  scale errors; the selected concept, period and filing are right, so no selection fix applies and the count is NA.
+  10/17 raw: `diluted_shares` → NA for MCD and WAT only; per-share histories → `[]` for MCD and BKNG (25-for-1 split after
+  FY0, no split-ratio fact: the FY0-basis histories were 1/23 of the published post-split count); 43 issuers without a
+  same-filing cover are unchecked (41 of them have net income / diluted EPS of the same period: ratios 0.23–1.09, IBKR lowest
+  with its class-A-only EPS; ABNB and CVNA have no such pair). Q·G metrics,
+  factors and axes are identical. Test: `test_v_inputs_diluted_shares_scale_unconfirmed_is_na_never_rescaled`.
+- `ebit_per_share_history`, `fcf_per_share_history`: up to 5 fiscal years `{fiscal_year_end, value}`, oldest first. These feed the own-history multiple percentile. `[]` when their FY0-basis count fails V-SHARES-SCALE.
 - `revenue_cagr_3y`, `eps_cagr_3y`, `fcf_per_share_cagr_3y`, `revenue_ttm_growth`: realized growth for the expectation check.
 - Also: `currency`, `taxonomy`, `fiscal_year_end`.
 

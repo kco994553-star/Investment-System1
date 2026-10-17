@@ -278,12 +278,34 @@ def cases():
     for case_id, symbol, etf in [('sector-doc-assignment', 'ETN', None), ('sector-user-assigned', '8035', None),
                                  ('sector-etf-unique', 'SYNX', 'XLV'), ('sector-etf-ambiguous', 'SYNY', 'XLI'), ('sector-none', 'SYNZ', None)]:
         c.append({'id': case_id, 'synthetic': True, 'operation': 'sector_for', 'input': {'symbol': symbol, 'etf': etf}})
+    # 2026-10-14 C: macro is reference-only in the shipped config; gate-off behavior is pinned here.
+    ev('gate-off-U3-not-fired', **dict(u3, macro_state='CRISIS'))
+    ev('gate-off-crisis-no-expansion-block', macro_state='CRISIS', actual_pct=3.5, v_now=60, market_explained_ratio_60=0.2)
+    ev('gate-off-warning-cyclical-no-block', memberships={'cyclical': 1.0}, macro_state='WARNING', actual_pct=3.5, operating_margin_5y_position=0.1)
+    tr('tr-W2-gate-off-half', 'W2', 'W2_PROCEED', {'macro_state': 'CRISIS'})
+    for case in c:
+        if case['id'].startswith(GATE_ON_PREFIXES):
+            case['input']['macro_gate_active'] = True
     return c
+
+
+GATE_ON_PREFIXES = ('U3-', 'macro-', 'core-U1-candidate-U3', 'v2-value-trap-gate-U3', 'tr-U1-warning', 'tr-W2-crisis')
+
+
+def with_gate(cfg, case):
+    """Vectors that test the §13-5 macro gate itself run with it active; the shipped config keeps it reference-only."""
+    flag = case['input'].get('macro_gate_active')
+    if flag is None:
+        return cfg
+    out = copy.deepcopy(cfg)
+    out['macro']['gate_active'] = flag
+    return out
 
 
 def run(cfg, case):
     i = case['input']
     op = case['operation']
+    cfg = with_gate(cfg, case)
     if op == 'evaluate':
         return P.evaluate(cfg, i['situation'], i['mode'])
     if op == 'transition':
