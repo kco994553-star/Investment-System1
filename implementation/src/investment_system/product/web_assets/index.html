@@ -12,25 +12,51 @@
     <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="theme-color" content="#152d2b" />
     <title>Investment System · 개인 투자</title>
+    <script src="theme-boot.js"></script>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="device-actual.css" />
     <link rel="stylesheet" href="google-sheet-quotes.css" />
     <link rel="stylesheet" href="private-history.css" />
     <link rel="stylesheet" href="pc-layout.css" />
+    <link rel="stylesheet" href="theme.css" />
   </head>
   <body>
     <a class="skip" href="#content" data-i18n="본문으로">본문으로</a>
     <p class="personal-reference personal-reference-top" data-personal-reference="top" data-i18n="개인 참고용입니다. 투자 권유나 자문이 아닙니다.">개인 참고용입니다. 투자 권유나 자문이 아닙니다.</p>
-    <header>
-      <a class="brand" href="#home"
-        ><span class="mark">i.</span> INVESTMENT SYSTEM</a
-      ><span class="private">PERSONAL / READ ONLY</span><a href="#settings" data-i18n="설정">설정</a>
+    <header class="app-header">
+      <a class="brand" href="#home"><span class="brand-mark">QGV</span><span class="brand-name">INVESTMENT SYSTEM</span></a>
+      <nav id="primary-nav" aria-label="주요 화면">
+        <a href="#home" data-nav-tab="home"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg><span class="nav-long">홈</span><span class="nav-short">홈</span></a>
+        <a href="#companies" data-nav-tab="explore"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><span class="nav-long">기업 탐색</span><span class="nav-short">탐색</span></a>
+        <a href="#portfolio" data-nav-tab="invest"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 20V11M12 20V5M18 20v-7"/></svg><span class="nav-long">내 투자</span><span class="nav-short">내 투자</span></a>
+        <a href="#news" data-nav-tab="market"><span class="nav-long">시장·뉴스</span><span class="nav-short">시장·뉴스</span></a>
+        <a href="#validation" data-nav-tab="records"><span class="nav-long">기록</span><span class="nav-short">기록</span></a>
+        <button type="button" id="more-button" data-nav-more aria-expanded="false" aria-controls="more-menu"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span class="nav-long">전체 메뉴</span><span class="nav-short">더보기</span></button>
+      </nav>
+      <div class="header-tools">
+        <button type="button" class="tool" id="lang-toggle"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg><span data-lang-code>KR</span></button>
+        <div class="theme-control">
+          <button type="button" class="tool" id="theme-button" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-menu"><svg class="tool-icon icon-light" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="tool-icon icon-dark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="tool-icon icon-system" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" class="fill"/></svg></button>
+          <div id="theme-menu" class="pop" role="menu" hidden>
+            <button type="button" role="menuitemradio" data-theme-choice="light" aria-checked="false"><span>라이트</span></button>
+            <button type="button" role="menuitemradio" data-theme-choice="dark" aria-checked="false"><span>다크</span></button>
+            <button type="button" role="menuitemradio" data-theme-choice="system" aria-checked="false"><span>시스템 설정</span></button>
+          </div>
+        </div>
+        <a class="tool tool-settings" href="#settings" data-i18n="설정">설정</a>
+      </div>
     </header>
-    <section class="global-search" aria-label="Global Search">
+    <div id="more-menu" class="more-menu" role="dialog" aria-labelledby="more-title" hidden></div>
+    <div id="global-search-anchor" hidden></div>
+    <section class="global-search" id="global-search-section" aria-label="Global Search">
       <label for="global-search" data-i18n="전체 검색">전체 검색</label>
-      <input type="search" id="global-search" maxlength="128" autocomplete="off" aria-controls="global-results" placeholder="기업·산업·투자자·거시지표 검색">
+      <div class="search-field">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+        <input type="search" id="global-search" maxlength="128" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="global-results" placeholder="기업·산업·투자자·거시지표 검색">
+        <kbd class="search-kbd" aria-hidden="true">/</kbd>
+      </div>
       <p class="meta" data-i18n="검색 순서는 투자 추천 순위가 아닙니다.">검색 순서는 투자 추천 순위가 아닙니다.</p>
-      <ul class="list" id="global-results" aria-live="polite" hidden></ul>
+      <ul class="list" id="global-results" role="listbox" hidden></ul>
     </section>
     <main id="content" tabindex="-1">
       <p role="status" data-i18n="데이터를 불러오는 중…">데이터를 불러오는 중…</p>
@@ -38,20 +64,6 @@
     <footer class="personal-reference-footer">
       <p class="personal-reference" data-personal-reference="bottom" data-i18n="개인 참고용입니다. 투자 권유나 자문이 아닙니다.">개인 참고용입니다. 투자 권유나 자문이 아닙니다.</p>
     </footer>
-    <nav id="primary-nav" aria-label="주요 화면">
-      <a href="#home" data-nav-tab="home">Home<span data-i18n="오늘">오늘</span></a>
-      <a href="#qgv" data-nav-tab="qgv"><b class="nav-flow" aria-hidden="true">1</b>QGV<span>QGV</span></a>
-      <div class="nav-subgroups" role="group" aria-label="QGV">
-        <a href="#qgv/investments" data-nav-group="investments" data-i18n="내 투자">내 투자</a>
-        <a href="#qgv/companies" data-nav-group="companies" data-i18n="종목 찾기">종목 찾기</a>
-        <a href="#qgv/market" data-nav-group="market" data-i18n="시장 정보">시장 정보</a>
-        <a href="#qgv/performance" data-nav-group="performance" data-i18n="성과">성과</a>
-      </div>
-      <a href="#technical" data-nav-tab="technical"><b class="nav-flow" aria-hidden="true">2</b>Technical<span data-i18n="기술">기술</span></a>
-      <a href="#macro" data-nav-tab="macro"><b class="nav-flow" aria-hidden="true">3</b>Macro<span data-i18n="매크로">매크로</span></a>
-      <a href="#validation" data-nav-tab="validation"><b class="nav-flow" aria-hidden="true">4</b>Validation<span data-i18n="검증">검증</span></a>
-      <p class="nav-device-note" data-i18n="보유 정보는 이 기기에만">보유 정보는 이 기기에만</p>
-    </nav>
     <div id="notice" role="status" aria-live="polite"></div>
     <script src="locale.js"></script>
     <script src="entity-search.js"></script>
@@ -121,6 +133,9 @@
     <script src="daily-report.js"></script>
     <script src="table-sort.js"></script>
     <script src="pwa.js"></script>
+    <script src="home-quotes.js"></script>
+    <script src="app-shell.js"></script>
+    <script src="home-screen.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

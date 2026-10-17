@@ -14,7 +14,7 @@
    const streak=p.locator('[data-deploy-streak]');assert.ok(['NOT_STARTED','BROKEN'].includes(await streak.getAttribute('data-deploy-streak')));
    const streakText=await streak.textContent();assert.ok(streakText.includes('정기 실행 연속 배포 성공(게시본 기준 추정): 0회 / 7회')&&streakText.includes('2026-10-19 실행부터 집계')&&streakText.includes('수집 완전성과 별도')&&streakText.includes('실제 배포 성공은 보고 때 Actions 기록으로 확인합니다'));
    assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
-   await p.goto(process.env.PAGES_COCKPIT_URL+'#home');await p.locator('[data-data-basis] a[href="#settings"]').waitFor();
+   await p.goto(process.env.PAGES_COCKPIT_URL+'#brief');await p.locator('[data-data-basis] a[href="#settings"]').waitFor();
    assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));assert.equal(errors,0);pass++;console.log('PASS ops status '+width);}
   catch(e){fail++;console.log('FAIL ops status '+width+' '+(e.code==='ERR_ASSERTION'?'CONTRACT':'EXECUTION'));}finally{await c.close();}}}
  finally{await b.close();}console.log('COUNTS pass='+pass+' fail='+fail);process.exitCode=fail?1:0;})();

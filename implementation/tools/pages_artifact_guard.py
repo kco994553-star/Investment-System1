@@ -99,7 +99,7 @@ APPROVED_SHA256 = {
     "sec-m2-candidates.json": "3499f945e45bdc61b627148755cb017008568e49d6cc1276c9a2b780c412b816",
     "actual-catalog.json": "f73548d955a722e91e732074cfc3686e2c1e5dc70784b4134e9294ba46e7256e",
     "app-config.js": "5dc9cbd509264e88b827c96ddf0bd888637c9bcdfd16235c3e38c2086e91b82b",
-    "app.js": "19e8a5033f00157445f741b58c5bbd55269fe5bc096c9ca83a5b4939cb724387",
+    "app.js": "fb97bac84b7f17ca86c4910e034628f880d6768e9c44055096ea5e28488c32a2",
     "data.json": "7afba9f30d4322ae67593cba3866db78d0d0f7822c32e2eff375497156b5b7e1",
     "device-actual.css": "319b0aa07e9f47f19cadaae773fa555a65d9c52f3c28320604e382872fa8d4b9",
     "device-actual.js": "fef15d147292698e2d5b79b3aa75842ceb569ef2aa7a42f8dad9f4e5903ed904",
@@ -109,7 +109,7 @@ APPROVED_SHA256 = {
     "google-sheet-core.js": "9825b81e6f81c87c2608979b533f2ad5e7bfba63c4e88d6ce292940958be624c",
     "google-sheet-quotes.js": "59c8bab257051b7b5b4982ba4bedfa998a2e14c63852caef643aee6072f249b2",
     "google-sheet-quotes.css": "5e37d704c69891893a8ca81a9a41d7f268696be210774609cc9c1d7ac7db5237",
-    "index.html": "1c80bf49ce20326e91a21b5b335142b9990ac74b0d187a61f6fcacd7e6922d83",
+    "index.html": "d3cabe9a52328c6f6ad04febc05c1ad7540610022e7c522a07eda459707a6579",
     "locale.js": "97fe93767ba008907e38916ad67e0412895b6ed6e4e8aeef798decd84fb76753",
     "private-history.css": "c3c0eb9e71aa52ae9acf79e9e2b0a7aeefdf3a0138ff2856a2562a029c11ad52",
     "private-history.js": "e7ca6fb62a3f9e494c2019988956b97581600078f9e045ea4fb933df21f73c5d",
@@ -127,6 +127,15 @@ APPROVED_SHA256 = {
     "dart-disclosures.js": "093d131ffccbb30284cabd796a3b190a4d2fdd049e1f6648c078321c33101713",
     "macro-lights.js": "d64e3d4c68fb8c0ffdbfe16ad3220af2648bda4d331edd387ca337d52c42d741",
     "sec-disclosures.js": "7af4fd52b2e83ac348bb7b7b3e80e7130f6e4c32a8f29fd55d14c22e2a5f2714",
+    "theme-boot.js": "47f0b228cd4d97a6595bba6b53f817d10ad85d3d26c357f542d0cc77c8e237c8",
+    "theme.css": "6b72f84aa371ac1407368ef0d8ed098a4f3d840d619a9037cd3f7fa642bcfd60",
+    "app-shell.js": "aef85a38108a0f87debf1b6c27350bd175214c0b451622ad8af50ae80aec5209",
+    "home-screen.js": "0c015e22e53052d737b8ad7c0c0f6c659a756fe3c8929204cff6e452e852b626",
+    "home-quotes.js": "f369212ca40b6d3c82176cf27807faa9103a9322bfe057829649d822f2867de2",
+    "home-bg-day-wide.svg": "ad17f8ea87e91ec7cef104c091dc57897c2eb5c3f0a17ea817e282796a9b3020",
+    "home-bg-day-narrow.svg": "a8fe96239d16599d607ce3fa331e6184e67496020c32675ef5aa754cd323133a",
+    "home-bg-night-wide.svg": "f1d11c09eb6e2cbc0da46dca1cbdc359fb48fe4bd6fbd4875603f7deb8a2eddf",
+    "home-bg-night-narrow.svg": "8828706c24cc69ae6b3f28c432235513353305aae3119af1db75e6bd95b7c435",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024

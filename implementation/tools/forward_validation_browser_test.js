@@ -86,7 +86,7 @@ async function seedSession(page){
     assert.ok(!(await page.evaluate(()=>JSON.stringify(localStorage)+JSON.stringify(sessionStorage))).includes('%'),'no computed value stored');
     assert.deepEqual(sent,[],'nothing is sent');
     await page.locator('[data-forward-action="clear"]').click();assert.equal(await page.locator('[data-forward-portfolio]').getAttribute('data-forward-portfolio'),'NOT_AVAILABLE');
-    await open(page,'home','.hero');assert.equal(await page.locator('[data-forward-validation]').count(),0);
+    await open(page,'brief','.hero');assert.equal(await page.locator('[data-forward-validation]').count(),0);
     assert.equal(errors,0);await context.close();pass++;}
    phase='BASIS '+width;
    {const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),page=await context.newPage();let errors=0;page.on('pageerror',()=>errors++);

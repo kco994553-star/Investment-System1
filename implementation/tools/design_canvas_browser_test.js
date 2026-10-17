@@ -8,24 +8,25 @@ async function current(page){return page.locator('#primary-nav [data-nav-tab][ar
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let phase='START',pass=0,fail=0;
  try{for(const width of [390,1440]){const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),page=await context.newPage();page.setDefaultTimeout(15000);let errors=0;page.on('pageerror',()=>errors++);
   try{
-   phase='S01';await open(page,'home','[data-integrated-judgement]');
+   // S01 dashboard cards moved from home (now the search start) to #brief, unchanged (2026-10-17 home redesign).
+   phase='S01';await open(page,'brief','[data-integrated-judgement]');
    assert.ok((await page.locator('[data-integrated-judgement]').textContent()).includes('매수·매도 지시 아님'));
    assert.equal(await page.locator('[data-system-flow] .flow-number').count(),4);
    await page.waitForFunction(()=>document.querySelector('#home-target-version')?.textContent!=='—');
-   assert.deepEqual(await current(page),['home']);
+   assert.deepEqual(await current(page),['invest']);
    phase='S02';await open(page,'qgv','[data-hub="qgv"]');
    assert.equal(await page.locator('.flow-step[data-flow-step="1"]').count(),1);
    assert.deepEqual(await page.locator('[data-hub="qgv"] .hub-group h2').allTextContents(),['내 투자','종목 찾기','시장 정보','성과']);
    assert.equal(await page.locator('[data-hub-legend] [data-feature-status]').count(),4);
    assert.equal(await page.locator('[data-hub="qgv"] a[href="#model"]').count(),1);
-   assert.deepEqual(await current(page),['qgv']);
+   assert.deepEqual(await current(page),['explore']);
    phase='S14';await open(page,'model','[data-model-table]');await page.locator('[data-model-row]').first().waitFor();
    const rows=await page.locator('[data-model-row]').evaluateAll(r=>r.map(x=>[...x.cells].map(c=>c.textContent)));
    assert.equal(rows.length,19);
    for(const r of rows){assert.equal(r[1],'—');assert.equal(r[4],'—');assert.match(r[2],/^\d+(\.\d+)?%$|^—$/);assert.notEqual(r[3],'0');}
    assert.equal(await page.locator('[data-model-row] [data-na="NOT_AVAILABLE"]').count(),38);
    assert.equal(await page.locator('.parent-row [data-sub-category]').textContent(),'내 투자');
-   assert.deepEqual(await current(page),['qgv']);
+   assert.deepEqual(await current(page),['invest']);
    phase='SUBCATEGORY';await open(page,'watchlist','h1');assert.equal(await page.locator('[data-sub-category]').textContent(),'종목 찾기');
    await open(page,'thirteenf','h1');assert.equal(await page.locator('[data-sub-category]').textContent(),'시장 정보');
    phase='S08';await open(page,'technical','[data-ia-screen="technical"]');
@@ -39,9 +40,10 @@ async function current(page){return page.locator('#primary-nav [data-nav-tab][ar
    assert.equal(await page.locator('.flow-step[data-flow-step="4"]').count(),1);
    assert.equal(await page.locator('[data-screen-tab]').count(),6);
    assert.ok((await page.locator('main .data-badges').textContent()).includes('UNCONFIRMED'));
-   await open(page,'validation-backtest','#validation-backtest');assert.deepEqual(await current(page),['validation']);
-   phase='LAYOUT';for(const hash of ['home','qgv','model','technical','macro','validation']){await open(page,hash,'h1');assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no horizontal scroll '+hash);}
-   if(width>=1024)assert.ok(await page.locator('.nav-device-note').isVisible());else assert.equal(await page.locator('.nav-device-note').isVisible(),false);
+   await open(page,'validation-backtest','#validation-backtest');assert.deepEqual(await current(page),['records']);
+   phase='LAYOUT';for(const hash of ['home','brief','qgv','model','technical','macro','validation']){await open(page,hash,'h1');assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no horizontal scroll '+hash);}
+   // The device note moved into the 더보기 / 전체 메뉴 panel.
+   await page.locator('#more-button').click();assert.ok((await page.locator('#more-menu .more-note').textContent()).includes('이 기기에만'));await page.keyboard.press('Escape');assert.ok(await page.locator('#more-menu').isHidden());
    assert.equal(errors,0);pass++;console.log('PASS design canvas S01~S16 structure '+width);
   }catch(e){fail++;console.log('FAIL design canvas '+width+' '+phase+' '+(e.code==='ERR_ASSERTION'?'CONTRACT':'EXECUTION'));}
   finally{await context.close();}}}

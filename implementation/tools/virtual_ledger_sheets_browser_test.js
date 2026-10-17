@@ -111,7 +111,7 @@ async function open(browser, { now, width = 390, sheet, dartGate = null }) {
   page.on('pageerror', (e) => { traffic.errors++; console.log('pageerror ' + String(e.message).slice(0, 200)); });
   page.on('console', (m) => { const t = m.text(); if (t.includes(CANARY) || t.includes(String(COST_CANARY)) || t.includes(TOKEN) || t.includes(SHEET)) traffic.console++; });
   await page.clock.install({ time: new Date(now) });
-  await page.goto(BASE + '#home');
+  await page.goto(BASE + '#brief');
   await page.locator('[data-report-link="mock"]').waitFor();
   await prepare(page);
   return { context, page, traffic };

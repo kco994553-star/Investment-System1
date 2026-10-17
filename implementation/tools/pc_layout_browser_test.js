@@ -1,6 +1,6 @@
 'use strict';
 const {displayOnlyOff}=require('./display_only_off.js');
-// PC layout (>= 1024px) at 390 / 768 / 1024 / 1440: S12 home dashboard, S17 report grid, S03/S06/S16/S10 tables
+// PC layout (>= 1024px) at 390 / 768 / 1024 / 1440: S12 dashboard (#brief since the 2026-10-17 search home), S17 report grid, S03/S06/S16/S10 tables
 // (all columns without horizontal scroll, sticky header, keyboard-accessible stable sorting with NOT_AVAILABLE last) and
 // the unchanged phone layout below 1024px. Two data sets: the empty public screens and a synthetic LIVE set served by
 // route interception (synthetic Q/G scores, synthetic 13F names, synthetic forward ledger, synthetic report model with
@@ -9,7 +9,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
 const {routeEmptyPublicScreens}=require('./empty_public_screens.js');
 const BASE=process.env.PAGES_COCKPIT_URL,SHOTS=process.env.PC_LAYOUT_SCREENSHOT_DIR||'';
 const WIDTHS=[390,768,1024,1440];
-const ROUTES=[['S12','home','[data-home-dashboard]'],['S17','report/mock','[data-report-badges]'],['S03','companies','#company-list li'],['S03P','portfolio','#portfolio-screen [data-portfolio-badges]'],
+const ROUTES=[['S12','brief','[data-home-dashboard]'],['S17','report/mock','[data-report-badges]'],['S03','companies','#company-list li'],['S03P','portfolio','#portfolio-screen [data-portfolio-badges]'],
  ['S06','leaderboard','[data-leaderboard-table]'],['S16','thirteenf','[data-public-screen="thirteenf"]'],['S10','validation','[data-validation-section]'],
  ['S02','qgv','[data-nav-tab][aria-current="page"]'],['S08','technical','[data-nav-tab][aria-current="page"]'],['S09','macro','[data-nav-tab][aria-current="page"]'],['S07','news','#news-pane'],
  ['S04','company/nvda','[data-nav-tab][aria-current="page"]'],['S15','watchlist','#watchlist-company-list'],['S17R','report/real','[data-report-badges]'],['S11','settings','#device-backup-export']];

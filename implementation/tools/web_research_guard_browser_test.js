@@ -98,13 +98,14 @@ async function main() {
 
   try {
     browser = await chromium.launch(launch);
-    const routes = ["home", "companies", "portfolio", "leaderboard", "news", "research", "settings",
+    // Home is the search start (2026-10-17 redesign); the dashboard cards checked below live on #brief.
+    const routes = ["home", "brief", "companies", "portfolio", "leaderboard", "news", "research", "settings",
       "company/" + encodeURIComponent(manifest.company), "entity/" + encodeURIComponent("MACRO:CPIAUCSL"),
       "qgv", "watchlist", "technical", "macro", "validation"];
 
     await check("public data.json is all NOT_AVAILABLE; a data.json carrying the research sections is never rendered", async () => {
       const probe = await openPage();
-      await probe.go("home");
+      await probe.go("brief");
       const served = await probe.evaluate(() => fetch("data.json").then((r) => r.json()));
       assert.deepEqual(served.companies, []);
       for (const name of Object.keys(manifest.withheld).concat(Object.keys(manifest.rendered))) assert.equal(served[name].state, "NOT_AVAILABLE", name);
@@ -161,7 +162,7 @@ async function main() {
         assert.equal(await page.locator("#news-list [data-source-original], #news-list h3").count(), 0, "no withheld news rows");
       });
       await check(`${locale}: valid LIVE, legacy FROZEN universe, DEMO and NOT_AVAILABLE still render`, async () => {
-        await page.view("home", bundle);
+        await page.view("brief", bundle);
         const macro = page.locator(".home-grid section.card", { has: page.locator(".badge.LIVE") });
         assert.equal(await macro.count(), 1);
         assert.equal((await macro.locator(".badge.LIVE").innerText()).trim(), "LIVE");
@@ -186,7 +187,7 @@ async function main() {
         await page.view("companies", bundle);
         assert.ok((await page.locator("main p.meta").first().innerText()).includes("FROZEN_SNAPSHOT / DEMO"));
       });
-      await page.view("home", bundle);
+      await page.view("brief", bundle);
       await page.screenshot({ path: path.join(evidence, `guard-home-${locale}-390.png`), fullPage: true });
       await page.context().close();
     }
@@ -201,7 +202,7 @@ async function main() {
       await vpage.view("companies", variant);
       const legend = await vpage.locator("main p.meta").first().innerText();
       assert.ok(legend.startsWith("NOT_AVAILABLE") && legend.includes(REASON["ko-KR"]) && !legend.includes("FROZEN"), legend);
-      await vpage.view("home", variant);
+      await vpage.view("brief", variant);
       assert.ok(!(await vpage.locator(ATTENTION).innerText()).includes(bundle.universe.as_of), "no withheld universe as_of");
       await vpage.context().close();
     });
@@ -230,18 +231,18 @@ async function main() {
             }
           }
           if (expect.section === "macro") {
-            for (const hash of ["home", "portfolio", "company/" + manifest.company]) {
+            for (const hash of ["brief", "portfolio", "company/" + manifest.company]) {
               await vpage.view(hash, variant);
               assert.equal(await vpage.locator('[data-withheld="macro"]').count(), 1, `${file} ${hash}: macro withheld`);
             }
-            await vpage.view("home", variant);
+            await vpage.view("brief", variant);
             const seen = await vpage.locator("[data-withheld]").evaluateAll((l) => [...new Set(l.map((e) => e.dataset.withheld))].sort());
             assert.deepEqual(seen, ["changes", "macro", "news", "qgv", "technical"], `${file}: research sections stay withheld`);
           } else {
             await vpage.view("companies", variant);
             const legend = await vpage.locator("main p.meta").first().innerText();
             assert.ok(legend.startsWith("NOT_AVAILABLE") && legend.includes(VALIDATION_REASON[locale]) && !legend.includes("FROZEN"), legend);
-            await vpage.view("home", variant);
+            await vpage.view("brief", variant);
             assert.ok(!(await vpage.locator(ATTENTION).innerText()).includes(bundle.universe.as_of), "no withheld universe as_of");
           }
         }

@@ -56,6 +56,9 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
   try {
     await check("default fail-closed missing data", async () => {
       await page.goto(base.href);
+      // Home is the search start (2026-10-17); the fail-closed dashboard cards moved to #brief unchanged.
+      await page.getByRole("heading", { name: "어떤 기업을 살펴볼까요?" }).waitFor();
+      await page.goto(new URL("#brief", base).href);
       await page.getByRole("heading", { name: "오늘의 투자 화면" }).waitFor();
       assert.equal(await page.locator(".banner").count(), 0);
       assert.ok(
@@ -67,6 +70,7 @@ if (!base.pathname.endsWith("/")) base.pathname += "/";
         await page.setViewportSize({ width, height: 844 });
         for (const hash of [
           "home",
+          "brief",
           "companies",
           "portfolio",
           "leaderboard",

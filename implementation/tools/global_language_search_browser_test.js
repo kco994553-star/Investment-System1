@@ -110,7 +110,7 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
       assert.equal(await page.evaluate(()=>JSON.stringify(prefs)),interests);
       await page.reload();await page.getByRole("heading",{name:"Settings",exact:true}).waitFor();
       assert.equal(await page.locator("#display-locale").inputValue(),"en-US");
-      await go("home");await page.getByRole("heading",{name:"Today's investment view"}).waitFor();
+      await go("brief");await page.getByRole("heading",{name:"Today's investment view"}).waitFor();
       await go("portfolio");await page.getByRole("heading",{name:"My portfolio"}).waitFor();
       await go("leaderboard");await page.getByRole("heading",{name:"Company research"}).waitFor();
       await seed();
@@ -123,7 +123,7 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
       await page.evaluate(()=>{location.hash="#leaderboard";});
       await page.getByRole("heading",{name:"기업 연구"}).waitFor();
       assert.deepEqual(await page.locator("main .list a b").allTextContents(),["#2 NVDA","#1 ASML"]);
-      await go("home");await page.getByRole("heading",{name:"오늘의 투자 화면"}).waitFor();
+      await go("brief");await page.getByRole("heading",{name:"오늘의 투자 화면"}).waitFor();
     });
     await check("source language filter independent; localized summaries retain raw originals",async()=>{
       await go("settings");await page.locator("#source-language").selectOption("en");

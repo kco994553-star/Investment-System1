@@ -101,7 +101,7 @@ async function open(browser, { sheet, enabled = false, width = 390 }) {
   page.on('pageerror', (e) => { traffic.errors++; console.log('pageerror ' + String(e.message).slice(0, 200)); });
   page.on('console', (m) => { if (m.text().includes(CANARY) || m.text().includes(TOKEN)) traffic.console++; });
   await page.clock.install({ time: new Date(NOW) });
-  await page.goto(BASE + '#home');
+  await page.goto(BASE + '#brief');
   await page.locator('[data-report-link="mock"]').waitFor();
   return { context, page, traffic };
 }
