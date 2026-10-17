@@ -20,7 +20,7 @@ import json
 import math
 import re
 
-from .sec_universe_shares import _clock, _hash, _iso, load_config, universe_codes
+from .sec_universe_shares import IDENTITY_CONFLICT, PRESERVE, _clock, _hash, _iso, load_config, note, previous_decision, universe_codes
 
 FILENAME = 'sec-universe-qg.json'
 KIND = 'SEC_UNIVERSE_QG'
@@ -117,8 +117,9 @@ def restate(record, as_of, stale_after):
     return out
 
 
-def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None):
-    """Previous published rows + this shard's rows (same rules as the Universe shares merge)."""
+def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None, conflicts=(), stats=None):
+    """Previous published rows + this shard's rows (same rules as the Universe shares merge, including
+    `previous_decision`: a row without its own collection record is no new observation)."""
     cfg = config or load_config()
     stale_after = timedelta(days=cfg['stale_after_days'])
     cut = _clock(_iso(as_of))
@@ -134,7 +135,12 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
                 cik = new.get('cik') if type(new) is dict else None
                 new = empty_record(cik=cik if type(cik) is str and re.fullmatch(r'[0-9]{10}', cik) and cik != '0000000000' else None,
                                    reasons=('INVALID_INPUT',))
-        if new is not None and not (not _scored(new) and _scored(old)):
+        decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflicts,
+                                     new_observation=lambda r: r['acquired_at'] is not None)
+        note(stats, decision, code, old)
+        if decision == PRESERVE:
+            pass
+        elif new is not None and (decision == IDENTITY_CONFLICT or not (not _scored(new) and _scored(old))):
             old = new
         elif new is None and code in unresolved and not _scored(old):
             old = empty_record(reasons=('CIK_UNRESOLVED',))

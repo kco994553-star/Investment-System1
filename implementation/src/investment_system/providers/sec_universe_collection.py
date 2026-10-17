@@ -37,6 +37,9 @@ class UniverseRegistry:
     source_sha256: str
     unresolved_code_count: int
     _validation_token: object = field(default=None,init=False,repr=False,compare=False)
+    # Universe codes whose SEC ticker/exchange pair is claimed by more than one CIK (an explicit identity conflict, owner
+    # decision 2026-10-17): unresolved like a code no CIK claims, but never a basis for keeping an earlier row.
+    conflicting_codes: frozenset = field(default=frozenset(),init=False,repr=False,compare=False)
 
     @property
     def code_count(self):
@@ -78,6 +81,7 @@ def universe_registry(body):
         issuers=tuple(UniverseIssuer(cik,tuple(sorted(selected))) for cik,selected in sorted(grouped.items()))
         result=UniverseRegistry(issuers,sha256(body).hexdigest(),sum(len(v)!=1 for v in bindings.values()))
         object.__setattr__(result,'_validation_token',_REGISTRY_TOKEN)
+        object.__setattr__(result,'conflicting_codes',frozenset(c for c,v in bindings.items() if len(v)>1))
         return result
     except (ValueError,TypeError,KeyError,UnicodeError,RecursionError,OSError):
         raise SecCollectionError('SEC_UNIVERSE_INPUT_INVALID') from None

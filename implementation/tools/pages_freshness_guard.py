@@ -22,6 +22,13 @@ the current calculation rules, not a retreat. Live rows without a collection rec
 that has one where the live row has none is counted as new_record). Markers are acquisition times only, never a file's
 `as_of`: the preserve-only path of the manual build re-stamps the Universe files' `as_of` to its own build time.
 
+Producers (owner decision 2026-10-17, option a): a company/code whose collection or identification failed keeps its
+verified previous row unchanged (same acquired_at, sources and calc_version) when the same issuer is confirmed, so such a
+failure arrives here as EQUAL, never as LOST_RECORD: tools/public_sec_inputs.py (transient fetch failures) and the
+Universe merges (`previous_decision`: unresolved symbol, identity unconfirmed, builder failure). Identity conflicts and
+TARGET normalize results are never preserved: a live row with a collection record then has none in the artifact and
+the deploy is refused here (fail closed).
+
 forward-validation-ledger.json: every record of every append-only list in `versions` (v1, v1+dcf, v2 and any list a
 later schema adds) must be in the artifact at the same position with identical canonical JSON; the artifact may only
 add records after them. A live record that is missing, changed or moved refuses the deploy, also when the last session
