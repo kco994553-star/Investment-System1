@@ -95,9 +95,13 @@ jobs:
         with:
           name: github-pages
           path: ${{ runner.temp }}/pages-artifact
-      # Owner queue 2026-10-17 §5: inside the job that holds the Pages group, right before the deploy. Its data-acquisition
-      # markers must not be older than the live Pages copy (an artifact built earlier never rolls back a newer deploy);
-      # a live copy that cannot be read fails closed. One fixed line per marker: file, verdict and dates only.
+      # Owner queue 2026-10-17 §5 (amended 2026-10-17): inside the job that holds the Pages group, right before the deploy.
+      # Compared row by row with the live Pages copy of the same file: a live row with an acquired_at must be in the
+      # artifact with an equal or later acquired_at (missing row, lost or earlier acquired_at -> refused; a normal NA row
+      # of new calculation rules collected at least as recently passes), and the ledger is append only (every live record
+      # kept unchanged and in order). Live copy served but invalid -> PAGES_FRESHNESS_LIVE_INVALID, refused: restoring a
+      # healthy live copy is a separate, evidence-based procedure, never automatic. Live 404 -> first publication (pass);
+      # live unreachable -> refused (fail closed). Fixed lines only: counts, dates and public row codes.
       - name: Refuse to deploy public data older than the live Pages copy
         run: |
           mkdir "$RUNNER_TEMP/deploy-check"
