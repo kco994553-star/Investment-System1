@@ -320,13 +320,16 @@ def test_codes_without_data_are_not_available_with_reasons_never_zero_or_an_olde
         if row['state'] == 'NOT_AVAILABLE':
             assert row['shares'] is None and row['reason_codes']
     assert v['records']['BATS:CBOE']['reason_codes'] in (['CIK_UNRESOLVED'], ['NOT_COLLECTED'])
-    # The daily rule (unchanged) keeps an older row with data when today's row has none; the one-off run does not.
+    # Owner rule 2026-10-17: the daily merge publishes the same NA row as the one-off run (it no longer keeps an older
+    # row with data over a successful collection without data).
     daily = tmp_path / 'daily'
     when = WHEN
     while shard_of(SPEC[1][1]) != when.date().toordinal() % 7:
         when += timedelta(days=1)
     assert run(tool, daily, Sec(empty=empty), when=when, previous=first) == 0
-    assert files(daily)[2]['records'][SPEC[1][0]]['metrics'] == files(first)[2]['records'][SPEC[1][0]]['metrics'] != {}
+    assert files(first)[2]['records'][SPEC[1][0]]['metrics'] != {}
+    row = files(daily)[2]['records'][SPEC[1][0]]
+    assert (row['metrics'], row['reason_codes'], row['acquired_at']) == ({}, ['NO_ANNUAL_SEC_FINANCIALS'], when.isoformat().replace('+00:00', 'Z'))
     assert_no_identifiers(capsys.readouterr().out)
 
 

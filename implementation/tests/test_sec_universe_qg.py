@@ -153,9 +153,15 @@ def test_merge_covers_504_codes_keeps_rows_with_own_time_and_ages_them():
     assert p['config_status'] == 'DEFAULT_V0_UNCALIBRATED' and p['method_status'] == 'PROVISIONAL_UNCALIBRATED'
     assert p['stale_after_seconds'] == 14 * 86400 and p['shard_count'] == 7
     later = NOW + timedelta(days=3)
+    # Owner rule 2026-10-17: a successful collection without scores is published (its reason and its own acquired_at),
+    # never replaced by the kept scores; a row without its own collection record (tool fallback) never erases them.
     unavailable = row(revenues=(), when=later)
-    kept = merged({'NASDAQ:NVDA': unavailable}, previous=p, as_of=later)
-    assert kept['records']['NASDAQ:NVDA'] == p['records']['NASDAQ:NVDA']  # a row without scores never erases a kept one
+    replaced = merged({'NASDAQ:NVDA': unavailable}, previous=p, as_of=later)
+    assert replaced['records']['NASDAQ:NVDA'] == unavailable and unavailable['reason_codes'] == ['M1_NOT_AVAILABLE']
+    assert unavailable['acquired_at'] == '2026-10-13T22:30:00Z'
+    failed = q.empty_record(cik='0001045810', reasons=('INVALID_INPUT',))
+    kept = merged({'NASDAQ:NVDA': failed}, previous=p, as_of=later)
+    assert kept['records']['NASDAQ:NVDA'] == p['records']['NASDAQ:NVDA']
     stale = merged(previous=kept, as_of=NOW + timedelta(days=15))
     nvda = stale['records']['NASDAQ:NVDA']
     assert nvda['state'] == 'STALE' and nvda['reason_codes'] == ['STALE_INPUT'] and nvda['factors'] == p['records']['NASDAQ:NVDA']['factors']

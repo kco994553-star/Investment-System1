@@ -5,8 +5,12 @@ const W = path.join(__dirname, '../src/investment_system/product/web_assets');
 const E = require(path.join(W, 'playbook-engine.js')), CFG = require(path.join(W, 'playbook-config-defaults.js'));
 const vectors = JSON.parse(fs.readFileSync(path.join(__dirname, '../tests/fixtures/playbook_reference_v1.json'), 'utf8'));
 const DOC = fs.readFileSync(path.join(__dirname, '../docs/playbook/PLAYBOOK_V1.md'), 'utf8');
+function withGate(c) { // vectors that test the macro gate itself run with it active (shipped config: reference-only)
+  if (c.input.macro_gate_active === undefined) return CFG;
+  const out = JSON.parse(JSON.stringify(CFG)); out.macro.gate_active = c.input.macro_gate_active; return out;
+}
 function run(c) {
-  const i = c.input;
+  const i = c.input, CFG = withGate(c);
   switch (c.operation) {
     case 'evaluate': return E.evaluate(CFG, i.situation, i.mode);
     case 'transition': return E.transition(CFG, i.from, i.choice, i.ctx);
