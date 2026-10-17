@@ -1176,7 +1176,14 @@ def test_merge_carries_rows_never_erases_and_ages_them():
     nodata = q.build_row(cik=p['records'][code]['cik'], companyfacts_body=b'{"cik":1000,"facts":{}}',
                          submissions_body=b'{"cik":1000,"sic":"3674"}', acquired_at=later)
     assert nodata['reason_codes'] == ['NO_ANNUAL_SEC_FINANCIALS'] and nodata['sic'] == '3674'
-    kept = q.merge(p, {code: nodata}, as_of=later, shard_index=4)
+    # Owner rule 2026-10-17: a successful collection without data is published with its reason and own acquired_at
+    # (it leaves the cross-section); only a row without its own collection record keeps the kept data.
+    replaced = q.merge(p, {code: nodata}, as_of=later, shard_index=4)
+    row = replaced['records'][code]
+    assert (row['state'], row['reason_codes'], row['metrics'], row['calc_version']) == ('NOT_AVAILABLE', ['NO_ANNUAL_SEC_FINANCIALS'], {}, None)
+    assert row['acquired_at'] == nodata['acquired_at'] and replaced['cross_section_size'] == p['cross_section_size'] - 1
+    failed = q.empty_record(cik=p['records'][code]['cik'], reasons=('INVALID_INPUT',))
+    kept = q.merge(p, {code: failed}, as_of=later, shard_index=4)
     assert kept['records'][code]['metrics'] == p['records'][code]['metrics'] and kept['records'][code]['acquired_at'] == p['records'][code]['acquired_at']
     stale = q.merge(kept, {}, as_of=NOW + timedelta(days=15), shard_index=5)
     row = stale['records'][code]

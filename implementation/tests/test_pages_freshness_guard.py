@@ -412,12 +412,11 @@ def test_rows_turned_na_with_reasons_under_a_new_calc_version_and_a_newer_collec
         live = qgv2_payload({ROW_A: T16, ROW_B: T16, ROW_C: T16}, target={TARGET_A: T16, TARGET_B: T16})
     assert live['calc_version'] == old_version and all(r['calc_version'] == old_version for r in live['target'].values()
                                                        if r['acquired_at'])
-    # The one-off all-shards publication path (tools/sec_universe_shares.py _refresh_base): each collected code is cleared,
-    # then replaced by this run's row under the current rules. A: data again; B: no annual financials now (NA with its
-    # reason); C: not collected (kept, still the old version); TARGET nvda refreshed, msft kept.
+    # The merge of every Universe run (daily and all-shards, owner rule 2026-10-17): each collected code is replaced by
+    # this run's row under the current rules. A: data again; B: no annual financials now (NA with its reason); C: not
+    # collected (kept, still the old version); TARGET nvda refreshed, msft kept.
     updates = {**qgv2_rows(ROW_A, T17), **qgv2_rows(ROW_B, T17, no_financials=True)}
-    base = load_tool('sec_universe_shares')._refresh_base(live, updates, lambda: qgv2.empty_record())
-    mine = qgv2.merge(base, updates, as_of=AS_OF, shard_index=6, target_updates=qgv2_target(TARGET_A, T17))
+    mine = qgv2.merge(live, updates, as_of=AS_OF, shard_index=6, target_updates=qgv2_target(TARGET_A, T17))
     assert mine['calc_version'] == vf.CALC_VERSION != old_version
     assert mine['records'][ROW_A]['calc_version'] == vf.CALC_VERSION and mine['records'][ROW_C]['calc_version'] == old_version
     na = mine['records'][ROW_B]

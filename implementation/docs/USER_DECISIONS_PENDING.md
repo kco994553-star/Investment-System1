@@ -15,6 +15,24 @@
 | TYPE-SCOPE | 기업 유형 비중이 TARGET v0 목록 기준으로만 계산되는지(`public_engine_screens.py`) — TARGET v1 후보 선정에서 기준이 달라질 수 있음 | 방향은 사용자 지시(2026-10-17)로 정함: "같은 자격의 기업에는 같은 승인된 유형 판정 규칙". 미정 유형 규칙은 새로 만들지 않는다. 남은 결정: 수정안의 버전 관리(새 calc_version 여부)와 게시 형식 | 가격 없는 실제 적용 범위 집계·동일 입력 비교·수정안 준비 진행 중(운영 브랜치 `claude/type-scope-ops`). 실제 점수·상위 30 변화는 기기 가격으로 확인. **TARGET v1 확정 전 처리** | 현행(차이 가능, 표시 없음) |
 | BACKTEST | 백테스트 연구 결정 후보 BT-1~17(기간·모집단·공통 후보군·비용·현금·TA-1·체결·동점 등)과 M1 근사 MD-1~12 | 각 문서의 선택지 | [BACKTEST_RESEARCH_PLAN](backtest/BACKTEST_RESEARCH_PLAN.md) §2, [BACKTEST_MACRO_M1_MAPPING](backtest/BACKTEST_MACRO_M1_MAPPING.md) 참고. 운영 차단 아님. **#283 문서 병합은 BT·MD 권장안 승인이 아니다** | 문서·합성 검증·어댑터 설계만 |
 | NEWS-CAP | S07·S15 공시+뉴스 30행 목록에서 확정 공시(8-K)가 뉴스에 밀리는 문제 | 공시 최소 보장(예: 8-K 별도 상한) / 현행 | 공시 최소 보장 권장: 확정 공시가 뉴스 양에 따라 사라지면 안 된다. 화면 정책이라 결정 후 화면 PR | 현행(최신순 30행) |
+| UNI-WITHDRAWN | Universe 3개 공개 파일(shares·Q·G·QGV v2)에서 다중 CIK 충돌로 이전 값을 철회할 때의 표현. 지금은 `CIK_UNRESOLVED`(CIK·acquired_at 없음)로 게시되고, 그 종목에 수집 기록이 있었으면 배포 직전 검사가 LOST_RECORD로 그날 배포 전체를 거부한다(fail closed) | (a) TARGET /4(#285)와 같은 방식: 사유 `IDENTITY_CONFLICT_WITHDRAWN`, `detected_at`(감지 시각, 수집 시각 아님), `withdrawn_acquired_at`(철회하는 기록의 수집 시각). 검사는 이 값이 게시본과 정확히 같을 때만 통과 / (b) 현행(거부 유지) | (a) 권장: 충돌이 이어지는 동안 일일 배포가 매일 막히고, 화면에는 철회해야 할 이전 값이 계속 남는다. 3개 Python 모듈·3개 JS 검증기·두 가드·고정 해시를 바꾸는 공개 형식 변경이라 별도 PR. 2026-10-17 자료에서 충돌 코드는 0개라 지금 막히는 배포는 없다 | 현행(충돌 시 배포 거부) |
+
+## 결정됨 — 2026-10-17 (#278 후속: 다중 CIK 충돌 철회 · 성공 수집 NA 우선)
+
+사용자 후속 보완(2026-10-17) 1·2항. 계산식 변경이 없어 calc_version은 그대로다.
+
+1. **성공 수집 NA 우선(일일 포함)**: 2026-10-11 M3 shares 옵션 a 이후 Universe 일일 병합(shares·Q·G·QGV v2, QGV v2 TARGET 구역)은 "새 행에 값이 없으면 같은 종목의 이전 값을 지우지 않는다"를 적용했다.
+   - 이는 2026-10-17 규칙 "성공한 새 수집에서 나온 정책상 NA 또는 확인된 INVALID_INPUT은 과거 값으로 덮지 않는다"와 충돌했다.
+   - all-shards(1회성) 실행은 Q·G·QGV v2에서만 새 NA를 게시해, 같은 관측이 실행 경로에 따라 다르게 게시됐다.
+   - 대체 규칙: 자기 수집 기록이 있는 새 행(shares는 식별 확인된 `listing_id`, Q·G·QGV v2는 `acquired_at`)이 NA나 INVALID_INPUT이면, 일일·all-shards·TARGET 모두 새 행을 새 수집 시각·사유와 함께 게시한다.
+   - 옵션 a의 보존은 수집 기록이 없을 때만 남는다: 일시 수집 실패, 식별 실패, 빌더 실패, 엄격 검사 거부, 표지 파일 수집 실패로 주식 수가 없는 shares 행. 이때는 #278 결정대로 같은 CIK의 검증된 이전 행을 그대로 둔다.
+2. **다중 CIK 충돌**: 한 티커를 여러 CIK가 주장해 이번 실행 행이 없으면, 이전 행은 값이 있어도 철회하고 `CIK_UNRESOLVED`(CIK·acquired_at 없음)로 게시한다.
+   - 충돌 감지 시각은 수집 시각이 아니므로 acquired_at을 만들지 않는다.
+   - 배포 직전 검사는 이를 LOST_RECORD로 거부한다(fail closed). 공개 표현은 위 UNI-WITHDRAWN 결정 대기.
+3. **2026-10-17 자료 영향**: 0행.
+   - 미해결 코드 1개는 `BATS:CBOE`(거래소 이름이 SEC 파일에서 `CBOE`라 연결 안 됨, 주장 CIK 0개)라 충돌이 아니다.
+   - `NYSE:XOM`(CIK 2115436, ExxonMobil Holdings)·`NASDAQ:HONA`(CIK 2089271)는 단일 CIK의 수집 실패(샤드 2·3 각 1건)로, #278 보존 규칙 대상이다.
+   - 504 실행(38996553263)의 `kept_previous_shares/qg/qgv2`가 모든 샤드에서 0이라, 게시본에 이전 실행 값으로 남은 LIVE·STALE 행이 없다. 성공 수집 NA 36행(shares)도 이미 NA로 게시돼 있다.
 
 ## 결정됨 — 2026-10-17 (#280 V 입력 · #278 배포 보호)
 

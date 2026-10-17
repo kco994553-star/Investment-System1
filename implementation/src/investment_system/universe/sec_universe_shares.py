@@ -338,18 +338,23 @@ def verified_observation(row):
 
 
 def previous_decision(old, new, *, code, unresolved=(), conflicts=(), new_observation):
-    """How one Universe code's kept row meets this run's row; None leaves the file's existing merge rule.
+    """How one Universe code's kept row meets this run's row; None leaves the file's merge rule (`replaces`).
 
     - PRESERVE: this run has no new observation of the code (its symbol is unresolved in today's SEC registry, or its
-      row records no verified collection: identity unconfirmed, builder failure, rejected by the validator) while the
-      kept row is a verified observation of the SAME issuer (same CIK, no conflicting claim). The kept row stays
-      unchanged (acquired_at, source hashes, calc_version), and freshness/STALE/ranking rules judge it as before.
+      row records no verified collection: identity unconfirmed, builder failure, rejected by the validator, a transient
+      failure after the bytes arrived) while the kept row is a verified observation of the SAME issuer (same CIK, no
+      conflicting claim). The kept row stays unchanged (acquired_at, source hashes, calc_version), and
+      freshness/STALE/ranking rules judge it as before.
     - IDENTITY_CONFLICT: another CIK for the code, or explicit conflict evidence this run (`conflicts`: a ticker claimed
       by several CIKs, an issuer whose SEC response named another CIK). This run's row replaces the kept one, also over
-      a kept value: another issuer's earlier values are never carried.
+      a kept value: another issuer's earlier values are never carried. With no row this run (a ticker claimed by
+      several CIKs is unresolved, so nothing was collected) the kept row is withdrawn: the merges publish the code as
+      CIK_UNRESOLVED without CIK and acquired_at (the time a conflict is detected is not a collection time).
     A new observation (successful collection, also a policy NA or an invalid input) never meets PRESERVE."""
     if new is None:
-        if code in unresolved and code not in conflicts and verified_observation(old):
+        if code in conflicts:
+            return IDENTITY_CONFLICT
+        if code in unresolved and verified_observation(old):
             return PRESERVE
         return None
     old_cik, new_cik = old.get('cik'), new.get('cik')
@@ -358,6 +363,14 @@ def previous_decision(old, new, *, code, unresolved=(), conflicts=(), new_observ
     if not new_observation(new) and new_cik is not None and new_cik == old_cik and verified_observation(old):
         return PRESERVE
     return None
+
+
+def replaces(new, old, *, observed, has_value):
+    """Merge rule when `previous_decision` is None (owner rule 2026-10-17, superseding the M3 option-a daily keep rule
+    for this case): a new row that records this run's collection (`observed`: successful collection, also a policy NA
+    or a confirmed invalid input) replaces the kept row, with its own acquired_at and reasons, even when it has no value
+    and the kept row has one. A new row without its own collection record never erases a kept value."""
+    return new is not None and (observed(new) or not (not has_value(new) and has_value(old)))
 
 
 def note(stats, decision, code, old):
@@ -371,10 +384,13 @@ def note(stats, decision, code, old):
 
 
 def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unresolved=(), config=None, unlisted_updates=None,
-          conflicts=(), stats=None):
-    """Previous published rows + this shard's rows. A new row without shares never erases a kept value of the same
-    issuer; `previous_decision` keeps a verified row across a collection/identification failure and never carries a
-    row across an identity conflict (`conflicts`: codes with conflict evidence this run; `stats`: see `note`).
+          conflicts=(), stats=None, transient=()):
+    """Previous published rows + this shard's rows. A new row of this run's collection (identity confirmed: listing_id
+    set) replaces the kept one also without shares (`replaces`); a row without that record never erases a kept value.
+    `previous_decision` keeps a verified row across a collection/identification failure and never carries a row
+    across an identity conflict (`conflicts`: codes with conflict evidence this run; `stats`: see `note`).
+    `transient`: codes whose collection hit a transient failure after the SEC bytes arrived (the cover filing fetch
+    failed); a row of theirs without shares records no completed collection, so it is no new observation.
 
     An `unlisted_classes` entry follows its valued-at listing row: replaced together with that row (missing
     update -> NOT_AVAILABLE), otherwise kept, and dropped to NOT_AVAILABLE when no longer bound to the row's cover."""
@@ -393,12 +409,16 @@ def merge(previous, updates, *, as_of, shard_index, registry_sha256=None, unreso
                 new = empty_record(cik=new.get('cik') if type(new) is dict and type(new.get('cik')) is str and re.fullmatch(r'[0-9]{10}', new['cik']) else None, reasons=('INVALID_INPUT',))
         # A row naming a CIK other than the one fetched is identity conflict evidence of this run.
         conflict = set(conflicts) | ({code} if new is not None and 'CIK_MISMATCH' in new['reason_codes'] else set())
-        decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflict,
-                                     new_observation=lambda r: r['listing_id'] is not None)
+        observed = lambda r: r['listing_id'] is not None and not (code in transient and r['shares'] is None)
+        decision = previous_decision(old, new, code=code, unresolved=unresolved, conflicts=conflict, new_observation=observed)
         note(stats, decision, code, old)
         if decision == PRESERVE:
             pass
-        elif new is not None and (decision == IDENTITY_CONFLICT or not (new['shares'] is None and old['shares'] is not None)):
+        elif decision == IDENTITY_CONFLICT and new is None:
+            # Withdrawn over an identity conflict (a ticker claimed by several CIKs): unresolved, no acquired_at.
+            old = empty_record(reasons=('CIK_UNRESOLVED',))
+            replaced.add(code)
+        elif decision == IDENTITY_CONFLICT or replaces(new, old, observed=observed, has_value=lambda r: r['shares'] is not None):
             old = new
             replaced.add(code)
         elif new is None and code in unresolved and old['shares'] is None:
