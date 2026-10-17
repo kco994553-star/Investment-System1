@@ -20,6 +20,7 @@ function qg(){const companies={};for(const id of IDS)companies[id]={state:'NOT_A
 function types(){const companies={};for(const id of IDS)companies[id]={state:'NOT_AVAILABLE',config_version:null,source_hashes:{},memberships:{growth:null,quality:null,cyclical:null,defensive:null}};
  companies.nvda={state:'LIVE',config_version:'type_config/1',source_hashes:live,memberships:{growth:0.8,quality:0.35,cyclical:null,defensive:null}};
  companies.hanmi={state:'LIVE',config_version:'type_config/1',source_hashes:live,memberships:{growth:0.1,quality:0.5,cyclical:null,defensive:null}};
+ companies.msft={state:'LIVE',config_version:'type_config/1',source_hashes:live,memberships:{growth:0.2,quality:0.1,cyclical:null,defensive:null}};
  return envelope('COMPANY_TYPES_PRICEFREE',{companies,method_status:'PROVISIONAL_UNCALIBRATED',availability_basis:'OBSERVED_CAPTURE_ONLY'},['SEC_COMPANYFACTS','SEC_SUBMISSIONS']);}
 function filings(){const companies={},soon=new Date(Date.now()+3*86400000);for(const id of IDS)companies[id]={state:'NOT_AVAILABLE',role:'ESTIMATED_PATTERN_NOT_CONFIRMED',confirmed_earnings_date:null,groups:[],source_hashes:{}};
  companies.nvda={state:'LIVE',role:'ESTIMATED_PATTERN_NOT_CONFIRMED',confirmed_earnings_date:null,source_hashes:live,groups:[{form:'10-Q',report_month_day:'09-30',observation_count:2,observed_filing_windows:[{month:soon.getUTCMonth()+1,day_min:soon.getUTCDate(),day_max:soon.getUTCDate(),count:2}]}]};
@@ -41,7 +42,14 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
     assert.equal(await text(page,'[data-holding="theme"]'),'AI·반도체');assert.equal(await text(page,'[data-holding="target"]'),'8.0%');
     assert.ok((await text(page,'[data-holding="actual"]')).includes('NOT_AVAILABLE'));assert.equal(await text(page,'[data-holding="delta"]'),'—');
     assert.equal(await page.locator('#company-holding a[href="#actual"]').count(),1);
-    for(const key of ['V','rank','reeval'])assert.ok((await text(page,'[data-qgv="'+key+'"]')).includes('NOT_AVAILABLE'),key);
+    // DESIGN_CLEANUP_BACKLOG S04: a v2 NOT_AVAILABLE card is one line with the reason, not four NOT_AVAILABLE badges.
+    assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="total"]').getAttribute('data-state'),'NOT_AVAILABLE');
+    for(const key of ['Q','G','V'])assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="'+key+'"]').count(),0,key);
+    for(const key of ['rank','reeval'])assert.ok((await text(page,'[data-qgv="'+key+'"]')).includes('NOT_AVAILABLE'),key);
+    // Data badges in words; raw state / PIT basis stay in data-* attributes.
+    assert.equal(await text(page,'[data-company-badges] [data-badge="price"]'),'시세 없음');
+    assert.ok(!/NOT_AVAILABLE|OBSERVED_CAPTURE_ONLY|T\d\d:\d\d:\d\d/.test(await text(page,'[data-company-badges]')),'badges in words');
+    assert.equal(await text(page,'[data-section="sec-reported"]'),'재무 보고 (SEC)');
     assert.equal(await page.locator('[data-company-card="qgv"] a[href="#analysis/nvda"]').count(),1);
     assert.equal(await page.locator('[data-company-card="technical"] #private-history-chart').count(),1);
     assert.equal(await page.locator('[data-company-card="technical"] a[href="#technical"]').count(),1);
@@ -64,6 +72,7 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
     assert.deepEqual(await page.locator('[data-analysis-tab]').allTextContents(),['종합','사업·경쟁','재무','주가·이벤트','QGV 요소','가치·시나리오','비교·컨센서스']);
     assert.equal(await text(page,'.sub-category'),'종목 찾기');assert.equal(await page.locator('#primary-nav [data-nav-tab][aria-current="page"]').getAttribute('data-nav-tab'),'qgv');
     assert.ok((await text(page,'[data-confidence-note]')).includes('확률 아님'));assert.ok((await text(page,'[data-na="overall"]')).includes('NOT_AVAILABLE'));
+    assert.equal(await text(page,'[data-confidence]'),'정의 대기');assert.equal(await page.locator('[data-company-badges] [data-badge="pit"]').getAttribute('data-pit'),'NOT_AVAILABLE');
     for(const key of ['business','financials','events','factors','value','compare']){await page.locator('[data-analysis-tab="'+key+'"]').click();assert.equal(await page.locator('[data-analysis-panel="'+key+'"]').isVisible(),true,key);assert.equal(await page.locator('[data-analysis-panel]:visible').count(),1,'one panel '+key);}
     await page.locator('[data-analysis-tab="factors"]').click();assert.equal(await page.locator('[data-v2-factor]').count(),15);assert.equal(await page.locator('[data-factor]').count(),0,'no v1 factor table');
     assert.deepEqual(await page.locator('[data-factor-score]').evaluateAll(n=>[...new Set(n.map(x=>x.textContent))]),['—']);
@@ -93,17 +102,23 @@ const text=async(page,selector)=>(await page.locator(selector).first().textConte
    try{
     phase='S04-DATA';await open(page,'company/nvda','[data-qgv="Q"]');await page.locator('[data-type-chip]').first().waitFor();
     // v1 Q·G (54.0 / 50.0 from sec-qg-factors.json) is no longer shown; without sec-qgv2.json the v2 NOT_AVAILABLE reason is.
-    for(const key of ['Q','G','V'])assert.ok((await text(page,'[data-qgv="'+key+'"]')).includes('NOT_AVAILABLE'),key);
-    assert.ok(!(await text(page,'[data-company-card="qgv"]')).includes('54.0'));assert.equal(await text(page,'[data-qgv2-na]'),'QGV v2 산출 불가 · 이 기업의 v2 입력 없음');
+    for(const key of ['Q','G','V'])assert.equal(await page.locator('[data-company-card="qgv"] [data-qgv="'+key+'"]').count(),0,key);
+    assert.ok(!(await text(page,'[data-company-card="qgv"]')).includes('54.0'));
+    assert.equal(await text(page,'[data-company-badges] [data-badge="data"]'),'실데이터');assert.equal(await page.locator('[data-company-badges] [data-badge="data"]').getAttribute('data-state'),'LIVE');assert.equal(await text(page,'[data-qgv2-na]'),'QGV v2 산출 불가 · 이 기업의 v2 입력 없음');
     assert.deepEqual(await page.locator('[data-type-chip]').allTextContents(),['성장 0.80','우량 0.35']);
     assert.match(await text(page,'[data-next-earnings-line]'),/^다음 실적 \d\d\/\d\d경 \(확정 아님\) · D-3$/);assert.equal(await page.locator('[data-next-earnings-line]').count(),1);
-    await open(page,'company/amd','[data-qgv="Q"]');assert.ok((await text(page,'[data-qgv="Q"]')).includes('NOT_AVAILABLE'));assert.ok((await text(page,'[data-axis="type"]')).includes('NOT_AVAILABLE'));
+    await open(page,'company/amd','[data-qgv="total"]');assert.equal(await page.locator('[data-qgv="total"]').getAttribute('data-state'),'NOT_AVAILABLE');assert.ok((await text(page,'[data-axis="type"]')).includes('NOT_AVAILABLE'));
+    // Calculated but every membership below 0.3 is a result ('해당 유형 없음'), not missing data.
+    await open(page,'company/msft','[data-axis="type"]');await page.locator('[data-type-none]').waitFor();
+    assert.equal(await text(page,'[data-axis="type"] [data-type-none]'),'해당 유형 없음');assert.ok((await text(page,'[data-axis="type"]')).includes('가장 높은 값 성장 0.20'));assert.ok(!(await text(page,'[data-axis="type"]')).includes('NOT_AVAILABLE'));
     phase='S05-DATA';await open(page,'analysis/nvda','[data-analysis-tab]');await page.locator('[data-analysis-tab="factors"]').click();
     assert.equal(await page.locator('[data-factor]').count(),0,'v1 leaf factors are raw data now');
     // The SEC Q·G leaf scores, types and filing window of the last viewed company are in Settings > 원자료 보기(개발자용).
     phase='S11-RAW-DATA';await open(page,'settings','[data-raw-data]');await page.locator('[data-raw-data] > summary').click();
     const rawQg=page.locator('[data-raw-data] [data-public-screen="qg"] [data-screen-company="nvda"]');await rawQg.waitFor();
-    const leaf=async f=>(await rawQg.locator('dt').filter({hasText:new RegExp('^'+f+'$')}).locator('xpath=following-sibling::dd[1]').textContent()).trim();
+    // Raw ids stay first; their Korean name follows ('competitive_advantage · 경쟁우위').
+    const leaf=async f=>(await rawQg.locator('dt').filter({hasText:new RegExp('^'+f+'( · |$)')}).locator('xpath=following-sibling::dd[1]').textContent()).trim();
+    assert.equal(await rawQg.locator('dt').filter({hasText:/^competitive_advantage · 경쟁우위$/}).count(),1);
     assert.equal(await leaf('competitive_advantage'),'90');assert.equal(await leaf('roic_wacc'),'30');
     assert.equal(await page.locator('[data-raw-data] [data-public-screen="qg"] [data-public-state]').getAttribute('data-public-state'),'LIVE');
     assert.ok((await text(page,'[data-raw-data] [data-public-screen="types"] [data-screen-company="nvda"]')).includes('0.8'));

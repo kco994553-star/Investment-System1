@@ -74,7 +74,8 @@ for (const mode of ['v1', 'v2']) test('setting ' + mode + ': every consumer show
     assert.ok(sum.includes('점수 기준 v2 · PROVISIONAL') && sum.includes('DCF 참고 범위'));
     // Without v2 the company summary shows the v2 NOT_AVAILABLE reason (no v1 Q·G).
     const naSum = CS.summary({ locale: 'ko-KR', id: 'nvda', screens: { 'sec-qg-factors.json': screens['sec-qg-factors.json'] }, scores: noV2, headerHtml: '', groupsHtml: '' });
-    assert.ok(naSum.includes('data-qgv2-na') && naSum.includes('QGV v2 산출 불가 · 이 기업의 v2 입력 없음') && naSum.includes('data-qgv="Q"'));
+    // One line with the reason (DESIGN_CLEANUP_BACKLOG S04), not four NOT_AVAILABLE badges.
+    assert.ok(naSum.includes('data-qgv2-na') && naSum.includes('QGV v2 산출 불가 · 이 기업의 v2 입력 없음') && naSum.includes('data-qgv="total" data-state="NOT_AVAILABLE"') && !naSum.includes('data-qgv="Q"'));
     assert.ok(!naSum.includes('점수 기준 v1') && !naSum.includes('임시 기본'));
     // Judgement rows: rehearsal snapshot + daily report + export
     const qg = QS.judgmentRows(sc);
@@ -88,7 +89,8 @@ for (const mode of ['v1', 'v2']) test('setting ' + mode + ': every consumer show
     assert.ok(text.includes('QGV 점수 기준 v2(PROVISIONAL)'));
     assert.ok(!text.includes('v1 참고') && !text.includes('v2 비교용') && !text.includes('점수 기준 v1'));
     const html = R.screenHtml(model, { hidden: true, locale: 'ko-KR' });
-    assert.ok(html.includes('(v2 · 산출 요인 ') && !html.includes('QGV 점수 기준 v1'));
+    // Screen cell is the score alone (DESIGN_CLEANUP_BACKLOG S17); the export above keeps '(v2 · 산출 요인 n/15)'.
+    assert.ok(html.includes('data-report-qgv="READY"') && !html.includes('QGV 점수 기준 v1'));assert.ok(text.includes('(v2 · 산출 요인 '));
   } finally { require.cache[CONFIG].exports = original; }
 });
 

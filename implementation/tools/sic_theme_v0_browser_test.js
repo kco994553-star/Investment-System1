@@ -19,7 +19,7 @@ async function noScroll(page,label){assert.ok(await page.evaluate(()=>document.d
     phase='A-S04';await open(page,'company/nvda','[data-company-card="classification"]');
     await page.waitForFunction(()=>document.querySelector('[data-axis="industry"] [data-v0-marker]'));
     assert.ok((await text(page,'[data-axis="industry"]')).includes('NOT_AVAILABLE'));assert.ok((await text(page,'[data-axis="theme"]')).includes('NOT_AVAILABLE'));
-    assert.ok((await text(page,'[data-axis="industry"] [data-v0-marker]')).includes('v0 기본값 · UNCALIBRATED · 나중에 수정 가능'));
+    assert.ok((await text(page,'[data-axis="industry"] [data-v0-marker]')).includes('v0 기본값 · 보정 전 · 나중에 수정 가능'));
     phase='A-S03';await open(page,'portfolio','[data-concentration]');assert.ok((await text(page,'[data-concentration]')).includes('NOT_AVAILABLE'));
     assert.equal(await page.locator('[data-concentration-warning]').count(),0);assert.ok((await text(page,'[data-concentration] [data-v0-marker]')).includes('UNCALIBRATED'));
     assert.equal(errors,0);pass++;console.log('PASS sic/theme v0 published build '+width);
@@ -46,7 +46,7 @@ async function noScroll(page,label){assert.ok(await page.evaluate(()=>document.d
     assert.equal(await page.locator('[data-concentration-scope="strategy"] [data-concentration-warning="ai"]').count(),1);
     assert.equal(await page.locator('[data-concentration-scope="target"] [data-concentration-warning="ai_semi"]').count(),1);
     assert.equal(await page.locator('[data-concentration-scope="target"] [data-concentration-warning="semi_equipment"]').count(),0);
-    assert.ok((await text(page,'[data-concentration]')).includes('v0 기본값 · UNCALIBRATED · 나중에 수정 가능'));
+    assert.ok((await text(page,'[data-concentration]')).includes('v0 기본값 · 보정 전 · 나중에 수정 가능'));
     assert.ok((await text(page,'[data-portfolio-card="industry"] [data-industry="manufacturing_industrial_tech"]')).includes('76.9%'));
     assert.ok((await text(page,'[data-portfolio-card="industry"] [data-industry="nodata"]')).includes('23.1%'));
     await noScroll(page,'S03 v0');

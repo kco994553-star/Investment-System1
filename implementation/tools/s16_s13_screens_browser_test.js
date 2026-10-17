@@ -54,12 +54,12 @@ const texts=(page,sel)=>page.locator(sel).evaluateAll(n=>n.map(r=>[...r.cells].m
    phase='S16_STORAGE';assert.deepEqual(await page.evaluate(()=>Object.keys(localStorage).filter(k=>/13f|thirteen|cusip/i.test(k))),[]);
    phase='S13_OFFICIAL';await page.goto(process.env.PAGES_COCKPIT_URL+'#types');await page.locator('[data-type-official-table]').waitFor();
    assert.equal(await page.locator('[data-type-official-row]').count(),9);assert.equal(await page.locator('[data-type-panel="mine"]').isVisible(),false);
-   assert.equal(await page.locator('[data-type-view="official"]').getAttribute('aria-selected'),'true');assert.ok((await page.locator('[data-type-official-row="growth"]').textContent()).includes('revenue_cagr_3y 0.1–0.2'));
+   assert.equal(await page.locator('[data-type-view="official"]').getAttribute('aria-selected'),'true');assert.ok((await page.locator('[data-type-official-row="growth"]').textContent()).includes('3년 매출 성장률 0.1–0.2'));assert.ok(!(await page.locator('[data-type-official]').textContent()).includes('revenue_cagr_3y'),'metric id not on screen');
    const officialBefore=await page.evaluate(()=>JSON.stringify(TypeConfigDefaults));
    phase='S13_COPY';await page.locator('#type-copy').click();await page.locator('[data-type-panel="mine"]').waitFor();
    assert.equal(await page.locator('[data-type-custom-badge=""]').textContent(),'사용자 설정 · 공식 아님');assert.equal(await page.locator('[data-type-panel="official"]').isVisible(),false);
    await page.fill('#type-growth-lower','0.3');await page.fill('#type-growth-upper','0.4');await page.locator('#type-preview').click();await page.locator('[data-type-preview-row="nvda"]').waitFor();
-   const n=(await texts(page,'[data-type-preview-row="nvda"]'))[0];assert.equal(n[1],'growth');assert.equal(n[2],'미분류');assert.ok(n[5].startsWith('유형 변경'));
+   const n=(await texts(page,'[data-type-preview-row="nvda"]'))[0];assert.equal(n[1],'성장');assert.equal(n[2],'미분류');assert.ok(n[5].startsWith('유형 변경'));
    assert.deepEqual(await page.locator('[data-type-diff-path]').evaluateAll(x=>x.map(e=>e.dataset.typeDiffPath)),['types.growth.rule.lower','types.growth.rule.upper']);
    assert.equal(await page.locator('[data-type-preview-state="PREVIEW"]').count(),2);assert.equal(await page.locator('[data-type-preview-row]').count(),19);
    assert.ok((await page.locator('[data-type-custom-badge="preview"]').textContent()).includes('공식 아님'));

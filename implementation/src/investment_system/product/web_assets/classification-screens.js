@@ -88,7 +88,7 @@ const tr=locale=>(ko,en)=>locale==='en-US'?en:ko;
 const na=(reason,locale)=>'<span class="badge NOT_AVAILABLE">NOT_AVAILABLE</span>'+(reason?' <span class="small">'+esc(reason)+'</span>':'');
 const pct=(v,locale)=>typeof v==='number'&&Number.isFinite(v)?new Intl.NumberFormat(locale==='en-US'?'en-US':'ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1}).format(v*100)+'%':'—';
 function record(p,id){return p&&typeof id==='string'&&Object.hasOwn(p.data.companies,id)?p.data.companies[id]:null;}
-function marker(locale){return '<span class="badge partial" data-v0-marker>'+esc(tr(locale)('v0 기본값 · UNCALIBRATED · 나중에 수정 가능','v0 default · UNCALIBRATED · editable later'))+'</span>';}
+function marker(locale){return '<span class="badge partial" data-v0-marker>'+esc(tr(locale)('v0 기본값 · 보정 전 · 나중에 수정 가능','v0 default · uncalibrated · editable later'))+'</span>';}
 const label=(item,locale)=>item?(locale==='en-US'?item.name_en:item.name):'—';
 function industryReason(code,sic,locale){const T=tr(locale);return code==='SIC_UNMATCHED'?T('SIC '+sic+' · v0 업종군 표에 없음','SIC '+sic+' · not in the v0 group table'):code==='SIC_NOT_AVAILABLE'?T('SEC 공시에 SIC 없음(또는 0000)','No SIC in SEC filings (or 0000)'):code==='NOT_SEC_REGISTRANT'?T('SEC 등록 기업 아님 · DART/EDINET 미연결','Not an SEC registrant · DART/EDINET not connected'):T('SEC 수집 결과가 아직 없습니다','No SEC collection result yet');}
 function industryChip(p,id,locale){
