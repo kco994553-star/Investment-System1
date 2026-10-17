@@ -39,7 +39,10 @@ and QGV v2 separately; counts only).
 # failure, a row the strict check rejects, a shares row without a count after the cover fetch failed), keeps its
 # verified previous row of the same CIK unchanged. Identity conflicts (another CIK for the code, a ticker claimed by
 # several CIKs, an SEC response naming another CIK) never keep an earlier row: a ticker claimed by several CIKs has no
-# row this run and is published CIK_UNRESOLVED without acquired_at. Owner rule 2026-10-17 (later): a row of a successful
+# row this run. Owner decision UNI-WITHDRAWN (a) 2026-10-17: such a code whose kept row in a file has a collection record
+# is published there as a withdrawal row (IDENTITY_CONFLICT_WITHDRAWN, detected_at, withdrawn_acquired_at, withdrawn_cik,
+# no values), kept unchanged until a confirmed new collection; without a kept record it is CIK_UNRESOLVED without
+# acquired_at (nothing invented). Each summary line counts withdrawn rows. Owner rule 2026-10-17 (later): a row of a successful
 # collection replaces the kept row also when it is NOT_AVAILABLE or INVALID_INPUT (daily and --all-shards alike).
 # `SEC_UNIVERSE_COLLECTION` counts new collections, failures and published rows of an earlier run.
 import argparse
@@ -62,8 +65,8 @@ from investment_system.providers.sec_universe_collection import (
     UniverseSecClient, collect_partition, daily_partition, fetch_ticker_exchange, universe_registry,
 )
 from investment_system.universe.sec_universe_shares import (
-    FILENAME, MAX_BYTES, build_issuer_records, empty_record, encode, load_config, merge, parse_json, require_universe_shares,
-    select_cover_filing, shard_day, shard_index_for, universe_codes, upgrade_legacy,
+    FILENAME, MAX_BYTES, build_issuer_records, empty_record, encode, is_withdrawal, load_config, merge, parse_json,
+    require_universe_shares, select_cover_filing, shard_day, shard_index_for, universe_codes, upgrade_legacy,
 )
 from investment_system.universe import sec_universe_qg as qg
 from investment_system.universe import sec_qgv2 as qgv2
@@ -313,7 +316,7 @@ def _summary(payload):
     rows = payload['records'].values()
     count = lambda key, value: sum(1 for r in rows if r[key] == value)
     return (f"live={count('state', 'LIVE')} stale={count('state', 'STALE')} not_available={count('state', 'NOT_AVAILABLE')} "
-            f"single_class={count('share_class_basis', 'SINGLE_CLASS_CONFIRMED')} share_class_basis={count('share_class_basis', 'SHARE_CLASS_BASIS')} "
+            f"withdrawn={sum(1 for r in rows if is_withdrawal(r))} single_class={count('share_class_basis', 'SINGLE_CLASS_CONFIRMED')} share_class_basis={count('share_class_basis', 'SHARE_CLASS_BASIS')} "
             f"basis_unconfirmed={count('share_class_basis', 'BASIS_UNCONFIRMED')}")
 
 
@@ -321,7 +324,8 @@ def _qg_summary(payload):
     rows = payload['records'].values()
     count = lambda value: sum(1 for r in rows if r['state'] == value)
     scored = sum(1 for r in rows for score in r['factors'].values() if score is not None)
-    return f"live={count('LIVE')} stale={count('STALE')} not_available={count('NOT_AVAILABLE')} factor_scores={scored}"
+    return (f"live={count('LIVE')} stale={count('STALE')} not_available={count('NOT_AVAILABLE')} "
+            f"withdrawn={sum(1 for r in rows if is_withdrawal(r))} factor_scores={scored}")
 
 
 def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kwargs=None,
@@ -456,6 +460,7 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
                               failed=counts['failed'], unresolved=unresolved, attempted=counts['codes'],
                               files=(('shares', payload, updates), ('qg', qg_payload, qg_updates),
                                      ('qgv2', qgv2_payload, qgv2_updates)), stats=stats))
+        print(withdrawal_line(f"shard={index}/{cfg['shard_count']}", stats))
         if counts['all_failed']:
             print('SEC_UNIVERSE_SHARES SHARD_ALL_FAILED previous_kept')
         if token is None:
@@ -519,6 +524,15 @@ def collection_line(scope, *, issuers, collected, failed, unresolved, attempted,
             f"unresolved_codes={len(unresolved)} "
             + ' '.join(f'preserved_previous_{name}={_count(preserved_previous(p, u, codes))}' for name, p, u in files)
             + f" preserved_unconfirmed={union('preserved')} identity_not_preserved={union('identity_not_preserved')}")
+
+
+def withdrawal_line(scope, stats):
+    """UNI-WITHDRAWN run log (owner decision 2026-10-17, #289 item 2): per file, codes withdrawn this run and live
+    withdrawals that persist (re-checked by this run). The rows keep their first detected_at; nothing here is published."""
+    count = lambda name, key: len(stats.get(name, {}).get(key, ()))
+    return (f'SEC_UNIVERSE_WITHDRAWALS {scope} '
+            + ' '.join(f'new_{name}={count(name, "withdrawn_new")} kept_{name}={count(name, "withdrawal_kept")}'
+                       for name in ('shares', 'qg', 'qgv2')))
 
 
 def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload, previous, previous_qg, previous_qgv2,
@@ -646,6 +660,7 @@ def _run_all_shards(out, *, cfg, environ, now, client_kwargs, token, open_upload
     print(collection_line(f'shard=all/{count}', issuers=sum(len(i) for i in partitions.values()),
                           collected=totals['collected'], failed=totals['failed'], unresolved=unresolved,
                           attempted=set().union(*shard_codes.values()), files=files, stats=stats))
+    print(withdrawal_line(f'shard=all/{count}', stats))
     if failed_shards:
         print('SEC_UNIVERSE_SHARES ALL_SHARDS_PARTIAL failed_shards=' + ','.join(str(i) for i in failed_shards) + ' previous_kept')
     return 0
