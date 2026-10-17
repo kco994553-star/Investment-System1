@@ -224,6 +224,7 @@ python3 implementation/tools/macro_lights_replay.py --unrate UNRATE.csv --cpi CP
   - 숫자: `macro_lights_v1.json` `state.crisis_inflation_other_lit_min = 1`. 결정 기록: 같은 파일 `revisions`(M-RULE-C).
   - 코드: `macro_lights_v1.py`와 JS 미러 `macro-lights.js`를 같이 바꿨다. 다른 상태 규칙(3개 이상, 시장+신용, 2개, 물가 > 5% + 성장 < 0)은 그대로다.
 - **2022 결과(C 적용).** §2와 같은 입력(공개 매크로 통계 사본)으로 바뀐 코드를 다시 돌렸다. 저장소의 `macro_lights_replay.py` `evaluate()`를 수정 없이 평일마다 불렀다.
+- **근사 결과다.** 현재 빈티지(수정치)에 발표 지연을 근사로 넣었다. 당시 발표값(as-published)이 아니다(§9, §12-4).
 
 | 단위 | 정상 | 경고 | 위기 |
 |---|---|---|---|
@@ -265,6 +266,8 @@ python3 implementation/tools/macro_lights_replay.py --unrate UNRATE.csv --cpi CP
   - 그 밖의 공개 계열(실업률 1948~, CPI 1913~, GDP 1947~)은 모든 구간을 덮는다.
 
 ### 12-2. 구간별 결과 (평일 기준)
+
+- **모든 행은 근사 결과다.** 당시 발표값(as-published) 자료가 없어 현재 빈티지(수정치)에 발표 지연을 근사로 넣었다(§12-4). 공개 경고등만 쓴 재생이고, 시장·신용을 포함한 검증이 아니다.
 
 | 구간 | 쓸 수 있던 경고등 | 알려진 스트레스(비교 기준) | 첫 경고 / 첫 위기, 기존 | 첫 경고 / 첫 위기, C | 정상/경고/위기, 기존 → C | 스트레스 밖 경고/위기, 기존 → C |
 |---|---|---|---|---|---|---|
@@ -311,3 +314,49 @@ python3 implementation/tools/macro_lights_replay.py --unrate UNRATE.csv --cpi CP
 - 수치는 두 종류로 나누어 읽는다.
   - **배포 기준 값:** 배포된 공개 파일에 실제로 들어 있는 값. 위 0/5가 여기에 속한다.
   - **오프라인 계산 값:** 미러 자료로 계산한 값. §6의 "3/5, 켜짐 0, 정상"과 §3·§11·§12의 재생 결과가 여기에 속한다.
+
+## 14. 기기 비공개 재생 절차 (M-GATE B, 2026-10-17 추가)
+
+이 절은 사용자가 기기에서 할 일만 적는다. 재생 결과 값은 저장소에 넣지 않는다.
+
+### 14-1. 준비
+
+1. 저장소를 받은 사용자 컴퓨터에서 `python3`가 돌아가는지 확인한다.
+2. 저장소 밖에 비공개 폴더를 만든다(예: `~/macro-replay-private/`). 아래 CSV는 모두 이 폴더에 둔다.
+3. 공개 매크로 계열 CSV 4개를 받는다.
+   - 실업률 `UNRATE`, CPI-U NSA `CPIAUCNS`, 실질 GDP 전기비 연율 `A191RL1Q225SBEA`, 10년−3개월 `T10Y3M`(FRED).
+4. 가격 CSV 3개를 받는다: SPY, HYG, IEF 일별 종가.
+   - 배당 미조정 원 종가를 쓴다(§7).
+   - 첫 열은 날짜(YYYY-MM-DD), 값 열은 `close` 또는 `Close`.
+   - 빈 값은 비워 둔다. 0으로 채우지 않는다.
+
+### 14-2. 실행
+
+5. 저장소 폴더에서 아래를 실행한다. 결과는 화면에만 나온다. 파일로 저장하지 않는다.
+
+```
+python3 implementation/tools/macro_lights_replay.py \
+  --unrate ~/macro-replay-private/UNRATE.csv --cpi ~/macro-replay-private/CPIAUCNS.csv \
+  --gdp ~/macro-replay-private/GDP.csv --curve ~/macro-replay-private/T10Y3M.csv \
+  --spy ~/macro-replay-private/SPY.csv --hyg ~/macro-replay-private/HYG.csv --ief ~/macro-replay-private/IEF.csv
+```
+
+6. 기본 구간(2000·2008·2020·2022·대조 구간)이 돈다. 추가 과거 재생 구간을 보려면 `--period 1998:1998-01-01:1999-06-30` 같은 옵션을 붙인다(1994·1998·2011·2015-16).
+7. 앱을 기기에서 열고 매크로 화면에서 "쓸 수 있는 경고등 n/5"와 시장·신용이 "확인 불가"인지만 본다.
+
+### 14-3. 보고할 최소 항목 (가격·가격 파생 수치 없음)
+
+| 항목 | 예시 형식 |
+|---|---|
+| 구간별 주 수 정상/경고/위기 | 구간명: 정상 n / 경고 n / 위기 n |
+| 구간별 첫 경고·첫 위기 날짜와 사유 코드 | YYYY-MM-DD, 사유 코드(예: `MARKET_AND_CREDIT_LIT`) |
+| 시장·신용 경고등의 첫 켜짐 날짜 | market YYYY-MM-DD 또는 없음, credit YYYY-MM-DD 또는 없음 |
+| 구간별 쓸 수 있던 경고등 수 | 4/5 또는 5/5 |
+| 입력 범위(첫 날짜·마지막 날짜·행 수) | 계열명 YYYY-MM-DD → YYYY-MM-DD (n행) |
+| 기기 앱의 현재 쓸 수 있는 경고등 수 | n/5, 확인 불가인 경고등 이름 |
+
+- 보고하지 않는 값: 종가, 낙폭(%), 변동성, HYG÷IEF 비율과 그 변화율, 그 밖에 가격에서 계산한 숫자.
+- 보고는 대화로만 한다. 저장소·Pages·Actions 로그·PR 본문에는 넣지 않는다. 기록 범위는 사용자가 정한다.
+- 조건(4/5 이상)을 채워도 게이트는 켜지지 않는다. 재가동은 M-REENABLE 사용자 결정으로만 한다.
+- 이 재생도 수정치 기반 근사 재생이다. 앞으로의 전진 검증(§12 (b))과는 다르다.
+
