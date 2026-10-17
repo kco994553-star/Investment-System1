@@ -285,7 +285,8 @@ def reported_sec(company):
 
 def inputs_payload(tmp_path, stamps):
     """sec-public-inputs.json from the daily collector with a fake SEC client: every company acquired at T17 unless
-    `stamps` says otherwise; None = that company's fetch failed in this run (NOT_AVAILABLE row without acquired_at)."""
+    `stamps` says otherwise; None = that company's fetch failed in this run without a kept row (schema /4:
+    COLLECTION_FAILED row with checked_at, without acquired_at)."""
     class Client:
         def __init__(self, _):
             pass
@@ -355,9 +356,12 @@ def test_a_row_older_than_live_is_refused_although_the_file_maximum_is_unchanged
     assert file_maximum(mine, section) == file_maximum(live, section) == T17
     code, out = guard(write(tmp_path / 'artifact', {name: mine}), served({name: live}), capsys)
     n = compared_rows(kind)
+    extra = (' withdrawn=0 withdrawal_mismatch=0 preserved_mismatch=0 changed=0' if kind == 'inputs'
+             else ' withdrawn=0 withdrawal_mismatch=0' if kind == 'qgv2-target' else '')
     assert code == 1
     assert (f'PAGES_FRESHNESS file={name} section={section} verdict=REFUSED compared={n} newer=0 equal={n - 1} older=1 '
-            'missing=0 lost_record=0 new_record=0 artifact_latest=2026-10-17T00:00:00Z live_latest=2026-10-17T00:00:00Z\n') in out
+            f'missing=0 lost_record=0 new_record=0{extra} artifact_latest=2026-10-17T00:00:00Z '
+            'live_latest=2026-10-17T00:00:00Z\n') in out
     assert (f'PAGES_FRESHNESS_REGRESSION file={name} section={section} code={b} kind=OLDER '
             'artifact=2026-10-15T00:00:00Z live=2026-10-16T00:00:00Z\n') in out
     assert out.count('PAGES_FRESHNESS_REGRESSION ') == 1 and ' rows_regressed=1 ' in out
@@ -383,8 +387,11 @@ def test_a_row_whose_collection_record_disappears_is_refused(tmp_path, capsys, k
     assert (f'PAGES_FRESHNESS_REGRESSION file={name} section={section} code={b} kind={kind_} artifact=NONE '
             'live=2026-10-16T00:00:00Z\n') in out
     n = compared_rows(kind)
-    lost = n if loss == 'file_missing' else 1
+    # sec-public-inputs.json is read through its strict validator: a file without one of its 17 rows has no rows.
+    invalid_file = kind == 'inputs' and loss == 'row_missing'
+    lost = n if loss == 'file_missing' or invalid_file else 1
     assert section_line(out, name, section)[kind_.lower()] == str(lost) and f' rows_regressed={lost} ' in out
+    assert (f'PAGES_FRESHNESS_ARTIFACT_INVALID file={name} rows=NONE\n' in out) == invalid_file
 
 
 @pytest.mark.parametrize('target_b', (T15, None))

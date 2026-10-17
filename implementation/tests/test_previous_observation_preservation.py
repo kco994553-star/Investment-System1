@@ -38,6 +38,7 @@ ENV = {'SEC_USER_AGENT': 'synthetic setting'}
 # ======================= TARGET: sec-public-inputs.json (public_screens_pipeline.collect) =======================
 T1 = datetime(2026, 9, 1, 22, 0, tzinfo=UTC)
 T2 = T1 + timedelta(days=1)
+CHECK_DELAY = timedelta(minutes=5)   # the collector's clock (checked_at / detected_at) after the SEC client's acquisition
 IDS = sorted(US_LISTINGS)
 A, B, C = IDS[0], IDS[1], IDS[2]
 
@@ -61,7 +62,8 @@ def target_day(tmp_path, name, site, when, *, failures=None, bodies=None, read_l
     out = tmp_path / name
     out.mkdir()
     previous, state = PIPE.load_previous_inputs(open_response=site) if read_live else (None, 'UNAVAILABLE')
-    result = PIPE.collect(out, environ=ENV, client_factory=target_factory(when, failures, bodies), previous=previous)
+    result = PIPE.collect(out, environ=ENV, client_factory=target_factory(when, failures, bodies), previous=previous,
+                          previous_state=state, now=lambda: when + CHECK_DELAY)
     artifact = tmp_path / (name + '-artifact')
     artifact.mkdir()
     shutil.copyfile(out / INPUTS_FILE, artifact / INPUTS_FILE)
@@ -86,8 +88,14 @@ def collection_line(capsys, result, state):
     return capsys.readouterr().out
 
 
+def observation(row):
+    """A row without its run marker (`preserved_previous`, schema /4)."""
+    return {k: v for k, v in row.items() if k != 'preserved_previous'}
+
+
 def test_a_target_partial_fetch_failure_keeps_the_previous_row_and_its_acquired_at_and_deploys(tmp_path, capsys):
-    """(a) Day 2: A's fetch fails with HTTP 503, B's transport retries run out; both keep their T1 rows unchanged."""
+    """(a) Day 2: A's fetch fails with HTTP 503, B's transport retries run out; both keep their T1 rows unchanged (values,
+    sources, acquired_at); the failed attempt is recorded apart, in `preserved_previous`, never as an acquired_at."""
     site = Site()
     first = published_target(tmp_path, site)
     failures = {A: SecCollectionError('SEC_HTTP_503', stage='fetch', http_status=503),
@@ -95,32 +103,41 @@ def test_a_target_partial_fetch_failure_keeps_the_previous_row_and_its_acquired_
     artifact, result, state = target_day(tmp_path, 'day2', site, T2, failures=failures)
     before, after = companies(first), companies(artifact)
     assert state == 'LOADED'
-    assert after[A] == before[A] and after[B] == before[B]                 # unchanged: acquired_at, sources, values
+    assert observation(after[A]) == observation(before[A]) and observation(after[B]) == observation(before[B])
     assert after[A]['acquired_at'] == after[B]['acquired_at'] == '2026-09-01T22:00:00+00:00'
-    assert all(after[c]['acquired_at'] == '2026-09-02T22:00:00+00:00' for c in IDS[2:])
+    assert after[A]['preserved_previous'] == {'checked_at': '2026-09-02T22:05:00+00:00', 'reason_codes': ['SEC_HTTP_503'],
+                                              'failure_stage': 'fetch', 'http_status': 503}
+    assert after[B]['preserved_previous']['reason_codes'] == ['SEC_TRANSPORT_RETRIES_EXHAUSTED']
+    assert all(after[c]['acquired_at'] == '2026-09-02T22:00:00+00:00' and after[c]['preserved_previous'] is None
+               for c in IDS[2:])
     # Collection completeness stays visible: two failed collections, kept as preserved, never counted as success.
     assert result['failed_companies'] == 2 and result['collected_companies'] == 15
-    assert result['preserved'] == [{'company_index': 1, 'code': 'SEC_HTTP_503'},
-                                   {'company_index': 2, 'code': 'SEC_TRANSPORT_RETRIES_EXHAUSTED'}]
+    assert result['preserved'] == [{'company_index': 1, 'code': 'SEC_HTTP_503', 'previous': 'LIVE'},
+                                   {'company_index': 2, 'code': 'SEC_TRANSPORT_RETRIES_EXHAUSTED', 'previous': 'LIVE'}]
     out = collection_line(capsys, result, state)
     assert out == ('SEC_PRESERVED company_index=1 code=SEC_HTTP_503 previous=LIVE\n'
                    'SEC_PRESERVED company_index=2 code=SEC_TRANSPORT_RETRIES_EXHAUSTED previous=LIVE\n'
                    'SEC_PUBLIC_COLLECTION companies=17 collected=15 failed=2 preserved_previous=2 not_available=0 '
-                   'previous=LOADED\n')
+                   # an OTHER-trigger run carries the live streak: 0 since the first publication (no scheduled run)
+                   'previous=LOADED policy_na=0 withdrawn=0 collection_failed=0 scheduled_streak=0\n')
     code, out = guard(artifact, site, capsys)
     line = section_line(out, INPUTS_FILE, 'companies')
     assert code == 0 and (line['verdict'], line['compared'], line['equal'], line['newer']) == ('PASS', '17', '2', '15')
 
 
 def test_d_target_row_loss_is_still_refused_when_no_previous_row_could_be_read(tmp_path, capsys):
-    """(d) The live copy could not be read at collection time (preservation off): the failed company is NOT_AVAILABLE
-    without acquired_at and the guard refuses that real loss."""
+    """(d) The live copy could not be read at collection time (preservation off): the failed company is
+    COLLECTION_FAILED (checked_at, no acquired_at) and the guard refuses that real loss."""
     site = Site()
     published_target(tmp_path, site)
     failures = {A: SecCollectionError('SEC_HTTP_503', stage='fetch', http_status=503)}
     artifact, result, state = target_day(tmp_path, 'day2', site, T2, failures=failures, read_live=False)
-    assert companies(artifact)[A]['status'] == 'NOT_AVAILABLE' and result['preserved'] == []
-    assert collection_line(capsys, result, state).endswith('preserved_previous=0 not_available=1 previous=UNAVAILABLE\n')
+    row = companies(artifact)[A]
+    assert (row['status'], row['checked_at']) == ('COLLECTION_FAILED', '2026-09-02T22:05:00+00:00') and 'acquired_at' not in row
+    assert result['preserved'] == []
+    assert collection_line(capsys, result, state).endswith(
+        'preserved_previous=0 not_available=1 previous=UNAVAILABLE policy_na=0 withdrawn=0 collection_failed=1 '
+        'scheduled_streak=NONE\n')
     code, out = guard(artifact, site, capsys)
     assert code == 1 and f'code={A} kind=LOST_RECORD artifact=NONE live=2026-09-01T22:00:00Z\n' in out
 
@@ -128,17 +145,37 @@ def test_d_target_row_loss_is_still_refused_when_no_previous_row_could_be_read(t
 @pytest.mark.parametrize('error, reason', [
     (SecCollectionError('SEC_CIK_MISMATCH', stage='parse'), 'SEC_CIK_MISMATCH'),          # response of another CIK
     (SecCollectionError('SEC_ISSUER_NOT_ALLOWED'), 'SEC_ISSUER_NOT_ALLOWED'),              # issuer outside the scope
-    (SecCollectionError('SEC_HTTP_404', stage='fetch', http_status=404), 'SEC_HTTP_404'),  # SEC resource absent
-    (ValueError('unknown'), 'SEC_COLLECTION_FAILED'),                                      # not a known transient failure
 ])
-def test_e_target_identity_conflicts_and_non_transient_failures_are_not_preserved(tmp_path, capsys, error, reason):
-    """(e) Never preserved: the row is NOT_AVAILABLE with its fixed reason. Its live row had a collection record, so the
-    guard refuses the deploy (fail closed) instead of carrying the old values."""
+def test_e_target_identity_conflict_withdraws_the_previous_observation(tmp_path, capsys, error, reason):
+    """(e) Never preserved: an identity conflict is a WITHDRAWN row (no values, no acquired_at) with the detection time
+    and the acquired_at of the live observation whose use it stops. The guard passes it as WITHDRAWN because it names
+    exactly the live observation (owner decision 2026-10-17, schema /4)."""
     site = Site()
     published_target(tmp_path, site)
     artifact, result, _ = target_day(tmp_path, 'day2', site, T2, failures={A: error})
     row = companies(artifact)[A]
-    assert row['status'] == 'NOT_AVAILABLE' and row['reason_codes'] == [reason] and 'acquired_at' not in row
+    assert (row['status'], row['reason_codes'], row['detected_at'], row['withdrawn_acquired_at']) == (
+        'WITHDRAWN', [reason], '2026-09-02T22:05:00+00:00', '2026-09-01T22:00:00+00:00')
+    assert not {'acquired_at', 'sources', 'reported_shares', 'filings'} & set(row)
+    assert result['preserved'] == [] and result['failed_companies'] == 1
+    assert result['withdrawn'] == [{'company_index': 1, 'code': reason, 'previous': 'LIVE'}]
+    code, out = guard(artifact, site, capsys)
+    line = section_line(out, INPUTS_FILE, 'companies')
+    assert code == 0 and (line['verdict'], line['withdrawn'], line['newer']) == ('PASS', '1', '16')
+
+
+@pytest.mark.parametrize('error, reason', [
+    (SecCollectionError('SEC_HTTP_404', stage='fetch', http_status=404), 'SEC_HTTP_404'),  # SEC resource absent
+    (ValueError('unknown'), 'SEC_COLLECTION_FAILED'),                                      # not a known transient failure
+])
+def test_e_target_non_transient_failures_are_not_preserved(tmp_path, capsys, error, reason):
+    """(e) Never preserved: the row is COLLECTION_FAILED with its fixed reason and checked_at. Its live row had a
+    collection record, so the guard refuses the deploy (fail closed) instead of carrying the old values."""
+    site = Site()
+    published_target(tmp_path, site)
+    artifact, result, _ = target_day(tmp_path, 'day2', site, T2, failures={A: error})
+    row = companies(artifact)[A]
+    assert row['status'] == 'COLLECTION_FAILED' and row['reason_codes'] == [reason] and 'acquired_at' not in row
     assert result['preserved'] == [] and result['failed_companies'] == 1
     code, out = guard(artifact, site, capsys)
     assert code == 1 and f'code={A} kind=LOST_RECORD ' in out
@@ -146,8 +183,9 @@ def test_e_target_identity_conflicts_and_non_transient_failures_are_not_preserve
 
 def test_f_target_policy_na_of_a_successful_collection_is_not_overwritten_by_the_old_row(tmp_path, capsys):
     """(f) A's SEC bytes arrive but carry no share concept: SEC_SHARE_CONCEPT_MISSING (normalize stage) is the result
-    of today's collection and is published as such, never replaced by the T1 values. The NOT_AVAILABLE schema of this
-    file has no acquired_at, so the guard reports the live T1 record as lost and refuses (fail closed)."""
+    of today's collection and is published as such, never replaced by the T1 values. Schema /4 records that
+    collection's real acquired_at and source hashes on the NOT_AVAILABLE row, so the guard sees a newer record and
+    the deploy passes (it was refused under /3: LOST_RECORD on every daily deploy)."""
     site = Site()
     published_target(tmp_path, site)
     facts, subs = raw(A)
@@ -155,9 +193,12 @@ def test_f_target_policy_na_of_a_successful_collection_is_not_overwritten_by_the
     artifact, result, _ = target_day(tmp_path, 'day2', site, T2, bodies={A: (facts, subs)})
     row = companies(artifact)[A]
     assert (row['status'], row['reason_codes'], row['failure_stage']) == ('NOT_AVAILABLE', ['SEC_SHARE_CONCEPT_MISSING'], 'normalize')
-    assert result['preserved'] == []
+    assert row['acquired_at'] == '2026-09-02T22:00:00+00:00' and row['preserved_previous'] is None
+    assert not {'reported_shares', 'filings'} & set(row)
+    assert result['preserved'] == [] and result['policy_na'] == 1
     code, out = guard(artifact, site, capsys)
-    assert code == 1 and f'code={A} kind=LOST_RECORD ' in out
+    line = section_line(out, INPUTS_FILE, 'companies')
+    assert code == 0 and (line['verdict'], line['newer'], line['lost_record']) == ('PASS', '17', '0')
 
 
 def test_target_previous_copy_of_an_older_schema_is_not_used_for_preservation(tmp_path):

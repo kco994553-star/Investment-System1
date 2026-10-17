@@ -34,15 +34,26 @@ function normalize(r,pooled){
  return{na_reasons:naReasons,metrics:object(r)&&object(r.metrics)?{...Object.fromEntries(Object.entries(r.metrics).filter(([k,v])=>/^[a-z][a-z0-9_]{0,63}$/.test(k)&&finite(v))),...years}:{},sic:object(r)&&typeof r.sic==='string'&&/^\d{4}$/.test(r.sic)?r.sic:null,cik:object(r)&&typeof r.cik==='string'?r.cik:null,industry_group:object(r)&&typeof r.industry_group==='string'&&GROUP.test(r.industry_group)?r.industry_group:null,profile:object(r)&&r.profile==='FINANCIAL'?'FINANCIAL':'GENERAL',
   factors,qg_axes:{Q:{score:object(ax.Q)?score(ax.Q.score):null},G:{score:object(ax.G)?score(ax.G.score):null}},v_inputs:v,periods,state:object(r)&&['LIVE','STALE'].includes(r.state)?r.state:'NOT_AVAILABLE',in_cross_section:pooled};
 }
+/* Identity-conflict withdrawal (owner instruction 2026-10-17 item 3; sec-qgv2.json TARGET withdrawal rows, Python
+   sec_qgv2.WITHDRAWN_REASON): a withdrawn TARGET issuer is used nowhere on this device. Its TARGET record and every Universe
+   code of the same CIK (other share classes and codes) carry no factors, axes, V inputs or metrics, leave every ranking
+   population and candidate list, and show the reason IDENTITY_CONFLICT_WITHDRAWN (`identity_withdrawn`). Their state is
+   WITHDRAWN, not NOT_AVAILABLE: QgvScores falls back from a NOT_AVAILABLE TARGET row to the Universe code of the same ticker,
+   and a withdrawn TARGET issuer must not be scored through any other code or CIK. The withdrawal row itself has no values
+   and nothing is read from an earlier copy or another row. */
+const WITHDRAWN_REASON='IDENTITY_CONFLICT_WITHDRAWN';
+const withdrawn=r=>object(r)&&(Object.hasOwn(r,'detected_at')||Array.isArray(r.reason_codes)&&r.reason_codes.includes(WITHDRAWN_REASON));
+function stopped(rec){return{...rec,state:'WITHDRAWN',na_reasons:[WITHDRAWN_REASON],metrics:{},sic:null,industry_group:null,factors:Object.fromEntries(FACTORS.map(k=>[k,null])),qg_axes:{Q:{score:null},G:{score:null}},v_inputs:null,periods:{},in_cross_section:false,identity_withdrawn:true};}
 const frozenCopy=x=>{const copy=JSON.parse(JSON.stringify(x));function freeze(v){if(object(v)||Array.isArray(v)){Object.values(v).forEach(freeze);Object.freeze(v);}return v;}return freeze(copy);};
 /* SecQgv2.toInputs() result (or a lightly checked payload) -> {as_of, records:{key: record}, count}. */
 function fromInputs(inputs){
  if(!object(inputs)||!object(inputs.records))throw Error('SEC_QGV2_INVALID');
  const records={},seen=new Set(),version=typeof inputs.calc_version==='string'?inputs.calc_version:null;
  const mark=(rec,r)=>{if(!versionMismatch(r,version))return rec;return{...rec,factors:Object.fromEntries(FACTORS.map(k=>[k,null])),qg_axes:{Q:{score:null},G:{score:null}},v_inputs:null,in_cross_section:false,calc_version_mismatch:true};};
- for(const code of Object.keys(inputs.records).sort()){if(!CODE.test(code))throw Error('SEC_QGV2_INVALID');const r=inputs.records[code],live=object(r)&&['LIVE','STALE'].includes(r.state),cik=object(r)?r.cik:null;
-  const mismatch=versionMismatch(r,version),pooled=live&&!mismatch&&!(cik&&seen.has(cik));if(live&&!mismatch&&cik)seen.add(cik);records[code]=mark(normalize(r,pooled),r);}
- for(const[id,r]of Object.entries(object(inputs.target)?inputs.target:{})){if(!ID.test(id))throw Error('SEC_QGV2_INVALID');records['TARGET:'+id]=mark(normalize(r,false),r);}
+ const targets=object(inputs.target)?inputs.target:{},withdrawnCiks=new Set(Object.values(targets).filter(withdrawn).map(r=>r.cik).filter(c=>typeof c==='string'));
+ for(const code of Object.keys(inputs.records).sort()){if(!CODE.test(code))throw Error('SEC_QGV2_INVALID');const r=inputs.records[code],cik=object(r)?r.cik:null,stop=withdrawn(r)||typeof cik==='string'&&withdrawnCiks.has(cik),live=!stop&&object(r)&&['LIVE','STALE'].includes(r.state);
+  const mismatch=versionMismatch(r,version),pooled=live&&!mismatch&&!(cik&&seen.has(cik));if(live&&!mismatch&&cik)seen.add(cik);records[code]=stop?stopped(normalize(r,false)):mark(normalize(r,pooled),r);}
+ for(const[id,r]of Object.entries(targets)){if(!ID.test(id))throw Error('SEC_QGV2_INVALID');records['TARGET:'+id]=withdrawn(r)?stopped(normalize(r,false)):mark(normalize(r,false),r);}
  // Keep the source TARGET rows in RAM for exact-period disclosure confirmation. The strict reader supplies these rows;
  // normalization must not discard their price-free source dates or replace them with an inferred confirmation.
  return Object.freeze({as_of:typeof inputs.as_of==='string'?inputs.as_of:null,calc_version:version,target:frozenCopy(object(inputs.target)?inputs.target:{}),records:Object.freeze(records),count:Object.keys(records).length});
@@ -59,5 +70,5 @@ async function load(view,{signal}={}){
   const text=await r.text();if(new TextEncoder().encode(text).length>MAX)return null;return fromInputs(light(JSON.parse(text)));
  }catch(_){return null;}
 }
-return Object.freeze({FILE,KIND,FACTORS,normalize,fromInputs,light,load});
+return Object.freeze({FILE,KIND,FACTORS,WITHDRAWN_REASON,normalize,fromInputs,light,load});
 });

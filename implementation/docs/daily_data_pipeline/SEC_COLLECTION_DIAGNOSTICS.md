@@ -25,7 +25,7 @@ optional start/fy/fp/frame의 JSON null은 필드 미제공으로 투영한다. 
 
 ## 공개 계약 v3·로그
 
-생성기는 항상 `public-sec-reported-inputs/3`를 쓴다. scope·정확한 US17 순서는 유지한다. strict guard는 이전 /1·/2도 계속 읽는다.
+2026-10-17 이전 생성기는 항상 `public-sec-reported-inputs/3`를 썼다(지금은 아래 v4). scope·정확한 US17 순서는 유지한다. strict guard는 이전 /1·/2·/3도 계속 읽는다.
 
 | 행 | 필드 |
 | --- | --- |
@@ -41,6 +41,31 @@ optional start/fy/fp/frame의 JSON null은 필드 미제공으로 투영한다. 
 예: `SEC_EXCLUDED company_index=4 code=FORM_NOT_ALLOWED count=2`. 실패/성공 회사의 제외 개수가 동일한 고정 형식으로 출력된다. core fact가 없어서 모든 회사 실패한 경우에도 실패 diagnostics에 제외 개수를 남긴다. source URL·SHA는 기존 고정 SEC 공개 출처 계약에만 남고 진단 stdout에는 출력하지 않는다.
 
 코덱1 consumer는 schema /1·/2·/3를 읽고 NOT_AVAILABLE 행을 **먼저 건너뛴 다음** sources/reported_shares/filings를 접근해야 한다. 새 notice는 증거 확정이 아니다. `share_class_basis`는 공개 데이터만으로 확인할 수 없어 항상 `UNCONFIRMED`이며 단일 종류로 해석하지 않는다. 유효한 종류 차원 행에만 notice를 붙이며 값·날짜·form이 잘못된 행은 해당 기본 사유로 제외하고 종류 근거로 쓰지 않는다. 워크플로·Worker·웹은 코덱2가 바꾸지 않는다.
+
+## 공개 계약 v4 (사용자 결정 2026-10-17, TARGET NA 스키마 보완)
+
+생성기는 `public-sec-reported-inputs/4`를 쓴다. 성공한 수집의 시각만 `acquired_at`이다. 실패 시각(`checked_at`)·식별 충돌 감지 시각(`detected_at`)은 `acquired_at`에 넣지 않는다.
+
+| 행 status | 뜻 | 필드(공통: company_id,cik,status,excluded_fact_counts,share_class_basis,share_class_notice,preserved_previous) |
+| --- | --- | --- |
+| LIVE | 성공한 수집, 주식 수 있음 | acquired_at,sources,reported_shares,filings |
+| NOT_AVAILABLE | 성공한 수집의 정책상 NA(normalize 단계) | acquired_at(실제 수집 시각),sources,reason_codes,failure_stage=normalize,company_index,http_status=null |
+| COLLECTION_FAILED | 수집 실패, 유지할 이전 행 없음 | checked_at,reason_codes,failure_stage,company_index,http_status |
+| WITHDRAWN | 식별 충돌(SEC_CIK_MISMATCH·SEC_ISSUER_NOT_ALLOWED), 이전 관측 사용 중지 | detected_at,withdrawn_acquired_at(중지한 관측의 acquired_at, 없으면 null),reason_codes,failure_stage,company_index,http_status |
+
+- `preserved_previous`: 이번 실행에서 만든 행은 null. 일시적 수집 실패로 이전 사본의 행(LIVE·NOT_AVAILABLE·WITHDRAWN)을 그대로 둔 행은 `{checked_at, reason_codes, failure_stage, http_status}`(이번 실패). 관측 내용(acquired_at·sources·값)은 바꾸지 않는다.
+- 최상위 `collection`: `checked_at`, `run_day`(뉴욕 날짜), `trigger`(SCHEDULED·MANUAL·OTHER, `GITHUB_EVENT_NAME`), `previous`(LOADED·NO_LIVE·UNAVAILABLE·NOT_REQUESTED), `stale_after_seconds`(일일 주기 86400), `scheduled_streak {start_day, count, since, last_run_day}`.
+- `scheduled_streak`(차트 착수 조건 7회, 대기열 §9·사용자 지시 2026-10-17 2항): `start_day`는 고정 2026-10-19다. 10/19 미국 거래일을 관측하는 정기 실행(22:17 UTC = 뉴욕 18:17, 같은 날)이다. 날짜는 실행의 뉴욕 날짜(`run_day`)다. 주말 실행도 평일처럼 센다(관측일 NONE이어도 일일 workflow 기준).
+  - 시작일 전 정기 실행: 0. `since`가 되지 않는다.
+  - 시작일 정기 실행, 또는 게시본이 아직 없음(404): 1.
+  - 게시본이 같은 뉴욕 날짜의 정기 실행이면(재실행): 그대로 둔다. 두 번 세지 않는다.
+  - 게시본의 마지막 정기 날짜가 전날이면 +1. 전날보다 이전이면(그날 배포 실패·거부·누락) 1부터 다시 센다.
+  - 게시본을 읽지 못했거나 /3이거나 수가 null이면 null(확인 불가). 추정하지 않는다. 이후 하루가 빠지면 1부터 다시 알려진 수가 된다.
+  - 수동 실행(대체·일회성)은 세지도 끊지도 않는다. 게시본 값을 그대로 옮긴다(첫 게시면 0, 읽지 못하면 null).
+  - 파일은 배포에 성공해야만 공개되므로 공개된 수는 게시본 기준 추정이다. 실제 배포 성공은 보고 때 Actions 실행 기록으로 확인한다.
+- 로그: `SEC_WITHDRAWN company_index=… code=… previous=LIVE|NOT_AVAILABLE|WITHDRAWN|NONE`, `SEC_PRESERVED … previous=…`, `SEC_PUBLIC_COLLECTION … previous=… policy_na=… withdrawn=… collection_failed=… scheduled_streak=…`(기존 토큰 뒤에 붙임, 기존 토큰 뜻은 그대로).
+- 배포 직전 신선도 검사(`tools/pages_freshness_guard.py`)는 이 파일을 strict validator로 읽는다. 정책상 NA·새 수집은 acquired_at이 같거나 늦으면 통과, WITHDRAWN은 라이브 관측의 acquired_at을 정확히 가리키고 그 뒤에 감지됐을 때만 통과한다. 유지 행이 라이브 행과 다르거나(PRESERVED_MISMATCH), 같은 시각에 값만 바뀌거나(CHANGED), 행 손실·이전 시각은 거부한다. 라이브가 /3이어도 같은 규칙으로 비교한다(/3 NOT_AVAILABLE은 기록 없음).
+- 웹(`sec-reported.js`·`ops-status.js`)은 /1~/4를 읽는다. WITHDRAWN·COLLECTION_FAILED 행은 acquired_at을 보이지 않으며 값으로 쓰지 않는다.
 
 ## 실제 조사 상태
 
