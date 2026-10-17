@@ -22,38 +22,51 @@ const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),finite=v=>typeo
 function config(){let c=null;try{c=scoringConfig();}catch(_){c=null;}return c&&typeof c==='object'?c:{};}
 // v2 is the only display score (owner decision 2026-10-14); any other stored value no longer reaches a screen.
 function scoringDefault(){return 'v2';}
-/* {basis, label, since}: always v2 '기본'. Before v2 is computed on this device the screens show the v2 NOT_AVAILABLE state
-   with its reason (no v1 fallback any more). since = the configured switch date of strategy version v2. */
+/* {basis, label, since, type_scope}: always v2 '기본'. Before v2 is computed on this device the screens show the v2 NOT_AVAILABLE
+   state with its reason (no v1 fallback any more). since = the configured switch date of strategy version v2. type_scope = the
+   type-application scope id the scores use (QgvV2.TYPE_SCOPE, owner decision 2026-10-17 item 4); calc_version stays as published. */
+function typeScope(){try{const v=qgvV2();return v&&typeof v.TYPE_SCOPE==='string'?v.TYPE_SCOPE:null;}catch(_){return null;}}
 function basis(intended,v2Ready){const since=config().v2_since;
- return Object.freeze({basis:'v2',label:'기본',label_en:'default',since:typeof since==='string'?since:null,intended:'v2',ready:v2Ready===true});}
+ return Object.freeze({basis:'v2',label:'기본',label_en:'default',since:typeof since==='string'?since:null,intended:'v2',ready:v2Ready===true,type_scope:typeScope()});}
 const key=t=>String(t||'').replaceAll('.','-').toUpperCase(),symbolOf=code=>key(String(code).slice(String(code).indexOf(':')+1));
 // Identity -> v2 record key: the TARGET row ('TARGET:<id>', fresher) when it has data, else the Universe code by ticker.
 function codeIndex(inputs){const codes=new Map();if(inputs)for(const code of Object.keys(inputs.records))if(!code.startsWith('TARGET:')&&!codes.has(symbolOf(code)))codes.set(symbolOf(code),code);
  return c=>{const t='TARGET:'+c.company_id,r=inputs&&Object.hasOwn(inputs.records,t)?inputs.records[t]:null;if(r&&r.state!=='NOT_AVAILABLE')return t;return codes.get(key(c.ticker))||null;};}
-function record(screens,file,id){const p=screens&&screens[file];return p&&p.data&&object(p.data.companies)&&Object.hasOwn(p.data.companies,id)?p.data.companies[id]:null;}
 function v2Display(r){
  if(!r)return{version:'v2',q:null,g:null,v:null,total:null,partial:true,factors_available:0,factors_total:qgvV2().FACTORS.length,flags:['V2_INPUTS_NOT_AVAILABLE'],state:'NOT_AVAILABLE',total_reason:'V2_INPUTS_NOT_AVAILABLE'};
  const ax=a=>r.axes[a].score;
  return{version:'v2',q:ax('Q'),g:ax('G'),v:ax('V'),total:r.total,total_reason:r.total===null?(r.total_reason||'AXIS_WEIGHT_INSUFFICIENT'):null,partial:['Q','G','V'].some(a=>r.axes[a].state!=='READY'),factors_available:r.factors_available,factors_total:r.factors_total,flags:[...r.flags],state:r.total===null?'NOT_AVAILABLE':'READY',
   axes:r.axes,factors:r.factors,weights:r.weights,profile:r.profile,q_industry_percentile:r.q_industry_percentile,v_excluded:r.v_excluded,detail:r.detail,reference_range:r.reference_range,selected_types:r.selected_types,type_reason:r.type_reason,value_trap_gate:r.value_trap_gate===true};
 }
+/* TYPE-SCOPE: the memberships of one v2 record — the same approved rule for every row (QgvV2.pricefreeMemberships on the row's
+   own published metrics); a row of another calc_version is not scored, so it has none (null, never 0). */
+function rowMemberships(r){return r&&r.calc_version_mismatch!==true?qgvV2().pricefreeMemberships(r.metrics):null;}
+/* The type memberships the v2 score of one identity uses: the same record (codeIndex: the TARGET row when it has data, else the
+   Universe code by ticker) and the same rule (rowMemberships). The playbook's growth fact reads it (owner decision 2026-10-17
+   item 4). Returns {code, type_scope, memberships} or null when the identity has no scored v2 record. */
+function typeMemberships({identity,publicScreens={},v2Inputs}={}){
+ const inputs=v2Inputs===undefined?(publicScreens&&qgv2Inputs()?publicScreens[qgv2Inputs().FILE]||null:null):v2Inputs;
+ if(!object(identity)||!inputs||!object(inputs.records))return null;const code=codeIndex(inputs)(identity),m=code?rowMemberships(inputs.records[code]):null;
+ return m?{code,type_scope:typeScope(),memberships:m}:null;}
 let memo=null;
-function universeScores(v2Inputs,quotes,preset,gate,memberships,cyclicalBasis={}){
- const mk=JSON.stringify([preset,gate,memberships,cyclicalBasis]);if(memo&&memo.inputs===v2Inputs&&memo.quotes===quotes&&memo.key===mk)return memo.result;
+function universeScores(v2Inputs,quotes,preset,gate,cyclicalBasis={}){
+ const mk=JSON.stringify([preset,gate,cyclicalBasis]);if(memo&&memo.inputs===v2Inputs&&memo.quotes===quotes&&memo.key===mk)return memo.result;
  // A row of another calculation-rule version never joins this device's ranking population (QGV_V2_QG_METHOD.md 5, calc_version).
- const companies={};for(const[code,r]of Object.entries(v2Inputs.records))if(r.calc_version_mismatch!==true)companies[code]={cyclical_basis:cyclicalBasis[code]===true,cik:r.cik,industry_group:r.industry_group,profile:r.profile,factors:r.factors,v_inputs:r.v_inputs,qg_axes:r.qg_axes,in_cross_section:r.in_cross_section!==false,memberships:Object.hasOwn(memberships,code)?memberships[code]:null};
+ // TYPE-SCOPE (owner instruction 2026-10-17): type memberships come from each row's own published price-free metrics with the
+ // same approved rule (QgvV2.pricefreeMemberships), for every Universe code and TARGET row alike. TARGET membership no longer
+ // decides who is typed (formerly only TARGET ids, via company-types-pricefree.json, got type weights).
+ const companies={};for(const[code,r]of Object.entries(v2Inputs.records))if(r.calc_version_mismatch!==true)companies[code]={cyclical_basis:cyclicalBasis[code]===true,cik:r.cik,industry_group:r.industry_group,profile:r.profile,factors:r.factors,v_inputs:r.v_inputs,qg_axes:r.qg_axes,in_cross_section:r.in_cross_section!==false,memberships:rowMemberships(r)};
  const result=qgvV2().scoreUniverse(companies,quotes,{preset,gate});memo={inputs:v2Inputs,quotes,key:mk,result};return result;
 }
-/* The accessor. identities: [{company_id, ticker}] rows to show; publicScreens: the app's loaded public screens (company types
-   and sec-qgv2.json under SecQgv2.FILE); quotes: {code:{price,currency}} RAM. Returns rows with v2 (= primary). reference is
-   always null: there is no comparison score on screens. */
+/* The accessor. identities: [{company_id, ticker}] rows to show; publicScreens: the app's loaded public screens (sec-qgv2.json
+   under SecQgv2.FILE; type memberships come from its rows, company-types-pricefree.json is display-only); quotes:
+   {code:{price,currency}} RAM. Returns rows with v2 (= primary). reference is always null: there is no comparison score on screens. */
 function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=null,referenceRows={}}={}){
  const V2=qgvV2(),intended='v2',inputs=v2Inputs===undefined?(publicScreens&&qgv2Inputs()?publicScreens[qgv2Inputs().FILE]||null:null):v2Inputs;
  const chosen=preset&&Object.hasOwn(V2.PRESETS,preset)?preset:V2.DEFAULT_PRESET,gateOn=gate===null||gate===undefined?V2.GATE_DEFAULT:Boolean(gate);
  const codeFor=codeIndex(inputs);
- const memberships={};for(const c of identities){const code=codeFor(c),t=record(publicScreens,'company-types-pricefree.json',c.company_id);if(code&&t&&t.state!=='NOT_AVAILABLE'&&object(t.memberships))memberships[code]=t.memberships;}
  const cyclicalBasis={};try{const engine=globalThis.PlaybookEngine,cfg=globalThis.PlaybookConfigDefaults;if(engine?.classifyTypesV0&&cfg&&inputs?.records){const symbols={};for(const c of identities){const code=codeFor(c);if(code)symbols[code]=c.ticker;}for(const[code,r]of Object.entries(inputs.records)){const symbol=symbols[code]||symbolOf(code),group=engine.sectorFor?.(cfg,symbol,null,r.sic);cyclicalBasis[code]=engine.classifyTypesV0(cfg,{sic:r.sic,sector_subgroup:group?.sector??null,revenue_volatility_5y_rank_pct:finite(r.metrics?.revenue_volatility_5y_rank_pct)?r.metrics.revenue_volatility_5y_rank_pct/100:null}).cyclical?.member===true;}}}catch(_){}
- let universe=null,v2Reason=inputs?null:'SEC_QGV2_NOT_AVAILABLE';if(inputs){try{universe=universeScores(inputs,object(quotes)?quotes:{},chosen,gateOn,memberships,cyclicalBasis);}catch(_){universe=null;v2Reason='V2_CALCULATION_FAILED';}}
+ let universe=null,v2Reason=inputs?null:'SEC_QGV2_NOT_AVAILABLE';if(inputs){try{universe=universeScores(inputs,object(quotes)?quotes:{},chosen,gateOn,cyclicalBasis);}catch(_){universe=null;v2Reason='V2_CALCULATION_FAILED';}}
  const v2Ready=!!universe&&Object.values(universe).some(r=>finite(r.total));if(universe&&!v2Ready)v2Reason='V2_SCORES_NOT_AVAILABLE';
  const b=basis(intended,v2Ready),current=b.basis,rows={};let ranked=[];
  for(const c of identities){const code=codeFor(c);let v2=v2Display(universe&&code?universe[code]:null);if(universe&&code&&inputs.records[code]?.calc_version_mismatch===true){v2.flags=['CALC_VERSION_MISMATCH'];v2.reason='CALC_VERSION_MISMATCH';}if(universe&&code&&universe[code]&&ebitEstimated(inputs.records[code])){v2.flags.push('EBIT_ESTIMATED');const ys=inputs.records[code].metrics.ebit_estimated_fiscal_years;if(Array.isArray(ys))v2.ebit_estimated_fiscal_years=[...ys];}
@@ -64,7 +77,7 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
  ranked=Object.values(rows).filter(r=>finite(r.primary.total)&&r.primary.reference_only!==true).sort((a,b)=>b.primary.total-a.primary.total||(a.ticker<b.ticker?-1:1));
  ranked.forEach((r,i)=>{r.rank=i+1;});
  const quoted=object(quotes)?Object.keys(quotes).length:0;
- return{default:current,basis:b,label:LABEL[current],profile:{preset:chosen,gate:gateOn,id:V2.VERSION+'/'+chosen+'/gate-'+(gateOn?'on':'off'),name:V2.PRESETS[chosen]},
+ return{default:current,basis:b,label:LABEL[current],profile:{preset:chosen,gate:gateOn,id:V2.VERSION+'/'+chosen+'/gate-'+(gateOn?'on':'off'),name:V2.PRESETS[chosen],type_scope:b.type_scope},
   v2_state:v2Ready?'READY':'NOT_AVAILABLE',v2_reason:v2Reason,v2_as_of:inputs?inputs.as_of:null,priced_codes:quoted,rows};
 }
 /* Rows for the virtual-trading rehearsal snapshot and the daily report (+ export): {cid:{q,g,partial,...}} from v2 only.
@@ -114,8 +127,9 @@ function naText(d,en){
  return parts.join(' · ');
 }
 function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
-// Badge text of the basis: '점수 기준 v2 · PROVISIONAL · 기본' (+ ' · 2026-10-19부터' when the switch date is configured).
-function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'');}
+// Badge text of the basis: '점수 기준 v2 · PROVISIONAL · 기본' (+ ' · 2026-10-19부터' when the switch date is configured)
+// (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
+function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({MODES,LABEL,FLAG,scoringDefault,compute,judgmentRows,collectQuotes,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
+return Object.freeze({MODES,LABEL,FLAG,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
 });
