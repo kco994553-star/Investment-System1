@@ -53,4 +53,5 @@ macro_lights_node_test.js
 playbook_screen_node_test.js
 qgv_v2_node_test.js
 qgv_scores_node_test.js
+target_v1_builder_node_test.js
 type_scope_node_test.js
