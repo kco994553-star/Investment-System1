@@ -2,6 +2,7 @@
 
 먼저 읽기: [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md) → [PLAYBOOK_V1.md](implementation/docs/playbook/PLAYBOOK_V1.md)(17·18절 포함).
 **현재 실행 대기열(지시 원문):** [QUEUE_20261017.md](implementation/docs/QUEUE_20261017.md). 아래 상태 표의 절 번호(§)는 이 문서의 절이다. 최신 사용자 결정이 대기열보다 우선한다.
+**보완 지시(원문):** [QUEUE_20261017_SUPPLEMENT_INTEGRATED.md](implementation/docs/QUEUE_20261017_SUPPLEMENT_INTEGRATED.md) — 전체 영역 병렬 진행·결측 정보 표시·부분 점수·가중치 처리 검토. 아래 "전체 영역 상태표"가 이 지시의 9개 영역 표다.
 이전 기록: [HANDOFF_HISTORY_THROUGH_20261013.md](implementation/docs/handoff/HANDOFF_HISTORY_THROUGH_20261013.md), [HANDOFF_HISTORY_20261014_15.md](implementation/docs/handoff/HANDOFF_HISTORY_20261014_15.md).
 보고 규칙: 시각은 UTC와 KST를 함께 적는다. `PUBLISHED_COVERAGE`는 같은 실행의 deploy 성공을 확인했을 때만 "실제 게시 커버리지"라고 부른다.
 
@@ -56,6 +57,24 @@
   - 기존 행이 보존됐는지
 - 확인하려고 운영 배포를 일부러 실패시키지 않는다.
 
+## 전체 영역 상태표 (2026-10-17 11:00 UTC / 20:00 KST, canonical ace73289, 실제 게시 d98757cd)
+
+열린 PR만으로 "실행 중"이라 하지 않는다. 담당 "에이전트"는 Main이 배치한 하위 작업자다. 공유 파일(결정 기록·인수인계·대기열·가드 고정 해시 최종 조정)은 Main.
+
+| 영역 | 담당 | 실제 작업 | 관련 PR | 수정 범위 | 의존 | 상태 | 다음 행동 | 완료 근거 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ① QGV 계산·가치평가 | Main | WITHDRAWN-PEER 구현 끝(새 calc `qgv2-calc/2026-10-17.2`, 로컬). 결측·가중치 조사 끝(이미 축 안 비례 재정규화, 축 최소 50%, 필수 요인 없음) | `claude/withdrawn-peer`(미푸시) | sec_qgv2 단면, calc_version, 벡터 | 커밋이 권한 검사에서 거부됨 | 사용자 결정 대기(진행 확인, 버전 시점) | 확인 후 정규 병합·PR·6체크 | 17.1 게시(run 38996553263), #284(709c379f) |
+| ② 수집·식별·배포·원장 | Main | #287·#285·#289 병합. 10/17 22:17 UTC 정기 실행에서 첫 배포 | #287·#285·#289(병합) | — | 정기 실행 | 검증 중(운영 미검증) | 21:40 사전 점검, 23:15 실행 점검(스키마 /4·Universe v2 첫 배포, 신선도 검사, RUN_CONTEXT) | 합성·회귀 시험만. 실제 충돌 0건 |
+| ③ TARGET·포트폴리오 | 에이전트 | #248·#263 최신화, 유형 범위 초안 비교 패치 | #248, #263 | target-v1-*, index.html, device-actual, playbook-screen, 가드 | 10종목 재대조 남은 항목, 10/19 관측, 사용자 승인 | 실행 중(최신화) | 구현 병합과 TARGET 확정 분리 보고 | — |
+| ④ 기술적 분석·패턴 차트 | Main | 준비 현황 문서([TA_PREP_STATUS_20261017](implementation/docs/technical/TA_PREP_STATUS_20261017.md)) | #291(이 PR에 포함) | docs/technical | 착수 조건 1/6, 설계 공백 G1~G3 | 사용자 결정 대기(G1 분할 공급원·G2 19개 밖 종목·G3 주봉 범위) | 신규 구현 착수 아님 | 문서 |
+| ⑤ 매크로 | Main | #262 최신화(b7db9b60): 낡은 고정 해시 2개 검토 후 재고정, 근사 재생 표시, 기기 재생 절차 §14 | #262 | macro-lights.js, playbook-config-defaults.js, 문서 | #260(병합), #248→#263 뒤 | 사용자 결정 대기(#262 병합 검토) + 외부 입력 대기(기기 재생) | M-REENABLE은 결과 보고 뒤 사용자 승인 | #260 병합(1049627e) |
+| ⑥ 백테스트 연구 | Main | FSDS 2분기 표본 확인, 시점 어댑터·조기 폐장 | #286·#288(병합) | research/, docs/backtest | 드라이브 companyfacts.zip 활용, BT·MD 결정 | 외부 입력·결정 대기 + 준비 | 어댑터 실데이터 검증(비공개 작업 공간) | #286(0ed50bf9), #288(6d787518) |
+| ⑦ 프론트엔드·인터랙션 | Main | 첫 흐름 PR 병합(#292). 다음: 결측·부분 점수 표시(공개 파일의 충족률·PARTIAL·축 사유), 목록 탐색 구분 | #292(병합) | app.js, company-screen.js, leaderboard-screen.js, style.css, qgv2-inputs.js(다음) | — | 완료(#292, 게시·운영 확인 전) / 다음 PR 미착수 | 두 번째 화면 PR | #292 3a325b78, 브라우저 60/60(통합 전)·24(통합 후) |
+| ⑧ 뉴스·공시·13F·기업정보 | 미배정 | — | — | — | 여유 작업(G) | 미착수 | 미연결 항목 조사 | — |
+| ⑨ 계정·개인자료·저장소 | 미배정 | — | — | — | 여유 작업(G) | 미착수 | 접근 경계 점검 | — |
+
+세션 밖 자동 재개: 예약 점검(21:40, 23:15, 00:17 UTC)은 이 세션으로 들어온다. 세션이 끝나면 하위 작업자는 이어지지 않는다.
+
 ## 대기열 상태 (QUEUE_20261017 기준, 2026-10-17 05:10 UTC / 14:10 KST)
 
 | 절 | 항목 | 상태 | 근거·다음 |
@@ -87,6 +106,14 @@
 - 10/17 04:07 UTC: #276 대체 실행 보호(0d8e29c5) — 뉴욕 날짜 샤드, 워크플로 직렬화, `RUN_CONTEXT`.
 - 10/17 04:3x UTC: #260 매크로 참고 모드(1049627e) — `gate_active=false`에서 확대 제한·U3 미발동.
 - 10/17 05:06 UTC: #278 배포 직전 신선도 검사 + 수집 실패 시 이전 관측 보존(5d11a03a).
+- 10/17 06:36 UTC: #283 백테스트 연구 문서(8a055bae). 문서 병합은 BT·MD 승인이 아니다.
+- 10/17 08:13 UTC: #287 다중 CIK 충돌 철회·성공 수집 NA 우선(7b7d5a02).
+- 10/17 08:38 UTC: #288 FSDS 2015q4·2016q1 표본(6d787518). `accepted`=뉴욕 현지 시각(분 반올림), submissions `Z` 불신.
+- 10/17 09:0x UTC: #284 TYPE-SCOPE(709c379f), 유형 범위 식별값 `qgv2-type-scope/2026-10-17.1`.
+- 10/17 09:25 UTC: #285 TARGET 공개 입력 /4·연속 집계(10/19부터)·TARGET 철회 연결(8d3c9800).
+- 10/17 09:41 UTC: #286 과거 시점 공시 어댑터·조기 폐장 종가(0ed50bf9, 연구 전용).
+- 10/17 11:30 UTC: #292 첫 화면 흐름(3a325b78). S06 상태 복원·순위 일치·바로 가기·v2 점수 시각·모바일 열 정리·철회 흐름 확인.
+- 10/17 10:55 UTC: #289 UNI-WITHDRAWN (a)와 후속(ace73289). Universe 3개 파일 `schema_version` 1→2. 구버전 화면은 새 파일 전체를 거부(안전 차단, 하위 호환 아님).
 - 열림·승인됨: #262(매크로 재생), #248 → #263(TARGET v1, Q·G 454 충족·재대조 완료 조건 대기).
 - 연구(운영 차단 아님): QGV 백테스트 연구 설계 v0.2 — 원문·계획·데이터 감사·M1 대응표([BACKTEST_RESEARCH_PLAN](implementation/docs/backtest/BACKTEST_RESEARCH_PLAN.md)). 상태: 준비 단계. A~D 12개 준비 가능, E 자료 대기, F·G 규칙 대기. 수익률·과거 선정 계산 없음. 결정 후보 BT-1~16·MD-1~12는 계획·대응표 문서에 있다.
 - 보류: #267(합성 데이터 투자 스튜디오).
