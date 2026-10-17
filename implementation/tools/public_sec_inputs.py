@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 import sys
 import tempfile
+from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from investment_system.markets.us import US_LISTINGS
@@ -22,6 +23,16 @@ from investment_system.providers.sec_collection import SecCollectionError, MAX_B
 
 FILENAME = 'sec-public-inputs.json'
 MAX_BYTES = 2 * 1024 * 1024
+SCOPE = 'US_TARGET17_REPORTED_SEC_ONLY'
+SCHEMA = 'public-sec-reported-inputs/4'
+SCHEMAS = ('public-sec-reported-inputs/1', 'public-sec-reported-inputs/2', 'public-sec-reported-inputs/3', SCHEMA)
+# Daily acquisition cadence (public_screens_pipeline.ACQUISITION_TTL), published so readers judge a kept row's age with
+# the file's own value. Not a model or calibration threshold.
+STALE_AFTER_SECONDS = 24 * 3600
+NEW_YORK = ZoneInfo('America/New_York')
+TRIGGERS = {'schedule': 'SCHEDULED', 'workflow_dispatch': 'MANUAL'}
+# Whether this run read the live copy: read and valid, first publication (404), read failed, or not asked for.
+PREVIOUS_STATES = ('LOADED', 'NO_LIVE', 'UNAVAILABLE', 'NOT_REQUESTED')
 CONCEPTS = {('dei', 'EntityCommonStockSharesOutstanding'), ('us-gaap', 'CommonStockSharesOutstanding'),
             ('ifrs-full', 'NumberOfSharesOutstanding')}
 FORMS = {'10-K', '10-Q', '10-K/A', '10-Q/A', '10-KT', '10-QT', '10-KT/A', '10-QT/A', '20-F', '20-F/A', '40-F', '40-F/A', '6-K', '6-K/A', '8-K', '8-K/A'}
@@ -121,12 +132,14 @@ TRANSIENT_FETCH_CODES = frozenset({
     'SEC_CONFIG_INVALID',
 })
 IDENTITY_CODES = frozenset({'SEC_CIK_MISMATCH', 'SEC_ISSUER_NOT_ALLOWED'})
+# Owner decision 2026-10-17 (schema /4): a normalize-stage result of a successful collection (bytes received, both bodies
+# bound to the issuer's CIK, acquisition time valid) is a policy NA that records that collection's real acquired_at.
+POLICY_NA_CODES = (NORMALIZATION_CODES - {'SEC_ACQUISITION_TIMESTAMP_INVALID'}) | {'SEC_PUBLIC_INPUT_INVALID'}
 
 
-def preservable_failure(diagnostic, error):
-    """True for a collection failure (not an identity conflict, not a result of a successful collection)."""
-    code, stage = diagnostic['code'], diagnostic['stage']
-    if code in IDENTITY_CODES or not isinstance(error, SecCollectionError):
+def preservable_code(code, stage):
+    """A failure of the collection itself (fetch/transport/undecodable body), never an identity conflict or a result."""
+    if code in IDENTITY_CODES:
         return False
     if stage == 'fetch':
         return code in TRANSIENT_FETCH_CODES or (re.fullmatch(r'SEC_HTTP_[45][0-9]{2}', code) is not None
@@ -134,18 +147,38 @@ def preservable_failure(diagnostic, error):
     return stage == 'parse' and code == 'SEC_JSON_INVALID'
 
 
+def preservable_failure(diagnostic, error):
+    """True for a collection failure (not an identity conflict, not a result of a successful collection)."""
+    return isinstance(error, SecCollectionError) and preservable_code(diagnostic['code'], diagnostic['stage'])
+
+
 def previous_rows(previous):
-    """{company_id: row} of the LIVE rows of a validated previous copy in the current schema (unchanged rows only)."""
-    if type(previous) is not dict or previous.get('schema') != 'public-sec-reported-inputs/3':
+    """{company_id: row} of the rows of a validated previous copy that carry a record of the issuer, as /4 rows:
+    /3 LIVE rows; /4 LIVE and NOT_AVAILABLE rows (a successful collection, `acquired_at`) and WITHDRAWN rows (an
+    identity conflict that stopped an observation). Rows without a record (NOT_AVAILABLE of /3, COLLECTION_FAILED) and
+    older schemas give nothing. The run marker `preserved_previous` of the previous copy is dropped (set again here)."""
+    if type(previous) is not dict or previous.get('schema') not in ('public-sec-reported-inputs/3', SCHEMA):
         return {}
+    v4 = previous['schema'] == SCHEMA
     out = {}
     for row in previous.get('companies', []):
-        if type(row) is not dict or row.get('status') != 'LIVE' or type(row.get('acquired_at')) is not str:
+        if type(row) is not dict:
+            continue
+        status = row.get('status')
+        recorded = (status in ('LIVE', 'NOT_AVAILABLE') and type(row.get('acquired_at')) is str) if v4 or status == 'LIVE' else False
+        if not (recorded or v4 and status == 'WITHDRAWN' and type(row.get('detected_at')) is str):
             continue
         company = row.get('company_id')
         if company in US_LISTINGS and row.get('cik') == US_LISTINGS[company]['cik']:
-            out[company] = row
+            out[company] = {k: v for k, v in json.loads(json.dumps(row)).items() if k != 'preserved_previous'}
     return out
+
+
+def withdrawn_observation(kept):
+    """The acquired_at a withdrawal stops: the kept row's own, or the one an earlier withdrawal already stopped."""
+    if kept is None:
+        return None
+    return kept['withdrawn_acquired_at'] if kept['status'] == 'WITHDRAWN' else kept['acquired_at']
 
 
 def fixed_code(value):
@@ -197,15 +230,19 @@ def _require_exclusions(row):
     if row['share_class_notice'] != ('SHARE_CLASS_BASIS' if counts.get('CLASS_SPLIT', 0) else None): invalid()
 
 
-def _require_reported_row(row):
-    acquired = timestamp(row['acquired_at'], 'SEC_ACQUISITION_TIMESTAMP_INVALID')
-    as_of = acquired.date().isoformat()
+def _require_sources(row):
     if not isinstance(row['sources'], dict) or set(row['sources']) != {'companyfacts', 'submissions'}:
         invalid('SEC_SOURCE_METADATA_INVALID')
     for kind, source in row['sources'].items():
         if not isinstance(source, dict) or set(source) != {'url', 'sha256'} or source['url'] != source_url(kind, row['cik']) \
                 or not isinstance(source['sha256'], str) or not re.fullmatch('[0-9a-f]{64}', source['sha256']):
             invalid('SEC_SOURCE_METADATA_INVALID')
+
+
+def _require_reported_row(row):
+    acquired = timestamp(row['acquired_at'], 'SEC_ACQUISITION_TIMESTAMP_INVALID')
+    as_of = acquired.date().isoformat()
+    _require_sources(row)
     if not isinstance(row['reported_shares'], list) or len(row['reported_shares']) > 10000:
         invalid('SEC_SHARE_SCHEMA_INVALID')
     fact_keys = {}
@@ -218,11 +255,106 @@ def _require_reported_row(row):
     for filing in row['filings']: _require_filing(filing, acquired, as_of)
 
 
+# ---- schema /4 (owner decision 2026-10-17, TARGET NA schema supplement) ----
+# Every row says what is known of its issuer, and a time is only ever an acquired_at when a collection succeeded:
+#   LIVE               successful collection with reported share facts: acquired_at, sources, reported_shares, filings.
+#   NOT_AVAILABLE      successful collection whose result is a policy NA (normalize stage): the collection's real
+#                      acquired_at, its sources (SEC URL + sha256 of the bodies received) and one fixed reason code.
+#   COLLECTION_FAILED  no successful collection and no kept record: checked_at (when the failure was seen), reason,
+#                      stage. Never an acquired_at.
+#   WITHDRAWN          identity conflict (SEC_CIK_MISMATCH / SEC_ISSUER_NOT_ALLOWED): no values; detected_at (when the
+#                      conflict was seen) and withdrawn_acquired_at, the acquired_at of the observation whose use it stops
+#                      (null when there was none). Readers never use the stopped observation.
+# preserved_previous: null for a row produced by this run; for a row kept unchanged from the previous copy because this
+# run's collection failed transiently: {checked_at, reason_codes, failure_stage, http_status} of that failed attempt.
+# collection: this run (checked_at, New York run_day, trigger, whether the previous copy was read, the file's
+# stale_after_seconds) and the self-certifying scheduled_streak (see scheduled_streak()).
+_V4_COMMON = {'company_id', 'cik', 'status', 'excluded_fact_counts', 'share_class_basis', 'share_class_notice',
+              'preserved_previous'}
+_V4_FAILURE = {'reason_codes', 'failure_stage', 'company_index', 'http_status'}
+V4_FIELDS = {
+    'LIVE': _V4_COMMON | {'acquired_at', 'sources', 'reported_shares', 'filings'},
+    'NOT_AVAILABLE': _V4_COMMON | _V4_FAILURE | {'acquired_at', 'sources'},
+    'COLLECTION_FAILED': _V4_COMMON | _V4_FAILURE | {'checked_at'},
+    'WITHDRAWN': _V4_COMMON | _V4_FAILURE | {'detected_at', 'withdrawn_acquired_at'},
+}
+COLLECTION_FIELDS = {'checked_at', 'run_day', 'trigger', 'previous', 'stale_after_seconds', 'scheduled_streak'}
+STREAK_FIELDS = {'count', 'since', 'last_run_day'}
+
+
+def _http_status(value):
+    if value is not None and (type(value) is not int or not 400 <= value <= 599): invalid()
+
+
+def _require_failure(row, index):
+    if type(row['company_index']) is not int or row['company_index'] != index: invalid()
+    if row['failure_stage'] not in ('fetch', 'parse', 'normalize'): invalid()
+    if not isinstance(row['reason_codes'], list) or len(row['reason_codes']) != 1 or not fixed_code(row['reason_codes'][0]): invalid()
+    _http_status(row['http_status'])
+    return row['reason_codes'][0]
+
+
+def _require_collection(collection):
+    if not isinstance(collection, dict) or set(collection) != COLLECTION_FIELDS: invalid()
+    checked = timestamp(collection['checked_at'])
+    if collection['run_day'] != checked.astimezone(NEW_YORK).date().isoformat(): invalid()
+    if collection['trigger'] not in ('SCHEDULED', 'MANUAL', 'OTHER'): invalid()
+    if collection['previous'] not in PREVIOUS_STATES: invalid()
+    if type(collection['stale_after_seconds']) is not int or collection['stale_after_seconds'] != STALE_AFTER_SECONDS: invalid()
+    streak = collection['scheduled_streak']
+    if not isinstance(streak, dict) or set(streak) != STREAK_FIELDS: invalid()
+    last = None if streak['last_run_day'] is None else date.fromisoformat(day(streak['last_run_day']))
+    if last is not None and last.isoformat() > collection['run_day']: invalid()
+    if collection['trigger'] == 'SCHEDULED' and streak['last_run_day'] != collection['run_day']: invalid()
+    if streak['count'] is None:
+        if streak['since'] is not None: invalid()
+    else:
+        if type(streak['count']) is not int or not 1 <= streak['count'] <= 100000 or last is None: invalid()
+        if (last - date.fromisoformat(day(streak['since']))).days + 1 != streak['count']: invalid()
+    return checked
+
+
+def _require_v4_row(row, index, run_checked):
+    status = row.get('status')
+    if status not in V4_FIELDS or set(row) != V4_FIELDS[status]: invalid()
+    _require_exclusions(row)
+    if status == 'LIVE':
+        _require_reported_row(row)
+        if not row['reported_shares']: invalid()
+        marker = timestamp(row['acquired_at'])
+    elif status == 'NOT_AVAILABLE':
+        if _require_failure(row, index) not in POLICY_NA_CODES or row['failure_stage'] != 'normalize' \
+                or row['http_status'] is not None: invalid()
+        marker = timestamp(row['acquired_at'])
+        _require_sources(row)
+    else:
+        code = _require_failure(row, index)
+        if row['excluded_fact_counts'] or row['share_class_notice'] is not None: invalid()
+        if status == 'COLLECTION_FAILED':
+            if code in IDENTITY_CODES or row['preserved_previous'] is not None: invalid()
+            marker = timestamp(row['checked_at'])
+        else:
+            if code not in IDENTITY_CODES: invalid()
+            marker = timestamp(row['detected_at'])
+            if row['withdrawn_acquired_at'] is not None and timestamp(row['withdrawn_acquired_at']) > marker: invalid()
+    kept = row['preserved_previous']
+    if kept is not None:
+        if not isinstance(kept, dict) or set(kept) != {'checked_at', 'reason_codes', 'failure_stage', 'http_status'}: invalid()
+        if not isinstance(kept['reason_codes'], list) or len(kept['reason_codes']) != 1 \
+                or not fixed_code(kept['reason_codes'][0]) or not preservable_code(kept['reason_codes'][0], kept['failure_stage']): invalid()
+        _http_status(kept['http_status'])
+        checked = timestamp(kept['checked_at'])
+        if checked < marker or checked > run_checked: invalid()
+    elif marker > run_checked: invalid()
+
+
 def _require_public_inputs(payload):
-    if not isinstance(payload, dict) or set(payload) != {'schema', 'scope', 'companies'} \
-            or payload['schema'] not in ('public-sec-reported-inputs/1', 'public-sec-reported-inputs/2', 'public-sec-reported-inputs/3') or payload['scope'] != 'US_TARGET17_REPORTED_SEC_ONLY': invalid()
+    if not isinstance(payload, dict) or payload.get('schema') not in SCHEMAS: invalid()
+    v4 = payload['schema'] == SCHEMA
+    if set(payload) != {'schema', 'scope', 'companies'} | ({'collection'} if v4 else set()) or payload['scope'] != SCOPE: invalid()
     companies = payload['companies']; v3 = payload['schema'].endswith('/3'); partial = payload['schema'].endswith('/2') or v3
     if not isinstance(companies, list) or len(companies) != len(US_LISTINGS): invalid()
+    run_checked = _require_collection(payload['collection']) if v4 else None
     seen = []
     extra = {'excluded_fact_counts', 'share_class_basis', 'share_class_notice'} if v3 else set()
     base_fields = {'company_id', 'cik', 'acquired_at', 'sources', 'reported_shares', 'filings'}
@@ -232,12 +364,13 @@ def _require_public_inputs(payload):
         company = row.get('company_id')
         if not isinstance(company, str) or company not in US_LISTINGS or row.get('cik') != US_LISTINGS[company]['cik']: invalid()
         seen.append(company)
+        if v4:
+            _require_v4_row(row, index, run_checked)
+            continue
         if v3: _require_exclusions(row)
         if partial and row.get('status') == 'NOT_AVAILABLE':
-            if set(row) != unavailable_fields | extra or row['company_index'] != index or type(row['company_index']) is not int: invalid()
-            if row['failure_stage'] not in ('fetch', 'parse', 'normalize'): invalid()
-            if not isinstance(row['reason_codes'], list) or len(row['reason_codes']) != 1 or not fixed_code(row['reason_codes'][0]): invalid()
-            if row['http_status'] is not None and (type(row['http_status']) is not int or not 400 <= row['http_status'] <= 599): invalid()
+            if set(row) != unavailable_fields | extra: invalid()
+            _require_failure(row, index)
             continue
         if set(row) != base_fields | ({'status'} if partial else set()) | extra or partial and row.get('status') != 'LIVE': invalid()
         _require_reported_row(row)
@@ -378,9 +511,52 @@ def _project_observations(observations):
     except (KeyError, TypeError, ValueError, AttributeError, OverflowError, RecursionError): invalid()
 
 
+def _utc_now():
+    return datetime.now(timezone.utc)
+
+
+def _iso(moment):
+    return moment.astimezone(timezone.utc).isoformat()
+
+
+def scheduled_streak(previous, previous_state, trigger, run_day):
+    """Consecutive New York run days whose SCHEDULED run reached Pages, as this file will show once deployed.
+
+    Self-certifying: a file is public only when its deploy succeeded, so a scheduled run that reads, as the live copy, the
+    file of the scheduled run of the previous day continues that run's count; any other live copy (gap, failed deploy,
+    /3 copy) starts again at 1. A manual run (fallback or one-off) never counts and carries the live count unchanged;
+    the manual cockpit-pages deploy re-publishes the live bytes and changes nothing. Unknown when the live copy could
+    not be read."""
+    live = previous.get('collection', {}).get('scheduled_streak') if type(previous) is dict and previous.get('schema') == SCHEMA else None
+    if live is not None and live['last_run_day'] is not None and live['last_run_day'] > run_day:
+        live = None                                   # a live copy from a later run day (clock skew): no history
+    if trigger != 'SCHEDULED':
+        return dict(live) if previous_state == 'LOADED' and live is not None else dict.fromkeys(STREAK_FIELDS)
+    today = date.fromisoformat(run_day)
+    if previous_state not in ('LOADED', 'NO_LIVE'):
+        return {'count': None, 'since': None, 'last_run_day': run_day}
+    if live is not None and live['last_run_day'] is not None:
+        last = date.fromisoformat(live['last_run_day'])
+        if last == today and live['count'] is not None:
+            return dict(live)
+        if (today - last).days == 1:
+            since = live['since'] or live['last_run_day']
+            return {'count': (today - date.fromisoformat(since)).days + 1, 'since': since, 'last_run_day': run_day}
+    return {'count': 1, 'since': run_day, 'last_run_day': run_day}
+
+
+def collection_block(checked, *, trigger='OTHER', previous_state='NOT_REQUESTED', previous=None):
+    run_day = checked.astimezone(NEW_YORK).date().isoformat()
+    return {'checked_at': _iso(checked), 'run_day': run_day, 'trigger': trigger, 'previous': previous_state,
+            'stale_after_seconds': STALE_AFTER_SECONDS,
+            'scheduled_streak': scheduled_streak(previous, previous_state, trigger, run_day)}
+
+
 def build_public_inputs(observations):
-    return require_public_inputs({'schema': 'public-sec-reported-inputs/3',
-        'scope': 'US_TARGET17_REPORTED_SEC_ONLY', 'companies': _project_observations(observations)})
+    """A /4 payload of successful collections only (no run context: trigger OTHER, previous copy not requested)."""
+    rows = [dict(row, preserved_previous=None) for row in _project_observations(observations)]
+    checked = max(timestamp(row['acquired_at']) for row in rows) if rows else _utc_now()
+    return require_public_inputs({'schema': SCHEMA, 'scope': SCOPE, 'collection': collection_block(checked), 'companies': rows})
 
 
 def _diagnostic(error, index, stage):
@@ -393,11 +569,26 @@ def _diagnostic(error, index, stage):
     return {'company_index': index, 'stage': phase, 'code': code, 'http_status': status}
 
 
-def collect_public_inputs(output, *, environ=None, client_factory=None, previous=None):
-    """Collect the 17 TARGET US issuers. `previous`: the validated live Pages copy (or None). A company whose collection
-    failed transiently keeps that copy's LIVE row of the same company_id and CIK unchanged (acquired_at, sources and
-    values); otherwise, and for identity conflicts or normalize results, it is NOT_AVAILABLE with its fixed reason."""
+def _failure_fields(diagnostic, index):
+    return {'reason_codes': [diagnostic['code']], 'failure_stage': diagnostic['stage'], 'company_index': index,
+            'http_status': diagnostic['http_status']}
+
+
+def collect_public_inputs(output, *, environ=None, client_factory=None, previous=None, previous_state=None, now=None):
+    """Collect the 17 TARGET US issuers into schema /4. `previous`: the validated live Pages copy (/3 or /4, or None);
+    `previous_state`: how it was read (PREVIOUS_STATES); `now`: the collector's clock (checked_at / detected_at).
+
+    Per company (owner decisions 2026-10-17):
+    - successful collection -> LIVE, or NOT_AVAILABLE with the collection's real acquired_at, sources and reason when
+      the result is a policy NA (normalize stage);
+    - identity conflict (SEC_CIK_MISMATCH / SEC_ISSUER_NOT_ALLOWED) -> WITHDRAWN: detected_at, and the acquired_at of
+      the previous record it stops (withdrawn_acquired_at, null without one); never the previous values;
+    - transient collection failure with a previous record of the same company_id and CIK -> that row unchanged (its
+      acquired_at, sources and values, or its withdrawal) with `preserved_previous` naming this failed attempt;
+    - any other failure -> COLLECTION_FAILED with checked_at. A failure time is never written as acquired_at."""
     settings = os.environ if environ is None else environ
+    clock = now or _utc_now
+    state = previous_state if previous_state in PREVIOUS_STATES else 'LOADED' if previous is not None else 'NOT_REQUESTED'
     kept_rows = previous_rows(previous)
     if not isinstance(settings.get('SEC_USER_AGENT'), str) or not settings['SEC_USER_AGENT'].strip():
         raise CollectionFailure('SEC_USER_AGENT_MISSING', [{'company_index': 0, 'stage': 'fetch', 'code': 'SEC_USER_AGENT_MISSING', 'http_status': None}])
@@ -410,32 +601,44 @@ def collect_public_inputs(output, *, environ=None, client_factory=None, previous
     except Exception as error:
         diagnostic = _diagnostic(error, 0, 'fetch')
         raise CollectionFailure(diagnostic['code'], [diagnostic]) from None
-    rows = []; diagnostics = []; preserved = []
+    rows = []; diagnostics = []; preserved = []; withdrawn = []
     for index, company in enumerate(sorted(US_LISTINGS), 1):
-        stage = 'fetch'; cik = US_LISTINGS[company]['cik']
+        stage = 'fetch'; cik = US_LISTINGS[company]['cik']; collected = None
         try:
             facts, submissions, acquired = client.collect(company, cik)
             # Validate JSON separately so supplied fake clients retain parse stage.
             stage = 'parse'; parse(facts, cik); parse(submissions, cik)
             stage = 'normalize'
             if not isinstance(acquired, datetime) or acquired.utcoffset() is None: invalid('SEC_ACQUISITION_TIMESTAMP_INVALID')
-            row = _project_observations([(company, facts, submissions, acquired.astimezone(timezone.utc).isoformat())])[0]
-            rows.append(row)
+            acquired_at = acquired.astimezone(timezone.utc).isoformat()
+            timestamp(acquired_at, 'SEC_ACQUISITION_TIMESTAMP_INVALID')
+            # From here the collection succeeded: both bodies bound to the issuer's CIK at a valid acquisition time.
+            collected = {'acquired_at': acquired_at, 'sources': {kind: {'url': source_url(kind, cik),
+                         'sha256': hashlib.sha256(body).hexdigest()} for kind, body in [('companyfacts', facts), ('submissions', submissions)]}}
+            row = _project_observations([(company, facts, submissions, acquired_at)])[0]
+            rows.append(dict(row, preserved_previous=None))
         except Exception as error:
             diagnostic = _diagnostic(error, index, stage)
             if stage == 'parse' and diagnostic['code'] == 'SEC_COLLECTION_FAILED': diagnostic['code'] = 'SEC_JSON_INVALID'
             diagnostics.append(diagnostic)
             kept = kept_rows.get(company)
-            if kept is not None and kept['cik'] == cik and preservable_failure(diagnostic, error):
-                rows.append(json.loads(json.dumps(kept)))
-                preserved.append({'company_index': index, 'code': diagnostic['code']})
-                continue
-            rows.append({'company_id': company, 'cik': cik, 'status': 'NOT_AVAILABLE',
-                'reason_codes': [diagnostic['code']], 'failure_stage': diagnostic['stage'],
-                'company_index': index, 'http_status': diagnostic['http_status'],
-                'excluded_fact_counts': error.excluded_fact_counts if isinstance(error, SecNormalizationError) else {},
-                'share_class_basis': 'UNCONFIRMED',
-                'share_class_notice': error.share_class_notice if isinstance(error, SecNormalizationError) else None})
+            base = {'company_id': company, 'cik': cik, 'excluded_fact_counts': {}, 'share_class_basis': 'UNCONFIRMED',
+                    'share_class_notice': None, 'preserved_previous': None}
+            if diagnostic['code'] in IDENTITY_CODES:
+                rows.append(dict(base, status='WITHDRAWN', detected_at=_iso(clock()),
+                                 withdrawn_acquired_at=withdrawn_observation(kept), **_failure_fields(diagnostic, index)))
+                withdrawn.append({'company_index': index, 'code': diagnostic['code'],
+                                  'previous': 'NONE' if kept is None else kept['status']})
+            elif kept is not None and preservable_failure(diagnostic, error):
+                rows.append(dict(kept, preserved_previous={'checked_at': _iso(clock()), 'reason_codes': [diagnostic['code']],
+                    'failure_stage': diagnostic['stage'], 'http_status': diagnostic['http_status']}))
+                preserved.append({'company_index': index, 'code': diagnostic['code'], 'previous': kept['status']})
+            elif collected is not None:
+                rows.append(dict(base, status='NOT_AVAILABLE', **collected, **_failure_fields(diagnostic, index),
+                    excluded_fact_counts=error.excluded_fact_counts if isinstance(error, SecNormalizationError) else {},
+                    share_class_notice=error.share_class_notice if isinstance(error, SecNormalizationError) else None))
+            else:
+                rows.append(dict(base, status='COLLECTION_FAILED', checked_at=_iso(clock()), **_failure_fields(diagnostic, index)))
     kept_index = {p['company_index'] for p in preserved}
     # A preserved row's exclusions belong to its earlier collection, not to this run.
     exclusions = [{'company_index': i, 'code': code, 'count': count}
@@ -443,11 +646,9 @@ def collect_public_inputs(output, *, environ=None, client_factory=None, previous
     if len(diagnostics) == len(US_LISTINGS):
         codes = {d['code'] for d in diagnostics}
         raise CollectionFailure(next(iter(codes)) if len(codes) == 1 else 'SEC_COLLECTION_FAILED', diagnostics, exclusions=exclusions) from None
-    if diagnostics:
-        for row in rows:
-            if 'status' not in row: row['status'] = 'LIVE'
-    payload = require_public_inputs({'schema': 'public-sec-reported-inputs/3',
-        'scope': 'US_TARGET17_REPORTED_SEC_ONLY', 'companies': rows})
+    trigger = TRIGGERS.get(settings.get('GITHUB_EVENT_NAME'), 'OTHER')
+    payload = require_public_inputs({'schema': SCHEMA, 'scope': SCOPE, 'companies': rows,
+        'collection': collection_block(clock(), trigger=trigger, previous_state=state, previous=previous)})
     output = Path(output); output.parent.mkdir(parents=True, exist_ok=True)
     temporary = None
     try:
@@ -456,9 +657,12 @@ def collect_public_inputs(output, *, environ=None, client_factory=None, previous
         os.replace(temporary, output)
     finally:
         if temporary is not None: temporary.unlink(missing_ok=True)
+    count = lambda status: sum(1 for row in rows if row['status'] == status and row['preserved_previous'] is None)
     return {'failed_companies': len(diagnostics), 'diagnostics': diagnostics,
-        'exclusions': exclusions, 'preserved': preserved, 'companies': len(US_LISTINGS),
-        'collected_companies': len(US_LISTINGS) - len(diagnostics)}
+        'exclusions': exclusions, 'preserved': preserved, 'withdrawn': withdrawn, 'companies': len(US_LISTINGS),
+        'collected_companies': len(US_LISTINGS) - len(diagnostics), 'policy_na': count('NOT_AVAILABLE'),
+        'collection_failed': count('COLLECTION_FAILED'), 'previous': state,
+        'scheduled_streak': payload['collection']['scheduled_streak']}
 
 
 def _print_exclusions(exclusions):
@@ -471,19 +675,24 @@ def _print_diagnostics(diagnostics):
         print('SEC_FAILURE company_index={company_index} stage={stage} code={code} http_status={http_status}'.format(**row))
 
 
-PREVIOUS_STATES = ('LOADED', 'NO_LIVE', 'UNAVAILABLE', 'NOT_REQUESTED')
-
 
 def _print_collection(result, previous_state='NOT_REQUESTED'):
-    """Owner decision 2026-10-17: new collections, failures and rows kept from the previous copy, counted separately
-    (a preserved company is a failed collection, never today's success). Counts and fixed codes only."""
+    """Owner decisions 2026-10-17: new collections, failures, rows kept from the previous copy and identity withdrawals,
+    counted separately (a preserved company is a failed collection, never today's success; a policy NA is a successful
+    collection without values). `collected` keeps its meaning (new LIVE rows). Counts and fixed codes only."""
     preserved = result.get('preserved', [])
     for row in preserved:
-        print('SEC_PRESERVED company_index={company_index} code={code} previous=LIVE'.format(**row))
+        print('SEC_PRESERVED company_index={company_index} code={code} previous={previous}'.format(**{'previous': 'LIVE', **row}))
+    for row in result.get('withdrawn', []):
+        print('SEC_WITHDRAWN company_index={company_index} code={code} previous={previous}'.format(**row))
     state = previous_state if previous_state in PREVIOUS_STATES else 'UNAVAILABLE'
+    streak = result.get('scheduled_streak') or {}
     print(f"SEC_PUBLIC_COLLECTION companies={result['companies']} collected={result['collected_companies']} "
           f"failed={result['failed_companies']} preserved_previous={len(preserved)} "
-          f"not_available={result['failed_companies'] - len(preserved)} previous={state}")
+          f"not_available={result['failed_companies'] - len(preserved)} previous={state} "
+          f"policy_na={result.get('policy_na', 0)} withdrawn={len(result.get('withdrawn', []))} "
+          f"collection_failed={result.get('collection_failed', 0)} "
+          f"scheduled_streak={'NONE' if streak.get('count') is None else streak['count']}")
 
 
 class Parser(argparse.ArgumentParser):

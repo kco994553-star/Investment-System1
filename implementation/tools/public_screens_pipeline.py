@@ -9,11 +9,12 @@ import tempfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from investment_system.product.public_engine_screens import generate_screen_bundle
 from investment_system.universe import sec_qgv2 as qgv2
-from public_sec_inputs import collect_public_inputs, CollectionFailure, Parser, _print_collection, _print_diagnostics, _print_exclusions, parse
+from public_sec_inputs import collect_public_inputs, CollectionFailure, Parser, STALE_AFTER_SECONDS, _print_collection, _print_diagnostics, _print_exclusions, parse
 import preserve_public_sec_inputs
 
-# Daily acquisition cadence, not a model or calibration threshold.
-ACQUISITION_TTL = timedelta(hours=24)
+# Daily acquisition cadence, not a model or calibration threshold (published in sec-public-inputs.json /4 as the file's
+# stale_after_seconds).
+ACQUISITION_TTL = timedelta(seconds=STALE_AFTER_SECONDS)
 
 def emit(directory, manifest=None, input_root=None, as_of=None):
     directory = Path(directory)
@@ -74,8 +75,9 @@ def stage_qgv2_target(directory, manifest, root, *, now=None):
 
 
 def load_previous_inputs(*, open_response=None):
-    """(validated live sec-public-inputs.json payload or None, LOADED | NO_LIVE | UNAVAILABLE). A failed read only turns
-    preservation off for this run (the pre-deploy freshness guard still compares with the live copy)."""
+    """(validated live sec-public-inputs.json payload (/3 or /4) or None, LOADED | NO_LIVE | UNAVAILABLE). A failed read
+    only turns preservation off for this run (the pre-deploy freshness guard still compares with the live copy); the
+    state is published in the /4 `collection.previous` field."""
     try:
         payload = preserve_public_sec_inputs.fetch_previous(open_response=open_response)
     except Exception:
@@ -83,7 +85,8 @@ def load_previous_inputs(*, open_response=None):
     return payload, 'LOADED' if payload is not None else 'NO_LIVE'
 
 
-def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macro_curve=None, previous=None):
+def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macro_curve=None, previous=None,
+            previous_state=None, now=None):
     if client_factory is None:
         from investment_system.providers.sec_collection import SecCollectionClient
         client_factory = SecCollectionClient
@@ -113,7 +116,7 @@ def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macr
                     acquired_at=acquired.astimezone(timezone.utc).isoformat(), synthetic=False))
                 return facts, submissions, acquired
         result = collect_public_inputs(Path(directory) / 'sec-public-inputs.json', environ=environ, client_factory=Capture,
-                                       previous=previous)
+                                       previous=previous, previous_state=previous_state, now=now)
         emit(directory, manifest, root)
         stage_qgv2_target(directory, manifest, root)
         return result
@@ -165,7 +168,8 @@ def main(argv=None):
                             (d.get(k) if d.get(k) is not None else '-') for k in ('stage', 'code', 'http', 'content', 'size')))
                     return entries
             previous, previous_state = load_previous_inputs()
-            result = collect(args.out, macro_v0=macro_v0, macro_curve=macro_curve, previous=previous)
+            result = collect(args.out, macro_v0=macro_v0, macro_curve=macro_curve, previous=previous,
+                             previous_state=previous_state)
             _print_diagnostics(result['diagnostics']); _print_exclusions(result['exclusions'])
             _print_collection(result, previous_state)
             if args.macro_v0:
