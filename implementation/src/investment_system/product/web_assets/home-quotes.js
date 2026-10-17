@@ -2,7 +2,7 @@
    (Berkshire Hathaway shareholder letters on berkshirehathaway.com, read 2026-10-17). Philosophy content only: never a
    recommendation, a signal or evidence of performance. No external quote API; nothing here is fetched.
    type DIRECT = the original sentence(s) exactly as printed; STORY = a Korean summary of a passage, with the printed
-   sentence it rests on in `original`. `ko` is our translation/summary and is always labelled as such. Items that could
+   sentence it rests on in `original`. `headline_en` is always an exact excerpt (\u2026 marks a cut). `ko` is our translation/summary and is always labelled as such. Items that could
    not be verified against a primary source are not listed. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.HomeQuotes=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
  'use strict';
@@ -19,7 +19,7 @@
    context:{ko:'2008년 금융위기 직후 주주서한의 투자 설명 부분. 주가가 하락한 시기에 가격과 기업 가치를 구분해 보라는 맥락입니다.',en:'From the investment discussion right after the 2008 crisis: separate the price paid from the value of the business.'}},
   {id:'brk-1986-fearful-greedy',type:'DIRECT',
    original:'Our goal is more modest: we simply attempt to be fearful when others are greedy and to be greedy only when others are fearful.',
-   headline_en:'Be fearful when others are greedy and greedy only when others are fearful.',
+   headline_en:'\u2026we simply attempt to be fearful when others are greedy and to be greedy only when others are fearful.',
    ko:'남들이 탐욕스러울 때 두려워하고, 남들이 두려워할 때만 탐욕스러워지려 할 뿐입니다.',
    ko_full:'우리의 목표는 더 소박합니다. 우리는 그저 남들이 탐욕스러울 때 두려워하고, 남들이 두려워할 때만 탐욕스러워지려 할 뿐입니다.',
    speaker:{ko:'워런 버핏',en:'Warren Buffett'},
@@ -28,7 +28,7 @@
    context:{ko:'버핏은 바로 앞 문장에서 시장이 오를지 내릴지 전혀 모른다고 밝힙니다. 시장 예측이 아니라, 공포와 탐욕이 번질 때 휩쓸리지 않겠다는 태도입니다.',en:'Just before this, Buffett says he has no idea where the market will go: an attitude toward fear and greed, not a forecast.'}},
   {id:'brk-1996-understandable-business',type:'DIRECT',
    original:'Your goal as an investor should simply be to purchase, at a rational price, a part interest in an easily-understandable business whose earnings are virtually certain to be materially higher five, ten and twenty years from now.',
-   headline_en:'Buy, at a rational price, part of an easily-understandable business.',
+   headline_en:'\u2026to purchase, at a rational price, a part interest in an easily-understandable business\u2026',
    ko:'합리적인 가격에, 이해하기 쉬운 기업의 일부를 사는 것.',
    ko_full:'투자자로서 당신의 목표는 단순히, 5년·10년·20년 뒤 이익이 지금보다 상당히 높을 것이 거의 확실한, 이해하기 쉬운 기업의 일부 지분을 합리적인 가격에 사는 것이어야 합니다.',
    speaker:{ko:'워런 버핏',en:'Warren Buffett'},
@@ -46,7 +46,7 @@
    context:{ko:'시장 변동을 대하는 마음가짐에 관한 단락입니다. 가격 변동은 기회일 수 있지만 판단을 대신하지 않는다는 비유입니다.',en:'A passage on the attitude toward market fluctuations: prices can offer chances but never replace your own judgement.'}},
   {id:'brk-2013-farm',type:'STORY',
    original:'In 1986, I purchased a 400-acre farm, located 50 miles north of Omaha, from the FDIC. … With my two small investments, I thought only of what the properties would produce and cared not at all about their daily valuations.',
-   headline_en:'I thought only of what the properties would produce.',
+   headline_en:'\u2026I thought only of what the properties would produce and cared not at all about their daily valuations.',
    ko:'자산이 무엇을 만들어 낼지만 생각했고, 매일의 평가액은 신경 쓰지 않았다.',
    ko_full:'(일화 요약) 1986년 버핏은 오마하 북쪽의 농장을 샀습니다. 농사는 몰랐지만 수확량과 비용으로 정상 수익을 추정했고, 매일의 시세가 아니라 농장이 만들어 낼 산출에만 집중했다고 회고합니다.',
    speaker:{ko:'워런 버핏',en:'Warren Buffett'},
@@ -55,7 +55,7 @@
    context:{ko:'“투자에 관한 몇 가지 생각” 단락의 개인 투자 일화입니다. 수익률이나 성과의 증거로 쓰지 않습니다.',en:'A personal anecdote from “Some Thoughts About Investing”. Not used as evidence of returns or performance.'}},
   {id:'brk-2013-playing-field',type:'DIRECT',
    original:'Games are won by players who focus on the playing field – not by those whose eyes are glued to the scoreboard.',
-   headline_en:'Games are won by players who focus on the playing field.',
+   headline_en:'Games are won by players who focus on the playing field \u2013 not by those whose eyes are glued to the scoreboard.',
    ko:'경기는 경기장에 집중하는 선수가 이긴다. 전광판에 눈을 고정한 선수가 아니라.',
    ko_full:'경기는 경기장에 집중하는 선수가 이깁니다. 전광판에 눈을 붙이고 있는 선수가 아니라.',
    speaker:{ko:'워런 버핏',en:'Warren Buffett'},

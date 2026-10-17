@@ -185,6 +185,58 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
       assert.equal(await p.evaluate(()=>localStorage.getItem("investment.web.v1.settings")),"{broken");
       await broken.close();
     });
+    // Search home (2026-10-17): the home screen starts from this same search box.
+    await check("search home: real shortcuts only, IME-safe combobox, back restores query and row, story source sheet",async()=>{
+      const home=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await displayOnlyOff(home);
+      await home.route("**/*",guard);const p=await home.newPage();responses(p);p.on("pageerror",e=>errors.push(e.message));
+      await p.goto(new URL("#home",base).href);await p.locator("[data-home]").waitFor();await p.waitForFunction(()=>typeof window.investmentSearch==="function");
+      // First visit: no invented recent searches or watchlist chips, no autofocus on a phone.
+      assert.equal(await p.locator("[data-recent-searches],[data-watch-shortcuts]").count(),0);
+      assert.equal(await p.locator("[data-shortcut-hint]").count(),1);
+      assert.notEqual(await p.evaluate(()=>document.activeElement?.id),"global-search");
+      const box=p.locator("#global-search");
+      assert.equal(await box.getAttribute("role"),"combobox");assert.equal(await p.locator("#global-results").getAttribute("role"),"listbox");
+      // Korean composition: the input element is never replaced and arrow keys belong to the IME while composing.
+      const cdp=await home.newCDPSession(p);await box.tap();await p.evaluate(()=>{window.__box=document.querySelector("#global-search");});
+      await cdp.send("Input.imeSetComposition",{text:"반",selectionStart:1,selectionEnd:1});await p.keyboard.press("ArrowDown");
+      assert.equal(await box.getAttribute("aria-activedescendant"),null);
+      await cdp.send("Input.insertText",{text:"반"});await cdp.send("Input.imeSetComposition",{text:"도",selectionStart:1,selectionEnd:1});await cdp.send("Input.insertText",{text:"도"});
+      assert.equal(await p.evaluate(()=>document.querySelector("#global-search")===window.__box),true);
+      assert.ok((await p.locator('#global-results [role="option"]').evaluateAll(n=>n.map(x=>x.dataset.entityId))).includes("INDUSTRY:semiconductor"));
+      assert.equal(await p.locator("#search-head-title").textContent(),"검색 결과");
+      assert.equal(await p.locator("#primary-nav").isVisible(),false,"the bottom navigation steps aside while typing");
+      // Keys: ArrowDown + Enter opens; back restores the query, the scope and the chosen row.
+      await p.locator('[data-search-filter="other"]').tap();await box.focus();await p.keyboard.press("ArrowDown");await p.keyboard.press("Enter");
+      await p.waitForFunction(()=>location.hash==="#entity/INDUSTRY%3Asemiconductor");await p.locator('[data-origin-link="home"]').waitFor();
+      await p.goBack();await p.waitForFunction(()=>location.hash==="#home"&&document.querySelector("#global-search")?.value==="반도");
+      assert.equal(await p.locator('[data-search-filter="other"]').getAttribute("aria-pressed"),"true");
+      assert.equal(await p.locator('#global-results [aria-selected="true"]').getAttribute("data-entity-id"),"INDUSTRY:semiconductor");
+      await p.locator('[data-search-filter="all"]').tap();
+      await box.fill("zzqqxx");assert.equal((await p.locator("#global-results .empty").textContent()).trim(),"일치하는 항목이 없습니다.");
+      await box.press("Escape");assert.equal(await box.inputValue(),"");
+      // Company: exchange shown, ★ on the detail, the back link restores the results; shortcuts are the real ones.
+      await box.fill("nvda");const row=p.locator('#global-results [data-entity-id="COMPANY:nvda"]');assert.ok((await row.textContent()).includes("NASDAQ"));
+      await row.locator("a").tap();await p.waitForFunction(()=>location.hash==="#company/nvda");await p.locator('[data-star="nvda"]').first().tap();
+      await p.locator('[data-origin-link="home"]').tap();await p.waitForFunction(()=>location.hash==="#home"&&document.querySelector("#global-search")?.value==="nvda");
+      await box.press("Escape");await box.blur();
+      assert.deepEqual(await p.locator("[data-recent-searches] [data-shortcut]").evaluateAll(n=>n.map(x=>x.dataset.shortcut)),["COMPANY:nvda","INDUSTRY:semiconductor"]);
+      assert.deepEqual(await p.locator("[data-watch-shortcuts] [data-shortcut]").evaluateAll(n=>n.map(x=>x.textContent)),["NVDA"]);
+      // One verified story: stable across re-render and typing, changes only on request, source sheet returns focus.
+      const story=await p.locator("[data-quote-id]").getAttribute("data-quote-id");await p.evaluate(()=>render());
+      assert.equal(await p.locator("[data-quote-id]").getAttribute("data-quote-id"),story);
+      await p.locator("[data-quote-next]").tap();assert.notEqual(await p.locator("[data-quote-id]").getAttribute("data-quote-id"),story);
+      await p.locator("[data-quote-source]").tap();const sheet=p.locator("#quote-dialog");await sheet.waitFor();
+      assert.equal(await sheet.locator('a[href^="https://www.berkshirehathaway.com/letters/"]').count(),1);
+      await p.keyboard.press("Escape");await p.waitForFunction(()=>!document.querySelector("#quote-dialog").open);
+      assert.equal(await p.evaluate(()=>document.activeElement?.id),"quote-source-button");
+      // Theme switch keeps the query; the landscape falls back to the solid theme colour when it cannot load.
+      await box.fill("am");await p.locator("#theme-button").tap();await p.locator('#theme-menu [data-theme-choice="dark"]').tap();
+      assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),"dark");assert.equal(await box.inputValue(),"am");
+      await home.route("**/home-bg-*.svg",r=>r.abort());await p.reload();await p.locator("[data-home]").waitFor();
+      assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),"dark","choice kept on this device");
+      await p.waitForFunction(()=>document.querySelector(".home-bg")?.dataset.bgState==="failed");assert.equal(await p.locator(".home-bg svg").count(),0);
+      await home.close();
+    });
     await check("no external calls, unsafe requests, failed responses or page errors",async()=>{
       assert.deepEqual(traffic,{external:0,unsafe:0,failed_responses:0});
       assert.deepEqual(errors,[]);

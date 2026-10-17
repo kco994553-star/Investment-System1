@@ -116,6 +116,7 @@ button, input, select, textarea { background: var(--field); border-color: var(--
 .pop [role="menuitemradio"][aria-checked="true"] { font-weight: 700; }
 .pop [role="menuitemradio"]:hover { background: var(--nav-active-bg); }
 .tool-settings { text-decoration: none; }
+.tool-settings[aria-current="page"] { background: var(--nav-active-bg); color: var(--nav-active-ink); }
 
 /* ---------- main menu (PC) / bottom navigation (phone) ---------- */
 #primary-nav {
@@ -165,6 +166,7 @@ button, input, select, textarea { background: var(--field); border-color: var(--
   #primary-nav > a:hover, #primary-nav > button:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
   #primary-nav > a[aria-current="page"] { background: var(--nav-active-bg); color: var(--nav-active-ink); box-shadow: none; }
   .app-header { padding-left: 40px; padding-right: 40px; min-height: 72px; }
+  html[data-route="home"] .personal-reference-footer { margin-bottom: 24px; }
   .brand-mark { font-size: 30px; }
 }
 
@@ -226,16 +228,18 @@ html[data-route="home"] .home-bg {
   background: var(--home-fallback);
 }
 .home-bg > svg { display: block; width: 100%; height: 100%; }
-html[data-route="home"] body { background: var(--home-fallback); color: var(--home-ink); }
+html[data-route="home"] body { background: var(--home-fallback); color: var(--home-ink); min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+html[data-route="home"] body > main { flex: 1 0 auto; width: 100%; margin: 0 auto; }
 html[data-route="home"] .personal-reference-top { background: transparent; border-bottom: 0; color: var(--home-ink); text-align: center; font-size: var(--fs-xs); padding: 6px 16px 0; }
 html[data-route="home"] .app-header { background: transparent; border-bottom: 0; color: var(--home-ink); }
 html[data-route="home"] .brand-name { color: var(--home-muted); }
-html[data-route="home"] main { max-width: 860px; padding: clamp(20px, 7vh, 96px) 16px calc(var(--bottom-nav-h) + 48px + env(safe-area-inset-bottom)); min-height: auto; }
+/* Home fills the first screen; the footer notice starts below it, so it is never under the phone navigation. */
+html[data-route="home"] main { max-width: 860px; padding: clamp(20px, 7vh, 96px) 16px 32px; min-height: 100vh; min-height: 100dvh; }
 html[data-route="home"] .global-search { max-width: none; margin: 0; padding: 0; }
 html[data-route="home"] .global-search > label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 html[data-route="home"] .global-search > .meta { display: none; }
 html[data-route="home"][data-searching="1"] .global-search > .meta { display: block; text-align: center; color: var(--home-muted); }
-html[data-route="home"] .personal-reference-footer { max-width: 640px; margin: 0 auto calc(var(--bottom-nav-h) + 16px + env(safe-area-inset-bottom)); padding: 10px 16px; border: 0; border-radius: var(--radius-m); background: var(--home-scrim); color: var(--home-ink); text-align: center; }
+html[data-route="home"] .personal-reference-footer { max-width: 640px; width: calc(100% - 32px); margin: 0 auto calc(var(--bottom-nav-h) + 16px + env(safe-area-inset-bottom)); padding: 10px 16px; border: 0; border-radius: var(--radius-m); background: var(--home-scrim); color: var(--home-ink); text-align: center; }
 .home { display: flex; flex-direction: column; align-items: center; text-align: center; color: var(--home-ink); }
 .home-title { margin: 0; max-width: 16em; font-family: var(--font-serif); font-size: var(--fs-hero); font-weight: 700; line-height: 1.18; letter-spacing: -.02em; text-wrap: balance; word-break: keep-all; overflow-wrap: anywhere; }
 .home-title:focus { outline: none; }
@@ -270,7 +274,7 @@ html[data-route="home"] .personal-reference-footer { max-width: 640px; margin: 0
 .shuffle { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 #quote-next { text-decoration: none; }
 .home-more { margin: 28px 0 0; font-size: var(--fs-s); }
-.home-more a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: var(--radius-pill); background: var(--home-scrim); color: var(--home-ink); }
+.home-more a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: var(--radius-pill); background: var(--home-field); color: var(--home-ink); }
 /* Searching on a phone: the results come first; the story waits below. */
 @media (max-width: 749.98px) {
   html[data-route="home"] main { padding-top: clamp(12px, 5vh, 56px); }
@@ -357,3 +361,5 @@ html[data-route="home"] .personal-reference-footer { max-width: 640px; margin: 0
 :root[data-theme="dark"] .private-history, :root[data-theme="dark"] .bench-chart, :root[data-theme="dark"] .tv-frame, :root[data-theme="dark"] iframe { background: #f6f7f4; color: #17201d; border-radius: var(--radius-m); }
 :root[data-theme="dark"] .private-history { padding: 8px; }
 :root[data-theme="dark"] .private-history .small, :root[data-theme="dark"] .private-history .meta, :root[data-theme="dark"] .private-history .muted { color: #4d5a55; }
+:root[data-theme="dark"] .private-history :is(button, input, select, textarea) { background: #fff; color: #17201d; border-color: #b5c5ba; }
+:root[data-theme="dark"] .private-history .chart-controls button[aria-pressed="true"] { background: var(--acc, #1e4d43); color: #fff; }

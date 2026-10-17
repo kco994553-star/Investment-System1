@@ -9,7 +9,7 @@
  function read(){try{const v=root.localStorage.getItem(KEY);return CHOICES.includes(v)?v:'system';}catch(_){return 'system';}}
  let choice=read();
  const resolve=c=>c==='system'?(mq&&mq.matches?'dark':'light'):c;
- function apply(){const t=resolve(choice);doc.dataset.theme=t;doc.dataset.themeChoice=choice;doc.style.colorScheme=t;
+ function apply(){const t=resolve(choice);doc.dataset.theme=t;doc.dataset.themePref=choice;doc.style.colorScheme=t;
   const meta=root.document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',t==='dark'?'#081633':'#f4f4ef');}
  const listeners=new Set();
  function notify(){for(const fn of listeners){try{fn(resolve(choice),choice);}catch(_){}}}

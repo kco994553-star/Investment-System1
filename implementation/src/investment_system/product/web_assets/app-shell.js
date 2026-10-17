@@ -52,6 +52,7 @@
   locale=loc||locale;route=r;doc.documentElement.dataset.route=r||'';
   const tab=tabFor(r);
   for(const a of doc.querySelectorAll('#primary-nav [data-nav-tab]')){if(tab&&a.dataset.navTab===tab.key)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}
+  const settings=$('.tool-settings');if(settings){if(r==='settings')settings.setAttribute('aria-current','page');else settings.removeAttribute('aria-current');}
   label();closeMore(false);closeTheme(false);
  }
  // ---------- 더보기 / 전체 메뉴 ----------
@@ -81,9 +82,14 @@
  function afterRender(r){if(r==='settings')mountSettings();}
  // ---------- phone keyboard: the bottom navigation never covers a focused field or its results ----------
  const typingField=el=>!!el&&(el.isContentEditable||el.tagName==='TEXTAREA'||el.tagName==='SELECT'||(el.tagName==='INPUT'&&!['checkbox','radio','button','submit','reset','range','color','file','image'].includes(el.type)));
+ // The navigation comes back a moment after the field is left, so a tap that ends the typing (e.g. on a button that was
+ // just above the keyboard) is not caught by the bar reappearing under the finger.
+ let typingTimer=0;
  function syncTyping(){const vv=root.visualViewport,kb=!!vv&&vv.height<root.innerHeight*0.78;const on=typingField(doc.activeElement)||kb;
-  if(on)doc.documentElement.dataset.typing='1';else delete doc.documentElement.dataset.typing;
-  if(vv)doc.documentElement.style.setProperty('--vv-height',Math.round(vv.height)+'px');}
+  if(vv)doc.documentElement.style.setProperty('--vv-height',Math.round(vv.height)+'px');
+  root.clearTimeout(typingTimer);
+  if(on)doc.documentElement.dataset.typing='1';
+  else if(doc.documentElement.dataset.typing)typingTimer=root.setTimeout(()=>{if(!typingField(doc.activeElement))delete doc.documentElement.dataset.typing;},450);}
  doc.addEventListener('focusin',syncTyping);doc.addEventListener('focusout',()=>setTimeout(syncTyping,0));
  if(root.visualViewport){root.visualViewport.addEventListener('resize',syncTyping);}
 
@@ -93,7 +99,7 @@
   if(t.closest('[data-more-close]')){closeMore();return;}
   if(t.closest('#more-menu a')){closeMore(false);return;}
   if(t.closest('#theme-button')){if($('#theme-menu')?.hidden)openTheme();else closeTheme();return;}
-  const choice=t.closest('[data-theme-choice]');if(choice){chooseTheme(choice.dataset.themeChoice);closeTheme();return;}
+  const choice=t.closest('#theme-menu [data-theme-choice]');if(choice){chooseTheme(choice.dataset.themeChoice);closeTheme();return;}
   if(t.closest('#lang-toggle')){const next=locale==='en-US'?'ko-KR':'en-US';if(typeof root.updateSettings==='function')root.updateSettings({display_locale:next});return;}
   if(!t.closest('#more-menu'))closeMore(false);
   if(!t.closest('.theme-control'))closeTheme(false);

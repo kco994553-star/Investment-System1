@@ -28,7 +28,7 @@
  // Korean company names are published, so no other Korean company query is answered with a guess.
  const KO_NAMES=Object.freeze({hanmi:'한미반도체',tokyo_electron:'도쿄일렉트론'});
  const FILTERS=Object.freeze({all:null,company:['COMPANY'],other:['INDUSTRY','INVESTOR','MACRO']});
- const S={filter:'all',active:-1,hits:[],composing:false,state:'idle',universe:null,dismissed:false,chosen:false,refocus:false};
+ const S={filter:'all',active:-1,hits:[],composing:false,state:'idle',universe:null,chosen:false,refocus:false};
  const input=()=>$('#global-search'),list=()=>$('#global-results');
  function exchangeOf(e){
   if(e.scope==='UNIVERSE504'&&e.canonical_id.includes(':'))return e.canonical_id.split(':')[0];
@@ -70,7 +70,7 @@
   const inp=input(),out=list();if(!inp||!out)return;head();labelHead();
   inp.setAttribute('role','combobox');inp.setAttribute('aria-autocomplete','list');inp.setAttribute('aria-controls','global-results');
   out.setAttribute('role','listbox');out.setAttribute('aria-label',T(locale,'검색 결과','Search results'));out.removeAttribute('aria-live');
-  const q=inp.value.trim(),open=!!q&&!S.dismissed;
+  const q=inp.value.trim(),open=!!q;
   out.hidden=!open;$('#search-head').hidden=!open;inp.setAttribute('aria-expanded',String(open));
   doc.documentElement.dataset.searching=open?'1':'';if(!open){S.hits=[];setActive(-1);status('');out.innerHTML='';return;}
   if(typeof root.investmentSearch!=='function'){
@@ -93,15 +93,14 @@
  function wire(){
   const inp=input();if(!inp||inp.dataset.searchWired)return;inp.dataset.searchWired='1';
   inp.addEventListener('compositionstart',()=>{S.composing=true;});
-  inp.addEventListener('compositionend',()=>{S.composing=false;S.dismissed=false;refresh();});
-  inp.addEventListener('input',()=>{S.dismissed=false;if(typeof root.ensureUniverseDirectory==='function'&&inp.value.trim())try{void root.ensureUniverseDirectory();}catch(_){}paint();});
+  inp.addEventListener('compositionend',()=>{S.composing=false;paint();});
+  inp.addEventListener('input',()=>{if(typeof root.ensureUniverseDirectory==='function'&&inp.value.trim())try{void root.ensureUniverseDirectory();}catch(_){}paint();});
   inp.addEventListener('keydown',e=>{
    if(e.isComposing||S.composing||e.keyCode===229)return;
    const n=S.hits.length;
    if((e.key==='ArrowDown'||e.key==='ArrowUp')&&n&&!list().hidden){e.preventDefault();setActive(S.active<0?(e.key==='ArrowDown'?0:n-1):(S.active+(e.key==='ArrowDown'?1:n-1))%n);}
    else if(e.key==='Enter'&&n&&!list().hidden){e.preventDefault();choose(S.active>=0?S.active:0);}
-   else if(e.key==='Escape'){if(inp.value){e.preventDefault();inp.value='';S.dismissed=false;paint();}else inp.blur();}
-   else if(e.key==='Home'||e.key==='End'){/* caret movement stays native */}
+   else if(e.key==='Escape'){if(inp.value){e.preventDefault();inp.value='';paint();}else inp.blur();}
   });
   inp.addEventListener('focus',()=>{if(narrow()&&currentRoute==='home'){const top=inp.getBoundingClientRect().top+root.scrollY-12;root.setTimeout(()=>root.scrollTo({top:Math.max(0,top),behavior:'auto'}),60);}});
   doc.addEventListener('click',e=>{
@@ -119,7 +118,7 @@
    e.preventDefault();inp.focus();inp.select();
   });
  }
- function refresh(opts={}){if(opts.universe!==undefined)S.universe=opts.universe;if(S.composing){paint();return;}paint();}
+ function refresh(opts={}){if(opts.universe!==undefined)S.universe=opts.universe;paint();}
  function setUnavailable(){S.state='error';paint();}
  function setLocale(l){locale=l||locale;const inp=input();if(inp){inp.placeholder=currentRoute==='home'?T(locale,'기업명 또는 티커 검색','Company name or ticker'):inp.placeholder;}labelHead();}
 
@@ -170,7 +169,7 @@
   const q=HomeQuotes.byId(home.quoteId);if(!q)return null;const en=locale==='en-US',story=q.type==='STORY';
   const rows=[[T(locale,'유형','Type'),esc(story?T(locale,'일화 요약','Story summary'):T(locale,'직접 인용','Direct quote'))],
    [T(locale,'원문','Original'),'<blockquote lang="en" class="src-original">'+esc(q.original)+'</blockquote>'],
-   ...(en?[]:[[story?'요약·번역 (우리 번역)':'번역 (우리 번역)','<p lang="ko">'+esc(q.ko_full)+'</p>']]),
+   ...(en?[]:[[story?'요약·번역 (자체 작성)':'번역 (자체 번역)','<p lang="ko">'+esc(q.ko_full)+'</p>']]),
    [T(locale,'발언자','Speaker'),esc(en?q.speaker.en:q.speaker.ko)],[T(locale,'출처','Source'),esc(q.source)],[T(locale,'날짜','Date'),esc(q.date)],
    [T(locale,'원문 링크','Link'),'<a href="'+esc(q.url)+'" target="_blank" rel="noopener noreferrer">'+esc(q.url.replace(/^https:\/\//,''))+' <span aria-hidden="true">↗</span></a>'],
    [T(locale,'맥락','Context'),esc(en?q.context.en:q.context.ko)],
@@ -194,7 +193,7 @@
   const sec=$('#global-search-section'),anchor=$('#global-search-anchor');if(!sec||!anchor||sec.previousElementSibling===anchor)return;
   const inp=input(),keep=nextRoute==='home';
   if(keep&&inp&&doc.activeElement===inp)S.refocus={start:inp.selectionStart,end:inp.selectionEnd};
-  if(!keep&&inp){inp.value='';S.dismissed=false;}anchor.after(sec);paint();
+  if(!keep&&inp)inp.value='';anchor.after(sec);paint();
  }
  function placeIntoHome(){
   const sec=$('#global-search-section'),slot=$('#home-search-slot');if(!sec||!slot||sec.parentElement===slot)return;
@@ -213,7 +212,7 @@
   shortcuts(ctx);quote();
   // Back from a screen opened from these results: the query, scope and the chosen row come back.
   if(home.pending&&home.saved&&entering&&['company','analysis','entity','news','technical'].includes(lastRoute)){
-   const s=home.saved;S.filter=s.filter;inp.value=s.query;S.dismissed=false;
+   const s=home.saved;S.filter=s.filter;inp.value=s.query;
    if(typeof root.ensureUniverseDirectory==='function')try{void root.ensureUniverseDirectory();}catch(_){}
    paint();const i=S.hits.findIndex(h=>h.canonical_entity_id===s.key);setActive(i,false);
    if(i>=0)list().scrollTop=s.listScroll||0;
