@@ -88,3 +88,20 @@ test('module source holds no storage writes, logging or network beyond the sessi
   for (const bad of ['setItem', 'console.', 'indexedDB', 'sendBeacon', 'XMLHttpRequest', 'fetch(']) assert.ok(!src.includes(bad), bad);
   assert.ok(src.includes('session.fetchHistory('));
 });
+test('macro screen marks the lights reference-only while the playbook gate is off (M-239), and not when it is on', () => {
+  const node = tag => ({tag, attrs: {}, kids: [], text: '', setAttribute(k, v) { this.attrs[k] = String(v); }, append(...n) { this.kids.push(...n); },
+    replaceChildren(...n) { this.kids = n; }, addEventListener() {}, set textContent(v) { this.text = String(v); }, get textContent() { return this.text + this.kids.map(k => k.textContent).join(''); }});
+  const doc = {createElement: node, createTextNode: t => ({textContent: t})}, find = (n, attr) => n.attrs?.[attr] !== undefined ? n : (n.kids || []).map(k => find(k, attr)).find(Boolean);
+  const CFG = require(path.join(W, 'playbook-config-defaults.js')), prior = globalThis.PlaybookConfigDefaults;
+  assert.equal(CFG.macro.gate_active, false);
+  const merged = M.merge({}, {market: {lit: true, reason: 'LIT'}, credit: {lit: true, reason: 'LIT'}});
+  try {
+    globalThis.PlaybookConfigDefaults = CFG;
+    const host = {ownerDocument: doc, ...node('div')}, card = M.render(host, merged, {locale: 'ko-KR'});
+    assert.equal(find(card, 'data-macro-lights-verdict').attrs['data-macro-lights-verdict'], merged.state, 'state is still shown');
+    assert.match(find(card, 'data-macro-reference-only').textContent, /참고 표시 · 과거 재생 완료 전에는 확대 차단·U3에 쓰지 않음/);
+    assert.match(find(M.render(host, merged, {locale: 'en-US'}), 'data-macro-reference-only').textContent, /Reference only/);
+    globalThis.PlaybookConfigDefaults = {...CFG, macro: {...CFG.macro, gate_active: true}};
+    assert.equal(find(M.render(host, merged, {locale: 'ko-KR'}), 'data-macro-reference-only'), undefined);
+  } finally { if (prior === undefined) delete globalThis.PlaybookConfigDefaults; else globalThis.PlaybookConfigDefaults = prior; M.clearDevice(); }
+});

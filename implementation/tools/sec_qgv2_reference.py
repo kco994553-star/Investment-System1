@@ -141,11 +141,54 @@ def _codes():
     return [c for c, *_ in universe_spec()]
 
 
+def _diff_ops(old, new, path=()):
+    """Leaf-level ops turning `old` into `new` (dicts compared key by key; anything else replaced whole)."""
+    if isinstance(old, dict) and isinstance(new, dict):
+        ops = []
+        for key in sorted(set(old) | set(new)):
+            if key not in new:
+                ops.append((list(path) + [key], DELETE))
+            elif key not in old:
+                ops.append((list(path) + [key], new[key]))
+            else:
+                ops += _diff_ops(old[key], new[key], path + (key,))
+        return ops
+    return [] if old == new else [(list(path), new)]
+
+
+OLD_CALC_VERSION = 'qgv2-calc/2026-10-14.1'
+
+
+def mixed_version_ops():
+    """Ops from the base file to a valid file where two Universe rows and one TARGET row are of another calc_version (one
+    legacy, one older): the publisher keeps them out of the ranking population (CALC_VERSION_MISMATCH) and re-ranks the rest."""
+    from investment_system.universe import sec_qgv2 as q
+    from investment_system.universe.sec_universe_shares import load_config
+    from datetime import timedelta
+    before = expand(sparse(base()))
+    after = json.loads(json.dumps(before))
+    c = _codes()
+    after['records'][c[2]]['calc_version'] = None
+    after['records'][c[5]]['calc_version'] = OLD_CALC_VERSION
+    after['target']['amd']['calc_version'] = None
+    cfg = load_config()
+    repub = q.publish(after['records'], after['target'], as_of=AS_OF, cfg=cfg, stale_after=timedelta(seconds=after['stale_after_seconds']),
+                      shard_index=after['last_shard_index'], registry_sha256=after['registry_sha256'])
+    return _diff_ops(before, json.loads(json.dumps(repub)))
+
+
 def cases():
     from investment_system.universe.sec_universe_shares import universe_codes
+    from investment_system.universe.sec_qgv2 import target_ids
     c = _codes()
+    mixed = mixed_version_ops()
+    legacy = [(['calc_version'], DELETE)] + [(['records', code, 'calc_version'], DELETE) for code in universe_codes()]
+    legacy += [(['target', cid, 'calc_version'], DELETE) for cid in target_ids()]
+    stale_scores = [op for op in mixed if op[0][:2] != ['records', c[5]] or op[0][2] not in ('factors', 'axes')]
     R, T = ['records'], ['target']
     first, second, fin, empty = c[0], c[1], c[21], universe_codes()[30]
+    from investment_system.universe import sec_qgv2 as q
+    withdrawn = dict(q.withdrawn_target('nvda', '2026-10-13T22:10:00Z'), withdrawn_acquired_at='2026-10-12T22:30:00Z')
     return [
         ('base_valid', []),
         ('null_shard_and_registry_valid', [(['last_shard_index'], None), (['registry_sha256'], None)]),
@@ -168,6 +211,30 @@ def cases():
         ('metric_outside_profile', [(R + [first, 'metrics', 'roe'], 0.1)]),
         ('metric_unknown_key', [(R + [first, 'metrics', 'v_score'], 0.1)]),
         ('moat_years_too_small', [(R + [first, 'metrics', 'moat_return_years'], 2)]),
+        ('ebit_estimated_years_valid', [(R + [first, 'metrics', 'ebit_estimated_years'], 2),
+                                        (R + [first, 'metrics', 'ebit_estimated_fiscal_years'], [2022, 2023])]),
+        ('ebit_estimated_count_without_years', [(R + [first, 'metrics', 'ebit_estimated_years'], 2)]),
+        ('ebit_estimated_years_without_count', [(R + [first, 'metrics', 'ebit_estimated_fiscal_years'], [2023])]),
+        ('ebit_estimated_years_length_mismatch', [(R + [first, 'metrics', 'ebit_estimated_years'], 2),
+                                                  (R + [first, 'metrics', 'ebit_estimated_fiscal_years'], [2023])]),
+        ('ebit_estimated_years_unsorted', [(R + [first, 'metrics', 'ebit_estimated_years'], 2),
+                                           (R + [first, 'metrics', 'ebit_estimated_fiscal_years'], [2023, 2022])]),
+        ('ebit_estimated_years_after_fiscal_year', [(R + [first, 'metrics', 'ebit_estimated_years'], 1),
+                                                    (R + [first, 'metrics', 'ebit_estimated_fiscal_years'], [2026])]),
+        ('ebit_estimated_years_not_integers', [(R + [first, 'metrics', 'ebit_estimated_years'], 1),
+                                               (R + [first, 'metrics', 'ebit_estimated_fiscal_years'], ['2023'])]),
+        ('ebit_estimated_years_zero', [(R + [first, 'metrics', 'ebit_estimated_years'], 0),
+                                       (R + [first, 'metrics', 'ebit_estimated_fiscal_years'], [])]),
+        ('ebit_estimated_years_too_many', [(R + [first, 'metrics', 'ebit_estimated_years'], 7),
+                                           (R + [first, 'metrics', 'ebit_estimated_fiscal_years'], list(range(2019, 2026)))]),
+        ('ebit_estimated_years_not_integer', [(R + [first, 'metrics', 'ebit_estimated_years'], 1.5),
+                                              (R + [first, 'metrics', 'ebit_estimated_fiscal_years'], [2023])]),
+        ('ebit_estimated_years_on_financial', [(R + [fin, 'metrics', 'ebit_estimated_years'], 1),
+                                               (R + [fin, 'metrics', 'ebit_estimated_fiscal_years'], [2023])]),
+        ('roic_avg_3y_on_financial', [(R + [fin, 'metrics', 'roic_avg_3y'], 0.2)]),
+        ('roic_avg_3y_string', [(R + [first, 'metrics', 'roic_avg_3y'], '0.2')]),
+        ('operating_margin_std_negative', [(R + [first, 'metrics', 'operating_margin_std_5y_pp'], -0.5)]),
+        ('operating_margin_std_too_large', [(R + [first, 'metrics', 'operating_margin_std_5y_pp'], 1e13)]),
         ('profile_mismatch', [(R + [fin, 'profile'], 'GENERAL')]),
         ('group_mismatch', [(R + [first, 'industry_group'], 'utilities')]),
         ('cross_section_size_tampered', [(['cross_section_size'], 99)]),
@@ -194,6 +261,29 @@ def cases():
         ('top_state_mismatch', [(['state'], 'STALE')]),
         ('code_count_changed', [(['code_count'], 503)]),
         ('kind_changed', [(['kind'], 'SEC_UNIVERSE_QG')]),
+        ('calc_version_legacy_file_valid', legacy),
+        ('calc_version_mixed_population_valid', mixed),
+        ('calc_version_mismatch_row_still_ranked', stale_scores),
+        ('calc_version_row_key_missing', [(R + [first, 'calc_version'], DELETE)]),
+        ('calc_version_top_malformed', [(['calc_version'], 'v2')]),
+        ('calc_version_row_malformed', [(R + [first, 'calc_version'], 'qgv2-calc/latest')]),
+        ('calc_version_on_row_without_data', [(R + [empty, 'calc_version'], OLD_CALC_VERSION)]),
+        # TARGET withdrawal (identity conflict, sec-public-inputs.json WITHDRAWN): TARGET section only, no values.
+        ('target_withdrawn_valid', [(T + ['nvda'], withdrawn)]),
+        ('target_withdrawn_without_observation_valid', [(T + ['asml'], dict(withdrawn, cik=q.target_cik('asml'),
+                                                                            withdrawn_acquired_at=None))]),
+        ('target_withdrawn_with_values', [(T + ['nvda', 'detected_at'], withdrawn['detected_at']),
+                                          (T + ['nvda', 'withdrawn_acquired_at'], None)]),
+        ('target_withdrawn_reason_without_keys', [(T + ['asml', 'reason_codes'], [q.WITHDRAWN_REASON])]),
+        ('target_withdrawn_with_acquired_at', [(T + ['nvda'], dict(withdrawn, acquired_at=withdrawn['withdrawn_acquired_at']))]),
+        ('target_withdrawn_other_reason', [(T + ['nvda'], dict(withdrawn, reason_codes=['NOT_COLLECTED']))]),
+        ('target_withdrawn_cik_mismatch', [(T + ['nvda'], dict(withdrawn, cik=q.target_cik('msft')))]),
+        ('target_withdrawn_without_cik', [(T + ['nvda'], dict(withdrawn, cik=None))]),
+        ('target_withdrawn_non_sec_issuer', [(T + ['hanmi'], dict(withdrawn, cik=None))]),
+        ('target_withdrawn_detected_after_as_of', [(T + ['nvda'], dict(withdrawn, detected_at='2026-10-14T00:00:00Z'))]),
+        ('target_withdrawn_names_a_later_observation', [(T + ['nvda'], dict(withdrawn, withdrawn_acquired_at='2026-10-13T22:20:00Z'))]),
+        ('target_withdrawn_detected_at_missing', [(T + ['nvda'], {k: v for k, v in withdrawn.items() if k != 'detected_at'})]),
+        ('records_withdrawn_not_allowed', [(R + [empty], dict(withdrawn, cik=None))]),
     ]
 
 
@@ -244,6 +334,7 @@ def build():
     constants = {'target_ciks': {cid: q.target_cik(cid) for cid in q.target_ids()},
                  'sic_groups': [[g['id'], g['sic_ranges']] for g in load_sic_config()['groups']],
                  'metric_keys': list(vf.METRIC_KEYS), 'factor_ids': list(vs.FACTOR_IDS), 'method': q.METHOD,
+                 'extra_metrics': {k: list(v) for k, v in vf.EXTRA_METRIC_PROFILES.items()}, 'calc_version': vf.CALC_VERSION,
                  'submetrics': {p: {f: [list(x) for x in specs] for f, specs in by.items()} for p, by in vs.SUBMETRICS.items()}}
     return {'synthetic': True, 'delete_marker': DELETE, 'constants': constants, 'base': payload, 'cases': out_cases}
 

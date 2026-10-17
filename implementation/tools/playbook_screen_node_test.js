@@ -109,6 +109,16 @@ test('approved SIC and strict 5-year revenue volatility classify playbook types 
  const context={idByTicker:new Map([['SYN','syn']]),screens:{'sec-qgv2.json':{records:{'NYSE:SYN':{sic:'2834',metrics:{revenue_volatility_5y_rank_pct:20}}}}}};
  assert.equal(P.factsFor('SYN',context).memberships.defensive,1);assert.equal(P.factsFor('SYN',context).memberships.quality,null);
 });
+test('quality (#19) reads the published sec-qgv2 fields roic_avg_3y and operating_margin_std_5y_pp',()=>{
+ const reader=require('../src/investment_system/product/web_assets/sec-qgv2.js');assert.deepEqual(Object.keys(reader.EXTRA_METRICS).filter(k=>!k.startsWith('ebit_')),['roic_avg_3y','operating_margin_std_5y_pp']);
+ const row=metrics=>({idByTicker:new Map([['SYN','syn']]),screens:{'sec-qgv2.json':{records:{'NYSE:SYN':{sic:'3674',metrics}}}}});
+ const pass={roic_avg_3y:0.2,operating_margin_std_5y_pp:2.0,net_debt_to_ebitda:1.0};
+ let f=P.factsFor('SYN',row(pass));assert.equal(f.memberships.quality,1);assert.equal(f.type_classification.quality.member,true);
+ assert.equal(P.factsFor('SYN',row({...pass,operating_margin_std_5y_pp:3.0})).memberships.quality,0);
+ assert.equal(P.factsFor('SYN',row({...pass,roic_avg_3y:0.149})).memberships.quality,0);
+ const{roic_avg_3y,...noRoic}=pass;assert.equal(P.factsFor('SYN',row(noRoic)).memberships.quality,null);
+ const{operating_margin_std_5y_pp,...noStd}=pass;assert.equal(P.factsFor('SYN',row(noStd)).memberships.quality,null);
+});
 test('v2 facts use their own QG snapshot and ephemeral per-symbol price availability',async()=>{
  const primary={q:70,g:60,v:null,axes:{Q:{state:'READY'},G:{state:'READY'},V:{state:'NOT_AVAILABLE'}}},idByTicker=new Map([['SYN','syn']]),context={idByTicker,computed:{default:'v2',rows:{syn:{primary}},playbook_price_symbols:['SYN']},ram:{state:'NOT_AVAILABLE',rows:[]}};
  const ready=P.factsFor('SYN',context);assert.equal(ready.data.snapshot_missing,false);assert.equal(ready.data.price_missing,false);assert.equal(ready.coverage,'READY');
@@ -127,4 +137,24 @@ test('navigation keeps shared RAM quotes and selected v2 basis, fresh device rea
  fresh={'NYSE:SYN':{price:88.7654321,currency:'USD'}};context.screens['sec-qgv2.json'].records['NYSE:SYN']={v_inputs:{currency:'EUR'}};assert.deepEqual((await P.prepareScores({},context)).playbook_price_symbols,[]);context.screens['sec-qgv2.json'].records['NYSE:SYN']={v_inputs:{currency:'USD'}};assert.deepEqual((await P.prepareScores({},context)).playbook_price_symbols,['SYN']);
  fresh={};context.scoreOptions=()=>({quotes:{},preset:'balanced',gate:true});const cleared=await P.prepareScores({},context);assert.deepEqual(cleared.playbook_price_symbols,[]);assert.deepEqual(seen.quotes,{});
  }finally{if(previous===undefined)delete globalThis.QgvScores;else globalThis.QgvScores=previous;}
+});
+test('macro reference-only (M-239): the screen shows CRISIS but no U3 and no macro expansion block; a gate-on copy still applies both',()=>{
+ const E=require('../src/investment_system/product/web_assets/playbook-engine.js'),CFG=require('../src/investment_system/product/web_assets/playbook-config-defaults.js');
+ const fixture=JSON.parse(require('node:fs').readFileSync(require('node:path').join(__dirname,'../tests/fixtures/playbook_reference_v1.json'),'utf8'));
+ assert.equal(CFG.macro.gate_active,false);assert.equal(CFG.macro.gate_status.state,'REFERENCE_ONLY');assert.equal(CFG.macro.gate_status.reason,'REPLAY_PENDING');
+ const situation={...fixture.cases.find(c=>c.id==='U3-crisis-all-five').input.situation,symbol:'SYN',macro_state:'CRISIS',macro_available_count:5};
+ const codes=j=>[j.primary,...j.secondary].filter(Boolean).map(c=>c.code),macroBlocks=j=>JSON.stringify([j.disabled,j.choices_by_code]).match(/MACRO_[A-Z_]+/g)||[];
+ const off=E.evaluate(CFG,situation); // default mode, as openPanel() calls it
+ assert.equal(off.macro.state,'CRISIS');assert.equal(off.macro.label,'CRISIS');assert.equal(off.macro.gate,'REFERENCE_ONLY');assert.equal(off.macro.split_multiplier,1);
+ assert.ok(!codes(off).includes('U3'));assert.deepEqual(macroBlocks(off),[]);
+ const html=P.panelHtml({symbol:'SYN',situation,judgement:off,stored:P.empty(),code:off.primary?.code||'H1'});
+ assert.match(html,/CRISIS · 매크로 참고 표시/);assert.ok(!html.includes('data-playbook-code="U3"'));
+ const warning=E.evaluate(CFG,{...situation,macro_state:'WARNING',memberships:{...situation.memberships,cyclical:1}});
+ assert.equal(warning.macro.state,'WARNING');assert.deepEqual(macroBlocks(warning),[]);assert.equal(warning.macro.split_multiplier,1);
+ const on=E.evaluate({...CFG,macro:{...CFG.macro,gate_active:true}},situation);
+ assert.ok(codes(on).includes('U3'));assert.ok(macroBlocks(on).includes('MACRO_CRISIS'));assert.ok(macroBlocks(on).includes('MACRO_BLOCK'));assert.equal(on.macro.gate,'ACTIVE');
+ assert.ok(!P.panelHtml({symbol:'SYN',situation,judgement:on,stored:P.empty(),code:on.primary.code}).includes('매크로 참고 표시'));
+ // Other safety rules are not part of the macro gate and still apply with it off.
+ assert.ok(JSON.stringify(E.evaluate(CFG,{...situation,theme_weight_pct:45}).disabled).includes('THEME_CONCENTRATION'));
+ assert.ok(JSON.stringify(E.evaluate(CFG,{...situation,sector:'financials'}).disabled).includes(CFG.financial_exception.reason));
 });

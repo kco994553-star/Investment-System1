@@ -23,6 +23,20 @@ from datetime import date, timedelta
 import math
 import re
 
+# Calculation-rule version of the Q·G raw metrics (owner supplement 2026-10-15). Bump it whenever a factor rule here changes
+# (concept lists, fallback lines, period rules, metric definitions). Every sec-qgv2.json row with data carries the version it
+# was computed with and the file declares the current one; rows of another version are never ranked in the same percentile
+# population (v2_scoring.score_rows, sec-qgv2.js, qgv2-inputs.js -> CALC_VERSION_MISMATCH). Format: qgv2-calc/<date>.<n>.
+# 2026-10-15.1 = rules SW, MAA, RSG, NODEBT, EBIT, SPLIT, APPQ on top of F1-F3 (QGV_V2_QG_METHOD.md section 1).
+# 2026-10-17.1 = v_inputs_v2 only: total_debt / cash_and_equivalents dated before the FY0 balance sheet are NA (V-STALE-BS);
+#                diluted_shares is the latest-ending fact over all allowed diluted-share concepts and NA when its period end is
+#                before FY0 end minus YEAR_TOLERANCE_DAYS (V-STALE-SHARES, owner decision 2026-10-17, same version);
+#                diluted_shares is NA (SHARES_SCALE_UNCONFIRMED) when it is outside SHARES_SCALE_BAND of the dei cover share
+#                count of the SAME filing, and the per-share histories are NA when their FY0 basis count is (V-SHARES-SCALE,
+#                owner decision 2026-10-17 on the MCD/WAT unit errors, same version; never rescaled, never another concept);
+#                Q·G metrics, factors and axes are unchanged from 2026-10-15.1.
+CALC_VERSION = 'qgv2-calc/2026-10-17.1'
+CALC_VERSION_PATTERN = r'qgv2-calc/[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]{1,4}'
 ANNUAL_FORMS = frozenset({'10-K', '10-K/A', '10-KT', '10-KT/A', '20-F', '20-F/A', '40-F', '40-F/A'})
 QUARTER_FORMS = frozenset({'10-Q', '10-Q/A'})
 INSTANT_FORMS = ANNUAL_FORMS | QUARTER_FORMS
@@ -38,12 +52,16 @@ TAX_RATE_BOUNDS = (0.0, 0.5)
 FINANCIAL_SIC_RANGE = (6000, 6499)
 PROFILES = ('GENERAL', 'FINANCIAL')
 
-# Concept priority lists. For each period the first concept with a usable fact wins.
+# Concept priority lists. For each period the first concept with a usable fact wins. Pretax income, D&A and capex then
+# have documented us-gaap fallback lines (component items at the end of the list; _Company.annual_hit).
 CONCEPTS = {
     'us-gaap': {
         'revenue': ('Revenues', 'RevenueFromContractWithCustomerExcludingAssessedTax',
                     'RevenueFromContractWithCustomerIncludingAssessedTax', 'SalesRevenueNet', 'SalesRevenueGoodsNet',
-                    'RevenuesNetOfInterestExpense'),
+                    'RevenuesNetOfInterestExpense',
+                    # Utilities' total operating revenues (regulated + unregulated). Same amount the issuer tagged as
+                    # `Revenues` in years where both were reported; last in the list, so it never overrides them.
+                    'RegulatedAndUnregulatedOperatingRevenue'),
         'gross_profit': ('GrossProfit',),
         'cost_of_revenue': ('CostOfRevenue', 'CostOfGoodsAndServicesSold', 'CostOfGoodsSold'),
         'ebit': ('OperatingIncomeLoss',),
@@ -71,6 +89,55 @@ CONCEPTS = {
         'debt_current_maturities': ('LongTermDebtCurrent', 'LongTermDebtAndCapitalLeaseObligationsCurrent'),
         'debt_short_term': ('ShortTermBorrowings', 'CommercialPaper'),
         'debt_current_total': ('DebtCurrent',),
+        # Component lines, read only by _Company.annual_hit when the item above has no usable value for a fiscal year
+        # (QGV_V2_QG_METHOD.md section 1, "Fallback lines"). Never a source of their own metric.
+        'pretax_income_domestic': ('IncomeLossFromContinuingOperationsBeforeIncomeTaxesDomestic',),
+        'pretax_income_foreign': ('IncomeLossFromContinuingOperationsBeforeIncomeTaxesForeign',),
+        'depreciation': ('Depreciation',),
+        'amortization_of_intangibles': ('AmortizationOfIntangibleAssets',),
+        # Total capex reported under a narrower element name (INCY: OtherProductiveAssets; RL FY2026: MachineryAndEquipment;
+        # GLW/SNA/IT: CapitalImprovements; LLY/WEC/ADP: OtherPropertyPlantAndEquipment). Used only when exactly one of them is
+        # reported for the year and no line of 'capital_expenditure_partial_lines' is: two or more lines mean each is a
+        # partial capex line, so capex stays None.
+        'capital_expenditure_fallback': ('PaymentsToAcquireOtherProductiveAssets', 'PaymentsToAcquireMachineryAndEquipment',
+                                         'PaymentsForCapitalImprovements', 'PaymentsToAcquireOtherPropertyPlantAndEquipment'),
+        'capital_expenditure_partial_lines': ('PaymentsToAcquireOilAndGasProperty', 'PaymentsToAcquireOilAndGasPropertyAndEquipment',
+                                              'PaymentsToExploreAndDevelopOilAndGasProperties', 'PaymentsToAcquireRealEstate',
+                                              'PaymentsToAcquireCommercialRealEstate', 'PaymentsToAcquireResidentialRealEstate',
+                                              'PaymentsToAcquireOtherRealEstate', 'PaymentsToDevelopRealEstateAssets',
+                                              'PaymentsForTenantImprovements', 'PaymentsForConstructionInProcess',
+                                              'PaymentsToAcquireTimberlands', 'PaymentsToAcquireBuildings', 'PaymentsToAcquireLand',
+                                              'PaymentsToAcquireFurnitureAndFixtures', 'PaymentsForProceedsFromProductiveAssets'),
+        # Capitalized software (owner decision Q-SW 2026-10-15: included in capex). Added to a physical capex line of the same
+        # span, never on its own and never to PaymentsToAcquireProductiveAssets (_Company._capex_with_software).
+        'capital_expenditure_software_total': ('PaymentsForSoftware',),
+        'capital_expenditure_software_parts': ('PaymentsToAcquireSoftware', 'PaymentsToDevelopSoftware'),
+        # Debt-free rule (owner decision Q-NODEBT 2026-10-15; _Company.debt_rule). Instants: borrowing concepts outside the
+        # debt lines above (DXCM-type convertible notes, notes payable, credit lines, ...). Any non-zero one at the
+        # balance-sheet date means the issuer reports debt that the debt lines do not capture, so debt stays NA.
+        'debt_evidence': ('ConvertibleDebt', 'ConvertibleDebtNoncurrent', 'ConvertibleDebtCurrent', 'ConvertibleNotesPayable',
+                          'ConvertibleNotesPayableCurrent', 'ConvertibleLongTermNotesPayable', 'ConvertibleSubordinatedDebt',
+                          'ConvertibleSubordinatedDebtNoncurrent', 'SeniorNotes', 'SeniorNotesCurrent', 'SeniorNotesNoncurrent',
+                          'SeniorLongTermNotes', 'SeniorSubordinatedNotes', 'SubordinatedDebt', 'SubordinatedLongTermDebt',
+                          'NotesPayable', 'NotesPayableCurrent', 'LongTermNotesPayable', 'LongTermNotesPayableCurrent',
+                          'NotesAndLoansPayable', 'NotesAndLoansPayableCurrent', 'LoansPayable', 'LoansPayableCurrent',
+                          'LongTermLoansPayable', 'ShortTermBankLoansAndNotesPayable', 'BankOverdrafts', 'LineOfCredit',
+                          'LongTermLineOfCredit', 'LongTermLineOfCreditNoncurrent', 'LinesOfCreditCurrent', 'SecuredDebt',
+                          'SecuredDebtCurrent', 'SecuredLongTermDebt', 'UnsecuredDebt', 'UnsecuredDebtCurrent',
+                          'UnsecuredLongTermDebt', 'OtherLongTermDebt', 'OtherLongTermDebtNoncurrent', 'OtherLongTermDebtCurrent',
+                          'OtherShortTermBorrowings', 'OtherBorrowings', 'DebtInstrumentCarryingAmount', 'DebtInstrumentFaceAmount',
+                          'LongTermDebtFairValue', 'DebtLongtermAndShorttermCombinedAmount', 'DebtAndCapitalLeaseObligations',
+                          'LongTermDebtAndCapitalLeaseObligationsIncludingCurrentMaturities'),
+        # Finance-lease liabilities (operating leases stay outside debt, as before): total, else noncurrent + current.
+        'finance_lease_total': ('FinanceLeaseLiability', 'CapitalLeaseObligations'),
+        'finance_lease_noncurrent': ('FinanceLeaseLiabilityNoncurrent', 'CapitalLeaseObligationsNoncurrent'),
+        'finance_lease_current': ('FinanceLeaseLiabilityCurrent', 'CapitalLeaseObligationsCurrent'),
+        # Flows: every interest-expense concept (any non-zero one blocks the zero-debt rule) and the finance-lease interest.
+        'interest_expense_evidence': ('InterestExpense', 'InterestExpenseNonoperating', 'InterestExpenseDebt',
+                                      'InterestAndDebtExpense', 'InterestExpenseOther', 'InterestExpenseBorrowings',
+                                      'InterestExpenseLongTermDebt', 'InterestExpenseShortTermBorrowings',
+                                      'InterestExpenseDebtExcludingAmortization', 'InterestExpenseRelatedParty'),
+        'finance_lease_interest': ('FinanceLeaseInterestExpense',),
     },
     'ifrs-full': {
         'revenue': ('Revenue', 'RevenueFromContractsWithCustomers'),
@@ -96,13 +163,47 @@ CONCEPTS = {
         'debt_current_maturities': ('CurrentPortionOfNoncurrentBorrowings',),
         'debt_short_term': ('ShorttermBorrowings', 'CurrentBorrowings'),
         'debt_current_total': ('CurrentBorrowingsAndCurrentPortionOfNoncurrentBorrowings',),
+        # No ifrs-full component fallbacks (us-gaap only).
+        'pretax_income_domestic': (), 'pretax_income_foreign': (), 'depreciation': (), 'amortization_of_intangibles': (),
+        'capital_expenditure_fallback': (), 'capital_expenditure_partial_lines': (),
+        'capital_expenditure_software_total': (), 'capital_expenditure_software_parts': (),
+        'debt_evidence': (), 'finance_lease_total': (), 'finance_lease_noncurrent': (), 'finance_lease_current': (),
+        'interest_expense_evidence': (), 'finance_lease_interest': (),
     },
 }
+# Issuer exceptions (owner decision Q-RSG 2026-10-15): explicit, CIK-keyed, us-gaap only, never a blanket rule (a blanket
+# "income-statement revenue first" breaks REITs, whose `Revenues` is the right total). For a listed issuer the item reads ONLY
+# the listed concepts, so years never mix the two bases; a year without them is NA.
+ISSUER_CONCEPT_EXCEPTIONS = {
+    # RSG (Republic Services): `Revenues` is the segment-note total before intercompany eliminations (FY2025 19,027 vs the
+    # income statement's 16,591); the income statement is RevenueFromContractWithCustomerExcludingAssessedTax.
+    '0001060391': {'revenue': ('RevenueFromContractWithCustomerExcludingAssessedTax',)},
+}
+COMPONENT_ITEMS = ('pretax_income_domestic', 'pretax_income_foreign', 'depreciation', 'amortization_of_intangibles',
+                   'capital_expenditure_fallback', 'capital_expenditure_partial_lines',
+                   'capital_expenditure_software_total', 'capital_expenditure_software_parts',
+                   'interest_expense_evidence', 'finance_lease_interest')
+# REITs (SIC 6798): PaymentsForCapitalImprovements is improvement spending on existing properties, a part of capex next to
+# development and acquisitions (MAA tags development elsewhere). Owner decision Q-MAA 2026-10-15: for a REIT this line is never
+# the F3 fallback and, like the partial lines, its presence leaves F3 capex NA.
+REIT_SIC = '6798'
+REIT_PARTIAL_CAPEX_FALLBACK = frozenset({'PaymentsForCapitalImprovements'})
+# Capex totals whose us-gaap definition already includes software (and other intangibles): software is never added to them.
+CAPEX_INCLUDES_SOFTWARE = frozenset({'PaymentsToAcquireProductiveAssets'})
+# Double-count guard: when PaymentsToAcquireProductiveAssets is also reported for the span, software is added only if that
+# total is at least physical capex + software (within this relative tolerance), i.e. the total confirms they are separate.
+CAPEX_SOFTWARE_TOLERANCE = 0.005
 FLOW_ITEMS = ('revenue', 'gross_profit', 'cost_of_revenue', 'ebit', 'pretax_income', 'income_tax', 'net_income',
               'operating_cash_flow', 'capital_expenditure', 'depreciation_amortization', 'interest_expense',
-              'net_interest_income', 'eps_diluted', 'diluted_shares')
+              'net_interest_income', 'eps_diluted', 'diluted_shares') + COMPONENT_ITEMS
+# D&A total that "holds only depreciation": equal to `Depreciation` within this relative tolerance (FIX: 62.4 vs 62.379).
+DA_DEPRECIATION_ONLY_TOLERANCE = 0.005
 INSTANT_ITEMS = ('total_assets', 'equity', 'cash_and_equivalents', 'debt_total_long_term', 'debt_noncurrent',
-                 'debt_current_maturities', 'debt_short_term', 'debt_current_total')
+                 'debt_current_maturities', 'debt_short_term', 'debt_current_total',
+                 'debt_evidence', 'finance_lease_total', 'finance_lease_noncurrent', 'finance_lease_current')
+DEBT_ITEMS = ('debt_total_long_term', 'debt_noncurrent', 'debt_current_maturities', 'debt_short_term', 'debt_current_total')
+# Lease case of the debt-free rule: interest expense is explained by the finance lease when it is at most the lease interest.
+LEASE_INTEREST_TOLERANCE = 0.005
 # FY0 anchor: the latest annual end of any of these defines the fiscal year sequence.
 ANCHOR_ITEMS = ('net_income', 'revenue', 'operating_cash_flow', 'ebit')
 
@@ -121,6 +222,46 @@ METRIC_KEYS = (
     'revenue_ttm_growth', 'revenue_acceleration',
     'revenue_growth_std_5y', 'revenue_volatility_5y_rank_pct',
 )
+# Stock-split adjustment of per-share histories (rule SPLIT, owner decision Q-SPLIT 2026-10-15; _Company.share_factor).
+# Split-ratio facts that confirm a share-count restatement (us-gaap, unit 'pure'; 2 = 2-for-1, a reverse split may be tagged
+# as 0.2 or 5: the direction always comes from the restated share counts themselves).
+SPLIT_RATIO_CONCEPTS = ('StockholdersEquityNoteStockSplitConversionRatio1', 'StockholdersEquityNoteStockSplitConversionRatio')
+# Two filings reporting the same share-count period: values within this relative distance are one basis (ordinary revision).
+SHARE_REVISION_TOLERANCE = 0.05
+# Otherwise the restatement ratio must match a reported split ratio (or its reciprocal) within this relative tolerance.
+SPLIT_MATCH_TOLERANCE = 0.03
+# An adjusted share count more than this factor away from FY0's is an unexplained discontinuity (e.g. a unit error): NA.
+SHARE_JUMP_LIMIT = 3.0
+# Scale check of v_inputs_v2.diluted_shares (rule V-SHARES-SCALE, owner decision 2026-10-17, calc_version 2026-10-17.1). The
+# reference is the dei cover share count (EntityCommonStockSharesOutstanding) reported in the SAME filing as the count: a
+# separately tagged point-in-time count, so a scale slip in the EPS table (MCD: 711.1 tagged without the millions scale; WAT 2026
+# 10-Qs: 98,204,000,000, 1,000x) does not repeat in it, while the basic weighted count of the same table does. A count whose
+# ratio to it is outside the band is NA with reason SHARES_SCALE_UNCONFIRMED: never multiplied or divided by 1,000 / 1,000,000,
+# never replaced by the cover or another concept. 10/17 raw (442 issuers with a current count and one same-filing cover value):
+# every correctly tagged count is within 0.83..1.16 of it, and the FY0-basis counts of the per-share histories within 0.58..1.20
+# (the low end: mergers closed after FY0, OMC/FITB/HBAN/WAT/DVN); the errors are 1,000,000x (MCD), 1,000x (WAT) and 1/23 (BKNG
+# histories: 25-for-1 split after FY0 without a split-ratio fact). The band is one order of magnitude each way (UNCALIBRATED):
+# far outside every observed normal difference and far inside the smallest unit error. No same-filing cover value, or several
+# distinct ones (class-dimensioned covers are not in companyfacts), means no reference: the count is kept unchecked (status
+# NO_REFERENCE), never blocked for it.
+SHARES_SCALE_BAND = (0.1, 10.0)
+SHARES_SCALE_UNCONFIRMED = 'SHARES_SCALE_UNCONFIRMED'
+COVER_SHARES_CONCEPT = ('dei', 'EntityCommonStockSharesOutstanding')
+# Price-free descriptors published only in the SEC file `sec-qgv2.json` (never ranked, never in the DART reference block,
+# whose key set is METRIC_KEYS exactly), with the profiles allowed to carry each (validators: universe/sec_qgv2.py, sec-qgv2.js).
+# ebit_estimated_years: number of fiscal years FY0..FY-5 whose EBIT is the substitute pretax + interest (rule EBIT); present
+# only when >= 1, so its absence means every EBIT used is the reported operating income (or EBIT is not available).
+# roic_avg_3y, operating_margin_std_5y_pp (owner decision Q-APPQ 2026-10-15): the PLAYBOOK §6-2 / §17 #19 quality inputs
+# (3-year average ROIC >= 15%, 5-year operating-margin population std < 3 percentage points), price-free.
+# ebit_estimated_fiscal_years (owner decision Q-EBIT-SCOPE 2026-10-15): WHICH fiscal years those are, as the calendar year
+# of each substituted fiscal-year end (ascending, unique; FY ending 2026-03-31 -> 2026). Same presence and length as the count.
+EXTRA_METRIC_PROFILES = {'ebit_estimated_years': ('GENERAL',), 'ebit_estimated_fiscal_years': ('GENERAL',), 'roic_avg_3y': ('GENERAL',),
+                         'operating_margin_std_5y_pp': ('GENERAL', 'FINANCIAL')}
+QUALITY_ROIC_YEARS = 3
+QUALITY_MARGIN_YEARS = 5
+EXTRA_METRIC_KEYS = tuple(EXTRA_METRIC_PROFILES)
+INTEGER_METRICS = frozenset({'moat_return_years', 'ebit_estimated_years'})
+LIST_METRICS = frozenset({'ebit_estimated_fiscal_years'})
 # Metrics that are counts/descriptors, not ranked directly.
 DESCRIPTIVE_METRICS = frozenset({'moat_return_mean_5y', 'moat_return_std_5y', 'moat_return_years', 'revenue_ttm_growth',
                                'revenue_growth_std_5y', 'revenue_volatility_5y_rank_pct'})
@@ -173,10 +314,84 @@ class _Facts:
         self.taxonomy, self.currency, self.cutoff = taxonomy, currency, cutoff
         facts = payload.get('facts') if isinstance(payload.get('facts'), dict) else {}
         facts = facts.get(taxonomy) if isinstance(facts.get(taxonomy), dict) else {}
-        self.items = {}
+        self.items, self.concepts, self.sources = {}, {}, {}
+        cik = payload.get('cik')
+        cik = str(cik).zfill(10) if type(cik) in (int, str) and str(cik).isdigit() else None
+        exceptions = ISSUER_CONCEPT_EXCEPTIONS.get(cik, {}) if taxonomy == 'us-gaap' else {}
+        self.issuer_exceptions = tuple(sorted(exceptions))
         for item, concepts in CONCEPTS[taxonomy].items():
+            concepts = exceptions.get(item, concepts)
             unit = self._unit(item)
-            self.items[item] = [self._table(facts.get(concept), unit, item in INSTANT_ITEMS) for concept in concepts]
+            self.concepts[item] = tuple(concepts)
+            tables = [self._table(facts.get(concept), unit, item in INSTANT_ITEMS) for concept in concepts]
+            self.items[item] = [table for table, _ in tables]
+            self.sources[item] = [source for _, source in tables]
+        self._share_filings(facts)
+        self._split_ratios(payload)
+        self._cover_counts(payload)
+
+    def _share_filings(self, facts):
+        """{filing: {(concept index, start, end): diluted shares}} for every annual-form annual span and 10-Q YTD/quarter
+        span (filed <= cutoff, > 0); a filing = (accession, filed date). A period reported twice in one filing with two
+        values is dropped. Used only to detect restatements (splits) between filings."""
+        self.share_filings = {}
+        dropped = set()
+        for n, concept in enumerate(self.concepts.get('diluted_shares', ())):
+            node = facts.get(concept)
+            rows = node.get('units', {}).get('shares') if isinstance(node, dict) and isinstance(node.get('units'), dict) else None
+            for row in rows if isinstance(rows, list) else ():
+                if not isinstance(row, dict):
+                    continue
+                form, filed, value = row.get('form'), _day(row.get('filed')), row.get('val')
+                start, end = _day(row.get('start')), _day(row.get('end'))
+                if None in (start, end, filed) or filed > self.cutoff or not _finite(value) or value <= 0:
+                    continue
+                days = (end - start).days
+                if not (ANNUAL_DAYS[0] <= days <= ANNUAL_DAYS[1] and form in ANNUAL_FORMS
+                        or YTD_DAYS[0] <= days <= YTD_DAYS[1] and form in QUARTER_FORMS):
+                    continue
+                filing, key = (row.get('accn') if isinstance(row.get('accn'), str) else None, filed), (n, start, end)
+                values = self.share_filings.setdefault(filing, {})
+                if key in values and values[key] != value:
+                    dropped.add((filing, key))
+                values.setdefault(key, value)
+        for filing, key in dropped:
+            self.share_filings[filing].pop(key, None)
+
+    def _split_ratios(self, payload):
+        """[(filed, ratio)] of the us-gaap stock-split ratio facts filed <= cutoff (any taxonomy of the row)."""
+        facts = payload.get('facts') if isinstance(payload.get('facts'), dict) else {}
+        group = facts.get('us-gaap') if isinstance(facts.get('us-gaap'), dict) else {}
+        self.split_ratios = []
+        for concept in SPLIT_RATIO_CONCEPTS:
+            node = group.get(concept)
+            units = node.get('units') if isinstance(node, dict) and isinstance(node.get('units'), dict) else {}
+            for rows in units.values():
+                for row in rows if isinstance(rows, list) else ():
+                    filed, value = _day(row.get('filed')) if isinstance(row, dict) else None, row.get('val') if isinstance(row, dict) else None
+                    if filed is not None and filed <= self.cutoff and _finite(value) and value > 0 and abs(value - 1.0) > SHARE_REVISION_TOLERANCE:
+                        self.split_ratios.append((filed, float(value)))
+
+    def _cover_counts(self, payload):
+        """{accession: {values}} of the dei cover share counts (COVER_SHARES_CONCEPT, unit 'shares', > 0, filed <= cutoff), any
+        taxonomy of the row. Read only by the V-SHARES-SCALE check (_shares_scale)."""
+        facts = payload.get('facts') if isinstance(payload.get('facts'), dict) else {}
+        group = facts.get(COVER_SHARES_CONCEPT[0]) if isinstance(facts.get(COVER_SHARES_CONCEPT[0]), dict) else {}
+        node = group.get(COVER_SHARES_CONCEPT[1])
+        rows = node.get('units', {}).get('shares') if isinstance(node, dict) and isinstance(node.get('units'), dict) else None
+        self.cover_counts = {}
+        for row in rows if isinstance(rows, list) else ():
+            if not isinstance(row, dict) or not isinstance(row.get('accn'), str):
+                continue
+            filed, value = _day(row.get('filed')), row.get('val')
+            if filed is not None and filed <= self.cutoff and _finite(value) and value > 0:
+                self.cover_counts.setdefault(row['accn'], set()).add(float(value))
+
+    def cover_count(self, filing):
+        """The one cover share count reported in `filing` (accession, filed); None when it reports none or several distinct
+        values (ambiguous: no reference)."""
+        values = self.cover_counts.get(filing[0]) if filing is not None else None
+        return next(iter(values)) if values is not None and len(values) == 1 else None
 
     def _unit(self, item):
         if item == 'diluted_shares':
@@ -186,12 +401,13 @@ class _Facts:
         return self.currency
 
     def _table(self, concept, unit, instant):
-        """{(start|None, end): value} with latest-filed wins and same-filed conflicts dropped."""
+        """({(start|None, end): value}, {key: filing}) with latest-filed wins and same-filed conflicts dropped;
+        filing = (accession, filed date) of the kept value."""
         if not isinstance(concept, dict) or not isinstance(concept.get('units'), dict):
-            return {}
+            return {}, {}
         rows = concept['units'].get(unit)
         if not isinstance(rows, list):
-            return {}
+            return {}, {}
         best, dropped = {}, set()
         for row in rows:
             if not isinstance(row, dict):
@@ -215,12 +431,14 @@ class _Facts:
                     continue
                 key = (start, end)
             previous = best.get(key)
+            accn = row.get('accn') if isinstance(row.get('accn'), str) else None
             if previous is None or filed > previous[0]:
-                best[key] = (filed, value)
+                best[key] = (filed, value, accn)
                 dropped.discard(key)
             elif filed == previous[0] and value != previous[1]:
                 dropped.add(key)
-        return {key: v for key, (_, v) in best.items() if key not in dropped}
+        kept = {key: entry for key, entry in best.items() if key not in dropped}
+        return {key: v for key, (_, v, _) in kept.items()}, {key: (accn, filed) for key, (filed, _, accn) in kept.items()}
 
     # ---- lookups ----
     def annual_ends(self, item):
@@ -239,6 +457,25 @@ class _Facts:
                 hits.sort()
                 _, start, end, value = hits[0]
                 return value, start, end
+        return None
+
+    def annual_filing(self, item, target):
+        """The filing (accession, filed) of the value annual(item, target) returns; None when there is none."""
+        for table, source in zip(self.items[item], self.sources[item]):
+            hits = [(abs((end - target).days), start, end) for (start, end) in table
+                    if start is not None and ANNUAL_DAYS[0] <= (end - start).days <= ANNUAL_DAYS[1]
+                    and abs((end - target).days) <= YEAR_TOLERANCE_DAYS]
+            if hits:
+                hits.sort()
+                return source.get(hits[0][1:])
+        return None
+
+    def latest_duration_filing(self, item):
+        """The filing of the value latest_duration(item) returns."""
+        for table, source in zip(self.items[item], self.sources[item]):
+            if table:
+                key = max(table, key=lambda k: (k[1], -(k[1] - k[0]).days))
+                return source.get(key)
         return None
 
     def ytd(self, item, start_near, end_near, tables=None):
@@ -281,6 +518,22 @@ class _Facts:
                 (start, end), value = max(table.items(), key=lambda kv: (kv[0][1], -(kv[0][1] - kv[0][0]).days))
                 return value, end
         return None
+
+    def latest_duration_any_concept(self, item):
+        """(value, end, filing, concept) of the latest-ending positive annual or quarterly-span fact over ALL allowed concepts of
+        `item` (V-STALE-SHARES, calc_version 2026-10-17.1): the latest period end wins; at the same end the earlier-listed
+        concept; within one concept the shortest span (as latest_duration). Only facts the tables kept (filed <= cutoff,
+        annual spans from annual forms, YTD/quarter spans from 10-Q forms). Read only for v_inputs_v2.diluted_shares;
+        latest_duration keeps its first-concept rule."""
+        best = None
+        for n, (table, source) in enumerate(zip(self.items[item], self.sources[item])):
+            for (start, end), value in table.items():
+                if start is None or not _finite(value) or value <= 0:
+                    continue
+                rank = (end, -n, -(end - start).days)
+                if best is None or rank > best[0]:
+                    best = (rank, value, end, source.get((start, end)), self.concepts[item][n])
+        return None if best is None else best[1:]
 
 
 def _taxonomy_and_currency(payload, cutoff):
@@ -353,9 +606,12 @@ def _avg_pair(a, b):
 
 
 class _Company:
-    def __init__(self, facts, fy0_end):
-        self.f, self.fy0 = facts, fy0_end
+    def __init__(self, facts, fy0_end, *, sic=None, profile='GENERAL'):
+        self.f, self.fy0, self.sic, self.profile = facts, fy0_end, sic, profile
         self._cache = {}
+        # The SEC-only rules (software capex, ...) read component tables of a companyfacts payload; other period
+        # adapters (DART) keep the shared definitions only.
+        self.sec = isinstance(facts, _Facts)
 
     def end(self, k):
         return _shift_years(self.fy0, k)
@@ -363,9 +619,137 @@ class _Company:
     def a(self, item, k):
         key = ('a', item, k)
         if key not in self._cache:
-            hit = self.f.annual(item, self.end(k))
+            hit = self.annual_hit(item, self.end(k))
             self._cache[key] = hit[0] if hit else None
         return self._cache[key]
+
+    # ---- fallback lines (QGV_V2_QG_METHOD.md section 1). Each needs every component it names: never 0-filled. ----
+    def _component(self, item, target):
+        """Per-concept hits of a component item for one fiscal year: [(hit, table)]. Adapters without the item: []."""
+        return [(hit, table) for hit, table, _ in self._component_named(item, target)]
+
+    def _component_named(self, item, target):
+        """[(hit, table, concept name)] in list order (concept name None for adapters without names)."""
+        out = []
+        names = getattr(self.f, 'concepts', {}).get(item, ())
+        for n, table in enumerate(self.f.items.get(item) or ()):
+            hit = self.f.annual(item, target, [table])
+            if hit is not None:
+                out.append((hit, table, names[n] if n < len(names) else None))
+        return out
+
+    def _single(self, item, target):
+        hits = self._component(item, target)
+        return hits[0][0] if hits else None
+
+    def _pair_sum(self, first, second, target):
+        a, b = self._single(first, target), self._single(second, target)
+        if a is None or b is None or a[1:] != b[1:]:
+            return None
+        return a[0] + b[0], a[1], a[2]
+
+    def capex_fallback(self, target):
+        """(hit, table) of the one fallback capex line reported for the year; None when none or ambiguous."""
+        found = self._capex_fallback_named(target)
+        return found[:2] if found else None
+
+    def _capex_fallback_named(self, target):
+        hits = self._component_named('capital_expenditure_fallback', target)
+        partial = bool(self._component('capital_expenditure_partial_lines', target))
+        if self.sic == REIT_SIC:  # Q-MAA: a REIT's capital improvements are a partial capex line
+            partial = partial or any(name in REIT_PARTIAL_CAPEX_FALLBACK for _, _, name in hits)
+            hits = [h for h in hits if h[2] not in REIT_PARTIAL_CAPEX_FALLBACK]
+        if len(hits) != 1 or partial:
+            return None
+        return hits[0]
+
+    def _capex_base(self, target):
+        """(hit, table, concept) of the physical capex line: the priority list first (first concept wins), then F3."""
+        hits = self._component_named('capital_expenditure', target)
+        if hits:
+            return hits[0]
+        return self._capex_fallback_named(target)
+
+    def _software(self, span):
+        """[(hit, table, concept)] of the capitalized-software lines of exactly `span` (start, end), each >= 0:
+        PaymentsForSoftware alone when reported (a total of the parts), else every reported part. [] when none."""
+        pick = lambda item: [h for h in self._component_named(item, span[1]) if h[0][1:] == span and h[0][0] >= 0]
+        total = pick('capital_expenditure_software_total')
+        return total[:1] if total else pick('capital_expenditure_software_parts')
+
+    def _capex_with_software(self, target):
+        """(hit, software lines) for one fiscal year (QGV_V2_QG_METHOD.md section 1, rule SW). Software is added only to a
+        physical capex line of the same span, never to PaymentsToAcquireProductiveAssets (its definition includes software),
+        and not when a reported PaymentsToAcquireProductiveAssets total of the span is smaller than PP&E + software (the
+        software would then already be inside the PP&E line). Software alone is not capex."""
+        base = self._capex_base(target)
+        if base is None:
+            return None, []
+        hit, _, concept = base
+        if concept in CAPEX_INCLUDES_SOFTWARE:
+            return hit, []
+        software = self._software(hit[1:])
+        if not software:
+            return hit, []
+        added = math.fsum(h[0][0] for h in software)
+        for total_hit, _, name in self._component_named('capital_expenditure', target):
+            if name in CAPEX_INCLUDES_SOFTWARE and total_hit[1:] == hit[1:]:
+                if total_hit[0] < (hit[0] + added) * (1.0 - CAPEX_SOFTWARE_TOLERANCE):
+                    return hit, []
+        return (hit[0] + added, hit[1], hit[2]), software
+
+    def _depreciation_amortization(self, total, target):
+        """Depreciation + AmortizationOfIntangibleAssets (same period, both >= 0) replaces the total D&A line when
+        (a) no total D&A concept is reported for the year, or (b) the total equals Depreciation within
+        DA_DEPRECIATION_ONLY_TOLERANCE and the intangible amortization is larger than the total, so the total cannot
+        contain it (FIX). Otherwise the total is kept: a total that may already include the amortization is never
+        added to again (no double count)."""
+        dep, amo = self._single('depreciation', target), self._single('amortization_of_intangibles', target)
+        if dep is None or amo is None or dep[1:] != amo[1:] or dep[0] < 0 or amo[0] < 0:
+            return total
+        combined = (dep[0] + amo[0], dep[1], dep[2])
+        if total is None:
+            return combined
+        if (total[1:] == dep[1:] and abs(total[0] - dep[0]) <= DA_DEPRECIATION_ONLY_TOLERANCE * abs(dep[0])
+                and amo[0] > total[0]):
+            return combined
+        return total
+
+    # ---- EBIT substitute (rule EBIT, owner decision Q-EBIT 2026-10-15) ----
+    def ebit_substitute_on(self):
+        """SEC GENERAL issuers only: for a bank or insurer the interest expense is an operating cost, so pretax + interest is
+        not an operating result; the DART adapter always reports operating income."""
+        return self.sec and self.profile == 'GENERAL'
+
+    def _ebit_substitute(self, target):
+        """EBIT = pretax income (incl. F1) + interest expense of the same span (>= 0) when no operating income is reported
+        for the year. Both are needed: a missing interest expense is never taken as 0."""
+        pretax, interest = self.annual_hit('pretax_income', target), self.f.annual('interest_expense', target)
+        if pretax is None or interest is None or pretax[1:] != interest[1:] or interest[0] < 0:
+            return None
+        return pretax[0] + interest[0], pretax[1], pretax[2]
+
+    def ebit_estimated(self, k):
+        """True when year k's EBIT is the substitute (no reported operating income, substitute available)."""
+        return self.ebit_substitute_on() and self.f.annual('ebit', self.end(k)) is None and self.a('ebit', k) is not None
+
+    def annual_hit(self, item, target):
+        """(value, start, end) for one fiscal year: the item's concept list first, then its documented fallback."""
+        if item == 'capital_expenditure' and self.sec:
+            return self._capex_with_software(target)[0]
+        hit = self.f.annual(item, target)
+        if item == 'depreciation_amortization':
+            return self._depreciation_amortization(hit, target)
+        if hit is not None:
+            return hit
+        if item == 'pretax_income':
+            return self._pair_sum('pretax_income_domestic', 'pretax_income_foreign', target)
+        if item == 'ebit' and self.ebit_substitute_on():
+            return self._ebit_substitute(target)
+        if item == 'capital_expenditure':
+            found = self.capex_fallback(target)
+            return found[0] if found else None
+        return None
 
     def i(self, item, k):
         key = ('i', item, k)
@@ -397,8 +781,48 @@ class _Company:
     def debt(self, k):
         key = ('debt', k)
         if key not in self._cache:
-            self._cache[key] = self.debt_at(self.end(k))
+            debt = self.debt_at(self.end(k))
+            self._cache[key] = debt if debt is not None else self.debt_rule(self.end(k))
         return self._cache[key]
+
+    def _any_instant(self, item, target, tolerance=YEAR_TOLERANCE_DAYS):
+        """Values of every concept of `item` reported at `target` (the per-concept nearest end)."""
+        out = []
+        for table in self.f.items.get(item) or ():
+            hits = sorted((abs((end - target).days), v) for (_, end), v in table.items() if abs((end - target).days) <= tolerance)
+            if hits:
+                out.append(hits[0][1])
+        return out
+
+    def debt_rule(self, target):
+        """Debt at a fiscal-year-end balance sheet that reports none of the debt lines (QGV_V2_QG_METHOD.md section 1, rule
+        NODEBT; owner decision Q-NODEBT 2026-10-15). us-gaap SEC payloads only; None (NA) unless every condition holds:
+        - a balance sheet exists at `target` (total assets or equity reported);
+        - no debt line and no debt-evidence concept (convertible/senior notes, notes/loans payable, credit lines, ...) has a
+          non-zero value at `target` (a reported 0 is a reported zero, not a debt);
+        - without finance-lease liabilities: every interest-expense concept of the fiscal year is 0 or unreported -> debt 0;
+        - with finance-lease liabilities only: debt = the lease liability (total, else noncurrent + current, both needed),
+          and every non-zero interest expense of the year is at most FinanceLeaseInterestExpense (the interest is the lease's).
+        An issuer with debt under other concepts (DXCM) or under extension tags with interest expense (ORCL, F, GM) stays NA."""
+        if not self.sec or self.f.taxonomy != 'us-gaap':
+            return None
+        if self.f.instant('total_assets', target) is None and self.f.instant('equity', target) is None:
+            return None
+        if any(v != 0 for item in DEBT_ITEMS + ('debt_evidence',) for v in self._any_instant(item, target)):
+            return None
+        interest = [hit[0] for hit, _, _ in self._component_named('interest_expense_evidence', target) if hit[0] != 0]
+        lease_total = self.f.instant('finance_lease_total', target)
+        lease_parts = (self.f.instant('finance_lease_noncurrent', target), self.f.instant('finance_lease_current', target))
+        if lease_total is None and all(v is None or v == 0 for v in lease_parts):
+            return 0.0 if not interest else None
+        lease = lease_total if lease_total is not None else (None if None in lease_parts else lease_parts[0] + lease_parts[1])
+        if lease is None or lease < 0:
+            return None
+        if interest:
+            lease_interest = self._single('finance_lease_interest', target)
+            if lease_interest is None or any(v < 0 or v > lease_interest[0] * (1.0 + LEASE_INTEREST_TOLERANCE) for v in interest):
+                return None
+        return float(lease)
 
     def tax_rate(self, k):
         pretax, tax = self.a('pretax_income', k), self.a('income_tax', k)
@@ -438,17 +862,162 @@ class _Company:
         ocf, capex = self.a('operating_cash_flow', k), self.a('capital_expenditure', k)
         return None if ocf is None or capex is None else ocf - capex
 
+    # ---- stock-split adjustment (rule SPLIT, owner decision Q-SPLIT 2026-10-15) ----
+    def _basis(self):
+        """The filing whose share basis all per-share values are restated to: that of the FY0 diluted share count (else of
+        FY0 diluted EPS)."""
+        if 'basis' not in self._cache:
+            self._cache['basis'] = self.f.annual_filing('diluted_shares', self.fy0) or self.f.annual_filing('eps_diluted', self.fy0)
+        return self._cache['basis']
+
+    def _edge(self, a, b):
+        """Factor turning a share count of filing a's basis into filing b's, from the periods both report: 1 for an ordinary
+        revision (within SHARE_REVISION_TOLERANCE), a reported split ratio (or reciprocal) the restatement matches, 'X' for an
+        unconfirmed restatement, None when they share no period."""
+        va, vb = self.f.share_filings.get(a, {}), self.f.share_filings.get(b, {})
+        ratios = [vb[key] / va[key] for key in va.keys() & vb.keys()]
+        if not ratios:
+            return None
+        if all(abs(r - 1.0) <= SHARE_REVISION_TOLERANCE for r in ratios):
+            return 1.0
+        candidates = sorted({c for _, s in self.f.split_ratios for c in (s, 1.0 / s)})
+        for c in candidates:
+            if all(abs(r / c - 1.0) <= SPLIT_MATCH_TOLERANCE for r in ratios):
+                return c
+        return 'X'
+
+    def share_factor(self, filing, target=None):
+        """Multiply a share count reported in `filing` by this factor to restate it to `target`'s basis (default: the FY0
+        basis); divide a per-share value by it. 1.0 outside SEC payloads. None when the basis cannot be established:
+        - filings are linked through periods both report (a confirmed split or an ordinary revision on every link);
+        - linked only through an unconfirmed restatement (no matching split-ratio fact, e.g. a 1,000x unit change): None;
+        - not linked at all: 1.0 unless a split-ratio fact was filed between the two filings (then None)."""
+        if not self.sec:
+            return 1.0
+        target = self._basis() if target is None else target
+        if filing is None or target is None or filing == target:
+            return 1.0
+        key = ('share_factor', filing, target)
+        if key in self._cache:
+            return self._cache[key]
+        nodes, index = self.f.share_filings, self._period_index()
+        result, seen, frontier = None, {filing: 1.0}, [filing]
+        while frontier and result is None:  # breadth-first over confirmed links
+            nxt = []
+            for node in frontier:
+                for other in sorted({o for period in nodes.get(node, {}) for o in index[period]} - {node}, key=str):
+                    edge = self._edge(node, other)
+                    if edge is None or edge == 'X' or other in seen:
+                        continue
+                    seen[other] = seen[node] * edge
+                    if other == target:
+                        result = seen[other]
+                        break
+                    nxt.append(other)
+                if result is not None:
+                    break
+            frontier = nxt
+        if result is None:
+            reachable = self._linked(filing, index)
+            if target in reachable:
+                result = None  # only through an unconfirmed restatement
+            else:
+                low, high = sorted((filing[1], target[1]))
+                result = None if any(low < filed <= high for filed, _ in self.f.split_ratios) else 1.0
+        self._cache[key] = result
+        return result
+
+    def _period_index(self):
+        if 'period_index' not in self._cache:
+            index = {}
+            for node, values in self.f.share_filings.items():
+                for period in values:
+                    index.setdefault(period, set()).add(node)
+            self._cache['period_index'] = index
+        return self._cache['period_index']
+
+    def _linked(self, filing, index):
+        nodes, seen, stack = self.f.share_filings, {filing}, [filing]
+        while stack:
+            node = stack.pop()
+            for period in nodes.get(node, {}):
+                for other in index[period] - seen:
+                    seen.add(other)
+                    stack.append(other)
+        return seen
+
+    def _raw_shares(self, k):
+        return self.a('diluted_shares', k)
+
+    def shares(self, k):
+        """Diluted share count of year k on the FY0 basis (split-adjusted); None when the basis cannot be established or
+        the adjusted count is more than SHARE_JUMP_LIMIT away from FY0's (unexplained discontinuity)."""
+        key = ('shares', k)
+        if key not in self._cache:
+            raw = self._raw_shares(k)
+            out = raw
+            if raw is not None and self.sec:
+                factor = self.share_factor(self.f.annual_filing('diluted_shares', self.end(k)))
+                out = None if factor is None else raw * factor
+                if out is not None and k > 0 and self._jump(out):
+                    out = None
+            self._cache[key] = out
+        return self._cache[key]
+
+    def _jump(self, adjusted):
+        base = self.shares(0)
+        return base is not None and base > 0 and not 1.0 / SHARE_JUMP_LIMIT <= adjusted / base <= SHARE_JUMP_LIMIT
+
+    def eps(self, k):
+        """Diluted EPS of year k on the FY0 share basis; None when its filing's basis cannot be established or year k's
+        share count is an unexplained discontinuity."""
+        raw = self.a('eps_diluted', k)
+        if raw is None or not self.sec:
+            return raw
+        factor = self.share_factor(self.f.annual_filing('eps_diluted', self.end(k)))
+        if factor is None or k > 0 and self._raw_shares(k) is not None and self.shares(k) is None:
+            return None
+        return raw / factor
+
     def per_share(self, value, k):
-        return _div(value, self.a('diluted_shares', k))
+        return _div(value, self.shares(k))
 
     # ---- TTM ----
     def ttm(self, item):
         """(ttm_value, period_end, ttm_year_ago_value): FY0 + YTD - YTD(prior year), all from ONE concept;
-        FY0 alone (period end = FY0 end) when no concept has a later 10-Q with its prior-year comparative."""
-        fy0 = self.f.annual(item, self.fy0)
+        FY0 alone (period end = FY0 end) when no concept has a later 10-Q with its prior-year comparative.
+        Capex with capitalized software (SEC): TTM of the physical line + TTM of each software line, only when every one
+        ends on the same date (else None: FY and TTM never mix spans); the year-ago TTM is then not derived."""
+        software = self._capex_with_software(self.fy0)[1] if item == 'capital_expenditure' and self.sec else []
+        if software:
+            base = self._capex_base(self.fy0)
+            out = self._ttm_one(item, base[0], [base[1]], single=True)
+            parts = [out] + [self._ttm_one(item, h, [table], single=True) for h, table, _ in software]
+            if any(p[1] != out[1] for p in parts):
+                return None
+            return math.fsum(p[0] for p in parts), out[1], None
+        if item == 'ebit' and self.f.annual(item, self.fy0) is None and self.ebit_substitute_on():
+            # Substitute TTM = TTM pretax + TTM interest, only when both end on the same date (never mixed spans).
+            if self._ebit_substitute(self.fy0) is None:
+                return None
+            pretax, interest = self.ttm('pretax_income'), self.ttm('interest_expense')
+            if pretax is None or interest is None or pretax[1] != interest[1]:
+                return None
+            ago = None if pretax[2] is None or interest[2] is None else pretax[2] + interest[2]
+            return pretax[0] + interest[0], pretax[1], ago
+        fy0, tables = self.f.annual(item, self.fy0), self.f.items[item]
+        if fy0 is None and item == 'capital_expenditure':
+            found = self.capex_fallback(self.fy0)  # the one fallback line, still a single concept for FY0 and YTD
+            if found is not None:
+                fy0, tables = found[0], [found[1]]
         if fy0 is None:
             return None
-        for table in self.f.items[item]:
+        return self._ttm_one(item, fy0, tables)
+
+    def _ttm_one(self, item, fy0, tables, single=False):
+        """TTM over `tables` (first table with FY0 + later 10-Q YTD + prior-year YTD), else FY0 alone. `single`: the
+        year-ago value also comes from `tables` only (a component line), not from the item's full rule."""
+        for table in tables:
             one = [table]
             hit = self.f.annual(item, self.fy0, one)
             if hit is None:
@@ -469,7 +1038,7 @@ class _Company:
                 if prev2 is not None:
                     ago = fy1[0] + prev[0] - prev2[0]
             return value0 + cur[0] - prev[0], cur[2], ago
-        fy1 = self.f.annual(item, _shift_years(fy0[2], 1))
+        fy1 = self.f.annual(item, _shift_years(fy0[2], 1), tables) if single else self.annual_hit(item, _shift_years(fy0[2], 1))
         return fy0[0], fy0[2], (fy1[0] if fy1 else None)
 
 
@@ -527,8 +1096,8 @@ def _moat(m, returns):
 
 def _growth_common(c, m):
     m['revenue_cagr_3y'] = _cagr(c.a('revenue', 0), c.a('revenue', 3), 3)
-    m['eps_cagr_3y'] = _cagr(c.a('eps_diluted', 0), c.a('eps_diluted', 3), 3)
-    shares0, shares3 = c.a('diluted_shares', 0), c.a('diluted_shares', 3)
+    m['eps_cagr_3y'] = _cagr(c.eps(0), c.eps(3), 3)
+    shares0, shares3 = c.shares(0), c.shares(3)
     m['dilution_3y'] = _cagr(shares0, shares3, 3)
     growth = []
     for k in range(HISTORY_YEARS):
@@ -549,12 +1118,36 @@ def _growth_common(c, m):
             m['revenue_acceleration'] = m['revenue_ttm_growth'] - m['revenue_cagr_3y']
 
 
+def _extra_metrics(c, m):
+    """SEC-only descriptors (EXTRA_METRIC_KEYS); a profile outside a key's EXTRA_METRIC_PROFILES leaves it None."""
+    m.update(dict.fromkeys(EXTRA_METRIC_KEYS))
+    years = sorted({c.annual_hit('ebit', c.end(k))[2].year for k in range(HISTORY_YEARS + 1) if c.ebit_estimated(k)})
+    if years and c.profile in EXTRA_METRIC_PROFILES['ebit_estimated_years']:
+        m['ebit_estimated_years'], m['ebit_estimated_fiscal_years'] = len(years), years
+    # roic_avg_3y = mean of ROIC FY0, FY-1, FY-2 (all three needed; same ROIC as `roic`, GENERAL only).
+    roic = [c.roic(k) for k in range(QUALITY_ROIC_YEARS)]
+    if c.profile in EXTRA_METRIC_PROFILES['roic_avg_3y'] and None not in roic:
+        m['roic_avg_3y'] = _mean(roic)
+    # operating_margin_std_5y_pp = population std of EBIT / revenue over FY0..FY-4, in percentage points (all five needed,
+    # revenue > 0; the margins of v_inputs_v2.operating_margin_history before rounding).
+    margins = []
+    for k in range(QUALITY_MARGIN_YEARS):
+        revenue, ebit = c.a('revenue', k), c.a('ebit', k)
+        if revenue is None or revenue <= 0 or ebit is None:
+            break
+        margins.append(ebit / revenue)
+    if len(margins) == QUALITY_MARGIN_YEARS:
+        m['operating_margin_std_5y_pp'] = 100.0 * _pstdev(margins)
+
+
 V_FLOW_KEYS = ('fy_value', 'fy_end', 'ttm_value', 'ttm_end')
 V_INSTANT_KEYS = ('value', 'period_end')
 LEGACY_V_KEYS = ('currency', 'taxonomy', 'fiscal_year_end', 'ebit', 'fcf', 'total_debt', 'cash_and_equivalents', 'diluted_shares', 'ebit_per_share_history', 'fcf_per_share_history',
           'revenue_cagr_3y', 'eps_cagr_3y', 'fcf_per_share_cagr_3y', 'revenue_ttm_growth')
 
 V_KEYS = LEGACY_V_KEYS + ('revenue', 'operating_margin_history')
+# EV balance-sheet inputs that must be on or after the FY0 balance sheet (V-STALE-BS, calc_version 2026-10-17.1).
+STALE_BALANCE_SHEET_V_KEYS = ('total_debt', 'cash_and_equivalents')
 
 def empty_v_inputs():
     return {'currency': None, 'taxonomy': None, 'fiscal_year_end': None,
@@ -571,12 +1164,25 @@ def _flow(c, item_value_fy, ttm):
     return out if out['fy_value'] is not None or out['ttm_value'] is not None else None
 
 
-def _v_inputs(c, m, taxonomy, currency):
+def _shares_scale(value, reference):
+    """V-SHARES-SCALE status of a share count against its reference cover count: NO_REFERENCE, IN_BAND or
+    SHARES_SCALE_UNCONFIRMED (ratio outside SHARES_SCALE_BAND)."""
+    if reference is None or not _finite(value) or value <= 0:
+        return {'status': 'NO_REFERENCE', 'reference': reference, 'reference_concept': None, 'ratio': None}
+    ratio = value / reference
+    status = 'IN_BAND' if SHARES_SCALE_BAND[0] <= ratio <= SHARES_SCALE_BAND[1] else SHARES_SCALE_UNCONFIRMED
+    return {'status': status, 'reference': reference, 'reference_concept': ':'.join(COVER_SHARES_CONCEPT), 'ratio': ratio}
+
+
+def _v_inputs(c, m, taxonomy, currency, diagnostics=None):
+    """`diagnostics` (optional dict) receives the V-SHARES-SCALE checks: {'diluted_shares': {...}, 'per_share_histories':
+    {...}} with status, reference, ratio, value and filing (not published; audit and tests)."""
+    diagnostics = {} if diagnostics is None else diagnostics
     v = empty_v_inputs()
     v.update(currency=currency, taxonomy=taxonomy, fiscal_year_end=c.fy0.isoformat())
 
     def fy(item):
-        hit = c.f.annual(item, c.fy0)
+        hit = c.annual_hit(item, c.fy0)
         return (hit[0], hit[2].isoformat()) if hit else (None, None)
 
     def ttm(item):
@@ -594,7 +1200,6 @@ def _v_inputs(c, m, taxonomy, currency):
         if ocf['ttm_value'] is not None and capex['ttm_value'] is not None and ocf['ttm_end'] == capex['ttm_end']:
             fcf['ttm_value'], fcf['ttm_end'] = ocf['ttm_value'] - capex['ttm_value'], ocf['ttm_end']
         v['fcf'] = fcf if fcf['fy_value'] is not None or fcf['ttm_value'] is not None else None
-    # Latest balance sheet: the latest cash date (any 10-K/10-Q); debt at that exact date.
     # Latest balance sheet values, each with its own date (any 10-K/10-Q); debt on a date where its lines exist.
     cash_ends = c.f.instant_ends('cash_and_equivalents')
     if cash_ends:
@@ -608,14 +1213,68 @@ def _v_inputs(c, m, taxonomy, currency):
         if debt is not None:
             v['total_debt'] = {'value': debt, 'period_end': end.isoformat()}
             break
-    shares = c.f.latest_duration('diluted_shares')
-    if shares is not None and shares[0] > 0:
-        v['diluted_shares'] = {'value': shares[0], 'period_end': shares[1].isoformat()}
+    # Debt-free rule at the FY0 balance sheet when no debt line gives a value on or after FY0 end (MNST: a FY-1 debt line
+    # repaid in FY0 is not carried forward as the latest debt).
+    if v['total_debt'] is None or v['total_debt']['period_end'] < c.fy0.isoformat():
+        rule = c.debt_rule(c.fy0) if c.debt_at(c.fy0) is None else None
+        if rule is not None:
+            v['total_debt'] = {'value': rule, 'period_end': c.fy0.isoformat()}
+    # V-STALE-BS (2026-10-17 number check; Q-NODEBT-INT): a debt or cash value dated before the FY0 balance sheet (FY0 end minus
+    # the usual instant tolerance) is NA, never the last value reported years earlier (INCY 2018, EME 2023, DECK 2021, PCAR cash
+    # 2019). Debt is 0 only when an FY0 line or the approved NODEBT rule says so. The device then shows ebit_yield/fcf_yield
+    # as NA with reason DEBT_CASH_NOT_AVAILABLE (qgv-v2.js metrics); missing is never 0.
+    oldest = (c.fy0 - timedelta(days=YEAR_TOLERANCE_DAYS)).isoformat()
+    for key in STALE_BALANCE_SHEET_V_KEYS:
+        if v[key] is not None and v[key]['period_end'] < oldest:
+            v[key] = None
+    # V-STALE-SHARES (owner decision 2026-10-17, calc_version 2026-10-17.1): the diluted share count is the latest-ending
+    # positive fact over ALL allowed diluted-share concepts (not the first concept's last value: BKR 2021, REG 2020, TTWO 2024,
+    # HSY 2015, LYB 2019, SJM 2023, ERIE 2021), judged by its period END: an end before FY0 end minus the same tolerance as
+    # V-STALE-BS is NA. Never basic shares, shares outstanding or another concept. The device then shows the per-share and
+    # EV-based V metrics as NA with reason SHARES_NOT_AVAILABLE (qgv-v2.js metrics); missing is never filled.
+    if c.sec:
+        shares = c.f.latest_duration_any_concept('diluted_shares')
+    else:  # other period adapters (DART): their single annual series
+        shares = c.f.latest_duration('diluted_shares')
+        shares = None if shares is None else (shares[0], shares[1], None, None)
+    shares_filing, reference = None, None
+    if shares is not None and shares[0] > 0 and shares[1].isoformat() >= oldest:
+        # V-SHARES-SCALE (owner decision 2026-10-17, calc_version 2026-10-17.1): a count outside SHARES_SCALE_BAND of the cover
+        # share count of its own filing is NA (SHARES_SCALE_UNCONFIRMED; MCD 711.1 vs 707,641,531, WAT 98,204,000,000 vs
+        # 98,248,111), never rescaled and never replaced. The device then shows the per-share and EV-based V as NA with
+        # SHARES_NOT_AVAILABLE, exactly as for a stale count. No same-filing cover value -> kept unchecked (NO_REFERENCE).
+        reference = c.f.cover_count(shares[2]) if c.sec else None
+        check = _shares_scale(shares[0], reference)
+        diagnostics['diluted_shares'] = dict(check, value=shares[0], period_end=shares[1].isoformat(), concept=shares[3],
+                                             accn=shares[2][0] if shares[2] else None)
+        if check['status'] != SHARES_SCALE_UNCONFIRMED:
+            v['diluted_shares'] = {'value': shares[0], 'period_end': shares[1].isoformat()}
+            shares_filing = shares[2]
+    # Per-share histories are on the basis of the latest share count (v['diluted_shares']), which the device pairs with the
+    # current price: FY0 basis x the FY0 -> latest factor (the filing of that count; none -> the FY0 basis). Unknown factor
+    # (a split filed after FY0 that no shared period confirms) -> both histories NA.
+    latest = c.share_factor(c._basis(), shares_filing) if c.sec else 1.0
+    # V-SHARES-SCALE for the histories: they divide by the FY0-basis counts, so they are NA (SHARES_SCALE_UNCONFIRMED) when the
+    # FY0 count, restated to the filing of the latest count, is outside the band of that filing's cover count (MCD: every
+    # filing since the FY2023 10-K tags the counts in millions). WAT keeps them: its FY0 10-K count is correctly scaled and,
+    # with the 2026 10-Q count NA, the histories stay on the FY0 basis. The Q·G metrics only use ratios of counts of one basis
+    # (dilution, EPS/FCF/BVPS per-share CAGRs, SHARE_JUMP_LIMIT guard) and are unchanged.
+    if reference is not None and latest is not None:
+        base, factor = c.shares(0), c.share_factor(c._basis(), shares[2])
+        if base is not None and factor is not None:
+            check = _shares_scale(base * factor, reference)
+            diagnostics['per_share_histories'] = dict(check, value=base * factor, fiscal_year_end=c.fy0.isoformat(),
+                                                      accn=shares[2][0] if shares[2] else None)
+            if check['status'] == SHARES_SCALE_UNCONFIRMED:
+                latest = None
     for key, value_of in (('ebit_per_share_history', lambda k: c.a('ebit', k)), ('fcf_per_share_history', c.fcf)):
+        if latest is None:
+            v[key] = []
+            continue
         history = []
         for k in range(HISTORY_YEARS - 1, -1, -1):
             hit = c.f.annual('diluted_shares', c.end(k))
-            per_share = c.per_share(value_of(k), k)
+            per_share = _div(c.per_share(value_of(k), k), latest)
             if per_share is not None and hit is not None:
                 history.append({'fiscal_year_end': hit[2].isoformat(), 'value': _round(per_share)})
         ends = [h['fiscal_year_end'] for h in history]
@@ -636,19 +1295,21 @@ def _v_inputs(c, m, taxonomy, currency):
     return v
 
 
-def compute(companyfacts, *, sic, cutoff):
+def compute(companyfacts, *, sic, cutoff, diagnostics=None):
     """(profile, fiscal_year_end, currency, metrics, v_inputs_v2) for one issuer; metrics rounded for publication.
 
     `companyfacts` is the parsed SEC JSON; `cutoff` is a date (facts filed later are ignored).
-    Missing or unusable inputs give None metrics (never 0). Raises nothing for bad content."""
+    Missing or unusable inputs give None metrics (never 0). Raises nothing for bad content.
+    `diagnostics` (optional dict): filled with the v_inputs_v2 checks (V-SHARES-SCALE reason codes); never published."""
     profile = profile_for_sic(sic)
     try:
-        return _compute(companyfacts, profile, cutoff)
+        return _compute(companyfacts, profile, cutoff, sic, diagnostics)
     except (TypeError, ValueError, AttributeError, KeyError, OverflowError, RecursionError, ZeroDivisionError):
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
 
 
-def _compute(companyfacts, profile, cutoff):
+def _compute(companyfacts, profile, cutoff, sic=None, diagnostics=None):
+    """SEC companyfacts path: the shared metrics plus the SEC-only descriptors EXTRA_METRIC_KEYS."""
     if not isinstance(companyfacts, dict) or not isinstance(cutoff, date):
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
     taxonomy, currency = _taxonomy_and_currency(companyfacts, cutoff)
@@ -660,24 +1321,30 @@ def _compute(companyfacts, profile, cutoff):
         ends |= facts.annual_ends(item)
     if not ends:
         return profile, None, None, dict.fromkeys(METRIC_KEYS), empty_v_inputs()
-    return compute_reported_periods(facts, fiscal_year_end=max(ends), profile=profile, taxonomy=taxonomy, currency=currency)
+    return compute_reported_periods(facts, fiscal_year_end=max(ends), profile=profile, taxonomy=taxonomy, currency=currency,
+                                    sic=sic, extra_metrics=True, diagnostics=diagnostics)
 
-def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxonomy=None, currency=None):
+def compute_reported_periods(facts, *, fiscal_year_end, profile='GENERAL', taxonomy=None, currency=None, sic=None,
+                             extra_metrics=False, diagnostics=None):
     """Shared Q/G definitions for source adapters, without fabricated SEC facts.
 
     `facts` supplies annual(item,date), instant(item,date,tolerance), annual/instant_ends,
     latest_duration and .items (reported duration observations). The adapter owns filing
     cutoff/currency/period checks. Missing inputs remain None. Source metadata is supplied
     separately by its caller; this API never assigns a SEC source to a DART observation.
+    `extra_metrics` adds EXTRA_METRIC_KEYS (SEC file only); the default key set is METRIC_KEYS exactly.
     """
     if profile not in ('GENERAL', 'FINANCIAL') or not isinstance(fiscal_year_end, date):
         raise ValueError('REPORTED_PERIODS_INVALID')
-    company = _Company(facts, fiscal_year_end)
+    company = _Company(facts, fiscal_year_end, sic=sic, profile=profile)
     metrics = _metrics_financial(company) if profile == 'FINANCIAL' else _metrics_general(company)
     _growth_common(company, metrics)
+    if extra_metrics:
+        _extra_metrics(company, metrics)
     raw = dict(metrics)
-    metrics = {k: (_round(v) if k != 'moat_return_years' else v) for k, v in metrics.items()}
-    if metrics['moat_return_years'] is not None:
-        metrics['moat_return_years'] = int(metrics['moat_return_years'])
-    v_inputs = _v_inputs(company, raw, taxonomy, currency)
+    metrics = {k: (_round(v) if k not in INTEGER_METRICS | LIST_METRICS else v) for k, v in metrics.items()}
+    for key in INTEGER_METRICS:
+        if metrics.get(key) is not None:
+            metrics[key] = int(metrics[key])
+    v_inputs = _v_inputs(company, raw, taxonomy, currency, diagnostics)
     return profile, company.fy0.isoformat(), currency, metrics, v_inputs

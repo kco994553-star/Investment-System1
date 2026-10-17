@@ -11,7 +11,14 @@ function naRecord(date,created){return{date,version:V,strategy:'QGV_STANDARD_V1'
 (async()=>{
 await test('every synthetic vector equals the Python reference exactly',()=>{
  assert.equal(vectors.synthetic,true);assert.ok(vectors.cases.length>=7);
- for(const c of vectors.cases){assert.equal(c.synthetic,true);const got=c.operation==='forward_return'?api.forwardReturn(c.input):api.qgSummary(c.input);assert.deepStrictEqual(JSON.parse(JSON.stringify(got)),c.expected,c.id);}
+ for(const c of vectors.cases){assert.equal(c.synthetic,true);const got=c.operation==='forward_return'?api.forwardReturn(c.input):c.operation==='evaluation_segments'?api.segments(c.input):api.qgSummary(c.input);assert.deepStrictEqual(JSON.parse(JSON.stringify(got)),c.expected,c.id);}
+ assert.ok(vectors.cases.some(c=>c.operation==='evaluation_segments')&&vectors.cases.some(c=>c.input.end_date));
+});
+await test('evaluation segments never chain calc versions and keep preparatory rows outside the primary evaluation',()=>{
+ const [c]=vectors.cases.filter(c=>c.operation==='evaluation_segments'),segs=api.segments(c.input);
+ assert.deepEqual(segs.map(s=>s.segment),['LEGACY','NONE','qgv2-calc/2026-10-15.1','qgv2-calc/2026-11-02.1']);
+ assert.deepEqual(segs[2].eligible_dates,['2026-10-21','2026-10-26']);assert.deepEqual(segs[2].preparatory_dates,['2026-10-23']);
+ assert.equal(api.PRIMARY_MIN,454);assert.equal(api.FRESH_DAYS,7);
 });
 await test('missing prices are NOT_AVAILABLE, never zero; benchmark stays NOT_AVAILABLE',()=>{
  const r=api.forwardReturn({start_date:'2026-10-19',weights_units:{a:1,b:1},series:{a:[{session_date:'2026-10-19',adjusted_close:2,session_status:'COMPLETE'},{session_date:'2026-10-20',adjusted_close:3,session_status:'COMPLETE'}]}});
