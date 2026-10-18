@@ -643,7 +643,7 @@ function paintLeaderSummary(S,shown){const host=$('#leader-summary');if(!host)re
 let qgv2Profile={preset:null,gate:null},qgv2Quotes={},qgv2QuotesKey='';
 // New device quotes change only the score sections. Repaint those in place: a full render() would reset the open analysis
 // tab, the value panel, the loaded private history table and the playbook panel.
-const SCORE_SECTIONS=['[data-company-badges]','[data-company-card="qgv"]','[data-analysis-panel="summary"]','[data-analysis-panel="factors"]'];
+const SCORE_SECTIONS=['[data-company-card="radar"]','[data-company-badges]','[data-company-card="qgv"]','[data-analysis-panel="summary"]','[data-analysis-panel="factors"]'];
 // Coverage sections the user opened (details[data-keep-open]) stay open across the repaint.
 function repaintScores(build){const fresh=document.createElement('div');fresh.innerHTML=build();for(const sel of SCORE_SECTIONS){const live=$('#content '+sel),next=fresh.querySelector(sel);if(!live||!next)continue;
  const open=new Set([...live.querySelectorAll('details[data-keep-open][open]')].map(d=>d.dataset.keepOpen));for(const d of next.querySelectorAll('details[data-keep-open]'))if(open.has(d.dataset.keepOpen))d.open=true;live.innerHTML=next.innerHTML;}}
