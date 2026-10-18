@@ -36,6 +36,8 @@ const NOT_CODES = {
   states: ['READY', 'PARTIAL', 'BLOCKED', 'NOT_AVAILABLE', 'NOT_STARTED', 'STARTED', 'LOADING', 'LOADED', 'ERROR', 'LIVE', 'STALE', 'ABNORMAL', 'NORMAL', 'COMPLETE',
     'IN_PROGRESS', 'UNKNOWN', 'EMPTY', 'UNAVAILABLE', 'RECORDED', 'NOT_RECORDED', 'COLLECTING', 'RECORDING', 'REHEARSAL', 'OPEN', 'CLOSED', 'NOT_DEFINED'],
   report_periods_verdicts_series: ['SINCE_START', 'ABOVE', 'BELOW', 'EQUAL', 'LEDGER', 'INDEX'],
+  // 보고 불가 card (daily-report.js, directive §9): minimum-missing-input keys and their kinds, shown through their own wording.
+  report_missing_inputs: [...Object.keys(R.NEED), 'USER', 'WAIT', 'SYSTEM', 'CHECK'],
   config_values: ['NEXT_SESSION_CLOSE', 'V0_UNCALIBRATED', 'INACTIVE_MAPPING_PENDING', 'PROVISIONAL_UNCALIBRATED', 'RAM_ONLY_DEVICE', 'SECTOR_ETF_CONFIRMED', 'SP500_SUBSTITUTE_D22_PENDING',
     'TYPE_WEIGHTED_QGV_ELSE_QG'],
 };
