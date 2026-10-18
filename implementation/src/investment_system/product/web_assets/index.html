@@ -10,7 +10,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
-    <meta name="theme-color" content="#f4f3ef" />
+    <meta name="theme-color" content="#ffffff" />
     <title>Investment System · 개인 투자</title>
     <script src="theme-boot.js"></script>
     <link rel="stylesheet" href="style.css" />
@@ -26,16 +26,16 @@
     <header class="app-header">
       <a class="brand" href="#home"><span class="brand-mark">QGV</span><span class="brand-name">INVESTMENT SYSTEM</span></a>
       <nav id="primary-nav" aria-label="주요 화면">
-        <a href="#home" data-nav-tab="home"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg><span class="nav-long">홈</span><span class="nav-short">홈</span></a>
-        <a href="#leaderboard" data-nav-tab="qgv"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3.5 20 18.5H4z"/><path d="M12 9.5v9M12 13l-4.2 5.5M12 13l4.2 5.5"/></svg><span class="nav-num" aria-hidden="true">01</span><span class="nav-long">QGV</span><span class="nav-short">QGV</span></a>
+        <a href="#home" data-nav-tab="home"><span class="nav-long">홈</span><span class="nav-short">홈</span></a>
+        <a href="#leaderboard" data-nav-tab="qgv"><span class="nav-num" aria-hidden="true">01</span><span class="nav-long">QGV</span><span class="nav-short">QGV</span></a>
         <a href="#technical" data-nav-tab="technical" data-nav-phone="0"><span class="nav-num" aria-hidden="true">02</span><span class="nav-long">기술적 분석</span><span class="nav-short">기술적 분석</span></a>
         <a href="#macro" data-nav-tab="macro" data-nav-phone="0"><span class="nav-num" aria-hidden="true">03</span><span class="nav-long">매크로</span><span class="nav-short">매크로</span></a>
-        <a href="#news" data-nav-tab="news"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4.5h11a1 1 0 0 1 1 1V19a1.5 1.5 0 0 0 3 0V9h-3"/><path d="M5 4.5V19a1.5 1.5 0 0 0 1.5 1.5H18.5M8 8.5h6M8 12h6M8 15.5h4"/></svg><span class="nav-num" aria-hidden="true">04</span><span class="nav-long">뉴스·공시·기업 관계</span><span class="nav-short">뉴스·공시</span></a>
-        <a href="#portfolio" data-nav-tab="portfolio"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 20V11M12 20V5M18 20v-7"/></svg><span class="nav-num" aria-hidden="true">05</span><span class="nav-long">포트폴리오</span><span class="nav-short">포트폴리오</span></a>
+        <a href="#news" data-nav-tab="news"><span class="nav-num" aria-hidden="true">04</span><span class="nav-long">뉴스·공시·기업 관계</span><span class="nav-short">뉴스·공시</span></a>
+        <a href="#portfolio" data-nav-tab="portfolio"><span class="nav-num" aria-hidden="true">05</span><span class="nav-long">포트폴리오</span><span class="nav-short">포트폴리오</span></a>
         <a href="#research" data-nav-tab="prompts" data-nav-phone="0"><span class="nav-num" aria-hidden="true">06</span><span class="nav-long">프롬프트 라이브러리</span><span class="nav-short">프롬프트</span></a>
         <a href="#system" data-nav-tab="system" data-nav-phone="0"><span class="nav-num" aria-hidden="true">07</span><span class="nav-long">투자시스템 안내·구조</span><span class="nav-short">시스템 안내</span></a>
         <a href="#validation" data-nav-tab="lab" data-nav-phone="0"><span class="nav-num" aria-hidden="true">08</span><span class="nav-long">Lab</span><span class="nav-short">Lab</span></a>
-        <button type="button" id="more-button" data-nav-more aria-expanded="false" aria-controls="more-menu" aria-haspopup="dialog"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="nav-long">전체 메뉴</span><span class="nav-short">전체 메뉴</span></button>
+        <button type="button" id="more-button" data-nav-more aria-expanded="false" aria-controls="more-menu" aria-haspopup="dialog"><span class="nav-long">전체 메뉴</span><span class="nav-short">전체 메뉴</span></button>
       </nav>
       <div class="header-tools">
         <button type="button" class="tool" id="lang-toggle"><svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg><span data-lang-code>KR</span></button>
@@ -50,6 +50,7 @@
         <a class="tool tool-settings" href="#settings" data-i18n="설정">설정</a>
       </div>
     </header>
+    <script src="doodles.js"></script>
     <div id="more-menu" class="more-menu" role="dialog" aria-labelledby="more-title" hidden></div>
     <div id="global-search-anchor" hidden></div>
     <section class="global-search" id="global-search-section" aria-label="Global Search">

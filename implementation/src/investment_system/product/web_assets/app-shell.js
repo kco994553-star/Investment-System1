@@ -83,13 +83,15 @@
   label();closeMore(false);closeTheme(false);
  }
  // ---------- full-menu sheet ----------
+ // Each menu group carries its hand-drawn doodle (doodles.js; decoration only, aria-hidden).
+ const doodle=key=>root.Doodles?Doodles.icon(Doodles.TAB_ICON[key],'more-icon'):'';
  function paintMore(){
   const host=$('#more-menu');if(!host)return;const here='#'+(root.location.hash.slice(1)||'home');
   host.setAttribute('aria-label',T(locale,'전체 메뉴','All menus'));host.setAttribute('aria-modal','true');
   const pendingTag='<span class="more-pending">'+esc(T(locale,'준비 중','Pending'))+'</span>';
   const link=([href,ko,en,pending])=>'<li><a href="'+href+'"'+(here===href?' aria-current="page"':'')+(pending?' data-menu-pending':'')+'>'+esc(T(locale,ko,en))+(pending?' '+pendingTag:'')+'</a></li>';
   host.innerHTML='<div class="more-head"><h2 id="more-title">'+esc(T(locale,'전체 메뉴','All menus'))+'</h2><button type="button" class="tool" data-more-close aria-label="'+esc(T(locale,'메뉴 닫기','Close menu'))+'"><span aria-hidden="true">×</span></button></div>'+
-   '<div class="more-groups">'+MENUS.map(m=>'<section data-menu-group="'+m.key+'"><h3><span class="more-num" aria-hidden="true">'+pad(m.n)+'</span>'+esc(T(locale,m.ko,m.en))+'</h3><p class="more-desc">'+esc(T(locale,...m.desc))+'</p><ul>'+m.items.map(link).join('')+'</ul></section>').join('')+
+   '<div class="more-groups">'+MENUS.map(m=>'<section data-menu-group="'+m.key+'"><h3>'+doodle(m.key)+'<span class="more-num" aria-hidden="true">'+pad(m.n)+'</span>'+esc(T(locale,m.ko,m.en))+'</h3><p class="more-desc">'+esc(T(locale,...m.desc))+'</p><ul>'+m.items.map(link).join('')+'</ul></section>').join('')+
    '<section data-menu-group="settings"><h3><span class="more-num" aria-hidden="true">—</span>'+esc(T(locale,SETTINGS.ko,SETTINGS.en))+'</h3><ul>'+SETTINGS.items.map(link).join('')+'</ul></section></div>'+
    '<p class="more-note">'+esc(T(locale,'PERSONAL / READ ONLY · 보유 정보는 이 기기에만 저장됩니다.','PERSONAL / READ ONLY · Holdings stay on this device.'))+'</p>';
  }

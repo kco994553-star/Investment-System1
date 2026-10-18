@@ -10,7 +10,7 @@
  let choice=read();
  const resolve=c=>c==='system'?(mq&&mq.matches?'dark':'light'):c;
  function apply(){const t=resolve(choice);doc.dataset.theme=t;doc.dataset.themePref=choice;doc.style.colorScheme=t;
-  const meta=root.document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',t==='dark'?'#161715':'#f4f3ef');}
+  const meta=root.document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',t==='dark'?'#1a1c1b':'#ffffff');}
  const listeners=new Set();
  function notify(){for(const fn of listeners){try{fn(resolve(choice),choice);}catch(_){}}}
  function set(next){if(!CHOICES.includes(next))return false;choice=next;let stored=true;try{root.localStorage.setItem(KEY,next);}catch(_){stored=false;}apply();notify();return stored;}

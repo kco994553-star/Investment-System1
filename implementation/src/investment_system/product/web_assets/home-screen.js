@@ -8,7 +8,9 @@
      shortcuts (nothing invented when there are none), one verified investor story (home-quotes.js) and its source sheet,
      a discovery area (menu entry points, navigation only) and, only when the watchlist has companies, a personal news
      area built from the existing public disclosure/news files filtered to those companies (no sample items).
-     Monochrome editorial look (theme.css); no background image and no animation. */
+     Around the search, the eight menus are drawn as a one-page map of numbered doodle nodes (doodles.js) with
+     hand-drawn arrows; the single accent ring marks the search. Monochrome editorial look with hand-drawn line
+     decoration (theme.css); no background image. The arrows may draw once on first paint, never with reduced motion. */
 (function(root){
  'use strict';
  const doc=root.document,$=s=>doc.querySelector(s);
@@ -128,18 +130,37 @@
  const home={quoteId:null,saved:null,pending:false};
  function html(ctx){
   locale=ctx.locale||locale;
+  const D=root.Doodles;
   return '<section class="home" data-home aria-labelledby="home-title">'+
+   // One-page map: the question and the search in the centre, the eight menus as numbered nodes around it.
+   '<div class="home-map" data-home-map>'+
+   '<div class="map-center">'+
    '<p class="home-eyebrow" aria-hidden="true">'+esc(T(locale,'기업 검색 · 근거에서 판단까지','Company search · from evidence to judgement'))+'</p>'+
    '<h1 class="home-title" id="home-title">'+esc(T(locale,'어떤 기업을 살펴볼까요?','Which company shall we look into?'))+'</h1>'+
    // Self-made hand-drawn rule: decoration only.
-   '<svg class="home-sketch" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 8.5c18-3.2 36-4.1 55-2.6 17 1.3 30 3.9 49 3.1 22-.9 38-4.6 60-4.2 17 .3 33 2 52 3.6"/><path d="M40 11.2c25-1.6 52-1.2 80-.3"/></svg>'+
+   (D?D.underline('home-sketch'):'')+
    '<p class="home-sub">'+esc(T(locale,'기업을 이해하고, 근거로 판단하세요.','Understand the business, decide on evidence.'))+'</p>'+
-   '<div class="home-search-slot" id="home-search-slot"></div>'+
+   // The one accent mark on home: a hand-drawn ring around the search box (where every visit starts).
+   '<div class="home-search-wrap">'+(D?D.ring('home-search-ring'):'')+'<div class="home-search-slot" id="home-search-slot"></div></div>'+
    '<div class="home-shortcuts" id="home-shortcuts" data-home-shortcuts></div>'+
+   '</div>'+
+   mapNodes(D)+
+   '</div>'+
    '<section class="home-quote" id="home-quote" data-home-quote aria-labelledby="home-quote-title"></section>'+
    '<section class="home-personal" id="home-personal" data-home-personal aria-labelledby="home-personal-title" hidden></section>'+
    discover()+
    '</section>';
+ }
+ // The eight owner menus (app-shell.js MENUS) as numbered map nodes: real links to each menu's first screen. Positions
+ // 1~8 run clockwise from the top left on PC; on phones the nodes are a list. Navigation only, no data.
+ function mapNodes(D){
+  const menus=root.AppShell?.MENUS||[];if(!menus.length)return '';
+  return '<nav class="map-nodes" data-map-nodes aria-labelledby="map-title"><h2 class="sr-only" id="map-title">'+esc(T(locale,'메뉴 지도','Menu map'))+'</h2><ol>'+
+   menus.map(m=>'<li class="map-node" data-map-pos="'+m.n+'">'+(D?D.arrow('map-arrow')+D.arrowShort('map-arrow-short'):'')+
+    '<a href="'+m.href+'" data-map-node="'+esc(m.key)+'">'+(D?D.icon(D.TAB_ICON[m.key],'map-icon'):'')+
+    '<span class="map-text"><span class="map-label"><span class="map-num">'+m.n+'.</span> '+esc(T(locale,m.ko,m.en))+'</span>'+
+    '<span class="map-desc">'+esc(T(locale,...m.desc))+'</span></span></a></li>').join('')+
+   '</ol></nav>';
  }
  // Discovery (shown when nothing is being searched): where each question is answered. Navigation only, no data.
  function discover(){
