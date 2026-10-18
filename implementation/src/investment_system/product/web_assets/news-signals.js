@@ -97,10 +97,33 @@ function timeline({sec=null,dart=null,news=null}={},{companyIds=null,dartApi=nul
  for(const list of byGroup.values()){const head=list.find(i=>i.occurrence==='NEW')||list[list.length-1];rows.push({channel:'NEWS',source:head.source,time:head.published_at,company_id:head.company_id,item:head,repeats:list.filter(i=>i!==head),orphan:false});}
  return rows.sort((a,b)=>a.time<b.time?1:a.time>b.time?-1:0);}
 const COMPANY_LABEL={hanmi:'042700',tokyo_electron:'8035'};
-function mount(host,{sec=null,dart=null,news=null}={},{locale,companyIds=null,limit=30,emptyText,secApi=root.SecDisclosures,dartApi=root.DartDisclosures}={}){
+// Display-only filters for the combined list: channel, category, new/repeat and order. Kept per browser tab in sessionStorage so
+// #news and #watchlist share them across screen moves; unreadable storage falls back to the defaults. Filters only narrow or
+// reorder the newest-`limit` rows; they never widen that set (the disclosure minimum, NEWS-CAP, is an open owner decision).
+const FILTER_KEY='investment.web.v1.news-filters',PERSONAL_KEY='investment.web.v1.personal';
+const FILTER_DEFAULT=Object.freeze({channel:'ALL',category:'ALL',occurrence:'ALL',order:'TIME'});
+const FILTER_VALUES={channel:['ALL','DISCLOSURE','NEWS'],occurrence:['ALL','NEW','REPEAT'],order:['TIME','IMPORTANCE']};
+// Importance here is only what the data supports: held, watchlist, other company, market. Event materiality is not computed.
+const TIERS={HELD:['보유','Held'],INTEREST:['관심','Watchlist'],OTHER:['기타 기업','Other companies'],MARKET:['시장','Market']},TIER_ORDER=['HELD','INTEREST','OTHER','MARKET'];
+function session(){try{return root.sessionStorage||null;}catch(_){return null;}}
+function readFilters(storage=session()){const out={...FILTER_DEFAULT};
+ try{const v=JSON.parse(storage?storage.getItem(FILTER_KEY)||'null':'null');if(!plain(v))return out;
+  for(const k of Object.keys(FILTER_DEFAULT)){const x=v[k];if(k==='category'?typeof x==='string'&&/^(?:ALL|RESULTS|(?:NEWS|SEC|DART):[A-Z_]{1,40})$/.test(x):FILTER_VALUES[k].includes(x))out[k]=x;}}catch(_){}
+ return out;}
+function writeFilters(f,storage=session()){try{if(!storage)return false;storage.setItem(FILTER_KEY,JSON.stringify(f));return true;}catch(_){return false;}}
+// Reads the one interest list kept by the app (never copied or written here).
+function readInterests(){try{const v=JSON.parse(root.localStorage?.getItem(PERSONAL_KEY)||'null');return Array.isArray(v?.interests)?v.interests.filter(x=>typeof x==='string'):[];}catch(_){return [];}}
+// Category key: '실적' merges news EARNINGS with SEC/DART RESULTS (same label); every other class keeps its own source.
+function rowCategory(row){if(row.channel==='NEWS'){const c=row.item.classification;return c==='EARNINGS'?'RESULTS':'NEWS:'+c;}const c=row.event.classification;return c==='RESULTS'?'RESULTS':(row.source==='DART'?'DART:':'SEC:')+c;}
+function rowOccurrence(row){return row.channel==='NEWS'?(row.orphan?'REPEAT':row.item.occurrence):row.event.occurrence;}
+function rowTier(row,{held=[],interests=[]}={}){if(!row.company_id)return 'MARKET';if(held.includes(row.company_id))return 'HELD';if(interests.includes(row.company_id))return 'INTEREST';return 'OTHER';}
+// Same tier: newest first (input order), as in the relation feed order.
+function filterRows(rows,f=FILTER_DEFAULT,ctx={}){const out=rows.filter(r=>(f.channel==='ALL'||r.channel===f.channel)&&(f.category==='ALL'||rowCategory(r)===f.category)&&(f.occurrence==='ALL'||rowOccurrence(r)===f.occurrence));
+ if(f.order!=='IMPORTANCE')return out;const rank=r=>TIER_ORDER.indexOf(rowTier(r,ctx));return out.map((r,i)=>[r,i]).sort((a,b)=>rank(a[0])-rank(b[0])||a[1]-b[1]).map(x=>x[0]);}
+function mount(host,{sec=null,dart=null,news=null}={},{locale,companyIds=null,limit=30,emptyText,secApi=root.SecDisclosures,dartApi=root.DartDisclosures,held=null,interests=null,storage=session()}={}){
  if(!host)return;const doc=host.ownerDocument,en=locale==='en-US',T=(k,e)=>en?e:k,el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};
  const when=v=>v.slice(0,16).replace('T',' ')+' UTC',srcLabel=s=>s==='IR'?T('회사 IR','Company IR'):'GDELT',classLabel=c=>{const [k,e]=CLASSES[c];return en?e+' ('+k+')':k+' ('+e+')';};
- const section=el('section',undefined,{class:'card','data-sec-disclosures':'','data-news-signals':''});section.append(el('h2',T('공시·확정 + 뉴스·신호 · 시간순','Disclosures (confirmed) + news (signals) · chronological')));
+ const section=el('section',undefined,{class:'card','data-sec-disclosures':'','data-news-signals':''});section.append(el('h2',T('뉴스·공시 · 공시·확정 + 뉴스·신호','News & disclosures · confirmed disclosures + news signals')));
  const secState=sec?sec.state:'NOT_AVAILABLE',newsState=news?news.state:'NOT_AVAILABLE',chips=el('p',undefined,{class:'chips'});
  chips.append(el('span',CHANNELS.DISCLOSURE[en?1:0]+' · SEC 8-K',{class:'badge'}),el('span',secState,{class:'badge '+secState,'data-disclosure-state':secState}));
  if(dart)chips.append(el('span','DART',{class:'badge'}),el('span',dart.state,{class:'badge disclosure-state','data-dart-state':dart.state}));
@@ -111,25 +134,56 @@ function mount(host,{sec=null,dart=null,news=null}={},{locale,companyIds=null,li
  if(news){const a=el('p',undefined,{class:'small','data-news-attribution':''});a.append(doc.createTextNode(T('뉴스·신호 출처: ','News signals source: ')),el('a',ATTRIBUTION.GDELT.name,{href:ATTRIBUTION.GDELT.url,target:'_blank',rel:'noopener noreferrer','data-gdelt-attribution':''}),doc.createTextNode(' (GDELT DOC 2.0 API) · '+T('회사 IR 보도자료 피드 · 제목·링크만 표시, 기사는 각 언론사 소유','company IR press-release feeds · titles and links only; articles belong to their publishers')));section.append(a);}
  else section.append(el('p',T('뉴스·신호 자료가 연결되지 않았습니다.','News signal data is not connected.'),{class:'small','data-news-missing':''}));
  section.append(el('p',T('점수에 반영하지 않음 · 제목·링크·시각·기업·분류만 표시','Never changes scores · title, link, time, company and classification only'),{class:'small','data-score-effect':'NONE'}));
- const rows=timeline({sec,dart,news},{companyIds,dartApi}).slice(0,limit);
+ const all=timeline({sec,dart,news},{companyIds,dartApi}),rows=all.slice(0,limit);
  if(!rows.length){section.append(el('p',emptyText||T('표시할 공시·뉴스가 없습니다.','No disclosures or news to show.'),{class:'empty'}));host.replaceChildren(section);return;}
+ const ctx={held:Array.isArray(held)?held:[],interests:Array.isArray(interests)?interests:readInterests()};
+ const catOrder=k=>k==='RESULTS'?'0':k.startsWith('NEWS:')?'1'+k:k.startsWith('SEC:')?'2'+k:'3'+k,cats=[...new Set(all.map(rowCategory))].sort((a,b)=>catOrder(a)<catOrder(b)?-1:1);
+ const catLabel=key=>{if(key==='RESULTS')return T('실적','Results');const [src,c]=key.split(':'),table=src==='NEWS'?CLASSES:src==='SEC'?secApi?.CLASSES:dartApi?.CLASSES,pair=table&&table[c];return (pair?pair[en?1:0]:c)+' · '+(src==='NEWS'?T('뉴스','news'):src);};
+ let f=readFilters(storage);if(f.category!=='ALL'&&!cats.includes(f.category))f={...f,category:'ALL'};
+ const bar=el('div',undefined,{class:'chips toolbar','data-news-filters':'',role:'group','aria-label':T('뉴스·공시 보기 조건','News & disclosures view options')}),selects={};
+ const control=(name,label,options)=>{const l=el('label',label+' '),s=el('select',undefined,{'data-news-filter':name,'aria-label':label});for(const[v,t]of options)s.append(el('option',t,{value:v}));s.value=f[name];
+  s.onchange=()=>{f={...f,[name]:s.value};writeFilters(f,storage);paint();};l.append(s);bar.append(l);selects[name]=s;};
+ const all_=T('전체','All');
+ control('channel',T('채널','Channel'),[['ALL',all_],['DISCLOSURE',CHANNELS.DISCLOSURE[en?1:0]],['NEWS',CHANNELS.NEWS[en?1:0]]]);
+ control('category',T('분류','Category'),[['ALL',all_],...cats.map(k=>[k,catLabel(k)])]);
+ control('occurrence',T('신규·반복','New / repeat'),[['ALL',all_],['NEW',T('새 소식·새 공시','New only')],['REPEAT',T('반복·정정','Repeat / amendment')]]);
+ control('order',T('정렬','Order'),[['TIME',T('시간순 (최신 먼저)','Newest first')],['IMPORTANCE',T('중요도 순 (보유→관심→기타→시장)','Importance (held→watchlist→other→market)')]]);
+ const reset=el('button',T('조건 초기화','Reset'),{type:'button','data-news-filter-reset':''});reset.onclick=()=>{f={...FILTER_DEFAULT};writeFilters(f,storage);for(const[k,s]of Object.entries(selects))s.value=f[k];paint();};bar.append(reset);
+ section.append(bar,el('p',T('중요도 기준: 보유·관심 여부','Importance basis: held / watchlist')+' · '+T('사건 자체의 중요도는 계산하지 않음','event materiality is not computed')+' · '+T('같은 그룹은 최신 먼저','newest first within a group')+(Array.isArray(held)?'':' · '+T('보유 정보 미연결','holdings not connected')),{class:'small','data-importance-basis':''}));
+ const count=el('p',undefined,{class:'small','data-news-filter-count':'',role:'status'}),body=el('div',undefined,{'data-news-body':''});section.append(count,body);
+ const tierBadge=t=>el('span',TIERS[t][en?1:0],{class:'badge','data-importance':t});
+ const evidenceBox=(kind,entries)=>{const d=el('details',undefined,{class:'evidence','data-evidence':kind}),dl=el('dl',undefined,{class:'kv'});d.append(el('summary',T('근거 보기','Show evidence')));
+  for(const[k,v]of entries){const dd=el('dd');if(typeof v==='string')dd.textContent=v;else dd.append(v);dl.append(el('dt',k),dd);}d.append(dl);return d;};
+ const newsEvidence=row=>{const i=row.item,src=el('span'),acq=news?.sources?.[i.source]?.[i.company_id]?.acquired_at;
+  src.append(el('a',linkHost(i.link)[1]+' ↗',{href:i.link,target:'_blank',rel:'noopener noreferrer','data-evidence-link':''}));if(i.source==='GDELT')src.append(doc.createTextNode(' · '+T('수집 경로: ','via ')+ATTRIBUTION.GDELT.name));
+  const dedup=row.orphan?T('8-K 관련 IR 보도자료 · 그 8-K('+i.related_8k_accession+')가 목록에 없어 단독 표시','IR release related to 8-K '+i.related_8k_accession+' · that 8-K is not listed, so shown alone')
+   :row.repeats.length?T('같은 사건 묶음 · 첫 보도 + 반복 '+row.repeats.length+'건 (72시간 안 제목 유사)','One event · first report + '+row.repeats.length+' repeat(s) (similar titles within 72h)')
+   :i.occurrence==='NEW'?T('새 소식 · 반복 보도 없음','New · no repeat reports'):T('반복 보도 · 첫 보도는 목록 범위 밖','Repeat · first report outside the window');
+  return evidenceBox('NEWS',[[T('구분','Kind'),i.source==='IR'?T('뉴스·신호 · 회사 IR 보도자료 (공시 아님)','News · signal · company IR release (not a filing)'):T('뉴스·신호 · 언론 보도 제목 (내용 미확인)','News · signal · press headline (content unverified)')],
+   [T('출처','Source'),src],[T('발표 시각','Published'),when(i.published_at)],[T('수집 시각','Collected'),acq?when(acq)+' · '+T('이 기업 피드 수집','feed collected for this company'):T('미제공','not provided')],
+   [T('기업 연결','Company match'),i.source==='GDELT'?T('제목 속 회사 이름·티커','company name or ticker in the title'):T('회사 공식 IR 도메인','company IR domain')],[T('분류 근거','Category basis'),T('제목 단어 규칙','title keyword rule')],
+   [T('중복 처리','Dedup'),dedup],[T('점수 영향','Score effect'),T('없음','None')]]);};
  const line=i=>{const li=el('li',undefined,{'data-news-item':'','data-news-source':i.source,'data-news-occurrence':i.occurrence,'data-relation':i.relation});li.append(el('a',i.title,{href:i.link,target:'_blank',rel:'noopener noreferrer','data-news-link':''}),doc.createTextNode(' · '+srcLabel(i.source)+' · '+when(i.published_at)+' · '+linkHost(i.link)[1]));return li;};
- const list=el('ol',undefined,{class:'list','data-disclosure-list':'','data-timeline':''});
- for(const row of rows){
-  if(row.channel==='DISCLOSURE'&&row.source==='SEC'&&secApi){const li=secApi.renderRow(doc,row.event,en);
+ const render=row=>{const tier=rowTier(row,ctx);
+  if(row.channel==='DISCLOSURE'&&row.source==='SEC'&&secApi){const li=secApi.renderRow(doc,row.event,en);li.querySelector('.chips')?.append(tierBadge(tier));
    if(row.related.length){const d=el('details',undefined,{'data-related-ir':String(row.related.length)}),ul=el('ul',undefined,{class:'list'});d.append(el('summary',T('관련 IR 보도자료 '+row.related.length+'건 · 8-K와 같은 발표(반복)','Related IR release ×'+row.related.length+' · same announcement as this 8-K (repeat)')));for(const i of row.related)ul.append(line(i));d.append(ul);li.append(d);}
-   list.append(li);continue;}
+   return li;}
   if(row.channel==='DISCLOSURE'&&row.source==='DART'){const e=row.event,li=el('li',undefined,{class:'card','data-disclosure':e.rcept_no,'data-source':'DART','data-occurrence':e.occurrence,'data-classification':e.classification}),head=el('p',undefined,{class:'chips'});
-   head.append(el('span',CHANNELS.DISCLOSURE[en?1:0],{class:'badge LIVE','data-channel':'DISCLOSURE'}),el('span',e.occurrence==='NEW'?T('새 공시','New'):T('정정·반복','Repeat / amendment'),{class:'badge','data-occurrence-label':e.occurrence}),el('span',dartApi&&dartApi.classLabel?dartApi.classLabel(e.classification,en):e.classification,{class:'badge','data-classification-label':e.classification}));
-   const who=el('p');who.append(el('a',COMPANY_LABEL[e.company_id]||e.company_id.toUpperCase(),{href:'#company/'+encodeURIComponent(e.company_id)}),doc.createTextNode(' · DART · '+e.filing_date+' KST'));const t=el('p');t.append(el('a',e.title,{href:e.link,target:'_blank',rel:'noopener noreferrer','data-filing-link':''}),doc.createTextNode(' ↗'));li.append(head,who,t);list.append(li);continue;}
-  if(row.channel!=='NEWS')continue;
+   head.append(el('span',CHANNELS.DISCLOSURE[en?1:0],{class:'badge LIVE','data-channel':'DISCLOSURE'}),el('span',e.occurrence==='NEW'?T('새 공시','New'):T('정정·반복','Repeat / amendment'),{class:'badge','data-occurrence-label':e.occurrence}),el('span',dartApi&&dartApi.classLabel?dartApi.classLabel(e.classification,en):e.classification,{class:'badge','data-classification-label':e.classification}),tierBadge(tier));
+   const who=el('p');who.append(el('a',COMPANY_LABEL[e.company_id]||e.company_id.toUpperCase(),{href:'#company/'+encodeURIComponent(e.company_id)}),doc.createTextNode(' · DART · '+e.filing_date+' KST'));const t=el('p');t.append(el('a',e.title,{href:e.link,target:'_blank',rel:'noopener noreferrer','data-filing-link':''}),doc.createTextNode(' ↗'));li.append(head,who,t);
+   if(dartApi&&typeof dartApi.evidence==='function')li.append(dartApi.evidence(doc,e,en));return li;}
+  if(row.channel!=='NEWS')return null;
   const i=row.item,li=el('li',undefined,{class:'card','data-news':i.group_id,'data-news-source':i.source,'data-news-occurrence':i.occurrence,'data-news-classification':i.classification}),head=el('p',undefined,{class:'chips'});
-  head.append(el('span',CHANNELS.NEWS[en?1:0],{class:'badge news-signal','data-channel':'NEWS'}),el('span',row.orphan?T('8-K 관련 · 반복','Related to 8-K · repeat'):i.occurrence==='NEW'?T('새 소식','New'):T('반복 보도','Repeat'),{class:'badge','data-news-occurrence-label':row.orphan?'RELATED_TO_8K':i.occurrence}),el('span',classLabel(i.classification),{class:'badge','data-news-classification-label':i.classification}));
+  head.append(el('span',CHANNELS.NEWS[en?1:0],{class:'badge news-signal','data-channel':'NEWS'}),el('span',row.orphan?T('8-K 관련 · 반복','Related to 8-K · repeat'):i.occurrence==='NEW'?T('새 소식','New'):T('반복 보도','Repeat'),{class:'badge','data-news-occurrence-label':row.orphan?'RELATED_TO_8K':i.occurrence}),el('span',classLabel(i.classification),{class:'badge','data-news-classification-label':i.classification}),tierBadge(tier));
   const who=el('p');who.append(el('a',COMPANY_LABEL[i.company_id]||i.company_id.toUpperCase(),{href:'#company/'+encodeURIComponent(i.company_id)}),doc.createTextNode(' · '+srcLabel(i.source)+' · '+when(i.published_at)+' · '+linkHost(i.link)[1]));
   const t=el('p');t.append(el('a',i.title,{href:i.link,target:'_blank',rel:'noopener noreferrer','data-news-link':''}),doc.createTextNode(' ↗'));li.append(head,who,t);
   if(row.repeats.length){const d=el('details',undefined,{'data-news-repeats':String(row.repeats.length)}),ul=el('ul',undefined,{class:'list'});d.append(el('summary',T('같은 사건 반복 보도 '+row.repeats.length+'건','Repeat reports of this event: '+row.repeats.length)));for(const r of row.repeats)ul.append(line(r));d.append(ul);li.append(d);}
-  list.append(li);}
- section.append(list);host.replaceChildren(section);
+  li.append(newsEvidence(row));return li;};
+ function paint(){const shown=filterRows(rows,f,ctx),outside=filterRows(all.slice(limit),{...f,order:'TIME'},ctx).length;
+  count.textContent=T('표시 '+shown.length+'건 · 최신 '+limit+'행 안에서 거름','Showing '+shown.length+' · filtered within the newest '+limit+' rows')+(outside?' · '+T('조건에 맞는 '+outside+'건은 최신 '+limit+'행 밖이라 표시 안 함 (공시 최소 보장은 사용자 결정 대기)',outside+' matching row(s) are beyond the newest '+limit+' and not shown (disclosure minimum awaits an owner decision)'):'');
+  if(!shown.length){body.replaceChildren(el('p',T('조건에 맞는 항목이 없습니다.','Nothing matches these options.'),{class:'empty','data-news-filter-empty':''}));return;}
+  const list=el('ol',undefined,{class:'list','data-disclosure-list':'','data-timeline':''});for(const row of shown){const li=render(row);if(li)list.append(li);}body.replaceChildren(list);}
+ paint();host.replaceChildren(section);
 }
-return Object.freeze({FILENAME,KIND,MATCH,IR_DOMAINS,CLASS_RULES,STOPWORDS,ATTRIBUTION,CLASSES,CHANNELS,GDELT_COMPANIES,IR_COMPANIES,STRUCTURAL_RULES,structuralCandidates,tokens,significant,classify,relevant,similar,validTitle,linkHost,irLinkAllowed,groups,validate,load,timeline,mount});
+return Object.freeze({FILENAME,KIND,MATCH,IR_DOMAINS,CLASS_RULES,STOPWORDS,ATTRIBUTION,CLASSES,CHANNELS,GDELT_COMPANIES,IR_COMPANIES,STRUCTURAL_RULES,structuralCandidates,tokens,significant,classify,relevant,similar,validTitle,linkHost,irLinkAllowed,groups,validate,load,timeline,FILTER_KEY,FILTER_DEFAULT,TIERS,readFilters,writeFilters,rowCategory,rowOccurrence,rowTier,filterRows,mount});
 });
