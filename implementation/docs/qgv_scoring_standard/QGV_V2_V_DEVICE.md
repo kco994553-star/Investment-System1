@@ -61,7 +61,7 @@
 
 - v1 결측 재정규화는 `strategy_preview`를 쓰는 공개 전진검증 원장(Actions, 10-19 시작)의 Q·G 기록에도 그대로 적용된다(공식 `qgv.scoring._weighted`는 그대로).
 - 기록 모드 가상매매 판단은 전진검증 원장 스냅샷(v1 Q·G)을 쓴다. v2 Q·G가 원장에 기록되기 전에는 리허설·보고서 행만 v2를 따른다. 기기 V 기울기 저장소(`virtual-trading-v-scores`)는 v1 V를 유지한다(v2 V는 저장하지 않음).
-- 금융사 V(P/B 등) 정의, 프리셋 위 유형 비중 결합식(곱 방식) 확인. 동업종 최소 8·평균 순위 백분위·CIK 1점은 Q·G 쪽(`QGV_V2_QG_METHOD.md` §4)과 같다.
+- 금융사 V(P/B 등) 정의: 별도 연구 대기열(RESEARCH / NOT ADOPTED, 공식 총점 대체값 없음) → [FINANCIAL_V_RESEARCH_PREP_20261018.md](FINANCIAL_V_RESEARCH_PREP_20261018.md). 프리셋 위 유형 비중 결합식(곱 방식) 확인. 동업종 최소 8·평균 순위 백분위·CIK 1점은 Q·G 쪽(`QGV_V2_QG_METHOD.md` §4)과 같다.
 
 ## 8. PLAYBOOK_V1 §13·§14 반영 (2026-10-13, 모두 v0 · UNCALIBRATED)
 
