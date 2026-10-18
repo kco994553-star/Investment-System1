@@ -34,9 +34,9 @@
 .stat-radar .sr-legend li { display: flex; gap: 8px; align-items: flex-start; min-width: 0; overflow-wrap: anywhere; }
 .stat-radar .sr-legend li[data-sr-legend-state="NOT_AVAILABLE"] { color: var(--muted, #4a4a4a); }
 /* value table (also the screen-reader table) */
-.stat-radar .sr-table { max-width: 100%; overflow-x: auto; margin-top: 12px; }
+.stat-radar .sr-table { max-width: 100%; margin-top: 12px; }  /* .table-wrap: pc-layout.css owns the PC table rules (sticky header) */
 .stat-radar .sr-table table { width: 100%; border-collapse: collapse; font-size: var(--fs-s, 13px); }
-.stat-radar .sr-table th, .stat-radar .sr-table td { padding: 7px 8px; border-bottom: 1.5px solid var(--ink, #161616); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.stat-radar .sr-table th, .stat-radar .sr-table td { padding: 7px 8px; border-bottom: 1.5px solid var(--ink, #161616); text-align: left; vertical-align: top; white-space: normal; overflow-wrap: anywhere; font-size: var(--fs-s, 13px); }
 .stat-radar .sr-table tbody th { font-weight: 400; min-width: 12em; }
 .stat-radar .sr-table .badge { white-space: normal; }
 .stat-radar .sr-fresh { margin: 8px 0 0; overflow-wrap: anywhere; }
