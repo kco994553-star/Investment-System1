@@ -377,7 +377,7 @@ function brief() {
   <section class="card"><h2>${t("Attention(확인 필요)")}</h2><p class="small">${D.universe.state==="FROZEN_SNAPSHOT"?t("기업 목록은")+" "+esc(D.universe.as_of)+" "+t("과거 스냅샷입니다. 최신 시세·분석이 아닙니다."):t("출처와 데이터 시점을 확인하세요.")}</p><div class="chips"><a href="#companies">${t("관심기업")} ${prefs.interests.length} →</a><a href="#leaderboard">Leaderboard →</a></div></section>
   <section class="card" data-daily-reports><h2>${appSettings.display_locale==='en-US'?'Daily reports':'일일보고서'}</h2><div class="chips"><a href="#report/mock" data-report-link="mock">${appSettings.display_locale==='en-US'?'Paper trading daily report':'모의투자 일일보고서'} →</a><a href="#report/real" data-report-link="real">${appSettings.display_locale==='en-US'?'Investment daily report':'투자 일일보고서'} →</a></div><p class="small">${appSettings.display_locale==='en-US'?'Virtual records only · no orders':'가상 기록 · 주문 기능 없음'}</p></section>
   <details><summary>${t("분석 · 뉴스 · 관계 변화 더보기")}</summary><div class="grid">${block("qgv",t("QGV 변화"),"<p>"+t("변화량은 upstream changes가 제공할 때만 표시합니다.")+"</p>")}${block("technical",t("Technical 변화"),"<p>"+t("최근 신호는 기업 상세에서 확인하세요.")+"</p>")}${block("news",t("관심기업 뉴스"),'<a href="#news">'+t("뉴스 열기 →")+"</a>")}${block("relationships",t("Relationship changes(관계 변화)"),'<a href="#news">'+t("관계망 열기 →")+"</a>")}</div></details>`+
-  `<section class="card" data-system-flow><h2>${t("시스템")}</h2><div class="hub-grid">${[["1","QGV","#qgv","qgv"],["2",t("기술적 분석"),"#technical","technical"],["3",t("매크로"),"#macro","macro"],["4",t("검증·연구"),"#validation",null]].map(([n,label,href,name])=>`<a class="card hub-card" href="${href}"><h3><span class="flow-number">${n}</span> ${esc(label)}</h3><span class="badge ${name?esc(D[name].state):"NOT_AVAILABLE"}">${name?esc(D[name].state):"NOT_AVAILABLE"}</span></a>`).join("")}</div></section>
+  `<section class="card" data-system-flow><h2>${t("시스템")}</h2><div class="hub-grid">${[["1","QGV","#qgv","qgv"],["2",t("기술적 분석"),"#technical","technical"],["3",t("매크로"),"#macro","macro"],["8",t("검증·연구"),"#validation",null]].map(([n,label,href,name])=>`<a class="card hub-card" href="${href}"><h3><span class="flow-number">${n}</span> ${esc(label)}</h3><span class="badge ${name?esc(D[name].state):"NOT_AVAILABLE"}">${name?esc(D[name].state):"NOT_AVAILABLE"}</span></a>`).join("")}</div></section>
   <section class="card" data-data-basis><h2>${t("데이터 기준")}</h2><dl><dt>${t("목표 비중 버전")}</dt><dd id="home-target-version">—</dd><dt>${t("QGV 기준 버전")}</dt><dd>${esc(t("v2 · PROVISIONAL"))}</dd><dt>${t("시세·환율")}</dt><dd>${esc(t("이 기기에서만 입력·계산"))}</dd><dt>${t("보유 정보")}</dt><dd>${esc(t("이 기기에만 저장"))}</dd></dl><a href="#settings">${t("데이터 운영 상태 →")}</a></section></div>`;
 }
 // S06 ('leader') starts from the remembered view state of this tab (leaderboardView) and adds a text search and the
@@ -591,8 +591,7 @@ function validation() {
     `<nav class="chips screen-tabs" aria-label="${esc(t("검증·연구"))}">${tabs.map(([id,label])=>`<a href="#validation-${id}" data-screen-tab="${id}">${esc(t(label))}</a>`).join("")}<a href="#research" data-screen-tab="research">${esc(t("리서치"))}</a></nav>`+
     `<div class="hub-grid" data-hub="validation">${tabs.map(([id,title,status,reason])=>`<div id="validation-${id}">${hubCard(title,status,reason)}</div>`).join("")}${hubCard("리서치","사용 가능","기존 프롬프트 라이브러리를 엽니다.","#research")}</div><div id="forward-validation-root"></div>`+ScreenDetail.validationHtml(appSettings.display_locale);
 }
-// Design canvas S01~S16: analysis flow numbers and QGV sub-categories (navigation only).
-const FLOW_STEPS=Object.freeze({qgv:[1,"QGV"],technical:[2,"기술적 분석"],macro:[3,"매크로"],validation:[4,"검증·연구"]});
+// QGV sub-categories (navigation only). The "01 / QGV" line above a screen follows the menu of its route (app-shell.js).
 const QGV_SUBCATEGORY=Object.freeze({portfolio:"내 투자",actual:"내 투자",profiles:"내 투자",model:"내 투자",companies:"종목 찾기",company:"종목 찾기",analysis:"종목 찾기",entity:"종목 찾기",leaderboard:"종목 찾기",watchlist:"종목 찾기",types:"종목 찾기",news:"시장 정보",thirteenf:"시장 정보"});
 const QGV_CHILDREN=Object.freeze(["companies","company","analysis","leaderboard","news","portfolio","actual","entity","profiles","types","thirteenf","watchlist","model","playbook"]);
 // Main menu / bottom navigation (app-shell.js): one current destination per route, none in settings.
@@ -833,7 +832,7 @@ function renderRoute() {
   let anchor=null;
   for(const screen of ["validation","technical"]) if(route.startsWith(screen+"-")) {anchor=route;route=screen;}
   try {id=decodeURIComponent(id || "");} catch(e) {id="";}
-  const routes={home,brief,qgv,analysis:()=>analysis(id,sub||null),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
+  const routes={home,brief,qgv,analysis:()=>analysis(id,sub||null),profiles,types,model,watchlist,technical,macro,thirteenf,validation,companies,portfolio,actual,leaderboard,news:()=>news(id),research,company:()=>detail(id),settings:settingsUI,entity:()=>entityDetail(id),report:()=>report(id),system:()=>AppShell.pendingHtml("system",appSettings.display_locale),"lab-13f":()=>AppShell.pendingHtml("lab-13f",appSettings.display_locale),playbook:()=>heading("PLAYBOOK","플레이북 · 기록·채점·TARGET v1")+'<div id="playbook-screen"></div>'};
   if(!routes[route]) route="home";
   HomeScreen.park(route);
   if((route==='company'||route==='analysis')&&id) rawDataCompany=id;
@@ -878,8 +877,8 @@ function renderRoute() {
   if(route==='macro') MacroLights.mount($('#macro-lights-root'),{bundle:publicScreens,locale:appSettings.display_locale,config:window.InvestmentAppConfig});
   for(const kind of ['qg','types','filings','macro','thirteenf']) PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:route==='company'?id:route==='settings'?rawDataCompanyId()||undefined:undefined,locale:appSettings.display_locale,...(kind==='thirteenf'?{catalog:publicCatalog,interests:[...prefs.interests]}:{})});
   syncNavigation(route);
-  const flowParent=QGV_CHILDREN.includes(route)?"qgv":route==="research"?"validation":route;
-  if(FLOW_STEPS[flowParent]) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${FLOW_STEPS[flowParent][0]}"><span class="flow-number">${FLOW_STEPS[flowParent][0]}</span> ${esc(t(FLOW_STEPS[flowParent][1]))}</p>`);
+  const menu=window.AppShell?.menuFor(route);
+  if(menu) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${menu.n}" data-menu="${esc(menu.key)}"><span class="flow-number">${esc(menu.num)}</span> ${esc(menu.label)}</p>`);
   if(QGV_CHILDREN.includes(route) || route==="research") {
     const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← 검증",sub=QGV_SUBCATEGORY[route];
     const origin=(route==='company'||route==='analysis') && companyOrigin && companyOrigin.id===id?companyOrigin:null,back=origin?LIST_ORIGIN[origin.hash.slice(1).split('/')[0]]:null;
