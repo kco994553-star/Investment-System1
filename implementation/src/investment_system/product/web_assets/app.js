@@ -391,7 +391,7 @@ function brief() {
 // 'QGV v2 순' sort (design canvas S06: 정렬 QGV 높은 순, the default). S15 ('watch') is unchanged.
 function directoryFilters(prefix,watch=false) {
  const v=prefix==='leader'?leaderboardView:null,en=appSettings.display_locale==='en-US',pick=(a,b)=>a===b?" selected":"";
- const sorts=(v?[["qgv",en?"QGV v2 (high first)":"QGV v2 순"]]:[]).concat([[watch?"added":"ticker",watch?t("추가한 순"):t("티커 순")],["name",t("기업명 순")],["favorites",t("관심기업 우선")]]);
+ const sorts=(v?[["qgv",en?"QGV v2 (high first)":"QGV v2 순"]]:[]).concat([[watch?"added":"ticker",watch?t("추가한 순"):t("티커 순")],["name",t("기업명 순")],["favorites",t("관심기업 우선")]],v?LeaderboardScreen.sortOptions(en):[]);
  return `<div class="chips">${v?`<input type="search" id="leader-query" aria-label="${en?"Search companies":"기업 검색"}" placeholder="${en?"Ticker or name":"티커 또는 기업명"}" value="${esc(v.query)}">`:""}<label><input type="checkbox" id="${prefix}-interest" ${watch?"checked disabled":v?.interest?"checked":""}>${t("관심기업만")}</label><select id="${prefix}-group" aria-label="${t("그룹 필터")}"><option value="">${t("모든 그룹")}</option>${prefs.groups.map(g=>`<option value="${esc(g.id)}"${pick(v?.group,g.id)}>${esc(g.name)}</option>`).join("")}</select><select id="${prefix}-sort" aria-label="${t("정렬")}">${sorts.map(([k,l])=>`<option value="${k}"${pick(v?.sort,k)}>${esc(l)}</option>`).join("")}</select></div>`;
 }
 function companyGroups(id){return `<p class="small">${t("관심·그룹은 이 기기에만 저장됩니다.")}</p>${prefs.groups.length?prefs.groups.map(g=>`<label><input type="checkbox" data-group="${esc(g.id)}" data-member="${esc(id)}" ${g.members.includes(id)?"checked":""} ${prefs.interests.includes(id)?"":"disabled"}>${esc(g.name)}</label>`).join(""):`<a href="#watchlist">${t("그룹 관리 →")}</a>`}`;}
@@ -622,7 +622,7 @@ function directoryRows(prefix){return DeviceWatchlist.filter(identityCompanies,p
 /* S06 view state of this tab: view/profile, filters (interest, group, text), sort and scroll, plus where S04/S05 was opened
    from (origin, for its back link). RAM first, mirrored to sessionStorage as a per-tab convenience (try/catch: RAM only when
    storage is unavailable). No score, rank, price or v2 profile is stored: the v2 preset/gate stay in page memory (qgv2Profile). */
-const S06_KEY='investment.web.v1.s06-view',LEADER_SORTS=['qgv','ticker','name','favorites'];
+const S06_KEY='investment.web.v1.s06-view',LEADER_SORTS=LeaderboardScreen.SORT_IDS;
 let leaderboardView={view:'default',profileId:null,interest:false,group:'',sort:'qgv',query:'',explore:'all',scrollY:0,anchor:null,offset:0},leaderboardRows=null,companyOrigin=null;
 // S06 exploration filter (FE-MISSING-2): all / QGV available / some axes only / check data (LeaderboardScreen.EXPLORE).
 const LEADER_EXPLORE=['all','ranked','partial','check'];
@@ -644,10 +644,10 @@ function restoreLeaderScroll(){const v=leaderboardView,row=v.anchor?document.que
 let leaderRestoring=false;
 function restoreLeaderView(){leaderRestoring=true;restoreLeaderScroll();requestAnimationFrame(()=>requestAnimationFrame(()=>{if(currentRoute==='leaderboard')restoreLeaderScroll();leaderRestoring=false;}));}
 // 'QGV v2 순': the v2 rank over all 19 identities (QgvScores); filters only hide rows. No rank (NOT_AVAILABLE) goes last, by ticker.
-function rankOrder(rows,S){if(leaderboardView.sort!=='qgv')return rows;const rank=id=>{const r=S?.rows?.[id]?.rank;return Number.isInteger(r)?r:null;};
-  return [...rows].sort((a,b)=>{const x=rank(a.company_id),y=rank(b.company_id);return (x===null)-(y===null)||(x!==null&&y!==null?x-y:0)||a.ticker.localeCompare(b.ticker);});}
+// Other S06 sort keys (Q/G/V, direction, data date, M3 market cap): structured values, NA last (LeaderboardScreen.sortRows).
+function rankOrder(rows,S){return LeaderboardScreen.sortRows(rows,S,leaderboardView.sort,{deviceRanks:window.PrivateSubsetView?.ranks?.()||null});}
 function paintLeaderSummary(S,shown){const host=$('#leader-summary');if(!host)return;const en=appSettings.display_locale==='en-US',v=leaderboardView,group=prefs.groups.find(g=>g.id===v.group);
-  const sort={qgv:en?'QGV v2 (high first)':'QGV v2 순',ticker:t('티커 순'),name:t('기업명 순'),favorites:t('관심기업 우선')}[v.sort],filters=[v.interest?t('관심기업만'):null,group?(en?'group ':'그룹 ')+group.name:null,v.query.trim()?(en?'search “':'검색 “')+v.query.trim()+'”':null,v.explore!=='all'&&v.view!=='profile'?(LeaderboardScreen.EXPLORE.find(e=>e[0]===v.explore)||[])[en?2:1]:null].filter(Boolean);
+  const sort={qgv:en?'QGV v2 (high first)':'QGV v2 순',ticker:t('티커 순'),name:t('기업명 순'),favorites:t('관심기업 우선')}[v.sort]||LeaderboardScreen.sortLabel(v.sort,en),filters=[v.interest?t('관심기업만'):null,group?(en?'group ':'그룹 ')+group.name:null,v.query.trim()?(en?'search “':'검색 “')+v.query.trim()+'”':null,v.explore!=='all'&&v.view!=='profile'?(LeaderboardScreen.EXPLORE.find(e=>e[0]===v.explore)||[])[en?2:1]:null].filter(Boolean);
   const view={default:en?'Default':'기본',profile:en?'My profile (v1 preview, not the official v2 score)':'내 프로필(v1 미리보기 · 공식 v2 점수 아님)',device:en?'My device (M3)':'내 기기 기준(M3)'}[v.view];
   const p=S&&S.profile?(en?S.profile.name.name_en:S.profile.name.name)+' · '+(en?'gate ':'관문 ')+(S.profile.gate?(en?'on':'켬'):(en?'off':'끔')):'—';
   const text=(en?'Sort: ':'정렬: ')+sort+' · '+(en?'Filter: ':'필터: ')+(filters.join(' · ')||(en?'none':'없음'))+' · '+(en?'View: ':'보기: ')+view+' · '+(en?'Profile: ':'프로필: ')+p+' · '+(en?shown+' of '+identityCompanies.length+' shown':identityCompanies.length+'개 중 '+shown+'개 표시');

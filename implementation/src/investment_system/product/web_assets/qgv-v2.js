@@ -20,12 +20,43 @@ const deep=x=>{if(x&&typeof x==='object'){Object.values(x).forEach(deep);Object.
 deep(WEIGHTS);deep(PRESETS);Object.freeze(FACTORS);Object.freeze(QG_FACTORS);
 const finite=v=>typeof v==='number'&&Number.isFinite(v),positive=v=>finite(v)&&v>0,object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 function percentile(value,population){const n=population.length;if(n<2)return null;let less=0,equal=0;for(const y of population){if(y<value)less++;else if(y===value)equal++;}return 100*(less+0.5*(equal-1))/(n-1);}
-function axisScore(scores,axis){
+/* weights (optional): a custom inner-weight row (PERSONAL_PREVIEW, from validateWeights): 0 = factor excluded (listed in
+   `excluded`, never `missing`), the 50% rule applies to the custom weights, weight_available_official = share of the OFFICIAL
+   axis weight whose factors are available. Absent: the official weights, unchanged. Python: qgv_v2.axis_score. */
+function axisScore(scores,axis,custom=null){
+ if(custom!==null&&custom!==undefined)return customAxisScore(scores,axis,custom);
  const weights=WEIGHTS[axis];let total=0,used=0,acc=0,available=0;const missing=[];
  for(const[f,w]of Object.entries(weights)){total+=w;const s=Object.hasOwn(scores,f)?scores[f]:null;if(s===null||s===undefined){missing.push(f);continue;}available++;used+=w;acc+=w*s;}
  const share=used/total,out={score:null,state:'NOT_AVAILABLE',weight_available:share,factors_available:available,factors_total:Object.keys(weights).length,missing};
  if(used===0||share<MIN_AXIS_WEIGHT){out.reason='AXIS_WEIGHT_INSUFFICIENT';return out;}
  out.score=acc/used;out.state=missing.length?'PARTIAL':'READY';out.reason=null;return out;}
+function customAxisScore(scores,axis,weights){
+ let total=0,used=0,acc=0,available=0,officialTotal=0,officialUsed=0;const missing=[],excluded=[];
+ for(const[f,ow]of Object.entries(WEIGHTS[axis])){officialTotal+=ow;const s=Object.hasOwn(scores,f)?scores[f]:null,has=s!==null&&s!==undefined;if(has)officialUsed+=ow;
+  const w=weights[f];if(w===0){excluded.push(f);continue;}total+=w;if(!has){missing.push(f);continue;}available++;used+=w;acc+=w*s;}
+ const share=used/total,out={score:null,state:'NOT_AVAILABLE',weight_available:share,factors_available:available,factors_total:Object.keys(WEIGHTS[axis]).length-excluded.length,missing,excluded,weight_available_official:officialUsed/officialTotal};
+ if(used===0||share<MIN_AXIS_WEIGHT){out.reason='AXIS_WEIGHT_INSUFFICIENT';return out;}
+ out.score=acc/used;out.state=missing.length?'PARTIAL':'READY';out.reason=null;return out;}
+/* PERSONAL_PREVIEW two-level weights (owner directive 2026-10-18 §4.2): {axis:{Q,G,V}, inner:{Q:{5 factors},G:{..},V:{..}}}.
+   Every weight a finite number 0..100; 0 = excluded (not missing); each axis's inner sum and the axis sum > 0. Results carry
+   the profile id qgv-v2/custom/<hash>/gate-.. in the PERSONAL_PREVIEW namespace, never the official profile. Python twin:
+   qgv_v2.validate_weights / weights_id / official_weights. */
+const PERSONAL_NAMESPACE='PERSONAL_PREVIEW',WEIGHTS_SCHEMA='qgv-v2-weights/1';
+function invalid(){return Error('WEIGHTS_INVALID');}
+function weightValue(v){if(typeof v!=='number'||!Number.isFinite(v)||v<0||v>100)throw invalid();return v+0;}
+function sameKeys(o,keys){return object(o)&&Object.keys(o).length===keys.length&&keys.every(k=>Object.hasOwn(o,k));}
+function validateWeights(w){
+ if(!sameKeys(w,['axis','inner'])||!sameKeys(w.axis,PILLARS)||!sameKeys(w.inner,PILLARS))throw invalid();
+ const out={axis:{},inner:{}};let total=0;for(const p of PILLARS){out.axis[p]=weightValue(w.axis[p]);total+=out.axis[p];}if(!(total>0))throw invalid();
+ for(const p of PILLARS){const keys=Object.keys(WEIGHTS[p]),row=w.inner[p];if(!sameKeys(row,keys))throw invalid();out.inner[p]={};let sum=0;for(const f of keys){out.inner[p][f]=weightValue(row[f]);sum+=out.inner[p][f];}if(!(sum>0))throw invalid();}
+ return out;}
+function officialWeights(preset=DEFAULT_PRESET){if(!Object.hasOwn(PRESETS,preset))throw Error('PRESET_INVALID');const inner={};for(const p of PILLARS)inner[p]={...WEIGHTS[p]};return{axis:{...PRESETS[preset].weights},inner};}
+function hex64(v){const view=new DataView(new ArrayBuffer(8));view.setFloat64(0,v,false);let s='';for(let i=0;i<8;i++)s+=view.getUint8(i).toString(16).padStart(2,'0');return s;}
+// Stable id: FNV-1a 64 over the IEEE-754 bits of every weight in canonical order (== qgv_v2.weights_id).
+function weightsId(tree,typeWeights=true){
+ const parts=[WEIGHTS_SCHEMA];for(const p of PILLARS)parts.push(hex64(tree.axis[p]));for(const p of PILLARS)for(const f of Object.keys(WEIGHTS[p]))parts.push(hex64(tree.inner[p][f]));parts.push(typeWeights?'types-on':'types-off');
+ let h=0xcbf29ce484222325n;const text=parts.join('|');for(let i=0;i<text.length;i++){h^=BigInt(text.charCodeAt(i));h=BigInt.asUintN(64,h*0x100000001b3n);}return h.toString(16).padStart(16,'0');}
+function officialInner(tree,axis){return Object.entries(WEIGHTS[axis]).every(([f,w])=>tree.inner[axis][f]===w);}
 // GSQ-017 mixing (type_config/1): memberships {type_id: 0..1|null} -> parent Q/G/V weights.
 function typeAxisWeights(memberships,cfg){
  const fallback={};for(const p of PILLARS)fallback[p]=cfg.fallback.weights[p];const mix=cfg.mixing,types=cfg.types;
@@ -106,18 +137,28 @@ function publishedAxis(axis,scores,pub){const out=axisScore(scores,axis),s=objec
  if(finite(s)&&s>=0&&s<=100){out.score=s;out.state=out.missing.length?'PARTIAL':'READY';out.reason=null;}else{out.score=null;out.state='NOT_AVAILABLE';out.reason='AXIS_NOT_PUBLISHED';}return out;}
 /* companies: {code: {industry_group, profile, factors, v_inputs, memberships}}; quotes: {code: {price, currency, month_closes?: {YYYY-MM: close}}} (RAM).
    Returns {code: result}. */
-function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dcfDefaults(),preset=DEFAULT_PRESET,gate=null}={}){
+/* weights (PERSONAL_PREVIEW, optional; absent = the official path, unchanged): two-level tree in place of the preset. An axis
+   whose inner weights equal the official ones keeps the published Q/G score; otherwise it is recomputed from the published
+   factor scores, and the gate's Q industry percentile is recomputed over all pooled rows. typeWeights (default true) applies the
+   type weights on top of the custom axis weights as on presets. recomputePublished (verification only) recomputes Q/G even at
+   the official inner weights. Python: qgv_v2.score_universe. */
+function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dcfDefaults(),preset=DEFAULT_PRESET,gate=null,weights=null,typeWeights=true,recomputePublished=false}={}){
  if(!Object.hasOwn(PRESETS,preset))throw Error('PRESET_INVALID');
+ const custom=weights===null||weights===undefined?null:validateWeights(weights),typesOn=Boolean(typeWeights),recomputed=custom?['Q','G'].filter(a=>recomputePublished||!officialInner(custom,a)):[];
+ const axisOf=(i,a,pub)=>recomputed.includes(a)?{...axisScore(qg[i],a,custom.inner[a]),recomputed:true}:pub?publishedAxis(a,qg[i],pub[a]):axisScore(qg[i],a);
  const gateOn=gate===null||gate===undefined?GATE_DEFAULT:Boolean(gate),ids=Object.keys(object(companies)?companies:{}).sort(),groups={},fallback={};
  for(const i of ids){const g=companies[i].industry_group;groups[i]=g===undefined?null:g;}for(const p of PILLARS)fallback[p]=typeConfig.fallback.weights[p];
  const Q=object(quotes)?quotes:{},qg={},qAxis={},gAxis={},m={};
- for(const i of ids){const f=object(companies[i].factors)?companies[i].factors:{};qg[i]={};for(const k of QG_FACTORS){const v=Object.hasOwn(f,k)?f[k]:null;qg[i][k]=finite(v)&&v>=0&&v<=100?v:null;}const pub=object(companies[i].qg_axes)?companies[i].qg_axes:null;qAxis[i]=pub?publishedAxis('Q',qg[i],pub.Q):axisScore(qg[i],'Q');gAxis[i]=pub?publishedAxis('G',qg[i],pub.G):axisScore(qg[i],'G');}
+ for(const i of ids){const f=object(companies[i].factors)?companies[i].factors:{};qg[i]={};for(const k of QG_FACTORS){const v=Object.hasOwn(f,k)?f[k]:null;qg[i][k]=finite(v)&&v>=0&&v<=100?v:null;}const pub=object(companies[i].qg_axes)?companies[i].qg_axes:null;qAxis[i]=axisOf(i,'Q',pub);gAxis[i]=axisOf(i,'G',pub);}
  const map=fn=>{const o={};for(const i of ids)o[i]=fn(i);return o;};
  const issuers=map(i=>companies[i].cik),pooled=ids.filter(i=>companies[i].in_cross_section!==false),qPct=cross(map(i=>qAxis[i].score),groups,ids,pooled,true,issuers);
  const cyc=typeConfig.value_basis.cyclical_type,years=typeConfig.value_basis.normalized_years,typed={};for(const i of ids)typed[i]=typeAxisWeights(companies[i].memberships,typeConfig);
  for(const i of ids)m[i]=metrics(companies[i],Object.hasOwn(Q,i)?Q[i]:null,parameters,companies[i].cyclical_basis===true||typed[i][2].includes(cyc)?years:null);
  const ey=cross(map(i=>m[i].ebit_yield),groups,ids,pooled,false,issuers),fy=cross(map(i=>m[i].fcf_yield),groups,ids,pooled,false,issuers),ind=cross(map(i=>m[i].ebit_yield),groups,ids,pooled,true,issuers),exp=cross(map(i=>m[i].gap===null?null:-m[i].gap),groups,ids,pooled,false,issuers);
- const pw=PRESETS[preset].weights,results={};
+ const pw=custom?custom.axis:PRESETS[preset].weights,vInner=custom&&!officialInner(custom,'V')?custom.inner.V:null,results={};let plain=null;
+ if(custom&&!typesOn){let total=0;for(const p of PILLARS)total+=pw[p];plain={};for(const p of PILLARS)plain[p]=100*pw[p]/total;}
+ const pid=(custom?VERSION+'/custom/'+weightsId(custom,typesOn):VERSION+'/'+preset)+'/gate-'+(gateOn?'on':'off');
+ const profileOf=()=>custom?{preset:'custom',gate:gateOn,id:pid,namespace:PERSONAL_NAMESPACE,type_weights:typesOn,weights:structuredClone(custom),recomputed_axes:[...recomputed,...(vInner?['V']:[])]}:{preset,gate:gateOn,id:pid};
  for(const i of ids){const c=companies[i],x=m[i],factors={};
   for(const k of QG_FACTORS){const s=qg[i][k];factors[k]={score:s,state:s===null?'NOT_AVAILABLE':'PUBLIC',reason:s===null?'SEC_FACTOR_NOT_AVAILABLE':null,basis:null};}
   for(const[k,cr,key]of [['v_earnings_yield',ey,'ebit_yield'],['v_fcf_yield',fy,'fcf_yield'],['v_vs_industry',ind,'ebit_yield'],['v_expectation_check',exp,'gap']]){
@@ -125,18 +166,18 @@ function scoreUniverse(companies,quotes,{typeConfig=typeDefaults(),parameters=dc
    else factors[k]={score:null,state:'NOT_AVAILABLE',reason:Object.hasOwn(cr,i)?cr[i][1]:(Object.hasOwn(x.reasons,key)?x.reasons[key]:null),basis:null};}
   const oh=x.own_history;factors.v_vs_own_history=oh!==null?{score:oh,state:'CALCULATED',reason:null,basis:'OWN_HISTORY'}:{score:null,state:'NOT_AVAILABLE',reason:Object.hasOwn(x.reasons,'own_history')?x.reasons.own_history:null,basis:null};
   const vs={};for(const k of Object.keys(WEIGHTS.V))vs[k]=factors[k].score;
-  const axes={Q:qAxis[i],G:gAxis[i],V:axisScore(vs,'V')},[tw,typeReason,selected]=typed[i],weights=compositeWeights(pw,tw,fallback),flags=[];
+  const axes={Q:qAxis[i],G:gAxis[i],V:axisScore(vs,'V',vInner)},[tw,typeReason,selected]=typed[i],weights=plain?{...plain}:compositeWeights(pw,tw,fallback),flags=[];
   const qp=Object.hasOwn(qPct,i)?qPct[i]:null,qPercentile=qp?qp[0]:null,qBasis=qp?qp[2]:null,trap=gateOn&&qPercentile!==null&&qPercentile<=GATE_PERCENTILE;
   if(trap)flags.push('VALUE_TRAP_CAUTION');if(gateOn&&qPercentile===null)flags.push('GATE_NOT_EVALUATED');if(axes.V.score===null)flags.push('V_NOT_AVAILABLE');
   let data=0;for(const p of PILLARS)if(axes[p].score!==null)data+=weights[p];
   const included=PILLARS.filter(p=>axes[p].score!==null&&!(p==='V'&&trap));let total=null,totalReason=null;
   if(data/100<MIN_AXIS_WEIGHT||!included.length)totalReason='AXIS_WEIGHT_INSUFFICIENT';else{let acc=0,used=0;for(const p of included){acc+=weights[p]*axes[p].score;used+=weights[p];}total=acc/used;}
   let available=0;for(const k of FACTORS)if(factors[k].score!==null)available++;
-  results[i]={version:VERSION,status:STATUS,profile:{preset,gate:gateOn,id:VERSION+'/'+preset+'/gate-'+(gateOn?'on':'off')},axes,factors,factors_available:available,factors_total:FACTORS.length,
+  results[i]={version:VERSION,status:STATUS,profile:profileOf(),axes,factors,factors_available:available,factors_total:FACTORS.length,
    q_industry_percentile:qPercentile,q_industry_basis:qBasis,type_weights:tw,type_reason:typeReason,selected_types:selected,weights,v_excluded:trap?'VALUE_TRAP_GATE':null,value_trap_gate:trap,total,total_reason:totalReason,flags,
    detail:{earnings_basis:x.earnings_basis,ebit_yield:x.ebit_yield,fcf_yield:x.fcf_yield,implied_growth:x.implied_growth,realized_growth:x.realized_growth,expectation_gap:x.gap,industry_basis:factors.v_vs_industry.basis,industry_peers:Object.hasOwn(ind,i)?ind[i][3]:null},
    reference_range:referenceRange(c,parameters)};}
  return results;}
 return Object.freeze({VERSION,STATUS,PILLARS,WEIGHTS,FACTORS,QG_FACTORS,PRESETS,DEFAULT_PRESET,GATE_DEFAULT,GATE_PERCENTILE,MIN_PEERS,MIN_UNIVERSE,MIN_AXIS_WEIGHT,MIN_HISTORY,
- PRICEFREE_TYPE_METRICS,TYPE_SCOPE,percentile,axisScore,typeAxisWeights,pricefreeMemberships,compositeWeights,monthClose,normalizedEbit,scoreUniverse});
+ PRICEFREE_TYPE_METRICS,TYPE_SCOPE,PERSONAL_NAMESPACE,WEIGHTS_SCHEMA,validateWeights,officialWeights,weightsId,percentile,axisScore,typeAxisWeights,pricefreeMemberships,compositeWeights,monthClose,normalizedEbit,scoreUniverse});
 });
