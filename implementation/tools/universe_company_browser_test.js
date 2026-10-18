@@ -7,12 +7,14 @@
 // below 50% of its weight), a NOT_COLLECTED / CIK_UNRESOLVED code, a FINANCIAL row and (synthetic) a withdrawn code. No device
 // prices exist in this browser, so V must be NOT_AVAILABLE with the engine's reason (financial: not applicable). Never 0 for NA.
 const { chromium } = require('playwright'), assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
-const F = require('./qgv_v2_fixture.js'), SQ = require('../src/investment_system/product/web_assets/sec-qgv2.js');
+const F = require('./qgv_v2_fixture.js'), SQ = require('../src/investment_system/product/web_assets/sec-qgv2.js'), ES = require('../src/investment_system/product/web_assets/entity-search.js');
 const BASE = process.env.PAGES_COCKPIT_URL, ORIGIN = new URL(BASE).origin, SHOTS = process.env.PAGES_COCKPIT_EVIDENCE_DIR || '';
 const Q = Object.keys(SQ.Q_WEIGHTS), G = Object.keys(SQ.G_WEIGHTS), TARGET_CIKS = new Set(Object.values(SQ.TARGET_CIKS).filter(Boolean));
 const close = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
 const fmt = (v) => new Intl.NumberFormat('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(v);
-let phase = 'START';
+let phase = 'START', NAMES = null;
+// KR-NAMES table served with the build (company-names-ko.json): the page title is "<name> · <ticker>" from it.
+async function servedNames() { try { const r = await fetch(new URL('company-names-ko.json', BASE)); return r.status === 200 ? ES.nameIndex(JSON.parse(await r.text())) : null; } catch (_) { return null; } }
 async function served() {
   try { const r = await fetch(new URL('sec-qgv2.json', BASE)); if (r.status !== 200) return null; return JSON.parse(await r.text()); } catch (_) { return null; }
 }
@@ -45,7 +47,8 @@ async function check(page, p, kind, code) {
   await page.goto(BASE + '#company/' + encodeURIComponent(code));await pg.waitFor();
   await page.waitForFunction(() => document.querySelector('[data-universe-page]')?.dataset.universeV !== 'PENDING');
   assert.equal(await pg.getAttribute('data-universe-page'), code);
-  assert.equal(await page.locator('main h1').textContent(), code.slice(code.indexOf(':') + 1));
+  const names = NAMES ? NAMES.get(code) : null;
+  await page.waitForFunction((t) => document.querySelector('main h1')?.textContent === t, ES.companyTitle(names, code.slice(code.indexOf(':') + 1), 'ko-KR'));
   const state = await pg.getAttribute('data-universe-state'), reason = await pg.getAttribute('data-universe-reason');
   if (kind === 'WITHDRAWN') assert.equal(state, 'WITHDRAWN');
   else if (kind === 'SOURCE_NA') { assert.equal(state, 'SOURCE_NA'); assert.equal(reason, r.reason_codes[0]); }
@@ -84,7 +87,8 @@ async function check(page, p, kind, code) {
   assert.equal(await page.locator('[data-uc-profile]').getAttribute('data-uc-profile'), file ? r.profile : 'NA');
   assert.equal(await page.locator('[data-uc-filing-windows="NA"]').count(), 1);
   if (!TARGET_CIKS.has(r.cik)) assert.equal(await page.locator('[data-uc-chart="NA"]').count(), 1);
-  assert.equal(await page.locator('[data-uc-name="NOT_PUBLISHED"]').count(), 1);
+  assert.equal(await page.locator('[data-uc-name="' + (names ? names.ko_status : 'NOT_LOADED') + '"]').count(), 1);
+  if (names) assert.equal(await page.locator('[data-company-names] [data-name-en]').getAttribute('data-name-en'), names.en_name ? 'PRESENT' : 'MISSING');
   assert.equal(await page.locator('[data-universe-company]').count(), 1);
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'no horizontal scroll');
   assert.equal(await page.locator('[data-universe-page] [style]').count(), 0, 'no inline styles');
@@ -92,6 +96,7 @@ async function check(page, p, kind, code) {
 (async () => {
   const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_EXECUTABLE_PATH });let pass = 0;
   try {
+    NAMES = await servedNames();
     const live = await served(), mode = live ? 'REAL' : 'SYNTHETIC', fx = live ? { payload: live, withdrawn: null } : synthetic(), p = fx.payload;
     SQ.validate(p);const list = cases(p, fx.withdrawn, !!live);console.log('UNIVERSE_COMPANY mode=' + mode + ' as_of=' + p.as_of + ' cases=' + list.map(([k, c]) => k + ':' + c).join(','));
     for (const width of [390, 1280]) {

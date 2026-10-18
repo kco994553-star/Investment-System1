@@ -211,10 +211,17 @@ function rawDataUI(){
 function mountRawData(){const id=rawDataCompanyId();for(const kind of ['qg','types','filings'])PublicScreens.mount($('#public-'+kind),publicScreens,{kind,companyId:id||undefined,locale:appSettings.display_locale});}
 // Company search (TARGET directory + public Universe504 codes): identity only, no prices/caps/ranks (GSQ-010).
 let publicEntities=[],universeDirectory=null,universeDirectoryPromise=null;
+// KR-NAMES (2026-10-18): reviewed company-names-ko.json, display and search only (never a score, rank or identity input).
+// It adds names to the entities above; which companies are searchable still comes from the directory and the shares file.
+let companyNames=null;
+const companyNamesPromise=(window.EntitySearch?.loadNames?EntitySearch.loadNames(window):Promise.resolve(null)).then(n=>{companyNames=n;
+  if(!n) return;if(searchIndex){rebuildSearchIndex();paintGlobalSearch();}
+  const [route]=location.hash.slice(1).split("/");if(route==="company" && D) render();});
+function companyTitle(id,ticker){return EntitySearch.companyTitle(companyNames?.get(id)||null,ticker,appSettings.display_locale);}
 function rebuildSearchIndex() {
   const codes={};if(universeDirectory?.state==="READY") for(const [code,r] of Object.entries(universeDirectory.records)) codes[code]=r.company_id;
-  const ko=window.SearchUI?.KO_NAMES||{},named=e=>Object.hasOwn(ko,e.canonical_id)?{...e,localized_names:{"ko-KR":ko[e.canonical_id]}}:e;
-  try {searchIndex=EntitySearch.createIndex([...publicEntities,...EntitySearch.companyEntities(identityCompanies,codes).map(named)]);}
+  const ko=window.SearchUI?.KO_NAMES||{},named=e=>!e.names&&Object.hasOwn(ko,e.canonical_id)?{...e,localized_names:{"ko-KR":ko[e.canonical_id]}}:e;
+  try {searchIndex=EntitySearch.createIndex([...publicEntities,...EntitySearch.companyEntities(identityCompanies,codes,companyNames).map(named)]);}
   catch(_) {searchIndex=EntitySearch.createIndex(publicEntities);}
 }
 function ensureUniverseDirectory() {
@@ -468,17 +475,19 @@ function m2Panel(id,companyIds) {
 
 function detail(id) {
   const c=company(id);
-  if(!c && universeCode(id)) {void ensureUniverseDirectory();return window.UniverseCompany?UniverseCompany.html(id,{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes}):universeDetail(id);}
+  if(!c && universeCode(id)) {void ensureUniverseDirectory();return window.UniverseCompany?UniverseCompany.html(id,{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames}):universeDetail(id);}
   const candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null;
   const historySymbol=PrivateHistory.symbolFor(id);
   if((!c || c.identity_only) && (candidate || historySymbol)) return CompanyScreen.summary({locale:appSettings.display_locale,id,screens:publicScreens,scores:qgvScores(),quote:companyQuote.id===id?companyQuote.quote:null,
-    headerHtml:`<div class="row">${heading("COMPANY RESEARCH",CompanyLogos.html(candidate?.ticker || historySymbol || c?.ticker || id,40)+esc(candidate?.ticker || historySymbol || c?.ticker || ""),esc(c?.name || ""))}${star(id)}</div>`,groupsHtml:companyGroups(id),candidateHtml:m2Panel(id)});
+    headerHtml:`<div class="row">${heading("COMPANY RESEARCH",CompanyLogos.html(candidate?.ticker || historySymbol || c?.ticker || id,40)+esc(companyTitle(id,candidate?.ticker || historySymbol || c?.ticker || "")),esc(c?.name || ""))}${star(id)}</div>`+namesBlock(id),groupsHtml:companyGroups(id),candidateHtml:m2Panel(id)});
   if(!c) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
   const h=D.portfolio.data?.holdings?.find(r=>r.company_id===id),e=searchIndex.resolve("COMPANY",id);
-  return `<a class="small" href="#companies">${t("← 기업 목록")}</a><div class="row">${heading("COMPANY DETAIL",CompanyLogos.html(c.ticker,40)+esc(c.ticker),esc(label(e) || c.name))}${star(id)}</div><div id="private-history-chart"></div><div id="sec-reported-panel"></div><div class="grid">${summaryFor("qgv",id)}${summaryFor("technical",id)}</div>`+
+  return `<a class="small" href="#companies">${t("← 기업 목록")}</a><div class="row">${heading("COMPANY DETAIL",CompanyLogos.html(c.ticker,40)+esc(companyTitle(id,c.ticker)),esc(label(e) || c.name))}${star(id)}</div>${namesBlock(id)}<div id="private-history-chart"></div><div id="sec-reported-panel"></div><div class="grid">${summaryFor("qgv",id)}${summaryFor("technical",id)}</div>`+
   block("macro",t("Macro exposure / context(거시 노출)"),`<p>${esc(D.macro.data?.regime || "")}</p><p>${t("기업 노출:")} ${esc(D.macro.data?.exposures?.[id] || t("미제공"))}</p>`)+
   `<section class="card"><h2>${t("Portfolio status(보유 상태)")}</h2>${state(D.portfolio)}<p>${h?t("Snapshot에 포함 · 비중")+" "+(Number.isFinite(h.actual_weight)?pct(h.actual_weight):"NOT_AVAILABLE"):D.portfolio.data?t("제공된 Snapshot에 없음"):t("실제 보유 상태 미제공")}</p>${h && Number.isFinite(h.target_weight)?`<p class="small" data-weight-kind="TARGET">TARGET · ${t("모델 비중")} ${pct(h.target_weight)}</p>`:""}${h?evidence(h):""}</section><section class="card"><h2>${t("News / Relationships(뉴스·관계)")}</h2>${state(D.news)}<a href="#news/${encodeURIComponent(id)}">${t("이 기업의 뉴스·관계망 확인 →")}</a></section>${evidence(c)}`;
 }
+// English (SEC) name, Korean name with its status and source, aliases and share class of a company page (KR-NAMES).
+function namesBlock(id){return window.UniverseCompany?.namesHtml?UniverseCompany.namesHtml(companyNames?companyNames.get(id):undefined,appSettings.display_locale):"";}
 function analysis(id,tab=null) {
   const c=company(id),candidate=Object.hasOwn(m2Candidates.companies,id)?m2Candidates.companies[id]:null,historySymbol=PrivateHistory.symbolFor(id);
   if(!c && !candidate && !historySymbol) return heading("COMPANIES",t("기업을 찾을 수 없습니다."))+'<a href="#companies">'+t("기업 목록 →")+"</a>";
@@ -878,7 +887,7 @@ function renderRoute() {
   if(route==='brief'&&window.PlaybookScreen){try{$('#content').insertAdjacentHTML('afterbegin',PlaybookScreen.todayHtml(localStorage));}catch(_){}}
   if(route==='actual') attachDeviceActual('#device-actual-root',true);
   if(route==='portfolio') {attachDeviceActual('#device-actual-summary',false);paintPortfolio();}
-  if(route==='company' && window.UniverseCompany && !company(id) && universeCode(id)) void UniverseCompany.mount($('#content'),{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,catalogPromise:deviceCatalog(),config:window.InvestmentAppConfig});
+  if(route==='company' && window.UniverseCompany && !company(id) && universeCode(id)) void UniverseCompany.mount($('#content'),{locale:appSettings.display_locale,screens:publicScreens,shares:universeDirectory,quotes:qgv2Quotes,names:companyNames,catalogPromise:deviceCatalog(),config:window.InvestmentAppConfig});
   if(route==='company' && $('#company-holding')) void CompanyScreen.mountHolding($('#company-holding'),{locale:appSettings.display_locale,ticker:company(id)?.identity_only?company(id).ticker:null,catalogPromise:deviceCatalog()});
   // Tab choice is mirrored into the hash ('#analysis/<id>/<tab>') with replaceState: no new history entry, back leaves S05.
   if(route==='analysis') CompanyScreen.wireTabs($('#content'),{onSelect:key=>{try{history.replaceState(history.state,'','#analysis/'+encodeURIComponent(id)+(key==='summary'?'':'/'+key));currentHash=location.hash;}catch(_){}}});
