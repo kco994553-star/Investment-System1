@@ -37,8 +37,8 @@ async function current(page){return page.locator('#primary-nav [data-nav-tab][ar
    assert.equal(await page.locator('.flow-step[data-flow-step="3"]').count(),1);
    assert.equal(await page.locator('[data-macro-regime]').textContent(),'자료 없음');
    phase='S10';await open(page,'validation','[data-hub="validation"]');
-   // Flow numbers follow the owner's eight menus (2026-10-18): validation is 8 · Lab.
-   assert.equal(await page.locator('.flow-step[data-flow-step="8"]').count(),1);
+   // Flow numbers follow the owner's menu numbers (0 · 1~6 · n · n+1, 2026-10-18): validation is n+1 · Lab.
+   assert.equal(await page.locator('.flow-step[data-flow-step="n+1"]').count(),1);
    assert.equal(await page.locator('[data-screen-tab]').count(),6);
    assert.ok((await page.locator('main .data-badges').textContent()).includes('UNCONFIRMED'));
    await open(page,'validation-backtest','#validation-backtest');assert.deepEqual(await current(page),['lab']);

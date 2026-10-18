@@ -130,7 +130,8 @@
   locale=ctx.locale||locale;
   return '<section class="home" data-home aria-labelledby="home-title">'+
    '<p class="home-eyebrow" aria-hidden="true">'+esc(T(locale,'기업 검색 · 근거에서 판단까지','Company search · from evidence to judgement'))+'</p>'+
-   '<h1 class="home-title" id="home-title">'+esc(T(locale,'어떤 기업을 살펴볼까요?','Which company shall we look into?'))+'</h1>'+
+   // The last words get the yellow highlighter (owner design 2026-10-18); the heading text is unchanged.
+   '<h1 class="home-title" id="home-title">'+esc(T(locale,'어떤 기업을 ','Which company shall we '))+'<span class="hl">'+esc(T(locale,'살펴볼까요?','look into?'))+'</span></h1>'+
    // Self-made hand-drawn rule: decoration only.
    '<svg class="home-sketch" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 8.5c18-3.2 36-4.1 55-2.6 17 1.3 30 3.9 49 3.1 22-.9 38-4.6 60-4.2 17 .3 33 2 52 3.6"/><path d="M40 11.2c25-1.6 52-1.2 80-.3"/></svg>'+
    '<p class="home-sub">'+esc(T(locale,'기업을 이해하고, 근거로 판단하세요.','Understand the business, decide on evidence.'))+'</p>'+
@@ -143,12 +144,13 @@
  }
  // Discovery (shown when nothing is being searched): where each question is answered. Navigation only, no data.
  function discover(){
-  const rows=[['01','QGV','무엇을 하는 기업인가','What does the company do?','리더보드 · 기업 목록 · 기업 상세','Leaderboard · company list · detail','#leaderboard'],
-   ['03',T(locale,'매크로','Macro'),'지금 어떤 환경인가','What is the environment now?','거시 8축 · 경고등','Eight macro axes · lights','#macro'],
-   ['04',T(locale,'뉴스·공시','News'),'무슨 일이 있었나','What happened?','공시·뉴스 · 기업 관계망','Filings and news · company network','#news'],
-   ['08','Lab','이 판단은 작동하는가','Does the judgement work?','검증·연구 · 전진검증','Validation · forward checks','#validation']];
+  // Numbers follow the owner menus (0 홈 · 1–6 · n 구조 트리 · n+1 Lab, 2026-10-18); data-menu carries the menu colour.
+  const rows=[['1','QGV','무엇을 하는 기업인가','What does the company do?','리더보드 · 기업 목록 · 기업 상세','Leaderboard · company list · detail','#leaderboard'],
+   ['3',T(locale,'매크로','Macro'),'지금 어떤 환경인가','What is the environment now?','거시 8축 · 경고등','Eight macro axes · lights','#macro'],
+   ['4',T(locale,'뉴스','News'),'무슨 일이 있었나','What happened?','공시·뉴스 · 기업 관계망','Filings and news · company network','#news'],
+   ['n+1','Lab','이 판단은 작동하는가','Does the judgement work?','검증·연구 · 전진검증','Validation · forward checks','#validation']];
   return '<nav class="home-discover" id="home-discover" data-home-discover aria-labelledby="home-discover-title"><h2 class="home-section-title" id="home-discover-title">'+esc(T(locale,'어디서 시작할까요','Where to begin'))+'</h2><ul class="discover-list">'+
-   rows.map(([n,menu,qk,qe,tk,te,href])=>'<li><a href="'+href+'" data-discover="'+esc(href.slice(1))+'"><span class="discover-num">'+esc(n+' / '+menu)+'</span><span class="discover-q">'+esc(T(locale,qk,qe))+'</span><span class="discover-to">'+esc(T(locale,tk,te))+' <span aria-hidden="true">↗</span></span></a></li>').join('')+
+   rows.map(([n,menu,qk,qe,tk,te,href])=>'<li data-menu="'+({'1':'qgv','3':'macro','4':'news','n+1':'lab'})[n]+'"><a href="'+href+'" data-discover="'+esc(href.slice(1))+'"><span class="discover-num">'+esc(n+' / '+menu)+'</span><span class="discover-q">'+esc(T(locale,qk,qe))+'</span><span class="discover-to">'+esc(T(locale,tk,te))+' <span aria-hidden="true">↗</span></span></a></li>').join('')+
    '</ul><p class="home-more"><a href="#brief" data-home-brief>'+esc(T(locale,'오늘의 투자 화면 · 운영 카드 보기','Today’s investment view · status cards'))+' <span aria-hidden="true">→</span></a></p></nav>';
  }
  // Personal news: only for companies on this device's watchlist, from the same public files the news screen reads
