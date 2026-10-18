@@ -73,7 +73,7 @@ APPROVED_SHA256 = {
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "97720e4a6305bdbab40c82355878ee152d3df138e4fe78c344fcfacd5b2b7050",
     "portfolio-screen.js": "b3488b83540dbdb06377f011984a8bdb27959bc627d8f9836235c2322493b038",
-    "company-screen.js": "b31beba58c1fb834552d11c251acfa60542943b6b981b92ead666f20da38faee",
+    "company-screen.js": "5c1be48050ab6490aeb8cc6295c45485d66477aaed8f0ab01b201cf7cd21e207",
     "ops-status.js": "bccccba913e0887ee2bb3c38fd61f27fcc2a6d37acb67aeeffea227df422c7a9",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "016d74e3e870a404172b0b2e51ee649204cfaf288ee013afd32f0a8e834c17a4",
@@ -136,8 +136,8 @@ APPROVED_SHA256 = {
     "ia-screens.js": "0a8606972351534a6a228071f902334063d7bccc2a1752b61b47b6cb83e82c4f",
     "universe-company.js": "a7b1e27630aa08fc977ddfe358108121c6a8d1a4f6afd053b0ab577bd5103bcb",
     "universe-company.css": "5b1b0236290f91c95b7f25d49bc93d032bf1718754c1cfae7789e92bb74b11b8",
-    "stat-radar.js": "1a799ed110bd01d15ba27a61bcc0a9480f06afba9cb12cc79196d442997e20af",
-    "stat-radar.css": "976a16fca205d02c6d24658a002fb1d7f5f2d9414d057bca8b22ad46b6af1a5a",
+    "stat-radar.js": "71b7aa9287d6753534fd785da47228b87b7877527a5753490d2313d3f16d3a23",
+    "stat-radar.css": "66b21c51680638bd1e9375f21ac9b105dec5fece6b21368f4651644f0f37ed03",
 }
 ALLOWED_NAMES = frozenset(APPROVED_SHA256) | {SEC_PUBLIC_FILENAME, UNIVERSE_SHARES_FILENAME, UNIVERSE_QG_FILENAME, CLASSIFICATION_FILENAME, FORWARD_LEDGER_FILENAME, UNIVERSE_CODES_FILENAME, UNIVERSE_DOMAINS_FILENAME, COMPANY_LOGOS_FILENAME, QGV2_FILENAME, DISCLOSURES_FILENAME, NEWS_SIGNALS_FILENAME} | set(SCREEN_FILENAMES) | set(DART_FILENAMES)
 MAX_FILE_BYTES = 2 * 1024 * 1024
