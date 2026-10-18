@@ -3,6 +3,7 @@
 상태: **점검 문서만.** 코드·가드·워크플로·결정 기록은 바꾸지 않았다.
 기준 커밋: canonical `35ffbf84` (`claude/investment-system-top500-validation-alrugm`, #303 병합).
 근거 지시: 사용자 새 화면 구조(2026-10-18). 홈=기업 검색, 1 QGV ~ 6 프롬프트, n 전체 시스템 트리, n+1 Lab.
+화면 요소별 자료 출처·갱신·신선도 계약: [FRONTEND_DATA_CONTRACT](FRONTEND_DATA_CONTRACT.md).
 
 > 이 문서를 병합해도 아래 IA-2~IA-18 권장안의 승인이 아니다. 각 항목은 결정 후보로 남는다.
 > IA-1(3.5 이름)만 결정됐다: **연쇄 효과 지도**(사용자 결정, 2026-10-18, 코디네이터 전달).
