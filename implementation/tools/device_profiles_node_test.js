@@ -35,3 +35,16 @@ test('v2 editor helpers: within-axis and total shares, fit to 100 with locks, ru
  const mine={rows:{a:{personal_rank:2,personal:{...off.rows.a.primary,total:45}},b:{personal_rank:1,personal:{...off.rows.b.primary,total:50,value_trap_gate:false,flags:[]}},c:{personal_rank:null,personal:off.rows.c.primary}}},rows=P.compareRows(off,mine);
  assert.deepEqual(rows.map(r=>r.company_id),['b','a','c']);assert.equal(rows[0].rank_change,1);assert.equal(rows[1].rank_change,-1);assert.equal(rows[2].rank_change,null);assert.equal(rows[0].official.gate,'TRAP');assert.equal(rows[0].mine.gate,'CLEAR');assert.equal(rows[2].mine.eligible,false);assert.equal(rows[2].official.rank,null);
  assert.deepEqual(P.PRODUCT_PRESETS.map(p=>p[1][0]),['공격형','균형형','수비형','사용자 설정']);assert.equal(P.FACTOR_LABELS.q_profitability[0],'수익성');assert.equal(Object.keys(P.FACTOR_LABELS).length,15);});
+test('S13 v0.1 candidates: 공격형/균형형/수비형 map to user-preset ids (never the code presets); stage summary reads the engine stages',()=>{
+ const V2=require('../src/investment_system/product/web_assets/qgv-v2.js');
+ const want={aggressive:['user-preset/aggressive@0.1',{Q:30,G:50,V:20}],balanced:['user-preset/balanced@0.1',{Q:40,G:30,V:30}],defensive:['user-preset/defensive@0.1',{Q:55,G:15,V:30}]};
+ for(const[key,[id,axis]]of Object.entries(want)){const d=P.candidateFor(key);assert.equal(d.id,id);assert.deepEqual(d.weights.axis,axis);assert.equal(d.status,'CANDIDATE_UNVALIDATED');assert.ok(d.type_weights&&d.gate);for(const p of V2.PILLARS)assert.deepEqual(d.weights.inner[p],{...V2.WEIGHTS[p]});}
+ assert.equal(P.candidateFor('custom'),null);assert.equal(P.candidateFor('quality'),null);assert.equal(P.CANDIDATE_LABEL[0],'v0.1 후보 · 검증 전 · 공식 기본값 아님');
+ // A saved personal profile from a candidate tree is a normal versioned /2 profile.
+ const doc=P.saveV2(P.emptyV2(),{name:'공격형 v0.1',weights:P.candidateFor('aggressive').weights},new Date('2026-10-18T00:00:00Z'));assert.equal(doc.profiles[0].version,1);assert.deepEqual(doc.profiles[0].weights.axis,{Q:30,G:50,V:20});
+ const vec=JSON.parse(require('node:fs').readFileSync(require('node:path').join(__dirname,'../tests/fixtures/qgv_v2_vectors_v1.json'),'utf8')).cases[0].input;
+ const res=V2.scoreUniverse(vec.companies,vec.synthetic_market,{weights:P.candidateFor('aggressive').weights,weightStages:true}),mine={rows:Object.fromEntries(Object.entries(res).map(([k,r])=>[k,{personal:{weight_stages:r.weight_stages}}]))};
+ const sm=P.stageSummary(mine),rows=Object.values(res);assert.equal(sm.rows,rows.length);assert.deepEqual(sm.base,{Q:30,G:50,V:20});
+ assert.equal(sm.applied.n,rows.filter(r=>r.total!==null).length);assert.equal(sm.counts.TOTAL_NOT_AVAILABLE,rows.filter(r=>r.total===null).length);
+ assert.equal(sm.counts.VALUE_TRAP_GATE,rows.filter(r=>r.value_trap_gate&&r.axes.V.score!==null).length);assert.ok(sm.type.changed>0);
+ let s=0;for(const p of V2.PILLARS)s+=sm.applied.mean[p];assert.ok(Math.abs(s-100)<1e-9);assert.deepEqual(P.stageSummary({rows:{}}).rows,0);});

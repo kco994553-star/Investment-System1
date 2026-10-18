@@ -82,7 +82,7 @@ async function sortFlow(page, width) {
   } else if (SHOTS) await page.screenshot({ path: SHOTS + '/s06-sort-' + width + '.png' });
   phase = 'SORT_DONE';
 }
-/* S13 QGV v2 two-level editor (owner directive 2026-10-18 §4.2/§4.3): product presets without numbers, the code presets under
+/* S13 QGV v2 two-level editor (owner directive 2026-10-18 §4.2/§4.3): product presets = the v0.1 candidates (owner decision 2026-10-18), the code presets under
    their own label, 3 axis + 15 inner weights, shares, zero = excluded, lock + fit, invalid sum, reset, before/after compare
    (personal key, official result untouched) and versioned save in this browser. */
 async function editorFlow(page, width) {
@@ -94,9 +94,11 @@ async function editorFlow(page, width) {
   assert.equal(await page.locator(E + ' [data-product-preset="custom"]').getAttribute('aria-pressed'), 'true');
   const code = await page.locator(E + ' [data-code-preset]').allTextContents();assert.equal(code.length, 4);assert.ok(code[0].startsWith('balanced · 균형 · Q34/G33/V33'));assert.ok(code.every((t) => !/공격|수비|균형형/.test(t)));
   assert.match(await page.locator(E).textContent(), /기존 축 비중 프리셋\(balanced\/quality\/growth\/value\)/);
+  // Owner decision 2026-10-18 (preset v0.1): 공격형 is a CANDIDATE_UNVALIDATED preset that fills the editor (details: preset_candidates_browser_test.js).
   await page.locator(E + ' [data-product-preset="aggressive"]').click();const status = page.locator(E + ' [data-product-preset-status="aggressive"]');
-  assert.match(await status.textContent(), /수치 미정 · 결정 대기/);assert.match(await status.locator('[data-product-preset-decision]').getAttribute('href'), /USER_DECISIONS_PENDING\.md$/);
-  assert.equal(await page.locator(E + ' [data-qgv2w]').count(), 0, 'no numbers for 공격형');
+  assert.match(await status.locator('[data-user-preset-label]').textContent(), /^v0\.1 후보 · 검증 전 · 공식 기본값 아님$/);assert.match(await status.locator('[data-product-preset-decision]').getAttribute('href'), /USER_DECISIONS_PENDING\.md$/);
+  assert.equal(await page.locator('#qgv2w-axis-G').inputValue(), '50');
+  await page.locator(E + ' [data-qgv2w-reset]').click();assert.equal(await page.locator(E + ' [data-product-preset="custom"]').getAttribute('aria-pressed'), 'true');
   await page.locator(E + ' [data-product-preset="custom"]').click();
   phase = 'ED_FIELDS';assert.equal(await page.locator(E + ' [data-qgv2w^="axis."]').count(), 3);assert.equal(await page.locator(E + ' [data-qgv2w^="inner."]').count(), 15);
   assert.equal(await page.locator(E + ' input[type="range"]').count(), 18);assert.equal(await page.locator(E + ' [data-qgv2w-lock]').count(), 18);

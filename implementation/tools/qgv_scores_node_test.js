@@ -388,6 +388,26 @@ test('personal weights: separate output key, official rows byte-identical, cover
   for (const row of Object.values(same.rows)) { assert.equal(row.personal.total, row.primary.total); assert.equal(row.personal_rank, row.rank); }
 });
 
+// User preset v0.1 candidates (owner decision 2026-10-18): personal rows carry the engine's weight stages; official rows never do.
+test('user preset candidates: personal weight stages from the engine, official result byte-identical', () => {
+  const V2 = globalThis.QgvV2, base = { identities, publicScreens: screens, quotes }, official = JSON.stringify(QS.compute(base));
+  for (const id of Object.keys(V2.USER_PRESETS)) {
+    const S = QS.compute({ ...base, weights: V2.userPreset(id).weights }), { personal, ...rest } = JSON.parse(JSON.stringify(S));
+    for (const r of Object.values(rest.rows)) { delete r.personal; delete r.personal_rank; }
+    assert.deepEqual(rest, JSON.parse(official), id);assert.equal(personal.state, 'READY');
+    let staged = 0;
+    for (const row of Object.values(S.rows)) {
+      assert.ok(!('weight_stages' in row.primary), 'official row has no stages');
+      const ws = row.personal.weight_stages;if (!ws) { assert.equal(row.personal.flags[0], 'V2_INPUTS_NOT_AVAILABLE');continue; }
+      staged++;assert.deepEqual(ws.base.axis, V2.userPreset(id).weights.axis);assert.deepEqual(ws.type_adjusted.axis, row.personal.weights);
+      if (Number.isFinite(row.personal.total)) { let t = 0;for (const p of ['Q', 'G', 'V']) if (ws.applied.axis[p] > 0) t += ws.applied.axis[p] * row.personal.axes[p].score / 100;assert.ok(Math.abs(t - row.personal.total) < 1e-9); }
+      else assert.ok(ws.applied.state === 'NOT_AVAILABLE' || ws.display_stop, row.company_id);
+    }
+    assert.ok(staged > 0);
+  }
+  assert.equal(JSON.stringify(QS.compute(base)), official);
+});
+
 // S06 structured sort (owner directive 2026-10-18 §4.4): numeric keys, NA last both ways, QGV ties by ticker, cap ties by company_id.
 test('S06 sortRows: structured keys, NA last in both directions, ties, official rank untouched', () => {
   const S = QS.compute({ identities, publicScreens: screens, quotes }), rows = identities.map((c) => ({ ...c, name: c.ticker.toLowerCase() }));

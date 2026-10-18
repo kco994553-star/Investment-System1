@@ -140,11 +140,32 @@ function previewRanks(payload,draft,engine){
 const V2_KEY='investment.web.v1.profile-drafts-v2',V2_SCHEMA='device-profile-drafts/2',qgvApi=()=>node?require('./qgv-v2.js'):globalThis.QgvV2;
 const FACTOR_LABELS={q_profitability:['수익성','Profitability'],q_moat_proxy:['해자 대리','Moat proxy'],q_earnings_quality:['이익의 질','Earnings quality'],q_financial_safety:['재무 안전','Financial safety'],q_capital_allocation:['자본 배분','Capital allocation'],g_revenue_growth:['매출 성장','Revenue growth'],g_per_share_growth:['주당 성장','Per-share growth'],g_growth_efficiency:['성장 효율','Growth efficiency'],g_consistency:['성장 일관성','Growth consistency'],g_recent_acceleration:['최근 가속','Recent acceleration'],v_earnings_yield:['이익 수익률','Earnings yield'],v_fcf_yield:['FCF 수익률','FCF yield'],v_vs_industry:['업종 대비','Industry comparison'],v_vs_own_history:['자기 과거 대비','Own history'],v_expectation_check:['기대 점검','Expectation check']};
 const AXIS_NAMES={Q:['Q 우량','Q quality'],G:['G 성장','G growth'],V:['V 가치','V value']};
-/* Product presets (directive §0-1, §4.3): 공격형/균형형/수비형 are decided as a direction but have NO numbers yet. They are never
-   mapped to the code presets balanced/quality/growth/value, which stay available under their own label. */
+/* Product presets (directive §0-1, §4.3; owner decision 2026-10-18 '프리셋 v0.1 후보 정의'): 공격형/균형형/수비형 are the v0.1
+   candidates QgvV2.USER_PRESETS (ids user-preset/<key>@0.1, CANDIDATE_UNVALIDATED, official inner weights, type weights and gate on).
+   Selecting one loads its tree into the editor (PERSONAL_PREVIEW only); it is never mapped to the code presets
+   balanced/quality/growth/value, which stay available under their own label, and never replaces the official default. */
 const PRODUCT_PRESETS=Object.freeze([['aggressive',['공격형','Aggressive']],['balanced',['균형형','Balanced']],['defensive',['수비형','Defensive']],['custom',['사용자 설정','Custom']]]);
+const CANDIDATE_LABEL=Object.freeze(['v0.1 후보 · 검증 전 · 공식 기본값 아님','v0.1 candidate · not validated · not the official default']);
+// The v0.1 candidate definition of a product preset key (null for 'custom' or an unknown key).
+function candidateFor(key,api=qgvApi()){const id=Object.keys(api.USER_PRESETS||{}).find(k=>api.USER_PRESETS[k].key===key);return id?api.userPreset(id):null;}
+/* Weight stages (owner decision 2026-10-18): reason words for the engine's change codes (QgvV2 weight_stages). Display only. */
+const STAGE_REASON={TYPE_WEIGHTS:['기업 유형 반영','Company-type adjustment'],RENORMALIZED:['다른 축·요인이 빠져 남은 비중으로 다시 나눔','Renormalized: another axis or factor left out'],
+ MISSING:['결측 · 남은 요인 비중으로 다시 나눔(0점 아님)','Missing · remaining weights renormalized (never 0)'],AXIS_NOT_AVAILABLE:['축 산출 불가 · 총점에서 제외','Axis not calculated · left out of the total'],
+ AXIS_NOT_USED:['축이 총점에서 빠짐','Axis left out of the total'],VALUE_TRAP_GATE:['가치 함정 관문: 업종 내 Q 백분위 30 이하 · V 제외','Value-trap gate: industry Q percentile ≤ 30 · V dropped'],
+ ZERO_WEIGHT:['0 = 제외(결측 아님)','0 = left out (not missing)'],TOTAL_NOT_AVAILABLE:['총점 산출 불가 · 적용 비중 없음','No total · no applied weights'],
+ INNER_NOT_DERIVABLE:['공개 축 점수 · 세부 비중 산출 불가','Published axis score · inner shares not derivable'],
+ AXIS_WEIGHT_INSUFFICIENT:['비중 50% 미만','below 50% of the weight'],AXIS_NOT_PUBLISHED:['공개 축 점수 없음','no published axis score'],PRICE_IDENTITY_CONFLICT:['가격 식별 충돌로 총점 사용 중지','Price identity conflict: total not used']};
+/* Profile summary of the three stages over the personal rows of a QgvScores.compute result: (a) base axis shares, (b) mean
+   type-adjusted axis weights (rows with stages), (c) mean applied axis weights (rows with a total) and how many rows each
+   change reason touched. All values are the engine's; nothing is recomputed here. */
+function stageSummary(mine){const P=['Q','G','V'],rows=Object.values(mine&&mine.rows?mine.rows:{}).map(r=>r.personal&&r.personal.weight_stages).filter(Boolean);
+ const out={rows:rows.length,base:rows.length?{...rows[0].base.axis}:null,type:{n:rows.length,changed:0,mean:null},applied:{n:0,mean:null},counts:{VALUE_TRAP_GATE:0,MISSING:0,TOTAL_NOT_AVAILABLE:0,STOPPED:0,AXIS_NOT_AVAILABLE:{Q:0,G:0,V:0}}};
+ if(!rows.length)return out;const tsum={Q:0,G:0,V:0},asum={Q:0,G:0,V:0};
+ for(const w of rows){for(const p of P)tsum[p]+=w.type_adjusted.axis[p];if(w.type_adjusted.changes.length)out.type.changed++;
+  if(w.display_stop){out.counts.STOPPED++;continue;}if(w.applied.state!=='READY'){out.counts.TOTAL_NOT_AVAILABLE++;}else{out.applied.n++;for(const p of P)asum[p]+=w.applied.axis[p];}
+  const c=w.applied.changes;if(c.some(x=>x.reason==='VALUE_TRAP_GATE'))out.counts.VALUE_TRAP_GATE++;if(c.some(x=>x.reason==='MISSING'))out.counts.MISSING++;for(const p of P)if(c.some(x=>x.level==='axis'&&x.key===p&&x.reason==='AXIS_NOT_AVAILABLE'))out.counts.AXIS_NOT_AVAILABLE[p]++;}
+ out.type.mean=Object.fromEntries(P.map(p=>[p,tsum[p]/rows.length]));if(out.applied.n)out.applied.mean=Object.fromEntries(P.map(p=>[p,asum[p]/out.applied.n]));return out;}
 const DECISION_URL='https://github.com/kco994553-star/Investment-System1/blob/claude/investment-system-top500-validation-alrugm/implementation/docs/USER_DECISIONS_PENDING.md';
-const PRESET_FIELDS=[['목적','Purpose'],['축 비중','Axis weights'],['세부 요인 비중','Inner factor weights'],['기대 선택 성향','Expected selection tilt'],['한계','Limits'],['검증 상태','Validation status']];
 function validName(n){return typeof n==='string'&&n.trim().length>0&&n.length<=60&&!/[\x00-\x1f]/.test(n);}
 function emptyV2(){return{schema:V2_SCHEMA,profiles:[]};}
 function validateV2(v){keys(v,['schema','profiles']);need(v.schema===V2_SCHEMA&&Array.isArray(v.profiles)&&v.profiles.length<=20);const ids=new Set();
@@ -186,7 +207,7 @@ function defaultV2Context(view){
  if(!v2CtxPromise)v2CtxPromise=(async()=>{const inputs=view.Qgv2Inputs?await view.Qgv2Inputs.load(view):null;let catalog=null;try{const r=await view.fetch('actual-catalog.json',{cache:'no-store'});if(r.ok)catalog=await r.json();}catch(_){catalog=null;}
   let identities=[];try{identities=catalog&&view.DeviceWatchlist?view.DeviceWatchlist.identities(catalog):[];}catch(_){identities=[];}return{inputs,identities,catalog};})().catch(e=>{v2CtxPromise=null;throw e;});
  return v2CtxPromise.then(async c=>{let quotes={};try{quotes=c.inputs&&view.QgvScores?await view.QgvScores.collectQuotes(view,{identities:c.identities,v2Inputs:c.inputs,catalog:c.catalog}):{};}catch(_){quotes={};}return{...c,quotes};});}
-function mountV2(box,el,view,en,{v2Context=defaultV2Context}={}){
+function mountV2(box,el,view,en,{v2Context=defaultV2Context,sessionQuotes=null}={}){
  const api=view.QgvV2,QS=view.QgvScores;if(!api||!QS||typeof api.validateWeights!=='function'){box.append(el('p',en?'QGV v2 engine not loaded.':'QGV v2 엔진을 불러오지 못했습니다.',{class:'small'}));return;}
  const T=(ko,e)=>en?e:ko,pct=v=>finiteNum(v)?(Math.round(v*10)/10).toFixed(1)+'%':'—',num=v=>finiteNum(v)?(Math.round(v*10)/10).toFixed(1):'—';
  let doc2=emptyV2(),writable=true;try{doc2=readV2(view.localStorage);}catch(_){writable=false;}
@@ -198,20 +219,27 @@ function mountV2(box,el,view,en,{v2Context=defaultV2Context}={}){
   el('p',T('축 비중(Q/G/V)과 축마다 5개 세부 요인 비중을 바꿔 이 기기 메모리에서 다시 계산합니다. 공식 점수·순위·게시 파일·원장은 바뀌지 않습니다. 이 브라우저에만 저장됩니다(기기 백업 미포함).','Change the Q/G/V axis weights and the 5 factor weights of each axis and recalculate in this device’s memory. Official scores, ranks, published files and ledgers do not change. Saved in this browser only (not in the device backup).'),{class:'small'}),status,body);
  const changed=()=>{st.result=null;st.token++;};
  function render(){body.replaceChildren();const sh=weightShares(st.tree),problem=treeProblem(st.tree,en);
-  // Product presets: no numbers for 공격/균형/수비 (decision pending); 사용자 설정 is the editor below.
+  // Product presets: 공격/균형/수비 = the v0.1 candidates (CANDIDATE_UNVALIDATED); selecting one fills the editor below.
   const prod=el('div',undefined,{class:'chips',role:'group','aria-label':T('제품 프리셋','Product presets'),'data-qgv2w-product-presets':''});
-  for(const[id,[ko,e]]of PRODUCT_PRESETS){const b=el('button',en?e:ko,{type:'button','data-product-preset':id,'aria-pressed':String(st.product===id)});b.onclick=()=>{st.product=id;render();};prod.append(b);}
+  for(const[id,[ko,e]]of PRODUCT_PRESETS){const b=el('button',en?e:ko,{type:'button','data-product-preset':id,'aria-pressed':String(st.product===id)});b.onclick=()=>{
+    if(id==='custom'){st.product='custom';render();return;}const d=candidateFor(id,api);if(!d)return;
+    st.tree=structuredClone(d.weights);st.locks=official().locks;st.typeWeights=d.type_weights;st.gate=d.gate;st.product=id;st.selectedId=null;st.name=(en?d.name_en:d.name)+' v'+d.version;changed();
+    status.textContent=T(d.name+' v'+d.version+' 후보(검증 전)를 불러왔습니다 · 축·세부 비중을 바꿔 개인 프로필로 저장할 수 있습니다.','Loaded the '+d.name_en+' v'+d.version+' candidate (not validated) · edit both levels and save as a personal profile.');render();};prod.append(b);}
   body.append(el('h4',T('프리셋','Presets')),prod);
-  if(st.product!=='custom'){const card=el('div',undefined,{class:'card','data-product-preset-status':st.product});card.append(el('p',T('수치 미정 · 결정 대기','Numbers undecided · decision pending'),{class:'badge STALE'}));
-   const dl=el('dl',undefined,{class:'kv'});for(const[ko,e]of PRESET_FIELDS)dl.append(el('dt',en?e:ko),el('dd',ko==='검증 상태'?T('검증 계획 대기 · Lab 후보 미등록','Validation plan pending · no Lab candidate yet'):T('미정','Undecided')));
-   dl.append(el('dt',T('유지되는 안전 조건','Safety conditions kept')),el('dd',T('축·총점 50% 충족 규칙 · 가치 함정 관문 · 계산 규칙 버전 혼합 금지 · 식별 충돌 철회 제외','50% coverage rule · value-trap gate · no mixed calculation versions · withdrawn identities excluded')));card.append(dl);
-   const link=el('a',T('결정 기록 보기','Open the decision record'),{href:DECISION_URL,target:'_blank',rel:'noopener noreferrer','data-product-preset-decision':''});
-   card.append(el('p',T('공격형·균형형·수비형의 축·세부 요인 수치와 안전 조건은 아직 정해지지 않았습니다. 기존 balanced/quality/growth/value를 이 이름으로 바꾸어 쓰지 않습니다. 수비형이라는 이름이 손실 방지나 낮은 변동성을 보장하지 않습니다. ','The axis and factor numbers and safety conditions of Aggressive/Balanced/Defensive are not decided. The code presets balanced/quality/growth/value are not renamed to them. "Defensive" does not promise loss protection or low volatility. '),{class:'small'}),link);body.append(card);}
+  const cand=st.product!=='custom'?candidateFor(st.product,api):null;
+  if(cand){const card=el('div',undefined,{class:'card','data-product-preset-status':st.product,'data-user-preset-id':cand.id});card.append(el('p',CANDIDATE_LABEL[en?1:0],{class:'badge partial','data-user-preset-label':''}));
+   const dl=el('ul',undefined,{class:'list','data-user-preset-fields':''}),add=(ko,e,v,attr)=>{const li=el('li',undefined,{class:'small'});li.append(el('strong',(en?e:ko)+': '),el('span',v,attr?{[attr]:''}:{}));dl.append(li);};
+   add('ID','ID',cand.id,'data-user-preset-ident');add('축 비중','Axis weights','Q '+cand.weights.axis.Q+' / G '+cand.weights.axis.G+' / V '+cand.weights.axis.V,'data-user-preset-axis');
+   add('세부 요인 비중','Inner factor weights',T('현재 공식 15요인 비중 공통 · ','Current official 15-factor weights · ')+api.PILLARS.map(p=>p+' '+Object.values(cand.weights.inner[p]).join('/')).join(' · '),'data-user-preset-inner');
+   add('기업 유형 조정 · 가치 함정 관문','Type adjustment · value-trap gate',T('기본 켬','On by default'),'data-user-preset-toggles');
+   add('검증 상태','Validation status',T('검증 전 후보 ('+cand.status+') · 과거 수익률·최대낙폭 확인 불가','Candidate before validation ('+cand.status+') · historical return / MDD not available'),'data-user-preset-validation');
+   add('유지되는 안전 조건','Safety conditions kept',T('축·총점 50% 충족 규칙 · 가치 함정 관문 · 계산 규칙 버전 혼합 금지 · 식별 충돌 철회 제외 · 순위·후보 자격 조건 그대로','50% coverage rule · value-trap gate · no mixed calculation versions · withdrawn identities excluded · rank and candidate rules unchanged'));card.append(dl);
+   card.append(el('p',T('공식 기본값(균형 34/33/33 · 관문 켬)을 바꾸지 않는 별도 ID·버전의 후보입니다. 기존 balanced/quality/growth/value와 다른 프리셋입니다. 수비형이라는 이름이 손실 방지나 낮은 변동성을 보장하지 않습니다. 아래에서 축·세부 비중을 모두 바꿔 개인 프로필로 저장할 수 있습니다. ','A candidate with its own id and version; it does not change the official default (balanced 34/33/33, gate on) and is not one of the code presets balanced/quality/growth/value. "Defensive" does not promise loss protection or low volatility. Edit both levels below and save as a personal profile. '),{class:'small'}),
+    el('p','',{class:'small','data-product-preset-modified':''}),el('a',T('결정 기록 보기','Open the decision record'),{href:DECISION_URL,target:'_blank',rel:'noopener noreferrer','data-product-preset-decision':''}));body.append(card);}
   // The four code presets stay under their own label: they only fill the editor's starting axis weights.
   const code=el('div',undefined,{class:'chips',role:'group','aria-label':T('기존 축 비중 프리셋','Existing axis-weight presets'),'data-qgv2w-code-presets':''});
   for(const[id,p]of Object.entries(api.PRESETS)){const b=el('button',id+' · '+(en?p.name_en:p.name)+' · Q'+p.weights.Q+'/G'+p.weights.G+'/V'+p.weights.V,{type:'button','data-code-preset':id});b.onclick=()=>{const o=official();st.tree=api.officialWeights(id);st.locks=o.locks;st.product='custom';changed();status.textContent=T('기존 축 비중 프리셋 '+id+'을 시작값으로 불러왔습니다(세부 요인은 공식값).','Loaded code preset '+id+' as the start (official inner weights).');render();};code.append(b);}
   body.append(el('h4',T('기존 축 비중 프리셋(balanced/quality/growth/value)','Existing axis-weight presets (balanced/quality/growth/value)')),code);
-  if(st.product!=='custom')return;
   // Editor rows: slider + number + lock, with within-axis share and total contribution share.
   const row=(path,label,value,locked,share)=>{const id='qgv2w-'+path.replaceAll('.','-'),r=el('div',undefined,{class:'chips qgv2w-row','data-qgv2w-row':path});
    const range=el('input',undefined,{type:'range',min:'0',max:'100',step:'1','aria-label':label+T(' 슬라이더',' slider'),'data-qgv2w-range':path}),input=el('input',undefined,{id,type:'number',min:'0',max:'100',step:'any',inputmode:'decimal','data-qgv2w':path}),lock=el('input',undefined,{type:'checkbox','data-qgv2w-lock':path,'aria-label':label+T(' 잠금',' lock')});
@@ -231,7 +259,7 @@ function mountV2(box,el,view,en,{v2Context=defaultV2Context}={}){
   body.append(el('div',undefined,{class:'stack'}),types,el('br'),gate,el('p',T('0 = 그 요인(또는 축)을 계산에서 뺍니다(결측이 아님). 결측 요인은 0점으로 채우지 않고, 남은 요인 비중으로 다시 나눕니다. 축은 내 설정 비중의 50% 이상 요인이 있어야 점수를 냅니다. 원래 가중치 기준 충족률도 함께 보여 줍니다. 잠근 값은 직접 바꾸거나 100으로 맞출 때 바뀌지 않습니다.','0 = the factor (or axis) is left out (not missing). Missing factors are never filled with 0; the remaining weights are renormalized. An axis needs factors worth ≥ 50% of your weights; the fill rate against the original weights is shown too. Locked values do not change, also not when fitting to 100.'),{class:'small','data-qgv2w-rules':''}));
   const err=el('p','',{class:'small','data-qgv2w-error':'','aria-live':'polite'});body.append(err);
   const actions=el('div',undefined,{class:'chips'}),reset=el('button',T('공식값으로 초기화','Reset to official'),{type:'button','data-qgv2w-reset':''}),cmp=el('button',T('변경 전후 비교','Compare before / after'),{type:'button','data-qgv2w-compare':''});
-  reset.onclick=()=>{const o=official();st.tree=o.tree;st.locks=o.locks;st.typeWeights=true;st.gate=true;changed();status.textContent=T('공식값(균형 34/33/33 · 공식 세부 비중 · 관문 켬)으로 되돌렸습니다.','Reset to official (balanced 34/33/33, official inner weights, gate on).');render();};
+  reset.onclick=()=>{const o=official();st.tree=o.tree;st.locks=o.locks;st.typeWeights=true;st.gate=true;st.product='custom';changed();status.textContent=T('공식값(균형 34/33/33 · 공식 세부 비중 · 관문 켬)으로 되돌렸습니다.','Reset to official (balanced 34/33/33, official inner weights, gate on).');render();};
   cmp.onclick=()=>compare();actions.append(reset,cmp);body.append(actions);
   const results=el('div',undefined,{'data-qgv2w-results':'','aria-live':'polite'});body.append(results);
   const name=el('input',undefined,{id:'qgv2w-name',maxlength:'60',placeholder:T('프로필 이름','Profile name')}),save=el('button',T('이 브라우저에 저장','Save in this browser'),{type:'button','data-qgv2w-save':''});name.value=st.name;name.oninput=()=>{st.name=name.value;refresh();};
@@ -249,17 +277,23 @@ function mountV2(box,el,view,en,{v2Context=defaultV2Context}={}){
    if(!next){err.textContent=T('잠근 값의 합이 100을 넘거나 잘못된 값이 있어 맞출 수 없습니다.','Cannot fit: locked values exceed 100 or a value is invalid.');return;}if(group==='axis')st.tree.axis=next;else st.tree.inner[group]=next;changed();render();};return b;}
   function refresh(){const s=weightShares(st.tree),bad=treeProblem(st.tree,en);for(const p of api.PILLARS){const n=body.querySelector('[data-qgv2w-share="axis.'+p+'"]');if(n)n.textContent=axisShareText(s,p);for(const k of Object.keys(api.WEIGHTS[p])){const m=body.querySelector('[data-qgv2w-share="inner.'+p+'.'+k+'"]');if(m)m.textContent=innerShareText(s,p,k);}
     const sum=body.querySelector('[data-qgv2w-sum="'+p+'"]');if(sum)sum.textContent=sumText(s.inner_sum[p]);}
-   const a=body.querySelector('[data-qgv2w-sum="axis"]');if(a)a.textContent=sumText(s.axis_sum);err.textContent=bad||'';cmp.disabled=!!bad;save.disabled=!!bad||!writable||!validName(st.name);
+   const a=body.querySelector('[data-qgv2w-sum="axis"]');if(a)a.textContent=sumText(s.axis_sum);err.textContent=bad||'';
+   const mod=body.querySelector('[data-product-preset-modified]');if(mod){const m=modified();mod.dataset.productPresetModified=String(m);mod.textContent=m?T('수정됨 · 후보 값과 다릅니다 · 저장하면 내 개인 프로필(사용자 설정)이 됩니다','Modified · differs from the candidate · saving makes a personal profile (custom)'):T('후보 값 그대로 · 유형 조정·관문 켬','Candidate values as defined · type adjustment and gate on');}cmp.disabled=!!bad;save.disabled=!!bad||!writable||!validName(st.name);
    if(!st.result)results.replaceChildren();}
   function sumText(v){return v===null?T('합계 — (잘못된 값)','Sum — (invalid value)'):T('합계 ','Sum ')+num(v)+(Math.abs(v-100)<1e-9?'':T(' · 계산 때 100으로 정규화',' · normalized to 100 when calculating'));}
   function compare(){if(treeProblem(st.tree,en))return;const token=++st.token;results.replaceChildren(el('p',T('계산 중…','Calculating…'),{class:'small'}));
-   Promise.resolve(v2Context(view)).then(ctx=>{if(token!==st.token)return;const base={identities:ctx.identities,v2Inputs:ctx.inputs,quotes:ctx.quotes};
+   Promise.resolve(v2Context(view)).then(ctx=>{if(token!==st.token)return;
+    // Device prices of this page session (S06 Universe read, RAM only; app.js qgv2Quotes) under the freshly collected ones, so V and the
+    // value-trap gate stage are not lost when the Universe read is dropped on navigation. Official and mine always share the same quotes.
+    let session={};try{session=typeof sessionQuotes==='function'?sessionQuotes()||{}:{};}catch(_){session={};}const base={identities:ctx.identities,v2Inputs:ctx.inputs,quotes:{...session,...ctx.quotes}};
     const off=QS.compute(base),mine=QS.compute({...base,gate:st.gate,weights:st.tree,typeWeights:st.typeWeights});st.result={off,mine,rows:compareRows(off,mine)};renderResult();})
     .catch(()=>{if(token===st.token)results.replaceChildren(el('p',T('비교 자료를 불러오지 못했습니다 · NOT_AVAILABLE','Compare inputs could not be loaded · NOT_AVAILABLE'),{class:'small','data-qgv2w-result-state':'NOT_AVAILABLE'}));});}
   function renderResult(){results.replaceChildren();const r=st.result;if(!r)return;const P=r.mine.personal,rows=r.rows;
    results.append(el('p',(QS.PERSONAL_LABEL||['개인 설정 미리보기 · 공식 점수 아님','Personal setting preview · not an official score'])[en?1:0]+' · '+(P&&P.profile?P.profile.id:'—'),{class:'badge partial','data-qgv2w-result-label':''}));
    if(!P||P.state!=='READY'||!rows.length){results.append(el('p',T('내 설정 결과 없음 · ','No personal result · ')+(P?P.state+(P.reason?' · '+P.reason:''):'NOT_AVAILABLE'),{class:'small','data-qgv2w-result-state':P?P.state:'NOT_AVAILABLE'}));return;}
    results.append(el('p',T('공식 = 기본(균형 34/33/33 · 관문 켬) · 내 설정 = 위 비중','Official = default (balanced 34/33/33 · gate on) · Mine = the weights above')+' · '+T('같은 공개 입력·같은 기기 가격 ','same public inputs and device prices ')+r.off.priced_codes+T('개','')+(r.off.priced_codes?'':T(' · 가격이 없으면 V는 —입니다(리더보드 › 내 기기 기준에서 Universe를 읽으면 계산)',' · without prices V is — (read the Universe under Leaderboard › My device)')),{class:'small','data-qgv2w-result-state':'READY'}));
+   const cand=st.product!=='custom'?candidateFor(st.product,api):null;if(cand)results.append(el('p',cand.name+' v'+cand.version+' · '+CANDIDATE_LABEL[en?1:0]+(modified()?T(' · 수정됨',' · modified'):''),{class:'small','data-qgv2w-result-preset':cand.id}));
+   results.append(stagesSummaryBox(r.mine));
    if(!st.company||!rows.some(x=>x.company_id===st.company))st.company=rows[0].company_id;
    const pick=el('select',undefined,{'data-qgv2w-company':'','aria-label':T('비교할 기업','Company to compare')});for(const x of [...rows].sort((a,b)=>String(a.ticker).localeCompare(String(b.ticker)))){const o=el('option',x.ticker,{value:x.company_id});if(x.company_id===st.company)o.selected=true;pick.append(o);}
    pick.onchange=()=>{st.company=pick.value;renderResult();};results.append(el('label',T('선택 기업 ','Company '),{class:'small'}),pick);
@@ -270,16 +304,54 @@ function mountV2(box,el,view,en,{v2Context=defaultV2Context}={}){
    const t1=el('table',undefined,{'data-qgv2w-company-table':st.company}),h1=el('tr'),b1=el('tbody');for(const h of [T('항목','Item'),T('공식','Official'),T('내 설정','Mine')])h1.append(el('th',h,{scope:'col'}));
    for(const[label,f]of lines){const tr=el('tr');tr.append(el('th',label,{scope:'row'}),el('td',x.official?f(x.official):'—'),el('td',x.mine?f(x.mine):'—'));b1.append(tr);}
    const th1=el('thead');th1.append(h1);t1.append(th1,b1);const w1=el('div',undefined,{class:'table-scroll'});w1.append(t1);results.append(w1);
+   results.append(companyStagesBox(r.mine.rows[st.company]));
    const t2=el('table',undefined,{'data-qgv2w-compare-table':''}),h2=el('tr'),b2=el('tbody');for(const h of [T('기업','Company'),T('공식 QGV (순위)','Official QGV (rank)'),T('내 설정 QGV (순위)','Mine QGV (rank)'),T('순위 변화','Rank change'),T('관문 공식→내 설정','Gate official→mine')])h2.append(el('th',h,{scope:'col'}));
    for(const y of rows){const tr=el('tr',undefined,{'data-qgv2w-compare-row':y.company_id}),qr=s=>s?num(s.total)+(s.rank===null?' (—)':' ('+s.rank+')'):'—',chg=y.rank_change===null?'—':y.rank_change>0?'▲'+y.rank_change:y.rank_change<0?'▼'+(-y.rank_change):'0';
     tr.append(el('td',y.ticker),el('td',qr(y.official)),el('td',qr(y.mine)),el('td',chg),el('td',(y.official?gateText(y.official.gate):'—')+' → '+(y.mine?gateText(y.mine.gate):'—')));b2.append(tr);}
    const th2=el('thead');th2.append(h2);t2.append(th2,b2);const w2=el('div',undefined,{class:'table-scroll'});w2.append(t2);
    results.append(el('h4',T('상위 목록 · 내 설정 순','Top list · by my setting')),w2,el('p',T('순위 —: QGV 종합 점수가 없어 순위·후보에 넣지 않습니다(0점 아님). 공식 순위 번호는 바뀌지 않습니다.','Rank —: no QGV total, so no rank or candidate place (never 0). The official rank numbers do not change.'),{class:'small'}));}
+  /* Three weight stages, all from the engine (QgvScores personal rows .weight_stages): (a) 기본 비중, (b) 유형 반영 비중,
+     (c) 결측·관문 반영 후 실제 적용 비중, per axis and per factor, with the reason of every change. */
+  function stageCell(v){return el('td',pct(v),{'data-value':finiteNum(v)?String(v):''});}
+  function reasonWords(c,ws){const t=STAGE_REASON[c.reason]?STAGE_REASON[c.reason][en?1:0]:c.reason;let d='';
+   if(c.reason==='TYPE_WEIGHTS'){const names=typeNames(ws.type_adjusted.selected_types);d=names.length?names.join('·'):'';}
+   else if(c.reason==='MISSING'&&c.detail)d=QS.reasonText?QS.reasonText(c.detail,en):c.detail;else if(c.detail&&STAGE_REASON[c.detail]&&c.detail!==c.reason)d=STAGE_REASON[c.detail][en?1:0];
+   return t+(d?' ('+d+')':'');}
+  function typeNames(ids){let cfg=null;try{cfg=view.TypeConfigDefaults||null;}catch(_){cfg=null;}return(ids||[]).map(id=>{const t=cfg&&Array.isArray(cfg.types)?cfg.types.find(x=>x.id===id):null;return t&&!en?t.name:id;});}
+  function stagesSummaryBox(mine){const box=el('div',undefined,{'data-qgv2w-stages-summary':''}),sm=stageSummary(mine);
+   box.append(el('h4',T('비중 3단계 · 프로필 요약','Three weight stages · profile summary')));
+   if(!sm.rows){box.append(el('p',T('비중 단계 없음 · v2 입력 없음','No weight stages · no v2 input'),{class:'small'}));return box;}
+   const t=el('table',undefined,{'data-qgv2w-stages-summary-table':''}),h=el('tr'),b=el('tbody');for(const x of [T('축','Axis'),T('(a) 기본','(a) Base'),T('(b) 유형 반영 · 평균','(b) Type-adjusted · mean'),T('(c) 실제 적용 · 평균','(c) Applied · mean')])h.append(el('th',x,{scope:'col'}));
+   for(const p of api.PILLARS){const tr=el('tr',undefined,{'data-qgv2w-stages-summary-row':p});tr.append(el('th',p,{scope:'row',title:AXIS_NAMES[p][en?1:0]}),stageCell(sm.base[p]),stageCell(sm.type.mean[p]),stageCell(sm.applied.mean?sm.applied.mean[p]:null));b.append(tr);}
+   const th=el('thead');th.append(h);t.append(th,b);const w=el('div',undefined,{class:'table-scroll'});w.append(t);box.append(w);
+   const c=sm.counts,ax=api.PILLARS.filter(p=>c.AXIS_NOT_AVAILABLE[p]).map(p=>p+' '+c.AXIS_NOT_AVAILABLE[p]).join(' · ');
+   box.append(el('p',T('기업 '+sm.rows+'개 · (b) 유형 반영으로 축 비중이 바뀐 기업 '+sm.type.changed+'개 · (c) 평균은 총점이 있는 '+sm.applied.n+'개 기준','Companies '+sm.rows+' · (b) type adjustment changed the axis weights of '+sm.type.changed+' · (c) mean over '+sm.applied.n+' with a total'),{class:'small','data-qgv2w-stages-counts':'type'}),
+    el('p',T('가치 함정 관문으로 V 제외 '+c.VALUE_TRAP_GATE+'개 · 결측 요인 재정규화 '+c.MISSING+'개 · 축 산출 불가 '+(ax||'0')+' · 총점 산출 불가 '+c.TOTAL_NOT_AVAILABLE+'개'+(c.STOPPED?' · 사용 중지 '+c.STOPPED+'개':''),'V dropped by the value-trap gate '+c.VALUE_TRAP_GATE+' · missing factors renormalized '+c.MISSING+' · axis not calculated '+(ax||'0')+' · no total '+c.TOTAL_NOT_AVAILABLE+(c.STOPPED?' · stopped '+c.STOPPED:'')),{class:'small','data-qgv2w-stages-counts':'applied'}));
+   return box;}
+  function companyStagesBox(row){const box=el('div',undefined,{'data-qgv2w-stages-company':row?row.company_id:''}),d=row&&row.personal?row.personal:null,ws=d&&d.weight_stages?d.weight_stages:null;
+   box.append(el('h4',T('비중 3단계 · 선택 기업 ','Three weight stages · company ')+(row?row.ticker:'—')));
+   if(!ws){box.append(el('p',T('비중 단계 없음 · 이 기업의 v2 입력 없음','No weight stages · no v2 input for this company'),{class:'small','data-qgv2w-stages-state':'NOT_AVAILABLE'}));return box;}
+   const a=ws.applied,stop=ws.display_stop||null,state=stop?'STOPPED':a.state;
+   const types=ws.type_adjusted.applied?(ws.type_adjusted.selected_types.length?T('유형 반영: ','Types: ')+typeNames(ws.type_adjusted.selected_types).join('·'):T('유형 반영 켬 · 인식된 유형 없음(기본과 같음)','Type adjustment on · no type recognized (same as base)')):T('유형 반영 끔','Type adjustment off');
+   box.append(el('p',types+' · '+(state==='READY'?T('(c) = 총점을 만든 실제 비중','(c) = the weights that produced the total'):stop?(STAGE_REASON[stop]?STAGE_REASON[stop][en?1:0]:stop):STAGE_REASON.TOTAL_NOT_AVAILABLE[en?1:0]),{class:'small','data-qgv2w-stages-state':state}));
+   const t=el('table',undefined,{'data-qgv2w-stages-table':row.company_id}),h=el('tr'),b=el('tbody');for(const x of [T('항목','Item'),T('(a) 기본','(a) Base'),T('(b) 유형 반영','(b) Type-adjusted'),T('(c) 실제 적용','(c) Applied')])h.append(el('th',x,{scope:'col'}));
+   const reasonOf=(level,key)=>{const out=[];if(level==='axis')for(const c of ws.type_adjusted.changes)if(c.key===key)out.push(reasonWords(c,ws));for(const c of a.changes)if(c.level===level&&c.key===key)out.push(reasonWords(c,ws));
+    if(level==='factor'&&a.factor_status[key]&&a.factor_status[key].status==='ZERO_WEIGHT')out.push(STAGE_REASON.ZERO_WEIGHT[en?1:0]);if(level==='axis'&&a.axis_status[key]&&a.axis_status[key].status==='ZERO_WEIGHT')out.push(STAGE_REASON.ZERO_WEIGHT[en?1:0]);return out.join(' · ');};
+   const why=(path,text)=>{if(!text)return;const tr=el('tr',undefined,{'data-qgv2w-stage-reason-for':path,class:'qgv2w-stage-why'});tr.append(el('td',text,{colspan:'4',class:'small','data-stage-reason':''}));b.append(tr);};
+   const applied=v=>stop?null:v;
+   for(const p of api.PILLARS){const tr=el('tr',undefined,{'data-qgv2w-stage-row':'axis.'+p,class:'qgv2w-stage-axis'});tr.append(el('th',AXIS_NAMES[p][en?1:0],{scope:'row'}),stageCell(ws.base.axis[p]),stageCell(ws.type_adjusted.axis[p]),stageCell(applied(a.axis[p])));b.append(tr);why('axis.'+p,stop?(STAGE_REASON[stop]?STAGE_REASON[stop][en?1:0]:stop):reasonOf('axis',p));
+    for(const f of Object.keys(api.WEIGHTS[p])){const fr=el('tr',undefined,{'data-qgv2w-stage-row':'factor.'+f});fr.append(el('th',FACTOR_LABELS[f][en?1:0],{scope:'row',class:'small'}),stageCell(ws.base.factor[f]),stageCell(ws.type_adjusted.factor[f]),stageCell(applied(a.factor[f])));b.append(fr);if(!stop)why('factor.'+f,reasonOf('factor',f));}}
+   for(const tr of b.querySelectorAll('tr[data-qgv2w-stage-row]')){const cells=tr.querySelectorAll('td[data-value]');cells[0].dataset.stage='base';cells[1].dataset.stage='type';cells[2].dataset.stage='applied';}
+   const th=el('thead');th.append(h);t.append(th,b);const w=el('div',undefined,{class:'table-scroll'});w.append(t);
+   const basis=api.PILLARS.filter(p=>a.inner_basis[p]==='PUBLISHED');
+   box.append(w,el('p',T('축 행 = 총점 대비 축 비중, 요인 행 = 총점 대비 요인 비중(축 비중 × 축 내 비중). 바뀐 항목 아래 줄에 이유를 적습니다(이유가 없으면 변경 없음). 결측 요인은 0점으로 채우지 않고 남은 요인 비중으로 다시 나눕니다.','Axis rows = share of the total; factor rows = share of the total (axis × within-axis). The reason of a change is on the line below it (no line = no change). Missing factors are never filled with 0; the remaining weights are renormalized.')+(basis.length?T(' '+basis.join('·')+' 축은 공개 점수를 쓰며, 세부 비중은 공식 비중을 있는 요인으로 다시 나눈 값입니다.',' The '+basis.join('/')+' axis uses the published score; its inner shares are the official weights renormalized over the available factors.'):''),{class:'small'}));
+   return box;}
+  function modified(){const c=candidateFor(st.product,api);return !c||JSON.stringify(c.weights)!==JSON.stringify(st.tree)||st.typeWeights!==c.type_weights||st.gate!==c.gate;}
   refresh();if(st.result)renderResult();}
  const axisShareText=(sh,p)=>sh.axis[p]===null?'—':(st.tree.axis[p]===0?T('0 = 제외 · ','0 = left out · '):'')+T('전체 ','total ')+pct(sh.axis[p]);
  const innerShareText=(sh,p,k)=>st.tree.inner[p][k]===0?T('0 = 제외(결측 아님)','0 = left out (not missing)'):T('축 내 ','in axis ')+pct(sh.inner[p][k])+T(' · 전체 ',' · total ')+pct(sh.total[p][k]);
  render();}
-function mount(host,{locale,mode='strategy',qgFactors=()=>null,engine=globalThis.EnginePreview,v2Context}={}){
+function mount(host,{locale,mode='strategy',qgFactors=()=>null,engine=globalThis.EnginePreview,v2Context,sessionQuotes}={}){
  if(!host)return;const doc=host.ownerDocument,view=doc.defaultView,en=locale==='en-US',el=(tag,text,attrs={})=>{const n=doc.createElement(tag);if(text!==undefined)n.textContent=text;for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n;};const section=el('section',undefined,{class:'card','data-profile-editor':mode});section.append(el('h2',mode==='types'?(en?'Custom company types':'기업 유형 커스텀'):(en?'Strategy profiles':'전략 프로필')),el('p','PREVIEW · '+(en?'Device configuration · Official values are preserved':'기기 설정 · 공식값 유지'),{class:'badge'}));
  const status=el('p','NOT_AVAILABLE · '+(mode==='types'?'TYPE_CONFIG_PENDING_MERGE':'PREVIEW_NOT_RUN'),{role:'status','data-profile-status':''});section.append(status);
  if(mode==='types'){mountTypes(section,status,el,view,en);host.replaceChildren(section);return;}
@@ -294,8 +366,8 @@ function mount(host,{locale,mode='strategy',qgFactors=()=>null,engine=globalThis
  name.oninput=()=>{previewed=false;save.disabled=true;};
  preview.onclick=()=>{try{weights(draft);need(name.value.trim().length>0);previewed=true;save.disabled=!writable;const result=previewRanks(qgFactors(),draft,engine);status.textContent='PREVIEW · Q/G/V '+(en?'each sum 100':'각 합 100')+' · '+(result.state==='PREVIEW'?(en?'Q/G preview recalculated':'Q/G 미리보기 재계산'):(en?'Calculated results':'계산 결과')+' NOT_AVAILABLE · '+result.reason);renderPreview(result);}catch(_){previewed=false;save.disabled=true;status.textContent='PROFILE_INVALID · '+(en?'Each axis must total 100; enter a name.':'각 축 비중 합이 100이어야 하며 이름이 필요합니다.');}};
  save.onclick=()=>{if(!previewed||!writable)return;try{const id=selectedId||'device-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10),p={id,name:name.value.trim(),weights:weights(draft)},next={...state,strategies:[...state.strategies.filter(x=>x.id!==id),p]};state=write(view.localStorage,next);selectedId=id;status.textContent='PREVIEW · '+(en?'Saved on this device':'이 기기에 저장했습니다.');renderSaved();}catch(_){status.textContent='PROFILE_SAVE_FAILED';}};
- const v2box=el('div',undefined,{class:'card','data-qgv2-weights-editor':''});try{mountV2(v2box,el,view,en,v2Context?{v2Context}:{});}catch(_){v2box.append(el('p','NOT_AVAILABLE',{class:'small'}));}
+ const v2box=el('div',undefined,{class:'card','data-qgv2-weights-editor':''});try{mountV2(v2box,el,view,en,{...(v2Context?{v2Context}:{}),sessionQuotes});}catch(_){v2box.append(el('p','NOT_AVAILABLE',{class:'small'}));}
  section.append(activeV2View(el,en,view),v2box,officialView(el,en,view),el('h3',en?'v1 preview · legacy leaf-weight drafts (not the official v2 score)':'v1 미리보기 · 기존 개별 가중치 초안 (공식 v2 점수 아님)',{'data-profile-v1-heading':''}),label,name,copy,editor,preview,results,save,el('h3',en?'Saved profiles · v1 preview':'저장한 프로필 · v1 미리보기'),saved);renderSaved();host.replaceChildren(section);
 }
-return Object.freeze({KEY,SCHEMA,V2_KEY,V2_SCHEMA,PRODUCT_PRESETS,FACTOR_LABELS,DECISION_URL,emptyV2,validateV2,readV2,writeV2,saveV2,weightShares,fitTo100,treeProblem,compareRows,TARGET_IDS,empty,copyOfficial,copyOfficialTypes,typeConfig,weights,validate,read,write,previewRanks,typePreview,targetTypePreview,configDiff,mount});
+return Object.freeze({KEY,SCHEMA,V2_KEY,V2_SCHEMA,PRODUCT_PRESETS,CANDIDATE_LABEL,STAGE_REASON,candidateFor,stageSummary,FACTOR_LABELS,DECISION_URL,emptyV2,validateV2,readV2,writeV2,saveV2,weightShares,fitTo100,treeProblem,compareRows,TARGET_IDS,empty,copyOfficial,copyOfficialTypes,typeConfig,weights,validate,read,write,previewRanks,typePreview,targetTypePreview,configDiff,mount});
 });

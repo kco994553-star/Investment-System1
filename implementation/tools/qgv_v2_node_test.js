@@ -90,3 +90,28 @@ test('invalid weight trees are rejected (sum 0, negative, NaN, unknown factor, .
  const w={q_profitability:25,q_moat_proxy:0,q_earnings_quality:20,q_financial_safety:20,q_capital_allocation:15},s={q_profitability:80,q_moat_proxy:null,q_earnings_quality:40,q_financial_safety:null,q_capital_allocation:null},o=V2.axisScore(s,'Q',w);
  assert.deepEqual(o.excluded,['q_moat_proxy']);assert.deepEqual(o.missing,['q_financial_safety','q_capital_allocation']);assert.equal(o.factors_total,4);assert.ok(Math.abs(o.weight_available_official-0.45)<1e-12);assert.equal(V2.axisScore(s,'Q').state,'NOT_AVAILABLE');
  assert.equal(V2.weightsId(V2.validateWeights({...V2.officialWeights(),axis:{Q:34,G:33,V:-0}})),V2.weightsId(V2.validateWeights({...V2.officialWeights(),axis:{Q:34,G:33,V:0}})));});
+/* User presets v0.1 (owner decision 2026-10-18) and the PERSONAL_PREVIEW weight-stage diagnostic. Python twin and Python == JS
+   parity: tests/test_qgv_v2_user_presets.py. */
+test('user presets v0.1: own ids and version, owner axis weights, official inner weights, CANDIDATE_UNVALIDATED; code presets untouched',()=>{
+ assert.deepEqual(Object.keys(V2.USER_PRESETS),['user-preset/aggressive@0.1','user-preset/balanced@0.1','user-preset/defensive@0.1']);
+ const want={'user-preset/aggressive@0.1':['공격형',{Q:30,G:50,V:20}],'user-preset/balanced@0.1':['균형형',{Q:40,G:30,V:30}],'user-preset/defensive@0.1':['수비형',{Q:55,G:15,V:30}]};
+ for(const[id,[name,axis]]of Object.entries(want)){const d=V2.userPreset(id);assert.equal(d.name,name);assert.equal(d.version,'0.1');assert.equal(d.status,'CANDIDATE_UNVALIDATED');assert.equal(d.official_default,false);
+  assert.equal(d.type_weights,true);assert.equal(d.gate,true);assert.deepEqual(d.weights.axis,axis);assert.equal(axis.Q+axis.G+axis.V,100);
+  for(const p of V2.PILLARS)assert.deepEqual(d.weights.inner[p],{...V2.WEIGHTS[p]});d.weights.inner.Q.q_profitability=99;assert.equal(V2.WEIGHTS.Q.q_profitability,25);}
+ assert.throws(()=>V2.userPreset('balanced'),/USER_PRESET_INVALID/);assert.equal(V2.DEFAULT_PRESET,'balanced');
+ assert.deepEqual(Object.fromEntries(Object.entries(V2.PRESETS).map(([k,p])=>[k,p.weights])),{balanced:{Q:34,G:33,V:33},quality:{Q:50,G:25,V:25},growth:{Q:30,G:50,V:20},value:{Q:25,G:20,V:55}});
+ assert.ok(Object.isFrozen(V2.USER_PRESETS['user-preset/defensive@0.1'].axis));});
+test('weight stages: scores byte-identical with and without; (c) sums to 100 over the factors that produced the total; official path refuses',()=>{
+ assert.throws(()=>V2.scoreUniverse({},{},{weightStages:true}),/WEIGHT_STAGES_PERSONAL_ONLY/);
+ const runs=[...vectors.cases.map(c=>[c.input.companies,c.input.synthetic_market,c.input.gate]),[custom.scored_universe,custom.cases.find(c=>c.id==='scored-official-forced-recompute').input.synthetic_market,null]];
+ let trap=0,typed=0;
+ for(const[companies,market,gate]of runs)for(const id of Object.keys(V2.USER_PRESETS)){const opts={typeConfig:TC,parameters:P,gate,weights:V2.userPreset(id).weights};
+  const plain=V2.scoreUniverse(structuredClone(companies),structuredClone(market),opts),diag=V2.scoreUniverse(structuredClone(companies),structuredClone(market),{...opts,weightStages:true});
+  for(const[k,r]of Object.entries(diag)){const{weight_stages:ws,...rest}=r;assert.equal(JSON.stringify(rest),JSON.stringify(plain[k]),k);assert.deepEqual(ws.type_adjusted.axis,r.weights);
+   if(r.selected_types.length){typed++;assert.ok(ws.type_adjusted.changes.length);}
+   if(r.total===null){assert.equal(ws.applied.state,'NOT_AVAILABLE');continue;}
+   let sum=0,fsum=0,tot=0;for(const p of V2.PILLARS){sum+=ws.applied.axis[p];if(ws.applied.axis[p]>0)tot+=ws.applied.axis[p]*r.axes[p].score/100;}for(const v of Object.values(ws.applied.factor))fsum+=v;
+   assert.ok(Math.abs(sum-100)<1e-9&&Math.abs(fsum-100)<1e-9&&Math.abs(tot-r.total)<1e-9,k);
+   for(const[f,v]of Object.entries(ws.applied.factor))assert.equal(v>0,ws.applied.factor_status[f].status==='USED',k+' '+f);
+   if(r.value_trap_gate&&r.axes.V.score!==null){trap++;assert.equal(ws.applied.axis.V,0);assert.ok(ws.applied.changes.some(c=>c.key==='V'&&c.reason==='VALUE_TRAP_GATE'));}}}
+ assert.ok(trap>0&&typed>0);});
