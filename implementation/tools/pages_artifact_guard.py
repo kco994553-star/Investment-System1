@@ -74,7 +74,7 @@ APPROVED_SHA256 = {
     "technical-cards.js": "42bb2d1e8de0997eb8e7a2a3a25441d2ac29b010fb58b5fff1d879ba5eb03aad",
     "leaderboard-screen.js": "447913d76b3f1bd32b90419f9d74e795e9ab6f8e172c5bc27fecee4232e173d2",
     "portfolio-screen.js": "b3488b83540dbdb06377f011984a8bdb27959bc627d8f9836235c2322493b038",
-    "company-screen.js": "27f0dd525bafe8cc4bcdb017beb8f386b84718509e590bf84ce6f16be7c799b1",
+    "company-screen.js": "866a30331fabbe6dfcc8c8441b320909307cc8e6e1a02eef776ca09e726a6c49",
     "ops-status.js": "bccccba913e0887ee2bb3c38fd61f27fcc2a6d37acb67aeeffea227df422c7a9",
     "type-config-defaults.js": "8b287dde54fb194469bd13d62c356e51eb78c4c04c415eafc6f5091935fed131",
     "private-subset-view.js": "2a801d1c3e9495cb855893e03f01d0d93da0e87a956aa9c84bba3b8e75671356",

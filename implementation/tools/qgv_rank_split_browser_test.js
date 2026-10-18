@@ -88,6 +88,12 @@ const officialSnapshot = (page) => page.evaluate(() => JSON.stringify(Object.ent
         const counts = await page.locator(E + ' button').evaluateAll((b) => Object.fromEntries(b.map((x) => [x.dataset.leaderboardExploreOption, Number(x.textContent.match(/(\d+)$/)[1])])));
         assert.equal(counts.ranked, Object.values(R).filter((r) => Number.isInteger(r.rank)).length);assert.equal(counts.qg, Object.values(R).filter((r) => r.qg).length);
         assert.equal(await page.locator('[data-leaderboard-counts]').getAttribute('data-qg-reference'), String(counts.qg));
+        // The counts line and the footnote (D3, PR #320: data-ranked of [data-leaderboard-rank-scope], when present) name the same
+        // official ranked count as the D11 split; the rank population stays the S06 identities.
+        assert.equal(await page.locator('[data-leaderboard-counts]').getAttribute('data-rankable'), String(counts.ranked));
+        const scope = page.locator('[data-leaderboard-rank-scope]');
+        if (await scope.count()) { assert.equal(await scope.getAttribute('data-ranked'), String(counts.ranked), 'footnote ranked == official ranked');assert.equal(await scope.getAttribute('data-rank-base'), String(Object.keys(R).length)); }
+        else console.log('INFO ' + width + ' footnote rank scope (D3, #320) not on this build: footnote check skipped');
         // The V coverage panel (same page result): QG list rows == qg_only_total.full; ranked == rows with V and a total (gate included).
         phase = 'PANEL';assert.equal(s.cov.connected, true);assert.equal(s.uni.qg, s.cov.qg_full);assert.equal(s.uni.ranked, s.uni.vTotal);assert.equal(s.uni.mixed, 0);
         assert.equal(s.uni.gateRows, s.cov.gate);assert.equal(s.uni.gateRanked, s.uni.gateRows);
