@@ -2,6 +2,7 @@
 
 먼저 읽기: [WORKING_RULES.md](WORKING_RULES.md) → 이 파일 → [USER_DECISIONS_PENDING.md](implementation/docs/USER_DECISIONS_PENDING.md) → [PLAYBOOK_V1.md](implementation/docs/playbook/PLAYBOOK_V1.md)(17·18절 포함).
 **현재 실행 대기열(지시 원문):** [QUEUE_20261017.md](implementation/docs/QUEUE_20261017.md). 아래 상태 표의 절 번호(§)는 이 문서의 절이다. 최신 사용자 결정이 대기열보다 우선한다.
+**제품·프론트엔드 재설계 지시(2026-10-18, 원문):** [PRODUCT_FRONTEND_REDESIGN_20261018.md](implementation/docs/PRODUCT_FRONTEND_REDESIGN_20261018.md) — 사용자 정정(공격·균형·수비형 / 2단계 가중치 / 13F 가중치 연구) 우선. 확정 방향과 미정 수치는 결정 기록 2026-10-18.
 **보완 지시(원문):** [QUEUE_20261017_SUPPLEMENT_INTEGRATED.md](implementation/docs/QUEUE_20261017_SUPPLEMENT_INTEGRATED.md) — 전체 영역 병렬 진행·결측 정보 표시·부분 점수·가중치 처리 검토. 아래 "전체 영역 상태표"가 이 지시의 9개 영역 표다.
 이전 기록: [HANDOFF_HISTORY_THROUGH_20261013.md](implementation/docs/handoff/HANDOFF_HISTORY_THROUGH_20261013.md), [HANDOFF_HISTORY_20261014_15.md](implementation/docs/handoff/HANDOFF_HISTORY_20261014_15.md).
 보고 규칙: 시각은 UTC와 KST를 함께 적는다. `PUBLISHED_COVERAGE`는 같은 실행의 deploy 성공을 확인했을 때만 "실제 게시 커버리지"라고 부른다.
