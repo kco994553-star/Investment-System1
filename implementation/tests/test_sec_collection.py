@@ -205,7 +205,9 @@ def test_mismatched_final_url_rejected_without_retry(url):
 @pytest.mark.parametrize("payload", [b"not-json", b"[]", b'{"cik":true}',
                                      b'{"cik":"0000320193"}',
                                      '{"cik":"０００１０４５８１０"}'.encode(),
-                                     b'{"cik":"1045810"}',
+                                     b'{"cik":"1045811"}', b'{"cik":"01045810"}', b'{"cik":" 1045810"}',
+                                     b'{"cik":"+1045810"}', b'{"cik":"1045810.0"}', b'{"cik":"0"}', b'{"cik":""}',
+                                     b'{"cik":"10458100"}', b'{"cik":1045810.0}',
                                      b'{"cik":1045810,"value":NaN}',
                                      b'{"cik":1045810,"value":1e999}',
                                      b'{"cik":1045810,"cik":320193}'])
@@ -219,6 +221,14 @@ def test_invalid_json_nonfinite_or_unbound_identity_is_rejected(payload):
 def test_integer_cik_identity_is_accepted():
     client, _, _ = setup([lambda url: SecResponse(200, body(int(CIK)), final_url=url)])
     assert json.loads(client.collect("nvda", CIK)[0])["cik"] == int(CIK)
+
+
+def test_unpadded_decimal_string_cik_of_the_same_issuer_is_accepted():
+    # SEC companyfacts of recently registered issuers (2026-10: CIK 2115436, 2089271) carry "cik" as an unpadded
+    # decimal string. Synthetic body; the number must still equal the expected CIK exactly.
+    client, _, calls = setup([lambda url: SecResponse(200, body(str(int(CIK))), final_url=url)])
+    facts, submissions, _ = client.collect("nvda", CIK)
+    assert json.loads(facts)["cik"] == "1045810" and len(calls) == 2
 
 
 def test_body_bound_applies_to_injected_transport():
