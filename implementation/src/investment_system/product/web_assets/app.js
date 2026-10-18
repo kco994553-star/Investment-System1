@@ -394,7 +394,12 @@ function weekFilings(){const p=publicScreens["sec-filing-windows.json"],rows=p?.
 let disclosuresPromise=null;
 function paintDisclosures(host,companyIds,emptyText){if(!host||typeof SecDisclosures!=="object")return;const dart=typeof DartDisclosures==="object"&&!$(host.id==="news-disclosures"?"#news-dart-disclosures":"#watch-dart-disclosures")?DartDisclosures:null,news=typeof NewsSignals==="object"?NewsSignals:null;
  disclosuresPromise=disclosuresPromise||Promise.all([SecDisclosures.load(window),news?news.load(window):null,dart?dart.load(window):null]);
- disclosuresPromise.then(([sec,signals,dartPayload])=>{if(!host.isConnected)return;const options={locale:appSettings.display_locale,companyIds,emptyText};if(news)news.mount(host,{sec,news:signals,dart:dartPayload},Object.assign(options,{secApi:SecDisclosures,dartApi:dart}));else SecDisclosures.mount(host,sec,options);});}
+ disclosuresPromise.then(([sec,signals,dartPayload])=>{if(!host.isConnected)return;const options={locale:appSettings.display_locale,companyIds,emptyText};if(news)news.mount(host,{sec,news:signals,dart:dartPayload},Object.assign(options,{secApi:SecDisclosures,dartApi:dart,...newsTiers()}));else SecDisclosures.mount(host,sec,options);});}
+// Importance tiers for the news/disclosure list: interests = this device's watchlist (prefs), held = companies in the
+// portfolio snapshot already in page memory (D.portfolio, the same set paintNews uses). Device ACTUAL holdings live in
+// IndexedDB and are not read here; without a snapshot in memory held stays null (the list then says "holdings not connected").
+function newsTiers(){const rows=D&&D.portfolio&&D.portfolio.data&&Array.isArray(D.portfolio.data.holdings)?D.portfolio.data.holdings:null;
+ return{interests:[...prefs.interests],held:rows?rows.map(h=>h&&h.company_id).filter(x=>typeof x==='string'):null};}
 // DART disclosures (042700): same '공시·확정' record format as SEC 8-K, own public file; one lazy read. S07 all (or the company in context), S15 interest companies.
 let dartDisclosuresPromise=null;
 function paintDartDisclosures(host,companyIds,emptyText){if(!host||typeof DartDisclosures!=="object")return;dartDisclosuresPromise=dartDisclosuresPromise||DartDisclosures.load(window);dartDisclosuresPromise.then(p=>{if(host.isConnected)DartDisclosures.mount(host,p,{locale:appSettings.display_locale,companyIds,emptyText});});}
@@ -507,7 +512,7 @@ function leaderboard() {
 function news(id) {
   const c=company(id);
   return heading("NEWS / NETWORK",t("뉴스와 연결"),c?esc(c.ticker)+" "+t("기업 문맥"):t("Portfolio · 관심기업 · 기타 중요뉴스"))+
-  `<div class="chips toolbar" role="group" aria-label="${t("콘텐츠 전환")}"><button id="show-news" aria-pressed="true">${t("뉴스")}</button><button id="show-network" aria-pressed="false">${t("관계망")}</button>${c?star(id):""}</div><p class="small" data-news-overlay>${t("정보 제공용, 투자 판단 덧씌우기(Overlay)는 기본 OFF")} · ${t("뉴스 무료 출처 미정: NOT_AVAILABLE")}</p><div class="chips" data-news-scopes>${["전체","관심 기업","내 포트폴리오","업종","매크로","정치","경제"].map(x=>`<span class="badge">${esc(t(x))}</span>`).join("")}</div><div id="news-disclosures"></div><div id="news-dart-disclosures"></div><section id="news-pane"><select id="news-scope" aria-label="${t("뉴스 범위")}"><option value="all">${t("전체 중요뉴스")}</option><option value="interest">${t("관심기업")}</option><option value="portfolio">Portfolio</option></select>${state(D.news)}<ul id="news-list" class="list"></ul></section><section id="network-pane" hidden><p class="muted">${t("Fact = 확인된 관계 · Impact = 잠재 영향 경로")}</p>${state(D.relationships)}${D.relationships.data?'<iframe title="'+esc(t("News Network(뉴스 관계망)"))+'" data-src="network.html" id="network-frame"></iframe>':'<p class="empty">'+t("Track D 운영 관계망 미연결")+"</p>"}</section>`;
+  `<div class="chips toolbar" role="group" aria-label="${t("콘텐츠 전환")}"><button id="show-news" aria-pressed="true">${t("뉴스")}</button><button id="show-network" aria-pressed="false">${t("관계망")}</button>${c?star(id):""}</div><p class="small" data-news-overlay>${t("정보 제공용, 투자 판단 덧씌우기(Overlay)는 기본 OFF")} · ${t("뉴스 무료 출처 미정: NOT_AVAILABLE")}</p><div class="chips" data-news-scopes>${["전체","관심 기업","내 포트폴리오","업종","매크로","정치","경제"].map(x=>`<span class="badge">${esc(t(x))}</span>`).join("")}</div><div id="news-disclosures"></div><div id="news-dart-disclosures"></div><section id="news-pane"><select id="news-scope" aria-label="${t("뉴스 범위")}"><option value="all">${t("전체 중요뉴스")}</option><option value="interest">${t("관심기업")}</option><option value="portfolio">Portfolio</option></select>${state(D.news)}<ul id="news-list" class="list"></ul></section><section id="network-pane" hidden><p class="muted">${t("Fact = 확인된 관계 · Impact = 잠재 영향 경로")}</p>${state(D.relationships)}${D.relationships.data?'<iframe title="'+esc(t("News Network(뉴스 관계망)"))+'" data-src="network.html" id="network-frame"></iframe>':'<p class="empty">'+t("기업 관계 · 미연결")+"</p>"}</section>`;
 }
 function research() {
   return heading("RESEARCH",t("질문에서 근거로"),t("Prompt → Context / Variables → Preview → Copy"))+'<p class="badge">FROZEN_SNAPSHOT · PLV1_CONTENT_V1.0</p><iframe title="'+esc(t("Prompt Library(프롬프트 라이브러리)"))+'" src="research.html" id="research-frame"></iframe>';
@@ -599,7 +604,7 @@ function syncNavigation(route) {window.AppShell?.sync(route,appSettings.display_
 let listLimit=30;
 // Route history of this page (for the S04 back link and S06 scroll restore).
 let currentRoute=null,previousRoute=null,currentHash='';
-const LIST_ORIGIN=Object.freeze({leaderboard:['← 리더보드','← Leaderboard'],companies:['← 기업 탐색','← Companies'],watchlist:['← 관심 기업','← Watchlist']}),LIST_ORIGIN_HASH=/^#(leaderboard|leaderboard\/interest|companies|watchlist)$/;
+const LIST_ORIGIN=Object.freeze({leaderboard:['← 리더보드','← Leaderboard'],companies:['← 기업 목록','← Company list'],watchlist:['← 관심 기업','← Watchlist']}),LIST_ORIGIN_HASH=/^#(leaderboard|leaderboard\/interest|companies|watchlist)$/;
 function paintCompanies(){
  const rows=DeviceWatchlist.filter(identityCompanies,prefs,{query:$('#search').value,group:$('#group-filter').value,onlyInterest:$('#only-interest').checked,sort:$('#company-sort').value});
  $('#company-list').innerHTML=rows.slice(0,listLimit).map(row).join('')||'<li class="empty">'+t("일치하는 기업이 없습니다.")+'</li>';$('#more-companies').hidden=rows.length<=listLimit;
@@ -705,7 +710,7 @@ async function paintReport(id){
   try{await refreshQgv2Quotes();}catch(_){}
   const qg={},names={};try{Object.assign(qg,QgvScores.judgmentRows(qgvScores()));for(const c of identityCompanies)names[c.company_id]=c.ticker;}catch(_){}
   const reportDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
-  let model=null,canonical='',key=null,inboxText='',benchInputs=null;
+  let model=null,canonical='',key=null,inboxText='',benchInputs=null,mailboxAnswer=null;
   // ⑬ selection change: recompute the RAM-only benchmark view (pure) and repaint; the canonical template keeps 20D·KRW.
   const rebench=focus=>{if(!benchInputs||!window.ReportBenchmarks||!model)return;model={...model,bench:ReportBenchmarks.build({...benchInputs,...benchSelection})};paint();const n=focus&&host.querySelector(focus);if(n)n.focus();};
   const paint=()=>{
@@ -717,11 +722,20 @@ async function paintReport(id){
     const status=host.querySelector('[data-report-status]'),say=text=>{if(status)status.textContent=text;};
     for(const box of host.querySelectorAll('[data-hide-amounts],[data-hide-amounts-export]'))box.onchange=()=>{if(!box.checked&&!confirm('개인 금액이 화면/복사본에 표시됩니다.')){box.checked=true;return;}R.hiddenSetting(localStorage,box.checked);paint();};
     host.querySelector('[data-export-template]').onclick=async()=>{const text=R.renderTemplate(model,{hidden:R.hiddenSetting(localStorage),guide:host.querySelector('[data-include-guide]').checked});try{await navigator.clipboard.writeText(text);say('보고서 템플릿을 복사했습니다. AI 새 대화에 붙여넣으세요.');}catch(_){const area=document.createElement('textarea');area.readOnly=true;area.value=text;area.rows=8;area.setAttribute('data-export-fallback','');host.querySelector('[data-report-export]').append(area);area.select();say('클립보드를 쓸 수 없어 아래 칸에 표시했습니다. 직접 복사하세요.');}};
-    host.querySelector('[data-save-answer]').onclick=()=>{const text=host.querySelector('[data-ai-input]').value.trim();if(!text){say('붙여넣은 답변이 없습니다.');return;}if(!key){say('HASH_UNAVAILABLE');return;}if(R.saveAnswer(localStorage,key,{answer:text,saved_at:new Date().toISOString(),source:'PASTE',report_date:reportDate}))paint();else say('DEVICE_STORAGE_UNAVAILABLE');};
+    // '검토한 답변 보관' (enabled only by DailyReport.reviewInto) is the one save. A mailbox answer keeps its source, model and
+    // Outbox time only while the reviewed text is exactly the answer that was fetched for this data key; anything else is PASTE.
+    host.querySelector('[data-save-answer]').onclick=()=>{const text=host.querySelector('[data-ai-input]').value.trim();if(!text){say('붙여넣은 답변이 없습니다.');return;}if(!key){say('HASH_UNAVAILABLE');return;}
+      const fromMailbox=!!(mailboxAnswer&&mailboxAnswer.key===key&&mailboxAnswer.answer.trim()===text);
+      const entry=fromMailbox?{answer:text,saved_at:mailboxAnswer.saved_at,source:'MAILBOX',model:mailboxAnswer.model,report_date:reportDate}:{answer:text,saved_at:new Date().toISOString(),source:'PASTE',report_date:reportDate};
+      if(R.saveAnswer(localStorage,key,entry)){mailboxAnswer=null;paint();}else say('DEVICE_STORAGE_UNAVAILABLE');};
     const mailbox=async(action)=>{try{const session=GoogleSheetQuotes.sessionFor(window,window.InvestmentAppConfig.googleSheetsClientId),sheet=GoogleSheetSetup.source(window);
       if(!session.state().connected||!sheet){say('구글 로그인과 시트 연결이 필요합니다(설정 → Google 첫 설정).');return;}
       if(action==='post'){await R.postInbox(session,sheet,{report_date:reportDate,kind,template:inboxText,data_sha256:key,now:new Date().toISOString()});say('ReportInbox에 오늘 템플릿(금액 숨김)을 넣었습니다.');}
-      else{const found=await R.readOutbox(session,sheet,await R.hash(inboxText));if(!found){say('해시가 같은 답이 아직 없습니다.');return;}R.saveAnswer(localStorage,key,{answer:found.answer,saved_at:found.created_at||new Date().toISOString(),source:'MAILBOX',model:found.model,report_date:reportDate});paint();}
+      else{const found=await R.readOutbox(session,sheet,await R.hash(inboxText));if(!found){say('해시가 같은 답이 아직 없습니다.');return;}
+        // Same path as a pasted answer: into the answer box, reviewed, and stored only by '검토한 답변 보관'.
+        const card=live()&&host.querySelector('[data-report-export]'),input=card&&card.querySelector('[data-ai-input]');if(!input)return;
+        input.value=found.answer;mailboxAnswer={key,answer:found.answer,model:found.model,saved_at:found.created_at||new Date().toISOString()};
+        R.reviewInto(card,model);card.scrollIntoView({block:'start'});say('우체통 답을 가져와 검토했습니다. 아직 보관하지 않았습니다. 확인 뒤 \'검토한 답변 보관\'을 누르세요.');}
     }catch(e){say(String(e&&e.message||'MAILBOX_FAILED'));}};
     host.querySelector('[data-mailbox-post]').onclick=()=>void mailbox('post');
     host.querySelector('[data-mailbox-read]').onclick=()=>void mailbox('read');
@@ -744,13 +758,25 @@ async function paintReport(id){
     const view=C.build(entries,{indices:result.indices||{},sources:result.sources||{},basis:benchSelection.basis,types});
     const wide=!window.matchMedia||window.matchMedia('(min-width: 1024px)').matches,ids=view.sets.map(s=>s.id);
     if(!Array.isArray(run.picked)||run.picked.some(x=>!ids.includes(x))||run.picked.length<2)run.picked=ids.slice(0,Math.min(3,Math.max(2,ids.length)));
+    // 보고 불가 per set, on the report screen's own condition: the set's report model (same inputs as its tab) is UNAVAILABLE,
+    // i.e. its ledger has not started and it holds nothing. States, reason codes and missing inputs only; no number is filled.
+    const runnerOf=l=>({state:result.state==='READY'?(l.state==='OK'?'READY':'NOT_AVAILABLE'):result.state,reason_codes:result.state==='READY'?(l.state==='OK'?[]:l.reason_codes):result.reason_codes,sources:Runner.statusRows(result),progress:''});
+    const blocked=entries.map(e=>({e,m:R.buildModel({kind:'MOCK',tab:e.kind,reportDate,ledger:e.ledger,names,config:cfg,runner:runnerOf(e.ledger),hits:e.hits,mode})})).filter(x=>R.unavailability(x.m).state==='UNAVAILABLE');
     const draw=()=>{if(!live())return;const hidden=R.hiddenSetting(localStorage);
-      host.innerHTML=R.tabsNav(mockTabs(defs),'COMPARE')+C.html(view,{money:v=>R.money(v,{hidden}),picked:run.picked,wide,locale})
+      host.innerHTML=R.tabsNav(mockTabs(defs),'COMPARE')+blocked.map(x=>'<div data-compare-unavailable="'+esc(x.e.kind)+'">'+R.unavailableCard(x.m)+'</div>').join('')+C.html(view,{money:v=>R.money(v,{hidden}),picked:run.picked,wide,locale})
         +'<section class="card" data-compare-export><div class="sheet-actions"><button type="button" data-compare-copy>비교 템플릿 내보내기</button></div><p class="small">숫자 표와 한 줄 요약(【AI】) 칸만 담습니다. 금액은 숨김 설정을 따릅니다.</p><p role="status" data-compare-status></p></section>';
       for(const box of host.querySelectorAll('[data-compare-pick]'))box.onchange=()=>{const id=box.getAttribute('data-compare-pick'),next=box.checked?[...run.picked,id]:run.picked.filter(x=>x!==id);
         if(next.length>=2&&next.length<=3){run.picked=ids.filter(x=>next.includes(x));draw();}else box.checked=!box.checked;};
       host.querySelector('[data-compare-copy]').onclick=async()=>{const text=C.template(view,{money:v=>R.money(v,{hidden:R.hiddenSetting(localStorage),mode:'export'}),reportDate}),say=t=>{const n=host.querySelector('[data-compare-status]');if(n)n.textContent=t;};
-        try{await navigator.clipboard.writeText(text);say('비교 템플릿을 복사했습니다.');}catch(_){const area=document.createElement('textarea');area.readOnly=true;area.value=text;area.rows=8;host.querySelector('[data-compare-export]').append(area);area.select();say('클립보드를 쓸 수 없어 아래 칸에 표시했습니다.');}};};
+        try{await navigator.clipboard.writeText(text);say('비교 템플릿을 복사했습니다.');}catch(_){const area=document.createElement('textarea');area.readOnly=true;area.value=text;area.rows=8;host.querySelector('[data-compare-export]').append(area);area.select();say('클립보드를 쓸 수 없어 아래 칸에 표시했습니다.');}};
+      // Each 보고 불가 card names its set, keeps its own field id and copies its own set's prompt (DailyReport's document
+      // handler copies the prompt of the report screen painted last, so the click stops here).
+      for(const{e,m}of blocked){const box=host.querySelector('[data-compare-unavailable="'+e.kind+'"]');if(!box)continue;
+        const title=box.querySelector('h2'),area=box.querySelector('[data-unavailable-prompt]'),label=box.querySelector('label[for="unavailable-prompt"]'),fid='unavailable-prompt-'+e.kind.toLowerCase();
+        if(title)title.prepend(R.TABS[e.kind]+' · ');if(area)area.id=fid;if(label)label.htmlFor=fid;
+        for(const b of box.querySelectorAll('[data-unavailable-copy]'))b.onclick=async ev=>{ev.stopPropagation();const which=b.getAttribute('data-unavailable-copy'),scope=box.querySelector('[data-unavailable-scope]'),status=box.querySelector('[data-unavailable-status]');
+          const name=which==='all'?'전체':(R.AREAS.find(a=>a[0]===which)||[0,which])[1];area.value=R.unavailablePrompt(m,{area:which==='all'?null:which});if(scope)scope.textContent='· '+name;
+          try{await navigator.clipboard.writeText(area.value);if(status)status.textContent=name+' 프롬프트를 복사했습니다.';}catch(_){area.focus();area.select();if(status)status.textContent='클립보드를 쓸 수 없어 프롬프트를 선택했습니다. 직접 복사하세요.';}};}};
     draw();
   };
   // Model from a runner result or a placeholder state. Nothing is stored: prices and ledgers stay in this closure.
@@ -880,7 +906,7 @@ function renderRoute() {
   const menu=window.AppShell?.menuFor(route);
   if(menu) $("#content").insertAdjacentHTML("afterbegin",`<p class="flow-step" data-flow-step="${menu.n}" data-menu="${esc(menu.key)}"><span class="flow-number">${esc(menu.num)}</span> ${esc(menu.label)}</p>`);
   if(QGV_CHILDREN.includes(route) || route==="research") {
-    const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← 검증",sub=QGV_SUBCATEGORY[route];
+    const parent=route==="research"?"validation":"qgv",key=parent==="qgv"?"← QGV":"← Lab",sub=QGV_SUBCATEGORY[route];
     const origin=(route==='company'||route==='analysis') && companyOrigin && companyOrigin.id===id?companyOrigin:null,back=origin?LIST_ORIGIN[origin.hash.slice(1).split('/')[0]]:null;
     $("#content").insertAdjacentHTML("afterbegin",`<p class="parent-row"><a class="parent-link" href="#${parent}">${esc(t(key))}</a>${back?`<a class="parent-link" href="${esc(origin.hash)}" data-origin-link="${esc(origin.hash.slice(1))}">${esc(back[appSettings.display_locale==='en-US'?1:0])}</a>`:""}${sub?`<span class="sub-category" data-sub-category>${esc(t(sub))}</span>`:""}</p>`);
   }

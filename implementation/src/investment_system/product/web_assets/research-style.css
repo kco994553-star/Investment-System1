@@ -144,3 +144,5 @@ details .row {
 .pl-official {margin: 6px 0 0;}
 .pl-mine {margin-left: 6px;}
 .pl-domains button:focus-visible, .pl-actions button:focus-visible, #pl-fav:focus-visible, #pl-view:focus-visible, #pl-body:focus-visible {outline: 3px solid var(--acc); outline-offset: 2px;}
+/* Prompt fields and the personal prompt body: the full width of their column at every size; height is the user's. */
+.field-guide textarea, #pl-personal textarea {width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; resize: vertical;}

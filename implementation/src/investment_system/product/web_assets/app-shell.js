@@ -123,7 +123,7 @@
   'lab-13f':{eyebrow:'LAB · 13F WEIGHT RESEARCH',ko:'13F 가중치 연구',en:'13F weight research',
    what:['과거 13F 보유와 비슷한 기업을 고르게 만드는 Q/G/V 축 가중치와 Q1~Q5·G1~G5·V1~V5 세부 요인 가중치를 탐색하고, 다른 기간의 유사도와 투자 성과로 검증하는 연구 화면입니다. 기관 관심도 슬라이더가 아니며, 기존 주검정과 별도의 실험으로 등록합니다.',
          'A research screen that searches Q/G/V axis weights and Q1–Q5, G1–G5, V1–V5 factor weights that make the selection resemble past 13F holdings, then checks similarity and investment results in other periods. It is not an institutional-interest slider and is registered apart from the main test.'],
-   need:[['과거 Track C·Investor-QGV 연구 자산의 재사용 범위 확인','How much of the earlier Track C / Investor-QGV research can be reused'],
+   need:[['과거 13F 투자자 보유 연구 자산의 재사용 범위 확인','How much of the earlier 13F investor-holdings research can be reused'],
          ['분기별 13F 보유 이력(공개 시점 기준)과 증권 식별 연결','Quarterly 13F holdings history as of filing time, linked to security identifiers'],
          ['같은 시점의 요인 점수 이력','Factor score history at the same points in time'],
          ['학습·검증 기간, 평가 지표, 별도 실험 ID·버전 결정','Training and test periods, metrics, and a separate experiment ID and version']],
