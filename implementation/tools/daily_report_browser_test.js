@@ -1,6 +1,7 @@
 'use strict';const {chromium}=require('playwright'),assert=require('node:assert/strict');
 // S17 daily reports at 390 and 1440: links from S01, badges, amount hiding on by default, template export with/without guide,
-// 보고 불가 card with a copyable prompt, AI answer review before save with format/number warnings, no horizontal scroll, and no network request carrying the report.
+// 보고 불가 card with a copyable prompt, AI answer review before save with format/number warnings (pasted or from the AI mailbox),
+// no horizontal scroll, and no network request carrying the report.
 (async()=>{const b=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE_PATH});let pass=0,fail=0;
  try{for(const width of [390,1440]){const c=await b.newContext({viewport:{width,height:900},serviceWorkers:'block',permissions:['clipboard-read','clipboard-write']}),p=await c.newPage();let errors=0;const posts=[];
   p.on('pageerror',e=>{errors++;console.log(String(e));});p.on('request',r=>{if(r.method()!=='GET'||/ReportInbox|%5B%EC%9D%BC%EC%9D%BC|일일보고서 템플릿/.test(r.url()))posts.push(r.url());});
@@ -60,6 +61,26 @@
    assert.equal(await p.locator('[data-report-tabs]').count(),0);assert.ok((await p.locator('h1, h2').first().textContent()).length>0);
    await p.locator('[data-report-unavailable]').waitFor();assert.equal(await p.locator('[data-missing-key="HOLDINGS"]').count(),1,'real report names the missing holdings');
    assert.ok((await p.locator('[data-unavailable-prompt]').inputValue()).includes('투자 일일보고서 · 내 실제 포트폴리오'));
+   // AI 우체통: the Outbox answer with the same hash goes into the answer box and is reviewed like a pasted one; nothing is
+   // stored until '검토한 답변 보관', which keeps source MAILBOX with the Outbox model and time. In-memory synthetic sheet session.
+   await p.evaluate(()=>{const tabs=new Map(),tab=range=>/'([^']+)'/.exec(range)[1];window.__mailbox=tabs;
+    const session={state:()=>({connected:true}),async sheetTitles(){return [...tabs.keys()];},async addTabs(_id,names){for(const n of names)tabs.set(n,[]);},
+     async appendRows(_id,range,rows){tabs.get(tab(range)).push(...rows);},async fetchValues(_id,range){return {values:tabs.get(tab(range))||[]};}};
+    window.GoogleSheetQuotes={...GoogleSheetQuotes,sessionFor:()=>session};window.GoogleSheetSetup={...GoogleSheetSetup,source:()=>'synthetic_mailbox_sheet_fixture'};});
+   const mailAnswer='【AI】 우체통 합성 답변 · synthetic',storedBefore=await p.evaluate(k=>localStorage.getItem(k),AI);
+   await p.locator('[data-mailbox-post]').click();
+   await p.waitForFunction(()=>(document.querySelector('[data-report-status]')?.textContent||'').includes('ReportInbox'));
+   await p.evaluate(a=>{const inbox=window.__mailbox.get(DailyReport.INBOX);window.__mailbox.get(DailyReport.OUTBOX).push([inbox[inbox.length-1][4],'synthetic-model','2026-10-18T09:00:00Z',a]);},mailAnswer);
+   await p.locator('[data-mailbox-read]').click();await p.locator('[data-answer-review-result]').waitFor();
+   assert.equal(await p.locator('[data-ai-input]').inputValue(),mailAnswer,'the mailbox answer is placed in the answer box');
+   assert.equal(await p.locator('[data-save-answer]').isDisabled(),false,'reviewed: the save button is offered');
+   assert.ok((await p.locator('[data-report-status]').textContent()).includes('아직 보관하지 않았습니다'));
+   assert.equal(await p.evaluate(k=>localStorage.getItem(k),AI),storedBefore,'fetching from the mailbox stores nothing');
+   assert.equal(await p.locator('[data-ai-answer]').count(),0);
+   await p.locator('[data-save-answer]').click();await p.locator('[data-ai-answer]').waitFor();
+   const mailStored=Object.values(await p.evaluate(k=>JSON.parse(localStorage.getItem(k)),AI)).filter(x=>x.answer===mailAnswer);
+   assert.equal(mailStored.length,1);assert.equal(mailStored[0].source,'MAILBOX');assert.equal(mailStored[0].model,'synthetic-model');assert.equal(mailStored[0].saved_at,'2026-10-18T09:00:00Z');
+   assert.ok((await p.locator('[data-report-ai-summary]').textContent()).includes('우체통'));
    assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
    assert.equal(posts.length,0,posts.join(','));assert.equal(errors,0);pass++;console.log('PASS daily report '+width);}
   catch(e){fail++;console.log('FAIL daily report '+width+' '+(e.code==='ERR_ASSERTION'?'CONTRACT':'EXECUTION')+' '+e.message);}finally{await c.close();}}}

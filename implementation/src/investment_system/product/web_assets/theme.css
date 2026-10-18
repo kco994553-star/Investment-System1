@@ -114,6 +114,8 @@ main h1[tabindex="-1"]:focus-visible { outline: 1px solid var(--line-strong); ou
 .hero .muted, .hero .meta, .hero .small { color: color-mix(in srgb, var(--paper) 78%, var(--ink)); }
 .hero a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 button, input, select, textarea { background: var(--field); color: var(--ink); border: var(--rule) solid var(--field-line); border-radius: var(--radius-m); }
+/* Prompt and answer fields (S17 report: AI answer, 보고 불가 prompt, export fallbacks): the full width of their card at every size; height is the user's. */
+#daily-report textarea { display: block; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; resize: vertical; }
 button:hover:not(:disabled) { background: var(--soft); }
 button.primary, button.primary:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 details { border-top-color: var(--line); }
