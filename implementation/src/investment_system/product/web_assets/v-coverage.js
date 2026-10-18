@@ -30,9 +30,9 @@ function html(s,{en=false,reasonText=c=>c}={}){
  h+='<div class="v-coverage-table-wrap"><table class="v-coverage-table" data-v-coverage-table><thead><tr><th scope="col">'+T('항목','Item')+'</th><th scope="col">'+esc(T('전체 '+N+' 기준','All '+N))+'</th><th scope="col">'+esc(T('일반 기업 '+G+' 기준','General '+G))+'</th></tr></thead><tbody>';
  h+='<tr data-v-row="v"><th scope="row">'+T('V 산출 (실제 엔진 규칙)','V computed (engine rules)')+'</th>'+cell(count('data-v-full',on&&s.v.full),on?frac(s.v.full,N):'—')+cell(count('data-v-general',on&&s.v.general),on?frac(s.v.general,G):'—')+'</tr>';
  h+='<tr data-v-row="qgv"><th scope="row">'+T('Q·G·V 공통 산출','Q·G·V all computed')+'</th>'+cell(count('data-qgv-full',on&&s.qgv.full),on?frac(s.qgv.full,N):'—')+cell(count('data-qgv-general',on&&s.qgv.general),on?frac(s.qgv.general,G):'—')+'</tr>';
- // Q·G-only totals = financials + no price / V not computed. Value-trap-gate rows had V computed and the approved gate rule
- // excluded it from the total: not a 'V 없음' result, kept in the official ranking, so they get their own line (all GENERAL rows).
- const qo=s.qg_only_total,qgFull=on?qo.full-qo.gate:null,qgGeneral=on?qo.general-qo.gate:null;
+ // Q·G-only totals (QgvScores.vCoverage qg_only_total) = financials + no price / V not computed. Value-trap-gate rows (its `gate`)
+ // had V computed and the approved gate rule excluded it from the total: kept in the official ranking, their own line.
+ const qo=s.qg_only_total,qgFull=on?qo.full:null,qgGeneral=on?qo.general:null;
  h+='<tr data-v-row="qg-only-total"><th scope="row">'+T('Q·G만으로 종합점수가 난 행','Rows with a total from Q·G only')+'</th>'+cell(count('data-qg-only-full',qgFull),on?qgFull+T(' (금융 ',' (financial ')+qo.financial+T(' · 가격 없음/V 미산출 ',' · no price/V not computed ')+qo.no_v+')':'—')+cell(count('data-qg-only-general',qgGeneral),on?qgGeneral+T(' (가격 없음/V 미산출 ',' (no price/V not computed ')+qo.no_v+')':'—')+'</tr>';
  h+='<tr data-v-row="gate"><th scope="row">'+T('가치 함정 관문으로 V 제외(공식 규칙 · 순위 유지)','V excluded by the value-trap gate (official rule · stays ranked)')+'</th>'+cell(count('data-gate-full',on&&qo.gate),on?frac(qo.gate,N):'—')+cell(count('data-gate-general',on&&qo.gate),on?frac(qo.gate,G):'—')+'</tr>';
  h+='<tr data-v-row="complete"><th scope="row">'+T('V 입력 완비 (빠진 V 입력 없음)','V inputs complete (none missing)')+'</th>'+cell('data-complete="'+s.input_complete+'"',frac(s.input_complete,N))+cell('',frac(s.input_complete,G))+'</tr>';
