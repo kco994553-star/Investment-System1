@@ -194,13 +194,15 @@ function treeProblem(tree,en){const api=qgvApi();for(const p of api.PILLARS){con
  const sh=weightShares(tree);if(!(sh.axis_sum>0))return en?'The axis weights sum to 0: nothing to score.':'축 비중 합계가 0이면 계산할 수 없습니다.';for(const p of api.PILLARS)if(!(sh.inner_sum[p]>0))return(en?p+' inner weights sum to 0.':p+' 축 내부 비중 합계가 0이면 계산할 수 없습니다.');
  try{api.validateWeights(tree);}catch(_){return 'WEIGHTS_INVALID';}return null;}
 /* Pure compare rows: official result (QgvScores.compute without weights) vs the personal rows of a compute with weights. Rows are
-   ordered by the personal rank (NA last by ticker); ranks are each result's own (the official rank is never renumbered). */
-function compareRows(official,mine){const side=(row,p,rank)=>{if(!p)return null;const cov=p.coverage&&p.coverage.axes?p.coverage.axes:null;
-  return{q:p.q,g:p.g,v:p.v,total:p.total,rank:Number.isInteger(rank)?rank:null,eligible:Number.isInteger(rank),gate:p.value_trap_gate===true?'TRAP':(p.flags||[]).includes('GATE_NOT_EVALUATED')?'NOT_EVALUATED':'CLEAR',factors_available:p.factors_available,factors_total:p.factors_total,
+   ordered by the personal rank, then the personal QG 참고 목록 (V 미포함, D11) in its own order, then NA by ticker; ranks are each
+   result's own (the official rank is never renumbered). qg = {order, reason} of a total from Q·G only (no rank), else null. */
+function compareRows(official,mine){const side=(row,p,rank,qg)=>{if(!p)return null;const cov=p.coverage&&p.coverage.axes?p.coverage.axes:null;
+  return{q:p.q,g:p.g,v:p.v,total:p.total,rank:Number.isInteger(rank)?rank:null,eligible:Number.isInteger(rank),qg:!Number.isInteger(rank)&&qg&&typeof qg==='object'?{order:Number.isInteger(qg.order)?qg.order:null,reason:qg.reason||null}:null,gate:p.value_trap_gate===true?'TRAP':(p.flags||[]).includes('GATE_NOT_EVALUATED')?'NOT_EVALUATED':'CLEAR',factors_available:p.factors_available,factors_total:p.factors_total,
    coverage:cov?Object.fromEntries(['Q','G','V'].map(a=>[a,{custom:finiteNum(cov[a].weight_available)?cov[a].weight_available:null,official:finiteNum(cov[a].weight_available_official)?cov[a].weight_available_official:finiteNum(cov[a].weight_available)?cov[a].weight_available:null,status:cov[a].status}])):null};};
- const rows=[];for(const[cid,r]of Object.entries(official&&official.rows?official.rows:{})){const m=mine&&mine.rows?mine.rows[cid]:null,o=side(r,r.primary,r.rank),x=m&&m.personal?side(m,m.personal,m.personal_rank):null;
+ const rows=[];for(const[cid,r]of Object.entries(official&&official.rows?official.rows:{})){const m=mine&&mine.rows?mine.rows[cid]:null,o=side(r,r.primary,r.rank,r.qg_reference),x=m&&m.personal?side(m,m.personal,m.personal_rank,m.personal_qg_reference):null;
   rows.push({company_id:cid,ticker:r.ticker,official:o,mine:x,rank_change:o&&x&&o.rank!==null&&x.rank!==null?o.rank-x.rank:null});}
- rows.sort((a,b)=>{const x=a.mine?a.mine.rank:null,y=b.mine?b.mine.rank:null;return(x===null)-(y===null)||(x!==null&&y!==null?x-y:0)||String(a.ticker).localeCompare(String(b.ticker));});return rows;}
+ const key=s=>!s?[2,0]:s.rank!==null?[0,s.rank]:s.qg&&s.qg.order!==null?[1,s.qg.order]:[2,0];
+ rows.sort((a,b)=>{const x=key(a.mine),y=key(b.mine);return x[0]-y[0]||x[1]-y[1]||String(a.ticker).localeCompare(String(b.ticker));});return rows;}
 let v2CtxPromise=null;
 // Public inputs and identities for the S13 compare (the same public files and device quotes as S06), loaded once per page.
 function defaultV2Context(view){
@@ -289,7 +291,9 @@ function mountV2(box,el,view,en,{v2Context=defaultV2Context,sessionQuotes=null}=
     const off=QS.compute(base),mine=QS.compute({...base,gate:st.gate,weights:st.tree,typeWeights:st.typeWeights});st.result={off,mine,rows:compareRows(off,mine)};renderResult();})
     .catch(()=>{if(token===st.token)results.replaceChildren(el('p',T('비교 자료를 불러오지 못했습니다 · NOT_AVAILABLE','Compare inputs could not be loaded · NOT_AVAILABLE'),{class:'small','data-qgv2w-result-state':'NOT_AVAILABLE'}));});}
   function renderResult(){results.replaceChildren();const r=st.result;if(!r)return;const P=r.mine.personal,rows=r.rows;
-   results.append(el('p',(QS.PERSONAL_LABEL||['개인 설정 미리보기 · 공식 점수 아님','Personal setting preview · not an official score'])[en?1:0]+' · '+(P&&P.profile?P.profile.id:'—'),{class:'badge partial','data-qgv2w-result-label':''}));
+   // V axis weight 0: a personal Q·G-only result, labelled '개인 설정 결과 (V 비중 0)' (QgvScores personal.label); never the official ranking.
+   const plabel=P&&Array.isArray(P.label)?P.label:(QS.PERSONAL_LABEL||['개인 설정 미리보기 · 공식 점수 아님','Personal setting preview · not an official score']);
+   results.append(el('p',plabel[en?1:0]+' · '+(P&&P.profile?P.profile.id:'—'),{class:'badge partial','data-qgv2w-result-label':P&&P.v_weight_zero?'V_WEIGHT_ZERO':''}));
    if(!P||P.state!=='READY'||!rows.length){results.append(el('p',T('내 설정 결과 없음 · ','No personal result · ')+(P?P.state+(P.reason?' · '+P.reason:''):'NOT_AVAILABLE'),{class:'small','data-qgv2w-result-state':P?P.state:'NOT_AVAILABLE'}));return;}
    results.append(el('p',T('공식 = 기본(균형 34/33/33 · 관문 켬) · 내 설정 = 위 비중','Official = default (balanced 34/33/33 · gate on) · Mine = the weights above')+' · '+T('같은 공개 입력·같은 기기 가격 ','same public inputs and device prices ')+r.off.priced_codes+T('개','')+(r.off.priced_codes?'':T(' · 가격이 없으면 V는 —입니다(리더보드 › 내 기기 기준에서 Universe를 읽으면 계산)',' · without prices V is — (read the Universe under Leaderboard › My device)')),{class:'small','data-qgv2w-result-state':'READY'}));
    const cand=st.product!=='custom'?candidateFor(st.product,api):null;if(cand)results.append(el('p',cand.name+' v'+cand.version+' · '+CANDIDATE_LABEL[en?1:0]+(modified()?T(' · 수정됨',' · modified'):''),{class:'small','data-qgv2w-result-preset':cand.id}));
@@ -299,17 +303,18 @@ function mountV2(box,el,view,en,{v2Context=defaultV2Context,sessionQuotes=null}=
    pick.onchange=()=>{st.company=pick.value;renderResult();};results.append(el('label',T('선택 기업 ','Company '),{class:'small'}),pick);
    const x=rows.find(y=>y.company_id===st.company),gateText=g=>g==='TRAP'?T('가치 함정 주의(V 제외)','Value-trap caution (V dropped)'):g==='NOT_EVALUATED'?T('판정 불가','Not evaluated'):T('주의 없음','No caution');
    const cov=(s,a)=>s&&s.coverage?pct(100*s.coverage[a].custom)+T(' (원래 가중치 기준 ',' (original weights ')+pct(100*s.coverage[a].official)+')':'—';
-   const lines=[['Q',s=>num(s.q)],['G',s=>num(s.g)],['V',s=>num(s.v)],['QGV',s=>num(s.total)],[T('순위','Rank'),s=>s.rank===null?'—':String(s.rank)],[T('산출 요인','Factors'),s=>s.factors_available+'/'+s.factors_total],
-    ...['Q','G','V'].map(a=>[a+T(' 축 충족률',' coverage'),s=>cov(s,a)]),[T('순위·후보 자격','Rank / candidate'),s=>s.eligible?T('사용','used'):T('제외','excluded')],[T('가치 함정 관문','Value-trap gate'),s=>gateText(s.gate)]];
+   const lines=[['Q',s=>num(s.q)],['G',s=>num(s.g)],['V',s=>num(s.v)],['QGV',s=>num(s.total)],[T('순위','Rank'),s=>s.rank!==null?String(s.rank):s.qg?qgText(s.qg):'—'],[T('산출 요인','Factors'),s=>s.factors_available+'/'+s.factors_total],
+    ...['Q','G','V'].map(a=>[a+T(' 축 충족률',' coverage'),s=>cov(s,a)]),[T('순위·후보 자격','Rank / candidate'),s=>s.eligible?T('사용','used'):s.qg?T('QG 참고 목록 (V 미포함) · 공식 순위 아님','Q·G reference list (V not included) · not an official rank'):T('제외','excluded')],[T('가치 함정 관문','Value-trap gate'),s=>gateText(s.gate)]];
    const t1=el('table',undefined,{'data-qgv2w-company-table':st.company}),h1=el('tr'),b1=el('tbody');for(const h of [T('항목','Item'),T('공식','Official'),T('내 설정','Mine')])h1.append(el('th',h,{scope:'col'}));
    for(const[label,f]of lines){const tr=el('tr');tr.append(el('th',label,{scope:'row'}),el('td',x.official?f(x.official):'—'),el('td',x.mine?f(x.mine):'—'));b1.append(tr);}
    const th1=el('thead');th1.append(h1);t1.append(th1,b1);const w1=el('div',undefined,{class:'table-scroll'});w1.append(t1);results.append(w1);
    results.append(companyStagesBox(r.mine.rows[st.company]));
    const t2=el('table',undefined,{'data-qgv2w-compare-table':''}),h2=el('tr'),b2=el('tbody');for(const h of [T('기업','Company'),T('공식 QGV (순위)','Official QGV (rank)'),T('내 설정 QGV (순위)','Mine QGV (rank)'),T('순위 변화','Rank change'),T('관문 공식→내 설정','Gate official→mine')])h2.append(el('th',h,{scope:'col'}));
-   for(const y of rows){const tr=el('tr',undefined,{'data-qgv2w-compare-row':y.company_id}),qr=s=>s?num(s.total)+(s.rank===null?' (—)':' ('+s.rank+')'):'—',chg=y.rank_change===null?'—':y.rank_change>0?'▲'+y.rank_change:y.rank_change<0?'▼'+(-y.rank_change):'0';
+   for(const y of rows){const tr=el('tr',undefined,{'data-qgv2w-compare-row':y.company_id}),qr=s=>s?num(s.total)+(s.rank!==null?' ('+s.rank+')':s.qg?' ('+qgText(s.qg)+')':' (—)'):'—',chg=y.rank_change===null?'—':y.rank_change>0?'▲'+y.rank_change:y.rank_change<0?'▼'+(-y.rank_change):'0';
     tr.append(el('td',y.ticker),el('td',qr(y.official)),el('td',qr(y.mine)),el('td',chg),el('td',(y.official?gateText(y.official.gate):'—')+' → '+(y.mine?gateText(y.mine.gate):'—')));b2.append(tr);}
    const th2=el('thead');th2.append(h2);t2.append(th2,b2);const w2=el('div',undefined,{class:'table-scroll'});w2.append(t2);
-   results.append(el('h4',T('상위 목록 · 내 설정 순','Top list · by my setting')),w2,el('p',T('순위 —: QGV 종합 점수가 없어 순위·후보에 넣지 않습니다(0점 아님). 공식 순위 번호는 바뀌지 않습니다.','Rank —: no QGV total, so no rank or candidate place (never 0). The official rank numbers do not change.'),{class:'small'}));}
+   results.append(el('h4',P.v_weight_zero?T('상위 목록 · 개인 설정 결과 (V 비중 0) 순 · 공식 순위 아님','Top list · personal setting result (V weight 0) · not the official ranking'):T('상위 목록 · 내 설정 순','Top list · by my setting'),{'data-qgv2w-top-title':P.v_weight_zero?'V_WEIGHT_ZERO':'PERSONAL'}),w2,el('p',T('순위 —: QGV 종합 점수가 없어 순위·후보에 넣지 않습니다(0점 아님). QG 참고: Q·G만으로 낸 종합점수라 공식 QGV 순위와 섞지 않습니다(V 해당 없음·미산출). 공식 순위 번호는 바뀌지 않습니다.','Rank —: no QGV total, so no rank or candidate place (never 0). QG ref: a total from Q·G only, kept apart from the official QGV ranking (V not applicable or not computed). The official rank numbers do not change.'),{class:'small'}));}
+  function qgText(q){return T('QG 참고','QG ref')+(q.order!==null?' '+q.order:'');}
   /* Three weight stages, all from the engine (QgvScores personal rows .weight_stages): (a) 기본 비중, (b) 유형 반영 비중,
      (c) 결측·관문 반영 후 실제 적용 비중, per axis and per factor, with the reason of every change. */
   function stageCell(v){return el('td',pct(v),{'data-value':finiteNum(v)?String(v):''});}

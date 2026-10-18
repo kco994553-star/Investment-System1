@@ -153,9 +153,21 @@ function coverageFor(d,rec,{blocked=false,inner=null}={}){
  if(!withdrawn&&!blocked&&has('PRICE_NEEDED'))states.push('PRICE_NEEDED');if(rec&&rec.state!=='NOT_AVAILABLE'&&!withdrawn&&(has('PARTIAL')||missing.length))states.push('PARTIAL');if(has('NOT_APPLICABLE'))states.push('NOT_APPLICABLE');
  return{axes,states,v_inputs_missing:missing,v_periods:rec&&object(rec.periods)?{...rec.periods}:{},
   source:{state:rec?rec.state:'NOT_AVAILABLE',acquired_at:rec&&typeof rec.acquired_at==='string'?rec.acquired_at:null,fiscal_year_end:rec&&typeof rec.fiscal_year_end==='string'?rec.fiscal_year_end:null,profile,reason_codes:rec&&Array.isArray(rec.na_reasons)?[...rec.na_reasons]:[]}};}
-/* S06 exploration group of one computed row: RANKED (QGV total and a device rank), PARTIAL_AXES (some axis score but no rank:
-   never put into the ranked order) or CHECK_DATA (no axis score). */
-function exploreGroup(row){if(!row||!row.primary)return 'CHECK_DATA';if(row.rank!==null&&row.rank!==undefined)return 'RANKED';const p=row.primary;return [p.q,p.g,p.v].some(finite)?'PARTIAL_AXES':'CHECK_DATA';}
+/* D11 (approved owner rule 'Q·G만 있는 결과를 QGV 종합순위와 섞지 않는다'): the official QGV ranking holds only rows whose V axis
+   score is finite. A row with a total but no V (financial: V not defined; no device price; V inputs missing) keeps its engine
+   total unchanged and goes to the 'QG 참고 목록 (V 미포함)': its own order by the same total, never an official rank. A
+   value-trap-gate row computed V and the approved gate left V out of its total: it is not 'Q·G only' and stays ranked with its
+   flag. Display only: no total, axis score or engine rule changes. Reference-only rows (DART 참고 순위) keep their own state.
+   qgReference(d): {reason} (the V axis reason code of the row's coverage, else the engine's) for such a row, else null. */
+const QG_REFERENCE_LABEL=['QG 참고 목록 (V 미포함)','Q·G reference list (V not included)'];
+const NO_OFFICIAL_RANK=['가격 연결 전: 공식 QGV 순위 없음 · QG 참고 목록 보기','Before prices: no official QGV ranking · see the Q·G reference list'];
+const PERSONAL_V0_LABEL=['개인 설정 결과 (V 비중 0) · 공식 순위 아님','Personal setting result (V weight 0) · not the official ranking'];
+function qgReference(d){if(!d||d.reference_only===true||!finite(d.total)||finite(d.v))return null;const ax=d.coverage&&d.coverage.axes?d.coverage.axes.V:null,f=ax&&Array.isArray(ax.factors)?ax.factors.find(x=>x.score===null&&x.reason):null;
+ return{reason:ax&&ax.reason?ax.reason:f?f.reason:d.factors&&d.factors.v_earnings_yield&&d.factors.v_earnings_yield.reason?d.factors.v_earnings_yield.reason:'V_INPUTS_NOT_AVAILABLE'};}
+/* S06 exploration group of one computed row: RANKED (official QGV rank: a total with V), QG_REFERENCE (a total from Q·G only, in
+   the QG 참고 목록, no official rank), PARTIAL_AXES (some axis score but no total: never in either order) or CHECK_DATA (no axis
+   score). */
+function exploreGroup(row){if(!row||!row.primary)return 'CHECK_DATA';if(row.rank!==null&&row.rank!==undefined)return 'RANKED';const p=row.primary;if(qgReference(p))return 'QG_REFERENCE';return [p.q,p.g,p.v].some(finite)?'PARTIAL_AXES':'CHECK_DATA';}
 function stateText(code,en){return Object.hasOwn(DATA_STATE,code)?DATA_STATE[code][en?1:0]:code;}
 function axisStatusText(code,en){return Object.hasOwn(AXIS_STATUS,code)?AXIS_STATUS[code][en?1:0]:code;}
 function vInputText(key,en){return Object.hasOwn(V_INPUT,key)?V_INPUT[key][en?1:0]:(en?'value inputs':'가치 입력 전체');}
@@ -191,16 +203,22 @@ function compute({identities=[],publicScreens={},v2Inputs,quotes={},preset,gate=
   if(inputs&&!newer){try{v2.coverage=coverageFor(v2,src,extra.weights?{blocked:blocked.has(code),inner:extra.weights.inner}:{blocked:blocked.has(code)});}catch(_){v2.coverage=null;}}else if(newer)v2.coverage={axes:null,states:['FORMAT_NEWER'],v_inputs_missing:[],v_periods:{},source:null};
   return v2;};
  for(const c of identities){const code=codeFor(c),v2=display(universe,c,code,{});
-  const row={company_id:c.company_id,ticker:c.ticker,code,v2,primary:v2,reference:null,rank:null};rows[c.company_id]=row;}
- ranked=Object.values(rows).filter(r=>finite(r.primary.total)&&r.primary.reference_only!==true).sort((a,b)=>b.primary.total-a.primary.total||(a.ticker<b.ticker?-1:1));
- ranked.forEach((r,i)=>{r.rank=i+1;});
+  const row={company_id:c.company_id,ticker:c.ticker,code,v2,primary:v2,reference:null,rank:null,qg_reference:null};rows[c.company_id]=row;}
+ // D11: official rank = rows with a total AND a V score; Q·G-only totals get qg_reference {order, reason} in their own order.
+ const byTotal=k=>(a,b)=>b[k].total-a[k].total||(a.ticker<b.ticker?-1:1),scored=Object.values(rows).filter(r=>finite(r.primary.total)&&r.primary.reference_only!==true);
+ ranked=scored.filter(r=>!qgReference(r.primary)).sort(byTotal('primary'));ranked.forEach((r,i)=>{r.rank=i+1;});
+ scored.filter(r=>qgReference(r.primary)).sort(byTotal('primary')).forEach((r,i)=>{r.qg_reference={order:i+1,...qgReference(r.primary)};});
  // PERSONAL_PREVIEW: same identities, inputs, quotes, stops and tie rule; a separate memo, rows[cid].personal, never primary.
  let personal=null;if(weights!==null&&weights!==undefined){let tree=null;try{tree=V2.validateWeights(weights);}catch(_){tree=null;}const typesOn=typeWeights!==false;
   personal={state:'NOT_AVAILABLE',reason:null,label:PERSONAL_LABEL,profile:tree?{id:V2.VERSION+'/custom/'+V2.weightsId(tree,typesOn)+'/gate-'+(gateOn?'on':'off'),namespace:V2.PERSONAL_NAMESPACE,gate:gateOn,type_weights:typesOn,weights:tree}:null};
+  // A tree with V axis weight 0 is a personal Q·G-only result: its own label, all its totals ranked as that personal result only.
+  if(tree&&tree.axis.V===0){personal.v_weight_zero=true;personal.label=PERSONAL_V0_LABEL;}
   if(!tree){personal.state='INVALID';personal.reason='WEIGHTS_INVALID';}
   else{let pu=null;if(inputs){try{pu=universeScores(inputs,priced,chosen,gateOn,cyclicalBasis,{weights:tree,typeWeights:typesOn});}catch(_){pu=null;personal.reason='V2_CALCULATION_FAILED';}}else personal.reason=v2Reason;
-   const extra={weights:tree,typeWeights:typesOn};for(const c of identities){const row=rows[c.company_id];row.personal=display(pu,c,row.code,extra);row.personal_rank=null;}
-   Object.values(rows).filter(r=>finite(r.personal.total)&&r.personal.reference_only!==true).sort((a,b)=>b.personal.total-a.personal.total||(a.ticker<b.ticker?-1:1)).forEach((r,i)=>{r.personal_rank=i+1;});
+   const extra={weights:tree,typeWeights:typesOn};for(const c of identities){const row=rows[c.company_id];row.personal=display(pu,c,row.code,extra);row.personal_rank=null;row.personal_qg_reference=null;}
+   // Same D11 split for the personal result (V weight > 0); with V weight 0 every personal total is ranked under PERSONAL_V0_LABEL.
+   const mine=Object.values(rows).filter(r=>finite(r.personal.total)&&r.personal.reference_only!==true),qgOnly=r=>!personal.v_weight_zero&&qgReference(r.personal);
+   mine.filter(r=>!qgOnly(r)).sort(byTotal('personal')).forEach((r,i)=>{r.personal_rank=i+1;});mine.filter(qgOnly).sort(byTotal('personal')).forEach((r,i)=>{r.personal_qg_reference={order:i+1,...qgReference(r.personal)};});
    if(pu&&Object.values(pu).some(r=>finite(r.total)))personal.state='READY';else if(!personal.reason)personal.reason='V2_SCORES_NOT_AVAILABLE';}}
  const quoted=object(quotes)?Object.keys(quotes).length:0;
  return{default:current,basis:b,label:LABEL[current],profile:{preset:chosen,gate:gateOn,id:V2.VERSION+'/'+chosen+'/gate-'+(gateOn?'on':'off'),name:V2.PRESETS[chosen],type_scope:b.type_scope},
@@ -320,5 +338,5 @@ function label(version,en){return(LABEL[version]||LABEL.v2)[en?1:0];}
 // (+ ' · 유형 범위 qgv2-type-scope/…' = the type-application scope id the scores use).
 function basisText(S,en){const b=S&&S.basis?S.basis:basis('v2',false);return label('v2',en)+' · '+(en?b.label_en:b.label)+(b.since?(en?' · since ':' · ')+b.since+(en?'':'부터'):'')+(b.type_scope?(en?' · type scope ':' · 유형 범위 ')+b.type_scope:'');}
 function presets(){return qgvV2().PRESETS;}
-return Object.freeze({MODES,LABEL,PERSONAL_LABEL,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
+return Object.freeze({MODES,LABEL,PERSONAL_LABEL,PERSONAL_V0_LABEL,QG_REFERENCE_LABEL,NO_OFFICIAL_RANK,qgReference,FLAG,DATA_STATE,AXIS_STATUS,REASON,coverageFor,exploreGroup,reasonText,stateText,axisStatusText,vInputText,scoringDefault,compute,typeMemberships,judgmentRows,collectQuotes,pageResult,vCoverage,V_TARGET_SHARE,summaryText,naText,flagText,label,basis,basisText,presets,symbolOf});
 });
