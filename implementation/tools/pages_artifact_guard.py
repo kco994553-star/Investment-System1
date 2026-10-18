@@ -128,7 +128,7 @@ APPROVED_SHA256 = {
     "macro-lights.js": "d64e3d4c68fb8c0ffdbfe16ad3220af2648bda4d331edd387ca337d52c42d741",
     "sec-disclosures.js": "849cbfbf2b21badd52c06cf5887dcd259e08864552a76fde39f065f82c6a7194",
     "theme-boot.js": "4aaf08ecd900e1216a95159a277f8a7c51c32e41784f1ac9530ecf1dc77a6f2c",
-    "theme.css": "e769aeb2626d15cf1df2a564b5a369332da9a33deb673af35cd309096b07a185",
+    "theme.css": "68c35311eaadc6425fd6179fc393c8e67cc28ce85127f7631295173bf8b675bc",
     "app-shell.js": "e7cdd03821e5f543925c16bbb2fb67b977df4c1d5c88e2f532f86cb3b8d31199",
     "home-screen.js": "13ec2c5d8900b42a15bfcd21c1bde8bcd9d03268f4cc1f14e96faa3b11285fae",
     "home-quotes.js": "46487b40e170c3291b023bebcb0fd01da19bb3beb53bfad3006be6377cfe3a96",
