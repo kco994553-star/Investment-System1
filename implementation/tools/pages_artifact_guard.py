@@ -136,7 +136,7 @@ APPROVED_SHA256 = {
     "doodles.js": "413afcb07c5ef5f4edcb0ab544ba61a7d19954db0951ccdf85742c04cf5bb57e",
     "ia-screens.js": "469d763bdb4cf1d32ba71d4d835ed6be25d3c8b9ef20ecb60fd292f2a6ca1578",
     "universe-company.js": "b527627c9bc15df0f3d267be68a9ef334c344c439380fa39247f39e3f27aece4",
-    "price-time.js": "bb79b8fb9aeb95dd8fcac0e0d35dc53c8a42d908aaad808cf3e8f2ba51cabdab",
+    "price-time.js": "980231d0ee1798de71d79b08afa9ae061cd459c9882cf33c5dd135d077688849",
     "universe-company.css": "5b1b0236290f91c95b7f25d49bc93d032bf1718754c1cfae7789e92bb74b11b8",
     "v-coverage.js": "784cf80e200a0e86cf8ab3ee492198f9ea74d894dd3a8a288e3866e59beec3a8",
     "v-coverage.css": "185302f9f5aa9542d2caadfa03363f084bf837e8e1ea2998da49fa1db8af9364",

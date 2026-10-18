@@ -6,7 +6,9 @@
    - UNCONFIRMED no price time at all (GOOGLEFINANCE with time_status UNKNOWN/FX_UNKNOWN, the Universe tab
                  GOOGLEFINANCE_CURRENT with trade_time null, PrivateSubsetView.priceBasis() with price_time null).
                  Shown exactly '가격 기준 시각 미확인'; freshness is '판정 불가', never current.
-   Staleness is judged ONLY from a confirmed price time or date (7 days, the DeviceMarket rule); the read time never decides it.
+   Staleness is judged ONLY from a confirmed price time or date, and only with the source's EXISTING rule passed in by the caller
+   (options.staleness, e.g. DeviceMarket.staleness for device market quotes). PriceTime has no threshold of its own: without a
+   rule, or with no price time, freshness is UNDETERMINED ('신선도 판정 불가'), never current. The read time never decides it.
    Reads only fields the existing records already carry (time_status, as_of, available_at, trade_time, price_time, acquired_at,
    observed_at, date, fetched_at). No price value is read, stored, sent or logged here. No DOM, no network. */
 (function (root, factory) {
@@ -15,7 +17,7 @@
   else root.PriceTime = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  const STALE_AFTER_MS = 7 * 24 * 60 * 60 * 1000, KST_MS = 9 * 60 * 60 * 1000;
+  const KST_MS = 9 * 60 * 60 * 1000;
   const UNCONFIRMED_KO = '가격 기준 시각 미확인', UNCONFIRMED_EN = 'Price time unconfirmed';
   const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/, DAY = /^\d{4}-\d{2}-\d{2}$/;
   const UNKNOWN = new Set(['UNKNOWN', 'FX_UNKNOWN']);
@@ -59,17 +61,19 @@
     if (day(q.as_of) !== null) return {price_time: null, price_date: q.as_of};
     return none;
   }
-  /* describe(quote, {now, staleAfterMs}) -> {read_at, price_time|null, price_date|null, status, freshness, stale, labels}.
-     stale is true/false only for CONFIRMED/DATE_ONLY; null (판정 불가) for UNCONFIRMED. */
+  /* describe(quote, {now, staleness}) -> {read_at, price_time|null, price_date|null, status, freshness, stale, labels}.
+     staleness(isoPriceTime, nowMs) is the source's existing rule ('STALE' | 'CURRENT'); a DATE_ONLY price is passed as
+     'YYYY-MM-DDT00:00:00Z'. stale is true/false only with a confirmed time or date AND a rule; otherwise null (판정 불가). */
   function describe(quote, options = {}) {
     const q = quote !== null && typeof quote === 'object' ? quote : {};
     const read_at = firstTime(q, ['read_at', 'available_at', 'acquired_at', 'fetched_at', 'observed_at']);
     const {price_time, price_date} = own(q);
     const status = price_time !== null ? 'CONFIRMED' : price_date !== null ? 'DATE_ONLY' : 'UNCONFIRMED';
     const now = typeof options.now === 'number' ? options.now : options.now !== undefined && instant(options.now) !== null ? instant(options.now) : Date.now();
-    const limit = Number.isFinite(options.staleAfterMs) && options.staleAfterMs > 0 ? options.staleAfterMs : STALE_AFTER_MS;
-    const basis = status === 'CONFIRMED' ? instant(price_time) : status === 'DATE_ONLY' ? Date.parse(price_date + 'T00:00:00Z') : null;
-    const stale = basis === null ? null : now - basis >= limit;
+    const basis = status === 'CONFIRMED' ? price_time : status === 'DATE_ONLY' ? price_date + 'T00:00:00Z' : null;
+    let verdict = null;
+    if (basis !== null && typeof options.staleness === 'function') { try { verdict = options.staleness(basis, now); } catch (_) { verdict = null; } }
+    const stale = verdict === 'STALE' ? true : verdict === 'CURRENT' ? false : null;
     const freshness = stale === null ? 'UNDETERMINED' : stale ? 'STALE' : 'CURRENT';
     const readKo = '읽은 시각 ' + (clock(read_at) || '—'), readEn = 'Read at ' + (clock(read_at) || '—');
     const priceKo = status === 'CONFIRMED' ? '가격 기준 시각 ' + clock(price_time) : status === 'DATE_ONLY' ? '가격 기준일 ' + price_date + ' (거래일)' : UNCONFIRMED_KO;
@@ -78,7 +82,6 @@
     const freshEn = freshness === 'STALE' ? 'STALE · old price' : freshness === 'UNDETERMINED' ? 'Freshness undetermined' : '';
     const join = parts => parts.filter(Boolean).join(' · ');
     return Object.freeze({read_at, price_time, price_date, status, freshness, stale,
-      stale_after_days: limit / (24 * 60 * 60 * 1000),
       price_label_ko: priceKo, price_label_en: priceEn, read_label_ko: readKo, read_label_en: readEn,
       freshness_label_ko: freshKo, freshness_label_en: freshEn,
       label_ko: join([priceKo, readKo, freshKo]), label_en: join([priceEn, readEn, freshEn])});
@@ -110,5 +113,5 @@
     }
     return Object.freeze(out);
   }
-  return Object.freeze({STALE_AFTER_MS, UNCONFIRMED_KO, UNCONFIRMED_EN, describe, label, html, summarize, clock});
+  return Object.freeze({UNCONFIRMED_KO, UNCONFIRMED_EN, describe, label, html, summarize, clock});
 });
