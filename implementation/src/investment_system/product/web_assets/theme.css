@@ -386,6 +386,8 @@ html[data-route="home"] .personal-reference-footer { max-width: 640px; width: ca
 .home-more a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 2px; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 .home-personal .home-personal-note { margin: -6px 0 10px; font-size: var(--fs-xs); color: var(--muted); }
 .home-personal [data-home-personal-feed] .card { background: transparent; }
+/* Home shows the newest few only; the view options live on the news and watchlist screens. */
+.home-personal [data-news-filters] { display: none; }
 .home-personal .home-personal-all { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: var(--fs-s); text-decoration: underline; text-underline-offset: 4px; }
 @media (min-width: 750px) {
   .discover-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }

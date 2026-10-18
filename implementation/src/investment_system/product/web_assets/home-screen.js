@@ -166,7 +166,8 @@
   personalLoad=personalLoad||Promise.all([root.SecDisclosures.load(root),news?news.load(root):null,dart?dart.load(root):null]).catch(()=>[null,null,null]);
   personalLoad.then(([sec,signals,dartPayload])=>{
    const feed=host.querySelector('[data-home-personal-feed]');if(token!==personalToken||!feed||!feed.isConnected)return;
-   const tmp=doc.createElement('div'),opts={locale,companyIds:ids,limit:5};
+   // storage:null keeps the news screen's own view options untouched (home shows the default, newest first).
+   const tmp=doc.createElement('div'),opts={locale,companyIds:ids,limit:5,interests:ids,storage:null};
    try{if(news)news.mount(tmp,{sec,news:signals,dart:dartPayload},Object.assign(opts,{secApi:root.SecDisclosures,dartApi:dart}));else root.SecDisclosures.mount(tmp,sec,opts);}catch(_){tmp.replaceChildren();}
    const items=tmp.querySelectorAll('[data-news-item],[data-disclosure]').length;
    feed.removeAttribute('aria-busy');

@@ -31,3 +31,22 @@ test('fetch omits credentials, cache and redirects; 404, invalid and oversized f
  assert.equal(await api.load({fetch:async()=>({ok:true,text:async()=>' '.repeat(1024*1024+1)})}),null);assert.equal(await api.load({fetch:async()=>{throw Error('PRIVATE_TEST_DIAGNOSTIC');}}),null);});
 
 test('structural E4 excludes generic legal stories and repeat reports',()=>{const rows=[{company_id:'asml',title:'ASML export controls extended',link:'https://example.invalid/export',published_at:'2031-01-01T10:00:00+00:00',group_id:'a',occurrence:'NEW'},{company_id:'asml',title:'ASML lawsuit filed',link:'https://example.invalid/suit',published_at:'2031-01-01T11:00:00+00:00',group_id:'b',occurrence:'NEW'},{company_id:'asml',title:'ASML export controls repeated',link:'https://example.invalid/repeat',published_at:'2031-01-02T10:00:00+00:00',group_id:'a',occurrence:'REPEAT'}];const c=api.structuralCandidates(rows);assert.equal(c.length,1);assert.equal(c[0].code,'E4');assert.equal(c[0].evidence_grade,'SIGNAL');assert.equal(c[0].score_effect,'NONE');assert.equal(c[0].info_only,true);});
+
+test('display filters: defaults when storage is missing, throws or holds junk; valid values round-trip per tab',()=>{
+ const memory=()=>{const m=new Map();return{getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v))};};
+ assert.deepEqual(api.readFilters(null),api.FILTER_DEFAULT);assert.deepEqual(api.readFilters({getItem:()=>{throw Error('SecurityError');}}),api.FILTER_DEFAULT);
+ assert.equal(api.writeFilters({channel:'NEWS'},{setItem:()=>{throw Error('QuotaExceededError');}}),false);assert.equal(api.writeFilters({channel:'NEWS'},null),false);
+ const s=memory();s.setItem(api.FILTER_KEY,'{not json');assert.deepEqual(api.readFilters(s),api.FILTER_DEFAULT);
+ s.setItem(api.FILTER_KEY,JSON.stringify({channel:'X',category:'<b>',occurrence:'NEW',order:'IMPORTANCE',extra:1}));assert.deepEqual(api.readFilters(s),{channel:'ALL',category:'ALL',occurrence:'NEW',order:'IMPORTANCE'});
+ const f={channel:'DISCLOSURE',category:'SEC:MATERIAL_AGREEMENT',occurrence:'REPEAT',order:'TIME'};assert.equal(api.writeFilters(f,s),true);assert.deepEqual(api.readFilters(s),f);});
+test('display filters narrow or reorder rows only; 실적 joins news earnings and SEC results; importance = held → watchlist → other, newest first inside',()=>{
+ const rows=api.timeline({sec:SEC,news:NEWS});assert.deepEqual(api.filterRows(rows),rows);
+ const only=f=>api.filterRows(rows,Object.assign({},api.FILTER_DEFAULT,f));
+ assert.ok(only({channel:'NEWS'}).every(r=>r.channel==='NEWS'));assert.equal(only({channel:'NEWS'}).length+only({channel:'DISCLOSURE'}).length,rows.length);
+ const results=only({category:'RESULTS'});assert.ok(results.some(r=>r.channel==='NEWS'&&r.item.classification==='EARNINGS')&&results.some(r=>r.channel==='DISCLOSURE'&&r.event.classification==='RESULTS'));
+ assert.ok(only({category:'NEWS:LEGAL'}).every(r=>r.item.classification==='LEGAL'));
+ assert.ok(only({occurrence:'REPEAT'}).every(r=>api.rowOccurrence(r)==='REPEAT'));assert.equal(only({occurrence:'NEW'}).length+only({occurrence:'REPEAT'}).length,rows.length);
+ const ctx={held:['amd'],interests:['nvda','msft']},ordered=api.filterRows(rows,Object.assign({},api.FILTER_DEFAULT,{order:'IMPORTANCE'}),ctx),tiers=ordered.map(r=>api.rowTier(r,ctx));
+ assert.equal(ordered.length,rows.length);assert.deepEqual(tiers,[...tiers].sort((a,b)=>['HELD','INTEREST','OTHER','MARKET'].indexOf(a)-['HELD','INTEREST','OTHER','MARKET'].indexOf(b)));
+ for(const t of ['HELD','INTEREST','OTHER']){const times=ordered.filter(r=>api.rowTier(r,ctx)===t).map(r=>r.time);assert.deepEqual(times,[...times].sort().reverse());}
+ assert.equal(api.rowTier({company_id:null}),'MARKET');assert.equal(api.rowTier(rows[0]),'OTHER');});
