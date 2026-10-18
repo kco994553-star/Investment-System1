@@ -168,6 +168,16 @@ async function checkNoDevice(el, label, financial) {
     else if (s === 'company') { assert.ok(c.reason && c.reason !== 'FINANCIAL_PROFILE_V_NOT_DEFINED'); assert.match(c.text, /미산출/); }
     else assert.equal(c.reason, 'NO_DEVICE_PRICE', label + ' V ' + s); }
   for (const axis of ['v', ...Object.keys(PRICE)]) assert.equal(await el.locator('.sr-mark[data-sr-axis="' + axis + '"]').count(), 0, label + ' no vertex for 미산출 ' + axis);
+  assert.equal(await el.locator('[data-sr-freshness]').getAttribute('data-sr-freshness'), 'UNKNOWN'); assert.match(await el.locator('[data-sr-freshness]').textContent(), /가격 기준 시각: 미확인/);
+}
+/* V missing: any QGV total shown in the radar is labelled 'Q·G만 반영(V 미포함)' and equals the score accessor's total (one path). */
+async function checkQgOnly(page, el, spec, label) {
+  const want = await page.evaluate(async (spec) => { const inputs = await Qgv2Inputs.load(window), id = spec.code ? { company_id: spec.code, ticker: spec.code.slice(spec.code.indexOf(':') + 1) } : { company_id: spec.targetId, ticker: PrivateHistory.symbolFor(spec.targetId) };
+    const S = QgvScores.compute({ identities: [id], v2Inputs: inputs }), d = S.rows[id.company_id].primary; return Number.isFinite(d.total) ? d.total : null; }, spec);
+  const tag = el.locator('tr[data-sr-axis="v"] td[data-sr-series="company"] [data-sr-total-qg-only]');
+  if (want === null) { assert.equal(await tag.count(), 0, label + ' no total'); return 1; }
+  assert.match(await tag.textContent(), /Q·G만 반영\(V 미포함\)/); assert.ok((await tag.textContent()).includes(new Intl.NumberFormat('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(want)), label + ' same total as the accessor');
+  return 2;
 }
 /* V detail: financial -> the model-scope text only; general -> each value input with its published raw value or a reason. */
 async function checkVDetail(el, r, label) {
@@ -215,7 +225,7 @@ const FAKE_STORE = (b) => { const real = window.PriceStore; window.PriceStore = 
         const el = await radar(page), exp = expectPublic(p, spec);
         assert.equal(await el.getAttribute('data-stat-radar'), spec.code ? 'code:' + spec.code : 'target:' + spec.targetId);
         pass += await checkPublic(el, exp, phase); await checkNoDevice(el, phase, exp.subject.r.profile === 'FINANCIAL'); await checkCommon(page, el, phase); pass += 3;
-        pass += await checkVDetail(el, exp.subject.r, phase);
+        pass += await checkVDetail(el, exp.subject.r, phase); pass += await checkQgOnly(page, el, spec, phase);
         await shot(el, 'radar-' + kind.toLowerCase() + '-' + width + '-light-nodevice');
         // Financial detail: the published operating_margin_std_5y_pp (raw %p, FY basis, source) or its missing-data reason.
         const r = exp.subject.r, want = marginStd(r), hist = ((r.v_inputs_v2 && r.v_inputs_v2.operating_margin_history) || []).map((h) => h.fiscal_year_end).filter(Boolean).sort().slice(-5);

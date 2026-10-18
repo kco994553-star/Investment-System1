@@ -227,15 +227,20 @@ function priceTable(dev,end){
  const spy=dev.series.get(SPY),w=spy&&end?priceWindow(spy.closes,end):null,values=new Map(),ok=!!(w&&!w.short);
  if(ok)for(const[s,ser]of dev.series)if(s!==SPY)values.set(s,priceAxesOn(ser,spy,w.sessions));
  memo={dev,end,sessions:ok?w.sessions:null,window:ok?windowInfo(w.sessions,series(spy).basis,w.behind):null,short:!!(w&&w.short),values};return memo;}
+/* One V path: the subject and every cross-section issuer come from ONE QgvScores.compute call on the same inputs and quotes
+   (no second single-identity compute), so the subject's V, its detail and the peers' V share one population. Interim until
+   the shared page result (QgvScores.pageResult, owned elsewhere) lands. total: the QGV total of the same row, kept only to
+   label it 'Q·G만 반영(V 미포함)' when V is missing. Memoised for the last (inputs, quotes, subject) in RAM. */
 let vMemo=null;
 function vOne(S,id,full=false){const row=S&&S.rows?S.rows[id]:null,d=row?row.primary:null,cov=d&&d.coverage&&d.coverage.axes?d.coverage.axes.V:null;
  const x=d&&finite(d.v)?{value:d.v,score:d.v,reason:null}:na(cov&&cov.reason||'NO_DEVICE_PRICE');
- if(full)x.v_detail={detail:d&&object(d.detail)?d.detail:null,factors:cov&&Array.isArray(cov.factors)?cov.factors.map(f=>({id:f.id,reason:f.reason})):[]};return x;}
+ if(full){x.v_detail={detail:d&&object(d.detail)?d.detail:null,factors:cov&&Array.isArray(cov.factors)?cov.factors.map(f=>({id:f.id,reason:f.reason})):[]};x.total=d&&finite(d.total)?d.total:null;}return x;}
 function vScores(inputs,subject,points,quotes){
- const QS=g.QgvScores,q=object(quotes)?quotes:EMPTY;if(!inputs||!QS||typeof QS.compute!=='function')return{map:new Map(),subject:na('NO_DEVICE_PRICE')};
- const run=ids=>{try{return QS.compute({identities:ids,v2Inputs:inputs,quotes:q});}catch(_){return null;}};
- if(!vMemo||vMemo.inputs!==inputs||vMemo.quotes!==q){const S=run(points.map(p=>({company_id:p.code,ticker:tickerOf(p.code)}))),map=new Map();for(const p of points)map.set(p.code,vOne(S,p.code));vMemo={inputs,quotes:q,map};}
- return{map:vMemo.map,subject:vOne(run([subject.identity]),subject.identity.company_id,true)};}
+ const QS=g.QgvScores,q=object(quotes)?quotes:EMPTY,sid=subject.identity.company_id;if(!inputs||!QS||typeof QS.compute!=='function')return{map:new Map(),subject:na('NO_DEVICE_PRICE')};
+ if(!vMemo||vMemo.inputs!==inputs||vMemo.quotes!==q||vMemo.sid!==sid){let S=null;
+  try{S=QS.compute({identities:[...points.map(p=>({company_id:p.code,ticker:tickerOf(p.code)})),subject.identity],v2Inputs:inputs,quotes:q});}catch(_){S=null;}
+  const map=new Map();for(const p of points)map.set(p.code,vOne(S,p.code));vMemo={inputs,quotes:q,sid,map,subject:vOne(S,sid,true)};}
+ return{map:vMemo.map,subject:{...vMemo.subject}};}
 
 
 /* ---------- model ---------- */
@@ -304,7 +309,7 @@ const clock=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(x)?x.s
 function axisMeta(a,model,T,en){
  const r=model.subject.rec,pubAsOf=model.inputs?clock(model.inputs.as_of):'—',w=model.window,fy=r&&r.fiscal_year_end?r.fiscal_year_end:'—';
  if(a.kind==='SCORE')return{unit:T('점(0–100)','points (0–100)'),period:'FY '+fy,asof:pubAsOf,basis:T('공개 sec-qgv2.json','published sec-qgv2.json'),storage:T('공개 파일','public file')};
- if(a.kind==='DEVICE_SCORE')return{unit:T('점(0–100)','points (0–100)'),period:T('현재 시세 · SEC 입력 FY ','current quote · SEC inputs FY ')+fy,asof:T('시세 시각 미보관 · 공개 ','quote time not kept · published ')+pubAsOf,basis:T('기존 V 경로','existing V path'),storage:T('시세: 내 비공개 구글 시트(Universe 탭)·이 브라우저 저장 시세·Worker 종가 → 메모리 계산','quotes: your private Google Sheet (Universe tab) · quotes stored in this browser · Worker closes → computed in memory')};
+ if(a.kind==='DEVICE_SCORE')return{unit:T('점(0–100)','points (0–100)'),period:T('현재 시세 · SEC 입력 FY ','current quote · SEC inputs FY ')+fy,asof:T('가격 기준 시각: 미확인 · 공개 ','price as-of: unknown · published ')+pubAsOf,basis:T('기존 V 경로','existing V path'),storage:T('시세: 내 비공개 구글 시트(Universe 탭)·이 브라우저 저장 시세·Worker 종가 → 메모리 계산','quotes: your private Google Sheet (Universe tab) · quotes stored in this browser · Worker closes → computed in memory')};
  if(a.kind==='PUBLIC')return{unit:'%p',period:T('5개 회계연도 FY0~FY-4 · FY ','5 fiscal years FY0–FY-4 · FY ')+fy,asof:pubAsOf,basis:T('공개 sec-qgv2.json','published sec-qgv2.json'),storage:T('공개 파일','public file')};
  const per=w?(a.id==='relative_strength'?w.rs_start+' ~ '+w.end+T(' (126거래일)',' (126 sessions)'):w.start+' ~ '+w.end+T(' (252거래일)',' (252 sessions)')):'—';
  return{unit:a.unit==='pp'?'%p':'%',period:per,asof:w?w.end+T(' (마지막 공통 거래일)',' (latest common session)'):'—',basis:model.basis?BASIS_TEXT[model.basis][en?1:0]:'—',storage:storageText(model,T)};}
@@ -371,7 +376,8 @@ function cell(series,a,x,locale){
    +'<span class="small">'+esc(counts)+'</span>'+(x.note?'<br><span class="small sr-note">'+esc(reasonText(x.note,en))+'</span>':'');}
  else if(hasScore)body=T(series==='company'?'점수 ':'평균 ',series==='company'?'score ':'mean ')+'<b class="num">'+esc(scoreText(x.score,locale))+'</b>'+(series!=='company'&&Number.isInteger(x.n)?' <span class="small">n='+x.n+'</span>':'');
  else{const code=series!=='company'&&why==='NO_DEVICE_PRICE'?'GROUP_NO_DEVICE_PRICE':why;
-  body=why==='FINANCIAL_PROFILE_V_NOT_DEFINED'?badge(why):badge(why)+' <span class="small">'+esc(reasonText(code,en)+(x.detail?' · '+reasonText(x.detail,en):'')+(Number.isInteger(x.n)&&series!=='company'?' (n='+x.n+')':'')+counts)+'</span>';}
+  const qgOnly=series==='company'&&a.id==='v'&&finite(x.total)?'<br><span class="small" data-sr-total-qg-only>'+esc(T('QGV 종합 ','QGV total ')+fmtNum(x.total,locale,1)+T(' · Q·G만 반영(V 미포함)',' · Q·G only (V not included)'))+'</span>':'';
+  body=(why==='FINANCIAL_PROFILE_V_NOT_DEFINED'?badge(why):badge(why)+' <span class="small">'+esc(reasonText(code,en)+(x.detail?' · '+reasonText(x.detail,en):'')+(Number.isInteger(x.n)&&series!=='company'?' (n='+x.n+')':'')+counts)+'</span>')+qgOnly;}
  return '<td'+attrs+' data-label="'+esc(label)+'">'+body+'</td>';}
 function table(model,locale){
  const T=tr(locale),en=locale==='en-US',same=model.groups.same,rows=[...model.axes.filter(a=>!a.aux),model.aux];
@@ -416,8 +422,8 @@ function vDetailHtml(model,locale){
   +rows.map(([id,name,val,fmt,period,src,why])=>'<tr data-sr-v-input="'+id+'" data-sr-raw="'+(val===null?'NA':String(val))+'" data-sr-reason="'+esc(val===null?why:'')+'"><th scope="row">'+esc(name)+'</th><td data-label="'+esc(T('원값','Raw value'))+'">'+(val===null?'<span class="badge NOT_AVAILABLE">'+esc(T('미산출','n/a'))+'</span> <span class="small">'+esc(reasonText(why,en))+'</span>':'<span class="num">'+esc(fmt(val))+'</span>')+'</td><td data-label="'+esc(T('기간','Period'))+'">'+esc(period)+'</td><td class="small" data-label="'+esc(T('출처','Source'))+'">'+esc(src)+'</td></tr>').join('')
   +'</tbody></table></div>';}
 function freshLine(model,locale){
- const T=tr(locale),f=model.fresh;if(!f)return '';
- return '<p class="small sr-fresh" data-sr-freshness="'+(f.stale?'STALE':'CURRENT')+'" data-sr-days="'+f.days+'">'+(f.stale?'<span class="badge partial">STALE</span> ':'')+esc(T('기준 거래일 ','as of session ')+f.end+' · '+f.days+T('일 전',' days ago')+' · '+T('최신 SPY 거래일보다 ','behind the latest SPY session by ')+f.behind+T('거래일 뒤',' sessions')+(f.stale?T(' · '+STALE_SESSIONS+'거래일 또는 '+STALE_DAYS+'일 초과라 STALE',' · beyond '+STALE_SESSIONS+' sessions or '+STALE_DAYS+' days: STALE'):''))+'</p>';}
+ const T=tr(locale),f=model.fresh;if(!f)return '<p class="small sr-fresh" data-sr-freshness="UNKNOWN">'+esc(T('가격 기준 시각: 미확인','Price as-of: unknown'))+'</p>';
+ return '<p class="small sr-fresh" data-sr-freshness="'+(f.stale?'STALE':'CURRENT')+'" data-sr-days="'+f.days+'">'+(f.stale?'<span class="badge partial">STALE</span> ':'')+esc(T('가격 기준 시각(마지막 공통 종가일) ','price as-of (latest common close) ')+f.end+' · '+f.days+T('일 전',' days ago')+' · '+T('최신 SPY 거래일보다 ','behind the latest SPY session by ')+f.behind+T('거래일 뒤',' sessions')+(f.stale?T(' · '+STALE_SESSIONS+'거래일 또는 '+STALE_DAYS+'일 초과라 STALE',' · beyond '+STALE_SESSIONS+' sessions or '+STALE_DAYS+' days: STALE'):''))+'</p>';}
 function body(model,locale){
  const T=tr(locale),en=locale==='en-US',d=model.device,dev=d.state==='READY'?T('읽음 · 가격 있는 종목 ','read · symbols with prices ')+d.priced+(d.series.has(SPY)?' · SPY':T(' · SPY 없음',' · no SPY')):d.state==='PENDING'?reasonText('PENDING',en):d.state+' · '+reasonText(d.state==='NOT_AVAILABLE'?'NO_DEVICE_PRICE':d.state,en);
  return '<div class="sr-layout"><figure class="sr-figure">'+svg(model,locale)+'<figcaption class="sr-notes small">'+(model.axes.some(a=>a.id==='v'&&a.company.reason==='FINANCIAL_PROFILE_V_NOT_DEFINED')?'<span class="badge sr-model-scope" data-sr-model-scope>V · '+esc(FIN_V_TEXT[en?1:0])+'</span> ':'')+esc(T('모든 축에서 바깥이 더 좋은 평가입니다. 설명용이며 공식 QGV 점수·비중·순위를 바꾸지 않습니다. 면적은 계산하지 않습니다. 미산출 축에는 점을 찍지 않습니다(0이나 평균으로 채우지 않음).','Outer is the better evaluation on every axis. Explanatory only: official QGV scores, weights and ranks are unchanged. The area is not computed. 미산출 axes get no point (never 0 or an average).'))+'</figcaption></figure>'
