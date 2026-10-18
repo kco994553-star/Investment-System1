@@ -60,3 +60,4 @@ price_store_browser_test.js
 macro_lights_browser_test.js
 qgv_v2_screens_browser_test.js
 universe_company_browser_test.js
+stat_radar_browser_test.js
