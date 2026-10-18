@@ -118,10 +118,18 @@ def _validate_body(body: bytes, expected_cik: str) -> None:
     if not isinstance(payload, dict):
         raise SecCollectionError("SEC_JSON_INVALID") from None
     cik = payload.get("cik")
+    # SEC encodes the issuer CIK as an integer, a 10-digit zero-padded string, or
+    # (companyfacts of recently registered issuers, e.g. CIK 2115436 / 2089271 in
+    # 2026-10) a canonical unpadded decimal string such as "2115436". All three
+    # name the same number; only an exact equality with the expected CIK binds.
+    # Partial padding, signs, spaces, non-ASCII digits and other numbers stay
+    # unbound (SEC_CIK_MISMATCH).
     bound = ((type(cik) is int and 0 < cik < 10 ** 10
               and str(cik).zfill(10) == expected_cik)
              or (isinstance(cik, str) and re.fullmatch(r"[0-9]{10}", cik)
-                 and cik == expected_cik))
+                 and cik == expected_cik)
+             or (isinstance(cik, str) and re.fullmatch(r"[1-9][0-9]{0,8}", cik)
+                 and cik.zfill(10) == expected_cik))
     if not bound:
         raise SecCollectionError("SEC_CIK_MISMATCH") from None
     # JSON's ordinary decoder also accepts overflowed numeric literals (1e999).

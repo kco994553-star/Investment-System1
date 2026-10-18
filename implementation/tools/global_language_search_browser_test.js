@@ -193,6 +193,7 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
       // First visit: no invented recent searches or watchlist chips, no autofocus on a phone.
       assert.equal(await p.locator("[data-recent-searches],[data-watch-shortcuts]").count(),0);
       assert.equal(await p.locator("[data-shortcut-hint]").count(),1);
+      assert.equal(await p.locator("[data-home-personal]").isHidden(),true,"no watchlist: no personal news area");
       assert.notEqual(await p.evaluate(()=>document.activeElement?.id),"global-search");
       const box=p.locator("#global-search");
       assert.equal(await box.getAttribute("role"),"combobox");assert.equal(await p.locator("#global-results").getAttribute("role"),"listbox");
@@ -229,12 +230,17 @@ if(!base.pathname.endsWith("/")) base.pathname+="/";
       assert.equal(await sheet.locator('a[href^="https://www.berkshirehathaway.com/letters/"]').count(),1);
       await p.keyboard.press("Escape");await p.waitForFunction(()=>!document.querySelector("#quote-dialog").open);
       assert.equal(await p.evaluate(()=>document.activeElement?.id),"quote-source-button");
-      // Theme switch keeps the query; the landscape falls back to the solid theme colour when it cannot load.
+      // Watchlist news area: only with a watchlist, built from the public files (empty here: a short hint, no sample item).
+      await p.locator("[data-home-personal]").waitFor();await p.waitForFunction(()=>!document.querySelector("[data-home-personal-feed]")?.hasAttribute("aria-busy"));
+      assert.equal(await p.locator("[data-home-discover] [data-discover]").count(),4);
+      // Theme switch keeps the query; the monochrome home loads no background image (2026-10-18 design).
       await box.fill("am");await p.locator("#theme-button").tap();await p.locator('#theme-menu [data-theme-choice="dark"]').tap();
       assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),"dark");assert.equal(await box.inputValue(),"am");
-      await home.route("**/home-bg-*.svg",r=>r.abort());await p.reload();await p.locator("[data-home]").waitFor();
+      assert.equal(await p.locator("[data-home-discover]").isHidden(),true,"discovery steps aside while searching");
+      const images=[];p.on("request",r=>{if(["image","media","font"].includes(r.resourceType())||/\.svg$/.test(new URL(r.url()).pathname))images.push(r.url());});
+      await p.reload();await p.locator("[data-home]").waitFor();
       assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),"dark","choice kept on this device");
-      await p.waitForFunction(()=>document.querySelector(".home-bg")?.dataset.bgState==="failed");assert.equal(await p.locator(".home-bg svg").count(),0);
+      assert.equal(await p.locator(".home-bg").count(),0);assert.deepEqual(images.filter(u=>!/icon-192\.png$/.test(u)),[]);
       await home.close();
     });
     await check("no external calls, unsafe requests, failed responses or page errors",async()=>{

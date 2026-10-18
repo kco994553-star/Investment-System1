@@ -279,5 +279,5 @@ function wireTabs(rootEl,{onSelect=null}={}){
  const select=key=>{for(const b of tabs){const on=b.dataset.analysisTab===key;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;}for(const p of rootEl.querySelectorAll('[data-analysis-panel]'))p.hidden=p.dataset.analysisPanel!==key;if(onSelect)onSelect(key);};
  tabs.forEach((b,i)=>{b.addEventListener('click',()=>select(b.dataset.analysisTab));b.addEventListener('keydown',e=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:e.key==='Home'?-i:e.key==='End'?tabs.length-1-i:0;if(!d&&e.key!=='Home')return;e.preventDefault();const n=tabs[(i+d+tabs.length)%tabs.length];select(n.dataset.analysisTab);n.focus();});});
 }
-return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,scoreRow,qgvBody,coverageHtml,factorTable,classification,nextEarningsLine,summary,analysis,mountHolding,mountValue,valueHtml,wireTabs,tabKey,priceBadge,TYPES,TAB_KEYS});
+return Object.freeze({esc,na,fmtPct,fmtPp,num,tr,typeName,record,selectTypes,V2_LABEL,scoreRow,qgvBody,coverageHtml,factorTable,classification,nextEarningsLine,summary,analysis,mountHolding,mountValue,valueHtml,wireTabs,tabKey,priceBadge,TYPES,TAB_KEYS});
 });

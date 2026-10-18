@@ -5,9 +5,10 @@
      rebuilt and keys are ignored while a composition is open. No request is made except the existing same-origin
      Universe504 identity file (app.js ensureUniverseDirectory); no price is requested.
    - HomeScreen: title, the search box (moved into the home slot, never re-created), real recent searches / watchlist
-     shortcuts (nothing invented when there are none), one verified investor story (home-quotes.js) and its source sheet.
-   - HomeBg: self-made SVG landscape (day sea + lighthouse / night stars), inlined after the page is usable; a failed load
-     leaves the solid theme colour. Very slow, stepped motion only, paused while typing, when hidden or with reduced motion. */
+     shortcuts (nothing invented when there are none), one verified investor story (home-quotes.js) and its source sheet,
+     a discovery area (menu entry points, navigation only) and, only when the watchlist has companies, a personal news
+     area built from the existing public disclosure/news files filtered to those companies (no sample items).
+     Monochrome editorial look (theme.css); no background image and no animation. */
 (function(root){
  'use strict';
  const doc=root.document,$=s=>doc.querySelector(s);
@@ -114,7 +115,7 @@
   doc.addEventListener('keydown',e=>{
    if(e.key!=='/'||e.ctrlKey||e.metaKey||e.altKey||e.defaultPrevented||!finePointer())return;
    const a=doc.activeElement;if(a&&(a.isContentEditable||['INPUT','TEXTAREA','SELECT'].includes(a.tagName)))return;
-   if(doc.querySelector('dialog[open]'))return;
+   if(doc.querySelector('dialog[open]')||doc.documentElement.dataset.more==='open')return;
    e.preventDefault();inp.focus();inp.select();
   });
  }
@@ -128,13 +129,53 @@
  function html(ctx){
   locale=ctx.locale||locale;
   return '<section class="home" data-home aria-labelledby="home-title">'+
-   '<h1 class="home-title" id="home-title">'+esc(T(locale,'어떤 기업을 살펴볼까요?','Which company shall we look into?'))+'</h1>'+
+   '<p class="home-eyebrow" aria-hidden="true">'+esc(T(locale,'기업 검색 · 근거에서 판단까지','Company search · from evidence to judgement'))+'</p>'+
+   // The last words get the yellow highlighter (owner design 2026-10-18); the heading text is unchanged.
+   '<h1 class="home-title" id="home-title">'+esc(T(locale,'어떤 기업을 ','Which company shall we '))+'<span class="hl">'+esc(T(locale,'살펴볼까요?','look into?'))+'</span></h1>'+
+   // Self-made hand-drawn rule: decoration only.
+   '<svg class="home-sketch" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 8.5c18-3.2 36-4.1 55-2.6 17 1.3 30 3.9 49 3.1 22-.9 38-4.6 60-4.2 17 .3 33 2 52 3.6"/><path d="M40 11.2c25-1.6 52-1.2 80-.3"/></svg>'+
    '<p class="home-sub">'+esc(T(locale,'기업을 이해하고, 근거로 판단하세요.','Understand the business, decide on evidence.'))+'</p>'+
    '<div class="home-search-slot" id="home-search-slot"></div>'+
    '<div class="home-shortcuts" id="home-shortcuts" data-home-shortcuts></div>'+
    '<section class="home-quote" id="home-quote" data-home-quote aria-labelledby="home-quote-title"></section>'+
-   '<p class="home-more"><a href="#brief" data-home-brief>'+esc(T(locale,'오늘의 투자 화면 · 운영 카드 보기','Today’s investment view · status cards'))+' <span aria-hidden="true">→</span></a></p>'+
+   '<section class="home-personal" id="home-personal" data-home-personal aria-labelledby="home-personal-title" hidden></section>'+
+   discover()+
    '</section>';
+ }
+ // Discovery (shown when nothing is being searched): where each question is answered. Navigation only, no data.
+ function discover(){
+  // Numbers follow the owner menus (0 홈 · 1–6 · n 구조 트리 · n+1 Lab, 2026-10-18); data-menu carries the menu colour.
+  const rows=[['1','QGV','무엇을 하는 기업인가','What does the company do?','리더보드 · 기업 목록 · 기업 상세','Leaderboard · company list · detail','#leaderboard'],
+   ['3',T(locale,'매크로','Macro'),'지금 어떤 환경인가','What is the environment now?','거시 8축 · 경고등','Eight macro axes · lights','#macro'],
+   ['4',T(locale,'뉴스','News'),'무슨 일이 있었나','What happened?','공시·뉴스 · 기업 관계망','Filings and news · company network','#news'],
+   ['n+1','Lab','이 판단은 작동하는가','Does the judgement work?','검증·연구 · 전진검증','Validation · forward checks','#validation']];
+  return '<nav class="home-discover" id="home-discover" data-home-discover aria-labelledby="home-discover-title"><h2 class="home-section-title" id="home-discover-title">'+esc(T(locale,'어디서 시작할까요','Where to begin'))+'</h2><ul class="discover-list">'+
+   rows.map(([n,menu,qk,qe,tk,te,href])=>'<li data-menu="'+({'1':'qgv','3':'macro','4':'news','n+1':'lab'})[n]+'"><a href="'+href+'" data-discover="'+esc(href.slice(1))+'"><span class="discover-num">'+esc(n+' / '+menu)+'</span><span class="discover-q">'+esc(T(locale,qk,qe))+'</span><span class="discover-to">'+esc(T(locale,tk,te))+' <span aria-hidden="true">↗</span></span></a></li>').join('')+
+   '</ul><p class="home-more"><a href="#brief" data-home-brief>'+esc(T(locale,'오늘의 투자 화면 · 운영 카드 보기','Today’s investment view · status cards'))+' <span aria-hidden="true">→</span></a></p></nav>';
+ }
+ // Personal news: only for companies on this device's watchlist, from the same public files the news screen reads
+ // (SEC 8-K, DART, news signals). Nothing is shown without a watchlist; a short hint when those companies have no item.
+ let personalLoad=null,personalToken=0;
+ function personal(ctx){
+  const host=$('#home-personal');if(!host)return;const ids=[...new Set((ctx.interests||[]).filter(x=>typeof x==='string'&&x))];
+  if(!ids.length||typeof root.SecDisclosures!=='object'){host.hidden=true;host.replaceChildren();return;}
+  const token=++personalToken;host.hidden=false;
+  host.innerHTML='<h2 class="home-section-title" id="home-personal-title">'+esc(T(locale,'내 관심 기업 소식','News on my watchlist'))+'</h2>'+
+   '<p class="home-personal-note">'+esc(T(locale,'관심 기업 '+ids.length+'곳 · 공시·확정과 뉴스·신호 · 점수에 반영하지 않음','Watchlist: '+ids.length+' · filings (confirmed) and news (signals) · never changes scores'))+'</p>'+
+   '<div data-home-personal-feed aria-busy="true"><p class="small">'+esc(T(locale,'불러오는 중…','Loading…'))+'</p></div>'+
+   '<a class="home-personal-all" href="#watchlist">'+esc(T(locale,'관심 기업 화면에서 전체 보기','See everything on the watchlist screen'))+' <span aria-hidden="true">→</span></a>';
+  const news=typeof root.NewsSignals==='object'?root.NewsSignals:null,dart=typeof root.DartDisclosures==='object'?root.DartDisclosures:null;
+  personalLoad=personalLoad||Promise.all([root.SecDisclosures.load(root),news?news.load(root):null,dart?dart.load(root):null]).catch(()=>[null,null,null]);
+  personalLoad.then(([sec,signals,dartPayload])=>{
+   const feed=host.querySelector('[data-home-personal-feed]');if(token!==personalToken||!feed||!feed.isConnected)return;
+   // storage:null keeps the news screen's own view options untouched (home shows the default, newest first).
+   const tmp=doc.createElement('div'),opts={locale,companyIds:ids,limit:5,interests:ids,storage:null};
+   try{if(news)news.mount(tmp,{sec,news:signals,dart:dartPayload},Object.assign(opts,{secApi:root.SecDisclosures,dartApi:dart}));else root.SecDisclosures.mount(tmp,sec,opts);}catch(_){tmp.replaceChildren();}
+   const items=tmp.querySelectorAll('[data-news-item],[data-disclosure]').length;
+   feed.removeAttribute('aria-busy');
+   if(items)feed.replaceChildren(...tmp.childNodes);
+   else feed.innerHTML='<p class="small" data-home-personal-empty>'+esc(T(locale,'관심 기업의 최근 공시·뉴스가 없습니다.','No recent filings or news for your watchlist.'))+'</p>';
+  });
  }
  function shortcuts(ctx){
   const host=$('#home-shortcuts');if(!host)return;
@@ -155,7 +196,7 @@
   const en=locale==='en-US',story=q.type==='STORY';
   const kind=story?T(locale,'일화 요약','Story summary'):T(locale,'직접 인용','Direct quote');
   host.innerHTML='<h2 class="sr-only" id="home-quote-title">'+esc(T(locale,'투자 이야기','Investor story'))+'</h2>'+
-   '<p class="quote-kind" data-quote-type="'+q.type+'"><span>'+esc(kind)+'</span>'+(en?'':'<span class="quote-tr">'+esc(story?'한국어 요약':'한국어 번역')+'</span>')+'</p>'+
+   '<p class="quote-kind" data-quote-type="'+q.type+'"><span data-quote-kind>'+esc(kind)+'</span>'+(en?'':'<span class="quote-tr">'+esc(story?'한국어 요약':'한국어 번역')+'</span>')+'</p>'+
    '<blockquote class="quote-text" data-quote-id="'+esc(q.id)+'" lang="'+(en?'en':'ko')+'"><p>'+esc(en?q.headline_en:q.ko)+'</p></blockquote>'+
    '<p class="quote-line">'+esc(en?q.line.en:q.line.ko)+'</p>'+
    '<div class="quote-actions"><button type="button" class="link-btn" id="quote-source-button" aria-haspopup="dialog" data-quote-source>'+esc(T(locale,'출처 보기','View source'))+' <span aria-hidden="true">↗</span></button>'+
@@ -209,7 +250,7 @@
   if(entering&&!home.pending){home.quoteId=HomeQuotes.pick(home.quoteId).id;}
   placeIntoHome();const inp=input();
   if(inp){inp.placeholder=T(locale,'기업명 또는 티커 검색','Company name or ticker');inp.setAttribute('aria-label',T(locale,'기업명 또는 티커 검색','Search by company name or ticker'));}
-  shortcuts(ctx);quote();
+  shortcuts(ctx);quote();personal(ctx);
   // Back from a screen opened from these results: the query, scope and the chosen row come back.
   if(home.pending&&home.saved&&entering&&['company','analysis','entity','news','technical'].includes(lastRoute)){
    const s=home.saved;S.filter=s.filter;inp.value=s.query;
@@ -219,7 +260,6 @@
    root.requestAnimationFrame(()=>{root.scrollTo(0,s.scrollY||0);if(!narrow())inp.focus({preventScroll:true});});
   }
   home.pending=false;
-  HomeBg.schedule();
  }
  function afterRender(route,ctx){
   lastRoute=currentRoute;currentRoute=route;locale=ctx.locale||locale;
@@ -236,43 +276,7 @@
   const row=content.querySelector(':scope > .parent-row');
   if(row)row.insertAdjacentHTML('afterbegin',link);else content.insertAdjacentHTML('afterbegin','<p class="parent-row">'+link+'</p>');
  }
- // ---------- background ----------
- const HomeBg=(function(){
-  const cache=new Map();let host=null,shown='',timer=0;
-  const variant=()=>((root.AppTheme?.resolved()==='dark')?'night':'day')+'-'+(narrow()||root.matchMedia('(max-aspect-ratio: 4/5)').matches?'narrow':'wide');
-  function ensureHost(){if(host&&host.isConnected)return host;host=doc.createElement('div');host.className='home-bg';host.setAttribute('aria-hidden','true');doc.body.prepend(host);return host;}
-  function sanitize(text){
-   const parsed=new DOMParser().parseFromString(text,'image/svg+xml'),svg=parsed.documentElement;
-   if(!svg||svg.localName!=='svg'||parsed.querySelector('parsererror'))throw Error('HOME_BG_INVALID');
-   for(const el of [...svg.querySelectorAll('*')]){
-    if(['script','foreignObject','style','image','a','iframe','use'].includes(el.localName)){el.remove();continue;}
-    for(const at of [...el.attributes]){if(/^on/i.test(at.name)||/href$/i.test(at.name)||(/url\(/i.test(at.value)&&!/^url\(#hb-[a-z]+\)$/.test(at.value)))el.removeAttribute(at.name);}
-   }
-   for(const at of [...svg.attributes])if(/^on/i.test(at.name))svg.removeAttribute(at.name);
-   svg.setAttribute('width','100%');svg.setAttribute('height','100%');
-   return doc.importNode(svg,true);
-  }
-  async function load(){
-   timer=0;if(currentRoute!=='home')return;const v=variant(),h=ensureHost();if(shown===v)return;
-   try{if(!cache.has(v)){const r=await root.fetch('home-bg-'+v+'.svg',{cache:'force-cache',credentials:'same-origin'});if(!r.ok)throw Error('HOME_BG_HTTP');const text=await r.text();if(text.length>200000)throw Error('HOME_BG_SIZE');cache.set(v,text);}
-    if(variant()!==v)return load();
-    const node=sanitize(cache.get(v));h.replaceChildren(node);shown=v;h.dataset.bg=v;h.dataset.bgState='ready';
-   }catch(_){h.replaceChildren();shown='';h.dataset.bgState='failed';delete h.dataset.bg;}
-  }
-  function schedule(){if(timer)return;ensureHost();const run=()=>{void load();};
-   // After the search box and menus are usable: wait for idle time (or a short timeout).
-   if(typeof root.requestIdleCallback==='function')timer=root.requestIdleCallback(run,{timeout:900});else timer=root.setTimeout(run,120);}
-  function refresh(){if(currentRoute==='home'&&shown!==variant()){shown===''?schedule():void load();}}
-  if(root.AppTheme)AppTheme.subscribe(refresh);
-  for(const q of ['(max-width: 749.98px)','(max-aspect-ratio: 4/5)']){try{const m=root.matchMedia(q);if(m.addEventListener)m.addEventListener('change',refresh);}catch(_){}}
-  return {schedule,refresh,variant};
- })();
- // Motion pauses while typing and while the page is hidden (reduced motion: no motion at all, see theme.css).
- function syncMotion(){const a=doc.activeElement,typing=!!a&&(a.isContentEditable||['INPUT','TEXTAREA','SELECT'].includes(a.tagName));
-  if(typing||doc.hidden)doc.documentElement.dataset.motion='paused';else delete doc.documentElement.dataset.motion;}
- doc.addEventListener('focusin',syncMotion);doc.addEventListener('focusout',()=>root.setTimeout(syncMotion,0));doc.addEventListener('visibilitychange',syncMotion);
-
  wire();
  root.SearchUI=Object.freeze({refresh,setUnavailable,setLocale,paint,readRecent,clearRecent,KO_NAMES});
- root.HomeScreen=Object.freeze({html,afterRender,park,background:HomeBg,state:()=>({route:currentRoute,quoteId:home.quoteId,filter:S.filter})});
+ root.HomeScreen=Object.freeze({html,afterRender,park,state:()=>({route:currentRoute,quoteId:home.quoteId,filter:S.filter})});
 })(window);
